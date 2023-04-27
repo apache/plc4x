@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataFirmwareRevision is the corresponding interface of BACnetConstructedDataFirmwareRevision
 type BACnetConstructedDataFirmwareRevision interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataFirmwareRevision(firmwareRevision BACnetApplication
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataFirmwareRevision(structType interface{}) BACnetConstructedDataFirmwareRevision {
+func CastBACnetConstructedDataFirmwareRevision(structType any) BACnetConstructedDataFirmwareRevision {
 	if casted, ok := structType.(BACnetConstructedDataFirmwareRevision); ok {
 		return casted
 	}

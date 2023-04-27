@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataDoorUnlockDelayTime is the corresponding interface of BACnetConstructedDataDoorUnlockDelayTime
 type BACnetConstructedDataDoorUnlockDelayTime interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataDoorUnlockDelayTime(doorUnlockDelayTime BACnetAppli
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataDoorUnlockDelayTime(structType interface{}) BACnetConstructedDataDoorUnlockDelayTime {
+func CastBACnetConstructedDataDoorUnlockDelayTime(structType any) BACnetConstructedDataDoorUnlockDelayTime {
 	if casted, ok := structType.(BACnetConstructedDataDoorUnlockDelayTime); ok {
 		return casted
 	}

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // ReplyNetwork is the corresponding interface of ReplyNetwork
 type ReplyNetwork interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetNetworkRoute returns NetworkRoute (property field)
@@ -74,7 +76,7 @@ func NewReplyNetwork(networkRoute NetworkRoute, unitAddress UnitAddress) *_Reply
 }
 
 // Deprecated: use the interface for direct cast
-func CastReplyNetwork(structType interface{}) ReplyNetwork {
+func CastReplyNetwork(structType any) ReplyNetwork {
 	if casted, ok := structType.(ReplyNetwork); ok {
 		return casted
 	}

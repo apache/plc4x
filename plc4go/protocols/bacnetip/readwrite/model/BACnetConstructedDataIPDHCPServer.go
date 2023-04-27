@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataIPDHCPServer is the corresponding interface of BACnetConstructedDataIPDHCPServer
 type BACnetConstructedDataIPDHCPServer interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataIPDHCPServer(dhcpServer BACnetApplicationTagOctetSt
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataIPDHCPServer(structType interface{}) BACnetConstructedDataIPDHCPServer {
+func CastBACnetConstructedDataIPDHCPServer(structType any) BACnetConstructedDataIPDHCPServer {
 	if casted, ok := structType.(BACnetConstructedDataIPDHCPServer); ok {
 		return casted
 	}

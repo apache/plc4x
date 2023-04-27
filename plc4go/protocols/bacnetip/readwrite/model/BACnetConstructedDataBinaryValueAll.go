@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataBinaryValueAll is the corresponding interface of BACnetConstructedDataBinaryValueAll
 type BACnetConstructedDataBinaryValueAll interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -84,7 +86,7 @@ func NewBACnetConstructedDataBinaryValueAll(openingTag BACnetOpeningTag, peekedT
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataBinaryValueAll(structType interface{}) BACnetConstructedDataBinaryValueAll {
+func CastBACnetConstructedDataBinaryValueAll(structType any) BACnetConstructedDataBinaryValueAll {
 	if casted, ok := structType.(BACnetConstructedDataBinaryValueAll); ok {
 		return casted
 	}

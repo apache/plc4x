@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // KnxNetIpCore is the corresponding interface of KnxNetIpCore
 type KnxNetIpCore interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	ServiceId
@@ -94,7 +96,7 @@ func NewKnxNetIpCore(version uint8) *_KnxNetIpCore {
 }
 
 // Deprecated: use the interface for direct cast
-func CastKnxNetIpCore(structType interface{}) KnxNetIpCore {
+func CastKnxNetIpCore(structType any) KnxNetIpCore {
 	if casted, ok := structType.(KnxNetIpCore); ok {
 		return casted
 	}

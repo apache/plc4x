@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // COTPPacketTpduError is the corresponding interface of COTPPacketTpduError
 type COTPPacketTpduError interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	COTPPacket
@@ -105,7 +107,7 @@ func NewCOTPPacketTpduError(destinationReference uint16, rejectCause uint8, para
 }
 
 // Deprecated: use the interface for direct cast
-func CastCOTPPacketTpduError(structType interface{}) COTPPacketTpduError {
+func CastCOTPPacketTpduError(structType any) COTPPacketTpduError {
 	if casted, ok := structType.(COTPPacketTpduError); ok {
 		return casted
 	}

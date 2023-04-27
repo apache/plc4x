@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // TelephonyDataLineOffHook is the corresponding interface of TelephonyDataLineOffHook
 type TelephonyDataLineOffHook interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	TelephonyData
@@ -101,7 +103,7 @@ func NewTelephonyDataLineOffHook(reason LineOffHookReason, number string, comman
 }
 
 // Deprecated: use the interface for direct cast
-func CastTelephonyDataLineOffHook(structType interface{}) TelephonyDataLineOffHook {
+func CastTelephonyDataLineOffHook(structType any) TelephonyDataLineOffHook {
 	if casted, ok := structType.(TelephonyDataLineOffHook); ok {
 		return casted
 	}

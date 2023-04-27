@@ -21,7 +21,7 @@ package model
 
 import (
 	"context"
-	spiContext "github.com/apache/plc4x/plc4go/spi/context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
@@ -31,6 +31,7 @@ import (
 
 // BACnetConstructedDataLinkSpeeds is the corresponding interface of BACnetConstructedDataLinkSpeeds
 type BACnetConstructedDataLinkSpeeds interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -131,7 +132,7 @@ func NewBACnetConstructedDataLinkSpeeds(numberOfDataElements BACnetApplicationTa
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataLinkSpeeds(structType interface{}) BACnetConstructedDataLinkSpeeds {
+func CastBACnetConstructedDataLinkSpeeds(structType any) BACnetConstructedDataLinkSpeeds {
 	if casted, ok := structType.(BACnetConstructedDataLinkSpeeds); ok {
 		return casted
 	}
@@ -287,7 +288,7 @@ func (m *_BACnetConstructedDataLinkSpeeds) SerializeWithWriteBuffer(ctx context.
 		}
 		for _curItem, _element := range m.GetLinkSpeeds() {
 			_ = _curItem
-			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetLinkSpeeds()), _curItem)
+			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetLinkSpeeds()), _curItem)
 			_ = arrayCtx
 			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 			if _elementErr != nil {

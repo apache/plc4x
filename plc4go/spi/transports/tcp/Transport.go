@@ -95,6 +95,10 @@ func (m Transport) CreateTransportInstance(transportUrl url.URL, options map[str
 	return NewTcpTransportInstance(tcpAddr, connectTimeout, &m), nil
 }
 
+func (m Transport) String() string {
+	return m.GetTransportCode() + "(" + m.GetTransportName() + ")"
+}
+
 type TransportInstance struct {
 	transports.DefaultBufferedTransportInstance
 	RemoteAddress  *net.TCPAddr
@@ -150,7 +154,7 @@ func (m *TransportInstance) IsConnected() bool {
 	return m.tcpConn != nil
 }
 
-func (m *TransportInstance) Write(data []uint8) error {
+func (m *TransportInstance) Write(data []byte) error {
 	if m.tcpConn == nil {
 		return errors.New("error writing to transport. No writer available")
 	}
@@ -166,4 +170,12 @@ func (m *TransportInstance) Write(data []uint8) error {
 
 func (m *TransportInstance) GetReader() *bufio.Reader {
 	return m.reader
+}
+
+func (m *TransportInstance) String() string {
+	localAddress := ""
+	if m.LocalAddress != nil {
+		localAddress = m.LocalAddress.String() + "->"
+	}
+	return fmt.Sprintf("tcp:%s%s", localAddress, m.RemoteAddress)
 }

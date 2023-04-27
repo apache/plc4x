@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetTimeStampEnclosed is the corresponding interface of BACnetTimeStampEnclosed
 type BACnetTimeStampEnclosed interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetOpeningTag returns OpeningTag (property field)
@@ -84,7 +86,7 @@ func NewBACnetTimeStampEnclosed(openingTag BACnetOpeningTag, timestamp BACnetTim
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetTimeStampEnclosed(structType interface{}) BACnetTimeStampEnclosed {
+func CastBACnetTimeStampEnclosed(structType any) BACnetTimeStampEnclosed {
 	if casted, ok := structType.(BACnetTimeStampEnclosed); ok {
 		return casted
 	}

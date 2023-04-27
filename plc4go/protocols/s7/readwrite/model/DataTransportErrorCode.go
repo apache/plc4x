@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -31,6 +32,8 @@ import (
 type DataTransportErrorCode uint8
 
 type IDataTransportErrorCode interface {
+	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 
@@ -102,8 +105,8 @@ func DataTransportErrorCodeKnows(value uint8) bool {
 	return false
 }
 
-func CastDataTransportErrorCode(structType interface{}) DataTransportErrorCode {
-	castFunc := func(typ interface{}) DataTransportErrorCode {
+func CastDataTransportErrorCode(structType any) DataTransportErrorCode {
+	castFunc := func(typ any) DataTransportErrorCode {
 		if sDataTransportErrorCode, ok := typ.(DataTransportErrorCode); ok {
 			return sDataTransportErrorCode
 		}

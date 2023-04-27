@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataIntegerValueDeadband is the corresponding interface of BACnetConstructedDataIntegerValueDeadband
 type BACnetConstructedDataIntegerValueDeadband interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataIntegerValueDeadband(deadband BACnetApplicationTagU
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataIntegerValueDeadband(structType interface{}) BACnetConstructedDataIntegerValueDeadband {
+func CastBACnetConstructedDataIntegerValueDeadband(structType any) BACnetConstructedDataIntegerValueDeadband {
 	if casted, ok := structType.(BACnetConstructedDataIntegerValueDeadband); ok {
 		return casted
 	}

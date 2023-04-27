@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetLimitEnableTagged is the corresponding interface of BACnetLimitEnableTagged
 type BACnetLimitEnableTagged interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetHeader returns Header (property field)
@@ -83,13 +85,13 @@ func (m *_BACnetLimitEnableTagged) GetPayload() BACnetTagPayloadBitString {
 func (m *_BACnetLimitEnableTagged) GetLowLimitEnable() bool {
 	ctx := context.Background()
 	_ = ctx
-	return bool(utils.InlineIf((bool((len(m.GetPayload().GetData())) > (0))), func() interface{} { return bool(m.GetPayload().GetData()[0]) }, func() interface{} { return bool(bool(false)) }).(bool))
+	return bool(utils.InlineIf((bool((len(m.GetPayload().GetData())) > (0))), func() any { return bool(m.GetPayload().GetData()[0]) }, func() any { return bool(bool(false)) }).(bool))
 }
 
 func (m *_BACnetLimitEnableTagged) GetHighLimitEnable() bool {
 	ctx := context.Background()
 	_ = ctx
-	return bool(utils.InlineIf((bool((len(m.GetPayload().GetData())) > (1))), func() interface{} { return bool(m.GetPayload().GetData()[1]) }, func() interface{} { return bool(bool(false)) }).(bool))
+	return bool(utils.InlineIf((bool((len(m.GetPayload().GetData())) > (1))), func() any { return bool(m.GetPayload().GetData()[1]) }, func() any { return bool(bool(false)) }).(bool))
 }
 
 ///////////////////////
@@ -103,7 +105,7 @@ func NewBACnetLimitEnableTagged(header BACnetTagHeader, payload BACnetTagPayload
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetLimitEnableTagged(structType interface{}) BACnetLimitEnableTagged {
+func CastBACnetLimitEnableTagged(structType any) BACnetLimitEnableTagged {
 	if casted, ok := structType.(BACnetLimitEnableTagged); ok {
 		return casted
 	}
@@ -187,12 +189,12 @@ func BACnetLimitEnableTaggedParseWithBuffer(ctx context.Context, readBuffer util
 	}
 
 	// Virtual field
-	_lowLimitEnable := utils.InlineIf((bool((len(payload.GetData())) > (0))), func() interface{} { return bool(payload.GetData()[0]) }, func() interface{} { return bool(bool(false)) }).(bool)
+	_lowLimitEnable := utils.InlineIf((bool((len(payload.GetData())) > (0))), func() any { return bool(payload.GetData()[0]) }, func() any { return bool(bool(false)) }).(bool)
 	lowLimitEnable := bool(_lowLimitEnable)
 	_ = lowLimitEnable
 
 	// Virtual field
-	_highLimitEnable := utils.InlineIf((bool((len(payload.GetData())) > (1))), func() interface{} { return bool(payload.GetData()[1]) }, func() interface{} { return bool(bool(false)) }).(bool)
+	_highLimitEnable := utils.InlineIf((bool((len(payload.GetData())) > (1))), func() any { return bool(payload.GetData()[1]) }, func() any { return bool(bool(false)) }).(bool)
 	highLimitEnable := bool(_highLimitEnable)
 	_ = highLimitEnable
 

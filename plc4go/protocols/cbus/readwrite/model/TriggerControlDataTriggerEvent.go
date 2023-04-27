@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // TriggerControlDataTriggerEvent is the corresponding interface of TriggerControlDataTriggerEvent
 type TriggerControlDataTriggerEvent interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	TriggerControlData
@@ -93,7 +95,7 @@ func NewTriggerControlDataTriggerEvent(actionSelector byte, commandTypeContainer
 }
 
 // Deprecated: use the interface for direct cast
-func CastTriggerControlDataTriggerEvent(structType interface{}) TriggerControlDataTriggerEvent {
+func CastTriggerControlDataTriggerEvent(structType any) TriggerControlDataTriggerEvent {
 	if casted, ok := structType.(TriggerControlDataTriggerEvent); ok {
 		return casted
 	}

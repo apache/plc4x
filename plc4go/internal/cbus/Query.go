@@ -35,11 +35,11 @@ import (
 type UnitInfoQuery interface {
 	apiModel.PlcQuery
 
-	GetUnitAddress() *readWriteModel.UnitAddress
+	GetUnitAddress() readWriteModel.UnitAddress
 	GetAttribute() *readWriteModel.Attribute
 }
 
-func NewUnitInfoQuery(unitAddress *readWriteModel.UnitAddress, attribute *readWriteModel.Attribute, numElements uint16) UnitInfoQuery {
+func NewUnitInfoQuery(unitAddress readWriteModel.UnitAddress, attribute *readWriteModel.Attribute, numElements uint16) UnitInfoQuery {
 	return &unitInfoQuery{
 		unitAddress: unitAddress,
 		tagType:     UNIT_INFO,
@@ -50,7 +50,7 @@ func NewUnitInfoQuery(unitAddress *readWriteModel.UnitAddress, attribute *readWr
 
 type unitInfoQuery struct {
 	tagType     TagType
-	unitAddress *readWriteModel.UnitAddress
+	unitAddress readWriteModel.UnitAddress
 	attribute   *readWriteModel.Attribute
 	numElements uint16
 }
@@ -58,11 +58,11 @@ type unitInfoQuery struct {
 func (u unitInfoQuery) GetQueryString() string {
 	unitAddressString := "*"
 	if u.unitAddress != nil {
-		unitAddressString = fmt.Sprintf("%d", (*u.unitAddress).GetAddress())
+		unitAddressString = fmt.Sprintf("%d", u.unitAddress.GetAddress())
 	}
 	attributeString := "*"
 	if u.attribute != nil {
-		unitAddressString = u.attribute.String()
+		attributeString = u.attribute.String()
 	}
 	return fmt.Sprintf("cal/%s/identify=%s", unitAddressString, attributeString)
 }
@@ -72,22 +72,22 @@ func (u unitInfoQuery) GetValueType() values.PlcValueType {
 }
 
 func (u unitInfoQuery) GetArrayInfo() []apiModel.ArrayInfo {
-	if u.numElements != 1 {
-		return []apiModel.ArrayInfo{
-			spiModel.DefaultArrayInfo{
-				LowerBound: 0,
-				UpperBound: uint32(u.numElements),
-			},
-		}
+	if u.numElements == 1 {
+		return []apiModel.ArrayInfo{}
 	}
-	return []apiModel.ArrayInfo{}
+	return []apiModel.ArrayInfo{
+		spiModel.DefaultArrayInfo{
+			LowerBound: 0,
+			UpperBound: uint32(u.numElements),
+		},
+	}
 }
 
 func (u unitInfoQuery) GetTagType() TagType {
 	return u.tagType
 }
 
-func (u unitInfoQuery) GetUnitAddress() *readWriteModel.UnitAddress {
+func (u unitInfoQuery) GetUnitAddress() readWriteModel.UnitAddress {
 	return u.unitAddress
 }
 
@@ -109,7 +109,7 @@ func (u unitInfoQuery) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 	}
 
 	if unitAddress := u.unitAddress; unitAddress != nil {
-		if err := (*unitAddress).SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
+		if err := unitAddress.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
 			return err
 		}
 	}

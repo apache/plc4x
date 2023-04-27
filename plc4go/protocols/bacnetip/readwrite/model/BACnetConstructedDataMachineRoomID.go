@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataMachineRoomID is the corresponding interface of BACnetConstructedDataMachineRoomID
 type BACnetConstructedDataMachineRoomID interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataMachineRoomID(machineRoomId BACnetApplicationTagObj
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataMachineRoomID(structType interface{}) BACnetConstructedDataMachineRoomID {
+func CastBACnetConstructedDataMachineRoomID(structType any) BACnetConstructedDataMachineRoomID {
 	if casted, ok := structType.(BACnetConstructedDataMachineRoomID); ok {
 		return casted
 	}

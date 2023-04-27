@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetLandingDoorStatus is the corresponding interface of BACnetLandingDoorStatus
 type BACnetLandingDoorStatus interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetLandingDoors returns LandingDoors (property field)
@@ -67,7 +69,7 @@ func NewBACnetLandingDoorStatus(landingDoors BACnetLandingDoorStatusLandingDoors
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetLandingDoorStatus(structType interface{}) BACnetLandingDoorStatus {
+func CastBACnetLandingDoorStatus(structType any) BACnetLandingDoorStatus {
 	if casted, ok := structType.(BACnetLandingDoorStatus); ok {
 		return casted
 	}

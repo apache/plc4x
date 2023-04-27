@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // DF1CommandResponseMessageProtectedTypedLogicalRead is the corresponding interface of DF1CommandResponseMessageProtectedTypedLogicalRead
 type DF1CommandResponseMessageProtectedTypedLogicalRead interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	DF1ResponseMessage
@@ -99,7 +101,7 @@ func NewDF1CommandResponseMessageProtectedTypedLogicalRead(data []uint8, destina
 }
 
 // Deprecated: use the interface for direct cast
-func CastDF1CommandResponseMessageProtectedTypedLogicalRead(structType interface{}) DF1CommandResponseMessageProtectedTypedLogicalRead {
+func CastDF1CommandResponseMessageProtectedTypedLogicalRead(structType any) DF1CommandResponseMessageProtectedTypedLogicalRead {
 	if casted, ok := structType.(DF1CommandResponseMessageProtectedTypedLogicalRead); ok {
 		return casted
 	}

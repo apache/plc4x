@@ -22,7 +22,6 @@ package model
 import (
 	"context"
 	"fmt"
-	spiContext "github.com/apache/plc4x/plc4go/spi/context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -34,6 +33,7 @@ const S7PayloadUserDataItemCpuFunctionReadSzlResponse_SZLITEMLENGTH uint16 = uin
 
 // S7PayloadUserDataItemCpuFunctionReadSzlResponse is the corresponding interface of S7PayloadUserDataItemCpuFunctionReadSzlResponse
 type S7PayloadUserDataItemCpuFunctionReadSzlResponse interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	S7PayloadUserDataItem
@@ -139,7 +139,7 @@ func NewS7PayloadUserDataItemCpuFunctionReadSzlResponse(szlId SzlId, szlIndex ui
 }
 
 // Deprecated: use the interface for direct cast
-func CastS7PayloadUserDataItemCpuFunctionReadSzlResponse(structType interface{}) S7PayloadUserDataItemCpuFunctionReadSzlResponse {
+func CastS7PayloadUserDataItemCpuFunctionReadSzlResponse(structType any) S7PayloadUserDataItemCpuFunctionReadSzlResponse {
 	if casted, ok := structType.(S7PayloadUserDataItemCpuFunctionReadSzlResponse); ok {
 		return casted
 	}
@@ -171,7 +171,7 @@ func (m *_S7PayloadUserDataItemCpuFunctionReadSzlResponse) GetLengthInBits(ctx c
 	// Array field
 	if len(m.Items) > 0 {
 		for _curItem, element := range m.Items {
-			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.Items), _curItem)
+			arrayCtx := utils.CreateArrayContext(ctx, len(m.Items), _curItem)
 			_ = arrayCtx
 			_ = _curItem
 			lengthInBits += element.(interface{ GetLengthInBits(context.Context) uint16 }).GetLengthInBits(arrayCtx)
@@ -247,7 +247,7 @@ func S7PayloadUserDataItemCpuFunctionReadSzlResponseParseWithBuffer(ctx context.
 	{
 		_numItems := uint16(szlItemCount)
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := spiContext.CreateArrayContext(ctx, int(_numItems), int(_curItem))
+			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
 			_ = _curItem
 			_item, _err := SzlDataTreeItemParseWithBuffer(arrayCtx, readBuffer)
@@ -330,7 +330,7 @@ func (m *_S7PayloadUserDataItemCpuFunctionReadSzlResponse) SerializeWithWriteBuf
 		}
 		for _curItem, _element := range m.GetItems() {
 			_ = _curItem
-			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetItems()), _curItem)
+			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetItems()), _curItem)
 			_ = arrayCtx
 			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 			if _elementErr != nil {

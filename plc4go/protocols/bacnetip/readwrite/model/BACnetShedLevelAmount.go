@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetShedLevelAmount is the corresponding interface of BACnetShedLevelAmount
 type BACnetShedLevelAmount interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetShedLevel
@@ -92,7 +94,7 @@ func NewBACnetShedLevelAmount(amount BACnetContextTagReal, peekedTagHeader BACne
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetShedLevelAmount(structType interface{}) BACnetShedLevelAmount {
+func CastBACnetShedLevelAmount(structType any) BACnetShedLevelAmount {
 	if casted, ok := structType.(BACnetShedLevelAmount); ok {
 		return casted
 	}

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetAddressBinding is the corresponding interface of BACnetAddressBinding
 type BACnetAddressBinding interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetDeviceIdentifier returns DeviceIdentifier (property field)
@@ -74,7 +76,7 @@ func NewBACnetAddressBinding(deviceIdentifier BACnetApplicationTagObjectIdentifi
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetAddressBinding(structType interface{}) BACnetAddressBinding {
+func CastBACnetAddressBinding(structType any) BACnetAddressBinding {
 	if casted, ok := structType.(BACnetAddressBinding); ok {
 		return casted
 	}

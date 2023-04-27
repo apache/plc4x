@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataPassbackMode is the corresponding interface of BACnetConstructedDataPassbackMode
 type BACnetConstructedDataPassbackMode interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataPassbackMode(passbackMode BACnetAccessPassbackModeT
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataPassbackMode(structType interface{}) BACnetConstructedDataPassbackMode {
+func CastBACnetConstructedDataPassbackMode(structType any) BACnetConstructedDataPassbackMode {
 	if casted, ok := structType.(BACnetConstructedDataPassbackMode); ok {
 		return casted
 	}

@@ -21,196 +21,90 @@ package spi
 
 import (
 	"container/list"
+	"context"
 	"fmt"
-	"github.com/apache/plc4x/plc4go/pkg/api/config"
-	"github.com/pkg/errors"
-	"github.com/rs/zerolog"
-	"github.com/rs/zerolog/log"
 	"runtime"
 	"sync"
 	"time"
+
+	"github.com/apache/plc4x/plc4go/pkg/api/config"
+	"github.com/apache/plc4x/plc4go/spi/utils"
+
+	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
 )
 
-var sharedExecutorInstance Executor // shared instance
+var sharedExecutorInstance utils.Executor // shared instance
 
 func init() {
-	sharedExecutorInstance = *NewFixedSizeExecutor(runtime.NumCPU())
-	sharedExecutorInstance.start()
+	sharedExecutorInstance = utils.NewFixedSizeExecutor(runtime.NumCPU(), 100, utils.WithExecutorOptionTracerWorkers(config.TraceTransactionManagerWorkers))
+	sharedExecutorInstance.Start()
 }
 
-type Runnable func()
-
-type Worker struct {
-	id          int
-	shutdown    bool
-	runnable    Runnable
-	interrupted bool
-	executor    *Executor
+// RequestTransaction represents a transaction
+type RequestTransaction interface {
+	fmt.Stringer
+	// FailRequest signals that this transaction has failed
+	FailRequest(err error) error
+	// EndRequest signals that this transaction is done
+	EndRequest() error
+	// Submit submits a Runnable to the RequestTransactionManager
+	Submit(operation utils.Runnable)
+	// AwaitCompletion wait for this RequestTransaction to finish. Returns an error if it finished unsuccessful
+	AwaitCompletion(ctx context.Context) error
 }
 
-func (w *Worker) work() {
-	defer func() {
-		if recovered := recover(); recovered != nil {
-			log.Error().Msgf("Recovering from panic()=%v", recovered)
-		}
-		if !w.shutdown {
-			// TODO: if we are not in shutdown we continue
-			w.work()
-		}
-	}()
-	workerLog := log.With().Int("Worker id", w.id).Logger()
-	if !config.TraceTransactionManagerWorkers {
-		workerLog = zerolog.Nop()
+// RequestTransactionManager handles transactions
+type RequestTransactionManager interface {
+	// SetNumberOfConcurrentRequests sets the number of concurrent requests that will be sent out to a device
+	SetNumberOfConcurrentRequests(numberOfConcurrentRequests int)
+	// StartTransaction starts a RequestTransaction
+	StartTransaction() RequestTransaction
+}
+
+// NewRequestTransactionManager creates a new RequestTransactionManager
+func NewRequestTransactionManager(numberOfConcurrentRequests int, requestTransactionManagerOptions ...RequestTransactionManagerOption) RequestTransactionManager {
+	_requestTransactionManager := &requestTransactionManager{
+		numberOfConcurrentRequests: numberOfConcurrentRequests,
+		transactionId:              0,
+		workLog:                    *list.New(),
+		executor:                   sharedExecutorInstance,
 	}
+	for _, requestTransactionManagerOption := range requestTransactionManagerOptions {
+		requestTransactionManagerOption(_requestTransactionManager)
+	}
+	return _requestTransactionManager
+}
 
-	for !w.shutdown {
-		workerLog.Debug().Msg("Working")
-		select {
-		case workItem := <-w.executor.queue:
-			workerLog.Debug().Msgf("Got work item %v", workItem)
-			if workItem.completionFuture.cancelRequested || (w.shutdown && w.interrupted) {
-				workerLog.Debug().Msg("We need to stop")
-				// TODO: do we need to complete with a error?
-			} else {
-				workerLog.Debug().Msgf("Running work item %v", workItem)
-				workItem.runnable()
-				workItem.completionFuture.complete()
-				workerLog.Debug().Msgf("work item %v completed", workItem)
-			}
-		default:
-			workerLog.Debug().Msgf("Idling")
-			time.Sleep(time.Millisecond * 10)
-		}
+type RequestTransactionManagerOption func(requestTransactionManager *requestTransactionManager)
+
+// WithCustomExecutor sets a custom Executor for the RequestTransactionManager
+func WithCustomExecutor(executor utils.Executor) RequestTransactionManagerOption {
+	return func(requestTransactionManager *requestTransactionManager) {
+		requestTransactionManager.executor = executor
 	}
 }
 
-type WorkItem struct {
-	transactionId    int32
-	runnable         Runnable
-	completionFuture *CompletionFuture
-}
+///////////////////////////////////////
+///////////////////////////////////////
+//
+// Internal section
+//
 
-func (w *WorkItem) String() string {
-	return fmt.Sprintf("Workitem{tid:%d}", w.transactionId)
-}
-
-type Executor struct {
-	running     bool
-	shutdown    bool
-	stateChange sync.Mutex
-	worker      []*Worker
-	queue       chan WorkItem
-}
-
-func NewFixedSizeExecutor(numberOfWorkers int) *Executor {
-	workers := make([]*Worker, numberOfWorkers)
-	for i := 0; i < numberOfWorkers; i++ {
-		workers[i] = &Worker{
-			id:          i,
-			shutdown:    false,
-			runnable:    nil,
-			interrupted: false,
-			executor:    nil,
-		}
-	}
-	executor := Executor{
-		queue:  make(chan WorkItem, 100),
-		worker: workers,
-	}
-	for i := 0; i < numberOfWorkers; i++ {
-		worker := workers[i]
-		worker.executor = &executor
-	}
-	return &executor
-}
-
-func (e *Executor) submit(transactionId int32, runnable Runnable) *CompletionFuture {
-	log.Trace().Int32("transactionId", transactionId).Msg("Submitting runnable")
-	completionFuture := &CompletionFuture{}
-	// TODO: add select and timeout if queue is full
-	e.queue <- WorkItem{
-		transactionId:    transactionId,
-		runnable:         runnable,
-		completionFuture: completionFuture,
-	}
-	log.Trace().Int32("transactionId", transactionId).Msg("runnable queued")
-	return completionFuture
-}
-
-func (e *Executor) start() {
-	e.stateChange.Lock()
-	defer e.stateChange.Unlock()
-	if e.running {
-		return
-	}
-	e.running = true
-	e.shutdown = false
-	for i := 0; i < len(e.worker); i++ {
-		worker := e.worker[i]
-		go worker.work()
-	}
-}
-
-func (e *Executor) stop() {
-	e.stateChange.Lock()
-	defer e.stateChange.Unlock()
-	if !e.running {
-		return
-	}
-	e.shutdown = true
-	close(e.queue)
-	for i := 0; i < len(e.worker); i++ {
-		worker := e.worker[i]
-		worker.shutdown = true
-		worker.interrupted = true
-	}
-	e.running = false
-}
-
-type CompletionFuture struct {
-	cancelRequested    bool
-	interruptRequested bool
-	completed          bool
-	errored            bool
-	err                error
-}
-
-func (f *CompletionFuture) cancel(interrupt bool, err error) {
-	f.cancelRequested = true
-	f.interruptRequested = interrupt
-	f.errored = true
-	f.err = err
-}
-
-func (f *CompletionFuture) complete() {
-	f.completed = true
-}
-
-func (f *CompletionFuture) AwaitCompletion() error {
-	for !f.completed && !f.errored {
-		time.Sleep(time.Millisecond * 10)
-	}
-	return f.err
-}
-
-type RequestTransaction struct {
-	parent        *RequestTransactionManager
+type requestTransaction struct {
+	parent        *requestTransactionManager
 	transactionId int32
 
 	/** The initial operation to perform to kick off the request */
-	operation        Runnable
-	completionFuture *CompletionFuture
+	operation        utils.Runnable
+	completionFuture utils.CompletionFuture
 
 	transactionLog zerolog.Logger
 }
 
-func (t *RequestTransaction) String() string {
-	return fmt.Sprintf("Transaction{tid:%d}", t.transactionId)
-}
-
-// RequestTransactionManager handles transactions
-type RequestTransactionManager struct {
-	runningRequests []*RequestTransaction
+type requestTransactionManager struct {
+	runningRequests []*requestTransaction
 	// How many Transactions are allowed to run at the same time?
 	numberOfConcurrentRequests int
 	// Assigns each request a Unique Transaction Id, especially important for failure handling
@@ -219,34 +113,16 @@ type RequestTransactionManager struct {
 	// Important, this is a FIFO Queue for Fairness!
 	workLog      list.List
 	workLogMutex sync.RWMutex
-	executor     *Executor
+	executor     utils.Executor
 }
 
-// NewRequestTransactionManager creates a new RequestTransactionManager
-func NewRequestTransactionManager(numberOfConcurrentRequests int, requestTransactionManagerOptions ...RequestTransactionManagerOption) *RequestTransactionManager {
-	requestTransactionManager := &RequestTransactionManager{
-		numberOfConcurrentRequests: numberOfConcurrentRequests,
-		transactionId:              0,
-		workLog:                    *list.New(),
-		executor:                   &sharedExecutorInstance,
-	}
-	for _, requestTransactionManagerOption := range requestTransactionManagerOptions {
-		requestTransactionManagerOption(requestTransactionManager)
-	}
-	return requestTransactionManager
-}
+//
+// Internal section
+//
+///////////////////////////////////////
+///////////////////////////////////////
 
-type RequestTransactionManagerOption func(requestTransactionManager *RequestTransactionManager)
-
-// WithCustomExecutor sets a custom Executor for the RequestTransactionManager
-func WithCustomExecutor(executor *Executor) RequestTransactionManagerOption {
-	return func(requestTransactionManager *RequestTransactionManager) {
-		requestTransactionManager.executor = executor
-	}
-}
-
-// SetNumberOfConcurrentRequests sets the number of concurrent requests that will be sent out to a device
-func (r *RequestTransactionManager) SetNumberOfConcurrentRequests(numberOfConcurrentRequests int) {
+func (r *requestTransactionManager) SetNumberOfConcurrentRequests(numberOfConcurrentRequests int) {
 	log.Info().Msgf("Setting new number of concurrent requests %d", numberOfConcurrentRequests)
 	// If we reduced the number of concurrent requests and more requests are in-flight
 	// than should be, at least log a warning.
@@ -260,40 +136,32 @@ func (r *RequestTransactionManager) SetNumberOfConcurrentRequests(numberOfConcur
 	r.processWorklog()
 }
 
-func (r *RequestTransactionManager) submitHandle(handle *RequestTransaction) {
-	if handle.operation == nil {
-		panic("invalid handle")
-	}
-	// Add this Request with this handle i the Worklog
+func (r *requestTransactionManager) submitTransaction(transaction *requestTransaction) {
+	// Add this Request with this transaction i the Worklog
 	// Put Transaction into Worklog
 	r.workLogMutex.Lock()
-	r.workLog.PushFront(handle)
+	r.workLog.PushFront(transaction)
 	r.workLogMutex.Unlock()
 	// Try to Process the Worklog
 	r.processWorklog()
 }
 
-func (r *RequestTransactionManager) processWorklog() {
+func (r *requestTransactionManager) processWorklog() {
 	r.workLogMutex.RLock()
 	defer r.workLogMutex.RUnlock()
 	log.Debug().Msgf("Processing work log with size of %d (%d concurrent requests allowed)", r.workLog.Len(), r.numberOfConcurrentRequests)
 	for len(r.runningRequests) < r.numberOfConcurrentRequests && r.workLog.Len() > 0 {
 		front := r.workLog.Front()
-		if front == nil {
-			return
-		}
-		next := front.Value.(*RequestTransaction)
+		next := front.Value.(*requestTransaction)
 		log.Debug().Msgf("Handling next %v. (Adding to running requests (length: %d))", next, len(r.runningRequests))
 		r.runningRequests = append(r.runningRequests, next)
-		// TODO: use sharedInstance if none is present
-		completionFuture := sharedExecutorInstance.submit(next.transactionId, next.operation)
+		completionFuture := r.executor.Submit(context.Background(), next.transactionId, next.operation)
 		next.completionFuture = completionFuture
 		r.workLog.Remove(front)
 	}
 }
 
-// StartTransaction starts a RequestTransaction
-func (r *RequestTransactionManager) StartTransaction() *RequestTransaction {
+func (r *requestTransactionManager) StartTransaction() RequestTransaction {
 	r.transactionMutex.Lock()
 	defer r.transactionMutex.Unlock()
 	currentTransactionId := r.transactionId
@@ -302,7 +170,7 @@ func (r *RequestTransactionManager) StartTransaction() *RequestTransaction {
 	if !config.TraceTransactionManagerTransactions {
 		transactionLogger = zerolog.Nop()
 	}
-	return &RequestTransaction{
+	return &requestTransaction{
 		r,
 		currentTransactionId,
 		nil,
@@ -311,18 +179,18 @@ func (r *RequestTransactionManager) StartTransaction() *RequestTransaction {
 	}
 }
 
-func (r *RequestTransactionManager) getNumberOfActiveRequests() int {
+func (r *requestTransactionManager) getNumberOfActiveRequests() int {
 	return len(r.runningRequests)
 }
 
-func (r *RequestTransactionManager) failRequest(transaction *RequestTransaction, err error) error {
+func (r *requestTransactionManager) failRequest(transaction *requestTransaction, err error) error {
 	// Try to fail it!
-	transaction.completionFuture.cancel(true, err)
+	transaction.completionFuture.Cancel(true, err)
 	// End it
 	return r.endRequest(transaction)
 }
 
-func (r *RequestTransactionManager) endRequest(transaction *RequestTransaction) error {
+func (r *requestTransactionManager) endRequest(transaction *requestTransaction) error {
 	transaction.transactionLog.Debug().Msg("Trying to find a existing transaction")
 	found := false
 	index := -1
@@ -345,23 +213,20 @@ func (r *RequestTransactionManager) endRequest(transaction *RequestTransaction) 
 	return nil
 }
 
-// FailRequest signals that this transaction has failed
-func (t *RequestTransaction) FailRequest(err error) error {
+func (t *requestTransaction) FailRequest(err error) error {
 	t.transactionLog.Trace().Msg("Fail the request")
 	return t.parent.failRequest(t, err)
 }
 
-// EndRequest signals that this transaction is done
-func (t *RequestTransaction) EndRequest() error {
+func (t *requestTransaction) EndRequest() error {
 	t.transactionLog.Trace().Msg("Ending the request")
 	// Remove it from Running Requests
 	return t.parent.endRequest(t)
 }
 
-// Submit submits a Runnable to the RequestTransactionManager
-func (t *RequestTransaction) Submit(operation Runnable) {
+func (t *requestTransaction) Submit(operation utils.Runnable) {
 	if t.operation != nil {
-		panic("Operation already set")
+		log.Warn().Msg("Operation already set")
 	}
 	t.transactionLog.Trace().Msgf("Submission of transaction %d", t.transactionId)
 	t.operation = func() {
@@ -369,15 +234,15 @@ func (t *RequestTransaction) Submit(operation Runnable) {
 		operation()
 		t.transactionLog.Trace().Msgf("Completed execution of transaction %d", t.transactionId)
 	}
-	t.parent.submitHandle(t)
+	t.parent.submitTransaction(t)
 }
 
-// AwaitCompletion wait for this RequestTransaction to finish. Returns an error if it finished unsuccessful
-func (t *RequestTransaction) AwaitCompletion() error {
+func (t *requestTransaction) AwaitCompletion(ctx context.Context) error {
 	for t.completionFuture == nil {
 		time.Sleep(time.Millisecond * 10)
+		// TODO: this should timeout and not loop infinite...
 	}
-	if err := t.completionFuture.AwaitCompletion(); err != nil {
+	if err := t.completionFuture.AwaitCompletion(ctx); err != nil {
 		return err
 	}
 	stillActive := true
@@ -391,4 +256,8 @@ func (t *RequestTransaction) AwaitCompletion() error {
 		}
 	}
 	return nil
+}
+
+func (t *requestTransaction) String() string {
+	return fmt.Sprintf("Transaction{tid:%d}", t.transactionId)
 }

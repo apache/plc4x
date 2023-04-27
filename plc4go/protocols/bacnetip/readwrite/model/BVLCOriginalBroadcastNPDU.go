@@ -22,6 +22,7 @@ package model
 import (
 	"context"
 	"encoding/binary"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,6 +31,7 @@ import (
 
 // BVLCOriginalBroadcastNPDU is the corresponding interface of BVLCOriginalBroadcastNPDU
 type BVLCOriginalBroadcastNPDU interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BVLC
@@ -98,7 +100,7 @@ func NewBVLCOriginalBroadcastNPDU(npdu NPDU, bvlcPayloadLength uint16) *_BVLCOri
 }
 
 // Deprecated: use the interface for direct cast
-func CastBVLCOriginalBroadcastNPDU(structType interface{}) BVLCOriginalBroadcastNPDU {
+func CastBVLCOriginalBroadcastNPDU(structType any) BVLCOriginalBroadcastNPDU {
 	if casted, ok := structType.(BVLCOriginalBroadcastNPDU); ok {
 		return casted
 	}

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetProcessIdSelectionValue is the corresponding interface of BACnetProcessIdSelectionValue
 type BACnetProcessIdSelectionValue interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetProcessIdSelection
@@ -92,7 +94,7 @@ func NewBACnetProcessIdSelectionValue(processIdentifier BACnetApplicationTagUnsi
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetProcessIdSelectionValue(structType interface{}) BACnetProcessIdSelectionValue {
+func CastBACnetProcessIdSelectionValue(structType any) BACnetProcessIdSelectionValue {
 	if casted, ok := structType.(BACnetProcessIdSelectionValue); ok {
 		return casted
 	}

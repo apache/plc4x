@@ -22,6 +22,7 @@ package model
 import (
 	"context"
 	"encoding/binary"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,6 +31,7 @@ import (
 
 // FirmataMessageSubscribeAnalogPinValue is the corresponding interface of FirmataMessageSubscribeAnalogPinValue
 type FirmataMessageSubscribeAnalogPinValue interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	FirmataMessage
@@ -105,7 +107,7 @@ func NewFirmataMessageSubscribeAnalogPinValue(pin uint8, enable bool, response b
 }
 
 // Deprecated: use the interface for direct cast
-func CastFirmataMessageSubscribeAnalogPinValue(structType interface{}) FirmataMessageSubscribeAnalogPinValue {
+func CastFirmataMessageSubscribeAnalogPinValue(structType any) FirmataMessageSubscribeAnalogPinValue {
 	if casted, ok := structType.(FirmataMessageSubscribeAnalogPinValue); ok {
 		return casted
 	}
@@ -166,7 +168,7 @@ func FirmataMessageSubscribeAnalogPinValueParseWithBuffer(ctx context.Context, r
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of FirmataMessageSubscribeAnalogPinValue")
 		}
 		if reserved != uint8(0x00) {
-			Plc4xModelLog.Info().Fields(map[string]interface{}{
+			Plc4xModelLog.Info().Fields(map[string]any{
 				"expected value": uint8(0x00),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
@@ -226,7 +228,7 @@ func (m *_FirmataMessageSubscribeAnalogPinValue) SerializeWithWriteBuffer(ctx co
 		{
 			var reserved uint8 = uint8(0x00)
 			if m.reservedField0 != nil {
-				Plc4xModelLog.Info().Fields(map[string]interface{}{
+				Plc4xModelLog.Info().Fields(map[string]any{
 					"expected value": uint8(0x00),
 					"got value":      reserved,
 				}).Msg("Overriding reserved field with unexpected value.")

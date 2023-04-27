@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataIPAddress is the corresponding interface of BACnetConstructedDataIPAddress
 type BACnetConstructedDataIPAddress interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataIPAddress(ipAddress BACnetApplicationTagOctetString
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataIPAddress(structType interface{}) BACnetConstructedDataIPAddress {
+func CastBACnetConstructedDataIPAddress(structType any) BACnetConstructedDataIPAddress {
 	if casted, ok := structType.(BACnetConstructedDataIPAddress); ok {
 		return casted
 	}

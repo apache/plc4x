@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataLoopAction is the corresponding interface of BACnetConstructedDataLoopAction
 type BACnetConstructedDataLoopAction interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataLoopAction(action BACnetActionTagged, openingTag BA
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataLoopAction(structType interface{}) BACnetConstructedDataLoopAction {
+func CastBACnetConstructedDataLoopAction(structType any) BACnetConstructedDataLoopAction {
 	if casted, ok := structType.(BACnetConstructedDataLoopAction); ok {
 		return casted
 	}

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetLogDataLogDataEntryIntegerValue is the corresponding interface of BACnetLogDataLogDataEntryIntegerValue
 type BACnetLogDataLogDataEntryIntegerValue interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetLogDataLogDataEntry
@@ -92,7 +94,7 @@ func NewBACnetLogDataLogDataEntryIntegerValue(integerValue BACnetContextTagSigne
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetLogDataLogDataEntryIntegerValue(structType interface{}) BACnetLogDataLogDataEntryIntegerValue {
+func CastBACnetLogDataLogDataEntryIntegerValue(structType any) BACnetLogDataLogDataEntryIntegerValue {
 	if casted, ok := structType.(BACnetLogDataLogDataEntryIntegerValue); ok {
 		return casted
 	}

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataRequestedUpdateInterval is the corresponding interface of BACnetConstructedDataRequestedUpdateInterval
 type BACnetConstructedDataRequestedUpdateInterval interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataRequestedUpdateInterval(requestedUpdateInterval BAC
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataRequestedUpdateInterval(structType interface{}) BACnetConstructedDataRequestedUpdateInterval {
+func CastBACnetConstructedDataRequestedUpdateInterval(structType any) BACnetConstructedDataRequestedUpdateInterval {
 	if casted, ok := structType.(BACnetConstructedDataRequestedUpdateInterval); ok {
 		return casted
 	}

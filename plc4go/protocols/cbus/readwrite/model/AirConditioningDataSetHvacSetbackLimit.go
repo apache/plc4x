@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // AirConditioningDataSetHvacSetbackLimit is the corresponding interface of AirConditioningDataSetHvacSetbackLimit
 type AirConditioningDataSetHvacSetbackLimit interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	AirConditioningData
@@ -116,7 +118,7 @@ func NewAirConditioningDataSetHvacSetbackLimit(zoneGroup byte, zoneList HVACZone
 }
 
 // Deprecated: use the interface for direct cast
-func CastAirConditioningDataSetHvacSetbackLimit(structType interface{}) AirConditioningDataSetHvacSetbackLimit {
+func CastAirConditioningDataSetHvacSetbackLimit(structType any) AirConditioningDataSetHvacSetbackLimit {
 	if casted, ok := structType.(AirConditioningDataSetHvacSetbackLimit); ok {
 		return casted
 	}

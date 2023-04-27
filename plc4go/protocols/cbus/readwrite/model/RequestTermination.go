@@ -33,6 +33,7 @@ const RequestTermination_CR byte = 0x0D
 
 // RequestTermination is the corresponding interface of RequestTermination
 type RequestTermination interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 }
@@ -68,7 +69,7 @@ func NewRequestTermination() *_RequestTermination {
 }
 
 // Deprecated: use the interface for direct cast
-func CastRequestTermination(structType interface{}) RequestTermination {
+func CastRequestTermination(structType any) RequestTermination {
 	if casted, ok := structType.(RequestTermination); ok {
 		return casted
 	}

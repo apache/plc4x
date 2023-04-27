@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // HVACModeAndFlags is the corresponding interface of HVACModeAndFlags
 type HVACModeAndFlags interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetAuxiliaryLevel returns AuxiliaryLevel (property field)
@@ -170,7 +172,7 @@ func NewHVACModeAndFlags(auxiliaryLevel bool, guard bool, setback bool, level bo
 }
 
 // Deprecated: use the interface for direct cast
-func CastHVACModeAndFlags(structType interface{}) HVACModeAndFlags {
+func CastHVACModeAndFlags(structType any) HVACModeAndFlags {
 	if casted, ok := structType.(HVACModeAndFlags); ok {
 		return casted
 	}
@@ -249,7 +251,7 @@ func HVACModeAndFlagsParseWithBuffer(ctx context.Context, readBuffer utils.ReadB
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of HVACModeAndFlags")
 		}
 		if reserved != bool(false) {
-			Plc4xModelLog.Info().Fields(map[string]interface{}{
+			Plc4xModelLog.Info().Fields(map[string]any{
 				"expected value": bool(false),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
@@ -373,7 +375,7 @@ func (m *_HVACModeAndFlags) SerializeWithWriteBuffer(ctx context.Context, writeB
 	{
 		var reserved bool = bool(false)
 		if m.reservedField0 != nil {
-			Plc4xModelLog.Info().Fields(map[string]interface{}{
+			Plc4xModelLog.Info().Fields(map[string]any{
 				"expected value": bool(false),
 				"got value":      reserved,
 			}).Msg("Overriding reserved field with unexpected value.")

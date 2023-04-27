@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataLightingCommandDefaultPriority is the corresponding interface of BACnetConstructedDataLightingCommandDefaultPriority
 type BACnetConstructedDataLightingCommandDefaultPriority interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataLightingCommandDefaultPriority(lightingCommandDefau
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataLightingCommandDefaultPriority(structType interface{}) BACnetConstructedDataLightingCommandDefaultPriority {
+func CastBACnetConstructedDataLightingCommandDefaultPriority(structType any) BACnetConstructedDataLightingCommandDefaultPriority {
 	if casted, ok := structType.(BACnetConstructedDataLightingCommandDefaultPriority); ok {
 		return casted
 	}

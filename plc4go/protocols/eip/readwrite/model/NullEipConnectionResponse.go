@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // NullEipConnectionResponse is the corresponding interface of NullEipConnectionResponse
 type NullEipConnectionResponse interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	EipPacket
@@ -89,7 +91,7 @@ func NewNullEipConnectionResponse(sessionHandle uint32, status uint32, senderCon
 }
 
 // Deprecated: use the interface for direct cast
-func CastNullEipConnectionResponse(structType interface{}) NullEipConnectionResponse {
+func CastNullEipConnectionResponse(structType any) NullEipConnectionResponse {
 	if casted, ok := structType.(NullEipConnectionResponse); ok {
 		return casted
 	}

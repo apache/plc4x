@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // IdentifyReplyCommandManufacturer is the corresponding interface of IdentifyReplyCommandManufacturer
 type IdentifyReplyCommandManufacturer interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	IdentifyReplyCommand
@@ -94,7 +96,7 @@ func NewIdentifyReplyCommandManufacturer(manufacturerName string, numBytes uint8
 }
 
 // Deprecated: use the interface for direct cast
-func CastIdentifyReplyCommandManufacturer(structType interface{}) IdentifyReplyCommandManufacturer {
+func CastIdentifyReplyCommandManufacturer(structType any) IdentifyReplyCommandManufacturer {
 	if casted, ok := structType.(IdentifyReplyCommandManufacturer); ok {
 		return casted
 	}

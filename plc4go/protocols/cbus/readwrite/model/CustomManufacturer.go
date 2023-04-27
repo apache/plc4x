@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // CustomManufacturer is the corresponding interface of CustomManufacturer
 type CustomManufacturer interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetCustomString returns CustomString (property field)
@@ -70,7 +72,7 @@ func NewCustomManufacturer(customString string, numBytes uint8) *_CustomManufact
 }
 
 // Deprecated: use the interface for direct cast
-func CastCustomManufacturer(structType interface{}) CustomManufacturer {
+func CastCustomManufacturer(structType any) CustomManufacturer {
 	if casted, ok := structType.(CustomManufacturer); ok {
 		return casted
 	}

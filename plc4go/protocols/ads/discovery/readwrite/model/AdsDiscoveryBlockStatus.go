@@ -33,6 +33,7 @@ const AdsDiscoveryBlockStatus_STATUSLENGTH uint16 = 0x0004
 
 // AdsDiscoveryBlockStatus is the corresponding interface of AdsDiscoveryBlockStatus
 type AdsDiscoveryBlockStatus interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	AdsDiscoveryBlock
@@ -111,7 +112,7 @@ func NewAdsDiscoveryBlockStatus(status Status) *_AdsDiscoveryBlockStatus {
 }
 
 // Deprecated: use the interface for direct cast
-func CastAdsDiscoveryBlockStatus(structType interface{}) AdsDiscoveryBlockStatus {
+func CastAdsDiscoveryBlockStatus(structType any) AdsDiscoveryBlockStatus {
 	if casted, ok := structType.(AdsDiscoveryBlockStatus); ok {
 		return casted
 	}

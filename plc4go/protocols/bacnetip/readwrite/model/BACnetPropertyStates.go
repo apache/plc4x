@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetPropertyStates is the corresponding interface of BACnetPropertyStates
 type BACnetPropertyStates interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetPeekedTagHeader returns PeekedTagHeader (property field)
@@ -105,7 +107,7 @@ func NewBACnetPropertyStates(peekedTagHeader BACnetTagHeader) *_BACnetPropertySt
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetPropertyStates(structType interface{}) BACnetPropertyStates {
+func CastBACnetPropertyStates(structType any) BACnetPropertyStates {
 	if casted, ok := structType.(BACnetPropertyStates); ok {
 		return casted
 	}
@@ -163,7 +165,7 @@ func BACnetPropertyStatesParseWithBuffer(ctx context.Context, readBuffer utils.R
 		InitializeParent(BACnetPropertyStates, BACnetTagHeader)
 		GetParent() BACnetPropertyStates
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child BACnetPropertyStatesChildSerializeRequirement
 	var typeSwitchError error
 	switch {

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetPropertyStatesAccessCredentialDisable is the corresponding interface of BACnetPropertyStatesAccessCredentialDisable
 type BACnetPropertyStatesAccessCredentialDisable interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetPropertyStates
@@ -92,7 +94,7 @@ func NewBACnetPropertyStatesAccessCredentialDisable(accessCredentialDisable BACn
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetPropertyStatesAccessCredentialDisable(structType interface{}) BACnetPropertyStatesAccessCredentialDisable {
+func CastBACnetPropertyStatesAccessCredentialDisable(structType any) BACnetPropertyStatesAccessCredentialDisable {
 	if casted, ok := structType.(BACnetPropertyStatesAccessCredentialDisable); ok {
 		return casted
 	}

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // EncodedReply is the corresponding interface of EncodedReply
 type EncodedReply interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetPeekedByte returns PeekedByte (property field)
@@ -109,7 +111,7 @@ func NewEncodedReply(peekedByte byte, cBusOptions CBusOptions, requestContext Re
 }
 
 // Deprecated: use the interface for direct cast
-func CastEncodedReply(structType interface{}) EncodedReply {
+func CastEncodedReply(structType any) EncodedReply {
 	if casted, ok := structType.(EncodedReply); ok {
 		return casted
 	}
@@ -168,7 +170,7 @@ func EncodedReplyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 		InitializeParent(EncodedReply, byte)
 		GetParent() EncodedReply
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child EncodedReplyChildSerializeRequirement
 	var typeSwitchError error
 	switch {

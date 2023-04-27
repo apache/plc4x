@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataLastUseTime is the corresponding interface of BACnetConstructedDataLastUseTime
 type BACnetConstructedDataLastUseTime interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataLastUseTime(lastUseTime BACnetDateTime, openingTag 
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataLastUseTime(structType interface{}) BACnetConstructedDataLastUseTime {
+func CastBACnetConstructedDataLastUseTime(structType any) BACnetConstructedDataLastUseTime {
 	if casted, ok := structType.(BACnetConstructedDataLastUseTime); ok {
 		return casted
 	}

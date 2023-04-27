@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier is the corresponding interface of BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier
 type BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetFaultParameterFaultExtendedParametersEntry
@@ -92,7 +94,7 @@ func NewBACnetFaultParameterFaultExtendedParametersEntryObjectidentifier(objecti
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetFaultParameterFaultExtendedParametersEntryObjectidentifier(structType interface{}) BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier {
+func CastBACnetFaultParameterFaultExtendedParametersEntryObjectidentifier(structType any) BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier {
 	if casted, ok := structType.(BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier); ok {
 		return casted
 	}

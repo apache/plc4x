@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // NLMDisconnectConnectionToNetwork is the corresponding interface of NLMDisconnectConnectionToNetwork
 type NLMDisconnectConnectionToNetwork interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	NLM
@@ -94,7 +96,7 @@ func NewNLMDisconnectConnectionToNetwork(destinationNetworkAddress uint16, apduL
 }
 
 // Deprecated: use the interface for direct cast
-func CastNLMDisconnectConnectionToNetwork(structType interface{}) NLMDisconnectConnectionToNetwork {
+func CastNLMDisconnectConnectionToNetwork(structType any) NLMDisconnectConnectionToNetwork {
 	if casted, ok := structType.(NLMDisconnectConnectionToNetwork); ok {
 		return casted
 	}

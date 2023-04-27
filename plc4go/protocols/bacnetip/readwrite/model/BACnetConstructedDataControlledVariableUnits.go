@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataControlledVariableUnits is the corresponding interface of BACnetConstructedDataControlledVariableUnits
 type BACnetConstructedDataControlledVariableUnits interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataControlledVariableUnits(units BACnetEngineeringUnit
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataControlledVariableUnits(structType interface{}) BACnetConstructedDataControlledVariableUnits {
+func CastBACnetConstructedDataControlledVariableUnits(structType any) BACnetConstructedDataControlledVariableUnits {
 	if casted, ok := structType.(BACnetConstructedDataControlledVariableUnits); ok {
 		return casted
 	}

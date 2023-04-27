@@ -22,8 +22,7 @@ package interceptors
 import (
 	"context"
 	"errors"
-
-	"github.com/apache/plc4x/plc4go/pkg/api/model"
+	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/utils"
@@ -46,11 +45,29 @@ type WriteRequestInterceptorExposer interface {
 	GetWriteRequestInterceptor() WriteRequestInterceptor
 }
 
-type readRequestFactory func(tags map[string]model.PlcTag, tagNames []string, reader spi.PlcReader, readRequestInterceptor ReadRequestInterceptor) model.PlcReadRequest
-type writeRequestFactory func(tags map[string]model.PlcTag, tagNames []string, values map[string]values.PlcValue, writer spi.PlcWriter, writeRequestInterceptor WriteRequestInterceptor) model.PlcWriteRequest
+type readRequestFactory func(
+	tags map[string]apiModel.PlcTag,
+	tagNames []string,
+	reader spi.PlcReader,
+	readRequestInterceptor ReadRequestInterceptor,
+) apiModel.PlcReadRequest
+type writeRequestFactory func(
+	tags map[string]apiModel.PlcTag,
+	tagNames []string,
+	values map[string]values.PlcValue,
+	writer spi.PlcWriter,
+	writeRequestInterceptor WriteRequestInterceptor,
+) apiModel.PlcWriteRequest
 
-type readResponseFactory func(request model.PlcReadRequest, responseCodes map[string]model.PlcResponseCode, values map[string]values.PlcValue) model.PlcReadResponse
-type writeResponseFactory func(request model.PlcWriteRequest, responseCodes map[string]model.PlcResponseCode) model.PlcWriteResponse
+type readResponseFactory func(
+	request apiModel.PlcReadRequest,
+	responseCodes map[string]apiModel.PlcResponseCode,
+	values map[string]values.PlcValue,
+) apiModel.PlcReadResponse
+type writeResponseFactory func(
+	request apiModel.PlcWriteRequest,
+	responseCodes map[string]apiModel.PlcResponseCode,
+) apiModel.PlcWriteResponse
 
 type SingleItemRequestInterceptor struct {
 	readRequestFactory   readRequestFactory
@@ -70,16 +87,16 @@ func NewSingleItemRequestInterceptor(readRequestFactory readRequestFactory, writ
 //
 
 type interceptedPlcReadRequestResult struct {
-	Request  model.PlcReadRequest
-	Response model.PlcReadResponse
+	Request  apiModel.PlcReadRequest
+	Response apiModel.PlcReadResponse
 	Err      error
 }
 
-func (d *interceptedPlcReadRequestResult) GetRequest() model.PlcReadRequest {
+func (d *interceptedPlcReadRequestResult) GetRequest() apiModel.PlcReadRequest {
 	return d.Request
 }
 
-func (d *interceptedPlcReadRequestResult) GetResponse() model.PlcReadResponse {
+func (d *interceptedPlcReadRequestResult) GetResponse() apiModel.PlcReadResponse {
 	return d.Response
 }
 
@@ -88,16 +105,16 @@ func (d *interceptedPlcReadRequestResult) GetErr() error {
 }
 
 type interceptedPlcWriteRequestResult struct {
-	Request  model.PlcWriteRequest
-	Response model.PlcWriteResponse
+	Request  apiModel.PlcWriteRequest
+	Response apiModel.PlcWriteResponse
 	Err      error
 }
 
-func (d *interceptedPlcWriteRequestResult) GetRequest() model.PlcWriteRequest {
+func (d *interceptedPlcWriteRequestResult) GetRequest() apiModel.PlcWriteRequest {
 	return d.Request
 }
 
-func (d *interceptedPlcWriteRequestResult) GetResponse() model.PlcWriteResponse {
+func (d *interceptedPlcWriteRequestResult) GetResponse() apiModel.PlcWriteResponse {
 	return d.Response
 }
 
@@ -111,21 +128,27 @@ func (d *interceptedPlcWriteRequestResult) GetErr() error {
 ///////////////////////////////////////
 ///////////////////////////////////////
 
-func (m SingleItemRequestInterceptor) InterceptReadRequest(ctx context.Context, readRequest model.PlcReadRequest) []model.PlcReadRequest {
-	// TODO: handle ctx
+func (m SingleItemRequestInterceptor) InterceptReadRequest(ctx context.Context, readRequest apiModel.PlcReadRequest) []apiModel.PlcReadRequest {
+	if readRequest == nil || len(readRequest.GetTagNames()) == 0 {
+		return nil
+	}
 	// If this request just has one tag, go the shortcut
 	if len(readRequest.GetTagNames()) == 1 {
 		log.Debug().Msg("We got only one request, no splitting required")
-		return []model.PlcReadRequest{readRequest}
+		return []apiModel.PlcReadRequest{readRequest}
 	}
 	log.Trace().Msg("Splitting requests")
 	// In all other cases, create a new read request containing only one item
-	var readRequests []model.PlcReadRequest
+	var readRequests []apiModel.PlcReadRequest
 	for _, tagName := range readRequest.GetTagNames() {
+		if err := ctx.Err(); err != nil {
+			log.Warn().Err(err).Msg("aborting early")
+			return nil
+		}
 		log.Debug().Str("tagName", tagName).Msg("Splitting into own request")
 		tag := readRequest.GetTag(tagName)
 		subReadRequest := m.readRequestFactory(
-			map[string]model.PlcTag{tagName: tag},
+			map[string]apiModel.PlcTag{tagName: tag},
 			[]string{tagName},
 			readRequest.(ReaderExposer).GetReader(),
 			readRequest.(ReadRequestInterceptorExposer).GetReadRequestInterceptor(),
@@ -135,17 +158,26 @@ func (m SingleItemRequestInterceptor) InterceptReadRequest(ctx context.Context, 
 	return readRequests
 }
 
-func (m SingleItemRequestInterceptor) ProcessReadResponses(ctx context.Context, readRequest model.PlcReadRequest, readResults []model.PlcReadRequestResult) model.PlcReadRequestResult {
-	// TODO: handle ctx
+func (m SingleItemRequestInterceptor) ProcessReadResponses(ctx context.Context, readRequest apiModel.PlcReadRequest, readResults []apiModel.PlcReadRequestResult) apiModel.PlcReadRequestResult {
 	if len(readResults) == 1 {
 		log.Debug().Msg("We got only one response, no merging required")
 		return readResults[0]
 	}
 	log.Trace().Msg("Merging requests")
-	responseCodes := map[string]model.PlcResponseCode{}
+	responseCodes := map[string]apiModel.PlcResponseCode{}
 	val := map[string]values.PlcValue{}
 	var err error = nil
 	for _, readResult := range readResults {
+		if ctxErr := ctx.Err(); ctxErr != nil {
+			log.Warn().Err(ctxErr).Msg("aborting early")
+			if err != nil {
+				multiError := err.(utils.MultiError)
+				multiError.Errors = append(multiError.Errors, ctxErr)
+			} else {
+				err = ctxErr
+			}
+			break
+		}
 		if readResult.GetErr() != nil {
 			log.Debug().Err(readResult.GetErr()).Msgf("Error during read")
 			if err == nil {
@@ -155,13 +187,14 @@ func (m SingleItemRequestInterceptor) ProcessReadResponses(ctx context.Context, 
 				multiError := err.(utils.MultiError)
 				multiError.Errors = append(multiError.Errors, readResult.GetErr())
 			}
-		} else if readResult.GetResponse() != nil {
-			if len(readResult.GetResponse().GetRequest().GetTagNames()) > 1 {
-				log.Error().Int("numberOfTags", len(readResult.GetResponse().GetRequest().GetTagNames())).Msg("We should only get 1")
+		} else if response := readResult.GetResponse(); response != nil {
+			request := response.GetRequest()
+			if len(request.GetTagNames()) > 1 {
+				log.Error().Int("numberOfTags", len(request.GetTagNames())).Msg("We should only get 1")
 			}
-			for _, tagName := range readResult.GetResponse().GetRequest().GetTagNames() {
-				responseCodes[tagName] = readResult.GetResponse().GetResponseCode(tagName)
-				val[tagName] = readResult.GetResponse().GetValue(tagName)
+			for _, tagName := range request.GetTagNames() {
+				responseCodes[tagName] = response.GetResponseCode(tagName)
+				val[tagName] = response.GetValue(tagName)
 			}
 		}
 	}
@@ -172,21 +205,27 @@ func (m SingleItemRequestInterceptor) ProcessReadResponses(ctx context.Context, 
 	}
 }
 
-func (m SingleItemRequestInterceptor) InterceptWriteRequest(ctx context.Context, writeRequest model.PlcWriteRequest) []model.PlcWriteRequest {
-	// TODO: handle ctx
+func (m SingleItemRequestInterceptor) InterceptWriteRequest(ctx context.Context, writeRequest apiModel.PlcWriteRequest) []apiModel.PlcWriteRequest {
+	if writeRequest == nil {
+		return nil
+	}
 	// If this request just has one tag, go the shortcut
 	if len(writeRequest.GetTagNames()) == 1 {
 		log.Debug().Msg("We got only one request, no splitting required")
-		return []model.PlcWriteRequest{writeRequest}
+		return []apiModel.PlcWriteRequest{writeRequest}
 	}
 	log.Trace().Msg("Splitting requests")
 	// In all other cases, create a new write request containing only one item
-	var writeRequests []model.PlcWriteRequest
+	var writeRequests []apiModel.PlcWriteRequest
 	for _, tagName := range writeRequest.GetTagNames() {
+		if err := ctx.Err(); err != nil {
+			log.Warn().Err(err).Msg("aborting early")
+			return nil
+		}
 		log.Debug().Str("tagName", tagName).Msg("Splitting into own request")
 		tag := writeRequest.GetTag(tagName)
 		subWriteRequest := m.writeRequestFactory(
-			map[string]model.PlcTag{tagName: tag},
+			map[string]apiModel.PlcTag{tagName: tag},
 			[]string{tagName},
 			map[string]values.PlcValue{tagName: writeRequest.GetValue(tagName)},
 			writeRequest.(WriterExposer).GetWriter(),
@@ -197,16 +236,25 @@ func (m SingleItemRequestInterceptor) InterceptWriteRequest(ctx context.Context,
 	return writeRequests
 }
 
-func (m SingleItemRequestInterceptor) ProcessWriteResponses(ctx context.Context, writeRequest model.PlcWriteRequest, writeResults []model.PlcWriteRequestResult) model.PlcWriteRequestResult {
-	// TODO: handle ctx
+func (m SingleItemRequestInterceptor) ProcessWriteResponses(ctx context.Context, writeRequest apiModel.PlcWriteRequest, writeResults []apiModel.PlcWriteRequestResult) apiModel.PlcWriteRequestResult {
 	if len(writeResults) == 1 {
 		log.Debug().Msg("We got only one response, no merging required")
 		return writeResults[0]
 	}
 	log.Trace().Msg("Merging requests")
-	responseCodes := map[string]model.PlcResponseCode{}
+	responseCodes := map[string]apiModel.PlcResponseCode{}
 	var err error = nil
 	for _, writeResult := range writeResults {
+		if ctxErr := ctx.Err(); ctxErr != nil {
+			log.Warn().Err(ctxErr).Msg("aborting early")
+			if err != nil {
+				multiError := err.(utils.MultiError)
+				multiError.Errors = append(multiError.Errors, ctxErr)
+			} else {
+				err = ctxErr
+			}
+			break
+		}
 		if writeResult.GetErr() != nil {
 			log.Debug().Err(writeResult.GetErr()).Msgf("Error during write")
 			if err == nil {

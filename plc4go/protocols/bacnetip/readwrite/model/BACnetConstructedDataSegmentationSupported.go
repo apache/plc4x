@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataSegmentationSupported is the corresponding interface of BACnetConstructedDataSegmentationSupported
 type BACnetConstructedDataSegmentationSupported interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataSegmentationSupported(segmentationSupported BACnetS
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataSegmentationSupported(structType interface{}) BACnetConstructedDataSegmentationSupported {
+func CastBACnetConstructedDataSegmentationSupported(structType any) BACnetConstructedDataSegmentationSupported {
 	if casted, ok := structType.(BACnetConstructedDataSegmentationSupported); ok {
 		return casted
 	}

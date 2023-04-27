@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -31,6 +32,8 @@ import (
 type BACnetEscalatorMode uint16
 
 type IBACnetEscalatorMode interface {
+	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 
@@ -108,8 +111,8 @@ func BACnetEscalatorModeKnows(value uint16) bool {
 	return false
 }
 
-func CastBACnetEscalatorMode(structType interface{}) BACnetEscalatorMode {
-	castFunc := func(typ interface{}) BACnetEscalatorMode {
+func CastBACnetEscalatorMode(structType any) BACnetEscalatorMode {
+	castFunc := func(typ any) BACnetEscalatorMode {
 		if sBACnetEscalatorMode, ok := typ.(BACnetEscalatorMode); ok {
 			return sBACnetEscalatorMode
 		}

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetEventParameterCommandFailure is the corresponding interface of BACnetEventParameterCommandFailure
 type BACnetEventParameterCommandFailure interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetEventParameter
@@ -116,7 +118,7 @@ func NewBACnetEventParameterCommandFailure(openingTag BACnetOpeningTag, timeDela
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetEventParameterCommandFailure(structType interface{}) BACnetEventParameterCommandFailure {
+func CastBACnetEventParameterCommandFailure(structType any) BACnetEventParameterCommandFailure {
 	if casted, ok := structType.(BACnetEventParameterCommandFailure); ok {
 		return casted
 	}

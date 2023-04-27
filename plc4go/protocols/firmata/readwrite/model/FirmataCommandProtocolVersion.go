@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // FirmataCommandProtocolVersion is the corresponding interface of FirmataCommandProtocolVersion
 type FirmataCommandProtocolVersion interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	FirmataCommand
@@ -102,7 +104,7 @@ func NewFirmataCommandProtocolVersion(majorVersion uint8, minorVersion uint8, re
 }
 
 // Deprecated: use the interface for direct cast
-func CastFirmataCommandProtocolVersion(structType interface{}) FirmataCommandProtocolVersion {
+func CastFirmataCommandProtocolVersion(structType any) FirmataCommandProtocolVersion {
 	if casted, ok := structType.(FirmataCommandProtocolVersion); ok {
 		return casted
 	}

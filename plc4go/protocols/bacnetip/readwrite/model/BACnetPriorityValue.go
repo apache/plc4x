@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetPriorityValue is the corresponding interface of BACnetPriorityValue
 type BACnetPriorityValue interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetPeekedTagHeader returns PeekedTagHeader (property field)
@@ -117,7 +119,7 @@ func NewBACnetPriorityValue(peekedTagHeader BACnetTagHeader, objectTypeArgument 
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetPriorityValue(structType interface{}) BACnetPriorityValue {
+func CastBACnetPriorityValue(structType any) BACnetPriorityValue {
 	if casted, ok := structType.(BACnetPriorityValue); ok {
 		return casted
 	}
@@ -187,7 +189,7 @@ func BACnetPriorityValueParseWithBuffer(ctx context.Context, readBuffer utils.Re
 		InitializeParent(BACnetPriorityValue, BACnetTagHeader)
 		GetParent() BACnetPriorityValue
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child BACnetPriorityValueChildSerializeRequirement
 	var typeSwitchError error
 	switch {

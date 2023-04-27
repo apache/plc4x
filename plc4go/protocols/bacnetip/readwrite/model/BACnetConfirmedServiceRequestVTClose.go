@@ -21,7 +21,7 @@ package model
 
 import (
 	"context"
-	spiContext "github.com/apache/plc4x/plc4go/spi/context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,6 +30,7 @@ import (
 
 // BACnetConfirmedServiceRequestVTClose is the corresponding interface of BACnetConfirmedServiceRequestVTClose
 type BACnetConfirmedServiceRequestVTClose interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConfirmedServiceRequest
@@ -99,7 +100,7 @@ func NewBACnetConfirmedServiceRequestVTClose(listOfRemoteVtSessionIdentifiers []
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConfirmedServiceRequestVTClose(structType interface{}) BACnetConfirmedServiceRequestVTClose {
+func CastBACnetConfirmedServiceRequestVTClose(structType any) BACnetConfirmedServiceRequestVTClose {
 	if casted, ok := structType.(BACnetConfirmedServiceRequestVTClose); ok {
 		return casted
 	}
@@ -201,7 +202,7 @@ func (m *_BACnetConfirmedServiceRequestVTClose) SerializeWithWriteBuffer(ctx con
 		}
 		for _curItem, _element := range m.GetListOfRemoteVtSessionIdentifiers() {
 			_ = _curItem
-			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetListOfRemoteVtSessionIdentifiers()), _curItem)
+			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetListOfRemoteVtSessionIdentifiers()), _curItem)
 			_ = arrayCtx
 			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 			if _elementErr != nil {

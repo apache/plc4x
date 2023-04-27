@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataDoorExtendedPulseTime is the corresponding interface of BACnetConstructedDataDoorExtendedPulseTime
 type BACnetConstructedDataDoorExtendedPulseTime interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataDoorExtendedPulseTime(doorExtendedPulseTime BACnetA
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataDoorExtendedPulseTime(structType interface{}) BACnetConstructedDataDoorExtendedPulseTime {
+func CastBACnetConstructedDataDoorExtendedPulseTime(structType any) BACnetConstructedDataDoorExtendedPulseTime {
 	if casted, ok := structType.(BACnetConstructedDataDoorExtendedPulseTime); ok {
 		return casted
 	}

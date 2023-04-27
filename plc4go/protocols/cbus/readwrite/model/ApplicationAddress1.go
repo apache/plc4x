@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // ApplicationAddress1 is the corresponding interface of ApplicationAddress1
 type ApplicationAddress1 interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetAddress returns Address (property field)
@@ -84,7 +86,7 @@ func NewApplicationAddress1(address byte) *_ApplicationAddress1 {
 }
 
 // Deprecated: use the interface for direct cast
-func CastApplicationAddress1(structType interface{}) ApplicationAddress1 {
+func CastApplicationAddress1(structType any) ApplicationAddress1 {
 	if casted, ok := structType.(ApplicationAddress1); ok {
 		return casted
 	}

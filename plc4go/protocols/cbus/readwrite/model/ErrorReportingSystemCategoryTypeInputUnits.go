@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // ErrorReportingSystemCategoryTypeInputUnits is the corresponding interface of ErrorReportingSystemCategoryTypeInputUnits
 type ErrorReportingSystemCategoryTypeInputUnits interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	ErrorReportingSystemCategoryType
@@ -95,7 +97,7 @@ func NewErrorReportingSystemCategoryTypeInputUnits(categoryForType ErrorReportin
 }
 
 // Deprecated: use the interface for direct cast
-func CastErrorReportingSystemCategoryTypeInputUnits(structType interface{}) ErrorReportingSystemCategoryTypeInputUnits {
+func CastErrorReportingSystemCategoryTypeInputUnits(structType any) ErrorReportingSystemCategoryTypeInputUnits {
 	if casted, ok := structType.(ErrorReportingSystemCategoryTypeInputUnits); ok {
 		return casted
 	}

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetTimeStamp is the corresponding interface of BACnetTimeStamp
 type BACnetTimeStamp interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetPeekedTagHeader returns PeekedTagHeader (property field)
@@ -105,7 +107,7 @@ func NewBACnetTimeStamp(peekedTagHeader BACnetTagHeader) *_BACnetTimeStamp {
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetTimeStamp(structType interface{}) BACnetTimeStamp {
+func CastBACnetTimeStamp(structType any) BACnetTimeStamp {
 	if casted, ok := structType.(BACnetTimeStamp); ok {
 		return casted
 	}
@@ -163,7 +165,7 @@ func BACnetTimeStampParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 		InitializeParent(BACnetTimeStamp, BACnetTagHeader)
 		GetParent() BACnetTimeStamp
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child BACnetTimeStampChildSerializeRequirement
 	var typeSwitchError error
 	switch {

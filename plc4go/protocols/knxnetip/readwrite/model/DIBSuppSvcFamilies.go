@@ -21,7 +21,7 @@ package model
 
 import (
 	"context"
-	spiContext "github.com/apache/plc4x/plc4go/spi/context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,6 +30,7 @@ import (
 
 // DIBSuppSvcFamilies is the corresponding interface of DIBSuppSvcFamilies
 type DIBSuppSvcFamilies interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetDescriptionType returns DescriptionType (property field)
@@ -75,7 +76,7 @@ func NewDIBSuppSvcFamilies(descriptionType uint8, serviceIds []ServiceId) *_DIBS
 }
 
 // Deprecated: use the interface for direct cast
-func CastDIBSuppSvcFamilies(structType interface{}) DIBSuppSvcFamilies {
+func CastDIBSuppSvcFamilies(structType any) DIBSuppSvcFamilies {
 	if casted, ok := structType.(DIBSuppSvcFamilies); ok {
 		return casted
 	}
@@ -206,7 +207,7 @@ func (m *_DIBSuppSvcFamilies) SerializeWithWriteBuffer(ctx context.Context, writ
 	}
 	for _curItem, _element := range m.GetServiceIds() {
 		_ = _curItem
-		arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetServiceIds()), _curItem)
+		arrayCtx := utils.CreateArrayContext(ctx, len(m.GetServiceIds()), _curItem)
 		_ = arrayCtx
 		_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 		if _elementErr != nil {

@@ -21,6 +21,7 @@ package serial
 
 import (
 	"bufio"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/transports"
 	"github.com/jacobsa/go-serial/serial"
 	"github.com/pkg/errors"
@@ -73,6 +74,10 @@ func (m Transport) CreateTransportInstanceForLocalAddress(transportUrl url.URL, 
 	}
 
 	return NewTransportInstance(serialPortName, baudRate, connectTimeout, &m), nil
+}
+
+func (m Transport) String() string {
+	return m.GetTransportCode() + "(" + m.GetTransportName() + ")"
 }
 
 type TransportInstance struct {
@@ -133,7 +138,7 @@ func (m *TransportInstance) IsConnected() bool {
 	return m.serialPort != nil
 }
 
-func (m *TransportInstance) Write(data []uint8) error {
+func (m *TransportInstance) Write(data []byte) error {
 	if m.serialPort == nil {
 		return errors.New("error writing to transport. No writer available")
 	}
@@ -149,4 +154,8 @@ func (m *TransportInstance) Write(data []uint8) error {
 
 func (m *TransportInstance) GetReader() *bufio.Reader {
 	return m.reader
+}
+
+func (m *TransportInstance) String() string {
+	return fmt.Sprintf("serial:%s:%d", m.SerialPortName, m.BaudRate)
 }

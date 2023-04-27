@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetClientCOVNone is the corresponding interface of BACnetClientCOVNone
 type BACnetClientCOVNone interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetClientCOV
@@ -92,7 +94,7 @@ func NewBACnetClientCOVNone(defaultIncrement BACnetApplicationTagNull, peekedTag
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetClientCOVNone(structType interface{}) BACnetClientCOVNone {
+func CastBACnetClientCOVNone(structType any) BACnetClientCOVNone {
 	if casted, ok := structType.(BACnetClientCOVNone); ok {
 		return casted
 	}

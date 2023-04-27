@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // S7ParameterUserDataItem is the corresponding interface of S7ParameterUserDataItem
 type S7ParameterUserDataItem interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetItemType returns ItemType (discriminator field)
@@ -73,7 +75,7 @@ func NewS7ParameterUserDataItem() *_S7ParameterUserDataItem {
 }
 
 // Deprecated: use the interface for direct cast
-func CastS7ParameterUserDataItem(structType interface{}) S7ParameterUserDataItem {
+func CastS7ParameterUserDataItem(structType any) S7ParameterUserDataItem {
 	if casted, ok := structType.(S7ParameterUserDataItem); ok {
 		return casted
 	}
@@ -124,7 +126,7 @@ func S7ParameterUserDataItemParseWithBuffer(ctx context.Context, readBuffer util
 		InitializeParent(S7ParameterUserDataItem)
 		GetParent() S7ParameterUserDataItem
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child S7ParameterUserDataItemChildSerializeRequirement
 	var typeSwitchError error
 	switch {

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // MediaTransportControlDataNextPreviousTrack is the corresponding interface of MediaTransportControlDataNextPreviousTrack
 type MediaTransportControlDataNextPreviousTrack interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	MediaTransportControlData
@@ -118,7 +120,7 @@ func NewMediaTransportControlDataNextPreviousTrack(operation byte, commandTypeCo
 }
 
 // Deprecated: use the interface for direct cast
-func CastMediaTransportControlDataNextPreviousTrack(structType interface{}) MediaTransportControlDataNextPreviousTrack {
+func CastMediaTransportControlDataNextPreviousTrack(structType any) MediaTransportControlDataNextPreviousTrack {
 	if casted, ok := structType.(MediaTransportControlDataNextPreviousTrack); ok {
 		return casted
 	}

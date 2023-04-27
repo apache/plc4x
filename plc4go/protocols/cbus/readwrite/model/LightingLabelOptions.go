@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // LightingLabelOptions is the corresponding interface of LightingLabelOptions
 type LightingLabelOptions interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetLabelFlavour returns LabelFlavour (property field)
@@ -79,7 +81,7 @@ func NewLightingLabelOptions(labelFlavour LightingLabelFlavour, labelType Lighti
 }
 
 // Deprecated: use the interface for direct cast
-func CastLightingLabelOptions(structType interface{}) LightingLabelOptions {
+func CastLightingLabelOptions(structType any) LightingLabelOptions {
 	if casted, ok := structType.(LightingLabelOptions); ok {
 		return casted
 	}
@@ -142,7 +144,7 @@ func LightingLabelOptionsParseWithBuffer(ctx context.Context, readBuffer utils.R
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of LightingLabelOptions")
 		}
 		if reserved != bool(false) {
-			Plc4xModelLog.Info().Fields(map[string]interface{}{
+			Plc4xModelLog.Info().Fields(map[string]any{
 				"expected value": bool(false),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
@@ -172,7 +174,7 @@ func LightingLabelOptionsParseWithBuffer(ctx context.Context, readBuffer utils.R
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of LightingLabelOptions")
 		}
 		if reserved != bool(false) {
-			Plc4xModelLog.Info().Fields(map[string]interface{}{
+			Plc4xModelLog.Info().Fields(map[string]any{
 				"expected value": bool(false),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
@@ -189,7 +191,7 @@ func LightingLabelOptionsParseWithBuffer(ctx context.Context, readBuffer utils.R
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of LightingLabelOptions")
 		}
 		if reserved != bool(false) {
-			Plc4xModelLog.Info().Fields(map[string]interface{}{
+			Plc4xModelLog.Info().Fields(map[string]any{
 				"expected value": bool(false),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
@@ -219,7 +221,7 @@ func LightingLabelOptionsParseWithBuffer(ctx context.Context, readBuffer utils.R
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of LightingLabelOptions")
 		}
 		if reserved != bool(false) {
-			Plc4xModelLog.Info().Fields(map[string]interface{}{
+			Plc4xModelLog.Info().Fields(map[string]any{
 				"expected value": bool(false),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
@@ -262,7 +264,7 @@ func (m *_LightingLabelOptions) SerializeWithWriteBuffer(ctx context.Context, wr
 	{
 		var reserved bool = bool(false)
 		if m.reservedField0 != nil {
-			Plc4xModelLog.Info().Fields(map[string]interface{}{
+			Plc4xModelLog.Info().Fields(map[string]any{
 				"expected value": bool(false),
 				"got value":      reserved,
 			}).Msg("Overriding reserved field with unexpected value.")
@@ -290,7 +292,7 @@ func (m *_LightingLabelOptions) SerializeWithWriteBuffer(ctx context.Context, wr
 	{
 		var reserved bool = bool(false)
 		if m.reservedField1 != nil {
-			Plc4xModelLog.Info().Fields(map[string]interface{}{
+			Plc4xModelLog.Info().Fields(map[string]any{
 				"expected value": bool(false),
 				"got value":      reserved,
 			}).Msg("Overriding reserved field with unexpected value.")
@@ -306,7 +308,7 @@ func (m *_LightingLabelOptions) SerializeWithWriteBuffer(ctx context.Context, wr
 	{
 		var reserved bool = bool(false)
 		if m.reservedField2 != nil {
-			Plc4xModelLog.Info().Fields(map[string]interface{}{
+			Plc4xModelLog.Info().Fields(map[string]any{
 				"expected value": bool(false),
 				"got value":      reserved,
 			}).Msg("Overriding reserved field with unexpected value.")
@@ -334,7 +336,7 @@ func (m *_LightingLabelOptions) SerializeWithWriteBuffer(ctx context.Context, wr
 	{
 		var reserved bool = bool(false)
 		if m.reservedField3 != nil {
-			Plc4xModelLog.Info().Fields(map[string]interface{}{
+			Plc4xModelLog.Info().Fields(map[string]any{
 				"expected value": bool(false),
 				"got value":      reserved,
 			}).Msg("Overriding reserved field with unexpected value.")

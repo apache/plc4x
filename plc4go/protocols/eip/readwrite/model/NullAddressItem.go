@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // NullAddressItem is the corresponding interface of NullAddressItem
 type NullAddressItem interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	TypeId
@@ -78,7 +80,7 @@ func NewNullAddressItem() *_NullAddressItem {
 }
 
 // Deprecated: use the interface for direct cast
-func CastNullAddressItem(structType interface{}) NullAddressItem {
+func CastNullAddressItem(structType any) NullAddressItem {
 	if casted, ok := structType.(NullAddressItem); ok {
 		return casted
 	}
@@ -126,7 +128,7 @@ func NullAddressItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of NullAddressItem")
 		}
 		if reserved != uint16(0x0000) {
-			Plc4xModelLog.Info().Fields(map[string]interface{}{
+			Plc4xModelLog.Info().Fields(map[string]any{
 				"expected value": uint16(0x0000),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
@@ -168,7 +170,7 @@ func (m *_NullAddressItem) SerializeWithWriteBuffer(ctx context.Context, writeBu
 		{
 			var reserved uint16 = uint16(0x0000)
 			if m.reservedField0 != nil {
-				Plc4xModelLog.Info().Fields(map[string]interface{}{
+				Plc4xModelLog.Info().Fields(map[string]any{
 					"expected value": uint16(0x0000),
 					"got value":      reserved,
 				}).Msg("Overriding reserved field with unexpected value.")

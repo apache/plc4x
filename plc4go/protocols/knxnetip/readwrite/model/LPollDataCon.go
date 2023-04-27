@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // LPollDataCon is the corresponding interface of LPollDataCon
 type LPollDataCon interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	CEMI
@@ -76,7 +78,7 @@ func NewLPollDataCon(size uint16) *_LPollDataCon {
 }
 
 // Deprecated: use the interface for direct cast
-func CastLPollDataCon(structType interface{}) LPollDataCon {
+func CastLPollDataCon(structType any) LPollDataCon {
 	if casted, ok := structType.(LPollDataCon); ok {
 		return casted
 	}

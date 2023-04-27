@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataFaultParameters is the corresponding interface of BACnetConstructedDataFaultParameters
 type BACnetConstructedDataFaultParameters interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataFaultParameters(faultParameters BACnetFaultParamete
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataFaultParameters(structType interface{}) BACnetConstructedDataFaultParameters {
+func CastBACnetConstructedDataFaultParameters(structType any) BACnetConstructedDataFaultParameters {
 	if casted, ok := structType.(BACnetConstructedDataFaultParameters); ok {
 		return casted
 	}

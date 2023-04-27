@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataProfileLocation is the corresponding interface of BACnetConstructedDataProfileLocation
 type BACnetConstructedDataProfileLocation interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataProfileLocation(profileLocation BACnetApplicationTa
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataProfileLocation(structType interface{}) BACnetConstructedDataProfileLocation {
+func CastBACnetConstructedDataProfileLocation(structType any) BACnetConstructedDataProfileLocation {
 	if casted, ok := structType.(BACnetConstructedDataProfileLocation); ok {
 		return casted
 	}

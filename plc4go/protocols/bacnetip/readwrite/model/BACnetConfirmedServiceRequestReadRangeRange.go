@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConfirmedServiceRequestReadRangeRange is the corresponding interface of BACnetConfirmedServiceRequestReadRangeRange
 type BACnetConfirmedServiceRequestReadRangeRange interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetPeekedTagHeader returns PeekedTagHeader (property field)
@@ -119,7 +121,7 @@ func NewBACnetConfirmedServiceRequestReadRangeRange(peekedTagHeader BACnetTagHea
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConfirmedServiceRequestReadRangeRange(structType interface{}) BACnetConfirmedServiceRequestReadRangeRange {
+func CastBACnetConfirmedServiceRequestReadRangeRange(structType any) BACnetConfirmedServiceRequestReadRangeRange {
 	if casted, ok := structType.(BACnetConfirmedServiceRequestReadRangeRange); ok {
 		return casted
 	}
@@ -196,7 +198,7 @@ func BACnetConfirmedServiceRequestReadRangeRangeParseWithBuffer(ctx context.Cont
 		InitializeParent(BACnetConfirmedServiceRequestReadRangeRange, BACnetTagHeader, BACnetOpeningTag, BACnetClosingTag)
 		GetParent() BACnetConfirmedServiceRequestReadRangeRange
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child BACnetConfirmedServiceRequestReadRangeRangeChildSerializeRequirement
 	var typeSwitchError error
 	switch {

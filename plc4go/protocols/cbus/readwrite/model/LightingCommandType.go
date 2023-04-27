@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -31,6 +32,8 @@ import (
 type LightingCommandType uint8
 
 type ILightingCommandType interface {
+	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 	NumberOfArguments() uint8
 }
@@ -134,8 +137,8 @@ func LightingCommandTypeKnows(value uint8) bool {
 	return false
 }
 
-func CastLightingCommandType(structType interface{}) LightingCommandType {
-	castFunc := func(typ interface{}) LightingCommandType {
+func CastLightingCommandType(structType any) LightingCommandType {
+	castFunc := func(typ any) LightingCommandType {
 		if sLightingCommandType, ok := typ.(LightingCommandType); ok {
 			return sLightingCommandType
 		}

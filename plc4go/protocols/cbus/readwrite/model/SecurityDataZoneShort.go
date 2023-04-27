@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // SecurityDataZoneShort is the corresponding interface of SecurityDataZoneShort
 type SecurityDataZoneShort interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	SecurityData
@@ -93,7 +95,7 @@ func NewSecurityDataZoneShort(zoneNumber uint8, commandTypeContainer SecurityCom
 }
 
 // Deprecated: use the interface for direct cast
-func CastSecurityDataZoneShort(structType interface{}) SecurityDataZoneShort {
+func CastSecurityDataZoneShort(structType any) SecurityDataZoneShort {
 	if casted, ok := structType.(SecurityDataZoneShort); ok {
 		return casted
 	}

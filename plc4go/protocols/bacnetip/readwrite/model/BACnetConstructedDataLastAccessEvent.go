@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataLastAccessEvent is the corresponding interface of BACnetConstructedDataLastAccessEvent
 type BACnetConstructedDataLastAccessEvent interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataLastAccessEvent(lastAccessEvent BACnetAccessEventTa
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataLastAccessEvent(structType interface{}) BACnetConstructedDataLastAccessEvent {
+func CastBACnetConstructedDataLastAccessEvent(structType any) BACnetConstructedDataLastAccessEvent {
 	if casted, ok := structType.(BACnetConstructedDataLastAccessEvent); ok {
 		return casted
 	}

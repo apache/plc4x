@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
@@ -30,6 +31,7 @@ import (
 
 // BACnetRecipientProcess is the corresponding interface of BACnetRecipientProcess
 type BACnetRecipientProcess interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetRecipient returns Recipient (property field)
@@ -75,7 +77,7 @@ func NewBACnetRecipientProcess(recipient BACnetRecipientEnclosed, processIdentif
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetRecipientProcess(structType interface{}) BACnetRecipientProcess {
+func CastBACnetRecipientProcess(structType any) BACnetRecipientProcess {
 	if casted, ok := structType.(BACnetRecipientProcess); ok {
 		return casted
 	}

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // ClassSegment is the corresponding interface of ClassSegment
 type ClassSegment interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetPathSegmentType returns PathSegmentType (property field)
@@ -88,7 +90,7 @@ func NewClassSegment(pathSegmentType uint8, logicalSegmentType uint8, logicalSeg
 }
 
 // Deprecated: use the interface for direct cast
-func CastClassSegment(structType interface{}) ClassSegment {
+func CastClassSegment(structType any) ClassSegment {
 	if casted, ok := structType.(ClassSegment); ok {
 		return casted
 	}

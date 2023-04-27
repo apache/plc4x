@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // ApduDataDeviceDescriptorResponse is the corresponding interface of ApduDataDeviceDescriptorResponse
 type ApduDataDeviceDescriptorResponse interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	ApduData
@@ -102,7 +104,7 @@ func NewApduDataDeviceDescriptorResponse(descriptorType uint8, data []byte, data
 }
 
 // Deprecated: use the interface for direct cast
-func CastApduDataDeviceDescriptorResponse(structType interface{}) ApduDataDeviceDescriptorResponse {
+func CastApduDataDeviceDescriptorResponse(structType any) ApduDataDeviceDescriptorResponse {
 	if casted, ok := structType.(ApduDataDeviceDescriptorResponse); ok {
 		return casted
 	}
@@ -154,7 +156,7 @@ func ApduDataDeviceDescriptorResponseParseWithBuffer(ctx context.Context, readBu
 	}
 	descriptorType := _descriptorType
 	// Byte Array field (data)
-	numberOfBytesdata := int(utils.InlineIf((bool((dataLength) < (1))), func() interface{} { return uint16(uint16(0)) }, func() interface{} { return uint16(uint16(dataLength) - uint16(uint16(1))) }).(uint16))
+	numberOfBytesdata := int(utils.InlineIf((bool((dataLength) < (1))), func() any { return uint16(uint16(0)) }, func() any { return uint16(uint16(dataLength) - uint16(uint16(1))) }).(uint16))
 	data, _readArrayErr := readBuffer.ReadByteArray("data", numberOfBytesdata)
 	if _readArrayErr != nil {
 		return nil, errors.Wrap(_readArrayErr, "Error parsing 'data' field of ApduDataDeviceDescriptorResponse")

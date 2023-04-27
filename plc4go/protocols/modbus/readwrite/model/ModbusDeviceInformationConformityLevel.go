@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -31,6 +32,8 @@ import (
 type ModbusDeviceInformationConformityLevel uint8
 
 type IModbusDeviceInformationConformityLevel interface {
+	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 
@@ -84,8 +87,8 @@ func ModbusDeviceInformationConformityLevelKnows(value uint8) bool {
 	return false
 }
 
-func CastModbusDeviceInformationConformityLevel(structType interface{}) ModbusDeviceInformationConformityLevel {
-	castFunc := func(typ interface{}) ModbusDeviceInformationConformityLevel {
+func CastModbusDeviceInformationConformityLevel(structType any) ModbusDeviceInformationConformityLevel {
+	castFunc := func(typ any) ModbusDeviceInformationConformityLevel {
 		if sModbusDeviceInformationConformityLevel, ok := typ.(ModbusDeviceInformationConformityLevel); ok {
 			return sModbusDeviceInformationConformityLevel
 		}

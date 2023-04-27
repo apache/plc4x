@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // ApduDataExtNetworkParameterWrite is the corresponding interface of ApduDataExtNetworkParameterWrite
 type ApduDataExtNetworkParameterWrite interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	ApduDataExt
@@ -76,7 +78,7 @@ func NewApduDataExtNetworkParameterWrite(length uint8) *_ApduDataExtNetworkParam
 }
 
 // Deprecated: use the interface for direct cast
-func CastApduDataExtNetworkParameterWrite(structType interface{}) ApduDataExtNetworkParameterWrite {
+func CastApduDataExtNetworkParameterWrite(structType any) ApduDataExtNetworkParameterWrite {
 	if casted, ok := structType.(ApduDataExtNetworkParameterWrite); ok {
 		return casted
 	}

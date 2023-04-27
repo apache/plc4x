@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // SALDataAudioAndVideo is the corresponding interface of SALDataAudioAndVideo
 type SALDataAudioAndVideo interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	SALData
@@ -96,7 +98,7 @@ func NewSALDataAudioAndVideo(audioVideoData LightingData, salData SALData) *_SAL
 }
 
 // Deprecated: use the interface for direct cast
-func CastSALDataAudioAndVideo(structType interface{}) SALDataAudioAndVideo {
+func CastSALDataAudioAndVideo(structType any) SALDataAudioAndVideo {
 	if casted, ok := structType.(SALDataAudioAndVideo); ok {
 		return casted
 	}

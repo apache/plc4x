@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataTimerRunning is the corresponding interface of BACnetConstructedDataTimerRunning
 type BACnetConstructedDataTimerRunning interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataTimerRunning(timerRunning BACnetApplicationTagBoole
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataTimerRunning(structType interface{}) BACnetConstructedDataTimerRunning {
+func CastBACnetConstructedDataTimerRunning(structType any) BACnetConstructedDataTimerRunning {
 	if casted, ok := structType.(BACnetConstructedDataTimerRunning); ok {
 		return casted
 	}

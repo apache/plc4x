@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // IdentifyReplyCommandMaximumLevels is the corresponding interface of IdentifyReplyCommandMaximumLevels
 type IdentifyReplyCommandMaximumLevels interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	IdentifyReplyCommand
@@ -94,7 +96,7 @@ func NewIdentifyReplyCommandMaximumLevels(maximumLevels []byte, numBytes uint8) 
 }
 
 // Deprecated: use the interface for direct cast
-func CastIdentifyReplyCommandMaximumLevels(structType interface{}) IdentifyReplyCommandMaximumLevels {
+func CastIdentifyReplyCommandMaximumLevels(structType any) IdentifyReplyCommandMaximumLevels {
 	if casted, ok := structType.(IdentifyReplyCommandMaximumLevels); ok {
 		return casted
 	}

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetNotificationParameters is the corresponding interface of BACnetNotificationParameters
 type BACnetNotificationParameters interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetOpeningTag returns OpeningTag (property field)
@@ -123,7 +125,7 @@ func NewBACnetNotificationParameters(openingTag BACnetOpeningTag, peekedTagHeade
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetNotificationParameters(structType interface{}) BACnetNotificationParameters {
+func CastBACnetNotificationParameters(structType any) BACnetNotificationParameters {
 	if casted, ok := structType.(BACnetNotificationParameters); ok {
 		return casted
 	}
@@ -200,7 +202,7 @@ func BACnetNotificationParametersParseWithBuffer(ctx context.Context, readBuffer
 		InitializeParent(BACnetNotificationParameters, BACnetOpeningTag, BACnetTagHeader, BACnetClosingTag)
 		GetParent() BACnetNotificationParameters
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child BACnetNotificationParametersChildSerializeRequirement
 	var typeSwitchError error
 	switch {

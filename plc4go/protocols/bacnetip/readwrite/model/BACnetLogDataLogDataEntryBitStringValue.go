@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetLogDataLogDataEntryBitStringValue is the corresponding interface of BACnetLogDataLogDataEntryBitStringValue
 type BACnetLogDataLogDataEntryBitStringValue interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetLogDataLogDataEntry
@@ -92,7 +94,7 @@ func NewBACnetLogDataLogDataEntryBitStringValue(bitStringValue BACnetContextTagB
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetLogDataLogDataEntryBitStringValue(structType interface{}) BACnetLogDataLogDataEntryBitStringValue {
+func CastBACnetLogDataLogDataEntryBitStringValue(structType any) BACnetLogDataLogDataEntryBitStringValue {
 	if casted, ok := structType.(BACnetLogDataLogDataEntryBitStringValue); ok {
 		return casted
 	}

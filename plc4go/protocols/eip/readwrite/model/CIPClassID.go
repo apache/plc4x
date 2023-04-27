@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -31,6 +32,8 @@ import (
 type CIPClassID uint16
 
 type ICIPClassID interface {
+	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 
@@ -482,8 +485,8 @@ func CIPClassIDKnows(value uint16) bool {
 	return false
 }
 
-func CastCIPClassID(structType interface{}) CIPClassID {
-	castFunc := func(typ interface{}) CIPClassID {
+func CastCIPClassID(structType any) CIPClassID {
+	castFunc := func(typ any) CIPClassID {
 		if sCIPClassID, ok := typ.(CIPClassID); ok {
 			return sCIPClassID
 		}

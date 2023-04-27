@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -31,6 +32,8 @@ import (
 type HostProtocolCode uint8
 
 type IHostProtocolCode interface {
+	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 
@@ -78,8 +81,8 @@ func HostProtocolCodeKnows(value uint8) bool {
 	return false
 }
 
-func CastHostProtocolCode(structType interface{}) HostProtocolCode {
-	castFunc := func(typ interface{}) HostProtocolCode {
+func CastHostProtocolCode(structType any) HostProtocolCode {
+	castFunc := func(typ any) HostProtocolCode {
 		if sHostProtocolCode, ok := typ.(HostProtocolCode); ok {
 			return sHostProtocolCode
 		}

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataNextStoppingFloor is the corresponding interface of BACnetConstructedDataNextStoppingFloor
 type BACnetConstructedDataNextStoppingFloor interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataNextStoppingFloor(nextStoppingFloor BACnetApplicati
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataNextStoppingFloor(structType interface{}) BACnetConstructedDataNextStoppingFloor {
+func CastBACnetConstructedDataNextStoppingFloor(structType any) BACnetConstructedDataNextStoppingFloor {
 	if casted, ok := structType.(BACnetConstructedDataNextStoppingFloor); ok {
 		return casted
 	}

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetFaultParameter is the corresponding interface of BACnetFaultParameter
 type BACnetFaultParameter interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetPeekedTagHeader returns PeekedTagHeader (property field)
@@ -105,7 +107,7 @@ func NewBACnetFaultParameter(peekedTagHeader BACnetTagHeader) *_BACnetFaultParam
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetFaultParameter(structType interface{}) BACnetFaultParameter {
+func CastBACnetFaultParameter(structType any) BACnetFaultParameter {
 	if casted, ok := structType.(BACnetFaultParameter); ok {
 		return casted
 	}
@@ -163,7 +165,7 @@ func BACnetFaultParameterParseWithBuffer(ctx context.Context, readBuffer utils.R
 		InitializeParent(BACnetFaultParameter, BACnetTagHeader)
 		GetParent() BACnetFaultParameter
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child BACnetFaultParameterChildSerializeRequirement
 	var typeSwitchError error
 	switch {

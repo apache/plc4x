@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // GroupObjectDescriptorRealisationType7 is the corresponding interface of GroupObjectDescriptorRealisationType7
 type GroupObjectDescriptorRealisationType7 interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetDataAddress returns DataAddress (property field)
@@ -123,7 +125,7 @@ func NewGroupObjectDescriptorRealisationType7(dataAddress uint16, updateEnable b
 }
 
 // Deprecated: use the interface for direct cast
-func CastGroupObjectDescriptorRealisationType7(structType interface{}) GroupObjectDescriptorRealisationType7 {
+func CastGroupObjectDescriptorRealisationType7(structType any) GroupObjectDescriptorRealisationType7 {
 	if casted, ok := structType.(GroupObjectDescriptorRealisationType7); ok {
 		return casted
 	}

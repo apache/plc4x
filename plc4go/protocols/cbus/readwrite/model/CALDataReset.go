@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // CALDataReset is the corresponding interface of CALDataReset
 type CALDataReset interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	CALData
@@ -75,7 +77,7 @@ func NewCALDataReset(commandTypeContainer CALCommandTypeContainer, additionalDat
 }
 
 // Deprecated: use the interface for direct cast
-func CastCALDataReset(structType interface{}) CALDataReset {
+func CastCALDataReset(structType any) CALDataReset {
 	if casted, ok := structType.(CALDataReset); ok {
 		return casted
 	}

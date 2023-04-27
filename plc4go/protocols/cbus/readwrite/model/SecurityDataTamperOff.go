@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // SecurityDataTamperOff is the corresponding interface of SecurityDataTamperOff
 type SecurityDataTamperOff interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	SecurityData
@@ -75,7 +77,7 @@ func NewSecurityDataTamperOff(commandTypeContainer SecurityCommandTypeContainer,
 }
 
 // Deprecated: use the interface for direct cast
-func CastSecurityDataTamperOff(structType interface{}) SecurityDataTamperOff {
+func CastSecurityDataTamperOff(structType any) SecurityDataTamperOff {
 	if casted, ok := structType.(SecurityDataTamperOff); ok {
 		return casted
 	}

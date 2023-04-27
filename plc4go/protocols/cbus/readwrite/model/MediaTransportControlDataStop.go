@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // MediaTransportControlDataStop is the corresponding interface of MediaTransportControlDataStop
 type MediaTransportControlDataStop interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	MediaTransportControlData
@@ -75,7 +77,7 @@ func NewMediaTransportControlDataStop(commandTypeContainer MediaTransportControl
 }
 
 // Deprecated: use the interface for direct cast
-func CastMediaTransportControlDataStop(structType interface{}) MediaTransportControlDataStop {
+func CastMediaTransportControlDataStop(structType any) MediaTransportControlDataStop {
 	if casted, ok := structType.(MediaTransportControlDataStop); ok {
 		return casted
 	}

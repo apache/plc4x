@@ -22,6 +22,7 @@ package model
 import (
 	"context"
 	"encoding/binary"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,6 +31,7 @@ import (
 
 // ModbusADU is the corresponding interface of ModbusADU
 type ModbusADU interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetDriverType returns DriverType (discriminator field)
@@ -77,7 +79,7 @@ func NewModbusADU(response bool) *_ModbusADU {
 }
 
 // Deprecated: use the interface for direct cast
-func CastModbusADU(structType interface{}) ModbusADU {
+func CastModbusADU(structType any) ModbusADU {
 	if casted, ok := structType.(ModbusADU); ok {
 		return casted
 	}
@@ -120,7 +122,7 @@ func ModbusADUParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, 
 		InitializeParent(ModbusADU)
 		GetParent() ModbusADU
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child ModbusADUChildSerializeRequirement
 	var typeSwitchError error
 	switch {

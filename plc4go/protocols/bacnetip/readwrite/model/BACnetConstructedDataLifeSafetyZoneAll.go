@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataLifeSafetyZoneAll is the corresponding interface of BACnetConstructedDataLifeSafetyZoneAll
 type BACnetConstructedDataLifeSafetyZoneAll interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -84,7 +86,7 @@ func NewBACnetConstructedDataLifeSafetyZoneAll(openingTag BACnetOpeningTag, peek
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataLifeSafetyZoneAll(structType interface{}) BACnetConstructedDataLifeSafetyZoneAll {
+func CastBACnetConstructedDataLifeSafetyZoneAll(structType any) BACnetConstructedDataLifeSafetyZoneAll {
 	if casted, ok := structType.(BACnetConstructedDataLifeSafetyZoneAll); ok {
 		return casted
 	}

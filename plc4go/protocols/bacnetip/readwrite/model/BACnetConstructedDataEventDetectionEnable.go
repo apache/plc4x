@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataEventDetectionEnable is the corresponding interface of BACnetConstructedDataEventDetectionEnable
 type BACnetConstructedDataEventDetectionEnable interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataEventDetectionEnable(eventDetectionEnable BACnetApp
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataEventDetectionEnable(structType interface{}) BACnetConstructedDataEventDetectionEnable {
+func CastBACnetConstructedDataEventDetectionEnable(structType any) BACnetConstructedDataEventDetectionEnable {
 	if casted, ok := structType.(BACnetConstructedDataEventDetectionEnable); ok {
 		return casted
 	}

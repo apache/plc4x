@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // CBusOptions is the corresponding interface of CBusOptions
 type CBusOptions interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetConnect returns Connect (property field)
@@ -123,7 +125,7 @@ func NewCBusOptions(connect bool, smart bool, idmon bool, exstat bool, monitor b
 }
 
 // Deprecated: use the interface for direct cast
-func CastCBusOptions(structType interface{}) CBusOptions {
+func CastCBusOptions(structType any) CBusOptions {
 	if casted, ok := structType.(CBusOptions); ok {
 		return casted
 	}

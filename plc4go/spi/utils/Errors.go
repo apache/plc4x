@@ -22,7 +22,13 @@ package utils
 import (
 	"fmt"
 	"strings"
+	"time"
 )
+
+// ErrorIdentify is an interface defining the inline interface defined in errors.Is(err, target error) bool (wrap.go)
+type ErrorIdentify interface {
+	Is(target error) bool
+}
 
 // MultiError is a Wrapper for multiple Errors
 type MultiError struct {
@@ -69,5 +75,22 @@ func (e ParseValidationError) Error() string {
 
 func (e ParseValidationError) Is(target error) bool {
 	_, ok := target.(ParseValidationError)
+	return ok
+}
+
+type TimeoutError struct {
+	timeout time.Duration
+}
+
+func NewTimeoutError(timeout time.Duration) TimeoutError {
+	return TimeoutError{timeout: timeout}
+}
+
+func (t TimeoutError) Error() string {
+	return fmt.Sprintf("got timeout after %v", t.timeout)
+}
+
+func (t TimeoutError) Is(target error) bool {
+	_, ok := target.(TimeoutError)
 	return ok
 }

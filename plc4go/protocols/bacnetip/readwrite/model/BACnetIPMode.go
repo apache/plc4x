@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -31,6 +32,8 @@ import (
 type BACnetIPMode uint8
 
 type IBACnetIPMode interface {
+	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 
@@ -84,8 +87,8 @@ func BACnetIPModeKnows(value uint8) bool {
 	return false
 }
 
-func CastBACnetIPMode(structType interface{}) BACnetIPMode {
-	castFunc := func(typ interface{}) BACnetIPMode {
+func CastBACnetIPMode(structType any) BACnetIPMode {
+	castFunc := func(typ any) BACnetIPMode {
 		if sBACnetIPMode, ok := typ.(BACnetIPMode); ok {
 			return sBACnetIPMode
 		}

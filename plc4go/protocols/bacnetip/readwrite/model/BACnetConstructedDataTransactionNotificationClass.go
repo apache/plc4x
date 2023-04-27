@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataTransactionNotificationClass is the corresponding interface of BACnetConstructedDataTransactionNotificationClass
 type BACnetConstructedDataTransactionNotificationClass interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataTransactionNotificationClass(transactionNotificatio
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataTransactionNotificationClass(structType interface{}) BACnetConstructedDataTransactionNotificationClass {
+func CastBACnetConstructedDataTransactionNotificationClass(structType any) BACnetConstructedDataTransactionNotificationClass {
 	if casted, ok := structType.(BACnetConstructedDataTransactionNotificationClass); ok {
 		return casted
 	}

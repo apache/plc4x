@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged is the corresponding interface of BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged
 type BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetHeader returns Header (property field)
@@ -78,7 +80,7 @@ func NewBACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged(h
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged(structType interface{}) BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged {
+func CastBACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged(structType any) BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged {
 	if casted, ok := structType.(BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged); ok {
 		return casted
 	}

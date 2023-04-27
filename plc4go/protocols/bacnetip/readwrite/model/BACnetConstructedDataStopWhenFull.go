@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataStopWhenFull is the corresponding interface of BACnetConstructedDataStopWhenFull
 type BACnetConstructedDataStopWhenFull interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataStopWhenFull(stopWhenFull BACnetApplicationTagBoole
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataStopWhenFull(structType interface{}) BACnetConstructedDataStopWhenFull {
+func CastBACnetConstructedDataStopWhenFull(structType any) BACnetConstructedDataStopWhenFull {
 	if casted, ok := structType.(BACnetConstructedDataStopWhenFull); ok {
 		return casted
 	}

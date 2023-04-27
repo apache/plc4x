@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // CALDataIdentifyReply is the corresponding interface of CALDataIdentifyReply
 type CALDataIdentifyReply interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	CALData
@@ -101,7 +103,7 @@ func NewCALDataIdentifyReply(attribute Attribute, identifyReplyCommand IdentifyR
 }
 
 // Deprecated: use the interface for direct cast
-func CastCALDataIdentifyReply(structType interface{}) CALDataIdentifyReply {
+func CastCALDataIdentifyReply(structType any) CALDataIdentifyReply {
 	if casted, ok := structType.(CALDataIdentifyReply); ok {
 		return casted
 	}

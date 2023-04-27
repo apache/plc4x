@@ -22,6 +22,7 @@ package model
 import (
 	"context"
 	"encoding/binary"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,6 +31,7 @@ import (
 
 // Dummy is the corresponding interface of Dummy
 type Dummy interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetDummy returns Dummy (property field)
@@ -68,7 +70,7 @@ func NewDummy(dummy uint16) *_Dummy {
 }
 
 // Deprecated: use the interface for direct cast
-func CastDummy(structType interface{}) Dummy {
+func CastDummy(structType any) Dummy {
 	if casted, ok := structType.(Dummy); ok {
 		return casted
 	}

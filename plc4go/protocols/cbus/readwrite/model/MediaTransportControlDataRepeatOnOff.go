@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // MediaTransportControlDataRepeatOnOff is the corresponding interface of MediaTransportControlDataRepeatOnOff
 type MediaTransportControlDataRepeatOnOff interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	MediaTransportControlData
@@ -126,7 +128,7 @@ func NewMediaTransportControlDataRepeatOnOff(repeatType byte, commandTypeContain
 }
 
 // Deprecated: use the interface for direct cast
-func CastMediaTransportControlDataRepeatOnOff(structType interface{}) MediaTransportControlDataRepeatOnOff {
+func CastMediaTransportControlDataRepeatOnOff(structType any) MediaTransportControlDataRepeatOnOff {
 	if casted, ok := structType.(MediaTransportControlDataRepeatOnOff); ok {
 		return casted
 	}

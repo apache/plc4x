@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // ModbusPDUWriteSingleCoilRequest is the corresponding interface of ModbusPDUWriteSingleCoilRequest
 type ModbusPDUWriteSingleCoilRequest interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	ModbusPDU
@@ -110,7 +112,7 @@ func NewModbusPDUWriteSingleCoilRequest(address uint16, value uint16) *_ModbusPD
 }
 
 // Deprecated: use the interface for direct cast
-func CastModbusPDUWriteSingleCoilRequest(structType interface{}) ModbusPDUWriteSingleCoilRequest {
+func CastModbusPDUWriteSingleCoilRequest(structType any) ModbusPDUWriteSingleCoilRequest {
 	if casted, ok := structType.(ModbusPDUWriteSingleCoilRequest); ok {
 		return casted
 	}

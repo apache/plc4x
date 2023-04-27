@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // MeteringData is the corresponding interface of MeteringData
 type MeteringData interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetCommandTypeContainer returns CommandTypeContainer (property field)
@@ -113,7 +115,7 @@ func NewMeteringData(commandTypeContainer MeteringCommandTypeContainer, argument
 }
 
 // Deprecated: use the interface for direct cast
-func CastMeteringData(structType interface{}) MeteringData {
+func CastMeteringData(structType any) MeteringData {
 	if casted, ok := structType.(MeteringData); ok {
 		return casted
 	}
@@ -194,7 +196,7 @@ func MeteringDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 		InitializeParent(MeteringData, MeteringCommandTypeContainer, byte)
 		GetParent() MeteringData
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child MeteringDataChildSerializeRequirement
 	var typeSwitchError error
 	switch {

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // S7VarRequestParameterItem is the corresponding interface of S7VarRequestParameterItem
 type S7VarRequestParameterItem interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetItemType returns ItemType (discriminator field)
@@ -73,7 +75,7 @@ func NewS7VarRequestParameterItem() *_S7VarRequestParameterItem {
 }
 
 // Deprecated: use the interface for direct cast
-func CastS7VarRequestParameterItem(structType interface{}) S7VarRequestParameterItem {
+func CastS7VarRequestParameterItem(structType any) S7VarRequestParameterItem {
 	if casted, ok := structType.(S7VarRequestParameterItem); ok {
 		return casted
 	}
@@ -124,7 +126,7 @@ func S7VarRequestParameterItemParseWithBuffer(ctx context.Context, readBuffer ut
 		InitializeParent(S7VarRequestParameterItem)
 		GetParent() S7VarRequestParameterItem
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child S7VarRequestParameterItemChildSerializeRequirement
 	var typeSwitchError error
 	switch {

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // ClockAndTimekeepingData is the corresponding interface of ClockAndTimekeepingData
 type ClockAndTimekeepingData interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetCommandTypeContainer returns CommandTypeContainer (property field)
@@ -113,7 +115,7 @@ func NewClockAndTimekeepingData(commandTypeContainer ClockAndTimekeepingCommandT
 }
 
 // Deprecated: use the interface for direct cast
-func CastClockAndTimekeepingData(structType interface{}) ClockAndTimekeepingData {
+func CastClockAndTimekeepingData(structType any) ClockAndTimekeepingData {
 	if casted, ok := structType.(ClockAndTimekeepingData); ok {
 		return casted
 	}
@@ -194,7 +196,7 @@ func ClockAndTimekeepingDataParseWithBuffer(ctx context.Context, readBuffer util
 		InitializeParent(ClockAndTimekeepingData, ClockAndTimekeepingCommandTypeContainer, byte)
 		GetParent() ClockAndTimekeepingData
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child ClockAndTimekeepingDataChildSerializeRequirement
 	var typeSwitchError error
 	switch {

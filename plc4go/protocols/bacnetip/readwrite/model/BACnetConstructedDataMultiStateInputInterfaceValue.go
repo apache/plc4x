@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataMultiStateInputInterfaceValue is the corresponding interface of BACnetConstructedDataMultiStateInputInterfaceValue
 type BACnetConstructedDataMultiStateInputInterfaceValue interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataMultiStateInputInterfaceValue(interfaceValue BACnet
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataMultiStateInputInterfaceValue(structType interface{}) BACnetConstructedDataMultiStateInputInterfaceValue {
+func CastBACnetConstructedDataMultiStateInputInterfaceValue(structType any) BACnetConstructedDataMultiStateInputInterfaceValue {
 	if casted, ok := structType.(BACnetConstructedDataMultiStateInputInterfaceValue); ok {
 		return casted
 	}

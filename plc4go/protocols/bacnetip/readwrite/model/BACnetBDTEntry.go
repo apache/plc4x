@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
@@ -30,6 +31,7 @@ import (
 
 // BACnetBDTEntry is the corresponding interface of BACnetBDTEntry
 type BACnetBDTEntry interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetBbmdAddress returns BbmdAddress (property field)
@@ -75,7 +77,7 @@ func NewBACnetBDTEntry(bbmdAddress BACnetHostNPortEnclosed, broadcastMask BACnet
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetBDTEntry(structType interface{}) BACnetBDTEntry {
+func CastBACnetBDTEntry(structType any) BACnetBDTEntry {
 	if casted, ok := structType.(BACnetBDTEntry); ok {
 		return casted
 	}

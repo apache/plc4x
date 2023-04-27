@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // LogicAssignment is the corresponding interface of LogicAssignment
 type LogicAssignment interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetGreaterOfOrLogic returns GreaterOfOrLogic (property field)
@@ -105,7 +107,7 @@ func NewLogicAssignment(greaterOfOrLogic bool, reStrikeDelay bool, assignedToGav
 }
 
 // Deprecated: use the interface for direct cast
-func CastLogicAssignment(structType interface{}) LogicAssignment {
+func CastLogicAssignment(structType any) LogicAssignment {
 	if casted, ok := structType.(LogicAssignment); ok {
 		return casted
 	}
@@ -188,7 +190,7 @@ func LogicAssignmentParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of LogicAssignment")
 		}
 		if reserved != bool(false) {
-			Plc4xModelLog.Info().Fields(map[string]interface{}{
+			Plc4xModelLog.Info().Fields(map[string]any{
 				"expected value": bool(false),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
@@ -205,7 +207,7 @@ func LogicAssignmentParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of LogicAssignment")
 		}
 		if reserved != bool(false) {
-			Plc4xModelLog.Info().Fields(map[string]interface{}{
+			Plc4xModelLog.Info().Fields(map[string]any{
 				"expected value": bool(false),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
@@ -292,7 +294,7 @@ func (m *_LogicAssignment) SerializeWithWriteBuffer(ctx context.Context, writeBu
 	{
 		var reserved bool = bool(false)
 		if m.reservedField0 != nil {
-			Plc4xModelLog.Info().Fields(map[string]interface{}{
+			Plc4xModelLog.Info().Fields(map[string]any{
 				"expected value": bool(false),
 				"got value":      reserved,
 			}).Msg("Overriding reserved field with unexpected value.")
@@ -308,7 +310,7 @@ func (m *_LogicAssignment) SerializeWithWriteBuffer(ctx context.Context, writeBu
 	{
 		var reserved bool = bool(false)
 		if m.reservedField1 != nil {
-			Plc4xModelLog.Info().Fields(map[string]interface{}{
+			Plc4xModelLog.Info().Fields(map[string]any{
 				"expected value": bool(false),
 				"got value":      reserved,
 			}).Msg("Overriding reserved field with unexpected value.")

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // PortSegmentNormal is the corresponding interface of PortSegmentNormal
 type PortSegmentNormal interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	PortSegmentType
@@ -102,7 +104,7 @@ func NewPortSegmentNormal(port uint8, linkAddress uint8) *_PortSegmentNormal {
 }
 
 // Deprecated: use the interface for direct cast
-func CastPortSegmentNormal(structType interface{}) PortSegmentNormal {
+func CastPortSegmentNormal(structType any) PortSegmentNormal {
 	if casted, ok := structType.(PortSegmentNormal); ok {
 		return casted
 	}

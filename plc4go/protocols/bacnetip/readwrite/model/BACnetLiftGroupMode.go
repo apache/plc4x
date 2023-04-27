@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -31,6 +32,8 @@ import (
 type BACnetLiftGroupMode uint8
 
 type IBACnetLiftGroupMode interface {
+	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 
@@ -108,8 +111,8 @@ func BACnetLiftGroupModeKnows(value uint8) bool {
 	return false
 }
 
-func CastBACnetLiftGroupMode(structType interface{}) BACnetLiftGroupMode {
-	castFunc := func(typ interface{}) BACnetLiftGroupMode {
+func CastBACnetLiftGroupMode(structType any) BACnetLiftGroupMode {
+	castFunc := func(typ any) BACnetLiftGroupMode {
 		if sBACnetLiftGroupMode, ok := typ.(BACnetLiftGroupMode); ok {
 			return sBACnetLiftGroupMode
 		}

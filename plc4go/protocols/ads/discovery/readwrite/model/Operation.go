@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -31,6 +32,8 @@ import (
 type Operation uint32
 
 type IOperation interface {
+	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 
@@ -114,8 +117,8 @@ func OperationKnows(value uint32) bool {
 	return false
 }
 
-func CastOperation(structType interface{}) Operation {
-	castFunc := func(typ interface{}) Operation {
+func CastOperation(structType any) Operation {
+	castFunc := func(typ any) Operation {
 		if sOperation, ok := typ.(Operation); ok {
 			return sOperation
 		}

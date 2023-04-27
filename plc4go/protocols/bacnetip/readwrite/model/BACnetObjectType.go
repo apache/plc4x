@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -31,6 +32,8 @@ import (
 type BACnetObjectType uint16
 
 type IBACnetObjectType interface {
+	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 
@@ -432,8 +435,8 @@ func BACnetObjectTypeKnows(value uint16) bool {
 	return false
 }
 
-func CastBACnetObjectType(structType interface{}) BACnetObjectType {
-	castFunc := func(typ interface{}) BACnetObjectType {
+func CastBACnetObjectType(structType any) BACnetObjectType {
+	castFunc := func(typ any) BACnetObjectType {
 		if sBACnetObjectType, ok := typ.(BACnetObjectType); ok {
 			return sBACnetObjectType
 		}

@@ -33,6 +33,7 @@ const ServerErrorReply_ERRORMARKER byte = 0x21
 
 // ServerErrorReply is the corresponding interface of ServerErrorReply
 type ServerErrorReply interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	ReplyOrConfirmation
@@ -92,7 +93,7 @@ func NewServerErrorReply(peekedByte byte, cBusOptions CBusOptions, requestContex
 }
 
 // Deprecated: use the interface for direct cast
-func CastServerErrorReply(structType interface{}) ServerErrorReply {
+func CastServerErrorReply(structType any) ServerErrorReply {
 	if casted, ok := structType.(ServerErrorReply); ok {
 		return casted
 	}

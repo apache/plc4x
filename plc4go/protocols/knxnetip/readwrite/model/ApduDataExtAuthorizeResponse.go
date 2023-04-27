@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // ApduDataExtAuthorizeResponse is the corresponding interface of ApduDataExtAuthorizeResponse
 type ApduDataExtAuthorizeResponse interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	ApduDataExt
@@ -94,7 +96,7 @@ func NewApduDataExtAuthorizeResponse(level uint8, length uint8) *_ApduDataExtAut
 }
 
 // Deprecated: use the interface for direct cast
-func CastApduDataExtAuthorizeResponse(structType interface{}) ApduDataExtAuthorizeResponse {
+func CastApduDataExtAuthorizeResponse(structType any) ApduDataExtAuthorizeResponse {
 	if casted, ok := structType.(ApduDataExtAuthorizeResponse); ok {
 		return casted
 	}

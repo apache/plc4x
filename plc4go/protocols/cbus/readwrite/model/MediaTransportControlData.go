@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // MediaTransportControlData is the corresponding interface of MediaTransportControlData
 type MediaTransportControlData interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetCommandTypeContainer returns CommandTypeContainer (property field)
@@ -112,7 +114,7 @@ func NewMediaTransportControlData(commandTypeContainer MediaTransportControlComm
 }
 
 // Deprecated: use the interface for direct cast
-func CastMediaTransportControlData(structType interface{}) MediaTransportControlData {
+func CastMediaTransportControlData(structType any) MediaTransportControlData {
 	if casted, ok := structType.(MediaTransportControlData); ok {
 		return casted
 	}
@@ -193,7 +195,7 @@ func MediaTransportControlDataParseWithBuffer(ctx context.Context, readBuffer ut
 		InitializeParent(MediaTransportControlData, MediaTransportControlCommandTypeContainer, byte)
 		GetParent() MediaTransportControlData
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child MediaTransportControlDataChildSerializeRequirement
 	var typeSwitchError error
 	switch {

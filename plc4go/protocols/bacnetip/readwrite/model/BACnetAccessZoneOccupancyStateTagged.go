@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetAccessZoneOccupancyStateTagged is the corresponding interface of BACnetAccessZoneOccupancyStateTagged
 type BACnetAccessZoneOccupancyStateTagged interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetHeader returns Header (property field)
@@ -102,7 +104,7 @@ func NewBACnetAccessZoneOccupancyStateTagged(header BACnetTagHeader, value BACne
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetAccessZoneOccupancyStateTagged(structType interface{}) BACnetAccessZoneOccupancyStateTagged {
+func CastBACnetAccessZoneOccupancyStateTagged(structType any) BACnetAccessZoneOccupancyStateTagged {
 	if casted, ok := structType.(BACnetAccessZoneOccupancyStateTagged); ok {
 		return casted
 	}
@@ -123,12 +125,12 @@ func (m *_BACnetAccessZoneOccupancyStateTagged) GetLengthInBits(ctx context.Cont
 	lengthInBits += m.Header.GetLengthInBits(ctx)
 
 	// Manual Field (value)
-	lengthInBits += uint16(utils.InlineIf(m.GetIsProprietary(), func() interface{} { return int32(int32(0)) }, func() interface{} { return int32((int32(m.GetHeader().GetActualLength()) * int32(int32(8)))) }).(int32))
+	lengthInBits += uint16(utils.InlineIf(m.GetIsProprietary(), func() any { return int32(int32(0)) }, func() any { return int32((int32(m.GetHeader().GetActualLength()) * int32(int32(8)))) }).(int32))
 
 	// A virtual field doesn't have any in- or output.
 
 	// Manual Field (proprietaryValue)
-	lengthInBits += uint16(utils.InlineIf(m.GetIsProprietary(), func() interface{} { return int32((int32(m.GetHeader().GetActualLength()) * int32(int32(8)))) }, func() interface{} { return int32(int32(0)) }).(int32))
+	lengthInBits += uint16(utils.InlineIf(m.GetIsProprietary(), func() any { return int32((int32(m.GetHeader().GetActualLength()) * int32(int32(8)))) }, func() any { return int32(int32(0)) }).(int32))
 
 	return lengthInBits
 }

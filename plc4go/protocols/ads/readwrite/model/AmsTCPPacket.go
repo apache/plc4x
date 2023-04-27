@@ -22,6 +22,7 @@ package model
 import (
 	"context"
 	"encoding/binary"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,6 +31,7 @@ import (
 
 // AmsTCPPacket is the corresponding interface of AmsTCPPacket
 type AmsTCPPacket interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetUserdata returns Userdata (property field)
@@ -70,7 +72,7 @@ func NewAmsTCPPacket(userdata AmsPacket) *_AmsTCPPacket {
 }
 
 // Deprecated: use the interface for direct cast
-func CastAmsTCPPacket(structType interface{}) AmsTCPPacket {
+func CastAmsTCPPacket(structType any) AmsTCPPacket {
 	if casted, ok := structType.(AmsTCPPacket); ok {
 		return casted
 	}
@@ -124,7 +126,7 @@ func AmsTCPPacketParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of AmsTCPPacket")
 		}
 		if reserved != uint16(0x0000) {
-			Plc4xModelLog.Info().Fields(map[string]interface{}{
+			Plc4xModelLog.Info().Fields(map[string]any{
 				"expected value": uint16(0x0000),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
@@ -183,7 +185,7 @@ func (m *_AmsTCPPacket) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 	{
 		var reserved uint16 = uint16(0x0000)
 		if m.reservedField0 != nil {
-			Plc4xModelLog.Info().Fields(map[string]interface{}{
+			Plc4xModelLog.Info().Fields(map[string]any{
 				"expected value": uint16(0x0000),
 				"got value":      reserved,
 			}).Msg("Overriding reserved field with unexpected value.")

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // SetAttributeListRequest is the corresponding interface of SetAttributeListRequest
 type SetAttributeListRequest interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	CipService
@@ -84,7 +86,7 @@ func NewSetAttributeListRequest(serviceLen uint16) *_SetAttributeListRequest {
 }
 
 // Deprecated: use the interface for direct cast
-func CastSetAttributeListRequest(structType interface{}) SetAttributeListRequest {
+func CastSetAttributeListRequest(structType any) SetAttributeListRequest {
 	if casted, ok := structType.(SetAttributeListRequest); ok {
 		return casted
 	}

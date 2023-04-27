@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // SzlDataTreeItem is the corresponding interface of SzlDataTreeItem
 type SzlDataTreeItem interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetItemIndex returns ItemIndex (property field)
@@ -95,7 +97,7 @@ func NewSzlDataTreeItem(itemIndex uint16, mlfb []byte, moduleTypeId uint16, ausb
 }
 
 // Deprecated: use the interface for direct cast
-func CastSzlDataTreeItem(structType interface{}) SzlDataTreeItem {
+func CastSzlDataTreeItem(structType any) SzlDataTreeItem {
 	if casted, ok := structType.(SzlDataTreeItem); ok {
 		return casted
 	}

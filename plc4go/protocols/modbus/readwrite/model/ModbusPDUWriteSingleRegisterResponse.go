@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // ModbusPDUWriteSingleRegisterResponse is the corresponding interface of ModbusPDUWriteSingleRegisterResponse
 type ModbusPDUWriteSingleRegisterResponse interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	ModbusPDU
@@ -110,7 +112,7 @@ func NewModbusPDUWriteSingleRegisterResponse(address uint16, value uint16) *_Mod
 }
 
 // Deprecated: use the interface for direct cast
-func CastModbusPDUWriteSingleRegisterResponse(structType interface{}) ModbusPDUWriteSingleRegisterResponse {
+func CastModbusPDUWriteSingleRegisterResponse(structType any) ModbusPDUWriteSingleRegisterResponse {
 	if casted, ok := structType.(ModbusPDUWriteSingleRegisterResponse); ok {
 		return casted
 	}

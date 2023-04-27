@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataCredentialDataInputUpdateTime is the corresponding interface of BACnetConstructedDataCredentialDataInputUpdateTime
 type BACnetConstructedDataCredentialDataInputUpdateTime interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataCredentialDataInputUpdateTime(updateTime BACnetTime
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataCredentialDataInputUpdateTime(structType interface{}) BACnetConstructedDataCredentialDataInputUpdateTime {
+func CastBACnetConstructedDataCredentialDataInputUpdateTime(structType any) BACnetConstructedDataCredentialDataInputUpdateTime {
 	if casted, ok := structType.(BACnetConstructedDataCredentialDataInputUpdateTime); ok {
 		return casted
 	}

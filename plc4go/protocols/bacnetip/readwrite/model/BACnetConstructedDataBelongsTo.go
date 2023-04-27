@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataBelongsTo is the corresponding interface of BACnetConstructedDataBelongsTo
 type BACnetConstructedDataBelongsTo interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataBelongsTo(belongsTo BACnetDeviceObjectReference, op
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataBelongsTo(structType interface{}) BACnetConstructedDataBelongsTo {
+func CastBACnetConstructedDataBelongsTo(structType any) BACnetConstructedDataBelongsTo {
 	if casted, ok := structType.(BACnetConstructedDataBelongsTo); ok {
 		return casted
 	}

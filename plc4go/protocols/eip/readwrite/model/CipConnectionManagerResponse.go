@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // CipConnectionManagerResponse is the corresponding interface of CipConnectionManagerResponse
 type CipConnectionManagerResponse interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	CipService
@@ -153,7 +155,7 @@ func NewCipConnectionManagerResponse(otConnectionId uint32, toConnectionId uint3
 }
 
 // Deprecated: use the interface for direct cast
-func CastCipConnectionManagerResponse(structType interface{}) CipConnectionManagerResponse {
+func CastCipConnectionManagerResponse(structType any) CipConnectionManagerResponse {
 	if casted, ok := structType.(CipConnectionManagerResponse); ok {
 		return casted
 	}
@@ -228,7 +230,7 @@ func CipConnectionManagerResponseParseWithBuffer(ctx context.Context, readBuffer
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of CipConnectionManagerResponse")
 		}
 		if reserved != uint32(0x000000) {
-			Plc4xModelLog.Info().Fields(map[string]interface{}{
+			Plc4xModelLog.Info().Fields(map[string]any{
 				"expected value": uint32(0x000000),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
@@ -301,7 +303,7 @@ func CipConnectionManagerResponseParseWithBuffer(ctx context.Context, readBuffer
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of CipConnectionManagerResponse")
 		}
 		if reserved != uint8(0x00) {
-			Plc4xModelLog.Info().Fields(map[string]interface{}{
+			Plc4xModelLog.Info().Fields(map[string]any{
 				"expected value": uint8(0x00),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
@@ -353,7 +355,7 @@ func (m *_CipConnectionManagerResponse) SerializeWithWriteBuffer(ctx context.Con
 		{
 			var reserved uint32 = uint32(0x000000)
 			if m.reservedField0 != nil {
-				Plc4xModelLog.Info().Fields(map[string]interface{}{
+				Plc4xModelLog.Info().Fields(map[string]any{
 					"expected value": uint32(0x000000),
 					"got value":      reserved,
 				}).Msg("Overriding reserved field with unexpected value.")
@@ -425,7 +427,7 @@ func (m *_CipConnectionManagerResponse) SerializeWithWriteBuffer(ctx context.Con
 		{
 			var reserved uint8 = uint8(0x00)
 			if m.reservedField1 != nil {
-				Plc4xModelLog.Info().Fields(map[string]interface{}{
+				Plc4xModelLog.Info().Fields(map[string]any{
 					"expected value": uint8(0x00),
 					"got value":      reserved,
 				}).Msg("Overriding reserved field with unexpected value.")

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetDestination is the corresponding interface of BACnetDestination
 type BACnetDestination interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetValidDays returns ValidDays (property field)
@@ -109,7 +111,7 @@ func NewBACnetDestination(validDays BACnetDaysOfWeekTagged, fromTime BACnetAppli
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetDestination(structType interface{}) BACnetDestination {
+func CastBACnetDestination(structType any) BACnetDestination {
 	if casted, ok := structType.(BACnetDestination); ok {
 		return casted
 	}

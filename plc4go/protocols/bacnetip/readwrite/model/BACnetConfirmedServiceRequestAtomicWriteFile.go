@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
@@ -30,6 +31,7 @@ import (
 
 // BACnetConfirmedServiceRequestAtomicWriteFile is the corresponding interface of BACnetConfirmedServiceRequestAtomicWriteFile
 type BACnetConfirmedServiceRequestAtomicWriteFile interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConfirmedServiceRequest
@@ -128,7 +130,7 @@ func NewBACnetConfirmedServiceRequestAtomicWriteFile(deviceIdentifier BACnetAppl
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConfirmedServiceRequestAtomicWriteFile(structType interface{}) BACnetConfirmedServiceRequestAtomicWriteFile {
+func CastBACnetConfirmedServiceRequestAtomicWriteFile(structType any) BACnetConfirmedServiceRequestAtomicWriteFile {
 	if casted, ok := structType.(BACnetConfirmedServiceRequestAtomicWriteFile); ok {
 		return casted
 	}

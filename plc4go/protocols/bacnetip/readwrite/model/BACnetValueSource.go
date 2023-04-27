@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetValueSource is the corresponding interface of BACnetValueSource
 type BACnetValueSource interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetPeekedTagHeader returns PeekedTagHeader (property field)
@@ -105,7 +107,7 @@ func NewBACnetValueSource(peekedTagHeader BACnetTagHeader) *_BACnetValueSource {
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetValueSource(structType interface{}) BACnetValueSource {
+func CastBACnetValueSource(structType any) BACnetValueSource {
 	if casted, ok := structType.(BACnetValueSource); ok {
 		return casted
 	}
@@ -163,7 +165,7 @@ func BACnetValueSourceParseWithBuffer(ctx context.Context, readBuffer utils.Read
 		InitializeParent(BACnetValueSource, BACnetTagHeader)
 		GetParent() BACnetValueSource
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child BACnetValueSourceChildSerializeRequirement
 	var typeSwitchError error
 	switch {

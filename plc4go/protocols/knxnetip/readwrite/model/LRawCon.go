@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // LRawCon is the corresponding interface of LRawCon
 type LRawCon interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	CEMI
@@ -76,7 +78,7 @@ func NewLRawCon(size uint16) *_LRawCon {
 }
 
 // Deprecated: use the interface for direct cast
-func CastLRawCon(structType interface{}) LRawCon {
+func CastLRawCon(structType any) LRawCon {
 	if casted, ok := structType.(LRawCon); ok {
 		return casted
 	}

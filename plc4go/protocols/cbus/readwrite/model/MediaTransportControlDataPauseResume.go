@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // MediaTransportControlDataPauseResume is the corresponding interface of MediaTransportControlDataPauseResume
 type MediaTransportControlDataPauseResume interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	MediaTransportControlData
@@ -118,7 +120,7 @@ func NewMediaTransportControlDataPauseResume(operation byte, commandTypeContaine
 }
 
 // Deprecated: use the interface for direct cast
-func CastMediaTransportControlDataPauseResume(structType interface{}) MediaTransportControlDataPauseResume {
+func CastMediaTransportControlDataPauseResume(structType any) MediaTransportControlDataPauseResume {
 	if casted, ok := structType.(MediaTransportControlDataPauseResume); ok {
 		return casted
 	}

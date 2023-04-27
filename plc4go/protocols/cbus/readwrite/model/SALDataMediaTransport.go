@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // SALDataMediaTransport is the corresponding interface of SALDataMediaTransport
 type SALDataMediaTransport interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	SALData
@@ -96,7 +98,7 @@ func NewSALDataMediaTransport(mediaTransportControlData MediaTransportControlDat
 }
 
 // Deprecated: use the interface for direct cast
-func CastSALDataMediaTransport(structType interface{}) SALDataMediaTransport {
+func CastSALDataMediaTransport(structType any) SALDataMediaTransport {
 	if casted, ok := structType.(SALDataMediaTransport); ok {
 		return casted
 	}

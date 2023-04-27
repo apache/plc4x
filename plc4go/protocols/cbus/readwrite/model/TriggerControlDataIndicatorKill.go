@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // TriggerControlDataIndicatorKill is the corresponding interface of TriggerControlDataIndicatorKill
 type TriggerControlDataIndicatorKill interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	TriggerControlData
@@ -75,7 +77,7 @@ func NewTriggerControlDataIndicatorKill(commandTypeContainer TriggerControlComma
 }
 
 // Deprecated: use the interface for direct cast
-func CastTriggerControlDataIndicatorKill(structType interface{}) TriggerControlDataIndicatorKill {
+func CastTriggerControlDataIndicatorKill(structType any) TriggerControlDataIndicatorKill {
 	if casted, ok := structType.(TriggerControlDataIndicatorKill); ok {
 		return casted
 	}

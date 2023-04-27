@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // ApduDataExtReadRouterMemoryResponse is the corresponding interface of ApduDataExtReadRouterMemoryResponse
 type ApduDataExtReadRouterMemoryResponse interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	ApduDataExt
@@ -76,7 +78,7 @@ func NewApduDataExtReadRouterMemoryResponse(length uint8) *_ApduDataExtReadRoute
 }
 
 // Deprecated: use the interface for direct cast
-func CastApduDataExtReadRouterMemoryResponse(structType interface{}) ApduDataExtReadRouterMemoryResponse {
+func CastApduDataExtReadRouterMemoryResponse(structType any) ApduDataExtReadRouterMemoryResponse {
 	if casted, ok := structType.(ApduDataExtReadRouterMemoryResponse); ok {
 		return casted
 	}

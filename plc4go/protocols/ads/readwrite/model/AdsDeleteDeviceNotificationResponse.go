@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // AdsDeleteDeviceNotificationResponse is the corresponding interface of AdsDeleteDeviceNotificationResponse
 type AdsDeleteDeviceNotificationResponse interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	AmsPacket
@@ -105,7 +107,7 @@ func NewAdsDeleteDeviceNotificationResponse(result ReturnCode, targetAmsNetId Am
 }
 
 // Deprecated: use the interface for direct cast
-func CastAdsDeleteDeviceNotificationResponse(structType interface{}) AdsDeleteDeviceNotificationResponse {
+func CastAdsDeleteDeviceNotificationResponse(structType any) AdsDeleteDeviceNotificationResponse {
 	if casted, ok := structType.(AdsDeleteDeviceNotificationResponse); ok {
 		return casted
 	}

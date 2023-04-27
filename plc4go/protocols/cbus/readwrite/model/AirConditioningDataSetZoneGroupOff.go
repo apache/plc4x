@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // AirConditioningDataSetZoneGroupOff is the corresponding interface of AirConditioningDataSetZoneGroupOff
 type AirConditioningDataSetZoneGroupOff interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	AirConditioningData
@@ -92,7 +94,7 @@ func NewAirConditioningDataSetZoneGroupOff(zoneGroup byte, commandTypeContainer 
 }
 
 // Deprecated: use the interface for direct cast
-func CastAirConditioningDataSetZoneGroupOff(structType interface{}) AirConditioningDataSetZoneGroupOff {
+func CastAirConditioningDataSetZoneGroupOff(structType any) AirConditioningDataSetZoneGroupOff {
 	if casted, ok := structType.(AirConditioningDataSetZoneGroupOff); ok {
 		return casted
 	}

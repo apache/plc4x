@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataLinkSpeed is the corresponding interface of BACnetConstructedDataLinkSpeed
 type BACnetConstructedDataLinkSpeed interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataLinkSpeed(linkSpeed BACnetApplicationTagReal, openi
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataLinkSpeed(structType interface{}) BACnetConstructedDataLinkSpeed {
+func CastBACnetConstructedDataLinkSpeed(structType any) BACnetConstructedDataLinkSpeed {
 	if casted, ok := structType.(BACnetConstructedDataLinkSpeed); ok {
 		return casted
 	}

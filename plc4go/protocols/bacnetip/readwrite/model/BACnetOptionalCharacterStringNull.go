@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetOptionalCharacterStringNull is the corresponding interface of BACnetOptionalCharacterStringNull
 type BACnetOptionalCharacterStringNull interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetOptionalCharacterString
@@ -92,7 +94,7 @@ func NewBACnetOptionalCharacterStringNull(nullValue BACnetApplicationTagNull, pe
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetOptionalCharacterStringNull(structType interface{}) BACnetOptionalCharacterStringNull {
+func CastBACnetOptionalCharacterStringNull(structType any) BACnetOptionalCharacterStringNull {
 	if casted, ok := structType.(BACnetOptionalCharacterStringNull); ok {
 		return casted
 	}

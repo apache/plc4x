@@ -35,6 +35,7 @@ const DF1SymbolMessageFrame_ENDTRANSACTION uint8 = 0x03
 
 // DF1SymbolMessageFrame is the corresponding interface of DF1SymbolMessageFrame
 type DF1SymbolMessageFrame interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	DF1Symbol
@@ -133,7 +134,7 @@ func NewDF1SymbolMessageFrame(destinationAddress uint8, sourceAddress uint8, com
 }
 
 // Deprecated: use the interface for direct cast
-func CastDF1SymbolMessageFrame(structType interface{}) DF1SymbolMessageFrame {
+func CastDF1SymbolMessageFrame(structType any) DF1SymbolMessageFrame {
 	if casted, ok := structType.(DF1SymbolMessageFrame); ok {
 		return casted
 	}

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // AdsDiscoveryBlockPassword is the corresponding interface of AdsDiscoveryBlockPassword
 type AdsDiscoveryBlockPassword interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	AdsDiscoveryBlock
@@ -94,7 +96,7 @@ func NewAdsDiscoveryBlockPassword(password AmsString) *_AdsDiscoveryBlockPasswor
 }
 
 // Deprecated: use the interface for direct cast
-func CastAdsDiscoveryBlockPassword(structType interface{}) AdsDiscoveryBlockPassword {
+func CastAdsDiscoveryBlockPassword(structType any) AdsDiscoveryBlockPassword {
 	if casted, ok := structType.(AdsDiscoveryBlockPassword); ok {
 		return casted
 	}

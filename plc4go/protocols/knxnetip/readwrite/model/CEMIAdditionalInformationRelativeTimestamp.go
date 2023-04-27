@@ -33,6 +33,7 @@ const CEMIAdditionalInformationRelativeTimestamp_LEN uint8 = uint8(2)
 
 // CEMIAdditionalInformationRelativeTimestamp is the corresponding interface of CEMIAdditionalInformationRelativeTimestamp
 type CEMIAdditionalInformationRelativeTimestamp interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	CEMIAdditionalInformation
@@ -112,7 +113,7 @@ func NewCEMIAdditionalInformationRelativeTimestamp(relativeTimestamp RelativeTim
 }
 
 // Deprecated: use the interface for direct cast
-func CastCEMIAdditionalInformationRelativeTimestamp(structType interface{}) CEMIAdditionalInformationRelativeTimestamp {
+func CastCEMIAdditionalInformationRelativeTimestamp(structType any) CEMIAdditionalInformationRelativeTimestamp {
 	if casted, ok := structType.(CEMIAdditionalInformationRelativeTimestamp); ok {
 		return casted
 	}

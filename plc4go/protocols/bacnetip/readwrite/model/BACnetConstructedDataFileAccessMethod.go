@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataFileAccessMethod is the corresponding interface of BACnetConstructedDataFileAccessMethod
 type BACnetConstructedDataFileAccessMethod interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataFileAccessMethod(fileAccessMethod BACnetFileAccessM
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataFileAccessMethod(structType interface{}) BACnetConstructedDataFileAccessMethod {
+func CastBACnetConstructedDataFileAccessMethod(structType any) BACnetConstructedDataFileAccessMethod {
 	if casted, ok := structType.(BACnetConstructedDataFileAccessMethod); ok {
 		return casted
 	}

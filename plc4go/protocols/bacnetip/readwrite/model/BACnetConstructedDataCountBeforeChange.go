@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataCountBeforeChange is the corresponding interface of BACnetConstructedDataCountBeforeChange
 type BACnetConstructedDataCountBeforeChange interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataCountBeforeChange(countBeforeChange BACnetApplicati
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataCountBeforeChange(structType interface{}) BACnetConstructedDataCountBeforeChange {
+func CastBACnetConstructedDataCountBeforeChange(structType any) BACnetConstructedDataCountBeforeChange {
 	if casted, ok := structType.(BACnetConstructedDataCountBeforeChange); ok {
 		return casted
 	}

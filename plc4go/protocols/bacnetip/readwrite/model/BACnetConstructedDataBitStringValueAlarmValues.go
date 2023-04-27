@@ -21,7 +21,7 @@ package model
 
 import (
 	"context"
-	spiContext "github.com/apache/plc4x/plc4go/spi/context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
@@ -31,6 +31,7 @@ import (
 
 // BACnetConstructedDataBitStringValueAlarmValues is the corresponding interface of BACnetConstructedDataBitStringValueAlarmValues
 type BACnetConstructedDataBitStringValueAlarmValues interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -131,7 +132,7 @@ func NewBACnetConstructedDataBitStringValueAlarmValues(numberOfDataElements BACn
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataBitStringValueAlarmValues(structType interface{}) BACnetConstructedDataBitStringValueAlarmValues {
+func CastBACnetConstructedDataBitStringValueAlarmValues(structType any) BACnetConstructedDataBitStringValueAlarmValues {
 	if casted, ok := structType.(BACnetConstructedDataBitStringValueAlarmValues); ok {
 		return casted
 	}
@@ -287,7 +288,7 @@ func (m *_BACnetConstructedDataBitStringValueAlarmValues) SerializeWithWriteBuff
 		}
 		for _curItem, _element := range m.GetAlarmValues() {
 			_ = _curItem
-			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetAlarmValues()), _curItem)
+			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetAlarmValues()), _curItem)
 			_ = arrayCtx
 			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 			if _elementErr != nil {

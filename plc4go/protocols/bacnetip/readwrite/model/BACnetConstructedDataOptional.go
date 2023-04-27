@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataOptional is the corresponding interface of BACnetConstructedDataOptional
 type BACnetConstructedDataOptional interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -84,7 +86,7 @@ func NewBACnetConstructedDataOptional(openingTag BACnetOpeningTag, peekedTagHead
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataOptional(structType interface{}) BACnetConstructedDataOptional {
+func CastBACnetConstructedDataOptional(structType any) BACnetConstructedDataOptional {
 	if casted, ok := structType.(BACnetConstructedDataOptional); ok {
 		return casted
 	}

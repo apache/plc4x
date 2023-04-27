@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // AdsDiscoveryBlockHostName is the corresponding interface of AdsDiscoveryBlockHostName
 type AdsDiscoveryBlockHostName interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	AdsDiscoveryBlock
@@ -94,7 +96,7 @@ func NewAdsDiscoveryBlockHostName(hostName AmsString) *_AdsDiscoveryBlockHostNam
 }
 
 // Deprecated: use the interface for direct cast
-func CastAdsDiscoveryBlockHostName(structType interface{}) AdsDiscoveryBlockHostName {
+func CastAdsDiscoveryBlockHostName(structType any) AdsDiscoveryBlockHostName {
 	if casted, ok := structType.(AdsDiscoveryBlockHostName); ok {
 		return casted
 	}

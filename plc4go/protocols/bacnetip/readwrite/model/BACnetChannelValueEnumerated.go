@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetChannelValueEnumerated is the corresponding interface of BACnetChannelValueEnumerated
 type BACnetChannelValueEnumerated interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetChannelValue
@@ -92,7 +94,7 @@ func NewBACnetChannelValueEnumerated(enumeratedValue BACnetApplicationTagEnumera
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetChannelValueEnumerated(structType interface{}) BACnetChannelValueEnumerated {
+func CastBACnetChannelValueEnumerated(structType any) BACnetChannelValueEnumerated {
 	if casted, ok := structType.(BACnetChannelValueEnumerated); ok {
 		return casted
 	}

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataValueSource is the corresponding interface of BACnetConstructedDataValueSource
 type BACnetConstructedDataValueSource interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataValueSource(valueSource BACnetValueSource, openingT
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataValueSource(structType interface{}) BACnetConstructedDataValueSource {
+func CastBACnetConstructedDataValueSource(structType any) BACnetConstructedDataValueSource {
 	if casted, ok := structType.(BACnetConstructedDataValueSource); ok {
 		return casted
 	}

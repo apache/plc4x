@@ -33,6 +33,7 @@ const AlarmMessageObjectQueryType_VARIABLESPEC uint8 = 0x12
 
 // AlarmMessageObjectQueryType is the corresponding interface of AlarmMessageObjectQueryType
 type AlarmMessageObjectQueryType interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetLengthDataset returns LengthDataset (property field)
@@ -135,7 +136,7 @@ func NewAlarmMessageObjectQueryType(lengthDataset uint8, eventState State, ackSt
 }
 
 // Deprecated: use the interface for direct cast
-func CastAlarmMessageObjectQueryType(structType interface{}) AlarmMessageObjectQueryType {
+func CastAlarmMessageObjectQueryType(structType any) AlarmMessageObjectQueryType {
 	if casted, ok := structType.(AlarmMessageObjectQueryType); ok {
 		return casted
 	}
@@ -217,7 +218,7 @@ func AlarmMessageObjectQueryTypeParseWithBuffer(ctx context.Context, readBuffer 
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of AlarmMessageObjectQueryType")
 		}
 		if reserved != uint16(0x0000) {
-			Plc4xModelLog.Info().Fields(map[string]interface{}{
+			Plc4xModelLog.Info().Fields(map[string]any{
 				"expected value": uint16(0x0000),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
@@ -370,7 +371,7 @@ func (m *_AlarmMessageObjectQueryType) SerializeWithWriteBuffer(ctx context.Cont
 	{
 		var reserved uint16 = uint16(0x0000)
 		if m.reservedField0 != nil {
-			Plc4xModelLog.Info().Fields(map[string]interface{}{
+			Plc4xModelLog.Info().Fields(map[string]any{
 				"expected value": uint16(0x0000),
 				"got value":      reserved,
 			}).Msg("Overriding reserved field with unexpected value.")

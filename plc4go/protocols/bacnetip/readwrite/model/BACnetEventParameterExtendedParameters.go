@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
@@ -30,6 +31,7 @@ import (
 
 // BACnetEventParameterExtendedParameters is the corresponding interface of BACnetEventParameterExtendedParameters
 type BACnetEventParameterExtendedParameters interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetOpeningTag returns OpeningTag (property field)
@@ -300,7 +302,7 @@ func NewBACnetEventParameterExtendedParameters(openingTag BACnetOpeningTag, peek
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetEventParameterExtendedParameters(structType interface{}) BACnetEventParameterExtendedParameters {
+func CastBACnetEventParameterExtendedParameters(structType any) BACnetEventParameterExtendedParameters {
 	if casted, ok := structType.(BACnetEventParameterExtendedParameters); ok {
 		return casted
 	}

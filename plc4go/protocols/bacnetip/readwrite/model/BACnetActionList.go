@@ -21,7 +21,7 @@ package model
 
 import (
 	"context"
-	spiContext "github.com/apache/plc4x/plc4go/spi/context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,6 +30,7 @@ import (
 
 // BACnetActionList is the corresponding interface of BACnetActionList
 type BACnetActionList interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetInnerOpeningTag returns InnerOpeningTag (property field)
@@ -82,7 +83,7 @@ func NewBACnetActionList(innerOpeningTag BACnetOpeningTag, action []BACnetAction
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetActionList(structType interface{}) BACnetActionList {
+func CastBACnetActionList(structType any) BACnetActionList {
 	if casted, ok := structType.(BACnetActionList); ok {
 		return casted
 	}
@@ -222,7 +223,7 @@ func (m *_BACnetActionList) SerializeWithWriteBuffer(ctx context.Context, writeB
 	}
 	for _curItem, _element := range m.GetAction() {
 		_ = _curItem
-		arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetAction()), _curItem)
+		arrayCtx := utils.CreateArrayContext(ctx, len(m.GetAction()), _curItem)
 		_ = arrayCtx
 		_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 		if _elementErr != nil {

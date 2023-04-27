@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConfirmedServiceRequestDeleteObject is the corresponding interface of BACnetConfirmedServiceRequestDeleteObject
 type BACnetConfirmedServiceRequestDeleteObject interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConfirmedServiceRequest
@@ -95,7 +97,7 @@ func NewBACnetConfirmedServiceRequestDeleteObject(objectIdentifier BACnetApplica
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConfirmedServiceRequestDeleteObject(structType interface{}) BACnetConfirmedServiceRequestDeleteObject {
+func CastBACnetConfirmedServiceRequestDeleteObject(structType any) BACnetConfirmedServiceRequestDeleteObject {
 	if casted, ok := structType.(BACnetConfirmedServiceRequestDeleteObject); ok {
 		return casted
 	}

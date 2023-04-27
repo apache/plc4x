@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // RequestReset is the corresponding interface of RequestReset
 type RequestReset interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	Request
@@ -120,7 +122,7 @@ func NewRequestReset(tildePeek RequestType, secondTilde *RequestType, tildePeek2
 }
 
 // Deprecated: use the interface for direct cast
-func CastRequestReset(structType interface{}) RequestReset {
+func CastRequestReset(structType any) RequestReset {
 	if casted, ok := structType.(RequestReset); ok {
 		return casted
 	}

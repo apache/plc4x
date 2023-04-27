@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataAccumulatorFaultHighLimit is the corresponding interface of BACnetConstructedDataAccumulatorFaultHighLimit
 type BACnetConstructedDataAccumulatorFaultHighLimit interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataAccumulatorFaultHighLimit(faultHighLimit BACnetAppl
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataAccumulatorFaultHighLimit(structType interface{}) BACnetConstructedDataAccumulatorFaultHighLimit {
+func CastBACnetConstructedDataAccumulatorFaultHighLimit(structType any) BACnetConstructedDataAccumulatorFaultHighLimit {
 	if casted, ok := structType.(BACnetConstructedDataAccumulatorFaultHighLimit); ok {
 		return casted
 	}

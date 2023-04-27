@@ -21,7 +21,7 @@ package model
 
 import (
 	"context"
-	spiContext "github.com/apache/plc4x/plc4go/spi/context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,6 +30,7 @@ import (
 
 // S7PayloadUserDataItemCpuFunctionAlarmAck is the corresponding interface of S7PayloadUserDataItemCpuFunctionAlarmAck
 type S7PayloadUserDataItemCpuFunctionAlarmAck interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	S7PayloadUserDataItem
@@ -114,7 +115,7 @@ func NewS7PayloadUserDataItemCpuFunctionAlarmAck(functionId uint8, messageObject
 }
 
 // Deprecated: use the interface for direct cast
-func CastS7PayloadUserDataItemCpuFunctionAlarmAck(structType interface{}) S7PayloadUserDataItemCpuFunctionAlarmAck {
+func CastS7PayloadUserDataItemCpuFunctionAlarmAck(structType any) S7PayloadUserDataItemCpuFunctionAlarmAck {
 	if casted, ok := structType.(S7PayloadUserDataItemCpuFunctionAlarmAck); ok {
 		return casted
 	}
@@ -140,7 +141,7 @@ func (m *_S7PayloadUserDataItemCpuFunctionAlarmAck) GetLengthInBits(ctx context.
 	// Array field
 	if len(m.MessageObjects) > 0 {
 		for _curItem, element := range m.MessageObjects {
-			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.MessageObjects), _curItem)
+			arrayCtx := utils.CreateArrayContext(ctx, len(m.MessageObjects), _curItem)
 			_ = arrayCtx
 			_ = _curItem
 			lengthInBits += element.(interface{ GetLengthInBits(context.Context) uint16 }).GetLengthInBits(arrayCtx)
@@ -194,7 +195,7 @@ func S7PayloadUserDataItemCpuFunctionAlarmAckParseWithBuffer(ctx context.Context
 	{
 		_numItems := uint16(numberOfObjects)
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := spiContext.CreateArrayContext(ctx, int(_numItems), int(_curItem))
+			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
 			_ = _curItem
 			_item, _err := AlarmMessageObjectAckTypeParseWithBuffer(arrayCtx, readBuffer)
@@ -258,7 +259,7 @@ func (m *_S7PayloadUserDataItemCpuFunctionAlarmAck) SerializeWithWriteBuffer(ctx
 		}
 		for _curItem, _element := range m.GetMessageObjects() {
 			_ = _curItem
-			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetMessageObjects()), _curItem)
+			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetMessageObjects()), _curItem)
 			_ = arrayCtx
 			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 			if _elementErr != nil {

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetAuthenticationFactor is the corresponding interface of BACnetAuthenticationFactor
 type BACnetAuthenticationFactor interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetFormatType returns FormatType (property field)
@@ -81,7 +83,7 @@ func NewBACnetAuthenticationFactor(formatType BACnetAuthenticationFactorTypeTagg
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetAuthenticationFactor(structType interface{}) BACnetAuthenticationFactor {
+func CastBACnetAuthenticationFactor(structType any) BACnetAuthenticationFactor {
 	if casted, ok := structType.(BACnetAuthenticationFactor); ok {
 		return casted
 	}

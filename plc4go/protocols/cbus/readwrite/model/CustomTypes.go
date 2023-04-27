@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // CustomTypes is the corresponding interface of CustomTypes
 type CustomTypes interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetCustomString returns CustomString (property field)
@@ -70,7 +72,7 @@ func NewCustomTypes(customString string, numBytes uint8) *_CustomTypes {
 }
 
 // Deprecated: use the interface for direct cast
-func CastCustomTypes(structType interface{}) CustomTypes {
+func CastCustomTypes(structType any) CustomTypes {
 	if casted, ok := structType.(CustomTypes); ok {
 		return casted
 	}

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetPriorityValueConstructedValue is the corresponding interface of BACnetPriorityValueConstructedValue
 type BACnetPriorityValueConstructedValue interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetPriorityValue
@@ -92,7 +94,7 @@ func NewBACnetPriorityValueConstructedValue(constructedValue BACnetConstructedDa
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetPriorityValueConstructedValue(structType interface{}) BACnetPriorityValueConstructedValue {
+func CastBACnetPriorityValueConstructedValue(structType any) BACnetPriorityValueConstructedValue {
 	if casted, ok := structType.(BACnetPriorityValueConstructedValue); ok {
 		return casted
 	}

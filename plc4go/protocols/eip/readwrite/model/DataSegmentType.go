@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // DataSegmentType is the corresponding interface of DataSegmentType
 type DataSegmentType interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetDataSegmentType returns DataSegmentType (discriminator field)
@@ -73,7 +75,7 @@ func NewDataSegmentType() *_DataSegmentType {
 }
 
 // Deprecated: use the interface for direct cast
-func CastDataSegmentType(structType interface{}) DataSegmentType {
+func CastDataSegmentType(structType any) DataSegmentType {
 	if casted, ok := structType.(DataSegmentType); ok {
 		return casted
 	}
@@ -124,7 +126,7 @@ func DataSegmentTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 		InitializeParent(DataSegmentType)
 		GetParent() DataSegmentType
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child DataSegmentTypeChildSerializeRequirement
 	var typeSwitchError error
 	switch {

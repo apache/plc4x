@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataLimitMonitoringInterval is the corresponding interface of BACnetConstructedDataLimitMonitoringInterval
 type BACnetConstructedDataLimitMonitoringInterval interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataLimitMonitoringInterval(limitMonitoringInterval BAC
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataLimitMonitoringInterval(structType interface{}) BACnetConstructedDataLimitMonitoringInterval {
+func CastBACnetConstructedDataLimitMonitoringInterval(structType any) BACnetConstructedDataLimitMonitoringInterval {
 	if casted, ok := structType.(BACnetConstructedDataLimitMonitoringInterval); ok {
 		return casted
 	}

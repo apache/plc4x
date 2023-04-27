@@ -21,7 +21,7 @@ package model
 
 import (
 	"context"
-	spiContext "github.com/apache/plc4x/plc4go/spi/context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,6 +30,7 @@ import (
 
 // BACnetWriteAccessSpecification is the corresponding interface of BACnetWriteAccessSpecification
 type BACnetWriteAccessSpecification interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetObjectIdentifier returns ObjectIdentifier (property field)
@@ -89,7 +90,7 @@ func NewBACnetWriteAccessSpecification(objectIdentifier BACnetContextTagObjectId
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetWriteAccessSpecification(structType interface{}) BACnetWriteAccessSpecification {
+func CastBACnetWriteAccessSpecification(structType any) BACnetWriteAccessSpecification {
 	if casted, ok := structType.(BACnetWriteAccessSpecification); ok {
 		return casted
 	}
@@ -258,7 +259,7 @@ func (m *_BACnetWriteAccessSpecification) SerializeWithWriteBuffer(ctx context.C
 	}
 	for _curItem, _element := range m.GetListOfPropertyWriteDefinition() {
 		_ = _curItem
-		arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetListOfPropertyWriteDefinition()), _curItem)
+		arrayCtx := utils.CreateArrayContext(ctx, len(m.GetListOfPropertyWriteDefinition()), _curItem)
 		_ = arrayCtx
 		_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 		if _elementErr != nil {

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataDefaultFadeTime is the corresponding interface of BACnetConstructedDataDefaultFadeTime
 type BACnetConstructedDataDefaultFadeTime interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataDefaultFadeTime(defaultFadeTime BACnetApplicationTa
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataDefaultFadeTime(structType interface{}) BACnetConstructedDataDefaultFadeTime {
+func CastBACnetConstructedDataDefaultFadeTime(structType any) BACnetConstructedDataDefaultFadeTime {
 	if casted, ok := structType.(BACnetConstructedDataDefaultFadeTime); ok {
 		return casted
 	}

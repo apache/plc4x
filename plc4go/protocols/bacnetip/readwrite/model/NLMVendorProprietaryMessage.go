@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // NLMVendorProprietaryMessage is the corresponding interface of NLMVendorProprietaryMessage
 type NLMVendorProprietaryMessage interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	NLM
@@ -102,7 +104,7 @@ func NewNLMVendorProprietaryMessage(vendorId BACnetVendorId, proprietaryMessage 
 }
 
 // Deprecated: use the interface for direct cast
-func CastNLMVendorProprietaryMessage(structType interface{}) NLMVendorProprietaryMessage {
+func CastNLMVendorProprietaryMessage(structType any) NLMVendorProprietaryMessage {
 	if casted, ok := structType.(NLMVendorProprietaryMessage); ok {
 		return casted
 	}
@@ -160,7 +162,7 @@ func NLMVendorProprietaryMessageParseWithBuffer(ctx context.Context, readBuffer 
 		return nil, errors.Wrap(closeErr, "Error closing for vendorId")
 	}
 	// Byte Array field (proprietaryMessage)
-	numberOfBytesproprietaryMessage := int(utils.InlineIf((bool((apduLength) > (0))), func() interface{} { return uint16((uint16(apduLength) - uint16(uint16(3)))) }, func() interface{} { return uint16(uint16(0)) }).(uint16))
+	numberOfBytesproprietaryMessage := int(utils.InlineIf((bool((apduLength) > (0))), func() any { return uint16((uint16(apduLength) - uint16(uint16(3)))) }, func() any { return uint16(uint16(0)) }).(uint16))
 	proprietaryMessage, _readArrayErr := readBuffer.ReadByteArray("proprietaryMessage", numberOfBytesproprietaryMessage)
 	if _readArrayErr != nil {
 		return nil, errors.Wrap(_readArrayErr, "Error parsing 'proprietaryMessage' field of NLMVendorProprietaryMessage")

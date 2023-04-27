@@ -42,7 +42,7 @@ func init() {
 	_ = utils.Dump
 }
 
-func (m BacnetipXmlParserHelper) Parse(typeName string, xmlString string, parserArguments ...string) (interface{}, error) {
+func (m BacnetipXmlParserHelper) Parse(typeName string, xmlString string, parserArguments ...string) (any, error) {
 	switch typeName {
 	case "BACnetAuthenticationStatusTagged":
 		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 8)

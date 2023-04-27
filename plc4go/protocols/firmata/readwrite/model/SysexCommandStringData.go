@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // SysexCommandStringData is the corresponding interface of SysexCommandStringData
 type SysexCommandStringData interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	SysexCommand
@@ -80,7 +82,7 @@ func NewSysexCommandStringData() *_SysexCommandStringData {
 }
 
 // Deprecated: use the interface for direct cast
-func CastSysexCommandStringData(structType interface{}) SysexCommandStringData {
+func CastSysexCommandStringData(structType any) SysexCommandStringData {
 	if casted, ok := structType.(SysexCommandStringData); ok {
 		return casted
 	}

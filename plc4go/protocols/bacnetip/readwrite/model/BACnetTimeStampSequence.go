@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetTimeStampSequence is the corresponding interface of BACnetTimeStampSequence
 type BACnetTimeStampSequence interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetTimeStamp
@@ -92,7 +94,7 @@ func NewBACnetTimeStampSequence(sequenceNumber BACnetContextTagUnsignedInteger, 
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetTimeStampSequence(structType interface{}) BACnetTimeStampSequence {
+func CastBACnetTimeStampSequence(structType any) BACnetTimeStampSequence {
 	if casted, ok := structType.(BACnetTimeStampSequence); ok {
 		return casted
 	}

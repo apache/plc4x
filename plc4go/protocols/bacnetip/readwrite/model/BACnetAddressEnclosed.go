@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetAddressEnclosed is the corresponding interface of BACnetAddressEnclosed
 type BACnetAddressEnclosed interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetOpeningTag returns OpeningTag (property field)
@@ -84,7 +86,7 @@ func NewBACnetAddressEnclosed(openingTag BACnetOpeningTag, address BACnetAddress
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetAddressEnclosed(structType interface{}) BACnetAddressEnclosed {
+func CastBACnetAddressEnclosed(structType any) BACnetAddressEnclosed {
 	if casted, ok := structType.(BACnetAddressEnclosed); ok {
 		return casted
 	}

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetPropertyStatesLiftGroupMode is the corresponding interface of BACnetPropertyStatesLiftGroupMode
 type BACnetPropertyStatesLiftGroupMode interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetPropertyStates
@@ -92,7 +94,7 @@ func NewBACnetPropertyStatesLiftGroupMode(liftGroupMode BACnetLiftGroupModeTagge
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetPropertyStatesLiftGroupMode(structType interface{}) BACnetPropertyStatesLiftGroupMode {
+func CastBACnetPropertyStatesLiftGroupMode(structType any) BACnetPropertyStatesLiftGroupMode {
 	if casted, ok := structType.(BACnetPropertyStatesLiftGroupMode); ok {
 		return casted
 	}

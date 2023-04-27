@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -31,6 +32,8 @@ import (
 type KnxInterfaceObjectProperty uint32
 
 type IKnxInterfaceObjectProperty interface {
+	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 	PropertyDataType() KnxPropertyDataType
 	Name() string
@@ -4893,8 +4896,8 @@ func KnxInterfaceObjectPropertyKnows(value uint32) bool {
 	return false
 }
 
-func CastKnxInterfaceObjectProperty(structType interface{}) KnxInterfaceObjectProperty {
-	castFunc := func(typ interface{}) KnxInterfaceObjectProperty {
+func CastKnxInterfaceObjectProperty(structType any) KnxInterfaceObjectProperty {
+	castFunc := func(typ any) KnxInterfaceObjectProperty {
 		if sKnxInterfaceObjectProperty, ok := typ.(KnxInterfaceObjectProperty); ok {
 			return sKnxInterfaceObjectProperty
 		}

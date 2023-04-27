@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // S7ParameterWriteVarResponse is the corresponding interface of S7ParameterWriteVarResponse
 type S7ParameterWriteVarResponse interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	S7Parameter
@@ -98,7 +100,7 @@ func NewS7ParameterWriteVarResponse(numItems uint8) *_S7ParameterWriteVarRespons
 }
 
 // Deprecated: use the interface for direct cast
-func CastS7ParameterWriteVarResponse(structType interface{}) S7ParameterWriteVarResponse {
+func CastS7ParameterWriteVarResponse(structType any) S7ParameterWriteVarResponse {
 	if casted, ok := structType.(S7ParameterWriteVarResponse); ok {
 		return casted
 	}

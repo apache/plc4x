@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetValueSourceObject is the corresponding interface of BACnetValueSourceObject
 type BACnetValueSourceObject interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetValueSource
@@ -92,7 +94,7 @@ func NewBACnetValueSourceObject(object BACnetDeviceObjectReferenceEnclosed, peek
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetValueSourceObject(structType interface{}) BACnetValueSourceObject {
+func CastBACnetValueSourceObject(structType any) BACnetValueSourceObject {
 	if casted, ok := structType.(BACnetValueSourceObject); ok {
 		return casted
 	}

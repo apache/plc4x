@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetLightingCommandEnclosed is the corresponding interface of BACnetLightingCommandEnclosed
 type BACnetLightingCommandEnclosed interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetOpeningTag returns OpeningTag (property field)
@@ -84,7 +86,7 @@ func NewBACnetLightingCommandEnclosed(openingTag BACnetOpeningTag, lightingComma
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetLightingCommandEnclosed(structType interface{}) BACnetLightingCommandEnclosed {
+func CastBACnetLightingCommandEnclosed(structType any) BACnetLightingCommandEnclosed {
 	if casted, ok := structType.(BACnetLightingCommandEnclosed); ok {
 		return casted
 	}

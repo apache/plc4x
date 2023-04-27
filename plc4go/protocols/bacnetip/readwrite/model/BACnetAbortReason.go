@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -31,6 +32,8 @@ import (
 type BACnetAbortReason uint8
 
 type IBACnetAbortReason interface {
+	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 
@@ -144,8 +147,8 @@ func BACnetAbortReasonKnows(value uint8) bool {
 	return false
 }
 
-func CastBACnetAbortReason(structType interface{}) BACnetAbortReason {
-	castFunc := func(typ interface{}) BACnetAbortReason {
+func CastBACnetAbortReason(structType any) BACnetAbortReason {
+	castFunc := func(typ any) BACnetAbortReason {
 		if sBACnetAbortReason, ok := typ.(BACnetAbortReason); ok {
 			return sBACnetAbortReason
 		}

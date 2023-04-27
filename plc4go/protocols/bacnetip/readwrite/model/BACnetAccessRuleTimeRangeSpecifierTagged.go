@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetAccessRuleTimeRangeSpecifierTagged is the corresponding interface of BACnetAccessRuleTimeRangeSpecifierTagged
 type BACnetAccessRuleTimeRangeSpecifierTagged interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetHeader returns Header (property field)
@@ -78,7 +80,7 @@ func NewBACnetAccessRuleTimeRangeSpecifierTagged(header BACnetTagHeader, value B
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetAccessRuleTimeRangeSpecifierTagged(structType interface{}) BACnetAccessRuleTimeRangeSpecifierTagged {
+func CastBACnetAccessRuleTimeRangeSpecifierTagged(structType any) BACnetAccessRuleTimeRangeSpecifierTagged {
 	if casted, ok := structType.(BACnetAccessRuleTimeRangeSpecifierTagged); ok {
 		return casted
 	}

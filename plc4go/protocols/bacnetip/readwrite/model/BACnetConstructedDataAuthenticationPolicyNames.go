@@ -21,7 +21,7 @@ package model
 
 import (
 	"context"
-	spiContext "github.com/apache/plc4x/plc4go/spi/context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
@@ -31,6 +31,7 @@ import (
 
 // BACnetConstructedDataAuthenticationPolicyNames is the corresponding interface of BACnetConstructedDataAuthenticationPolicyNames
 type BACnetConstructedDataAuthenticationPolicyNames interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -131,7 +132,7 @@ func NewBACnetConstructedDataAuthenticationPolicyNames(numberOfDataElements BACn
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataAuthenticationPolicyNames(structType interface{}) BACnetConstructedDataAuthenticationPolicyNames {
+func CastBACnetConstructedDataAuthenticationPolicyNames(structType any) BACnetConstructedDataAuthenticationPolicyNames {
 	if casted, ok := structType.(BACnetConstructedDataAuthenticationPolicyNames); ok {
 		return casted
 	}
@@ -287,7 +288,7 @@ func (m *_BACnetConstructedDataAuthenticationPolicyNames) SerializeWithWriteBuff
 		}
 		for _curItem, _element := range m.GetAuthenticationPolicyNames() {
 			_ = _curItem
-			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetAuthenticationPolicyNames()), _curItem)
+			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetAuthenticationPolicyNames()), _curItem)
 			_ = arrayCtx
 			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 			if _elementErr != nil {

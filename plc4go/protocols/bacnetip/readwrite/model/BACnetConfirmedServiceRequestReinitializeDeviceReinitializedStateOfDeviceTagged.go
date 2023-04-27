@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged is the corresponding interface of BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged
 type BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetHeader returns Header (property field)
@@ -78,7 +80,7 @@ func NewBACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevic
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged(structType interface{}) BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged {
+func CastBACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged(structType any) BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged {
 	if casted, ok := structType.(BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged); ok {
 		return casted
 	}

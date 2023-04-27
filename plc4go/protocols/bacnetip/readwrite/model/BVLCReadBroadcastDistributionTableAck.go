@@ -22,7 +22,7 @@ package model
 import (
 	"context"
 	"encoding/binary"
-	spiContext "github.com/apache/plc4x/plc4go/spi/context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -31,6 +31,7 @@ import (
 
 // BVLCReadBroadcastDistributionTableAck is the corresponding interface of BVLCReadBroadcastDistributionTableAck
 type BVLCReadBroadcastDistributionTableAck interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BVLC
@@ -99,7 +100,7 @@ func NewBVLCReadBroadcastDistributionTableAck(table []BVLCBroadcastDistributionT
 }
 
 // Deprecated: use the interface for direct cast
-func CastBVLCReadBroadcastDistributionTableAck(structType interface{}) BVLCReadBroadcastDistributionTableAck {
+func CastBVLCReadBroadcastDistributionTableAck(structType any) BVLCReadBroadcastDistributionTableAck {
 	if casted, ok := structType.(BVLCReadBroadcastDistributionTableAck); ok {
 		return casted
 	}
@@ -199,7 +200,7 @@ func (m *_BVLCReadBroadcastDistributionTableAck) SerializeWithWriteBuffer(ctx co
 		}
 		for _curItem, _element := range m.GetTable() {
 			_ = _curItem
-			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetTable()), _curItem)
+			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetTable()), _curItem)
 			_ = arrayCtx
 			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 			if _elementErr != nil {

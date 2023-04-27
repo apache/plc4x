@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // NullCommandResponse is the corresponding interface of NullCommandResponse
 type NullCommandResponse interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	EipPacket
@@ -89,7 +91,7 @@ func NewNullCommandResponse(sessionHandle uint32, status uint32, senderContext [
 }
 
 // Deprecated: use the interface for direct cast
-func CastNullCommandResponse(structType interface{}) NullCommandResponse {
+func CastNullCommandResponse(structType any) NullCommandResponse {
 	if casted, ok := structType.(NullCommandResponse); ok {
 		return casted
 	}

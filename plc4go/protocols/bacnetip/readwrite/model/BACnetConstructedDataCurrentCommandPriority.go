@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataCurrentCommandPriority is the corresponding interface of BACnetConstructedDataCurrentCommandPriority
 type BACnetConstructedDataCurrentCommandPriority interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataCurrentCommandPriority(currentCommandPriority BACne
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataCurrentCommandPriority(structType interface{}) BACnetConstructedDataCurrentCommandPriority {
+func CastBACnetConstructedDataCurrentCommandPriority(structType any) BACnetConstructedDataCurrentCommandPriority {
 	if casted, ok := structType.(BACnetConstructedDataCurrentCommandPriority); ok {
 		return casted
 	}

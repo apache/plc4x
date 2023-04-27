@@ -21,7 +21,7 @@ package model
 
 import (
 	"context"
-	spiContext "github.com/apache/plc4x/plc4go/spi/context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,6 +30,7 @@ import (
 
 // BACnetConfirmedServiceRequestReadPropertyMultiple is the corresponding interface of BACnetConfirmedServiceRequestReadPropertyMultiple
 type BACnetConfirmedServiceRequestReadPropertyMultiple interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConfirmedServiceRequest
@@ -99,7 +100,7 @@ func NewBACnetConfirmedServiceRequestReadPropertyMultiple(data []BACnetReadAcces
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConfirmedServiceRequestReadPropertyMultiple(structType interface{}) BACnetConfirmedServiceRequestReadPropertyMultiple {
+func CastBACnetConfirmedServiceRequestReadPropertyMultiple(structType any) BACnetConfirmedServiceRequestReadPropertyMultiple {
 	if casted, ok := structType.(BACnetConfirmedServiceRequestReadPropertyMultiple); ok {
 		return casted
 	}
@@ -201,7 +202,7 @@ func (m *_BACnetConfirmedServiceRequestReadPropertyMultiple) SerializeWithWriteB
 		}
 		for _curItem, _element := range m.GetData() {
 			_ = _curItem
-			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetData()), _curItem)
+			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetData()), _curItem)
 			_ = arrayCtx
 			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 			if _elementErr != nil {

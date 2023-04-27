@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // SecurityDataMainsFailure is the corresponding interface of SecurityDataMainsFailure
 type SecurityDataMainsFailure interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	SecurityData
@@ -75,7 +77,7 @@ func NewSecurityDataMainsFailure(commandTypeContainer SecurityCommandTypeContain
 }
 
 // Deprecated: use the interface for direct cast
-func CastSecurityDataMainsFailure(structType interface{}) SecurityDataMainsFailure {
+func CastSecurityDataMainsFailure(structType any) SecurityDataMainsFailure {
 	if casted, ok := structType.(SecurityDataMainsFailure); ok {
 		return casted
 	}

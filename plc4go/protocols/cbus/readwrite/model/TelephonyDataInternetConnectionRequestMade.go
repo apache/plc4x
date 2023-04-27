@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // TelephonyDataInternetConnectionRequestMade is the corresponding interface of TelephonyDataInternetConnectionRequestMade
 type TelephonyDataInternetConnectionRequestMade interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	TelephonyData
@@ -75,7 +77,7 @@ func NewTelephonyDataInternetConnectionRequestMade(commandTypeContainer Telephon
 }
 
 // Deprecated: use the interface for direct cast
-func CastTelephonyDataInternetConnectionRequestMade(structType interface{}) TelephonyDataInternetConnectionRequestMade {
+func CastTelephonyDataInternetConnectionRequestMade(structType any) TelephonyDataInternetConnectionRequestMade {
 	if casted, ok := structType.(TelephonyDataInternetConnectionRequestMade); ok {
 		return casted
 	}

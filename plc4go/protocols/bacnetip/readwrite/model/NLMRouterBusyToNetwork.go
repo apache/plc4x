@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // NLMRouterBusyToNetwork is the corresponding interface of NLMRouterBusyToNetwork
 type NLMRouterBusyToNetwork interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	NLM
@@ -94,7 +96,7 @@ func NewNLMRouterBusyToNetwork(destinationNetworkAddresses []uint16, apduLength 
 }
 
 // Deprecated: use the interface for direct cast
-func CastNLMRouterBusyToNetwork(structType interface{}) NLMRouterBusyToNetwork {
+func CastNLMRouterBusyToNetwork(structType any) NLMRouterBusyToNetwork {
 	if casted, ok := structType.(NLMRouterBusyToNetwork); ok {
 		return casted
 	}

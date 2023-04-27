@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // SysexCommandSysexRealtime is the corresponding interface of SysexCommandSysexRealtime
 type SysexCommandSysexRealtime interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	SysexCommand
@@ -80,7 +82,7 @@ func NewSysexCommandSysexRealtime() *_SysexCommandSysexRealtime {
 }
 
 // Deprecated: use the interface for direct cast
-func CastSysexCommandSysexRealtime(structType interface{}) SysexCommandSysexRealtime {
+func CastSysexCommandSysexRealtime(structType any) SysexCommandSysexRealtime {
 	if casted, ok := structType.(SysexCommandSysexRealtime); ok {
 		return casted
 	}

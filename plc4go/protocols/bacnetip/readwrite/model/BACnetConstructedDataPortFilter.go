@@ -21,7 +21,7 @@ package model
 
 import (
 	"context"
-	spiContext "github.com/apache/plc4x/plc4go/spi/context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
@@ -31,6 +31,7 @@ import (
 
 // BACnetConstructedDataPortFilter is the corresponding interface of BACnetConstructedDataPortFilter
 type BACnetConstructedDataPortFilter interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -131,7 +132,7 @@ func NewBACnetConstructedDataPortFilter(numberOfDataElements BACnetApplicationTa
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataPortFilter(structType interface{}) BACnetConstructedDataPortFilter {
+func CastBACnetConstructedDataPortFilter(structType any) BACnetConstructedDataPortFilter {
 	if casted, ok := structType.(BACnetConstructedDataPortFilter); ok {
 		return casted
 	}
@@ -287,7 +288,7 @@ func (m *_BACnetConstructedDataPortFilter) SerializeWithWriteBuffer(ctx context.
 		}
 		for _curItem, _element := range m.GetPortFilter() {
 			_ = _curItem
-			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetPortFilter()), _curItem)
+			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetPortFilter()), _curItem)
 			_ = arrayCtx
 			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 			if _elementErr != nil {

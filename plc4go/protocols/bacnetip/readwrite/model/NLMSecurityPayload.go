@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // NLMSecurityPayload is the corresponding interface of NLMSecurityPayload
 type NLMSecurityPayload interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	NLM
@@ -102,7 +104,7 @@ func NewNLMSecurityPayload(payloadLength uint16, payload []byte, apduLength uint
 }
 
 // Deprecated: use the interface for direct cast
-func CastNLMSecurityPayload(structType interface{}) NLMSecurityPayload {
+func CastNLMSecurityPayload(structType any) NLMSecurityPayload {
 	if casted, ok := structType.(NLMSecurityPayload); ok {
 		return casted
 	}

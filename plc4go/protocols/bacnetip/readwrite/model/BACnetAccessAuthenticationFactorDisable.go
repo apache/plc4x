@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -31,6 +32,8 @@ import (
 type BACnetAccessAuthenticationFactorDisable uint16
 
 type IBACnetAccessAuthenticationFactorDisable interface {
+	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 
@@ -108,8 +111,8 @@ func BACnetAccessAuthenticationFactorDisableKnows(value uint16) bool {
 	return false
 }
 
-func CastBACnetAccessAuthenticationFactorDisable(structType interface{}) BACnetAccessAuthenticationFactorDisable {
-	castFunc := func(typ interface{}) BACnetAccessAuthenticationFactorDisable {
+func CastBACnetAccessAuthenticationFactorDisable(structType any) BACnetAccessAuthenticationFactorDisable {
+	castFunc := func(typ any) BACnetAccessAuthenticationFactorDisable {
 		if sBACnetAccessAuthenticationFactorDisable, ok := typ.(BACnetAccessAuthenticationFactorDisable); ok {
 			return sBACnetAccessAuthenticationFactorDisable
 		}

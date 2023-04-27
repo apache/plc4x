@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetContextTagObjectIdentifier is the corresponding interface of BACnetContextTagObjectIdentifier
 type BACnetContextTagObjectIdentifier interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetContextTag
@@ -121,7 +123,7 @@ func NewBACnetContextTagObjectIdentifier(payload BACnetTagPayloadObjectIdentifie
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetContextTagObjectIdentifier(structType interface{}) BACnetContextTagObjectIdentifier {
+func CastBACnetContextTagObjectIdentifier(structType any) BACnetContextTagObjectIdentifier {
 	if casted, ok := structType.(BACnetContextTagObjectIdentifier); ok {
 		return casted
 	}

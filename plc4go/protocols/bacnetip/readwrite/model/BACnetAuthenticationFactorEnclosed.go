@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetAuthenticationFactorEnclosed is the corresponding interface of BACnetAuthenticationFactorEnclosed
 type BACnetAuthenticationFactorEnclosed interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetOpeningTag returns OpeningTag (property field)
@@ -84,7 +86,7 @@ func NewBACnetAuthenticationFactorEnclosed(openingTag BACnetOpeningTag, authenti
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetAuthenticationFactorEnclosed(structType interface{}) BACnetAuthenticationFactorEnclosed {
+func CastBACnetAuthenticationFactorEnclosed(structType any) BACnetAuthenticationFactorEnclosed {
 	if casted, ok := structType.(BACnetAuthenticationFactorEnclosed); ok {
 		return casted
 	}

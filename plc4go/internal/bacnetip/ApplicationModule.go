@@ -142,8 +142,9 @@ func (d *DeviceInfoCache) GetDeviceInfo(key DeviceInfoCacheKey) (DeviceInfo, boo
 }
 
 // UpdateDeviceInfo The application has updated one or more fields in the device information record and the cache needs
-//        to be updated to reflect the changes.  If this is a cached version of a persistent record then this is the
-//        opportunity to update the database.
+//
+//	to be updated to reflect the changes.  If this is a cached version of a persistent record then this is the
+//	opportunity to update the database.
 func (d *DeviceInfoCache) UpdateDeviceInfo(deviceInfo DeviceInfo) {
 	log.Debug().Msgf("UpdateDeviceInfo %#v", deviceInfo)
 
@@ -171,7 +172,8 @@ func (d *DeviceInfoCache) UpdateDeviceInfo(deviceInfo DeviceInfo) {
 }
 
 // Acquire Return the known information about the device and mark the record as being used by a segmentation state
-//        machine.
+//
+//	machine.
 func (d *DeviceInfoCache) Acquire(key DeviceInfoCacheKey) (DeviceInfo, bool) {
 	log.Debug().Msgf("Acquire %#v", key)
 
@@ -206,7 +208,7 @@ type Application struct {
 	objectIdentifier map[string]*LocalDeviceObject
 	localDevice      *LocalDeviceObject
 	deviceInfoCache  *DeviceInfoCache
-	controllers      map[string]interface{}
+	controllers      map[string]any
 	helpers          map[string]func(pdu _PDU) error
 
 	_startupDisabled bool
@@ -244,7 +246,7 @@ func NewApplication(localDevice *LocalDeviceObject, deviceInfoCache *DeviceInfoC
 	a.deviceInfoCache = deviceInfoCache
 
 	// controllers for managing confirmed requests as a client
-	a.controllers = map[string]interface{}{}
+	a.controllers = map[string]any{}
 
 	// now set up the rest of the capabilities
 	a.Collector = Collector{}
@@ -347,7 +349,9 @@ func (a *Application) IterObjects() []*LocalDeviceObject {
 }
 
 // GetServicesSupported returns a ServicesSupported bit string based in introspection, look for helper methods that
-//        match confirmed and unconfirmed services.
+//
+//	match confirmed and unconfirmed services.
+//
 // TODO: match that with readWriteModel.BACnetServicesSupported
 func (a *Application) GetServicesSupported() []string {
 	servicesSupported := make([]string, 0, len(a.helpers))

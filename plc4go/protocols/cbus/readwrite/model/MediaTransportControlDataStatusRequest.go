@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // MediaTransportControlDataStatusRequest is the corresponding interface of MediaTransportControlDataStatusRequest
 type MediaTransportControlDataStatusRequest interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	MediaTransportControlData
@@ -75,7 +77,7 @@ func NewMediaTransportControlDataStatusRequest(commandTypeContainer MediaTranspo
 }
 
 // Deprecated: use the interface for direct cast
-func CastMediaTransportControlDataStatusRequest(structType interface{}) MediaTransportControlDataStatusRequest {
+func CastMediaTransportControlDataStatusRequest(structType any) MediaTransportControlDataStatusRequest {
 	if casted, ok := structType.(MediaTransportControlDataStatusRequest); ok {
 		return casted
 	}

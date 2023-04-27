@@ -21,7 +21,7 @@ package model
 
 import (
 	"context"
-	spiContext "github.com/apache/plc4x/plc4go/spi/context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,6 +30,7 @@ import (
 
 // AdsReadWriteRequest is the corresponding interface of AdsReadWriteRequest
 type AdsReadWriteRequest interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	AmsPacket
@@ -138,7 +139,7 @@ func NewAdsReadWriteRequest(indexGroup uint32, indexOffset uint32, readLength ui
 }
 
 // Deprecated: use the interface for direct cast
-func CastAdsReadWriteRequest(structType interface{}) AdsReadWriteRequest {
+func CastAdsReadWriteRequest(structType any) AdsReadWriteRequest {
 	if casted, ok := structType.(AdsReadWriteRequest); ok {
 		return casted
 	}
@@ -170,7 +171,7 @@ func (m *_AdsReadWriteRequest) GetLengthInBits(ctx context.Context) uint16 {
 	// Array field
 	if len(m.Items) > 0 {
 		for _curItem, element := range m.Items {
-			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.Items), _curItem)
+			arrayCtx := utils.CreateArrayContext(ctx, len(m.Items), _curItem)
 			_ = arrayCtx
 			_ = _curItem
 			lengthInBits += element.(interface{ GetLengthInBits(context.Context) uint16 }).GetLengthInBits(arrayCtx)
@@ -235,15 +236,15 @@ func AdsReadWriteRequestParseWithBuffer(ctx context.Context, readBuffer utils.Re
 		return nil, errors.Wrap(pullErr, "Error pulling for items")
 	}
 	// Count array
-	items := make([]AdsMultiRequestItem, utils.InlineIf((bool(bool((bool((indexGroup) == (61568)))) || bool((bool((indexGroup) == (61569))))) || bool((bool((indexGroup) == (61570))))), func() interface{} { return uint16(indexOffset) }, func() interface{} { return uint16(uint16(0)) }).(uint16))
+	items := make([]AdsMultiRequestItem, utils.InlineIf((bool(bool((bool((indexGroup) == (61568)))) || bool((bool((indexGroup) == (61569))))) || bool((bool((indexGroup) == (61570))))), func() any { return uint16(indexOffset) }, func() any { return uint16(uint16(0)) }).(uint16))
 	// This happens when the size is set conditional to 0
 	if len(items) == 0 {
 		items = nil
 	}
 	{
-		_numItems := uint16(utils.InlineIf((bool(bool((bool((indexGroup) == (61568)))) || bool((bool((indexGroup) == (61569))))) || bool((bool((indexGroup) == (61570))))), func() interface{} { return uint16(indexOffset) }, func() interface{} { return uint16(uint16(0)) }).(uint16))
+		_numItems := uint16(utils.InlineIf((bool(bool((bool((indexGroup) == (61568)))) || bool((bool((indexGroup) == (61569))))) || bool((bool((indexGroup) == (61570))))), func() any { return uint16(indexOffset) }, func() any { return uint16(uint16(0)) }).(uint16))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := spiContext.CreateArrayContext(ctx, int(_numItems), int(_curItem))
+			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
 			_ = _curItem
 			_item, _err := AdsMultiRequestItemParseWithBuffer(arrayCtx, readBuffer, indexGroup)
@@ -318,7 +319,7 @@ func (m *_AdsReadWriteRequest) SerializeWithWriteBuffer(ctx context.Context, wri
 		}
 
 		// Implicit Field (writeLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-		writeLength := uint32(uint32((uint32(uint32(len(m.GetItems()))) * uint32((utils.InlineIf((bool((m.GetIndexGroup()) == (61570))), func() interface{} { return uint32(uint32(16)) }, func() interface{} { return uint32(uint32(12)) }).(uint32))))) + uint32(uint32(len(m.GetData()))))
+		writeLength := uint32(uint32((uint32(uint32(len(m.GetItems()))) * uint32((utils.InlineIf((bool((m.GetIndexGroup()) == (61570))), func() any { return uint32(uint32(16)) }, func() any { return uint32(uint32(12)) }).(uint32))))) + uint32(uint32(len(m.GetData()))))
 		_writeLengthErr := writeBuffer.WriteUint32("writeLength", 32, (writeLength))
 		if _writeLengthErr != nil {
 			return errors.Wrap(_writeLengthErr, "Error serializing 'writeLength' field")
@@ -330,7 +331,7 @@ func (m *_AdsReadWriteRequest) SerializeWithWriteBuffer(ctx context.Context, wri
 		}
 		for _curItem, _element := range m.GetItems() {
 			_ = _curItem
-			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetItems()), _curItem)
+			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetItems()), _curItem)
 			_ = arrayCtx
 			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 			if _elementErr != nil {

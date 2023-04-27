@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetFaultParameterFaultStatusFlags is the corresponding interface of BACnetFaultParameterFaultStatusFlags
 type BACnetFaultParameterFaultStatusFlags interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetFaultParameter
@@ -108,7 +110,7 @@ func NewBACnetFaultParameterFaultStatusFlags(openingTag BACnetOpeningTag, status
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetFaultParameterFaultStatusFlags(structType interface{}) BACnetFaultParameterFaultStatusFlags {
+func CastBACnetFaultParameterFaultStatusFlags(structType any) BACnetFaultParameterFaultStatusFlags {
 	if casted, ok := structType.(BACnetFaultParameterFaultStatusFlags); ok {
 		return casted
 	}

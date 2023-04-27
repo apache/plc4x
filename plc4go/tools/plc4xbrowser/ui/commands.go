@@ -22,6 +22,7 @@ package ui
 import (
 	"fmt"
 	"net/url"
+	"runtime/debug"
 	"strings"
 	"time"
 
@@ -742,7 +743,15 @@ func Execute(commandText string) error {
 	return err
 }
 
-func (c Command) Execute(commandText string) error {
+func (c Command) Execute(commandText string) (err error) {
+	defer func() {
+		if recoveredErr := recover(); recoveredErr != nil {
+			if log.Debug().Enabled() {
+				log.Debug().Msgf("Panic '%v' stack:\n%s", recoveredErr, debug.Stack())
+			}
+			err = errors.Errorf("panic occurred: %v.", recoveredErr)
+		}
+	}()
 	plc4xBrowserLog.Debug().Msgf("%s executes %s", c, commandText)
 	if !c.acceptsCurrentText(commandText) {
 		return errors.Errorf("%s doesn't understand %s", c.Name, commandText)

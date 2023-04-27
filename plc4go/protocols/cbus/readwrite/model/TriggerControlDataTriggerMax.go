@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // TriggerControlDataTriggerMax is the corresponding interface of TriggerControlDataTriggerMax
 type TriggerControlDataTriggerMax interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	TriggerControlData
@@ -75,7 +77,7 @@ func NewTriggerControlDataTriggerMax(commandTypeContainer TriggerControlCommandT
 }
 
 // Deprecated: use the interface for direct cast
-func CastTriggerControlDataTriggerMax(structType interface{}) TriggerControlDataTriggerMax {
+func CastTriggerControlDataTriggerMax(structType any) TriggerControlDataTriggerMax {
 	if casted, ok := structType.(TriggerControlDataTriggerMax); ok {
 		return casted
 	}

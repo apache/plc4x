@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // TypeId is the corresponding interface of TypeId
 type TypeId interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetId returns Id (discriminator field)
@@ -73,7 +75,7 @@ func NewTypeId() *_TypeId {
 }
 
 // Deprecated: use the interface for direct cast
-func CastTypeId(structType interface{}) TypeId {
+func CastTypeId(structType any) TypeId {
 	if casted, ok := structType.(TypeId); ok {
 		return casted
 	}
@@ -124,7 +126,7 @@ func TypeIdParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (Ty
 		InitializeParent(TypeId)
 		GetParent() TypeId
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child TypeIdChildSerializeRequirement
 	var typeSwitchError error
 	switch {

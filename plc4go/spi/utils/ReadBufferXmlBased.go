@@ -324,7 +324,7 @@ findTheEndToken:
 	return endElement, nil
 }
 
-func (x *xmlReadBuffer) decode(logicalName string, dataType string, bitLength uint, readerArgs []WithReaderArgs, targetValue interface{}) error {
+func (x *xmlReadBuffer) decode(logicalName string, dataType string, bitLength uint, readerArgs []WithReaderArgs, targetValue any) error {
 	startElement, err := x.travelToNextStartElement()
 	if err != nil {
 		return err

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetAccumulatorRecord is the corresponding interface of BACnetAccumulatorRecord
 type BACnetAccumulatorRecord interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetTimestamp returns Timestamp (property field)
@@ -88,7 +90,7 @@ func NewBACnetAccumulatorRecord(timestamp BACnetDateTimeEnclosed, presentValue B
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetAccumulatorRecord(structType interface{}) BACnetAccumulatorRecord {
+func CastBACnetAccumulatorRecord(structType any) BACnetAccumulatorRecord {
 	if casted, ok := structType.(BACnetAccumulatorRecord); ok {
 		return casted
 	}

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // APDU is the corresponding interface of APDU
 type APDU interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetApduType returns ApduType (discriminator field)
@@ -76,7 +78,7 @@ func NewAPDU(apduLength uint16) *_APDU {
 }
 
 // Deprecated: use the interface for direct cast
-func CastAPDU(structType interface{}) APDU {
+func CastAPDU(structType any) APDU {
 	if casted, ok := structType.(APDU); ok {
 		return casted
 	}
@@ -134,7 +136,7 @@ func APDUParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, apduL
 		InitializeParent(APDU)
 		GetParent() APDU
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child APDUChildSerializeRequirement
 	var typeSwitchError error
 	switch {

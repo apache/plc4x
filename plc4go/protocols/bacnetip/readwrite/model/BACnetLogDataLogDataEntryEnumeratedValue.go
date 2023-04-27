@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetLogDataLogDataEntryEnumeratedValue is the corresponding interface of BACnetLogDataLogDataEntryEnumeratedValue
 type BACnetLogDataLogDataEntryEnumeratedValue interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetLogDataLogDataEntry
@@ -92,7 +94,7 @@ func NewBACnetLogDataLogDataEntryEnumeratedValue(enumeratedValue BACnetContextTa
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetLogDataLogDataEntryEnumeratedValue(structType interface{}) BACnetLogDataLogDataEntryEnumeratedValue {
+func CastBACnetLogDataLogDataEntryEnumeratedValue(structType any) BACnetLogDataLogDataEntryEnumeratedValue {
 	if casted, ok := structType.(BACnetLogDataLogDataEntryEnumeratedValue); ok {
 		return casted
 	}

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetLogMultipleRecord is the corresponding interface of BACnetLogMultipleRecord
 type BACnetLogMultipleRecord interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetTimestamp returns Timestamp (property field)
@@ -74,7 +76,7 @@ func NewBACnetLogMultipleRecord(timestamp BACnetDateTimeEnclosed, logData BACnet
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetLogMultipleRecord(structType interface{}) BACnetLogMultipleRecord {
+func CastBACnetLogMultipleRecord(structType any) BACnetLogMultipleRecord {
 	if casted, ok := structType.(BACnetLogMultipleRecord); ok {
 		return casted
 	}

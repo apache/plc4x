@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // NLMWhatIsNetworkNumber is the corresponding interface of NLMWhatIsNetworkNumber
 type NLMWhatIsNetworkNumber interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	NLM
@@ -76,7 +78,7 @@ func NewNLMWhatIsNetworkNumber(apduLength uint16) *_NLMWhatIsNetworkNumber {
 }
 
 // Deprecated: use the interface for direct cast
-func CastNLMWhatIsNetworkNumber(structType interface{}) NLMWhatIsNetworkNumber {
+func CastNLMWhatIsNetworkNumber(structType any) NLMWhatIsNetworkNumber {
 	if casted, ok := structType.(NLMWhatIsNetworkNumber); ok {
 		return casted
 	}

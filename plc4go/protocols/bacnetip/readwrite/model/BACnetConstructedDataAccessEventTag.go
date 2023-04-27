@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataAccessEventTag is the corresponding interface of BACnetConstructedDataAccessEventTag
 type BACnetConstructedDataAccessEventTag interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataAccessEventTag(accessEventTag BACnetApplicationTagU
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataAccessEventTag(structType interface{}) BACnetConstructedDataAccessEventTag {
+func CastBACnetConstructedDataAccessEventTag(structType any) BACnetConstructedDataAccessEventTag {
 	if casted, ok := structType.(BACnetConstructedDataAccessEventTag); ok {
 		return casted
 	}

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -31,6 +32,8 @@ import (
 type BACnetUnconfirmedServiceChoice uint8
 
 type IBACnetUnconfirmedServiceChoice interface {
+	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 
@@ -138,8 +141,8 @@ func BACnetUnconfirmedServiceChoiceKnows(value uint8) bool {
 	return false
 }
 
-func CastBACnetUnconfirmedServiceChoice(structType interface{}) BACnetUnconfirmedServiceChoice {
-	castFunc := func(typ interface{}) BACnetUnconfirmedServiceChoice {
+func CastBACnetUnconfirmedServiceChoice(structType any) BACnetUnconfirmedServiceChoice {
+	castFunc := func(typ any) BACnetUnconfirmedServiceChoice {
 		if sBACnetUnconfirmedServiceChoice, ok := typ.(BACnetUnconfirmedServiceChoice); ok {
 			return sBACnetUnconfirmedServiceChoice
 		}

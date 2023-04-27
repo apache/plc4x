@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // LPollDataReq is the corresponding interface of LPollDataReq
 type LPollDataReq interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	CEMI
@@ -76,7 +78,7 @@ func NewLPollDataReq(size uint16) *_LPollDataReq {
 }
 
 // Deprecated: use the interface for direct cast
-func CastLPollDataReq(structType interface{}) LPollDataReq {
+func CastLPollDataReq(structType any) LPollDataReq {
 	if casted, ok := structType.(LPollDataReq); ok {
 		return casted
 	}

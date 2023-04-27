@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetNetworkNumberQualityTagged is the corresponding interface of BACnetNetworkNumberQualityTagged
 type BACnetNetworkNumberQualityTagged interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetHeader returns Header (property field)
@@ -78,7 +80,7 @@ func NewBACnetNetworkNumberQualityTagged(header BACnetTagHeader, value BACnetNet
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetNetworkNumberQualityTagged(structType interface{}) BACnetNetworkNumberQualityTagged {
+func CastBACnetNetworkNumberQualityTagged(structType any) BACnetNetworkNumberQualityTagged {
 	if casted, ok := structType.(BACnetNetworkNumberQualityTagged); ok {
 		return casted
 	}

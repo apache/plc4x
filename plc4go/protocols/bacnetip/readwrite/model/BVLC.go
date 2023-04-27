@@ -34,6 +34,7 @@ const BVLC_BACNETTYPE uint8 = 0x81
 
 // BVLC is the corresponding interface of BVLC
 type BVLC interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetBvlcFunction returns BvlcFunction (discriminator field)
@@ -109,7 +110,7 @@ func NewBVLC() *_BVLC {
 }
 
 // Deprecated: use the interface for direct cast
-func CastBVLC(structType interface{}) BVLC {
+func CastBVLC(structType any) BVLC {
 	if casted, ok := structType.(BVLC); ok {
 		return casted
 	}
@@ -189,7 +190,7 @@ func BVLCParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BVLC
 		InitializeParent(BVLC)
 		GetParent() BVLC
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child BVLCChildSerializeRequirement
 	var typeSwitchError error
 	switch {

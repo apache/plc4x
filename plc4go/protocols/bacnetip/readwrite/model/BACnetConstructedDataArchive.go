@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataArchive is the corresponding interface of BACnetConstructedDataArchive
 type BACnetConstructedDataArchive interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataArchive(archive BACnetApplicationTagBoolean, openin
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataArchive(structType interface{}) BACnetConstructedDataArchive {
+func CastBACnetConstructedDataArchive(structType any) BACnetConstructedDataArchive {
 	if casted, ok := structType.(BACnetConstructedDataArchive); ok {
 		return casted
 	}

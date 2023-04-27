@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetNotificationParametersComplexEventType is the corresponding interface of BACnetNotificationParametersComplexEventType
 type BACnetNotificationParametersComplexEventType interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetNotificationParameters
@@ -94,7 +96,7 @@ func NewBACnetNotificationParametersComplexEventType(listOfValues BACnetProperty
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetNotificationParametersComplexEventType(structType interface{}) BACnetNotificationParametersComplexEventType {
+func CastBACnetNotificationParametersComplexEventType(structType any) BACnetNotificationParametersComplexEventType {
 	if casted, ok := structType.(BACnetNotificationParametersComplexEventType); ok {
 		return casted
 	}

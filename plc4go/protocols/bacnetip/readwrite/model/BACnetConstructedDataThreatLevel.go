@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataThreatLevel is the corresponding interface of BACnetConstructedDataThreatLevel
 type BACnetConstructedDataThreatLevel interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataThreatLevel(threatLevel BACnetAccessThreatLevel, op
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataThreatLevel(structType interface{}) BACnetConstructedDataThreatLevel {
+func CastBACnetConstructedDataThreatLevel(structType any) BACnetConstructedDataThreatLevel {
 	if casted, ok := structType.(BACnetConstructedDataThreatLevel); ok {
 		return casted
 	}

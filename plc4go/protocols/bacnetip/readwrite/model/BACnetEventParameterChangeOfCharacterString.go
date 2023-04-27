@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetEventParameterChangeOfCharacterString is the corresponding interface of BACnetEventParameterChangeOfCharacterString
 type BACnetEventParameterChangeOfCharacterString interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetEventParameter
@@ -116,7 +118,7 @@ func NewBACnetEventParameterChangeOfCharacterString(openingTag BACnetOpeningTag,
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetEventParameterChangeOfCharacterString(structType interface{}) BACnetEventParameterChangeOfCharacterString {
+func CastBACnetEventParameterChangeOfCharacterString(structType any) BACnetEventParameterChangeOfCharacterString {
 	if casted, ok := structType.(BACnetEventParameterChangeOfCharacterString); ok {
 		return casted
 	}

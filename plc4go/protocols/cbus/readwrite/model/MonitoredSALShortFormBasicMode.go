@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
@@ -30,6 +31,7 @@ import (
 
 // MonitoredSALShortFormBasicMode is the corresponding interface of MonitoredSALShortFormBasicMode
 type MonitoredSALShortFormBasicMode interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	MonitoredSAL
@@ -133,7 +135,7 @@ func NewMonitoredSALShortFormBasicMode(counts byte, bridgeCount *uint8, networkN
 }
 
 // Deprecated: use the interface for direct cast
-func CastMonitoredSALShortFormBasicMode(structType interface{}) MonitoredSALShortFormBasicMode {
+func CastMonitoredSALShortFormBasicMode(structType any) MonitoredSALShortFormBasicMode {
 	if casted, ok := structType.(MonitoredSALShortFormBasicMode); ok {
 		return casted
 	}

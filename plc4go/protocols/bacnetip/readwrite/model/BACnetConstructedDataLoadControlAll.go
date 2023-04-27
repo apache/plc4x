@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataLoadControlAll is the corresponding interface of BACnetConstructedDataLoadControlAll
 type BACnetConstructedDataLoadControlAll interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -84,7 +86,7 @@ func NewBACnetConstructedDataLoadControlAll(openingTag BACnetOpeningTag, peekedT
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataLoadControlAll(structType interface{}) BACnetConstructedDataLoadControlAll {
+func CastBACnetConstructedDataLoadControlAll(structType any) BACnetConstructedDataLoadControlAll {
 	if casted, ok := structType.(BACnetConstructedDataLoadControlAll); ok {
 		return casted
 	}

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetHostAddressName is the corresponding interface of BACnetHostAddressName
 type BACnetHostAddressName interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetHostAddress
@@ -92,7 +94,7 @@ func NewBACnetHostAddressName(name BACnetContextTagCharacterString, peekedTagHea
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetHostAddressName(structType interface{}) BACnetHostAddressName {
+func CastBACnetHostAddressName(structType any) BACnetHostAddressName {
 	if casted, ok := structType.(BACnetHostAddressName); ok {
 		return casted
 	}

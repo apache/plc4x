@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // TelephonyDataDivert is the corresponding interface of TelephonyDataDivert
 type TelephonyDataDivert interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	TelephonyData
@@ -93,7 +95,7 @@ func NewTelephonyDataDivert(number string, commandTypeContainer TelephonyCommand
 }
 
 // Deprecated: use the interface for direct cast
-func CastTelephonyDataDivert(structType interface{}) TelephonyDataDivert {
+func CastTelephonyDataDivert(structType any) TelephonyDataDivert {
 	if casted, ok := structType.(TelephonyDataDivert); ok {
 		return casted
 	}

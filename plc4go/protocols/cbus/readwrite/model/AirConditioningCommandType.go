@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -31,6 +32,8 @@ import (
 type AirConditioningCommandType uint8
 
 type IAirConditioningCommandType interface {
+	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 	NumberOfArguments() uint8
 }
@@ -274,8 +277,8 @@ func AirConditioningCommandTypeKnows(value uint8) bool {
 	return false
 }
 
-func CastAirConditioningCommandType(structType interface{}) AirConditioningCommandType {
-	castFunc := func(typ interface{}) AirConditioningCommandType {
+func CastAirConditioningCommandType(structType any) AirConditioningCommandType {
+	castFunc := func(typ any) AirConditioningCommandType {
 		if sAirConditioningCommandType, ok := typ.(AirConditioningCommandType); ok {
 			return sAirConditioningCommandType
 		}

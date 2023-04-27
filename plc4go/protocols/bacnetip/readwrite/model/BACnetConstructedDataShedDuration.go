@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataShedDuration is the corresponding interface of BACnetConstructedDataShedDuration
 type BACnetConstructedDataShedDuration interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataShedDuration(shedDuration BACnetApplicationTagUnsig
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataShedDuration(structType interface{}) BACnetConstructedDataShedDuration {
+func CastBACnetConstructedDataShedDuration(structType any) BACnetConstructedDataShedDuration {
 	if casted, ok := structType.(BACnetConstructedDataShedDuration); ok {
 		return casted
 	}

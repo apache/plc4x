@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // ReplyEncodedReply is the corresponding interface of ReplyEncodedReply
 type ReplyEncodedReply interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	Reply
@@ -125,7 +127,7 @@ func NewReplyEncodedReply(encodedReply EncodedReply, chksum Checksum, peekedByte
 }
 
 // Deprecated: use the interface for direct cast
-func CastReplyEncodedReply(structType interface{}) ReplyEncodedReply {
+func CastReplyEncodedReply(structType any) ReplyEncodedReply {
 	if casted, ok := structType.(ReplyEncodedReply); ok {
 		return casted
 	}
@@ -148,7 +150,7 @@ func (m *_ReplyEncodedReply) GetLengthInBits(ctx context.Context) uint16 {
 	// A virtual field doesn't have any in- or output.
 
 	// Manual Field (chksum)
-	lengthInBits += uint16(utils.InlineIf((m.CBusOptions.GetSrchk()), func() interface{} { return int32((int32(16))) }, func() interface{} { return int32((int32(0))) }).(int32))
+	lengthInBits += uint16(utils.InlineIf((m.CBusOptions.GetSrchk()), func() any { return int32((int32(16))) }, func() any { return int32((int32(0))) }).(int32))
 
 	// A virtual field doesn't have any in- or output.
 

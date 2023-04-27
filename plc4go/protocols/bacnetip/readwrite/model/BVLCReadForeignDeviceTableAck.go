@@ -22,7 +22,7 @@ package model
 import (
 	"context"
 	"encoding/binary"
-	spiContext "github.com/apache/plc4x/plc4go/spi/context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -31,6 +31,7 @@ import (
 
 // BVLCReadForeignDeviceTableAck is the corresponding interface of BVLCReadForeignDeviceTableAck
 type BVLCReadForeignDeviceTableAck interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BVLC
@@ -99,7 +100,7 @@ func NewBVLCReadForeignDeviceTableAck(table []BVLCForeignDeviceTableEntry, bvlcP
 }
 
 // Deprecated: use the interface for direct cast
-func CastBVLCReadForeignDeviceTableAck(structType interface{}) BVLCReadForeignDeviceTableAck {
+func CastBVLCReadForeignDeviceTableAck(structType any) BVLCReadForeignDeviceTableAck {
 	if casted, ok := structType.(BVLCReadForeignDeviceTableAck); ok {
 		return casted
 	}
@@ -199,7 +200,7 @@ func (m *_BVLCReadForeignDeviceTableAck) SerializeWithWriteBuffer(ctx context.Co
 		}
 		for _curItem, _element := range m.GetTable() {
 			_ = _curItem
-			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetTable()), _curItem)
+			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetTable()), _curItem)
 			_ = arrayCtx
 			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 			if _elementErr != nil {

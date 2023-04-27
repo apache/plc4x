@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // DeviceDescriptorType2 is the corresponding interface of DeviceDescriptorType2
 type DeviceDescriptorType2 interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetManufacturerId returns ManufacturerId (property field)
@@ -130,7 +132,7 @@ func NewDeviceDescriptorType2(manufacturerId uint16, deviceType uint16, version 
 }
 
 // Deprecated: use the interface for direct cast
-func CastDeviceDescriptorType2(structType interface{}) DeviceDescriptorType2 {
+func CastDeviceDescriptorType2(structType any) DeviceDescriptorType2 {
 	if casted, ok := structType.(DeviceDescriptorType2); ok {
 		return casted
 	}

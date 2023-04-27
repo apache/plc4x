@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // ParameterValueSerialNumber is the corresponding interface of ParameterValueSerialNumber
 type ParameterValueSerialNumber interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	ParameterValue
@@ -102,7 +104,7 @@ func NewParameterValueSerialNumber(value SerialNumber, data []byte, numBytes uin
 }
 
 // Deprecated: use the interface for direct cast
-func CastParameterValueSerialNumber(structType interface{}) ParameterValueSerialNumber {
+func CastParameterValueSerialNumber(structType any) ParameterValueSerialNumber {
 	if casted, ok := structType.(ParameterValueSerialNumber); ok {
 		return casted
 	}

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // SecurityDataLowBatteryCharging is the corresponding interface of SecurityDataLowBatteryCharging
 type SecurityDataLowBatteryCharging interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	SecurityData
@@ -118,7 +120,7 @@ func NewSecurityDataLowBatteryCharging(startStop byte, commandTypeContainer Secu
 }
 
 // Deprecated: use the interface for direct cast
-func CastSecurityDataLowBatteryCharging(structType interface{}) SecurityDataLowBatteryCharging {
+func CastSecurityDataLowBatteryCharging(structType any) SecurityDataLowBatteryCharging {
 	if casted, ok := structType.(SecurityDataLowBatteryCharging); ok {
 		return casted
 	}

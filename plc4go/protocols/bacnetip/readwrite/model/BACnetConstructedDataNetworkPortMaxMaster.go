@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataNetworkPortMaxMaster is the corresponding interface of BACnetConstructedDataNetworkPortMaxMaster
 type BACnetConstructedDataNetworkPortMaxMaster interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataNetworkPortMaxMaster(maxMaster BACnetApplicationTag
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataNetworkPortMaxMaster(structType interface{}) BACnetConstructedDataNetworkPortMaxMaster {
+func CastBACnetConstructedDataNetworkPortMaxMaster(structType any) BACnetConstructedDataNetworkPortMaxMaster {
 	if casted, ok := structType.(BACnetConstructedDataNetworkPortMaxMaster); ok {
 		return casted
 	}

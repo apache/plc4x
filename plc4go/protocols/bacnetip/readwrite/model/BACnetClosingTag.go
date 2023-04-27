@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetClosingTag is the corresponding interface of BACnetClosingTag
 type BACnetClosingTag interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetHeader returns Header (property field)
@@ -70,7 +72,7 @@ func NewBACnetClosingTag(header BACnetTagHeader, tagNumberArgument uint8) *_BACn
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetClosingTag(structType interface{}) BACnetClosingTag {
+func CastBACnetClosingTag(structType any) BACnetClosingTag {
 	if casted, ok := structType.(BACnetClosingTag); ok {
 		return casted
 	}

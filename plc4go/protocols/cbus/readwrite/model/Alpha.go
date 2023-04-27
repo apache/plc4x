@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // Alpha is the corresponding interface of Alpha
 type Alpha interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetCharacter returns Character (property field)
@@ -67,7 +69,7 @@ func NewAlpha(character byte) *_Alpha {
 }
 
 // Deprecated: use the interface for direct cast
-func CastAlpha(structType interface{}) Alpha {
+func CastAlpha(structType any) Alpha {
 	if casted, ok := structType.(Alpha); ok {
 		return casted
 	}

@@ -22,6 +22,7 @@ package model
 import (
 	"context"
 	"encoding/binary"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,6 +31,7 @@ import (
 
 // TunnelingRequest is the corresponding interface of TunnelingRequest
 type TunnelingRequest interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	KnxNetIpMessage
@@ -106,7 +108,7 @@ func NewTunnelingRequest(tunnelingRequestDataBlock TunnelingRequestDataBlock, ce
 }
 
 // Deprecated: use the interface for direct cast
-func CastTunnelingRequest(structType interface{}) TunnelingRequest {
+func CastTunnelingRequest(structType any) TunnelingRequest {
 	if casted, ok := structType.(TunnelingRequest); ok {
 		return casted
 	}

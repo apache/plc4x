@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetEventParameterBufferReady is the corresponding interface of BACnetEventParameterBufferReady
 type BACnetEventParameterBufferReady interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetEventParameter
@@ -116,7 +118,7 @@ func NewBACnetEventParameterBufferReady(openingTag BACnetOpeningTag, notificatio
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetEventParameterBufferReady(structType interface{}) BACnetEventParameterBufferReady {
+func CastBACnetEventParameterBufferReady(structType any) BACnetEventParameterBufferReady {
 	if casted, ok := structType.(BACnetEventParameterBufferReady); ok {
 		return casted
 	}

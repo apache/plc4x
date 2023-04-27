@@ -56,9 +56,9 @@ func (t *AlphaGenerator) getAndIncrement() byte {
 type Connection struct {
 	_default.DefaultConnection
 	alphaGenerator AlphaGenerator
-	messageCodec   spi.MessageCodec
+	messageCodec   *MessageCodec
 	subscribers    []*Subscriber
-	tm             *spi.RequestTransactionManager
+	tm             spi.RequestTransactionManager
 
 	configuration Configuration
 	driverContext DriverContext
@@ -67,7 +67,7 @@ type Connection struct {
 	tracer       *spi.Tracer
 }
 
-func NewConnection(messageCodec spi.MessageCodec, configuration Configuration, driverContext DriverContext, tagHandler spi.PlcTagHandler, tm *spi.RequestTransactionManager, options map[string][]string) *Connection {
+func NewConnection(messageCodec *MessageCodec, configuration Configuration, driverContext DriverContext, tagHandler spi.PlcTagHandler, tm spi.RequestTransactionManager, options map[string][]string) *Connection {
 	connection := &Connection{
 		alphaGenerator: AlphaGenerator{currentAlpha: 'g'},
 		messageCodec:   messageCodec,
@@ -107,9 +107,7 @@ func (c *Connection) GetMessageCodec() spi.MessageCodec {
 	return c.messageCodec
 }
 
-func (c *Connection) Connect() <-chan plc4go.PlcConnectionConnectResult {
-	// TODO: use proper context
-	ctx := context.TODO()
+func (c *Connection) ConnectWithContext(ctx context.Context) <-chan plc4go.PlcConnectionConnectResult {
 	log.Trace().Msg("Connecting")
 	ch := make(chan plc4go.PlcConnectionConnectResult)
 	go func() {
@@ -161,7 +159,7 @@ func (c *Connection) UnsubscriptionRequestBuilder() apiModel.PlcUnsubscriptionRe
 }
 
 func (c *Connection) BrowseRequestBuilder() apiModel.PlcBrowseRequestBuilder {
-	return internalModel.NewDefaultPlcBrowseRequestBuilder(c.GetPlcTagHandler(), NewBrowser(c, c.messageCodec))
+	return internalModel.NewDefaultPlcBrowseRequestBuilder(c.GetPlcTagHandler(), NewBrowser(c))
 }
 
 func (c *Connection) addSubscriber(subscriber *Subscriber) {
@@ -179,8 +177,8 @@ func (c *Connection) String() string {
 }
 
 func (c *Connection) setupConnection(ctx context.Context, ch chan plc4go.PlcConnectionConnectResult) {
-	cbusOptions := &c.messageCodec.(*MessageCodec).cbusOptions
-	requestContext := &c.messageCodec.(*MessageCodec).requestContext
+	cbusOptions := &c.messageCodec.cbusOptions
+	requestContext := &c.messageCodec.requestContext
 
 	if !c.sendReset(ctx, ch, cbusOptions, requestContext, false) {
 		log.Warn().Msg("First reset failed")
@@ -215,10 +213,11 @@ func (c *Connection) startSubscriptionHandler() {
 	go func() {
 		log.Debug().Msg("SAL handler stated")
 		for c.IsConnected() {
-			for monitoredSal := range c.messageCodec.(*MessageCodec).monitoredSALs {
+			for monitoredSal := range c.messageCodec.monitoredSALs {
 				for _, subscriber := range c.subscribers {
-					if ok := subscriber.handleMonitoredSal(monitoredSal); ok {
+					if ok := subscriber.handleMonitoredSAL(monitoredSal); ok {
 						log.Debug().Msgf("%v handled\n%s", subscriber, monitoredSal)
+						continue
 					}
 				}
 			}
@@ -229,7 +228,7 @@ func (c *Connection) startSubscriptionHandler() {
 	go func() {
 		log.Debug().Msg("default MMI started")
 		for c.IsConnected() {
-			for calReply := range c.messageCodec.(*MessageCodec).monitoredMMIs {
+			for calReply := range c.messageCodec.monitoredMMIs {
 				for _, subscriber := range c.subscribers {
 					if ok := subscriber.handleMonitoredMMI(calReply); ok {
 						log.Debug().Msgf("%v handled\n%s", subscriber, calReply)
@@ -372,9 +371,9 @@ func (c *Connection) setInterfaceOptions1(ctx context.Context, ch chan plc4go.Pl
 
 // This is used for connection setup
 func (c *Connection) sendCalDataWrite(ctx context.Context, ch chan plc4go.PlcConnectionConnectResult, paramNo readWriteModel.Parameter, parameterValue readWriteModel.ParameterValue, requestContext *readWriteModel.RequestContext, cbusOptions *readWriteModel.CBusOptions) bool {
-	// TODO: we assume that is always a one byte request otherwise we need to map the length here
-	calData := readWriteModel.NewCALDataWrite(paramNo, 0x0, parameterValue, readWriteModel.CALCommandTypeContainer_CALCommandWrite_3Bytes, nil, *requestContext)
-	directCommand := readWriteModel.NewRequestDirectCommandAccess(calData /*we don't want a alpha otherwise the PCI will auto-switch*/, nil, 0x40, nil, nil, 0x0, readWriteModel.NewRequestTermination(), *cbusOptions)
+	calCommandTypeContainer := readWriteModel.CALCommandTypeContainer_CALCommandWrite_2Bytes + readWriteModel.CALCommandTypeContainer(parameterValue.GetLengthInBytes(ctx))
+	calData := readWriteModel.NewCALDataWrite(paramNo, 0x0, parameterValue, calCommandTypeContainer, nil, *requestContext)
+	directCommand := readWriteModel.NewRequestDirectCommandAccess(calData /*we don't want an alpha otherwise the PCI will auto-switch*/, nil, 0x40, nil, nil, 0x0, readWriteModel.NewRequestTermination(), *cbusOptions)
 	cBusMessage := readWriteModel.NewCBusMessageToServer(directCommand, *requestContext, *cbusOptions)
 
 	directCommandAckChan := make(chan bool, 1)
@@ -454,6 +453,9 @@ func (c *Connection) fireConnectionError(err error, ch chan<- plc4go.PlcConnecti
 		ch <- _default.NewDefaultPlcConnectionConnectResult(nil, errors.Wrap(err, "Error during connection"))
 	} else {
 		log.Error().Err(err).Msg("awaitSetupComplete set to false and we got a error during connect")
+	}
+	if err := c.messageCodec.Disconnect(); err != nil {
+		log.Debug().Err(err).Msg("Error disconnecting message codec on connection error")
 	}
 }
 

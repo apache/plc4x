@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
@@ -30,6 +31,7 @@ import (
 
 // BACnetAccessRule is the corresponding interface of BACnetAccessRule
 type BACnetAccessRule interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetTimeRangeSpecifier returns TimeRangeSpecifier (property field)
@@ -96,7 +98,7 @@ func NewBACnetAccessRule(timeRangeSpecifier BACnetAccessRuleTimeRangeSpecifierTa
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetAccessRule(structType interface{}) BACnetAccessRule {
+func CastBACnetAccessRule(structType any) BACnetAccessRule {
 	if casted, ok := structType.(BACnetAccessRule); ok {
 		return casted
 	}

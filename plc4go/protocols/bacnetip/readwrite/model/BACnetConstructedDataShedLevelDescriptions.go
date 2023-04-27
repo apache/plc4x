@@ -21,7 +21,7 @@ package model
 
 import (
 	"context"
-	spiContext "github.com/apache/plc4x/plc4go/spi/context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
@@ -31,6 +31,7 @@ import (
 
 // BACnetConstructedDataShedLevelDescriptions is the corresponding interface of BACnetConstructedDataShedLevelDescriptions
 type BACnetConstructedDataShedLevelDescriptions interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -131,7 +132,7 @@ func NewBACnetConstructedDataShedLevelDescriptions(numberOfDataElements BACnetAp
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataShedLevelDescriptions(structType interface{}) BACnetConstructedDataShedLevelDescriptions {
+func CastBACnetConstructedDataShedLevelDescriptions(structType any) BACnetConstructedDataShedLevelDescriptions {
 	if casted, ok := structType.(BACnetConstructedDataShedLevelDescriptions); ok {
 		return casted
 	}
@@ -287,7 +288,7 @@ func (m *_BACnetConstructedDataShedLevelDescriptions) SerializeWithWriteBuffer(c
 		}
 		for _curItem, _element := range m.GetShedLevelDescriptions() {
 			_ = _curItem
-			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetShedLevelDescriptions()), _curItem)
+			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetShedLevelDescriptions()), _curItem)
 			_ = arrayCtx
 			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 			if _elementErr != nil {

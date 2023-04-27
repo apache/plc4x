@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // NetworkProtocolControlInformation is the corresponding interface of NetworkProtocolControlInformation
 type NetworkProtocolControlInformation interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetStackCounter returns StackCounter (property field)
@@ -76,7 +78,7 @@ func NewNetworkProtocolControlInformation(stackCounter uint8, stackDepth uint8) 
 }
 
 // Deprecated: use the interface for direct cast
-func CastNetworkProtocolControlInformation(structType interface{}) NetworkProtocolControlInformation {
+func CastNetworkProtocolControlInformation(structType any) NetworkProtocolControlInformation {
 	if casted, ok := structType.(NetworkProtocolControlInformation); ok {
 		return casted
 	}
@@ -130,7 +132,7 @@ func NetworkProtocolControlInformationParseWithBuffer(ctx context.Context, readB
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of NetworkProtocolControlInformation")
 		}
 		if reserved != uint8(0x0) {
-			Plc4xModelLog.Info().Fields(map[string]interface{}{
+			Plc4xModelLog.Info().Fields(map[string]any{
 				"expected value": uint8(0x0),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
@@ -184,7 +186,7 @@ func (m *_NetworkProtocolControlInformation) SerializeWithWriteBuffer(ctx contex
 	{
 		var reserved uint8 = uint8(0x0)
 		if m.reservedField0 != nil {
-			Plc4xModelLog.Info().Fields(map[string]interface{}{
+			Plc4xModelLog.Info().Fields(map[string]any{
 				"expected value": uint8(0x0),
 				"got value":      reserved,
 			}).Msg("Overriding reserved field with unexpected value.")

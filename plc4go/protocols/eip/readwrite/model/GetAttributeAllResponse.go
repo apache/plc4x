@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
@@ -30,6 +31,7 @@ import (
 
 // GetAttributeAllResponse is the corresponding interface of GetAttributeAllResponse
 type GetAttributeAllResponse interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	CipService
@@ -121,7 +123,7 @@ func NewGetAttributeAllResponse(status uint8, extStatus uint8, attributes CIPAtt
 }
 
 // Deprecated: use the interface for direct cast
-func CastGetAttributeAllResponse(structType interface{}) GetAttributeAllResponse {
+func CastGetAttributeAllResponse(structType any) GetAttributeAllResponse {
 	if casted, ok := structType.(GetAttributeAllResponse); ok {
 		return casted
 	}
@@ -180,7 +182,7 @@ func GetAttributeAllResponseParseWithBuffer(ctx context.Context, readBuffer util
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of GetAttributeAllResponse")
 		}
 		if reserved != uint8(0x00) {
-			Plc4xModelLog.Info().Fields(map[string]interface{}{
+			Plc4xModelLog.Info().Fields(map[string]any{
 				"expected value": uint8(0x00),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
@@ -263,7 +265,7 @@ func (m *_GetAttributeAllResponse) SerializeWithWriteBuffer(ctx context.Context,
 		{
 			var reserved uint8 = uint8(0x00)
 			if m.reservedField0 != nil {
-				Plc4xModelLog.Info().Fields(map[string]interface{}{
+				Plc4xModelLog.Info().Fields(map[string]any{
 					"expected value": uint8(0x00),
 					"got value":      reserved,
 				}).Msg("Overriding reserved field with unexpected value.")

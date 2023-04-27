@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // MediaTransportControlDataSourcePowerControl is the corresponding interface of MediaTransportControlDataSourcePowerControl
 type MediaTransportControlDataSourcePowerControl interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	MediaTransportControlData
@@ -118,7 +120,7 @@ func NewMediaTransportControlDataSourcePowerControl(state byte, commandTypeConta
 }
 
 // Deprecated: use the interface for direct cast
-func CastMediaTransportControlDataSourcePowerControl(structType interface{}) MediaTransportControlDataSourcePowerControl {
+func CastMediaTransportControlDataSourcePowerControl(structType any) MediaTransportControlDataSourcePowerControl {
 	if casted, ok := structType.(MediaTransportControlDataSourcePowerControl); ok {
 		return casted
 	}

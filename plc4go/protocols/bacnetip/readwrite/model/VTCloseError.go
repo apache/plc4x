@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
@@ -30,6 +31,7 @@ import (
 
 // VTCloseError is the corresponding interface of VTCloseError
 type VTCloseError interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetError
@@ -103,7 +105,7 @@ func NewVTCloseError(errorType ErrorEnclosed, listOfVtSessionIdentifiers VTClose
 }
 
 // Deprecated: use the interface for direct cast
-func CastVTCloseError(structType interface{}) VTCloseError {
+func CastVTCloseError(structType any) VTCloseError {
 	if casted, ok := structType.(VTCloseError); ok {
 		return casted
 	}

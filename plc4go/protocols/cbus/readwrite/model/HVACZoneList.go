@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // HVACZoneList is the corresponding interface of HVACZoneList
 type HVACZoneList interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetExpansion returns Expansion (property field)
@@ -133,7 +135,7 @@ func NewHVACZoneList(expansion bool, zone6 bool, zone5 bool, zone4 bool, zone3 b
 }
 
 // Deprecated: use the interface for direct cast
-func CastHVACZoneList(structType interface{}) HVACZoneList {
+func CastHVACZoneList(structType any) HVACZoneList {
 	if casted, ok := structType.(HVACZoneList); ok {
 		return casted
 	}

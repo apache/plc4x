@@ -22,6 +22,7 @@ package model
 import (
 	"context"
 	"encoding/binary"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,6 +31,7 @@ import (
 
 // AdsDataTypeArrayInfo is the corresponding interface of AdsDataTypeArrayInfo
 type AdsDataTypeArrayInfo interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetLowerBound returns LowerBound (property field)
@@ -92,7 +94,7 @@ func NewAdsDataTypeArrayInfo(lowerBound uint32, numElements uint32) *_AdsDataTyp
 }
 
 // Deprecated: use the interface for direct cast
-func CastAdsDataTypeArrayInfo(structType interface{}) AdsDataTypeArrayInfo {
+func CastAdsDataTypeArrayInfo(structType any) AdsDataTypeArrayInfo {
 	if casted, ok := structType.(AdsDataTypeArrayInfo); ok {
 		return casted
 	}

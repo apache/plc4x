@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -31,6 +32,8 @@ import (
 type ReservedIndexGroups uint32
 
 type IReservedIndexGroups interface {
+	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 
@@ -288,8 +291,8 @@ func ReservedIndexGroupsKnows(value uint32) bool {
 	return false
 }
 
-func CastReservedIndexGroups(structType interface{}) ReservedIndexGroups {
-	castFunc := func(typ interface{}) ReservedIndexGroups {
+func CastReservedIndexGroups(structType any) ReservedIndexGroups {
+	castFunc := func(typ any) ReservedIndexGroups {
 		if sReservedIndexGroups, ok := typ.(ReservedIndexGroups); ok {
 			return sReservedIndexGroups
 		}

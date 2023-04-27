@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetPropertyStatesProtocolLevel is the corresponding interface of BACnetPropertyStatesProtocolLevel
 type BACnetPropertyStatesProtocolLevel interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetPropertyStates
@@ -92,7 +94,7 @@ func NewBACnetPropertyStatesProtocolLevel(protocolLevel BACnetProtocolLevelTagge
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetPropertyStatesProtocolLevel(structType interface{}) BACnetPropertyStatesProtocolLevel {
+func CastBACnetPropertyStatesProtocolLevel(structType any) BACnetPropertyStatesProtocolLevel {
 	if casted, ok := structType.(BACnetPropertyStatesProtocolLevel); ok {
 		return casted
 	}

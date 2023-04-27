@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // SecurityDataEmulatedKeypad is the corresponding interface of SecurityDataEmulatedKeypad
 type SecurityDataEmulatedKeypad interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	SecurityData
@@ -190,7 +192,7 @@ func NewSecurityDataEmulatedKeypad(key byte, commandTypeContainer SecurityComman
 }
 
 // Deprecated: use the interface for direct cast
-func CastSecurityDataEmulatedKeypad(structType interface{}) SecurityDataEmulatedKeypad {
+func CastSecurityDataEmulatedKeypad(structType any) SecurityDataEmulatedKeypad {
 	if casted, ok := structType.(SecurityDataEmulatedKeypad); ok {
 		return casted
 	}

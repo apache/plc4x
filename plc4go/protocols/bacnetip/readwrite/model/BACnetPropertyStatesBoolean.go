@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetPropertyStatesBoolean is the corresponding interface of BACnetPropertyStatesBoolean
 type BACnetPropertyStatesBoolean interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetPropertyStates
@@ -92,7 +94,7 @@ func NewBACnetPropertyStatesBoolean(booleanValue BACnetContextTagBoolean, peeked
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetPropertyStatesBoolean(structType interface{}) BACnetPropertyStatesBoolean {
+func CastBACnetPropertyStatesBoolean(structType any) BACnetPropertyStatesBoolean {
 	if casted, ok := structType.(BACnetPropertyStatesBoolean); ok {
 		return casted
 	}

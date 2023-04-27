@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetChannelValueUnsigned is the corresponding interface of BACnetChannelValueUnsigned
 type BACnetChannelValueUnsigned interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetChannelValue
@@ -92,7 +94,7 @@ func NewBACnetChannelValueUnsigned(unsignedValue BACnetApplicationTagUnsignedInt
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetChannelValueUnsigned(structType interface{}) BACnetChannelValueUnsigned {
+func CastBACnetChannelValueUnsigned(structType any) BACnetChannelValueUnsigned {
 	if casted, ok := structType.(BACnetChannelValueUnsigned); ok {
 		return casted
 	}

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // COTPPacketData is the corresponding interface of COTPPacketData
 type COTPPacketData interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	COTPPacket
@@ -105,7 +107,7 @@ func NewCOTPPacketData(eot bool, tpduRef uint8, parameters []COTPParameter, payl
 }
 
 // Deprecated: use the interface for direct cast
-func CastCOTPPacketData(structType interface{}) COTPPacketData {
+func CastCOTPPacketData(structType any) COTPPacketData {
 	if casted, ok := structType.(COTPPacketData); ok {
 		return casted
 	}

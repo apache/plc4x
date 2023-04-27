@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // MResetInd is the corresponding interface of MResetInd
 type MResetInd interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	CEMI
@@ -76,7 +78,7 @@ func NewMResetInd(size uint16) *_MResetInd {
 }
 
 // Deprecated: use the interface for direct cast
-func CastMResetInd(structType interface{}) MResetInd {
+func CastMResetInd(structType any) MResetInd {
 	if casted, ok := structType.(MResetInd); ok {
 		return casted
 	}

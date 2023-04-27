@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetOptionalUnsigned is the corresponding interface of BACnetOptionalUnsigned
 type BACnetOptionalUnsigned interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetPeekedTagHeader returns PeekedTagHeader (property field)
@@ -105,7 +107,7 @@ func NewBACnetOptionalUnsigned(peekedTagHeader BACnetTagHeader) *_BACnetOptional
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetOptionalUnsigned(structType interface{}) BACnetOptionalUnsigned {
+func CastBACnetOptionalUnsigned(structType any) BACnetOptionalUnsigned {
 	if casted, ok := structType.(BACnetOptionalUnsigned); ok {
 		return casted
 	}
@@ -163,7 +165,7 @@ func BACnetOptionalUnsignedParseWithBuffer(ctx context.Context, readBuffer utils
 		InitializeParent(BACnetOptionalUnsigned, BACnetTagHeader)
 		GetParent() BACnetOptionalUnsigned
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child BACnetOptionalUnsignedChildSerializeRequirement
 	var typeSwitchError error
 	switch {

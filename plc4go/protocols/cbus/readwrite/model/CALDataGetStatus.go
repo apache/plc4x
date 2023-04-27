@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // CALDataGetStatus is the corresponding interface of CALDataGetStatus
 type CALDataGetStatus interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	CALData
@@ -101,7 +103,7 @@ func NewCALDataGetStatus(paramNo Parameter, count uint8, commandTypeContainer CA
 }
 
 // Deprecated: use the interface for direct cast
-func CastCALDataGetStatus(structType interface{}) CALDataGetStatus {
+func CastCALDataGetStatus(structType any) CALDataGetStatus {
 	if casted, ok := structType.(CALDataGetStatus); ok {
 		return casted
 	}

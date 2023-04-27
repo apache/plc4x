@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // COTPPacketConnectionResponse is the corresponding interface of COTPPacketConnectionResponse
 type COTPPacketConnectionResponse interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	COTPPacket
@@ -113,7 +115,7 @@ func NewCOTPPacketConnectionResponse(destinationReference uint16, sourceReferenc
 }
 
 // Deprecated: use the interface for direct cast
-func CastCOTPPacketConnectionResponse(structType interface{}) COTPPacketConnectionResponse {
+func CastCOTPPacketConnectionResponse(structType any) COTPPacketConnectionResponse {
 	if casted, ok := structType.(COTPPacketConnectionResponse); ok {
 		return casted
 	}

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // AmsSerialResetFrame is the corresponding interface of AmsSerialResetFrame
 type AmsSerialResetFrame interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetMagicCookie returns MagicCookie (property field)
@@ -102,7 +104,7 @@ func NewAmsSerialResetFrame(magicCookie uint16, transmitterAddress int8, receive
 }
 
 // Deprecated: use the interface for direct cast
-func CastAmsSerialResetFrame(structType interface{}) AmsSerialResetFrame {
+func CastAmsSerialResetFrame(structType any) AmsSerialResetFrame {
 	if casted, ok := structType.(AmsSerialResetFrame); ok {
 		return casted
 	}

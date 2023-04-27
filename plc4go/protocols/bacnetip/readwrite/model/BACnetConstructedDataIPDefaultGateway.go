@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataIPDefaultGateway is the corresponding interface of BACnetConstructedDataIPDefaultGateway
 type BACnetConstructedDataIPDefaultGateway interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataIPDefaultGateway(ipDefaultGateway BACnetApplication
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataIPDefaultGateway(structType interface{}) BACnetConstructedDataIPDefaultGateway {
+func CastBACnetConstructedDataIPDefaultGateway(structType any) BACnetConstructedDataIPDefaultGateway {
 	if casted, ok := structType.(BACnetConstructedDataIPDefaultGateway); ok {
 		return casted
 	}

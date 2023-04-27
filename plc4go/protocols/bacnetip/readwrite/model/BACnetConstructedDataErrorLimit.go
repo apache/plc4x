@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataErrorLimit is the corresponding interface of BACnetConstructedDataErrorLimit
 type BACnetConstructedDataErrorLimit interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataErrorLimit(errorLimit BACnetApplicationTagReal, ope
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataErrorLimit(structType interface{}) BACnetConstructedDataErrorLimit {
+func CastBACnetConstructedDataErrorLimit(structType any) BACnetConstructedDataErrorLimit {
 	if casted, ok := structType.(BACnetConstructedDataErrorLimit); ok {
 		return casted
 	}

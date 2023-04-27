@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // ApduDataGroupValueRead is the corresponding interface of ApduDataGroupValueRead
 type ApduDataGroupValueRead interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	ApduData
@@ -78,7 +80,7 @@ func NewApduDataGroupValueRead(dataLength uint8) *_ApduDataGroupValueRead {
 }
 
 // Deprecated: use the interface for direct cast
-func CastApduDataGroupValueRead(structType interface{}) ApduDataGroupValueRead {
+func CastApduDataGroupValueRead(structType any) ApduDataGroupValueRead {
 	if casted, ok := structType.(ApduDataGroupValueRead); ok {
 		return casted
 	}
@@ -126,7 +128,7 @@ func ApduDataGroupValueReadParseWithBuffer(ctx context.Context, readBuffer utils
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of ApduDataGroupValueRead")
 		}
 		if reserved != uint8(0x00) {
-			Plc4xModelLog.Info().Fields(map[string]interface{}{
+			Plc4xModelLog.Info().Fields(map[string]any{
 				"expected value": uint8(0x00),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
@@ -170,7 +172,7 @@ func (m *_ApduDataGroupValueRead) SerializeWithWriteBuffer(ctx context.Context, 
 		{
 			var reserved uint8 = uint8(0x00)
 			if m.reservedField0 != nil {
-				Plc4xModelLog.Info().Fields(map[string]interface{}{
+				Plc4xModelLog.Info().Fields(map[string]any{
 					"expected value": uint8(0x00),
 					"got value":      reserved,
 				}).Msg("Overriding reserved field with unexpected value.")

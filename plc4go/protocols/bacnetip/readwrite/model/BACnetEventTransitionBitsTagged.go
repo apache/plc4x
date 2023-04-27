@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetEventTransitionBitsTagged is the corresponding interface of BACnetEventTransitionBitsTagged
 type BACnetEventTransitionBitsTagged interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetHeader returns Header (property field)
@@ -85,19 +87,19 @@ func (m *_BACnetEventTransitionBitsTagged) GetPayload() BACnetTagPayloadBitStrin
 func (m *_BACnetEventTransitionBitsTagged) GetToOffnormal() bool {
 	ctx := context.Background()
 	_ = ctx
-	return bool(utils.InlineIf((bool((len(m.GetPayload().GetData())) > (0))), func() interface{} { return bool(m.GetPayload().GetData()[0]) }, func() interface{} { return bool(bool(false)) }).(bool))
+	return bool(utils.InlineIf((bool((len(m.GetPayload().GetData())) > (0))), func() any { return bool(m.GetPayload().GetData()[0]) }, func() any { return bool(bool(false)) }).(bool))
 }
 
 func (m *_BACnetEventTransitionBitsTagged) GetToFault() bool {
 	ctx := context.Background()
 	_ = ctx
-	return bool(utils.InlineIf((bool((len(m.GetPayload().GetData())) > (1))), func() interface{} { return bool(m.GetPayload().GetData()[1]) }, func() interface{} { return bool(bool(false)) }).(bool))
+	return bool(utils.InlineIf((bool((len(m.GetPayload().GetData())) > (1))), func() any { return bool(m.GetPayload().GetData()[1]) }, func() any { return bool(bool(false)) }).(bool))
 }
 
 func (m *_BACnetEventTransitionBitsTagged) GetToNormal() bool {
 	ctx := context.Background()
 	_ = ctx
-	return bool(utils.InlineIf((bool((len(m.GetPayload().GetData())) > (2))), func() interface{} { return bool(m.GetPayload().GetData()[2]) }, func() interface{} { return bool(bool(false)) }).(bool))
+	return bool(utils.InlineIf((bool((len(m.GetPayload().GetData())) > (2))), func() any { return bool(m.GetPayload().GetData()[2]) }, func() any { return bool(bool(false)) }).(bool))
 }
 
 ///////////////////////
@@ -111,7 +113,7 @@ func NewBACnetEventTransitionBitsTagged(header BACnetTagHeader, payload BACnetTa
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetEventTransitionBitsTagged(structType interface{}) BACnetEventTransitionBitsTagged {
+func CastBACnetEventTransitionBitsTagged(structType any) BACnetEventTransitionBitsTagged {
 	if casted, ok := structType.(BACnetEventTransitionBitsTagged); ok {
 		return casted
 	}
@@ -197,17 +199,17 @@ func BACnetEventTransitionBitsTaggedParseWithBuffer(ctx context.Context, readBuf
 	}
 
 	// Virtual field
-	_toOffnormal := utils.InlineIf((bool((len(payload.GetData())) > (0))), func() interface{} { return bool(payload.GetData()[0]) }, func() interface{} { return bool(bool(false)) }).(bool)
+	_toOffnormal := utils.InlineIf((bool((len(payload.GetData())) > (0))), func() any { return bool(payload.GetData()[0]) }, func() any { return bool(bool(false)) }).(bool)
 	toOffnormal := bool(_toOffnormal)
 	_ = toOffnormal
 
 	// Virtual field
-	_toFault := utils.InlineIf((bool((len(payload.GetData())) > (1))), func() interface{} { return bool(payload.GetData()[1]) }, func() interface{} { return bool(bool(false)) }).(bool)
+	_toFault := utils.InlineIf((bool((len(payload.GetData())) > (1))), func() any { return bool(payload.GetData()[1]) }, func() any { return bool(bool(false)) }).(bool)
 	toFault := bool(_toFault)
 	_ = toFault
 
 	// Virtual field
-	_toNormal := utils.InlineIf((bool((len(payload.GetData())) > (2))), func() interface{} { return bool(payload.GetData()[2]) }, func() interface{} { return bool(bool(false)) }).(bool)
+	_toNormal := utils.InlineIf((bool((len(payload.GetData())) > (2))), func() any { return bool(payload.GetData()[2]) }, func() any { return bool(bool(false)) }).(bool)
 	toNormal := bool(_toNormal)
 	_ = toNormal
 

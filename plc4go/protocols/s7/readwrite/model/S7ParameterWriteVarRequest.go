@@ -21,7 +21,7 @@ package model
 
 import (
 	"context"
-	spiContext "github.com/apache/plc4x/plc4go/spi/context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,6 +30,7 @@ import (
 
 // S7ParameterWriteVarRequest is the corresponding interface of S7ParameterWriteVarRequest
 type S7ParameterWriteVarRequest interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	S7Parameter
@@ -99,7 +100,7 @@ func NewS7ParameterWriteVarRequest(items []S7VarRequestParameterItem) *_S7Parame
 }
 
 // Deprecated: use the interface for direct cast
-func CastS7ParameterWriteVarRequest(structType interface{}) S7ParameterWriteVarRequest {
+func CastS7ParameterWriteVarRequest(structType any) S7ParameterWriteVarRequest {
 	if casted, ok := structType.(S7ParameterWriteVarRequest); ok {
 		return casted
 	}
@@ -122,7 +123,7 @@ func (m *_S7ParameterWriteVarRequest) GetLengthInBits(ctx context.Context) uint1
 	// Array field
 	if len(m.Items) > 0 {
 		for _curItem, element := range m.Items {
-			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.Items), _curItem)
+			arrayCtx := utils.CreateArrayContext(ctx, len(m.Items), _curItem)
 			_ = arrayCtx
 			_ = _curItem
 			lengthInBits += element.(interface{ GetLengthInBits(context.Context) uint16 }).GetLengthInBits(arrayCtx)
@@ -169,7 +170,7 @@ func S7ParameterWriteVarRequestParseWithBuffer(ctx context.Context, readBuffer u
 	{
 		_numItems := uint16(numItems)
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := spiContext.CreateArrayContext(ctx, int(_numItems), int(_curItem))
+			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
 			_ = _curItem
 			_item, _err := S7VarRequestParameterItemParseWithBuffer(arrayCtx, readBuffer)
@@ -225,7 +226,7 @@ func (m *_S7ParameterWriteVarRequest) SerializeWithWriteBuffer(ctx context.Conte
 		}
 		for _curItem, _element := range m.GetItems() {
 			_ = _curItem
-			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetItems()), _curItem)
+			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetItems()), _curItem)
 			_ = arrayCtx
 			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 			if _elementErr != nil {

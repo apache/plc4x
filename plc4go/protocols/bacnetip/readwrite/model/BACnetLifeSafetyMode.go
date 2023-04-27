@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -31,6 +32,8 @@ import (
 type BACnetLifeSafetyMode uint16
 
 type IBACnetLifeSafetyMode interface {
+	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 
@@ -162,8 +165,8 @@ func BACnetLifeSafetyModeKnows(value uint16) bool {
 	return false
 }
 
-func CastBACnetLifeSafetyMode(structType interface{}) BACnetLifeSafetyMode {
-	castFunc := func(typ interface{}) BACnetLifeSafetyMode {
+func CastBACnetLifeSafetyMode(structType any) BACnetLifeSafetyMode {
+	castFunc := func(typ any) BACnetLifeSafetyMode {
 		if sBACnetLifeSafetyMode, ok := typ.(BACnetLifeSafetyMode); ok {
 			return sBACnetLifeSafetyMode
 		}

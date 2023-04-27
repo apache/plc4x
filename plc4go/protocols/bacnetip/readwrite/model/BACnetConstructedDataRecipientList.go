@@ -21,7 +21,7 @@ package model
 
 import (
 	"context"
-	spiContext "github.com/apache/plc4x/plc4go/spi/context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,6 +30,7 @@ import (
 
 // BACnetConstructedDataRecipientList is the corresponding interface of BACnetConstructedDataRecipientList
 type BACnetConstructedDataRecipientList interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -103,7 +104,7 @@ func NewBACnetConstructedDataRecipientList(recipientList []BACnetDestination, op
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataRecipientList(structType interface{}) BACnetConstructedDataRecipientList {
+func CastBACnetConstructedDataRecipientList(structType any) BACnetConstructedDataRecipientList {
 	if casted, ok := structType.(BACnetConstructedDataRecipientList); ok {
 		return casted
 	}
@@ -204,7 +205,7 @@ func (m *_BACnetConstructedDataRecipientList) SerializeWithWriteBuffer(ctx conte
 		}
 		for _curItem, _element := range m.GetRecipientList() {
 			_ = _curItem
-			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetRecipientList()), _curItem)
+			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetRecipientList()), _curItem)
 			_ = arrayCtx
 			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 			if _elementErr != nil {

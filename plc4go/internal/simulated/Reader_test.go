@@ -21,7 +21,7 @@ package simulated
 
 import (
 	"context"
-	"reflect"
+	"github.com/stretchr/testify/assert"
 	"testing"
 	"time"
 
@@ -178,15 +178,19 @@ func TestReader_Read(t *testing.T) {
 						t.Errorf("Reader.Read() completed too fast. Expected at least %v but returned after %v", tt.delayAtLeast, pingTime)
 					}
 				}
-				if !reflect.DeepEqual(readResponse.GetRequest(), readRequest) {
+				if !assert.Equal(t, readRequest, readResponse.GetRequest()) {
 					t.Errorf("Reader.Read() ReadRequest = %v, want %v", readResponse.GetRequest(), readRequest)
 				}
 				for _, fieldName := range readRequest.GetTagNames() {
-					if !reflect.DeepEqual(readResponse.GetResponse().GetResponseCode(fieldName), tt.want.GetResponseCode(fieldName)) {
+					wantCode := tt.want.GetResponseCode(fieldName)
+					gotCode := readResponse.GetResponse().GetResponseCode(fieldName)
+					if !assert.Equal(t, wantCode, gotCode) {
 						t.Errorf("Reader.Read() PlcResponse.ResponseCode = %v, want %v",
 							readResponse.GetResponse().GetResponseCode(fieldName), tt.want.GetResponseCode(fieldName))
 					}
-					if !reflect.DeepEqual(readResponse.GetResponse().GetValue(fieldName), tt.want.GetValue(fieldName)) {
+					wantValue := tt.want.GetValue(fieldName)
+					gotValue := readResponse.GetResponse().GetValue(fieldName)
+					if !assert.Equal(t, wantValue, gotValue) {
 						t.Errorf("Reader.Read() PlcResponse.Value = %v, want %v",
 							readResponse.GetResponse().GetValue(fieldName), tt.want.GetValue(fieldName))
 					}

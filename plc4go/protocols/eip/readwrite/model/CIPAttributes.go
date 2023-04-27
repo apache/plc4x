@@ -21,7 +21,7 @@ package model
 
 import (
 	"context"
-	spiContext "github.com/apache/plc4x/plc4go/spi/context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,6 +30,7 @@ import (
 
 // CIPAttributes is the corresponding interface of CIPAttributes
 type CIPAttributes interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetClassId returns ClassId (property field)
@@ -92,7 +93,7 @@ func NewCIPAttributes(classId []uint16, numberAvailable uint16, numberActive uin
 }
 
 // Deprecated: use the interface for direct cast
-func CastCIPAttributes(structType interface{}) CIPAttributes {
+func CastCIPAttributes(structType any) CIPAttributes {
 	if casted, ok := structType.(CIPAttributes); ok {
 		return casted
 	}
@@ -168,7 +169,7 @@ func CIPAttributesParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 	{
 		_numItems := uint16(numberOfClasses)
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := spiContext.CreateArrayContext(ctx, int(_numItems), int(_curItem))
+			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
 			_ = _curItem
 			_item, _err := readBuffer.ReadUint16("", 16)

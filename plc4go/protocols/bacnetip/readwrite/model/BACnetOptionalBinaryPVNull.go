@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetOptionalBinaryPVNull is the corresponding interface of BACnetOptionalBinaryPVNull
 type BACnetOptionalBinaryPVNull interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetOptionalBinaryPV
@@ -92,7 +94,7 @@ func NewBACnetOptionalBinaryPVNull(nullValue BACnetApplicationTagNull, peekedTag
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetOptionalBinaryPVNull(structType interface{}) BACnetOptionalBinaryPVNull {
+func CastBACnetOptionalBinaryPVNull(structType any) BACnetOptionalBinaryPVNull {
 	if casted, ok := structType.(BACnetOptionalBinaryPVNull); ok {
 		return casted
 	}

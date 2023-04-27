@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataNumberOfAPDURetries is the corresponding interface of BACnetConstructedDataNumberOfAPDURetries
 type BACnetConstructedDataNumberOfAPDURetries interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataNumberOfAPDURetries(numberOfApduRetries BACnetAppli
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataNumberOfAPDURetries(structType interface{}) BACnetConstructedDataNumberOfAPDURetries {
+func CastBACnetConstructedDataNumberOfAPDURetries(structType any) BACnetConstructedDataNumberOfAPDURetries {
 	if casted, ok := structType.(BACnetConstructedDataNumberOfAPDURetries); ok {
 		return casted
 	}

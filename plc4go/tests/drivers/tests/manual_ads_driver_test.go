@@ -21,12 +21,13 @@ package tests
 
 import (
 	"fmt"
+	"testing"
+
 	"github.com/apache/plc4x/plc4go/internal/ads"
 	"github.com/apache/plc4x/plc4go/pkg/api"
 	"github.com/apache/plc4x/plc4go/pkg/api/transports"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
 	_ "github.com/apache/plc4x/plc4go/tests/initializetest"
-	"testing"
 )
 
 func TestManualAds(t *testing.T) {
@@ -109,5 +110,5 @@ func TestManualAds(t *testing.T) {
 	test.AddTestCase("main.hurz_TOD:TOD", "16:17:18.123")
 	test.AddTestCase("main.hurz_DATE_AND_TIME:DATE_AND_TIME", "1996-05-06T15:36:30")
 	test.AddTestCase("main.hurz_DT:DT", "1972-03-29T00:00")
-	test.Run()
+	test.Run(t)
 }

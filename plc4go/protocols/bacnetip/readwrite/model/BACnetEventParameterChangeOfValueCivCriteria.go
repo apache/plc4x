@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetEventParameterChangeOfValueCivCriteria is the corresponding interface of BACnetEventParameterChangeOfValueCivCriteria
 type BACnetEventParameterChangeOfValueCivCriteria interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetOpeningTag returns OpeningTag (property field)
@@ -122,7 +124,7 @@ func NewBACnetEventParameterChangeOfValueCivCriteria(openingTag BACnetOpeningTag
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetEventParameterChangeOfValueCivCriteria(structType interface{}) BACnetEventParameterChangeOfValueCivCriteria {
+func CastBACnetEventParameterChangeOfValueCivCriteria(structType any) BACnetEventParameterChangeOfValueCivCriteria {
 	if casted, ok := structType.(BACnetEventParameterChangeOfValueCivCriteria); ok {
 		return casted
 	}
@@ -199,7 +201,7 @@ func BACnetEventParameterChangeOfValueCivCriteriaParseWithBuffer(ctx context.Con
 		InitializeParent(BACnetEventParameterChangeOfValueCivCriteria, BACnetOpeningTag, BACnetTagHeader, BACnetClosingTag)
 		GetParent() BACnetEventParameterChangeOfValueCivCriteria
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child BACnetEventParameterChangeOfValueCivCriteriaChildSerializeRequirement
 	var typeSwitchError error
 	switch {

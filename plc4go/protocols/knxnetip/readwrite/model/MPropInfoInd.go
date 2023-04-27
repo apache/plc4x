@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // MPropInfoInd is the corresponding interface of MPropInfoInd
 type MPropInfoInd interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	CEMI
@@ -76,7 +78,7 @@ func NewMPropInfoInd(size uint16) *_MPropInfoInd {
 }
 
 // Deprecated: use the interface for direct cast
-func CastMPropInfoInd(structType interface{}) MPropInfoInd {
+func CastMPropInfoInd(structType any) MPropInfoInd {
 	if casted, ok := structType.(MPropInfoInd); ok {
 		return casted
 	}

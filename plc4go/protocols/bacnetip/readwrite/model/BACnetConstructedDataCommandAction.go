@@ -21,7 +21,7 @@ package model
 
 import (
 	"context"
-	spiContext "github.com/apache/plc4x/plc4go/spi/context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
@@ -31,6 +31,7 @@ import (
 
 // BACnetConstructedDataCommandAction is the corresponding interface of BACnetConstructedDataCommandAction
 type BACnetConstructedDataCommandAction interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -131,7 +132,7 @@ func NewBACnetConstructedDataCommandAction(numberOfDataElements BACnetApplicatio
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataCommandAction(structType interface{}) BACnetConstructedDataCommandAction {
+func CastBACnetConstructedDataCommandAction(structType any) BACnetConstructedDataCommandAction {
 	if casted, ok := structType.(BACnetConstructedDataCommandAction); ok {
 		return casted
 	}
@@ -287,7 +288,7 @@ func (m *_BACnetConstructedDataCommandAction) SerializeWithWriteBuffer(ctx conte
 		}
 		for _curItem, _element := range m.GetActionLists() {
 			_ = _curItem
-			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetActionLists()), _curItem)
+			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetActionLists()), _curItem)
 			_ = arrayCtx
 			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 			if _elementErr != nil {

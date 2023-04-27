@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetPropertyStatesLiftFault is the corresponding interface of BACnetPropertyStatesLiftFault
 type BACnetPropertyStatesLiftFault interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetPropertyStates
@@ -92,7 +94,7 @@ func NewBACnetPropertyStatesLiftFault(liftFault BACnetLiftFaultTagged, peekedTag
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetPropertyStatesLiftFault(structType interface{}) BACnetPropertyStatesLiftFault {
+func CastBACnetPropertyStatesLiftFault(structType any) BACnetPropertyStatesLiftFault {
 	if casted, ok := structType.(BACnetPropertyStatesLiftFault); ok {
 		return casted
 	}

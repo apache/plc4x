@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataIPDHCPEnable is the corresponding interface of BACnetConstructedDataIPDHCPEnable
 type BACnetConstructedDataIPDHCPEnable interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataIPDHCPEnable(ipDhcpEnable BACnetApplicationTagBoole
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataIPDHCPEnable(structType interface{}) BACnetConstructedDataIPDHCPEnable {
+func CastBACnetConstructedDataIPDHCPEnable(structType any) BACnetConstructedDataIPDHCPEnable {
 	if casted, ok := structType.(BACnetConstructedDataIPDHCPEnable); ok {
 		return casted
 	}

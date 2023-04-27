@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // StatusByte is the corresponding interface of StatusByte
 type StatusByte interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetGav3 returns Gav3 (property field)
@@ -88,7 +90,7 @@ func NewStatusByte(gav3 GAVState, gav2 GAVState, gav1 GAVState, gav0 GAVState) *
 }
 
 // Deprecated: use the interface for direct cast
-func CastStatusByte(structType interface{}) StatusByte {
+func CastStatusByte(structType any) StatusByte {
 	if casted, ok := structType.(StatusByte); ok {
 		return casted
 	}

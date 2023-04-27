@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // TelephonyDataIsolateSecondaryOutlet is the corresponding interface of TelephonyDataIsolateSecondaryOutlet
 type TelephonyDataIsolateSecondaryOutlet interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	TelephonyData
@@ -118,7 +120,7 @@ func NewTelephonyDataIsolateSecondaryOutlet(isolateStatus byte, commandTypeConta
 }
 
 // Deprecated: use the interface for direct cast
-func CastTelephonyDataIsolateSecondaryOutlet(structType interface{}) TelephonyDataIsolateSecondaryOutlet {
+func CastTelephonyDataIsolateSecondaryOutlet(structType any) TelephonyDataIsolateSecondaryOutlet {
 	if casted, ok := structType.(TelephonyDataIsolateSecondaryOutlet); ok {
 		return casted
 	}

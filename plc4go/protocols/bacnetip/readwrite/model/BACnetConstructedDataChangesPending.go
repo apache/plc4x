@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataChangesPending is the corresponding interface of BACnetConstructedDataChangesPending
 type BACnetConstructedDataChangesPending interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataChangesPending(changesPending BACnetApplicationTagB
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataChangesPending(structType interface{}) BACnetConstructedDataChangesPending {
+func CastBACnetConstructedDataChangesPending(structType any) BACnetConstructedDataChangesPending {
 	if casted, ok := structType.(BACnetConstructedDataChangesPending); ok {
 		return casted
 	}

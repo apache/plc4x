@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // MACAddress is the corresponding interface of MACAddress
 type MACAddress interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetAddr returns Addr (property field)
@@ -67,7 +69,7 @@ func NewMACAddress(addr []byte) *_MACAddress {
 }
 
 // Deprecated: use the interface for direct cast
-func CastMACAddress(structType interface{}) MACAddress {
+func CastMACAddress(structType any) MACAddress {
 	if casted, ok := structType.(MACAddress); ok {
 		return casted
 	}

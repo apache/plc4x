@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetPropertyStatesBinaryValue is the corresponding interface of BACnetPropertyStatesBinaryValue
 type BACnetPropertyStatesBinaryValue interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetPropertyStates
@@ -92,7 +94,7 @@ func NewBACnetPropertyStatesBinaryValue(binaryValue BACnetBinaryPVTagged, peeked
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetPropertyStatesBinaryValue(structType interface{}) BACnetPropertyStatesBinaryValue {
+func CastBACnetPropertyStatesBinaryValue(structType any) BACnetPropertyStatesBinaryValue {
 	if casted, ok := structType.(BACnetPropertyStatesBinaryValue); ok {
 		return casted
 	}

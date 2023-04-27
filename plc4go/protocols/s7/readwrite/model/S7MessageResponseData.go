@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // S7MessageResponseData is the corresponding interface of S7MessageResponseData
 type S7MessageResponseData interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	S7Message
@@ -106,7 +108,7 @@ func NewS7MessageResponseData(errorClass uint8, errorCode uint8, tpduReference u
 }
 
 // Deprecated: use the interface for direct cast
-func CastS7MessageResponseData(structType interface{}) S7MessageResponseData {
+func CastS7MessageResponseData(structType any) S7MessageResponseData {
 	if casted, ok := structType.(S7MessageResponseData); ok {
 		return casted
 	}

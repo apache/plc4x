@@ -438,7 +438,7 @@
 
       <api-request name="Receive Read Request from application">
         <TestReadRequest className="TestReadRequest">
-          <tags>
+          <tags isList="true">
             <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
               <name>tag1</name>
               <address>%DB1.DBD0:REAL</address>
@@ -2460,7 +2460,7 @@
       <api-response name="Report Read Response to application">
         <PlcReadResponse>
           <PlcReadRequest>
-            <tags>
+            <tags isList="true">
               <hurz>
                 <S7Tag>
                   <memoryArea>OUTPUTS</memoryArea>

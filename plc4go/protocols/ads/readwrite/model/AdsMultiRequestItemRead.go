@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // AdsMultiRequestItemRead is the corresponding interface of AdsMultiRequestItemRead
 type AdsMultiRequestItemRead interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	AdsMultiRequestItem
@@ -110,7 +112,7 @@ func NewAdsMultiRequestItemRead(itemIndexGroup uint32, itemIndexOffset uint32, i
 }
 
 // Deprecated: use the interface for direct cast
-func CastAdsMultiRequestItemRead(structType interface{}) AdsMultiRequestItemRead {
+func CastAdsMultiRequestItemRead(structType any) AdsMultiRequestItemRead {
 	if casted, ok := structType.(AdsMultiRequestItemRead); ok {
 		return casted
 	}

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetServiceAckAuthenticate is the corresponding interface of BACnetServiceAckAuthenticate
 type BACnetServiceAckAuthenticate interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetServiceAck
@@ -97,7 +99,7 @@ func NewBACnetServiceAckAuthenticate(bytesOfRemovedService []byte, serviceAckPay
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetServiceAckAuthenticate(structType interface{}) BACnetServiceAckAuthenticate {
+func CastBACnetServiceAckAuthenticate(structType any) BACnetServiceAckAuthenticate {
 	if casted, ok := structType.(BACnetServiceAckAuthenticate); ok {
 		return casted
 	}

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // IPAddress is the corresponding interface of IPAddress
 type IPAddress interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetAddr returns Addr (property field)
@@ -67,7 +69,7 @@ func NewIPAddress(addr []byte) *_IPAddress {
 }
 
 // Deprecated: use the interface for direct cast
-func CastIPAddress(structType interface{}) IPAddress {
+func CastIPAddress(structType any) IPAddress {
 	if casted, ok := structType.(IPAddress); ok {
 		return casted
 	}

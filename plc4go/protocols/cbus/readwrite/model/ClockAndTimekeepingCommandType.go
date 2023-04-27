@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -31,6 +32,8 @@ import (
 type ClockAndTimekeepingCommandType uint8
 
 type IClockAndTimekeepingCommandType interface {
+	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 	NumberOfArguments() uint8
 }
@@ -104,8 +107,8 @@ func ClockAndTimekeepingCommandTypeKnows(value uint8) bool {
 	return false
 }
 
-func CastClockAndTimekeepingCommandType(structType interface{}) ClockAndTimekeepingCommandType {
-	castFunc := func(typ interface{}) ClockAndTimekeepingCommandType {
+func CastClockAndTimekeepingCommandType(structType any) ClockAndTimekeepingCommandType {
+	castFunc := func(typ any) ClockAndTimekeepingCommandType {
 		if sClockAndTimekeepingCommandType, ok := typ.(ClockAndTimekeepingCommandType); ok {
 			return sClockAndTimekeepingCommandType
 		}

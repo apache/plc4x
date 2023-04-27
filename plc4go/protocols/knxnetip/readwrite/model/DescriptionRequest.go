@@ -22,6 +22,7 @@ package model
 import (
 	"context"
 	"encoding/binary"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,6 +31,7 @@ import (
 
 // DescriptionRequest is the corresponding interface of DescriptionRequest
 type DescriptionRequest interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	KnxNetIpMessage
@@ -95,7 +97,7 @@ func NewDescriptionRequest(hpaiControlEndpoint HPAIControlEndpoint) *_Descriptio
 }
 
 // Deprecated: use the interface for direct cast
-func CastDescriptionRequest(structType interface{}) DescriptionRequest {
+func CastDescriptionRequest(structType any) DescriptionRequest {
 	if casted, ok := structType.(DescriptionRequest); ok {
 		return casted
 	}

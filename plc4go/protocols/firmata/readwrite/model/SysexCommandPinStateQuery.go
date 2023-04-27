@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // SysexCommandPinStateQuery is the corresponding interface of SysexCommandPinStateQuery
 type SysexCommandPinStateQuery interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	SysexCommand
@@ -98,7 +100,7 @@ func NewSysexCommandPinStateQuery(pin uint8) *_SysexCommandPinStateQuery {
 }
 
 // Deprecated: use the interface for direct cast
-func CastSysexCommandPinStateQuery(structType interface{}) SysexCommandPinStateQuery {
+func CastSysexCommandPinStateQuery(structType any) SysexCommandPinStateQuery {
 	if casted, ok := structType.(SysexCommandPinStateQuery); ok {
 		return casted
 	}

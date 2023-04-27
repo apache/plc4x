@@ -22,7 +22,7 @@ package model
 import (
 	"context"
 	"encoding/binary"
-	spiContext "github.com/apache/plc4x/plc4go/spi/context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -31,6 +31,7 @@ import (
 
 // FirmataMessageDigitalIO is the corresponding interface of FirmataMessageDigitalIO
 type FirmataMessageDigitalIO interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	FirmataMessage
@@ -104,7 +105,7 @@ func NewFirmataMessageDigitalIO(pinBlock uint8, data []int8, response bool) *_Fi
 }
 
 // Deprecated: use the interface for direct cast
-func CastFirmataMessageDigitalIO(structType interface{}) FirmataMessageDigitalIO {
+func CastFirmataMessageDigitalIO(structType any) FirmataMessageDigitalIO {
 	if casted, ok := structType.(FirmataMessageDigitalIO); ok {
 		return casted
 	}
@@ -169,7 +170,7 @@ func FirmataMessageDigitalIOParseWithBuffer(ctx context.Context, readBuffer util
 	{
 		_numItems := uint16(uint16(2))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := spiContext.CreateArrayContext(ctx, int(_numItems), int(_curItem))
+			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
 			_ = _curItem
 			_item, _err := readBuffer.ReadInt8("", 8)

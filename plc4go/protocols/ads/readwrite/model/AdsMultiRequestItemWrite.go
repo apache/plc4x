@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // AdsMultiRequestItemWrite is the corresponding interface of AdsMultiRequestItemWrite
 type AdsMultiRequestItemWrite interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	AdsMultiRequestItem
@@ -110,7 +112,7 @@ func NewAdsMultiRequestItemWrite(itemIndexGroup uint32, itemIndexOffset uint32, 
 }
 
 // Deprecated: use the interface for direct cast
-func CastAdsMultiRequestItemWrite(structType interface{}) AdsMultiRequestItemWrite {
+func CastAdsMultiRequestItemWrite(structType any) AdsMultiRequestItemWrite {
 	if casted, ok := structType.(AdsMultiRequestItemWrite); ok {
 		return casted
 	}

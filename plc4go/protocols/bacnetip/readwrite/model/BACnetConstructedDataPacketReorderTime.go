@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataPacketReorderTime is the corresponding interface of BACnetConstructedDataPacketReorderTime
 type BACnetConstructedDataPacketReorderTime interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataPacketReorderTime(packetReorderTime BACnetApplicati
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataPacketReorderTime(structType interface{}) BACnetConstructedDataPacketReorderTime {
+func CastBACnetConstructedDataPacketReorderTime(structType any) BACnetConstructedDataPacketReorderTime {
 	if casted, ok := structType.(BACnetConstructedDataPacketReorderTime); ok {
 		return casted
 	}

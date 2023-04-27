@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataProcessIdentifier is the corresponding interface of BACnetConstructedDataProcessIdentifier
 type BACnetConstructedDataProcessIdentifier interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataProcessIdentifier(processIdentifier BACnetApplicati
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataProcessIdentifier(structType interface{}) BACnetConstructedDataProcessIdentifier {
+func CastBACnetConstructedDataProcessIdentifier(structType any) BACnetConstructedDataProcessIdentifier {
 	if casted, ok := structType.(BACnetConstructedDataProcessIdentifier); ok {
 		return casted
 	}

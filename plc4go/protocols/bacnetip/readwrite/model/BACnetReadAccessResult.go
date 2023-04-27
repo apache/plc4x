@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
@@ -30,6 +31,7 @@ import (
 
 // BACnetReadAccessResult is the corresponding interface of BACnetReadAccessResult
 type BACnetReadAccessResult interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetObjectIdentifier returns ObjectIdentifier (property field)
@@ -75,7 +77,7 @@ func NewBACnetReadAccessResult(objectIdentifier BACnetContextTagObjectIdentifier
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetReadAccessResult(structType interface{}) BACnetReadAccessResult {
+func CastBACnetReadAccessResult(structType any) BACnetReadAccessResult {
 	if casted, ok := structType.(BACnetReadAccessResult); ok {
 		return casted
 	}

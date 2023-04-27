@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // NLMNetworkNumberIs is the corresponding interface of NLMNetworkNumberIs
 type NLMNetworkNumberIs interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	NLM
@@ -104,7 +106,7 @@ func NewNLMNetworkNumberIs(networkNumber uint16, networkNumberConfigured bool, a
 }
 
 // Deprecated: use the interface for direct cast
-func CastNLMNetworkNumberIs(structType interface{}) NLMNetworkNumberIs {
+func CastNLMNetworkNumberIs(structType any) NLMNetworkNumberIs {
 	if casted, ok := structType.(NLMNetworkNumberIs); ok {
 		return casted
 	}
@@ -165,7 +167,7 @@ func NLMNetworkNumberIsParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of NLMNetworkNumberIs")
 		}
 		if reserved != uint8(0) {
-			Plc4xModelLog.Info().Fields(map[string]interface{}{
+			Plc4xModelLog.Info().Fields(map[string]any{
 				"expected value": uint8(0),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
@@ -225,7 +227,7 @@ func (m *_NLMNetworkNumberIs) SerializeWithWriteBuffer(ctx context.Context, writ
 		{
 			var reserved uint8 = uint8(0)
 			if m.reservedField0 != nil {
-				Plc4xModelLog.Info().Fields(map[string]interface{}{
+				Plc4xModelLog.Info().Fields(map[string]any{
 					"expected value": uint8(0),
 					"got value":      reserved,
 				}).Msg("Overriding reserved field with unexpected value.")

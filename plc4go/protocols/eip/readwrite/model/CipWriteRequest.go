@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // CipWriteRequest is the corresponding interface of CipWriteRequest
 type CipWriteRequest interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	CipService
@@ -126,7 +128,7 @@ func NewCipWriteRequest(tag []byte, dataType CIPDataTypeCode, elementNb uint16, 
 }
 
 // Deprecated: use the interface for direct cast
-func CastCipWriteRequest(structType interface{}) CipWriteRequest {
+func CastCipWriteRequest(structType any) CipWriteRequest {
 	if casted, ok := structType.(CipWriteRequest); ok {
 		return casted
 	}

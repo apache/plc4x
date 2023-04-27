@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // SecurityDataDisplayMessage is the corresponding interface of SecurityDataDisplayMessage
 type SecurityDataDisplayMessage interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	SecurityData
@@ -93,7 +95,7 @@ func NewSecurityDataDisplayMessage(message string, commandTypeContainer Security
 }
 
 // Deprecated: use the interface for direct cast
-func CastSecurityDataDisplayMessage(structType interface{}) SecurityDataDisplayMessage {
+func CastSecurityDataDisplayMessage(structType any) SecurityDataDisplayMessage {
 	if casted, ok := structType.(SecurityDataDisplayMessage); ok {
 		return casted
 	}

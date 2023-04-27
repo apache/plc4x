@@ -34,6 +34,7 @@ const RequestCommand_INITIATOR byte = 0x5C
 
 // RequestCommand is the corresponding interface of RequestCommand
 type RequestCommand interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	Request
@@ -159,7 +160,7 @@ func NewRequestCommand(cbusCommand CBusCommand, chksum Checksum, alpha Alpha, pe
 }
 
 // Deprecated: use the interface for direct cast
-func CastRequestCommand(structType interface{}) RequestCommand {
+func CastRequestCommand(structType any) RequestCommand {
 	if casted, ok := structType.(RequestCommand); ok {
 		return casted
 	}
@@ -185,7 +186,7 @@ func (m *_RequestCommand) GetLengthInBits(ctx context.Context) uint16 {
 	// A virtual field doesn't have any in- or output.
 
 	// Manual Field (chksum)
-	lengthInBits += uint16(utils.InlineIf((m.CBusOptions.GetSrchk()), func() interface{} { return int32((int32(16))) }, func() interface{} { return int32((int32(0))) }).(int32))
+	lengthInBits += uint16(utils.InlineIf((m.CBusOptions.GetSrchk()), func() any { return int32((int32(16))) }, func() any { return int32((int32(0))) }).(int32))
 
 	// A virtual field doesn't have any in- or output.
 

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
@@ -30,6 +31,7 @@ import (
 
 // CipReadResponse is the corresponding interface of CipReadResponse
 type CipReadResponse interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	CipService
@@ -121,7 +123,7 @@ func NewCipReadResponse(status uint8, extStatus uint8, data CIPData, serviceLen 
 }
 
 // Deprecated: use the interface for direct cast
-func CastCipReadResponse(structType interface{}) CipReadResponse {
+func CastCipReadResponse(structType any) CipReadResponse {
 	if casted, ok := structType.(CipReadResponse); ok {
 		return casted
 	}
@@ -180,7 +182,7 @@ func CipReadResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of CipReadResponse")
 		}
 		if reserved != uint8(0x00) {
-			Plc4xModelLog.Info().Fields(map[string]interface{}{
+			Plc4xModelLog.Info().Fields(map[string]any{
 				"expected value": uint8(0x00),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
@@ -263,7 +265,7 @@ func (m *_CipReadResponse) SerializeWithWriteBuffer(ctx context.Context, writeBu
 		{
 			var reserved uint8 = uint8(0x00)
 			if m.reservedField0 != nil {
-				Plc4xModelLog.Info().Fields(map[string]interface{}{
+				Plc4xModelLog.Info().Fields(map[string]any{
 					"expected value": uint8(0x00),
 					"got value":      reserved,
 				}).Msg("Overriding reserved field with unexpected value.")

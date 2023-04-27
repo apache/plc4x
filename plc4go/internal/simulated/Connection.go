@@ -20,6 +20,7 @@
 package simulated
 
 import (
+	"context"
 	"strconv"
 	"time"
 
@@ -72,6 +73,10 @@ func (c *Connection) GetTracer() *spi.Tracer {
 }
 
 func (c *Connection) Connect() <-chan plc4go.PlcConnectionConnectResult {
+	return c.ConnectWithContext(context.Background())
+}
+
+func (c *Connection) ConnectWithContext(ctx context.Context) <-chan plc4go.PlcConnectionConnectResult {
 	ch := make(chan plc4go.PlcConnectionConnectResult)
 	go func() {
 		// Check if the connection was already connected
@@ -232,7 +237,7 @@ func (c *Connection) WriteRequestBuilder() model.PlcWriteRequestBuilder {
 }
 
 func (c *Connection) SubscriptionRequestBuilder() model.PlcSubscriptionRequestBuilder {
-	panic("not implemented")
+	return internalModel.NewDefaultPlcSubscriptionRequestBuilder(c.tagHandler, c.valueHandler, NewSubscriber(c.device, c.options, c.tracer))
 }
 
 func (c *Connection) UnsubscriptionRequestBuilder() model.PlcUnsubscriptionRequestBuilder {

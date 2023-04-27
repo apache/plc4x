@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetTimerStateChangeValueReal is the corresponding interface of BACnetTimerStateChangeValueReal
 type BACnetTimerStateChangeValueReal interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetTimerStateChangeValue
@@ -92,7 +94,7 @@ func NewBACnetTimerStateChangeValueReal(realValue BACnetApplicationTagReal, peek
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetTimerStateChangeValueReal(structType interface{}) BACnetTimerStateChangeValueReal {
+func CastBACnetTimerStateChangeValueReal(structType any) BACnetTimerStateChangeValueReal {
 	if casted, ok := structType.(BACnetTimerStateChangeValueReal); ok {
 		return casted
 	}

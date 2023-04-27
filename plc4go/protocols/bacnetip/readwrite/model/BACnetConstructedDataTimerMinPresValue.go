@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataTimerMinPresValue is the corresponding interface of BACnetConstructedDataTimerMinPresValue
 type BACnetConstructedDataTimerMinPresValue interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataTimerMinPresValue(minPresValue BACnetApplicationTag
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataTimerMinPresValue(structType interface{}) BACnetConstructedDataTimerMinPresValue {
+func CastBACnetConstructedDataTimerMinPresValue(structType any) BACnetConstructedDataTimerMinPresValue {
 	if casted, ok := structType.(BACnetConstructedDataTimerMinPresValue); ok {
 		return casted
 	}

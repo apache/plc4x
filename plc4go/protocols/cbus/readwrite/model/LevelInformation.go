@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // LevelInformation is the corresponding interface of LevelInformation
 type LevelInformation interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetRaw returns Raw (property field)
@@ -162,7 +164,7 @@ func NewLevelInformation(raw uint16) *_LevelInformation {
 }
 
 // Deprecated: use the interface for direct cast
-func CastLevelInformation(structType interface{}) LevelInformation {
+func CastLevelInformation(structType any) LevelInformation {
 	if casted, ok := structType.(LevelInformation); ok {
 		return casted
 	}
@@ -270,7 +272,7 @@ func LevelInformationParseWithBuffer(ctx context.Context, readBuffer utils.ReadB
 		InitializeParent(LevelInformation, uint16)
 		GetParent() LevelInformation
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child LevelInformationChildSerializeRequirement
 	var typeSwitchError error
 	switch {

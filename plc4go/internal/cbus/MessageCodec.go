@@ -63,7 +63,10 @@ func (m *MessageCodec) GetCodec() spi.MessageCodec {
 func (m *MessageCodec) Send(message spi.Message) error {
 	log.Trace().Msg("Sending message")
 	// Cast the message to the correct type of struct
-	cbusMessage := message.(readWriteModel.CBusMessage)
+	cbusMessage, ok := message.(readWriteModel.CBusMessage)
+	if !ok {
+		return errors.Errorf("Invalid message type %T", message)
+	}
 
 	// Set the right request context
 	m.requestContext = CreateRequestContext(cbusMessage)
@@ -89,15 +92,19 @@ func (m *MessageCodec) Receive() (spi.Message, error) {
 	confirmation := false
 	// Fill the buffer
 	{
-		if err := ti.FillBuffer(func(_ uint, currentByte byte, reader *bufio.Reader) bool {
+		if err := ti.FillBuffer(func(pos uint, currentByte byte, reader *bufio.Reader) bool {
 			log.Trace().Uint8("byte", currentByte).Msg("current byte")
 			switch currentByte {
 			case
 				readWriteModel.ResponseTermination_CR,
 				readWriteModel.ResponseTermination_LF:
 				return false
+			case byte(readWriteModel.ConfirmationType_CONFIRMATION_SUCCESSFUL):
+				confirmation = true
+				// In case we have directly more data in the buffer after a confirmation
+				_, err := reader.Peek(int(pos + 1))
+				return err == nil
 			case
-				byte(readWriteModel.ConfirmationType_CONFIRMATION_SUCCESSFUL),
 				byte(readWriteModel.ConfirmationType_NOT_TRANSMITTED_TO_MANY_RE_TRANSMISSIONS),
 				byte(readWriteModel.ConfirmationType_NOT_TRANSMITTED_CORRUPTION),
 				byte(readWriteModel.ConfirmationType_NOT_TRANSMITTED_SYNC_LOSS),
@@ -128,6 +135,7 @@ func (m *MessageCodec) Receive() (spi.Message, error) {
 		}
 		readableBytes = numBytesAvailableInBuffer
 	}
+	log.Trace().Msgf("%d bytes available in buffer", readableBytes)
 
 	// Check for an isolated error
 	if bytes, err := ti.PeekReadableBytes(1); err == nil && (bytes[0] == byte(readWriteModel.ConfirmationType_CHECKSUM_FAILURE)) {
@@ -179,6 +187,8 @@ lookingForTheEnd:
 		// This means a <cr> is directly followed by a <lf> which means that we know for sure this is a response
 		pciResponse = true
 	}
+	const numberOfCyclesToWait = 15
+	const estimatedElapsedTime = numberOfCyclesToWait * 10
 	if !pciResponse && !requestToPci && indexOfLF < 0 {
 		// To be sure we might receive that package later we hash the bytes and check if we might receive one
 		hash := crc32.NewIEEE()
@@ -187,19 +197,24 @@ lookingForTheEnd:
 		if newPackageHash == m.lastPackageHash {
 			m.hashEncountered++
 		}
+		log.Trace().Msgf("new hash %x, last hash %x, seen %d times", newPackageHash, m.lastPackageHash, m.hashEncountered)
 		m.lastPackageHash = newPackageHash
-		if m.hashEncountered < 9 {
+		if m.hashEncountered < numberOfCyclesToWait {
+			log.Trace().Msg("Waiting for more data")
 			return nil, nil
 		} else {
-			// after 90ms we give up finding a lf
+			log.Trace().Msgf("stopping after ~%dms", estimatedElapsedTime)
+			// after numberOfCyclesToWait*10 ms we give up finding a lf
 			m.lastPackageHash, m.hashEncountered = 0, 0
 			if indexOfCR >= 0 {
+				log.Trace().Msg("setting requestToPci")
 				requestToPci = true
 			}
 		}
 	}
 	if !pciResponse && !requestToPci && !confirmation {
 		// Apparently we have not found any message yet
+		log.Trace().Msg("no message found yet")
 		return nil, nil
 	}
 
@@ -248,6 +263,7 @@ lookingForTheEnd:
 
 	var rawInput []byte
 	{
+		log.Trace().Msgf("Read packet length %d", packetLength)
 		read, err := ti.Read(uint32(packetLength))
 		if err != nil {
 			panic("Invalid state... If we have peeked that before we should be able to read that now")

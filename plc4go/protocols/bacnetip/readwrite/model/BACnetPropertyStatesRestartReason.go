@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetPropertyStatesRestartReason is the corresponding interface of BACnetPropertyStatesRestartReason
 type BACnetPropertyStatesRestartReason interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetPropertyStates
@@ -92,7 +94,7 @@ func NewBACnetPropertyStatesRestartReason(restartReason BACnetRestartReasonTagge
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetPropertyStatesRestartReason(structType interface{}) BACnetPropertyStatesRestartReason {
+func CastBACnetPropertyStatesRestartReason(structType any) BACnetPropertyStatesRestartReason {
 	if casted, ok := structType.(BACnetPropertyStatesRestartReason); ok {
 		return casted
 	}

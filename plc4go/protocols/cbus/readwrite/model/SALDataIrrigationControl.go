@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // SALDataIrrigationControl is the corresponding interface of SALDataIrrigationControl
 type SALDataIrrigationControl interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	SALData
@@ -96,7 +98,7 @@ func NewSALDataIrrigationControl(irrigationControlData LightingData, salData SAL
 }
 
 // Deprecated: use the interface for direct cast
-func CastSALDataIrrigationControl(structType interface{}) SALDataIrrigationControl {
+func CastSALDataIrrigationControl(structType any) SALDataIrrigationControl {
 	if casted, ok := structType.(SALDataIrrigationControl); ok {
 		return casted
 	}

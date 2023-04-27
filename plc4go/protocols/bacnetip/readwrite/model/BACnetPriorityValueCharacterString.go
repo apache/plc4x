@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetPriorityValueCharacterString is the corresponding interface of BACnetPriorityValueCharacterString
 type BACnetPriorityValueCharacterString interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetPriorityValue
@@ -92,7 +94,7 @@ func NewBACnetPriorityValueCharacterString(characterStringValue BACnetApplicatio
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetPriorityValueCharacterString(structType interface{}) BACnetPriorityValueCharacterString {
+func CastBACnetPriorityValueCharacterString(structType any) BACnetPriorityValueCharacterString {
 	if casted, ok := structType.(BACnetPriorityValueCharacterString); ok {
 		return casted
 	}

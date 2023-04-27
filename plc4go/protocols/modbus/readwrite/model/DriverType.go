@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -31,6 +32,8 @@ import (
 type DriverType uint32
 
 type IDriverType interface {
+	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 
@@ -84,8 +87,8 @@ func DriverTypeKnows(value uint32) bool {
 	return false
 }
 
-func CastDriverType(structType interface{}) DriverType {
-	castFunc := func(typ interface{}) DriverType {
+func CastDriverType(structType any) DriverType {
+	castFunc := func(typ any) DriverType {
 		if sDriverType, ok := typ.(DriverType); ok {
 			return sDriverType
 		}

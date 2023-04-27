@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetEventTimestamps is the corresponding interface of BACnetEventTimestamps
 type BACnetEventTimestamps interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetToOffnormal returns ToOffnormal (property field)
@@ -81,7 +83,7 @@ func NewBACnetEventTimestamps(toOffnormal BACnetTimeStamp, toFault BACnetTimeSta
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetEventTimestamps(structType interface{}) BACnetEventTimestamps {
+func CastBACnetEventTimestamps(structType any) BACnetEventTimestamps {
 	if casted, ok := structType.(BACnetEventTimestamps); ok {
 		return casted
 	}

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataHigherDeck is the corresponding interface of BACnetConstructedDataHigherDeck
 type BACnetConstructedDataHigherDeck interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataHigherDeck(higherDeck BACnetApplicationTagObjectIde
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataHigherDeck(structType interface{}) BACnetConstructedDataHigherDeck {
+func CastBACnetConstructedDataHigherDeck(structType any) BACnetConstructedDataHigherDeck {
 	if casted, ok := structType.(BACnetConstructedDataHigherDeck); ok {
 		return casted
 	}

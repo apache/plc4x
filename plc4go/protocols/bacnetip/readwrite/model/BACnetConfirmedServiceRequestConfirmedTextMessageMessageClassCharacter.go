@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter is the corresponding interface of BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter
 type BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass
@@ -94,7 +96,7 @@ func NewBACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter(c
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter(structType interface{}) BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter {
+func CastBACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter(structType any) BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter {
 	if casted, ok := structType.(BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter); ok {
 		return casted
 	}

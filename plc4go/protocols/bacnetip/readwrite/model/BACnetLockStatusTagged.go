@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetLockStatusTagged is the corresponding interface of BACnetLockStatusTagged
 type BACnetLockStatusTagged interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetHeader returns Header (property field)
@@ -78,7 +80,7 @@ func NewBACnetLockStatusTagged(header BACnetTagHeader, value BACnetLockStatus, t
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetLockStatusTagged(structType interface{}) BACnetLockStatusTagged {
+func CastBACnetLockStatusTagged(structType any) BACnetLockStatusTagged {
 	if casted, ok := structType.(BACnetLockStatusTagged); ok {
 		return casted
 	}

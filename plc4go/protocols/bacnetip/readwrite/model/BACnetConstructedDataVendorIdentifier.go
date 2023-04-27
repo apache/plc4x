@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataVendorIdentifier is the corresponding interface of BACnetConstructedDataVendorIdentifier
 type BACnetConstructedDataVendorIdentifier interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataVendorIdentifier(vendorIdentifier BACnetVendorIdTag
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataVendorIdentifier(structType interface{}) BACnetConstructedDataVendorIdentifier {
+func CastBACnetConstructedDataVendorIdentifier(structType any) BACnetConstructedDataVendorIdentifier {
 	if casted, ok := structType.(BACnetConstructedDataVendorIdentifier); ok {
 		return casted
 	}

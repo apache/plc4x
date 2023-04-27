@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetPropertyAccessResultAccessResultPropertyAccessError is the corresponding interface of BACnetPropertyAccessResultAccessResultPropertyAccessError
 type BACnetPropertyAccessResultAccessResultPropertyAccessError interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetPropertyAccessResultAccessResult
@@ -92,7 +94,7 @@ func NewBACnetPropertyAccessResultAccessResultPropertyAccessError(propertyAccess
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetPropertyAccessResultAccessResultPropertyAccessError(structType interface{}) BACnetPropertyAccessResultAccessResultPropertyAccessError {
+func CastBACnetPropertyAccessResultAccessResultPropertyAccessError(structType any) BACnetPropertyAccessResultAccessResultPropertyAccessError {
 	if casted, ok := structType.(BACnetPropertyAccessResultAccessResultPropertyAccessError); ok {
 		return casted
 	}

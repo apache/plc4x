@@ -21,7 +21,7 @@ package model
 
 import (
 	"context"
-	spiContext "github.com/apache/plc4x/plc4go/spi/context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,6 +30,7 @@ import (
 
 // BACnetEventParameterChangeOfBitstringListOfBitstringValues is the corresponding interface of BACnetEventParameterChangeOfBitstringListOfBitstringValues
 type BACnetEventParameterChangeOfBitstringListOfBitstringValues interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetOpeningTag returns OpeningTag (property field)
@@ -85,7 +86,7 @@ func NewBACnetEventParameterChangeOfBitstringListOfBitstringValues(openingTag BA
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetEventParameterChangeOfBitstringListOfBitstringValues(structType interface{}) BACnetEventParameterChangeOfBitstringListOfBitstringValues {
+func CastBACnetEventParameterChangeOfBitstringListOfBitstringValues(structType any) BACnetEventParameterChangeOfBitstringListOfBitstringValues {
 	if casted, ok := structType.(BACnetEventParameterChangeOfBitstringListOfBitstringValues); ok {
 		return casted
 	}
@@ -226,7 +227,7 @@ func (m *_BACnetEventParameterChangeOfBitstringListOfBitstringValues) SerializeW
 	}
 	for _curItem, _element := range m.GetListOfBitstringValues() {
 		_ = _curItem
-		arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetListOfBitstringValues()), _curItem)
+		arrayCtx := utils.CreateArrayContext(ctx, len(m.GetListOfBitstringValues()), _curItem)
 		_ = arrayCtx
 		_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 		if _elementErr != nil {

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -31,6 +32,8 @@ import (
 type SyntaxIdType uint8
 
 type ISyntaxIdType interface {
+	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 
@@ -144,8 +147,8 @@ func SyntaxIdTypeKnows(value uint8) bool {
 	return false
 }
 
-func CastSyntaxIdType(structType interface{}) SyntaxIdType {
-	castFunc := func(typ interface{}) SyntaxIdType {
+func CastSyntaxIdType(structType any) SyntaxIdType {
+	castFunc := func(typ any) SyntaxIdType {
 		if sSyntaxIdType, ok := typ.(SyntaxIdType); ok {
 			return sSyntaxIdType
 		}

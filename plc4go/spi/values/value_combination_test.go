@@ -33,13 +33,17 @@ import (
 )
 
 func TestCombinations(t *testing.T) {
+	type argument interface {
+		apiValues.PlcValue
+		utils.Serializable
+	}
 	tests := []struct {
 		name      apiValues.PlcValueType
-		arguments []apiValues.PlcValue
+		arguments []argument
 	}{
 		/*{
 			name: apiValues.BINT,
-			arguments: []apiValues.PlcValue{
+			arguments: []argument{
 				NewPlcBINT(big.NewInt(0)),
 				NewPlcBINT(big.NewInt(64)),
 				NewPlcBINT(big.NewInt(255)),
@@ -49,14 +53,14 @@ func TestCombinations(t *testing.T) {
 		},*/
 		{
 			name: apiValues.BOOL,
-			arguments: []apiValues.PlcValue{
+			arguments: []argument{
 				NewPlcBOOL(true),
 				NewPlcBOOL(false),
 			},
 		},
 		/*{
 			name: apiValues.BREAL,
-			arguments: []apiValues.PlcValue{
+			arguments: []argument{
 				NewPlcBREAL(big.NewFloat(0)),
 				NewPlcBREAL(big.NewFloat(64)),
 				NewPlcBREAL(big.NewFloat(255)),
@@ -66,7 +70,7 @@ func TestCombinations(t *testing.T) {
 		},*/
 		{
 			name: apiValues.BYTE,
-			arguments: []apiValues.PlcValue{
+			arguments: []argument{
 				NewPlcBYTE(0),
 				NewPlcBYTE(64),
 				NewPlcBYTE(255),
@@ -74,25 +78,25 @@ func TestCombinations(t *testing.T) {
 		},
 		{
 			name: apiValues.CHAR,
-			arguments: []apiValues.PlcValue{
+			arguments: []argument{
 				NewPlcCHAR(""),
 			},
 		},
 		{
 			name: apiValues.DATE,
-			arguments: []apiValues.PlcValue{
+			arguments: []argument{
 				NewPlcDATE(time.Now()),
 			},
 		},
 		{
 			name: apiValues.DATE_AND_TIME,
-			arguments: []apiValues.PlcValue{
+			arguments: []argument{
 				NewPlcDATE_AND_TIME(time.Now()),
 			},
 		},
 		{
 			name: apiValues.DINT,
-			arguments: []apiValues.PlcValue{
+			arguments: []argument{
 				NewPlcDINT(math.MinInt32),
 				NewPlcDINT(64),
 				NewPlcDINT(255),
@@ -101,7 +105,7 @@ func TestCombinations(t *testing.T) {
 		},
 		{
 			name: apiValues.DWORD,
-			arguments: []apiValues.PlcValue{
+			arguments: []argument{
 				NewPlcDWORD(0),
 				NewPlcDWORD(64),
 				NewPlcDWORD(255),
@@ -110,7 +114,7 @@ func TestCombinations(t *testing.T) {
 		},
 		{
 			name: apiValues.INT,
-			arguments: []apiValues.PlcValue{
+			arguments: []argument{
 				NewPlcINT(0),
 				NewPlcINT(64),
 				NewPlcINT(255),
@@ -118,8 +122,20 @@ func TestCombinations(t *testing.T) {
 			},
 		},
 		{
+			name: apiValues.LDATE,
+			arguments: []argument{
+				NewPlcLDATE(time.Now()),
+			},
+		},
+		{
+			name: apiValues.LDATE_AND_TIME,
+			arguments: []argument{
+				NewPlcLDATE_AND_TIME(time.Now()),
+			},
+		},
+		{
 			name: apiValues.LINT,
-			arguments: []apiValues.PlcValue{
+			arguments: []argument{
 				NewPlcLINT(0),
 				NewPlcLINT(64),
 				NewPlcLINT(255),
@@ -128,7 +144,7 @@ func TestCombinations(t *testing.T) {
 		},
 		{
 			name: apiValues.List,
-			arguments: []apiValues.PlcValue{
+			arguments: []argument{
 				NewPlcList(nil),
 				NewPlcList([]apiValues.PlcValue{
 					NewPlcBOOL(true),
@@ -138,17 +154,17 @@ func TestCombinations(t *testing.T) {
 		},
 		{
 			name: apiValues.LREAL,
-			arguments: []apiValues.PlcValue{
-				NewPlcREAL(0),
-				NewPlcREAL(64),
-				NewPlcREAL(255),
-				NewPlcREAL(math.MinInt64),
-				NewPlcREAL(math.MaxInt64),
+			arguments: []argument{
+				NewPlcLREAL(0),
+				NewPlcLREAL(64),
+				NewPlcLREAL(255),
+				NewPlcLREAL(math.MinInt64),
+				NewPlcLREAL(math.MaxInt64),
 			},
 		},
 		{
 			name: apiValues.LTIME,
-			arguments: []apiValues.PlcValue{
+			arguments: []argument{
 				NewPlcLTIME(0),
 				NewPlcLTIME(64),
 				NewPlcLTIME(255),
@@ -157,7 +173,7 @@ func TestCombinations(t *testing.T) {
 		},
 		{
 			name: apiValues.LWORD,
-			arguments: []apiValues.PlcValue{
+			arguments: []argument{
 				NewPlcLWORD(0),
 				NewPlcLWORD(64),
 				NewPlcLWORD(255),
@@ -167,19 +183,19 @@ func TestCombinations(t *testing.T) {
 		},
 		{
 			name: apiValues.NULL,
-			arguments: []apiValues.PlcValue{
+			arguments: []argument{
 				NewPlcNULL(),
 			},
 		},
 		{
 			name: apiValues.RAW_BYTE_ARRAY,
-			arguments: []apiValues.PlcValue{
+			arguments: []argument{
 				NewPlcRawByteArray(utils.NewReadBufferByteBased([]byte{0x47, 0x11}).GetBytes()),
 			},
 		},
 		{
 			name: apiValues.REAL,
-			arguments: []apiValues.PlcValue{
+			arguments: []argument{
 				NewPlcREAL(0),
 				NewPlcREAL(64),
 				NewPlcREAL(255),
@@ -188,7 +204,7 @@ func TestCombinations(t *testing.T) {
 		},
 		{
 			name: apiValues.Struct,
-			arguments: []apiValues.PlcValue{
+			arguments: []argument{
 				NewPlcStruct(map[string]apiValues.PlcValue{
 					"something": NewPlcStruct(map[string]apiValues.PlcValue{
 						"more": NewPlcList([]apiValues.PlcValue{
@@ -203,7 +219,7 @@ func TestCombinations(t *testing.T) {
 		},
 		{
 			name: apiValues.SINT,
-			arguments: []apiValues.PlcValue{
+			arguments: []argument{
 				NewPlcSINT(-128),
 				NewPlcSINT(-64),
 				NewPlcSINT(0),
@@ -213,7 +229,7 @@ func TestCombinations(t *testing.T) {
 		},
 		{
 			name: apiValues.STRING,
-			arguments: []apiValues.PlcValue{
+			arguments: []argument{
 				NewPlcSTRING("Hello Tody"),
 				NewPlcSTRING("1"),
 				NewPlcSTRING("true"),
@@ -223,7 +239,7 @@ func TestCombinations(t *testing.T) {
 		},
 		{
 			name: apiValues.TIME,
-			arguments: []apiValues.PlcValue{
+			arguments: []argument{
 				NewPlcTIME(0),
 				NewPlcTIME(64),
 				NewPlcTIME(255),
@@ -232,7 +248,7 @@ func TestCombinations(t *testing.T) {
 		},
 		{
 			name: apiValues.TIME_OF_DAY,
-			arguments: []apiValues.PlcValue{
+			arguments: []argument{
 				NewPlcTIME_OF_DAY(time.Now()),
 				NewPlcTIME_OF_DAY(0),
 				NewPlcTIME_OF_DAY(64),
@@ -242,7 +258,7 @@ func TestCombinations(t *testing.T) {
 		},
 		{
 			name: apiValues.UDINT,
-			arguments: []apiValues.PlcValue{
+			arguments: []argument{
 				NewPlcUDINT(0),
 				NewPlcUDINT(64),
 				NewPlcUDINT(255),
@@ -251,7 +267,7 @@ func TestCombinations(t *testing.T) {
 		},
 		{
 			name: apiValues.UINT,
-			arguments: []apiValues.PlcValue{
+			arguments: []argument{
 				NewPlcUINT(0),
 				NewPlcUINT(64),
 				NewPlcUINT(255),
@@ -260,7 +276,7 @@ func TestCombinations(t *testing.T) {
 		},
 		{
 			name: apiValues.USINT,
-			arguments: []apiValues.PlcValue{
+			arguments: []argument{
 				NewPlcUSINT(0),
 				NewPlcUSINT(64),
 				NewPlcUSINT(255),
@@ -269,7 +285,7 @@ func TestCombinations(t *testing.T) {
 		},
 		{
 			name: apiValues.ULINT,
-			arguments: []apiValues.PlcValue{
+			arguments: []argument{
 				NewPlcULINT(0),
 				NewPlcULINT(64),
 				NewPlcULINT(math.MaxUint8),
@@ -277,13 +293,13 @@ func TestCombinations(t *testing.T) {
 		},
 		{
 			name: apiValues.WCHAR,
-			arguments: []apiValues.PlcValue{
+			arguments: []argument{
 				NewPlcWCHAR("a"),
 			},
 		},
 		{
 			name: apiValues.WORD,
-			arguments: []apiValues.PlcValue{
+			arguments: []argument{
 				NewPlcWORD(0),
 				NewPlcWORD(64),
 				NewPlcWORD(255),
@@ -292,15 +308,15 @@ func TestCombinations(t *testing.T) {
 		},
 		{
 			name: apiValues.WSTRING,
-			arguments: []apiValues.PlcValue{
+			arguments: []argument{
 				NewPlcWSTRING("hurz"),
 			},
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name.String(), func(t *testing.T) {
-			for _, argument := range tt.arguments {
-				argumentCopy := argument
+			for _, _argument := range tt.arguments {
+				argument := _argument
 				t.Run(fmt.Sprintf("%s", argument), func(t *testing.T) {
 					PlcValueType := reflect.TypeOf((*apiValues.PlcValue)(nil)).Elem()
 					methods := make(map[string]reflect.Method)
@@ -314,18 +330,34 @@ func TestCombinations(t *testing.T) {
 							queryType := strings.TrimPrefix(methodName, "Is")
 							t.Run(queryType, func(t *testing.T) {
 								getMethod := methods[fmt.Sprintf("Get%s", queryType)]
-								isA := reflect.ValueOf(argumentCopy).MethodByName(methodName).Call([]reflect.Value{})[0].Bool()
+								isA := reflect.ValueOf(argument).MethodByName(methodName).Call([]reflect.Value{})[0].Bool()
 								t.Logf("%s() == %t", methodName, isA)
 								var emptyMethod reflect.Method
 								if isA && getMethod != emptyMethod {
 									t.Logf("Calling %s()", getMethod.Name)
-									value := reflect.ValueOf(argumentCopy).MethodByName(getMethod.Name).Call([]reflect.Value{})[0]
+									value := reflect.ValueOf(argument).MethodByName(getMethod.Name).Call([]reflect.Value{})[0]
 									assert.True(t, value.IsValid())
 									t.Logf("Value: %v", value)
 								}
 							})
 						}
 					}
+
+					t.Run("Serialize", func(t *testing.T) {
+						serialize, err := argument.Serialize()
+						assert.NoError(t, err)
+						_ = serialize
+					})
+
+					t.Run("Raw", func(t *testing.T) {
+						defer func() {
+							if err := recover(); err != nil {
+								t.Log(err)
+								t.Skip("this panics and there is no was to check if it is supported") // TODO: fix that
+							}
+						}()
+						argument.GetRaw()
+					})
 				})
 			}
 		})

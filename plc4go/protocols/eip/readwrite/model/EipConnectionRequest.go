@@ -34,6 +34,7 @@ const EipConnectionRequest_FLAGS uint16 = 0x00
 
 // EipConnectionRequest is the corresponding interface of EipConnectionRequest
 type EipConnectionRequest interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	EipPacket
@@ -112,7 +113,7 @@ func NewEipConnectionRequest(sessionHandle uint32, status uint32, senderContext 
 }
 
 // Deprecated: use the interface for direct cast
-func CastEipConnectionRequest(structType interface{}) EipConnectionRequest {
+func CastEipConnectionRequest(structType any) EipConnectionRequest {
 	if casted, ok := structType.(EipConnectionRequest); ok {
 		return casted
 	}

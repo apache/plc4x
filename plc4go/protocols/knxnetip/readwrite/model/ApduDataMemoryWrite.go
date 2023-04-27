@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // ApduDataMemoryWrite is the corresponding interface of ApduDataMemoryWrite
 type ApduDataMemoryWrite interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	ApduData
@@ -76,7 +78,7 @@ func NewApduDataMemoryWrite(dataLength uint8) *_ApduDataMemoryWrite {
 }
 
 // Deprecated: use the interface for direct cast
-func CastApduDataMemoryWrite(structType interface{}) ApduDataMemoryWrite {
+func CastApduDataMemoryWrite(structType any) ApduDataMemoryWrite {
 	if casted, ok := structType.(ApduDataMemoryWrite); ok {
 		return casted
 	}

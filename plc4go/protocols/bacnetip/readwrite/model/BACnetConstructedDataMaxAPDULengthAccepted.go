@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataMaxAPDULengthAccepted is the corresponding interface of BACnetConstructedDataMaxAPDULengthAccepted
 type BACnetConstructedDataMaxAPDULengthAccepted interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataMaxAPDULengthAccepted(maxApduLengthAccepted BACnetA
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataMaxAPDULengthAccepted(structType interface{}) BACnetConstructedDataMaxAPDULengthAccepted {
+func CastBACnetConstructedDataMaxAPDULengthAccepted(structType any) BACnetConstructedDataMaxAPDULengthAccepted {
 	if casted, ok := structType.(BACnetConstructedDataMaxAPDULengthAccepted); ok {
 		return casted
 	}

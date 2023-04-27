@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
@@ -30,6 +31,7 @@ import (
 
 // RequestObsolete is the corresponding interface of RequestObsolete
 type RequestObsolete interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	Request
@@ -124,7 +126,7 @@ func NewRequestObsolete(calData CALData, alpha Alpha, peekedByte RequestType, st
 }
 
 // Deprecated: use the interface for direct cast
-func CastRequestObsolete(structType interface{}) RequestObsolete {
+func CastRequestObsolete(structType any) RequestObsolete {
 	if casted, ok := structType.(RequestObsolete); ok {
 		return casted
 	}

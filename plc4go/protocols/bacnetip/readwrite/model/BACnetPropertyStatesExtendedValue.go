@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetPropertyStatesExtendedValue is the corresponding interface of BACnetPropertyStatesExtendedValue
 type BACnetPropertyStatesExtendedValue interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetPropertyStates
@@ -92,7 +94,7 @@ func NewBACnetPropertyStatesExtendedValue(extendedValue BACnetContextTagUnsigned
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetPropertyStatesExtendedValue(structType interface{}) BACnetPropertyStatesExtendedValue {
+func CastBACnetPropertyStatesExtendedValue(structType any) BACnetPropertyStatesExtendedValue {
 	if casted, ok := structType.(BACnetPropertyStatesExtendedValue); ok {
 		return casted
 	}

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataExpirationTime is the corresponding interface of BACnetConstructedDataExpirationTime
 type BACnetConstructedDataExpirationTime interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataExpirationTime(expirationTime BACnetDateTime, openi
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataExpirationTime(structType interface{}) BACnetConstructedDataExpirationTime {
+func CastBACnetConstructedDataExpirationTime(structType any) BACnetConstructedDataExpirationTime {
 	if casted, ok := structType.(BACnetConstructedDataExpirationTime); ok {
 		return casted
 	}

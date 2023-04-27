@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // AirConditioningDataRefresh is the corresponding interface of AirConditioningDataRefresh
 type AirConditioningDataRefresh interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	AirConditioningData
@@ -92,7 +94,7 @@ func NewAirConditioningDataRefresh(zoneGroup byte, commandTypeContainer AirCondi
 }
 
 // Deprecated: use the interface for direct cast
-func CastAirConditioningDataRefresh(structType interface{}) AirConditioningDataRefresh {
+func CastAirConditioningDataRefresh(structType any) AirConditioningDataRefresh {
 	if casted, ok := structType.(AirConditioningDataRefresh); ok {
 		return casted
 	}

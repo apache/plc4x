@@ -144,4 +144,68 @@ public class ProfinetConfigurationTests {
         XmlMapper xmlMapper = new XmlMapper();
         assertDoesNotThrow(() -> devices.get("DEVICE_NAME_1").getDeviceContext().setGsdFile(xmlMapper.readValue(new File("src/test/resources/gsdml.xml"), ProfinetISO15745Profile.class)));
     }
+
+    @Test
+    public void parseJoinedDeviceConfigurationSpacesInDeviceAccessName() {
+        String[] deviceNames = new String[] {"DEVICE_NAME_1"};
+
+        ProfinetConfiguration configuration = new ConfigurationFactory().createConfiguration(
+            ProfinetConfiguration.class, "devices=[[device_name_1, PLC4X 1, (PLC4X_DUMMY_MODULE, PLC4X_DUMMY_MODULE)]]&gsddirectory=src/test/resources");
+
+        Map<String, ProfinetDevice> devices = configuration.getDevices().getConfiguredDevices();
+
+        for (String deviceName : deviceNames) {
+            assert(devices.containsKey(deviceName));
+            assertEquals(devices.get(deviceName).getDeviceContext().getDeviceAccess(), "PLC4X 1");
+        }
+    }
+
+    @Test
+    public void parseJoinedDeviceConfigurationSpacesInDeviceName() {
+        String[] deviceNames = new String[] {"DEVICE NAME 1"};
+
+        ProfinetConfiguration configuration = new ConfigurationFactory().createConfiguration(
+            ProfinetConfiguration.class, "devices=[[device name 1, PLC4X 1, (PLC4X_DUMMY_MODULE, PLC4X_DUMMY_MODULE)]]&gsddirectory=src/test/resources");
+
+        Map<String, ProfinetDevice> devices = configuration.getDevices().getConfiguredDevices();
+
+        for (String deviceName : deviceNames) {
+            assert(devices.containsKey(deviceName));
+        }
+    }
+
+    @Test
+    public void parseJoinedDeviceConfigurationSpacesInDeviceModuleName() {
+        String[] deviceNames = new String[] {"DEVICE NAME 1"};
+
+        ProfinetConfiguration configuration = new ConfigurationFactory().createConfiguration(
+            ProfinetConfiguration.class, "devices=[[device name 1, PLC4X 1, (PLC4X DUMMY MODULE, PLC4X DUMMY MODULE)]]&gsddirectory=src/test/resources");
+
+        Map<String, ProfinetDevice> devices = configuration.getDevices().getConfiguredDevices();
+
+        for (String deviceName : deviceNames) {
+            assert(devices.containsKey(deviceName));
+            assertEquals(devices.get(deviceName).getDeviceContext().getSubModules().length, 2);
+            assertEquals(devices.get(deviceName).getDeviceContext().getSubModules()[0], "PLC4X DUMMY MODULE");
+        }
+    }
+
+    @Test
+    public void parseAllowedModuleSingleSlot() {
+        String[] deviceNames = new String[] {"DEVICE NAME 1"};
+
+        ProfinetConfiguration configuration = new ConfigurationFactory().createConfiguration(
+            ProfinetConfiguration.class, "devices=[[device name 1, PLC4X 1, (PLC4X DUMMY MODULE, PLC4X DUMMY MODULE,,1)]]&gsddirectory=src/test/resources");
+
+        Map<String, ProfinetDevice> devices = configuration.getDevices().getConfiguredDevices();
+        XmlMapper xmlMapper = new XmlMapper();
+
+        assertDoesNotThrow(() -> devices.get("DEVICE NAME 1").getDeviceContext().setGsdFile(xmlMapper.readValue(new File("src/test/resources/gsdml.xml"), ProfinetISO15745Profile.class)));
+
+        for (String deviceName : deviceNames) {
+            assert(devices.containsKey(deviceName));
+            assertEquals(devices.get(deviceName).getDeviceContext().getSubModules().length, 4);
+            assertEquals(devices.get(deviceName).getDeviceContext().getSubModules()[3], "1");
+        }
+    }
 }

@@ -21,7 +21,7 @@ package model
 
 import (
 	"context"
-	spiContext "github.com/apache/plc4x/plc4go/spi/context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,6 +30,7 @@ import (
 
 // BACnetEventParameterChangeOfLifeSavetyListOfAlarmValues is the corresponding interface of BACnetEventParameterChangeOfLifeSavetyListOfAlarmValues
 type BACnetEventParameterChangeOfLifeSavetyListOfAlarmValues interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetOpeningTag returns OpeningTag (property field)
@@ -85,7 +86,7 @@ func NewBACnetEventParameterChangeOfLifeSavetyListOfAlarmValues(openingTag BACne
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetEventParameterChangeOfLifeSavetyListOfAlarmValues(structType interface{}) BACnetEventParameterChangeOfLifeSavetyListOfAlarmValues {
+func CastBACnetEventParameterChangeOfLifeSavetyListOfAlarmValues(structType any) BACnetEventParameterChangeOfLifeSavetyListOfAlarmValues {
 	if casted, ok := structType.(BACnetEventParameterChangeOfLifeSavetyListOfAlarmValues); ok {
 		return casted
 	}
@@ -226,7 +227,7 @@ func (m *_BACnetEventParameterChangeOfLifeSavetyListOfAlarmValues) SerializeWith
 	}
 	for _curItem, _element := range m.GetListOfAlarmValues() {
 		_ = _curItem
-		arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetListOfAlarmValues()), _curItem)
+		arrayCtx := utils.CreateArrayContext(ctx, len(m.GetListOfAlarmValues()), _curItem)
 		_ = arrayCtx
 		_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 		if _elementErr != nil {

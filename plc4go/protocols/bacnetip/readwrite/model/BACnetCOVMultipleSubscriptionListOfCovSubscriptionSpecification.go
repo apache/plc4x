@@ -21,7 +21,7 @@ package model
 
 import (
 	"context"
-	spiContext "github.com/apache/plc4x/plc4go/spi/context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,6 +30,7 @@ import (
 
 // BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification is the corresponding interface of BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification
 type BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetOpeningTag returns OpeningTag (property field)
@@ -85,7 +86,7 @@ func NewBACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification(openingT
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification(structType interface{}) BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification {
+func CastBACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification(structType any) BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification {
 	if casted, ok := structType.(BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification); ok {
 		return casted
 	}
@@ -226,7 +227,7 @@ func (m *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification) Seria
 	}
 	for _curItem, _element := range m.GetListOfCovSubscriptionSpecificationEntry() {
 		_ = _curItem
-		arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetListOfCovSubscriptionSpecificationEntry()), _curItem)
+		arrayCtx := utils.CreateArrayContext(ctx, len(m.GetListOfCovSubscriptionSpecificationEntry()), _curItem)
 		_ = arrayCtx
 		_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 		if _elementErr != nil {

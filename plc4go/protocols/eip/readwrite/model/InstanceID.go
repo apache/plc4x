@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // InstanceID is the corresponding interface of InstanceID
 type InstanceID interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	LogicalSegmentType
@@ -102,7 +104,7 @@ func NewInstanceID(format uint8, instance uint8) *_InstanceID {
 }
 
 // Deprecated: use the interface for direct cast
-func CastInstanceID(structType interface{}) InstanceID {
+func CastInstanceID(structType any) InstanceID {
 	if casted, ok := structType.(InstanceID); ok {
 		return casted
 	}

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataInProcess is the corresponding interface of BACnetConstructedDataInProcess
 type BACnetConstructedDataInProcess interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataInProcess(inProcess BACnetApplicationTagBoolean, op
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataInProcess(structType interface{}) BACnetConstructedDataInProcess {
+func CastBACnetConstructedDataInProcess(structType any) BACnetConstructedDataInProcess {
 	if casted, ok := structType.(BACnetConstructedDataInProcess); ok {
 		return casted
 	}

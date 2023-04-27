@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataAuthorizationMode is the corresponding interface of BACnetConstructedDataAuthorizationMode
 type BACnetConstructedDataAuthorizationMode interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataAuthorizationMode(authorizationMode BACnetAuthoriza
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataAuthorizationMode(structType interface{}) BACnetConstructedDataAuthorizationMode {
+func CastBACnetConstructedDataAuthorizationMode(structType any) BACnetConstructedDataAuthorizationMode {
 	if casted, ok := structType.(BACnetConstructedDataAuthorizationMode); ok {
 		return casted
 	}

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetUnconfirmedServiceRequestTimeSynchronization is the corresponding interface of BACnetUnconfirmedServiceRequestTimeSynchronization
 type BACnetUnconfirmedServiceRequestTimeSynchronization interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetUnconfirmedServiceRequest
@@ -103,7 +105,7 @@ func NewBACnetUnconfirmedServiceRequestTimeSynchronization(synchronizedDate BACn
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetUnconfirmedServiceRequestTimeSynchronization(structType interface{}) BACnetUnconfirmedServiceRequestTimeSynchronization {
+func CastBACnetUnconfirmedServiceRequestTimeSynchronization(structType any) BACnetUnconfirmedServiceRequestTimeSynchronization {
 	if casted, ok := structType.(BACnetUnconfirmedServiceRequestTimeSynchronization); ok {
 		return casted
 	}

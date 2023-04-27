@@ -48,14 +48,16 @@ public class ResponseItem<T> implements Serializable {
     public void serialize(WriteBuffer writeBuffer) throws SerializationException {
         writeBuffer.pushContext("ResponseItem");
         String codeName = code.name();
-        writeBuffer.writeString("result",
+        writeBuffer.writeString("code",
             codeName.getBytes(StandardCharsets.UTF_8).length * 8,
             codeName, WithOption.WithEncoding(StandardCharsets.UTF_8.name()));
         if (value != null) {
+            writeBuffer.pushContext("value");
             if (!(value instanceof Serializable)) {
                 throw new RuntimeException("Error serializing. Tag value doesn't implement XmlSerializable");
             }
             ((Serializable) value).serialize(writeBuffer);
+            writeBuffer.popContext("value");
         }
         writeBuffer.popContext("ResponseItem");
     }

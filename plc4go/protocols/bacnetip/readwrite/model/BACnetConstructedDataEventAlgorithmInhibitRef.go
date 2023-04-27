@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataEventAlgorithmInhibitRef is the corresponding interface of BACnetConstructedDataEventAlgorithmInhibitRef
 type BACnetConstructedDataEventAlgorithmInhibitRef interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataEventAlgorithmInhibitRef(eventAlgorithmInhibitRef B
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataEventAlgorithmInhibitRef(structType interface{}) BACnetConstructedDataEventAlgorithmInhibitRef {
+func CastBACnetConstructedDataEventAlgorithmInhibitRef(structType any) BACnetConstructedDataEventAlgorithmInhibitRef {
 	if casted, ok := structType.(BACnetConstructedDataEventAlgorithmInhibitRef); ok {
 		return casted
 	}

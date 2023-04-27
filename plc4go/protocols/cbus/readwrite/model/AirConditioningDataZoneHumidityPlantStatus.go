@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // AirConditioningDataZoneHumidityPlantStatus is the corresponding interface of AirConditioningDataZoneHumidityPlantStatus
 type AirConditioningDataZoneHumidityPlantStatus interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	AirConditioningData
@@ -124,7 +126,7 @@ func NewAirConditioningDataZoneHumidityPlantStatus(zoneGroup byte, zoneList HVAC
 }
 
 // Deprecated: use the interface for direct cast
-func CastAirConditioningDataZoneHumidityPlantStatus(structType interface{}) AirConditioningDataZoneHumidityPlantStatus {
+func CastAirConditioningDataZoneHumidityPlantStatus(structType any) AirConditioningDataZoneHumidityPlantStatus {
 	if casted, ok := structType.(AirConditioningDataZoneHumidityPlantStatus); ok {
 		return casted
 	}

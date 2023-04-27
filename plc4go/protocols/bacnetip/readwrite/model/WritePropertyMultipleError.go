@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // WritePropertyMultipleError is the corresponding interface of WritePropertyMultipleError
 type WritePropertyMultipleError interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetError
@@ -102,7 +104,7 @@ func NewWritePropertyMultipleError(errorType ErrorEnclosed, firstFailedWriteAtte
 }
 
 // Deprecated: use the interface for direct cast
-func CastWritePropertyMultipleError(structType interface{}) WritePropertyMultipleError {
+func CastWritePropertyMultipleError(structType any) WritePropertyMultipleError {
 	if casted, ok := structType.(WritePropertyMultipleError); ok {
 		return casted
 	}

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // PortSegmentType is the corresponding interface of PortSegmentType
 type PortSegmentType interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetExtendedLinkAddress returns ExtendedLinkAddress (discriminator field)
@@ -73,7 +75,7 @@ func NewPortSegmentType() *_PortSegmentType {
 }
 
 // Deprecated: use the interface for direct cast
-func CastPortSegmentType(structType interface{}) PortSegmentType {
+func CastPortSegmentType(structType any) PortSegmentType {
 	if casted, ok := structType.(PortSegmentType); ok {
 		return casted
 	}
@@ -124,7 +126,7 @@ func PortSegmentTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 		InitializeParent(PortSegmentType)
 		GetParent() PortSegmentType
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child PortSegmentTypeChildSerializeRequirement
 	var typeSwitchError error
 	switch {

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
@@ -30,6 +31,7 @@ import (
 
 // BACnetEventNotificationSubscription is the corresponding interface of BACnetEventNotificationSubscription
 type BACnetEventNotificationSubscription interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetRecipient returns Recipient (property field)
@@ -89,7 +91,7 @@ func NewBACnetEventNotificationSubscription(recipient BACnetRecipientEnclosed, p
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetEventNotificationSubscription(structType interface{}) BACnetEventNotificationSubscription {
+func CastBACnetEventNotificationSubscription(structType any) BACnetEventNotificationSubscription {
 	if casted, ok := structType.(BACnetEventNotificationSubscription); ok {
 		return casted
 	}

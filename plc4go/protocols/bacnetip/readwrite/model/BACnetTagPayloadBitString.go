@@ -21,7 +21,7 @@ package model
 
 import (
 	"context"
-	spiContext "github.com/apache/plc4x/plc4go/spi/context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,6 +30,7 @@ import (
 
 // BACnetTagPayloadBitString is the corresponding interface of BACnetTagPayloadBitString
 type BACnetTagPayloadBitString interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetUnusedBits returns UnusedBits (property field)
@@ -85,7 +86,7 @@ func NewBACnetTagPayloadBitString(unusedBits uint8, data []bool, unused []bool, 
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetTagPayloadBitString(structType interface{}) BACnetTagPayloadBitString {
+func CastBACnetTagPayloadBitString(structType any) BACnetTagPayloadBitString {
 	if casted, ok := structType.(BACnetTagPayloadBitString); ok {
 		return casted
 	}
@@ -155,7 +156,7 @@ func BACnetTagPayloadBitStringParseWithBuffer(ctx context.Context, readBuffer ut
 	{
 		_numItems := uint16(uint16((uint16((uint16(actualLength) - uint16(uint16(1)))) * uint16(uint16(8)))) - uint16(unusedBits))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := spiContext.CreateArrayContext(ctx, int(_numItems), int(_curItem))
+			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
 			_ = _curItem
 			_item, _err := readBuffer.ReadBit("")
@@ -182,7 +183,7 @@ func BACnetTagPayloadBitStringParseWithBuffer(ctx context.Context, readBuffer ut
 	{
 		_numItems := uint16(unusedBits)
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := spiContext.CreateArrayContext(ctx, int(_numItems), int(_curItem))
+			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
 			_ = _curItem
 			_item, _err := readBuffer.ReadBit("")

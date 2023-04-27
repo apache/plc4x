@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetUnconfirmedServiceRequestIHave is the corresponding interface of BACnetUnconfirmedServiceRequestIHave
 type BACnetUnconfirmedServiceRequestIHave interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetUnconfirmedServiceRequest
@@ -111,7 +113,7 @@ func NewBACnetUnconfirmedServiceRequestIHave(deviceIdentifier BACnetApplicationT
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetUnconfirmedServiceRequestIHave(structType interface{}) BACnetUnconfirmedServiceRequestIHave {
+func CastBACnetUnconfirmedServiceRequestIHave(structType any) BACnetUnconfirmedServiceRequestIHave {
 	if casted, ok := structType.(BACnetUnconfirmedServiceRequestIHave); ok {
 		return casted
 	}

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetPriorityValueObjectidentifier is the corresponding interface of BACnetPriorityValueObjectidentifier
 type BACnetPriorityValueObjectidentifier interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetPriorityValue
@@ -92,7 +94,7 @@ func NewBACnetPriorityValueObjectidentifier(objectidentifierValue BACnetApplicat
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetPriorityValueObjectidentifier(structType interface{}) BACnetPriorityValueObjectidentifier {
+func CastBACnetPriorityValueObjectidentifier(structType any) BACnetPriorityValueObjectidentifier {
 	if casted, ok := structType.(BACnetPriorityValueObjectidentifier); ok {
 		return casted
 	}

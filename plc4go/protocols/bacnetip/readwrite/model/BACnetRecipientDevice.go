@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetRecipientDevice is the corresponding interface of BACnetRecipientDevice
 type BACnetRecipientDevice interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetRecipient
@@ -92,7 +94,7 @@ func NewBACnetRecipientDevice(deviceValue BACnetContextTagObjectIdentifier, peek
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetRecipientDevice(structType interface{}) BACnetRecipientDevice {
+func CastBACnetRecipientDevice(structType any) BACnetRecipientDevice {
 	if casted, ok := structType.(BACnetRecipientDevice); ok {
 		return casted
 	}

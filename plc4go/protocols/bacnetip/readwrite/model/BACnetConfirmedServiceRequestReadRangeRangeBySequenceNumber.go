@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber is the corresponding interface of BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber
 type BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConfirmedServiceRequestReadRangeRange
@@ -102,7 +104,7 @@ func NewBACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber(referenceSeq
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber(structType interface{}) BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber {
+func CastBACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber(structType any) BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber {
 	if casted, ok := structType.(BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber); ok {
 		return casted
 	}

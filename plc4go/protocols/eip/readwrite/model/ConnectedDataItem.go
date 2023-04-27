@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // ConnectedDataItem is the corresponding interface of ConnectedDataItem
 type ConnectedDataItem interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	TypeId
@@ -102,7 +104,7 @@ func NewConnectedDataItem(sequenceCount uint16, service CipService) *_ConnectedD
 }
 
 // Deprecated: use the interface for direct cast
-func CastConnectedDataItem(structType interface{}) ConnectedDataItem {
+func CastConnectedDataItem(structType any) ConnectedDataItem {
 	if casted, ok := structType.(ConnectedDataItem); ok {
 		return casted
 	}

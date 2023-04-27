@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetProcessIdSelection is the corresponding interface of BACnetProcessIdSelection
 type BACnetProcessIdSelection interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetPeekedTagHeader returns PeekedTagHeader (property field)
@@ -105,7 +107,7 @@ func NewBACnetProcessIdSelection(peekedTagHeader BACnetTagHeader) *_BACnetProces
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetProcessIdSelection(structType interface{}) BACnetProcessIdSelection {
+func CastBACnetProcessIdSelection(structType any) BACnetProcessIdSelection {
 	if casted, ok := structType.(BACnetProcessIdSelection); ok {
 		return casted
 	}
@@ -163,7 +165,7 @@ func BACnetProcessIdSelectionParseWithBuffer(ctx context.Context, readBuffer uti
 		InitializeParent(BACnetProcessIdSelection, BACnetTagHeader)
 		GetParent() BACnetProcessIdSelection
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child BACnetProcessIdSelectionChildSerializeRequirement
 	var typeSwitchError error
 	switch {

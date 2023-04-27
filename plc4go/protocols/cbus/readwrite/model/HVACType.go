@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -31,6 +32,8 @@ import (
 type HVACType uint8
 
 type IHVACType interface {
+	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 
@@ -138,8 +141,8 @@ func HVACTypeKnows(value uint8) bool {
 	return false
 }
 
-func CastHVACType(structType interface{}) HVACType {
-	castFunc := func(typ interface{}) HVACType {
+func CastHVACType(structType any) HVACType {
+	castFunc := func(typ any) HVACType {
 		if sHVACType, ok := typ.(HVACType); ok {
 			return sHVACType
 		}

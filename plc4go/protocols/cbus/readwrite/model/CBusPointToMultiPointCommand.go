@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // CBusPointToMultiPointCommand is the corresponding interface of CBusPointToMultiPointCommand
 type CBusPointToMultiPointCommand interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetPeekedApplication returns PeekedApplication (property field)
@@ -91,7 +93,7 @@ func NewCBusPointToMultiPointCommand(peekedApplication byte, cBusOptions CBusOpt
 }
 
 // Deprecated: use the interface for direct cast
-func CastCBusPointToMultiPointCommand(structType interface{}) CBusPointToMultiPointCommand {
+func CastCBusPointToMultiPointCommand(structType any) CBusPointToMultiPointCommand {
 	if casted, ok := structType.(CBusPointToMultiPointCommand); ok {
 		return casted
 	}
@@ -143,7 +145,7 @@ func CBusPointToMultiPointCommandParseWithBuffer(ctx context.Context, readBuffer
 		InitializeParent(CBusPointToMultiPointCommand, byte)
 		GetParent() CBusPointToMultiPointCommand
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child CBusPointToMultiPointCommandChildSerializeRequirement
 	var typeSwitchError error
 	switch {

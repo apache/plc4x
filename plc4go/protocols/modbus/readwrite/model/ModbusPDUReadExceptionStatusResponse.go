@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // ModbusPDUReadExceptionStatusResponse is the corresponding interface of ModbusPDUReadExceptionStatusResponse
 type ModbusPDUReadExceptionStatusResponse interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	ModbusPDU
@@ -102,7 +104,7 @@ func NewModbusPDUReadExceptionStatusResponse(value uint8) *_ModbusPDUReadExcepti
 }
 
 // Deprecated: use the interface for direct cast
-func CastModbusPDUReadExceptionStatusResponse(structType interface{}) ModbusPDUReadExceptionStatusResponse {
+func CastModbusPDUReadExceptionStatusResponse(structType any) ModbusPDUReadExceptionStatusResponse {
 	if casted, ok := structType.(ModbusPDUReadExceptionStatusResponse); ok {
 		return casted
 	}

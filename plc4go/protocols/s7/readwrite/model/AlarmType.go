@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -31,6 +32,8 @@ import (
 type AlarmType uint8
 
 type IAlarmType interface {
+	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 
@@ -84,8 +87,8 @@ func AlarmTypeKnows(value uint8) bool {
 	return false
 }
 
-func CastAlarmType(structType interface{}) AlarmType {
-	castFunc := func(typ interface{}) AlarmType {
+func CastAlarmType(structType any) AlarmType {
+	castFunc := func(typ any) AlarmType {
 		if sAlarmType, ok := typ.(AlarmType); ok {
 			return sAlarmType
 		}

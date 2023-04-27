@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -31,6 +32,8 @@ import (
 type CIPDataTypeCode uint16
 
 type ICIPDataTypeCode interface {
+	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 	Size() uint8
 }
@@ -378,8 +381,8 @@ func CIPDataTypeCodeKnows(value uint16) bool {
 	return false
 }
 
-func CastCIPDataTypeCode(structType interface{}) CIPDataTypeCode {
-	castFunc := func(typ interface{}) CIPDataTypeCode {
+func CastCIPDataTypeCode(structType any) CIPDataTypeCode {
+	castFunc := func(typ any) CIPDataTypeCode {
 		if sCIPDataTypeCode, ok := typ.(CIPDataTypeCode); ok {
 			return sCIPDataTypeCode
 		}

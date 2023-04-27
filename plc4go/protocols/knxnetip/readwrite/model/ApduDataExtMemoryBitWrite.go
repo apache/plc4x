@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // ApduDataExtMemoryBitWrite is the corresponding interface of ApduDataExtMemoryBitWrite
 type ApduDataExtMemoryBitWrite interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	ApduDataExt
@@ -76,7 +78,7 @@ func NewApduDataExtMemoryBitWrite(length uint8) *_ApduDataExtMemoryBitWrite {
 }
 
 // Deprecated: use the interface for direct cast
-func CastApduDataExtMemoryBitWrite(structType interface{}) ApduDataExtMemoryBitWrite {
+func CastApduDataExtMemoryBitWrite(structType any) ApduDataExtMemoryBitWrite {
 	if casted, ok := structType.(ApduDataExtMemoryBitWrite); ok {
 		return casted
 	}

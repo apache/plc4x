@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataLastAccessPoint is the corresponding interface of BACnetConstructedDataLastAccessPoint
 type BACnetConstructedDataLastAccessPoint interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataLastAccessPoint(lastAccessPoint BACnetDeviceObjectR
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataLastAccessPoint(structType interface{}) BACnetConstructedDataLastAccessPoint {
+func CastBACnetConstructedDataLastAccessPoint(structType any) BACnetConstructedDataLastAccessPoint {
 	if casted, ok := structType.(BACnetConstructedDataLastAccessPoint); ok {
 		return casted
 	}

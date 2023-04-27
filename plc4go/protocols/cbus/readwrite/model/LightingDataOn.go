@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // LightingDataOn is the corresponding interface of LightingDataOn
 type LightingDataOn interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	LightingData
@@ -92,7 +94,7 @@ func NewLightingDataOn(group byte, commandTypeContainer LightingCommandTypeConta
 }
 
 // Deprecated: use the interface for direct cast
-func CastLightingDataOn(structType interface{}) LightingDataOn {
+func CastLightingDataOn(structType any) LightingDataOn {
 	if casted, ok := structType.(LightingDataOn); ok {
 		return casted
 	}

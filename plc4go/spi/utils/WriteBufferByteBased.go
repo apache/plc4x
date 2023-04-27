@@ -237,9 +237,10 @@ func (wb *byteWriteBuffer) WriteBigFloat(_ string, bitLength uint8, value *big.F
 
 func (wb *byteWriteBuffer) WriteString(_ string, bitLength uint32, encoding string, value string, _ ...WithWriterArgs) error {
 	wb.move(uint(bitLength))
+	// TODO: make this a writer arg
 	var nonAlphanumericRegex = regexp.MustCompile(`[^A-Z0-9]+`)
 	encoding = nonAlphanumericRegex.ReplaceAllLiteralString(strings.ToUpper(encoding), "")
-	remainingBits := bitLength
+	remainingBits := int64(bitLength) // we use int64 otherwise the subtraction below flips
 	// TODO: the implementation completely ignores encoding for now. Fix this
 	switch encoding {
 	case "UTF8":
@@ -271,7 +272,7 @@ func (wb *byteWriteBuffer) WriteString(_ string, bitLength uint32, encoding stri
 	return wb.writer.TryError
 }
 
-func (wb *byteWriteBuffer) WriteVirtual(ctx context.Context, logicalName string, value interface{}, writerArgs ...WithWriterArgs) error {
+func (wb *byteWriteBuffer) WriteVirtual(ctx context.Context, logicalName string, value any, writerArgs ...WithWriterArgs) error {
 	// NO-OP
 	return nil
 }

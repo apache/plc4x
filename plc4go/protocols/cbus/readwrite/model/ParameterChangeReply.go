@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // ParameterChangeReply is the corresponding interface of ParameterChangeReply
 type ParameterChangeReply interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	Reply
@@ -92,7 +94,7 @@ func NewParameterChangeReply(parameterChange ParameterChange, peekedByte byte, c
 }
 
 // Deprecated: use the interface for direct cast
-func CastParameterChangeReply(structType interface{}) ParameterChangeReply {
+func CastParameterChangeReply(structType any) ParameterChangeReply {
 	if casted, ok := structType.(ParameterChangeReply); ok {
 		return casted
 	}

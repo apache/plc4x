@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetServicesSupportedTagged is the corresponding interface of BACnetServicesSupportedTagged
 type BACnetServicesSupportedTagged interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetHeader returns Header (property field)
@@ -99,61 +101,61 @@ func (m *_BACnetServicesSupportedTagged) GetPayload() BACnetTagPayloadBitString 
 func (m *_BACnetServicesSupportedTagged) GetWriteGroup() bool {
 	ctx := context.Background()
 	_ = ctx
-	return bool(utils.InlineIf((bool((len(m.GetPayload().GetData())) > (0))), func() interface{} { return bool(m.GetPayload().GetData()[0]) }, func() interface{} { return bool(bool(false)) }).(bool))
+	return bool(utils.InlineIf((bool((len(m.GetPayload().GetData())) > (0))), func() any { return bool(m.GetPayload().GetData()[0]) }, func() any { return bool(bool(false)) }).(bool))
 }
 
 func (m *_BACnetServicesSupportedTagged) GetSubscribeCovPropertyMultiple() bool {
 	ctx := context.Background()
 	_ = ctx
-	return bool(utils.InlineIf((bool((len(m.GetPayload().GetData())) > (1))), func() interface{} { return bool(m.GetPayload().GetData()[1]) }, func() interface{} { return bool(bool(false)) }).(bool))
+	return bool(utils.InlineIf((bool((len(m.GetPayload().GetData())) > (1))), func() any { return bool(m.GetPayload().GetData()[1]) }, func() any { return bool(bool(false)) }).(bool))
 }
 
 func (m *_BACnetServicesSupportedTagged) GetConfirmedCovNotificationMultiple() bool {
 	ctx := context.Background()
 	_ = ctx
-	return bool(utils.InlineIf((bool((len(m.GetPayload().GetData())) > (2))), func() interface{} { return bool(m.GetPayload().GetData()[2]) }, func() interface{} { return bool(bool(false)) }).(bool))
+	return bool(utils.InlineIf((bool((len(m.GetPayload().GetData())) > (2))), func() any { return bool(m.GetPayload().GetData()[2]) }, func() any { return bool(bool(false)) }).(bool))
 }
 
 func (m *_BACnetServicesSupportedTagged) GetUnconfirmedCovNotificationMultiple() bool {
 	ctx := context.Background()
 	_ = ctx
-	return bool(utils.InlineIf((bool((len(m.GetPayload().GetData())) > (3))), func() interface{} { return bool(m.GetPayload().GetData()[3]) }, func() interface{} { return bool(bool(false)) }).(bool))
+	return bool(utils.InlineIf((bool((len(m.GetPayload().GetData())) > (3))), func() any { return bool(m.GetPayload().GetData()[3]) }, func() any { return bool(bool(false)) }).(bool))
 }
 
 func (m *_BACnetServicesSupportedTagged) GetWhoIs() bool {
 	ctx := context.Background()
 	_ = ctx
-	return bool(utils.InlineIf((bool((len(m.GetPayload().GetData())) > (4))), func() interface{} { return bool(m.GetPayload().GetData()[4]) }, func() interface{} { return bool(bool(false)) }).(bool))
+	return bool(utils.InlineIf((bool((len(m.GetPayload().GetData())) > (4))), func() any { return bool(m.GetPayload().GetData()[4]) }, func() any { return bool(bool(false)) }).(bool))
 }
 
 func (m *_BACnetServicesSupportedTagged) GetReadRange() bool {
 	ctx := context.Background()
 	_ = ctx
-	return bool(utils.InlineIf((bool((len(m.GetPayload().GetData())) > (5))), func() interface{} { return bool(m.GetPayload().GetData()[5]) }, func() interface{} { return bool(bool(false)) }).(bool))
+	return bool(utils.InlineIf((bool((len(m.GetPayload().GetData())) > (5))), func() any { return bool(m.GetPayload().GetData()[5]) }, func() any { return bool(bool(false)) }).(bool))
 }
 
 func (m *_BACnetServicesSupportedTagged) GetUtcTimeSynchronization() bool {
 	ctx := context.Background()
 	_ = ctx
-	return bool(utils.InlineIf((bool((len(m.GetPayload().GetData())) > (6))), func() interface{} { return bool(m.GetPayload().GetData()[6]) }, func() interface{} { return bool(bool(false)) }).(bool))
+	return bool(utils.InlineIf((bool((len(m.GetPayload().GetData())) > (6))), func() any { return bool(m.GetPayload().GetData()[6]) }, func() any { return bool(bool(false)) }).(bool))
 }
 
 func (m *_BACnetServicesSupportedTagged) GetLifeSafetyOperation() bool {
 	ctx := context.Background()
 	_ = ctx
-	return bool(utils.InlineIf((bool((len(m.GetPayload().GetData())) > (7))), func() interface{} { return bool(m.GetPayload().GetData()[7]) }, func() interface{} { return bool(bool(false)) }).(bool))
+	return bool(utils.InlineIf((bool((len(m.GetPayload().GetData())) > (7))), func() any { return bool(m.GetPayload().GetData()[7]) }, func() any { return bool(bool(false)) }).(bool))
 }
 
 func (m *_BACnetServicesSupportedTagged) GetSubscribeCovProperty() bool {
 	ctx := context.Background()
 	_ = ctx
-	return bool(utils.InlineIf((bool((len(m.GetPayload().GetData())) > (8))), func() interface{} { return bool(m.GetPayload().GetData()[8]) }, func() interface{} { return bool(bool(false)) }).(bool))
+	return bool(utils.InlineIf((bool((len(m.GetPayload().GetData())) > (8))), func() any { return bool(m.GetPayload().GetData()[8]) }, func() any { return bool(bool(false)) }).(bool))
 }
 
 func (m *_BACnetServicesSupportedTagged) GetGetEventInformation() bool {
 	ctx := context.Background()
 	_ = ctx
-	return bool(utils.InlineIf((bool((len(m.GetPayload().GetData())) > (9))), func() interface{} { return bool(m.GetPayload().GetData()[9]) }, func() interface{} { return bool(bool(false)) }).(bool))
+	return bool(utils.InlineIf((bool((len(m.GetPayload().GetData())) > (9))), func() any { return bool(m.GetPayload().GetData()[9]) }, func() any { return bool(bool(false)) }).(bool))
 }
 
 ///////////////////////
@@ -167,7 +169,7 @@ func NewBACnetServicesSupportedTagged(header BACnetTagHeader, payload BACnetTagP
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetServicesSupportedTagged(structType interface{}) BACnetServicesSupportedTagged {
+func CastBACnetServicesSupportedTagged(structType any) BACnetServicesSupportedTagged {
 	if casted, ok := structType.(BACnetServicesSupportedTagged); ok {
 		return casted
 	}
@@ -267,52 +269,52 @@ func BACnetServicesSupportedTaggedParseWithBuffer(ctx context.Context, readBuffe
 	}
 
 	// Virtual field
-	_writeGroup := utils.InlineIf((bool((len(payload.GetData())) > (0))), func() interface{} { return bool(payload.GetData()[0]) }, func() interface{} { return bool(bool(false)) }).(bool)
+	_writeGroup := utils.InlineIf((bool((len(payload.GetData())) > (0))), func() any { return bool(payload.GetData()[0]) }, func() any { return bool(bool(false)) }).(bool)
 	writeGroup := bool(_writeGroup)
 	_ = writeGroup
 
 	// Virtual field
-	_subscribeCovPropertyMultiple := utils.InlineIf((bool((len(payload.GetData())) > (1))), func() interface{} { return bool(payload.GetData()[1]) }, func() interface{} { return bool(bool(false)) }).(bool)
+	_subscribeCovPropertyMultiple := utils.InlineIf((bool((len(payload.GetData())) > (1))), func() any { return bool(payload.GetData()[1]) }, func() any { return bool(bool(false)) }).(bool)
 	subscribeCovPropertyMultiple := bool(_subscribeCovPropertyMultiple)
 	_ = subscribeCovPropertyMultiple
 
 	// Virtual field
-	_confirmedCovNotificationMultiple := utils.InlineIf((bool((len(payload.GetData())) > (2))), func() interface{} { return bool(payload.GetData()[2]) }, func() interface{} { return bool(bool(false)) }).(bool)
+	_confirmedCovNotificationMultiple := utils.InlineIf((bool((len(payload.GetData())) > (2))), func() any { return bool(payload.GetData()[2]) }, func() any { return bool(bool(false)) }).(bool)
 	confirmedCovNotificationMultiple := bool(_confirmedCovNotificationMultiple)
 	_ = confirmedCovNotificationMultiple
 
 	// Virtual field
-	_unconfirmedCovNotificationMultiple := utils.InlineIf((bool((len(payload.GetData())) > (3))), func() interface{} { return bool(payload.GetData()[3]) }, func() interface{} { return bool(bool(false)) }).(bool)
+	_unconfirmedCovNotificationMultiple := utils.InlineIf((bool((len(payload.GetData())) > (3))), func() any { return bool(payload.GetData()[3]) }, func() any { return bool(bool(false)) }).(bool)
 	unconfirmedCovNotificationMultiple := bool(_unconfirmedCovNotificationMultiple)
 	_ = unconfirmedCovNotificationMultiple
 
 	// Virtual field
-	_whoIs := utils.InlineIf((bool((len(payload.GetData())) > (4))), func() interface{} { return bool(payload.GetData()[4]) }, func() interface{} { return bool(bool(false)) }).(bool)
+	_whoIs := utils.InlineIf((bool((len(payload.GetData())) > (4))), func() any { return bool(payload.GetData()[4]) }, func() any { return bool(bool(false)) }).(bool)
 	whoIs := bool(_whoIs)
 	_ = whoIs
 
 	// Virtual field
-	_readRange := utils.InlineIf((bool((len(payload.GetData())) > (5))), func() interface{} { return bool(payload.GetData()[5]) }, func() interface{} { return bool(bool(false)) }).(bool)
+	_readRange := utils.InlineIf((bool((len(payload.GetData())) > (5))), func() any { return bool(payload.GetData()[5]) }, func() any { return bool(bool(false)) }).(bool)
 	readRange := bool(_readRange)
 	_ = readRange
 
 	// Virtual field
-	_utcTimeSynchronization := utils.InlineIf((bool((len(payload.GetData())) > (6))), func() interface{} { return bool(payload.GetData()[6]) }, func() interface{} { return bool(bool(false)) }).(bool)
+	_utcTimeSynchronization := utils.InlineIf((bool((len(payload.GetData())) > (6))), func() any { return bool(payload.GetData()[6]) }, func() any { return bool(bool(false)) }).(bool)
 	utcTimeSynchronization := bool(_utcTimeSynchronization)
 	_ = utcTimeSynchronization
 
 	// Virtual field
-	_lifeSafetyOperation := utils.InlineIf((bool((len(payload.GetData())) > (7))), func() interface{} { return bool(payload.GetData()[7]) }, func() interface{} { return bool(bool(false)) }).(bool)
+	_lifeSafetyOperation := utils.InlineIf((bool((len(payload.GetData())) > (7))), func() any { return bool(payload.GetData()[7]) }, func() any { return bool(bool(false)) }).(bool)
 	lifeSafetyOperation := bool(_lifeSafetyOperation)
 	_ = lifeSafetyOperation
 
 	// Virtual field
-	_subscribeCovProperty := utils.InlineIf((bool((len(payload.GetData())) > (8))), func() interface{} { return bool(payload.GetData()[8]) }, func() interface{} { return bool(bool(false)) }).(bool)
+	_subscribeCovProperty := utils.InlineIf((bool((len(payload.GetData())) > (8))), func() any { return bool(payload.GetData()[8]) }, func() any { return bool(bool(false)) }).(bool)
 	subscribeCovProperty := bool(_subscribeCovProperty)
 	_ = subscribeCovProperty
 
 	// Virtual field
-	_getEventInformation := utils.InlineIf((bool((len(payload.GetData())) > (9))), func() interface{} { return bool(payload.GetData()[9]) }, func() interface{} { return bool(bool(false)) }).(bool)
+	_getEventInformation := utils.InlineIf((bool((len(payload.GetData())) > (9))), func() any { return bool(payload.GetData()[9]) }, func() any { return bool(bool(false)) }).(bool)
 	getEventInformation := bool(_getEventInformation)
 	_ = getEventInformation
 

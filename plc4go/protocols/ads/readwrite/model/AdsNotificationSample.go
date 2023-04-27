@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // AdsNotificationSample is the corresponding interface of AdsNotificationSample
 type AdsNotificationSample interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetNotificationHandle returns NotificationHandle (property field)
@@ -81,7 +83,7 @@ func NewAdsNotificationSample(notificationHandle uint32, sampleSize uint32, data
 }
 
 // Deprecated: use the interface for direct cast
-func CastAdsNotificationSample(structType interface{}) AdsNotificationSample {
+func CastAdsNotificationSample(structType any) AdsNotificationSample {
 	if casted, ok := structType.(AdsNotificationSample); ok {
 		return casted
 	}

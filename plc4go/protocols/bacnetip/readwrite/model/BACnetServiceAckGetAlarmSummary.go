@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetServiceAckGetAlarmSummary is the corresponding interface of BACnetServiceAckGetAlarmSummary
 type BACnetServiceAckGetAlarmSummary interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetServiceAck
@@ -110,7 +112,7 @@ func NewBACnetServiceAckGetAlarmSummary(objectIdentifier BACnetApplicationTagObj
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetServiceAckGetAlarmSummary(structType interface{}) BACnetServiceAckGetAlarmSummary {
+func CastBACnetServiceAckGetAlarmSummary(structType any) BACnetServiceAckGetAlarmSummary {
 	if casted, ok := structType.(BACnetServiceAckGetAlarmSummary); ok {
 		return casted
 	}

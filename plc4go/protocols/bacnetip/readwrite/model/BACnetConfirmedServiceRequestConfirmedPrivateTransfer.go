@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
@@ -30,6 +31,7 @@ import (
 
 // BACnetConfirmedServiceRequestConfirmedPrivateTransfer is the corresponding interface of BACnetConfirmedServiceRequestConfirmedPrivateTransfer
 type BACnetConfirmedServiceRequestConfirmedPrivateTransfer interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConfirmedServiceRequest
@@ -112,7 +114,7 @@ func NewBACnetConfirmedServiceRequestConfirmedPrivateTransfer(vendorId BACnetVen
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConfirmedServiceRequestConfirmedPrivateTransfer(structType interface{}) BACnetConfirmedServiceRequestConfirmedPrivateTransfer {
+func CastBACnetConfirmedServiceRequestConfirmedPrivateTransfer(structType any) BACnetConfirmedServiceRequestConfirmedPrivateTransfer {
 	if casted, ok := structType.(BACnetConfirmedServiceRequestConfirmedPrivateTransfer); ok {
 		return casted
 	}

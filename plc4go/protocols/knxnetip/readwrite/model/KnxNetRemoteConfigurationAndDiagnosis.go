@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // KnxNetRemoteConfigurationAndDiagnosis is the corresponding interface of KnxNetRemoteConfigurationAndDiagnosis
 type KnxNetRemoteConfigurationAndDiagnosis interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	ServiceId
@@ -94,7 +96,7 @@ func NewKnxNetRemoteConfigurationAndDiagnosis(version uint8) *_KnxNetRemoteConfi
 }
 
 // Deprecated: use the interface for direct cast
-func CastKnxNetRemoteConfigurationAndDiagnosis(structType interface{}) KnxNetRemoteConfigurationAndDiagnosis {
+func CastKnxNetRemoteConfigurationAndDiagnosis(structType any) KnxNetRemoteConfigurationAndDiagnosis {
 	if casted, ok := structType.(KnxNetRemoteConfigurationAndDiagnosis); ok {
 		return casted
 	}

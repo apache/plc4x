@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // FirmataCommand is the corresponding interface of FirmataCommand
 type FirmataCommand interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetCommandCode returns CommandCode (discriminator field)
@@ -76,7 +78,7 @@ func NewFirmataCommand(response bool) *_FirmataCommand {
 }
 
 // Deprecated: use the interface for direct cast
-func CastFirmataCommand(structType interface{}) FirmataCommand {
+func CastFirmataCommand(structType any) FirmataCommand {
 	if casted, ok := structType.(FirmataCommand); ok {
 		return casted
 	}
@@ -127,7 +129,7 @@ func FirmataCommandParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 		InitializeParent(FirmataCommand)
 		GetParent() FirmataCommand
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child FirmataCommandChildSerializeRequirement
 	var typeSwitchError error
 	switch {

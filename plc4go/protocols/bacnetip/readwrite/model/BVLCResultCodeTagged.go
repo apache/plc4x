@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BVLCResultCodeTagged is the corresponding interface of BVLCResultCodeTagged
 type BVLCResultCodeTagged interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetHeader returns Header (property field)
@@ -78,7 +80,7 @@ func NewBVLCResultCodeTagged(header BACnetTagHeader, value BVLCResultCode, tagNu
 }
 
 // Deprecated: use the interface for direct cast
-func CastBVLCResultCodeTagged(structType interface{}) BVLCResultCodeTagged {
+func CastBVLCResultCodeTagged(structType any) BVLCResultCodeTagged {
 	if casted, ok := structType.(BVLCResultCodeTagged); ok {
 		return casted
 	}

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // ConnectionRequestInformation is the corresponding interface of ConnectionRequestInformation
 type ConnectionRequestInformation interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetConnectionType returns ConnectionType (discriminator field)
@@ -73,7 +75,7 @@ func NewConnectionRequestInformation() *_ConnectionRequestInformation {
 }
 
 // Deprecated: use the interface for direct cast
-func CastConnectionRequestInformation(structType interface{}) ConnectionRequestInformation {
+func CastConnectionRequestInformation(structType any) ConnectionRequestInformation {
 	if casted, ok := structType.(ConnectionRequestInformation); ok {
 		return casted
 	}
@@ -134,7 +136,7 @@ func ConnectionRequestInformationParseWithBuffer(ctx context.Context, readBuffer
 		InitializeParent(ConnectionRequestInformation)
 		GetParent() ConnectionRequestInformation
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child ConnectionRequestInformationChildSerializeRequirement
 	var typeSwitchError error
 	switch {

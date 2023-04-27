@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetPropertyStateActionUnknown is the corresponding interface of BACnetPropertyStateActionUnknown
 type BACnetPropertyStateActionUnknown interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetPropertyStates
@@ -92,7 +94,7 @@ func NewBACnetPropertyStateActionUnknown(unknownValue BACnetContextTagUnknown, p
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetPropertyStateActionUnknown(structType interface{}) BACnetPropertyStateActionUnknown {
+func CastBACnetPropertyStateActionUnknown(structType any) BACnetPropertyStateActionUnknown {
 	if casted, ok := structType.(BACnetPropertyStateActionUnknown); ok {
 		return casted
 	}

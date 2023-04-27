@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataBitMask is the corresponding interface of BACnetConstructedDataBitMask
 type BACnetConstructedDataBitMask interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataBitMask(bitString BACnetApplicationTagBitString, op
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataBitMask(structType interface{}) BACnetConstructedDataBitMask {
+func CastBACnetConstructedDataBitMask(structType any) BACnetConstructedDataBitMask {
 	if casted, ok := structType.(BACnetConstructedDataBitMask); ok {
 		return casted
 	}

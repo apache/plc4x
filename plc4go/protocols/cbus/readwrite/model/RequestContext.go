@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // RequestContext is the corresponding interface of RequestContext
 type RequestContext interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetSendIdentifyRequestBefore returns SendIdentifyRequestBefore (property field)
@@ -67,7 +69,7 @@ func NewRequestContext(sendIdentifyRequestBefore bool) *_RequestContext {
 }
 
 // Deprecated: use the interface for direct cast
-func CastRequestContext(structType interface{}) RequestContext {
+func CastRequestContext(structType any) RequestContext {
 	if casted, ok := structType.(RequestContext); ok {
 		return casted
 	}

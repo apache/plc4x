@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // SecurityDataDropTamper is the corresponding interface of SecurityDataDropTamper
 type SecurityDataDropTamper interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	SecurityData
@@ -75,7 +77,7 @@ func NewSecurityDataDropTamper(commandTypeContainer SecurityCommandTypeContainer
 }
 
 // Deprecated: use the interface for direct cast
-func CastSecurityDataDropTamper(structType interface{}) SecurityDataDropTamper {
+func CastSecurityDataDropTamper(structType any) SecurityDataDropTamper {
 	if casted, ok := structType.(SecurityDataDropTamper); ok {
 		return casted
 	}

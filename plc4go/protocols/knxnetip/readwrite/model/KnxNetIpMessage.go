@@ -34,6 +34,7 @@ const KnxNetIpMessage_PROTOCOLVERSION uint8 = 0x10
 
 // KnxNetIpMessage is the corresponding interface of KnxNetIpMessage
 type KnxNetIpMessage interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetMsgType returns MsgType (discriminator field)
@@ -92,7 +93,7 @@ func NewKnxNetIpMessage() *_KnxNetIpMessage {
 }
 
 // Deprecated: use the interface for direct cast
-func CastKnxNetIpMessage(structType interface{}) KnxNetIpMessage {
+func CastKnxNetIpMessage(structType any) KnxNetIpMessage {
 	if casted, ok := structType.(KnxNetIpMessage); ok {
 		return casted
 	}
@@ -175,7 +176,7 @@ func KnxNetIpMessageParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 		InitializeParent(KnxNetIpMessage)
 		GetParent() KnxNetIpMessage
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child KnxNetIpMessageChildSerializeRequirement
 	var typeSwitchError error
 	switch {

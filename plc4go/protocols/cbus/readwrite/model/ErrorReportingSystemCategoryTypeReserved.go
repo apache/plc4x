@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // ErrorReportingSystemCategoryTypeReserved is the corresponding interface of ErrorReportingSystemCategoryTypeReserved
 type ErrorReportingSystemCategoryTypeReserved interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	ErrorReportingSystemCategoryType
@@ -95,7 +97,7 @@ func NewErrorReportingSystemCategoryTypeReserved(reservedValue uint8) *_ErrorRep
 }
 
 // Deprecated: use the interface for direct cast
-func CastErrorReportingSystemCategoryTypeReserved(structType interface{}) ErrorReportingSystemCategoryTypeReserved {
+func CastErrorReportingSystemCategoryTypeReserved(structType any) ErrorReportingSystemCategoryTypeReserved {
 	if casted, ok := structType.(ErrorReportingSystemCategoryTypeReserved); ok {
 		return casted
 	}

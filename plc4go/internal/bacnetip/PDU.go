@@ -108,7 +108,7 @@ type Address struct {
 	AddrBroadcastTuple *AddressTuple[string, uint16]
 }
 
-func NewAddress(args ...interface{}) (*Address, error) {
+func NewAddress(args ...any) (*Address, error) {
 	log.Debug().Interface("args", args).Msg("NewAddress")
 	a := &Address{}
 	a.AddrNet = nil
@@ -142,7 +142,7 @@ func NewAddress(args ...interface{}) (*Address, error) {
 }
 
 // decodeAddress Initialize the address from a string.  Lots of different forms are supported
-func (a *Address) decodeAddress(addr interface{}) error {
+func (a *Address) decodeAddress(addr any) error {
 	log.Debug().Msgf("decodeAddress %v (%T)", addr, addr)
 
 	// start out assuming this is a local station and didn't get routed
@@ -220,7 +220,7 @@ func (a *Address) decodeAddress(addr interface{}) error {
 				route_ip_addr := groups[8]
 				route_ip_port := groups[9]
 
-				a := func(...interface{}) {
+				a := func(...any) {
 
 				}
 				a(net, global_broadcast, local_broadcast, local_addr, local_ip_addr, local_ip_net, local_ip_port, route_addr, route_ip_addr, route_ip_port)
@@ -282,7 +282,7 @@ func (a *Address) decodeAddress(addr interface{}) error {
 	return nil
 }
 
-func (a *Address) Equals(other interface{}) bool {
+func (a *Address) Equals(other any) bool {
 	if a == nil && other == nil {
 		return true
 	} else if a == nil && other != nil {
@@ -375,7 +375,7 @@ func uint32ToIpv4(number uint32) net.IP {
 	return ipv4
 }
 
-func NewLocalStation(addr interface{}, route *Address) (*Address, error) {
+func NewLocalStation(addr any, route *Address) (*Address, error) {
 	l := &Address{}
 	l.AddrType = LOCAL_STATION_ADDRESS
 	l.AddrRoute = route
@@ -399,7 +399,7 @@ func NewLocalStation(addr interface{}, route *Address) (*Address, error) {
 	return l, nil
 }
 
-func NewRemoteStation(net *uint16, addr interface{}, route *Address) (*Address, error) {
+func NewRemoteStation(net *uint16, addr any, route *Address) (*Address, error) {
 	l := &Address{}
 	l.AddrType = REMOTE_STATION_ADDRESS
 	l.AddrNet = net

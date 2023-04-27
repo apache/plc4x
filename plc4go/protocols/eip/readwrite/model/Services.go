@@ -21,7 +21,7 @@ package model
 
 import (
 	"context"
-	spiContext "github.com/apache/plc4x/plc4go/spi/context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,6 +30,7 @@ import (
 
 // Services is the corresponding interface of Services
 type Services interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetOffsets returns Offsets (property field)
@@ -78,7 +79,7 @@ func NewServices(offsets []uint16, services []CipService, servicesLen uint16) *_
 }
 
 // Deprecated: use the interface for direct cast
-func CastServices(structType interface{}) Services {
+func CastServices(structType any) Services {
 	if casted, ok := structType.(Services); ok {
 		return casted
 	}
@@ -106,7 +107,7 @@ func (m *_Services) GetLengthInBits(ctx context.Context) uint16 {
 	// Array field
 	if len(m.Services) > 0 {
 		for _curItem, element := range m.Services {
-			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.Services), _curItem)
+			arrayCtx := utils.CreateArrayContext(ctx, len(m.Services), _curItem)
 			_ = arrayCtx
 			_ = _curItem
 			lengthInBits += element.(interface{ GetLengthInBits(context.Context) uint16 }).GetLengthInBits(arrayCtx)
@@ -153,7 +154,7 @@ func ServicesParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, s
 	{
 		_numItems := uint16(serviceNb)
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := spiContext.CreateArrayContext(ctx, int(_numItems), int(_curItem))
+			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
 			_ = _curItem
 			_item, _err := readBuffer.ReadUint16("", 16)
@@ -180,7 +181,7 @@ func ServicesParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, s
 	{
 		_numItems := uint16(serviceNb)
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := spiContext.CreateArrayContext(ctx, int(_numItems), int(_curItem))
+			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
 			_ = _curItem
 			_item, _err := CipServiceParseWithBuffer(arrayCtx, readBuffer, bool(false), uint16(servicesLen)/uint16(serviceNb))
@@ -249,7 +250,7 @@ func (m *_Services) SerializeWithWriteBuffer(ctx context.Context, writeBuffer ut
 	}
 	for _curItem, _element := range m.GetServices() {
 		_ = _curItem
-		arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetServices()), _curItem)
+		arrayCtx := utils.CreateArrayContext(ctx, len(m.GetServices()), _curItem)
 		_ = arrayCtx
 		_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 		if _elementErr != nil {

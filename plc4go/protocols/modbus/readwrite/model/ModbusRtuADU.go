@@ -22,6 +22,7 @@ package model
 import (
 	"context"
 	"encoding/binary"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,6 +31,7 @@ import (
 
 // ModbusRtuADU is the corresponding interface of ModbusRtuADU
 type ModbusRtuADU interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	ModbusADU
@@ -103,7 +105,7 @@ func NewModbusRtuADU(address uint8, pdu ModbusPDU, response bool) *_ModbusRtuADU
 }
 
 // Deprecated: use the interface for direct cast
-func CastModbusRtuADU(structType interface{}) ModbusRtuADU {
+func CastModbusRtuADU(structType any) ModbusRtuADU {
 	if casted, ok := structType.(ModbusRtuADU); ok {
 		return casted
 	}

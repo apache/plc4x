@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataEgressTime is the corresponding interface of BACnetConstructedDataEgressTime
 type BACnetConstructedDataEgressTime interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataEgressTime(egressTime BACnetApplicationTagUnsignedI
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataEgressTime(structType interface{}) BACnetConstructedDataEgressTime {
+func CastBACnetConstructedDataEgressTime(structType any) BACnetConstructedDataEgressTime {
 	if casted, ok := structType.(BACnetConstructedDataEgressTime); ok {
 		return casted
 	}

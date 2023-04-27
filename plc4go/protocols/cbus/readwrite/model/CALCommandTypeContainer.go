@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -31,6 +32,8 @@ import (
 type CALCommandTypeContainer uint8
 
 type ICALCommandTypeContainer interface {
+	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 	NumBytes() uint8
 	CommandType() CALCommandType
@@ -1741,8 +1744,8 @@ func CALCommandTypeContainerKnows(value uint8) bool {
 	return false
 }
 
-func CastCALCommandTypeContainer(structType interface{}) CALCommandTypeContainer {
-	castFunc := func(typ interface{}) CALCommandTypeContainer {
+func CastCALCommandTypeContainer(structType any) CALCommandTypeContainer {
+	castFunc := func(typ any) CALCommandTypeContainer {
 		if sCALCommandTypeContainer, ok := typ.(CALCommandTypeContainer); ok {
 			return sCALCommandTypeContainer
 		}

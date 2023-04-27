@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetApplicationTagOctetString is the corresponding interface of BACnetApplicationTagOctetString
 type BACnetApplicationTagOctetString interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetApplicationTag
@@ -92,7 +94,7 @@ func NewBACnetApplicationTagOctetString(payload BACnetTagPayloadOctetString, hea
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetApplicationTagOctetString(structType interface{}) BACnetApplicationTagOctetString {
+func CastBACnetApplicationTagOctetString(structType any) BACnetApplicationTagOctetString {
 	if casted, ok := structType.(BACnetApplicationTagOctetString); ok {
 		return casted
 	}

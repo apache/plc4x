@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetOptionalCharacterStringValue is the corresponding interface of BACnetOptionalCharacterStringValue
 type BACnetOptionalCharacterStringValue interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetOptionalCharacterString
@@ -92,7 +94,7 @@ func NewBACnetOptionalCharacterStringValue(characterstring BACnetApplicationTagC
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetOptionalCharacterStringValue(structType interface{}) BACnetOptionalCharacterStringValue {
+func CastBACnetOptionalCharacterStringValue(structType any) BACnetOptionalCharacterStringValue {
 	if casted, ok := structType.(BACnetOptionalCharacterStringValue); ok {
 		return casted
 	}

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataFileRecordCount is the corresponding interface of BACnetConstructedDataFileRecordCount
 type BACnetConstructedDataFileRecordCount interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataFileRecordCount(recordCount BACnetApplicationTagUns
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataFileRecordCount(structType interface{}) BACnetConstructedDataFileRecordCount {
+func CastBACnetConstructedDataFileRecordCount(structType any) BACnetConstructedDataFileRecordCount {
 	if casted, ok := structType.(BACnetConstructedDataFileRecordCount); ok {
 		return casted
 	}

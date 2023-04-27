@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetNotificationParametersOutOfRange is the corresponding interface of BACnetNotificationParametersOutOfRange
 type BACnetNotificationParametersOutOfRange interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetNotificationParameters
@@ -134,7 +136,7 @@ func NewBACnetNotificationParametersOutOfRange(innerOpeningTag BACnetOpeningTag,
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetNotificationParametersOutOfRange(structType interface{}) BACnetNotificationParametersOutOfRange {
+func CastBACnetNotificationParametersOutOfRange(structType any) BACnetNotificationParametersOutOfRange {
 	if casted, ok := structType.(BACnetNotificationParametersOutOfRange); ok {
 		return casted
 	}

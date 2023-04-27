@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // DIBDeviceInfo is the corresponding interface of DIBDeviceInfo
 type DIBDeviceInfo interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetDescriptionType returns DescriptionType (property field)
@@ -123,7 +125,7 @@ func NewDIBDeviceInfo(descriptionType uint8, knxMedium KnxMedium, deviceStatus D
 }
 
 // Deprecated: use the interface for direct cast
-func CastDIBDeviceInfo(structType interface{}) DIBDeviceInfo {
+func CastDIBDeviceInfo(structType any) DIBDeviceInfo {
 	if casted, ok := structType.(DIBDeviceInfo); ok {
 		return casted
 	}

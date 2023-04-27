@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // MFuncPropCommandReq is the corresponding interface of MFuncPropCommandReq
 type MFuncPropCommandReq interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	CEMI
@@ -76,7 +78,7 @@ func NewMFuncPropCommandReq(size uint16) *_MFuncPropCommandReq {
 }
 
 // Deprecated: use the interface for direct cast
-func CastMFuncPropCommandReq(structType interface{}) MFuncPropCommandReq {
+func CastMFuncPropCommandReq(structType any) MFuncPropCommandReq {
 	if casted, ok := structType.(MFuncPropCommandReq); ok {
 		return casted
 	}

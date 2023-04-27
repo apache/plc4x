@@ -21,7 +21,7 @@ package model
 
 import (
 	"context"
-	spiContext "github.com/apache/plc4x/plc4go/spi/context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,6 +30,7 @@ import (
 
 // BACnetConstructedDataAcceptedModes is the corresponding interface of BACnetConstructedDataAcceptedModes
 type BACnetConstructedDataAcceptedModes interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -103,7 +104,7 @@ func NewBACnetConstructedDataAcceptedModes(acceptedModes []BACnetLifeSafetyModeT
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataAcceptedModes(structType interface{}) BACnetConstructedDataAcceptedModes {
+func CastBACnetConstructedDataAcceptedModes(structType any) BACnetConstructedDataAcceptedModes {
 	if casted, ok := structType.(BACnetConstructedDataAcceptedModes); ok {
 		return casted
 	}
@@ -204,7 +205,7 @@ func (m *_BACnetConstructedDataAcceptedModes) SerializeWithWriteBuffer(ctx conte
 		}
 		for _curItem, _element := range m.GetAcceptedModes() {
 			_ = _curItem
-			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetAcceptedModes()), _curItem)
+			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetAcceptedModes()), _curItem)
 			_ = arrayCtx
 			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 			if _elementErr != nil {

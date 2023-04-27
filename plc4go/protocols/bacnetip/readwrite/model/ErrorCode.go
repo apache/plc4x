@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -31,6 +32,8 @@ import (
 type ErrorCode uint16
 
 type IErrorCode interface {
+	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 
@@ -846,8 +849,8 @@ func ErrorCodeKnows(value uint16) bool {
 	return false
 }
 
-func CastErrorCode(structType interface{}) ErrorCode {
-	castFunc := func(typ interface{}) ErrorCode {
+func CastErrorCode(structType any) ErrorCode {
+	castFunc := func(typ any) ErrorCode {
 		if sErrorCode, ok := typ.(ErrorCode); ok {
 			return sErrorCode
 		}

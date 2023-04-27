@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // Apdu is the corresponding interface of Apdu
 type Apdu interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetControl returns Control (discriminator field)
@@ -100,7 +102,7 @@ func NewApdu(numbered bool, counter uint8, dataLength uint8) *_Apdu {
 }
 
 // Deprecated: use the interface for direct cast
-func CastApdu(structType interface{}) Apdu {
+func CastApdu(structType any) Apdu {
 	if casted, ok := structType.(Apdu); ok {
 		return casted
 	}
@@ -171,7 +173,7 @@ func ApduParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, dataL
 		InitializeParent(Apdu, bool, uint8)
 		GetParent() Apdu
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child ApduChildSerializeRequirement
 	var typeSwitchError error
 	switch {

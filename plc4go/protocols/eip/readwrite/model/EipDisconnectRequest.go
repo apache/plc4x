@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // EipDisconnectRequest is the corresponding interface of EipDisconnectRequest
 type EipDisconnectRequest interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	EipPacket
@@ -89,7 +91,7 @@ func NewEipDisconnectRequest(sessionHandle uint32, status uint32, senderContext 
 }
 
 // Deprecated: use the interface for direct cast
-func CastEipDisconnectRequest(structType interface{}) EipDisconnectRequest {
+func CastEipDisconnectRequest(structType any) EipDisconnectRequest {
 	if casted, ok := structType.(EipDisconnectRequest); ok {
 		return casted
 	}

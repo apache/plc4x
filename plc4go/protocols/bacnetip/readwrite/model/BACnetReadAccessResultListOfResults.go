@@ -21,7 +21,7 @@ package model
 
 import (
 	"context"
-	spiContext "github.com/apache/plc4x/plc4go/spi/context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,6 +30,7 @@ import (
 
 // BACnetReadAccessResultListOfResults is the corresponding interface of BACnetReadAccessResultListOfResults
 type BACnetReadAccessResultListOfResults interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetOpeningTag returns OpeningTag (property field)
@@ -86,7 +87,7 @@ func NewBACnetReadAccessResultListOfResults(openingTag BACnetOpeningTag, listOfR
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetReadAccessResultListOfResults(structType interface{}) BACnetReadAccessResultListOfResults {
+func CastBACnetReadAccessResultListOfResults(structType any) BACnetReadAccessResultListOfResults {
 	if casted, ok := structType.(BACnetReadAccessResultListOfResults); ok {
 		return casted
 	}
@@ -228,7 +229,7 @@ func (m *_BACnetReadAccessResultListOfResults) SerializeWithWriteBuffer(ctx cont
 	}
 	for _curItem, _element := range m.GetListOfReadAccessProperty() {
 		_ = _curItem
-		arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetListOfReadAccessProperty()), _curItem)
+		arrayCtx := utils.CreateArrayContext(ctx, len(m.GetListOfReadAccessProperty()), _curItem)
 		_ = arrayCtx
 		_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 		if _elementErr != nil {

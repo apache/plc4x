@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // CIPDataConnected is the corresponding interface of CIPDataConnected
 type CIPDataConnected interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetValue returns Value (property field)
@@ -74,7 +76,7 @@ func NewCIPDataConnected(value uint32, tagStatus uint16) *_CIPDataConnected {
 }
 
 // Deprecated: use the interface for direct cast
-func CastCIPDataConnected(structType interface{}) CIPDataConnected {
+func CastCIPDataConnected(structType any) CIPDataConnected {
 	if casted, ok := structType.(CIPDataConnected); ok {
 		return casted
 	}

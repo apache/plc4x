@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataObjectPropertyReference is the corresponding interface of BACnetConstructedDataObjectPropertyReference
 type BACnetConstructedDataObjectPropertyReference interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataObjectPropertyReference(propertyReference BACnetDev
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataObjectPropertyReference(structType interface{}) BACnetConstructedDataObjectPropertyReference {
+func CastBACnetConstructedDataObjectPropertyReference(structType any) BACnetConstructedDataObjectPropertyReference {
 	if casted, ok := structType.(BACnetConstructedDataObjectPropertyReference); ok {
 		return casted
 	}

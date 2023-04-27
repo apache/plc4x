@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // LevelInformationCorrupted is the corresponding interface of LevelInformationCorrupted
 type LevelInformationCorrupted interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	LevelInformation
@@ -116,7 +118,7 @@ func NewLevelInformationCorrupted(corruptedNibble1 uint8, corruptedNibble2 uint8
 }
 
 // Deprecated: use the interface for direct cast
-func CastLevelInformationCorrupted(structType interface{}) LevelInformationCorrupted {
+func CastLevelInformationCorrupted(structType any) LevelInformationCorrupted {
 	if casted, ok := structType.(LevelInformationCorrupted); ok {
 		return casted
 	}

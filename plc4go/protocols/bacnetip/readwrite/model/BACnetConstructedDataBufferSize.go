@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataBufferSize is the corresponding interface of BACnetConstructedDataBufferSize
 type BACnetConstructedDataBufferSize interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataBufferSize(bufferSize BACnetApplicationTagUnsignedI
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataBufferSize(structType interface{}) BACnetConstructedDataBufferSize {
+func CastBACnetConstructedDataBufferSize(structType any) BACnetConstructedDataBufferSize {
 	if casted, ok := structType.(BACnetConstructedDataBufferSize); ok {
 		return casted
 	}

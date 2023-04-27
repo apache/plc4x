@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
@@ -30,6 +31,7 @@ import (
 
 // AirConditioningDataSetZoneHvacMode is the corresponding interface of AirConditioningDataSetZoneHvacMode
 type AirConditioningDataSetZoneHvacMode interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	AirConditioningData
@@ -141,7 +143,7 @@ func NewAirConditioningDataSetZoneHvacMode(zoneGroup byte, zoneList HVACZoneList
 }
 
 // Deprecated: use the interface for direct cast
-func CastAirConditioningDataSetZoneHvacMode(structType interface{}) AirConditioningDataSetZoneHvacMode {
+func CastAirConditioningDataSetZoneHvacMode(structType any) AirConditioningDataSetZoneHvacMode {
 	if casted, ok := structType.(AirConditioningDataSetZoneHvacMode); ok {
 		return casted
 	}

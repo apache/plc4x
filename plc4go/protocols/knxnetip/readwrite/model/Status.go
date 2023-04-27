@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -31,6 +32,8 @@ import (
 type Status uint8
 
 type IStatus interface {
+	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 
@@ -138,8 +141,8 @@ func StatusKnows(value uint8) bool {
 	return false
 }
 
-func CastStatus(structType interface{}) Status {
-	castFunc := func(typ interface{}) Status {
+func CastStatus(structType any) Status {
+	castFunc := func(typ any) Status {
 		if sStatus, ok := typ.(Status); ok {
 			return sStatus
 		}

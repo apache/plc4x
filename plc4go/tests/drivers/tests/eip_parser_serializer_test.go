@@ -22,14 +22,15 @@ package tests
 import (
 	"testing"
 
+	eipIO "github.com/apache/plc4x/plc4go/protocols/eip/readwrite"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
 	_ "github.com/apache/plc4x/plc4go/tests/initializetest"
 )
 
 func TestEipParserSerializerBigEndian(t *testing.T) {
-	testutils.RunParserSerializerTestsuite(t, "assets/testing/protocols/eip/ParserSerializerTestsuiteBigEndian.xml")
+	testutils.RunParserSerializerTestsuite(t, "assets/testing/protocols/eip/ParserSerializerTestsuiteBigEndian.xml", eipIO.EipParserHelper{})
 }
 
 func TestEipParserSerializerLittleEndian(t *testing.T) {
-	testutils.RunParserSerializerTestsuite(t, "assets/testing/protocols/eip/ParserSerializerTestsuiteLittleEndian.xml")
+	testutils.RunParserSerializerTestsuite(t, "assets/testing/protocols/eip/ParserSerializerTestsuiteLittleEndian.xml", eipIO.EipParserHelper{})
 }

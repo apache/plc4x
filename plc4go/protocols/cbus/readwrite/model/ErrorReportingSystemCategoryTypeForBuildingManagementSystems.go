@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -31,6 +32,8 @@ import (
 type ErrorReportingSystemCategoryTypeForBuildingManagementSystems uint8
 
 type IErrorReportingSystemCategoryTypeForBuildingManagementSystems interface {
+	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 
@@ -162,8 +165,8 @@ func ErrorReportingSystemCategoryTypeForBuildingManagementSystemsKnows(value uin
 	return false
 }
 
-func CastErrorReportingSystemCategoryTypeForBuildingManagementSystems(structType interface{}) ErrorReportingSystemCategoryTypeForBuildingManagementSystems {
-	castFunc := func(typ interface{}) ErrorReportingSystemCategoryTypeForBuildingManagementSystems {
+func CastErrorReportingSystemCategoryTypeForBuildingManagementSystems(structType any) ErrorReportingSystemCategoryTypeForBuildingManagementSystems {
+	castFunc := func(typ any) ErrorReportingSystemCategoryTypeForBuildingManagementSystems {
 		if sErrorReportingSystemCategoryTypeForBuildingManagementSystems, ok := typ.(ErrorReportingSystemCategoryTypeForBuildingManagementSystems); ok {
 			return sErrorReportingSystemCategoryTypeForBuildingManagementSystems
 		}

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // SALDataErrorReporting is the corresponding interface of SALDataErrorReporting
 type SALDataErrorReporting interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	SALData
@@ -96,7 +98,7 @@ func NewSALDataErrorReporting(errorReportingData ErrorReportingData, salData SAL
 }
 
 // Deprecated: use the interface for direct cast
-func CastSALDataErrorReporting(structType interface{}) SALDataErrorReporting {
+func CastSALDataErrorReporting(structType any) SALDataErrorReporting {
 	if casted, ok := structType.(SALDataErrorReporting); ok {
 		return casted
 	}

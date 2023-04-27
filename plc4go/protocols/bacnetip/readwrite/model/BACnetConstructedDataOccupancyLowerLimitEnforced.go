@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataOccupancyLowerLimitEnforced is the corresponding interface of BACnetConstructedDataOccupancyLowerLimitEnforced
 type BACnetConstructedDataOccupancyLowerLimitEnforced interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataOccupancyLowerLimitEnforced(occupancyLowerLimitEnfo
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataOccupancyLowerLimitEnforced(structType interface{}) BACnetConstructedDataOccupancyLowerLimitEnforced {
+func CastBACnetConstructedDataOccupancyLowerLimitEnforced(structType any) BACnetConstructedDataOccupancyLowerLimitEnforced {
 	if casted, ok := structType.(BACnetConstructedDataOccupancyLowerLimitEnforced); ok {
 		return casted
 	}

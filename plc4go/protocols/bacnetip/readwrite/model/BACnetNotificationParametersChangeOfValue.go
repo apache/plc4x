@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetNotificationParametersChangeOfValue is the corresponding interface of BACnetNotificationParametersChangeOfValue
 type BACnetNotificationParametersChangeOfValue interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetNotificationParameters
@@ -118,7 +120,7 @@ func NewBACnetNotificationParametersChangeOfValue(innerOpeningTag BACnetOpeningT
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetNotificationParametersChangeOfValue(structType interface{}) BACnetNotificationParametersChangeOfValue {
+func CastBACnetNotificationParametersChangeOfValue(structType any) BACnetNotificationParametersChangeOfValue {
 	if casted, ok := structType.(BACnetNotificationParametersChangeOfValue); ok {
 		return casted
 	}

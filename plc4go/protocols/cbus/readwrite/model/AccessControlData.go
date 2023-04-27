@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // AccessControlData is the corresponding interface of AccessControlData
 type AccessControlData interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetCommandTypeContainer returns CommandTypeContainer (property field)
@@ -119,7 +121,7 @@ func NewAccessControlData(commandTypeContainer AccessControlCommandTypeContainer
 }
 
 // Deprecated: use the interface for direct cast
-func CastAccessControlData(structType interface{}) AccessControlData {
+func CastAccessControlData(structType any) AccessControlData {
 	if casted, ok := structType.(AccessControlData); ok {
 		return casted
 	}
@@ -210,7 +212,7 @@ func AccessControlDataParseWithBuffer(ctx context.Context, readBuffer utils.Read
 		InitializeParent(AccessControlData, AccessControlCommandTypeContainer, byte, byte)
 		GetParent() AccessControlData
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child AccessControlDataChildSerializeRequirement
 	var typeSwitchError error
 	switch {

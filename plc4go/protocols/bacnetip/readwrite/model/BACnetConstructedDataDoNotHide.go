@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataDoNotHide is the corresponding interface of BACnetConstructedDataDoNotHide
 type BACnetConstructedDataDoNotHide interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataDoNotHide(doNotHide BACnetApplicationTagBoolean, op
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataDoNotHide(structType interface{}) BACnetConstructedDataDoNotHide {
+func CastBACnetConstructedDataDoNotHide(structType any) BACnetConstructedDataDoNotHide {
 	if casted, ok := structType.(BACnetConstructedDataDoNotHide); ok {
 		return casted
 	}

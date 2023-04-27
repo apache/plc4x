@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // CALReplyShort is the corresponding interface of CALReplyShort
 type CALReplyShort interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	CALReply
@@ -75,7 +77,7 @@ func NewCALReplyShort(calType byte, calData CALData, cBusOptions CBusOptions, re
 }
 
 // Deprecated: use the interface for direct cast
-func CastCALReplyShort(structType interface{}) CALReplyShort {
+func CastCALReplyShort(structType any) CALReplyShort {
 	if casted, ok := structType.(CALReplyShort); ok {
 		return casted
 	}

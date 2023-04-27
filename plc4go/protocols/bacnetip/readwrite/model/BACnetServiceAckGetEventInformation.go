@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetServiceAckGetEventInformation is the corresponding interface of BACnetServiceAckGetEventInformation
 type BACnetServiceAckGetEventInformation interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetServiceAck
@@ -102,7 +104,7 @@ func NewBACnetServiceAckGetEventInformation(listOfEventSummaries BACnetEventSumm
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetServiceAckGetEventInformation(structType interface{}) BACnetServiceAckGetEventInformation {
+func CastBACnetServiceAckGetEventInformation(structType any) BACnetServiceAckGetEventInformation {
 	if casted, ok := structType.(BACnetServiceAckGetEventInformation); ok {
 		return casted
 	}

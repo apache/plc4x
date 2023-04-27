@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // HVACRawLevels is the corresponding interface of HVACRawLevels
 type HVACRawLevels interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetRawValue returns RawValue (property field)
@@ -84,7 +86,7 @@ func NewHVACRawLevels(rawValue int16) *_HVACRawLevels {
 }
 
 // Deprecated: use the interface for direct cast
-func CastHVACRawLevels(structType interface{}) HVACRawLevels {
+func CastHVACRawLevels(structType any) HVACRawLevels {
 	if casted, ok := structType.(HVACRawLevels); ok {
 		return casted
 	}

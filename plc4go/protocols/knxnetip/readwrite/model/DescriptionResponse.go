@@ -22,6 +22,7 @@ package model
 import (
 	"context"
 	"encoding/binary"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,6 +31,7 @@ import (
 
 // DescriptionResponse is the corresponding interface of DescriptionResponse
 type DescriptionResponse interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	KnxNetIpMessage
@@ -103,7 +105,7 @@ func NewDescriptionResponse(dibDeviceInfo DIBDeviceInfo, dibSuppSvcFamilies DIBS
 }
 
 // Deprecated: use the interface for direct cast
-func CastDescriptionResponse(structType interface{}) DescriptionResponse {
+func CastDescriptionResponse(structType any) DescriptionResponse {
 	if casted, ok := structType.(DescriptionResponse); ok {
 		return casted
 	}

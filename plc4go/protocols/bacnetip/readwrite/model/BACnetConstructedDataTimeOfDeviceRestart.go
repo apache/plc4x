@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataTimeOfDeviceRestart is the corresponding interface of BACnetConstructedDataTimeOfDeviceRestart
 type BACnetConstructedDataTimeOfDeviceRestart interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataTimeOfDeviceRestart(timeOfDeviceRestart BACnetTimeS
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataTimeOfDeviceRestart(structType interface{}) BACnetConstructedDataTimeOfDeviceRestart {
+func CastBACnetConstructedDataTimeOfDeviceRestart(structType any) BACnetConstructedDataTimeOfDeviceRestart {
 	if casted, ok := structType.(BACnetConstructedDataTimeOfDeviceRestart); ok {
 		return casted
 	}

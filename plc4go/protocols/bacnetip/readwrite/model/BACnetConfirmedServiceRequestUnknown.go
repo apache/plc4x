@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConfirmedServiceRequestUnknown is the corresponding interface of BACnetConfirmedServiceRequestUnknown
 type BACnetConfirmedServiceRequestUnknown interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConfirmedServiceRequest
@@ -98,7 +100,7 @@ func NewBACnetConfirmedServiceRequestUnknown(unknownBytes []byte, serviceRequest
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConfirmedServiceRequestUnknown(structType interface{}) BACnetConfirmedServiceRequestUnknown {
+func CastBACnetConfirmedServiceRequestUnknown(structType any) BACnetConfirmedServiceRequestUnknown {
 	if casted, ok := structType.(BACnetConfirmedServiceRequestUnknown); ok {
 		return casted
 	}

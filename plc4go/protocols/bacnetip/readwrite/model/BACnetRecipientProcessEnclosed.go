@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetRecipientProcessEnclosed is the corresponding interface of BACnetRecipientProcessEnclosed
 type BACnetRecipientProcessEnclosed interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetOpeningTag returns OpeningTag (property field)
@@ -84,7 +86,7 @@ func NewBACnetRecipientProcessEnclosed(openingTag BACnetOpeningTag, recipientPro
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetRecipientProcessEnclosed(structType interface{}) BACnetRecipientProcessEnclosed {
+func CastBACnetRecipientProcessEnclosed(structType any) BACnetRecipientProcessEnclosed {
 	if casted, ok := structType.(BACnetRecipientProcessEnclosed); ok {
 		return casted
 	}

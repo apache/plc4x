@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -31,6 +32,8 @@ import (
 type CommandId uint16
 
 type ICommandId interface {
+	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 
@@ -126,8 +129,8 @@ func CommandIdKnows(value uint16) bool {
 	return false
 }
 
-func CastCommandId(structType interface{}) CommandId {
-	castFunc := func(typ interface{}) CommandId {
+func CastCommandId(structType any) CommandId {
+	castFunc := func(typ any) CommandId {
 		if sCommandId, ok := typ.(CommandId); ok {
 			return sCommandId
 		}

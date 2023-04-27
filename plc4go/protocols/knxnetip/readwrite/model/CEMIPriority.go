@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -31,6 +32,8 @@ import (
 type CEMIPriority uint8
 
 type ICEMIPriority interface {
+	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 
@@ -90,8 +93,8 @@ func CEMIPriorityKnows(value uint8) bool {
 	return false
 }
 
-func CastCEMIPriority(structType interface{}) CEMIPriority {
-	castFunc := func(typ interface{}) CEMIPriority {
+func CastCEMIPriority(structType any) CEMIPriority {
+	castFunc := func(typ any) CEMIPriority {
 		if sCEMIPriority, ok := typ.(CEMIPriority); ok {
 			return sCEMIPriority
 		}

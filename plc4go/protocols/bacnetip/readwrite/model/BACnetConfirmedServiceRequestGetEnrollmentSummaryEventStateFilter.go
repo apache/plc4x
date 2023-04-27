@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -31,6 +32,8 @@ import (
 type BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter uint8
 
 type IBACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter interface {
+	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 
@@ -96,8 +99,8 @@ func BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterKnows(valu
 	return false
 }
 
-func CastBACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter(structType interface{}) BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter {
-	castFunc := func(typ interface{}) BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter {
+func CastBACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter(structType any) BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter {
+	castFunc := func(typ any) BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter {
 		if sBACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter, ok := typ.(BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter); ok {
 			return sBACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter
 		}

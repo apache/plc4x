@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataPositiveIntegerValueCOVIncrement is the corresponding interface of BACnetConstructedDataPositiveIntegerValueCOVIncrement
 type BACnetConstructedDataPositiveIntegerValueCOVIncrement interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataPositiveIntegerValueCOVIncrement(covIncrement BACne
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataPositiveIntegerValueCOVIncrement(structType interface{}) BACnetConstructedDataPositiveIntegerValueCOVIncrement {
+func CastBACnetConstructedDataPositiveIntegerValueCOVIncrement(structType any) BACnetConstructedDataPositiveIntegerValueCOVIncrement {
 	if casted, ok := structType.(BACnetConstructedDataPositiveIntegerValueCOVIncrement); ok {
 		return casted
 	}

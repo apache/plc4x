@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetContextTagUnknown is the corresponding interface of BACnetContextTagUnknown
 type BACnetContextTagUnknown interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetContextTag
@@ -99,7 +101,7 @@ func NewBACnetContextTagUnknown(unknownData []byte, header BACnetTagHeader, actu
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetContextTagUnknown(structType interface{}) BACnetContextTagUnknown {
+func CastBACnetContextTagUnknown(structType any) BACnetContextTagUnknown {
 	if casted, ok := structType.(BACnetContextTagUnknown); ok {
 		return casted
 	}

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetScaleFloatScale is the corresponding interface of BACnetScaleFloatScale
 type BACnetScaleFloatScale interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetScale
@@ -92,7 +94,7 @@ func NewBACnetScaleFloatScale(floatScale BACnetContextTagReal, peekedTagHeader B
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetScaleFloatScale(structType interface{}) BACnetScaleFloatScale {
+func CastBACnetScaleFloatScale(structType any) BACnetScaleFloatScale {
 	if casted, ok := structType.(BACnetScaleFloatScale); ok {
 		return casted
 	}

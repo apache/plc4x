@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetTimerStateChangeValueBitString is the corresponding interface of BACnetTimerStateChangeValueBitString
 type BACnetTimerStateChangeValueBitString interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetTimerStateChangeValue
@@ -92,7 +94,7 @@ func NewBACnetTimerStateChangeValueBitString(bitStringValue BACnetApplicationTag
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetTimerStateChangeValueBitString(structType interface{}) BACnetTimerStateChangeValueBitString {
+func CastBACnetTimerStateChangeValueBitString(structType any) BACnetTimerStateChangeValueBitString {
 	if casted, ok := structType.(BACnetTimerStateChangeValueBitString); ok {
 		return casted
 	}

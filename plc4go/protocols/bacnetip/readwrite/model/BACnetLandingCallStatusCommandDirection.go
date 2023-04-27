@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetLandingCallStatusCommandDirection is the corresponding interface of BACnetLandingCallStatusCommandDirection
 type BACnetLandingCallStatusCommandDirection interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetLandingCallStatusCommand
@@ -92,7 +94,7 @@ func NewBACnetLandingCallStatusCommandDirection(direction BACnetLiftCarDirection
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetLandingCallStatusCommandDirection(structType interface{}) BACnetLandingCallStatusCommandDirection {
+func CastBACnetLandingCallStatusCommandDirection(structType any) BACnetLandingCallStatusCommandDirection {
 	if casted, ok := structType.(BACnetLandingCallStatusCommandDirection); ok {
 		return casted
 	}

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConfirmedServiceRequestAcknowledgeAlarm is the corresponding interface of BACnetConfirmedServiceRequestAcknowledgeAlarm
 type BACnetConfirmedServiceRequestAcknowledgeAlarm interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConfirmedServiceRequest
@@ -135,7 +137,7 @@ func NewBACnetConfirmedServiceRequestAcknowledgeAlarm(acknowledgingProcessIdenti
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConfirmedServiceRequestAcknowledgeAlarm(structType interface{}) BACnetConfirmedServiceRequestAcknowledgeAlarm {
+func CastBACnetConfirmedServiceRequestAcknowledgeAlarm(structType any) BACnetConfirmedServiceRequestAcknowledgeAlarm {
 	if casted, ok := structType.(BACnetConfirmedServiceRequestAcknowledgeAlarm); ok {
 		return casted
 	}

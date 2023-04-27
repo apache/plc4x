@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataOccupancyCountEnable is the corresponding interface of BACnetConstructedDataOccupancyCountEnable
 type BACnetConstructedDataOccupancyCountEnable interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataOccupancyCountEnable(occupancyCountEnable BACnetApp
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataOccupancyCountEnable(structType interface{}) BACnetConstructedDataOccupancyCountEnable {
+func CastBACnetConstructedDataOccupancyCountEnable(structType any) BACnetConstructedDataOccupancyCountEnable {
 	if casted, ok := structType.(BACnetConstructedDataOccupancyCountEnable); ok {
 		return casted
 	}

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataSilenced is the corresponding interface of BACnetConstructedDataSilenced
 type BACnetConstructedDataSilenced interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataSilenced(silenced BACnetSilencedStateTagged, openin
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataSilenced(structType interface{}) BACnetConstructedDataSilenced {
+func CastBACnetConstructedDataSilenced(structType any) BACnetConstructedDataSilenced {
 	if casted, ok := structType.(BACnetConstructedDataSilenced); ok {
 		return casted
 	}

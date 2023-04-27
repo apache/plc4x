@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetNotifyTypeTagged is the corresponding interface of BACnetNotifyTypeTagged
 type BACnetNotifyTypeTagged interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetHeader returns Header (property field)
@@ -78,7 +80,7 @@ func NewBACnetNotifyTypeTagged(header BACnetTagHeader, value BACnetNotifyType, t
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetNotifyTypeTagged(structType interface{}) BACnetNotifyTypeTagged {
+func CastBACnetNotifyTypeTagged(structType any) BACnetNotifyTypeTagged {
 	if casted, ok := structType.(BACnetNotifyTypeTagged); ok {
 		return casted
 	}

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetCalendarEntry is the corresponding interface of BACnetCalendarEntry
 type BACnetCalendarEntry interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetPeekedTagHeader returns PeekedTagHeader (property field)
@@ -105,7 +107,7 @@ func NewBACnetCalendarEntry(peekedTagHeader BACnetTagHeader) *_BACnetCalendarEnt
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetCalendarEntry(structType interface{}) BACnetCalendarEntry {
+func CastBACnetCalendarEntry(structType any) BACnetCalendarEntry {
 	if casted, ok := structType.(BACnetCalendarEntry); ok {
 		return casted
 	}
@@ -168,7 +170,7 @@ func BACnetCalendarEntryParseWithBuffer(ctx context.Context, readBuffer utils.Re
 		InitializeParent(BACnetCalendarEntry, BACnetTagHeader)
 		GetParent() BACnetCalendarEntry
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child BACnetCalendarEntryChildSerializeRequirement
 	var typeSwitchError error
 	switch {

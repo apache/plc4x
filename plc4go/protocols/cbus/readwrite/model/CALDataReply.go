@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // CALDataReply is the corresponding interface of CALDataReply
 type CALDataReply interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	CALData
@@ -101,7 +103,7 @@ func NewCALDataReply(paramNo Parameter, parameterValue ParameterValue, commandTy
 }
 
 // Deprecated: use the interface for direct cast
-func CastCALDataReply(structType interface{}) CALDataReply {
+func CastCALDataReply(structType any) CALDataReply {
 	if casted, ok := structType.(CALDataReply); ok {
 		return casted
 	}

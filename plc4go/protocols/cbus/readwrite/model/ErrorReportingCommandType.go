@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -31,6 +32,8 @@ import (
 type ErrorReportingCommandType uint8
 
 type IErrorReportingCommandType interface {
+	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 	NumberOfArguments() uint8
 }
@@ -124,8 +127,8 @@ func ErrorReportingCommandTypeKnows(value uint8) bool {
 	return false
 }
 
-func CastErrorReportingCommandType(structType interface{}) ErrorReportingCommandType {
-	castFunc := func(typ interface{}) ErrorReportingCommandType {
+func CastErrorReportingCommandType(structType any) ErrorReportingCommandType {
+	castFunc := func(typ any) ErrorReportingCommandType {
 		if sErrorReportingCommandType, ok := typ.(ErrorReportingCommandType); ok {
 			return sErrorReportingCommandType
 		}

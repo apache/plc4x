@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataTrackingValue is the corresponding interface of BACnetConstructedDataTrackingValue
 type BACnetConstructedDataTrackingValue interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataTrackingValue(trackingValue BACnetLifeSafetyStateTa
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataTrackingValue(structType interface{}) BACnetConstructedDataTrackingValue {
+func CastBACnetConstructedDataTrackingValue(structType any) BACnetConstructedDataTrackingValue {
 	if casted, ok := structType.(BACnetConstructedDataTrackingValue); ok {
 		return casted
 	}

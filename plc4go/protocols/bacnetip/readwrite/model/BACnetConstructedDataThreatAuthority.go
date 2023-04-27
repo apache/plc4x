@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataThreatAuthority is the corresponding interface of BACnetConstructedDataThreatAuthority
 type BACnetConstructedDataThreatAuthority interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataThreatAuthority(threatAuthority BACnetAccessThreatL
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataThreatAuthority(structType interface{}) BACnetConstructedDataThreatAuthority {
+func CastBACnetConstructedDataThreatAuthority(structType any) BACnetConstructedDataThreatAuthority {
 	if casted, ok := structType.(BACnetConstructedDataThreatAuthority); ok {
 		return casted
 	}

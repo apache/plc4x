@@ -21,7 +21,7 @@ package model
 
 import (
 	"context"
-	spiContext "github.com/apache/plc4x/plc4go/spi/context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,6 +30,7 @@ import (
 
 // BACnetPropertyValues is the corresponding interface of BACnetPropertyValues
 type BACnetPropertyValues interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetInnerOpeningTag returns InnerOpeningTag (property field)
@@ -86,7 +87,7 @@ func NewBACnetPropertyValues(innerOpeningTag BACnetOpeningTag, data []BACnetProp
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetPropertyValues(structType interface{}) BACnetPropertyValues {
+func CastBACnetPropertyValues(structType any) BACnetPropertyValues {
 	if casted, ok := structType.(BACnetPropertyValues); ok {
 		return casted
 	}
@@ -228,7 +229,7 @@ func (m *_BACnetPropertyValues) SerializeWithWriteBuffer(ctx context.Context, wr
 	}
 	for _curItem, _element := range m.GetData() {
 		_ = _curItem
-		arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetData()), _curItem)
+		arrayCtx := utils.CreateArrayContext(ctx, len(m.GetData()), _curItem)
 		_ = arrayCtx
 		_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 		if _elementErr != nil {

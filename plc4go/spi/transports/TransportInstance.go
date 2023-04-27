@@ -22,10 +22,12 @@ package transports
 import (
 	"bufio"
 	"context"
+	"fmt"
 	"github.com/pkg/errors"
 )
 
 type TransportInstance interface {
+	fmt.Stringer
 	Connect() error
 	ConnectWithContext(ctx context.Context) error
 	Close() error
@@ -36,10 +38,10 @@ type TransportInstance interface {
 	FillBuffer(until func(pos uint, currentByte byte, reader *bufio.Reader) bool) error
 	// GetNumBytesAvailableInBuffer returns the bytes currently available in buffer (!!!Careful: if you looking for a termination you have to use FillBuffer)
 	GetNumBytesAvailableInBuffer() (uint32, error)
-	PeekReadableBytes(numBytes uint32) ([]uint8, error)
-	Read(numBytes uint32) ([]uint8, error)
+	PeekReadableBytes(numBytes uint32) ([]byte, error)
+	Read(numBytes uint32) ([]byte, error)
 
-	Write(data []uint8) error
+	Write(data []byte) error
 }
 
 type DefaultBufferedTransportInstanceRequirements interface {
@@ -51,8 +53,8 @@ type DefaultBufferedTransportInstance interface {
 	ConnectWithContext(ctx context.Context) error
 	GetNumBytesAvailableInBuffer() (uint32, error)
 	FillBuffer(until func(pos uint, currentByte byte, reader *bufio.Reader) bool) error
-	PeekReadableBytes(numBytes uint32) ([]uint8, error)
-	Read(numBytes uint32) ([]uint8, error)
+	PeekReadableBytes(numBytes uint32) ([]byte, error)
+	Read(numBytes uint32) ([]byte, error)
 }
 
 func NewDefaultBufferedTransportInstance(defaultBufferedTransportInstanceRequirements DefaultBufferedTransportInstanceRequirements) DefaultBufferedTransportInstance {
@@ -103,18 +105,18 @@ func (m *defaultBufferedTransportInstance) FillBuffer(until func(pos uint, curre
 	}
 }
 
-func (m *defaultBufferedTransportInstance) PeekReadableBytes(numBytes uint32) ([]uint8, error) {
+func (m *defaultBufferedTransportInstance) PeekReadableBytes(numBytes uint32) ([]byte, error) {
 	if m.GetReader() == nil {
 		return nil, errors.New("error peeking from transport. No reader available")
 	}
 	return m.GetReader().Peek(int(numBytes))
 }
 
-func (m *defaultBufferedTransportInstance) Read(numBytes uint32) ([]uint8, error) {
+func (m *defaultBufferedTransportInstance) Read(numBytes uint32) ([]byte, error) {
 	if m.GetReader() == nil {
 		return nil, errors.New("error reading from transport. No reader available")
 	}
-	data := make([]uint8, numBytes)
+	data := make([]byte, numBytes)
 	for i := uint32(0); i < numBytes; i++ {
 		val, err := m.GetReader().ReadByte()
 		if err != nil {

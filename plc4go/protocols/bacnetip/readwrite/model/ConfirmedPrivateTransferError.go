@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
@@ -30,6 +31,7 @@ import (
 
 // ConfirmedPrivateTransferError is the corresponding interface of ConfirmedPrivateTransferError
 type ConfirmedPrivateTransferError interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetError
@@ -119,7 +121,7 @@ func NewConfirmedPrivateTransferError(errorType ErrorEnclosed, vendorId BACnetVe
 }
 
 // Deprecated: use the interface for direct cast
-func CastConfirmedPrivateTransferError(structType interface{}) ConfirmedPrivateTransferError {
+func CastConfirmedPrivateTransferError(structType any) ConfirmedPrivateTransferError {
 	if casted, ok := structType.(ConfirmedPrivateTransferError); ok {
 		return casted
 	}

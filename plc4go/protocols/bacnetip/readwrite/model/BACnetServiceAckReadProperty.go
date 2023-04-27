@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
@@ -30,6 +31,7 @@ import (
 
 // BACnetServiceAckReadProperty is the corresponding interface of BACnetServiceAckReadProperty
 type BACnetServiceAckReadProperty interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetServiceAck
@@ -119,7 +121,7 @@ func NewBACnetServiceAckReadProperty(objectIdentifier BACnetContextTagObjectIden
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetServiceAckReadProperty(structType interface{}) BACnetServiceAckReadProperty {
+func CastBACnetServiceAckReadProperty(structType any) BACnetServiceAckReadProperty {
 	if casted, ok := structType.(BACnetServiceAckReadProperty); ok {
 		return casted
 	}
@@ -227,7 +229,7 @@ func BACnetServiceAckReadPropertyParseWithBuffer(ctx context.Context, readBuffer
 		if pullErr := readBuffer.PullContext("values"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for values")
 		}
-		_val, _err := BACnetConstructedDataParseWithBuffer(ctx, readBuffer, uint8(3), objectIdentifier.GetObjectType(), propertyIdentifier.GetValue(), (CastBACnetTagPayloadUnsignedInteger(utils.InlineIf(bool((arrayIndex) != (nil)), func() interface{} { return CastBACnetTagPayloadUnsignedInteger((arrayIndex).GetPayload()) }, func() interface{} { return CastBACnetTagPayloadUnsignedInteger(nil) }))))
+		_val, _err := BACnetConstructedDataParseWithBuffer(ctx, readBuffer, uint8(3), objectIdentifier.GetObjectType(), propertyIdentifier.GetValue(), (CastBACnetTagPayloadUnsignedInteger(utils.InlineIf(bool((arrayIndex) != (nil)), func() any { return CastBACnetTagPayloadUnsignedInteger((arrayIndex).GetPayload()) }, func() any { return CastBACnetTagPayloadUnsignedInteger(nil) }))))
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")

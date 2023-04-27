@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // AdsWriteRequest is the corresponding interface of AdsWriteRequest
 type AdsWriteRequest interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	AmsPacket
@@ -121,7 +123,7 @@ func NewAdsWriteRequest(indexGroup uint32, indexOffset uint32, data []byte, targ
 }
 
 // Deprecated: use the interface for direct cast
-func CastAdsWriteRequest(structType interface{}) AdsWriteRequest {
+func CastAdsWriteRequest(structType any) AdsWriteRequest {
 	if casted, ok := structType.(AdsWriteRequest); ok {
 		return casted
 	}

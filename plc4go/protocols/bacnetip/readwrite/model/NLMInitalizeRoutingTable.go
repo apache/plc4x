@@ -21,7 +21,7 @@ package model
 
 import (
 	"context"
-	spiContext "github.com/apache/plc4x/plc4go/spi/context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,6 +30,7 @@ import (
 
 // NLMInitalizeRoutingTable is the corresponding interface of NLMInitalizeRoutingTable
 type NLMInitalizeRoutingTable interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	NLM
@@ -103,7 +104,7 @@ func NewNLMInitalizeRoutingTable(numberOfPorts uint8, portMappings []NLMInitaliz
 }
 
 // Deprecated: use the interface for direct cast
-func CastNLMInitalizeRoutingTable(structType interface{}) NLMInitalizeRoutingTable {
+func CastNLMInitalizeRoutingTable(structType any) NLMInitalizeRoutingTable {
 	if casted, ok := structType.(NLMInitalizeRoutingTable); ok {
 		return casted
 	}
@@ -126,7 +127,7 @@ func (m *_NLMInitalizeRoutingTable) GetLengthInBits(ctx context.Context) uint16 
 	// Array field
 	if len(m.PortMappings) > 0 {
 		for _curItem, element := range m.PortMappings {
-			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.PortMappings), _curItem)
+			arrayCtx := utils.CreateArrayContext(ctx, len(m.PortMappings), _curItem)
 			_ = arrayCtx
 			_ = _curItem
 			lengthInBits += element.(interface{ GetLengthInBits(context.Context) uint16 }).GetLengthInBits(arrayCtx)
@@ -173,7 +174,7 @@ func NLMInitalizeRoutingTableParseWithBuffer(ctx context.Context, readBuffer uti
 	{
 		_numItems := uint16(numberOfPorts)
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := spiContext.CreateArrayContext(ctx, int(_numItems), int(_curItem))
+			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
 			_ = _curItem
 			_item, _err := NLMInitalizeRoutingTablePortMappingParseWithBuffer(arrayCtx, readBuffer)
@@ -232,7 +233,7 @@ func (m *_NLMInitalizeRoutingTable) SerializeWithWriteBuffer(ctx context.Context
 		}
 		for _curItem, _element := range m.GetPortMappings() {
 			_ = _curItem
-			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetPortMappings()), _curItem)
+			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetPortMappings()), _curItem)
 			_ = arrayCtx
 			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 			if _elementErr != nil {

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataTimeDelayNormal is the corresponding interface of BACnetConstructedDataTimeDelayNormal
 type BACnetConstructedDataTimeDelayNormal interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataTimeDelayNormal(timeDelayNormal BACnetApplicationTa
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataTimeDelayNormal(structType interface{}) BACnetConstructedDataTimeDelayNormal {
+func CastBACnetConstructedDataTimeDelayNormal(structType any) BACnetConstructedDataTimeDelayNormal {
 	if casted, ok := structType.(BACnetConstructedDataTimeDelayNormal); ok {
 		return casted
 	}

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // ApduDataExtLinkResponse is the corresponding interface of ApduDataExtLinkResponse
 type ApduDataExtLinkResponse interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	ApduDataExt
@@ -76,7 +78,7 @@ func NewApduDataExtLinkResponse(length uint8) *_ApduDataExtLinkResponse {
 }
 
 // Deprecated: use the interface for direct cast
-func CastApduDataExtLinkResponse(structType interface{}) ApduDataExtLinkResponse {
+func CastApduDataExtLinkResponse(structType any) ApduDataExtLinkResponse {
 	if casted, ok := structType.(ApduDataExtLinkResponse); ok {
 		return casted
 	}

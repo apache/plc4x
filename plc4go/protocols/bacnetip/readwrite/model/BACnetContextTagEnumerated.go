@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetContextTagEnumerated is the corresponding interface of BACnetContextTagEnumerated
 type BACnetContextTagEnumerated interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetContextTag
@@ -113,7 +115,7 @@ func NewBACnetContextTagEnumerated(payload BACnetTagPayloadEnumerated, header BA
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetContextTagEnumerated(structType interface{}) BACnetContextTagEnumerated {
+func CastBACnetContextTagEnumerated(structType any) BACnetContextTagEnumerated {
 	if casted, ok := structType.(BACnetContextTagEnumerated); ok {
 		return casted
 	}

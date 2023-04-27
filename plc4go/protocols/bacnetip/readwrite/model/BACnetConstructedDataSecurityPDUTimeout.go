@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataSecurityPDUTimeout is the corresponding interface of BACnetConstructedDataSecurityPDUTimeout
 type BACnetConstructedDataSecurityPDUTimeout interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataSecurityPDUTimeout(securityPduTimeout BACnetApplica
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataSecurityPDUTimeout(structType interface{}) BACnetConstructedDataSecurityPDUTimeout {
+func CastBACnetConstructedDataSecurityPDUTimeout(structType any) BACnetConstructedDataSecurityPDUTimeout {
 	if casted, ok := structType.(BACnetConstructedDataSecurityPDUTimeout); ok {
 		return casted
 	}

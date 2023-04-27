@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetBinaryPVTagged is the corresponding interface of BACnetBinaryPVTagged
 type BACnetBinaryPVTagged interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetHeader returns Header (property field)
@@ -78,7 +80,7 @@ func NewBACnetBinaryPVTagged(header BACnetTagHeader, value BACnetBinaryPV, tagNu
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetBinaryPVTagged(structType interface{}) BACnetBinaryPVTagged {
+func CastBACnetBinaryPVTagged(structType any) BACnetBinaryPVTagged {
 	if casted, ok := structType.(BACnetBinaryPVTagged); ok {
 		return casted
 	}

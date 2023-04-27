@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
@@ -30,6 +31,7 @@ import (
 
 // BACnetConfirmedServiceRequestCreateObject is the corresponding interface of BACnetConfirmedServiceRequestCreateObject
 type BACnetConfirmedServiceRequestCreateObject interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConfirmedServiceRequest
@@ -104,7 +106,7 @@ func NewBACnetConfirmedServiceRequestCreateObject(objectSpecifier BACnetConfirme
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConfirmedServiceRequestCreateObject(structType interface{}) BACnetConfirmedServiceRequestCreateObject {
+func CastBACnetConfirmedServiceRequestCreateObject(structType any) BACnetConfirmedServiceRequestCreateObject {
 	if casted, ok := structType.(BACnetConfirmedServiceRequestCreateObject); ok {
 		return casted
 	}
@@ -169,7 +171,7 @@ func BACnetConfirmedServiceRequestCreateObjectParseWithBuffer(ctx context.Contex
 		if pullErr := readBuffer.PullContext("listOfValues"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for listOfValues")
 		}
-		_val, _err := BACnetPropertyValuesParseWithBuffer(ctx, readBuffer, uint8(1), CastBACnetObjectType(utils.InlineIf(objectSpecifier.GetIsObjectType(), func() interface{} { return CastBACnetObjectType(objectSpecifier.GetObjectType()) }, func() interface{} { return CastBACnetObjectType(objectSpecifier.GetObjectIdentifier().GetObjectType()) })))
+		_val, _err := BACnetPropertyValuesParseWithBuffer(ctx, readBuffer, uint8(1), CastBACnetObjectType(utils.InlineIf(objectSpecifier.GetIsObjectType(), func() any { return CastBACnetObjectType(objectSpecifier.GetObjectType()) }, func() any { return CastBACnetObjectType(objectSpecifier.GetObjectIdentifier().GetObjectType()) })))
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
@@ -30,6 +31,7 @@ import (
 
 // BACnetGroupChannelValue is the corresponding interface of BACnetGroupChannelValue
 type BACnetGroupChannelValue interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetChannel returns Channel (property field)
@@ -82,7 +84,7 @@ func NewBACnetGroupChannelValue(channel BACnetContextTagUnsignedInteger, overrid
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetGroupChannelValue(structType interface{}) BACnetGroupChannelValue {
+func CastBACnetGroupChannelValue(structType any) BACnetGroupChannelValue {
 	if casted, ok := structType.(BACnetGroupChannelValue); ok {
 		return casted
 	}

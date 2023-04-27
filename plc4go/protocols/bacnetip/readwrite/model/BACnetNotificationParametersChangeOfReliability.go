@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetNotificationParametersChangeOfReliability is the corresponding interface of BACnetNotificationParametersChangeOfReliability
 type BACnetNotificationParametersChangeOfReliability interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetNotificationParameters
@@ -126,7 +128,7 @@ func NewBACnetNotificationParametersChangeOfReliability(innerOpeningTag BACnetOp
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetNotificationParametersChangeOfReliability(structType interface{}) BACnetNotificationParametersChangeOfReliability {
+func CastBACnetNotificationParametersChangeOfReliability(structType any) BACnetNotificationParametersChangeOfReliability {
 	if casted, ok := structType.(BACnetNotificationParametersChangeOfReliability); ok {
 		return casted
 	}

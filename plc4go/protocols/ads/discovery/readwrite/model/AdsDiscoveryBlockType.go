@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -31,6 +32,8 @@ import (
 type AdsDiscoveryBlockType uint16
 
 type IAdsDiscoveryBlockType interface {
+	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 
@@ -120,8 +123,8 @@ func AdsDiscoveryBlockTypeKnows(value uint16) bool {
 	return false
 }
 
-func CastAdsDiscoveryBlockType(structType interface{}) AdsDiscoveryBlockType {
-	castFunc := func(typ interface{}) AdsDiscoveryBlockType {
+func CastAdsDiscoveryBlockType(structType any) AdsDiscoveryBlockType {
+	castFunc := func(typ any) AdsDiscoveryBlockType {
 		if sAdsDiscoveryBlockType, ok := typ.(AdsDiscoveryBlockType); ok {
 			return sAdsDiscoveryBlockType
 		}

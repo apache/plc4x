@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // NLMUpdateKeyUpdateControlFlags is the corresponding interface of NLMUpdateKeyUpdateControlFlags
 type NLMUpdateKeyUpdateControlFlags interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetSet1KeyRevisionActivationTimeExpirationTimePresent returns Set1KeyRevisionActivationTimeExpirationTimePresent (property field)
@@ -116,7 +118,7 @@ func NewNLMUpdateKeyUpdateControlFlags(set1KeyRevisionActivationTimeExpirationTi
 }
 
 // Deprecated: use the interface for direct cast
-func CastNLMUpdateKeyUpdateControlFlags(structType interface{}) NLMUpdateKeyUpdateControlFlags {
+func CastNLMUpdateKeyUpdateControlFlags(structType any) NLMUpdateKeyUpdateControlFlags {
 	if casted, ok := structType.(NLMUpdateKeyUpdateControlFlags); ok {
 		return casted
 	}

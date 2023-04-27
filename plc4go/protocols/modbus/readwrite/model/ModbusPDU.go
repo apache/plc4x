@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // ModbusPDU is the corresponding interface of ModbusPDU
 type ModbusPDU interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetErrorFlag returns ErrorFlag (discriminator field)
@@ -79,7 +81,7 @@ func NewModbusPDU() *_ModbusPDU {
 }
 
 // Deprecated: use the interface for direct cast
-func CastModbusPDU(structType interface{}) ModbusPDU {
+func CastModbusPDU(structType any) ModbusPDU {
 	if casted, ok := structType.(ModbusPDU); ok {
 		return casted
 	}
@@ -138,7 +140,7 @@ func ModbusPDUParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, 
 		InitializeParent(ModbusPDU)
 		GetParent() ModbusPDU
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child ModbusPDUChildSerializeRequirement
 	var typeSwitchError error
 	switch {

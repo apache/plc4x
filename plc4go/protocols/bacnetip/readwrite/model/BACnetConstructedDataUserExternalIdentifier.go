@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataUserExternalIdentifier is the corresponding interface of BACnetConstructedDataUserExternalIdentifier
 type BACnetConstructedDataUserExternalIdentifier interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataUserExternalIdentifier(userExternalIdentifier BACne
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataUserExternalIdentifier(structType interface{}) BACnetConstructedDataUserExternalIdentifier {
+func CastBACnetConstructedDataUserExternalIdentifier(structType any) BACnetConstructedDataUserExternalIdentifier {
 	if casted, ok := structType.(BACnetConstructedDataUserExternalIdentifier); ok {
 		return casted
 	}

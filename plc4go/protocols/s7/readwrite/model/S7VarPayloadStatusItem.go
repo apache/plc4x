@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // S7VarPayloadStatusItem is the corresponding interface of S7VarPayloadStatusItem
 type S7VarPayloadStatusItem interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetReturnCode returns ReturnCode (property field)
@@ -67,7 +69,7 @@ func NewS7VarPayloadStatusItem(returnCode DataTransportErrorCode) *_S7VarPayload
 }
 
 // Deprecated: use the interface for direct cast
-func CastS7VarPayloadStatusItem(structType interface{}) S7VarPayloadStatusItem {
+func CastS7VarPayloadStatusItem(structType any) S7VarPayloadStatusItem {
 	if casted, ok := structType.(S7VarPayloadStatusItem); ok {
 		return casted
 	}

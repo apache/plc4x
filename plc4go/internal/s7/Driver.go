@@ -20,6 +20,7 @@
 package s7
 
 import (
+	"context"
 	"net/url"
 
 	"github.com/apache/plc4x/plc4go/pkg/api"
@@ -38,15 +39,16 @@ type Driver struct {
 }
 
 func NewDriver() plc4go.PlcDriver {
-	return &Driver{
-		DefaultDriver:           _default.NewDefaultDriver("s7", "Siemens S7 (Basic)", "tcp", NewTagHandler()),
-		tm:                      *spi.NewRequestTransactionManager(1),
+	driver := &Driver{
+		tm:                      spi.NewRequestTransactionManager(1),
 		awaitSetupComplete:      true,
 		awaitDisconnectComplete: true,
 	}
+	driver.DefaultDriver = _default.NewDefaultDriver(driver, "s7", "Siemens S7 (Basic)", "tcp", NewTagHandler())
+	return driver
 }
 
-func (m *Driver) GetConnection(transportUrl url.URL, transports map[string]transports.Transport, options map[string][]string) <-chan plc4go.PlcConnectionConnectResult {
+func (m *Driver) GetConnectionWithContext(ctx context.Context, transportUrl url.URL, transports map[string]transports.Transport, options map[string][]string) <-chan plc4go.PlcConnectionConnectResult {
 	log.Debug().Stringer("transportUrl", &transportUrl).Msgf("Get connection for transport url with %d transport(s) and %d option(s)", len(transports), len(options))
 	// Get the transport specified in the url
 	transport, ok := transports[transportUrl.Scheme]
@@ -97,9 +99,9 @@ func (m *Driver) GetConnection(transportUrl url.URL, transports map[string]trans
 	driverContext.awaitDisconnectComplete = m.awaitDisconnectComplete
 
 	// Create the new connection
-	connection := NewConnection(codec, configuration, driverContext, m.GetPlcTagHandler(), &m.tm, options)
+	connection := NewConnection(codec, configuration, driverContext, m.GetPlcTagHandler(), m.tm, options)
 	log.Debug().Msg("created connection, connecting now")
-	return connection.Connect()
+	return connection.ConnectWithContext(ctx)
 }
 
 func (m *Driver) SetAwaitSetupComplete(awaitComplete bool) {

@@ -21,7 +21,7 @@ package model
 
 import (
 	"context"
-	spiContext "github.com/apache/plc4x/plc4go/spi/context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,6 +30,7 @@ import (
 
 // BACnetConstructedDataActiveCOVSubscriptions is the corresponding interface of BACnetConstructedDataActiveCOVSubscriptions
 type BACnetConstructedDataActiveCOVSubscriptions interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -103,7 +104,7 @@ func NewBACnetConstructedDataActiveCOVSubscriptions(activeCOVSubscriptions []BAC
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataActiveCOVSubscriptions(structType interface{}) BACnetConstructedDataActiveCOVSubscriptions {
+func CastBACnetConstructedDataActiveCOVSubscriptions(structType any) BACnetConstructedDataActiveCOVSubscriptions {
 	if casted, ok := structType.(BACnetConstructedDataActiveCOVSubscriptions); ok {
 		return casted
 	}
@@ -204,7 +205,7 @@ func (m *_BACnetConstructedDataActiveCOVSubscriptions) SerializeWithWriteBuffer(
 		}
 		for _curItem, _element := range m.GetActiveCOVSubscriptions() {
 			_ = _curItem
-			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetActiveCOVSubscriptions()), _curItem)
+			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetActiveCOVSubscriptions()), _curItem)
 			_ = arrayCtx
 			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 			if _elementErr != nil {

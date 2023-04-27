@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetUnconfirmedServiceRequestUnknown is the corresponding interface of BACnetUnconfirmedServiceRequestUnknown
 type BACnetUnconfirmedServiceRequestUnknown interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetUnconfirmedServiceRequest
@@ -95,7 +97,7 @@ func NewBACnetUnconfirmedServiceRequestUnknown(unknownBytes []byte, serviceReque
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetUnconfirmedServiceRequestUnknown(structType interface{}) BACnetUnconfirmedServiceRequestUnknown {
+func CastBACnetUnconfirmedServiceRequestUnknown(structType any) BACnetUnconfirmedServiceRequestUnknown {
 	if casted, ok := structType.(BACnetUnconfirmedServiceRequestUnknown); ok {
 		return casted
 	}
@@ -137,7 +139,7 @@ func BACnetUnconfirmedServiceRequestUnknownParseWithBuffer(ctx context.Context, 
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 	// Byte Array field (unknownBytes)
-	numberOfBytesunknownBytes := int(utils.InlineIf((bool((serviceRequestLength) > (0))), func() interface{} { return uint16((uint16(serviceRequestLength) - uint16(uint16(1)))) }, func() interface{} { return uint16(uint16(0)) }).(uint16))
+	numberOfBytesunknownBytes := int(utils.InlineIf((bool((serviceRequestLength) > (0))), func() any { return uint16((uint16(serviceRequestLength) - uint16(uint16(1)))) }, func() any { return uint16(uint16(0)) }).(uint16))
 	unknownBytes, _readArrayErr := readBuffer.ReadByteArray("unknownBytes", numberOfBytesunknownBytes)
 	if _readArrayErr != nil {
 		return nil, errors.Wrap(_readArrayErr, "Error parsing 'unknownBytes' field of BACnetUnconfirmedServiceRequestUnknown")

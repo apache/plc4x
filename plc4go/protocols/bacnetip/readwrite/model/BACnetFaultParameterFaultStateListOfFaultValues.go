@@ -21,7 +21,7 @@ package model
 
 import (
 	"context"
-	spiContext "github.com/apache/plc4x/plc4go/spi/context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,6 +30,7 @@ import (
 
 // BACnetFaultParameterFaultStateListOfFaultValues is the corresponding interface of BACnetFaultParameterFaultStateListOfFaultValues
 type BACnetFaultParameterFaultStateListOfFaultValues interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetOpeningTag returns OpeningTag (property field)
@@ -85,7 +86,7 @@ func NewBACnetFaultParameterFaultStateListOfFaultValues(openingTag BACnetOpening
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetFaultParameterFaultStateListOfFaultValues(structType interface{}) BACnetFaultParameterFaultStateListOfFaultValues {
+func CastBACnetFaultParameterFaultStateListOfFaultValues(structType any) BACnetFaultParameterFaultStateListOfFaultValues {
 	if casted, ok := structType.(BACnetFaultParameterFaultStateListOfFaultValues); ok {
 		return casted
 	}
@@ -226,7 +227,7 @@ func (m *_BACnetFaultParameterFaultStateListOfFaultValues) SerializeWithWriteBuf
 	}
 	for _curItem, _element := range m.GetListIfFaultValues() {
 		_ = _curItem
-		arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetListIfFaultValues()), _curItem)
+		arrayCtx := utils.CreateArrayContext(ctx, len(m.GetListIfFaultValues()), _curItem)
 		_ = arrayCtx
 		_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 		if _elementErr != nil {

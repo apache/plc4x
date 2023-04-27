@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // ApduDataExtGroupPropertyValueWrite is the corresponding interface of ApduDataExtGroupPropertyValueWrite
 type ApduDataExtGroupPropertyValueWrite interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	ApduDataExt
@@ -76,7 +78,7 @@ func NewApduDataExtGroupPropertyValueWrite(length uint8) *_ApduDataExtGroupPrope
 }
 
 // Deprecated: use the interface for direct cast
-func CastApduDataExtGroupPropertyValueWrite(structType interface{}) ApduDataExtGroupPropertyValueWrite {
+func CastApduDataExtGroupPropertyValueWrite(structType any) ApduDataExtGroupPropertyValueWrite {
 	if casted, ok := structType.(ApduDataExtGroupPropertyValueWrite); ok {
 		return casted
 	}

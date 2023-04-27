@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataCOVPeriod is the corresponding interface of BACnetConstructedDataCOVPeriod
 type BACnetConstructedDataCOVPeriod interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataCOVPeriod(covPeriod BACnetApplicationTagUnsignedInt
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataCOVPeriod(structType interface{}) BACnetConstructedDataCOVPeriod {
+func CastBACnetConstructedDataCOVPeriod(structType any) BACnetConstructedDataCOVPeriod {
 	if casted, ok := structType.(BACnetConstructedDataCOVPeriod); ok {
 		return casted
 	}

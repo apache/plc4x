@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // InterfaceOptions1PowerUpSettings is the corresponding interface of InterfaceOptions1PowerUpSettings
 type InterfaceOptions1PowerUpSettings interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetInterfaceOptions1 returns InterfaceOptions1 (property field)
@@ -67,7 +69,7 @@ func NewInterfaceOptions1PowerUpSettings(interfaceOptions1 InterfaceOptions1) *_
 }
 
 // Deprecated: use the interface for direct cast
-func CastInterfaceOptions1PowerUpSettings(structType interface{}) InterfaceOptions1PowerUpSettings {
+func CastInterfaceOptions1PowerUpSettings(structType any) InterfaceOptions1PowerUpSettings {
 	if casted, ok := structType.(InterfaceOptions1PowerUpSettings); ok {
 		return casted
 	}

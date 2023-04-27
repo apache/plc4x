@@ -33,6 +33,7 @@ const CEMIAdditionalInformationBusmonitorInfo_LEN uint8 = uint8(1)
 
 // CEMIAdditionalInformationBusmonitorInfo is the corresponding interface of CEMIAdditionalInformationBusmonitorInfo
 type CEMIAdditionalInformationBusmonitorInfo interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	CEMIAdditionalInformation
@@ -152,7 +153,7 @@ func NewCEMIAdditionalInformationBusmonitorInfo(frameErrorFlag bool, bitErrorFla
 }
 
 // Deprecated: use the interface for direct cast
-func CastCEMIAdditionalInformationBusmonitorInfo(structType interface{}) CEMIAdditionalInformationBusmonitorInfo {
+func CastCEMIAdditionalInformationBusmonitorInfo(structType any) CEMIAdditionalInformationBusmonitorInfo {
 	if casted, ok := structType.(CEMIAdditionalInformationBusmonitorInfo); ok {
 		return casted
 	}

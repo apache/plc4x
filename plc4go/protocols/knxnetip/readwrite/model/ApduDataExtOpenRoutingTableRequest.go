@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // ApduDataExtOpenRoutingTableRequest is the corresponding interface of ApduDataExtOpenRoutingTableRequest
 type ApduDataExtOpenRoutingTableRequest interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	ApduDataExt
@@ -76,7 +78,7 @@ func NewApduDataExtOpenRoutingTableRequest(length uint8) *_ApduDataExtOpenRoutin
 }
 
 // Deprecated: use the interface for direct cast
-func CastApduDataExtOpenRoutingTableRequest(structType interface{}) ApduDataExtOpenRoutingTableRequest {
+func CastApduDataExtOpenRoutingTableRequest(structType any) ApduDataExtOpenRoutingTableRequest {
 	if casted, ok := structType.(ApduDataExtOpenRoutingTableRequest); ok {
 		return casted
 	}

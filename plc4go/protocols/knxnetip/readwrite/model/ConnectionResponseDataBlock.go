@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // ConnectionResponseDataBlock is the corresponding interface of ConnectionResponseDataBlock
 type ConnectionResponseDataBlock interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetConnectionType returns ConnectionType (discriminator field)
@@ -73,7 +75,7 @@ func NewConnectionResponseDataBlock() *_ConnectionResponseDataBlock {
 }
 
 // Deprecated: use the interface for direct cast
-func CastConnectionResponseDataBlock(structType interface{}) ConnectionResponseDataBlock {
+func CastConnectionResponseDataBlock(structType any) ConnectionResponseDataBlock {
 	if casted, ok := structType.(ConnectionResponseDataBlock); ok {
 		return casted
 	}
@@ -134,7 +136,7 @@ func ConnectionResponseDataBlockParseWithBuffer(ctx context.Context, readBuffer 
 		InitializeParent(ConnectionResponseDataBlock)
 		GetParent() ConnectionResponseDataBlock
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child ConnectionResponseDataBlockChildSerializeRequirement
 	var typeSwitchError error
 	switch {

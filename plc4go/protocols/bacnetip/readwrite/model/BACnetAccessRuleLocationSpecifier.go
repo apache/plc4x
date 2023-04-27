@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -31,6 +32,8 @@ import (
 type BACnetAccessRuleLocationSpecifier uint8
 
 type IBACnetAccessRuleLocationSpecifier interface {
+	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 
@@ -78,8 +81,8 @@ func BACnetAccessRuleLocationSpecifierKnows(value uint8) bool {
 	return false
 }
 
-func CastBACnetAccessRuleLocationSpecifier(structType interface{}) BACnetAccessRuleLocationSpecifier {
-	castFunc := func(typ interface{}) BACnetAccessRuleLocationSpecifier {
+func CastBACnetAccessRuleLocationSpecifier(structType any) BACnetAccessRuleLocationSpecifier {
+	castFunc := func(typ any) BACnetAccessRuleLocationSpecifier {
 		if sBACnetAccessRuleLocationSpecifier, ok := typ.(BACnetAccessRuleLocationSpecifier); ok {
 			return sBACnetAccessRuleLocationSpecifier
 		}

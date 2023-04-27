@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -31,6 +32,8 @@ import (
 type AccessLevel uint8
 
 type IAccessLevel interface {
+	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 	Purpose() string
 	NeedsAuthentication() bool
@@ -173,8 +176,8 @@ func AccessLevelKnows(value uint8) bool {
 	return false
 }
 
-func CastAccessLevel(structType interface{}) AccessLevel {
-	castFunc := func(typ interface{}) AccessLevel {
+func CastAccessLevel(structType any) AccessLevel {
+	castFunc := func(typ any) AccessLevel {
 		if sAccessLevel, ok := typ.(AccessLevel); ok {
 			return sAccessLevel
 		}

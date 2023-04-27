@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetUnconfirmedServiceRequestIAm is the corresponding interface of BACnetUnconfirmedServiceRequestIAm
 type BACnetUnconfirmedServiceRequestIAm interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetUnconfirmedServiceRequest
@@ -119,7 +121,7 @@ func NewBACnetUnconfirmedServiceRequestIAm(deviceIdentifier BACnetApplicationTag
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetUnconfirmedServiceRequestIAm(structType interface{}) BACnetUnconfirmedServiceRequestIAm {
+func CastBACnetUnconfirmedServiceRequestIAm(structType any) BACnetUnconfirmedServiceRequestIAm {
 	if casted, ok := structType.(BACnetUnconfirmedServiceRequestIAm); ok {
 		return casted
 	}

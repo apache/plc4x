@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetAddress is the corresponding interface of BACnetAddress
 type BACnetAddress interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetNetworkNumber returns NetworkNumber (property field)
@@ -107,7 +109,7 @@ func NewBACnetAddress(networkNumber BACnetApplicationTagUnsignedInteger, macAddr
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetAddress(structType interface{}) BACnetAddress {
+func CastBACnetAddress(structType any) BACnetAddress {
 	if casted, ok := structType.(BACnetAddress); ok {
 		return casted
 	}

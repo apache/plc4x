@@ -21,7 +21,7 @@ package model
 
 import (
 	"context"
-	spiContext "github.com/apache/plc4x/plc4go/spi/context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
@@ -31,6 +31,7 @@ import (
 
 // BACnetConstructedDataAuthenticationFactors is the corresponding interface of BACnetConstructedDataAuthenticationFactors
 type BACnetConstructedDataAuthenticationFactors interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -131,7 +132,7 @@ func NewBACnetConstructedDataAuthenticationFactors(numberOfDataElements BACnetAp
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataAuthenticationFactors(structType interface{}) BACnetConstructedDataAuthenticationFactors {
+func CastBACnetConstructedDataAuthenticationFactors(structType any) BACnetConstructedDataAuthenticationFactors {
 	if casted, ok := structType.(BACnetConstructedDataAuthenticationFactors); ok {
 		return casted
 	}
@@ -287,7 +288,7 @@ func (m *_BACnetConstructedDataAuthenticationFactors) SerializeWithWriteBuffer(c
 		}
 		for _curItem, _element := range m.GetAuthenticationFactors() {
 			_ = _curItem
-			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetAuthenticationFactors()), _curItem)
+			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetAuthenticationFactors()), _curItem)
 			_ = arrayCtx
 			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 			if _elementErr != nil {

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataLockoutRelinquishTime is the corresponding interface of BACnetConstructedDataLockoutRelinquishTime
 type BACnetConstructedDataLockoutRelinquishTime interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataLockoutRelinquishTime(lockoutRelinquishTime BACnetA
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataLockoutRelinquishTime(structType interface{}) BACnetConstructedDataLockoutRelinquishTime {
+func CastBACnetConstructedDataLockoutRelinquishTime(structType any) BACnetConstructedDataLockoutRelinquishTime {
 	if casted, ok := structType.(BACnetConstructedDataLockoutRelinquishTime); ok {
 		return casted
 	}

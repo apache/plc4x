@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // SecurityDataExitDelayStarted is the corresponding interface of SecurityDataExitDelayStarted
 type SecurityDataExitDelayStarted interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	SecurityData
@@ -75,7 +77,7 @@ func NewSecurityDataExitDelayStarted(commandTypeContainer SecurityCommandTypeCon
 }
 
 // Deprecated: use the interface for direct cast
-func CastSecurityDataExitDelayStarted(structType interface{}) SecurityDataExitDelayStarted {
+func CastSecurityDataExitDelayStarted(structType any) SecurityDataExitDelayStarted {
 	if casted, ok := structType.(SecurityDataExitDelayStarted); ok {
 		return casted
 	}

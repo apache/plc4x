@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataApplicationSoftwareVersion is the corresponding interface of BACnetConstructedDataApplicationSoftwareVersion
 type BACnetConstructedDataApplicationSoftwareVersion interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataApplicationSoftwareVersion(applicationSoftwareVersi
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataApplicationSoftwareVersion(structType interface{}) BACnetConstructedDataApplicationSoftwareVersion {
+func CastBACnetConstructedDataApplicationSoftwareVersion(structType any) BACnetConstructedDataApplicationSoftwareVersion {
 	if casted, ok := structType.(BACnetConstructedDataApplicationSoftwareVersion); ok {
 		return casted
 	}

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -31,6 +32,8 @@ import (
 type ApduType uint8
 
 type IApduType interface {
+	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 
@@ -162,8 +165,8 @@ func ApduTypeKnows(value uint8) bool {
 	return false
 }
 
-func CastApduType(structType interface{}) ApduType {
-	castFunc := func(typ interface{}) ApduType {
+func CastApduType(structType any) ApduType {
+	castFunc := func(typ any) ApduType {
 		if sApduType, ok := typ.(ApduType); ok {
 			return sApduType
 		}

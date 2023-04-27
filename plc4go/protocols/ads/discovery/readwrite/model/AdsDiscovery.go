@@ -23,7 +23,6 @@ import (
 	"context"
 	"encoding/binary"
 	"fmt"
-	spiContext "github.com/apache/plc4x/plc4go/spi/context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -35,6 +34,7 @@ const AdsDiscovery_HEADER uint32 = 0x71146603
 
 // AdsDiscovery is the corresponding interface of AdsDiscovery
 type AdsDiscovery interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetRequestId returns RequestId (property field)
@@ -114,7 +114,7 @@ func NewAdsDiscovery(requestId uint32, operation Operation, amsNetId AmsNetId, p
 }
 
 // Deprecated: use the interface for direct cast
-func CastAdsDiscovery(structType interface{}) AdsDiscovery {
+func CastAdsDiscovery(structType any) AdsDiscovery {
 	if casted, ok := structType.(AdsDiscovery); ok {
 		return casted
 	}
@@ -152,7 +152,7 @@ func (m *_AdsDiscovery) GetLengthInBits(ctx context.Context) uint16 {
 	// Array field
 	if len(m.Blocks) > 0 {
 		for _curItem, element := range m.Blocks {
-			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.Blocks), _curItem)
+			arrayCtx := utils.CreateArrayContext(ctx, len(m.Blocks), _curItem)
 			_ = arrayCtx
 			_ = _curItem
 			lengthInBits += element.(interface{ GetLengthInBits(context.Context) uint16 }).GetLengthInBits(arrayCtx)
@@ -254,7 +254,7 @@ func AdsDiscoveryParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 	{
 		_numItems := uint16(numBlocks)
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := spiContext.CreateArrayContext(ctx, int(_numItems), int(_curItem))
+			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
 			_ = _curItem
 			_item, _err := AdsDiscoveryBlockParseWithBuffer(arrayCtx, readBuffer)
@@ -359,7 +359,7 @@ func (m *_AdsDiscovery) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 	}
 	for _curItem, _element := range m.GetBlocks() {
 		_ = _curItem
-		arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetBlocks()), _curItem)
+		arrayCtx := utils.CreateArrayContext(ctx, len(m.GetBlocks()), _curItem)
 		_ = arrayCtx
 		_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 		if _elementErr != nil {

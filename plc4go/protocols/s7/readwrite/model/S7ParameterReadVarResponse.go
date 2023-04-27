@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // S7ParameterReadVarResponse is the corresponding interface of S7ParameterReadVarResponse
 type S7ParameterReadVarResponse interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	S7Parameter
@@ -98,7 +100,7 @@ func NewS7ParameterReadVarResponse(numItems uint8) *_S7ParameterReadVarResponse 
 }
 
 // Deprecated: use the interface for direct cast
-func CastS7ParameterReadVarResponse(structType interface{}) S7ParameterReadVarResponse {
+func CastS7ParameterReadVarResponse(structType any) S7ParameterReadVarResponse {
 	if casted, ok := structType.(S7ParameterReadVarResponse); ok {
 		return casted
 	}

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetChannelValue is the corresponding interface of BACnetChannelValue
 type BACnetChannelValue interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetPeekedTagHeader returns PeekedTagHeader (property field)
@@ -114,7 +116,7 @@ func NewBACnetChannelValue(peekedTagHeader BACnetTagHeader) *_BACnetChannelValue
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetChannelValue(structType interface{}) BACnetChannelValue {
+func CastBACnetChannelValue(structType any) BACnetChannelValue {
 	if casted, ok := structType.(BACnetChannelValue); ok {
 		return casted
 	}
@@ -184,7 +186,7 @@ func BACnetChannelValueParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 		InitializeParent(BACnetChannelValue, BACnetTagHeader)
 		GetParent() BACnetChannelValue
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child BACnetChannelValueChildSerializeRequirement
 	var typeSwitchError error
 	switch {

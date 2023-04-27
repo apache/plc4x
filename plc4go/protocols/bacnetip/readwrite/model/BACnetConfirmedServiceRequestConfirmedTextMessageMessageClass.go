@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass is the corresponding interface of BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass
 type BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetOpeningTag returns OpeningTag (property field)
@@ -122,7 +124,7 @@ func NewBACnetConfirmedServiceRequestConfirmedTextMessageMessageClass(openingTag
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConfirmedServiceRequestConfirmedTextMessageMessageClass(structType interface{}) BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass {
+func CastBACnetConfirmedServiceRequestConfirmedTextMessageMessageClass(structType any) BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass {
 	if casted, ok := structType.(BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass); ok {
 		return casted
 	}
@@ -199,7 +201,7 @@ func BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassParseWithBuffe
 		InitializeParent(BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass, BACnetOpeningTag, BACnetTagHeader, BACnetClosingTag)
 		GetParent() BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassChildSerializeRequirement
 	var typeSwitchError error
 	switch {

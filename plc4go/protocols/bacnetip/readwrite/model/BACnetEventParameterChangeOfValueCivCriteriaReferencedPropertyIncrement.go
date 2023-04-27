@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement is the corresponding interface of BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement
 type BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetEventParameterChangeOfValueCivCriteria
@@ -94,7 +96,7 @@ func NewBACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement(
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement(structType interface{}) BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement {
+func CastBACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement(structType any) BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement {
 	if casted, ok := structType.(BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement); ok {
 		return casted
 	}

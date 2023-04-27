@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // MResetReq is the corresponding interface of MResetReq
 type MResetReq interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	CEMI
@@ -76,7 +78,7 @@ func NewMResetReq(size uint16) *_MResetReq {
 }
 
 // Deprecated: use the interface for direct cast
-func CastMResetReq(structType interface{}) MResetReq {
+func CastMResetReq(structType any) MResetReq {
 	if casted, ok := structType.(MResetReq); ok {
 		return casted
 	}

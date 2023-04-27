@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // DF1RequestCommand is the corresponding interface of DF1RequestCommand
 type DF1RequestCommand interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetFunctionCode returns FunctionCode (discriminator field)
@@ -73,7 +75,7 @@ func NewDF1RequestCommand() *_DF1RequestCommand {
 }
 
 // Deprecated: use the interface for direct cast
-func CastDF1RequestCommand(structType interface{}) DF1RequestCommand {
+func CastDF1RequestCommand(structType any) DF1RequestCommand {
 	if casted, ok := structType.(DF1RequestCommand); ok {
 		return casted
 	}
@@ -124,7 +126,7 @@ func DF1RequestCommandParseWithBuffer(ctx context.Context, readBuffer utils.Read
 		InitializeParent(DF1RequestCommand)
 		GetParent() DF1RequestCommand
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child DF1RequestCommandChildSerializeRequirement
 	var typeSwitchError error
 	switch {

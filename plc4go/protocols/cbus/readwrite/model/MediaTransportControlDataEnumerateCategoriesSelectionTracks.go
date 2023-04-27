@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // MediaTransportControlDataEnumerateCategoriesSelectionTracks is the corresponding interface of MediaTransportControlDataEnumerateCategoriesSelectionTracks
 type MediaTransportControlDataEnumerateCategoriesSelectionTracks interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	MediaTransportControlData
@@ -142,7 +144,7 @@ func NewMediaTransportControlDataEnumerateCategoriesSelectionTracks(enumerateTyp
 }
 
 // Deprecated: use the interface for direct cast
-func CastMediaTransportControlDataEnumerateCategoriesSelectionTracks(structType interface{}) MediaTransportControlDataEnumerateCategoriesSelectionTracks {
+func CastMediaTransportControlDataEnumerateCategoriesSelectionTracks(structType any) MediaTransportControlDataEnumerateCategoriesSelectionTracks {
 	if casted, ok := structType.(MediaTransportControlDataEnumerateCategoriesSelectionTracks); ok {
 		return casted
 	}

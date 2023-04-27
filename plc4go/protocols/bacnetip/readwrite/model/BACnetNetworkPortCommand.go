@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -31,6 +32,8 @@ import (
 type BACnetNetworkPortCommand uint8
 
 type IBACnetNetworkPortCommand interface {
+	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 
@@ -120,8 +123,8 @@ func BACnetNetworkPortCommandKnows(value uint8) bool {
 	return false
 }
 
-func CastBACnetNetworkPortCommand(structType interface{}) BACnetNetworkPortCommand {
-	castFunc := func(typ interface{}) BACnetNetworkPortCommand {
+func CastBACnetNetworkPortCommand(structType any) BACnetNetworkPortCommand {
+	castFunc := func(typ any) BACnetNetworkPortCommand {
 		if sBACnetNetworkPortCommand, ok := typ.(BACnetNetworkPortCommand); ok {
 			return sBACnetNetworkPortCommand
 		}

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // ConnectedAddressItem is the corresponding interface of ConnectedAddressItem
 type ConnectedAddressItem interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	TypeId
@@ -96,7 +98,7 @@ func NewConnectedAddressItem(connectionId uint32) *_ConnectedAddressItem {
 }
 
 // Deprecated: use the interface for direct cast
-func CastConnectedAddressItem(structType interface{}) ConnectedAddressItem {
+func CastConnectedAddressItem(structType any) ConnectedAddressItem {
 	if casted, ok := structType.(ConnectedAddressItem); ok {
 		return casted
 	}
@@ -147,7 +149,7 @@ func ConnectedAddressItemParseWithBuffer(ctx context.Context, readBuffer utils.R
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of ConnectedAddressItem")
 		}
 		if reserved != uint16(0x0004) {
-			Plc4xModelLog.Info().Fields(map[string]interface{}{
+			Plc4xModelLog.Info().Fields(map[string]any{
 				"expected value": uint16(0x0004),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
@@ -197,7 +199,7 @@ func (m *_ConnectedAddressItem) SerializeWithWriteBuffer(ctx context.Context, wr
 		{
 			var reserved uint16 = uint16(0x0004)
 			if m.reservedField0 != nil {
-				Plc4xModelLog.Info().Fields(map[string]interface{}{
+				Plc4xModelLog.Info().Fields(map[string]any{
 					"expected value": uint16(0x0004),
 					"got value":      reserved,
 				}).Msg("Overriding reserved field with unexpected value.")

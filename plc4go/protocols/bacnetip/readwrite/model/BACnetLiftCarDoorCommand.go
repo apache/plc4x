@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -31,6 +32,8 @@ import (
 type BACnetLiftCarDoorCommand uint8
 
 type IBACnetLiftCarDoorCommand interface {
+	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 
@@ -84,8 +87,8 @@ func BACnetLiftCarDoorCommandKnows(value uint8) bool {
 	return false
 }
 
-func CastBACnetLiftCarDoorCommand(structType interface{}) BACnetLiftCarDoorCommand {
-	castFunc := func(typ interface{}) BACnetLiftCarDoorCommand {
+func CastBACnetLiftCarDoorCommand(structType any) BACnetLiftCarDoorCommand {
+	castFunc := func(typ any) BACnetLiftCarDoorCommand {
 		if sBACnetLiftCarDoorCommand, ok := typ.(BACnetLiftCarDoorCommand); ok {
 			return sBACnetLiftCarDoorCommand
 		}

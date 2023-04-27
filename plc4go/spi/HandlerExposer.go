@@ -19,7 +19,10 @@
 
 package spi
 
+// HandlerExposer exposes PlcTagHandler and PlcValueHandler
 type HandlerExposer interface {
+	// GetPlcTagHandler returns the PlcTagHandler
 	GetPlcTagHandler() PlcTagHandler
+	// GetPlcValueHandler returns the PlcValueHandler
 	GetPlcValueHandler() PlcValueHandler
 }

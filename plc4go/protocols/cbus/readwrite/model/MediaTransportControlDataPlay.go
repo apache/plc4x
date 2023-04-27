@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // MediaTransportControlDataPlay is the corresponding interface of MediaTransportControlDataPlay
 type MediaTransportControlDataPlay interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	MediaTransportControlData
@@ -75,7 +77,7 @@ func NewMediaTransportControlDataPlay(commandTypeContainer MediaTransportControl
 }
 
 // Deprecated: use the interface for direct cast
-func CastMediaTransportControlDataPlay(structType interface{}) MediaTransportControlDataPlay {
+func CastMediaTransportControlDataPlay(structType any) MediaTransportControlDataPlay {
 	if casted, ok := structType.(MediaTransportControlDataPlay); ok {
 		return casted
 	}

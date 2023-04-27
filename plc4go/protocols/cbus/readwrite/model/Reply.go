@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // Reply is the corresponding interface of Reply
 type Reply interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetPeekedByte returns PeekedByte (property field)
@@ -92,7 +94,7 @@ func NewReply(peekedByte byte, cBusOptions CBusOptions, requestContext RequestCo
 }
 
 // Deprecated: use the interface for direct cast
-func CastReply(structType interface{}) Reply {
+func CastReply(structType any) Reply {
 	if casted, ok := structType.(Reply); ok {
 		return casted
 	}
@@ -144,7 +146,7 @@ func ReplyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cBus
 		InitializeParent(Reply, byte)
 		GetParent() Reply
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child ReplyChildSerializeRequirement
 	var typeSwitchError error
 	switch {

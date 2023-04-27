@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetKeyIdentifier is the corresponding interface of BACnetKeyIdentifier
 type BACnetKeyIdentifier interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetAlgorithm returns Algorithm (property field)
@@ -74,7 +76,7 @@ func NewBACnetKeyIdentifier(algorithm BACnetContextTagUnsignedInteger, keyId BAC
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetKeyIdentifier(structType interface{}) BACnetKeyIdentifier {
+func CastBACnetKeyIdentifier(structType any) BACnetKeyIdentifier {
 	if casted, ok := structType.(BACnetKeyIdentifier); ok {
 		return casted
 	}

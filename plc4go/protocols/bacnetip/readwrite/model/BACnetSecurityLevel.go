@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -31,6 +32,8 @@ import (
 type BACnetSecurityLevel uint8
 
 type IBACnetSecurityLevel interface {
+	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 
@@ -102,8 +105,8 @@ func BACnetSecurityLevelKnows(value uint8) bool {
 	return false
 }
 
-func CastBACnetSecurityLevel(structType interface{}) BACnetSecurityLevel {
-	castFunc := func(typ interface{}) BACnetSecurityLevel {
+func CastBACnetSecurityLevel(structType any) BACnetSecurityLevel {
+	castFunc := func(typ any) BACnetSecurityLevel {
 		if sBACnetSecurityLevel, ok := typ.(BACnetSecurityLevel); ok {
 			return sBACnetSecurityLevel
 		}

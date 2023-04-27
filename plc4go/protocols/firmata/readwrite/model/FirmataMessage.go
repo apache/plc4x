@@ -22,6 +22,7 @@ package model
 import (
 	"context"
 	"encoding/binary"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,6 +31,7 @@ import (
 
 // FirmataMessage is the corresponding interface of FirmataMessage
 type FirmataMessage interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetMessageType returns MessageType (discriminator field)
@@ -77,7 +79,7 @@ func NewFirmataMessage(response bool) *_FirmataMessage {
 }
 
 // Deprecated: use the interface for direct cast
-func CastFirmataMessage(structType interface{}) FirmataMessage {
+func CastFirmataMessage(structType any) FirmataMessage {
 	if casted, ok := structType.(FirmataMessage); ok {
 		return casted
 	}
@@ -128,7 +130,7 @@ func FirmataMessageParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 		InitializeParent(FirmataMessage)
 		GetParent() FirmataMessage
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child FirmataMessageChildSerializeRequirement
 	var typeSwitchError error
 	switch {

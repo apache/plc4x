@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetPropertyStatesLightningInProgress is the corresponding interface of BACnetPropertyStatesLightningInProgress
 type BACnetPropertyStatesLightningInProgress interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetPropertyStates
@@ -92,7 +94,7 @@ func NewBACnetPropertyStatesLightningInProgress(lightningInProgress BACnetLighti
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetPropertyStatesLightningInProgress(structType interface{}) BACnetPropertyStatesLightningInProgress {
+func CastBACnetPropertyStatesLightningInProgress(structType any) BACnetPropertyStatesLightningInProgress {
 	if casted, ok := structType.(BACnetPropertyStatesLightningInProgress); ok {
 		return casted
 	}

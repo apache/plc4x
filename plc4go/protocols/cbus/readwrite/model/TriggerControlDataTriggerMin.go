@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // TriggerControlDataTriggerMin is the corresponding interface of TriggerControlDataTriggerMin
 type TriggerControlDataTriggerMin interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	TriggerControlData
@@ -75,7 +77,7 @@ func NewTriggerControlDataTriggerMin(commandTypeContainer TriggerControlCommandT
 }
 
 // Deprecated: use the interface for direct cast
-func CastTriggerControlDataTriggerMin(structType interface{}) TriggerControlDataTriggerMin {
+func CastTriggerControlDataTriggerMin(structType any) TriggerControlDataTriggerMin {
 	if casted, ok := structType.(TriggerControlDataTriggerMin); ok {
 		return casted
 	}

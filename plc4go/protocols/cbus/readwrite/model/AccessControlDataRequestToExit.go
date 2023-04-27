@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // AccessControlDataRequestToExit is the corresponding interface of AccessControlDataRequestToExit
 type AccessControlDataRequestToExit interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	AccessControlData
@@ -76,7 +78,7 @@ func NewAccessControlDataRequestToExit(commandTypeContainer AccessControlCommand
 }
 
 // Deprecated: use the interface for direct cast
-func CastAccessControlDataRequestToExit(structType interface{}) AccessControlDataRequestToExit {
+func CastAccessControlDataRequestToExit(structType any) AccessControlDataRequestToExit {
 	if casted, ok := structType.(AccessControlDataRequestToExit); ok {
 		return casted
 	}

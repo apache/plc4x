@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
@@ -30,6 +31,7 @@ import (
 
 // BACnetConstructedDataElement is the corresponding interface of BACnetConstructedDataElement
 type BACnetConstructedDataElement interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetPeekedTagHeader returns PeekedTagHeader (property field)
@@ -159,7 +161,7 @@ func NewBACnetConstructedDataElement(peekedTagHeader BACnetTagHeader, applicatio
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataElement(structType interface{}) BACnetConstructedDataElement {
+func CastBACnetConstructedDataElement(structType any) BACnetConstructedDataElement {
 	if casted, ok := structType.(BACnetConstructedDataElement); ok {
 		return casted
 	}

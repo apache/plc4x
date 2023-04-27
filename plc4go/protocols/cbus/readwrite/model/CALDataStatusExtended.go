@@ -21,7 +21,7 @@ package model
 
 import (
 	"context"
-	spiContext "github.com/apache/plc4x/plc4go/spi/context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,6 +30,7 @@ import (
 
 // CALDataStatusExtended is the corresponding interface of CALDataStatusExtended
 type CALDataStatusExtended interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	CALData
@@ -122,15 +123,15 @@ func (m *_CALDataStatusExtended) GetLevelInformation() []LevelInformation {
 func (m *_CALDataStatusExtended) GetNumberOfStatusBytes() uint8 {
 	ctx := context.Background()
 	_ = ctx
-	return uint8(utils.InlineIf((bool(bool((m.GetCoding()) == (StatusCoding_BINARY_BY_THIS_SERIAL_INTERFACE))) || bool(bool((m.GetCoding()) == (StatusCoding_BINARY_BY_ELSEWHERE)))), func() interface{} { return uint8((uint8(m.GetCommandTypeContainer().NumBytes()) - uint8(uint8(3)))) }, func() interface{} { return uint8((uint8(0))) }).(uint8))
+	return uint8(utils.InlineIf((bool(bool((m.GetCoding()) == (StatusCoding_BINARY_BY_THIS_SERIAL_INTERFACE))) || bool(bool((m.GetCoding()) == (StatusCoding_BINARY_BY_ELSEWHERE)))), func() any { return uint8((uint8(m.GetCommandTypeContainer().NumBytes()) - uint8(uint8(3)))) }, func() any { return uint8((uint8(0))) }).(uint8))
 }
 
 func (m *_CALDataStatusExtended) GetNumberOfLevelInformation() uint8 {
 	ctx := context.Background()
 	_ = ctx
-	return uint8(utils.InlineIf((bool(bool((m.GetCoding()) == (StatusCoding_LEVEL_BY_THIS_SERIAL_INTERFACE))) || bool(bool((m.GetCoding()) == (StatusCoding_LEVEL_BY_ELSEWHERE)))), func() interface{} {
+	return uint8(utils.InlineIf((bool(bool((m.GetCoding()) == (StatusCoding_LEVEL_BY_THIS_SERIAL_INTERFACE))) || bool(bool((m.GetCoding()) == (StatusCoding_LEVEL_BY_ELSEWHERE)))), func() any {
 		return uint8((uint8((uint8(m.GetCommandTypeContainer().NumBytes()) - uint8(uint8(3)))) / uint8(uint8(2))))
-	}, func() interface{} { return uint8((uint8(0))) }).(uint8))
+	}, func() any { return uint8((uint8(0))) }).(uint8))
 }
 
 ///////////////////////
@@ -153,7 +154,7 @@ func NewCALDataStatusExtended(coding StatusCoding, application ApplicationIdCont
 }
 
 // Deprecated: use the interface for direct cast
-func CastCALDataStatusExtended(structType interface{}) CALDataStatusExtended {
+func CastCALDataStatusExtended(structType any) CALDataStatusExtended {
 	if casted, ok := structType.(CALDataStatusExtended); ok {
 		return casted
 	}
@@ -186,7 +187,7 @@ func (m *_CALDataStatusExtended) GetLengthInBits(ctx context.Context) uint16 {
 	// Array field
 	if len(m.StatusBytes) > 0 {
 		for _curItem, element := range m.StatusBytes {
-			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.StatusBytes), _curItem)
+			arrayCtx := utils.CreateArrayContext(ctx, len(m.StatusBytes), _curItem)
 			_ = arrayCtx
 			_ = _curItem
 			lengthInBits += element.(interface{ GetLengthInBits(context.Context) uint16 }).GetLengthInBits(arrayCtx)
@@ -196,7 +197,7 @@ func (m *_CALDataStatusExtended) GetLengthInBits(ctx context.Context) uint16 {
 	// Array field
 	if len(m.LevelInformation) > 0 {
 		for _curItem, element := range m.LevelInformation {
-			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.LevelInformation), _curItem)
+			arrayCtx := utils.CreateArrayContext(ctx, len(m.LevelInformation), _curItem)
 			_ = arrayCtx
 			_ = _curItem
 			lengthInBits += element.(interface{ GetLengthInBits(context.Context) uint16 }).GetLengthInBits(arrayCtx)
@@ -257,14 +258,14 @@ func CALDataStatusExtendedParseWithBuffer(ctx context.Context, readBuffer utils.
 	blockStart := _blockStart
 
 	// Virtual field
-	_numberOfStatusBytes := utils.InlineIf((bool(bool((coding) == (StatusCoding_BINARY_BY_THIS_SERIAL_INTERFACE))) || bool(bool((coding) == (StatusCoding_BINARY_BY_ELSEWHERE)))), func() interface{} { return uint8((uint8(commandTypeContainer.NumBytes()) - uint8(uint8(3)))) }, func() interface{} { return uint8((uint8(0))) }).(uint8)
+	_numberOfStatusBytes := utils.InlineIf((bool(bool((coding) == (StatusCoding_BINARY_BY_THIS_SERIAL_INTERFACE))) || bool(bool((coding) == (StatusCoding_BINARY_BY_ELSEWHERE)))), func() any { return uint8((uint8(commandTypeContainer.NumBytes()) - uint8(uint8(3)))) }, func() any { return uint8((uint8(0))) }).(uint8)
 	numberOfStatusBytes := uint8(_numberOfStatusBytes)
 	_ = numberOfStatusBytes
 
 	// Virtual field
-	_numberOfLevelInformation := utils.InlineIf((bool(bool((coding) == (StatusCoding_LEVEL_BY_THIS_SERIAL_INTERFACE))) || bool(bool((coding) == (StatusCoding_LEVEL_BY_ELSEWHERE)))), func() interface{} {
+	_numberOfLevelInformation := utils.InlineIf((bool(bool((coding) == (StatusCoding_LEVEL_BY_THIS_SERIAL_INTERFACE))) || bool(bool((coding) == (StatusCoding_LEVEL_BY_ELSEWHERE)))), func() any {
 		return uint8((uint8((uint8(commandTypeContainer.NumBytes()) - uint8(uint8(3)))) / uint8(uint8(2))))
-	}, func() interface{} { return uint8((uint8(0))) }).(uint8)
+	}, func() any { return uint8((uint8(0))) }).(uint8)
 	numberOfLevelInformation := uint8(_numberOfLevelInformation)
 	_ = numberOfLevelInformation
 
@@ -281,7 +282,7 @@ func CALDataStatusExtendedParseWithBuffer(ctx context.Context, readBuffer utils.
 	{
 		_numItems := uint16(numberOfStatusBytes)
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := spiContext.CreateArrayContext(ctx, int(_numItems), int(_curItem))
+			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
 			_ = _curItem
 			_item, _err := StatusByteParseWithBuffer(arrayCtx, readBuffer)
@@ -308,7 +309,7 @@ func CALDataStatusExtendedParseWithBuffer(ctx context.Context, readBuffer utils.
 	{
 		_numItems := uint16(numberOfLevelInformation)
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := spiContext.CreateArrayContext(ctx, int(_numItems), int(_curItem))
+			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
 			_ = _curItem
 			_item, _err := LevelInformationParseWithBuffer(arrayCtx, readBuffer)
@@ -402,7 +403,7 @@ func (m *_CALDataStatusExtended) SerializeWithWriteBuffer(ctx context.Context, w
 		}
 		for _curItem, _element := range m.GetStatusBytes() {
 			_ = _curItem
-			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetStatusBytes()), _curItem)
+			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetStatusBytes()), _curItem)
 			_ = arrayCtx
 			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 			if _elementErr != nil {
@@ -419,7 +420,7 @@ func (m *_CALDataStatusExtended) SerializeWithWriteBuffer(ctx context.Context, w
 		}
 		for _curItem, _element := range m.GetLevelInformation() {
 			_ = _curItem
-			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetLevelInformation()), _curItem)
+			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetLevelInformation()), _curItem)
 			_ = arrayCtx
 			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 			if _elementErr != nil {

@@ -33,6 +33,7 @@ const CBusCommandDeviceManagement_DELIMITER byte = 0x0
 
 // CBusCommandDeviceManagement is the corresponding interface of CBusCommandDeviceManagement
 type CBusCommandDeviceManagement interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	CBusCommand
@@ -117,7 +118,7 @@ func NewCBusCommandDeviceManagement(paramNo Parameter, parameterValue byte, head
 }
 
 // Deprecated: use the interface for direct cast
-func CastCBusCommandDeviceManagement(structType interface{}) CBusCommandDeviceManagement {
+func CastCBusCommandDeviceManagement(structType any) CBusCommandDeviceManagement {
 	if casted, ok := structType.(CBusCommandDeviceManagement); ok {
 		return casted
 	}

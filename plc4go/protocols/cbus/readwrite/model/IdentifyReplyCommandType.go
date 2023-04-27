@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // IdentifyReplyCommandType is the corresponding interface of IdentifyReplyCommandType
 type IdentifyReplyCommandType interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	IdentifyReplyCommand
@@ -94,7 +96,7 @@ func NewIdentifyReplyCommandType(unitType string, numBytes uint8) *_IdentifyRepl
 }
 
 // Deprecated: use the interface for direct cast
-func CastIdentifyReplyCommandType(structType interface{}) IdentifyReplyCommandType {
+func CastIdentifyReplyCommandType(structType any) IdentifyReplyCommandType {
 	if casted, ok := structType.(IdentifyReplyCommandType); ok {
 		return casted
 	}

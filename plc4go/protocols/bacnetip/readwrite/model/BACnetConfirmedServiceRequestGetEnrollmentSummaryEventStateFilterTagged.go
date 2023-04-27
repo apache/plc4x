@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged is the corresponding interface of BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged
 type BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetHeader returns Header (property field)
@@ -78,7 +80,7 @@ func NewBACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged(
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged(structType interface{}) BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged {
+func CastBACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged(structType any) BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged {
 	if casted, ok := structType.(BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged); ok {
 		return casted
 	}

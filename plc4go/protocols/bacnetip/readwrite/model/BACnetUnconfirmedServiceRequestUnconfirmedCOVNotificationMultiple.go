@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
@@ -30,6 +31,7 @@ import (
 
 // BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple is the corresponding interface of BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple
 type BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetUnconfirmedServiceRequest
@@ -128,7 +130,7 @@ func NewBACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple(subscr
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple(structType interface{}) BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple {
+func CastBACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple(structType any) BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple {
 	if casted, ok := structType.(BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple); ok {
 		return casted
 	}

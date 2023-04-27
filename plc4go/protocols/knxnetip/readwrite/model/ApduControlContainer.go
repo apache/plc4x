@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // ApduControlContainer is the corresponding interface of ApduControlContainer
 type ApduControlContainer interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	Apdu
@@ -97,7 +99,7 @@ func NewApduControlContainer(controlApdu ApduControl, numbered bool, counter uin
 }
 
 // Deprecated: use the interface for direct cast
-func CastApduControlContainer(structType interface{}) ApduControlContainer {
+func CastApduControlContainer(structType any) ApduControlContainer {
 	if casted, ok := structType.(ApduControlContainer); ok {
 		return casted
 	}

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // SysexCommand is the corresponding interface of SysexCommand
 type SysexCommand interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetCommandType returns CommandType (discriminator field)
@@ -76,7 +78,7 @@ func NewSysexCommand() *_SysexCommand {
 }
 
 // Deprecated: use the interface for direct cast
-func CastSysexCommand(structType interface{}) SysexCommand {
+func CastSysexCommand(structType any) SysexCommand {
 	if casted, ok := structType.(SysexCommand); ok {
 		return casted
 	}
@@ -127,7 +129,7 @@ func SysexCommandParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 		InitializeParent(SysexCommand)
 		GetParent() SysexCommand
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child SysexCommandChildSerializeRequirement
 	var typeSwitchError error
 	switch {

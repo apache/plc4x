@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // RequestEmpty is the corresponding interface of RequestEmpty
 type RequestEmpty interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	Request
@@ -78,7 +80,7 @@ func NewRequestEmpty(peekedByte RequestType, startingCR *RequestType, resetMode 
 }
 
 // Deprecated: use the interface for direct cast
-func CastRequestEmpty(structType interface{}) RequestEmpty {
+func CastRequestEmpty(structType any) RequestEmpty {
 	if casted, ok := structType.(RequestEmpty); ok {
 		return casted
 	}

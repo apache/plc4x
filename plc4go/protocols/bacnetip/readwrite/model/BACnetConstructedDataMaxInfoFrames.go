@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataMaxInfoFrames is the corresponding interface of BACnetConstructedDataMaxInfoFrames
 type BACnetConstructedDataMaxInfoFrames interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataMaxInfoFrames(maxInfoFrames BACnetApplicationTagUns
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataMaxInfoFrames(structType interface{}) BACnetConstructedDataMaxInfoFrames {
+func CastBACnetConstructedDataMaxInfoFrames(structType any) BACnetConstructedDataMaxInfoFrames {
 	if casted, ok := structType.(BACnetConstructedDataMaxInfoFrames); ok {
 		return casted
 	}

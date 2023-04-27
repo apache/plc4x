@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetLogDataLogDataTimeChange is the corresponding interface of BACnetLogDataLogDataTimeChange
 type BACnetLogDataLogDataTimeChange interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetLogData
@@ -94,7 +96,7 @@ func NewBACnetLogDataLogDataTimeChange(timeChange BACnetContextTagReal, openingT
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetLogDataLogDataTimeChange(structType interface{}) BACnetLogDataLogDataTimeChange {
+func CastBACnetLogDataLogDataTimeChange(structType any) BACnetLogDataLogDataTimeChange {
 	if casted, ok := structType.(BACnetLogDataLogDataTimeChange); ok {
 		return casted
 	}

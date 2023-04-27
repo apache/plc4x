@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetPropertyStatesAction is the corresponding interface of BACnetPropertyStatesAction
 type BACnetPropertyStatesAction interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetPropertyStates
@@ -92,7 +94,7 @@ func NewBACnetPropertyStatesAction(action BACnetActionTagged, peekedTagHeader BA
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetPropertyStatesAction(structType interface{}) BACnetPropertyStatesAction {
+func CastBACnetPropertyStatesAction(structType any) BACnetPropertyStatesAction {
 	if casted, ok := structType.(BACnetPropertyStatesAction); ok {
 		return casted
 	}

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -31,6 +32,8 @@ import (
 type ComObjectValueType uint8
 
 type IComObjectValueType interface {
+	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 	SizeInBytes() uint8
 }
@@ -234,8 +237,8 @@ func ComObjectValueTypeKnows(value uint8) bool {
 	return false
 }
 
-func CastComObjectValueType(structType interface{}) ComObjectValueType {
-	castFunc := func(typ interface{}) ComObjectValueType {
+func CastComObjectValueType(structType any) ComObjectValueType {
+	castFunc := func(typ any) ComObjectValueType {
 		if sComObjectValueType, ok := typ.(ComObjectValueType); ok {
 			return sComObjectValueType
 		}

@@ -40,12 +40,12 @@ import (
 
 type Reader struct {
 	messageCodec  spi.MessageCodec
-	tm            *spi.RequestTransactionManager
+	tm            spi.RequestTransactionManager
 	configuration Configuration
 	sessionHandle *uint32
 }
 
-func NewReader(messageCodec spi.MessageCodec, tm *spi.RequestTransactionManager, configuration Configuration, sessionHandle *uint32) *Reader {
+func NewReader(messageCodec spi.MessageCodec, tm spi.RequestTransactionManager, configuration Configuration, sessionHandle *uint32) *Reader {
 	return &Reader{
 		messageCodec:  messageCodec,
 		tm:            tm,

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetAssignedLandingCalls is the corresponding interface of BACnetAssignedLandingCalls
 type BACnetAssignedLandingCalls interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetLandingCalls returns LandingCalls (property field)
@@ -67,7 +69,7 @@ func NewBACnetAssignedLandingCalls(landingCalls BACnetAssignedLandingCallsLandin
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetAssignedLandingCalls(structType interface{}) BACnetAssignedLandingCalls {
+func CastBACnetAssignedLandingCalls(structType any) BACnetAssignedLandingCalls {
 	if casted, ok := structType.(BACnetAssignedLandingCalls); ok {
 		return casted
 	}

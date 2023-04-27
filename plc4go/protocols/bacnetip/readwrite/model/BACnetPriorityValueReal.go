@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetPriorityValueReal is the corresponding interface of BACnetPriorityValueReal
 type BACnetPriorityValueReal interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetPriorityValue
@@ -92,7 +94,7 @@ func NewBACnetPriorityValueReal(realValue BACnetApplicationTagReal, peekedTagHea
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetPriorityValueReal(structType interface{}) BACnetPriorityValueReal {
+func CastBACnetPriorityValueReal(structType any) BACnetPriorityValueReal {
 	if casted, ok := structType.(BACnetPriorityValueReal); ok {
 		return casted
 	}

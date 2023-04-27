@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // ParameterValueInterfaceOptions2 is the corresponding interface of ParameterValueInterfaceOptions2
 type ParameterValueInterfaceOptions2 interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	ParameterValue
@@ -102,7 +104,7 @@ func NewParameterValueInterfaceOptions2(value InterfaceOptions2, data []byte, nu
 }
 
 // Deprecated: use the interface for direct cast
-func CastParameterValueInterfaceOptions2(structType interface{}) ParameterValueInterfaceOptions2 {
+func CastParameterValueInterfaceOptions2(structType any) ParameterValueInterfaceOptions2 {
 	if casted, ok := structType.(ParameterValueInterfaceOptions2); ok {
 		return casted
 	}

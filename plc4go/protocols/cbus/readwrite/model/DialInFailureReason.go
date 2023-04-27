@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -31,6 +32,8 @@ import (
 type DialInFailureReason uint8
 
 type IDialInFailureReason interface {
+	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 
@@ -72,8 +75,8 @@ func DialInFailureReasonKnows(value uint8) bool {
 	return false
 }
 
-func CastDialInFailureReason(structType interface{}) DialInFailureReason {
-	castFunc := func(typ interface{}) DialInFailureReason {
+func CastDialInFailureReason(structType any) DialInFailureReason {
+	castFunc := func(typ any) DialInFailureReason {
 		if sDialInFailureReason, ok := typ.(DialInFailureReason); ok {
 			return sDialInFailureReason
 		}

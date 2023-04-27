@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // IdentifyReplyCommandUnitSummary is the corresponding interface of IdentifyReplyCommandUnitSummary
 type IdentifyReplyCommandUnitSummary interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetAssertingNetworkBurden returns AssertingNetworkBurden (property field)
@@ -116,7 +118,7 @@ func NewIdentifyReplyCommandUnitSummary(assertingNetworkBurden bool, restrikeTim
 }
 
 // Deprecated: use the interface for direct cast
-func CastIdentifyReplyCommandUnitSummary(structType interface{}) IdentifyReplyCommandUnitSummary {
+func CastIdentifyReplyCommandUnitSummary(structType any) IdentifyReplyCommandUnitSummary {
 	if casted, ok := structType.(IdentifyReplyCommandUnitSummary); ok {
 		return casted
 	}

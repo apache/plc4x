@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataPositiveIntegerValueMaxPresValue is the corresponding interface of BACnetConstructedDataPositiveIntegerValueMaxPresValue
 type BACnetConstructedDataPositiveIntegerValueMaxPresValue interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataPositiveIntegerValueMaxPresValue(maxPresValue BACne
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataPositiveIntegerValueMaxPresValue(structType interface{}) BACnetConstructedDataPositiveIntegerValueMaxPresValue {
+func CastBACnetConstructedDataPositiveIntegerValueMaxPresValue(structType any) BACnetConstructedDataPositiveIntegerValueMaxPresValue {
 	if casted, ok := structType.(BACnetConstructedDataPositiveIntegerValueMaxPresValue); ok {
 		return casted
 	}

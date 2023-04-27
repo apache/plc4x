@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataAbsenteeLimit is the corresponding interface of BACnetConstructedDataAbsenteeLimit
 type BACnetConstructedDataAbsenteeLimit interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataAbsenteeLimit(absenteeLimit BACnetApplicationTagUns
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataAbsenteeLimit(structType interface{}) BACnetConstructedDataAbsenteeLimit {
+func CastBACnetConstructedDataAbsenteeLimit(structType any) BACnetConstructedDataAbsenteeLimit {
 	if casted, ok := structType.(BACnetConstructedDataAbsenteeLimit); ok {
 		return casted
 	}

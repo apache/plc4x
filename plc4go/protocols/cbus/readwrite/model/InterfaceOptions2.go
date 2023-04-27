@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // InterfaceOptions2 is the corresponding interface of InterfaceOptions2
 type InterfaceOptions2 interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetBurden returns Burden (property field)
@@ -81,7 +83,7 @@ func NewInterfaceOptions2(burden bool, clockGen bool) *_InterfaceOptions2 {
 }
 
 // Deprecated: use the interface for direct cast
-func CastInterfaceOptions2(structType interface{}) InterfaceOptions2 {
+func CastInterfaceOptions2(structType any) InterfaceOptions2 {
 	if casted, ok := structType.(InterfaceOptions2); ok {
 		return casted
 	}
@@ -150,7 +152,7 @@ func InterfaceOptions2ParseWithBuffer(ctx context.Context, readBuffer utils.Read
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of InterfaceOptions2")
 		}
 		if reserved != bool(false) {
-			Plc4xModelLog.Info().Fields(map[string]interface{}{
+			Plc4xModelLog.Info().Fields(map[string]any{
 				"expected value": bool(false),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
@@ -174,7 +176,7 @@ func InterfaceOptions2ParseWithBuffer(ctx context.Context, readBuffer utils.Read
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of InterfaceOptions2")
 		}
 		if reserved != bool(false) {
-			Plc4xModelLog.Info().Fields(map[string]interface{}{
+			Plc4xModelLog.Info().Fields(map[string]any{
 				"expected value": bool(false),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
@@ -191,7 +193,7 @@ func InterfaceOptions2ParseWithBuffer(ctx context.Context, readBuffer utils.Read
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of InterfaceOptions2")
 		}
 		if reserved != bool(false) {
-			Plc4xModelLog.Info().Fields(map[string]interface{}{
+			Plc4xModelLog.Info().Fields(map[string]any{
 				"expected value": bool(false),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
@@ -208,7 +210,7 @@ func InterfaceOptions2ParseWithBuffer(ctx context.Context, readBuffer utils.Read
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of InterfaceOptions2")
 		}
 		if reserved != bool(false) {
-			Plc4xModelLog.Info().Fields(map[string]interface{}{
+			Plc4xModelLog.Info().Fields(map[string]any{
 				"expected value": bool(false),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
@@ -225,7 +227,7 @@ func InterfaceOptions2ParseWithBuffer(ctx context.Context, readBuffer utils.Read
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of InterfaceOptions2")
 		}
 		if reserved != bool(false) {
-			Plc4xModelLog.Info().Fields(map[string]interface{}{
+			Plc4xModelLog.Info().Fields(map[string]any{
 				"expected value": bool(false),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
@@ -242,7 +244,7 @@ func InterfaceOptions2ParseWithBuffer(ctx context.Context, readBuffer utils.Read
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of InterfaceOptions2")
 		}
 		if reserved != bool(false) {
-			Plc4xModelLog.Info().Fields(map[string]interface{}{
+			Plc4xModelLog.Info().Fields(map[string]any{
 				"expected value": bool(false),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
@@ -294,7 +296,7 @@ func (m *_InterfaceOptions2) SerializeWithWriteBuffer(ctx context.Context, write
 	{
 		var reserved bool = bool(false)
 		if m.reservedField0 != nil {
-			Plc4xModelLog.Info().Fields(map[string]interface{}{
+			Plc4xModelLog.Info().Fields(map[string]any{
 				"expected value": bool(false),
 				"got value":      reserved,
 			}).Msg("Overriding reserved field with unexpected value.")
@@ -317,7 +319,7 @@ func (m *_InterfaceOptions2) SerializeWithWriteBuffer(ctx context.Context, write
 	{
 		var reserved bool = bool(false)
 		if m.reservedField1 != nil {
-			Plc4xModelLog.Info().Fields(map[string]interface{}{
+			Plc4xModelLog.Info().Fields(map[string]any{
 				"expected value": bool(false),
 				"got value":      reserved,
 			}).Msg("Overriding reserved field with unexpected value.")
@@ -333,7 +335,7 @@ func (m *_InterfaceOptions2) SerializeWithWriteBuffer(ctx context.Context, write
 	{
 		var reserved bool = bool(false)
 		if m.reservedField2 != nil {
-			Plc4xModelLog.Info().Fields(map[string]interface{}{
+			Plc4xModelLog.Info().Fields(map[string]any{
 				"expected value": bool(false),
 				"got value":      reserved,
 			}).Msg("Overriding reserved field with unexpected value.")
@@ -349,7 +351,7 @@ func (m *_InterfaceOptions2) SerializeWithWriteBuffer(ctx context.Context, write
 	{
 		var reserved bool = bool(false)
 		if m.reservedField3 != nil {
-			Plc4xModelLog.Info().Fields(map[string]interface{}{
+			Plc4xModelLog.Info().Fields(map[string]any{
 				"expected value": bool(false),
 				"got value":      reserved,
 			}).Msg("Overriding reserved field with unexpected value.")
@@ -365,7 +367,7 @@ func (m *_InterfaceOptions2) SerializeWithWriteBuffer(ctx context.Context, write
 	{
 		var reserved bool = bool(false)
 		if m.reservedField4 != nil {
-			Plc4xModelLog.Info().Fields(map[string]interface{}{
+			Plc4xModelLog.Info().Fields(map[string]any{
 				"expected value": bool(false),
 				"got value":      reserved,
 			}).Msg("Overriding reserved field with unexpected value.")
@@ -381,7 +383,7 @@ func (m *_InterfaceOptions2) SerializeWithWriteBuffer(ctx context.Context, write
 	{
 		var reserved bool = bool(false)
 		if m.reservedField5 != nil {
-			Plc4xModelLog.Info().Fields(map[string]interface{}{
+			Plc4xModelLog.Info().Fields(map[string]any{
 				"expected value": bool(false),
 				"got value":      reserved,
 			}).Msg("Overriding reserved field with unexpected value.")

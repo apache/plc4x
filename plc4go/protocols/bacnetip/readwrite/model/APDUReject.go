@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // APDUReject is the corresponding interface of APDUReject
 type APDUReject interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	APDU
@@ -104,7 +106,7 @@ func NewAPDUReject(originalInvokeId uint8, rejectReason BACnetRejectReasonTagged
 }
 
 // Deprecated: use the interface for direct cast
-func CastAPDUReject(structType interface{}) APDUReject {
+func CastAPDUReject(structType any) APDUReject {
 	if casted, ok := structType.(APDUReject); ok {
 		return casted
 	}
@@ -158,7 +160,7 @@ func APDURejectParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer,
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of APDUReject")
 		}
 		if reserved != uint8(0x00) {
-			Plc4xModelLog.Info().Fields(map[string]interface{}{
+			Plc4xModelLog.Info().Fields(map[string]any{
 				"expected value": uint8(0x00),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
@@ -224,7 +226,7 @@ func (m *_APDUReject) SerializeWithWriteBuffer(ctx context.Context, writeBuffer 
 		{
 			var reserved uint8 = uint8(0x00)
 			if m.reservedField0 != nil {
-				Plc4xModelLog.Info().Fields(map[string]interface{}{
+				Plc4xModelLog.Info().Fields(map[string]any{
 					"expected value": uint8(0x00),
 					"got value":      reserved,
 				}).Msg("Overriding reserved field with unexpected value.")

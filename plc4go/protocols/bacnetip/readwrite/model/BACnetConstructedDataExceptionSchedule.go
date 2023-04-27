@@ -21,7 +21,7 @@ package model
 
 import (
 	"context"
-	spiContext "github.com/apache/plc4x/plc4go/spi/context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
@@ -31,6 +31,7 @@ import (
 
 // BACnetConstructedDataExceptionSchedule is the corresponding interface of BACnetConstructedDataExceptionSchedule
 type BACnetConstructedDataExceptionSchedule interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -131,7 +132,7 @@ func NewBACnetConstructedDataExceptionSchedule(numberOfDataElements BACnetApplic
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataExceptionSchedule(structType interface{}) BACnetConstructedDataExceptionSchedule {
+func CastBACnetConstructedDataExceptionSchedule(structType any) BACnetConstructedDataExceptionSchedule {
 	if casted, ok := structType.(BACnetConstructedDataExceptionSchedule); ok {
 		return casted
 	}
@@ -287,7 +288,7 @@ func (m *_BACnetConstructedDataExceptionSchedule) SerializeWithWriteBuffer(ctx c
 		}
 		for _curItem, _element := range m.GetExceptionSchedule() {
 			_ = _curItem
-			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetExceptionSchedule()), _curItem)
+			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetExceptionSchedule()), _curItem)
 			_ = arrayCtx
 			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 			if _elementErr != nil {

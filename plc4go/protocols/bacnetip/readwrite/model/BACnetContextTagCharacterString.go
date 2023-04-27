@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetContextTagCharacterString is the corresponding interface of BACnetContextTagCharacterString
 type BACnetContextTagCharacterString interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetContextTag
@@ -113,7 +115,7 @@ func NewBACnetContextTagCharacterString(payload BACnetTagPayloadCharacterString,
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetContextTagCharacterString(structType interface{}) BACnetContextTagCharacterString {
+func CastBACnetContextTagCharacterString(structType any) BACnetContextTagCharacterString {
 	if casted, ok := structType.(BACnetContextTagCharacterString); ok {
 		return casted
 	}

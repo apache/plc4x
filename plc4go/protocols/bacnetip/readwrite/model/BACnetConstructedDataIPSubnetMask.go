@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataIPSubnetMask is the corresponding interface of BACnetConstructedDataIPSubnetMask
 type BACnetConstructedDataIPSubnetMask interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataIPSubnetMask(ipSubnetMask BACnetApplicationTagOctet
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataIPSubnetMask(structType interface{}) BACnetConstructedDataIPSubnetMask {
+func CastBACnetConstructedDataIPSubnetMask(structType any) BACnetConstructedDataIPSubnetMask {
 	if casted, ok := structType.(BACnetConstructedDataIPSubnetMask); ok {
 		return casted
 	}

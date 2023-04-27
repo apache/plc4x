@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // SecurityDataLineCutAlarmCleared is the corresponding interface of SecurityDataLineCutAlarmCleared
 type SecurityDataLineCutAlarmCleared interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	SecurityData
@@ -75,7 +77,7 @@ func NewSecurityDataLineCutAlarmCleared(commandTypeContainer SecurityCommandType
 }
 
 // Deprecated: use the interface for direct cast
-func CastSecurityDataLineCutAlarmCleared(structType interface{}) SecurityDataLineCutAlarmCleared {
+func CastSecurityDataLineCutAlarmCleared(structType any) SecurityDataLineCutAlarmCleared {
 	if casted, ok := structType.(SecurityDataLineCutAlarmCleared); ok {
 		return casted
 	}

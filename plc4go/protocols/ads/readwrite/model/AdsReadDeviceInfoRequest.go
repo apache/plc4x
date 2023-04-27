@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // AdsReadDeviceInfoRequest is the corresponding interface of AdsReadDeviceInfoRequest
 type AdsReadDeviceInfoRequest interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	AmsPacket
@@ -87,7 +89,7 @@ func NewAdsReadDeviceInfoRequest(targetAmsNetId AmsNetId, targetAmsPort uint16, 
 }
 
 // Deprecated: use the interface for direct cast
-func CastAdsReadDeviceInfoRequest(structType interface{}) AdsReadDeviceInfoRequest {
+func CastAdsReadDeviceInfoRequest(structType any) AdsReadDeviceInfoRequest {
 	if casted, ok := structType.(AdsReadDeviceInfoRequest); ok {
 		return casted
 	}

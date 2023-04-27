@@ -21,7 +21,7 @@ package model
 
 import (
 	"context"
-	spiContext "github.com/apache/plc4x/plc4go/spi/context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,6 +30,7 @@ import (
 
 // BACnetConstructedDataManualSlaveAddressBinding is the corresponding interface of BACnetConstructedDataManualSlaveAddressBinding
 type BACnetConstructedDataManualSlaveAddressBinding interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -103,7 +104,7 @@ func NewBACnetConstructedDataManualSlaveAddressBinding(manualSlaveAddressBinding
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataManualSlaveAddressBinding(structType interface{}) BACnetConstructedDataManualSlaveAddressBinding {
+func CastBACnetConstructedDataManualSlaveAddressBinding(structType any) BACnetConstructedDataManualSlaveAddressBinding {
 	if casted, ok := structType.(BACnetConstructedDataManualSlaveAddressBinding); ok {
 		return casted
 	}
@@ -204,7 +205,7 @@ func (m *_BACnetConstructedDataManualSlaveAddressBinding) SerializeWithWriteBuff
 		}
 		for _curItem, _element := range m.GetManualSlaveAddressBinding() {
 			_ = _curItem
-			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetManualSlaveAddressBinding()), _curItem)
+			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetManualSlaveAddressBinding()), _curItem)
 			_ = arrayCtx
 			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 			if _elementErr != nil {

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // GetAttributeSingleRequest is the corresponding interface of GetAttributeSingleRequest
 type GetAttributeSingleRequest interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	CipService
@@ -84,7 +86,7 @@ func NewGetAttributeSingleRequest(serviceLen uint16) *_GetAttributeSingleRequest
 }
 
 // Deprecated: use the interface for direct cast
-func CastGetAttributeSingleRequest(structType interface{}) GetAttributeSingleRequest {
+func CastGetAttributeSingleRequest(structType any) GetAttributeSingleRequest {
 	if casted, ok := structType.(GetAttributeSingleRequest); ok {
 		return casted
 	}

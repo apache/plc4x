@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // LogicalSegmentType is the corresponding interface of LogicalSegmentType
 type LogicalSegmentType interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetLogicalSegmentType returns LogicalSegmentType (discriminator field)
@@ -73,7 +75,7 @@ func NewLogicalSegmentType() *_LogicalSegmentType {
 }
 
 // Deprecated: use the interface for direct cast
-func CastLogicalSegmentType(structType interface{}) LogicalSegmentType {
+func CastLogicalSegmentType(structType any) LogicalSegmentType {
 	if casted, ok := structType.(LogicalSegmentType); ok {
 		return casted
 	}
@@ -124,7 +126,7 @@ func LogicalSegmentTypeParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 		InitializeParent(LogicalSegmentType)
 		GetParent() LogicalSegmentType
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child LogicalSegmentTypeChildSerializeRequirement
 	var typeSwitchError error
 	switch {

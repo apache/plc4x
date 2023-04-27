@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // SALDataSecurity is the corresponding interface of SALDataSecurity
 type SALDataSecurity interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	SALData
@@ -96,7 +98,7 @@ func NewSALDataSecurity(securityData SecurityData, salData SALData) *_SALDataSec
 }
 
 // Deprecated: use the interface for direct cast
-func CastSALDataSecurity(structType interface{}) SALDataSecurity {
+func CastSALDataSecurity(structType any) SALDataSecurity {
 	if casted, ok := structType.(SALDataSecurity); ok {
 		return casted
 	}

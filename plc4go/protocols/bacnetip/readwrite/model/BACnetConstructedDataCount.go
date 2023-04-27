@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataCount is the corresponding interface of BACnetConstructedDataCount
 type BACnetConstructedDataCount interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataCount(count BACnetApplicationTagUnsignedInteger, op
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataCount(structType interface{}) BACnetConstructedDataCount {
+func CastBACnetConstructedDataCount(structType any) BACnetConstructedDataCount {
 	if casted, ok := structType.(BACnetConstructedDataCount); ok {
 		return casted
 	}

@@ -21,7 +21,7 @@ package model
 
 import (
 	"context"
-	spiContext "github.com/apache/plc4x/plc4go/spi/context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,6 +30,7 @@ import (
 
 // BACnetConstructedDataLandingCalls is the corresponding interface of BACnetConstructedDataLandingCalls
 type BACnetConstructedDataLandingCalls interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -103,7 +104,7 @@ func NewBACnetConstructedDataLandingCalls(landingCallStatus []BACnetLandingCallS
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataLandingCalls(structType interface{}) BACnetConstructedDataLandingCalls {
+func CastBACnetConstructedDataLandingCalls(structType any) BACnetConstructedDataLandingCalls {
 	if casted, ok := structType.(BACnetConstructedDataLandingCalls); ok {
 		return casted
 	}
@@ -204,7 +205,7 @@ func (m *_BACnetConstructedDataLandingCalls) SerializeWithWriteBuffer(ctx contex
 		}
 		for _curItem, _element := range m.GetLandingCallStatus() {
 			_ = _curItem
-			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetLandingCallStatus()), _curItem)
+			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetLandingCallStatus()), _curItem)
 			_ = arrayCtx
 			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 			if _elementErr != nil {

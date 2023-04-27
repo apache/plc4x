@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // AdsDiscoveryBlockVersion is the corresponding interface of AdsDiscoveryBlockVersion
 type AdsDiscoveryBlockVersion interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	AdsDiscoveryBlock
@@ -94,7 +96,7 @@ func NewAdsDiscoveryBlockVersion(versionData []byte) *_AdsDiscoveryBlockVersion 
 }
 
 // Deprecated: use the interface for direct cast
-func CastAdsDiscoveryBlockVersion(structType interface{}) AdsDiscoveryBlockVersion {
+func CastAdsDiscoveryBlockVersion(structType any) AdsDiscoveryBlockVersion {
 	if casted, ok := structType.(AdsDiscoveryBlockVersion); ok {
 		return casted
 	}

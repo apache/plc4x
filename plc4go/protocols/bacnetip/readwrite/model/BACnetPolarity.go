@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -31,6 +32,8 @@ import (
 type BACnetPolarity uint8
 
 type IBACnetPolarity interface {
+	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 
@@ -78,8 +81,8 @@ func BACnetPolarityKnows(value uint8) bool {
 	return false
 }
 
-func CastBACnetPolarity(structType interface{}) BACnetPolarity {
-	castFunc := func(typ interface{}) BACnetPolarity {
+func CastBACnetPolarity(structType any) BACnetPolarity {
+	castFunc := func(typ any) BACnetPolarity {
 		if sBACnetPolarity, ok := typ.(BACnetPolarity); ok {
 			return sBACnetPolarity
 		}

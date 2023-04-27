@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // MPropWriteCon is the corresponding interface of MPropWriteCon
 type MPropWriteCon interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	CEMI
@@ -76,7 +78,7 @@ func NewMPropWriteCon(size uint16) *_MPropWriteCon {
 }
 
 // Deprecated: use the interface for direct cast
-func CastMPropWriteCon(structType interface{}) MPropWriteCon {
+func CastMPropWriteCon(structType any) MPropWriteCon {
 	if casted, ok := structType.(MPropWriteCon); ok {
 		return casted
 	}

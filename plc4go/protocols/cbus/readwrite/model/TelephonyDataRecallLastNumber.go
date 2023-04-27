@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // TelephonyDataRecallLastNumber is the corresponding interface of TelephonyDataRecallLastNumber
 type TelephonyDataRecallLastNumber interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	TelephonyData
@@ -126,7 +128,7 @@ func NewTelephonyDataRecallLastNumber(recallLastNumberType byte, number string, 
 }
 
 // Deprecated: use the interface for direct cast
-func CastTelephonyDataRecallLastNumber(structType interface{}) TelephonyDataRecallLastNumber {
+func CastTelephonyDataRecallLastNumber(structType any) TelephonyDataRecallLastNumber {
 	if casted, ok := structType.(TelephonyDataRecallLastNumber); ok {
 		return casted
 	}

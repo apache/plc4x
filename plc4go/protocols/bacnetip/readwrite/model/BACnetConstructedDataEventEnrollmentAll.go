@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataEventEnrollmentAll is the corresponding interface of BACnetConstructedDataEventEnrollmentAll
 type BACnetConstructedDataEventEnrollmentAll interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -84,7 +86,7 @@ func NewBACnetConstructedDataEventEnrollmentAll(openingTag BACnetOpeningTag, pee
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataEventEnrollmentAll(structType interface{}) BACnetConstructedDataEventEnrollmentAll {
+func CastBACnetConstructedDataEventEnrollmentAll(structType any) BACnetConstructedDataEventEnrollmentAll {
 	if casted, ok := structType.(BACnetConstructedDataEventEnrollmentAll); ok {
 		return casted
 	}

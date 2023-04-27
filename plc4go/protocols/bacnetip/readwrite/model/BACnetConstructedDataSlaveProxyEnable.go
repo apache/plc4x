@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataSlaveProxyEnable is the corresponding interface of BACnetConstructedDataSlaveProxyEnable
 type BACnetConstructedDataSlaveProxyEnable interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataSlaveProxyEnable(slaveProxyEnable BACnetApplication
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataSlaveProxyEnable(structType interface{}) BACnetConstructedDataSlaveProxyEnable {
+func CastBACnetConstructedDataSlaveProxyEnable(structType any) BACnetConstructedDataSlaveProxyEnable {
 	if casted, ok := structType.(BACnetConstructedDataSlaveProxyEnable); ok {
 		return casted
 	}

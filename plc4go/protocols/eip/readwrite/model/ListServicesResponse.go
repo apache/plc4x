@@ -21,7 +21,7 @@ package model
 
 import (
 	"context"
-	spiContext "github.com/apache/plc4x/plc4go/spi/context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,6 +30,7 @@ import (
 
 // ListServicesResponse is the corresponding interface of ListServicesResponse
 type ListServicesResponse interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	EipPacket
@@ -108,7 +109,7 @@ func NewListServicesResponse(typeIds []TypeId, sessionHandle uint32, status uint
 }
 
 // Deprecated: use the interface for direct cast
-func CastListServicesResponse(structType interface{}) ListServicesResponse {
+func CastListServicesResponse(structType any) ListServicesResponse {
 	if casted, ok := structType.(ListServicesResponse); ok {
 		return casted
 	}
@@ -131,7 +132,7 @@ func (m *_ListServicesResponse) GetLengthInBits(ctx context.Context) uint16 {
 	// Array field
 	if len(m.TypeIds) > 0 {
 		for _curItem, element := range m.TypeIds {
-			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.TypeIds), _curItem)
+			arrayCtx := utils.CreateArrayContext(ctx, len(m.TypeIds), _curItem)
 			_ = arrayCtx
 			_ = _curItem
 			lengthInBits += element.(interface{ GetLengthInBits(context.Context) uint16 }).GetLengthInBits(arrayCtx)
@@ -178,7 +179,7 @@ func ListServicesResponseParseWithBuffer(ctx context.Context, readBuffer utils.R
 	{
 		_numItems := uint16(typeIdCount)
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := spiContext.CreateArrayContext(ctx, int(_numItems), int(_curItem))
+			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
 			_ = _curItem
 			_item, _err := TypeIdParseWithBuffer(arrayCtx, readBuffer)
@@ -234,7 +235,7 @@ func (m *_ListServicesResponse) SerializeWithWriteBuffer(ctx context.Context, wr
 		}
 		for _curItem, _element := range m.GetTypeIds() {
 			_ = _curItem
-			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetTypeIds()), _curItem)
+			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetTypeIds()), _curItem)
 			_ = arrayCtx
 			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 			if _elementErr != nil {

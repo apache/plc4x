@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // LightingDataTerminateRamp is the corresponding interface of LightingDataTerminateRamp
 type LightingDataTerminateRamp interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	LightingData
@@ -92,7 +94,7 @@ func NewLightingDataTerminateRamp(group byte, commandTypeContainer LightingComma
 }
 
 // Deprecated: use the interface for direct cast
-func CastLightingDataTerminateRamp(structType interface{}) LightingDataTerminateRamp {
+func CastLightingDataTerminateRamp(structType any) LightingDataTerminateRamp {
 	if casted, ok := structType.(LightingDataTerminateRamp); ok {
 		return casted
 	}

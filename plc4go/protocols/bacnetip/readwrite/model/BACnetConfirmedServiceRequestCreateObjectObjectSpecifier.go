@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
@@ -30,6 +31,7 @@ import (
 
 // BACnetConfirmedServiceRequestCreateObjectObjectSpecifier is the corresponding interface of BACnetConfirmedServiceRequestCreateObjectObjectSpecifier
 type BACnetConfirmedServiceRequestCreateObjectObjectSpecifier interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetOpeningTag returns OpeningTag (property field)
@@ -137,7 +139,7 @@ func NewBACnetConfirmedServiceRequestCreateObjectObjectSpecifier(openingTag BACn
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConfirmedServiceRequestCreateObjectObjectSpecifier(structType interface{}) BACnetConfirmedServiceRequestCreateObjectObjectSpecifier {
+func CastBACnetConfirmedServiceRequestCreateObjectObjectSpecifier(structType any) BACnetConfirmedServiceRequestCreateObjectObjectSpecifier {
 	if casted, ok := structType.(BACnetConfirmedServiceRequestCreateObjectObjectSpecifier); ok {
 		return casted
 	}

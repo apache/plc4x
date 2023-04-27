@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // AmsSerialAcknowledgeFrame is the corresponding interface of AmsSerialAcknowledgeFrame
 type AmsSerialAcknowledgeFrame interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetMagicCookie returns MagicCookie (property field)
@@ -102,7 +104,7 @@ func NewAmsSerialAcknowledgeFrame(magicCookie uint16, transmitterAddress int8, r
 }
 
 // Deprecated: use the interface for direct cast
-func CastAmsSerialAcknowledgeFrame(structType interface{}) AmsSerialAcknowledgeFrame {
+func CastAmsSerialAcknowledgeFrame(structType any) AmsSerialAcknowledgeFrame {
 	if casted, ok := structType.(AmsSerialAcknowledgeFrame); ok {
 		return casted
 	}

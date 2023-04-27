@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataLargeAnalogValueLowLimit is the corresponding interface of BACnetConstructedDataLargeAnalogValueLowLimit
 type BACnetConstructedDataLargeAnalogValueLowLimit interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataLargeAnalogValueLowLimit(lowLimit BACnetApplication
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataLargeAnalogValueLowLimit(structType interface{}) BACnetConstructedDataLargeAnalogValueLowLimit {
+func CastBACnetConstructedDataLargeAnalogValueLowLimit(structType any) BACnetConstructedDataLargeAnalogValueLowLimit {
 	if casted, ok := structType.(BACnetConstructedDataLargeAnalogValueLowLimit); ok {
 		return casted
 	}

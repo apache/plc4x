@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // CBusCommand is the corresponding interface of CBusCommand
 type CBusCommand interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetHeader returns Header (property field)
@@ -117,7 +119,7 @@ func NewCBusCommand(header CBusHeader, cBusOptions CBusOptions) *_CBusCommand {
 }
 
 // Deprecated: use the interface for direct cast
-func CastCBusCommand(structType interface{}) CBusCommand {
+func CastCBusCommand(structType any) CBusCommand {
 	if casted, ok := structType.(CBusCommand); ok {
 		return casted
 	}
@@ -190,7 +192,7 @@ func CBusCommandParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 		InitializeParent(CBusCommand, CBusHeader)
 		GetParent() CBusCommand
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child CBusCommandChildSerializeRequirement
 	var typeSwitchError error
 	switch {

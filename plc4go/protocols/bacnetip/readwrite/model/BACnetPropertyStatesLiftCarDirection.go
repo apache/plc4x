@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetPropertyStatesLiftCarDirection is the corresponding interface of BACnetPropertyStatesLiftCarDirection
 type BACnetPropertyStatesLiftCarDirection interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetPropertyStates
@@ -92,7 +94,7 @@ func NewBACnetPropertyStatesLiftCarDirection(liftCarDirection BACnetLiftCarDirec
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetPropertyStatesLiftCarDirection(structType interface{}) BACnetPropertyStatesLiftCarDirection {
+func CastBACnetPropertyStatesLiftCarDirection(structType any) BACnetPropertyStatesLiftCarDirection {
 	if casted, ok := structType.(BACnetPropertyStatesLiftCarDirection); ok {
 		return casted
 	}

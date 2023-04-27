@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataPulseRate is the corresponding interface of BACnetConstructedDataPulseRate
 type BACnetConstructedDataPulseRate interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataPulseRate(pulseRate BACnetApplicationTagUnsignedInt
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataPulseRate(structType interface{}) BACnetConstructedDataPulseRate {
+func CastBACnetConstructedDataPulseRate(structType any) BACnetConstructedDataPulseRate {
 	if casted, ok := structType.(BACnetConstructedDataPulseRate); ok {
 		return casted
 	}

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataAccessZoneAdjustValue is the corresponding interface of BACnetConstructedDataAccessZoneAdjustValue
 type BACnetConstructedDataAccessZoneAdjustValue interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataAccessZoneAdjustValue(adjustValue BACnetApplication
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataAccessZoneAdjustValue(structType interface{}) BACnetConstructedDataAccessZoneAdjustValue {
+func CastBACnetConstructedDataAccessZoneAdjustValue(structType any) BACnetConstructedDataAccessZoneAdjustValue {
 	if casted, ok := structType.(BACnetConstructedDataAccessZoneAdjustValue); ok {
 		return casted
 	}

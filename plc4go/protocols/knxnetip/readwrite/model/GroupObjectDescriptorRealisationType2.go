@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // GroupObjectDescriptorRealisationType2 is the corresponding interface of GroupObjectDescriptorRealisationType2
 type GroupObjectDescriptorRealisationType2 interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetDataPointer returns DataPointer (property field)
@@ -123,7 +125,7 @@ func NewGroupObjectDescriptorRealisationType2(dataPointer uint8, updateEnable bo
 }
 
 // Deprecated: use the interface for direct cast
-func CastGroupObjectDescriptorRealisationType2(structType interface{}) GroupObjectDescriptorRealisationType2 {
+func CastGroupObjectDescriptorRealisationType2(structType any) GroupObjectDescriptorRealisationType2 {
 	if casted, ok := structType.(GroupObjectDescriptorRealisationType2); ok {
 		return casted
 	}

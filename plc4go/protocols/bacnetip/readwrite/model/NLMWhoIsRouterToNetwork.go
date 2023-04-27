@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // NLMWhoIsRouterToNetwork is the corresponding interface of NLMWhoIsRouterToNetwork
 type NLMWhoIsRouterToNetwork interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	NLM
@@ -94,7 +96,7 @@ func NewNLMWhoIsRouterToNetwork(destinationNetworkAddress *uint16, apduLength ui
 }
 
 // Deprecated: use the interface for direct cast
-func CastNLMWhoIsRouterToNetwork(structType interface{}) NLMWhoIsRouterToNetwork {
+func CastNLMWhoIsRouterToNetwork(structType any) NLMWhoIsRouterToNetwork {
 	if casted, ok := structType.(NLMWhoIsRouterToNetwork); ok {
 		return casted
 	}

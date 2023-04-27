@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataAccessEventCredential is the corresponding interface of BACnetConstructedDataAccessEventCredential
 type BACnetConstructedDataAccessEventCredential interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataAccessEventCredential(accessEventCredential BACnetD
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataAccessEventCredential(structType interface{}) BACnetConstructedDataAccessEventCredential {
+func CastBACnetConstructedDataAccessEventCredential(structType any) BACnetConstructedDataAccessEventCredential {
 	if casted, ok := structType.(BACnetConstructedDataAccessEventCredential); ok {
 		return casted
 	}

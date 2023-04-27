@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetTagPayloadSignedInteger is the corresponding interface of BACnetTagPayloadSignedInteger
 type BACnetTagPayloadSignedInteger interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetValueInt8 returns ValueInt8 (property field)
@@ -330,13 +332,13 @@ func (m *_BACnetTagPayloadSignedInteger) GetActualValue() uint64 {
 	_ = valueInt56
 	valueInt64 := m.ValueInt64
 	_ = valueInt64
-	return uint64(utils.InlineIf(m.GetIsInt8(), func() interface{} { return uint64((*m.GetValueInt8())) }, func() interface{} {
-		return uint64((utils.InlineIf(m.GetIsInt16(), func() interface{} { return uint64((*m.GetValueInt16())) }, func() interface{} {
-			return uint64((utils.InlineIf(m.GetIsInt24(), func() interface{} { return uint64((*m.GetValueInt24())) }, func() interface{} {
-				return uint64((utils.InlineIf(m.GetIsInt32(), func() interface{} { return uint64((*m.GetValueInt32())) }, func() interface{} {
-					return uint64((utils.InlineIf(m.GetIsInt40(), func() interface{} { return uint64((*m.GetValueInt40())) }, func() interface{} {
-						return uint64((utils.InlineIf(m.GetIsInt48(), func() interface{} { return uint64((*m.GetValueInt48())) }, func() interface{} {
-							return uint64((utils.InlineIf(m.GetIsInt56(), func() interface{} { return uint64((*m.GetValueInt56())) }, func() interface{} { return uint64((*m.GetValueInt64())) }).(uint64)))
+	return uint64(utils.InlineIf(m.GetIsInt8(), func() any { return uint64((*m.GetValueInt8())) }, func() any {
+		return uint64((utils.InlineIf(m.GetIsInt16(), func() any { return uint64((*m.GetValueInt16())) }, func() any {
+			return uint64((utils.InlineIf(m.GetIsInt24(), func() any { return uint64((*m.GetValueInt24())) }, func() any {
+				return uint64((utils.InlineIf(m.GetIsInt32(), func() any { return uint64((*m.GetValueInt32())) }, func() any {
+					return uint64((utils.InlineIf(m.GetIsInt40(), func() any { return uint64((*m.GetValueInt40())) }, func() any {
+						return uint64((utils.InlineIf(m.GetIsInt48(), func() any { return uint64((*m.GetValueInt48())) }, func() any {
+							return uint64((utils.InlineIf(m.GetIsInt56(), func() any { return uint64((*m.GetValueInt56())) }, func() any { return uint64((*m.GetValueInt64())) }).(uint64)))
 						}).(uint64)))
 					}).(uint64)))
 				}).(uint64)))
@@ -356,7 +358,7 @@ func NewBACnetTagPayloadSignedInteger(valueInt8 *int8, valueInt16 *int16, valueI
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetTagPayloadSignedInteger(structType interface{}) BACnetTagPayloadSignedInteger {
+func CastBACnetTagPayloadSignedInteger(structType any) BACnetTagPayloadSignedInteger {
 	if casted, ok := structType.(BACnetTagPayloadSignedInteger); ok {
 		return casted
 	}
@@ -577,13 +579,13 @@ func BACnetTagPayloadSignedIntegerParseWithBuffer(ctx context.Context, readBuffe
 	}
 
 	// Virtual field
-	_actualValue := utils.InlineIf(isInt8, func() interface{} { return uint64((*valueInt8)) }, func() interface{} {
-		return uint64((utils.InlineIf(isInt16, func() interface{} { return uint64((*valueInt16)) }, func() interface{} {
-			return uint64((utils.InlineIf(isInt24, func() interface{} { return uint64((*valueInt24)) }, func() interface{} {
-				return uint64((utils.InlineIf(isInt32, func() interface{} { return uint64((*valueInt32)) }, func() interface{} {
-					return uint64((utils.InlineIf(isInt40, func() interface{} { return uint64((*valueInt40)) }, func() interface{} {
-						return uint64((utils.InlineIf(isInt48, func() interface{} { return uint64((*valueInt48)) }, func() interface{} {
-							return uint64((utils.InlineIf(isInt56, func() interface{} { return uint64((*valueInt56)) }, func() interface{} { return uint64((*valueInt64)) }).(uint64)))
+	_actualValue := utils.InlineIf(isInt8, func() any { return uint64((*valueInt8)) }, func() any {
+		return uint64((utils.InlineIf(isInt16, func() any { return uint64((*valueInt16)) }, func() any {
+			return uint64((utils.InlineIf(isInt24, func() any { return uint64((*valueInt24)) }, func() any {
+				return uint64((utils.InlineIf(isInt32, func() any { return uint64((*valueInt32)) }, func() any {
+					return uint64((utils.InlineIf(isInt40, func() any { return uint64((*valueInt40)) }, func() any {
+						return uint64((utils.InlineIf(isInt48, func() any { return uint64((*valueInt48)) }, func() any {
+							return uint64((utils.InlineIf(isInt56, func() any { return uint64((*valueInt56)) }, func() any { return uint64((*valueInt64)) }).(uint64)))
 						}).(uint64)))
 					}).(uint64)))
 				}).(uint64)))

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // CALReply is the corresponding interface of CALReply
 type CALReply interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetCalType returns CalType (property field)
@@ -99,7 +101,7 @@ func NewCALReply(calType byte, calData CALData, cBusOptions CBusOptions, request
 }
 
 // Deprecated: use the interface for direct cast
-func CastCALReply(structType interface{}) CALReply {
+func CastCALReply(structType any) CALReply {
 	if casted, ok := structType.(CALReply); ok {
 		return casted
 	}
@@ -154,7 +156,7 @@ func CALReplyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, c
 		InitializeParent(CALReply, byte, CALData)
 		GetParent() CALReply
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child CALReplyChildSerializeRequirement
 	var typeSwitchError error
 	switch {

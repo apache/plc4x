@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetLogRecordLogDatumRealValue is the corresponding interface of BACnetLogRecordLogDatumRealValue
 type BACnetLogRecordLogDatumRealValue interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetLogRecordLogDatum
@@ -94,7 +96,7 @@ func NewBACnetLogRecordLogDatumRealValue(realValue BACnetContextTagReal, opening
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetLogRecordLogDatumRealValue(structType interface{}) BACnetLogRecordLogDatumRealValue {
+func CastBACnetLogRecordLogDatumRealValue(structType any) BACnetLogRecordLogDatumRealValue {
 	if casted, ok := structType.(BACnetLogRecordLogDatumRealValue); ok {
 		return casted
 	}

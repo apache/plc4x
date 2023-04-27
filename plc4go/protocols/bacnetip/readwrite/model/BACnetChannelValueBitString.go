@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetChannelValueBitString is the corresponding interface of BACnetChannelValueBitString
 type BACnetChannelValueBitString interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetChannelValue
@@ -92,7 +94,7 @@ func NewBACnetChannelValueBitString(bitStringValue BACnetApplicationTagBitString
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetChannelValueBitString(structType interface{}) BACnetChannelValueBitString {
+func CastBACnetChannelValueBitString(structType any) BACnetChannelValueBitString {
 	if casted, ok := structType.(BACnetChannelValueBitString); ok {
 		return casted
 	}

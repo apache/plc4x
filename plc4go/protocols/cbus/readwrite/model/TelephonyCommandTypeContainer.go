@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -31,6 +32,8 @@ import (
 type TelephonyCommandTypeContainer uint8
 
 type ITelephonyCommandTypeContainer interface {
+	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 	NumBytes() uint8
 	CommandType() TelephonyCommandType
@@ -565,8 +568,8 @@ func TelephonyCommandTypeContainerKnows(value uint8) bool {
 	return false
 }
 
-func CastTelephonyCommandTypeContainer(structType interface{}) TelephonyCommandTypeContainer {
-	castFunc := func(typ interface{}) TelephonyCommandTypeContainer {
+func CastTelephonyCommandTypeContainer(structType any) TelephonyCommandTypeContainer {
+	castFunc := func(typ any) TelephonyCommandTypeContainer {
 		if sTelephonyCommandTypeContainer, ok := typ.(TelephonyCommandTypeContainer); ok {
 			return sTelephonyCommandTypeContainer
 		}

@@ -21,7 +21,7 @@ package model
 
 import (
 	"context"
-	spiContext "github.com/apache/plc4x/plc4go/spi/context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,6 +30,7 @@ import (
 
 // MultipleServiceResponse is the corresponding interface of MultipleServiceResponse
 type MultipleServiceResponse interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	CipService
@@ -137,7 +138,7 @@ func NewMultipleServiceResponse(status uint8, extStatus uint8, serviceNb uint16,
 }
 
 // Deprecated: use the interface for direct cast
-func CastMultipleServiceResponse(structType interface{}) MultipleServiceResponse {
+func CastMultipleServiceResponse(structType any) MultipleServiceResponse {
 	if casted, ok := structType.(MultipleServiceResponse); ok {
 		return casted
 	}
@@ -204,7 +205,7 @@ func MultipleServiceResponseParseWithBuffer(ctx context.Context, readBuffer util
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of MultipleServiceResponse")
 		}
 		if reserved != uint8(0x0) {
-			Plc4xModelLog.Info().Fields(map[string]interface{}{
+			Plc4xModelLog.Info().Fields(map[string]any{
 				"expected value": uint8(0x0),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
@@ -247,7 +248,7 @@ func MultipleServiceResponseParseWithBuffer(ctx context.Context, readBuffer util
 	{
 		_numItems := uint16(serviceNb)
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := spiContext.CreateArrayContext(ctx, int(_numItems), int(_curItem))
+			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
 			_ = _curItem
 			_item, _err := readBuffer.ReadUint16("", 16)
@@ -307,7 +308,7 @@ func (m *_MultipleServiceResponse) SerializeWithWriteBuffer(ctx context.Context,
 		{
 			var reserved uint8 = uint8(0x0)
 			if m.reservedField0 != nil {
-				Plc4xModelLog.Info().Fields(map[string]interface{}{
+				Plc4xModelLog.Info().Fields(map[string]any{
 					"expected value": uint8(0x0),
 					"got value":      reserved,
 				}).Msg("Overriding reserved field with unexpected value.")

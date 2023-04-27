@@ -21,7 +21,7 @@ package model
 
 import (
 	"context"
-	spiContext "github.com/apache/plc4x/plc4go/spi/context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,6 +30,7 @@ import (
 
 // ComObjectTableRealisationType2 is the corresponding interface of ComObjectTableRealisationType2
 type ComObjectTableRealisationType2 interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	ComObjectTable
@@ -111,7 +112,7 @@ func NewComObjectTableRealisationType2(numEntries uint8, ramFlagsTablePointer ui
 }
 
 // Deprecated: use the interface for direct cast
-func CastComObjectTableRealisationType2(structType interface{}) ComObjectTableRealisationType2 {
+func CastComObjectTableRealisationType2(structType any) ComObjectTableRealisationType2 {
 	if casted, ok := structType.(ComObjectTableRealisationType2); ok {
 		return casted
 	}
@@ -137,7 +138,7 @@ func (m *_ComObjectTableRealisationType2) GetLengthInBits(ctx context.Context) u
 	// Array field
 	if len(m.ComObjectDescriptors) > 0 {
 		for _curItem, element := range m.ComObjectDescriptors {
-			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.ComObjectDescriptors), _curItem)
+			arrayCtx := utils.CreateArrayContext(ctx, len(m.ComObjectDescriptors), _curItem)
 			_ = arrayCtx
 			_ = _curItem
 			lengthInBits += element.(interface{ GetLengthInBits(context.Context) uint16 }).GetLengthInBits(arrayCtx)
@@ -191,7 +192,7 @@ func ComObjectTableRealisationType2ParseWithBuffer(ctx context.Context, readBuff
 	{
 		_numItems := uint16(numEntries)
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := spiContext.CreateArrayContext(ctx, int(_numItems), int(_curItem))
+			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
 			_ = _curItem
 			_item, _err := GroupObjectDescriptorRealisationType2ParseWithBuffer(arrayCtx, readBuffer)
@@ -256,7 +257,7 @@ func (m *_ComObjectTableRealisationType2) SerializeWithWriteBuffer(ctx context.C
 		}
 		for _curItem, _element := range m.GetComObjectDescriptors() {
 			_ = _curItem
-			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetComObjectDescriptors()), _curItem)
+			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetComObjectDescriptors()), _curItem)
 			_ = arrayCtx
 			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 			if _elementErr != nil {

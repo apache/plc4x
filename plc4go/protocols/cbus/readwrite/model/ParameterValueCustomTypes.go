@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // ParameterValueCustomTypes is the corresponding interface of ParameterValueCustomTypes
 type ParameterValueCustomTypes interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	ParameterValue
@@ -94,7 +96,7 @@ func NewParameterValueCustomTypes(value CustomTypes, numBytes uint8) *_Parameter
 }
 
 // Deprecated: use the interface for direct cast
-func CastParameterValueCustomTypes(structType interface{}) ParameterValueCustomTypes {
+func CastParameterValueCustomTypes(structType any) ParameterValueCustomTypes {
 	if casted, ok := structType.(ParameterValueCustomTypes); ok {
 		return casted
 	}

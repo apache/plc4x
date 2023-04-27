@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataGlobalGroupAll is the corresponding interface of BACnetConstructedDataGlobalGroupAll
 type BACnetConstructedDataGlobalGroupAll interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -84,7 +86,7 @@ func NewBACnetConstructedDataGlobalGroupAll(openingTag BACnetOpeningTag, peekedT
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataGlobalGroupAll(structType interface{}) BACnetConstructedDataGlobalGroupAll {
+func CastBACnetConstructedDataGlobalGroupAll(structType any) BACnetConstructedDataGlobalGroupAll {
 	if casted, ok := structType.(BACnetConstructedDataGlobalGroupAll); ok {
 		return casted
 	}

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetFaultParameterFaultOutOfRangeMaxNormalValue is the corresponding interface of BACnetFaultParameterFaultOutOfRangeMaxNormalValue
 type BACnetFaultParameterFaultOutOfRangeMaxNormalValue interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetOpeningTag returns OpeningTag (property field)
@@ -122,7 +124,7 @@ func NewBACnetFaultParameterFaultOutOfRangeMaxNormalValue(openingTag BACnetOpeni
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetFaultParameterFaultOutOfRangeMaxNormalValue(structType interface{}) BACnetFaultParameterFaultOutOfRangeMaxNormalValue {
+func CastBACnetFaultParameterFaultOutOfRangeMaxNormalValue(structType any) BACnetFaultParameterFaultOutOfRangeMaxNormalValue {
 	if casted, ok := structType.(BACnetFaultParameterFaultOutOfRangeMaxNormalValue); ok {
 		return casted
 	}
@@ -204,7 +206,7 @@ func BACnetFaultParameterFaultOutOfRangeMaxNormalValueParseWithBuffer(ctx contex
 		InitializeParent(BACnetFaultParameterFaultOutOfRangeMaxNormalValue, BACnetOpeningTag, BACnetTagHeader, BACnetClosingTag)
 		GetParent() BACnetFaultParameterFaultOutOfRangeMaxNormalValue
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child BACnetFaultParameterFaultOutOfRangeMaxNormalValueChildSerializeRequirement
 	var typeSwitchError error
 	switch {

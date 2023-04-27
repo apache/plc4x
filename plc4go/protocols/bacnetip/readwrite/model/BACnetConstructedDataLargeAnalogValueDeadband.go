@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataLargeAnalogValueDeadband is the corresponding interface of BACnetConstructedDataLargeAnalogValueDeadband
 type BACnetConstructedDataLargeAnalogValueDeadband interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataLargeAnalogValueDeadband(deadband BACnetApplication
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataLargeAnalogValueDeadband(structType interface{}) BACnetConstructedDataLargeAnalogValueDeadband {
+func CastBACnetConstructedDataLargeAnalogValueDeadband(structType any) BACnetConstructedDataLargeAnalogValueDeadband {
 	if casted, ok := structType.(BACnetConstructedDataLargeAnalogValueDeadband); ok {
 		return casted
 	}

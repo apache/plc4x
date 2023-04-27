@@ -22,6 +22,7 @@ package model
 import (
 	"context"
 	"encoding/binary"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,6 +31,7 @@ import (
 
 // BVLCRegisterForeignDevice is the corresponding interface of BVLCRegisterForeignDevice
 type BVLCRegisterForeignDevice interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BVLC
@@ -95,7 +97,7 @@ func NewBVLCRegisterForeignDevice(ttl uint16) *_BVLCRegisterForeignDevice {
 }
 
 // Deprecated: use the interface for direct cast
-func CastBVLCRegisterForeignDevice(structType interface{}) BVLCRegisterForeignDevice {
+func CastBVLCRegisterForeignDevice(structType any) BVLCRegisterForeignDevice {
 	if casted, ok := structType.(BVLCRegisterForeignDevice); ok {
 		return casted
 	}

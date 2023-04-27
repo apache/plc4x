@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // NLMRejectRouterToNetwork is the corresponding interface of NLMRejectRouterToNetwork
 type NLMRejectRouterToNetwork interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	NLM
@@ -102,7 +104,7 @@ func NewNLMRejectRouterToNetwork(rejectReason NLMRejectRouterToNetworkRejectReas
 }
 
 // Deprecated: use the interface for direct cast
-func CastNLMRejectRouterToNetwork(structType interface{}) NLMRejectRouterToNetwork {
+func CastNLMRejectRouterToNetwork(structType any) NLMRejectRouterToNetwork {
 	if casted, ok := structType.(NLMRejectRouterToNetwork); ok {
 		return casted
 	}

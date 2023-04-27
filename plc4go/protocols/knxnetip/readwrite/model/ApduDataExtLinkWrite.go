@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // ApduDataExtLinkWrite is the corresponding interface of ApduDataExtLinkWrite
 type ApduDataExtLinkWrite interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	ApduDataExt
@@ -76,7 +78,7 @@ func NewApduDataExtLinkWrite(length uint8) *_ApduDataExtLinkWrite {
 }
 
 // Deprecated: use the interface for direct cast
-func CastApduDataExtLinkWrite(structType interface{}) ApduDataExtLinkWrite {
+func CastApduDataExtLinkWrite(structType any) ApduDataExtLinkWrite {
 	if casted, ok := structType.(ApduDataExtLinkWrite); ok {
 		return casted
 	}

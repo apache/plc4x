@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetApplicationTagUnsignedInteger is the corresponding interface of BACnetApplicationTagUnsignedInteger
 type BACnetApplicationTagUnsignedInteger interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetApplicationTag
@@ -109,7 +111,7 @@ func NewBACnetApplicationTagUnsignedInteger(payload BACnetTagPayloadUnsignedInte
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetApplicationTagUnsignedInteger(structType interface{}) BACnetApplicationTagUnsignedInteger {
+func CastBACnetApplicationTagUnsignedInteger(structType any) BACnetApplicationTagUnsignedInteger {
 	if casted, ok := structType.(BACnetApplicationTagUnsignedInteger); ok {
 		return casted
 	}

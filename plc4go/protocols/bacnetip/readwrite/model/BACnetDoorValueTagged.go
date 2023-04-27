@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetDoorValueTagged is the corresponding interface of BACnetDoorValueTagged
 type BACnetDoorValueTagged interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetHeader returns Header (property field)
@@ -78,7 +80,7 @@ func NewBACnetDoorValueTagged(header BACnetTagHeader, value BACnetDoorValue, tag
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetDoorValueTagged(structType interface{}) BACnetDoorValueTagged {
+func CastBACnetDoorValueTagged(structType any) BACnetDoorValueTagged {
 	if casted, ok := structType.(BACnetDoorValueTagged); ok {
 		return casted
 	}

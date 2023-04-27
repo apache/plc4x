@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetPropertyStatesTimerTransition is the corresponding interface of BACnetPropertyStatesTimerTransition
 type BACnetPropertyStatesTimerTransition interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetPropertyStates
@@ -92,7 +94,7 @@ func NewBACnetPropertyStatesTimerTransition(timerTransition BACnetTimerTransitio
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetPropertyStatesTimerTransition(structType interface{}) BACnetPropertyStatesTimerTransition {
+func CastBACnetPropertyStatesTimerTransition(structType any) BACnetPropertyStatesTimerTransition {
 	if casted, ok := structType.(BACnetPropertyStatesTimerTransition); ok {
 		return casted
 	}

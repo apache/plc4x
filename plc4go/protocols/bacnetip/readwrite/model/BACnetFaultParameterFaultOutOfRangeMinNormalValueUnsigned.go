@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned is the corresponding interface of BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned
 type BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetFaultParameterFaultOutOfRangeMinNormalValue
@@ -94,7 +96,7 @@ func NewBACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned(unsignedValue 
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned(structType interface{}) BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned {
+func CastBACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned(structType any) BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned {
 	if casted, ok := structType.(BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned); ok {
 		return casted
 	}

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // SALDataMetering is the corresponding interface of SALDataMetering
 type SALDataMetering interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	SALData
@@ -96,7 +98,7 @@ func NewSALDataMetering(meteringData MeteringData, salData SALData) *_SALDataMet
 }
 
 // Deprecated: use the interface for direct cast
-func CastSALDataMetering(structType interface{}) SALDataMetering {
+func CastSALDataMetering(structType any) SALDataMetering {
 	if casted, ok := structType.(SALDataMetering); ok {
 		return casted
 	}

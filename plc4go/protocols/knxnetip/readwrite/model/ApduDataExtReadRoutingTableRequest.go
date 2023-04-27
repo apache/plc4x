@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // ApduDataExtReadRoutingTableRequest is the corresponding interface of ApduDataExtReadRoutingTableRequest
 type ApduDataExtReadRoutingTableRequest interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	ApduDataExt
@@ -76,7 +78,7 @@ func NewApduDataExtReadRoutingTableRequest(length uint8) *_ApduDataExtReadRoutin
 }
 
 // Deprecated: use the interface for direct cast
-func CastApduDataExtReadRoutingTableRequest(structType interface{}) ApduDataExtReadRoutingTableRequest {
+func CastApduDataExtReadRoutingTableRequest(structType any) ApduDataExtReadRoutingTableRequest {
 	if casted, ok := structType.(ApduDataExtReadRoutingTableRequest); ok {
 		return casted
 	}

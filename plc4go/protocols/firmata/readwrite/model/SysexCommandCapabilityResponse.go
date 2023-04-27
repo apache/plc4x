@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // SysexCommandCapabilityResponse is the corresponding interface of SysexCommandCapabilityResponse
 type SysexCommandCapabilityResponse interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	SysexCommand
@@ -80,7 +82,7 @@ func NewSysexCommandCapabilityResponse() *_SysexCommandCapabilityResponse {
 }
 
 // Deprecated: use the interface for direct cast
-func CastSysexCommandCapabilityResponse(structType interface{}) SysexCommandCapabilityResponse {
+func CastSysexCommandCapabilityResponse(structType any) SysexCommandCapabilityResponse {
 	if casted, ok := structType.(SysexCommandCapabilityResponse); ok {
 		return casted
 	}

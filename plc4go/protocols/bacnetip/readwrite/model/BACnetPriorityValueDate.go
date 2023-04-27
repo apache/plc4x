@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetPriorityValueDate is the corresponding interface of BACnetPriorityValueDate
 type BACnetPriorityValueDate interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetPriorityValue
@@ -92,7 +94,7 @@ func NewBACnetPriorityValueDate(dateValue BACnetApplicationTagDate, peekedTagHea
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetPriorityValueDate(structType interface{}) BACnetPriorityValueDate {
+func CastBACnetPriorityValueDate(structType any) BACnetPriorityValueDate {
 	if casted, ok := structType.(BACnetPriorityValueDate); ok {
 		return casted
 	}

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // HVACAuxiliaryLevel is the corresponding interface of HVACAuxiliaryLevel
 type HVACAuxiliaryLevel interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetFanMode returns FanMode (property field)
@@ -117,7 +119,7 @@ func NewHVACAuxiliaryLevel(fanMode bool, mode uint8) *_HVACAuxiliaryLevel {
 }
 
 // Deprecated: use the interface for direct cast
-func CastHVACAuxiliaryLevel(structType interface{}) HVACAuxiliaryLevel {
+func CastHVACAuxiliaryLevel(structType any) HVACAuxiliaryLevel {
 	if casted, ok := structType.(HVACAuxiliaryLevel); ok {
 		return casted
 	}
@@ -179,7 +181,7 @@ func HVACAuxiliaryLevelParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of HVACAuxiliaryLevel")
 		}
 		if reserved != bool(false) {
-			Plc4xModelLog.Info().Fields(map[string]interface{}{
+			Plc4xModelLog.Info().Fields(map[string]any{
 				"expected value": bool(false),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
@@ -253,7 +255,7 @@ func (m *_HVACAuxiliaryLevel) SerializeWithWriteBuffer(ctx context.Context, writ
 	{
 		var reserved bool = bool(false)
 		if m.reservedField0 != nil {
-			Plc4xModelLog.Info().Fields(map[string]interface{}{
+			Plc4xModelLog.Info().Fields(map[string]any{
 				"expected value": bool(false),
 				"got value":      reserved,
 			}).Msg("Overriding reserved field with unexpected value.")

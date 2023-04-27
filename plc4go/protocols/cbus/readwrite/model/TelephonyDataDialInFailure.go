@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // TelephonyDataDialInFailure is the corresponding interface of TelephonyDataDialInFailure
 type TelephonyDataDialInFailure interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	TelephonyData
@@ -93,7 +95,7 @@ func NewTelephonyDataDialInFailure(reason DialInFailureReason, commandTypeContai
 }
 
 // Deprecated: use the interface for direct cast
-func CastTelephonyDataDialInFailure(structType interface{}) TelephonyDataDialInFailure {
+func CastTelephonyDataDialInFailure(structType any) TelephonyDataDialInFailure {
 	if casted, ok := structType.(TelephonyDataDialInFailure); ok {
 		return casted
 	}

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // ConnectionResponseDataBlockDeviceManagement is the corresponding interface of ConnectionResponseDataBlockDeviceManagement
 type ConnectionResponseDataBlockDeviceManagement interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	ConnectionResponseDataBlock
@@ -77,7 +79,7 @@ func NewConnectionResponseDataBlockDeviceManagement() *_ConnectionResponseDataBl
 }
 
 // Deprecated: use the interface for direct cast
-func CastConnectionResponseDataBlockDeviceManagement(structType interface{}) ConnectionResponseDataBlockDeviceManagement {
+func CastConnectionResponseDataBlockDeviceManagement(structType any) ConnectionResponseDataBlockDeviceManagement {
 	if casted, ok := structType.(ConnectionResponseDataBlockDeviceManagement); ok {
 		return casted
 	}

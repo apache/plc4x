@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
@@ -30,6 +31,7 @@ import (
 
 // BACnetPortPermission is the corresponding interface of BACnetPortPermission
 type BACnetPortPermission interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetPort returns Port (property field)
@@ -75,7 +77,7 @@ func NewBACnetPortPermission(port BACnetContextTagUnsignedInteger, enable BACnet
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetPortPermission(structType interface{}) BACnetPortPermission {
+func CastBACnetPortPermission(structType any) BACnetPortPermission {
 	if casted, ok := structType.(BACnetPortPermission); ok {
 		return casted
 	}

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // MediaTransportControlDataTrackName is the corresponding interface of MediaTransportControlDataTrackName
 type MediaTransportControlDataTrackName interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	MediaTransportControlData
@@ -93,7 +95,7 @@ func NewMediaTransportControlDataTrackName(trackName string, commandTypeContaine
 }
 
 // Deprecated: use the interface for direct cast
-func CastMediaTransportControlDataTrackName(structType interface{}) MediaTransportControlDataTrackName {
+func CastMediaTransportControlDataTrackName(structType any) MediaTransportControlDataTrackName {
 	if casted, ok := structType.(MediaTransportControlDataTrackName); ok {
 		return casted
 	}

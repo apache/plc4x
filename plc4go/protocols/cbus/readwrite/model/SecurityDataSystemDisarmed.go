@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // SecurityDataSystemDisarmed is the corresponding interface of SecurityDataSystemDisarmed
 type SecurityDataSystemDisarmed interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	SecurityData
@@ -75,7 +77,7 @@ func NewSecurityDataSystemDisarmed(commandTypeContainer SecurityCommandTypeConta
 }
 
 // Deprecated: use the interface for direct cast
-func CastSecurityDataSystemDisarmed(structType interface{}) SecurityDataSystemDisarmed {
+func CastSecurityDataSystemDisarmed(structType any) SecurityDataSystemDisarmed {
 	if casted, ok := structType.(SecurityDataSystemDisarmed); ok {
 		return casted
 	}

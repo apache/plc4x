@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // ApduDataExt is the corresponding interface of ApduDataExt
 type ApduDataExt interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetExtApciType returns ExtApciType (discriminator field)
@@ -76,7 +78,7 @@ func NewApduDataExt(length uint8) *_ApduDataExt {
 }
 
 // Deprecated: use the interface for direct cast
-func CastApduDataExt(structType interface{}) ApduDataExt {
+func CastApduDataExt(structType any) ApduDataExt {
 	if casted, ok := structType.(ApduDataExt); ok {
 		return casted
 	}
@@ -127,7 +129,7 @@ func ApduDataExtParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 		InitializeParent(ApduDataExt)
 		GetParent() ApduDataExt
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child ApduDataExtChildSerializeRequirement
 	var typeSwitchError error
 	switch {

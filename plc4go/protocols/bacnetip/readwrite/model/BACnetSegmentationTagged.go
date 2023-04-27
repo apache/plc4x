@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetSegmentationTagged is the corresponding interface of BACnetSegmentationTagged
 type BACnetSegmentationTagged interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetHeader returns Header (property field)
@@ -78,7 +80,7 @@ func NewBACnetSegmentationTagged(header BACnetTagHeader, value BACnetSegmentatio
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetSegmentationTagged(structType interface{}) BACnetSegmentationTagged {
+func CastBACnetSegmentationTagged(structType any) BACnetSegmentationTagged {
 	if casted, ok := structType.(BACnetSegmentationTagged); ok {
 		return casted
 	}

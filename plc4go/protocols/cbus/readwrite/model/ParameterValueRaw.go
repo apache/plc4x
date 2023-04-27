@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // ParameterValueRaw is the corresponding interface of ParameterValueRaw
 type ParameterValueRaw interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	ParameterValue
@@ -94,7 +96,7 @@ func NewParameterValueRaw(data []byte, numBytes uint8) *_ParameterValueRaw {
 }
 
 // Deprecated: use the interface for direct cast
-func CastParameterValueRaw(structType interface{}) ParameterValueRaw {
+func CastParameterValueRaw(structType any) ParameterValueRaw {
 	if casted, ok := structType.(ParameterValueRaw); ok {
 		return casted
 	}

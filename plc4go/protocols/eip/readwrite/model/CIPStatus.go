@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -31,6 +32,8 @@ import (
 type CIPStatus uint32
 
 type ICIPStatus interface {
+	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 
@@ -258,8 +261,8 @@ func CIPStatusKnows(value uint32) bool {
 	return false
 }
 
-func CastCIPStatus(structType interface{}) CIPStatus {
-	castFunc := func(typ interface{}) CIPStatus {
+func CastCIPStatus(structType any) CIPStatus {
+	castFunc := func(typ any) CIPStatus {
 		if sCIPStatus, ok := typ.(CIPStatus); ok {
 			return sCIPStatus
 		}

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataBackupFailureTimeout is the corresponding interface of BACnetConstructedDataBackupFailureTimeout
 type BACnetConstructedDataBackupFailureTimeout interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataBackupFailureTimeout(backupFailureTimeout BACnetApp
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataBackupFailureTimeout(structType interface{}) BACnetConstructedDataBackupFailureTimeout {
+func CastBACnetConstructedDataBackupFailureTimeout(structType any) BACnetConstructedDataBackupFailureTimeout {
 	if casted, ok := structType.(BACnetConstructedDataBackupFailureTimeout); ok {
 		return casted
 	}

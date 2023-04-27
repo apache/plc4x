@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -31,6 +32,8 @@ import (
 type GAVState uint8
 
 type IGAVState interface {
+	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 
@@ -90,8 +93,8 @@ func GAVStateKnows(value uint8) bool {
 	return false
 }
 
-func CastGAVState(structType interface{}) GAVState {
-	castFunc := func(typ interface{}) GAVState {
+func CastGAVState(structType any) GAVState {
+	castFunc := func(typ any) GAVState {
 		if sGAVState, ok := typ.(GAVState); ok {
 			return sGAVState
 		}

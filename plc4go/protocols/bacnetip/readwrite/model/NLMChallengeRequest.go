@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // NLMChallengeRequest is the corresponding interface of NLMChallengeRequest
 type NLMChallengeRequest interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	NLM
@@ -110,7 +112,7 @@ func NewNLMChallengeRequest(messageChallenge byte, originalMessageId uint32, ori
 }
 
 // Deprecated: use the interface for direct cast
-func CastNLMChallengeRequest(structType interface{}) NLMChallengeRequest {
+func CastNLMChallengeRequest(structType any) NLMChallengeRequest {
 	if casted, ok := structType.(NLMChallengeRequest); ok {
 		return casted
 	}

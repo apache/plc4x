@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // GetAttributeSingleResponse is the corresponding interface of GetAttributeSingleResponse
 type GetAttributeSingleResponse interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	CipService
@@ -84,7 +86,7 @@ func NewGetAttributeSingleResponse(serviceLen uint16) *_GetAttributeSingleRespon
 }
 
 // Deprecated: use the interface for direct cast
-func CastGetAttributeSingleResponse(structType interface{}) GetAttributeSingleResponse {
+func CastGetAttributeSingleResponse(structType any) GetAttributeSingleResponse {
 	if casted, ok := structType.(GetAttributeSingleResponse); ok {
 		return casted
 	}

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataDutyWindow is the corresponding interface of BACnetConstructedDataDutyWindow
 type BACnetConstructedDataDutyWindow interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataDutyWindow(dutyWindow BACnetApplicationTagUnsignedI
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataDutyWindow(structType interface{}) BACnetConstructedDataDutyWindow {
+func CastBACnetConstructedDataDutyWindow(structType any) BACnetConstructedDataDutyWindow {
 	if casted, ok := structType.(BACnetConstructedDataDutyWindow); ok {
 		return casted
 	}

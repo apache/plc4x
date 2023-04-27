@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // S7ParameterUserDataItemCPUFunctions is the corresponding interface of S7ParameterUserDataItemCPUFunctions
 type S7ParameterUserDataItemCPUFunctions interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	S7ParameterUserDataItem
@@ -150,7 +152,7 @@ func NewS7ParameterUserDataItemCPUFunctions(method uint8, cpuFunctionType uint8,
 }
 
 // Deprecated: use the interface for direct cast
-func CastS7ParameterUserDataItemCPUFunctions(structType interface{}) S7ParameterUserDataItemCPUFunctions {
+func CastS7ParameterUserDataItemCPUFunctions(structType any) S7ParameterUserDataItemCPUFunctions {
 	if casted, ok := structType.(S7ParameterUserDataItemCPUFunctions); ok {
 		return casted
 	}

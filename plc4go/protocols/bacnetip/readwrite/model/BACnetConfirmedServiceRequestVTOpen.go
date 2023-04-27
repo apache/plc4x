@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConfirmedServiceRequestVTOpen is the corresponding interface of BACnetConfirmedServiceRequestVTOpen
 type BACnetConfirmedServiceRequestVTOpen interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConfirmedServiceRequest
@@ -103,7 +105,7 @@ func NewBACnetConfirmedServiceRequestVTOpen(vtClass BACnetVTClassTagged, localVt
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConfirmedServiceRequestVTOpen(structType interface{}) BACnetConfirmedServiceRequestVTOpen {
+func CastBACnetConfirmedServiceRequestVTOpen(structType any) BACnetConfirmedServiceRequestVTOpen {
 	if casted, ok := structType.(BACnetConfirmedServiceRequestVTOpen); ok {
 		return casted
 	}

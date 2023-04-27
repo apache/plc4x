@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // EnableControlData is the corresponding interface of EnableControlData
 type EnableControlData interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetCommandTypeContainer returns CommandTypeContainer (property field)
@@ -98,7 +100,7 @@ func NewEnableControlData(commandTypeContainer EnableControlCommandTypeContainer
 }
 
 // Deprecated: use the interface for direct cast
-func CastEnableControlData(structType interface{}) EnableControlData {
+func CastEnableControlData(structType any) EnableControlData {
 	if casted, ok := structType.(EnableControlData); ok {
 		return casted
 	}

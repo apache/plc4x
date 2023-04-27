@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // AdsDiscoveryBlock is the corresponding interface of AdsDiscoveryBlock
 type AdsDiscoveryBlock interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetBlockType returns BlockType (discriminator field)
@@ -73,7 +75,7 @@ func NewAdsDiscoveryBlock() *_AdsDiscoveryBlock {
 }
 
 // Deprecated: use the interface for direct cast
-func CastAdsDiscoveryBlock(structType interface{}) AdsDiscoveryBlock {
+func CastAdsDiscoveryBlock(structType any) AdsDiscoveryBlock {
 	if casted, ok := structType.(AdsDiscoveryBlock); ok {
 		return casted
 	}
@@ -131,7 +133,7 @@ func AdsDiscoveryBlockParseWithBuffer(ctx context.Context, readBuffer utils.Read
 		InitializeParent(AdsDiscoveryBlock)
 		GetParent() AdsDiscoveryBlock
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child AdsDiscoveryBlockChildSerializeRequirement
 	var typeSwitchError error
 	switch {

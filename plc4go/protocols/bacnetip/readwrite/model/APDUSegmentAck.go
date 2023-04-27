@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // APDUSegmentAck is the corresponding interface of APDUSegmentAck
 type APDUSegmentAck interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	APDU
@@ -128,7 +130,7 @@ func NewAPDUSegmentAck(negativeAck bool, server bool, originalInvokeId uint8, se
 }
 
 // Deprecated: use the interface for direct cast
-func CastAPDUSegmentAck(structType interface{}) APDUSegmentAck {
+func CastAPDUSegmentAck(structType any) APDUSegmentAck {
 	if casted, ok := structType.(APDUSegmentAck); ok {
 		return casted
 	}
@@ -191,7 +193,7 @@ func APDUSegmentAckParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of APDUSegmentAck")
 		}
 		if reserved != uint8(0x00) {
-			Plc4xModelLog.Info().Fields(map[string]interface{}{
+			Plc4xModelLog.Info().Fields(map[string]any{
 				"expected value": uint8(0x00),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
@@ -275,7 +277,7 @@ func (m *_APDUSegmentAck) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 		{
 			var reserved uint8 = uint8(0x00)
 			if m.reservedField0 != nil {
-				Plc4xModelLog.Info().Fields(map[string]interface{}{
+				Plc4xModelLog.Info().Fields(map[string]any{
 					"expected value": uint8(0x00),
 					"got value":      reserved,
 				}).Msg("Overriding reserved field with unexpected value.")

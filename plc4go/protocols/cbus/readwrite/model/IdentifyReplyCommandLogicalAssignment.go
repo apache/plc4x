@@ -21,7 +21,7 @@ package model
 
 import (
 	"context"
-	spiContext "github.com/apache/plc4x/plc4go/spi/context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,6 +30,7 @@ import (
 
 // IdentifyReplyCommandLogicalAssignment is the corresponding interface of IdentifyReplyCommandLogicalAssignment
 type IdentifyReplyCommandLogicalAssignment interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	IdentifyReplyCommand
@@ -95,7 +96,7 @@ func NewIdentifyReplyCommandLogicalAssignment(logicAssigment []LogicAssignment, 
 }
 
 // Deprecated: use the interface for direct cast
-func CastIdentifyReplyCommandLogicalAssignment(structType interface{}) IdentifyReplyCommandLogicalAssignment {
+func CastIdentifyReplyCommandLogicalAssignment(structType any) IdentifyReplyCommandLogicalAssignment {
 	if casted, ok := structType.(IdentifyReplyCommandLogicalAssignment); ok {
 		return casted
 	}
@@ -115,7 +116,7 @@ func (m *_IdentifyReplyCommandLogicalAssignment) GetLengthInBits(ctx context.Con
 	// Array field
 	if len(m.LogicAssigment) > 0 {
 		for _curItem, element := range m.LogicAssigment {
-			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.LogicAssigment), _curItem)
+			arrayCtx := utils.CreateArrayContext(ctx, len(m.LogicAssigment), _curItem)
 			_ = arrayCtx
 			_ = _curItem
 			lengthInBits += element.(interface{ GetLengthInBits(context.Context) uint16 }).GetLengthInBits(arrayCtx)
@@ -155,7 +156,7 @@ func IdentifyReplyCommandLogicalAssignmentParseWithBuffer(ctx context.Context, r
 	{
 		_numItems := uint16(numBytes)
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := spiContext.CreateArrayContext(ctx, int(_numItems), int(_curItem))
+			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
 			_ = _curItem
 			_item, _err := LogicAssignmentParseWithBuffer(arrayCtx, readBuffer)
@@ -206,7 +207,7 @@ func (m *_IdentifyReplyCommandLogicalAssignment) SerializeWithWriteBuffer(ctx co
 		}
 		for _curItem, _element := range m.GetLogicAssigment() {
 			_ = _curItem
-			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetLogicAssigment()), _curItem)
+			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetLogicAssigment()), _curItem)
 			_ = arrayCtx
 			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 			if _elementErr != nil {

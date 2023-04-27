@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // ConnectionRequestInformationDeviceManagement is the corresponding interface of ConnectionRequestInformationDeviceManagement
 type ConnectionRequestInformationDeviceManagement interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	ConnectionRequestInformation
@@ -77,7 +79,7 @@ func NewConnectionRequestInformationDeviceManagement() *_ConnectionRequestInform
 }
 
 // Deprecated: use the interface for direct cast
-func CastConnectionRequestInformationDeviceManagement(structType interface{}) ConnectionRequestInformationDeviceManagement {
+func CastConnectionRequestInformationDeviceManagement(structType any) ConnectionRequestInformationDeviceManagement {
 	if casted, ok := structType.(ConnectionRequestInformationDeviceManagement); ok {
 		return casted
 	}

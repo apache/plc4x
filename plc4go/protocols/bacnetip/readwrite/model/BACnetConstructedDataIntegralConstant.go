@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataIntegralConstant is the corresponding interface of BACnetConstructedDataIntegralConstant
 type BACnetConstructedDataIntegralConstant interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataIntegralConstant(integralConstant BACnetApplication
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataIntegralConstant(structType interface{}) BACnetConstructedDataIntegralConstant {
+func CastBACnetConstructedDataIntegralConstant(structType any) BACnetConstructedDataIntegralConstant {
 	if casted, ok := structType.(BACnetConstructedDataIntegralConstant); ok {
 		return casted
 	}

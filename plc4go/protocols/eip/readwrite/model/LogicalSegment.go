@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // LogicalSegment is the corresponding interface of LogicalSegment
 type LogicalSegment interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	PathSegment
@@ -94,7 +96,7 @@ func NewLogicalSegment(segmentType LogicalSegmentType) *_LogicalSegment {
 }
 
 // Deprecated: use the interface for direct cast
-func CastLogicalSegment(structType interface{}) LogicalSegment {
+func CastLogicalSegment(structType any) LogicalSegment {
 	if casted, ok := structType.(LogicalSegment); ok {
 		return casted
 	}

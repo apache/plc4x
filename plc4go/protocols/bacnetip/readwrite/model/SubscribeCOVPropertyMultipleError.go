@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // SubscribeCOVPropertyMultipleError is the corresponding interface of SubscribeCOVPropertyMultipleError
 type SubscribeCOVPropertyMultipleError interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetError
@@ -102,7 +104,7 @@ func NewSubscribeCOVPropertyMultipleError(errorType ErrorEnclosed, firstFailedSu
 }
 
 // Deprecated: use the interface for direct cast
-func CastSubscribeCOVPropertyMultipleError(structType interface{}) SubscribeCOVPropertyMultipleError {
+func CastSubscribeCOVPropertyMultipleError(structType any) SubscribeCOVPropertyMultipleError {
 	if casted, ok := structType.(SubscribeCOVPropertyMultipleError); ok {
 		return casted
 	}

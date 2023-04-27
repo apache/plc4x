@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataInactiveText is the corresponding interface of BACnetConstructedDataInactiveText
 type BACnetConstructedDataInactiveText interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataInactiveText(inactiveText BACnetApplicationTagChara
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataInactiveText(structType interface{}) BACnetConstructedDataInactiveText {
+func CastBACnetConstructedDataInactiveText(structType any) BACnetConstructedDataInactiveText {
 	if casted, ok := structType.(BACnetConstructedDataInactiveText); ok {
 		return casted
 	}

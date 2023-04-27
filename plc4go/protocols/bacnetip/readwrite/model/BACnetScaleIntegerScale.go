@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetScaleIntegerScale is the corresponding interface of BACnetScaleIntegerScale
 type BACnetScaleIntegerScale interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetScale
@@ -92,7 +94,7 @@ func NewBACnetScaleIntegerScale(integerScale BACnetContextTagSignedInteger, peek
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetScaleIntegerScale(structType interface{}) BACnetScaleIntegerScale {
+func CastBACnetScaleIntegerScale(structType any) BACnetScaleIntegerScale {
 	if casted, ok := structType.(BACnetScaleIntegerScale); ok {
 		return casted
 	}

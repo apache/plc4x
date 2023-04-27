@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
@@ -30,6 +31,7 @@ import (
 
 // ReplyOrConfirmationConfirmation is the corresponding interface of ReplyOrConfirmationConfirmation
 type ReplyOrConfirmationConfirmation interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	ReplyOrConfirmation
@@ -101,7 +103,7 @@ func NewReplyOrConfirmationConfirmation(confirmation Confirmation, embeddedReply
 }
 
 // Deprecated: use the interface for direct cast
-func CastReplyOrConfirmationConfirmation(structType interface{}) ReplyOrConfirmationConfirmation {
+func CastReplyOrConfirmationConfirmation(structType any) ReplyOrConfirmationConfirmation {
 	if casted, ok := structType.(ReplyOrConfirmationConfirmation); ok {
 		return casted
 	}

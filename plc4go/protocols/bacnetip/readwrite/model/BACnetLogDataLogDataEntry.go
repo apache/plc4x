@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetLogDataLogDataEntry is the corresponding interface of BACnetLogDataLogDataEntry
 type BACnetLogDataLogDataEntry interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetPeekedTagHeader returns PeekedTagHeader (property field)
@@ -105,7 +107,7 @@ func NewBACnetLogDataLogDataEntry(peekedTagHeader BACnetTagHeader) *_BACnetLogDa
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetLogDataLogDataEntry(structType interface{}) BACnetLogDataLogDataEntry {
+func CastBACnetLogDataLogDataEntry(structType any) BACnetLogDataLogDataEntry {
 	if casted, ok := structType.(BACnetLogDataLogDataEntry); ok {
 		return casted
 	}
@@ -163,7 +165,7 @@ func BACnetLogDataLogDataEntryParseWithBuffer(ctx context.Context, readBuffer ut
 		InitializeParent(BACnetLogDataLogDataEntry, BACnetTagHeader)
 		GetParent() BACnetLogDataLogDataEntry
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child BACnetLogDataLogDataEntryChildSerializeRequirement
 	var typeSwitchError error
 	switch {

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetServiceAckAtomicWriteFile is the corresponding interface of BACnetServiceAckAtomicWriteFile
 type BACnetServiceAckAtomicWriteFile interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetServiceAck
@@ -94,7 +96,7 @@ func NewBACnetServiceAckAtomicWriteFile(fileStartPosition BACnetContextTagSigned
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetServiceAckAtomicWriteFile(structType interface{}) BACnetServiceAckAtomicWriteFile {
+func CastBACnetServiceAckAtomicWriteFile(structType any) BACnetServiceAckAtomicWriteFile {
 	if casted, ok := structType.(BACnetServiceAckAtomicWriteFile); ok {
 		return casted
 	}

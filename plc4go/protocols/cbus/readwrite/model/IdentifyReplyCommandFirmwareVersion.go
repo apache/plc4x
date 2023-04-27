@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // IdentifyReplyCommandFirmwareVersion is the corresponding interface of IdentifyReplyCommandFirmwareVersion
 type IdentifyReplyCommandFirmwareVersion interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	IdentifyReplyCommand
@@ -94,7 +96,7 @@ func NewIdentifyReplyCommandFirmwareVersion(firmwareVersion string, numBytes uin
 }
 
 // Deprecated: use the interface for direct cast
-func CastIdentifyReplyCommandFirmwareVersion(structType interface{}) IdentifyReplyCommandFirmwareVersion {
+func CastIdentifyReplyCommandFirmwareVersion(structType any) IdentifyReplyCommandFirmwareVersion {
 	if casted, ok := structType.(IdentifyReplyCommandFirmwareVersion); ok {
 		return casted
 	}

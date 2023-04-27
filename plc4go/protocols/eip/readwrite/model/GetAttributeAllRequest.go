@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // GetAttributeAllRequest is the corresponding interface of GetAttributeAllRequest
 type GetAttributeAllRequest interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	CipService
@@ -110,7 +112,7 @@ func NewGetAttributeAllRequest(classSegment PathSegment, instanceSegment PathSeg
 }
 
 // Deprecated: use the interface for direct cast
-func CastGetAttributeAllRequest(structType interface{}) GetAttributeAllRequest {
+func CastGetAttributeAllRequest(structType any) GetAttributeAllRequest {
 	if casted, ok := structType.(GetAttributeAllRequest); ok {
 		return casted
 	}

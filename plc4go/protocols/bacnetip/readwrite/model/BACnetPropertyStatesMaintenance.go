@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetPropertyStatesMaintenance is the corresponding interface of BACnetPropertyStatesMaintenance
 type BACnetPropertyStatesMaintenance interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetPropertyStates
@@ -92,7 +94,7 @@ func NewBACnetPropertyStatesMaintenance(maintenance BACnetMaintenanceTagged, pee
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetPropertyStatesMaintenance(structType interface{}) BACnetPropertyStatesMaintenance {
+func CastBACnetPropertyStatesMaintenance(structType any) BACnetPropertyStatesMaintenance {
 	if casted, ok := structType.(BACnetPropertyStatesMaintenance); ok {
 		return casted
 	}

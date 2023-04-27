@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // LightingDataRampToLevel is the corresponding interface of LightingDataRampToLevel
 type LightingDataRampToLevel interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	LightingData
@@ -100,7 +102,7 @@ func NewLightingDataRampToLevel(group byte, level byte, commandTypeContainer Lig
 }
 
 // Deprecated: use the interface for direct cast
-func CastLightingDataRampToLevel(structType interface{}) LightingDataRampToLevel {
+func CastLightingDataRampToLevel(structType any) LightingDataRampToLevel {
 	if casted, ok := structType.(LightingDataRampToLevel); ok {
 		return casted
 	}

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetTimerStateChangeValueLightingCommand is the corresponding interface of BACnetTimerStateChangeValueLightingCommand
 type BACnetTimerStateChangeValueLightingCommand interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetTimerStateChangeValue
@@ -92,7 +94,7 @@ func NewBACnetTimerStateChangeValueLightingCommand(ligthingCommandValue BACnetLi
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetTimerStateChangeValueLightingCommand(structType interface{}) BACnetTimerStateChangeValueLightingCommand {
+func CastBACnetTimerStateChangeValueLightingCommand(structType any) BACnetTimerStateChangeValueLightingCommand {
 	if casted, ok := structType.(BACnetTimerStateChangeValueLightingCommand); ok {
 		return casted
 	}

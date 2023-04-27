@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // ModbusPDUReportServerIdRequest is the corresponding interface of ModbusPDUReportServerIdRequest
 type ModbusPDUReportServerIdRequest interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	ModbusPDU
@@ -84,7 +86,7 @@ func NewModbusPDUReportServerIdRequest() *_ModbusPDUReportServerIdRequest {
 }
 
 // Deprecated: use the interface for direct cast
-func CastModbusPDUReportServerIdRequest(structType interface{}) ModbusPDUReportServerIdRequest {
+func CastModbusPDUReportServerIdRequest(structType any) ModbusPDUReportServerIdRequest {
 	if casted, ok := structType.(ModbusPDUReportServerIdRequest); ok {
 		return casted
 	}

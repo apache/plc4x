@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // AmsNetId is the corresponding interface of AmsNetId
 type AmsNetId interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetOctet1 returns Octet1 (property field)
@@ -102,7 +104,7 @@ func NewAmsNetId(octet1 uint8, octet2 uint8, octet3 uint8, octet4 uint8, octet5 
 }
 
 // Deprecated: use the interface for direct cast
-func CastAmsNetId(structType interface{}) AmsNetId {
+func CastAmsNetId(structType any) AmsNetId {
 	if casted, ok := structType.(AmsNetId); ok {
 		return casted
 	}

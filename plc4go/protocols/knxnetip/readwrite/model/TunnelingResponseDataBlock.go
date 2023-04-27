@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // TunnelingResponseDataBlock is the corresponding interface of TunnelingResponseDataBlock
 type TunnelingResponseDataBlock interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetCommunicationChannelId returns CommunicationChannelId (property field)
@@ -81,7 +83,7 @@ func NewTunnelingResponseDataBlock(communicationChannelId uint8, sequenceCounter
 }
 
 // Deprecated: use the interface for direct cast
-func CastTunnelingResponseDataBlock(structType interface{}) TunnelingResponseDataBlock {
+func CastTunnelingResponseDataBlock(structType any) TunnelingResponseDataBlock {
 	if casted, ok := structType.(TunnelingResponseDataBlock); ok {
 		return casted
 	}

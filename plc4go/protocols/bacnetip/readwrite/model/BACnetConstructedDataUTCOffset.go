@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataUTCOffset is the corresponding interface of BACnetConstructedDataUTCOffset
 type BACnetConstructedDataUTCOffset interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataUTCOffset(utcOffset BACnetApplicationTagSignedInteg
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataUTCOffset(structType interface{}) BACnetConstructedDataUTCOffset {
+func CastBACnetConstructedDataUTCOffset(structType any) BACnetConstructedDataUTCOffset {
 	if casted, ok := structType.(BACnetConstructedDataUTCOffset); ok {
 		return casted
 	}

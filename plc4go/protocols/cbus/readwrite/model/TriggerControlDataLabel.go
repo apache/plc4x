@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // TriggerControlDataLabel is the corresponding interface of TriggerControlDataLabel
 type TriggerControlDataLabel interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	TriggerControlData
@@ -117,7 +119,7 @@ func NewTriggerControlDataLabel(triggerControlOptions TriggerControlLabelOptions
 }
 
 // Deprecated: use the interface for direct cast
-func CastTriggerControlDataLabel(structType interface{}) TriggerControlDataLabel {
+func CastTriggerControlDataLabel(structType any) TriggerControlDataLabel {
 	if casted, ok := structType.(TriggerControlDataLabel); ok {
 		return casted
 	}
@@ -206,7 +208,7 @@ func TriggerControlDataLabelParseWithBuffer(ctx context.Context, readBuffer util
 		}
 	}
 	// Byte Array field (data)
-	numberOfBytesdata := int((uint16(commandTypeContainer.NumBytes()) - uint16((utils.InlineIf((bool((triggerControlOptions.GetLabelType()) != (TriggerControlLabelType_LOAD_DYNAMIC_ICON))), func() interface{} { return uint16((uint16(4))) }, func() interface{} { return uint16((uint16(3))) }).(uint16)))))
+	numberOfBytesdata := int((uint16(commandTypeContainer.NumBytes()) - uint16((utils.InlineIf((bool((triggerControlOptions.GetLabelType()) != (TriggerControlLabelType_LOAD_DYNAMIC_ICON))), func() any { return uint16((uint16(4))) }, func() any { return uint16((uint16(3))) }).(uint16)))))
 	data, _readArrayErr := readBuffer.ReadByteArray("data", numberOfBytesdata)
 	if _readArrayErr != nil {
 		return nil, errors.Wrap(_readArrayErr, "Error parsing 'data' field of TriggerControlDataLabel")

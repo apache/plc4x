@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // ApduDataExtDomainAddressSelectiveRead is the corresponding interface of ApduDataExtDomainAddressSelectiveRead
 type ApduDataExtDomainAddressSelectiveRead interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	ApduDataExt
@@ -76,7 +78,7 @@ func NewApduDataExtDomainAddressSelectiveRead(length uint8) *_ApduDataExtDomainA
 }
 
 // Deprecated: use the interface for direct cast
-func CastApduDataExtDomainAddressSelectiveRead(structType interface{}) ApduDataExtDomainAddressSelectiveRead {
+func CastApduDataExtDomainAddressSelectiveRead(structType any) ApduDataExtDomainAddressSelectiveRead {
 	if casted, ok := structType.(ApduDataExtDomainAddressSelectiveRead); ok {
 		return casted
 	}

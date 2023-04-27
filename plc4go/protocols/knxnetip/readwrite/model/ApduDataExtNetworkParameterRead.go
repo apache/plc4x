@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // ApduDataExtNetworkParameterRead is the corresponding interface of ApduDataExtNetworkParameterRead
 type ApduDataExtNetworkParameterRead interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	ApduDataExt
@@ -76,7 +78,7 @@ func NewApduDataExtNetworkParameterRead(length uint8) *_ApduDataExtNetworkParame
 }
 
 // Deprecated: use the interface for direct cast
-func CastApduDataExtNetworkParameterRead(structType interface{}) ApduDataExtNetworkParameterRead {
+func CastApduDataExtNetworkParameterRead(structType any) ApduDataExtNetworkParameterRead {
 	if casted, ok := structType.(ApduDataExtNetworkParameterRead); ok {
 		return casted
 	}

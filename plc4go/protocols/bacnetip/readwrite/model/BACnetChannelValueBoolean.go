@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetChannelValueBoolean is the corresponding interface of BACnetChannelValueBoolean
 type BACnetChannelValueBoolean interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetChannelValue
@@ -92,7 +94,7 @@ func NewBACnetChannelValueBoolean(booleanValue BACnetApplicationTagBoolean, peek
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetChannelValueBoolean(structType interface{}) BACnetChannelValueBoolean {
+func CastBACnetChannelValueBoolean(structType any) BACnetChannelValueBoolean {
 	if casted, ok := structType.(BACnetChannelValueBoolean); ok {
 		return casted
 	}

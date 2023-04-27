@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // ErrorReportingDataGeneric is the corresponding interface of ErrorReportingDataGeneric
 type ErrorReportingDataGeneric interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	ErrorReportingData
@@ -181,7 +183,7 @@ func NewErrorReportingDataGeneric(systemCategory ErrorReportingSystemCategory, m
 }
 
 // Deprecated: use the interface for direct cast
-func CastErrorReportingDataGeneric(structType interface{}) ErrorReportingDataGeneric {
+func CastErrorReportingDataGeneric(structType any) ErrorReportingDataGeneric {
 	if casted, ok := structType.(ErrorReportingDataGeneric); ok {
 		return casted
 	}

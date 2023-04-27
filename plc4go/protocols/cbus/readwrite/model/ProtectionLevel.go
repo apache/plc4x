@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -31,6 +32,8 @@ import (
 type ProtectionLevel uint8
 
 type IProtectionLevel interface {
+	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 	Description() string
 }
@@ -124,8 +127,8 @@ func ProtectionLevelKnows(value uint8) bool {
 	return false
 }
 
-func CastProtectionLevel(structType interface{}) ProtectionLevel {
-	castFunc := func(typ interface{}) ProtectionLevel {
+func CastProtectionLevel(structType any) ProtectionLevel {
+	castFunc := func(typ any) ProtectionLevel {
 		if sProtectionLevel, ok := typ.(ProtectionLevel); ok {
 			return sProtectionLevel
 		}

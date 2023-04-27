@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // COTPPacketDisconnectRequest is the corresponding interface of COTPPacketDisconnectRequest
 type COTPPacketDisconnectRequest interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	COTPPacket
@@ -113,7 +115,7 @@ func NewCOTPPacketDisconnectRequest(destinationReference uint16, sourceReference
 }
 
 // Deprecated: use the interface for direct cast
-func CastCOTPPacketDisconnectRequest(structType interface{}) COTPPacketDisconnectRequest {
+func CastCOTPPacketDisconnectRequest(structType any) COTPPacketDisconnectRequest {
 	if casted, ok := structType.(COTPPacketDisconnectRequest); ok {
 		return casted
 	}

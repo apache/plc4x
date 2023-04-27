@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataIPDHCPLeaseTime is the corresponding interface of BACnetConstructedDataIPDHCPLeaseTime
 type BACnetConstructedDataIPDHCPLeaseTime interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataIPDHCPLeaseTime(ipDhcpLeaseTime BACnetApplicationTa
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataIPDHCPLeaseTime(structType interface{}) BACnetConstructedDataIPDHCPLeaseTime {
+func CastBACnetConstructedDataIPDHCPLeaseTime(structType any) BACnetConstructedDataIPDHCPLeaseTime {
 	if casted, ok := structType.(BACnetConstructedDataIPDHCPLeaseTime); ok {
 		return casted
 	}

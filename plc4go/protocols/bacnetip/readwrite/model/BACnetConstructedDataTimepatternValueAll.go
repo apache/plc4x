@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataTimepatternValueAll is the corresponding interface of BACnetConstructedDataTimepatternValueAll
 type BACnetConstructedDataTimepatternValueAll interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -84,7 +86,7 @@ func NewBACnetConstructedDataTimepatternValueAll(openingTag BACnetOpeningTag, pe
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataTimepatternValueAll(structType interface{}) BACnetConstructedDataTimepatternValueAll {
+func CastBACnetConstructedDataTimepatternValueAll(structType any) BACnetConstructedDataTimepatternValueAll {
 	if casted, ok := structType.(BACnetConstructedDataTimepatternValueAll); ok {
 		return casted
 	}

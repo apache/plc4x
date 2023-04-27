@@ -21,7 +21,7 @@ package model
 
 import (
 	"context"
-	spiContext "github.com/apache/plc4x/plc4go/spi/context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,6 +30,7 @@ import (
 
 // BACnetConstructedDataCOVURecipients is the corresponding interface of BACnetConstructedDataCOVURecipients
 type BACnetConstructedDataCOVURecipients interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -103,7 +104,7 @@ func NewBACnetConstructedDataCOVURecipients(covuRecipients []BACnetRecipient, op
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataCOVURecipients(structType interface{}) BACnetConstructedDataCOVURecipients {
+func CastBACnetConstructedDataCOVURecipients(structType any) BACnetConstructedDataCOVURecipients {
 	if casted, ok := structType.(BACnetConstructedDataCOVURecipients); ok {
 		return casted
 	}
@@ -204,7 +205,7 @@ func (m *_BACnetConstructedDataCOVURecipients) SerializeWithWriteBuffer(ctx cont
 		}
 		for _curItem, _element := range m.GetCovuRecipients() {
 			_ = _curItem
-			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetCovuRecipients()), _curItem)
+			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetCovuRecipients()), _curItem)
 			_ = arrayCtx
 			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 			if _elementErr != nil {

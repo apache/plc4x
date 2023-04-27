@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // NLMRequestMasterKey is the corresponding interface of NLMRequestMasterKey
 type NLMRequestMasterKey interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	NLM
@@ -102,7 +104,7 @@ func NewNLMRequestMasterKey(numberOfSupportedKeyAlgorithms uint8, encryptionAndS
 }
 
 // Deprecated: use the interface for direct cast
-func CastNLMRequestMasterKey(structType interface{}) NLMRequestMasterKey {
+func CastNLMRequestMasterKey(structType any) NLMRequestMasterKey {
 	if casted, ok := structType.(NLMRequestMasterKey); ok {
 		return casted
 	}

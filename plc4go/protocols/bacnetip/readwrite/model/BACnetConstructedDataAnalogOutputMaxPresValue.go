@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataAnalogOutputMaxPresValue is the corresponding interface of BACnetConstructedDataAnalogOutputMaxPresValue
 type BACnetConstructedDataAnalogOutputMaxPresValue interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataAnalogOutputMaxPresValue(maxPresValue BACnetApplica
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataAnalogOutputMaxPresValue(structType interface{}) BACnetConstructedDataAnalogOutputMaxPresValue {
+func CastBACnetConstructedDataAnalogOutputMaxPresValue(structType any) BACnetConstructedDataAnalogOutputMaxPresValue {
 	if casted, ok := structType.(BACnetConstructedDataAnalogOutputMaxPresValue); ok {
 		return casted
 	}

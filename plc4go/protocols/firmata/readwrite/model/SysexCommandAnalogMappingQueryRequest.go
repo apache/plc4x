@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // SysexCommandAnalogMappingQueryRequest is the corresponding interface of SysexCommandAnalogMappingQueryRequest
 type SysexCommandAnalogMappingQueryRequest interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	SysexCommand
@@ -80,7 +82,7 @@ func NewSysexCommandAnalogMappingQueryRequest() *_SysexCommandAnalogMappingQuery
 }
 
 // Deprecated: use the interface for direct cast
-func CastSysexCommandAnalogMappingQueryRequest(structType interface{}) SysexCommandAnalogMappingQueryRequest {
+func CastSysexCommandAnalogMappingQueryRequest(structType any) SysexCommandAnalogMappingQueryRequest {
 	if casted, ok := structType.(SysexCommandAnalogMappingQueryRequest); ok {
 		return casted
 	}

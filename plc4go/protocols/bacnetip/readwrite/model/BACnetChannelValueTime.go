@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetChannelValueTime is the corresponding interface of BACnetChannelValueTime
 type BACnetChannelValueTime interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetChannelValue
@@ -92,7 +94,7 @@ func NewBACnetChannelValueTime(timeValue BACnetApplicationTagTime, peekedTagHead
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetChannelValueTime(structType interface{}) BACnetChannelValueTime {
+func CastBACnetChannelValueTime(structType any) BACnetChannelValueTime {
 	if casted, ok := structType.(BACnetChannelValueTime); ok {
 		return casted
 	}

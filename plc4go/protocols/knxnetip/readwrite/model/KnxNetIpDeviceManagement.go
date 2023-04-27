@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // KnxNetIpDeviceManagement is the corresponding interface of KnxNetIpDeviceManagement
 type KnxNetIpDeviceManagement interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	ServiceId
@@ -94,7 +96,7 @@ func NewKnxNetIpDeviceManagement(version uint8) *_KnxNetIpDeviceManagement {
 }
 
 // Deprecated: use the interface for direct cast
-func CastKnxNetIpDeviceManagement(structType interface{}) KnxNetIpDeviceManagement {
+func CastKnxNetIpDeviceManagement(structType any) KnxNetIpDeviceManagement {
 	if casted, ok := structType.(KnxNetIpDeviceManagement); ok {
 		return casted
 	}

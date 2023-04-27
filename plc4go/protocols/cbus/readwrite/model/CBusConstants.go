@@ -33,6 +33,7 @@ const CBusConstants_CBUSTCPDEFAULTPORT uint16 = uint16(10001)
 
 // CBusConstants is the corresponding interface of CBusConstants
 type CBusConstants interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 }
@@ -68,7 +69,7 @@ func NewCBusConstants() *_CBusConstants {
 }
 
 // Deprecated: use the interface for direct cast
-func CastCBusConstants(structType interface{}) CBusConstants {
+func CastCBusConstants(structType any) CBusConstants {
 	if casted, ok := structType.(CBusConstants); ok {
 		return casted
 	}

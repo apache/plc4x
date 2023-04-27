@@ -192,7 +192,7 @@
         </execution>
       </executions>
       <configuration>
-        <goVersion>1.16</goVersion>
+        <goVersion>1.19</goVersion>
         <packages>
           <!-- We want to format every package here so we don't get dirty commits -->
           <package>./internal/...</package>

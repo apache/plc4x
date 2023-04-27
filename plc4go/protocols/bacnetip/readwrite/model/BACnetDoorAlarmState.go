@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -31,6 +32,8 @@ import (
 type BACnetDoorAlarmState uint8
 
 type IBACnetDoorAlarmState interface {
+	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 
@@ -126,8 +129,8 @@ func BACnetDoorAlarmStateKnows(value uint8) bool {
 	return false
 }
 
-func CastBACnetDoorAlarmState(structType interface{}) BACnetDoorAlarmState {
-	castFunc := func(typ interface{}) BACnetDoorAlarmState {
+func CastBACnetDoorAlarmState(structType any) BACnetDoorAlarmState {
+	castFunc := func(typ any) BACnetDoorAlarmState {
 		if sBACnetDoorAlarmState, ok := typ.(BACnetDoorAlarmState); ok {
 			return sBACnetDoorAlarmState
 		}

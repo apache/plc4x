@@ -21,7 +21,7 @@ package model
 
 import (
 	"context"
-	spiContext "github.com/apache/plc4x/plc4go/spi/context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
@@ -31,6 +31,7 @@ import (
 
 // BACnetConstructedDataAssignedAccessRights is the corresponding interface of BACnetConstructedDataAssignedAccessRights
 type BACnetConstructedDataAssignedAccessRights interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -131,7 +132,7 @@ func NewBACnetConstructedDataAssignedAccessRights(numberOfDataElements BACnetApp
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataAssignedAccessRights(structType interface{}) BACnetConstructedDataAssignedAccessRights {
+func CastBACnetConstructedDataAssignedAccessRights(structType any) BACnetConstructedDataAssignedAccessRights {
 	if casted, ok := structType.(BACnetConstructedDataAssignedAccessRights); ok {
 		return casted
 	}
@@ -287,7 +288,7 @@ func (m *_BACnetConstructedDataAssignedAccessRights) SerializeWithWriteBuffer(ct
 		}
 		for _curItem, _element := range m.GetAssignedAccessRights() {
 			_ = _curItem
-			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetAssignedAccessRights()), _curItem)
+			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetAssignedAccessRights()), _curItem)
 			_ = arrayCtx
 			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 			if _elementErr != nil {

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // MeteringDataOtherWaterConsumption is the corresponding interface of MeteringDataOtherWaterConsumption
 type MeteringDataOtherWaterConsumption interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	MeteringData
@@ -93,7 +95,7 @@ func NewMeteringDataOtherWaterConsumption(kL uint32, commandTypeContainer Meteri
 }
 
 // Deprecated: use the interface for direct cast
-func CastMeteringDataOtherWaterConsumption(structType interface{}) MeteringDataOtherWaterConsumption {
+func CastMeteringDataOtherWaterConsumption(structType any) MeteringDataOtherWaterConsumption {
 	if casted, ok := structType.(MeteringDataOtherWaterConsumption); ok {
 		return casted
 	}

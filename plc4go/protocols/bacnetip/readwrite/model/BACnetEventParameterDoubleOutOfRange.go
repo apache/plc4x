@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetEventParameterDoubleOutOfRange is the corresponding interface of BACnetEventParameterDoubleOutOfRange
 type BACnetEventParameterDoubleOutOfRange interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetEventParameter
@@ -132,7 +134,7 @@ func NewBACnetEventParameterDoubleOutOfRange(openingTag BACnetOpeningTag, timeDe
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetEventParameterDoubleOutOfRange(structType interface{}) BACnetEventParameterDoubleOutOfRange {
+func CastBACnetEventParameterDoubleOutOfRange(structType any) BACnetEventParameterDoubleOutOfRange {
 	if casted, ok := structType.(BACnetEventParameterDoubleOutOfRange); ok {
 		return casted
 	}

@@ -22,6 +22,7 @@ package model
 import (
 	"context"
 	"encoding/binary"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,6 +31,7 @@ import (
 
 // BVLCReadBroadcastDistributionTable is the corresponding interface of BVLCReadBroadcastDistributionTable
 type BVLCReadBroadcastDistributionTable interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BVLC
@@ -77,7 +79,7 @@ func NewBVLCReadBroadcastDistributionTable() *_BVLCReadBroadcastDistributionTabl
 }
 
 // Deprecated: use the interface for direct cast
-func CastBVLCReadBroadcastDistributionTable(structType interface{}) BVLCReadBroadcastDistributionTable {
+func CastBVLCReadBroadcastDistributionTable(structType any) BVLCReadBroadcastDistributionTable {
 	if casted, ok := structType.(BVLCReadBroadcastDistributionTable); ok {
 		return casted
 	}

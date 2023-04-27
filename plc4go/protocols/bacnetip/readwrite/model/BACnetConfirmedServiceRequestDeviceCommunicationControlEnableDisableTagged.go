@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged is the corresponding interface of BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged
 type BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetHeader returns Header (property field)
@@ -78,7 +80,7 @@ func NewBACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagg
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged(structType interface{}) BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged {
+func CastBACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged(structType any) BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged {
 	if casted, ok := structType.(BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged); ok {
 		return casted
 	}

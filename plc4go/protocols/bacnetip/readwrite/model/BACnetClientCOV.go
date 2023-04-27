@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetClientCOV is the corresponding interface of BACnetClientCOV
 type BACnetClientCOV interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetPeekedTagHeader returns PeekedTagHeader (property field)
@@ -105,7 +107,7 @@ func NewBACnetClientCOV(peekedTagHeader BACnetTagHeader) *_BACnetClientCOV {
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetClientCOV(structType interface{}) BACnetClientCOV {
+func CastBACnetClientCOV(structType any) BACnetClientCOV {
 	if casted, ok := structType.(BACnetClientCOV); ok {
 		return casted
 	}
@@ -163,7 +165,7 @@ func BACnetClientCOVParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 		InitializeParent(BACnetClientCOV, BACnetTagHeader)
 		GetParent() BACnetClientCOV
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child BACnetClientCOVChildSerializeRequirement
 	var typeSwitchError error
 	switch {

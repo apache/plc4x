@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -31,6 +32,8 @@ import (
 type QueryType uint8
 
 type IQueryType interface {
+	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 
@@ -84,8 +87,8 @@ func QueryTypeKnows(value uint8) bool {
 	return false
 }
 
-func CastQueryType(structType interface{}) QueryType {
-	castFunc := func(typ interface{}) QueryType {
+func CastQueryType(structType any) QueryType {
+	castFunc := func(typ any) QueryType {
 		if sQueryType, ok := typ.(QueryType); ok {
 			return sQueryType
 		}

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // SecurityDataMainsRestoredOrApplied is the corresponding interface of SecurityDataMainsRestoredOrApplied
 type SecurityDataMainsRestoredOrApplied interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	SecurityData
@@ -75,7 +77,7 @@ func NewSecurityDataMainsRestoredOrApplied(commandTypeContainer SecurityCommandT
 }
 
 // Deprecated: use the interface for direct cast
-func CastSecurityDataMainsRestoredOrApplied(structType interface{}) SecurityDataMainsRestoredOrApplied {
+func CastSecurityDataMainsRestoredOrApplied(structType any) SecurityDataMainsRestoredOrApplied {
 	if casted, ok := structType.(SecurityDataMainsRestoredOrApplied); ok {
 		return casted
 	}

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // MeteringDataOilConsumption is the corresponding interface of MeteringDataOilConsumption
 type MeteringDataOilConsumption interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	MeteringData
@@ -93,7 +95,7 @@ func NewMeteringDataOilConsumption(L uint32, commandTypeContainer MeteringComman
 }
 
 // Deprecated: use the interface for direct cast
-func CastMeteringDataOilConsumption(structType interface{}) MeteringDataOilConsumption {
+func CastMeteringDataOilConsumption(structType any) MeteringDataOilConsumption {
 	if casted, ok := structType.(MeteringDataOilConsumption); ok {
 		return casted
 	}

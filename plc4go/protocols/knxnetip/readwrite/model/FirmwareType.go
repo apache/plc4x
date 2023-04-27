@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -31,6 +32,8 @@ import (
 type FirmwareType uint16
 
 type IFirmwareType interface {
+	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 
@@ -162,8 +165,8 @@ func FirmwareTypeKnows(value uint16) bool {
 	return false
 }
 
-func CastFirmwareType(structType interface{}) FirmwareType {
-	castFunc := func(typ interface{}) FirmwareType {
+func CastFirmwareType(structType any) FirmwareType {
+	castFunc := func(typ any) FirmwareType {
 		if sFirmwareType, ok := typ.(FirmwareType); ok {
 			return sFirmwareType
 		}

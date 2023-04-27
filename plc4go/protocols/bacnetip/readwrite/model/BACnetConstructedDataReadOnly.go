@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataReadOnly is the corresponding interface of BACnetConstructedDataReadOnly
 type BACnetConstructedDataReadOnly interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataReadOnly(readOnly BACnetApplicationTagBoolean, open
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataReadOnly(structType interface{}) BACnetConstructedDataReadOnly {
+func CastBACnetConstructedDataReadOnly(structType any) BACnetConstructedDataReadOnly {
 	if casted, ok := structType.(BACnetConstructedDataReadOnly); ok {
 		return casted
 	}

@@ -34,7 +34,7 @@
     <steps>
       <api-request name="Receive Read Request from application">
         <TestReadRequest>
-          <tags>
+          <tags isList="true">
             <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
               <name>hurz</name>
               <address>holding-register:1:REAL</address>
@@ -92,22 +92,28 @@
       </incoming-plc-message>
       <api-response name="Report Read Response to application">
         <PlcReadResponse>
-          <PlcReadRequest>
-            <tags>
-              <hurz>
-                <ModbusTagHoldingRegister>
-                  <address dataType="uint" bitLength="16">0</address>
-                  <numberOfElements dataType="uint" bitLength="16">1</numberOfElements>
-                  <dataType dataType="string" bitLength="32" encoding="UTF-8">REAL</dataType>
-                </ModbusTagHoldingRegister>
-              </hurz>
-            </tags>
-          </PlcReadRequest>
-          <values>
+          <request>
+            <PlcReadRequest>
+              <PlcTagRequest>
+                <tags isList="true">
+                  <hurz>
+                    <ModbusTagHoldingRegister>
+                      <address dataType="uint" bitLength="16">0</address>
+                      <numberOfElements dataType="uint" bitLength="16">1</numberOfElements>
+                      <dataType dataType="string" bitLength="32" encoding="UTF-8">REAL</dataType>
+                    </ModbusTagHoldingRegister>
+                  </hurz>
+                </tags>
+              </PlcTagRequest>
+            </PlcReadRequest>
+          </request>
+          <values isList="true">
             <hurz>
               <ResponseItem>
-                <result dataType="string" bitLength="16" encoding="UTF-8">OK</result>
-                <PlcREAL dataType="float" bitLength="32">3.1415927410125732</PlcREAL>
+                <code dataType="string" bitLength="16" encoding="UTF-8">OK</code>
+                <value>
+                  <PlcREAL dataType="float" bitLength="32">3.1415927410125732</PlcREAL>
+                </value>
               </ResponseItem>
             </hurz>
           </values>
@@ -121,7 +127,7 @@
     <steps>
       <api-request name="Receive Read Request from application">
         <TestReadRequest>
-          <tags>
+          <tags isList="true">
             <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
               <name>hurz</name>
               <address>holding-register:1:REAL[2]</address>
@@ -179,25 +185,31 @@
       </incoming-plc-message>
       <api-response name="Report Read Response to application">
         <PlcReadResponse>
-          <PlcReadRequest>
-            <tags>
-              <hurz>
-                <ModbusTagHoldingRegister>
-                  <address dataType="uint" bitLength="16">0</address>
-                  <numberOfElements dataType="uint" bitLength="16">2</numberOfElements>
-                  <dataType dataType="string" bitLength="32" encoding="UTF-8">REAL</dataType>
-                </ModbusTagHoldingRegister>
-              </hurz>
-            </tags>
-          </PlcReadRequest>
-          <values>
+          <request>
+            <PlcReadRequest>
+              <PlcTagRequest>
+                <tags isList="true">
+                  <hurz>
+                    <ModbusTagHoldingRegister>
+                      <address dataType="uint" bitLength="16">0</address>
+                      <numberOfElements dataType="uint" bitLength="16">2</numberOfElements>
+                      <dataType dataType="string" bitLength="32" encoding="UTF-8">REAL</dataType>
+                    </ModbusTagHoldingRegister>
+                  </hurz>
+                </tags>
+              </PlcTagRequest>
+            </PlcReadRequest>
+          </request>
+          <values isList="true">
             <hurz>
               <ResponseItem>
-                <result dataType="string" bitLength="16" encoding="UTF-8">OK</result>
-                <PlcList>
-                  <PlcREAL dataType="float" bitLength="32">3.1415927410125732</PlcREAL>
-                  <PlcREAL dataType="float" bitLength="32">3.1415927410125732</PlcREAL>
-                </PlcList>
+                <code dataType="string" bitLength="16" encoding="UTF-8">OK</code>
+                <value>
+                  <PlcList>
+                    <PlcREAL dataType="float" bitLength="32">3.1415927410125732</PlcREAL>
+                    <PlcREAL dataType="float" bitLength="32">3.1415927410125732</PlcREAL>
+                  </PlcList>
+                </value>
               </ResponseItem>
             </hurz>
           </values>
@@ -211,7 +223,7 @@
     <steps>
       <api-request name="Receive Read Request from application">
         <TestReadRequest>
-          <tags>
+          <tags isList="true">
             <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
               <name>hurz1</name>
               <address>holding-register:1:REAL</address>
@@ -321,35 +333,43 @@
       </incoming-plc-message>
       <api-response name="Report Read Response to application">
         <PlcReadResponse>
-          <PlcReadRequest>
-            <tags>
-              <hurz1>
-                <ModbusTagHoldingRegister>
-                  <address dataType="uint" bitLength="16">0</address>
-                  <numberOfElements dataType="uint" bitLength="16">1</numberOfElements>
-                  <dataType dataType="string" bitLength="32" encoding="UTF-8">REAL</dataType>
-                </ModbusTagHoldingRegister>
-              </hurz1>
-              <hurz2>
-                <ModbusTagHoldingRegister>
-                  <address dataType="uint" bitLength="16">2</address>
-                  <numberOfElements dataType="uint" bitLength="16">1</numberOfElements>
-                  <dataType dataType="string" bitLength="32" encoding="UTF-8">REAL</dataType>
-                </ModbusTagHoldingRegister>
-              </hurz2>
-            </tags>
-          </PlcReadRequest>
-          <values>
+          <request>
+            <PlcReadRequest>
+              <PlcTagRequest>
+                <tags isList="true">
+                  <hurz1>
+                    <ModbusTagHoldingRegister>
+                      <address dataType="uint" bitLength="16">0</address>
+                      <numberOfElements dataType="uint" bitLength="16">1</numberOfElements>
+                      <dataType dataType="string" bitLength="32" encoding="UTF-8">REAL</dataType>
+                    </ModbusTagHoldingRegister>
+                  </hurz1>
+                  <hurz2>
+                    <ModbusTagHoldingRegister>
+                      <address dataType="uint" bitLength="16">2</address>
+                      <numberOfElements dataType="uint" bitLength="16">1</numberOfElements>
+                      <dataType dataType="string" bitLength="32" encoding="UTF-8">REAL</dataType>
+                    </ModbusTagHoldingRegister>
+                  </hurz2>
+                </tags>
+              </PlcTagRequest>
+            </PlcReadRequest>
+          </request>
+          <values isList="true">
             <hurz1>
               <ResponseItem>
-                <result dataType="string" bitLength="16" encoding="UTF-8">OK</result>
-                <PlcREAL dataType="float" bitLength="32">3.1415927410125732</PlcREAL>
+                <code dataType="string" bitLength="16" encoding="UTF-8">OK</code>
+                <value>
+                  <PlcREAL dataType="float" bitLength="32">3.1415927410125732</PlcREAL>
+                </value>
               </ResponseItem>
             </hurz1>
             <hurz2>
               <ResponseItem>
-                <result dataType="string" bitLength="16" encoding="UTF-8">OK</result>
-                <PlcREAL dataType="float" bitLength="32">3.1415927410125732</PlcREAL>
+                <code dataType="string" bitLength="16" encoding="UTF-8">OK</code>
+                <value>
+                  <PlcREAL dataType="float" bitLength="32">3.1415927410125732</PlcREAL>
+                </value>
               </ResponseItem>
             </hurz2>
           </values>
@@ -363,7 +383,7 @@
     <steps>
       <api-request name="Receive Write Request from application">
         <TestWriteRequest>
-          <tags>
+          <tags isList="true">
             <tag className="org.apache.plc4x.test.driver.internal.api.TestValueTag">
               <name>hurz</name>
               <address>holding-register:1:REAL</address>
@@ -424,20 +444,30 @@
       </incoming-plc-message>
       <api-response name="Report Write Response to application">
         <PlcWriteResponse>
-          <PlcWriteRequest>
-            <tags>
-              <hurz>
-                <ModbusTagHoldingRegister>
-                  <address dataType="uint" bitLength="16">0</address>
-                  <numberOfElements dataType="uint" bitLength="16">1</numberOfElements>
-                  <dataType dataType="string" bitLength="32" encoding="UTF-8">REAL</dataType>
-                </ModbusTagHoldingRegister>
-                <PlcREAL dataType="float" bitLength="32">3.1415927410125732</PlcREAL>
-              </hurz>
-            </tags>
-          </PlcWriteRequest>
-          <responseCodes>
-            <hurz dataType="string" bitLength="16" encoding="UTF-8">OK</hurz>
+          <request>
+            <PlcWriteRequest>
+              <PlcTagRequest>
+                <tags isList="true">
+                  <hurz>
+                    <ModbusTagHoldingRegister>
+                      <address dataType="uint" bitLength="16">0</address>
+                      <numberOfElements dataType="uint" bitLength="16">1</numberOfElements>
+                      <dataType dataType="string" bitLength="32" encoding="UTF-8">REAL</dataType>
+                    </ModbusTagHoldingRegister>
+                  </hurz>
+                </tags>
+              </PlcTagRequest>
+              <values isList="true">
+                <hurz>
+                  <PlcREAL dataType="float" bitLength="32">3.1415927410125732</PlcREAL>
+                </hurz>
+              </values>
+            </PlcWriteRequest>
+          </request>
+          <responseCodes isList="true">
+            <hurz>
+              <ResponseCode dataType="uint" bitLength="8" stringRepresentation="OK">1</ResponseCode>
+            </hurz>
           </responseCodes>
         </PlcWriteResponse>
       </api-response>
@@ -449,7 +479,7 @@
     <steps>
       <api-request name="Receive Write Request from application">
         <TestWriteRequest>
-          <tags>
+          <tags isList="true">
             <tag className="org.apache.plc4x.test.driver.internal.api.TestValueTag">
               <name>hurz</name>
               <address>holding-register:1:REAL[2]</address>
@@ -511,23 +541,33 @@
       </incoming-plc-message>
       <api-response name="Report Write Response to application">
         <PlcWriteResponse>
-          <PlcWriteRequest>
-            <tags>
-              <hurz>
-                <ModbusTagHoldingRegister>
-                  <address dataType="uint" bitLength="16">0</address>
-                  <numberOfElements dataType="uint" bitLength="16">2</numberOfElements>
-                  <dataType dataType="string" bitLength="32" encoding="UTF-8">REAL</dataType>
-                </ModbusTagHoldingRegister>
-                <PlcList>
-                  <PlcREAL dataType="float" bitLength="32">3.1415927410125732</PlcREAL>
-                  <PlcREAL dataType="float" bitLength="32">3.1415927410125732</PlcREAL>
-                </PlcList>
-              </hurz>
-            </tags>
-          </PlcWriteRequest>
-          <responseCodes>
-            <hurz dataType="string" bitLength="16" encoding="UTF-8">OK</hurz>
+          <request>
+            <PlcWriteRequest>
+              <PlcTagRequest>
+                <tags isList="true">
+                  <hurz>
+                    <ModbusTagHoldingRegister>
+                      <address dataType="uint" bitLength="16">0</address>
+                      <numberOfElements dataType="uint" bitLength="16">2</numberOfElements>
+                      <dataType dataType="string" bitLength="32" encoding="UTF-8">REAL</dataType>
+                    </ModbusTagHoldingRegister>
+                  </hurz>
+                </tags>
+              </PlcTagRequest>
+              <values isList="true">
+                <hurz>
+                  <PlcList>
+                    <PlcREAL dataType="float" bitLength="32">3.1415927410125732</PlcREAL>
+                    <PlcREAL dataType="float" bitLength="32">3.1415927410125732</PlcREAL>
+                  </PlcList>
+                </hurz>
+              </values>
+            </PlcWriteRequest>
+          </request>
+          <responseCodes isList="true">
+            <hurz>
+              <ResponseCode dataType="uint" bitLength="8" stringRepresentation="OK">1</ResponseCode>
+            </hurz>
           </responseCodes>
         </PlcWriteResponse>
       </api-response>

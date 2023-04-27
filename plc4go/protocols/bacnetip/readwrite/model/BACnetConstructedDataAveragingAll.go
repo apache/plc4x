@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataAveragingAll is the corresponding interface of BACnetConstructedDataAveragingAll
 type BACnetConstructedDataAveragingAll interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -84,7 +86,7 @@ func NewBACnetConstructedDataAveragingAll(openingTag BACnetOpeningTag, peekedTag
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataAveragingAll(structType interface{}) BACnetConstructedDataAveragingAll {
+func CastBACnetConstructedDataAveragingAll(structType any) BACnetConstructedDataAveragingAll {
 	if casted, ok := structType.(BACnetConstructedDataAveragingAll); ok {
 		return casted
 	}

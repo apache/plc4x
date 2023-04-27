@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // AdsDiscoveryBlockOsData is the corresponding interface of AdsDiscoveryBlockOsData
 type AdsDiscoveryBlockOsData interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	AdsDiscoveryBlock
@@ -94,7 +96,7 @@ func NewAdsDiscoveryBlockOsData(osData []byte) *_AdsDiscoveryBlockOsData {
 }
 
 // Deprecated: use the interface for direct cast
-func CastAdsDiscoveryBlockOsData(structType interface{}) AdsDiscoveryBlockOsData {
+func CastAdsDiscoveryBlockOsData(structType any) AdsDiscoveryBlockOsData {
 	if casted, ok := structType.(AdsDiscoveryBlockOsData); ok {
 		return casted
 	}

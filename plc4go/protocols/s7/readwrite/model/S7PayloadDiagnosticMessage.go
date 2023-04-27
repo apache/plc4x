@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // S7PayloadDiagnosticMessage is the corresponding interface of S7PayloadDiagnosticMessage
 type S7PayloadDiagnosticMessage interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	S7PayloadUserDataItem
@@ -153,7 +155,7 @@ func NewS7PayloadDiagnosticMessage(EventId uint16, PriorityClass uint8, ObNumber
 }
 
 // Deprecated: use the interface for direct cast
-func CastS7PayloadDiagnosticMessage(structType interface{}) S7PayloadDiagnosticMessage {
+func CastS7PayloadDiagnosticMessage(structType any) S7PayloadDiagnosticMessage {
 	if casted, ok := structType.(S7PayloadDiagnosticMessage); ok {
 		return casted
 	}

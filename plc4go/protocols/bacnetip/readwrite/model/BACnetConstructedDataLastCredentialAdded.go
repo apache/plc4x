@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataLastCredentialAdded is the corresponding interface of BACnetConstructedDataLastCredentialAdded
 type BACnetConstructedDataLastCredentialAdded interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataLastCredentialAdded(lastCredentialAdded BACnetDevic
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataLastCredentialAdded(structType interface{}) BACnetConstructedDataLastCredentialAdded {
+func CastBACnetConstructedDataLastCredentialAdded(structType any) BACnetConstructedDataLastCredentialAdded {
 	if casted, ok := structType.(BACnetConstructedDataLastCredentialAdded); ok {
 		return casted
 	}

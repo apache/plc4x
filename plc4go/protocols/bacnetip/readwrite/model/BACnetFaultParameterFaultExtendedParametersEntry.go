@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetFaultParameterFaultExtendedParametersEntry is the corresponding interface of BACnetFaultParameterFaultExtendedParametersEntry
 type BACnetFaultParameterFaultExtendedParametersEntry interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetPeekedTagHeader returns PeekedTagHeader (property field)
@@ -114,7 +116,7 @@ func NewBACnetFaultParameterFaultExtendedParametersEntry(peekedTagHeader BACnetT
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetFaultParameterFaultExtendedParametersEntry(structType interface{}) BACnetFaultParameterFaultExtendedParametersEntry {
+func CastBACnetFaultParameterFaultExtendedParametersEntry(structType any) BACnetFaultParameterFaultExtendedParametersEntry {
 	if casted, ok := structType.(BACnetFaultParameterFaultExtendedParametersEntry); ok {
 		return casted
 	}
@@ -184,7 +186,7 @@ func BACnetFaultParameterFaultExtendedParametersEntryParseWithBuffer(ctx context
 		InitializeParent(BACnetFaultParameterFaultExtendedParametersEntry, BACnetTagHeader)
 		GetParent() BACnetFaultParameterFaultExtendedParametersEntry
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child BACnetFaultParameterFaultExtendedParametersEntryChildSerializeRequirement
 	var typeSwitchError error
 	switch {

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // IdentifyReplyCommandOutputUnitSummary is the corresponding interface of IdentifyReplyCommandOutputUnitSummary
 type IdentifyReplyCommandOutputUnitSummary interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	IdentifyReplyCommand
@@ -118,7 +120,7 @@ func NewIdentifyReplyCommandOutputUnitSummary(unitFlags IdentifyReplyCommandUnit
 }
 
 // Deprecated: use the interface for direct cast
-func CastIdentifyReplyCommandOutputUnitSummary(structType interface{}) IdentifyReplyCommandOutputUnitSummary {
+func CastIdentifyReplyCommandOutputUnitSummary(structType any) IdentifyReplyCommandOutputUnitSummary {
 	if casted, ok := structType.(IdentifyReplyCommandOutputUnitSummary); ok {
 		return casted
 	}

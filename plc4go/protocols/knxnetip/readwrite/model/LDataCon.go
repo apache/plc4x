@@ -21,7 +21,7 @@ package model
 
 import (
 	"context"
-	spiContext "github.com/apache/plc4x/plc4go/spi/context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,6 +30,7 @@ import (
 
 // LDataCon is the corresponding interface of LDataCon
 type LDataCon interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	CEMI
@@ -111,7 +112,7 @@ func NewLDataCon(additionalInformationLength uint8, additionalInformation []CEMI
 }
 
 // Deprecated: use the interface for direct cast
-func CastLDataCon(structType interface{}) LDataCon {
+func CastLDataCon(structType any) LDataCon {
 	if casted, ok := structType.(LDataCon); ok {
 		return casted
 	}
@@ -248,7 +249,7 @@ func (m *_LDataCon) SerializeWithWriteBuffer(ctx context.Context, writeBuffer ut
 		}
 		for _curItem, _element := range m.GetAdditionalInformation() {
 			_ = _curItem
-			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetAdditionalInformation()), _curItem)
+			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetAdditionalInformation()), _curItem)
 			_ = arrayCtx
 			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 			if _elementErr != nil {

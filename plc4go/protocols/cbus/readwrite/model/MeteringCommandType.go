@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -31,6 +32,8 @@ import (
 type MeteringCommandType uint8
 
 type IMeteringCommandType interface {
+	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 	NumberOfArguments() uint8
 }
@@ -94,8 +97,8 @@ func MeteringCommandTypeKnows(value uint8) bool {
 	return false
 }
 
-func CastMeteringCommandType(structType interface{}) MeteringCommandType {
-	castFunc := func(typ interface{}) MeteringCommandType {
+func CastMeteringCommandType(structType any) MeteringCommandType {
+	castFunc := func(typ any) MeteringCommandType {
 		if sMeteringCommandType, ok := typ.(MeteringCommandType); ok {
 			return sMeteringCommandType
 		}

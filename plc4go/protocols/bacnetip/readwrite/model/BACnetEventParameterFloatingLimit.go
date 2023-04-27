@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetEventParameterFloatingLimit is the corresponding interface of BACnetEventParameterFloatingLimit
 type BACnetEventParameterFloatingLimit interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetEventParameter
@@ -140,7 +142,7 @@ func NewBACnetEventParameterFloatingLimit(openingTag BACnetOpeningTag, timeDelay
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetEventParameterFloatingLimit(structType interface{}) BACnetEventParameterFloatingLimit {
+func CastBACnetEventParameterFloatingLimit(structType any) BACnetEventParameterFloatingLimit {
 	if casted, ok := structType.(BACnetEventParameterFloatingLimit); ok {
 		return casted
 	}

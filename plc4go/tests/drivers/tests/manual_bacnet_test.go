@@ -24,6 +24,7 @@ import (
 
 	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 	_ "github.com/apache/plc4x/plc4go/tests/initializetest"
+
 	"github.com/stretchr/testify/require"
 )
 

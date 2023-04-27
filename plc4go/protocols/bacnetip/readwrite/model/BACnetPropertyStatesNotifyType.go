@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetPropertyStatesNotifyType is the corresponding interface of BACnetPropertyStatesNotifyType
 type BACnetPropertyStatesNotifyType interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetPropertyStates
@@ -92,7 +94,7 @@ func NewBACnetPropertyStatesNotifyType(notifyType BACnetNotifyTypeTagged, peeked
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetPropertyStatesNotifyType(structType interface{}) BACnetPropertyStatesNotifyType {
+func CastBACnetPropertyStatesNotifyType(structType any) BACnetPropertyStatesNotifyType {
 	if casted, ok := structType.(BACnetPropertyStatesNotifyType); ok {
 		return casted
 	}

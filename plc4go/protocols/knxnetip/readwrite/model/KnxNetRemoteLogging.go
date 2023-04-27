@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // KnxNetRemoteLogging is the corresponding interface of KnxNetRemoteLogging
 type KnxNetRemoteLogging interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	ServiceId
@@ -94,7 +96,7 @@ func NewKnxNetRemoteLogging(version uint8) *_KnxNetRemoteLogging {
 }
 
 // Deprecated: use the interface for direct cast
-func CastKnxNetRemoteLogging(structType interface{}) KnxNetRemoteLogging {
+func CastKnxNetRemoteLogging(structType any) KnxNetRemoteLogging {
 	if casted, ok := structType.(KnxNetRemoteLogging); ok {
 		return casted
 	}

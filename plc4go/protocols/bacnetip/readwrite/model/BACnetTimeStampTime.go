@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetTimeStampTime is the corresponding interface of BACnetTimeStampTime
 type BACnetTimeStampTime interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetTimeStamp
@@ -92,7 +94,7 @@ func NewBACnetTimeStampTime(timeValue BACnetContextTagTime, peekedTagHeader BACn
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetTimeStampTime(structType interface{}) BACnetTimeStampTime {
+func CastBACnetTimeStampTime(structType any) BACnetTimeStampTime {
 	if casted, ok := structType.(BACnetTimeStampTime); ok {
 		return casted
 	}

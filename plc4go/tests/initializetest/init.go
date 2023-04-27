@@ -20,16 +20,35 @@
 package initializetest
 
 import (
+	"github.com/apache/plc4x/plc4go/pkg/api/config"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
+	"github.com/rs/zerolog/pkgerrors"
 	"os"
 )
 
 func init() {
+	SetupDefaultLoggerForTest()
+}
+
+// SetupDefaultLoggerForTest This is the default log setting for Jenkins
+func SetupDefaultLoggerForTest() {
 	onJenkins := os.Getenv("JENKINS_URL") != ""
 	log.Logger = log.
 		//// Enable below if you want to see the filenames
 		//With().Caller().Logger().
 		Output(zerolog.ConsoleWriter{Out: os.Stderr, NoColor: onJenkins}).
 		Level(zerolog.InfoLevel)
+}
+
+// GoFullDebug can be called to set up logger for debug (the call to this should not be committed)
+func GoFullDebug() {
+	zerolog.ErrorStackMarshaler = pkgerrors.MarshalStack
+	log.Logger = log.
+		With().Caller().Logger().
+		Output(zerolog.ConsoleWriter{Out: os.Stderr}).
+		Level(zerolog.DebugLevel)
+	config.TraceTransactionManagerWorkers = false
+	config.TraceTransactionManagerTransactions = false
+	config.TraceDefaultMessageCodecWorker = false
 }

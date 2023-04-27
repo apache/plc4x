@@ -32,7 +32,7 @@ import (
 type ModbusParserHelper struct {
 }
 
-func (m ModbusParserHelper) Parse(typeName string, arguments []string, io utils.ReadBuffer) (interface{}, error) {
+func (m ModbusParserHelper) Parse(typeName string, arguments []string, io utils.ReadBuffer) (any, error) {
 	switch typeName {
 	case "ModbusPDUWriteFileRecordRequestItem":
 		return model.ModbusPDUWriteFileRecordRequestItemParseWithBuffer(context.Background(), io)

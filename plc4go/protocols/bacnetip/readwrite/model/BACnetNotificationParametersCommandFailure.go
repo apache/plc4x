@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetNotificationParametersCommandFailure is the corresponding interface of BACnetNotificationParametersCommandFailure
 type BACnetNotificationParametersCommandFailure interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetNotificationParameters
@@ -126,7 +128,7 @@ func NewBACnetNotificationParametersCommandFailure(innerOpeningTag BACnetOpening
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetNotificationParametersCommandFailure(structType interface{}) BACnetNotificationParametersCommandFailure {
+func CastBACnetNotificationParametersCommandFailure(structType any) BACnetNotificationParametersCommandFailure {
 	if casted, ok := structType.(BACnetNotificationParametersCommandFailure); ok {
 		return casted
 	}

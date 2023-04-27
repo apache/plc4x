@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
@@ -30,6 +31,7 @@ import (
 
 // BACnetConfirmedServiceRequestConfirmedEventNotification is the corresponding interface of BACnetConfirmedServiceRequestConfirmedEventNotification
 type BACnetConfirmedServiceRequestConfirmedEventNotification interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConfirmedServiceRequest
@@ -192,7 +194,7 @@ func NewBACnetConfirmedServiceRequestConfirmedEventNotification(processIdentifie
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConfirmedServiceRequestConfirmedEventNotification(structType interface{}) BACnetConfirmedServiceRequestConfirmedEventNotification {
+func CastBACnetConfirmedServiceRequestConfirmedEventNotification(structType any) BACnetConfirmedServiceRequestConfirmedEventNotification {
 	if casted, ok := structType.(BACnetConfirmedServiceRequestConfirmedEventNotification); ok {
 		return casted
 	}

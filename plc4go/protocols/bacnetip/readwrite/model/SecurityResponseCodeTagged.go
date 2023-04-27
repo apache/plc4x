@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // SecurityResponseCodeTagged is the corresponding interface of SecurityResponseCodeTagged
 type SecurityResponseCodeTagged interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetHeader returns Header (property field)
@@ -78,7 +80,7 @@ func NewSecurityResponseCodeTagged(header BACnetTagHeader, value SecurityRespons
 }
 
 // Deprecated: use the interface for direct cast
-func CastSecurityResponseCodeTagged(structType interface{}) SecurityResponseCodeTagged {
+func CastSecurityResponseCodeTagged(structType any) SecurityResponseCodeTagged {
 	if casted, ok := structType.(SecurityResponseCodeTagged); ok {
 		return casted
 	}

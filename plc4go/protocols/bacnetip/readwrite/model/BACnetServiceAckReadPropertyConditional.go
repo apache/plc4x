@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetServiceAckReadPropertyConditional is the corresponding interface of BACnetServiceAckReadPropertyConditional
 type BACnetServiceAckReadPropertyConditional interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetServiceAck
@@ -97,7 +99,7 @@ func NewBACnetServiceAckReadPropertyConditional(bytesOfRemovedService []byte, se
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetServiceAckReadPropertyConditional(structType interface{}) BACnetServiceAckReadPropertyConditional {
+func CastBACnetServiceAckReadPropertyConditional(structType any) BACnetServiceAckReadPropertyConditional {
 	if casted, ok := structType.(BACnetServiceAckReadPropertyConditional); ok {
 		return casted
 	}

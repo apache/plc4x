@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataInitialTimeout is the corresponding interface of BACnetConstructedDataInitialTimeout
 type BACnetConstructedDataInitialTimeout interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataInitialTimeout(initialTimeout BACnetApplicationTagU
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataInitialTimeout(structType interface{}) BACnetConstructedDataInitialTimeout {
+func CastBACnetConstructedDataInitialTimeout(structType any) BACnetConstructedDataInitialTimeout {
 	if casted, ok := structType.(BACnetConstructedDataInitialTimeout); ok {
 		return casted
 	}

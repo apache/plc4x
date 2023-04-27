@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // CALDataAcknowledge is the corresponding interface of CALDataAcknowledge
 type CALDataAcknowledge interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	CALData
@@ -101,7 +103,7 @@ func NewCALDataAcknowledge(paramNo Parameter, code uint8, commandTypeContainer C
 }
 
 // Deprecated: use the interface for direct cast
-func CastCALDataAcknowledge(structType interface{}) CALDataAcknowledge {
+func CastCALDataAcknowledge(structType any) CALDataAcknowledge {
 	if casted, ok := structType.(CALDataAcknowledge); ok {
 		return casted
 	}

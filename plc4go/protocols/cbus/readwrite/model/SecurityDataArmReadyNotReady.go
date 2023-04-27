@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // SecurityDataArmReadyNotReady is the corresponding interface of SecurityDataArmReadyNotReady
 type SecurityDataArmReadyNotReady interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	SecurityData
@@ -93,7 +95,7 @@ func NewSecurityDataArmReadyNotReady(zoneNumber uint8, commandTypeContainer Secu
 }
 
 // Deprecated: use the interface for direct cast
-func CastSecurityDataArmReadyNotReady(structType interface{}) SecurityDataArmReadyNotReady {
+func CastSecurityDataArmReadyNotReady(structType any) SecurityDataArmReadyNotReady {
 	if casted, ok := structType.(SecurityDataArmReadyNotReady); ok {
 		return casted
 	}

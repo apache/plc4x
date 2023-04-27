@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // AmsString is the corresponding interface of AmsString
 type AmsString interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetText returns Text (property field)
@@ -69,7 +71,7 @@ func NewAmsString(text string) *_AmsString {
 }
 
 // Deprecated: use the interface for direct cast
-func CastAmsString(structType interface{}) AmsString {
+func CastAmsString(structType any) AmsString {
 	if casted, ok := structType.(AmsString); ok {
 		return casted
 	}
@@ -137,7 +139,7 @@ func AmsStringParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) 
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of AmsString")
 		}
 		if reserved != uint8(0x00) {
-			Plc4xModelLog.Info().Fields(map[string]interface{}{
+			Plc4xModelLog.Info().Fields(map[string]any{
 				"expected value": uint8(0x00),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
@@ -190,7 +192,7 @@ func (m *_AmsString) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 	{
 		var reserved uint8 = uint8(0x00)
 		if m.reservedField0 != nil {
-			Plc4xModelLog.Info().Fields(map[string]interface{}{
+			Plc4xModelLog.Info().Fields(map[string]any{
 				"expected value": uint8(0x00),
 				"got value":      reserved,
 			}).Msg("Overriding reserved field with unexpected value.")

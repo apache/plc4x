@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataMaxFailedAttempts is the corresponding interface of BACnetConstructedDataMaxFailedAttempts
 type BACnetConstructedDataMaxFailedAttempts interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataMaxFailedAttempts(maxFailedAttempts BACnetApplicati
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataMaxFailedAttempts(structType interface{}) BACnetConstructedDataMaxFailedAttempts {
+func CastBACnetConstructedDataMaxFailedAttempts(structType any) BACnetConstructedDataMaxFailedAttempts {
 	if casted, ok := structType.(BACnetConstructedDataMaxFailedAttempts); ok {
 		return casted
 	}

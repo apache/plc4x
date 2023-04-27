@@ -21,7 +21,7 @@ package model
 
 import (
 	"context"
-	spiContext "github.com/apache/plc4x/plc4go/spi/context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,6 +30,7 @@ import (
 
 // BACnetConstructedDataGroupPresentValue is the corresponding interface of BACnetConstructedDataGroupPresentValue
 type BACnetConstructedDataGroupPresentValue interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -103,7 +104,7 @@ func NewBACnetConstructedDataGroupPresentValue(presentValue []BACnetReadAccessRe
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataGroupPresentValue(structType interface{}) BACnetConstructedDataGroupPresentValue {
+func CastBACnetConstructedDataGroupPresentValue(structType any) BACnetConstructedDataGroupPresentValue {
 	if casted, ok := structType.(BACnetConstructedDataGroupPresentValue); ok {
 		return casted
 	}
@@ -204,7 +205,7 @@ func (m *_BACnetConstructedDataGroupPresentValue) SerializeWithWriteBuffer(ctx c
 		}
 		for _curItem, _element := range m.GetPresentValue() {
 			_ = _curItem
-			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetPresentValue()), _curItem)
+			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetPresentValue()), _curItem)
 			_ = arrayCtx
 			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 			if _elementErr != nil {

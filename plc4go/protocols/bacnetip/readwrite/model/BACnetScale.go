@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetScale is the corresponding interface of BACnetScale
 type BACnetScale interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetPeekedTagHeader returns PeekedTagHeader (property field)
@@ -105,7 +107,7 @@ func NewBACnetScale(peekedTagHeader BACnetTagHeader) *_BACnetScale {
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetScale(structType interface{}) BACnetScale {
+func CastBACnetScale(structType any) BACnetScale {
 	if casted, ok := structType.(BACnetScale); ok {
 		return casted
 	}
@@ -163,7 +165,7 @@ func BACnetScaleParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 		InitializeParent(BACnetScale, BACnetTagHeader)
 		GetParent() BACnetScale
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child BACnetScaleChildSerializeRequirement
 	var typeSwitchError error
 	switch {

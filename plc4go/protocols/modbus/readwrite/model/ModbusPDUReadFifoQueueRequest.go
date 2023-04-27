@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // ModbusPDUReadFifoQueueRequest is the corresponding interface of ModbusPDUReadFifoQueueRequest
 type ModbusPDUReadFifoQueueRequest interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	ModbusPDU
@@ -102,7 +104,7 @@ func NewModbusPDUReadFifoQueueRequest(fifoPointerAddress uint16) *_ModbusPDURead
 }
 
 // Deprecated: use the interface for direct cast
-func CastModbusPDUReadFifoQueueRequest(structType interface{}) ModbusPDUReadFifoQueueRequest {
+func CastModbusPDUReadFifoQueueRequest(structType any) ModbusPDUReadFifoQueueRequest {
 	if casted, ok := structType.(ModbusPDUReadFifoQueueRequest); ok {
 		return casted
 	}

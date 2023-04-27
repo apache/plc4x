@@ -21,7 +21,7 @@ package model
 
 import (
 	"context"
-	spiContext "github.com/apache/plc4x/plc4go/spi/context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
@@ -31,6 +31,7 @@ import (
 
 // BACnetConstructedDataLogBuffer is the corresponding interface of BACnetConstructedDataLogBuffer
 type BACnetConstructedDataLogBuffer interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -131,7 +132,7 @@ func NewBACnetConstructedDataLogBuffer(numberOfDataElements BACnetApplicationTag
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataLogBuffer(structType interface{}) BACnetConstructedDataLogBuffer {
+func CastBACnetConstructedDataLogBuffer(structType any) BACnetConstructedDataLogBuffer {
 	if casted, ok := structType.(BACnetConstructedDataLogBuffer); ok {
 		return casted
 	}
@@ -287,7 +288,7 @@ func (m *_BACnetConstructedDataLogBuffer) SerializeWithWriteBuffer(ctx context.C
 		}
 		for _curItem, _element := range m.GetFloorText() {
 			_ = _curItem
-			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetFloorText()), _curItem)
+			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetFloorText()), _curItem)
 			_ = arrayCtx
 			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 			if _elementErr != nil {

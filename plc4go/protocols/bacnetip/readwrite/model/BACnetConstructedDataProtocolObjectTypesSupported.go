@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataProtocolObjectTypesSupported is the corresponding interface of BACnetConstructedDataProtocolObjectTypesSupported
 type BACnetConstructedDataProtocolObjectTypesSupported interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataProtocolObjectTypesSupported(protocolObjectTypesSup
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataProtocolObjectTypesSupported(structType interface{}) BACnetConstructedDataProtocolObjectTypesSupported {
+func CastBACnetConstructedDataProtocolObjectTypesSupported(structType any) BACnetConstructedDataProtocolObjectTypesSupported {
 	if casted, ok := structType.(BACnetConstructedDataProtocolObjectTypesSupported); ok {
 		return casted
 	}

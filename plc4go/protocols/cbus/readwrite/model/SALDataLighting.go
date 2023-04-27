@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // SALDataLighting is the corresponding interface of SALDataLighting
 type SALDataLighting interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	SALData
@@ -96,7 +98,7 @@ func NewSALDataLighting(lightingData LightingData, salData SALData) *_SALDataLig
 }
 
 // Deprecated: use the interface for direct cast
-func CastSALDataLighting(structType interface{}) SALDataLighting {
+func CastSALDataLighting(structType any) SALDataLighting {
 	if casted, ok := structType.(SALDataLighting); ok {
 		return casted
 	}

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // SALDataTemperatureBroadcast is the corresponding interface of SALDataTemperatureBroadcast
 type SALDataTemperatureBroadcast interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	SALData
@@ -96,7 +98,7 @@ func NewSALDataTemperatureBroadcast(temperatureBroadcastData TemperatureBroadcas
 }
 
 // Deprecated: use the interface for direct cast
-func CastSALDataTemperatureBroadcast(structType interface{}) SALDataTemperatureBroadcast {
+func CastSALDataTemperatureBroadcast(structType any) SALDataTemperatureBroadcast {
 	if casted, ok := structType.(SALDataTemperatureBroadcast); ok {
 		return casted
 	}

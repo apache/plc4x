@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetOptionalBinaryPVValue is the corresponding interface of BACnetOptionalBinaryPVValue
 type BACnetOptionalBinaryPVValue interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetOptionalBinaryPV
@@ -92,7 +94,7 @@ func NewBACnetOptionalBinaryPVValue(binaryPv BACnetBinaryPVTagged, peekedTagHead
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetOptionalBinaryPVValue(structType interface{}) BACnetOptionalBinaryPVValue {
+func CastBACnetOptionalBinaryPVValue(structType any) BACnetOptionalBinaryPVValue {
 	if casted, ok := structType.(BACnetOptionalBinaryPVValue); ok {
 		return casted
 	}

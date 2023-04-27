@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetHostAddressNull is the corresponding interface of BACnetHostAddressNull
 type BACnetHostAddressNull interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetHostAddress
@@ -92,7 +94,7 @@ func NewBACnetHostAddressNull(none BACnetContextTagNull, peekedTagHeader BACnetT
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetHostAddressNull(structType interface{}) BACnetHostAddressNull {
+func CastBACnetHostAddressNull(structType any) BACnetHostAddressNull {
 	if casted, ok := structType.(BACnetHostAddressNull); ok {
 		return casted
 	}

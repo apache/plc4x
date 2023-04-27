@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -31,6 +32,8 @@ import (
 type DeviceGroup uint8
 
 type IDeviceGroup interface {
+	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 
@@ -84,8 +87,8 @@ func DeviceGroupKnows(value uint8) bool {
 	return false
 }
 
-func CastDeviceGroup(structType interface{}) DeviceGroup {
-	castFunc := func(typ interface{}) DeviceGroup {
+func CastDeviceGroup(structType any) DeviceGroup {
+	castFunc := func(typ any) DeviceGroup {
 		if sDeviceGroup, ok := typ.(DeviceGroup); ok {
 			return sDeviceGroup
 		}

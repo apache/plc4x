@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -31,6 +32,8 @@ import (
 type MediaTransportControlCommandTypeContainer uint8
 
 type IMediaTransportControlCommandTypeContainer interface {
+	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 	NumBytes() uint8
 	CommandType() MediaTransportControlCommandType
@@ -1699,8 +1702,8 @@ func MediaTransportControlCommandTypeContainerKnows(value uint8) bool {
 	return false
 }
 
-func CastMediaTransportControlCommandTypeContainer(structType interface{}) MediaTransportControlCommandTypeContainer {
-	castFunc := func(typ interface{}) MediaTransportControlCommandTypeContainer {
+func CastMediaTransportControlCommandTypeContainer(structType any) MediaTransportControlCommandTypeContainer {
+	castFunc := func(typ any) MediaTransportControlCommandTypeContainer {
 		if sMediaTransportControlCommandTypeContainer, ok := typ.(MediaTransportControlCommandTypeContainer); ok {
 			return sMediaTransportControlCommandTypeContainer
 		}

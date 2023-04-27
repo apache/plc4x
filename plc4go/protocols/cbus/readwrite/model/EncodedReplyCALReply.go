@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // EncodedReplyCALReply is the corresponding interface of EncodedReplyCALReply
 type EncodedReplyCALReply interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	EncodedReply
@@ -92,7 +94,7 @@ func NewEncodedReplyCALReply(calReply CALReply, peekedByte byte, cBusOptions CBu
 }
 
 // Deprecated: use the interface for direct cast
-func CastEncodedReplyCALReply(structType interface{}) EncodedReplyCALReply {
+func CastEncodedReplyCALReply(structType any) EncodedReplyCALReply {
 	if casted, ok := structType.(EncodedReplyCALReply); ok {
 		return casted
 	}

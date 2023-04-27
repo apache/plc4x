@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataAPDUSegmentTimeout is the corresponding interface of BACnetConstructedDataAPDUSegmentTimeout
 type BACnetConstructedDataAPDUSegmentTimeout interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataAPDUSegmentTimeout(apduSegmentTimeout BACnetApplica
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataAPDUSegmentTimeout(structType interface{}) BACnetConstructedDataAPDUSegmentTimeout {
+func CastBACnetConstructedDataAPDUSegmentTimeout(structType any) BACnetConstructedDataAPDUSegmentTimeout {
 	if casted, ok := structType.(BACnetConstructedDataAPDUSegmentTimeout); ok {
 		return casted
 	}

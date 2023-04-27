@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetSpecialEvent is the corresponding interface of BACnetSpecialEvent
 type BACnetSpecialEvent interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetPeriod returns Period (property field)
@@ -81,7 +83,7 @@ func NewBACnetSpecialEvent(period BACnetSpecialEventPeriod, listOfTimeValues BAC
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetSpecialEvent(structType interface{}) BACnetSpecialEvent {
+func CastBACnetSpecialEvent(structType any) BACnetSpecialEvent {
 	if casted, ok := structType.(BACnetSpecialEvent); ok {
 		return casted
 	}

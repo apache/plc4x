@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // State is the corresponding interface of State
 type State interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetSIG_8 returns SIG_8 (property field)
@@ -116,7 +118,7 @@ func NewState(SIG_8 bool, SIG_7 bool, SIG_6 bool, SIG_5 bool, SIG_4 bool, SIG_3 
 }
 
 // Deprecated: use the interface for direct cast
-func CastState(structType interface{}) State {
+func CastState(structType any) State {
 	if casted, ok := structType.(State); ok {
 		return casted
 	}

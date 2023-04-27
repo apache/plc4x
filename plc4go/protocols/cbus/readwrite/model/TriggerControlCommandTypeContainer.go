@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -31,6 +32,8 @@ import (
 type TriggerControlCommandTypeContainer uint8
 
 type ITriggerControlCommandTypeContainer interface {
+	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 	NumBytes() uint8
 	CommandType() TriggerControlCommandType
@@ -817,8 +820,8 @@ func TriggerControlCommandTypeContainerKnows(value uint8) bool {
 	return false
 }
 
-func CastTriggerControlCommandTypeContainer(structType interface{}) TriggerControlCommandTypeContainer {
-	castFunc := func(typ interface{}) TriggerControlCommandTypeContainer {
+func CastTriggerControlCommandTypeContainer(structType any) TriggerControlCommandTypeContainer {
+	castFunc := func(typ any) TriggerControlCommandTypeContainer {
 		if sTriggerControlCommandTypeContainer, ok := typ.(TriggerControlCommandTypeContainer); ok {
 			return sTriggerControlCommandTypeContainer
 		}

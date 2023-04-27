@@ -212,7 +212,7 @@ func (b *boxedWriteBuffer) WriteString(logicalName string, bitLength uint32, _ s
 	return nil
 }
 
-func (b *boxedWriteBuffer) WriteVirtual(ctx context.Context, logicalName string, value interface{}, writerArgs ...WithWriterArgs) error {
+func (b *boxedWriteBuffer) WriteVirtual(ctx context.Context, logicalName string, value any, writerArgs ...WithWriterArgs) error {
 	additionalStringRepresentation := b.extractAdditionalStringRepresentation(UpcastWriterArgs(writerArgs...)...)
 	if value == nil {
 		return nil

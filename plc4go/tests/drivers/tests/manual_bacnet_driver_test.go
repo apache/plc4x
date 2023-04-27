@@ -20,29 +20,17 @@
 package tests
 
 import (
+	"testing"
+
 	"github.com/apache/plc4x/plc4go/internal/bacnetip"
 	"github.com/apache/plc4x/plc4go/pkg/api"
-	"github.com/apache/plc4x/plc4go/pkg/api/config"
 	"github.com/apache/plc4x/plc4go/pkg/api/transports"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
 	_ "github.com/apache/plc4x/plc4go/tests/initializetest"
-	"github.com/rs/zerolog"
-	"github.com/rs/zerolog/log"
-	"github.com/rs/zerolog/pkgerrors"
-	"os"
-	"testing"
 )
 
 func TestManualBacnetDriver(t *testing.T) {
 	t.Skip()
-	zerolog.ErrorStackMarshaler = pkgerrors.MarshalStack
-	log.Logger = log.
-		With().Caller().Logger().
-		Output(zerolog.ConsoleWriter{Out: os.Stderr}).
-		Level(zerolog.DebugLevel)
-	config.TraceTransactionManagerWorkers = false
-	config.TraceTransactionManagerTransactions = false
-	config.TraceDefaultMessageCodecWorker = false
 
 	connectionString := "bacnet-ip://192.168.178.101"
 	driverManager := plc4go.NewPlcDriverManager()
@@ -53,5 +41,5 @@ func TestManualBacnetDriver(t *testing.T) {
 	test.AddTestCase("ANALOG_OUTPUT,133/PRESENT_VALUE", true)
 	test.AddTestCase("DEVICE,133/LOCATION&DESCRIPTION", true)
 
-	test.Run()
+	test.Run(t)
 }

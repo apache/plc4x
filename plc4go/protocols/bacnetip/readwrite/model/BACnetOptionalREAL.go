@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetOptionalREAL is the corresponding interface of BACnetOptionalREAL
 type BACnetOptionalREAL interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetPeekedTagHeader returns PeekedTagHeader (property field)
@@ -105,7 +107,7 @@ func NewBACnetOptionalREAL(peekedTagHeader BACnetTagHeader) *_BACnetOptionalREAL
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetOptionalREAL(structType interface{}) BACnetOptionalREAL {
+func CastBACnetOptionalREAL(structType any) BACnetOptionalREAL {
 	if casted, ok := structType.(BACnetOptionalREAL); ok {
 		return casted
 	}
@@ -163,7 +165,7 @@ func BACnetOptionalREALParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 		InitializeParent(BACnetOptionalREAL, BACnetTagHeader)
 		GetParent() BACnetOptionalREAL
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child BACnetOptionalREALChildSerializeRequirement
 	var typeSwitchError error
 	switch {

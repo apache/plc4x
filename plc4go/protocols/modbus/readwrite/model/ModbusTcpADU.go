@@ -34,6 +34,7 @@ const ModbusTcpADU_PROTOCOLIDENTIFIER uint16 = 0x0000
 
 // ModbusTcpADU is the corresponding interface of ModbusTcpADU
 type ModbusTcpADU interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	ModbusADU
@@ -128,7 +129,7 @@ func NewModbusTcpADU(transactionIdentifier uint16, unitIdentifier uint8, pdu Mod
 }
 
 // Deprecated: use the interface for direct cast
-func CastModbusTcpADU(structType interface{}) ModbusTcpADU {
+func CastModbusTcpADU(structType any) ModbusTcpADU {
 	if casted, ok := structType.(ModbusTcpADU); ok {
 		return casted
 	}

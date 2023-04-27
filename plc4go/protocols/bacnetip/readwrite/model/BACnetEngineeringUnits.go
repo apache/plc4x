@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -31,6 +32,8 @@ import (
 type BACnetEngineeringUnits uint32
 
 type IBACnetEngineeringUnits interface {
+	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 
@@ -1578,8 +1581,8 @@ func BACnetEngineeringUnitsKnows(value uint32) bool {
 	return false
 }
 
-func CastBACnetEngineeringUnits(structType interface{}) BACnetEngineeringUnits {
-	castFunc := func(typ interface{}) BACnetEngineeringUnits {
+func CastBACnetEngineeringUnits(structType any) BACnetEngineeringUnits {
+	castFunc := func(typ any) BACnetEngineeringUnits {
 		if sBACnetEngineeringUnits, ok := typ.(BACnetEngineeringUnits); ok {
 			return sBACnetEngineeringUnits
 		}

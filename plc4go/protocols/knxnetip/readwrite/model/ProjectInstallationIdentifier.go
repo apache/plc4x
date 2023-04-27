@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // ProjectInstallationIdentifier is the corresponding interface of ProjectInstallationIdentifier
 type ProjectInstallationIdentifier interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetProjectNumber returns ProjectNumber (property field)
@@ -74,7 +76,7 @@ func NewProjectInstallationIdentifier(projectNumber uint8, installationNumber ui
 }
 
 // Deprecated: use the interface for direct cast
-func CastProjectInstallationIdentifier(structType interface{}) ProjectInstallationIdentifier {
+func CastProjectInstallationIdentifier(structType any) ProjectInstallationIdentifier {
 	if casted, ok := structType.(ProjectInstallationIdentifier); ok {
 		return casted
 	}

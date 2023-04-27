@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetOptionalUnsignedNull is the corresponding interface of BACnetOptionalUnsignedNull
 type BACnetOptionalUnsignedNull interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetOptionalUnsigned
@@ -92,7 +94,7 @@ func NewBACnetOptionalUnsignedNull(nullValue BACnetApplicationTagNull, peekedTag
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetOptionalUnsignedNull(structType interface{}) BACnetOptionalUnsignedNull {
+func CastBACnetOptionalUnsignedNull(structType any) BACnetOptionalUnsignedNull {
 	if casted, ok := structType.(BACnetOptionalUnsignedNull); ok {
 		return casted
 	}

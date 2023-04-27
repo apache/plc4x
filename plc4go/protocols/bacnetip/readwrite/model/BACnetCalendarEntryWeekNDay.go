@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetCalendarEntryWeekNDay is the corresponding interface of BACnetCalendarEntryWeekNDay
 type BACnetCalendarEntryWeekNDay interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetCalendarEntry
@@ -92,7 +94,7 @@ func NewBACnetCalendarEntryWeekNDay(weekNDay BACnetWeekNDayTagged, peekedTagHead
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetCalendarEntryWeekNDay(structType interface{}) BACnetCalendarEntryWeekNDay {
+func CastBACnetCalendarEntryWeekNDay(structType any) BACnetCalendarEntryWeekNDay {
 	if casted, ok := structType.(BACnetCalendarEntryWeekNDay); ok {
 		return casted
 	}

@@ -22,6 +22,7 @@ package model
 import (
 	"context"
 	"encoding/binary"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,6 +31,7 @@ import (
 
 // RoutingIndication is the corresponding interface of RoutingIndication
 type RoutingIndication interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	KnxNetIpMessage
@@ -77,7 +79,7 @@ func NewRoutingIndication() *_RoutingIndication {
 }
 
 // Deprecated: use the interface for direct cast
-func CastRoutingIndication(structType interface{}) RoutingIndication {
+func CastRoutingIndication(structType any) RoutingIndication {
 	if casted, ok := structType.(RoutingIndication); ok {
 		return casted
 	}

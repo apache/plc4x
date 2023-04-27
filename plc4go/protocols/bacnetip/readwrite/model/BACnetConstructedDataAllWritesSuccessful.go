@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataAllWritesSuccessful is the corresponding interface of BACnetConstructedDataAllWritesSuccessful
 type BACnetConstructedDataAllWritesSuccessful interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataAllWritesSuccessful(allWritesSuccessful BACnetAppli
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataAllWritesSuccessful(structType interface{}) BACnetConstructedDataAllWritesSuccessful {
+func CastBACnetConstructedDataAllWritesSuccessful(structType any) BACnetConstructedDataAllWritesSuccessful {
 	if casted, ok := structType.(BACnetConstructedDataAllWritesSuccessful); ok {
 		return casted
 	}

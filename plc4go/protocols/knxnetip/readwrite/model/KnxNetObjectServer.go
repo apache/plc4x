@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // KnxNetObjectServer is the corresponding interface of KnxNetObjectServer
 type KnxNetObjectServer interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	ServiceId
@@ -94,7 +96,7 @@ func NewKnxNetObjectServer(version uint8) *_KnxNetObjectServer {
 }
 
 // Deprecated: use the interface for direct cast
-func CastKnxNetObjectServer(structType interface{}) KnxNetObjectServer {
+func CastKnxNetObjectServer(structType any) KnxNetObjectServer {
 	if casted, ok := structType.(KnxNetObjectServer); ok {
 		return casted
 	}

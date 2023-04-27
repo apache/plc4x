@@ -22,6 +22,7 @@ package model
 import (
 	"context"
 	"encoding/binary"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,6 +31,7 @@ import (
 
 // BVLCResult is the corresponding interface of BVLCResult
 type BVLCResult interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BVLC
@@ -95,7 +97,7 @@ func NewBVLCResult(code BVLCResultCode) *_BVLCResult {
 }
 
 // Deprecated: use the interface for direct cast
-func CastBVLCResult(structType interface{}) BVLCResult {
+func CastBVLCResult(structType any) BVLCResult {
 	if casted, ok := structType.(BVLCResult); ok {
 		return casted
 	}

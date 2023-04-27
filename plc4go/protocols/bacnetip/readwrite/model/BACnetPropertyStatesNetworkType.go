@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetPropertyStatesNetworkType is the corresponding interface of BACnetPropertyStatesNetworkType
 type BACnetPropertyStatesNetworkType interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetPropertyStates
@@ -92,7 +94,7 @@ func NewBACnetPropertyStatesNetworkType(networkType BACnetNetworkTypeTagged, pee
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetPropertyStatesNetworkType(structType interface{}) BACnetPropertyStatesNetworkType {
+func CastBACnetPropertyStatesNetworkType(structType any) BACnetPropertyStatesNetworkType {
 	if casted, ok := structType.(BACnetPropertyStatesNetworkType); ok {
 		return casted
 	}

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // ClockAndTimekeepingDataUpdateDate is the corresponding interface of ClockAndTimekeepingDataUpdateDate
 type ClockAndTimekeepingDataUpdateDate interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	ClockAndTimekeepingData
@@ -125,7 +127,7 @@ func NewClockAndTimekeepingDataUpdateDate(yearHigh byte, yearLow byte, month uin
 }
 
 // Deprecated: use the interface for direct cast
-func CastClockAndTimekeepingDataUpdateDate(structType interface{}) ClockAndTimekeepingDataUpdateDate {
+func CastClockAndTimekeepingDataUpdateDate(structType any) ClockAndTimekeepingDataUpdateDate {
 	if casted, ok := structType.(ClockAndTimekeepingDataUpdateDate); ok {
 		return casted
 	}

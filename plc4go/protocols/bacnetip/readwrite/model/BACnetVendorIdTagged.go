@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetVendorIdTagged is the corresponding interface of BACnetVendorIdTagged
 type BACnetVendorIdTagged interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetHeader returns Header (property field)
@@ -102,7 +104,7 @@ func NewBACnetVendorIdTagged(header BACnetTagHeader, value BACnetVendorId, unkno
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetVendorIdTagged(structType interface{}) BACnetVendorIdTagged {
+func CastBACnetVendorIdTagged(structType any) BACnetVendorIdTagged {
 	if casted, ok := structType.(BACnetVendorIdTagged); ok {
 		return casted
 	}
@@ -123,12 +125,12 @@ func (m *_BACnetVendorIdTagged) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits += m.Header.GetLengthInBits(ctx)
 
 	// Manual Field (value)
-	lengthInBits += uint16(utils.InlineIf(m.GetIsUnknownId(), func() interface{} { return int32(int32(0)) }, func() interface{} { return int32((int32(m.GetHeader().GetActualLength()) * int32(int32(8)))) }).(int32))
+	lengthInBits += uint16(utils.InlineIf(m.GetIsUnknownId(), func() any { return int32(int32(0)) }, func() any { return int32((int32(m.GetHeader().GetActualLength()) * int32(int32(8)))) }).(int32))
 
 	// A virtual field doesn't have any in- or output.
 
 	// Manual Field (unknownId)
-	lengthInBits += uint16(utils.InlineIf(m.GetIsUnknownId(), func() interface{} { return int32((int32(m.GetHeader().GetActualLength()) * int32(int32(8)))) }, func() interface{} { return int32(int32(0)) }).(int32))
+	lengthInBits += uint16(utils.InlineIf(m.GetIsUnknownId(), func() any { return int32((int32(m.GetHeader().GetActualLength()) * int32(int32(8)))) }, func() any { return int32(int32(0)) }).(int32))
 
 	return lengthInBits
 }

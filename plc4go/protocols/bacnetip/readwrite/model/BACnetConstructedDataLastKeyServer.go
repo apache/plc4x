@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataLastKeyServer is the corresponding interface of BACnetConstructedDataLastKeyServer
 type BACnetConstructedDataLastKeyServer interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataLastKeyServer(lastKeyServer BACnetAddressBinding, o
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataLastKeyServer(structType interface{}) BACnetConstructedDataLastKeyServer {
+func CastBACnetConstructedDataLastKeyServer(structType any) BACnetConstructedDataLastKeyServer {
 	if casted, ok := structType.(BACnetConstructedDataLastKeyServer); ok {
 		return casted
 	}

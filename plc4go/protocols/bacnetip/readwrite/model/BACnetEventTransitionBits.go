@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -31,6 +32,8 @@ import (
 type BACnetEventTransitionBits uint8
 
 type IBACnetEventTransitionBits interface {
+	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 
@@ -84,8 +87,8 @@ func BACnetEventTransitionBitsKnows(value uint8) bool {
 	return false
 }
 
-func CastBACnetEventTransitionBits(structType interface{}) BACnetEventTransitionBits {
-	castFunc := func(typ interface{}) BACnetEventTransitionBits {
+func CastBACnetEventTransitionBits(structType any) BACnetEventTransitionBits {
+	castFunc := func(typ any) BACnetEventTransitionBits {
 		if sBACnetEventTransitionBits, ok := typ.(BACnetEventTransitionBits); ok {
 			return sBACnetEventTransitionBits
 		}

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -31,6 +32,8 @@ import (
 type KnxInterfaceObjectType uint16
 
 type IKnxInterfaceObjectType interface {
+	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 	Code() string
 	Name() string
@@ -453,8 +456,8 @@ func KnxInterfaceObjectTypeKnows(value uint16) bool {
 	return false
 }
 
-func CastKnxInterfaceObjectType(structType interface{}) KnxInterfaceObjectType {
-	castFunc := func(typ interface{}) KnxInterfaceObjectType {
+func CastKnxInterfaceObjectType(structType any) KnxInterfaceObjectType {
+	castFunc := func(typ any) KnxInterfaceObjectType {
 		if sKnxInterfaceObjectType, ok := typ.(KnxInterfaceObjectType); ok {
 			return sKnxInterfaceObjectType
 		}

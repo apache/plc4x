@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataValidSamples is the corresponding interface of BACnetConstructedDataValidSamples
 type BACnetConstructedDataValidSamples interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataValidSamples(validSamples BACnetApplicationTagUnsig
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataValidSamples(structType interface{}) BACnetConstructedDataValidSamples {
+func CastBACnetConstructedDataValidSamples(structType any) BACnetConstructedDataValidSamples {
 	if casted, ok := structType.(BACnetConstructedDataValidSamples); ok {
 		return casted
 	}

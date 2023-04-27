@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataTimeOfStrikeCountReset is the corresponding interface of BACnetConstructedDataTimeOfStrikeCountReset
 type BACnetConstructedDataTimeOfStrikeCountReset interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataTimeOfStrikeCountReset(timeOfStrikeCountReset BACne
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataTimeOfStrikeCountReset(structType interface{}) BACnetConstructedDataTimeOfStrikeCountReset {
+func CastBACnetConstructedDataTimeOfStrikeCountReset(structType any) BACnetConstructedDataTimeOfStrikeCountReset {
 	if casted, ok := structType.(BACnetConstructedDataTimeOfStrikeCountReset); ok {
 		return casted
 	}

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetEventParameterAccessEvent is the corresponding interface of BACnetEventParameterAccessEvent
 type BACnetEventParameterAccessEvent interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetEventParameter
@@ -116,7 +118,7 @@ func NewBACnetEventParameterAccessEvent(openingTag BACnetOpeningTag, listOfAcces
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetEventParameterAccessEvent(structType interface{}) BACnetEventParameterAccessEvent {
+func CastBACnetEventParameterAccessEvent(structType any) BACnetEventParameterAccessEvent {
 	if casted, ok := structType.(BACnetEventParameterAccessEvent); ok {
 		return casted
 	}

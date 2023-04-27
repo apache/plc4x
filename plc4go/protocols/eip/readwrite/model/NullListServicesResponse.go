@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // NullListServicesResponse is the corresponding interface of NullListServicesResponse
 type NullListServicesResponse interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	EipPacket
@@ -89,7 +91,7 @@ func NewNullListServicesResponse(sessionHandle uint32, status uint32, senderCont
 }
 
 // Deprecated: use the interface for direct cast
-func CastNullListServicesResponse(structType interface{}) NullListServicesResponse {
+func CastNullListServicesResponse(structType any) NullListServicesResponse {
 	if casted, ok := structType.(NullListServicesResponse); ok {
 		return casted
 	}

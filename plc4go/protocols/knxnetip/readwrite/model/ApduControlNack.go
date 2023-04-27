@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // ApduControlNack is the corresponding interface of ApduControlNack
 type ApduControlNack interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	ApduControl
@@ -76,7 +78,7 @@ func NewApduControlNack() *_ApduControlNack {
 }
 
 // Deprecated: use the interface for direct cast
-func CastApduControlNack(structType interface{}) ApduControlNack {
+func CastApduControlNack(structType any) ApduControlNack {
 	if casted, ok := structType.(ApduControlNack); ok {
 		return casted
 	}

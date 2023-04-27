@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // ModbusPDUGetComEventCounterResponse is the corresponding interface of ModbusPDUGetComEventCounterResponse
 type ModbusPDUGetComEventCounterResponse interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	ModbusPDU
@@ -110,7 +112,7 @@ func NewModbusPDUGetComEventCounterResponse(status uint16, eventCount uint16) *_
 }
 
 // Deprecated: use the interface for direct cast
-func CastModbusPDUGetComEventCounterResponse(structType interface{}) ModbusPDUGetComEventCounterResponse {
+func CastModbusPDUGetComEventCounterResponse(structType any) ModbusPDUGetComEventCounterResponse {
 	if casted, ok := structType.(ModbusPDUGetComEventCounterResponse); ok {
 		return casted
 	}

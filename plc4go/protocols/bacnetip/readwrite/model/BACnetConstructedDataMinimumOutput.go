@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataMinimumOutput is the corresponding interface of BACnetConstructedDataMinimumOutput
 type BACnetConstructedDataMinimumOutput interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataMinimumOutput(minimumOutput BACnetApplicationTagRea
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataMinimumOutput(structType interface{}) BACnetConstructedDataMinimumOutput {
+func CastBACnetConstructedDataMinimumOutput(structType any) BACnetConstructedDataMinimumOutput {
 	if casted, ok := structType.(BACnetConstructedDataMinimumOutput); ok {
 		return casted
 	}

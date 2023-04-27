@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataMode is the corresponding interface of BACnetConstructedDataMode
 type BACnetConstructedDataMode interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataMode(mode BACnetLifeSafetyModeTagged, openingTag BA
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataMode(structType interface{}) BACnetConstructedDataMode {
+func CastBACnetConstructedDataMode(structType any) BACnetConstructedDataMode {
 	if casted, ok := structType.(BACnetConstructedDataMode); ok {
 		return casted
 	}

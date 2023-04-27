@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // KnxNetIpRouting is the corresponding interface of KnxNetIpRouting
 type KnxNetIpRouting interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	ServiceId
@@ -94,7 +96,7 @@ func NewKnxNetIpRouting(version uint8) *_KnxNetIpRouting {
 }
 
 // Deprecated: use the interface for direct cast
-func CastKnxNetIpRouting(structType interface{}) KnxNetIpRouting {
+func CastKnxNetIpRouting(structType any) KnxNetIpRouting {
 	if casted, ok := structType.(KnxNetIpRouting); ok {
 		return casted
 	}

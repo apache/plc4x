@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // TDataIndividualReq is the corresponding interface of TDataIndividualReq
 type TDataIndividualReq interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	CEMI
@@ -76,7 +78,7 @@ func NewTDataIndividualReq(size uint16) *_TDataIndividualReq {
 }
 
 // Deprecated: use the interface for direct cast
-func CastTDataIndividualReq(structType interface{}) TDataIndividualReq {
+func CastTDataIndividualReq(structType any) TDataIndividualReq {
 	if casted, ok := structType.(TDataIndividualReq); ok {
 		return casted
 	}

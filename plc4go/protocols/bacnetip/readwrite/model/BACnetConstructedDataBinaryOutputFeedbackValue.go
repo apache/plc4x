@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataBinaryOutputFeedbackValue is the corresponding interface of BACnetConstructedDataBinaryOutputFeedbackValue
 type BACnetConstructedDataBinaryOutputFeedbackValue interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataBinaryOutputFeedbackValue(feedbackValue BACnetBinar
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataBinaryOutputFeedbackValue(structType interface{}) BACnetConstructedDataBinaryOutputFeedbackValue {
+func CastBACnetConstructedDataBinaryOutputFeedbackValue(structType any) BACnetConstructedDataBinaryOutputFeedbackValue {
 	if casted, ok := structType.(BACnetConstructedDataBinaryOutputFeedbackValue); ok {
 		return casted
 	}

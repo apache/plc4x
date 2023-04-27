@@ -33,6 +33,7 @@ const AdsDiscoveryBlockAmsNetId_AMSNETIDLENGTH uint16 = 0x0006
 
 // AdsDiscoveryBlockAmsNetId is the corresponding interface of AdsDiscoveryBlockAmsNetId
 type AdsDiscoveryBlockAmsNetId interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	AdsDiscoveryBlock
@@ -111,7 +112,7 @@ func NewAdsDiscoveryBlockAmsNetId(amsNetId AmsNetId) *_AdsDiscoveryBlockAmsNetId
 }
 
 // Deprecated: use the interface for direct cast
-func CastAdsDiscoveryBlockAmsNetId(structType interface{}) AdsDiscoveryBlockAmsNetId {
+func CastAdsDiscoveryBlockAmsNetId(structType any) AdsDiscoveryBlockAmsNetId {
 	if casted, ok := structType.(AdsDiscoveryBlockAmsNetId); ok {
 		return casted
 	}

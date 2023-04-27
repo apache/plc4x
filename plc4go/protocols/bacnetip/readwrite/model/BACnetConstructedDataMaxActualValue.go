@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataMaxActualValue is the corresponding interface of BACnetConstructedDataMaxActualValue
 type BACnetConstructedDataMaxActualValue interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataMaxActualValue(maxActualValue BACnetApplicationTagR
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataMaxActualValue(structType interface{}) BACnetConstructedDataMaxActualValue {
+func CastBACnetConstructedDataMaxActualValue(structType any) BACnetConstructedDataMaxActualValue {
 	if casted, ok := structType.(BACnetConstructedDataMaxActualValue); ok {
 		return casted
 	}

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // SALDataRoomControlSystem is the corresponding interface of SALDataRoomControlSystem
 type SALDataRoomControlSystem interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	SALData
@@ -78,7 +80,7 @@ func NewSALDataRoomControlSystem(salData SALData) *_SALDataRoomControlSystem {
 }
 
 // Deprecated: use the interface for direct cast
-func CastSALDataRoomControlSystem(structType interface{}) SALDataRoomControlSystem {
+func CastSALDataRoomControlSystem(structType any) SALDataRoomControlSystem {
 	if casted, ok := structType.(SALDataRoomControlSystem); ok {
 		return casted
 	}

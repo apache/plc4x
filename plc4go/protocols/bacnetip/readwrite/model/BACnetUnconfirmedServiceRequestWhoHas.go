@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
@@ -30,6 +31,7 @@ import (
 
 // BACnetUnconfirmedServiceRequestWhoHas is the corresponding interface of BACnetUnconfirmedServiceRequestWhoHas
 type BACnetUnconfirmedServiceRequestWhoHas interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetUnconfirmedServiceRequest
@@ -112,7 +114,7 @@ func NewBACnetUnconfirmedServiceRequestWhoHas(deviceInstanceRangeLowLimit BACnet
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetUnconfirmedServiceRequestWhoHas(structType interface{}) BACnetUnconfirmedServiceRequestWhoHas {
+func CastBACnetUnconfirmedServiceRequestWhoHas(structType any) BACnetUnconfirmedServiceRequestWhoHas {
 	if casted, ok := structType.(BACnetUnconfirmedServiceRequestWhoHas); ok {
 		return casted
 	}

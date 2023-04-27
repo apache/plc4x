@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // ModbusPDUReadInputRegistersResponse is the corresponding interface of ModbusPDUReadInputRegistersResponse
 type ModbusPDUReadInputRegistersResponse interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	ModbusPDU
@@ -102,7 +104,7 @@ func NewModbusPDUReadInputRegistersResponse(value []byte) *_ModbusPDUReadInputRe
 }
 
 // Deprecated: use the interface for direct cast
-func CastModbusPDUReadInputRegistersResponse(structType interface{}) ModbusPDUReadInputRegistersResponse {
+func CastModbusPDUReadInputRegistersResponse(structType any) ModbusPDUReadInputRegistersResponse {
 	if casted, ok := structType.(ModbusPDUReadInputRegistersResponse); ok {
 		return casted
 	}

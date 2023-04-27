@@ -22,6 +22,7 @@ package udp
 import (
 	"bufio"
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/transports"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/libp2p/go-reuseport"
@@ -105,6 +106,10 @@ func (m Transport) CreateTransportInstanceForLocalAddress(transportUrl url.URL, 
 	}
 
 	return NewTransportInstance(localAddress, remoteAddress, connectTimeout, soReUse, &m), nil
+}
+
+func (m Transport) String() string {
+	return m.GetTransportCode() + "(" + m.GetTransportName() + ")"
 }
 
 type TransportInstance struct {
@@ -218,18 +223,18 @@ func (m *TransportInstance) FillBuffer(until func(pos uint, currentByte byte, re
 	}
 }
 
-func (m *TransportInstance) PeekReadableBytes(numBytes uint32) ([]uint8, error) {
+func (m *TransportInstance) PeekReadableBytes(numBytes uint32) ([]byte, error) {
 	if m.reader == nil {
 		return nil, errors.New("error peeking from transport. No reader available")
 	}
 	return m.reader.Peek(int(numBytes))
 }
 
-func (m *TransportInstance) Read(numBytes uint32) ([]uint8, error) {
+func (m *TransportInstance) Read(numBytes uint32) ([]byte, error) {
 	if m.reader == nil {
 		return nil, errors.New("error reading from transport. No reader available")
 	}
-	data := make([]uint8, numBytes)
+	data := make([]byte, numBytes)
 	for i := uint32(0); i < numBytes; i++ {
 		val, err := m.reader.ReadByte()
 		if err != nil {
@@ -240,7 +245,7 @@ func (m *TransportInstance) Read(numBytes uint32) ([]uint8, error) {
 	return data, nil
 }
 
-func (m *TransportInstance) Write(data []uint8) error {
+func (m *TransportInstance) Write(data []byte) error {
 	if m.udpConn == nil {
 		return errors.New("error writing to transport. No writer available")
 	}
@@ -261,4 +266,8 @@ func (m *TransportInstance) Write(data []uint8) error {
 		return errors.New("error writing: not all bytes written")
 	}
 	return nil
+}
+
+func (m *TransportInstance) String() string {
+	return fmt.Sprintf("udp:%s->%s", m.LocalAddress, m.RemoteAddress)
 }

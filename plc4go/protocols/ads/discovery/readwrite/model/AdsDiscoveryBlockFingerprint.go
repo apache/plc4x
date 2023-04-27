@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // AdsDiscoveryBlockFingerprint is the corresponding interface of AdsDiscoveryBlockFingerprint
 type AdsDiscoveryBlockFingerprint interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	AdsDiscoveryBlock
@@ -94,7 +96,7 @@ func NewAdsDiscoveryBlockFingerprint(data []byte) *_AdsDiscoveryBlockFingerprint
 }
 
 // Deprecated: use the interface for direct cast
-func CastAdsDiscoveryBlockFingerprint(structType interface{}) AdsDiscoveryBlockFingerprint {
+func CastAdsDiscoveryBlockFingerprint(structType any) AdsDiscoveryBlockFingerprint {
 	if casted, ok := structType.(AdsDiscoveryBlockFingerprint); ok {
 		return casted
 	}

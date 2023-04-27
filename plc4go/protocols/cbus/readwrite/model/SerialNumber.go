@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // SerialNumber is the corresponding interface of SerialNumber
 type SerialNumber interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetOctet1 returns Octet1 (property field)
@@ -88,7 +90,7 @@ func NewSerialNumber(octet1 byte, octet2 byte, octet3 byte, octet4 byte) *_Seria
 }
 
 // Deprecated: use the interface for direct cast
-func CastSerialNumber(structType interface{}) SerialNumber {
+func CastSerialNumber(structType any) SerialNumber {
 	if casted, ok := structType.(SerialNumber); ok {
 		return casted
 	}

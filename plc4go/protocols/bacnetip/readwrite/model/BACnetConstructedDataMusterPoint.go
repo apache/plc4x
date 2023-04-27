@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataMusterPoint is the corresponding interface of BACnetConstructedDataMusterPoint
 type BACnetConstructedDataMusterPoint interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataMusterPoint(musterPoint BACnetApplicationTagBoolean
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataMusterPoint(structType interface{}) BACnetConstructedDataMusterPoint {
+func CastBACnetConstructedDataMusterPoint(structType any) BACnetConstructedDataMusterPoint {
 	if casted, ok := structType.(BACnetConstructedDataMusterPoint); ok {
 		return casted
 	}

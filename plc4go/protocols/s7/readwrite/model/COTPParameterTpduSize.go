@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // COTPParameterTpduSize is the corresponding interface of COTPParameterTpduSize
 type COTPParameterTpduSize interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	COTPParameter
@@ -94,7 +96,7 @@ func NewCOTPParameterTpduSize(tpduSize COTPTpduSize, rest uint8) *_COTPParameter
 }
 
 // Deprecated: use the interface for direct cast
-func CastCOTPParameterTpduSize(structType interface{}) COTPParameterTpduSize {
+func CastCOTPParameterTpduSize(structType any) COTPParameterTpduSize {
 	if casted, ok := structType.(COTPParameterTpduSize); ok {
 		return casted
 	}

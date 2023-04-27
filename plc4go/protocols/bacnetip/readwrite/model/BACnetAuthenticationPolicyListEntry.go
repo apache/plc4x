@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetAuthenticationPolicyListEntry is the corresponding interface of BACnetAuthenticationPolicyListEntry
 type BACnetAuthenticationPolicyListEntry interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetCredentialDataInput returns CredentialDataInput (property field)
@@ -74,7 +76,7 @@ func NewBACnetAuthenticationPolicyListEntry(credentialDataInput BACnetDeviceObje
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetAuthenticationPolicyListEntry(structType interface{}) BACnetAuthenticationPolicyListEntry {
+func CastBACnetAuthenticationPolicyListEntry(structType any) BACnetAuthenticationPolicyListEntry {
 	if casted, ok := structType.(BACnetAuthenticationPolicyListEntry); ok {
 		return casted
 	}

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // SysexCommandReportFirmwareRequest is the corresponding interface of SysexCommandReportFirmwareRequest
 type SysexCommandReportFirmwareRequest interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	SysexCommand
@@ -80,7 +82,7 @@ func NewSysexCommandReportFirmwareRequest() *_SysexCommandReportFirmwareRequest 
 }
 
 // Deprecated: use the interface for direct cast
-func CastSysexCommandReportFirmwareRequest(structType interface{}) SysexCommandReportFirmwareRequest {
+func CastSysexCommandReportFirmwareRequest(structType any) SysexCommandReportFirmwareRequest {
 	if casted, ok := structType.(SysexCommandReportFirmwareRequest); ok {
 		return casted
 	}

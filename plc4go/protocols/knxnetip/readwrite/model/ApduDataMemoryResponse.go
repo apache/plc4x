@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // ApduDataMemoryResponse is the corresponding interface of ApduDataMemoryResponse
 type ApduDataMemoryResponse interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	ApduData
@@ -102,7 +104,7 @@ func NewApduDataMemoryResponse(address uint16, data []byte, dataLength uint8) *_
 }
 
 // Deprecated: use the interface for direct cast
-func CastApduDataMemoryResponse(structType interface{}) ApduDataMemoryResponse {
+func CastApduDataMemoryResponse(structType any) ApduDataMemoryResponse {
 	if casted, ok := structType.(ApduDataMemoryResponse); ok {
 		return casted
 	}

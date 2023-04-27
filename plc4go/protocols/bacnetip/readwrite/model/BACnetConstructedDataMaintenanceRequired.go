@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataMaintenanceRequired is the corresponding interface of BACnetConstructedDataMaintenanceRequired
 type BACnetConstructedDataMaintenanceRequired interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataMaintenanceRequired(maintenanceRequired BACnetMaint
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataMaintenanceRequired(structType interface{}) BACnetConstructedDataMaintenanceRequired {
+func CastBACnetConstructedDataMaintenanceRequired(structType any) BACnetConstructedDataMaintenanceRequired {
 	if casted, ok := structType.(BACnetConstructedDataMaintenanceRequired); ok {
 		return casted
 	}

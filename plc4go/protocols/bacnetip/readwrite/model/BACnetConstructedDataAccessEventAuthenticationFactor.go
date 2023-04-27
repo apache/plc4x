@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataAccessEventAuthenticationFactor is the corresponding interface of BACnetConstructedDataAccessEventAuthenticationFactor
 type BACnetConstructedDataAccessEventAuthenticationFactor interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataAccessEventAuthenticationFactor(accessEventAuthenti
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataAccessEventAuthenticationFactor(structType interface{}) BACnetConstructedDataAccessEventAuthenticationFactor {
+func CastBACnetConstructedDataAccessEventAuthenticationFactor(structType any) BACnetConstructedDataAccessEventAuthenticationFactor {
 	if casted, ok := structType.(BACnetConstructedDataAccessEventAuthenticationFactor); ok {
 		return casted
 	}

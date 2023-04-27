@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetPriorityValueEnumerated is the corresponding interface of BACnetPriorityValueEnumerated
 type BACnetPriorityValueEnumerated interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetPriorityValue
@@ -92,7 +94,7 @@ func NewBACnetPriorityValueEnumerated(enumeratedValue BACnetApplicationTagEnumer
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetPriorityValueEnumerated(structType interface{}) BACnetPriorityValueEnumerated {
+func CastBACnetPriorityValueEnumerated(structType any) BACnetPriorityValueEnumerated {
 	if casted, ok := structType.(BACnetPriorityValueEnumerated); ok {
 		return casted
 	}

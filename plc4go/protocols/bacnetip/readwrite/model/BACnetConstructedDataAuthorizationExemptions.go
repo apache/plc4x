@@ -21,7 +21,7 @@ package model
 
 import (
 	"context"
-	spiContext "github.com/apache/plc4x/plc4go/spi/context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,6 +30,7 @@ import (
 
 // BACnetConstructedDataAuthorizationExemptions is the corresponding interface of BACnetConstructedDataAuthorizationExemptions
 type BACnetConstructedDataAuthorizationExemptions interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -103,7 +104,7 @@ func NewBACnetConstructedDataAuthorizationExemptions(authorizationExemption []BA
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataAuthorizationExemptions(structType interface{}) BACnetConstructedDataAuthorizationExemptions {
+func CastBACnetConstructedDataAuthorizationExemptions(structType any) BACnetConstructedDataAuthorizationExemptions {
 	if casted, ok := structType.(BACnetConstructedDataAuthorizationExemptions); ok {
 		return casted
 	}
@@ -204,7 +205,7 @@ func (m *_BACnetConstructedDataAuthorizationExemptions) SerializeWithWriteBuffer
 		}
 		for _curItem, _element := range m.GetAuthorizationExemption() {
 			_ = _curItem
-			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetAuthorizationExemption()), _curItem)
+			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetAuthorizationExemption()), _curItem)
 			_ = arrayCtx
 			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 			if _elementErr != nil {

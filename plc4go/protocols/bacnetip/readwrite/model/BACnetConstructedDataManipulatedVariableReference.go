@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataManipulatedVariableReference is the corresponding interface of BACnetConstructedDataManipulatedVariableReference
 type BACnetConstructedDataManipulatedVariableReference interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataManipulatedVariableReference(manipulatedVariableRef
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataManipulatedVariableReference(structType interface{}) BACnetConstructedDataManipulatedVariableReference {
+func CastBACnetConstructedDataManipulatedVariableReference(structType any) BACnetConstructedDataManipulatedVariableReference {
 	if casted, ok := structType.(BACnetConstructedDataManipulatedVariableReference); ok {
 		return casted
 	}

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // ApduDataExtPropertyValueRead is the corresponding interface of ApduDataExtPropertyValueRead
 type ApduDataExtPropertyValueRead interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	ApduDataExt
@@ -118,7 +120,7 @@ func NewApduDataExtPropertyValueRead(objectIndex uint8, propertyId uint8, count 
 }
 
 // Deprecated: use the interface for direct cast
-func CastApduDataExtPropertyValueRead(structType interface{}) ApduDataExtPropertyValueRead {
+func CastApduDataExtPropertyValueRead(structType any) ApduDataExtPropertyValueRead {
 	if casted, ok := structType.(ApduDataExtPropertyValueRead); ok {
 		return casted
 	}

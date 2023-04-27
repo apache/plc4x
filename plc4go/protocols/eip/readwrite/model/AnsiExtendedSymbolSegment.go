@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // AnsiExtendedSymbolSegment is the corresponding interface of AnsiExtendedSymbolSegment
 type AnsiExtendedSymbolSegment interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	DataSegmentType
@@ -102,7 +104,7 @@ func NewAnsiExtendedSymbolSegment(symbol string, pad *uint8) *_AnsiExtendedSymbo
 }
 
 // Deprecated: use the interface for direct cast
-func CastAnsiExtendedSymbolSegment(structType interface{}) AnsiExtendedSymbolSegment {
+func CastAnsiExtendedSymbolSegment(structType any) AnsiExtendedSymbolSegment {
 	if casted, ok := structType.(AnsiExtendedSymbolSegment); ok {
 		return casted
 	}

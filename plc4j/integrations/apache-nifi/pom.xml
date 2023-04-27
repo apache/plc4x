@@ -33,7 +33,7 @@
 	<description>Integration module for integrating PLC4X into Apache Nifi.</description>
 
 	<properties>
-		<nifi.version>1.20.0</nifi.version>
+		<nifi.version>1.21.0</nifi.version>
 		<avro.version>1.11.1</avro.version>
 	</properties>
 
@@ -48,7 +48,7 @@
 			<plugin>
 				<groupId>org.apache.nifi</groupId>
 				<artifactId>nifi-nar-maven-plugin</artifactId>
-				<version>1.4.0</version>
+				<version>1.5.0</version>
 				<extensions>true</extensions>
 			</plugin>
 			<!-- Makes buildRevision and buildBranch available to the NAR Plugin, so they can be populated in the MANIFEST -->
@@ -137,7 +137,7 @@
 			<dependency>
 				<groupId>io.swagger</groupId>
 				<artifactId>swagger-annotations</artifactId>
-				<version>1.6.9</version>
+				<version>1.6.10</version>
 			</dependency>
 			<dependency>
 				<groupId>org.glassfish.jaxb</groupId>

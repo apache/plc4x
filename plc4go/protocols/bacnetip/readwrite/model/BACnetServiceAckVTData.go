@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetServiceAckVTData is the corresponding interface of BACnetServiceAckVTData
 type BACnetServiceAckVTData interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetServiceAck
@@ -110,7 +112,7 @@ func NewBACnetServiceAckVTData(vtSessionIdentifier BACnetApplicationTagUnsignedI
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetServiceAckVTData(structType interface{}) BACnetServiceAckVTData {
+func CastBACnetServiceAckVTData(structType any) BACnetServiceAckVTData {
 	if casted, ok := structType.(BACnetServiceAckVTData); ok {
 		return casted
 	}

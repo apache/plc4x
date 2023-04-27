@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetAssignedAccessRights is the corresponding interface of BACnetAssignedAccessRights
 type BACnetAssignedAccessRights interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetAssignedAccessRights returns AssignedAccessRights (property field)
@@ -74,7 +76,7 @@ func NewBACnetAssignedAccessRights(assignedAccessRights BACnetDeviceObjectRefere
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetAssignedAccessRights(structType interface{}) BACnetAssignedAccessRights {
+func CastBACnetAssignedAccessRights(structType any) BACnetAssignedAccessRights {
 	if casted, ok := structType.(BACnetAssignedAccessRights); ok {
 		return casted
 	}

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // ChannelInformation is the corresponding interface of ChannelInformation
 type ChannelInformation interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetNumChannels returns NumChannels (property field)
@@ -74,7 +76,7 @@ func NewChannelInformation(numChannels uint8, channelCode uint16) *_ChannelInfor
 }
 
 // Deprecated: use the interface for direct cast
-func CastChannelInformation(structType interface{}) ChannelInformation {
+func CastChannelInformation(structType any) ChannelInformation {
 	if casted, ok := structType.(ChannelInformation); ok {
 		return casted
 	}

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetValueSourceAddress is the corresponding interface of BACnetValueSourceAddress
 type BACnetValueSourceAddress interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetValueSource
@@ -92,7 +94,7 @@ func NewBACnetValueSourceAddress(address BACnetAddressEnclosed, peekedTagHeader 
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetValueSourceAddress(structType interface{}) BACnetValueSourceAddress {
+func CastBACnetValueSourceAddress(structType any) BACnetValueSourceAddress {
 	if casted, ok := structType.(BACnetValueSourceAddress); ok {
 		return casted
 	}

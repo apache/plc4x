@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // S7Parameter is the corresponding interface of S7Parameter
 type S7Parameter interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetMessageType returns MessageType (discriminator field)
@@ -76,7 +78,7 @@ func NewS7Parameter() *_S7Parameter {
 }
 
 // Deprecated: use the interface for direct cast
-func CastS7Parameter(structType interface{}) S7Parameter {
+func CastS7Parameter(structType any) S7Parameter {
 	if casted, ok := structType.(S7Parameter); ok {
 		return casted
 	}
@@ -127,7 +129,7 @@ func S7ParameterParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 		InitializeParent(S7Parameter)
 		GetParent() S7Parameter
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child S7ParameterChildSerializeRequirement
 	var typeSwitchError error
 	switch {

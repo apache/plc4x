@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // Checksum is the corresponding interface of Checksum
 type Checksum interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetValue returns Value (property field)
@@ -67,7 +69,7 @@ func NewChecksum(value byte) *_Checksum {
 }
 
 // Deprecated: use the interface for direct cast
-func CastChecksum(structType interface{}) Checksum {
+func CastChecksum(structType any) Checksum {
 	if casted, ok := structType.(Checksum); ok {
 		return casted
 	}

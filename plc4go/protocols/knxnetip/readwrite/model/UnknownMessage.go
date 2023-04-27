@@ -22,6 +22,7 @@ package model
 import (
 	"context"
 	"encoding/binary"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,6 +31,7 @@ import (
 
 // UnknownMessage is the corresponding interface of UnknownMessage
 type UnknownMessage interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	KnxNetIpMessage
@@ -98,7 +100,7 @@ func NewUnknownMessage(unknownData []byte, totalLength uint16) *_UnknownMessage 
 }
 
 // Deprecated: use the interface for direct cast
-func CastUnknownMessage(structType interface{}) UnknownMessage {
+func CastUnknownMessage(structType any) UnknownMessage {
 	if casted, ok := structType.(UnknownMessage); ok {
 		return casted
 	}

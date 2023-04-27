@@ -29,7 +29,7 @@ import (
 
 // DefaultBrowserRequirements adds required methods to Browser that are needed when using DefaultBrowser
 type DefaultBrowserRequirements interface {
-	BrowseQuery(ctx context.Context, browseRequest apiModel.PlcBrowseRequest, interceptor func(result apiModel.PlcBrowseItem) bool, queryName string, query apiModel.PlcQuery) (apiModel.PlcResponseCode, []apiModel.PlcBrowseItem)
+	BrowseQuery(ctx context.Context, interceptor func(result apiModel.PlcBrowseItem) bool, queryName string, query apiModel.PlcQuery) (apiModel.PlcResponseCode, []apiModel.PlcBrowseItem)
 }
 
 type DefaultBrowser interface {
@@ -71,12 +71,12 @@ func (m *defaultBrowser) BrowseWithInterceptor(ctx context.Context, browseReques
 		results := map[string][]apiModel.PlcBrowseItem{}
 		for _, queryName := range browseRequest.GetQueryNames() {
 			query := browseRequest.GetQuery(queryName)
-			responseCodes[queryName], results[queryName] = m.BrowseQuery(ctx, browseRequest, interceptor, queryName, query)
+			responseCodes[queryName], results[queryName] = m.BrowseQuery(ctx, interceptor, queryName, query)
 		}
 		browseResponse := model.NewDefaultPlcBrowseResponse(browseRequest, results, responseCodes)
 		result <- &model.DefaultPlcBrowseRequestResult{
 			Request:  browseRequest,
-			Response: &browseResponse,
+			Response: browseResponse,
 			Err:      nil,
 		}
 	}()

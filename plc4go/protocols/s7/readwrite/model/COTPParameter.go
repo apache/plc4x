@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // COTPParameter is the corresponding interface of COTPParameter
 type COTPParameter interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetParameterType returns ParameterType (discriminator field)
@@ -76,7 +78,7 @@ func NewCOTPParameter(rest uint8) *_COTPParameter {
 }
 
 // Deprecated: use the interface for direct cast
-func CastCOTPParameter(structType interface{}) COTPParameter {
+func CastCOTPParameter(structType any) COTPParameter {
 	if casted, ok := structType.(COTPParameter); ok {
 		return casted
 	}
@@ -137,7 +139,7 @@ func COTPParameterParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 		InitializeParent(COTPParameter)
 		GetParent() COTPParameter
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child COTPParameterChildSerializeRequirement
 	var typeSwitchError error
 	switch {

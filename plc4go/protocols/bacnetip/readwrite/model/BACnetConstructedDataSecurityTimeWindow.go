@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataSecurityTimeWindow is the corresponding interface of BACnetConstructedDataSecurityTimeWindow
 type BACnetConstructedDataSecurityTimeWindow interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataSecurityTimeWindow(securityTimeWindow BACnetApplica
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataSecurityTimeWindow(structType interface{}) BACnetConstructedDataSecurityTimeWindow {
+func CastBACnetConstructedDataSecurityTimeWindow(structType any) BACnetConstructedDataSecurityTimeWindow {
 	if casted, ok := structType.(BACnetConstructedDataSecurityTimeWindow); ok {
 		return casted
 	}

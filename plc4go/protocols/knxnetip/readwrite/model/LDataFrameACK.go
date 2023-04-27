@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // LDataFrameACK is the corresponding interface of LDataFrameACK
 type LDataFrameACK interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	LDataFrame
@@ -86,7 +88,7 @@ func NewLDataFrameACK(frameType bool, notRepeated bool, priority CEMIPriority, a
 }
 
 // Deprecated: use the interface for direct cast
-func CastLDataFrameACK(structType interface{}) LDataFrameACK {
+func CastLDataFrameACK(structType any) LDataFrameACK {
 	if casted, ok := structType.(LDataFrameACK); ok {
 		return casted
 	}

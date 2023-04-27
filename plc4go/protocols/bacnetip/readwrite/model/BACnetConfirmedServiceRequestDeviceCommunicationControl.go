@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
@@ -30,6 +31,7 @@ import (
 
 // BACnetConfirmedServiceRequestDeviceCommunicationControl is the corresponding interface of BACnetConfirmedServiceRequestDeviceCommunicationControl
 type BACnetConfirmedServiceRequestDeviceCommunicationControl interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConfirmedServiceRequest
@@ -112,7 +114,7 @@ func NewBACnetConfirmedServiceRequestDeviceCommunicationControl(timeDuration BAC
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConfirmedServiceRequestDeviceCommunicationControl(structType interface{}) BACnetConfirmedServiceRequestDeviceCommunicationControl {
+func CastBACnetConfirmedServiceRequestDeviceCommunicationControl(structType any) BACnetConfirmedServiceRequestDeviceCommunicationControl {
 	if casted, ok := structType.(BACnetConfirmedServiceRequestDeviceCommunicationControl); ok {
 		return casted
 	}

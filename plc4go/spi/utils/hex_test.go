@@ -20,8 +20,8 @@
 package utils
 
 import (
+	"github.com/stretchr/testify/assert"
 	"math"
-	"reflect"
 	"strings"
 	"testing"
 )
@@ -514,7 +514,7 @@ func Test_calculateBytesPerRowAndIndexWidth(t *testing.T) {
 func Test_Immutability(t *testing.T) {
 	inputBytes := []byte{0, 1, 2, 46, 56, 0, 200}
 	_ = Dump(inputBytes)
-	if !reflect.DeepEqual(inputBytes, []byte{0, 1, 2, 46, 56, 0, 200}) {
+	if !assert.Equal(t, []byte{0, 1, 2, 46, 56, 0, 200}, inputBytes) {
 		t.Errorf("Dump has mutated the array got:=%x, want:=%x", inputBytes, []byte{0, 1, 2, 46, 56, 0, 200})
 	}
 }

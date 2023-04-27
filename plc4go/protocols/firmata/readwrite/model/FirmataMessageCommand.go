@@ -22,6 +22,7 @@ package model
 import (
 	"context"
 	"encoding/binary"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,6 +31,7 @@ import (
 
 // FirmataMessageCommand is the corresponding interface of FirmataMessageCommand
 type FirmataMessageCommand interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	FirmataMessage
@@ -95,7 +97,7 @@ func NewFirmataMessageCommand(command FirmataCommand, response bool) *_FirmataMe
 }
 
 // Deprecated: use the interface for direct cast
-func CastFirmataMessageCommand(structType interface{}) FirmataMessageCommand {
+func CastFirmataMessageCommand(structType any) FirmataMessageCommand {
 	if casted, ok := structType.(FirmataMessageCommand); ok {
 		return casted
 	}

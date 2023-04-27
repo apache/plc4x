@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // TransportType is the corresponding interface of TransportType
 type TransportType interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetDirection returns Direction (property field)
@@ -81,7 +83,7 @@ func NewTransportType(direction bool, trigger uint8, classTransport uint8) *_Tra
 }
 
 // Deprecated: use the interface for direct cast
-func CastTransportType(structType interface{}) TransportType {
+func CastTransportType(structType any) TransportType {
 	if casted, ok := structType.(TransportType); ok {
 		return casted
 	}

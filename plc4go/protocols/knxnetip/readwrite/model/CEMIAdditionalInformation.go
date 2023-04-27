@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // CEMIAdditionalInformation is the corresponding interface of CEMIAdditionalInformation
 type CEMIAdditionalInformation interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetAdditionalInformationType returns AdditionalInformationType (discriminator field)
@@ -73,7 +75,7 @@ func NewCEMIAdditionalInformation() *_CEMIAdditionalInformation {
 }
 
 // Deprecated: use the interface for direct cast
-func CastCEMIAdditionalInformation(structType interface{}) CEMIAdditionalInformation {
+func CastCEMIAdditionalInformation(structType any) CEMIAdditionalInformation {
 	if casted, ok := structType.(CEMIAdditionalInformation); ok {
 		return casted
 	}
@@ -124,7 +126,7 @@ func CEMIAdditionalInformationParseWithBuffer(ctx context.Context, readBuffer ut
 		InitializeParent(CEMIAdditionalInformation)
 		GetParent() CEMIAdditionalInformation
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child CEMIAdditionalInformationChildSerializeRequirement
 	var typeSwitchError error
 	switch {

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -31,6 +32,8 @@ import (
 type ErrorReportingSystemCategoryTypeForClimateControllers uint8
 
 type IErrorReportingSystemCategoryTypeForClimateControllers interface {
+	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 
@@ -162,8 +165,8 @@ func ErrorReportingSystemCategoryTypeForClimateControllersKnows(value uint8) boo
 	return false
 }
 
-func CastErrorReportingSystemCategoryTypeForClimateControllers(structType interface{}) ErrorReportingSystemCategoryTypeForClimateControllers {
-	castFunc := func(typ interface{}) ErrorReportingSystemCategoryTypeForClimateControllers {
+func CastErrorReportingSystemCategoryTypeForClimateControllers(structType any) ErrorReportingSystemCategoryTypeForClimateControllers {
+	castFunc := func(typ any) ErrorReportingSystemCategoryTypeForClimateControllers {
 		if sErrorReportingSystemCategoryTypeForClimateControllers, ok := typ.(ErrorReportingSystemCategoryTypeForClimateControllers); ok {
 			return sErrorReportingSystemCategoryTypeForClimateControllers
 		}

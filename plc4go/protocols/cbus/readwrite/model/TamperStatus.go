@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // TamperStatus is the corresponding interface of TamperStatus
 type TamperStatus interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetStatus returns Status (property field)
@@ -100,7 +102,7 @@ func NewTamperStatus(status uint8) *_TamperStatus {
 }
 
 // Deprecated: use the interface for direct cast
-func CastTamperStatus(structType interface{}) TamperStatus {
+func CastTamperStatus(structType any) TamperStatus {
 	if casted, ok := structType.(TamperStatus); ok {
 		return casted
 	}

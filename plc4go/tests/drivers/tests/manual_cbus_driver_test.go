@@ -21,31 +21,21 @@ package tests
 
 import (
 	"fmt"
-	"os"
 	"testing"
 	"time"
 
 	"github.com/apache/plc4x/plc4go/internal/cbus"
 	"github.com/apache/plc4x/plc4go/pkg/api"
-	"github.com/apache/plc4x/plc4go/pkg/api/config"
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/pkg/api/transports"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	_ "github.com/apache/plc4x/plc4go/tests/initializetest"
-	"github.com/rs/zerolog"
-	"github.com/rs/zerolog/log"
+
 	"github.com/stretchr/testify/require"
 )
 
 func TestManualCBusDriverMixed(t *testing.T) {
-	log.Logger = log.
-		With().Caller().Logger().
-		Output(zerolog.ConsoleWriter{Out: os.Stderr}).
-		Level(zerolog.InfoLevel)
-	config.TraceTransactionManagerWorkers = true
-	config.TraceTransactionManagerTransactions = true
-	config.TraceDefaultMessageCodecWorker = true
 	t.Skip()
 
 	connectionString := "c-bus://192.168.178.101"
@@ -61,7 +51,7 @@ func TestManualCBusDriverMixed(t *testing.T) {
 	//test.AddTestCase("cal/0/identify=[FirmwareVersion]", true)
 	//test.AddTestCase("cal/0/gestatus=[0xFF, 1]", true)
 
-	plcConnection := test.Run()
+	plcConnection := test.Run(t)
 	t.Run("Subscription test", func(t *testing.T) {
 		gotMMI := make(chan bool)
 		gotSAL := make(chan bool)
@@ -121,13 +111,6 @@ func TestManualCBusDriverMixed(t *testing.T) {
 }
 
 func TestManualCBusBrowse(t *testing.T) {
-	log.Logger = log.
-		With().Caller().Logger().
-		Output(zerolog.ConsoleWriter{Out: os.Stderr}).
-		Level(zerolog.InfoLevel)
-	config.TraceTransactionManagerWorkers = false
-	config.TraceTransactionManagerTransactions = false
-	config.TraceDefaultMessageCodecWorker = false
 	t.Skip()
 
 	connectionString := "c-bus://192.168.178.101?Monitor=false&MonitoredApplication1=0x00&MonitoredApplication2=0x00"
@@ -155,13 +138,6 @@ func TestManualCBusBrowse(t *testing.T) {
 }
 
 func TestManualCBusRead(t *testing.T) {
-	log.Logger = log.
-		With().Caller().Logger().
-		Output(zerolog.ConsoleWriter{Out: os.Stderr}).
-		Level(zerolog.InfoLevel)
-	config.TraceTransactionManagerWorkers = false
-	config.TraceTransactionManagerTransactions = false
-	config.TraceDefaultMessageCodecWorker = false
 	t.Skip()
 
 	connectionString := "c-bus://192.168.178.101?Monitor=false&MonitoredApplication1=0x00&MonitoredApplication2=0x00"
@@ -184,13 +160,6 @@ func TestManualCBusRead(t *testing.T) {
 }
 
 func TestManualDiscovery(t *testing.T) {
-	log.Logger = log.
-		With().Caller().Logger().
-		Output(zerolog.ConsoleWriter{Out: os.Stderr}).
-		Level(zerolog.TraceLevel)
-	config.TraceTransactionManagerWorkers = false
-	config.TraceTransactionManagerTransactions = false
-	config.TraceDefaultMessageCodecWorker = false
 	t.Skip()
 
 	driverManager := plc4go.NewPlcDriverManager()

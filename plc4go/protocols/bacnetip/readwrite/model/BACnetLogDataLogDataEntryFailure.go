@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetLogDataLogDataEntryFailure is the corresponding interface of BACnetLogDataLogDataEntryFailure
 type BACnetLogDataLogDataEntryFailure interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetLogDataLogDataEntry
@@ -92,7 +94,7 @@ func NewBACnetLogDataLogDataEntryFailure(failure ErrorEnclosed, peekedTagHeader 
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetLogDataLogDataEntryFailure(structType interface{}) BACnetLogDataLogDataEntryFailure {
+func CastBACnetLogDataLogDataEntryFailure(structType any) BACnetLogDataLogDataEntryFailure {
 	if casted, ok := structType.(BACnetLogDataLogDataEntryFailure); ok {
 		return casted
 	}

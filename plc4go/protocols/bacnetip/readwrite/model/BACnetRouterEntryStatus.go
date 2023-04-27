@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -31,6 +32,8 @@ import (
 type BACnetRouterEntryStatus uint8
 
 type IBACnetRouterEntryStatus interface {
+	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 
@@ -84,8 +87,8 @@ func BACnetRouterEntryStatusKnows(value uint8) bool {
 	return false
 }
 
-func CastBACnetRouterEntryStatus(structType interface{}) BACnetRouterEntryStatus {
-	castFunc := func(typ interface{}) BACnetRouterEntryStatus {
+func CastBACnetRouterEntryStatus(structType any) BACnetRouterEntryStatus {
+	castFunc := func(typ any) BACnetRouterEntryStatus {
 		if sBACnetRouterEntryStatus, ok := typ.(BACnetRouterEntryStatus); ok {
 			return sBACnetRouterEntryStatus
 		}

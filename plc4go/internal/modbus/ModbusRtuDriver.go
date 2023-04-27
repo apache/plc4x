@@ -20,6 +20,7 @@
 package modbus
 
 import (
+	"context"
 	"encoding/json"
 	"github.com/apache/plc4x/plc4go/pkg/api"
 	"github.com/apache/plc4x/plc4go/protocols/modbus/readwrite/model"
@@ -36,12 +37,12 @@ type ModbusRtuDriver struct {
 }
 
 func NewModbusRtuDriver() *ModbusRtuDriver {
-	return &ModbusRtuDriver{
-		DefaultDriver: _default.NewDefaultDriver("modbus-rtu", "Modbus RTU", "serial", NewTagHandler()),
-	}
+	driver := &ModbusRtuDriver{}
+	driver.DefaultDriver = _default.NewDefaultDriver(driver, "modbus-rtu", "Modbus RTU", "serial", NewTagHandler())
+	return driver
 }
 
-func (m ModbusRtuDriver) GetConnection(transportUrl url.URL, transports map[string]transports.Transport, options map[string][]string) <-chan plc4go.PlcConnectionConnectResult {
+func (m ModbusRtuDriver) GetConnectionWithContext(ctx context.Context, transportUrl url.URL, transports map[string]transports.Transport, options map[string][]string) <-chan plc4go.PlcConnectionConnectResult {
 	log.Debug().Stringer("transportUrl", &transportUrl).Msgf("Get connection for transport url with %d transport(s) and %d option(s)", len(transports), len(options))
 	// Get an the transport specified in the url
 	transport, ok := transports[transportUrl.Scheme]
@@ -68,7 +69,7 @@ func (m ModbusRtuDriver) GetConnection(transportUrl url.URL, transports map[stri
 
 	// Create a new codec for taking care of encoding/decoding of messages
 	// TODO: the code below looks strange: where is defaultChanel being used?
-	defaultChanel := make(chan interface{})
+	defaultChanel := make(chan any)
 	go func() {
 		for {
 			msg := <-defaultChanel
@@ -98,5 +99,5 @@ func (m ModbusRtuDriver) GetConnection(transportUrl url.URL, transports map[stri
 	// Create the new connection
 	connection := NewConnection(unitIdentifier, codec, options, m.GetPlcTagHandler())
 	log.Debug().Stringer("connection", connection).Msg("created connection, connecting now")
-	return connection.Connect()
+	return connection.ConnectWithContext(ctx)
 }

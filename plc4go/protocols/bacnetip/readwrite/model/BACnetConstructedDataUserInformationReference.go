@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataUserInformationReference is the corresponding interface of BACnetConstructedDataUserInformationReference
 type BACnetConstructedDataUserInformationReference interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataUserInformationReference(userInformationReference B
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataUserInformationReference(structType interface{}) BACnetConstructedDataUserInformationReference {
+func CastBACnetConstructedDataUserInformationReference(structType any) BACnetConstructedDataUserInformationReference {
 	if casted, ok := structType.(BACnetConstructedDataUserInformationReference); ok {
 		return casted
 	}

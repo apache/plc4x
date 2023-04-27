@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -31,6 +32,8 @@ import (
 type COTPProtocolClass uint8
 
 type ICOTPProtocolClass interface {
+	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 
@@ -96,8 +99,8 @@ func COTPProtocolClassKnows(value uint8) bool {
 	return false
 }
 
-func CastCOTPProtocolClass(structType interface{}) COTPProtocolClass {
-	castFunc := func(typ interface{}) COTPProtocolClass {
+func CastCOTPProtocolClass(structType any) COTPProtocolClass {
+	castFunc := func(typ any) COTPProtocolClass {
 		if sCOTPProtocolClass, ok := typ.(COTPProtocolClass); ok {
 			return sCOTPProtocolClass
 		}

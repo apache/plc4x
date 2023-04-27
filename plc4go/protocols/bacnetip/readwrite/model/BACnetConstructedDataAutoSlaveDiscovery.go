@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataAutoSlaveDiscovery is the corresponding interface of BACnetConstructedDataAutoSlaveDiscovery
 type BACnetConstructedDataAutoSlaveDiscovery interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataAutoSlaveDiscovery(autoSlaveDiscovery BACnetApplica
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataAutoSlaveDiscovery(structType interface{}) BACnetConstructedDataAutoSlaveDiscovery {
+func CastBACnetConstructedDataAutoSlaveDiscovery(structType any) BACnetConstructedDataAutoSlaveDiscovery {
 	if casted, ok := structType.(BACnetConstructedDataAutoSlaveDiscovery); ok {
 		return casted
 	}

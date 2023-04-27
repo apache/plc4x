@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // PathSegment is the corresponding interface of PathSegment
 type PathSegment interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetPathSegment returns PathSegment (discriminator field)
@@ -73,7 +75,7 @@ func NewPathSegment() *_PathSegment {
 }
 
 // Deprecated: use the interface for direct cast
-func CastPathSegment(structType interface{}) PathSegment {
+func CastPathSegment(structType any) PathSegment {
 	if casted, ok := structType.(PathSegment); ok {
 		return casted
 	}
@@ -124,7 +126,7 @@ func PathSegmentParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 		InitializeParent(PathSegment)
 		GetParent() PathSegment
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child PathSegmentChildSerializeRequirement
 	var typeSwitchError error
 	switch {

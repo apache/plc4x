@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetPriorityValueOctetString is the corresponding interface of BACnetPriorityValueOctetString
 type BACnetPriorityValueOctetString interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetPriorityValue
@@ -92,7 +94,7 @@ func NewBACnetPriorityValueOctetString(octetStringValue BACnetApplicationTagOcte
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetPriorityValueOctetString(structType interface{}) BACnetPriorityValueOctetString {
+func CastBACnetPriorityValueOctetString(structType any) BACnetPriorityValueOctetString {
 	if casted, ok := structType.(BACnetPriorityValueOctetString); ok {
 		return casted
 	}

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // ApduDataIndividualAddressRead is the corresponding interface of ApduDataIndividualAddressRead
 type ApduDataIndividualAddressRead interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	ApduData
@@ -76,7 +78,7 @@ func NewApduDataIndividualAddressRead(dataLength uint8) *_ApduDataIndividualAddr
 }
 
 // Deprecated: use the interface for direct cast
-func CastApduDataIndividualAddressRead(structType interface{}) ApduDataIndividualAddressRead {
+func CastApduDataIndividualAddressRead(structType any) ApduDataIndividualAddressRead {
 	if casted, ok := structType.(ApduDataIndividualAddressRead); ok {
 		return casted
 	}

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetLightingInProgressTagged is the corresponding interface of BACnetLightingInProgressTagged
 type BACnetLightingInProgressTagged interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetHeader returns Header (property field)
@@ -78,7 +80,7 @@ func NewBACnetLightingInProgressTagged(header BACnetTagHeader, value BACnetLight
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetLightingInProgressTagged(structType interface{}) BACnetLightingInProgressTagged {
+func CastBACnetLightingInProgressTagged(structType any) BACnetLightingInProgressTagged {
 	if casted, ok := structType.(BACnetLightingInProgressTagged); ok {
 		return casted
 	}

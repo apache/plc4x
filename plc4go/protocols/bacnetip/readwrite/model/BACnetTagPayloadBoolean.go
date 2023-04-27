@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetTagPayloadBoolean is the corresponding interface of BACnetTagPayloadBoolean
 type BACnetTagPayloadBoolean interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetValue returns Value (virtual field)
@@ -87,7 +89,7 @@ func NewBACnetTagPayloadBoolean(actualLength uint32) *_BACnetTagPayloadBoolean {
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetTagPayloadBoolean(structType interface{}) BACnetTagPayloadBoolean {
+func CastBACnetTagPayloadBoolean(structType any) BACnetTagPayloadBoolean {
 	if casted, ok := structType.(BACnetTagPayloadBoolean); ok {
 		return casted
 	}

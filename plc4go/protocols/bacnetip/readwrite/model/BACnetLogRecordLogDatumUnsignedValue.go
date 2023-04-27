@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetLogRecordLogDatumUnsignedValue is the corresponding interface of BACnetLogRecordLogDatumUnsignedValue
 type BACnetLogRecordLogDatumUnsignedValue interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetLogRecordLogDatum
@@ -94,7 +96,7 @@ func NewBACnetLogRecordLogDatumUnsignedValue(unsignedValue BACnetContextTagUnsig
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetLogRecordLogDatumUnsignedValue(structType interface{}) BACnetLogRecordLogDatumUnsignedValue {
+func CastBACnetLogRecordLogDatumUnsignedValue(structType any) BACnetLogRecordLogDatumUnsignedValue {
 	if casted, ok := structType.(BACnetLogRecordLogDatumUnsignedValue); ok {
 		return casted
 	}

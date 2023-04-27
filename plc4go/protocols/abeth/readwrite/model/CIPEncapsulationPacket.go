@@ -22,7 +22,7 @@ package model
 import (
 	"context"
 	"encoding/binary"
-	spiContext "github.com/apache/plc4x/plc4go/spi/context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -31,6 +31,7 @@ import (
 
 // CIPEncapsulationPacket is the corresponding interface of CIPEncapsulationPacket
 type CIPEncapsulationPacket interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetCommandType returns CommandType (discriminator field)
@@ -115,7 +116,7 @@ func NewCIPEncapsulationPacket(sessionHandle uint32, status uint32, senderContex
 }
 
 // Deprecated: use the interface for direct cast
-func CastCIPEncapsulationPacket(structType interface{}) CIPEncapsulationPacket {
+func CastCIPEncapsulationPacket(structType any) CIPEncapsulationPacket {
 	if casted, ok := structType.(CIPEncapsulationPacket); ok {
 		return casted
 	}
@@ -214,7 +215,7 @@ func CIPEncapsulationPacketParseWithBuffer(ctx context.Context, readBuffer utils
 	{
 		_numItems := uint16(uint16(8))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := spiContext.CreateArrayContext(ctx, int(_numItems), int(_curItem))
+			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
 			_ = _curItem
 			_item, _err := readBuffer.ReadUint8("", 8)
@@ -243,7 +244,7 @@ func CIPEncapsulationPacketParseWithBuffer(ctx context.Context, readBuffer utils
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of CIPEncapsulationPacket")
 		}
 		if reserved != uint32(0x00000000) {
-			Plc4xModelLog.Info().Fields(map[string]interface{}{
+			Plc4xModelLog.Info().Fields(map[string]any{
 				"expected value": uint32(0x00000000),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
@@ -258,7 +259,7 @@ func CIPEncapsulationPacketParseWithBuffer(ctx context.Context, readBuffer utils
 		InitializeParent(CIPEncapsulationPacket, uint32, uint32, []uint8, uint32)
 		GetParent() CIPEncapsulationPacket
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child CIPEncapsulationPacketChildSerializeRequirement
 	var typeSwitchError error
 	switch {
@@ -353,7 +354,7 @@ func (pm *_CIPEncapsulationPacket) SerializeParent(ctx context.Context, writeBuf
 	{
 		var reserved uint32 = uint32(0x00000000)
 		if pm.reservedField0 != nil {
-			Plc4xModelLog.Info().Fields(map[string]interface{}{
+			Plc4xModelLog.Info().Fields(map[string]any{
 				"expected value": uint32(0x00000000),
 				"got value":      reserved,
 			}).Msg("Overriding reserved field with unexpected value.")

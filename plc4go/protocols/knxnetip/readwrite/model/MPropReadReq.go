@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // MPropReadReq is the corresponding interface of MPropReadReq
 type MPropReadReq interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	CEMI
@@ -126,7 +128,7 @@ func NewMPropReadReq(interfaceObjectType uint16, objectInstance uint8, propertyI
 }
 
 // Deprecated: use the interface for direct cast
-func CastMPropReadReq(structType interface{}) MPropReadReq {
+func CastMPropReadReq(structType any) MPropReadReq {
 	if casted, ok := structType.(MPropReadReq); ok {
 		return casted
 	}

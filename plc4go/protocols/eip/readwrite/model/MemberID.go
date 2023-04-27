@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // MemberID is the corresponding interface of MemberID
 type MemberID interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	LogicalSegmentType
@@ -102,7 +104,7 @@ func NewMemberID(format uint8, instance uint8) *_MemberID {
 }
 
 // Deprecated: use the interface for direct cast
-func CastMemberID(structType interface{}) MemberID {
+func CastMemberID(structType any) MemberID {
 	if casted, ok := structType.(MemberID); ok {
 		return casted
 	}

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataStopTime is the corresponding interface of BACnetConstructedDataStopTime
 type BACnetConstructedDataStopTime interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataStopTime(stopTime BACnetDateTime, openingTag BACnet
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataStopTime(structType interface{}) BACnetConstructedDataStopTime {
+func CastBACnetConstructedDataStopTime(structType any) BACnetConstructedDataStopTime {
 	if casted, ok := structType.(BACnetConstructedDataStopTime); ok {
 		return casted
 	}

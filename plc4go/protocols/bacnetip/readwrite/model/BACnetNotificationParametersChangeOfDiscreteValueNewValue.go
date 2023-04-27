@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetNotificationParametersChangeOfDiscreteValueNewValue is the corresponding interface of BACnetNotificationParametersChangeOfDiscreteValueNewValue
 type BACnetNotificationParametersChangeOfDiscreteValueNewValue interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetOpeningTag returns OpeningTag (property field)
@@ -131,7 +133,7 @@ func NewBACnetNotificationParametersChangeOfDiscreteValueNewValue(openingTag BAC
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetNotificationParametersChangeOfDiscreteValueNewValue(structType interface{}) BACnetNotificationParametersChangeOfDiscreteValueNewValue {
+func CastBACnetNotificationParametersChangeOfDiscreteValueNewValue(structType any) BACnetNotificationParametersChangeOfDiscreteValueNewValue {
 	if casted, ok := structType.(BACnetNotificationParametersChangeOfDiscreteValueNewValue); ok {
 		return casted
 	}
@@ -220,7 +222,7 @@ func BACnetNotificationParametersChangeOfDiscreteValueNewValueParseWithBuffer(ct
 		InitializeParent(BACnetNotificationParametersChangeOfDiscreteValueNewValue, BACnetOpeningTag, BACnetTagHeader, BACnetClosingTag)
 		GetParent() BACnetNotificationParametersChangeOfDiscreteValueNewValue
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child BACnetNotificationParametersChangeOfDiscreteValueNewValueChildSerializeRequirement
 	var typeSwitchError error
 	switch {

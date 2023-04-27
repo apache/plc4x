@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -31,6 +32,8 @@ import (
 type RequestType uint8
 
 type IRequestType interface {
+	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 	ControlChar() uint8
 }
@@ -154,8 +157,8 @@ func RequestTypeKnows(value uint8) bool {
 	return false
 }
 
-func CastRequestType(structType interface{}) RequestType {
-	castFunc := func(typ interface{}) RequestType {
+func CastRequestType(structType any) RequestType {
+	castFunc := func(typ any) RequestType {
 		if sRequestType, ok := typ.(RequestType); ok {
 			return sRequestType
 		}

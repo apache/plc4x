@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
@@ -30,6 +31,7 @@ import (
 
 // BACnetCOVSubscription is the corresponding interface of BACnetCOVSubscription
 type BACnetCOVSubscription interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetRecipient returns Recipient (property field)
@@ -96,7 +98,7 @@ func NewBACnetCOVSubscription(recipient BACnetRecipientProcessEnclosed, monitore
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetCOVSubscription(structType interface{}) BACnetCOVSubscription {
+func CastBACnetCOVSubscription(structType any) BACnetCOVSubscription {
 	if casted, ok := structType.(BACnetCOVSubscription); ok {
 		return casted
 	}

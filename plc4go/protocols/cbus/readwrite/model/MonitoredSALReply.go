@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // MonitoredSALReply is the corresponding interface of MonitoredSALReply
 type MonitoredSALReply interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	EncodedReply
@@ -92,7 +94,7 @@ func NewMonitoredSALReply(monitoredSAL MonitoredSAL, peekedByte byte, cBusOption
 }
 
 // Deprecated: use the interface for direct cast
-func CastMonitoredSALReply(structType interface{}) MonitoredSALReply {
+func CastMonitoredSALReply(structType any) MonitoredSALReply {
 	if casted, ok := structType.(MonitoredSALReply); ok {
 		return casted
 	}

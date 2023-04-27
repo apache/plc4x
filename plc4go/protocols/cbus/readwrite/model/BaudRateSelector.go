@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -31,6 +32,8 @@ import (
 type BaudRateSelector uint8
 
 type IBaudRateSelector interface {
+	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 
@@ -102,8 +105,8 @@ func BaudRateSelectorKnows(value uint8) bool {
 	return false
 }
 
-func CastBaudRateSelector(structType interface{}) BaudRateSelector {
-	castFunc := func(typ interface{}) BaudRateSelector {
+func CastBaudRateSelector(structType any) BaudRateSelector {
+	castFunc := func(typ any) BaudRateSelector {
 		if sBaudRateSelector, ok := typ.(BaudRateSelector); ok {
 			return sBaudRateSelector
 		}

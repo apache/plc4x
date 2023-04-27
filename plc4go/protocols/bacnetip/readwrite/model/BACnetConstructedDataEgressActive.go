@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataEgressActive is the corresponding interface of BACnetConstructedDataEgressActive
 type BACnetConstructedDataEgressActive interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataEgressActive(egressActive BACnetApplicationTagBoole
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataEgressActive(structType interface{}) BACnetConstructedDataEgressActive {
+func CastBACnetConstructedDataEgressActive(structType any) BACnetConstructedDataEgressActive {
 	if casted, ok := structType.(BACnetConstructedDataEgressActive); ok {
 		return casted
 	}

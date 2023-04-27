@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataScale is the corresponding interface of BACnetConstructedDataScale
 type BACnetConstructedDataScale interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataScale(scale BACnetScale, openingTag BACnetOpeningTa
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataScale(structType interface{}) BACnetConstructedDataScale {
+func CastBACnetConstructedDataScale(structType any) BACnetConstructedDataScale {
 	if casted, ok := structType.(BACnetConstructedDataScale); ok {
 		return casted
 	}

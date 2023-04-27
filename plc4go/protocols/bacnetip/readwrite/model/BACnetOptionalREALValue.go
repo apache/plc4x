@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetOptionalREALValue is the corresponding interface of BACnetOptionalREALValue
 type BACnetOptionalREALValue interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetOptionalREAL
@@ -92,7 +94,7 @@ func NewBACnetOptionalREALValue(realValue BACnetApplicationTagReal, peekedTagHea
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetOptionalREALValue(structType interface{}) BACnetOptionalREALValue {
+func CastBACnetOptionalREALValue(structType any) BACnetOptionalREALValue {
 	if casted, ok := structType.(BACnetOptionalREALValue); ok {
 		return casted
 	}

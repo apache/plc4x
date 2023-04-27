@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // ApduControlDisconnect is the corresponding interface of ApduControlDisconnect
 type ApduControlDisconnect interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	ApduControl
@@ -76,7 +78,7 @@ func NewApduControlDisconnect() *_ApduControlDisconnect {
 }
 
 // Deprecated: use the interface for direct cast
-func CastApduControlDisconnect(structType interface{}) ApduControlDisconnect {
+func CastApduControlDisconnect(structType any) ApduControlDisconnect {
 	if casted, ok := structType.(ApduControlDisconnect); ok {
 		return casted
 	}

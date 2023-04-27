@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // CBusCommandPointToMultiPoint is the corresponding interface of CBusCommandPointToMultiPoint
 type CBusCommandPointToMultiPoint interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	CBusCommand
@@ -92,7 +94,7 @@ func NewCBusCommandPointToMultiPoint(command CBusPointToMultiPointCommand, heade
 }
 
 // Deprecated: use the interface for direct cast
-func CastCBusCommandPointToMultiPoint(structType interface{}) CBusCommandPointToMultiPoint {
+func CastCBusCommandPointToMultiPoint(structType any) CBusCommandPointToMultiPoint {
 	if casted, ok := structType.(CBusCommandPointToMultiPoint); ok {
 		return casted
 	}

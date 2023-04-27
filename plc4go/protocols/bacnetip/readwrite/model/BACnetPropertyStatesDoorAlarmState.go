@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetPropertyStatesDoorAlarmState is the corresponding interface of BACnetPropertyStatesDoorAlarmState
 type BACnetPropertyStatesDoorAlarmState interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetPropertyStates
@@ -92,7 +94,7 @@ func NewBACnetPropertyStatesDoorAlarmState(doorAlarmState BACnetDoorAlarmStateTa
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetPropertyStatesDoorAlarmState(structType interface{}) BACnetPropertyStatesDoorAlarmState {
+func CastBACnetPropertyStatesDoorAlarmState(structType any) BACnetPropertyStatesDoorAlarmState {
 	if casted, ok := structType.(BACnetPropertyStatesDoorAlarmState); ok {
 		return casted
 	}

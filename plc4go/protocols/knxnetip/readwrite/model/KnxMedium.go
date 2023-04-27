@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -31,6 +32,8 @@ import (
 type KnxMedium uint8
 
 type IKnxMedium interface {
+	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 
@@ -102,8 +105,8 @@ func KnxMediumKnows(value uint8) bool {
 	return false
 }
 
-func CastKnxMedium(structType interface{}) KnxMedium {
-	castFunc := func(typ interface{}) KnxMedium {
+func CastKnxMedium(structType any) KnxMedium {
+	castFunc := func(typ any) KnxMedium {
 		if sKnxMedium, ok := typ.(KnxMedium); ok {
 			return sKnxMedium
 		}

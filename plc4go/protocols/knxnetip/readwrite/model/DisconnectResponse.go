@@ -22,6 +22,7 @@ package model
 import (
 	"context"
 	"encoding/binary"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,6 +31,7 @@ import (
 
 // DisconnectResponse is the corresponding interface of DisconnectResponse
 type DisconnectResponse interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	KnxNetIpMessage
@@ -103,7 +105,7 @@ func NewDisconnectResponse(communicationChannelId uint8, status Status) *_Discon
 }
 
 // Deprecated: use the interface for direct cast
-func CastDisconnectResponse(structType interface{}) DisconnectResponse {
+func CastDisconnectResponse(structType any) DisconnectResponse {
 	if casted, ok := structType.(DisconnectResponse); ok {
 		return casted
 	}

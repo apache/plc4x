@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataGlobalIdentifier is the corresponding interface of BACnetConstructedDataGlobalIdentifier
 type BACnetConstructedDataGlobalIdentifier interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataGlobalIdentifier(globalIdentifier BACnetApplication
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataGlobalIdentifier(structType interface{}) BACnetConstructedDataGlobalIdentifier {
+func CastBACnetConstructedDataGlobalIdentifier(structType any) BACnetConstructedDataGlobalIdentifier {
 	if casted, ok := structType.(BACnetConstructedDataGlobalIdentifier); ok {
 		return casted
 	}

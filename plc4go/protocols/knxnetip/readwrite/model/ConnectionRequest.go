@@ -22,6 +22,7 @@ package model
 import (
 	"context"
 	"encoding/binary"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,6 +31,7 @@ import (
 
 // ConnectionRequest is the corresponding interface of ConnectionRequest
 type ConnectionRequest interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	KnxNetIpMessage
@@ -111,7 +113,7 @@ func NewConnectionRequest(hpaiDiscoveryEndpoint HPAIDiscoveryEndpoint, hpaiDataE
 }
 
 // Deprecated: use the interface for direct cast
-func CastConnectionRequest(structType interface{}) ConnectionRequest {
+func CastConnectionRequest(structType any) ConnectionRequest {
 	if casted, ok := structType.(ConnectionRequest); ok {
 		return casted
 	}

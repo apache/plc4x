@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // AccessControlDataAccessPointClosed is the corresponding interface of AccessControlDataAccessPointClosed
 type AccessControlDataAccessPointClosed interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	AccessControlData
@@ -76,7 +78,7 @@ func NewAccessControlDataAccessPointClosed(commandTypeContainer AccessControlCom
 }
 
 // Deprecated: use the interface for direct cast
-func CastAccessControlDataAccessPointClosed(structType interface{}) AccessControlDataAccessPointClosed {
+func CastAccessControlDataAccessPointClosed(structType any) AccessControlDataAccessPointClosed {
 	if casted, ok := structType.(AccessControlDataAccessPointClosed); ok {
 		return casted
 	}

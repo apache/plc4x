@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -31,6 +32,8 @@ import (
 type HVACHumidityType uint8
 
 type IHVACHumidityType interface {
+	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 
@@ -90,8 +93,8 @@ func HVACHumidityTypeKnows(value uint8) bool {
 	return false
 }
 
-func CastHVACHumidityType(structType interface{}) HVACHumidityType {
-	castFunc := func(typ interface{}) HVACHumidityType {
+func CastHVACHumidityType(structType any) HVACHumidityType {
+	castFunc := func(typ any) HVACHumidityType {
 		if sHVACHumidityType, ok := typ.(HVACHumidityType); ok {
 			return sHVACHumidityType
 		}

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // MediaTransportControlDataShuffleOnOff is the corresponding interface of MediaTransportControlDataShuffleOnOff
 type MediaTransportControlDataShuffleOnOff interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	MediaTransportControlData
@@ -118,7 +120,7 @@ func NewMediaTransportControlDataShuffleOnOff(state byte, commandTypeContainer M
 }
 
 // Deprecated: use the interface for direct cast
-func CastMediaTransportControlDataShuffleOnOff(structType interface{}) MediaTransportControlDataShuffleOnOff {
+func CastMediaTransportControlDataShuffleOnOff(structType any) MediaTransportControlDataShuffleOnOff {
 	if casted, ok := structType.(MediaTransportControlDataShuffleOnOff); ok {
 		return casted
 	}

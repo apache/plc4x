@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -31,6 +32,8 @@ import (
 type AirConditioningCommandTypeContainer uint8
 
 type IAirConditioningCommandTypeContainer interface {
+	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 	NumBytes() uint8
 	CommandType() AirConditioningCommandType
@@ -369,8 +372,8 @@ func AirConditioningCommandTypeContainerKnows(value uint8) bool {
 	return false
 }
 
-func CastAirConditioningCommandTypeContainer(structType interface{}) AirConditioningCommandTypeContainer {
-	castFunc := func(typ interface{}) AirConditioningCommandTypeContainer {
+func CastAirConditioningCommandTypeContainer(structType any) AirConditioningCommandTypeContainer {
+	castFunc := func(typ any) AirConditioningCommandTypeContainer {
 		if sAirConditioningCommandTypeContainer, ok := typ.(AirConditioningCommandTypeContainer); ok {
 			return sAirConditioningCommandTypeContainer
 		}

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataCredentialDisable is the corresponding interface of BACnetConstructedDataCredentialDisable
 type BACnetConstructedDataCredentialDisable interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataCredentialDisable(credentialDisable BACnetAccessCre
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataCredentialDisable(structType interface{}) BACnetConstructedDataCredentialDisable {
+func CastBACnetConstructedDataCredentialDisable(structType any) BACnetConstructedDataCredentialDisable {
 	if casted, ok := structType.(BACnetConstructedDataCredentialDisable); ok {
 		return casted
 	}

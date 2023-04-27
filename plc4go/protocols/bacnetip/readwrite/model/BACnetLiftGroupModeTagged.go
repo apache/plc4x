@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetLiftGroupModeTagged is the corresponding interface of BACnetLiftGroupModeTagged
 type BACnetLiftGroupModeTagged interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetHeader returns Header (property field)
@@ -78,7 +80,7 @@ func NewBACnetLiftGroupModeTagged(header BACnetTagHeader, value BACnetLiftGroupM
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetLiftGroupModeTagged(structType interface{}) BACnetLiftGroupModeTagged {
+func CastBACnetLiftGroupModeTagged(structType any) BACnetLiftGroupModeTagged {
 	if casted, ok := structType.(BACnetLiftGroupModeTagged); ok {
 		return casted
 	}

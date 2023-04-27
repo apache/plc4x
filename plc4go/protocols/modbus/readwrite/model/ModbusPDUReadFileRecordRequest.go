@@ -21,7 +21,7 @@ package model
 
 import (
 	"context"
-	spiContext "github.com/apache/plc4x/plc4go/spi/context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,6 +30,7 @@ import (
 
 // ModbusPDUReadFileRecordRequest is the corresponding interface of ModbusPDUReadFileRecordRequest
 type ModbusPDUReadFileRecordRequest interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	ModbusPDU
@@ -103,7 +104,7 @@ func NewModbusPDUReadFileRecordRequest(items []ModbusPDUReadFileRecordRequestIte
 }
 
 // Deprecated: use the interface for direct cast
-func CastModbusPDUReadFileRecordRequest(structType interface{}) ModbusPDUReadFileRecordRequest {
+func CastModbusPDUReadFileRecordRequest(structType any) ModbusPDUReadFileRecordRequest {
 	if casted, ok := structType.(ModbusPDUReadFileRecordRequest); ok {
 		return casted
 	}
@@ -227,7 +228,7 @@ func (m *_ModbusPDUReadFileRecordRequest) SerializeWithWriteBuffer(ctx context.C
 		}
 		for _curItem, _element := range m.GetItems() {
 			_ = _curItem
-			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetItems()), _curItem)
+			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetItems()), _curItem)
 			_ = arrayCtx
 			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 			if _elementErr != nil {

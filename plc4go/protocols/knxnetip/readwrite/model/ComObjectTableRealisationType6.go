@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // ComObjectTableRealisationType6 is the corresponding interface of ComObjectTableRealisationType6
 type ComObjectTableRealisationType6 interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	ComObjectTable
@@ -94,7 +96,7 @@ func NewComObjectTableRealisationType6(comObjectDescriptors GroupObjectDescripto
 }
 
 // Deprecated: use the interface for direct cast
-func CastComObjectTableRealisationType6(structType interface{}) ComObjectTableRealisationType6 {
+func CastComObjectTableRealisationType6(structType any) ComObjectTableRealisationType6 {
 	if casted, ok := structType.(ComObjectTableRealisationType6); ok {
 		return casted
 	}

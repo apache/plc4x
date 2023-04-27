@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetPropertyStatesFileAccessMethod is the corresponding interface of BACnetPropertyStatesFileAccessMethod
 type BACnetPropertyStatesFileAccessMethod interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetPropertyStates
@@ -92,7 +94,7 @@ func NewBACnetPropertyStatesFileAccessMethod(fileAccessMethod BACnetFileAccessMe
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetPropertyStatesFileAccessMethod(structType interface{}) BACnetPropertyStatesFileAccessMethod {
+func CastBACnetPropertyStatesFileAccessMethod(structType any) BACnetPropertyStatesFileAccessMethod {
 	if casted, ok := structType.(BACnetPropertyStatesFileAccessMethod); ok {
 		return casted
 	}

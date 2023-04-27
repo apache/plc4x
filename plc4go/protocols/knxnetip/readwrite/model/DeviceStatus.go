@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // DeviceStatus is the corresponding interface of DeviceStatus
 type DeviceStatus interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetProgramMode returns ProgramMode (property field)
@@ -69,7 +71,7 @@ func NewDeviceStatus(programMode bool) *_DeviceStatus {
 }
 
 // Deprecated: use the interface for direct cast
-func CastDeviceStatus(structType interface{}) DeviceStatus {
+func CastDeviceStatus(structType any) DeviceStatus {
 	if casted, ok := structType.(DeviceStatus); ok {
 		return casted
 	}
@@ -120,7 +122,7 @@ func DeviceStatusParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of DeviceStatus")
 		}
 		if reserved != uint8(0x00) {
-			Plc4xModelLog.Info().Fields(map[string]interface{}{
+			Plc4xModelLog.Info().Fields(map[string]any{
 				"expected value": uint8(0x00),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
@@ -166,7 +168,7 @@ func (m *_DeviceStatus) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 	{
 		var reserved uint8 = uint8(0x00)
 		if m.reservedField0 != nil {
-			Plc4xModelLog.Info().Fields(map[string]interface{}{
+			Plc4xModelLog.Info().Fields(map[string]any{
 				"expected value": uint8(0x00),
 				"got value":      reserved,
 			}).Msg("Overriding reserved field with unexpected value.")

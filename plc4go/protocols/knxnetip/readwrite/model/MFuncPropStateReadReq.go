@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // MFuncPropStateReadReq is the corresponding interface of MFuncPropStateReadReq
 type MFuncPropStateReadReq interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	CEMI
@@ -76,7 +78,7 @@ func NewMFuncPropStateReadReq(size uint16) *_MFuncPropStateReadReq {
 }
 
 // Deprecated: use the interface for direct cast
-func CastMFuncPropStateReadReq(structType interface{}) MFuncPropStateReadReq {
+func CastMFuncPropStateReadReq(structType any) MFuncPropStateReadReq {
 	if casted, ok := structType.(MFuncPropStateReadReq); ok {
 		return casted
 	}

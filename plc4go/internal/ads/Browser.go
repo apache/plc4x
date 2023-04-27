@@ -46,28 +46,28 @@ func (m *Connection) BrowseWithInterceptor(ctx context.Context, browseRequest ap
 		results := map[string][]apiModel.PlcBrowseItem{}
 		for _, queryName := range browseRequest.GetQueryNames() {
 			query := browseRequest.GetQuery(queryName)
-			responseCodes[queryName], results[queryName] = m.BrowseQuery(ctx, browseRequest, interceptor, queryName, query)
+			responseCodes[queryName], results[queryName] = m.BrowseQuery(ctx, interceptor, queryName, query)
 		}
 		browseResponse := internalModel.NewDefaultPlcBrowseResponse(browseRequest, results, responseCodes)
 		result <- &internalModel.DefaultPlcBrowseRequestResult{
 			Request:  browseRequest,
-			Response: &browseResponse,
+			Response: browseResponse,
 			Err:      nil,
 		}
 	}()
 	return result
 }
 
-func (m *Connection) BrowseQuery(ctx context.Context, browseRequest apiModel.PlcBrowseRequest, interceptor func(result apiModel.PlcBrowseItem) bool, queryName string, query apiModel.PlcQuery) (apiModel.PlcResponseCode, []apiModel.PlcBrowseItem) {
+func (m *Connection) BrowseQuery(_ context.Context, _ func(result apiModel.PlcBrowseItem) bool, _ string, query apiModel.PlcQuery) (apiModel.PlcResponseCode, []apiModel.PlcBrowseItem) {
 	switch query.(type) {
 	case SymbolicPlcQuery:
-		return m.executeSymbolicAddressQuery(ctx, query.(SymbolicPlcQuery))
+		return m.executeSymbolicAddressQuery(query.(SymbolicPlcQuery))
 	default:
 		return apiModel.PlcResponseCode_INTERNAL_ERROR, nil
 	}
 }
 
-func (m *Connection) executeSymbolicAddressQuery(ctx context.Context, query SymbolicPlcQuery) (apiModel.PlcResponseCode, []apiModel.PlcBrowseItem) {
+func (m *Connection) executeSymbolicAddressQuery(query SymbolicPlcQuery) (apiModel.PlcResponseCode, []apiModel.PlcBrowseItem) {
 	// Process the data type and symbol tables to produce the response.
 	tags := m.filterSymbols(query.GetSymbolicAddressPattern())
 	return apiModel.PlcResponseCode_OK, tags

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataFDSubscriptionLifetime is the corresponding interface of BACnetConstructedDataFDSubscriptionLifetime
 type BACnetConstructedDataFDSubscriptionLifetime interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataFDSubscriptionLifetime(fdSubscriptionLifetime BACne
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataFDSubscriptionLifetime(structType interface{}) BACnetConstructedDataFDSubscriptionLifetime {
+func CastBACnetConstructedDataFDSubscriptionLifetime(structType any) BACnetConstructedDataFDSubscriptionLifetime {
 	if casted, ok := structType.(BACnetConstructedDataFDSubscriptionLifetime); ok {
 		return casted
 	}

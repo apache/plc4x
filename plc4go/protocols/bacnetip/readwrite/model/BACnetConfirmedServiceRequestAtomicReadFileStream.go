@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConfirmedServiceRequestAtomicReadFileStream is the corresponding interface of BACnetConfirmedServiceRequestAtomicReadFileStream
 type BACnetConfirmedServiceRequestAtomicReadFileStream interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord
@@ -102,7 +104,7 @@ func NewBACnetConfirmedServiceRequestAtomicReadFileStream(fileStartPosition BACn
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConfirmedServiceRequestAtomicReadFileStream(structType interface{}) BACnetConfirmedServiceRequestAtomicReadFileStream {
+func CastBACnetConfirmedServiceRequestAtomicReadFileStream(structType any) BACnetConfirmedServiceRequestAtomicReadFileStream {
 	if casted, ok := structType.(BACnetConfirmedServiceRequestAtomicReadFileStream); ok {
 		return casted
 	}

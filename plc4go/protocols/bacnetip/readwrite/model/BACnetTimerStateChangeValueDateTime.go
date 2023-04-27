@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetTimerStateChangeValueDateTime is the corresponding interface of BACnetTimerStateChangeValueDateTime
 type BACnetTimerStateChangeValueDateTime interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetTimerStateChangeValue
@@ -92,7 +94,7 @@ func NewBACnetTimerStateChangeValueDateTime(dateTimeValue BACnetDateTimeEnclosed
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetTimerStateChangeValueDateTime(structType interface{}) BACnetTimerStateChangeValueDateTime {
+func CastBACnetTimerStateChangeValueDateTime(structType any) BACnetTimerStateChangeValueDateTime {
 	if casted, ok := structType.(BACnetTimerStateChangeValueDateTime); ok {
 		return casted
 	}

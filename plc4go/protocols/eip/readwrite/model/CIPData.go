@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // CIPData is the corresponding interface of CIPData
 type CIPData interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetDataType returns DataType (property field)
@@ -77,7 +79,7 @@ func NewCIPData(dataType CIPDataTypeCode, data []byte, packetLength uint16) *_CI
 }
 
 // Deprecated: use the interface for direct cast
-func CastCIPData(structType interface{}) CIPData {
+func CastCIPData(structType any) CIPData {
 	if casted, ok := structType.(CIPData); ok {
 		return casted
 	}

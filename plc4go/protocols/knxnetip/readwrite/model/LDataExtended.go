@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // LDataExtended is the corresponding interface of LDataExtended
 type LDataExtended interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	LDataFrame
@@ -144,7 +146,7 @@ func NewLDataExtended(groupAddress bool, hopCount uint8, extendedFrameFormat uin
 }
 
 // Deprecated: use the interface for direct cast
-func CastLDataExtended(structType interface{}) LDataExtended {
+func CastLDataExtended(structType any) LDataExtended {
 	if casted, ok := structType.(LDataExtended); ok {
 		return casted
 	}

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // StatusRequestBinaryState is the corresponding interface of StatusRequestBinaryState
 type StatusRequestBinaryState interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	StatusRequest
@@ -95,7 +97,7 @@ func NewStatusRequestBinaryState(application ApplicationIdContainer, statusType 
 }
 
 // Deprecated: use the interface for direct cast
-func CastStatusRequestBinaryState(structType interface{}) StatusRequestBinaryState {
+func CastStatusRequestBinaryState(structType any) StatusRequestBinaryState {
 	if casted, ok := structType.(StatusRequestBinaryState); ok {
 		return casted
 	}
@@ -149,7 +151,7 @@ func StatusRequestBinaryStateParseWithBuffer(ctx context.Context, readBuffer uti
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of StatusRequestBinaryState")
 		}
 		if reserved != byte(0x7A) {
-			Plc4xModelLog.Info().Fields(map[string]interface{}{
+			Plc4xModelLog.Info().Fields(map[string]any{
 				"expected value": byte(0x7A),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
@@ -179,7 +181,7 @@ func StatusRequestBinaryStateParseWithBuffer(ctx context.Context, readBuffer uti
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of StatusRequestBinaryState")
 		}
 		if reserved != byte(0x00) {
-			Plc4xModelLog.Info().Fields(map[string]interface{}{
+			Plc4xModelLog.Info().Fields(map[string]any{
 				"expected value": byte(0x00),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
@@ -223,7 +225,7 @@ func (m *_StatusRequestBinaryState) SerializeWithWriteBuffer(ctx context.Context
 		{
 			var reserved byte = byte(0x7A)
 			if m.reservedField0 != nil {
-				Plc4xModelLog.Info().Fields(map[string]interface{}{
+				Plc4xModelLog.Info().Fields(map[string]any{
 					"expected value": byte(0x7A),
 					"got value":      reserved,
 				}).Msg("Overriding reserved field with unexpected value.")
@@ -251,7 +253,7 @@ func (m *_StatusRequestBinaryState) SerializeWithWriteBuffer(ctx context.Context
 		{
 			var reserved byte = byte(0x00)
 			if m.reservedField1 != nil {
-				Plc4xModelLog.Info().Fields(map[string]interface{}{
+				Plc4xModelLog.Info().Fields(map[string]any{
 					"expected value": byte(0x00),
 					"got value":      reserved,
 				}).Msg("Overriding reserved field with unexpected value.")

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -31,6 +32,8 @@ import (
 type TagClass uint8
 
 type ITagClass interface {
+	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 
@@ -78,8 +81,8 @@ func TagClassKnows(value uint8) bool {
 	return false
 }
 
-func CastTagClass(structType interface{}) TagClass {
-	castFunc := func(typ interface{}) TagClass {
+func CastTagClass(structType any) TagClass {
+	castFunc := func(typ any) TagClass {
 		if sTagClass, ok := typ.(TagClass); ok {
 			return sTagClass
 		}

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -31,6 +32,8 @@ import (
 type DefaultAmsPorts uint16
 
 type IDefaultAmsPorts interface {
+	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 
@@ -396,8 +399,8 @@ func DefaultAmsPortsKnows(value uint16) bool {
 	return false
 }
 
-func CastDefaultAmsPorts(structType interface{}) DefaultAmsPorts {
-	castFunc := func(typ interface{}) DefaultAmsPorts {
+func CastDefaultAmsPorts(structType any) DefaultAmsPorts {
+	castFunc := func(typ any) DefaultAmsPorts {
 		if sDefaultAmsPorts, ok := typ.(DefaultAmsPorts); ok {
 			return sDefaultAmsPorts
 		}

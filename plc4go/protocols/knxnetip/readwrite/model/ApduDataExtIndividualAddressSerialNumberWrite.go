@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // ApduDataExtIndividualAddressSerialNumberWrite is the corresponding interface of ApduDataExtIndividualAddressSerialNumberWrite
 type ApduDataExtIndividualAddressSerialNumberWrite interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	ApduDataExt
@@ -76,7 +78,7 @@ func NewApduDataExtIndividualAddressSerialNumberWrite(length uint8) *_ApduDataEx
 }
 
 // Deprecated: use the interface for direct cast
-func CastApduDataExtIndividualAddressSerialNumberWrite(structType interface{}) ApduDataExtIndividualAddressSerialNumberWrite {
+func CastApduDataExtIndividualAddressSerialNumberWrite(structType any) ApduDataExtIndividualAddressSerialNumberWrite {
 	if casted, ok := structType.(ApduDataExtIndividualAddressSerialNumberWrite); ok {
 		return casted
 	}

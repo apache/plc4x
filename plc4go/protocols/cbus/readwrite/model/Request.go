@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // Request is the corresponding interface of Request
 type Request interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetPeekedByte returns PeekedByte (property field)
@@ -126,7 +128,7 @@ func (m *_Request) GetActualPeek() RequestType {
 	_ = startingCR
 	resetMode := m.ResetMode
 	_ = resetMode
-	return CastRequestType(CastRequestType(utils.InlineIf(bool((bool(bool((m.GetStartingCR()) == (nil))) && bool(bool((m.GetResetMode()) == (nil))))) || bool((bool(bool(bool((m.GetStartingCR()) == (nil))) && bool(bool((m.GetResetMode()) != (nil)))) && bool(bool((m.GetSecondPeek()) == (RequestType_EMPTY))))), func() interface{} { return CastRequestType(m.GetPeekedByte()) }, func() interface{} { return CastRequestType(m.GetSecondPeek()) })))
+	return CastRequestType(CastRequestType(utils.InlineIf(bool((bool(bool((m.GetStartingCR()) == (nil))) && bool(bool((m.GetResetMode()) == (nil))))) || bool((bool(bool(bool((m.GetStartingCR()) == (nil))) && bool(bool((m.GetResetMode()) != (nil)))) && bool(bool((m.GetSecondPeek()) == (RequestType_EMPTY))))), func() any { return CastRequestType(m.GetPeekedByte()) }, func() any { return CastRequestType(m.GetSecondPeek()) })))
 }
 
 ///////////////////////
@@ -140,7 +142,7 @@ func NewRequest(peekedByte RequestType, startingCR *RequestType, resetMode *Requ
 }
 
 // Deprecated: use the interface for direct cast
-func CastRequest(structType interface{}) Request {
+func CastRequest(structType any) Request {
 	if casted, ok := structType.(Request); ok {
 		return casted
 	}
@@ -255,7 +257,7 @@ func RequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cB
 	readBuffer.Reset(currentPos)
 
 	// Virtual field
-	_actualPeek := CastRequestType(utils.InlineIf(bool((bool(bool((startingCR) == (nil))) && bool(bool((resetMode) == (nil))))) || bool((bool(bool(bool((startingCR) == (nil))) && bool(bool((resetMode) != (nil)))) && bool(bool((secondPeek) == (RequestType_EMPTY))))), func() interface{} { return CastRequestType(peekedByte) }, func() interface{} { return CastRequestType(secondPeek) }))
+	_actualPeek := CastRequestType(utils.InlineIf(bool((bool(bool((startingCR) == (nil))) && bool(bool((resetMode) == (nil))))) || bool((bool(bool(bool((startingCR) == (nil))) && bool(bool((resetMode) != (nil)))) && bool(bool((secondPeek) == (RequestType_EMPTY))))), func() any { return CastRequestType(peekedByte) }, func() any { return CastRequestType(secondPeek) }))
 	actualPeek := RequestType(_actualPeek)
 	_ = actualPeek
 
@@ -265,7 +267,7 @@ func RequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cB
 		InitializeParent(Request, RequestType, *RequestType, *RequestType, RequestType, RequestTermination)
 		GetParent() Request
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child RequestChildSerializeRequirement
 	var typeSwitchError error
 	switch {

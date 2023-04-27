@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataEscalatorAll is the corresponding interface of BACnetConstructedDataEscalatorAll
 type BACnetConstructedDataEscalatorAll interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -84,7 +86,7 @@ func NewBACnetConstructedDataEscalatorAll(openingTag BACnetOpeningTag, peekedTag
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataEscalatorAll(structType interface{}) BACnetConstructedDataEscalatorAll {
+func CastBACnetConstructedDataEscalatorAll(structType any) BACnetConstructedDataEscalatorAll {
 	if casted, ok := structType.(BACnetConstructedDataEscalatorAll); ok {
 		return casted
 	}

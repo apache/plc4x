@@ -35,16 +35,15 @@ type Writer struct {
 	tracer  *spi.Tracer
 }
 
-func NewWriter(device *Device, options map[string][]string, tracer *spi.Tracer) Writer {
-	return Writer{
+func NewWriter(device *Device, options map[string][]string, tracer *spi.Tracer) *Writer {
+	return &Writer{
 		device:  device,
 		options: options,
 		tracer:  tracer,
 	}
 }
 
-func (w Writer) Write(ctx context.Context, writeRequest model.PlcWriteRequest) <-chan model.PlcWriteRequestResult {
-	// TODO: handle context
+func (w *Writer) Write(_ context.Context, writeRequest model.PlcWriteRequest) <-chan model.PlcWriteRequestResult {
 	ch := make(chan model.PlcWriteRequestResult)
 	go func() {
 		var txId string

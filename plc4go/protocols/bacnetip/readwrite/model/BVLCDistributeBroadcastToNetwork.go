@@ -22,6 +22,7 @@ package model
 import (
 	"context"
 	"encoding/binary"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,6 +31,7 @@ import (
 
 // BVLCDistributeBroadcastToNetwork is the corresponding interface of BVLCDistributeBroadcastToNetwork
 type BVLCDistributeBroadcastToNetwork interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BVLC
@@ -98,7 +100,7 @@ func NewBVLCDistributeBroadcastToNetwork(npdu NPDU, bvlcPayloadLength uint16) *_
 }
 
 // Deprecated: use the interface for direct cast
-func CastBVLCDistributeBroadcastToNetwork(structType interface{}) BVLCDistributeBroadcastToNetwork {
+func CastBVLCDistributeBroadcastToNetwork(structType any) BVLCDistributeBroadcastToNetwork {
 	if casted, ok := structType.(BVLCDistributeBroadcastToNetwork); ok {
 		return casted
 	}

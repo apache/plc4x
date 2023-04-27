@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -31,6 +32,8 @@ import (
 type ZoneStatusTemp uint8
 
 type IZoneStatusTemp interface {
+	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 
@@ -90,8 +93,8 @@ func ZoneStatusTempKnows(value uint8) bool {
 	return false
 }
 
-func CastZoneStatusTemp(structType interface{}) ZoneStatusTemp {
-	castFunc := func(typ interface{}) ZoneStatusTemp {
+func CastZoneStatusTemp(structType any) ZoneStatusTemp {
+	castFunc := func(typ any) ZoneStatusTemp {
 		if sZoneStatusTemp, ok := typ.(ZoneStatusTemp); ok {
 			return sZoneStatusTemp
 		}

@@ -21,7 +21,7 @@ package simulated
 
 import (
 	"context"
-	"reflect"
+	"github.com/stretchr/testify/assert"
 	"testing"
 	"time"
 
@@ -190,16 +190,18 @@ func TestWriter_Write(t *testing.T) {
 						t.Errorf("Writer.Write() completed too fast. Expected at least %v but returned after %v", tt.delayAtLeast, pingTime)
 					}
 				}
-				if !reflect.DeepEqual(writeResponse.GetRequest(), writeRequest) {
+				if !assert.Equal(t, writeRequest, writeResponse.GetRequest()) {
 					t.Errorf("Writer.Write() ReadRequest = %v, want %v", writeResponse.GetRequest(), writeRequest)
 				}
 				for _, fieldName := range writeRequest.GetTagNames() {
-					if !reflect.DeepEqual(writeResponse.GetResponse().GetResponseCode(fieldName), tt.want.GetResponseCode(fieldName)) {
+					gotCode := writeResponse.GetResponse().GetResponseCode(fieldName)
+					wantCode := tt.want.GetResponseCode(fieldName)
+					if !assert.Equal(t, wantCode, gotCode) {
 						t.Errorf("Writer.Write() PlcResponse.ResponseCode = %v, want %v",
 							writeResponse.GetResponse().GetResponseCode(fieldName), tt.want.GetResponseCode(fieldName))
 					}
 				}
-				if !reflect.DeepEqual(tt.fields.device.State, tt.newState) {
+				if !assert.Equal(t, tt.newState, tt.fields.device.State) {
 					t.Errorf("Writer.Write() Device State = %v, want %v",
 						tt.fields.device.State, tt.newState)
 				}

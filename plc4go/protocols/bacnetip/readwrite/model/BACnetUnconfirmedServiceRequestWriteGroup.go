@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
@@ -30,6 +31,7 @@ import (
 
 // BACnetUnconfirmedServiceRequestWriteGroup is the corresponding interface of BACnetUnconfirmedServiceRequestWriteGroup
 type BACnetUnconfirmedServiceRequestWriteGroup interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetUnconfirmedServiceRequest
@@ -120,7 +122,7 @@ func NewBACnetUnconfirmedServiceRequestWriteGroup(groupNumber BACnetContextTagUn
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetUnconfirmedServiceRequestWriteGroup(structType interface{}) BACnetUnconfirmedServiceRequestWriteGroup {
+func CastBACnetUnconfirmedServiceRequestWriteGroup(structType any) BACnetUnconfirmedServiceRequestWriteGroup {
 	if casted, ok := structType.(BACnetUnconfirmedServiceRequestWriteGroup); ok {
 		return casted
 	}

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
@@ -30,6 +31,7 @@ import (
 
 // BACnetConfirmedServiceRequestSubscribeCOV is the corresponding interface of BACnetConfirmedServiceRequestSubscribeCOV
 type BACnetConfirmedServiceRequestSubscribeCOV interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConfirmedServiceRequest
@@ -120,7 +122,7 @@ func NewBACnetConfirmedServiceRequestSubscribeCOV(subscriberProcessIdentifier BA
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConfirmedServiceRequestSubscribeCOV(structType interface{}) BACnetConfirmedServiceRequestSubscribeCOV {
+func CastBACnetConfirmedServiceRequestSubscribeCOV(structType any) BACnetConfirmedServiceRequestSubscribeCOV {
 	if casted, ok := structType.(BACnetConfirmedServiceRequestSubscribeCOV); ok {
 		return casted
 	}

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetEventParameterChangeOfValueCivCriteriaBitmask is the corresponding interface of BACnetEventParameterChangeOfValueCivCriteriaBitmask
 type BACnetEventParameterChangeOfValueCivCriteriaBitmask interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetEventParameterChangeOfValueCivCriteria
@@ -94,7 +96,7 @@ func NewBACnetEventParameterChangeOfValueCivCriteriaBitmask(bitmask BACnetContex
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetEventParameterChangeOfValueCivCriteriaBitmask(structType interface{}) BACnetEventParameterChangeOfValueCivCriteriaBitmask {
+func CastBACnetEventParameterChangeOfValueCivCriteriaBitmask(structType any) BACnetEventParameterChangeOfValueCivCriteriaBitmask {
 	if casted, ok := structType.(BACnetEventParameterChangeOfValueCivCriteriaBitmask); ok {
 		return casted
 	}

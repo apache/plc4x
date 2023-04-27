@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -31,6 +32,8 @@ import (
 type AccessControlCategory uint8
 
 type IAccessControlCategory interface {
+	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 
@@ -78,8 +81,8 @@ func AccessControlCategoryKnows(value uint8) bool {
 	return false
 }
 
-func CastAccessControlCategory(structType interface{}) AccessControlCategory {
-	castFunc := func(typ interface{}) AccessControlCategory {
+func CastAccessControlCategory(structType any) AccessControlCategory {
+	castFunc := func(typ any) AccessControlCategory {
 		if sAccessControlCategory, ok := typ.(AccessControlCategory); ok {
 			return sAccessControlCategory
 		}

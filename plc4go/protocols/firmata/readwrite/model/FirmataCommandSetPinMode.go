@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // FirmataCommandSetPinMode is the corresponding interface of FirmataCommandSetPinMode
 type FirmataCommandSetPinMode interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	FirmataCommand
@@ -102,7 +104,7 @@ func NewFirmataCommandSetPinMode(pin uint8, mode PinMode, response bool) *_Firma
 }
 
 // Deprecated: use the interface for direct cast
-func CastFirmataCommandSetPinMode(structType interface{}) FirmataCommandSetPinMode {
+func CastFirmataCommandSetPinMode(structType any) FirmataCommandSetPinMode {
 	if casted, ok := structType.(FirmataCommandSetPinMode); ok {
 		return casted
 	}

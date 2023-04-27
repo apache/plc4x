@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -31,6 +32,8 @@ import (
 type PlcValueType uint8
 
 type IPlcValueType interface {
+	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 
@@ -252,8 +255,8 @@ func PlcValueTypeKnows(value uint8) bool {
 	return false
 }
 
-func CastPlcValueType(structType interface{}) PlcValueType {
-	castFunc := func(typ interface{}) PlcValueType {
+func CastPlcValueType(structType any) PlcValueType {
+	castFunc := func(typ any) PlcValueType {
 		if sPlcValueType, ok := typ.(PlcValueType); ok {
 			return sPlcValueType
 		}

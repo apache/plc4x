@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse is the corresponding interface of S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse
 type S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	S7PayloadUserDataItem
@@ -87,7 +89,7 @@ func NewS7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse(returnCode DataT
 }
 
 // Deprecated: use the interface for direct cast
-func CastS7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse(structType interface{}) S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse {
+func CastS7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse(structType any) S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse {
 	if casted, ok := structType.(S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse); ok {
 		return casted
 	}

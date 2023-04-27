@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // S7PayloadAlarmSC is the corresponding interface of S7PayloadAlarmSC
 type S7PayloadAlarmSC interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	S7PayloadUserDataItem
@@ -105,7 +107,7 @@ func NewS7PayloadAlarmSC(alarmMessage AlarmMessagePushType, returnCode DataTrans
 }
 
 // Deprecated: use the interface for direct cast
-func CastS7PayloadAlarmSC(structType interface{}) S7PayloadAlarmSC {
+func CastS7PayloadAlarmSC(structType any) S7PayloadAlarmSC {
 	if casted, ok := structType.(S7PayloadAlarmSC); ok {
 		return casted
 	}

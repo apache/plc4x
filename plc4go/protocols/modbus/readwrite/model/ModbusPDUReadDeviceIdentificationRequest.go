@@ -33,6 +33,7 @@ const ModbusPDUReadDeviceIdentificationRequest_MEITYPE uint8 = 0x0E
 
 // ModbusPDUReadDeviceIdentificationRequest is the corresponding interface of ModbusPDUReadDeviceIdentificationRequest
 type ModbusPDUReadDeviceIdentificationRequest interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	ModbusPDU
@@ -127,7 +128,7 @@ func NewModbusPDUReadDeviceIdentificationRequest(level ModbusDeviceInformationLe
 }
 
 // Deprecated: use the interface for direct cast
-func CastModbusPDUReadDeviceIdentificationRequest(structType interface{}) ModbusPDUReadDeviceIdentificationRequest {
+func CastModbusPDUReadDeviceIdentificationRequest(structType any) ModbusPDUReadDeviceIdentificationRequest {
 	if casted, ok := structType.(ModbusPDUReadDeviceIdentificationRequest); ok {
 		return casted
 	}

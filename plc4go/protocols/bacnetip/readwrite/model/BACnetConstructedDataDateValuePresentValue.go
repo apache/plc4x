@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataDateValuePresentValue is the corresponding interface of BACnetConstructedDataDateValuePresentValue
 type BACnetConstructedDataDateValuePresentValue interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataDateValuePresentValue(presentValue BACnetApplicatio
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataDateValuePresentValue(structType interface{}) BACnetConstructedDataDateValuePresentValue {
+func CastBACnetConstructedDataDateValuePresentValue(structType any) BACnetConstructedDataDateValuePresentValue {
 	if casted, ok := structType.(BACnetConstructedDataDateValuePresentValue); ok {
 		return casted
 	}

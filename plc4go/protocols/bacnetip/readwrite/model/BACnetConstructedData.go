@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedData is the corresponding interface of BACnetConstructedData
 type BACnetConstructedData interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetObjectTypeArgument returns ObjectTypeArgument (discriminator field)
@@ -129,7 +131,7 @@ func NewBACnetConstructedData(openingTag BACnetOpeningTag, peekedTagHeader BACne
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedData(structType interface{}) BACnetConstructedData {
+func CastBACnetConstructedData(structType any) BACnetConstructedData {
 	if casted, ok := structType.(BACnetConstructedData); ok {
 		return casted
 	}
@@ -206,7 +208,7 @@ func BACnetConstructedDataParseWithBuffer(ctx context.Context, readBuffer utils.
 		InitializeParent(BACnetConstructedData, BACnetOpeningTag, BACnetTagHeader, BACnetClosingTag)
 		GetParent() BACnetConstructedData
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child BACnetConstructedDataChildSerializeRequirement
 	var typeSwitchError error
 	switch {

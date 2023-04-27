@@ -54,7 +54,7 @@ func WithDiscoveryOptionRemoteAddress(remoteAddress string) WithDiscoveryOption 
 	}
 }
 
-func WithDiscoveryOptionProtocolSpecific(key string, value interface{}) WithDiscoveryOption {
+func WithDiscoveryOptionProtocolSpecific(key string, value any) WithDiscoveryOption {
 	return discoveryOptionProtocolSpecific{
 		key:   key,
 		value: value,
@@ -207,20 +207,20 @@ func (d discoveryOptionRemoteAddress) GetRemoteAddress() string {
 
 type DiscoveryOptionProtocolSpecific interface {
 	GetKey() string
-	GetValue() interface{}
+	GetValue() any
 }
 
 type discoveryOptionProtocolSpecific struct {
 	discoveryOption
 	key   string
-	value interface{}
+	value any
 }
 
 func (d discoveryOptionProtocolSpecific) GetKey() string {
 	return d.key
 }
 
-func (d discoveryOptionProtocolSpecific) GetValue() interface{} {
+func (d discoveryOptionProtocolSpecific) GetValue() any {
 	return d.value
 }
 

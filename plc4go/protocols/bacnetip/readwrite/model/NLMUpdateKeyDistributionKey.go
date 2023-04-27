@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // NLMUpdateKeyDistributionKey is the corresponding interface of NLMUpdateKeyDistributionKey
 type NLMUpdateKeyDistributionKey interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	NLM
@@ -102,7 +104,7 @@ func NewNLMUpdateKeyDistributionKey(keyRevision byte, key NLMUpdateKeyUpdateKeyE
 }
 
 // Deprecated: use the interface for direct cast
-func CastNLMUpdateKeyDistributionKey(structType interface{}) NLMUpdateKeyDistributionKey {
+func CastNLMUpdateKeyDistributionKey(structType any) NLMUpdateKeyDistributionKey {
 	if casted, ok := structType.(NLMUpdateKeyDistributionKey); ok {
 		return casted
 	}

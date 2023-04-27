@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // TemperatureBroadcastData is the corresponding interface of TemperatureBroadcastData
 type TemperatureBroadcastData interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetCommandTypeContainer returns CommandTypeContainer (property field)
@@ -106,7 +108,7 @@ func NewTemperatureBroadcastData(commandTypeContainer TemperatureBroadcastComman
 }
 
 // Deprecated: use the interface for direct cast
-func CastTemperatureBroadcastData(structType interface{}) TemperatureBroadcastData {
+func CastTemperatureBroadcastData(structType any) TemperatureBroadcastData {
 	if casted, ok := structType.(TemperatureBroadcastData); ok {
 		return casted
 	}

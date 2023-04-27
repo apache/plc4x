@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
@@ -30,6 +31,7 @@ import (
 
 // BACnetConfirmedServiceRequestRemoveListElement is the corresponding interface of BACnetConfirmedServiceRequestRemoveListElement
 type BACnetConfirmedServiceRequestRemoveListElement interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConfirmedServiceRequest
@@ -120,7 +122,7 @@ func NewBACnetConfirmedServiceRequestRemoveListElement(objectIdentifier BACnetCo
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConfirmedServiceRequestRemoveListElement(structType interface{}) BACnetConfirmedServiceRequestRemoveListElement {
+func CastBACnetConfirmedServiceRequestRemoveListElement(structType any) BACnetConfirmedServiceRequestRemoveListElement {
 	if casted, ok := structType.(BACnetConfirmedServiceRequestRemoveListElement); ok {
 		return casted
 	}
@@ -228,7 +230,7 @@ func BACnetConfirmedServiceRequestRemoveListElementParseWithBuffer(ctx context.C
 		if pullErr := readBuffer.PullContext("listOfElements"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for listOfElements")
 		}
-		_val, _err := BACnetConstructedDataParseWithBuffer(ctx, readBuffer, uint8(3), objectIdentifier.GetObjectType(), propertyIdentifier.GetValue(), (CastBACnetTagPayloadUnsignedInteger(utils.InlineIf(bool((arrayIndex) != (nil)), func() interface{} { return CastBACnetTagPayloadUnsignedInteger((arrayIndex).GetPayload()) }, func() interface{} { return CastBACnetTagPayloadUnsignedInteger(nil) }))))
+		_val, _err := BACnetConstructedDataParseWithBuffer(ctx, readBuffer, uint8(3), objectIdentifier.GetObjectType(), propertyIdentifier.GetValue(), (CastBACnetTagPayloadUnsignedInteger(utils.InlineIf(bool((arrayIndex) != (nil)), func() any { return CastBACnetTagPayloadUnsignedInteger((arrayIndex).GetPayload()) }, func() any { return CastBACnetTagPayloadUnsignedInteger(nil) }))))
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")

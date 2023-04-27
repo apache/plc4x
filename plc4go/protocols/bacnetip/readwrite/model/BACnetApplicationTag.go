@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetApplicationTag is the corresponding interface of BACnetApplicationTag
 type BACnetApplicationTag interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetHeader returns Header (property field)
@@ -113,7 +115,7 @@ func NewBACnetApplicationTag(header BACnetTagHeader) *_BACnetApplicationTag {
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetApplicationTag(structType interface{}) BACnetApplicationTag {
+func CastBACnetApplicationTag(structType any) BACnetApplicationTag {
 	if casted, ok := structType.(BACnetApplicationTag); ok {
 		return casted
 	}
@@ -191,7 +193,7 @@ func BACnetApplicationTagParseWithBuffer(ctx context.Context, readBuffer utils.R
 		InitializeParent(BACnetApplicationTag, BACnetTagHeader)
 		GetParent() BACnetApplicationTag
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child BACnetApplicationTagChildSerializeRequirement
 	var typeSwitchError error
 	switch {

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // ModbusPDUReadFileRecordResponseItem is the corresponding interface of ModbusPDUReadFileRecordResponseItem
 type ModbusPDUReadFileRecordResponseItem interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetReferenceType returns ReferenceType (property field)
@@ -74,7 +76,7 @@ func NewModbusPDUReadFileRecordResponseItem(referenceType uint8, data []byte) *_
 }
 
 // Deprecated: use the interface for direct cast
-func CastModbusPDUReadFileRecordResponseItem(structType interface{}) ModbusPDUReadFileRecordResponseItem {
+func CastModbusPDUReadFileRecordResponseItem(structType any) ModbusPDUReadFileRecordResponseItem {
 	if casted, ok := structType.(ModbusPDUReadFileRecordResponseItem); ok {
 		return casted
 	}

@@ -22,12 +22,12 @@ package bacnetip
 import (
 	"container/heap"
 	"fmt"
-	"github.com/apache/plc4x/plc4go/spi/plcerrors"
+	"sync"
+	"time"
+
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
-	"sync"
-	"time"
 )
 
 var stateLog = log.Logger
@@ -110,7 +110,7 @@ type IOCB struct {
 	ioCallback     []func()
 	ioQueue        []_IOCB
 	ioTimeout      *time.Timer
-	ioTimoutCancel chan interface{}
+	ioTimoutCancel chan any
 	priority       int
 }
 
@@ -199,7 +199,8 @@ func (i *IOCB) Trigger() {
 }
 
 // Complete Called to complete a transaction, usually when ProcessIO has shipped the IOCB off to some other thread or
-//        function.
+//
+//	function.
 func (i *IOCB) Complete(apdu _PDU) error {
 	log.Debug().Msgf("Complete(%d)\n%s", i.ioID, apdu)
 
@@ -240,11 +241,11 @@ func (i *IOCB) SetTimeout(delay time.Duration) {
 	} else {
 		now := time.Now()
 		i.ioTimeout = time.NewTimer(delay)
-		i.ioTimoutCancel = make(chan interface{})
+		i.ioTimoutCancel = make(chan any)
 		go func() {
 			select {
 			case timeout := <-i.ioTimeout.C:
-				_ = i.Abort(plcerrors.NewTimeoutError(now.Sub(timeout)))
+				_ = i.Abort(utils.NewTimeoutError(now.Sub(timeout)))
 			case <-i.ioTimoutCancel:
 			}
 		}()
@@ -346,7 +347,8 @@ func NewIOQueue(name string) *IOQueue {
 }
 
 // Put an IOCB to a queue.  This is usually called by the function that filters requests and passes them out to the
-//        correct processing thread.
+//
+//	correct processing thread.
 func (i *IOQueue) Put(iocb _IOCB) error {
 	log.Debug().Msgf("Put %s", iocb)
 
@@ -377,7 +379,7 @@ func (i *IOQueue) Get(block bool, delay *time.Duration) (_IOCB, error) {
 	// wait for something to be in the queue
 	if len(i.queue) == 0 {
 		if delay != nil {
-			gotSomething := make(chan interface{})
+			gotSomething := make(chan any)
 			go func() {
 				i.notEmpty.Wait()
 				close(gotSomething)
@@ -408,7 +410,8 @@ func (i *IOQueue) Get(block bool, delay *time.Duration) (_IOCB, error) {
 }
 
 // Remove a control block from the queue, called if the request
-//        is canceled/aborted
+//
+//	is canceled/aborted
 func (i *IOQueue) Remove(iocb _IOCB) error {
 	for _, item := range i.queue {
 		if iocb == item.value {
@@ -423,7 +426,7 @@ func (i *IOQueue) Remove(iocb _IOCB) error {
 	return nil
 }
 
-//Abort all the control blocks in the queue
+// Abort all the control blocks in the queue
 func (i *IOQueue) Abort(err error) {
 	for _, item := range i.queue {
 		item.value.clearQueue()
@@ -657,7 +660,7 @@ func (i *IOQController) ProcessIO(_IOCB) error {
 	panic("IOController must implement ProcessIO()")
 }
 
-//ActiveIO Called by a handler to notify the controller that a request is being processed
+// ActiveIO Called by a handler to notify the controller that a request is being processed
 func (i *IOQController) ActiveIO(iocb _IOCB) error {
 	log.Debug().Msgf("ActiveIO %v", iocb)
 

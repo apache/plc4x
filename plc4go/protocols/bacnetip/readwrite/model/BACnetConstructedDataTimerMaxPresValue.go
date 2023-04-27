@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataTimerMaxPresValue is the corresponding interface of BACnetConstructedDataTimerMaxPresValue
 type BACnetConstructedDataTimerMaxPresValue interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataTimerMaxPresValue(maxPresValue BACnetApplicationTag
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataTimerMaxPresValue(structType interface{}) BACnetConstructedDataTimerMaxPresValue {
+func CastBACnetConstructedDataTimerMaxPresValue(structType any) BACnetConstructedDataTimerMaxPresValue {
 	if casted, ok := structType.(BACnetConstructedDataTimerMaxPresValue); ok {
 		return casted
 	}

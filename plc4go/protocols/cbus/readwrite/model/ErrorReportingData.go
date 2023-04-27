@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // ErrorReportingData is the corresponding interface of ErrorReportingData
 type ErrorReportingData interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetCommandTypeContainer returns CommandTypeContainer (property field)
@@ -105,7 +107,7 @@ func NewErrorReportingData(commandTypeContainer ErrorReportingCommandTypeContain
 }
 
 // Deprecated: use the interface for direct cast
-func CastErrorReportingData(structType interface{}) ErrorReportingData {
+func CastErrorReportingData(structType any) ErrorReportingData {
 	if casted, ok := structType.(ErrorReportingData); ok {
 		return casted
 	}
@@ -176,7 +178,7 @@ func ErrorReportingDataParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 		InitializeParent(ErrorReportingData, ErrorReportingCommandTypeContainer)
 		GetParent() ErrorReportingData
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child ErrorReportingDataChildSerializeRequirement
 	var typeSwitchError error
 	switch {

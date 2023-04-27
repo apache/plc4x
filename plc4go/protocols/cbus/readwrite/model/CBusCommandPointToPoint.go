@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // CBusCommandPointToPoint is the corresponding interface of CBusCommandPointToPoint
 type CBusCommandPointToPoint interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	CBusCommand
@@ -92,7 +94,7 @@ func NewCBusCommandPointToPoint(command CBusPointToPointCommand, header CBusHead
 }
 
 // Deprecated: use the interface for direct cast
-func CastCBusCommandPointToPoint(structType interface{}) CBusCommandPointToPoint {
+func CastCBusCommandPointToPoint(structType any) CBusCommandPointToPoint {
 	if casted, ok := structType.(CBusCommandPointToPoint); ok {
 		return casted
 	}

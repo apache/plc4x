@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // KnxNetIpTunneling is the corresponding interface of KnxNetIpTunneling
 type KnxNetIpTunneling interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	ServiceId
@@ -94,7 +96,7 @@ func NewKnxNetIpTunneling(version uint8) *_KnxNetIpTunneling {
 }
 
 // Deprecated: use the interface for direct cast
-func CastKnxNetIpTunneling(structType interface{}) KnxNetIpTunneling {
+func CastKnxNetIpTunneling(structType any) KnxNetIpTunneling {
 	if casted, ok := structType.(KnxNetIpTunneling); ok {
 		return casted
 	}

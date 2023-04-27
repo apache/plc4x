@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // SecurityDataArmFailedCleared is the corresponding interface of SecurityDataArmFailedCleared
 type SecurityDataArmFailedCleared interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	SecurityData
@@ -75,7 +77,7 @@ func NewSecurityDataArmFailedCleared(commandTypeContainer SecurityCommandTypeCon
 }
 
 // Deprecated: use the interface for direct cast
-func CastSecurityDataArmFailedCleared(structType interface{}) SecurityDataArmFailedCleared {
+func CastSecurityDataArmFailedCleared(structType any) SecurityDataArmFailedCleared {
 	if casted, ok := structType.(SecurityDataArmFailedCleared); ok {
 		return casted
 	}

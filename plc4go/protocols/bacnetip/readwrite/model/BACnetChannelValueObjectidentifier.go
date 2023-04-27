@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetChannelValueObjectidentifier is the corresponding interface of BACnetChannelValueObjectidentifier
 type BACnetChannelValueObjectidentifier interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetChannelValue
@@ -92,7 +94,7 @@ func NewBACnetChannelValueObjectidentifier(objectidentifierValue BACnetApplicati
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetChannelValueObjectidentifier(structType interface{}) BACnetChannelValueObjectidentifier {
+func CastBACnetChannelValueObjectidentifier(structType any) BACnetChannelValueObjectidentifier {
 	if casted, ok := structType.(BACnetChannelValueObjectidentifier); ok {
 		return casted
 	}

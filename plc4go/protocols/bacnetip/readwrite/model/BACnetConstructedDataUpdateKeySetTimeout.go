@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataUpdateKeySetTimeout is the corresponding interface of BACnetConstructedDataUpdateKeySetTimeout
 type BACnetConstructedDataUpdateKeySetTimeout interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataUpdateKeySetTimeout(updateKeySetTimeout BACnetAppli
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataUpdateKeySetTimeout(structType interface{}) BACnetConstructedDataUpdateKeySetTimeout {
+func CastBACnetConstructedDataUpdateKeySetTimeout(structType any) BACnetConstructedDataUpdateKeySetTimeout {
 	if casted, ok := structType.(BACnetConstructedDataUpdateKeySetTimeout); ok {
 		return casted
 	}

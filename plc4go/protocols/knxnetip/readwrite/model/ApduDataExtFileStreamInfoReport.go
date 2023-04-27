@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // ApduDataExtFileStreamInfoReport is the corresponding interface of ApduDataExtFileStreamInfoReport
 type ApduDataExtFileStreamInfoReport interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	ApduDataExt
@@ -76,7 +78,7 @@ func NewApduDataExtFileStreamInfoReport(length uint8) *_ApduDataExtFileStreamInf
 }
 
 // Deprecated: use the interface for direct cast
-func CastApduDataExtFileStreamInfoReport(structType interface{}) ApduDataExtFileStreamInfoReport {
+func CastApduDataExtFileStreamInfoReport(structType any) ApduDataExtFileStreamInfoReport {
 	if casted, ok := structType.(ApduDataExtFileStreamInfoReport); ok {
 		return casted
 	}

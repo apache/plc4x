@@ -21,7 +21,7 @@ package model
 
 import (
 	"context"
-	spiContext "github.com/apache/plc4x/plc4go/spi/context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,6 +30,7 @@ import (
 
 // AlarmMessageAckPushType is the corresponding interface of AlarmMessageAckPushType
 type AlarmMessageAckPushType interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetTimeStamp returns TimeStamp (property field)
@@ -89,7 +90,7 @@ func NewAlarmMessageAckPushType(TimeStamp DateAndTime, functionId uint8, numberO
 }
 
 // Deprecated: use the interface for direct cast
-func CastAlarmMessageAckPushType(structType interface{}) AlarmMessageAckPushType {
+func CastAlarmMessageAckPushType(structType any) AlarmMessageAckPushType {
 	if casted, ok := structType.(AlarmMessageAckPushType); ok {
 		return casted
 	}
@@ -118,7 +119,7 @@ func (m *_AlarmMessageAckPushType) GetLengthInBits(ctx context.Context) uint16 {
 	// Array field
 	if len(m.MessageObjects) > 0 {
 		for _curItem, element := range m.MessageObjects {
-			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.MessageObjects), _curItem)
+			arrayCtx := utils.CreateArrayContext(ctx, len(m.MessageObjects), _curItem)
 			_ = arrayCtx
 			_ = _curItem
 			lengthInBits += element.(interface{ GetLengthInBits(context.Context) uint16 }).GetLengthInBits(arrayCtx)
@@ -185,7 +186,7 @@ func AlarmMessageAckPushTypeParseWithBuffer(ctx context.Context, readBuffer util
 	{
 		_numItems := uint16(numberOfObjects)
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := spiContext.CreateArrayContext(ctx, int(_numItems), int(_curItem))
+			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
 			_ = _curItem
 			_item, _err := AlarmMessageAckObjectPushTypeParseWithBuffer(arrayCtx, readBuffer)
@@ -259,7 +260,7 @@ func (m *_AlarmMessageAckPushType) SerializeWithWriteBuffer(ctx context.Context,
 	}
 	for _curItem, _element := range m.GetMessageObjects() {
 		_ = _curItem
-		arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetMessageObjects()), _curItem)
+		arrayCtx := utils.CreateArrayContext(ctx, len(m.GetMessageObjects()), _curItem)
 		_ = arrayCtx
 		_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 		if _elementErr != nil {

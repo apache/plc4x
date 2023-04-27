@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetFaultParameterNone is the corresponding interface of BACnetFaultParameterNone
 type BACnetFaultParameterNone interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetFaultParameter
@@ -92,7 +94,7 @@ func NewBACnetFaultParameterNone(none BACnetContextTagNull, peekedTagHeader BACn
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetFaultParameterNone(structType interface{}) BACnetFaultParameterNone {
+func CastBACnetFaultParameterNone(structType any) BACnetFaultParameterNone {
 	if casted, ok := structType.(BACnetFaultParameterNone); ok {
 		return casted
 	}

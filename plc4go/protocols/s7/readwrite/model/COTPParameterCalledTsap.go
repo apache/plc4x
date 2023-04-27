@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // COTPParameterCalledTsap is the corresponding interface of COTPParameterCalledTsap
 type COTPParameterCalledTsap interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	COTPParameter
@@ -94,7 +96,7 @@ func NewCOTPParameterCalledTsap(tsapId uint16, rest uint8) *_COTPParameterCalled
 }
 
 // Deprecated: use the interface for direct cast
-func CastCOTPParameterCalledTsap(structType interface{}) COTPParameterCalledTsap {
+func CastCOTPParameterCalledTsap(structType any) COTPParameterCalledTsap {
 	if casted, ok := structType.(COTPParameterCalledTsap); ok {
 		return casted
 	}

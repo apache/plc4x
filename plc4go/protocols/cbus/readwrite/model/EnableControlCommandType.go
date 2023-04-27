@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -31,6 +32,8 @@ import (
 type EnableControlCommandType uint8
 
 type IEnableControlCommandType interface {
+	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 	NumberOfArguments() uint8
 }
@@ -94,8 +97,8 @@ func EnableControlCommandTypeKnows(value uint8) bool {
 	return false
 }
 
-func CastEnableControlCommandType(structType interface{}) EnableControlCommandType {
-	castFunc := func(typ interface{}) EnableControlCommandType {
+func CastEnableControlCommandType(structType any) EnableControlCommandType {
+	castFunc := func(typ any) EnableControlCommandType {
 		if sEnableControlCommandType, ok := typ.(EnableControlCommandType); ok {
 			return sEnableControlCommandType
 		}

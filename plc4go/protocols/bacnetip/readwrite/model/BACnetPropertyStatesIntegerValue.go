@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetPropertyStatesIntegerValue is the corresponding interface of BACnetPropertyStatesIntegerValue
 type BACnetPropertyStatesIntegerValue interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetPropertyStates
@@ -92,7 +94,7 @@ func NewBACnetPropertyStatesIntegerValue(integerValue BACnetContextTagSignedInte
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetPropertyStatesIntegerValue(structType interface{}) BACnetPropertyStatesIntegerValue {
+func CastBACnetPropertyStatesIntegerValue(structType any) BACnetPropertyStatesIntegerValue {
 	if casted, ok := structType.(BACnetPropertyStatesIntegerValue); ok {
 		return casted
 	}

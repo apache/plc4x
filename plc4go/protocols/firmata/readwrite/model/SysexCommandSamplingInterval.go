@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // SysexCommandSamplingInterval is the corresponding interface of SysexCommandSamplingInterval
 type SysexCommandSamplingInterval interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	SysexCommand
@@ -80,7 +82,7 @@ func NewSysexCommandSamplingInterval() *_SysexCommandSamplingInterval {
 }
 
 // Deprecated: use the interface for direct cast
-func CastSysexCommandSamplingInterval(structType interface{}) SysexCommandSamplingInterval {
+func CastSysexCommandSamplingInterval(structType any) SysexCommandSamplingInterval {
 	if casted, ok := structType.(SysexCommandSamplingInterval); ok {
 		return casted
 	}

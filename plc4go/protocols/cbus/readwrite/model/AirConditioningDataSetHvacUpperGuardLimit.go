@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // AirConditioningDataSetHvacUpperGuardLimit is the corresponding interface of AirConditioningDataSetHvacUpperGuardLimit
 type AirConditioningDataSetHvacUpperGuardLimit interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	AirConditioningData
@@ -116,7 +118,7 @@ func NewAirConditioningDataSetHvacUpperGuardLimit(zoneGroup byte, zoneList HVACZ
 }
 
 // Deprecated: use the interface for direct cast
-func CastAirConditioningDataSetHvacUpperGuardLimit(structType interface{}) AirConditioningDataSetHvacUpperGuardLimit {
+func CastAirConditioningDataSetHvacUpperGuardLimit(structType any) AirConditioningDataSetHvacUpperGuardLimit {
 	if casted, ok := structType.(AirConditioningDataSetHvacUpperGuardLimit); ok {
 		return casted
 	}

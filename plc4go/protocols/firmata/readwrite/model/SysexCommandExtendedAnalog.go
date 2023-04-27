@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // SysexCommandExtendedAnalog is the corresponding interface of SysexCommandExtendedAnalog
 type SysexCommandExtendedAnalog interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	SysexCommand
@@ -80,7 +82,7 @@ func NewSysexCommandExtendedAnalog() *_SysexCommandExtendedAnalog {
 }
 
 // Deprecated: use the interface for direct cast
-func CastSysexCommandExtendedAnalog(structType interface{}) SysexCommandExtendedAnalog {
+func CastSysexCommandExtendedAnalog(structType any) SysexCommandExtendedAnalog {
 	if casted, ok := structType.(SysexCommandExtendedAnalog); ok {
 		return casted
 	}

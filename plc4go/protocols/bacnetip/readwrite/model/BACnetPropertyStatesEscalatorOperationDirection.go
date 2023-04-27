@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetPropertyStatesEscalatorOperationDirection is the corresponding interface of BACnetPropertyStatesEscalatorOperationDirection
 type BACnetPropertyStatesEscalatorOperationDirection interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetPropertyStates
@@ -92,7 +94,7 @@ func NewBACnetPropertyStatesEscalatorOperationDirection(escalatorOperationDirect
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetPropertyStatesEscalatorOperationDirection(structType interface{}) BACnetPropertyStatesEscalatorOperationDirection {
+func CastBACnetPropertyStatesEscalatorOperationDirection(structType any) BACnetPropertyStatesEscalatorOperationDirection {
 	if casted, ok := structType.(BACnetPropertyStatesEscalatorOperationDirection); ok {
 		return casted
 	}

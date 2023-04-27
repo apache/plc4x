@@ -21,7 +21,7 @@ package model
 
 import (
 	"context"
-	spiContext "github.com/apache/plc4x/plc4go/spi/context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,6 +30,7 @@ import (
 
 // BACnetConstructedDataVirtualMACAddressTable is the corresponding interface of BACnetConstructedDataVirtualMACAddressTable
 type BACnetConstructedDataVirtualMACAddressTable interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -103,7 +104,7 @@ func NewBACnetConstructedDataVirtualMACAddressTable(virtualMacAddressTable []BAC
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataVirtualMACAddressTable(structType interface{}) BACnetConstructedDataVirtualMACAddressTable {
+func CastBACnetConstructedDataVirtualMACAddressTable(structType any) BACnetConstructedDataVirtualMACAddressTable {
 	if casted, ok := structType.(BACnetConstructedDataVirtualMACAddressTable); ok {
 		return casted
 	}
@@ -204,7 +205,7 @@ func (m *_BACnetConstructedDataVirtualMACAddressTable) SerializeWithWriteBuffer(
 		}
 		for _curItem, _element := range m.GetVirtualMacAddressTable() {
 			_ = _curItem
-			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetVirtualMacAddressTable()), _curItem)
+			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetVirtualMacAddressTable()), _curItem)
 			_ = arrayCtx
 			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 			if _elementErr != nil {

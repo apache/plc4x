@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataEnergyMeter is the corresponding interface of BACnetConstructedDataEnergyMeter
 type BACnetConstructedDataEnergyMeter interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataEnergyMeter(energyMeter BACnetApplicationTagReal, o
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataEnergyMeter(structType interface{}) BACnetConstructedDataEnergyMeter {
+func CastBACnetConstructedDataEnergyMeter(structType any) BACnetConstructedDataEnergyMeter {
 	if casted, ok := structType.(BACnetConstructedDataEnergyMeter); ok {
 		return casted
 	}

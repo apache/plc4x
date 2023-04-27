@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -31,6 +32,8 @@ import (
 type LineOffHookReason uint8
 
 type ILineOffHookReason interface {
+	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 
@@ -114,8 +117,8 @@ func LineOffHookReasonKnows(value uint8) bool {
 	return false
 }
 
-func CastLineOffHookReason(structType interface{}) LineOffHookReason {
-	castFunc := func(typ interface{}) LineOffHookReason {
+func CastLineOffHookReason(structType any) LineOffHookReason {
+	castFunc := func(typ any) LineOffHookReason {
 		if sLineOffHookReason, ok := typ.(LineOffHookReason); ok {
 			return sLineOffHookReason
 		}

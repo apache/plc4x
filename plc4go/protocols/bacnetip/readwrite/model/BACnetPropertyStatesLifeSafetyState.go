@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetPropertyStatesLifeSafetyState is the corresponding interface of BACnetPropertyStatesLifeSafetyState
 type BACnetPropertyStatesLifeSafetyState interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetPropertyStates
@@ -92,7 +94,7 @@ func NewBACnetPropertyStatesLifeSafetyState(lifeSafetyState BACnetLifeSafetyStat
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetPropertyStatesLifeSafetyState(structType interface{}) BACnetPropertyStatesLifeSafetyState {
+func CastBACnetPropertyStatesLifeSafetyState(structType any) BACnetPropertyStatesLifeSafetyState {
 	if casted, ok := structType.(BACnetPropertyStatesLifeSafetyState); ok {
 		return casted
 	}

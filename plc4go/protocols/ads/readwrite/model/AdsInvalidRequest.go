@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // AdsInvalidRequest is the corresponding interface of AdsInvalidRequest
 type AdsInvalidRequest interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	AmsPacket
@@ -87,7 +89,7 @@ func NewAdsInvalidRequest(targetAmsNetId AmsNetId, targetAmsPort uint16, sourceA
 }
 
 // Deprecated: use the interface for direct cast
-func CastAdsInvalidRequest(structType interface{}) AdsInvalidRequest {
+func CastAdsInvalidRequest(structType any) AdsInvalidRequest {
 	if casted, ok := structType.(AdsInvalidRequest); ok {
 		return casted
 	}

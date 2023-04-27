@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // UnitAddress is the corresponding interface of UnitAddress
 type UnitAddress interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetAddress returns Address (property field)
@@ -67,7 +69,7 @@ func NewUnitAddress(address byte) *_UnitAddress {
 }
 
 // Deprecated: use the interface for direct cast
-func CastUnitAddress(structType interface{}) UnitAddress {
+func CastUnitAddress(structType any) UnitAddress {
 	if casted, ok := structType.(UnitAddress); ok {
 		return casted
 	}

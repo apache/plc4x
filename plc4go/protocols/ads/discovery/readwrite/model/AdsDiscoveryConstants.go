@@ -33,6 +33,7 @@ const AdsDiscoveryConstants_ADSDISCOVERYUDPDEFAULTPORT uint16 = uint16(48899)
 
 // AdsDiscoveryConstants is the corresponding interface of AdsDiscoveryConstants
 type AdsDiscoveryConstants interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 }
@@ -68,7 +69,7 @@ func NewAdsDiscoveryConstants() *_AdsDiscoveryConstants {
 }
 
 // Deprecated: use the interface for direct cast
-func CastAdsDiscoveryConstants(structType interface{}) AdsDiscoveryConstants {
+func CastAdsDiscoveryConstants(structType any) AdsDiscoveryConstants {
 	if casted, ok := structType.(AdsDiscoveryConstants); ok {
 		return casted
 	}

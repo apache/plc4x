@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // DF1UnprotectedReadResponse is the corresponding interface of DF1UnprotectedReadResponse
 type DF1UnprotectedReadResponse interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	DF1Command
@@ -97,7 +99,7 @@ func NewDF1UnprotectedReadResponse(data []byte, status uint8, transactionCounter
 }
 
 // Deprecated: use the interface for direct cast
-func CastDF1UnprotectedReadResponse(structType interface{}) DF1UnprotectedReadResponse {
+func CastDF1UnprotectedReadResponse(structType any) DF1UnprotectedReadResponse {
 	if casted, ok := structType.(DF1UnprotectedReadResponse); ok {
 		return casted
 	}

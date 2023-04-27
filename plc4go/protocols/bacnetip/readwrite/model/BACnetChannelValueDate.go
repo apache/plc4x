@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetChannelValueDate is the corresponding interface of BACnetChannelValueDate
 type BACnetChannelValueDate interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetChannelValue
@@ -92,7 +94,7 @@ func NewBACnetChannelValueDate(dateValue BACnetApplicationTagDate, peekedTagHead
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetChannelValueDate(structType interface{}) BACnetChannelValueDate {
+func CastBACnetChannelValueDate(structType any) BACnetChannelValueDate {
 	if casted, ok := structType.(BACnetChannelValueDate); ok {
 		return casted
 	}

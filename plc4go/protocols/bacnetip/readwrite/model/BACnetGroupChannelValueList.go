@@ -21,7 +21,7 @@ package model
 
 import (
 	"context"
-	spiContext "github.com/apache/plc4x/plc4go/spi/context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,6 +30,7 @@ import (
 
 // BACnetGroupChannelValueList is the corresponding interface of BACnetGroupChannelValueList
 type BACnetGroupChannelValueList interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetOpeningTag returns OpeningTag (property field)
@@ -85,7 +86,7 @@ func NewBACnetGroupChannelValueList(openingTag BACnetOpeningTag, listOfEventSumm
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetGroupChannelValueList(structType interface{}) BACnetGroupChannelValueList {
+func CastBACnetGroupChannelValueList(structType any) BACnetGroupChannelValueList {
 	if casted, ok := structType.(BACnetGroupChannelValueList); ok {
 		return casted
 	}
@@ -226,7 +227,7 @@ func (m *_BACnetGroupChannelValueList) SerializeWithWriteBuffer(ctx context.Cont
 	}
 	for _curItem, _element := range m.GetListOfEventSummaries() {
 		_ = _curItem
-		arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetListOfEventSummaries()), _curItem)
+		arrayCtx := utils.CreateArrayContext(ctx, len(m.GetListOfEventSummaries()), _curItem)
 		_ = arrayCtx
 		_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 		if _elementErr != nil {

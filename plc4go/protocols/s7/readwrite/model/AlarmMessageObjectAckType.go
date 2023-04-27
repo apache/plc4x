@@ -34,6 +34,7 @@ const AlarmMessageObjectAckType_LENGTH uint8 = 0x08
 
 // AlarmMessageObjectAckType is the corresponding interface of AlarmMessageObjectAckType
 type AlarmMessageObjectAckType interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetSyntaxId returns SyntaxId (property field)
@@ -117,7 +118,7 @@ func NewAlarmMessageObjectAckType(syntaxId SyntaxIdType, numberOfValues uint8, e
 }
 
 // Deprecated: use the interface for direct cast
-func CastAlarmMessageObjectAckType(structType interface{}) AlarmMessageObjectAckType {
+func CastAlarmMessageObjectAckType(structType any) AlarmMessageObjectAckType {
 	if casted, ok := structType.(AlarmMessageObjectAckType); ok {
 		return casted
 	}

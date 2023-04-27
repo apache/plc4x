@@ -21,7 +21,7 @@ package model
 
 import (
 	"context"
-	spiContext "github.com/apache/plc4x/plc4go/spi/context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,6 +30,7 @@ import (
 
 // CipConnectionManagerCloseRequest is the corresponding interface of CipConnectionManagerCloseRequest
 type CipConnectionManagerCloseRequest interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	CipService
@@ -185,7 +186,7 @@ func NewCipConnectionManagerCloseRequest(requestPathSize uint8, classSegment Pat
 }
 
 // Deprecated: use the interface for direct cast
-func CastCipConnectionManagerCloseRequest(structType interface{}) CipConnectionManagerCloseRequest {
+func CastCipConnectionManagerCloseRequest(structType any) CipConnectionManagerCloseRequest {
 	if casted, ok := structType.(CipConnectionManagerCloseRequest); ok {
 		return casted
 	}
@@ -352,7 +353,7 @@ func CipConnectionManagerCloseRequestParseWithBuffer(ctx context.Context, readBu
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of CipConnectionManagerCloseRequest")
 		}
 		if reserved != byte(0x00) {
-			Plc4xModelLog.Info().Fields(map[string]interface{}{
+			Plc4xModelLog.Info().Fields(map[string]any{
 				"expected value": byte(0x00),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
@@ -506,7 +507,7 @@ func (m *_CipConnectionManagerCloseRequest) SerializeWithWriteBuffer(ctx context
 		{
 			var reserved byte = byte(0x00)
 			if m.reservedField0 != nil {
-				Plc4xModelLog.Info().Fields(map[string]interface{}{
+				Plc4xModelLog.Info().Fields(map[string]any{
 					"expected value": byte(0x00),
 					"got value":      reserved,
 				}).Msg("Overriding reserved field with unexpected value.")
@@ -524,7 +525,7 @@ func (m *_CipConnectionManagerCloseRequest) SerializeWithWriteBuffer(ctx context
 		}
 		for _curItem, _element := range m.GetConnectionPaths() {
 			_ = _curItem
-			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetConnectionPaths()), _curItem)
+			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetConnectionPaths()), _curItem)
 			_ = arrayCtx
 			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 			if _elementErr != nil {

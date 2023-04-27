@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetSecurityLevelTagged is the corresponding interface of BACnetSecurityLevelTagged
 type BACnetSecurityLevelTagged interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetHeader returns Header (property field)
@@ -78,7 +80,7 @@ func NewBACnetSecurityLevelTagged(header BACnetTagHeader, value BACnetSecurityLe
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetSecurityLevelTagged(structType interface{}) BACnetSecurityLevelTagged {
+func CastBACnetSecurityLevelTagged(structType any) BACnetSecurityLevelTagged {
 	if casted, ok := structType.(BACnetSecurityLevelTagged); ok {
 		return casted
 	}

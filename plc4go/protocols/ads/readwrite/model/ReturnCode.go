@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -31,6 +32,8 @@ import (
 type ReturnCode uint32
 
 type IReturnCode interface {
+	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 
@@ -798,8 +801,8 @@ func ReturnCodeKnows(value uint32) bool {
 	return false
 }
 
-func CastReturnCode(structType interface{}) ReturnCode {
-	castFunc := func(typ interface{}) ReturnCode {
+func CastReturnCode(structType any) ReturnCode {
+	castFunc := func(typ any) ReturnCode {
 		if sReturnCode, ok := typ.(ReturnCode); ok {
 			return sReturnCode
 		}

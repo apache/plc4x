@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BridgeAddress is the corresponding interface of BridgeAddress
 type BridgeAddress interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetAddress returns Address (property field)
@@ -67,7 +69,7 @@ func NewBridgeAddress(address byte) *_BridgeAddress {
 }
 
 // Deprecated: use the interface for direct cast
-func CastBridgeAddress(structType interface{}) BridgeAddress {
+func CastBridgeAddress(structType any) BridgeAddress {
 	if casted, ok := structType.(BridgeAddress); ok {
 		return casted
 	}

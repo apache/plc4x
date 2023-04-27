@@ -42,7 +42,7 @@ func init() {
 	_ = utils.Dump
 }
 
-func (m CbusXmlParserHelper) Parse(typeName string, xmlString string, parserArguments ...string) (interface{}, error) {
+func (m CbusXmlParserHelper) Parse(typeName string, xmlString string, parserArguments ...string) (any, error) {
 	switch typeName {
 	case "HVACStatusFlags":
 		return model.HVACStatusFlagsParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -31,6 +32,8 @@ import (
 type LightingCompatible uint8
 
 type ILightingCompatible interface {
+	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 
@@ -90,8 +93,8 @@ func LightingCompatibleKnows(value uint8) bool {
 	return false
 }
 
-func CastLightingCompatible(structType interface{}) LightingCompatible {
-	castFunc := func(typ interface{}) LightingCompatible {
+func CastLightingCompatible(structType any) LightingCompatible {
+	castFunc := func(typ any) LightingCompatible {
 		if sLightingCompatible, ok := typ.(LightingCompatible); ok {
 			return sLightingCompatible
 		}

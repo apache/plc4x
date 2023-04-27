@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // SerialInterfaceAddress is the corresponding interface of SerialInterfaceAddress
 type SerialInterfaceAddress interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetAddress returns Address (property field)
@@ -67,7 +69,7 @@ func NewSerialInterfaceAddress(address byte) *_SerialInterfaceAddress {
 }
 
 // Deprecated: use the interface for direct cast
-func CastSerialInterfaceAddress(structType interface{}) SerialInterfaceAddress {
+func CastSerialInterfaceAddress(structType any) SerialInterfaceAddress {
 	if casted, ok := structType.(SerialInterfaceAddress); ok {
 		return casted
 	}

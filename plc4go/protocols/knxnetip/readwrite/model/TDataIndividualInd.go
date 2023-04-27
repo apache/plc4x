@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // TDataIndividualInd is the corresponding interface of TDataIndividualInd
 type TDataIndividualInd interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	CEMI
@@ -76,7 +78,7 @@ func NewTDataIndividualInd(size uint16) *_TDataIndividualInd {
 }
 
 // Deprecated: use the interface for direct cast
-func CastTDataIndividualInd(structType interface{}) TDataIndividualInd {
+func CastTDataIndividualInd(structType any) TDataIndividualInd {
 	if casted, ok := structType.(TDataIndividualInd); ok {
 		return casted
 	}

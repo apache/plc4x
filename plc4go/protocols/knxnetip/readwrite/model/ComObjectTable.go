@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // ComObjectTable is the corresponding interface of ComObjectTable
 type ComObjectTable interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetFirmwareType returns FirmwareType (discriminator field)
@@ -73,7 +75,7 @@ func NewComObjectTable() *_ComObjectTable {
 }
 
 // Deprecated: use the interface for direct cast
-func CastComObjectTable(structType interface{}) ComObjectTable {
+func CastComObjectTable(structType any) ComObjectTable {
 	if casted, ok := structType.(ComObjectTable); ok {
 		return casted
 	}
@@ -116,7 +118,7 @@ func ComObjectTableParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 		InitializeParent(ComObjectTable)
 		GetParent() ComObjectTable
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child ComObjectTableChildSerializeRequirement
 	var typeSwitchError error
 	switch {

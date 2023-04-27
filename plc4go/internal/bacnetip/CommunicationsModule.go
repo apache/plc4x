@@ -333,7 +333,7 @@ func (a *ApplicationServiceElement) _setElementService(elementService _ServiceAc
 }
 
 // bind a list of clients and servers together, top down
-func bind(args ...interface{}) error {
+func bind(args ...any) error {
 	// generic bind is pairs of names
 	if len(args) == 0 {
 		// find unbound clients and bind them

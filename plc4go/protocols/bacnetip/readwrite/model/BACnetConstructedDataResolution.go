@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataResolution is the corresponding interface of BACnetConstructedDataResolution
 type BACnetConstructedDataResolution interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataResolution(resolution BACnetApplicationTagReal, ope
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataResolution(structType interface{}) BACnetConstructedDataResolution {
+func CastBACnetConstructedDataResolution(structType any) BACnetConstructedDataResolution {
 	if casted, ok := structType.(BACnetConstructedDataResolution); ok {
 		return casted
 	}

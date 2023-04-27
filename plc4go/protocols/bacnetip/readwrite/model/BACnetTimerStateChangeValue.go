@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetTimerStateChangeValue is the corresponding interface of BACnetTimerStateChangeValue
 type BACnetTimerStateChangeValue interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetPeekedTagHeader returns PeekedTagHeader (property field)
@@ -117,7 +119,7 @@ func NewBACnetTimerStateChangeValue(peekedTagHeader BACnetTagHeader, objectTypeA
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetTimerStateChangeValue(structType interface{}) BACnetTimerStateChangeValue {
+func CastBACnetTimerStateChangeValue(structType any) BACnetTimerStateChangeValue {
 	if casted, ok := structType.(BACnetTimerStateChangeValue); ok {
 		return casted
 	}
@@ -187,7 +189,7 @@ func BACnetTimerStateChangeValueParseWithBuffer(ctx context.Context, readBuffer 
 		InitializeParent(BACnetTimerStateChangeValue, BACnetTagHeader)
 		GetParent() BACnetTimerStateChangeValue
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child BACnetTimerStateChangeValueChildSerializeRequirement
 	var typeSwitchError error
 	switch {

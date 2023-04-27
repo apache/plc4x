@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataNumberOfAuthenticationPolicies is the corresponding interface of BACnetConstructedDataNumberOfAuthenticationPolicies
 type BACnetConstructedDataNumberOfAuthenticationPolicies interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataNumberOfAuthenticationPolicies(numberOfAuthenticati
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataNumberOfAuthenticationPolicies(structType interface{}) BACnetConstructedDataNumberOfAuthenticationPolicies {
+func CastBACnetConstructedDataNumberOfAuthenticationPolicies(structType any) BACnetConstructedDataNumberOfAuthenticationPolicies {
 	if casted, ok := structType.(BACnetConstructedDataNumberOfAuthenticationPolicies); ok {
 		return casted
 	}

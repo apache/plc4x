@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetCalendarEntryEnclosed is the corresponding interface of BACnetCalendarEntryEnclosed
 type BACnetCalendarEntryEnclosed interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetOpeningTag returns OpeningTag (property field)
@@ -84,7 +86,7 @@ func NewBACnetCalendarEntryEnclosed(openingTag BACnetOpeningTag, calendarEntry B
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetCalendarEntryEnclosed(structType interface{}) BACnetCalendarEntryEnclosed {
+func CastBACnetCalendarEntryEnclosed(structType any) BACnetCalendarEntryEnclosed {
 	if casted, ok := structType.(BACnetCalendarEntryEnclosed); ok {
 		return casted
 	}

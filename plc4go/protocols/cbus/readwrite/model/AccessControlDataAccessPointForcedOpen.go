@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // AccessControlDataAccessPointForcedOpen is the corresponding interface of AccessControlDataAccessPointForcedOpen
 type AccessControlDataAccessPointForcedOpen interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	AccessControlData
@@ -76,7 +78,7 @@ func NewAccessControlDataAccessPointForcedOpen(commandTypeContainer AccessContro
 }
 
 // Deprecated: use the interface for direct cast
-func CastAccessControlDataAccessPointForcedOpen(structType interface{}) AccessControlDataAccessPointForcedOpen {
+func CastAccessControlDataAccessPointForcedOpen(structType any) AccessControlDataAccessPointForcedOpen {
 	if casted, ok := structType.(AccessControlDataAccessPointForcedOpen); ok {
 		return casted
 	}

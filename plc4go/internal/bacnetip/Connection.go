@@ -20,6 +20,7 @@
 package bacnetip
 
 import (
+	"context"
 	"fmt"
 	"sync"
 	"time"
@@ -38,13 +39,13 @@ type Connection struct {
 	invokeIdGenerator InvokeIdGenerator
 	messageCodec      spi.MessageCodec
 	subscribers       []*Subscriber
-	tm                *spi.RequestTransactionManager
+	tm                spi.RequestTransactionManager
 
 	connectionId string
 	tracer       *spi.Tracer
 }
 
-func NewConnection(messageCodec spi.MessageCodec, tagHandler spi.PlcTagHandler, tm *spi.RequestTransactionManager, options map[string][]string) *Connection {
+func NewConnection(messageCodec spi.MessageCodec, tagHandler spi.PlcTagHandler, tm spi.RequestTransactionManager, options map[string][]string) *Connection {
 	connection := &Connection{
 		invokeIdGenerator: InvokeIdGenerator{currentInvokeId: 0},
 		messageCodec:      messageCodec,
@@ -74,11 +75,11 @@ func (c *Connection) GetTracer() *spi.Tracer {
 	return c.tracer
 }
 
-func (c *Connection) Connect() <-chan plc4go.PlcConnectionConnectResult {
+func (c *Connection) ConnectWithContext(ctx context.Context) <-chan plc4go.PlcConnectionConnectResult {
 	log.Trace().Msg("Connecting")
 	ch := make(chan plc4go.PlcConnectionConnectResult)
 	go func() {
-		connectionConnectResult := <-c.DefaultConnection.Connect()
+		connectionConnectResult := <-c.DefaultConnection.ConnectWithContext(ctx)
 		go func() {
 			for c.IsConnected() {
 				log.Trace().Msg("Polling data")

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -31,6 +32,8 @@ import (
 type ErrorReportingSeverity uint8
 
 type IErrorReportingSeverity interface {
+	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 
@@ -114,8 +117,8 @@ func ErrorReportingSeverityKnows(value uint8) bool {
 	return false
 }
 
-func CastErrorReportingSeverity(structType interface{}) ErrorReportingSeverity {
-	castFunc := func(typ interface{}) ErrorReportingSeverity {
+func CastErrorReportingSeverity(structType any) ErrorReportingSeverity {
+	castFunc := func(typ any) ErrorReportingSeverity {
 		if sErrorReportingSeverity, ok := typ.(ErrorReportingSeverity); ok {
 			return sErrorReportingSeverity
 		}

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // IdentifyReplyCommandGAVPhysicalAddresses is the corresponding interface of IdentifyReplyCommandGAVPhysicalAddresses
 type IdentifyReplyCommandGAVPhysicalAddresses interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	IdentifyReplyCommand
@@ -94,7 +96,7 @@ func NewIdentifyReplyCommandGAVPhysicalAddresses(values []byte, numBytes uint8) 
 }
 
 // Deprecated: use the interface for direct cast
-func CastIdentifyReplyCommandGAVPhysicalAddresses(structType interface{}) IdentifyReplyCommandGAVPhysicalAddresses {
+func CastIdentifyReplyCommandGAVPhysicalAddresses(structType any) IdentifyReplyCommandGAVPhysicalAddresses {
 	if casted, ok := structType.(IdentifyReplyCommandGAVPhysicalAddresses); ok {
 		return casted
 	}

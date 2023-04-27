@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // CALDataWrite is the corresponding interface of CALDataWrite
 type CALDataWrite interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	CALData
@@ -109,7 +111,7 @@ func NewCALDataWrite(paramNo Parameter, code byte, parameterValue ParameterValue
 }
 
 // Deprecated: use the interface for direct cast
-func CastCALDataWrite(structType interface{}) CALDataWrite {
+func CastCALDataWrite(structType any) CALDataWrite {
 	if casted, ok := structType.(CALDataWrite); ok {
 		return casted
 	}

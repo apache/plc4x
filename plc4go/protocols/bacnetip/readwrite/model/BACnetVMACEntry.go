@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
@@ -30,6 +31,7 @@ import (
 
 // BACnetVMACEntry is the corresponding interface of BACnetVMACEntry
 type BACnetVMACEntry interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetVirtualMacAddress returns VirtualMacAddress (property field)
@@ -75,7 +77,7 @@ func NewBACnetVMACEntry(virtualMacAddress BACnetContextTagOctetString, nativeMac
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetVMACEntry(structType interface{}) BACnetVMACEntry {
+func CastBACnetVMACEntry(structType any) BACnetVMACEntry {
 	if casted, ok := structType.(BACnetVMACEntry); ok {
 		return casted
 	}

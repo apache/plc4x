@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetCalendarEntryDateRange is the corresponding interface of BACnetCalendarEntryDateRange
 type BACnetCalendarEntryDateRange interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetCalendarEntry
@@ -92,7 +94,7 @@ func NewBACnetCalendarEntryDateRange(dateRange BACnetDateRangeEnclosed, peekedTa
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetCalendarEntryDateRange(structType interface{}) BACnetCalendarEntryDateRange {
+func CastBACnetCalendarEntryDateRange(structType any) BACnetCalendarEntryDateRange {
 	if casted, ok := structType.(BACnetCalendarEntryDateRange); ok {
 		return casted
 	}

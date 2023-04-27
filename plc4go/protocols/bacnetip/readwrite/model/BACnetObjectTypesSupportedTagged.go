@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetObjectTypesSupportedTagged is the corresponding interface of BACnetObjectTypesSupportedTagged
 type BACnetObjectTypesSupportedTagged interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetHeader returns Header (property field)
@@ -99,61 +101,61 @@ func (m *_BACnetObjectTypesSupportedTagged) GetPayload() BACnetTagPayloadBitStri
 func (m *_BACnetObjectTypesSupportedTagged) GetTimeValue() bool {
 	ctx := context.Background()
 	_ = ctx
-	return bool(utils.InlineIf((bool((len(m.GetPayload().GetData())) > (0))), func() interface{} { return bool(m.GetPayload().GetData()[0]) }, func() interface{} { return bool(bool(false)) }).(bool))
+	return bool(utils.InlineIf((bool((len(m.GetPayload().GetData())) > (0))), func() any { return bool(m.GetPayload().GetData()[0]) }, func() any { return bool(bool(false)) }).(bool))
 }
 
 func (m *_BACnetObjectTypesSupportedTagged) GetNotificationForwarder() bool {
 	ctx := context.Background()
 	_ = ctx
-	return bool(utils.InlineIf((bool((len(m.GetPayload().GetData())) > (1))), func() interface{} { return bool(m.GetPayload().GetData()[1]) }, func() interface{} { return bool(bool(false)) }).(bool))
+	return bool(utils.InlineIf((bool((len(m.GetPayload().GetData())) > (1))), func() any { return bool(m.GetPayload().GetData()[1]) }, func() any { return bool(bool(false)) }).(bool))
 }
 
 func (m *_BACnetObjectTypesSupportedTagged) GetAlertEnrollment() bool {
 	ctx := context.Background()
 	_ = ctx
-	return bool(utils.InlineIf((bool((len(m.GetPayload().GetData())) > (2))), func() interface{} { return bool(m.GetPayload().GetData()[2]) }, func() interface{} { return bool(bool(false)) }).(bool))
+	return bool(utils.InlineIf((bool((len(m.GetPayload().GetData())) > (2))), func() any { return bool(m.GetPayload().GetData()[2]) }, func() any { return bool(bool(false)) }).(bool))
 }
 
 func (m *_BACnetObjectTypesSupportedTagged) GetChannel() bool {
 	ctx := context.Background()
 	_ = ctx
-	return bool(utils.InlineIf((bool((len(m.GetPayload().GetData())) > (3))), func() interface{} { return bool(m.GetPayload().GetData()[3]) }, func() interface{} { return bool(bool(false)) }).(bool))
+	return bool(utils.InlineIf((bool((len(m.GetPayload().GetData())) > (3))), func() any { return bool(m.GetPayload().GetData()[3]) }, func() any { return bool(bool(false)) }).(bool))
 }
 
 func (m *_BACnetObjectTypesSupportedTagged) GetLightingOutput() bool {
 	ctx := context.Background()
 	_ = ctx
-	return bool(utils.InlineIf((bool((len(m.GetPayload().GetData())) > (4))), func() interface{} { return bool(m.GetPayload().GetData()[4]) }, func() interface{} { return bool(bool(false)) }).(bool))
+	return bool(utils.InlineIf((bool((len(m.GetPayload().GetData())) > (4))), func() any { return bool(m.GetPayload().GetData()[4]) }, func() any { return bool(bool(false)) }).(bool))
 }
 
 func (m *_BACnetObjectTypesSupportedTagged) GetBinaryLightingOutput() bool {
 	ctx := context.Background()
 	_ = ctx
-	return bool(utils.InlineIf((bool((len(m.GetPayload().GetData())) > (5))), func() interface{} { return bool(m.GetPayload().GetData()[5]) }, func() interface{} { return bool(bool(false)) }).(bool))
+	return bool(utils.InlineIf((bool((len(m.GetPayload().GetData())) > (5))), func() any { return bool(m.GetPayload().GetData()[5]) }, func() any { return bool(bool(false)) }).(bool))
 }
 
 func (m *_BACnetObjectTypesSupportedTagged) GetNetworkPort() bool {
 	ctx := context.Background()
 	_ = ctx
-	return bool(utils.InlineIf((bool((len(m.GetPayload().GetData())) > (6))), func() interface{} { return bool(m.GetPayload().GetData()[6]) }, func() interface{} { return bool(bool(false)) }).(bool))
+	return bool(utils.InlineIf((bool((len(m.GetPayload().GetData())) > (6))), func() any { return bool(m.GetPayload().GetData()[6]) }, func() any { return bool(bool(false)) }).(bool))
 }
 
 func (m *_BACnetObjectTypesSupportedTagged) GetElevatorGroup() bool {
 	ctx := context.Background()
 	_ = ctx
-	return bool(utils.InlineIf((bool((len(m.GetPayload().GetData())) > (7))), func() interface{} { return bool(m.GetPayload().GetData()[7]) }, func() interface{} { return bool(bool(false)) }).(bool))
+	return bool(utils.InlineIf((bool((len(m.GetPayload().GetData())) > (7))), func() any { return bool(m.GetPayload().GetData()[7]) }, func() any { return bool(bool(false)) }).(bool))
 }
 
 func (m *_BACnetObjectTypesSupportedTagged) GetEscalator() bool {
 	ctx := context.Background()
 	_ = ctx
-	return bool(utils.InlineIf((bool((len(m.GetPayload().GetData())) > (8))), func() interface{} { return bool(m.GetPayload().GetData()[8]) }, func() interface{} { return bool(bool(false)) }).(bool))
+	return bool(utils.InlineIf((bool((len(m.GetPayload().GetData())) > (8))), func() any { return bool(m.GetPayload().GetData()[8]) }, func() any { return bool(bool(false)) }).(bool))
 }
 
 func (m *_BACnetObjectTypesSupportedTagged) GetLift() bool {
 	ctx := context.Background()
 	_ = ctx
-	return bool(utils.InlineIf((bool((len(m.GetPayload().GetData())) > (9))), func() interface{} { return bool(m.GetPayload().GetData()[9]) }, func() interface{} { return bool(bool(false)) }).(bool))
+	return bool(utils.InlineIf((bool((len(m.GetPayload().GetData())) > (9))), func() any { return bool(m.GetPayload().GetData()[9]) }, func() any { return bool(bool(false)) }).(bool))
 }
 
 ///////////////////////
@@ -167,7 +169,7 @@ func NewBACnetObjectTypesSupportedTagged(header BACnetTagHeader, payload BACnetT
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetObjectTypesSupportedTagged(structType interface{}) BACnetObjectTypesSupportedTagged {
+func CastBACnetObjectTypesSupportedTagged(structType any) BACnetObjectTypesSupportedTagged {
 	if casted, ok := structType.(BACnetObjectTypesSupportedTagged); ok {
 		return casted
 	}
@@ -267,52 +269,52 @@ func BACnetObjectTypesSupportedTaggedParseWithBuffer(ctx context.Context, readBu
 	}
 
 	// Virtual field
-	_timeValue := utils.InlineIf((bool((len(payload.GetData())) > (0))), func() interface{} { return bool(payload.GetData()[0]) }, func() interface{} { return bool(bool(false)) }).(bool)
+	_timeValue := utils.InlineIf((bool((len(payload.GetData())) > (0))), func() any { return bool(payload.GetData()[0]) }, func() any { return bool(bool(false)) }).(bool)
 	timeValue := bool(_timeValue)
 	_ = timeValue
 
 	// Virtual field
-	_notificationForwarder := utils.InlineIf((bool((len(payload.GetData())) > (1))), func() interface{} { return bool(payload.GetData()[1]) }, func() interface{} { return bool(bool(false)) }).(bool)
+	_notificationForwarder := utils.InlineIf((bool((len(payload.GetData())) > (1))), func() any { return bool(payload.GetData()[1]) }, func() any { return bool(bool(false)) }).(bool)
 	notificationForwarder := bool(_notificationForwarder)
 	_ = notificationForwarder
 
 	// Virtual field
-	_alertEnrollment := utils.InlineIf((bool((len(payload.GetData())) > (2))), func() interface{} { return bool(payload.GetData()[2]) }, func() interface{} { return bool(bool(false)) }).(bool)
+	_alertEnrollment := utils.InlineIf((bool((len(payload.GetData())) > (2))), func() any { return bool(payload.GetData()[2]) }, func() any { return bool(bool(false)) }).(bool)
 	alertEnrollment := bool(_alertEnrollment)
 	_ = alertEnrollment
 
 	// Virtual field
-	_channel := utils.InlineIf((bool((len(payload.GetData())) > (3))), func() interface{} { return bool(payload.GetData()[3]) }, func() interface{} { return bool(bool(false)) }).(bool)
+	_channel := utils.InlineIf((bool((len(payload.GetData())) > (3))), func() any { return bool(payload.GetData()[3]) }, func() any { return bool(bool(false)) }).(bool)
 	channel := bool(_channel)
 	_ = channel
 
 	// Virtual field
-	_lightingOutput := utils.InlineIf((bool((len(payload.GetData())) > (4))), func() interface{} { return bool(payload.GetData()[4]) }, func() interface{} { return bool(bool(false)) }).(bool)
+	_lightingOutput := utils.InlineIf((bool((len(payload.GetData())) > (4))), func() any { return bool(payload.GetData()[4]) }, func() any { return bool(bool(false)) }).(bool)
 	lightingOutput := bool(_lightingOutput)
 	_ = lightingOutput
 
 	// Virtual field
-	_binaryLightingOutput := utils.InlineIf((bool((len(payload.GetData())) > (5))), func() interface{} { return bool(payload.GetData()[5]) }, func() interface{} { return bool(bool(false)) }).(bool)
+	_binaryLightingOutput := utils.InlineIf((bool((len(payload.GetData())) > (5))), func() any { return bool(payload.GetData()[5]) }, func() any { return bool(bool(false)) }).(bool)
 	binaryLightingOutput := bool(_binaryLightingOutput)
 	_ = binaryLightingOutput
 
 	// Virtual field
-	_networkPort := utils.InlineIf((bool((len(payload.GetData())) > (6))), func() interface{} { return bool(payload.GetData()[6]) }, func() interface{} { return bool(bool(false)) }).(bool)
+	_networkPort := utils.InlineIf((bool((len(payload.GetData())) > (6))), func() any { return bool(payload.GetData()[6]) }, func() any { return bool(bool(false)) }).(bool)
 	networkPort := bool(_networkPort)
 	_ = networkPort
 
 	// Virtual field
-	_elevatorGroup := utils.InlineIf((bool((len(payload.GetData())) > (7))), func() interface{} { return bool(payload.GetData()[7]) }, func() interface{} { return bool(bool(false)) }).(bool)
+	_elevatorGroup := utils.InlineIf((bool((len(payload.GetData())) > (7))), func() any { return bool(payload.GetData()[7]) }, func() any { return bool(bool(false)) }).(bool)
 	elevatorGroup := bool(_elevatorGroup)
 	_ = elevatorGroup
 
 	// Virtual field
-	_escalator := utils.InlineIf((bool((len(payload.GetData())) > (8))), func() interface{} { return bool(payload.GetData()[8]) }, func() interface{} { return bool(bool(false)) }).(bool)
+	_escalator := utils.InlineIf((bool((len(payload.GetData())) > (8))), func() any { return bool(payload.GetData()[8]) }, func() any { return bool(bool(false)) }).(bool)
 	escalator := bool(_escalator)
 	_ = escalator
 
 	// Virtual field
-	_lift := utils.InlineIf((bool((len(payload.GetData())) > (9))), func() interface{} { return bool(payload.GetData()[9]) }, func() interface{} { return bool(bool(false)) }).(bool)
+	_lift := utils.InlineIf((bool((len(payload.GetData())) > (9))), func() any { return bool(payload.GetData()[9]) }, func() any { return bool(bool(false)) }).(bool)
 	lift := bool(_lift)
 	_ = lift
 

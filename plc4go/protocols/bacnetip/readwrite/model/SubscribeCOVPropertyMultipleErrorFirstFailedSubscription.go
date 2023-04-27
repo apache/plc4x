@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // SubscribeCOVPropertyMultipleErrorFirstFailedSubscription is the corresponding interface of SubscribeCOVPropertyMultipleErrorFirstFailedSubscription
 type SubscribeCOVPropertyMultipleErrorFirstFailedSubscription interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetOpeningTag returns OpeningTag (property field)
@@ -98,7 +100,7 @@ func NewSubscribeCOVPropertyMultipleErrorFirstFailedSubscription(openingTag BACn
 }
 
 // Deprecated: use the interface for direct cast
-func CastSubscribeCOVPropertyMultipleErrorFirstFailedSubscription(structType interface{}) SubscribeCOVPropertyMultipleErrorFirstFailedSubscription {
+func CastSubscribeCOVPropertyMultipleErrorFirstFailedSubscription(structType any) SubscribeCOVPropertyMultipleErrorFirstFailedSubscription {
 	if casted, ok := structType.(SubscribeCOVPropertyMultipleErrorFirstFailedSubscription); ok {
 		return casted
 	}

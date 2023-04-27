@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataRecordsSinceNotification is the corresponding interface of BACnetConstructedDataRecordsSinceNotification
 type BACnetConstructedDataRecordsSinceNotification interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataRecordsSinceNotification(recordsSinceNotifications 
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataRecordsSinceNotification(structType interface{}) BACnetConstructedDataRecordsSinceNotification {
+func CastBACnetConstructedDataRecordsSinceNotification(structType any) BACnetConstructedDataRecordsSinceNotification {
 	if casted, ok := structType.(BACnetConstructedDataRecordsSinceNotification); ok {
 		return casted
 	}

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // PanicStatus is the corresponding interface of PanicStatus
 type PanicStatus interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetStatus returns Status (property field)
@@ -100,7 +102,7 @@ func NewPanicStatus(status uint8) *_PanicStatus {
 }
 
 // Deprecated: use the interface for direct cast
-func CastPanicStatus(structType interface{}) PanicStatus {
+func CastPanicStatus(structType any) PanicStatus {
 	if casted, ok := structType.(PanicStatus); ok {
 		return casted
 	}

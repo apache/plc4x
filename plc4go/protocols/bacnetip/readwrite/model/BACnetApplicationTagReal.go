@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetApplicationTagReal is the corresponding interface of BACnetApplicationTagReal
 type BACnetApplicationTagReal interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetApplicationTag
@@ -109,7 +111,7 @@ func NewBACnetApplicationTagReal(payload BACnetTagPayloadReal, header BACnetTagH
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetApplicationTagReal(structType interface{}) BACnetApplicationTagReal {
+func CastBACnetApplicationTagReal(structType any) BACnetApplicationTagReal {
 	if casted, ok := structType.(BACnetApplicationTagReal); ok {
 		return casted
 	}

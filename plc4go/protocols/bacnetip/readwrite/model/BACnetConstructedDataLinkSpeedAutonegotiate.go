@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataLinkSpeedAutonegotiate is the corresponding interface of BACnetConstructedDataLinkSpeedAutonegotiate
 type BACnetConstructedDataLinkSpeedAutonegotiate interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataLinkSpeedAutonegotiate(linkSpeedAutonegotiate BACne
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataLinkSpeedAutonegotiate(structType interface{}) BACnetConstructedDataLinkSpeedAutonegotiate {
+func CastBACnetConstructedDataLinkSpeedAutonegotiate(structType any) BACnetConstructedDataLinkSpeedAutonegotiate {
 	if casted, ok := structType.(BACnetConstructedDataLinkSpeedAutonegotiate); ok {
 		return casted
 	}

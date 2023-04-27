@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -31,6 +32,8 @@ import (
 type AdsPortNumbers uint16
 
 type IAdsPortNumbers interface {
+	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 
@@ -144,8 +147,8 @@ func AdsPortNumbersKnows(value uint16) bool {
 	return false
 }
 
-func CastAdsPortNumbers(structType interface{}) AdsPortNumbers {
-	castFunc := func(typ interface{}) AdsPortNumbers {
+func CastAdsPortNumbers(structType any) AdsPortNumbers {
+	castFunc := func(typ any) AdsPortNumbers {
 		if sAdsPortNumbers, ok := typ.(AdsPortNumbers); ok {
 			return sAdsPortNumbers
 		}

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -31,6 +32,8 @@ import (
 type MaxSegmentsAccepted uint8
 
 type IMaxSegmentsAccepted interface {
+	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 	MaxSegments() uint8
 }
@@ -164,8 +167,8 @@ func MaxSegmentsAcceptedKnows(value uint8) bool {
 	return false
 }
 
-func CastMaxSegmentsAccepted(structType interface{}) MaxSegmentsAccepted {
-	castFunc := func(typ interface{}) MaxSegmentsAccepted {
+func CastMaxSegmentsAccepted(structType any) MaxSegmentsAccepted {
+	castFunc := func(typ any) MaxSegmentsAccepted {
 		if sMaxSegmentsAccepted, ok := typ.(MaxSegmentsAccepted); ok {
 			return sMaxSegmentsAccepted
 		}

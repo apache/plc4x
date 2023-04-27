@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry is the corresponding interface of BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry
 type BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetMonitoredObjectIdentifier returns MonitoredObjectIdentifier (property field)
@@ -74,7 +76,7 @@ func NewBACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry(mon
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry(structType interface{}) BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry {
+func CastBACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry(structType any) BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry {
 	if casted, ok := structType.(BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry); ok {
 		return casted
 	}

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataIPv6PrefixLength is the corresponding interface of BACnetConstructedDataIPv6PrefixLength
 type BACnetConstructedDataIPv6PrefixLength interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataIPv6PrefixLength(ipv6PrefixLength BACnetApplication
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataIPv6PrefixLength(structType interface{}) BACnetConstructedDataIPv6PrefixLength {
+func CastBACnetConstructedDataIPv6PrefixLength(structType any) BACnetConstructedDataIPv6PrefixLength {
 	if casted, ok := structType.(BACnetConstructedDataIPv6PrefixLength); ok {
 		return casted
 	}

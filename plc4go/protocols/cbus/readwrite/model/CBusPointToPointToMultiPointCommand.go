@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // CBusPointToPointToMultiPointCommand is the corresponding interface of CBusPointToPointToMultiPointCommand
 type CBusPointToPointToMultiPointCommand interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetBridgeAddress returns BridgeAddress (property field)
@@ -105,7 +107,7 @@ func NewCBusPointToPointToMultiPointCommand(bridgeAddress BridgeAddress, network
 }
 
 // Deprecated: use the interface for direct cast
-func CastCBusPointToPointToMultiPointCommand(structType interface{}) CBusPointToPointToMultiPointCommand {
+func CastCBusPointToPointToMultiPointCommand(structType any) CBusPointToPointToMultiPointCommand {
 	if casted, ok := structType.(CBusPointToPointToMultiPointCommand); ok {
 		return casted
 	}
@@ -189,7 +191,7 @@ func CBusPointToPointToMultiPointCommandParseWithBuffer(ctx context.Context, rea
 		InitializeParent(CBusPointToPointToMultiPointCommand, BridgeAddress, NetworkRoute, byte)
 		GetParent() CBusPointToPointToMultiPointCommand
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child CBusPointToPointToMultiPointCommandChildSerializeRequirement
 	var typeSwitchError error
 	switch {

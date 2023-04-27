@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataAllowGroupDelayInhibit is the corresponding interface of BACnetConstructedDataAllowGroupDelayInhibit
 type BACnetConstructedDataAllowGroupDelayInhibit interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataAllowGroupDelayInhibit(allowGroupDelayInhibit BACne
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataAllowGroupDelayInhibit(structType interface{}) BACnetConstructedDataAllowGroupDelayInhibit {
+func CastBACnetConstructedDataAllowGroupDelayInhibit(structType any) BACnetConstructedDataAllowGroupDelayInhibit {
 	if casted, ok := structType.(BACnetConstructedDataAllowGroupDelayInhibit); ok {
 		return casted
 	}

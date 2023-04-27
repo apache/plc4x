@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // TelephonyDataRinging is the corresponding interface of TelephonyDataRinging
 type TelephonyDataRinging interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	TelephonyData
@@ -95,7 +97,7 @@ func NewTelephonyDataRinging(number string, commandTypeContainer TelephonyComman
 }
 
 // Deprecated: use the interface for direct cast
-func CastTelephonyDataRinging(structType interface{}) TelephonyDataRinging {
+func CastTelephonyDataRinging(structType any) TelephonyDataRinging {
 	if casted, ok := structType.(TelephonyDataRinging); ok {
 		return casted
 	}
@@ -146,7 +148,7 @@ func TelephonyDataRingingParseWithBuffer(ctx context.Context, readBuffer utils.R
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of TelephonyDataRinging")
 		}
 		if reserved != byte(0x01) {
-			Plc4xModelLog.Info().Fields(map[string]interface{}{
+			Plc4xModelLog.Info().Fields(map[string]any{
 				"expected value": byte(0x01),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
@@ -196,7 +198,7 @@ func (m *_TelephonyDataRinging) SerializeWithWriteBuffer(ctx context.Context, wr
 		{
 			var reserved byte = byte(0x01)
 			if m.reservedField0 != nil {
-				Plc4xModelLog.Info().Fields(map[string]interface{}{
+				Plc4xModelLog.Info().Fields(map[string]any{
 					"expected value": byte(0x01),
 					"got value":      reserved,
 				}).Msg("Overriding reserved field with unexpected value.")

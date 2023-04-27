@@ -34,6 +34,7 @@ const ResponseTermination_LF byte = 0x0A
 
 // ResponseTermination is the corresponding interface of ResponseTermination
 type ResponseTermination interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 }
@@ -73,7 +74,7 @@ func NewResponseTermination() *_ResponseTermination {
 }
 
 // Deprecated: use the interface for direct cast
-func CastResponseTermination(structType interface{}) ResponseTermination {
+func CastResponseTermination(structType any) ResponseTermination {
 	if casted, ok := structType.(ResponseTermination); ok {
 		return casted
 	}

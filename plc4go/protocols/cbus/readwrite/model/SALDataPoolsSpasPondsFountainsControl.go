@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // SALDataPoolsSpasPondsFountainsControl is the corresponding interface of SALDataPoolsSpasPondsFountainsControl
 type SALDataPoolsSpasPondsFountainsControl interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	SALData
@@ -96,7 +98,7 @@ func NewSALDataPoolsSpasPondsFountainsControl(poolsSpaPondsFountainsData Lightin
 }
 
 // Deprecated: use the interface for direct cast
-func CastSALDataPoolsSpasPondsFountainsControl(structType interface{}) SALDataPoolsSpasPondsFountainsControl {
+func CastSALDataPoolsSpasPondsFountainsControl(structType any) SALDataPoolsSpasPondsFountainsControl {
 	if casted, ok := structType.(SALDataPoolsSpasPondsFountainsControl); ok {
 		return casted
 	}

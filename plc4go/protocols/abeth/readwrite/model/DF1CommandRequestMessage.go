@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // DF1CommandRequestMessage is the corresponding interface of DF1CommandRequestMessage
 type DF1CommandRequestMessage interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	DF1RequestMessage
@@ -99,7 +101,7 @@ func NewDF1CommandRequestMessage(command DF1RequestCommand, destinationAddress u
 }
 
 // Deprecated: use the interface for direct cast
-func CastDF1CommandRequestMessage(structType interface{}) DF1CommandRequestMessage {
+func CastDF1CommandRequestMessage(structType any) DF1CommandRequestMessage {
 	if casted, ok := structType.(DF1CommandRequestMessage); ok {
 		return casted
 	}

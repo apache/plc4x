@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // ModbusPDUDiagnosticRequest is the corresponding interface of ModbusPDUDiagnosticRequest
 type ModbusPDUDiagnosticRequest interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	ModbusPDU
@@ -110,7 +112,7 @@ func NewModbusPDUDiagnosticRequest(subFunction uint16, data uint16) *_ModbusPDUD
 }
 
 // Deprecated: use the interface for direct cast
-func CastModbusPDUDiagnosticRequest(structType interface{}) ModbusPDUDiagnosticRequest {
+func CastModbusPDUDiagnosticRequest(structType any) ModbusPDUDiagnosticRequest {
 	if casted, ok := structType.(ModbusPDUDiagnosticRequest); ok {
 		return casted
 	}

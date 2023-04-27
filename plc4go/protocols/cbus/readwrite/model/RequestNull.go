@@ -33,6 +33,7 @@ const RequestNull_NULLINDICATOR uint32 = 0x6E756C6C
 
 // RequestNull is the corresponding interface of RequestNull
 type RequestNull interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	Request
@@ -96,7 +97,7 @@ func NewRequestNull(peekedByte RequestType, startingCR *RequestType, resetMode *
 }
 
 // Deprecated: use the interface for direct cast
-func CastRequestNull(structType interface{}) RequestNull {
+func CastRequestNull(structType any) RequestNull {
 	if casted, ok := structType.(RequestNull); ok {
 		return casted
 	}

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // NLMEstablishConnectionToNetwork is the corresponding interface of NLMEstablishConnectionToNetwork
 type NLMEstablishConnectionToNetwork interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	NLM
@@ -102,7 +104,7 @@ func NewNLMEstablishConnectionToNetwork(destinationNetworkAddress uint16, termin
 }
 
 // Deprecated: use the interface for direct cast
-func CastNLMEstablishConnectionToNetwork(structType interface{}) NLMEstablishConnectionToNetwork {
+func CastNLMEstablishConnectionToNetwork(structType any) NLMEstablishConnectionToNetwork {
 	if casted, ok := structType.(NLMEstablishConnectionToNetwork); ok {
 		return casted
 	}

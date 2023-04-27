@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -31,6 +32,8 @@ import (
 type EiPCommand uint16
 
 type IEiPCommand interface {
+	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 
@@ -84,8 +87,8 @@ func EiPCommandKnows(value uint16) bool {
 	return false
 }
 
-func CastEiPCommand(structType interface{}) EiPCommand {
-	castFunc := func(typ interface{}) EiPCommand {
+func CastEiPCommand(structType any) EiPCommand {
+	castFunc := func(typ any) EiPCommand {
 		if sEiPCommand, ok := typ.(EiPCommand); ok {
 			return sEiPCommand
 		}

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // CALDataRecall is the corresponding interface of CALDataRecall
 type CALDataRecall interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	CALData
@@ -101,7 +103,7 @@ func NewCALDataRecall(paramNo Parameter, count uint8, commandTypeContainer CALCo
 }
 
 // Deprecated: use the interface for direct cast
-func CastCALDataRecall(structType interface{}) CALDataRecall {
+func CastCALDataRecall(structType any) CALDataRecall {
 	if casted, ok := structType.(CALDataRecall); ok {
 		return casted
 	}

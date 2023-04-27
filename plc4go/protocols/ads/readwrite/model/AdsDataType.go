@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -31,6 +32,8 @@ import (
 type AdsDataType int8
 
 type IAdsDataType interface {
+	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 	NumBytes() uint16
 	PlcValueType() PlcValueType
@@ -663,8 +666,8 @@ func AdsDataTypeKnows(value int8) bool {
 	return false
 }
 
-func CastAdsDataType(structType interface{}) AdsDataType {
-	castFunc := func(typ interface{}) AdsDataType {
+func CastAdsDataType(structType any) AdsDataType {
+	castFunc := func(typ any) AdsDataType {
 		if sAdsDataType, ok := typ.(AdsDataType); ok {
 			return sAdsDataType
 		}

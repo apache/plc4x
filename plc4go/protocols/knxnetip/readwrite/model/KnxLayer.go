@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -31,6 +32,8 @@ import (
 type KnxLayer uint8
 
 type IKnxLayer interface {
+	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 
@@ -84,8 +87,8 @@ func KnxLayerKnows(value uint8) bool {
 	return false
 }
 
-func CastKnxLayer(structType interface{}) KnxLayer {
-	castFunc := func(typ interface{}) KnxLayer {
+func CastKnxLayer(structType any) KnxLayer {
+	castFunc := func(typ any) KnxLayer {
 		if sKnxLayer, ok := typ.(KnxLayer); ok {
 			return sKnxLayer
 		}

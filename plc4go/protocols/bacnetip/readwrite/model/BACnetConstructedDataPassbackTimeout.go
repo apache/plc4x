@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataPassbackTimeout is the corresponding interface of BACnetConstructedDataPassbackTimeout
 type BACnetConstructedDataPassbackTimeout interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataPassbackTimeout(passbackTimeout BACnetApplicationTa
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataPassbackTimeout(structType interface{}) BACnetConstructedDataPassbackTimeout {
+func CastBACnetConstructedDataPassbackTimeout(structType any) BACnetConstructedDataPassbackTimeout {
 	if casted, ok := structType.(BACnetConstructedDataPassbackTimeout); ok {
 		return casted
 	}

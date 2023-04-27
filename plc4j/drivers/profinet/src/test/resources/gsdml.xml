@@ -82,6 +82,49 @@
                   <GraphicItemRef Type="DeviceSymbol" GraphicItemTarget="PLC4X-Icon"/>
                </Graphics>
             </DeviceAccessPointItem>
+           <DeviceAccessPointItem ID="PLC4X 1" PNIO_Version="V2.4" PhysicalSlots="0..32" ModuleIdentNumber="0x00000001" MinDeviceInterval="32" DNS_CompatibleName="plc4x" FixedInSlots="0" ObjectUUID_LocalIndex="1" DeviceAccessSupported="false" MultipleWriteSupported="true" CheckDeviceID_Allowed="true" NameOfStationNotTransferable="false" LLDP_NoD_Supported="true" ResetToFactoryModes="1..2">
+             <ModuleInfo>
+               <Name TextId="PLC4X_Module"/>
+               <InfoText TextId="PLC4X_Info"/>
+               <VendorName Value="PLC4X"/>
+               <OrderNumber Value="000000"/>
+               <HardwareRelease Value="0.11"/>
+               <SoftwareRelease Value="0.11"/>
+             </ModuleInfo>
+             <CertificationInfo ConformanceClass="B" ApplicationClass="" NetloadClass="I"/>
+             <IOConfigData MaxInputLength="40" MaxOutputLength="40"/>
+             <UseableModules>
+               <ModuleItemRef ModuleItemTarget="PLC4X_DUMMY_MODULE" AllowedInSlots="1..4"/>
+               <ModuleItemRef ModuleItemTarget="PLC4X DUMMY MODULE" AllowedInSlots="1..4"/>
+               <ModuleItemRef ModuleItemTarget="1" AllowedInSlots="4"/>
+             </UseableModules>
+             <VirtualSubmoduleList>
+               <VirtualSubmoduleItem ID="PLC4X_1_V0" SubmoduleIdentNumber="0x00000001" Writeable_IM_Records="1 2 3" MayIssueProcessAlarm="false">
+                 <IOData/>
+                 <ModuleInfo>
+                   <Name TextId="Virtual_PLC4X_Module"/>
+                   <InfoText TextId="Virtual_PLC4X_Info"/>
+                 </ModuleInfo>
+               </VirtualSubmoduleItem>
+             </VirtualSubmoduleList>
+             <SystemDefinedSubmoduleList>
+               <InterfaceSubmoduleItem ID="PLC4X_1_S0" SubmoduleIdentNumber="0x00000001" SubslotNumber="32768" TextId="PLC4X_Module_System_0" SupportedRT_Classes="RT_CLASS_1" SupportedProtocols="SNMP;LLDP" NetworkComponentDiagnosisSupported="false" PTP_BoundarySupported="true" DCP_BoundarySupported="true">
+                 <ApplicationRelations StartupMode="Advanced">
+                   <TimingProperties SendClock="32" ReductionRatio="1 2 4 8 16 32 64 128 256 512"/>
+                 </ApplicationRelations>
+               </InterfaceSubmoduleItem>
+               <PortSubmoduleItem ID="PLC4X_1_S1" SubmoduleIdentNumber="0x00000002" SubslotNumber="32769" TextId="PLC4X_Module_System_1" MaxPortRxDelay="100" MaxPortTxDelay="30">
+                 <MAUTypeList>
+                   <MAUTypeItem Value="1"/>
+                   <MAUTypeItem Value="2"/>
+                   <MAUTypeItem Value="3"/>
+                 </MAUTypeList>
+               </PortSubmoduleItem>
+             </SystemDefinedSubmoduleList>
+             <Graphics>
+               <GraphicItemRef Type="DeviceSymbol" GraphicItemTarget="PLC4X-Icon"/>
+             </Graphics>
+           </DeviceAccessPointItem>
          </DeviceAccessPointList>
          <ModuleList>
             <ModuleItem ID="PLC4X_DUMMY_MODULE" ModuleIdentNumber="0x00000003">
@@ -115,6 +158,72 @@
                   </VirtualSubmoduleItem>
                </VirtualSubmoduleList>
             </ModuleItem>
+           <ModuleItem ID="PLC4X DUMMY MODULE" ModuleIdentNumber="0x00000004">
+             <ModuleInfo>
+               <Name TextId="PLC4X_INPUT_MODULE_NAME"/>
+               <InfoText TextId="PLC4X_INPUT_MODULE_INFO"/>
+               <HardwareRelease Value="0.11"/>
+               <SoftwareRelease Value="0.11"/>
+             </ModuleInfo>
+             <VirtualSubmoduleList>
+               <VirtualSubmoduleItem ID="PLC4X_DUMMY_MODULE_V0" SubmoduleIdentNumber="0x0002" MayIssueProcessAlarm="true">
+                 <IOData>
+                   <Input Consistency="None">
+                     <DataItem DataType="Unsigned8" TextId="PLC4X_INPUT_MODULE_INFO_32" UseAsBits="true">
+                       <BitDataItem BitOffset="0" TextId="PLC4X_INPUT_MODULE_INFO_32"/>
+                       <BitDataItem BitOffset="1" TextId="PLC4X_INPUT_MODULE_INFO_32"/>
+                       <BitDataItem BitOffset="2" TextId="PLC4X_INPUT_MODULE_INFO_32"/>
+                       <BitDataItem BitOffset="3" TextId="PLC4X_INPUT_MODULE_INFO_32"/>
+                       <BitDataItem BitOffset="4" TextId="PLC4X_INPUT_MODULE_INFO_32"/>
+                       <BitDataItem BitOffset="5" TextId="PLC4X_INPUT_MODULE_INFO_32"/>
+                       <BitDataItem BitOffset="6" TextId="PLC4X_INPUT_MODULE_INFO_32"/>
+                       <BitDataItem BitOffset="7" TextId="PLC4X_INPUT_MODULE_INFO_32"/>
+                     </DataItem>
+                     <DataItem DataType="Float32" TextId="PLC4X_INPUT_MODULE_INFO_FLOAT"/>
+                   </Input>
+                 </IOData>
+                 <ModuleInfo>
+                   <Name TextId="PLC4X_VIRTUAL_INPUT_MODULE_NAME"/>
+                   <InfoText TextId="PLC4X_VIRTUAL_INPUT_MODULE_INFO"/>
+                 </ModuleInfo>
+               </VirtualSubmoduleItem>
+             </VirtualSubmoduleList>
+           </ModuleItem>
+           <ModuleItem ID="1" ModuleIdentNumber="0x00000005">
+             <ModuleInfo>
+               <Name TextId="PLC4X_INPUT_MODULE_NAME"/>
+               <InfoText TextId="PLC4X_INPUT_MODULE_INFO"/>
+               <HardwareRelease Value="0.11"/>
+               <SoftwareRelease Value="0.11"/>
+             </ModuleInfo>
+             <VirtualSubmoduleList>
+               <VirtualSubmoduleItem ID="PLC4X_DUMMY_MODULE_V0" SubmoduleIdentNumber="0x0002" MayIssueProcessAlarm="true">
+                 <IOData>
+                   <Input Consistency="None">
+                     <DataItem DataType="Unsigned8" TextId="PLC4X_INPUT_MODULE_INFO_32" UseAsBits="true">
+                       <BitDataItem BitOffset="0" TextId="PLC4X_INPUT_MODULE_INFO_32"/>
+                       <BitDataItem BitOffset="1" TextId="PLC4X_INPUT_MODULE_INFO_32"/>
+                       <BitDataItem BitOffset="2" TextId="PLC4X_INPUT_MODULE_INFO_32"/>
+                       <BitDataItem BitOffset="3" TextId="PLC4X_INPUT_MODULE_INFO_32"/>
+                       <BitDataItem BitOffset="4" TextId="PLC4X_INPUT_MODULE_INFO_32"/>
+                       <BitDataItem BitOffset="5" TextId="PLC4X_INPUT_MODULE_INFO_32"/>
+                       <BitDataItem BitOffset="6" TextId="PLC4X_INPUT_MODULE_INFO_32"/>
+                       <BitDataItem BitOffset="7" TextId="PLC4X_INPUT_MODULE_INFO_32"/>
+                     </DataItem>
+                     <DataItem DataType="Float32" TextId="PLC4X_INPUT_MODULE_INFO_FLOAT"/>
+                   </Input>
+                   <Input Consistency="None">
+                     <DataItem Length="15" TextId="Inputs" DataType="OctetString" UseAsBits="true" />
+                     <DataItem DataType="Float32" TextId="PLC4X_INPUT_MODULE_INFO_FLOAT"/>
+                   </Input>
+                 </IOData>
+                 <ModuleInfo>
+                   <Name TextId="PLC4X_VIRTUAL_INPUT_MODULE_NAME"/>
+                   <InfoText TextId="PLC4X_VIRTUAL_INPUT_MODULE_INFO"/>
+                 </ModuleInfo>
+               </VirtualSubmoduleItem>
+             </VirtualSubmoduleList>
+           </ModuleItem>
          </ModuleList>
          <LogBookEntryList>
             <LogBookEntryItem Status="1">

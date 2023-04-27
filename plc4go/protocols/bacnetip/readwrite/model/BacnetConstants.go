@@ -33,6 +33,7 @@ const BacnetConstants_BACNETUDPDEFAULTPORT uint16 = uint16(47808)
 
 // BacnetConstants is the corresponding interface of BacnetConstants
 type BacnetConstants interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 }
@@ -68,7 +69,7 @@ func NewBacnetConstants() *_BacnetConstants {
 }
 
 // Deprecated: use the interface for direct cast
-func CastBacnetConstants(structType interface{}) BacnetConstants {
+func CastBacnetConstants(structType any) BacnetConstants {
 	if casted, ok := structType.(BacnetConstants); ok {
 		return casted
 	}

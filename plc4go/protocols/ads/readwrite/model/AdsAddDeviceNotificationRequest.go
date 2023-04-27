@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // AdsAddDeviceNotificationRequest is the corresponding interface of AdsAddDeviceNotificationRequest
 type AdsAddDeviceNotificationRequest interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	AmsPacket
@@ -148,7 +150,7 @@ func NewAdsAddDeviceNotificationRequest(indexGroup uint32, indexOffset uint32, l
 }
 
 // Deprecated: use the interface for direct cast
-func CastAdsAddDeviceNotificationRequest(structType interface{}) AdsAddDeviceNotificationRequest {
+func CastAdsAddDeviceNotificationRequest(structType any) AdsAddDeviceNotificationRequest {
 	if casted, ok := structType.(AdsAddDeviceNotificationRequest); ok {
 		return casted
 	}
@@ -265,7 +267,7 @@ func AdsAddDeviceNotificationRequestParseWithBuffer(ctx context.Context, readBuf
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of AdsAddDeviceNotificationRequest")
 		}
 		if reserved != uint64(0x0000) {
-			Plc4xModelLog.Info().Fields(map[string]interface{}{
+			Plc4xModelLog.Info().Fields(map[string]any{
 				"expected value": uint64(0x0000),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
@@ -282,7 +284,7 @@ func AdsAddDeviceNotificationRequestParseWithBuffer(ctx context.Context, readBuf
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of AdsAddDeviceNotificationRequest")
 		}
 		if reserved != uint64(0x0000) {
-			Plc4xModelLog.Info().Fields(map[string]interface{}{
+			Plc4xModelLog.Info().Fields(map[string]any{
 				"expected value": uint64(0x0000),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
@@ -378,7 +380,7 @@ func (m *_AdsAddDeviceNotificationRequest) SerializeWithWriteBuffer(ctx context.
 		{
 			var reserved uint64 = uint64(0x0000)
 			if m.reservedField0 != nil {
-				Plc4xModelLog.Info().Fields(map[string]interface{}{
+				Plc4xModelLog.Info().Fields(map[string]any{
 					"expected value": uint64(0x0000),
 					"got value":      reserved,
 				}).Msg("Overriding reserved field with unexpected value.")
@@ -394,7 +396,7 @@ func (m *_AdsAddDeviceNotificationRequest) SerializeWithWriteBuffer(ctx context.
 		{
 			var reserved uint64 = uint64(0x0000)
 			if m.reservedField1 != nil {
-				Plc4xModelLog.Info().Fields(map[string]interface{}{
+				Plc4xModelLog.Info().Fields(map[string]any{
 					"expected value": uint64(0x0000),
 					"got value":      reserved,
 				}).Msg("Overriding reserved field with unexpected value.")

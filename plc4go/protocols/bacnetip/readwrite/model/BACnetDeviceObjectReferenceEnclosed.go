@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetDeviceObjectReferenceEnclosed is the corresponding interface of BACnetDeviceObjectReferenceEnclosed
 type BACnetDeviceObjectReferenceEnclosed interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetOpeningTag returns OpeningTag (property field)
@@ -84,7 +86,7 @@ func NewBACnetDeviceObjectReferenceEnclosed(openingTag BACnetOpeningTag, objectR
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetDeviceObjectReferenceEnclosed(structType interface{}) BACnetDeviceObjectReferenceEnclosed {
+func CastBACnetDeviceObjectReferenceEnclosed(structType any) BACnetDeviceObjectReferenceEnclosed {
 	if casted, ok := structType.(BACnetDeviceObjectReferenceEnclosed); ok {
 		return casted
 	}

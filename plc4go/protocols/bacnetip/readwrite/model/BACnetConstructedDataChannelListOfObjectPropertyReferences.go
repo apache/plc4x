@@ -21,7 +21,7 @@ package model
 
 import (
 	"context"
-	spiContext "github.com/apache/plc4x/plc4go/spi/context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
@@ -31,6 +31,7 @@ import (
 
 // BACnetConstructedDataChannelListOfObjectPropertyReferences is the corresponding interface of BACnetConstructedDataChannelListOfObjectPropertyReferences
 type BACnetConstructedDataChannelListOfObjectPropertyReferences interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -131,7 +132,7 @@ func NewBACnetConstructedDataChannelListOfObjectPropertyReferences(numberOfDataE
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataChannelListOfObjectPropertyReferences(structType interface{}) BACnetConstructedDataChannelListOfObjectPropertyReferences {
+func CastBACnetConstructedDataChannelListOfObjectPropertyReferences(structType any) BACnetConstructedDataChannelListOfObjectPropertyReferences {
 	if casted, ok := structType.(BACnetConstructedDataChannelListOfObjectPropertyReferences); ok {
 		return casted
 	}
@@ -287,7 +288,7 @@ func (m *_BACnetConstructedDataChannelListOfObjectPropertyReferences) SerializeW
 		}
 		for _curItem, _element := range m.GetReferences() {
 			_ = _curItem
-			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetReferences()), _curItem)
+			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetReferences()), _curItem)
 			_ = arrayCtx
 			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 			if _elementErr != nil {

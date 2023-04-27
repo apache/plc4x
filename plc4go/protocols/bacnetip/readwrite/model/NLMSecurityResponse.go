@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // NLMSecurityResponse is the corresponding interface of NLMSecurityResponse
 type NLMSecurityResponse interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	NLM
@@ -118,7 +120,7 @@ func NewNLMSecurityResponse(responseCode SecurityResponseCode, originalMessageId
 }
 
 // Deprecated: use the interface for direct cast
-func CastNLMSecurityResponse(structType interface{}) NLMSecurityResponse {
+func CastNLMSecurityResponse(structType any) NLMSecurityResponse {
 	if casted, ok := structType.(NLMSecurityResponse); ok {
 		return casted
 	}

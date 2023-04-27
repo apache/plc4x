@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConfirmedServiceRequestReadPropertyConditional is the corresponding interface of BACnetConfirmedServiceRequestReadPropertyConditional
 type BACnetConfirmedServiceRequestReadPropertyConditional interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConfirmedServiceRequest
@@ -98,7 +100,7 @@ func NewBACnetConfirmedServiceRequestReadPropertyConditional(bytesOfRemovedServi
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConfirmedServiceRequestReadPropertyConditional(structType interface{}) BACnetConfirmedServiceRequestReadPropertyConditional {
+func CastBACnetConfirmedServiceRequestReadPropertyConditional(structType any) BACnetConfirmedServiceRequestReadPropertyConditional {
 	if casted, ok := structType.(BACnetConfirmedServiceRequestReadPropertyConditional); ok {
 		return casted
 	}

@@ -21,7 +21,7 @@ package model
 
 import (
 	"context"
-	spiContext "github.com/apache/plc4x/plc4go/spi/context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,6 +30,7 @@ import (
 
 // AssociatedValueType is the corresponding interface of AssociatedValueType
 type AssociatedValueType interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetReturnCode returns ReturnCode (property field)
@@ -89,7 +90,7 @@ func NewAssociatedValueType(returnCode DataTransportErrorCode, transportSize Dat
 }
 
 // Deprecated: use the interface for direct cast
-func CastAssociatedValueType(structType interface{}) AssociatedValueType {
+func CastAssociatedValueType(structType any) AssociatedValueType {
 	if casted, ok := structType.(AssociatedValueType); ok {
 		return casted
 	}
@@ -189,7 +190,7 @@ func AssociatedValueTypeParseWithBuffer(ctx context.Context, readBuffer utils.Re
 	{
 		_numItems := uint16(EventItemLength(readBuffer, valueLength))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := spiContext.CreateArrayContext(ctx, int(_numItems), int(_curItem))
+			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
 			_ = _curItem
 			_item, _err := readBuffer.ReadUint8("", 8)

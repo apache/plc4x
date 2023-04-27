@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetTagPayloadEnumerated is the corresponding interface of BACnetTagPayloadEnumerated
 type BACnetTagPayloadEnumerated interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetData returns Data (property field)
@@ -87,7 +89,7 @@ func NewBACnetTagPayloadEnumerated(data []byte, actualLength uint32) *_BACnetTag
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetTagPayloadEnumerated(structType interface{}) BACnetTagPayloadEnumerated {
+func CastBACnetTagPayloadEnumerated(structType any) BACnetTagPayloadEnumerated {
 	if casted, ok := structType.(BACnetTagPayloadEnumerated); ok {
 		return casted
 	}

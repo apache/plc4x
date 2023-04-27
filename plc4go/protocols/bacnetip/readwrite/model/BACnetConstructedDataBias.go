@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataBias is the corresponding interface of BACnetConstructedDataBias
 type BACnetConstructedDataBias interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataBias(bias BACnetApplicationTagReal, openingTag BACn
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataBias(structType interface{}) BACnetConstructedDataBias {
+func CastBACnetConstructedDataBias(structType any) BACnetConstructedDataBias {
 	if casted, ok := structType.(BACnetConstructedDataBias); ok {
 		return casted
 	}

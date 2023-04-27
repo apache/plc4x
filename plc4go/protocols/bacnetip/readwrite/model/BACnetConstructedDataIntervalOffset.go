@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataIntervalOffset is the corresponding interface of BACnetConstructedDataIntervalOffset
 type BACnetConstructedDataIntervalOffset interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataIntervalOffset(intervalOffset BACnetApplicationTagU
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataIntervalOffset(structType interface{}) BACnetConstructedDataIntervalOffset {
+func CastBACnetConstructedDataIntervalOffset(structType any) BACnetConstructedDataIntervalOffset {
 	if casted, ok := structType.(BACnetConstructedDataIntervalOffset); ok {
 		return casted
 	}

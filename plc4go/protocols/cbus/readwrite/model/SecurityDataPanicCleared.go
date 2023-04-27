@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // SecurityDataPanicCleared is the corresponding interface of SecurityDataPanicCleared
 type SecurityDataPanicCleared interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	SecurityData
@@ -75,7 +77,7 @@ func NewSecurityDataPanicCleared(commandTypeContainer SecurityCommandTypeContain
 }
 
 // Deprecated: use the interface for direct cast
-func CastSecurityDataPanicCleared(structType interface{}) SecurityDataPanicCleared {
+func CastSecurityDataPanicCleared(structType any) SecurityDataPanicCleared {
 	if casted, ok := structType.(SecurityDataPanicCleared); ok {
 		return casted
 	}

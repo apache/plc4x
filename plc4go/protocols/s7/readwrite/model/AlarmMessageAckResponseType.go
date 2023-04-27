@@ -21,7 +21,7 @@ package model
 
 import (
 	"context"
-	spiContext "github.com/apache/plc4x/plc4go/spi/context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,6 +30,7 @@ import (
 
 // AlarmMessageAckResponseType is the corresponding interface of AlarmMessageAckResponseType
 type AlarmMessageAckResponseType interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetFunctionId returns FunctionId (property field)
@@ -82,7 +83,7 @@ func NewAlarmMessageAckResponseType(functionId uint8, numberOfObjects uint8, mes
 }
 
 // Deprecated: use the interface for direct cast
-func CastAlarmMessageAckResponseType(structType interface{}) AlarmMessageAckResponseType {
+func CastAlarmMessageAckResponseType(structType any) AlarmMessageAckResponseType {
 	if casted, ok := structType.(AlarmMessageAckResponseType); ok {
 		return casted
 	}
@@ -157,7 +158,7 @@ func AlarmMessageAckResponseTypeParseWithBuffer(ctx context.Context, readBuffer 
 	{
 		_numItems := uint16(numberOfObjects)
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := spiContext.CreateArrayContext(ctx, int(_numItems), int(_curItem))
+			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
 			_ = _curItem
 			_item, _err := readBuffer.ReadUint8("", 8)

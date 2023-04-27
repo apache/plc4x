@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -31,6 +32,8 @@ import (
 type BACnetLoggingType uint8
 
 type IBACnetLoggingType interface {
+	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 
@@ -90,8 +93,8 @@ func BACnetLoggingTypeKnows(value uint8) bool {
 	return false
 }
 
-func CastBACnetLoggingType(structType interface{}) BACnetLoggingType {
-	castFunc := func(typ interface{}) BACnetLoggingType {
+func CastBACnetLoggingType(structType any) BACnetLoggingType {
+	castFunc := func(typ any) BACnetLoggingType {
 		if sBACnetLoggingType, ok := typ.(BACnetLoggingType); ok {
 			return sBACnetLoggingType
 		}

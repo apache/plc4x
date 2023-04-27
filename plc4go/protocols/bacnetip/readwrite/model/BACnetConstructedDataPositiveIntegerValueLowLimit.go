@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataPositiveIntegerValueLowLimit is the corresponding interface of BACnetConstructedDataPositiveIntegerValueLowLimit
 type BACnetConstructedDataPositiveIntegerValueLowLimit interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataPositiveIntegerValueLowLimit(lowLimit BACnetApplica
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataPositiveIntegerValueLowLimit(structType interface{}) BACnetConstructedDataPositiveIntegerValueLowLimit {
+func CastBACnetConstructedDataPositiveIntegerValueLowLimit(structType any) BACnetConstructedDataPositiveIntegerValueLowLimit {
 	if casted, ok := structType.(BACnetConstructedDataPositiveIntegerValueLowLimit); ok {
 		return casted
 	}

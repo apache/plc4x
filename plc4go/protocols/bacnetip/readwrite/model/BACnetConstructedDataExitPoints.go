@@ -21,7 +21,7 @@ package model
 
 import (
 	"context"
-	spiContext "github.com/apache/plc4x/plc4go/spi/context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,6 +30,7 @@ import (
 
 // BACnetConstructedDataExitPoints is the corresponding interface of BACnetConstructedDataExitPoints
 type BACnetConstructedDataExitPoints interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -103,7 +104,7 @@ func NewBACnetConstructedDataExitPoints(exitPoints []BACnetDeviceObjectReference
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataExitPoints(structType interface{}) BACnetConstructedDataExitPoints {
+func CastBACnetConstructedDataExitPoints(structType any) BACnetConstructedDataExitPoints {
 	if casted, ok := structType.(BACnetConstructedDataExitPoints); ok {
 		return casted
 	}
@@ -204,7 +205,7 @@ func (m *_BACnetConstructedDataExitPoints) SerializeWithWriteBuffer(ctx context.
 		}
 		for _curItem, _element := range m.GetExitPoints() {
 			_ = _curItem
-			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetExitPoints()), _curItem)
+			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetExitPoints()), _curItem)
 			_ = arrayCtx
 			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 			if _elementErr != nil {

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetNotificationParametersBufferReady is the corresponding interface of BACnetNotificationParametersBufferReady
 type BACnetNotificationParametersBufferReady interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetNotificationParameters
@@ -126,7 +128,7 @@ func NewBACnetNotificationParametersBufferReady(innerOpeningTag BACnetOpeningTag
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetNotificationParametersBufferReady(structType interface{}) BACnetNotificationParametersBufferReady {
+func CastBACnetNotificationParametersBufferReady(structType any) BACnetNotificationParametersBufferReady {
 	if casted, ok := structType.(BACnetNotificationParametersBufferReady); ok {
 		return casted
 	}

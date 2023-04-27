@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -31,6 +32,8 @@ import (
 type SecurityCommandTypeContainer uint8
 
 type ISecurityCommandTypeContainer interface {
+	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 	NumBytes() uint8
 	CommandType() SecurityCommandType
@@ -1783,8 +1786,8 @@ func SecurityCommandTypeContainerKnows(value uint8) bool {
 	return false
 }
 
-func CastSecurityCommandTypeContainer(structType interface{}) SecurityCommandTypeContainer {
-	castFunc := func(typ interface{}) SecurityCommandTypeContainer {
+func CastSecurityCommandTypeContainer(structType any) SecurityCommandTypeContainer {
+	castFunc := func(typ any) SecurityCommandTypeContainer {
 		if sSecurityCommandTypeContainer, ok := typ.(SecurityCommandTypeContainer); ok {
 			return sSecurityCommandTypeContainer
 		}

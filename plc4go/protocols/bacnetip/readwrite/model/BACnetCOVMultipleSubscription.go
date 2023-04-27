@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetCOVMultipleSubscription is the corresponding interface of BACnetCOVMultipleSubscription
 type BACnetCOVMultipleSubscription interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetRecipient returns Recipient (property field)
@@ -95,7 +97,7 @@ func NewBACnetCOVMultipleSubscription(recipient BACnetRecipientProcessEnclosed, 
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetCOVMultipleSubscription(structType interface{}) BACnetCOVMultipleSubscription {
+func CastBACnetCOVMultipleSubscription(structType any) BACnetCOVMultipleSubscription {
 	if casted, ok := structType.(BACnetCOVMultipleSubscription); ok {
 		return casted
 	}

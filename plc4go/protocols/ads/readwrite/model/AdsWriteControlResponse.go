@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // AdsWriteControlResponse is the corresponding interface of AdsWriteControlResponse
 type AdsWriteControlResponse interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	AmsPacket
@@ -105,7 +107,7 @@ func NewAdsWriteControlResponse(result ReturnCode, targetAmsNetId AmsNetId, targ
 }
 
 // Deprecated: use the interface for direct cast
-func CastAdsWriteControlResponse(structType interface{}) AdsWriteControlResponse {
+func CastAdsWriteControlResponse(structType any) AdsWriteControlResponse {
 	if casted, ok := structType.(AdsWriteControlResponse); ok {
 		return casted
 	}

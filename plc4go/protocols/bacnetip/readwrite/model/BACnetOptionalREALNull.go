@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetOptionalREALNull is the corresponding interface of BACnetOptionalREALNull
 type BACnetOptionalREALNull interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetOptionalREAL
@@ -92,7 +94,7 @@ func NewBACnetOptionalREALNull(nullValue BACnetApplicationTagNull, peekedTagHead
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetOptionalREALNull(structType interface{}) BACnetOptionalREALNull {
+func CastBACnetOptionalREALNull(structType any) BACnetOptionalREALNull {
 	if casted, ok := structType.(BACnetOptionalREALNull); ok {
 		return casted
 	}

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataTrendLogLogDeviceObjectProperty is the corresponding interface of BACnetConstructedDataTrendLogLogDeviceObjectProperty
 type BACnetConstructedDataTrendLogLogDeviceObjectProperty interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataTrendLogLogDeviceObjectProperty(logDeviceObjectProp
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataTrendLogLogDeviceObjectProperty(structType interface{}) BACnetConstructedDataTrendLogLogDeviceObjectProperty {
+func CastBACnetConstructedDataTrendLogLogDeviceObjectProperty(structType any) BACnetConstructedDataTrendLogLogDeviceObjectProperty {
 	if casted, ok := structType.(BACnetConstructedDataTrendLogLogDeviceObjectProperty); ok {
 		return casted
 	}

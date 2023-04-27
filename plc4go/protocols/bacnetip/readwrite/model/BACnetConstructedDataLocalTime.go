@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataLocalTime is the corresponding interface of BACnetConstructedDataLocalTime
 type BACnetConstructedDataLocalTime interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataLocalTime(localTime BACnetApplicationTagTime, openi
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataLocalTime(structType interface{}) BACnetConstructedDataLocalTime {
+func CastBACnetConstructedDataLocalTime(structType any) BACnetConstructedDataLocalTime {
 	if casted, ok := structType.(BACnetConstructedDataLocalTime); ok {
 		return casted
 	}

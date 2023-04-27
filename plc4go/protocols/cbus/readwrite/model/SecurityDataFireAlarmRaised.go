@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // SecurityDataFireAlarmRaised is the corresponding interface of SecurityDataFireAlarmRaised
 type SecurityDataFireAlarmRaised interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	SecurityData
@@ -75,7 +77,7 @@ func NewSecurityDataFireAlarmRaised(commandTypeContainer SecurityCommandTypeCont
 }
 
 // Deprecated: use the interface for direct cast
-func CastSecurityDataFireAlarmRaised(structType interface{}) SecurityDataFireAlarmRaised {
+func CastSecurityDataFireAlarmRaised(structType any) SecurityDataFireAlarmRaised {
 	if casted, ok := structType.(SecurityDataFireAlarmRaised); ok {
 		return casted
 	}

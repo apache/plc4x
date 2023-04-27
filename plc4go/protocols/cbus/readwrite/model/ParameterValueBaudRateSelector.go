@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // ParameterValueBaudRateSelector is the corresponding interface of ParameterValueBaudRateSelector
 type ParameterValueBaudRateSelector interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	ParameterValue
@@ -102,7 +104,7 @@ func NewParameterValueBaudRateSelector(value BaudRateSelector, data []byte, numB
 }
 
 // Deprecated: use the interface for direct cast
-func CastParameterValueBaudRateSelector(structType interface{}) ParameterValueBaudRateSelector {
+func CastParameterValueBaudRateSelector(structType any) ParameterValueBaudRateSelector {
 	if casted, ok := structType.(ParameterValueBaudRateSelector); ok {
 		return casted
 	}

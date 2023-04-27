@@ -33,6 +33,7 @@ const AlarmMessageAckObjectPushType_VARIABLESPEC uint8 = 0x12
 
 // AlarmMessageAckObjectPushType is the corresponding interface of AlarmMessageAckObjectPushType
 type AlarmMessageAckObjectPushType interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetLengthSpec returns LengthSpec (property field)
@@ -119,7 +120,7 @@ func NewAlarmMessageAckObjectPushType(lengthSpec uint8, syntaxId SyntaxIdType, n
 }
 
 // Deprecated: use the interface for direct cast
-func CastAlarmMessageAckObjectPushType(structType interface{}) AlarmMessageAckObjectPushType {
+func CastAlarmMessageAckObjectPushType(structType any) AlarmMessageAckObjectPushType {
 	if casted, ok := structType.(AlarmMessageAckObjectPushType); ok {
 		return casted
 	}

@@ -22,6 +22,7 @@ package model
 import (
 	"context"
 	"encoding/binary"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,6 +31,7 @@ import (
 
 // SearchResponse is the corresponding interface of SearchResponse
 type SearchResponse interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	KnxNetIpMessage
@@ -111,7 +113,7 @@ func NewSearchResponse(hpaiControlEndpoint HPAIControlEndpoint, dibDeviceInfo DI
 }
 
 // Deprecated: use the interface for direct cast
-func CastSearchResponse(structType interface{}) SearchResponse {
+func CastSearchResponse(structType any) SearchResponse {
 	if casted, ok := structType.(SearchResponse); ok {
 		return casted
 	}

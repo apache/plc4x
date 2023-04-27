@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataDaysRemaining is the corresponding interface of BACnetConstructedDataDaysRemaining
 type BACnetConstructedDataDaysRemaining interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataDaysRemaining(daysRemaining BACnetApplicationTagSig
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataDaysRemaining(structType interface{}) BACnetConstructedDataDaysRemaining {
+func CastBACnetConstructedDataDaysRemaining(structType any) BACnetConstructedDataDaysRemaining {
 	if casted, ok := structType.(BACnetConstructedDataDaysRemaining); ok {
 		return casted
 	}

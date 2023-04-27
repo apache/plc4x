@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // IdentifyReplyCommand is the corresponding interface of IdentifyReplyCommand
 type IdentifyReplyCommand interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetAttribute returns Attribute (discriminator field)
@@ -76,7 +78,7 @@ func NewIdentifyReplyCommand(numBytes uint8) *_IdentifyReplyCommand {
 }
 
 // Deprecated: use the interface for direct cast
-func CastIdentifyReplyCommand(structType interface{}) IdentifyReplyCommand {
+func CastIdentifyReplyCommand(structType any) IdentifyReplyCommand {
 	if casted, ok := structType.(IdentifyReplyCommand); ok {
 		return casted
 	}
@@ -119,7 +121,7 @@ func IdentifyReplyCommandParseWithBuffer(ctx context.Context, readBuffer utils.R
 		InitializeParent(IdentifyReplyCommand)
 		GetParent() IdentifyReplyCommand
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child IdentifyReplyCommandChildSerializeRequirement
 	var typeSwitchError error
 	switch {

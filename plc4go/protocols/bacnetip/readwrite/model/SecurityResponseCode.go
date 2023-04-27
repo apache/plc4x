@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -31,6 +32,8 @@ import (
 type SecurityResponseCode uint8
 
 type ISecurityResponseCode interface {
+	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 
@@ -222,8 +225,8 @@ func SecurityResponseCodeKnows(value uint8) bool {
 	return false
 }
 
-func CastSecurityResponseCode(structType interface{}) SecurityResponseCode {
-	castFunc := func(typ interface{}) SecurityResponseCode {
+func CastSecurityResponseCode(structType any) SecurityResponseCode {
+	castFunc := func(typ any) SecurityResponseCode {
 		if sSecurityResponseCode, ok := typ.(SecurityResponseCode); ok {
 			return sSecurityResponseCode
 		}

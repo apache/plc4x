@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // ApduDataExtGroupPropertyValueResponse is the corresponding interface of ApduDataExtGroupPropertyValueResponse
 type ApduDataExtGroupPropertyValueResponse interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	ApduDataExt
@@ -76,7 +78,7 @@ func NewApduDataExtGroupPropertyValueResponse(length uint8) *_ApduDataExtGroupPr
 }
 
 // Deprecated: use the interface for direct cast
-func CastApduDataExtGroupPropertyValueResponse(structType interface{}) ApduDataExtGroupPropertyValueResponse {
+func CastApduDataExtGroupPropertyValueResponse(structType any) ApduDataExtGroupPropertyValueResponse {
 	if casted, ok := structType.(ApduDataExtGroupPropertyValueResponse); ok {
 		return casted
 	}

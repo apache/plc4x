@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetContextTagBoolean is the corresponding interface of BACnetContextTagBoolean
 type BACnetContextTagBoolean interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetContextTag
@@ -121,7 +123,7 @@ func NewBACnetContextTagBoolean(value uint8, payload BACnetTagPayloadBoolean, he
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetContextTagBoolean(structType interface{}) BACnetContextTagBoolean {
+func CastBACnetContextTagBoolean(structType any) BACnetContextTagBoolean {
 	if casted, ok := structType.(BACnetContextTagBoolean); ok {
 		return casted
 	}

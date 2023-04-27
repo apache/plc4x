@@ -45,7 +45,7 @@ func (m PlcREAL) GetRaw() []byte {
 	return theBytes
 }
 
-func (m PlcREAL) GetBoolean() bool {
+func (m PlcREAL) GetBool() bool {
 	if m.value == 0.0 {
 		return false
 	}

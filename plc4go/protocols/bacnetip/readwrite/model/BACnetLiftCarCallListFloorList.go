@@ -21,7 +21,7 @@ package model
 
 import (
 	"context"
-	spiContext "github.com/apache/plc4x/plc4go/spi/context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,6 +30,7 @@ import (
 
 // BACnetLiftCarCallListFloorList is the corresponding interface of BACnetLiftCarCallListFloorList
 type BACnetLiftCarCallListFloorList interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetOpeningTag returns OpeningTag (property field)
@@ -85,7 +86,7 @@ func NewBACnetLiftCarCallListFloorList(openingTag BACnetOpeningTag, floorNumbers
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetLiftCarCallListFloorList(structType interface{}) BACnetLiftCarCallListFloorList {
+func CastBACnetLiftCarCallListFloorList(structType any) BACnetLiftCarCallListFloorList {
 	if casted, ok := structType.(BACnetLiftCarCallListFloorList); ok {
 		return casted
 	}
@@ -226,7 +227,7 @@ func (m *_BACnetLiftCarCallListFloorList) SerializeWithWriteBuffer(ctx context.C
 	}
 	for _curItem, _element := range m.GetFloorNumbers() {
 		_ = _curItem
-		arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetFloorNumbers()), _curItem)
+		arrayCtx := utils.CreateArrayContext(ctx, len(m.GetFloorNumbers()), _curItem)
 		_ = arrayCtx
 		_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 		if _elementErr != nil {

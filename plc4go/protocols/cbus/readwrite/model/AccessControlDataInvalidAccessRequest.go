@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // AccessControlDataInvalidAccessRequest is the corresponding interface of AccessControlDataInvalidAccessRequest
 type AccessControlDataInvalidAccessRequest interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	AccessControlData
@@ -102,7 +104,7 @@ func NewAccessControlDataInvalidAccessRequest(accessControlDirection AccessContr
 }
 
 // Deprecated: use the interface for direct cast
-func CastAccessControlDataInvalidAccessRequest(structType interface{}) AccessControlDataInvalidAccessRequest {
+func CastAccessControlDataInvalidAccessRequest(structType any) AccessControlDataInvalidAccessRequest {
 	if casted, ok := structType.(AccessControlDataInvalidAccessRequest); ok {
 		return casted
 	}

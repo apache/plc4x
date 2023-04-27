@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -31,6 +32,8 @@ import (
 type ComObjectTableAddresses uint16
 
 type IComObjectTableAddresses interface {
+	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 	ComObjectTableAddress() uint16
 }
@@ -18844,8 +18847,8 @@ func ComObjectTableAddressesKnows(value uint16) bool {
 	return false
 }
 
-func CastComObjectTableAddresses(structType interface{}) ComObjectTableAddresses {
-	castFunc := func(typ interface{}) ComObjectTableAddresses {
+func CastComObjectTableAddresses(structType any) ComObjectTableAddresses {
+	castFunc := func(typ any) ComObjectTableAddresses {
 		if sComObjectTableAddresses, ok := typ.(ComObjectTableAddresses); ok {
 			return sComObjectTableAddresses
 		}

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataMinimumOffTime is the corresponding interface of BACnetConstructedDataMinimumOffTime
 type BACnetConstructedDataMinimumOffTime interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataMinimumOffTime(minimumOffTime BACnetApplicationTagU
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataMinimumOffTime(structType interface{}) BACnetConstructedDataMinimumOffTime {
+func CastBACnetConstructedDataMinimumOffTime(structType any) BACnetConstructedDataMinimumOffTime {
 	if casted, ok := structType.(BACnetConstructedDataMinimumOffTime); ok {
 		return casted
 	}

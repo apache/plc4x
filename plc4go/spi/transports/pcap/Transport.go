@@ -22,6 +22,7 @@ package pcap
 import (
 	"bufio"
 	"bytes"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/transports"
 	"github.com/gopacket/gopacket"
 	"github.com/gopacket/gopacket/layers"
@@ -76,6 +77,10 @@ func (m Transport) CreateTransportInstance(transportUrl url.URL, options map[str
 	}
 
 	return NewPcapTransportInstance(transportUrl.Path, transportType, portRange, speedFactor, &m), nil
+}
+
+func (m Transport) String() string {
+	return m.GetTransportCode() + "(" + m.GetTransportName() + ")"
 }
 
 type TransportInstance struct {
@@ -186,10 +191,14 @@ func (m *TransportInstance) IsConnected() bool {
 	return m.connected
 }
 
-func (m *TransportInstance) Write(_ []uint8) error {
+func (m *TransportInstance) Write(_ []byte) error {
 	panic("Write to pcap not supported")
 }
 
 func (m *TransportInstance) GetReader() *bufio.Reader {
 	return m.reader
+}
+
+func (m *TransportInstance) String() string {
+	return fmt.Sprintf("pcap:%s(%s)x%f", m.transportFile, m.portRange, m.speedFactor)
 }

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataZoneTo is the corresponding interface of BACnetConstructedDataZoneTo
 type BACnetConstructedDataZoneTo interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataZoneTo(zoneTo BACnetDeviceObjectReference, openingT
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataZoneTo(structType interface{}) BACnetConstructedDataZoneTo {
+func CastBACnetConstructedDataZoneTo(structType any) BACnetConstructedDataZoneTo {
 	if casted, ok := structType.(BACnetConstructedDataZoneTo); ok {
 		return casted
 	}

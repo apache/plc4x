@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetAuthenticationPolicy is the corresponding interface of BACnetAuthenticationPolicy
 type BACnetAuthenticationPolicy interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetPolicy returns Policy (property field)
@@ -81,7 +83,7 @@ func NewBACnetAuthenticationPolicy(policy BACnetAuthenticationPolicyList, orderE
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetAuthenticationPolicy(structType interface{}) BACnetAuthenticationPolicy {
+func CastBACnetAuthenticationPolicy(structType any) BACnetAuthenticationPolicy {
 	if casted, ok := structType.(BACnetAuthenticationPolicy); ok {
 		return casted
 	}

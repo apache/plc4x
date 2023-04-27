@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // ModbusPDUError is the corresponding interface of ModbusPDUError
 type ModbusPDUError interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	ModbusPDU
@@ -102,7 +104,7 @@ func NewModbusPDUError(exceptionCode ModbusErrorCode) *_ModbusPDUError {
 }
 
 // Deprecated: use the interface for direct cast
-func CastModbusPDUError(structType interface{}) ModbusPDUError {
+func CastModbusPDUError(structType any) ModbusPDUError {
 	if casted, ok := structType.(ModbusPDUError); ok {
 		return casted
 	}

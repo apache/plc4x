@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // IdentifyReplyCommandCurrentSenseLevels is the corresponding interface of IdentifyReplyCommandCurrentSenseLevels
 type IdentifyReplyCommandCurrentSenseLevels interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	IdentifyReplyCommand
@@ -94,7 +96,7 @@ func NewIdentifyReplyCommandCurrentSenseLevels(currentSenseLevels []byte, numByt
 }
 
 // Deprecated: use the interface for direct cast
-func CastIdentifyReplyCommandCurrentSenseLevels(structType interface{}) IdentifyReplyCommandCurrentSenseLevels {
+func CastIdentifyReplyCommandCurrentSenseLevels(structType any) IdentifyReplyCommandCurrentSenseLevels {
 	if casted, ok := structType.(IdentifyReplyCommandCurrentSenseLevels); ok {
 		return casted
 	}

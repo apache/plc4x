@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
@@ -30,6 +31,7 @@ import (
 
 // ListOfCovNotificationsValue is the corresponding interface of ListOfCovNotificationsValue
 type ListOfCovNotificationsValue interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetPropertyIdentifier returns PropertyIdentifier (property field)
@@ -92,7 +94,7 @@ func NewListOfCovNotificationsValue(propertyIdentifier BACnetPropertyIdentifierT
 }
 
 // Deprecated: use the interface for direct cast
-func CastListOfCovNotificationsValue(structType interface{}) ListOfCovNotificationsValue {
+func CastListOfCovNotificationsValue(structType any) ListOfCovNotificationsValue {
 	if casted, ok := structType.(ListOfCovNotificationsValue); ok {
 		return casted
 	}
@@ -184,7 +186,7 @@ func ListOfCovNotificationsValueParseWithBuffer(ctx context.Context, readBuffer 
 	if pullErr := readBuffer.PullContext("propertyValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for propertyValue")
 	}
-	_propertyValue, _propertyValueErr := BACnetConstructedDataParseWithBuffer(ctx, readBuffer, uint8(uint8(2)), BACnetObjectType(objectTypeArgument), BACnetPropertyIdentifier(propertyIdentifier.GetValue()), (CastBACnetTagPayloadUnsignedInteger(utils.InlineIf(bool((arrayIndex) != (nil)), func() interface{} { return CastBACnetTagPayloadUnsignedInteger((arrayIndex).GetPayload()) }, func() interface{} { return CastBACnetTagPayloadUnsignedInteger(nil) }))))
+	_propertyValue, _propertyValueErr := BACnetConstructedDataParseWithBuffer(ctx, readBuffer, uint8(uint8(2)), BACnetObjectType(objectTypeArgument), BACnetPropertyIdentifier(propertyIdentifier.GetValue()), (CastBACnetTagPayloadUnsignedInteger(utils.InlineIf(bool((arrayIndex) != (nil)), func() any { return CastBACnetTagPayloadUnsignedInteger((arrayIndex).GetPayload()) }, func() any { return CastBACnetTagPayloadUnsignedInteger(nil) }))))
 	if _propertyValueErr != nil {
 		return nil, errors.Wrap(_propertyValueErr, "Error parsing 'propertyValue' field of ListOfCovNotificationsValue")
 	}

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataNetworkNumberQuality is the corresponding interface of BACnetConstructedDataNetworkNumberQuality
 type BACnetConstructedDataNetworkNumberQuality interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataNetworkNumberQuality(networkNumberQuality BACnetNet
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataNetworkNumberQuality(structType interface{}) BACnetConstructedDataNetworkNumberQuality {
+func CastBACnetConstructedDataNetworkNumberQuality(structType any) BACnetConstructedDataNetworkNumberQuality {
 	if casted, ok := structType.(BACnetConstructedDataNetworkNumberQuality); ok {
 		return casted
 	}

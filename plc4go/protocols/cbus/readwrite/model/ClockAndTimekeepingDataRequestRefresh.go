@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // ClockAndTimekeepingDataRequestRefresh is the corresponding interface of ClockAndTimekeepingDataRequestRefresh
 type ClockAndTimekeepingDataRequestRefresh interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	ClockAndTimekeepingData
@@ -75,7 +77,7 @@ func NewClockAndTimekeepingDataRequestRefresh(commandTypeContainer ClockAndTimek
 }
 
 // Deprecated: use the interface for direct cast
-func CastClockAndTimekeepingDataRequestRefresh(structType interface{}) ClockAndTimekeepingDataRequestRefresh {
+func CastClockAndTimekeepingDataRequestRefresh(structType any) ClockAndTimekeepingDataRequestRefresh {
 	if casted, ok := structType.(ClockAndTimekeepingDataRequestRefresh); ok {
 		return casted
 	}

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // DF1ResponseMessage is the corresponding interface of DF1ResponseMessage
 type DF1ResponseMessage interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetCommandCode returns CommandCode (discriminator field)
@@ -117,7 +119,7 @@ func NewDF1ResponseMessage(destinationAddress uint8, sourceAddress uint8, status
 }
 
 // Deprecated: use the interface for direct cast
-func CastDF1ResponseMessage(structType interface{}) DF1ResponseMessage {
+func CastDF1ResponseMessage(structType any) DF1ResponseMessage {
 	if casted, ok := structType.(DF1ResponseMessage); ok {
 		return casted
 	}
@@ -182,7 +184,7 @@ func DF1ResponseMessageParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of DF1ResponseMessage")
 		}
 		if reserved != uint8(0x00) {
-			Plc4xModelLog.Info().Fields(map[string]interface{}{
+			Plc4xModelLog.Info().Fields(map[string]any{
 				"expected value": uint8(0x00),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
@@ -213,7 +215,7 @@ func DF1ResponseMessageParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of DF1ResponseMessage")
 		}
 		if reserved != uint8(0x00) {
-			Plc4xModelLog.Info().Fields(map[string]interface{}{
+			Plc4xModelLog.Info().Fields(map[string]any{
 				"expected value": uint8(0x00),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
@@ -248,7 +250,7 @@ func DF1ResponseMessageParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 		InitializeParent(DF1ResponseMessage, uint8, uint8, uint8, uint16)
 		GetParent() DF1ResponseMessage
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child DF1ResponseMessageChildSerializeRequirement
 	var typeSwitchError error
 	switch {
@@ -287,7 +289,7 @@ func (pm *_DF1ResponseMessage) SerializeParent(ctx context.Context, writeBuffer 
 	{
 		var reserved uint8 = uint8(0x00)
 		if pm.reservedField0 != nil {
-			Plc4xModelLog.Info().Fields(map[string]interface{}{
+			Plc4xModelLog.Info().Fields(map[string]any{
 				"expected value": uint8(0x00),
 				"got value":      reserved,
 			}).Msg("Overriding reserved field with unexpected value.")
@@ -317,7 +319,7 @@ func (pm *_DF1ResponseMessage) SerializeParent(ctx context.Context, writeBuffer 
 	{
 		var reserved uint8 = uint8(0x00)
 		if pm.reservedField1 != nil {
-			Plc4xModelLog.Info().Fields(map[string]interface{}{
+			Plc4xModelLog.Info().Fields(map[string]any{
 				"expected value": uint8(0x00),
 				"got value":      reserved,
 			}).Msg("Overriding reserved field with unexpected value.")

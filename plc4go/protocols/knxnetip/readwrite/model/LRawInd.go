@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // LRawInd is the corresponding interface of LRawInd
 type LRawInd interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	CEMI
@@ -76,7 +78,7 @@ func NewLRawInd(size uint16) *_LRawInd {
 }
 
 // Deprecated: use the interface for direct cast
-func CastLRawInd(structType interface{}) LRawInd {
+func CastLRawInd(structType any) LRawInd {
 	if casted, ok := structType.(LRawInd); ok {
 		return casted
 	}

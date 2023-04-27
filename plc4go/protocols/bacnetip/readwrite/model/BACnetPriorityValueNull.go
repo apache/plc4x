@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetPriorityValueNull is the corresponding interface of BACnetPriorityValueNull
 type BACnetPriorityValueNull interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetPriorityValue
@@ -92,7 +94,7 @@ func NewBACnetPriorityValueNull(nullValue BACnetApplicationTagNull, peekedTagHea
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetPriorityValueNull(structType interface{}) BACnetPriorityValueNull {
+func CastBACnetPriorityValueNull(structType any) BACnetPriorityValueNull {
 	if casted, ok := structType.(BACnetPriorityValueNull); ok {
 		return casted
 	}

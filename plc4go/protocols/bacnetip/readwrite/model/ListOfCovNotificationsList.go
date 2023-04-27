@@ -21,7 +21,7 @@ package model
 
 import (
 	"context"
-	spiContext "github.com/apache/plc4x/plc4go/spi/context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,6 +30,7 @@ import (
 
 // ListOfCovNotificationsList is the corresponding interface of ListOfCovNotificationsList
 type ListOfCovNotificationsList interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetOpeningTag returns OpeningTag (property field)
@@ -85,7 +86,7 @@ func NewListOfCovNotificationsList(openingTag BACnetOpeningTag, specifications [
 }
 
 // Deprecated: use the interface for direct cast
-func CastListOfCovNotificationsList(structType interface{}) ListOfCovNotificationsList {
+func CastListOfCovNotificationsList(structType any) ListOfCovNotificationsList {
 	if casted, ok := structType.(ListOfCovNotificationsList); ok {
 		return casted
 	}
@@ -226,7 +227,7 @@ func (m *_ListOfCovNotificationsList) SerializeWithWriteBuffer(ctx context.Conte
 	}
 	for _curItem, _element := range m.GetSpecifications() {
 		_ = _curItem
-		arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetSpecifications()), _curItem)
+		arrayCtx := utils.CreateArrayContext(ctx, len(m.GetSpecifications()), _curItem)
 		_ = arrayCtx
 		_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 		if _elementErr != nil {

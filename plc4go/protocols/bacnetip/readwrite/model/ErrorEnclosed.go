@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // ErrorEnclosed is the corresponding interface of ErrorEnclosed
 type ErrorEnclosed interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetOpeningTag returns OpeningTag (property field)
@@ -84,7 +86,7 @@ func NewErrorEnclosed(openingTag BACnetOpeningTag, error Error, closingTag BACne
 }
 
 // Deprecated: use the interface for direct cast
-func CastErrorEnclosed(structType interface{}) ErrorEnclosed {
+func CastErrorEnclosed(structType any) ErrorEnclosed {
 	if casted, ok := structType.(ErrorEnclosed); ok {
 		return casted
 	}

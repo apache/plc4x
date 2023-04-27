@@ -29,7 +29,7 @@ import (
 )
 
 type SubscriptionEvent struct {
-	internalModel.DefaultPlcSubscriptionEvent
+	*internalModel.DefaultPlcSubscriptionEvent
 	addresses map[string][]byte
 }
 
@@ -37,7 +37,8 @@ func NewSubscriptionEvent(tags map[string]apiModel.PlcTag, types map[string]inte
 	intervals map[string]time.Duration, responseCodes map[string]apiModel.PlcResponseCode,
 	addresses map[string][]byte, values map[string]values.PlcValue) SubscriptionEvent {
 	subscriptionEvent := SubscriptionEvent{addresses: addresses}
-	subscriptionEvent.DefaultPlcSubscriptionEvent = internalModel.NewDefaultPlcSubscriptionEvent(&subscriptionEvent, tags, types, intervals, responseCodes, values)
+	event := internalModel.NewDefaultPlcSubscriptionEvent(&subscriptionEvent, tags, types, intervals, responseCodes, values)
+	subscriptionEvent.DefaultPlcSubscriptionEvent = event.(*internalModel.DefaultPlcSubscriptionEvent)
 	return subscriptionEvent
 }
 

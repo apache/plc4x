@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetOptionalBinaryPV is the corresponding interface of BACnetOptionalBinaryPV
 type BACnetOptionalBinaryPV interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetPeekedTagHeader returns PeekedTagHeader (property field)
@@ -105,7 +107,7 @@ func NewBACnetOptionalBinaryPV(peekedTagHeader BACnetTagHeader) *_BACnetOptional
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetOptionalBinaryPV(structType interface{}) BACnetOptionalBinaryPV {
+func CastBACnetOptionalBinaryPV(structType any) BACnetOptionalBinaryPV {
 	if casted, ok := structType.(BACnetOptionalBinaryPV); ok {
 		return casted
 	}
@@ -163,7 +165,7 @@ func BACnetOptionalBinaryPVParseWithBuffer(ctx context.Context, readBuffer utils
 		InitializeParent(BACnetOptionalBinaryPV, BACnetTagHeader)
 		GetParent() BACnetOptionalBinaryPV
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child BACnetOptionalBinaryPVChildSerializeRequirement
 	var typeSwitchError error
 	switch {

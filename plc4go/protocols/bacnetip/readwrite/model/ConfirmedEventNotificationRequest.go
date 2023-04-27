@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
@@ -30,6 +31,7 @@ import (
 
 // ConfirmedEventNotificationRequest is the corresponding interface of ConfirmedEventNotificationRequest
 type ConfirmedEventNotificationRequest interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetProcessIdentifier returns ProcessIdentifier (property field)
@@ -152,7 +154,7 @@ func NewConfirmedEventNotificationRequest(processIdentifier BACnetContextTagUnsi
 }
 
 // Deprecated: use the interface for direct cast
-func CastConfirmedEventNotificationRequest(structType interface{}) ConfirmedEventNotificationRequest {
+func CastConfirmedEventNotificationRequest(structType any) ConfirmedEventNotificationRequest {
 	if casted, ok := structType.(ConfirmedEventNotificationRequest); ok {
 		return casted
 	}

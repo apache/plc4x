@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // TelephonyDataRejectIncomingCall is the corresponding interface of TelephonyDataRejectIncomingCall
 type TelephonyDataRejectIncomingCall interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	TelephonyData
@@ -75,7 +77,7 @@ func NewTelephonyDataRejectIncomingCall(commandTypeContainer TelephonyCommandTyp
 }
 
 // Deprecated: use the interface for direct cast
-func CastTelephonyDataRejectIncomingCall(structType interface{}) TelephonyDataRejectIncomingCall {
+func CastTelephonyDataRejectIncomingCall(structType any) TelephonyDataRejectIncomingCall {
 	if casted, ok := structType.(TelephonyDataRejectIncomingCall); ok {
 		return casted
 	}

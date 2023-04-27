@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetNetworkSecurityPolicy is the corresponding interface of BACnetNetworkSecurityPolicy
 type BACnetNetworkSecurityPolicy interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetPortId returns PortId (property field)
@@ -74,7 +76,7 @@ func NewBACnetNetworkSecurityPolicy(portId BACnetContextTagUnsignedInteger, secu
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetNetworkSecurityPolicy(structType interface{}) BACnetNetworkSecurityPolicy {
+func CastBACnetNetworkSecurityPolicy(structType any) BACnetNetworkSecurityPolicy {
 	if casted, ok := structType.(BACnetNetworkSecurityPolicy); ok {
 		return casted
 	}

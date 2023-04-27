@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // NPDUNetworkPriorityTagged is the corresponding interface of NPDUNetworkPriorityTagged
 type NPDUNetworkPriorityTagged interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetHeader returns Header (property field)
@@ -78,7 +80,7 @@ func NewNPDUNetworkPriorityTagged(header BACnetTagHeader, value NPDUNetworkPrior
 }
 
 // Deprecated: use the interface for direct cast
-func CastNPDUNetworkPriorityTagged(structType interface{}) NPDUNetworkPriorityTagged {
+func CastNPDUNetworkPriorityTagged(structType any) NPDUNetworkPriorityTagged {
 	if casted, ok := structType.(NPDUNetworkPriorityTagged); ok {
 		return casted
 	}

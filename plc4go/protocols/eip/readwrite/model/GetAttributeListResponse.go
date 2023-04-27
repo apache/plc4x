@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // GetAttributeListResponse is the corresponding interface of GetAttributeListResponse
 type GetAttributeListResponse interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	CipService
@@ -84,7 +86,7 @@ func NewGetAttributeListResponse(serviceLen uint16) *_GetAttributeListResponse {
 }
 
 // Deprecated: use the interface for direct cast
-func CastGetAttributeListResponse(structType interface{}) GetAttributeListResponse {
+func CastGetAttributeListResponse(structType any) GetAttributeListResponse {
 	if casted, ok := structType.(GetAttributeListResponse); ok {
 		return casted
 	}

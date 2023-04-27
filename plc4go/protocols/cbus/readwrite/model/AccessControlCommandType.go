@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -31,6 +32,8 @@ import (
 type AccessControlCommandType uint8
 
 type IAccessControlCommandType interface {
+	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 	NumberOfArguments() uint8
 }
@@ -164,8 +167,8 @@ func AccessControlCommandTypeKnows(value uint8) bool {
 	return false
 }
 
-func CastAccessControlCommandType(structType interface{}) AccessControlCommandType {
-	castFunc := func(typ interface{}) AccessControlCommandType {
+func CastAccessControlCommandType(structType any) AccessControlCommandType {
+	castFunc := func(typ any) AccessControlCommandType {
 		if sAccessControlCommandType, ok := typ.(AccessControlCommandType); ok {
 			return sAccessControlCommandType
 		}

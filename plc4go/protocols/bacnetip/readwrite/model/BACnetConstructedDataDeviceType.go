@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataDeviceType is the corresponding interface of BACnetConstructedDataDeviceType
 type BACnetConstructedDataDeviceType interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataDeviceType(deviceType BACnetApplicationTagCharacter
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataDeviceType(structType interface{}) BACnetConstructedDataDeviceType {
+func CastBACnetConstructedDataDeviceType(structType any) BACnetConstructedDataDeviceType {
 	if casted, ok := structType.(BACnetConstructedDataDeviceType); ok {
 		return casted
 	}

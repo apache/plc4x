@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataExtendedTimeEnable is the corresponding interface of BACnetConstructedDataExtendedTimeEnable
 type BACnetConstructedDataExtendedTimeEnable interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataExtendedTimeEnable(extendedTimeEnable BACnetApplica
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataExtendedTimeEnable(structType interface{}) BACnetConstructedDataExtendedTimeEnable {
+func CastBACnetConstructedDataExtendedTimeEnable(structType any) BACnetConstructedDataExtendedTimeEnable {
 	if casted, ok := structType.(BACnetConstructedDataExtendedTimeEnable); ok {
 		return casted
 	}

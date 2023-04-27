@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // NPDUControl is the corresponding interface of NPDUControl
 type NPDUControl interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetMessageTypeFieldPresent returns MessageTypeFieldPresent (property field)
@@ -98,7 +100,7 @@ func NewNPDUControl(messageTypeFieldPresent bool, destinationSpecified bool, sou
 }
 
 // Deprecated: use the interface for direct cast
-func CastNPDUControl(structType interface{}) NPDUControl {
+func CastNPDUControl(structType any) NPDUControl {
 	if casted, ok := structType.(NPDUControl); ok {
 		return casted
 	}
@@ -171,7 +173,7 @@ func NPDUControlParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of NPDUControl")
 		}
 		if reserved != uint8(0) {
-			Plc4xModelLog.Info().Fields(map[string]interface{}{
+			Plc4xModelLog.Info().Fields(map[string]any{
 				"expected value": uint8(0),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
@@ -195,7 +197,7 @@ func NPDUControlParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of NPDUControl")
 		}
 		if reserved != uint8(0) {
-			Plc4xModelLog.Info().Fields(map[string]interface{}{
+			Plc4xModelLog.Info().Fields(map[string]any{
 				"expected value": uint8(0),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
@@ -273,7 +275,7 @@ func (m *_NPDUControl) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 	{
 		var reserved uint8 = uint8(0)
 		if m.reservedField0 != nil {
-			Plc4xModelLog.Info().Fields(map[string]interface{}{
+			Plc4xModelLog.Info().Fields(map[string]any{
 				"expected value": uint8(0),
 				"got value":      reserved,
 			}).Msg("Overriding reserved field with unexpected value.")
@@ -296,7 +298,7 @@ func (m *_NPDUControl) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 	{
 		var reserved uint8 = uint8(0)
 		if m.reservedField1 != nil {
-			Plc4xModelLog.Info().Fields(map[string]interface{}{
+			Plc4xModelLog.Info().Fields(map[string]any{
 				"expected value": uint8(0),
 				"got value":      reserved,
 			}).Msg("Overriding reserved field with unexpected value.")

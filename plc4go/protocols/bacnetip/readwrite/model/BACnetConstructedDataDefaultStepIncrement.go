@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataDefaultStepIncrement is the corresponding interface of BACnetConstructedDataDefaultStepIncrement
 type BACnetConstructedDataDefaultStepIncrement interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataDefaultStepIncrement(defaultStepIncrement BACnetApp
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataDefaultStepIncrement(structType interface{}) BACnetConstructedDataDefaultStepIncrement {
+func CastBACnetConstructedDataDefaultStepIncrement(structType any) BACnetConstructedDataDefaultStepIncrement {
 	if casted, ok := structType.(BACnetConstructedDataDefaultStepIncrement); ok {
 		return casted
 	}

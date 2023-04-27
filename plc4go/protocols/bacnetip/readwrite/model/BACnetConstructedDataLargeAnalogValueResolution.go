@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataLargeAnalogValueResolution is the corresponding interface of BACnetConstructedDataLargeAnalogValueResolution
 type BACnetConstructedDataLargeAnalogValueResolution interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataLargeAnalogValueResolution(resolution BACnetApplica
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataLargeAnalogValueResolution(structType interface{}) BACnetConstructedDataLargeAnalogValueResolution {
+func CastBACnetConstructedDataLargeAnalogValueResolution(structType any) BACnetConstructedDataLargeAnalogValueResolution {
 	if casted, ok := structType.(BACnetConstructedDataLargeAnalogValueResolution); ok {
 		return casted
 	}

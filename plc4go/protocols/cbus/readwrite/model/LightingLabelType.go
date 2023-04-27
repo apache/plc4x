@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -31,6 +32,8 @@ import (
 type LightingLabelType uint8
 
 type ILightingLabelType interface {
+	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 
@@ -90,8 +93,8 @@ func LightingLabelTypeKnows(value uint8) bool {
 	return false
 }
 
-func CastLightingLabelType(structType interface{}) LightingLabelType {
-	castFunc := func(typ interface{}) LightingLabelType {
+func CastLightingLabelType(structType any) LightingLabelType {
+	castFunc := func(typ any) LightingLabelType {
 		if sLightingLabelType, ok := typ.(LightingLabelType); ok {
 			return sLightingLabelType
 		}

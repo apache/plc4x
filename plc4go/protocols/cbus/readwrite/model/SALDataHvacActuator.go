@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // SALDataHvacActuator is the corresponding interface of SALDataHvacActuator
 type SALDataHvacActuator interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	SALData
@@ -96,7 +98,7 @@ func NewSALDataHvacActuator(hvacActuatorData LightingData, salData SALData) *_SA
 }
 
 // Deprecated: use the interface for direct cast
-func CastSALDataHvacActuator(structType interface{}) SALDataHvacActuator {
+func CastSALDataHvacActuator(structType any) SALDataHvacActuator {
 	if casted, ok := structType.(SALDataHvacActuator); ok {
 		return casted
 	}

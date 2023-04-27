@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataReasonForHalt is the corresponding interface of BACnetConstructedDataReasonForHalt
 type BACnetConstructedDataReasonForHalt interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataReasonForHalt(programError BACnetProgramErrorTagged
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataReasonForHalt(structType interface{}) BACnetConstructedDataReasonForHalt {
+func CastBACnetConstructedDataReasonForHalt(structType any) BACnetConstructedDataReasonForHalt {
 	if casted, ok := structType.(BACnetConstructedDataReasonForHalt); ok {
 		return casted
 	}

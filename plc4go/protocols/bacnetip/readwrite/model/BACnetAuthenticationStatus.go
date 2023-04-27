@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -31,6 +32,8 @@ import (
 type BACnetAuthenticationStatus uint8
 
 type IBACnetAuthenticationStatus interface {
+	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 
@@ -108,8 +111,8 @@ func BACnetAuthenticationStatusKnows(value uint8) bool {
 	return false
 }
 
-func CastBACnetAuthenticationStatus(structType interface{}) BACnetAuthenticationStatus {
-	castFunc := func(typ interface{}) BACnetAuthenticationStatus {
+func CastBACnetAuthenticationStatus(structType any) BACnetAuthenticationStatus {
+	castFunc := func(typ any) BACnetAuthenticationStatus {
 		if sBACnetAuthenticationStatus, ok := typ.(BACnetAuthenticationStatus); ok {
 			return sBACnetAuthenticationStatus
 		}

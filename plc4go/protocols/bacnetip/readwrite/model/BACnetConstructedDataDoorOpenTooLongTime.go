@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataDoorOpenTooLongTime is the corresponding interface of BACnetConstructedDataDoorOpenTooLongTime
 type BACnetConstructedDataDoorOpenTooLongTime interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataDoorOpenTooLongTime(doorOpenTooLongTime BACnetAppli
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataDoorOpenTooLongTime(structType interface{}) BACnetConstructedDataDoorOpenTooLongTime {
+func CastBACnetConstructedDataDoorOpenTooLongTime(structType any) BACnetConstructedDataDoorOpenTooLongTime {
 	if casted, ok := structType.(BACnetConstructedDataDoorOpenTooLongTime); ok {
 		return casted
 	}

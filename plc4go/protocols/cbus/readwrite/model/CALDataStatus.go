@@ -21,7 +21,7 @@ package model
 
 import (
 	"context"
-	spiContext "github.com/apache/plc4x/plc4go/spi/context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,6 +30,7 @@ import (
 
 // CALDataStatus is the corresponding interface of CALDataStatus
 type CALDataStatus interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	CALData
@@ -110,7 +111,7 @@ func NewCALDataStatus(application ApplicationIdContainer, blockStart uint8, stat
 }
 
 // Deprecated: use the interface for direct cast
-func CastCALDataStatus(structType interface{}) CALDataStatus {
+func CastCALDataStatus(structType any) CALDataStatus {
 	if casted, ok := structType.(CALDataStatus); ok {
 		return casted
 	}
@@ -136,7 +137,7 @@ func (m *_CALDataStatus) GetLengthInBits(ctx context.Context) uint16 {
 	// Array field
 	if len(m.StatusBytes) > 0 {
 		for _curItem, element := range m.StatusBytes {
-			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.StatusBytes), _curItem)
+			arrayCtx := utils.CreateArrayContext(ctx, len(m.StatusBytes), _curItem)
 			_ = arrayCtx
 			_ = _curItem
 			lengthInBits += element.(interface{ GetLengthInBits(context.Context) uint16 }).GetLengthInBits(arrayCtx)
@@ -196,7 +197,7 @@ func CALDataStatusParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 	{
 		_numItems := uint16(uint16(commandTypeContainer.NumBytes()) - uint16(uint16(2)))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := spiContext.CreateArrayContext(ctx, int(_numItems), int(_curItem))
+			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
 			_ = _curItem
 			_item, _err := StatusByteParseWithBuffer(arrayCtx, readBuffer)
@@ -268,7 +269,7 @@ func (m *_CALDataStatus) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 		}
 		for _curItem, _element := range m.GetStatusBytes() {
 			_ = _curItem
-			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetStatusBytes()), _curItem)
+			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetStatusBytes()), _curItem)
 			_ = arrayCtx
 			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 			if _elementErr != nil {

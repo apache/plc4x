@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetChannelValueReal is the corresponding interface of BACnetChannelValueReal
 type BACnetChannelValueReal interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetChannelValue
@@ -92,7 +94,7 @@ func NewBACnetChannelValueReal(realValue BACnetApplicationTagReal, peekedTagHead
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetChannelValueReal(structType interface{}) BACnetChannelValueReal {
+func CastBACnetChannelValueReal(structType any) BACnetChannelValueReal {
 	if casted, ok := structType.(BACnetChannelValueReal); ok {
 		return casted
 	}

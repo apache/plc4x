@@ -46,7 +46,7 @@
     <steps>
       <api-request name="Receive Read Request from application">
         <TestReadRequest>
-          <tags>
+          <tags isList="true">
             <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
               <name>expeditedSdo</name>
               <address>SDO:1:1000/22:UNSIGNED32</address>
@@ -65,7 +65,8 @@
             <CANOpenPayload>
               <CANOpenSDORequest>
                 <command>
-                  <SDORequestCommand dataType="uint" bitLength="3" stringRepresentation="INITIATE_UPLOAD">2</SDORequestCommand>
+                  <SDORequestCommand dataType="uint" bitLength="3" stringRepresentation="INITIATE_UPLOAD">2
+                  </SDORequestCommand>
                 </command>
                 <request>
                   <SDORequest>
@@ -99,7 +100,8 @@
             <CANOpenPayload>
               <CANOpenSDOResponse>
                 <command>
-                  <SDOResponseCommand dataType="uint" bitLength="3" stringRepresentation="INITIATE_UPLOAD">2</SDOResponseCommand>
+                  <SDOResponseCommand dataType="uint" bitLength="3" stringRepresentation="INITIATE_UPLOAD">2
+                  </SDOResponseCommand>
                 </command>
                 <response>
                   <SDOResponse>
@@ -144,7 +146,8 @@
             <CANOpenPayload>
               <CANOpenSDOResponse>
                 <command>
-                  <SDOResponseCommand dataType="uint" bitLength="3" stringRepresentation="INITIATE_UPLOAD">2</SDOResponseCommand>
+                  <SDOResponseCommand dataType="uint" bitLength="3" stringRepresentation="INITIATE_UPLOAD">2
+                  </SDOResponseCommand>
                 </command>
                 <response>
                   <SDOResponse>
@@ -181,22 +184,26 @@
       <api-response name="Report Read Response to application (expedited)">
         <PlcReadResponse>
           <PlcReadRequest>
-            <tags>
-              <expeditedSdo>
-                <CANOpenSDOTag>
-                  <node dataType="int" bitLength="64">1</node>
-                  <index dataType="int" bitLength="64">1000</index>
-                  <subIndex dataType="int" bitLength="64">22</subIndex>
-                  <dataType dataType="string" bitLength="80" encoding="UTF-8">UNSIGNED32</dataType>
-                </CANOpenSDOTag>
-              </expeditedSdo>
-            </tags>
+            <PlcTagRequest>
+              <tags isList="true">
+                <expeditedSdo>
+                  <CANOpenSDOTag>
+                    <node dataType="int" bitLength="64">1</node>
+                    <index dataType="int" bitLength="64">1000</index>
+                    <subIndex dataType="int" bitLength="64">22</subIndex>
+                    <dataType dataType="string" bitLength="80" encoding="UTF-8">UNSIGNED32</dataType>
+                  </CANOpenSDOTag>
+                </expeditedSdo>
+              </tags>
+            </PlcTagRequest>
           </PlcReadRequest>
-          <values>
+          <values isList="true">
             <expeditedSdo>
               <ResponseItem>
-                <result dataType="string" bitLength="16" encoding="UTF-8">OK</result>
-                <PlcUDINT dataType="int" bitLength="32">1717859169</PlcUDINT>
+                <code dataType="string" bitLength="16" encoding="UTF-8">OK</code>
+                <value>
+                  <PlcUDINT dataType="int" bitLength="32">1717859169</PlcUDINT>
+                </value>
               </ResponseItem>
             </expeditedSdo>
           </values>
@@ -214,7 +221,7 @@
     <steps>
       <api-request name="Receive Read Request from application">
         <TestReadRequest>
-          <tags>
+          <tags isList="true">
             <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
               <name>expeditedShort</name>
               <address>SDO:1:9186/1:UNSIGNED8</address>
@@ -233,7 +240,8 @@
             <CANOpenPayload>
               <CANOpenSDORequest>
                 <command>
-                  <SDORequestCommand dataType="uint" bitLength="3" stringRepresentation="INITIATE_UPLOAD">2</SDORequestCommand>
+                  <SDORequestCommand dataType="uint" bitLength="3" stringRepresentation="INITIATE_UPLOAD">2
+                  </SDORequestCommand>
                 </command>
                 <request>
                   <SDORequest>
@@ -267,7 +275,8 @@
             <CANOpenPayload>
               <CANOpenSDOResponse>
                 <command>
-                  <SDOResponseCommand dataType="uint" bitLength="3" stringRepresentation="INITIATE_UPLOAD">2</SDOResponseCommand>
+                  <SDOResponseCommand dataType="uint" bitLength="3" stringRepresentation="INITIATE_UPLOAD">2
+                  </SDOResponseCommand>
                 </command>
                 <response>
                   <SDOResponse>
@@ -304,22 +313,26 @@
       <api-response name="Report Read Response to application (expedited short)">
         <PlcReadResponse>
           <PlcReadRequest>
-            <tags>
-              <expeditedShort>
-                <CANOpenSDOTag>
-                  <node dataType="int" bitLength="64">1</node>
-                  <index dataType="int" bitLength="64">9186</index>
-                  <subIndex dataType="int" bitLength="64">1</subIndex>
-                  <dataType dataType="string" bitLength="72" encoding="UTF-8">UNSIGNED8</dataType>
-                </CANOpenSDOTag>
-              </expeditedShort>
-            </tags>
+            <PlcTagRequest>
+              <tags isList="true">
+                <expeditedShort>
+                  <CANOpenSDOTag>
+                    <node dataType="int" bitLength="64">1</node>
+                    <index dataType="int" bitLength="64">9186</index>
+                    <subIndex dataType="int" bitLength="64">1</subIndex>
+                    <dataType dataType="string" bitLength="72" encoding="UTF-8">UNSIGNED8</dataType>
+                  </CANOpenSDOTag>
+                </expeditedShort>
+              </tags>
+            </PlcTagRequest>
           </PlcReadRequest>
-          <values>
+          <values isList="true">
             <expeditedShort>
               <ResponseItem>
-                <result dataType="string" bitLength="16" encoding="UTF-8">OK</result>
-                <PlcUSINT dataType="int" bitLength="8">97</PlcUSINT>
+                <code dataType="string" bitLength="16" encoding="UTF-8">OK</code>
+                <value>
+                  <PlcUSINT dataType="int" bitLength="8">97</PlcUSINT>
+                </value>
               </ResponseItem>
             </expeditedShort>
           </values>
@@ -337,7 +350,7 @@
     <steps>
       <api-request name="Receive Read Request from application">
         <TestReadRequest>
-          <tags>
+          <tags isList="true">
             <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
               <name>expeditedSdoCustomAnswer</name>
               <address>SDO:1/2:1000/22:UNSIGNED32</address>
@@ -356,7 +369,8 @@
             <CANOpenPayload>
               <CANOpenSDORequest>
                 <command>
-                  <SDORequestCommand dataType="uint" bitLength="3" stringRepresentation="INITIATE_UPLOAD">2</SDORequestCommand>
+                  <SDORequestCommand dataType="uint" bitLength="3" stringRepresentation="INITIATE_UPLOAD">2
+                  </SDORequestCommand>
                 </command>
                 <request>
                   <SDORequest>
@@ -391,7 +405,8 @@
             <CANOpenPayload>
               <CANOpenSDOResponse>
                 <command>
-                  <SDOResponseCommand dataType="uint" bitLength="3" stringRepresentation="INITIATE_UPLOAD">2</SDOResponseCommand>
+                  <SDOResponseCommand dataType="uint" bitLength="3" stringRepresentation="INITIATE_UPLOAD">2
+                  </SDOResponseCommand>
                 </command>
                 <response>
                   <SDOResponse>
@@ -436,7 +451,8 @@
             <CANOpenPayload>
               <CANOpenSDOResponse>
                 <command>
-                  <SDOResponseCommand dataType="uint" bitLength="3" stringRepresentation="INITIATE_UPLOAD">2</SDOResponseCommand>
+                  <SDOResponseCommand dataType="uint" bitLength="3" stringRepresentation="INITIATE_UPLOAD">2
+                  </SDOResponseCommand>
                 </command>
                 <response>
                   <SDOResponse>
@@ -473,22 +489,26 @@
       <api-response name="Report Read Response to application (custom answer id)">
         <PlcReadResponse>
           <PlcReadRequest>
-            <tags>
-              <expeditedSdoCustomAnswer>
-                <CANOpenSDOTag>
-                  <node dataType="int" bitLength="64">1</node>
-                  <index dataType="int" bitLength="64">1000</index>
-                  <subIndex dataType="int" bitLength="64">22</subIndex>
-                  <dataType dataType="string" bitLength="80" encoding="UTF-8">UNSIGNED32</dataType>
-                </CANOpenSDOTag>
-              </expeditedSdoCustomAnswer>
-            </tags>
+            <PlcTagRequest>
+              <tags isList="true">
+                <expeditedSdoCustomAnswer>
+                  <CANOpenSDOTag>
+                    <node dataType="int" bitLength="64">1</node>
+                    <index dataType="int" bitLength="64">1000</index>
+                    <subIndex dataType="int" bitLength="64">22</subIndex>
+                    <dataType dataType="string" bitLength="80" encoding="UTF-8">UNSIGNED32</dataType>
+                  </CANOpenSDOTag>
+                </expeditedSdoCustomAnswer>
+              </tags>
+            </PlcTagRequest>
           </PlcReadRequest>
-          <values>
+          <values isList="true">
             <expeditedSdoCustomAnswer>
               <ResponseItem>
-                <result dataType="string" bitLength="16" encoding="UTF-8">OK</result>
-                <PlcUDINT dataType="int" bitLength="32">1717859169</PlcUDINT>
+                <code dataType="string" bitLength="16" encoding="UTF-8">OK</code>
+                <value>
+                  <PlcUDINT dataType="int" bitLength="32">1717859169</PlcUDINT>
+                </value>
               </ResponseItem>
             </expeditedSdoCustomAnswer>
           </values>
@@ -506,7 +526,7 @@
     <steps>
       <api-request name="Receive Read Request from application">
         <TestReadRequest>
-          <tags>
+          <tags isList="true">
             <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
               <name>segmentedSdo</name>
               <address>SDO:2:2000/44:RECORD</address>
@@ -526,7 +546,8 @@
             <CANOpenPayload>
               <CANOpenSDORequest>
                 <command>
-                  <SDORequestCommand dataType="uint" bitLength="3" stringRepresentation="INITIATE_UPLOAD">2</SDORequestCommand>
+                  <SDORequestCommand dataType="uint" bitLength="3" stringRepresentation="INITIATE_UPLOAD">2
+                  </SDORequestCommand>
                 </command>
                 <request>
                   <SDORequest>
@@ -560,7 +581,8 @@
             <CANOpenPayload>
               <CANOpenSDOResponse>
                 <command>
-                  <SDOResponseCommand dataType="uint" bitLength="3" stringRepresentation="INITIATE_UPLOAD">2</SDOResponseCommand>
+                  <SDOResponseCommand dataType="uint" bitLength="3" stringRepresentation="INITIATE_UPLOAD">2
+                  </SDOResponseCommand>
                 </command>
                 <response>
                   <SDOResponse>
@@ -604,7 +626,8 @@
             <CANOpenPayload>
               <CANOpenSDORequest>
                 <command>
-                  <SDORequestCommand dataType="uint" bitLength="3" stringRepresentation="SEGMENT_UPLOAD">3</SDORequestCommand>
+                  <SDORequestCommand dataType="uint" bitLength="3" stringRepresentation="SEGMENT_UPLOAD">3
+                  </SDORequestCommand>
                 </command>
                 <request>
                   <SDORequest>
@@ -633,7 +656,8 @@
             <CANOpenPayload>
               <CANOpenSDOResponse>
                 <command>
-                  <SDOResponseCommand dataType="uint" bitLength="3" stringRepresentation="SEGMENT_UPLOAD">0</SDOResponseCommand>
+                  <SDOResponseCommand dataType="uint" bitLength="3" stringRepresentation="SEGMENT_UPLOAD">0
+                  </SDOResponseCommand>
                 </command>
                 <response>
                   <SDOResponse>
@@ -669,7 +693,8 @@
             <CANOpenPayload>
               <CANOpenSDORequest>
                 <command>
-                  <SDORequestCommand dataType="uint" bitLength="3" stringRepresentation="SEGMENT_UPLOAD">3</SDORequestCommand>
+                  <SDORequestCommand dataType="uint" bitLength="3" stringRepresentation="SEGMENT_UPLOAD">3
+                  </SDORequestCommand>
                 </command>
                 <request>
                   <SDORequest>
@@ -698,7 +723,8 @@
             <CANOpenPayload>
               <CANOpenSDOResponse>
                 <command>
-                  <SDOResponseCommand dataType="uint" bitLength="3" stringRepresentation="SEGMENT_UPLOAD">0</SDOResponseCommand>
+                  <SDOResponseCommand dataType="uint" bitLength="3" stringRepresentation="SEGMENT_UPLOAD">0
+                  </SDOResponseCommand>
                 </command>
                 <response>
                   <SDOResponse>
@@ -735,7 +761,8 @@
             <CANOpenPayload>
               <CANOpenSDORequest>
                 <command>
-                  <SDORequestCommand dataType="uint" bitLength="3" stringRepresentation="SEGMENT_UPLOAD">3</SDORequestCommand>
+                  <SDORequestCommand dataType="uint" bitLength="3" stringRepresentation="SEGMENT_UPLOAD">3
+                  </SDORequestCommand>
                 </command>
                 <request>
                   <SDORequest>
@@ -764,7 +791,8 @@
             <CANOpenPayload>
               <CANOpenSDOResponse>
                 <command>
-                  <SDOResponseCommand dataType="uint" bitLength="3" stringRepresentation="SEGMENT_UPLOAD">0</SDOResponseCommand>
+                  <SDOResponseCommand dataType="uint" bitLength="3" stringRepresentation="SEGMENT_UPLOAD">0
+                  </SDOResponseCommand>
                 </command>
                 <response>
                   <SDOResponse>
@@ -792,31 +820,35 @@
       <api-response name="Report Read Response to application (segmented)">
         <PlcReadResponse>
           <PlcReadRequest>
-            <tags>
-              <segmentedSdo>
-                <CANOpenSDOTag>
-                  <node dataType="int" bitLength="64">2</node>
-                  <index dataType="int" bitLength="64">2000</index>
-                  <subIndex dataType="int" bitLength="64">44</subIndex>
-                  <dataType dataType="string" bitLength="48" encoding="UTF-8">RECORD</dataType>
-                </CANOpenSDOTag>
-              </segmentedSdo>
-            </tags>
+            <PlcTagRequest>
+              <tags isList="true">
+                <segmentedSdo>
+                  <CANOpenSDOTag>
+                    <node dataType="int" bitLength="64">2</node>
+                    <index dataType="int" bitLength="64">2000</index>
+                    <subIndex dataType="int" bitLength="64">44</subIndex>
+                    <dataType dataType="string" bitLength="48" encoding="UTF-8">RECORD</dataType>
+                  </CANOpenSDOTag>
+                </segmentedSdo>
+              </tags>
+            </PlcTagRequest>
           </PlcReadRequest>
-          <values>
+          <values isList="true">
             <segmentedSdo>
               <ResponseItem>
-                <result dataType="string" bitLength="16" encoding="UTF-8">OK</result>
-                <PlcList>
-                  <PlcSINT dataType="byte" bitLength="8">0x61</PlcSINT>
-                  <PlcSINT dataType="byte" bitLength="8">0x73</PlcSINT>
-                  <PlcSINT dataType="byte" bitLength="8">0x64</PlcSINT>
-                  <PlcSINT dataType="byte" bitLength="8">0x66</PlcSINT>
-                  <PlcSINT dataType="byte" bitLength="8">0x61</PlcSINT>
-                  <PlcSINT dataType="byte" bitLength="8">0x73</PlcSINT>
-                  <PlcSINT dataType="byte" bitLength="8">0x64</PlcSINT>
-                  <PlcSINT dataType="byte" bitLength="8">0x66</PlcSINT>
-                </PlcList>
+                <code dataType="string" bitLength="16" encoding="UTF-8">OK</code>
+                <value>
+                  <PlcList>
+                    <PlcSINT dataType="byte" bitLength="8">0x61</PlcSINT>
+                    <PlcSINT dataType="byte" bitLength="8">0x73</PlcSINT>
+                    <PlcSINT dataType="byte" bitLength="8">0x64</PlcSINT>
+                    <PlcSINT dataType="byte" bitLength="8">0x66</PlcSINT>
+                    <PlcSINT dataType="byte" bitLength="8">0x61</PlcSINT>
+                    <PlcSINT dataType="byte" bitLength="8">0x73</PlcSINT>
+                    <PlcSINT dataType="byte" bitLength="8">0x64</PlcSINT>
+                    <PlcSINT dataType="byte" bitLength="8">0x66</PlcSINT>
+                  </PlcList>
+                </value>
               </ResponseItem>
             </segmentedSdo>
           </values>
@@ -834,7 +866,7 @@
     <steps>
       <api-request name="Receive Read Request from application">
         <TestReadRequest>
-          <tags>
+          <tags isList="true">
             <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
               <name>TheFailingTag</name>
               <address>SDO:1:1000/22:UNSIGNED32</address>
@@ -853,7 +885,8 @@
             <CANOpenPayload>
               <CANOpenSDORequest>
                 <command>
-                  <SDORequestCommand dataType="uint" bitLength="3" stringRepresentation="INITIATE_UPLOAD">2</SDORequestCommand>
+                  <SDORequestCommand dataType="uint" bitLength="3" stringRepresentation="INITIATE_UPLOAD">2
+                  </SDORequestCommand>
                 </command>
                 <request>
                   <SDORequest>
@@ -917,22 +950,26 @@
       <api-response name="Report Read Response to application (abort)">
         <PlcReadResponse>
           <PlcReadRequest>
-            <tags>
-              <TheFailingTag>
-                <CANOpenSDOTag>
-                  <node dataType="int" bitLength="64">1</node>
-                  <index dataType="int" bitLength="64">1000</index>
-                  <subIndex dataType="int" bitLength="64">22</subIndex>
-                  <dataType dataType="string" bitLength="80" encoding="UTF-8">UNSIGNED32</dataType>
-                </CANOpenSDOTag>
-              </TheFailingTag>
-            </tags>
+            <PlcTagRequest>
+              <tags isList="true">
+                <TheFailingTag>
+                  <CANOpenSDOTag>
+                    <node dataType="int" bitLength="64">1</node>
+                    <index dataType="int" bitLength="64">1000</index>
+                    <subIndex dataType="int" bitLength="64">22</subIndex>
+                    <dataType dataType="string" bitLength="80" encoding="UTF-8">UNSIGNED32</dataType>
+                  </CANOpenSDOTag>
+                </TheFailingTag>
+              </tags>
+            </PlcTagRequest>
           </PlcReadRequest>
-          <values>
+          <values isList="true">
             <TheFailingTag>
               <ResponseItem>
-                <result dataType="string" bitLength="96" encoding="UTF-8">REMOTE_ERROR</result>
-                <PlcLINT dataType="int" bitLength="64">84082688</PlcLINT>
+                <code dataType="string" bitLength="96" encoding="UTF-8">REMOTE_ERROR</code>
+                <value>
+                  <PlcLINT dataType="int" bitLength="64">84082688</PlcLINT>
+                </value>
               </ResponseItem>
             </TheFailingTag>
           </values>

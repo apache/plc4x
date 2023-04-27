@@ -21,7 +21,7 @@ package model
 
 import (
 	"context"
-	spiContext "github.com/apache/plc4x/plc4go/spi/context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
@@ -31,6 +31,7 @@ import (
 
 // BACnetConstructedDataIPDNSServer is the corresponding interface of BACnetConstructedDataIPDNSServer
 type BACnetConstructedDataIPDNSServer interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -131,7 +132,7 @@ func NewBACnetConstructedDataIPDNSServer(numberOfDataElements BACnetApplicationT
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataIPDNSServer(structType interface{}) BACnetConstructedDataIPDNSServer {
+func CastBACnetConstructedDataIPDNSServer(structType any) BACnetConstructedDataIPDNSServer {
 	if casted, ok := structType.(BACnetConstructedDataIPDNSServer); ok {
 		return casted
 	}
@@ -287,7 +288,7 @@ func (m *_BACnetConstructedDataIPDNSServer) SerializeWithWriteBuffer(ctx context
 		}
 		for _curItem, _element := range m.GetIpDnsServer() {
 			_ = _curItem
-			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetIpDnsServer()), _curItem)
+			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetIpDnsServer()), _curItem)
 			_ = arrayCtx
 			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 			if _elementErr != nil {

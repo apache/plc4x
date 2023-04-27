@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataRelinquishDefault is the corresponding interface of BACnetConstructedDataRelinquishDefault
 type BACnetConstructedDataRelinquishDefault interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataRelinquishDefault(relinquishDefault BACnetApplicati
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataRelinquishDefault(structType interface{}) BACnetConstructedDataRelinquishDefault {
+func CastBACnetConstructedDataRelinquishDefault(structType any) BACnetConstructedDataRelinquishDefault {
 	if casted, ok := structType.(BACnetConstructedDataRelinquishDefault); ok {
 		return casted
 	}

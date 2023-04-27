@@ -34,6 +34,7 @@ const RequestDirectCommandAccess_AT byte = 0x40
 
 // RequestDirectCommandAccess is the corresponding interface of RequestDirectCommandAccess
 type RequestDirectCommandAccess interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	Request
@@ -141,7 +142,7 @@ func NewRequestDirectCommandAccess(calData CALData, alpha Alpha, peekedByte Requ
 }
 
 // Deprecated: use the interface for direct cast
-func CastRequestDirectCommandAccess(structType interface{}) RequestDirectCommandAccess {
+func CastRequestDirectCommandAccess(structType any) RequestDirectCommandAccess {
 	if casted, ok := structType.(RequestDirectCommandAccess); ok {
 		return casted
 	}

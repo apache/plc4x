@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetNotificationParametersFloatingLimit is the corresponding interface of BACnetNotificationParametersFloatingLimit
 type BACnetNotificationParametersFloatingLimit interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetNotificationParameters
@@ -134,7 +136,7 @@ func NewBACnetNotificationParametersFloatingLimit(innerOpeningTag BACnetOpeningT
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetNotificationParametersFloatingLimit(structType interface{}) BACnetNotificationParametersFloatingLimit {
+func CastBACnetNotificationParametersFloatingLimit(structType any) BACnetNotificationParametersFloatingLimit {
 	if casted, ok := structType.(BACnetNotificationParametersFloatingLimit); ok {
 		return casted
 	}

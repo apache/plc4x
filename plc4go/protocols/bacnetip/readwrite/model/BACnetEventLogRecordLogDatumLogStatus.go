@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetEventLogRecordLogDatumLogStatus is the corresponding interface of BACnetEventLogRecordLogDatumLogStatus
 type BACnetEventLogRecordLogDatumLogStatus interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetEventLogRecordLogDatum
@@ -94,7 +96,7 @@ func NewBACnetEventLogRecordLogDatumLogStatus(logStatus BACnetLogStatusTagged, o
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetEventLogRecordLogDatumLogStatus(structType interface{}) BACnetEventLogRecordLogDatumLogStatus {
+func CastBACnetEventLogRecordLogDatumLogStatus(structType any) BACnetEventLogRecordLogDatumLogStatus {
 	if casted, ok := structType.(BACnetEventLogRecordLogDatumLogStatus); ok {
 		return casted
 	}

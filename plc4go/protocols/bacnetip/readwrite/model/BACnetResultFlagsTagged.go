@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetResultFlagsTagged is the corresponding interface of BACnetResultFlagsTagged
 type BACnetResultFlagsTagged interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetHeader returns Header (property field)
@@ -85,19 +87,19 @@ func (m *_BACnetResultFlagsTagged) GetPayload() BACnetTagPayloadBitString {
 func (m *_BACnetResultFlagsTagged) GetFirstItem() bool {
 	ctx := context.Background()
 	_ = ctx
-	return bool(utils.InlineIf((bool((len(m.GetPayload().GetData())) > (0))), func() interface{} { return bool(m.GetPayload().GetData()[0]) }, func() interface{} { return bool(bool(false)) }).(bool))
+	return bool(utils.InlineIf((bool((len(m.GetPayload().GetData())) > (0))), func() any { return bool(m.GetPayload().GetData()[0]) }, func() any { return bool(bool(false)) }).(bool))
 }
 
 func (m *_BACnetResultFlagsTagged) GetLastItem() bool {
 	ctx := context.Background()
 	_ = ctx
-	return bool(utils.InlineIf((bool((len(m.GetPayload().GetData())) > (1))), func() interface{} { return bool(m.GetPayload().GetData()[1]) }, func() interface{} { return bool(bool(false)) }).(bool))
+	return bool(utils.InlineIf((bool((len(m.GetPayload().GetData())) > (1))), func() any { return bool(m.GetPayload().GetData()[1]) }, func() any { return bool(bool(false)) }).(bool))
 }
 
 func (m *_BACnetResultFlagsTagged) GetMoreItems() bool {
 	ctx := context.Background()
 	_ = ctx
-	return bool(utils.InlineIf((bool((len(m.GetPayload().GetData())) > (2))), func() interface{} { return bool(m.GetPayload().GetData()[2]) }, func() interface{} { return bool(bool(false)) }).(bool))
+	return bool(utils.InlineIf((bool((len(m.GetPayload().GetData())) > (2))), func() any { return bool(m.GetPayload().GetData()[2]) }, func() any { return bool(bool(false)) }).(bool))
 }
 
 ///////////////////////
@@ -111,7 +113,7 @@ func NewBACnetResultFlagsTagged(header BACnetTagHeader, payload BACnetTagPayload
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetResultFlagsTagged(structType interface{}) BACnetResultFlagsTagged {
+func CastBACnetResultFlagsTagged(structType any) BACnetResultFlagsTagged {
 	if casted, ok := structType.(BACnetResultFlagsTagged); ok {
 		return casted
 	}
@@ -197,17 +199,17 @@ func BACnetResultFlagsTaggedParseWithBuffer(ctx context.Context, readBuffer util
 	}
 
 	// Virtual field
-	_firstItem := utils.InlineIf((bool((len(payload.GetData())) > (0))), func() interface{} { return bool(payload.GetData()[0]) }, func() interface{} { return bool(bool(false)) }).(bool)
+	_firstItem := utils.InlineIf((bool((len(payload.GetData())) > (0))), func() any { return bool(payload.GetData()[0]) }, func() any { return bool(bool(false)) }).(bool)
 	firstItem := bool(_firstItem)
 	_ = firstItem
 
 	// Virtual field
-	_lastItem := utils.InlineIf((bool((len(payload.GetData())) > (1))), func() interface{} { return bool(payload.GetData()[1]) }, func() interface{} { return bool(bool(false)) }).(bool)
+	_lastItem := utils.InlineIf((bool((len(payload.GetData())) > (1))), func() any { return bool(payload.GetData()[1]) }, func() any { return bool(bool(false)) }).(bool)
 	lastItem := bool(_lastItem)
 	_ = lastItem
 
 	// Virtual field
-	_moreItems := utils.InlineIf((bool((len(payload.GetData())) > (2))), func() interface{} { return bool(payload.GetData()[2]) }, func() interface{} { return bool(bool(false)) }).(bool)
+	_moreItems := utils.InlineIf((bool((len(payload.GetData())) > (2))), func() any { return bool(payload.GetData()[2]) }, func() any { return bool(bool(false)) }).(bool)
 	moreItems := bool(_moreItems)
 	_ = moreItems
 

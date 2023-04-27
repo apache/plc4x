@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // CBusMessageToClient is the corresponding interface of CBusMessageToClient
 type CBusMessageToClient interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	CBusMessage
@@ -94,7 +96,7 @@ func NewCBusMessageToClient(reply ReplyOrConfirmation, requestContext RequestCon
 }
 
 // Deprecated: use the interface for direct cast
-func CastCBusMessageToClient(structType interface{}) CBusMessageToClient {
+func CastCBusMessageToClient(structType any) CBusMessageToClient {
 	if casted, ok := structType.(CBusMessageToClient); ok {
 		return casted
 	}

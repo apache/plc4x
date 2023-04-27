@@ -43,6 +43,7 @@ type HandleMessage func(message Message) error
 // HandleError Function for handling the message, returns an error if anything goes wrong
 type HandleError func(err error) error
 
+// MessageCodec handles sending and retrieving of messages
 type MessageCodec interface {
 	// Connect connects this codec
 	Connect() error

@@ -21,7 +21,7 @@ package model
 
 import (
 	"context"
-	spiContext "github.com/apache/plc4x/plc4go/spi/context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,6 +30,7 @@ import (
 
 // BACnetConstructedDataRoutingTable is the corresponding interface of BACnetConstructedDataRoutingTable
 type BACnetConstructedDataRoutingTable interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -103,7 +104,7 @@ func NewBACnetConstructedDataRoutingTable(routingTable []BACnetRouterEntry, open
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataRoutingTable(structType interface{}) BACnetConstructedDataRoutingTable {
+func CastBACnetConstructedDataRoutingTable(structType any) BACnetConstructedDataRoutingTable {
 	if casted, ok := structType.(BACnetConstructedDataRoutingTable); ok {
 		return casted
 	}
@@ -204,7 +205,7 @@ func (m *_BACnetConstructedDataRoutingTable) SerializeWithWriteBuffer(ctx contex
 		}
 		for _curItem, _element := range m.GetRoutingTable() {
 			_ = _curItem
-			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetRoutingTable()), _curItem)
+			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetRoutingTable()), _curItem)
 			_ = arrayCtx
 			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 			if _elementErr != nil {

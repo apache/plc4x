@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // MFuncPropCon is the corresponding interface of MFuncPropCon
 type MFuncPropCon interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	CEMI
@@ -76,7 +78,7 @@ func NewMFuncPropCon(size uint16) *_MFuncPropCon {
 }
 
 // Deprecated: use the interface for direct cast
-func CastMFuncPropCon(structType interface{}) MFuncPropCon {
+func CastMFuncPropCon(structType any) MFuncPropCon {
 	if casted, ok := structType.(MFuncPropCon); ok {
 		return casted
 	}

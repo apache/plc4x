@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // ModbusPDUWriteMultipleCoilsRequest is the corresponding interface of ModbusPDUWriteMultipleCoilsRequest
 type ModbusPDUWriteMultipleCoilsRequest interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	ModbusPDU
@@ -118,7 +120,7 @@ func NewModbusPDUWriteMultipleCoilsRequest(startingAddress uint16, quantity uint
 }
 
 // Deprecated: use the interface for direct cast
-func CastModbusPDUWriteMultipleCoilsRequest(structType interface{}) ModbusPDUWriteMultipleCoilsRequest {
+func CastModbusPDUWriteMultipleCoilsRequest(structType any) ModbusPDUWriteMultipleCoilsRequest {
 	if casted, ok := structType.(ModbusPDUWriteMultipleCoilsRequest); ok {
 		return casted
 	}

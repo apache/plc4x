@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
@@ -30,6 +31,7 @@ import (
 
 // CALData is the corresponding interface of CALData
 type CALData interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetCommandTypeContainer returns CommandTypeContainer (property field)
@@ -115,7 +117,7 @@ func (m *_CALData) GetSendIdentifyRequestBefore() bool {
 	_ = ctx
 	additionalData := m.AdditionalData
 	_ = additionalData
-	return bool(utils.InlineIf(bool((m.RequestContext) != (nil)), func() interface{} { return bool(m.RequestContext.GetSendIdentifyRequestBefore()) }, func() interface{} { return bool(bool(false)) }).(bool))
+	return bool(utils.InlineIf(bool((m.RequestContext) != (nil)), func() any { return bool(m.RequestContext.GetSendIdentifyRequestBefore()) }, func() any { return bool(bool(false)) }).(bool))
 }
 
 ///////////////////////
@@ -129,7 +131,7 @@ func NewCALData(commandTypeContainer CALCommandTypeContainer, additionalData CAL
 }
 
 // Deprecated: use the interface for direct cast
-func CastCALData(structType interface{}) CALData {
+func CastCALData(structType any) CALData {
 	if casted, ok := structType.(CALData); ok {
 		return casted
 	}
@@ -202,7 +204,7 @@ func CALDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, re
 	_ = commandType
 
 	// Virtual field
-	_sendIdentifyRequestBefore := utils.InlineIf(bool((requestContext) != (nil)), func() interface{} { return bool(requestContext.GetSendIdentifyRequestBefore()) }, func() interface{} { return bool(bool(false)) }).(bool)
+	_sendIdentifyRequestBefore := utils.InlineIf(bool((requestContext) != (nil)), func() any { return bool(requestContext.GetSendIdentifyRequestBefore()) }, func() any { return bool(bool(false)) }).(bool)
 	sendIdentifyRequestBefore := bool(_sendIdentifyRequestBefore)
 	_ = sendIdentifyRequestBefore
 
@@ -212,7 +214,7 @@ func CALDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, re
 		InitializeParent(CALData, CALCommandTypeContainer, CALData)
 		GetParent() CALData
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child CALDataChildSerializeRequirement
 	var typeSwitchError error
 	switch {

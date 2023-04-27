@@ -22,6 +22,7 @@ package model
 import (
 	"context"
 	"encoding/binary"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,6 +31,7 @@ import (
 
 // DeviceConfigurationRequest is the corresponding interface of DeviceConfigurationRequest
 type DeviceConfigurationRequest interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	KnxNetIpMessage
@@ -106,7 +108,7 @@ func NewDeviceConfigurationRequest(deviceConfigurationRequestDataBlock DeviceCon
 }
 
 // Deprecated: use the interface for direct cast
-func CastDeviceConfigurationRequest(structType interface{}) DeviceConfigurationRequest {
+func CastDeviceConfigurationRequest(structType any) DeviceConfigurationRequest {
 	if casted, ok := structType.(DeviceConfigurationRequest); ok {
 		return casted
 	}

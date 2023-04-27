@@ -21,7 +21,7 @@ package model
 
 import (
 	"context"
-	spiContext "github.com/apache/plc4x/plc4go/spi/context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,6 +30,7 @@ import (
 
 // BACnetConstructedDataDateList is the corresponding interface of BACnetConstructedDataDateList
 type BACnetConstructedDataDateList interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -103,7 +104,7 @@ func NewBACnetConstructedDataDateList(dateList []BACnetCalendarEntry, openingTag
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataDateList(structType interface{}) BACnetConstructedDataDateList {
+func CastBACnetConstructedDataDateList(structType any) BACnetConstructedDataDateList {
 	if casted, ok := structType.(BACnetConstructedDataDateList); ok {
 		return casted
 	}
@@ -204,7 +205,7 @@ func (m *_BACnetConstructedDataDateList) SerializeWithWriteBuffer(ctx context.Co
 		}
 		for _curItem, _element := range m.GetDateList() {
 			_ = _curItem
-			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetDateList()), _curItem)
+			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetDateList()), _curItem)
 			_ = arrayCtx
 			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 			if _elementErr != nil {

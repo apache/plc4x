@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // ChangeListRemoveError is the corresponding interface of ChangeListRemoveError
 type ChangeListRemoveError interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetError
@@ -102,7 +104,7 @@ func NewChangeListRemoveError(errorType ErrorEnclosed, firstFailedElementNumber 
 }
 
 // Deprecated: use the interface for direct cast
-func CastChangeListRemoveError(structType interface{}) ChangeListRemoveError {
+func CastChangeListRemoveError(structType any) ChangeListRemoveError {
 	if casted, ok := structType.(ChangeListRemoveError); ok {
 		return casted
 	}

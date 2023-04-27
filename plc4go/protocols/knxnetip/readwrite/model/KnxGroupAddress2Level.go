@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // KnxGroupAddress2Level is the corresponding interface of KnxGroupAddress2Level
 type KnxGroupAddress2Level interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	KnxGroupAddress
@@ -102,7 +104,7 @@ func NewKnxGroupAddress2Level(mainGroup uint8, subGroup uint16) *_KnxGroupAddres
 }
 
 // Deprecated: use the interface for direct cast
-func CastKnxGroupAddress2Level(structType interface{}) KnxGroupAddress2Level {
+func CastKnxGroupAddress2Level(structType any) KnxGroupAddress2Level {
 	if casted, ok := structType.(KnxGroupAddress2Level); ok {
 		return casted
 	}

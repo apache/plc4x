@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataLimitEnable is the corresponding interface of BACnetConstructedDataLimitEnable
 type BACnetConstructedDataLimitEnable interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataLimitEnable(limitEnable BACnetLimitEnableTagged, op
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataLimitEnable(structType interface{}) BACnetConstructedDataLimitEnable {
+func CastBACnetConstructedDataLimitEnable(structType any) BACnetConstructedDataLimitEnable {
 	if casted, ok := structType.(BACnetConstructedDataLimitEnable); ok {
 		return casted
 	}

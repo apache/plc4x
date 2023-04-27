@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // S7PayloadUserDataItemCpuFunctionReadSzlRequest is the corresponding interface of S7PayloadUserDataItemCpuFunctionReadSzlRequest
 type S7PayloadUserDataItemCpuFunctionReadSzlRequest interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	S7PayloadUserDataItem
@@ -113,7 +115,7 @@ func NewS7PayloadUserDataItemCpuFunctionReadSzlRequest(szlId SzlId, szlIndex uin
 }
 
 // Deprecated: use the interface for direct cast
-func CastS7PayloadUserDataItemCpuFunctionReadSzlRequest(structType interface{}) S7PayloadUserDataItemCpuFunctionReadSzlRequest {
+func CastS7PayloadUserDataItemCpuFunctionReadSzlRequest(structType any) S7PayloadUserDataItemCpuFunctionReadSzlRequest {
 	if casted, ok := structType.(S7PayloadUserDataItemCpuFunctionReadSzlRequest); ok {
 		return casted
 	}

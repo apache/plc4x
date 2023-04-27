@@ -22,6 +22,7 @@ package model
 import (
 	"context"
 	"encoding/binary"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,6 +31,7 @@ import (
 
 // ConnectionStateResponse is the corresponding interface of ConnectionStateResponse
 type ConnectionStateResponse interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	KnxNetIpMessage
@@ -103,7 +105,7 @@ func NewConnectionStateResponse(communicationChannelId uint8, status Status) *_C
 }
 
 // Deprecated: use the interface for direct cast
-func CastConnectionStateResponse(structType interface{}) ConnectionStateResponse {
+func CastConnectionStateResponse(structType any) ConnectionStateResponse {
 	if casted, ok := structType.(ConnectionStateResponse); ok {
 		return casted
 	}

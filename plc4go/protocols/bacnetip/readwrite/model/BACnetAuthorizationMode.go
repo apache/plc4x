@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -31,6 +32,8 @@ import (
 type BACnetAuthorizationMode uint16
 
 type IBACnetAuthorizationMode interface {
+	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 
@@ -108,8 +111,8 @@ func BACnetAuthorizationModeKnows(value uint16) bool {
 	return false
 }
 
-func CastBACnetAuthorizationMode(structType interface{}) BACnetAuthorizationMode {
-	castFunc := func(typ interface{}) BACnetAuthorizationMode {
+func CastBACnetAuthorizationMode(structType any) BACnetAuthorizationMode {
+	castFunc := func(typ any) BACnetAuthorizationMode {
 		if sBACnetAuthorizationMode, ok := typ.(BACnetAuthorizationMode); ok {
 			return sBACnetAuthorizationMode
 		}

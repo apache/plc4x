@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // StatusRequest is the corresponding interface of StatusRequest
 type StatusRequest interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetStatusType returns StatusType (property field)
@@ -88,7 +90,7 @@ func NewStatusRequest(statusType byte) *_StatusRequest {
 }
 
 // Deprecated: use the interface for direct cast
-func CastStatusRequest(structType interface{}) StatusRequest {
+func CastStatusRequest(structType any) StatusRequest {
 	if casted, ok := structType.(StatusRequest); ok {
 		return casted
 	}
@@ -140,7 +142,7 @@ func StatusRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 		InitializeParent(StatusRequest, byte)
 		GetParent() StatusRequest
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child StatusRequestChildSerializeRequirement
 	var typeSwitchError error
 	switch {

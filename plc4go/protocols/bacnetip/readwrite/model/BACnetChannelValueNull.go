@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetChannelValueNull is the corresponding interface of BACnetChannelValueNull
 type BACnetChannelValueNull interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetChannelValue
@@ -92,7 +94,7 @@ func NewBACnetChannelValueNull(nullValue BACnetApplicationTagNull, peekedTagHead
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetChannelValueNull(structType interface{}) BACnetChannelValueNull {
+func CastBACnetChannelValueNull(structType any) BACnetChannelValueNull {
 	if casted, ok := structType.(BACnetChannelValueNull); ok {
 		return casted
 	}

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
@@ -30,6 +31,7 @@ import (
 
 // BACnetConfirmedServiceRequestGetEnrollmentSummary is the corresponding interface of BACnetConfirmedServiceRequestGetEnrollmentSummary
 type BACnetConfirmedServiceRequestGetEnrollmentSummary interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConfirmedServiceRequest
@@ -136,7 +138,7 @@ func NewBACnetConfirmedServiceRequestGetEnrollmentSummary(acknowledgmentFilter B
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConfirmedServiceRequestGetEnrollmentSummary(structType interface{}) BACnetConfirmedServiceRequestGetEnrollmentSummary {
+func CastBACnetConfirmedServiceRequestGetEnrollmentSummary(structType any) BACnetConfirmedServiceRequestGetEnrollmentSummary {
 	if casted, ok := structType.(BACnetConfirmedServiceRequestGetEnrollmentSummary); ok {
 		return casted
 	}

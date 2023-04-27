@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataActivationTime is the corresponding interface of BACnetConstructedDataActivationTime
 type BACnetConstructedDataActivationTime interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataActivationTime(activationTime BACnetDateTime, openi
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataActivationTime(structType interface{}) BACnetConstructedDataActivationTime {
+func CastBACnetConstructedDataActivationTime(structType any) BACnetConstructedDataActivationTime {
 	if casted, ok := structType.(BACnetConstructedDataActivationTime); ok {
 		return casted
 	}

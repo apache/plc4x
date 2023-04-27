@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -31,6 +32,8 @@ import (
 type BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice uint8
 
 type IBACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice interface {
+	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 
@@ -120,8 +123,8 @@ func BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceKn
 	return false
 }
 
-func CastBACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice(structType interface{}) BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice {
-	castFunc := func(typ interface{}) BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice {
+func CastBACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice(structType any) BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice {
+	castFunc := func(typ any) BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice {
 		if sBACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice, ok := typ.(BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice); ok {
 			return sBACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice
 		}

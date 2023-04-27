@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // AdsMultiRequestItem is the corresponding interface of AdsMultiRequestItem
 type AdsMultiRequestItem interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetIndexGroup returns IndexGroup (discriminator field)
@@ -73,7 +75,7 @@ func NewAdsMultiRequestItem() *_AdsMultiRequestItem {
 }
 
 // Deprecated: use the interface for direct cast
-func CastAdsMultiRequestItem(structType interface{}) AdsMultiRequestItem {
+func CastAdsMultiRequestItem(structType any) AdsMultiRequestItem {
 	if casted, ok := structType.(AdsMultiRequestItem); ok {
 		return casted
 	}
@@ -116,7 +118,7 @@ func AdsMultiRequestItemParseWithBuffer(ctx context.Context, readBuffer utils.Re
 		InitializeParent(AdsMultiRequestItem)
 		GetParent() AdsMultiRequestItem
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child AdsMultiRequestItemChildSerializeRequirement
 	var typeSwitchError error
 	switch {

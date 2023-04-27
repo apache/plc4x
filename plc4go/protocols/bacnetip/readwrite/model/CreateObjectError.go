@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // CreateObjectError is the corresponding interface of CreateObjectError
 type CreateObjectError interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetError
@@ -102,7 +104,7 @@ func NewCreateObjectError(errorType ErrorEnclosed, firstFailedElementNumber BACn
 }
 
 // Deprecated: use the interface for direct cast
-func CastCreateObjectError(structType interface{}) CreateObjectError {
+func CastCreateObjectError(structType any) CreateObjectError {
 	if casted, ok := structType.(CreateObjectError); ok {
 		return casted
 	}

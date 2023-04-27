@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetPriorityValueDouble is the corresponding interface of BACnetPriorityValueDouble
 type BACnetPriorityValueDouble interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetPriorityValue
@@ -92,7 +94,7 @@ func NewBACnetPriorityValueDouble(doubleValue BACnetApplicationTagDouble, peeked
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetPriorityValueDouble(structType interface{}) BACnetPriorityValueDouble {
+func CastBACnetPriorityValueDouble(structType any) BACnetPriorityValueDouble {
 	if casted, ok := structType.(BACnetPriorityValueDouble); ok {
 		return casted
 	}

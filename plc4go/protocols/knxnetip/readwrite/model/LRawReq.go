@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // LRawReq is the corresponding interface of LRawReq
 type LRawReq interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	CEMI
@@ -76,7 +78,7 @@ func NewLRawReq(size uint16) *_LRawReq {
 }
 
 // Deprecated: use the interface for direct cast
-func CastLRawReq(structType interface{}) LRawReq {
+func CastLRawReq(structType any) LRawReq {
 	if casted, ok := structType.(LRawReq); ok {
 		return casted
 	}

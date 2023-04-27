@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // ApduDataAdcRead is the corresponding interface of ApduDataAdcRead
 type ApduDataAdcRead interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	ApduData
@@ -76,7 +78,7 @@ func NewApduDataAdcRead(dataLength uint8) *_ApduDataAdcRead {
 }
 
 // Deprecated: use the interface for direct cast
-func CastApduDataAdcRead(structType interface{}) ApduDataAdcRead {
+func CastApduDataAdcRead(structType any) ApduDataAdcRead {
 	if casted, ok := structType.(ApduDataAdcRead); ok {
 		return casted
 	}

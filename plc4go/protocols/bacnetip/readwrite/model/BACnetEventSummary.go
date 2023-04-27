@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetEventSummary is the corresponding interface of BACnetEventSummary
 type BACnetEventSummary interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetObjectIdentifier returns ObjectIdentifier (property field)
@@ -109,7 +111,7 @@ func NewBACnetEventSummary(objectIdentifier BACnetContextTagObjectIdentifier, ev
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetEventSummary(structType interface{}) BACnetEventSummary {
+func CastBACnetEventSummary(structType any) BACnetEventSummary {
 	if casted, ok := structType.(BACnetEventSummary); ok {
 		return casted
 	}

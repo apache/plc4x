@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetLogDataLogDataEntryBooleanValue is the corresponding interface of BACnetLogDataLogDataEntryBooleanValue
 type BACnetLogDataLogDataEntryBooleanValue interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetLogDataLogDataEntry
@@ -92,7 +94,7 @@ func NewBACnetLogDataLogDataEntryBooleanValue(booleanValue BACnetContextTagBoole
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetLogDataLogDataEntryBooleanValue(structType interface{}) BACnetLogDataLogDataEntryBooleanValue {
+func CastBACnetLogDataLogDataEntryBooleanValue(structType any) BACnetLogDataLogDataEntryBooleanValue {
 	if casted, ok := structType.(BACnetLogDataLogDataEntryBooleanValue); ok {
 		return casted
 	}

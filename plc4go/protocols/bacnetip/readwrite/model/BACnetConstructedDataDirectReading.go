@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataDirectReading is the corresponding interface of BACnetConstructedDataDirectReading
 type BACnetConstructedDataDirectReading interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataDirectReading(directReading BACnetApplicationTagRea
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataDirectReading(structType interface{}) BACnetConstructedDataDirectReading {
+func CastBACnetConstructedDataDirectReading(structType any) BACnetConstructedDataDirectReading {
 	if casted, ok := structType.(BACnetConstructedDataDirectReading); ok {
 		return casted
 	}

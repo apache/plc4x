@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -31,6 +32,8 @@ import (
 type ParameterType uint8
 
 type IParameterType interface {
+	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 
@@ -132,8 +135,8 @@ func ParameterTypeKnows(value uint8) bool {
 	return false
 }
 
-func CastParameterType(structType interface{}) ParameterType {
-	castFunc := func(typ interface{}) ParameterType {
+func CastParameterType(structType any) ParameterType {
+	castFunc := func(typ any) ParameterType {
 		if sParameterType, ok := typ.(ParameterType); ok {
 			return sParameterType
 		}

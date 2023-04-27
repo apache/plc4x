@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // LevelInformationNormal is the corresponding interface of LevelInformationNormal
 type LevelInformationNormal interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	LevelInformation
@@ -125,7 +127,7 @@ func NewLevelInformationNormal(pair1 LevelInformationNibblePair, pair2 LevelInfo
 }
 
 // Deprecated: use the interface for direct cast
-func CastLevelInformationNormal(structType interface{}) LevelInformationNormal {
+func CastLevelInformationNormal(structType any) LevelInformationNormal {
 	if casted, ok := structType.(LevelInformationNormal); ok {
 		return casted
 	}

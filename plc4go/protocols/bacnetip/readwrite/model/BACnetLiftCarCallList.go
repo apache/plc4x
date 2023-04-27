@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetLiftCarCallList is the corresponding interface of BACnetLiftCarCallList
 type BACnetLiftCarCallList interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetFloorNumbers returns FloorNumbers (property field)
@@ -67,7 +69,7 @@ func NewBACnetLiftCarCallList(floorNumbers BACnetLiftCarCallListFloorList) *_BAC
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetLiftCarCallList(structType interface{}) BACnetLiftCarCallList {
+func CastBACnetLiftCarCallList(structType any) BACnetLiftCarCallList {
 	if casted, ok := structType.(BACnetLiftCarCallList); ok {
 		return casted
 	}

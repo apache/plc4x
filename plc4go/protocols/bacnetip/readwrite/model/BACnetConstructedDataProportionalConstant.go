@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataProportionalConstant is the corresponding interface of BACnetConstructedDataProportionalConstant
 type BACnetConstructedDataProportionalConstant interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataProportionalConstant(proportionalConstant BACnetApp
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataProportionalConstant(structType interface{}) BACnetConstructedDataProportionalConstant {
+func CastBACnetConstructedDataProportionalConstant(structType any) BACnetConstructedDataProportionalConstant {
 	if casted, ok := structType.(BACnetConstructedDataProportionalConstant); ok {
 		return casted
 	}

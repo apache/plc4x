@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // CBusPointToPointToMultiPointCommandStatus is the corresponding interface of CBusPointToPointToMultiPointCommandStatus
 type CBusPointToPointToMultiPointCommandStatus interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	CBusPointToPointToMultiPointCommand
@@ -96,7 +98,7 @@ func NewCBusPointToPointToMultiPointCommandStatus(statusRequest StatusRequest, b
 }
 
 // Deprecated: use the interface for direct cast
-func CastCBusPointToPointToMultiPointCommandStatus(structType interface{}) CBusPointToPointToMultiPointCommandStatus {
+func CastCBusPointToPointToMultiPointCommandStatus(structType any) CBusPointToPointToMultiPointCommandStatus {
 	if casted, ok := structType.(CBusPointToPointToMultiPointCommandStatus); ok {
 		return casted
 	}
@@ -147,7 +149,7 @@ func CBusPointToPointToMultiPointCommandStatusParseWithBuffer(ctx context.Contex
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of CBusPointToPointToMultiPointCommandStatus")
 		}
 		if reserved != byte(0xFF) {
-			Plc4xModelLog.Info().Fields(map[string]interface{}{
+			Plc4xModelLog.Info().Fields(map[string]any{
 				"expected value": byte(0xFF),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
@@ -205,7 +207,7 @@ func (m *_CBusPointToPointToMultiPointCommandStatus) SerializeWithWriteBuffer(ct
 		{
 			var reserved byte = byte(0xFF)
 			if m.reservedField0 != nil {
-				Plc4xModelLog.Info().Fields(map[string]interface{}{
+				Plc4xModelLog.Info().Fields(map[string]any{
 					"expected value": byte(0xFF),
 					"got value":      reserved,
 				}).Msg("Overriding reserved field with unexpected value.")

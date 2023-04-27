@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetServiceAckAtomicReadFileStreamOrRecord is the corresponding interface of BACnetServiceAckAtomicReadFileStreamOrRecord
 type BACnetServiceAckAtomicReadFileStreamOrRecord interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetPeekedTagHeader returns PeekedTagHeader (property field)
@@ -119,7 +121,7 @@ func NewBACnetServiceAckAtomicReadFileStreamOrRecord(peekedTagHeader BACnetTagHe
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetServiceAckAtomicReadFileStreamOrRecord(structType interface{}) BACnetServiceAckAtomicReadFileStreamOrRecord {
+func CastBACnetServiceAckAtomicReadFileStreamOrRecord(structType any) BACnetServiceAckAtomicReadFileStreamOrRecord {
 	if casted, ok := structType.(BACnetServiceAckAtomicReadFileStreamOrRecord); ok {
 		return casted
 	}
@@ -196,7 +198,7 @@ func BACnetServiceAckAtomicReadFileStreamOrRecordParseWithBuffer(ctx context.Con
 		InitializeParent(BACnetServiceAckAtomicReadFileStreamOrRecord, BACnetTagHeader, BACnetOpeningTag, BACnetClosingTag)
 		GetParent() BACnetServiceAckAtomicReadFileStreamOrRecord
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child BACnetServiceAckAtomicReadFileStreamOrRecordChildSerializeRequirement
 	var typeSwitchError error
 	switch {

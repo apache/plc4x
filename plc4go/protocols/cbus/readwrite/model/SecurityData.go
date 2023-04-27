@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // SecurityData is the corresponding interface of SecurityData
 type SecurityData interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetCommandTypeContainer returns CommandTypeContainer (property field)
@@ -113,7 +115,7 @@ func NewSecurityData(commandTypeContainer SecurityCommandTypeContainer, argument
 }
 
 // Deprecated: use the interface for direct cast
-func CastSecurityData(structType interface{}) SecurityData {
+func CastSecurityData(structType any) SecurityData {
 	if casted, ok := structType.(SecurityData); ok {
 		return casted
 	}
@@ -194,7 +196,7 @@ func SecurityDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 		InitializeParent(SecurityData, SecurityCommandTypeContainer, byte)
 		GetParent() SecurityData
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child SecurityDataChildSerializeRequirement
 	var typeSwitchError error
 	switch {

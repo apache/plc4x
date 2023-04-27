@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataPriorityArray is the corresponding interface of BACnetConstructedDataPriorityArray
 type BACnetConstructedDataPriorityArray interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataPriorityArray(priorityArray BACnetPriorityArray, op
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataPriorityArray(structType interface{}) BACnetConstructedDataPriorityArray {
+func CastBACnetConstructedDataPriorityArray(structType any) BACnetConstructedDataPriorityArray {
 	if casted, ok := structType.(BACnetConstructedDataPriorityArray); ok {
 		return casted
 	}

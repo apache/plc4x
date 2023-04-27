@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
@@ -30,6 +31,7 @@ import (
 
 // BACnetPropertyReference is the corresponding interface of BACnetPropertyReference
 type BACnetPropertyReference interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetPropertyIdentifier returns PropertyIdentifier (property field)
@@ -75,7 +77,7 @@ func NewBACnetPropertyReference(propertyIdentifier BACnetPropertyIdentifierTagge
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetPropertyReference(structType interface{}) BACnetPropertyReference {
+func CastBACnetPropertyReference(structType any) BACnetPropertyReference {
 	if casted, ok := structType.(BACnetPropertyReference); ok {
 		return casted
 	}

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetSpecialEventPeriod is the corresponding interface of BACnetSpecialEventPeriod
 type BACnetSpecialEventPeriod interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetPeekedTagHeader returns PeekedTagHeader (property field)
@@ -105,7 +107,7 @@ func NewBACnetSpecialEventPeriod(peekedTagHeader BACnetTagHeader) *_BACnetSpecia
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetSpecialEventPeriod(structType interface{}) BACnetSpecialEventPeriod {
+func CastBACnetSpecialEventPeriod(structType any) BACnetSpecialEventPeriod {
 	if casted, ok := structType.(BACnetSpecialEventPeriod); ok {
 		return casted
 	}
@@ -168,7 +170,7 @@ func BACnetSpecialEventPeriodParseWithBuffer(ctx context.Context, readBuffer uti
 		InitializeParent(BACnetSpecialEventPeriod, BACnetTagHeader)
 		GetParent() BACnetSpecialEventPeriod
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child BACnetSpecialEventPeriodChildSerializeRequirement
 	var typeSwitchError error
 	switch {

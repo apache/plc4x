@@ -80,7 +80,7 @@ type UDPMultiplexer struct {
 	annexJ             *_MultiplexServer
 }
 
-func NewUDPMultiplexer(address interface{}, noBroadcast bool) (*UDPMultiplexer, error) {
+func NewUDPMultiplexer(address any, noBroadcast bool) (*UDPMultiplexer, error) {
 	log.Debug().Msgf("NewUDPMultiplexer %v noBroadcast=%t", address, noBroadcast)
 	u := &UDPMultiplexer{}
 
@@ -654,8 +654,8 @@ func (b *BIPForeign) Confirmation(pdu _PDU) error {
 
 // register starts the foreign device registration process with the given BBMD.
 //
-//        Registration will be renewed periodically according to the ttl value
-//        until explicitly stopped by a call to `unregister`.
+//	Registration will be renewed periodically according to the ttl value
+//	until explicitly stopped by a call to `unregister`.
 func (b *BIPForeign) register(addr Address, ttl int) error {
 	// a little error checking
 	if ttl <= 0 {

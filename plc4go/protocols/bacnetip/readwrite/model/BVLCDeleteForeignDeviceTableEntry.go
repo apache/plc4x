@@ -22,7 +22,7 @@ package model
 import (
 	"context"
 	"encoding/binary"
-	spiContext "github.com/apache/plc4x/plc4go/spi/context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -31,6 +31,7 @@ import (
 
 // BVLCDeleteForeignDeviceTableEntry is the corresponding interface of BVLCDeleteForeignDeviceTableEntry
 type BVLCDeleteForeignDeviceTableEntry interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BVLC
@@ -104,7 +105,7 @@ func NewBVLCDeleteForeignDeviceTableEntry(ip []uint8, port uint16) *_BVLCDeleteF
 }
 
 // Deprecated: use the interface for direct cast
-func CastBVLCDeleteForeignDeviceTableEntry(structType interface{}) BVLCDeleteForeignDeviceTableEntry {
+func CastBVLCDeleteForeignDeviceTableEntry(structType any) BVLCDeleteForeignDeviceTableEntry {
 	if casted, ok := structType.(BVLCDeleteForeignDeviceTableEntry); ok {
 		return casted
 	}
@@ -162,7 +163,7 @@ func BVLCDeleteForeignDeviceTableEntryParseWithBuffer(ctx context.Context, readB
 	{
 		_numItems := uint16(uint16(4))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := spiContext.CreateArrayContext(ctx, int(_numItems), int(_curItem))
+			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
 			_ = _curItem
 			_item, _err := readBuffer.ReadUint8("", 8)

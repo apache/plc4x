@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataDefaultSubordinateRelationship is the corresponding interface of BACnetConstructedDataDefaultSubordinateRelationship
 type BACnetConstructedDataDefaultSubordinateRelationship interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataDefaultSubordinateRelationship(defaultSubordinateRe
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataDefaultSubordinateRelationship(structType interface{}) BACnetConstructedDataDefaultSubordinateRelationship {
+func CastBACnetConstructedDataDefaultSubordinateRelationship(structType any) BACnetConstructedDataDefaultSubordinateRelationship {
 	if casted, ok := structType.(BACnetConstructedDataDefaultSubordinateRelationship); ok {
 		return casted
 	}

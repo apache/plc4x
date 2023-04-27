@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // ApduDataExtDomainAddressResponse is the corresponding interface of ApduDataExtDomainAddressResponse
 type ApduDataExtDomainAddressResponse interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	ApduDataExt
@@ -76,7 +78,7 @@ func NewApduDataExtDomainAddressResponse(length uint8) *_ApduDataExtDomainAddres
 }
 
 // Deprecated: use the interface for direct cast
-func CastApduDataExtDomainAddressResponse(structType interface{}) ApduDataExtDomainAddressResponse {
+func CastApduDataExtDomainAddressResponse(structType any) ApduDataExtDomainAddressResponse {
 	if casted, ok := structType.(ApduDataExtDomainAddressResponse); ok {
 		return casted
 	}

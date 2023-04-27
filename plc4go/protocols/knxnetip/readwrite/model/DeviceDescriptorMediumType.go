@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -31,6 +32,8 @@ import (
 type DeviceDescriptorMediumType uint8
 
 type IDeviceDescriptorMediumType interface {
+	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 
@@ -102,8 +105,8 @@ func DeviceDescriptorMediumTypeKnows(value uint8) bool {
 	return false
 }
 
-func CastDeviceDescriptorMediumType(structType interface{}) DeviceDescriptorMediumType {
-	castFunc := func(typ interface{}) DeviceDescriptorMediumType {
+func CastDeviceDescriptorMediumType(structType any) DeviceDescriptorMediumType {
+	castFunc := func(typ any) DeviceDescriptorMediumType {
 		if sDeviceDescriptorMediumType, ok := typ.(DeviceDescriptorMediumType); ok {
 			return sDeviceDescriptorMediumType
 		}

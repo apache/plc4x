@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -31,6 +32,8 @@ import (
 type BACnetVendorId uint16
 
 type IBACnetVendorId interface {
+	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 	VendorId() uint16
 	VendorName() string
@@ -260,7 +263,7 @@ const (
 	BACnetVendorId_CONTROL_TECHNIQUES_LTD                                                       BACnetVendorId = 220
 	BACnetVendorId_OPEN_GENERAL_PTY_LTD                                                         BACnetVendorId = 221
 	BACnetVendorId_WAGO_KONTAKTTECHNIK_GMBH_COKG                                                BACnetVendorId = 222
-	BACnetVendorId_CERUS_INDUSTRIAL                                                             BACnetVendorId = 223
+	BACnetVendorId_FRANKLIN_ELECTRIC                                                            BACnetVendorId = 223
 	BACnetVendorId_CHLORIDE_POWER_PROTECTION_COMPANY                                            BACnetVendorId = 224
 	BACnetVendorId_COMPUTROLS_INC                                                               BACnetVendorId = 225
 	BACnetVendorId_PHOENIX_CONTACT_GMBH_COKG                                                    BACnetVendorId = 226
@@ -1439,6 +1442,14 @@ const (
 	BACnetVendorId_ELSNER_ELEKTRONIK                                                            BACnetVendorId = 1408
 	BACnetVendorId_LEFOO_INDUSTRIAL_HANGZHOU_CO_LTD                                             BACnetVendorId = 1409
 	BACnetVendorId_CALIBRATION_TECHNOLOGIES_INC                                                 BACnetVendorId = 1410
+	BACnetVendorId_ALLORADO                                                                     BACnetVendorId = 1411
+	BACnetVendorId_VERKADA                                                                      BACnetVendorId = 1412
+	BACnetVendorId_WATTSENSE                                                                    BACnetVendorId = 1413
+	BACnetVendorId_EMERSON_AUTOMATION_SOLUTIONS                                                 BACnetVendorId = 1414
+	BACnetVendorId_GROWLINK                                                                     BACnetVendorId = 1415
+	BACnetVendorId_OLYMPIA_ELECTRONICS                                                          BACnetVendorId = 1416
+	BACnetVendorId_NORMAL_SOFTWARE_INC                                                          BACnetVendorId = 1417
+	BACnetVendorId_ST_ENGINEERING_SOLUTIONJSC                                                   BACnetVendorId = 1418
 	BACnetVendorId_UNKNOWN_VENDOR                                                               BACnetVendorId = 0xFFFF
 )
 
@@ -1670,7 +1681,7 @@ func init() {
 		BACnetVendorId_CONTROL_TECHNIQUES_LTD,
 		BACnetVendorId_OPEN_GENERAL_PTY_LTD,
 		BACnetVendorId_WAGO_KONTAKTTECHNIK_GMBH_COKG,
-		BACnetVendorId_CERUS_INDUSTRIAL,
+		BACnetVendorId_FRANKLIN_ELECTRIC,
 		BACnetVendorId_CHLORIDE_POWER_PROTECTION_COMPANY,
 		BACnetVendorId_COMPUTROLS_INC,
 		BACnetVendorId_PHOENIX_CONTACT_GMBH_COKG,
@@ -2849,6 +2860,14 @@ func init() {
 		BACnetVendorId_ELSNER_ELEKTRONIK,
 		BACnetVendorId_LEFOO_INDUSTRIAL_HANGZHOU_CO_LTD,
 		BACnetVendorId_CALIBRATION_TECHNOLOGIES_INC,
+		BACnetVendorId_ALLORADO,
+		BACnetVendorId_VERKADA,
+		BACnetVendorId_WATTSENSE,
+		BACnetVendorId_EMERSON_AUTOMATION_SOLUTIONS,
+		BACnetVendorId_GROWLINK,
+		BACnetVendorId_OLYMPIA_ELECTRONICS,
+		BACnetVendorId_NORMAL_SOFTWARE_INC,
+		BACnetVendorId_ST_ENGINEERING_SOLUTIONJSC,
 		BACnetVendorId_UNKNOWN_VENDOR,
 	}
 }
@@ -4686,6 +4705,38 @@ func (e BACnetVendorId) VendorId() uint16 {
 	case 1410:
 		{ /* '1410' */
 			return 1410
+		}
+	case 1411:
+		{ /* '1411' */
+			return 1411
+		}
+	case 1412:
+		{ /* '1412' */
+			return 1412
+		}
+	case 1413:
+		{ /* '1413' */
+			return 1413
+		}
+	case 1414:
+		{ /* '1414' */
+			return 1414
+		}
+	case 1415:
+		{ /* '1415' */
+			return 1415
+		}
+	case 1416:
+		{ /* '1416' */
+			return 1416
+		}
+	case 1417:
+		{ /* '1417' */
+			return 1417
+		}
+	case 1418:
+		{ /* '1418' */
+			return 1418
 		}
 	case 142:
 		{ /* '142' */
@@ -10317,6 +10368,38 @@ func (e BACnetVendorId) VendorName() string {
 		{ /* '1410' */
 			return "Calibration Technologies, Inc."
 		}
+	case 1411:
+		{ /* '1411' */
+			return "Allorado"
+		}
+	case 1412:
+		{ /* '1412' */
+			return "Verkada"
+		}
+	case 1413:
+		{ /* '1413' */
+			return "Wattsense"
+		}
+	case 1414:
+		{ /* '1414' */
+			return "Emerson Automation Solutions"
+		}
+	case 1415:
+		{ /* '1415' */
+			return "Growlink"
+		}
+	case 1416:
+		{ /* '1416' */
+			return "Olympia Electronics"
+		}
+	case 1417:
+		{ /* '1417' */
+			return "Normal Software, Inc."
+		}
+	case 1418:
+		{ /* '1418' */
+			return "ST Engineering Solution JSC"
+		}
 	case 142:
 		{ /* '142' */
 			return "DEOS control systems GmbH"
@@ -10679,7 +10762,7 @@ func (e BACnetVendorId) VendorName() string {
 		}
 	case 223:
 		{ /* '223' */
-			return "Cerus Industrial"
+			return "Franklin Electric"
 		}
 	case 224:
 		{ /* '224' */
@@ -15030,6 +15113,22 @@ func BACnetVendorIdByValue(value uint16) (enum BACnetVendorId, ok bool) {
 		return BACnetVendorId_YASKAWA_AMERICA_INC, true
 	case 1410:
 		return BACnetVendorId_CALIBRATION_TECHNOLOGIES_INC, true
+	case 1411:
+		return BACnetVendorId_ALLORADO, true
+	case 1412:
+		return BACnetVendorId_VERKADA, true
+	case 1413:
+		return BACnetVendorId_WATTSENSE, true
+	case 1414:
+		return BACnetVendorId_EMERSON_AUTOMATION_SOLUTIONS, true
+	case 1415:
+		return BACnetVendorId_GROWLINK, true
+	case 1416:
+		return BACnetVendorId_OLYMPIA_ELECTRONICS, true
+	case 1417:
+		return BACnetVendorId_NORMAL_SOFTWARE_INC, true
+	case 1418:
+		return BACnetVendorId_ST_ENGINEERING_SOLUTIONJSC, true
 	case 142:
 		return BACnetVendorId_DEO_SCONTROLSYSTEMS_GMBH, true
 	case 143:
@@ -15211,7 +15310,7 @@ func BACnetVendorIdByValue(value uint16) (enum BACnetVendorId, ok bool) {
 	case 222:
 		return BACnetVendorId_WAGO_KONTAKTTECHNIK_GMBH_COKG, true
 	case 223:
-		return BACnetVendorId_CERUS_INDUSTRIAL, true
+		return BACnetVendorId_FRANKLIN_ELECTRIC, true
 	case 224:
 		return BACnetVendorId_CHLORIDE_POWER_PROTECTION_COMPANY, true
 	case 225:
@@ -17842,6 +17941,22 @@ func BACnetVendorIdByName(value string) (enum BACnetVendorId, ok bool) {
 		return BACnetVendorId_YASKAWA_AMERICA_INC, true
 	case "CALIBRATION_TECHNOLOGIES_INC":
 		return BACnetVendorId_CALIBRATION_TECHNOLOGIES_INC, true
+	case "ALLORADO":
+		return BACnetVendorId_ALLORADO, true
+	case "VERKADA":
+		return BACnetVendorId_VERKADA, true
+	case "WATTSENSE":
+		return BACnetVendorId_WATTSENSE, true
+	case "EMERSON_AUTOMATION_SOLUTIONS":
+		return BACnetVendorId_EMERSON_AUTOMATION_SOLUTIONS, true
+	case "GROWLINK":
+		return BACnetVendorId_GROWLINK, true
+	case "OLYMPIA_ELECTRONICS":
+		return BACnetVendorId_OLYMPIA_ELECTRONICS, true
+	case "NORMAL_SOFTWARE_INC":
+		return BACnetVendorId_NORMAL_SOFTWARE_INC, true
+	case "ST_ENGINEERING_SOLUTIONJSC":
+		return BACnetVendorId_ST_ENGINEERING_SOLUTIONJSC, true
 	case "DEO_SCONTROLSYSTEMS_GMBH":
 		return BACnetVendorId_DEO_SCONTROLSYSTEMS_GMBH, true
 	case "DIGITALE_MESSUND_STEUERSYSTEMEAG":
@@ -18022,8 +18137,8 @@ func BACnetVendorIdByName(value string) (enum BACnetVendorId, ok bool) {
 		return BACnetVendorId_OPEN_GENERAL_PTY_LTD, true
 	case "WAGO_KONTAKTTECHNIK_GMBH_COKG":
 		return BACnetVendorId_WAGO_KONTAKTTECHNIK_GMBH_COKG, true
-	case "CERUS_INDUSTRIAL":
-		return BACnetVendorId_CERUS_INDUSTRIAL, true
+	case "FRANKLIN_ELECTRIC":
+		return BACnetVendorId_FRANKLIN_ELECTRIC, true
 	case "CHLORIDE_POWER_PROTECTION_COMPANY":
 		return BACnetVendorId_CHLORIDE_POWER_PROTECTION_COMPANY, true
 	case "COMPUTROLS_INC":
@@ -19745,8 +19860,8 @@ func BACnetVendorIdKnows(value uint16) bool {
 	return false
 }
 
-func CastBACnetVendorId(structType interface{}) BACnetVendorId {
-	castFunc := func(typ interface{}) BACnetVendorId {
+func CastBACnetVendorId(structType any) BACnetVendorId {
+	castFunc := func(typ any) BACnetVendorId {
 		if sBACnetVendorId, ok := typ.(BACnetVendorId); ok {
 			return sBACnetVendorId
 		}
@@ -20711,6 +20826,22 @@ func (e BACnetVendorId) PLC4XEnumName() string {
 		return "YASKAWA_AMERICA_INC"
 	case BACnetVendorId_CALIBRATION_TECHNOLOGIES_INC:
 		return "CALIBRATION_TECHNOLOGIES_INC"
+	case BACnetVendorId_ALLORADO:
+		return "ALLORADO"
+	case BACnetVendorId_VERKADA:
+		return "VERKADA"
+	case BACnetVendorId_WATTSENSE:
+		return "WATTSENSE"
+	case BACnetVendorId_EMERSON_AUTOMATION_SOLUTIONS:
+		return "EMERSON_AUTOMATION_SOLUTIONS"
+	case BACnetVendorId_GROWLINK:
+		return "GROWLINK"
+	case BACnetVendorId_OLYMPIA_ELECTRONICS:
+		return "OLYMPIA_ELECTRONICS"
+	case BACnetVendorId_NORMAL_SOFTWARE_INC:
+		return "NORMAL_SOFTWARE_INC"
+	case BACnetVendorId_ST_ENGINEERING_SOLUTIONJSC:
+		return "ST_ENGINEERING_SOLUTIONJSC"
 	case BACnetVendorId_DEO_SCONTROLSYSTEMS_GMBH:
 		return "DEO_SCONTROLSYSTEMS_GMBH"
 	case BACnetVendorId_DIGITALE_MESSUND_STEUERSYSTEMEAG:
@@ -20891,8 +21022,8 @@ func (e BACnetVendorId) PLC4XEnumName() string {
 		return "OPEN_GENERAL_PTY_LTD"
 	case BACnetVendorId_WAGO_KONTAKTTECHNIK_GMBH_COKG:
 		return "WAGO_KONTAKTTECHNIK_GMBH_COKG"
-	case BACnetVendorId_CERUS_INDUSTRIAL:
-		return "CERUS_INDUSTRIAL"
+	case BACnetVendorId_FRANKLIN_ELECTRIC:
+		return "FRANKLIN_ELECTRIC"
 	case BACnetVendorId_CHLORIDE_POWER_PROTECTION_COMPANY:
 		return "CHLORIDE_POWER_PROTECTION_COMPANY"
 	case BACnetVendorId_COMPUTROLS_INC:

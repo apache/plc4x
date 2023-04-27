@@ -21,7 +21,7 @@ package model
 
 import (
 	"context"
-	spiContext "github.com/apache/plc4x/plc4go/spi/context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
@@ -31,6 +31,7 @@ import (
 
 // BACnetConstructedDataSubordinateTags is the corresponding interface of BACnetConstructedDataSubordinateTags
 type BACnetConstructedDataSubordinateTags interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -131,7 +132,7 @@ func NewBACnetConstructedDataSubordinateTags(numberOfDataElements BACnetApplicat
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataSubordinateTags(structType interface{}) BACnetConstructedDataSubordinateTags {
+func CastBACnetConstructedDataSubordinateTags(structType any) BACnetConstructedDataSubordinateTags {
 	if casted, ok := structType.(BACnetConstructedDataSubordinateTags); ok {
 		return casted
 	}
@@ -287,7 +288,7 @@ func (m *_BACnetConstructedDataSubordinateTags) SerializeWithWriteBuffer(ctx con
 		}
 		for _curItem, _element := range m.GetSubordinateList() {
 			_ = _curItem
-			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetSubordinateList()), _curItem)
+			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetSubordinateList()), _curItem)
 			_ = arrayCtx
 			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 			if _elementErr != nil {

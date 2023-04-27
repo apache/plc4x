@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataAckRequired is the corresponding interface of BACnetConstructedDataAckRequired
 type BACnetConstructedDataAckRequired interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataAckRequired(ackRequired BACnetEventTransitionBitsTa
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataAckRequired(structType interface{}) BACnetConstructedDataAckRequired {
+func CastBACnetConstructedDataAckRequired(structType any) BACnetConstructedDataAckRequired {
 	if casted, ok := structType.(BACnetConstructedDataAckRequired); ok {
 		return casted
 	}

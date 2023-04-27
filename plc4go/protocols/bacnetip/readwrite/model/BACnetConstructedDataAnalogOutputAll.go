@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataAnalogOutputAll is the corresponding interface of BACnetConstructedDataAnalogOutputAll
 type BACnetConstructedDataAnalogOutputAll interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -84,7 +86,7 @@ func NewBACnetConstructedDataAnalogOutputAll(openingTag BACnetOpeningTag, peeked
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataAnalogOutputAll(structType interface{}) BACnetConstructedDataAnalogOutputAll {
+func CastBACnetConstructedDataAnalogOutputAll(structType any) BACnetConstructedDataAnalogOutputAll {
 	if casted, ok := structType.(BACnetConstructedDataAnalogOutputAll); ok {
 		return casted
 	}

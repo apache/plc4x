@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataLandingCallControl is the corresponding interface of BACnetConstructedDataLandingCallControl
 type BACnetConstructedDataLandingCallControl interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataLandingCallControl(landingCallControl BACnetLanding
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataLandingCallControl(structType interface{}) BACnetConstructedDataLandingCallControl {
+func CastBACnetConstructedDataLandingCallControl(structType any) BACnetConstructedDataLandingCallControl {
 	if casted, ok := structType.(BACnetConstructedDataLandingCallControl); ok {
 		return casted
 	}

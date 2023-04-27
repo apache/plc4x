@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // ModbusDeviceInformationObject is the corresponding interface of ModbusDeviceInformationObject
 type ModbusDeviceInformationObject interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetObjectId returns ObjectId (property field)
@@ -74,7 +76,7 @@ func NewModbusDeviceInformationObject(objectId uint8, data []byte) *_ModbusDevic
 }
 
 // Deprecated: use the interface for direct cast
-func CastModbusDeviceInformationObject(structType interface{}) ModbusDeviceInformationObject {
+func CastModbusDeviceInformationObject(structType any) ModbusDeviceInformationObject {
 	if casted, ok := structType.(ModbusDeviceInformationObject); ok {
 		return casted
 	}

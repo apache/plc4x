@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // HVACTemperature is the corresponding interface of HVACTemperature
 type HVACTemperature interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetTemperatureValue returns TemperatureValue (property field)
@@ -84,7 +86,7 @@ func NewHVACTemperature(temperatureValue int16) *_HVACTemperature {
 }
 
 // Deprecated: use the interface for direct cast
-func CastHVACTemperature(structType interface{}) HVACTemperature {
+func CastHVACTemperature(structType any) HVACTemperature {
 	if casted, ok := structType.(HVACTemperature); ok {
 		return casted
 	}

@@ -22,6 +22,7 @@ package model
 import (
 	"context"
 	"encoding/binary"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,6 +31,7 @@ import (
 
 // DF1SymbolMessageFrameNAK is the corresponding interface of DF1SymbolMessageFrameNAK
 type DF1SymbolMessageFrameNAK interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	DF1Symbol
@@ -77,7 +79,7 @@ func NewDF1SymbolMessageFrameNAK() *_DF1SymbolMessageFrameNAK {
 }
 
 // Deprecated: use the interface for direct cast
-func CastDF1SymbolMessageFrameNAK(structType interface{}) DF1SymbolMessageFrameNAK {
+func CastDF1SymbolMessageFrameNAK(structType any) DF1SymbolMessageFrameNAK {
 	if casted, ok := structType.(DF1SymbolMessageFrameNAK); ok {
 		return casted
 	}

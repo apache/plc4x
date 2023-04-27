@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // IdentifyReplyCommandTerminalLevels is the corresponding interface of IdentifyReplyCommandTerminalLevels
 type IdentifyReplyCommandTerminalLevels interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	IdentifyReplyCommand
@@ -94,7 +96,7 @@ func NewIdentifyReplyCommandTerminalLevels(terminalLevels []byte, numBytes uint8
 }
 
 // Deprecated: use the interface for direct cast
-func CastIdentifyReplyCommandTerminalLevels(structType interface{}) IdentifyReplyCommandTerminalLevels {
+func CastIdentifyReplyCommandTerminalLevels(structType any) IdentifyReplyCommandTerminalLevels {
 	if casted, ok := structType.(IdentifyReplyCommandTerminalLevels); ok {
 		return casted
 	}

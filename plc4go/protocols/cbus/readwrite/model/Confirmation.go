@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
@@ -30,6 +31,7 @@ import (
 
 // Confirmation is the corresponding interface of Confirmation
 type Confirmation interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetAlpha returns Alpha (property field)
@@ -101,7 +103,7 @@ func NewConfirmation(alpha Alpha, secondAlpha Alpha, confirmationType Confirmati
 }
 
 // Deprecated: use the interface for direct cast
-func CastConfirmation(structType interface{}) Confirmation {
+func CastConfirmation(structType any) Confirmation {
 	if casted, ok := structType.(Confirmation); ok {
 		return casted
 	}

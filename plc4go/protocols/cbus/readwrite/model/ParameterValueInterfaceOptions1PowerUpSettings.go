@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // ParameterValueInterfaceOptions1PowerUpSettings is the corresponding interface of ParameterValueInterfaceOptions1PowerUpSettings
 type ParameterValueInterfaceOptions1PowerUpSettings interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	ParameterValue
@@ -94,7 +96,7 @@ func NewParameterValueInterfaceOptions1PowerUpSettings(value InterfaceOptions1Po
 }
 
 // Deprecated: use the interface for direct cast
-func CastParameterValueInterfaceOptions1PowerUpSettings(structType interface{}) ParameterValueInterfaceOptions1PowerUpSettings {
+func CastParameterValueInterfaceOptions1PowerUpSettings(structType any) ParameterValueInterfaceOptions1PowerUpSettings {
 	if casted, ok := structType.(ParameterValueInterfaceOptions1PowerUpSettings); ok {
 		return casted
 	}

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetLogRecordLogDatumNullValue is the corresponding interface of BACnetLogRecordLogDatumNullValue
 type BACnetLogRecordLogDatumNullValue interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetLogRecordLogDatum
@@ -94,7 +96,7 @@ func NewBACnetLogRecordLogDatumNullValue(nullValue BACnetContextTagNull, opening
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetLogRecordLogDatumNullValue(structType interface{}) BACnetLogRecordLogDatumNullValue {
+func CastBACnetLogRecordLogDatumNullValue(structType any) BACnetLogRecordLogDatumNullValue {
 	if casted, ok := structType.(BACnetLogRecordLogDatumNullValue); ok {
 		return casted
 	}

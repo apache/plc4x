@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetTimerStateChangeValueEnumerated is the corresponding interface of BACnetTimerStateChangeValueEnumerated
 type BACnetTimerStateChangeValueEnumerated interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetTimerStateChangeValue
@@ -92,7 +94,7 @@ func NewBACnetTimerStateChangeValueEnumerated(enumeratedValue BACnetApplicationT
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetTimerStateChangeValueEnumerated(structType interface{}) BACnetTimerStateChangeValueEnumerated {
+func CastBACnetTimerStateChangeValueEnumerated(structType any) BACnetTimerStateChangeValueEnumerated {
 	if casted, ok := structType.(BACnetTimerStateChangeValueEnumerated); ok {
 		return casted
 	}

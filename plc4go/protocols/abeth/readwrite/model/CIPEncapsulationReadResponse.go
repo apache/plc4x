@@ -22,6 +22,7 @@ package model
 import (
 	"context"
 	"encoding/binary"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,6 +31,7 @@ import (
 
 // CIPEncapsulationReadResponse is the corresponding interface of CIPEncapsulationReadResponse
 type CIPEncapsulationReadResponse interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	CIPEncapsulationPacket
@@ -103,7 +105,7 @@ func NewCIPEncapsulationReadResponse(response DF1ResponseMessage, sessionHandle 
 }
 
 // Deprecated: use the interface for direct cast
-func CastCIPEncapsulationReadResponse(structType interface{}) CIPEncapsulationReadResponse {
+func CastCIPEncapsulationReadResponse(structType any) CIPEncapsulationReadResponse {
 	if casted, ok := structType.(CIPEncapsulationReadResponse); ok {
 		return casted
 	}

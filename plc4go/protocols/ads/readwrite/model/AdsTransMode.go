@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -31,6 +32,8 @@ import (
 type AdsTransMode uint32
 
 type IAdsTransMode interface {
+	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 
@@ -108,8 +111,8 @@ func AdsTransModeKnows(value uint32) bool {
 	return false
 }
 
-func CastAdsTransMode(structType interface{}) AdsTransMode {
-	castFunc := func(typ interface{}) AdsTransMode {
+func CastAdsTransMode(structType any) AdsTransMode {
+	castFunc := func(typ any) AdsTransMode {
 		if sAdsTransMode, ok := typ.(AdsTransMode); ok {
 			return sAdsTransMode
 		}

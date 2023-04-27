@@ -21,7 +21,7 @@ package model
 
 import (
 	"context"
-	spiContext "github.com/apache/plc4x/plc4go/spi/context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
@@ -31,6 +31,7 @@ import (
 
 // BACnetConstructedDataAccessDoors is the corresponding interface of BACnetConstructedDataAccessDoors
 type BACnetConstructedDataAccessDoors interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -131,7 +132,7 @@ func NewBACnetConstructedDataAccessDoors(numberOfDataElements BACnetApplicationT
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataAccessDoors(structType interface{}) BACnetConstructedDataAccessDoors {
+func CastBACnetConstructedDataAccessDoors(structType any) BACnetConstructedDataAccessDoors {
 	if casted, ok := structType.(BACnetConstructedDataAccessDoors); ok {
 		return casted
 	}
@@ -287,7 +288,7 @@ func (m *_BACnetConstructedDataAccessDoors) SerializeWithWriteBuffer(ctx context
 		}
 		for _curItem, _element := range m.GetAccessDoors() {
 			_ = _curItem
-			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetAccessDoors()), _curItem)
+			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetAccessDoors()), _curItem)
 			_ = arrayCtx
 			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 			if _elementErr != nil {

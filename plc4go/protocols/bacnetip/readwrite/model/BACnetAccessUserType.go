@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -31,6 +32,8 @@ import (
 type BACnetAccessUserType uint16
 
 type IBACnetAccessUserType interface {
+	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 
@@ -90,8 +93,8 @@ func BACnetAccessUserTypeKnows(value uint16) bool {
 	return false
 }
 
-func CastBACnetAccessUserType(structType interface{}) BACnetAccessUserType {
-	castFunc := func(typ interface{}) BACnetAccessUserType {
+func CastBACnetAccessUserType(structType any) BACnetAccessUserType {
+	castFunc := func(typ any) BACnetAccessUserType {
 		if sBACnetAccessUserType, ok := typ.(BACnetAccessUserType); ok {
 			return sBACnetAccessUserType
 		}

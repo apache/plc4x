@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetDateRangeEnclosed is the corresponding interface of BACnetDateRangeEnclosed
 type BACnetDateRangeEnclosed interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetOpeningTag returns OpeningTag (property field)
@@ -84,7 +86,7 @@ func NewBACnetDateRangeEnclosed(openingTag BACnetOpeningTag, dateRange BACnetDat
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetDateRangeEnclosed(structType interface{}) BACnetDateRangeEnclosed {
+func CastBACnetDateRangeEnclosed(structType any) BACnetDateRangeEnclosed {
 	if casted, ok := structType.(BACnetDateRangeEnclosed); ok {
 		return casted
 	}

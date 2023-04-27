@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -31,6 +32,8 @@ import (
 type TriggerControlLabelType uint8
 
 type ITriggerControlLabelType interface {
+	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 
@@ -90,8 +93,8 @@ func TriggerControlLabelTypeKnows(value uint8) bool {
 	return false
 }
 
-func CastTriggerControlLabelType(structType interface{}) TriggerControlLabelType {
-	castFunc := func(typ interface{}) TriggerControlLabelType {
+func CastTriggerControlLabelType(structType any) TriggerControlLabelType {
+	castFunc := func(typ any) TriggerControlLabelType {
 		if sTriggerControlLabelType, ok := typ.(TriggerControlLabelType); ok {
 			return sTriggerControlLabelType
 		}

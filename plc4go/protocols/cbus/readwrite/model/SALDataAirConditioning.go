@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // SALDataAirConditioning is the corresponding interface of SALDataAirConditioning
 type SALDataAirConditioning interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	SALData
@@ -96,7 +98,7 @@ func NewSALDataAirConditioning(airConditioningData AirConditioningData, salData 
 }
 
 // Deprecated: use the interface for direct cast
-func CastSALDataAirConditioning(structType interface{}) SALDataAirConditioning {
+func CastSALDataAirConditioning(structType any) SALDataAirConditioning {
 	if casted, ok := structType.(SALDataAirConditioning); ok {
 		return casted
 	}

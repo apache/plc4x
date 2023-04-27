@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // NLMRequestKeyUpdate is the corresponding interface of NLMRequestKeyUpdate
 type NLMRequestKeyUpdate interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	NLM
@@ -142,7 +144,7 @@ func NewNLMRequestKeyUpdate(set1KeyRevision byte, set1ActivationTime uint32, set
 }
 
 // Deprecated: use the interface for direct cast
-func CastNLMRequestKeyUpdate(structType interface{}) NLMRequestKeyUpdate {
+func CastNLMRequestKeyUpdate(structType any) NLMRequestKeyUpdate {
 	if casted, ok := structType.(NLMRequestKeyUpdate); ok {
 		return casted
 	}

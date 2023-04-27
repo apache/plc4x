@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetAccessRuleLocationSpecifierTagged is the corresponding interface of BACnetAccessRuleLocationSpecifierTagged
 type BACnetAccessRuleLocationSpecifierTagged interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetHeader returns Header (property field)
@@ -78,7 +80,7 @@ func NewBACnetAccessRuleLocationSpecifierTagged(header BACnetTagHeader, value BA
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetAccessRuleLocationSpecifierTagged(structType interface{}) BACnetAccessRuleLocationSpecifierTagged {
+func CastBACnetAccessRuleLocationSpecifierTagged(structType any) BACnetAccessRuleLocationSpecifierTagged {
 	if casted, ok := structType.(BACnetAccessRuleLocationSpecifierTagged); ok {
 		return casted
 	}

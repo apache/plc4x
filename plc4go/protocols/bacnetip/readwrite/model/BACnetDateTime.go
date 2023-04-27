@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetDateTime is the corresponding interface of BACnetDateTime
 type BACnetDateTime interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetDateValue returns DateValue (property field)
@@ -74,7 +76,7 @@ func NewBACnetDateTime(dateValue BACnetApplicationTagDate, timeValue BACnetAppli
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetDateTime(structType interface{}) BACnetDateTime {
+func CastBACnetDateTime(structType any) BACnetDateTime {
 	if casted, ok := structType.(BACnetDateTime); ok {
 		return casted
 	}

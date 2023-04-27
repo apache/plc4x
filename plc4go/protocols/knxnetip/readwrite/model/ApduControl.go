@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // ApduControl is the corresponding interface of ApduControl
 type ApduControl interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetControlType returns ControlType (discriminator field)
@@ -73,7 +75,7 @@ func NewApduControl() *_ApduControl {
 }
 
 // Deprecated: use the interface for direct cast
-func CastApduControl(structType interface{}) ApduControl {
+func CastApduControl(structType any) ApduControl {
 	if casted, ok := structType.(ApduControl); ok {
 		return casted
 	}
@@ -124,7 +126,7 @@ func ApduControlParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 		InitializeParent(ApduControl)
 		GetParent() ApduControl
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child ApduControlChildSerializeRequirement
 	var typeSwitchError error
 	switch {

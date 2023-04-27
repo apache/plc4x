@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataOutOfService is the corresponding interface of BACnetConstructedDataOutOfService
 type BACnetConstructedDataOutOfService interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataOutOfService(outOfService BACnetApplicationTagBoole
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataOutOfService(structType interface{}) BACnetConstructedDataOutOfService {
+func CastBACnetConstructedDataOutOfService(structType any) BACnetConstructedDataOutOfService {
 	if casted, ok := structType.(BACnetConstructedDataOutOfService); ok {
 		return casted
 	}

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConstructedDataPositiveIntegerValueResolution is the corresponding interface of BACnetConstructedDataPositiveIntegerValueResolution
 type BACnetConstructedDataPositiveIntegerValueResolution interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -119,7 +121,7 @@ func NewBACnetConstructedDataPositiveIntegerValueResolution(resolution BACnetApp
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataPositiveIntegerValueResolution(structType interface{}) BACnetConstructedDataPositiveIntegerValueResolution {
+func CastBACnetConstructedDataPositiveIntegerValueResolution(structType any) BACnetConstructedDataPositiveIntegerValueResolution {
 	if casted, ok := structType.(BACnetConstructedDataPositiveIntegerValueResolution); ok {
 		return casted
 	}

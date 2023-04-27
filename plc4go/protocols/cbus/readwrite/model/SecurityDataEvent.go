@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // SecurityDataEvent is the corresponding interface of SecurityDataEvent
 type SecurityDataEvent interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	SecurityData
@@ -93,7 +95,7 @@ func NewSecurityDataEvent(data []byte, commandTypeContainer SecurityCommandTypeC
 }
 
 // Deprecated: use the interface for direct cast
-func CastSecurityDataEvent(structType interface{}) SecurityDataEvent {
+func CastSecurityDataEvent(structType any) SecurityDataEvent {
 	if casted, ok := structType.(SecurityDataEvent); ok {
 		return casted
 	}

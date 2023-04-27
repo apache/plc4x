@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // SecurityDataStatus1Request is the corresponding interface of SecurityDataStatus1Request
 type SecurityDataStatus1Request interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	SecurityData
@@ -75,7 +77,7 @@ func NewSecurityDataStatus1Request(commandTypeContainer SecurityCommandTypeConta
 }
 
 // Deprecated: use the interface for direct cast
-func CastSecurityDataStatus1Request(structType interface{}) SecurityDataStatus1Request {
+func CastSecurityDataStatus1Request(structType any) SecurityDataStatus1Request {
 	if casted, ok := structType.(SecurityDataStatus1Request); ok {
 		return casted
 	}

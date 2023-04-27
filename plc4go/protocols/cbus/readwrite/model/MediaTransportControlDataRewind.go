@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // MediaTransportControlDataRewind is the corresponding interface of MediaTransportControlDataRewind
 type MediaTransportControlDataRewind interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	MediaTransportControlData
@@ -166,7 +168,7 @@ func NewMediaTransportControlDataRewind(operation byte, commandTypeContainer Med
 }
 
 // Deprecated: use the interface for direct cast
-func CastMediaTransportControlDataRewind(structType interface{}) MediaTransportControlDataRewind {
+func CastMediaTransportControlDataRewind(structType any) MediaTransportControlDataRewind {
 	if casted, ok := structType.(MediaTransportControlDataRewind); ok {
 		return casted
 	}

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
@@ -30,6 +31,7 @@ import (
 
 // BACnetLogRecord is the corresponding interface of BACnetLogRecord
 type BACnetLogRecord interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetTimestamp returns Timestamp (property field)
@@ -82,7 +84,7 @@ func NewBACnetLogRecord(timestamp BACnetDateTimeEnclosed, logDatum BACnetLogReco
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetLogRecord(structType interface{}) BACnetLogRecord {
+func CastBACnetLogRecord(structType any) BACnetLogRecord {
 	if casted, ok := structType.(BACnetLogRecord); ok {
 		return casted
 	}

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // NLMInitalizeRoutingTablePortMapping is the corresponding interface of NLMInitalizeRoutingTablePortMapping
 type NLMInitalizeRoutingTablePortMapping interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetDestinationNetworkAddress returns DestinationNetworkAddress (property field)
@@ -88,7 +90,7 @@ func NewNLMInitalizeRoutingTablePortMapping(destinationNetworkAddress uint16, po
 }
 
 // Deprecated: use the interface for direct cast
-func CastNLMInitalizeRoutingTablePortMapping(structType interface{}) NLMInitalizeRoutingTablePortMapping {
+func CastNLMInitalizeRoutingTablePortMapping(structType any) NLMInitalizeRoutingTablePortMapping {
 	if casted, ok := structType.(NLMInitalizeRoutingTablePortMapping); ok {
 		return casted
 	}

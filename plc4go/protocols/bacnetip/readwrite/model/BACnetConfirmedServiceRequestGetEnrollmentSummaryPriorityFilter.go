@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter is the corresponding interface of BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter
 type BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetOpeningTag returns OpeningTag (property field)
@@ -91,7 +93,7 @@ func NewBACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter(openingT
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter(structType interface{}) BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter {
+func CastBACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter(structType any) BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter {
 	if casted, ok := structType.(BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter); ok {
 		return casted
 	}

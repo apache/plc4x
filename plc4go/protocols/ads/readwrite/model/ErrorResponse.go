@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // ErrorResponse is the corresponding interface of ErrorResponse
 type ErrorResponse interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	AmsPacket
@@ -87,7 +89,7 @@ func NewErrorResponse(targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNe
 }
 
 // Deprecated: use the interface for direct cast
-func CastErrorResponse(structType interface{}) ErrorResponse {
+func CastErrorResponse(structType any) ErrorResponse {
 	if casted, ok := structType.(ErrorResponse); ok {
 		return casted
 	}

@@ -21,7 +21,7 @@ package model
 
 import (
 	"context"
-	spiContext "github.com/apache/plc4x/plc4go/spi/context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,6 +30,7 @@ import (
 
 // BACnetConstructedDataVTClassesSupported is the corresponding interface of BACnetConstructedDataVTClassesSupported
 type BACnetConstructedDataVTClassesSupported interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
@@ -103,7 +104,7 @@ func NewBACnetConstructedDataVTClassesSupported(vtClassesSupported []BACnetVTCla
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataVTClassesSupported(structType interface{}) BACnetConstructedDataVTClassesSupported {
+func CastBACnetConstructedDataVTClassesSupported(structType any) BACnetConstructedDataVTClassesSupported {
 	if casted, ok := structType.(BACnetConstructedDataVTClassesSupported); ok {
 		return casted
 	}
@@ -204,7 +205,7 @@ func (m *_BACnetConstructedDataVTClassesSupported) SerializeWithWriteBuffer(ctx 
 		}
 		for _curItem, _element := range m.GetVtClassesSupported() {
 			_ = _curItem
-			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetVtClassesSupported()), _curItem)
+			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetVtClassesSupported()), _curItem)
 			_ = arrayCtx
 			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 			if _elementErr != nil {
