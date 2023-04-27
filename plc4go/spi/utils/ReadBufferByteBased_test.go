@@ -22,6 +22,7 @@ package utils
 import (
 	"bytes"
 	"encoding/binary"
+	"fmt"
 	"github.com/icza/bitio"
 	"github.com/stretchr/testify/assert"
 	"math"
@@ -374,6 +375,23 @@ func TestReadBuffer_ReadFloat32(t *testing.T) {
 			fields: fields{
 				reader: bitio.NewReader(bytes.NewBuffer([]byte{0x0})),
 			},
+		},
+		{
+			name: "read it LE",
+			args: args{
+				bitLength: 32,
+			},
+			fields: fields{
+				reader:    bitio.NewReader(bytes.NewBuffer([]byte{0x0, 0x0, 0x0, 0x0})),
+				byteOrder: binary.LittleEndian,
+			},
+		},
+		{
+			name: "can't handle it",
+			args: args{
+				bitLength: 0xFF,
+			},
+			wantErr: true,
 		},
 	}
 	for _, tt := range tests {
@@ -1324,6 +1342,13 @@ func TestReadBuffer_ReadInt16(t *testing.T) {
 				reader: bitio.NewReader(bytes.NewBuffer([]byte{0x0})),
 			},
 		},
+		{
+			name: "read it LE",
+			fields: fields{
+				reader:    bitio.NewReader(bytes.NewBuffer([]byte{0x0})),
+				byteOrder: binary.LittleEndian,
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -1368,6 +1393,13 @@ func TestReadBuffer_ReadInt32(t *testing.T) {
 				reader: bitio.NewReader(bytes.NewBuffer([]byte{0x0})),
 			},
 		},
+		{
+			name: "read it LE",
+			fields: fields{
+				reader:    bitio.NewReader(bytes.NewBuffer([]byte{0x0})),
+				byteOrder: binary.LittleEndian,
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -1410,6 +1442,13 @@ func TestReadBuffer_ReadInt64(t *testing.T) {
 			name: "read it",
 			fields: fields{
 				reader: bitio.NewReader(bytes.NewBuffer([]byte{0x0})),
+			},
+		},
+		{
+			name: "read it LE",
+			fields: fields{
+				reader:    bitio.NewReader(bytes.NewBuffer([]byte{0x0})),
+				byteOrder: binary.LittleEndian,
 			},
 		},
 	}
@@ -1542,6 +1581,13 @@ func TestReadBuffer_ReadUint16(t *testing.T) {
 			name: "read it",
 			fields: fields{
 				reader: bitio.NewReader(bytes.NewBuffer([]byte{0x0})),
+			},
+		},
+		{
+			name: "read it LE",
+			fields: fields{
+				reader:    bitio.NewReader(bytes.NewBuffer([]byte{0x0})),
+				byteOrder: binary.LittleEndian,
 			},
 		},
 	}
@@ -1776,6 +1822,13 @@ func TestReadBuffer_ReadUint64(t *testing.T) {
 				reader: bitio.NewReader(bytes.NewBuffer([]byte{0x0})),
 			},
 		},
+		{
+			name: "read it LE",
+			fields: fields{
+				reader:    bitio.NewReader(bytes.NewBuffer([]byte{0x0})),
+				byteOrder: binary.LittleEndian,
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -1940,6 +1993,167 @@ func TestReadBuffer_GetByteOrder(t *testing.T) {
 			}
 			assert.Equal(t, tt.want, rb.GetByteOrder())
 
+		})
+	}
+}
+
+func Test_byteReadBuffer_PullContext(t *testing.T) {
+	type fields struct {
+		data      []byte
+		reader    *bitio.Reader
+		pos       uint64
+		byteOrder binary.ByteOrder
+	}
+	type args struct {
+		in0 string
+		in1 []WithReaderArgs
+	}
+	tests := []struct {
+		name    string
+		fields  fields
+		args    args
+		wantErr assert.ErrorAssertionFunc
+	}{
+		{
+			name:    "pull it",
+			wantErr: assert.NoError,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			rb := &byteReadBuffer{
+				data:      tt.fields.data,
+				reader:    tt.fields.reader,
+				pos:       tt.fields.pos,
+				byteOrder: tt.fields.byteOrder,
+			}
+			tt.wantErr(t, rb.PullContext(tt.args.in0, tt.args.in1...), fmt.Sprintf("PullContext(%v, %v)", tt.args.in0, tt.args.in1))
+		})
+	}
+}
+
+func Test_byteReadBuffer_CloseContext(t *testing.T) {
+	type fields struct {
+		data      []byte
+		reader    *bitio.Reader
+		pos       uint64
+		byteOrder binary.ByteOrder
+	}
+	type args struct {
+		in0 string
+		in1 []WithReaderArgs
+	}
+	tests := []struct {
+		name    string
+		fields  fields
+		args    args
+		wantErr assert.ErrorAssertionFunc
+	}{
+		{
+			name:    "NO OP",
+			wantErr: assert.NoError,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			rb := &byteReadBuffer{
+				data:      tt.fields.data,
+				reader:    tt.fields.reader,
+				pos:       tt.fields.pos,
+				byteOrder: tt.fields.byteOrder,
+			}
+			tt.wantErr(t, rb.CloseContext(tt.args.in0, tt.args.in1...), fmt.Sprintf("CloseContext(%v, %v)", tt.args.in0, tt.args.in1))
+		})
+	}
+}
+
+func Test_byteReadBuffer_ReadByte(t *testing.T) {
+	type fields struct {
+		data      []byte
+		reader    *bitio.Reader
+		pos       uint64
+		byteOrder binary.ByteOrder
+	}
+	type args struct {
+		in0 string
+		in1 []WithReaderArgs
+	}
+	tests := []struct {
+		name    string
+		fields  fields
+		args    args
+		want    byte
+		wantErr assert.ErrorAssertionFunc
+	}{
+		{
+			name: "read it",
+			fields: fields{
+				reader: bitio.NewReader(bytes.NewBuffer([]byte{0x0})),
+			},
+			wantErr: assert.NoError,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			rb := &byteReadBuffer{
+				data:      tt.fields.data,
+				reader:    tt.fields.reader,
+				pos:       tt.fields.pos,
+				byteOrder: tt.fields.byteOrder,
+			}
+			got, err := rb.ReadByte(tt.args.in0, tt.args.in1...)
+			if !tt.wantErr(t, err, fmt.Sprintf("ReadByte(%v, %v)", tt.args.in0, tt.args.in1)) {
+				return
+			}
+			assert.Equalf(t, tt.want, got, "ReadByte(%v, %v)", tt.args.in0, tt.args.in1)
+		})
+	}
+}
+
+func Test_byteReadBuffer_ReadByteArray(t *testing.T) {
+	type fields struct {
+		data      []byte
+		reader    *bitio.Reader
+		pos       uint64
+		byteOrder binary.ByteOrder
+	}
+	type args struct {
+		in0           string
+		numberOfBytes int
+		in2           []WithReaderArgs
+	}
+	tests := []struct {
+		name    string
+		fields  fields
+		args    args
+		want    []byte
+		wantErr assert.ErrorAssertionFunc
+	}{
+		{
+			name: "read  it",
+			fields: fields{
+				reader: bitio.NewReader(bytes.NewBuffer([]byte{0x0})),
+			},
+			args: args{
+				numberOfBytes: 1,
+			},
+			want:    []byte{0},
+			wantErr: assert.NoError,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			rb := &byteReadBuffer{
+				data:      tt.fields.data,
+				reader:    tt.fields.reader,
+				pos:       tt.fields.pos,
+				byteOrder: tt.fields.byteOrder,
+			}
+			got, err := rb.ReadByteArray(tt.args.in0, tt.args.numberOfBytes, tt.args.in2...)
+			if !tt.wantErr(t, err, fmt.Sprintf("ReadByteArray(%v, %v, %v)", tt.args.in0, tt.args.numberOfBytes, tt.args.in2)) {
+				return
+			}
+			assert.Equalf(t, tt.want, got, "ReadByteArray(%v, %v, %v)", tt.args.in0, tt.args.numberOfBytes, tt.args.in2)
 		})
 	}
 }
