@@ -23,7 +23,14 @@ import org.apache.plc4x.test.parserserializer.ParserSerializerTestsuiteRunner;
 public class S7ParserSerializerTest extends ParserSerializerTestsuiteRunner {
 
     public S7ParserSerializerTest() {
-        super("/protocols/s7/ParserSerializerTestsuite.xml");
+        super("/protocols/s7/ParserSerializerTestsuite.xml",
+	      "S7 Read PLC Type Request",
+	      "S7 Read PLC Type Response",
+	      "S7 Read Request",
+	      "S7 Read Response",
+	      "S7 Read Error Response",
+	      "S7 Write Request",
+	      "S7 Write Request");
     }
 
 }

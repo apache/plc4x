@@ -23,7 +23,9 @@ import org.apache.plc4x.test.driver.DriverTestsuiteRunner;
 public class S7DriverIT extends DriverTestsuiteRunner {
 
     public S7DriverIT() {
-        super("/protocols/s7/DriverTestsuite.xml");
+        super("/protocols/s7/DriverTestsuite.xml",
+	"Single element read request",
+	"Single element read request with disabled PUT/GET");
     }
 
 }

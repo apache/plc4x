@@ -26,7 +26,8 @@ import java.util.Map;
 public enum QueryType {
   BYALARMTYPE((short) 0x01),
   ALARM_8((short) 0x02),
-  ALARM_S((short) 0x04);
+  ALARM_S((short) 0x04),
+  ALARM_8P((short) 0x09);
   private static final Map<Short, QueryType> map;
 
   static {

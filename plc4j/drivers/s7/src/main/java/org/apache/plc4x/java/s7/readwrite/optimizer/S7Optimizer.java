@@ -34,6 +34,7 @@ import org.apache.plc4x.java.spi.messages.utils.TagValueItem;
 import org.apache.plc4x.java.spi.optimizer.BaseOptimizer;
 
 import java.util.*;
+import org.apache.plc4x.java.s7.readwrite.tag.S7SzlTag;
 
 public class S7Optimizer extends BaseOptimizer {
 
@@ -62,6 +63,12 @@ public class S7Optimizer extends BaseOptimizer {
         LinkedHashMap<String, PlcTag> curTags = new LinkedHashMap<>();
 
         for (String tagName : readRequest.getTagNames()) {
+            
+            if (readRequest.getTag(tagName) instanceof S7SzlTag){
+                curTags.put(tagName, readRequest.getTag(tagName));
+                continue;
+            }
+            
             S7Tag tag = (S7Tag) readRequest.getTag(tagName);
 
             int readRequestItemSize = S7_ADDRESS_ANY_SIZE;

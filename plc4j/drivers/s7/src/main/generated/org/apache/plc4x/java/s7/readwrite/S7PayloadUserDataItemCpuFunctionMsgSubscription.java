@@ -39,16 +39,16 @@ public class S7PayloadUserDataItemCpuFunctionMsgSubscription extends S7PayloadUs
     implements Message {
 
   // Accessors for discriminator values.
+  public Byte getCpuFunctionGroup() {
+    return (byte) 0x04;
+  }
+
   public Byte getCpuFunctionType() {
     return (byte) 0x04;
   }
 
   public Short getCpuSubfunction() {
     return (short) 0x02;
-  }
-
-  public Integer getDataLength() {
-    return 0;
   }
 
   // Properties.
@@ -60,11 +60,12 @@ public class S7PayloadUserDataItemCpuFunctionMsgSubscription extends S7PayloadUs
   public S7PayloadUserDataItemCpuFunctionMsgSubscription(
       DataTransportErrorCode returnCode,
       DataTransportSize transportSize,
+      int dataLength,
       short Subscription,
       String magicKey,
       AlarmStateType Alarmtype,
       Short Reserve) {
-    super(returnCode, transportSize);
+    super(returnCode, transportSize, dataLength);
     this.Subscription = Subscription;
     this.magicKey = magicKey;
     this.Alarmtype = Alarmtype;
@@ -153,7 +154,8 @@ public class S7PayloadUserDataItemCpuFunctionMsgSubscription extends S7PayloadUs
   }
 
   public static S7PayloadUserDataItemBuilder staticParseS7PayloadUserDataItemBuilder(
-      ReadBuffer readBuffer, Byte cpuFunctionType, Short cpuSubfunction) throws ParseException {
+      ReadBuffer readBuffer, Byte cpuFunctionGroup, Byte cpuFunctionType, Short cpuSubfunction)
+      throws ParseException {
     readBuffer.pullContext("S7PayloadUserDataItemCpuFunctionMsgSubscription");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -199,11 +201,17 @@ public class S7PayloadUserDataItemCpuFunctionMsgSubscription extends S7PayloadUs
     }
 
     public S7PayloadUserDataItemCpuFunctionMsgSubscription build(
-        DataTransportErrorCode returnCode, DataTransportSize transportSize) {
+        DataTransportErrorCode returnCode, DataTransportSize transportSize, int dataLength) {
       S7PayloadUserDataItemCpuFunctionMsgSubscription
           s7PayloadUserDataItemCpuFunctionMsgSubscription =
               new S7PayloadUserDataItemCpuFunctionMsgSubscription(
-                  returnCode, transportSize, Subscription, magicKey, Alarmtype, Reserve);
+                  returnCode,
+                  transportSize,
+                  dataLength,
+                  Subscription,
+                  magicKey,
+                  Alarmtype,
+                  Reserve);
       return s7PayloadUserDataItemCpuFunctionMsgSubscription;
     }
   }

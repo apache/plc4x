@@ -39,6 +39,10 @@ public class S7PayloadUserDataItemCpuFunctionReadSzlResponse extends S7PayloadUs
     implements Message {
 
   // Accessors for discriminator values.
+  public Byte getCpuFunctionGroup() {
+    return (byte) 0x04;
+  }
+
   public Byte getCpuFunctionType() {
     return (byte) 0x08;
   }
@@ -47,44 +51,20 @@ public class S7PayloadUserDataItemCpuFunctionReadSzlResponse extends S7PayloadUs
     return (short) 0x01;
   }
 
-  public Integer getDataLength() {
-    return 0;
-  }
-
-  // Constant values.
-  public static final Integer SZLITEMLENGTH = 28;
-
   // Properties.
-  protected final SzlId szlId;
-  protected final int szlIndex;
-  protected final List<SzlDataTreeItem> items;
+  protected final byte[] items;
 
   public S7PayloadUserDataItemCpuFunctionReadSzlResponse(
       DataTransportErrorCode returnCode,
       DataTransportSize transportSize,
-      SzlId szlId,
-      int szlIndex,
-      List<SzlDataTreeItem> items) {
-    super(returnCode, transportSize);
-    this.szlId = szlId;
-    this.szlIndex = szlIndex;
+      int dataLength,
+      byte[] items) {
+    super(returnCode, transportSize, dataLength);
     this.items = items;
   }
 
-  public SzlId getSzlId() {
-    return szlId;
-  }
-
-  public int getSzlIndex() {
-    return szlIndex;
-  }
-
-  public List<SzlDataTreeItem> getItems() {
+  public byte[] getItems() {
     return items;
-  }
-
-  public int getSzlItemLength() {
-    return SZLITEMLENGTH;
   }
 
   @Override
@@ -95,22 +75,8 @@ public class S7PayloadUserDataItemCpuFunctionReadSzlResponse extends S7PayloadUs
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("S7PayloadUserDataItemCpuFunctionReadSzlResponse");
 
-    // Simple Field (szlId)
-    writeSimpleField("szlId", szlId, new DataWriterComplexDefault<>(writeBuffer));
-
-    // Simple Field (szlIndex)
-    writeSimpleField("szlIndex", szlIndex, writeUnsignedInt(writeBuffer, 16));
-
-    // Const Field (szlItemLength)
-    writeConstField("szlItemLength", SZLITEMLENGTH, writeUnsignedInt(writeBuffer, 16));
-
-    // Implicit Field (szlItemCount) (Used for parsing, but its value is not stored as it's
-    // implicitly given by the objects content)
-    int szlItemCount = (int) (COUNT(getItems()));
-    writeImplicitField("szlItemCount", szlItemCount, writeUnsignedInt(writeBuffer, 16));
-
     // Array Field (items)
-    writeComplexTypeArrayField("items", items, writeBuffer);
+    writeByteArrayField("items", items, writeByteArray(writeBuffer, 8));
 
     writeBuffer.popContext("S7PayloadUserDataItemCpuFunctionReadSzlResponse");
   }
@@ -126,84 +92,48 @@ public class S7PayloadUserDataItemCpuFunctionReadSzlResponse extends S7PayloadUs
     S7PayloadUserDataItemCpuFunctionReadSzlResponse _value = this;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    // Simple field (szlId)
-    lengthInBits += szlId.getLengthInBits();
-
-    // Simple field (szlIndex)
-    lengthInBits += 16;
-
-    // Const Field (szlItemLength)
-    lengthInBits += 16;
-
-    // Implicit Field (szlItemCount)
-    lengthInBits += 16;
-
     // Array field
     if (items != null) {
-      int i = 0;
-      for (SzlDataTreeItem element : items) {
-        ThreadLocalHelper.lastItemThreadLocal.set(++i >= items.size());
-        lengthInBits += element.getLengthInBits();
-      }
+      lengthInBits += 8 * items.length;
     }
 
     return lengthInBits;
   }
 
   public static S7PayloadUserDataItemBuilder staticParseS7PayloadUserDataItemBuilder(
-      ReadBuffer readBuffer, Byte cpuFunctionType, Short cpuSubfunction) throws ParseException {
+      ReadBuffer readBuffer,
+      Integer dataLength,
+      Byte cpuFunctionGroup,
+      Byte cpuFunctionType,
+      Short cpuSubfunction)
+      throws ParseException {
     readBuffer.pullContext("S7PayloadUserDataItemCpuFunctionReadSzlResponse");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    SzlId szlId =
-        readSimpleField(
-            "szlId",
-            new DataReaderComplexDefault<>(() -> SzlId.staticParse(readBuffer), readBuffer));
-
-    int szlIndex = readSimpleField("szlIndex", readUnsignedInt(readBuffer, 16));
-
-    int szlItemLength =
-        readConstField(
-            "szlItemLength",
-            readUnsignedInt(readBuffer, 16),
-            S7PayloadUserDataItemCpuFunctionReadSzlResponse.SZLITEMLENGTH);
-
-    int szlItemCount = readImplicitField("szlItemCount", readUnsignedInt(readBuffer, 16));
-
-    List<SzlDataTreeItem> items =
-        readCountArrayField(
-            "items",
-            new DataReaderComplexDefault<>(
-                () -> SzlDataTreeItem.staticParse(readBuffer), readBuffer),
-            szlItemCount);
+    byte[] items = readBuffer.readByteArray("items", Math.toIntExact(dataLength));
 
     readBuffer.closeContext("S7PayloadUserDataItemCpuFunctionReadSzlResponse");
     // Create the instance
-    return new S7PayloadUserDataItemCpuFunctionReadSzlResponseBuilderImpl(szlId, szlIndex, items);
+    return new S7PayloadUserDataItemCpuFunctionReadSzlResponseBuilderImpl(items);
   }
 
   public static class S7PayloadUserDataItemCpuFunctionReadSzlResponseBuilderImpl
       implements S7PayloadUserDataItem.S7PayloadUserDataItemBuilder {
-    private final SzlId szlId;
-    private final int szlIndex;
-    private final List<SzlDataTreeItem> items;
+    private final byte[] items;
 
-    public S7PayloadUserDataItemCpuFunctionReadSzlResponseBuilderImpl(
-        SzlId szlId, int szlIndex, List<SzlDataTreeItem> items) {
-      this.szlId = szlId;
-      this.szlIndex = szlIndex;
+    public S7PayloadUserDataItemCpuFunctionReadSzlResponseBuilderImpl(byte[] items) {
       this.items = items;
     }
 
     public S7PayloadUserDataItemCpuFunctionReadSzlResponse build(
-        DataTransportErrorCode returnCode, DataTransportSize transportSize) {
+        DataTransportErrorCode returnCode, DataTransportSize transportSize, int dataLength) {
       S7PayloadUserDataItemCpuFunctionReadSzlResponse
           s7PayloadUserDataItemCpuFunctionReadSzlResponse =
               new S7PayloadUserDataItemCpuFunctionReadSzlResponse(
-                  returnCode, transportSize, szlId, szlIndex, items);
+                  returnCode, transportSize, dataLength, items);
       return s7PayloadUserDataItemCpuFunctionReadSzlResponse;
     }
   }
@@ -218,16 +148,12 @@ public class S7PayloadUserDataItemCpuFunctionReadSzlResponse extends S7PayloadUs
     }
     S7PayloadUserDataItemCpuFunctionReadSzlResponse that =
         (S7PayloadUserDataItemCpuFunctionReadSzlResponse) o;
-    return (getSzlId() == that.getSzlId())
-        && (getSzlIndex() == that.getSzlIndex())
-        && (getItems() == that.getItems())
-        && super.equals(that)
-        && true;
+    return (getItems() == that.getItems()) && super.equals(that) && true;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), getSzlId(), getSzlIndex(), getItems());
+    return Objects.hash(super.hashCode(), getItems());
   }
 
   @Override

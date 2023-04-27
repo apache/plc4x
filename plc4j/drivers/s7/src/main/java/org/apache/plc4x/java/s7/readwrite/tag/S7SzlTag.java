@@ -27,26 +27,26 @@ import org.apache.plc4x.java.api.model.ArrayInfo;
 import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.types.PlcValueType;
 
-public class S7SslTag implements PlcTag {
+public class S7SzlTag implements PlcTag {
     
    //SZL_ID=0xYYYY;INDEX=0xZZZZ
     private static final Pattern SSL_ADDRESS_PATTERN =
-        Pattern.compile("^SSL_ID=(?<sslId>16#[0-9a-fA-F]{4});INDEX=(?<index>16#[0-9a-fA-F]{4})");  
+        Pattern.compile("^SZL_ID=(?<szlId>16#[0-9a-fA-F]{4});INDEX=(?<index>16#[0-9a-fA-F]{4})");  
     
-    private static final String SSL_ID = "sslId";    
+    private static final String SZL_ID = "szlId";    
     private static final String INDEX = "index";    
     
     private final int szlId;
     private final int index;
 
-    public S7SslTag(int sslId, int index) {
-        this.szlId = sslId;
+    public S7SzlTag(int szlId, int index) {
+        this.szlId = szlId;
         this.index = index;
     }
 
     @Override
     public String getAddressString() {
-        return String.format("SSL_ID=%s;INDEX=16#%d", szlId, index);
+        return String.format("SZL_ID=%s;INDEX=16#%d", szlId, index);
     }
 
     @Override
@@ -59,7 +59,7 @@ public class S7SslTag implements PlcTag {
         return Collections.emptyList();
     }
 
-    public int getSslId() {
+    public int getSzlId() {
         return szlId;
     }
 
@@ -71,14 +71,14 @@ public class S7SslTag implements PlcTag {
         return SSL_ADDRESS_PATTERN.matcher(tagString).matches();
     }   
     
-    public static S7SslTag of(String tagString) {
+    public static S7SzlTag of(String tagString) {
         Matcher matcher = SSL_ADDRESS_PATTERN.matcher(tagString);
         if (matcher.matches()){
-            String strSxlId = matcher.group(SSL_ID);
+            String strSxlId = matcher.group(SZL_ID);
             String strIndex = matcher.group(INDEX);
             strSxlId = strSxlId.replaceAll("16#", "");
             strIndex = strIndex.replaceAll("16#", "");
-            return new S7SslTag(Integer.parseInt(strSxlId, 16),Integer.parseInt(strIndex, 16));
+            return new S7SzlTag(Integer.parseInt(strSxlId, 16),Integer.parseInt(strIndex, 16));
         }  
         throw new PlcInvalidTagException("Unable to parse address: " + tagString);
     }       

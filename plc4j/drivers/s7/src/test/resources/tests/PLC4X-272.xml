@@ -432,8 +432,10 @@
   </setup>
 
   <testcase>
+
     <name>100 element read request</name>
     <steps>
+
       <api-request name="Receive Read Request from application">
         <TestReadRequest className="TestReadRequest">
           <tags isList="true">
@@ -840,6 +842,7 @@
           </tags>
         </TestReadRequest>
       </api-request>
+
       <!--outgoing-plc-message name="Send first part of the S7 Read Request">
         <TPKTPacket className="org.apache.plc4x.java.s7.readwrite.TPKTPacket">
           <payload className="org.apache.plc4x.java.s7.readwrite.COTPPacketData">
