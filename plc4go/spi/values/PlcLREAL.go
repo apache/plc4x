@@ -52,6 +52,13 @@ func (m PlcLREAL) GetBoolean() bool {
 	return true
 }
 
+func (m PlcLREAL) GetByte() byte {
+	if m.IsUint8() {
+		return byte(m.GetFloat64())
+	}
+	return 0
+}
+
 func (m PlcLREAL) IsUint8() bool {
 	return m.value >= 0 && m.value <= math.MaxUint8
 }

@@ -142,7 +142,7 @@ func (m *Connection) String() string {
 }
 
 type KnxReadResult struct {
-	value    *values.PlcValue
+	value    values.PlcValue
 	numItems uint8
 	err      error
 }
