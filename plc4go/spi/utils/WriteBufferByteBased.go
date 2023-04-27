@@ -240,7 +240,7 @@ func (wb *byteWriteBuffer) WriteString(_ string, bitLength uint32, encoding stri
 	// TODO: make this a writer arg
 	var nonAlphanumericRegex = regexp.MustCompile(`[^A-Z0-9]+`)
 	encoding = nonAlphanumericRegex.ReplaceAllLiteralString(strings.ToUpper(encoding), "")
-	remainingBits := bitLength
+	remainingBits := int64(bitLength) // we use int64 otherwise the subtraction below flips
 	// TODO: the implementation completely ignores encoding for now. Fix this
 	switch encoding {
 	case "UTF8":
