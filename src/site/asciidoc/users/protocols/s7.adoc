@@ -461,7 +461,7 @@ Here we will assume that you use standard technological functions/libraries with
 The different actors involved in communication are shown in image 1.
 
 
-[plantuml, target="image01", format=png, align="center"]
+[plantuml, target="../../image01", format=png, align="center"]
 ....
 autonumber "<b>(00)"
 title Participants in the communication model of the S7 driver.
@@ -474,6 +474,11 @@ participant OS
 participant PCS7
 participant S7App
 endbox
+
+box "CP" #LightGray
+participant CP
+endbox
+
 ....
 
 
@@ -483,17 +488,14 @@ endbox
 . `OS`, PLC operating system.
 . `PCS7`, represents the technological functions used in the PLC. PCS7 are Siemens DCS libraries.
 . `S7App`, your application that runs on the PLC.
-
-
-
-
+. `CP`, the communications CP will depend on your architecture and requirements, for an S7-300 it will be a CP 343-1 or a CP 443-1 for an S7-400.
 
 
 ==== S7 Read/Write
 
 
 
-[plantuml, target=image0X, format=png, align="center"]
+[plantuml, target="../../image02", format=png, align="center"]
 ....
 autonumber "<b>(00)"
 title PLC4X Simatic S7 <b>MODE</b> Suscription.
@@ -505,6 +507,10 @@ box "PLC (AS)" #LightBlue
 participant OS
 participant PCS7
 participant S7App
+endbox
+
+box "CP" #LightGray
+participant CP
 endbox
 
 App -> PLC4X : subscription("MODE")
@@ -580,11 +586,11 @@ In the use of a unified Siemens architecture, the operator panels (HMI) and WinC
 In the case of an application developed with PLC4X, the use of MODE events will allow your application to indicate to users the quality of the points used, and that by design the quality is not updated in the controller.
 
 
-[plantuml, target=image02, format=png, align="center"]
+[plantuml, target="../../image03", format=png, align="center"]
 ....
 autonumber "<b>(00)"
 title PLC4X Simatic S7 <b>MODE</b> Suscription.
-footer Image 2
+footer Image 3
 
 actor App
 participant PLC4X
@@ -593,6 +599,11 @@ participant OS
 participant PCS7
 participant S7App
 endbox
+
+box "CP" #LightGray
+participant CP
+endbox
+
 
 App -> PLC4X : subscription("MODE")
 PLC4X -> OS
@@ -681,11 +692,11 @@ public class PLCEventModeSubscription {
 
 System events allow to receive asynchronously any event that affects the operation of the controller, or any of its peripheral equipment that is capable of sending events through a PROFIBUS or Profinet fieldbus.
 
-[plantuml, target="image03", format=png, align="center"]
+[plantuml, target="../../image04", format=png, align="center"]
 ....
 autonumber "<b>(00)"
 title PLC4X Simatic S7 System Event <b>SYS</b> subscription.
-footer Image 3
+footer Image 4
 
 actor App
 participant PLC4X
@@ -713,11 +724,11 @@ PLC4X --> App : to consumer
 
 A first example of its use is the change of state of a CP, IM or FM within the architecture of the controller. This will allow the application to indicate that there is an effect on the system that may affect the quality of the signals used, allowing preventive or corrective actions to be taken as required.
 
-[plantuml, target="image04", format=png, align="center"]
+[plantuml, target="../../image05", format=png, align="center"]
 ....
 autonumber "<b>(00)"
 title PLC4X User Event <b>USR</b> subscription.
-footer Image 4
+footer Image 5
 
 actor App
 participant PLC4X
@@ -778,7 +789,7 @@ For the USER or User-defined events follow the same pattern as system events. Th
 
 This programming of the user-defined events is carried out at the level of the *PLC(AS)* controller, so we recommend the technical note [3] of the Siemens portal.
 
-[TIP,icon=s7_tip.png]
+[TIP,icon="s7_tip.png"]
 In the case of user-defined messages, it is important to take into account that these are reported to the diagnostic buffer, which has a limited capacity depending on the CPU model used. Also take into account that the diagnostic buffer works like a circular buffer, so the oldest messages will be lost.
 
 ....
@@ -909,11 +920,11 @@ By having INFO1 and INFO2 in the *S7App* program, the user can transfer data ass
 
 
 
-[plantuml, target="image05", format=png, align="center"]
+[plantuml, target="../../image06", format=png, align="center"]
 ....
 autonumber "<b>(00)"
 title PLC4X Simatic S7 Alarm Event <b>ALM</b> suscription.
-footer Image 5
+footer Image 6
 
 actor App
 participant PLC4X
@@ -1025,11 +1036,11 @@ TODO: Example code
 
 The cyclical subscription allows the acquisition of data in passive mode, that is, the data is sent from the PLC in a cyclical and synchronous way.
 
-[plantuml, target="image01", format=png, align="center"]
+[plantuml, target="../../image07", format=png, align="center"]
 ....
 autonumber "<b>(00)"
 title Participants in the communication model of the S7 driver.
-footer Image 1
+footer Image 7
 
 actor App
 participant PLC4X
@@ -1038,6 +1049,11 @@ participant OS
 participant PCS7
 participant S7App
 endbox
+
+box "CP" #LightGray
+participant CP
+endbox
+
 ....
 
 
@@ -1165,14 +1181,21 @@ In (04) and (05), we prepare and execute the request to the PLC. If we have a va
 
 As we pointed out in the support libraries, we have an "SZL" object (an enum), which allows us to select the appropriate parser based on the numerical index SLZ_ID (09). In (10) we make a wrapper in a ByteBuf type (from the Netty library) in order to pass it to the "szl" instance through the "execute" method (11).
 
-When processing the data buffer we must obtain in (12) a StringBuilder with the JSON representation. As noted above, the parser performed on the SZL enum is not complete, so the missing information must be obtained from the returned fields. For further details you should consult [].
+When processing the data buffer we must obtain in (12) a StringBuilder with the JSON representation.
+
+....
+{"RECORDS":[{"AUSBG2":0,"AUSBG1":61,"BGTYP":130,"INDEX":1,"MIFB":"6ES7 417-4XT05-0AB0 "},{"AUSBG2":0,"AUSBG1":2,"BGTYP":130,"INDEX":6,"MIFB":"6ES7 417-4XT05-0AB0 "},{"AUSBG2":768,"AUSBG1":22021,"BGTYP":0,"INDEX":7,"MIFB":"                    "},{"AUSBG2":3,"AUSBG1":22021,"BGTYP":0,"INDEX":129,"MIFB":"Boot Loader         "}],"LENGTHDR":28,"SZL-ID":17,"INDEX":0,"N_DR":4}
+....
+
+As noted above, the parser performed on the SZL enum is not complete, so the missing information must be obtained from the returned fields. For further details you should consult [].
+
 
 In case of not being able to process the request, it is detected in (13) to take the necessary measures.
 
 The following diagram represents the information in JSON format.
 
 
-[plantuml, target=szlxy11demo, format=png, align="center"]
+[plantuml, target="../../szlxy11demo", format=png, align="center"]
 ....
 @startjson
 {"RECORDS":[{"AUSBG2":0,"AUSBG1":61,"BGTYP":130,"INDEX":1,"MIFB":"6ES7 417-4XT05-0AB0 "},{"AUSBG2":0,"AUSBG1":2,"BGTYP":130,"INDEX":6,"MIFB":"6ES7 417-4XT05-0AB0 "},{"AUSBG2":768,"AUSBG1":22021,"BGTYP":0,"INDEX":7,"MIFB":"                    "},{"AUSBG2":3,"AUSBG1":22021,"BGTYP":0,"INDEX":129,"MIFB":"Boot Loader         "}],"LENGTHDR":28,"SZL-ID":17,"INDEX":0,"N_DR":4}
@@ -1210,97 +1233,6 @@ From the obtained StringBuilder, you can use the JSON processor of your choice t
 |Module diagnostic information (data record 1), local address |16#xyB3   |Tested with S7-400, JSON 
 |Diagnostic data of a DP slave |16#xyB4   |Tested with S7-400, JSON 
 |===
-
-
-
-==== SZL List - SZL-ID W#16#xy00 
-
-==== Module Identification - SZL-ID W#16#xy11
-
-[plantuml, target=szlxy11, format=png, align="center"]
-....
-@startjson
-{"RECORDS":[{"AUSBG2":0,"AUSBG1":61,"BGTYP":130,"INDEX":1,"MIFB":"6ES7 417-4XT05-0AB0 "},{"AUSBG2":0,"AUSBG1":2,"BGTYP":130,"INDEX":6,"MIFB":"6ES7 417-4XT05-0AB0 "},{"AUSBG2":768,"AUSBG1":22021,"BGTYP":0,"INDEX":7,"MIFB":"                    "},{"AUSBG2":3,"AUSBG1":22021,"BGTYP":0,"INDEX":129,"MIFB":"Boot Loader         "}],"LENGTHDR":28,"SZL-ID":17,"INDEX":0,"N_DR":4}
-@endjson
-....
-
-
-==== CPU characteristics - SZL-ID 16#xy12
-
-[plantuml, target=szlxy12, format=png, align="center"]
-....
-@startjson
-{"RECORDS":[{"CH_0x0002":"MC7 interpreter"},{"CH_0x0101":"1 ms resolution"},{"CH_0x0104":"BCD time-of-day format"},{"CH_0x0105":"All time-of-day functions"},{"CH_0x0106":"SFC 78 \"OB_RT\" is available"},{"CH_0x0201":"Capable of multiprocessor mode"},{"CH_0x0202":"Cold restart, warm restart and hot restart possible"},{"CH_0x0206":"New distributed I/O configuration is possible during\nRUN by using predefined resources"},{"CH_0x0302":"All 32 bit fixed-point instructions"},{"CH_0x0303":"All floating-point instructions"},{"CH_0x0304":"sin, asin, cos, acos, tan, atan, sqr, sqrt, ln, exp"},{"CH_0x0305":"Accumulator 3/accumulator 4 with corresponding instructions\n(ENT,PUSH,POP,LEAVE)"},{"CH_0x0306":"Master Control Relay instructions"},{"CH_0x0307":"Address register 1 exists with corresponding instructions"},{"CH_0x0308":"Address register 2 exists with corresponding instructions"},{"CH_0x0309":"Operations for area-crossing addressing"},{"CH_0x030A":"Operations for area-internal addressing"},{"CH_0x030B":"All memory-indirect addressing instructions for bit memory (M)"},{"CH_0x030C":"All memory-indirect addressing instructions for data blocks (DB)"},{"CH_0x030D":"All memory-indirect addressing instructions for data blocks (DI)"},{"CH_0x030E":"All memory-indirect addressing instructions for local data (L)"},{"CH_0x030F":"All instructions for parameter transfer in FCs"},{"CH_0x0310":"Memory bit edge instructions for process image input (I)"},{"CH_0x0311":"Memory bit edge instructions for process image output (Q)"},{"CH_0x0312":"Memory bit edge instructions for bit memory (M)"},{"CH_0x0313":"Memory bit edge instructions for data blocks (DB)"},{"CH_0x0314":"Memory bit edge instructions for data blocks (DI)"},{"CH_0x0315":"Memory bit edge instructions for local data (L)"},{"CH_0x0316":"Dynamic evaluation of the FC bit"},{"CH_0x0317":"Dynamic local data area with the corresponding instructions"},{"CH_0x0318":"Reserved"},{"CH_0x0319":"Reserved"}],"LENGTHDR":2,"SZL-ID":18,"INDEX":0,"N_DR":33}
-@endjson
-....
-
-==== User memory areas - SZL-ID 16#xy13
-
-[plantuml, target=szlxy13, format=png, align="center"]
-....
-@startjson
-{"RECORDS":[{"BELEGT2":343138,"BELEGT1":40570,"CODE":1,"GRANU":0,"BLOCK2":0,"SIZE":31604864,"MODE":8,"BLOCK1":0,"INDEX":1,"BER2":15843456,"BER1":15761408},{"BELEGT2":0,"BELEGT1":0,"CODE":1,"GRANU":0,"BLOCK2":0,"SIZE":1048576,"MODE":1,"BLOCK1":1048576,"INDEX":2,"BER2":0,"BER1":1048576},{"BELEGT2":0,"BELEGT1":10390,"CODE":1,"GRANU":0,"BLOCK2":0,"SIZE":16777216,"MODE":1,"BLOCK1":16766826,"INDEX":3,"BER2":0,"BER1":16777216},{"BELEGT2":0,"BELEGT1":0,"CODE":1,"GRANU":0,"BLOCK2":0,"SIZE":67108864,"MODE":0,"BLOCK1":67108864,"INDEX":4,"BER2":0,"BER1":67108864},{"BELEGT2":0,"BELEGT1":0,"CODE":0,"GRANU":0,"BLOCK2":0,"SIZE":0,"MODE":0,"BLOCK1":0,"INDEX":5,"BER2":0,"BER1":0}],"LENGTHDR":36,"SZL-ID":19,"INDEX":0,"N_DR":5}
-@endjson
-....
-
-==== System areas - SZL-ID 16#xy14
-
-[plantuml, target=szlxy14, format=png, align="center"]
-....
-@startjson
-{"RECORDS":[{"CODE":1,"REMAN":0,"QUANTITY":3072,"INDEX":1},{"CODE":1,"REMAN":0,"QUANTITY":3072,"INDEX":2},{"CODE":1,"REMAN":0,"QUANTITY":2048,"INDEX":4},{"CODE":1,"REMAN":8,"QUANTITY":2048,"INDEX":5},{"CODE":1,"REMAN":0,"QUANTITY":16384,"INDEX":6},{"CODE":1,"REMAN":16,"QUANTITY":16384,"INDEX":8},{"CODE":1,"REMAN":0,"QUANTITY":32,"INDEX":9}],"LENGTHDR":8,"SZL-ID":20,"INDEX":0,"N_DR":7}
-@endjson
-....
-
-==== Block types - SZL-ID 16#xy15
-
-[plantuml, target=szlxy15, format=png, align="center"]
-....
-@startjson
-{"RECORDS":[{"MAXLNG":977,"MAXABL":65570,"INDEX":2048,"MAXANZ":53},{"MAXLNG":977,"MAXABL":65570,"INDEX":2560,"MAXANZ":16001},{"MAXLNG":977,"MAXABL":65570,"INDEX":2816,"MAXANZ":2048},{"MAXLNG":977,"MAXABL":65570,"INDEX":3072,"MAXANZ":8000},{"MAXLNG":977,"MAXABL":65570,"INDEX":3584,"MAXANZ":8000}],"LENGTHDR":10,"SZL-ID":21,"INDEX":0,"N_DR":5}
-@endjson
-....
-
-==== Interrupt status  - SZL-ID 16#xy22
-
-[plantuml, target=szlxy22, format=png, align="center"]
-....
-@startjson
-{"RECORDS":[{"AL_2":8,"AL_3":0,"AL_1":16,"INFO":"11030101c8580001000100019401090519301751"},{"AL_2":2,"AL_3":0,"AL_1":0,"INFO":"1111020a00500000000000000000000000000000"},{"AL_2":2,"AL_3":0,"AL_1":0,"INFO":"1112020b00500000000000000000000000000000"},{"AL_2":2,"AL_3":0,"AL_1":0,"INFO":"1113020c00500000000000000000000000000000"},{"AL_2":2,"AL_3":0,"AL_1":0,"INFO":"1114020d00500000000000000000000000000000"},{"AL_2":2,"AL_3":0,"AL_1":0,"INFO":"1115020e00500000000000000000000000000000"},{"AL_2":2,"AL_3":0,"AL_1":0,"INFO":"1116020f00500000000000000000000000000000"},{"AL_2":2,"AL_3":0,"AL_1":0,"INFO":"1117021000500000000000000000000000000000"},{"AL_2":2,"AL_3":0,"AL_1":0,"INFO":"1118021100500000000000000000000000000000"},{"AL_2":2,"AL_3":0,"AL_1":0,"INFO":"11210314cd500000000000009401010000000007"},{"AL_2":2,"AL_3":0,"AL_1":0,"INFO":"11220415cd500000000000009401010000000007"},{"AL_2":2,"AL_3":0,"AL_1":0,"INFO":"11230516cd500000000000009401010000000007"},{"AL_2":2,"AL_3":0,"AL_1":0,"INFO":"11240617cd500000000000009401010000000007"},{"AL_2":1,"AL_3":0,"AL_1":4,"INFO":"1131071ecd580000000013889401010000000007"},{"AL_2":1,"AL_3":0,"AL_1":4,"INFO":"1132081fcd580000000007d09401010000000007"},{"AL_2":1,"AL_3":0,"AL_1":4,"INFO":"11330920cd580000000003e89401010000000007"},{"AL_2":1,"AL_3":0,"AL_1":4,"INFO":"11340a21cd580000000001f49401010000000007"},{"AL_2":1,"AL_3":0,"AL_1":4,"INFO":"11350b22cd580000000000c89401010000000007"},{"AL_2":1,"AL_3":0,"AL_1":4,"INFO":"11360c23cd580000000000649401010000000007"},{"AL_2":1,"AL_3":0,"AL_1":4,"INFO":"11370d24cd580000000000329401010000000007"},{"AL_2":1,"AL_3":0,"AL_1":4,"INFO":"11380e25cd580000000000149401010000000007"},{"AL_2":1,"AL_3":0,"AL_1":4,"INFO":"11390f26cd5800000000000a9401010000000007"},{"AL_2":2,"AL_3":0,"AL_1":0,"INFO":"11411028c1540000000000009401010000000007"},{"AL_2":2,"AL_3":0,"AL_1":0,"INFO":"11411129c1540000000000009401010000000007"},{"AL_2":2,"AL_3":0,"AL_1":0,"INFO":"1141122ac1540000000000009401010000000007"},{"AL_2":2,"AL_3":0,"AL_1":0,"INFO":"1141132bc1540000000000009401010000000007"},{"AL_2":2,"AL_3":0,"AL_1":0,"INFO":"1141142cc1540000000000009401010000000007"},{"AL_2":2,"AL_3":0,"AL_1":0,"INFO":"1141152dc1540000000000009401010000000007"},{"AL_2":2,"AL_3":0,"AL_1":0,"INFO":"1141162ec1540000000000009401010000000007"},{"AL_2":2,"AL_3":0,"AL_1":0,"INFO":"1141172fc1540000000000009401010000000007"},{"AL_2":2,"AL_3":0,"AL_1":0,"INFO":"11550237d4540000000000009401010000000007"},{"AL_2":2,"AL_3":0,"AL_1":0,"INFO":"11560238d4540000000000009401010000000007"},{"AL_2":2,"AL_3":0,"AL_1":0,"INFO":"11570239d4540000000000009401010000000007"},{"AL_2":8,"AL_3":0,"AL_1":0,"INFO":"1161193c00500000000000009401010000000007"},{"AL_2":8,"AL_3":0,"AL_1":0,"INFO":"1164193dcc5b0000000000009401010000000007"},{"AL_2":8,"AL_3":0,"AL_1":0,"INFO":"1165193ecc5b0000000000009401010000000007"},{"AL_2":8,"AL_3":0,"AL_1":0,"INFO":"1166193fcc5b0000000000009401010000000007"},{"AL_2":8,"AL_3":0,"AL_1":0,"INFO":"11671940cc5b0000000000009401010000000007"},{"AL_2":4,"AL_3":0,"AL_1":0,"INFO":"35011a50c8000000000017709401010000000007"},{"AL_2":8,"AL_3":0,"AL_1":0,"INFO":"3921195100000000000000009401010000000007"},{"AL_2":4,"AL_3":0,"AL_1":0,"INFO":"30421952c5000000000000009401010000000007"},{"AL_2":4,"AL_3":0,"AL_1":0,"INFO":"30611953c4000000000000009401010000000007"},{"AL_2":8,"AL_3":0,"AL_1":0,"INFO":"3081195400000000000000009401010000000007"},{"AL_2":4,"AL_3":0,"AL_1":0,"INFO":"35a1195500000000000000009401010000000007"},{"AL_2":4,"AL_3":0,"AL_1":0,"INFO":"30c11956c1000000000000009401010000000007"},{"AL_2":8,"AL_3":0,"AL_1":0,"INFO":"35d2195700000000000000009401010000000007"},{"AL_2":4,"AL_3":0,"AL_1":0,"INFO":"35731c5800000000000000009401010000000007"},{"AL_2":8,"AL_3":0,"AL_1":0,"INFO":"11911d5a00000000000000009401011017240367"},{"AL_2":8,"AL_3":0,"AL_1":0,"INFO":"13811b64c7724303020307039401011017230177"},{"AL_2":8,"AL_3":0,"AL_1":0,"INFO":"13831b65c7720000000000009401010000000007"},{"AL_2":8,"AL_3":0,"AL_1":0,"INFO":"13851b66c7720000000000009401010000000007"},{"AL_2":4,"AL_3":0,"AL_1":0,"INFO":"25217f7900000000000000009401010000000007"},{"AL_2":4,"AL_3":0,"AL_1":0,"INFO":"29427f7a00000000000000009401010000000007"}],"LENGTHDR":28,"SZL-ID":34,"INDEX":0,"N_DR":53}
-@endjson
-....
-
-==== Component Identification - SZL-ID 16#xy1C
-
-[plantuml, target=szlxy1C, format=png, align="center"]
-....
-@startjson
-{"RECORDS":[{"INDEX":21321,"RESERVED":0,"NAME":"MATIC 400(1)\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000"},{"INDEX":2},{"INDEX":21792},{"INDEX":14125},{"INDEX":0},{"INDEX":0},{"INDEX":0},{"INDEX":0},{"INDEX":0}],"LENGTHDR":34,"SZL-ID":28,"INDEX":0,"N_DR":9}
-@endjson
-....
-
-==== XXX - SZL-ID 16#xy74
-
-
-==== Status of the module LEDs - SZL-ID 16#xy74
-
-[plantuml, target=szlxy74, format=png, align="center"]
-....
-@startjson
-{"RECORDS":[{"LED_BLINK":0,"CPU_LED_ID":2,"LED_ON":0},{"LED_BLINK":0,"CPU_LED_ID":3,"LED_ON":0},{"LED_BLINK":0,"CPU_LED_ID":4,"LED_ON":1},{"LED_BLINK":0,"CPU_LED_ID":5,"LED_ON":0},{"LED_BLINK":0,"CPU_LED_ID":6,"LED_ON":0},{"LED_BLINK":0,"CPU_LED_ID":11,"LED_ON":0},{"LED_BLINK":0,"CPU_LED_ID":12,"LED_ON":0},{"LED_BLINK":0,"CPU_LED_ID":18,"LED_ON":0},{"LED_BLINK":0,"CPU_LED_ID":19,"LED_ON":0},{"LED_BLINK":0,"CPU_LED_ID":21,"LED_ON":0}],"LENGTHDR":4,"SZL-ID":116,"INDEX":0,"N_DR":10}
-@endjson
-....
-
-==== Module status information - SZL-ID 16#xy91
-
-[plantuml, target=szlxy91, format=png, align="center"]
-....
-@startjson
-{"RECORDS":[{"LOGADR":0,"RESERVIERT":0,"BER_BGBR":0,"SOLLTYP":40330,"EASTAT":0,"ISTTYP":40330,"ADR1":0,"ADR2":511},{"LOGADR":32767,"RESERVIERT":0,"BER_BGBR":2,"SOLLTYP":130,"EASTAT":46082,"ISTTYP":130,"ADR1":0,"ADR2":768},{"LOGADR":16381,"RESERVIERT":0,"BER_BGBR":1,"SOLLTYP":44168,"EASTAT":46082,"ISTTYP":44168,"ADR1":0,"ADR2":1280},{"LOGADR":16380,"RESERVIERT":0,"BER_BGBR":1,"SOLLTYP":44168,"EASTAT":46082,"ISTTYP":44168,"ADR1":0,"ADR2":1536},{"LOGADR":0,"RESERVIERT":0,"BER_BGBR":0,"SOLLTYP":40591,"EASTAT":0,"ISTTYP":40582,"ADR1":0,"ADR2":255},{"LOGADR":16383,"RESERVIERT":0,"BER_BGBR":1,"SOLLTYP":50304,"EASTAT":46082,"ISTTYP":50304,"ADR1":0,"ADR2":769},{"LOGADR":16382,"RESERVIERT":0,"BER_BGBR":1,"SOLLTYP":50304,"EASTAT":46082,"ISTTYP":50304,"ADR1":0,"ADR2":770}],"LENGTHDR":16,"SZL-ID":145,"INDEX":0,"N_DR":7}
-@endjson
-....
-
-
 
 
 

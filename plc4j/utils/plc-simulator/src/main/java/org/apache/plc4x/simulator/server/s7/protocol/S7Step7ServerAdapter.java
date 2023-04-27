@@ -28,6 +28,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.BitSet;
 import java.util.List;
+import org.apache.plc4x.java.spi.generation.ReadBuffer;
+import org.apache.plc4x.java.spi.generation.ReadBufferByteBased;
+import org.apache.plc4x.java.spi.generation.WriteBuffer;
+import org.apache.plc4x.java.spi.generation.WriteBufferByteBased;
 
 public class S7Step7ServerAdapter extends ChannelInboundHandlerAdapter {
 
@@ -190,11 +194,18 @@ public class S7Step7ServerAdapter extends ChannelInboundHandlerAdapter {
                                                 List<SzlDataTreeItem> items = new ArrayList<>();
                                                 items.add(new SzlDataTreeItem((short) 0x0001,
                                                     "6ES7 212-1BD30-0XB0 ".getBytes(), 0x2020, 0x0001, 0x2020));
+                                                
+                                                WriteBuffer writeBuffer = new WriteBufferByteBased(items.get(0).getLengthInBytes());
+                                                ReadBuffer  readBuffer =  new ReadBufferByteBased(new byte[items.get(0).getLengthInBytes()]);
+                                                items.get(0).serialize(writeBuffer);
 
+                                                //TODO: Fix this section. Fail!!!
                                                 S7PayloadUserDataItemCpuFunctionReadSzlResponse readSzlResponsePayload =
+//                                                    new S7PayloadUserDataItemCpuFunctionReadSzlResponse(
+//                                                        DataTransportErrorCode.OK, DataTransportSize.OCTET_STRING, szlId,
+//                                                        readSzlRequestPayload.getSzlIndex(), items);
                                                     new S7PayloadUserDataItemCpuFunctionReadSzlResponse(
-                                                        DataTransportErrorCode.OK, DataTransportSize.OCTET_STRING, szlId,
-                                                        readSzlRequestPayload.getSzlIndex(), items);
+                                                        DataTransportErrorCode.OK, DataTransportSize.OCTET_STRING, items.get(0).getLengthInBytes(),  readBuffer.readByteArray(items.get(0).getLengthInBytes()));                                                      
 
                                                 List<S7ParameterUserDataItem> responseParameterItems = new ArrayList<>();
                                                 responseParameterItems.add(readSzlResponseParameter);

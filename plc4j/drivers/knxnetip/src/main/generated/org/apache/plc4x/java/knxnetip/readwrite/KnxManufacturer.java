@@ -715,9 +715,11 @@ public enum KnxManufacturer {
       (int) 621, (int) 678, (String) "Raylogic Control Systems Pvt Ltd"),
   M_BITS_AND_BYTES((int) 622, (int) 679, (String) "Bits & Bytes"),
   M_KFV_SIEGENIA_GRUPPE((int) 623, (int) 680, (String) "KFV (SIEGENIA GRUPPE)"),
-  M_ABB___RESERVED((int) 624, (int) 43954, (String) "ABB - reserved"),
+  M_SYMCON((int) 624, (int) 681, (String) "Symcon"),
+  M_I_TRUST((int) 625, (int) 682, (String) "I.Trust"),
+  M_ABB___RESERVED((int) 626, (int) 43954, (String) "ABB - reserved"),
   M_BUSCH_JAEGER_ELEKTRO___RESERVED(
-      (int) 625, (int) 43959, (String) "Busch-Jaeger Elektro - reserved");
+      (int) 627, (int) 43959, (String) "Busch-Jaeger Elektro - reserved");
   private static final Map<Integer, KnxManufacturer> map;
 
   static {
