@@ -1615,12 +1615,10 @@ public enum BACnetVendorId {
   THING_WAREHOUSELLC((int) 1404, (int) 1404, (String) "Thing Warehouse LLC"),
   INNOFRIENDS_GMBH((int) 1405, (int) 1405, (String) "Innofriends GmbH"),
   METRONICAKP_SPJ((int) 1406, (int) 1406, (String) "Metronic AKP Sp. J."),
-
   TECHKNAVE((int) 1407, (int) 1407, (String) "Techknave"),
   ELSNER_ELEKTRONIK((int) 1408, (int) 1408, (String) "Elsner Elektronik"),
   LEFOO_INDUSTRIAL_HANGZHOU_CO_LTD(
       (int) 1409, (int) 1409, (String) "LEFOO Industrial (Hangzhou) Co., Ltd."),
-
   CALIBRATION_TECHNOLOGIES_INC((int) 1410, (int) 1410, (String) "Calibration Technologies, Inc."),
   ALLORADO((int) 1411, (int) 1411, (String) "Allorado"),
   VERKADA((int) 1412, (int) 1412, (String) "Verkada"),
@@ -1630,7 +1628,6 @@ public enum BACnetVendorId {
   OLYMPIA_ELECTRONICS((int) 1416, (int) 1416, (String) "Olympia Electronics"),
   NORMAL_SOFTWARE_INC((int) 1417, (int) 1417, (String) "Normal Software, Inc."),
   ST_ENGINEERING_SOLUTIONJSC((int) 1418, (int) 1418, (String) "ST Engineering Solution JSC"),
-
   UNKNOWN_VENDOR((int) 0xFFFF, (int) 0xFFFF, (String) "Unknown");
   private static final Map<Integer, BACnetVendorId> map;
 
