@@ -237,6 +237,7 @@ func (wb *byteWriteBuffer) WriteBigFloat(_ string, bitLength uint8, value *big.F
 
 func (wb *byteWriteBuffer) WriteString(_ string, bitLength uint32, encoding string, value string, _ ...WithWriterArgs) error {
 	wb.move(uint(bitLength))
+	// TODO: make this a writer arg
 	var nonAlphanumericRegex = regexp.MustCompile(`[^A-Z0-9]+`)
 	encoding = nonAlphanumericRegex.ReplaceAllLiteralString(strings.ToUpper(encoding), "")
 	remainingBits := bitLength
