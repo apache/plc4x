@@ -30,7 +30,7 @@ import (
 )
 
 type PlcWORD struct {
-	PlcSimpleValueAdapter
+	PlcSimpleNumericValueAdapter
 	value uint16
 }
 
