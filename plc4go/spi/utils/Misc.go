@@ -37,6 +37,9 @@ func InlineIf(test bool, a func() any, b func() any) any {
 //
 //	and is safe to call even if the channel has already been received
 func CleanupTimer(timer *time.Timer) {
+	if timer == nil {
+		return
+	}
 	if !timer.Stop() {
 		select {
 		case <-timer.C:
