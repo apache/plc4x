@@ -126,7 +126,7 @@ if( itemType == 0x12 ) { /* S7ParameterUserDataItemCPUFunctions */
 
   // Optional Field (dataUnitReferenceNumber) (Can be skipped, if a given expression evaluates to false)
   uint8_t* dataUnitReferenceNumber = NULL;
-  if((cpuFunctionType) == (8)) {
+  if((((cpuFunctionType) == (8))) || (((((cpuFunctionType) == (0))) && (((cpuFunctionGroup) == (2)))))) {
     dataUnitReferenceNumber = malloc(sizeof(uint8_t));
     if(dataUnitReferenceNumber == NULL) {
       return NO_MEMORY;
@@ -144,7 +144,7 @@ if( itemType == 0x12 ) { /* S7ParameterUserDataItemCPUFunctions */
 
   // Optional Field (lastDataUnit) (Can be skipped, if a given expression evaluates to false)
   uint8_t* lastDataUnit = NULL;
-  if((cpuFunctionType) == (8)) {
+  if((((cpuFunctionType) == (8))) || (((((cpuFunctionType) == (0))) && (((cpuFunctionGroup) == (2)))))) {
     lastDataUnit = malloc(sizeof(uint8_t));
     if(lastDataUnit == NULL) {
       return NO_MEMORY;
@@ -162,7 +162,7 @@ if( itemType == 0x12 ) { /* S7ParameterUserDataItemCPUFunctions */
 
   // Optional Field (errorCode) (Can be skipped, if a given expression evaluates to false)
   uint16_t* errorCode = NULL;
-  if((cpuFunctionType) == (8)) {
+  if((((cpuFunctionType) == (8))) || (((((cpuFunctionType) == (0))) && (((cpuFunctionGroup) == (2)))))) {
     errorCode = malloc(sizeof(uint16_t));
     if(errorCode == NULL) {
       return NO_MEMORY;

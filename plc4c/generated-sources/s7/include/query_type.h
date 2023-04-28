@@ -32,7 +32,8 @@
 enum plc4c_s7_read_write_query_type {
   plc4c_s7_read_write_query_type_BYALARMTYPE = 0x01,
   plc4c_s7_read_write_query_type_ALARM_8 = 0x02,
-  plc4c_s7_read_write_query_type_ALARM_S = 0x04
+  plc4c_s7_read_write_query_type_ALARM_S = 0x04,
+  plc4c_s7_read_write_query_type_ALARM_8P = 0x09
 };
 typedef enum plc4c_s7_read_write_query_type plc4c_s7_read_write_query_type;
 

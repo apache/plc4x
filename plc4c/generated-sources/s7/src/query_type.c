@@ -70,11 +70,14 @@ plc4c_s7_read_write_query_type plc4c_s7_read_write_query_type_value_of(char* val
     if(strcmp(value_string, "ALARM_S") == 0) {
         return plc4c_s7_read_write_query_type_ALARM_S;
     }
+    if(strcmp(value_string, "ALARM_8P") == 0) {
+        return plc4c_s7_read_write_query_type_ALARM_8P;
+    }
     return -1;
 }
 
 int plc4c_s7_read_write_query_type_num_values() {
-  return 3;
+  return 4;
 }
 
 plc4c_s7_read_write_query_type plc4c_s7_read_write_query_type_value_for_index(int index) {
@@ -87,6 +90,9 @@ plc4c_s7_read_write_query_type plc4c_s7_read_write_query_type_value_for_index(in
       }
       case 2: {
         return plc4c_s7_read_write_query_type_ALARM_S;
+      }
+      case 3: {
+        return plc4c_s7_read_write_query_type_ALARM_8P;
       }
       default: {
         return -1;
