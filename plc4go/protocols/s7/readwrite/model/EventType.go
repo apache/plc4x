@@ -42,6 +42,7 @@ const (
 	EventType_SYS  EventType = 0x02
 	EventType_USR  EventType = 0x04
 	EventType_ALM  EventType = 0x80
+	EventType_CYC  EventType = 0x69
 )
 
 var EventTypeValues []EventType
@@ -53,6 +54,7 @@ func init() {
 		EventType_SYS,
 		EventType_USR,
 		EventType_ALM,
+		EventType_CYC,
 	}
 }
 
@@ -64,6 +66,8 @@ func EventTypeByValue(value uint8) (enum EventType, ok bool) {
 		return EventType_SYS, true
 	case 0x04:
 		return EventType_USR, true
+	case 0x69:
+		return EventType_CYC, true
 	case 0x80:
 		return EventType_ALM, true
 	}
@@ -78,6 +82,8 @@ func EventTypeByName(value string) (enum EventType, ok bool) {
 		return EventType_SYS, true
 	case "USR":
 		return EventType_USR, true
+	case "CYC":
+		return EventType_CYC, true
 	case "ALM":
 		return EventType_ALM, true
 	}
@@ -149,6 +155,8 @@ func (e EventType) PLC4XEnumName() string {
 		return "SYS"
 	case EventType_USR:
 		return "USR"
+	case EventType_CYC:
+		return "CYC"
 	case EventType_ALM:
 		return "ALM"
 	}

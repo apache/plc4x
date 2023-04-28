@@ -54,6 +54,7 @@
     <steps>
       <api-request name="Receive Read Request from application">
         <TestReadRequest>
+          ®
           <tags isList="true">
             <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
               <name>hurz</name>

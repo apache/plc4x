@@ -34,26 +34,10 @@ type S7ParserHelper struct {
 
 func (m S7ParserHelper) Parse(typeName string, arguments []string, io utils.ReadBuffer) (any, error) {
 	switch typeName {
-	case "DataItem":
-		dataProtocolId, err := utils.StrToString(arguments[0])
-		if err != nil {
-			return nil, errors.Wrap(err, "Error parsing")
-		}
-		stringLength, err := utils.StrToInt32(arguments[1])
-		if err != nil {
-			return nil, errors.Wrap(err, "Error parsing")
-		}
-		return model.DataItemParseWithBuffer(context.Background(), io, dataProtocolId, stringLength)
 	case "SzlId":
 		return model.SzlIdParseWithBuffer(context.Background(), io)
 	case "AlarmMessageObjectAckType":
 		return model.AlarmMessageObjectAckTypeParseWithBuffer(context.Background(), io)
-	case "AlarmMessageAckPushType":
-		return model.AlarmMessageAckPushTypeParseWithBuffer(context.Background(), io)
-	case "S7Message":
-		return model.S7MessageParseWithBuffer(context.Background(), io)
-	case "S7VarPayloadStatusItem":
-		return model.S7VarPayloadStatusItemParseWithBuffer(context.Background(), io)
 	case "S7Parameter":
 		messageType, err := utils.StrToUint8(arguments[0])
 		if err != nil {
@@ -66,44 +50,24 @@ func (m S7ParserHelper) Parse(typeName string, arguments []string, io utils.Read
 			return nil, errors.Wrap(err, "Error parsing")
 		}
 		return model.S7DataAlarmMessageParseWithBuffer(context.Background(), io, cpuFunctionType)
-	case "SzlDataTreeItem":
-		return model.SzlDataTreeItemParseWithBuffer(context.Background(), io)
-	case "COTPPacket":
-		cotpLen, err := utils.StrToUint16(arguments[0])
-		if err != nil {
-			return nil, errors.Wrap(err, "Error parsing")
-		}
-		return model.COTPPacketParseWithBuffer(context.Background(), io, cotpLen)
 	case "S7PayloadUserDataItem":
-		cpuFunctionType, err := utils.StrToUint8(arguments[0])
+		cpuFunctionGroup, err := utils.StrToUint8(arguments[0])
 		if err != nil {
 			return nil, errors.Wrap(err, "Error parsing")
 		}
-		cpuSubfunction, err := utils.StrToUint8(arguments[1])
+		cpuFunctionType, err := utils.StrToUint8(arguments[1])
 		if err != nil {
 			return nil, errors.Wrap(err, "Error parsing")
 		}
-		return model.S7PayloadUserDataItemParseWithBuffer(context.Background(), io, cpuFunctionType, cpuSubfunction)
-	case "DateAndTime":
-		return model.DateAndTimeParseWithBuffer(context.Background(), io)
-	case "COTPParameter":
-		rest, err := utils.StrToUint8(arguments[0])
+		cpuSubfunction, err := utils.StrToUint8(arguments[2])
 		if err != nil {
 			return nil, errors.Wrap(err, "Error parsing")
 		}
-		return model.COTPParameterParseWithBuffer(context.Background(), io, rest)
+		return model.S7PayloadUserDataItemParseWithBuffer(context.Background(), io, cpuFunctionGroup, cpuFunctionType, cpuSubfunction)
 	case "AlarmMessageObjectPushType":
 		return model.AlarmMessageObjectPushTypeParseWithBuffer(context.Background(), io)
-	case "State":
-		return model.StateParseWithBuffer(context.Background(), io)
 	case "AlarmMessagePushType":
 		return model.AlarmMessagePushTypeParseWithBuffer(context.Background(), io)
-	case "TPKTPacket":
-		return model.TPKTPacketParseWithBuffer(context.Background(), io)
-	case "AlarmMessageAckType":
-		return model.AlarmMessageAckTypeParseWithBuffer(context.Background(), io)
-	case "AssociatedValueType":
-		return model.AssociatedValueTypeParseWithBuffer(context.Background(), io)
 	case "AlarmMessageAckObjectPushType":
 		return model.AlarmMessageAckObjectPushTypeParseWithBuffer(context.Background(), io)
 	case "S7Payload":
@@ -113,6 +77,56 @@ func (m S7ParserHelper) Parse(typeName string, arguments []string, io utils.Read
 		}
 		var parameter model.S7Parameter
 		return model.S7PayloadParseWithBuffer(context.Background(), io, messageType, parameter)
+	case "S7Address":
+		return model.S7AddressParseWithBuffer(context.Background(), io)
+	case "DataItem":
+		dataProtocolId, err := utils.StrToString(arguments[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		stringLength, err := utils.StrToInt32(arguments[1])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		return model.DataItemParseWithBuffer(context.Background(), io, dataProtocolId, stringLength)
+	case "SubItem":
+		return model.SubItemParseWithBuffer(context.Background(), io)
+	case "CycServiceItemType":
+		return model.CycServiceItemTypeParseWithBuffer(context.Background(), io)
+	case "AlarmMessageAckPushType":
+		return model.AlarmMessageAckPushTypeParseWithBuffer(context.Background(), io)
+	case "S7Message":
+		return model.S7MessageParseWithBuffer(context.Background(), io)
+	case "S7VarPayloadStatusItem":
+		return model.S7VarPayloadStatusItemParseWithBuffer(context.Background(), io)
+	case "SzlDataTreeItem":
+		return model.SzlDataTreeItemParseWithBuffer(context.Background(), io)
+	case "AssociatedQueryValueType":
+		return model.AssociatedQueryValueTypeParseWithBuffer(context.Background(), io)
+	case "COTPPacket":
+		cotpLen, err := utils.StrToUint16(arguments[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		return model.COTPPacketParseWithBuffer(context.Background(), io, cotpLen)
+	case "DateAndTime":
+		return model.DateAndTimeParseWithBuffer(context.Background(), io)
+	case "COTPParameter":
+		rest, err := utils.StrToUint8(arguments[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		return model.COTPParameterParseWithBuffer(context.Background(), io, rest)
+	case "State":
+		return model.StateParseWithBuffer(context.Background(), io)
+	case "TPKTPacket":
+		return model.TPKTPacketParseWithBuffer(context.Background(), io)
+	case "Alarm8MessageQueryType":
+		return model.Alarm8MessageQueryTypeParseWithBuffer(context.Background(), io)
+	case "AlarmMessageAckType":
+		return model.AlarmMessageAckTypeParseWithBuffer(context.Background(), io)
+	case "AssociatedValueType":
+		return model.AssociatedValueTypeParseWithBuffer(context.Background(), io)
 	case "S7VarRequestParameterItem":
 		return model.S7VarRequestParameterItemParseWithBuffer(context.Background(), io)
 	case "S7VarPayloadDataItem":
@@ -123,8 +137,6 @@ func (m S7ParserHelper) Parse(typeName string, arguments []string, io utils.Read
 		return model.AlarmMessageAckResponseTypeParseWithBuffer(context.Background(), io)
 	case "AlarmMessageObjectQueryType":
 		return model.AlarmMessageObjectQueryTypeParseWithBuffer(context.Background(), io)
-	case "S7Address":
-		return model.S7AddressParseWithBuffer(context.Background(), io)
 	case "S7ParameterUserDataItem":
 		return model.S7ParameterUserDataItemParseWithBuffer(context.Background(), io)
 	}
