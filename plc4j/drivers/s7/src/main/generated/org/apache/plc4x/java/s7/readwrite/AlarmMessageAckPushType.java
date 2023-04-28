@@ -173,8 +173,7 @@ public class AlarmMessageAckPushType implements Message {
     return (getTimeStamp() == that.getTimeStamp())
         && (getFunctionId() == that.getFunctionId())
         && (getNumberOfObjects() == that.getNumberOfObjects())
-        && (getMessageObjects() == that.getMessageObjects())
-        && true;
+        && (getMessageObjects() == that.getMessageObjects());
   }
 
   @Override

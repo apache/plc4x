@@ -33,11 +33,11 @@ public enum SzlModuleTypeClass {
   static {
     map = new HashMap<>();
     for (SzlModuleTypeClass value : SzlModuleTypeClass.values()) {
-      map.put((byte) value.getValue(), value);
+      map.put(value.getValue(), value);
     }
   }
 
-  private byte value;
+  private final byte value;
 
   SzlModuleTypeClass(byte value) {
     this.value = value;

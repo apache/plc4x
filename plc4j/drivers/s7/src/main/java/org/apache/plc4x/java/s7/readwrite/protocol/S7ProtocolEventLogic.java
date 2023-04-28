@@ -18,6 +18,18 @@
  */
 package org.apache.plc4x.java.s7.readwrite.protocol;
 
+import org.apache.plc4x.java.api.messages.*;
+import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
+import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
+import org.apache.plc4x.java.s7.events.*;
+import org.apache.plc4x.java.s7.readwrite.EventType;
+import org.apache.plc4x.java.s7.readwrite.S7ParameterModeTransition;
+import org.apache.plc4x.java.s7.readwrite.S7PayloadDiagnosticMessage;
+import org.apache.plc4x.java.s7.readwrite.utils.S7PlcSubscriptionHandle;
+import org.apache.plc4x.java.spi.messages.PlcSubscriber;
+import org.apache.plc4x.java.spi.model.DefaultPlcConsumerRegistration;
+import org.slf4j.LoggerFactory;
+
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -26,62 +38,41 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import org.apache.plc4x.java.api.messages.PlcSubscriptionEvent;
-import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
-import org.apache.plc4x.java.api.messages.PlcSubscriptionResponse;
-import org.apache.plc4x.java.api.messages.PlcUnsubscriptionRequest;
-import org.apache.plc4x.java.api.messages.PlcUnsubscriptionResponse;
-import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
-import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
-import org.apache.plc4x.java.s7.events.S7AlarmEvent;
-import org.apache.plc4x.java.s7.events.S7CyclicEvent;
-import org.apache.plc4x.java.s7.events.S7ModeEvent;
-import org.apache.plc4x.java.s7.events.S7SysEvent;
-import org.apache.plc4x.java.s7.events.S7UserEvent;
-import org.apache.plc4x.java.s7.readwrite.S7ParameterModeTransition;
-import org.apache.plc4x.java.s7.readwrite.S7PayloadDiagnosticMessage;
-import org.apache.plc4x.java.s7.readwrite.EventType;
-import org.apache.plc4x.java.s7.readwrite.utils.S7PlcSubscriptionHandle;
-import org.apache.plc4x.java.spi.messages.PlcSubscriber;
-import org.apache.plc4x.java.spi.model.DefaultPlcConsumerRegistration;
-import org.slf4j.LoggerFactory;
 
 public class S7ProtocolEventLogic implements PlcSubscriber {
+
     private final org.slf4j.Logger logger = LoggerFactory.getLogger(S7ProtocolEventLogic.class);
-    
-    private final BlockingQueue eventqueue;
-    private final BlockingQueue dispachqueue = new ArrayBlockingQueue<>(1024);
-        
-    private Map<EventType, Map<PlcConsumerRegistration, Consumer>> mapIndex = new HashMap(); 
-    private Map<EventType, PlcSubscriptionHandle> eventtypehandles =  new HashMap(); ;
-    
-    private final Runnable runnProcessor;
-    private final Runnable runnDispacher;
 
-    
-    private Thread processor;
-    private Thread dispacher;
+    private final BlockingQueue<?> eventQueue;
+    private final BlockingQueue<PlcSubscriptionEvent> dispachQueue = new ArrayBlockingQueue<>(1024);
 
-    public S7ProtocolEventLogic(BlockingQueue eventqueue) {
-        this.eventqueue = eventqueue;
-        runnProcessor = new ObjectProcessor(eventqueue,dispachqueue);
-        runnDispacher = new EventDispacher(dispachqueue);
-        processor = new Thread(runnProcessor);
-        dispacher = new Thread(runnDispacher);        
+    private final Map<EventType, Map<PlcConsumerRegistration, Consumer<PlcSubscriptionEvent>>> mapIndex = new HashMap<>();
+    private final Map<EventType, PlcSubscriptionHandle> eventTypeHandles = new HashMap<>();
+
+    private final Runnable runProcessor;
+    private final Runnable runDispacher;
+
+    private final Thread processor;
+    private final Thread dispacher;
+
+    public S7ProtocolEventLogic(BlockingQueue<?> eventQueue) {
+        this.eventQueue = eventQueue;
+        runProcessor = new ObjectProcessor(eventQueue, dispachQueue);
+        runDispacher = new EventDispatcher(dispachQueue);
+        processor = new Thread(runProcessor);
+        dispacher = new Thread(runDispacher);
     }
-    
+
     public void start() {
         processor.start();
-        dispacher.start();    
+        dispacher.start();
     }
-    
-    public void stop(){
-        ((ObjectProcessor) runnProcessor).doShutdown();
-        ((EventDispacher) runnDispacher).doShutdown();
+
+    public void stop() {
+        ((ObjectProcessor) runProcessor).doShutdown();
+        ((EventDispatcher) runDispacher).doShutdown();
     }
-    
+
     @Override
     public CompletableFuture<PlcSubscriptionResponse> subscribe(PlcSubscriptionRequest subscriptionRequest) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -94,144 +85,151 @@ public class S7ProtocolEventLogic implements PlcSubscriber {
 
     @Override
     public PlcConsumerRegistration register(Consumer<PlcSubscriptionEvent> consumer, Collection<PlcSubscriptionHandle> handles) {
-        Map<PlcConsumerRegistration, Consumer> mapConsumers = null;
+        Map<PlcConsumerRegistration, Consumer<PlcSubscriptionEvent>> mapConsumers = null;
         S7PlcSubscriptionHandle handle = (S7PlcSubscriptionHandle) handles.toArray()[0];
         if (!mapIndex.containsKey(handle.getEventType())) {
-            mapConsumers = new HashMap();
+            mapConsumers = new HashMap<>();
             mapIndex.put(handle.getEventType(), mapConsumers);
         }
         mapConsumers = mapIndex.get(handle.getEventType());
         //TODO: Check the implementation of "DefaultPlcConsumerRegistration". List<> vs Collection<>
         DefaultPlcConsumerRegistration registro = new DefaultPlcConsumerRegistration(this,
-                consumer, handles.toArray(new PlcSubscriptionHandle[handles.size()]));
+            consumer, handles.toArray(new PlcSubscriptionHandle[0]));
         mapConsumers.put(registro, consumer);
         return registro;
     }
 
     @Override
     public void unregister(PlcConsumerRegistration registration) {
-        S7PlcSubscriptionHandle handle = (S7PlcSubscriptionHandle)registration.getSubscriptionHandles().get(0); 
-        Map<PlcConsumerRegistration, Consumer> mapConsumers = mapIndex.get(handle.getEventType()); 
+        S7PlcSubscriptionHandle handle = (S7PlcSubscriptionHandle) registration.getSubscriptionHandles().get(0);
+        Map<PlcConsumerRegistration, Consumer<PlcSubscriptionEvent>> mapConsumers = mapIndex.get(handle.getEventType());
         mapConsumers.remove(registration);
     }
-    
-    private class ObjectProcessor implements Runnable {
-        
-        private final BlockingQueue eventqueue;
-        private final BlockingQueue dispathqueue;        
+
+    private static class ObjectProcessor implements Runnable {
+
+        private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(ObjectProcessor.class);
+
+        private final BlockingQueue<?> eventQueue;
+        private final BlockingQueue<PlcSubscriptionEvent> dispatchQueue;
         private boolean shutdown = false;
-        private int delay = 100;
-        
-        public ObjectProcessor(BlockingQueue eventqueue, BlockingQueue dispathqueue) {
-            this.eventqueue = eventqueue;
-            this.dispathqueue = dispathqueue;
+        private final int delay = 100;
+
+        public ObjectProcessor(BlockingQueue<?> eventQueue, BlockingQueue<PlcSubscriptionEvent> dispatchQueue) {
+            this.eventQueue = eventQueue;
+            this.dispatchQueue = dispatchQueue;
         }
-        
+
         @Override
         public void run() {
-            while(!shutdown){
+            while (!shutdown) {
                 try {
-                    Object obj = eventqueue.poll(delay, TimeUnit.MILLISECONDS);
-                    if (obj != null){
-                        if (obj instanceof S7ParameterModeTransition){
-                            S7ModeEvent modeEvent = new S7ModeEvent((S7ParameterModeTransition) obj);
-                            dispathqueue.add(modeEvent);
-                        } else
-                        if (obj instanceof S7PayloadDiagnosticMessage){
-                            S7PayloadDiagnosticMessage msg = (S7PayloadDiagnosticMessage) obj;
-                            if ((msg.getEventId() >= 0x0A000) & (msg.getEventId() <= 0x0BFFF)) {
-                                S7UserEvent userevent = new S7UserEvent(msg);
-                                dispathqueue.add(userevent);
-                            } else {
-                                S7SysEvent sysevent = new S7SysEvent(msg);
-                                dispathqueue.add(sysevent);
-                            }
-                        } else                           
-                        if (obj instanceof S7CyclicEvent){
-                                dispathqueue.add(obj);  
+                    Object obj = eventQueue.poll(delay, TimeUnit.MILLISECONDS);
+                    if (obj == null) {
+                        continue;
+                    }
+                    if (obj instanceof S7ParameterModeTransition) {
+                        S7ModeEvent modeEvent = new S7ModeEvent((S7ParameterModeTransition) obj);
+                        dispatchQueue.add(modeEvent);
+                    } else if (obj instanceof S7PayloadDiagnosticMessage) {
+                        S7PayloadDiagnosticMessage msg = (S7PayloadDiagnosticMessage) obj;
+                        if ((msg.getEventId() >= 0x0A000) & (msg.getEventId() <= 0x0BFFF)) {
+                            S7UserEvent userEvent = new S7UserEvent(msg);
+                            dispatchQueue.add(userEvent);
                         } else {
-                            S7AlarmEvent alarmevent = new S7AlarmEvent(obj);
-                            dispathqueue.add(alarmevent);
+                            S7SysEvent sysEvent = new S7SysEvent(msg);
+                            dispatchQueue.add(sysEvent);
                         }
-                    }                    
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(S7ProtocolEventLogic.class.getName()).log(Level.SEVERE, null, ex);
+                    } else if (obj instanceof S7CyclicEvent) {
+                        dispatchQueue.add((S7CyclicEvent) obj);
+                    } else {
+                        S7AlarmEvent alarmEvent = new S7AlarmEvent(obj);
+                        dispatchQueue.add(alarmEvent);
+                    }
+                } catch (InterruptedException e) {
+                    LOGGER.error("oh no", e);
+                    Thread.currentThread().interrupt();
                 }
             }
-            System.out.println("ObjectProcessor Bye!");            
+            LOGGER.trace("ObjectProcessor Bye!");
         }
 
-        public void doShutdown(){
+        public void doShutdown() {
             shutdown = true;
         }
-    }    
-    
-    private class EventDispacher implements Runnable {
-        private final BlockingQueue dispachqueue; 
-        private boolean shutdown = false;
-        private int delay = 100;  
-        private Object cycDelayedObject = null;        
+    }
 
-        public EventDispacher(BlockingQueue dispachqueue) {
-            this.dispachqueue = dispachqueue;
+    private class EventDispatcher implements Runnable {
+
+        private final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(EventDispatcher.class);
+
+        private final BlockingQueue<PlcSubscriptionEvent> dispachQueue;
+        private boolean shutdown = false;
+        private final int delay = 100;
+        private PlcSubscriptionEvent cycDelayedObject = null;
+
+        public EventDispatcher(BlockingQueue<PlcSubscriptionEvent> dispachQueue) {
+            this.dispachQueue = dispachQueue;
         }
-        
+
         @Override
         public void run() {
             try {
                 Thread.sleep(500);
-            } catch (InterruptedException ex) {
-                logger.warn(ex.toString());
+            } catch (InterruptedException e) {
+                logger.warn("Error sleeping", e);
+                Thread.currentThread().interrupt();
             }
-            while(!shutdown){
+            while (!shutdown) {
                 try {
-                    Object obj = dispachqueue.poll(delay, TimeUnit.MILLISECONDS);
-                    if (obj != null){
-                        if (obj instanceof S7ModeEvent){
+                    PlcSubscriptionEvent obj = dispachQueue.poll(delay, TimeUnit.MILLISECONDS);
+                    if (obj != null) {
+                        if (obj instanceof S7ModeEvent) {
                             if (mapIndex.containsKey(EventType.MODE)) {
-                                Map<PlcConsumerRegistration, Consumer> mapConsumers = mapIndex.get(EventType.MODE);
-                                mapConsumers.forEach((x,y) -> y.accept(obj));
+                                Map<PlcConsumerRegistration, Consumer<PlcSubscriptionEvent>> mapConsumers = mapIndex.get(EventType.MODE);
+                                mapConsumers.forEach((x, y) -> y.accept(obj));
                             }
                         } else if (obj instanceof S7UserEvent) {
                             if (mapIndex.containsKey(EventType.USR)) {
-                                Map<PlcConsumerRegistration, Consumer> mapConsumers = mapIndex.get(EventType.USR);
-                                mapConsumers.forEach((x,y) -> y.accept(obj)); 
+                                Map<PlcConsumerRegistration, Consumer<PlcSubscriptionEvent>> mapConsumers = mapIndex.get(EventType.USR);
+                                mapConsumers.forEach((x, y) -> y.accept(obj));
                             }
                         } else if (obj instanceof S7SysEvent) {
                             if (mapIndex.containsKey(EventType.SYS)) {
-                                Map<PlcConsumerRegistration, Consumer> mapConsumers = mapIndex.get(EventType.SYS);
-                                mapConsumers.forEach((x,y) -> y.accept(obj));  
+                                Map<PlcConsumerRegistration, Consumer<PlcSubscriptionEvent>> mapConsumers = mapIndex.get(EventType.SYS);
+                                mapConsumers.forEach((x, y) -> y.accept(obj));
                             }
-                        }else if (obj instanceof S7AlarmEvent) {
+                        } else if (obj instanceof S7AlarmEvent) {
                             if (mapIndex.containsKey(EventType.ALM)) {
-                                Map<PlcConsumerRegistration, Consumer> mapConsumers = mapIndex.get(EventType.ALM);
-                                mapConsumers.forEach((x,y) -> y.accept(obj)); 
+                                Map<PlcConsumerRegistration, Consumer<PlcSubscriptionEvent>> mapConsumers = mapIndex.get(EventType.ALM);
+                                mapConsumers.forEach((x, y) -> y.accept(obj));
                             }
-                        }else if (obj instanceof S7CyclicEvent) {  
+                        } else if (obj instanceof S7CyclicEvent) {
                             if (mapIndex.containsKey(EventType.CYC)) {
-                                Map<PlcConsumerRegistration, Consumer> mapConsumers = mapIndex.get(EventType.CYC);
-                                    if (cycDelayedObject != null) {                                                                          
-                                        mapConsumers.forEach((x,y) -> y.accept(cycDelayedObject)); 
-                                        cycDelayedObject = null;
-                                    }                                                                       
-                                    mapConsumers.forEach((x,y) -> y.accept(obj)); 
+                                Map<PlcConsumerRegistration, Consumer<PlcSubscriptionEvent>> mapConsumers = mapIndex.get(EventType.CYC);
+                                if (cycDelayedObject != null) {
+                                    mapConsumers.forEach((x, y) -> y.accept(cycDelayedObject));
+                                    cycDelayedObject = null;
+                                }
+                                mapConsumers.forEach((x, y) -> y.accept(obj));
                             } else {
                                 cycDelayedObject = obj;
-                            }                           
-                        }                         
+                            }
+                        }
                     }
-                } catch (Exception ex) {
-                    Logger.getLogger(S7ProtocolEventLogic.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (Exception e) {
+                    LOGGER.error("oh no", e);
+                    Thread.currentThread().interrupt();
                 }
             }
-            System.out.println("EventDispacher Bye!");
+            LOGGER.trace("EventDispatcher Bye!");
         }
 
-        public void doShutdown(){
+        public void doShutdown() {
             shutdown = true;
         }
-        
+
     }
-    
-    
+
+
 }

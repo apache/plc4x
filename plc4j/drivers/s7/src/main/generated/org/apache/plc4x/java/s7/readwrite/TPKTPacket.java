@@ -78,7 +78,7 @@ public class TPKTPacket implements Message {
 
     // Implicit Field (len) (Used for parsing, but its value is not stored as it's implicitly given
     // by the objects content)
-    int len = (int) ((getPayload().getLengthInBytes()) + (4));
+    int len = (getPayload().getLengthInBytes()) + (4);
     writeImplicitField(
         "len",
         len,
@@ -156,7 +156,7 @@ public class TPKTPacket implements Message {
         readSimpleField(
             "payload",
             new DataReaderComplexDefault<>(
-                () -> COTPPacket.staticParse(readBuffer, (int) ((len) - (4))), readBuffer),
+                () -> COTPPacket.staticParse(readBuffer, (len) - (4)), readBuffer),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     readBuffer.closeContext("TPKTPacket");
@@ -175,7 +175,7 @@ public class TPKTPacket implements Message {
       return false;
     }
     TPKTPacket that = (TPKTPacket) o;
-    return (getPayload() == that.getPayload()) && true;
+    return (getPayload() == that.getPayload());
   }
 
   @Override

@@ -133,7 +133,7 @@ public class COTPParameterTpduSize extends COTPParameter implements Message {
       return false;
     }
     COTPParameterTpduSize that = (COTPParameterTpduSize) o;
-    return (getTpduSize() == that.getTpduSize()) && super.equals(that) && true;
+    return (getTpduSize() == that.getTpduSize()) && super.equals(that);
   }
 
   @Override

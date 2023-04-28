@@ -309,8 +309,7 @@ public class S7ParameterUserDataItemCPUFunctions extends S7ParameterUserDataItem
         && (getDataUnitReferenceNumber() == that.getDataUnitReferenceNumber())
         && (getLastDataUnit() == that.getLastDataUnit())
         && (getErrorCode() == that.getErrorCode())
-        && super.equals(that)
-        && true;
+        && super.equals(that);
   }
 
   @Override

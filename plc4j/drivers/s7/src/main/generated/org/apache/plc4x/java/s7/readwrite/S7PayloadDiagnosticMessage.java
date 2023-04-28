@@ -268,8 +268,7 @@ public class S7PayloadDiagnosticMessage extends S7PayloadUserDataItem implements
         && (getInfo1() == that.getInfo1())
         && (getInfo2() == that.getInfo2())
         && (getTimeStamp() == that.getTimeStamp())
-        && super.equals(that)
-        && true;
+        && super.equals(that);
   }
 
   @Override

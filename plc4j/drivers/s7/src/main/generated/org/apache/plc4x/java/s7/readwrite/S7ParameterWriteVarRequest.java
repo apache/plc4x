@@ -147,7 +147,7 @@ public class S7ParameterWriteVarRequest extends S7Parameter implements Message {
       return false;
     }
     S7ParameterWriteVarRequest that = (S7ParameterWriteVarRequest) o;
-    return (getItems() == that.getItems()) && super.equals(that) && true;
+    return (getItems() == that.getItems()) && super.equals(that);
   }
 
   @Override

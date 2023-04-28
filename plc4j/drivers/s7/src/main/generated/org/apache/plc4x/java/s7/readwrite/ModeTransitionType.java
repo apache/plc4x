@@ -38,11 +38,11 @@ public enum ModeTransitionType {
   static {
     map = new HashMap<>();
     for (ModeTransitionType value : ModeTransitionType.values()) {
-      map.put((short) value.getValue(), value);
+      map.put(value.getValue(), value);
     }
   }
 
-  private short value;
+  private final short value;
 
   ModeTransitionType(short value) {
     this.value = value;

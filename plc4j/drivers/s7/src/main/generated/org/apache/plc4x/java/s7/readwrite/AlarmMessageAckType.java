@@ -151,8 +151,7 @@ public class AlarmMessageAckType implements Message {
     AlarmMessageAckType that = (AlarmMessageAckType) o;
     return (getFunctionId() == that.getFunctionId())
         && (getNumberOfObjects() == that.getNumberOfObjects())
-        && (getMessageObjects() == that.getMessageObjects())
-        && true;
+        && (getMessageObjects() == that.getMessageObjects());
   }
 
   @Override

@@ -162,8 +162,7 @@ public class S7PayloadUserDataItemCyclicServicesUnsubscribeRequest extends S7Pay
         (S7PayloadUserDataItemCyclicServicesUnsubscribeRequest) o;
     return (getFunction() == that.getFunction())
         && (getJobId() == that.getJobId())
-        && super.equals(that)
-        && true;
+        && super.equals(that);
   }
 
   @Override

@@ -171,8 +171,7 @@ public class SzlDataTreeItem implements Message {
         && (getMlfb() == that.getMlfb())
         && (getModuleTypeId() == that.getModuleTypeId())
         && (getAusbg() == that.getAusbg())
-        && (getAusbe() == that.getAusbe())
-        && true;
+        && (getAusbe() == that.getAusbe());
   }
 
   @Override

@@ -171,9 +171,8 @@ public class AssociatedValueType implements Message {
             "valueLength",
             readBuffer,
             () ->
-                (int)
-                    (org.apache.plc4x.java.s7.readwrite.utils.StaticHelper.RightShift3(
-                        readBuffer, transportSize)));
+                org.apache.plc4x.java.s7.readwrite.utils.StaticHelper.RightShift3(
+                    readBuffer, transportSize));
 
     List<Short> data =
         readCountArrayField(
@@ -201,8 +200,7 @@ public class AssociatedValueType implements Message {
     return (getReturnCode() == that.getReturnCode())
         && (getTransportSize() == that.getTransportSize())
         && (getValueLength() == that.getValueLength())
-        && (getData() == that.getData())
-        && true;
+        && (getData() == that.getData());
   }
 
   @Override

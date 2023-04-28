@@ -18,10 +18,6 @@
  */
 package org.apache.plc4x.java.s7.readwrite.protocol;
 
-/**
- *
- * @author cgarcia
- */
 public class S7HAbortRequestException {
-    
+
 }

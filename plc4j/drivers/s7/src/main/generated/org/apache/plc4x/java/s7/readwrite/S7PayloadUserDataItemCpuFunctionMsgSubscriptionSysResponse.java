@@ -163,8 +163,7 @@ public class S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse
         (S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse) o;
     return (getResult() == that.getResult())
         && (getReserved01() == that.getReserved01())
-        && super.equals(that)
-        && true;
+        && super.equals(that);
   }
 
   @Override

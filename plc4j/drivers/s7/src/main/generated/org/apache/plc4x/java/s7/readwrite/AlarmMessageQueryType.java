@@ -228,8 +228,7 @@ public class AlarmMessageQueryType implements Message {
         && (getNumberOfObjects() == that.getNumberOfObjects())
         && (getReturnCode() == that.getReturnCode())
         && (getTransportSize() == that.getTransportSize())
-        && (getMessageObjects() == that.getMessageObjects())
-        && true;
+        && (getMessageObjects() == that.getMessageObjects());
   }
 
   @Override

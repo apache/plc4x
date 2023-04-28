@@ -150,8 +150,7 @@ public class CycServiceItemDbReadType extends CycServiceItemType implements Mess
     CycServiceItemDbReadType that = (CycServiceItemDbReadType) o;
     return (getNumberOfAreas() == that.getNumberOfAreas())
         && (getItems() == that.getItems())
-        && super.equals(that)
-        && true;
+        && super.equals(that);
   }
 
   @Override

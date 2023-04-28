@@ -120,7 +120,7 @@ public class S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse extends S7Pay
     }
     S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse that =
         (S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse) o;
-    return super.equals(that) && true;
+    return super.equals(that);
   }
 
   @Override

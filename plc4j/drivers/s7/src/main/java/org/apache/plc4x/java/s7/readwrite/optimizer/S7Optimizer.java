@@ -63,7 +63,6 @@ public class S7Optimizer extends BaseOptimizer {
         LinkedHashMap<String, PlcTag> curTags = new LinkedHashMap<>();
 
         for (String tagName : readRequest.getTagNames()) {
-            
             if (readRequest.getTag(tagName) instanceof S7SzlTag){
                 curTags.put(tagName, readRequest.getTag(tagName));
                 continue;

@@ -297,8 +297,7 @@ public class S7PayloadUserDataItemCpuFunctionAlarmQueryRequest extends S7Payload
     return (getSyntaxId() == that.getSyntaxId())
         && (getQueryType() == that.getQueryType())
         && (getAlarmType() == that.getAlarmType())
-        && super.equals(that)
-        && true;
+        && super.equals(that);
   }
 
   @Override

@@ -91,11 +91,10 @@ public class S7VarPayloadDataItem implements Message {
     // Implicit Field (dataLength) (Used for parsing, but its value is not stored as it's implicitly
     // given by the objects content)
     int dataLength =
-        (int)
-            ((COUNT(getData()))
-                * ((((((getTransportSize()) == (DataTransportSize.BIT)))
-                    ? 1
-                    : (((getTransportSize().getSizeInBits()) ? 8 : 1))))));
+        (COUNT(getData()))
+            * ((((((getTransportSize()) == (DataTransportSize.BIT)))
+                ? 1
+                : (((getTransportSize().getSizeInBits()) ? 8 : 1)))));
     writeImplicitField("dataLength", dataLength, writeUnsignedInt(writeBuffer, 16));
 
     // Array Field (data)
@@ -104,7 +103,7 @@ public class S7VarPayloadDataItem implements Message {
     // Padding Field (padding)
     writePaddingField(
         "padding",
-        (int) ((((!(_lastItem))) ? ((COUNT(data)) % (2)) : 0)),
+        (((!(_lastItem))) ? ((COUNT(data)) % (2)) : 0),
         (short) 0x00,
         writeUnsignedShort(writeBuffer, 8));
 
@@ -137,7 +136,7 @@ public class S7VarPayloadDataItem implements Message {
     }
 
     // Padding Field (padding)
-    int _timesPadding = (int) ((((!(_lastItem))) ? ((COUNT(data)) % (2)) : 0));
+    int _timesPadding = (((!(_lastItem))) ? ((COUNT(data)) % (2)) : 0);
     while (_timesPadding-- > 0) {
       lengthInBits += 8;
     }
@@ -181,7 +180,7 @@ public class S7VarPayloadDataItem implements Message {
                 ((transportSize.getSizeInBits()) ? CEIL((dataLength) / (8.0)) : dataLength)));
 
     readPaddingField(
-        readUnsignedShort(readBuffer, 8), (int) ((((!(_lastItem))) ? ((COUNT(data)) % (2)) : 0)));
+        readUnsignedShort(readBuffer, 8), (((!(_lastItem))) ? ((COUNT(data)) % (2)) : 0));
 
     readBuffer.closeContext("S7VarPayloadDataItem");
     // Create the instance
@@ -201,8 +200,7 @@ public class S7VarPayloadDataItem implements Message {
     S7VarPayloadDataItem that = (S7VarPayloadDataItem) o;
     return (getReturnCode() == that.getReturnCode())
         && (getTransportSize() == that.getTransportSize())
-        && (getData() == that.getData())
-        && true;
+        && (getData() == that.getData());
   }
 
   @Override

@@ -120,7 +120,7 @@ public class S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest extends S7Payl
     }
     S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest that =
         (S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest) o;
-    return super.equals(that) && true;
+    return super.equals(that);
   }
 
   @Override

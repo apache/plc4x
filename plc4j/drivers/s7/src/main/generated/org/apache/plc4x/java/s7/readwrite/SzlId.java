@@ -160,8 +160,7 @@ public class SzlId implements Message {
     SzlId that = (SzlId) o;
     return (getTypeClass() == that.getTypeClass())
         && (getSublistExtract() == that.getSublistExtract())
-        && (getSublistList() == that.getSublistList())
-        && true;
+        && (getSublistList() == that.getSublistList());
   }
 
   @Override

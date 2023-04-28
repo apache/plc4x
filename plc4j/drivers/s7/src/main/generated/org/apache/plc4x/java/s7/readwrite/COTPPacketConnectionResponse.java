@@ -180,8 +180,7 @@ public class COTPPacketConnectionResponse extends COTPPacket implements Message 
     return (getDestinationReference() == that.getDestinationReference())
         && (getSourceReference() == that.getSourceReference())
         && (getProtocolClass() == that.getProtocolClass())
-        && super.equals(that)
-        && true;
+        && super.equals(that);
   }
 
   @Override

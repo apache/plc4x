@@ -34,11 +34,11 @@ public enum EventType {
   static {
     map = new HashMap<>();
     for (EventType value : EventType.values()) {
-      map.put((short) value.getValue(), value);
+      map.put(value.getValue(), value);
     }
   }
 
-  private short value;
+  private final short value;
 
   EventType(short value) {
     this.value = value;

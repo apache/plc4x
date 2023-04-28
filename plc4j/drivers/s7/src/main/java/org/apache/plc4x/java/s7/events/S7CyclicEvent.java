@@ -20,6 +20,13 @@ package org.apache.plc4x.java.s7.events;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
+import org.apache.plc4x.java.api.messages.PlcReadRequest;
+import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
+import org.apache.plc4x.java.api.model.PlcTag;
+import org.apache.plc4x.java.api.types.PlcResponseCode;
+import org.apache.plc4x.java.api.value.PlcValue;
+import org.apache.plc4x.java.s7.readwrite.*;
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.nio.charset.Charset;
@@ -27,134 +34,122 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.ZoneOffset;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import org.apache.plc4x.java.api.messages.PlcReadRequest;
-import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
-import org.apache.plc4x.java.api.model.PlcTag;
-import org.apache.plc4x.java.api.types.PlcResponseCode;
-import org.apache.plc4x.java.api.value.PlcValue;
-import org.apache.plc4x.java.s7.readwrite.S7PayloadUserDataItemCyclicServicesChangeDrivenPush;
-import org.apache.plc4x.java.s7.readwrite.S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponse;
-import org.apache.plc4x.java.s7.readwrite.S7PayloadUserDataItemCyclicServicesPush;
-import org.apache.plc4x.java.s7.readwrite.S7PayloadUserDataItemCyclicServicesSubscribeResponse;
 
 /**
- *
  * @author cgarcia
  */
 public class S7CyclicEvent implements S7Event {
 
-    public enum Fields{
+    public enum Fields {
         TYPE,
         JOBID,
-        TIMESTAMP,        
+        TIMESTAMP,
         ITEMSCOUNT,
         REQUEST,
         MAP,
         RETURNCODE_,
         TRANSPORTSIZE_,
         DATA_
-    }    
-    
-    private final PlcSubscriptionRequest request;
-    
-    private final Instant timeStamp;
-    private final Map<String, Object> map;    
-    
-    private int j;
-    
-    public S7CyclicEvent(PlcSubscriptionRequest request, short jobid, S7PayloadUserDataItemCyclicServicesPush event) {
-        this.map = new HashMap();
-        this.timeStamp = Instant.now(); 
-        this.request = request;
-        map.put(Fields.TYPE.name(), "CYCEVENT");         
-        map.put(Fields.TIMESTAMP.name(),this.timeStamp);
-        map.put(Fields.JOBID.name(), jobid);
-        map.put(Fields.ITEMSCOUNT.name(), event.getItemsCount());        
-        for (int i=0; i<event.getItemsCount(); i++){
-            //map.put(Fields.RETURNCODE_.name()+i, event.getItems()[i].getReturnCode().getValue());
-            map.put(Fields.RETURNCODE_.name()+i, event.getItems().get(i).getReturnCode().getValue());
-            map.put(Fields.TRANSPORTSIZE_.name()+i, event.getItems().get(i).getTransportSize().getValue());
-            byte[] buffer = new byte[event.getItems().get(i).getData().size()];
-            j = 0;
-            event.getItems().get(i).getData().forEach(s->{
-                    buffer[j] = s.byteValue();
-                    j ++;                
-                });
-            map.put(Fields.DATA_.name()+i, buffer);  
-        }
-    }
-    
-    public S7CyclicEvent(PlcSubscriptionRequest request, short jobid, S7PayloadUserDataItemCyclicServicesChangeDrivenPush event) {
-        this.map = new HashMap();
-        this.timeStamp = Instant.now(); 
-        this.request = request;
-        map.put(Fields.TYPE.name(), "CYCEVENT");         
-        map.put(Fields.TIMESTAMP.name(),this.timeStamp);
-        map.put(Fields.JOBID.name(), jobid);
-        map.put(Fields.ITEMSCOUNT.name(), event.getItemsCount());        
-        for (int i=0; i<event.getItemsCount(); i++){
-            map.put(Fields.RETURNCODE_.name()+i, event.getItems().get(i).getReturnCode().getValue());
-            map.put(Fields.TRANSPORTSIZE_.name()+i, event.getItems().get(i).getTransportSize().getValue());
-            byte[] buffer = new byte[event.getItems().get(i).getData().size()];
-            j = 0;
-            event.getItems().get(i).getData().forEach(s->{
-                    buffer[j] = s.byteValue();
-                    j ++;                
-                });
-            map.put(Fields.DATA_.name()+i, buffer);  
-        }
-    }    
-    
-    public S7CyclicEvent(PlcSubscriptionRequest request, short jobid, S7PayloadUserDataItemCyclicServicesSubscribeResponse event) {
-        this.map = new HashMap();
-        this.timeStamp = Instant.now(); 
-        this.request = request;
-        map.put(Fields.TYPE.name(), "CYCEVENT");         
-        map.put(Fields.TIMESTAMP.name(),this.timeStamp);
-        map.put(Fields.JOBID.name(), jobid);
-        map.put(Fields.ITEMSCOUNT.name(), event.getItemsCount());
-        for (int i=0; i<event.getItemsCount(); i++){
-            map.put(Fields.RETURNCODE_.name()+i, event.getItems().get(i).getReturnCode().getValue());
-            map.put(Fields.TRANSPORTSIZE_.name()+i, event.getItems().get(i).getTransportSize().getValue());
-            byte[] buffer = new byte[event.getItems().get(i).getData().size()];
-            j = 0;
-            event.getItems().get(i).getData().forEach(s->{
-                    buffer[j] = s.byteValue();
-                    j ++;                
-                });
-            map.put(Fields.DATA_.name()+i, buffer); 
-        }            
     }
 
-    public S7CyclicEvent(PlcSubscriptionRequest request, short jobid, S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponse event) {
-        this.map = new HashMap();
-        this.timeStamp = Instant.now(); 
+    private final PlcSubscriptionRequest request;
+
+    private final Instant timeStamp;
+    private final Map<String, Object> map;
+
+    private int j;
+
+    public S7CyclicEvent(PlcSubscriptionRequest request, short jobId, S7PayloadUserDataItemCyclicServicesPush event) {
+        this.map = new HashMap<>();
+        this.timeStamp = Instant.now();
         this.request = request;
-        map.put(Fields.TYPE.name(), "CYCEVENT");         
-        map.put(Fields.TIMESTAMP.name(),this.timeStamp);
-        map.put(Fields.JOBID.name(), jobid);
+        map.put(Fields.TYPE.name(), "CYCEVENT");
+        map.put(Fields.TIMESTAMP.name(), this.timeStamp);
+        map.put(Fields.JOBID.name(), jobId);
         map.put(Fields.ITEMSCOUNT.name(), event.getItemsCount());
-        for (int i=0; i<event.getItemsCount(); i++){
-            map.put(Fields.RETURNCODE_.name()+i, event.getItems().get(i).getReturnCode().getValue());
-            map.put(Fields.TRANSPORTSIZE_.name()+i, event.getItems().get(i).getTransportSize().getValue());
-            byte[] buffer = new byte[event.getItems().get(i).getData().size()];
+        for (int i = 0; i < event.getItemsCount(); i++) {
+            AssociatedValueType associatedValueType = event.getItems().get(i);
+            map.put(Fields.RETURNCODE_.name() + i, associatedValueType.getReturnCode().getValue());
+            map.put(Fields.TRANSPORTSIZE_.name() + i, associatedValueType.getTransportSize().getValue());
+            byte[] buffer = new byte[associatedValueType.getData().size()];
             j = 0;
-            event.getItems().get(i).getData().forEach(s->{
-                    buffer[j] = s.byteValue();
-                    j ++;                
-                });
-            map.put(Fields.DATA_.name()+i, buffer); 
-        }            
-    }    
-    
+            associatedValueType.getData().forEach(s -> {
+                buffer[j] = s.byteValue();
+                j++;
+            });
+            map.put(Fields.DATA_.name() + i, buffer);
+        }
+    }
+
+    public S7CyclicEvent(PlcSubscriptionRequest request, short jobId, S7PayloadUserDataItemCyclicServicesChangeDrivenPush event) {
+        this.map = new HashMap<>();
+        this.timeStamp = Instant.now();
+        this.request = request;
+        map.put(Fields.TYPE.name(), "CYCEVENT");
+        map.put(Fields.TIMESTAMP.name(), this.timeStamp);
+        map.put(Fields.JOBID.name(), jobId);
+        map.put(Fields.ITEMSCOUNT.name(), event.getItemsCount());
+        for (int i = 0; i < event.getItemsCount(); i++) {
+            AssociatedQueryValueType associatedQueryValueType = event.getItems().get(i);
+            map.put(Fields.RETURNCODE_.name() + i, associatedQueryValueType.getReturnCode().getValue());
+            map.put(Fields.TRANSPORTSIZE_.name() + i, associatedQueryValueType.getTransportSize().getValue());
+            byte[] buffer = new byte[associatedQueryValueType.getData().size()];
+            j = 0;
+            associatedQueryValueType.getData().forEach(s -> {
+                buffer[j] = s.byteValue();
+                j++;
+            });
+            map.put(Fields.DATA_.name() + i, buffer);
+        }
+    }
+
+    public S7CyclicEvent(PlcSubscriptionRequest request, short jobId, S7PayloadUserDataItemCyclicServicesSubscribeResponse event) {
+        this.map = new HashMap<>();
+        this.timeStamp = Instant.now();
+        this.request = request;
+        map.put(Fields.TYPE.name(), "CYCEVENT");
+        map.put(Fields.TIMESTAMP.name(), this.timeStamp);
+        map.put(Fields.JOBID.name(), jobId);
+        map.put(Fields.ITEMSCOUNT.name(), event.getItemsCount());
+        for (int i = 0; i < event.getItemsCount(); i++) {
+            AssociatedValueType associatedValueType = event.getItems().get(i);
+            map.put(Fields.RETURNCODE_.name() + i, associatedValueType.getReturnCode().getValue());
+            map.put(Fields.TRANSPORTSIZE_.name() + i, associatedValueType.getTransportSize().getValue());
+            byte[] buffer = new byte[associatedValueType.getData().size()];
+            j = 0;
+            associatedValueType.getData().forEach(s -> {
+                buffer[j] = s.byteValue();
+                j++;
+            });
+            map.put(Fields.DATA_.name() + i, buffer);
+        }
+    }
+
+    public S7CyclicEvent(PlcSubscriptionRequest request, short jobId, S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponse event) {
+        this.map = new HashMap<>();
+        this.timeStamp = Instant.now();
+        this.request = request;
+        map.put(Fields.TYPE.name(), "CYCEVENT");
+        map.put(Fields.TIMESTAMP.name(), this.timeStamp);
+        map.put(Fields.JOBID.name(), jobId);
+        map.put(Fields.ITEMSCOUNT.name(), event.getItemsCount());
+        for (int i = 0; i < event.getItemsCount(); i++) {
+            AssociatedQueryValueType associatedQueryValueType = event.getItems().get(i);
+            map.put(Fields.RETURNCODE_.name() + i, associatedQueryValueType.getReturnCode().getValue());
+            map.put(Fields.TRANSPORTSIZE_.name() + i, associatedQueryValueType.getTransportSize().getValue());
+            byte[] buffer = new byte[associatedQueryValueType.getData().size()];
+            j = 0;
+            associatedQueryValueType.getData().forEach(s -> {
+                buffer[j] = s.byteValue();
+                j++;
+            });
+            map.put(Fields.DATA_.name() + i, buffer);
+        }
+    }
+
     @Override
     public Map<String, Object> getMap() {
         return this.map;
@@ -238,30 +233,28 @@ public class S7CyclicEvent implements S7Event {
 
     @Override
     public Byte getByte(String name) {
-       if (!(map.get(name) instanceof Byte)) 
+        if (!(map.get(name) instanceof Byte))
             throw new UnsupportedOperationException("Field is not a Byte. Required Byte type.");
         return (byte) map.get(name);
     }
 
     @Override
     public Byte getByte(String name, int index) {
-       if (!(map.get(name) instanceof byte[])) 
-            throw new UnsupportedOperationException("Field is not a buffer of bytes. Required byte[] type.");     
+        if (!(map.get(name) instanceof byte[]))
+            throw new UnsupportedOperationException("Field is not a buffer of bytes. Required byte[] type.");
         ByteBuf byteBuf = Unpooled.wrappedBuffer((byte[]) map.get(name));
-        int pos = index*Byte.BYTES;
+        int pos = index * Byte.BYTES;
         return byteBuf.getByte(pos);
     }
 
     @Override
     public Collection<Byte> getAllBytes(String name) {
-       if (!(map.get(name) instanceof byte[])) 
+        if (!(map.get(name) instanceof byte[]))
             throw new UnsupportedOperationException("Field is not a buffer of bytes. Required byte[] type.");
         byte[] array = (byte[]) map.get(name);
-        
-        List<Byte> list = IntStream.range(0, array.length).
-                mapToObj(i -> array[i]).collect(Collectors.toList());
-        
-        return list;
+
+        return IntStream.range(0, array.length).
+            mapToObj(i -> array[i]).collect(Collectors.toList());
     }
 
     @Override
@@ -282,20 +275,20 @@ public class S7CyclicEvent implements S7Event {
 
     @Override
     public Short getShort(String name, int index) {
-       if (!(map.get(name) instanceof byte[])) 
-            throw new UnsupportedOperationException("Field is not a buffer of bytes. Required byte[] type.");    
+        if (!(map.get(name) instanceof byte[]))
+            throw new UnsupportedOperationException("Field is not a buffer of bytes. Required byte[] type.");
         ByteBuf byteBuf = Unpooled.wrappedBuffer((byte[]) map.get(name));
-        int pos = index*Short.BYTES;
+        int pos = index * Short.BYTES;
         return byteBuf.getShort(index);
     }
 
     @Override
     public Collection<Short> getAllShorts(String name) {
-       if (!(map.get(name) instanceof byte[])) 
+        if (!(map.get(name) instanceof byte[]))
             throw new UnsupportedOperationException("Field is not a buffer of bytes. Required byte[] type.");
         ByteBuf byteBuf = Unpooled.wrappedBuffer((byte[]) map.get(name));
-        List<Short> list = new ArrayList();
-        while(byteBuf.isReadable(Short.BYTES)) list.add(byteBuf.readShort());        
+        List<Short> list = new ArrayList<>();
+        while (byteBuf.isReadable(Short.BYTES)) list.add(byteBuf.readShort());
         return list;
     }
 
@@ -316,20 +309,20 @@ public class S7CyclicEvent implements S7Event {
 
     @Override
     public Integer getInteger(String name, int index) {
-       if (!(map.get(name) instanceof byte[])) 
-            throw new UnsupportedOperationException("Field is not a buffer of bytes. Required byte[] type.");     
+        if (!(map.get(name) instanceof byte[]))
+            throw new UnsupportedOperationException("Field is not a buffer of bytes. Required byte[] type.");
         ByteBuf byteBuf = Unpooled.wrappedBuffer((byte[]) map.get(name));
-        int pos = index*Integer.BYTES;
+        int pos = index * Integer.BYTES;
         return byteBuf.getInt(pos);
     }
 
     @Override
     public Collection<Integer> getAllIntegers(String name) {
-       if (!(map.get(name) instanceof byte[])) 
-            throw new UnsupportedOperationException("Field is not a buffer of bytes. Required byte[] type.");        
+        if (!(map.get(name) instanceof byte[]))
+            throw new UnsupportedOperationException("Field is not a buffer of bytes. Required byte[] type.");
         ByteBuf byteBuf = Unpooled.wrappedBuffer((byte[]) map.get(name));
-        List<Integer> list = new ArrayList();
-        while(byteBuf.isReadable(Integer.BYTES)) list.add(byteBuf.readInt());        
+        List<Integer> list = new ArrayList<>();
+        while (byteBuf.isReadable(Integer.BYTES)) list.add(byteBuf.readInt());
         return list;
     }
 
@@ -375,20 +368,20 @@ public class S7CyclicEvent implements S7Event {
 
     @Override
     public Long getLong(String name, int index) {
-       if (!(map.get(name) instanceof byte[])) 
-            throw new UnsupportedOperationException("Field is not a buffer of bytes. Required byte[] type.");     
+        if (!(map.get(name) instanceof byte[]))
+            throw new UnsupportedOperationException("Field is not a buffer of bytes. Required byte[] type.");
         ByteBuf byteBuf = Unpooled.wrappedBuffer((byte[]) map.get(name));
-        int pos = index*Long.BYTES;
+        int pos = index * Long.BYTES;
         return byteBuf.getLong(pos);
     }
 
     @Override
     public Collection<Long> getAllLongs(String name) {
-       if (!(map.get(name) instanceof byte[])) 
-            throw new UnsupportedOperationException("Field is not a buffer of bytes. Required byte[] type.");     
+        if (!(map.get(name) instanceof byte[]))
+            throw new UnsupportedOperationException("Field is not a buffer of bytes. Required byte[] type.");
         ByteBuf byteBuf = Unpooled.wrappedBuffer((byte[]) map.get(name));
-        List<Long> list = new ArrayList();
-        while(byteBuf.isReadable(Long.BYTES)) list.add(byteBuf.readLong());        
+        List<Long> list = new ArrayList<>();
+        while (byteBuf.isReadable(Long.BYTES)) list.add(byteBuf.readLong());
         return list;
     }
 
@@ -409,20 +402,20 @@ public class S7CyclicEvent implements S7Event {
 
     @Override
     public Float getFloat(String name, int index) {
-       if (!(map.get(name) instanceof byte[])) 
-            throw new UnsupportedOperationException("Field is not a buffer of bytes. Required byte[] type.");     
+        if (!(map.get(name) instanceof byte[]))
+            throw new UnsupportedOperationException("Field is not a buffer of bytes. Required byte[] type.");
         ByteBuf byteBuf = Unpooled.wrappedBuffer((byte[]) map.get(name));
-        int pos = index*Float.BYTES;
+        int pos = index * Float.BYTES;
         return byteBuf.getFloat(pos);
     }
 
     @Override
     public Collection<Float> getAllFloats(String name) {
-       if (!(map.get(name) instanceof byte[])) 
-            throw new UnsupportedOperationException("Field is not a buffer of bytes. Required byte[] type.");       
+        if (!(map.get(name) instanceof byte[]))
+            throw new UnsupportedOperationException("Field is not a buffer of bytes. Required byte[] type.");
         ByteBuf byteBuf = Unpooled.wrappedBuffer((byte[]) map.get(name));
-        List<Float> list = new ArrayList();
-        while(byteBuf.isReadable(Float.BYTES)) list.add(byteBuf.readFloat());        
+        List<Float> list = new ArrayList<>();
+        while (byteBuf.isReadable(Float.BYTES)) list.add(byteBuf.readFloat());
         return list;
     }
 
@@ -443,20 +436,20 @@ public class S7CyclicEvent implements S7Event {
 
     @Override
     public Double getDouble(String name, int index) {
-       if (!(map.get(name) instanceof byte[])) 
-            throw new UnsupportedOperationException("Field is not a buffer of bytes. Required byte[] type.");    
+        if (!(map.get(name) instanceof byte[]))
+            throw new UnsupportedOperationException("Field is not a buffer of bytes. Required byte[] type.");
         ByteBuf byteBuf = Unpooled.wrappedBuffer((byte[]) map.get(name));
-        int pos = index*Double.BYTES;
+        int pos = index * Double.BYTES;
         return byteBuf.getDouble(pos);
     }
 
     @Override
     public Collection<Double> getAllDoubles(String name) {
-       if (!(map.get(name) instanceof byte[])) 
-            throw new UnsupportedOperationException("Field is not a buffer of bytes. Required byte[] type.");      
+        if (!(map.get(name) instanceof byte[]))
+            throw new UnsupportedOperationException("Field is not a buffer of bytes. Required byte[] type.");
         ByteBuf byteBuf = Unpooled.wrappedBuffer((byte[]) map.get(name));
-        List<Double> list = new ArrayList();
-        while(byteBuf.isReadable(Double.BYTES)) list.add(byteBuf.readDouble());        
+        List<Double> list = new ArrayList<>();
+        while (byteBuf.isReadable(Double.BYTES)) list.add(byteBuf.readDouble());
         return list;
     }
 
@@ -497,7 +490,7 @@ public class S7CyclicEvent implements S7Event {
 
     @Override
     public String getString(String name) {
-        if (!(map.get(name) instanceof byte[])) 
+        if (!(map.get(name) instanceof byte[]))
             throw new UnsupportedOperationException("Field is not a buffer of bytes. Required byte[] type.");
         ByteBuf byteBuf = Unpooled.wrappedBuffer((byte[]) map.get(name));
         return byteBuf.toString(Charset.defaultCharset());
@@ -596,12 +589,12 @@ public class S7CyclicEvent implements S7Event {
     @Override
     public PlcTag getTag(String name) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }      
+    }
 
     @Override
     public PlcResponseCode getResponseCode(String name) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }  
-  
-    
+    }
+
+
 }

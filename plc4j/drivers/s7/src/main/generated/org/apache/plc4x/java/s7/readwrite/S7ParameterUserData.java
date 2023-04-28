@@ -146,7 +146,7 @@ public class S7ParameterUserData extends S7Parameter implements Message {
       return false;
     }
     S7ParameterUserData that = (S7ParameterUserData) o;
-    return (getItems() == that.getItems()) && super.equals(that) && true;
+    return (getItems() == that.getItems()) && super.equals(that);
   }
 
   @Override

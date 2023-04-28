@@ -221,8 +221,7 @@ public class State implements Message {
         && (getSIG_4() == that.getSIG_4())
         && (getSIG_3() == that.getSIG_3())
         && (getSIG_2() == that.getSIG_2())
-        && (getSIG_1() == that.getSIG_1())
-        && true;
+        && (getSIG_1() == that.getSIG_1());
   }
 
   @Override

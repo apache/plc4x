@@ -127,7 +127,7 @@ public class S7ParameterReadVarResponse extends S7Parameter implements Message {
       return false;
     }
     S7ParameterReadVarResponse that = (S7ParameterReadVarResponse) o;
-    return (getNumItems() == that.getNumItems()) && super.equals(that) && true;
+    return (getNumItems() == that.getNumItems()) && super.equals(that);
   }
 
   @Override

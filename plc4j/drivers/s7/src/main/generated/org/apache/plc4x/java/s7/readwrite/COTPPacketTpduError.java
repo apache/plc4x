@@ -146,8 +146,7 @@ public class COTPPacketTpduError extends COTPPacket implements Message {
     COTPPacketTpduError that = (COTPPacketTpduError) o;
     return (getDestinationReference() == that.getDestinationReference())
         && (getRejectCause() == that.getRejectCause())
-        && super.equals(that)
-        && true;
+        && super.equals(that);
   }
 
   @Override

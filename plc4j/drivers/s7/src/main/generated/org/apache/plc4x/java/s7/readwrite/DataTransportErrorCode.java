@@ -35,11 +35,11 @@ public enum DataTransportErrorCode {
   static {
     map = new HashMap<>();
     for (DataTransportErrorCode value : DataTransportErrorCode.values()) {
-      map.put((short) value.getValue(), value);
+      map.put(value.getValue(), value);
     }
   }
 
-  private short value;
+  private final short value;
 
   DataTransportErrorCode(short value) {
     this.value = value;

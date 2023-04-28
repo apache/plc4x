@@ -219,8 +219,7 @@ public class S7PayloadUserDataItemCyclicServicesSubscribeRequest extends S7Paylo
         && (getTimeBase() == that.getTimeBase())
         && (getTimeFactor() == that.getTimeFactor())
         && (getItem() == that.getItem())
-        && super.equals(that)
-        && true;
+        && super.equals(that);
   }
 
   @Override

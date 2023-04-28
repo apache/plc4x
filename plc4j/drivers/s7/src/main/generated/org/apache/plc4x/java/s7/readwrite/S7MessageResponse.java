@@ -145,8 +145,7 @@ public class S7MessageResponse extends S7Message implements Message {
     S7MessageResponse that = (S7MessageResponse) o;
     return (getErrorClass() == that.getErrorClass())
         && (getErrorCode() == that.getErrorCode())
-        && super.equals(that)
-        && true;
+        && super.equals(that);
   }
 
   @Override

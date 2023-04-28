@@ -142,7 +142,7 @@ public class S7PayloadAlarmSQ extends S7PayloadUserDataItem implements Message {
       return false;
     }
     S7PayloadAlarmSQ that = (S7PayloadAlarmSQ) o;
-    return (getAlarmMessage() == that.getAlarmMessage()) && super.equals(that) && true;
+    return (getAlarmMessage() == that.getAlarmMessage()) && super.equals(that);
   }
 
   @Override

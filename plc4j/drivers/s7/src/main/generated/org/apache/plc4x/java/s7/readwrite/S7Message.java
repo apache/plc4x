@@ -87,7 +87,7 @@ public abstract class S7Message implements Message {
     writeDiscriminatorField("messageType", getMessageType(), writeUnsignedShort(writeBuffer, 8));
 
     // Reserved Field (reserved)
-    writeReservedField("reserved", (int) 0x0000, writeUnsignedInt(writeBuffer, 16));
+    writeReservedField("reserved", 0x0000, writeUnsignedInt(writeBuffer, 16));
 
     // Simple Field (tpduReference)
     writeSimpleField("tpduReference", tpduReference, writeUnsignedInt(writeBuffer, 16));
@@ -95,12 +95,12 @@ public abstract class S7Message implements Message {
     // Implicit Field (parameterLength) (Used for parsing, but its value is not stored as it's
     // implicitly given by the objects content)
     int parameterLength =
-        (int) ((((getParameter()) != (null)) ? getParameter().getLengthInBytes() : 0));
+        (((getParameter()) != (null)) ? getParameter().getLengthInBytes() : 0);
     writeImplicitField("parameterLength", parameterLength, writeUnsignedInt(writeBuffer, 16));
 
     // Implicit Field (payloadLength) (Used for parsing, but its value is not stored as it's
     // implicitly given by the objects content)
-    int payloadLength = (int) ((((getPayload()) != (null)) ? getPayload().getLengthInBytes() : 0));
+    int payloadLength = (((getPayload()) != (null)) ? getPayload().getLengthInBytes() : 0);
     writeImplicitField("payloadLength", payloadLength, writeUnsignedInt(writeBuffer, 16));
 
     // Switch field (Serialize the sub-type)
@@ -177,7 +177,7 @@ public abstract class S7Message implements Message {
     short messageType = readDiscriminatorField("messageType", readUnsignedShort(readBuffer, 8));
 
     Integer reservedField0 =
-        readReservedField("reserved", readUnsignedInt(readBuffer, 16), (int) 0x0000);
+        readReservedField("reserved", readUnsignedInt(readBuffer, 16), 0x0000);
 
     int tpduReference = readSimpleField("tpduReference", readUnsignedInt(readBuffer, 16));
 
@@ -209,7 +209,7 @@ public abstract class S7Message implements Message {
         readOptionalField(
             "parameter",
             new DataReaderComplexDefault<>(
-                () -> S7Parameter.staticParse(readBuffer, (short) (messageType)), readBuffer),
+                () -> S7Parameter.staticParse(readBuffer, messageType), readBuffer),
             (parameterLength) > (0));
 
     S7Payload payload =
@@ -218,7 +218,7 @@ public abstract class S7Message implements Message {
             new DataReaderComplexDefault<>(
                 () ->
                     S7Payload.staticParse(
-                        readBuffer, (short) (messageType), (S7Parameter) (parameter)),
+                        readBuffer, messageType, parameter),
                 readBuffer),
             (payloadLength) > (0));
 
@@ -243,8 +243,7 @@ public abstract class S7Message implements Message {
     S7Message that = (S7Message) o;
     return (getTpduReference() == that.getTpduReference())
         && (getParameter() == that.getParameter())
-        && (getPayload() == that.getPayload())
-        && true;
+        && (getPayload() == that.getPayload());
   }
 
   @Override

@@ -177,8 +177,7 @@ public class S7MessageObjectResponse extends S7DataAlarmMessage implements Messa
     S7MessageObjectResponse that = (S7MessageObjectResponse) o;
     return (getReturnCode() == that.getReturnCode())
         && (getTransportSize() == that.getTransportSize())
-        && super.equals(that)
-        && true;
+        && super.equals(that);
   }
 
   @Override

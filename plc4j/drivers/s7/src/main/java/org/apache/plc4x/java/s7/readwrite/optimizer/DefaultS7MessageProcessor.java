@@ -43,7 +43,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class DefaultS7MessageProcessor implements S7MessageProcessor {
 
-    private AtomicInteger tpduRefGen;
+    private final AtomicInteger tpduRefGen;
 
     public static final int EMPTY_READ_REQUEST_SIZE = new S7MessageRequest(0, new S7ParameterReadVarRequest(
         Collections.emptyList()), null).getLengthInBytes();

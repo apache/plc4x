@@ -185,8 +185,7 @@ public class AssociatedQueryValueType implements Message {
     return (getReturnCode() == that.getReturnCode())
         && (getTransportSize() == that.getTransportSize())
         && (getValueLength() == that.getValueLength())
-        && (getData() == that.getData())
-        && true;
+        && (getData() == that.getData());
   }
 
   @Override

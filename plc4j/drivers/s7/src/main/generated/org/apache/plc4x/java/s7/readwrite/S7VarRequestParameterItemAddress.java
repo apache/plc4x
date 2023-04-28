@@ -137,7 +137,7 @@ public class S7VarRequestParameterItemAddress extends S7VarRequestParameterItem 
       return false;
     }
     S7VarRequestParameterItemAddress that = (S7VarRequestParameterItemAddress) o;
-    return (getAddress() == that.getAddress()) && super.equals(that) && true;
+    return (getAddress() == that.getAddress()) && super.equals(that);
   }
 
   @Override

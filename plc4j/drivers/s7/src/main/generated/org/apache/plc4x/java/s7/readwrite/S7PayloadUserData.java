@@ -109,21 +109,18 @@ public class S7PayloadUserData extends S7Payload implements Message {
                 () ->
                     S7PayloadUserDataItem.staticParse(
                         readBuffer,
-                        (byte)
-                            (CAST(
-                                    CAST(parameter, S7ParameterUserData.class).getItems().get(0),
-                                    S7ParameterUserDataItemCPUFunctions.class)
-                                .getCpuFunctionGroup()),
-                        (byte)
-                            (CAST(
-                                    CAST(parameter, S7ParameterUserData.class).getItems().get(0),
-                                    S7ParameterUserDataItemCPUFunctions.class)
-                                .getCpuFunctionType()),
-                        (short)
-                            (CAST(
-                                    CAST(parameter, S7ParameterUserData.class).getItems().get(0),
-                                    S7ParameterUserDataItemCPUFunctions.class)
-                                .getCpuSubfunction())),
+                        CAST(
+                                CAST(parameter, S7ParameterUserData.class).getItems().get(0),
+                                S7ParameterUserDataItemCPUFunctions.class)
+                            .getCpuFunctionGroup(),
+                        CAST(
+                                CAST(parameter, S7ParameterUserData.class).getItems().get(0),
+                                S7ParameterUserDataItemCPUFunctions.class)
+                            .getCpuFunctionType(),
+                        CAST(
+                                CAST(parameter, S7ParameterUserData.class).getItems().get(0),
+                                S7ParameterUserDataItemCPUFunctions.class)
+                            .getCpuSubfunction()),
                 readBuffer),
             COUNT(CAST(parameter, S7ParameterUserData.class).getItems()));
 
@@ -154,7 +151,7 @@ public class S7PayloadUserData extends S7Payload implements Message {
       return false;
     }
     S7PayloadUserData that = (S7PayloadUserData) o;
-    return (getItems() == that.getItems()) && super.equals(that) && true;
+    return (getItems() == that.getItems()) && super.equals(that);
   }
 
   @Override

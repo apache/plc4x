@@ -250,8 +250,7 @@ public class S7AddressAny extends S7Address implements Message {
         && (getArea() == that.getArea())
         && (getByteAddress() == that.getByteAddress())
         && (getBitAddress() == that.getBitAddress())
-        && super.equals(that)
-        && true;
+        && super.equals(that);
   }
 
   @Override

@@ -148,7 +148,7 @@ public class S7PayloadUserDataItemCpuFunctionAlarmQueryResponse extends S7Payloa
     }
     S7PayloadUserDataItemCpuFunctionAlarmQueryResponse that =
         (S7PayloadUserDataItemCpuFunctionAlarmQueryResponse) o;
-    return (getItems() == that.getItems()) && super.equals(that) && true;
+    return (getItems() == that.getItems()) && super.equals(that);
   }
 
   @Override

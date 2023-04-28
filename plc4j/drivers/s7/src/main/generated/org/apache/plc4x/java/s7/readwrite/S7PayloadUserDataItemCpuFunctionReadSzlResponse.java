@@ -148,7 +148,7 @@ public class S7PayloadUserDataItemCpuFunctionReadSzlResponse extends S7PayloadUs
     }
     S7PayloadUserDataItemCpuFunctionReadSzlResponse that =
         (S7PayloadUserDataItemCpuFunctionReadSzlResponse) o;
-    return (getItems() == that.getItems()) && super.equals(that) && true;
+    return (getItems() == that.getItems()) && super.equals(that);
   }
 
   @Override

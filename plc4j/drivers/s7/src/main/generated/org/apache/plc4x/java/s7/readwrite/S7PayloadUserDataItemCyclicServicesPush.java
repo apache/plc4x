@@ -171,8 +171,7 @@ public class S7PayloadUserDataItemCyclicServicesPush extends S7PayloadUserDataIt
     S7PayloadUserDataItemCyclicServicesPush that = (S7PayloadUserDataItemCyclicServicesPush) o;
     return (getItemsCount() == that.getItemsCount())
         && (getItems() == that.getItems())
-        && super.equals(that)
-        && true;
+        && super.equals(that);
   }
 
   @Override

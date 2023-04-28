@@ -136,7 +136,7 @@ public class S7PayloadWriteVarRequest extends S7Payload implements Message {
       return false;
     }
     S7PayloadWriteVarRequest that = (S7PayloadWriteVarRequest) o;
-    return (getItems() == that.getItems()) && super.equals(that) && true;
+    return (getItems() == that.getItems()) && super.equals(that);
   }
 
   @Override
