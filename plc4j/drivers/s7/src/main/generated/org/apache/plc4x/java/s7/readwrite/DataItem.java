@@ -163,16 +163,18 @@ public class DataItem {
 
       // Manual Field (value)
       String value =
-          org.apache.plc4x.java.s7.readwrite.utils.StaticHelper.parseS7String(
-              readBuffer, stringLength, "UTF-8");
+          (String)
+              (org.apache.plc4x.java.s7.readwrite.utils.StaticHelper.parseS7String(
+                  readBuffer, stringLength, "UTF-8"));
 
       return new PlcSTRING(value);
     } else if (EvaluationHelper.equals(dataProtocolId, "IEC61131_WSTRING")) { // STRING
 
       // Manual Field (value)
       String value =
-          org.apache.plc4x.java.s7.readwrite.utils.StaticHelper.parseS7String(
-              readBuffer, stringLength, "UTF-16");
+          (String)
+              (org.apache.plc4x.java.s7.readwrite.utils.StaticHelper.parseS7String(
+                  readBuffer, stringLength, "UTF-16"));
 
       return new PlcSTRING(value);
     } else if (EvaluationHelper.equals(dataProtocolId, "IEC61131_TIME")) { // TIME
@@ -269,91 +271,91 @@ public class DataItem {
       /*TODO: migrate me*/ writeBuffer.writeUnsignedShort(
           "", 7, ((Number) (short) 0x00).shortValue());
       // Simple Field (value)
-      boolean value = _value.getBoolean();
+      boolean value = (boolean) _value.getBoolean();
       /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeBit("", value);
+      /*TODO: migrate me*/ writeBuffer.writeBit("", (boolean) (value));
     } else if (EvaluationHelper.equals(dataProtocolId, "IEC61131_BYTE")) { // BYTE
       // Simple Field (value)
-      short value = _value.getShort();
+      short value = (short) _value.getShort();
       /*TODO: migrate me*/
       /*TODO: migrate me*/ writeBuffer.writeUnsignedShort("", 8, ((Number) (value)).shortValue());
     } else if (EvaluationHelper.equals(dataProtocolId, "IEC61131_WORD")) { // WORD
       // Simple Field (value)
-      int value = _value.getInt();
+      int value = (int) _value.getInt();
       /*TODO: migrate me*/
       /*TODO: migrate me*/ writeBuffer.writeUnsignedInt("", 16, ((Number) (value)).intValue());
     } else if (EvaluationHelper.equals(dataProtocolId, "IEC61131_DWORD")) { // DWORD
       // Simple Field (value)
-      long value = _value.getLong();
+      long value = (long) _value.getLong();
       /*TODO: migrate me*/
       /*TODO: migrate me*/ writeBuffer.writeUnsignedLong("", 32, ((Number) (value)).longValue());
     } else if (EvaluationHelper.equals(dataProtocolId, "IEC61131_LWORD")) { // LWORD
       // Simple Field (value)
-      BigInteger value = _value.getBigInteger();
+      BigInteger value = (BigInteger) _value.getBigInteger();
       /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedBigInteger("", 64, value);
+      /*TODO: migrate me*/ writeBuffer.writeUnsignedBigInteger("", 64, (BigInteger) (value));
     } else if (EvaluationHelper.equals(dataProtocolId, "IEC61131_SINT")) { // SINT
       // Simple Field (value)
-      byte value = _value.getByte();
+      byte value = (byte) _value.getByte();
       /*TODO: migrate me*/
       /*TODO: migrate me*/ writeBuffer.writeSignedByte("", 8, ((Number) (value)).byteValue());
     } else if (EvaluationHelper.equals(dataProtocolId, "IEC61131_USINT")) { // USINT
       // Simple Field (value)
-      short value = _value.getShort();
+      short value = (short) _value.getShort();
       /*TODO: migrate me*/
       /*TODO: migrate me*/ writeBuffer.writeUnsignedShort("", 8, ((Number) (value)).shortValue());
     } else if (EvaluationHelper.equals(dataProtocolId, "IEC61131_INT")) { // INT
       // Simple Field (value)
-      short value = _value.getShort();
+      short value = (short) _value.getShort();
       /*TODO: migrate me*/
       /*TODO: migrate me*/ writeBuffer.writeShort("", 16, ((Number) (value)).shortValue());
     } else if (EvaluationHelper.equals(dataProtocolId, "IEC61131_UINT")) { // UINT
       // Simple Field (value)
-      int value = _value.getInt();
+      int value = (int) _value.getInt();
       /*TODO: migrate me*/
       /*TODO: migrate me*/ writeBuffer.writeUnsignedInt("", 16, ((Number) (value)).intValue());
     } else if (EvaluationHelper.equals(dataProtocolId, "IEC61131_DINT")) { // DINT
       // Simple Field (value)
-      int value = _value.getInt();
+      int value = (int) _value.getInt();
       /*TODO: migrate me*/
       /*TODO: migrate me*/ writeBuffer.writeInt("", 32, ((Number) (value)).intValue());
     } else if (EvaluationHelper.equals(dataProtocolId, "IEC61131_UDINT")) { // UDINT
       // Simple Field (value)
-      long value = _value.getLong();
+      long value = (long) _value.getLong();
       /*TODO: migrate me*/
       /*TODO: migrate me*/ writeBuffer.writeUnsignedLong("", 32, ((Number) (value)).longValue());
     } else if (EvaluationHelper.equals(dataProtocolId, "IEC61131_LINT")) { // LINT
       // Simple Field (value)
-      long value = _value.getLong();
+      long value = (long) _value.getLong();
       /*TODO: migrate me*/
       /*TODO: migrate me*/ writeBuffer.writeLong("", 64, ((Number) (value)).longValue());
     } else if (EvaluationHelper.equals(dataProtocolId, "IEC61131_ULINT")) { // ULINT
       // Simple Field (value)
-      BigInteger value = _value.getBigInteger();
+      BigInteger value = (BigInteger) _value.getBigInteger();
       /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedBigInteger("", 64, value);
+      /*TODO: migrate me*/ writeBuffer.writeUnsignedBigInteger("", 64, (BigInteger) (value));
     } else if (EvaluationHelper.equals(dataProtocolId, "IEC61131_REAL")) { // REAL
       // Simple Field (value)
-      float value = _value.getFloat();
+      float value = (float) _value.getFloat();
       /*TODO: migrate me*/
       /*TODO: migrate me*/ writeBuffer.writeFloat("", 32, (value));
     } else if (EvaluationHelper.equals(dataProtocolId, "IEC61131_LREAL")) { // LREAL
       // Simple Field (value)
-      double value = _value.getDouble();
+      double value = (double) _value.getDouble();
       /*TODO: migrate me*/
       /*TODO: migrate me*/ writeBuffer.writeDouble("", 64, (value));
     } else if (EvaluationHelper.equals(dataProtocolId, "IEC61131_CHAR")) { // CHAR
       // Simple Field (value)
-      String value = _value.getString();
+      String value = (String) _value.getString();
       /*TODO: migrate me*/
       /*TODO: migrate me*/ writeBuffer.writeString(
-          "", 8, value, WithOption.WithEncoding("UTF-8"));
+          "", 8, (String) (value), WithOption.WithEncoding("UTF-8"));
     } else if (EvaluationHelper.equals(dataProtocolId, "IEC61131_WCHAR")) { // CHAR
       // Simple Field (value)
-      String value = _value.getString();
+      String value = (String) _value.getString();
       /*TODO: migrate me*/
       /*TODO: migrate me*/ writeBuffer.writeString(
-          "", 16, value, WithOption.WithEncoding("UTF-16"));
+          "", 16, (String) (value), WithOption.WithEncoding("UTF-16"));
     } else if (EvaluationHelper.equals(dataProtocolId, "IEC61131_STRING")) { // STRING
       // Manual Field (value)
       org.apache.plc4x.java.s7.readwrite.utils.StaticHelper.serializeS7String(
@@ -364,65 +366,65 @@ public class DataItem {
           writeBuffer, _value, stringLength, "UTF-16");
     } else if (EvaluationHelper.equals(dataProtocolId, "IEC61131_TIME")) { // TIME
       // Simple Field (milliseconds)
-      long milliseconds = _value.getLong();
+      long milliseconds = (long) _value.getLong();
       /*TODO: migrate me*/
       /*TODO: migrate me*/ writeBuffer.writeUnsignedLong(
           "", 32, ((Number) (milliseconds)).longValue());
     } else if (EvaluationHelper.equals(dataProtocolId, "IEC61131_LTIME")) { // LTIME
       // Simple Field (nanoseconds)
-      BigInteger nanoseconds = _value.getBigInteger();
+      BigInteger nanoseconds = (BigInteger) _value.getBigInteger();
       /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedBigInteger("", 64, nanoseconds);
+      /*TODO: migrate me*/ writeBuffer.writeUnsignedBigInteger("", 64, (BigInteger) (nanoseconds));
     } else if (EvaluationHelper.equals(dataProtocolId, "IEC61131_DATE")) { // DATE
       // Simple Field (daysSinceSiemensEpoch)
-      int daysSinceSiemensEpoch = _value.getInt();
+      int daysSinceSiemensEpoch = (int) _value.getInt();
       /*TODO: migrate me*/
       /*TODO: migrate me*/ writeBuffer.writeUnsignedInt(
           "", 16, ((Number) (daysSinceSiemensEpoch)).intValue());
     } else if (EvaluationHelper.equals(dataProtocolId, "IEC61131_TIME_OF_DAY")) { // TIME_OF_DAY
       // Simple Field (millisecondsSinceMidnight)
-      long millisecondsSinceMidnight = _value.getLong();
+      long millisecondsSinceMidnight = (long) _value.getLong();
       /*TODO: migrate me*/
       /*TODO: migrate me*/ writeBuffer.writeUnsignedLong(
           "", 32, ((Number) (millisecondsSinceMidnight)).longValue());
     } else if (EvaluationHelper.equals(dataProtocolId, "IEC61131_LTIME_OF_DAY")) { // LTIME_OF_DAY
       // Simple Field (nanosecondsSinceMidnight)
-      BigInteger nanosecondsSinceMidnight = _value.getBigInteger();
+      BigInteger nanosecondsSinceMidnight = (BigInteger) _value.getBigInteger();
       /*TODO: migrate me*/
       /*TODO: migrate me*/ writeBuffer.writeUnsignedBigInteger(
-          "", 64, nanosecondsSinceMidnight);
+          "", 64, (BigInteger) (nanosecondsSinceMidnight));
     } else if (EvaluationHelper.equals(dataProtocolId, "IEC61131_DATE_AND_TIME")) { // DATE_AND_TIME
       // Simple Field (year)
-      int year = _value.getInt();
+      int year = (int) _value.getInt();
       /*TODO: migrate me*/
       /*TODO: migrate me*/ writeBuffer.writeUnsignedInt("", 16, ((Number) (year)).intValue());
       // Simple Field (month)
-      short month = _value.getShort();
+      short month = (short) _value.getShort();
       /*TODO: migrate me*/
       /*TODO: migrate me*/ writeBuffer.writeUnsignedShort("", 8, ((Number) (month)).shortValue());
       // Simple Field (day)
-      short day = _value.getShort();
+      short day = (short) _value.getShort();
       /*TODO: migrate me*/
       /*TODO: migrate me*/ writeBuffer.writeUnsignedShort("", 8, ((Number) (day)).shortValue());
       // Simple Field (dayOfWeek)
-      short dayOfWeek = _value.getShort();
+      short dayOfWeek = (short) _value.getShort();
       /*TODO: migrate me*/
       /*TODO: migrate me*/ writeBuffer.writeUnsignedShort(
           "", 8, ((Number) (dayOfWeek)).shortValue());
       // Simple Field (hour)
-      short hour = _value.getShort();
+      short hour = (short) _value.getShort();
       /*TODO: migrate me*/
       /*TODO: migrate me*/ writeBuffer.writeUnsignedShort("", 8, ((Number) (hour)).shortValue());
       // Simple Field (minutes)
-      short minutes = _value.getShort();
+      short minutes = (short) _value.getShort();
       /*TODO: migrate me*/
       /*TODO: migrate me*/ writeBuffer.writeUnsignedShort("", 8, ((Number) (minutes)).shortValue());
       // Simple Field (seconds)
-      short seconds = _value.getShort();
+      short seconds = (short) _value.getShort();
       /*TODO: migrate me*/
       /*TODO: migrate me*/ writeBuffer.writeUnsignedShort("", 8, ((Number) (seconds)).shortValue());
       // Simple Field (nanoseconds)
-      long nanoseconds = _value.getLong();
+      long nanoseconds = (long) _value.getLong();
       /*TODO: migrate me*/
       /*TODO: migrate me*/ writeBuffer.writeUnsignedLong(
           "", 32, ((Number) (nanoseconds)).longValue());

@@ -180,7 +180,8 @@ public class COTPPacketDisconnectRequest extends COTPPacket implements Message {
     return (getDestinationReference() == that.getDestinationReference())
         && (getSourceReference() == that.getSourceReference())
         && (getProtocolClass() == that.getProtocolClass())
-        && super.equals(that);
+        && super.equals(that)
+        && true;
   }
 
   @Override

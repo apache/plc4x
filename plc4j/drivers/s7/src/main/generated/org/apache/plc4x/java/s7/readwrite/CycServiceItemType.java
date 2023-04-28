@@ -170,7 +170,8 @@ public abstract class CycServiceItemType implements Message {
     }
     CycServiceItemType that = (CycServiceItemType) o;
     return (getByteLength() == that.getByteLength())
-        && (getSyntaxId() == that.getSyntaxId());
+        && (getSyntaxId() == that.getSyntaxId())
+        && true;
   }
 
   @Override

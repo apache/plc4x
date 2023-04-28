@@ -148,7 +148,8 @@ public class COTPPacketDisconnectResponse extends COTPPacket implements Message 
     COTPPacketDisconnectResponse that = (COTPPacketDisconnectResponse) o;
     return (getDestinationReference() == that.getDestinationReference())
         && (getSourceReference() == that.getSourceReference())
-        && super.equals(that);
+        && super.equals(that)
+        && true;
   }
 
   @Override

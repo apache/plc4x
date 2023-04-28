@@ -217,7 +217,7 @@ public abstract class COTPPacket implements Message {
       return false;
     }
     COTPPacket that = (COTPPacket) o;
-    return (getParameters() == that.getParameters()) && (getPayload() == that.getPayload());
+    return (getParameters() == that.getParameters()) && (getPayload() == that.getPayload()) && true;
   }
 
   @Override

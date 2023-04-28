@@ -42,11 +42,11 @@ public enum SyntaxIdType {
   static {
     map = new HashMap<>();
     for (SyntaxIdType value : SyntaxIdType.values()) {
-      map.put(value.getValue(), value);
+      map.put((short) value.getValue(), value);
     }
   }
 
-  private final short value;
+  private short value;
 
   SyntaxIdType(short value) {
     this.value = value;

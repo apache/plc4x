@@ -102,7 +102,7 @@ public class S7MessageRequest extends S7Message implements Message {
       return false;
     }
     S7MessageRequest that = (S7MessageRequest) o;
-    return super.equals(that);
+    return super.equals(that) && true;
   }
 
   @Override

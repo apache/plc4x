@@ -32,11 +32,11 @@ public enum AlarmType {
   static {
     map = new HashMap<>();
     for (AlarmType value : AlarmType.values()) {
-      map.put(value.getValue(), value);
+      map.put((short) value.getValue(), value);
     }
   }
 
-  private final short value;
+  private short value;
 
   AlarmType(short value) {
     this.value = value;

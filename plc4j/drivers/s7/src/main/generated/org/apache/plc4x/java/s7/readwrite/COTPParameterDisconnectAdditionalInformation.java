@@ -127,7 +127,7 @@ public class COTPParameterDisconnectAdditionalInformation extends COTPParameter 
     }
     COTPParameterDisconnectAdditionalInformation that =
         (COTPParameterDisconnectAdditionalInformation) o;
-    return (getData() == that.getData()) && super.equals(that);
+    return (getData() == that.getData()) && super.equals(that) && true;
   }
 
   @Override

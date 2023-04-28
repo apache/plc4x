@@ -140,7 +140,8 @@ public class COTPPacketData extends COTPPacket implements Message {
     COTPPacketData that = (COTPPacketData) o;
     return (getEot() == that.getEot())
         && (getTpduRef() == that.getTpduRef())
-        && super.equals(that);
+        && super.equals(that)
+        && true;
   }
 
   @Override

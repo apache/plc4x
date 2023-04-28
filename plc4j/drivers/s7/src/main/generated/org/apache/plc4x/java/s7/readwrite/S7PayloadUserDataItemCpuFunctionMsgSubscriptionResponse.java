@@ -120,7 +120,7 @@ public class S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse extends S7P
     }
     S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse that =
         (S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse) o;
-    return super.equals(that);
+    return super.equals(that) && true;
   }
 
   @Override

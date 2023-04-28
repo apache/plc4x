@@ -32,11 +32,11 @@ public enum TimeBase {
   static {
     map = new HashMap<>();
     for (TimeBase value : TimeBase.values()) {
-      map.put(value.getValue(), value);
+      map.put((short) value.getValue(), value);
     }
   }
 
-  private final short value;
+  private short value;
 
   TimeBase(short value) {
     this.value = value;

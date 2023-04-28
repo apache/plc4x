@@ -120,7 +120,7 @@ public class S7PayloadUserDataItemCyclicServicesUnsubscribeResponse extends S7Pa
     }
     S7PayloadUserDataItemCyclicServicesUnsubscribeResponse that =
         (S7PayloadUserDataItemCyclicServicesUnsubscribeResponse) o;
-    return super.equals(that);
+    return super.equals(that) && true;
   }
 
   @Override

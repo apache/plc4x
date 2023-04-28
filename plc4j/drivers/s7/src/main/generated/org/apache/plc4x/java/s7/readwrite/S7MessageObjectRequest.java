@@ -237,7 +237,8 @@ public class S7MessageObjectRequest extends S7DataAlarmMessage implements Messag
     return (getSyntaxId() == that.getSyntaxId())
         && (getQueryType() == that.getQueryType())
         && (getAlarmType() == that.getAlarmType())
-        && super.equals(that);
+        && super.equals(that)
+        && true;
   }
 
   @Override

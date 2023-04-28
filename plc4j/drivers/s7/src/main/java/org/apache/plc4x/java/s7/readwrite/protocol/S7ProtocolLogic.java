@@ -252,9 +252,9 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
         if (request.getTags().get(0) instanceof S7SzlTag) {
             S7SzlTag szltag = (S7SzlTag) request.getTags().get(0);
 
-            final S7MessageUserData s7SzlMessageRequest = new S7MessageUserData(1, new S7ParameterUserData(List.of(
+            final S7MessageUserData s7SzlMessageRequest = new S7MessageUserData(1, new S7ParameterUserData(Arrays.asList(
                 new S7ParameterUserDataItemCPUFunctions((short) 0x11, (byte) 0x4, (byte) 0x4, (short) 0x01, (short) 0x00, null, null, null)
-            )), new S7PayloadUserData(List.of(
+            )), new S7PayloadUserData(Arrays.asList(
                 new S7PayloadUserDataItemCpuFunctionReadSzlRequest(DataTransportErrorCode.OK,
                     DataTransportSize.OCTET_STRING,
                     0x04,
@@ -1787,9 +1787,9 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
      *
      */
     private TPKTPacket createSzlReassembledRequest(int tpduId, short sequenceNumber) {
-        S7MessageUserData identifyRemoteMessage = new S7MessageUserData(tpduId, new S7ParameterUserData(List.of(
+        S7MessageUserData identifyRemoteMessage = new S7MessageUserData(tpduId, new S7ParameterUserData(Arrays.asList(
             new S7ParameterUserDataItemCPUFunctions((short) 0x12, (byte) 0x4, (byte) 0x4, (short) 0x01, sequenceNumber, (short) 0x00, (short) 0x00, 0)
-        )), new S7PayloadUserData(List.of(
+        )), new S7PayloadUserData(Arrays.asList(
             new S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest(
                 DataTransportErrorCode.NOT_FOUND,
                 DataTransportSize.NULL,
@@ -1829,9 +1829,9 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
 
     //TODO: S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest to S7PayloadUserDataItemCpuFunctionAlarmQueryNoDataRequest 
     private TPKTPacket createAlarmQueryReassembledRequest(int tpduId, short sequenceNumber) {
-        S7MessageUserData identifyRemoteMessage = new S7MessageUserData(tpduId, new S7ParameterUserData(List.of(
+        S7MessageUserData identifyRemoteMessage = new S7MessageUserData(tpduId, new S7ParameterUserData(Arrays.asList(
             new S7ParameterUserDataItemCPUFunctions((short) 0x12, (byte) 0x4, (byte) 0x4, (short) 0x13, sequenceNumber, (short) 0x00, (short) 0x00, 0)
-        )), new S7PayloadUserData(List.of(
+        )), new S7PayloadUserData(Arrays.asList(
             new S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest(
                 DataTransportErrorCode.NOT_FOUND,
                 DataTransportSize.NULL,

@@ -32,11 +32,11 @@ public enum DeviceGroup {
   static {
     map = new HashMap<>();
     for (DeviceGroup value : DeviceGroup.values()) {
-      map.put(value.getValue(), value);
+      map.put((short) value.getValue(), value);
     }
   }
 
-  private final short value;
+  private short value;
 
   DeviceGroup(short value) {
     this.value = value;

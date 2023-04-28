@@ -123,7 +123,7 @@ public class COTPParameterChecksum extends COTPParameter implements Message {
       return false;
     }
     COTPParameterChecksum that = (COTPParameterChecksum) o;
-    return (getCrc() == that.getCrc()) && super.equals(that);
+    return (getCrc() == that.getCrc()) && super.equals(that) && true;
   }
 
   @Override

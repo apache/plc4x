@@ -173,7 +173,8 @@ public class S7PayloadUserDataItemCyclicServicesChangeDrivenPush extends S7Paylo
         (S7PayloadUserDataItemCyclicServicesChangeDrivenPush) o;
     return (getItemsCount() == that.getItemsCount())
         && (getItems() == that.getItems())
-        && super.equals(that);
+        && super.equals(that)
+        && true;
   }
 
   @Override

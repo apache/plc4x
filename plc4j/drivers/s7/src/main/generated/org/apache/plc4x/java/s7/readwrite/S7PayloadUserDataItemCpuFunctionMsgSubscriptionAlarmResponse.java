@@ -233,7 +233,8 @@ public class S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse
         && (getAlarmType() == that.getAlarmType())
         && (getReserved02() == that.getReserved02())
         && (getReserved03() == that.getReserved03())
-        && super.equals(that);
+        && super.equals(that)
+        && true;
   }
 
   @Override

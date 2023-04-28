@@ -34,11 +34,11 @@ public enum COTPProtocolClass {
   static {
     map = new HashMap<>();
     for (COTPProtocolClass value : COTPProtocolClass.values()) {
-      map.put(value.getValue(), value);
+      map.put((short) value.getValue(), value);
     }
   }
 
-  private final short value;
+  private short value;
 
   COTPProtocolClass(short value) {
     this.value = value;

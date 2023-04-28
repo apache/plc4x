@@ -136,7 +136,7 @@ public class S7PayloadReadVarResponse extends S7Payload implements Message {
       return false;
     }
     S7PayloadReadVarResponse that = (S7PayloadReadVarResponse) o;
-    return (getItems() == that.getItems()) && super.equals(that);
+    return (getItems() == that.getItems()) && super.equals(that) && true;
   }
 
   @Override

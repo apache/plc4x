@@ -121,7 +121,7 @@ public class S7VarPayloadStatusItem implements Message {
       return false;
     }
     S7VarPayloadStatusItem that = (S7VarPayloadStatusItem) o;
-    return (getReturnCode() == that.getReturnCode());
+    return (getReturnCode() == that.getReturnCode()) && true;
   }
 
   @Override

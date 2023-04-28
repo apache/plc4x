@@ -33,11 +33,11 @@ public enum CpuSubscribeEvents {
   static {
     map = new HashMap<>();
     for (CpuSubscribeEvents value : CpuSubscribeEvents.values()) {
-      map.put(value.getValue(), value);
+      map.put((short) value.getValue(), value);
     }
   }
 
-  private final short value;
+  private short value;
 
   CpuSubscribeEvents(short value) {
     this.value = value;

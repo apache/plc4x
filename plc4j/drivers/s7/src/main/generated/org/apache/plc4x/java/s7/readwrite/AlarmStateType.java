@@ -35,11 +35,11 @@ public enum AlarmStateType {
   static {
     map = new HashMap<>();
     for (AlarmStateType value : AlarmStateType.values()) {
-      map.put(value.getValue(), value);
+      map.put((short) value.getValue(), value);
     }
   }
 
-  private final short value;
+  private short value;
 
   AlarmStateType(short value) {
     this.value = value;

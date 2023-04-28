@@ -173,7 +173,8 @@ public class S7PayloadUserDataItemCyclicServicesSubscribeResponse extends S7Payl
         (S7PayloadUserDataItemCyclicServicesSubscribeResponse) o;
     return (getItemsCount() == that.getItemsCount())
         && (getItems() == that.getItems())
-        && super.equals(that);
+        && super.equals(that)
+        && true;
   }
 
   @Override

@@ -257,8 +257,9 @@ public class DateAndTime implements Message {
             "msec",
             readBuffer,
             () ->
-                org.apache.plc4x.java.s7.readwrite.utils.StaticHelper.S7msecToInt(
-                    readBuffer));
+                (int)
+                    (org.apache.plc4x.java.s7.readwrite.utils.StaticHelper.S7msecToInt(
+                        readBuffer)));
 
     byte dow = readSimpleField("dow", readUnsignedByte(readBuffer, 4));
 
@@ -285,7 +286,8 @@ public class DateAndTime implements Message {
         && (getMinutes() == that.getMinutes())
         && (getSeconds() == that.getSeconds())
         && (getMsec() == that.getMsec())
-        && (getDow() == that.getDow());
+        && (getDow() == that.getDow())
+        && true;
   }
 
   @Override

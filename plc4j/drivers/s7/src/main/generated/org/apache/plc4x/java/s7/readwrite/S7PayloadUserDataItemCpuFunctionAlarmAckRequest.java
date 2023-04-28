@@ -183,7 +183,7 @@ public class S7PayloadUserDataItemCpuFunctionAlarmAckRequest extends S7PayloadUs
     }
     S7PayloadUserDataItemCpuFunctionAlarmAckRequest that =
         (S7PayloadUserDataItemCpuFunctionAlarmAckRequest) o;
-    return (getMessageObjects() == that.getMessageObjects()) && super.equals(that);
+    return (getMessageObjects() == that.getMessageObjects()) && super.equals(that) && true;
   }
 
   @Override

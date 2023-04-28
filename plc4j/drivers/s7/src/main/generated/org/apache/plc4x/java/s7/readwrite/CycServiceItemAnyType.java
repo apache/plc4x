@@ -224,7 +224,8 @@ public class CycServiceItemAnyType extends CycServiceItemType implements Message
         && (getDbNumber() == that.getDbNumber())
         && (getMemoryArea() == that.getMemoryArea())
         && (getAddress() == that.getAddress())
-        && super.equals(that);
+        && super.equals(that)
+        && true;
   }
 
   @Override

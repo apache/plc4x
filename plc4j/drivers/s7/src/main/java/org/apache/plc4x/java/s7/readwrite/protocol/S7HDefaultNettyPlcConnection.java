@@ -121,7 +121,7 @@ public class S7HDefaultNettyPlcConnection extends DefaultNettyPlcConnection impl
 
             channel = new EmbeddedChannel(getChannelHandler(sessionSetupCompleteFuture, sessionDisconnectCompleteFuture, sessionDiscoveredCompleteFuture));
             channel.pipeline().addFirst(s7hmux);
-            ((S7HMux) s7hmux).setEmbededhannel(channel);
+            ((S7HMux) s7hmux).setEmbeddedChannel(channel);
             //channel.pipeline().addFirst((new LoggingHandler(LogLevel.INFO))); 
             /*
             channel.closeFuture().addListener(future -> {
@@ -184,8 +184,8 @@ public class S7HDefaultNettyPlcConnection extends DefaultNettyPlcConnection impl
         if (closed) return;
         try {
             scf.cancel(true);
-        } catch (Exception ex) {
-            logger.info(ex.toString());
+        } catch (Exception e) {
+            logger.info("uh", e);
         }
         if (primary_channel != null)
             if (primary_channel.isActive()) {
@@ -302,7 +302,7 @@ public class S7HDefaultNettyPlcConnection extends DefaultNettyPlcConnection impl
                 PlcReadRequest readRequest = builder.build();
                 try {
                     PlcReadResponse readResponse = readRequest.execute().get(2, TimeUnit.SECONDS);
-                    logger.info("PING: " + readResponse.getResponseCode("value"));
+                    logger.info("PING: {}", readResponse.getResponseCode("value"));
                 } catch (Exception e) {
                     logger.info("PING: {}", e.getMessage(), e);
                 }

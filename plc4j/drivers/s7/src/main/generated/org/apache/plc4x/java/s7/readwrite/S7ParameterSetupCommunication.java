@@ -172,7 +172,8 @@ public class S7ParameterSetupCommunication extends S7Parameter implements Messag
     return (getMaxAmqCaller() == that.getMaxAmqCaller())
         && (getMaxAmqCallee() == that.getMaxAmqCallee())
         && (getPduLength() == that.getPduLength())
-        && super.equals(that);
+        && super.equals(that)
+        && true;
   }
 
   @Override

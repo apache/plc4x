@@ -120,7 +120,7 @@ public class S7PayloadUserDataItemCyclicServicesErrorResponse extends S7PayloadU
     }
     S7PayloadUserDataItemCyclicServicesErrorResponse that =
         (S7PayloadUserDataItemCyclicServicesErrorResponse) o;
-    return super.equals(that);
+    return super.equals(that) && true;
   }
 
   @Override

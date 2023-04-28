@@ -176,7 +176,8 @@ public class S7PayloadUserDataItemCpuFunctionAlarmAckResponse extends S7PayloadU
         (S7PayloadUserDataItemCpuFunctionAlarmAckResponse) o;
     return (getFunctionId() == that.getFunctionId())
         && (getMessageObjects() == that.getMessageObjects())
-        && super.equals(that);
+        && super.equals(that)
+        && true;
   }
 
   @Override

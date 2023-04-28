@@ -243,7 +243,7 @@ public abstract class S7PayloadUserDataItem implements Message {
     } else if (EvaluationHelper.equals(cpuFunctionGroup, (byte) 0x02)
         && EvaluationHelper.equals(cpuFunctionType, (byte) 0x08)
         && EvaluationHelper.equals(cpuSubfunction, (short) 0x05)
-        && EvaluationHelper.equals(dataLength, 0x00)) {
+        && EvaluationHelper.equals(dataLength, (int) 0x00)) {
       builder =
           S7PayloadUserDataItemCyclicServicesErrorResponse.staticParseS7PayloadUserDataItemBuilder(
               readBuffer, cpuFunctionGroup, cpuFunctionType, cpuSubfunction);
@@ -305,7 +305,7 @@ public abstract class S7PayloadUserDataItem implements Message {
     } else if (EvaluationHelper.equals(cpuFunctionGroup, (byte) 0x04)
         && EvaluationHelper.equals(cpuFunctionType, (byte) 0x04)
         && EvaluationHelper.equals(cpuSubfunction, (short) 0x01)
-        && EvaluationHelper.equals(dataLength, 0x00)) {
+        && EvaluationHelper.equals(dataLength, (int) 0x00)) {
       builder =
           S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest
               .staticParseS7PayloadUserDataItemBuilder(
@@ -332,7 +332,7 @@ public abstract class S7PayloadUserDataItem implements Message {
     } else if (EvaluationHelper.equals(cpuFunctionGroup, (byte) 0x04)
         && EvaluationHelper.equals(cpuFunctionType, (byte) 0x08)
         && EvaluationHelper.equals(cpuSubfunction, (short) 0x02)
-        && EvaluationHelper.equals(dataLength, 0x00)) {
+        && EvaluationHelper.equals(dataLength, (int) 0x00)) {
       builder =
           S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse
               .staticParseS7PayloadUserDataItemBuilder(
@@ -340,7 +340,7 @@ public abstract class S7PayloadUserDataItem implements Message {
     } else if (EvaluationHelper.equals(cpuFunctionGroup, (byte) 0x04)
         && EvaluationHelper.equals(cpuFunctionType, (byte) 0x08)
         && EvaluationHelper.equals(cpuSubfunction, (short) 0x02)
-        && EvaluationHelper.equals(dataLength, 0x02)) {
+        && EvaluationHelper.equals(dataLength, (int) 0x02)) {
       builder =
           S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse
               .staticParseS7PayloadUserDataItemBuilder(
@@ -348,7 +348,7 @@ public abstract class S7PayloadUserDataItem implements Message {
     } else if (EvaluationHelper.equals(cpuFunctionGroup, (byte) 0x04)
         && EvaluationHelper.equals(cpuFunctionType, (byte) 0x08)
         && EvaluationHelper.equals(cpuSubfunction, (short) 0x02)
-        && EvaluationHelper.equals(dataLength, 0x05)) {
+        && EvaluationHelper.equals(dataLength, (int) 0x05)) {
       builder =
           S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse
               .staticParseS7PayloadUserDataItemBuilder(
@@ -362,7 +362,7 @@ public abstract class S7PayloadUserDataItem implements Message {
     } else if (EvaluationHelper.equals(cpuFunctionGroup, (byte) 0x04)
         && EvaluationHelper.equals(cpuFunctionType, (byte) 0x08)
         && EvaluationHelper.equals(cpuSubfunction, (short) 0x0b)
-        && EvaluationHelper.equals(dataLength, 0x00)) {
+        && EvaluationHelper.equals(dataLength, (int) 0x00)) {
       builder =
           S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse
               .staticParseS7PayloadUserDataItemBuilder(
@@ -428,7 +428,8 @@ public abstract class S7PayloadUserDataItem implements Message {
     S7PayloadUserDataItem that = (S7PayloadUserDataItem) o;
     return (getReturnCode() == that.getReturnCode())
         && (getTransportSize() == that.getTransportSize())
-        && (getDataLength() == that.getDataLength());
+        && (getDataLength() == that.getDataLength())
+        && true;
   }
 
   @Override

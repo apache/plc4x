@@ -33,11 +33,11 @@ public enum QueryType {
   static {
     map = new HashMap<>();
     for (QueryType value : QueryType.values()) {
-      map.put(value.getValue(), value);
+      map.put((short) value.getValue(), value);
     }
   }
 
-  private final short value;
+  private short value;
 
   QueryType(short value) {
     this.value = value;

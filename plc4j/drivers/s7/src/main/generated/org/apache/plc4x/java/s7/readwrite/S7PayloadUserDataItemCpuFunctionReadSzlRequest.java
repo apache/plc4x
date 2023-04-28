@@ -164,7 +164,8 @@ public class S7PayloadUserDataItemCpuFunctionReadSzlRequest extends S7PayloadUse
         (S7PayloadUserDataItemCpuFunctionReadSzlRequest) o;
     return (getSzlId() == that.getSzlId())
         && (getSzlIndex() == that.getSzlIndex())
-        && super.equals(that);
+        && super.equals(that)
+        && true;
   }
 
   @Override

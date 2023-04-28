@@ -138,7 +138,8 @@ public class SubItem implements Message {
     SubItem that = (SubItem) o;
     return (getBytesToRead() == that.getBytesToRead())
         && (getDbNumber() == that.getDbNumber())
-        && (getStartAddress() == that.getStartAddress());
+        && (getStartAddress() == that.getStartAddress())
+        && true;
   }
 
   @Override

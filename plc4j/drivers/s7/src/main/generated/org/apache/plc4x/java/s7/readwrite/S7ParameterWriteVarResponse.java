@@ -127,7 +127,7 @@ public class S7ParameterWriteVarResponse extends S7Parameter implements Message 
       return false;
     }
     S7ParameterWriteVarResponse that = (S7ParameterWriteVarResponse) o;
-    return (getNumItems() == that.getNumItems()) && super.equals(that);
+    return (getNumItems() == that.getNumItems()) && super.equals(that) && true;
   }
 
   @Override

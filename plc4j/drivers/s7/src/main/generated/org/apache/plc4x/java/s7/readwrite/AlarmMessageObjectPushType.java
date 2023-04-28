@@ -301,7 +301,8 @@ public class AlarmMessageObjectPushType implements Message {
         && (getLocalState() == that.getLocalState())
         && (getAckStateGoing() == that.getAckStateGoing())
         && (getAckStateComing() == that.getAckStateComing())
-        && (getAssociatedValues() == that.getAssociatedValues());
+        && (getAssociatedValues() == that.getAssociatedValues())
+        && true;
   }
 
   @Override

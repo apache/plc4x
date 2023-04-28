@@ -230,7 +230,8 @@ public class S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest extends S7Pa
         && (getMagicKey() == that.getMagicKey())
         && (getAlarmtype() == that.getAlarmtype())
         && (getReserve() == that.getReserve())
-        && super.equals(that);
+        && super.equals(that)
+        && true;
   }
 
   @Override

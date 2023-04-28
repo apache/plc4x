@@ -123,7 +123,7 @@ public class COTPParameterCallingTsap extends COTPParameter implements Message {
       return false;
     }
     COTPParameterCallingTsap that = (COTPParameterCallingTsap) o;
-    return (getTsapId() == that.getTsapId()) && super.equals(that);
+    return (getTsapId() == that.getTsapId()) && super.equals(that) && true;
   }
 
   @Override

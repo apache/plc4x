@@ -226,7 +226,8 @@ public class AlarmMessageObjectAckType implements Message {
         && (getNumberOfValues() == that.getNumberOfValues())
         && (getEventId() == that.getEventId())
         && (getAckStateGoing() == that.getAckStateGoing())
-        && (getAckStateComing() == that.getAckStateComing());
+        && (getAckStateComing() == that.getAckStateComing())
+        && true;
   }
 
   @Override

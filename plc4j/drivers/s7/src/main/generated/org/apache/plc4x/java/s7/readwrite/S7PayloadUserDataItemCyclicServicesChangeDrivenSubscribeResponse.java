@@ -174,7 +174,8 @@ public class S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponse
         (S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponse) o;
     return (getItemsCount() == that.getItemsCount())
         && (getItems() == that.getItems())
-        && super.equals(that);
+        && super.equals(that)
+        && true;
   }
 
   @Override

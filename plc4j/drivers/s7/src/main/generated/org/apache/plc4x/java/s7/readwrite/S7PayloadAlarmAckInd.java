@@ -142,7 +142,7 @@ public class S7PayloadAlarmAckInd extends S7PayloadUserDataItem implements Messa
       return false;
     }
     S7PayloadAlarmAckInd that = (S7PayloadAlarmAckInd) o;
-    return (getAlarmMessage() == that.getAlarmMessage()) && super.equals(that);
+    return (getAlarmMessage() == that.getAlarmMessage()) && super.equals(that) && true;
   }
 
   @Override

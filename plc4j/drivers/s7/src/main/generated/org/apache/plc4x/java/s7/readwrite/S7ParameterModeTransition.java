@@ -95,7 +95,7 @@ public class S7ParameterModeTransition extends S7Parameter implements Message {
     writeBuffer.pushContext("S7ParameterModeTransition");
 
     // Reserved Field (reserved)
-    writeReservedField("reserved", 0x0010, writeUnsignedInt(writeBuffer, 16));
+    writeReservedField("reserved", (int) 0x0010, writeUnsignedInt(writeBuffer, 16));
 
     // Implicit Field (itemLength) (Used for parsing, but its value is not stored as it's implicitly
     // given by the objects content)
@@ -164,7 +164,7 @@ public class S7ParameterModeTransition extends S7Parameter implements Message {
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     Integer reservedField0 =
-        readReservedField("reserved", readUnsignedInt(readBuffer, 16), 0x0010);
+        readReservedField("reserved", readUnsignedInt(readBuffer, 16), (int) 0x0010);
 
     short itemLength = readImplicitField("itemLength", readUnsignedShort(readBuffer, 8));
 
@@ -227,7 +227,8 @@ public class S7ParameterModeTransition extends S7Parameter implements Message {
         && (getCpuFunctionGroup() == that.getCpuFunctionGroup())
         && (getCurrentMode() == that.getCurrentMode())
         && (getSequenceNumber() == that.getSequenceNumber())
-        && super.equals(that);
+        && super.equals(that)
+        && true;
   }
 
   @Override

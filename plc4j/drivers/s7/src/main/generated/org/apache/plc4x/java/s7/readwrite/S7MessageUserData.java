@@ -103,7 +103,7 @@ public class S7MessageUserData extends S7Message implements Message {
       return false;
     }
     S7MessageUserData that = (S7MessageUserData) o;
-    return super.equals(that);
+    return super.equals(that) && true;
   }
 
   @Override
