@@ -576,6 +576,7 @@
             [simple   uint 16                szlIndex]
         ]
 
+        // TODO: carcia: explain why you out commented this? the byte array variant below looks hacky
         //['0x04', '0x08', '0x01' S7PayloadUserDataItemCpuFunctionReadSzlResponse
         //    [simple   SzlId           szlId]
         //    [simple   uint 16         szlIndex]

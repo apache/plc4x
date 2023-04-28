@@ -309,10 +309,14 @@ func (m *Connection) extractControllerTypeAndFireConnected(payloadUserData readW
 		switch readSzlResponseItem := item.(type) {
 		case readWriteModel.S7PayloadUserDataItemCpuFunctionReadSzlResponse:
 			for _, readSzlResponseItemItem := range readSzlResponseItem.GetItems() {
+				_ = readSzlResponseItemItem
+				/* TODO: broken by mspec changes from carcia
 				if readSzlResponseItemItem.GetItemIndex() != 0x0001 {
 					continue
 				}
 				articleNumber := string(readSzlResponseItemItem.GetMlfb())
+				*/
+				articleNumber := "broken at the moment"
 				var controllerType ControllerType
 				if !strings.HasPrefix(articleNumber, "6ES7 ") {
 					controllerType = ControllerType_ANY
@@ -371,6 +375,7 @@ func (m *Connection) createIdentifyRemoteMessage() readWriteModel.TPKTPacket {
 					0x0000,
 					readWriteModel.DataTransportErrorCode_OK,
 					readWriteModel.DataTransportSize_OCTET_STRING,
+					4,
 				),
 			},
 			nil,

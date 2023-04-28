@@ -1264,7 +1264,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
             S7PayloadUserDataItemCpuFunctionReadSzlResponse readSzlResponseItem =
                 (S7PayloadUserDataItemCpuFunctionReadSzlResponse) item;
 
-            // TODO: describe why this is out commented
+            // TODO: @carcia: why did you do that this way? it looks like you skip the two bytes you removed with the mspec changes
 //            for (SzlDataTreeItem readSzlResponseItemItem : readSzlResponseItem.getItems()) {
 //                if (readSzlResponseItemItem.getItemIndex() != 0x0001) {
 //                    continue;
@@ -1408,10 +1408,9 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
 
                     if (responseCode == PlcResponseCode.OK) {
                         try {
-                            LinkedList plcvalues = null;
+                            List<PlcValue> plcvalues = new LinkedList<>();
                             byte[] data = payloadItem.getItems();
 
-                            plcvalues = new LinkedList<PlcSINT>();
                             for (byte b : data) plcvalues.add(new PlcSINT(b));
 
                             if (parameteritem.getLastDataUnit() == 1) {
@@ -1422,7 +1421,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
 
                                 while (parameteritem.getLastDataUnit() == 1) {
                                     //TODO: Just wait for one answer!. Pending for other packages for rearm.
-                                    next_future = reassembledMessage(parameteritem.getSequenceNumber(), plcvalues);
+                                    next_future = reassembledMessage(parameteritem.getSequenceNumber());
 
                                     S7MessageUserData msg = null;
 
@@ -1748,7 +1747,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
             (s7DriverContext.getControllerType() == S7ControllerType.S7_400);
     }
 
-    private CompletableFuture<S7MessageUserData> reassembledMessage(short sequenceNumber, LinkedList<PlcSINT> plcValues) {
+    private CompletableFuture<S7MessageUserData> reassembledMessage(short sequenceNumber) {
 
         CompletableFuture<S7MessageUserData> future = new CompletableFuture<>();
 
@@ -1797,9 +1796,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
         //TODO: PDU id is the same, we need check.
         int tpduId = tpduGenerator.getAndIncrement();
         // If we've reached the max value for a 16 bit transaction identifier, reset back to 1
-        if (tpduGenerator.get() == 0xFFFF) {
-            tpduGenerator.set(1);
-        }
+        tpduGenerator.compareAndExchange(0xFFFF, 1);
 
         TPKTPacket request = createAlarmQueryReassembledRequest(tpduId, sequenceNumber);
 
