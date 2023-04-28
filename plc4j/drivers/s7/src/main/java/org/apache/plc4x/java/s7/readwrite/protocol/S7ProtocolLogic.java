@@ -337,9 +337,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
         CompletableFuture<S7Message> future = new CompletableFuture<>();
         int tpduId = tpduGenerator.getAndIncrement();
         // If we've reached the max value for a 16 bit transaction identifier, reset back to 1
-        if (tpduGenerator.get() == 0xFFFF) {
-            tpduGenerator.set(1);
-        }
+        tpduGenerator.compareAndExchange(0xFFFF, 1);
 
         S7Message message = (request instanceof S7MessageUserData) ?
             new S7MessageUserData(tpduId, request.getParameter(), request.getPayload()) :
@@ -400,9 +398,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
 
         final int tpduId = tpduGenerator.getAndIncrement();
         // If we've reached the max value for a 16 bit transaction identifier, reset back to 1
-        if (tpduGenerator.get() == 0xFFFF) {
-            tpduGenerator.set(1);
-        }
+        tpduGenerator.compareAndExchange(0xFFFF, 1);
 
         TPKTPacket tpktPacket = new TPKTPacket(
             new COTPPacketData(
@@ -505,9 +501,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
                 //payloadItems.add(serializePlcValue(tag, plcValue));
                 final int tpduId = tpduGenerator.getAndIncrement();
                 // If we've reached the max value for a 16 bit transaction identifier, reset back to 1
-                if (tpduGenerator.get() == 0xFFFF) {
-                    tpduGenerator.set(1);
-                }
+                tpduGenerator.compareAndExchange(0xFFFF, 1);
 
                 TPKTPacket tpktPacket = new TPKTPacket(new COTPPacketData(null,
                     new S7MessageUserData(tpduId,
@@ -1761,9 +1755,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
         //TODO: PDU id is the same, we need check.
         int tpduId = tpduGenerator.getAndIncrement();
         // If we've reached the max value for a 16 bit transaction identifier, reset back to 1
-        if (tpduGenerator.get() == 0xFFFF) {
-            tpduGenerator.set(1);
-        }
+        tpduGenerator.compareAndExchange(0xFFFF, 1);
 
         TPKTPacket request = createSzlReassembledRequest(tpduId, sequenceNumber);
 
