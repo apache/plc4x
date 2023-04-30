@@ -17,7 +17,9 @@
 :imagesdir: ../../images/
 :icons: font
 
-image::integrations/plc4x_hop_banner.jpg[]
+
+
+image::plc4x_hop_banner.jpg[banner,512,167]
 
 == Apache Hop
 
@@ -26,16 +28,15 @@ image::integrations/plc4x_hop_banner.jpg[]
 "__Hop aims to be the future of data integration. Visual development enables developers to be more productive than they can be through code. Our Design once, run anywhere workflows and pipelines can be designed in the Hop Gui and run on the Hop native engine (local or remote), or on Spark, Flink, Google Dataflow or AWS EMR through Beam. Lifecycle Management enables developers and administrators to switch between projects, environments and purposes without leaving your train of thought__."
 
 
-
-
-
-
 .Version control
-[width="100%",options="header,footer"]
-|====================
-| Date | Plc4x  | Comments  
-| 10/03/2023 |0.11.0-SNAPSHOT  | xxx 
-|  |  |  
-|====================
+=== Record of revisions
+
+[cols="1, 2,2a,5a"]
+|===
+|Rev |Release |Date |Description of the change
+
+|0 |0.10.0 |2022/10/04 |Stable release.
+
+|===
 
 

@@ -120,18 +120,18 @@ public class Plc4xConnectionEditor  extends MetadataEditor<Plc4xConnection>
 
     Button wbTest = new Button(parent, SWT.PUSH | SWT.CENTER);
     props.setLook(wbTest);
-    wbTest.setText("Test");
-    wbTest.addListener(SWT.Selection, e -> test());
+    wbTest.setText("Test connection");
+    wbTest.addListener(SWT.Selection, e -> test_connection());
 
     return new Button[] {wbTest};
   }
   
-  public void test() {   
+  public void test_connection() {   
     PlcConnection plcConnection;      
     try {      
         Plc4xConnection meta = getMetadata();
         plcConnection = new DefaultPlcDriverManager().getConnection(meta.getUrl()); 
-        plcConnection.connect();       
+
         Thread.sleep(100);
         plcConnection.close();         
         MessageBox box = new MessageBox(parent.getShell(), SWT.ICON_INFORMATION | SWT.OK);

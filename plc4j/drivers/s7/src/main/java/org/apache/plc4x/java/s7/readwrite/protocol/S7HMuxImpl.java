@@ -19,6 +19,7 @@
 package org.apache.plc4x.java.s7.readwrite.protocol;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
@@ -117,7 +118,7 @@ public class S7HMuxImpl extends MessageToMessageCodec<ByteBuf, ByteBuf> implemen
     */
     @Override
     protected void encode(ChannelHandlerContext ctx, ByteBuf outbb, List<Object> list) throws Exception { 
-        System.out.println("Llego aqui: " + outbb);
+        //System.out.println("Llego aqui: " + ByteBufUtil.hexDump(outbb));
         if ((embed_ctx == null) && (ctx.channel() instanceof EmbeddedChannel)) embed_ctx = ctx;
         if ((tcp_channel != null)  && (embed_ctx == ctx)){  
             tcp_channel.writeAndFlush(outbb.copy());

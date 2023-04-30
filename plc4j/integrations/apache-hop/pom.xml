@@ -33,7 +33,7 @@
     
     <properties>
         <!-- Set this to the Hop version you want to debug against-->
-        <hop.version>2.3.0</hop.version>
+        <hop.version>2.4.0</hop.version>
         <!-- Path You will be using to debug the application -->
         <hop.debug.path>/home/hans/Documents/test</hop.debug.path>
         <!-- Third-party dependencies-->

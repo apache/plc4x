@@ -251,15 +251,16 @@ public class Plc4xWrite extends BaseTransform<Plc4xWriteMeta, Plc4xWriteData> {
     
     data.outputRowMeta = getInputRowMeta();
     
-    
+    first = true;
     if (first) {
         index.clear();
         plcfields.clear();
         meta.getFields().forEach((f) ->{
             Integer i = getInputRowMeta().indexOfValue(f.getName()); //(01)
             if (i>=0) {
+                logDebug(">> i: " + i + " : " + f.getName() + " : " + f.getItem());
                 index.put(f.getName(), i);
-                plcfields.put(f.getName(),Plc4xPlcTag.of(f.getItem()));
+                plcfields.put(f.getName(), Plc4xPlcTag.of(f.getItem()));
             }
         });
         first = false;
@@ -310,15 +311,16 @@ public class Plc4xWrite extends BaseTransform<Plc4xWriteMeta, Plc4xWriteData> {
 
     if ((connmeta != null) && (connwrapper != null)){
         if (connwrapper.getConnection().isConnected()){
-
+            logDebug(">>>> Paso por aqui!");
             builder = null;
             builder = connwrapper.getConnection().writeRequestBuilder(); //(05)
             Integer i;
             for (Plc4xGeneratorField field: meta.getFields()){
-
+            logDebug(">>>> Paso por aqui! 22");
                 i = index.get(field.getName());
                 if (i != null) {
                     //From Input Type
+                                logDebug(">>>> Paso por aqui! 33: " + inputRowMeta.getValueMeta(i).getTypeDesc() + " : " + field.getType());
                     if (inputRowMeta.getValueMeta(i).getTypeDesc().
                             equalsIgnoreCase(field.getType()))
                     switch(inputRowMeta.getValueMeta(i).getType()) {
@@ -326,9 +328,22 @@ public class Plc4xWrite extends BaseTransform<Plc4xWriteMeta, Plc4xWriteData> {
                         case IValueMeta.TYPE_INTEGER:    
                         case IValueMeta.TYPE_NUMBER:      
                         case IValueMeta.TYPE_BIGNUMBER: 
+                            Object value= null;
+                            switch(plcfields.get(field.getName()).getDataType()) {
+                                case BOOL:
+                                case BYTE:
+                                case WORD:
+                                    value = Short.parseShort(r[i].toString());
+                                    break;
+                                case REAL:
+                                    value = Float.parseFloat(r[i].toString());
+                                    break;
+                            }
+                           
+                            logDebug(">>>> " + field.getName() + " : " + field.getItem() + " : " + r[i] + " : " +  plcfields.get(field.getName()).getDataType().name());
                             builder.addTagAddress(field.getName(), 
                                 field.getItem(),
-                                r[i]);    
+                                value);    
                             break;
                         case IValueMeta.TYPE_DATE:
                             builder.addTagAddress(field.getName(), 
@@ -401,6 +416,7 @@ public class Plc4xWrite extends BaseTransform<Plc4xWriteMeta, Plc4xWriteData> {
 
   @Override
   public boolean init() {
+
     try {
         if(super.init()){     
             // Determine the number of rows to generate...
@@ -435,6 +451,7 @@ public class Plc4xWrite extends BaseTransform<Plc4xWriteMeta, Plc4xWriteData> {
         logError("Error initializing transform", ex);
         return false;
     }
+
   }
 
   /*
