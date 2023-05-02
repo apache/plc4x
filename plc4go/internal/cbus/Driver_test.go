@@ -29,9 +29,12 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/transports"
 	"github.com/apache/plc4x/plc4go/spi/transports/test"
+	"github.com/apache/plc4x/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"github.com/stretchr/testify/assert"
 	"net/url"
 	"testing"
+	"time"
 )
 
 func TestDriver_DiscoverWithContext(t *testing.T) {
@@ -94,7 +97,7 @@ func TestDriver_GetConnectionWithContext(t *testing.T) {
 		name         string
 		fields       fields
 		args         args
-		wantVerifier func(t *testing.T, result <-chan plc4go.PlcConnectionConnectResult) bool
+		wantVerifier func(t *testing.T, results <-chan plc4go.PlcConnectionConnectResult) bool
 	}{
 		{
 			name: "get connection transport not found",
@@ -112,12 +115,87 @@ func TestDriver_GetConnectionWithContext(t *testing.T) {
 				transports: map[string]transports.Transport{},
 				options:    map[string][]string{},
 			},
-			wantVerifier: func(t *testing.T, result <-chan plc4go.PlcConnectionConnectResult) bool {
-				connectResult := <-result
-				assert.NotNil(t, connectResult)
+			wantVerifier: func(t *testing.T, results <-chan plc4go.PlcConnectionConnectResult) bool {
+				timeout := time.NewTimer(20 * time.Millisecond)
+				defer utils.CleanupTimer(timeout)
+				select {
+				case <-timeout.C:
+					t.Error("timeout")
+					return false
+				case result := <-results:
+					assert.Error(t, result.GetErr())
+				}
 				return true
 			},
-		}, {
+		},
+		{
+			name: "get connection invalid options for transport",
+			fields: fields{
+				DefaultDriver:           _default.NewDefaultDriver(nil, "test", "test", "test", NewTagHandler()),
+				tm:                      nil,
+				awaitSetupComplete:      false,
+				awaitDisconnectComplete: false,
+			},
+			args: args{
+				ctx: context.Background(),
+				transportUrl: url.URL{
+					Scheme: "test",
+				},
+				transports: map[string]transports.Transport{
+					"test": test.NewTransport(),
+				},
+				options: map[string][]string{
+					"failTestTransport": {"yesSir"},
+				},
+			},
+			wantVerifier: func(t *testing.T, results <-chan plc4go.PlcConnectionConnectResult) bool {
+				timeout := time.NewTimer(20 * time.Millisecond)
+				defer utils.CleanupTimer(timeout)
+				select {
+				case <-timeout.C:
+					t.Error("timeout")
+					return false
+				case result := <-results:
+					assert.Error(t, result.GetErr())
+					assert.Equal(t, "couldn't initialize transport configuration for given transport url test:: test transport failed on purpose", result.GetErr().Error())
+				}
+				return true
+			},
+		},
+		{
+			name: "get connection invalid options for driver",
+			fields: fields{
+				DefaultDriver:           _default.NewDefaultDriver(nil, "test", "test", "test", NewTagHandler()),
+				tm:                      nil,
+				awaitSetupComplete:      false,
+				awaitDisconnectComplete: false,
+			},
+			args: args{
+				ctx: context.Background(),
+				transportUrl: url.URL{
+					Scheme: "test",
+				},
+				transports: map[string]transports.Transport{
+					"test": test.NewTransport(),
+				},
+				options: map[string][]string{
+					"MonitoredApplication1": {"pineapple"},
+				},
+			},
+			wantVerifier: func(t *testing.T, results <-chan plc4go.PlcConnectionConnectResult) bool {
+				timeout := time.NewTimer(20 * time.Millisecond)
+				defer utils.CleanupTimer(timeout)
+				select {
+				case <-timeout.C:
+					t.Error("timeout")
+					return false
+				case result := <-results:
+					assert.Error(t, result.GetErr())
+				}
+				return true
+			},
+		},
+		{
 			name: "get connection",
 			fields: fields{
 				DefaultDriver:           _default.NewDefaultDriver(nil, "test", "test", "test", NewTagHandler()),
@@ -135,9 +213,17 @@ func TestDriver_GetConnectionWithContext(t *testing.T) {
 				},
 				options: map[string][]string{},
 			},
-			wantVerifier: func(t *testing.T, result <-chan plc4go.PlcConnectionConnectResult) bool {
-				connectResult := <-result
-				assert.NotNil(t, connectResult)
+			wantVerifier: func(t *testing.T, results <-chan plc4go.PlcConnectionConnectResult) bool {
+				timeout := time.NewTimer(20 * time.Millisecond)
+				defer utils.CleanupTimer(timeout)
+				select {
+				case <-timeout.C:
+					t.Error("timeout")
+					return false
+				case result := <-results:
+					assert.NoError(t, result.GetErr())
+					assert.NotNil(t, result.GetConnection())
+				}
 				return true
 			},
 		},
@@ -180,6 +266,54 @@ func TestNewDriver(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			assert.Equalf(t, tt.want, NewDriver(), "NewDriver()")
+		})
+	}
+}
+
+func TestDriver_reportError(t *testing.T) {
+	type fields struct {
+		DefaultDriver           _default.DefaultDriver
+		tm                      spi.RequestTransactionManager
+		awaitSetupComplete      bool
+		awaitDisconnectComplete bool
+	}
+	type args struct {
+		err error
+	}
+	tests := []struct {
+		name         string
+		fields       fields
+		args         args
+		wantAsserter func(t *testing.T, results <-chan plc4go.PlcConnectionConnectResult) bool
+	}{
+		{
+			name: "report it",
+			args: args{
+				err: errors.New("No no no no no"),
+			},
+			wantAsserter: func(t *testing.T, results <-chan plc4go.PlcConnectionConnectResult) bool {
+				timeout := time.NewTimer(20 * time.Millisecond)
+				defer utils.CleanupTimer(timeout)
+				select {
+				case <-timeout.C:
+					t.Error("timeout")
+					return false
+				case result := <-results:
+					assert.Error(t, result.GetErr())
+				}
+				return true
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			m := &Driver{
+				DefaultDriver:           tt.fields.DefaultDriver,
+				tm:                      tt.fields.tm,
+				awaitSetupComplete:      tt.fields.awaitSetupComplete,
+				awaitDisconnectComplete: tt.fields.awaitDisconnectComplete,
+			}
+			assert.Truef(t, tt.wantAsserter(t, m.reportError(tt.args.err)), "reportError(%v)", tt.args.err)
 		})
 	}
 }

@@ -46,7 +46,10 @@ func (m *Transport) GetTransportName() string {
 	return "Test Transport"
 }
 
-func (m *Transport) CreateTransportInstance(transportUrl url.URL, _ map[string][]string) (transports.TransportInstance, error) {
+func (m *Transport) CreateTransportInstance(transportUrl url.URL, options map[string][]string) (transports.TransportInstance, error) {
+	if _, ok := options["failTestTransport"]; ok {
+		return nil, errors.New("test transport failed on purpose")
+	}
 	if preregisteredInstance, ok := m.preregisteredInstances[transportUrl]; ok {
 		log.Trace().Msgf("Returning pre registered instance for %v", transportUrl)
 		return preregisteredInstance, nil

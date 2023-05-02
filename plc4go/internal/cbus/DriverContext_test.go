@@ -20,7 +20,6 @@
 package cbus
 
 import (
-	"fmt"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
@@ -43,10 +42,7 @@ func TestNewDriverContext(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := NewDriverContext(tt.args.configuration)
-			if !tt.wantErr(t, err, fmt.Sprintf("NewDriverContext(%v)", tt.args.configuration)) {
-				return
-			}
+			got := NewDriverContext(tt.args.configuration)
 			assert.Equalf(t, tt.want, got, "NewDriverContext(%v)", tt.args.configuration)
 		})
 	}
