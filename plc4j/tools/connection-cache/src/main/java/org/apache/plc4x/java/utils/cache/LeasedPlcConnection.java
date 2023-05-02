@@ -34,9 +34,6 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 import java.util.function.Consumer;
 
 public class LeasedPlcConnection implements PlcConnection {
@@ -114,20 +111,7 @@ public class LeasedPlcConnection implements PlcConnection {
                     @Override
                     public CompletableFuture<? extends PlcReadResponse> execute() {
                         CompletableFuture<? extends PlcReadResponse> future = innerPlcReadRequest.execute();
-                        
-                        final CompletableFuture<PlcReadResponse> responseFuture = new CompletableFuture<PlcReadResponse>() {
-                            @Override
-                            public PlcReadResponse get(long timeout, TimeUnit unit)
-                                    throws InterruptedException, ExecutionException, TimeoutException {
-                                try {
-                                    return super.get(timeout, unit);
-                                } catch (TimeoutException e) {
-                                    future.completeExceptionally(e);
-                                    throw e;
-                                }
-                            }
-                        };
-
+                        final CompletableFuture<PlcReadResponse> responseFuture = new CompletableFuture<>();
                         future.handle((plcReadResponse, throwable) -> {
                             if (throwable == null) {
                                 responseFuture.complete(plcReadResponse);
@@ -165,14 +149,12 @@ public class LeasedPlcConnection implements PlcConnection {
 
             @Override
             public PlcReadRequest.Builder addTagAddress(String name, String tagAddress) {
-                innerBuilder.addTagAddress(name, tagAddress);
-                return this;
+                return innerBuilder.addTagAddress(name, tagAddress);
             }
 
             @Override
             public PlcReadRequest.Builder addTag(String name, PlcTag tag) {
-                innerBuilder.addTag(name, tag);
-                return this;
+                return innerBuilder.addTag(name, tag);
             }
         };
     }
@@ -191,19 +173,7 @@ public class LeasedPlcConnection implements PlcConnection {
                     @Override
                     public CompletableFuture<? extends PlcWriteResponse> execute() {
                         CompletableFuture<? extends PlcWriteResponse> future = innerPlcWriteRequest.execute();
-                        
-                        final CompletableFuture<PlcWriteResponse> responseFuture = new CompletableFuture<PlcWriteResponse>() {
-                            @Override
-                            public PlcWriteResponse get(long timeout, TimeUnit unit)
-                                    throws InterruptedException, ExecutionException, TimeoutException {
-                                try {
-                                    return super.get(timeout, unit);
-                                } catch (TimeoutException e) {
-                                    future.completeExceptionally(e);
-                                    throw e;
-                                }
-                            }
-                        };
+                        final CompletableFuture<PlcWriteResponse> responseFuture = new CompletableFuture<>();
                         future.handle((plcWriteResponse, throwable)->{
                             if (throwable == null) {
                                 responseFuture.complete(plcWriteResponse);
@@ -251,14 +221,12 @@ public class LeasedPlcConnection implements PlcConnection {
 
             @Override
             public PlcWriteRequest.Builder addTagAddress(String name, String tagAddress, Object... values) {
-                innerBuilder.addTagAddress(name, tagAddress, values);
-                return this;
+                return innerBuilder.addTagAddress(name, tagAddress, values);
             }
 
             @Override
             public PlcWriteRequest.Builder addTag(String name, PlcTag tag, Object... values) {
-                innerBuilder.addTag(name, tag, values);
-                return this;
+                return innerBuilder.addTag(name, tag, values);
             }
         };
     }
@@ -277,19 +245,7 @@ public class LeasedPlcConnection implements PlcConnection {
                     @Override
                     public CompletableFuture<? extends PlcSubscriptionResponse> execute() {
                         CompletableFuture<? extends PlcSubscriptionResponse> future = innerPlcSubscriptionRequest.execute();
-
-                        final CompletableFuture<PlcSubscriptionResponse> responseFuture = new CompletableFuture<PlcSubscriptionResponse>() {
-                            @Override
-                            public PlcSubscriptionResponse get(long timeout, TimeUnit unit)
-                                    throws InterruptedException, ExecutionException, TimeoutException {
-                                try {
-                                    return super.get(timeout, unit);
-                                } catch (TimeoutException e) {
-                                    future.completeExceptionally(e);
-                                    throw e;
-                                }
-                            }
-                        };
+                        final CompletableFuture<PlcSubscriptionResponse> responseFuture = new CompletableFuture<>();
                         future.handle((plcSubscriptionResponse, throwable)->{
                             if (throwable == null) {
                                 responseFuture.complete(plcSubscriptionResponse);
@@ -332,44 +288,37 @@ public class LeasedPlcConnection implements PlcConnection {
 
             @Override
             public PlcSubscriptionRequest.Builder addCyclicTagAddress(String name, String tagAddress, Duration pollingInterval) {
-                innerBuilder.addCyclicTagAddress(name, tagAddress, pollingInterval);
-                return this;
+                return innerBuilder.addCyclicTagAddress(name, tagAddress, pollingInterval);
             }
 
             @Override
             public PlcSubscriptionRequest.Builder addCyclicTag(String name, PlcTag tag, Duration pollingInterval) {
-                innerBuilder.addCyclicTag(name, tag, pollingInterval);
-                return this;
+                return innerBuilder.addCyclicTag(name, tag, pollingInterval);
             }
 
             @Override
             public PlcSubscriptionRequest.Builder addChangeOfStateTagAddress(String name, String tagAddress) {
-                innerBuilder.addChangeOfStateTagAddress(name, tagAddress);
-                return this;
+                return innerBuilder.addChangeOfStateTagAddress(name, tagAddress);
             }
 
             @Override
             public PlcSubscriptionRequest.Builder addChangeOfStateTag(String name, PlcTag tag) {
-                innerBuilder.addChangeOfStateTag(name, tag);
-                return this;
+                return innerBuilder.addChangeOfStateTag(name, tag);
             }
 
             @Override
             public PlcSubscriptionRequest.Builder addEventTagAddress(String name, String tagAddress) {
-                innerBuilder.addEventTagAddress(name, tagAddress);
-                return this;
+                return innerBuilder.addEventTagAddress(name, tagAddress);
             }
 
             @Override
             public PlcSubscriptionRequest.Builder addEventTag(String name, PlcTag tag) {
-                innerBuilder.addEventTag(name, tag);
-                return this;
+                return innerBuilder.addEventTag(name, tag);
             }
 
             @Override
             public PlcSubscriptionRequest.Builder addPreRegisteredConsumer(String name, Consumer<PlcSubscriptionEvent> preRegisteredConsumer) {
-                innerBuilder.addPreRegisteredConsumer(name, preRegisteredConsumer);
-                return this;
+                return innerBuilder.addPreRegisteredConsumer(name, preRegisteredConsumer);
             }
         };
     }
@@ -388,19 +337,7 @@ public class LeasedPlcConnection implements PlcConnection {
                     @Override
                     public CompletableFuture<PlcUnsubscriptionResponse> execute() {
                         CompletableFuture<? extends PlcUnsubscriptionResponse> future = innerPlcUnsubscriptionRequest.execute();
-
-                        final CompletableFuture<PlcUnsubscriptionResponse> responseFuture = new CompletableFuture<PlcUnsubscriptionResponse>() {
-                            @Override
-                            public PlcUnsubscriptionResponse get(long timeout, TimeUnit unit)
-                                    throws InterruptedException, ExecutionException, TimeoutException {
-                                try {
-                                    return super.get(timeout, unit);
-                                } catch (TimeoutException e) {
-                                    future.completeExceptionally(e);
-                                    throw e;
-                                }
-                            }
-                        };
+                        final CompletableFuture<PlcUnsubscriptionResponse> responseFuture = new CompletableFuture<>();
                         future.handle((plcUnsubscriptionResponse, throwable)->{
                             if (throwable == null) {
                                 responseFuture.complete(plcUnsubscriptionResponse);
@@ -423,20 +360,17 @@ public class LeasedPlcConnection implements PlcConnection {
 
             @Override
             public PlcUnsubscriptionRequest.Builder addHandles(PlcSubscriptionHandle plcSubscriptionHandle) {
-                innerBuilder.addHandles(plcSubscriptionHandle);
-                return this;
+                return innerBuilder.addHandles(plcSubscriptionHandle);
             }
 
             @Override
             public PlcUnsubscriptionRequest.Builder addHandles(PlcSubscriptionHandle plcSubscriptionHandle1, PlcSubscriptionHandle... plcSubscriptionHandles) {
-                innerBuilder.addHandles(plcSubscriptionHandle1, plcSubscriptionHandles);
-                return this;
+                return innerBuilder.addHandles(plcSubscriptionHandle1, plcSubscriptionHandles);
             }
 
             @Override
             public PlcUnsubscriptionRequest.Builder addHandles(Collection<PlcSubscriptionHandle> plcSubscriptionHandle) {
-                innerBuilder.addHandles(plcSubscriptionHandle);
-                return this;
+                return innerBuilder.addHandles(plcSubscriptionHandle);
             }
         };
     }
@@ -455,19 +389,7 @@ public class LeasedPlcConnection implements PlcConnection {
                     @Override
                     public CompletableFuture<? extends PlcBrowseResponse> execute() {
                         CompletableFuture<? extends PlcBrowseResponse> future = innerPlcBrowseRequest.execute();
-
-                        final CompletableFuture<PlcBrowseResponse> responseFuture = new CompletableFuture<PlcBrowseResponse>() {
-                            @Override
-                            public PlcBrowseResponse get(long timeout, TimeUnit unit)
-                                    throws InterruptedException, ExecutionException, TimeoutException {
-                                try {
-                                    return super.get(timeout, unit);
-                                } catch (TimeoutException e) {
-                                    future.completeExceptionally(e);
-                                    throw e;
-                                }
-                            }
-                        };
+                        final CompletableFuture<PlcBrowseResponse> responseFuture = new CompletableFuture<>();
                         future.handle((plcBrowseResponse, throwable)->{
                             if (throwable == null) {
                                 responseFuture.complete(plcBrowseResponse);
@@ -484,19 +406,7 @@ public class LeasedPlcConnection implements PlcConnection {
                     @Override
                     public CompletableFuture<? extends PlcBrowseResponse> executeWithInterceptor(PlcBrowseRequestInterceptor interceptor) {
                         CompletableFuture<? extends PlcBrowseResponse> future = innerPlcBrowseRequest.executeWithInterceptor(interceptor);
-                        
-                        final CompletableFuture<PlcBrowseResponse> responseFuture = new CompletableFuture<PlcBrowseResponse>() {
-                            @Override
-                            public PlcBrowseResponse get(long timeout, TimeUnit unit)
-                                    throws InterruptedException, ExecutionException, TimeoutException {
-                                try {
-                                    return super.get(timeout, unit);
-                                } catch (TimeoutException e) {
-                                    future.completeExceptionally(e);
-                                    throw e;
-                                }
-                            }
-                        };
+                        final CompletableFuture<PlcBrowseResponse> responseFuture = new CompletableFuture<>();
                         future.handle((plcBrowseResponse, throwable)->{
                             if (throwable == null) {
                                 responseFuture.complete(plcBrowseResponse);
@@ -524,8 +434,7 @@ public class LeasedPlcConnection implements PlcConnection {
 
             @Override
             public PlcBrowseRequest.Builder addQuery(String name, String query) {
-                innerBuilder.addQuery(name, query);
-                return this;
+                return innerBuilder.addQuery(name, query);
             }
         };
     }

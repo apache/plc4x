@@ -168,20 +168,6 @@
                                <div class="carousel-item">
                                    <div class="col-md-12 col-lg-4">
                                        <div class="card h-100 p-5 justify-content-center"
-                                            onclick="location.href='https://hop.apache.org';"
-                                            style="cursor:pointer;">
-                                           <div class="d-flex align-items-center justify-content-center h-100">
-                                               <img src="images/integrations/apache_hop_logo.png" alt="Card image cap">
-                                           </div>
-                                           <div class="card-body">
-                                               <h5 class="card-title"><b>Apache Hop</b></h5>
-                                           </div>
-                                       </div>
-                                   </div>
-                               </div>                               
-                               <div class="carousel-item">
-                                   <div class="col-md-12 col-lg-4">
-                                       <div class="card h-100 p-5 justify-content-center"
                                             onclick="location.href='https://www.eclipse.org/ditto/';"
                                             style="cursor:pointer;">
                                            <div class="d-flex align-items-center justify-content-center h-100">

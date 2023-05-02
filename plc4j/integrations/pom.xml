@@ -37,7 +37,6 @@
     <module>apache-nifi</module>
     <module>apache-calcite</module>
     <module>opcua-server</module>
-    <module>apache-hop</module>    
   </modules>
 
   <!-- ! the kafka maven plugin currently seems to have issues with Java 19 -->

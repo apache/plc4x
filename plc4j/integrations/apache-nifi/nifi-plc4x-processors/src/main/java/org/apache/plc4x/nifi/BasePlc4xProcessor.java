@@ -58,7 +58,7 @@ public abstract class BasePlc4xProcessor extends AbstractProcessor {
   
     protected String connectionString;
     protected Map<String, String> addressMap;
-    protected Long timeout;
+    protected Integer timeout;
 
     protected final SchemaCache schemaCache = new SchemaCache(0);
 
@@ -170,7 +170,7 @@ public abstract class BasePlc4xProcessor extends AbstractProcessor {
 		connectionString = context.getProperty(PLC_CONNECTION_STRING.getName()).getValue();
         schemaCache.restartCache(context.getProperty(PLC_SCHEMA_CACHE_SIZE).asInteger());
         debugEnabled = getLogger().isDebugEnabled();
-        timeout = Long.valueOf(context.getProperty(PLC_FUTURE_TIMEOUT_MILISECONDS.getName()).getValue());
+        timeout = Integer.valueOf(context.getProperty(PLC_FUTURE_TIMEOUT_MILISECONDS.getName()).getValue());
     }
 
     @Override

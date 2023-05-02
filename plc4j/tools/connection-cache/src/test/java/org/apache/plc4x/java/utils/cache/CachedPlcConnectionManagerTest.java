@@ -62,12 +62,7 @@ public class CachedPlcConnectionManagerTest {
     @Test
     public void testDoubleConnectionRequestTest() throws PlcConnectionException {
         PlcConnectionManager mockConnectionManager = Mockito.mock(PlcConnectionManager.class);
-        
-        // Create a mock connection that returns true when checked if it is connected.
-        PlcConnection mockConnection = Mockito.mock(PlcConnection.class);
-        Mockito.when(mockConnection.isConnected()).thenReturn(true);
-        Mockito.when(mockConnectionManager.getConnection("test")).thenReturn(mockConnection);
-
+        Mockito.when(mockConnectionManager.getConnection("test")).thenReturn(Mockito.mock(PlcConnection.class));
         CachedPlcConnectionManager connectionManager = CachedPlcConnectionManager.getBuilder(mockConnectionManager).build();
 
         // Get the connection for the first time.
@@ -127,12 +122,7 @@ public class CachedPlcConnectionManagerTest {
     public void testDoubleConnectionRequestTimeoutTest() throws Exception {
         // Create a connectionManager with a maximum wait time of 50ms
         PlcConnectionManager mockConnectionManager = Mockito.mock(PlcConnectionManager.class);
-
-        // Create a mock connection that returns true when checked if it is connected.
-        PlcConnection mockConnection = Mockito.mock(PlcConnection.class);
-        Mockito.when(mockConnection.isConnected()).thenReturn(true);
-        Mockito.when(mockConnectionManager.getConnection("test")).thenReturn(mockConnection);
-        
+        Mockito.when(mockConnectionManager.getConnection("test")).thenReturn(Mockito.mock(PlcConnection.class));
         CachedPlcConnectionManager connectionManager = CachedPlcConnectionManager.getBuilder(mockConnectionManager).withMaxWaitTime(Duration.ofMillis(50)).build();
         CountDownLatch startSignal = new CountDownLatch(1);
 

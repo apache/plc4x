@@ -47,13 +47,6 @@ class ConnectionContainer {
         this.leasedConnection = null;
     }
 
-    public boolean isConnected() {
-        if (connection != null) {
-            return connection.isConnected();
-        }
-        return false;
-    }
-
     public synchronized Future<PlcConnection> lease() {
         CompletableFuture<PlcConnection> connectionFuture = new CompletableFuture<>();
 

@@ -62,12 +62,6 @@ public class CachedPlcConnectionManager implements PlcConnectionManager {
         ConnectionContainer connectionContainer;
         synchronized (connectionContainers) {
             connectionContainer = connectionContainers.get(url);
-            if (connectionContainer != null) {
-                if (!connectionContainer.isConnected()){
-                    connectionContainers.remove(url);
-                }
-            }
-
             if (connectionContainers.get(url) == null) {
                 LOG.debug("Creating new connection");
 
