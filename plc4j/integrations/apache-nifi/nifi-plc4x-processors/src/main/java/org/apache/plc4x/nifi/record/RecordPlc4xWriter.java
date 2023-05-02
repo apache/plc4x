@@ -20,6 +20,7 @@ package org.apache.plc4x.nifi.record;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
@@ -76,16 +77,25 @@ public class RecordPlc4xWriter implements Plc4xWriter {
         if (fullRecordSet == null) {	
             fullRecordSet = new Plc4xReadResponseRecordSetWithCallback(response, callback, recordSchema);
             writeSchema = recordSetWriterFactory.getSchema(originalAttributes, fullRecordSet.getSchema());
-         }
-        try (final RecordSetWriter resultSetWriter = recordSetWriterFactory.createWriter(logger, writeSchema, outputStream, originalFlowFile)) {
-            writeResultRef.set(resultSetWriter.write(fullRecordSet));
-            if (mimeType == null) {
-                mimeType = resultSetWriter.getMimeType();
-            }
-            return writeResultRef.get().getRecordCount();
-        } catch (final Exception e) {
-            throw new IOException(e);
         }
+
+        final RecordSetWriter resultSetWriter;
+        if (originalFlowFile != null){
+            try {
+                resultSetWriter = recordSetWriterFactory.createWriter(logger, writeSchema, outputStream, originalFlowFile);
+            } catch (final Exception e) {
+                throw new IOException(e);
+            }
+        } else {
+            resultSetWriter = recordSetWriterFactory.createWriter(logger, writeSchema, outputStream, Collections.emptyMap());
+        }
+        
+        
+        writeResultRef.set(resultSetWriter.write(fullRecordSet));
+        if (mimeType == null) {
+            mimeType = resultSetWriter.getMimeType();
+        }
+        return writeResultRef.get().getRecordCount();
 	}
 
 	

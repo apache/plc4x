@@ -16,3 +16,4 @@ org.apache.plc4x.nifi.Plc4xSinkProcessor
 org.apache.plc4x.nifi.Plc4xSinkRecordProcessor
 org.apache.plc4x.nifi.Plc4xSourceProcessor
 org.apache.plc4x.nifi.Plc4xSourceRecordProcessor
+org.apache.plc4x.nifi.Plc4xListenRecordProcessor

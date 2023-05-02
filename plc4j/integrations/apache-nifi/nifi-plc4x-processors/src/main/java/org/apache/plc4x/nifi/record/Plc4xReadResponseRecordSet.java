@@ -34,6 +34,8 @@ import org.apache.nifi.serialization.record.RecordSchema;
 import org.apache.nifi.serialization.record.RecordSet;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.value.PlcValue;
+import org.apache.plc4x.java.spi.messages.DefaultPlcSubscriptionEvent;
+import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
 import org.apache.plc4x.nifi.util.Plc4xCommon;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,9 +43,10 @@ import org.slf4j.LoggerFactory;
 public class Plc4xReadResponseRecordSet implements RecordSet, Closeable {
     private static final Logger logger = LoggerFactory.getLogger(Plc4xReadResponseRecordSet.class);
     private final PlcReadResponse readResponse;
-    private final Set<String> rsColumnNames;
+    private Set<String> rsColumnNames;
     private boolean moreRows;
     private boolean debugEnabled = logger.isDebugEnabled();
+    private boolean isSubscription = false;
 
    	private AtomicReference<RecordSchema> recordSchema = new AtomicReference<RecordSchema>(null);
 
@@ -51,9 +54,23 @@ public class Plc4xReadResponseRecordSet implements RecordSet, Closeable {
         this.readResponse = readResponse;
         moreRows = true;
         
+        if (readResponse.getRequest() == null) {
+            isSubscription = true;
+        } else {
+            isSubscription = false;
+        }
+
         if (debugEnabled)
             logger.debug("Creating record schema from PlcReadResponse");
-        Map<String, ? extends PlcValue> responseDataStructure = readResponse.getAsPlcValue().getStruct();
+        
+        Map<String, ? extends PlcValue> responseDataStructure;
+
+        if (!isSubscription) {
+            responseDataStructure = readResponse.getAsPlcValue().getStruct();
+        } else {
+            isSubscription = true;
+            responseDataStructure = Plc4xSubscriptionResponseRecordSet((DefaultPlcSubscriptionEvent) readResponse, recordSchema);
+        }
         rsColumnNames = responseDataStructure.keySet();
                
         if (recordSchema == null) {
@@ -65,6 +82,21 @@ public class Plc4xReadResponseRecordSet implements RecordSet, Closeable {
         if (debugEnabled)
             logger.debug("Record schema from PlcReadResponse successfuly created.");
 
+    }
+
+    public Map<String, PlcValue> Plc4xSubscriptionResponseRecordSet(final DefaultPlcSubscriptionEvent subscriptionEvent, RecordSchema recordSchema) throws IOException {;
+        moreRows = true;
+        
+        if (debugEnabled)
+            logger.debug("Creating record schema from DefaultPlcSubscriptionEvent");
+        
+        Map<String, PlcValue> responseDataStructure = new HashMap<>();
+
+        for (Map.Entry<String, ResponseItem<PlcValue>> entry : subscriptionEvent.getValues().entrySet()) {
+            responseDataStructure.put(entry.getKey(), entry.getValue().getValue());
+        }
+
+        return responseDataStructure;
     }
 
     
@@ -89,11 +121,14 @@ public class Plc4xReadResponseRecordSet implements RecordSet, Closeable {
     @Override
     public Record next() throws IOException {
         if (moreRows) {
-             final Record record = createRecord(readResponse);
-             setMoreRows(false);
-             return record;
+            Record record;
+            
+            record = createRecord(readResponse);
+
+            setMoreRows(false);
+            return record;
         } else {
-             return null;
+            return null;
         }
     }
 
@@ -114,7 +149,12 @@ public class Plc4xReadResponseRecordSet implements RecordSet, Closeable {
             final Object value;
             
             if (rsColumnNames.contains(tagName)) {
-            	value = normalizeValue(readResponse.getAsPlcValue().getValue(tagName));
+                if (!isSubscription) {
+                    value = normalizeValue(readResponse.getAsPlcValue().getValue(tagName));
+                } else {
+                    value = normalizeValue(readResponse.getPlcValue(tagName));
+                }
+            	
             } else {
                 value = null;
             }
@@ -132,7 +172,6 @@ public class Plc4xReadResponseRecordSet implements RecordSet, Closeable {
         return new MapRecord(getSchema(), values);
     }
 
-    @SuppressWarnings("rawtypes")
     private Object normalizeValue(final PlcValue value) {
         Object r = Plc4xCommon.normalizeValue(value);
         if (r != null) {
