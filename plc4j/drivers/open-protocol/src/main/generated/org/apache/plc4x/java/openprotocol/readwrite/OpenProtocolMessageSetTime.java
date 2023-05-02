@@ -41,6 +41,7 @@ public abstract class OpenProtocolMessageSetTime extends OpenProtocolMessage imp
   public Mid getMid() {
     return Mid.SetTime;
   }
+
   // Abstract accessors for discriminator values.
   public abstract Long getRevision();
 

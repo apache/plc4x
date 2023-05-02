@@ -42,6 +42,7 @@ public abstract class OpenProtocolMessageIdentifierDownloadRequest extends OpenP
   public Mid getMid() {
     return Mid.IdentifierDownloadRequest;
   }
+
   // Abstract accessors for discriminator values.
   public abstract Long getRevision();
 

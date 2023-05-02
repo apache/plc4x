@@ -42,6 +42,7 @@ public abstract class OpenProtocolMessageResultTracesCurvePlotData extends OpenP
   public Mid getMid() {
     return Mid.ResultTracesCurvePlotData;
   }
+
   // Abstract accessors for discriminator values.
   public abstract Long getRevision();
 

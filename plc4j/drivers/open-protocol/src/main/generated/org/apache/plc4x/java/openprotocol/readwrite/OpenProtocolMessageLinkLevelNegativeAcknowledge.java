@@ -42,6 +42,7 @@ public abstract class OpenProtocolMessageLinkLevelNegativeAcknowledge extends Op
   public Mid getMid() {
     return Mid.LinkLevelNegativeAcknowledge;
   }
+
   // Abstract accessors for discriminator values.
   public abstract Long getRevision();
 

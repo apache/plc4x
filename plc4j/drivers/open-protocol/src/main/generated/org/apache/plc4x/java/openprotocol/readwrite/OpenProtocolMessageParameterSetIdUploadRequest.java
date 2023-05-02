@@ -42,6 +42,7 @@ public abstract class OpenProtocolMessageParameterSetIdUploadRequest extends Ope
   public Mid getMid() {
     return Mid.ParameterSetIdUploadRequest;
   }
+
   // Abstract accessors for discriminator values.
   public abstract Long getRevision();
 

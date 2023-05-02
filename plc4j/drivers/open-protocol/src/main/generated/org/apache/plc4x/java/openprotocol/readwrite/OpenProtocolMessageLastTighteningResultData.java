@@ -42,6 +42,7 @@ public abstract class OpenProtocolMessageLastTighteningResultData extends OpenPr
   public Mid getMid() {
     return Mid.LastTighteningResultData;
   }
+
   // Abstract accessors for discriminator values.
   public abstract Long getRevision();
 

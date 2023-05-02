@@ -1450,6 +1450,9 @@ const (
 	BACnetVendorId_OLYMPIA_ELECTRONICS                                                          BACnetVendorId = 1416
 	BACnetVendorId_NORMAL_SOFTWARE_INC                                                          BACnetVendorId = 1417
 	BACnetVendorId_ST_ENGINEERING_SOLUTIONJSC                                                   BACnetVendorId = 1418
+	BACnetVendorId_INDUSTRIAL_FLOW_SOLUTIONS                                                    BACnetVendorId = 1419
+	BACnetVendorId_UBIQISENSE_APS                                                               BACnetVendorId = 1420
+	BACnetVendorId_TIGER_SOFT                                                                   BACnetVendorId = 1421
 	BACnetVendorId_UNKNOWN_VENDOR                                                               BACnetVendorId = 0xFFFF
 )
 
@@ -2868,6 +2871,9 @@ func init() {
 		BACnetVendorId_OLYMPIA_ELECTRONICS,
 		BACnetVendorId_NORMAL_SOFTWARE_INC,
 		BACnetVendorId_ST_ENGINEERING_SOLUTIONJSC,
+		BACnetVendorId_INDUSTRIAL_FLOW_SOLUTIONS,
+		BACnetVendorId_UBIQISENSE_APS,
+		BACnetVendorId_TIGER_SOFT,
 		BACnetVendorId_UNKNOWN_VENDOR,
 	}
 }
@@ -4738,9 +4744,21 @@ func (e BACnetVendorId) VendorId() uint16 {
 		{ /* '1418' */
 			return 1418
 		}
+	case 1419:
+		{ /* '1419' */
+			return 1419
+		}
 	case 142:
 		{ /* '142' */
 			return 142
+		}
+	case 1420:
+		{ /* '1420' */
+			return 1420
+		}
+	case 1421:
+		{ /* '1421' */
+			return 1421
 		}
 	case 143:
 		{ /* '143' */
@@ -10400,9 +10418,21 @@ func (e BACnetVendorId) VendorName() string {
 		{ /* '1418' */
 			return "ST Engineering Solution JSC"
 		}
+	case 1419:
+		{ /* '1419' */
+			return "Industrial Flow Solutions"
+		}
 	case 142:
 		{ /* '142' */
 			return "DEOS control systems GmbH"
+		}
+	case 1420:
+		{ /* '1420' */
+			return "Ubiqisense ApS"
+		}
+	case 1421:
+		{ /* '1421' */
+			return "Tiger-Soft"
 		}
 	case 143:
 		{ /* '143' */
@@ -15129,8 +15159,14 @@ func BACnetVendorIdByValue(value uint16) (enum BACnetVendorId, ok bool) {
 		return BACnetVendorId_NORMAL_SOFTWARE_INC, true
 	case 1418:
 		return BACnetVendorId_ST_ENGINEERING_SOLUTIONJSC, true
+	case 1419:
+		return BACnetVendorId_INDUSTRIAL_FLOW_SOLUTIONS, true
 	case 142:
 		return BACnetVendorId_DEO_SCONTROLSYSTEMS_GMBH, true
+	case 1420:
+		return BACnetVendorId_UBIQISENSE_APS, true
+	case 1421:
+		return BACnetVendorId_TIGER_SOFT, true
 	case 143:
 		return BACnetVendorId_DIGITALE_MESSUND_STEUERSYSTEMEAG, true
 	case 144:
@@ -17957,8 +17993,14 @@ func BACnetVendorIdByName(value string) (enum BACnetVendorId, ok bool) {
 		return BACnetVendorId_NORMAL_SOFTWARE_INC, true
 	case "ST_ENGINEERING_SOLUTIONJSC":
 		return BACnetVendorId_ST_ENGINEERING_SOLUTIONJSC, true
+	case "INDUSTRIAL_FLOW_SOLUTIONS":
+		return BACnetVendorId_INDUSTRIAL_FLOW_SOLUTIONS, true
 	case "DEO_SCONTROLSYSTEMS_GMBH":
 		return BACnetVendorId_DEO_SCONTROLSYSTEMS_GMBH, true
+	case "UBIQISENSE_APS":
+		return BACnetVendorId_UBIQISENSE_APS, true
+	case "TIGER_SOFT":
+		return BACnetVendorId_TIGER_SOFT, true
 	case "DIGITALE_MESSUND_STEUERSYSTEMEAG":
 		return BACnetVendorId_DIGITALE_MESSUND_STEUERSYSTEMEAG, true
 	case "FUJITSU_GENERAL_LIMITED":
@@ -20842,8 +20884,14 @@ func (e BACnetVendorId) PLC4XEnumName() string {
 		return "NORMAL_SOFTWARE_INC"
 	case BACnetVendorId_ST_ENGINEERING_SOLUTIONJSC:
 		return "ST_ENGINEERING_SOLUTIONJSC"
+	case BACnetVendorId_INDUSTRIAL_FLOW_SOLUTIONS:
+		return "INDUSTRIAL_FLOW_SOLUTIONS"
 	case BACnetVendorId_DEO_SCONTROLSYSTEMS_GMBH:
 		return "DEO_SCONTROLSYSTEMS_GMBH"
+	case BACnetVendorId_UBIQISENSE_APS:
+		return "UBIQISENSE_APS"
+	case BACnetVendorId_TIGER_SOFT:
+		return "TIGER_SOFT"
 	case BACnetVendorId_DIGITALE_MESSUND_STEUERSYSTEMEAG:
 		return "DIGITALE_MESSUND_STEUERSYSTEMEAG"
 	case BACnetVendorId_FUJITSU_GENERAL_LIMITED:

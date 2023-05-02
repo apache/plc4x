@@ -42,6 +42,7 @@ public abstract class OpenProtocolMessageApplicationCommandAccepted extends Open
   public Mid getMid() {
     return Mid.ApplicationCommandAccepted;
   }
+
   // Abstract accessors for discriminator values.
   public abstract Long getRevision();
 

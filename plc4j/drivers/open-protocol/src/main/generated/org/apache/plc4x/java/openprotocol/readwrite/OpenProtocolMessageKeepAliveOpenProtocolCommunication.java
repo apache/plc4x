@@ -42,6 +42,7 @@ public abstract class OpenProtocolMessageKeepAliveOpenProtocolCommunication
   public Mid getMid() {
     return Mid.KeepAliveOpenProtocolCommunication;
   }
+
   // Abstract accessors for discriminator values.
   public abstract Long getRevision();
 

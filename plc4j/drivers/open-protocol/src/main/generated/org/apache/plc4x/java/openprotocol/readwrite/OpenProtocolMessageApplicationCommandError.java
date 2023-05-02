@@ -42,6 +42,7 @@ public abstract class OpenProtocolMessageApplicationCommandError extends OpenPro
   public Mid getMid() {
     return Mid.ApplicationCommandError;
   }
+
   // Abstract accessors for discriminator values.
   public abstract Long getRevision();
 

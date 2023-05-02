@@ -42,6 +42,7 @@ public abstract class OpenProtocolMessageLastTighteningResultDataSubscribe
   public Mid getMid() {
     return Mid.LastTighteningResultDataSubscribe;
   }
+
   // Abstract accessors for discriminator values.
   public abstract Long getRevision();
 

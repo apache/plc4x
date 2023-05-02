@@ -41,6 +41,7 @@ public abstract class OpenProtocolMessageAlarm extends OpenProtocolMessage imple
   public Mid getMid() {
     return Mid.Alarm;
   }
+
   // Abstract accessors for discriminator values.
   public abstract Long getRevision();
 

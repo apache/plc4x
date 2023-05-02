@@ -42,6 +42,7 @@ public abstract class OpenProtocolMessageResetParameterSetBatchCounter extends O
   public Mid getMid() {
     return Mid.ResetParameterSetBatchCounter;
   }
+
   // Abstract accessors for discriminator values.
   public abstract Long getRevision();
 

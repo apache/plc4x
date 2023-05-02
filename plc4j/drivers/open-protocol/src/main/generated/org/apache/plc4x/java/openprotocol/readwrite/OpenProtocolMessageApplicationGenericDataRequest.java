@@ -42,6 +42,7 @@ public abstract class OpenProtocolMessageApplicationGenericDataRequest extends O
   public Mid getMid() {
     return Mid.ApplicationGenericDataRequest;
   }
+
   // Abstract accessors for discriminator values.
   public abstract Long getRevision();
 

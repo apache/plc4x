@@ -41,6 +41,7 @@ public abstract class OpenProtocolMessageEnableTool extends OpenProtocolMessage 
   public Mid getMid() {
     return Mid.EnableTool;
   }
+
   // Abstract accessors for discriminator values.
   public abstract Long getRevision();
 
