@@ -75,7 +75,7 @@ func (m *Subscriber) Unsubscribe(ctx context.Context, unsubscriptionRequest apiM
 	result := make(chan apiModel.PlcUnsubscriptionRequestResult)
 
 	// TODO: As soon as we establish a connection, we start getting data...
-	// subscriptions are more an internal handling of which values to pass where.
+	// subscriptions are more a internal handling of which values to pass where.
 
 	return result
 }
@@ -203,8 +203,6 @@ func (m *Subscriber) offerMMI(unitAddressString string, calData readWriteModel.C
 					plcListValues[i] = spiValues.NewPlcSTRING("corrupted")
 				case readWriteModel.LevelInformationNormalExactly:
 					plcListValues[i] = spiValues.NewPlcUSINT(levelInformation.GetActualLevel())
-				default:
-					panic("Impossible case")
 				}
 			}
 			plcValues[tagName] = spiValues.NewPlcList(plcListValues)
@@ -226,10 +224,6 @@ func (m *Subscriber) offerMMI(unitAddressString string, calData readWriteModel.C
 	address[tagName] = fmt.Sprintf("status/%s/%s", statusType, applicationString)
 
 	// Assemble a PlcSubscription event
-	if len(plcValues) <= 0 {
-		log.Debug().Msg("no values")
-		return false
-	}
 	event := NewSubscriptionEvent(tags, types, intervals, responseCodes, address, sources, plcValues)
 	consumer(&event)
 	return true
@@ -271,6 +265,10 @@ func (m *Subscriber) offerSAL(sal readWriteModel.MonitoredSAL, subscriptionHandl
 	var salData readWriteModel.SALData
 	var unitAddressString, applicationString string
 	switch sal := sal.(type) {
+	case readWriteModel.MonitoredSALShortFormBasicModeExactly:
+		unitAddressString = "u0" // On short form it should be always unit 0 TODO: double check that
+		applicationString = sal.GetApplication().ApplicationId().String()
+		salData = sal.GetSalData()
 	case readWriteModel.MonitoredSALLongFormSmartModeExactly:
 		if sal.GetIsUnitAddress() {
 			unitAddressString = fmt.Sprintf("u%d", sal.GetUnitAddress().GetAddress())
@@ -282,10 +280,6 @@ func (m *Subscriber) offerSAL(sal readWriteModel.MonitoredSAL, subscriptionHandl
 			}
 			unitAddressString += fmt.Sprintf("-u%d", replyNetwork.GetUnitAddress().GetAddress())
 		}
-		applicationString = sal.GetApplication().ApplicationId().String()
-		salData = sal.GetSalData()
-	case readWriteModel.MonitoredSALShortFormBasicModeExactly:
-		unitAddressString = "u0" // On short form it should be always unit 0 TODO: double check that
 		applicationString = sal.GetApplication().ApplicationId().String()
 		salData = sal.GetSalData()
 	}
@@ -305,57 +299,62 @@ func (m *Subscriber) offerSAL(sal readWriteModel.MonitoredSAL, subscriptionHandl
 		}
 	}
 
-	var commandType string
+	var commandTypeGetter interface {
+		PLC4XEnumName() string
+	}
 	switch salData := salData.(type) {
 	case readWriteModel.SALDataAccessControlExactly:
-		commandType = salData.GetAccessControlData().GetCommandType().PLC4XEnumName()
+		commandTypeGetter = salData.GetAccessControlData().GetCommandType()
 	case readWriteModel.SALDataAirConditioningExactly:
-		commandType = salData.GetAirConditioningData().GetCommandType().PLC4XEnumName()
+		commandTypeGetter = salData.GetAirConditioningData().GetCommandType()
 	case readWriteModel.SALDataAudioAndVideoExactly:
-		commandType = salData.GetAudioVideoData().GetCommandType().PLC4XEnumName()
+		commandTypeGetter = salData.GetAudioVideoData().GetCommandType()
 	case readWriteModel.SALDataClockAndTimekeepingExactly:
-		commandType = salData.GetClockAndTimekeepingData().GetCommandType().PLC4XEnumName()
+		commandTypeGetter = salData.GetClockAndTimekeepingData().GetCommandType()
 	case readWriteModel.SALDataEnableControlExactly:
-		commandType = salData.GetEnableControlData().GetCommandType().PLC4XEnumName()
+		commandTypeGetter = salData.GetEnableControlData().GetCommandType()
 	case readWriteModel.SALDataErrorReportingExactly:
-		commandType = salData.GetErrorReportingData().GetCommandType().PLC4XEnumName()
+		commandTypeGetter = salData.GetErrorReportingData().GetCommandType()
 	case readWriteModel.SALDataFreeUsageExactly:
-		commandType = "Unknown"
+		log.Info().Msg("Unknown command type")
 	case readWriteModel.SALDataHeatingExactly:
-		commandType = salData.GetHeatingData().GetCommandType().PLC4XEnumName()
+		commandTypeGetter = salData.GetHeatingData().GetCommandType()
 	case readWriteModel.SALDataHvacActuatorExactly:
-		commandType = salData.GetHvacActuatorData().GetCommandType().PLC4XEnumName()
+		commandTypeGetter = salData.GetHvacActuatorData().GetCommandType()
 	case readWriteModel.SALDataIrrigationControlExactly:
-		commandType = salData.GetIrrigationControlData().GetCommandType().PLC4XEnumName()
+		commandTypeGetter = salData.GetIrrigationControlData().GetCommandType()
 	case readWriteModel.SALDataLightingExactly:
-		commandType = salData.GetLightingData().GetCommandType().PLC4XEnumName()
+		commandTypeGetter = salData.GetLightingData().GetCommandType()
 	case readWriteModel.SALDataMeasurementExactly:
-		commandType = salData.GetMeasurementData().GetCommandType().PLC4XEnumName()
+		commandTypeGetter = salData.GetMeasurementData().GetCommandType()
 	case readWriteModel.SALDataMediaTransportExactly:
-		commandType = salData.GetMediaTransportControlData().GetCommandType().PLC4XEnumName()
+		commandTypeGetter = salData.GetMediaTransportControlData().GetCommandType()
 	case readWriteModel.SALDataMeteringExactly:
-		commandType = salData.GetMeteringData().GetCommandType().PLC4XEnumName()
+		commandTypeGetter = salData.GetMeteringData().GetCommandType()
 	case readWriteModel.SALDataPoolsSpasPondsFountainsControlExactly:
-		commandType = salData.GetPoolsSpaPondsFountainsData().GetCommandType().PLC4XEnumName()
+		commandTypeGetter = salData.GetPoolsSpaPondsFountainsData().GetCommandType()
 	case readWriteModel.SALDataReservedExactly:
-		commandType = "Unknown"
+		log.Info().Msg("Unknown command type")
 	case readWriteModel.SALDataRoomControlSystemExactly:
-		panic("Not implemented yet") // TODO: implement once there
+		log.Info().Msg("Unknown command type not implemented yet") // TODO: implement once there
 	case readWriteModel.SALDataSecurityExactly:
-		commandType = salData.GetSecurityData().GetCommandType().PLC4XEnumName()
+		commandTypeGetter = salData.GetSecurityData().GetCommandType()
 	case readWriteModel.SALDataTelephonyStatusAndControlExactly:
-		commandType = salData.GetTelephonyData().GetCommandType().PLC4XEnumName()
+		commandTypeGetter = salData.GetTelephonyData().GetCommandType()
 	case readWriteModel.SALDataTemperatureBroadcastExactly:
-		commandType = salData.GetTemperatureBroadcastData().GetCommandType().PLC4XEnumName()
+		commandTypeGetter = salData.GetTemperatureBroadcastData().GetCommandType()
 	case readWriteModel.SALDataTestingExactly:
-		panic("Not implemented yet") // TODO: implement once there
+		log.Info().Msg("Unknown command type not implemented yet") // TODO: implement once there
 	case readWriteModel.SALDataTriggerControlExactly:
-		commandType = salData.GetTriggerControlData().GetCommandType().PLC4XEnumName()
+		commandTypeGetter = salData.GetTriggerControlData().GetCommandType()
 	case readWriteModel.SALDataVentilationExactly:
-		commandType = salData.GetVentilationData().GetCommandType().PLC4XEnumName()
+		commandTypeGetter = salData.GetVentilationData().GetCommandType()
 	default:
 		log.Error().Msgf("Unmapped type %T", salData)
-		commandType = "Unknown"
+	}
+	commandType := "Unknown"
+	if commandTypeGetter != nil {
+		commandType = commandTypeGetter.PLC4XEnumName()
 	}
 
 	// TODO: we need to map commands e.g. if we get a MeteringDataElectricityConsumption we can map that to MeteringDataMeasureElectricity
@@ -373,10 +372,6 @@ func (m *Subscriber) offerSAL(sal readWriteModel.MonitoredSAL, subscriptionHandl
 	responseCodes[tagName] = apiModel.PlcResponseCode_OK
 
 	// Assemble a PlcSubscription event
-	if len(plcValues) <= 0 {
-		log.Debug().Msg("no values")
-		return false
-	}
 	event := NewSubscriptionEvent(tags, types, intervals, responseCodes, address, sources, plcValues)
 	consumer(&event)
 	return true

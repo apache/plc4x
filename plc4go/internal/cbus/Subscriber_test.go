@@ -151,7 +151,7 @@ func TestSubscriber_handleMonitoredMMI(t *testing.T) {
 			},
 		},
 		{
-			name: "handle the MMI short with consumer",
+			name: "handle the MMI short with consumerProvider",
 			fields: fields{
 				consumers: map[*spiModel.DefaultPlcConsumerRegistration]apiModel.PlcSubscriptionEventConsumer{
 					func() *spiModel.DefaultPlcConsumerRegistration {
@@ -230,7 +230,7 @@ func TestSubscriber_offerMMI(t *testing.T) {
 		unitAddressString  string
 		calData            model.CALData
 		subscriptionHandle *SubscriptionHandle
-		consumer           apiModel.PlcSubscriptionEventConsumer
+		consumerProvider   func(t *testing.T) apiModel.PlcSubscriptionEventConsumer
 	}
 	tests := []struct {
 		name   string
@@ -241,19 +241,226 @@ func TestSubscriber_offerMMI(t *testing.T) {
 		{
 			name: "offer not fitting tag",
 			args: args{
-				subscriptionHandle: &SubscriptionHandle{},
+				subscriptionHandle: NewSubscriptionHandle(
+					nil,
+					"nada",
+					nil,
+					spiModel.SubscriptionEvent,
+					0,
+				),
+				consumerProvider: func(t *testing.T) apiModel.PlcSubscriptionEventConsumer {
+					return func(_ apiModel.PlcSubscriptionEvent) {
+						t.Error("should not be called")
+					}
+				},
 			},
 		},
 		{
-			name: "valid monitor tag unmapped",
+			name: "valid monitor tag wrong address",
 			args: args{
-				subscriptionHandle: &SubscriptionHandle{
-					tag: &mmiMonitorTag{},
+				unitAddressString: "banana",
+				subscriptionHandle: NewSubscriptionHandle(
+					nil,
+					"tag",
+					NewMMIMonitorTag(
+						readWriteModel.NewUnitAddress(13),
+						nil,
+						1,
+					),
+					spiModel.SubscriptionEvent,
+					0,
+				),
+				consumerProvider: func(t *testing.T) apiModel.PlcSubscriptionEventConsumer {
+					return func(_ apiModel.PlcSubscriptionEvent) {
+						t.Error("should not be called")
+					}
 				},
 			},
 			want: false,
 		},
-		// TODO: add other cases
+		{
+			name: "valid monitor tag unmapped",
+			args: args{
+				subscriptionHandle: NewSubscriptionHandle(
+					nil,
+					"nada",
+					nil,
+					spiModel.SubscriptionEvent,
+					0,
+				),
+				consumerProvider: func(t *testing.T) apiModel.PlcSubscriptionEventConsumer {
+					return func(_ apiModel.PlcSubscriptionEvent) {
+						t.Error("should not be called")
+					}
+				},
+			},
+			want: false,
+		},
+		{
+			name: "valid monitor tag cal unrelated",
+			args: args{
+				unitAddressString: "u13",
+				calData:           readWriteModel.NewCALDataReset(readWriteModel.CALCommandTypeContainer_CALCommandGetStatus, nil, nil),
+				subscriptionHandle: NewSubscriptionHandle(
+					nil,
+					"tag",
+					NewMMIMonitorTag(
+						readWriteModel.NewUnitAddress(13),
+						nil,
+						1,
+					),
+					spiModel.SubscriptionEvent,
+					0,
+				),
+				consumerProvider: func(t *testing.T) apiModel.PlcSubscriptionEventConsumer {
+					return func(event apiModel.PlcSubscriptionEvent) {
+						assert.NotNil(t, event)
+					}
+				},
+			},
+			want: false,
+		},
+		{
+			name: "valid monitor tag cal status",
+			args: args{
+				unitAddressString: "u13",
+				calData: readWriteModel.NewCALDataStatus(
+					readWriteModel.ApplicationIdContainer_LIGHTING_3A,
+					0,
+					[]readWriteModel.StatusByte{
+						readWriteModel.NewStatusByte(readWriteModel.GAVState_DOES_NOT_EXIST, readWriteModel.GAVState_OFF, readWriteModel.GAVState_ON, readWriteModel.GAVState_ERROR),
+					},
+					readWriteModel.CALCommandTypeContainer_CALCommandIdentify,
+					nil,
+					nil,
+				),
+				subscriptionHandle: NewSubscriptionHandle(
+					nil,
+					"tag",
+					NewMMIMonitorTag(
+						readWriteModel.NewUnitAddress(13),
+						nil,
+						1,
+					),
+					spiModel.SubscriptionEvent,
+					0,
+				),
+				consumerProvider: func(t *testing.T) apiModel.PlcSubscriptionEventConsumer {
+					return func(event apiModel.PlcSubscriptionEvent) {
+						assert.NotNil(t, event)
+					}
+				},
+			},
+			want: true,
+		},
+		{
+			name: "valid monitor tag cal status wrong application",
+			args: args{
+				unitAddressString: "u13",
+				calData: readWriteModel.NewCALDataStatus(
+					readWriteModel.ApplicationIdContainer_LIGHTING_3A,
+					0,
+					[]readWriteModel.StatusByte{
+						readWriteModel.NewStatusByte(readWriteModel.GAVState_DOES_NOT_EXIST, readWriteModel.GAVState_OFF, readWriteModel.GAVState_ON, readWriteModel.GAVState_ERROR),
+					},
+					readWriteModel.CALCommandTypeContainer_CALCommandIdentify,
+					nil,
+					nil,
+				),
+				subscriptionHandle: NewSubscriptionHandle(
+					nil,
+					"tag",
+					NewMMIMonitorTag(
+						readWriteModel.NewUnitAddress(13),
+						func() *readWriteModel.ApplicationIdContainer {
+							a := readWriteModel.ApplicationIdContainer_HVAC_ACTUATOR_74
+							return &a
+						}(),
+						1,
+					),
+					spiModel.SubscriptionEvent,
+					0,
+				),
+				consumerProvider: func(t *testing.T) apiModel.PlcSubscriptionEventConsumer {
+					return func(event apiModel.PlcSubscriptionEvent) {
+						assert.NotNil(t, event)
+					}
+				},
+			},
+			want: false,
+		},
+		{
+			name: "valid monitor tag cal status extended binary",
+			args: args{
+				unitAddressString: "u13",
+				calData: readWriteModel.NewCALDataStatusExtended(
+					readWriteModel.StatusCoding_BINARY_BY_THIS_SERIAL_INTERFACE,
+					readWriteModel.ApplicationIdContainer_LIGHTING_3A,
+					0,
+					[]readWriteModel.StatusByte{
+						readWriteModel.NewStatusByte(readWriteModel.GAVState_DOES_NOT_EXIST, readWriteModel.GAVState_OFF, readWriteModel.GAVState_ON, readWriteModel.GAVState_ERROR),
+					},
+					nil,
+					readWriteModel.CALCommandTypeContainer_CALCommandIdentify,
+					nil,
+					nil,
+				),
+				subscriptionHandle: NewSubscriptionHandle(
+					nil,
+					"tag",
+					NewMMIMonitorTag(
+						readWriteModel.NewUnitAddress(13),
+						nil,
+						1,
+					),
+					spiModel.SubscriptionEvent,
+					0,
+				),
+				consumerProvider: func(t *testing.T) apiModel.PlcSubscriptionEventConsumer {
+					return func(event apiModel.PlcSubscriptionEvent) {
+						assert.NotNil(t, event)
+					}
+				},
+			},
+			want: true,
+		},
+		{
+			name: "valid monitor tag cal status extended level",
+			args: args{
+				unitAddressString: "u13",
+				calData: readWriteModel.NewCALDataStatusExtended(
+					readWriteModel.StatusCoding_LEVEL_BY_THIS_SERIAL_INTERFACE,
+					readWriteModel.ApplicationIdContainer_LIGHTING_3A,
+					0,
+					nil,
+					[]readWriteModel.LevelInformation{
+						readWriteModel.NewLevelInformationAbsent(13),
+						readWriteModel.NewLevelInformationCorrupted(1, 2, 3, 4, 5),
+						readWriteModel.NewLevelInformationNormal(readWriteModel.LevelInformationNibblePair_Value_0, readWriteModel.LevelInformationNibblePair_Value_2, 13),
+					},
+					readWriteModel.CALCommandTypeContainer_CALCommandIdentify,
+					nil,
+					nil,
+				),
+				subscriptionHandle: NewSubscriptionHandle(
+					nil,
+					"tag",
+					NewMMIMonitorTag(
+						readWriteModel.NewUnitAddress(13),
+						nil,
+						1,
+					),
+					spiModel.SubscriptionEvent,
+					0,
+				),
+				consumerProvider: func(t *testing.T) apiModel.PlcSubscriptionEventConsumer {
+					return func(event apiModel.PlcSubscriptionEvent) {
+						assert.NotNil(t, event)
+					}
+				},
+			},
+			want: true,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -261,7 +468,7 @@ func TestSubscriber_offerMMI(t *testing.T) {
 				connection: tt.fields.connection,
 				consumers:  tt.fields.consumers,
 			}
-			assert.Equalf(t, tt.want, m.offerMMI(tt.args.unitAddressString, tt.args.calData, tt.args.subscriptionHandle, tt.args.consumer), "offerMMI(%v, %v, %v, %v)", tt.args.unitAddressString, tt.args.calData, tt.args.subscriptionHandle, tt.args.consumer)
+			assert.Equalf(t, tt.want, m.offerMMI(tt.args.unitAddressString, tt.args.calData, tt.args.subscriptionHandle, tt.args.consumerProvider(t)), "offerMMI(%v,\n%v\n, \n%v\n, func())", tt.args.unitAddressString, tt.args.calData, tt.args.subscriptionHandle)
 		})
 	}
 }
@@ -284,7 +491,7 @@ func TestSubscriber_handleMonitoredSAL(t *testing.T) {
 			name: "no sal, no consumers",
 		},
 		{
-			name: "handle the SAL short with consumer",
+			name: "handle the SAL short with consumerProvider",
 			fields: fields{
 				consumers: map[*spiModel.DefaultPlcConsumerRegistration]apiModel.PlcSubscriptionEventConsumer{
 					func() *spiModel.DefaultPlcConsumerRegistration {
@@ -319,7 +526,7 @@ func TestSubscriber_offerSAL(t *testing.T) {
 	type args struct {
 		sal                model.MonitoredSAL
 		subscriptionHandle *SubscriptionHandle
-		consumer           apiModel.PlcSubscriptionEventConsumer
+		consumerProvider   func(t *testing.T) apiModel.PlcSubscriptionEventConsumer
 	}
 	tests := []struct {
 		name   string
@@ -330,11 +537,739 @@ func TestSubscriber_offerSAL(t *testing.T) {
 		{
 			name: "offer wong tag",
 			args: args{
-				subscriptionHandle: &SubscriptionHandle{},
+				subscriptionHandle: NewSubscriptionHandle(nil, "", nil, spiModel.SubscriptionEvent, 0),
+				consumerProvider: func(t *testing.T) apiModel.PlcSubscriptionEventConsumer {
+					return func(event apiModel.PlcSubscriptionEvent) {
+						t.Fail()
+					}
+				},
 			},
 		},
 		{
-			name: "offer sal tag",
+			name: "offer sal tag short",
+			args: args{
+				sal: readWriteModel.NewMonitoredSALShortFormBasicMode(
+					0,
+					nil,
+					nil,
+					nil,
+					readWriteModel.ApplicationIdContainer_HVAC_ACTUATOR_74,
+					readWriteModel.NewSALDataLighting(
+						readWriteModel.NewLightingDataOn(2, readWriteModel.LightingCommandTypeContainer_LightingCommandOn),
+						nil,
+					),
+					0,
+					nil,
+				),
+				subscriptionHandle: NewSubscriptionHandle(nil, "", NewSALMonitorTag(nil, nil, 1), spiModel.SubscriptionEvent, 0),
+				consumerProvider: func(t *testing.T) apiModel.PlcSubscriptionEventConsumer {
+					return func(event apiModel.PlcSubscriptionEvent) {
+						assert.NotNil(t, event)
+					}
+				},
+			},
+			want: true,
+		},
+		{
+			name: "offer sal tag short sal access control",
+			args: args{
+				sal: readWriteModel.NewMonitoredSALShortFormBasicMode(
+					0,
+					nil,
+					nil,
+					nil,
+					readWriteModel.ApplicationIdContainer_HVAC_ACTUATOR_74,
+					readWriteModel.NewSALDataAccessControl(
+						readWriteModel.NewAccessControlDataAccessPointClosed(readWriteModel.AccessControlCommandTypeContainer_AccessControlCommandAccessPointClosed, 0, 0),
+						nil,
+					),
+					0,
+					nil,
+				),
+				subscriptionHandle: NewSubscriptionHandle(nil, "", NewSALMonitorTag(nil, nil, 1), spiModel.SubscriptionEvent, 0),
+				consumerProvider: func(t *testing.T) apiModel.PlcSubscriptionEventConsumer {
+					return func(event apiModel.PlcSubscriptionEvent) {
+						assert.NotNil(t, event)
+					}
+				},
+			},
+			want: true,
+		},
+		{
+			name: "offer sal tag short sal air conditioning",
+			args: args{
+				sal: readWriteModel.NewMonitoredSALShortFormBasicMode(
+					0,
+					nil,
+					nil,
+					nil,
+					readWriteModel.ApplicationIdContainer_HVAC_ACTUATOR_74,
+					readWriteModel.NewSALDataAirConditioning(
+						readWriteModel.NewAirConditioningDataRefresh(0, readWriteModel.AirConditioningCommandTypeContainer_AirConditioningCommandRefresh),
+						nil,
+					),
+					0,
+					nil,
+				),
+				subscriptionHandle: NewSubscriptionHandle(nil, "", NewSALMonitorTag(nil, nil, 1), spiModel.SubscriptionEvent, 0),
+				consumerProvider: func(t *testing.T) apiModel.PlcSubscriptionEventConsumer {
+					return func(event apiModel.PlcSubscriptionEvent) {
+						assert.NotNil(t, event)
+					}
+				},
+			},
+			want: true,
+		},
+		{
+			name: "offer sal tag short sal audio & video",
+			args: args{
+				sal: readWriteModel.NewMonitoredSALShortFormBasicMode(
+					0,
+					nil,
+					nil,
+					nil,
+					readWriteModel.ApplicationIdContainer_HVAC_ACTUATOR_74,
+					readWriteModel.NewSALDataAudioAndVideo(
+						readWriteModel.NewLightingDataOff(0, readWriteModel.LightingCommandTypeContainer_LightingCommandOn),
+						nil,
+					),
+					0,
+					nil,
+				),
+				subscriptionHandle: NewSubscriptionHandle(nil, "", NewSALMonitorTag(nil, nil, 1), spiModel.SubscriptionEvent, 0),
+				consumerProvider: func(t *testing.T) apiModel.PlcSubscriptionEventConsumer {
+					return func(event apiModel.PlcSubscriptionEvent) {
+						assert.NotNil(t, event)
+					}
+				},
+			},
+			want: true,
+		},
+		{
+			name: "offer sal tag short sal clock and timekeeping",
+			args: args{
+				sal: readWriteModel.NewMonitoredSALShortFormBasicMode(
+					0,
+					nil,
+					nil,
+					nil,
+					readWriteModel.ApplicationIdContainer_HVAC_ACTUATOR_74,
+					readWriteModel.NewSALDataClockAndTimekeeping(
+						readWriteModel.NewClockAndTimekeepingDataRequestRefresh(
+							1,
+							0,
+						),
+						nil,
+					),
+					0,
+					nil,
+				),
+				subscriptionHandle: NewSubscriptionHandle(nil, "", NewSALMonitorTag(nil, nil, 1), spiModel.SubscriptionEvent, 0),
+				consumerProvider: func(t *testing.T) apiModel.PlcSubscriptionEventConsumer {
+					return func(event apiModel.PlcSubscriptionEvent) {
+						assert.NotNil(t, event)
+					}
+				},
+			},
+			want: true,
+		},
+		{
+			name: "offer sal tag short sal enable control",
+			args: args{
+				sal: readWriteModel.NewMonitoredSALShortFormBasicMode(
+					0,
+					nil,
+					nil,
+					nil,
+					readWriteModel.ApplicationIdContainer_HVAC_ACTUATOR_74,
+					readWriteModel.NewSALDataEnableControl(
+						readWriteModel.NewEnableControlData(0, 0, 0),
+						nil,
+					),
+					0,
+					nil,
+				),
+				subscriptionHandle: NewSubscriptionHandle(nil, "", NewSALMonitorTag(nil, nil, 1), spiModel.SubscriptionEvent, 0),
+				consumerProvider: func(t *testing.T) apiModel.PlcSubscriptionEventConsumer {
+					return func(event apiModel.PlcSubscriptionEvent) {
+						assert.NotNil(t, event)
+					}
+				},
+			},
+			want: true,
+		},
+		{
+			name: "offer sal tag short sal error reporting",
+			args: args{
+				sal: readWriteModel.NewMonitoredSALShortFormBasicMode(
+					0,
+					nil,
+					nil,
+					nil,
+					readWriteModel.ApplicationIdContainer_HVAC_ACTUATOR_74,
+					readWriteModel.NewSALDataErrorReporting(
+						readWriteModel.NewErrorReportingDataGeneric(
+							readWriteModel.NewErrorReportingSystemCategory(
+								readWriteModel.ErrorReportingSystemCategoryClass_INPUT_UNITS,
+								readWriteModel.NewErrorReportingSystemCategoryTypeInputUnits(
+									readWriteModel.ErrorReportingSystemCategoryTypeForInputUnits_RESERVED_2,
+								),
+								readWriteModel.ErrorReportingSystemCategoryVariant_RESERVED_0,
+							),
+							true,
+							true,
+							true,
+							readWriteModel.ErrorReportingSeverity_ALL_OK,
+							1,
+							2,
+							3,
+							4,
+						),
+						nil,
+					),
+					0,
+					nil,
+				),
+				subscriptionHandle: NewSubscriptionHandle(nil, "", NewSALMonitorTag(nil, nil, 1), spiModel.SubscriptionEvent, 0),
+				consumerProvider: func(t *testing.T) apiModel.PlcSubscriptionEventConsumer {
+					return func(event apiModel.PlcSubscriptionEvent) {
+						assert.NotNil(t, event)
+					}
+				},
+			},
+			want: true,
+		},
+		{
+			name: "offer sal tag short sal free usage",
+			args: args{
+				sal: readWriteModel.NewMonitoredSALShortFormBasicMode(
+					0,
+					nil,
+					nil,
+					nil,
+					readWriteModel.ApplicationIdContainer_HVAC_ACTUATOR_74,
+					readWriteModel.NewSALDataFreeUsage(nil),
+					0,
+					nil,
+				),
+				subscriptionHandle: NewSubscriptionHandle(nil, "", NewSALMonitorTag(nil, nil, 1), spiModel.SubscriptionEvent, 0),
+				consumerProvider: func(t *testing.T) apiModel.PlcSubscriptionEventConsumer {
+					return func(event apiModel.PlcSubscriptionEvent) {
+						assert.NotNil(t, event)
+					}
+				},
+			},
+			want: true,
+		},
+		{
+			name: "offer sal tag short heating",
+			args: args{
+				sal: readWriteModel.NewMonitoredSALShortFormBasicMode(
+					0,
+					nil,
+					nil,
+					nil,
+					readWriteModel.ApplicationIdContainer_HVAC_ACTUATOR_74,
+					readWriteModel.NewSALDataHeating(
+						readWriteModel.NewLightingDataOn(2, readWriteModel.LightingCommandTypeContainer_LightingCommandOn),
+						nil,
+					),
+					0,
+					nil,
+				),
+				subscriptionHandle: NewSubscriptionHandle(nil, "", NewSALMonitorTag(nil, nil, 1), spiModel.SubscriptionEvent, 0),
+				consumerProvider: func(t *testing.T) apiModel.PlcSubscriptionEventConsumer {
+					return func(event apiModel.PlcSubscriptionEvent) {
+						assert.NotNil(t, event)
+					}
+				},
+			},
+			want: true,
+		},
+		{
+			name: "offer sal tag short actuator",
+			args: args{
+				sal: readWriteModel.NewMonitoredSALShortFormBasicMode(
+					0,
+					nil,
+					nil,
+					nil,
+					readWriteModel.ApplicationIdContainer_HVAC_ACTUATOR_74,
+					readWriteModel.NewSALDataHvacActuator(
+						readWriteModel.NewLightingDataOn(2, readWriteModel.LightingCommandTypeContainer_LightingCommandOn),
+						nil,
+					),
+					0,
+					nil,
+				),
+				subscriptionHandle: NewSubscriptionHandle(nil, "", NewSALMonitorTag(nil, nil, 1), spiModel.SubscriptionEvent, 0),
+				consumerProvider: func(t *testing.T) apiModel.PlcSubscriptionEventConsumer {
+					return func(event apiModel.PlcSubscriptionEvent) {
+						assert.NotNil(t, event)
+					}
+				},
+			},
+			want: true,
+		},
+		{
+			name: "offer sal tag short irrigation control",
+			args: args{
+				sal: readWriteModel.NewMonitoredSALShortFormBasicMode(
+					0,
+					nil,
+					nil,
+					nil,
+					readWriteModel.ApplicationIdContainer_HVAC_ACTUATOR_74,
+					readWriteModel.NewSALDataIrrigationControl(
+						readWriteModel.NewLightingDataOn(2, readWriteModel.LightingCommandTypeContainer_LightingCommandOn),
+						nil,
+					),
+					0,
+					nil,
+				),
+				subscriptionHandle: NewSubscriptionHandle(nil, "", NewSALMonitorTag(nil, nil, 1), spiModel.SubscriptionEvent, 0),
+				consumerProvider: func(t *testing.T) apiModel.PlcSubscriptionEventConsumer {
+					return func(event apiModel.PlcSubscriptionEvent) {
+						assert.NotNil(t, event)
+					}
+				},
+			},
+			want: true,
+		},
+		{
+			name: "offer sal tag short lighting",
+			args: args{
+				sal: readWriteModel.NewMonitoredSALShortFormBasicMode(
+					0,
+					nil,
+					nil,
+					nil,
+					readWriteModel.ApplicationIdContainer_HVAC_ACTUATOR_74,
+					readWriteModel.NewSALDataLighting(
+						readWriteModel.NewLightingDataOn(2, readWriteModel.LightingCommandTypeContainer_LightingCommandOn),
+						nil,
+					),
+					0,
+					nil,
+				),
+				subscriptionHandle: NewSubscriptionHandle(nil, "", NewSALMonitorTag(nil, nil, 1), spiModel.SubscriptionEvent, 0),
+				consumerProvider: func(t *testing.T) apiModel.PlcSubscriptionEventConsumer {
+					return func(event apiModel.PlcSubscriptionEvent) {
+						assert.NotNil(t, event)
+					}
+				},
+			},
+			want: true,
+		},
+		{
+			name: "offer sal tag short measurement",
+			args: args{
+				sal: readWriteModel.NewMonitoredSALShortFormBasicMode(
+					0,
+					nil,
+					nil,
+					nil,
+					readWriteModel.ApplicationIdContainer_HVAC_ACTUATOR_74,
+					readWriteModel.NewSALDataMeasurement(
+						readWriteModel.NewMeasurementDataChannelMeasurementData(
+							0,
+							0,
+							readWriteModel.MeasurementUnits_ANGLE_DEGREES,
+							0,
+							0,
+							0,
+							0,
+						),
+						nil,
+					),
+					0,
+					nil,
+				),
+				subscriptionHandle: NewSubscriptionHandle(nil, "", NewSALMonitorTag(nil, nil, 1), spiModel.SubscriptionEvent, 0),
+				consumerProvider: func(t *testing.T) apiModel.PlcSubscriptionEventConsumer {
+					return func(event apiModel.PlcSubscriptionEvent) {
+						assert.NotNil(t, event)
+					}
+				},
+			},
+			want: true,
+		},
+		{
+			name: "offer sal tag short media transport",
+			args: args{
+				sal: readWriteModel.NewMonitoredSALShortFormBasicMode(
+					0,
+					nil,
+					nil,
+					nil,
+					readWriteModel.ApplicationIdContainer_HVAC_ACTUATOR_74,
+					readWriteModel.NewSALDataMediaTransport(
+						readWriteModel.NewMediaTransportControlDataFastForward(
+							0,
+							0,
+							0,
+						),
+						nil,
+					),
+					0,
+					nil,
+				),
+				subscriptionHandle: NewSubscriptionHandle(nil, "", NewSALMonitorTag(nil, nil, 1), spiModel.SubscriptionEvent, 0),
+				consumerProvider: func(t *testing.T) apiModel.PlcSubscriptionEventConsumer {
+					return func(event apiModel.PlcSubscriptionEvent) {
+						assert.NotNil(t, event)
+					}
+				},
+			},
+			want: true,
+		},
+		{
+			name: "offer sal tag short metering",
+			args: args{
+				sal: readWriteModel.NewMonitoredSALShortFormBasicMode(
+					0,
+					nil,
+					nil,
+					nil,
+					readWriteModel.ApplicationIdContainer_HVAC_ACTUATOR_74,
+					readWriteModel.NewSALDataMetering(
+						readWriteModel.NewMeteringDataGasConsumption(
+							0,
+							0,
+							0,
+						),
+						nil,
+					),
+					0,
+					nil,
+				),
+				subscriptionHandle: NewSubscriptionHandle(nil, "", NewSALMonitorTag(nil, nil, 1), spiModel.SubscriptionEvent, 0),
+				consumerProvider: func(t *testing.T) apiModel.PlcSubscriptionEventConsumer {
+					return func(event apiModel.PlcSubscriptionEvent) {
+						assert.NotNil(t, event)
+					}
+				},
+			},
+			want: true,
+		},
+		{
+			name: "offer sal tag short pools spas ponds",
+			args: args{
+				sal: readWriteModel.NewMonitoredSALShortFormBasicMode(
+					0,
+					nil,
+					nil,
+					nil,
+					readWriteModel.ApplicationIdContainer_HVAC_ACTUATOR_74,
+					readWriteModel.NewSALDataPoolsSpasPondsFountainsControl(
+						readWriteModel.NewLightingDataOn(
+							0,
+							0,
+						),
+						nil,
+					),
+					0,
+					nil,
+				),
+				subscriptionHandle: NewSubscriptionHandle(nil, "", NewSALMonitorTag(nil, nil, 1), spiModel.SubscriptionEvent, 0),
+				consumerProvider: func(t *testing.T) apiModel.PlcSubscriptionEventConsumer {
+					return func(event apiModel.PlcSubscriptionEvent) {
+						assert.NotNil(t, event)
+					}
+				},
+			},
+			want: true,
+		},
+		{
+			name: "offer sal tag short reserved",
+			args: args{
+				sal: readWriteModel.NewMonitoredSALShortFormBasicMode(
+					0,
+					nil,
+					nil,
+					nil,
+					readWriteModel.ApplicationIdContainer_HVAC_ACTUATOR_74,
+					readWriteModel.NewSALDataReserved(
+						nil,
+					),
+					0,
+					nil,
+				),
+				subscriptionHandle: NewSubscriptionHandle(nil, "", NewSALMonitorTag(nil, nil, 1), spiModel.SubscriptionEvent, 0),
+				consumerProvider: func(t *testing.T) apiModel.PlcSubscriptionEventConsumer {
+					return func(event apiModel.PlcSubscriptionEvent) {
+						assert.NotNil(t, event)
+					}
+				},
+			},
+			want: true,
+		},
+		{
+			name: "offer sal tag short reserved",
+			args: args{
+				sal: readWriteModel.NewMonitoredSALShortFormBasicMode(
+					0,
+					nil,
+					nil,
+					nil,
+					readWriteModel.ApplicationIdContainer_HVAC_ACTUATOR_74,
+					readWriteModel.NewSALDataRoomControlSystem(
+						nil,
+					),
+					0,
+					nil,
+				),
+				subscriptionHandle: NewSubscriptionHandle(nil, "", NewSALMonitorTag(nil, nil, 1), spiModel.SubscriptionEvent, 0),
+				consumerProvider: func(t *testing.T) apiModel.PlcSubscriptionEventConsumer {
+					return func(event apiModel.PlcSubscriptionEvent) {
+						assert.NotNil(t, event)
+					}
+				},
+			},
+			want: true,
+		},
+		{
+			name: "offer sal tag short reserved",
+			args: args{
+				sal: readWriteModel.NewMonitoredSALShortFormBasicMode(
+					0,
+					nil,
+					nil,
+					nil,
+					readWriteModel.ApplicationIdContainer_HVAC_ACTUATOR_74,
+					readWriteModel.NewSALDataSecurity(
+						readWriteModel.NewSecurityDataAlarmOn(
+							0,
+							0,
+						),
+						nil,
+					),
+					0,
+					nil,
+				),
+				subscriptionHandle: NewSubscriptionHandle(nil, "", NewSALMonitorTag(nil, nil, 1), spiModel.SubscriptionEvent, 0),
+				consumerProvider: func(t *testing.T) apiModel.PlcSubscriptionEventConsumer {
+					return func(event apiModel.PlcSubscriptionEvent) {
+						assert.NotNil(t, event)
+					}
+				},
+			},
+			want: true,
+		},
+		{
+			name: "offer sal tag short telephony",
+			args: args{
+				sal: readWriteModel.NewMonitoredSALShortFormBasicMode(
+					0,
+					nil,
+					nil,
+					nil,
+					readWriteModel.ApplicationIdContainer_HVAC_ACTUATOR_74,
+					readWriteModel.NewSALDataTelephonyStatusAndControl(
+						readWriteModel.NewTelephonyDataDivert(
+							"1234",
+							0,
+							0,
+						),
+						nil,
+					),
+					0,
+					nil,
+				),
+				subscriptionHandle: NewSubscriptionHandle(nil, "", NewSALMonitorTag(nil, nil, 1), spiModel.SubscriptionEvent, 0),
+				consumerProvider: func(t *testing.T) apiModel.PlcSubscriptionEventConsumer {
+					return func(event apiModel.PlcSubscriptionEvent) {
+						assert.NotNil(t, event)
+					}
+				},
+			},
+			want: true,
+		},
+		{
+			name: "offer sal tag short temperature broadcast",
+			args: args{
+				sal: readWriteModel.NewMonitoredSALShortFormBasicMode(
+					0,
+					nil,
+					nil,
+					nil,
+					readWriteModel.ApplicationIdContainer_HVAC_ACTUATOR_74,
+					readWriteModel.NewSALDataTemperatureBroadcast(
+						readWriteModel.NewTemperatureBroadcastData(
+							0,
+							0,
+							0,
+						),
+						nil,
+					),
+					0,
+					nil,
+				),
+				subscriptionHandle: NewSubscriptionHandle(nil, "", NewSALMonitorTag(nil, nil, 1), spiModel.SubscriptionEvent, 0),
+				consumerProvider: func(t *testing.T) apiModel.PlcSubscriptionEventConsumer {
+					return func(event apiModel.PlcSubscriptionEvent) {
+						assert.NotNil(t, event)
+					}
+				},
+			},
+			want: true,
+		},
+		{
+			name: "offer sal tag short testing",
+			args: args{
+				sal: readWriteModel.NewMonitoredSALShortFormBasicMode(
+					0,
+					nil,
+					nil,
+					nil,
+					readWriteModel.ApplicationIdContainer_HVAC_ACTUATOR_74,
+					readWriteModel.NewSALDataTesting(
+						nil,
+					),
+					0,
+					nil,
+				),
+				subscriptionHandle: NewSubscriptionHandle(nil, "", NewSALMonitorTag(nil, nil, 1), spiModel.SubscriptionEvent, 0),
+				consumerProvider: func(t *testing.T) apiModel.PlcSubscriptionEventConsumer {
+					return func(event apiModel.PlcSubscriptionEvent) {
+						assert.NotNil(t, event)
+					}
+				},
+			},
+			want: true,
+		},
+		{
+			name: "offer sal tag short trigger control",
+			args: args{
+				sal: readWriteModel.NewMonitoredSALShortFormBasicMode(
+					0,
+					nil,
+					nil,
+					nil,
+					readWriteModel.ApplicationIdContainer_HVAC_ACTUATOR_74,
+					readWriteModel.NewSALDataTriggerControl(
+						readWriteModel.NewTriggerControlDataTriggerEvent(
+							0,
+							0,
+							0,
+						),
+						nil,
+					),
+					0,
+					nil,
+				),
+				subscriptionHandle: NewSubscriptionHandle(nil, "", NewSALMonitorTag(nil, nil, 1), spiModel.SubscriptionEvent, 0),
+				consumerProvider: func(t *testing.T) apiModel.PlcSubscriptionEventConsumer {
+					return func(event apiModel.PlcSubscriptionEvent) {
+						assert.NotNil(t, event)
+					}
+				},
+			},
+			want: true,
+		},
+		{
+			name: "offer sal tag short ventilation",
+			args: args{
+				sal: readWriteModel.NewMonitoredSALShortFormBasicMode(
+					0,
+					nil,
+					nil,
+					nil,
+					readWriteModel.ApplicationIdContainer_HVAC_ACTUATOR_74,
+					readWriteModel.NewSALDataVentilation(
+						readWriteModel.NewLightingDataOn(
+							0,
+							0,
+						),
+						nil,
+					),
+					0,
+					nil,
+				),
+				subscriptionHandle: NewSubscriptionHandle(nil, "", NewSALMonitorTag(nil, nil, 1), spiModel.SubscriptionEvent, 0),
+				consumerProvider: func(t *testing.T) apiModel.PlcSubscriptionEventConsumer {
+					return func(event apiModel.PlcSubscriptionEvent) {
+						assert.NotNil(t, event)
+					}
+				},
+			},
+			want: true,
+		},
+		{
+			name: "offer sal tag short wrong unit address",
+			args: args{
+				sal: readWriteModel.NewMonitoredSALShortFormBasicMode(
+					0,
+					nil,
+					nil,
+					nil,
+					readWriteModel.ApplicationIdContainer_HVAC_ACTUATOR_74,
+					readWriteModel.NewSALDataLighting(
+						readWriteModel.NewLightingDataOn(2, readWriteModel.LightingCommandTypeContainer_LightingCommandOn),
+						nil,
+					),
+					0,
+					nil,
+				),
+				subscriptionHandle: NewSubscriptionHandle(
+					nil,
+					"",
+					NewSALMonitorTag(
+						readWriteModel.NewUnitAddress(13),
+						nil,
+						1,
+					),
+					spiModel.SubscriptionEvent,
+					0,
+				),
+				consumerProvider: func(t *testing.T) apiModel.PlcSubscriptionEventConsumer {
+					return func(event apiModel.PlcSubscriptionEvent) {
+						assert.NotNil(t, event)
+					}
+				},
+			},
+			want: false,
+		},
+		{
+			name: "offer sal tag short wrong application",
+			args: args{
+				sal: readWriteModel.NewMonitoredSALShortFormBasicMode(
+					0,
+					nil,
+					nil,
+					nil,
+					readWriteModel.ApplicationIdContainer_HVAC_ACTUATOR_74,
+					readWriteModel.NewSALDataLighting(
+						readWriteModel.NewLightingDataOn(2, readWriteModel.LightingCommandTypeContainer_LightingCommandOn),
+						nil,
+					),
+					0,
+					nil,
+				),
+				subscriptionHandle: NewSubscriptionHandle(
+					nil,
+					"",
+					NewSALMonitorTag(
+						nil,
+						func() *readWriteModel.ApplicationIdContainer {
+							a := readWriteModel.ApplicationIdContainer_LIGHTING_3A
+							return &a
+						}(),
+						1,
+					),
+					spiModel.SubscriptionEvent,
+					0,
+				),
+				consumerProvider: func(t *testing.T) apiModel.PlcSubscriptionEventConsumer {
+					return func(event apiModel.PlcSubscriptionEvent) {
+						assert.NotNil(t, event)
+					}
+				},
+			},
+			want: false,
+		},
+		{
+			name: "offer sal tag long",
 			args: args{
 				sal: readWriteModel.NewMonitoredSALLongFormSmartMode(
 					0,
@@ -350,10 +1285,45 @@ func TestSubscriber_offerSAL(t *testing.T) {
 					0,
 					nil,
 				),
-				subscriptionHandle: &SubscriptionHandle{
-					tag: &salMonitorTag{},
+				subscriptionHandle: NewSubscriptionHandle(nil, "", NewSALMonitorTag(nil, nil, 1), spiModel.SubscriptionEvent, 0),
+				consumerProvider: func(t *testing.T) apiModel.PlcSubscriptionEventConsumer {
+					return func(event apiModel.PlcSubscriptionEvent) {
+						assert.NotNil(t, event)
+					}
 				},
-				consumer: func(_ apiModel.PlcSubscriptionEvent) {
+			},
+			want: true,
+		},
+		{
+			name: "offer sal tag long bridged",
+			args: args{
+				sal: readWriteModel.NewMonitoredSALLongFormSmartMode(
+					1,
+					nil,
+					readWriteModel.NewBridgeAddress(2),
+					readWriteModel.ApplicationIdContainer_HVAC_ACTUATOR_74,
+					nil,
+					readWriteModel.NewReplyNetwork(
+						readWriteModel.NewNetworkRoute(
+							readWriteModel.NewNetworkProtocolControlInformation(1, 1),
+							[]readWriteModel.BridgeAddress{
+								readWriteModel.NewBridgeAddress(2),
+							},
+						),
+						readWriteModel.NewUnitAddress(0),
+					),
+					readWriteModel.NewSALDataLighting(
+						readWriteModel.NewLightingDataOn(2, readWriteModel.LightingCommandTypeContainer_LightingCommandOn),
+						nil,
+					),
+					0,
+					nil,
+				),
+				subscriptionHandle: NewSubscriptionHandle(nil, "", NewSALMonitorTag(nil, nil, 1), spiModel.SubscriptionEvent, 0),
+				consumerProvider: func(t *testing.T) apiModel.PlcSubscriptionEventConsumer {
+					return func(event apiModel.PlcSubscriptionEvent) {
+						assert.NotNil(t, event)
+					}
 				},
 			},
 			want: true,
@@ -365,7 +1335,7 @@ func TestSubscriber_offerSAL(t *testing.T) {
 				connection: tt.fields.connection,
 				consumers:  tt.fields.consumers,
 			}
-			assert.Equalf(t, tt.want, m.offerSAL(tt.args.sal, tt.args.subscriptionHandle, tt.args.consumer), "offerSAL(\n%v\n, %v)", tt.args.sal, tt.args.subscriptionHandle)
+			assert.Equalf(t, tt.want, m.offerSAL(tt.args.sal, tt.args.subscriptionHandle, tt.args.consumerProvider(t)), "offerSAL(\n%v\n, \n%v\n)", tt.args.sal, tt.args.subscriptionHandle)
 		})
 	}
 }
