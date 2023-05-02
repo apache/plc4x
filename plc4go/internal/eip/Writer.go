@@ -120,7 +120,7 @@ func (m Writer) Write(ctx context.Context, writeRequest model.PlcWriteRequest) <
 					)
 					// Start a new request-transaction (Is ended in the response-handler)
 					transaction := m.tm.StartTransaction()
-					transaction.Submit(func() {
+					transaction.Submit(func(transaction spi.RequestTransaction) {
 						// Send the  over the wire
 						if err := m.messageCodec.SendRequest(ctx, pkt, func(message spi.Message) bool {
 							eipPacket := message.(readWriteModel.EipPacket)
@@ -212,7 +212,7 @@ func (m Writer) Write(ctx context.Context, writeRequest model.PlcWriteRequest) <
 					)
 					// Start a new request-transaction (Is ended in the response-handler)
 					transaction := m.tm.StartTransaction()
-					transaction.Submit(func() {
+					transaction.Submit(func(transaction spi.RequestTransaction) {
 						// Send the  over the wire
 						if err := m.messageCodec.SendRequest(ctx, pkt, func(message spi.Message) bool {
 							eipPacket := message.(readWriteModel.EipPacket)

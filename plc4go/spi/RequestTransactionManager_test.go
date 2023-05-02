@@ -622,7 +622,7 @@ func Test_requestTransaction_Submit(t1 *testing.T) {
 		transactionLog   zerolog.Logger
 	}
 	type args struct {
-		operation utils.Runnable
+		operation RequestTransactionRunnable
 	}
 	tests := []struct {
 		name   string
@@ -635,7 +635,7 @@ func Test_requestTransaction_Submit(t1 *testing.T) {
 				parent: &requestTransactionManager{},
 			},
 			args: args{
-				operation: func() {
+				operation: func(_ RequestTransaction) {
 					// NOOP
 				},
 			},
@@ -649,7 +649,7 @@ func Test_requestTransaction_Submit(t1 *testing.T) {
 				},
 			},
 			args: args{
-				operation: func() {
+				operation: func(_ RequestTransaction) {
 					// NOOP
 				},
 			},

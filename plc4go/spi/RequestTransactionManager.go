@@ -42,6 +42,8 @@ func init() {
 	sharedExecutorInstance.Start()
 }
 
+type RequestTransactionRunnable func(transaction RequestTransaction)
+
 // RequestTransaction represents a transaction
 type RequestTransaction interface {
 	fmt.Stringer
@@ -49,8 +51,8 @@ type RequestTransaction interface {
 	FailRequest(err error) error
 	// EndRequest signals that this transaction is done
 	EndRequest() error
-	// Submit submits a Runnable to the RequestTransactionManager
-	Submit(operation utils.Runnable)
+	// Submit submits a RequestTransactionRunnable to the RequestTransactionManager
+	Submit(operation RequestTransactionRunnable)
 	// AwaitCompletion wait for this RequestTransaction to finish. Returns an error if it finished unsuccessful
 	AwaitCompletion(ctx context.Context) error
 }
@@ -224,14 +226,14 @@ func (t *requestTransaction) EndRequest() error {
 	return t.parent.endRequest(t)
 }
 
-func (t *requestTransaction) Submit(operation utils.Runnable) {
+func (t *requestTransaction) Submit(operation RequestTransactionRunnable) {
 	if t.operation != nil {
 		log.Warn().Msg("Operation already set")
 	}
 	t.transactionLog.Trace().Msgf("Submission of transaction %d", t.transactionId)
 	t.operation = func() {
 		t.transactionLog.Trace().Msgf("Start execution of transaction %d", t.transactionId)
-		operation()
+		operation(t)
 		t.transactionLog.Trace().Msgf("Completed execution of transaction %d", t.transactionId)
 	}
 	t.parent.submitTransaction(t)
