@@ -149,6 +149,55 @@ func TestReader_readSync(t *testing.T) {
 			},
 		},
 		{
+			name: "unmapped tag",
+			fields: fields{
+				messageCodec: func() *MessageCodec {
+					transport := test.NewTransport()
+					transportUrl := url.URL{Scheme: "test"}
+					transportInstance, err := transport.CreateTransportInstance(transportUrl, nil)
+					if err != nil {
+						t.Error(err)
+						t.FailNow()
+						return nil
+					}
+					codec := NewMessageCodec(transportInstance)
+					err = codec.Connect()
+					if err != nil {
+						t.Error(err)
+						t.FailNow()
+						return nil
+					}
+					return codec
+				}(),
+				tm: spi.NewRequestTransactionManager(10),
+			},
+			args: args{
+				ctx: context.Background(),
+				readRequest: spiModel.NewDefaultPlcReadRequest(
+					map[string]apiModel.PlcTag{
+						"asd": nil,
+					},
+					[]string{
+						"asd",
+					},
+					nil,
+					nil,
+				),
+				result: make(chan apiModel.PlcReadRequestResult, 1),
+			},
+			resultEvaluator: func(t *testing.T, results chan apiModel.PlcReadRequestResult) bool {
+				timer := time.NewTimer(2 * time.Second)
+				defer timer.Stop()
+				select {
+				case <-timer.C:
+					t.Fail()
+				case result := <-results:
+					assert.NotNil(t, result.GetErr())
+				}
+				return true
+			},
+		},
+		{
 			name: "read something without any tag",
 			args: args{
 				ctx: context.Background(),
@@ -245,6 +294,60 @@ func TestReader_readSync(t *testing.T) {
 					value := response.GetValue("blub")
 					assert.NotNil(t, value)
 					assert.Equal(t, "PC_CNIED", value.GetString())
+				}
+				return true
+			},
+		},
+		{
+			name: "read identify type aborted",
+			fields: fields{
+				alphaGenerator: &AlphaGenerator{currentAlpha: 'g'},
+				messageCodec: func() *MessageCodec {
+					transport := test.NewTransport()
+					transportUrl := url.URL{Scheme: "test"}
+					transportInstance, err := transport.CreateTransportInstance(transportUrl, nil)
+					if err != nil {
+						t.Error(err)
+						t.FailNow()
+						return nil
+					}
+					codec := NewMessageCodec(transportInstance)
+					err = codec.Connect()
+					if err != nil {
+						t.Error(err)
+						t.FailNow()
+						return nil
+					}
+					return codec
+				}(),
+				tm: spi.NewRequestTransactionManager(10),
+			},
+			args: args{
+				ctx: func() context.Context {
+					timeout, cancel := context.WithCancel(context.Background())
+					cancel()
+					return timeout
+				}(),
+				readRequest: spiModel.NewDefaultPlcReadRequest(
+					map[string]apiModel.PlcTag{
+						"blub": NewCALIdentifyTag(readWriteModel.NewUnitAddress(2), nil, readWriteModel.Attribute_Type, 1),
+					},
+					[]string{
+						"blub",
+					},
+					nil,
+					nil,
+				),
+				result: make(chan apiModel.PlcReadRequestResult, 1),
+			},
+			resultEvaluator: func(t *testing.T, results chan apiModel.PlcReadRequestResult) bool {
+				timer := time.NewTimer(2 * time.Second)
+				defer timer.Stop()
+				select {
+				case <-timer.C:
+					t.Fail()
+				case result := <-results:
+					assert.NotNil(t, result.GetErr())
 				}
 				return true
 			},
