@@ -65,6 +65,7 @@ func TestRenderTest(t *testing.T) {
 		&DefaultPlcWriteRequest{DefaultPlcTagRequest: NewDefaultPlcTagRequest(nil, nil)},
 		&DefaultPlcWriteRequestResult{},
 		&DefaultPlcWriteResponse{},
+		&ResponseItem{},
 	}
 	for _, sut := range suts {
 		t.Run(fmt.Sprintf("%T", sut), func(t *testing.T) {
