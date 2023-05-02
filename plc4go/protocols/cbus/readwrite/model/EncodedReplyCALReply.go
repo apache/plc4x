@@ -94,7 +94,7 @@ func NewEncodedReplyCALReply(calReply CALReply, peekedByte byte, cBusOptions CBu
 }
 
 // Deprecated: use the interface for direct cast
-func CastEncodedReplyCALReply(structType interface{}) EncodedReplyCALReply {
+func CastEncodedReplyCALReply(structType any) EncodedReplyCALReply {
 	if casted, ok := structType.(EncodedReplyCALReply); ok {
 		return casted
 	}

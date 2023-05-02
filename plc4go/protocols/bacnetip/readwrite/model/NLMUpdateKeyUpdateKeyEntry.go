@@ -83,7 +83,7 @@ func NewNLMUpdateKeyUpdateKeyEntry(keyIdentifier uint16, keySize uint8, key []by
 }
 
 // Deprecated: use the interface for direct cast
-func CastNLMUpdateKeyUpdateKeyEntry(structType interface{}) NLMUpdateKeyUpdateKeyEntry {
+func CastNLMUpdateKeyUpdateKeyEntry(structType any) NLMUpdateKeyUpdateKeyEntry {
 	if casted, ok := structType.(NLMUpdateKeyUpdateKeyEntry); ok {
 		return casted
 	}

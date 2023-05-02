@@ -112,7 +112,7 @@ func NewReplyOrConfirmation(peekedByte byte, cBusOptions CBusOptions, requestCon
 }
 
 // Deprecated: use the interface for direct cast
-func CastReplyOrConfirmation(structType interface{}) ReplyOrConfirmation {
+func CastReplyOrConfirmation(structType any) ReplyOrConfirmation {
 	if casted, ok := structType.(ReplyOrConfirmation); ok {
 		return casted
 	}
@@ -171,7 +171,7 @@ func ReplyOrConfirmationParseWithBuffer(ctx context.Context, readBuffer utils.Re
 		InitializeParent(ReplyOrConfirmation, byte)
 		GetParent() ReplyOrConfirmation
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child ReplyOrConfirmationChildSerializeRequirement
 	var typeSwitchError error
 	switch {

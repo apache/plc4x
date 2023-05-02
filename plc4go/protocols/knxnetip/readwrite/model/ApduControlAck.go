@@ -78,7 +78,7 @@ func NewApduControlAck() *_ApduControlAck {
 }
 
 // Deprecated: use the interface for direct cast
-func CastApduControlAck(structType interface{}) ApduControlAck {
+func CastApduControlAck(structType any) ApduControlAck {
 	if casted, ok := structType.(ApduControlAck); ok {
 		return casted
 	}

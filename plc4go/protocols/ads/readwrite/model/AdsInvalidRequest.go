@@ -89,7 +89,7 @@ func NewAdsInvalidRequest(targetAmsNetId AmsNetId, targetAmsPort uint16, sourceA
 }
 
 // Deprecated: use the interface for direct cast
-func CastAdsInvalidRequest(structType interface{}) AdsInvalidRequest {
+func CastAdsInvalidRequest(structType any) AdsInvalidRequest {
 	if casted, ok := structType.(AdsInvalidRequest); ok {
 		return casted
 	}

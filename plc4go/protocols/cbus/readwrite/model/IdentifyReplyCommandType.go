@@ -96,7 +96,7 @@ func NewIdentifyReplyCommandType(unitType string, numBytes uint8) *_IdentifyRepl
 }
 
 // Deprecated: use the interface for direct cast
-func CastIdentifyReplyCommandType(structType interface{}) IdentifyReplyCommandType {
+func CastIdentifyReplyCommandType(structType any) IdentifyReplyCommandType {
 	if casted, ok := structType.(IdentifyReplyCommandType); ok {
 		return casted
 	}

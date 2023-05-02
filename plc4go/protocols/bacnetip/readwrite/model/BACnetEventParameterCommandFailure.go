@@ -118,7 +118,7 @@ func NewBACnetEventParameterCommandFailure(openingTag BACnetOpeningTag, timeDela
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetEventParameterCommandFailure(structType interface{}) BACnetEventParameterCommandFailure {
+func CastBACnetEventParameterCommandFailure(structType any) BACnetEventParameterCommandFailure {
 	if casted, ok := structType.(BACnetEventParameterCommandFailure); ok {
 		return casted
 	}

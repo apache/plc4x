@@ -80,7 +80,7 @@ func NewBACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTa
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged(structType interface{}) BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged {
+func CastBACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged(structType any) BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged {
 	if casted, ok := structType.(BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged); ok {
 		return casted
 	}

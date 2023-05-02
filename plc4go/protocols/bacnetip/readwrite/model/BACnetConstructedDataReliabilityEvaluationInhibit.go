@@ -121,7 +121,7 @@ func NewBACnetConstructedDataReliabilityEvaluationInhibit(reliabilityEvaluationI
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataReliabilityEvaluationInhibit(structType interface{}) BACnetConstructedDataReliabilityEvaluationInhibit {
+func CastBACnetConstructedDataReliabilityEvaluationInhibit(structType any) BACnetConstructedDataReliabilityEvaluationInhibit {
 	if casted, ok := structType.(BACnetConstructedDataReliabilityEvaluationInhibit); ok {
 		return casted
 	}

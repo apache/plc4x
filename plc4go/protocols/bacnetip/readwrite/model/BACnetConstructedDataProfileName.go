@@ -121,7 +121,7 @@ func NewBACnetConstructedDataProfileName(profileName BACnetApplicationTagCharact
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataProfileName(structType interface{}) BACnetConstructedDataProfileName {
+func CastBACnetConstructedDataProfileName(structType any) BACnetConstructedDataProfileName {
 	if casted, ok := structType.(BACnetConstructedDataProfileName); ok {
 		return casted
 	}

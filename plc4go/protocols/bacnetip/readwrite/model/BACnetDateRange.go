@@ -76,7 +76,7 @@ func NewBACnetDateRange(startDate BACnetApplicationTagDate, endDate BACnetApplic
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetDateRange(structType interface{}) BACnetDateRange {
+func CastBACnetDateRange(structType any) BACnetDateRange {
 	if casted, ok := structType.(BACnetDateRange); ok {
 		return casted
 	}

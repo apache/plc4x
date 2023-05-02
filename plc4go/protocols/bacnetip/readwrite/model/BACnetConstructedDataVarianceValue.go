@@ -121,7 +121,7 @@ func NewBACnetConstructedDataVarianceValue(varianceValue BACnetApplicationTagRea
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataVarianceValue(structType interface{}) BACnetConstructedDataVarianceValue {
+func CastBACnetConstructedDataVarianceValue(structType any) BACnetConstructedDataVarianceValue {
 	if casted, ok := structType.(BACnetConstructedDataVarianceValue); ok {
 		return casted
 	}

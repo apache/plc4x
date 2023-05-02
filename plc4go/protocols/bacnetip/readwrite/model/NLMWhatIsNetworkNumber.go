@@ -78,7 +78,7 @@ func NewNLMWhatIsNetworkNumber(apduLength uint16) *_NLMWhatIsNetworkNumber {
 }
 
 // Deprecated: use the interface for direct cast
-func CastNLMWhatIsNetworkNumber(structType interface{}) NLMWhatIsNetworkNumber {
+func CastNLMWhatIsNetworkNumber(structType any) NLMWhatIsNetworkNumber {
 	if casted, ok := structType.(NLMWhatIsNetworkNumber); ok {
 		return casted
 	}

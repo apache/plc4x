@@ -142,7 +142,7 @@ func NewRequestDirectCommandAccess(calData CALData, alpha Alpha, peekedByte Requ
 }
 
 // Deprecated: use the interface for direct cast
-func CastRequestDirectCommandAccess(structType interface{}) RequestDirectCommandAccess {
+func CastRequestDirectCommandAccess(structType any) RequestDirectCommandAccess {
 	if casted, ok := structType.(RequestDirectCommandAccess); ok {
 		return casted
 	}

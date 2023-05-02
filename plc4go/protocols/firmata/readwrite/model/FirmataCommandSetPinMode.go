@@ -104,7 +104,7 @@ func NewFirmataCommandSetPinMode(pin uint8, mode PinMode, response bool) *_Firma
 }
 
 // Deprecated: use the interface for direct cast
-func CastFirmataCommandSetPinMode(structType interface{}) FirmataCommandSetPinMode {
+func CastFirmataCommandSetPinMode(structType any) FirmataCommandSetPinMode {
 	if casted, ok := structType.(FirmataCommandSetPinMode); ok {
 		return casted
 	}

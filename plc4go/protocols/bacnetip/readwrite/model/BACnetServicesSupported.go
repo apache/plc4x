@@ -33,6 +33,7 @@ type BACnetServicesSupported uint8
 
 type IBACnetServicesSupported interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 
@@ -314,8 +315,8 @@ func BACnetServicesSupportedKnows(value uint8) bool {
 	return false
 }
 
-func CastBACnetServicesSupported(structType interface{}) BACnetServicesSupported {
-	castFunc := func(typ interface{}) BACnetServicesSupported {
+func CastBACnetServicesSupported(structType any) BACnetServicesSupported {
+	castFunc := func(typ any) BACnetServicesSupported {
 		if sBACnetServicesSupported, ok := typ.(BACnetServicesSupported); ok {
 			return sBACnetServicesSupported
 		}

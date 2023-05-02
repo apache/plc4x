@@ -80,7 +80,7 @@ func WithDiscoveryOptionRemoteAddress(remoteAddress string) WithDiscoveryOption 
 	return withDiscoveryOption{options.WithDiscoveryOptionRemoteAddress(remoteAddress)}
 }
 
-func WithDiscoveryOptionProtocolSpecific(key string, value interface{}) WithDiscoveryOption {
+func WithDiscoveryOptionProtocolSpecific(key string, value any) WithDiscoveryOption {
 	return withDiscoveryOption{options.WithDiscoveryOptionProtocolSpecific(key, value)}
 }
 

@@ -121,7 +121,7 @@ func NewBACnetConstructedDataGroupID(groupId BACnetApplicationTagUnsignedInteger
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataGroupID(structType interface{}) BACnetConstructedDataGroupID {
+func CastBACnetConstructedDataGroupID(structType any) BACnetConstructedDataGroupID {
 	if casted, ok := structType.(BACnetConstructedDataGroupID); ok {
 		return casted
 	}

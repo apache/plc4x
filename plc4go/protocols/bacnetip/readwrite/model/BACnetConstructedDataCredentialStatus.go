@@ -121,7 +121,7 @@ func NewBACnetConstructedDataCredentialStatus(binaryPv BACnetBinaryPVTagged, ope
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataCredentialStatus(structType interface{}) BACnetConstructedDataCredentialStatus {
+func CastBACnetConstructedDataCredentialStatus(structType any) BACnetConstructedDataCredentialStatus {
 	if casted, ok := structType.(BACnetConstructedDataCredentialStatus); ok {
 		return casted
 	}

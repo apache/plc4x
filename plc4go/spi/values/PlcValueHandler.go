@@ -35,11 +35,11 @@ import (
 type DefaultValueHandler struct {
 }
 
-func (m DefaultValueHandler) NewPlcValue(tag model.PlcTag, value interface{}) (values.PlcValue, error) {
+func (m DefaultValueHandler) NewPlcValue(tag model.PlcTag, value any) (values.PlcValue, error) {
 	return m.parseType(tag, tag.GetArrayInfo(), value)
 }
 
-func (m DefaultValueHandler) parseType(tag model.PlcTag, arrayInfo []model.ArrayInfo, value interface{}) (values.PlcValue, error) {
+func (m DefaultValueHandler) parseType(tag model.PlcTag, arrayInfo []model.ArrayInfo, value any) (values.PlcValue, error) {
 	valueType := tag.GetValueType()
 	if (arrayInfo != nil) && (len(arrayInfo) > 0) {
 		return m.ParseListType(tag, arrayInfo, value)
@@ -49,7 +49,7 @@ func (m DefaultValueHandler) parseType(tag model.PlcTag, arrayInfo []model.Array
 	return m.ParseSimpleType(tag, value)
 }
 
-func (m DefaultValueHandler) ParseListType(tag model.PlcTag, arrayInfo []model.ArrayInfo, value interface{}) (values.PlcValue, error) {
+func (m DefaultValueHandler) ParseListType(tag model.PlcTag, arrayInfo []model.ArrayInfo, value any) (values.PlcValue, error) {
 	// We've reached the end of the recursion.
 	if len(arrayInfo) == 0 {
 		return m.parseType(tag, arrayInfo, value)
@@ -57,9 +57,9 @@ func (m DefaultValueHandler) ParseListType(tag model.PlcTag, arrayInfo []model.A
 
 	s := reflect.ValueOf(value)
 	if s.Kind() != reflect.Slice {
-		return nil, errors.New("couldn't cast value to []interface{}")
+		return nil, errors.New("couldn't cast value to []any")
 	}
-	curValues := make([]interface{}, s.Len())
+	curValues := make([]any, s.Len())
 	for i := 0; i < s.Len(); i++ {
 		curValues[i] = s.Index(i).Interface()
 	}
@@ -86,11 +86,11 @@ func (m DefaultValueHandler) ParseListType(tag model.PlcTag, arrayInfo []model.A
 	return NewPlcList(plcValues), nil
 }
 
-func (m DefaultValueHandler) ParseStructType(_ model.PlcTag, _ interface{}) (values.PlcValue, error) {
+func (m DefaultValueHandler) ParseStructType(_ model.PlcTag, _ any) (values.PlcValue, error) {
 	return nil, errors.New("structured types not supported by the base value handler")
 }
 
-func (m DefaultValueHandler) ParseSimpleType(tag model.PlcTag, value interface{}) (values.PlcValue, error) {
+func (m DefaultValueHandler) ParseSimpleType(tag model.PlcTag, value any) (values.PlcValue, error) {
 	plcValue, err := m.NewPlcValueFromType(tag.GetValueType(), value)
 	if err != nil && strings.HasPrefix(err.Error(), "couldn't cast") {
 		stringValue := fmt.Sprintf("%v", value)
@@ -102,7 +102,7 @@ func (m DefaultValueHandler) ParseSimpleType(tag model.PlcTag, value interface{}
 	return plcValue, err
 }
 
-func (m DefaultValueHandler) NewPlcValueFromType(valueType values.PlcValueType, value interface{}) (values.PlcValue, error) {
+func (m DefaultValueHandler) NewPlcValueFromType(valueType values.PlcValueType, value any) (values.PlcValue, error) {
 	// If the user passed in PLCValues, take a shortcut.
 	plcValue, isPlcValue := value.(values.PlcValue)
 	if isPlcValue {

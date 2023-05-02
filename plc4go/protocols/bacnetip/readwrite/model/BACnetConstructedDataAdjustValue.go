@@ -121,7 +121,7 @@ func NewBACnetConstructedDataAdjustValue(adjustValue BACnetApplicationTagSignedI
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataAdjustValue(structType interface{}) BACnetConstructedDataAdjustValue {
+func CastBACnetConstructedDataAdjustValue(structType any) BACnetConstructedDataAdjustValue {
 	if casted, ok := structType.(BACnetConstructedDataAdjustValue); ok {
 		return casted
 	}

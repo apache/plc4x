@@ -77,7 +77,7 @@ func NewMediaTransportControlDataStop(commandTypeContainer MediaTransportControl
 }
 
 // Deprecated: use the interface for direct cast
-func CastMediaTransportControlDataStop(structType interface{}) MediaTransportControlDataStop {
+func CastMediaTransportControlDataStop(structType any) MediaTransportControlDataStop {
 	if casted, ok := structType.(MediaTransportControlDataStop); ok {
 		return casted
 	}

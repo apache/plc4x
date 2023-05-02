@@ -53,7 +53,7 @@ func NewDriver() plc4go.PlcDriver {
 		applicationManager: ApplicationManager{
 			applications: map[string]*ApplicationLayerMessageCodec{},
 		},
-		tm:                      *spi.NewRequestTransactionManager(math.MaxInt),
+		tm:                      spi.NewRequestTransactionManager(math.MaxInt),
 		awaitSetupComplete:      true,
 		awaitDisconnectComplete: true,
 	}
@@ -103,7 +103,7 @@ func (m *Driver) GetConnectionWithContext(ctx context.Context, transportUrl url.
 	log.Debug().Msgf("working with codec %#v", codec)
 
 	// Create the new connection
-	connection := NewConnection(codec, m.GetPlcTagHandler(), &m.tm, options)
+	connection := NewConnection(codec, m.GetPlcTagHandler(), m.tm, options)
 	log.Debug().Msg("created connection, connecting now")
 	return connection.ConnectWithContext(ctx)
 }

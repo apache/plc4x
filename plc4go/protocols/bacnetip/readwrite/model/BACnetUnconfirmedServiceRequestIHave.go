@@ -113,7 +113,7 @@ func NewBACnetUnconfirmedServiceRequestIHave(deviceIdentifier BACnetApplicationT
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetUnconfirmedServiceRequestIHave(structType interface{}) BACnetUnconfirmedServiceRequestIHave {
+func CastBACnetUnconfirmedServiceRequestIHave(structType any) BACnetUnconfirmedServiceRequestIHave {
 	if casted, ok := structType.(BACnetUnconfirmedServiceRequestIHave); ok {
 		return casted
 	}

@@ -128,7 +128,7 @@ func NewApduDataExtPropertyValueWrite(objectIndex uint8, propertyId uint8, count
 }
 
 // Deprecated: use the interface for direct cast
-func CastApduDataExtPropertyValueWrite(structType interface{}) ApduDataExtPropertyValueWrite {
+func CastApduDataExtPropertyValueWrite(structType any) ApduDataExtPropertyValueWrite {
 	if casted, ok := structType.(ApduDataExtPropertyValueWrite); ok {
 		return casted
 	}

@@ -94,7 +94,7 @@ func NewBACnetChannelValueInteger(integerValue BACnetApplicationTagSignedInteger
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetChannelValueInteger(structType interface{}) BACnetChannelValueInteger {
+func CastBACnetChannelValueInteger(structType any) BACnetChannelValueInteger {
 	if casted, ok := structType.(BACnetChannelValueInteger); ok {
 		return casted
 	}

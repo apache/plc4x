@@ -69,7 +69,7 @@ func NewZoneStatus(value ZoneStatusTemp) *_ZoneStatus {
 }
 
 // Deprecated: use the interface for direct cast
-func CastZoneStatus(structType interface{}) ZoneStatus {
+func CastZoneStatus(structType any) ZoneStatus {
 	if casted, ok := structType.(ZoneStatus); ok {
 		return casted
 	}

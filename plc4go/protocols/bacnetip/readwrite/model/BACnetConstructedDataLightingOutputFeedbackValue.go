@@ -121,7 +121,7 @@ func NewBACnetConstructedDataLightingOutputFeedbackValue(feedbackValue BACnetApp
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataLightingOutputFeedbackValue(structType interface{}) BACnetConstructedDataLightingOutputFeedbackValue {
+func CastBACnetConstructedDataLightingOutputFeedbackValue(structType any) BACnetConstructedDataLightingOutputFeedbackValue {
 	if casted, ok := structType.(BACnetConstructedDataLightingOutputFeedbackValue); ok {
 		return casted
 	}

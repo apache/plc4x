@@ -121,7 +121,7 @@ func NewBACnetConstructedDataScheduleDefault(scheduleDefault BACnetConstructedDa
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataScheduleDefault(structType interface{}) BACnetConstructedDataScheduleDefault {
+func CastBACnetConstructedDataScheduleDefault(structType any) BACnetConstructedDataScheduleDefault {
 	if casted, ok := structType.(BACnetConstructedDataScheduleDefault); ok {
 		return casted
 	}

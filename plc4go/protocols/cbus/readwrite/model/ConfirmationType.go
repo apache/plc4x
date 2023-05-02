@@ -33,6 +33,7 @@ type ConfirmationType byte
 
 type IConfirmationType interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 
@@ -104,8 +105,8 @@ func ConfirmationTypeKnows(value byte) bool {
 	return false
 }
 
-func CastConfirmationType(structType interface{}) ConfirmationType {
-	castFunc := func(typ interface{}) ConfirmationType {
+func CastConfirmationType(structType any) ConfirmationType {
+	castFunc := func(typ any) ConfirmationType {
 		if sConfirmationType, ok := typ.(ConfirmationType); ok {
 			return sConfirmationType
 		}

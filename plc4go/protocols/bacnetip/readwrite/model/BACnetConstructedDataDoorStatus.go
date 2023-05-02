@@ -121,7 +121,7 @@ func NewBACnetConstructedDataDoorStatus(doorStatus BACnetDoorStatusTagged, openi
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataDoorStatus(structType interface{}) BACnetConstructedDataDoorStatus {
+func CastBACnetConstructedDataDoorStatus(structType any) BACnetConstructedDataDoorStatus {
 	if casted, ok := structType.(BACnetConstructedDataDoorStatus); ok {
 		return casted
 	}

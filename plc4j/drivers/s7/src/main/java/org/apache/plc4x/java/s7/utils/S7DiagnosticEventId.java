@@ -631,22 +631,22 @@ public enum S7DiagnosticEventId {
 
     
     
-    private static final Map<Short, S7DiagnosticEventId> map;
+    private static final Map<Integer, S7DiagnosticEventId> map;
     
-    private static final Map<Short, String> idstr;
+    private static final Map<Integer, String> idstr;
     
     static {
         map = new HashMap<>();
         idstr = new HashMap<>();
         for (S7DiagnosticEventId  event : S7DiagnosticEventId.values()) {
-            map.put(event.code, event);
+            map.put(Short.toUnsignedInt(event.code), event);
         }
        
-        idstr.put((short) 0x0000, "Event leaving state. ");
-        idstr.put((short) 0x0100, "Event entering state. ");
-        idstr.put((short) 0x0200, "Entry in diagnostic buffer. ");
-        idstr.put((short) 0x0400, "Internal error. ");
-        idstr.put((short) 0x0800, "External error. ");
+        idstr.put(0x0000, "Event leaving state. ");
+        idstr.put(0x0100, "Event entering state. ");
+        idstr.put(0x0200, "Entry in diagnostic buffer. ");
+        idstr.put(0x0400, "Internal error. ");
+        idstr.put(0x0800, "External error. ");
     }    
     
     private final String description;
@@ -667,16 +667,14 @@ public enum S7DiagnosticEventId {
     }    
 
     public static S7DiagnosticEventId  valueOf(short code) {
+        int intcode = Short.toUnsignedInt(code);
+        int a = code & 0xA000;
+        int b = code & 0xB000;
+        if ((a != 0) || (b != 0)) intcode = 0x0000;
         
-        Integer intcode = Short.toUnsignedInt(code);
-        
-        if ((intcode > 0x8000) && (intcode < 0xA000)){
-            if ((intcode != 0x9101) && (intcode != 0x9190) && (intcode != 0x91F0)
-                    && (intcode != 0x91F1) && (intcode != 0x91F2)
-                    && (intcode != 0x91F3))
-            intcode = (intcode & 0xF0FF);
-        } else if (((intcode >= 0xA000) && (intcode <= 0xBFFF))) intcode = 0x0000;
-                
-        return map.get(intcode.shortValue());
+       S7DiagnosticEventId eventid =  (map.get(intcode) == null)?
+                                        map.get(0x0000):
+                                        map.get(intcode);        
+        return eventid;
     }    
 }

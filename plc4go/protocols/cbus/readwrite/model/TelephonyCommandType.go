@@ -33,6 +33,7 @@ type TelephonyCommandType uint8
 
 type ITelephonyCommandType interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 	NumberOfArguments() uint8
 }
@@ -96,8 +97,8 @@ func TelephonyCommandTypeKnows(value uint8) bool {
 	return false
 }
 
-func CastTelephonyCommandType(structType interface{}) TelephonyCommandType {
-	castFunc := func(typ interface{}) TelephonyCommandType {
+func CastTelephonyCommandType(structType any) TelephonyCommandType {
+	castFunc := func(typ any) TelephonyCommandType {
 		if sTelephonyCommandType, ok := typ.(TelephonyCommandType); ok {
 			return sTelephonyCommandType
 		}

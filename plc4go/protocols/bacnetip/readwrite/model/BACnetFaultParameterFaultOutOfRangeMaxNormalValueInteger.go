@@ -96,7 +96,7 @@ func NewBACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger(integerValue BA
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger(structType interface{}) BACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger {
+func CastBACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger(structType any) BACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger {
 	if casted, ok := structType.(BACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger); ok {
 		return casted
 	}

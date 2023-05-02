@@ -116,7 +116,7 @@ func NewBACnetChannelValue(peekedTagHeader BACnetTagHeader) *_BACnetChannelValue
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetChannelValue(structType interface{}) BACnetChannelValue {
+func CastBACnetChannelValue(structType any) BACnetChannelValue {
 	if casted, ok := structType.(BACnetChannelValue); ok {
 		return casted
 	}
@@ -186,7 +186,7 @@ func BACnetChannelValueParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 		InitializeParent(BACnetChannelValue, BACnetTagHeader)
 		GetParent() BACnetChannelValue
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child BACnetChannelValueChildSerializeRequirement
 	var typeSwitchError error
 	switch {

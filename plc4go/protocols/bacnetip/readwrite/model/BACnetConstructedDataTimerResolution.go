@@ -121,7 +121,7 @@ func NewBACnetConstructedDataTimerResolution(resolution BACnetApplicationTagUnsi
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataTimerResolution(structType interface{}) BACnetConstructedDataTimerResolution {
+func CastBACnetConstructedDataTimerResolution(structType any) BACnetConstructedDataTimerResolution {
 	if casted, ok := structType.(BACnetConstructedDataTimerResolution); ok {
 		return casted
 	}

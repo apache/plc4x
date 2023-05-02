@@ -77,7 +77,7 @@ func NewSecurityDataTamperOn(commandTypeContainer SecurityCommandTypeContainer, 
 }
 
 // Deprecated: use the interface for direct cast
-func CastSecurityDataTamperOn(structType interface{}) SecurityDataTamperOn {
+func CastSecurityDataTamperOn(structType any) SecurityDataTamperOn {
 	if casted, ok := structType.(SecurityDataTamperOn); ok {
 		return casted
 	}

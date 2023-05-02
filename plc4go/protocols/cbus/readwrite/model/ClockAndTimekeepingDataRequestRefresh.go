@@ -77,7 +77,7 @@ func NewClockAndTimekeepingDataRequestRefresh(commandTypeContainer ClockAndTimek
 }
 
 // Deprecated: use the interface for direct cast
-func CastClockAndTimekeepingDataRequestRefresh(structType interface{}) ClockAndTimekeepingDataRequestRefresh {
+func CastClockAndTimekeepingDataRequestRefresh(structType any) ClockAndTimekeepingDataRequestRefresh {
 	if casted, ok := structType.(ClockAndTimekeepingDataRequestRefresh); ok {
 		return casted
 	}

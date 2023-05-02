@@ -69,7 +69,7 @@ func NewIPAddress(addr []byte) *_IPAddress {
 }
 
 // Deprecated: use the interface for direct cast
-func CastIPAddress(structType interface{}) IPAddress {
+func CastIPAddress(structType any) IPAddress {
 	if casted, ok := structType.(IPAddress); ok {
 		return casted
 	}

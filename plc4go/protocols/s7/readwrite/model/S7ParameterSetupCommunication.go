@@ -118,7 +118,7 @@ func NewS7ParameterSetupCommunication(maxAmqCaller uint16, maxAmqCallee uint16, 
 }
 
 // Deprecated: use the interface for direct cast
-func CastS7ParameterSetupCommunication(structType interface{}) S7ParameterSetupCommunication {
+func CastS7ParameterSetupCommunication(structType any) S7ParameterSetupCommunication {
 	if casted, ok := structType.(S7ParameterSetupCommunication); ok {
 		return casted
 	}
@@ -175,7 +175,7 @@ func S7ParameterSetupCommunicationParseWithBuffer(ctx context.Context, readBuffe
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of S7ParameterSetupCommunication")
 		}
 		if reserved != uint8(0x00) {
-			Plc4xModelLog.Info().Fields(map[string]interface{}{
+			Plc4xModelLog.Info().Fields(map[string]any{
 				"expected value": uint8(0x00),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
@@ -241,7 +241,7 @@ func (m *_S7ParameterSetupCommunication) SerializeWithWriteBuffer(ctx context.Co
 		{
 			var reserved uint8 = uint8(0x00)
 			if m.reservedField0 != nil {
-				Plc4xModelLog.Info().Fields(map[string]interface{}{
+				Plc4xModelLog.Info().Fields(map[string]any{
 					"expected value": uint8(0x00),
 					"got value":      reserved,
 				}).Msg("Overriding reserved field with unexpected value.")

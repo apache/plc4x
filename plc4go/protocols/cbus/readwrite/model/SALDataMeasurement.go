@@ -98,7 +98,7 @@ func NewSALDataMeasurement(measurementData MeasurementData, salData SALData) *_S
 }
 
 // Deprecated: use the interface for direct cast
-func CastSALDataMeasurement(structType interface{}) SALDataMeasurement {
+func CastSALDataMeasurement(structType any) SALDataMeasurement {
 	if casted, ok := structType.(SALDataMeasurement); ok {
 		return casted
 	}

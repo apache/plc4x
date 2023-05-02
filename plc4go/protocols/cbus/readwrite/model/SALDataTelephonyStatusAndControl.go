@@ -98,7 +98,7 @@ func NewSALDataTelephonyStatusAndControl(telephonyData TelephonyData, salData SA
 }
 
 // Deprecated: use the interface for direct cast
-func CastSALDataTelephonyStatusAndControl(structType interface{}) SALDataTelephonyStatusAndControl {
+func CastSALDataTelephonyStatusAndControl(structType any) SALDataTelephonyStatusAndControl {
 	if casted, ok := structType.(SALDataTelephonyStatusAndControl); ok {
 		return casted
 	}

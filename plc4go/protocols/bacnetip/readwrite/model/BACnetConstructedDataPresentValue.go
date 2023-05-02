@@ -121,7 +121,7 @@ func NewBACnetConstructedDataPresentValue(presentValue BACnetApplicationTagUnsig
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataPresentValue(structType interface{}) BACnetConstructedDataPresentValue {
+func CastBACnetConstructedDataPresentValue(structType any) BACnetConstructedDataPresentValue {
 	if casted, ok := structType.(BACnetConstructedDataPresentValue); ok {
 		return casted
 	}

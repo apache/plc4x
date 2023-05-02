@@ -96,7 +96,7 @@ func NewCBusMessageToClient(reply ReplyOrConfirmation, requestContext RequestCon
 }
 
 // Deprecated: use the interface for direct cast
-func CastCBusMessageToClient(structType interface{}) CBusMessageToClient {
+func CastCBusMessageToClient(structType any) CBusMessageToClient {
 	if casted, ok := structType.(CBusMessageToClient); ok {
 		return casted
 	}

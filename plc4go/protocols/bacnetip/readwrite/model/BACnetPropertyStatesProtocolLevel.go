@@ -94,7 +94,7 @@ func NewBACnetPropertyStatesProtocolLevel(protocolLevel BACnetProtocolLevelTagge
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetPropertyStatesProtocolLevel(structType interface{}) BACnetPropertyStatesProtocolLevel {
+func CastBACnetPropertyStatesProtocolLevel(structType any) BACnetPropertyStatesProtocolLevel {
 	if casted, ok := structType.(BACnetPropertyStatesProtocolLevel); ok {
 		return casted
 	}

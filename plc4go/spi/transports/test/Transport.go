@@ -31,34 +31,51 @@ import (
 )
 
 type Transport struct {
+	preregisteredInstances map[url.URL]transports.TransportInstance
 }
 
 func NewTransport() *Transport {
-	return &Transport{}
+	return &Transport{preregisteredInstances: map[url.URL]transports.TransportInstance{}}
 }
 
-func (m Transport) GetTransportCode() string {
+func (m *Transport) GetTransportCode() string {
 	return "test"
 }
 
-func (m Transport) GetTransportName() string {
+func (m *Transport) GetTransportName() string {
 	return "Test Transport"
 }
 
-func (m Transport) CreateTransportInstance(_ url.URL, _ map[string][]string) (transports.TransportInstance, error) {
+func (m *Transport) CreateTransportInstance(transportUrl url.URL, options map[string][]string) (transports.TransportInstance, error) {
+	if _, ok := options["failTestTransport"]; ok {
+		return nil, errors.New("test transport failed on purpose")
+	}
+	if preregisteredInstance, ok := m.preregisteredInstances[transportUrl]; ok {
+		log.Trace().Msgf("Returning pre registered instance for %v", transportUrl)
+		return preregisteredInstance, nil
+	}
 	log.Trace().Msg("create transport instance")
-	return NewTransportInstance(&m), nil
+	return NewTransportInstance(m), nil
 }
 
-func (m Transport) String() string {
+func (m *Transport) AddPreregisteredInstances(transportUrl url.URL, preregisteredInstance transports.TransportInstance) error {
+	if _, ok := m.preregisteredInstances[transportUrl]; ok {
+		return errors.Errorf("registered instance for %v already registered", transportUrl)
+	}
+	m.preregisteredInstances[transportUrl] = preregisteredInstance
+	return nil
+}
+
+func (m *Transport) String() string {
 	return m.GetTransportCode() + "(" + m.GetTransportName() + ")"
 }
 
 type TransportInstance struct {
-	readBuffer  []byte
-	writeBuffer []byte
-	connected   bool
-	transport   *Transport
+	readBuffer       []byte
+	writeBuffer      []byte
+	connected        bool
+	transport        *Transport
+	writeInterceptor func(transportInstance *TransportInstance, data []byte)
 }
 
 func NewTransportInstance(transport *Transport) *TransportInstance {
@@ -110,7 +127,7 @@ func (m *TransportInstance) FillBuffer(until func(pos uint, currentByte byte, re
 	}
 }
 
-func (m *TransportInstance) PeekReadableBytes(numBytes uint32) ([]uint8, error) {
+func (m *TransportInstance) PeekReadableBytes(numBytes uint32) ([]byte, error) {
 	log.Trace().Msgf("Peek %d readable bytes", numBytes)
 	availableBytes := uint32(math.Min(float64(numBytes), float64(len(m.readBuffer))))
 	var err error
@@ -123,23 +140,29 @@ func (m *TransportInstance) PeekReadableBytes(numBytes uint32) ([]uint8, error) 
 	return m.readBuffer[0:availableBytes], nil
 }
 
-func (m *TransportInstance) Read(numBytes uint32) ([]uint8, error) {
+func (m *TransportInstance) Read(numBytes uint32) ([]byte, error) {
 	log.Trace().Msgf("Read num bytes %d", numBytes)
 	data := m.readBuffer[0:int(numBytes)]
 	m.readBuffer = m.readBuffer[int(numBytes):]
 	return data, nil
 }
 
-func (m *TransportInstance) Write(data []uint8) error {
-	log.Trace().Msgf("Write data 0x%x", data)
+func (m *TransportInstance) SetWriteInterceptor(writeInterceptor func(transportInstance *TransportInstance, data []byte)) {
+	m.writeInterceptor = writeInterceptor
+}
+
+func (m *TransportInstance) Write(data []byte) error {
+	if m.writeInterceptor != nil {
+		m.writeInterceptor(m, data)
+	}
+	log.Trace().Msgf("Write data %#x", data)
 	m.writeBuffer = append(m.writeBuffer, data...)
 	return nil
 }
 
-func (m *TransportInstance) FillReadBuffer(data []uint8) error {
-	log.Trace().Msgf("FillReadBuffer with 0x%x", data)
+func (m *TransportInstance) FillReadBuffer(data []byte) {
+	log.Trace().Msgf("FillReadBuffer with %#x", data)
 	m.readBuffer = append(m.readBuffer, data...)
-	return nil
 }
 
 func (m *TransportInstance) GetNumDrainableBytes() uint32 {
@@ -147,11 +170,11 @@ func (m *TransportInstance) GetNumDrainableBytes() uint32 {
 	return uint32(len(m.writeBuffer))
 }
 
-func (m *TransportInstance) DrainWriteBuffer(numBytes uint32) ([]uint8, error) {
+func (m *TransportInstance) DrainWriteBuffer(numBytes uint32) []byte {
 	log.Trace().Msgf("Drain write buffer with number of bytes %d", numBytes)
 	data := m.writeBuffer[0:int(numBytes)]
 	m.writeBuffer = m.writeBuffer[int(numBytes):]
-	return data, nil
+	return data
 }
 
 func (m *TransportInstance) String() string {

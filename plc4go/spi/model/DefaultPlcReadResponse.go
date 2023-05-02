@@ -20,26 +20,21 @@
 package model
 
 import (
-	"context"
-	"encoding/binary"
-	"fmt"
-
-	"github.com/apache/plc4x/plc4go/pkg/api/model"
+	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
-	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
+//go:generate go run ../../tools/plc4xgenerator/gen.go -type=DefaultPlcReadResponse
 type DefaultPlcReadResponse struct {
-	DefaultResponse
-	request model.PlcReadRequest
-	values  map[string]*DefaultPlcReadResponseItem
+	request apiModel.PlcReadRequest
+	values  map[string]*ResponseItem
 }
 
-func NewDefaultPlcReadResponse(request model.PlcReadRequest, responseCodes map[string]model.PlcResponseCode, values map[string]values.PlcValue) model.PlcReadResponse {
-	valueMap := map[string]*DefaultPlcReadResponseItem{}
+func NewDefaultPlcReadResponse(request apiModel.PlcReadRequest, responseCodes map[string]apiModel.PlcResponseCode, values map[string]values.PlcValue) apiModel.PlcReadResponse {
+	valueMap := map[string]*ResponseItem{}
 	for name, code := range responseCodes {
 		value := values[name]
-		valueMap[name] = NewReadResponseItem(code, value)
+		valueMap[name] = NewResponseItem(code, value)
 	}
 	return &DefaultPlcReadResponse{
 		request: request,
@@ -47,7 +42,15 @@ func NewDefaultPlcReadResponse(request model.PlcReadRequest, responseCodes map[s
 	}
 }
 
+func (d *DefaultPlcReadResponse) IsAPlcMessage() bool {
+	return true
+}
+
 func (d *DefaultPlcReadResponse) GetTagNames() []string {
+	if d.request == nil {
+		// safety guard
+		return nil
+	}
 	var tagNames []string
 	// We take the tag names from the request to keep order as map is not ordered
 	for _, name := range d.request.GetTagNames() {
@@ -58,70 +61,14 @@ func (d *DefaultPlcReadResponse) GetTagNames() []string {
 	return tagNames
 }
 
-func (d *DefaultPlcReadResponse) GetRequest() model.PlcReadRequest {
+func (d *DefaultPlcReadResponse) GetRequest() apiModel.PlcReadRequest {
 	return d.request
 }
 
-func (d *DefaultPlcReadResponse) GetResponseCode(name string) model.PlcResponseCode {
+func (d *DefaultPlcReadResponse) GetResponseCode(name string) apiModel.PlcResponseCode {
 	return d.values[name].GetCode()
 }
 
 func (d *DefaultPlcReadResponse) GetValue(name string) values.PlcValue {
 	return d.values[name].GetValue()
-}
-
-func (d *DefaultPlcReadResponse) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
-	if err := d.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
-		return nil, err
-	}
-	return wb.GetBytes(), nil
-}
-
-func (d *DefaultPlcReadResponse) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
-	if err := writeBuffer.PushContext("PlcReadResponse"); err != nil {
-		return err
-	}
-
-	if d.request != nil {
-		if serializableField, ok := d.request.(utils.Serializable); ok {
-			if err := serializableField.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
-				return err
-			}
-		} else {
-			stringValue := fmt.Sprintf("%v", d.request)
-			if err := writeBuffer.WriteString("request", uint32(len(stringValue)*8), "UTF-8", stringValue); err != nil {
-				return err
-			}
-		}
-	}
-	if err := writeBuffer.PushContext("values"); err != nil {
-		return err
-	}
-	for name, elem := range d.values {
-		if err := writeBuffer.PushContext(name); err != nil {
-			return err
-		}
-		if err := elem.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
-			return err
-		}
-		if err := writeBuffer.PopContext(name); err != nil {
-			return err
-		}
-	}
-	if err := writeBuffer.PopContext("values", utils.WithRenderAsList(true)); err != nil {
-		return err
-	}
-	if err := writeBuffer.PopContext("PlcReadResponse"); err != nil {
-		return err
-	}
-	return nil
-}
-
-func (d *DefaultPlcReadResponse) String() string {
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), d); err != nil {
-		return err.Error()
-	}
-	return writeBuffer.GetBox().String()
 }

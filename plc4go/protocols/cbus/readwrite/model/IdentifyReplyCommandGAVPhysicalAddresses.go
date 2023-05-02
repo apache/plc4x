@@ -96,7 +96,7 @@ func NewIdentifyReplyCommandGAVPhysicalAddresses(values []byte, numBytes uint8) 
 }
 
 // Deprecated: use the interface for direct cast
-func CastIdentifyReplyCommandGAVPhysicalAddresses(structType interface{}) IdentifyReplyCommandGAVPhysicalAddresses {
+func CastIdentifyReplyCommandGAVPhysicalAddresses(structType any) IdentifyReplyCommandGAVPhysicalAddresses {
 	if casted, ok := structType.(IdentifyReplyCommandGAVPhysicalAddresses); ok {
 		return casted
 	}

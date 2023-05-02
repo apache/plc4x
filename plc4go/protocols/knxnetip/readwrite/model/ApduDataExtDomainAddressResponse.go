@@ -78,7 +78,7 @@ func NewApduDataExtDomainAddressResponse(length uint8) *_ApduDataExtDomainAddres
 }
 
 // Deprecated: use the interface for direct cast
-func CastApduDataExtDomainAddressResponse(structType interface{}) ApduDataExtDomainAddressResponse {
+func CastApduDataExtDomainAddressResponse(structType any) ApduDataExtDomainAddressResponse {
 	if casted, ok := structType.(ApduDataExtDomainAddressResponse); ok {
 		return casted
 	}

@@ -33,6 +33,7 @@ type BACnetNetworkType uint8
 
 type IBACnetNetworkType interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 
@@ -140,8 +141,8 @@ func BACnetNetworkTypeKnows(value uint8) bool {
 	return false
 }
 
-func CastBACnetNetworkType(structType interface{}) BACnetNetworkType {
-	castFunc := func(typ interface{}) BACnetNetworkType {
+func CastBACnetNetworkType(structType any) BACnetNetworkType {
+	castFunc := func(typ any) BACnetNetworkType {
 		if sBACnetNetworkType, ok := typ.(BACnetNetworkType); ok {
 			return sBACnetNetworkType
 		}

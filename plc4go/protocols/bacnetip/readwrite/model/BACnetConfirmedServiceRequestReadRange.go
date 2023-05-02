@@ -122,7 +122,7 @@ func NewBACnetConfirmedServiceRequestReadRange(objectIdentifier BACnetContextTag
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConfirmedServiceRequestReadRange(structType interface{}) BACnetConfirmedServiceRequestReadRange {
+func CastBACnetConfirmedServiceRequestReadRange(structType any) BACnetConfirmedServiceRequestReadRange {
 	if casted, ok := structType.(BACnetConfirmedServiceRequestReadRange); ok {
 		return casted
 	}

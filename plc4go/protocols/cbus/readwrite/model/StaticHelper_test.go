@@ -22,7 +22,7 @@ package model
 import (
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/utils"
-	"reflect"
+	"github.com/stretchr/testify/assert"
 	"testing"
 )
 
@@ -349,7 +349,7 @@ func TestReadAndValidateChecksum(t *testing.T) {
 				t.Errorf("ReadAndValidateChecksum() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			if !reflect.DeepEqual(got, tt.want) {
+			if !assert.Equal(t, tt.want, got) {
 				t.Errorf("ReadAndValidateChecksum() got = %v, want %v", got, tt.want)
 			}
 		})
@@ -375,7 +375,7 @@ func TestReadCALData(t *testing.T) {
 				t.Errorf("ReadCALData() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			if !reflect.DeepEqual(got, tt.want) {
+			if !assert.Equal(t, tt.want, got) {
 				t.Errorf("ReadCALData() got = %v, want %v", got, tt.want)
 			}
 		})
@@ -403,7 +403,7 @@ func TestReadCBusCommand(t *testing.T) {
 				t.Errorf("ReadCBusCommand() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			if !reflect.DeepEqual(got, tt.want) {
+			if !assert.Equal(t, tt.want, got) {
 				t.Errorf("ReadCBusCommand() got = %v, want %v", got, tt.want)
 			}
 		})
@@ -432,7 +432,7 @@ func TestReadEncodedReply(t *testing.T) {
 				t.Errorf("ReadEncodedReply() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			if !reflect.DeepEqual(got, tt.want) {
+			if !assert.Equal(t, tt.want, got) {
 				t.Errorf("ReadEncodedReply() got = %v, want %v", got, tt.want)
 			}
 		})
@@ -594,7 +594,7 @@ func Test_readBytesFromHex(t *testing.T) {
 				t.Errorf("readBytesFromHex() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			if !reflect.DeepEqual(got, tt.want) {
+			if !assert.Equal(t, tt.want, got) {
 				t.Errorf("readBytesFromHex() got = %v, want %v", got, tt.want)
 			}
 		})

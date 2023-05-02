@@ -80,7 +80,7 @@ func (n *RouterInfoCache) GetRouterInfo(*uint16, *uint16) *RouterInfo {
 	return nil
 }
 
-func (n *RouterInfoCache) UpdateRouterInfo(*uint16, interface{}, interface{}) error {
+func (n *RouterInfoCache) UpdateRouterInfo(*uint16, any, any) error {
 	panic("not implemented yet")
 	return nil
 }
@@ -89,7 +89,7 @@ func (n *RouterInfoCache) UpdateRouterStatus(*uint16, *Address, []*uint16) {
 	panic("not implemented yet")
 }
 
-func (n *RouterInfoCache) DeleteRouterInfo(*uint16, interface{}, interface{}) error {
+func (n *RouterInfoCache) DeleteRouterInfo(*uint16, any, any) error {
 	panic("not implemented yet")
 	return nil
 }
@@ -139,11 +139,11 @@ func (n *NetworkAdapter) ProcessNPDU(npdu _PDU) error {
 	return n.Request(npdu)
 }
 
-func (n *NetworkAdapter) EstablishConnectionToNetwork(net interface{}) error {
+func (n *NetworkAdapter) EstablishConnectionToNetwork(net any) error {
 	panic("not implemented yet")
 }
 
-func (n *NetworkAdapter) DisconnectConnectionToNetwork(net interface{}) error {
+func (n *NetworkAdapter) DisconnectConnectionToNetwork(net any) error {
 	panic("not implemented yet")
 }
 
@@ -237,7 +237,7 @@ func (n *NetworkServiceAccessPoint) bind(server _Server, net *uint16, address *A
 }
 
 // UpdateRouterReference Update references to routers.
-func (n *NetworkServiceAccessPoint) UpdateRouterReference(snet *uint16, address, dnets interface{}) error {
+func (n *NetworkServiceAccessPoint) UpdateRouterReference(snet *uint16, address, dnets any) error {
 	log.Debug().Msgf("UpdateRouterReference %d %s %d", snet, address, dnets)
 
 	// see if we have an adapter for the snet
@@ -251,7 +251,7 @@ func (n *NetworkServiceAccessPoint) UpdateRouterReference(snet *uint16, address,
 }
 
 // DeleteRouterReference Delete references to routers/networks.
-func (n *NetworkServiceAccessPoint) DeleteRouterReference(snet *uint16, address, dnets interface{}) error {
+func (n *NetworkServiceAccessPoint) DeleteRouterReference(snet *uint16, address, dnets any) error {
 	log.Debug().Msgf("NetworkServiceAccessPoint %d %s %s", snet, address, dnets)
 
 	// see if we have an adapter for the snet

@@ -110,7 +110,7 @@ func NewBACnetReadAccessPropertyReadResult(peekedTagHeader BACnetTagHeader, prop
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetReadAccessPropertyReadResult(structType interface{}) BACnetReadAccessPropertyReadResult {
+func CastBACnetReadAccessPropertyReadResult(structType any) BACnetReadAccessPropertyReadResult {
 	if casted, ok := structType.(BACnetReadAccessPropertyReadResult); ok {
 		return casted
 	}

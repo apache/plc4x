@@ -86,7 +86,7 @@ func NewBACnetConstructedDataPulseConverterAll(openingTag BACnetOpeningTag, peek
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataPulseConverterAll(structType interface{}) BACnetConstructedDataPulseConverterAll {
+func CastBACnetConstructedDataPulseConverterAll(structType any) BACnetConstructedDataPulseConverterAll {
 	if casted, ok := structType.(BACnetConstructedDataPulseConverterAll); ok {
 		return casted
 	}

@@ -75,7 +75,7 @@ func NewComObjectTable() *_ComObjectTable {
 }
 
 // Deprecated: use the interface for direct cast
-func CastComObjectTable(structType interface{}) ComObjectTable {
+func CastComObjectTable(structType any) ComObjectTable {
 	if casted, ok := structType.(ComObjectTable); ok {
 		return casted
 	}
@@ -118,7 +118,7 @@ func ComObjectTableParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 		InitializeParent(ComObjectTable)
 		GetParent() ComObjectTable
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child ComObjectTableChildSerializeRequirement
 	var typeSwitchError error
 	switch {

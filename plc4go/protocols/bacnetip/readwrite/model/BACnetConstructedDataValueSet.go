@@ -121,7 +121,7 @@ func NewBACnetConstructedDataValueSet(valueSet BACnetApplicationTagUnsignedInteg
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataValueSet(structType interface{}) BACnetConstructedDataValueSet {
+func CastBACnetConstructedDataValueSet(structType any) BACnetConstructedDataValueSet {
 	if casted, ok := structType.(BACnetConstructedDataValueSet); ok {
 		return casted
 	}

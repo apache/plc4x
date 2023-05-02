@@ -152,7 +152,7 @@ func NewS7ParameterUserDataItemCPUFunctions(method uint8, cpuFunctionType uint8,
 }
 
 // Deprecated: use the interface for direct cast
-func CastS7ParameterUserDataItemCPUFunctions(structType interface{}) S7ParameterUserDataItemCPUFunctions {
+func CastS7ParameterUserDataItemCPUFunctions(structType any) S7ParameterUserDataItemCPUFunctions {
 	if casted, ok := structType.(S7ParameterUserDataItemCPUFunctions); ok {
 		return casted
 	}
@@ -266,7 +266,7 @@ func S7ParameterUserDataItemCPUFunctionsParseWithBuffer(ctx context.Context, rea
 
 	// Optional Field (dataUnitReferenceNumber) (Can be skipped, if a given expression evaluates to false)
 	var dataUnitReferenceNumber *uint8 = nil
-	if bool((cpuFunctionType) == (8)) {
+	if bool((bool((cpuFunctionType) == (8)))) || bool((bool((bool((cpuFunctionType) == (0)))) && bool((bool((cpuFunctionGroup) == (2)))))) {
 		_val, _err := readBuffer.ReadUint8("dataUnitReferenceNumber", 8)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'dataUnitReferenceNumber' field of S7ParameterUserDataItemCPUFunctions")
@@ -276,7 +276,7 @@ func S7ParameterUserDataItemCPUFunctionsParseWithBuffer(ctx context.Context, rea
 
 	// Optional Field (lastDataUnit) (Can be skipped, if a given expression evaluates to false)
 	var lastDataUnit *uint8 = nil
-	if bool((cpuFunctionType) == (8)) {
+	if bool((bool((cpuFunctionType) == (8)))) || bool((bool((bool((cpuFunctionType) == (0)))) && bool((bool((cpuFunctionGroup) == (2)))))) {
 		_val, _err := readBuffer.ReadUint8("lastDataUnit", 8)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'lastDataUnit' field of S7ParameterUserDataItemCPUFunctions")
@@ -286,7 +286,7 @@ func S7ParameterUserDataItemCPUFunctionsParseWithBuffer(ctx context.Context, rea
 
 	// Optional Field (errorCode) (Can be skipped, if a given expression evaluates to false)
 	var errorCode *uint16 = nil
-	if bool((cpuFunctionType) == (8)) {
+	if bool((bool((cpuFunctionType) == (8)))) || bool((bool((bool((cpuFunctionType) == (0)))) && bool((bool((cpuFunctionGroup) == (2)))))) {
 		_val, _err := readBuffer.ReadUint16("errorCode", 16)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'errorCode' field of S7ParameterUserDataItemCPUFunctions")

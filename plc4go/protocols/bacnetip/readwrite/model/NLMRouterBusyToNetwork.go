@@ -96,7 +96,7 @@ func NewNLMRouterBusyToNetwork(destinationNetworkAddresses []uint16, apduLength 
 }
 
 // Deprecated: use the interface for direct cast
-func CastNLMRouterBusyToNetwork(structType interface{}) NLMRouterBusyToNetwork {
+func CastNLMRouterBusyToNetwork(structType any) NLMRouterBusyToNetwork {
 	if casted, ok := structType.(NLMRouterBusyToNetwork); ok {
 		return casted
 	}

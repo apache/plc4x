@@ -121,7 +121,7 @@ func NewBACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord(peekedTagHeade
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord(structType interface{}) BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord {
+func CastBACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord(structType any) BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord {
 	if casted, ok := structType.(BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord); ok {
 		return casted
 	}
@@ -198,7 +198,7 @@ func BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordParseWithBuffer(ct
 		InitializeParent(BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord, BACnetTagHeader, BACnetOpeningTag, BACnetClosingTag)
 		GetParent() BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordChildSerializeRequirement
 	var typeSwitchError error
 	switch {

@@ -121,7 +121,7 @@ func NewBACnetConstructedDataDistributionKeyRevision(distributionKeyRevision BAC
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataDistributionKeyRevision(structType interface{}) BACnetConstructedDataDistributionKeyRevision {
+func CastBACnetConstructedDataDistributionKeyRevision(structType any) BACnetConstructedDataDistributionKeyRevision {
 	if casted, ok := structType.(BACnetConstructedDataDistributionKeyRevision); ok {
 		return casted
 	}

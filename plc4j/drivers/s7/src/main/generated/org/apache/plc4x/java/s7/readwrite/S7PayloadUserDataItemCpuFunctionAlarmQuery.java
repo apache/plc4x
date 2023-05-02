@@ -39,16 +39,16 @@ public class S7PayloadUserDataItemCpuFunctionAlarmQuery extends S7PayloadUserDat
     implements Message {
 
   // Accessors for discriminator values.
+  public Byte getCpuFunctionGroup() {
+    return (byte) 0x04;
+  }
+
   public Byte getCpuFunctionType() {
     return (byte) 0x04;
   }
 
   public Short getCpuSubfunction() {
     return (short) 0x13;
-  }
-
-  public Integer getDataLength() {
-    return 0;
   }
 
   // Constant values.
@@ -65,10 +65,11 @@ public class S7PayloadUserDataItemCpuFunctionAlarmQuery extends S7PayloadUserDat
   public S7PayloadUserDataItemCpuFunctionAlarmQuery(
       DataTransportErrorCode returnCode,
       DataTransportSize transportSize,
+      int dataLength,
       SyntaxIdType syntaxId,
       QueryType queryType,
       AlarmType alarmType) {
-    super(returnCode, transportSize);
+    super(returnCode, transportSize, dataLength);
     this.syntaxId = syntaxId;
     this.queryType = queryType;
     this.alarmType = alarmType;
@@ -197,7 +198,8 @@ public class S7PayloadUserDataItemCpuFunctionAlarmQuery extends S7PayloadUserDat
   }
 
   public static S7PayloadUserDataItemBuilder staticParseS7PayloadUserDataItemBuilder(
-      ReadBuffer readBuffer, Byte cpuFunctionType, Short cpuSubfunction) throws ParseException {
+      ReadBuffer readBuffer, Byte cpuFunctionGroup, Byte cpuFunctionType, Short cpuSubfunction)
+      throws ParseException {
     readBuffer.pullContext("S7PayloadUserDataItemCpuFunctionAlarmQuery");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -273,10 +275,10 @@ public class S7PayloadUserDataItemCpuFunctionAlarmQuery extends S7PayloadUserDat
     }
 
     public S7PayloadUserDataItemCpuFunctionAlarmQuery build(
-        DataTransportErrorCode returnCode, DataTransportSize transportSize) {
+        DataTransportErrorCode returnCode, DataTransportSize transportSize, int dataLength) {
       S7PayloadUserDataItemCpuFunctionAlarmQuery s7PayloadUserDataItemCpuFunctionAlarmQuery =
           new S7PayloadUserDataItemCpuFunctionAlarmQuery(
-              returnCode, transportSize, syntaxId, queryType, alarmType);
+              returnCode, transportSize, dataLength, syntaxId, queryType, alarmType);
       return s7PayloadUserDataItemCpuFunctionAlarmQuery;
     }
   }
@@ -294,8 +296,7 @@ public class S7PayloadUserDataItemCpuFunctionAlarmQuery extends S7PayloadUserDat
     return (getSyntaxId() == that.getSyntaxId())
         && (getQueryType() == that.getQueryType())
         && (getAlarmType() == that.getAlarmType())
-        && super.equals(that)
-        && true;
+        && super.equals(that);
   }
 
   @Override

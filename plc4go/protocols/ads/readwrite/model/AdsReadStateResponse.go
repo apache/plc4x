@@ -123,7 +123,7 @@ func NewAdsReadStateResponse(result ReturnCode, adsState uint16, deviceState uin
 }
 
 // Deprecated: use the interface for direct cast
-func CastAdsReadStateResponse(structType interface{}) AdsReadStateResponse {
+func CastAdsReadStateResponse(structType any) AdsReadStateResponse {
 	if casted, ok := structType.(AdsReadStateResponse); ok {
 		return casted
 	}

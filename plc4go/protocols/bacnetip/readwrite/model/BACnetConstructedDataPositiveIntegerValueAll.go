@@ -86,7 +86,7 @@ func NewBACnetConstructedDataPositiveIntegerValueAll(openingTag BACnetOpeningTag
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataPositiveIntegerValueAll(structType interface{}) BACnetConstructedDataPositiveIntegerValueAll {
+func CastBACnetConstructedDataPositiveIntegerValueAll(structType any) BACnetConstructedDataPositiveIntegerValueAll {
 	if casted, ok := structType.(BACnetConstructedDataPositiveIntegerValueAll); ok {
 		return casted
 	}

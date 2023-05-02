@@ -36,10 +36,10 @@ import (
 type Reader struct {
 	tpduGenerator *TpduGenerator
 	messageCodec  spi.MessageCodec
-	tm            *spi.RequestTransactionManager
+	tm            spi.RequestTransactionManager
 }
 
-func NewReader(tpduGenerator *TpduGenerator, messageCodec spi.MessageCodec, tm *spi.RequestTransactionManager) *Reader {
+func NewReader(tpduGenerator *TpduGenerator, messageCodec spi.MessageCodec, tm spi.RequestTransactionManager) *Reader {
 	return &Reader{
 		tpduGenerator: tpduGenerator,
 		messageCodec:  messageCodec,

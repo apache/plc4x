@@ -86,7 +86,7 @@ func NewBACnetCalendarEntryEnclosed(openingTag BACnetOpeningTag, calendarEntry B
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetCalendarEntryEnclosed(structType interface{}) BACnetCalendarEntryEnclosed {
+func CastBACnetCalendarEntryEnclosed(structType any) BACnetCalendarEntryEnclosed {
 	if casted, ok := structType.(BACnetCalendarEntryEnclosed); ok {
 		return casted
 	}

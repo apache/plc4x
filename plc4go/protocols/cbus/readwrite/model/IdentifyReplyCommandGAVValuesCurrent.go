@@ -96,7 +96,7 @@ func NewIdentifyReplyCommandGAVValuesCurrent(values []byte, numBytes uint8) *_Id
 }
 
 // Deprecated: use the interface for direct cast
-func CastIdentifyReplyCommandGAVValuesCurrent(structType interface{}) IdentifyReplyCommandGAVValuesCurrent {
+func CastIdentifyReplyCommandGAVValuesCurrent(structType any) IdentifyReplyCommandGAVValuesCurrent {
 	if casted, ok := structType.(IdentifyReplyCommandGAVValuesCurrent); ok {
 		return casted
 	}

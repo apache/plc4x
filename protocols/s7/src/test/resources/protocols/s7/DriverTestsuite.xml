@@ -422,7 +422,7 @@
     <steps>
       <api-request name="Receive Read Request from application">
         <TestReadRequest>
-          <tags>
+          <tags isList="true">
             <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
               <name>hurz</name>
               <address>%Q0.0:BOOL</address>
@@ -562,25 +562,31 @@
       </incoming-plc-message>
       <api-response name="Report Read Response to application">
         <PlcReadResponse>
-          <PlcReadRequest>
-            <tags>
-              <hurz>
-                <S7Tag>
-                  <memoryArea dataType="string" bitLength="56" encoding="UTF-8">OUTPUTS</memoryArea>
-                  <blockNumber dataType="uint" bitLength="16">0</blockNumber>
-                  <byteOffset dataType="uint" bitLength="16">0</byteOffset>
-                  <bitOffset dataType="uint" bitLength="8">0</bitOffset>
-                  <numElements dataType="uint" bitLength="16">1</numElements>
-                  <dataType dataType="string" bitLength="32" encoding="UTF-8">BOOL</dataType>
-                </S7Tag>
-              </hurz>
-            </tags>
-          </PlcReadRequest>
-          <values>
+          <request>
+            <PlcReadRequest>
+              <PlcTagRequest>
+                <tags isList="true">
+                  <hurz>
+                    <S7Tag>
+                      <memoryArea dataType="string" bitLength="56" encoding="UTF-8">OUTPUTS</memoryArea>
+                      <blockNumber dataType="uint" bitLength="16">0</blockNumber>
+                      <byteOffset dataType="uint" bitLength="16">0</byteOffset>
+                      <bitOffset dataType="uint" bitLength="8">0</bitOffset>
+                      <numElements dataType="uint" bitLength="16">1</numElements>
+                      <dataType dataType="string" bitLength="32" encoding="UTF-8">BOOL</dataType>
+                    </S7Tag>
+                  </hurz>
+                </tags>
+              </PlcTagRequest>
+            </PlcReadRequest>
+          </request>
+          <values isList="true">
             <hurz>
               <ResponseItem>
-                <result dataType="string" bitLength="16" encoding="UTF-8">OK</result>
-                <PlcBOOL dataType="bit" bitLength="1">true</PlcBOOL>
+                <code dataType="string" bitLength="16" encoding="UTF-8">OK</code>
+                <value>
+                  <PlcBOOL dataType="bit" bitLength="1">true</PlcBOOL>
+                </value>
               </ResponseItem>
             </hurz>
           </values>
@@ -594,7 +600,7 @@
     <steps>
       <api-request name="Receive Read Request from application">
         <TestReadRequest>
-          <tags>
+          <tags isList="true">
             <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
               <name>hurz</name>
               <address>%Q0.0:BOOL</address>
@@ -704,24 +710,31 @@
       </incoming-plc-message>
       <api-response name="Report Read Response to application">
         <PlcReadResponse>
-          <PlcReadRequest>
-            <tags>
-              <hurz>
-                <S7Tag>
-                  <memoryArea dataType="string" bitLength="56" encoding="UTF-8">OUTPUTS</memoryArea>
-                  <blockNumber dataType="uint" bitLength="16">0</blockNumber>
-                  <byteOffset dataType="uint" bitLength="16">0</byteOffset>
-                  <bitOffset dataType="uint" bitLength="8">0</bitOffset>
-                  <numElements dataType="uint" bitLength="16">1</numElements>
-                  <dataType dataType="string" bitLength="32" encoding="UTF-8">BOOL</dataType>
-                </S7Tag>
-              </hurz>
-            </tags>
-          </PlcReadRequest>
-          <values>
+          <request>
+            <PlcReadRequest>
+              <PlcTagRequest>
+                <tags isList="true">
+                  <hurz>
+                    <S7Tag>
+                      <memoryArea dataType="string" bitLength="56" encoding="UTF-8">OUTPUTS</memoryArea>
+                      <blockNumber dataType="uint" bitLength="16">0</blockNumber>
+                      <byteOffset dataType="uint" bitLength="16">0</byteOffset>
+                      <bitOffset dataType="uint" bitLength="8">0</bitOffset>
+                      <numElements dataType="uint" bitLength="16">1</numElements>
+                      <dataType dataType="string" bitLength="32" encoding="UTF-8">BOOL</dataType>
+                    </S7Tag>
+                  </hurz>
+                </tags>
+              </PlcTagRequest>
+            </PlcReadRequest>
+          </request>
+          <values isList="true">
             <hurz>
               <ResponseItem>
-                <result dataType="string" bitLength="104" encoding="UTF-8">ACCESS_DENIED</result>
+                <code dataType="string" bitLength="104" encoding="UTF-8">ACCESS_DENIED</code>
+                <value>
+                  <PlcNull></PlcNull>
+                </value>
               </ResponseItem>
             </hurz>
           </values>

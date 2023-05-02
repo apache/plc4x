@@ -121,7 +121,7 @@ func NewBACnetConstructedDataStrikeCount(strikeCount BACnetApplicationTagUnsigne
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataStrikeCount(structType interface{}) BACnetConstructedDataStrikeCount {
+func CastBACnetConstructedDataStrikeCount(structType any) BACnetConstructedDataStrikeCount {
 	if casted, ok := structType.(BACnetConstructedDataStrikeCount); ok {
 		return casted
 	}

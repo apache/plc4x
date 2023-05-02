@@ -121,7 +121,7 @@ func NewBACnetConstructedDataIntegralConstant(integralConstant BACnetApplication
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataIntegralConstant(structType interface{}) BACnetConstructedDataIntegralConstant {
+func CastBACnetConstructedDataIntegralConstant(structType any) BACnetConstructedDataIntegralConstant {
 	if casted, ok := structType.(BACnetConstructedDataIntegralConstant); ok {
 		return casted
 	}

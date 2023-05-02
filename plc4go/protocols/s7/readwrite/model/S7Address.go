@@ -75,7 +75,7 @@ func NewS7Address() *_S7Address {
 }
 
 // Deprecated: use the interface for direct cast
-func CastS7Address(structType interface{}) S7Address {
+func CastS7Address(structType any) S7Address {
 	if casted, ok := structType.(S7Address); ok {
 		return casted
 	}
@@ -126,7 +126,7 @@ func S7AddressParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) 
 		InitializeParent(S7Address)
 		GetParent() S7Address
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child S7AddressChildSerializeRequirement
 	var typeSwitchError error
 	switch {

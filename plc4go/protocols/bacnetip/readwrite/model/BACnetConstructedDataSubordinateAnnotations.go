@@ -22,7 +22,6 @@ package model
 import (
 	"context"
 	"fmt"
-	spiContext "github.com/apache/plc4x/plc4go/spi/context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
@@ -133,7 +132,7 @@ func NewBACnetConstructedDataSubordinateAnnotations(numberOfDataElements BACnetA
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataSubordinateAnnotations(structType interface{}) BACnetConstructedDataSubordinateAnnotations {
+func CastBACnetConstructedDataSubordinateAnnotations(structType any) BACnetConstructedDataSubordinateAnnotations {
 	if casted, ok := structType.(BACnetConstructedDataSubordinateAnnotations); ok {
 		return casted
 	}
@@ -289,7 +288,7 @@ func (m *_BACnetConstructedDataSubordinateAnnotations) SerializeWithWriteBuffer(
 		}
 		for _curItem, _element := range m.GetSubordinateAnnotations() {
 			_ = _curItem
-			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetSubordinateAnnotations()), _curItem)
+			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetSubordinateAnnotations()), _curItem)
 			_ = arrayCtx
 			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 			if _elementErr != nil {

@@ -96,7 +96,7 @@ func NewKnxNetIpDeviceManagement(version uint8) *_KnxNetIpDeviceManagement {
 }
 
 // Deprecated: use the interface for direct cast
-func CastKnxNetIpDeviceManagement(structType interface{}) KnxNetIpDeviceManagement {
+func CastKnxNetIpDeviceManagement(structType any) KnxNetIpDeviceManagement {
 	if casted, ok := structType.(KnxNetIpDeviceManagement); ok {
 		return casted
 	}

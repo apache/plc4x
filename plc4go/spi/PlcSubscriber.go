@@ -21,12 +21,18 @@ package spi
 
 import (
 	"context"
-	"github.com/apache/plc4x/plc4go/pkg/api/model"
+
+	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 )
 
+// PlcSubscriber handles subscriptions to a PLC
 type PlcSubscriber interface {
-	Subscribe(ctx context.Context, subscriptionRequest model.PlcSubscriptionRequest) <-chan model.PlcSubscriptionRequestResult
-	Unsubscribe(ctx context.Context, unsubscriptionRequest model.PlcUnsubscriptionRequest) <-chan model.PlcUnsubscriptionRequestResult
-	Register(consumer model.PlcSubscriptionEventConsumer, handles []model.PlcSubscriptionHandle) model.PlcConsumerRegistration
-	Unregister(registration model.PlcConsumerRegistration)
+	// Subscribe subscribes to fields of a PLC
+	Subscribe(ctx context.Context, subscriptionRequest apiModel.PlcSubscriptionRequest) <-chan apiModel.PlcSubscriptionRequestResult
+	// Unsubscribe removes subscriptions
+	Unsubscribe(ctx context.Context, unsubscriptionRequest apiModel.PlcUnsubscriptionRequest) <-chan apiModel.PlcUnsubscriptionRequestResult
+	// Register registers a callback for a model.PlcSubscriptionHandle
+	Register(consumer apiModel.PlcSubscriptionEventConsumer, handles []apiModel.PlcSubscriptionHandle) apiModel.PlcConsumerRegistration
+	// Unregister removes a model.PlcSubscriptionHandle
+	Unregister(registration apiModel.PlcConsumerRegistration)
 }

@@ -104,7 +104,7 @@ func NewAnsiExtendedSymbolSegment(symbol string, pad *uint8) *_AnsiExtendedSymbo
 }
 
 // Deprecated: use the interface for direct cast
-func CastAnsiExtendedSymbolSegment(structType interface{}) AnsiExtendedSymbolSegment {
+func CastAnsiExtendedSymbolSegment(structType any) AnsiExtendedSymbolSegment {
 	if casted, ok := structType.(AnsiExtendedSymbolSegment); ok {
 		return casted
 	}

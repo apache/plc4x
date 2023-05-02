@@ -53,6 +53,10 @@ type _S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse struct {
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
+func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse) GetCpuFunctionGroup() uint8 {
+	return 0x04
+}
+
 func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse) GetCpuFunctionType() uint8 {
 	return 0x08
 }
@@ -61,18 +65,15 @@ func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse) GetCpuSubfunc
 	return 0x02
 }
 
-func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse) GetDataLength() uint16 {
-	return 0x00
-}
-
 ///////////////////////
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse) InitializeParent(parent S7PayloadUserDataItem, returnCode DataTransportErrorCode, transportSize DataTransportSize) {
+func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse) InitializeParent(parent S7PayloadUserDataItem, returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16) {
 	m.ReturnCode = returnCode
 	m.TransportSize = transportSize
+	m.DataLength = dataLength
 }
 
 func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse) GetParent() S7PayloadUserDataItem {
@@ -80,16 +81,16 @@ func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse) GetParent() S
 }
 
 // NewS7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse factory function for _S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse
-func NewS7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse(returnCode DataTransportErrorCode, transportSize DataTransportSize) *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse {
+func NewS7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse(returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16) *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse {
 	_result := &_S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse{
-		_S7PayloadUserDataItem: NewS7PayloadUserDataItem(returnCode, transportSize),
+		_S7PayloadUserDataItem: NewS7PayloadUserDataItem(returnCode, transportSize, dataLength),
 	}
 	_result._S7PayloadUserDataItem._S7PayloadUserDataItemChildRequirements = _result
 	return _result
 }
 
 // Deprecated: use the interface for direct cast
-func CastS7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse(structType interface{}) S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse {
+func CastS7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse(structType any) S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse {
 	if casted, ok := structType.(S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse); ok {
 		return casted
 	}
@@ -113,11 +114,11 @@ func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse) GetLengthInBy
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponseParse(theBytes []byte, cpuFunctionType uint8, cpuSubfunction uint8) (S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse, error) {
-	return S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponseParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), cpuFunctionType, cpuSubfunction)
+func S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponseParse(theBytes []byte, cpuFunctionGroup uint8, cpuFunctionType uint8, cpuSubfunction uint8) (S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse, error) {
+	return S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponseParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), cpuFunctionGroup, cpuFunctionType, cpuSubfunction)
 }
 
-func S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cpuFunctionType uint8, cpuSubfunction uint8) (S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse, error) {
+func S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cpuFunctionGroup uint8, cpuFunctionType uint8, cpuSubfunction uint8) (S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse"); pullErr != nil {

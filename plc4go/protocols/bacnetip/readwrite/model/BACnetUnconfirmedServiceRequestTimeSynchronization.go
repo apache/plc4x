@@ -105,7 +105,7 @@ func NewBACnetUnconfirmedServiceRequestTimeSynchronization(synchronizedDate BACn
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetUnconfirmedServiceRequestTimeSynchronization(structType interface{}) BACnetUnconfirmedServiceRequestTimeSynchronization {
+func CastBACnetUnconfirmedServiceRequestTimeSynchronization(structType any) BACnetUnconfirmedServiceRequestTimeSynchronization {
 	if casted, ok := structType.(BACnetUnconfirmedServiceRequestTimeSynchronization); ok {
 		return casted
 	}

@@ -121,7 +121,7 @@ func NewBACnetConstructedDataLockStatus(lockStatus BACnetLockStatusTagged, openi
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataLockStatus(structType interface{}) BACnetConstructedDataLockStatus {
+func CastBACnetConstructedDataLockStatus(structType any) BACnetConstructedDataLockStatus {
 	if casted, ok := structType.(BACnetConstructedDataLockStatus); ok {
 		return casted
 	}

@@ -121,7 +121,7 @@ func NewBACnetConstructedDataStateDescription(stateDescription BACnetApplication
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataStateDescription(structType interface{}) BACnetConstructedDataStateDescription {
+func CastBACnetConstructedDataStateDescription(structType any) BACnetConstructedDataStateDescription {
 	if casted, ok := structType.(BACnetConstructedDataStateDescription); ok {
 		return casted
 	}

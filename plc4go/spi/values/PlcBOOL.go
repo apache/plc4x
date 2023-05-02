@@ -93,7 +93,7 @@ func (m PlcBOOL) Serialize() ([]byte, error) {
 	return wb.GetBytes(), nil
 }
 
-func (m PlcBOOL) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
+func (m PlcBOOL) SerializeWithWriteBuffer(_ context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteBit("PlcBOOL", m.value)
 }
 

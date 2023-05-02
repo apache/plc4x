@@ -42,7 +42,7 @@ func init() {
 	_ = utils.Dump
 }
 
-func (m ModbusXmlParserHelper) Parse(typeName string, xmlString string, parserArguments ...string) (interface{}, error) {
+func (m ModbusXmlParserHelper) Parse(typeName string, xmlString string, parserArguments ...string) (any, error) {
 	switch typeName {
 	case "ModbusPDUWriteFileRecordRequestItem":
 		return model.ModbusPDUWriteFileRecordRequestItemParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))

@@ -112,7 +112,7 @@ func (m Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) <
 						}
 						if result.err == nil {
 							responseCodes[tagName] = apiModel.PlcResponseCode_OK
-							plcValues[tagName] = *result.value
+							plcValues[tagName] = result.value
 						} else {
 							responseCodes[tagName] = apiModel.PlcResponseCode_INTERNAL_ERROR
 							plcValues[tagName] = nil
@@ -133,7 +133,7 @@ func (m Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) <
 						}
 						if result.err == nil {
 							responseCodes[tagName] = apiModel.PlcResponseCode_OK
-							plcValues[tagName] = *result.value
+							plcValues[tagName] = result.value
 						} else {
 							responseCodes[tagName] = apiModel.PlcResponseCode_INTERNAL_ERROR
 							plcValues[tagName] = nil
@@ -195,7 +195,7 @@ func (m Reader) readGroupAddress(ctx context.Context, tag GroupAddressTag) (apiM
 				if readResult.value != nil {
 					if readResult.err == nil {
 						returnCodes[stringAddress] = apiModel.PlcResponseCode_OK
-						values[stringAddress] = *readResult.value
+						values[stringAddress] = readResult.value
 					} else {
 						returnCodes[stringAddress] = apiModel.PlcResponseCode_INTERNAL_ERROR
 						values[stringAddress] = nil

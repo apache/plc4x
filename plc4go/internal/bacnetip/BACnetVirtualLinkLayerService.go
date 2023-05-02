@@ -80,7 +80,7 @@ type UDPMultiplexer struct {
 	annexJ             *_MultiplexServer
 }
 
-func NewUDPMultiplexer(address interface{}, noBroadcast bool) (*UDPMultiplexer, error) {
+func NewUDPMultiplexer(address any, noBroadcast bool) (*UDPMultiplexer, error) {
 	log.Debug().Msgf("NewUDPMultiplexer %v noBroadcast=%t", address, noBroadcast)
 	u := &UDPMultiplexer{}
 

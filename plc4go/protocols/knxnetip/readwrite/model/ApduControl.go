@@ -75,7 +75,7 @@ func NewApduControl() *_ApduControl {
 }
 
 // Deprecated: use the interface for direct cast
-func CastApduControl(structType interface{}) ApduControl {
+func CastApduControl(structType any) ApduControl {
 	if casted, ok := structType.(ApduControl); ok {
 		return casted
 	}
@@ -126,7 +126,7 @@ func ApduControlParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 		InitializeParent(ApduControl)
 		GetParent() ApduControl
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child ApduControlChildSerializeRequirement
 	var typeSwitchError error
 	switch {

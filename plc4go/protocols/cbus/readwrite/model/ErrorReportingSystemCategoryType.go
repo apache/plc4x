@@ -75,7 +75,7 @@ func NewErrorReportingSystemCategoryType() *_ErrorReportingSystemCategoryType {
 }
 
 // Deprecated: use the interface for direct cast
-func CastErrorReportingSystemCategoryType(structType interface{}) ErrorReportingSystemCategoryType {
+func CastErrorReportingSystemCategoryType(structType any) ErrorReportingSystemCategoryType {
 	if casted, ok := structType.(ErrorReportingSystemCategoryType); ok {
 		return casted
 	}
@@ -118,7 +118,7 @@ func ErrorReportingSystemCategoryTypeParseWithBuffer(ctx context.Context, readBu
 		InitializeParent(ErrorReportingSystemCategoryType)
 		GetParent() ErrorReportingSystemCategoryType
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child ErrorReportingSystemCategoryTypeChildSerializeRequirement
 	var typeSwitchError error
 	switch {

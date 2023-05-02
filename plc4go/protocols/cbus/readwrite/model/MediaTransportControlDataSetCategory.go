@@ -95,7 +95,7 @@ func NewMediaTransportControlDataSetCategory(categoryNumber uint8, commandTypeCo
 }
 
 // Deprecated: use the interface for direct cast
-func CastMediaTransportControlDataSetCategory(structType interface{}) MediaTransportControlDataSetCategory {
+func CastMediaTransportControlDataSetCategory(structType any) MediaTransportControlDataSetCategory {
 	if casted, ok := structType.(MediaTransportControlDataSetCategory); ok {
 		return casted
 	}

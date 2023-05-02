@@ -33,6 +33,7 @@ type ErrorReportingSystemCategoryClass uint8
 
 type IErrorReportingSystemCategoryClass interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 
@@ -164,8 +165,8 @@ func ErrorReportingSystemCategoryClassKnows(value uint8) bool {
 	return false
 }
 
-func CastErrorReportingSystemCategoryClass(structType interface{}) ErrorReportingSystemCategoryClass {
-	castFunc := func(typ interface{}) ErrorReportingSystemCategoryClass {
+func CastErrorReportingSystemCategoryClass(structType any) ErrorReportingSystemCategoryClass {
+	castFunc := func(typ any) ErrorReportingSystemCategoryClass {
 		if sErrorReportingSystemCategoryClass, ok := typ.(ErrorReportingSystemCategoryClass); ok {
 			return sErrorReportingSystemCategoryClass
 		}

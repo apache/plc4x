@@ -121,7 +121,7 @@ func NewBACnetConstructedDataInactiveText(inactiveText BACnetApplicationTagChara
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataInactiveText(structType interface{}) BACnetConstructedDataInactiveText {
+func CastBACnetConstructedDataInactiveText(structType any) BACnetConstructedDataInactiveText {
 	if casted, ok := structType.(BACnetConstructedDataInactiveText); ok {
 		return casted
 	}

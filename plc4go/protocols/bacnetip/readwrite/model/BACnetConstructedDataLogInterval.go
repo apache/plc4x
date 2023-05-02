@@ -121,7 +121,7 @@ func NewBACnetConstructedDataLogInterval(logInterval BACnetApplicationTagUnsigne
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataLogInterval(structType interface{}) BACnetConstructedDataLogInterval {
+func CastBACnetConstructedDataLogInterval(structType any) BACnetConstructedDataLogInterval {
 	if casted, ok := structType.(BACnetConstructedDataLogInterval); ok {
 		return casted
 	}

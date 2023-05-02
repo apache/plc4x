@@ -37,7 +37,7 @@ func NewValueHandler() ValueHandler {
 	return ValueHandler{}
 }
 
-func (m ValueHandler) NewPlcValue(tag apiModel.PlcTag, value interface{}) (apiValues.PlcValue, error) {
+func (m ValueHandler) NewPlcValue(tag apiModel.PlcTag, value any) (apiValues.PlcValue, error) {
 	if cbusTag, ok := tag.(Tag); ok {
 		switch cbusTag.GetTagType() {
 		case
@@ -51,9 +51,9 @@ func (m ValueHandler) NewPlcValue(tag apiModel.PlcTag, value interface{}) (apiVa
 			if len(tag.GetArrayInfo()) > 0 && tag.GetArrayInfo()[0].GetSize() > 1 {
 				s := reflect.ValueOf(value)
 				if s.Kind() != reflect.Slice {
-					return nil, errors.New("couldn't cast value to []interface{}")
+					return nil, errors.New("couldn't cast value to []any")
 				}
-				curValues = make([]interface{}, s.Len())
+				curValues = make([]any, s.Len())
 				for i := 0; i < s.Len(); i++ {
 					curValues[i] = s.Index(i).Interface()
 				}
@@ -128,7 +128,7 @@ func (m ValueHandler) NewPlcValue(tag apiModel.PlcTag, value interface{}) (apiVa
 					if err != nil {
 						return nil, errors.Wrap(err, "error creating value for group")
 					}
-					level, err := m.DefaultValueHandler.NewPlcValueFromType(apiValues.BYTE, curValues[0])
+					level, err := m.DefaultValueHandler.NewPlcValueFromType(apiValues.BYTE, curValues[1])
 					if err != nil {
 						return nil, errors.Wrap(err, "error creating value for level")
 					}

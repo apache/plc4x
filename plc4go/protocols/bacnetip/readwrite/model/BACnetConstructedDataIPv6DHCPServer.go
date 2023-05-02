@@ -121,7 +121,7 @@ func NewBACnetConstructedDataIPv6DHCPServer(dhcpServer BACnetApplicationTagOctet
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataIPv6DHCPServer(structType interface{}) BACnetConstructedDataIPv6DHCPServer {
+func CastBACnetConstructedDataIPv6DHCPServer(structType any) BACnetConstructedDataIPv6DHCPServer {
 	if casted, ok := structType.(BACnetConstructedDataIPv6DHCPServer); ok {
 		return casted
 	}

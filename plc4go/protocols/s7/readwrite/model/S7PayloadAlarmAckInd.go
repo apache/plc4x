@@ -56,6 +56,10 @@ type _S7PayloadAlarmAckInd struct {
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
+func (m *_S7PayloadAlarmAckInd) GetCpuFunctionGroup() uint8 {
+	return 0x04
+}
+
 func (m *_S7PayloadAlarmAckInd) GetCpuFunctionType() uint8 {
 	return 0x00
 }
@@ -64,18 +68,15 @@ func (m *_S7PayloadAlarmAckInd) GetCpuSubfunction() uint8 {
 	return 0x0c
 }
 
-func (m *_S7PayloadAlarmAckInd) GetDataLength() uint16 {
-	return 0
-}
-
 ///////////////////////
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_S7PayloadAlarmAckInd) InitializeParent(parent S7PayloadUserDataItem, returnCode DataTransportErrorCode, transportSize DataTransportSize) {
+func (m *_S7PayloadAlarmAckInd) InitializeParent(parent S7PayloadUserDataItem, returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16) {
 	m.ReturnCode = returnCode
 	m.TransportSize = transportSize
+	m.DataLength = dataLength
 }
 
 func (m *_S7PayloadAlarmAckInd) GetParent() S7PayloadUserDataItem {
@@ -97,17 +98,17 @@ func (m *_S7PayloadAlarmAckInd) GetAlarmMessage() AlarmMessageAckPushType {
 ///////////////////////////////////////////////////////////
 
 // NewS7PayloadAlarmAckInd factory function for _S7PayloadAlarmAckInd
-func NewS7PayloadAlarmAckInd(alarmMessage AlarmMessageAckPushType, returnCode DataTransportErrorCode, transportSize DataTransportSize) *_S7PayloadAlarmAckInd {
+func NewS7PayloadAlarmAckInd(alarmMessage AlarmMessageAckPushType, returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16) *_S7PayloadAlarmAckInd {
 	_result := &_S7PayloadAlarmAckInd{
 		AlarmMessage:           alarmMessage,
-		_S7PayloadUserDataItem: NewS7PayloadUserDataItem(returnCode, transportSize),
+		_S7PayloadUserDataItem: NewS7PayloadUserDataItem(returnCode, transportSize, dataLength),
 	}
 	_result._S7PayloadUserDataItem._S7PayloadUserDataItemChildRequirements = _result
 	return _result
 }
 
 // Deprecated: use the interface for direct cast
-func CastS7PayloadAlarmAckInd(structType interface{}) S7PayloadAlarmAckInd {
+func CastS7PayloadAlarmAckInd(structType any) S7PayloadAlarmAckInd {
 	if casted, ok := structType.(S7PayloadAlarmAckInd); ok {
 		return casted
 	}
@@ -134,11 +135,11 @@ func (m *_S7PayloadAlarmAckInd) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func S7PayloadAlarmAckIndParse(theBytes []byte, cpuFunctionType uint8, cpuSubfunction uint8) (S7PayloadAlarmAckInd, error) {
-	return S7PayloadAlarmAckIndParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), cpuFunctionType, cpuSubfunction)
+func S7PayloadAlarmAckIndParse(theBytes []byte, cpuFunctionGroup uint8, cpuFunctionType uint8, cpuSubfunction uint8) (S7PayloadAlarmAckInd, error) {
+	return S7PayloadAlarmAckIndParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), cpuFunctionGroup, cpuFunctionType, cpuSubfunction)
 }
 
-func S7PayloadAlarmAckIndParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cpuFunctionType uint8, cpuSubfunction uint8) (S7PayloadAlarmAckInd, error) {
+func S7PayloadAlarmAckIndParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cpuFunctionGroup uint8, cpuFunctionType uint8, cpuSubfunction uint8) (S7PayloadAlarmAckInd, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("S7PayloadAlarmAckInd"); pullErr != nil {

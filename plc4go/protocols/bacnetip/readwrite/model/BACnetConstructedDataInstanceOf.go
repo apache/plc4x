@@ -121,7 +121,7 @@ func NewBACnetConstructedDataInstanceOf(instanceOf BACnetApplicationTagCharacter
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataInstanceOf(structType interface{}) BACnetConstructedDataInstanceOf {
+func CastBACnetConstructedDataInstanceOf(structType any) BACnetConstructedDataInstanceOf {
 	if casted, ok := structType.(BACnetConstructedDataInstanceOf); ok {
 		return casted
 	}

@@ -80,7 +80,7 @@ func NewBVLCResultCodeTagged(header BACnetTagHeader, value BVLCResultCode, tagNu
 }
 
 // Deprecated: use the interface for direct cast
-func CastBVLCResultCodeTagged(structType interface{}) BVLCResultCodeTagged {
+func CastBVLCResultCodeTagged(structType any) BVLCResultCodeTagged {
 	if casted, ok := structType.(BVLCResultCodeTagged); ok {
 		return casted
 	}

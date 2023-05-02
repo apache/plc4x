@@ -115,7 +115,7 @@ func NewSecurityData(commandTypeContainer SecurityCommandTypeContainer, argument
 }
 
 // Deprecated: use the interface for direct cast
-func CastSecurityData(structType interface{}) SecurityData {
+func CastSecurityData(structType any) SecurityData {
 	if casted, ok := structType.(SecurityData); ok {
 		return casted
 	}
@@ -196,7 +196,7 @@ func SecurityDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 		InitializeParent(SecurityData, SecurityCommandTypeContainer, byte)
 		GetParent() SecurityData
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child SecurityDataChildSerializeRequirement
 	var typeSwitchError error
 	switch {

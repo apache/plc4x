@@ -112,7 +112,7 @@ func NewNLMChallengeRequest(messageChallenge byte, originalMessageId uint32, ori
 }
 
 // Deprecated: use the interface for direct cast
-func CastNLMChallengeRequest(structType interface{}) NLMChallengeRequest {
+func CastNLMChallengeRequest(structType any) NLMChallengeRequest {
 	if casted, ok := structType.(NLMChallengeRequest); ok {
 		return casted
 	}

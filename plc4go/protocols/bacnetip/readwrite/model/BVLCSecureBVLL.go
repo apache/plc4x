@@ -100,7 +100,7 @@ func NewBVLCSecureBVLL(securityWrapper []byte, bvlcPayloadLength uint16) *_BVLCS
 }
 
 // Deprecated: use the interface for direct cast
-func CastBVLCSecureBVLL(structType interface{}) BVLCSecureBVLL {
+func CastBVLCSecureBVLL(structType any) BVLCSecureBVLL {
 	if casted, ok := structType.(BVLCSecureBVLL); ok {
 		return casted
 	}

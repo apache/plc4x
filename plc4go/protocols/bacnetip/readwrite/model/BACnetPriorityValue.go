@@ -119,7 +119,7 @@ func NewBACnetPriorityValue(peekedTagHeader BACnetTagHeader, objectTypeArgument 
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetPriorityValue(structType interface{}) BACnetPriorityValue {
+func CastBACnetPriorityValue(structType any) BACnetPriorityValue {
 	if casted, ok := structType.(BACnetPriorityValue); ok {
 		return casted
 	}
@@ -189,7 +189,7 @@ func BACnetPriorityValueParseWithBuffer(ctx context.Context, readBuffer utils.Re
 		InitializeParent(BACnetPriorityValue, BACnetTagHeader)
 		GetParent() BACnetPriorityValue
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child BACnetPriorityValueChildSerializeRequirement
 	var typeSwitchError error
 	switch {

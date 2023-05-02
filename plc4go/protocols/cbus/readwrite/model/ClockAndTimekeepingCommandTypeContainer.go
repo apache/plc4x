@@ -33,6 +33,7 @@ type ClockAndTimekeepingCommandTypeContainer uint8
 
 type IClockAndTimekeepingCommandTypeContainer interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 	NumBytes() uint8
 	CommandType() ClockAndTimekeepingCommandType
@@ -231,8 +232,8 @@ func ClockAndTimekeepingCommandTypeContainerKnows(value uint8) bool {
 	return false
 }
 
-func CastClockAndTimekeepingCommandTypeContainer(structType interface{}) ClockAndTimekeepingCommandTypeContainer {
-	castFunc := func(typ interface{}) ClockAndTimekeepingCommandTypeContainer {
+func CastClockAndTimekeepingCommandTypeContainer(structType any) ClockAndTimekeepingCommandTypeContainer {
+	castFunc := func(typ any) ClockAndTimekeepingCommandTypeContainer {
 		if sClockAndTimekeepingCommandTypeContainer, ok := typ.(ClockAndTimekeepingCommandTypeContainer); ok {
 			return sClockAndTimekeepingCommandTypeContainer
 		}

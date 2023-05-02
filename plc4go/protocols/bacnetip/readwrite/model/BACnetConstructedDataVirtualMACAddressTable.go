@@ -22,7 +22,6 @@ package model
 import (
 	"context"
 	"fmt"
-	spiContext "github.com/apache/plc4x/plc4go/spi/context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -105,7 +104,7 @@ func NewBACnetConstructedDataVirtualMACAddressTable(virtualMacAddressTable []BAC
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataVirtualMACAddressTable(structType interface{}) BACnetConstructedDataVirtualMACAddressTable {
+func CastBACnetConstructedDataVirtualMACAddressTable(structType any) BACnetConstructedDataVirtualMACAddressTable {
 	if casted, ok := structType.(BACnetConstructedDataVirtualMACAddressTable); ok {
 		return casted
 	}
@@ -206,7 +205,7 @@ func (m *_BACnetConstructedDataVirtualMACAddressTable) SerializeWithWriteBuffer(
 		}
 		for _curItem, _element := range m.GetVirtualMacAddressTable() {
 			_ = _curItem
-			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetVirtualMacAddressTable()), _curItem)
+			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetVirtualMacAddressTable()), _curItem)
 			_ = arrayCtx
 			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 			if _elementErr != nil {

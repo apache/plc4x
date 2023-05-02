@@ -94,7 +94,7 @@ func NewBACnetPropertyStatesIntegerValue(integerValue BACnetContextTagSignedInte
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetPropertyStatesIntegerValue(structType interface{}) BACnetPropertyStatesIntegerValue {
+func CastBACnetPropertyStatesIntegerValue(structType any) BACnetPropertyStatesIntegerValue {
 	if casted, ok := structType.(BACnetPropertyStatesIntegerValue); ok {
 		return casted
 	}

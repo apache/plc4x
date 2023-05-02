@@ -121,7 +121,7 @@ func NewBACnetConstructedDataAccumulatorMinPresValue(minPresValue BACnetApplicat
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataAccumulatorMinPresValue(structType interface{}) BACnetConstructedDataAccumulatorMinPresValue {
+func CastBACnetConstructedDataAccumulatorMinPresValue(structType any) BACnetConstructedDataAccumulatorMinPresValue {
 	if casted, ok := structType.(BACnetConstructedDataAccumulatorMinPresValue); ok {
 		return casted
 	}

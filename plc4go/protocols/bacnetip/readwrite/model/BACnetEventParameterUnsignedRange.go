@@ -126,7 +126,7 @@ func NewBACnetEventParameterUnsignedRange(openingTag BACnetOpeningTag, timeDelay
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetEventParameterUnsignedRange(structType interface{}) BACnetEventParameterUnsignedRange {
+func CastBACnetEventParameterUnsignedRange(structType any) BACnetEventParameterUnsignedRange {
 	if casted, ok := structType.(BACnetEventParameterUnsignedRange); ok {
 		return casted
 	}

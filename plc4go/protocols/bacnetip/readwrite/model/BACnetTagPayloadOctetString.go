@@ -72,7 +72,7 @@ func NewBACnetTagPayloadOctetString(octets []byte, actualLength uint32) *_BACnet
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetTagPayloadOctetString(structType interface{}) BACnetTagPayloadOctetString {
+func CastBACnetTagPayloadOctetString(structType any) BACnetTagPayloadOctetString {
 	if casted, ok := structType.(BACnetTagPayloadOctetString); ok {
 		return casted
 	}

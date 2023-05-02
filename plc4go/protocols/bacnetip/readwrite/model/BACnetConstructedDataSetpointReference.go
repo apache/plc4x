@@ -121,7 +121,7 @@ func NewBACnetConstructedDataSetpointReference(setpointReference BACnetSetpointR
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataSetpointReference(structType interface{}) BACnetConstructedDataSetpointReference {
+func CastBACnetConstructedDataSetpointReference(structType any) BACnetConstructedDataSetpointReference {
 	if casted, ok := structType.(BACnetConstructedDataSetpointReference); ok {
 		return casted
 	}

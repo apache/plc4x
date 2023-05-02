@@ -121,7 +121,7 @@ func NewBACnetConstructedDataLifeSafetyZoneMaintenanceRequired(maintenanceRequir
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataLifeSafetyZoneMaintenanceRequired(structType interface{}) BACnetConstructedDataLifeSafetyZoneMaintenanceRequired {
+func CastBACnetConstructedDataLifeSafetyZoneMaintenanceRequired(structType any) BACnetConstructedDataLifeSafetyZoneMaintenanceRequired {
 	if casted, ok := structType.(BACnetConstructedDataLifeSafetyZoneMaintenanceRequired); ok {
 		return casted
 	}

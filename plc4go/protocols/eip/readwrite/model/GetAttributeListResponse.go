@@ -86,7 +86,7 @@ func NewGetAttributeListResponse(serviceLen uint16) *_GetAttributeListResponse {
 }
 
 // Deprecated: use the interface for direct cast
-func CastGetAttributeListResponse(structType interface{}) GetAttributeListResponse {
+func CastGetAttributeListResponse(structType any) GetAttributeListResponse {
 	if casted, ok := structType.(GetAttributeListResponse); ok {
 		return casted
 	}

@@ -104,7 +104,7 @@ func NewModbusPDUError(exceptionCode ModbusErrorCode) *_ModbusPDUError {
 }
 
 // Deprecated: use the interface for direct cast
-func CastModbusPDUError(structType interface{}) ModbusPDUError {
+func CastModbusPDUError(structType any) ModbusPDUError {
 	if casted, ok := structType.(ModbusPDUError); ok {
 		return casted
 	}

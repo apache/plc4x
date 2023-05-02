@@ -41,7 +41,7 @@ func ReadAndValidateChecksum(readBuffer utils.ReadBuffer, message spi.Message, s
 		return nil, errors.Wrap(err, "Unable to calculate checksum")
 	}
 	if checksum != actualChecksum {
-		return nil, errors.Errorf("Expected checksum 0x%x doesn't match actual checksum 0x%x", checksum, actualChecksum)
+		return nil, errors.Errorf("Expected checksum %#x doesn't match actual checksum %#x", checksum, actualChecksum)
 	}
 	return NewChecksum(checksum), nil
 }

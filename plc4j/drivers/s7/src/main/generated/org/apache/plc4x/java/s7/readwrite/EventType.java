@@ -27,7 +27,8 @@ public enum EventType {
   MODE((short) 0x01),
   SYS((short) 0x02),
   USR((short) 0x04),
-  ALM((short) 0x80);
+  ALM((short) 0x80),
+  CYC((short) 0x69);
   private static final Map<Short, EventType> map;
 
   static {

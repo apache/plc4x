@@ -124,7 +124,7 @@ func NewBACnetNotificationParametersChangeOfValueNewValue(openingTag BACnetOpeni
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetNotificationParametersChangeOfValueNewValue(structType interface{}) BACnetNotificationParametersChangeOfValueNewValue {
+func CastBACnetNotificationParametersChangeOfValueNewValue(structType any) BACnetNotificationParametersChangeOfValueNewValue {
 	if casted, ok := structType.(BACnetNotificationParametersChangeOfValueNewValue); ok {
 		return casted
 	}
@@ -201,7 +201,7 @@ func BACnetNotificationParametersChangeOfValueNewValueParseWithBuffer(ctx contex
 		InitializeParent(BACnetNotificationParametersChangeOfValueNewValue, BACnetOpeningTag, BACnetTagHeader, BACnetClosingTag)
 		GetParent() BACnetNotificationParametersChangeOfValueNewValue
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child BACnetNotificationParametersChangeOfValueNewValueChildSerializeRequirement
 	var typeSwitchError error
 	switch {

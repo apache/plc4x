@@ -77,7 +77,7 @@ func NewMediaTransportControlDataPlay(commandTypeContainer MediaTransportControl
 }
 
 // Deprecated: use the interface for direct cast
-func CastMediaTransportControlDataPlay(structType interface{}) MediaTransportControlDataPlay {
+func CastMediaTransportControlDataPlay(structType any) MediaTransportControlDataPlay {
 	if casted, ok := structType.(MediaTransportControlDataPlay); ok {
 		return casted
 	}

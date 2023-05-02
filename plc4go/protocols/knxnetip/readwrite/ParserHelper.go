@@ -32,7 +32,7 @@ import (
 type KnxnetipParserHelper struct {
 }
 
-func (m KnxnetipParserHelper) Parse(typeName string, arguments []string, io utils.ReadBuffer) (interface{}, error) {
+func (m KnxnetipParserHelper) Parse(typeName string, arguments []string, io utils.ReadBuffer) (any, error) {
 	switch typeName {
 	case "KnxProperty":
 		propertyType, _ := model.KnxPropertyDataTypeByName(arguments[0])

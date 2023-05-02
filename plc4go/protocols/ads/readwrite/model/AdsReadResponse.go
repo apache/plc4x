@@ -115,7 +115,7 @@ func NewAdsReadResponse(result ReturnCode, data []byte, targetAmsNetId AmsNetId,
 }
 
 // Deprecated: use the interface for direct cast
-func CastAdsReadResponse(structType interface{}) AdsReadResponse {
+func CastAdsReadResponse(structType any) AdsReadResponse {
 	if casted, ok := structType.(AdsReadResponse); ok {
 		return casted
 	}

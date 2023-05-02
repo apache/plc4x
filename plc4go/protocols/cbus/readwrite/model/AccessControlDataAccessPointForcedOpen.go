@@ -78,7 +78,7 @@ func NewAccessControlDataAccessPointForcedOpen(commandTypeContainer AccessContro
 }
 
 // Deprecated: use the interface for direct cast
-func CastAccessControlDataAccessPointForcedOpen(structType interface{}) AccessControlDataAccessPointForcedOpen {
+func CastAccessControlDataAccessPointForcedOpen(structType any) AccessControlDataAccessPointForcedOpen {
 	if casted, ok := structType.(AccessControlDataAccessPointForcedOpen); ok {
 		return casted
 	}

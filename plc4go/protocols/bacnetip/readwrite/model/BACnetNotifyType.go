@@ -33,6 +33,7 @@ type BACnetNotifyType uint8
 
 type IBACnetNotifyType interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 
@@ -86,8 +87,8 @@ func BACnetNotifyTypeKnows(value uint8) bool {
 	return false
 }
 
-func CastBACnetNotifyType(structType interface{}) BACnetNotifyType {
-	castFunc := func(typ interface{}) BACnetNotifyType {
+func CastBACnetNotifyType(structType any) BACnetNotifyType {
+	castFunc := func(typ any) BACnetNotifyType {
 		if sBACnetNotifyType, ok := typ.(BACnetNotifyType); ok {
 			return sBACnetNotifyType
 		}

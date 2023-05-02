@@ -90,7 +90,7 @@ func NewNLMInitalizeRoutingTablePortMapping(destinationNetworkAddress uint16, po
 }
 
 // Deprecated: use the interface for direct cast
-func CastNLMInitalizeRoutingTablePortMapping(structType interface{}) NLMInitalizeRoutingTablePortMapping {
+func CastNLMInitalizeRoutingTablePortMapping(structType any) NLMInitalizeRoutingTablePortMapping {
 	if casted, ok := structType.(NLMInitalizeRoutingTablePortMapping); ok {
 		return casted
 	}

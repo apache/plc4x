@@ -102,7 +102,7 @@ func NewApdu(numbered bool, counter uint8, dataLength uint8) *_Apdu {
 }
 
 // Deprecated: use the interface for direct cast
-func CastApdu(structType interface{}) Apdu {
+func CastApdu(structType any) Apdu {
 	if casted, ok := structType.(Apdu); ok {
 		return casted
 	}
@@ -173,7 +173,7 @@ func ApduParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, dataL
 		InitializeParent(Apdu, bool, uint8)
 		GetParent() Apdu
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child ApduChildSerializeRequirement
 	var typeSwitchError error
 	switch {

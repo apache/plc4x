@@ -121,7 +121,7 @@ func NewBACnetConstructedDataAccompanimentTime(accompanimentTime BACnetApplicati
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataAccompanimentTime(structType interface{}) BACnetConstructedDataAccompanimentTime {
+func CastBACnetConstructedDataAccompanimentTime(structType any) BACnetConstructedDataAccompanimentTime {
 	if casted, ok := structType.(BACnetConstructedDataAccompanimentTime); ok {
 		return casted
 	}

@@ -99,7 +99,7 @@ func NewApduControlContainer(controlApdu ApduControl, numbered bool, counter uin
 }
 
 // Deprecated: use the interface for direct cast
-func CastApduControlContainer(structType interface{}) ApduControlContainer {
+func CastApduControlContainer(structType any) ApduControlContainer {
 	if casted, ok := structType.(ApduControlContainer); ok {
 		return casted
 	}

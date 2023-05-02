@@ -97,7 +97,7 @@ func NewSzlDataTreeItem(itemIndex uint16, mlfb []byte, moduleTypeId uint16, ausb
 }
 
 // Deprecated: use the interface for direct cast
-func CastSzlDataTreeItem(structType interface{}) SzlDataTreeItem {
+func CastSzlDataTreeItem(structType any) SzlDataTreeItem {
 	if casted, ok := structType.(SzlDataTreeItem); ok {
 		return casted
 	}

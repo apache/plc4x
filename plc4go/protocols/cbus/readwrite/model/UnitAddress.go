@@ -69,7 +69,7 @@ func NewUnitAddress(address byte) *_UnitAddress {
 }
 
 // Deprecated: use the interface for direct cast
-func CastUnitAddress(structType interface{}) UnitAddress {
+func CastUnitAddress(structType any) UnitAddress {
 	if casted, ok := structType.(UnitAddress); ok {
 		return casted
 	}

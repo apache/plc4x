@@ -97,7 +97,7 @@ func NewConnectionResponseDataBlockTunnelConnection(knxAddress KnxAddress) *_Con
 }
 
 // Deprecated: use the interface for direct cast
-func CastConnectionResponseDataBlockTunnelConnection(structType interface{}) ConnectionResponseDataBlockTunnelConnection {
+func CastConnectionResponseDataBlockTunnelConnection(structType any) ConnectionResponseDataBlockTunnelConnection {
 	if casted, ok := structType.(ConnectionResponseDataBlockTunnelConnection); ok {
 		return casted
 	}

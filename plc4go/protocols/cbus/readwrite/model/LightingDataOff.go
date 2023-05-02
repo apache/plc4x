@@ -94,7 +94,7 @@ func NewLightingDataOff(group byte, commandTypeContainer LightingCommandTypeCont
 }
 
 // Deprecated: use the interface for direct cast
-func CastLightingDataOff(structType interface{}) LightingDataOff {
+func CastLightingDataOff(structType any) LightingDataOff {
 	if casted, ok := structType.(LightingDataOff); ok {
 		return casted
 	}

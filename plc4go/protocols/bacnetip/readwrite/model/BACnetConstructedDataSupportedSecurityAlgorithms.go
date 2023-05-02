@@ -22,7 +22,6 @@ package model
 import (
 	"context"
 	"fmt"
-	spiContext "github.com/apache/plc4x/plc4go/spi/context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -105,7 +104,7 @@ func NewBACnetConstructedDataSupportedSecurityAlgorithms(supportedSecurityAlgori
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataSupportedSecurityAlgorithms(structType interface{}) BACnetConstructedDataSupportedSecurityAlgorithms {
+func CastBACnetConstructedDataSupportedSecurityAlgorithms(structType any) BACnetConstructedDataSupportedSecurityAlgorithms {
 	if casted, ok := structType.(BACnetConstructedDataSupportedSecurityAlgorithms); ok {
 		return casted
 	}
@@ -206,7 +205,7 @@ func (m *_BACnetConstructedDataSupportedSecurityAlgorithms) SerializeWithWriteBu
 		}
 		for _curItem, _element := range m.GetSupportedSecurityAlgorithms() {
 			_ = _curItem
-			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetSupportedSecurityAlgorithms()), _curItem)
+			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetSupportedSecurityAlgorithms()), _curItem)
 			_ = arrayCtx
 			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 			if _elementErr != nil {

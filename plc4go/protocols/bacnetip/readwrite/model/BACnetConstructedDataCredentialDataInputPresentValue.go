@@ -121,7 +121,7 @@ func NewBACnetConstructedDataCredentialDataInputPresentValue(presentValue BACnet
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataCredentialDataInputPresentValue(structType interface{}) BACnetConstructedDataCredentialDataInputPresentValue {
+func CastBACnetConstructedDataCredentialDataInputPresentValue(structType any) BACnetConstructedDataCredentialDataInputPresentValue {
 	if casted, ok := structType.(BACnetConstructedDataCredentialDataInputPresentValue); ok {
 		return casted
 	}

@@ -21,15 +21,13 @@ package model
 
 import (
 	"context"
-	"encoding/binary"
-	"fmt"
 
-	"github.com/apache/plc4x/plc4go/pkg/api/model"
+	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/spi"
-	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
+//go:generate go run ../../tools/plc4xgenerator/gen.go -type=DefaultPlcBrowseRequestBuilder
 type DefaultPlcBrowseRequestBuilder struct {
 	tagHandler spi.PlcTagHandler
 	browser    spi.PlcBrowser
@@ -38,7 +36,7 @@ type DefaultPlcBrowseRequestBuilder struct {
 	queryStrings map[string]string
 }
 
-func NewDefaultPlcBrowseRequestBuilder(tagHandler spi.PlcTagHandler, browser spi.PlcBrowser) *DefaultPlcBrowseRequestBuilder {
+func NewDefaultPlcBrowseRequestBuilder(tagHandler spi.PlcTagHandler, browser spi.PlcBrowser) apiModel.PlcBrowseRequestBuilder {
 	return &DefaultPlcBrowseRequestBuilder{
 		tagHandler:   tagHandler,
 		browser:      browser,
@@ -46,14 +44,14 @@ func NewDefaultPlcBrowseRequestBuilder(tagHandler spi.PlcTagHandler, browser spi
 	}
 }
 
-func (d *DefaultPlcBrowseRequestBuilder) AddQuery(name string, query string) model.PlcBrowseRequestBuilder {
+func (d *DefaultPlcBrowseRequestBuilder) AddQuery(name string, query string) apiModel.PlcBrowseRequestBuilder {
 	d.queryNames = append(d.queryNames, name)
 	d.queryStrings[name] = query
 	return d
 }
 
-func (d *DefaultPlcBrowseRequestBuilder) Build() (model.PlcBrowseRequest, error) {
-	queries := map[string]model.PlcQuery{}
+func (d *DefaultPlcBrowseRequestBuilder) Build() (apiModel.PlcBrowseRequest, error) {
+	queries := map[string]apiModel.PlcQuery{}
 	for name, queryString := range d.queryStrings {
 		query, err := d.tagHandler.ParseQuery(queryString)
 		if err != nil {
@@ -64,35 +62,38 @@ func (d *DefaultPlcBrowseRequestBuilder) Build() (model.PlcBrowseRequest, error)
 	return NewDefaultPlcBrowseRequest(queries, d.queryNames, d.browser), nil
 }
 
+//go:generate go run ../../tools/plc4xgenerator/gen.go -type=DefaultPlcBrowseRequest
 type DefaultPlcBrowseRequest struct {
-	DefaultPlcRequest
 	browser    spi.PlcBrowser
 	queryNames []string
-	queries    map[string]model.PlcQuery
+	queries    map[string]apiModel.PlcQuery
 }
 
-func NewDefaultPlcBrowseRequest(queries map[string]model.PlcQuery, queryNames []string, browser spi.PlcBrowser) model.PlcBrowseRequest {
+func NewDefaultPlcBrowseRequest(queries map[string]apiModel.PlcQuery, queryNames []string, browser spi.PlcBrowser) *DefaultPlcBrowseRequest {
 	return &DefaultPlcBrowseRequest{
-		DefaultPlcRequest: DefaultPlcRequest{},
-		browser:           browser,
-		queryNames:        queryNames,
-		queries:           queries,
+		browser:    browser,
+		queryNames: queryNames,
+		queries:    queries,
 	}
 }
 
-func (d *DefaultPlcBrowseRequest) Execute() <-chan model.PlcBrowseRequestResult {
+func (d *DefaultPlcBrowseRequest) IsAPlcMessage() bool {
+	return true
+}
+
+func (d *DefaultPlcBrowseRequest) Execute() <-chan apiModel.PlcBrowseRequestResult {
 	return d.browser.Browse(context.TODO(), d)
 }
 
-func (d *DefaultPlcBrowseRequest) ExecuteWithContext(ctx context.Context) <-chan model.PlcBrowseRequestResult {
+func (d *DefaultPlcBrowseRequest) ExecuteWithContext(ctx context.Context) <-chan apiModel.PlcBrowseRequestResult {
 	return d.browser.Browse(ctx, d)
 }
 
-func (d *DefaultPlcBrowseRequest) ExecuteWithInterceptor(interceptor func(result model.PlcBrowseItem) bool) <-chan model.PlcBrowseRequestResult {
+func (d *DefaultPlcBrowseRequest) ExecuteWithInterceptor(interceptor func(result apiModel.PlcBrowseItem) bool) <-chan apiModel.PlcBrowseRequestResult {
 	return d.ExecuteWithInterceptorWithContext(context.TODO(), interceptor)
 }
 
-func (d *DefaultPlcBrowseRequest) ExecuteWithInterceptorWithContext(ctx context.Context, interceptor func(result model.PlcBrowseItem) bool) <-chan model.PlcBrowseRequestResult {
+func (d *DefaultPlcBrowseRequest) ExecuteWithInterceptorWithContext(ctx context.Context, interceptor func(result apiModel.PlcBrowseItem) bool) <-chan apiModel.PlcBrowseRequestResult {
 	return d.browser.BrowseWithInterceptor(ctx, d, interceptor)
 }
 
@@ -100,91 +101,6 @@ func (d *DefaultPlcBrowseRequest) GetQueryNames() []string {
 	return d.queryNames
 }
 
-func (d *DefaultPlcBrowseRequest) GetQuery(queryName string) model.PlcQuery {
+func (d *DefaultPlcBrowseRequest) GetQuery(queryName string) apiModel.PlcQuery {
 	return d.queries[queryName]
-}
-
-func (d *DefaultPlcBrowseRequest) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
-	if err := d.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
-		return nil, err
-	}
-	return wb.GetBytes(), nil
-}
-
-func (d *DefaultPlcBrowseRequest) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
-	if err := writeBuffer.PushContext("PlcBrowseRequest"); err != nil {
-		return err
-	}
-	if err := d.DefaultPlcRequest.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
-		return err
-	}
-
-	if d.browser != nil {
-		if serializableField, ok := d.browser.(utils.Serializable); ok {
-			if err := writeBuffer.PushContext("browser"); err != nil {
-				return err
-			}
-			if err := serializableField.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
-				return err
-			}
-			if err := writeBuffer.PopContext("browser"); err != nil {
-				return err
-			}
-		} else {
-			stringValue := fmt.Sprintf("%v", d.browser)
-			if err := writeBuffer.WriteString("browser", uint32(len(stringValue)*8), "UTF-8", stringValue); err != nil {
-				return err
-			}
-		}
-	}
-	if err := writeBuffer.PushContext("queryNames", utils.WithRenderAsList(true)); err != nil {
-		return err
-	}
-	for _, elem := range d.queryNames {
-		if err := writeBuffer.WriteString("", uint32(len(elem)*8), "UTF-8", elem); err != nil {
-			return err
-		}
-	}
-	if err := writeBuffer.PopContext("queryNames", utils.WithRenderAsList(true)); err != nil {
-		return err
-	}
-	if err := writeBuffer.PushContext("queries", utils.WithRenderAsList(true)); err != nil {
-		return err
-	}
-	for name, elem := range d.queries {
-
-		var elem interface{} = elem
-		if serializable, ok := elem.(utils.Serializable); ok {
-			if err := writeBuffer.PushContext(name); err != nil {
-				return err
-			}
-			if err := serializable.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
-				return err
-			}
-			if err := writeBuffer.PopContext(name); err != nil {
-				return err
-			}
-		} else {
-			elemAsString := fmt.Sprintf("%v", elem)
-			if err := writeBuffer.WriteString(name, uint32(len(elemAsString)*8), "UTF-8", elemAsString); err != nil {
-				return err
-			}
-		}
-	}
-	if err := writeBuffer.PopContext("queries", utils.WithRenderAsList(true)); err != nil {
-		return err
-	}
-	if err := writeBuffer.PopContext("PlcBrowseRequest"); err != nil {
-		return err
-	}
-	return nil
-}
-
-func (d *DefaultPlcBrowseRequest) String() string {
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), d); err != nil {
-		return err.Error()
-	}
-	return writeBuffer.GetBox().String()
 }

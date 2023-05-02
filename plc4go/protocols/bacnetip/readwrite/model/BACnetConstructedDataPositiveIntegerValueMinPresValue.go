@@ -121,7 +121,7 @@ func NewBACnetConstructedDataPositiveIntegerValueMinPresValue(minPresValue BACne
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataPositiveIntegerValueMinPresValue(structType interface{}) BACnetConstructedDataPositiveIntegerValueMinPresValue {
+func CastBACnetConstructedDataPositiveIntegerValueMinPresValue(structType any) BACnetConstructedDataPositiveIntegerValueMinPresValue {
 	if casted, ok := structType.(BACnetConstructedDataPositiveIntegerValueMinPresValue); ok {
 		return casted
 	}

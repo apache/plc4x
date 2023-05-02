@@ -22,7 +22,6 @@ package model
 import (
 	"context"
 	"fmt"
-	spiContext "github.com/apache/plc4x/plc4go/spi/context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -87,7 +86,7 @@ func NewBACnetEventParameterChangeOfStateListOfValues(openingTag BACnetOpeningTa
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetEventParameterChangeOfStateListOfValues(structType interface{}) BACnetEventParameterChangeOfStateListOfValues {
+func CastBACnetEventParameterChangeOfStateListOfValues(structType any) BACnetEventParameterChangeOfStateListOfValues {
 	if casted, ok := structType.(BACnetEventParameterChangeOfStateListOfValues); ok {
 		return casted
 	}
@@ -228,7 +227,7 @@ func (m *_BACnetEventParameterChangeOfStateListOfValues) SerializeWithWriteBuffe
 	}
 	for _curItem, _element := range m.GetListOfValues() {
 		_ = _curItem
-		arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetListOfValues()), _curItem)
+		arrayCtx := utils.CreateArrayContext(ctx, len(m.GetListOfValues()), _curItem)
 		_ = arrayCtx
 		_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 		if _elementErr != nil {

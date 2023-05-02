@@ -94,7 +94,7 @@ func NewLightingDataTerminateRamp(group byte, commandTypeContainer LightingComma
 }
 
 // Deprecated: use the interface for direct cast
-func CastLightingDataTerminateRamp(structType interface{}) LightingDataTerminateRamp {
+func CastLightingDataTerminateRamp(structType any) LightingDataTerminateRamp {
 	if casted, ok := structType.(LightingDataTerminateRamp); ok {
 		return casted
 	}

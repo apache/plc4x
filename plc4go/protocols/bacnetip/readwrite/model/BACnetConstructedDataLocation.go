@@ -121,7 +121,7 @@ func NewBACnetConstructedDataLocation(location BACnetApplicationTagCharacterStri
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataLocation(structType interface{}) BACnetConstructedDataLocation {
+func CastBACnetConstructedDataLocation(structType any) BACnetConstructedDataLocation {
 	if casted, ok := structType.(BACnetConstructedDataLocation); ok {
 		return casted
 	}

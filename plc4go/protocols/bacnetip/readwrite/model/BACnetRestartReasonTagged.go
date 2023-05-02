@@ -104,7 +104,7 @@ func NewBACnetRestartReasonTagged(header BACnetTagHeader, value BACnetRestartRea
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetRestartReasonTagged(structType interface{}) BACnetRestartReasonTagged {
+func CastBACnetRestartReasonTagged(structType any) BACnetRestartReasonTagged {
 	if casted, ok := structType.(BACnetRestartReasonTagged); ok {
 		return casted
 	}
@@ -125,12 +125,12 @@ func (m *_BACnetRestartReasonTagged) GetLengthInBits(ctx context.Context) uint16
 	lengthInBits += m.Header.GetLengthInBits(ctx)
 
 	// Manual Field (value)
-	lengthInBits += uint16(utils.InlineIf(m.GetIsProprietary(), func() interface{} { return int32(int32(0)) }, func() interface{} { return int32((int32(m.GetHeader().GetActualLength()) * int32(int32(8)))) }).(int32))
+	lengthInBits += uint16(utils.InlineIf(m.GetIsProprietary(), func() any { return int32(int32(0)) }, func() any { return int32((int32(m.GetHeader().GetActualLength()) * int32(int32(8)))) }).(int32))
 
 	// A virtual field doesn't have any in- or output.
 
 	// Manual Field (proprietaryValue)
-	lengthInBits += uint16(utils.InlineIf(m.GetIsProprietary(), func() interface{} { return int32((int32(m.GetHeader().GetActualLength()) * int32(int32(8)))) }, func() interface{} { return int32(int32(0)) }).(int32))
+	lengthInBits += uint16(utils.InlineIf(m.GetIsProprietary(), func() any { return int32((int32(m.GetHeader().GetActualLength()) * int32(int32(8)))) }, func() any { return int32(int32(0)) }).(int32))
 
 	return lengthInBits
 }

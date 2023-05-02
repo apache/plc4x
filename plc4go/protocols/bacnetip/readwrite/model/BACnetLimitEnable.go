@@ -33,6 +33,7 @@ type BACnetLimitEnable uint8
 
 type IBACnetLimitEnable interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 
@@ -80,8 +81,8 @@ func BACnetLimitEnableKnows(value uint8) bool {
 	return false
 }
 
-func CastBACnetLimitEnable(structType interface{}) BACnetLimitEnable {
-	castFunc := func(typ interface{}) BACnetLimitEnable {
+func CastBACnetLimitEnable(structType any) BACnetLimitEnable {
+	castFunc := func(typ any) BACnetLimitEnable {
 		if sBACnetLimitEnable, ok := typ.(BACnetLimitEnable); ok {
 			return sBACnetLimitEnable
 		}

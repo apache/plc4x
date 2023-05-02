@@ -120,7 +120,7 @@ func NewGroupObjectDescriptorRealisationType1(dataPointer uint8, transmitEnable 
 }
 
 // Deprecated: use the interface for direct cast
-func CastGroupObjectDescriptorRealisationType1(structType interface{}) GroupObjectDescriptorRealisationType1 {
+func CastGroupObjectDescriptorRealisationType1(structType any) GroupObjectDescriptorRealisationType1 {
 	if casted, ok := structType.(GroupObjectDescriptorRealisationType1); ok {
 		return casted
 	}
@@ -199,7 +199,7 @@ func GroupObjectDescriptorRealisationType1ParseWithBuffer(ctx context.Context, r
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of GroupObjectDescriptorRealisationType1")
 		}
 		if reserved != uint8(0x1) {
-			Plc4xModelLog.Info().Fields(map[string]interface{}{
+			Plc4xModelLog.Info().Fields(map[string]any{
 				"expected value": uint8(0x1),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
@@ -313,7 +313,7 @@ func (m *_GroupObjectDescriptorRealisationType1) SerializeWithWriteBuffer(ctx co
 	{
 		var reserved uint8 = uint8(0x1)
 		if m.reservedField0 != nil {
-			Plc4xModelLog.Info().Fields(map[string]interface{}{
+			Plc4xModelLog.Info().Fields(map[string]any{
 				"expected value": uint8(0x1),
 				"got value":      reserved,
 			}).Msg("Overriding reserved field with unexpected value.")

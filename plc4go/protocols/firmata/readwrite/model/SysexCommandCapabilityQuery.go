@@ -82,7 +82,7 @@ func NewSysexCommandCapabilityQuery() *_SysexCommandCapabilityQuery {
 }
 
 // Deprecated: use the interface for direct cast
-func CastSysexCommandCapabilityQuery(structType interface{}) SysexCommandCapabilityQuery {
+func CastSysexCommandCapabilityQuery(structType any) SysexCommandCapabilityQuery {
 	if casted, ok := structType.(SysexCommandCapabilityQuery); ok {
 		return casted
 	}

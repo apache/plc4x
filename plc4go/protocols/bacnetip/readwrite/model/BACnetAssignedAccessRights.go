@@ -76,7 +76,7 @@ func NewBACnetAssignedAccessRights(assignedAccessRights BACnetDeviceObjectRefere
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetAssignedAccessRights(structType interface{}) BACnetAssignedAccessRights {
+func CastBACnetAssignedAccessRights(structType any) BACnetAssignedAccessRights {
 	if casted, ok := structType.(BACnetAssignedAccessRights); ok {
 		return casted
 	}

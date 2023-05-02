@@ -115,7 +115,7 @@ func NewClockAndTimekeepingData(commandTypeContainer ClockAndTimekeepingCommandT
 }
 
 // Deprecated: use the interface for direct cast
-func CastClockAndTimekeepingData(structType interface{}) ClockAndTimekeepingData {
+func CastClockAndTimekeepingData(structType any) ClockAndTimekeepingData {
 	if casted, ok := structType.(ClockAndTimekeepingData); ok {
 		return casted
 	}
@@ -196,7 +196,7 @@ func ClockAndTimekeepingDataParseWithBuffer(ctx context.Context, readBuffer util
 		InitializeParent(ClockAndTimekeepingData, ClockAndTimekeepingCommandTypeContainer, byte)
 		GetParent() ClockAndTimekeepingData
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child ClockAndTimekeepingDataChildSerializeRequirement
 	var typeSwitchError error
 	switch {

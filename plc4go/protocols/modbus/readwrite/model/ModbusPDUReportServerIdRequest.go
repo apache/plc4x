@@ -86,7 +86,7 @@ func NewModbusPDUReportServerIdRequest() *_ModbusPDUReportServerIdRequest {
 }
 
 // Deprecated: use the interface for direct cast
-func CastModbusPDUReportServerIdRequest(structType interface{}) ModbusPDUReportServerIdRequest {
+func CastModbusPDUReportServerIdRequest(structType any) ModbusPDUReportServerIdRequest {
 	if casted, ok := structType.(ModbusPDUReportServerIdRequest); ok {
 		return casted
 	}

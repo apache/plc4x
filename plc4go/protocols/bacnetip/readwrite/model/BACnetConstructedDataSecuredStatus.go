@@ -121,7 +121,7 @@ func NewBACnetConstructedDataSecuredStatus(securedStatus BACnetDoorSecuredStatus
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataSecuredStatus(structType interface{}) BACnetConstructedDataSecuredStatus {
+func CastBACnetConstructedDataSecuredStatus(structType any) BACnetConstructedDataSecuredStatus {
 	if casted, ok := structType.(BACnetConstructedDataSecuredStatus); ok {
 		return casted
 	}

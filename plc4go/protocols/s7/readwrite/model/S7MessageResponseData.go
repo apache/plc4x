@@ -108,7 +108,7 @@ func NewS7MessageResponseData(errorClass uint8, errorCode uint8, tpduReference u
 }
 
 // Deprecated: use the interface for direct cast
-func CastS7MessageResponseData(structType interface{}) S7MessageResponseData {
+func CastS7MessageResponseData(structType any) S7MessageResponseData {
 	if casted, ok := structType.(S7MessageResponseData); ok {
 		return casted
 	}

@@ -104,7 +104,7 @@ func NewBACnetServiceAckAtomicReadFileStream(fileStartPosition BACnetApplication
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetServiceAckAtomicReadFileStream(structType interface{}) BACnetServiceAckAtomicReadFileStream {
+func CastBACnetServiceAckAtomicReadFileStream(structType any) BACnetServiceAckAtomicReadFileStream {
 	if casted, ok := structType.(BACnetServiceAckAtomicReadFileStream); ok {
 		return casted
 	}

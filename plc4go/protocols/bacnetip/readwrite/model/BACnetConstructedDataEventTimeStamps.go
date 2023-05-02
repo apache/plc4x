@@ -22,7 +22,6 @@ package model
 import (
 	"context"
 	"fmt"
-	spiContext "github.com/apache/plc4x/plc4go/spi/context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
@@ -127,7 +126,7 @@ func (m *_BACnetConstructedDataEventTimeStamps) GetToOffnormal() BACnetTimeStamp
 	_ = ctx
 	numberOfDataElements := m.NumberOfDataElements
 	_ = numberOfDataElements
-	return CastBACnetTimeStamp(CastBACnetTimeStamp(utils.InlineIf(bool((len(m.GetEventTimeStamps())) == (3)), func() interface{} { return CastBACnetTimeStamp(m.GetEventTimeStamps()[0]) }, func() interface{} { return CastBACnetTimeStamp(nil) })))
+	return CastBACnetTimeStamp(CastBACnetTimeStamp(utils.InlineIf(bool((len(m.GetEventTimeStamps())) == (3)), func() any { return CastBACnetTimeStamp(m.GetEventTimeStamps()[0]) }, func() any { return CastBACnetTimeStamp(nil) })))
 }
 
 func (m *_BACnetConstructedDataEventTimeStamps) GetToFault() BACnetTimeStamp {
@@ -135,7 +134,7 @@ func (m *_BACnetConstructedDataEventTimeStamps) GetToFault() BACnetTimeStamp {
 	_ = ctx
 	numberOfDataElements := m.NumberOfDataElements
 	_ = numberOfDataElements
-	return CastBACnetTimeStamp(CastBACnetTimeStamp(utils.InlineIf(bool((len(m.GetEventTimeStamps())) == (3)), func() interface{} { return CastBACnetTimeStamp(m.GetEventTimeStamps()[1]) }, func() interface{} { return CastBACnetTimeStamp(nil) })))
+	return CastBACnetTimeStamp(CastBACnetTimeStamp(utils.InlineIf(bool((len(m.GetEventTimeStamps())) == (3)), func() any { return CastBACnetTimeStamp(m.GetEventTimeStamps()[1]) }, func() any { return CastBACnetTimeStamp(nil) })))
 }
 
 func (m *_BACnetConstructedDataEventTimeStamps) GetToNormal() BACnetTimeStamp {
@@ -143,7 +142,7 @@ func (m *_BACnetConstructedDataEventTimeStamps) GetToNormal() BACnetTimeStamp {
 	_ = ctx
 	numberOfDataElements := m.NumberOfDataElements
 	_ = numberOfDataElements
-	return CastBACnetTimeStamp(CastBACnetTimeStamp(utils.InlineIf(bool((len(m.GetEventTimeStamps())) == (3)), func() interface{} { return CastBACnetTimeStamp(m.GetEventTimeStamps()[2]) }, func() interface{} { return CastBACnetTimeStamp(nil) })))
+	return CastBACnetTimeStamp(CastBACnetTimeStamp(utils.InlineIf(bool((len(m.GetEventTimeStamps())) == (3)), func() any { return CastBACnetTimeStamp(m.GetEventTimeStamps()[2]) }, func() any { return CastBACnetTimeStamp(nil) })))
 }
 
 ///////////////////////
@@ -163,7 +162,7 @@ func NewBACnetConstructedDataEventTimeStamps(numberOfDataElements BACnetApplicat
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataEventTimeStamps(structType interface{}) BACnetConstructedDataEventTimeStamps {
+func CastBACnetConstructedDataEventTimeStamps(structType any) BACnetConstructedDataEventTimeStamps {
 	if casted, ok := structType.(BACnetConstructedDataEventTimeStamps); ok {
 		return casted
 	}
@@ -267,17 +266,17 @@ func BACnetConstructedDataEventTimeStampsParseWithBuffer(ctx context.Context, re
 	}
 
 	// Virtual field
-	_toOffnormal := CastBACnetTimeStamp(utils.InlineIf(bool((len(eventTimeStamps)) == (3)), func() interface{} { return CastBACnetTimeStamp(eventTimeStamps[0]) }, func() interface{} { return CastBACnetTimeStamp(nil) }))
+	_toOffnormal := CastBACnetTimeStamp(utils.InlineIf(bool((len(eventTimeStamps)) == (3)), func() any { return CastBACnetTimeStamp(eventTimeStamps[0]) }, func() any { return CastBACnetTimeStamp(nil) }))
 	toOffnormal := _toOffnormal
 	_ = toOffnormal
 
 	// Virtual field
-	_toFault := CastBACnetTimeStamp(utils.InlineIf(bool((len(eventTimeStamps)) == (3)), func() interface{} { return CastBACnetTimeStamp(eventTimeStamps[1]) }, func() interface{} { return CastBACnetTimeStamp(nil) }))
+	_toFault := CastBACnetTimeStamp(utils.InlineIf(bool((len(eventTimeStamps)) == (3)), func() any { return CastBACnetTimeStamp(eventTimeStamps[1]) }, func() any { return CastBACnetTimeStamp(nil) }))
 	toFault := _toFault
 	_ = toFault
 
 	// Virtual field
-	_toNormal := CastBACnetTimeStamp(utils.InlineIf(bool((len(eventTimeStamps)) == (3)), func() interface{} { return CastBACnetTimeStamp(eventTimeStamps[2]) }, func() interface{} { return CastBACnetTimeStamp(nil) }))
+	_toNormal := CastBACnetTimeStamp(utils.InlineIf(bool((len(eventTimeStamps)) == (3)), func() any { return CastBACnetTimeStamp(eventTimeStamps[2]) }, func() any { return CastBACnetTimeStamp(nil) }))
 	toNormal := _toNormal
 	_ = toNormal
 
@@ -345,7 +344,7 @@ func (m *_BACnetConstructedDataEventTimeStamps) SerializeWithWriteBuffer(ctx con
 		}
 		for _curItem, _element := range m.GetEventTimeStamps() {
 			_ = _curItem
-			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetEventTimeStamps()), _curItem)
+			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetEventTimeStamps()), _curItem)
 			_ = arrayCtx
 			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 			if _elementErr != nil {

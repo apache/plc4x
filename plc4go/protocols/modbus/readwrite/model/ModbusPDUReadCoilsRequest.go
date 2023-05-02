@@ -112,7 +112,7 @@ func NewModbusPDUReadCoilsRequest(startingAddress uint16, quantity uint16) *_Mod
 }
 
 // Deprecated: use the interface for direct cast
-func CastModbusPDUReadCoilsRequest(structType interface{}) ModbusPDUReadCoilsRequest {
+func CastModbusPDUReadCoilsRequest(structType any) ModbusPDUReadCoilsRequest {
 	if casted, ok := structType.(ModbusPDUReadCoilsRequest); ok {
 		return casted
 	}

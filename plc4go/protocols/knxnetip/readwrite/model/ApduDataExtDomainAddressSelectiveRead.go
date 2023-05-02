@@ -78,7 +78,7 @@ func NewApduDataExtDomainAddressSelectiveRead(length uint8) *_ApduDataExtDomainA
 }
 
 // Deprecated: use the interface for direct cast
-func CastApduDataExtDomainAddressSelectiveRead(structType interface{}) ApduDataExtDomainAddressSelectiveRead {
+func CastApduDataExtDomainAddressSelectiveRead(structType any) ApduDataExtDomainAddressSelectiveRead {
 	if casted, ok := structType.(ApduDataExtDomainAddressSelectiveRead); ok {
 		return casted
 	}

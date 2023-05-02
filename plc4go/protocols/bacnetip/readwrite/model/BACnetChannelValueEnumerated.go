@@ -94,7 +94,7 @@ func NewBACnetChannelValueEnumerated(enumeratedValue BACnetApplicationTagEnumera
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetChannelValueEnumerated(structType interface{}) BACnetChannelValueEnumerated {
+func CastBACnetChannelValueEnumerated(structType any) BACnetChannelValueEnumerated {
 	if casted, ok := structType.(BACnetChannelValueEnumerated); ok {
 		return casted
 	}

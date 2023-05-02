@@ -98,7 +98,7 @@ func NewSALDataSecurity(securityData SecurityData, salData SALData) *_SALDataSec
 }
 
 // Deprecated: use the interface for direct cast
-func CastSALDataSecurity(structType interface{}) SALDataSecurity {
+func CastSALDataSecurity(structType any) SALDataSecurity {
 	if casted, ok := structType.(SALDataSecurity); ok {
 		return casted
 	}

@@ -121,7 +121,7 @@ func NewBACnetConstructedDataMusterPoint(musterPoint BACnetApplicationTagBoolean
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataMusterPoint(structType interface{}) BACnetConstructedDataMusterPoint {
+func CastBACnetConstructedDataMusterPoint(structType any) BACnetConstructedDataMusterPoint {
 	if casted, ok := structType.(BACnetConstructedDataMusterPoint); ok {
 		return casted
 	}

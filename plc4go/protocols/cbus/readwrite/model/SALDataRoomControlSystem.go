@@ -80,7 +80,7 @@ func NewSALDataRoomControlSystem(salData SALData) *_SALDataRoomControlSystem {
 }
 
 // Deprecated: use the interface for direct cast
-func CastSALDataRoomControlSystem(structType interface{}) SALDataRoomControlSystem {
+func CastSALDataRoomControlSystem(structType any) SALDataRoomControlSystem {
 	if casted, ok := structType.(SALDataRoomControlSystem); ok {
 		return casted
 	}

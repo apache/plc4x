@@ -121,7 +121,7 @@ func NewBACnetConstructedDataIntegerValueMaxPresValue(maxPresValue BACnetApplica
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataIntegerValueMaxPresValue(structType interface{}) BACnetConstructedDataIntegerValueMaxPresValue {
+func CastBACnetConstructedDataIntegerValueMaxPresValue(structType any) BACnetConstructedDataIntegerValueMaxPresValue {
 	if casted, ok := structType.(BACnetConstructedDataIntegerValueMaxPresValue); ok {
 		return casted
 	}

@@ -121,7 +121,7 @@ func NewBACnetConstructedDataLargeAnalogValueRelinquishDefault(relinquishDefault
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataLargeAnalogValueRelinquishDefault(structType interface{}) BACnetConstructedDataLargeAnalogValueRelinquishDefault {
+func CastBACnetConstructedDataLargeAnalogValueRelinquishDefault(structType any) BACnetConstructedDataLargeAnalogValueRelinquishDefault {
 	if casted, ok := structType.(BACnetConstructedDataLargeAnalogValueRelinquishDefault); ok {
 		return casted
 	}

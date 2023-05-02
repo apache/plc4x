@@ -121,7 +121,7 @@ func NewBACnetConstructedDataLoggingRecord(loggingRecord BACnetAccumulatorRecord
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataLoggingRecord(structType interface{}) BACnetConstructedDataLoggingRecord {
+func CastBACnetConstructedDataLoggingRecord(structType any) BACnetConstructedDataLoggingRecord {
 	if casted, ok := structType.(BACnetConstructedDataLoggingRecord); ok {
 		return casted
 	}

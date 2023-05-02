@@ -72,7 +72,7 @@ func NewBACnetClosingTag(header BACnetTagHeader, tagNumberArgument uint8) *_BACn
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetClosingTag(structType interface{}) BACnetClosingTag {
+func CastBACnetClosingTag(structType any) BACnetClosingTag {
 	if casted, ok := structType.(BACnetClosingTag); ok {
 		return casted
 	}

@@ -94,7 +94,7 @@ func NewBACnetHostAddressName(name BACnetContextTagCharacterString, peekedTagHea
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetHostAddressName(structType interface{}) BACnetHostAddressName {
+func CastBACnetHostAddressName(structType any) BACnetHostAddressName {
 	if casted, ok := structType.(BACnetHostAddressName); ok {
 		return casted
 	}

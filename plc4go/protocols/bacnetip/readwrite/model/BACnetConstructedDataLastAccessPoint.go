@@ -121,7 +121,7 @@ func NewBACnetConstructedDataLastAccessPoint(lastAccessPoint BACnetDeviceObjectR
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataLastAccessPoint(structType interface{}) BACnetConstructedDataLastAccessPoint {
+func CastBACnetConstructedDataLastAccessPoint(structType any) BACnetConstructedDataLastAccessPoint {
 	if casted, ok := structType.(BACnetConstructedDataLastAccessPoint); ok {
 		return casted
 	}

@@ -94,7 +94,7 @@ func NewBACnetPropertyStatesEscalatorFault(escalatorFault BACnetEscalatorFaultTa
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetPropertyStatesEscalatorFault(structType interface{}) BACnetPropertyStatesEscalatorFault {
+func CastBACnetPropertyStatesEscalatorFault(structType any) BACnetPropertyStatesEscalatorFault {
 	if casted, ok := structType.(BACnetPropertyStatesEscalatorFault); ok {
 		return casted
 	}

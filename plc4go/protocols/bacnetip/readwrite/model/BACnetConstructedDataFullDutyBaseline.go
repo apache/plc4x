@@ -121,7 +121,7 @@ func NewBACnetConstructedDataFullDutyBaseline(fullDutyBaseLine BACnetApplication
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataFullDutyBaseline(structType interface{}) BACnetConstructedDataFullDutyBaseline {
+func CastBACnetConstructedDataFullDutyBaseline(structType any) BACnetConstructedDataFullDutyBaseline {
 	if casted, ok := structType.(BACnetConstructedDataFullDutyBaseline); ok {
 		return casted
 	}

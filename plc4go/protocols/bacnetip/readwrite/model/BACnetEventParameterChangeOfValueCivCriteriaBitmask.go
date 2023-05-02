@@ -96,7 +96,7 @@ func NewBACnetEventParameterChangeOfValueCivCriteriaBitmask(bitmask BACnetContex
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetEventParameterChangeOfValueCivCriteriaBitmask(structType interface{}) BACnetEventParameterChangeOfValueCivCriteriaBitmask {
+func CastBACnetEventParameterChangeOfValueCivCriteriaBitmask(structType any) BACnetEventParameterChangeOfValueCivCriteriaBitmask {
 	if casted, ok := structType.(BACnetEventParameterChangeOfValueCivCriteriaBitmask); ok {
 		return casted
 	}

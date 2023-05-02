@@ -97,7 +97,7 @@ func NewTunnelingResponse(tunnelingResponseDataBlock TunnelingResponseDataBlock)
 }
 
 // Deprecated: use the interface for direct cast
-func CastTunnelingResponse(structType interface{}) TunnelingResponse {
+func CastTunnelingResponse(structType any) TunnelingResponse {
 	if casted, ok := structType.(TunnelingResponse); ok {
 		return casted
 	}

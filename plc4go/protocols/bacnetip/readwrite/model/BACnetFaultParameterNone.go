@@ -94,7 +94,7 @@ func NewBACnetFaultParameterNone(none BACnetContextTagNull, peekedTagHeader BACn
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetFaultParameterNone(structType interface{}) BACnetFaultParameterNone {
+func CastBACnetFaultParameterNone(structType any) BACnetFaultParameterNone {
 	if casted, ok := structType.(BACnetFaultParameterNone); ok {
 		return casted
 	}

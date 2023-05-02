@@ -121,7 +121,7 @@ func NewBACnetConstructedDataReadOnly(readOnly BACnetApplicationTagBoolean, open
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataReadOnly(structType interface{}) BACnetConstructedDataReadOnly {
+func CastBACnetConstructedDataReadOnly(structType any) BACnetConstructedDataReadOnly {
 	if casted, ok := structType.(BACnetConstructedDataReadOnly); ok {
 		return casted
 	}

@@ -105,7 +105,7 @@ func NewModbusRtuADU(address uint8, pdu ModbusPDU, response bool) *_ModbusRtuADU
 }
 
 // Deprecated: use the interface for direct cast
-func CastModbusRtuADU(structType interface{}) ModbusRtuADU {
+func CastModbusRtuADU(structType any) ModbusRtuADU {
 	if casted, ok := structType.(ModbusRtuADU); ok {
 		return casted
 	}

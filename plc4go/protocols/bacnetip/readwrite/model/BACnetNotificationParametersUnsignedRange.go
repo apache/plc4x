@@ -128,7 +128,7 @@ func NewBACnetNotificationParametersUnsignedRange(innerOpeningTag BACnetOpeningT
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetNotificationParametersUnsignedRange(structType interface{}) BACnetNotificationParametersUnsignedRange {
+func CastBACnetNotificationParametersUnsignedRange(structType any) BACnetNotificationParametersUnsignedRange {
 	if casted, ok := structType.(BACnetNotificationParametersUnsignedRange); ok {
 		return casted
 	}

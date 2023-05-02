@@ -121,7 +121,7 @@ func NewBACnetConstructedDataDefaultRampRate(defaultRampRate BACnetApplicationTa
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataDefaultRampRate(structType interface{}) BACnetConstructedDataDefaultRampRate {
+func CastBACnetConstructedDataDefaultRampRate(structType any) BACnetConstructedDataDefaultRampRate {
 	if casted, ok := structType.(BACnetConstructedDataDefaultRampRate); ok {
 		return casted
 	}

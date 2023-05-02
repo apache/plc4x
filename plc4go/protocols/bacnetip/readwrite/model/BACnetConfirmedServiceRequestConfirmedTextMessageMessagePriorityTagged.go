@@ -80,7 +80,7 @@ func NewBACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged(h
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged(structType interface{}) BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged {
+func CastBACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged(structType any) BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged {
 	if casted, ok := structType.(BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged); ok {
 		return casted
 	}

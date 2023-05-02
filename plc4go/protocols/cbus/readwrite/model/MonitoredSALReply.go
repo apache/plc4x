@@ -94,7 +94,7 @@ func NewMonitoredSALReply(monitoredSAL MonitoredSAL, peekedByte byte, cBusOption
 }
 
 // Deprecated: use the interface for direct cast
-func CastMonitoredSALReply(structType interface{}) MonitoredSALReply {
+func CastMonitoredSALReply(structType any) MonitoredSALReply {
 	if casted, ok := structType.(MonitoredSALReply); ok {
 		return casted
 	}

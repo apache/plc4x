@@ -125,7 +125,7 @@ func NewMultipleServiceRequest(data Services, serviceLen uint16) *_MultipleServi
 }
 
 // Deprecated: use the interface for direct cast
-func CastMultipleServiceRequest(structType interface{}) MultipleServiceRequest {
+func CastMultipleServiceRequest(structType any) MultipleServiceRequest {
 	if casted, ok := structType.(MultipleServiceRequest); ok {
 		return casted
 	}

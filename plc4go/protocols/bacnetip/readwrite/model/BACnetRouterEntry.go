@@ -91,7 +91,7 @@ func NewBACnetRouterEntry(networkNumber BACnetContextTagUnsignedInteger, macAddr
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetRouterEntry(structType interface{}) BACnetRouterEntry {
+func CastBACnetRouterEntry(structType any) BACnetRouterEntry {
 	if casted, ok := structType.(BACnetRouterEntry); ok {
 		return casted
 	}

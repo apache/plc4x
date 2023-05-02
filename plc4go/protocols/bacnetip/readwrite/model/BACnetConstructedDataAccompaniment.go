@@ -121,7 +121,7 @@ func NewBACnetConstructedDataAccompaniment(accompaniment BACnetDeviceObjectRefer
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataAccompaniment(structType interface{}) BACnetConstructedDataAccompaniment {
+func CastBACnetConstructedDataAccompaniment(structType any) BACnetConstructedDataAccompaniment {
 	if casted, ok := structType.(BACnetConstructedDataAccompaniment); ok {
 		return casted
 	}

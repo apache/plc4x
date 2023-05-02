@@ -121,7 +121,7 @@ func NewBACnetConstructedDataLargeAnalogValueMinPresValue(minPresValue BACnetApp
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataLargeAnalogValueMinPresValue(structType interface{}) BACnetConstructedDataLargeAnalogValueMinPresValue {
+func CastBACnetConstructedDataLargeAnalogValueMinPresValue(structType any) BACnetConstructedDataLargeAnalogValueMinPresValue {
 	if casted, ok := structType.(BACnetConstructedDataLargeAnalogValueMinPresValue); ok {
 		return casted
 	}

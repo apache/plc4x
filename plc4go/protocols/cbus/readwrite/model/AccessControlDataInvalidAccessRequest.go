@@ -104,7 +104,7 @@ func NewAccessControlDataInvalidAccessRequest(accessControlDirection AccessContr
 }
 
 // Deprecated: use the interface for direct cast
-func CastAccessControlDataInvalidAccessRequest(structType interface{}) AccessControlDataInvalidAccessRequest {
+func CastAccessControlDataInvalidAccessRequest(structType any) AccessControlDataInvalidAccessRequest {
 	if casted, ok := structType.(AccessControlDataInvalidAccessRequest); ok {
 		return casted
 	}

@@ -77,7 +77,7 @@ func NewTriggerControlDataTriggerMax(commandTypeContainer TriggerControlCommandT
 }
 
 // Deprecated: use the interface for direct cast
-func CastTriggerControlDataTriggerMax(structType interface{}) TriggerControlDataTriggerMax {
+func CastTriggerControlDataTriggerMax(structType any) TriggerControlDataTriggerMax {
 	if casted, ok := structType.(TriggerControlDataTriggerMax); ok {
 		return casted
 	}

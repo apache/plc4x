@@ -94,7 +94,7 @@ func NewBACnetCalendarEntryDate(dateValue BACnetContextTagDate, peekedTagHeader 
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetCalendarEntryDate(structType interface{}) BACnetCalendarEntryDate {
+func CastBACnetCalendarEntryDate(structType any) BACnetCalendarEntryDate {
 	if casted, ok := structType.(BACnetCalendarEntryDate); ok {
 		return casted
 	}

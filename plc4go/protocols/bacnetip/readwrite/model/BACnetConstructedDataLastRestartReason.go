@@ -121,7 +121,7 @@ func NewBACnetConstructedDataLastRestartReason(lastRestartReason BACnetRestartRe
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataLastRestartReason(structType interface{}) BACnetConstructedDataLastRestartReason {
+func CastBACnetConstructedDataLastRestartReason(structType any) BACnetConstructedDataLastRestartReason {
 	if casted, ok := structType.(BACnetConstructedDataLastRestartReason); ok {
 		return casted
 	}

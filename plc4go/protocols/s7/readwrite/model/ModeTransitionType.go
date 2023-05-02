@@ -33,6 +33,7 @@ type ModeTransitionType uint8
 
 type IModeTransitionType interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 
@@ -122,8 +123,8 @@ func ModeTransitionTypeKnows(value uint8) bool {
 	return false
 }
 
-func CastModeTransitionType(structType interface{}) ModeTransitionType {
-	castFunc := func(typ interface{}) ModeTransitionType {
+func CastModeTransitionType(structType any) ModeTransitionType {
+	castFunc := func(typ any) ModeTransitionType {
 		if sModeTransitionType, ok := typ.(ModeTransitionType); ok {
 			return sModeTransitionType
 		}

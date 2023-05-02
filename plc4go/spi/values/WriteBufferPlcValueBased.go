@@ -166,7 +166,7 @@ func (p *writeBufferPlcValueBased) WriteString(logicalName string, bitLength uin
 	return p.appendValue(logicalName, NewPlcSTRING(value))
 }
 
-func (p *writeBufferPlcValueBased) WriteVirtual(ctx context.Context, logicalName string, value interface{}, _ ...utils.WithWriterArgs) error {
+func (p *writeBufferPlcValueBased) WriteVirtual(ctx context.Context, logicalName string, value any, _ ...utils.WithWriterArgs) error {
 	// NO-OP
 	return nil
 }

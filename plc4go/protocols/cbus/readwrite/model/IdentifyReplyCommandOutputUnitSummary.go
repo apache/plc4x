@@ -120,7 +120,7 @@ func NewIdentifyReplyCommandOutputUnitSummary(unitFlags IdentifyReplyCommandUnit
 }
 
 // Deprecated: use the interface for direct cast
-func CastIdentifyReplyCommandOutputUnitSummary(structType interface{}) IdentifyReplyCommandOutputUnitSummary {
+func CastIdentifyReplyCommandOutputUnitSummary(structType any) IdentifyReplyCommandOutputUnitSummary {
 	if casted, ok := structType.(IdentifyReplyCommandOutputUnitSummary); ok {
 		return casted
 	}

@@ -78,7 +78,7 @@ func NewTDataIndividualReq(size uint16) *_TDataIndividualReq {
 }
 
 // Deprecated: use the interface for direct cast
-func CastTDataIndividualReq(structType interface{}) TDataIndividualReq {
+func CastTDataIndividualReq(structType any) TDataIndividualReq {
 	if casted, ok := structType.(TDataIndividualReq); ok {
 		return casted
 	}

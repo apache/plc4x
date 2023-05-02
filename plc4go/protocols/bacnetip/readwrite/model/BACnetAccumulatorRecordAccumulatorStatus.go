@@ -33,6 +33,7 @@ type BACnetAccumulatorRecordAccumulatorStatus uint8
 
 type IBACnetAccumulatorRecordAccumulatorStatus interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 
@@ -98,8 +99,8 @@ func BACnetAccumulatorRecordAccumulatorStatusKnows(value uint8) bool {
 	return false
 }
 
-func CastBACnetAccumulatorRecordAccumulatorStatus(structType interface{}) BACnetAccumulatorRecordAccumulatorStatus {
-	castFunc := func(typ interface{}) BACnetAccumulatorRecordAccumulatorStatus {
+func CastBACnetAccumulatorRecordAccumulatorStatus(structType any) BACnetAccumulatorRecordAccumulatorStatus {
+	castFunc := func(typ any) BACnetAccumulatorRecordAccumulatorStatus {
 		if sBACnetAccumulatorRecordAccumulatorStatus, ok := typ.(BACnetAccumulatorRecordAccumulatorStatus); ok {
 			return sBACnetAccumulatorRecordAccumulatorStatus
 		}

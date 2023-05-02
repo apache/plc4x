@@ -100,11 +100,11 @@ func (m *MessageCodec) Receive() (spi.Message, error) {
 		if num < packetSize {
 			if err := transportInstance.FillBuffer(
 				func(pos uint, currentByte byte, reader *bufio.Reader) bool {
-					numBytesAvailalbe, err := transportInstance.GetNumBytesAvailableInBuffer()
+					numBytesAvailable, err := transportInstance.GetNumBytesAvailableInBuffer()
 					if err != nil {
 						return false
 					}
-					return numBytesAvailalbe < packetSize
+					return numBytesAvailable < packetSize
 				}); err != nil {
 				log.Warn().Err(err).Msg("error filling buffer")
 			}

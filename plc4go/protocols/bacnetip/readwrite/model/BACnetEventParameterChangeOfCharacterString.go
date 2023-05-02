@@ -118,7 +118,7 @@ func NewBACnetEventParameterChangeOfCharacterString(openingTag BACnetOpeningTag,
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetEventParameterChangeOfCharacterString(structType interface{}) BACnetEventParameterChangeOfCharacterString {
+func CastBACnetEventParameterChangeOfCharacterString(structType any) BACnetEventParameterChangeOfCharacterString {
 	if casted, ok := structType.(BACnetEventParameterChangeOfCharacterString); ok {
 		return casted
 	}

@@ -121,7 +121,7 @@ func NewBACnetConstructedDataBufferSize(bufferSize BACnetApplicationTagUnsignedI
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataBufferSize(structType interface{}) BACnetConstructedDataBufferSize {
+func CastBACnetConstructedDataBufferSize(structType any) BACnetConstructedDataBufferSize {
 	if casted, ok := structType.(BACnetConstructedDataBufferSize); ok {
 		return casted
 	}

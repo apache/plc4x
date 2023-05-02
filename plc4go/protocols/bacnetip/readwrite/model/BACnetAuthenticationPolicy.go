@@ -83,7 +83,7 @@ func NewBACnetAuthenticationPolicy(policy BACnetAuthenticationPolicyList, orderE
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetAuthenticationPolicy(structType interface{}) BACnetAuthenticationPolicy {
+func CastBACnetAuthenticationPolicy(structType any) BACnetAuthenticationPolicy {
 	if casted, ok := structType.(BACnetAuthenticationPolicy); ok {
 		return casted
 	}

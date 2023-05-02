@@ -107,7 +107,7 @@ func NewBACnetLandingCallStatusCommand(peekedTagHeader BACnetTagHeader) *_BACnet
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetLandingCallStatusCommand(structType interface{}) BACnetLandingCallStatusCommand {
+func CastBACnetLandingCallStatusCommand(structType any) BACnetLandingCallStatusCommand {
 	if casted, ok := structType.(BACnetLandingCallStatusCommand); ok {
 		return casted
 	}
@@ -165,7 +165,7 @@ func BACnetLandingCallStatusCommandParseWithBuffer(ctx context.Context, readBuff
 		InitializeParent(BACnetLandingCallStatusCommand, BACnetTagHeader)
 		GetParent() BACnetLandingCallStatusCommand
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child BACnetLandingCallStatusCommandChildSerializeRequirement
 	var typeSwitchError error
 	switch {

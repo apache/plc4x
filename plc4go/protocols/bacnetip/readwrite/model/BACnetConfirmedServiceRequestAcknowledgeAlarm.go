@@ -137,7 +137,7 @@ func NewBACnetConfirmedServiceRequestAcknowledgeAlarm(acknowledgingProcessIdenti
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConfirmedServiceRequestAcknowledgeAlarm(structType interface{}) BACnetConfirmedServiceRequestAcknowledgeAlarm {
+func CastBACnetConfirmedServiceRequestAcknowledgeAlarm(structType any) BACnetConfirmedServiceRequestAcknowledgeAlarm {
 	if casted, ok := structType.(BACnetConfirmedServiceRequestAcknowledgeAlarm); ok {
 		return casted
 	}

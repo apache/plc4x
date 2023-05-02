@@ -88,7 +88,7 @@ func NewTPKTPacket(payload COTPPacket) *_TPKTPacket {
 }
 
 // Deprecated: use the interface for direct cast
-func CastTPKTPacket(structType interface{}) TPKTPacket {
+func CastTPKTPacket(structType any) TPKTPacket {
 	if casted, ok := structType.(TPKTPacket); ok {
 		return casted
 	}
@@ -154,7 +154,7 @@ func TPKTPacketParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer)
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of TPKTPacket")
 		}
 		if reserved != uint8(0x00) {
-			Plc4xModelLog.Info().Fields(map[string]interface{}{
+			Plc4xModelLog.Info().Fields(map[string]any{
 				"expected value": uint8(0x00),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
@@ -219,7 +219,7 @@ func (m *_TPKTPacket) SerializeWithWriteBuffer(ctx context.Context, writeBuffer 
 	{
 		var reserved uint8 = uint8(0x00)
 		if m.reservedField0 != nil {
-			Plc4xModelLog.Info().Fields(map[string]interface{}{
+			Plc4xModelLog.Info().Fields(map[string]any{
 				"expected value": uint8(0x00),
 				"got value":      reserved,
 			}).Msg("Overriding reserved field with unexpected value.")

@@ -121,7 +121,7 @@ func NewBACnetConstructedDataIPv6ZoneIndex(ipv6ZoneIndex BACnetApplicationTagCha
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataIPv6ZoneIndex(structType interface{}) BACnetConstructedDataIPv6ZoneIndex {
+func CastBACnetConstructedDataIPv6ZoneIndex(structType any) BACnetConstructedDataIPv6ZoneIndex {
 	if casted, ok := structType.(BACnetConstructedDataIPv6ZoneIndex); ok {
 		return casted
 	}

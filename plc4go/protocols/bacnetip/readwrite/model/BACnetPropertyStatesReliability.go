@@ -94,7 +94,7 @@ func NewBACnetPropertyStatesReliability(reliability BACnetReliabilityTagged, pee
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetPropertyStatesReliability(structType interface{}) BACnetPropertyStatesReliability {
+func CastBACnetPropertyStatesReliability(structType any) BACnetPropertyStatesReliability {
 	if casted, ok := structType.(BACnetPropertyStatesReliability); ok {
 		return casted
 	}

@@ -35,7 +35,7 @@ type PlcStruct struct {
 	PlcValueAdapter
 }
 
-func NewPlcStruct(value map[string]apiValues.PlcValue) apiValues.PlcValue {
+func NewPlcStruct(value map[string]apiValues.PlcValue) PlcStruct {
 	return PlcStruct{
 		values: value,
 	}

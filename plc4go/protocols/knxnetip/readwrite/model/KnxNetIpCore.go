@@ -96,7 +96,7 @@ func NewKnxNetIpCore(version uint8) *_KnxNetIpCore {
 }
 
 // Deprecated: use the interface for direct cast
-func CastKnxNetIpCore(structType interface{}) KnxNetIpCore {
+func CastKnxNetIpCore(structType any) KnxNetIpCore {
 	if casted, ok := structType.(KnxNetIpCore); ok {
 		return casted
 	}

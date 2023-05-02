@@ -94,7 +94,7 @@ func NewBACnetPropertyStatesUnits(units BACnetEngineeringUnitsTagged, peekedTagH
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetPropertyStatesUnits(structType interface{}) BACnetPropertyStatesUnits {
+func CastBACnetPropertyStatesUnits(structType any) BACnetPropertyStatesUnits {
 	if casted, ok := structType.(BACnetPropertyStatesUnits); ok {
 		return casted
 	}

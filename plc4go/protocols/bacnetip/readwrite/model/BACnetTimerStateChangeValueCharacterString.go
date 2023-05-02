@@ -94,7 +94,7 @@ func NewBACnetTimerStateChangeValueCharacterString(characterStringValue BACnetAp
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetTimerStateChangeValueCharacterString(structType interface{}) BACnetTimerStateChangeValueCharacterString {
+func CastBACnetTimerStateChangeValueCharacterString(structType any) BACnetTimerStateChangeValueCharacterString {
 	if casted, ok := structType.(BACnetTimerStateChangeValueCharacterString); ok {
 		return casted
 	}

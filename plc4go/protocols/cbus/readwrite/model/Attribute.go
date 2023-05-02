@@ -33,6 +33,7 @@ type Attribute uint8
 
 type IAttribute interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 	BytesReturned() uint8
 }
@@ -266,8 +267,8 @@ func AttributeKnows(value uint8) bool {
 	return false
 }
 
-func CastAttribute(structType interface{}) Attribute {
-	castFunc := func(typ interface{}) Attribute {
+func CastAttribute(structType any) Attribute {
+	castFunc := func(typ any) Attribute {
 		if sAttribute, ok := typ.(Attribute); ok {
 			return sAttribute
 		}

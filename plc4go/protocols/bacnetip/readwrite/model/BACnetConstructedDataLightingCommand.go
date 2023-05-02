@@ -121,7 +121,7 @@ func NewBACnetConstructedDataLightingCommand(lightingCommand BACnetLightingComma
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataLightingCommand(structType interface{}) BACnetConstructedDataLightingCommand {
+func CastBACnetConstructedDataLightingCommand(structType any) BACnetConstructedDataLightingCommand {
 	if casted, ok := structType.(BACnetConstructedDataLightingCommand); ok {
 		return casted
 	}

@@ -104,7 +104,7 @@ func NewParameterValueSerialNumber(value SerialNumber, data []byte, numBytes uin
 }
 
 // Deprecated: use the interface for direct cast
-func CastParameterValueSerialNumber(structType interface{}) ParameterValueSerialNumber {
+func CastParameterValueSerialNumber(structType any) ParameterValueSerialNumber {
 	if casted, ok := structType.(ParameterValueSerialNumber); ok {
 		return casted
 	}

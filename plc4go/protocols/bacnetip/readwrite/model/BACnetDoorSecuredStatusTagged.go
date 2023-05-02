@@ -80,7 +80,7 @@ func NewBACnetDoorSecuredStatusTagged(header BACnetTagHeader, value BACnetDoorSe
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetDoorSecuredStatusTagged(structType interface{}) BACnetDoorSecuredStatusTagged {
+func CastBACnetDoorSecuredStatusTagged(structType any) BACnetDoorSecuredStatusTagged {
 	if casted, ok := structType.(BACnetDoorSecuredStatusTagged); ok {
 		return casted
 	}

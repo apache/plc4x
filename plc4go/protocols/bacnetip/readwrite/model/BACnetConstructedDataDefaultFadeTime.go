@@ -121,7 +121,7 @@ func NewBACnetConstructedDataDefaultFadeTime(defaultFadeTime BACnetApplicationTa
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataDefaultFadeTime(structType interface{}) BACnetConstructedDataDefaultFadeTime {
+func CastBACnetConstructedDataDefaultFadeTime(structType any) BACnetConstructedDataDefaultFadeTime {
 	if casted, ok := structType.(BACnetConstructedDataDefaultFadeTime); ok {
 		return casted
 	}

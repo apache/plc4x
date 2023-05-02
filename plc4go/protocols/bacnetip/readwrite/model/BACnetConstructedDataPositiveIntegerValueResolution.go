@@ -121,7 +121,7 @@ func NewBACnetConstructedDataPositiveIntegerValueResolution(resolution BACnetApp
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataPositiveIntegerValueResolution(structType interface{}) BACnetConstructedDataPositiveIntegerValueResolution {
+func CastBACnetConstructedDataPositiveIntegerValueResolution(structType any) BACnetConstructedDataPositiveIntegerValueResolution {
 	if casted, ok := structType.(BACnetConstructedDataPositiveIntegerValueResolution); ok {
 		return casted
 	}

@@ -86,7 +86,7 @@ func NewBACnetConstructedDataLightingOutputAll(openingTag BACnetOpeningTag, peek
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataLightingOutputAll(structType interface{}) BACnetConstructedDataLightingOutputAll {
+func CastBACnetConstructedDataLightingOutputAll(structType any) BACnetConstructedDataLightingOutputAll {
 	if casted, ok := structType.(BACnetConstructedDataLightingOutputAll); ok {
 		return casted
 	}

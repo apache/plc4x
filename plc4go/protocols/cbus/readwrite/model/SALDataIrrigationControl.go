@@ -98,7 +98,7 @@ func NewSALDataIrrigationControl(irrigationControlData LightingData, salData SAL
 }
 
 // Deprecated: use the interface for direct cast
-func CastSALDataIrrigationControl(structType interface{}) SALDataIrrigationControl {
+func CastSALDataIrrigationControl(structType any) SALDataIrrigationControl {
 	if casted, ok := structType.(SALDataIrrigationControl); ok {
 		return casted
 	}

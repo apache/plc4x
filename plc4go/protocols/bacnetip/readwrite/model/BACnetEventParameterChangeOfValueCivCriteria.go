@@ -124,7 +124,7 @@ func NewBACnetEventParameterChangeOfValueCivCriteria(openingTag BACnetOpeningTag
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetEventParameterChangeOfValueCivCriteria(structType interface{}) BACnetEventParameterChangeOfValueCivCriteria {
+func CastBACnetEventParameterChangeOfValueCivCriteria(structType any) BACnetEventParameterChangeOfValueCivCriteria {
 	if casted, ok := structType.(BACnetEventParameterChangeOfValueCivCriteria); ok {
 		return casted
 	}
@@ -201,7 +201,7 @@ func BACnetEventParameterChangeOfValueCivCriteriaParseWithBuffer(ctx context.Con
 		InitializeParent(BACnetEventParameterChangeOfValueCivCriteria, BACnetOpeningTag, BACnetTagHeader, BACnetClosingTag)
 		GetParent() BACnetEventParameterChangeOfValueCivCriteria
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child BACnetEventParameterChangeOfValueCivCriteriaChildSerializeRequirement
 	var typeSwitchError error
 	switch {

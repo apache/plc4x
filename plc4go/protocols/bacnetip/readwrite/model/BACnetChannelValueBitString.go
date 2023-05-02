@@ -94,7 +94,7 @@ func NewBACnetChannelValueBitString(bitStringValue BACnetApplicationTagBitString
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetChannelValueBitString(structType interface{}) BACnetChannelValueBitString {
+func CastBACnetChannelValueBitString(structType any) BACnetChannelValueBitString {
 	if casted, ok := structType.(BACnetChannelValueBitString); ok {
 		return casted
 	}

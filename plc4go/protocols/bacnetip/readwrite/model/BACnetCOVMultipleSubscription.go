@@ -97,7 +97,7 @@ func NewBACnetCOVMultipleSubscription(recipient BACnetRecipientProcessEnclosed, 
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetCOVMultipleSubscription(structType interface{}) BACnetCOVMultipleSubscription {
+func CastBACnetCOVMultipleSubscription(structType any) BACnetCOVMultipleSubscription {
 	if casted, ok := structType.(BACnetCOVMultipleSubscription); ok {
 		return casted
 	}

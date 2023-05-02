@@ -98,7 +98,7 @@ func NewSALDataTemperatureBroadcast(temperatureBroadcastData TemperatureBroadcas
 }
 
 // Deprecated: use the interface for direct cast
-func CastSALDataTemperatureBroadcast(structType interface{}) SALDataTemperatureBroadcast {
+func CastSALDataTemperatureBroadcast(structType any) SALDataTemperatureBroadcast {
 	if casted, ok := structType.(SALDataTemperatureBroadcast); ok {
 		return casted
 	}

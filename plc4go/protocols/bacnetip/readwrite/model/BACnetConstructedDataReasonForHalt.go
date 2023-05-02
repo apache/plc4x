@@ -121,7 +121,7 @@ func NewBACnetConstructedDataReasonForHalt(programError BACnetProgramErrorTagged
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataReasonForHalt(structType interface{}) BACnetConstructedDataReasonForHalt {
+func CastBACnetConstructedDataReasonForHalt(structType any) BACnetConstructedDataReasonForHalt {
 	if casted, ok := structType.(BACnetConstructedDataReasonForHalt); ok {
 		return casted
 	}

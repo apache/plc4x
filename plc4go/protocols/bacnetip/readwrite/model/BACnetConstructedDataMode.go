@@ -121,7 +121,7 @@ func NewBACnetConstructedDataMode(mode BACnetLifeSafetyModeTagged, openingTag BA
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataMode(structType interface{}) BACnetConstructedDataMode {
+func CastBACnetConstructedDataMode(structType any) BACnetConstructedDataMode {
 	if casted, ok := structType.(BACnetConstructedDataMode); ok {
 		return casted
 	}

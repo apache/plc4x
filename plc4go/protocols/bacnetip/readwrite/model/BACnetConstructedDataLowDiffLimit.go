@@ -121,7 +121,7 @@ func NewBACnetConstructedDataLowDiffLimit(lowDiffLimit BACnetOptionalREAL, openi
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataLowDiffLimit(structType interface{}) BACnetConstructedDataLowDiffLimit {
+func CastBACnetConstructedDataLowDiffLimit(structType any) BACnetConstructedDataLowDiffLimit {
 	if casted, ok := structType.(BACnetConstructedDataLowDiffLimit); ok {
 		return casted
 	}

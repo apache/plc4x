@@ -107,7 +107,7 @@ func NewCOTPPacketDisconnectResponse(destinationReference uint16, sourceReferenc
 }
 
 // Deprecated: use the interface for direct cast
-func CastCOTPPacketDisconnectResponse(structType interface{}) COTPPacketDisconnectResponse {
+func CastCOTPPacketDisconnectResponse(structType any) COTPPacketDisconnectResponse {
 	if casted, ok := structType.(COTPPacketDisconnectResponse); ok {
 		return casted
 	}

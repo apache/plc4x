@@ -94,7 +94,7 @@ func NewParameterChangeReply(parameterChange ParameterChange, peekedByte byte, c
 }
 
 // Deprecated: use the interface for direct cast
-func CastParameterChangeReply(structType interface{}) ParameterChangeReply {
+func CastParameterChangeReply(structType any) ParameterChangeReply {
 	if casted, ok := structType.(ParameterChangeReply); ok {
 		return casted
 	}

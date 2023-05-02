@@ -121,7 +121,7 @@ func NewBACnetConstructedDataElapsedActiveTime(elapsedActiveTime BACnetApplicati
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataElapsedActiveTime(structType interface{}) BACnetConstructedDataElapsedActiveTime {
+func CastBACnetConstructedDataElapsedActiveTime(structType any) BACnetConstructedDataElapsedActiveTime {
 	if casted, ok := structType.(BACnetConstructedDataElapsedActiveTime); ok {
 		return casted
 	}

@@ -121,7 +121,7 @@ func NewBACnetConstructedDataCarDoorZone(carDoorZone BACnetApplicationTagBoolean
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataCarDoorZone(structType interface{}) BACnetConstructedDataCarDoorZone {
+func CastBACnetConstructedDataCarDoorZone(structType any) BACnetConstructedDataCarDoorZone {
 	if casted, ok := structType.(BACnetConstructedDataCarDoorZone); ok {
 		return casted
 	}

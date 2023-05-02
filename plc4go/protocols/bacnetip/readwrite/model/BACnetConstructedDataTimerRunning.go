@@ -121,7 +121,7 @@ func NewBACnetConstructedDataTimerRunning(timerRunning BACnetApplicationTagBoole
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataTimerRunning(structType interface{}) BACnetConstructedDataTimerRunning {
+func CastBACnetConstructedDataTimerRunning(structType any) BACnetConstructedDataTimerRunning {
 	if casted, ok := structType.(BACnetConstructedDataTimerRunning); ok {
 		return casted
 	}

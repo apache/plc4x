@@ -104,7 +104,7 @@ func NewModbusPDUReadHoldingRegistersResponse(value []byte) *_ModbusPDUReadHoldi
 }
 
 // Deprecated: use the interface for direct cast
-func CastModbusPDUReadHoldingRegistersResponse(structType interface{}) ModbusPDUReadHoldingRegistersResponse {
+func CastModbusPDUReadHoldingRegistersResponse(structType any) ModbusPDUReadHoldingRegistersResponse {
 	if casted, ok := structType.(ModbusPDUReadHoldingRegistersResponse); ok {
 		return casted
 	}

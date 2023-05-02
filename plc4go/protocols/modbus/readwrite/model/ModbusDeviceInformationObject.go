@@ -76,7 +76,7 @@ func NewModbusDeviceInformationObject(objectId uint8, data []byte) *_ModbusDevic
 }
 
 // Deprecated: use the interface for direct cast
-func CastModbusDeviceInformationObject(structType interface{}) ModbusDeviceInformationObject {
+func CastModbusDeviceInformationObject(structType any) ModbusDeviceInformationObject {
 	if casted, ok := structType.(ModbusDeviceInformationObject); ok {
 		return casted
 	}

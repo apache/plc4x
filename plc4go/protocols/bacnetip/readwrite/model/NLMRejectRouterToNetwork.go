@@ -104,7 +104,7 @@ func NewNLMRejectRouterToNetwork(rejectReason NLMRejectRouterToNetworkRejectReas
 }
 
 // Deprecated: use the interface for direct cast
-func CastNLMRejectRouterToNetwork(structType interface{}) NLMRejectRouterToNetwork {
+func CastNLMRejectRouterToNetwork(structType any) NLMRejectRouterToNetwork {
 	if casted, ok := structType.(NLMRejectRouterToNetwork); ok {
 		return casted
 	}

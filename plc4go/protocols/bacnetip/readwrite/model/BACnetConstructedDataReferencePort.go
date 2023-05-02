@@ -121,7 +121,7 @@ func NewBACnetConstructedDataReferencePort(referencePort BACnetApplicationTagUns
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataReferencePort(structType interface{}) BACnetConstructedDataReferencePort {
+func CastBACnetConstructedDataReferencePort(structType any) BACnetConstructedDataReferencePort {
 	if casted, ok := structType.(BACnetConstructedDataReferencePort); ok {
 		return casted
 	}

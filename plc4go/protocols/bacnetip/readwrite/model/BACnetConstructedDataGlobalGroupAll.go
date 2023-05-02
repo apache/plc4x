@@ -86,7 +86,7 @@ func NewBACnetConstructedDataGlobalGroupAll(openingTag BACnetOpeningTag, peekedT
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataGlobalGroupAll(structType interface{}) BACnetConstructedDataGlobalGroupAll {
+func CastBACnetConstructedDataGlobalGroupAll(structType any) BACnetConstructedDataGlobalGroupAll {
 	if casted, ok := structType.(BACnetConstructedDataGlobalGroupAll); ok {
 		return casted
 	}

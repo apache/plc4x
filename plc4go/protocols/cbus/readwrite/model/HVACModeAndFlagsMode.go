@@ -33,6 +33,7 @@ type HVACModeAndFlagsMode uint8
 
 type IHVACModeAndFlagsMode interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 
@@ -98,8 +99,8 @@ func HVACModeAndFlagsModeKnows(value uint8) bool {
 	return false
 }
 
-func CastHVACModeAndFlagsMode(structType interface{}) HVACModeAndFlagsMode {
-	castFunc := func(typ interface{}) HVACModeAndFlagsMode {
+func CastHVACModeAndFlagsMode(structType any) HVACModeAndFlagsMode {
+	castFunc := func(typ any) HVACModeAndFlagsMode {
 		if sHVACModeAndFlagsMode, ok := typ.(HVACModeAndFlagsMode); ok {
 			return sHVACModeAndFlagsMode
 		}

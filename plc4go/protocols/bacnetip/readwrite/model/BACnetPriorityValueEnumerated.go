@@ -94,7 +94,7 @@ func NewBACnetPriorityValueEnumerated(enumeratedValue BACnetApplicationTagEnumer
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetPriorityValueEnumerated(structType interface{}) BACnetPriorityValueEnumerated {
+func CastBACnetPriorityValueEnumerated(structType any) BACnetPriorityValueEnumerated {
 	if casted, ok := structType.(BACnetPriorityValueEnumerated); ok {
 		return casted
 	}

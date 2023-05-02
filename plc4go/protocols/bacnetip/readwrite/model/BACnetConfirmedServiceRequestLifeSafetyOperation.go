@@ -122,7 +122,7 @@ func NewBACnetConfirmedServiceRequestLifeSafetyOperation(requestingProcessIdenti
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConfirmedServiceRequestLifeSafetyOperation(structType interface{}) BACnetConfirmedServiceRequestLifeSafetyOperation {
+func CastBACnetConfirmedServiceRequestLifeSafetyOperation(structType any) BACnetConfirmedServiceRequestLifeSafetyOperation {
 	if casted, ok := structType.(BACnetConfirmedServiceRequestLifeSafetyOperation); ok {
 		return casted
 	}

@@ -22,7 +22,6 @@ package s7
 import (
 	"context"
 	"fmt"
-	"reflect"
 	"strings"
 	"testing"
 
@@ -937,7 +936,7 @@ func TestS7MessageBytes(t *testing.T) {
 			t.Run("json roundtrip", func(t *testing.T) {
 				reader := strings.NewReader(tt.wantStringJson)
 				readBuffer := utils.NewJsonReadBuffer(reader)
-				if got, err := model.TPKTPacketParseWithBuffer(context.Background(), readBuffer); err != nil || !reflect.DeepEqual(got, tt.args.debuggable) {
+				if got, err := model.TPKTPacketParseWithBuffer(context.Background(), readBuffer); err != nil || !assert.Equal(t, tt.args.debuggable, got) {
 					if err != nil {
 						t.Error(err)
 					} else {

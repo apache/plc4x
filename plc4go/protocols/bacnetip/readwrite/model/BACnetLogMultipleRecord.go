@@ -76,7 +76,7 @@ func NewBACnetLogMultipleRecord(timestamp BACnetDateTimeEnclosed, logData BACnet
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetLogMultipleRecord(structType interface{}) BACnetLogMultipleRecord {
+func CastBACnetLogMultipleRecord(structType any) BACnetLogMultipleRecord {
 	if casted, ok := structType.(BACnetLogMultipleRecord); ok {
 		return casted
 	}

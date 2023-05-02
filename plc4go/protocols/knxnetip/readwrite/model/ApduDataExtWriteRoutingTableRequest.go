@@ -78,7 +78,7 @@ func NewApduDataExtWriteRoutingTableRequest(length uint8) *_ApduDataExtWriteRout
 }
 
 // Deprecated: use the interface for direct cast
-func CastApduDataExtWriteRoutingTableRequest(structType interface{}) ApduDataExtWriteRoutingTableRequest {
+func CastApduDataExtWriteRoutingTableRequest(structType any) ApduDataExtWriteRoutingTableRequest {
 	if casted, ok := structType.(ApduDataExtWriteRoutingTableRequest); ok {
 		return casted
 	}

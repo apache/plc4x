@@ -20,11 +20,13 @@
 package tests
 
 import (
+	"testing"
+
+	abethIO "github.com/apache/plc4x/plc4go/protocols/abeth/readwrite"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
 	_ "github.com/apache/plc4x/plc4go/tests/initializetest"
-	"testing"
 )
 
 func TestAbEthParserSerializer(t *testing.T) {
-	testutils.RunParserSerializerTestsuite(t, "assets/testing/protocols/abeth/ParserSerializerTestsuite.xml")
+	testutils.RunParserSerializerTestsuite(t, "assets/testing/protocols/abeth/ParserSerializerTestsuite.xml", abethIO.AbethParserHelper{})
 }

@@ -33,6 +33,7 @@ type DestinationAddressType uint8
 
 type IDestinationAddressType interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 
@@ -86,8 +87,8 @@ func DestinationAddressTypeKnows(value uint8) bool {
 	return false
 }
 
-func CastDestinationAddressType(structType interface{}) DestinationAddressType {
-	castFunc := func(typ interface{}) DestinationAddressType {
+func CastDestinationAddressType(structType any) DestinationAddressType {
+	castFunc := func(typ any) DestinationAddressType {
 		if sDestinationAddressType, ok := typ.(DestinationAddressType); ok {
 			return sDestinationAddressType
 		}

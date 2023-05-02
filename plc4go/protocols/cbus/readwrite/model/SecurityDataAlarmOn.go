@@ -77,7 +77,7 @@ func NewSecurityDataAlarmOn(commandTypeContainer SecurityCommandTypeContainer, a
 }
 
 // Deprecated: use the interface for direct cast
-func CastSecurityDataAlarmOn(structType interface{}) SecurityDataAlarmOn {
+func CastSecurityDataAlarmOn(structType any) SecurityDataAlarmOn {
 	if casted, ok := structType.(SecurityDataAlarmOn); ok {
 		return casted
 	}

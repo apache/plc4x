@@ -112,7 +112,7 @@ func NewAdsDiscoveryBlockStatus(status Status) *_AdsDiscoveryBlockStatus {
 }
 
 // Deprecated: use the interface for direct cast
-func CastAdsDiscoveryBlockStatus(structType interface{}) AdsDiscoveryBlockStatus {
+func CastAdsDiscoveryBlockStatus(structType any) AdsDiscoveryBlockStatus {
 	if casted, ok := structType.(AdsDiscoveryBlockStatus); ok {
 		return casted
 	}

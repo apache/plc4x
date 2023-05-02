@@ -107,7 +107,7 @@ func NewBACnetRecipient(peekedTagHeader BACnetTagHeader) *_BACnetRecipient {
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetRecipient(structType interface{}) BACnetRecipient {
+func CastBACnetRecipient(structType any) BACnetRecipient {
 	if casted, ok := structType.(BACnetRecipient); ok {
 		return casted
 	}
@@ -165,7 +165,7 @@ func BACnetRecipientParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 		InitializeParent(BACnetRecipient, BACnetTagHeader)
 		GetParent() BACnetRecipient
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child BACnetRecipientChildSerializeRequirement
 	var typeSwitchError error
 	switch {

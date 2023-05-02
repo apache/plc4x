@@ -94,7 +94,7 @@ func NewBACnetPropertyStatesZoneOccupanyState(zoneOccupanyState BACnetAccessZone
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetPropertyStatesZoneOccupanyState(structType interface{}) BACnetPropertyStatesZoneOccupanyState {
+func CastBACnetPropertyStatesZoneOccupanyState(structType any) BACnetPropertyStatesZoneOccupanyState {
 	if casted, ok := structType.(BACnetPropertyStatesZoneOccupanyState); ok {
 		return casted
 	}

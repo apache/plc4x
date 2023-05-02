@@ -100,7 +100,7 @@ func NewBVLCOriginalUnicastNPDU(npdu NPDU, bvlcPayloadLength uint16) *_BVLCOrigi
 }
 
 // Deprecated: use the interface for direct cast
-func CastBVLCOriginalUnicastNPDU(structType interface{}) BVLCOriginalUnicastNPDU {
+func CastBVLCOriginalUnicastNPDU(structType any) BVLCOriginalUnicastNPDU {
 	if casted, ok := structType.(BVLCOriginalUnicastNPDU); ok {
 		return casted
 	}

@@ -86,7 +86,7 @@ func NewBACnetConstructedDataBitstringValueAll(openingTag BACnetOpeningTag, peek
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataBitstringValueAll(structType interface{}) BACnetConstructedDataBitstringValueAll {
+func CastBACnetConstructedDataBitstringValueAll(structType any) BACnetConstructedDataBitstringValueAll {
 	if casted, ok := structType.(BACnetConstructedDataBitstringValueAll); ok {
 		return casted
 	}

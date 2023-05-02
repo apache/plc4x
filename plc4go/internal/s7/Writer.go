@@ -35,10 +35,10 @@ import (
 type Writer struct {
 	tpduGenerator *TpduGenerator
 	messageCodec  spi.MessageCodec
-	tm            *spi.RequestTransactionManager
+	tm            spi.RequestTransactionManager
 }
 
-func NewWriter(tpduGenerator *TpduGenerator, messageCodec spi.MessageCodec, tm *spi.RequestTransactionManager) Writer {
+func NewWriter(tpduGenerator *TpduGenerator, messageCodec spi.MessageCodec, tm spi.RequestTransactionManager) Writer {
 	return Writer{
 		tpduGenerator: tpduGenerator,
 		messageCodec:  messageCodec,

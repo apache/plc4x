@@ -84,7 +84,7 @@ func NewBACnetAuthenticationFactorFormat(formatType BACnetAuthenticationFactorTy
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetAuthenticationFactorFormat(structType interface{}) BACnetAuthenticationFactorFormat {
+func CastBACnetAuthenticationFactorFormat(structType any) BACnetAuthenticationFactorFormat {
 	if casted, ok := structType.(BACnetAuthenticationFactorFormat); ok {
 		return casted
 	}

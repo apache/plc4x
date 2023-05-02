@@ -98,7 +98,7 @@ func NewBACnetAccessRule(timeRangeSpecifier BACnetAccessRuleTimeRangeSpecifierTa
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetAccessRule(structType interface{}) BACnetAccessRule {
+func CastBACnetAccessRule(structType any) BACnetAccessRule {
 	if casted, ok := structType.(BACnetAccessRule); ok {
 		return casted
 	}

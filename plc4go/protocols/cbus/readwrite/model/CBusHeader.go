@@ -90,7 +90,7 @@ func NewCBusHeader(priorityClass PriorityClass, dp bool, rc uint8, destinationAd
 }
 
 // Deprecated: use the interface for direct cast
-func CastCBusHeader(structType interface{}) CBusHeader {
+func CastCBusHeader(structType any) CBusHeader {
 	if casted, ok := structType.(CBusHeader); ok {
 		return casted
 	}

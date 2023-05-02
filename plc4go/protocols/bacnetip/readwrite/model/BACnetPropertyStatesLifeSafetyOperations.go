@@ -94,7 +94,7 @@ func NewBACnetPropertyStatesLifeSafetyOperations(lifeSafetyOperations BACnetLife
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetPropertyStatesLifeSafetyOperations(structType interface{}) BACnetPropertyStatesLifeSafetyOperations {
+func CastBACnetPropertyStatesLifeSafetyOperations(structType any) BACnetPropertyStatesLifeSafetyOperations {
 	if casted, ok := structType.(BACnetPropertyStatesLifeSafetyOperations); ok {
 		return casted
 	}

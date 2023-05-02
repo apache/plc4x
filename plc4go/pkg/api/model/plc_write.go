@@ -26,8 +26,8 @@ import (
 )
 
 type PlcWriteRequestBuilder interface {
-	AddTagAddress(tagName string, tagAddress string, value interface{}) PlcWriteRequestBuilder
-	AddTag(tagName string, tag PlcTag, value interface{}) PlcWriteRequestBuilder
+	AddTagAddress(tagName string, tagAddress string, value any) PlcWriteRequestBuilder
+	AddTag(tagName string, tag PlcTag, value any) PlcWriteRequestBuilder
 	Build() (PlcWriteRequest, error)
 }
 

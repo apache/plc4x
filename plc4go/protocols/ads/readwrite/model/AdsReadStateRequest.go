@@ -89,7 +89,7 @@ func NewAdsReadStateRequest(targetAmsNetId AmsNetId, targetAmsPort uint16, sourc
 }
 
 // Deprecated: use the interface for direct cast
-func CastAdsReadStateRequest(structType interface{}) AdsReadStateRequest {
+func CastAdsReadStateRequest(structType any) AdsReadStateRequest {
 	if casted, ok := structType.(AdsReadStateRequest); ok {
 		return casted
 	}

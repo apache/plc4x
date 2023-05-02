@@ -94,7 +94,7 @@ func NewBACnetPropertyStatesLiftFault(liftFault BACnetLiftFaultTagged, peekedTag
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetPropertyStatesLiftFault(structType interface{}) BACnetPropertyStatesLiftFault {
+func CastBACnetPropertyStatesLiftFault(structType any) BACnetPropertyStatesLiftFault {
 	if casted, ok := structType.(BACnetPropertyStatesLiftFault); ok {
 		return casted
 	}

@@ -121,7 +121,7 @@ func NewBACnetConstructedDataRecordCount(recordCount BACnetApplicationTagUnsigne
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataRecordCount(structType interface{}) BACnetConstructedDataRecordCount {
+func CastBACnetConstructedDataRecordCount(structType any) BACnetConstructedDataRecordCount {
 	if casted, ok := structType.(BACnetConstructedDataRecordCount); ok {
 		return casted
 	}

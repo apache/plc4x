@@ -136,7 +136,7 @@ func NewBACnetNotificationParametersSignedOutOfRange(innerOpeningTag BACnetOpeni
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetNotificationParametersSignedOutOfRange(structType interface{}) BACnetNotificationParametersSignedOutOfRange {
+func CastBACnetNotificationParametersSignedOutOfRange(structType any) BACnetNotificationParametersSignedOutOfRange {
 	if casted, ok := structType.(BACnetNotificationParametersSignedOutOfRange); ok {
 		return casted
 	}

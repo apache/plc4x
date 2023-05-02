@@ -18,9 +18,9 @@
  */
 package org.apache.plc4x.java.s7.readwrite.context;
 
-import org.apache.plc4x.java.s7.readwrite.configuration.S7Configuration;
 import org.apache.plc4x.java.s7.readwrite.COTPTpduSize;
 import org.apache.plc4x.java.s7.readwrite.DeviceGroup;
+import org.apache.plc4x.java.s7.readwrite.configuration.S7Configuration;
 import org.apache.plc4x.java.s7.readwrite.types.S7ControllerType;
 import org.apache.plc4x.java.s7.readwrite.utils.S7TsapIdEncoder;
 import org.apache.plc4x.java.spi.configuration.HasConfiguration;
@@ -37,6 +37,13 @@ public class S7DriverContext implements DriverContext, HasConfiguration<S7Config
     private int maxAmqCallee;
     private S7ControllerType controllerType;
 
+
+    private int calledTsapId2;
+    private int readTimeout;
+    private boolean ping;
+    private int pingTime;
+    private int retryTime;
+
     @Override
     public void setConfiguration(S7Configuration configuration) {
         this.callingTsapId = S7TsapIdEncoder.encodeS7TsapId(DeviceGroup.OTHERS,
@@ -44,11 +51,15 @@ public class S7DriverContext implements DriverContext, HasConfiguration<S7Config
         this.calledTsapId = S7TsapIdEncoder.encodeS7TsapId(DeviceGroup.PG_OR_PC,
             configuration.remoteRack, configuration.remoteSlot);
 
+        this.calledTsapId2 = S7TsapIdEncoder.encodeS7TsapId(DeviceGroup.PG_OR_PC,
+            configuration.remoteRack2, configuration.remoteSlot2);
+
+
         if (configuration.localTsap > 0) {
-        	this.callingTsapId = configuration.localTsap;
+            this.callingTsapId = configuration.localTsap;
         }
         if (configuration.remoteTsap > 0) {
-        	this.calledTsapId = configuration.remoteTsap;
+            this.calledTsapId = configuration.remoteTsap;
         }
         this.controllerType = configuration.controllerType == null ? S7ControllerType.ANY : S7ControllerType.valueOf(configuration.controllerType);
 
@@ -57,7 +68,7 @@ public class S7DriverContext implements DriverContext, HasConfiguration<S7Config
 
         // The Siemens LOGO device seems to only work with very limited settings,
         // so we're overriding some of the defaults.
-        if ((this.controllerType == S7ControllerType.S7_200 || this.controllerType == S7ControllerType.LOGO) && configuration.pduSize == 1024) {
+        if (this.controllerType == S7ControllerType.LOGO && configuration.pduSize == 1024) {
             configuration.pduSize = 480;
             this.pduSize = 480;
         } else {
@@ -70,6 +81,11 @@ public class S7DriverContext implements DriverContext, HasConfiguration<S7Config
 
         this.maxAmqCaller = configuration.maxAmqCaller;
         this.maxAmqCallee = configuration.maxAmqCallee;
+
+        this.readTimeout = configuration.readTimeout;
+        this.ping = configuration.ping;
+        this.pingTime = configuration.pingTime;
+        this.retryTime = configuration.retryTime;
     }
 
     public boolean isPassiveMode() {
@@ -94,6 +110,14 @@ public class S7DriverContext implements DriverContext, HasConfiguration<S7Config
 
     public void setCalledTsapId(int calledTsapId) {
         this.calledTsapId = calledTsapId;
+    }
+
+    public int getCalledTsapId2() {
+        return calledTsapId2;
+    }
+
+    public void setCalledTsapId2(int calledTsapId2) {
+        this.calledTsapId2 = calledTsapId2;
     }
 
     public COTPTpduSize getCotpTpduSize() {
@@ -134,6 +158,38 @@ public class S7DriverContext implements DriverContext, HasConfiguration<S7Config
 
     public void setControllerType(S7ControllerType controllerType) {
         this.controllerType = controllerType;
+    }
+
+    public int getReadTimeout() {
+        return readTimeout;
+    }
+
+    public void setReadTimeout(int readTimeout) {
+        this.readTimeout = readTimeout;
+    }
+
+    public boolean getPing() {
+        return ping;
+    }
+
+    public void setPing(boolean ping) {
+        this.ping = ping;
+    }
+
+    public int getPingTime() {
+        return pingTime;
+    }
+
+    public void setPingTime(int pingTime) {
+        this.pingTime = pingTime;
+    }
+
+    public int getRetryTime() {
+        return pingTime;
+    }
+
+    public void setRetryTime(int retryTime) {
+        this.retryTime = retryTime;
     }
 
     /**

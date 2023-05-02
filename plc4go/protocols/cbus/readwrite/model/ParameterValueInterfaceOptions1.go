@@ -104,7 +104,7 @@ func NewParameterValueInterfaceOptions1(value InterfaceOptions1, data []byte, nu
 }
 
 // Deprecated: use the interface for direct cast
-func CastParameterValueInterfaceOptions1(structType interface{}) ParameterValueInterfaceOptions1 {
+func CastParameterValueInterfaceOptions1(structType any) ParameterValueInterfaceOptions1 {
 	if casted, ok := structType.(ParameterValueInterfaceOptions1); ok {
 		return casted
 	}

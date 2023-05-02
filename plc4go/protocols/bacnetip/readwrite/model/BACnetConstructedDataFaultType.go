@@ -121,7 +121,7 @@ func NewBACnetConstructedDataFaultType(faultType BACnetFaultTypeTagged, openingT
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataFaultType(structType interface{}) BACnetConstructedDataFaultType {
+func CastBACnetConstructedDataFaultType(structType any) BACnetConstructedDataFaultType {
 	if casted, ok := structType.(BACnetConstructedDataFaultType); ok {
 		return casted
 	}

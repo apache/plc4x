@@ -94,7 +94,7 @@ func NewBACnetPropertyStatesEscalatorMode(escalatorMode BACnetEscalatorModeTagge
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetPropertyStatesEscalatorMode(structType interface{}) BACnetPropertyStatesEscalatorMode {
+func CastBACnetPropertyStatesEscalatorMode(structType any) BACnetPropertyStatesEscalatorMode {
 	if casted, ok := structType.(BACnetPropertyStatesEscalatorMode); ok {
 		return casted
 	}

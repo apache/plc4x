@@ -78,7 +78,7 @@ func NewTDataConnectedReq(size uint16) *_TDataConnectedReq {
 }
 
 // Deprecated: use the interface for direct cast
-func CastTDataConnectedReq(structType interface{}) TDataConnectedReq {
+func CastTDataConnectedReq(structType any) TDataConnectedReq {
 	if casted, ok := structType.(TDataConnectedReq); ok {
 		return casted
 	}

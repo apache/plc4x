@@ -138,7 +138,7 @@ func (m *TransportInstance) IsConnected() bool {
 	return m.serialPort != nil
 }
 
-func (m *TransportInstance) Write(data []uint8) error {
+func (m *TransportInstance) Write(data []byte) error {
 	if m.serialPort == nil {
 		return errors.New("error writing to transport. No writer available")
 	}

@@ -22,6 +22,7 @@ package _default
 import (
 	"context"
 	"fmt"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"runtime/debug"
 	"time"
 
@@ -29,7 +30,6 @@ import (
 
 	"github.com/apache/plc4x/plc4go/pkg/api/config"
 	"github.com/apache/plc4x/plc4go/spi"
-	"github.com/apache/plc4x/plc4go/spi/plcerrors"
 	"github.com/apache/plc4x/plc4go/spi/transports"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
@@ -93,7 +93,6 @@ func buildDefaultCodec(defaultCodecRequirements DefaultCodecRequirements, transp
 		switch option.(type) {
 		case withCustomMessageHandler:
 			customMessageHandler = option.(withCustomMessageHandler).customMessageHandler
-			log.Debug()
 		}
 	}
 
@@ -203,30 +202,38 @@ func (m *defaultCodec) SendRequest(ctx context.Context, message spi.Message, acc
 }
 
 func (m *defaultCodec) TimeoutExpectations(now time.Time) {
-	for index, expectation := range m.expectations {
+	for i := 0; i < len(m.expectations); i++ {
+		expectation := m.expectations[i]
 		// Check if this expectation has expired.
 		if now.After(expectation.GetExpiration()) {
 			// Remove this expectation from the list.
-			m.expectations = append(m.expectations[:index], m.expectations[index+1:]...)
+			m.expectations = append(m.expectations[:i], m.expectations[i+1:]...)
+			i--
 			// Call the error handler.
-			go func() {
-				if err := expectation.GetHandleError()(plcerrors.NewTimeoutError(now.Sub(expectation.GetExpiration()))); err != nil {
+			go func(expectation spi.Expectation) {
+				if err := expectation.GetHandleError()(utils.NewTimeoutError(now.Sub(expectation.GetExpiration()))); err != nil {
 					log.Error().Err(err).Msg("Got an error handling error on expectation")
 				}
-			}()
+			}(expectation)
+			continue
 		}
 		if err := expectation.GetContext().Err(); err != nil {
-			go func() {
+			// Remove this expectation from the list.
+			m.expectations = append(m.expectations[:i], m.expectations[i+1:]...)
+			i--
+			go func(expectation spi.Expectation) {
 				if err := expectation.GetHandleError()(err); err != nil {
 					log.Error().Err(err).Msg("Got an error handling error on expectation")
 				}
-			}()
+			}(expectation)
+			continue
 		}
 	}
 }
 
 func (m *defaultCodec) HandleMessages(message spi.Message) bool {
 	messageHandled := false
+	log.Trace().Msgf("Current number of expectations: %d", len(m.expectations))
 	for index, expectation := range m.expectations {
 		// Check if the current message matches the expectations
 		// If it does, let it handle the message.
@@ -327,13 +334,11 @@ mainLoop:
 			timeout := time.NewTimer(time.Millisecond * 40)
 			select {
 			case m.defaultIncomingMessageChannel <- message:
-				if !timeout.Stop() {
-					<-timeout.C
-				}
 			case <-timeout.C:
 				timeout.Stop()
 				workerLog.Warn().Msgf("Message discarded\n%s", message)
 			}
+			utils.CleanupTimer(timeout)
 		}
 	}
 }

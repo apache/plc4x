@@ -80,7 +80,7 @@ func NewSALDataFreeUsage(salData SALData) *_SALDataFreeUsage {
 }
 
 // Deprecated: use the interface for direct cast
-func CastSALDataFreeUsage(structType interface{}) SALDataFreeUsage {
+func CastSALDataFreeUsage(structType any) SALDataFreeUsage {
 	if casted, ok := structType.(SALDataFreeUsage); ok {
 		return casted
 	}

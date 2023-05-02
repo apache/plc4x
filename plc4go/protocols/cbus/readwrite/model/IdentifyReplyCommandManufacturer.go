@@ -96,7 +96,7 @@ func NewIdentifyReplyCommandManufacturer(manufacturerName string, numBytes uint8
 }
 
 // Deprecated: use the interface for direct cast
-func CastIdentifyReplyCommandManufacturer(structType interface{}) IdentifyReplyCommandManufacturer {
+func CastIdentifyReplyCommandManufacturer(structType any) IdentifyReplyCommandManufacturer {
 	if casted, ok := structType.(IdentifyReplyCommandManufacturer); ok {
 		return casted
 	}

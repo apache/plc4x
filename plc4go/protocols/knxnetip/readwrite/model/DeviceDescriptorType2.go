@@ -132,7 +132,7 @@ func NewDeviceDescriptorType2(manufacturerId uint16, deviceType uint16, version 
 }
 
 // Deprecated: use the interface for direct cast
-func CastDeviceDescriptorType2(structType interface{}) DeviceDescriptorType2 {
+func CastDeviceDescriptorType2(structType any) DeviceDescriptorType2 {
 	if casted, ok := structType.(DeviceDescriptorType2); ok {
 		return casted
 	}

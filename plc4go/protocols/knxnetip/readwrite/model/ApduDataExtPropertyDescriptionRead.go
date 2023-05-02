@@ -112,7 +112,7 @@ func NewApduDataExtPropertyDescriptionRead(objectIndex uint8, propertyId uint8, 
 }
 
 // Deprecated: use the interface for direct cast
-func CastApduDataExtPropertyDescriptionRead(structType interface{}) ApduDataExtPropertyDescriptionRead {
+func CastApduDataExtPropertyDescriptionRead(structType any) ApduDataExtPropertyDescriptionRead {
 	if casted, ok := structType.(ApduDataExtPropertyDescriptionRead); ok {
 		return casted
 	}

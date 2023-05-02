@@ -78,7 +78,7 @@ func NewBACnetUnconfirmedServiceRequest(serviceRequestLength uint16) *_BACnetUnc
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetUnconfirmedServiceRequest(structType interface{}) BACnetUnconfirmedServiceRequest {
+func CastBACnetUnconfirmedServiceRequest(structType any) BACnetUnconfirmedServiceRequest {
 	if casted, ok := structType.(BACnetUnconfirmedServiceRequest); ok {
 		return casted
 	}
@@ -136,7 +136,7 @@ func BACnetUnconfirmedServiceRequestParseWithBuffer(ctx context.Context, readBuf
 		InitializeParent(BACnetUnconfirmedServiceRequest)
 		GetParent() BACnetUnconfirmedServiceRequest
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child BACnetUnconfirmedServiceRequestChildSerializeRequirement
 	var typeSwitchError error
 	switch {

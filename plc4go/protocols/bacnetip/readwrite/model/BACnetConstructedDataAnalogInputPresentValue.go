@@ -121,7 +121,7 @@ func NewBACnetConstructedDataAnalogInputPresentValue(presentValue BACnetApplicat
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataAnalogInputPresentValue(structType interface{}) BACnetConstructedDataAnalogInputPresentValue {
+func CastBACnetConstructedDataAnalogInputPresentValue(structType any) BACnetConstructedDataAnalogInputPresentValue {
 	if casted, ok := structType.(BACnetConstructedDataAnalogInputPresentValue); ok {
 		return casted
 	}

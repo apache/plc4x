@@ -22,7 +22,6 @@ package model
 import (
 	"context"
 	"fmt"
-	spiContext "github.com/apache/plc4x/plc4go/spi/context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -243,7 +242,7 @@ func NewCipConnectionManagerRequest(classSegment PathSegment, instanceSegment Pa
 }
 
 // Deprecated: use the interface for direct cast
-func CastCipConnectionManagerRequest(structType interface{}) CipConnectionManagerRequest {
+func CastCipConnectionManagerRequest(structType any) CipConnectionManagerRequest {
 	if casted, ok := structType.(CipConnectionManagerRequest); ok {
 		return casted
 	}
@@ -448,7 +447,7 @@ func CipConnectionManagerRequestParseWithBuffer(ctx context.Context, readBuffer 
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of CipConnectionManagerRequest")
 		}
 		if reserved != uint32(0x000000) {
-			Plc4xModelLog.Info().Fields(map[string]interface{}{
+			Plc4xModelLog.Info().Fields(map[string]any{
 				"expected value": uint32(0x000000),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
@@ -683,7 +682,7 @@ func (m *_CipConnectionManagerRequest) SerializeWithWriteBuffer(ctx context.Cont
 		{
 			var reserved uint32 = uint32(0x000000)
 			if m.reservedField0 != nil {
-				Plc4xModelLog.Info().Fields(map[string]interface{}{
+				Plc4xModelLog.Info().Fields(map[string]any{
 					"expected value": uint32(0x000000),
 					"got value":      reserved,
 				}).Msg("Overriding reserved field with unexpected value.")
@@ -758,7 +757,7 @@ func (m *_CipConnectionManagerRequest) SerializeWithWriteBuffer(ctx context.Cont
 		}
 		for _curItem, _element := range m.GetConnectionPaths() {
 			_ = _curItem
-			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetConnectionPaths()), _curItem)
+			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetConnectionPaths()), _curItem)
 			_ = arrayCtx
 			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 			if _elementErr != nil {

@@ -73,11 +73,14 @@ plc4c_s7_read_write_event_type plc4c_s7_read_write_event_type_value_of(char* val
     if(strcmp(value_string, "ALM") == 0) {
         return plc4c_s7_read_write_event_type_ALM;
     }
+    if(strcmp(value_string, "CYC") == 0) {
+        return plc4c_s7_read_write_event_type_CYC;
+    }
     return -1;
 }
 
 int plc4c_s7_read_write_event_type_num_values() {
-  return 4;
+  return 5;
 }
 
 plc4c_s7_read_write_event_type plc4c_s7_read_write_event_type_value_for_index(int index) {
@@ -93,6 +96,9 @@ plc4c_s7_read_write_event_type plc4c_s7_read_write_event_type_value_for_index(in
       }
       case 3: {
         return plc4c_s7_read_write_event_type_ALM;
+      }
+      case 4: {
+        return plc4c_s7_read_write_event_type_CYC;
       }
       default: {
         return -1;

@@ -116,7 +116,7 @@ func NewBACnetFaultParameterFaultExtendedParametersEntry(peekedTagHeader BACnetT
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetFaultParameterFaultExtendedParametersEntry(structType interface{}) BACnetFaultParameterFaultExtendedParametersEntry {
+func CastBACnetFaultParameterFaultExtendedParametersEntry(structType any) BACnetFaultParameterFaultExtendedParametersEntry {
 	if casted, ok := structType.(BACnetFaultParameterFaultExtendedParametersEntry); ok {
 		return casted
 	}
@@ -186,7 +186,7 @@ func BACnetFaultParameterFaultExtendedParametersEntryParseWithBuffer(ctx context
 		InitializeParent(BACnetFaultParameterFaultExtendedParametersEntry, BACnetTagHeader)
 		GetParent() BACnetFaultParameterFaultExtendedParametersEntry
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child BACnetFaultParameterFaultExtendedParametersEntryChildSerializeRequirement
 	var typeSwitchError error
 	switch {

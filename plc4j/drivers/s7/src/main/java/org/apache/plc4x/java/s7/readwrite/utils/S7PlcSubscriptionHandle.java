@@ -24,7 +24,7 @@ import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionHandle;
 
 public class S7PlcSubscriptionHandle extends DefaultPlcSubscriptionHandle {
     
-    private EventType eventtype;
+    private final EventType eventtype;
 
     public S7PlcSubscriptionHandle(EventType eventtype, PlcSubscriber plcSubscriber) {
         super(plcSubscriber);

@@ -125,7 +125,7 @@ func NewIdentifyReplyCommandNetworkVoltage(volts string, voltsDecimalPlace strin
 }
 
 // Deprecated: use the interface for direct cast
-func CastIdentifyReplyCommandNetworkVoltage(structType interface{}) IdentifyReplyCommandNetworkVoltage {
+func CastIdentifyReplyCommandNetworkVoltage(structType any) IdentifyReplyCommandNetworkVoltage {
 	if casted, ok := structType.(IdentifyReplyCommandNetworkVoltage); ok {
 		return casted
 	}

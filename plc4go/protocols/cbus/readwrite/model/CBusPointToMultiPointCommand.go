@@ -93,7 +93,7 @@ func NewCBusPointToMultiPointCommand(peekedApplication byte, cBusOptions CBusOpt
 }
 
 // Deprecated: use the interface for direct cast
-func CastCBusPointToMultiPointCommand(structType interface{}) CBusPointToMultiPointCommand {
+func CastCBusPointToMultiPointCommand(structType any) CBusPointToMultiPointCommand {
 	if casted, ok := structType.(CBusPointToMultiPointCommand); ok {
 		return casted
 	}
@@ -145,7 +145,7 @@ func CBusPointToMultiPointCommandParseWithBuffer(ctx context.Context, readBuffer
 		InitializeParent(CBusPointToMultiPointCommand, byte)
 		GetParent() CBusPointToMultiPointCommand
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child CBusPointToMultiPointCommandChildSerializeRequirement
 	var typeSwitchError error
 	switch {

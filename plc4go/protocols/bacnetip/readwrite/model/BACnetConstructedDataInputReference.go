@@ -121,7 +121,7 @@ func NewBACnetConstructedDataInputReference(inputReference BACnetObjectPropertyR
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataInputReference(structType interface{}) BACnetConstructedDataInputReference {
+func CastBACnetConstructedDataInputReference(structType any) BACnetConstructedDataInputReference {
 	if casted, ok := structType.(BACnetConstructedDataInputReference); ok {
 		return casted
 	}

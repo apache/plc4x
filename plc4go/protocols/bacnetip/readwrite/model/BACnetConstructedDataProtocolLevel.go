@@ -121,7 +121,7 @@ func NewBACnetConstructedDataProtocolLevel(protocolLevel BACnetProtocolLevelTagg
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataProtocolLevel(structType interface{}) BACnetConstructedDataProtocolLevel {
+func CastBACnetConstructedDataProtocolLevel(structType any) BACnetConstructedDataProtocolLevel {
 	if casted, ok := structType.(BACnetConstructedDataProtocolLevel); ok {
 		return casted
 	}

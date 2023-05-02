@@ -121,7 +121,7 @@ func NewBACnetConstructedDataProcessIdentifier(processIdentifier BACnetApplicati
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataProcessIdentifier(structType interface{}) BACnetConstructedDataProcessIdentifier {
+func CastBACnetConstructedDataProcessIdentifier(structType any) BACnetConstructedDataProcessIdentifier {
 	if casted, ok := structType.(BACnetConstructedDataProcessIdentifier); ok {
 		return casted
 	}

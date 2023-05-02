@@ -121,7 +121,7 @@ func NewBACnetConstructedDataPositiveIntegerValueCOVIncrement(covIncrement BACne
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataPositiveIntegerValueCOVIncrement(structType interface{}) BACnetConstructedDataPositiveIntegerValueCOVIncrement {
+func CastBACnetConstructedDataPositiveIntegerValueCOVIncrement(structType any) BACnetConstructedDataPositiveIntegerValueCOVIncrement {
 	if casted, ok := structType.(BACnetConstructedDataPositiveIntegerValueCOVIncrement); ok {
 		return casted
 	}

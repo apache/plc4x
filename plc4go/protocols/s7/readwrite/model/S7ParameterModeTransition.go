@@ -134,7 +134,7 @@ func NewS7ParameterModeTransition(method uint8, cpuFunctionType uint8, cpuFuncti
 }
 
 // Deprecated: use the interface for direct cast
-func CastS7ParameterModeTransition(structType interface{}) S7ParameterModeTransition {
+func CastS7ParameterModeTransition(structType any) S7ParameterModeTransition {
 	if casted, ok := structType.(S7ParameterModeTransition); ok {
 		return casted
 	}
@@ -200,7 +200,7 @@ func S7ParameterModeTransitionParseWithBuffer(ctx context.Context, readBuffer ut
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of S7ParameterModeTransition")
 		}
 		if reserved != uint16(0x0010) {
-			Plc4xModelLog.Info().Fields(map[string]interface{}{
+			Plc4xModelLog.Info().Fields(map[string]any{
 				"expected value": uint16(0x0010),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
@@ -289,7 +289,7 @@ func (m *_S7ParameterModeTransition) SerializeWithWriteBuffer(ctx context.Contex
 		{
 			var reserved uint16 = uint16(0x0010)
 			if m.reservedField0 != nil {
-				Plc4xModelLog.Info().Fields(map[string]interface{}{
+				Plc4xModelLog.Info().Fields(map[string]any{
 					"expected value": uint16(0x0010),
 					"got value":      reserved,
 				}).Msg("Overriding reserved field with unexpected value.")

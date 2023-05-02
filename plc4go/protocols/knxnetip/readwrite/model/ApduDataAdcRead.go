@@ -78,7 +78,7 @@ func NewApduDataAdcRead(dataLength uint8) *_ApduDataAdcRead {
 }
 
 // Deprecated: use the interface for direct cast
-func CastApduDataAdcRead(structType interface{}) ApduDataAdcRead {
+func CastApduDataAdcRead(structType any) ApduDataAdcRead {
 	if casted, ok := structType.(ApduDataAdcRead); ok {
 		return casted
 	}

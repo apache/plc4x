@@ -104,7 +104,7 @@ func NewNLMUpdateKeyDistributionKey(keyRevision byte, key NLMUpdateKeyUpdateKeyE
 }
 
 // Deprecated: use the interface for direct cast
-func CastNLMUpdateKeyDistributionKey(structType interface{}) NLMUpdateKeyDistributionKey {
+func CastNLMUpdateKeyDistributionKey(structType any) NLMUpdateKeyDistributionKey {
 	if casted, ok := structType.(NLMUpdateKeyDistributionKey); ok {
 		return casted
 	}

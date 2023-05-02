@@ -22,7 +22,6 @@ package model
 import (
 	"context"
 	"fmt"
-	spiContext "github.com/apache/plc4x/plc4go/spi/context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -105,7 +104,7 @@ func NewBACnetConstructedDataCredentialsInZone(credentialsInZone []BACnetDeviceO
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataCredentialsInZone(structType interface{}) BACnetConstructedDataCredentialsInZone {
+func CastBACnetConstructedDataCredentialsInZone(structType any) BACnetConstructedDataCredentialsInZone {
 	if casted, ok := structType.(BACnetConstructedDataCredentialsInZone); ok {
 		return casted
 	}
@@ -206,7 +205,7 @@ func (m *_BACnetConstructedDataCredentialsInZone) SerializeWithWriteBuffer(ctx c
 		}
 		for _curItem, _element := range m.GetCredentialsInZone() {
 			_ = _curItem
-			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetCredentialsInZone()), _curItem)
+			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetCredentialsInZone()), _curItem)
 			_ = arrayCtx
 			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 			if _elementErr != nil {

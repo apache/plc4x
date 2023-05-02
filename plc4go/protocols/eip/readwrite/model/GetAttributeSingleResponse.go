@@ -86,7 +86,7 @@ func NewGetAttributeSingleResponse(serviceLen uint16) *_GetAttributeSingleRespon
 }
 
 // Deprecated: use the interface for direct cast
-func CastGetAttributeSingleResponse(structType interface{}) GetAttributeSingleResponse {
+func CastGetAttributeSingleResponse(structType any) GetAttributeSingleResponse {
 	if casted, ok := structType.(GetAttributeSingleResponse); ok {
 		return casted
 	}

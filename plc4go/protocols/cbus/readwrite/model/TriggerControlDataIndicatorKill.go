@@ -77,7 +77,7 @@ func NewTriggerControlDataIndicatorKill(commandTypeContainer TriggerControlComma
 }
 
 // Deprecated: use the interface for direct cast
-func CastTriggerControlDataIndicatorKill(structType interface{}) TriggerControlDataIndicatorKill {
+func CastTriggerControlDataIndicatorKill(structType any) TriggerControlDataIndicatorKill {
 	if casted, ok := structType.(TriggerControlDataIndicatorKill); ok {
 		return casted
 	}

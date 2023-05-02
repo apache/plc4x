@@ -95,7 +95,7 @@ func NewTriggerControlDataTriggerEvent(actionSelector byte, commandTypeContainer
 }
 
 // Deprecated: use the interface for direct cast
-func CastTriggerControlDataTriggerEvent(structType interface{}) TriggerControlDataTriggerEvent {
+func CastTriggerControlDataTriggerEvent(structType any) TriggerControlDataTriggerEvent {
 	if casted, ok := structType.(TriggerControlDataTriggerEvent); ok {
 		return casted
 	}

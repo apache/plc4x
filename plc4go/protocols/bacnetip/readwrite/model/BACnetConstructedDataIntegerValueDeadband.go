@@ -121,7 +121,7 @@ func NewBACnetConstructedDataIntegerValueDeadband(deadband BACnetApplicationTagU
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataIntegerValueDeadband(structType interface{}) BACnetConstructedDataIntegerValueDeadband {
+func CastBACnetConstructedDataIntegerValueDeadband(structType any) BACnetConstructedDataIntegerValueDeadband {
 	if casted, ok := structType.(BACnetConstructedDataIntegerValueDeadband); ok {
 		return casted
 	}

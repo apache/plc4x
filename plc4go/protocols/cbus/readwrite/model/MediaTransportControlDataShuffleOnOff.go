@@ -120,7 +120,7 @@ func NewMediaTransportControlDataShuffleOnOff(state byte, commandTypeContainer M
 }
 
 // Deprecated: use the interface for direct cast
-func CastMediaTransportControlDataShuffleOnOff(structType interface{}) MediaTransportControlDataShuffleOnOff {
+func CastMediaTransportControlDataShuffleOnOff(structType any) MediaTransportControlDataShuffleOnOff {
 	if casted, ok := structType.(MediaTransportControlDataShuffleOnOff); ok {
 		return casted
 	}

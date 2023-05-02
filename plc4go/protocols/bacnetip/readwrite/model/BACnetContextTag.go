@@ -120,7 +120,7 @@ func NewBACnetContextTag(header BACnetTagHeader, tagNumberArgument uint8) *_BACn
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetContextTag(structType interface{}) BACnetContextTag {
+func CastBACnetContextTag(structType any) BACnetContextTag {
 	if casted, ok := structType.(BACnetContextTag); ok {
 		return casted
 	}
@@ -208,7 +208,7 @@ func BACnetContextTagParseWithBuffer(ctx context.Context, readBuffer utils.ReadB
 		InitializeParent(BACnetContextTag, BACnetTagHeader)
 		GetParent() BACnetContextTag
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child BACnetContextTagChildSerializeRequirement
 	var typeSwitchError error
 	switch {

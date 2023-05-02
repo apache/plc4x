@@ -19,6 +19,7 @@
 
 package model
 
+//go:generate go run ../../tools/plc4xgenerator/gen.go -type=DefaultArrayInfo
 type DefaultArrayInfo struct {
 	LowerBound uint32
 	UpperBound uint32

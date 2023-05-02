@@ -122,7 +122,7 @@ func NewTriggerControlData(commandTypeContainer TriggerControlCommandTypeContain
 }
 
 // Deprecated: use the interface for direct cast
-func CastTriggerControlData(structType interface{}) TriggerControlData {
+func CastTriggerControlData(structType any) TriggerControlData {
 	if casted, ok := structType.(TriggerControlData); ok {
 		return casted
 	}
@@ -210,7 +210,7 @@ func TriggerControlDataParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 		InitializeParent(TriggerControlData, TriggerControlCommandTypeContainer, byte)
 		GetParent() TriggerControlData
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child TriggerControlDataChildSerializeRequirement
 	var typeSwitchError error
 	switch {

@@ -121,7 +121,7 @@ func NewBACnetConstructedDataMaintenanceRequired(maintenanceRequired BACnetMaint
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataMaintenanceRequired(structType interface{}) BACnetConstructedDataMaintenanceRequired {
+func CastBACnetConstructedDataMaintenanceRequired(structType any) BACnetConstructedDataMaintenanceRequired {
 	if casted, ok := structType.(BACnetConstructedDataMaintenanceRequired); ok {
 		return casted
 	}

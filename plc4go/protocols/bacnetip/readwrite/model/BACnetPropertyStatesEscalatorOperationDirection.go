@@ -94,7 +94,7 @@ func NewBACnetPropertyStatesEscalatorOperationDirection(escalatorOperationDirect
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetPropertyStatesEscalatorOperationDirection(structType interface{}) BACnetPropertyStatesEscalatorOperationDirection {
+func CastBACnetPropertyStatesEscalatorOperationDirection(structType any) BACnetPropertyStatesEscalatorOperationDirection {
 	if casted, ok := structType.(BACnetPropertyStatesEscalatorOperationDirection); ok {
 		return casted
 	}

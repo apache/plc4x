@@ -121,7 +121,7 @@ func NewBACnetConstructedDataAccumulatorLowLimit(lowLimit BACnetApplicationTagUn
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataAccumulatorLowLimit(structType interface{}) BACnetConstructedDataAccumulatorLowLimit {
+func CastBACnetConstructedDataAccumulatorLowLimit(structType any) BACnetConstructedDataAccumulatorLowLimit {
 	if casted, ok := structType.(BACnetConstructedDataAccumulatorLowLimit); ok {
 		return casted
 	}

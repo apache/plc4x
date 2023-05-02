@@ -22,7 +22,6 @@ package model
 import (
 	"context"
 	"fmt"
-	spiContext "github.com/apache/plc4x/plc4go/spi/context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
@@ -133,7 +132,7 @@ func NewBACnetConstructedDataNetworkAccessSecurityPolicies(numberOfDataElements 
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataNetworkAccessSecurityPolicies(structType interface{}) BACnetConstructedDataNetworkAccessSecurityPolicies {
+func CastBACnetConstructedDataNetworkAccessSecurityPolicies(structType any) BACnetConstructedDataNetworkAccessSecurityPolicies {
 	if casted, ok := structType.(BACnetConstructedDataNetworkAccessSecurityPolicies); ok {
 		return casted
 	}
@@ -289,7 +288,7 @@ func (m *_BACnetConstructedDataNetworkAccessSecurityPolicies) SerializeWithWrite
 		}
 		for _curItem, _element := range m.GetNetworkAccessSecurityPolicies() {
 			_ = _curItem
-			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetNetworkAccessSecurityPolicies()), _curItem)
+			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetNetworkAccessSecurityPolicies()), _curItem)
 			_ = arrayCtx
 			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 			if _elementErr != nil {

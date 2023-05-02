@@ -121,7 +121,7 @@ func NewBACnetConstructedDataCarDriveStatus(carDriveStatus BACnetLiftCarDriveSta
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataCarDriveStatus(structType interface{}) BACnetConstructedDataCarDriveStatus {
+func CastBACnetConstructedDataCarDriveStatus(structType any) BACnetConstructedDataCarDriveStatus {
 	if casted, ok := structType.(BACnetConstructedDataCarDriveStatus); ok {
 		return casted
 	}

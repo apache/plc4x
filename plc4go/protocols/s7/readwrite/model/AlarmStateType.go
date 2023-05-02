@@ -33,6 +33,7 @@ type AlarmStateType uint8
 
 type IAlarmStateType interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 
@@ -104,8 +105,8 @@ func AlarmStateTypeKnows(value uint8) bool {
 	return false
 }
 
-func CastAlarmStateType(structType interface{}) AlarmStateType {
-	castFunc := func(typ interface{}) AlarmStateType {
+func CastAlarmStateType(structType any) AlarmStateType {
+	castFunc := func(typ any) AlarmStateType {
 		if sAlarmStateType, ok := typ.(AlarmStateType); ok {
 			return sAlarmStateType
 		}

@@ -33,6 +33,7 @@ type LightingLabelFlavour uint8
 
 type ILightingLabelFlavour interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 
@@ -92,8 +93,8 @@ func LightingLabelFlavourKnows(value uint8) bool {
 	return false
 }
 
-func CastLightingLabelFlavour(structType interface{}) LightingLabelFlavour {
-	castFunc := func(typ interface{}) LightingLabelFlavour {
+func CastLightingLabelFlavour(structType any) LightingLabelFlavour {
+	castFunc := func(typ any) LightingLabelFlavour {
 		if sLightingLabelFlavour, ok := typ.(LightingLabelFlavour); ok {
 			return sLightingLabelFlavour
 		}

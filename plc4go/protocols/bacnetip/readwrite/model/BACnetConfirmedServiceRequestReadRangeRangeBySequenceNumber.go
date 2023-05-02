@@ -104,7 +104,7 @@ func NewBACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber(referenceSeq
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber(structType interface{}) BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber {
+func CastBACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber(structType any) BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber {
 	if casted, ok := structType.(BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber); ok {
 		return casted
 	}

@@ -77,7 +77,7 @@ func NewTelephonyDataInternetConnectionRequestMade(commandTypeContainer Telephon
 }
 
 // Deprecated: use the interface for direct cast
-func CastTelephonyDataInternetConnectionRequestMade(structType interface{}) TelephonyDataInternetConnectionRequestMade {
+func CastTelephonyDataInternetConnectionRequestMade(structType any) TelephonyDataInternetConnectionRequestMade {
 	if casted, ok := structType.(TelephonyDataInternetConnectionRequestMade); ok {
 		return casted
 	}

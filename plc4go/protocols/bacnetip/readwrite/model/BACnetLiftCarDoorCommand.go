@@ -33,6 +33,7 @@ type BACnetLiftCarDoorCommand uint8
 
 type IBACnetLiftCarDoorCommand interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 
@@ -86,8 +87,8 @@ func BACnetLiftCarDoorCommandKnows(value uint8) bool {
 	return false
 }
 
-func CastBACnetLiftCarDoorCommand(structType interface{}) BACnetLiftCarDoorCommand {
-	castFunc := func(typ interface{}) BACnetLiftCarDoorCommand {
+func CastBACnetLiftCarDoorCommand(structType any) BACnetLiftCarDoorCommand {
+	castFunc := func(typ any) BACnetLiftCarDoorCommand {
 		if sBACnetLiftCarDoorCommand, ok := typ.(BACnetLiftCarDoorCommand); ok {
 			return sBACnetLiftCarDoorCommand
 		}

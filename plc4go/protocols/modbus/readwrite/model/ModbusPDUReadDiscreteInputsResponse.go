@@ -104,7 +104,7 @@ func NewModbusPDUReadDiscreteInputsResponse(value []byte) *_ModbusPDUReadDiscret
 }
 
 // Deprecated: use the interface for direct cast
-func CastModbusPDUReadDiscreteInputsResponse(structType interface{}) ModbusPDUReadDiscreteInputsResponse {
+func CastModbusPDUReadDiscreteInputsResponse(structType any) ModbusPDUReadDiscreteInputsResponse {
 	if casted, ok := structType.(ModbusPDUReadDiscreteInputsResponse); ok {
 		return casted
 	}

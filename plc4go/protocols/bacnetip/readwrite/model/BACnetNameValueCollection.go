@@ -22,7 +22,6 @@ package model
 import (
 	"context"
 	"fmt"
-	spiContext "github.com/apache/plc4x/plc4go/spi/context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -87,7 +86,7 @@ func NewBACnetNameValueCollection(openingTag BACnetOpeningTag, members []BACnetN
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetNameValueCollection(structType interface{}) BACnetNameValueCollection {
+func CastBACnetNameValueCollection(structType any) BACnetNameValueCollection {
 	if casted, ok := structType.(BACnetNameValueCollection); ok {
 		return casted
 	}
@@ -228,7 +227,7 @@ func (m *_BACnetNameValueCollection) SerializeWithWriteBuffer(ctx context.Contex
 	}
 	for _curItem, _element := range m.GetMembers() {
 		_ = _curItem
-		arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetMembers()), _curItem)
+		arrayCtx := utils.CreateArrayContext(ctx, len(m.GetMembers()), _curItem)
 		_ = arrayCtx
 		_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 		if _elementErr != nil {

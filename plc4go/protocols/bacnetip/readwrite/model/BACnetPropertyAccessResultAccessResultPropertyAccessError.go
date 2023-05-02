@@ -94,7 +94,7 @@ func NewBACnetPropertyAccessResultAccessResultPropertyAccessError(propertyAccess
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetPropertyAccessResultAccessResultPropertyAccessError(structType interface{}) BACnetPropertyAccessResultAccessResultPropertyAccessError {
+func CastBACnetPropertyAccessResultAccessResultPropertyAccessError(structType any) BACnetPropertyAccessResultAccessResultPropertyAccessError {
 	if casted, ok := structType.(BACnetPropertyAccessResultAccessResultPropertyAccessError); ok {
 		return casted
 	}

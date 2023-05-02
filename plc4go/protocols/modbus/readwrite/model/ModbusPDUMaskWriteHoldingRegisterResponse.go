@@ -120,7 +120,7 @@ func NewModbusPDUMaskWriteHoldingRegisterResponse(referenceAddress uint16, andMa
 }
 
 // Deprecated: use the interface for direct cast
-func CastModbusPDUMaskWriteHoldingRegisterResponse(structType interface{}) ModbusPDUMaskWriteHoldingRegisterResponse {
+func CastModbusPDUMaskWriteHoldingRegisterResponse(structType any) ModbusPDUMaskWriteHoldingRegisterResponse {
 	if casted, ok := structType.(ModbusPDUMaskWriteHoldingRegisterResponse); ok {
 		return casted
 	}

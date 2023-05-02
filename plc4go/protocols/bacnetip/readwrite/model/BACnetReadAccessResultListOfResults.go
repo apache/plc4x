@@ -22,7 +22,6 @@ package model
 import (
 	"context"
 	"fmt"
-	spiContext "github.com/apache/plc4x/plc4go/spi/context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -88,7 +87,7 @@ func NewBACnetReadAccessResultListOfResults(openingTag BACnetOpeningTag, listOfR
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetReadAccessResultListOfResults(structType interface{}) BACnetReadAccessResultListOfResults {
+func CastBACnetReadAccessResultListOfResults(structType any) BACnetReadAccessResultListOfResults {
 	if casted, ok := structType.(BACnetReadAccessResultListOfResults); ok {
 		return casted
 	}
@@ -230,7 +229,7 @@ func (m *_BACnetReadAccessResultListOfResults) SerializeWithWriteBuffer(ctx cont
 	}
 	for _curItem, _element := range m.GetListOfReadAccessProperty() {
 		_ = _curItem
-		arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetListOfReadAccessProperty()), _curItem)
+		arrayCtx := utils.CreateArrayContext(ctx, len(m.GetListOfReadAccessProperty()), _curItem)
 		_ = arrayCtx
 		_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 		if _elementErr != nil {

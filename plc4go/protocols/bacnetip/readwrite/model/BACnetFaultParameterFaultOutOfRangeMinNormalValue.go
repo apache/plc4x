@@ -124,7 +124,7 @@ func NewBACnetFaultParameterFaultOutOfRangeMinNormalValue(openingTag BACnetOpeni
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetFaultParameterFaultOutOfRangeMinNormalValue(structType interface{}) BACnetFaultParameterFaultOutOfRangeMinNormalValue {
+func CastBACnetFaultParameterFaultOutOfRangeMinNormalValue(structType any) BACnetFaultParameterFaultOutOfRangeMinNormalValue {
 	if casted, ok := structType.(BACnetFaultParameterFaultOutOfRangeMinNormalValue); ok {
 		return casted
 	}
@@ -206,7 +206,7 @@ func BACnetFaultParameterFaultOutOfRangeMinNormalValueParseWithBuffer(ctx contex
 		InitializeParent(BACnetFaultParameterFaultOutOfRangeMinNormalValue, BACnetOpeningTag, BACnetTagHeader, BACnetClosingTag)
 		GetParent() BACnetFaultParameterFaultOutOfRangeMinNormalValue
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child BACnetFaultParameterFaultOutOfRangeMinNormalValueChildSerializeRequirement
 	var typeSwitchError error
 	switch {

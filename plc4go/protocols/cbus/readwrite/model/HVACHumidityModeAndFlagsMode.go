@@ -33,6 +33,7 @@ type HVACHumidityModeAndFlagsMode uint8
 
 type IHVACHumidityModeAndFlagsMode interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 
@@ -92,8 +93,8 @@ func HVACHumidityModeAndFlagsModeKnows(value uint8) bool {
 	return false
 }
 
-func CastHVACHumidityModeAndFlagsMode(structType interface{}) HVACHumidityModeAndFlagsMode {
-	castFunc := func(typ interface{}) HVACHumidityModeAndFlagsMode {
+func CastHVACHumidityModeAndFlagsMode(structType any) HVACHumidityModeAndFlagsMode {
+	castFunc := func(typ any) HVACHumidityModeAndFlagsMode {
 		if sHVACHumidityModeAndFlagsMode, ok := typ.(HVACHumidityModeAndFlagsMode); ok {
 			return sHVACHumidityModeAndFlagsMode
 		}

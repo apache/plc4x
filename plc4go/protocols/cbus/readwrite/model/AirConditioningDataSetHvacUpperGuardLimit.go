@@ -118,7 +118,7 @@ func NewAirConditioningDataSetHvacUpperGuardLimit(zoneGroup byte, zoneList HVACZ
 }
 
 // Deprecated: use the interface for direct cast
-func CastAirConditioningDataSetHvacUpperGuardLimit(structType interface{}) AirConditioningDataSetHvacUpperGuardLimit {
+func CastAirConditioningDataSetHvacUpperGuardLimit(structType any) AirConditioningDataSetHvacUpperGuardLimit {
 	if casted, ok := structType.(AirConditioningDataSetHvacUpperGuardLimit); ok {
 		return casted
 	}

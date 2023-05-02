@@ -94,7 +94,7 @@ func NewBACnetScaleFloatScale(floatScale BACnetContextTagReal, peekedTagHeader B
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetScaleFloatScale(structType interface{}) BACnetScaleFloatScale {
+func CastBACnetScaleFloatScale(structType any) BACnetScaleFloatScale {
 	if casted, ok := structType.(BACnetScaleFloatScale); ok {
 		return casted
 	}

@@ -78,7 +78,7 @@ func NewApduDataRestart(dataLength uint8) *_ApduDataRestart {
 }
 
 // Deprecated: use the interface for direct cast
-func CastApduDataRestart(structType interface{}) ApduDataRestart {
+func CastApduDataRestart(structType any) ApduDataRestart {
 	if casted, ok := structType.(ApduDataRestart); ok {
 		return casted
 	}

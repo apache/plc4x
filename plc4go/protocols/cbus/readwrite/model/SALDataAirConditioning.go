@@ -98,7 +98,7 @@ func NewSALDataAirConditioning(airConditioningData AirConditioningData, salData 
 }
 
 // Deprecated: use the interface for direct cast
-func CastSALDataAirConditioning(structType interface{}) SALDataAirConditioning {
+func CastSALDataAirConditioning(structType any) SALDataAirConditioning {
 	if casted, ok := structType.(SALDataAirConditioning); ok {
 		return casted
 	}

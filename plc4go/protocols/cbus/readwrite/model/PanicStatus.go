@@ -102,7 +102,7 @@ func NewPanicStatus(status uint8) *_PanicStatus {
 }
 
 // Deprecated: use the interface for direct cast
-func CastPanicStatus(structType interface{}) PanicStatus {
+func CastPanicStatus(structType any) PanicStatus {
 	if casted, ok := structType.(PanicStatus); ok {
 		return casted
 	}

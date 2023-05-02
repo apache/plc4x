@@ -30,7 +30,7 @@ import (
 )
 
 type PlcBYTE struct {
-	PlcSimpleValueAdapter
+	PlcSimpleNumericValueAdapter
 	value uint8
 }
 

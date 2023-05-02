@@ -101,7 +101,7 @@ func NewDF1CommandRequestMessage(command DF1RequestCommand, destinationAddress u
 }
 
 // Deprecated: use the interface for direct cast
-func CastDF1CommandRequestMessage(structType interface{}) DF1CommandRequestMessage {
+func CastDF1CommandRequestMessage(structType any) DF1CommandRequestMessage {
 	if casted, ok := structType.(DF1CommandRequestMessage); ok {
 		return casted
 	}

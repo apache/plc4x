@@ -96,7 +96,7 @@ func NewAdsDiscoveryBlockHostName(hostName AmsString) *_AdsDiscoveryBlockHostNam
 }
 
 // Deprecated: use the interface for direct cast
-func CastAdsDiscoveryBlockHostName(structType interface{}) AdsDiscoveryBlockHostName {
+func CastAdsDiscoveryBlockHostName(structType any) AdsDiscoveryBlockHostName {
 	if casted, ok := structType.(AdsDiscoveryBlockHostName); ok {
 		return casted
 	}

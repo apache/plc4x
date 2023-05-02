@@ -98,7 +98,7 @@ func NewSALDataHeating(heatingData LightingData, salData SALData) *_SALDataHeati
 }
 
 // Deprecated: use the interface for direct cast
-func CastSALDataHeating(structType interface{}) SALDataHeating {
+func CastSALDataHeating(structType any) SALDataHeating {
 	if casted, ok := structType.(SALDataHeating); ok {
 		return casted
 	}

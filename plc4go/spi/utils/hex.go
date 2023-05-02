@@ -170,7 +170,7 @@ func maskString(data []byte) string {
 	return string(data)
 }
 
-func toBytes(anything interface{}) ([]byte, error) {
+func toBytes(anything any) ([]byte, error) {
 	var buffer bytes.Buffer
 	err := gob.NewEncoder(&buffer).Encode(anything)
 	if err != nil {

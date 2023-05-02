@@ -112,7 +112,7 @@ func NewCipReadRequest(tag []byte, elementNb uint16, serviceLen uint16) *_CipRea
 }
 
 // Deprecated: use the interface for direct cast
-func CastCipReadRequest(structType interface{}) CipReadRequest {
+func CastCipReadRequest(structType any) CipReadRequest {
 	if casted, ok := structType.(CipReadRequest); ok {
 		return casted
 	}

@@ -69,7 +69,7 @@ func NewModbusConstants() *_ModbusConstants {
 }
 
 // Deprecated: use the interface for direct cast
-func CastModbusConstants(structType interface{}) ModbusConstants {
+func CastModbusConstants(structType any) ModbusConstants {
 	if casted, ok := structType.(ModbusConstants); ok {
 		return casted
 	}

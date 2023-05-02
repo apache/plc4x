@@ -120,7 +120,7 @@ func NewMediaTransportControlDataNextPreviousSelection(operation byte, commandTy
 }
 
 // Deprecated: use the interface for direct cast
-func CastMediaTransportControlDataNextPreviousSelection(structType interface{}) MediaTransportControlDataNextPreviousSelection {
+func CastMediaTransportControlDataNextPreviousSelection(structType any) MediaTransportControlDataNextPreviousSelection {
 	if casted, ok := structType.(MediaTransportControlDataNextPreviousSelection); ok {
 		return casted
 	}

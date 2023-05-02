@@ -86,7 +86,7 @@ func NewBACnetTimeStampEnclosed(openingTag BACnetOpeningTag, timestamp BACnetTim
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetTimeStampEnclosed(structType interface{}) BACnetTimeStampEnclosed {
+func CastBACnetTimeStampEnclosed(structType any) BACnetTimeStampEnclosed {
 	if casted, ok := structType.(BACnetTimeStampEnclosed); ok {
 		return casted
 	}

@@ -96,7 +96,7 @@ func NewParameterValueCustomManufacturer(value CustomManufacturer, numBytes uint
 }
 
 // Deprecated: use the interface for direct cast
-func CastParameterValueCustomManufacturer(structType interface{}) ParameterValueCustomManufacturer {
+func CastParameterValueCustomManufacturer(structType any) ParameterValueCustomManufacturer {
 	if casted, ok := structType.(ParameterValueCustomManufacturer); ok {
 		return casted
 	}

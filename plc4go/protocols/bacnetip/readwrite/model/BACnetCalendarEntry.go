@@ -107,7 +107,7 @@ func NewBACnetCalendarEntry(peekedTagHeader BACnetTagHeader) *_BACnetCalendarEnt
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetCalendarEntry(structType interface{}) BACnetCalendarEntry {
+func CastBACnetCalendarEntry(structType any) BACnetCalendarEntry {
 	if casted, ok := structType.(BACnetCalendarEntry); ok {
 		return casted
 	}
@@ -170,7 +170,7 @@ func BACnetCalendarEntryParseWithBuffer(ctx context.Context, readBuffer utils.Re
 		InitializeParent(BACnetCalendarEntry, BACnetTagHeader)
 		GetParent() BACnetCalendarEntry
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child BACnetCalendarEntryChildSerializeRequirement
 	var typeSwitchError error
 	switch {

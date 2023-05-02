@@ -121,7 +121,7 @@ func NewBACnetConstructedDataAckedTransitions(ackedTransitions BACnetEventTransi
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataAckedTransitions(structType interface{}) BACnetConstructedDataAckedTransitions {
+func CastBACnetConstructedDataAckedTransitions(structType any) BACnetConstructedDataAckedTransitions {
 	if casted, ok := structType.(BACnetConstructedDataAckedTransitions); ok {
 		return casted
 	}

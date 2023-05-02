@@ -95,7 +95,7 @@ func NewTelephonyDataDivert(number string, commandTypeContainer TelephonyCommand
 }
 
 // Deprecated: use the interface for direct cast
-func CastTelephonyDataDivert(structType interface{}) TelephonyDataDivert {
+func CastTelephonyDataDivert(structType any) TelephonyDataDivert {
 	if casted, ok := structType.(TelephonyDataDivert); ok {
 		return casted
 	}

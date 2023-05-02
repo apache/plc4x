@@ -77,7 +77,7 @@ func NewSecurityDataEntryDelayStarted(commandTypeContainer SecurityCommandTypeCo
 }
 
 // Deprecated: use the interface for direct cast
-func CastSecurityDataEntryDelayStarted(structType interface{}) SecurityDataEntryDelayStarted {
+func CastSecurityDataEntryDelayStarted(structType any) SecurityDataEntryDelayStarted {
 	if casted, ok := structType.(SecurityDataEntryDelayStarted); ok {
 		return casted
 	}

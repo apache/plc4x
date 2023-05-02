@@ -121,7 +121,7 @@ func NewBACnetConstructedDataCommand(command BACnetNetworkPortCommandTagged, ope
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataCommand(structType interface{}) BACnetConstructedDataCommand {
+func CastBACnetConstructedDataCommand(structType any) BACnetConstructedDataCommand {
 	if casted, ok := structType.(BACnetConstructedDataCommand); ok {
 		return casted
 	}

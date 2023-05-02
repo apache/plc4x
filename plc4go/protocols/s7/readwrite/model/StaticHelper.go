@@ -152,7 +152,7 @@ func SerializeS7Char(io utils.WriteBuffer, value values.PlcValue, encoding strin
 	return io.WriteUint8("", 8, value.GetUint8())
 }
 
-func RightShift3(readBuffer utils.ReadBuffer) (interface{}, error) {
+func RightShift3(readBuffer utils.ReadBuffer, dataTransportSize DataTransportSize) (any, error) {
 	return uint16(0), nil
 }
 
@@ -164,7 +164,7 @@ func EventItemLength(readBuffer utils.ReadBuffer, valueLength uint16) uint16 {
 	return 0
 }
 
-func BcdToInt(readBuffer utils.ReadBuffer) (interface{}, error) {
+func BcdToInt(readBuffer utils.ReadBuffer) (any, error) {
 	return uint8(0), nil
 }
 
@@ -172,7 +172,7 @@ func ByteToBcd(writeBuffer utils.WriteBuffer, value uint8) error {
 	return nil
 }
 
-func S7msecToInt(readBuffer utils.ReadBuffer) (interface{}, error) {
+func S7msecToInt(readBuffer utils.ReadBuffer) (any, error) {
 	return uint16(0), nil
 }
 

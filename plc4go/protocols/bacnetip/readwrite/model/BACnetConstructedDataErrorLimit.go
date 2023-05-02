@@ -121,7 +121,7 @@ func NewBACnetConstructedDataErrorLimit(errorLimit BACnetApplicationTagReal, ope
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataErrorLimit(structType interface{}) BACnetConstructedDataErrorLimit {
+func CastBACnetConstructedDataErrorLimit(structType any) BACnetConstructedDataErrorLimit {
 	if casted, ok := structType.(BACnetConstructedDataErrorLimit); ok {
 		return casted
 	}

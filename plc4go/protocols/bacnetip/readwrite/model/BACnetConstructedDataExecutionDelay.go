@@ -22,7 +22,6 @@ package model
 import (
 	"context"
 	"fmt"
-	spiContext "github.com/apache/plc4x/plc4go/spi/context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
@@ -133,7 +132,7 @@ func NewBACnetConstructedDataExecutionDelay(numberOfDataElements BACnetApplicati
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataExecutionDelay(structType interface{}) BACnetConstructedDataExecutionDelay {
+func CastBACnetConstructedDataExecutionDelay(structType any) BACnetConstructedDataExecutionDelay {
 	if casted, ok := structType.(BACnetConstructedDataExecutionDelay); ok {
 		return casted
 	}
@@ -289,7 +288,7 @@ func (m *_BACnetConstructedDataExecutionDelay) SerializeWithWriteBuffer(ctx cont
 		}
 		for _curItem, _element := range m.GetExecutionDelay() {
 			_ = _curItem
-			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetExecutionDelay()), _curItem)
+			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetExecutionDelay()), _curItem)
 			_ = arrayCtx
 			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 			if _elementErr != nil {

@@ -94,7 +94,7 @@ func NewBACnetOptionalUnsignedNull(nullValue BACnetApplicationTagNull, peekedTag
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetOptionalUnsignedNull(structType interface{}) BACnetOptionalUnsignedNull {
+func CastBACnetOptionalUnsignedNull(structType any) BACnetOptionalUnsignedNull {
 	if casted, ok := structType.(BACnetOptionalUnsignedNull); ok {
 		return casted
 	}

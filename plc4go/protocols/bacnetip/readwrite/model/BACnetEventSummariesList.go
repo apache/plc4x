@@ -22,7 +22,6 @@ package model
 import (
 	"context"
 	"fmt"
-	spiContext "github.com/apache/plc4x/plc4go/spi/context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -87,7 +86,7 @@ func NewBACnetEventSummariesList(openingTag BACnetOpeningTag, listOfEventSummari
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetEventSummariesList(structType interface{}) BACnetEventSummariesList {
+func CastBACnetEventSummariesList(structType any) BACnetEventSummariesList {
 	if casted, ok := structType.(BACnetEventSummariesList); ok {
 		return casted
 	}
@@ -228,7 +227,7 @@ func (m *_BACnetEventSummariesList) SerializeWithWriteBuffer(ctx context.Context
 	}
 	for _curItem, _element := range m.GetListOfEventSummaries() {
 		_ = _curItem
-		arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetListOfEventSummaries()), _curItem)
+		arrayCtx := utils.CreateArrayContext(ctx, len(m.GetListOfEventSummaries()), _curItem)
 		_ = arrayCtx
 		_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 		if _elementErr != nil {

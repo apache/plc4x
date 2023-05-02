@@ -121,7 +121,7 @@ func NewBACnetConstructedDataFDSubscriptionLifetime(fdSubscriptionLifetime BACne
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataFDSubscriptionLifetime(structType interface{}) BACnetConstructedDataFDSubscriptionLifetime {
+func CastBACnetConstructedDataFDSubscriptionLifetime(structType any) BACnetConstructedDataFDSubscriptionLifetime {
 	if casted, ok := structType.(BACnetConstructedDataFDSubscriptionLifetime); ok {
 		return casted
 	}

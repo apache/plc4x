@@ -33,6 +33,7 @@ type BACnetProgramRequest uint8
 
 type IBACnetProgramRequest interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 
@@ -104,8 +105,8 @@ func BACnetProgramRequestKnows(value uint8) bool {
 	return false
 }
 
-func CastBACnetProgramRequest(structType interface{}) BACnetProgramRequest {
-	castFunc := func(typ interface{}) BACnetProgramRequest {
+func CastBACnetProgramRequest(structType any) BACnetProgramRequest {
+	castFunc := func(typ any) BACnetProgramRequest {
 		if sBACnetProgramRequest, ok := typ.(BACnetProgramRequest); ok {
 			return sBACnetProgramRequest
 		}

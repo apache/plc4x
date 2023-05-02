@@ -33,6 +33,7 @@ type BACnetBinaryLightingPV uint8
 
 type IBACnetBinaryLightingPV interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 
@@ -110,8 +111,8 @@ func BACnetBinaryLightingPVKnows(value uint8) bool {
 	return false
 }
 
-func CastBACnetBinaryLightingPV(structType interface{}) BACnetBinaryLightingPV {
-	castFunc := func(typ interface{}) BACnetBinaryLightingPV {
+func CastBACnetBinaryLightingPV(structType any) BACnetBinaryLightingPV {
+	castFunc := func(typ any) BACnetBinaryLightingPV {
 		if sBACnetBinaryLightingPV, ok := typ.(BACnetBinaryLightingPV); ok {
 			return sBACnetBinaryLightingPV
 		}

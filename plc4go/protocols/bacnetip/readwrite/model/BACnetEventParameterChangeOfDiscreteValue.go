@@ -110,7 +110,7 @@ func NewBACnetEventParameterChangeOfDiscreteValue(openingTag BACnetOpeningTag, t
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetEventParameterChangeOfDiscreteValue(structType interface{}) BACnetEventParameterChangeOfDiscreteValue {
+func CastBACnetEventParameterChangeOfDiscreteValue(structType any) BACnetEventParameterChangeOfDiscreteValue {
 	if casted, ok := structType.(BACnetEventParameterChangeOfDiscreteValue); ok {
 		return casted
 	}

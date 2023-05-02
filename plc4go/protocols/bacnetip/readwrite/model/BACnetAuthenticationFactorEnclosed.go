@@ -86,7 +86,7 @@ func NewBACnetAuthenticationFactorEnclosed(openingTag BACnetOpeningTag, authenti
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetAuthenticationFactorEnclosed(structType interface{}) BACnetAuthenticationFactorEnclosed {
+func CastBACnetAuthenticationFactorEnclosed(structType any) BACnetAuthenticationFactorEnclosed {
 	if casted, ok := structType.(BACnetAuthenticationFactorEnclosed); ok {
 		return casted
 	}

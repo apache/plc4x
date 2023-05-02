@@ -84,7 +84,7 @@ func NewCIPEncapsulationConnectionRequest(sessionHandle uint32, status uint32, s
 }
 
 // Deprecated: use the interface for direct cast
-func CastCIPEncapsulationConnectionRequest(structType interface{}) CIPEncapsulationConnectionRequest {
+func CastCIPEncapsulationConnectionRequest(structType any) CIPEncapsulationConnectionRequest {
 	if casted, ok := structType.(CIPEncapsulationConnectionRequest); ok {
 		return casted
 	}

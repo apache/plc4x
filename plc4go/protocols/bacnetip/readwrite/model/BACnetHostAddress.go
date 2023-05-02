@@ -107,7 +107,7 @@ func NewBACnetHostAddress(peekedTagHeader BACnetTagHeader) *_BACnetHostAddress {
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetHostAddress(structType interface{}) BACnetHostAddress {
+func CastBACnetHostAddress(structType any) BACnetHostAddress {
 	if casted, ok := structType.(BACnetHostAddress); ok {
 		return casted
 	}
@@ -165,7 +165,7 @@ func BACnetHostAddressParseWithBuffer(ctx context.Context, readBuffer utils.Read
 		InitializeParent(BACnetHostAddress, BACnetTagHeader)
 		GetParent() BACnetHostAddress
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child BACnetHostAddressChildSerializeRequirement
 	var typeSwitchError error
 	switch {

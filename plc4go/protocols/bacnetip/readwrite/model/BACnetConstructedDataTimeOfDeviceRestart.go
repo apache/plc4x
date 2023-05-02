@@ -121,7 +121,7 @@ func NewBACnetConstructedDataTimeOfDeviceRestart(timeOfDeviceRestart BACnetTimeS
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataTimeOfDeviceRestart(structType interface{}) BACnetConstructedDataTimeOfDeviceRestart {
+func CastBACnetConstructedDataTimeOfDeviceRestart(structType any) BACnetConstructedDataTimeOfDeviceRestart {
 	if casted, ok := structType.(BACnetConstructedDataTimeOfDeviceRestart); ok {
 		return casted
 	}

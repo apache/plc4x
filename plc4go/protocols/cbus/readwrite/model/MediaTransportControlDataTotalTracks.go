@@ -119,7 +119,7 @@ func NewMediaTransportControlDataTotalTracks(totalTracksMSB byte, totalTracksMMS
 }
 
 // Deprecated: use the interface for direct cast
-func CastMediaTransportControlDataTotalTracks(structType interface{}) MediaTransportControlDataTotalTracks {
+func CastMediaTransportControlDataTotalTracks(structType any) MediaTransportControlDataTotalTracks {
 	if casted, ok := structType.(MediaTransportControlDataTotalTracks); ok {
 		return casted
 	}

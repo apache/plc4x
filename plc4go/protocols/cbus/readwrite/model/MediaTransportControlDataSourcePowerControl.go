@@ -120,7 +120,7 @@ func NewMediaTransportControlDataSourcePowerControl(state byte, commandTypeConta
 }
 
 // Deprecated: use the interface for direct cast
-func CastMediaTransportControlDataSourcePowerControl(structType interface{}) MediaTransportControlDataSourcePowerControl {
+func CastMediaTransportControlDataSourcePowerControl(structType any) MediaTransportControlDataSourcePowerControl {
 	if casted, ok := structType.(MediaTransportControlDataSourcePowerControl); ok {
 		return casted
 	}

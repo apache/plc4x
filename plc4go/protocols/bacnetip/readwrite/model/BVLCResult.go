@@ -97,7 +97,7 @@ func NewBVLCResult(code BVLCResultCode) *_BVLCResult {
 }
 
 // Deprecated: use the interface for direct cast
-func CastBVLCResult(structType interface{}) BVLCResult {
+func CastBVLCResult(structType any) BVLCResult {
 	if casted, ok := structType.(BVLCResult); ok {
 		return casted
 	}

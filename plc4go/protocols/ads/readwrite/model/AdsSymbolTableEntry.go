@@ -246,7 +246,7 @@ func NewAdsSymbolTableEntry(entryLength uint32, group uint32, offset uint32, siz
 }
 
 // Deprecated: use the interface for direct cast
-func CastAdsSymbolTableEntry(structType interface{}) AdsSymbolTableEntry {
+func CastAdsSymbolTableEntry(structType any) AdsSymbolTableEntry {
 	if casted, ok := structType.(AdsSymbolTableEntry); ok {
 		return casted
 	}
@@ -476,7 +476,7 @@ func AdsSymbolTableEntryParseWithBuffer(ctx context.Context, readBuffer utils.Re
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of AdsSymbolTableEntry")
 		}
 		if reserved != uint8(0x00) {
-			Plc4xModelLog.Info().Fields(map[string]interface{}{
+			Plc4xModelLog.Info().Fields(map[string]any{
 				"expected value": uint8(0x00),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
@@ -528,7 +528,7 @@ func AdsSymbolTableEntryParseWithBuffer(ctx context.Context, readBuffer utils.Re
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of AdsSymbolTableEntry")
 		}
 		if reserved != uint16(0x0000) {
-			Plc4xModelLog.Info().Fields(map[string]interface{}{
+			Plc4xModelLog.Info().Fields(map[string]any{
 				"expected value": uint16(0x0000),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
@@ -755,7 +755,7 @@ func (m *_AdsSymbolTableEntry) SerializeWithWriteBuffer(ctx context.Context, wri
 	{
 		var reserved uint8 = uint8(0x00)
 		if m.reservedField0 != nil {
-			Plc4xModelLog.Info().Fields(map[string]interface{}{
+			Plc4xModelLog.Info().Fields(map[string]any{
 				"expected value": uint8(0x00),
 				"got value":      reserved,
 			}).Msg("Overriding reserved field with unexpected value.")
@@ -806,7 +806,7 @@ func (m *_AdsSymbolTableEntry) SerializeWithWriteBuffer(ctx context.Context, wri
 	{
 		var reserved uint16 = uint16(0x0000)
 		if m.reservedField1 != nil {
-			Plc4xModelLog.Info().Fields(map[string]interface{}{
+			Plc4xModelLog.Info().Fields(map[string]any{
 				"expected value": uint16(0x0000),
 				"got value":      reserved,
 			}).Msg("Overriding reserved field with unexpected value.")

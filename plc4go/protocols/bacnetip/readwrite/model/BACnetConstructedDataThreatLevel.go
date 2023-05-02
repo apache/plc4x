@@ -121,7 +121,7 @@ func NewBACnetConstructedDataThreatLevel(threatLevel BACnetAccessThreatLevel, op
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataThreatLevel(structType interface{}) BACnetConstructedDataThreatLevel {
+func CastBACnetConstructedDataThreatLevel(structType any) BACnetConstructedDataThreatLevel {
 	if casted, ok := structType.(BACnetConstructedDataThreatLevel); ok {
 		return casted
 	}

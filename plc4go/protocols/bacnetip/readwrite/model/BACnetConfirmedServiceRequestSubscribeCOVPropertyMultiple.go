@@ -130,7 +130,7 @@ func NewBACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple(subscriberProc
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple(structType interface{}) BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple {
+func CastBACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple(structType any) BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple {
 	if casted, ok := structType.(BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple); ok {
 		return casted
 	}

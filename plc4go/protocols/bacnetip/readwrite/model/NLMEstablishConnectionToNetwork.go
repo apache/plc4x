@@ -104,7 +104,7 @@ func NewNLMEstablishConnectionToNetwork(destinationNetworkAddress uint16, termin
 }
 
 // Deprecated: use the interface for direct cast
-func CastNLMEstablishConnectionToNetwork(structType interface{}) NLMEstablishConnectionToNetwork {
+func CastNLMEstablishConnectionToNetwork(structType any) NLMEstablishConnectionToNetwork {
 	if casted, ok := structType.(NLMEstablishConnectionToNetwork); ok {
 		return casted
 	}

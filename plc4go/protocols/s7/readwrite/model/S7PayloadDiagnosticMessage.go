@@ -74,6 +74,10 @@ type _S7PayloadDiagnosticMessage struct {
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
+func (m *_S7PayloadDiagnosticMessage) GetCpuFunctionGroup() uint8 {
+	return 0x04
+}
+
 func (m *_S7PayloadDiagnosticMessage) GetCpuFunctionType() uint8 {
 	return 0x00
 }
@@ -82,18 +86,15 @@ func (m *_S7PayloadDiagnosticMessage) GetCpuSubfunction() uint8 {
 	return 0x03
 }
 
-func (m *_S7PayloadDiagnosticMessage) GetDataLength() uint16 {
-	return 0
-}
-
 ///////////////////////
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_S7PayloadDiagnosticMessage) InitializeParent(parent S7PayloadUserDataItem, returnCode DataTransportErrorCode, transportSize DataTransportSize) {
+func (m *_S7PayloadDiagnosticMessage) InitializeParent(parent S7PayloadUserDataItem, returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16) {
 	m.ReturnCode = returnCode
 	m.TransportSize = transportSize
+	m.DataLength = dataLength
 }
 
 func (m *_S7PayloadDiagnosticMessage) GetParent() S7PayloadUserDataItem {
@@ -139,7 +140,7 @@ func (m *_S7PayloadDiagnosticMessage) GetTimeStamp() DateAndTime {
 ///////////////////////////////////////////////////////////
 
 // NewS7PayloadDiagnosticMessage factory function for _S7PayloadDiagnosticMessage
-func NewS7PayloadDiagnosticMessage(EventId uint16, PriorityClass uint8, ObNumber uint8, DatId uint16, Info1 uint16, Info2 uint32, TimeStamp DateAndTime, returnCode DataTransportErrorCode, transportSize DataTransportSize) *_S7PayloadDiagnosticMessage {
+func NewS7PayloadDiagnosticMessage(EventId uint16, PriorityClass uint8, ObNumber uint8, DatId uint16, Info1 uint16, Info2 uint32, TimeStamp DateAndTime, returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16) *_S7PayloadDiagnosticMessage {
 	_result := &_S7PayloadDiagnosticMessage{
 		EventId:                EventId,
 		PriorityClass:          PriorityClass,
@@ -148,14 +149,14 @@ func NewS7PayloadDiagnosticMessage(EventId uint16, PriorityClass uint8, ObNumber
 		Info1:                  Info1,
 		Info2:                  Info2,
 		TimeStamp:              TimeStamp,
-		_S7PayloadUserDataItem: NewS7PayloadUserDataItem(returnCode, transportSize),
+		_S7PayloadUserDataItem: NewS7PayloadUserDataItem(returnCode, transportSize, dataLength),
 	}
 	_result._S7PayloadUserDataItem._S7PayloadUserDataItemChildRequirements = _result
 	return _result
 }
 
 // Deprecated: use the interface for direct cast
-func CastS7PayloadDiagnosticMessage(structType interface{}) S7PayloadDiagnosticMessage {
+func CastS7PayloadDiagnosticMessage(structType any) S7PayloadDiagnosticMessage {
 	if casted, ok := structType.(S7PayloadDiagnosticMessage); ok {
 		return casted
 	}
@@ -200,11 +201,11 @@ func (m *_S7PayloadDiagnosticMessage) GetLengthInBytes(ctx context.Context) uint
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func S7PayloadDiagnosticMessageParse(theBytes []byte, cpuFunctionType uint8, cpuSubfunction uint8) (S7PayloadDiagnosticMessage, error) {
-	return S7PayloadDiagnosticMessageParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), cpuFunctionType, cpuSubfunction)
+func S7PayloadDiagnosticMessageParse(theBytes []byte, cpuFunctionGroup uint8, cpuFunctionType uint8, cpuSubfunction uint8) (S7PayloadDiagnosticMessage, error) {
+	return S7PayloadDiagnosticMessageParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), cpuFunctionGroup, cpuFunctionType, cpuSubfunction)
 }
 
-func S7PayloadDiagnosticMessageParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cpuFunctionType uint8, cpuSubfunction uint8) (S7PayloadDiagnosticMessage, error) {
+func S7PayloadDiagnosticMessageParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cpuFunctionGroup uint8, cpuFunctionType uint8, cpuSubfunction uint8) (S7PayloadDiagnosticMessage, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("S7PayloadDiagnosticMessage"); pullErr != nil {

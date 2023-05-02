@@ -143,7 +143,7 @@ func NewAirConditioningDataSetPlantHumidityLevel(zoneGroup byte, zoneList HVACZo
 }
 
 // Deprecated: use the interface for direct cast
-func CastAirConditioningDataSetPlantHumidityLevel(structType interface{}) AirConditioningDataSetPlantHumidityLevel {
+func CastAirConditioningDataSetPlantHumidityLevel(structType any) AirConditioningDataSetPlantHumidityLevel {
 	if casted, ok := structType.(AirConditioningDataSetPlantHumidityLevel); ok {
 		return casted
 	}

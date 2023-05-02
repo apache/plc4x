@@ -121,7 +121,7 @@ func NewBACnetConstructedDataOutputUnits(units BACnetEngineeringUnitsTagged, ope
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataOutputUnits(structType interface{}) BACnetConstructedDataOutputUnits {
+func CastBACnetConstructedDataOutputUnits(structType any) BACnetConstructedDataOutputUnits {
 	if casted, ok := structType.(BACnetConstructedDataOutputUnits); ok {
 		return casted
 	}

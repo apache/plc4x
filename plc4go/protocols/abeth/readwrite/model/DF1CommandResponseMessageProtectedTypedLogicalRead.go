@@ -101,7 +101,7 @@ func NewDF1CommandResponseMessageProtectedTypedLogicalRead(data []uint8, destina
 }
 
 // Deprecated: use the interface for direct cast
-func CastDF1CommandResponseMessageProtectedTypedLogicalRead(structType interface{}) DF1CommandResponseMessageProtectedTypedLogicalRead {
+func CastDF1CommandResponseMessageProtectedTypedLogicalRead(structType any) DF1CommandResponseMessageProtectedTypedLogicalRead {
 	if casted, ok := structType.(DF1CommandResponseMessageProtectedTypedLogicalRead); ok {
 		return casted
 	}

@@ -120,7 +120,7 @@ func NewNLMSecurityResponse(responseCode SecurityResponseCode, originalMessageId
 }
 
 // Deprecated: use the interface for direct cast
-func CastNLMSecurityResponse(structType interface{}) NLMSecurityResponse {
+func CastNLMSecurityResponse(structType any) NLMSecurityResponse {
 	if casted, ok := structType.(NLMSecurityResponse); ok {
 		return casted
 	}

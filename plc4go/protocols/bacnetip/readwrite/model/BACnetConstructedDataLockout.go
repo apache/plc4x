@@ -121,7 +121,7 @@ func NewBACnetConstructedDataLockout(lockout BACnetApplicationTagBoolean, openin
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataLockout(structType interface{}) BACnetConstructedDataLockout {
+func CastBACnetConstructedDataLockout(structType any) BACnetConstructedDataLockout {
 	if casted, ok := structType.(BACnetConstructedDataLockout); ok {
 		return casted
 	}

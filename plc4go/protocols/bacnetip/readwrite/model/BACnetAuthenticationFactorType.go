@@ -33,6 +33,7 @@ type BACnetAuthenticationFactorType uint8
 
 type IBACnetAuthenticationFactorType interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 
@@ -218,8 +219,8 @@ func BACnetAuthenticationFactorTypeKnows(value uint8) bool {
 	return false
 }
 
-func CastBACnetAuthenticationFactorType(structType interface{}) BACnetAuthenticationFactorType {
-	castFunc := func(typ interface{}) BACnetAuthenticationFactorType {
+func CastBACnetAuthenticationFactorType(structType any) BACnetAuthenticationFactorType {
+	castFunc := func(typ any) BACnetAuthenticationFactorType {
 		if sBACnetAuthenticationFactorType, ok := typ.(BACnetAuthenticationFactorType); ok {
 			return sBACnetAuthenticationFactorType
 		}

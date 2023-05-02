@@ -96,7 +96,7 @@ func NewAdsDiscoveryBlockUserName(userName AmsString) *_AdsDiscoveryBlockUserNam
 }
 
 // Deprecated: use the interface for direct cast
-func CastAdsDiscoveryBlockUserName(structType interface{}) AdsDiscoveryBlockUserName {
+func CastAdsDiscoveryBlockUserName(structType any) AdsDiscoveryBlockUserName {
 	if casted, ok := structType.(AdsDiscoveryBlockUserName); ok {
 		return casted
 	}

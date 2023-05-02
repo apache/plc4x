@@ -104,7 +104,7 @@ func NewNLMICouldBeRouterToNetwork(destinationNetworkAddress uint16, performance
 }
 
 // Deprecated: use the interface for direct cast
-func CastNLMICouldBeRouterToNetwork(structType interface{}) NLMICouldBeRouterToNetwork {
+func CastNLMICouldBeRouterToNetwork(structType any) NLMICouldBeRouterToNetwork {
 	if casted, ok := structType.(NLMICouldBeRouterToNetwork); ok {
 		return casted
 	}

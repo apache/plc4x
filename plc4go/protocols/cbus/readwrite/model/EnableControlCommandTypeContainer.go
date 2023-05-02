@@ -33,6 +33,7 @@ type EnableControlCommandTypeContainer uint8
 
 type IEnableControlCommandTypeContainer interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 	NumBytes() uint8
 	CommandType() EnableControlCommandType
@@ -329,8 +330,8 @@ func EnableControlCommandTypeContainerKnows(value uint8) bool {
 	return false
 }
 
-func CastEnableControlCommandTypeContainer(structType interface{}) EnableControlCommandTypeContainer {
-	castFunc := func(typ interface{}) EnableControlCommandTypeContainer {
+func CastEnableControlCommandTypeContainer(structType any) EnableControlCommandTypeContainer {
+	castFunc := func(typ any) EnableControlCommandTypeContainer {
 		if sEnableControlCommandTypeContainer, ok := typ.(EnableControlCommandTypeContainer); ok {
 			return sEnableControlCommandTypeContainer
 		}

@@ -83,7 +83,7 @@ func NewKnxAddress(mainGroup uint8, middleGroup uint8, subGroup uint8) *_KnxAddr
 }
 
 // Deprecated: use the interface for direct cast
-func CastKnxAddress(structType interface{}) KnxAddress {
+func CastKnxAddress(structType any) KnxAddress {
 	if casted, ok := structType.(KnxAddress); ok {
 		return casted
 	}

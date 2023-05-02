@@ -42,8 +42,58 @@ func init() {
 	sharedExecutorInstance.Start()
 }
 
-type RequestTransaction struct {
-	parent        *RequestTransactionManager
+// RequestTransaction represents a transaction
+type RequestTransaction interface {
+	fmt.Stringer
+	// FailRequest signals that this transaction has failed
+	FailRequest(err error) error
+	// EndRequest signals that this transaction is done
+	EndRequest() error
+	// Submit submits a Runnable to the RequestTransactionManager
+	Submit(operation utils.Runnable)
+	// AwaitCompletion wait for this RequestTransaction to finish. Returns an error if it finished unsuccessful
+	AwaitCompletion(ctx context.Context) error
+}
+
+// RequestTransactionManager handles transactions
+type RequestTransactionManager interface {
+	// SetNumberOfConcurrentRequests sets the number of concurrent requests that will be sent out to a device
+	SetNumberOfConcurrentRequests(numberOfConcurrentRequests int)
+	// StartTransaction starts a RequestTransaction
+	StartTransaction() RequestTransaction
+}
+
+// NewRequestTransactionManager creates a new RequestTransactionManager
+func NewRequestTransactionManager(numberOfConcurrentRequests int, requestTransactionManagerOptions ...RequestTransactionManagerOption) RequestTransactionManager {
+	_requestTransactionManager := &requestTransactionManager{
+		numberOfConcurrentRequests: numberOfConcurrentRequests,
+		transactionId:              0,
+		workLog:                    *list.New(),
+		executor:                   sharedExecutorInstance,
+	}
+	for _, requestTransactionManagerOption := range requestTransactionManagerOptions {
+		requestTransactionManagerOption(_requestTransactionManager)
+	}
+	return _requestTransactionManager
+}
+
+type RequestTransactionManagerOption func(requestTransactionManager *requestTransactionManager)
+
+// WithCustomExecutor sets a custom Executor for the RequestTransactionManager
+func WithCustomExecutor(executor utils.Executor) RequestTransactionManagerOption {
+	return func(requestTransactionManager *requestTransactionManager) {
+		requestTransactionManager.executor = executor
+	}
+}
+
+///////////////////////////////////////
+///////////////////////////////////////
+//
+// Internal section
+//
+
+type requestTransaction struct {
+	parent        *requestTransactionManager
 	transactionId int32
 
 	/** The initial operation to perform to kick off the request */
@@ -53,13 +103,8 @@ type RequestTransaction struct {
 	transactionLog zerolog.Logger
 }
 
-func (t *RequestTransaction) String() string {
-	return fmt.Sprintf("Transaction{tid:%d}", t.transactionId)
-}
-
-// RequestTransactionManager handles transactions
-type RequestTransactionManager struct {
-	runningRequests []*RequestTransaction
+type requestTransactionManager struct {
+	runningRequests []*requestTransaction
 	// How many Transactions are allowed to run at the same time?
 	numberOfConcurrentRequests int
 	// Assigns each request a Unique Transaction Id, especially important for failure handling
@@ -71,31 +116,13 @@ type RequestTransactionManager struct {
 	executor     utils.Executor
 }
 
-// NewRequestTransactionManager creates a new RequestTransactionManager
-func NewRequestTransactionManager(numberOfConcurrentRequests int, requestTransactionManagerOptions ...RequestTransactionManagerOption) *RequestTransactionManager {
-	requestTransactionManager := &RequestTransactionManager{
-		numberOfConcurrentRequests: numberOfConcurrentRequests,
-		transactionId:              0,
-		workLog:                    *list.New(),
-		executor:                   sharedExecutorInstance,
-	}
-	for _, requestTransactionManagerOption := range requestTransactionManagerOptions {
-		requestTransactionManagerOption(requestTransactionManager)
-	}
-	return requestTransactionManager
-}
+//
+// Internal section
+//
+///////////////////////////////////////
+///////////////////////////////////////
 
-type RequestTransactionManagerOption func(requestTransactionManager *RequestTransactionManager)
-
-// WithCustomExecutor sets a custom Executor for the RequestTransactionManager
-func WithCustomExecutor(executor utils.Executor) RequestTransactionManagerOption {
-	return func(requestTransactionManager *RequestTransactionManager) {
-		requestTransactionManager.executor = executor
-	}
-}
-
-// SetNumberOfConcurrentRequests sets the number of concurrent requests that will be sent out to a device
-func (r *RequestTransactionManager) SetNumberOfConcurrentRequests(numberOfConcurrentRequests int) {
+func (r *requestTransactionManager) SetNumberOfConcurrentRequests(numberOfConcurrentRequests int) {
 	log.Info().Msgf("Setting new number of concurrent requests %d", numberOfConcurrentRequests)
 	// If we reduced the number of concurrent requests and more requests are in-flight
 	// than should be, at least log a warning.
@@ -109,29 +136,23 @@ func (r *RequestTransactionManager) SetNumberOfConcurrentRequests(numberOfConcur
 	r.processWorklog()
 }
 
-func (r *RequestTransactionManager) submitHandle(handle *RequestTransaction) {
-	if handle.operation == nil {
-		panic("invalid handle")
-	}
-	// Add this Request with this handle i the Worklog
+func (r *requestTransactionManager) submitTransaction(transaction *requestTransaction) {
+	// Add this Request with this transaction i the Worklog
 	// Put Transaction into Worklog
 	r.workLogMutex.Lock()
-	r.workLog.PushFront(handle)
+	r.workLog.PushFront(transaction)
 	r.workLogMutex.Unlock()
 	// Try to Process the Worklog
 	r.processWorklog()
 }
 
-func (r *RequestTransactionManager) processWorklog() {
+func (r *requestTransactionManager) processWorklog() {
 	r.workLogMutex.RLock()
 	defer r.workLogMutex.RUnlock()
 	log.Debug().Msgf("Processing work log with size of %d (%d concurrent requests allowed)", r.workLog.Len(), r.numberOfConcurrentRequests)
 	for len(r.runningRequests) < r.numberOfConcurrentRequests && r.workLog.Len() > 0 {
 		front := r.workLog.Front()
-		if front == nil {
-			return
-		}
-		next := front.Value.(*RequestTransaction)
+		next := front.Value.(*requestTransaction)
 		log.Debug().Msgf("Handling next %v. (Adding to running requests (length: %d))", next, len(r.runningRequests))
 		r.runningRequests = append(r.runningRequests, next)
 		completionFuture := r.executor.Submit(context.Background(), next.transactionId, next.operation)
@@ -140,8 +161,7 @@ func (r *RequestTransactionManager) processWorklog() {
 	}
 }
 
-// StartTransaction starts a RequestTransaction
-func (r *RequestTransactionManager) StartTransaction() *RequestTransaction {
+func (r *requestTransactionManager) StartTransaction() RequestTransaction {
 	r.transactionMutex.Lock()
 	defer r.transactionMutex.Unlock()
 	currentTransactionId := r.transactionId
@@ -150,7 +170,7 @@ func (r *RequestTransactionManager) StartTransaction() *RequestTransaction {
 	if !config.TraceTransactionManagerTransactions {
 		transactionLogger = zerolog.Nop()
 	}
-	return &RequestTransaction{
+	return &requestTransaction{
 		r,
 		currentTransactionId,
 		nil,
@@ -159,18 +179,18 @@ func (r *RequestTransactionManager) StartTransaction() *RequestTransaction {
 	}
 }
 
-func (r *RequestTransactionManager) getNumberOfActiveRequests() int {
+func (r *requestTransactionManager) getNumberOfActiveRequests() int {
 	return len(r.runningRequests)
 }
 
-func (r *RequestTransactionManager) failRequest(transaction *RequestTransaction, err error) error {
+func (r *requestTransactionManager) failRequest(transaction *requestTransaction, err error) error {
 	// Try to fail it!
 	transaction.completionFuture.Cancel(true, err)
 	// End it
 	return r.endRequest(transaction)
 }
 
-func (r *RequestTransactionManager) endRequest(transaction *RequestTransaction) error {
+func (r *requestTransactionManager) endRequest(transaction *requestTransaction) error {
 	transaction.transactionLog.Debug().Msg("Trying to find a existing transaction")
 	found := false
 	index := -1
@@ -193,23 +213,20 @@ func (r *RequestTransactionManager) endRequest(transaction *RequestTransaction) 
 	return nil
 }
 
-// FailRequest signals that this transaction has failed
-func (t *RequestTransaction) FailRequest(err error) error {
+func (t *requestTransaction) FailRequest(err error) error {
 	t.transactionLog.Trace().Msg("Fail the request")
 	return t.parent.failRequest(t, err)
 }
 
-// EndRequest signals that this transaction is done
-func (t *RequestTransaction) EndRequest() error {
+func (t *requestTransaction) EndRequest() error {
 	t.transactionLog.Trace().Msg("Ending the request")
 	// Remove it from Running Requests
 	return t.parent.endRequest(t)
 }
 
-// Submit submits a Runnable to the RequestTransactionManager
-func (t *RequestTransaction) Submit(operation utils.Runnable) {
+func (t *requestTransaction) Submit(operation utils.Runnable) {
 	if t.operation != nil {
-		panic("Operation already set")
+		log.Warn().Msg("Operation already set")
 	}
 	t.transactionLog.Trace().Msgf("Submission of transaction %d", t.transactionId)
 	t.operation = func() {
@@ -217,13 +234,13 @@ func (t *RequestTransaction) Submit(operation utils.Runnable) {
 		operation()
 		t.transactionLog.Trace().Msgf("Completed execution of transaction %d", t.transactionId)
 	}
-	t.parent.submitHandle(t)
+	t.parent.submitTransaction(t)
 }
 
-// AwaitCompletion wait for this RequestTransaction to finish. Returns an error if it finished unsuccessful
-func (t *RequestTransaction) AwaitCompletion(ctx context.Context) error {
+func (t *requestTransaction) AwaitCompletion(ctx context.Context) error {
 	for t.completionFuture == nil {
 		time.Sleep(time.Millisecond * 10)
+		// TODO: this should timeout and not loop infinite...
 	}
 	if err := t.completionFuture.AwaitCompletion(ctx); err != nil {
 		return err
@@ -239,4 +256,8 @@ func (t *RequestTransaction) AwaitCompletion(ctx context.Context) error {
 		}
 	}
 	return nil
+}
+
+func (t *requestTransaction) String() string {
+	return fmt.Sprintf("Transaction{tid:%d}", t.transactionId)
 }

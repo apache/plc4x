@@ -93,7 +93,7 @@ func NewMonitoredSAL(salType byte, cBusOptions CBusOptions) *_MonitoredSAL {
 }
 
 // Deprecated: use the interface for direct cast
-func CastMonitoredSAL(structType interface{}) MonitoredSAL {
+func CastMonitoredSAL(structType any) MonitoredSAL {
 	if casted, ok := structType.(MonitoredSAL); ok {
 		return casted
 	}
@@ -145,7 +145,7 @@ func MonitoredSALParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 		InitializeParent(MonitoredSAL, byte)
 		GetParent() MonitoredSAL
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child MonitoredSALChildSerializeRequirement
 	var typeSwitchError error
 	switch {

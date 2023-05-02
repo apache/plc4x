@@ -121,7 +121,7 @@ func NewBACnetConstructedDataLargeAnalogValueResolution(resolution BACnetApplica
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataLargeAnalogValueResolution(structType interface{}) BACnetConstructedDataLargeAnalogValueResolution {
+func CastBACnetConstructedDataLargeAnalogValueResolution(structType any) BACnetConstructedDataLargeAnalogValueResolution {
 	if casted, ok := structType.(BACnetConstructedDataLargeAnalogValueResolution); ok {
 		return casted
 	}

@@ -121,7 +121,7 @@ func NewBACnetConstructedDataMinimumOffTime(minimumOffTime BACnetApplicationTagU
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataMinimumOffTime(structType interface{}) BACnetConstructedDataMinimumOffTime {
+func CastBACnetConstructedDataMinimumOffTime(structType any) BACnetConstructedDataMinimumOffTime {
 	if casted, ok := structType.(BACnetConstructedDataMinimumOffTime); ok {
 		return casted
 	}

@@ -69,7 +69,7 @@ func NewAdsConstants() *_AdsConstants {
 }
 
 // Deprecated: use the interface for direct cast
-func CastAdsConstants(structType interface{}) AdsConstants {
+func CastAdsConstants(structType any) AdsConstants {
 	if casted, ok := structType.(AdsConstants); ok {
 		return casted
 	}

@@ -33,6 +33,7 @@ type TriggerControlLabelFlavour uint8
 
 type ITriggerControlLabelFlavour interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 
@@ -92,8 +93,8 @@ func TriggerControlLabelFlavourKnows(value uint8) bool {
 	return false
 }
 
-func CastTriggerControlLabelFlavour(structType interface{}) TriggerControlLabelFlavour {
-	castFunc := func(typ interface{}) TriggerControlLabelFlavour {
+func CastTriggerControlLabelFlavour(structType any) TriggerControlLabelFlavour {
+	castFunc := func(typ any) TriggerControlLabelFlavour {
 		if sTriggerControlLabelFlavour, ok := typ.(TriggerControlLabelFlavour); ok {
 			return sTriggerControlLabelFlavour
 		}

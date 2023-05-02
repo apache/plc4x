@@ -121,7 +121,7 @@ func NewBACnetConstructedDataBackupAndRestoreState(backupAndRestoreState BACnetB
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataBackupAndRestoreState(structType interface{}) BACnetConstructedDataBackupAndRestoreState {
+func CastBACnetConstructedDataBackupAndRestoreState(structType any) BACnetConstructedDataBackupAndRestoreState {
 	if casted, ok := structType.(BACnetConstructedDataBackupAndRestoreState); ok {
 		return casted
 	}

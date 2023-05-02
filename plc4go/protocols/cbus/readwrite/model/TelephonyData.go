@@ -115,7 +115,7 @@ func NewTelephonyData(commandTypeContainer TelephonyCommandTypeContainer, argume
 }
 
 // Deprecated: use the interface for direct cast
-func CastTelephonyData(structType interface{}) TelephonyData {
+func CastTelephonyData(structType any) TelephonyData {
 	if casted, ok := structType.(TelephonyData); ok {
 		return casted
 	}
@@ -196,7 +196,7 @@ func TelephonyDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 		InitializeParent(TelephonyData, TelephonyCommandTypeContainer, byte)
 		GetParent() TelephonyData
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child TelephonyDataChildSerializeRequirement
 	var typeSwitchError error
 	switch {

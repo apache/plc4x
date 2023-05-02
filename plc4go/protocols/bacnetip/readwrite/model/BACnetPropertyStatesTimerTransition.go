@@ -94,7 +94,7 @@ func NewBACnetPropertyStatesTimerTransition(timerTransition BACnetTimerTransitio
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetPropertyStatesTimerTransition(structType interface{}) BACnetPropertyStatesTimerTransition {
+func CastBACnetPropertyStatesTimerTransition(structType any) BACnetPropertyStatesTimerTransition {
 	if casted, ok := structType.(BACnetPropertyStatesTimerTransition); ok {
 		return casted
 	}

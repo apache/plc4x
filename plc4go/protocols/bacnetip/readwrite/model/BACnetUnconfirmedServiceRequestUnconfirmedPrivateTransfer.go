@@ -114,7 +114,7 @@ func NewBACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer(vendorId BACne
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer(structType interface{}) BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer {
+func CastBACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer(structType any) BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer {
 	if casted, ok := structType.(BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer); ok {
 		return casted
 	}

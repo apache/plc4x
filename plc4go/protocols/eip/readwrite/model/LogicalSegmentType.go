@@ -75,7 +75,7 @@ func NewLogicalSegmentType() *_LogicalSegmentType {
 }
 
 // Deprecated: use the interface for direct cast
-func CastLogicalSegmentType(structType interface{}) LogicalSegmentType {
+func CastLogicalSegmentType(structType any) LogicalSegmentType {
 	if casted, ok := structType.(LogicalSegmentType); ok {
 		return casted
 	}
@@ -126,7 +126,7 @@ func LogicalSegmentTypeParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 		InitializeParent(LogicalSegmentType)
 		GetParent() LogicalSegmentType
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child LogicalSegmentTypeChildSerializeRequirement
 	var typeSwitchError error
 	switch {

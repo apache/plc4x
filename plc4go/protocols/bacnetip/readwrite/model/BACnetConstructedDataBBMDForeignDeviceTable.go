@@ -22,7 +22,6 @@ package model
 import (
 	"context"
 	"fmt"
-	spiContext "github.com/apache/plc4x/plc4go/spi/context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -105,7 +104,7 @@ func NewBACnetConstructedDataBBMDForeignDeviceTable(bbmdForeignDeviceTable []BAC
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataBBMDForeignDeviceTable(structType interface{}) BACnetConstructedDataBBMDForeignDeviceTable {
+func CastBACnetConstructedDataBBMDForeignDeviceTable(structType any) BACnetConstructedDataBBMDForeignDeviceTable {
 	if casted, ok := structType.(BACnetConstructedDataBBMDForeignDeviceTable); ok {
 		return casted
 	}
@@ -206,7 +205,7 @@ func (m *_BACnetConstructedDataBBMDForeignDeviceTable) SerializeWithWriteBuffer(
 		}
 		for _curItem, _element := range m.GetBbmdForeignDeviceTable() {
 			_ = _curItem
-			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetBbmdForeignDeviceTable()), _curItem)
+			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetBbmdForeignDeviceTable()), _curItem)
 			_ = arrayCtx
 			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 			if _elementErr != nil {

@@ -121,7 +121,7 @@ func NewBACnetConstructedDataDeviceType(deviceType BACnetApplicationTagCharacter
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataDeviceType(structType interface{}) BACnetConstructedDataDeviceType {
+func CastBACnetConstructedDataDeviceType(structType any) BACnetConstructedDataDeviceType {
 	if casted, ok := structType.(BACnetConstructedDataDeviceType); ok {
 		return casted
 	}

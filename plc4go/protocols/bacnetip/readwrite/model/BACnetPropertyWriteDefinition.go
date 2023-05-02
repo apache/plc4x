@@ -94,7 +94,7 @@ func NewBACnetPropertyWriteDefinition(propertyIdentifier BACnetPropertyIdentifie
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetPropertyWriteDefinition(structType interface{}) BACnetPropertyWriteDefinition {
+func CastBACnetPropertyWriteDefinition(structType any) BACnetPropertyWriteDefinition {
 	if casted, ok := structType.(BACnetPropertyWriteDefinition); ok {
 		return casted
 	}
@@ -191,7 +191,7 @@ func BACnetPropertyWriteDefinitionParseWithBuffer(ctx context.Context, readBuffe
 		if pullErr := readBuffer.PullContext("propertyValue"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for propertyValue")
 		}
-		_val, _err := BACnetConstructedDataParseWithBuffer(ctx, readBuffer, uint8(2), objectTypeArgument, propertyIdentifier.GetValue(), (CastBACnetTagPayloadUnsignedInteger(utils.InlineIf(bool((arrayIndex) != (nil)), func() interface{} { return CastBACnetTagPayloadUnsignedInteger((arrayIndex).GetPayload()) }, func() interface{} { return CastBACnetTagPayloadUnsignedInteger(nil) }))))
+		_val, _err := BACnetConstructedDataParseWithBuffer(ctx, readBuffer, uint8(2), objectTypeArgument, propertyIdentifier.GetValue(), (CastBACnetTagPayloadUnsignedInteger(utils.InlineIf(bool((arrayIndex) != (nil)), func() any { return CastBACnetTagPayloadUnsignedInteger((arrayIndex).GetPayload()) }, func() any { return CastBACnetTagPayloadUnsignedInteger(nil) }))))
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")

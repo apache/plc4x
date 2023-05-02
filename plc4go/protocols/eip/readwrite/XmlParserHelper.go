@@ -42,7 +42,7 @@ func init() {
 	_ = utils.Dump
 }
 
-func (m EipXmlParserHelper) Parse(typeName string, xmlString string, parserArguments ...string) (interface{}, error) {
+func (m EipXmlParserHelper) Parse(typeName string, xmlString string, parserArguments ...string) (any, error) {
 	switch typeName {
 	case "PathSegment":
 		return model.PathSegmentParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))

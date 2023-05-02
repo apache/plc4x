@@ -76,7 +76,7 @@ func NewReplyNetwork(networkRoute NetworkRoute, unitAddress UnitAddress) *_Reply
 }
 
 // Deprecated: use the interface for direct cast
-func CastReplyNetwork(structType interface{}) ReplyNetwork {
+func CastReplyNetwork(structType any) ReplyNetwork {
 	if casted, ok := structType.(ReplyNetwork); ok {
 		return casted
 	}

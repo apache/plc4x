@@ -22,7 +22,6 @@ package model
 import (
 	"context"
 	"fmt"
-	spiContext "github.com/apache/plc4x/plc4go/spi/context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
@@ -133,7 +132,7 @@ func NewBACnetConstructedDataValueSourceArray(numberOfDataElements BACnetApplica
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataValueSourceArray(structType interface{}) BACnetConstructedDataValueSourceArray {
+func CastBACnetConstructedDataValueSourceArray(structType any) BACnetConstructedDataValueSourceArray {
 	if casted, ok := structType.(BACnetConstructedDataValueSourceArray); ok {
 		return casted
 	}
@@ -294,7 +293,7 @@ func (m *_BACnetConstructedDataValueSourceArray) SerializeWithWriteBuffer(ctx co
 		}
 		for _curItem, _element := range m.GetVtClassesSupported() {
 			_ = _curItem
-			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetVtClassesSupported()), _curItem)
+			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetVtClassesSupported()), _curItem)
 			_ = arrayCtx
 			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 			if _elementErr != nil {

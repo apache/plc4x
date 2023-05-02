@@ -104,7 +104,7 @@ func NewNLMSecurityPayload(payloadLength uint16, payload []byte, apduLength uint
 }
 
 // Deprecated: use the interface for direct cast
-func CastNLMSecurityPayload(structType interface{}) NLMSecurityPayload {
+func CastNLMSecurityPayload(structType any) NLMSecurityPayload {
 	if casted, ok := structType.(NLMSecurityPayload); ok {
 		return casted
 	}

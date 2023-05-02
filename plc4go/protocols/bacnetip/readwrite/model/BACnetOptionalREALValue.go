@@ -94,7 +94,7 @@ func NewBACnetOptionalREALValue(realValue BACnetApplicationTagReal, peekedTagHea
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetOptionalREALValue(structType interface{}) BACnetOptionalREALValue {
+func CastBACnetOptionalREALValue(structType any) BACnetOptionalREALValue {
 	if casted, ok := structType.(BACnetOptionalREALValue); ok {
 		return casted
 	}

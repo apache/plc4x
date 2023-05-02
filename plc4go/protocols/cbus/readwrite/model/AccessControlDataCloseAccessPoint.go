@@ -78,7 +78,7 @@ func NewAccessControlDataCloseAccessPoint(commandTypeContainer AccessControlComm
 }
 
 // Deprecated: use the interface for direct cast
-func CastAccessControlDataCloseAccessPoint(structType interface{}) AccessControlDataCloseAccessPoint {
+func CastAccessControlDataCloseAccessPoint(structType any) AccessControlDataCloseAccessPoint {
 	if casted, ok := structType.(AccessControlDataCloseAccessPoint); ok {
 		return casted
 	}

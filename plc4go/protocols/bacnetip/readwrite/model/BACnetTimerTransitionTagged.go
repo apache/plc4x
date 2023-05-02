@@ -80,7 +80,7 @@ func NewBACnetTimerTransitionTagged(header BACnetTagHeader, value BACnetTimerTra
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetTimerTransitionTagged(structType interface{}) BACnetTimerTransitionTagged {
+func CastBACnetTimerTransitionTagged(structType any) BACnetTimerTransitionTagged {
 	if casted, ok := structType.(BACnetTimerTransitionTagged); ok {
 		return casted
 	}

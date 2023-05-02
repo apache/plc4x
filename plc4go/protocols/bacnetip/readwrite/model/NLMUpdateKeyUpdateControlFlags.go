@@ -118,7 +118,7 @@ func NewNLMUpdateKeyUpdateControlFlags(set1KeyRevisionActivationTimeExpirationTi
 }
 
 // Deprecated: use the interface for direct cast
-func CastNLMUpdateKeyUpdateControlFlags(structType interface{}) NLMUpdateKeyUpdateControlFlags {
+func CastNLMUpdateKeyUpdateControlFlags(structType any) NLMUpdateKeyUpdateControlFlags {
 	if casted, ok := structType.(NLMUpdateKeyUpdateControlFlags); ok {
 		return casted
 	}

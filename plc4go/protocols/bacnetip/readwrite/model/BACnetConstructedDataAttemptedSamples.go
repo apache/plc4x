@@ -121,7 +121,7 @@ func NewBACnetConstructedDataAttemptedSamples(attemptedSamples BACnetApplication
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataAttemptedSamples(structType interface{}) BACnetConstructedDataAttemptedSamples {
+func CastBACnetConstructedDataAttemptedSamples(structType any) BACnetConstructedDataAttemptedSamples {
 	if casted, ok := structType.(BACnetConstructedDataAttemptedSamples); ok {
 		return casted
 	}

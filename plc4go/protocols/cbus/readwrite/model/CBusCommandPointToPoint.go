@@ -94,7 +94,7 @@ func NewCBusCommandPointToPoint(command CBusPointToPointCommand, header CBusHead
 }
 
 // Deprecated: use the interface for direct cast
-func CastCBusCommandPointToPoint(structType interface{}) CBusCommandPointToPoint {
+func CastCBusCommandPointToPoint(structType any) CBusCommandPointToPoint {
 	if casted, ok := structType.(CBusCommandPointToPoint); ok {
 		return casted
 	}

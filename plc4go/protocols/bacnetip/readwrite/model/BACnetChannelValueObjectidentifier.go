@@ -94,7 +94,7 @@ func NewBACnetChannelValueObjectidentifier(objectidentifierValue BACnetApplicati
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetChannelValueObjectidentifier(structType interface{}) BACnetChannelValueObjectidentifier {
+func CastBACnetChannelValueObjectidentifier(structType any) BACnetChannelValueObjectidentifier {
 	if casted, ok := structType.(BACnetChannelValueObjectidentifier); ok {
 		return casted
 	}

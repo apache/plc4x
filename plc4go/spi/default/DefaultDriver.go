@@ -105,7 +105,7 @@ func (d *defaultDriver) SupportsDiscovery() bool {
 }
 
 func (d *defaultDriver) Discover(callback func(event apiModel.PlcDiscoveryItem), discoveryOptions ...options.WithDiscoveryOption) error {
-	return d.DiscoverWithContext(context.Background(), callback, discoveryOptions...)
+	return d.DefaultDriverRequirements.DiscoverWithContext(context.Background(), callback, discoveryOptions...)
 }
 
 func (d *defaultDriver) DiscoverWithContext(_ context.Context, _ func(event apiModel.PlcDiscoveryItem), _ ...options.WithDiscoveryOption) error {

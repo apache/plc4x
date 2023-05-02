@@ -22,7 +22,6 @@ package model
 import (
 	"context"
 	"fmt"
-	spiContext "github.com/apache/plc4x/plc4go/spi/context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -113,7 +112,7 @@ func NewBACnetLogDataLogData(innerOpeningTag BACnetOpeningTag, logData []BACnetL
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetLogDataLogData(structType interface{}) BACnetLogDataLogData {
+func CastBACnetLogDataLogData(structType any) BACnetLogDataLogData {
 	if casted, ok := structType.(BACnetLogDataLogData); ok {
 		return casted
 	}
@@ -259,7 +258,7 @@ func (m *_BACnetLogDataLogData) SerializeWithWriteBuffer(ctx context.Context, wr
 		}
 		for _curItem, _element := range m.GetLogData() {
 			_ = _curItem
-			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetLogData()), _curItem)
+			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetLogData()), _curItem)
 			_ = arrayCtx
 			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 			if _elementErr != nil {

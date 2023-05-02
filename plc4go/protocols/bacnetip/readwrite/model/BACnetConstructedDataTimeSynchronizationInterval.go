@@ -121,7 +121,7 @@ func NewBACnetConstructedDataTimeSynchronizationInterval(timeSynchronization BAC
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataTimeSynchronizationInterval(structType interface{}) BACnetConstructedDataTimeSynchronizationInterval {
+func CastBACnetConstructedDataTimeSynchronizationInterval(structType any) BACnetConstructedDataTimeSynchronizationInterval {
 	if casted, ok := structType.(BACnetConstructedDataTimeSynchronizationInterval); ok {
 		return casted
 	}

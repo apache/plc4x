@@ -128,7 +128,7 @@ func NewDF1RequestProtectedTypedLogicalRead(byteSize uint8, fileNumber uint8, fi
 }
 
 // Deprecated: use the interface for direct cast
-func CastDF1RequestProtectedTypedLogicalRead(structType interface{}) DF1RequestProtectedTypedLogicalRead {
+func CastDF1RequestProtectedTypedLogicalRead(structType any) DF1RequestProtectedTypedLogicalRead {
 	if casted, ok := structType.(DF1RequestProtectedTypedLogicalRead); ok {
 		return casted
 	}

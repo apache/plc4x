@@ -60,19 +60,19 @@ type jsonWriteBuffer struct {
 	Stack
 	*json.Encoder
 	jsonString   *strings.Builder
-	rootNode     interface{}
+	rootNode     any
 	doRenderAttr bool
 	pos          uint
 }
 
 type elementContext struct {
 	logicalName string
-	properties  map[string]interface{}
+	properties  map[string]any
 }
 
 type listContext struct {
 	logicalName string
-	list        []interface{}
+	list        []any
 }
 
 //
@@ -84,9 +84,9 @@ type listContext struct {
 func (j *jsonWriteBuffer) PushContext(logicalName string, writerArgs ...WithWriterArgs) error {
 	renderedAsList := j.IsToBeRenderedAsList(UpcastWriterArgs(writerArgs...)...)
 	if renderedAsList {
-		j.Push(&listContext{logicalName, make([]interface{}, 0)})
+		j.Push(&listContext{logicalName, make([]any, 0)})
 	} else {
-		j.Push(&elementContext{logicalName, make(map[string]interface{})})
+		j.Push(&elementContext{logicalName, make(map[string]any)})
 	}
 	return nil
 }
@@ -182,7 +182,7 @@ func (j *jsonWriteBuffer) WriteString(logicalName string, bitLength uint32, enco
 	return j.encodeNode(logicalName, value, attr)
 }
 
-func (j *jsonWriteBuffer) WriteVirtual(ctx context.Context, logicalName string, value interface{}, writerArgs ...WithWriterArgs) error {
+func (j *jsonWriteBuffer) WriteVirtual(ctx context.Context, logicalName string, value any, writerArgs ...WithWriterArgs) error {
 	// NO-OP
 	return nil
 }
@@ -197,7 +197,7 @@ func (j *jsonWriteBuffer) WriteSerializable(ctx context.Context, serializable Se
 func (j *jsonWriteBuffer) PopContext(logicalName string, _ ...WithWriterArgs) error {
 	pop := j.Pop()
 	var poppedName string
-	var unwrapped interface{}
+	var unwrapped any
 	switch pop.(type) {
 	case *elementContext:
 		context := pop.(*elementContext)
@@ -214,7 +214,7 @@ func (j *jsonWriteBuffer) PopContext(logicalName string, _ ...WithWriterArgs) er
 		return errors.Errorf("unexpected closing context %s, expected %s", poppedName, logicalName)
 	}
 	if j.Empty() {
-		lastElement := make(map[string]interface{})
+		lastElement := make(map[string]any)
 		lastElement[logicalName] = unwrapped
 		j.rootNode = lastElement
 		return nil
@@ -226,7 +226,7 @@ func (j *jsonWriteBuffer) PopContext(logicalName string, _ ...WithWriterArgs) er
 		context.properties[logicalName] = unwrapped
 	case *listContext:
 		context := j.rootNode.(*listContext)
-		wrappedWrap := make(map[string]interface{})
+		wrappedWrap := make(map[string]any)
 		wrappedWrap[logicalName] = unwrapped
 		context.list = append(context.list, wrappedWrap)
 	default:
@@ -246,7 +246,7 @@ func (j *jsonWriteBuffer) GetJsonString() (string, error) {
 	return j.jsonString.String(), nil
 }
 
-func (j *jsonWriteBuffer) encodeNode(logicalName string, value interface{}, attr map[string]interface{}, _ ...WithWriterArgs) error {
+func (j *jsonWriteBuffer) encodeNode(logicalName string, value any, attr map[string]any, _ ...WithWriterArgs) error {
 	logicalName = j.SanitizeLogicalName(logicalName)
 	peek := j.Peek()
 	switch peek.(type) {
@@ -259,7 +259,7 @@ func (j *jsonWriteBuffer) encodeNode(logicalName string, value interface{}, attr
 		return nil
 	case *listContext:
 		context := peek.(*listContext)
-		m := make(map[string]interface{})
+		m := make(map[string]any)
 		m[logicalName] = value
 		for attrKey, attrValue := range attr {
 			m[attrKey] = attrValue
@@ -267,7 +267,7 @@ func (j *jsonWriteBuffer) encodeNode(logicalName string, value interface{}, attr
 		context.list = append(context.list, m)
 		return nil
 	default:
-		context := &elementContext{logicalName, make(map[string]interface{})}
+		context := &elementContext{logicalName, make(map[string]any)}
 		context.properties[logicalName] = value
 		for key, attrValue := range attr {
 			context.properties[key] = attrValue
@@ -277,8 +277,8 @@ func (j *jsonWriteBuffer) encodeNode(logicalName string, value interface{}, attr
 	}
 }
 
-func (j *jsonWriteBuffer) generateAttr(logicalName string, dataType string, bitLength uint, writerArgs ...WithWriterArgs) map[string]interface{} {
-	attr := make(map[string]interface{})
+func (j *jsonWriteBuffer) generateAttr(logicalName string, dataType string, bitLength uint, writerArgs ...WithWriterArgs) map[string]any {
+	attr := make(map[string]any)
 	if !j.doRenderAttr {
 		return attr
 	}

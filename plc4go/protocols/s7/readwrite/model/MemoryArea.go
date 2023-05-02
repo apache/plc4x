@@ -33,6 +33,7 @@ type MemoryArea uint8
 
 type IMemoryArea interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 	ShortName() string
 }
@@ -176,8 +177,8 @@ func MemoryAreaKnows(value uint8) bool {
 	return false
 }
 
-func CastMemoryArea(structType interface{}) MemoryArea {
-	castFunc := func(typ interface{}) MemoryArea {
+func CastMemoryArea(structType any) MemoryArea {
+	castFunc := func(typ any) MemoryArea {
 		if sMemoryArea, ok := typ.(MemoryArea); ok {
 			return sMemoryArea
 		}

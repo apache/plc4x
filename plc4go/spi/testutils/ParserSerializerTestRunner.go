@@ -24,35 +24,201 @@ import (
 	"encoding/binary"
 	"encoding/hex"
 	"fmt"
+	"github.com/pkg/errors"
 	"os"
+	"runtime/debug"
 	"strconv"
 	"strings"
 	"testing"
 
-	abethModel "github.com/apache/plc4x/plc4go/protocols/abeth/readwrite"
-	adsModel "github.com/apache/plc4x/plc4go/protocols/ads/readwrite"
-	bacnetModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite"
-	df1Model "github.com/apache/plc4x/plc4go/protocols/df1/readwrite"
-	eipModel "github.com/apache/plc4x/plc4go/protocols/eip/readwrite"
-	firmataModel "github.com/apache/plc4x/plc4go/protocols/firmata/readwrite"
-	knxModel "github.com/apache/plc4x/plc4go/protocols/knxnetip/readwrite"
-	modbusModel "github.com/apache/plc4x/plc4go/protocols/modbus/readwrite"
-	s7Model "github.com/apache/plc4x/plc4go/protocols/s7/readwrite"
 	"github.com/apache/plc4x/plc4go/spi/utils"
-	"github.com/rs/zerolog/log"
+
 	"github.com/stretchr/testify/assert"
 	"github.com/subchen/go-xmldom"
 )
 
-func RunParserSerializerTestsuite(t *testing.T, testPath string, skippedTestCases ...string) {
-	skippedTestCasesMap := map[string]bool{}
-	for _, skippedTestCase := range skippedTestCases {
-		skippedTestCasesMap[skippedTestCase] = true
+type ParserSerializerTestsuite struct {
+	name             string
+	protocolName     string
+	outputFlavor     string
+	driverParameters map[string]string
+	byteOrder        binary.ByteOrder
+	parser           Parser
+	rootTypeParser   func(utils.ReadBufferByteBased) (any, error)
+	testcases        []ParserSerializerTestcase
+}
+
+type ParserSerializerTestcase struct {
+	name            string
+	rawInputText    string
+	rootType        string
+	referenceXml    string
+	parserArguments []string
+}
+
+func (p *ParserSerializerTestsuite) Run(t *testing.T, testcase ParserSerializerTestcase) error {
+	t.Logf("running testsuite: %s test: %s", p.name, testcase.name)
+
+	// Get the raw input by decoding the hex-encoded binary input
+	t.Log("decoding input")
+	rawInput, err := hex.DecodeString(testcase.rawInputText)
+	if err != nil {
+		return errors.Wrap(err, "Error decoding test input")
 	}
+
+	// Create the right read buffer
+	t.Log("creating read buffer")
+	var readBuffer utils.ReadBuffer
+	if p.byteOrder == binary.LittleEndian {
+		readBuffer = utils.NewReadBufferByteBased(rawInput, utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian))
+	} else {
+		readBuffer = utils.NewReadBufferByteBased(rawInput)
+	}
+
+	// Parse the input according to the settings of the testcase
+	t.Log("parsing input")
+	msg, err := p.parser.Parse(testcase.rootType, testcase.parserArguments, readBuffer)
+	if err != nil {
+		return errors.Wrap(err, "Error parsing input data")
+	}
+
+	t.Log("Try serializing")
+	{
+		// First try to use the native xml writer
+		serializable := msg.(utils.Serializable)
+		buffer := utils.NewXmlWriteBuffer()
+		if err := serializable.SerializeWithWriteBuffer(context.Background(), buffer); err == nil {
+			actualXml := buffer.GetXmlString()
+			if err := CompareResults(t, []byte(actualXml), []byte(testcase.referenceXml)); err != nil {
+				border := strings.Repeat("=", 100)
+				fmt.Printf(
+					"\n"+
+						// Border
+						"%[1]s\n"+
+						// Testcase name
+						"%[4]s\n"+
+						// diff detected message
+						"Diff detected\n"+
+						// Border
+						"%[1]s\n"+
+						// xml
+						"%[2]s\n"+
+						// Border
+						"%[1]s\n%[1]s\n"+
+						// Text
+						"Differences were found after parsing (Use the above xml in the testsuite to disable this warning).\n"+
+						// Diff
+						"%[3]s\n"+
+						// Double Border
+						"%[1]s\n%[1]s\n",
+					border,
+					actualXml,
+					err,
+					testcase.name)
+				assert.Equal(t, testcase.referenceXml, actualXml)
+				return errors.Wrap(err, "Error comparing the results")
+			}
+		}
+	}
+
+	// If all was ok, serialize the object again
+	s, ok := msg.(utils.Serializable)
+	if !ok {
+		return errors.New("Couldn't cast message to Serializable")
+	}
+	t.Log("Serializing went ok")
+
+	// Create the write buffer
+	t.Log("creating write buffer")
+	var writeBuffer utils.WriteBufferByteBased
+	if p.byteOrder == binary.LittleEndian {
+		writeBuffer = utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.LittleEndian))
+	} else {
+		writeBuffer = utils.NewWriteBufferByteBased()
+	}
+
+	// Serialize the message
+	t.Log("Serialize message")
+	err = s.SerializeWithWriteBuffer(context.Background(), writeBuffer)
+	if !ok {
+		return errors.New("Couldn't serialize message back to byte array")
+	}
+
+	// Check if the output matches in size and content
+	t.Log("comparing output")
+	rawOutput := writeBuffer.GetBytes()
+	if len(rawInput) != len(rawOutput) {
+		t.Errorf("Missmatched number of bytes expected ->%d != %d<-actual\nexpected:\t%x\nactual:\t\t%x", len(rawInput), len(rawOutput), rawInput, rawOutput)
+		t.Errorf("Hexdumps:\n%s", utils.DiffHex(rawInput, rawOutput))
+		return errors.New("length doesn't match")
+	}
+	for i, val := range rawInput {
+		if rawOutput[i] != val {
+			t.Error("Raw output doesn't match input at position: " + strconv.Itoa(i))
+			t.Errorf("Hexdumps:\n%s", utils.DiffHex(rawInput, rawOutput))
+			return errors.New("index mismatch")
+		}
+	}
+	return nil
+}
+
+type Parser interface {
+	Parse(typeName string, arguments []string, io utils.ReadBuffer) (any, error)
+}
+
+func RunParserSerializerTestsuite(t *testing.T, testPath string, parser Parser, options ...WithOption) {
+	t.Log("Extract testsuite options")
+	var rootTypeParser func(utils.ReadBufferByteBased) (any, error)
+	skippedTestCasesMap := map[string]bool{}
+	for _, withOption := range options {
+		switch option := withOption.(type) {
+		case withRootTypeParser:
+			t.Logf("Using root type parser for better output")
+			rootTypeParser = option.rootTypeParser
+		case withSkippedTestCases:
+			t.Log("Skipping test cases:")
+			for _, skippedTestCase := range option.skippedTestCases {
+				t.Logf("Skipping %s", skippedTestCase)
+				skippedTestCasesMap[skippedTestCase] = true
+			}
+		}
+	}
+
+	// Read the test-specification as XML file
+	rootNode := ParseParserSerializerTestSuiteXml(t, testPath)
+
+	// Parse the contents of the test-specification
+	testsuite := ParseParserSerializerTestSuite(t, *rootNode, parser, rootTypeParser)
+
+	t.Logf("Running %d testcases", len(testsuite.testcases))
+	for _, testcase := range testsuite.testcases {
+		t.Run(testcase.name, func(t *testing.T) {
+			defer func() {
+				if err := recover(); err != nil {
+					t.Fatalf("\n-------------------------------------------------------\nPanic Failure\n%+v\n%s\n-------------------------------------------------------\n\n", err, debug.Stack())
+				}
+			}()
+			if skippedTestCasesMap[testcase.name] {
+				t.Logf("Testcase %s skipped", testcase.name)
+				t.Skipf("Testcase %s skipped", testcase.name)
+				return
+			}
+			t.Logf("Running testcase %s", testcase.name)
+			if err := testsuite.Run(t, testcase); err != nil {
+				t.Fatalf("\n-------------------------------------------------------\nFailure\n%+v\n-------------------------------------------------------\n\n", err)
+			}
+		})
+	}
+	t.Log("Done running testcases")
+	// Execute the tests in the testsuite
+	t.Logf(testsuite.name)
+}
+
+func ParseParserSerializerTestSuiteXml(t *testing.T, testPath string) *xmldom.Node {
 	// Get the current working directory
 	path, err := os.Getwd()
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	// Check if the test-file is available
@@ -60,10 +226,12 @@ func RunParserSerializerTestsuite(t *testing.T, testPath string, skippedTestCase
 	testFile := path + dirOffset + testPath
 	info, err := os.Stat(testFile)
 	if os.IsNotExist(err) {
-		t.Errorf("Test-File %s doesn't exist", testFile)
+		t.Logf("Test-File %s doesn't exist", testFile)
+		t.Fatal(err)
 	}
 	if info.IsDir() {
-		t.Errorf("Test-File %s refers to a directory", testFile)
+		t.Logf("Test-File %s refers to a directory", testFile)
+		t.Fatal(err)
 	}
 
 	// Open a reader for this file
@@ -74,9 +242,12 @@ func RunParserSerializerTestsuite(t *testing.T, testPath string, skippedTestCase
 
 	// Read the xml
 	node := xmldom.Must(xmldom.Parse(dat)).Root
+	return node
+}
 
+func ParseParserSerializerTestSuite(t *testing.T, node xmldom.Node, parser Parser, rootTypeParser func(utils.ReadBufferByteBased) (any, error)) *ParserSerializerTestsuite {
 	if node.Name != "testsuite" {
-		t.Error("Invalid document structure")
+		t.Fatal("invalid document structure")
 	}
 	var byteOrder binary.ByteOrder
 	if node.GetAttributeValue("byteOrder") != "LITTLE_ENDIAN" {
@@ -84,166 +255,73 @@ func RunParserSerializerTestsuite(t *testing.T, testPath string, skippedTestCase
 	} else {
 		byteOrder = binary.LittleEndian
 	}
-	var (
-		testsuiteName string
-		protocolName  string
-		outputFlavor  string
-	)
+	var testsuiteName string
+	var protocolName string
+	var outputFlavor string
+	driverParameters := make(map[string]string)
+	var testcases []ParserSerializerTestcase
 	for _, childPtr := range node.Children {
 		child := *childPtr
-		if child.Name == "name" {
+		switch child.Name {
+		case "name":
 			testsuiteName = child.Text
-		} else if child.Name == "protocolName" {
+		case "protocolName":
 			protocolName = child.Text
-		} else if child.Name == "outputFlavor" {
+		case "outputFlavor":
 			outputFlavor = child.Text
-		} else if child.Name != "testcase" {
-			t.Error("Invalid document structure")
-			return
-		} else {
-			testCaseName := child.FindOneByName("name").Text
-			t.Run(testCaseName, func(t *testing.T) {
-				if skippedTestCasesMap[testCaseName] {
-					log.Warn().Msgf("Testcase %s skipped", testCaseName)
-					t.Skipf("Testcase %s skipped", testCaseName)
-					return
+		case "driver-parameters":
+			parameterList := child.FindByName("parameter")
+			for _, parameter := range parameterList {
+				nameElement := parameter.FindOneByName("name")
+				valueElement := parameter.FindOneByName("value")
+				if nameElement == nil || valueElement == nil {
+					t.Fatal("invalid parameter found: no present")
 				}
-				t.Logf("running testsuite: %s test: %s", testsuiteName, testCaseName)
-				rawInputText := (*(child.FindOneByName("raw"))).Text
-				rootType := (*(child.FindOneByName("root-type"))).Text
-				parserArgumentsXml := child.FindOneByName("parser-arguments")
-				var parserArguments []string
-				if parserArgumentsXml != nil {
-					for _, parserArgumentXml := range parserArgumentsXml.Children {
-						parserArguments = append(parserArguments, parserArgumentXml.Text)
-					}
+				name := nameElement.Text
+				value := valueElement.Text
+				if name == "" || value == "" {
+					t.Fatal("invalid parameter found: empty")
 				}
-				referenceXml := child.FindOneByName("xml")
-				normalizeXml(referenceXml)
-				referenceSerialized := referenceXml.FirstChild().XMLPretty()
-
-				// Get the raw input by decoding the hex-encoded binary input
-				rawInput, err := hex.DecodeString(rawInputText)
-				if err != nil {
-					t.Errorf("Error decoding test input")
-					return
+				driverParameters[name] = value
+			}
+		case "testcase":
+			testcaseName := child.FindOneByName("name").Text
+			rawInputText := (*(child.FindOneByName("raw"))).Text
+			rootType := (*(child.FindOneByName("root-type"))).Text
+			parserArgumentsXml := child.FindOneByName("parser-arguments")
+			var parserArguments []string
+			if parserArgumentsXml != nil {
+				for _, parserArgumentXml := range parserArgumentsXml.Children {
+					parserArguments = append(parserArguments, parserArgumentXml.Text)
 				}
-				var readBuffer utils.ReadBuffer
-				if byteOrder == binary.LittleEndian {
-					readBuffer = utils.NewReadBufferByteBased(rawInput, utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian))
-				} else {
-					readBuffer = utils.NewReadBufferByteBased(rawInput)
-				}
-
-				// Parse the input according to the settings of the testcase
-				var helper interface {
-					Parse(typeName string, arguments []string, io utils.ReadBuffer) (interface{}, error)
-				}
-				switch protocolName {
-				case "abeth":
-					helper = new(abethModel.AbethParserHelper)
-				case "ads":
-					helper = new(adsModel.AdsParserHelper)
-				case "bacnetip":
-					helper = new(bacnetModel.BacnetipParserHelper)
-				case "df1":
-					helper = new(df1Model.Df1ParserHelper)
-				case "eip":
-					helper = new(eipModel.EipParserHelper)
-				case "firmata":
-					helper = new(firmataModel.FirmataParserHelper)
-				case "modbus":
-					helper = new(modbusModel.ModbusParserHelper)
-				case "s7":
-					helper = new(s7Model.S7ParserHelper)
-				case "knxnetip":
-					helper = new(knxModel.KnxnetipParserHelper)
-				default:
-					t.Errorf("Testsuite %s has not mapped parser for %s", testsuiteName, protocolName)
-					return
-				}
-				_ = outputFlavor
-				msg, err := helper.Parse(rootType, parserArguments, readBuffer)
-				if err != nil {
-					t.Error("Error parsing input data: ", err)
-					return
-				}
-
-				{
-					// First try to use the native xml writer
-					serializable := msg.(utils.Serializable)
-					buffer := utils.NewXmlWriteBuffer()
-					if err := serializable.SerializeWithWriteBuffer(context.Background(), buffer); err == nil {
-						actualXml := buffer.GetXmlString()
-						if err := CompareResults([]byte(actualXml), []byte(referenceSerialized)); err != nil {
-							border := strings.Repeat("=", 100)
-							fmt.Printf(
-								"\n"+
-									// Border
-									"%[1]s\n"+
-									// Testcase name
-									"%[4]s\n"+
-									// diff detected message
-									"Diff detected\n"+
-									// Border
-									"%[1]s\n"+
-									// xml
-									"%[2]s\n"+
-									// Border
-									"%[1]s\n%[1]s\n"+
-									// Text
-									"Differences were found after parsing (Use the above xml in the testsuite to disable this warning).\n"+
-									// Diff
-									"%[3]s\n"+
-									// Double Border
-									"%[1]s\n%[1]s\n",
-								border,
-								actualXml,
-								err,
-								testCaseName)
-							assert.Equal(t, referenceSerialized, actualXml)
-							t.Error("Error comparing the results: " + err.Error())
-							return
-						}
-					}
-				}
-
-				// If all was ok, serialize the object again
-				s, ok := msg.(utils.Serializable)
-				if !ok {
-					t.Error("Couldn't cast message to Serializable")
-					return
-				}
-				var writeBuffer utils.WriteBufferByteBased
-				if byteOrder == binary.LittleEndian {
-					writeBuffer = utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.LittleEndian))
-				} else {
-					writeBuffer = utils.NewWriteBufferByteBased()
-				}
-				err = s.SerializeWithWriteBuffer(context.Background(), writeBuffer)
-				if !ok {
-					t.Error("Couldn't serialize message back to byte array")
-					return
-				}
-
-				// Check if the output matches in size and content
-				rawOutput := writeBuffer.GetBytes()
-				if len(rawInput) != len(rawOutput) {
-					t.Errorf("Missmatched number of bytes expected ->%d != %d<-actual\nexpected:\t%x\nactual:\t\t%x", len(rawInput), len(rawOutput), rawInput, rawOutput)
-					t.Errorf("Hexdumps:\n%s", utils.DiffHex(rawInput, rawOutput))
-					return
-				}
-				for i, val := range rawInput {
-					if rawOutput[i] != val {
-						t.Error("Raw output doesn't match input at position: " + strconv.Itoa(i))
-						t.Errorf("Hexdumps:\n%s", utils.DiffHex(rawInput, rawOutput))
-						return
-					}
-				}
-			})
+			}
+			referenceXml := child.FindOneByName("xml")
+			normalizeXml(referenceXml)
+			referenceSerialized := referenceXml.FirstChild().XMLPretty()
+			testcase := ParserSerializerTestcase{
+				name:            testcaseName,
+				rawInputText:    rawInputText,
+				rootType:        rootType,
+				referenceXml:    referenceSerialized,
+				parserArguments: parserArguments,
+			}
+			testcases = append(testcases, testcase)
+		default:
+			t.Fatalf("invalid document structure. Unhandled element %s", child.Name)
 		}
 	}
-	fmt.Printf("name = %v\n", node.Name)
+	t.Logf("Parsed testsuite name: %s", testsuiteName)
+
+	return &ParserSerializerTestsuite{
+		name:             testsuiteName,
+		protocolName:     protocolName,
+		outputFlavor:     outputFlavor,
+		driverParameters: driverParameters,
+		byteOrder:        byteOrder,
+		parser:           parser,
+		rootTypeParser:   rootTypeParser,
+		testcases:        testcases,
+	}
 }
 
 // Mainly remove linebreaks from text content.

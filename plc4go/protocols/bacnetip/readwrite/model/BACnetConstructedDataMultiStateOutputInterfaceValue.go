@@ -121,7 +121,7 @@ func NewBACnetConstructedDataMultiStateOutputInterfaceValue(interfaceValue BACne
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataMultiStateOutputInterfaceValue(structType interface{}) BACnetConstructedDataMultiStateOutputInterfaceValue {
+func CastBACnetConstructedDataMultiStateOutputInterfaceValue(structType any) BACnetConstructedDataMultiStateOutputInterfaceValue {
 	if casted, ok := structType.(BACnetConstructedDataMultiStateOutputInterfaceValue); ok {
 		return casted
 	}

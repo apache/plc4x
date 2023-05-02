@@ -94,7 +94,7 @@ func NewBACnetClientCOVObject(realIncrement BACnetApplicationTagReal, peekedTagH
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetClientCOVObject(structType interface{}) BACnetClientCOVObject {
+func CastBACnetClientCOVObject(structType any) BACnetClientCOVObject {
 	if casted, ok := structType.(BACnetClientCOVObject); ok {
 		return casted
 	}

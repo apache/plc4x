@@ -121,7 +121,7 @@ func NewBACnetConstructedDataIntegerValueRelinquishDefault(relinquishDefault BAC
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataIntegerValueRelinquishDefault(structType interface{}) BACnetConstructedDataIntegerValueRelinquishDefault {
+func CastBACnetConstructedDataIntegerValueRelinquishDefault(structType any) BACnetConstructedDataIntegerValueRelinquishDefault {
 	if casted, ok := structType.(BACnetConstructedDataIntegerValueRelinquishDefault); ok {
 		return casted
 	}

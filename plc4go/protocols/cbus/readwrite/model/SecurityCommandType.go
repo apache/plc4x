@@ -33,6 +33,7 @@ type SecurityCommandType uint8
 
 type ISecurityCommandType interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 	NumberOfArguments() uint8
 }
@@ -116,8 +117,8 @@ func SecurityCommandTypeKnows(value uint8) bool {
 	return false
 }
 
-func CastSecurityCommandType(structType interface{}) SecurityCommandType {
-	castFunc := func(typ interface{}) SecurityCommandType {
+func CastSecurityCommandType(structType any) SecurityCommandType {
+	castFunc := func(typ any) SecurityCommandType {
 		if sSecurityCommandType, ok := typ.(SecurityCommandType); ok {
 			return sSecurityCommandType
 		}

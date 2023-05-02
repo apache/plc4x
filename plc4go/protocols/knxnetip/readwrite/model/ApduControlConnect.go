@@ -78,7 +78,7 @@ func NewApduControlConnect() *_ApduControlConnect {
 }
 
 // Deprecated: use the interface for direct cast
-func CastApduControlConnect(structType interface{}) ApduControlConnect {
+func CastApduControlConnect(structType any) ApduControlConnect {
 	if casted, ok := structType.(ApduControlConnect); ok {
 		return casted
 	}

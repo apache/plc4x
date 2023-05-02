@@ -121,7 +121,7 @@ func NewBACnetConstructedDataOccupancyLowerLimitEnforced(occupancyLowerLimitEnfo
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataOccupancyLowerLimitEnforced(structType interface{}) BACnetConstructedDataOccupancyLowerLimitEnforced {
+func CastBACnetConstructedDataOccupancyLowerLimitEnforced(structType any) BACnetConstructedDataOccupancyLowerLimitEnforced {
 	if casted, ok := structType.(BACnetConstructedDataOccupancyLowerLimitEnforced); ok {
 		return casted
 	}

@@ -83,7 +83,7 @@ func NewBACnetSpecialEvent(period BACnetSpecialEventPeriod, listOfTimeValues BAC
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetSpecialEvent(structType interface{}) BACnetSpecialEvent {
+func CastBACnetSpecialEvent(structType any) BACnetSpecialEvent {
 	if casted, ok := structType.(BACnetSpecialEvent); ok {
 		return casted
 	}

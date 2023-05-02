@@ -25,7 +25,7 @@ import (
 )
 
 // InlineIf is basically a inline if like construct for golang
-func InlineIf(test bool, a func() interface{}, b func() interface{}) interface{} {
+func InlineIf(test bool, a func() any, b func() any) any {
 	if test {
 		return a()
 	} else {
@@ -37,6 +37,9 @@ func InlineIf(test bool, a func() interface{}, b func() interface{}) interface{}
 //
 //	and is safe to call even if the channel has already been received
 func CleanupTimer(timer *time.Timer) {
+	if timer == nil {
+		return
+	}
 	if !timer.Stop() {
 		select {
 		case <-timer.C:

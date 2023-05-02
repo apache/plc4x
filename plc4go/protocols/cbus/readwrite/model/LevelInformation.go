@@ -164,7 +164,7 @@ func NewLevelInformation(raw uint16) *_LevelInformation {
 }
 
 // Deprecated: use the interface for direct cast
-func CastLevelInformation(structType interface{}) LevelInformation {
+func CastLevelInformation(structType any) LevelInformation {
 	if casted, ok := structType.(LevelInformation); ok {
 		return casted
 	}
@@ -272,7 +272,7 @@ func LevelInformationParseWithBuffer(ctx context.Context, readBuffer utils.ReadB
 		InitializeParent(LevelInformation, uint16)
 		GetParent() LevelInformation
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child LevelInformationChildSerializeRequirement
 	var typeSwitchError error
 	switch {
