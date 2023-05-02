@@ -112,14 +112,14 @@ func (m *ManualTestSuite) runSingleTest(t *testing.T, connection plc4go.PlcConne
 	readRequestBuilder.AddTagAddress(tagName, testCase.Address)
 	readRequest, err := readRequestBuilder.Build()
 	if err != nil {
-		panic(err)
+		t.Fatal(err)
+		return
 	}
 
 	// Execute the read request
 	readResponseResult := <-readRequest.Execute()
 	if readResponseResult.GetErr() != nil {
-		t.Errorf("Error getting response %v", readResponseResult.GetErr())
-		t.FailNow()
+		t.Fatalf("Error getting response %v", readResponseResult.GetErr())
 		return
 	}
 	readResponse := readResponseResult.GetResponse()

@@ -96,7 +96,7 @@ func (rb *byteReadBuffer) Reset(pos uint16) {
 	bytesToSkip := make([]byte, pos)
 	_, err := rb.reader.Read(bytesToSkip)
 	if err != nil {
-		panic(err)
+		panic(errors.Wrap(err, "Should not happen")) // TODO: maybe this is a possible occurence since we accept a argument, better returns a error
 	}
 	rb.pos = uint64(pos * 8)
 }

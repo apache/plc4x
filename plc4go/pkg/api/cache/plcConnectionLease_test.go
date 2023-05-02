@@ -565,7 +565,7 @@ func TestLeasedPlcConnection_UnsubscriptionRequestBuilder(t *testing.T) {
 				func() {
 					defer func() {
 						if r := recover(); r != nil {
-							assert.Equal(t, r, "not implemented")
+							assert.Equal(t, r, "not provided by simulated connection")
 						} else {
 							t.Errorf("The code did not panic")
 						}
@@ -615,7 +615,7 @@ func TestLeasedPlcConnection_BrowseRequestBuilder(t *testing.T) {
 				func() {
 					defer func() {
 						if r := recover(); r != nil {
-							assert.Equal(t, r, "not implemented")
+							assert.Equal(t, r, "not provided by simulated connection")
 						} else {
 							t.Errorf("The code did not panic")
 						}

@@ -23,6 +23,7 @@ import (
 	"context"
 	"encoding/binary"
 	"fmt"
+	"github.com/pkg/errors"
 	"net"
 	"net/url"
 	"strconv"
@@ -131,11 +132,11 @@ func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.
 	for _, discoveryItem := range discoveryItems {
 		responseAddr, err := net.ResolveUDPAddr("udp4", fmt.Sprintf("%s:%d", discoveryItem.localAddress, model.AdsDiscoveryConstants_ADSDISCOVERYUDPDEFAULTPORT))
 		if err != nil {
-			panic(err)
+			return errors.Wrap(err, "error resolving udp")
 		}
 		socket, err := net.ListenUDP("udp4", responseAddr)
 		if err != nil {
-			panic(err)
+			return errors.Wrap(err, "error listening udp")
 		}
 		discoveryItem.socket = socket
 

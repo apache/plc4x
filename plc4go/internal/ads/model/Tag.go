@@ -158,7 +158,7 @@ func (m DirectPlcTag) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) er
 }
 
 func (m DirectPlcTag) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	panic(name)
+	return xml.Attr{}, errors.Errorf("%s", name) // TODO: why did this panic before
 }
 
 type SymbolicPlcTag struct {

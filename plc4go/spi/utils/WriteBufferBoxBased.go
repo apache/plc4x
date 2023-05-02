@@ -23,6 +23,7 @@ import (
 	"container/list"
 	"context"
 	"fmt"
+	"github.com/pkg/errors"
 	"math/big"
 )
 
@@ -264,7 +265,7 @@ findTheBox:
 			finalBoxes = append(asciiBoxes, finalBoxes...)
 			break findTheBox
 		default:
-			panic("We should never reach this point")
+			return errors.New("We should never reach this point")
 		}
 	}
 	if b.mergeSingleBoxes && len(finalBoxes) == 1 {

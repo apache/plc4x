@@ -307,23 +307,23 @@ func (d *defaultConnection) GetMetadata() model.PlcConnectionMetadata {
 }
 
 func (d *defaultConnection) ReadRequestBuilder() model.PlcReadRequestBuilder {
-	panic("not implemented")
+	panic("not provided by actual connection")
 }
 
 func (d *defaultConnection) WriteRequestBuilder() model.PlcWriteRequestBuilder {
-	panic("not implemented")
+	panic("not provided by actual connection")
 }
 
 func (d *defaultConnection) SubscriptionRequestBuilder() model.PlcSubscriptionRequestBuilder {
-	panic("not implemented")
+	panic("not provided by actual connection")
 }
 
 func (d *defaultConnection) UnsubscriptionRequestBuilder() model.PlcUnsubscriptionRequestBuilder {
-	panic("not implemented")
+	panic("not provided by actual connection")
 }
 
 func (d *defaultConnection) BrowseRequestBuilder() model.PlcBrowseRequestBuilder {
-	panic("not implemented")
+	panic("not provided by actual connection")
 }
 
 func (d *defaultConnection) GetTransportInstance() transports.TransportInstance {

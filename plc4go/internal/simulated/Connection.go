@@ -241,9 +241,9 @@ func (c *Connection) SubscriptionRequestBuilder() model.PlcSubscriptionRequestBu
 }
 
 func (c *Connection) UnsubscriptionRequestBuilder() model.PlcUnsubscriptionRequestBuilder {
-	panic("not implemented")
+	panic("not provided by simulated connection")
 }
 
 func (c *Connection) BrowseRequestBuilder() model.PlcBrowseRequestBuilder {
-	panic("not implemented")
+	panic("not provided by simulated connection")
 }

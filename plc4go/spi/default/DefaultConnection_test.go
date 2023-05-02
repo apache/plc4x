@@ -477,7 +477,7 @@ func Test_defaultConnection_BrowseRequestBuilder(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			defer func() {
 				if err := recover(); err != nil {
-					assert.Equal(t, "not implemented", err)
+					assert.Equal(t, "not provided by actual connection", err)
 				} else {
 					t.Error("should fail")
 				}
@@ -903,7 +903,7 @@ func Test_defaultConnection_ReadRequestBuilder(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			defer func() {
 				if err := recover(); err != nil {
-					assert.Equal(t, "not implemented", err)
+					assert.Equal(t, "not provided by actual connection", err)
 				} else {
 					t.Error("should fail")
 				}
@@ -975,7 +975,7 @@ func Test_defaultConnection_SubscriptionRequestBuilder(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			defer func() {
 				if err := recover(); err != nil {
-					assert.Equal(t, "not implemented", err)
+					assert.Equal(t, "not provided by actual connection", err)
 				} else {
 					t.Error("should fail")
 				}
@@ -1013,7 +1013,7 @@ func Test_defaultConnection_UnsubscriptionRequestBuilder(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			defer func() {
 				if err := recover(); err != nil {
-					assert.Equal(t, "not implemented", err)
+					assert.Equal(t, "not provided by actual connection", err)
 				} else {
 					t.Error("should fail")
 				}
@@ -1051,7 +1051,7 @@ func Test_defaultConnection_WriteRequestBuilder(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			defer func() {
 				if err := recover(); err != nil {
-					assert.Equal(t, "not implemented", err)
+					assert.Equal(t, "not provided by actual connection", err)
 				} else {
 					t.Error("should fail")
 				}
