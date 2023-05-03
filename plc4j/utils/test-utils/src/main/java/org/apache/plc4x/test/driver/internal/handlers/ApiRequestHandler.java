@@ -84,6 +84,9 @@ public class ApiRequestHandler {
                 synchronizer.responseFuture = plc4xRequest.execute();
                 break;
             }
+            case "TestSubscriptionRequest":{
+                // TODO: chris add your stuff here...
+            }
             default:
                 throw new PlcRuntimeException("Unknown class name" + typeName);
         }

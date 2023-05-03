@@ -18,7 +18,13 @@
  */
 package org.apache.plc4x.test.driver.internal.api;
 
-public class TestTag {
+import org.apache.plc4x.java.spi.generation.ParseException;
+import org.apache.plc4x.java.spi.generation.ReadBuffer;
+import org.apache.plc4x.java.spi.generation.SerializationException;
+import org.apache.plc4x.java.spi.generation.WriteBuffer;
+import org.apache.plc4x.java.spi.utils.Serializable;
+
+public class TestTag implements Serializable {
 
     private final String name;
     private final String address;
@@ -26,6 +32,14 @@ public class TestTag {
     public TestTag(String name, String address) {
         this.name = name;
         this.address = address;
+    }
+
+    public static TestTag staticParse(ReadBuffer readBuffer, Object... args) throws ParseException {
+        readBuffer.pullContext("TestTag");
+        String name = readBuffer.readString("name", 64 * 8); // TODO: where to get the bitlength from
+        String address = readBuffer.readString("address", 64 * 8); // TODO: where to get the bitlength from
+        readBuffer.closeContext("TestTag");
+        return new TestTag(name, address);
     }
 
     public String getName() {
@@ -36,4 +50,11 @@ public class TestTag {
         return address;
     }
 
+    @Override
+    public void serialize(WriteBuffer writeBuffer) throws SerializationException {
+        writeBuffer.pushContext("TestTag");
+        writeBuffer.writeString("name", 64 * 8, name);
+        writeBuffer.writeString("address", 64 * 8, name);
+        writeBuffer.popContext("TestTag");
+    }
 }
