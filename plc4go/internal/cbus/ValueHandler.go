@@ -336,8 +336,6 @@ func (m ValueHandler) NewPlcValue(tag apiModel.PlcTag, value any) (apiValues.Plc
 					return nil, errors.New("Implement me") //TODO: implement me me
 				case readWriteModel.MediaTransportControlCommandType_CATEGORY_NAME.PLC4XEnumName():
 					return nil, errors.New("Implement me") //TODO: implement me me
-				case readWriteModel.MediaTransportControlCommandType_FAST_FORWARD.PLC4XEnumName():
-					return nil, errors.New("Implement me") //TODO: implement me me
 				default:
 					return nil, errors.Errorf("Unsupported command %s for %s", salCommand, tmpSalTag.application.ApplicationId())
 				}
