@@ -62,7 +62,7 @@ public class ConnectionManager {
         ChannelExposingConnection connection = (ChannelExposingConnection) plcConnection;
         Channel channel = connection.getChannel();
         if (!(channel instanceof Plc4xEmbeddedChannel)) {
-            throw new PlcRuntimeException("Expecting EmbeddedChannel. Actual "+ channel.getClass());
+            throw new PlcRuntimeException("Expecting Plc4xEmbeddedChannel. Actual "+ channel.getClass());
         }
         return (Plc4xEmbeddedChannel) channel;
     }
