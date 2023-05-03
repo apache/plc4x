@@ -656,13 +656,14 @@ func TestNewMessageCodec(t *testing.T) {
 	tests := []struct {
 		name string
 		args args
-		want *MessageCodec
 	}{
-		// TODO: Add test cases.
+		{
+			name: "create it",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			assert.Equalf(t, tt.want, NewMessageCodec(tt.args.transportInstance), "NewMessageCodec(%v)", tt.args.transportInstance)
+			assert.NotNilf(t, NewMessageCodec(tt.args.transportInstance), "NewMessageCodec(%v)", tt.args.transportInstance)
 		})
 	}
 }
@@ -682,7 +683,37 @@ func Test_extractMMIAndSAL(t *testing.T) {
 		args args
 		want bool
 	}{
-		// TODO: Add test cases.
+		{
+			name: "extract it",
+		},
+		{
+			name: "monitored sal",
+			args: args{
+				codec: NewMessageCodec(nil),
+				message: readWriteModel.NewCBusMessageToClient(
+					readWriteModel.NewReplyOrConfirmationReply(
+						readWriteModel.NewReplyEncodedReply(
+							readWriteModel.NewMonitoredSALReply(
+								nil,
+								0,
+								nil,
+								nil,
+							),
+							nil,
+							0,
+							nil,
+							nil,
+						),
+						nil,
+						0,
+						nil,
+						nil,
+					),
+					nil,
+					nil,
+				),
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

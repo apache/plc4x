@@ -582,7 +582,9 @@ func TestConnection_UnsubscriptionRequestBuilder(t *testing.T) {
 		fields fields
 		want   apiModel.PlcUnsubscriptionRequestBuilder
 	}{
-		// TODO: Add test cases.
+		{
+			name: "create one",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

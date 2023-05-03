@@ -76,6 +76,8 @@ func (m *Subscriber) Unsubscribe(ctx context.Context, unsubscriptionRequest apiM
 
 	// TODO: As soon as we establish a connection, we start getting data...
 	// subscriptions are more a internal handling of which values to pass where.
+	_ = ctx
+	_ = unsubscriptionRequest
 
 	return result
 }

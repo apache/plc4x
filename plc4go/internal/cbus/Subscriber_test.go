@@ -21,13 +21,14 @@ package cbus
 
 import (
 	"context"
+	"testing"
+	"time"
+
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/protocols/cbus/readwrite/model"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/cbus/readwrite/model"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/stretchr/testify/assert"
-	"testing"
-	"time"
 )
 
 func TestNewSubscriber(t *testing.T) {
@@ -112,12 +113,19 @@ func TestSubscriber_Unsubscribe(t *testing.T) {
 		unsubscriptionRequest apiModel.PlcUnsubscriptionRequest
 	}
 	tests := []struct {
-		name   string
-		fields fields
-		args   args
-		want   <-chan apiModel.PlcUnsubscriptionRequestResult
+		name         string
+		fields       fields
+		args         args
+		wantAsserter func(t *testing.T, results <-chan apiModel.PlcUnsubscriptionRequestResult) bool
 	}{
-		// TODO: Add test cases.
+		{
+			name: "just do it",
+			wantAsserter: func(t *testing.T, results <-chan apiModel.PlcUnsubscriptionRequestResult) bool {
+				assert.NotNil(t, results)
+				// TODO: add tests once implemented
+				return true
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -125,7 +133,7 @@ func TestSubscriber_Unsubscribe(t *testing.T) {
 				connection: tt.fields.connection,
 				consumers:  tt.fields.consumers,
 			}
-			assert.Equalf(t, tt.want, m.Unsubscribe(tt.args.ctx, tt.args.unsubscriptionRequest), "Unsubscribe(%v, %v)", tt.args.ctx, tt.args.unsubscriptionRequest)
+			assert.Truef(t, tt.wantAsserter(t, m.Unsubscribe(tt.args.ctx, tt.args.unsubscriptionRequest)), "Unsubscribe(%v, %v)", tt.args.ctx, tt.args.unsubscriptionRequest)
 		})
 	}
 }
@@ -1385,7 +1393,12 @@ func TestSubscriber_Unregister(t *testing.T) {
 		fields fields
 		args   args
 	}{
-		// TODO: Add test cases.
+		{
+			name: "just do it",
+			args: args{
+				registration: spiModel.NewDefaultPlcConsumerRegistration(nil, nil),
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
