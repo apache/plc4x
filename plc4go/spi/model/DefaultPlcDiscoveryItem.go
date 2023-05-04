@@ -82,7 +82,7 @@ func (d *DefaultPlcDiscoveryItem) GetAttributes() map[string]apiValues.PlcValue 
 func (d *DefaultPlcDiscoveryItem) GetConnectionUrl() string {
 	options := ""
 	if d.Options != nil {
-		flatOptions := []string{}
+		var flatOptions []string
 		for k, vl := range d.Options {
 			for _, v := range vl {
 				flatOptions = append(flatOptions, url.QueryEscape(k)+"="+url.QueryEscape(v))

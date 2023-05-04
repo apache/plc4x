@@ -25,7 +25,6 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/rs/zerolog"
 	"github.com/stretchr/testify/assert"
-	"sync"
 	"testing"
 	"time"
 )
@@ -380,9 +379,7 @@ func Test_requestTransactionManager_submitTransaction(t *testing.T) {
 		runningRequests            []*requestTransaction
 		numberOfConcurrentRequests int
 		transactionId              int32
-		transactionMutex           sync.RWMutex
 		workLog                    list.List
-		workLogMutex               sync.RWMutex
 		executor                   utils.Executor
 	}
 	type args struct {
@@ -410,9 +407,7 @@ func Test_requestTransactionManager_submitTransaction(t *testing.T) {
 				runningRequests:            tt.fields.runningRequests,
 				numberOfConcurrentRequests: tt.fields.numberOfConcurrentRequests,
 				transactionId:              tt.fields.transactionId,
-				transactionMutex:           tt.fields.transactionMutex,
 				workLog:                    tt.fields.workLog,
-				workLogMutex:               tt.fields.workLogMutex,
 				executor:                   tt.fields.executor,
 			}
 			r.submitTransaction(tt.args.handle)

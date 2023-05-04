@@ -163,7 +163,7 @@ func (m *DriverContext) getArrayInfoForDataTypeTableEntry(entry driverModel.AdsD
 			LowerBound: adsArrayInfo.GetLowerBound(),
 			UpperBound: adsArrayInfo.GetUpperBound(),
 		}
-		arrayInfos = append(arrayInfos, arrayInfo)
+		arrayInfos = append(arrayInfos, &arrayInfo)
 	}
 	return arrayInfos
 }

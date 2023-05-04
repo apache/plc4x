@@ -320,7 +320,7 @@ func (m *Connection) serializePlcValue(dataType driverModel.AdsDataTypeTableEntr
 			}
 			var childArrayInfo []apiModel.ArrayInfo
 			for _, adsArrayInfo := range childDataType.GetArrayInfo() {
-				childArrayInfo = append(childArrayInfo, internalModel.DefaultArrayInfo{
+				childArrayInfo = append(childArrayInfo, &internalModel.DefaultArrayInfo{
 					LowerBound: adsArrayInfo.GetLowerBound(),
 					UpperBound: adsArrayInfo.GetUpperBound(),
 				})

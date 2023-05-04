@@ -84,7 +84,7 @@ func Test_unitInfoQuery_GetArrayInfo(t *testing.T) {
 				numElements: 2,
 			},
 			want: []apiModel.ArrayInfo{
-				spiModel.DefaultArrayInfo{
+				&spiModel.DefaultArrayInfo{
 					LowerBound: 0,
 					UpperBound: 2,
 				},

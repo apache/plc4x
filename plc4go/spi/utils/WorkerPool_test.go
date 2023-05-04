@@ -445,7 +445,8 @@ func Test_future_AwaitCompletion(t *testing.T) {
 		{
 			name: "completes not int time",
 			args: args{ctx: func() context.Context {
-				deadline, _ := context.WithDeadline(context.Background(), time.Now().Add(30*time.Millisecond))
+				deadline, cancel := context.WithDeadline(context.Background(), time.Now().Add(30*time.Millisecond))
+				t.Cleanup(cancel)
 				return deadline
 			}()},
 			completer: func(f *future) {

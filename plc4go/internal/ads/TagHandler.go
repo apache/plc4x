@@ -140,7 +140,7 @@ func (m TagHandler) ParseTag(query string) (apiModel.PlcTag, error) {
 						if err != nil {
 							return nil, fmt.Errorf("error parsing array info: %s, got error: %v", currentSegment, err)
 						}
-						arrayInfo = append(arrayInfo, model2.DefaultArrayInfo{
+						arrayInfo = append(arrayInfo, &model2.DefaultArrayInfo{
 							LowerBound: startElement,
 							UpperBound: endElement,
 						})
@@ -153,7 +153,7 @@ func (m TagHandler) ParseTag(query string) (apiModel.PlcTag, error) {
 						if err != nil {
 							return nil, fmt.Errorf("error parsing array info: %s, got error: %v", currentSegment, err)
 						}
-						arrayInfo = append(arrayInfo, model2.DefaultArrayInfo{
+						arrayInfo = append(arrayInfo, &model2.DefaultArrayInfo{
 							LowerBound: startElement,
 							UpperBound: startElement + numElements,
 						})
@@ -162,7 +162,7 @@ func (m TagHandler) ParseTag(query string) (apiModel.PlcTag, error) {
 						if err != nil {
 							return nil, fmt.Errorf("error parsing array info: %s, got error: %v", currentSegment, err)
 						}
-						arrayInfo = append(arrayInfo, model2.DefaultArrayInfo{
+						arrayInfo = append(arrayInfo, &model2.DefaultArrayInfo{
 							LowerBound: 0,
 							UpperBound: numElements,
 						})
@@ -240,7 +240,7 @@ func (m TagHandler) ParseTag(query string) (apiModel.PlcTag, error) {
 						if err != nil {
 							return nil, fmt.Errorf("error parsing array info: %s, got error: %v", currentSegment, err)
 						}
-						arrayInfo = append(arrayInfo, model2.DefaultArrayInfo{
+						arrayInfo = append(arrayInfo, &model2.DefaultArrayInfo{
 							LowerBound: startElement,
 							UpperBound: endElement,
 						})
@@ -253,7 +253,7 @@ func (m TagHandler) ParseTag(query string) (apiModel.PlcTag, error) {
 						if err != nil {
 							return nil, fmt.Errorf("error parsing array info: %s, got error: %v", currentSegment, err)
 						}
-						arrayInfo = append(arrayInfo, model2.DefaultArrayInfo{
+						arrayInfo = append(arrayInfo, &model2.DefaultArrayInfo{
 							LowerBound: startElement,
 							UpperBound: startElement + numElements,
 						})
@@ -262,7 +262,7 @@ func (m TagHandler) ParseTag(query string) (apiModel.PlcTag, error) {
 						if err != nil {
 							return nil, fmt.Errorf("error parsing array info: %s, got error: %v", currentSegment, err)
 						}
-						arrayInfo = append(arrayInfo, model2.DefaultArrayInfo{
+						arrayInfo = append(arrayInfo, &model2.DefaultArrayInfo{
 							LowerBound: 0,
 							UpperBound: numElements,
 						})
@@ -295,7 +295,7 @@ func (m TagHandler) ParseTag(query string) (apiModel.PlcTag, error) {
 						if err != nil {
 							return nil, fmt.Errorf("error parsing array info: %s, got error: %v", currentSegment, err)
 						}
-						arrayInfo = append(arrayInfo, model2.DefaultArrayInfo{
+						arrayInfo = append(arrayInfo, &model2.DefaultArrayInfo{
 							LowerBound: startElement,
 							UpperBound: endElement,
 						})
@@ -308,7 +308,7 @@ func (m TagHandler) ParseTag(query string) (apiModel.PlcTag, error) {
 						if err != nil {
 							return nil, fmt.Errorf("error parsing array info: %s, got error: %v", currentSegment, err)
 						}
-						arrayInfo = append(arrayInfo, model2.DefaultArrayInfo{
+						arrayInfo = append(arrayInfo, &model2.DefaultArrayInfo{
 							LowerBound: startElement,
 							UpperBound: startElement + numElements,
 						})
@@ -317,7 +317,7 @@ func (m TagHandler) ParseTag(query string) (apiModel.PlcTag, error) {
 						if err != nil {
 							return nil, fmt.Errorf("error parsing array info: %s, got error: %v", currentSegment, err)
 						}
-						arrayInfo = append(arrayInfo, model2.DefaultArrayInfo{
+						arrayInfo = append(arrayInfo, &model2.DefaultArrayInfo{
 							LowerBound: 0,
 							UpperBound: numElements,
 						})

@@ -88,7 +88,7 @@ func (m modbusTag) GetValueType() values.PlcValueType {
 func (m modbusTag) GetArrayInfo() []model.ArrayInfo {
 	if m.Quantity != 1 {
 		return []model.ArrayInfo{
-			model3.DefaultArrayInfo{
+			&model3.DefaultArrayInfo{
 				LowerBound: 0,
 				UpperBound: uint32(m.Quantity),
 			},
