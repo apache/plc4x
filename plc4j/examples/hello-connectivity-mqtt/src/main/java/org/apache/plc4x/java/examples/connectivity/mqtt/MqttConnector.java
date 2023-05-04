@@ -99,17 +99,18 @@ public class MqttConnector {
             PlcReadRequest readRequest = builder.build();
 
             // Send a message containing the PLC read response.
-            Flowable<Mqtt3Publish> messagesToPublish = Flowable.generate(emitter -> {
-                readRequest.execute().thenAccept(response -> {
-                    String jsonPayload = getPayload(response);
-                    final Mqtt3Publish publishMessage = Mqtt3Publish.builder()
-                        .topic(config.getMqttConfig().getTopicName())
-                        .qos(MqttQos.AT_LEAST_ONCE)
-                        .payload(jsonPayload.getBytes())
-                        .build();
-                    emitter.onNext(publishMessage);
-                });
-            });
+            Flowable<Mqtt3Publish> messagesToPublish = Flowable.generate(emitter ->
+                readRequest.execute()
+                    .thenAccept(response ->
+                        emitter.onNext(
+                            Mqtt3Publish.builder()
+                                .topic(config.getMqttConfig().getTopicName())
+                                .qos(MqttQos.AT_LEAST_ONCE)
+                                .payload(getPayload(response).getBytes())
+                                .build()
+                        )
+                    )
+            );
 
             // Emit 1 message only every 100 milliseconds.
             messagesToPublish = messagesToPublish.zipWith(Flowable.interval(

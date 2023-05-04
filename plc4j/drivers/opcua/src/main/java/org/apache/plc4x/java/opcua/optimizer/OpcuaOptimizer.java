@@ -33,8 +33,8 @@ import java.util.List;
 public class OpcuaOptimizer extends BaseOptimizer{
 
     @Override
-    protected List<PlcRequest> processReadRequest(PlcReadRequest readRequest, DriverContext driverContext) {
-        List<PlcRequest> processedRequests = new LinkedList<>();
+    protected List<PlcReadRequest> processReadRequest(PlcReadRequest readRequest, DriverContext driverContext) {
+        List<PlcReadRequest> processedRequests = new LinkedList<>();
 
         // List of all items in the current request.
         LinkedHashMap<String, PlcTag> curTags = new LinkedHashMap<>();

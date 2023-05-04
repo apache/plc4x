@@ -50,9 +50,9 @@ public class S7Optimizer extends BaseOptimizer {
         new S7AddressAny(TransportSize.INT, 1, 1, MemoryArea.DATA_BLOCKS, 1, (byte) 0).getLengthInBytes();
 
     @Override
-    protected List<PlcRequest> processReadRequest(PlcReadRequest readRequest, DriverContext driverContext) {
+    protected List<PlcReadRequest> processReadRequest(PlcReadRequest readRequest, DriverContext driverContext) {
         S7DriverContext s7DriverContext = (S7DriverContext) driverContext;
-        List<PlcRequest> processedRequests = new LinkedList<>();
+        List<PlcReadRequest> processedRequests = new LinkedList<>();
 
         // This calculates the size of the header for the request and response.
         int curRequestSize = EMPTY_READ_REQUEST_SIZE;
@@ -116,9 +116,9 @@ public class S7Optimizer extends BaseOptimizer {
     }
 
     @Override
-    protected List<PlcRequest> processWriteRequest(PlcWriteRequest writeRequest, DriverContext driverContext) {
+    protected List<PlcWriteRequest> processWriteRequest(PlcWriteRequest writeRequest, DriverContext driverContext) {
         S7DriverContext s7DriverContext = (S7DriverContext) driverContext;
-        List<PlcRequest> processedRequests = new LinkedList<>();
+        List<PlcWriteRequest> processedRequests = new LinkedList<>();
 
         // This calculates the size of the header for the request and response.
         int curRequestSize = EMPTY_WRITE_REQUEST_SIZE;
