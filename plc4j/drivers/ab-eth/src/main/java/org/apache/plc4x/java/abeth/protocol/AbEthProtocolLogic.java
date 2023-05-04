@@ -170,7 +170,7 @@ public class AbEthProtocolLogic extends Plc4xProtocolBase<CIPEncapsulationPacket
                                 if (((data.get(1)>> 7) & 1) == 0)  {
                                     plcValue = PlcValueHandler.of((data.get(1) << 8) + data.get(0));  // positive number
                                 } else {
-                                    plcValue = PlcValueHandler.of((((~data.get(1) & 0b01111111) << 8) + (~(data.get(0)-1) & 0b11111111))  * -1);  // negative number
+                                    plcValue = PlcValueHandler.of((((~data.get(1) & 0b01111111) << 8) + (-data.get(0) & 0b11111111))  * -1);  // negative number
                                 }
                             }
                             break;
@@ -181,7 +181,7 @@ public class AbEthProtocolLogic extends Plc4xProtocolBase<CIPEncapsulationPacket
                                 if (((data.get(3)>> 7) & 1) == 0)  {
                                     plcValue = PlcValueHandler.of((data.get(3) << 24) + (data.get(2) << 16) + (data.get(1) << 8) + data.get(0));  // positive number
                                 } else {
-                                    plcValue = PlcValueHandler.of((((~data.get(3) & 0b01111111) << 24) + ((~(data.get(2)-1) & 0b11111111) << 16)+ ((~(data.get(1)-1) & 0b11111111) << 8) + (~(data.get(0)-1) & 0b11111111))  * -1);  // negative number
+                                    plcValue = PlcValueHandler.of((((~data.get(3) & 0b01111111) << 24) + ((-data.get(2) & 0b11111111) << 16)+ ((-data.get(1) & 0b11111111) << 8) + (-data.get(0) & 0b11111111))  * -1);  // negative number
                                 }
                             }
                             break;

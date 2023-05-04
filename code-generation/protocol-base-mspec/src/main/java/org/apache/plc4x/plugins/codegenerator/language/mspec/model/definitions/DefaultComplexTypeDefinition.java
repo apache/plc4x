@@ -47,8 +47,7 @@ public class DefaultComplexTypeDefinition extends DefaultTypeDefinition implemen
     }
 
     public Optional<List<Argument>> getAllParserArguments() {
-        List<Argument> allArguments = new ArrayList<>();
-        allArguments.addAll(getParserArguments().orElse(Collections.emptyList()));
+        List<Argument> allArguments = new ArrayList<>(getParserArguments().orElse(Collections.emptyList()));
         if(getParentType().isPresent()) {
             ComplexTypeDefinition parent = getParentType().get();
             allArguments.addAll(parent.getAllParserArguments().orElse(Collections.emptyList()));

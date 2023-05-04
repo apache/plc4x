@@ -24,7 +24,6 @@ import org.junit.jupiter.api.Test;
 
 import java.nio.charset.Charset;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Consumer;
 
 import static org.hamcrest.MatcherAssert.assertThat;

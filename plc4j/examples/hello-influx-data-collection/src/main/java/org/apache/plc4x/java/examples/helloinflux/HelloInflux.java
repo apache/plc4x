@@ -48,7 +48,7 @@ public class HelloInflux {
 
     private static final Logger logger = LoggerFactory.getLogger(HelloInflux.class);
 
-    private Configuration configuration;
+    private final Configuration configuration;
 
     public HelloInflux(File configFile) {
         Configurations configs = new Configurations();

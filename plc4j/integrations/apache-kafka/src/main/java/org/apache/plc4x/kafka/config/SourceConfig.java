@@ -120,7 +120,7 @@ public class SourceConfig extends AbstractConfig{
     @Override
     public String toString() {
         StringBuilder query = new StringBuilder();
-        query.append(Constants.DEFAULT_TOPIC_CONFIG + "=" + defaultTopic + ",\n");
+        query.append(Constants.DEFAULT_TOPIC_CONFIG + "=").append(defaultTopic).append(",\n");
         for (Source source : sources) {
             query.append(source.toString());
         }

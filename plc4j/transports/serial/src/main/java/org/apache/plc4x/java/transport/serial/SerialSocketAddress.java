@@ -26,25 +26,24 @@ public class SerialSocketAddress extends SocketAddress {
 
     private final String identifier;
 
-    private final Optional<SerialChannelHandler> handler;
+    private final SerialChannelHandler handler;
 
     public SerialSocketAddress(String identifier) {
         this.identifier = identifier;
-        this.handler = Optional.empty();
+        this.handler = null;
     }
 
     /**
      * @param identifier of the port
-     * @param handler for custom behavior.  E.g. testing
+     * @param handler    for custom behavior.  E.g. testing
      */
-    public SerialSocketAddress(final String identifier, final SerialChannelHandler handler)
-    {
+    public SerialSocketAddress(final String identifier, final SerialChannelHandler handler) {
         this.identifier = identifier;
-        this.handler = Optional.of(handler);
+        this.handler = handler;
     }
 
     public Optional<SerialChannelHandler> getHandler() {
-        return handler;
+        return Optional.ofNullable(handler);
     }
 
     public String getIdentifier() {

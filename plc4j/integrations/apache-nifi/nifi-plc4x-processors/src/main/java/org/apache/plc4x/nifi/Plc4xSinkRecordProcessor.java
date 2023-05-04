@@ -91,12 +91,10 @@ public class Plc4xSinkRecordProcessor extends BasePlc4xProcessor {
 	@Override
 	protected void init(final ProcessorInitializationContext context) {
 		super.init(context);
-		final Set<Relationship> r = new HashSet<>();
-		r.addAll(super.getRelationships());
+        final Set<Relationship> r = new HashSet<>(super.getRelationships());
 		this.relationships = Collections.unmodifiableSet(r);
 
-		final List<PropertyDescriptor> pds = new ArrayList<>();
-		pds.addAll(super.getSupportedPropertyDescriptors());
+        final List<PropertyDescriptor> pds = new ArrayList<>(super.getSupportedPropertyDescriptors());
 		pds.add(PLC_RECORD_READER_FACTORY);
 		pds.add(PLC_WRITE_FUTURE_TIMEOUT_MILISECONDS);
 		this.properties = Collections.unmodifiableList(pds);

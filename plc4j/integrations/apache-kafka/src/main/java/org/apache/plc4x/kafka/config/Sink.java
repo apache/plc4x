@@ -120,10 +120,10 @@ public class Sink extends AbstractConfig{
     @Override
     public String toString() {
         StringBuilder query = new StringBuilder();
-        query.append(Constants.CONNECTION_STRING_CONFIG + "=" + connectionString + ",\n");
-        query.append(Constants.TOPIC_CONFIG + "=" + topic + ",\n");
-        query.append(Constants.RETRIES_CONFIG + "=" + retries + ",\n");
-        query.append(Constants.TIMEOUT_CONFIG + "=" + timeout + ",\n");
+        query.append(Constants.CONNECTION_STRING_CONFIG + "=").append(connectionString).append(",\n");
+        query.append(Constants.TOPIC_CONFIG + "=").append(topic).append(",\n");
+        query.append(Constants.RETRIES_CONFIG + "=").append(retries).append(",\n");
+        query.append(Constants.TIMEOUT_CONFIG + "=").append(timeout).append(",\n");
         for (Tag tag : tags) {
             query.append(tag.toString());
         }

@@ -76,7 +76,7 @@ public class ManualParserTest {
         assertEquals(frame.data.length, 5);
     }
 
-    public final static SocketCanFrameStub parse(String hex) throws Exception {
+    public static SocketCanFrameStub parse(String hex) throws Exception {
         byte[] input = Hex.decodeHex(hex.toCharArray());
 
         ReadBufferByteBased readBuffer = new ReadBufferByteBased(input, ByteOrder.LITTLE_ENDIAN);

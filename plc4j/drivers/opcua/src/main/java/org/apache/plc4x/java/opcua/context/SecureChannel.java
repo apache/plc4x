@@ -102,7 +102,7 @@ public class SecureChannel {
     private UserTokenType tokenType;
     private boolean discovery;
     private String certFile;
-    private String keyStoreFile;
+    private final String keyStoreFile;
     private CertificateKeyPair ckp;
     private final PascalString endpoint;
     private final String username;
@@ -113,8 +113,8 @@ public class SecureChannel {
     private final boolean isEncrypted;
     private byte[] senderCertificate = null;
     private byte[] senderNonce = null;
-    private PascalByteString certificateThumbprint = null;
-    private boolean checkedEndpoints = false;
+    private final PascalByteString certificateThumbprint = null;
+    private final boolean checkedEndpoints = false;
     private EncryptionHandler encryptionHandler = null;
     private final OpcuaConfiguration configuration;
     private final AtomicInteger channelId = new AtomicInteger(1);

@@ -161,11 +161,7 @@ public class SerialChannel extends AbstractNioByteChannel implements DuplexChann
         try {
             // A bit hacky but to support testing check for custom handler
             final Optional<SerialChannelHandler> customHandler = ((SerialSocketAddress) remoteAddress).getHandler();
-            if (customHandler.isPresent()) {
-                comPort = customHandler.get();
-            } else {
-                comPort = new SerialChannelHandler.SerialPortHandler(remoteAddress, config);
-            }
+            comPort = customHandler.orElseGet(() -> new SerialChannelHandler.SerialPortHandler(remoteAddress, config));
             logger.debug("Using Com Port {}, trying to open port", comPort.getIdentifier());
             if (comPort.open()) {
                 logger.debug("Opened port successful to {}", comPort.getIdentifier());
@@ -231,7 +227,7 @@ public class SerialChannel extends AbstractNioByteChannel implements DuplexChann
         private boolean inFlush0; // Copied from AbstractUnsafe
         private Throwable initialCloseCause; // Copied from AbstractUnsafe
 
-        private ChannelOutboundBuffer outboundBuffer;
+        private final ChannelOutboundBuffer outboundBuffer;
 
         private RecvByteBufAllocator.Handle recvHandle;
 

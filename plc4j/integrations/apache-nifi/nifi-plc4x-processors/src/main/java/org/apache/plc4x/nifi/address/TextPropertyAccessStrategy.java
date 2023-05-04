@@ -28,7 +28,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class TextPropertyAccessStrategy implements AddressesAccessStrategy{
-    private Map<String,String> extractAddressesFromText(String input) throws JsonMappingException, JsonProcessingException {
+    private Map<String,String> extractAddressesFromText(String input) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
 
         return mapper.readValue(input, Map.class);

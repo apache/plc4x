@@ -125,10 +125,10 @@ public class Source extends AbstractConfig{
     @Override
     public String toString() {
         StringBuilder query = new StringBuilder();
-        query.append("\t" + "Name" + "=" + name + ",\n");
-        query.append("\t" + CONNECTION_STRING_CONFIG + "=" + connectionString + ",\n");
-        query.append("\t" + BUFFER_SIZE_CONFIG + "=" + bufferSize + ",\n");
-        query.append("\t" + KAFKA_POLL_RETURN_CONFIG + "=" + pollReturnInterval + ",\n");
+        query.append("\t" + "Name" + "=").append(name).append(",\n");
+        query.append("\t" + CONNECTION_STRING_CONFIG + "=").append(connectionString).append(",\n");
+        query.append("\t" + BUFFER_SIZE_CONFIG + "=").append(bufferSize).append(",\n");
+        query.append("\t" + KAFKA_POLL_RETURN_CONFIG + "=").append(pollReturnInterval).append(",\n");
 
         for (JobReference jobReference : jobReferences) {
             query.append(jobReference.toString());

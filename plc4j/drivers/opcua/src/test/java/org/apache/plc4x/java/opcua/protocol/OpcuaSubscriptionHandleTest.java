@@ -48,8 +48,8 @@ public class OpcuaSubscriptionHandleTest {
     //Tcp pattern of OPC UA
     private static final String opcPattern = "opcua:tcp://";
 
-    private String paramSectionDivider = "?";
-    private String paramDivider = "&";
+    private final String paramSectionDivider = "?";
+    private final String paramDivider = "&";
 
     private static final String tcpConnectionAddress = opcPattern + miloLocalAddress;
 

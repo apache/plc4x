@@ -74,12 +74,12 @@ public class OpcuaPlcDriverTest {
     private final String opcPattern = "opcua:tcp://";
 
     private final String paramSectionDivider = "?";
-    private String paramDivider = "&";
+    private final String paramDivider = "&";
 
     private final String tcpConnectionAddress = opcPattern + miloLocalAddress;
 
     private final List<String> connectionStringValidSet = List.of(tcpConnectionAddress);
-    private List<String> connectionStringCorruptedSet = List.of();
+    private final List<String> connectionStringCorruptedSet = List.of();
 
     private final String discoveryValidParamTrue = "discovery=true";
     private final String discoveryValidParamFalse = "discovery=false";
