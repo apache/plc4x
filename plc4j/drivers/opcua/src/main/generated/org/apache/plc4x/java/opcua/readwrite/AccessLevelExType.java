@@ -45,7 +45,7 @@ public enum AccessLevelExType {
     }
   }
 
-  private long value;
+  private final long value;
 
   AccessLevelExType(long value) {
     this.value = value;

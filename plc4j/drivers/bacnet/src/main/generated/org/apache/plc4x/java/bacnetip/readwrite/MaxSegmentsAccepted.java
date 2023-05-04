@@ -43,7 +43,7 @@ public enum MaxSegmentsAccepted {
     }
   }
 
-  private byte value;
+  private final byte value;
   private short maxSegments;
 
   MaxSegmentsAccepted(byte value, short maxSegments) {

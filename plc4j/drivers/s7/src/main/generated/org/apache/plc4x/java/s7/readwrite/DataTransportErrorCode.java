@@ -39,7 +39,7 @@ public enum DataTransportErrorCode {
     }
   }
 
-  private short value;
+  private final short value;
 
   DataTransportErrorCode(short value) {
     this.value = value;

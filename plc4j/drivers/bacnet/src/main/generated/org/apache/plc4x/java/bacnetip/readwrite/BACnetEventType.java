@@ -54,7 +54,7 @@ public enum BACnetEventType {
     }
   }
 
-  private int value;
+  private final int value;
 
   BACnetEventType(int value) {
     this.value = value;

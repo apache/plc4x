@@ -39,7 +39,7 @@ public enum ProtectionLevel {
     }
   }
 
-  private byte value;
+  private final byte value;
   private String description;
 
   ProtectionLevel(byte value, String description) {

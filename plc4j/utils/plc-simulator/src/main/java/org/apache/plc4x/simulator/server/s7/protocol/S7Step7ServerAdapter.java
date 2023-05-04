@@ -38,7 +38,7 @@ public class S7Step7ServerAdapter extends ChannelInboundHandlerAdapter {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(S7Step7ServerAdapter.class);
 
-    private Context context;
+    private final Context context;
 
     private State state;
 

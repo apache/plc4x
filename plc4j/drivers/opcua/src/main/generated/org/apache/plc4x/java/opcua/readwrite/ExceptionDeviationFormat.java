@@ -38,7 +38,7 @@ public enum ExceptionDeviationFormat {
     }
   }
 
-  private long value;
+  private final long value;
 
   ExceptionDeviationFormat(long value) {
     this.value = value;

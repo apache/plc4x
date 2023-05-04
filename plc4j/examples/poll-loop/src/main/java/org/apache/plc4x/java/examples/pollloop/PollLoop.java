@@ -41,10 +41,10 @@ public class PollLoop {
 
     private final AtomicBoolean doCollect = new AtomicBoolean(false);
 
-    private String connectionString;
-    private String plcType;
-    private List<String> variables;
-    private int samplingRate;
+    private final String connectionString;
+    private final String plcType;
+    private final List<String> variables;
+    private final int samplingRate;
 
     final static String PLC4JTYPE_SIEMENS = "Siemens S7";
 
@@ -63,9 +63,9 @@ public class PollLoop {
      */
     public class Collector extends Thread {
 
-        String connectionString;
-        String plcType;
-        int samplingRate;
+        final String connectionString;
+        final String plcType;
+        final int samplingRate;
 
         int incrementalSleepTime;
 

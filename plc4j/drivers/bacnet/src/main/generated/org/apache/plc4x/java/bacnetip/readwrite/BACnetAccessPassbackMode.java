@@ -36,7 +36,7 @@ public enum BACnetAccessPassbackMode {
     }
   }
 
-  private short value;
+  private final short value;
 
   BACnetAccessPassbackMode(short value) {
     this.value = value;

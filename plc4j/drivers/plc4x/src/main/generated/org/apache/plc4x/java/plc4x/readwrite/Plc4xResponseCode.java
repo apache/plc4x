@@ -44,7 +44,7 @@ public enum Plc4xResponseCode {
     }
   }
 
-  private short value;
+  private final short value;
 
   Plc4xResponseCode(short value) {
     this.value = value;

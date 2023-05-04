@@ -36,11 +36,11 @@ import org.junit.jupiter.api.Test;
 
 public class SchemaCacheTest {
 
-    private static SchemaCache schemaCache = new SchemaCache(0);
-    private static List<RecordSchema> schemas = new ArrayList<>();
-    private static List<List<PlcTag>> tags = new ArrayList<>();
-    private static List<Map<String, String>> addresses = new ArrayList<>();
-    private static List<LinkedHashSet<String>> tagNames = new ArrayList<>();
+    private static final SchemaCache schemaCache = new SchemaCache(0);
+    private static final List<RecordSchema> schemas = new ArrayList<>();
+    private static final List<List<PlcTag>> tags = new ArrayList<>();
+    private static final List<Map<String, String>> addresses = new ArrayList<>();
+    private static final List<LinkedHashSet<String>> tagNames = new ArrayList<>();
 
     @BeforeAll
     static public void innit() {
@@ -160,7 +160,7 @@ public class SchemaCacheTest {
 
     private static class TestPlcTag implements PlcTag {
 
-        String address;
+        final String address;
 
         TestPlcTag(String address) {
             this.address = address;

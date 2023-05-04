@@ -96,7 +96,7 @@ public class CANOpenProtocolLogic extends Plc4xCANProtocolBase<CANOpenFrame>
     implements HasConfiguration<CANOpenConfiguration>, PlcSubscriber {
 
     private static final Duration REQUEST_TIMEOUT = Duration.ofSeconds(10L);
-    private Logger logger = LoggerFactory.getLogger(CANOpenProtocolLogic.class);
+    private final Logger logger = LoggerFactory.getLogger(CANOpenProtocolLogic.class);
 
     private CANOpenConfiguration configuration;
     private RequestTransactionManager tm;
@@ -104,7 +104,7 @@ public class CANOpenProtocolLogic extends Plc4xCANProtocolBase<CANOpenFrame>
     private CANOpenDriverContext canContext;
     private CANConversation conversation;
 
-    private Map<DefaultPlcConsumerRegistration, Consumer<PlcSubscriptionEvent>> consumers = new ConcurrentHashMap<>();
+    private final Map<DefaultPlcConsumerRegistration, Consumer<PlcSubscriptionEvent>> consumers = new ConcurrentHashMap<>();
 
     @Override
     public void setConfiguration(CANOpenConfiguration configuration) {

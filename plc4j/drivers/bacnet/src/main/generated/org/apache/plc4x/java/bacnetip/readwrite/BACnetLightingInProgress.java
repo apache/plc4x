@@ -38,7 +38,7 @@ public enum BACnetLightingInProgress {
     }
   }
 
-  private short value;
+  private final short value;
 
   BACnetLightingInProgress(short value) {
     this.value = value;

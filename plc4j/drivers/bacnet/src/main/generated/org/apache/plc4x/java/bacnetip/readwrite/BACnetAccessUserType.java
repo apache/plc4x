@@ -37,7 +37,7 @@ public enum BACnetAccessUserType {
     }
   }
 
-  private int value;
+  private final int value;
 
   BACnetAccessUserType(int value) {
     this.value = value;

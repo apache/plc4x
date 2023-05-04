@@ -68,7 +68,7 @@ public enum TemperatureBroadcastCommandTypeContainer {
     }
   }
 
-  private short value;
+  private final short value;
   private short numBytes;
   private TemperatureBroadcastCommandType commandType;
 

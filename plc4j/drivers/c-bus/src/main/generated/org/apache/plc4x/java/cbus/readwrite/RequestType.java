@@ -42,7 +42,7 @@ public enum RequestType {
     }
   }
 
-  private short value;
+  private final short value;
   private short controlChar;
 
   RequestType(short value, short controlChar) {

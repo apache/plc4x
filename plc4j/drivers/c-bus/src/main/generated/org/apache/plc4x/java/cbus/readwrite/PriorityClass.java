@@ -37,7 +37,7 @@ public enum PriorityClass {
     }
   }
 
-  private byte value;
+  private final byte value;
 
   PriorityClass(byte value) {
     this.value = value;

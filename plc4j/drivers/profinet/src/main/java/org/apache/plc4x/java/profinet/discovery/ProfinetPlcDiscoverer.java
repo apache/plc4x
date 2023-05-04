@@ -64,9 +64,9 @@ public class ProfinetPlcDiscoverer implements PlcDiscoverer {
     // Pre-Defined LLDP discovery MAC address
     private static final MacAddress LLDP_BROADCAST_MAC_ADDRESS = new MacAddress(new byte[]{0x01, (byte) 0x80, (byte) 0xc2, 0x00, 0x00, 0x0e});
 
-    Map<MacAddress, PcapHandle> openHandles;
-    List<PlcDiscoveryItem> values = new ArrayList<>();
-    Set<Timer> periodicTimers = new HashSet<>();
+    final Map<MacAddress, PcapHandle> openHandles;
+    final List<PlcDiscoveryItem> values = new ArrayList<>();
+    final Set<Timer> periodicTimers = new HashSet<>();
     private final Logger logger = LoggerFactory.getLogger(ProfinetPlcDiscoverer.class);
     private PlcDiscoveryItemHandler handler;
 

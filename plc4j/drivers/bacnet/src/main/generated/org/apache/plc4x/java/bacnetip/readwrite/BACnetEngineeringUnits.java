@@ -285,7 +285,7 @@ public enum BACnetEngineeringUnits {
     }
   }
 
-  private long value;
+  private final long value;
 
   BACnetEngineeringUnits(long value) {
     this.value = value;

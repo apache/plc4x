@@ -40,7 +40,7 @@ public enum BACnetEscalatorOperationDirection {
     }
   }
 
-  private int value;
+  private final int value;
 
   BACnetEscalatorOperationDirection(int value) {
     this.value = value;

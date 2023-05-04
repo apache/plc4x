@@ -50,7 +50,7 @@ public enum ComObjectValueType {
     }
   }
 
-  private short value;
+  private final short value;
   private short sizeInBytes;
 
   ComObjectValueType(short value, short sizeInBytes) {

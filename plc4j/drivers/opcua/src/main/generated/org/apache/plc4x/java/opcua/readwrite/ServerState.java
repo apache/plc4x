@@ -41,7 +41,7 @@ public enum ServerState {
     }
   }
 
-  private long value;
+  private final long value;
 
   ServerState(long value) {
     this.value = value;

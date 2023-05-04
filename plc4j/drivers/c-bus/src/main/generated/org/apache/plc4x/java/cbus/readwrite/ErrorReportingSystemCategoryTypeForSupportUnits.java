@@ -50,7 +50,7 @@ public enum ErrorReportingSystemCategoryTypeForSupportUnits {
     }
   }
 
-  private byte value;
+  private final byte value;
 
   ErrorReportingSystemCategoryTypeForSupportUnits(byte value) {
     this.value = value;

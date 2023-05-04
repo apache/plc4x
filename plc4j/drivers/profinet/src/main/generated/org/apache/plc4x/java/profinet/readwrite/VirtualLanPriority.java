@@ -43,7 +43,7 @@ public enum VirtualLanPriority {
     }
   }
 
-  private byte value;
+  private final byte value;
   private String acronym;
 
   VirtualLanPriority(byte value, String acronym) {

@@ -43,7 +43,7 @@ public enum AccessControlCommandType {
     }
   }
 
-  private byte value;
+  private final byte value;
   private short numberOfArguments;
 
   AccessControlCommandType(byte value, short numberOfArguments) {

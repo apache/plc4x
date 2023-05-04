@@ -41,7 +41,7 @@ public class CBusServerAdapter extends ChannelInboundHandlerAdapter {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CBusServerAdapter.class);
 
-    private Context context;
+    private final Context context;
 
     private static final RequestContext requestContext = new RequestContext(false);
 

@@ -42,7 +42,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class MessageFormatParserTest {
 
-    MessageFormatParser SUT = new MessageFormatParser();
+    final MessageFormatParser SUT = new MessageFormatParser();
 
     @Test
     void parseNull() {

@@ -37,7 +37,7 @@ public enum HistoryUpdateType {
     }
   }
 
-  private long value;
+  private final long value;
 
   HistoryUpdateType(long value) {
     this.value = value;

@@ -1169,7 +1169,7 @@ public enum KnxDatapointType {
     }
   }
 
-  private long value;
+  private final long value;
   private int number;
   private String name;
   private KnxDatapointMainType datapointMainType;

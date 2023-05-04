@@ -50,7 +50,7 @@ public enum CANOpenService {
     }
   }
 
-  private byte value;
+  private final byte value;
   private short min;
   private short max;
   private boolean pdo;

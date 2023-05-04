@@ -38,7 +38,7 @@ public enum PubSubState {
     }
   }
 
-  private long value;
+  private final long value;
 
   PubSubState(long value) {
     this.value = value;

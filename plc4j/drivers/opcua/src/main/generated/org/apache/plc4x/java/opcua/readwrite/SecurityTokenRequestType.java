@@ -35,7 +35,7 @@ public enum SecurityTokenRequestType {
     }
   }
 
-  private long value;
+  private final long value;
 
   SecurityTokenRequestType(long value) {
     this.value = value;

@@ -47,7 +47,7 @@ public abstract class NettyChannelFactory implements ChannelFactory {
     /**
      * TODO should be removed together with the Constructor.
      */
-    private SocketAddress address;
+    private final SocketAddress address;
 
     protected NettyChannelFactory(SocketAddress address) {
         this.address = address;

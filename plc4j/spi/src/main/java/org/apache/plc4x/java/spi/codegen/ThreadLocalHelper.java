@@ -20,6 +20,6 @@ package org.apache.plc4x.java.spi.codegen;
 
 public class ThreadLocalHelper {
 
-    public static ThreadLocal<Boolean> lastItemThreadLocal = ThreadLocal.withInitial(() -> false);
+    public static final ThreadLocal<Boolean> lastItemThreadLocal = ThreadLocal.withInitial(() -> false);
 
 }

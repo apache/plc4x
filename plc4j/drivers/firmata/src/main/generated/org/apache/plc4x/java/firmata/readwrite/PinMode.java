@@ -45,7 +45,7 @@ public enum PinMode {
     }
   }
 
-  private short value;
+  private final short value;
 
   PinMode(short value) {
     this.value = value;

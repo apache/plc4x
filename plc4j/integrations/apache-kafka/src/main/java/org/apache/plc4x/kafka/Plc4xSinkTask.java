@@ -264,6 +264,5 @@ public class Plc4xSinkTask extends SinkTask {
         }
 
         remainingRetries = plc4xRetries;
-        return;
     }
 }

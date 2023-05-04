@@ -299,7 +299,7 @@ public enum ApplicationIdContainer {
     }
   }
 
-  private short value;
+  private final short value;
   private LightingCompatible lightingCompatible;
   private ApplicationId applicationId;
 

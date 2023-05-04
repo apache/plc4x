@@ -312,7 +312,7 @@ public class PlcEntityManagerComplexTest implements WithAssertions {
     public static class EntityWithBadConstructor {
 
         @PlcTag("asdf")
-        private long field;
+        private final long field;
 
         public EntityWithBadConstructor(long field) {
             this.field = field;

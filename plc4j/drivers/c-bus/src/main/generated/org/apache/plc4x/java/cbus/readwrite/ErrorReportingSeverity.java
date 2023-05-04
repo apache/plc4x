@@ -41,7 +41,7 @@ public enum ErrorReportingSeverity {
     }
   }
 
-  private byte value;
+  private final byte value;
 
   ErrorReportingSeverity(byte value) {
     this.value = value;

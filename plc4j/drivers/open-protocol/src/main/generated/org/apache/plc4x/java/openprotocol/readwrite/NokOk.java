@@ -35,7 +35,7 @@ public enum NokOk {
     }
   }
 
-  private short value;
+  private final short value;
 
   NokOk(short value) {
     this.value = value;

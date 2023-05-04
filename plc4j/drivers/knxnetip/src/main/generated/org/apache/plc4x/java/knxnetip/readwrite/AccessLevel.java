@@ -40,7 +40,7 @@ public enum AccessLevel {
     }
   }
 
-  private byte value;
+  private final byte value;
   private String purpose;
   private boolean needsAuthentication;
 

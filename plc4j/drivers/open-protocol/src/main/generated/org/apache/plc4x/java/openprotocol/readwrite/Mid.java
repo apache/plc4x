@@ -219,7 +219,7 @@ public enum Mid {
     }
   }
 
-  private long value;
+  private final long value;
 
   Mid(long value) {
     this.value = value;

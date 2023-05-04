@@ -39,7 +39,7 @@ public enum BACnetAccumulatorRecordAccumulatorStatus {
     }
   }
 
-  private short value;
+  private final short value;
 
   BACnetAccumulatorRecordAccumulatorStatus(short value) {
     this.value = value;

@@ -55,11 +55,11 @@ public class Plc4xNamespace extends ManagedNamespaceWithLifecycle {
 
     public static final String APPLICATIONID = "urn:eclipse:milo:plc4x:server";
 
-    private Configuration config;
+    private final Configuration config;
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private final DataTypeDictionaryManager dictionaryManager;
     private final SubscriptionModel subscriptionModel;
-    private Plc4xCommunication plc4xServer;
+    private final Plc4xCommunication plc4xServer;
 
     public Plc4xNamespace(OpcUaServer server, Configuration c) {
         super(server, APPLICATIONID);

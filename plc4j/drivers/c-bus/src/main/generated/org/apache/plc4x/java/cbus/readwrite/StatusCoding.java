@@ -37,7 +37,7 @@ public enum StatusCoding {
     }
   }
 
-  private byte value;
+  private final byte value;
 
   StatusCoding(byte value) {
     this.value = value;

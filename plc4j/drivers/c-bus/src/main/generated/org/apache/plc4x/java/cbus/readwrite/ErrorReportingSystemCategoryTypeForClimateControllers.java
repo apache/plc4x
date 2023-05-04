@@ -50,7 +50,7 @@ public enum ErrorReportingSystemCategoryTypeForClimateControllers {
     }
   }
 
-  private byte value;
+  private final byte value;
 
   ErrorReportingSystemCategoryTypeForClimateControllers(byte value) {
     this.value = value;

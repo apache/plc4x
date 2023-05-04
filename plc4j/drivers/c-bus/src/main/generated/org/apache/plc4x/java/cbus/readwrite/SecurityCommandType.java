@@ -38,7 +38,7 @@ public enum SecurityCommandType {
     }
   }
 
-  private byte value;
+  private final byte value;
   private short numberOfArguments;
 
   SecurityCommandType(byte value, short numberOfArguments) {

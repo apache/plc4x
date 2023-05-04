@@ -36,7 +36,7 @@ public enum BACnetTimerState {
     }
   }
 
-  private short value;
+  private final short value;
 
   BACnetTimerState(short value) {
     this.value = value;

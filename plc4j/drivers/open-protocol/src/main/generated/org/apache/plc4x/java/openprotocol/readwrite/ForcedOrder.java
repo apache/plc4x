@@ -36,7 +36,7 @@ public enum ForcedOrder {
     }
   }
 
-  private short value;
+  private final short value;
 
   ForcedOrder(short value) {
     this.value = value;

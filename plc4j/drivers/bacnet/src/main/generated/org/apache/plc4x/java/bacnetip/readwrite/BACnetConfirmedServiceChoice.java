@@ -65,7 +65,7 @@ public enum BACnetConfirmedServiceChoice {
     }
   }
 
-  private short value;
+  private final short value;
 
   BACnetConfirmedServiceChoice(short value) {
     this.value = value;

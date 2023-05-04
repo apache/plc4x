@@ -41,7 +41,7 @@ public enum BACnetFaultType {
     }
   }
 
-  private short value;
+  private final short value;
 
   BACnetFaultType(short value) {
     this.value = value;

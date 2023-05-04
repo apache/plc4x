@@ -85,7 +85,7 @@ public enum KnxPropertyDataType {
     }
   }
 
-  private short value;
+  private final short value;
   private short number;
   private short sizeInBytes;
   private String name;

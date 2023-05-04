@@ -29,7 +29,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class SimularedTagHandlerTest implements WithAssertions {
 
-    SimulatedTagHandler SUT = new SimulatedTagHandler();
+    final SimulatedTagHandler SUT = new SimulatedTagHandler();
 
     @Mock
     SimulatedTag plcTag;

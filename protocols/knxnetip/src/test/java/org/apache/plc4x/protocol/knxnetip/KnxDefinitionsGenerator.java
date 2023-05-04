@@ -70,7 +70,7 @@ public class KnxDefinitionsGenerator extends BaseKnxWebserviceContentProcessor {
     public static final String FOOTER = "]\n";
 
     protected int deviceCounter;
-    protected Set<String> processedIds;
+    protected final Set<String> processedIds;
 
     public KnxDefinitionsGenerator() {
         processedIds = new HashSet<>();

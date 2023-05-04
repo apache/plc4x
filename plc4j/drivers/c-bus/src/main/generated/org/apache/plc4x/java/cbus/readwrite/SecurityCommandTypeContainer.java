@@ -155,7 +155,7 @@ public enum SecurityCommandTypeContainer {
     }
   }
 
-  private short value;
+  private final short value;
   private short numBytes;
   private SecurityCommandType commandType;
 

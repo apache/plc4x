@@ -75,7 +75,7 @@ public enum AdsDataType {
     }
   }
 
-  private byte value;
+  private final byte value;
   private int numBytes;
   private PlcValueType plcValueType;
 

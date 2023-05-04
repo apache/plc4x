@@ -51,7 +51,7 @@ public enum PermissionType {
     }
   }
 
-  private long value;
+  private final long value;
 
   PermissionType(long value) {
     this.value = value;

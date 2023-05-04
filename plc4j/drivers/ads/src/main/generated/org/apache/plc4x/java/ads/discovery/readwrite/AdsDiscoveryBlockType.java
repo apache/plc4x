@@ -42,7 +42,7 @@ public enum AdsDiscoveryBlockType {
     }
   }
 
-  private int value;
+  private final int value;
 
   AdsDiscoveryBlockType(int value) {
     this.value = value;

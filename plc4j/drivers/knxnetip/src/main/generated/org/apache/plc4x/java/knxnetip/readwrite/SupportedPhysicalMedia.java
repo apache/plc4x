@@ -62,7 +62,7 @@ public enum SupportedPhysicalMedia {
     }
   }
 
-  private short value;
+  private final short value;
   private boolean knxSupport;
   private String description;
 

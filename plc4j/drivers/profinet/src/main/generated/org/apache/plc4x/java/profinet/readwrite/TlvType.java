@@ -43,7 +43,7 @@ public enum TlvType {
     }
   }
 
-  private short value;
+  private final short value;
 
   TlvType(short value) {
     this.value = value;

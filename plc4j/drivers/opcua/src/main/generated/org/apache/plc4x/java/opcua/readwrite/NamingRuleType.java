@@ -36,7 +36,7 @@ public enum NamingRuleType {
     }
   }
 
-  private long value;
+  private final long value;
 
   NamingRuleType(long value) {
     this.value = value;

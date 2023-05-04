@@ -2083,7 +2083,7 @@ public enum Parameter {
     }
   }
 
-  private short value;
+  private final short value;
   private ParameterType parameterType;
   private String form;
   private boolean isVolatile;

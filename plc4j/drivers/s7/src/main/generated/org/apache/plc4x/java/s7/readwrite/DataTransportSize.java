@@ -42,7 +42,7 @@ public enum DataTransportSize {
     }
   }
 
-  private short value;
+  private final short value;
   private boolean sizeInBits;
 
   DataTransportSize(short value, boolean sizeInBits) {

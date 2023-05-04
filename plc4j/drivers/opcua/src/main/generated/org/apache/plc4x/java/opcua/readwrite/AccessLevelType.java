@@ -41,7 +41,7 @@ public enum AccessLevelType {
     }
   }
 
-  private short value;
+  private final short value;
 
   AccessLevelType(short value) {
     this.value = value;

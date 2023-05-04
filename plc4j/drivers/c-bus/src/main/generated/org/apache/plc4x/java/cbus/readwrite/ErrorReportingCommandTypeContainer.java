@@ -40,7 +40,7 @@ public enum ErrorReportingCommandTypeContainer {
     }
   }
 
-  private short value;
+  private final short value;
   private short numBytes;
   private ErrorReportingCommandType commandType;
 

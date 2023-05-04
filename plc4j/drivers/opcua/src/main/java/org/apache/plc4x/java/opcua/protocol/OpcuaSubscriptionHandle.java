@@ -48,20 +48,20 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OpcuaSubscriptionHandle.class);
 
-    private Set<Consumer<PlcSubscriptionEvent>> consumers;
-    private List<String> tagNames;
-    private SecureChannel channel;
-    private PlcSubscriptionRequest subscriptionRequest;
-    private AtomicBoolean destroy = new AtomicBoolean(false);
-    private OpcuaProtocolLogic plcSubscriber;
-    private Long subscriptionId;
-    private long cycleTime;
-    private long revisedCycleTime;
+    private final Set<Consumer<PlcSubscriptionEvent>> consumers;
+    private final List<String> tagNames;
+    private final SecureChannel channel;
+    private final PlcSubscriptionRequest subscriptionRequest;
+    private final AtomicBoolean destroy = new AtomicBoolean(false);
+    private final OpcuaProtocolLogic plcSubscriber;
+    private final Long subscriptionId;
+    private final long cycleTime;
+    private final long revisedCycleTime;
     private boolean complete = false;
 
     private final AtomicLong clientHandles = new AtomicLong(1L);
 
-    private ConversationContext<OpcuaAPU> context;
+    private final ConversationContext<OpcuaAPU> context;
 
     public OpcuaSubscriptionHandle(ConversationContext<OpcuaAPU> context, OpcuaProtocolLogic plcSubscriber, SecureChannel channel, PlcSubscriptionRequest subscriptionRequest, Long subscriptionId, long cycleTime) {
         super(plcSubscriber);

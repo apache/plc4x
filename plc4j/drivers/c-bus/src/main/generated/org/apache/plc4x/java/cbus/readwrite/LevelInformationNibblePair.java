@@ -51,7 +51,7 @@ public enum LevelInformationNibblePair {
     }
   }
 
-  private short value;
+  private final short value;
   private byte nibbleValue;
 
   LevelInformationNibblePair(short value, byte nibbleValue) {

@@ -41,7 +41,7 @@ public enum BACnetTimerTransition {
     }
   }
 
-  private short value;
+  private final short value;
 
   BACnetTimerTransition(short value) {
     this.value = value;

@@ -35,7 +35,7 @@ public enum TagClass {
     }
   }
 
-  private byte value;
+  private final byte value;
 
   TagClass(byte value) {
     this.value = value;

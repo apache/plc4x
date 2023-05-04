@@ -44,9 +44,9 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
 
     // TODO: we could condense it to one import set as these can be emitted per template and are not hardcoded anymore
 
-    public SortedSet<String> requiredImports = new TreeSet<>();
+    public final SortedSet<String> requiredImports = new TreeSet<>();
 
-    public SortedSet<String> requiredImportsForDataIo = new TreeSet<>();
+    public final SortedSet<String> requiredImportsForDataIo = new TreeSet<>();
 
     public GoLanguageTemplateHelper(TypeDefinition thisType, String protocolName, String flavorName, Map<String, TypeDefinition> types) {
         super(thisType, protocolName, flavorName, types);

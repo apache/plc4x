@@ -35,7 +35,7 @@ public enum TlvIEEESubType {
     }
   }
 
-  private short value;
+  private final short value;
 
   TlvIEEESubType(short value) {
     this.value = value;

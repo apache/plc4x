@@ -40,7 +40,7 @@ public enum TriggerControlCommandType {
     }
   }
 
-  private byte value;
+  private final byte value;
   private short numberOfArguments;
 
   TriggerControlCommandType(byte value, short numberOfArguments) {

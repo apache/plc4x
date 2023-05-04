@@ -104,7 +104,7 @@ public enum KnxDatapointMainType {
     }
   }
 
-  private int value;
+  private final int value;
   private int number;
   private String name;
   private short sizeInBits;

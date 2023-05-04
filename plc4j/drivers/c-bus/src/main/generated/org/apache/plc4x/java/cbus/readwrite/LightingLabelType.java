@@ -37,7 +37,7 @@ public enum LightingLabelType {
     }
   }
 
-  private byte value;
+  private final byte value;
 
   LightingLabelType(byte value) {
     this.value = value;

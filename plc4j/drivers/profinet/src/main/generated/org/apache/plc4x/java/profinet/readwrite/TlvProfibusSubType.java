@@ -37,7 +37,7 @@ public enum TlvProfibusSubType {
     }
   }
 
-  private short value;
+  private final short value;
 
   TlvProfibusSubType(short value) {
     this.value = value;

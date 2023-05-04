@@ -46,7 +46,7 @@ public enum SyntaxIdType {
     }
   }
 
-  private short value;
+  private final short value;
 
   SyntaxIdType(short value) {
     this.value = value;

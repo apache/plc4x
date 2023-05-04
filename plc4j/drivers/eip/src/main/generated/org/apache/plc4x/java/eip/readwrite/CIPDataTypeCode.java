@@ -66,7 +66,7 @@ public enum CIPDataTypeCode {
     }
   }
 
-  private int value;
+  private final int value;
   private short size;
 
   CIPDataTypeCode(int value, short size) {

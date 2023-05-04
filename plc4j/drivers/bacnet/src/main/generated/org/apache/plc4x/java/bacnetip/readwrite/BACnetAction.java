@@ -35,7 +35,7 @@ public enum BACnetAction {
     }
   }
 
-  private short value;
+  private final short value;
 
   BACnetAction(short value) {
     this.value = value;

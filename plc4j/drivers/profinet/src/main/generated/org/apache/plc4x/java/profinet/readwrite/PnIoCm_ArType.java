@@ -34,7 +34,7 @@ public enum PnIoCm_ArType {
     }
   }
 
-  private int value;
+  private final int value;
 
   PnIoCm_ArType(int value) {
     this.value = value;

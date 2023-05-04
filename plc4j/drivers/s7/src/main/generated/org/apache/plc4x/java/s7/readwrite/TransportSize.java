@@ -373,7 +373,7 @@ public enum TransportSize {
     }
   }
 
-  private short value;
+  private final short value;
   private boolean supported_S7_300;
   private boolean supported_LOGO;
   private short code;

@@ -40,7 +40,7 @@ public enum BACnetBackupState {
     }
   }
 
-  private short value;
+  private final short value;
 
   BACnetBackupState(short value) {
     this.value = value;

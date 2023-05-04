@@ -36,7 +36,7 @@ public enum KnxLayer {
     }
   }
 
-  private short value;
+  private final short value;
 
   KnxLayer(short value) {
     this.value = value;

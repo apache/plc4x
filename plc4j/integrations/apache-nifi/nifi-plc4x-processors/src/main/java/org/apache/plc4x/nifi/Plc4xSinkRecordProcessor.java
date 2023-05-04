@@ -150,7 +150,7 @@ public class Plc4xSinkRecordProcessor extends BasePlc4xProcessor {
 						}
 					} else {
 						if (debugEnabled)
-                   			logger.debug("Plc-Avro schema and PlcTypes resolution not found in cache and will be added with key: " + addressMap.toString());
+                   			logger.debug("Plc-Avro schema and PlcTypes resolution not found in cache and will be added with key: " + addressMap);
 						for (Map.Entry<String,String> entry: addressMap.entrySet()){
 							if (record.toMap().containsKey(entry.getKey())) {
 								builder.addTagAddress(entry.getKey(), entry.getValue(), record.getValue(entry.getKey()));
@@ -190,7 +190,7 @@ public class Plc4xSinkRecordProcessor extends BasePlc4xProcessor {
 					}
 					if (tags == null && writeRequest != null){
 						if (debugEnabled)
-							logger.debug("Adding PlcTypes resolution into cache with key: " + addressMap.toString());
+							logger.debug("Adding PlcTypes resolution into cache with key: " + addressMap);
 						getSchemaCache().addSchema(
 							addressMap, 
 							writeRequest.getTagNames(),

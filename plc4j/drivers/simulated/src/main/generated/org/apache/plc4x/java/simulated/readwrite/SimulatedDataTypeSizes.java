@@ -62,7 +62,7 @@ public enum SimulatedDataTypeSizes {
     }
   }
 
-  private short value;
+  private final short value;
   private short dataTypeSize;
 
   SimulatedDataTypeSizes(short value, short dataTypeSize) {

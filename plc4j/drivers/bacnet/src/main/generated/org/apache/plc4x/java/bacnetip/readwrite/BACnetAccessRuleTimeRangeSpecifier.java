@@ -35,7 +35,7 @@ public enum BACnetAccessRuleTimeRangeSpecifier {
     }
   }
 
-  private short value;
+  private final short value;
 
   BACnetAccessRuleTimeRangeSpecifier(short value) {
     this.value = value;

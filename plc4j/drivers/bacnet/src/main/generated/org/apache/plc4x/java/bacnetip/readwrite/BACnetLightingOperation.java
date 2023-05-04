@@ -45,7 +45,7 @@ public enum BACnetLightingOperation {
     }
   }
 
-  private int value;
+  private final int value;
 
   BACnetLightingOperation(int value) {
     this.value = value;

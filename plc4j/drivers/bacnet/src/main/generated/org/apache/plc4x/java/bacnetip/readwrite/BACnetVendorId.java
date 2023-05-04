@@ -1641,7 +1641,7 @@ public enum BACnetVendorId {
     }
   }
 
-  private int value;
+  private final int value;
   private int vendorId;
   private String vendorName;
 

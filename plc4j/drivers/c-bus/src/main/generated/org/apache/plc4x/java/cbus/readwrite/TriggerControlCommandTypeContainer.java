@@ -105,7 +105,7 @@ public enum TriggerControlCommandTypeContainer {
     }
   }
 
-  private short value;
+  private final short value;
   private short numBytes;
   private TriggerControlCommandType commandType;
 

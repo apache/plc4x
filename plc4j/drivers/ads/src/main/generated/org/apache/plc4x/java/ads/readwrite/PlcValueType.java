@@ -64,7 +64,7 @@ public enum PlcValueType {
     }
   }
 
-  private short value;
+  private final short value;
 
   PlcValueType(short value) {
     this.value = value;

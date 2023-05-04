@@ -40,7 +40,7 @@ public enum TraceType {
     }
   }
 
-  private long value;
+  private final long value;
 
   TraceType(long value) {
     this.value = value;

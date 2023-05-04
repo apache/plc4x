@@ -36,7 +36,7 @@ public enum TelephonyCommandType {
     }
   }
 
-  private byte value;
+  private final byte value;
   private short numberOfArguments;
 
   TelephonyCommandType(byte value, short numberOfArguments) {

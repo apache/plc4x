@@ -39,7 +39,7 @@ public class DefaultExpectRequestContext<T> implements ConversationContext.Expec
 
     private final ConversationContext context;
 
-    protected Class<?> expectClazz;
+    protected final Class<?> expectClazz;
 
     protected Consumer<?> packetConsumer;
 
@@ -47,7 +47,7 @@ public class DefaultExpectRequestContext<T> implements ConversationContext.Expec
 
     protected BiConsumer<?, ? extends Throwable> errorConsumer;
 
-    protected Duration timeout;
+    protected final Duration timeout;
     private HandlerRegistration registration;
 
     public DefaultExpectRequestContext(Consumer<HandlerRegistration> finisher, Class<T> expectClazz, Duration timeout, ConversationContext context) {

@@ -56,7 +56,7 @@ public abstract class Plc4xBaseTable extends AbstractTable {
     private final JobConfiguration conf;
     private final long tableCutoff;
     private Plc4xSchema.Record current;
-    private List<String> names;
+    private final List<String> names;
 
     public Plc4xBaseTable(BlockingQueue<Plc4xSchema.Record> queue, JobConfiguration conf, long tableCutoff) {
         this.tableCutoff = tableCutoff;

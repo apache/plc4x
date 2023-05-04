@@ -31,7 +31,7 @@ public abstract class DefaultTypedField extends DefaultField {
 
     protected TypeReference type;
 
-    protected CompletableFuture<TypeReference> typeReferenceCompletionStage = new CompletableFuture<>();
+    protected final CompletableFuture<TypeReference> typeReferenceCompletionStage = new CompletableFuture<>();
 
     public DefaultTypedField(Map<String, Term> attributes) {
         super(attributes);

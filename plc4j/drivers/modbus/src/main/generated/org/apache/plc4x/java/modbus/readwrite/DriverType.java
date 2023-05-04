@@ -36,7 +36,7 @@ public enum DriverType {
     }
   }
 
-  private long value;
+  private final long value;
 
   DriverType(long value) {
     this.value = value;

@@ -34,7 +34,7 @@ public enum PnIoCm_DescriptionType {
     }
   }
 
-  private int value;
+  private final int value;
 
   PnIoCm_DescriptionType(int value) {
     this.value = value;

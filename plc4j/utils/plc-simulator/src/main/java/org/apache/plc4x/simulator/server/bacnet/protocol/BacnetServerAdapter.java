@@ -35,7 +35,7 @@ public class BacnetServerAdapter extends ChannelInboundHandlerAdapter {
     private Context context;
 
     // TODO: make configurable
-    private static int DEVICE_INSTANCE = 4711;
+    private static final int DEVICE_INSTANCE = 4711;
 
     // TODO: make configurable
     private static int DEVICE_ID = 815;

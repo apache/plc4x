@@ -37,7 +37,7 @@ public enum ClockAndTimekeepingCommandType {
     }
   }
 
-  private byte value;
+  private final byte value;
   private short numberOfArguments;
 
   ClockAndTimekeepingCommandType(byte value, short numberOfArguments) {

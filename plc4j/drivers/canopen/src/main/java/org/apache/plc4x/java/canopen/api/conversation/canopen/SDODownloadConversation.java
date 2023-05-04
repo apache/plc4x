@@ -18,17 +18,17 @@
  */
 package org.apache.plc4x.java.canopen.api.conversation.canopen;
 
+import io.vavr.control.Either;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.value.PlcValue;
-import org.apache.plc4x.java.canopen.transport.CANOpenAbortException;
 import org.apache.plc4x.java.canopen.readwrite.*;
+import org.apache.plc4x.java.canopen.transport.CANOpenAbortException;
 import org.apache.plc4x.java.spi.generation.ByteOrder;
-
-import java.util.concurrent.CompletableFuture;
-
 import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBufferByteBased;
+
+import java.util.concurrent.CompletableFuture;
 
 public class SDODownloadConversation extends CANOpenConversationBase {
 
@@ -126,21 +126,18 @@ public class SDODownloadConversation extends CANOpenConversationBase {
             .unwrap(CANOpenSDOResponse::getResponse)
             .check(new TypeOrAbortPredicate<>(SDOSegmentDownloadResponse.class))
             .unwrap(payload -> unwrap(SDOSegmentDownloadResponse.class, payload))
-            .handle(either -> {
-                if (either.isLeft()) {
+            .check(sdoSegmentDownloadResponses -> !sdoSegmentDownloadResponses.isLeft())
+            .unwrap(Either::get)
+            .handle(response -> {
+                if (response.getToggle() != toggle) {
+                    receiver.complete(PlcResponseCode.REMOTE_ERROR);
                     return;
-                } else {
-                    SDOSegmentDownloadResponse response = either.get();
-                    if (response.getToggle() != toggle) {
-                        receiver.complete(PlcResponseCode.REMOTE_ERROR);
-                        return;
-                    }
+                }
 
-                    if (offset + segment.length == data.length) {
-                        receiver.complete(PlcResponseCode.OK);
-                    } else {
-                        put(data, receiver, !toggle, offset + segment.length);
-                    }
+                if (offset + segment.length == data.length) {
+                    receiver.complete(PlcResponseCode.OK);
+                } else {
+                    put(data, receiver, !toggle, offset + segment.length);
                 }
             });
     }

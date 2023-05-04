@@ -37,7 +37,7 @@ public enum BACnetLightingTransition {
     }
   }
 
-  private short value;
+  private final short value;
 
   BACnetLightingTransition(short value) {
     this.value = value;

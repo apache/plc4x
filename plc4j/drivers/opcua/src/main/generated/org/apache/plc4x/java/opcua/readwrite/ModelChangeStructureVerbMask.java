@@ -38,7 +38,7 @@ public enum ModelChangeStructureVerbMask {
     }
   }
 
-  private long value;
+  private final long value;
 
   ModelChangeStructureVerbMask(long value) {
     this.value = value;

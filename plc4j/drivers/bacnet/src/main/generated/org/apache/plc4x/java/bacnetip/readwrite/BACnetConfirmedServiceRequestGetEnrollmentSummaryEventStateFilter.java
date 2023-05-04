@@ -40,7 +40,7 @@ public enum BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter {
     }
   }
 
-  private short value;
+  private final short value;
 
   BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter(short value) {
     this.value = value;

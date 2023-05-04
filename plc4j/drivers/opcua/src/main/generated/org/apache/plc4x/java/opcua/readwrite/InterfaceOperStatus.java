@@ -40,7 +40,7 @@ public enum InterfaceOperStatus {
     }
   }
 
-  private long value;
+  private final long value;
 
   InterfaceOperStatus(long value) {
     this.value = value;

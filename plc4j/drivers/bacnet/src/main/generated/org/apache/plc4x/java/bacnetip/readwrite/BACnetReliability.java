@@ -58,7 +58,7 @@ public enum BACnetReliability {
     }
   }
 
-  private int value;
+  private final int value;
 
   BACnetReliability(int value) {
     this.value = value;

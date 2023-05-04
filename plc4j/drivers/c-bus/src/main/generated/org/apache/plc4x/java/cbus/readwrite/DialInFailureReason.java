@@ -34,7 +34,7 @@ public enum DialInFailureReason {
     }
   }
 
-  private short value;
+  private final short value;
 
   DialInFailureReason(short value) {
     this.value = value;

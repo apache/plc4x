@@ -61,9 +61,9 @@ public class Plc4xCommunication extends AbstractLifecycle {
     private final Integer DEFAULT_RETRY_BACKOFF = 5000;
     private final DataValue BAD_RESPONSE = new DataValue(new Variant(null), StatusCode.BAD);
 
-    private Map<String, Long> failedConnectionList = new HashMap<>();
+    private final Map<String, Long> failedConnectionList = new HashMap<>();
 
-    Map<NodeId, DataItem> monitoredList = new HashMap<>();
+    final Map<NodeId, DataItem> monitoredList = new HashMap<>();
 
     public Plc4xCommunication() {
 

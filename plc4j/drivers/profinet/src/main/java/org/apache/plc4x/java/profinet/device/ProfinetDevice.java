@@ -69,7 +69,7 @@ public class ProfinetDevice implements PlcSubscriber{
     private String vendorId;
     private String deviceId;
     private Thread eventLoop = null;
-    Map<String, List<Consumer<PlcSubscriptionEvent>>> registrations = new HashMap<>();
+    final Map<String, List<Consumer<PlcSubscriptionEvent>>> registrations = new HashMap<>();
     private int offset = 0;
     private boolean firstMessage = true;
 
@@ -414,7 +414,7 @@ public class ProfinetDevice implements PlcSubscriber{
 
     public class CreateConnection implements ProfinetCallable<DceRpc_Packet> {
 
-        CompletableFuture<Boolean> responseHandled = new CompletableFuture<>();
+        final CompletableFuture<Boolean> responseHandled = new CompletableFuture<>();
         private long id = getObjectId();
         public CompletableFuture<Boolean> getResponseHandled() {
             return responseHandled;
@@ -538,9 +538,7 @@ public class ProfinetDevice implements PlcSubscriber{
 
             blocks.add(deviceContext.getOutputReq());
 
-            for (PnIoCm_Block_ExpectedSubmoduleReq expectedSubModuleApiBlocksReq : deviceContext.getExpectedSubmoduleReq()) {
-                blocks.add(expectedSubModuleApiBlocksReq);
-            }
+            blocks.addAll(deviceContext.getExpectedSubmoduleReq());
 
             return new DceRpc_Packet(
                 DceRpc_PacketType.REQUEST,
@@ -599,7 +597,7 @@ public class ProfinetDevice implements PlcSubscriber{
 
     public class WriteParameters implements ProfinetCallable<DceRpc_Packet> {
 
-        CompletableFuture<Boolean> responseHandled = new CompletableFuture<>();
+        final CompletableFuture<Boolean> responseHandled = new CompletableFuture<>();
         private long id = getObjectId();
 
         public CompletableFuture<Boolean> getResponseHandled() {
@@ -742,7 +740,7 @@ public class ProfinetDevice implements PlcSubscriber{
 
     public class WriteParametersEnd implements ProfinetCallable<DceRpc_Packet> {
 
-        CompletableFuture<Boolean> responseHandled = new CompletableFuture<>();
+        final CompletableFuture<Boolean> responseHandled = new CompletableFuture<>();
         private long id = getObjectId();
 
         public CompletableFuture<Boolean> getResponseHandled() {

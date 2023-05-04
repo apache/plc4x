@@ -173,7 +173,7 @@ public enum HVACHumidityError {
     }
   }
 
-  private short value;
+  private final short value;
 
   HVACHumidityError(short value) {
     this.value = value;

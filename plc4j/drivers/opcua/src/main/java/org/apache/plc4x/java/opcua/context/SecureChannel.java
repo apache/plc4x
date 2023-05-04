@@ -69,7 +69,7 @@ public class SecureChannel {
     private static final PascalString SECURITY_POLICY_NONE = new PascalString("http://opcfoundation.org/UA/SecurityPolicy#None");
     protected static final PascalString NULL_STRING = new PascalString("");
     private static final PascalByteString NULL_BYTE_STRING = new PascalByteString(-1, null);
-    private static ExpandedNodeId NULL_EXPANDED_NODEID = new ExpandedNodeId(false,
+    private static final ExpandedNodeId NULL_EXPANDED_NODEID = new ExpandedNodeId(false,
         false,
         new NodeIdTwoByte((short) 0),
         null,
@@ -116,19 +116,19 @@ public class SecureChannel {
     private PascalByteString certificateThumbprint = null;
     private boolean checkedEndpoints = false;
     private EncryptionHandler encryptionHandler = null;
-    private OpcuaConfiguration configuration;
-    private AtomicInteger channelId = new AtomicInteger(1);
-    private AtomicInteger tokenId = new AtomicInteger(1);
+    private final OpcuaConfiguration configuration;
+    private final AtomicInteger channelId = new AtomicInteger(1);
+    private final AtomicInteger tokenId = new AtomicInteger(1);
     private NodeIdTypeDefinition authenticationToken = new NodeIdTwoByte((short) 0);
     ConversationContext<OpcuaAPU> context;
-    private SecureChannelTransactionManager channelTransactionManager = new SecureChannelTransactionManager();
+    private final SecureChannelTransactionManager channelTransactionManager = new SecureChannelTransactionManager();
     private long lifetime = DEFAULT_CONNECTION_LIFETIME;
     private CompletableFuture<Void> keepAlive;
     private int sendBufferSize;
     private int maxMessageSize;
-    private List<String> endpoints = new ArrayList<>();
+    private final List<String> endpoints = new ArrayList<>();
 
-    private AtomicLong senderSequenceNumber = new AtomicLong();
+    private final AtomicLong senderSequenceNumber = new AtomicLong();
 
     public SecureChannel(DriverContext driverContext, OpcuaConfiguration configuration) {
         this.configuration = configuration;

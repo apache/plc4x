@@ -42,7 +42,7 @@ public enum COTPTpduSize {
     }
   }
 
-  private short value;
+  private final short value;
   private int sizeInBytes;
 
   COTPTpduSize(short value, int sizeInBytes) {

@@ -40,7 +40,7 @@ public enum BACnetAuthenticationStatus {
     }
   }
 
-  private short value;
+  private final short value;
 
   BACnetAuthenticationStatus(short value) {
     this.value = value;

@@ -38,7 +38,7 @@ public enum BACnetAccessCredentialDisable {
     }
   }
 
-  private int value;
+  private final int value;
 
   BACnetAccessCredentialDisable(int value) {
     this.value = value;

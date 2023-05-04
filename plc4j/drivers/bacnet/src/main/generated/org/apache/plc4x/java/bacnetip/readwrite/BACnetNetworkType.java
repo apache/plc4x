@@ -45,7 +45,7 @@ public enum BACnetNetworkType {
     }
   }
 
-  private short value;
+  private final short value;
 
   BACnetNetworkType(short value) {
     this.value = value;

@@ -294,7 +294,7 @@ public enum OpcuaStatusCode {
     }
   }
 
-  private long value;
+  private final long value;
 
   OpcuaStatusCode(long value) {
     this.value = value;

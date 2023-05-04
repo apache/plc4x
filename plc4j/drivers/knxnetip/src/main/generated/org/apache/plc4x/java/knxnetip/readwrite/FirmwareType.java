@@ -49,7 +49,7 @@ public enum FirmwareType {
     }
   }
 
-  private int value;
+  private final int value;
 
   FirmwareType(int value) {
     this.value = value;

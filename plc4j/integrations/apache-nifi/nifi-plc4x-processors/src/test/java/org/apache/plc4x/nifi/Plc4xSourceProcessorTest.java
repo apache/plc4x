@@ -31,7 +31,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class Plc4xSourceProcessorTest {
 
     private TestRunner testRunner;
-    private static int NUMBER_OF_CALLS = 5;
+    private static final int NUMBER_OF_CALLS = 5;
 
     @BeforeEach
     public void init() {

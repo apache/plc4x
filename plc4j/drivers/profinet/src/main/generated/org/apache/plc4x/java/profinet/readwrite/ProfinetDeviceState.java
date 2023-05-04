@@ -40,7 +40,7 @@ public enum ProfinetDeviceState {
     }
   }
 
-  private short value;
+  private final short value;
 
   ProfinetDeviceState(short value) {
     this.value = value;

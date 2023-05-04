@@ -53,7 +53,7 @@ public enum Attribute {
     }
   }
 
-  private short value;
+  private final short value;
   private short bytesReturned;
 
   Attribute(short value, short bytesReturned) {

@@ -44,7 +44,7 @@ public enum ParameterType {
     }
   }
 
-  private short value;
+  private final short value;
 
   ParameterType(short value) {
     this.value = value;

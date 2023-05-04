@@ -36,7 +36,7 @@ public enum DataChangeTrigger {
     }
   }
 
-  private long value;
+  private final long value;
 
   DataChangeTrigger(long value) {
     this.value = value;

@@ -60,9 +60,10 @@ public class SourceConfig extends AbstractConfig{
             source.validate();
             for (JobReference jobReference : source.getJobReferences()) {
                 Boolean found = false;
-                for (Job job : jobs) {                    
+                for (Job job : jobs) {
                     if (jobReference.getName().equals(job.getName())) {
                         found = true;
+                        break;
                     }
                 }
                 if (!found) {

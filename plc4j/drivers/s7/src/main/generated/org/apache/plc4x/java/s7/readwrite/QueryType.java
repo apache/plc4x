@@ -37,7 +37,7 @@ public enum QueryType {
     }
   }
 
-  private short value;
+  private final short value;
 
   QueryType(short value) {
     this.value = value;

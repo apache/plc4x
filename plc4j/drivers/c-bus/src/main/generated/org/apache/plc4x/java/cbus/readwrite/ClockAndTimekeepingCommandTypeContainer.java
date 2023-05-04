@@ -54,7 +54,7 @@ public enum ClockAndTimekeepingCommandTypeContainer {
     }
   }
 
-  private short value;
+  private final short value;
   private short numBytes;
   private ClockAndTimekeepingCommandType commandType;
 

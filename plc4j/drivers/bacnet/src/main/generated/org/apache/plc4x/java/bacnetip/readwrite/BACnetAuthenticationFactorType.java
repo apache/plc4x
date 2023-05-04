@@ -58,7 +58,7 @@ public enum BACnetAuthenticationFactorType {
     }
   }
 
-  private short value;
+  private final short value;
 
   BACnetAuthenticationFactorType(short value) {
     this.value = value;

@@ -40,7 +40,7 @@ public enum LightingCommandType {
     }
   }
 
-  private byte value;
+  private final byte value;
   private short numberOfArguments;
 
   LightingCommandType(byte value, short numberOfArguments) {

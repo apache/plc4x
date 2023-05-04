@@ -34,7 +34,7 @@ public enum PnIoCm_CompanionArType {
     }
   }
 
-  private byte value;
+  private final byte value;
 
   PnIoCm_CompanionArType(byte value) {
     this.value = value;

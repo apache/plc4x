@@ -69,7 +69,7 @@ public class SzlRequest {
             if (szlresponse.getResponseCode("MySZL") == PlcResponseCode.OK) { //(06)
 
                 Collection<Byte> data = szlresponse.getAllBytes("MySZL"); //(07)
-                byte[] dbytes = ArrayUtils.toPrimitive(data.toArray(new Byte[data.size()])); //(08)
+                byte[] dbytes = ArrayUtils.toPrimitive(data.toArray(new Byte[0])); //(08)
 
                 SZL szl = SZL.valueOf(0x0022); //(09)
                 ByteBuf wb = wrappedBuffer(dbytes); //(10)

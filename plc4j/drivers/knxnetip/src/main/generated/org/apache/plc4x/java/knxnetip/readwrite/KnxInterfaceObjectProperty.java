@@ -1331,7 +1331,7 @@ public enum KnxInterfaceObjectProperty {
     }
   }
 
-  private long value;
+  private final long value;
   private KnxPropertyDataType propertyDataType;
   private String name;
   private short propertyId;

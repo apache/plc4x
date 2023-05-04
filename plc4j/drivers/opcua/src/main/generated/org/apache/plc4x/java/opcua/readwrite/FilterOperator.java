@@ -51,7 +51,7 @@ public enum FilterOperator {
     }
   }
 
-  private long value;
+  private final long value;
 
   FilterOperator(long value) {
     this.value = value;

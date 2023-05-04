@@ -37,7 +37,7 @@ public enum ModbusDeviceInformationLevel {
     }
   }
 
-  private short value;
+  private final short value;
 
   ModbusDeviceInformationLevel(short value) {
     this.value = value;

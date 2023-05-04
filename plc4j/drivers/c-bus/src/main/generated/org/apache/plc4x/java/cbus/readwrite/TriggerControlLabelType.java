@@ -37,7 +37,7 @@ public enum TriggerControlLabelType {
     }
   }
 
-  private byte value;
+  private final byte value;
 
   TriggerControlLabelType(byte value) {
     this.value = value;

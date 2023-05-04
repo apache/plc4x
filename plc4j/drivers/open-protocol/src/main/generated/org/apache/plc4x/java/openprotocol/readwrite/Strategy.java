@@ -60,7 +60,7 @@ public enum Strategy {
     }
   }
 
-  private int value;
+  private final int value;
 
   Strategy(int value) {
     this.value = value;

@@ -35,7 +35,7 @@ public enum MultipleInterfaceModeNameOfDevice {
     }
   }
 
-  private boolean value;
+  private final boolean value;
 
   MultipleInterfaceModeNameOfDevice(boolean value) {
     this.value = value;

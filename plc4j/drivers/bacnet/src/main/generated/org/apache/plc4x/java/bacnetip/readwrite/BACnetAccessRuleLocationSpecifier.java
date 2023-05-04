@@ -35,7 +35,7 @@ public enum BACnetAccessRuleLocationSpecifier {
     }
   }
 
-  private short value;
+  private final short value;
 
   BACnetAccessRuleLocationSpecifier(short value) {
     this.value = value;

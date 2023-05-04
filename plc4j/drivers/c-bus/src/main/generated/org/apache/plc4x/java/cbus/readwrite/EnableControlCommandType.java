@@ -36,7 +36,7 @@ public enum EnableControlCommandType {
     }
   }
 
-  private byte value;
+  private final byte value;
   private short numberOfArguments;
 
   EnableControlCommandType(byte value, short numberOfArguments) {

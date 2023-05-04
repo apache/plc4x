@@ -60,7 +60,7 @@ public enum CANOpenDataType {
     }
   }
 
-  private long value;
+  private final long value;
   private String plcValueName;
   private short numBits;
 

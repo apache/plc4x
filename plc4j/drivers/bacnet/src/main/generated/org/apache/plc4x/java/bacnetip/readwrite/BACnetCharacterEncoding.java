@@ -39,7 +39,7 @@ public enum BACnetCharacterEncoding {
     }
   }
 
-  private byte value;
+  private final byte value;
 
   BACnetCharacterEncoding(byte value) {
     this.value = value;

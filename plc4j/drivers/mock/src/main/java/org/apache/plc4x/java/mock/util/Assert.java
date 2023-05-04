@@ -80,7 +80,7 @@ public class Assert {
     private static String dump(byte[] bytes) throws IOException {
         try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()) {
             HexDump.dump(bytes, 0, byteArrayOutputStream, 0);
-            return HexDump.EOL + byteArrayOutputStream.toString();
+            return HexDump.EOL + byteArrayOutputStream;
         }
     }
 }

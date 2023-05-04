@@ -77,7 +77,7 @@ public class TriggeredScraperImpl implements Scraper, TriggeredScraperMBean {
     private final List<ScrapeJob> jobs;
     private MBeanServer mBeanServer;
 
-    private long futureTimeOut;
+    private final long futureTimeOut;
 
     private final TriggerCollector triggerCollector;
 

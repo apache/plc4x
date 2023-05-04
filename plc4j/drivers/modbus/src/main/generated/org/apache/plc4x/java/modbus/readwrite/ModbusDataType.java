@@ -62,7 +62,7 @@ public enum ModbusDataType {
     }
   }
 
-  private short value;
+  private final short value;
   private short dataTypeSize;
 
   ModbusDataType(short value, short dataTypeSize) {

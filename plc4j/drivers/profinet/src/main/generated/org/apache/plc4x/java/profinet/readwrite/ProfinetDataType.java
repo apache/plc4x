@@ -68,7 +68,7 @@ public enum ProfinetDataType {
     }
   }
 
-  private short value;
+  private final short value;
   private short dataTypeSize;
   private String conversion;
 

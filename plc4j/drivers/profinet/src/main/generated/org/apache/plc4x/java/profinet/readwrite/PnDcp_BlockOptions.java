@@ -39,7 +39,7 @@ public enum PnDcp_BlockOptions {
     }
   }
 
-  private short value;
+  private final short value;
 
   PnDcp_BlockOptions(short value) {
     this.value = value;

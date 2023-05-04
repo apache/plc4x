@@ -1911,7 +1911,7 @@ public enum ComObjectTableAddresses {
     }
   }
 
-  private int value;
+  private final int value;
   private int comObjectTableAddress;
 
   ComObjectTableAddresses(int value, int comObjectTableAddress) {

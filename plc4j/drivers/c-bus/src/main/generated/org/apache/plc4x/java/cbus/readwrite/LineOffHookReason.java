@@ -41,7 +41,7 @@ public enum LineOffHookReason {
     }
   }
 
-  private short value;
+  private final short value;
 
   LineOffHookReason(short value) {
     this.value = value;

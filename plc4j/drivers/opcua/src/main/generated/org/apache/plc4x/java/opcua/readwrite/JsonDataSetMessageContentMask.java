@@ -40,7 +40,7 @@ public enum JsonDataSetMessageContentMask {
     }
   }
 
-  private long value;
+  private final long value;
 
   JsonDataSetMessageContentMask(long value) {
     this.value = value;

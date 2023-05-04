@@ -53,8 +53,8 @@ public class Plc4xAbEthProtocol extends PlcMessageToMessageCodec<CIPEncapsulatio
             (short) 0x00,(short) 0x00,(short) 0x00, (short) 0x00,(short) 0x00);
 
     private long sessionHandle;
-    private Map<Integer, PlcRequestContainer> requests;
-    private int station;
+    private final Map<Integer, PlcRequestContainer> requests;
+    private final int station;
 
     public Plc4xAbEthProtocol(int station) {
         logger.trace("Created new instance of PLC4X-AB-ETH Protocol");

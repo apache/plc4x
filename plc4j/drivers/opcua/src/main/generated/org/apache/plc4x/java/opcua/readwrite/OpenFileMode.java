@@ -37,7 +37,7 @@ public enum OpenFileMode {
     }
   }
 
-  private long value;
+  private final long value;
 
   OpenFileMode(long value) {
     this.value = value;

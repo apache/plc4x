@@ -181,7 +181,7 @@ public class ConnectionTabController {
         }
     }
 
-    class PlcBrowseItemComparator implements Comparator<PlcBrowseItem> {
+    static class PlcBrowseItemComparator implements Comparator<PlcBrowseItem> {
         @Override
         public int compare(PlcBrowseItem o1, PlcBrowseItem o2) {
             return o1.getTag().getAddressString().compareTo(o2.getTag().getAddressString());

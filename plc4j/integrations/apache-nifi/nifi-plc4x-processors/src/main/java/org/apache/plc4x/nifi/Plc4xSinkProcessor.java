@@ -81,7 +81,7 @@ public class Plc4xSinkProcessor extends BasePlc4xProcessor {
                     }
                 }
                 if (debugEnabled)
-                    logger.debug("PlcTypes resolution not found in cache and will be added with key: " + addressMap.toString());
+                    logger.debug("PlcTypes resolution not found in cache and will be added with key: " + addressMap);
             }
            
             PlcWriteRequest writeRequest = builder.build();
@@ -104,7 +104,7 @@ public class Plc4xSinkProcessor extends BasePlc4xProcessor {
 
                 if (tags == null){
                     if (debugEnabled)
-                        logger.debug("Adding PlcTypes resolution into cache with key: " + addressMap.toString());
+                        logger.debug("Adding PlcTypes resolution into cache with key: " + addressMap);
                     getSchemaCache().addSchema(
                         addressMap, 
                         writeRequest.getTagNames(),

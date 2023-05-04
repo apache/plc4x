@@ -40,7 +40,7 @@ public enum BACnetBinaryLightingPV {
     }
   }
 
-  private short value;
+  private final short value;
 
   BACnetBinaryLightingPV(short value) {
     this.value = value;

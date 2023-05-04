@@ -53,9 +53,7 @@ public class Tag {
 
     @Override
     public String toString() {
-        StringBuilder query = new StringBuilder();
-        query.append("\t\t\t" + name + "=" + address + ",\n");
-        return query.toString();
+        return "\t\t\t" + name + "=" + address + ",\n";
     }
 
 }

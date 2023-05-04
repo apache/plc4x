@@ -62,7 +62,7 @@ public enum KnxInterfaceObjectType {
     }
   }
 
-  private int value;
+  private final int value;
   private String code;
   private String name;
 
