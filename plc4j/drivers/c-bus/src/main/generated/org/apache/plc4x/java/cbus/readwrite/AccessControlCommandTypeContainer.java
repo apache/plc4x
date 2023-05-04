@@ -386,9 +386,9 @@ public enum AccessControlCommandTypeContainer {
   }
 
   private final short value;
-  private short numBytes;
-  private AccessControlCommandType commandType;
-  private AccessControlCategory category;
+  private final short numBytes;
+  private final AccessControlCommandType commandType;
+  private final AccessControlCategory category;
 
   AccessControlCommandTypeContainer(
       short value,

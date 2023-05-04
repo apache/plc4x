@@ -86,9 +86,9 @@ public enum KnxPropertyDataType {
   }
 
   private final short value;
-  private short number;
-  private short sizeInBytes;
-  private String name;
+  private final short number;
+  private final short sizeInBytes;
+  private final String name;
 
   KnxPropertyDataType(short value, short number, short sizeInBytes, String name) {
     this.value = value;

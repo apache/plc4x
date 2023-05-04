@@ -57,7 +57,7 @@ public enum MediaTransportControlCommandType {
   }
 
   private final byte value;
-  private short numberOfArguments;
+  private final short numberOfArguments;
 
   MediaTransportControlCommandType(byte value, short numberOfArguments) {
     this.value = value;

@@ -51,9 +51,9 @@ public enum CANOpenService {
   }
 
   private final byte value;
-  private short min;
-  private short max;
-  private boolean pdo;
+  private final short min;
+  private final short max;
+  private final boolean pdo;
 
   CANOpenService(byte value, short min, short max, boolean pdo) {
     this.value = value;

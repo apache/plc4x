@@ -300,8 +300,8 @@ public enum ApplicationIdContainer {
   }
 
   private final short value;
-  private LightingCompatible lightingCompatible;
-  private ApplicationId applicationId;
+  private final LightingCompatible lightingCompatible;
+  private final ApplicationId applicationId;
 
   ApplicationIdContainer(
       short value, LightingCompatible lightingCompatible, ApplicationId applicationId) {

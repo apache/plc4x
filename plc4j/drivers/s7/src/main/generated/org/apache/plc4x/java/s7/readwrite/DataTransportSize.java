@@ -43,7 +43,7 @@ public enum DataTransportSize {
   }
 
   private final short value;
-  private boolean sizeInBits;
+  private final boolean sizeInBits;
 
   DataTransportSize(short value, boolean sizeInBits) {
     this.value = value;

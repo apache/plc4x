@@ -88,8 +88,8 @@ public enum LightingCommandTypeContainer {
   }
 
   private final short value;
-  private short numBytes;
-  private LightingCommandType commandType;
+  private final short numBytes;
+  private final LightingCommandType commandType;
 
   LightingCommandTypeContainer(short value, short numBytes, LightingCommandType commandType) {
     this.value = value;

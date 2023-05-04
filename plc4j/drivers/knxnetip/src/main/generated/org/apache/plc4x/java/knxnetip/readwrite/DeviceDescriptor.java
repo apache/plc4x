@@ -68,8 +68,8 @@ public enum DeviceDescriptor {
   }
 
   private final int value;
-  private FirmwareType firmwareType;
-  private DeviceDescriptorMediumType mediumType;
+  private final FirmwareType firmwareType;
+  private final DeviceDescriptorMediumType mediumType;
 
   DeviceDescriptor(int value, FirmwareType firmwareType, DeviceDescriptorMediumType mediumType) {
     this.value = value;

@@ -105,9 +105,9 @@ public enum KnxDatapointMainType {
   }
 
   private final int value;
-  private int number;
-  private String name;
-  private short sizeInBits;
+  private final int number;
+  private final String name;
+  private final short sizeInBits;
 
   KnxDatapointMainType(int value, int number, String name, short sizeInBits) {
     this.value = value;

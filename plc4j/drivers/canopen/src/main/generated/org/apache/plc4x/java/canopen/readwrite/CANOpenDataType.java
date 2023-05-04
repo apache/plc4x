@@ -61,8 +61,8 @@ public enum CANOpenDataType {
   }
 
   private final long value;
-  private String plcValueName;
-  private short numBits;
+  private final String plcValueName;
+  private final short numBits;
 
   CANOpenDataType(long value, String plcValueName, short numBits) {
     this.value = value;

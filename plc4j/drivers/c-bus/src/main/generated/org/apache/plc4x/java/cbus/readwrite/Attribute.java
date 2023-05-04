@@ -54,7 +54,7 @@ public enum Attribute {
   }
 
   private final short value;
-  private short bytesReturned;
+  private final short bytesReturned;
 
   Attribute(short value, short bytesReturned) {
     this.value = value;

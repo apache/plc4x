@@ -45,7 +45,7 @@ public enum MemoryArea {
   }
 
   private final short value;
-  private String shortName;
+  private final String shortName;
 
   MemoryArea(short value, String shortName) {
     this.value = value;

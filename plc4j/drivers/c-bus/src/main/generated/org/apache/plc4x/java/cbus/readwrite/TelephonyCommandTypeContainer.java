@@ -69,8 +69,8 @@ public enum TelephonyCommandTypeContainer {
   }
 
   private final short value;
-  private short numBytes;
-  private TelephonyCommandType commandType;
+  private final short numBytes;
+  private final TelephonyCommandType commandType;
 
   TelephonyCommandTypeContainer(short value, short numBytes, TelephonyCommandType commandType) {
     this.value = value;

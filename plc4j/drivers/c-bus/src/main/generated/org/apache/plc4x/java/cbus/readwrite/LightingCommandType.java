@@ -41,7 +41,7 @@ public enum LightingCommandType {
   }
 
   private final byte value;
-  private short numberOfArguments;
+  private final short numberOfArguments;
 
   LightingCommandType(byte value, short numberOfArguments) {
     this.value = value;

@@ -55,7 +55,7 @@ public enum AirConditioningCommandType {
   }
 
   private final byte value;
-  private short numberOfArguments;
+  private final short numberOfArguments;
 
   AirConditioningCommandType(byte value, short numberOfArguments) {
     this.value = value;

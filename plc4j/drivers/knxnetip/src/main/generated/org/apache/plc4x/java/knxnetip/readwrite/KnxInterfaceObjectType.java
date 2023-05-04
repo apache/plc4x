@@ -63,8 +63,8 @@ public enum KnxInterfaceObjectType {
   }
 
   private final int value;
-  private String code;
-  private String name;
+  private final String code;
+  private final String name;
 
   KnxInterfaceObjectType(int value, String code, String name) {
     this.value = value;

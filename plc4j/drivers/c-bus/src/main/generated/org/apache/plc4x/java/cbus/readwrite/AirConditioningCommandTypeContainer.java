@@ -73,8 +73,8 @@ public enum AirConditioningCommandTypeContainer {
   }
 
   private final short value;
-  private short numBytes;
-  private AirConditioningCommandType commandType;
+  private final short numBytes;
+  private final AirConditioningCommandType commandType;
 
   AirConditioningCommandTypeContainer(
       short value, short numBytes, AirConditioningCommandType commandType) {

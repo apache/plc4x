@@ -52,7 +52,7 @@ public enum MaxApduLengthAccepted {
   }
 
   private final byte value;
-  private int numberOfOctets;
+  private final int numberOfOctets;
 
   MaxApduLengthAccepted(byte value, int numberOfOctets) {
     this.value = value;

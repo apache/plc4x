@@ -76,8 +76,8 @@ public enum AdsDataType {
   }
 
   private final byte value;
-  private int numBytes;
-  private PlcValueType plcValueType;
+  private final int numBytes;
+  private final PlcValueType plcValueType;
 
   AdsDataType(byte value, int numBytes, PlcValueType plcValueType) {
     this.value = value;

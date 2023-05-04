@@ -60,7 +60,7 @@ public enum OpcuaDataType {
   }
 
   private final String value;
-  private short variantType;
+  private final short variantType;
 
   OpcuaDataType(String value, short variantType) {
     this.value = value;

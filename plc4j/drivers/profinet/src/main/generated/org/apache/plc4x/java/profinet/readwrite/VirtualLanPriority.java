@@ -44,7 +44,7 @@ public enum VirtualLanPriority {
   }
 
   private final byte value;
-  private String acronym;
+  private final String acronym;
 
   VirtualLanPriority(byte value, String acronym) {
     this.value = value;

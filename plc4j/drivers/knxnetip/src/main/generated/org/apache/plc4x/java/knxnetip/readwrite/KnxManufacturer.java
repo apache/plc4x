@@ -730,8 +730,8 @@ public enum KnxManufacturer {
   }
 
   private final int value;
-  private int number;
-  private String name;
+  private final int number;
+  private final String name;
 
   KnxManufacturer(int value, int number, String name) {
     this.value = value;

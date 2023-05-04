@@ -41,8 +41,8 @@ public enum AccessLevel {
   }
 
   private final byte value;
-  private String purpose;
-  private boolean needsAuthentication;
+  private final String purpose;
+  private final boolean needsAuthentication;
 
   AccessLevel(byte value, String purpose, boolean needsAuthentication) {
     this.value = value;

@@ -68,8 +68,8 @@ public enum EnableControlCommandTypeContainer {
   }
 
   private final short value;
-  private short numBytes;
-  private EnableControlCommandType commandType;
+  private final short numBytes;
+  private final EnableControlCommandType commandType;
 
   EnableControlCommandTypeContainer(
       short value, short numBytes, EnableControlCommandType commandType) {

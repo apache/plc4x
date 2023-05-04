@@ -51,7 +51,7 @@ public enum ComObjectValueType {
   }
 
   private final short value;
-  private short sizeInBytes;
+  private final short sizeInBytes;
 
   ComObjectValueType(short value, short sizeInBytes) {
     this.value = value;

@@ -1642,8 +1642,8 @@ public enum BACnetVendorId {
   }
 
   private final int value;
-  private int vendorId;
-  private String vendorName;
+  private final int vendorId;
+  private final String vendorName;
 
   BACnetVendorId(int value, int vendorId, String vendorName) {
     this.value = value;

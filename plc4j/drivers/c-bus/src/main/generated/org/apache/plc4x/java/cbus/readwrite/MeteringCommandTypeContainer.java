@@ -44,8 +44,8 @@ public enum MeteringCommandTypeContainer {
   }
 
   private final short value;
-  private short numBytes;
-  private MeteringCommandType commandType;
+  private final short numBytes;
+  private final MeteringCommandType commandType;
 
   MeteringCommandTypeContainer(short value, short numBytes, MeteringCommandType commandType) {
     this.value = value;

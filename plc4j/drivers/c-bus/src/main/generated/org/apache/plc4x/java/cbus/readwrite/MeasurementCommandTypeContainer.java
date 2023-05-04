@@ -38,8 +38,8 @@ public enum MeasurementCommandTypeContainer {
   }
 
   private final short value;
-  private short numBytes;
-  private MeasurementCommandType commandType;
+  private final short numBytes;
+  private final MeasurementCommandType commandType;
 
   MeasurementCommandTypeContainer(short value, short numBytes, MeasurementCommandType commandType) {
     this.value = value;

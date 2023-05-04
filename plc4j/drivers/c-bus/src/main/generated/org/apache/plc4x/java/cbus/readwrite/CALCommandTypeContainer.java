@@ -153,8 +153,8 @@ public enum CALCommandTypeContainer {
   }
 
   private final short value;
-  private short numBytes;
-  private CALCommandType commandType;
+  private final short numBytes;
+  private final CALCommandType commandType;
 
   CALCommandTypeContainer(short value, short numBytes, CALCommandType commandType) {
     this.value = value;

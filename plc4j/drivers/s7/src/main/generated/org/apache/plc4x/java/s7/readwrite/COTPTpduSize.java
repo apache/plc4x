@@ -43,7 +43,7 @@ public enum COTPTpduSize {
   }
 
   private final short value;
-  private int sizeInBytes;
+  private final int sizeInBytes;
 
   COTPTpduSize(short value, int sizeInBytes) {
     this.value = value;

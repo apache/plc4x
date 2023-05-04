@@ -43,7 +43,7 @@ public enum RequestType {
   }
 
   private final short value;
-  private short controlChar;
+  private final short controlChar;
 
   RequestType(short value, short controlChar) {
     this.value = value;

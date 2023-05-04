@@ -40,7 +40,7 @@ public enum ProtectionLevel {
   }
 
   private final byte value;
-  private String description;
+  private final String description;
 
   ProtectionLevel(byte value, String description) {
     this.value = value;

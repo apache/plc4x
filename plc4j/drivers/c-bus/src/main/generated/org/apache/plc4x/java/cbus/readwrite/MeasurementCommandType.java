@@ -37,7 +37,7 @@ public enum MeasurementCommandType {
   }
 
   private final byte value;
-  private short numberOfArguments;
+  private final short numberOfArguments;
 
   MeasurementCommandType(byte value, short numberOfArguments) {
     this.value = value;

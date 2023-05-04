@@ -1912,7 +1912,7 @@ public enum ComObjectTableAddresses {
   }
 
   private final int value;
-  private int comObjectTableAddress;
+  private final int comObjectTableAddress;
 
   ComObjectTableAddresses(int value, int comObjectTableAddress) {
     this.value = value;

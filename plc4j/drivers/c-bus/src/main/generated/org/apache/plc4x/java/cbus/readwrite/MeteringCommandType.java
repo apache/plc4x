@@ -37,7 +37,7 @@ public enum MeteringCommandType {
   }
 
   private final byte value;
-  private short numberOfArguments;
+  private final short numberOfArguments;
 
   MeteringCommandType(byte value, short numberOfArguments) {
     this.value = value;

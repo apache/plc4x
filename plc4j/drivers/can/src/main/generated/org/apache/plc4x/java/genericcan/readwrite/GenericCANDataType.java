@@ -56,8 +56,8 @@ public enum GenericCANDataType {
   }
 
   private final long value;
-  private String plcValueName;
-  private short numBits;
+  private final String plcValueName;
+  private final short numBits;
 
   GenericCANDataType(long value, String plcValueName, short numBits) {
     this.value = value;

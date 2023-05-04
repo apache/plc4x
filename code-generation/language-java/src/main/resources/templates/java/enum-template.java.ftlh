@@ -102,7 +102,7 @@ public enum ${type.name} {
 </#if>
 <#if type.constantNames?has_content>
     <#list type.constantNames as constantName>
-        private ${helper.getLanguageTypeNameForTypeReference(type.getConstantType(constantName), true)} ${constantName};
+        private final ${helper.getLanguageTypeNameForTypeReference(type.getConstantType(constantName), true)} ${constantName};
     </#list>
 </#if>
 

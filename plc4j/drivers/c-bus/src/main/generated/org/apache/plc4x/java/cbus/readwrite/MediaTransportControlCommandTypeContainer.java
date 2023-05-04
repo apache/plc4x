@@ -265,8 +265,8 @@ public enum MediaTransportControlCommandTypeContainer {
   }
 
   private final short value;
-  private short numBytes;
-  private MediaTransportControlCommandType commandType;
+  private final short numBytes;
+  private final MediaTransportControlCommandType commandType;
 
   MediaTransportControlCommandTypeContainer(
       short value, short numBytes, MediaTransportControlCommandType commandType) {

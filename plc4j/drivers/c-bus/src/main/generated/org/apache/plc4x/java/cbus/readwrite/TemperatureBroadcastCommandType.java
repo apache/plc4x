@@ -37,7 +37,7 @@ public enum TemperatureBroadcastCommandType {
   }
 
   private final byte value;
-  private short numberOfArguments;
+  private final short numberOfArguments;
 
   TemperatureBroadcastCommandType(byte value, short numberOfArguments) {
     this.value = value;

@@ -156,8 +156,8 @@ public enum SecurityCommandTypeContainer {
   }
 
   private final short value;
-  private short numBytes;
-  private SecurityCommandType commandType;
+  private final short numBytes;
+  private final SecurityCommandType commandType;
 
   SecurityCommandTypeContainer(short value, short numBytes, SecurityCommandType commandType) {
     this.value = value;

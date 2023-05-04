@@ -52,7 +52,7 @@ public enum LevelInformationNibblePair {
   }
 
   private final short value;
-  private byte nibbleValue;
+  private final byte nibbleValue;
 
   LevelInformationNibblePair(short value, byte nibbleValue) {
     this.value = value;

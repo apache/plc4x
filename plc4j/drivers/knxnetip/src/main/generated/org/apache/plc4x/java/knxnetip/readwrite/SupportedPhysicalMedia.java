@@ -63,8 +63,8 @@ public enum SupportedPhysicalMedia {
   }
 
   private final short value;
-  private boolean knxSupport;
-  private String description;
+  private final boolean knxSupport;
+  private final String description;
 
   SupportedPhysicalMedia(short value, boolean knxSupport, String description) {
     this.value = value;

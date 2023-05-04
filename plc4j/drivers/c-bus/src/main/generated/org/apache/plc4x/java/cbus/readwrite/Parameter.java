@@ -2084,12 +2084,12 @@ public enum Parameter {
   }
 
   private final short value;
-  private ParameterType parameterType;
-  private String form;
-  private boolean isVolatile;
-  private String parameterDescription;
-  private ProtectionLevel protectionLevel;
-  private String group;
+  private final ParameterType parameterType;
+  private final String form;
+  private final boolean isVolatile;
+  private final String parameterDescription;
+  private final ProtectionLevel protectionLevel;
+  private final String group;
 
   Parameter(
       short value,

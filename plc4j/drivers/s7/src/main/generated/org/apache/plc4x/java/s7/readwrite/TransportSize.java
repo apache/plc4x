@@ -374,17 +374,17 @@ public enum TransportSize {
   }
 
   private final short value;
-  private boolean supported_S7_300;
-  private boolean supported_LOGO;
-  private short code;
-  private short sizeInBytes;
-  private boolean supported_S7_400;
-  private boolean supported_S7_1200;
-  private short shortName;
-  private boolean supported_S7_1500;
-  private DataTransportSize dataTransportSize;
-  private String dataProtocolId;
-  private TransportSize baseType;
+  private final boolean supported_S7_300;
+  private final boolean supported_LOGO;
+  private final short code;
+  private final short sizeInBytes;
+  private final boolean supported_S7_400;
+  private final boolean supported_S7_1200;
+  private final short shortName;
+  private final boolean supported_S7_1500;
+  private final DataTransportSize dataTransportSize;
+  private final String dataProtocolId;
+  private final TransportSize baseType;
 
   TransportSize(
       short value,

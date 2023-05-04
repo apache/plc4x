@@ -37,7 +37,7 @@ public enum TelephonyCommandType {
   }
 
   private final byte value;
-  private short numberOfArguments;
+  private final short numberOfArguments;
 
   TelephonyCommandType(byte value, short numberOfArguments) {
     this.value = value;

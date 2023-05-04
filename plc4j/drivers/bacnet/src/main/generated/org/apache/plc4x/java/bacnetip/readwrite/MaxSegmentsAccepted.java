@@ -44,7 +44,7 @@ public enum MaxSegmentsAccepted {
   }
 
   private final byte value;
-  private short maxSegments;
+  private final short maxSegments;
 
   MaxSegmentsAccepted(byte value, short maxSegments) {
     this.value = value;

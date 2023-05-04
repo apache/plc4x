@@ -69,8 +69,8 @@ public enum ProfinetDataType {
   }
 
   private final short value;
-  private short dataTypeSize;
-  private String conversion;
+  private final short dataTypeSize;
+  private final String conversion;
 
   ProfinetDataType(short value, short dataTypeSize, String conversion) {
     this.value = value;

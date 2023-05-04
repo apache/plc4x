@@ -63,7 +63,7 @@ public enum ModbusDataType {
   }
 
   private final short value;
-  private short dataTypeSize;
+  private final short dataTypeSize;
 
   ModbusDataType(short value, short dataTypeSize) {
     this.value = value;
