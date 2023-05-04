@@ -68,7 +68,7 @@ public enum DataTransportSize {
   }
 
   public static List<DataTransportSize> enumsForFieldSizeInBits(boolean fieldValue) {
-    List<DataTransportSize> _values = new ArrayList();
+    List<DataTransportSize> _values = new ArrayList<>();
     for (DataTransportSize _val : DataTransportSize.values()) {
       if (_val.getSizeInBits() == fieldValue) {
         _values.add(_val);

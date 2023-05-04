@@ -757,7 +757,7 @@ public enum KnxManufacturer {
   }
 
   public static List<KnxManufacturer> enumsForFieldNumber(int fieldValue) {
-    List<KnxManufacturer> _values = new ArrayList();
+    List<KnxManufacturer> _values = new ArrayList<>();
     for (KnxManufacturer _val : KnxManufacturer.values()) {
       if (_val.getNumber() == fieldValue) {
         _values.add(_val);
@@ -780,7 +780,7 @@ public enum KnxManufacturer {
   }
 
   public static List<KnxManufacturer> enumsForFieldName(String fieldValue) {
-    List<KnxManufacturer> _values = new ArrayList();
+    List<KnxManufacturer> _values = new ArrayList<>();
     for (KnxManufacturer _val : KnxManufacturer.values()) {
       if (_val.getName().equals(fieldValue)) {
         _values.add(_val);

@@ -196,7 +196,7 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
         /*if (factory == null) {
             throw new IllegalStateException("No Instance Factory is Present!");
         }*/
-        return new ChannelInitializer<Channel>() {
+        return new ChannelInitializer<>() {
             @Override
             protected void initChannel(Channel channel) {
                 // Build the protocol stack for communicating with the s7 protocol.
@@ -205,7 +205,7 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
                     @Override
                     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
                         Stream<ConnectionStateListener> eventListeners = listeners.stream().filter(ConnectionStateListener.class::isInstance)
-                            .map(ConnectionStateListener.class::cast);
+                                .map(ConnectionStateListener.class::cast);
                         if (evt instanceof ConnectedEvent) {
                             sessionSetupCompleteFuture.complete(null);
                             eventListeners.forEach(ConnectionStateListener::connected);
@@ -223,7 +223,7 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
                 channelFactory.initializePipeline(pipeline);
                 // Initialize Protocol Layer
                 setProtocol(stackConfigurer.configurePipeline(configuration, pipeline, getAuthentication(),
-                    channelFactory.isPassive()));
+                        channelFactory.isPassive()));
             }
         };
     }

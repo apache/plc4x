@@ -65,7 +65,7 @@ public enum ErrorReportingCommandType {
   }
 
   public static List<ErrorReportingCommandType> enumsForFieldNumberOfArguments(short fieldValue) {
-    List<ErrorReportingCommandType> _values = new ArrayList();
+    List<ErrorReportingCommandType> _values = new ArrayList<>();
     for (ErrorReportingCommandType _val : ErrorReportingCommandType.values()) {
       if (_val.getNumberOfArguments() == fieldValue) {
         _values.add(_val);

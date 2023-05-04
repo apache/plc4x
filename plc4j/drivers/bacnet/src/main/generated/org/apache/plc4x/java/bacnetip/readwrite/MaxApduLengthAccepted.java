@@ -77,7 +77,7 @@ public enum MaxApduLengthAccepted {
   }
 
   public static List<MaxApduLengthAccepted> enumsForFieldNumberOfOctets(int fieldValue) {
-    List<MaxApduLengthAccepted> _values = new ArrayList();
+    List<MaxApduLengthAccepted> _values = new ArrayList<>();
     for (MaxApduLengthAccepted _val : MaxApduLengthAccepted.values()) {
       if (_val.getNumberOfOctets() == fieldValue) {
         _values.add(_val);

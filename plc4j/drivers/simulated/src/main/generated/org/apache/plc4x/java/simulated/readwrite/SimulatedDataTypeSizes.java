@@ -88,7 +88,7 @@ public enum SimulatedDataTypeSizes {
   }
 
   public static List<SimulatedDataTypeSizes> enumsForFieldDataTypeSize(short fieldValue) {
-    List<SimulatedDataTypeSizes> _values = new ArrayList();
+    List<SimulatedDataTypeSizes> _values = new ArrayList<>();
     for (SimulatedDataTypeSizes _val : SimulatedDataTypeSizes.values()) {
       if (_val.getDataTypeSize() == fieldValue) {
         _values.add(_val);

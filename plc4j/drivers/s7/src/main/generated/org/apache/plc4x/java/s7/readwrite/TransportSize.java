@@ -431,7 +431,7 @@ public enum TransportSize {
   }
 
   public static List<TransportSize> enumsForFieldSupported_S7_300(boolean fieldValue) {
-    List<TransportSize> _values = new ArrayList();
+    List<TransportSize> _values = new ArrayList<>();
     for (TransportSize _val : TransportSize.values()) {
       if (_val.getSupported_S7_300() == fieldValue) {
         _values.add(_val);
@@ -454,7 +454,7 @@ public enum TransportSize {
   }
 
   public static List<TransportSize> enumsForFieldSupported_LOGO(boolean fieldValue) {
-    List<TransportSize> _values = new ArrayList();
+    List<TransportSize> _values = new ArrayList<>();
     for (TransportSize _val : TransportSize.values()) {
       if (_val.getSupported_LOGO() == fieldValue) {
         _values.add(_val);
@@ -477,7 +477,7 @@ public enum TransportSize {
   }
 
   public static List<TransportSize> enumsForFieldCode(short fieldValue) {
-    List<TransportSize> _values = new ArrayList();
+    List<TransportSize> _values = new ArrayList<>();
     for (TransportSize _val : TransportSize.values()) {
       if (_val.getCode() == fieldValue) {
         _values.add(_val);
@@ -500,7 +500,7 @@ public enum TransportSize {
   }
 
   public static List<TransportSize> enumsForFieldSizeInBytes(short fieldValue) {
-    List<TransportSize> _values = new ArrayList();
+    List<TransportSize> _values = new ArrayList<>();
     for (TransportSize _val : TransportSize.values()) {
       if (_val.getSizeInBytes() == fieldValue) {
         _values.add(_val);
@@ -523,7 +523,7 @@ public enum TransportSize {
   }
 
   public static List<TransportSize> enumsForFieldSupported_S7_400(boolean fieldValue) {
-    List<TransportSize> _values = new ArrayList();
+    List<TransportSize> _values = new ArrayList<>();
     for (TransportSize _val : TransportSize.values()) {
       if (_val.getSupported_S7_400() == fieldValue) {
         _values.add(_val);
@@ -546,7 +546,7 @@ public enum TransportSize {
   }
 
   public static List<TransportSize> enumsForFieldSupported_S7_1200(boolean fieldValue) {
-    List<TransportSize> _values = new ArrayList();
+    List<TransportSize> _values = new ArrayList<>();
     for (TransportSize _val : TransportSize.values()) {
       if (_val.getSupported_S7_1200() == fieldValue) {
         _values.add(_val);
@@ -569,7 +569,7 @@ public enum TransportSize {
   }
 
   public static List<TransportSize> enumsForFieldShortName(short fieldValue) {
-    List<TransportSize> _values = new ArrayList();
+    List<TransportSize> _values = new ArrayList<>();
     for (TransportSize _val : TransportSize.values()) {
       if (_val.getShortName() == fieldValue) {
         _values.add(_val);
@@ -592,7 +592,7 @@ public enum TransportSize {
   }
 
   public static List<TransportSize> enumsForFieldSupported_S7_1500(boolean fieldValue) {
-    List<TransportSize> _values = new ArrayList();
+    List<TransportSize> _values = new ArrayList<>();
     for (TransportSize _val : TransportSize.values()) {
       if (_val.getSupported_S7_1500() == fieldValue) {
         _values.add(_val);
@@ -615,7 +615,7 @@ public enum TransportSize {
   }
 
   public static List<TransportSize> enumsForFieldDataTransportSize(DataTransportSize fieldValue) {
-    List<TransportSize> _values = new ArrayList();
+    List<TransportSize> _values = new ArrayList<>();
     for (TransportSize _val : TransportSize.values()) {
       if (_val.getDataTransportSize() == fieldValue) {
         _values.add(_val);
@@ -638,7 +638,7 @@ public enum TransportSize {
   }
 
   public static List<TransportSize> enumsForFieldDataProtocolId(String fieldValue) {
-    List<TransportSize> _values = new ArrayList();
+    List<TransportSize> _values = new ArrayList<>();
     for (TransportSize _val : TransportSize.values()) {
       if (_val.getDataProtocolId().equals(fieldValue)) {
         _values.add(_val);
@@ -661,7 +661,7 @@ public enum TransportSize {
   }
 
   public static List<TransportSize> enumsForFieldBaseType(TransportSize fieldValue) {
-    List<TransportSize> _values = new ArrayList();
+    List<TransportSize> _values = new ArrayList<>();
     for (TransportSize _val : TransportSize.values()) {
       if (_val.getBaseType() == fieldValue) {
         _values.add(_val);

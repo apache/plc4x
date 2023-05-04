@@ -66,7 +66,7 @@ public enum LightingCommandType {
   }
 
   public static List<LightingCommandType> enumsForFieldNumberOfArguments(short fieldValue) {
-    List<LightingCommandType> _values = new ArrayList();
+    List<LightingCommandType> _values = new ArrayList<>();
     for (LightingCommandType _val : LightingCommandType.values()) {
       if (_val.getNumberOfArguments() == fieldValue) {
         _values.add(_val);

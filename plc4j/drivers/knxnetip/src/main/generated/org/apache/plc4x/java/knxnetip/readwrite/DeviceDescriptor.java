@@ -95,7 +95,7 @@ public enum DeviceDescriptor {
   }
 
   public static List<DeviceDescriptor> enumsForFieldFirmwareType(FirmwareType fieldValue) {
-    List<DeviceDescriptor> _values = new ArrayList();
+    List<DeviceDescriptor> _values = new ArrayList<>();
     for (DeviceDescriptor _val : DeviceDescriptor.values()) {
       if (_val.getFirmwareType() == fieldValue) {
         _values.add(_val);
@@ -120,7 +120,7 @@ public enum DeviceDescriptor {
 
   public static List<DeviceDescriptor> enumsForFieldMediumType(
       DeviceDescriptorMediumType fieldValue) {
-    List<DeviceDescriptor> _values = new ArrayList();
+    List<DeviceDescriptor> _values = new ArrayList<>();
     for (DeviceDescriptor _val : DeviceDescriptor.values()) {
       if (_val.getMediumType() == fieldValue) {
         _values.add(_val);

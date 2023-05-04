@@ -60,12 +60,7 @@ public class ProfinetDriver extends GeneratedDriverBase<Ethernet_Frame> {
 
     @Override
     public PlcDriverMetadata getMetadata() {
-        return new PlcDriverMetadata() {
-            @Override
-            public boolean canDiscover() {
-                return true;
-            }
-        };
+        return () -> true;
     }
 
     @Override

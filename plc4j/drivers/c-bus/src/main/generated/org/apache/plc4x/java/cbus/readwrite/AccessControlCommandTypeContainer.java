@@ -419,7 +419,7 @@ public enum AccessControlCommandTypeContainer {
   }
 
   public static List<AccessControlCommandTypeContainer> enumsForFieldNumBytes(short fieldValue) {
-    List<AccessControlCommandTypeContainer> _values = new ArrayList();
+    List<AccessControlCommandTypeContainer> _values = new ArrayList<>();
     for (AccessControlCommandTypeContainer _val : AccessControlCommandTypeContainer.values()) {
       if (_val.getNumBytes() == fieldValue) {
         _values.add(_val);
@@ -444,7 +444,7 @@ public enum AccessControlCommandTypeContainer {
 
   public static List<AccessControlCommandTypeContainer> enumsForFieldCommandType(
       AccessControlCommandType fieldValue) {
-    List<AccessControlCommandTypeContainer> _values = new ArrayList();
+    List<AccessControlCommandTypeContainer> _values = new ArrayList<>();
     for (AccessControlCommandTypeContainer _val : AccessControlCommandTypeContainer.values()) {
       if (_val.getCommandType() == fieldValue) {
         _values.add(_val);
@@ -469,7 +469,7 @@ public enum AccessControlCommandTypeContainer {
 
   public static List<AccessControlCommandTypeContainer> enumsForFieldCategory(
       AccessControlCategory fieldValue) {
-    List<AccessControlCommandTypeContainer> _values = new ArrayList();
+    List<AccessControlCommandTypeContainer> _values = new ArrayList<>();
     for (AccessControlCommandTypeContainer _val : AccessControlCommandTypeContainer.values()) {
       if (_val.getCategory() == fieldValue) {
         _values.add(_val);

@@ -76,32 +76,28 @@ class ExpressionStringParserTest {
                             "S7ParameterUserData"
                         );
                     },
-                    items -> {
-                        assertVariableLiteral(
-                            items,
-                            "items",
-                            hurzes -> {
-                                assertThat(hurzes, hasSize(1));
-                                assertVariableLiteral(
-                                    hurzes.get(0),
-                                    "hurz"
-                                );
-                            },
-                            null,
-                            0
-                        );
-                    });
+                    items -> assertVariableLiteral(
+                        items,
+                        "items",
+                        hurzes -> {
+                            assertThat(hurzes, hasSize(1));
+                            assertVariableLiteral(
+                                hurzes.get(0),
+                                "hurz"
+                            );
+                        },
+                        null,
+                        0
+                    ));
                 assertVariableLiteral(
                     outerCast.get(1),
                     "S7ParameterUserDataItemCPUFunctions"
                 );
             },
-            variableLiteral -> {
-                assertVariableLiteral(
-                    variableLiteral,
-                    "cpuFunctionType"
-                );
-            }
+            variableLiteral -> assertVariableLiteral(
+                variableLiteral,
+                "cpuFunctionType"
+            )
         );
     }
 
@@ -122,21 +118,19 @@ class ExpressionStringParserTest {
                     "S7ParameterUserData"
                 );
             },
-            variableLiteral -> {
-                assertVariableLiteral(
-                    variableLiteral,
-                    "items",
-                    terms -> {
-                        assertThat(terms, hasSize(1));
-                        assertVariableLiteral(
-                            terms.get(0),
-                            "hurz"
-                        );
-                    },
-                    null,
-                    0
-                );
-            }
+            variableLiteral -> assertVariableLiteral(
+                variableLiteral,
+                "items",
+                terms -> {
+                    assertThat(terms, hasSize(1));
+                    assertVariableLiteral(
+                        terms.get(0),
+                        "hurz"
+                    );
+                },
+                null,
+                0
+            )
         );
     }
 

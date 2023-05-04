@@ -103,7 +103,7 @@ public enum AdsDataType {
   }
 
   public static List<AdsDataType> enumsForFieldNumBytes(int fieldValue) {
-    List<AdsDataType> _values = new ArrayList();
+    List<AdsDataType> _values = new ArrayList<>();
     for (AdsDataType _val : AdsDataType.values()) {
       if (_val.getNumBytes() == fieldValue) {
         _values.add(_val);
@@ -126,7 +126,7 @@ public enum AdsDataType {
   }
 
   public static List<AdsDataType> enumsForFieldPlcValueType(PlcValueType fieldValue) {
-    List<AdsDataType> _values = new ArrayList();
+    List<AdsDataType> _values = new ArrayList<>();
     for (AdsDataType _val : AdsDataType.values()) {
       if (_val.getPlcValueType() == fieldValue) {
         _values.add(_val);

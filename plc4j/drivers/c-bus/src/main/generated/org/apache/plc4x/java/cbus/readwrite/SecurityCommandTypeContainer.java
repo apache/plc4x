@@ -183,7 +183,7 @@ public enum SecurityCommandTypeContainer {
   }
 
   public static List<SecurityCommandTypeContainer> enumsForFieldNumBytes(short fieldValue) {
-    List<SecurityCommandTypeContainer> _values = new ArrayList();
+    List<SecurityCommandTypeContainer> _values = new ArrayList<>();
     for (SecurityCommandTypeContainer _val : SecurityCommandTypeContainer.values()) {
       if (_val.getNumBytes() == fieldValue) {
         _values.add(_val);
@@ -208,7 +208,7 @@ public enum SecurityCommandTypeContainer {
 
   public static List<SecurityCommandTypeContainer> enumsForFieldCommandType(
       SecurityCommandType fieldValue) {
-    List<SecurityCommandTypeContainer> _values = new ArrayList();
+    List<SecurityCommandTypeContainer> _values = new ArrayList<>();
     for (SecurityCommandTypeContainer _val : SecurityCommandTypeContainer.values()) {
       if (_val.getCommandType() == fieldValue) {
         _values.add(_val);

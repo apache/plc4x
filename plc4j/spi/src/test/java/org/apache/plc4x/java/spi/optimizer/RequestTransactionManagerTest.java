@@ -159,17 +159,15 @@ public class RequestTransactionManagerTest {
     }
 
     private void sendRequest(RequestTransactionManager tm, CompletableFuture<Void> sendRequest, CompletableFuture<Void> endRequest, CompletableFuture<Void> requestIsEnded) {
-        tm.submit(handle -> {
-            handle.submit(() -> {
-                // Wait till the Request is sent
-                sendRequest.complete(null);
-                // Receive
-                endRequest.thenAccept((n) -> {
-                    handle.endRequest();
-                    requestIsEnded.complete(null);
-                });
+        tm.submit(handle -> handle.submit(() -> {
+            // Wait till the Request is sent
+            sendRequest.complete(null);
+            // Receive
+            endRequest.thenAccept((n) -> {
+                handle.endRequest();
+                requestIsEnded.complete(null);
             });
-        });
+        }));
     }
 
 }

@@ -71,7 +71,7 @@ public enum MeteringCommandTypeContainer {
   }
 
   public static List<MeteringCommandTypeContainer> enumsForFieldNumBytes(short fieldValue) {
-    List<MeteringCommandTypeContainer> _values = new ArrayList();
+    List<MeteringCommandTypeContainer> _values = new ArrayList<>();
     for (MeteringCommandTypeContainer _val : MeteringCommandTypeContainer.values()) {
       if (_val.getNumBytes() == fieldValue) {
         _values.add(_val);
@@ -96,7 +96,7 @@ public enum MeteringCommandTypeContainer {
 
   public static List<MeteringCommandTypeContainer> enumsForFieldCommandType(
       MeteringCommandType fieldValue) {
-    List<MeteringCommandTypeContainer> _values = new ArrayList();
+    List<MeteringCommandTypeContainer> _values = new ArrayList<>();
     for (MeteringCommandTypeContainer _val : MeteringCommandTypeContainer.values()) {
       if (_val.getCommandType() == fieldValue) {
         _values.add(_val);

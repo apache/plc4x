@@ -128,21 +128,19 @@ public class OpcuaPlcDriverTest {
 
     @Test
     public void connectionWithDiscoveryParam(){
-        connectionStringValidSet.forEach(connectionAddress -> {
-            discoveryParamValidSet.forEach(discoveryParam -> {
-                String connectionString = connectionAddress + paramSectionDivider + discoveryParam;
-                try {
-                    PlcConnection opcuaConnection = new DefaultPlcDriverManager().getConnection(connectionString);
-                    assert opcuaConnection.isConnected();
-                    opcuaConnection.close();
-                    assert !opcuaConnection.isConnected();
-                } catch (PlcConnectionException e) {
-                    fail("Exception during connectionWithDiscoveryParam while connecting Test EXCEPTION: " + e.getMessage());
-                } catch (Exception e) {
-                    fail("Exception during connectionWithDiscoveryParam while closing Test EXCEPTION: " + e.getMessage());
-                }
-            });
-        });
+        connectionStringValidSet.forEach(connectionAddress -> discoveryParamValidSet.forEach(discoveryParam -> {
+            String connectionString = connectionAddress + paramSectionDivider + discoveryParam;
+            try {
+                PlcConnection opcuaConnection = new DefaultPlcDriverManager().getConnection(connectionString);
+                assert opcuaConnection.isConnected();
+                opcuaConnection.close();
+                assert !opcuaConnection.isConnected();
+            } catch (PlcConnectionException e) {
+                fail("Exception during connectionWithDiscoveryParam while connecting Test EXCEPTION: " + e.getMessage());
+            } catch (Exception e) {
+                fail("Exception during connectionWithDiscoveryParam while closing Test EXCEPTION: " + e.getMessage());
+            }
+        }));
 
 
     }

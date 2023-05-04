@@ -80,7 +80,7 @@ public enum AirConditioningCommandType {
   }
 
   public static List<AirConditioningCommandType> enumsForFieldNumberOfArguments(short fieldValue) {
-    List<AirConditioningCommandType> _values = new ArrayList();
+    List<AirConditioningCommandType> _values = new ArrayList<>();
     for (AirConditioningCommandType _val : AirConditioningCommandType.values()) {
       if (_val.getNumberOfArguments() == fieldValue) {
         _values.add(_val);

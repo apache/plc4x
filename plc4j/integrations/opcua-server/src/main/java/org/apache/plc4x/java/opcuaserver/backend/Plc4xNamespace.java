@@ -100,10 +100,10 @@ public class Plc4xNamespace extends ManagedNamespaceWithLifecycle {
     private void addConfiguredNodes(UaFolderNode rootNode, DeviceConfiguration c) {
         final List<Tag> tags = c.getTags();
         final String connectionString = c.getConnectionString();
-        for (int i = 0; i < tags.size(); i++) {
-            logger.info("Adding Tag " + tags.get(i).getAlias() + " - " + tags.get(i).getAddress());
-            String name = tags.get(i).getAlias();
-            final String tag = tags.get(i).getAddress();
+        for (Tag item : tags) {
+            logger.info("Adding Tag " + item.getAlias() + " - " + item.getAddress());
+            String name = item.getAlias();
+            final String tag = item.getAddress();
 
             Class datatype = null;
             NodeId typeId = Identifiers.String;
@@ -112,22 +112,22 @@ public class Plc4xNamespace extends ManagedNamespaceWithLifecycle {
             try {
                 datatype = plc4xServer.getTag(tag, connectionString).getPlcValueType().getDefaultJavaType();
                 final int length = (plc4xServer.getTag(tag, connectionString).getArrayInfo().isEmpty()) ? 1 :
-                    plc4xServer.getTag(tag, connectionString).getArrayInfo().get(0).getSize();
+                        plc4xServer.getTag(tag, connectionString).getArrayInfo().get(0).getSize();
                 typeId = Plc4xCommunication.getNodeId(plc4xServer.getTag(tag, connectionString).getPlcValueType());
 
 
                 if (length > 1) {
                     node = new UaVariableNode.UaVariableNodeBuilder(getNodeContext())
-                        .setNodeId(newNodeId(name))
-                        .setAccessLevel(AccessLevel.READ_WRITE)
-                        .setUserAccessLevel(AccessLevel.READ_WRITE)
-                        .setBrowseName(newQualifiedName(name))
-                        .setDisplayName(LocalizedText.english(name))
-                        .setDataType(typeId)
-                        .setTypeDefinition(Identifiers.BaseDataVariableType)
-                        .setValueRank(ValueRank.OneDimension.getValue())
-                        .setArrayDimensions(new UInteger[]{uint(length)})
-                        .build();
+                            .setNodeId(newNodeId(name))
+                            .setAccessLevel(AccessLevel.READ_WRITE)
+                            .setUserAccessLevel(AccessLevel.READ_WRITE)
+                            .setBrowseName(newQualifiedName(name))
+                            .setDisplayName(LocalizedText.english(name))
+                            .setDataType(typeId)
+                            .setTypeDefinition(Identifiers.BaseDataVariableType)
+                            .setValueRank(ValueRank.OneDimension.getValue())
+                            .setArrayDimensions(new UInteger[]{uint(length)})
+                            .build();
 
                     Object array = Array.newInstance(datatype, length);
                     for (int j = 0; j < length; j++) {
@@ -136,36 +136,36 @@ public class Plc4xNamespace extends ManagedNamespaceWithLifecycle {
                     variant = new Variant(array);
                 } else {
                     node = new UaVariableNode.UaVariableNodeBuilder(getNodeContext())
-                        .setNodeId(newNodeId(name))
-                        .setAccessLevel(AccessLevel.READ_WRITE)
-                        .setUserAccessLevel(AccessLevel.READ_WRITE)
-                        .setBrowseName(newQualifiedName(name))
-                        .setDisplayName(LocalizedText.english(name))
-                        .setDataType(typeId)
-                        .setTypeDefinition(Identifiers.BaseDataVariableType)
-                        .build();
+                            .setNodeId(newNodeId(name))
+                            .setAccessLevel(AccessLevel.READ_WRITE)
+                            .setUserAccessLevel(AccessLevel.READ_WRITE)
+                            .setBrowseName(newQualifiedName(name))
+                            .setDisplayName(LocalizedText.english(name))
+                            .setDataType(typeId)
+                            .setTypeDefinition(Identifiers.BaseDataVariableType)
+                            .build();
                     variant = new Variant(0);
                 }
 
                 node.setValue(new DataValue(variant));
 
                 node.getFilterChain().addLast(
-                    AttributeFilters.getValue(
-                        ctx -> plc4xServer.getValue(ctx, tag, connectionString)
-                    )
+                        AttributeFilters.getValue(
+                                ctx -> plc4xServer.getValue(ctx, tag, connectionString)
+                        )
                 );
 
                 node.getFilterChain().addLast(
-                    AttributeFilters.setValue(
-                        (ctx, value) -> {
-                            if (length > 1) {
-                                plc4xServer.setValue(tag, Arrays.toString((Object[]) value.getValue().getValue()), connectionString);
-                            } else {
-                                plc4xServer.setValue(tag, value.getValue().getValue().toString(), connectionString);
-                            }
+                        AttributeFilters.setValue(
+                                (ctx, value) -> {
+                                    if (length > 1) {
+                                        plc4xServer.setValue(tag, Arrays.toString((Object[]) value.getValue().getValue()), connectionString);
+                                    } else {
+                                        plc4xServer.setValue(tag, value.getValue().getValue().toString(), connectionString);
+                                    }
 
-                        }
-                    )
+                                }
+                        )
                 );
 
             } catch (PlcConnectionException e) {

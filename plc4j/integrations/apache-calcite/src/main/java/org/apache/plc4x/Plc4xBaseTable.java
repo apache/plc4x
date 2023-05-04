@@ -129,10 +129,10 @@ public abstract class Plc4xBaseTable extends AbstractTable {
      * if tableCutoff is positive, then the row gets limited to that.
      */
     public Enumerable<Object[]> scan(DataContext root) {
-        return new AbstractEnumerable<Object[]>() {
+        return new AbstractEnumerable<>() {
             @Override
             public Enumerator<Object[]> enumerator() {
-                return new Enumerator<Object[]>() {
+                return new Enumerator<>() {
 
                     private final AtomicLong counter = new AtomicLong(0);
 

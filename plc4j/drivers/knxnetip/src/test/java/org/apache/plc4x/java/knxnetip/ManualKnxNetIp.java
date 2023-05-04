@@ -64,10 +64,8 @@ public class ManualKnxNetIp {
 
         // Register a callback which is called on new data being available.
         final PlcSubscriptionHandle subscriptionHandle = subscriptionResponse.getSubscriptionHandle("knxData");
-        subscriptionHandle.register(knxData -> {
-            System.out.println(knxData.getTimestamp().toString() + " - " +
-                ((DefaultPlcSubscriptionEvent) knxData).getValues().get("knxData"));
-        });
+        subscriptionHandle.register(knxData -> System.out.println(knxData.getTimestamp().toString() + " - " +
+            ((DefaultPlcSubscriptionEvent) knxData).getValues().get("knxData")));
     }
 
 }

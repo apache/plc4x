@@ -457,9 +457,7 @@ public class SecureChannel {
                 e.printStackTrace();
             };
 
-            BiConsumer<OpcuaAPU, Throwable> error = (message, e) -> {
-                LOGGER.error("Error while waiting for subscription response", e);
-            };
+            BiConsumer<OpcuaAPU, Throwable> error = (message, e) -> LOGGER.error("Error while waiting for subscription response", e);
 
             submit(context, timeout, error, consumer, buffer);
         } catch (SerializationException e) {
@@ -565,13 +563,9 @@ public class SecureChannel {
 
             };
 
-            Consumer<TimeoutException> timeout = e -> {
-                LOGGER.error("Timeout while waiting for activate session response", e);
-            };
+            Consumer<TimeoutException> timeout = e -> LOGGER.error("Timeout while waiting for activate session response", e);
 
-            BiConsumer<OpcuaAPU, Throwable> error = (message, e) -> {
-                LOGGER.error("Error while waiting for activate session response", e);
-            };
+            BiConsumer<OpcuaAPU, Throwable> error = (message, e) -> LOGGER.error("Error while waiting for activate session response", e);
 
             submit(context, timeout, error, consumer, buffer);
         } catch (SerializationException e) {
@@ -649,13 +643,9 @@ public class SecureChannel {
 
             };
 
-            Consumer<TimeoutException> timeout = e -> {
-                LOGGER.error("Timeout while waiting for close session response", e);
-            };
+            Consumer<TimeoutException> timeout = e -> LOGGER.error("Timeout while waiting for close session response", e);
 
-            BiConsumer<OpcuaAPU, Throwable> error = (message, e) -> {
-                LOGGER.error("Error while waiting for close session response", e);
-            };
+            BiConsumer<OpcuaAPU, Throwable> error = (message, e) -> LOGGER.error("Error while waiting for close session response", e);
 
             submit(context, timeout, error, consumer, buffer);
         } catch (SerializationException e) {
@@ -1102,7 +1092,7 @@ public class SecureChannel {
      * @throws PlcRuntimeException - If no endpoint with a compatible policy is found raise and error.
      */
     private void selectEndpoint(CreateSessionResponse sessionResponse) throws PlcRuntimeException {
-        List<String> returnedEndpoints = new ArrayList<String>();
+        List<String> returnedEndpoints = new ArrayList<>();
 
         // Get a list of the endpoints which match ours.
         Stream<EndpointDescription> filteredEndpoints = sessionResponse.getServerEndpoints().stream()

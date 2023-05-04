@@ -458,12 +458,7 @@ public class SerialChannel extends AbstractNioByteChannel implements DuplexChann
             try {
                 doBeginRead();
             } catch (final Exception e) {
-                invokeLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        pipeline().fireExceptionCaught(e);
-                    }
-                });
+                invokeLater(() -> pipeline().fireExceptionCaught(e));
                 close(voidPromise());
             }
         }

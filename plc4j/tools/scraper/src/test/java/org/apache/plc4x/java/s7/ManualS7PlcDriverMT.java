@@ -141,30 +141,27 @@ public class ManualS7PlcDriverMT {
         // Warmup
         connectionManager.getConnection(CONN_STRING);
 
-        Runnable iteration = new Runnable() {
-            @Override
-            public void run() {
+        Runnable iteration = () -> {
 //                System.out.println("Setting a request / guard...");
-                CompletableFuture<Double> requestFuture = CompletableFuture.supplyAsync(
-                    () -> ManualS7PlcDriverMT.this.runSingleRequest(connectionManager)
-                );
-                executorService.schedule(() -> {
-                    if (!requestFuture.isDone()) {
-                        requestFuture.cancel(true);
-                        System.out.print("!");
-                    } else {
-                        System.out.print(".");
-                        try {
-                            statistics.addValue(requestFuture.get());
-                        } catch (InterruptedException | ExecutionException e) {
-                            // do nothing...
-                        }
+            CompletableFuture<Double> requestFuture = CompletableFuture.supplyAsync(
+                () -> ManualS7PlcDriverMT.this.runSingleRequest(connectionManager)
+            );
+            executorService.schedule(() -> {
+                if (!requestFuture.isDone()) {
+                    requestFuture.cancel(true);
+                    System.out.print("!");
+                } else {
+                    System.out.print(".");
+                    try {
+                        statistics.addValue(requestFuture.get());
+                    } catch (InterruptedException | ExecutionException e) {
+                        // do nothing...
                     }
-                    if (counter.getAndIncrement() >= numberOfRuns) {
-                        executorService.shutdown();
-                    }
-                }, period, TimeUnit.MILLISECONDS);
-            }
+                }
+                if (counter.getAndIncrement() >= numberOfRuns) {
+                    executorService.shutdown();
+                }
+            }, period, TimeUnit.MILLISECONDS);
         };
 
         executorService.scheduleAtFixedRate(iteration, 0, period, TimeUnit.MILLISECONDS);

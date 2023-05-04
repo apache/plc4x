@@ -330,7 +330,7 @@ public enum ApplicationIdContainer {
 
   public static List<ApplicationIdContainer> enumsForFieldLightingCompatible(
       LightingCompatible fieldValue) {
-    List<ApplicationIdContainer> _values = new ArrayList();
+    List<ApplicationIdContainer> _values = new ArrayList<>();
     for (ApplicationIdContainer _val : ApplicationIdContainer.values()) {
       if (_val.getLightingCompatible() == fieldValue) {
         _values.add(_val);
@@ -353,7 +353,7 @@ public enum ApplicationIdContainer {
   }
 
   public static List<ApplicationIdContainer> enumsForFieldApplicationId(ApplicationId fieldValue) {
-    List<ApplicationIdContainer> _values = new ArrayList();
+    List<ApplicationIdContainer> _values = new ArrayList<>();
     for (ApplicationIdContainer _val : ApplicationIdContainer.values()) {
       if (_val.getApplicationId() == fieldValue) {
         _values.add(_val);

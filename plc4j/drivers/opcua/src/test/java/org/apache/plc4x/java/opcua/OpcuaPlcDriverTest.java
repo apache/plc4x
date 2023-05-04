@@ -171,22 +171,20 @@ public class OpcuaPlcDriverTest {
 
     @Test
     public void connectionWithDiscoveryParam() {
-        connectionStringValidSet.forEach(connectionAddress -> {
-            discoveryParamValidSet.forEach(discoveryParam -> {
-                String connectionString = connectionAddress + paramSectionDivider + discoveryParam;
-                try {
-                    PlcConnection opcuaConnection = new DefaultPlcDriverManager().getConnection(connectionString);
-                    Condition<PlcConnection> is_connected = new Condition<>(PlcConnection::isConnected, "is connected");
-                    assertThat(opcuaConnection).is(is_connected);
-                    opcuaConnection.close();
-                    assertThat(opcuaConnection).isNot(is_connected);
-                } catch (PlcConnectionException e) {
-                    fail("Exception during connectionWithDiscoveryParam while connecting Test EXCEPTION: " + e.getMessage());
-                } catch (Exception e) {
-                    fail("Exception during connectionWithDiscoveryParam while closing Test EXCEPTION: " + e.getMessage());
-                }
-            });
-        });
+        connectionStringValidSet.forEach(connectionAddress -> discoveryParamValidSet.forEach(discoveryParam -> {
+            String connectionString = connectionAddress + paramSectionDivider + discoveryParam;
+            try {
+                PlcConnection opcuaConnection = new DefaultPlcDriverManager().getConnection(connectionString);
+                Condition<PlcConnection> is_connected = new Condition<>(PlcConnection::isConnected, "is connected");
+                assertThat(opcuaConnection).is(is_connected);
+                opcuaConnection.close();
+                assertThat(opcuaConnection).isNot(is_connected);
+            } catch (PlcConnectionException e) {
+                fail("Exception during connectionWithDiscoveryParam while connecting Test EXCEPTION: " + e.getMessage());
+            } catch (Exception e) {
+                fail("Exception during connectionWithDiscoveryParam while closing Test EXCEPTION: " + e.getMessage());
+            }
+        }));
     }
 
     @Test
@@ -396,10 +394,8 @@ public class OpcuaPlcDriverTest {
                         assertThat(read_response.getResponseCode("Bool")).isEqualTo(PlcResponseCode.OK);
                     }
 
-                } catch (ExecutionException executionException) {
+                } catch (ExecutionException | InterruptedException executionException) {
                     executionException.printStackTrace();
-                } catch (InterruptedException interruptedException) {
-                    interruptedException.printStackTrace();
                 }
 
             }
@@ -423,10 +419,8 @@ public class OpcuaPlcDriverTest {
                         PlcWriteResponse write_response = write_request.execute().get();
                         assertThat(write_response.getResponseCode("Bool")).isEqualTo(PlcResponseCode.OK);
                     }
-                } catch (ExecutionException executionException) {
+                } catch (ExecutionException | InterruptedException executionException) {
                     executionException.printStackTrace();
-                } catch (InterruptedException interruptedException) {
-                    interruptedException.printStackTrace();
                 }
             }
         }

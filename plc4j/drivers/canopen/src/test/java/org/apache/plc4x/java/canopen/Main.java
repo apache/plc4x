@@ -37,11 +37,8 @@ public class Main {
     public static void main(String[] args) throws Exception {
         DefaultPlcDriverManager driverManager = new DefaultPlcDriverManager();
 
-        CANOpenDriverContext.CALLBACK.addCallback(new Callback() {
-            @Override
-            public void receive(CANOpenFrame frame) {
-                //System.err.println("Received frame " + frame);
-            }
+        CANOpenDriverContext.CALLBACK.addCallback(frame -> {
+            //System.err.println("Received frame " + frame);
         });
 
         PlcConnection connection = driverManager.getConnection("canopen:javacan://vcan0?nodeId=11");

@@ -667,7 +667,7 @@ public class ProfinetDevice implements PlcSubscriber{
                                 0x0001,
                                 record.getIndex(),
                                 record.getLength(),
-                                new UserData(ByteBuffer.allocate(4).putInt(Integer.valueOf(record.getRef().getDefaultValue())).array(), (long) record.getLength())
+                                new UserData(ByteBuffer.allocate(4).putInt(Integer.parseInt(record.getRef().getDefaultValue())).array(), (long) record.getLength())
                             ));
                         seqNumber += 1;
                     }

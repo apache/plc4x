@@ -135,9 +135,7 @@ public class DefaultPlcReadRequest implements PlcReadRequest, PlcTagRequest, Ser
         @Override
         public PlcReadRequest build() {
             LinkedHashMap<String, PlcTag> parsedTags = new LinkedHashMap<>();
-            tags.forEach((name, tagQuery) -> {
-                parsedTags.put(name, tagQuery.get());
-            });
+            tags.forEach((name, tagQuery) -> parsedTags.put(name, tagQuery.get()));
             return new DefaultPlcReadRequest(reader, parsedTags);
         }
 

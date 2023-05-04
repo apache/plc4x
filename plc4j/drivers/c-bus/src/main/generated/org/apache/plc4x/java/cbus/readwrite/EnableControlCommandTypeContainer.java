@@ -96,7 +96,7 @@ public enum EnableControlCommandTypeContainer {
   }
 
   public static List<EnableControlCommandTypeContainer> enumsForFieldNumBytes(short fieldValue) {
-    List<EnableControlCommandTypeContainer> _values = new ArrayList();
+    List<EnableControlCommandTypeContainer> _values = new ArrayList<>();
     for (EnableControlCommandTypeContainer _val : EnableControlCommandTypeContainer.values()) {
       if (_val.getNumBytes() == fieldValue) {
         _values.add(_val);
@@ -121,7 +121,7 @@ public enum EnableControlCommandTypeContainer {
 
   public static List<EnableControlCommandTypeContainer> enumsForFieldCommandType(
       EnableControlCommandType fieldValue) {
-    List<EnableControlCommandTypeContainer> _values = new ArrayList();
+    List<EnableControlCommandTypeContainer> _values = new ArrayList<>();
     for (EnableControlCommandTypeContainer _val : EnableControlCommandTypeContainer.values()) {
       if (_val.getCommandType() == fieldValue) {
         _values.add(_val);

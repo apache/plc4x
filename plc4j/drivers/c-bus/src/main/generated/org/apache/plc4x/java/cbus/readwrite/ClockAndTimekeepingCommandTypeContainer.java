@@ -86,7 +86,7 @@ public enum ClockAndTimekeepingCommandTypeContainer {
 
   public static List<ClockAndTimekeepingCommandTypeContainer> enumsForFieldNumBytes(
       short fieldValue) {
-    List<ClockAndTimekeepingCommandTypeContainer> _values = new ArrayList();
+    List<ClockAndTimekeepingCommandTypeContainer> _values = new ArrayList<>();
     for (ClockAndTimekeepingCommandTypeContainer _val :
         ClockAndTimekeepingCommandTypeContainer.values()) {
       if (_val.getNumBytes() == fieldValue) {
@@ -113,7 +113,7 @@ public enum ClockAndTimekeepingCommandTypeContainer {
 
   public static List<ClockAndTimekeepingCommandTypeContainer> enumsForFieldCommandType(
       ClockAndTimekeepingCommandType fieldValue) {
-    List<ClockAndTimekeepingCommandTypeContainer> _values = new ArrayList();
+    List<ClockAndTimekeepingCommandTypeContainer> _values = new ArrayList<>();
     for (ClockAndTimekeepingCommandTypeContainer _val :
         ClockAndTimekeepingCommandTypeContainer.values()) {
       if (_val.getCommandType() == fieldValue) {

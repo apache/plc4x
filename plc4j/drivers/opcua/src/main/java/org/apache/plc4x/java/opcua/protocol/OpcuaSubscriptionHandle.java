@@ -85,16 +85,16 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
 
     private CompletableFuture<CreateMonitoredItemsResponse> onSubscribeCreateMonitoredItemsRequest() {
         List<ExtensionObjectDefinition> requestList = new ArrayList<>(this.tagNames.size());
-        for (int i = 0; i < this.tagNames.size(); i++) {
-            final DefaultPlcSubscriptionTag tagDefaultPlcSubscription = (DefaultPlcSubscriptionTag) subscriptionRequest.getTag(tagNames.get(i));
+        for (String tagName : this.tagNames) {
+            final DefaultPlcSubscriptionTag tagDefaultPlcSubscription = (DefaultPlcSubscriptionTag) subscriptionRequest.getTag(tagName);
 
             NodeId idNode = generateNodeId((OpcuaTag) tagDefaultPlcSubscription.getTag());
 
             ReadValueId readValueId = new ReadValueId(
-                idNode,
-                0xD,
-                OpcuaProtocolLogic.NULL_STRING,
-                new QualifiedName(0, OpcuaProtocolLogic.NULL_STRING));
+                    idNode,
+                    0xD,
+                    OpcuaProtocolLogic.NULL_STRING,
+                    new QualifiedName(0, OpcuaProtocolLogic.NULL_STRING));
 
             MonitoringMode monitoringMode;
             switch (tagDefaultPlcSubscription.getPlcSubscriptionType()) {
@@ -114,15 +114,15 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
             long clientHandle = clientHandles.getAndIncrement();
 
             MonitoringParameters parameters = new MonitoringParameters(
-                clientHandle,
-                (double) cycleTime,     // sampling interval
-                OpcuaProtocolLogic.NULL_EXTENSION_OBJECT,       // filter, null means use default
-                1L,   // queue size
-                true        // discard oldest
+                    clientHandle,
+                    (double) cycleTime,     // sampling interval
+                    OpcuaProtocolLogic.NULL_EXTENSION_OBJECT,       // filter, null means use default
+                    1L,   // queue size
+                    true        // discard oldest
             );
 
             MonitoredItemCreateRequest request = new MonitoredItemCreateRequest(
-                readValueId, monitoringMode, parameters);
+                    readValueId, monitoringMode, parameters);
 
             requestList.add(request);
         }

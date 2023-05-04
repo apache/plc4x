@@ -97,9 +97,7 @@ public class DefaultPlcBrowseRequest implements PlcBrowseRequest, Serializable {
         @Override
         public PlcBrowseRequest build() {
             LinkedHashMap<String, PlcQuery> parsedQueries = new LinkedHashMap<>();
-            queries.forEach((name, tagQuery) -> {
-                parsedQueries.put(name, tagQuery.get());
-            });
+            queries.forEach((name, tagQuery) -> parsedQueries.put(name, tagQuery.get()));
             return new DefaultPlcBrowseRequest(browser, parsedQueries);
         }
 

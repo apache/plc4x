@@ -180,7 +180,7 @@ public enum CALCommandTypeContainer {
   }
 
   public static List<CALCommandTypeContainer> enumsForFieldNumBytes(short fieldValue) {
-    List<CALCommandTypeContainer> _values = new ArrayList();
+    List<CALCommandTypeContainer> _values = new ArrayList<>();
     for (CALCommandTypeContainer _val : CALCommandTypeContainer.values()) {
       if (_val.getNumBytes() == fieldValue) {
         _values.add(_val);
@@ -203,7 +203,7 @@ public enum CALCommandTypeContainer {
   }
 
   public static List<CALCommandTypeContainer> enumsForFieldCommandType(CALCommandType fieldValue) {
-    List<CALCommandTypeContainer> _values = new ArrayList();
+    List<CALCommandTypeContainer> _values = new ArrayList<>();
     for (CALCommandTypeContainer _val : CALCommandTypeContainer.values()) {
       if (_val.getCommandType() == fieldValue) {
         _values.add(_val);

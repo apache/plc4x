@@ -96,7 +96,7 @@ public enum ProfinetDataType {
   }
 
   public static List<ProfinetDataType> enumsForFieldDataTypeSize(short fieldValue) {
-    List<ProfinetDataType> _values = new ArrayList();
+    List<ProfinetDataType> _values = new ArrayList<>();
     for (ProfinetDataType _val : ProfinetDataType.values()) {
       if (_val.getDataTypeSize() == fieldValue) {
         _values.add(_val);
@@ -119,7 +119,7 @@ public enum ProfinetDataType {
   }
 
   public static List<ProfinetDataType> enumsForFieldConversion(String fieldValue) {
-    List<ProfinetDataType> _values = new ArrayList();
+    List<ProfinetDataType> _values = new ArrayList<>();
     for (ProfinetDataType _val : ProfinetDataType.values()) {
       if (_val.getConversion().equals(fieldValue)) {
         _values.add(_val);

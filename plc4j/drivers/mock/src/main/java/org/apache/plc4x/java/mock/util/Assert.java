@@ -46,7 +46,7 @@ public class Assert {
     }
 
     public static Matcher<byte[]> byteArrayEqualsTo(byte[] expected) {
-        return new IsEqual<byte[]>(expected) {
+        return new IsEqual<>(expected) {
             @Override
             public void describeTo(Description description) {
                 try {

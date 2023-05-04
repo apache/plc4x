@@ -63,9 +63,7 @@ public class EventSubscription {
                 .register(msg -> {
                     System.out.println("******** S7ModeEvent ********");
                     Map<String, Object> map = ((S7ModeEvent) msg).getMap();
-                    map.forEach((x, y) -> {
-                        System.out.println(x + " : " + y);
-                    });
+                    map.forEach((x, y) -> System.out.println(x + " : " + y));
                     System.out.println("****************************");
                 });
 //

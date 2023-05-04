@@ -1370,7 +1370,7 @@ public enum KnxInterfaceObjectProperty {
 
   public static List<KnxInterfaceObjectProperty> enumsForFieldPropertyDataType(
       KnxPropertyDataType fieldValue) {
-    List<KnxInterfaceObjectProperty> _values = new ArrayList();
+    List<KnxInterfaceObjectProperty> _values = new ArrayList<>();
     for (KnxInterfaceObjectProperty _val : KnxInterfaceObjectProperty.values()) {
       if (_val.getPropertyDataType() == fieldValue) {
         _values.add(_val);
@@ -1393,7 +1393,7 @@ public enum KnxInterfaceObjectProperty {
   }
 
   public static List<KnxInterfaceObjectProperty> enumsForFieldName(String fieldValue) {
-    List<KnxInterfaceObjectProperty> _values = new ArrayList();
+    List<KnxInterfaceObjectProperty> _values = new ArrayList<>();
     for (KnxInterfaceObjectProperty _val : KnxInterfaceObjectProperty.values()) {
       if (_val.getName().equals(fieldValue)) {
         _values.add(_val);
@@ -1416,7 +1416,7 @@ public enum KnxInterfaceObjectProperty {
   }
 
   public static List<KnxInterfaceObjectProperty> enumsForFieldPropertyId(short fieldValue) {
-    List<KnxInterfaceObjectProperty> _values = new ArrayList();
+    List<KnxInterfaceObjectProperty> _values = new ArrayList<>();
     for (KnxInterfaceObjectProperty _val : KnxInterfaceObjectProperty.values()) {
       if (_val.getPropertyId() == fieldValue) {
         _values.add(_val);
@@ -1441,7 +1441,7 @@ public enum KnxInterfaceObjectProperty {
 
   public static List<KnxInterfaceObjectProperty> enumsForFieldObjectType(
       KnxInterfaceObjectType fieldValue) {
-    List<KnxInterfaceObjectProperty> _values = new ArrayList();
+    List<KnxInterfaceObjectProperty> _values = new ArrayList<>();
     for (KnxInterfaceObjectProperty _val : KnxInterfaceObjectProperty.values()) {
       if (_val.getObjectType() == fieldValue) {
         _values.add(_val);

@@ -66,7 +66,7 @@ public enum TriggerControlCommandType {
   }
 
   public static List<TriggerControlCommandType> enumsForFieldNumberOfArguments(short fieldValue) {
-    List<TriggerControlCommandType> _values = new ArrayList();
+    List<TriggerControlCommandType> _values = new ArrayList<>();
     for (TriggerControlCommandType _val : TriggerControlCommandType.values()) {
       if (_val.getNumberOfArguments() == fieldValue) {
         _values.add(_val);

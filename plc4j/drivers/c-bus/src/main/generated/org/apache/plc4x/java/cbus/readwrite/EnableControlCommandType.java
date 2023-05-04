@@ -62,7 +62,7 @@ public enum EnableControlCommandType {
   }
 
   public static List<EnableControlCommandType> enumsForFieldNumberOfArguments(short fieldValue) {
-    List<EnableControlCommandType> _values = new ArrayList();
+    List<EnableControlCommandType> _values = new ArrayList<>();
     for (EnableControlCommandType _val : EnableControlCommandType.values()) {
       if (_val.getNumberOfArguments() == fieldValue) {
         _values.add(_val);

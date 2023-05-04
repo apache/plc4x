@@ -380,11 +380,11 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
                 } else if (variant instanceof VariantByteString) {
                     PlcList plcList = new PlcList();
                     List<ByteStringArray> array = ((VariantByteString) variant).getValue();
-                    for (int k = 0; k < array.size(); k++) {
-                        int length = array.get(k).getValue().size();
+                    for (ByteStringArray byteStringArray : array) {
+                        int length = byteStringArray.getValue().size();
                         Short[] tmpValue = new Short[length];
                         for (int i = 0; i < length; i++) {
-                            tmpValue[i] = array.get(k).getValue().get(i);
+                            tmpValue[i] = byteStringArray.getValue().get(i);
                         }
                         plcList.add(PlcValueHandler.of(tmpValue));
                     }

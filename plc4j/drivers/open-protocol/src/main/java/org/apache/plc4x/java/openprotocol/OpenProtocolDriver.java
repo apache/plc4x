@@ -59,12 +59,7 @@ public class OpenProtocolDriver extends GeneratedDriverBase<OpenProtocolMessage>
 
     @Override
     public PlcDriverMetadata getMetadata() {
-        return new PlcDriverMetadata() {
-            @Override
-            public boolean canDiscover() {
-                return false;
-            }
-        };
+        return () -> false;
     }
 
     @Override

@@ -77,7 +77,7 @@ public enum LevelInformationNibblePair {
   }
 
   public static List<LevelInformationNibblePair> enumsForFieldNibbleValue(byte fieldValue) {
-    List<LevelInformationNibblePair> _values = new ArrayList();
+    List<LevelInformationNibblePair> _values = new ArrayList<>();
     for (LevelInformationNibblePair _val : LevelInformationNibblePair.values()) {
       if (_val.getNibbleValue() == fieldValue) {
         _values.add(_val);

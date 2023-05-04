@@ -64,7 +64,7 @@ public enum SecurityCommandType {
   }
 
   public static List<SecurityCommandType> enumsForFieldNumberOfArguments(short fieldValue) {
-    List<SecurityCommandType> _values = new ArrayList();
+    List<SecurityCommandType> _values = new ArrayList<>();
     for (SecurityCommandType _val : SecurityCommandType.values()) {
       if (_val.getNumberOfArguments() == fieldValue) {
         _values.add(_val);

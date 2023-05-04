@@ -69,7 +69,7 @@ public enum AccessControlCommandType {
   }
 
   public static List<AccessControlCommandType> enumsForFieldNumberOfArguments(short fieldValue) {
-    List<AccessControlCommandType> _values = new ArrayList();
+    List<AccessControlCommandType> _values = new ArrayList<>();
     for (AccessControlCommandType _val : AccessControlCommandType.values()) {
       if (_val.getNumberOfArguments() == fieldValue) {
         _values.add(_val);

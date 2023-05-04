@@ -143,7 +143,7 @@ public enum ${type.name} {
     }
 
     public static List<${type.name}> enumsForField${constantName?cap_first}(${helper.getLanguageTypeNameForTypeReference(type.getConstantType(constantName), true)} fieldValue) {
-        List<${type.name}> _values = new ArrayList();
+        List<${type.name}> _values = new ArrayList<>();
         for (${type.name} _val : ${type.name}.values()) {
         <#if type.name == "String" || helper.getLanguageTypeNameForTypeReference(type.getConstantType(constantName), true) == "String">
             if(_val.get${constantName?cap_first}().equals(fieldValue)) {

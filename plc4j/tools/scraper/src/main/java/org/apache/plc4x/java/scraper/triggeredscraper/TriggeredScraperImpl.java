@@ -297,11 +297,7 @@ public class TriggeredScraperImpl implements Scraper, TriggeredScraperMBean {
         CompletableFuture<PlcConnection> future = CompletableFuture.supplyAsync(() -> {
             try {
                 return plcConnectionManager.getConnection(connectionString);
-            } catch (PlcConnectionException e) {
-                LOGGER.warn("Unable to instantiate connection to " + connectionString, e);
-                throw new PlcRuntimeException(e);
-            }
-            catch (Exception e){
+            } catch (Exception e){
                 LOGGER.warn("Unable to instantiate connection to " + connectionString, e);
                 throw new PlcRuntimeException(e);
             }

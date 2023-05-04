@@ -2522,14 +2522,12 @@ public class BACnetObjectsDefinitions {
 
     private static void createPropertyTypeCombinationCount() {
         propertyTypeCombinationCount = new HashMap<>();
-        bacNetObjects.forEach(bacNetObject -> {
-            bacNetObject.properties.forEach(bacNetProperty -> {
-                PropertyTypeCombination propertyTypeCombination = new PropertyTypeCombination(bacNetProperty);
-                propertyTypeCombinationCount.putIfAbsent(propertyTypeCombination, 0);
-                int count = propertyTypeCombinationCount.get(propertyTypeCombination);
-                propertyTypeCombinationCount.put(propertyTypeCombination, ++count);
-            });
-        });
+        bacNetObjects.forEach(bacNetObject -> bacNetObject.properties.forEach(bacNetProperty -> {
+            PropertyTypeCombination propertyTypeCombination = new PropertyTypeCombination(bacNetProperty);
+            propertyTypeCombinationCount.putIfAbsent(propertyTypeCombination, 0);
+            int count = propertyTypeCombinationCount.get(propertyTypeCombination);
+            propertyTypeCombinationCount.put(propertyTypeCombination, ++count);
+        }));
     }
 
     static void createPropertyIdToPropertyNameMap() {

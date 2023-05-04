@@ -65,7 +65,7 @@ public enum ClockAndTimekeepingCommandType {
 
   public static List<ClockAndTimekeepingCommandType> enumsForFieldNumberOfArguments(
       short fieldValue) {
-    List<ClockAndTimekeepingCommandType> _values = new ArrayList();
+    List<ClockAndTimekeepingCommandType> _values = new ArrayList<>();
     for (ClockAndTimekeepingCommandType _val : ClockAndTimekeepingCommandType.values()) {
       if (_val.getNumberOfArguments() == fieldValue) {
         _values.add(_val);

@@ -65,7 +65,7 @@ public enum MeasurementCommandTypeContainer {
   }
 
   public static List<MeasurementCommandTypeContainer> enumsForFieldNumBytes(short fieldValue) {
-    List<MeasurementCommandTypeContainer> _values = new ArrayList();
+    List<MeasurementCommandTypeContainer> _values = new ArrayList<>();
     for (MeasurementCommandTypeContainer _val : MeasurementCommandTypeContainer.values()) {
       if (_val.getNumBytes() == fieldValue) {
         _values.add(_val);
@@ -90,7 +90,7 @@ public enum MeasurementCommandTypeContainer {
 
   public static List<MeasurementCommandTypeContainer> enumsForFieldCommandType(
       MeasurementCommandType fieldValue) {
-    List<MeasurementCommandTypeContainer> _values = new ArrayList();
+    List<MeasurementCommandTypeContainer> _values = new ArrayList<>();
     for (MeasurementCommandTypeContainer _val : MeasurementCommandTypeContainer.values()) {
       if (_val.getCommandType() == fieldValue) {
         _values.add(_val);

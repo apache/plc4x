@@ -45,7 +45,7 @@ public class Plc4xReadResponseRecordSet implements RecordSet, Closeable {
     private boolean moreRows;
     private final boolean debugEnabled = logger.isDebugEnabled();
 
-   	private final AtomicReference<RecordSchema> recordSchema = new AtomicReference<RecordSchema>(null);
+   	private final AtomicReference<RecordSchema> recordSchema = new AtomicReference<>(null);
 
     public Plc4xReadResponseRecordSet(final PlcReadResponse readResponse, RecordSchema recordSchema) throws IOException {
         this.readResponse = readResponse;

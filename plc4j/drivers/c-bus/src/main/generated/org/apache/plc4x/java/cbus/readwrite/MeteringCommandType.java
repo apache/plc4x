@@ -62,7 +62,7 @@ public enum MeteringCommandType {
   }
 
   public static List<MeteringCommandType> enumsForFieldNumberOfArguments(short fieldValue) {
-    List<MeteringCommandType> _values = new ArrayList();
+    List<MeteringCommandType> _values = new ArrayList<>();
     for (MeteringCommandType _val : MeteringCommandType.values()) {
       if (_val.getNumberOfArguments() == fieldValue) {
         _values.add(_val);

@@ -92,7 +92,7 @@ public enum CIPDataTypeCode {
   }
 
   public static List<CIPDataTypeCode> enumsForFieldSize(short fieldValue) {
-    List<CIPDataTypeCode> _values = new ArrayList();
+    List<CIPDataTypeCode> _values = new ArrayList<>();
     for (CIPDataTypeCode _val : CIPDataTypeCode.values()) {
       if (_val.getSize() == fieldValue) {
         _values.add(_val);

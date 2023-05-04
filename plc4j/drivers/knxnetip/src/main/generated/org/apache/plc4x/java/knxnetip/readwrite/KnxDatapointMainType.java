@@ -134,7 +134,7 @@ public enum KnxDatapointMainType {
   }
 
   public static List<KnxDatapointMainType> enumsForFieldNumber(int fieldValue) {
-    List<KnxDatapointMainType> _values = new ArrayList();
+    List<KnxDatapointMainType> _values = new ArrayList<>();
     for (KnxDatapointMainType _val : KnxDatapointMainType.values()) {
       if (_val.getNumber() == fieldValue) {
         _values.add(_val);
@@ -157,7 +157,7 @@ public enum KnxDatapointMainType {
   }
 
   public static List<KnxDatapointMainType> enumsForFieldName(String fieldValue) {
-    List<KnxDatapointMainType> _values = new ArrayList();
+    List<KnxDatapointMainType> _values = new ArrayList<>();
     for (KnxDatapointMainType _val : KnxDatapointMainType.values()) {
       if (_val.getName().equals(fieldValue)) {
         _values.add(_val);
@@ -180,7 +180,7 @@ public enum KnxDatapointMainType {
   }
 
   public static List<KnxDatapointMainType> enumsForFieldSizeInBits(short fieldValue) {
-    List<KnxDatapointMainType> _values = new ArrayList();
+    List<KnxDatapointMainType> _values = new ArrayList<>();
     for (KnxDatapointMainType _val : KnxDatapointMainType.values()) {
       if (_val.getSizeInBits() == fieldValue) {
         _values.add(_val);
