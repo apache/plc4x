@@ -116,7 +116,7 @@ func (m *MessageCodec) Receive() (spi.Message, error) {
 				return true
 			}
 		}); err != nil {
-			return nil, errors.Wrap(err, "error filling buffer")
+			log.Debug().Err(err).Msg("Error filling buffer")
 		}
 	}
 	log.Trace().Msg("Buffer filled")

@@ -128,8 +128,8 @@ func (m *TransportInstance) FillBuffer(until func(pos uint, currentByte byte, re
 }
 
 func (m *TransportInstance) PeekReadableBytes(numBytes uint32) ([]byte, error) {
-	log.Trace().Msgf("Peek %d readable bytes", numBytes)
 	availableBytes := uint32(math.Min(float64(numBytes), float64(len(m.readBuffer))))
+	log.Trace().Msgf("Peek %d readable bytes (%d available bytes)", numBytes, availableBytes)
 	var err error
 	if availableBytes != numBytes {
 		err = errors.New("not enough bytes available")
@@ -137,7 +137,7 @@ func (m *TransportInstance) PeekReadableBytes(numBytes uint32) ([]byte, error) {
 	if availableBytes == 0 {
 		return nil, err
 	}
-	return m.readBuffer[0:availableBytes], nil
+	return m.readBuffer[0:availableBytes], err
 }
 
 func (m *TransportInstance) Read(numBytes uint32) ([]byte, error) {
