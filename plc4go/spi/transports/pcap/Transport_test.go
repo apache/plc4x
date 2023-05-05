@@ -22,11 +22,15 @@ package pcap
 import (
 	"bufio"
 	"github.com/apache/plc4x/plc4go/spi/transports"
+	"github.com/gopacket/gopacket"
+	"github.com/gopacket/gopacket/layers"
 	"github.com/gopacket/gopacket/pcap"
+	"github.com/gopacket/gopacket/pcapgo"
+	"github.com/stretchr/testify/assert"
 	"net/url"
-	"reflect"
-	"sync"
+	"os"
 	"testing"
+	"time"
 )
 
 func TestNewPcapTransportInstance(t *testing.T) {
@@ -42,11 +46,18 @@ func TestNewPcapTransportInstance(t *testing.T) {
 		args args
 		want *TransportInstance
 	}{
-		// TODO: Add test cases.
+		{
+			name: "create it",
+			want: func() *TransportInstance {
+				ti := &TransportInstance{}
+				ti.DefaultBufferedTransportInstance = transports.NewDefaultBufferedTransportInstance(ti)
+				return ti
+			}(),
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := NewPcapTransportInstance(tt.args.transportFile, tt.args.transportType, tt.args.portRange, tt.args.speedFactor, tt.args.transport); !reflect.DeepEqual(got, tt.want) {
+			if got := NewPcapTransportInstance(tt.args.transportFile, tt.args.transportType, tt.args.portRange, tt.args.speedFactor, tt.args.transport); !assert.Equal(t, tt.want, got) {
 				t.Errorf("NewPcapTransportInstance() = %v, want %v", got, tt.want)
 			}
 		})
@@ -58,11 +69,14 @@ func TestNewTransport(t *testing.T) {
 		name string
 		want *Transport
 	}{
-		// TODO: Add test cases.
+		{
+			name: "create it",
+			want: &Transport{},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := NewTransport(); !reflect.DeepEqual(got, tt.want) {
+			if got := NewTransport(); !assert.Equal(t, tt.want, got) {
 				t.Errorf("NewTransport() = %v, want %v", got, tt.want)
 			}
 		})
@@ -79,7 +93,6 @@ func TestTransportInstance_Close(t *testing.T) {
 		connected                        bool
 		transport                        *Transport
 		handle                           *pcap.Handle
-		mutex                            sync.Mutex
 		reader                           *bufio.Reader
 	}
 	tests := []struct {
@@ -87,7 +100,12 @@ func TestTransportInstance_Close(t *testing.T) {
 		fields  fields
 		wantErr bool
 	}{
-		// TODO: Add test cases.
+		{
+			name: "close it",
+			fields: fields{
+				handle: &pcap.Handle{},
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -100,7 +118,6 @@ func TestTransportInstance_Close(t *testing.T) {
 				connected:                        tt.fields.connected,
 				transport:                        tt.fields.transport,
 				handle:                           tt.fields.handle,
-				mutex:                            tt.fields.mutex,
 				reader:                           tt.fields.reader,
 			}
 			if err := m.Close(); (err != nil) != tt.wantErr {
@@ -120,7 +137,6 @@ func TestTransportInstance_Connect(t *testing.T) {
 		connected                        bool
 		transport                        *Transport
 		handle                           *pcap.Handle
-		mutex                            sync.Mutex
 		reader                           *bufio.Reader
 	}
 	tests := []struct {
@@ -128,7 +144,23 @@ func TestTransportInstance_Connect(t *testing.T) {
 		fields  fields
 		wantErr bool
 	}{
-		// TODO: Add test cases.
+		{
+			name: "already connected",
+			fields: fields{
+				connected: true,
+			},
+			wantErr: true,
+		},
+		{
+			name:    "connect no file",
+			wantErr: true,
+		},
+		{
+			name: "connect with file",
+			fields: fields{
+				transportFile: createPcap(t),
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -141,7 +173,6 @@ func TestTransportInstance_Connect(t *testing.T) {
 				connected:                        tt.fields.connected,
 				transport:                        tt.fields.transport,
 				handle:                           tt.fields.handle,
-				mutex:                            tt.fields.mutex,
 				reader:                           tt.fields.reader,
 			}
 			if err := m.Connect(); (err != nil) != tt.wantErr {
@@ -161,7 +192,6 @@ func TestTransportInstance_GetReader(t *testing.T) {
 		connected                        bool
 		transport                        *Transport
 		handle                           *pcap.Handle
-		mutex                            sync.Mutex
 		reader                           *bufio.Reader
 	}
 	tests := []struct {
@@ -169,7 +199,9 @@ func TestTransportInstance_GetReader(t *testing.T) {
 		fields fields
 		want   *bufio.Reader
 	}{
-		// TODO: Add test cases.
+		{
+			name: "get reader",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -182,10 +214,9 @@ func TestTransportInstance_GetReader(t *testing.T) {
 				connected:                        tt.fields.connected,
 				transport:                        tt.fields.transport,
 				handle:                           tt.fields.handle,
-				mutex:                            tt.fields.mutex,
 				reader:                           tt.fields.reader,
 			}
-			if got := m.GetReader(); !reflect.DeepEqual(got, tt.want) {
+			if got := m.GetReader(); !assert.Equal(t, tt.want, got) {
 				t.Errorf("GetReader() = %v, want %v", got, tt.want)
 			}
 		})
@@ -202,7 +233,6 @@ func TestTransportInstance_IsConnected(t *testing.T) {
 		connected                        bool
 		transport                        *Transport
 		handle                           *pcap.Handle
-		mutex                            sync.Mutex
 		reader                           *bufio.Reader
 	}
 	tests := []struct {
@@ -210,7 +240,9 @@ func TestTransportInstance_IsConnected(t *testing.T) {
 		fields fields
 		want   bool
 	}{
-		// TODO: Add test cases.
+		{
+			name: "is connected",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -223,7 +255,6 @@ func TestTransportInstance_IsConnected(t *testing.T) {
 				connected:                        tt.fields.connected,
 				transport:                        tt.fields.transport,
 				handle:                           tt.fields.handle,
-				mutex:                            tt.fields.mutex,
 				reader:                           tt.fields.reader,
 			}
 			if got := m.IsConnected(); got != tt.want {
@@ -243,7 +274,6 @@ func TestTransportInstance_String(t *testing.T) {
 		connected                        bool
 		transport                        *Transport
 		handle                           *pcap.Handle
-		mutex                            sync.Mutex
 		reader                           *bufio.Reader
 	}
 	tests := []struct {
@@ -251,7 +281,15 @@ func TestTransportInstance_String(t *testing.T) {
 		fields fields
 		want   string
 	}{
-		// TODO: Add test cases.
+		{
+			name: "get the string",
+			fields: fields{
+				transportFile: "plc4x",
+				portRange:     "is-the-best",
+				speedFactor:   3.14,
+			},
+			want: "pcap:plc4x(is-the-best)x3.140000",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -264,7 +302,6 @@ func TestTransportInstance_String(t *testing.T) {
 				connected:                        tt.fields.connected,
 				transport:                        tt.fields.transport,
 				handle:                           tt.fields.handle,
-				mutex:                            tt.fields.mutex,
 				reader:                           tt.fields.reader,
 			}
 			if got := m.String(); got != tt.want {
@@ -284,7 +321,6 @@ func TestTransportInstance_Write(t *testing.T) {
 		connected                        bool
 		transport                        *Transport
 		handle                           *pcap.Handle
-		mutex                            sync.Mutex
 		reader                           *bufio.Reader
 	}
 	type args struct {
@@ -296,7 +332,10 @@ func TestTransportInstance_Write(t *testing.T) {
 		args    args
 		wantErr bool
 	}{
-		// TODO: Add test cases.
+		{
+			name:    "we can't write",
+			wantErr: true,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -309,7 +348,6 @@ func TestTransportInstance_Write(t *testing.T) {
 				connected:                        tt.fields.connected,
 				transport:                        tt.fields.transport,
 				handle:                           tt.fields.handle,
-				mutex:                            tt.fields.mutex,
 				reader:                           tt.fields.reader,
 			}
 			if err := m.Write(tt.args.in0); (err != nil) != tt.wantErr {
@@ -330,7 +368,26 @@ func TestTransport_CreateTransportInstance(t *testing.T) {
 		want    transports.TransportInstance
 		wantErr bool
 	}{
-		// TODO: Add test cases.
+		{
+			name: "create it",
+			args: args{
+				options: map[string][]string{
+					"transport-type":       {"pcap"},
+					"transport-port-range": {"1-3"},
+					"speed-factor":         {"1.5"},
+				},
+			},
+			want: func() transports.TransportInstance {
+				ti := &TransportInstance{
+					transportType: "pcap",
+					speedFactor:   1.5,
+					transport:     NewTransport(),
+					portRange:     "1-3",
+				}
+				ti.DefaultBufferedTransportInstance = transports.NewDefaultBufferedTransportInstance(ti)
+				return ti
+			}(),
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -340,7 +397,7 @@ func TestTransport_CreateTransportInstance(t *testing.T) {
 				t.Errorf("CreateTransportInstance() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			if !reflect.DeepEqual(got, tt.want) {
+			if !assert.Equal(t, tt.want, got) {
 				t.Errorf("CreateTransportInstance() got = %v, want %v", got, tt.want)
 			}
 		})
@@ -352,7 +409,10 @@ func TestTransport_GetTransportCode(t *testing.T) {
 		name string
 		want string
 	}{
-		// TODO: Add test cases.
+		{
+			name: "get it",
+			want: "pcap",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -369,7 +429,10 @@ func TestTransport_GetTransportName(t *testing.T) {
 		name string
 		want string
 	}{
-		// TODO: Add test cases.
+		{
+			name: "get it",
+			want: "PCAP(NG) Playback Transport",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -386,7 +449,10 @@ func TestTransport_String(t *testing.T) {
 		name string
 		want string
 	}{
-		// TODO: Add test cases.
+		{
+			name: "get it",
+			want: "pcap(PCAP(NG) Playback Transport)",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -396,4 +462,29 @@ func TestTransport_String(t *testing.T) {
 			}
 		})
 	}
+}
+
+func createPcap(t *testing.T) string {
+	tempFile, err := os.CreateTemp(t.TempDir(), "some*.pcap")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	w := pcapgo.NewWriter(tempFile)
+	if err := w.WriteFileHeader(65536, layers.LinkTypeEthernet); err != nil {
+		t.Fatal(err)
+	}
+	ci := gopacket.CaptureInfo{
+		Timestamp:     time.Unix(0x01020304, 0xAA*1000),
+		Length:        0xABCD,
+		CaptureLength: 10,
+	}
+	data := []byte{9, 8, 7, 6, 5, 4, 3, 2, 1, 0}
+	if err := w.WritePacket(ci, data); err != nil {
+		t.Fatal(err)
+	}
+	if err := tempFile.Close(); err != nil {
+		t.Fatal(err)
+	}
+	return tempFile.Name()
 }

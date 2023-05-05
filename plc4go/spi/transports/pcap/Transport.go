@@ -39,8 +39,9 @@ import (
 type TransportType string
 
 const (
-	UDP TransportType = "udp"
-	TCP TransportType = "tcp"
+	UDP  TransportType = "udp"
+	TCP  TransportType = "tcp"
+	PCAP TransportType = "pcap"
 )
 
 type Transport struct {
@@ -59,7 +60,7 @@ func (m Transport) GetTransportName() string {
 }
 
 func (m Transport) CreateTransportInstance(transportUrl url.URL, options map[string][]string) (transports.TransportInstance, error) {
-	var transportType = TCP
+	var transportType = PCAP
 	if val, ok := options["transport-type"]; ok {
 		transportType = TransportType(val[0])
 	}
