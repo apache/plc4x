@@ -124,11 +124,7 @@ func (m *Reader) createMessageTransactionAndWait(ctx context.Context, messageToS
 func (m *Reader) sendMessageOverTheWire(ctx context.Context, transaction spi.RequestTransaction, messageToSend readWriteModel.CBusMessage, addResponseCode func(name string, responseCode apiModel.PlcResponseCode), tagName string, addPlcValue func(name string, plcValue apiValues.PlcValue)) {
 	// Send the  over the wire
 	log.Trace().Msg("Send ")
-	if err := m.messageCodec.SendRequest(ctx, messageToSend, func(receivedMessage spi.Message) bool {
-		cbusMessage, ok := receivedMessage.(readWriteModel.CBusMessageExactly)
-		if !ok {
-			return false
-		}
+	if err := m.messageCodec.SendRequest(ctx, messageToSend, func(cbusMessage spi.Message) bool {
 		messageToClient, ok := cbusMessage.(readWriteModel.CBusMessageToClientExactly)
 		if !ok {
 			return false
@@ -143,7 +139,10 @@ func (m *Reader) sendMessageOverTheWire(ctx context.Context, transaction spi.Req
 		if !ok {
 			return false
 		}
-		return confirmation.GetConfirmation().GetAlpha().GetCharacter() == messageToSend.(readWriteModel.CBusMessageToServer).GetRequest().(readWriteModel.RequestCommand).GetAlpha().GetCharacter()
+		actualAlpha := confirmation.GetConfirmation().GetAlpha().GetCharacter()
+		// TODO: assert that this is a CBusMessageToServer indeed (by changing param for example)
+		expectedAlpha := messageToSend.(readWriteModel.CBusMessageToServer).GetRequest().(interface{ GetAlpha() readWriteModel.Alpha }).GetAlpha().GetCharacter()
+		return actualAlpha == expectedAlpha
 	}, func(receivedMessage spi.Message) error {
 		defer func(transaction spi.RequestTransaction) {
 			// This is just to make sure we don't forget to close the transaction here
@@ -151,8 +150,7 @@ func (m *Reader) sendMessageOverTheWire(ctx context.Context, transaction spi.Req
 		}(transaction)
 		// Convert the response into an
 		log.Trace().Msg("convert response to ")
-		cbusMessage := receivedMessage.(readWriteModel.CBusMessage)
-		messageToClient := cbusMessage.(readWriteModel.CBusMessageToClient)
+		messageToClient := receivedMessage.(readWriteModel.CBusMessageToClient)
 		if _, ok := messageToClient.GetReply().(readWriteModel.ServerErrorReplyExactly); ok {
 			log.Trace().Msg("We got a server failure")
 			addResponseCode(tagName, apiModel.PlcResponseCode_INVALID_DATA)
@@ -200,7 +198,7 @@ func (m *Reader) sendMessageOverTheWire(ctx context.Context, transaction spi.Req
 	}, time.Second*1); err != nil {
 		log.Debug().Err(err).Msgf("Error sending message for tag %s", tagName)
 		addResponseCode(tagName, apiModel.PlcResponseCode_INTERNAL_ERROR)
-		if err := transaction.FailRequest(errors.Errorf("timeout after %ss", time.Second*1)); err != nil {
+		if err := transaction.FailRequest(errors.Errorf("timeout after %s", time.Second*1)); err != nil {
 			log.Debug().Err(err).Msg("Error failing request")
 		}
 	}
