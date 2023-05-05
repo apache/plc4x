@@ -592,6 +592,7 @@ public class ProfinetDevice implements PlcSubscriber {
                 if (dceRpc_packet.getPayload().getPacketType() == DceRpc_PacketType.RESPONSE) {
                     final PnIoCm_Packet_Res connectResponse = (PnIoCm_Packet_Res) dceRpc_packet.getPayload();
                     if (connectResponse.getErrorCode() == 0) {
+                        // TODO:- Re-enable the Write Parameters step if need be. Need a pcap of a simocode connection.
                         deviceContext.setState(ProfinetDeviceState.PREMED);
                         responseHandled.complete(true);
                         for (PnIoCm_Block module : connectResponse.getBlocks()) {
