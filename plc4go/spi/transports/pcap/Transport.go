@@ -192,7 +192,7 @@ func (m *TransportInstance) IsConnected() bool {
 }
 
 func (m *TransportInstance) Write(_ []byte) error {
-	panic("Write to pcap not supported")
+	return errors.New("Write to pcap not supported")
 }
 
 func (m *TransportInstance) GetReader() *bufio.Reader {
