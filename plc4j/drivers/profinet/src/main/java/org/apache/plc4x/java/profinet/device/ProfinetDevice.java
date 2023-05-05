@@ -972,6 +972,7 @@ public class ProfinetDevice implements PlcSubscriber {
                     buffer.writeByte((byte) 0x00);
                 }
 
+                // TODO:- Still having issues with this. For the Simcode after a while we received an Alarm low message, Although it might be related to the ping functionality.
                 int elapsedTime = (int) ((((System.nanoTime() - startTime) / (MIN_CYCLE_NANO_SEC)) + offset) % 65536);
 
                 Ethernet_Frame frame = new Ethernet_Frame(
