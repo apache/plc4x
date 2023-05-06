@@ -33,23 +33,45 @@ import org.apache.hop.workflow.action.IAction;
 import java.util.List;
 import org.apache.hop.core.Const;
 import org.apache.hop.core.exception.HopException;
+import org.apache.hop.pipeline.PipelineMeta;
+import org.apache.hop.pipeline.engine.IPipelineEngine;
 import org.apache.plc4x.hop.metadata.Plc4xConnection;
+import org.apache.plc4x.hop.metadata.util.Plc4xLookup;
+import org.apache.plc4x.hop.metadata.util.Plc4xWrapperConnection;
+import org.openide.util.Lookup;
 import org.w3c.dom.Node;
 
-
+/*
+* The purpose of this "Action" is to release the driver resource 
+* within a "workflow", in case the number of accounts reaches zero, 
+* the wrapper will close the connection.
+* The work pattern must be within the "workflow":
+*
+* Start -> Create connection -> Run pipeline -> Close connection -> Finish.
+* 
+* It should always be taken into account that the connections to 
+* the PLCs are limited resources.
+*/
 @Action(
     id = "CHECK_PLC4X_DISCONNECTIONS",
     name = "i18n::Plc4xActionDisConnections.Name",
     description = "i18n::Plc4xActionDisConnections.Description",
-    image = "plc4x_toddy.svg",
+    image = "plc4x_toddy_stop.svg",
     categoryDescription = "i18n:org.apache.hop.workflow:ActionCategory.Category.Conditions",
     keywords = "i18n::Plc4xActionDisConnections.keyword",
     documentationUrl = "/workflow/actions/checkdbconnection.html")
 public class Plc4xCheckDisConnections extends ActionBase implements Cloneable, IAction {
-  private static final Class<?> PKG = Plc4xCheckDisConnections.class; // Needed by Translator
+    
+    private static final Class<?> PKG = Plc4xCheckDisConnections.class; // Needed by Translator
 
   
-  private Plc4xConnection[] connections;  
+    private Plc4xConnection[] connections;  
+    private Plc4xWrapperConnection connwrapper = null; 
+    private ActionBase actionbase = null;
+    
+    private Plc4xLookup lookup = Plc4xLookup.getDefault();
+    private Lookup.Template template = null;
+    private Lookup.Result<Plc4xWrapperConnection> lkresult = null;    
   
   protected static final String[] unitTimeDesc =
       new String[] {
@@ -240,32 +262,31 @@ public class Plc4xCheckDisConnections extends ActionBase implements Cloneable, I
       }
   }
 
-  /**
-   * Execute this action and return the result. In this case it means, just set the result boolean in the Result
-   * class.
-   *
-   * @param result The result of the previous execution
-   * @return The Result of the execution.
-   */
-  @Override
-  public Result execute( Result result, int nr ) {
-      result.setResult(true);
-      System.out.println("NR: " + nr);
+    /**
+    * Execute this action and return the result. In this case it means,
+    * just set the result boolean in the Result class.
+    *
+    * @param result The result of the previous execution
+    * @return The Result of the execution.
+    */
+    @Override
+    public Result execute( Result result, int nr ) {
+        result.setResult(true);
+          
+        for (Plc4xConnection connmeta:connections) {
+            template = new Lookup.Template<>(Plc4xWrapperConnection.class, connmeta.getName(), null);                      
+            lkresult = lookup.lookup(template);
+            if (!lkresult.allItems().isEmpty()) {
+                connwrapper = (Plc4xWrapperConnection) lkresult.allInstances().toArray()[0];
+                if (connwrapper != null) {
+                    connwrapper.release(); 
+                    if (connwrapper.refCnt() <= 0) 
+                        lookup.remove(connwrapper);                  
+                }  
+            }
+        };  
 
     return result;
   }
 
-  /**
-   *
-   * Add checks to report warnings
-   *
-   * @param remarks
-   * @param workflowMeta
-   * @param variables
-   * @param metadataProvider
-   */
-  @Override
-  public void check( List<ICheckResult> remarks, WorkflowMeta workflowMeta, IVariables variables,
-                     IHopMetadataProvider metadataProvider ) {
-  }
 }

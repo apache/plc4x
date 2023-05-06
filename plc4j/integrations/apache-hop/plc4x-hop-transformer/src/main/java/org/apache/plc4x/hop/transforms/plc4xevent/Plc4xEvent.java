@@ -49,8 +49,10 @@ import org.apache.hop.pipeline.transform.BaseTransform;
 import org.apache.hop.pipeline.transform.ITransform;
 import org.apache.hop.pipeline.transform.TransformMeta;
 import org.apache.plc4x.hop.metadata.Plc4xConnection;
+import org.apache.plc4x.hop.metadata.util.Plc4xLookup;
 import org.apache.plc4x.hop.transforms.util.Plc4xGeneratorField;
-import org.apache.plc4x.hop.transforms.util.Plc4xWrapperConnection;
+import org.apache.plc4x.hop.metadata.util.Plc4xWrapperConnection;
+import org.apache.plc4x.hop.transforms.plc4xinput.Plc4xRead;
 import org.apache.plc4x.java.DefaultPlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
@@ -65,6 +67,7 @@ import org.apache.plc4x.java.s7.events.S7ModeEvent.Fields;
 import org.apache.plc4x.java.s7.events.S7SysEvent;
 import org.apache.plc4x.java.s7.events.S7UserEvent;
 import org.apache.plc4x.java.s7.readwrite.ModeTransitionType;
+import org.openide.util.Lookup;
 
 /**
  * This transform receives an event from the S7 driver, of type MODE, SYS, 
@@ -73,87 +76,93 @@ import org.apache.plc4x.java.s7.readwrite.ModeTransitionType;
  */
 public class Plc4xEvent extends BaseTransform<Plc4xEventMeta, Plc4xEventData> {
 
-  public static String FIELD_MODE_EVENT = "MODE";
-  public static String FIELD_USER_EVENT = "USR";
-  public static String FIELD_SYS_EVENT = "SYS";
-  public static String FIELD_ALARM_EVENT = "ALM";
+    public static String FIELD_MODE_EVENT = "MODE";
+    public static String FIELD_USER_EVENT = "USR";
+    public static String FIELD_SYS_EVENT = "SYS";
+    public static String FIELD_ALARM_EVENT = "ALM";
 
-  
-  private static final Class<?> PKG = Plc4xEvent.class; // Needed by Translator
-  
-  private Plc4xConnection connmeta              = null;
-  private Plc4xWrapperConnection connwrapper    = null;
-  private PlcReadRequest readRequest            = null;
-  private PlcConsumerRegistration registerMode  = null;
-  private PlcConsumerRegistration registerUser  = null;
-  private PlcConsumerRegistration registerSys   = null;
-  private PlcConsumerRegistration registerAlarm   = null;
-  private PlcSubscriptionRequest subsbuild      = null;
-  private PlcSubscriptionResponse subresponse   = null;
-  
-  private List<ICheckResult> remarks = new ArrayList<>(); // stores the errors...
-  
-  /*
-   * The transfer of events is done from the driver tasks. A delay can be added 
-   * for the execution of this transformer.
-   */
-  private ObjectMapper mapper = new ObjectMapper();
-  private ConcurrentLinkedQueue<S7Event> events = new ConcurrentLinkedQueue();
-  private boolean stopBundle = false;
-  private int index = 0;
-  
-  private static final ReentrantLock lock = new ReentrantLock();
-  
-  private static final String dummy = "dummy";
 
-  public Plc4xEvent(TransformMeta transformMeta, Plc4xEventMeta meta, Plc4xEventData data, int copyNr, PipelineMeta pipelineMeta,
+    private static final Class<?> PKG = Plc4xEvent.class; // Needed by Translator
+
+    private Plc4xConnection connmeta              = null;
+    private Plc4xWrapperConnection connwrapper    = null;
+    private PlcReadRequest readRequest            = null;
+    private PlcConsumerRegistration registerMode  = null;
+    private PlcConsumerRegistration registerUser  = null;
+    private PlcConsumerRegistration registerSys   = null;
+    private PlcConsumerRegistration registerAlarm   = null;
+    private PlcSubscriptionRequest subsbuild      = null;
+    private PlcSubscriptionResponse subresponse   = null;
+
+    private List<ICheckResult> remarks = new ArrayList<>(); // stores the errors...
+
+    private Plc4xLookup lookup = Plc4xLookup.getDefault();
+    private Lookup.Template template = null;
+    private Lookup.Result<Plc4xWrapperConnection> result = null;    
+
+
+    /*
+    * The transfer of events is done from the driver tasks. A delay can be added 
+    * for the execution of this transformer.
+    */
+    private ObjectMapper mapper = new ObjectMapper();
+    private ConcurrentLinkedQueue<S7Event> events = new ConcurrentLinkedQueue();
+    private boolean stopBundle = false;
+    private int index = 0;
+
+    private static final ReentrantLock lock = new ReentrantLock();
+
+    private static final String dummy = "dummy";
+
+    public Plc4xEvent(TransformMeta transformMeta, Plc4xEventMeta meta, Plc4xEventData data, int copyNr, PipelineMeta pipelineMeta,
                 Pipeline pipeline ) {
     super( transformMeta, meta, data, copyNr, pipelineMeta, pipeline );
-  }
+    }
 
-  /*
-  * Including Date and Time field for every row 
-  *
-  * @param meta Meta data from user dialog
-  * @param remarks Error registers
-  * @param origin transform instance name
-  */
-  public static final RowMetaAndData buildRow(Plc4xEventMeta meta, 
+    /*
+    * Including Date and Time field for every row 
+    *
+    * @param meta Meta data from user dialog
+    * @param remarks Error registers
+    * @param origin transform instance name
+    */
+    public static final RowMetaAndData buildRow(Plc4xEventMeta meta, 
           List<ICheckResult> remarks, 
           String origin) throws HopPluginException {
-    IRowMeta rowMeta = new RowMeta();
-    Object[] rowData = RowDataUtil.allocateRowData(2);
-    int index = 0;
-    
-    ArrayList<String> fields = new ArrayList<String>();
-    
-    if (meta.isModeEvent()) {
-        for (S7ModeEvent.Fields field:S7ModeEvent.Fields.values()) {
-            fields.add(field.name());
+        
+        IRowMeta rowMeta = new RowMeta();
+        Object[] rowData = RowDataUtil.allocateRowData(2);
+        int index = 0;
+
+        ArrayList<String> fields = new ArrayList<String>();
+
+        if (meta.isModeEvent()) {
+            for (S7ModeEvent.Fields field:S7ModeEvent.Fields.values()) {
+                fields.add(field.name());
+            }
+        } else if (meta.isSysEvent()) {
+            for (S7SysEvent.Fields field:S7SysEvent.Fields.values()) {
+                fields.add(field.name());
+            }        
+        } else if (meta.isUserEvent()) {
+            for (S7UserEvent.Fields field:S7UserEvent.Fields.values()) {
+                fields.add(field.name());
+            }        
+        } else if (meta.isAlarmEvent()) {
+            fields.add("ALARM");    
         }
-    } else if (meta.isSysEvent()) {
-        for (S7SysEvent.Fields field:S7SysEvent.Fields.values()) {
-            fields.add(field.name());
-        }        
-    } else if (meta.isUserEvent()) {
-        for (S7UserEvent.Fields field:S7UserEvent.Fields.values()) {
-            fields.add(field.name());
-        }        
-    } else if (meta.isAlarmEvent()) {
-        fields.add("ALARM");    
-    }
-    
-    for (String field : fields) {
-        IValueMeta valueMeta =
-            ValueMetaFactory.createValueMeta(field, IValueMeta.TYPE_STRING); // build a  
-          rowData[index] = StringUtil.EMPTY_STRING;
-        // Now add value to the row!
-        // This is in fact a copy from the fields row, but now with data.
-        rowMeta.addValueMeta(valueMeta);
-        index++;        
-    }
-  
-    return new RowMetaAndData(rowMeta, rowData);
+
+        for (String field : fields) {
+            IValueMeta valueMeta =
+                ValueMetaFactory.createValueMeta(field, IValueMeta.TYPE_STRING); // build a  
+              rowData[index] = StringUtil.EMPTY_STRING;
+            // Now add value to the row!
+            // This is in fact a copy from the fields row, but now with data.
+            rowMeta.addValueMeta(valueMeta);
+            index++;        
+        }
+
+        return new RowMetaAndData(rowMeta, rowData);
   }
   
   /* 
@@ -198,7 +207,7 @@ public class Plc4xEvent extends BaseTransform<Plc4xEventMeta, Plc4xEventData> {
             try{
                 PlcConnection conn =  new DefaultPlcDriverManager().getConnection(connmeta.getUrl()); //(03)
                 if (conn.isConnected()) {
-                    connwrapper = new Plc4xWrapperConnection(conn);            
+                    connwrapper = new Plc4xWrapperConnection(conn, meta.getConnection());            
                     getPipeline().getExtensionDataMap().put(meta.getConnection(), connwrapper); //(04)
                 }
             } catch (Exception ex){
@@ -319,62 +328,68 @@ public class Plc4xEvent extends BaseTransform<Plc4xEventMeta, Plc4xEventData> {
   }
 
 
-  @Override
-  public boolean init() {
-    try {
-        if(super.init()){     
-            // Determine the number of rows to generate...
-            data.rowLimit = Const.toLong(resolve(meta.getRowLimit()), -1L);
+    @Override
+    public boolean init() {
+        try {
+            if(super.init()){     
+                // Determine the number of rows to generate...
+                data.rowLimit = Const.toLong(resolve(meta.getRowLimit()), -1L);
 
-            if (data.rowLimit < 0L) { // Unable to parse
-              logError(BaseMessages.getString(PKG, "Plc4x.Read.Meta.Wrong.RowLimit.Number"));
-              return false; // fail
-            }            
-            
-            // Create a row (constants) with all the values in it...
-            List<ICheckResult> remarks = new ArrayList<>(); // stores the errors...
-            RowMetaAndData outputRow = buildRow(meta, remarks, getTransformName());
-            if (!remarks.isEmpty()) {
-              for (int i = 0; i < remarks.size(); i++) {
-                CheckResult cr = (CheckResult) remarks.get(i);
-                logError(cr.getText());
-              }
-              return false;
+                if (data.rowLimit < 0L) { // Unable to parse
+                  logError(BaseMessages.getString(PKG, "Plc4x.Read.Meta.Wrong.RowLimit.Number"));
+                  return false; // fail
+                }            
+
+                // Create a row (constants) with all the values in it...
+                List<ICheckResult> remarks = new ArrayList<>(); // stores the errors...
+                RowMetaAndData outputRow = buildRow(meta, remarks, getTransformName());
+                if (!remarks.isEmpty()) {
+                  for (int i = 0; i < remarks.size(); i++) {
+                    CheckResult cr = (CheckResult) remarks.get(i);
+                    logError(cr.getText());
+                  }
+                  return false;
+                }
+
+                data.outputRowData = outputRow.getData();
+                data.outputRowMeta = outputRow.getRowMeta();  
+
+                mapper.findAndRegisterModules();
+
+                getPlcConnection();
+                
+                return true;
             }
-
-            data.outputRowData = outputRow.getData();
-            data.outputRowMeta = outputRow.getRowMeta();  
             
-            mapper.findAndRegisterModules();
-
-          return true;
+            return false;
+            
+        } catch (Exception ex){
+            setErrors(1L);
+            logError("Error initializing transform", ex);
+            return false;
         }
-    return false;
-    } catch (Exception ex){
-        setErrors(1L);
-        logError("Error initializing transform", ex);
-        return false;
     }
-  }
 
-  /*
-  * Here, must perform the cleaning of any resource, main of the connection to 
-  * the associated PLC.
-  */
+    /*
+    * Here, must perform the cleaning of any resource, main of the connection to 
+    * the associated PLC.
+    */
     @Override
     public void cleanup() {
+        System.out.println("*************** CLEANUP *****************");          
         super.cleanup();
         logBasic("Cleanup. Release connection.");
         if (null != connwrapper) {
             if (null != registerMode )  registerMode.unregister();
             if (null != registerUser)   registerUser.unregister();
             if (null != registerSys)    registerSys.unregister();
-            if (null != registerAlarm)  registerAlarm.unregister();           
-            connwrapper.release();    
+            if (null != registerAlarm)  registerAlarm.unregister();    
+            connwrapper.release();            
+            if (connwrapper.refCnt() <= 0) 
+                lookup.remove(connwrapper); 
         }
     }
-
-
+    
     /*
     * Here, must perform the cleaning of any resource. 
     * 1. Check if we have reference to wrapper.
@@ -384,14 +399,14 @@ public class Plc4xEvent extends BaseTransform<Plc4xEventMeta, Plc4xEventData> {
     */    
     @Override
     public void dispose() {
+        System.out.println("*************** DISPOSE *****************");          
         super.dispose();
         if (connwrapper != null) {
             logBasic("Dispose. Release connection: " + connwrapper.refCnt());            
-            connwrapper.release();   
-            if (!connwrapper.getConnection().isConnected()){           
-                getPipeline().getExtensionDataMap().remove(meta.getConnection());
-            }            
-            connwrapper     = null;
+            connwrapper.release();
+            if (connwrapper.refCnt() <= 0) 
+                lookup.remove(connwrapper);            
+            connwrapper = null;
             readRequest     = null;
             registerMode    = null;
             registerUser    = null;
@@ -407,7 +422,55 @@ public class Plc4xEvent extends BaseTransform<Plc4xEventMeta, Plc4xEventData> {
         stopBundle = true;
     }
  
-  
+    private void getPlcConnection() {
+        lock.lock(); //(01)
+        try {
+
+            IHopMetadataProvider metaprovider = getMetadataProvider();
+            connmeta = metaprovider.getSerializer(Plc4xConnection.class).load(meta.getConnection());
+
+            if (connwrapper == null) {        
+                template = new Lookup.Template<>(Plc4xWrapperConnection.class, meta.getConnection(), null);                
+                result = lookup.lookup(template);
+                if (!result.allItems().isEmpty()) {
+                    System.out.println("Aqui encontro la conexion: " + meta.getConnection());
+                    connwrapper = (Plc4xWrapperConnection) result.allInstances().toArray()[0];
+                    if (connwrapper != null) connwrapper.retain();
+                }
+            };
+
+            if (connmeta == null){    
+                logError(
+                    BaseMessages.getString(
+                        PKG,
+                        "Plc4x.Read.Meta.Log.SetMetadata",
+                        meta.getConnection()));         
+            }
+
+            if ((connmeta != null) && (connwrapper == null)){
+                readRequest = null;
+                try{
+                    System.out.println("Creo una nueva conexión...");
+                    PlcConnection conn =  new DefaultPlcDriverManager().getConnection(connmeta.getUrl()); //(03)
+
+                    if (conn.isConnected()) {
+                        System.out.println("**** Agrego la segunda conexion. ****");
+                        connwrapper = new Plc4xWrapperConnection(conn, meta.getConnection());            
+                        lookup.add(connwrapper);
+                    }
+
+                } catch (Exception ex){
+                    setErrors(1L);
+                    logError("Unable to create connection to PLC. " + ex.getMessage());
+                }
+            }
+
+        } catch (HopException ex) {
+            logError("Unable to create connection to PLC. " + ex.getMessage());
+        } finally {
+            lock.unlock();
+        }        
+    }  
   
   
 }

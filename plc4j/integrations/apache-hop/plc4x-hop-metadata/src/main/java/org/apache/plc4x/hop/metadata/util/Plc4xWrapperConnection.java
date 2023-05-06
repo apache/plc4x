@@ -1,4 +1,4 @@
-    /*
+ /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.plc4x.hop.transforms.util;
+package org.apache.plc4x.hop.metadata.util;
 
 import io.netty.util.AbstractReferenceCounted;
 import io.netty.util.ReferenceCounted;
@@ -27,15 +27,17 @@ import org.apache.plc4x.java.api.PlcConnection;
  * Its goal is for it to be shared between the different transform that 
  * may be running simultaneously on the local or remote Hop engine. 
  * Its use with other kind of engines must be certified.
- * The concept is very simple, the last to leave closes the connection.
+ * The concept is very simple, "the last to leave closes the connection".
  */
 public class Plc4xWrapperConnection extends AbstractReferenceCounted {
 
     private final PlcConnection connection;
+    private final String id;
             
-    public Plc4xWrapperConnection(PlcConnection connection){
+    public Plc4xWrapperConnection(PlcConnection connection, String id){
         super();
         this.connection = connection;
+        this.id = id;
     }
     
     public PlcConnection getConnection(){
@@ -51,10 +53,13 @@ public class Plc4xWrapperConnection extends AbstractReferenceCounted {
         }
     }
     
-
     @Override
     public ReferenceCounted touch(Object hint) {
         return this;
+    }
+    
+    public String getId() {
+        return id;
     }
     
 }

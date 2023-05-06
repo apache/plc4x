@@ -122,7 +122,7 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>hop-plc4x-metadata</artifactId>
+            <artifactId>plc4x-hop-metadata</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
@@ -154,6 +154,11 @@
             <groupId>com.fasterxml.jackson.datatype</groupId>
             <artifactId>jackson-datatype-jsr310</artifactId>
             <version>${jackson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-openide-util-lookup</artifactId>
+            <version>RELEASE170</version>
         </dependency>
     </dependencies>
 </project>

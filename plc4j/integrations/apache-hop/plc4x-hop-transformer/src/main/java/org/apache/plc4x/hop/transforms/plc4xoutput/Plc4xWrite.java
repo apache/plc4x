@@ -23,6 +23,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.hop.core.CheckResult;
 import org.apache.hop.core.Const;
@@ -48,13 +50,15 @@ import org.apache.hop.pipeline.transform.BaseTransform;
 import org.apache.hop.pipeline.transform.ITransform;
 import org.apache.hop.pipeline.transform.TransformMeta;
 import org.apache.plc4x.hop.metadata.Plc4xConnection;
+import org.apache.plc4x.hop.metadata.util.Plc4xLookup;
 import org.apache.plc4x.hop.transforms.util.Plc4xGeneratorField;
 import org.apache.plc4x.hop.transforms.util.Plc4xPlcTag;
-import org.apache.plc4x.hop.transforms.util.Plc4xWrapperConnection;
+import org.apache.plc4x.hop.metadata.util.Plc4xWrapperConnection;
 import org.apache.plc4x.java.DefaultPlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteResponse;
+import org.openide.util.Lookup;
 
 /**
  * Transform That contains the basic skeleton needed to create your own plugin
@@ -69,6 +73,10 @@ public class Plc4xWrite extends BaseTransform<Plc4xWriteMeta, Plc4xWriteData> {
   private PlcWriteRequest writeRequest = null;
   private PlcWriteRequest.Builder builder = null;
   private PlcWriteResponse writeResponse = null;
+  
+  private Plc4xLookup lookup = Plc4xLookup.getDefault();
+  private Lookup.Template template = null;
+  private Lookup.Result<Plc4xWrapperConnection> result = null;  
   
   private static final ReentrantLock lock = new ReentrantLock();
   
@@ -275,39 +283,51 @@ public class Plc4xWrite extends BaseTransform<Plc4xWriteMeta, Plc4xWriteData> {
       return false;        
     }    
 
-    lock.lock(); //(01)
-    try {
-        IHopMetadataProvider metaprovider = getMetadataProvider();
-        connmeta = metaprovider.getSerializer(Plc4xConnection.class).load(meta.getConnection());
-        if (connwrapper == null) {
-            connwrapper = (Plc4xWrapperConnection) getPipeline().getExtensionDataMap().get(meta.getConnection()); //(02)
-            if (connwrapper != null) connwrapper.retain();
-        };
-
-        if (connmeta == null){    
-            logError(
-                BaseMessages.getString(
-                    PKG,
-                    "Plc4x.Read.Meta.Log.SetMetadata",
-                    meta.getConnection()));         
-        }
-
-        if ((connmeta != null) && (connwrapper == null)){
-            writeRequest = null;
-            try{
-                PlcConnection conn =  new DefaultPlcDriverManager().getConnection(connmeta.getUrl()); //(03)
-                if (conn.isConnected()) {
-                    connwrapper = new Plc4xWrapperConnection(conn);            
-                    getPipeline().getExtensionDataMap().put(meta.getConnection(), connwrapper); //(04)
-                }
-            } catch (Exception ex){
-                setErrors(1L);
-                logError("Unable to create connection to PLC. " + ex.getMessage());
-            }
-        }
-    } finally {
-        lock.unlock();
-    }
+//    lock.lock(); //(02)
+//    try {
+//        
+//        IHopMetadataProvider metaprovider = getMetadataProvider();
+//        connmeta = metaprovider.getSerializer(Plc4xConnection.class).load(meta.getConnection());
+// 
+//        if (connwrapper == null) {        
+//            template = new Lookup.Template<>(Plc4xWrapperConnection.class, meta.getConnection(), null);    //(03)            
+//            result = lookup.lookup(template);
+//            if (!result.allItems().isEmpty()) {
+//                System.out.println("Aqui encontro la conexion: " + meta.getConnection());
+//                connwrapper = (Plc4xWrapperConnection) result.allInstances().toArray()[0];
+//                if (connwrapper != null) connwrapper.retain();
+//            }
+//        };
+//
+//        if (connmeta == null){    
+//            logError(
+//                BaseMessages.getString(
+//                    PKG,
+//                    "Plc4x.Read.Meta.Log.SetMetadata",
+//                    meta.getConnection()));         
+//        }
+//
+//        if ((connmeta != null) && (connwrapper == null)){
+//            writeRequest = null;
+//            try{
+//                System.out.println("Creo una nueva conexión...");
+//                PlcConnection conn =  new DefaultPlcDriverManager().getConnection(connmeta.getUrl()); //(04)
+//                
+//                if (conn.isConnected()) {
+//                    System.out.println("**** Agrego la segunda conexion. ****");
+//                    connwrapper = new Plc4xWrapperConnection(conn, meta.getConnection());            
+//                    lookup.add(connwrapper); //(05)
+//                }
+//
+//            } catch (Exception ex){
+//                setErrors(1L);
+//                logError("Unable to create connection to PLC. " + ex.getMessage());
+//            }
+//        }
+//        
+//    } finally {
+//        lock.unlock();
+//    }
 
     if ((connmeta != null) && (connwrapper != null)){
         if (connwrapper.getConnection().isConnected()){
@@ -416,7 +436,7 @@ public class Plc4xWrite extends BaseTransform<Plc4xWriteMeta, Plc4xWriteData> {
 
   @Override
   public boolean init() {
-
+    System.out.println("*************** INIT *****************");  
     try {
         if(super.init()){     
             // Determine the number of rows to generate...
@@ -443,7 +463,9 @@ public class Plc4xWrite extends BaseTransform<Plc4xWriteMeta, Plc4xWriteData> {
             data.outputRowData = outputRow.getData();
             data.outputRowMeta = outputRow.getRowMeta();            
 
-          return true;
+            getPlcConnection();
+            
+            return true;
         }
     return false;
     } catch (Exception ex){
@@ -460,10 +482,14 @@ public class Plc4xWrite extends BaseTransform<Plc4xWriteMeta, Plc4xWriteData> {
   */
     @Override
     public void cleanup() {
+        System.out.println("*************** CLEANUP *****************");        
         super.cleanup();
         logBasic("Cleanup. Release connection.");
-        if (connwrapper != null)
-        connwrapper.release();     
+        if (connwrapper != null) {
+            connwrapper.release();
+            if (connwrapper.refCnt() <= 0) 
+                lookup.remove(connwrapper);
+        }    
     }
 
 
@@ -476,20 +502,68 @@ public class Plc4xWrite extends BaseTransform<Plc4xWriteMeta, Plc4xWriteData> {
     */    
     @Override
     public void dispose() {
+        System.out.println("*************** DISPOSE *****************");
         super.dispose();
         if (connwrapper != null) {
             logBasic("Dispose. Release connection: " + connwrapper.refCnt());            
-            connwrapper.release();   
-            if (!connwrapper.getConnection().isConnected()){           
-                getPipeline().getExtensionDataMap().remove(meta.getConnection());
-            }            
+            connwrapper.release();
+            if (connwrapper.refCnt() <= 0) 
+                lookup.remove(connwrapper);            
             connwrapper = null;
             writeRequest = null;
 
         }
     }
  
-  
+    private void getPlcConnection() {
+        lock.lock(); //(01)
+        try {
+
+            IHopMetadataProvider metaprovider = getMetadataProvider();
+            connmeta = metaprovider.getSerializer(Plc4xConnection.class).load(meta.getConnection());
+
+            if (connwrapper == null) {        
+                template = new Lookup.Template<>(Plc4xWrapperConnection.class, meta.getConnection(), null);                
+                result = lookup.lookup(template);
+                if (!result.allItems().isEmpty()) {
+                    System.out.println("Aqui encontro la conexion: " + meta.getConnection());
+                    connwrapper = (Plc4xWrapperConnection) result.allInstances().toArray()[0];
+                    if (connwrapper != null) connwrapper.retain();
+                }
+            };
+
+            if (connmeta == null){    
+                logError(
+                    BaseMessages.getString(
+                        PKG,
+                        "Plc4x.Read.Meta.Log.SetMetadata",
+                        meta.getConnection()));         
+            }
+
+            if ((connmeta != null) && (connwrapper == null)){
+                writeRequest = null;
+                try{
+                    System.out.println("Creo una nueva conexión...");
+                    PlcConnection conn =  new DefaultPlcDriverManager().getConnection(connmeta.getUrl()); //(03)
+
+                    if (conn.isConnected()) {
+                        System.out.println("**** Agrego la segunda conexion. ****");
+                        connwrapper = new Plc4xWrapperConnection(conn, meta.getConnection());            
+                        lookup.add(connwrapper);
+                    }
+
+                } catch (Exception ex){
+                    setErrors(1L);
+                    logError("Unable to create connection to PLC. " + ex.getMessage());
+                }
+            }
+
+        } catch (HopException ex) {
+          Logger.getLogger(Plc4xWrite.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            lock.unlock();
+        }        
+    }  
   
   
 }

@@ -120,7 +120,7 @@ public class Plc4xConnectionEditor  extends MetadataEditor<Plc4xConnection>
 
     Button wbTest = new Button(parent, SWT.PUSH | SWT.CENTER);
     props.setLook(wbTest);
-    wbTest.setText("Test connection");
+    wbTest.setText("Test connection.");
     wbTest.addListener(SWT.Selection, e -> test_connection());
 
     return new Button[] {wbTest};

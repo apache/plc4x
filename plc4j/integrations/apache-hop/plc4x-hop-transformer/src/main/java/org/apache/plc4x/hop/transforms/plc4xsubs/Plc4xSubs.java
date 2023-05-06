@@ -27,6 +27,8 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Consumer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.hop.core.CheckResult;
 import org.apache.hop.core.Const;
@@ -52,10 +54,12 @@ import org.apache.hop.pipeline.transform.BaseTransform;
 import org.apache.hop.pipeline.transform.ITransform;
 import org.apache.hop.pipeline.transform.TransformMeta;
 import org.apache.plc4x.hop.metadata.Plc4xConnection;
+import org.apache.plc4x.hop.metadata.util.Plc4xLookup;
 import org.apache.plc4x.hop.transforms.util.Plc4xGeneratorField;
 import org.apache.plc4x.hop.transforms.util.Plc4xPlcTag;
 import org.apache.plc4x.hop.transforms.util.Plc4xPlcSubscriptionTag;
-import org.apache.plc4x.hop.transforms.util.Plc4xWrapperConnection;
+import org.apache.plc4x.hop.metadata.util.Plc4xWrapperConnection;
+import org.apache.plc4x.hop.transforms.plc4xinput.Plc4xRead;
 import org.apache.plc4x.java.DefaultPlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
@@ -64,6 +68,7 @@ import org.apache.plc4x.java.api.messages.PlcSubscriptionEvent;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionResponse;
 import org.apache.plc4x.java.s7.events.S7Event;
+import org.openide.util.Lookup;
 
 /**
  * Transform That contains the basic skeleton needed to create your own plugin
@@ -71,27 +76,31 @@ import org.apache.plc4x.java.s7.events.S7Event;
  */
 public class Plc4xSubs extends BaseTransform<Plc4xSubsMeta, Plc4xSubsData> {
 
-  private static final Class<?> PKG = Plc4xSubs.class; // Needed by Translator
-  
-  private Plc4xConnection connmeta = null;
-  private Plc4xWrapperConnection connwrapper = null;
-  private PlcSubscriptionRequest subsRequest = null;
-  private PlcSubscriptionResponse subsResponse = null;  
-  private int maxwait = 0;
-  private static final ReentrantLock lock = new ReentrantLock();
-  
-  private ConcurrentLinkedQueue<PlcSubscriptionEvent> events = new ConcurrentLinkedQueue();
-  private boolean stopBundle = false;
-  
-  private static final String dummy = "dummy";
-  
-  private Map<String, Integer> index = new HashMap();
-  private Map<String, Plc4xPlcSubscriptionTag> plctags = new HashMap();  
+    private static final Class<?> PKG = Plc4xSubs.class; // Needed by Translator
 
-  public Plc4xSubs(TransformMeta transformMeta, Plc4xSubsMeta meta, Plc4xSubsData data, int copyNr, PipelineMeta pipelineMeta,
+    private Plc4xConnection connmeta = null;
+    private Plc4xWrapperConnection connwrapper = null;
+    private PlcSubscriptionRequest subsRequest = null;
+    private PlcSubscriptionResponse subsResponse = null;  
+    private int maxwait = 0;
+    private static final ReentrantLock lock = new ReentrantLock();
+
+    private Plc4xLookup lookup = Plc4xLookup.getDefault();
+    private Lookup.Template template = null;
+    private Lookup.Result<Plc4xWrapperConnection> result = null;  
+
+    private ConcurrentLinkedQueue<PlcSubscriptionEvent> events = new ConcurrentLinkedQueue();
+    private boolean stopBundle = false;
+
+    private static final String dummy = "dummy";
+
+    private Map<String, Integer> index = new HashMap();
+    private Map<String, Plc4xPlcSubscriptionTag> plctags = new HashMap();  
+
+    public Plc4xSubs(TransformMeta transformMeta, Plc4xSubsMeta meta, Plc4xSubsData data, int copyNr, PipelineMeta pipelineMeta,
                 Pipeline pipeline ) {
     super( transformMeta, meta, data, copyNr, pipelineMeta, pipeline );
-  }
+    }
 
   /*
   * Including Date and Time field for every row 
@@ -295,7 +304,7 @@ public class Plc4xSubs extends BaseTransform<Plc4xSubsMeta, Plc4xSubsData> {
             try{
                 PlcConnection conn =  new DefaultPlcDriverManager().getConnection(connmeta.getUrl()); //(03)
                 if (conn.isConnected()) {
-                    connwrapper = new Plc4xWrapperConnection(conn);            
+                    connwrapper = new Plc4xWrapperConnection(conn, meta.getConnection());            
                     getPipeline().getExtensionDataMap().put(meta.getConnection(), connwrapper); //(04)
                 }
             } catch (Exception ex){
@@ -391,6 +400,7 @@ public class Plc4xSubs extends BaseTransform<Plc4xSubsMeta, Plc4xSubsData> {
 
   @Override
   public boolean init() {
+    System.out.println("*************** INIT *****************");        
     try {
         if(super.init()){     
             // Determine the number of rows to generate...
@@ -433,10 +443,15 @@ public class Plc4xSubs extends BaseTransform<Plc4xSubsMeta, Plc4xSubsData> {
   */
     @Override
     public void cleanup() {
+        System.out.println("*************** CLEANUP *****************");          
+        super.cleanup();
         super.cleanup();
         logBasic("Cleanup. Release connection.");
-        if (connwrapper != null)
-        connwrapper.release();     
+        if (connwrapper != null) {
+            connwrapper.release();
+            if (connwrapper.refCnt() <= 0) 
+                lookup.remove(connwrapper);
+        }      
     }
 
 
@@ -449,13 +464,13 @@ public class Plc4xSubs extends BaseTransform<Plc4xSubsMeta, Plc4xSubsData> {
     */    
     @Override
     public void dispose() {
+        System.out.println("*************** DISPOSE *****************");        
         super.dispose();
         if (connwrapper != null) {
-            logBasic("Dispose. Release connection: " + connwrapper.refCnt());            
-            connwrapper.release();   
-            if (!connwrapper.getConnection().isConnected()){           
-                getPipeline().getExtensionDataMap().remove(meta.getConnection());
-            }            
+            logBasic("Dispose. Release connection: " + connwrapper.refCnt());                      
+            connwrapper.release();
+            if (connwrapper.refCnt() <= 0) 
+                lookup.remove(connwrapper);            
             connwrapper = null;
             subsRequest = null;
         }
@@ -467,6 +482,56 @@ public class Plc4xSubs extends BaseTransform<Plc4xSubsMeta, Plc4xSubsData> {
         super.stopRunning();
         stopBundle = true;
     }  
-  
+
+    private void getPlcConnection() {
+        lock.lock(); //(01)
+        try {
+
+            IHopMetadataProvider metaprovider = getMetadataProvider();
+            connmeta = metaprovider.getSerializer(Plc4xConnection.class).load(meta.getConnection());
+
+            if (connwrapper == null) {        
+                template = new Lookup.Template<>(Plc4xWrapperConnection.class, meta.getConnection(), null);                
+                result = lookup.lookup(template);
+                if (!result.allItems().isEmpty()) {
+                    System.out.println("Aqui encontro la conexion: " + meta.getConnection());
+                    connwrapper = (Plc4xWrapperConnection) result.allInstances().toArray()[0];
+                    if (connwrapper != null) connwrapper.retain();
+                }
+            };
+
+            if (connmeta == null){    
+                logError(
+                    BaseMessages.getString(
+                        PKG,
+                        "Plc4x.Read.Meta.Log.SetMetadata",
+                        meta.getConnection()));         
+            }
+
+            if ((connmeta != null) && (connwrapper == null)){
+                subsRequest = null;
+                try{
+                    System.out.println("Creo una nueva conexión...");
+                    PlcConnection conn =  new DefaultPlcDriverManager().getConnection(connmeta.getUrl()); //(03)
+
+                    if (conn.isConnected()) {
+                        System.out.println("**** Agrego la segunda conexion. ****");
+                        connwrapper = new Plc4xWrapperConnection(conn, meta.getConnection());            
+                        lookup.add(connwrapper);
+                    }
+
+                } catch (Exception ex){
+                    setErrors(1L);
+                    logError("Unable to create connection to PLC. " + ex.getMessage());
+                }
+            }
+
+        } catch (HopException ex) {
+          Logger.getLogger(Plc4xRead.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            lock.unlock();
+        }        
+    }    
+    
   
 }

@@ -31,22 +31,26 @@ import org.apache.hop.workflow.action.IAction;
 
 
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.apache.hop.core.Const;
 import org.apache.hop.core.exception.HopException;
 import org.apache.plc4x.hop.metadata.Plc4xConnection;
+import org.apache.plc4x.hop.metadata.util.Plc4xLookup;
+import org.apache.plc4x.hop.metadata.util.Plc4xWrapperConnection;
 import org.apache.plc4x.java.DefaultPlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
-import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
+import org.openide.util.Lookup;
 import org.w3c.dom.Node;
 
-
+/*
+* The purpose of this "Action" is firstly to verify the connection to 
+* the PLC and secondly to create a connection that will be shared by 
+* the Hop environment.
+*/
 @Action(
     id = "CHECK_PLC4X_CONNECTIONS",
     name = "i18n::Plc4xActionConnections.Name",
     description = "i18n::Plc4xActionConnections.Description",
-    image = "plc4x_toddy.svg",
+    image = "plc4x_toddy_play.svg",
     categoryDescription = "i18n:org.apache.hop.workflow:ActionCategory.Category.Conditions",
     keywords = "i18n::Plc4xActionConnections.keyword",
     documentationUrl = "/workflow/actions/plc4x.html")
@@ -56,7 +60,13 @@ public class Plc4xCheckConnections extends ActionBase implements Cloneable, IAct
   
   private Plc4xConnection[] connections;  
   private boolean connected = false;
+  private Plc4xWrapperConnection connwrapper = null;  
   private PlcConnection plcconn = null;
+  private ActionBase actionbase = null;
+  
+  private Plc4xLookup lookup = Plc4xLookup.getDefault();
+  private Lookup.Template template = null;
+  private Lookup.Result<Plc4xWrapperConnection> lkresult = null;
   
   protected static final String[] unitTimeDesc =
       new String[] {
@@ -79,7 +89,7 @@ public class Plc4xCheckConnections extends ActionBase implements Cloneable, IAct
   private long timeStart;
   private long now;  
      
-  public Plc4xCheckConnections( String name) {
+  public Plc4xCheckConnections(String name) {
     super(name, "");
     //connections = null;
     waitfors = null;
@@ -170,8 +180,6 @@ public class Plc4xCheckConnections extends ActionBase implements Cloneable, IAct
     return 0;
   }
   
-  
-  
   /**
    *
    * Save values to XML
@@ -247,63 +255,84 @@ public class Plc4xCheckConnections extends ActionBase implements Cloneable, IAct
       }
   }
 
-  /**
-   * Execute this action and return the result. 
-   * In this case it means, just set the result boolean in the Result
-   * class.
-   * Check all conections metadata from the dialog.
-   * @param prevResult The result of the previous execution
-   * @return The Result of the execution.
-   */
-  @Override
-  public Result execute( Result prevResult, int nr ) {
-    Result result = prevResult;
-    result.setNrErrors(0);
-    connected = true;
-    for (Plc4xConnection connmeta:connections) {
-        try {
-            plcconn =  new DefaultPlcDriverManager().getConnection(connmeta.getUrl()); //(01)
-            if (!plcconn.isConnected()) {
-                logBasic("Cant connect to: " + connmeta.getUrl());
-                connected = false;
-                plcconn = null;
-                //break;
+    /**
+    * Execute this action and return the result. 
+    * In this case it means, just set the result boolean in the Result class.
+    * 
+    * Check all conections metadata from the dialog (really only one).
+    * @param prevResult The result of the previous execution
+    * @return The Result of the execution.
+    */
+    @Override
+    public Result execute( Result prevResult, int nr ) {
+
+        Result result = prevResult;
+        result.setNrErrors(0);
+        connected = true;
+
+        actionbase = null;
+
+        for (Plc4xConnection connmeta:connections) {
+
+            if (null == connwrapper) { //(01)
+                template = new Lookup.Template<>(Plc4xWrapperConnection.class, connmeta.getName(), null);                      
+                lkresult = lookup.lookup(template);
+                if (!lkresult.allItems().isEmpty()) {            
+                    connwrapper = (Plc4xWrapperConnection) lkresult.allInstances().toArray()[0]; //(02)
+                    if (connwrapper != null) connwrapper.retain(); //(03)          
+                }
+            };   
+        
+            if (null == connwrapper) { //(04)
+                try {
+                    PlcConnection conn =  new DefaultPlcDriverManager().getConnection(connmeta.getUrl()); //(05)
+                    if (conn.isConnected()) {
+                        connwrapper = new Plc4xWrapperConnection(conn, connmeta.getName());                               
+                        lookup.add(connwrapper); //(06)
+                    } else {
+                        connected = false;
+                        plcconn = null;                        
+                    }                       
+                } catch (Exception ex) {
+                    connected = false;
+                    plcconn = null;                    
+                }
+
+            } else {
+                if (!connwrapper.getConnection().isConnected()) { //(07)
+                    connected = false;
+                    plcconn = null;   
+                }
             }
-            plcconn.close();
-            plcconn = null;
-        } catch (Exception ex) {
-            Logger.getLogger(Plc4xCheckConnections.class.getName()).log(Level.SEVERE, null, ex);
-            connected = false;
-            plcconn = null;
-            //break;            
-        } finally {
-            
+        
+            if (null == connwrapper) { //(08)
+                try {
+
+                    PlcConnection conn =  new DefaultPlcDriverManager().getConnection(connmeta.getUrl()); //(09)
+
+                    if (conn.isConnected()) {
+                        conn.close(); //(10)
+                        plcconn = null; 
+                    } else {
+                        connected = false;
+                        plcconn = null;                     
+                    }
+                } catch (Exception ex){
+                        connected = false;
+                        plcconn = null;                   
+                }
+
+            }
         }
-          
-    }
     
     result.setResult(connected);
     return result;
   }
 
-  /**
-   *
-   * Add checks to report warnings
-   *
-   * @param remarks
-   * @param workflowMeta
-   * @param variables
-   * @param metadataProvider
-   */
-  @Override
-  public void check( List<ICheckResult> remarks, WorkflowMeta workflowMeta, IVariables variables,
-                     IHopMetadataProvider metadataProvider ) {
-  }
-
-  @Override
-  public boolean resetErrorsBeforeExecution() {
-    return false;
-  }
+    @Override
+    public boolean resetErrorsBeforeExecution() {
+        return false;
+    }
 
     @Override
     public boolean isEvaluation() {
@@ -313,9 +342,6 @@ public class Plc4xCheckConnections extends ActionBase implements Cloneable, IAct
     @Override
     public boolean isUnconditional() {
         return false;
-    }
-  
-  
-  
+    }  
   
 }

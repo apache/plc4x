@@ -142,5 +142,10 @@
           <scope>provided</scope>
         </dependency>        
                 -->
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-openide-util-lookup</artifactId>
+            <version>RELEASE170</version>
+        </dependency>
     </dependencies>
 </project>
