@@ -113,7 +113,7 @@ func NewEipConnectionRequest(sessionHandle uint32, status uint32, senderContext 
 }
 
 // Deprecated: use the interface for direct cast
-func CastEipConnectionRequest(structType interface{}) EipConnectionRequest {
+func CastEipConnectionRequest(structType any) EipConnectionRequest {
 	if casted, ok := structType.(EipConnectionRequest); ok {
 		return casted
 	}

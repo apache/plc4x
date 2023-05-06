@@ -94,7 +94,7 @@ func NewBACnetPropertyStatesExtendedValue(extendedValue BACnetContextTagUnsigned
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetPropertyStatesExtendedValue(structType interface{}) BACnetPropertyStatesExtendedValue {
+func CastBACnetPropertyStatesExtendedValue(structType any) BACnetPropertyStatesExtendedValue {
 	if casted, ok := structType.(BACnetPropertyStatesExtendedValue); ok {
 		return casted
 	}

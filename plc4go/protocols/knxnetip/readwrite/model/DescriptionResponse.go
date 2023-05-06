@@ -105,7 +105,7 @@ func NewDescriptionResponse(dibDeviceInfo DIBDeviceInfo, dibSuppSvcFamilies DIBS
 }
 
 // Deprecated: use the interface for direct cast
-func CastDescriptionResponse(structType interface{}) DescriptionResponse {
+func CastDescriptionResponse(structType any) DescriptionResponse {
 	if casted, ok := structType.(DescriptionResponse); ok {
 		return casted
 	}

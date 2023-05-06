@@ -90,7 +90,7 @@ func NewSerialNumber(octet1 byte, octet2 byte, octet3 byte, octet4 byte) *_Seria
 }
 
 // Deprecated: use the interface for direct cast
-func CastSerialNumber(structType interface{}) SerialNumber {
+func CastSerialNumber(structType any) SerialNumber {
 	if casted, ok := structType.(SerialNumber); ok {
 		return casted
 	}

@@ -19,19 +19,20 @@
 
 package model
 
+//go:generate go run ../../tools/plc4xgenerator/gen.go -type=DefaultArrayInfo
 type DefaultArrayInfo struct {
 	LowerBound uint32
 	UpperBound uint32
 }
 
-func (t DefaultArrayInfo) GetSize() uint32 {
+func (t *DefaultArrayInfo) GetSize() uint32 {
 	return t.UpperBound - t.LowerBound
 }
 
-func (t DefaultArrayInfo) GetLowerBound() uint32 {
+func (t *DefaultArrayInfo) GetLowerBound() uint32 {
 	return t.LowerBound
 }
 
-func (t DefaultArrayInfo) GetUpperBound() uint32 {
+func (t *DefaultArrayInfo) GetUpperBound() uint32 {
 	return t.UpperBound
 }

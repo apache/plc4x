@@ -126,7 +126,7 @@ func NewBACnetEventParameterChangeOfBitstring(openingTag BACnetOpeningTag, timeD
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetEventParameterChangeOfBitstring(structType interface{}) BACnetEventParameterChangeOfBitstring {
+func CastBACnetEventParameterChangeOfBitstring(structType any) BACnetEventParameterChangeOfBitstring {
 	if casted, ok := structType.(BACnetEventParameterChangeOfBitstring); ok {
 		return casted
 	}

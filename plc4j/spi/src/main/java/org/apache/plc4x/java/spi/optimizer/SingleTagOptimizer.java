@@ -39,11 +39,11 @@ import java.util.List;
 public class SingleTagOptimizer extends BaseOptimizer {
 
     @Override
-    protected List<PlcRequest> processReadRequest(PlcReadRequest readRequest, DriverContext driverContext) {
+    protected List<PlcReadRequest> processReadRequest(PlcReadRequest readRequest, DriverContext driverContext) {
         if(readRequest.getNumberOfTags() == 1) {
             return Collections.singletonList(readRequest);
         }
-        List<PlcRequest> subRequests = new ArrayList<>(readRequest.getNumberOfTags());
+        List<PlcReadRequest> subRequests = new ArrayList<>(readRequest.getNumberOfTags());
         for (String tagName : readRequest.getTagNames()) {
             PlcTag tag = readRequest.getTag(tagName);
             PlcReadRequest subRequest = new DefaultPlcReadRequest(
@@ -55,11 +55,11 @@ public class SingleTagOptimizer extends BaseOptimizer {
     }
 
     @Override
-    protected List<PlcRequest> processWriteRequest(PlcWriteRequest writeRequest, DriverContext driverContext) {
+    protected List<PlcWriteRequest> processWriteRequest(PlcWriteRequest writeRequest, DriverContext driverContext) {
         if(writeRequest.getNumberOfTags() == 1) {
             return Collections.singletonList(writeRequest);
         }
-        List<PlcRequest> subRequests = new ArrayList<>(writeRequest.getNumberOfTags());
+        List<PlcWriteRequest> subRequests = new ArrayList<>(writeRequest.getNumberOfTags());
         for (String tagName : writeRequest.getTagNames()) {
             PlcTag tag = writeRequest.getTag(tagName);
             PlcValue value = writeRequest.getPlcValue(tagName);

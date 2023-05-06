@@ -44,14 +44,14 @@ public class OpcuaSubscriptionHandleTest {
     private static ExampleServer exampleServer;
 
     // Address of local milo server
-    private static String miloLocalAddress = "127.0.0.1:12686/milo";
+    private static final String miloLocalAddress = "127.0.0.1:12686/milo";
     //Tcp pattern of OPC UA
-    private static String opcPattern = "opcua:tcp://";
+    private static final String opcPattern = "opcua:tcp://";
 
-    private String paramSectionDivider = "?";
-    private String paramDivider = "&";
+    private final String paramSectionDivider = "?";
+    private final String paramDivider = "&";
 
-    private static String tcpConnectionAddress = opcPattern + miloLocalAddress;
+    private static final String tcpConnectionAddress = opcPattern + miloLocalAddress;
 
     // Read only variables of milo example server of version 3.6
     private static final String BOOL_IDENTIFIER_READ_WRITE = "ns=2;s=HelloWorld/ScalarTypes/Boolean";

@@ -82,7 +82,7 @@ func NewSysexCommandReportFirmwareRequest() *_SysexCommandReportFirmwareRequest 
 }
 
 // Deprecated: use the interface for direct cast
-func CastSysexCommandReportFirmwareRequest(structType interface{}) SysexCommandReportFirmwareRequest {
+func CastSysexCommandReportFirmwareRequest(structType any) SysexCommandReportFirmwareRequest {
 	if casted, ok := structType.(SysexCommandReportFirmwareRequest); ok {
 		return casted
 	}

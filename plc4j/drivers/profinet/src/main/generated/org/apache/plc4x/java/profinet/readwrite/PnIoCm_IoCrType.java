@@ -35,7 +35,7 @@ public enum PnIoCm_IoCrType {
     }
   }
 
-  private int value;
+  private final int value;
 
   PnIoCm_IoCrType(int value) {
     this.value = value;

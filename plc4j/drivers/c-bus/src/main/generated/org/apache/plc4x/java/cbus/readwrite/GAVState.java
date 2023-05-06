@@ -37,7 +37,7 @@ public enum GAVState {
     }
   }
 
-  private byte value;
+  private final byte value;
 
   GAVState(byte value) {
     this.value = value;

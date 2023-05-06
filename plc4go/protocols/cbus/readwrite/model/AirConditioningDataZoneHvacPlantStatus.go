@@ -126,7 +126,7 @@ func NewAirConditioningDataZoneHvacPlantStatus(zoneGroup byte, zoneList HVACZone
 }
 
 // Deprecated: use the interface for direct cast
-func CastAirConditioningDataZoneHvacPlantStatus(structType interface{}) AirConditioningDataZoneHvacPlantStatus {
+func CastAirConditioningDataZoneHvacPlantStatus(structType any) AirConditioningDataZoneHvacPlantStatus {
 	if casted, ok := structType.(AirConditioningDataZoneHvacPlantStatus); ok {
 		return casted
 	}

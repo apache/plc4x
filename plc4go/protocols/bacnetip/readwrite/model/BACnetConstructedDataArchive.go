@@ -121,7 +121,7 @@ func NewBACnetConstructedDataArchive(archive BACnetApplicationTagBoolean, openin
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataArchive(structType interface{}) BACnetConstructedDataArchive {
+func CastBACnetConstructedDataArchive(structType any) BACnetConstructedDataArchive {
 	if casted, ok := structType.(BACnetConstructedDataArchive); ok {
 		return casted
 	}

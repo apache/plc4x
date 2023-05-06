@@ -121,7 +121,7 @@ func NewBACnetConstructedDataAutoSlaveDiscovery(autoSlaveDiscovery BACnetApplica
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataAutoSlaveDiscovery(structType interface{}) BACnetConstructedDataAutoSlaveDiscovery {
+func CastBACnetConstructedDataAutoSlaveDiscovery(structType any) BACnetConstructedDataAutoSlaveDiscovery {
 	if casted, ok := structType.(BACnetConstructedDataAutoSlaveDiscovery); ok {
 		return casted
 	}

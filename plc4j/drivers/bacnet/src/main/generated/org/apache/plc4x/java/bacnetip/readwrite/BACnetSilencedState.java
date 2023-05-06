@@ -38,7 +38,7 @@ public enum BACnetSilencedState {
     }
   }
 
-  private int value;
+  private final int value;
 
   BACnetSilencedState(int value) {
     this.value = value;

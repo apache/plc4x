@@ -18,16 +18,31 @@
  */
 package org.apache.plc4x.test.driver.internal.api;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import org.apache.plc4x.java.spi.generation.ParseException;
+import org.apache.plc4x.java.spi.generation.ReadBuffer;
+import org.apache.plc4x.java.spi.generation.SerializationException;
+import org.apache.plc4x.java.spi.generation.WriteBuffer;
+import org.apache.plc4x.java.spi.utils.Serializable;
 
-@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
-public class TestWriteRequest extends TestTagRequest {
+public class TestWriteRequest implements Serializable {
 
-    @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-    public TestWriteRequest(@JsonProperty("tags") TestTag[] tags) {
-        super(tags);
+    private final TestTagRequest testTagRequest;
+
+    public TestWriteRequest(TestTagRequest testTagRequest) {
+        this.testTagRequest = testTagRequest;
     }
 
+    @Override
+    public void serialize(WriteBuffer writeBuffer) throws SerializationException {
+        writeBuffer.pushContext("TestReadRequest");
+        testTagRequest.serialize(writeBuffer);
+        writeBuffer.popContext("TestReadRequest");
+    }
+
+    public static TestWriteRequest staticParse(ReadBuffer readBuffer, Object... args) throws ParseException {
+        readBuffer.pullContext("TestWriteRequest");
+        TestTagRequest testTagRequest = TestTagRequest.staticParse(readBuffer, args);
+        readBuffer.closeContext("TestWriteRequest");
+        return new TestWriteRequest(testTagRequest);
+    }
 }

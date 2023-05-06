@@ -98,7 +98,7 @@ func NewBACnetPropertyAccessResult(objectIdentifier BACnetContextTagObjectIdenti
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetPropertyAccessResult(structType interface{}) BACnetPropertyAccessResult {
+func CastBACnetPropertyAccessResult(structType any) BACnetPropertyAccessResult {
 	if casted, ok := structType.(BACnetPropertyAccessResult); ok {
 		return casted
 	}
@@ -228,7 +228,7 @@ func BACnetPropertyAccessResultParseWithBuffer(ctx context.Context, readBuffer u
 	if pullErr := readBuffer.PullContext("accessResult"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for accessResult")
 	}
-	_accessResult, _accessResultErr := BACnetPropertyAccessResultAccessResultParseWithBuffer(ctx, readBuffer, BACnetObjectType(objectIdentifier.GetObjectType()), BACnetPropertyIdentifier(propertyIdentifier.GetValue()), (CastBACnetTagPayloadUnsignedInteger(utils.InlineIf(bool((propertyArrayIndex) != (nil)), func() interface{} { return CastBACnetTagPayloadUnsignedInteger((propertyArrayIndex).GetPayload()) }, func() interface{} { return CastBACnetTagPayloadUnsignedInteger(nil) }))))
+	_accessResult, _accessResultErr := BACnetPropertyAccessResultAccessResultParseWithBuffer(ctx, readBuffer, BACnetObjectType(objectIdentifier.GetObjectType()), BACnetPropertyIdentifier(propertyIdentifier.GetValue()), (CastBACnetTagPayloadUnsignedInteger(utils.InlineIf(bool((propertyArrayIndex) != (nil)), func() any { return CastBACnetTagPayloadUnsignedInteger((propertyArrayIndex).GetPayload()) }, func() any { return CastBACnetTagPayloadUnsignedInteger(nil) }))))
 	if _accessResultErr != nil {
 		return nil, errors.Wrap(_accessResultErr, "Error parsing 'accessResult' field of BACnetPropertyAccessResult")
 	}

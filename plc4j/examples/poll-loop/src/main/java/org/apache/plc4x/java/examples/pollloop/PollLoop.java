@@ -41,10 +41,10 @@ public class PollLoop {
 
     private final AtomicBoolean doCollect = new AtomicBoolean(false);
 
-    private String connectionString;
-    private String plcType;
-    private List<String> variables;
-    private int samplingRate;
+    private final String connectionString;
+    private final String plcType;
+    private final List<String> variables;
+    private final int samplingRate;
 
     final static String PLC4JTYPE_SIEMENS = "Siemens S7";
 
@@ -63,9 +63,9 @@ public class PollLoop {
      */
     public class Collector extends Thread {
 
-        String connectionString;
-        String plcType;
-        int samplingRate;
+        final String connectionString;
+        final String plcType;
+        final int samplingRate;
 
         int incrementalSleepTime;
 
@@ -93,8 +93,8 @@ public class PollLoop {
                 // Create a new read request
                 // variables names are the same as the actual variable read
                 PlcReadRequest.Builder builder = plcConnection.readRequestBuilder();
-                for (int i = 0; i < variables.size(); i++) {
-                    builder.addTagAddress(variables.get(i), variables.get(i));
+                for (String variable : variables) {
+                    builder.addTagAddress(variable, variable);
                 }
                 PlcReadRequest readRequest = builder.build();
 

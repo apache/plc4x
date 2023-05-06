@@ -121,7 +121,7 @@ func NewBACnetConstructedDataCOVPeriod(covPeriod BACnetApplicationTagUnsignedInt
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataCOVPeriod(structType interface{}) BACnetConstructedDataCOVPeriod {
+func CastBACnetConstructedDataCOVPeriod(structType any) BACnetConstructedDataCOVPeriod {
 	if casted, ok := structType.(BACnetConstructedDataCOVPeriod); ok {
 		return casted
 	}

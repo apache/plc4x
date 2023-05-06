@@ -105,7 +105,7 @@ func NewAdsTableSizes(symbolCount uint32, symbolLength uint32, dataTypeCount uin
 }
 
 // Deprecated: use the interface for direct cast
-func CastAdsTableSizes(structType interface{}) AdsTableSizes {
+func CastAdsTableSizes(structType any) AdsTableSizes {
 	if casted, ok := structType.(AdsTableSizes); ok {
 		return casted
 	}

@@ -77,7 +77,7 @@ func NewBACnetBDTEntry(bbmdAddress BACnetHostNPortEnclosed, broadcastMask BACnet
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetBDTEntry(structType interface{}) BACnetBDTEntry {
+func CastBACnetBDTEntry(structType any) BACnetBDTEntry {
 	if casted, ok := structType.(BACnetBDTEntry); ok {
 		return casted
 	}

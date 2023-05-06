@@ -94,7 +94,7 @@ func NewAirConditioningDataSetZoneGroupOff(zoneGroup byte, commandTypeContainer 
 }
 
 // Deprecated: use the interface for direct cast
-func CastAirConditioningDataSetZoneGroupOff(structType interface{}) AirConditioningDataSetZoneGroupOff {
+func CastAirConditioningDataSetZoneGroupOff(structType any) AirConditioningDataSetZoneGroupOff {
 	if casted, ok := structType.(AirConditioningDataSetZoneGroupOff); ok {
 		return casted
 	}

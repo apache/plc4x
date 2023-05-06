@@ -108,7 +108,7 @@ func NewDeviceConfigurationRequest(deviceConfigurationRequestDataBlock DeviceCon
 }
 
 // Deprecated: use the interface for direct cast
-func CastDeviceConfigurationRequest(structType interface{}) DeviceConfigurationRequest {
+func CastDeviceConfigurationRequest(structType any) DeviceConfigurationRequest {
 	if casted, ok := structType.(DeviceConfigurationRequest); ok {
 		return casted
 	}

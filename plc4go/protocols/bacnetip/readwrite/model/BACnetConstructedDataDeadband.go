@@ -121,7 +121,7 @@ func NewBACnetConstructedDataDeadband(deadband BACnetApplicationTagReal, opening
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataDeadband(structType interface{}) BACnetConstructedDataDeadband {
+func CastBACnetConstructedDataDeadband(structType any) BACnetConstructedDataDeadband {
 	if casted, ok := structType.(BACnetConstructedDataDeadband); ok {
 		return casted
 	}

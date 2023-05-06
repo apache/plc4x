@@ -41,7 +41,7 @@ public enum BACnetAuthorizationExemption {
     }
   }
 
-  private short value;
+  private final short value;
 
   BACnetAuthorizationExemption(short value) {
     this.value = value;

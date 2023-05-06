@@ -33,6 +33,7 @@ type MeasurementCommandTypeContainer uint8
 
 type IMeasurementCommandTypeContainer interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 	NumBytes() uint8
 	CommandType() MeasurementCommandType
@@ -119,8 +120,8 @@ func MeasurementCommandTypeContainerKnows(value uint8) bool {
 	return false
 }
 
-func CastMeasurementCommandTypeContainer(structType interface{}) MeasurementCommandTypeContainer {
-	castFunc := func(typ interface{}) MeasurementCommandTypeContainer {
+func CastMeasurementCommandTypeContainer(structType any) MeasurementCommandTypeContainer {
+	castFunc := func(typ any) MeasurementCommandTypeContainer {
 		if sMeasurementCommandTypeContainer, ok := typ.(MeasurementCommandTypeContainer); ok {
 			return sMeasurementCommandTypeContainer
 		}

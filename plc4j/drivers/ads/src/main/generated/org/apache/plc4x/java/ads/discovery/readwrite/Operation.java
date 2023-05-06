@@ -41,7 +41,7 @@ public enum Operation {
     }
   }
 
-  private long value;
+  private final long value;
 
   Operation(long value) {
     this.value = value;

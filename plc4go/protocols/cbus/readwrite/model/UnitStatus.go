@@ -33,6 +33,7 @@ type UnitStatus uint8
 
 type IUnitStatus interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 
@@ -86,8 +87,8 @@ func UnitStatusKnows(value uint8) bool {
 	return false
 }
 
-func CastUnitStatus(structType interface{}) UnitStatus {
-	castFunc := func(typ interface{}) UnitStatus {
+func CastUnitStatus(structType any) UnitStatus {
+	castFunc := func(typ any) UnitStatus {
 		if sUnitStatus, ok := typ.(UnitStatus); ok {
 			return sUnitStatus
 		}

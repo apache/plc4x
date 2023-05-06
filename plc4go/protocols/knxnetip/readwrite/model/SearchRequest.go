@@ -97,7 +97,7 @@ func NewSearchRequest(hpaiIDiscoveryEndpoint HPAIDiscoveryEndpoint) *_SearchRequ
 }
 
 // Deprecated: use the interface for direct cast
-func CastSearchRequest(structType interface{}) SearchRequest {
+func CastSearchRequest(structType any) SearchRequest {
 	if casted, ok := structType.(SearchRequest); ok {
 		return casted
 	}

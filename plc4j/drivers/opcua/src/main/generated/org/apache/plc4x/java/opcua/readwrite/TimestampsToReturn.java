@@ -38,7 +38,7 @@ public enum TimestampsToReturn {
     }
   }
 
-  private long value;
+  private final long value;
 
   TimestampsToReturn(long value) {
     this.value = value;

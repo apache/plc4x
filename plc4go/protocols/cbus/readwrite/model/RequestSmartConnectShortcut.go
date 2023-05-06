@@ -122,7 +122,7 @@ func NewRequestSmartConnectShortcut(pipePeek RequestType, secondPipe *byte, peek
 }
 
 // Deprecated: use the interface for direct cast
-func CastRequestSmartConnectShortcut(structType interface{}) RequestSmartConnectShortcut {
+func CastRequestSmartConnectShortcut(structType any) RequestSmartConnectShortcut {
 	if casted, ok := structType.(RequestSmartConnectShortcut); ok {
 		return casted
 	}

@@ -96,7 +96,7 @@ func NewBACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric(num
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric(structType interface{}) BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric {
+func CastBACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric(structType any) BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric {
 	if casted, ok := structType.(BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric); ok {
 		return casted
 	}

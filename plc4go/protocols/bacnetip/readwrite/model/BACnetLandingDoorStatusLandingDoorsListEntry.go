@@ -76,7 +76,7 @@ func NewBACnetLandingDoorStatusLandingDoorsListEntry(floorNumber BACnetContextTa
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetLandingDoorStatusLandingDoorsListEntry(structType interface{}) BACnetLandingDoorStatusLandingDoorsListEntry {
+func CastBACnetLandingDoorStatusLandingDoorsListEntry(structType any) BACnetLandingDoorStatusLandingDoorsListEntry {
 	if casted, ok := structType.(BACnetLandingDoorStatusLandingDoorsListEntry); ok {
 		return casted
 	}

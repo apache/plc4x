@@ -32,7 +32,7 @@ import (
 type CbusParserHelper struct {
 }
 
-func (m CbusParserHelper) Parse(typeName string, arguments []string, io utils.ReadBuffer) (interface{}, error) {
+func (m CbusParserHelper) Parse(typeName string, arguments []string, io utils.ReadBuffer) (any, error) {
 	switch typeName {
 	case "HVACStatusFlags":
 		return model.HVACStatusFlagsParseWithBuffer(context.Background(), io)

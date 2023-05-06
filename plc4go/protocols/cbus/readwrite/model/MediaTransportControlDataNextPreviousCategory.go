@@ -120,7 +120,7 @@ func NewMediaTransportControlDataNextPreviousCategory(operation byte, commandTyp
 }
 
 // Deprecated: use the interface for direct cast
-func CastMediaTransportControlDataNextPreviousCategory(structType interface{}) MediaTransportControlDataNextPreviousCategory {
+func CastMediaTransportControlDataNextPreviousCategory(structType any) MediaTransportControlDataNextPreviousCategory {
 	if casted, ok := structType.(MediaTransportControlDataNextPreviousCategory); ok {
 		return casted
 	}

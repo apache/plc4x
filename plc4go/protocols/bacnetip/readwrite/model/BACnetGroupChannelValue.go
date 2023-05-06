@@ -84,7 +84,7 @@ func NewBACnetGroupChannelValue(channel BACnetContextTagUnsignedInteger, overrid
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetGroupChannelValue(structType interface{}) BACnetGroupChannelValue {
+func CastBACnetGroupChannelValue(structType any) BACnetGroupChannelValue {
 	if casted, ok := structType.(BACnetGroupChannelValue); ok {
 		return casted
 	}

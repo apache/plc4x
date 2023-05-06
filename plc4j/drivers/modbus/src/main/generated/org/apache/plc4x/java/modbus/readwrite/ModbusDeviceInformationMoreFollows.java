@@ -35,7 +35,7 @@ public enum ModbusDeviceInformationMoreFollows {
     }
   }
 
-  private short value;
+  private final short value;
 
   ModbusDeviceInformationMoreFollows(short value) {
     this.value = value;

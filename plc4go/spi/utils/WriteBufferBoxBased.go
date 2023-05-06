@@ -23,6 +23,7 @@ import (
 	"container/list"
 	"context"
 	"fmt"
+	"github.com/pkg/errors"
 	"math/big"
 )
 
@@ -212,7 +213,7 @@ func (b *boxedWriteBuffer) WriteString(logicalName string, bitLength uint32, _ s
 	return nil
 }
 
-func (b *boxedWriteBuffer) WriteVirtual(ctx context.Context, logicalName string, value interface{}, writerArgs ...WithWriterArgs) error {
+func (b *boxedWriteBuffer) WriteVirtual(ctx context.Context, logicalName string, value any, writerArgs ...WithWriterArgs) error {
 	additionalStringRepresentation := b.extractAdditionalStringRepresentation(UpcastWriterArgs(writerArgs...)...)
 	if value == nil {
 		return nil
@@ -264,7 +265,7 @@ findTheBox:
 			finalBoxes = append(asciiBoxes, finalBoxes...)
 			break findTheBox
 		default:
-			panic("We should never reach this point")
+			return errors.New("We should never reach this point")
 		}
 	}
 	if b.mergeSingleBoxes && len(finalBoxes) == 1 {

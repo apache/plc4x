@@ -37,7 +37,7 @@ public enum BACnetNetworkNumberQuality {
     }
   }
 
-  private short value;
+  private final short value;
 
   BACnetNetworkNumberQuality(short value) {
     this.value = value;

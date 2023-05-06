@@ -96,7 +96,7 @@ func NewComObjectTableRealisationType6(comObjectDescriptors GroupObjectDescripto
 }
 
 // Deprecated: use the interface for direct cast
-func CastComObjectTableRealisationType6(structType interface{}) ComObjectTableRealisationType6 {
+func CastComObjectTableRealisationType6(structType any) ComObjectTableRealisationType6 {
 	if casted, ok := structType.(ComObjectTableRealisationType6); ok {
 		return casted
 	}

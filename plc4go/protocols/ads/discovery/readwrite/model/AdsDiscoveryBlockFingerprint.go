@@ -96,7 +96,7 @@ func NewAdsDiscoveryBlockFingerprint(data []byte) *_AdsDiscoveryBlockFingerprint
 }
 
 // Deprecated: use the interface for direct cast
-func CastAdsDiscoveryBlockFingerprint(structType interface{}) AdsDiscoveryBlockFingerprint {
+func CastAdsDiscoveryBlockFingerprint(structType any) AdsDiscoveryBlockFingerprint {
 	if casted, ok := structType.(AdsDiscoveryBlockFingerprint); ok {
 		return casted
 	}

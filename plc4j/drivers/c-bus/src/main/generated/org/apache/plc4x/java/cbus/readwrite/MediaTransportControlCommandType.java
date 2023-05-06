@@ -56,8 +56,8 @@ public enum MediaTransportControlCommandType {
     }
   }
 
-  private byte value;
-  private short numberOfArguments;
+  private final byte value;
+  private final short numberOfArguments;
 
   MediaTransportControlCommandType(byte value, short numberOfArguments) {
     this.value = value;
@@ -84,7 +84,7 @@ public enum MediaTransportControlCommandType {
 
   public static List<MediaTransportControlCommandType> enumsForFieldNumberOfArguments(
       short fieldValue) {
-    List<MediaTransportControlCommandType> _values = new ArrayList();
+    List<MediaTransportControlCommandType> _values = new ArrayList<>();
     for (MediaTransportControlCommandType _val : MediaTransportControlCommandType.values()) {
       if (_val.getNumberOfArguments() == fieldValue) {
         _values.add(_val);

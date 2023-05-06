@@ -36,7 +36,7 @@ public enum BACnetLogStatus {
     }
   }
 
-  private short value;
+  private final short value;
 
   BACnetLogStatus(short value) {
     this.value = value;

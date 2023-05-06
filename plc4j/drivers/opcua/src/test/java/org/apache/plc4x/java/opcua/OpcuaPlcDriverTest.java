@@ -107,24 +107,24 @@ public class OpcuaPlcDriverTest {
     private static final String DATE_TIME_ARRAY_IDENTIFIER = "ns=2;s=HelloWorld/ArrayTypes/DateTimeArray";
 
     // Address of local milo server
-    private String miloLocalAddress = "127.0.0.1:12686/milo";
+    private final String miloLocalAddress = "127.0.0.1:12686/milo";
     //Tcp pattern of OPC UA
-    private String opcPattern = "opcua:tcp://";
+    private final String opcPattern = "opcua:tcp://";
 
-    private String paramSectionDivider = "?";
-    private String paramDivider = "&";
+    private final String paramSectionDivider = "?";
+    private final String paramDivider = "&";
 
-    private String tcpConnectionAddress = opcPattern + miloLocalAddress;
+    private final String tcpConnectionAddress = opcPattern + miloLocalAddress;
 
-    private List<String> connectionStringValidSet = List.of(tcpConnectionAddress);
-    private List<String> connectionStringCorruptedSet = List.of();
+    private final List<String> connectionStringValidSet = List.of(tcpConnectionAddress);
+    private final List<String> connectionStringCorruptedSet = List.of();
 
-    private String discoveryValidParamTrue = "discovery=true";
-    private String discoveryValidParamFalse = "discovery=false";
-    private String discoveryCorruptedParamWrongValueNum = "discovery=1";
-    private String discoveryCorruptedParamWronName = "diskovery=false";
+    private final String discoveryValidParamTrue = "discovery=true";
+    private final String discoveryValidParamFalse = "discovery=false";
+    private final String discoveryCorruptedParamWrongValueNum = "discovery=1";
+    private final String discoveryCorruptedParamWronName = "diskovery=false";
 
-    List<String> discoveryParamValidSet = List.of(discoveryValidParamTrue, discoveryValidParamFalse);
+    final List<String> discoveryParamValidSet = List.of(discoveryValidParamTrue, discoveryValidParamFalse);
     List<String> discoveryParamCorruptedSet = List.of(discoveryCorruptedParamWrongValueNum, discoveryCorruptedParamWronName);
 
     private static ExampleServer exampleServer;
@@ -171,22 +171,20 @@ public class OpcuaPlcDriverTest {
 
     @Test
     public void connectionWithDiscoveryParam() {
-        connectionStringValidSet.forEach(connectionAddress -> {
-            discoveryParamValidSet.forEach(discoveryParam -> {
-                String connectionString = connectionAddress + paramSectionDivider + discoveryParam;
-                try {
-                    PlcConnection opcuaConnection = new DefaultPlcDriverManager().getConnection(connectionString);
-                    Condition<PlcConnection> is_connected = new Condition<>(PlcConnection::isConnected, "is connected");
-                    assertThat(opcuaConnection).is(is_connected);
-                    opcuaConnection.close();
-                    assertThat(opcuaConnection).isNot(is_connected);
-                } catch (PlcConnectionException e) {
-                    fail("Exception during connectionWithDiscoveryParam while connecting Test EXCEPTION: " + e.getMessage());
-                } catch (Exception e) {
-                    fail("Exception during connectionWithDiscoveryParam while closing Test EXCEPTION: " + e.getMessage());
-                }
-            });
-        });
+        connectionStringValidSet.forEach(connectionAddress -> discoveryParamValidSet.forEach(discoveryParam -> {
+            String connectionString = connectionAddress + paramSectionDivider + discoveryParam;
+            try {
+                PlcConnection opcuaConnection = new DefaultPlcDriverManager().getConnection(connectionString);
+                Condition<PlcConnection> is_connected = new Condition<>(PlcConnection::isConnected, "is connected");
+                assertThat(opcuaConnection).is(is_connected);
+                opcuaConnection.close();
+                assertThat(opcuaConnection).isNot(is_connected);
+            } catch (PlcConnectionException e) {
+                fail("Exception during connectionWithDiscoveryParam while connecting Test EXCEPTION: " + e.getMessage());
+            } catch (Exception e) {
+                fail("Exception during connectionWithDiscoveryParam while closing Test EXCEPTION: " + e.getMessage());
+            }
+        }));
     }
 
     @Test
@@ -378,7 +376,7 @@ public class OpcuaPlcDriverTest {
 
     public void multipleThreads() {
         class ReadWorker extends Thread {
-            private PlcConnection connection;
+            private final PlcConnection connection;
 
             public ReadWorker(PlcConnection opcuaConnection) {
                 this.connection = opcuaConnection;
@@ -396,17 +394,15 @@ public class OpcuaPlcDriverTest {
                         assertThat(read_response.getResponseCode("Bool")).isEqualTo(PlcResponseCode.OK);
                     }
 
-                } catch (ExecutionException executionException) {
+                } catch (ExecutionException | InterruptedException executionException) {
                     executionException.printStackTrace();
-                } catch (InterruptedException interruptedException) {
-                    interruptedException.printStackTrace();
                 }
 
             }
         }
 
         class WriteWorker extends Thread {
-            private PlcConnection connection;
+            private final PlcConnection connection;
 
             public WriteWorker(PlcConnection opcuaConnection) {
                 this.connection = opcuaConnection;
@@ -423,10 +419,8 @@ public class OpcuaPlcDriverTest {
                         PlcWriteResponse write_response = write_request.execute().get();
                         assertThat(write_response.getResponseCode("Bool")).isEqualTo(PlcResponseCode.OK);
                     }
-                } catch (ExecutionException executionException) {
+                } catch (ExecutionException | InterruptedException executionException) {
                     executionException.printStackTrace();
-                } catch (InterruptedException interruptedException) {
-                    interruptedException.printStackTrace();
                 }
             }
         }

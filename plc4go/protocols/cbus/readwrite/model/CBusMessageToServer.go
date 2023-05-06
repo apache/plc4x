@@ -96,7 +96,7 @@ func NewCBusMessageToServer(request Request, requestContext RequestContext, cBus
 }
 
 // Deprecated: use the interface for direct cast
-func CastCBusMessageToServer(structType interface{}) CBusMessageToServer {
+func CastCBusMessageToServer(structType any) CBusMessageToServer {
 	if casted, ok := structType.(CBusMessageToServer); ok {
 		return casted
 	}

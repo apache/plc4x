@@ -33,6 +33,7 @@ type BACnetDoorStatus uint16
 
 type IBACnetDoorStatus interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 
@@ -134,8 +135,8 @@ func BACnetDoorStatusKnows(value uint16) bool {
 	return false
 }
 
-func CastBACnetDoorStatus(structType interface{}) BACnetDoorStatus {
-	castFunc := func(typ interface{}) BACnetDoorStatus {
+func CastBACnetDoorStatus(structType any) BACnetDoorStatus {
+	castFunc := func(typ any) BACnetDoorStatus {
 		if sBACnetDoorStatus, ok := typ.(BACnetDoorStatus); ok {
 			return sBACnetDoorStatus
 		}

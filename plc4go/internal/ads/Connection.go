@@ -319,7 +319,7 @@ func (m *Connection) resolveSymbolicAddress(ctx context.Context, addressParts []
 	if len(addressParts) == 0 {
 		var arrayInfo []apiModel.ArrayInfo
 		for _, adsArrayInfo := range curDataType.GetArrayInfo() {
-			arrayInfo = append(arrayInfo, internalModel.DefaultArrayInfo{
+			arrayInfo = append(arrayInfo, &internalModel.DefaultArrayInfo{
 				LowerBound: adsArrayInfo.GetLowerBound(),
 				UpperBound: adsArrayInfo.GetUpperBound(),
 			})

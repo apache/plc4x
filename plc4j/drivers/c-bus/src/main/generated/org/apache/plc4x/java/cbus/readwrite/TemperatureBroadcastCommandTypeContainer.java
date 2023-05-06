@@ -68,9 +68,9 @@ public enum TemperatureBroadcastCommandTypeContainer {
     }
   }
 
-  private short value;
-  private short numBytes;
-  private TemperatureBroadcastCommandType commandType;
+  private final short value;
+  private final short numBytes;
+  private final TemperatureBroadcastCommandType commandType;
 
   TemperatureBroadcastCommandTypeContainer(
       short value, short numBytes, TemperatureBroadcastCommandType commandType) {
@@ -100,7 +100,7 @@ public enum TemperatureBroadcastCommandTypeContainer {
 
   public static List<TemperatureBroadcastCommandTypeContainer> enumsForFieldNumBytes(
       short fieldValue) {
-    List<TemperatureBroadcastCommandTypeContainer> _values = new ArrayList();
+    List<TemperatureBroadcastCommandTypeContainer> _values = new ArrayList<>();
     for (TemperatureBroadcastCommandTypeContainer _val :
         TemperatureBroadcastCommandTypeContainer.values()) {
       if (_val.getNumBytes() == fieldValue) {
@@ -127,7 +127,7 @@ public enum TemperatureBroadcastCommandTypeContainer {
 
   public static List<TemperatureBroadcastCommandTypeContainer> enumsForFieldCommandType(
       TemperatureBroadcastCommandType fieldValue) {
-    List<TemperatureBroadcastCommandTypeContainer> _values = new ArrayList();
+    List<TemperatureBroadcastCommandTypeContainer> _values = new ArrayList<>();
     for (TemperatureBroadcastCommandTypeContainer _val :
         TemperatureBroadcastCommandTypeContainer.values()) {
       if (_val.getCommandType() == fieldValue) {

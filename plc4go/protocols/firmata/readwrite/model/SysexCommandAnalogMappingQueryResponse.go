@@ -100,7 +100,7 @@ func NewSysexCommandAnalogMappingQueryResponse(pin uint8) *_SysexCommandAnalogMa
 }
 
 // Deprecated: use the interface for direct cast
-func CastSysexCommandAnalogMappingQueryResponse(structType interface{}) SysexCommandAnalogMappingQueryResponse {
+func CastSysexCommandAnalogMappingQueryResponse(structType any) SysexCommandAnalogMappingQueryResponse {
 	if casted, ok := structType.(SysexCommandAnalogMappingQueryResponse); ok {
 		return casted
 	}

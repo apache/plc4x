@@ -29,7 +29,7 @@ public class ManufacturerIdsHandler extends DefaultHandler {
 
     private boolean inElement = false;
 
-    private List<Integer> manufacturerIds = new ArrayList<>();
+    private final List<Integer> manufacturerIds = new ArrayList<>();
 
     @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {

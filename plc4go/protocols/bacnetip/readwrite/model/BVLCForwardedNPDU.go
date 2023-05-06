@@ -23,7 +23,6 @@ import (
 	"context"
 	"encoding/binary"
 	"fmt"
-	spiContext "github.com/apache/plc4x/plc4go/spi/context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -117,7 +116,7 @@ func NewBVLCForwardedNPDU(ip []uint8, port uint16, npdu NPDU, bvlcPayloadLength 
 }
 
 // Deprecated: use the interface for direct cast
-func CastBVLCForwardedNPDU(structType interface{}) BVLCForwardedNPDU {
+func CastBVLCForwardedNPDU(structType any) BVLCForwardedNPDU {
 	if casted, ok := structType.(BVLCForwardedNPDU); ok {
 		return casted
 	}
@@ -178,7 +177,7 @@ func BVLCForwardedNPDUParseWithBuffer(ctx context.Context, readBuffer utils.Read
 	{
 		_numItems := uint16(uint16(4))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := spiContext.CreateArrayContext(ctx, int(_numItems), int(_curItem))
+			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
 			_ = _curItem
 			_item, _err := readBuffer.ReadUint8("", 8)

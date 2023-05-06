@@ -40,14 +40,14 @@ import org.apache.avro.util.Utf8;
 import org.apache.nifi.util.MockFlowFile;
 
 public class Plc4xCommonTest {
-    public static Map<String, Object> originalMap = new HashMap<>();
-    public static Map<String, String> addressMap = new HashMap<>();
-    public static Map<String, Class<?>> typeMap = new HashMap<>();
+    public static final Map<String, Object> originalMap = new HashMap<>();
+    public static final Map<String, String> addressMap = new HashMap<>();
+    public static final Map<String, Class<?>> typeMap = new HashMap<>();
 
 
     // TODO: BOOL, WORD; DWORD and LWORD are commented because random generation is not working with this types 
     // or a because a reverse type mapping between avro and PlcTypes is not implemented
-    public static Schema schema = SchemaBuilder.builder()
+    public static final Schema schema = SchemaBuilder.builder()
         .record("tests").fields()
             .nullableBoolean("BOOL", true)
             // .nullableBytes("BYTE", new byte[] {1,2})
@@ -148,32 +148,27 @@ public class Plc4xCommonTest {
     }
 
     public static void assertAvroContent(List<MockFlowFile> flowfiles, boolean checkValue, boolean checkType) {
-        flowfiles.forEach(new Consumer<MockFlowFile>() {
-            @Override
-            public void accept(MockFlowFile t) {
-                DatumReader<GenericRecord> dr = new GenericDatumReader<>();
-                try (DataFileReader<GenericRecord> dfr = new DataFileReader<GenericRecord>(new SeekableByteArrayInput(t.toByteArray()), dr)) {
-                    GenericRecord data = null;
-                    while (dfr.hasNext()) {
-                        data = dfr.next(data);
+        flowfiles.forEach(t -> {
+            DatumReader<GenericRecord> dr = new GenericDatumReader<>();
+            try (DataFileReader<GenericRecord> dfr = new DataFileReader<>(new SeekableByteArrayInput(t.toByteArray()), dr)) {
+                GenericRecord data = null;
+                while (dfr.hasNext()) {
+                    data = dfr.next(data);
 
-						for (String tag : Plc4xCommonTest.addressMap.keySet()) {
-							if (data.hasField(tag)) {
-								// Check value after string conversion
-                                if (checkValue)
-								    assert data.get(tag).toString().equalsIgnoreCase(Plc4xCommonTest.originalMap.get(tag).toString());
+                    for (String tag : Plc4xCommonTest.addressMap.keySet()) {
+                        if (data.hasField(tag)) {
+                            // Check value after string conversion
+                            if (checkValue)
+                                assert data.get(tag).toString().equalsIgnoreCase(Plc4xCommonTest.originalMap.get(tag).toString());
 
-								// Check type
-                                if (checkType)
-								    assert data.get(tag).getClass().equals(Plc4xCommonTest.typeMap.get(tag));
-							}
-						}
+                            // Check type
+                            if (checkType)
+                                assert data.get(tag).getClass().equals(Plc4xCommonTest.typeMap.get(tag));
+                        }
                     }
-                    dfr.close();
-                
-                } catch (IOException e) {
-                    e.printStackTrace();
                 }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         });
     }
@@ -203,8 +198,8 @@ public class Plc4xCommonTest {
 
     public static byte[] encodeRecord(GenericRecord record){
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        DatumWriter<GenericRecord> writer = new GenericDatumWriter<GenericRecord>(schema);
-        DataFileWriter<GenericRecord> fileWriter = new DataFileWriter<GenericRecord>(writer);
+        DatumWriter<GenericRecord> writer = new GenericDatumWriter<>(schema);
+        DataFileWriter<GenericRecord> fileWriter = new DataFileWriter<>(writer);
 
         try {
             fileWriter.create(schema, out);

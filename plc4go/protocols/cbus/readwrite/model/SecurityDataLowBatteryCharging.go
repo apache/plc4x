@@ -120,7 +120,7 @@ func NewSecurityDataLowBatteryCharging(startStop byte, commandTypeContainer Secu
 }
 
 // Deprecated: use the interface for direct cast
-func CastSecurityDataLowBatteryCharging(structType interface{}) SecurityDataLowBatteryCharging {
+func CastSecurityDataLowBatteryCharging(structType any) SecurityDataLowBatteryCharging {
 	if casted, ok := structType.(SecurityDataLowBatteryCharging); ok {
 		return casted
 	}

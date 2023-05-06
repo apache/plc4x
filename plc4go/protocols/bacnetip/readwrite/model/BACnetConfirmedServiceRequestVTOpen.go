@@ -105,7 +105,7 @@ func NewBACnetConfirmedServiceRequestVTOpen(vtClass BACnetVTClassTagged, localVt
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConfirmedServiceRequestVTOpen(structType interface{}) BACnetConfirmedServiceRequestVTOpen {
+func CastBACnetConfirmedServiceRequestVTOpen(structType any) BACnetConfirmedServiceRequestVTOpen {
 	if casted, ok := structType.(BACnetConfirmedServiceRequestVTOpen); ok {
 		return casted
 	}

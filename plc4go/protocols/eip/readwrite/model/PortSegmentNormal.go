@@ -104,7 +104,7 @@ func NewPortSegmentNormal(port uint8, linkAddress uint8) *_PortSegmentNormal {
 }
 
 // Deprecated: use the interface for direct cast
-func CastPortSegmentNormal(structType interface{}) PortSegmentNormal {
+func CastPortSegmentNormal(structType any) PortSegmentNormal {
 	if casted, ok := structType.(PortSegmentNormal); ok {
 		return casted
 	}

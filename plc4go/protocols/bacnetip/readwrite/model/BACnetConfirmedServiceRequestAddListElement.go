@@ -122,7 +122,7 @@ func NewBACnetConfirmedServiceRequestAddListElement(objectIdentifier BACnetConte
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConfirmedServiceRequestAddListElement(structType interface{}) BACnetConfirmedServiceRequestAddListElement {
+func CastBACnetConfirmedServiceRequestAddListElement(structType any) BACnetConfirmedServiceRequestAddListElement {
 	if casted, ok := structType.(BACnetConfirmedServiceRequestAddListElement); ok {
 		return casted
 	}
@@ -230,7 +230,7 @@ func BACnetConfirmedServiceRequestAddListElementParseWithBuffer(ctx context.Cont
 		if pullErr := readBuffer.PullContext("listOfElements"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for listOfElements")
 		}
-		_val, _err := BACnetConstructedDataParseWithBuffer(ctx, readBuffer, uint8(3), objectIdentifier.GetObjectType(), propertyIdentifier.GetValue(), (CastBACnetTagPayloadUnsignedInteger(utils.InlineIf(bool((arrayIndex) != (nil)), func() interface{} { return CastBACnetTagPayloadUnsignedInteger((arrayIndex).GetPayload()) }, func() interface{} { return CastBACnetTagPayloadUnsignedInteger(nil) }))))
+		_val, _err := BACnetConstructedDataParseWithBuffer(ctx, readBuffer, uint8(3), objectIdentifier.GetObjectType(), propertyIdentifier.GetValue(), (CastBACnetTagPayloadUnsignedInteger(utils.InlineIf(bool((arrayIndex) != (nil)), func() any { return CastBACnetTagPayloadUnsignedInteger((arrayIndex).GetPayload()) }, func() any { return CastBACnetTagPayloadUnsignedInteger(nil) }))))
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")

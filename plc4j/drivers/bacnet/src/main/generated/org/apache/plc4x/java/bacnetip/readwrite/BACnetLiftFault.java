@@ -51,7 +51,7 @@ public enum BACnetLiftFault {
     }
   }
 
-  private int value;
+  private final int value;
 
   BACnetLiftFault(int value) {
     this.value = value;

@@ -36,7 +36,7 @@ public enum Status {
     }
   }
 
-  private short value;
+  private final short value;
 
   Status(short value) {
     this.value = value;

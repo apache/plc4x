@@ -78,7 +78,7 @@ func NewLRawReq(size uint16) *_LRawReq {
 }
 
 // Deprecated: use the interface for direct cast
-func CastLRawReq(structType interface{}) LRawReq {
+func CastLRawReq(structType any) LRawReq {
 	if casted, ok := structType.(LRawReq); ok {
 		return casted
 	}

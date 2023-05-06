@@ -121,7 +121,7 @@ func NewBACnetConstructedDataIntervalOffset(intervalOffset BACnetApplicationTagU
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataIntervalOffset(structType interface{}) BACnetConstructedDataIntervalOffset {
+func CastBACnetConstructedDataIntervalOffset(structType any) BACnetConstructedDataIntervalOffset {
 	if casted, ok := structType.(BACnetConstructedDataIntervalOffset); ok {
 		return casted
 	}

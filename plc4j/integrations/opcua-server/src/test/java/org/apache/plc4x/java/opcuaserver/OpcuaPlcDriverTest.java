@@ -69,24 +69,24 @@ public class OpcuaPlcDriverTest {
     private static final String VARIANT_READ_WRITE = "ns=1;s=HelloWorld/ScalarTypes/Variant";
     private static final String XML_ELEMENT_READ_WRITE = "ns=1;s=HelloWorld/ScalarTypes/XmlElement";
     // Address of local milo server
-    private String miloLocalAddress = "127.0.0.1:12673/plc4x";
+    private final String miloLocalAddress = "127.0.0.1:12673/plc4x";
     //Tcp pattern of OPC UA
-    private String opcPattern = "opcua:tcp://";
+    private final String opcPattern = "opcua:tcp://";
 
-    private String paramSectionDivider = "?";
-    private String paramDivider = "&";
+    private final String paramSectionDivider = "?";
+    private final String paramDivider = "&";
 
-    private String tcpConnectionAddress = opcPattern + miloLocalAddress;
+    private final String tcpConnectionAddress = opcPattern + miloLocalAddress;
 
-    private List<String> connectionStringValidSet = List.of(tcpConnectionAddress);
-    private List<String> connectionStringCorruptedSet = List.of();
+    private final List<String> connectionStringValidSet = List.of(tcpConnectionAddress);
+    private final List<String> connectionStringCorruptedSet = List.of();
 
-    private String discoveryValidParamTrue = "discovery=true";
-    private String discoveryValidParamFalse = "discovery=false";
-    private String discoveryCorruptedParamWrongValueNum = "discovery=1";
-    private String discoveryCorruptedParamWronName = "diskovery=false";
+    private final String discoveryValidParamTrue = "discovery=true";
+    private final String discoveryValidParamFalse = "discovery=false";
+    private final String discoveryCorruptedParamWrongValueNum = "discovery=1";
+    private final String discoveryCorruptedParamWronName = "diskovery=false";
 
-    List<String> discoveryParamValidSet = List.of(discoveryValidParamTrue, discoveryValidParamFalse);
+    final List<String> discoveryParamValidSet = List.of(discoveryValidParamTrue, discoveryValidParamFalse);
     List<String> discoveryParamCorruptedSet = List.of(discoveryCorruptedParamWrongValueNum, discoveryCorruptedParamWronName);
 
     private static OPCUAServer exampleServer;
@@ -128,21 +128,19 @@ public class OpcuaPlcDriverTest {
 
     @Test
     public void connectionWithDiscoveryParam(){
-        connectionStringValidSet.forEach(connectionAddress -> {
-            discoveryParamValidSet.forEach(discoveryParam -> {
-                String connectionString = connectionAddress + paramSectionDivider + discoveryParam;
-                try {
-                    PlcConnection opcuaConnection = new DefaultPlcDriverManager().getConnection(connectionString);
-                    assert opcuaConnection.isConnected();
-                    opcuaConnection.close();
-                    assert !opcuaConnection.isConnected();
-                } catch (PlcConnectionException e) {
-                    fail("Exception during connectionWithDiscoveryParam while connecting Test EXCEPTION: " + e.getMessage());
-                } catch (Exception e) {
-                    fail("Exception during connectionWithDiscoveryParam while closing Test EXCEPTION: " + e.getMessage());
-                }
-            });
-        });
+        connectionStringValidSet.forEach(connectionAddress -> discoveryParamValidSet.forEach(discoveryParam -> {
+            String connectionString = connectionAddress + paramSectionDivider + discoveryParam;
+            try {
+                PlcConnection opcuaConnection = new DefaultPlcDriverManager().getConnection(connectionString);
+                assert opcuaConnection.isConnected();
+                opcuaConnection.close();
+                assert !opcuaConnection.isConnected();
+            } catch (PlcConnectionException e) {
+                fail("Exception during connectionWithDiscoveryParam while connecting Test EXCEPTION: " + e.getMessage());
+            } catch (Exception e) {
+                fail("Exception during connectionWithDiscoveryParam while closing Test EXCEPTION: " + e.getMessage());
+            }
+        }));
 
 
     }

@@ -121,7 +121,7 @@ func NewBACnetConstructedDataLockoutRelinquishTime(lockoutRelinquishTime BACnetA
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataLockoutRelinquishTime(structType interface{}) BACnetConstructedDataLockoutRelinquishTime {
+func CastBACnetConstructedDataLockoutRelinquishTime(structType any) BACnetConstructedDataLockoutRelinquishTime {
 	if casted, ok := structType.(BACnetConstructedDataLockoutRelinquishTime); ok {
 		return casted
 	}

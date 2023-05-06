@@ -121,7 +121,7 @@ func NewBACnetConstructedDataFailedAttempts(failedAttempts BACnetApplicationTagU
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataFailedAttempts(structType interface{}) BACnetConstructedDataFailedAttempts {
+func CastBACnetConstructedDataFailedAttempts(structType any) BACnetConstructedDataFailedAttempts {
 	if casted, ok := structType.(BACnetConstructedDataFailedAttempts); ok {
 		return casted
 	}

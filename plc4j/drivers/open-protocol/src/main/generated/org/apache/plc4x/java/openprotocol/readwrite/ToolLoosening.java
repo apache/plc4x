@@ -36,7 +36,7 @@ public enum ToolLoosening {
     }
   }
 
-  private short value;
+  private final short value;
 
   ToolLoosening(short value) {
     this.value = value;

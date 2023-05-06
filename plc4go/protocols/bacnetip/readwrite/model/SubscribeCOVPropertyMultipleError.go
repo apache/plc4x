@@ -104,7 +104,7 @@ func NewSubscribeCOVPropertyMultipleError(errorType ErrorEnclosed, firstFailedSu
 }
 
 // Deprecated: use the interface for direct cast
-func CastSubscribeCOVPropertyMultipleError(structType interface{}) SubscribeCOVPropertyMultipleError {
+func CastSubscribeCOVPropertyMultipleError(structType any) SubscribeCOVPropertyMultipleError {
 	if casted, ok := structType.(SubscribeCOVPropertyMultipleError); ok {
 		return casted
 	}

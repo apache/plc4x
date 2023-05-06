@@ -45,12 +45,7 @@ public class VirtualCANTransport extends TestTransport implements CANTransport<V
 
     @Override
     public ToIntFunction<ByteBuf> getEstimator() {
-        return new ToIntFunction<ByteBuf>() {
-            @Override
-            public int applyAsInt(ByteBuf value) {
-                return value.getShort(value.readerIndex());
-            }
-        };
+        return value -> value.getShort(value.readerIndex());
     }
 
     @Override
@@ -60,7 +55,7 @@ public class VirtualCANTransport extends TestTransport implements CANTransport<V
 
     @Override
     public CANFrameBuilder<VirtualCANFrame> getTransportFrameBuilder() {
-        return new CANFrameBuilder<VirtualCANFrame>() {
+        return new CANFrameBuilder<>() {
 
             private byte[] data;
             private int nodeId;
@@ -86,34 +81,29 @@ public class VirtualCANTransport extends TestTransport implements CANTransport<V
 
     @Override
     public Function<VirtualCANFrame, FrameData> adapter() {
-        return new Function<VirtualCANFrame, FrameData>() {
+        return frame -> new FrameData() {
             @Override
-            public FrameData apply(VirtualCANFrame frame) {
-                return new FrameData() {
-                    @Override
-                    public int getNodeId() {
-                        return frame.getNodeId();
-                    }
+            public int getNodeId() {
+                return frame.getNodeId();
+            }
 
-                    @Override
-                    public <T extends Message> T read(MessageInput<T> input, Object... args) {
-                        try {
-                            return input.parse(new ReadBufferByteBased(getData(), ByteOrder.LITTLE_ENDIAN), args);
-                        } catch (ParseException e) {
-                            throw new PlcRuntimeException(e);
-                        }
-                    }
+            @Override
+            public <T extends Message> T read(MessageInput<T> input, Object... args) {
+                try {
+                    return input.parse(new ReadBufferByteBased(getData(), ByteOrder.LITTLE_ENDIAN), args);
+                } catch (ParseException e) {
+                    throw new PlcRuntimeException(e);
+                }
+            }
 
-                    @Override
-                    public int getDataLength() {
-                        return frame.getData().length;
-                    }
+            @Override
+            public int getDataLength() {
+                return frame.getData().length;
+            }
 
-                    @Override
-                    public byte[] getData() {
-                        return frame.getData();
-                    }
-                };
+            @Override
+            public byte[] getData() {
+                return frame.getData();
             }
         };
     }

@@ -123,7 +123,7 @@ func NewAdsWriteControlRequest(adsState uint16, deviceState uint16, data []byte,
 }
 
 // Deprecated: use the interface for direct cast
-func CastAdsWriteControlRequest(structType interface{}) AdsWriteControlRequest {
+func CastAdsWriteControlRequest(structType any) AdsWriteControlRequest {
 	if casted, ok := structType.(AdsWriteControlRequest); ok {
 		return casted
 	}

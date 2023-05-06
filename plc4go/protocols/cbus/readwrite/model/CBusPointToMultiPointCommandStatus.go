@@ -97,7 +97,7 @@ func NewCBusPointToMultiPointCommandStatus(statusRequest StatusRequest, peekedAp
 }
 
 // Deprecated: use the interface for direct cast
-func CastCBusPointToMultiPointCommandStatus(structType interface{}) CBusPointToMultiPointCommandStatus {
+func CastCBusPointToMultiPointCommandStatus(structType any) CBusPointToMultiPointCommandStatus {
 	if casted, ok := structType.(CBusPointToMultiPointCommandStatus); ok {
 		return casted
 	}
@@ -151,7 +151,7 @@ func CBusPointToMultiPointCommandStatusParseWithBuffer(ctx context.Context, read
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of CBusPointToMultiPointCommandStatus")
 		}
 		if reserved != byte(0xFF) {
-			Plc4xModelLog.Info().Fields(map[string]interface{}{
+			Plc4xModelLog.Info().Fields(map[string]any{
 				"expected value": byte(0xFF),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
@@ -168,7 +168,7 @@ func CBusPointToMultiPointCommandStatusParseWithBuffer(ctx context.Context, read
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of CBusPointToMultiPointCommandStatus")
 		}
 		if reserved != byte(0x00) {
-			Plc4xModelLog.Info().Fields(map[string]interface{}{
+			Plc4xModelLog.Info().Fields(map[string]any{
 				"expected value": byte(0x00),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
@@ -227,7 +227,7 @@ func (m *_CBusPointToMultiPointCommandStatus) SerializeWithWriteBuffer(ctx conte
 		{
 			var reserved byte = byte(0xFF)
 			if m.reservedField0 != nil {
-				Plc4xModelLog.Info().Fields(map[string]interface{}{
+				Plc4xModelLog.Info().Fields(map[string]any{
 					"expected value": byte(0xFF),
 					"got value":      reserved,
 				}).Msg("Overriding reserved field with unexpected value.")
@@ -243,7 +243,7 @@ func (m *_CBusPointToMultiPointCommandStatus) SerializeWithWriteBuffer(ctx conte
 		{
 			var reserved byte = byte(0x00)
 			if m.reservedField1 != nil {
-				Plc4xModelLog.Info().Fields(map[string]interface{}{
+				Plc4xModelLog.Info().Fields(map[string]any{
 					"expected value": byte(0x00),
 					"got value":      reserved,
 				}).Msg("Overriding reserved field with unexpected value.")

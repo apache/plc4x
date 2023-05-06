@@ -114,7 +114,7 @@ func NewAPDUAbort(server bool, originalInvokeId uint8, abortReason BACnetAbortRe
 }
 
 // Deprecated: use the interface for direct cast
-func CastAPDUAbort(structType interface{}) APDUAbort {
+func CastAPDUAbort(structType any) APDUAbort {
 	if casted, ok := structType.(APDUAbort); ok {
 		return casted
 	}
@@ -171,7 +171,7 @@ func APDUAbortParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, 
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of APDUAbort")
 		}
 		if reserved != uint8(0x00) {
-			Plc4xModelLog.Info().Fields(map[string]interface{}{
+			Plc4xModelLog.Info().Fields(map[string]any{
 				"expected value": uint8(0x00),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
@@ -245,7 +245,7 @@ func (m *_APDUAbort) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 		{
 			var reserved uint8 = uint8(0x00)
 			if m.reservedField0 != nil {
-				Plc4xModelLog.Info().Fields(map[string]interface{}{
+				Plc4xModelLog.Info().Fields(map[string]any{
 					"expected value": uint8(0x00),
 					"got value":      reserved,
 				}).Msg("Overriding reserved field with unexpected value.")

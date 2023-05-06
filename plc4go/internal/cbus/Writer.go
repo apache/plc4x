@@ -34,19 +34,19 @@ import (
 
 type Writer struct {
 	alphaGenerator *AlphaGenerator
-	messageCodec   spi.MessageCodec
+	messageCodec   *MessageCodec
 	tm             spi.RequestTransactionManager
 }
 
-func NewWriter(tpduGenerator *AlphaGenerator, messageCodec spi.MessageCodec, tm spi.RequestTransactionManager) Writer {
-	return Writer{
+func NewWriter(tpduGenerator *AlphaGenerator, messageCodec *MessageCodec, tm spi.RequestTransactionManager) *Writer {
+	return &Writer{
 		alphaGenerator: tpduGenerator,
 		messageCodec:   messageCodec,
 		tm:             tm,
 	}
 }
 
-func (m Writer) Write(ctx context.Context, writeRequest apiModel.PlcWriteRequest) <-chan apiModel.PlcWriteRequestResult {
+func (m *Writer) Write(ctx context.Context, writeRequest apiModel.PlcWriteRequest) <-chan apiModel.PlcWriteRequestResult {
 	log.Trace().Msg("Writing")
 	result := make(chan apiModel.PlcWriteRequestResult)
 	go func() {
@@ -64,7 +64,7 @@ func (m Writer) Write(ctx context.Context, writeRequest apiModel.PlcWriteRequest
 		for _, tagName := range writeRequest.GetTagNames() {
 			tag := writeRequest.GetTag(tagName)
 			plcValue := writeRequest.GetValue(tagName)
-			message, _, supportsWrite, _, err := TagToCBusMessage(tag, plcValue, m.alphaGenerator, m.messageCodec.(*MessageCodec))
+			message, _, supportsWrite, _, err := TagToCBusMessage(tag, plcValue, m.alphaGenerator, m.messageCodec)
 			if !supportsWrite {
 				result <- &spiModel.DefaultPlcWriteRequestResult{
 					Request:  writeRequest,
@@ -101,7 +101,7 @@ func (m Writer) Write(ctx context.Context, writeRequest apiModel.PlcWriteRequest
 			tagNameCopy := tagName
 			// Start a new request-transaction (Is ended in the response-handler)
 			transaction := m.tm.StartTransaction()
-			transaction.Submit(func() {
+			transaction.Submit(func(transaction spi.RequestTransaction) {
 				// Send the  over the wire
 				log.Trace().Msg("Send ")
 				if err := m.messageCodec.SendRequest(ctx, messageToSend, func(receivedMessage spi.Message) bool {

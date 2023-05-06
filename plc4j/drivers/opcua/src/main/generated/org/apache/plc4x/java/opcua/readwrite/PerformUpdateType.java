@@ -37,7 +37,7 @@ public enum PerformUpdateType {
     }
   }
 
-  private long value;
+  private final long value;
 
   PerformUpdateType(long value) {
     this.value = value;

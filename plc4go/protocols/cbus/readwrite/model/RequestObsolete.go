@@ -126,7 +126,7 @@ func NewRequestObsolete(calData CALData, alpha Alpha, peekedByte RequestType, st
 }
 
 // Deprecated: use the interface for direct cast
-func CastRequestObsolete(structType interface{}) RequestObsolete {
+func CastRequestObsolete(structType any) RequestObsolete {
 	if casted, ok := structType.(RequestObsolete); ok {
 		return casted
 	}

@@ -121,7 +121,7 @@ func NewBACnetConstructedDataPolarity(polarity BACnetPolarityTagged, openingTag 
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataPolarity(structType interface{}) BACnetConstructedDataPolarity {
+func CastBACnetConstructedDataPolarity(structType any) BACnetConstructedDataPolarity {
 	if casted, ok := structType.(BACnetConstructedDataPolarity); ok {
 		return casted
 	}

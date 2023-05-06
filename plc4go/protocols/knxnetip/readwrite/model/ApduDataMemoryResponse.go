@@ -104,7 +104,7 @@ func NewApduDataMemoryResponse(address uint16, data []byte, dataLength uint8) *_
 }
 
 // Deprecated: use the interface for direct cast
-func CastApduDataMemoryResponse(structType interface{}) ApduDataMemoryResponse {
+func CastApduDataMemoryResponse(structType any) ApduDataMemoryResponse {
 	if casted, ok := structType.(ApduDataMemoryResponse); ok {
 		return casted
 	}

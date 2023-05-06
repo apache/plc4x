@@ -94,7 +94,7 @@ func NewBACnetScaleIntegerScale(integerScale BACnetContextTagSignedInteger, peek
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetScaleIntegerScale(structType interface{}) BACnetScaleIntegerScale {
+func CastBACnetScaleIntegerScale(structType any) BACnetScaleIntegerScale {
 	if casted, ok := structType.(BACnetScaleIntegerScale); ok {
 		return casted
 	}

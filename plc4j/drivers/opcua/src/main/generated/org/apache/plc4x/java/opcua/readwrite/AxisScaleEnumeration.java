@@ -36,7 +36,7 @@ public enum AxisScaleEnumeration {
     }
   }
 
-  private long value;
+  private final long value;
 
   AxisScaleEnumeration(long value) {
     this.value = value;

@@ -59,6 +59,10 @@ type _S7PayloadUserDataItemCpuFunctionReadSzlRequest struct {
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
+func (m *_S7PayloadUserDataItemCpuFunctionReadSzlRequest) GetCpuFunctionGroup() uint8 {
+	return 0x04
+}
+
 func (m *_S7PayloadUserDataItemCpuFunctionReadSzlRequest) GetCpuFunctionType() uint8 {
 	return 0x04
 }
@@ -67,18 +71,15 @@ func (m *_S7PayloadUserDataItemCpuFunctionReadSzlRequest) GetCpuSubfunction() ui
 	return 0x01
 }
 
-func (m *_S7PayloadUserDataItemCpuFunctionReadSzlRequest) GetDataLength() uint16 {
-	return 0
-}
-
 ///////////////////////
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_S7PayloadUserDataItemCpuFunctionReadSzlRequest) InitializeParent(parent S7PayloadUserDataItem, returnCode DataTransportErrorCode, transportSize DataTransportSize) {
+func (m *_S7PayloadUserDataItemCpuFunctionReadSzlRequest) InitializeParent(parent S7PayloadUserDataItem, returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16) {
 	m.ReturnCode = returnCode
 	m.TransportSize = transportSize
+	m.DataLength = dataLength
 }
 
 func (m *_S7PayloadUserDataItemCpuFunctionReadSzlRequest) GetParent() S7PayloadUserDataItem {
@@ -104,18 +105,18 @@ func (m *_S7PayloadUserDataItemCpuFunctionReadSzlRequest) GetSzlIndex() uint16 {
 ///////////////////////////////////////////////////////////
 
 // NewS7PayloadUserDataItemCpuFunctionReadSzlRequest factory function for _S7PayloadUserDataItemCpuFunctionReadSzlRequest
-func NewS7PayloadUserDataItemCpuFunctionReadSzlRequest(szlId SzlId, szlIndex uint16, returnCode DataTransportErrorCode, transportSize DataTransportSize) *_S7PayloadUserDataItemCpuFunctionReadSzlRequest {
+func NewS7PayloadUserDataItemCpuFunctionReadSzlRequest(szlId SzlId, szlIndex uint16, returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16) *_S7PayloadUserDataItemCpuFunctionReadSzlRequest {
 	_result := &_S7PayloadUserDataItemCpuFunctionReadSzlRequest{
 		SzlId:                  szlId,
 		SzlIndex:               szlIndex,
-		_S7PayloadUserDataItem: NewS7PayloadUserDataItem(returnCode, transportSize),
+		_S7PayloadUserDataItem: NewS7PayloadUserDataItem(returnCode, transportSize, dataLength),
 	}
 	_result._S7PayloadUserDataItem._S7PayloadUserDataItemChildRequirements = _result
 	return _result
 }
 
 // Deprecated: use the interface for direct cast
-func CastS7PayloadUserDataItemCpuFunctionReadSzlRequest(structType interface{}) S7PayloadUserDataItemCpuFunctionReadSzlRequest {
+func CastS7PayloadUserDataItemCpuFunctionReadSzlRequest(structType any) S7PayloadUserDataItemCpuFunctionReadSzlRequest {
 	if casted, ok := structType.(S7PayloadUserDataItemCpuFunctionReadSzlRequest); ok {
 		return casted
 	}
@@ -145,11 +146,11 @@ func (m *_S7PayloadUserDataItemCpuFunctionReadSzlRequest) GetLengthInBytes(ctx c
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func S7PayloadUserDataItemCpuFunctionReadSzlRequestParse(theBytes []byte, cpuFunctionType uint8, cpuSubfunction uint8) (S7PayloadUserDataItemCpuFunctionReadSzlRequest, error) {
-	return S7PayloadUserDataItemCpuFunctionReadSzlRequestParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), cpuFunctionType, cpuSubfunction)
+func S7PayloadUserDataItemCpuFunctionReadSzlRequestParse(theBytes []byte, cpuFunctionGroup uint8, cpuFunctionType uint8, cpuSubfunction uint8) (S7PayloadUserDataItemCpuFunctionReadSzlRequest, error) {
+	return S7PayloadUserDataItemCpuFunctionReadSzlRequestParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), cpuFunctionGroup, cpuFunctionType, cpuSubfunction)
 }
 
-func S7PayloadUserDataItemCpuFunctionReadSzlRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cpuFunctionType uint8, cpuSubfunction uint8) (S7PayloadUserDataItemCpuFunctionReadSzlRequest, error) {
+func S7PayloadUserDataItemCpuFunctionReadSzlRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cpuFunctionGroup uint8, cpuFunctionType uint8, cpuSubfunction uint8) (S7PayloadUserDataItemCpuFunctionReadSzlRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("S7PayloadUserDataItemCpuFunctionReadSzlRequest"); pullErr != nil {

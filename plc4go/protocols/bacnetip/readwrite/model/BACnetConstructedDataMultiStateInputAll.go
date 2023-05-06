@@ -86,7 +86,7 @@ func NewBACnetConstructedDataMultiStateInputAll(openingTag BACnetOpeningTag, pee
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataMultiStateInputAll(structType interface{}) BACnetConstructedDataMultiStateInputAll {
+func CastBACnetConstructedDataMultiStateInputAll(structType any) BACnetConstructedDataMultiStateInputAll {
 	if casted, ok := structType.(BACnetConstructedDataMultiStateInputAll); ok {
 		return casted
 	}

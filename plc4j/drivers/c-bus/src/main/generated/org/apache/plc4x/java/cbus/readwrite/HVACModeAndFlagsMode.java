@@ -38,7 +38,7 @@ public enum HVACModeAndFlagsMode {
     }
   }
 
-  private byte value;
+  private final byte value;
 
   HVACModeAndFlagsMode(byte value) {
     this.value = value;

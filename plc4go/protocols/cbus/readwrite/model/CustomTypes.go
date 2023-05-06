@@ -72,7 +72,7 @@ func NewCustomTypes(customString string, numBytes uint8) *_CustomTypes {
 }
 
 // Deprecated: use the interface for direct cast
-func CastCustomTypes(structType interface{}) CustomTypes {
+func CastCustomTypes(structType any) CustomTypes {
 	if casted, ok := structType.(CustomTypes); ok {
 		return casted
 	}

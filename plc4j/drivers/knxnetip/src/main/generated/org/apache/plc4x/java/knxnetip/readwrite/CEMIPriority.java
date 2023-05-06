@@ -37,7 +37,7 @@ public enum CEMIPriority {
     }
   }
 
-  private byte value;
+  private final byte value;
 
   CEMIPriority(byte value) {
     this.value = value;

@@ -128,7 +128,7 @@ func NewMPropReadReq(interfaceObjectType uint16, objectInstance uint8, propertyI
 }
 
 // Deprecated: use the interface for direct cast
-func CastMPropReadReq(structType interface{}) MPropReadReq {
+func CastMPropReadReq(structType any) MPropReadReq {
 	if casted, ok := structType.(MPropReadReq); ok {
 		return casted
 	}

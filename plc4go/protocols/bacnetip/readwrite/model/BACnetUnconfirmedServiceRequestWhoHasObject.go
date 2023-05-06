@@ -107,7 +107,7 @@ func NewBACnetUnconfirmedServiceRequestWhoHasObject(peekedTagHeader BACnetTagHea
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetUnconfirmedServiceRequestWhoHasObject(structType interface{}) BACnetUnconfirmedServiceRequestWhoHasObject {
+func CastBACnetUnconfirmedServiceRequestWhoHasObject(structType any) BACnetUnconfirmedServiceRequestWhoHasObject {
 	if casted, ok := structType.(BACnetUnconfirmedServiceRequestWhoHasObject); ok {
 		return casted
 	}
@@ -165,7 +165,7 @@ func BACnetUnconfirmedServiceRequestWhoHasObjectParseWithBuffer(ctx context.Cont
 		InitializeParent(BACnetUnconfirmedServiceRequestWhoHasObject, BACnetTagHeader)
 		GetParent() BACnetUnconfirmedServiceRequestWhoHasObject
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child BACnetUnconfirmedServiceRequestWhoHasObjectChildSerializeRequirement
 	var typeSwitchError error
 	switch {

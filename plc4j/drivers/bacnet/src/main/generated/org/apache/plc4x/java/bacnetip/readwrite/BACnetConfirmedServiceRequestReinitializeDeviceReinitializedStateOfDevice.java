@@ -45,7 +45,7 @@ public enum BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfD
     }
   }
 
-  private short value;
+  private final short value;
 
   BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice(short value) {
     this.value = value;

@@ -121,7 +121,7 @@ func NewBACnetConstructedDataNodeType(nodeType BACnetNodeTypeTagged, openingTag 
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataNodeType(structType interface{}) BACnetConstructedDataNodeType {
+func CastBACnetConstructedDataNodeType(structType any) BACnetConstructedDataNodeType {
 	if casted, ok := structType.(BACnetConstructedDataNodeType); ok {
 		return casted
 	}

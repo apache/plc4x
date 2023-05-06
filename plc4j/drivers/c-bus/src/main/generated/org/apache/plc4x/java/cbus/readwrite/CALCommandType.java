@@ -42,7 +42,7 @@ public enum CALCommandType {
     }
   }
 
-  private short value;
+  private final short value;
 
   CALCommandType(short value) {
     this.value = value;

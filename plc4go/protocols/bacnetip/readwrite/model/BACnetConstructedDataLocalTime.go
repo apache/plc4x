@@ -121,7 +121,7 @@ func NewBACnetConstructedDataLocalTime(localTime BACnetApplicationTagTime, openi
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataLocalTime(structType interface{}) BACnetConstructedDataLocalTime {
+func CastBACnetConstructedDataLocalTime(structType any) BACnetConstructedDataLocalTime {
 	if casted, ok := structType.(BACnetConstructedDataLocalTime); ok {
 		return casted
 	}

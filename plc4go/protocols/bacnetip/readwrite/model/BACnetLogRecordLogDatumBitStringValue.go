@@ -96,7 +96,7 @@ func NewBACnetLogRecordLogDatumBitStringValue(bitStringValue BACnetContextTagBit
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetLogRecordLogDatumBitStringValue(structType interface{}) BACnetLogRecordLogDatumBitStringValue {
+func CastBACnetLogRecordLogDatumBitStringValue(structType any) BACnetLogRecordLogDatumBitStringValue {
 	if casted, ok := structType.(BACnetLogRecordLogDatumBitStringValue); ok {
 		return casted
 	}

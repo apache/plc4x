@@ -89,7 +89,7 @@ func NewBACnetTagPayloadEnumerated(data []byte, actualLength uint32) *_BACnetTag
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetTagPayloadEnumerated(structType interface{}) BACnetTagPayloadEnumerated {
+func CastBACnetTagPayloadEnumerated(structType any) BACnetTagPayloadEnumerated {
 	if casted, ok := structType.(BACnetTagPayloadEnumerated); ok {
 		return casted
 	}

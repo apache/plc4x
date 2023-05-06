@@ -98,7 +98,7 @@ func NewSALDataMediaTransport(mediaTransportControlData MediaTransportControlDat
 }
 
 // Deprecated: use the interface for direct cast
-func CastSALDataMediaTransport(structType interface{}) SALDataMediaTransport {
+func CastSALDataMediaTransport(structType any) SALDataMediaTransport {
 	if casted, ok := structType.(SALDataMediaTransport); ok {
 		return casted
 	}

@@ -62,9 +62,9 @@ public enum SupportedPhysicalMedia {
     }
   }
 
-  private short value;
-  private boolean knxSupport;
-  private String description;
+  private final short value;
+  private final boolean knxSupport;
+  private final String description;
 
   SupportedPhysicalMedia(short value, boolean knxSupport, String description) {
     this.value = value;
@@ -90,7 +90,7 @@ public enum SupportedPhysicalMedia {
   }
 
   public static List<SupportedPhysicalMedia> enumsForFieldKnxSupport(boolean fieldValue) {
-    List<SupportedPhysicalMedia> _values = new ArrayList();
+    List<SupportedPhysicalMedia> _values = new ArrayList<>();
     for (SupportedPhysicalMedia _val : SupportedPhysicalMedia.values()) {
       if (_val.getKnxSupport() == fieldValue) {
         _values.add(_val);
@@ -113,7 +113,7 @@ public enum SupportedPhysicalMedia {
   }
 
   public static List<SupportedPhysicalMedia> enumsForFieldDescription(String fieldValue) {
-    List<SupportedPhysicalMedia> _values = new ArrayList();
+    List<SupportedPhysicalMedia> _values = new ArrayList<>();
     for (SupportedPhysicalMedia _val : SupportedPhysicalMedia.values()) {
       if (_val.getDescription().equals(fieldValue)) {
         _values.add(_val);

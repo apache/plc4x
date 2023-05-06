@@ -37,7 +37,7 @@ public enum ErrorReportingSystemCategoryVariant {
     }
   }
 
-  private byte value;
+  private final byte value;
 
   ErrorReportingSystemCategoryVariant(byte value) {
     this.value = value;

@@ -22,10 +22,12 @@ package transports
 import (
 	"bufio"
 	"context"
+	"fmt"
 	"github.com/pkg/errors"
 )
 
 type TransportInstance interface {
+	fmt.Stringer
 	Connect() error
 	ConnectWithContext(ctx context.Context) error
 	Close() error

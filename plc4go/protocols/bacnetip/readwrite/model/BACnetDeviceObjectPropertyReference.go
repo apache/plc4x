@@ -91,7 +91,7 @@ func NewBACnetDeviceObjectPropertyReference(objectIdentifier BACnetContextTagObj
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetDeviceObjectPropertyReference(structType interface{}) BACnetDeviceObjectPropertyReference {
+func CastBACnetDeviceObjectPropertyReference(structType any) BACnetDeviceObjectPropertyReference {
 	if casted, ok := structType.(BACnetDeviceObjectPropertyReference); ok {
 		return casted
 	}

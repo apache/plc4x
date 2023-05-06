@@ -124,7 +124,7 @@ func NewBACnetEventLogRecordLogDatum(openingTag BACnetOpeningTag, peekedTagHeade
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetEventLogRecordLogDatum(structType interface{}) BACnetEventLogRecordLogDatum {
+func CastBACnetEventLogRecordLogDatum(structType any) BACnetEventLogRecordLogDatum {
 	if casted, ok := structType.(BACnetEventLogRecordLogDatum); ok {
 		return casted
 	}
@@ -201,7 +201,7 @@ func BACnetEventLogRecordLogDatumParseWithBuffer(ctx context.Context, readBuffer
 		InitializeParent(BACnetEventLogRecordLogDatum, BACnetOpeningTag, BACnetTagHeader, BACnetClosingTag)
 		GetParent() BACnetEventLogRecordLogDatum
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child BACnetEventLogRecordLogDatumChildSerializeRequirement
 	var typeSwitchError error
 	switch {

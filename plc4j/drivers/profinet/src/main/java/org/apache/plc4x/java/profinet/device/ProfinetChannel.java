@@ -38,7 +38,7 @@ public class ProfinetChannel {
     private static final EtherType PN_EtherType = EtherType.getInstance((short) 0x8892);
     private static final EtherType LLDP_EtherType = EtherType.getInstance((short) 0x88cc);
     private ProfinetPlcDiscoverer discoverer = null;
-    private Map<MacAddress, PcapHandle> openHandles;
+    private final Map<MacAddress, PcapHandle> openHandles;
     private Map<String, ProfinetDevice> devices;
 
     public ProfinetChannel(List<PcapNetworkInterface> devs, Map<String, ProfinetDevice> devices) {

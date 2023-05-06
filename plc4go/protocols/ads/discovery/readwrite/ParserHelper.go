@@ -32,7 +32,7 @@ import (
 type AdsDiscoveryParserHelper struct {
 }
 
-func (m AdsDiscoveryParserHelper) Parse(typeName string, arguments []string, io utils.ReadBuffer) (interface{}, error) {
+func (m AdsDiscoveryParserHelper) Parse(typeName string, arguments []string, io utils.ReadBuffer) (any, error) {
 	switch typeName {
 	case "AdsDiscovery":
 		return model.AdsDiscoveryParseWithBuffer(context.Background(), io)

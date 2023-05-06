@@ -22,7 +22,6 @@ package model
 import (
 	"context"
 	"fmt"
-	spiContext "github.com/apache/plc4x/plc4go/spi/context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -105,7 +104,7 @@ func NewModbusPDUWriteFileRecordResponse(items []ModbusPDUWriteFileRecordRespons
 }
 
 // Deprecated: use the interface for direct cast
-func CastModbusPDUWriteFileRecordResponse(structType interface{}) ModbusPDUWriteFileRecordResponse {
+func CastModbusPDUWriteFileRecordResponse(structType any) ModbusPDUWriteFileRecordResponse {
 	if casted, ok := structType.(ModbusPDUWriteFileRecordResponse); ok {
 		return casted
 	}
@@ -229,7 +228,7 @@ func (m *_ModbusPDUWriteFileRecordResponse) SerializeWithWriteBuffer(ctx context
 		}
 		for _curItem, _element := range m.GetItems() {
 			_ = _curItem
-			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetItems()), _curItem)
+			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetItems()), _curItem)
 			_ = arrayCtx
 			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 			if _elementErr != nil {

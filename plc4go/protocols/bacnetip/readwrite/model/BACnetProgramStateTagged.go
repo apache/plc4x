@@ -80,7 +80,7 @@ func NewBACnetProgramStateTagged(header BACnetTagHeader, value BACnetProgramStat
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetProgramStateTagged(structType interface{}) BACnetProgramStateTagged {
+func CastBACnetProgramStateTagged(structType any) BACnetProgramStateTagged {
 	if casted, ok := structType.(BACnetProgramStateTagged); ok {
 		return casted
 	}

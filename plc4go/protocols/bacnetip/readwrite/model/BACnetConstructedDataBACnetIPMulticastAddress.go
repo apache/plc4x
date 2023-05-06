@@ -121,7 +121,7 @@ func NewBACnetConstructedDataBACnetIPMulticastAddress(ipMulticastAddress BACnetA
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataBACnetIPMulticastAddress(structType interface{}) BACnetConstructedDataBACnetIPMulticastAddress {
+func CastBACnetConstructedDataBACnetIPMulticastAddress(structType any) BACnetConstructedDataBACnetIPMulticastAddress {
 	if casted, ok := structType.(BACnetConstructedDataBACnetIPMulticastAddress); ok {
 		return casted
 	}

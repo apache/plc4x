@@ -94,7 +94,7 @@ func NewBACnetFaultParameterFaultExtendedParametersEntryEnumerated(enumeratedVal
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetFaultParameterFaultExtendedParametersEntryEnumerated(structType interface{}) BACnetFaultParameterFaultExtendedParametersEntryEnumerated {
+func CastBACnetFaultParameterFaultExtendedParametersEntryEnumerated(structType any) BACnetFaultParameterFaultExtendedParametersEntryEnumerated {
 	if casted, ok := structType.(BACnetFaultParameterFaultExtendedParametersEntryEnumerated); ok {
 		return casted
 	}

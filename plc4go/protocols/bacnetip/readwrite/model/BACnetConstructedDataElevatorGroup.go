@@ -121,7 +121,7 @@ func NewBACnetConstructedDataElevatorGroup(elevatorGroup BACnetApplicationTagObj
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataElevatorGroup(structType interface{}) BACnetConstructedDataElevatorGroup {
+func CastBACnetConstructedDataElevatorGroup(structType any) BACnetConstructedDataElevatorGroup {
 	if casted, ok := structType.(BACnetConstructedDataElevatorGroup); ok {
 		return casted
 	}

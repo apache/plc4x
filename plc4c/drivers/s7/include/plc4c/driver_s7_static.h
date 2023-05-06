@@ -27,6 +27,8 @@ extern "C" {
 #include <plc4c/spi/write_buffer.h>
 #include <time.h>
 
+#include "data_transport_size.h"
+
 /*
  *
  *   Static functions
@@ -36,7 +38,7 @@ uint8_t plc4c_spi_evaluation_helper_str_len(char* str);
 
 uint16_t plc4c_s7_read_write_event_item_length(plc4c_spi_read_buffer* io, uint16_t valueLength);
 
-uint16_t plc4c_s7_read_write_right_shift3(plc4c_spi_read_buffer* io);
+uint16_t plc4c_s7_read_write_right_shift3(plc4c_spi_read_buffer* io, plc4c_s7_read_write_data_transport_size transportSize);
 
 plc4c_return_code plc4c_s7_read_write_left_shift3(plc4c_spi_write_buffer* io, uint16_t value);
 

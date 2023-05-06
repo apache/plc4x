@@ -100,7 +100,7 @@ func (m plcTag) GetValueType() values.PlcValueType {
 func (m plcTag) GetArrayInfo() []model.ArrayInfo {
 	if m.NumElements != 1 {
 		return []model.ArrayInfo{
-			model2.DefaultArrayInfo{
+			&model2.DefaultArrayInfo{
 				LowerBound: 0,
 				UpperBound: uint32(m.NumElements),
 			},

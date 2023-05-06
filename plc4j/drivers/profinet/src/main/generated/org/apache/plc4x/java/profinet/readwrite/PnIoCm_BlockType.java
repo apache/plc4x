@@ -51,7 +51,7 @@ public enum PnIoCm_BlockType {
     }
   }
 
-  private int value;
+  private final int value;
 
   PnIoCm_BlockType(int value) {
     this.value = value;

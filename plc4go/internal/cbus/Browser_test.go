@@ -22,22 +22,30 @@ package cbus
 import (
 	"context"
 	"fmt"
+	plc4go "github.com/apache/plc4x/plc4go/pkg/api"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
+	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/cbus/readwrite/model"
-	"github.com/apache/plc4x/plc4go/spi"
 	_default "github.com/apache/plc4x/plc4go/spi/default"
+	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/spi/transports"
 	"github.com/apache/plc4x/plc4go/spi/transports/test"
+	spiValues "github.com/apache/plc4x/plc4go/spi/values"
+	"github.com/pkg/errors"
 	"github.com/stretchr/testify/assert"
 	"net/url"
 	"sync/atomic"
 	"testing"
 )
 
+func TestNewBrowser(t *testing.T) {
+	assert.NotNil(t, NewBrowser(nil))
+}
+
 func TestBrowser_BrowseQuery(t *testing.T) {
 	type fields struct {
 		DefaultBrowser  _default.DefaultBrowser
-		connection      spi.PlcConnection
+		connection      plc4go.PlcConnection
 		sequenceCounter uint8
 	}
 	type args struct {
@@ -61,7 +69,7 @@ func TestBrowser_BrowseQuery(t *testing.T) {
 			name: "non responding browse",
 			fields: fields{
 				DefaultBrowser: nil,
-				connection: func() spi.PlcConnection {
+				connection: func() plc4go.PlcConnection {
 					transport := test.NewTransport()
 					transportUrl := url.URL{Scheme: "test"}
 					transportInstance, err := transport.CreateTransportInstance(transportUrl, nil)
@@ -78,6 +86,7 @@ func TestBrowser_BrowseQuery(t *testing.T) {
 						INTERFACE_OPTIONS_3
 						INTERFACE_OPTIONS_1_PUN
 						INTERFACE_OPTIONS_1
+						MANUFACTURER
 						DONE
 					)
 					currentState := atomic.Value{}
@@ -112,6 +121,10 @@ func TestBrowser_BrowseQuery(t *testing.T) {
 							t.Log("Dispatching interface 1 echo and confirm???")
 							transportInstance.FillReadBuffer([]byte("@A3300079\r"))
 							transportInstance.FillReadBuffer([]byte("3230009E\r\n"))
+							currentState.Store(MANUFACTURER)
+						case MANUFACTURER:
+							t.Log("Dispatching manufacturer")
+							transportInstance.FillReadBuffer([]byte("g.890050435F434E49454422\r\n"))
 							currentState.Store(DONE)
 						case DONE:
 							t.Log("Dispatching 3 MMI segments")
@@ -132,18 +145,30 @@ func TestBrowser_BrowseQuery(t *testing.T) {
 						t.FailNow()
 						return nil
 					}
-					connection := connectionConnectResult.GetConnection()
-					return connection.(spi.PlcConnection)
+					return connectionConnectResult.GetConnection()
 				}(),
 				sequenceCounter: 0,
 			},
 			args: args{
-				ctx:         context.Background(),
-				interceptor: nil,
-				queryName:   "testQuery",
-				query:       NewUnitInfoQuery(readWriteModel.NewUnitAddress(2), nil, 1),
+				ctx: context.Background(),
+				interceptor: func(result apiModel.PlcBrowseItem) bool {
+					// No-OP
+					return true
+				},
+				queryName: "testQuery",
+				query:     NewUnitInfoQuery(readWriteModel.NewUnitAddress(2), nil, 1),
 			},
 			want: apiModel.PlcResponseCode_OK,
+			want1: []apiModel.PlcBrowseItem{
+				&spiModel.DefaultPlcBrowseItem{
+					Tag:      NewCALIdentifyTag(readWriteModel.NewUnitAddress(2), nil, readWriteModel.Attribute_Manufacturer, 1),
+					Name:     "testQuery",
+					Readable: true,
+					Options: map[string]apiValues.PlcValue{
+						"CurrentValue": spiValues.NewPlcSTRING("PC_CNIED"),
+					},
+				},
+			},
 		},
 	}
 	for _, tt := range tests {
@@ -155,7 +180,130 @@ func TestBrowser_BrowseQuery(t *testing.T) {
 			}
 			got, got1 := m.BrowseQuery(tt.args.ctx, tt.args.interceptor, tt.args.queryName, tt.args.query)
 			assert.Equalf(t, tt.want, got, "BrowseQuery(%v, func(), %v,\n%v\n)", tt.args.ctx, tt.args.queryName, tt.args.query)
-			assert.Equalf(t, tt.want1, got1, "BrowseQuery(%v, %v, %v, %v)", tt.args.ctx, tt.args.interceptor, tt.args.queryName, tt.args.query)
+			assert.Equalf(t, tt.want1, got1, "BrowseQuery(%v, func(), %v, \n%v\n)", tt.args.ctx, tt.args.queryName, tt.args.query)
+		})
+	}
+}
+
+func TestBrowser_extractUnits(t *testing.T) {
+	type fields struct {
+		DefaultBrowser  _default.DefaultBrowser
+		connection      plc4go.PlcConnection
+		sequenceCounter uint8
+	}
+	type args struct {
+		ctx                          context.Context
+		query                        *unitInfoQuery
+		getInstalledUnitAddressBytes func(ctx context.Context) (map[byte]any, error)
+	}
+	tests := []struct {
+		name    string
+		fields  fields
+		args    args
+		want    []readWriteModel.UnitAddress
+		want1   bool
+		wantErr assert.ErrorAssertionFunc
+	}{
+		{
+			name: "one unit",
+			args: args{
+				ctx: context.Background(),
+				query: &unitInfoQuery{
+					unitAddress: readWriteModel.NewUnitAddress(2),
+				},
+			},
+			want:    []readWriteModel.UnitAddress{readWriteModel.NewUnitAddress(2)},
+			want1:   false,
+			wantErr: assert.NoError,
+		},
+		{
+			name: "all units error",
+			args: args{
+				ctx:   context.Background(),
+				query: &unitInfoQuery{},
+				getInstalledUnitAddressBytes: func(ctx context.Context) (map[byte]any, error) {
+					return nil, errors.New("not today")
+				},
+			},
+			wantErr: assert.Error,
+		},
+		{
+			name: "all units",
+			args: args{
+				ctx:   context.Background(),
+				query: &unitInfoQuery{},
+				getInstalledUnitAddressBytes: func(ctx context.Context) (map[byte]any, error) {
+					return map[byte]any{0xAF: true, 0xFE: true}, nil
+				},
+			},
+			want:    []readWriteModel.UnitAddress{readWriteModel.NewUnitAddress(0xAF), readWriteModel.NewUnitAddress(0xFE)},
+			want1:   true,
+			wantErr: assert.NoError,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			m := Browser{
+				DefaultBrowser:  tt.fields.DefaultBrowser,
+				connection:      tt.fields.connection,
+				sequenceCounter: tt.fields.sequenceCounter,
+			}
+			got, got1, err := m.extractUnits(tt.args.ctx, tt.args.query, tt.args.getInstalledUnitAddressBytes)
+			if !tt.wantErr(t, err, fmt.Sprintf("extractUnits(%v, \n%v, func())", tt.args.ctx, tt.args.query)) {
+				return
+			}
+			assert.Equalf(t, tt.want, got, "extractUnits(%v, \n%v, func())", tt.args.ctx, tt.args.query)
+			assert.Equalf(t, tt.want1, got1, "extractUnits(%v, \n%v, func())", tt.args.ctx, tt.args.query)
+		})
+	}
+}
+
+func TestBrowser_extractAttributes(t *testing.T) {
+	type fields struct {
+		DefaultBrowser  _default.DefaultBrowser
+		connection      plc4go.PlcConnection
+		sequenceCounter uint8
+	}
+	type args struct {
+		query *unitInfoQuery
+	}
+	tests := []struct {
+		name   string
+		fields fields
+		args   args
+		want   []readWriteModel.Attribute
+		want1  bool
+	}{
+		{
+			name: "one attribute",
+			args: args{
+				query: &unitInfoQuery{attribute: func() *readWriteModel.Attribute {
+					attributeType := readWriteModel.Attribute_Type
+					return &attributeType
+				}()},
+			},
+			want:  []readWriteModel.Attribute{readWriteModel.Attribute_Type},
+			want1: false,
+		},
+		{
+			name: "all attributes",
+			args: args{
+				query: &unitInfoQuery{},
+			},
+			want:  readWriteModel.AttributeValues,
+			want1: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			m := Browser{
+				DefaultBrowser:  tt.fields.DefaultBrowser,
+				connection:      tt.fields.connection,
+				sequenceCounter: tt.fields.sequenceCounter,
+			}
+			got, got1 := m.extractAttributes(tt.args.query)
+			assert.Equalf(t, tt.want, got, "extractAttributes(\n%v)", tt.args.query)
+			assert.Equalf(t, tt.want1, got1, "extractAttributes(\n%v)", tt.args.query)
 		})
 	}
 }
@@ -163,7 +311,7 @@ func TestBrowser_BrowseQuery(t *testing.T) {
 func TestBrowser_getInstalledUnitAddressBytes(t *testing.T) {
 	type fields struct {
 		DefaultBrowser  _default.DefaultBrowser
-		connection      spi.PlcConnection
+		connection      plc4go.PlcConnection
 		sequenceCounter uint8
 	}
 	type args struct {
@@ -180,7 +328,7 @@ func TestBrowser_getInstalledUnitAddressBytes(t *testing.T) {
 			name: "get units",
 			fields: fields{
 				DefaultBrowser: nil,
-				connection: func() spi.PlcConnection {
+				connection: func() plc4go.PlcConnection {
 					transport := test.NewTransport()
 					transportUrl := url.URL{Scheme: "test"}
 					transportInstance, err := transport.CreateTransportInstance(transportUrl, nil)
@@ -251,8 +399,7 @@ func TestBrowser_getInstalledUnitAddressBytes(t *testing.T) {
 						t.FailNow()
 						return nil
 					}
-					connection := connectionConnectResult.GetConnection()
-					return connection.(spi.PlcConnection)
+					return connectionConnectResult.GetConnection()
 				}(),
 				sequenceCounter: 0,
 			},
@@ -286,8 +433,4 @@ func TestBrowser_getInstalledUnitAddressBytes(t *testing.T) {
 			assert.Equalf(t, tt.want, got, "getInstalledUnitAddressBytes(%v)", tt.args.ctx)
 		})
 	}
-}
-
-func TestNewBrowser(t *testing.T) {
-	assert.NotNil(t, NewBrowser(nil))
 }

@@ -121,7 +121,7 @@ func NewBACnetConstructedDataChangeOfStateCount(changeIfStateCount BACnetApplica
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataChangeOfStateCount(structType interface{}) BACnetConstructedDataChangeOfStateCount {
+func CastBACnetConstructedDataChangeOfStateCount(structType any) BACnetConstructedDataChangeOfStateCount {
 	if casted, ok := structType.(BACnetConstructedDataChangeOfStateCount); ok {
 		return casted
 	}

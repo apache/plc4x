@@ -153,7 +153,7 @@ func NewBACnetNotificationParametersAccessEvent(innerOpeningTag BACnetOpeningTag
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetNotificationParametersAccessEvent(structType interface{}) BACnetNotificationParametersAccessEvent {
+func CastBACnetNotificationParametersAccessEvent(structType any) BACnetNotificationParametersAccessEvent {
 	if casted, ok := structType.(BACnetNotificationParametersAccessEvent); ok {
 		return casted
 	}

@@ -94,7 +94,7 @@ func NewBACnetLogDataLogDataEntryEnumeratedValue(enumeratedValue BACnetContextTa
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetLogDataLogDataEntryEnumeratedValue(structType interface{}) BACnetLogDataLogDataEntryEnumeratedValue {
+func CastBACnetLogDataLogDataEntryEnumeratedValue(structType any) BACnetLogDataLogDataEntryEnumeratedValue {
 	if casted, ok := structType.(BACnetLogDataLogDataEntryEnumeratedValue); ok {
 		return casted
 	}

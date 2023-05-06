@@ -40,7 +40,7 @@ public enum AdsTransMode {
     }
   }
 
-  private long value;
+  private final long value;
 
   AdsTransMode(long value) {
     this.value = value;

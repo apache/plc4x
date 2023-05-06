@@ -86,7 +86,7 @@ func NewBACnetConstructedDataOptional(openingTag BACnetOpeningTag, peekedTagHead
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataOptional(structType interface{}) BACnetConstructedDataOptional {
+func CastBACnetConstructedDataOptional(structType any) BACnetConstructedDataOptional {
 	if casted, ok := structType.(BACnetConstructedDataOptional); ok {
 		return casted
 	}

@@ -22,7 +22,6 @@ package model
 import (
 	"context"
 	"fmt"
-	spiContext "github.com/apache/plc4x/plc4go/spi/context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -105,7 +104,7 @@ func NewBACnetConstructedDataAccessAlarmEvents(accessAlarmEvents []BACnetAccessE
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataAccessAlarmEvents(structType interface{}) BACnetConstructedDataAccessAlarmEvents {
+func CastBACnetConstructedDataAccessAlarmEvents(structType any) BACnetConstructedDataAccessAlarmEvents {
 	if casted, ok := structType.(BACnetConstructedDataAccessAlarmEvents); ok {
 		return casted
 	}
@@ -206,7 +205,7 @@ func (m *_BACnetConstructedDataAccessAlarmEvents) SerializeWithWriteBuffer(ctx c
 		}
 		for _curItem, _element := range m.GetAccessAlarmEvents() {
 			_ = _curItem
-			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetAccessAlarmEvents()), _curItem)
+			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetAccessAlarmEvents()), _curItem)
 			_ = arrayCtx
 			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 			if _elementErr != nil {

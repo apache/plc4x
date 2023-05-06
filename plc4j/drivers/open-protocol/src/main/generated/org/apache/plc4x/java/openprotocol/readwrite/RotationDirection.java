@@ -36,7 +36,7 @@ public enum RotationDirection {
     }
   }
 
-  private short value;
+  private final short value;
 
   RotationDirection(short value) {
     this.value = value;

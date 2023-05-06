@@ -95,7 +95,7 @@ func NewMeteringDataDrinkingWaterConsumption(kL uint32, commandTypeContainer Met
 }
 
 // Deprecated: use the interface for direct cast
-func CastMeteringDataDrinkingWaterConsumption(structType interface{}) MeteringDataDrinkingWaterConsumption {
+func CastMeteringDataDrinkingWaterConsumption(structType any) MeteringDataDrinkingWaterConsumption {
 	if casted, ok := structType.(MeteringDataDrinkingWaterConsumption); ok {
 		return casted
 	}

@@ -46,7 +46,10 @@ func (m *Transport) GetTransportName() string {
 	return "Test Transport"
 }
 
-func (m *Transport) CreateTransportInstance(transportUrl url.URL, _ map[string][]string) (transports.TransportInstance, error) {
+func (m *Transport) CreateTransportInstance(transportUrl url.URL, options map[string][]string) (transports.TransportInstance, error) {
+	if _, ok := options["failTestTransport"]; ok {
+		return nil, errors.New("test transport failed on purpose")
+	}
 	if preregisteredInstance, ok := m.preregisteredInstances[transportUrl]; ok {
 		log.Trace().Msgf("Returning pre registered instance for %v", transportUrl)
 		return preregisteredInstance, nil
@@ -125,8 +128,8 @@ func (m *TransportInstance) FillBuffer(until func(pos uint, currentByte byte, re
 }
 
 func (m *TransportInstance) PeekReadableBytes(numBytes uint32) ([]byte, error) {
-	log.Trace().Msgf("Peek %d readable bytes", numBytes)
 	availableBytes := uint32(math.Min(float64(numBytes), float64(len(m.readBuffer))))
+	log.Trace().Msgf("Peek %d readable bytes (%d available bytes)", numBytes, availableBytes)
 	var err error
 	if availableBytes != numBytes {
 		err = errors.New("not enough bytes available")
@@ -134,7 +137,7 @@ func (m *TransportInstance) PeekReadableBytes(numBytes uint32) ([]byte, error) {
 	if availableBytes == 0 {
 		return nil, err
 	}
-	return m.readBuffer[0:availableBytes], nil
+	return m.readBuffer[0:availableBytes], err
 }
 
 func (m *TransportInstance) Read(numBytes uint32) ([]byte, error) {
@@ -152,13 +155,13 @@ func (m *TransportInstance) Write(data []byte) error {
 	if m.writeInterceptor != nil {
 		m.writeInterceptor(m, data)
 	}
-	log.Trace().Msgf("Write data 0x%x", data)
+	log.Trace().Msgf("Write data %#x", data)
 	m.writeBuffer = append(m.writeBuffer, data...)
 	return nil
 }
 
 func (m *TransportInstance) FillReadBuffer(data []byte) {
-	log.Trace().Msgf("FillReadBuffer with 0x%x", data)
+	log.Trace().Msgf("FillReadBuffer with %#x", data)
 	m.readBuffer = append(m.readBuffer, data...)
 }
 

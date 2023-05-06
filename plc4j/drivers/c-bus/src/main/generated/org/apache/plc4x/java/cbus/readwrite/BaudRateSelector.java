@@ -39,7 +39,7 @@ public enum BaudRateSelector {
     }
   }
 
-  private short value;
+  private final short value;
 
   BaudRateSelector(short value) {
     this.value = value;

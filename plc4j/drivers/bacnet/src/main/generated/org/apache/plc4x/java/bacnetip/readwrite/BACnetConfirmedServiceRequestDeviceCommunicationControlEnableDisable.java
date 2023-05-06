@@ -39,7 +39,7 @@ public enum BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable
     }
   }
 
-  private short value;
+  private final short value;
 
   BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable(short value) {
     this.value = value;

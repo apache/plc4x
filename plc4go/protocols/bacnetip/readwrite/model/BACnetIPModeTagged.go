@@ -80,7 +80,7 @@ func NewBACnetIPModeTagged(header BACnetTagHeader, value BACnetIPMode, tagNumber
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetIPModeTagged(structType interface{}) BACnetIPModeTagged {
+func CastBACnetIPModeTagged(structType any) BACnetIPModeTagged {
 	if casted, ok := structType.(BACnetIPModeTagged); ok {
 		return casted
 	}

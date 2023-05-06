@@ -104,7 +104,7 @@ func NewBACnetConfirmedServiceRequestAtomicReadFileStream(fileStartPosition BACn
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConfirmedServiceRequestAtomicReadFileStream(structType interface{}) BACnetConfirmedServiceRequestAtomicReadFileStream {
+func CastBACnetConfirmedServiceRequestAtomicReadFileStream(structType any) BACnetConfirmedServiceRequestAtomicReadFileStream {
 	if casted, ok := structType.(BACnetConfirmedServiceRequestAtomicReadFileStream); ok {
 		return casted
 	}

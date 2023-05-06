@@ -85,10 +85,10 @@ public enum KnxPropertyDataType {
     }
   }
 
-  private short value;
-  private short number;
-  private short sizeInBytes;
-  private String name;
+  private final short value;
+  private final short number;
+  private final short sizeInBytes;
+  private final String name;
 
   KnxPropertyDataType(short value, short number, short sizeInBytes, String name) {
     this.value = value;
@@ -115,7 +115,7 @@ public enum KnxPropertyDataType {
   }
 
   public static List<KnxPropertyDataType> enumsForFieldNumber(short fieldValue) {
-    List<KnxPropertyDataType> _values = new ArrayList();
+    List<KnxPropertyDataType> _values = new ArrayList<>();
     for (KnxPropertyDataType _val : KnxPropertyDataType.values()) {
       if (_val.getNumber() == fieldValue) {
         _values.add(_val);
@@ -138,7 +138,7 @@ public enum KnxPropertyDataType {
   }
 
   public static List<KnxPropertyDataType> enumsForFieldSizeInBytes(short fieldValue) {
-    List<KnxPropertyDataType> _values = new ArrayList();
+    List<KnxPropertyDataType> _values = new ArrayList<>();
     for (KnxPropertyDataType _val : KnxPropertyDataType.values()) {
       if (_val.getSizeInBytes() == fieldValue) {
         _values.add(_val);
@@ -161,7 +161,7 @@ public enum KnxPropertyDataType {
   }
 
   public static List<KnxPropertyDataType> enumsForFieldName(String fieldValue) {
-    List<KnxPropertyDataType> _values = new ArrayList();
+    List<KnxPropertyDataType> _values = new ArrayList<>();
     for (KnxPropertyDataType _val : KnxPropertyDataType.values()) {
       if (_val.getName().equals(fieldValue)) {
         _values.add(_val);

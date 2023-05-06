@@ -95,7 +95,7 @@ func NewCALDataIdentify(attribute Attribute, commandTypeContainer CALCommandType
 }
 
 // Deprecated: use the interface for direct cast
-func CastCALDataIdentify(structType interface{}) CALDataIdentify {
+func CastCALDataIdentify(structType any) CALDataIdentify {
 	if casted, ok := structType.(CALDataIdentify); ok {
 		return casted
 	}

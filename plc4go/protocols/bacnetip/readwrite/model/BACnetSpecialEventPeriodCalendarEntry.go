@@ -94,7 +94,7 @@ func NewBACnetSpecialEventPeriodCalendarEntry(calendarEntry BACnetCalendarEntryE
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetSpecialEventPeriodCalendarEntry(structType interface{}) BACnetSpecialEventPeriodCalendarEntry {
+func CastBACnetSpecialEventPeriodCalendarEntry(structType any) BACnetSpecialEventPeriodCalendarEntry {
 	if casted, ok := structType.(BACnetSpecialEventPeriodCalendarEntry); ok {
 		return casted
 	}

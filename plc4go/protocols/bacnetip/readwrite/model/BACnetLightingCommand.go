@@ -105,7 +105,7 @@ func NewBACnetLightingCommand(lightningOperation BACnetLightingOperationTagged, 
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetLightingCommand(structType interface{}) BACnetLightingCommand {
+func CastBACnetLightingCommand(structType any) BACnetLightingCommand {
 	if casted, ok := structType.(BACnetLightingCommand); ok {
 		return casted
 	}

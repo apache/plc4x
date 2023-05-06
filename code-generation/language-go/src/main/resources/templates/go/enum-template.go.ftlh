@@ -63,6 +63,7 @@ type ${type.name} ${baseType}
 
 type I${type.name} interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 <#if type.constantNames?has_content>
 	<#list type.constantNames as constantName>
@@ -158,8 +159,8 @@ func ${type.name}Knows(value <#if type.type.isPresent()>${helper.getLanguageType
 	return false;
 }
 
-func Cast${type.name}(structType interface{}) ${type.name} {
-	castFunc := func(typ interface{}) ${type.name} {
+func Cast${type.name}(structType any) ${type.name} {
+	castFunc := func(typ any) ${type.name} {
 		if s${type.name}, ok := typ.(${type.name}); ok {
 			return s${type.name}
 		}

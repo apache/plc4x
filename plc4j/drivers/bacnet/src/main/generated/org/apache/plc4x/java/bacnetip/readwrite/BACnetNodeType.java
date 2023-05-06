@@ -55,7 +55,7 @@ public enum BACnetNodeType {
     }
   }
 
-  private short value;
+  private final short value;
 
   BACnetNodeType(short value) {
     this.value = value;

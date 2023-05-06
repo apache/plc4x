@@ -94,7 +94,7 @@ func NewBACnetPriorityValueObjectidentifier(objectidentifierValue BACnetApplicat
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetPriorityValueObjectidentifier(structType interface{}) BACnetPriorityValueObjectidentifier {
+func CastBACnetPriorityValueObjectidentifier(structType any) BACnetPriorityValueObjectidentifier {
 	if casted, ok := structType.(BACnetPriorityValueObjectidentifier); ok {
 		return casted
 	}

@@ -65,7 +65,7 @@ public class RandomPackagesTest {
 
     public static final String BACNET_BPF_FILTER_UDP = "udp port 47808";
 
-    Queue<Closeable> toBeClosed = new ConcurrentLinkedDeque<>();
+    final Queue<Closeable> toBeClosed = new ConcurrentLinkedDeque<>();
 
     @AfterEach
     void closeStuff() {
@@ -6136,11 +6136,11 @@ public class RandomPackagesTest {
     }
 
     static class SkipInstruction {
-        int packageNumber;
+        final int packageNumber;
 
-        SkipType skipType;
+        final SkipType skipType;
 
-        String reason;
+        final String reason;
 
         SkipInstruction(int packageNumber, SkipType skipType, String reason) {
             this.packageNumber = packageNumber;

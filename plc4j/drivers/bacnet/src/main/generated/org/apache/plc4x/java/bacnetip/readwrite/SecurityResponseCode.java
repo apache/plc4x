@@ -59,7 +59,7 @@ public enum SecurityResponseCode {
     }
   }
 
-  private short value;
+  private final short value;
 
   SecurityResponseCode(short value) {
     this.value = value;

@@ -42,7 +42,7 @@ public enum ModeTransitionType {
     }
   }
 
-  private short value;
+  private final short value;
 
   ModeTransitionType(short value) {
     this.value = value;

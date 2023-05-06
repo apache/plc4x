@@ -59,7 +59,7 @@ public enum TsnFailureCode {
     }
   }
 
-  private long value;
+  private final long value;
 
   TsnFailureCode(long value) {
     this.value = value;

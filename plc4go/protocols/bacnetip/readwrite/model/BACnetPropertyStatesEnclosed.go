@@ -86,7 +86,7 @@ func NewBACnetPropertyStatesEnclosed(openingTag BACnetOpeningTag, propertyState 
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetPropertyStatesEnclosed(structType interface{}) BACnetPropertyStatesEnclosed {
+func CastBACnetPropertyStatesEnclosed(structType any) BACnetPropertyStatesEnclosed {
 	if casted, ok := structType.(BACnetPropertyStatesEnclosed); ok {
 		return casted
 	}

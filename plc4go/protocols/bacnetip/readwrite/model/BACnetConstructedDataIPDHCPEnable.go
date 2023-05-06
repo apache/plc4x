@@ -121,7 +121,7 @@ func NewBACnetConstructedDataIPDHCPEnable(ipDhcpEnable BACnetApplicationTagBoole
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataIPDHCPEnable(structType interface{}) BACnetConstructedDataIPDHCPEnable {
+func CastBACnetConstructedDataIPDHCPEnable(structType any) BACnetConstructedDataIPDHCPEnable {
 	if casted, ok := structType.(BACnetConstructedDataIPDHCPEnable); ok {
 		return casted
 	}

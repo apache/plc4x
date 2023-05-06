@@ -93,7 +93,7 @@ func NewSALData(salData SALData) *_SALData {
 }
 
 // Deprecated: use the interface for direct cast
-func CastSALData(structType interface{}) SALData {
+func CastSALData(structType any) SALData {
 	if casted, ok := structType.(SALData); ok {
 		return casted
 	}
@@ -141,7 +141,7 @@ func SALDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, ap
 		InitializeParent(SALData, SALData)
 		GetParent() SALData
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child SALDataChildSerializeRequirement
 	var typeSwitchError error
 	switch {

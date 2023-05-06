@@ -82,7 +82,7 @@ func NewSysexCommandCapabilityResponse() *_SysexCommandCapabilityResponse {
 }
 
 // Deprecated: use the interface for direct cast
-func CastSysexCommandCapabilityResponse(structType interface{}) SysexCommandCapabilityResponse {
+func CastSysexCommandCapabilityResponse(structType any) SysexCommandCapabilityResponse {
 	if casted, ok := structType.(SysexCommandCapabilityResponse); ok {
 		return casted
 	}

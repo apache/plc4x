@@ -69,7 +69,7 @@ func NewSerialInterfaceAddress(address byte) *_SerialInterfaceAddress {
 }
 
 // Deprecated: use the interface for direct cast
-func CastSerialInterfaceAddress(structType interface{}) SerialInterfaceAddress {
+func CastSerialInterfaceAddress(structType any) SerialInterfaceAddress {
 	if casted, ok := structType.(SerialInterfaceAddress); ok {
 		return casted
 	}

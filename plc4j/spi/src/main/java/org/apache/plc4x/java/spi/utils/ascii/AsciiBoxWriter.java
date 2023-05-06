@@ -33,10 +33,10 @@ public class AsciiBoxWriter {
 
     private final Logger LOGGER = LoggerFactory.getLogger(AsciiBoxWriter.class);
 
-    public static AsciiBoxWriter DEFAULT = new AsciiBoxWriter();
+    public static final AsciiBoxWriter DEFAULT = new AsciiBoxWriter();
 
     //public static AsciiBoxWriter LIGHT = new AsciiBoxWriter("┌","┐","┄","┆","└","┘");
-    public static AsciiBoxWriter LIGHT = new AsciiBoxWriter("╭", "╮", "┄", "┆", "╰", "╯");
+    public static final AsciiBoxWriter LIGHT = new AsciiBoxWriter("╭", "╮", "┄", "┆", "╰", "╯");
 
     final BoxSet boxSet;
 

@@ -33,6 +33,7 @@ type MeteringCommandType uint8
 
 type IMeteringCommandType interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 	NumberOfArguments() uint8
 }
@@ -96,8 +97,8 @@ func MeteringCommandTypeKnows(value uint8) bool {
 	return false
 }
 
-func CastMeteringCommandType(structType interface{}) MeteringCommandType {
-	castFunc := func(typ interface{}) MeteringCommandType {
+func CastMeteringCommandType(structType any) MeteringCommandType {
+	castFunc := func(typ any) MeteringCommandType {
 		if sMeteringCommandType, ok := typ.(MeteringCommandType); ok {
 			return sMeteringCommandType
 		}

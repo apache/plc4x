@@ -97,7 +97,7 @@ func NewFirmataMessageCommand(command FirmataCommand, response bool) *_FirmataMe
 }
 
 // Deprecated: use the interface for direct cast
-func CastFirmataMessageCommand(structType interface{}) FirmataMessageCommand {
+func CastFirmataMessageCommand(structType any) FirmataMessageCommand {
 	if casted, ok := structType.(FirmataMessageCommand); ok {
 		return casted
 	}

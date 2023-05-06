@@ -121,7 +121,7 @@ func NewBACnetConstructedDataAPDULength(apduLength BACnetApplicationTagUnsignedI
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataAPDULength(structType interface{}) BACnetConstructedDataAPDULength {
+func CastBACnetConstructedDataAPDULength(structType any) BACnetConstructedDataAPDULength {
 	if casted, ok := structType.(BACnetConstructedDataAPDULength); ok {
 		return casted
 	}

@@ -20,10 +20,10 @@ package org.apache.plc4x.java.api.exceptions;
 
 public class PlcProtocolPayloadTooBigException extends PlcProtocolException {
 
-    private String protocolName;
-    private int maxSize;
-    private int actualSize;
-    private transient Object payload;
+    private final String protocolName;
+    private final int maxSize;
+    private final int actualSize;
+    private final transient Object payload;
 
     public PlcProtocolPayloadTooBigException(String protocolName, int maxSize, int actualSize, Object payload) {
         super("Payload for protocol '" + protocolName + "' with size " + actualSize +

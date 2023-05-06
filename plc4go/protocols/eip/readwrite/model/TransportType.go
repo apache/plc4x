@@ -83,7 +83,7 @@ func NewTransportType(direction bool, trigger uint8, classTransport uint8) *_Tra
 }
 
 // Deprecated: use the interface for direct cast
-func CastTransportType(structType interface{}) TransportType {
+func CastTransportType(structType any) TransportType {
 	if casted, ok := structType.(TransportType); ok {
 		return casted
 	}

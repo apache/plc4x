@@ -25,7 +25,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 public class CompositeCallback implements Callback {
 
-    private List<Callback> callbacks = new CopyOnWriteArrayList<>();
+    private final List<Callback> callbacks = new CopyOnWriteArrayList<>();
 
     @Override
     public void receive(CANOpenFrame frame) {

@@ -33,6 +33,7 @@ type ReturnCode uint32
 
 type IReturnCode interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 
@@ -800,8 +801,8 @@ func ReturnCodeKnows(value uint32) bool {
 	return false
 }
 
-func CastReturnCode(structType interface{}) ReturnCode {
-	castFunc := func(typ interface{}) ReturnCode {
+func CastReturnCode(structType any) ReturnCode {
+	castFunc := func(typ any) ReturnCode {
 		if sReturnCode, ok := typ.(ReturnCode); ok {
 			return sReturnCode
 		}

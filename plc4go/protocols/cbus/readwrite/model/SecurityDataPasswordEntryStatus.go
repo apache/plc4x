@@ -144,7 +144,7 @@ func NewSecurityDataPasswordEntryStatus(code byte, commandTypeContainer Security
 }
 
 // Deprecated: use the interface for direct cast
-func CastSecurityDataPasswordEntryStatus(structType interface{}) SecurityDataPasswordEntryStatus {
+func CastSecurityDataPasswordEntryStatus(structType any) SecurityDataPasswordEntryStatus {
 	if casted, ok := structType.(SecurityDataPasswordEntryStatus); ok {
 		return casted
 	}

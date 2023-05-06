@@ -36,8 +36,8 @@ public enum EnableControlCommandType {
     }
   }
 
-  private byte value;
-  private short numberOfArguments;
+  private final byte value;
+  private final short numberOfArguments;
 
   EnableControlCommandType(byte value, short numberOfArguments) {
     this.value = value;
@@ -62,7 +62,7 @@ public enum EnableControlCommandType {
   }
 
   public static List<EnableControlCommandType> enumsForFieldNumberOfArguments(short fieldValue) {
-    List<EnableControlCommandType> _values = new ArrayList();
+    List<EnableControlCommandType> _values = new ArrayList<>();
     for (EnableControlCommandType _val : EnableControlCommandType.values()) {
       if (_val.getNumberOfArguments() == fieldValue) {
         _values.add(_val);

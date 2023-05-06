@@ -121,7 +121,7 @@ func NewBACnetConstructedDataDoNotHide(doNotHide BACnetApplicationTagBoolean, op
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataDoNotHide(structType interface{}) BACnetConstructedDataDoNotHide {
+func CastBACnetConstructedDataDoNotHide(structType any) BACnetConstructedDataDoNotHide {
 	if casted, ok := structType.(BACnetConstructedDataDoNotHide); ok {
 		return casted
 	}

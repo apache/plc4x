@@ -78,7 +78,7 @@ func NewLRawInd(size uint16) *_LRawInd {
 }
 
 // Deprecated: use the interface for direct cast
-func CastLRawInd(structType interface{}) LRawInd {
+func CastLRawInd(structType any) LRawInd {
 	if casted, ok := structType.(LRawInd); ok {
 		return casted
 	}

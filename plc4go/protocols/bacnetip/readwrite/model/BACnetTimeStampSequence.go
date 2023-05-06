@@ -94,7 +94,7 @@ func NewBACnetTimeStampSequence(sequenceNumber BACnetContextTagUnsignedInteger, 
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetTimeStampSequence(structType interface{}) BACnetTimeStampSequence {
+func CastBACnetTimeStampSequence(structType any) BACnetTimeStampSequence {
 	if casted, ok := structType.(BACnetTimeStampSequence); ok {
 		return casted
 	}

@@ -179,7 +179,7 @@ type MMIMonitorTag interface {
 	GetApplication() *readWriteModel.ApplicationIdContainer
 }
 
-func NewMMIMonitorTag(unitAddress readWriteModel.UnitAddress, application *readWriteModel.ApplicationIdContainer, numElements uint16) SALMonitorTag {
+func NewMMIMonitorTag(unitAddress readWriteModel.UnitAddress, application *readWriteModel.ApplicationIdContainer, numElements uint16) MMIMonitorTag {
 	return &mmiMonitorTag{
 		tagType:     MMI_STATUS_MONITOR,
 		unitAddress: unitAddress,
@@ -270,7 +270,11 @@ func (s statusTag) GetAddressString() string {
 		statusRequestType = "binary"
 	case StatusRequestTypeLevel:
 		statusRequestType = "level"
-		statusRequestType += fmt.Sprintf("=0x%x", *s.startingGroupAddressLabel)
+		if s.startingGroupAddressLabel != nil {
+			statusRequestType += fmt.Sprintf("=%#02x", *s.startingGroupAddressLabel)
+		}
+	default:
+		statusRequestType = "invalid"
 	}
 	return fmt.Sprintf("status/%s/%s", statusRequestType, s.application)
 }
@@ -282,7 +286,7 @@ func (s statusTag) GetValueType() apiValues.PlcValueType {
 func (s statusTag) GetArrayInfo() []apiModel.ArrayInfo {
 	if s.numElements != 1 {
 		return []apiModel.ArrayInfo{
-			spiModel.DefaultArrayInfo{
+			&spiModel.DefaultArrayInfo{
 				LowerBound: 0,
 				UpperBound: uint32(s.numElements),
 			},
@@ -423,7 +427,7 @@ func (c calRecallTag) GetValueType() apiValues.PlcValueType {
 func (c calRecallTag) GetArrayInfo() []apiModel.ArrayInfo {
 	if c.count != 1 {
 		return []apiModel.ArrayInfo{
-			spiModel.DefaultArrayInfo{
+			&spiModel.DefaultArrayInfo{
 				LowerBound: 0,
 				UpperBound: uint32(c.count),
 			},
@@ -490,7 +494,7 @@ func (c calIdentifyTag) GetValueType() apiValues.PlcValueType {
 func (c calIdentifyTag) GetArrayInfo() []apiModel.ArrayInfo {
 	if c.numElements != 1 {
 		return []apiModel.ArrayInfo{
-			spiModel.DefaultArrayInfo{
+			&spiModel.DefaultArrayInfo{
 				LowerBound: 0,
 				UpperBound: uint32(c.numElements),
 			},
@@ -557,7 +561,7 @@ func (c calGetStatusTag) GetValueType() apiValues.PlcValueType {
 func (c calGetStatusTag) GetArrayInfo() []apiModel.ArrayInfo {
 	if c.count != 1 {
 		return []apiModel.ArrayInfo{
-			spiModel.DefaultArrayInfo{
+			&spiModel.DefaultArrayInfo{
 				LowerBound: 0,
 				UpperBound: uint32(c.count),
 			},
@@ -632,7 +636,7 @@ func (s salTag) GetValueType() apiValues.PlcValueType {
 func (s salTag) GetArrayInfo() []apiModel.ArrayInfo {
 	if s.numElements != 1 {
 		return []apiModel.ArrayInfo{
-			spiModel.DefaultArrayInfo{
+			&spiModel.DefaultArrayInfo{
 				LowerBound: 0,
 				UpperBound: uint32(s.numElements),
 			},
@@ -697,11 +701,11 @@ func (s salTag) String() string {
 func (s salMonitorTag) GetAddressString() string {
 	unitAddress := "*"
 	if s.unitAddress != nil {
-		unitAddress = fmt.Sprintf("%d", s.unitAddress.GetAddress())
+		unitAddress = fmt.Sprintf("%#02x", s.unitAddress.GetAddress())
 	}
 	application := "*"
 	if s.application != nil {
-		application = fmt.Sprintf("%d", *s.application)
+		application = fmt.Sprintf("%s", *s.application)
 	}
 	return fmt.Sprintf("salmonitor/%s/%s", unitAddress, application)
 }
@@ -713,7 +717,7 @@ func (s salMonitorTag) GetValueType() apiValues.PlcValueType {
 func (s salMonitorTag) GetArrayInfo() []apiModel.ArrayInfo {
 	if s.numElements != 1 {
 		return []apiModel.ArrayInfo{
-			spiModel.DefaultArrayInfo{
+			&spiModel.DefaultArrayInfo{
 				LowerBound: 0,
 				UpperBound: uint32(s.numElements),
 			},
@@ -775,11 +779,11 @@ func (s salMonitorTag) String() string {
 func (m mmiMonitorTag) GetAddressString() string {
 	unitAddress := "*"
 	if m.unitAddress != nil {
-		unitAddress = fmt.Sprintf("%d", m.unitAddress.GetAddress())
+		unitAddress = fmt.Sprintf("%#02x", m.unitAddress.GetAddress())
 	}
 	application := "*"
 	if m.application != nil {
-		application = fmt.Sprintf("%d", *m.application)
+		application = fmt.Sprintf("%s", *m.application)
 	}
 	return fmt.Sprintf("mmimonitor/%s/%s", unitAddress, application)
 }
@@ -791,7 +795,7 @@ func (m mmiMonitorTag) GetValueType() apiValues.PlcValueType {
 func (m mmiMonitorTag) GetArrayInfo() []apiModel.ArrayInfo {
 	if m.numElements != 1 {
 		return []apiModel.ArrayInfo{
-			spiModel.DefaultArrayInfo{
+			&spiModel.DefaultArrayInfo{
 				LowerBound: 0,
 				UpperBound: uint32(m.numElements),
 			},

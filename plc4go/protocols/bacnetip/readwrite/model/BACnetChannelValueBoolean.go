@@ -94,7 +94,7 @@ func NewBACnetChannelValueBoolean(booleanValue BACnetApplicationTagBoolean, peek
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetChannelValueBoolean(structType interface{}) BACnetChannelValueBoolean {
+func CastBACnetChannelValueBoolean(structType any) BACnetChannelValueBoolean {
 	if casted, ok := structType.(BACnetChannelValueBoolean); ok {
 		return casted
 	}

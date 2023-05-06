@@ -20,26 +20,22 @@
 package model
 
 import (
-	"context"
-	"encoding/binary"
-	"fmt"
-
-	"github.com/apache/plc4x/plc4go/pkg/api/model"
-	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
+
+	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 )
 
+//go:generate go run ../../tools/plc4xgenerator/gen.go -type=DefaultPlcSubscriptionResponse
 type DefaultPlcSubscriptionResponse struct {
-	DefaultResponse
-	request model.PlcSubscriptionRequest
+	request apiModel.PlcSubscriptionRequest
 	values  map[string]*DefaultPlcSubscriptionResponseItem
 }
 
-func NewDefaultPlcSubscriptionResponse(request model.PlcSubscriptionRequest, responseCodes map[string]model.PlcResponseCode, values map[string]model.PlcSubscriptionHandle) *DefaultPlcSubscriptionResponse {
+func NewDefaultPlcSubscriptionResponse(request apiModel.PlcSubscriptionRequest, responseCodes map[string]apiModel.PlcResponseCode, values map[string]apiModel.PlcSubscriptionHandle) apiModel.PlcSubscriptionResponse {
 	valueMap := map[string]*DefaultPlcSubscriptionResponseItem{}
 	for name, code := range responseCodes {
 		value := values[name]
-		valueMap[name] = NewSubscriptionResponseItem(code, value)
+		valueMap[name] = NewDefaultPlcSubscriptionResponseItem(code, value)
 	}
 	plcSubscriptionResponse := DefaultPlcSubscriptionResponse{
 		request: request,
@@ -57,14 +53,22 @@ func NewDefaultPlcSubscriptionResponse(request model.PlcSubscriptionRequest, res
 	return &plcSubscriptionResponse
 }
 
-func (d *DefaultPlcSubscriptionResponse) GetRequest() model.PlcSubscriptionRequest {
+func (d *DefaultPlcSubscriptionResponse) IsAPlcMessage() bool {
+	return true
+}
+
+func (d *DefaultPlcSubscriptionResponse) GetRequest() apiModel.PlcSubscriptionRequest {
 	return d.request
 }
 
 func (d *DefaultPlcSubscriptionResponse) GetTagNames() []string {
+	if d.request == nil {
+		// Safety guard
+		return nil
+	}
 	var tagNames []string
 	// We take the tag names from the request to keep order as map is not ordered
-	for _, name := range d.request.(*DefaultPlcSubscriptionRequest).GetTagNames() {
+	for _, name := range d.request.GetTagNames() {
 		if _, ok := d.values[name]; ok {
 			tagNames = append(tagNames, name)
 		}
@@ -72,79 +76,21 @@ func (d *DefaultPlcSubscriptionResponse) GetTagNames() []string {
 	return tagNames
 }
 
-func (d *DefaultPlcSubscriptionResponse) GetResponseCode(name string) model.PlcResponseCode {
+func (d *DefaultPlcSubscriptionResponse) GetResponseCode(name string) apiModel.PlcResponseCode {
 	return d.values[name].GetCode()
 }
 
-func (d *DefaultPlcSubscriptionResponse) GetSubscriptionHandle(name string) (model.PlcSubscriptionHandle, error) {
-	if d.values[name].GetCode() != model.PlcResponseCode_OK {
+func (d *DefaultPlcSubscriptionResponse) GetSubscriptionHandle(name string) (apiModel.PlcSubscriptionHandle, error) {
+	if d.values[name].GetCode() != apiModel.PlcResponseCode_OK {
 		return nil, errors.Errorf("%s failed to subscribe", name)
 	}
 	return d.values[name].GetSubscriptionHandle(), nil
 }
 
-func (d *DefaultPlcSubscriptionResponse) GetSubscriptionHandles() []model.PlcSubscriptionHandle {
-	result := make([]model.PlcSubscriptionHandle, 0, len(d.values))
+func (d *DefaultPlcSubscriptionResponse) GetSubscriptionHandles() []apiModel.PlcSubscriptionHandle {
+	result := make([]apiModel.PlcSubscriptionHandle, 0, len(d.values))
 	for _, value := range d.values {
 		result = append(result, value.GetSubscriptionHandle())
 	}
 	return result
-}
-
-func (d *DefaultPlcSubscriptionResponse) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
-	if err := d.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
-		return nil, err
-	}
-	return wb.GetBytes(), nil
-}
-
-func (d *DefaultPlcSubscriptionResponse) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
-	if err := writeBuffer.PushContext("PlcSubscriptionResponse"); err != nil {
-		return err
-	}
-
-	if d.request != nil {
-		if serializableField, ok := d.request.(utils.Serializable); ok {
-			if err := writeBuffer.PushContext("request"); err != nil {
-				return err
-			}
-			if err := serializableField.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
-				return err
-			}
-			if err := writeBuffer.PopContext("request"); err != nil {
-				return err
-			}
-		} else {
-			stringValue := fmt.Sprintf("%v", d.request)
-			if err := writeBuffer.WriteString("request", uint32(len(stringValue)*8), "UTF-8", stringValue); err != nil {
-				return err
-			}
-		}
-	}
-	if err := writeBuffer.PushContext("values", utils.WithRenderAsList(true)); err != nil {
-		return err
-	}
-	for name, elem := range d.values {
-		_value := fmt.Sprintf("%v", elem)
-
-		if err := writeBuffer.WriteString(name, uint32(len(_value)*8), "UTF-8", _value); err != nil {
-			return err
-		}
-	}
-	if err := writeBuffer.PopContext("values", utils.WithRenderAsList(true)); err != nil {
-		return err
-	}
-	if err := writeBuffer.PopContext("PlcSubscriptionResponse"); err != nil {
-		return err
-	}
-	return nil
-}
-
-func (d *DefaultPlcSubscriptionResponse) String() string {
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), d); err != nil {
-		return err.Error()
-	}
-	return writeBuffer.GetBox().String()
 }

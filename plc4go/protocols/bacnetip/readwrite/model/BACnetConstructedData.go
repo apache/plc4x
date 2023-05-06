@@ -131,7 +131,7 @@ func NewBACnetConstructedData(openingTag BACnetOpeningTag, peekedTagHeader BACne
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedData(structType interface{}) BACnetConstructedData {
+func CastBACnetConstructedData(structType any) BACnetConstructedData {
 	if casted, ok := structType.(BACnetConstructedData); ok {
 		return casted
 	}
@@ -208,7 +208,7 @@ func BACnetConstructedDataParseWithBuffer(ctx context.Context, readBuffer utils.
 		InitializeParent(BACnetConstructedData, BACnetOpeningTag, BACnetTagHeader, BACnetClosingTag)
 		GetParent() BACnetConstructedData
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child BACnetConstructedDataChildSerializeRequirement
 	var typeSwitchError error
 	switch {

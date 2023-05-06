@@ -97,7 +97,7 @@ func NewRequestNull(peekedByte RequestType, startingCR *RequestType, resetMode *
 }
 
 // Deprecated: use the interface for direct cast
-func CastRequestNull(structType interface{}) RequestNull {
+func CastRequestNull(structType any) RequestNull {
 	if casted, ok := structType.(RequestNull); ok {
 		return casted
 	}

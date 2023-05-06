@@ -94,7 +94,7 @@ public enum BACnetObjectType {
     }
   }
 
-  private int value;
+  private final int value;
 
   BACnetObjectType(int value) {
     this.value = value;

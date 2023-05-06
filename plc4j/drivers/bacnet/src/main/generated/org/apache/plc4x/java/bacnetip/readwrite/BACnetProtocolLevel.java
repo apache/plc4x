@@ -37,7 +37,7 @@ public enum BACnetProtocolLevel {
     }
   }
 
-  private short value;
+  private final short value;
 
   BACnetProtocolLevel(short value) {
     this.value = value;

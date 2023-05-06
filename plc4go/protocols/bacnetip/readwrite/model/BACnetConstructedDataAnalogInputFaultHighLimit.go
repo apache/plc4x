@@ -121,7 +121,7 @@ func NewBACnetConstructedDataAnalogInputFaultHighLimit(faultHighLimit BACnetAppl
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataAnalogInputFaultHighLimit(structType interface{}) BACnetConstructedDataAnalogInputFaultHighLimit {
+func CastBACnetConstructedDataAnalogInputFaultHighLimit(structType any) BACnetConstructedDataAnalogInputFaultHighLimit {
 	if casted, ok := structType.(BACnetConstructedDataAnalogInputFaultHighLimit); ok {
 		return casted
 	}

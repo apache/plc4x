@@ -97,7 +97,7 @@ func NewBACnetConfirmedServiceRequestDeleteObject(objectIdentifier BACnetApplica
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConfirmedServiceRequestDeleteObject(structType interface{}) BACnetConfirmedServiceRequestDeleteObject {
+func CastBACnetConfirmedServiceRequestDeleteObject(structType any) BACnetConfirmedServiceRequestDeleteObject {
 	if casted, ok := structType.(BACnetConfirmedServiceRequestDeleteObject); ok {
 		return casted
 	}

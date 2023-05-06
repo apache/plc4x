@@ -39,7 +39,7 @@ public enum ConfirmationType {
     }
   }
 
-  private byte value;
+  private final byte value;
 
   ConfirmationType(byte value) {
     this.value = value;

@@ -96,7 +96,7 @@ func NewParameterValueInterfaceOptions1PowerUpSettings(value InterfaceOptions1Po
 }
 
 // Deprecated: use the interface for direct cast
-func CastParameterValueInterfaceOptions1PowerUpSettings(structType interface{}) ParameterValueInterfaceOptions1PowerUpSettings {
+func CastParameterValueInterfaceOptions1PowerUpSettings(structType any) ParameterValueInterfaceOptions1PowerUpSettings {
 	if casted, ok := structType.(ParameterValueInterfaceOptions1PowerUpSettings); ok {
 		return casted
 	}

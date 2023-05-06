@@ -42,6 +42,7 @@ public abstract class OpenProtocolMessageApplicationGenericUnsubscribe extends O
   public Mid getMid() {
     return Mid.ApplicationGenericUnsubscribe;
   }
+
   // Abstract accessors for discriminator values.
   public abstract Long getRevision();
 

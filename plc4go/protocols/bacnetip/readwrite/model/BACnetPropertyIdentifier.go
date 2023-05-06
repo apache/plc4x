@@ -33,6 +33,7 @@ type BACnetPropertyIdentifier uint32
 
 type IBACnetPropertyIdentifier interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 
@@ -2816,8 +2817,8 @@ func BACnetPropertyIdentifierKnows(value uint32) bool {
 	return false
 }
 
-func CastBACnetPropertyIdentifier(structType interface{}) BACnetPropertyIdentifier {
-	castFunc := func(typ interface{}) BACnetPropertyIdentifier {
+func CastBACnetPropertyIdentifier(structType any) BACnetPropertyIdentifier {
+	castFunc := func(typ any) BACnetPropertyIdentifier {
 		if sBACnetPropertyIdentifier, ok := typ.(BACnetPropertyIdentifier); ok {
 			return sBACnetPropertyIdentifier
 		}

@@ -125,7 +125,7 @@ func NewS7Message(tpduReference uint16, parameter S7Parameter, payload S7Payload
 }
 
 // Deprecated: use the interface for direct cast
-func CastS7Message(structType interface{}) S7Message {
+func CastS7Message(structType any) S7Message {
 	if casted, ok := structType.(S7Message); ok {
 		return casted
 	}
@@ -212,7 +212,7 @@ func S7MessageParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) 
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of S7Message")
 		}
 		if reserved != uint16(0x0000) {
-			Plc4xModelLog.Info().Fields(map[string]interface{}{
+			Plc4xModelLog.Info().Fields(map[string]any{
 				"expected value": uint16(0x0000),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
@@ -248,7 +248,7 @@ func S7MessageParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) 
 		InitializeParent(S7Message, uint16, S7Parameter, S7Payload)
 		GetParent() S7Message
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child S7MessageChildSerializeRequirement
 	var typeSwitchError error
 	switch {
@@ -350,7 +350,7 @@ func (pm *_S7Message) SerializeParent(ctx context.Context, writeBuffer utils.Wri
 	{
 		var reserved uint16 = uint16(0x0000)
 		if pm.reservedField0 != nil {
-			Plc4xModelLog.Info().Fields(map[string]interface{}{
+			Plc4xModelLog.Info().Fields(map[string]any{
 				"expected value": uint16(0x0000),
 				"got value":      reserved,
 			}).Msg("Overriding reserved field with unexpected value.")
@@ -370,14 +370,14 @@ func (pm *_S7Message) SerializeParent(ctx context.Context, writeBuffer utils.Wri
 	}
 
 	// Implicit Field (parameterLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	parameterLength := uint16(utils.InlineIf(bool((m.GetParameter()) != (nil)), func() interface{} { return uint16((m.GetParameter()).GetLengthInBytes(ctx)) }, func() interface{} { return uint16(uint16(0)) }).(uint16))
+	parameterLength := uint16(utils.InlineIf(bool((m.GetParameter()) != (nil)), func() any { return uint16((m.GetParameter()).GetLengthInBytes(ctx)) }, func() any { return uint16(uint16(0)) }).(uint16))
 	_parameterLengthErr := writeBuffer.WriteUint16("parameterLength", 16, (parameterLength))
 	if _parameterLengthErr != nil {
 		return errors.Wrap(_parameterLengthErr, "Error serializing 'parameterLength' field")
 	}
 
 	// Implicit Field (payloadLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	payloadLength := uint16(utils.InlineIf(bool((m.GetPayload()) != (nil)), func() interface{} { return uint16((m.GetPayload()).GetLengthInBytes(ctx)) }, func() interface{} { return uint16(uint16(0)) }).(uint16))
+	payloadLength := uint16(utils.InlineIf(bool((m.GetPayload()) != (nil)), func() any { return uint16((m.GetPayload()).GetLengthInBytes(ctx)) }, func() any { return uint16(uint16(0)) }).(uint16))
 	_payloadLengthErr := writeBuffer.WriteUint16("payloadLength", 16, (payloadLength))
 	if _payloadLengthErr != nil {
 		return errors.Wrap(_payloadLengthErr, "Error serializing 'payloadLength' field")

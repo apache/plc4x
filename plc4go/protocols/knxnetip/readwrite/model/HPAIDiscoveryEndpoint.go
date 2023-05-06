@@ -83,7 +83,7 @@ func NewHPAIDiscoveryEndpoint(hostProtocolCode HostProtocolCode, ipAddress IPAdd
 }
 
 // Deprecated: use the interface for direct cast
-func CastHPAIDiscoveryEndpoint(structType interface{}) HPAIDiscoveryEndpoint {
+func CastHPAIDiscoveryEndpoint(structType any) HPAIDiscoveryEndpoint {
 	if casted, ok := structType.(HPAIDiscoveryEndpoint); ok {
 		return casted
 	}

@@ -39,7 +39,7 @@ public enum RedundancySupport {
     }
   }
 
-  private long value;
+  private final long value;
 
   RedundancySupport(long value) {
     this.value = value;

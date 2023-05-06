@@ -37,7 +37,7 @@ public enum HVACHumidityType {
     }
   }
 
-  private short value;
+  private final short value;
 
   HVACHumidityType(short value) {
     this.value = value;

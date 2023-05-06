@@ -31,8 +31,8 @@ import java.nio.charset.StandardCharsets;
 public class PlcCHAR extends PlcIECValue<Short> {
 
     private static final String VALUE_OUT_OF_RANGE = "Value of type %s is out of range %d - %d for a %s Value";
-    static Short minValue = 0;
-    static Short maxValue = (short) Byte.MAX_VALUE * 2 + 1;
+    static final Short minValue = 0;
+    static final Short maxValue = (short) Byte.MAX_VALUE * 2 + 1;
 
     public static PlcCHAR of(Object value) {
         if (value instanceof Boolean) {

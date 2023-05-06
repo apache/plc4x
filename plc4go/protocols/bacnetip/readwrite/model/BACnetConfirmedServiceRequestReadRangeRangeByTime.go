@@ -104,7 +104,7 @@ func NewBACnetConfirmedServiceRequestReadRangeRangeByTime(referenceTime BACnetDa
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConfirmedServiceRequestReadRangeRangeByTime(structType interface{}) BACnetConfirmedServiceRequestReadRangeRangeByTime {
+func CastBACnetConfirmedServiceRequestReadRangeRangeByTime(structType any) BACnetConfirmedServiceRequestReadRangeRangeByTime {
 	if casted, ok := structType.(BACnetConfirmedServiceRequestReadRangeRangeByTime); ok {
 		return casted
 	}

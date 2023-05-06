@@ -115,7 +115,7 @@ func NewCOTPPacketConnectionResponse(destinationReference uint16, sourceReferenc
 }
 
 // Deprecated: use the interface for direct cast
-func CastCOTPPacketConnectionResponse(structType interface{}) COTPPacketConnectionResponse {
+func CastCOTPPacketConnectionResponse(structType any) COTPPacketConnectionResponse {
 	if casted, ok := structType.(COTPPacketConnectionResponse); ok {
 		return casted
 	}

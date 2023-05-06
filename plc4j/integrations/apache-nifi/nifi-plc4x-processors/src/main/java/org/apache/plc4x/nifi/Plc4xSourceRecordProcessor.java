@@ -90,12 +90,10 @@ public class Plc4xSourceRecordProcessor extends BasePlc4xProcessor {
 	@Override
 	protected void init(final ProcessorInitializationContext context) {
 		super.init(context);
-		final Set<Relationship> r = new HashSet<>();
-		r.addAll(super.getRelationships());
+        final Set<Relationship> r = new HashSet<>(super.getRelationships());
 		this.relationships = Collections.unmodifiableSet(r);
 
-		final List<PropertyDescriptor> pds = new ArrayList<>();
-		pds.addAll(super.getSupportedPropertyDescriptors());
+        final List<PropertyDescriptor> pds = new ArrayList<>(super.getSupportedPropertyDescriptors());
 		pds.add(PLC_RECORD_WRITER_FACTORY);
 		pds.add(PLC_READ_FUTURE_TIMEOUT_MILISECONDS);
 		this.properties = Collections.unmodifiableList(pds);
@@ -155,7 +153,7 @@ public class Plc4xSourceRecordProcessor extends BasePlc4xProcessor {
 				}
 			} else {
 				if (debugEnabled)
-                    logger.debug("Plc-Avro schema and PlcTypes resolution not found in cache and will be added with key: " + addressMap.toString());
+                    logger.debug("Plc-Avro schema and PlcTypes resolution not found in cache and will be added with key: " + addressMap);
 				for (Map.Entry<String,String> entry: addressMap.entrySet()){
 					builder.addTagAddress(entry.getKey(), entry.getValue());
 				}
@@ -186,7 +184,7 @@ public class Plc4xSourceRecordProcessor extends BasePlc4xProcessor {
 
 			if (recordSchema == null){
 				if (debugEnabled)
-                    logger.debug("Adding Plc-Avro schema and PlcTypes resolution into cache with key: " + addressMap.toString());
+                    logger.debug("Adding Plc-Avro schema and PlcTypes resolution into cache with key: " + addressMap);
 				getSchemaCache().addSchema(
 					addressMap, 
 					readRequest.getTagNames(),

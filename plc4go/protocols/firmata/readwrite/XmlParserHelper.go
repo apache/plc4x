@@ -42,7 +42,7 @@ func init() {
 	_ = utils.Dump
 }
 
-func (m FirmataXmlParserHelper) Parse(typeName string, xmlString string, parserArguments ...string) (interface{}, error) {
+func (m FirmataXmlParserHelper) Parse(typeName string, xmlString string, parserArguments ...string) (any, error) {
 	switch typeName {
 	case "SysexCommand":
 		response := parserArguments[0] == "true"

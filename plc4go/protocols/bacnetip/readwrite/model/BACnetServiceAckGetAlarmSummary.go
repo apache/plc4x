@@ -112,7 +112,7 @@ func NewBACnetServiceAckGetAlarmSummary(objectIdentifier BACnetApplicationTagObj
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetServiceAckGetAlarmSummary(structType interface{}) BACnetServiceAckGetAlarmSummary {
+func CastBACnetServiceAckGetAlarmSummary(structType any) BACnetServiceAckGetAlarmSummary {
 	if casted, ok := structType.(BACnetServiceAckGetAlarmSummary); ok {
 		return casted
 	}

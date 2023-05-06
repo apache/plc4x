@@ -22,7 +22,6 @@ package model
 import (
 	"context"
 	"fmt"
-	spiContext "github.com/apache/plc4x/plc4go/spi/context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -105,7 +104,7 @@ func NewModbusPDUReadFifoQueueResponse(fifoValue []uint16) *_ModbusPDUReadFifoQu
 }
 
 // Deprecated: use the interface for direct cast
-func CastModbusPDUReadFifoQueueResponse(structType interface{}) ModbusPDUReadFifoQueueResponse {
+func CastModbusPDUReadFifoQueueResponse(structType any) ModbusPDUReadFifoQueueResponse {
 	if casted, ok := structType.(ModbusPDUReadFifoQueueResponse); ok {
 		return casted
 	}
@@ -180,7 +179,7 @@ func ModbusPDUReadFifoQueueResponseParseWithBuffer(ctx context.Context, readBuff
 	{
 		_numItems := uint16(fifoCount)
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := spiContext.CreateArrayContext(ctx, int(_numItems), int(_curItem))
+			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
 			_ = _curItem
 			_item, _err := readBuffer.ReadUint16("", 16)

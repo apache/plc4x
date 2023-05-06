@@ -78,7 +78,7 @@ func NewLPollDataReq(size uint16) *_LPollDataReq {
 }
 
 // Deprecated: use the interface for direct cast
-func CastLPollDataReq(structType interface{}) LPollDataReq {
+func CastLPollDataReq(structType any) LPollDataReq {
 	if casted, ok := structType.(LPollDataReq); ok {
 		return casted
 	}

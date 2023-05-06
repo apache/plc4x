@@ -50,7 +50,7 @@ public enum ErrorReportingSystemCategoryTypeForBuildingManagementSystems {
     }
   }
 
-  private byte value;
+  private final byte value;
 
   ErrorReportingSystemCategoryTypeForBuildingManagementSystems(byte value) {
     this.value = value;

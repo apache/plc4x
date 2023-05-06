@@ -21,9 +21,11 @@ package spi
 
 import (
 	"context"
-	"github.com/apache/plc4x/plc4go/pkg/api/model"
+	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 )
 
+// PlcWriter writes fields to a PLC
 type PlcWriter interface {
-	Write(ctx context.Context, writeRequest model.PlcWriteRequest) <-chan model.PlcWriteRequestResult
+	// Write writes a field to a PLC
+	Write(ctx context.Context, writeRequest apiModel.PlcWriteRequest) <-chan apiModel.PlcWriteRequestResult
 }

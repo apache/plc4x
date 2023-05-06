@@ -114,7 +114,7 @@ func NewBACnetConfirmedServiceRequestReadProperty(objectIdentifier BACnetContext
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConfirmedServiceRequestReadProperty(structType interface{}) BACnetConfirmedServiceRequestReadProperty {
+func CastBACnetConfirmedServiceRequestReadProperty(structType any) BACnetConfirmedServiceRequestReadProperty {
 	if casted, ok := structType.(BACnetConfirmedServiceRequestReadProperty); ok {
 		return casted
 	}

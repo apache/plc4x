@@ -79,7 +79,7 @@ func NewRoutingIndication() *_RoutingIndication {
 }
 
 // Deprecated: use the interface for direct cast
-func CastRoutingIndication(structType interface{}) RoutingIndication {
+func CastRoutingIndication(structType any) RoutingIndication {
 	if casted, ok := structType.(RoutingIndication); ok {
 		return casted
 	}

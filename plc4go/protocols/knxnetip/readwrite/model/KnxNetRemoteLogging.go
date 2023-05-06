@@ -96,7 +96,7 @@ func NewKnxNetRemoteLogging(version uint8) *_KnxNetRemoteLogging {
 }
 
 // Deprecated: use the interface for direct cast
-func CastKnxNetRemoteLogging(structType interface{}) KnxNetRemoteLogging {
+func CastKnxNetRemoteLogging(structType any) KnxNetRemoteLogging {
 	if casted, ok := structType.(KnxNetRemoteLogging); ok {
 		return casted
 	}

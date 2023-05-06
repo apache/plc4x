@@ -130,7 +130,7 @@ func NewBACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple(subscr
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple(structType interface{}) BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple {
+func CastBACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple(structType any) BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple {
 	if casted, ok := structType.(BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple); ok {
 		return casted
 	}

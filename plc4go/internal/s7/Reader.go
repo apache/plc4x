@@ -95,7 +95,7 @@ func (m *Reader) Read(ctx context.Context, readRequest model.PlcReadRequest) <-c
 		)
 		// Start a new request-transaction (Is ended in the response-handler)
 		transaction := m.tm.StartTransaction()
-		transaction.Submit(func() {
+		transaction.Submit(func(transaction spi.RequestTransaction) {
 
 			// Send the  over the wire
 			log.Trace().Msg("Send ")

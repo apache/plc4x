@@ -78,7 +78,7 @@ func (t simulatedTag) GetValueType() values.PlcValueType {
 func (t simulatedTag) GetArrayInfo() []apiModel.ArrayInfo {
 	if t.Quantity != 1 {
 		return []apiModel.ArrayInfo{
-			spiModel.DefaultArrayInfo{
+			&spiModel.DefaultArrayInfo{
 				LowerBound: 0,
 				UpperBound: uint32(t.Quantity),
 			},

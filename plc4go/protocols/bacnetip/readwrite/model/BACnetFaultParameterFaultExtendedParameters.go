@@ -22,7 +22,6 @@ package model
 import (
 	"context"
 	"fmt"
-	spiContext "github.com/apache/plc4x/plc4go/spi/context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -87,7 +86,7 @@ func NewBACnetFaultParameterFaultExtendedParameters(openingTag BACnetOpeningTag,
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetFaultParameterFaultExtendedParameters(structType interface{}) BACnetFaultParameterFaultExtendedParameters {
+func CastBACnetFaultParameterFaultExtendedParameters(structType any) BACnetFaultParameterFaultExtendedParameters {
 	if casted, ok := structType.(BACnetFaultParameterFaultExtendedParameters); ok {
 		return casted
 	}
@@ -228,7 +227,7 @@ func (m *_BACnetFaultParameterFaultExtendedParameters) SerializeWithWriteBuffer(
 	}
 	for _curItem, _element := range m.GetParameters() {
 		_ = _curItem
-		arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetParameters()), _curItem)
+		arrayCtx := utils.CreateArrayContext(ctx, len(m.GetParameters()), _curItem)
 		_ = arrayCtx
 		_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 		if _elementErr != nil {

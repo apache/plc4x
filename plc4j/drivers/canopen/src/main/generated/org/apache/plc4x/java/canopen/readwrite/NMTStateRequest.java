@@ -38,7 +38,7 @@ public enum NMTStateRequest {
     }
   }
 
-  private short value;
+  private final short value;
 
   NMTStateRequest(short value) {
     this.value = value;

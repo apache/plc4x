@@ -94,7 +94,7 @@ func NewBACnetPriorityValueDouble(doubleValue BACnetApplicationTagDouble, peeked
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetPriorityValueDouble(structType interface{}) BACnetPriorityValueDouble {
+func CastBACnetPriorityValueDouble(structType any) BACnetPriorityValueDouble {
 	if casted, ok := structType.(BACnetPriorityValueDouble); ok {
 		return casted
 	}

@@ -35,7 +35,7 @@ public enum NoYes {
     }
   }
 
-  private short value;
+  private final short value;
 
   NoYes(short value) {
     this.value = value;

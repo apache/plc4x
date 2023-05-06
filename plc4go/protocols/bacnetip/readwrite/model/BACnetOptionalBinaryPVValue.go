@@ -94,7 +94,7 @@ func NewBACnetOptionalBinaryPVValue(binaryPv BACnetBinaryPVTagged, peekedTagHead
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetOptionalBinaryPVValue(structType interface{}) BACnetOptionalBinaryPVValue {
+func CastBACnetOptionalBinaryPVValue(structType any) BACnetOptionalBinaryPVValue {
 	if casted, ok := structType.(BACnetOptionalBinaryPVValue); ok {
 		return casted
 	}

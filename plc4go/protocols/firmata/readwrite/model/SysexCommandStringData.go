@@ -82,7 +82,7 @@ func NewSysexCommandStringData() *_SysexCommandStringData {
 }
 
 // Deprecated: use the interface for direct cast
-func CastSysexCommandStringData(structType interface{}) SysexCommandStringData {
+func CastSysexCommandStringData(structType any) SysexCommandStringData {
 	if casted, ok := structType.(SysexCommandStringData); ok {
 		return casted
 	}

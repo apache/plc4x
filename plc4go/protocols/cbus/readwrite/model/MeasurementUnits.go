@@ -33,6 +33,7 @@ type MeasurementUnits uint8
 
 type IMeasurementUnits interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 
@@ -320,8 +321,8 @@ func MeasurementUnitsKnows(value uint8) bool {
 	return false
 }
 
-func CastMeasurementUnits(structType interface{}) MeasurementUnits {
-	castFunc := func(typ interface{}) MeasurementUnits {
+func CastMeasurementUnits(structType any) MeasurementUnits {
+	castFunc := func(typ any) MeasurementUnits {
 		if sMeasurementUnits, ok := typ.(MeasurementUnits); ok {
 			return sMeasurementUnits
 		}

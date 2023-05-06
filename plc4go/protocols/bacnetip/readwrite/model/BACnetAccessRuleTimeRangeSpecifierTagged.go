@@ -80,7 +80,7 @@ func NewBACnetAccessRuleTimeRangeSpecifierTagged(header BACnetTagHeader, value B
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetAccessRuleTimeRangeSpecifierTagged(structType interface{}) BACnetAccessRuleTimeRangeSpecifierTagged {
+func CastBACnetAccessRuleTimeRangeSpecifierTagged(structType any) BACnetAccessRuleTimeRangeSpecifierTagged {
 	if casted, ok := structType.(BACnetAccessRuleTimeRangeSpecifierTagged); ok {
 		return casted
 	}

@@ -120,7 +120,7 @@ func NewBACnetNotificationParametersChangeOfStatusFlags(innerOpeningTag BACnetOp
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetNotificationParametersChangeOfStatusFlags(structType interface{}) BACnetNotificationParametersChangeOfStatusFlags {
+func CastBACnetNotificationParametersChangeOfStatusFlags(structType any) BACnetNotificationParametersChangeOfStatusFlags {
 	if casted, ok := structType.(BACnetNotificationParametersChangeOfStatusFlags); ok {
 		return casted
 	}

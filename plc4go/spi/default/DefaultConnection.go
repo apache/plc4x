@@ -23,14 +23,14 @@ import (
 	"context"
 	"time"
 
-	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/pkg/errors"
+	"github.com/rs/zerolog/log"
 
 	"github.com/apache/plc4x/plc4go/pkg/api"
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/spi"
+	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/transports"
-	"github.com/pkg/errors"
-	"github.com/rs/zerolog/log"
 )
 
 // DefaultConnectionRequirements defines the required at a implementing connection when using DefaultConnection
@@ -307,23 +307,23 @@ func (d *defaultConnection) GetMetadata() model.PlcConnectionMetadata {
 }
 
 func (d *defaultConnection) ReadRequestBuilder() model.PlcReadRequestBuilder {
-	panic("not implemented")
+	panic("not provided by actual connection")
 }
 
 func (d *defaultConnection) WriteRequestBuilder() model.PlcWriteRequestBuilder {
-	panic("not implemented")
+	panic("not provided by actual connection")
 }
 
 func (d *defaultConnection) SubscriptionRequestBuilder() model.PlcSubscriptionRequestBuilder {
-	panic("not implemented")
+	panic("not provided by actual connection")
 }
 
 func (d *defaultConnection) UnsubscriptionRequestBuilder() model.PlcUnsubscriptionRequestBuilder {
-	panic("not implemented")
+	panic("not provided by actual connection")
 }
 
 func (d *defaultConnection) BrowseRequestBuilder() model.PlcBrowseRequestBuilder {
-	panic("not implemented")
+	panic("not provided by actual connection")
 }
 
 func (d *defaultConnection) GetTransportInstance() transports.TransportInstance {

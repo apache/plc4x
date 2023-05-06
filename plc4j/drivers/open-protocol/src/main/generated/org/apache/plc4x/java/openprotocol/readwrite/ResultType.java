@@ -41,7 +41,7 @@ public enum ResultType {
     }
   }
 
-  private short value;
+  private final short value;
 
   ResultType(short value) {
     this.value = value;

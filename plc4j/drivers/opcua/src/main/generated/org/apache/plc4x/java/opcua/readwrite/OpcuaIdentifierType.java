@@ -37,7 +37,7 @@ public enum OpcuaIdentifierType {
     }
   }
 
-  private String value;
+  private final String value;
 
   OpcuaIdentifierType(String value) {
     this.value = value;

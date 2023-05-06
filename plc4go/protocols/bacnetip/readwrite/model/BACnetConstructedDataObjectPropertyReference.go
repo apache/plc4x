@@ -121,7 +121,7 @@ func NewBACnetConstructedDataObjectPropertyReference(propertyReference BACnetDev
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataObjectPropertyReference(structType interface{}) BACnetConstructedDataObjectPropertyReference {
+func CastBACnetConstructedDataObjectPropertyReference(structType any) BACnetConstructedDataObjectPropertyReference {
 	if casted, ok := structType.(BACnetConstructedDataObjectPropertyReference); ok {
 		return casted
 	}

@@ -112,7 +112,7 @@ func NewIdentifyReplyCommandSummary(partName string, unitServiceType byte, versi
 }
 
 // Deprecated: use the interface for direct cast
-func CastIdentifyReplyCommandSummary(structType interface{}) IdentifyReplyCommandSummary {
+func CastIdentifyReplyCommandSummary(structType any) IdentifyReplyCommandSummary {
 	if casted, ok := structType.(IdentifyReplyCommandSummary); ok {
 		return casted
 	}

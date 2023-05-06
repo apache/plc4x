@@ -40,7 +40,7 @@ public enum BACnetEscalatorMode {
     }
   }
 
-  private int value;
+  private final int value;
 
   BACnetEscalatorMode(int value) {
     this.value = value;

@@ -33,6 +33,7 @@ type KnxPropertyDataType uint8
 
 type IKnxPropertyDataType interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 	Number() uint8
 	SizeInBytes() uint8
@@ -1024,8 +1025,8 @@ func KnxPropertyDataTypeKnows(value uint8) bool {
 	return false
 }
 
-func CastKnxPropertyDataType(structType interface{}) KnxPropertyDataType {
-	castFunc := func(typ interface{}) KnxPropertyDataType {
+func CastKnxPropertyDataType(structType any) KnxPropertyDataType {
+	castFunc := func(typ any) KnxPropertyDataType {
 		if sKnxPropertyDataType, ok := typ.(KnxPropertyDataType); ok {
 			return sKnxPropertyDataType
 		}

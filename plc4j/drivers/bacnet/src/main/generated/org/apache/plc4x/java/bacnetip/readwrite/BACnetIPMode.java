@@ -36,7 +36,7 @@ public enum BACnetIPMode {
     }
   }
 
-  private short value;
+  private final short value;
 
   BACnetIPMode(short value) {
     this.value = value;

@@ -94,7 +94,7 @@ func NewPowerUpReply(powerUpIndicator PowerUp, peekedByte byte, cBusOptions CBus
 }
 
 // Deprecated: use the interface for direct cast
-func CastPowerUpReply(structType interface{}) PowerUpReply {
+func CastPowerUpReply(structType any) PowerUpReply {
 	if casted, ok := structType.(PowerUpReply); ok {
 		return casted
 	}

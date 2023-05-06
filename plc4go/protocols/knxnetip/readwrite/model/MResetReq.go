@@ -78,7 +78,7 @@ func NewMResetReq(size uint16) *_MResetReq {
 }
 
 // Deprecated: use the interface for direct cast
-func CastMResetReq(structType interface{}) MResetReq {
+func CastMResetReq(structType any) MResetReq {
 	if casted, ok := structType.(MResetReq); ok {
 		return casted
 	}

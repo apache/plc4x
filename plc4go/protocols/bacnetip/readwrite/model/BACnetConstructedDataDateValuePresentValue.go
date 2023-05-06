@@ -121,7 +121,7 @@ func NewBACnetConstructedDataDateValuePresentValue(presentValue BACnetApplicatio
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataDateValuePresentValue(structType interface{}) BACnetConstructedDataDateValuePresentValue {
+func CastBACnetConstructedDataDateValuePresentValue(structType any) BACnetConstructedDataDateValuePresentValue {
 	if casted, ok := structType.(BACnetConstructedDataDateValuePresentValue); ok {
 		return casted
 	}

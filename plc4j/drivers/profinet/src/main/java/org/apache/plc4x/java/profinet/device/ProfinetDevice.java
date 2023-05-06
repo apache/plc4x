@@ -25,11 +25,13 @@ import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
 import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
+import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.types.PlcSubscriptionType;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.profinet.context.ProfinetDeviceContext;
 import org.apache.plc4x.java.profinet.gsdml.*;
 import org.apache.plc4x.java.profinet.readwrite.*;
+import org.apache.plc4x.java.profinet.tag.ProfinetTag;
 import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.generation.*;
 import org.apache.plc4x.java.spi.messages.DefaultPlcSubscriptionEvent;
@@ -37,6 +39,7 @@ import org.apache.plc4x.java.spi.messages.DefaultPlcSubscriptionResponse;
 import org.apache.plc4x.java.spi.messages.PlcSubscriber;
 import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
 import org.apache.plc4x.java.spi.model.DefaultPlcConsumerRegistration;
+import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionTag;
 import org.apache.plc4x.java.spi.values.PlcSTRING;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -442,7 +445,7 @@ public class ProfinetDevice implements PlcSubscriber {
 
     public class CreateConnection implements ProfinetCallable<DceRpc_Packet> {
 
-        CompletableFuture<Boolean> responseHandled = new CompletableFuture<>();
+        final CompletableFuture<Boolean> responseHandled = new CompletableFuture<>();
         private final long id = getObjectId();
 
         public CompletableFuture<Boolean> getResponseHandled() {
@@ -565,9 +568,7 @@ public class ProfinetDevice implements PlcSubscriber {
 
             blocks.add(deviceContext.getOutputReq());
 
-            for (PnIoCm_Block_ExpectedSubmoduleReq expectedSubModuleApiBlocksReq : deviceContext.getExpectedSubmoduleReq()) {
-                blocks.add(expectedSubModuleApiBlocksReq);
-            }
+            blocks.addAll(deviceContext.getExpectedSubmoduleReq());
 
             return new DceRpc_Packet(
                 DceRpc_PacketType.REQUEST,
@@ -627,7 +628,7 @@ public class ProfinetDevice implements PlcSubscriber {
 
     public class WriteParameters implements ProfinetCallable<DceRpc_Packet> {
 
-        CompletableFuture<Boolean> responseHandled = new CompletableFuture<>();
+        final CompletableFuture<Boolean> responseHandled = new CompletableFuture<>();
         private final long id = getObjectId();
 
         public CompletableFuture<Boolean> getResponseHandled() {
@@ -766,7 +767,7 @@ public class ProfinetDevice implements PlcSubscriber {
 
     public class WriteParametersEnd implements ProfinetCallable<DceRpc_Packet> {
 
-        CompletableFuture<Boolean> responseHandled = new CompletableFuture<>();
+        final CompletableFuture<Boolean> responseHandled = new CompletableFuture<>();
         private final long id = getObjectId();
 
         public CompletableFuture<Boolean> getResponseHandled() {

@@ -104,7 +104,7 @@ func NewClassID(format uint8, segmentClass uint8) *_ClassID {
 }
 
 // Deprecated: use the interface for direct cast
-func CastClassID(structType interface{}) ClassID {
+func CastClassID(structType any) ClassID {
 	if casted, ok := structType.(ClassID); ok {
 		return casted
 	}

@@ -96,7 +96,7 @@ func NewBACnetLogRecordLogDatumNullValue(nullValue BACnetContextTagNull, opening
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetLogRecordLogDatumNullValue(structType interface{}) BACnetLogRecordLogDatumNullValue {
+func CastBACnetLogRecordLogDatumNullValue(structType any) BACnetLogRecordLogDatumNullValue {
 	if casted, ok := structType.(BACnetLogRecordLogDatumNullValue); ok {
 		return casted
 	}

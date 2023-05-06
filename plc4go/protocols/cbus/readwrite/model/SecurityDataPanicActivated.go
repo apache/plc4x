@@ -77,7 +77,7 @@ func NewSecurityDataPanicActivated(commandTypeContainer SecurityCommandTypeConta
 }
 
 // Deprecated: use the interface for direct cast
-func CastSecurityDataPanicActivated(structType interface{}) SecurityDataPanicActivated {
+func CastSecurityDataPanicActivated(structType any) SecurityDataPanicActivated {
 	if casted, ok := structType.(SecurityDataPanicActivated); ok {
 		return casted
 	}

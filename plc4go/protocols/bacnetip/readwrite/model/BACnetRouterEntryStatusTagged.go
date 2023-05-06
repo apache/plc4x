@@ -80,7 +80,7 @@ func NewBACnetRouterEntryStatusTagged(header BACnetTagHeader, value BACnetRouter
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetRouterEntryStatusTagged(structType interface{}) BACnetRouterEntryStatusTagged {
+func CastBACnetRouterEntryStatusTagged(structType any) BACnetRouterEntryStatusTagged {
 	if casted, ok := structType.(BACnetRouterEntryStatusTagged); ok {
 		return casted
 	}

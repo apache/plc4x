@@ -30,12 +30,12 @@ public class ModbusTagDataTypeTest {
         String[][] datatypes = {{"INT","1"},
                                 {"UINT","1"},
                                 {"REAL","2"}};
-        for(int i = 0; i< datatypes.length; i++){
-            ModbusTagHoldingRegister holdingregister = ModbusTagHoldingRegister.of("holding-register:1:" + datatypes[i][0]);
-            Assertions.assertEquals(datatypes[i][0], holdingregister.getDataType().name());
+        for (String[] datatype : datatypes) {
+            ModbusTagHoldingRegister holdingregister = ModbusTagHoldingRegister.of("holding-register:1:" + datatype[0]);
+            Assertions.assertEquals(datatype[0], holdingregister.getDataType().name());
             Assertions.assertEquals(1, holdingregister.getNumberOfElements());
-            Assertions.assertEquals(Integer.parseInt(datatypes[i][1]) * 2, holdingregister.getLengthBytes());
-            Assertions.assertEquals(Integer.parseInt(datatypes[i][1]), holdingregister.getLengthWords());
+            Assertions.assertEquals(Integer.parseInt(datatype[1]) * 2, holdingregister.getLengthBytes());
+            Assertions.assertEquals(Integer.parseInt(datatype[1]), holdingregister.getLengthWords());
         }
     }
 
@@ -45,12 +45,12 @@ public class ModbusTagDataTypeTest {
         String[][] datatypes = {{"INT","1"},
                                 {"UINT","1"},
                                 {"REAL","2"}};
-        for(int i = 0; i< datatypes.length; i++){
-            ModbusTagInputRegister inputregister = ModbusTagInputRegister.of("input-register:1:" + datatypes[i][0]);
-            Assertions.assertEquals(datatypes[i][0], inputregister.getDataType().name());
+        for (String[] datatype : datatypes) {
+            ModbusTagInputRegister inputregister = ModbusTagInputRegister.of("input-register:1:" + datatype[0]);
+            Assertions.assertEquals(datatype[0], inputregister.getDataType().name());
             Assertions.assertEquals(1, inputregister.getNumberOfElements());
-            Assertions.assertEquals(Integer.parseInt(datatypes[i][1]) * 2, inputregister.getLengthBytes());
-            Assertions.assertEquals(Integer.parseInt(datatypes[i][1]), inputregister.getLengthWords());
+            Assertions.assertEquals(Integer.parseInt(datatype[1]) * 2, inputregister.getLengthBytes());
+            Assertions.assertEquals(Integer.parseInt(datatype[1]), inputregister.getLengthWords());
         }
     }
 
@@ -61,12 +61,12 @@ public class ModbusTagDataTypeTest {
                                 {"UINT","1"},
                                 {"DINT","2"},
                                 {"REAL","2"}};
-        for(int i = 0; i< datatypes.length; i++){
-            ModbusTagExtendedRegister extendedregister = ModbusTagExtendedRegister.of("extended-register:1:" + datatypes[i][0]);
-            Assertions.assertEquals(datatypes[i][0], extendedregister.getDataType().name());
+        for (String[] datatype : datatypes) {
+            ModbusTagExtendedRegister extendedregister = ModbusTagExtendedRegister.of("extended-register:1:" + datatype[0]);
+            Assertions.assertEquals(datatype[0], extendedregister.getDataType().name());
             Assertions.assertEquals(1, extendedregister.getNumberOfElements());
-            Assertions.assertEquals(Integer.parseInt(datatypes[i][1]) * 2, extendedregister.getLengthBytes());
-            Assertions.assertEquals(Integer.parseInt(datatypes[i][1]), extendedregister.getLengthWords());
+            Assertions.assertEquals(Integer.parseInt(datatype[1]) * 2, extendedregister.getLengthBytes());
+            Assertions.assertEquals(Integer.parseInt(datatype[1]), extendedregister.getLengthWords());
         }
     }
 
@@ -74,9 +74,9 @@ public class ModbusTagDataTypeTest {
     public void testCoil_DataType() {
         //Datatype, Length in Bytes
         String[][] datatypes = {{"BOOL","1"}};
-        for(int i = 0; i< datatypes.length; i++){
-            ModbusTagCoil coil = ModbusTagCoil.of("coil:1:" + datatypes[i][0]);
-            Assertions.assertEquals(datatypes[i][0], coil.getDataType().name());
+        for (String[] datatype : datatypes) {
+            ModbusTagCoil coil = ModbusTagCoil.of("coil:1:" + datatype[0]);
+            Assertions.assertEquals(datatype[0], coil.getDataType().name());
             Assertions.assertEquals(1, coil.getNumberOfElements());
         }
     }
@@ -85,9 +85,9 @@ public class ModbusTagDataTypeTest {
     public void testDiscreteInput_DataType() {
         //Datatype, Length in Bytes
         String[][] datatypes = {{"BOOL","1"}};
-        for(int i = 0; i< datatypes.length; i++){
-            ModbusTagDiscreteInput discrete = ModbusTagDiscreteInput.of("discrete-input:1:" + datatypes[i][0]);
-            Assertions.assertEquals(datatypes[i][0], discrete.getDataType().name());
+        for (String[] datatype : datatypes) {
+            ModbusTagDiscreteInput discrete = ModbusTagDiscreteInput.of("discrete-input:1:" + datatype[0]);
+            Assertions.assertEquals(datatype[0], discrete.getDataType().name());
             Assertions.assertEquals(1, discrete.getNumberOfElements());
         }
     }

@@ -80,7 +80,7 @@ func WithDiscoveryOptionRemoteAddress(remoteAddress string) WithDiscoveryOption 
 	return withDiscoveryOption{options.WithDiscoveryOptionRemoteAddress(remoteAddress)}
 }
 
-func WithDiscoveryOptionProtocolSpecific(key string, value interface{}) WithDiscoveryOption {
+func WithDiscoveryOptionProtocolSpecific(key string, value any) WithDiscoveryOption {
 	return withDiscoveryOption{options.WithDiscoveryOptionProtocolSpecific(key, value)}
 }
 
@@ -137,9 +137,6 @@ func convertToInternalOptions(withDiscoveryOptions ...WithDiscoveryOption) []opt
 ///////////////////////////////////////
 
 func (m *plcDriverManger) RegisterDriver(driver PlcDriver) {
-	if driver == nil {
-		panic("driver must not be nil")
-	}
 	log.Debug().Str("protocolName", driver.GetProtocolName()).Msg("Registering driver")
 	// If this driver is already registered, just skip resetting it
 	for driverName := range m.drivers {
@@ -170,9 +167,6 @@ func (m *plcDriverManger) GetDriver(driverName string) (PlcDriver, error) {
 }
 
 func (m *plcDriverManger) RegisterTransport(transport transports.Transport) {
-	if transport == nil {
-		panic("transport must not be nil")
-	}
 	log.Debug().Str("transportName", transport.GetTransportName()).Msg("Registering transport")
 	// If this transport is already registered, just skip resetting it
 	for transportName := range m.transports {

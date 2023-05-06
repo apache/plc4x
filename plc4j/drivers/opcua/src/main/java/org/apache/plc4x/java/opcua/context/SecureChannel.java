@@ -69,7 +69,7 @@ public class SecureChannel {
     private static final PascalString SECURITY_POLICY_NONE = new PascalString("http://opcfoundation.org/UA/SecurityPolicy#None");
     protected static final PascalString NULL_STRING = new PascalString("");
     private static final PascalByteString NULL_BYTE_STRING = new PascalByteString(-1, null);
-    private static ExpandedNodeId NULL_EXPANDED_NODEID = new ExpandedNodeId(false,
+    private static final ExpandedNodeId NULL_EXPANDED_NODEID = new ExpandedNodeId(false,
         false,
         new NodeIdTwoByte((short) 0),
         null,
@@ -102,7 +102,7 @@ public class SecureChannel {
     private UserTokenType tokenType;
     private boolean discovery;
     private String certFile;
-    private String keyStoreFile;
+    private final String keyStoreFile;
     private CertificateKeyPair ckp;
     private final PascalString endpoint;
     private final String username;
@@ -113,22 +113,22 @@ public class SecureChannel {
     private final boolean isEncrypted;
     private byte[] senderCertificate = null;
     private byte[] senderNonce = null;
-    private PascalByteString certificateThumbprint = null;
-    private boolean checkedEndpoints = false;
+    private final PascalByteString certificateThumbprint = null;
+    private final boolean checkedEndpoints = false;
     private EncryptionHandler encryptionHandler = null;
-    private OpcuaConfiguration configuration;
-    private AtomicInteger channelId = new AtomicInteger(1);
-    private AtomicInteger tokenId = new AtomicInteger(1);
+    private final OpcuaConfiguration configuration;
+    private final AtomicInteger channelId = new AtomicInteger(1);
+    private final AtomicInteger tokenId = new AtomicInteger(1);
     private NodeIdTypeDefinition authenticationToken = new NodeIdTwoByte((short) 0);
     ConversationContext<OpcuaAPU> context;
-    private SecureChannelTransactionManager channelTransactionManager = new SecureChannelTransactionManager();
+    private final SecureChannelTransactionManager channelTransactionManager = new SecureChannelTransactionManager();
     private long lifetime = DEFAULT_CONNECTION_LIFETIME;
     private CompletableFuture<Void> keepAlive;
     private int sendBufferSize;
     private int maxMessageSize;
-    private List<String> endpoints = new ArrayList<>();
+    private final List<String> endpoints = new ArrayList<>();
 
-    private AtomicLong senderSequenceNumber = new AtomicLong();
+    private final AtomicLong senderSequenceNumber = new AtomicLong();
 
     public SecureChannel(DriverContext driverContext, OpcuaConfiguration configuration) {
         this.configuration = configuration;
@@ -457,9 +457,7 @@ public class SecureChannel {
                 e.printStackTrace();
             };
 
-            BiConsumer<OpcuaAPU, Throwable> error = (message, e) -> {
-                LOGGER.error("Error while waiting for subscription response", e);
-            };
+            BiConsumer<OpcuaAPU, Throwable> error = (message, e) -> LOGGER.error("Error while waiting for subscription response", e);
 
             submit(context, timeout, error, consumer, buffer);
         } catch (SerializationException e) {
@@ -565,13 +563,9 @@ public class SecureChannel {
 
             };
 
-            Consumer<TimeoutException> timeout = e -> {
-                LOGGER.error("Timeout while waiting for activate session response", e);
-            };
+            Consumer<TimeoutException> timeout = e -> LOGGER.error("Timeout while waiting for activate session response", e);
 
-            BiConsumer<OpcuaAPU, Throwable> error = (message, e) -> {
-                LOGGER.error("Error while waiting for activate session response", e);
-            };
+            BiConsumer<OpcuaAPU, Throwable> error = (message, e) -> LOGGER.error("Error while waiting for activate session response", e);
 
             submit(context, timeout, error, consumer, buffer);
         } catch (SerializationException e) {
@@ -649,13 +643,9 @@ public class SecureChannel {
 
             };
 
-            Consumer<TimeoutException> timeout = e -> {
-                LOGGER.error("Timeout while waiting for close session response", e);
-            };
+            Consumer<TimeoutException> timeout = e -> LOGGER.error("Timeout while waiting for close session response", e);
 
-            BiConsumer<OpcuaAPU, Throwable> error = (message, e) -> {
-                LOGGER.error("Error while waiting for close session response", e);
-            };
+            BiConsumer<OpcuaAPU, Throwable> error = (message, e) -> LOGGER.error("Error while waiting for close session response", e);
 
             submit(context, timeout, error, consumer, buffer);
         } catch (SerializationException e) {
@@ -1102,7 +1092,7 @@ public class SecureChannel {
      * @throws PlcRuntimeException - If no endpoint with a compatible policy is found raise and error.
      */
     private void selectEndpoint(CreateSessionResponse sessionResponse) throws PlcRuntimeException {
-        List<String> returnedEndpoints = new ArrayList<String>();
+        List<String> returnedEndpoints = new ArrayList<>();
 
         // Get a list of the endpoints which match ours.
         Stream<EndpointDescription> filteredEndpoints = sessionResponse.getServerEndpoints().stream()

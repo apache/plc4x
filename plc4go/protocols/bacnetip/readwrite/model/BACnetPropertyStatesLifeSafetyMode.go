@@ -94,7 +94,7 @@ func NewBACnetPropertyStatesLifeSafetyMode(lifeSafetyMode BACnetLifeSafetyModeTa
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetPropertyStatesLifeSafetyMode(structType interface{}) BACnetPropertyStatesLifeSafetyMode {
+func CastBACnetPropertyStatesLifeSafetyMode(structType any) BACnetPropertyStatesLifeSafetyMode {
 	if casted, ok := structType.(BACnetPropertyStatesLifeSafetyMode); ok {
 		return casted
 	}

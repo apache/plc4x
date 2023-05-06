@@ -141,30 +141,27 @@ public class ManualS7PlcDriverMT {
         // Warmup
         connectionManager.getConnection(CONN_STRING);
 
-        Runnable iteration = new Runnable() {
-            @Override
-            public void run() {
+        Runnable iteration = () -> {
 //                System.out.println("Setting a request / guard...");
-                CompletableFuture<Double> requestFuture = CompletableFuture.supplyAsync(
-                    () -> ManualS7PlcDriverMT.this.runSingleRequest(connectionManager)
-                );
-                executorService.schedule(() -> {
-                    if (!requestFuture.isDone()) {
-                        requestFuture.cancel(true);
-                        System.out.print("!");
-                    } else {
-                        System.out.print(".");
-                        try {
-                            statistics.addValue(requestFuture.get());
-                        } catch (InterruptedException | ExecutionException e) {
-                            // do nothing...
-                        }
+            CompletableFuture<Double> requestFuture = CompletableFuture.supplyAsync(
+                () -> ManualS7PlcDriverMT.this.runSingleRequest(connectionManager)
+            );
+            executorService.schedule(() -> {
+                if (!requestFuture.isDone()) {
+                    requestFuture.cancel(true);
+                    System.out.print("!");
+                } else {
+                    System.out.print(".");
+                    try {
+                        statistics.addValue(requestFuture.get());
+                    } catch (InterruptedException | ExecutionException e) {
+                        // do nothing...
                     }
-                    if (counter.getAndIncrement() >= numberOfRuns) {
-                        executorService.shutdown();
-                    }
-                }, period, TimeUnit.MILLISECONDS);
-            }
+                }
+                if (counter.getAndIncrement() >= numberOfRuns) {
+                    executorService.shutdown();
+                }
+            }, period, TimeUnit.MILLISECONDS);
         };
 
         executorService.scheduleAtFixedRate(iteration, 0, period, TimeUnit.MILLISECONDS);
@@ -196,10 +193,10 @@ public class ManualS7PlcDriverMT {
         System.out.println("Mean response time: " + TimeUnit.NANOSECONDS.toMillis((long) statistics.getMean()) + " ms");
         System.out.println("Median response time: " + TimeUnit.NANOSECONDS.toMillis((long) statistics.getPercentile(50)) + " ms");
         for (int i = 10; i <= 90; i += 10) {
-            System.out.println(String.format(Locale.ENGLISH, "Percentile %3d %%: %5d ms", i, TimeUnit.NANOSECONDS.toMillis((long) statistics.getPercentile(i))));
+            System.out.printf(Locale.ENGLISH, "Percentile %3d %%: %5d ms%n", i, TimeUnit.NANOSECONDS.toMillis((long) statistics.getPercentile(i)));
         }
         for (int i = 91; i <= 100; i++) {
-            System.out.println(String.format(Locale.ENGLISH, "Percentile %3d %%: %5d ms", i, TimeUnit.NANOSECONDS.toMillis((long) statistics.getPercentile(i))));
+            System.out.printf(Locale.ENGLISH, "Percentile %3d %%: %5d ms%n", i, TimeUnit.NANOSECONDS.toMillis((long) statistics.getPercentile(i)));
         }
     }
 }

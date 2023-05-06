@@ -188,7 +188,7 @@ public abstract class AbstractPlcConnection implements PlcConnection, PlcConnect
     @Override
     public CompletableFuture<PlcUnsubscriptionResponse> unsubscribe(PlcUnsubscriptionRequest unsubscriptionRequest) {
         if(optimizer != null) {
-            return optimizer.optmizedUnsubscribe(unsubscriptionRequest, protocol);
+            return optimizer.optimizedUnsubscribe(unsubscriptionRequest, protocol);
         }
         return protocol.unsubscribe(unsubscriptionRequest);
     }

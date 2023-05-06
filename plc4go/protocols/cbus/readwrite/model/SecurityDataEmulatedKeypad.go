@@ -192,7 +192,7 @@ func NewSecurityDataEmulatedKeypad(key byte, commandTypeContainer SecurityComman
 }
 
 // Deprecated: use the interface for direct cast
-func CastSecurityDataEmulatedKeypad(structType interface{}) SecurityDataEmulatedKeypad {
+func CastSecurityDataEmulatedKeypad(structType any) SecurityDataEmulatedKeypad {
 	if casted, ok := structType.(SecurityDataEmulatedKeypad); ok {
 		return casted
 	}

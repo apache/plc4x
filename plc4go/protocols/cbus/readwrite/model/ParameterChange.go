@@ -74,7 +74,7 @@ func NewParameterChange() *_ParameterChange {
 }
 
 // Deprecated: use the interface for direct cast
-func CastParameterChange(structType interface{}) ParameterChange {
+func CastParameterChange(structType any) ParameterChange {
 	if casted, ok := structType.(ParameterChange); ok {
 		return casted
 	}

@@ -33,6 +33,7 @@ type SupportedPhysicalMedia uint8
 
 type ISupportedPhysicalMedia interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 	KnxSupport() bool
 	Description() string
@@ -399,8 +400,8 @@ func SupportedPhysicalMediaKnows(value uint8) bool {
 	return false
 }
 
-func CastSupportedPhysicalMedia(structType interface{}) SupportedPhysicalMedia {
-	castFunc := func(typ interface{}) SupportedPhysicalMedia {
+func CastSupportedPhysicalMedia(structType any) SupportedPhysicalMedia {
+	castFunc := func(typ any) SupportedPhysicalMedia {
 		if sSupportedPhysicalMedia, ok := typ.(SupportedPhysicalMedia); ok {
 			return sSupportedPhysicalMedia
 		}

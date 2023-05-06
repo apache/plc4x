@@ -34,7 +34,7 @@ public enum CIPStructTypeCode {
     }
   }
 
-  private int value;
+  private final int value;
 
   CIPStructTypeCode(int value) {
     this.value = value;

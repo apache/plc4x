@@ -37,7 +37,7 @@ public enum SzlModuleTypeClass {
     }
   }
 
-  private byte value;
+  private final byte value;
 
   SzlModuleTypeClass(byte value) {
     this.value = value;

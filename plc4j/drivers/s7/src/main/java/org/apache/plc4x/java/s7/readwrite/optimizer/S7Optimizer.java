@@ -34,6 +34,7 @@ import org.apache.plc4x.java.spi.messages.utils.TagValueItem;
 import org.apache.plc4x.java.spi.optimizer.BaseOptimizer;
 
 import java.util.*;
+import org.apache.plc4x.java.s7.readwrite.tag.S7SzlTag;
 
 public class S7Optimizer extends BaseOptimizer {
 
@@ -49,9 +50,9 @@ public class S7Optimizer extends BaseOptimizer {
         new S7AddressAny(TransportSize.INT, 1, 1, MemoryArea.DATA_BLOCKS, 1, (byte) 0).getLengthInBytes();
 
     @Override
-    protected List<PlcRequest> processReadRequest(PlcReadRequest readRequest, DriverContext driverContext) {
+    protected List<PlcReadRequest> processReadRequest(PlcReadRequest readRequest, DriverContext driverContext) {
         S7DriverContext s7DriverContext = (S7DriverContext) driverContext;
-        List<PlcRequest> processedRequests = new LinkedList<>();
+        List<PlcReadRequest> processedRequests = new LinkedList<>();
 
         // This calculates the size of the header for the request and response.
         int curRequestSize = EMPTY_READ_REQUEST_SIZE;
@@ -62,6 +63,11 @@ public class S7Optimizer extends BaseOptimizer {
         LinkedHashMap<String, PlcTag> curTags = new LinkedHashMap<>();
 
         for (String tagName : readRequest.getTagNames()) {
+            if (readRequest.getTag(tagName) instanceof S7SzlTag){
+                curTags.put(tagName, readRequest.getTag(tagName));
+                continue;
+            }
+            
             S7Tag tag = (S7Tag) readRequest.getTag(tagName);
 
             int readRequestItemSize = S7_ADDRESS_ANY_SIZE;
@@ -110,9 +116,9 @@ public class S7Optimizer extends BaseOptimizer {
     }
 
     @Override
-    protected List<PlcRequest> processWriteRequest(PlcWriteRequest writeRequest, DriverContext driverContext) {
+    protected List<PlcWriteRequest> processWriteRequest(PlcWriteRequest writeRequest, DriverContext driverContext) {
         S7DriverContext s7DriverContext = (S7DriverContext) driverContext;
-        List<PlcRequest> processedRequests = new LinkedList<>();
+        List<PlcWriteRequest> processedRequests = new LinkedList<>();
 
         // This calculates the size of the header for the request and response.
         int curRequestSize = EMPTY_WRITE_REQUEST_SIZE;

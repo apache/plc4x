@@ -21,6 +21,7 @@ package spi
 
 import "github.com/apache/plc4x/plc4go/spi/transports"
 
+// TransportAware exposes transports.Transport related functionality
 type TransportAware interface {
 	// RegisterTransport Manually register a new driver
 	RegisterTransport(transport transports.Transport)

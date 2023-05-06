@@ -94,7 +94,7 @@ func NewBACnetChannelValueReal(realValue BACnetApplicationTagReal, peekedTagHead
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetChannelValueReal(structType interface{}) BACnetChannelValueReal {
+func CastBACnetChannelValueReal(structType any) BACnetChannelValueReal {
 	if casted, ok := structType.(BACnetChannelValueReal); ok {
 		return casted
 	}

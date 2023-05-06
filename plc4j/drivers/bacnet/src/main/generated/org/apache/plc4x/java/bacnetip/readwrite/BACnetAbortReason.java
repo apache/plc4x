@@ -46,7 +46,7 @@ public enum BACnetAbortReason {
     }
   }
 
-  private short value;
+  private final short value;
 
   BACnetAbortReason(short value) {
     this.value = value;

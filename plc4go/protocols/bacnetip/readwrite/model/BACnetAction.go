@@ -33,6 +33,7 @@ type BACnetAction uint8
 
 type IBACnetAction interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 
@@ -80,8 +81,8 @@ func BACnetActionKnows(value uint8) bool {
 	return false
 }
 
-func CastBACnetAction(structType interface{}) BACnetAction {
-	castFunc := func(typ interface{}) BACnetAction {
+func CastBACnetAction(structType any) BACnetAction {
+	castFunc := func(typ any) BACnetAction {
 		if sBACnetAction, ok := typ.(BACnetAction); ok {
 			return sBACnetAction
 		}

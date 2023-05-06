@@ -111,7 +111,7 @@ func NewBACnetApplicationTagReal(payload BACnetTagPayloadReal, header BACnetTagH
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetApplicationTagReal(structType interface{}) BACnetApplicationTagReal {
+func CastBACnetApplicationTagReal(structType any) BACnetApplicationTagReal {
 	if casted, ok := structType.(BACnetApplicationTagReal); ok {
 		return casted
 	}

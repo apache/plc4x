@@ -42,6 +42,7 @@ public abstract class OpenProtocolMessageDynamicPsetSelection extends OpenProtoc
   public Mid getMid() {
     return Mid.DynamicPsetSelection;
   }
+
   // Abstract accessors for discriminator values.
   public abstract Long getRevision();
 

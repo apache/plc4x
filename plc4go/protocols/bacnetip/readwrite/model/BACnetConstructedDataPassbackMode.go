@@ -121,7 +121,7 @@ func NewBACnetConstructedDataPassbackMode(passbackMode BACnetAccessPassbackModeT
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataPassbackMode(structType interface{}) BACnetConstructedDataPassbackMode {
+func CastBACnetConstructedDataPassbackMode(structType any) BACnetConstructedDataPassbackMode {
 	if casted, ok := structType.(BACnetConstructedDataPassbackMode); ok {
 		return casted
 	}

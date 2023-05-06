@@ -75,7 +75,7 @@ public enum MeasurementUnits {
     }
   }
 
-  private short value;
+  private final short value;
 
   MeasurementUnits(short value) {
     this.value = value;

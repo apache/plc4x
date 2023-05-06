@@ -59,8 +59,8 @@ public enum OpcuaDataType {
     }
   }
 
-  private String value;
-  private short variantType;
+  private final String value;
+  private final short variantType;
 
   OpcuaDataType(String value, short variantType) {
     this.value = value;
@@ -85,7 +85,7 @@ public enum OpcuaDataType {
   }
 
   public static List<OpcuaDataType> enumsForFieldVariantType(short fieldValue) {
-    List<OpcuaDataType> _values = new ArrayList();
+    List<OpcuaDataType> _values = new ArrayList<>();
     for (OpcuaDataType _val : OpcuaDataType.values()) {
       if (_val.getVariantType() == fieldValue) {
         _values.add(_val);

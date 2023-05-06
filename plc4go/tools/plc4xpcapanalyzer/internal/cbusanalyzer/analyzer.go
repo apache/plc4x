@@ -153,7 +153,7 @@ func (a *Analyzer) getCurrentPayload(packetInformation common.PacketInformation,
 	if lastElement := currentPayload[len(currentPayload)-1]; (lastElement != '\r') && (lastElement != '\n') {
 		return nil, common.ErrUnterminatedPackage
 	} else {
-		log.Debug().Stringer("packetInformation", packetInformation).Msgf("Last element 0x%x", lastElement)
+		log.Debug().Stringer("packetInformation", packetInformation).Msgf("Last element %#x", lastElement)
 		if shouldClearInboundPayload {
 			if currentSavedPayload := currentInboundPayloads[srcUip]; currentSavedPayload != nil {
 				// We remove our current payload from the beginning of the cache

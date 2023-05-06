@@ -104,10 +104,10 @@ public enum KnxDatapointMainType {
     }
   }
 
-  private int value;
-  private int number;
-  private String name;
-  private short sizeInBits;
+  private final int value;
+  private final int number;
+  private final String name;
+  private final short sizeInBits;
 
   KnxDatapointMainType(int value, int number, String name, short sizeInBits) {
     this.value = value;
@@ -134,7 +134,7 @@ public enum KnxDatapointMainType {
   }
 
   public static List<KnxDatapointMainType> enumsForFieldNumber(int fieldValue) {
-    List<KnxDatapointMainType> _values = new ArrayList();
+    List<KnxDatapointMainType> _values = new ArrayList<>();
     for (KnxDatapointMainType _val : KnxDatapointMainType.values()) {
       if (_val.getNumber() == fieldValue) {
         _values.add(_val);
@@ -157,7 +157,7 @@ public enum KnxDatapointMainType {
   }
 
   public static List<KnxDatapointMainType> enumsForFieldName(String fieldValue) {
-    List<KnxDatapointMainType> _values = new ArrayList();
+    List<KnxDatapointMainType> _values = new ArrayList<>();
     for (KnxDatapointMainType _val : KnxDatapointMainType.values()) {
       if (_val.getName().equals(fieldValue)) {
         _values.add(_val);
@@ -180,7 +180,7 @@ public enum KnxDatapointMainType {
   }
 
   public static List<KnxDatapointMainType> enumsForFieldSizeInBits(short fieldValue) {
-    List<KnxDatapointMainType> _values = new ArrayList();
+    List<KnxDatapointMainType> _values = new ArrayList<>();
     for (KnxDatapointMainType _val : KnxDatapointMainType.values()) {
       if (_val.getSizeInBits() == fieldValue) {
         _values.add(_val);

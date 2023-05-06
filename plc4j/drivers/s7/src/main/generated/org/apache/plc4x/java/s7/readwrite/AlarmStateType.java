@@ -39,7 +39,7 @@ public enum AlarmStateType {
     }
   }
 
-  private short value;
+  private final short value;
 
   AlarmStateType(short value) {
     this.value = value;

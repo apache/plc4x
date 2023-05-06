@@ -121,7 +121,7 @@ func NewBACnetConstructedDataProgramChange(programChange BACnetProgramRequestTag
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataProgramChange(structType interface{}) BACnetConstructedDataProgramChange {
+func CastBACnetConstructedDataProgramChange(structType any) BACnetConstructedDataProgramChange {
 	if casted, ok := structType.(BACnetConstructedDataProgramChange); ok {
 		return casted
 	}

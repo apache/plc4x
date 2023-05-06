@@ -42,6 +42,7 @@ public abstract class OpenProtocolMessageLockAtBatchDoneUpload extends OpenProto
   public Mid getMid() {
     return Mid.LockAtBatchDoneUpload;
   }
+
   // Abstract accessors for discriminator values.
   public abstract Long getRevision();
 

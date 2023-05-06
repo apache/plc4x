@@ -86,7 +86,7 @@ func NewBACnetLightingCommandEnclosed(openingTag BACnetOpeningTag, lightingComma
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetLightingCommandEnclosed(structType interface{}) BACnetLightingCommandEnclosed {
+func CastBACnetLightingCommandEnclosed(structType any) BACnetLightingCommandEnclosed {
 	if casted, ok := structType.(BACnetLightingCommandEnclosed); ok {
 		return casted
 	}

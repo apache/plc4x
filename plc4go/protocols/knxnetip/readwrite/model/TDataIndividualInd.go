@@ -78,7 +78,7 @@ func NewTDataIndividualInd(size uint16) *_TDataIndividualInd {
 }
 
 // Deprecated: use the interface for direct cast
-func CastTDataIndividualInd(structType interface{}) TDataIndividualInd {
+func CastTDataIndividualInd(structType any) TDataIndividualInd {
 	if casted, ok := structType.(TDataIndividualInd); ok {
 		return casted
 	}

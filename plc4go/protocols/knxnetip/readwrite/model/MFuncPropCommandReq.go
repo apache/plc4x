@@ -78,7 +78,7 @@ func NewMFuncPropCommandReq(size uint16) *_MFuncPropCommandReq {
 }
 
 // Deprecated: use the interface for direct cast
-func CastMFuncPropCommandReq(structType interface{}) MFuncPropCommandReq {
+func CastMFuncPropCommandReq(structType any) MFuncPropCommandReq {
 	if casted, ok := structType.(MFuncPropCommandReq); ok {
 		return casted
 	}

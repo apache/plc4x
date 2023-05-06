@@ -86,7 +86,7 @@ func NewBACnetConstructedDataDatetimepatternValueAll(openingTag BACnetOpeningTag
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataDatetimepatternValueAll(structType interface{}) BACnetConstructedDataDatetimepatternValueAll {
+func CastBACnetConstructedDataDatetimepatternValueAll(structType any) BACnetConstructedDataDatetimepatternValueAll {
 	if casted, ok := structType.(BACnetConstructedDataDatetimepatternValueAll); ok {
 		return casted
 	}

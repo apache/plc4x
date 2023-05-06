@@ -121,7 +121,7 @@ func NewBACnetConstructedDataCurrentCommandPriority(currentCommandPriority BACne
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataCurrentCommandPriority(structType interface{}) BACnetConstructedDataCurrentCommandPriority {
+func CastBACnetConstructedDataCurrentCommandPriority(structType any) BACnetConstructedDataCurrentCommandPriority {
 	if casted, ok := structType.(BACnetConstructedDataCurrentCommandPriority); ok {
 		return casted
 	}

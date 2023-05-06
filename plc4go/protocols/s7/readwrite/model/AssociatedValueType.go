@@ -22,7 +22,6 @@ package model
 import (
 	"context"
 	"fmt"
-	spiContext "github.com/apache/plc4x/plc4go/spi/context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -91,7 +90,7 @@ func NewAssociatedValueType(returnCode DataTransportErrorCode, transportSize Dat
 }
 
 // Deprecated: use the interface for direct cast
-func CastAssociatedValueType(structType interface{}) AssociatedValueType {
+func CastAssociatedValueType(structType any) AssociatedValueType {
 	if casted, ok := structType.(AssociatedValueType); ok {
 		return casted
 	}
@@ -115,7 +114,7 @@ func (m *_AssociatedValueType) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits += 8
 
 	// Manual Field (valueLength)
-	lengthInBits += uint16(int32(16))
+	lengthInBits += uint16(int32(2))
 
 	// Array field
 	if len(m.Data) > 0 {
@@ -169,7 +168,7 @@ func AssociatedValueTypeParseWithBuffer(ctx context.Context, readBuffer utils.Re
 	}
 
 	// Manual Field (valueLength)
-	_valueLength, _valueLengthErr := RightShift3(readBuffer)
+	_valueLength, _valueLengthErr := RightShift3(readBuffer, transportSize)
 	if _valueLengthErr != nil {
 		return nil, errors.Wrap(_valueLengthErr, "Error parsing 'valueLength' field of AssociatedValueType")
 	}
@@ -191,7 +190,7 @@ func AssociatedValueTypeParseWithBuffer(ctx context.Context, readBuffer utils.Re
 	{
 		_numItems := uint16(EventItemLength(readBuffer, valueLength))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := spiContext.CreateArrayContext(ctx, int(_numItems), int(_curItem))
+			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
 			_ = _curItem
 			_item, _err := readBuffer.ReadUint8("", 8)

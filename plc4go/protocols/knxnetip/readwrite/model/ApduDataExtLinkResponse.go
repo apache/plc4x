@@ -78,7 +78,7 @@ func NewApduDataExtLinkResponse(length uint8) *_ApduDataExtLinkResponse {
 }
 
 // Deprecated: use the interface for direct cast
-func CastApduDataExtLinkResponse(structType interface{}) ApduDataExtLinkResponse {
+func CastApduDataExtLinkResponse(structType any) ApduDataExtLinkResponse {
 	if casted, ok := structType.(ApduDataExtLinkResponse); ok {
 		return casted
 	}

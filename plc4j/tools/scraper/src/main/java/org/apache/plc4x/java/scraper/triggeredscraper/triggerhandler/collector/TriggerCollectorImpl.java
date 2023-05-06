@@ -243,12 +243,12 @@ public class TriggerCollectorImpl implements TriggerCollector {
     }
 
 
-    class RequestElement{
-        private String plcConnectionString;
-        private String plcTag;
+    static class RequestElement{
+        private final String plcConnectionString;
+        private final String plcTag;
         private LocalDateTime lastAcquirement;
         private Object result;
-        private String uuid;
+        private final String uuid;
         private long scanIntervalMs;
 
 

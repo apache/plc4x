@@ -37,7 +37,7 @@ public enum HVACSensorStatus {
     }
   }
 
-  private short value;
+  private final short value;
 
   HVACSensorStatus(short value) {
     this.value = value;

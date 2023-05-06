@@ -111,7 +111,7 @@ func NewBACnetEventSummary(objectIdentifier BACnetContextTagObjectIdentifier, ev
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetEventSummary(structType interface{}) BACnetEventSummary {
+func CastBACnetEventSummary(structType any) BACnetEventSummary {
 	if casted, ok := structType.(BACnetEventSummary); ok {
 		return casted
 	}

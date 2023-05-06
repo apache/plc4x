@@ -111,7 +111,7 @@ func NewBACnetApplicationTagCharacterString(payload BACnetTagPayloadCharacterStr
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetApplicationTagCharacterString(structType interface{}) BACnetApplicationTagCharacterString {
+func CastBACnetApplicationTagCharacterString(structType any) BACnetApplicationTagCharacterString {
 	if casted, ok := structType.(BACnetApplicationTagCharacterString); ok {
 		return casted
 	}

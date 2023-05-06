@@ -118,7 +118,7 @@ func NewAirConditioningDataSetHumiditySetbackLimit(zoneGroup byte, zoneList HVAC
 }
 
 // Deprecated: use the interface for direct cast
-func CastAirConditioningDataSetHumiditySetbackLimit(structType interface{}) AirConditioningDataSetHumiditySetbackLimit {
+func CastAirConditioningDataSetHumiditySetbackLimit(structType any) AirConditioningDataSetHumiditySetbackLimit {
 	if casted, ok := structType.(AirConditioningDataSetHumiditySetbackLimit); ok {
 		return casted
 	}

@@ -64,7 +64,7 @@ public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, Object> {
         this.registeredHandlers = new ConcurrentLinkedQueue<>();
         this.protocolBase = protocol;
         this.authentication = authentication;
-        this.protocolBase.setContext(new ConversationContext<T>() {
+        this.protocolBase.setContext(new ConversationContext<>() {
 
             @Override
             public PlcAuthentication getAuthentication() {
@@ -166,8 +166,7 @@ public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, Object> {
                 // Check all Commands / Functions
                 Deque<Either<Function<?, ?>, Predicate<?>>> commands = registration.getCommands();
                 Object instance = t;
-                for (Iterator<Either<Function<?, ?>, Predicate<?>>> iterator = commands.iterator(); iterator.hasNext(); ) {
-                    Either<Function<?, ?>, Predicate<?>> either = iterator.next();
+                for (Either<Function<?, ?>, Predicate<?>> either : commands) {
                     if (either.isLeft()) {
                         Function unwrap = either.getLeft();
                         instance = unwrap.apply(instance);

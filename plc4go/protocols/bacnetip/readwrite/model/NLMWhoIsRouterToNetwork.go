@@ -96,7 +96,7 @@ func NewNLMWhoIsRouterToNetwork(destinationNetworkAddress *uint16, apduLength ui
 }
 
 // Deprecated: use the interface for direct cast
-func CastNLMWhoIsRouterToNetwork(structType interface{}) NLMWhoIsRouterToNetwork {
+func CastNLMWhoIsRouterToNetwork(structType any) NLMWhoIsRouterToNetwork {
 	if casted, ok := structType.(NLMWhoIsRouterToNetwork); ok {
 		return casted
 	}

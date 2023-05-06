@@ -96,7 +96,7 @@ func NewApduDataExtAuthorizeResponse(level uint8, length uint8) *_ApduDataExtAut
 }
 
 // Deprecated: use the interface for direct cast
-func CastApduDataExtAuthorizeResponse(structType interface{}) ApduDataExtAuthorizeResponse {
+func CastApduDataExtAuthorizeResponse(structType any) ApduDataExtAuthorizeResponse {
 	if casted, ok := structType.(ApduDataExtAuthorizeResponse); ok {
 		return casted
 	}

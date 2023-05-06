@@ -121,7 +121,7 @@ func NewBACnetConstructedDataLocalForwardingOnly(localForwardingOnly BACnetAppli
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataLocalForwardingOnly(structType interface{}) BACnetConstructedDataLocalForwardingOnly {
+func CastBACnetConstructedDataLocalForwardingOnly(structType any) BACnetConstructedDataLocalForwardingOnly {
 	if casted, ok := structType.(BACnetConstructedDataLocalForwardingOnly); ok {
 		return casted
 	}

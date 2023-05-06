@@ -39,8 +39,8 @@ public enum ProtectionLevel {
     }
   }
 
-  private byte value;
-  private String description;
+  private final byte value;
+  private final String description;
 
   ProtectionLevel(byte value, String description) {
     this.value = value;
@@ -65,7 +65,7 @@ public enum ProtectionLevel {
   }
 
   public static List<ProtectionLevel> enumsForFieldDescription(String fieldValue) {
-    List<ProtectionLevel> _values = new ArrayList();
+    List<ProtectionLevel> _values = new ArrayList<>();
     for (ProtectionLevel _val : ProtectionLevel.values()) {
       if (_val.getDescription().equals(fieldValue)) {
         _values.add(_val);

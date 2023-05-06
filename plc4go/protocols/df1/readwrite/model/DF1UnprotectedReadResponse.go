@@ -99,7 +99,7 @@ func NewDF1UnprotectedReadResponse(data []byte, status uint8, transactionCounter
 }
 
 // Deprecated: use the interface for direct cast
-func CastDF1UnprotectedReadResponse(structType interface{}) DF1UnprotectedReadResponse {
+func CastDF1UnprotectedReadResponse(structType any) DF1UnprotectedReadResponse {
 	if casted, ok := structType.(DF1UnprotectedReadResponse); ok {
 		return casted
 	}

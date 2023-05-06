@@ -70,7 +70,7 @@ func init() {
 	_ = utils.Dump
 }
 
-func (m ${helper.getSanitizedProtocolName()?cap_first}XmlParserHelper) Parse(typeName string, xmlString string, parserArguments ...string) (interface{}, error) {
+func (m ${helper.getSanitizedProtocolName()?cap_first}XmlParserHelper) Parse(typeName string, xmlString string, parserArguments ...string) (any, error) {
     switch typeName {
     <#list helper.getComplexTypeRootDefinitions() as typeDefinition>
         case "${typeDefinition.name}":

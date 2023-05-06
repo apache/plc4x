@@ -70,8 +70,8 @@ public enum PlcValueType {
         }
     }
 
-    private short value;
-    private Class<?> defaultJavaType;
+    private final short value;
+    private final Class<?> defaultJavaType;
 
     PlcValueType(short value, Class<?> defaultJavaType) {
         this.value = value;

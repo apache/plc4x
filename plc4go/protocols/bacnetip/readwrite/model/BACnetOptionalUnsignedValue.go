@@ -94,7 +94,7 @@ func NewBACnetOptionalUnsignedValue(unsignedValue BACnetApplicationTagUnsignedIn
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetOptionalUnsignedValue(structType interface{}) BACnetOptionalUnsignedValue {
+func CastBACnetOptionalUnsignedValue(structType any) BACnetOptionalUnsignedValue {
 	if casted, ok := structType.(BACnetOptionalUnsignedValue); ok {
 		return casted
 	}

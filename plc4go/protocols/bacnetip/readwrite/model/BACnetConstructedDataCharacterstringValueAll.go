@@ -86,7 +86,7 @@ func NewBACnetConstructedDataCharacterstringValueAll(openingTag BACnetOpeningTag
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataCharacterstringValueAll(structType interface{}) BACnetConstructedDataCharacterstringValueAll {
+func CastBACnetConstructedDataCharacterstringValueAll(structType any) BACnetConstructedDataCharacterstringValueAll {
 	if casted, ok := structType.(BACnetConstructedDataCharacterstringValueAll); ok {
 		return casted
 	}

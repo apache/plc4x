@@ -121,7 +121,7 @@ func NewBACnetConstructedDataLightingOutputTrackingValue(trackingValue BACnetApp
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataLightingOutputTrackingValue(structType interface{}) BACnetConstructedDataLightingOutputTrackingValue {
+func CastBACnetConstructedDataLightingOutputTrackingValue(structType any) BACnetConstructedDataLightingOutputTrackingValue {
 	if casted, ok := structType.(BACnetConstructedDataLightingOutputTrackingValue); ok {
 		return casted
 	}

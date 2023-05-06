@@ -80,7 +80,7 @@ func NewBACnetFaultTypeTagged(header BACnetTagHeader, value BACnetFaultType, tag
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetFaultTypeTagged(structType interface{}) BACnetFaultTypeTagged {
+func CastBACnetFaultTypeTagged(structType any) BACnetFaultTypeTagged {
 	if casted, ok := structType.(BACnetFaultTypeTagged); ok {
 		return casted
 	}

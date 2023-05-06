@@ -104,7 +104,7 @@ func NewApduDataExtAuthorizeRequest(level uint8, data []byte, length uint8) *_Ap
 }
 
 // Deprecated: use the interface for direct cast
-func CastApduDataExtAuthorizeRequest(structType interface{}) ApduDataExtAuthorizeRequest {
+func CastApduDataExtAuthorizeRequest(structType any) ApduDataExtAuthorizeRequest {
 	if casted, ok := structType.(ApduDataExtAuthorizeRequest); ok {
 		return casted
 	}

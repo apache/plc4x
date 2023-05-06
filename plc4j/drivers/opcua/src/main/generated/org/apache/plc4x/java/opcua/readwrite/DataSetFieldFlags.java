@@ -35,7 +35,7 @@ public enum DataSetFieldFlags {
     }
   }
 
-  private int value;
+  private final int value;
 
   DataSetFieldFlags(int value) {
     this.value = value;

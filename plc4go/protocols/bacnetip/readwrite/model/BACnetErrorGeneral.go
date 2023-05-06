@@ -96,7 +96,7 @@ func NewBACnetErrorGeneral(error Error) *_BACnetErrorGeneral {
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetErrorGeneral(structType interface{}) BACnetErrorGeneral {
+func CastBACnetErrorGeneral(structType any) BACnetErrorGeneral {
 	if casted, ok := structType.(BACnetErrorGeneral); ok {
 		return casted
 	}

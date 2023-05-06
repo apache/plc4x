@@ -99,7 +99,7 @@ func NewBACnetServiceAckReadPropertyConditional(bytesOfRemovedService []byte, se
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetServiceAckReadPropertyConditional(structType interface{}) BACnetServiceAckReadPropertyConditional {
+func CastBACnetServiceAckReadPropertyConditional(structType any) BACnetServiceAckReadPropertyConditional {
 	if casted, ok := structType.(BACnetServiceAckReadPropertyConditional); ok {
 		return casted
 	}

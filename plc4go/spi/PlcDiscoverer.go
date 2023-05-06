@@ -21,11 +21,15 @@ package spi
 
 import (
 	"context"
-	"github.com/apache/plc4x/plc4go/pkg/api/model"
+
+	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/spi/options"
 )
 
+// PlcDiscoverer defines an interface to discover PLCs
 type PlcDiscoverer interface {
-	Discover(callback func(event model.PlcDiscoveryItem), discoveryOptions ...options.WithDiscoveryOption) error
-	DiscoverWithContext(ctx context.Context, callback func(event model.PlcDiscoveryItem), discoveryOptions ...options.WithDiscoveryOption) error
+	// Discover discovers PLCs according to discoveryOptions and calls callback on every discovery
+	Discover(callback func(event apiModel.PlcDiscoveryItem), discoveryOptions ...options.WithDiscoveryOption) error
+	// DiscoverWithContext discovers PLCs according to discoveryOptions and calls callback on every discovery
+	DiscoverWithContext(ctx context.Context, callback func(event apiModel.PlcDiscoveryItem), discoveryOptions ...options.WithDiscoveryOption) error
 }

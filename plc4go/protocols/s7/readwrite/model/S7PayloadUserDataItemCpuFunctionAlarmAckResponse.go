@@ -22,7 +22,6 @@ package model
 import (
 	"context"
 	"fmt"
-	spiContext "github.com/apache/plc4x/plc4go/spi/context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -60,6 +59,10 @@ type _S7PayloadUserDataItemCpuFunctionAlarmAckResponse struct {
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
+func (m *_S7PayloadUserDataItemCpuFunctionAlarmAckResponse) GetCpuFunctionGroup() uint8 {
+	return 0x04
+}
+
 func (m *_S7PayloadUserDataItemCpuFunctionAlarmAckResponse) GetCpuFunctionType() uint8 {
 	return 0x08
 }
@@ -68,18 +71,15 @@ func (m *_S7PayloadUserDataItemCpuFunctionAlarmAckResponse) GetCpuSubfunction() 
 	return 0x0b
 }
 
-func (m *_S7PayloadUserDataItemCpuFunctionAlarmAckResponse) GetDataLength() uint16 {
-	return 0
-}
-
 ///////////////////////
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_S7PayloadUserDataItemCpuFunctionAlarmAckResponse) InitializeParent(parent S7PayloadUserDataItem, returnCode DataTransportErrorCode, transportSize DataTransportSize) {
+func (m *_S7PayloadUserDataItemCpuFunctionAlarmAckResponse) InitializeParent(parent S7PayloadUserDataItem, returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16) {
 	m.ReturnCode = returnCode
 	m.TransportSize = transportSize
+	m.DataLength = dataLength
 }
 
 func (m *_S7PayloadUserDataItemCpuFunctionAlarmAckResponse) GetParent() S7PayloadUserDataItem {
@@ -105,18 +105,18 @@ func (m *_S7PayloadUserDataItemCpuFunctionAlarmAckResponse) GetMessageObjects() 
 ///////////////////////////////////////////////////////////
 
 // NewS7PayloadUserDataItemCpuFunctionAlarmAckResponse factory function for _S7PayloadUserDataItemCpuFunctionAlarmAckResponse
-func NewS7PayloadUserDataItemCpuFunctionAlarmAckResponse(functionId uint8, messageObjects []uint8, returnCode DataTransportErrorCode, transportSize DataTransportSize) *_S7PayloadUserDataItemCpuFunctionAlarmAckResponse {
+func NewS7PayloadUserDataItemCpuFunctionAlarmAckResponse(functionId uint8, messageObjects []uint8, returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16) *_S7PayloadUserDataItemCpuFunctionAlarmAckResponse {
 	_result := &_S7PayloadUserDataItemCpuFunctionAlarmAckResponse{
 		FunctionId:             functionId,
 		MessageObjects:         messageObjects,
-		_S7PayloadUserDataItem: NewS7PayloadUserDataItem(returnCode, transportSize),
+		_S7PayloadUserDataItem: NewS7PayloadUserDataItem(returnCode, transportSize, dataLength),
 	}
 	_result._S7PayloadUserDataItem._S7PayloadUserDataItemChildRequirements = _result
 	return _result
 }
 
 // Deprecated: use the interface for direct cast
-func CastS7PayloadUserDataItemCpuFunctionAlarmAckResponse(structType interface{}) S7PayloadUserDataItemCpuFunctionAlarmAckResponse {
+func CastS7PayloadUserDataItemCpuFunctionAlarmAckResponse(structType any) S7PayloadUserDataItemCpuFunctionAlarmAckResponse {
 	if casted, ok := structType.(S7PayloadUserDataItemCpuFunctionAlarmAckResponse); ok {
 		return casted
 	}
@@ -151,11 +151,11 @@ func (m *_S7PayloadUserDataItemCpuFunctionAlarmAckResponse) GetLengthInBytes(ctx
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func S7PayloadUserDataItemCpuFunctionAlarmAckResponseParse(theBytes []byte, cpuFunctionType uint8, cpuSubfunction uint8) (S7PayloadUserDataItemCpuFunctionAlarmAckResponse, error) {
-	return S7PayloadUserDataItemCpuFunctionAlarmAckResponseParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), cpuFunctionType, cpuSubfunction)
+func S7PayloadUserDataItemCpuFunctionAlarmAckResponseParse(theBytes []byte, cpuFunctionGroup uint8, cpuFunctionType uint8, cpuSubfunction uint8) (S7PayloadUserDataItemCpuFunctionAlarmAckResponse, error) {
+	return S7PayloadUserDataItemCpuFunctionAlarmAckResponseParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), cpuFunctionGroup, cpuFunctionType, cpuSubfunction)
 }
 
-func S7PayloadUserDataItemCpuFunctionAlarmAckResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cpuFunctionType uint8, cpuSubfunction uint8) (S7PayloadUserDataItemCpuFunctionAlarmAckResponse, error) {
+func S7PayloadUserDataItemCpuFunctionAlarmAckResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cpuFunctionGroup uint8, cpuFunctionType uint8, cpuSubfunction uint8) (S7PayloadUserDataItemCpuFunctionAlarmAckResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("S7PayloadUserDataItemCpuFunctionAlarmAckResponse"); pullErr != nil {
@@ -191,7 +191,7 @@ func S7PayloadUserDataItemCpuFunctionAlarmAckResponseParseWithBuffer(ctx context
 	{
 		_numItems := uint16(numberOfObjects)
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := spiContext.CreateArrayContext(ctx, int(_numItems), int(_curItem))
+			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
 			_ = _curItem
 			_item, _err := readBuffer.ReadUint8("", 8)

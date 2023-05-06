@@ -77,7 +77,7 @@ func NewMediaTransportControlDataStatusRequest(commandTypeContainer MediaTranspo
 }
 
 // Deprecated: use the interface for direct cast
-func CastMediaTransportControlDataStatusRequest(structType interface{}) MediaTransportControlDataStatusRequest {
+func CastMediaTransportControlDataStatusRequest(structType any) MediaTransportControlDataStatusRequest {
 	if casted, ok := structType.(MediaTransportControlDataStatusRequest); ok {
 		return casted
 	}

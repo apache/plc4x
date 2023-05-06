@@ -29,8 +29,8 @@ import java.math.BigInteger;
 public class PlcSINT extends PlcIECValue<Byte> {
 
     private static final String VALUE_OUT_OF_RANGE = "Value of type %s is out of range %d - %d for a %s Value";
-    static Byte minValue = Byte.MIN_VALUE;
-    static Byte maxValue = Byte.MAX_VALUE;
+    static final Byte minValue = Byte.MIN_VALUE;
+    static final Byte maxValue = Byte.MAX_VALUE;
 
     public static PlcSINT of(Object value) {
         if (value instanceof Boolean) {

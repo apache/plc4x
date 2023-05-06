@@ -35,7 +35,7 @@ public enum CharacterEncoding {
     }
   }
 
-  private byte value;
+  private final byte value;
 
   CharacterEncoding(byte value) {
     this.value = value;

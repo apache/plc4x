@@ -121,7 +121,7 @@ func NewBACnetConstructedDataLoggingType(loggingType BACnetLoggingTypeTagged, op
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataLoggingType(structType interface{}) BACnetConstructedDataLoggingType {
+func CastBACnetConstructedDataLoggingType(structType any) BACnetConstructedDataLoggingType {
 	if casted, ok := structType.(BACnetConstructedDataLoggingType); ok {
 		return casted
 	}

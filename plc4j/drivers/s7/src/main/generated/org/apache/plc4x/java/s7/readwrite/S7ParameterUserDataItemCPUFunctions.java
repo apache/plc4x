@@ -215,14 +215,24 @@ public class S7ParameterUserDataItemCPUFunctions extends S7ParameterUserDataItem
 
     Short dataUnitReferenceNumber =
         readOptionalField(
-            "dataUnitReferenceNumber", readUnsignedShort(readBuffer, 8), (cpuFunctionType) == (8));
+            "dataUnitReferenceNumber",
+            readUnsignedShort(readBuffer, 8),
+            (((cpuFunctionType) == (8)))
+                || (((((cpuFunctionType) == (0))) && (((cpuFunctionGroup) == (2))))));
 
     Short lastDataUnit =
         readOptionalField(
-            "lastDataUnit", readUnsignedShort(readBuffer, 8), (cpuFunctionType) == (8));
+            "lastDataUnit",
+            readUnsignedShort(readBuffer, 8),
+            (((cpuFunctionType) == (8)))
+                || (((((cpuFunctionType) == (0))) && (((cpuFunctionGroup) == (2))))));
 
     Integer errorCode =
-        readOptionalField("errorCode", readUnsignedInt(readBuffer, 16), (cpuFunctionType) == (8));
+        readOptionalField(
+            "errorCode",
+            readUnsignedInt(readBuffer, 16),
+            (((cpuFunctionType) == (8)))
+                || (((((cpuFunctionType) == (0))) && (((cpuFunctionGroup) == (2))))));
 
     readBuffer.closeContext("S7ParameterUserDataItemCPUFunctions");
     // Create the instance

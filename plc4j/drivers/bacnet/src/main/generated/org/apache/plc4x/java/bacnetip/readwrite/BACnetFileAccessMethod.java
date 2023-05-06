@@ -35,7 +35,7 @@ public enum BACnetFileAccessMethod {
     }
   }
 
-  private short value;
+  private final short value;
 
   BACnetFileAccessMethod(short value) {
     this.value = value;

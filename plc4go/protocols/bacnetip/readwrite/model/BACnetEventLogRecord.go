@@ -76,7 +76,7 @@ func NewBACnetEventLogRecord(timestamp BACnetDateTimeEnclosed, logDatum BACnetEv
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetEventLogRecord(structType interface{}) BACnetEventLogRecord {
+func CastBACnetEventLogRecord(structType any) BACnetEventLogRecord {
 	if casted, ok := structType.(BACnetEventLogRecord); ok {
 		return casted
 	}

@@ -215,7 +215,7 @@ func NewBACnetWeekNDayTagged(header BACnetTagHeader, month uint8, weekOfMonth ui
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetWeekNDayTagged(structType interface{}) BACnetWeekNDayTagged {
+func CastBACnetWeekNDayTagged(structType any) BACnetWeekNDayTagged {
 	if casted, ok := structType.(BACnetWeekNDayTagged); ok {
 		return casted
 	}

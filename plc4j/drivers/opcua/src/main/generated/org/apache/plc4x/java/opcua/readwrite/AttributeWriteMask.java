@@ -60,7 +60,7 @@ public enum AttributeWriteMask {
     }
   }
 
-  private long value;
+  private final long value;
 
   AttributeWriteMask(long value) {
     this.value = value;

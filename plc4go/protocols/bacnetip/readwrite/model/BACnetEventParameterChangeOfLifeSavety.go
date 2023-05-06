@@ -134,7 +134,7 @@ func NewBACnetEventParameterChangeOfLifeSavety(openingTag BACnetOpeningTag, time
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetEventParameterChangeOfLifeSavety(structType interface{}) BACnetEventParameterChangeOfLifeSavety {
+func CastBACnetEventParameterChangeOfLifeSavety(structType any) BACnetEventParameterChangeOfLifeSavety {
 	if casted, ok := structType.(BACnetEventParameterChangeOfLifeSavety); ok {
 		return casted
 	}

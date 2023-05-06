@@ -26,6 +26,7 @@
 #include "plc4c/driver_s7_encode_decode.h"
 #include "plc4c/driver_s7_packets.h"
 #include "cotp_protocol_class.h"
+#include "szl_data_tree_item.h"
 #include "tpkt_packet.h"
 
 

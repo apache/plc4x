@@ -22,7 +22,6 @@ package model
 import (
 	"context"
 	"fmt"
-	spiContext "github.com/apache/plc4x/plc4go/spi/context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
@@ -133,7 +132,7 @@ func NewBACnetConstructedDataConfigurationFiles(numberOfDataElements BACnetAppli
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataConfigurationFiles(structType interface{}) BACnetConstructedDataConfigurationFiles {
+func CastBACnetConstructedDataConfigurationFiles(structType any) BACnetConstructedDataConfigurationFiles {
 	if casted, ok := structType.(BACnetConstructedDataConfigurationFiles); ok {
 		return casted
 	}
@@ -289,7 +288,7 @@ func (m *_BACnetConstructedDataConfigurationFiles) SerializeWithWriteBuffer(ctx 
 		}
 		for _curItem, _element := range m.GetConfigurationFiles() {
 			_ = _curItem
-			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetConfigurationFiles()), _curItem)
+			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetConfigurationFiles()), _curItem)
 			_ = arrayCtx
 			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 			if _elementErr != nil {

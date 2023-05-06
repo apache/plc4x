@@ -96,7 +96,7 @@ func (rb *byteReadBuffer) Reset(pos uint16) {
 	bytesToSkip := make([]byte, pos)
 	_, err := rb.reader.Read(bytesToSkip)
 	if err != nil {
-		panic(err)
+		panic(errors.Wrap(err, "Should not happen")) // TODO: maybe this is a possible occurence since we accept a argument, better returns a error
 	}
 	rb.pos = uint64(pos * 8)
 }
@@ -381,6 +381,7 @@ func (rb *byteReadBuffer) ReadString(logicalName string, bitLength uint32, encod
 	if err != nil {
 		return "", errors.Wrap(err, "Error reading big int")
 	}
+	// TODO: make the null-termination a reader arg
 	// End the string at the 0-character.
 	for i, value := range stringBytes {
 		if value == 0x00 {

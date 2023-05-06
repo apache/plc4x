@@ -48,20 +48,20 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OpcuaSubscriptionHandle.class);
 
-    private Set<Consumer<PlcSubscriptionEvent>> consumers;
-    private List<String> tagNames;
-    private SecureChannel channel;
-    private PlcSubscriptionRequest subscriptionRequest;
-    private AtomicBoolean destroy = new AtomicBoolean(false);
-    private OpcuaProtocolLogic plcSubscriber;
-    private Long subscriptionId;
-    private long cycleTime;
-    private long revisedCycleTime;
+    private final Set<Consumer<PlcSubscriptionEvent>> consumers;
+    private final List<String> tagNames;
+    private final SecureChannel channel;
+    private final PlcSubscriptionRequest subscriptionRequest;
+    private final AtomicBoolean destroy = new AtomicBoolean(false);
+    private final OpcuaProtocolLogic plcSubscriber;
+    private final Long subscriptionId;
+    private final long cycleTime;
+    private final long revisedCycleTime;
     private boolean complete = false;
 
     private final AtomicLong clientHandles = new AtomicLong(1L);
 
-    private ConversationContext<OpcuaAPU> context;
+    private final ConversationContext<OpcuaAPU> context;
 
     public OpcuaSubscriptionHandle(ConversationContext<OpcuaAPU> context, OpcuaProtocolLogic plcSubscriber, SecureChannel channel, PlcSubscriptionRequest subscriptionRequest, Long subscriptionId, long cycleTime) {
         super(plcSubscriber);
@@ -85,16 +85,16 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
 
     private CompletableFuture<CreateMonitoredItemsResponse> onSubscribeCreateMonitoredItemsRequest() {
         List<ExtensionObjectDefinition> requestList = new ArrayList<>(this.tagNames.size());
-        for (int i = 0; i < this.tagNames.size(); i++) {
-            final DefaultPlcSubscriptionTag tagDefaultPlcSubscription = (DefaultPlcSubscriptionTag) subscriptionRequest.getTag(tagNames.get(i));
+        for (String tagName : this.tagNames) {
+            final DefaultPlcSubscriptionTag tagDefaultPlcSubscription = (DefaultPlcSubscriptionTag) subscriptionRequest.getTag(tagName);
 
             NodeId idNode = generateNodeId((OpcuaTag) tagDefaultPlcSubscription.getTag());
 
             ReadValueId readValueId = new ReadValueId(
-                idNode,
-                0xD,
-                OpcuaProtocolLogic.NULL_STRING,
-                new QualifiedName(0, OpcuaProtocolLogic.NULL_STRING));
+                    idNode,
+                    0xD,
+                    OpcuaProtocolLogic.NULL_STRING,
+                    new QualifiedName(0, OpcuaProtocolLogic.NULL_STRING));
 
             MonitoringMode monitoringMode;
             switch (tagDefaultPlcSubscription.getPlcSubscriptionType()) {
@@ -114,15 +114,15 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
             long clientHandle = clientHandles.getAndIncrement();
 
             MonitoringParameters parameters = new MonitoringParameters(
-                clientHandle,
-                (double) cycleTime,     // sampling interval
-                OpcuaProtocolLogic.NULL_EXTENSION_OBJECT,       // filter, null means use default
-                1L,   // queue size
-                true        // discard oldest
+                    clientHandle,
+                    (double) cycleTime,     // sampling interval
+                    OpcuaProtocolLogic.NULL_EXTENSION_OBJECT,       // filter, null means use default
+                    1L,   // queue size
+                    true        // discard oldest
             );
 
             MonitoredItemCreateRequest request = new MonitoredItemCreateRequest(
-                readValueId, monitoringMode, parameters);
+                    readValueId, monitoringMode, parameters);
 
             requestList.add(request);
         }

@@ -38,9 +38,9 @@ public class DefaultPlcDriverManager implements PlcDriverManager, PlcConnectionM
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DefaultPlcDriverManager.class);
 
-    protected ClassLoader classLoader;
+    protected final ClassLoader classLoader;
 
-    private Map<String, PlcDriver> driverMap;
+    private final Map<String, PlcDriver> driverMap;
 
     public DefaultPlcDriverManager() {
         this(Thread.currentThread().getContextClassLoader());

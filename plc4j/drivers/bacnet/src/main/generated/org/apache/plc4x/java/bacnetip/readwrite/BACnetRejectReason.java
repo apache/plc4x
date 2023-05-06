@@ -44,7 +44,7 @@ public enum BACnetRejectReason {
     }
   }
 
-  private short value;
+  private final short value;
 
   BACnetRejectReason(short value) {
     this.value = value;

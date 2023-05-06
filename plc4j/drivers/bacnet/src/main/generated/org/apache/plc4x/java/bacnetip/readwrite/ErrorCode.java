@@ -163,7 +163,7 @@ public enum ErrorCode {
     }
   }
 
-  private int value;
+  private final int value;
 
   ErrorCode(int value) {
     this.value = value;

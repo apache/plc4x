@@ -18,7 +18,6 @@
  */
 package org.apache.plc4x.plugins.codegenerator.language.mspec.model.fields;
 
-import org.apache.plc4x.plugins.codegenerator.types.definitions.TypeDefinition;
 import org.apache.plc4x.plugins.codegenerator.types.references.TypeReference;
 import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 
@@ -31,7 +30,7 @@ public abstract class DefaultTypedField extends DefaultField {
 
     protected TypeReference type;
 
-    protected CompletableFuture<TypeReference> typeReferenceCompletionStage = new CompletableFuture<>();
+    protected final CompletableFuture<TypeReference> typeReferenceCompletionStage = new CompletableFuture<>();
 
     public DefaultTypedField(Map<String, Term> attributes) {
         super(attributes);

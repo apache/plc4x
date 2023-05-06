@@ -121,7 +121,7 @@ func NewBACnetConstructedDataUpdateTime(updateTime BACnetDateTime, openingTag BA
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataUpdateTime(structType interface{}) BACnetConstructedDataUpdateTime {
+func CastBACnetConstructedDataUpdateTime(structType any) BACnetConstructedDataUpdateTime {
 	if casted, ok := structType.(BACnetConstructedDataUpdateTime); ok {
 		return casted
 	}

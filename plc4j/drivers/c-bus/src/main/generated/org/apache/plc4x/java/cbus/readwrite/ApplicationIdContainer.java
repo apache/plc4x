@@ -299,9 +299,9 @@ public enum ApplicationIdContainer {
     }
   }
 
-  private short value;
-  private LightingCompatible lightingCompatible;
-  private ApplicationId applicationId;
+  private final short value;
+  private final LightingCompatible lightingCompatible;
+  private final ApplicationId applicationId;
 
   ApplicationIdContainer(
       short value, LightingCompatible lightingCompatible, ApplicationId applicationId) {
@@ -330,7 +330,7 @@ public enum ApplicationIdContainer {
 
   public static List<ApplicationIdContainer> enumsForFieldLightingCompatible(
       LightingCompatible fieldValue) {
-    List<ApplicationIdContainer> _values = new ArrayList();
+    List<ApplicationIdContainer> _values = new ArrayList<>();
     for (ApplicationIdContainer _val : ApplicationIdContainer.values()) {
       if (_val.getLightingCompatible() == fieldValue) {
         _values.add(_val);
@@ -353,7 +353,7 @@ public enum ApplicationIdContainer {
   }
 
   public static List<ApplicationIdContainer> enumsForFieldApplicationId(ApplicationId fieldValue) {
-    List<ApplicationIdContainer> _values = new ArrayList();
+    List<ApplicationIdContainer> _values = new ArrayList<>();
     for (ApplicationIdContainer _val : ApplicationIdContainer.values()) {
       if (_val.getApplicationId() == fieldValue) {
         _values.add(_val);

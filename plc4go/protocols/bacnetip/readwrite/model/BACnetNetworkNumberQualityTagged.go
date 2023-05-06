@@ -80,7 +80,7 @@ func NewBACnetNetworkNumberQualityTagged(header BACnetTagHeader, value BACnetNet
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetNetworkNumberQualityTagged(structType interface{}) BACnetNetworkNumberQualityTagged {
+func CastBACnetNetworkNumberQualityTagged(structType any) BACnetNetworkNumberQualityTagged {
 	if casted, ok := structType.(BACnetNetworkNumberQualityTagged); ok {
 		return casted
 	}

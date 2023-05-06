@@ -121,7 +121,7 @@ func NewBACnetConstructedDataLastKeyServer(lastKeyServer BACnetAddressBinding, o
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataLastKeyServer(structType interface{}) BACnetConstructedDataLastKeyServer {
+func CastBACnetConstructedDataLastKeyServer(structType any) BACnetConstructedDataLastKeyServer {
 	if casted, ok := structType.(BACnetConstructedDataLastKeyServer); ok {
 		return casted
 	}

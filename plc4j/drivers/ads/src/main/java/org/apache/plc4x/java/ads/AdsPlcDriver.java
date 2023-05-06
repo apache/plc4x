@@ -100,12 +100,7 @@ public class AdsPlcDriver extends GeneratedDriverBase<AmsTCPPacket> {
 
     @Override
     public PlcDriverMetadata getMetadata() {
-        return new PlcDriverMetadata() {
-            @Override
-            public boolean canDiscover() {
-                return true;
-            }
-        };
+        return () -> true;
     }
 
     /**

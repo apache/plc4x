@@ -96,7 +96,7 @@ func NewNLMDisconnectConnectionToNetwork(destinationNetworkAddress uint16, apduL
 }
 
 // Deprecated: use the interface for direct cast
-func CastNLMDisconnectConnectionToNetwork(structType interface{}) NLMDisconnectConnectionToNetwork {
+func CastNLMDisconnectConnectionToNetwork(structType any) NLMDisconnectConnectionToNetwork {
 	if casted, ok := structType.(NLMDisconnectConnectionToNetwork); ok {
 		return casted
 	}

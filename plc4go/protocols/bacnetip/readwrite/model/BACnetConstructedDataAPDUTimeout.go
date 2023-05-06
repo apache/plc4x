@@ -121,7 +121,7 @@ func NewBACnetConstructedDataAPDUTimeout(apduTimeout BACnetApplicationTagUnsigne
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataAPDUTimeout(structType interface{}) BACnetConstructedDataAPDUTimeout {
+func CastBACnetConstructedDataAPDUTimeout(structType any) BACnetConstructedDataAPDUTimeout {
 	if casted, ok := structType.(BACnetConstructedDataAPDUTimeout); ok {
 		return casted
 	}

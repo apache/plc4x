@@ -104,7 +104,7 @@ func NewApduDataMemoryRead(numBytes uint8, address uint16, dataLength uint8) *_A
 }
 
 // Deprecated: use the interface for direct cast
-func CastApduDataMemoryRead(structType interface{}) ApduDataMemoryRead {
+func CastApduDataMemoryRead(structType any) ApduDataMemoryRead {
 	if casted, ok := structType.(ApduDataMemoryRead); ok {
 		return casted
 	}

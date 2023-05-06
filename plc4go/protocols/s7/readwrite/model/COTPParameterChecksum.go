@@ -96,7 +96,7 @@ func NewCOTPParameterChecksum(crc uint8, rest uint8) *_COTPParameterChecksum {
 }
 
 // Deprecated: use the interface for direct cast
-func CastCOTPParameterChecksum(structType interface{}) COTPParameterChecksum {
+func CastCOTPParameterChecksum(structType any) COTPParameterChecksum {
 	if casted, ok := structType.(COTPParameterChecksum); ok {
 		return casted
 	}

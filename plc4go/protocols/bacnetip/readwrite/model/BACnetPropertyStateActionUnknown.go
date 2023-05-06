@@ -94,7 +94,7 @@ func NewBACnetPropertyStateActionUnknown(unknownValue BACnetContextTagUnknown, p
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetPropertyStateActionUnknown(structType interface{}) BACnetPropertyStateActionUnknown {
+func CastBACnetPropertyStateActionUnknown(structType any) BACnetPropertyStateActionUnknown {
 	if casted, ok := structType.(BACnetPropertyStateActionUnknown); ok {
 		return casted
 	}

@@ -77,7 +77,7 @@ func NewBACnetNameValue(name BACnetContextTagCharacterString, value BACnetConstr
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetNameValue(structType interface{}) BACnetNameValue {
+func CastBACnetNameValue(structType any) BACnetNameValue {
 	if casted, ok := structType.(BACnetNameValue); ok {
 		return casted
 	}

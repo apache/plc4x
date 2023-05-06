@@ -95,7 +95,7 @@ func NewMeteringDataOilConsumption(L uint32, commandTypeContainer MeteringComman
 }
 
 // Deprecated: use the interface for direct cast
-func CastMeteringDataOilConsumption(structType interface{}) MeteringDataOilConsumption {
+func CastMeteringDataOilConsumption(structType any) MeteringDataOilConsumption {
 	if casted, ok := structType.(MeteringDataOilConsumption); ok {
 		return casted
 	}

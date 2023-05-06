@@ -106,7 +106,7 @@ func NewFirmataCommandSetDigitalPinValue(pin uint8, on bool, response bool) *_Fi
 }
 
 // Deprecated: use the interface for direct cast
-func CastFirmataCommandSetDigitalPinValue(structType interface{}) FirmataCommandSetDigitalPinValue {
+func CastFirmataCommandSetDigitalPinValue(structType any) FirmataCommandSetDigitalPinValue {
 	if casted, ok := structType.(FirmataCommandSetDigitalPinValue); ok {
 		return casted
 	}
@@ -167,7 +167,7 @@ func FirmataCommandSetDigitalPinValueParseWithBuffer(ctx context.Context, readBu
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of FirmataCommandSetDigitalPinValue")
 		}
 		if reserved != uint8(0x00) {
-			Plc4xModelLog.Info().Fields(map[string]interface{}{
+			Plc4xModelLog.Info().Fields(map[string]any{
 				"expected value": uint8(0x00),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
@@ -227,7 +227,7 @@ func (m *_FirmataCommandSetDigitalPinValue) SerializeWithWriteBuffer(ctx context
 		{
 			var reserved uint8 = uint8(0x00)
 			if m.reservedField0 != nil {
-				Plc4xModelLog.Info().Fields(map[string]interface{}{
+				Plc4xModelLog.Info().Fields(map[string]any{
 					"expected value": uint8(0x00),
 					"got value":      reserved,
 				}).Msg("Overriding reserved field with unexpected value.")

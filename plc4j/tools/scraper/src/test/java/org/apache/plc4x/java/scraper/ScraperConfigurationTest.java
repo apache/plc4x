@@ -38,7 +38,7 @@ import java.util.List;
 @ExtendWith(MockitoExtension.class)
 class ScraperConfigurationTest implements WithAssertions {
 
-    ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
+    final ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
 
     @Test
     void parseJobs_fromString() throws IOException {

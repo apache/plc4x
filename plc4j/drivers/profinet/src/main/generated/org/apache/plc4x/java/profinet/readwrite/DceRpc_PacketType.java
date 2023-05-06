@@ -44,7 +44,7 @@ public enum DceRpc_PacketType {
     }
   }
 
-  private short value;
+  private final short value;
 
   DceRpc_PacketType(short value) {
     this.value = value;

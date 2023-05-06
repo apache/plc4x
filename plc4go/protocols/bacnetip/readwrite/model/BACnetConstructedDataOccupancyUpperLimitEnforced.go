@@ -121,7 +121,7 @@ func NewBACnetConstructedDataOccupancyUpperLimitEnforced(occupancyUpperLimitEnfo
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataOccupancyUpperLimitEnforced(structType interface{}) BACnetConstructedDataOccupancyUpperLimitEnforced {
+func CastBACnetConstructedDataOccupancyUpperLimitEnforced(structType any) BACnetConstructedDataOccupancyUpperLimitEnforced {
 	if casted, ok := structType.(BACnetConstructedDataOccupancyUpperLimitEnforced); ok {
 		return casted
 	}

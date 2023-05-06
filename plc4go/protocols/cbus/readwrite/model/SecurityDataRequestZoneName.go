@@ -95,7 +95,7 @@ func NewSecurityDataRequestZoneName(zoneNumber uint8, commandTypeContainer Secur
 }
 
 // Deprecated: use the interface for direct cast
-func CastSecurityDataRequestZoneName(structType interface{}) SecurityDataRequestZoneName {
+func CastSecurityDataRequestZoneName(structType any) SecurityDataRequestZoneName {
 	if casted, ok := structType.(SecurityDataRequestZoneName); ok {
 		return casted
 	}

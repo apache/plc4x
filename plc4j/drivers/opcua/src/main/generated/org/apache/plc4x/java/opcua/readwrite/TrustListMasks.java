@@ -39,7 +39,7 @@ public enum TrustListMasks {
     }
   }
 
-  private long value;
+  private final long value;
 
   TrustListMasks(long value) {
     this.value = value;

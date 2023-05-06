@@ -40,7 +40,7 @@ public enum IdentityCriteriaType {
     }
   }
 
-  private long value;
+  private final long value;
 
   IdentityCriteriaType(long value) {
     this.value = value;

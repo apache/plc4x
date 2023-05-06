@@ -160,7 +160,7 @@ func NewClockAndTimekeepingDataUpdateTime(hours uint8, minute uint8, second uint
 }
 
 // Deprecated: use the interface for direct cast
-func CastClockAndTimekeepingDataUpdateTime(structType interface{}) ClockAndTimekeepingDataUpdateTime {
+func CastClockAndTimekeepingDataUpdateTime(structType any) ClockAndTimekeepingDataUpdateTime {
 	if casted, ok := structType.(ClockAndTimekeepingDataUpdateTime); ok {
 		return casted
 	}

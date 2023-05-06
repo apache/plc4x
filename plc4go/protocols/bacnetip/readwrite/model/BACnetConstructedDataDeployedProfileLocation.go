@@ -121,7 +121,7 @@ func NewBACnetConstructedDataDeployedProfileLocation(deployedProfileLocation BAC
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataDeployedProfileLocation(structType interface{}) BACnetConstructedDataDeployedProfileLocation {
+func CastBACnetConstructedDataDeployedProfileLocation(structType any) BACnetConstructedDataDeployedProfileLocation {
 	if casted, ok := structType.(BACnetConstructedDataDeployedProfileLocation); ok {
 		return casted
 	}

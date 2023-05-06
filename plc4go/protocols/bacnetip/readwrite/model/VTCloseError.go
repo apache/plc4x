@@ -105,7 +105,7 @@ func NewVTCloseError(errorType ErrorEnclosed, listOfVtSessionIdentifiers VTClose
 }
 
 // Deprecated: use the interface for direct cast
-func CastVTCloseError(structType interface{}) VTCloseError {
+func CastVTCloseError(structType any) VTCloseError {
 	if casted, ok := structType.(VTCloseError); ok {
 		return casted
 	}

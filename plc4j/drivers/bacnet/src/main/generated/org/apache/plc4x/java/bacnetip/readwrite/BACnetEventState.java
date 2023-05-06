@@ -40,7 +40,7 @@ public enum BACnetEventState {
     }
   }
 
-  private int value;
+  private final int value;
 
   BACnetEventState(int value) {
     this.value = value;

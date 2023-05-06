@@ -104,7 +104,7 @@ func NewApduDataGroupValueWrite(dataFirstByte int8, data []byte, dataLength uint
 }
 
 // Deprecated: use the interface for direct cast
-func CastApduDataGroupValueWrite(structType interface{}) ApduDataGroupValueWrite {
+func CastApduDataGroupValueWrite(structType any) ApduDataGroupValueWrite {
 	if casted, ok := structType.(ApduDataGroupValueWrite); ok {
 		return casted
 	}
@@ -156,7 +156,7 @@ func ApduDataGroupValueWriteParseWithBuffer(ctx context.Context, readBuffer util
 	}
 	dataFirstByte := _dataFirstByte
 	// Byte Array field (data)
-	numberOfBytesdata := int(utils.InlineIf((bool((dataLength) < (1))), func() interface{} { return uint16(uint16(0)) }, func() interface{} { return uint16(uint16(dataLength) - uint16(uint16(1))) }).(uint16))
+	numberOfBytesdata := int(utils.InlineIf((bool((dataLength) < (1))), func() any { return uint16(uint16(0)) }, func() any { return uint16(uint16(dataLength) - uint16(uint16(1))) }).(uint16))
 	data, _readArrayErr := readBuffer.ReadByteArray("data", numberOfBytesdata)
 	if _readArrayErr != nil {
 		return nil, errors.Wrap(_readArrayErr, "Error parsing 'data' field of ApduDataGroupValueWrite")

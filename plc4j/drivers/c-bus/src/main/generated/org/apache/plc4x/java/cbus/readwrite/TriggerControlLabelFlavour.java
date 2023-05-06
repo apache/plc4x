@@ -37,7 +37,7 @@ public enum TriggerControlLabelFlavour {
     }
   }
 
-  private byte value;
+  private final byte value;
 
   TriggerControlLabelFlavour(byte value) {
     this.value = value;

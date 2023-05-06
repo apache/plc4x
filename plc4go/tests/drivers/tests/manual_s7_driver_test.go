@@ -20,12 +20,13 @@
 package tests
 
 import (
+	"testing"
+
 	"github.com/apache/plc4x/plc4go/internal/s7"
 	"github.com/apache/plc4x/plc4go/pkg/api"
 	"github.com/apache/plc4x/plc4go/pkg/api/transports"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
 	_ "github.com/apache/plc4x/plc4go/tests/initializetest"
-	"testing"
 )
 
 func TestManualS7Driver(t *testing.T) {
@@ -108,5 +109,5 @@ func TestManualS7Driver(t *testing.T) {
 	test.AddTestCase("%DB4:140:STRING(10)", "hurz")
 	test.AddTestCase("%DB4:396:WSTRING(10)", "wolf")
 
-	test.Run()
+	test.Run(t)
 }

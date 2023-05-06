@@ -82,7 +82,7 @@ func NewSysexCommandSysexNonRealtime() *_SysexCommandSysexNonRealtime {
 }
 
 // Deprecated: use the interface for direct cast
-func CastSysexCommandSysexNonRealtime(structType interface{}) SysexCommandSysexNonRealtime {
+func CastSysexCommandSysexNonRealtime(structType any) SysexCommandSysexNonRealtime {
 	if casted, ok := structType.(SysexCommandSysexNonRealtime); ok {
 		return casted
 	}

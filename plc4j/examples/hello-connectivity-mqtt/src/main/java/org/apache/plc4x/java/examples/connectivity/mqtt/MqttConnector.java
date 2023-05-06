@@ -53,12 +53,12 @@ public class MqttConnector {
     private Configuration config;
 
     private MqttConnector(String propsPath) {
-        if(StringUtils.isEmpty(propsPath)) {
+        if (StringUtils.isEmpty(propsPath)) {
             logger.error("Empty configuration file parameter");
             throw new IllegalArgumentException("Empty configuration file parameter");
         }
         File propsFile = new File(propsPath);
-        if(!(propsFile.exists() && propsFile.isFile())) {
+        if (!(propsFile.exists() && propsFile.isFile())) {
             logger.error("Invalid configuration file {}", propsFile.getPath());
             throw new IllegalArgumentException("Invalid configuration file " + propsFile.getPath());
         }
@@ -99,16 +99,18 @@ public class MqttConnector {
             PlcReadRequest readRequest = builder.build();
 
             // Send a message containing the PLC read response.
-            Flowable<Mqtt3Publish> messagesToPublish = Flowable.generate(emitter -> {
-                PlcReadResponse response = readRequest.execute().get();
-                String jsonPayload = getPayload(response);
-                final Mqtt3Publish publishMessage = Mqtt3Publish.builder()
-                    .topic(config.getMqttConfig().getTopicName())
-                    .qos(MqttQos.AT_LEAST_ONCE)
-                    .payload(jsonPayload.getBytes())
-                    .build();
-                emitter.onNext(publishMessage);
-            });
+            Flowable<Mqtt3Publish> messagesToPublish = Flowable.generate(emitter ->
+                readRequest.execute()
+                    .thenAccept(response ->
+                        emitter.onNext(
+                            Mqtt3Publish.builder()
+                                .topic(config.getMqttConfig().getTopicName())
+                                .qos(MqttQos.AT_LEAST_ONCE)
+                                .payload(getPayload(response).getBytes())
+                                .build()
+                        )
+                    )
+            );
 
             // Emit 1 message only every 100 milliseconds.
             messagesToPublish = messagesToPublish.zipWith(Flowable.interval(
@@ -131,7 +133,7 @@ public class MqttConnector {
     private String getPayload(PlcReadResponse response) {
         JsonObject jsonObject = new JsonObject();
         response.getTagNames().forEach(tagName -> {
-            if(response.getNumberOfValues(tagName) == 1) {
+            if (response.getNumberOfValues(tagName) == 1) {
                 jsonObject.addProperty(tagName, response.getObject(tagName).toString());
             } else if (response.getNumberOfValues(tagName) > 1) {
                 JsonArray values = new JsonArray();
@@ -143,7 +145,7 @@ public class MqttConnector {
     }
 
     public static void main(String[] args) throws Exception {
-        if(args.length != 1) {
+        if (args.length != 1) {
             System.out.println("Usage: MqttConnector {path-to-mqtt-connector.yml}");
         }
         MqttConnector mqttConnector = new MqttConnector(args[0]);

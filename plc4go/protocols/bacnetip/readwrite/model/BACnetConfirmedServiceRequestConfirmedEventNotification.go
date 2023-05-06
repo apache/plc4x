@@ -194,7 +194,7 @@ func NewBACnetConfirmedServiceRequestConfirmedEventNotification(processIdentifie
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConfirmedServiceRequestConfirmedEventNotification(structType interface{}) BACnetConfirmedServiceRequestConfirmedEventNotification {
+func CastBACnetConfirmedServiceRequestConfirmedEventNotification(structType any) BACnetConfirmedServiceRequestConfirmedEventNotification {
 	if casted, ok := structType.(BACnetConfirmedServiceRequestConfirmedEventNotification); ok {
 		return casted
 	}

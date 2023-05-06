@@ -121,7 +121,7 @@ func NewBACnetConstructedDataFDBBMDAddress(fDBBMDAddress BACnetHostNPort, openin
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataFDBBMDAddress(structType interface{}) BACnetConstructedDataFDBBMDAddress {
+func CastBACnetConstructedDataFDBBMDAddress(structType any) BACnetConstructedDataFDBBMDAddress {
 	if casted, ok := structType.(BACnetConstructedDataFDBBMDAddress); ok {
 		return casted
 	}

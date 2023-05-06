@@ -42,6 +42,7 @@ public abstract class OpenProtocolMessageExecuteDynamicJobRequest extends OpenPr
   public Mid getMid() {
     return Mid.ExecuteDynamicJobRequest;
   }
+
   // Abstract accessors for discriminator values.
   public abstract Long getRevision();
 

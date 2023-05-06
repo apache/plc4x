@@ -111,7 +111,7 @@ func NewBACnetApplicationTagEnumerated(payload BACnetTagPayloadEnumerated, heade
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetApplicationTagEnumerated(structType interface{}) BACnetApplicationTagEnumerated {
+func CastBACnetApplicationTagEnumerated(structType any) BACnetApplicationTagEnumerated {
 	if casted, ok := structType.(BACnetApplicationTagEnumerated); ok {
 		return casted
 	}

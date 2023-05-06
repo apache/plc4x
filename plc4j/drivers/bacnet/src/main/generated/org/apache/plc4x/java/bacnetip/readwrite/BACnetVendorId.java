@@ -1622,6 +1622,15 @@ public enum BACnetVendorId {
   CALIBRATION_TECHNOLOGIES_INC((int) 1410, (int) 1410, (String) "Calibration Technologies, Inc."),
   ALLORADO((int) 1411, (int) 1411, (String) "Allorado"),
   VERKADA((int) 1412, (int) 1412, (String) "Verkada"),
+  WATTSENSE((int) 1413, (int) 1413, (String) "Wattsense"),
+  EMERSON_AUTOMATION_SOLUTIONS((int) 1414, (int) 1414, (String) "Emerson Automation Solutions"),
+  GROWLINK((int) 1415, (int) 1415, (String) "Growlink"),
+  OLYMPIA_ELECTRONICS((int) 1416, (int) 1416, (String) "Olympia Electronics"),
+  NORMAL_SOFTWARE_INC((int) 1417, (int) 1417, (String) "Normal Software, Inc."),
+  ST_ENGINEERING_SOLUTIONJSC((int) 1418, (int) 1418, (String) "ST Engineering Solution JSC"),
+  INDUSTRIAL_FLOW_SOLUTIONS((int) 1419, (int) 1419, (String) "Industrial Flow Solutions"),
+  UBIQISENSE_APS((int) 1420, (int) 1420, (String) "Ubiqisense ApS"),
+  TIGER_SOFT((int) 1421, (int) 1421, (String) "Tiger-Soft"),
   UNKNOWN_VENDOR((int) 0xFFFF, (int) 0xFFFF, (String) "Unknown");
   private static final Map<Integer, BACnetVendorId> map;
 
@@ -1632,9 +1641,9 @@ public enum BACnetVendorId {
     }
   }
 
-  private int value;
-  private int vendorId;
-  private String vendorName;
+  private final int value;
+  private final int vendorId;
+  private final String vendorName;
 
   BACnetVendorId(int value, int vendorId, String vendorName) {
     this.value = value;
@@ -1660,7 +1669,7 @@ public enum BACnetVendorId {
   }
 
   public static List<BACnetVendorId> enumsForFieldVendorId(int fieldValue) {
-    List<BACnetVendorId> _values = new ArrayList();
+    List<BACnetVendorId> _values = new ArrayList<>();
     for (BACnetVendorId _val : BACnetVendorId.values()) {
       if (_val.getVendorId() == fieldValue) {
         _values.add(_val);
@@ -1683,7 +1692,7 @@ public enum BACnetVendorId {
   }
 
   public static List<BACnetVendorId> enumsForFieldVendorName(String fieldValue) {
-    List<BACnetVendorId> _values = new ArrayList();
+    List<BACnetVendorId> _values = new ArrayList<>();
     for (BACnetVendorId _val : BACnetVendorId.values()) {
       if (_val.getVendorName().equals(fieldValue)) {
         _values.add(_val);

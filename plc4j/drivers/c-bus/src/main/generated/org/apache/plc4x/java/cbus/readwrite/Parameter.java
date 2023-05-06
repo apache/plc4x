@@ -2083,13 +2083,13 @@ public enum Parameter {
     }
   }
 
-  private short value;
-  private ParameterType parameterType;
-  private String form;
-  private boolean isVolatile;
-  private String parameterDescription;
-  private ProtectionLevel protectionLevel;
-  private String group;
+  private final short value;
+  private final ParameterType parameterType;
+  private final String form;
+  private final boolean isVolatile;
+  private final String parameterDescription;
+  private final ProtectionLevel protectionLevel;
+  private final String group;
 
   Parameter(
       short value,
@@ -2126,7 +2126,7 @@ public enum Parameter {
   }
 
   public static List<Parameter> enumsForFieldParameterType(ParameterType fieldValue) {
-    List<Parameter> _values = new ArrayList();
+    List<Parameter> _values = new ArrayList<>();
     for (Parameter _val : Parameter.values()) {
       if (_val.getParameterType() == fieldValue) {
         _values.add(_val);
@@ -2149,7 +2149,7 @@ public enum Parameter {
   }
 
   public static List<Parameter> enumsForFieldForm(String fieldValue) {
-    List<Parameter> _values = new ArrayList();
+    List<Parameter> _values = new ArrayList<>();
     for (Parameter _val : Parameter.values()) {
       if (_val.getForm().equals(fieldValue)) {
         _values.add(_val);
@@ -2172,7 +2172,7 @@ public enum Parameter {
   }
 
   public static List<Parameter> enumsForFieldIsVolatile(boolean fieldValue) {
-    List<Parameter> _values = new ArrayList();
+    List<Parameter> _values = new ArrayList<>();
     for (Parameter _val : Parameter.values()) {
       if (_val.getIsVolatile() == fieldValue) {
         _values.add(_val);
@@ -2195,7 +2195,7 @@ public enum Parameter {
   }
 
   public static List<Parameter> enumsForFieldParameterDescription(String fieldValue) {
-    List<Parameter> _values = new ArrayList();
+    List<Parameter> _values = new ArrayList<>();
     for (Parameter _val : Parameter.values()) {
       if (_val.getParameterDescription().equals(fieldValue)) {
         _values.add(_val);
@@ -2218,7 +2218,7 @@ public enum Parameter {
   }
 
   public static List<Parameter> enumsForFieldProtectionLevel(ProtectionLevel fieldValue) {
-    List<Parameter> _values = new ArrayList();
+    List<Parameter> _values = new ArrayList<>();
     for (Parameter _val : Parameter.values()) {
       if (_val.getProtectionLevel() == fieldValue) {
         _values.add(_val);
@@ -2241,7 +2241,7 @@ public enum Parameter {
   }
 
   public static List<Parameter> enumsForFieldGroup(String fieldValue) {
-    List<Parameter> _values = new ArrayList();
+    List<Parameter> _values = new ArrayList<>();
     for (Parameter _val : Parameter.values()) {
       if (_val.getGroup().equals(fieldValue)) {
         _values.add(_val);

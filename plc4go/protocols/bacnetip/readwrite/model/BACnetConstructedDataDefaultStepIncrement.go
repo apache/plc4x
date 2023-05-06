@@ -121,7 +121,7 @@ func NewBACnetConstructedDataDefaultStepIncrement(defaultStepIncrement BACnetApp
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataDefaultStepIncrement(structType interface{}) BACnetConstructedDataDefaultStepIncrement {
+func CastBACnetConstructedDataDefaultStepIncrement(structType any) BACnetConstructedDataDefaultStepIncrement {
 	if casted, ok := structType.(BACnetConstructedDataDefaultStepIncrement); ok {
 		return casted
 	}

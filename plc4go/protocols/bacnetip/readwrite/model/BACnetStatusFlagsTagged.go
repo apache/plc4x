@@ -89,25 +89,25 @@ func (m *_BACnetStatusFlagsTagged) GetPayload() BACnetTagPayloadBitString {
 func (m *_BACnetStatusFlagsTagged) GetInAlarm() bool {
 	ctx := context.Background()
 	_ = ctx
-	return bool(utils.InlineIf((bool((len(m.GetPayload().GetData())) > (0))), func() interface{} { return bool(m.GetPayload().GetData()[0]) }, func() interface{} { return bool(bool(false)) }).(bool))
+	return bool(utils.InlineIf((bool((len(m.GetPayload().GetData())) > (0))), func() any { return bool(m.GetPayload().GetData()[0]) }, func() any { return bool(bool(false)) }).(bool))
 }
 
 func (m *_BACnetStatusFlagsTagged) GetFault() bool {
 	ctx := context.Background()
 	_ = ctx
-	return bool(utils.InlineIf((bool((len(m.GetPayload().GetData())) > (1))), func() interface{} { return bool(m.GetPayload().GetData()[1]) }, func() interface{} { return bool(bool(false)) }).(bool))
+	return bool(utils.InlineIf((bool((len(m.GetPayload().GetData())) > (1))), func() any { return bool(m.GetPayload().GetData()[1]) }, func() any { return bool(bool(false)) }).(bool))
 }
 
 func (m *_BACnetStatusFlagsTagged) GetOverridden() bool {
 	ctx := context.Background()
 	_ = ctx
-	return bool(utils.InlineIf((bool((len(m.GetPayload().GetData())) > (2))), func() interface{} { return bool(m.GetPayload().GetData()[2]) }, func() interface{} { return bool(bool(false)) }).(bool))
+	return bool(utils.InlineIf((bool((len(m.GetPayload().GetData())) > (2))), func() any { return bool(m.GetPayload().GetData()[2]) }, func() any { return bool(bool(false)) }).(bool))
 }
 
 func (m *_BACnetStatusFlagsTagged) GetOutOfService() bool {
 	ctx := context.Background()
 	_ = ctx
-	return bool(utils.InlineIf((bool((len(m.GetPayload().GetData())) > (3))), func() interface{} { return bool(m.GetPayload().GetData()[3]) }, func() interface{} { return bool(bool(false)) }).(bool))
+	return bool(utils.InlineIf((bool((len(m.GetPayload().GetData())) > (3))), func() any { return bool(m.GetPayload().GetData()[3]) }, func() any { return bool(bool(false)) }).(bool))
 }
 
 ///////////////////////
@@ -121,7 +121,7 @@ func NewBACnetStatusFlagsTagged(header BACnetTagHeader, payload BACnetTagPayload
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetStatusFlagsTagged(structType interface{}) BACnetStatusFlagsTagged {
+func CastBACnetStatusFlagsTagged(structType any) BACnetStatusFlagsTagged {
 	if casted, ok := structType.(BACnetStatusFlagsTagged); ok {
 		return casted
 	}
@@ -209,22 +209,22 @@ func BACnetStatusFlagsTaggedParseWithBuffer(ctx context.Context, readBuffer util
 	}
 
 	// Virtual field
-	_inAlarm := utils.InlineIf((bool((len(payload.GetData())) > (0))), func() interface{} { return bool(payload.GetData()[0]) }, func() interface{} { return bool(bool(false)) }).(bool)
+	_inAlarm := utils.InlineIf((bool((len(payload.GetData())) > (0))), func() any { return bool(payload.GetData()[0]) }, func() any { return bool(bool(false)) }).(bool)
 	inAlarm := bool(_inAlarm)
 	_ = inAlarm
 
 	// Virtual field
-	_fault := utils.InlineIf((bool((len(payload.GetData())) > (1))), func() interface{} { return bool(payload.GetData()[1]) }, func() interface{} { return bool(bool(false)) }).(bool)
+	_fault := utils.InlineIf((bool((len(payload.GetData())) > (1))), func() any { return bool(payload.GetData()[1]) }, func() any { return bool(bool(false)) }).(bool)
 	fault := bool(_fault)
 	_ = fault
 
 	// Virtual field
-	_overridden := utils.InlineIf((bool((len(payload.GetData())) > (2))), func() interface{} { return bool(payload.GetData()[2]) }, func() interface{} { return bool(bool(false)) }).(bool)
+	_overridden := utils.InlineIf((bool((len(payload.GetData())) > (2))), func() any { return bool(payload.GetData()[2]) }, func() any { return bool(bool(false)) }).(bool)
 	overridden := bool(_overridden)
 	_ = overridden
 
 	// Virtual field
-	_outOfService := utils.InlineIf((bool((len(payload.GetData())) > (3))), func() interface{} { return bool(payload.GetData()[3]) }, func() interface{} { return bool(bool(false)) }).(bool)
+	_outOfService := utils.InlineIf((bool((len(payload.GetData())) > (3))), func() any { return bool(payload.GetData()[3]) }, func() any { return bool(bool(false)) }).(bool)
 	outOfService := bool(_outOfService)
 	_ = outOfService
 

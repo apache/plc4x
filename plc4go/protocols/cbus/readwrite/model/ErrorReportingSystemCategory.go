@@ -83,7 +83,7 @@ func NewErrorReportingSystemCategory(systemCategoryClass ErrorReportingSystemCat
 }
 
 // Deprecated: use the interface for direct cast
-func CastErrorReportingSystemCategory(structType interface{}) ErrorReportingSystemCategory {
+func CastErrorReportingSystemCategory(structType any) ErrorReportingSystemCategory {
 	if casted, ok := structType.(ErrorReportingSystemCategory); ok {
 		return casted
 	}

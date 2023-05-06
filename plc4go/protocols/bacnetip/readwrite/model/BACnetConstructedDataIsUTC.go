@@ -121,7 +121,7 @@ func NewBACnetConstructedDataIsUTC(isUtc BACnetApplicationTagBoolean, openingTag
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataIsUTC(structType interface{}) BACnetConstructedDataIsUTC {
+func CastBACnetConstructedDataIsUTC(structType any) BACnetConstructedDataIsUTC {
 	if casted, ok := structType.(BACnetConstructedDataIsUTC); ok {
 		return casted
 	}

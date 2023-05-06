@@ -62,7 +62,7 @@ func (u unitInfoQuery) GetQueryString() string {
 	}
 	attributeString := "*"
 	if u.attribute != nil {
-		unitAddressString = u.attribute.String()
+		attributeString = u.attribute.String()
 	}
 	return fmt.Sprintf("cal/%s/identify=%s", unitAddressString, attributeString)
 }
@@ -72,15 +72,15 @@ func (u unitInfoQuery) GetValueType() values.PlcValueType {
 }
 
 func (u unitInfoQuery) GetArrayInfo() []apiModel.ArrayInfo {
-	if u.numElements != 1 {
-		return []apiModel.ArrayInfo{
-			spiModel.DefaultArrayInfo{
-				LowerBound: 0,
-				UpperBound: uint32(u.numElements),
-			},
-		}
+	if u.numElements == 1 {
+		return []apiModel.ArrayInfo{}
 	}
-	return []apiModel.ArrayInfo{}
+	return []apiModel.ArrayInfo{
+		&spiModel.DefaultArrayInfo{
+			LowerBound: 0,
+			UpperBound: uint32(u.numElements),
+		},
+	}
 }
 
 func (u unitInfoQuery) GetTagType() TagType {

@@ -94,7 +94,7 @@ func NewAdsDataTypeArrayInfo(lowerBound uint32, numElements uint32) *_AdsDataTyp
 }
 
 // Deprecated: use the interface for direct cast
-func CastAdsDataTypeArrayInfo(structType interface{}) AdsDataTypeArrayInfo {
+func CastAdsDataTypeArrayInfo(structType any) AdsDataTypeArrayInfo {
 	if casted, ok := structType.(AdsDataTypeArrayInfo); ok {
 		return casted
 	}

@@ -78,7 +78,7 @@ func NewApduDataExtWriteRouterMemoryRequest(length uint8) *_ApduDataExtWriteRout
 }
 
 // Deprecated: use the interface for direct cast
-func CastApduDataExtWriteRouterMemoryRequest(structType interface{}) ApduDataExtWriteRouterMemoryRequest {
+func CastApduDataExtWriteRouterMemoryRequest(structType any) ApduDataExtWriteRouterMemoryRequest {
 	if casted, ok := structType.(ApduDataExtWriteRouterMemoryRequest); ok {
 		return casted
 	}

@@ -78,7 +78,7 @@ func NewAccessControlDataRequestToExit(commandTypeContainer AccessControlCommand
 }
 
 // Deprecated: use the interface for direct cast
-func CastAccessControlDataRequestToExit(structType interface{}) AccessControlDataRequestToExit {
+func CastAccessControlDataRequestToExit(structType any) AccessControlDataRequestToExit {
 	if casted, ok := structType.(AccessControlDataRequestToExit); ok {
 		return casted
 	}

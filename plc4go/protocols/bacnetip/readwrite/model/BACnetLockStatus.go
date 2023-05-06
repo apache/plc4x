@@ -33,6 +33,7 @@ type BACnetLockStatus uint8
 
 type IBACnetLockStatus interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 
@@ -98,8 +99,8 @@ func BACnetLockStatusKnows(value uint8) bool {
 	return false
 }
 
-func CastBACnetLockStatus(structType interface{}) BACnetLockStatus {
-	castFunc := func(typ interface{}) BACnetLockStatus {
+func CastBACnetLockStatus(structType any) BACnetLockStatus {
+	castFunc := func(typ any) BACnetLockStatus {
 		if sBACnetLockStatus, ok := typ.(BACnetLockStatus); ok {
 			return sBACnetLockStatus
 		}

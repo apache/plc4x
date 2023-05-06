@@ -76,7 +76,7 @@ func NewBACnetAddressBinding(deviceIdentifier BACnetApplicationTagObjectIdentifi
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetAddressBinding(structType interface{}) BACnetAddressBinding {
+func CastBACnetAddressBinding(structType any) BACnetAddressBinding {
 	if casted, ok := structType.(BACnetAddressBinding); ok {
 		return casted
 	}

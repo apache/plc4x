@@ -121,7 +121,7 @@ func NewBACnetConstructedDataFileAccessMethod(fileAccessMethod BACnetFileAccessM
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataFileAccessMethod(structType interface{}) BACnetConstructedDataFileAccessMethod {
+func CastBACnetConstructedDataFileAccessMethod(structType any) BACnetConstructedDataFileAccessMethod {
 	if casted, ok := structType.(BACnetConstructedDataFileAccessMethod); ok {
 		return casted
 	}

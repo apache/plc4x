@@ -44,9 +44,9 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
 
     // TODO: we could condense it to one import set as these can be emitted per template and are not hardcoded anymore
 
-    public SortedSet<String> requiredImports = new TreeSet<>();
+    public final SortedSet<String> requiredImports = new TreeSet<>();
 
-    public SortedSet<String> requiredImportsForDataIo = new TreeSet<>();
+    public final SortedSet<String> requiredImportsForDataIo = new TreeSet<>();
 
     public GoLanguageTemplateHelper(TypeDefinition thisType, String protocolName, String flavorName, Map<String, TypeDefinition> types) {
         super(thisType, protocolName, flavorName, types);
@@ -618,8 +618,8 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
             Term c = ternaryTerm.getC();
             String castExpressionForTypeReference = getCastExpressionForTypeReference(fieldType);
             String inlineIf = "utils.InlineIf(" + toExpression(field, new DefaultBooleanTypeReference(), a, parserArguments, serializerArguments, serialize, false) + ", " +
-                "func() interface{} {return " + castExpressionForTypeReference + "(" + toExpression(field, fieldType, b, parserArguments, serializerArguments, serialize, false) + ")}, " +
-                "func() interface{} {return " + castExpressionForTypeReference + "(" + toExpression(field, fieldType, c, parserArguments, serializerArguments, serialize, false) + ")})";
+                "func() any {return " + castExpressionForTypeReference + "(" + toExpression(field, fieldType, b, parserArguments, serializerArguments, serialize, false) + ")}, " +
+                "func() any {return " + castExpressionForTypeReference + "(" + toExpression(field, fieldType, c, parserArguments, serializerArguments, serialize, false) + ")})";
             if (fieldType != null) {
                 if (fieldType instanceof ByteOrderTypeReference) {
                     return tracer.dive("byteordertypereference") + "(" + inlineIf + ").(binary.ByteOrder)";
@@ -1153,7 +1153,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
 
     private String toLastItemVariableExpression(TypeReference typeReference, boolean serialize, Tracer tracer) {
         tracer = tracer.dive("lastItem");
-        return tracer + "spiContext.GetLastItemFromContext(ctx)";
+        return tracer + "utils.GetLastItemFromContext(ctx)";
     }
 
     private String toLengthVariableExpression(Field field, VariableLiteral variableLiteral, boolean serialize, Tracer tracer) {

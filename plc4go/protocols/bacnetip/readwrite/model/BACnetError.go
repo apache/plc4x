@@ -75,7 +75,7 @@ func NewBACnetError() *_BACnetError {
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetError(structType interface{}) BACnetError {
+func CastBACnetError(structType any) BACnetError {
 	if casted, ok := structType.(BACnetError); ok {
 		return casted
 	}
@@ -118,7 +118,7 @@ func BACnetErrorParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 		InitializeParent(BACnetError)
 		GetParent() BACnetError
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child BACnetErrorChildSerializeRequirement
 	var typeSwitchError error
 	switch {

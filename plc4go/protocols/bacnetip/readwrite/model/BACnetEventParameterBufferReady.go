@@ -118,7 +118,7 @@ func NewBACnetEventParameterBufferReady(openingTag BACnetOpeningTag, notificatio
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetEventParameterBufferReady(structType interface{}) BACnetEventParameterBufferReady {
+func CastBACnetEventParameterBufferReady(structType any) BACnetEventParameterBufferReady {
 	if casted, ok := structType.(BACnetEventParameterBufferReady); ok {
 		return casted
 	}

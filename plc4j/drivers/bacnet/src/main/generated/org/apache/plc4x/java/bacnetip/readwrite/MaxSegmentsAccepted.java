@@ -43,8 +43,8 @@ public enum MaxSegmentsAccepted {
     }
   }
 
-  private byte value;
-  private short maxSegments;
+  private final byte value;
+  private final short maxSegments;
 
   MaxSegmentsAccepted(byte value, short maxSegments) {
     this.value = value;
@@ -69,7 +69,7 @@ public enum MaxSegmentsAccepted {
   }
 
   public static List<MaxSegmentsAccepted> enumsForFieldMaxSegments(short fieldValue) {
-    List<MaxSegmentsAccepted> _values = new ArrayList();
+    List<MaxSegmentsAccepted> _values = new ArrayList<>();
     for (MaxSegmentsAccepted _val : MaxSegmentsAccepted.values()) {
       if (_val.getMaxSegments() == fieldValue) {
         _values.add(_val);

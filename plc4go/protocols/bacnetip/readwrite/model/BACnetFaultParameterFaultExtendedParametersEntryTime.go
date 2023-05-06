@@ -94,7 +94,7 @@ func NewBACnetFaultParameterFaultExtendedParametersEntryTime(timeValue BACnetApp
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetFaultParameterFaultExtendedParametersEntryTime(structType interface{}) BACnetFaultParameterFaultExtendedParametersEntryTime {
+func CastBACnetFaultParameterFaultExtendedParametersEntryTime(structType any) BACnetFaultParameterFaultExtendedParametersEntryTime {
 	if casted, ok := structType.(BACnetFaultParameterFaultExtendedParametersEntryTime); ok {
 		return casted
 	}

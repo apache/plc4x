@@ -55,7 +55,7 @@ plc4c_return_code plc4c_s7_read_write_associated_value_type_parse(plc4x_spi_cont
   (*_message)->transport_size = transportSize;
 
   // Manual Field (valueLength)
-  uint16_t valueLength = (uint16_t) (plc4c_s7_read_write_right_shift3(readBuffer));
+  uint16_t valueLength = (uint16_t) (plc4c_s7_read_write_right_shift3(readBuffer, transportSize));
   (*_message)->value_length = valueLength;
 
   // Array field (data)
@@ -128,7 +128,7 @@ uint16_t plc4c_s7_read_write_associated_value_type_length_in_bits(plc4x_spi_cont
   lengthInBits += plc4c_s7_read_write_data_transport_size_length_in_bits(ctx, &_message->transport_size);
 
   // Manual Field (valueLength)
-  lengthInBits += 16;
+  lengthInBits += 2;
 
   // Array field
   lengthInBits += 8 * plc4c_utils_list_size(_message->data);

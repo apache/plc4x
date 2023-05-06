@@ -25,7 +25,6 @@ import org.apache.plc4x.plugins.codegenerator.language.mspec.MSpecBaseListener;
 import org.apache.plc4x.plugins.codegenerator.language.mspec.MSpecParser;
 import org.apache.plc4x.plugins.codegenerator.language.mspec.expression.ExpressionStringParser;
 import org.apache.plc4x.plugins.codegenerator.language.mspec.model.definitions.*;
-import org.apache.plc4x.plugins.codegenerator.language.mspec.model.definitions.DefaultArgument;
 import org.apache.plc4x.plugins.codegenerator.language.mspec.model.fields.*;
 import org.apache.plc4x.plugins.codegenerator.language.mspec.model.references.*;
 import org.apache.plc4x.plugins.codegenerator.language.mspec.model.terms.WildcardTerm;
@@ -60,9 +59,9 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
 
     private Deque<List<EnumValue>> enumContexts;
 
-    protected Map<String, TypeDefinition> types;
+    protected final Map<String, TypeDefinition> types;
 
-    protected Map<String, List<Consumer<TypeDefinition>>> typeDefinitionConsumers;
+    protected final Map<String, List<Consumer<TypeDefinition>>> typeDefinitionConsumers;
 
     private final Stack<Map<String, Term>> batchSetAttributes = new Stack<>();
 
@@ -74,7 +73,7 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
         return enumContexts;
     }
 
-    private Stack<String> currentTypeName = new Stack<>();
+    private final Stack<String> currentTypeName = new Stack<>();
 
     public MessageFormatListener() {
         types = new HashMap<>();

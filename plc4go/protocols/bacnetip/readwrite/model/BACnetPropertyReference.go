@@ -77,7 +77,7 @@ func NewBACnetPropertyReference(propertyIdentifier BACnetPropertyIdentifierTagge
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetPropertyReference(structType interface{}) BACnetPropertyReference {
+func CastBACnetPropertyReference(structType any) BACnetPropertyReference {
 	if casted, ok := structType.(BACnetPropertyReference); ok {
 		return casted
 	}

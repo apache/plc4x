@@ -96,7 +96,7 @@ func NewNLMSetMasterKey(key NLMUpdateKeyUpdateKeyEntry, apduLength uint16) *_NLM
 }
 
 // Deprecated: use the interface for direct cast
-func CastNLMSetMasterKey(structType interface{}) NLMSetMasterKey {
+func CastNLMSetMasterKey(structType any) NLMSetMasterKey {
 	if casted, ok := structType.(NLMSetMasterKey); ok {
 		return casted
 	}

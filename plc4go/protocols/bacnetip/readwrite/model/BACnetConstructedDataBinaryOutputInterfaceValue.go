@@ -121,7 +121,7 @@ func NewBACnetConstructedDataBinaryOutputInterfaceValue(interfaceValue BACnetOpt
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataBinaryOutputInterfaceValue(structType interface{}) BACnetConstructedDataBinaryOutputInterfaceValue {
+func CastBACnetConstructedDataBinaryOutputInterfaceValue(structType any) BACnetConstructedDataBinaryOutputInterfaceValue {
 	if casted, ok := structType.(BACnetConstructedDataBinaryOutputInterfaceValue); ok {
 		return casted
 	}

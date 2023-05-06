@@ -94,7 +94,7 @@ func NewBACnetPropertyStatesRestartReason(restartReason BACnetRestartReasonTagge
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetPropertyStatesRestartReason(structType interface{}) BACnetPropertyStatesRestartReason {
+func CastBACnetPropertyStatesRestartReason(structType any) BACnetPropertyStatesRestartReason {
 	if casted, ok := structType.(BACnetPropertyStatesRestartReason); ok {
 		return casted
 	}

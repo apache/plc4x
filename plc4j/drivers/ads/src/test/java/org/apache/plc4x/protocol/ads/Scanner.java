@@ -37,7 +37,7 @@ import org.slf4j.LoggerFactory;
 
 public class Scanner {
 
-    private static Logger logger = LoggerFactory.getLogger(Scanner.class);
+    private static final Logger logger = LoggerFactory.getLogger(Scanner.class);
 
     public static void main(String[] args) throws Exception {
         if (args.length != 5) {

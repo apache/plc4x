@@ -78,7 +78,7 @@ func NewApduDataExtNetworkParameterRead(length uint8) *_ApduDataExtNetworkParame
 }
 
 // Deprecated: use the interface for direct cast
-func CastApduDataExtNetworkParameterRead(structType interface{}) ApduDataExtNetworkParameterRead {
+func CastApduDataExtNetworkParameterRead(structType any) ApduDataExtNetworkParameterRead {
 	if casted, ok := structType.(ApduDataExtNetworkParameterRead); ok {
 		return casted
 	}

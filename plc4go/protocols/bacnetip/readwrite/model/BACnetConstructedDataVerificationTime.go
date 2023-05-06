@@ -121,7 +121,7 @@ func NewBACnetConstructedDataVerificationTime(verificationTime BACnetApplication
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataVerificationTime(structType interface{}) BACnetConstructedDataVerificationTime {
+func CastBACnetConstructedDataVerificationTime(structType any) BACnetConstructedDataVerificationTime {
 	if casted, ok := structType.(BACnetConstructedDataVerificationTime); ok {
 		return casted
 	}

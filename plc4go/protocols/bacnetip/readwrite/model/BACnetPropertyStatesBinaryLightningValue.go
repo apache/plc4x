@@ -94,7 +94,7 @@ func NewBACnetPropertyStatesBinaryLightningValue(binaryLightningValue BACnetBina
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetPropertyStatesBinaryLightningValue(structType interface{}) BACnetPropertyStatesBinaryLightningValue {
+func CastBACnetPropertyStatesBinaryLightningValue(structType any) BACnetPropertyStatesBinaryLightningValue {
 	if casted, ok := structType.(BACnetPropertyStatesBinaryLightningValue); ok {
 		return casted
 	}

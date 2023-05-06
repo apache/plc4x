@@ -38,7 +38,7 @@ public enum StructureType {
     }
   }
 
-  private long value;
+  private final long value;
 
   StructureType(long value) {
     this.value = value;

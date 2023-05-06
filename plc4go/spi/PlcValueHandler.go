@@ -20,10 +20,12 @@
 package spi
 
 import (
-	"github.com/apache/plc4x/plc4go/pkg/api/model"
-	"github.com/apache/plc4x/plc4go/pkg/api/values"
+	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
+	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 )
 
+// PlcValueHandler provides functionality for apiValues.PlcValue
 type PlcValueHandler interface {
-	NewPlcValue(tag model.PlcTag, value interface{}) (values.PlcValue, error)
+	// NewPlcValue creates a apiValues.NewPlcValue for a supplied apiModel.PlcTag
+	NewPlcValue(tag apiModel.PlcTag, value any) (apiValues.PlcValue, error)
 }

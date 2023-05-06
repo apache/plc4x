@@ -121,7 +121,7 @@ func NewBACnetConstructedDataBinaryLightingOutputPresentValue(presentValue BACne
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataBinaryLightingOutputPresentValue(structType interface{}) BACnetConstructedDataBinaryLightingOutputPresentValue {
+func CastBACnetConstructedDataBinaryLightingOutputPresentValue(structType any) BACnetConstructedDataBinaryLightingOutputPresentValue {
 	if casted, ok := structType.(BACnetConstructedDataBinaryLightingOutputPresentValue); ok {
 		return casted
 	}

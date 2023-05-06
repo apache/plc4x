@@ -36,7 +36,7 @@ public enum DataSetOrderingType {
     }
   }
 
-  private long value;
+  private final long value;
 
   DataSetOrderingType(long value) {
     this.value = value;

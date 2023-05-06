@@ -96,7 +96,7 @@ func NewIdentifyReplyCommandMaximumLevels(maximumLevels []byte, numBytes uint8) 
 }
 
 // Deprecated: use the interface for direct cast
-func CastIdentifyReplyCommandMaximumLevels(structType interface{}) IdentifyReplyCommandMaximumLevels {
+func CastIdentifyReplyCommandMaximumLevels(structType any) IdentifyReplyCommandMaximumLevels {
 	if casted, ok := structType.(IdentifyReplyCommandMaximumLevels); ok {
 		return casted
 	}

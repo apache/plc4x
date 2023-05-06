@@ -35,7 +35,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class MockDriver implements PlcDriver {
 
-    private Map<String, PlcConnection> connectionMap = new ConcurrentHashMap<>();
+    private final Map<String, PlcConnection> connectionMap = new ConcurrentHashMap<>();
 
     @Override
     public String getProtocolCode() {

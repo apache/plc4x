@@ -110,7 +110,7 @@ func NewBVLC() *_BVLC {
 }
 
 // Deprecated: use the interface for direct cast
-func CastBVLC(structType interface{}) BVLC {
+func CastBVLC(structType any) BVLC {
 	if casted, ok := structType.(BVLC); ok {
 		return casted
 	}
@@ -190,7 +190,7 @@ func BVLCParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BVLC
 		InitializeParent(BVLC)
 		GetParent() BVLC
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child BVLCChildSerializeRequirement
 	var typeSwitchError error
 	switch {

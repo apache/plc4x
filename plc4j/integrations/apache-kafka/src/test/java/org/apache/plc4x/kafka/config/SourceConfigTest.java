@@ -127,7 +127,7 @@ public class SourceConfigTest {
             "jobs.ads-heartbeat.tags=active\n" +
             "jobs.ads-heartbeat.tags.active=Main.running\n"));
 
-        Map<String, String> map = new HashMap<String, String>();
+        Map<String, String> map = new HashMap<>();
         for (final String name: properties.stringPropertyNames())
             map.put(name, properties.getProperty(name));
 
@@ -167,7 +167,7 @@ public class SourceConfigTest {
         Path path = FileSystems.getDefault().getPath("config/", "plc4x-source.properties");
         properties.load((new StringReader(new String(Files.readAllBytes(path)))));
 
-        Map<String, String> map = new HashMap<String, String>();
+        Map<String, String> map = new HashMap<>();
         for (final String name: properties.stringPropertyNames())
             map.put(name, properties.getProperty(name));
 
@@ -188,7 +188,7 @@ public class SourceConfigTest {
         Path path = FileSystems.getDefault().getPath("config/", "plc4x-source.properties");
         properties.load((new StringReader(new String(Files.readAllBytes(path)))));
 
-        Map<String, String> map = new HashMap<String, String>();
+        Map<String, String> map = new HashMap<>();
         for (final String name: properties.stringPropertyNames())
             map.put(name, properties.getProperty(name));
 
@@ -203,7 +203,7 @@ public class SourceConfigTest {
         Path path = FileSystems.getDefault().getPath("config/", "plc4x-source.properties");
         properties.load((new StringReader(new String(Files.readAllBytes(path)))));
 
-        Map<String, String> map = new HashMap<String, String>();
+        Map<String, String> map = new HashMap<>();
         for (final String name: properties.stringPropertyNames())
             map.put(name, properties.getProperty(name));
 
@@ -211,7 +211,7 @@ public class SourceConfigTest {
         sourceConnector.start(map);
         sourceConnector.toString();
         sourceConnector.stop();
-        assertThrows(NullPointerException.class, () -> sourceConnector.toString());
+        assertThrows(NullPointerException.class, sourceConnector::toString);
     }
 
     @Test

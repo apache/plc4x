@@ -93,7 +93,7 @@ public enum BACnetObjectTypesSupported {
     }
   }
 
-  private short value;
+  private final short value;
 
   BACnetObjectTypesSupported(short value) {
     this.value = value;

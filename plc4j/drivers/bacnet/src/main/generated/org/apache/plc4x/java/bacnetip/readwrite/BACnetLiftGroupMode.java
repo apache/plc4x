@@ -40,7 +40,7 @@ public enum BACnetLiftGroupMode {
     }
   }
 
-  private short value;
+  private final short value;
 
   BACnetLiftGroupMode(short value) {
     this.value = value;

@@ -138,7 +138,7 @@ func NewBACnetConfirmedServiceRequestSubscribeCOVProperty(subscriberProcessIdent
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConfirmedServiceRequestSubscribeCOVProperty(structType interface{}) BACnetConfirmedServiceRequestSubscribeCOVProperty {
+func CastBACnetConfirmedServiceRequestSubscribeCOVProperty(structType any) BACnetConfirmedServiceRequestSubscribeCOVProperty {
 	if casted, ok := structType.(BACnetConfirmedServiceRequestSubscribeCOVProperty); ok {
 		return casted
 	}

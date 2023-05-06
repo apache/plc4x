@@ -121,7 +121,7 @@ func NewBACnetConstructedDataResolution(resolution BACnetApplicationTagReal, ope
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataResolution(structType interface{}) BACnetConstructedDataResolution {
+func CastBACnetConstructedDataResolution(structType any) BACnetConstructedDataResolution {
 	if casted, ok := structType.(BACnetConstructedDataResolution); ok {
 		return casted
 	}

@@ -36,7 +36,7 @@ public enum Plc4xSubscriptionType {
     }
   }
 
-  private short value;
+  private final short value;
 
   Plc4xSubscriptionType(short value) {
     this.value = value;

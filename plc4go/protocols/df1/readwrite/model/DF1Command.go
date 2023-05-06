@@ -99,7 +99,7 @@ func NewDF1Command(status uint8, transactionCounter uint16) *_DF1Command {
 }
 
 // Deprecated: use the interface for direct cast
-func CastDF1Command(structType interface{}) DF1Command {
+func CastDF1Command(structType any) DF1Command {
 	if casted, ok := structType.(DF1Command); ok {
 		return casted
 	}
@@ -170,7 +170,7 @@ func DF1CommandParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer)
 		InitializeParent(DF1Command, uint8, uint16)
 		GetParent() DF1Command
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child DF1CommandChildSerializeRequirement
 	var typeSwitchError error
 	switch {

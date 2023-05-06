@@ -32,7 +32,7 @@ import (
 type AbethParserHelper struct {
 }
 
-func (m AbethParserHelper) Parse(typeName string, arguments []string, io utils.ReadBuffer) (interface{}, error) {
+func (m AbethParserHelper) Parse(typeName string, arguments []string, io utils.ReadBuffer) (any, error) {
 	switch typeName {
 	case "DF1RequestCommand":
 		return model.DF1RequestCommandParseWithBuffer(context.Background(), io)

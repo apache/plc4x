@@ -104,7 +104,7 @@ func NewAmsSerialAcknowledgeFrame(magicCookie uint16, transmitterAddress int8, r
 }
 
 // Deprecated: use the interface for direct cast
-func CastAmsSerialAcknowledgeFrame(structType interface{}) AmsSerialAcknowledgeFrame {
+func CastAmsSerialAcknowledgeFrame(structType any) AmsSerialAcknowledgeFrame {
 	if casted, ok := structType.(AmsSerialAcknowledgeFrame); ok {
 		return casted
 	}

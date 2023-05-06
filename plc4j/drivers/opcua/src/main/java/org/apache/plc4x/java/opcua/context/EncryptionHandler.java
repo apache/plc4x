@@ -51,7 +51,7 @@ public class EncryptionHandler {
     private X509Certificate clientCertificate;
     private PrivateKey clientPrivateKey;
     private PublicKey clientPublicKey;
-    private String securitypolicy;
+    private final String securitypolicy;
 
     public EncryptionHandler(CertificateKeyPair ckp, byte[] senderCertificate, String securityPolicy) {
         if (ckp != null) {

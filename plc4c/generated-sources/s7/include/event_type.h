@@ -33,7 +33,8 @@ enum plc4c_s7_read_write_event_type {
   plc4c_s7_read_write_event_type_MODE = 0x01,
   plc4c_s7_read_write_event_type_SYS = 0x02,
   plc4c_s7_read_write_event_type_USR = 0x04,
-  plc4c_s7_read_write_event_type_ALM = 0x80
+  plc4c_s7_read_write_event_type_ALM = 0x80,
+  plc4c_s7_read_write_event_type_CYC = 0x69
 };
 typedef enum plc4c_s7_read_write_event_type plc4c_s7_read_write_event_type;
 

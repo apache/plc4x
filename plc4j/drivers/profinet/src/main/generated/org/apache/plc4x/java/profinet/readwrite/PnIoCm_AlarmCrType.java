@@ -34,7 +34,7 @@ public enum PnIoCm_AlarmCrType {
     }
   }
 
-  private int value;
+  private final int value;
 
   PnIoCm_AlarmCrType(int value) {
     this.value = value;

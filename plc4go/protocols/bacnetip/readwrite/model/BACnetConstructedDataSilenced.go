@@ -121,7 +121,7 @@ func NewBACnetConstructedDataSilenced(silenced BACnetSilencedStateTagged, openin
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataSilenced(structType interface{}) BACnetConstructedDataSilenced {
+func CastBACnetConstructedDataSilenced(structType any) BACnetConstructedDataSilenced {
 	if casted, ok := structType.(BACnetConstructedDataSilenced); ok {
 		return casted
 	}

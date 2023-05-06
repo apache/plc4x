@@ -79,7 +79,7 @@ func NewCBusMessage(requestContext RequestContext, cBusOptions CBusOptions) *_CB
 }
 
 // Deprecated: use the interface for direct cast
-func CastCBusMessage(structType interface{}) CBusMessage {
+func CastCBusMessage(structType any) CBusMessage {
 	if casted, ok := structType.(CBusMessage); ok {
 		return casted
 	}
@@ -132,7 +132,7 @@ func CBusMessageParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 		InitializeParent(CBusMessage)
 		GetParent() CBusMessage
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child CBusMessageChildSerializeRequirement
 	var typeSwitchError error
 	switch {

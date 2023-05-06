@@ -36,8 +36,8 @@ public enum MeasurementCommandType {
     }
   }
 
-  private byte value;
-  private short numberOfArguments;
+  private final byte value;
+  private final short numberOfArguments;
 
   MeasurementCommandType(byte value, short numberOfArguments) {
     this.value = value;
@@ -62,7 +62,7 @@ public enum MeasurementCommandType {
   }
 
   public static List<MeasurementCommandType> enumsForFieldNumberOfArguments(short fieldValue) {
-    List<MeasurementCommandType> _values = new ArrayList();
+    List<MeasurementCommandType> _values = new ArrayList<>();
     for (MeasurementCommandType _val : MeasurementCommandType.values()) {
       if (_val.getNumberOfArguments() == fieldValue) {
         _values.add(_val);

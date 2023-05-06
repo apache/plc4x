@@ -88,7 +88,7 @@ public enum DefaultAmsPorts {
     }
   }
 
-  private int value;
+  private final int value;
 
   DefaultAmsPorts(int value) {
     this.value = value;

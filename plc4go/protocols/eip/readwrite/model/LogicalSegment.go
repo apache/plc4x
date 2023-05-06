@@ -96,7 +96,7 @@ func NewLogicalSegment(segmentType LogicalSegmentType) *_LogicalSegment {
 }
 
 // Deprecated: use the interface for direct cast
-func CastLogicalSegment(structType interface{}) LogicalSegment {
+func CastLogicalSegment(structType any) LogicalSegment {
 	if casted, ok := structType.(LogicalSegment); ok {
 		return casted
 	}

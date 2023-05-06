@@ -33,6 +33,7 @@ type BACnetSilencedState uint16
 
 type IBACnetSilencedState interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 
@@ -98,8 +99,8 @@ func BACnetSilencedStateKnows(value uint16) bool {
 	return false
 }
 
-func CastBACnetSilencedState(structType interface{}) BACnetSilencedState {
-	castFunc := func(typ interface{}) BACnetSilencedState {
+func CastBACnetSilencedState(structType any) BACnetSilencedState {
+	castFunc := func(typ any) BACnetSilencedState {
 		if sBACnetSilencedState, ok := typ.(BACnetSilencedState); ok {
 			return sBACnetSilencedState
 		}

@@ -33,6 +33,7 @@ type NLMRejectRouterToNetworkRejectReason uint8
 
 type INLMRejectRouterToNetworkRejectReason interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 
@@ -110,8 +111,8 @@ func NLMRejectRouterToNetworkRejectReasonKnows(value uint8) bool {
 	return false
 }
 
-func CastNLMRejectRouterToNetworkRejectReason(structType interface{}) NLMRejectRouterToNetworkRejectReason {
-	castFunc := func(typ interface{}) NLMRejectRouterToNetworkRejectReason {
+func CastNLMRejectRouterToNetworkRejectReason(structType any) NLMRejectRouterToNetworkRejectReason {
+	castFunc := func(typ any) NLMRejectRouterToNetworkRejectReason {
 		if sNLMRejectRouterToNetworkRejectReason, ok := typ.(NLMRejectRouterToNetworkRejectReason); ok {
 			return sNLMRejectRouterToNetworkRejectReason
 		}

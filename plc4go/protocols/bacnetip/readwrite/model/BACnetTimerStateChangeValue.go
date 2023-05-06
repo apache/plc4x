@@ -119,7 +119,7 @@ func NewBACnetTimerStateChangeValue(peekedTagHeader BACnetTagHeader, objectTypeA
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetTimerStateChangeValue(structType interface{}) BACnetTimerStateChangeValue {
+func CastBACnetTimerStateChangeValue(structType any) BACnetTimerStateChangeValue {
 	if casted, ok := structType.(BACnetTimerStateChangeValue); ok {
 		return casted
 	}
@@ -189,7 +189,7 @@ func BACnetTimerStateChangeValueParseWithBuffer(ctx context.Context, readBuffer 
 		InitializeParent(BACnetTimerStateChangeValue, BACnetTagHeader)
 		GetParent() BACnetTimerStateChangeValue
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child BACnetTimerStateChangeValueChildSerializeRequirement
 	var typeSwitchError error
 	switch {

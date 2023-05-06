@@ -22,7 +22,6 @@ package model
 import (
 	"context"
 	"fmt"
-	spiContext "github.com/apache/plc4x/plc4go/spi/context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -161,7 +160,7 @@ func NewModbusPDUReadDeviceIdentificationResponse(level ModbusDeviceInformationL
 }
 
 // Deprecated: use the interface for direct cast
-func CastModbusPDUReadDeviceIdentificationResponse(structType interface{}) ModbusPDUReadDeviceIdentificationResponse {
+func CastModbusPDUReadDeviceIdentificationResponse(structType any) ModbusPDUReadDeviceIdentificationResponse {
 	if casted, ok := structType.(ModbusPDUReadDeviceIdentificationResponse); ok {
 		return casted
 	}
@@ -202,7 +201,7 @@ func (m *_ModbusPDUReadDeviceIdentificationResponse) GetLengthInBits(ctx context
 	// Array field
 	if len(m.Objects) > 0 {
 		for _curItem, element := range m.Objects {
-			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.Objects), _curItem)
+			arrayCtx := utils.CreateArrayContext(ctx, len(m.Objects), _curItem)
 			_ = arrayCtx
 			_ = _curItem
 			lengthInBits += element.(interface{ GetLengthInBits(context.Context) uint16 }).GetLengthInBits(arrayCtx)
@@ -311,7 +310,7 @@ func ModbusPDUReadDeviceIdentificationResponseParseWithBuffer(ctx context.Contex
 	{
 		_numItems := uint16(numberOfObjects)
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := spiContext.CreateArrayContext(ctx, int(_numItems), int(_curItem))
+			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
 			_ = _curItem
 			_item, _err := ModbusDeviceInformationObjectParseWithBuffer(arrayCtx, readBuffer)
@@ -428,7 +427,7 @@ func (m *_ModbusPDUReadDeviceIdentificationResponse) SerializeWithWriteBuffer(ct
 		}
 		for _curItem, _element := range m.GetObjects() {
 			_ = _curItem
-			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetObjects()), _curItem)
+			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetObjects()), _curItem)
 			_ = arrayCtx
 			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 			if _elementErr != nil {

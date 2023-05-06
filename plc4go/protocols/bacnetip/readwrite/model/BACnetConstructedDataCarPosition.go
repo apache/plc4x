@@ -121,7 +121,7 @@ func NewBACnetConstructedDataCarPosition(carPosition BACnetApplicationTagUnsigne
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataCarPosition(structType interface{}) BACnetConstructedDataCarPosition {
+func CastBACnetConstructedDataCarPosition(structType any) BACnetConstructedDataCarPosition {
 	if casted, ok := structType.(BACnetConstructedDataCarPosition); ok {
 		return casted
 	}

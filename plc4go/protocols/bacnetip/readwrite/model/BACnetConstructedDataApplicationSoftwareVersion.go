@@ -121,7 +121,7 @@ func NewBACnetConstructedDataApplicationSoftwareVersion(applicationSoftwareVersi
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataApplicationSoftwareVersion(structType interface{}) BACnetConstructedDataApplicationSoftwareVersion {
+func CastBACnetConstructedDataApplicationSoftwareVersion(structType any) BACnetConstructedDataApplicationSoftwareVersion {
 	if casted, ok := structType.(BACnetConstructedDataApplicationSoftwareVersion); ok {
 		return casted
 	}

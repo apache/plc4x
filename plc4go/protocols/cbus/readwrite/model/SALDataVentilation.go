@@ -98,7 +98,7 @@ func NewSALDataVentilation(ventilationData LightingData, salData SALData) *_SALD
 }
 
 // Deprecated: use the interface for direct cast
-func CastSALDataVentilation(structType interface{}) SALDataVentilation {
+func CastSALDataVentilation(structType any) SALDataVentilation {
 	if casted, ok := structType.(SALDataVentilation); ok {
 		return casted
 	}

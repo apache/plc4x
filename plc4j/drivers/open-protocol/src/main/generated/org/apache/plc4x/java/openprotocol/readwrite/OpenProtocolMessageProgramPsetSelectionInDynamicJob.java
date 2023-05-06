@@ -42,6 +42,7 @@ public abstract class OpenProtocolMessageProgramPsetSelectionInDynamicJob
   public Mid getMid() {
     return Mid.ProgramPsetSelectionInDynamicJob;
   }
+
   // Abstract accessors for discriminator values.
   public abstract Long getRevision();
 

@@ -94,7 +94,7 @@ func NewBACnetPropertyStatesNetworkType(networkType BACnetNetworkTypeTagged, pee
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetPropertyStatesNetworkType(structType interface{}) BACnetPropertyStatesNetworkType {
+func CastBACnetPropertyStatesNetworkType(structType any) BACnetPropertyStatesNetworkType {
 	if casted, ok := structType.(BACnetPropertyStatesNetworkType); ok {
 		return casted
 	}

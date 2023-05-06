@@ -123,7 +123,7 @@ func NewBACnetContextTagObjectIdentifier(payload BACnetTagPayloadObjectIdentifie
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetContextTagObjectIdentifier(structType interface{}) BACnetContextTagObjectIdentifier {
+func CastBACnetContextTagObjectIdentifier(structType any) BACnetContextTagObjectIdentifier {
 	if casted, ok := structType.(BACnetContextTagObjectIdentifier); ok {
 		return casted
 	}

@@ -84,7 +84,7 @@ func NewBACnetLogRecord(timestamp BACnetDateTimeEnclosed, logDatum BACnetLogReco
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetLogRecord(structType interface{}) BACnetLogRecord {
+func CastBACnetLogRecord(structType any) BACnetLogRecord {
 	if casted, ok := structType.(BACnetLogRecord); ok {
 		return casted
 	}

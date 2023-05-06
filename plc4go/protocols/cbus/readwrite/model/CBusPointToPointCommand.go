@@ -117,7 +117,7 @@ func NewCBusPointToPointCommand(bridgeAddressCountPeek uint16, calData CALData, 
 }
 
 // Deprecated: use the interface for direct cast
-func CastCBusPointToPointCommand(structType interface{}) CBusPointToPointCommand {
+func CastCBusPointToPointCommand(structType any) CBusPointToPointCommand {
 	if casted, ok := structType.(CBusPointToPointCommand); ok {
 		return casted
 	}
@@ -179,7 +179,7 @@ func CBusPointToPointCommandParseWithBuffer(ctx context.Context, readBuffer util
 		InitializeParent(CBusPointToPointCommand, uint16, CALData)
 		GetParent() CBusPointToPointCommand
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child CBusPointToPointCommandChildSerializeRequirement
 	var typeSwitchError error
 	switch {

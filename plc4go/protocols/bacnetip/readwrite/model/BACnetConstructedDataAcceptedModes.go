@@ -22,7 +22,6 @@ package model
 import (
 	"context"
 	"fmt"
-	spiContext "github.com/apache/plc4x/plc4go/spi/context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -105,7 +104,7 @@ func NewBACnetConstructedDataAcceptedModes(acceptedModes []BACnetLifeSafetyModeT
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataAcceptedModes(structType interface{}) BACnetConstructedDataAcceptedModes {
+func CastBACnetConstructedDataAcceptedModes(structType any) BACnetConstructedDataAcceptedModes {
 	if casted, ok := structType.(BACnetConstructedDataAcceptedModes); ok {
 		return casted
 	}
@@ -206,7 +205,7 @@ func (m *_BACnetConstructedDataAcceptedModes) SerializeWithWriteBuffer(ctx conte
 		}
 		for _curItem, _element := range m.GetAcceptedModes() {
 			_ = _curItem
-			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetAcceptedModes()), _curItem)
+			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetAcceptedModes()), _curItem)
 			_ = arrayCtx
 			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 			if _elementErr != nil {

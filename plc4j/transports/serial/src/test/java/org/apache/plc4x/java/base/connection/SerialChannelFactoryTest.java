@@ -106,7 +106,7 @@ public class SerialChannelFactoryTest {
                 sb.append(byteBuf.readByte()).append(", ");
             }
             byteBuf.resetReaderIndex();
-            logger.debug("We currently have {} readable bytes: {}", byteBuf.readableBytes(), sb.toString());
+            logger.debug("We currently have {} readable bytes: {}", byteBuf.readableBytes(), sb);
         }
     }
 }

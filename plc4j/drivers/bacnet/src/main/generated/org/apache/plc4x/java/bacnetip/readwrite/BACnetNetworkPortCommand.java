@@ -42,7 +42,7 @@ public enum BACnetNetworkPortCommand {
     }
   }
 
-  private short value;
+  private final short value;
 
   BACnetNetworkPortCommand(short value) {
     this.value = value;

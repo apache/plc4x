@@ -94,7 +94,7 @@ func NewCBusCommandPointToMultiPoint(command CBusPointToMultiPointCommand, heade
 }
 
 // Deprecated: use the interface for direct cast
-func CastCBusCommandPointToMultiPoint(structType interface{}) CBusCommandPointToMultiPoint {
+func CastCBusCommandPointToMultiPoint(structType any) CBusCommandPointToMultiPoint {
 	if casted, ok := structType.(CBusCommandPointToMultiPoint); ok {
 		return casted
 	}

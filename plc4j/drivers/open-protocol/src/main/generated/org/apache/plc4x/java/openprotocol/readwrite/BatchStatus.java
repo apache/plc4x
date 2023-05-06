@@ -36,7 +36,7 @@ public enum BatchStatus {
     }
   }
 
-  private short value;
+  private final short value;
 
   BatchStatus(short value) {
     this.value = value;

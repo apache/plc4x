@@ -20,7 +20,7 @@
 package ads
 
 import (
-	"reflect"
+	"github.com/stretchr/testify/assert"
 	"regexp"
 	"testing"
 
@@ -113,7 +113,7 @@ func TestTagHandler_ParseQuery(t *testing.T) {
 			want: model2.DirectPlcTag{
 				PlcTag: model2.PlcTag{
 					ArrayInfo: []model.ArrayInfo{
-						model3.DefaultArrayInfo{
+						&model3.DefaultArrayInfo{
 							LowerBound: 0,
 							UpperBound: 42,
 						},
@@ -133,7 +133,7 @@ func TestTagHandler_ParseQuery(t *testing.T) {
 			want: model2.DirectPlcTag{
 				PlcTag: model2.PlcTag{
 					ArrayInfo: []model.ArrayInfo{
-						model3.DefaultArrayInfo{
+						&model3.DefaultArrayInfo{
 							LowerBound: 0,
 							UpperBound: 42,
 						},
@@ -153,7 +153,7 @@ func TestTagHandler_ParseQuery(t *testing.T) {
 			want: model2.DirectPlcTag{
 				PlcTag: model2.PlcTag{
 					ArrayInfo: []model.ArrayInfo{
-						model3.DefaultArrayInfo{
+						&model3.DefaultArrayInfo{
 							LowerBound: 0,
 							UpperBound: 42,
 						},
@@ -173,7 +173,7 @@ func TestTagHandler_ParseQuery(t *testing.T) {
 			want: model2.DirectPlcTag{
 				PlcTag: model2.PlcTag{
 					ArrayInfo: []model.ArrayInfo{
-						model3.DefaultArrayInfo{
+						&model3.DefaultArrayInfo{
 							LowerBound: 0,
 							UpperBound: 42,
 						},
@@ -193,7 +193,7 @@ func TestTagHandler_ParseQuery(t *testing.T) {
 			want: model2.SymbolicPlcTag{
 				PlcTag: model2.PlcTag{
 					ArrayInfo: []model.ArrayInfo{
-						model3.DefaultArrayInfo{
+						&model3.DefaultArrayInfo{
 							LowerBound: 0,
 							UpperBound: 42,
 						},
@@ -211,7 +211,7 @@ func TestTagHandler_ParseQuery(t *testing.T) {
 			want: model2.DirectPlcTag{
 				PlcTag: model2.PlcTag{
 					ArrayInfo: []model.ArrayInfo{
-						model3.DefaultArrayInfo{
+						&model3.DefaultArrayInfo{
 							LowerBound: 23,
 							UpperBound: 42,
 						},
@@ -231,7 +231,7 @@ func TestTagHandler_ParseQuery(t *testing.T) {
 			want: model2.DirectPlcTag{
 				PlcTag: model2.PlcTag{
 					ArrayInfo: []model.ArrayInfo{
-						model3.DefaultArrayInfo{
+						&model3.DefaultArrayInfo{
 							LowerBound: 23,
 							UpperBound: 42,
 						},
@@ -251,7 +251,7 @@ func TestTagHandler_ParseQuery(t *testing.T) {
 			want: model2.DirectPlcTag{
 				PlcTag: model2.PlcTag{
 					ArrayInfo: []model.ArrayInfo{
-						model3.DefaultArrayInfo{
+						&model3.DefaultArrayInfo{
 							LowerBound: 23,
 							UpperBound: 42,
 						},
@@ -271,7 +271,7 @@ func TestTagHandler_ParseQuery(t *testing.T) {
 			want: model2.DirectPlcTag{
 				PlcTag: model2.PlcTag{
 					ArrayInfo: []model.ArrayInfo{
-						model3.DefaultArrayInfo{
+						&model3.DefaultArrayInfo{
 							LowerBound: 23,
 							UpperBound: 42,
 						},
@@ -291,7 +291,7 @@ func TestTagHandler_ParseQuery(t *testing.T) {
 			want: model2.SymbolicPlcTag{
 				PlcTag: model2.PlcTag{
 					ArrayInfo: []model.ArrayInfo{
-						model3.DefaultArrayInfo{
+						&model3.DefaultArrayInfo{
 							LowerBound: 23,
 							UpperBound: 42,
 						},
@@ -309,7 +309,7 @@ func TestTagHandler_ParseQuery(t *testing.T) {
 			want: model2.DirectPlcTag{
 				PlcTag: model2.PlcTag{
 					ArrayInfo: []model.ArrayInfo{
-						model3.DefaultArrayInfo{
+						&model3.DefaultArrayInfo{
 							LowerBound: 23,
 							UpperBound: 65,
 						},
@@ -329,7 +329,7 @@ func TestTagHandler_ParseQuery(t *testing.T) {
 			want: model2.DirectPlcTag{
 				PlcTag: model2.PlcTag{
 					ArrayInfo: []model.ArrayInfo{
-						model3.DefaultArrayInfo{
+						&model3.DefaultArrayInfo{
 							LowerBound: 23,
 							UpperBound: 65,
 						},
@@ -349,7 +349,7 @@ func TestTagHandler_ParseQuery(t *testing.T) {
 			want: model2.DirectPlcTag{
 				PlcTag: model2.PlcTag{
 					ArrayInfo: []model.ArrayInfo{
-						model3.DefaultArrayInfo{
+						&model3.DefaultArrayInfo{
 							LowerBound: 23,
 							UpperBound: 65,
 						},
@@ -369,7 +369,7 @@ func TestTagHandler_ParseQuery(t *testing.T) {
 			want: model2.DirectPlcTag{
 				PlcTag: model2.PlcTag{
 					ArrayInfo: []model.ArrayInfo{
-						model3.DefaultArrayInfo{
+						&model3.DefaultArrayInfo{
 							LowerBound: 23,
 							UpperBound: 65,
 						},
@@ -389,7 +389,7 @@ func TestTagHandler_ParseQuery(t *testing.T) {
 			want: model2.SymbolicPlcTag{
 				PlcTag: model2.PlcTag{
 					ArrayInfo: []model.ArrayInfo{
-						model3.DefaultArrayInfo{
+						&model3.DefaultArrayInfo{
 							LowerBound: 23,
 							UpperBound: 65,
 						},
@@ -407,7 +407,7 @@ func TestTagHandler_ParseQuery(t *testing.T) {
 				t.Errorf("ParseQuery() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			if !reflect.DeepEqual(got, tt.want) {
+			if !assert.Equal(t, tt.want, got) {
 				t.Errorf("ParseQuery() got = %v, want %v", got, tt.want)
 			}
 		})

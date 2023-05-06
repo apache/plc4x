@@ -96,7 +96,7 @@ func NewNLMRouterAvailableToNetwork(destinationNetworkAddresses []uint16, apduLe
 }
 
 // Deprecated: use the interface for direct cast
-func CastNLMRouterAvailableToNetwork(structType interface{}) NLMRouterAvailableToNetwork {
+func CastNLMRouterAvailableToNetwork(structType any) NLMRouterAvailableToNetwork {
 	if casted, ok := structType.(NLMRouterAvailableToNetwork); ok {
 		return casted
 	}

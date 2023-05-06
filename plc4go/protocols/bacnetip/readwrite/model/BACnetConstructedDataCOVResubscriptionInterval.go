@@ -121,7 +121,7 @@ func NewBACnetConstructedDataCOVResubscriptionInterval(covResubscriptionInterval
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataCOVResubscriptionInterval(structType interface{}) BACnetConstructedDataCOVResubscriptionInterval {
+func CastBACnetConstructedDataCOVResubscriptionInterval(structType any) BACnetConstructedDataCOVResubscriptionInterval {
 	if casted, ok := structType.(BACnetConstructedDataCOVResubscriptionInterval); ok {
 		return casted
 	}

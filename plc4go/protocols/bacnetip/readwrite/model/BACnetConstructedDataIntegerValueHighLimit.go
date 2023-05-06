@@ -121,7 +121,7 @@ func NewBACnetConstructedDataIntegerValueHighLimit(highLimit BACnetApplicationTa
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataIntegerValueHighLimit(structType interface{}) BACnetConstructedDataIntegerValueHighLimit {
+func CastBACnetConstructedDataIntegerValueHighLimit(structType any) BACnetConstructedDataIntegerValueHighLimit {
 	if casted, ok := structType.(BACnetConstructedDataIntegerValueHighLimit); ok {
 		return casted
 	}

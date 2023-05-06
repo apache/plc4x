@@ -491,7 +491,7 @@ public enum BACnetPropertyIdentifier {
     }
   }
 
-  private long value;
+  private final long value;
 
   BACnetPropertyIdentifier(long value) {
     this.value = value;

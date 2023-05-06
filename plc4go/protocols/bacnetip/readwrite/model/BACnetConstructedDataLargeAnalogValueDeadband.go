@@ -121,7 +121,7 @@ func NewBACnetConstructedDataLargeAnalogValueDeadband(deadband BACnetApplication
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataLargeAnalogValueDeadband(structType interface{}) BACnetConstructedDataLargeAnalogValueDeadband {
+func CastBACnetConstructedDataLargeAnalogValueDeadband(structType any) BACnetConstructedDataLargeAnalogValueDeadband {
 	if casted, ok := structType.(BACnetConstructedDataLargeAnalogValueDeadband); ok {
 		return casted
 	}

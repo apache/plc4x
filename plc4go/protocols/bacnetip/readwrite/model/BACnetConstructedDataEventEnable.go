@@ -121,7 +121,7 @@ func NewBACnetConstructedDataEventEnable(eventEnable BACnetEventTransitionBitsTa
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataEventEnable(structType interface{}) BACnetConstructedDataEventEnable {
+func CastBACnetConstructedDataEventEnable(structType any) BACnetConstructedDataEventEnable {
 	if casted, ok := structType.(BACnetConstructedDataEventEnable); ok {
 		return casted
 	}

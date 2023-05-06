@@ -68,12 +68,9 @@ public class GenericCANDriverTest {
                     return;
                 }
 
-                reply.getSubscriptionHandle("tag1").register(new Consumer<PlcSubscriptionEvent>() {
-                    @Override
-                    public void accept(PlcSubscriptionEvent event) {
-                        plcEvent.set(event);
-                        latch.countDown();
-                    }
+                reply.getSubscriptionHandle("tag1").register(event -> {
+                    plcEvent.set(event);
+                    latch.countDown();
                 });
             });
 

@@ -96,7 +96,7 @@ func NewIdentifyReplyCommandFirmwareVersion(firmwareVersion string, numBytes uin
 }
 
 // Deprecated: use the interface for direct cast
-func CastIdentifyReplyCommandFirmwareVersion(structType interface{}) IdentifyReplyCommandFirmwareVersion {
+func CastIdentifyReplyCommandFirmwareVersion(structType any) IdentifyReplyCommandFirmwareVersion {
 	if casted, ok := structType.(IdentifyReplyCommandFirmwareVersion); ok {
 		return casted
 	}

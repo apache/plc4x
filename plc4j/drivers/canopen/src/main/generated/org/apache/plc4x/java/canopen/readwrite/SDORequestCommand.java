@@ -39,7 +39,7 @@ public enum SDORequestCommand {
     }
   }
 
-  private byte value;
+  private final byte value;
 
   SDORequestCommand(byte value) {
     this.value = value;

@@ -86,7 +86,7 @@ func (m *Reader) Read(ctx context.Context, readRequest model.PlcReadRequest) <-c
 			}
 			request := readWriteModel.NewCipRRData(0, 0, typeIds, *m.sessionHandle, uint32(readWriteModel.CIPStatus_Success), []byte(DefaultSenderContext), 0)
 			transaction := m.tm.StartTransaction()
-			transaction.Submit(func() {
+			transaction.Submit(func(transaction spi.RequestTransaction) {
 				if err := m.messageCodec.SendRequest(ctx, request,
 					func(message spi.Message) bool {
 						eipPacket := message.(readWriteModel.EipPacket)
@@ -281,7 +281,7 @@ func parsePlcValue(tag EIPPlcTag, data utils.ReadBufferByteBased, _type readWrit
 				list = append(list, spiValues.NewPlcSINT(readInt8))
 			case readWriteModel.CIPDataTypeCode_REAL:
 				if _type.Size()*8 != 64 {
-					panic("Unexpected size")
+					return nil, errors.New("Unexpected size")
 				}
 				readFloat64, err := data.ReadFloat64("", 64)
 				if err != nil {
@@ -321,7 +321,7 @@ func parsePlcValue(tag EIPPlcTag, data utils.ReadBufferByteBased, _type readWrit
 			return spiValues.NewPlcDINT(readInt32), nil
 		case readWriteModel.CIPDataTypeCode_REAL:
 			if _type.Size()*8 != 64 {
-				panic("Unexpected size")
+				return nil, errors.New("Unexpected size")
 			}
 			readFloat32, err := data.ReadFloat32("", 64)
 			if err != nil {

@@ -42,6 +42,7 @@ public abstract class OpenProtocolMessageParameterSetSelected extends OpenProtoc
   public Mid getMid() {
     return Mid.ParameterSetSelected;
   }
+
   // Abstract accessors for discriminator values.
   public abstract Long getRevision();
 

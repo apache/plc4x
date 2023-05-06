@@ -38,7 +38,7 @@ public enum BACnetMaintenance {
     }
   }
 
-  private short value;
+  private final short value;
 
   BACnetMaintenance(short value) {
     this.value = value;

@@ -94,7 +94,7 @@ func NewBACnetTimerStateChangeValueOctetString(octetStringValue BACnetApplicatio
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetTimerStateChangeValueOctetString(structType interface{}) BACnetTimerStateChangeValueOctetString {
+func CastBACnetTimerStateChangeValueOctetString(structType any) BACnetTimerStateChangeValueOctetString {
 	if casted, ok := structType.(BACnetTimerStateChangeValueOctetString); ok {
 		return casted
 	}

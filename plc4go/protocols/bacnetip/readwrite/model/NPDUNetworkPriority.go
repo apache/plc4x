@@ -33,6 +33,7 @@ type NPDUNetworkPriority uint8
 
 type INPDUNetworkPriority interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 
@@ -92,8 +93,8 @@ func NPDUNetworkPriorityKnows(value uint8) bool {
 	return false
 }
 
-func CastNPDUNetworkPriority(structType interface{}) NPDUNetworkPriority {
-	castFunc := func(typ interface{}) NPDUNetworkPriority {
+func CastNPDUNetworkPriority(structType any) NPDUNetworkPriority {
+	castFunc := func(typ any) NPDUNetworkPriority {
 		if sNPDUNetworkPriority, ok := typ.(NPDUNetworkPriority); ok {
 			return sNPDUNetworkPriority
 		}

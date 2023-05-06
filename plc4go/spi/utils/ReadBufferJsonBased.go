@@ -32,7 +32,7 @@ import (
 // NewJsonReadBuffer return as ReadBuffer which doesn't validate attributes and lists
 func NewJsonReadBuffer(reader io.Reader) ReadBuffer {
 	decoder := json.NewDecoder(reader)
-	var rootElement map[string]interface{}
+	var rootElement map[string]any
 	err := decoder.Decode(&rootElement)
 	return &jsonReadBuffer{
 		rootElement:    rootElement,
@@ -45,7 +45,7 @@ func NewJsonReadBuffer(reader io.Reader) ReadBuffer {
 // NewStrictJsonReadBuffer return as ReadBuffer which does validate attributes on the setting
 func NewStrictJsonReadBuffer(reader io.Reader, validateAttr bool) ReadBuffer {
 	decoder := json.NewDecoder(reader)
-	var rootElement map[string]interface{}
+	var rootElement map[string]any
 	err := decoder.Decode(&rootElement)
 	return &jsonReadBuffer{
 		rootElement:    rootElement,
@@ -64,7 +64,7 @@ func NewStrictJsonReadBuffer(reader io.Reader, validateAttr bool) ReadBuffer {
 type jsonReadBuffer struct {
 	BufferCommons
 	Stack
-	rootElement    map[string]interface{}
+	rootElement    map[string]any
 	pos            uint
 	doValidateAttr bool
 	err            error
@@ -104,12 +104,12 @@ func (j *jsonReadBuffer) PullContext(logicalName string, readerArgs ...WithReade
 	}
 	peek := j.Peek()
 	switch peek.(type) {
-	case []interface{}:
+	case []any:
 		pop := j.Pop()
-		contextList := pop.([]interface{})
-		context := contextList[0].(map[string]interface{})
+		contextList := pop.([]any)
+		context := contextList[0].(map[string]any)
 		if len(contextList) < 2 {
-			j.Push(make([]interface{}, 0))
+			j.Push(make([]any, 0))
 		} else {
 			j.Push(contextList[1 : len(contextList)-1])
 		}
@@ -120,7 +120,7 @@ func (j *jsonReadBuffer) PullContext(logicalName string, readerArgs ...WithReade
 			return errors.Errorf("Required context %s not found in %v", logicalName, peek)
 		}
 	}
-	if context, ok := peek.(map[string]interface{})[logicalName]; ok {
+	if context, ok := peek.(map[string]any)[logicalName]; ok {
 		j.Push(context)
 		return nil
 	} else {
@@ -438,33 +438,33 @@ func (j *jsonReadBuffer) CloseContext(logicalName string, readerArgs ...WithRead
 	}
 	peek := j.Peek()
 	switch peek.(type) {
-	case []interface{}:
+	case []any:
 		return nil
 	}
-	if _, ok := peek.(map[string]interface{})[logicalName]; ok {
-		delete(peek.(map[string]interface{}), logicalName)
+	if _, ok := peek.(map[string]any)[logicalName]; ok {
+		delete(peek.(map[string]any), logicalName)
 		return nil
 	} else {
 		return errors.Errorf("Required context %s not found in %v", logicalName, peek)
 	}
 }
 
-func (j *jsonReadBuffer) getElement(logicalName string) (interface{}, map[string]interface{}) {
+func (j *jsonReadBuffer) getElement(logicalName string) (any, map[string]any) {
 	logicalName = j.SanitizeLogicalName(logicalName)
 	peek := j.Peek()
-	var element map[string]interface{}
+	var element map[string]any
 	switch peek.(type) {
-	case []interface{}:
+	case []any:
 		pop := j.Pop()
-		elementList := pop.([]interface{})
-		element = elementList[0].(map[string]interface{})
+		elementList := pop.([]any)
+		element = elementList[0].(map[string]any)
 		if len(elementList) < 2 {
-			j.Push(make([]interface{}, 0))
+			j.Push(make([]any, 0))
 		} else {
 			j.Push(elementList[1 : len(elementList)-1])
 		}
-	case map[string]interface{}:
-		element = peek.(map[string]interface{})
+	case map[string]any:
+		element = peek.(map[string]any)
 	default:
 		panic(fmt.Sprintf("Invalid state at %s with %v", logicalName, element))
 	}
@@ -475,7 +475,7 @@ func (j *jsonReadBuffer) move(bits uint) {
 	j.pos += bits
 }
 
-func (j *jsonReadBuffer) validateAttr(logicalName string, element map[string]interface{}, dataType string, bitLength uint, readerArgs ...WithReaderArgs) error {
+func (j *jsonReadBuffer) validateAttr(logicalName string, element map[string]any, dataType string, bitLength uint, readerArgs ...WithReaderArgs) error {
 	if !j.doValidateAttr {
 		return nil
 	}

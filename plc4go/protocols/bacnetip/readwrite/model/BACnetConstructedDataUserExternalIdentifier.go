@@ -121,7 +121,7 @@ func NewBACnetConstructedDataUserExternalIdentifier(userExternalIdentifier BACne
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataUserExternalIdentifier(structType interface{}) BACnetConstructedDataUserExternalIdentifier {
+func CastBACnetConstructedDataUserExternalIdentifier(structType any) BACnetConstructedDataUserExternalIdentifier {
 	if casted, ok := structType.(BACnetConstructedDataUserExternalIdentifier); ok {
 		return casted
 	}

@@ -121,7 +121,7 @@ func NewBACnetConstructedDataRestorePreparationTime(restorePreparationTime BACne
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataRestorePreparationTime(structType interface{}) BACnetConstructedDataRestorePreparationTime {
+func CastBACnetConstructedDataRestorePreparationTime(structType any) BACnetConstructedDataRestorePreparationTime {
 	if casted, ok := structType.(BACnetConstructedDataRestorePreparationTime); ok {
 		return casted
 	}

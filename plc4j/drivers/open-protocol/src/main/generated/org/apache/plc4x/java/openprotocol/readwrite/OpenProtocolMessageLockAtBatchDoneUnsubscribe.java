@@ -42,6 +42,7 @@ public abstract class OpenProtocolMessageLockAtBatchDoneUnsubscribe extends Open
   public Mid getMid() {
     return Mid.LockAtBatchDoneUnsubscribe;
   }
+
   // Abstract accessors for discriminator values.
   public abstract Long getRevision();
 

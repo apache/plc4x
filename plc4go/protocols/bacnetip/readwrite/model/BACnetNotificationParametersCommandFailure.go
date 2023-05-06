@@ -128,7 +128,7 @@ func NewBACnetNotificationParametersCommandFailure(innerOpeningTag BACnetOpening
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetNotificationParametersCommandFailure(structType interface{}) BACnetNotificationParametersCommandFailure {
+func CastBACnetNotificationParametersCommandFailure(structType any) BACnetNotificationParametersCommandFailure {
 	if casted, ok := structType.(BACnetNotificationParametersCommandFailure); ok {
 		return casted
 	}

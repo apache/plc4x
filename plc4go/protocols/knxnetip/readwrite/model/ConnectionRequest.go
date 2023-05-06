@@ -113,7 +113,7 @@ func NewConnectionRequest(hpaiDiscoveryEndpoint HPAIDiscoveryEndpoint, hpaiDataE
 }
 
 // Deprecated: use the interface for direct cast
-func CastConnectionRequest(structType interface{}) ConnectionRequest {
+func CastConnectionRequest(structType any) ConnectionRequest {
 	if casted, ok := structType.(ConnectionRequest); ok {
 		return casted
 	}

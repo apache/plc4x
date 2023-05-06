@@ -36,7 +36,7 @@ public enum BACnetNotifyType {
     }
   }
 
-  private short value;
+  private final short value;
 
   BACnetNotifyType(short value) {
     this.value = value;

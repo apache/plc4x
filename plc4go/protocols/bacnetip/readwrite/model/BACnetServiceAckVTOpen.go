@@ -96,7 +96,7 @@ func NewBACnetServiceAckVTOpen(remoteVtSessionIdentifier BACnetApplicationTagUns
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetServiceAckVTOpen(structType interface{}) BACnetServiceAckVTOpen {
+func CastBACnetServiceAckVTOpen(structType any) BACnetServiceAckVTOpen {
 	if casted, ok := structType.(BACnetServiceAckVTOpen); ok {
 		return casted
 	}

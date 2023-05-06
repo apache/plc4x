@@ -79,7 +79,7 @@ func NewBVLCReadBroadcastDistributionTable() *_BVLCReadBroadcastDistributionTabl
 }
 
 // Deprecated: use the interface for direct cast
-func CastBVLCReadBroadcastDistributionTable(structType interface{}) BVLCReadBroadcastDistributionTable {
+func CastBVLCReadBroadcastDistributionTable(structType any) BVLCReadBroadcastDistributionTable {
 	if casted, ok := structType.(BVLCReadBroadcastDistributionTable); ok {
 		return casted
 	}

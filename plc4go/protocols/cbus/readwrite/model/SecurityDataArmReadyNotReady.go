@@ -95,7 +95,7 @@ func NewSecurityDataArmReadyNotReady(zoneNumber uint8, commandTypeContainer Secu
 }
 
 // Deprecated: use the interface for direct cast
-func CastSecurityDataArmReadyNotReady(structType interface{}) SecurityDataArmReadyNotReady {
+func CastSecurityDataArmReadyNotReady(structType any) SecurityDataArmReadyNotReady {
 	if casted, ok := structType.(SecurityDataArmReadyNotReady); ok {
 		return casted
 	}

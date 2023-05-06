@@ -86,7 +86,7 @@ func NewBACnetConstructedDataGroupAll(openingTag BACnetOpeningTag, peekedTagHead
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataGroupAll(structType interface{}) BACnetConstructedDataGroupAll {
+func CastBACnetConstructedDataGroupAll(structType any) BACnetConstructedDataGroupAll {
 	if casted, ok := structType.(BACnetConstructedDataGroupAll); ok {
 		return casted
 	}

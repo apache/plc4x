@@ -86,7 +86,7 @@ func NewBACnetRecipientProcessEnclosed(openingTag BACnetOpeningTag, recipientPro
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetRecipientProcessEnclosed(structType interface{}) BACnetRecipientProcessEnclosed {
+func CastBACnetRecipientProcessEnclosed(structType any) BACnetRecipientProcessEnclosed {
 	if casted, ok := structType.(BACnetRecipientProcessEnclosed); ok {
 		return casted
 	}

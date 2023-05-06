@@ -129,7 +129,7 @@ func NewPortSegmentExtended(port uint8, linkAddressSize uint8, address string) *
 }
 
 // Deprecated: use the interface for direct cast
-func CastPortSegmentExtended(structType interface{}) PortSegmentExtended {
+func CastPortSegmentExtended(structType any) PortSegmentExtended {
 	if casted, ok := structType.(PortSegmentExtended); ok {
 		return casted
 	}

@@ -90,7 +90,7 @@ func NewClassSegment(pathSegmentType uint8, logicalSegmentType uint8, logicalSeg
 }
 
 // Deprecated: use the interface for direct cast
-func CastClassSegment(structType interface{}) ClassSegment {
+func CastClassSegment(structType any) ClassSegment {
 	if casted, ok := structType.(ClassSegment); ok {
 		return casted
 	}

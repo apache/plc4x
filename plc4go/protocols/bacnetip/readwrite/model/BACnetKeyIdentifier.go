@@ -76,7 +76,7 @@ func NewBACnetKeyIdentifier(algorithm BACnetContextTagUnsignedInteger, keyId BAC
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetKeyIdentifier(structType interface{}) BACnetKeyIdentifier {
+func CastBACnetKeyIdentifier(structType any) BACnetKeyIdentifier {
 	if casted, ok := structType.(BACnetKeyIdentifier); ok {
 		return casted
 	}

@@ -42,6 +42,7 @@ public abstract class OpenProtocolMessageSetParameterSetBatchSize extends OpenPr
   public Mid getMid() {
     return Mid.SetParameterSetBatchSize;
   }
+
   // Abstract accessors for discriminator values.
   public abstract Long getRevision();
 

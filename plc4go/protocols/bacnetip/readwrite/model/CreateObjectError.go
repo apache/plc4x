@@ -104,7 +104,7 @@ func NewCreateObjectError(errorType ErrorEnclosed, firstFailedElementNumber BACn
 }
 
 // Deprecated: use the interface for direct cast
-func CastCreateObjectError(structType interface{}) CreateObjectError {
+func CastCreateObjectError(structType any) CreateObjectError {
 	if casted, ok := structType.(CreateObjectError); ok {
 		return casted
 	}

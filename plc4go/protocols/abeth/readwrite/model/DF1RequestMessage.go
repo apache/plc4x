@@ -115,7 +115,7 @@ func NewDF1RequestMessage(destinationAddress uint8, sourceAddress uint8, status 
 }
 
 // Deprecated: use the interface for direct cast
-func CastDF1RequestMessage(structType interface{}) DF1RequestMessage {
+func CastDF1RequestMessage(structType any) DF1RequestMessage {
 	if casted, ok := structType.(DF1RequestMessage); ok {
 		return casted
 	}
@@ -191,7 +191,7 @@ func DF1RequestMessageParseWithBuffer(ctx context.Context, readBuffer utils.Read
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of DF1RequestMessage")
 		}
 		if reserved != uint16(0x0000) {
-			Plc4xModelLog.Info().Fields(map[string]interface{}{
+			Plc4xModelLog.Info().Fields(map[string]any{
 				"expected value": uint16(0x0000),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
@@ -226,7 +226,7 @@ func DF1RequestMessageParseWithBuffer(ctx context.Context, readBuffer utils.Read
 		InitializeParent(DF1RequestMessage, uint8, uint8, uint8, uint16)
 		GetParent() DF1RequestMessage
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child DF1RequestMessageChildSerializeRequirement
 	var typeSwitchError error
 	switch {
@@ -278,7 +278,7 @@ func (pm *_DF1RequestMessage) SerializeParent(ctx context.Context, writeBuffer u
 	{
 		var reserved uint16 = uint16(0x0000)
 		if pm.reservedField0 != nil {
-			Plc4xModelLog.Info().Fields(map[string]interface{}{
+			Plc4xModelLog.Info().Fields(map[string]any{
 				"expected value": uint16(0x0000),
 				"got value":      reserved,
 			}).Msg("Overriding reserved field with unexpected value.")

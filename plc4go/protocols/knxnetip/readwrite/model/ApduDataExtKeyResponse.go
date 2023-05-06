@@ -78,7 +78,7 @@ func NewApduDataExtKeyResponse(length uint8) *_ApduDataExtKeyResponse {
 }
 
 // Deprecated: use the interface for direct cast
-func CastApduDataExtKeyResponse(structType interface{}) ApduDataExtKeyResponse {
+func CastApduDataExtKeyResponse(structType any) ApduDataExtKeyResponse {
 	if casted, ok := structType.(ApduDataExtKeyResponse); ok {
 		return casted
 	}

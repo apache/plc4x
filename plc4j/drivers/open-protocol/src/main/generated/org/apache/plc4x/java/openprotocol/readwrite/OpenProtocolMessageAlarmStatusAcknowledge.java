@@ -42,6 +42,7 @@ public abstract class OpenProtocolMessageAlarmStatusAcknowledge extends OpenProt
   public Mid getMid() {
     return Mid.AlarmStatusAcknowledge;
   }
+
   // Abstract accessors for discriminator values.
   public abstract Long getRevision();
 

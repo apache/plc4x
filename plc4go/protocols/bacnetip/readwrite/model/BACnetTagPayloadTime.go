@@ -139,7 +139,7 @@ func NewBACnetTagPayloadTime(hour uint8, minute uint8, second uint8, fractional 
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetTagPayloadTime(structType interface{}) BACnetTagPayloadTime {
+func CastBACnetTagPayloadTime(structType any) BACnetTagPayloadTime {
 	if casted, ok := structType.(BACnetTagPayloadTime); ok {
 		return casted
 	}

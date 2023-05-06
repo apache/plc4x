@@ -76,7 +76,7 @@ func NewBACnetCredentialAuthenticationFactor(disable BACnetAccessAuthenticationF
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetCredentialAuthenticationFactor(structType interface{}) BACnetCredentialAuthenticationFactor {
+func CastBACnetCredentialAuthenticationFactor(structType any) BACnetCredentialAuthenticationFactor {
 	if casted, ok := structType.(BACnetCredentialAuthenticationFactor); ok {
 		return casted
 	}

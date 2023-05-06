@@ -80,7 +80,7 @@ func NewBACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevic
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged(structType interface{}) BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged {
+func CastBACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged(structType any) BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged {
 	if casted, ok := structType.(BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged); ok {
 		return casted
 	}

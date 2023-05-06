@@ -121,7 +121,7 @@ func NewBACnetConstructedDataLimitEnable(limitEnable BACnetLimitEnableTagged, op
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataLimitEnable(structType interface{}) BACnetConstructedDataLimitEnable {
+func CastBACnetConstructedDataLimitEnable(structType any) BACnetConstructedDataLimitEnable {
 	if casted, ok := structType.(BACnetConstructedDataLimitEnable); ok {
 		return casted
 	}

@@ -35,7 +35,7 @@ public enum BACnetPolarity {
     }
   }
 
-  private short value;
+  private final short value;
 
   BACnetPolarity(short value) {
     this.value = value;

@@ -98,7 +98,7 @@ func NewSALDataPoolsSpasPondsFountainsControl(poolsSpaPondsFountainsData Lightin
 }
 
 // Deprecated: use the interface for direct cast
-func CastSALDataPoolsSpasPondsFountainsControl(structType interface{}) SALDataPoolsSpasPondsFountainsControl {
+func CastSALDataPoolsSpasPondsFountainsControl(structType any) SALDataPoolsSpasPondsFountainsControl {
 	if casted, ok := structType.(SALDataPoolsSpasPondsFountainsControl); ok {
 		return casted
 	}

@@ -78,7 +78,7 @@ func NewTDataConnectedInd(size uint16) *_TDataConnectedInd {
 }
 
 // Deprecated: use the interface for direct cast
-func CastTDataConnectedInd(structType interface{}) TDataConnectedInd {
+func CastTDataConnectedInd(structType any) TDataConnectedInd {
 	if casted, ok := structType.(TDataConnectedInd); ok {
 		return casted
 	}

@@ -32,7 +32,7 @@ import (
 type FirmataParserHelper struct {
 }
 
-func (m FirmataParserHelper) Parse(typeName string, arguments []string, io utils.ReadBuffer) (interface{}, error) {
+func (m FirmataParserHelper) Parse(typeName string, arguments []string, io utils.ReadBuffer) (any, error) {
 	switch typeName {
 	case "SysexCommand":
 		response, err := utils.StrToBool(arguments[0])

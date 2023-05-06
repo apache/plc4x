@@ -121,7 +121,7 @@ func NewBACnetConstructedDataOutOfService(outOfService BACnetApplicationTagBoole
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataOutOfService(structType interface{}) BACnetConstructedDataOutOfService {
+func CastBACnetConstructedDataOutOfService(structType any) BACnetConstructedDataOutOfService {
 	if casted, ok := structType.(BACnetConstructedDataOutOfService); ok {
 		return casted
 	}

@@ -33,6 +33,7 @@ type ErrorClass uint16
 
 type IErrorClass interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 
@@ -122,8 +123,8 @@ func ErrorClassKnows(value uint16) bool {
 	return false
 }
 
-func CastErrorClass(structType interface{}) ErrorClass {
-	castFunc := func(typ interface{}) ErrorClass {
+func CastErrorClass(structType any) ErrorClass {
+	castFunc := func(typ any) ErrorClass {
 		if sErrorClass, ok := typ.(ErrorClass); ok {
 			return sErrorClass
 		}

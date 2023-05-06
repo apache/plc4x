@@ -42,8 +42,8 @@ public enum DataTransportSize {
     }
   }
 
-  private short value;
-  private boolean sizeInBits;
+  private final short value;
+  private final boolean sizeInBits;
 
   DataTransportSize(short value, boolean sizeInBits) {
     this.value = value;
@@ -68,7 +68,7 @@ public enum DataTransportSize {
   }
 
   public static List<DataTransportSize> enumsForFieldSizeInBits(boolean fieldValue) {
-    List<DataTransportSize> _values = new ArrayList();
+    List<DataTransportSize> _values = new ArrayList<>();
     for (DataTransportSize _val : DataTransportSize.values()) {
       if (_val.getSizeInBits() == fieldValue) {
         _values.add(_val);

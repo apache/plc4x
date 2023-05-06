@@ -82,7 +82,7 @@ func NewSysexCommandAnalogMappingResponse() *_SysexCommandAnalogMappingResponse 
 }
 
 // Deprecated: use the interface for direct cast
-func CastSysexCommandAnalogMappingResponse(structType interface{}) SysexCommandAnalogMappingResponse {
+func CastSysexCommandAnalogMappingResponse(structType any) SysexCommandAnalogMappingResponse {
 	if casted, ok := structType.(SysexCommandAnalogMappingResponse); ok {
 		return casted
 	}

@@ -58,7 +58,7 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
     protected final boolean awaitSessionSetupComplete;
     protected final boolean awaitSessionDisconnectComplete;
     protected final boolean awaitSessionDiscoverComplete;
-    protected final ProtocolStackConfigurer stackConfigurer;
+    protected final ProtocolStackConfigurer<?> stackConfigurer;
     protected final List<EventListener> listeners = new CopyOnWriteArrayList<>();
     protected final CompletableFuture<Void> sessionDisconnectCompleteFuture = new CompletableFuture<>();
 
@@ -69,7 +69,7 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
                                      PlcTagHandler tagHandler, PlcValueHandler valueHandler, Configuration configuration,
                                      ChannelFactory channelFactory, boolean awaitSessionSetupComplete,
                                      boolean awaitSessionDisconnectComplete, boolean awaitSessionDiscoverComplete,
-                                     ProtocolStackConfigurer stackConfigurer, BaseOptimizer optimizer,
+                                     ProtocolStackConfigurer<?> stackConfigurer, BaseOptimizer optimizer,
                                      PlcAuthentication authentication) {
         super(canRead, canWrite, canSubscribe, canBrowse, tagHandler, valueHandler, optimizer, authentication);
         this.configuration = configuration;
@@ -93,7 +93,7 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
             CompletableFuture<Void> sessionSetupCompleteFuture = new CompletableFuture<>();
             CompletableFuture<Configuration> sessionDiscoveredCompleteFuture = new CompletableFuture<>();
 
-            if(channelFactory == null) {
+            if (channelFactory == null) {
                 throw new PlcConnectionException("No channel factory provided");
             }
 
@@ -148,7 +148,8 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
     /**
      * Close the connection by firstly calling disconnect and waiting for a DisconnectedEvent occurs and then calling
      * Close() to finish up any other clean up.
-     * @throws PlcConnectionException
+     *
+     * @throws PlcConnectionException when a error occurs while closing
      */
     @Override
     public void close() throws PlcConnectionException {
@@ -196,7 +197,7 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
         /*if (factory == null) {
             throw new IllegalStateException("No Instance Factory is Present!");
         }*/
-        return new ChannelInitializer<Channel>() {
+        return new ChannelInitializer<>() {
             @Override
             protected void initChannel(Channel channel) {
                 // Build the protocol stack for communicating with the s7 protocol.

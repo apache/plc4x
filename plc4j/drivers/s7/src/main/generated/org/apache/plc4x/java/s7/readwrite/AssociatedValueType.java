@@ -129,7 +129,7 @@ public class AssociatedValueType implements Message {
     lengthInBits += 8;
 
     // Manual Field (valueLength)
-    lengthInBits += 16;
+    lengthInBits += 2;
 
     // Array field
     if (data != null) {
@@ -173,7 +173,7 @@ public class AssociatedValueType implements Message {
             () ->
                 (int)
                     (org.apache.plc4x.java.s7.readwrite.utils.StaticHelper.RightShift3(
-                        readBuffer)));
+                        readBuffer, transportSize)));
 
     List<Short> data =
         readCountArrayField(

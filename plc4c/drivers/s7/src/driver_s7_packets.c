@@ -25,7 +25,7 @@
 #include <tpkt_packet.h>
 
 #include "plc4c/driver_s7_packets.h"
-#include "plc4c/driver_s7_encode_decode.h"
+#include "szl_data_tree_item.h"
 
 // undef to use pointer to plc4c_data item on writes
 // probably safe to comment out but on for now.

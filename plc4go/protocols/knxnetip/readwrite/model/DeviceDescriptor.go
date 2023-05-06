@@ -33,6 +33,7 @@ type DeviceDescriptor uint16
 
 type IDeviceDescriptor interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 	FirmwareType() FirmwareType
 	MediumType() DeviceDescriptorMediumType
@@ -511,8 +512,8 @@ func DeviceDescriptorKnows(value uint16) bool {
 	return false
 }
 
-func CastDeviceDescriptor(structType interface{}) DeviceDescriptor {
-	castFunc := func(typ interface{}) DeviceDescriptor {
+func CastDeviceDescriptor(structType any) DeviceDescriptor {
+	castFunc := func(typ any) DeviceDescriptor {
 		if sDeviceDescriptor, ok := typ.(DeviceDescriptor); ok {
 			return sDeviceDescriptor
 		}

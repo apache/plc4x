@@ -51,7 +51,7 @@ func (m *Connection) BrowseWithInterceptor(ctx context.Context, browseRequest ap
 		browseResponse := internalModel.NewDefaultPlcBrowseResponse(browseRequest, results, responseCodes)
 		result <- &internalModel.DefaultPlcBrowseRequestResult{
 			Request:  browseRequest,
-			Response: &browseResponse,
+			Response: browseResponse,
 			Err:      nil,
 		}
 	}()
@@ -108,7 +108,7 @@ func (m *Connection) filterDataTypes(parentName string, currentType driverModel.
 	if len(remainingAddressSegments) == 0 {
 		arrayInfo := []apiModel.ArrayInfo{}
 		for _, ai := range currentType.GetArrayInfo() {
-			arrayInfo = append(arrayInfo, internalModel.DefaultArrayInfo{
+			arrayInfo = append(arrayInfo, &internalModel.DefaultArrayInfo{
 				LowerBound: ai.GetLowerBound(),
 				UpperBound: ai.GetUpperBound(),
 			})

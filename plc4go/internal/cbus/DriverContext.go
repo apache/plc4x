@@ -24,6 +24,6 @@ type DriverContext struct {
 	awaitDisconnectComplete bool
 }
 
-func NewDriverContext(configuration Configuration) (DriverContext, error) {
-	return DriverContext{}, nil
+func NewDriverContext(_ Configuration) DriverContext {
+	return DriverContext{}
 }

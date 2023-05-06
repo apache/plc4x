@@ -86,7 +86,7 @@ func NewBACnetConstructedDataLifeSafetyZoneAll(openingTag BACnetOpeningTag, peek
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataLifeSafetyZoneAll(structType interface{}) BACnetConstructedDataLifeSafetyZoneAll {
+func CastBACnetConstructedDataLifeSafetyZoneAll(structType any) BACnetConstructedDataLifeSafetyZoneAll {
 	if casted, ok := structType.(BACnetConstructedDataLifeSafetyZoneAll); ok {
 		return casted
 	}

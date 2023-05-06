@@ -50,10 +50,10 @@ public enum CANOpenService {
     }
   }
 
-  private byte value;
-  private short min;
-  private short max;
-  private boolean pdo;
+  private final byte value;
+  private final short min;
+  private final short max;
+  private final boolean pdo;
 
   CANOpenService(byte value, short min, short max, boolean pdo) {
     this.value = value;
@@ -80,7 +80,7 @@ public enum CANOpenService {
   }
 
   public static List<CANOpenService> enumsForFieldMin(short fieldValue) {
-    List<CANOpenService> _values = new ArrayList();
+    List<CANOpenService> _values = new ArrayList<>();
     for (CANOpenService _val : CANOpenService.values()) {
       if (_val.getMin() == fieldValue) {
         _values.add(_val);
@@ -103,7 +103,7 @@ public enum CANOpenService {
   }
 
   public static List<CANOpenService> enumsForFieldMax(short fieldValue) {
-    List<CANOpenService> _values = new ArrayList();
+    List<CANOpenService> _values = new ArrayList<>();
     for (CANOpenService _val : CANOpenService.values()) {
       if (_val.getMax() == fieldValue) {
         _values.add(_val);
@@ -126,7 +126,7 @@ public enum CANOpenService {
   }
 
   public static List<CANOpenService> enumsForFieldPdo(boolean fieldValue) {
-    List<CANOpenService> _values = new ArrayList();
+    List<CANOpenService> _values = new ArrayList<>();
     for (CANOpenService _val : CANOpenService.values()) {
       if (_val.getPdo() == fieldValue) {
         _values.add(_val);

@@ -20,11 +20,13 @@
 package tests
 
 import (
+	"testing"
+
+	firmataIO "github.com/apache/plc4x/plc4go/protocols/firmata/readwrite"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
 	_ "github.com/apache/plc4x/plc4go/tests/initializetest"
-	"testing"
 )
 
 func TestFirmataParserSerializer(t *testing.T) {
-	testutils.RunParserSerializerTestsuite(t, "assets/testing/protocols/firmata/ParserSerializerTestsuite.xml")
+	testutils.RunParserSerializerTestsuite(t, "assets/testing/protocols/firmata/ParserSerializerTestsuite.xml", firmataIO.FirmataParserHelper{})
 }

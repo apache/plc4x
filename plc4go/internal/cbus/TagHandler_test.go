@@ -1443,6 +1443,40 @@ func TestTagHandler_handleUnitQuery(t *testing.T) {
 				numElements: 1,
 			},
 		},
+		{
+			name: "identify type hex",
+			args: args{match: map[string]string{
+				"unitAddress":       "2",
+				"identifyAttribute": "0x01",
+			}},
+			want: &unitInfoQuery{
+				tagType:     UNIT_INFO,
+				unitAddress: readWriteModel.NewUnitAddress(2),
+				attribute: func() *readWriteModel.Attribute {
+					var attributeType readWriteModel.Attribute
+					attributeType = readWriteModel.Attribute_Type
+					return &attributeType
+				}(),
+				numElements: 1,
+			},
+		},
+		{
+			name: "identify type decimal",
+			args: args{match: map[string]string{
+				"unitAddress":       "2",
+				"identifyAttribute": "1",
+			}},
+			want: &unitInfoQuery{
+				tagType:     UNIT_INFO,
+				unitAddress: readWriteModel.NewUnitAddress(2),
+				attribute: func() *readWriteModel.Attribute {
+					var attributeType readWriteModel.Attribute
+					attributeType = readWriteModel.Attribute_Type
+					return &attributeType
+				}(),
+				numElements: 1,
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

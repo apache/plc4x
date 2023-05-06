@@ -20,48 +20,51 @@
 package cbus
 
 import (
-	readwriteModel "github.com/apache/plc4x/plc4go/protocols/cbus/readwrite/model"
+	readWriteModel "github.com/apache/plc4x/plc4go/protocols/cbus/readwrite/model"
 )
 
-func CreateRequestContext(cBusMessage readwriteModel.CBusMessage) readwriteModel.RequestContext {
-	return CreateRequestContextWithInfoCallback(cBusMessage, func(_ string) {})
+func CreateRequestContext(cBusMessage readWriteModel.CBusMessage) readWriteModel.RequestContext {
+	return CreateRequestContextWithInfoCallback(cBusMessage, nil)
 }
 
-func CreateRequestContextWithInfoCallback(cBusMessage readwriteModel.CBusMessage, infoCallBack func(string)) readwriteModel.RequestContext {
+func CreateRequestContextWithInfoCallback(cBusMessage readWriteModel.CBusMessage, infoCallBack func(string)) readWriteModel.RequestContext {
+	if infoCallBack == nil {
+		infoCallBack = func(_ string) {}
+	}
 	switch cBusMessage := cBusMessage.(type) {
-	case readwriteModel.CBusMessageToServerExactly:
+	case readWriteModel.CBusMessageToServerExactly:
 		switch request := cBusMessage.GetRequest().(type) {
-		case readwriteModel.RequestDirectCommandAccessExactly:
+		case readWriteModel.RequestDirectCommandAccessExactly:
 			sendIdentifyRequestBefore := false
 			infoCallBack("CAL request detected")
 			switch request.GetCalData().(type) {
-			case readwriteModel.CALDataIdentifyExactly:
+			case readWriteModel.CALDataIdentifyExactly:
 				sendIdentifyRequestBefore = true
 			}
-			return readwriteModel.NewRequestContext(sendIdentifyRequestBefore)
-		case readwriteModel.RequestCommandExactly:
+			return readWriteModel.NewRequestContext(sendIdentifyRequestBefore)
+		case readWriteModel.RequestCommandExactly:
 			switch command := request.GetCbusCommand().(type) {
-			case readwriteModel.CBusCommandPointToPointExactly:
+			case readWriteModel.CBusCommandPointToPointExactly:
 				sendIdentifyRequestBefore := false
 				infoCallBack("CAL request detected")
 				switch command.GetCommand().GetCalData().(type) {
-				case readwriteModel.CALDataIdentifyExactly:
+				case readWriteModel.CALDataIdentifyExactly:
 					sendIdentifyRequestBefore = true
 				}
-				return readwriteModel.NewRequestContext(sendIdentifyRequestBefore)
+				return readWriteModel.NewRequestContext(sendIdentifyRequestBefore)
 			}
-		case readwriteModel.RequestObsoleteExactly:
+		case readWriteModel.RequestObsoleteExactly:
 			sendIdentifyRequestBefore := false
 			infoCallBack("CAL request detected")
 			switch request.GetCalData().(type) {
-			case readwriteModel.CALDataIdentifyExactly:
+			case readWriteModel.CALDataIdentifyExactly:
 				sendIdentifyRequestBefore = true
 			}
-			return readwriteModel.NewRequestContext(sendIdentifyRequestBefore)
+			return readWriteModel.NewRequestContext(sendIdentifyRequestBefore)
 		}
-	case readwriteModel.CBusMessageToClientExactly:
-		// We received a request so we need to reset our flags
-		return readwriteModel.NewRequestContext(false)
+	case readWriteModel.CBusMessageToClientExactly:
+		// We received a request, so we need to reset our flags
+		return readWriteModel.NewRequestContext(false)
 	}
-	return readwriteModel.NewRequestContext(false)
+	return readWriteModel.NewRequestContext(false)
 }

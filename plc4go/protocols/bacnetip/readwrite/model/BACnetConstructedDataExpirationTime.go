@@ -121,7 +121,7 @@ func NewBACnetConstructedDataExpirationTime(expirationTime BACnetDateTime, openi
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataExpirationTime(structType interface{}) BACnetConstructedDataExpirationTime {
+func CastBACnetConstructedDataExpirationTime(structType any) BACnetConstructedDataExpirationTime {
 	if casted, ok := structType.(BACnetConstructedDataExpirationTime); ok {
 		return casted
 	}

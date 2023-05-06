@@ -121,7 +121,7 @@ func NewBACnetConstructedDataBinaryLightingOutputRelinquishDefault(relinquishDef
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataBinaryLightingOutputRelinquishDefault(structType interface{}) BACnetConstructedDataBinaryLightingOutputRelinquishDefault {
+func CastBACnetConstructedDataBinaryLightingOutputRelinquishDefault(structType any) BACnetConstructedDataBinaryLightingOutputRelinquishDefault {
 	if casted, ok := structType.(BACnetConstructedDataBinaryLightingOutputRelinquishDefault); ok {
 		return casted
 	}

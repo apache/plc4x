@@ -121,7 +121,7 @@ func NewBACnetConstructedDataFileSize(fileSize BACnetApplicationTagUnsignedInteg
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataFileSize(structType interface{}) BACnetConstructedDataFileSize {
+func CastBACnetConstructedDataFileSize(structType any) BACnetConstructedDataFileSize {
 	if casted, ok := structType.(BACnetConstructedDataFileSize); ok {
 		return casted
 	}

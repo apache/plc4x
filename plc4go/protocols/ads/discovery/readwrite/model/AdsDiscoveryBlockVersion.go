@@ -96,7 +96,7 @@ func NewAdsDiscoveryBlockVersion(versionData []byte) *_AdsDiscoveryBlockVersion 
 }
 
 // Deprecated: use the interface for direct cast
-func CastAdsDiscoveryBlockVersion(structType interface{}) AdsDiscoveryBlockVersion {
+func CastAdsDiscoveryBlockVersion(structType any) AdsDiscoveryBlockVersion {
 	if casted, ok := structType.(AdsDiscoveryBlockVersion); ok {
 		return casted
 	}

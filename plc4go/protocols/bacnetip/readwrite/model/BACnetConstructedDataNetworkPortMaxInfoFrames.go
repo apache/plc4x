@@ -121,7 +121,7 @@ func NewBACnetConstructedDataNetworkPortMaxInfoFrames(maxInfoFrames BACnetApplic
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataNetworkPortMaxInfoFrames(structType interface{}) BACnetConstructedDataNetworkPortMaxInfoFrames {
+func CastBACnetConstructedDataNetworkPortMaxInfoFrames(structType any) BACnetConstructedDataNetworkPortMaxInfoFrames {
 	if casted, ok := structType.(BACnetConstructedDataNetworkPortMaxInfoFrames); ok {
 		return casted
 	}

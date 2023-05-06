@@ -65,7 +65,7 @@ public enum CIPStatus {
     }
   }
 
-  private long value;
+  private final long value;
 
   CIPStatus(long value) {
     this.value = value;

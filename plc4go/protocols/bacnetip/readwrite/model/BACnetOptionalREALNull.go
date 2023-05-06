@@ -94,7 +94,7 @@ func NewBACnetOptionalREALNull(nullValue BACnetApplicationTagNull, peekedTagHead
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetOptionalREALNull(structType interface{}) BACnetOptionalREALNull {
+func CastBACnetOptionalREALNull(structType any) BACnetOptionalREALNull {
 	if casted, ok := structType.(BACnetOptionalREALNull); ok {
 		return casted
 	}

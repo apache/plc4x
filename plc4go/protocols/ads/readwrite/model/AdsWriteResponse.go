@@ -107,7 +107,7 @@ func NewAdsWriteResponse(result ReturnCode, targetAmsNetId AmsNetId, targetAmsPo
 }
 
 // Deprecated: use the interface for direct cast
-func CastAdsWriteResponse(structType interface{}) AdsWriteResponse {
+func CastAdsWriteResponse(structType any) AdsWriteResponse {
 	if casted, ok := structType.(AdsWriteResponse); ok {
 		return casted
 	}

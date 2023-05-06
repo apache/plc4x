@@ -121,7 +121,7 @@ func NewBACnetConstructedDataBinaryValueRelinquishDefault(relinquishDefault BACn
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataBinaryValueRelinquishDefault(structType interface{}) BACnetConstructedDataBinaryValueRelinquishDefault {
+func CastBACnetConstructedDataBinaryValueRelinquishDefault(structType any) BACnetConstructedDataBinaryValueRelinquishDefault {
 	if casted, ok := structType.(BACnetConstructedDataBinaryValueRelinquishDefault); ok {
 		return casted
 	}

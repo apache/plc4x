@@ -22,14 +22,15 @@ import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteResponse;
 import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
-import org.apache.plc4x.java.spi.codegen.WithOption;
 import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
 import org.apache.plc4x.java.spi.utils.Serializable;
 
-import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.Map;
+
+import static org.apache.plc4x.java.spi.generation.WithReaderWriterArgs.WithAdditionalStringRepresentation;
+import static org.apache.plc4x.java.spi.generation.WithReaderWriterArgs.WithRenderAsList;
 
 public class DefaultPlcWriteResponse implements PlcWriteResponse, Serializable {
 
@@ -66,17 +67,19 @@ public class DefaultPlcWriteResponse implements PlcWriteResponse, Serializable {
     public void serialize(WriteBuffer writeBuffer) throws SerializationException {
         writeBuffer.pushContext("PlcWriteResponse");
 
+        writeBuffer.pushContext("request");
         if (request instanceof Serializable) {
             ((Serializable) request).serialize(writeBuffer);
         }
-        writeBuffer.pushContext("responseCodes");
+        writeBuffer.popContext("request");
+
+        writeBuffer.pushContext("responseCodes", WithRenderAsList(true));
         for (Map.Entry<String, PlcResponseCode> tagEntry : responseCodes.entrySet()) {
             String tagName = tagEntry.getKey();
+            writeBuffer.pushContext(tagName);
             final PlcResponseCode tagResponseCode = tagEntry.getValue();
-            String result = tagResponseCode.name();
-            writeBuffer.writeString(tagName,
-                result.getBytes(StandardCharsets.UTF_8).length * 8,
-                result, WithOption.WithEncoding(StandardCharsets.UTF_8.name()));
+            writeBuffer.writeUnsignedByte("ResponseCode", 8, (byte) tagResponseCode.getValue(), WithAdditionalStringRepresentation(tagResponseCode.name()));
+            writeBuffer.popContext(tagName);
         }
         writeBuffer.popContext("responseCodes");
 

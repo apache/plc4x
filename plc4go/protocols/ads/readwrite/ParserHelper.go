@@ -32,7 +32,7 @@ import (
 type AdsParserHelper struct {
 }
 
-func (m AdsParserHelper) Parse(typeName string, arguments []string, io utils.ReadBuffer) (interface{}, error) {
+func (m AdsParserHelper) Parse(typeName string, arguments []string, io utils.ReadBuffer) (any, error) {
 	switch typeName {
 	case "AmsSerialFrame":
 		return model.AmsSerialFrameParseWithBuffer(context.Background(), io)

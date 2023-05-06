@@ -96,7 +96,7 @@ func NewIdentifyReplyCommandNetworkTerminalLevels(networkTerminalLevels []byte, 
 }
 
 // Deprecated: use the interface for direct cast
-func CastIdentifyReplyCommandNetworkTerminalLevels(structType interface{}) IdentifyReplyCommandNetworkTerminalLevels {
+func CastIdentifyReplyCommandNetworkTerminalLevels(structType any) IdentifyReplyCommandNetworkTerminalLevels {
 	if casted, ok := structType.(IdentifyReplyCommandNetworkTerminalLevels); ok {
 		return casted
 	}

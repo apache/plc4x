@@ -86,7 +86,7 @@ func NewApplicationAddress1(address byte) *_ApplicationAddress1 {
 }
 
 // Deprecated: use the interface for direct cast
-func CastApplicationAddress1(structType interface{}) ApplicationAddress1 {
+func CastApplicationAddress1(structType any) ApplicationAddress1 {
 	if casted, ok := structType.(ApplicationAddress1); ok {
 		return casted
 	}

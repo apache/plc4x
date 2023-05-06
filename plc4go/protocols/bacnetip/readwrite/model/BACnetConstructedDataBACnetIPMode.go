@@ -121,7 +121,7 @@ func NewBACnetConstructedDataBACnetIPMode(bacnetIpMode BACnetIPModeTagged, openi
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataBACnetIPMode(structType interface{}) BACnetConstructedDataBACnetIPMode {
+func CastBACnetConstructedDataBACnetIPMode(structType any) BACnetConstructedDataBACnetIPMode {
 	if casted, ok := structType.(BACnetConstructedDataBACnetIPMode); ok {
 		return casted
 	}

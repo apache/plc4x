@@ -121,7 +121,7 @@ func NewBACnetConstructedDataFileType(fileType BACnetApplicationTagCharacterStri
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataFileType(structType interface{}) BACnetConstructedDataFileType {
+func CastBACnetConstructedDataFileType(structType any) BACnetConstructedDataFileType {
 	if casted, ok := structType.(BACnetConstructedDataFileType); ok {
 		return casted
 	}

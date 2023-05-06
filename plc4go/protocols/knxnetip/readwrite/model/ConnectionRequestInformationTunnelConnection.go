@@ -99,7 +99,7 @@ func NewConnectionRequestInformationTunnelConnection(knxLayer KnxLayer) *_Connec
 }
 
 // Deprecated: use the interface for direct cast
-func CastConnectionRequestInformationTunnelConnection(structType interface{}) ConnectionRequestInformationTunnelConnection {
+func CastConnectionRequestInformationTunnelConnection(structType any) ConnectionRequestInformationTunnelConnection {
 	if casted, ok := structType.(ConnectionRequestInformationTunnelConnection); ok {
 		return casted
 	}
@@ -163,7 +163,7 @@ func ConnectionRequestInformationTunnelConnectionParseWithBuffer(ctx context.Con
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of ConnectionRequestInformationTunnelConnection")
 		}
 		if reserved != uint8(0x00) {
-			Plc4xModelLog.Info().Fields(map[string]interface{}{
+			Plc4xModelLog.Info().Fields(map[string]any{
 				"expected value": uint8(0x00),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
@@ -218,7 +218,7 @@ func (m *_ConnectionRequestInformationTunnelConnection) SerializeWithWriteBuffer
 		{
 			var reserved uint8 = uint8(0x00)
 			if m.reservedField0 != nil {
-				Plc4xModelLog.Info().Fields(map[string]interface{}{
+				Plc4xModelLog.Info().Fields(map[string]any{
 					"expected value": uint8(0x00),
 					"got value":      reserved,
 				}).Msg("Overriding reserved field with unexpected value.")

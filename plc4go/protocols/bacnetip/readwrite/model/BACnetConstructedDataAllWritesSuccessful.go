@@ -121,7 +121,7 @@ func NewBACnetConstructedDataAllWritesSuccessful(allWritesSuccessful BACnetAppli
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataAllWritesSuccessful(structType interface{}) BACnetConstructedDataAllWritesSuccessful {
+func CastBACnetConstructedDataAllWritesSuccessful(structType any) BACnetConstructedDataAllWritesSuccessful {
 	if casted, ok := structType.(BACnetConstructedDataAllWritesSuccessful); ok {
 		return casted
 	}

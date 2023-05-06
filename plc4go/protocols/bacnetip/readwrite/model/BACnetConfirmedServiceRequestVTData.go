@@ -113,7 +113,7 @@ func NewBACnetConfirmedServiceRequestVTData(vtSessionIdentifier BACnetApplicatio
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConfirmedServiceRequestVTData(structType interface{}) BACnetConfirmedServiceRequestVTData {
+func CastBACnetConfirmedServiceRequestVTData(structType any) BACnetConfirmedServiceRequestVTData {
 	if casted, ok := structType.(BACnetConfirmedServiceRequestVTData); ok {
 		return casted
 	}

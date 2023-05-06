@@ -44,7 +44,7 @@ public enum BACnetAccessCredentialDisableReason {
     }
   }
 
-  private int value;
+  private final int value;
 
   BACnetAccessCredentialDisableReason(int value) {
     this.value = value;

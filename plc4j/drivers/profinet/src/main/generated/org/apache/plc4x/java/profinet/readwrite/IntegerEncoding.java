@@ -35,7 +35,7 @@ public enum IntegerEncoding {
     }
   }
 
-  private byte value;
+  private final byte value;
 
   IntegerEncoding(byte value) {
     this.value = value;

@@ -94,7 +94,7 @@ func NewBACnetOptionalBinaryPVNull(nullValue BACnetApplicationTagNull, peekedTag
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetOptionalBinaryPVNull(structType interface{}) BACnetOptionalBinaryPVNull {
+func CastBACnetOptionalBinaryPVNull(structType any) BACnetOptionalBinaryPVNull {
 	if casted, ok := structType.(BACnetOptionalBinaryPVNull); ok {
 		return casted
 	}

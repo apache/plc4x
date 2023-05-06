@@ -106,7 +106,7 @@ func NewAPDUSimpleAck(originalInvokeId uint8, serviceChoice BACnetConfirmedServi
 }
 
 // Deprecated: use the interface for direct cast
-func CastAPDUSimpleAck(structType interface{}) APDUSimpleAck {
+func CastAPDUSimpleAck(structType any) APDUSimpleAck {
 	if casted, ok := structType.(APDUSimpleAck); ok {
 		return casted
 	}
@@ -160,7 +160,7 @@ func APDUSimpleAckParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of APDUSimpleAck")
 		}
 		if reserved != uint8(0) {
-			Plc4xModelLog.Info().Fields(map[string]interface{}{
+			Plc4xModelLog.Info().Fields(map[string]any{
 				"expected value": uint8(0),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
@@ -226,7 +226,7 @@ func (m *_APDUSimpleAck) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 		{
 			var reserved uint8 = uint8(0)
 			if m.reservedField0 != nil {
-				Plc4xModelLog.Info().Fields(map[string]interface{}{
+				Plc4xModelLog.Info().Fields(map[string]any{
 					"expected value": uint8(0),
 					"got value":      reserved,
 				}).Msg("Overriding reserved field with unexpected value.")

@@ -78,7 +78,7 @@ func NewApduDataExtLinkWrite(length uint8) *_ApduDataExtLinkWrite {
 }
 
 // Deprecated: use the interface for direct cast
-func CastApduDataExtLinkWrite(structType interface{}) ApduDataExtLinkWrite {
+func CastApduDataExtLinkWrite(structType any) ApduDataExtLinkWrite {
 	if casted, ok := structType.(ApduDataExtLinkWrite); ok {
 		return casted
 	}

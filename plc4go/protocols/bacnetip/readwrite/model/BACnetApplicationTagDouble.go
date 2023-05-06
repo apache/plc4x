@@ -111,7 +111,7 @@ func NewBACnetApplicationTagDouble(payload BACnetTagPayloadDouble, header BACnet
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetApplicationTagDouble(structType interface{}) BACnetApplicationTagDouble {
+func CastBACnetApplicationTagDouble(structType any) BACnetApplicationTagDouble {
 	if casted, ok := structType.(BACnetApplicationTagDouble); ok {
 		return casted
 	}

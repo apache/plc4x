@@ -128,7 +128,7 @@ func NewCipWriteRequest(tag []byte, dataType CIPDataTypeCode, elementNb uint16, 
 }
 
 // Deprecated: use the interface for direct cast
-func CastCipWriteRequest(structType interface{}) CipWriteRequest {
+func CastCipWriteRequest(structType any) CipWriteRequest {
 	if casted, ok := structType.(CipWriteRequest); ok {
 		return casted
 	}

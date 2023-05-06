@@ -42,7 +42,7 @@ public enum NodeClass {
     }
   }
 
-  private long value;
+  private final long value;
 
   NodeClass(long value) {
     this.value = value;

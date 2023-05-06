@@ -22,12 +22,13 @@ package spi
 import (
 	"context"
 
-	"github.com/apache/plc4x/plc4go/pkg/api/model"
+	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 )
 
+// PlcBrowser defines an interface to browse PLCs
 type PlcBrowser interface {
 	// Browse Non-Blocking request, which will return a full result as soon as the operation is finished
-	Browse(ctx context.Context, browseRequest model.PlcBrowseRequest) <-chan model.PlcBrowseRequestResult
+	Browse(ctx context.Context, browseRequest apiModel.PlcBrowseRequest) <-chan apiModel.PlcBrowseRequestResult
 
 	// BrowseWithInterceptor Variant of the Browser, which allows immediately intercepting found resources
 	// This is ideal, if additional information has to be queried on such found resources
@@ -35,5 +36,5 @@ type PlcBrowser interface {
 	// and increase throughput. It can also be used for simple filtering.
 	// If the interceptor function returns 'true' the result is added to the overall result
 	// if it's 'false' is is not.
-	BrowseWithInterceptor(ctx context.Context, browseRequest model.PlcBrowseRequest, interceptor func(result model.PlcBrowseItem) bool) <-chan model.PlcBrowseRequestResult
+	BrowseWithInterceptor(ctx context.Context, browseRequest apiModel.PlcBrowseRequest, interceptor func(result apiModel.PlcBrowseItem) bool) <-chan apiModel.PlcBrowseRequestResult
 }

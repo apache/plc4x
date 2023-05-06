@@ -121,7 +121,7 @@ func NewBACnetConstructedDataEnable(enable BACnetApplicationTagBoolean, openingT
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataEnable(structType interface{}) BACnetConstructedDataEnable {
+func CastBACnetConstructedDataEnable(structType any) BACnetConstructedDataEnable {
 	if casted, ok := structType.(BACnetConstructedDataEnable); ok {
 		return casted
 	}

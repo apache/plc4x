@@ -96,7 +96,7 @@ func NewBACnetLogRecordLogDatumIntegerValue(integerValue BACnetContextTagSignedI
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetLogRecordLogDatumIntegerValue(structType interface{}) BACnetLogRecordLogDatumIntegerValue {
+func CastBACnetLogRecordLogDatumIntegerValue(structType any) BACnetLogRecordLogDatumIntegerValue {
 	if casted, ok := structType.(BACnetLogRecordLogDatumIntegerValue); ok {
 		return casted
 	}

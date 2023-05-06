@@ -121,7 +121,7 @@ func NewBACnetConstructedDataChangesPending(changesPending BACnetApplicationTagB
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataChangesPending(structType interface{}) BACnetConstructedDataChangesPending {
+func CastBACnetConstructedDataChangesPending(structType any) BACnetConstructedDataChangesPending {
 	if casted, ok := structType.(BACnetConstructedDataChangesPending); ok {
 		return casted
 	}

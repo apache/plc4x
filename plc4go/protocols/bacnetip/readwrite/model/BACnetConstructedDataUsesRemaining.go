@@ -121,7 +121,7 @@ func NewBACnetConstructedDataUsesRemaining(usesRemaining BACnetApplicationTagSig
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataUsesRemaining(structType interface{}) BACnetConstructedDataUsesRemaining {
+func CastBACnetConstructedDataUsesRemaining(structType any) BACnetConstructedDataUsesRemaining {
 	if casted, ok := structType.(BACnetConstructedDataUsesRemaining); ok {
 		return casted
 	}

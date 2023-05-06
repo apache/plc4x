@@ -37,7 +37,7 @@ public enum HVACHumidityModeAndFlagsMode {
     }
   }
 
-  private byte value;
+  private final byte value;
 
   HVACHumidityModeAndFlagsMode(byte value) {
     this.value = value;

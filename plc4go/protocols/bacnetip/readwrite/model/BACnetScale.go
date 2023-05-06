@@ -107,7 +107,7 @@ func NewBACnetScale(peekedTagHeader BACnetTagHeader) *_BACnetScale {
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetScale(structType interface{}) BACnetScale {
+func CastBACnetScale(structType any) BACnetScale {
 	if casted, ok := structType.(BACnetScale); ok {
 		return casted
 	}
@@ -165,7 +165,7 @@ func BACnetScaleParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 		InitializeParent(BACnetScale, BACnetTagHeader)
 		GetParent() BACnetScale
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child BACnetScaleChildSerializeRequirement
 	var typeSwitchError error
 	switch {

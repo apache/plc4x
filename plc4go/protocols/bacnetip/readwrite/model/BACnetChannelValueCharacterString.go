@@ -94,7 +94,7 @@ func NewBACnetChannelValueCharacterString(characterStringValue BACnetApplication
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetChannelValueCharacterString(structType interface{}) BACnetChannelValueCharacterString {
+func CastBACnetChannelValueCharacterString(structType any) BACnetChannelValueCharacterString {
 	if casted, ok := structType.(BACnetChannelValueCharacterString); ok {
 		return casted
 	}

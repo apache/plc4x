@@ -35,7 +35,7 @@ public enum ManagementAddressSubType {
     }
   }
 
-  private short value;
+  private final short value;
 
   ManagementAddressSubType(short value) {
     this.value = value;

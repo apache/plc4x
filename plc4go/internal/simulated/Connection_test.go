@@ -21,7 +21,6 @@ package simulated
 
 import (
 	"github.com/stretchr/testify/assert"
-	"reflect"
 	"testing"
 	"time"
 
@@ -143,7 +142,7 @@ func TestConnection_Connect(t *testing.T) {
 					t.Errorf("TestConnection.Connect() hasErr= %v, wantErr %v", connectResult.GetErr() != nil, tt.wantErr)
 				} else if !tt.wantErr {
 					// Check if we're connected.
-					if !reflect.DeepEqual(connectResult, tt.want) {
+					if !assert.Equal(t, tt.want, connectResult) {
 						t.Errorf("TestConnection.Connect() = %v, want %v", connectResult, tt.want)
 					}
 				}
@@ -259,7 +258,7 @@ func TestConnection_Close(t *testing.T) {
 				if tt.wantErr != (closeResult.GetErr() != nil) {
 					t.Errorf("TestConnection.Close() hasErr= %v, wantErr %v", closeResult.GetErr() != nil, tt.wantErr)
 				} else if !tt.wantErr {
-					if !reflect.DeepEqual(closeResult, tt.want) {
+					if !assert.Equal(t, tt.want, closeResult) {
 						t.Errorf("TestConnection.Close() = %v, want %v", closeResult, tt.want)
 					}
 				}
@@ -397,7 +396,7 @@ func TestConnection_GetMetadata(t *testing.T) {
 				options:      tt.fields.options,
 				connected:    tt.fields.connected,
 			}
-			if got := c.GetMetadata(); !reflect.DeepEqual(got, tt.want) {
+			if got := c.GetMetadata(); !assert.Equal(t, tt.want, got) {
 				t.Errorf("GetMetadata() = %v, want %v", got, tt.want)
 			}
 		})
@@ -521,7 +520,7 @@ func TestConnection_Ping(t *testing.T) {
 						t.Errorf("TestConnection.Ping() completed too fast. Expected at least %v but returned after %v", tt.delayAtLeast, pingTime)
 					}
 				}
-				if !reflect.DeepEqual(pingResult, tt.want) {
+				if !assert.Equal(t, tt.want, pingResult) {
 					t.Errorf("TestConnection.Ping() = %v, want %v", pingResult, tt.want)
 				}
 			case <-timeout.C:
@@ -609,7 +608,7 @@ func TestConnection_ReadRequestBuilder(t *testing.T) {
 				options:      tt.fields.options,
 				connected:    tt.fields.connected,
 			}
-			if got := c.ReadRequestBuilder(); !reflect.DeepEqual(got, tt.want) {
+			if got := c.ReadRequestBuilder(); !assert.Equal(t, tt.want, got) {
 				t.Errorf("ReadRequestBuilder() = %v, want %v", got, tt.want)
 			}
 		})
@@ -733,7 +732,7 @@ func TestConnection_WriteRequestBuilder(t *testing.T) {
 				options:      tt.fields.options,
 				connected:    tt.fields.connected,
 			}
-			if got := c.WriteRequestBuilder(); !reflect.DeepEqual(got, tt.want) {
+			if got := c.WriteRequestBuilder(); !assert.Equal(t, tt.want, got) {
 				t.Errorf("WriteRequestBuilder() = %v, want %v", got, tt.want)
 			}
 		})

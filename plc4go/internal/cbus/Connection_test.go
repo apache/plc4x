@@ -30,6 +30,7 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/transports/test"
 	"github.com/stretchr/testify/assert"
 	"net/url"
+	"sync/atomic"
 	"testing"
 	"time"
 )
@@ -81,7 +82,7 @@ func TestAlphaGenerator_getAndIncrement_Turnaround(t *testing.T) {
 func TestConnection_BrowseRequestBuilder(t *testing.T) {
 	type fields struct {
 		DefaultConnection _default.DefaultConnection
-		messageCodec      spi.MessageCodec
+		messageCodec      *MessageCodec
 		subscribers       []*Subscriber
 		tm                spi.RequestTransactionManager
 		configuration     Configuration
@@ -124,7 +125,7 @@ func TestConnection_BrowseRequestBuilder(t *testing.T) {
 func TestConnection_ConnectWithContext(t *testing.T) {
 	type fields struct {
 		DefaultConnection _default.DefaultConnection
-		messageCodec      spi.MessageCodec
+		messageCodec      *MessageCodec
 		subscribers       []*Subscriber
 		tm                spi.RequestTransactionManager
 		configuration     Configuration
@@ -208,7 +209,7 @@ func TestConnection_ConnectWithContext(t *testing.T) {
 func TestConnection_GetConnection(t *testing.T) {
 	type fields struct {
 		DefaultConnection _default.DefaultConnection
-		messageCodec      spi.MessageCodec
+		messageCodec      *MessageCodec
 		subscribers       []*Subscriber
 		tm                spi.RequestTransactionManager
 		configuration     Configuration
@@ -248,7 +249,7 @@ func TestConnection_GetConnection(t *testing.T) {
 func TestConnection_GetConnectionId(t *testing.T) {
 	type fields struct {
 		DefaultConnection _default.DefaultConnection
-		messageCodec      spi.MessageCodec
+		messageCodec      *MessageCodec
 		subscribers       []*Subscriber
 		tm                spi.RequestTransactionManager
 		configuration     Configuration
@@ -285,7 +286,7 @@ func TestConnection_GetConnectionId(t *testing.T) {
 func TestConnection_GetMessageCodec(t *testing.T) {
 	type fields struct {
 		DefaultConnection _default.DefaultConnection
-		messageCodec      spi.MessageCodec
+		messageCodec      *MessageCodec
 		subscribers       []*Subscriber
 		tm                spi.RequestTransactionManager
 		configuration     Configuration
@@ -299,7 +300,11 @@ func TestConnection_GetMessageCodec(t *testing.T) {
 		want   spi.MessageCodec
 	}{
 		{
-			name: "just nil",
+			name: "just get",
+			fields: fields{
+				messageCodec: &MessageCodec{},
+			},
+			want: &MessageCodec{},
 		},
 	}
 	for _, tt := range tests {
@@ -322,7 +327,7 @@ func TestConnection_GetMessageCodec(t *testing.T) {
 func TestConnection_GetMetadata(t *testing.T) {
 	type fields struct {
 		DefaultConnection _default.DefaultConnection
-		messageCodec      spi.MessageCodec
+		messageCodec      *MessageCodec
 		subscribers       []*Subscriber
 		tm                spi.RequestTransactionManager
 		configuration     Configuration
@@ -366,7 +371,7 @@ func TestConnection_GetMetadata(t *testing.T) {
 func TestConnection_GetTracer(t *testing.T) {
 	type fields struct {
 		DefaultConnection _default.DefaultConnection
-		messageCodec      spi.MessageCodec
+		messageCodec      *MessageCodec
 		subscribers       []*Subscriber
 		tm                spi.RequestTransactionManager
 		configuration     Configuration
@@ -403,7 +408,7 @@ func TestConnection_GetTracer(t *testing.T) {
 func TestConnection_IsTraceEnabled(t *testing.T) {
 	type fields struct {
 		DefaultConnection _default.DefaultConnection
-		messageCodec      spi.MessageCodec
+		messageCodec      *MessageCodec
 		subscribers       []*Subscriber
 		tm                spi.RequestTransactionManager
 		configuration     Configuration
@@ -440,7 +445,7 @@ func TestConnection_IsTraceEnabled(t *testing.T) {
 func TestConnection_ReadRequestBuilder(t *testing.T) {
 	type fields struct {
 		DefaultConnection _default.DefaultConnection
-		messageCodec      spi.MessageCodec
+		messageCodec      *MessageCodec
 		subscribers       []*Subscriber
 		tm                spi.RequestTransactionManager
 		configuration     Configuration
@@ -483,7 +488,7 @@ func TestConnection_ReadRequestBuilder(t *testing.T) {
 func TestConnection_String(t *testing.T) {
 	type fields struct {
 		DefaultConnection _default.DefaultConnection
-		messageCodec      spi.MessageCodec
+		messageCodec      *MessageCodec
 		subscribers       []*Subscriber
 		tm                spi.RequestTransactionManager
 		configuration     Configuration
@@ -521,7 +526,7 @@ func TestConnection_String(t *testing.T) {
 func TestConnection_SubscriptionRequestBuilder(t *testing.T) {
 	type fields struct {
 		DefaultConnection _default.DefaultConnection
-		messageCodec      spi.MessageCodec
+		messageCodec      *MessageCodec
 		subscribers       []*Subscriber
 		tm                spi.RequestTransactionManager
 		configuration     Configuration
@@ -564,7 +569,7 @@ func TestConnection_SubscriptionRequestBuilder(t *testing.T) {
 func TestConnection_UnsubscriptionRequestBuilder(t *testing.T) {
 	type fields struct {
 		DefaultConnection _default.DefaultConnection
-		messageCodec      spi.MessageCodec
+		messageCodec      *MessageCodec
 		subscribers       []*Subscriber
 		tm                spi.RequestTransactionManager
 		configuration     Configuration
@@ -577,7 +582,9 @@ func TestConnection_UnsubscriptionRequestBuilder(t *testing.T) {
 		fields fields
 		want   apiModel.PlcUnsubscriptionRequestBuilder
 	}{
-		// TODO: Add test cases.
+		{
+			name: "create one",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -599,7 +606,7 @@ func TestConnection_UnsubscriptionRequestBuilder(t *testing.T) {
 func TestConnection_WriteRequestBuilder(t *testing.T) {
 	type fields struct {
 		DefaultConnection _default.DefaultConnection
-		messageCodec      spi.MessageCodec
+		messageCodec      *MessageCodec
 		subscribers       []*Subscriber
 		tm                spi.RequestTransactionManager
 		configuration     Configuration
@@ -642,7 +649,7 @@ func TestConnection_WriteRequestBuilder(t *testing.T) {
 func TestConnection_addSubscriber(t *testing.T) {
 	type fields struct {
 		DefaultConnection _default.DefaultConnection
-		messageCodec      spi.MessageCodec
+		messageCodec      *MessageCodec
 		subscribers       []*Subscriber
 		tm                spi.RequestTransactionManager
 		configuration     Configuration
@@ -697,7 +704,7 @@ func TestConnection_addSubscriber(t *testing.T) {
 func TestConnection_fireConnected(t *testing.T) {
 	type fields struct {
 		DefaultConnection _default.DefaultConnection
-		messageCodec      spi.MessageCodec
+		messageCodec      *MessageCodec
 		subscribers       []*Subscriber
 		tm                spi.RequestTransactionManager
 		configuration     Configuration
@@ -759,7 +766,7 @@ func TestConnection_fireConnected(t *testing.T) {
 func TestConnection_fireConnectionError(t *testing.T) {
 	type fields struct {
 		DefaultConnection _default.DefaultConnection
-		messageCodec      spi.MessageCodec
+		messageCodec      *MessageCodec
 		subscribers       []*Subscriber
 		tm                spi.RequestTransactionManager
 		configuration     Configuration
@@ -840,7 +847,7 @@ func TestConnection_fireConnectionError(t *testing.T) {
 func TestConnection_sendCalDataWrite(t *testing.T) {
 	type fields struct {
 		DefaultConnection _default.DefaultConnection
-		messageCodec      spi.MessageCodec
+		messageCodec      *MessageCodec
 		subscribers       []*Subscriber
 		tm                spi.RequestTransactionManager
 		configuration     Configuration
@@ -913,7 +920,7 @@ func TestConnection_sendCalDataWrite(t *testing.T) {
 func TestConnection_sendReset(t *testing.T) {
 	type fields struct {
 		DefaultConnection _default.DefaultConnection
-		messageCodec      spi.MessageCodec
+		messageCodec      *MessageCodec
 		subscribers       []*Subscriber
 		tm                spi.RequestTransactionManager
 		configuration     Configuration
@@ -984,7 +991,7 @@ func TestConnection_sendReset(t *testing.T) {
 func TestConnection_setApplicationFilter(t *testing.T) {
 	type fields struct {
 		DefaultConnection _default.DefaultConnection
-		messageCodec      spi.MessageCodec
+		messageCodec      *MessageCodec
 		subscribers       []*Subscriber
 		tm                spi.RequestTransactionManager
 		configuration     Configuration
@@ -1053,7 +1060,7 @@ func TestConnection_setApplicationFilter(t *testing.T) {
 func TestConnection_setInterface1PowerUpSettings(t *testing.T) {
 	type fields struct {
 		DefaultConnection _default.DefaultConnection
-		messageCodec      spi.MessageCodec
+		messageCodec      *MessageCodec
 		subscribers       []*Subscriber
 		tm                spi.RequestTransactionManager
 		configuration     Configuration
@@ -1122,7 +1129,7 @@ func TestConnection_setInterface1PowerUpSettings(t *testing.T) {
 func TestConnection_setInterfaceOptions1(t *testing.T) {
 	type fields struct {
 		DefaultConnection _default.DefaultConnection
-		messageCodec      spi.MessageCodec
+		messageCodec      *MessageCodec
 		subscribers       []*Subscriber
 		tm                spi.RequestTransactionManager
 		configuration     Configuration
@@ -1191,7 +1198,7 @@ func TestConnection_setInterfaceOptions1(t *testing.T) {
 func TestConnection_setInterfaceOptions3(t *testing.T) {
 	type fields struct {
 		DefaultConnection _default.DefaultConnection
-		messageCodec      spi.MessageCodec
+		messageCodec      *MessageCodec
 		subscribers       []*Subscriber
 		tm                spi.RequestTransactionManager
 		configuration     Configuration
@@ -1260,7 +1267,7 @@ func TestConnection_setInterfaceOptions3(t *testing.T) {
 func TestConnection_setupConnection(t *testing.T) {
 	type fields struct {
 		DefaultConnection _default.DefaultConnection
-		messageCodec      spi.MessageCodec
+		messageCodec      *MessageCodec
 		subscribers       []*Subscriber
 		tm                spi.RequestTransactionManager
 		configuration     Configuration
@@ -1296,6 +1303,315 @@ func TestConnection_setupConnection(t *testing.T) {
 				ch:  make(chan plc4go.PlcConnectionConnectResult, 1),
 			},
 		},
+		{
+			name: "setup connection (failing after reset)",
+			fields: fields{
+				DefaultConnection: _default.NewDefaultConnection(nil),
+				messageCodec: func() *MessageCodec {
+					transport := test.NewTransport()
+					transportUrl := url.URL{Scheme: "test"}
+					transportInstance, err := transport.CreateTransportInstance(transportUrl, nil)
+					if err != nil {
+						t.Error(err)
+						t.FailNow()
+						return nil
+					}
+					type MockState uint8
+					const (
+						RESET MockState = iota
+						DONE
+					)
+					currentState := atomic.Value{}
+					currentState.Store(RESET)
+					transportInstance.(*test.TransportInstance).SetWriteInterceptor(func(transportInstance *test.TransportInstance, data []byte) {
+						switch currentState.Load().(MockState) {
+						case RESET:
+							t.Log("Dispatching reset echo")
+							transportInstance.FillReadBuffer([]byte("~~~\r"))
+							currentState.Store(DONE)
+						case DONE:
+							t.Log("Done")
+						}
+					})
+					codec := NewMessageCodec(transportInstance)
+					err = codec.Connect()
+					if err != nil {
+						t.Error(err)
+						t.FailNow()
+						return nil
+					}
+					return codec
+				}(),
+			},
+			args: args{
+				ctx: context.Background(),
+				ch:  make(chan plc4go.PlcConnectionConnectResult, 1),
+			},
+		},
+		{
+			name: "setup connection (failing after app filters)",
+			fields: fields{
+				DefaultConnection: _default.NewDefaultConnection(nil),
+				messageCodec: func() *MessageCodec {
+					transport := test.NewTransport()
+					transportUrl := url.URL{Scheme: "test"}
+					transportInstance, err := transport.CreateTransportInstance(transportUrl, nil)
+					if err != nil {
+						t.Error(err)
+						t.FailNow()
+						return nil
+					}
+					type MockState uint8
+					const (
+						RESET MockState = iota
+						APPLICATION_FILTER_1
+						APPLICATION_FILTER_2
+						DONE
+					)
+					currentState := atomic.Value{}
+					currentState.Store(RESET)
+					transportInstance.(*test.TransportInstance).SetWriteInterceptor(func(transportInstance *test.TransportInstance, data []byte) {
+						switch currentState.Load().(MockState) {
+						case RESET:
+							t.Log("Dispatching reset echo")
+							transportInstance.FillReadBuffer([]byte("~~~\r"))
+							currentState.Store(APPLICATION_FILTER_1)
+						case APPLICATION_FILTER_1:
+							t.Log("Dispatching app1 echo and confirm")
+							transportInstance.FillReadBuffer([]byte("@A32100FF\r"))
+							transportInstance.FillReadBuffer([]byte("322100AD\r\n"))
+							currentState.Store(APPLICATION_FILTER_2)
+						case APPLICATION_FILTER_2:
+							t.Log("Dispatching app2 echo and confirm")
+							transportInstance.FillReadBuffer([]byte("@A32200FF\r"))
+							transportInstance.FillReadBuffer([]byte("322200AC\r\n"))
+							currentState.Store(DONE)
+						case DONE:
+							t.Log("Done")
+						}
+					})
+					codec := NewMessageCodec(transportInstance)
+					err = codec.Connect()
+					if err != nil {
+						t.Error(err)
+						t.FailNow()
+						return nil
+					}
+					return codec
+				}(),
+			},
+			args: args{
+				ctx: context.Background(),
+				ch:  make(chan plc4go.PlcConnectionConnectResult, 1),
+			},
+		},
+		{
+			name: "setup connection (failing after interface options 3",
+			fields: fields{
+				DefaultConnection: _default.NewDefaultConnection(nil),
+				messageCodec: func() *MessageCodec {
+					transport := test.NewTransport()
+					transportUrl := url.URL{Scheme: "test"}
+					transportInstance, err := transport.CreateTransportInstance(transportUrl, nil)
+					if err != nil {
+						t.Error(err)
+						t.FailNow()
+						return nil
+					}
+					type MockState uint8
+					const (
+						RESET MockState = iota
+						APPLICATION_FILTER_1
+						APPLICATION_FILTER_2
+						INTERFACE_OPTIONS_3
+						DONE
+					)
+					currentState := atomic.Value{}
+					currentState.Store(RESET)
+					transportInstance.(*test.TransportInstance).SetWriteInterceptor(func(transportInstance *test.TransportInstance, data []byte) {
+						switch currentState.Load().(MockState) {
+						case RESET:
+							t.Log("Dispatching reset echo")
+							transportInstance.FillReadBuffer([]byte("~~~\r"))
+							currentState.Store(APPLICATION_FILTER_1)
+						case APPLICATION_FILTER_1:
+							t.Log("Dispatching app1 echo and confirm")
+							transportInstance.FillReadBuffer([]byte("@A32100FF\r"))
+							transportInstance.FillReadBuffer([]byte("322100AD\r\n"))
+							currentState.Store(APPLICATION_FILTER_2)
+						case APPLICATION_FILTER_2:
+							t.Log("Dispatching app2 echo and confirm")
+							transportInstance.FillReadBuffer([]byte("@A32200FF\r"))
+							transportInstance.FillReadBuffer([]byte("322200AC\r\n"))
+							currentState.Store(INTERFACE_OPTIONS_3)
+						case INTERFACE_OPTIONS_3:
+							t.Log("Dispatching interface 3 echo and confirm")
+							transportInstance.FillReadBuffer([]byte("@A342000A\r"))
+							transportInstance.FillReadBuffer([]byte("3242008C\r\n"))
+							currentState.Store(DONE)
+						case DONE:
+							t.Log("Done")
+						}
+					})
+					codec := NewMessageCodec(transportInstance)
+					err = codec.Connect()
+					if err != nil {
+						t.Error(err)
+						t.FailNow()
+						return nil
+					}
+					return codec
+				}(),
+			},
+			args: args{
+				ctx: context.Background(),
+				ch:  make(chan plc4go.PlcConnectionConnectResult, 1),
+			},
+		},
+		{
+			name: "setup connection (failing after interface options 1 pun)",
+			fields: fields{
+				DefaultConnection: _default.NewDefaultConnection(nil),
+				messageCodec: func() *MessageCodec {
+					transport := test.NewTransport()
+					transportUrl := url.URL{Scheme: "test"}
+					transportInstance, err := transport.CreateTransportInstance(transportUrl, nil)
+					if err != nil {
+						t.Error(err)
+						t.FailNow()
+						return nil
+					}
+					type MockState uint8
+					const (
+						RESET MockState = iota
+						APPLICATION_FILTER_1
+						APPLICATION_FILTER_2
+						INTERFACE_OPTIONS_3
+						INTERFACE_OPTIONS_1_PUN
+						DONE
+					)
+					currentState := atomic.Value{}
+					currentState.Store(RESET)
+					transportInstance.(*test.TransportInstance).SetWriteInterceptor(func(transportInstance *test.TransportInstance, data []byte) {
+						switch currentState.Load().(MockState) {
+						case RESET:
+							t.Log("Dispatching reset echo")
+							transportInstance.FillReadBuffer([]byte("~~~\r"))
+							currentState.Store(APPLICATION_FILTER_1)
+						case APPLICATION_FILTER_1:
+							t.Log("Dispatching app1 echo and confirm")
+							transportInstance.FillReadBuffer([]byte("@A32100FF\r"))
+							transportInstance.FillReadBuffer([]byte("322100AD\r\n"))
+							currentState.Store(APPLICATION_FILTER_2)
+						case APPLICATION_FILTER_2:
+							t.Log("Dispatching app2 echo and confirm")
+							transportInstance.FillReadBuffer([]byte("@A32200FF\r"))
+							transportInstance.FillReadBuffer([]byte("322200AC\r\n"))
+							currentState.Store(INTERFACE_OPTIONS_3)
+						case INTERFACE_OPTIONS_3:
+							t.Log("Dispatching interface 3 echo and confirm")
+							transportInstance.FillReadBuffer([]byte("@A342000A\r"))
+							transportInstance.FillReadBuffer([]byte("3242008C\r\n"))
+							currentState.Store(INTERFACE_OPTIONS_1_PUN)
+						case INTERFACE_OPTIONS_1_PUN:
+							t.Log("Dispatching interface 1 PUN echo and confirm???")
+							transportInstance.FillReadBuffer([]byte("@A3410079\r"))
+							transportInstance.FillReadBuffer([]byte("3241008D\r\n"))
+							currentState.Store(DONE)
+						case DONE:
+							t.Log("Done")
+						}
+					})
+					codec := NewMessageCodec(transportInstance)
+					err = codec.Connect()
+					if err != nil {
+						t.Error(err)
+						t.FailNow()
+						return nil
+					}
+					return codec
+				}(),
+			},
+			args: args{
+				ctx: context.Background(),
+				ch:  make(chan plc4go.PlcConnectionConnectResult, 1),
+			},
+		},
+		{
+			name: "setup connection",
+			fields: fields{
+				DefaultConnection: _default.NewDefaultConnection(nil),
+				messageCodec: func() *MessageCodec {
+					transport := test.NewTransport()
+					transportUrl := url.URL{Scheme: "test"}
+					transportInstance, err := transport.CreateTransportInstance(transportUrl, nil)
+					if err != nil {
+						t.Error(err)
+						t.FailNow()
+						return nil
+					}
+					type MockState uint8
+					const (
+						RESET MockState = iota
+						APPLICATION_FILTER_1
+						APPLICATION_FILTER_2
+						INTERFACE_OPTIONS_3
+						INTERFACE_OPTIONS_1_PUN
+						INTERFACE_OPTIONS_1
+						DONE
+					)
+					currentState := atomic.Value{}
+					currentState.Store(RESET)
+					transportInstance.(*test.TransportInstance).SetWriteInterceptor(func(transportInstance *test.TransportInstance, data []byte) {
+						switch currentState.Load().(MockState) {
+						case RESET:
+							t.Log("Dispatching reset echo")
+							transportInstance.FillReadBuffer([]byte("~~~\r"))
+							currentState.Store(APPLICATION_FILTER_1)
+						case APPLICATION_FILTER_1:
+							t.Log("Dispatching app1 echo and confirm")
+							transportInstance.FillReadBuffer([]byte("@A32100FF\r"))
+							transportInstance.FillReadBuffer([]byte("322100AD\r\n"))
+							currentState.Store(APPLICATION_FILTER_2)
+						case APPLICATION_FILTER_2:
+							t.Log("Dispatching app2 echo and confirm")
+							transportInstance.FillReadBuffer([]byte("@A32200FF\r"))
+							transportInstance.FillReadBuffer([]byte("322200AC\r\n"))
+							currentState.Store(INTERFACE_OPTIONS_3)
+						case INTERFACE_OPTIONS_3:
+							t.Log("Dispatching interface 3 echo and confirm")
+							transportInstance.FillReadBuffer([]byte("@A342000A\r"))
+							transportInstance.FillReadBuffer([]byte("3242008C\r\n"))
+							currentState.Store(INTERFACE_OPTIONS_1_PUN)
+						case INTERFACE_OPTIONS_1_PUN:
+							t.Log("Dispatching interface 1 PUN echo and confirm???")
+							transportInstance.FillReadBuffer([]byte("@A3410079\r"))
+							transportInstance.FillReadBuffer([]byte("3241008D\r\n"))
+							currentState.Store(INTERFACE_OPTIONS_1)
+						case INTERFACE_OPTIONS_1:
+							t.Log("Dispatching interface 1 echo and confirm???")
+							transportInstance.FillReadBuffer([]byte("@A3300079\r"))
+							transportInstance.FillReadBuffer([]byte("3230009E\r\n"))
+							currentState.Store(DONE)
+						case DONE:
+							t.Log("Done")
+						}
+					})
+					codec := NewMessageCodec(transportInstance)
+					err = codec.Connect()
+					if err != nil {
+						t.Error(err)
+						t.FailNow()
+						return nil
+					}
+					return codec
+				}(),
+			},
+			args: args{
+				ctx: context.Background(),
+				ch:  make(chan plc4go.PlcConnectionConnectResult, 1),
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -1317,7 +1633,7 @@ func TestConnection_setupConnection(t *testing.T) {
 func TestConnection_startSubscriptionHandler(t *testing.T) {
 	type fields struct {
 		DefaultConnection _default.DefaultConnection
-		messageCodec      spi.MessageCodec
+		messageCodec      *MessageCodec
 		subscribers       []*Subscriber
 		tm                spi.RequestTransactionManager
 		configuration     Configuration
@@ -1335,6 +1651,43 @@ func TestConnection_startSubscriptionHandler(t *testing.T) {
 				DefaultConnection: _default.NewDefaultConnection(nil),
 			},
 		},
+		{
+			name: "just start and feed (no subs)",
+			fields: fields{
+				DefaultConnection: func() _default.DefaultConnection {
+					defaultConnection := _default.NewDefaultConnection(nil)
+					defaultConnection.SetConnected(true)
+					return defaultConnection
+				}(),
+				messageCodec: func() *MessageCodec {
+					messageCodec := NewMessageCodec(nil)
+					go func() {
+						messageCodec.monitoredMMIs <- nil
+						messageCodec.monitoredSALs <- nil
+					}()
+					return messageCodec
+				}(),
+			},
+		},
+		{
+			name: "just start and feed",
+			fields: fields{
+				DefaultConnection: func() _default.DefaultConnection {
+					defaultConnection := _default.NewDefaultConnection(nil)
+					defaultConnection.SetConnected(true)
+					return defaultConnection
+				}(),
+				messageCodec: func() *MessageCodec {
+					messageCodec := NewMessageCodec(nil)
+					go func() {
+						messageCodec.monitoredMMIs <- readWriteModel.NewCALReplyShort(0, nil, nil, nil)
+						messageCodec.monitoredSALs <- readWriteModel.NewMonitoredSAL(0, nil)
+					}()
+					return messageCodec
+				}(),
+				subscribers: []*Subscriber{NewSubscriber(nil)},
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -1349,13 +1702,14 @@ func TestConnection_startSubscriptionHandler(t *testing.T) {
 				tracer:            tt.fields.tracer,
 			}
 			c.startSubscriptionHandler()
+			time.Sleep(50 * time.Millisecond)
 		})
 	}
 }
 
 func TestNewConnection(t *testing.T) {
 	type args struct {
-		messageCodec  spi.MessageCodec
+		messageCodec  *MessageCodec
 		configuration Configuration
 		driverContext DriverContext
 		tagHandler    spi.PlcTagHandler

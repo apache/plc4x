@@ -70,7 +70,7 @@ public enum ReservedIndexGroups {
     }
   }
 
-  private long value;
+  private final long value;
 
   ReservedIndexGroups(long value) {
     this.value = value;

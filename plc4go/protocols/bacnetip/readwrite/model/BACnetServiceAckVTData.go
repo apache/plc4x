@@ -112,7 +112,7 @@ func NewBACnetServiceAckVTData(vtSessionIdentifier BACnetApplicationTagUnsignedI
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetServiceAckVTData(structType interface{}) BACnetServiceAckVTData {
+func CastBACnetServiceAckVTData(structType any) BACnetServiceAckVTData {
 	if casted, ok := structType.(BACnetServiceAckVTData); ok {
 		return casted
 	}

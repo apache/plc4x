@@ -104,7 +104,7 @@ func NewBACnetServiceAckGetEventInformation(listOfEventSummaries BACnetEventSumm
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetServiceAckGetEventInformation(structType interface{}) BACnetServiceAckGetEventInformation {
+func CastBACnetServiceAckGetEventInformation(structType any) BACnetServiceAckGetEventInformation {
 	if casted, ok := structType.(BACnetServiceAckGetEventInformation); ok {
 		return casted
 	}

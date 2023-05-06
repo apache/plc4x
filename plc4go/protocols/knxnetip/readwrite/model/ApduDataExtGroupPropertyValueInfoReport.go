@@ -78,7 +78,7 @@ func NewApduDataExtGroupPropertyValueInfoReport(length uint8) *_ApduDataExtGroup
 }
 
 // Deprecated: use the interface for direct cast
-func CastApduDataExtGroupPropertyValueInfoReport(structType interface{}) ApduDataExtGroupPropertyValueInfoReport {
+func CastApduDataExtGroupPropertyValueInfoReport(structType any) ApduDataExtGroupPropertyValueInfoReport {
 	if casted, ok := structType.(ApduDataExtGroupPropertyValueInfoReport); ok {
 		return casted
 	}

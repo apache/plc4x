@@ -113,7 +113,7 @@ func NewCEMIAdditionalInformationRelativeTimestamp(relativeTimestamp RelativeTim
 }
 
 // Deprecated: use the interface for direct cast
-func CastCEMIAdditionalInformationRelativeTimestamp(structType interface{}) CEMIAdditionalInformationRelativeTimestamp {
+func CastCEMIAdditionalInformationRelativeTimestamp(structType any) CEMIAdditionalInformationRelativeTimestamp {
 	if casted, ok := structType.(CEMIAdditionalInformationRelativeTimestamp); ok {
 		return casted
 	}

@@ -91,7 +91,7 @@ func NewNullListServicesResponse(sessionHandle uint32, status uint32, senderCont
 }
 
 // Deprecated: use the interface for direct cast
-func CastNullListServicesResponse(structType interface{}) NullListServicesResponse {
+func CastNullListServicesResponse(structType any) NullListServicesResponse {
 	if casted, ok := structType.(NullListServicesResponse); ok {
 		return casted
 	}

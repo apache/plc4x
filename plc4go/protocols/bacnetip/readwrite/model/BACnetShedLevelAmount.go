@@ -94,7 +94,7 @@ func NewBACnetShedLevelAmount(amount BACnetContextTagReal, peekedTagHeader BACne
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetShedLevelAmount(structType interface{}) BACnetShedLevelAmount {
+func CastBACnetShedLevelAmount(structType any) BACnetShedLevelAmount {
 	if casted, ok := structType.(BACnetShedLevelAmount); ok {
 		return casted
 	}

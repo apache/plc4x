@@ -95,7 +95,7 @@ func NewMediaTransportControlDataCategoryName(categoryName string, commandTypeCo
 }
 
 // Deprecated: use the interface for direct cast
-func CastMediaTransportControlDataCategoryName(structType interface{}) MediaTransportControlDataCategoryName {
+func CastMediaTransportControlDataCategoryName(structType any) MediaTransportControlDataCategoryName {
 	if casted, ok := structType.(MediaTransportControlDataCategoryName); ok {
 		return casted
 	}

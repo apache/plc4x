@@ -86,7 +86,7 @@ func NewBACnetConstructedDataAnalogOutputAll(openingTag BACnetOpeningTag, peeked
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataAnalogOutputAll(structType interface{}) BACnetConstructedDataAnalogOutputAll {
+func CastBACnetConstructedDataAnalogOutputAll(structType any) BACnetConstructedDataAnalogOutputAll {
 	if casted, ok := structType.(BACnetConstructedDataAnalogOutputAll); ok {
 		return casted
 	}

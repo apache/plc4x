@@ -42,6 +42,7 @@ public abstract class OpenProtocolMessageParameterSetSelectedUnsubscribe extends
   public Mid getMid() {
     return Mid.ParameterSetSelectedUnsubscribe;
   }
+
   // Abstract accessors for discriminator values.
   public abstract Long getRevision();
 

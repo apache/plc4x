@@ -90,7 +90,7 @@ func NewBACnetSecurityKeySet(keyRevision BACnetContextTagUnsignedInteger, activa
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetSecurityKeySet(structType interface{}) BACnetSecurityKeySet {
+func CastBACnetSecurityKeySet(structType any) BACnetSecurityKeySet {
 	if casted, ok := structType.(BACnetSecurityKeySet); ok {
 		return casted
 	}

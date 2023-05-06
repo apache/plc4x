@@ -49,7 +49,7 @@ public enum ErrorReportingSystemCategoryClass {
     }
   }
 
-  private byte value;
+  private final byte value;
 
   ErrorReportingSystemCategoryClass(byte value) {
     this.value = value;

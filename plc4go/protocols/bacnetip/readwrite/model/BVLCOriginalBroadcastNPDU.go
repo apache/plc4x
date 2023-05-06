@@ -100,7 +100,7 @@ func NewBVLCOriginalBroadcastNPDU(npdu NPDU, bvlcPayloadLength uint16) *_BVLCOri
 }
 
 // Deprecated: use the interface for direct cast
-func CastBVLCOriginalBroadcastNPDU(structType interface{}) BVLCOriginalBroadcastNPDU {
+func CastBVLCOriginalBroadcastNPDU(structType any) BVLCOriginalBroadcastNPDU {
 	if casted, ok := structType.(BVLCOriginalBroadcastNPDU); ok {
 		return casted
 	}

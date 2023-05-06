@@ -1911,8 +1911,8 @@ public enum ComObjectTableAddresses {
     }
   }
 
-  private int value;
-  private int comObjectTableAddress;
+  private final int value;
+  private final int comObjectTableAddress;
 
   ComObjectTableAddresses(int value, int comObjectTableAddress) {
     this.value = value;
@@ -1937,7 +1937,7 @@ public enum ComObjectTableAddresses {
   }
 
   public static List<ComObjectTableAddresses> enumsForFieldComObjectTableAddress(int fieldValue) {
-    List<ComObjectTableAddresses> _values = new ArrayList();
+    List<ComObjectTableAddresses> _values = new ArrayList<>();
     for (ComObjectTableAddresses _val : ComObjectTableAddresses.values()) {
       if (_val.getComObjectTableAddress() == fieldValue) {
         _values.add(_val);

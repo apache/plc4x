@@ -68,9 +68,9 @@ public enum TelephonyCommandTypeContainer {
     }
   }
 
-  private short value;
-  private short numBytes;
-  private TelephonyCommandType commandType;
+  private final short value;
+  private final short numBytes;
+  private final TelephonyCommandType commandType;
 
   TelephonyCommandTypeContainer(short value, short numBytes, TelephonyCommandType commandType) {
     this.value = value;
@@ -96,7 +96,7 @@ public enum TelephonyCommandTypeContainer {
   }
 
   public static List<TelephonyCommandTypeContainer> enumsForFieldNumBytes(short fieldValue) {
-    List<TelephonyCommandTypeContainer> _values = new ArrayList();
+    List<TelephonyCommandTypeContainer> _values = new ArrayList<>();
     for (TelephonyCommandTypeContainer _val : TelephonyCommandTypeContainer.values()) {
       if (_val.getNumBytes() == fieldValue) {
         _values.add(_val);
@@ -121,7 +121,7 @@ public enum TelephonyCommandTypeContainer {
 
   public static List<TelephonyCommandTypeContainer> enumsForFieldCommandType(
       TelephonyCommandType fieldValue) {
-    List<TelephonyCommandTypeContainer> _values = new ArrayList();
+    List<TelephonyCommandTypeContainer> _values = new ArrayList<>();
     for (TelephonyCommandTypeContainer _val : TelephonyCommandTypeContainer.values()) {
       if (_val.getCommandType() == fieldValue) {
         _values.add(_val);

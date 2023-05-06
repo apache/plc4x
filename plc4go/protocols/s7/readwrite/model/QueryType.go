@@ -33,6 +33,7 @@ type QueryType uint8
 
 type IQueryType interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 
@@ -40,6 +41,7 @@ const (
 	QueryType_BYALARMTYPE QueryType = 0x01
 	QueryType_ALARM_8     QueryType = 0x02
 	QueryType_ALARM_S     QueryType = 0x04
+	QueryType_ALARM_8P    QueryType = 0x09
 )
 
 var QueryTypeValues []QueryType
@@ -50,6 +52,7 @@ func init() {
 		QueryType_BYALARMTYPE,
 		QueryType_ALARM_8,
 		QueryType_ALARM_S,
+		QueryType_ALARM_8P,
 	}
 }
 
@@ -61,6 +64,8 @@ func QueryTypeByValue(value uint8) (enum QueryType, ok bool) {
 		return QueryType_ALARM_8, true
 	case 0x04:
 		return QueryType_ALARM_S, true
+	case 0x09:
+		return QueryType_ALARM_8P, true
 	}
 	return 0, false
 }
@@ -73,6 +78,8 @@ func QueryTypeByName(value string) (enum QueryType, ok bool) {
 		return QueryType_ALARM_8, true
 	case "ALARM_S":
 		return QueryType_ALARM_S, true
+	case "ALARM_8P":
+		return QueryType_ALARM_8P, true
 	}
 	return 0, false
 }
@@ -86,8 +93,8 @@ func QueryTypeKnows(value uint8) bool {
 	return false
 }
 
-func CastQueryType(structType interface{}) QueryType {
-	castFunc := func(typ interface{}) QueryType {
+func CastQueryType(structType any) QueryType {
+	castFunc := func(typ any) QueryType {
 		if sQueryType, ok := typ.(QueryType); ok {
 			return sQueryType
 		}
@@ -142,6 +149,8 @@ func (e QueryType) PLC4XEnumName() string {
 		return "ALARM_8"
 	case QueryType_ALARM_S:
 		return "ALARM_S"
+	case QueryType_ALARM_8P:
+		return "ALARM_8P"
 	}
 	return ""
 }

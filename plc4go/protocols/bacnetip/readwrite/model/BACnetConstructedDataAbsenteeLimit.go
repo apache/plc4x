@@ -121,7 +121,7 @@ func NewBACnetConstructedDataAbsenteeLimit(absenteeLimit BACnetApplicationTagUns
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataAbsenteeLimit(structType interface{}) BACnetConstructedDataAbsenteeLimit {
+func CastBACnetConstructedDataAbsenteeLimit(structType any) BACnetConstructedDataAbsenteeLimit {
 	if casted, ok := structType.(BACnetConstructedDataAbsenteeLimit); ok {
 		return casted
 	}

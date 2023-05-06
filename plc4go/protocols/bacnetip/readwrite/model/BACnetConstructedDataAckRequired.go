@@ -121,7 +121,7 @@ func NewBACnetConstructedDataAckRequired(ackRequired BACnetEventTransitionBitsTa
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataAckRequired(structType interface{}) BACnetConstructedDataAckRequired {
+func CastBACnetConstructedDataAckRequired(structType any) BACnetConstructedDataAckRequired {
 	if casted, ok := structType.(BACnetConstructedDataAckRequired); ok {
 		return casted
 	}

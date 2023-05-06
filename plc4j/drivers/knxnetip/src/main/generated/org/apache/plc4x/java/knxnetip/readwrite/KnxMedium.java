@@ -39,7 +39,7 @@ public enum KnxMedium {
     }
   }
 
-  private short value;
+  private final short value;
 
   KnxMedium(short value) {
     this.value = value;

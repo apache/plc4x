@@ -112,7 +112,7 @@ func NewModbusPDUWriteMultipleCoilsResponse(startingAddress uint16, quantity uin
 }
 
 // Deprecated: use the interface for direct cast
-func CastModbusPDUWriteMultipleCoilsResponse(structType interface{}) ModbusPDUWriteMultipleCoilsResponse {
+func CastModbusPDUWriteMultipleCoilsResponse(structType any) ModbusPDUWriteMultipleCoilsResponse {
 	if casted, ok := structType.(ModbusPDUWriteMultipleCoilsResponse); ok {
 		return casted
 	}

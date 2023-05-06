@@ -42,6 +42,7 @@ public abstract class OpenProtocolMessageAlarmUnsubscribe extends OpenProtocolMe
   public Mid getMid() {
     return Mid.AlarmUnsubscribe;
   }
+
   // Abstract accessors for discriminator values.
   public abstract Long getRevision();
 

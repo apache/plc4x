@@ -98,7 +98,7 @@ func NewBACnetContextTagDate(payload BACnetTagPayloadDate, header BACnetTagHeade
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetContextTagDate(structType interface{}) BACnetContextTagDate {
+func CastBACnetContextTagDate(structType any) BACnetContextTagDate {
 	if casted, ok := structType.(BACnetContextTagDate); ok {
 		return casted
 	}

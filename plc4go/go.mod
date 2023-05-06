@@ -30,10 +30,10 @@ require (
 	github.com/icza/bitio v1.1.0
 	github.com/jacobsa/go-serial v0.0.0-20180131005756-15cf729a72d4
 	github.com/k0kubun/go-ansi v0.0.0-20180517002512-3bf9e2903213
-	github.com/libp2p/go-reuseport v0.2.0
+	github.com/libp2p/go-reuseport v0.3.0
 	github.com/pkg/errors v0.9.1
 	github.com/rivo/tview v0.0.0-20230208211350-7dfff1ce7854
-	github.com/rs/zerolog v1.29.0
+	github.com/rs/zerolog v1.29.1
 	github.com/schollz/progressbar/v3 v3.13.1
 	github.com/snksoft/crc v1.1.0
 	github.com/spf13/cobra v1.7.0
@@ -42,6 +42,7 @@ require (
 	github.com/subchen/go-xmldom v1.1.2
 	github.com/viney-shih/go-lock v1.1.2
 	golang.org/x/exp v0.0.0-20230213192124-5e25df0256eb
+	golang.org/x/net v0.9.0
 	golang.org/x/tools v0.8.0
 	gopkg.in/yaml.v3 v3.0.1
 )
@@ -71,7 +72,7 @@ require (
 	golang.org/x/mod v0.10.0 // indirect
 	golang.org/x/sync v0.1.0 // indirect
 	golang.org/x/sys v0.7.0 // indirect
-	golang.org/x/term v0.6.0 // indirect
-	golang.org/x/text v0.8.0 // indirect
+	golang.org/x/term v0.7.0 // indirect
+	golang.org/x/text v0.9.0 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
 )

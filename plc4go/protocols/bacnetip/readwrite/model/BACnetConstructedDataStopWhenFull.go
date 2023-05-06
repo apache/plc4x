@@ -121,7 +121,7 @@ func NewBACnetConstructedDataStopWhenFull(stopWhenFull BACnetApplicationTagBoole
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataStopWhenFull(structType interface{}) BACnetConstructedDataStopWhenFull {
+func CastBACnetConstructedDataStopWhenFull(structType any) BACnetConstructedDataStopWhenFull {
 	if casted, ok := structType.(BACnetConstructedDataStopWhenFull); ok {
 		return casted
 	}

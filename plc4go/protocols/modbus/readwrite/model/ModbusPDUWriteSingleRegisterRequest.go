@@ -112,7 +112,7 @@ func NewModbusPDUWriteSingleRegisterRequest(address uint16, value uint16) *_Modb
 }
 
 // Deprecated: use the interface for direct cast
-func CastModbusPDUWriteSingleRegisterRequest(structType interface{}) ModbusPDUWriteSingleRegisterRequest {
+func CastModbusPDUWriteSingleRegisterRequest(structType any) ModbusPDUWriteSingleRegisterRequest {
 	if casted, ok := structType.(ModbusPDUWriteSingleRegisterRequest); ok {
 		return casted
 	}

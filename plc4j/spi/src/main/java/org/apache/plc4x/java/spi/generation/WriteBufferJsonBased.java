@@ -329,11 +329,7 @@ public class WriteBufferJsonBased implements WriteBuffer, BufferCommons, AutoClo
     }
 
     public String getJsonString() {
-        try {
-            return byteArrayOutputStream.toString(StandardCharsets.UTF_8.name());
-        } catch (IOException e) {
-            throw new PlcRuntimeException(e);
-        }
+        return byteArrayOutputStream.toString(StandardCharsets.UTF_8);
     }
 
     private void writeAttr(String logicalName, String dataType, int bitLength, WithWriterArgs... writerArgs) throws IOException {

@@ -39,7 +39,7 @@ public enum DceRpc_Operation {
     }
   }
 
-  private int value;
+  private final int value;
 
   DceRpc_Operation(int value) {
     this.value = value;

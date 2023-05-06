@@ -125,7 +125,7 @@ func NewGroupObjectDescriptorRealisationType7(dataAddress uint16, updateEnable b
 }
 
 // Deprecated: use the interface for direct cast
-func CastGroupObjectDescriptorRealisationType7(structType interface{}) GroupObjectDescriptorRealisationType7 {
+func CastGroupObjectDescriptorRealisationType7(structType any) GroupObjectDescriptorRealisationType7 {
 	if casted, ok := structType.(GroupObjectDescriptorRealisationType7); ok {
 		return casted
 	}

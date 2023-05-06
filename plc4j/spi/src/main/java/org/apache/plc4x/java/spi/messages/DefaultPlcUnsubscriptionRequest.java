@@ -68,7 +68,7 @@ public class DefaultPlcUnsubscriptionRequest implements PlcUnsubscriptionRequest
     public static class Builder implements PlcUnsubscriptionRequest.Builder {
 
         private final PlcSubscriber subscriber;
-        private List<PlcSubscriptionHandle> plcSubscriptionHandles;
+        private final List<PlcSubscriptionHandle> plcSubscriptionHandles;
 
         public Builder(PlcSubscriber subscriber) {
             this.subscriber = subscriber;

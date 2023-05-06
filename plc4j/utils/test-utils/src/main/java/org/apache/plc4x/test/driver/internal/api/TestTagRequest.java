@@ -18,18 +18,47 @@
  */
 package org.apache.plc4x.test.driver.internal.api;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import org.apache.plc4x.java.spi.generation.*;
 
-public abstract class TestTagRequest implements TestRequest {
+public class TestTagRequest implements TestRequest {
 
     private final TestTag[] tags;
 
-    public TestTagRequest(@JsonProperty("tags") TestTag[] tags) {
+    public TestTagRequest(TestTag[] tags) {
         this.tags = tags;
     }
 
     public TestTag[] getTags() {
         return tags;
+    }
+
+    @Override
+    public void serialize(WriteBuffer writeBuffer) throws SerializationException {
+        writeBuffer.pushContext("TestTagRequest");
+
+        writeBuffer.writeUnsignedInt("numberOfTags", 32, tags.length);
+        writeBuffer.pushContext("tags", WithReaderWriterArgs.WithRenderAsList(true));
+        for (TestTag testTag : tags) {
+            testTag.serialize(writeBuffer);
+        }
+        writeBuffer.popContext("tags");
+
+        writeBuffer.popContext("TestTagRequest");
+    }
+
+    public static TestTagRequest staticParse(ReadBuffer readBuffer, Object... args) throws ParseException {
+        readBuffer.pullContext("TestTagRequest");
+
+        int numberOfTags = readBuffer.readUnsignedInt("numberOfTags", 32);
+        readBuffer.pullContext("tags", WithReaderWriterArgs.WithRenderAsList(true));
+        TestTag[] tags = new TestTag[numberOfTags];
+        for (int i = 0; i < numberOfTags; i++) {
+            tags[i] = TestTag.staticParse(readBuffer, args);
+        }
+        readBuffer.closeContext("tags");
+
+        readBuffer.closeContext("TestTagRequest");
+        return new TestTagRequest(tags);
     }
 
 }

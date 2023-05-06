@@ -104,7 +104,7 @@ func NewConnectedDataItem(sequenceCount uint16, service CipService) *_ConnectedD
 }
 
 // Deprecated: use the interface for direct cast
-func CastConnectedDataItem(structType interface{}) ConnectedDataItem {
+func CastConnectedDataItem(structType any) ConnectedDataItem {
 	if casted, ok := structType.(ConnectedDataItem); ok {
 		return casted
 	}

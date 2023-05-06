@@ -121,7 +121,7 @@ func NewBACnetConstructedDataLastStateChange(lastStateChange BACnetTimerTransiti
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataLastStateChange(structType interface{}) BACnetConstructedDataLastStateChange {
+func CastBACnetConstructedDataLastStateChange(structType any) BACnetConstructedDataLastStateChange {
 	if casted, ok := structType.(BACnetConstructedDataLastStateChange); ok {
 		return casted
 	}

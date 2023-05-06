@@ -118,7 +118,7 @@ func NewState(SIG_8 bool, SIG_7 bool, SIG_6 bool, SIG_5 bool, SIG_4 bool, SIG_3 
 }
 
 // Deprecated: use the interface for direct cast
-func CastState(structType interface{}) State {
+func CastState(structType any) State {
 	if casted, ok := structType.(State); ok {
 		return casted
 	}

@@ -121,7 +121,7 @@ func NewBACnetConstructedDataAlertEnrollmentPresentValue(presentValue BACnetAppl
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataAlertEnrollmentPresentValue(structType interface{}) BACnetConstructedDataAlertEnrollmentPresentValue {
+func CastBACnetConstructedDataAlertEnrollmentPresentValue(structType any) BACnetConstructedDataAlertEnrollmentPresentValue {
 	if casted, ok := structType.(BACnetConstructedDataAlertEnrollmentPresentValue); ok {
 		return casted
 	}

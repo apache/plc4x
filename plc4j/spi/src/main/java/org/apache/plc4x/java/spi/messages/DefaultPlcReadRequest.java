@@ -36,11 +36,13 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 
+import static org.apache.plc4x.java.spi.generation.WithReaderWriterArgs.WithRenderAsList;
+
 public class DefaultPlcReadRequest implements PlcReadRequest, PlcTagRequest, Serializable {
 
     private final PlcReader reader;
     // This is intentionally a linked hash map in order to keep the order of how elements were added.
-    private LinkedHashMap<String, PlcTag> tags;
+    private final LinkedHashMap<String, PlcTag> tags;
 
     public DefaultPlcReadRequest(PlcReader reader,
                                  LinkedHashMap<String, PlcTag> tags) {
@@ -82,18 +84,20 @@ public class DefaultPlcReadRequest implements PlcReadRequest, PlcTagRequest, Ser
     public void serialize(WriteBuffer writeBuffer) throws SerializationException {
         writeBuffer.pushContext("PlcReadRequest");
 
-        writeBuffer.pushContext("tags");
+        writeBuffer.pushContext("PlcTagRequest");
+        writeBuffer.pushContext("tags", WithRenderAsList(true));
         for (Map.Entry<String, PlcTag> tagEntry : tags.entrySet()) {
             String tagName = tagEntry.getKey();
             writeBuffer.pushContext(tagName);
             PlcTag tag = tagEntry.getValue();
             if(!(tag instanceof Serializable)) {
-                throw new RuntimeException("Error serializing. Tag doesn't implement XmlSerializable");
+                throw new RuntimeException("Error serializing. Tag doesn't implement Serializable");
             }
             ((Serializable) tag).serialize(writeBuffer);
             writeBuffer.popContext(tagName);
         }
         writeBuffer.popContext("tags");
+        writeBuffer.popContext("PlcTagRequest");
 
         writeBuffer.popContext("PlcReadRequest");
     }
@@ -131,9 +135,7 @@ public class DefaultPlcReadRequest implements PlcReadRequest, PlcTagRequest, Ser
         @Override
         public PlcReadRequest build() {
             LinkedHashMap<String, PlcTag> parsedTags = new LinkedHashMap<>();
-            tags.forEach((name, tagQuery) -> {
-                parsedTags.put(name, tagQuery.get());
-            });
+            tags.forEach((name, tagQuery) -> parsedTags.put(name, tagQuery.get()));
             return new DefaultPlcReadRequest(reader, parsedTags);
         }
 

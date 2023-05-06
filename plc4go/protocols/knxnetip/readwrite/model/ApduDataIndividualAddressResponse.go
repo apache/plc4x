@@ -78,7 +78,7 @@ func NewApduDataIndividualAddressResponse(dataLength uint8) *_ApduDataIndividual
 }
 
 // Deprecated: use the interface for direct cast
-func CastApduDataIndividualAddressResponse(structType interface{}) ApduDataIndividualAddressResponse {
+func CastApduDataIndividualAddressResponse(structType any) ApduDataIndividualAddressResponse {
 	if casted, ok := structType.(ApduDataIndividualAddressResponse); ok {
 		return casted
 	}

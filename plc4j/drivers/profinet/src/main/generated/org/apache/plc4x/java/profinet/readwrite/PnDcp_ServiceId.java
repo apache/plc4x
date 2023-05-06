@@ -37,7 +37,7 @@ public enum PnDcp_ServiceId {
     }
   }
 
-  private short value;
+  private final short value;
 
   PnDcp_ServiceId(short value) {
     this.value = value;

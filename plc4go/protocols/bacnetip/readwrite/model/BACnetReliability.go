@@ -33,6 +33,7 @@ type BACnetReliability uint16
 
 type IBACnetReliability interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 
@@ -218,8 +219,8 @@ func BACnetReliabilityKnows(value uint16) bool {
 	return false
 }
 
-func CastBACnetReliability(structType interface{}) BACnetReliability {
-	castFunc := func(typ interface{}) BACnetReliability {
+func CastBACnetReliability(structType any) BACnetReliability {
+	castFunc := func(typ any) BACnetReliability {
 		if sBACnetReliability, ok := typ.(BACnetReliability); ok {
 			return sBACnetReliability
 		}

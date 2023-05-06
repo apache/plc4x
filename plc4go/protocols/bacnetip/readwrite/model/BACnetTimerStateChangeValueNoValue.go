@@ -94,7 +94,7 @@ func NewBACnetTimerStateChangeValueNoValue(noValue BACnetContextTagNull, peekedT
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetTimerStateChangeValueNoValue(structType interface{}) BACnetTimerStateChangeValueNoValue {
+func CastBACnetTimerStateChangeValueNoValue(structType any) BACnetTimerStateChangeValueNoValue {
 	if casted, ok := structType.(BACnetTimerStateChangeValueNoValue); ok {
 		return casted
 	}

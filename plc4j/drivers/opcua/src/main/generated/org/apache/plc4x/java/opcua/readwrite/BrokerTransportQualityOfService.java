@@ -38,7 +38,7 @@ public enum BrokerTransportQualityOfService {
     }
   }
 
-  private long value;
+  private final long value;
 
   BrokerTransportQualityOfService(long value) {
     this.value = value;

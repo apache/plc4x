@@ -107,7 +107,7 @@ func NewFirmataMessageSubscribeDigitalPinValue(pin uint8, enable bool, response 
 }
 
 // Deprecated: use the interface for direct cast
-func CastFirmataMessageSubscribeDigitalPinValue(structType interface{}) FirmataMessageSubscribeDigitalPinValue {
+func CastFirmataMessageSubscribeDigitalPinValue(structType any) FirmataMessageSubscribeDigitalPinValue {
 	if casted, ok := structType.(FirmataMessageSubscribeDigitalPinValue); ok {
 		return casted
 	}
@@ -168,7 +168,7 @@ func FirmataMessageSubscribeDigitalPinValueParseWithBuffer(ctx context.Context, 
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of FirmataMessageSubscribeDigitalPinValue")
 		}
 		if reserved != uint8(0x00) {
-			Plc4xModelLog.Info().Fields(map[string]interface{}{
+			Plc4xModelLog.Info().Fields(map[string]any{
 				"expected value": uint8(0x00),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
@@ -228,7 +228,7 @@ func (m *_FirmataMessageSubscribeDigitalPinValue) SerializeWithWriteBuffer(ctx c
 		{
 			var reserved uint8 = uint8(0x00)
 			if m.reservedField0 != nil {
-				Plc4xModelLog.Info().Fields(map[string]interface{}{
+				Plc4xModelLog.Info().Fields(map[string]any{
 					"expected value": uint8(0x00),
 					"got value":      reserved,
 				}).Msg("Overriding reserved field with unexpected value.")

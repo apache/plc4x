@@ -22,7 +22,6 @@ package model
 import (
 	"context"
 	"fmt"
-	spiContext "github.com/apache/plc4x/plc4go/spi/context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
@@ -133,7 +132,7 @@ func NewBACnetConstructedDataActionText(numberOfDataElements BACnetApplicationTa
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataActionText(structType interface{}) BACnetConstructedDataActionText {
+func CastBACnetConstructedDataActionText(structType any) BACnetConstructedDataActionText {
 	if casted, ok := structType.(BACnetConstructedDataActionText); ok {
 		return casted
 	}
@@ -289,7 +288,7 @@ func (m *_BACnetConstructedDataActionText) SerializeWithWriteBuffer(ctx context.
 		}
 		for _curItem, _element := range m.GetActionText() {
 			_ = _curItem
-			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetActionText()), _curItem)
+			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetActionText()), _curItem)
 			_ = arrayCtx
 			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 			if _elementErr != nil {

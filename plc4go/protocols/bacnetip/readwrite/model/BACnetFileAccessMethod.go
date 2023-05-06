@@ -33,6 +33,7 @@ type BACnetFileAccessMethod uint8
 
 type IBACnetFileAccessMethod interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 
@@ -80,8 +81,8 @@ func BACnetFileAccessMethodKnows(value uint8) bool {
 	return false
 }
 
-func CastBACnetFileAccessMethod(structType interface{}) BACnetFileAccessMethod {
-	castFunc := func(typ interface{}) BACnetFileAccessMethod {
+func CastBACnetFileAccessMethod(structType any) BACnetFileAccessMethod {
+	castFunc := func(typ any) BACnetFileAccessMethod {
 		if sBACnetFileAccessMethod, ok := typ.(BACnetFileAccessMethod); ok {
 			return sBACnetFileAccessMethod
 		}

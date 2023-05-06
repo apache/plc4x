@@ -94,7 +94,7 @@ func NewBACnetOptionalCharacterStringValue(characterstring BACnetApplicationTagC
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetOptionalCharacterStringValue(structType interface{}) BACnetOptionalCharacterStringValue {
+func CastBACnetOptionalCharacterStringValue(structType any) BACnetOptionalCharacterStringValue {
 	if casted, ok := structType.(BACnetOptionalCharacterStringValue); ok {
 		return casted
 	}

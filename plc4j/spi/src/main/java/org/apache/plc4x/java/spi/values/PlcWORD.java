@@ -30,8 +30,8 @@ import java.util.BitSet;
 public class PlcWORD extends PlcIECValue<Integer> {
 
     private static final String VALUE_OUT_OF_RANGE = "Value of type %s is out of range %d - %d for a %s Value";
-    static Integer minValue = 0;
-    static Integer maxValue = Short.MAX_VALUE * 2 + 1;
+    static final Integer minValue = 0;
+    static final Integer maxValue = Short.MAX_VALUE * 2 + 1;
 
     public static PlcWORD of(Object value) {
         if (value instanceof Boolean) {

@@ -121,7 +121,7 @@ func NewBACnetConstructedDataDutyWindow(dutyWindow BACnetApplicationTagUnsignedI
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataDutyWindow(structType interface{}) BACnetConstructedDataDutyWindow {
+func CastBACnetConstructedDataDutyWindow(structType any) BACnetConstructedDataDutyWindow {
 	if casted, ok := structType.(BACnetConstructedDataDutyWindow); ok {
 		return casted
 	}

@@ -76,7 +76,7 @@ func NewError(errorClass ErrorClassTagged, errorCode ErrorCodeTagged) *_Error {
 }
 
 // Deprecated: use the interface for direct cast
-func CastError(structType interface{}) Error {
+func CastError(structType any) Error {
 	if casted, ok := structType.(Error); ok {
 		return casted
 	}

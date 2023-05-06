@@ -37,7 +37,7 @@ public enum ApplicationType {
     }
   }
 
-  private long value;
+  private final long value;
 
   ApplicationType(long value) {
     this.value = value;

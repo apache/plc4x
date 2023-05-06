@@ -33,6 +33,7 @@ type ModbusDataType uint8
 
 type IModbusDataType interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 	DataTypeSize() uint8
 }
@@ -356,8 +357,8 @@ func ModbusDataTypeKnows(value uint8) bool {
 	return false
 }
 
-func CastModbusDataType(structType interface{}) ModbusDataType {
-	castFunc := func(typ interface{}) ModbusDataType {
+func CastModbusDataType(structType any) ModbusDataType {
+	castFunc := func(typ any) ModbusDataType {
 		if sModbusDataType, ok := typ.(ModbusDataType); ok {
 			return sModbusDataType
 		}

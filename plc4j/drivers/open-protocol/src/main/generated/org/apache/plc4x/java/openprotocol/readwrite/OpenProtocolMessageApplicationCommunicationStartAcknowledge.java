@@ -42,6 +42,7 @@ public abstract class OpenProtocolMessageApplicationCommunicationStartAcknowledg
   public Mid getMid() {
     return Mid.ApplicationCommunicationStartAcknowledge;
   }
+
   // Abstract accessors for discriminator values.
   public abstract Long getRevision();
 

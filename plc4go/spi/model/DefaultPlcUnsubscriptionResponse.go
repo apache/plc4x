@@ -20,4 +20,9 @@
 package model
 
 type DefaultPlcUnsubscriptionResponse struct {
+	// TODO: implement me
+}
+
+func NewDefaultPlcUnsubscriptionResponse() *DefaultPlcUnsubscriptionResponse {
+	return &DefaultPlcUnsubscriptionResponse{}
 }

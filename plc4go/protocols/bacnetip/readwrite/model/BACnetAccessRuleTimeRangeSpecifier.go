@@ -33,6 +33,7 @@ type BACnetAccessRuleTimeRangeSpecifier uint8
 
 type IBACnetAccessRuleTimeRangeSpecifier interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 
@@ -80,8 +81,8 @@ func BACnetAccessRuleTimeRangeSpecifierKnows(value uint8) bool {
 	return false
 }
 
-func CastBACnetAccessRuleTimeRangeSpecifier(structType interface{}) BACnetAccessRuleTimeRangeSpecifier {
-	castFunc := func(typ interface{}) BACnetAccessRuleTimeRangeSpecifier {
+func CastBACnetAccessRuleTimeRangeSpecifier(structType any) BACnetAccessRuleTimeRangeSpecifier {
+	castFunc := func(typ any) BACnetAccessRuleTimeRangeSpecifier {
 		if sBACnetAccessRuleTimeRangeSpecifier, ok := typ.(BACnetAccessRuleTimeRangeSpecifier); ok {
 			return sBACnetAccessRuleTimeRangeSpecifier
 		}

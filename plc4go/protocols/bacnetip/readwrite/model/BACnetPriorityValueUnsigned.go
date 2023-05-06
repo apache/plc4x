@@ -94,7 +94,7 @@ func NewBACnetPriorityValueUnsigned(unsignedValue BACnetApplicationTagUnsignedIn
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetPriorityValueUnsigned(structType interface{}) BACnetPriorityValueUnsigned {
+func CastBACnetPriorityValueUnsigned(structType any) BACnetPriorityValueUnsigned {
 	if casted, ok := structType.(BACnetPriorityValueUnsigned); ok {
 		return casted
 	}

@@ -96,7 +96,7 @@ func NewApduDataDeviceDescriptorRead(descriptorType uint8, dataLength uint8) *_A
 }
 
 // Deprecated: use the interface for direct cast
-func CastApduDataDeviceDescriptorRead(structType interface{}) ApduDataDeviceDescriptorRead {
+func CastApduDataDeviceDescriptorRead(structType any) ApduDataDeviceDescriptorRead {
 	if casted, ok := structType.(ApduDataDeviceDescriptorRead); ok {
 		return casted
 	}

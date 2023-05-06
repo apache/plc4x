@@ -91,7 +91,7 @@ func NewEipDisconnectRequest(sessionHandle uint32, status uint32, senderContext 
 }
 
 // Deprecated: use the interface for direct cast
-func CastEipDisconnectRequest(structType interface{}) EipDisconnectRequest {
+func CastEipDisconnectRequest(structType any) EipDisconnectRequest {
 	if casted, ok := structType.(EipDisconnectRequest); ok {
 		return casted
 	}

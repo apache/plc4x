@@ -88,7 +88,7 @@ func NewLDataFrameACK(frameType bool, notRepeated bool, priority CEMIPriority, a
 }
 
 // Deprecated: use the interface for direct cast
-func CastLDataFrameACK(structType interface{}) LDataFrameACK {
+func CastLDataFrameACK(structType any) LDataFrameACK {
 	if casted, ok := structType.(LDataFrameACK); ok {
 		return casted
 	}

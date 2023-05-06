@@ -121,7 +121,7 @@ func NewBACnetConstructedDataNextStoppingFloor(nextStoppingFloor BACnetApplicati
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataNextStoppingFloor(structType interface{}) BACnetConstructedDataNextStoppingFloor {
+func CastBACnetConstructedDataNextStoppingFloor(structType any) BACnetConstructedDataNextStoppingFloor {
 	if casted, ok := structType.(BACnetConstructedDataNextStoppingFloor); ok {
 		return casted
 	}

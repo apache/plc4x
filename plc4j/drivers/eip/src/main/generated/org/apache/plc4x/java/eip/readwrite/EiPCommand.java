@@ -36,7 +36,7 @@ public enum EiPCommand {
     }
   }
 
-  private int value;
+  private final int value;
 
   EiPCommand(int value) {
     this.value = value;

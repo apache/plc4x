@@ -121,7 +121,7 @@ func NewBACnetConstructedDataLocalDate(localDate BACnetApplicationTagDate, openi
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataLocalDate(structType interface{}) BACnetConstructedDataLocalDate {
+func CastBACnetConstructedDataLocalDate(structType any) BACnetConstructedDataLocalDate {
 	if casted, ok := structType.(BACnetConstructedDataLocalDate); ok {
 		return casted
 	}

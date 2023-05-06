@@ -121,7 +121,7 @@ func NewBACnetConstructedDataRepresents(represents BACnetDeviceObjectReference, 
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataRepresents(structType interface{}) BACnetConstructedDataRepresents {
+func CastBACnetConstructedDataRepresents(structType any) BACnetConstructedDataRepresents {
 	if casted, ok := structType.(BACnetConstructedDataRepresents); ok {
 		return casted
 	}

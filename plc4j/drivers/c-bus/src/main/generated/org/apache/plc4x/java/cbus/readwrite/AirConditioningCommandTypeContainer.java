@@ -72,9 +72,9 @@ public enum AirConditioningCommandTypeContainer {
     }
   }
 
-  private short value;
-  private short numBytes;
-  private AirConditioningCommandType commandType;
+  private final short value;
+  private final short numBytes;
+  private final AirConditioningCommandType commandType;
 
   AirConditioningCommandTypeContainer(
       short value, short numBytes, AirConditioningCommandType commandType) {
@@ -101,7 +101,7 @@ public enum AirConditioningCommandTypeContainer {
   }
 
   public static List<AirConditioningCommandTypeContainer> enumsForFieldNumBytes(short fieldValue) {
-    List<AirConditioningCommandTypeContainer> _values = new ArrayList();
+    List<AirConditioningCommandTypeContainer> _values = new ArrayList<>();
     for (AirConditioningCommandTypeContainer _val : AirConditioningCommandTypeContainer.values()) {
       if (_val.getNumBytes() == fieldValue) {
         _values.add(_val);
@@ -126,7 +126,7 @@ public enum AirConditioningCommandTypeContainer {
 
   public static List<AirConditioningCommandTypeContainer> enumsForFieldCommandType(
       AirConditioningCommandType fieldValue) {
-    List<AirConditioningCommandTypeContainer> _values = new ArrayList();
+    List<AirConditioningCommandTypeContainer> _values = new ArrayList<>();
     for (AirConditioningCommandTypeContainer _val : AirConditioningCommandTypeContainer.values()) {
       if (_val.getCommandType() == fieldValue) {
         _values.add(_val);

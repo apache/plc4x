@@ -40,7 +40,7 @@ public class TransportActivator implements BundleActivator {
     public void start(BundleContext context) throws Exception {
         ServiceLoader<Transport> transports = ServiceLoader.load(Transport.class, context.getBundle().adapt(BundleWiring.class).getClassLoader());
         for (Transport transport : transports) {
-            Hashtable<String, String> props = new Hashtable<String, String>();
+            Hashtable<String, String> props = new Hashtable<>();
             props.put(TRANSPORT_CODE, transport.getTransportCode());
             props.put(TRANSPORT_NAME, transport.getTransportName());
             registrations.add(context.registerService(Transport.class, transport, props));

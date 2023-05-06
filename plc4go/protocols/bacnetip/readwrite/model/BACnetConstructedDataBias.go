@@ -121,7 +121,7 @@ func NewBACnetConstructedDataBias(bias BACnetApplicationTagReal, openingTag BACn
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataBias(structType interface{}) BACnetConstructedDataBias {
+func CastBACnetConstructedDataBias(structType any) BACnetConstructedDataBias {
 	if casted, ok := structType.(BACnetConstructedDataBias); ok {
 		return casted
 	}

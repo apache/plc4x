@@ -80,7 +80,7 @@ func NewBACnetContextTagNull(header BACnetTagHeader, tagNumberArgument uint8) *_
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetContextTagNull(structType interface{}) BACnetContextTagNull {
+func CastBACnetContextTagNull(structType any) BACnetContextTagNull {
 	if casted, ok := structType.(BACnetContextTagNull); ok {
 		return casted
 	}

@@ -76,7 +76,7 @@ func NewBACnetTimeValue(timeValue BACnetApplicationTagTime, value BACnetConstruc
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetTimeValue(structType interface{}) BACnetTimeValue {
+func CastBACnetTimeValue(structType any) BACnetTimeValue {
 	if casted, ok := structType.(BACnetTimeValue); ok {
 		return casted
 	}

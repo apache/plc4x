@@ -99,7 +99,7 @@ func NewBACnetServiceAckRequestKey(bytesOfRemovedService []byte, serviceAckPaylo
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetServiceAckRequestKey(structType interface{}) BACnetServiceAckRequestKey {
+func CastBACnetServiceAckRequestKey(structType any) BACnetServiceAckRequestKey {
 	if casted, ok := structType.(BACnetServiceAckRequestKey); ok {
 		return casted
 	}

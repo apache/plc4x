@@ -78,7 +78,7 @@ func NewApduDataExtOpenRoutingTableRequest(length uint8) *_ApduDataExtOpenRoutin
 }
 
 // Deprecated: use the interface for direct cast
-func CastApduDataExtOpenRoutingTableRequest(structType interface{}) ApduDataExtOpenRoutingTableRequest {
+func CastApduDataExtOpenRoutingTableRequest(structType any) ApduDataExtOpenRoutingTableRequest {
 	if casted, ok := structType.(ApduDataExtOpenRoutingTableRequest); ok {
 		return casted
 	}

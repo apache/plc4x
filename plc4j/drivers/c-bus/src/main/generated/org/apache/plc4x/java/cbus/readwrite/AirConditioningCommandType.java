@@ -54,8 +54,8 @@ public enum AirConditioningCommandType {
     }
   }
 
-  private byte value;
-  private short numberOfArguments;
+  private final byte value;
+  private final short numberOfArguments;
 
   AirConditioningCommandType(byte value, short numberOfArguments) {
     this.value = value;
@@ -80,7 +80,7 @@ public enum AirConditioningCommandType {
   }
 
   public static List<AirConditioningCommandType> enumsForFieldNumberOfArguments(short fieldValue) {
-    List<AirConditioningCommandType> _values = new ArrayList();
+    List<AirConditioningCommandType> _values = new ArrayList<>();
     for (AirConditioningCommandType _val : AirConditioningCommandType.values()) {
       if (_val.getNumberOfArguments() == fieldValue) {
         _values.add(_val);

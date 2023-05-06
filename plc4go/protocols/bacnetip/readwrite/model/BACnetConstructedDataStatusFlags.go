@@ -121,7 +121,7 @@ func NewBACnetConstructedDataStatusFlags(statusFlags BACnetStatusFlagsTagged, op
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataStatusFlags(structType interface{}) BACnetConstructedDataStatusFlags {
+func CastBACnetConstructedDataStatusFlags(structType any) BACnetConstructedDataStatusFlags {
 	if casted, ok := structType.(BACnetConstructedDataStatusFlags); ok {
 		return casted
 	}

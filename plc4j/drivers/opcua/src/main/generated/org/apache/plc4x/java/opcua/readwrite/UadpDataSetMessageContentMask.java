@@ -40,7 +40,7 @@ public enum UadpDataSetMessageContentMask {
     }
   }
 
-  private long value;
+  private final long value;
 
   UadpDataSetMessageContentMask(long value) {
     this.value = value;

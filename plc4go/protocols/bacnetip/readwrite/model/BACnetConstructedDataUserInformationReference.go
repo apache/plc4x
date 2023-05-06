@@ -121,7 +121,7 @@ func NewBACnetConstructedDataUserInformationReference(userInformationReference B
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataUserInformationReference(structType interface{}) BACnetConstructedDataUserInformationReference {
+func CastBACnetConstructedDataUserInformationReference(structType any) BACnetConstructedDataUserInformationReference {
 	if casted, ok := structType.(BACnetConstructedDataUserInformationReference); ok {
 		return casted
 	}

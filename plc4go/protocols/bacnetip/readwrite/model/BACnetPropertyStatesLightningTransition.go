@@ -94,7 +94,7 @@ func NewBACnetPropertyStatesLightningTransition(lightningTransition BACnetLighti
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetPropertyStatesLightningTransition(structType interface{}) BACnetPropertyStatesLightningTransition {
+func CastBACnetPropertyStatesLightningTransition(structType any) BACnetPropertyStatesLightningTransition {
 	if casted, ok := structType.(BACnetPropertyStatesLightningTransition); ok {
 		return casted
 	}

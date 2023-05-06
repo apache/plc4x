@@ -94,7 +94,7 @@ func NewBACnetProcessIdSelectionValue(processIdentifier BACnetApplicationTagUnsi
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetProcessIdSelectionValue(structType interface{}) BACnetProcessIdSelectionValue {
+func CastBACnetProcessIdSelectionValue(structType any) BACnetProcessIdSelectionValue {
 	if casted, ok := structType.(BACnetProcessIdSelectionValue); ok {
 		return casted
 	}

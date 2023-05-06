@@ -112,7 +112,7 @@ func NewModbusPDUDiagnosticRequest(subFunction uint16, data uint16) *_ModbusPDUD
 }
 
 // Deprecated: use the interface for direct cast
-func CastModbusPDUDiagnosticRequest(structType interface{}) ModbusPDUDiagnosticRequest {
+func CastModbusPDUDiagnosticRequest(structType any) ModbusPDUDiagnosticRequest {
 	if casted, ok := structType.(ModbusPDUDiagnosticRequest); ok {
 		return casted
 	}

@@ -122,7 +122,7 @@ func NewBACnetUnconfirmedServiceRequestUnconfirmedTextMessage(textMessageSourceD
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetUnconfirmedServiceRequestUnconfirmedTextMessage(structType interface{}) BACnetUnconfirmedServiceRequestUnconfirmedTextMessage {
+func CastBACnetUnconfirmedServiceRequestUnconfirmedTextMessage(structType any) BACnetUnconfirmedServiceRequestUnconfirmedTextMessage {
 	if casted, ok := structType.(BACnetUnconfirmedServiceRequestUnconfirmedTextMessage); ok {
 		return casted
 	}

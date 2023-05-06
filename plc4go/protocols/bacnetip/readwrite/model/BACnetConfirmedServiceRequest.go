@@ -82,7 +82,7 @@ type BACnetConfirmedServiceRequestChild interface {
 func (m *_BACnetConfirmedServiceRequest) GetServiceRequestPayloadLength() uint32 {
 	ctx := context.Background()
 	_ = ctx
-	return uint32(utils.InlineIf((bool((m.ServiceRequestLength) > (0))), func() interface{} { return uint32((uint32(m.ServiceRequestLength) - uint32(uint32(1)))) }, func() interface{} { return uint32(uint32(0)) }).(uint32))
+	return uint32(utils.InlineIf((bool((m.ServiceRequestLength) > (0))), func() any { return uint32((uint32(m.ServiceRequestLength) - uint32(uint32(1)))) }, func() any { return uint32(uint32(0)) }).(uint32))
 }
 
 ///////////////////////
@@ -96,7 +96,7 @@ func NewBACnetConfirmedServiceRequest(serviceRequestLength uint32) *_BACnetConfi
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConfirmedServiceRequest(structType interface{}) BACnetConfirmedServiceRequest {
+func CastBACnetConfirmedServiceRequest(structType any) BACnetConfirmedServiceRequest {
 	if casted, ok := structType.(BACnetConfirmedServiceRequest); ok {
 		return casted
 	}
@@ -151,7 +151,7 @@ func BACnetConfirmedServiceRequestParseWithBuffer(ctx context.Context, readBuffe
 	}
 
 	// Virtual field
-	_serviceRequestPayloadLength := utils.InlineIf((bool((serviceRequestLength) > (0))), func() interface{} { return uint32((uint32(serviceRequestLength) - uint32(uint32(1)))) }, func() interface{} { return uint32(uint32(0)) }).(uint32)
+	_serviceRequestPayloadLength := utils.InlineIf((bool((serviceRequestLength) > (0))), func() any { return uint32((uint32(serviceRequestLength) - uint32(uint32(1)))) }, func() any { return uint32(uint32(0)) }).(uint32)
 	serviceRequestPayloadLength := uint32(_serviceRequestPayloadLength)
 	_ = serviceRequestPayloadLength
 
@@ -161,7 +161,7 @@ func BACnetConfirmedServiceRequestParseWithBuffer(ctx context.Context, readBuffe
 		InitializeParent(BACnetConfirmedServiceRequest)
 		GetParent() BACnetConfirmedServiceRequest
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child BACnetConfirmedServiceRequestChildSerializeRequirement
 	var typeSwitchError error
 	switch {

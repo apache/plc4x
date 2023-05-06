@@ -33,6 +33,7 @@ type BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority uint8
 
 type IBACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 
@@ -80,8 +81,8 @@ func BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityKnows(value
 	return false
 }
 
-func CastBACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority(structType interface{}) BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority {
-	castFunc := func(typ interface{}) BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority {
+func CastBACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority(structType any) BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority {
+	castFunc := func(typ any) BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority {
 		if sBACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority, ok := typ.(BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority); ok {
 			return sBACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority
 		}

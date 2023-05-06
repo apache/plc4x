@@ -183,7 +183,7 @@ func NewErrorReportingDataGeneric(systemCategory ErrorReportingSystemCategory, m
 }
 
 // Deprecated: use the interface for direct cast
-func CastErrorReportingDataGeneric(structType interface{}) ErrorReportingDataGeneric {
+func CastErrorReportingDataGeneric(structType any) ErrorReportingDataGeneric {
 	if casted, ok := structType.(ErrorReportingDataGeneric); ok {
 		return casted
 	}

@@ -94,7 +94,7 @@ func NewBACnetUnconfirmedServiceRequestWhoHasObjectName(objectName BACnetContext
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetUnconfirmedServiceRequestWhoHasObjectName(structType interface{}) BACnetUnconfirmedServiceRequestWhoHasObjectName {
+func CastBACnetUnconfirmedServiceRequestWhoHasObjectName(structType any) BACnetUnconfirmedServiceRequestWhoHasObjectName {
 	if casted, ok := structType.(BACnetUnconfirmedServiceRequestWhoHasObjectName); ok {
 		return casted
 	}

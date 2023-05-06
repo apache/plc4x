@@ -121,7 +121,7 @@ func NewBACnetConstructedDataLoopAction(action BACnetActionTagged, openingTag BA
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataLoopAction(structType interface{}) BACnetConstructedDataLoopAction {
+func CastBACnetConstructedDataLoopAction(structType any) BACnetConstructedDataLoopAction {
 	if casted, ok := structType.(BACnetConstructedDataLoopAction); ok {
 		return casted
 	}

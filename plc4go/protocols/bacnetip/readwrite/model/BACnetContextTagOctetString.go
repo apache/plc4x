@@ -98,7 +98,7 @@ func NewBACnetContextTagOctetString(payload BACnetTagPayloadOctetString, header 
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetContextTagOctetString(structType interface{}) BACnetContextTagOctetString {
+func CastBACnetContextTagOctetString(structType any) BACnetContextTagOctetString {
 	if casted, ok := structType.(BACnetContextTagOctetString); ok {
 		return casted
 	}

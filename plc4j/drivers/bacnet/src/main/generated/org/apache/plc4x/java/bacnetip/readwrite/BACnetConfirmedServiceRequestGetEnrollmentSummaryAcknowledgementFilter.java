@@ -39,7 +39,7 @@ public enum BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilt
     }
   }
 
-  private short value;
+  private final short value;
 
   BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter(short value) {
     this.value = value;

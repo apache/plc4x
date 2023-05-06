@@ -52,7 +52,7 @@ public enum PnDcp_FrameId {
     }
   }
 
-  private int value;
+  private final int value;
 
   PnDcp_FrameId(int value) {
     this.value = value;

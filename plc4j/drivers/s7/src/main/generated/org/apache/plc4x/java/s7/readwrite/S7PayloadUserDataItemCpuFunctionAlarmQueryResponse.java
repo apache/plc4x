@@ -39,6 +39,10 @@ public class S7PayloadUserDataItemCpuFunctionAlarmQueryResponse extends S7Payloa
     implements Message {
 
   // Accessors for discriminator values.
+  public Byte getCpuFunctionGroup() {
+    return (byte) 0x04;
+  }
+
   public Byte getCpuFunctionType() {
     return (byte) 0x08;
   }
@@ -47,42 +51,20 @@ public class S7PayloadUserDataItemCpuFunctionAlarmQueryResponse extends S7Payloa
     return (short) 0x13;
   }
 
-  public Integer getDataLength() {
-    return 0;
-  }
-
-  // Constant values.
-  public static final Short FUNCTIONID = 0x00;
-  public static final Short NUMBERMESSAGEOBJ = 0x01;
-
   // Properties.
-  protected final DataTransportErrorCode pudicfReturnCode;
-  protected final DataTransportSize pudicftransportSize;
+  protected final byte[] items;
 
   public S7PayloadUserDataItemCpuFunctionAlarmQueryResponse(
       DataTransportErrorCode returnCode,
       DataTransportSize transportSize,
-      DataTransportErrorCode pudicfReturnCode,
-      DataTransportSize pudicftransportSize) {
-    super(returnCode, transportSize);
-    this.pudicfReturnCode = pudicfReturnCode;
-    this.pudicftransportSize = pudicftransportSize;
+      int dataLength,
+      byte[] items) {
+    super(returnCode, transportSize, dataLength);
+    this.items = items;
   }
 
-  public DataTransportErrorCode getPudicfReturnCode() {
-    return pudicfReturnCode;
-  }
-
-  public DataTransportSize getPudicftransportSize() {
-    return pudicftransportSize;
-  }
-
-  public short getFunctionId() {
-    return FUNCTIONID;
-  }
-
-  public short getNumberMessageObj() {
-    return NUMBERMESSAGEOBJ;
+  public byte[] getItems() {
+    return items;
   }
 
   @Override
@@ -93,34 +75,8 @@ public class S7PayloadUserDataItemCpuFunctionAlarmQueryResponse extends S7Payloa
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("S7PayloadUserDataItemCpuFunctionAlarmQueryResponse");
 
-    // Const Field (functionId)
-    writeConstField("functionId", FUNCTIONID, writeUnsignedShort(writeBuffer, 8));
-
-    // Const Field (numberMessageObj)
-    writeConstField("numberMessageObj", NUMBERMESSAGEOBJ, writeUnsignedShort(writeBuffer, 8));
-
-    // Simple Field (pudicfReturnCode)
-    writeSimpleEnumField(
-        "pudicfReturnCode",
-        "DataTransportErrorCode",
-        pudicfReturnCode,
-        new DataWriterEnumDefault<>(
-            DataTransportErrorCode::getValue,
-            DataTransportErrorCode::name,
-            writeUnsignedShort(writeBuffer, 8)));
-
-    // Simple Field (pudicftransportSize)
-    writeSimpleEnumField(
-        "pudicftransportSize",
-        "DataTransportSize",
-        pudicftransportSize,
-        new DataWriterEnumDefault<>(
-            DataTransportSize::getValue,
-            DataTransportSize::name,
-            writeUnsignedShort(writeBuffer, 8)));
-
-    // Reserved Field (reserved)
-    writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 8));
+    // Array Field (items)
+    writeByteArrayField("items", items, writeByteArray(writeBuffer, 8));
 
     writeBuffer.popContext("S7PayloadUserDataItemCpuFunctionAlarmQueryResponse");
   }
@@ -136,84 +92,48 @@ public class S7PayloadUserDataItemCpuFunctionAlarmQueryResponse extends S7Payloa
     S7PayloadUserDataItemCpuFunctionAlarmQueryResponse _value = this;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    // Const Field (functionId)
-    lengthInBits += 8;
-
-    // Const Field (numberMessageObj)
-    lengthInBits += 8;
-
-    // Simple field (pudicfReturnCode)
-    lengthInBits += 8;
-
-    // Simple field (pudicftransportSize)
-    lengthInBits += 8;
-
-    // Reserved Field (reserved)
-    lengthInBits += 8;
+    // Array field
+    if (items != null) {
+      lengthInBits += 8 * items.length;
+    }
 
     return lengthInBits;
   }
 
   public static S7PayloadUserDataItemBuilder staticParseS7PayloadUserDataItemBuilder(
-      ReadBuffer readBuffer, Byte cpuFunctionType, Short cpuSubfunction) throws ParseException {
+      ReadBuffer readBuffer,
+      Integer dataLength,
+      Byte cpuFunctionGroup,
+      Byte cpuFunctionType,
+      Short cpuSubfunction)
+      throws ParseException {
     readBuffer.pullContext("S7PayloadUserDataItemCpuFunctionAlarmQueryResponse");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    short functionId =
-        readConstField(
-            "functionId",
-            readUnsignedShort(readBuffer, 8),
-            S7PayloadUserDataItemCpuFunctionAlarmQueryResponse.FUNCTIONID);
-
-    short numberMessageObj =
-        readConstField(
-            "numberMessageObj",
-            readUnsignedShort(readBuffer, 8),
-            S7PayloadUserDataItemCpuFunctionAlarmQueryResponse.NUMBERMESSAGEOBJ);
-
-    DataTransportErrorCode pudicfReturnCode =
-        readEnumField(
-            "pudicfReturnCode",
-            "DataTransportErrorCode",
-            new DataReaderEnumDefault<>(
-                DataTransportErrorCode::enumForValue, readUnsignedShort(readBuffer, 8)));
-
-    DataTransportSize pudicftransportSize =
-        readEnumField(
-            "pudicftransportSize",
-            "DataTransportSize",
-            new DataReaderEnumDefault<>(
-                DataTransportSize::enumForValue, readUnsignedShort(readBuffer, 8)));
-
-    Short reservedField0 =
-        readReservedField("reserved", readUnsignedShort(readBuffer, 8), (short) 0x00);
+    byte[] items = readBuffer.readByteArray("items", Math.toIntExact(dataLength));
 
     readBuffer.closeContext("S7PayloadUserDataItemCpuFunctionAlarmQueryResponse");
     // Create the instance
-    return new S7PayloadUserDataItemCpuFunctionAlarmQueryResponseBuilderImpl(
-        pudicfReturnCode, pudicftransportSize);
+    return new S7PayloadUserDataItemCpuFunctionAlarmQueryResponseBuilderImpl(items);
   }
 
   public static class S7PayloadUserDataItemCpuFunctionAlarmQueryResponseBuilderImpl
       implements S7PayloadUserDataItem.S7PayloadUserDataItemBuilder {
-    private final DataTransportErrorCode pudicfReturnCode;
-    private final DataTransportSize pudicftransportSize;
+    private final byte[] items;
 
-    public S7PayloadUserDataItemCpuFunctionAlarmQueryResponseBuilderImpl(
-        DataTransportErrorCode pudicfReturnCode, DataTransportSize pudicftransportSize) {
-      this.pudicfReturnCode = pudicfReturnCode;
-      this.pudicftransportSize = pudicftransportSize;
+    public S7PayloadUserDataItemCpuFunctionAlarmQueryResponseBuilderImpl(byte[] items) {
+      this.items = items;
     }
 
     public S7PayloadUserDataItemCpuFunctionAlarmQueryResponse build(
-        DataTransportErrorCode returnCode, DataTransportSize transportSize) {
+        DataTransportErrorCode returnCode, DataTransportSize transportSize, int dataLength) {
       S7PayloadUserDataItemCpuFunctionAlarmQueryResponse
           s7PayloadUserDataItemCpuFunctionAlarmQueryResponse =
               new S7PayloadUserDataItemCpuFunctionAlarmQueryResponse(
-                  returnCode, transportSize, pudicfReturnCode, pudicftransportSize);
+                  returnCode, transportSize, dataLength, items);
       return s7PayloadUserDataItemCpuFunctionAlarmQueryResponse;
     }
   }
@@ -228,15 +148,12 @@ public class S7PayloadUserDataItemCpuFunctionAlarmQueryResponse extends S7Payloa
     }
     S7PayloadUserDataItemCpuFunctionAlarmQueryResponse that =
         (S7PayloadUserDataItemCpuFunctionAlarmQueryResponse) o;
-    return (getPudicfReturnCode() == that.getPudicfReturnCode())
-        && (getPudicftransportSize() == that.getPudicftransportSize())
-        && super.equals(that)
-        && true;
+    return (getItems() == that.getItems()) && super.equals(that) && true;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), getPudicfReturnCode(), getPudicftransportSize());
+    return Objects.hash(super.hashCode(), getItems());
   }
 
   @Override
