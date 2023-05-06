@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   https://www.apache.org/licenses/LICENSE-2.0
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -19,12 +19,11 @@
 
 package org.apache.plc4x.java.profinet.device;
 
-import org.apache.plc4x.java.api.exceptions.PlcException;
+import org.apache.plc4x.java.profinet.context.ProfinetDeviceContext;
+import org.apache.plc4x.java.profinet.readwrite.DceRpc_Packet;
+import org.apache.plc4x.java.profinet.readwrite.Ethernet_Frame;
 
-public interface ProfinetCallable<T> {
-    void handle(T packet);
-
-    T create();
-
-    long getId();
+public interface MessageWrapper {
+    void sendUdpMessage(ProfinetCallable<DceRpc_Packet> callable, ProfinetDeviceContext context) throws RuntimeException;
+    void sendPnioMessage(ProfinetCallable<Ethernet_Frame> callable, ProfinetDeviceContext context) throws RuntimeException;
 }

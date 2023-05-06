@@ -29,7 +29,7 @@ import java.util.regex.Pattern;
 
 public class ProfinetTag implements PlcTag {
 
-    public static final Pattern ADDRESS_PATTERN = Pattern.compile("(?<address>[\\w\\-.]+)(:(?<datatype>[a-zA-Z_]+)){1}(\\[(?<quantity>\\d+)])?");
+    public static final Pattern ADDRESS_PATTERN = Pattern.compile("(?<address>[\\w\\-. ]+)(:(?<datatype>[a-zA-Z_]+)){1}(\\[(?<quantity>\\d+)])?");
     private final String address;
     private final int quantity;
     private final PlcValueType dataType;

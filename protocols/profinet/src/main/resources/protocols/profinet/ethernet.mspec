@@ -105,6 +105,12 @@
     [virtual  int 8 stringLength     'stringValue.length == -1 ? 0 : stringValue.length']
 ]
 
+[type PascalString16BitLength
+    [implicit int 16 sLength          'stringValue.length == 0 ? -1 : stringValue.length']
+    [simple vstring 'sLength == -1 ? 0 : sLength * 8' stringValue]
+    [virtual  int 16 stringLength     'stringValue.length == -1 ? 0 : stringValue.length']
+]
+
 [type Uuid
     [array byte data count '16']
 ]

@@ -45,10 +45,10 @@ public class PnIoCm_Block_ArServer extends PnIoCm_Block implements Message {
   // Properties.
   protected final short blockVersionHigh;
   protected final short blockVersionLow;
-  protected final PascalString stationName;
+  protected final PascalString16BitLength stationName;
 
   public PnIoCm_Block_ArServer(
-      short blockVersionHigh, short blockVersionLow, PascalString stationName) {
+      short blockVersionHigh, short blockVersionLow, PascalString16BitLength stationName) {
     super();
     this.blockVersionHigh = blockVersionHigh;
     this.blockVersionLow = blockVersionLow;
@@ -63,7 +63,7 @@ public class PnIoCm_Block_ArServer extends PnIoCm_Block implements Message {
     return blockVersionLow;
   }
 
-  public PascalString getStationName() {
+  public PascalString16BitLength getStationName() {
     return stationName;
   }
 
@@ -173,10 +173,11 @@ public class PnIoCm_Block_ArServer extends PnIoCm_Block implements Message {
             readUnsignedShort(readBuffer, 8),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
-    PascalString stationName =
+    PascalString16BitLength stationName =
         readSimpleField(
             "stationName",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer),
+            new DataReaderComplexDefault<>(
+                () -> PascalString16BitLength.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     readPaddingField(
@@ -192,10 +193,10 @@ public class PnIoCm_Block_ArServer extends PnIoCm_Block implements Message {
   public static class PnIoCm_Block_ArServerBuilderImpl implements PnIoCm_Block.PnIoCm_BlockBuilder {
     private final short blockVersionHigh;
     private final short blockVersionLow;
-    private final PascalString stationName;
+    private final PascalString16BitLength stationName;
 
     public PnIoCm_Block_ArServerBuilderImpl(
-        short blockVersionHigh, short blockVersionLow, PascalString stationName) {
+        short blockVersionHigh, short blockVersionLow, PascalString16BitLength stationName) {
       this.blockVersionHigh = blockVersionHigh;
       this.blockVersionLow = blockVersionLow;
       this.stationName = stationName;

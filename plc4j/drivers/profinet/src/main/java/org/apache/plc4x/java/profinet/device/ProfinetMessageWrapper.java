@@ -28,11 +28,11 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.util.Random;
 
-public class ProfinetMessageWrapper {
+public class ProfinetMessageWrapper implements MessageWrapper {
 
     private static final Logger logger = LoggerFactory.getLogger(ProfinetMessageWrapper.class);
 
-    public static void sendUdpMessage(ProfinetCallable<DceRpc_Packet> callable, ProfinetDeviceContext context) throws RuntimeException {
+    public void sendUdpMessage(ProfinetCallable<DceRpc_Packet> callable, ProfinetDeviceContext context) throws RuntimeException {
         try {
             DceRpc_Packet packet = callable.create();
             Random rand = new Random();
@@ -42,7 +42,7 @@ public class ProfinetMessageWrapper {
                 true,
                 false,
                 (short) 64,
-                new IpAddress(context.getLocalIpAddress().getAddress()),
+                new IpAddress(context.getNetworkInterface().getIpAddressAsByteArray()),
                 new IpAddress(InetAddress.getByName(context.getIpAddress()).getAddress()),
                 context.getSourcePort(),
                 context.getDestinationPort(),
@@ -63,7 +63,7 @@ public class ProfinetMessageWrapper {
         }
     }
 
-    public static void sendPnioMessage(ProfinetCallable<Ethernet_Frame> callable, ProfinetDeviceContext context) throws RuntimeException {
+    public void sendPnioMessage(ProfinetCallable<Ethernet_Frame> callable, ProfinetDeviceContext context) throws RuntimeException {
         Ethernet_Frame packet = callable.create();
         context.getChannel().send(packet);
     }
