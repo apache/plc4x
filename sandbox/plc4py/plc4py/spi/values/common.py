@@ -14,7 +14,10 @@
 #  KIND, either express or implied.  See the License for the
 #  specific language governing permissions and limitations
 #  under the License.
+from plc4py.spi.generation.WriteBuffer import WriteBuffer
 
 
 class Serializable:
-    pass
+
+    def serialize(self, write_buffer: WriteBuffer):
+        pass

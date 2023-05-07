@@ -46,7 +46,7 @@ class WriteBuffer(ByteOrderAware, PositionAware):
         raise NotImplementedError
 
     def write_byte(self, value: c_byte, logical_name: str = "", **kwargs) -> None:
-        self.write_signed_byte(value, logical_name, kwargs)
+        self.write_signed_byte(value, logical_name, **kwargs)
 
     def write_byte_array(self, value: List[c_byte], logical_name: str = "", **kwargs) -> None:
         raise NotImplementedError
@@ -86,7 +86,6 @@ class WriteBuffer(ByteOrderAware, PositionAware):
 
     def write_virtual(self, value: str, logical_name: str = "", **kwargs) -> None:
         raise NotImplementedError
-
 
     #
     # This method can be used to influence serializing (e.g. intercept whole types and render them in a simplified form)
