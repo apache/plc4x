@@ -95,7 +95,7 @@ class ${type.name}(Enum):
     <#if type.constantNames?has_content>
     def __new__(cls, value, <@compress single_line=true>
         <#list type.constantNames as constantName>
-            ${constantName}
+            ${helper.camelCaseToSnakeCase(constantName)}
             <#sep>, </#sep>
         </#list>):
         </@compress>
