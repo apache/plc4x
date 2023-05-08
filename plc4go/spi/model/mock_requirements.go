@@ -19,11 +19,29 @@
 
 package model
 
-import "github.com/apache/plc4x/plc4go/spi"
+import (
+	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
+	"github.com/apache/plc4x/plc4go/spi"
+)
 
 // Note this file is a Helper for mockery to generate use mocks from other package
 
 // Deprecated: don't use it in productive code
 type PlcTagHandler interface {
 	spi.PlcTagHandler
+}
+
+// Deprecated: don't use it in productive code
+type PlcTag interface {
+	apiModel.PlcTag
+}
+
+// Deprecated: don't use it in productive code
+type PlcBrowseItem interface {
+	apiModel.PlcBrowseItem
+}
+
+// Deprecated: don't use it in productive code
+type PlcQuery interface {
+	apiModel.PlcQuery
 }

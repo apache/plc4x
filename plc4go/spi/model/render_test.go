@@ -20,7 +20,6 @@
 package model
 
 import (
-	"context"
 	"fmt"
 	"net/url"
 	"reflect"
@@ -98,121 +97,6 @@ func TestRenderTest(t *testing.T) {
 	}
 }
 
-type _TestRenderTestCustomPlcTag struct {
-}
-
-func (_ _TestRenderTestCustomPlcTag) GetAddressString() string {
-	return "address string"
-}
-
-func (_ _TestRenderTestCustomPlcTag) GetValueType() apiValues.PlcValueType {
-	return 1
-}
-
-func (_ _TestRenderTestCustomPlcTag) GetArrayInfo() []apiModel.ArrayInfo {
-	return nil
-}
-
-func (_ _TestRenderTestCustomPlcTag) Serialize() ([]byte, error) {
-	return nil, nil // TODO: maybe we return something here... or not
-}
-
-func (_ _TestRenderTestCustomPlcTag) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
-	return nil // TODO: maybe we return something here... or not
-}
-
-type _TestRenderTestCustomPlcBrowseItem struct {
-}
-
-func (_ _TestRenderTestCustomPlcBrowseItem) GetTag() apiModel.PlcTag {
-	return _TestRenderTestCustomPlcTag{}
-}
-
-func (_ _TestRenderTestCustomPlcBrowseItem) GetName() string {
-	return "tagid"
-}
-
-func (_ _TestRenderTestCustomPlcBrowseItem) IsReadable() bool {
-	return true
-}
-
-func (_ _TestRenderTestCustomPlcBrowseItem) IsWritable() bool {
-	return true
-}
-
-func (_ _TestRenderTestCustomPlcBrowseItem) IsSubscribable() bool {
-	return true
-}
-
-func (_ _TestRenderTestCustomPlcBrowseItem) GetChildren() map[string]apiModel.PlcBrowseItem {
-	return nil // TODO: maybe we return something here... or not
-}
-
-func (_ _TestRenderTestCustomPlcBrowseItem) GetOptions() map[string]apiValues.PlcValue {
-	return nil // TODO: maybe we return something here... or not
-}
-
-type _TestRenderTestCustomPlcBrowseItem2 struct {
-}
-
-func (_ _TestRenderTestCustomPlcBrowseItem2) GetTag() apiModel.PlcTag {
-	return _TestRenderTestCustomPlcTag{}
-}
-
-func (_ _TestRenderTestCustomPlcBrowseItem2) GetName() string {
-	return "tagid"
-}
-
-func (_ _TestRenderTestCustomPlcBrowseItem2) IsReadable() bool {
-	return true
-}
-
-func (_ _TestRenderTestCustomPlcBrowseItem2) IsWritable() bool {
-	return true
-}
-
-func (_ _TestRenderTestCustomPlcBrowseItem2) IsSubscribable() bool {
-	return true
-}
-
-func (_ _TestRenderTestCustomPlcBrowseItem2) GetChildren() map[string]apiModel.PlcBrowseItem {
-	return nil // TODO: maybe we return something here... or not
-}
-
-func (_ _TestRenderTestCustomPlcBrowseItem2) GetOptions() map[string]apiValues.PlcValue {
-	return nil // TODO: maybe we return something here... or not
-}
-
-func (_ _TestRenderTestCustomPlcBrowseItem) Serialize() ([]byte, error) {
-	return nil, nil // TODO: maybe we return something here... or not
-}
-
-func (_ _TestRenderTestCustomPlcBrowseItem) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
-	return nil // TODO: maybe we return something here... or not
-}
-
-type _TestRenderTestCustom_TestPlcQuery struct {
-}
-
-func (_ _TestRenderTestCustom_TestPlcQuery) GetQueryString() string {
-	return "123456"
-}
-
-type _TestRenderTestCustom_TestPlcQuery2 struct {
-}
-
-func (_ _TestRenderTestCustom_TestPlcQuery2) GetQueryString() string {
-	return "123456"
-}
-
-func (_ _TestRenderTestCustom_TestPlcQuery2) Serialize() ([]byte, error) {
-	return nil, nil // TODO: maybe we return something here... or not
-}
-
-func (_ _TestRenderTestCustom_TestPlcQuery2) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
-	return nil // TODO: maybe we return something here... or not
-}
-
 // TestRenderTestCustom test some custom objects
 func TestRenderTestCustom(t *testing.T) {
 	tests := []struct {
@@ -225,15 +109,15 @@ func TestRenderTestCustom(t *testing.T) {
 	}{
 		{
 			sut: NewDefaultPlcBrowseItem(
-				_TestRenderTestCustomPlcTag{},
+				NewMockPlcTag(t),
 				"some name",
 				"some datatype",
 				true,
 				true,
 				true,
 				map[string]apiModel.PlcBrowseItem{
-					"tagid1": _TestRenderTestCustomPlcBrowseItem{},
-					"tagid2": _TestRenderTestCustomPlcBrowseItem2{},
+					"tagid1": NewMockPlcBrowseItem(t),
+					"tagid2": NewMockPlcBrowseItem(t),
 				},
 				map[string]apiValues.PlcValue{
 					"tagid1": spiValue.PlcNull{},
@@ -248,8 +132,8 @@ func TestRenderTestCustom(t *testing.T) {
 		{
 			sut: NewDefaultPlcBrowseRequest(
 				map[string]apiModel.PlcQuery{
-					"tagid1": _TestRenderTestCustom_TestPlcQuery{},
-					"tagid2": _TestRenderTestCustom_TestPlcQuery2{},
+					"tagid1": NewMockPlcQuery(t),
+					"tagid2": NewMockPlcQuery(t),
 				},
 				[]string{
 					"tagid1",
