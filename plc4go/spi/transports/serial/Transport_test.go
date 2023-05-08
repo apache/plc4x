@@ -22,10 +22,10 @@ package serial
 import (
 	"bufio"
 	"github.com/apache/plc4x/plc4go/spi/transports"
+	"github.com/stretchr/testify/assert"
 	"io"
 	"net"
 	"net/url"
-	"reflect"
 	"testing"
 )
 
@@ -34,11 +34,14 @@ func TestNewTransport(t *testing.T) {
 		name string
 		want *Transport
 	}{
-		// TODO: Add test cases.
+		{
+			name: "create it",
+			want: &Transport{},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := NewTransport(); !reflect.DeepEqual(got, tt.want) {
+			if got := NewTransport(); !assert.Equal(t, tt.want, got) {
 				t.Errorf("NewTransport() = %v, want %v", got, tt.want)
 			}
 		})
@@ -61,7 +64,7 @@ func TestNewTransportInstance(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := NewTransportInstance(tt.args.serialPortName, tt.args.baudRate, tt.args.connectTimeout, tt.args.transport); !reflect.DeepEqual(got, tt.want) {
+			if got := NewTransportInstance(tt.args.serialPortName, tt.args.baudRate, tt.args.connectTimeout, tt.args.transport); !assert.Equal(t, tt.want, got) {
 				t.Errorf("NewTransportInstance() = %v, want %v", got, tt.want)
 			}
 		})
@@ -166,7 +169,7 @@ func TestTransportInstance_GetReader(t *testing.T) {
 				serialPort:                       tt.fields.serialPort,
 				reader:                           tt.fields.reader,
 			}
-			if got := m.GetReader(); !reflect.DeepEqual(got, tt.want) {
+			if got := m.GetReader(); !assert.Equal(t, tt.want, got) {
 				t.Errorf("GetReader() = %v, want %v", got, tt.want)
 			}
 		})
@@ -303,7 +306,7 @@ func TestTransport_CreateTransportInstance(t *testing.T) {
 				t.Errorf("CreateTransportInstance() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			if !reflect.DeepEqual(got, tt.want) {
+			if !assert.Equal(t, tt.want, got) {
 				t.Errorf("CreateTransportInstance() got = %v, want %v", got, tt.want)
 			}
 		})
@@ -332,7 +335,7 @@ func TestTransport_CreateTransportInstanceForLocalAddress(t *testing.T) {
 				t.Errorf("CreateTransportInstanceForLocalAddress() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			if !reflect.DeepEqual(got, tt.want) {
+			if !assert.Equal(t, tt.want, got) {
 				t.Errorf("CreateTransportInstanceForLocalAddress() got = %v, want %v", got, tt.want)
 			}
 		})

@@ -23,7 +23,7 @@ import (
 	"bufio"
 	"bytes"
 	"context"
-	"reflect"
+	"github.com/stretchr/testify/assert"
 	"testing"
 )
 
@@ -43,7 +43,7 @@ func TestNewDefaultBufferedTransportInstance(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := NewDefaultBufferedTransportInstance(tt.args.defaultBufferedTransportInstanceRequirements); !reflect.DeepEqual(got, tt.want) {
+			if got := NewDefaultBufferedTransportInstance(tt.args.defaultBufferedTransportInstanceRequirements); !assert.Equal(t, tt.want, got) {
 				t.Errorf("NewDefaultBufferedTransportInstance() = %v, want %v", got, tt.want)
 			}
 		})
@@ -284,7 +284,7 @@ func Test_defaultBufferedTransportInstance_PeekReadableBytes(t *testing.T) {
 				t.Errorf("PeekReadableBytes() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			if !reflect.DeepEqual(got, tt.want) {
+			if !assert.Equal(t, tt.want, got) {
 				t.Errorf("PeekReadableBytes() got = %v, want %v", got, tt.want)
 			}
 		})
@@ -355,7 +355,7 @@ func Test_defaultBufferedTransportInstance_Read(t *testing.T) {
 				t.Errorf("Read() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			if !reflect.DeepEqual(got, tt.want) {
+			if !assert.Equal(t, tt.want, got) {
 				t.Errorf("Read() got = %v, want %v", got, tt.want)
 			}
 		})

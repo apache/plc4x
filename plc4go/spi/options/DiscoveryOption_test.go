@@ -20,7 +20,7 @@
 package options
 
 import (
-	"reflect"
+	"github.com/stretchr/testify/assert"
 	"testing"
 )
 
@@ -51,7 +51,7 @@ func TestFilterDiscoveryOptionProtocolSpecific(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := FilterDiscoveryOptionProtocolSpecific(tt.args.options); !reflect.DeepEqual(got, tt.want) {
+			if got := FilterDiscoveryOptionProtocolSpecific(tt.args.options); !assert.Equal(t, tt.want, got) {
 				t.Errorf("FilterDiscoveryOptionProtocolSpecific() = %v, want %v", got, tt.want)
 			}
 		})
@@ -85,7 +85,7 @@ func TestFilterDiscoveryOptionsDeviceName(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := FilterDiscoveryOptionsDeviceName(tt.args.options); !reflect.DeepEqual(got, tt.want) {
+			if got := FilterDiscoveryOptionsDeviceName(tt.args.options); !assert.Equal(t, tt.want, got) {
 				t.Errorf("FilterDiscoveryOptionsDeviceName() = %v, want %v", got, tt.want)
 			}
 		})
@@ -119,7 +119,7 @@ func TestFilterDiscoveryOptionsLocalAddress(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := FilterDiscoveryOptionsLocalAddress(tt.args.options); !reflect.DeepEqual(got, tt.want) {
+			if got := FilterDiscoveryOptionsLocalAddress(tt.args.options); !assert.Equal(t, tt.want, got) {
 				t.Errorf("FilterDiscoveryOptionsLocalAddress() = %v, want %v", got, tt.want)
 			}
 		})
@@ -154,7 +154,7 @@ func TestFilterDiscoveryOptionsProtocol(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := FilterDiscoveryOptionsProtocol(tt.args.options); !reflect.DeepEqual(got, tt.want) {
+			if got := FilterDiscoveryOptionsProtocol(tt.args.options); !assert.Equal(t, tt.want, got) {
 				t.Errorf("FilterDiscoveryOptionsProtocol() = %v, want %v", got, tt.want)
 			}
 		})
@@ -189,7 +189,7 @@ func TestFilterDiscoveryOptionsRemoteAddress(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := FilterDiscoveryOptionsRemoteAddress(tt.args.options); !reflect.DeepEqual(got, tt.want) {
+			if got := FilterDiscoveryOptionsRemoteAddress(tt.args.options); !assert.Equal(t, tt.want, got) {
 				t.Errorf("FilterDiscoveryOptionsRemoteAddress() = %v, want %v", got, tt.want)
 			}
 		})
@@ -224,7 +224,7 @@ func TestFilterDiscoveryOptionsTransport(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := FilterDiscoveryOptionsTransport(tt.args.options); !reflect.DeepEqual(got, tt.want) {
+			if got := FilterDiscoveryOptionsTransport(tt.args.options); !assert.Equal(t, tt.want, got) {
 				t.Errorf("FilterDiscoveryOptionsTransport() = %v, want %v", got, tt.want)
 			}
 		})
@@ -248,7 +248,7 @@ func TestWithDiscoveryOptionDeviceName(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := WithDiscoveryOptionDeviceName(tt.args.deviceName); !reflect.DeepEqual(got, tt.want) {
+			if got := WithDiscoveryOptionDeviceName(tt.args.deviceName); !assert.Equal(t, tt.want, got) {
 				t.Errorf("WithDiscoveryOptionDeviceName() = %v, want %v", got, tt.want)
 			}
 		})
@@ -272,7 +272,7 @@ func TestWithDiscoveryOptionLocalAddress(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := WithDiscoveryOptionLocalAddress(tt.args.localAddress); !reflect.DeepEqual(got, tt.want) {
+			if got := WithDiscoveryOptionLocalAddress(tt.args.localAddress); !assert.Equal(t, tt.want, got) {
 				t.Errorf("WithDiscoveryOptionLocalAddress() = %v, want %v", got, tt.want)
 			}
 		})
@@ -296,7 +296,7 @@ func TestWithDiscoveryOptionProtocol(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := WithDiscoveryOptionProtocol(tt.args.protocolName); !reflect.DeepEqual(got, tt.want) {
+			if got := WithDiscoveryOptionProtocol(tt.args.protocolName); !assert.Equal(t, tt.want, got) {
 				t.Errorf("WithDiscoveryOptionProtocol() = %v, want %v", got, tt.want)
 			}
 		})
@@ -321,7 +321,7 @@ func TestWithDiscoveryOptionProtocolSpecific(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := WithDiscoveryOptionProtocolSpecific(tt.args.key, tt.args.value); !reflect.DeepEqual(got, tt.want) {
+			if got := WithDiscoveryOptionProtocolSpecific(tt.args.key, tt.args.value); !assert.Equal(t, tt.want, got) {
 				t.Errorf("WithDiscoveryOptionProtocolSpecific() = %v, want %v", got, tt.want)
 			}
 		})
@@ -345,7 +345,7 @@ func TestWithDiscoveryOptionRemoteAddress(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := WithDiscoveryOptionRemoteAddress(tt.args.remoteAddress); !reflect.DeepEqual(got, tt.want) {
+			if got := WithDiscoveryOptionRemoteAddress(tt.args.remoteAddress); !assert.Equal(t, tt.want, got) {
 				t.Errorf("WithDiscoveryOptionRemoteAddress() = %v, want %v", got, tt.want)
 			}
 		})
@@ -369,7 +369,7 @@ func TestWithDiscoveryOptionTransport(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := WithDiscoveryOptionTransport(tt.args.transportName); !reflect.DeepEqual(got, tt.want) {
+			if got := WithDiscoveryOptionTransport(tt.args.transportName); !assert.Equal(t, tt.want, got) {
 				t.Errorf("WithDiscoveryOptionTransport() = %v, want %v", got, tt.want)
 			}
 		})
@@ -497,7 +497,7 @@ func Test_discoveryOptionProtocolSpecific_GetValue(t *testing.T) {
 				key:             tt.fields.key,
 				value:           tt.fields.value,
 			}
-			if got := d.GetValue(); !reflect.DeepEqual(got, tt.want) {
+			if got := d.GetValue(); !assert.Equal(t, tt.want, got) {
 				t.Errorf("GetValue() = %v, want %v", got, tt.want)
 			}
 		})

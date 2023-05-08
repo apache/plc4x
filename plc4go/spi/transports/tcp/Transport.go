@@ -57,16 +57,9 @@ func (m Transport) CreateTransportInstance(transportUrl url.URL, options map[str
 			address = val
 		} else if val, ok := match["hostname"]; ok && len(val) > 0 {
 			address = val
-		} else {
-			return nil, errors.New("missing hostname or ip to connect")
-		}
+		} // Note: the regex ensures that it is either ip or hostname
 		if val, ok := match["port"]; ok && len(val) > 0 {
-			portVal, err := strconv.Atoi(val)
-			if err != nil {
-				return nil, errors.Wrap(err, "error setting port")
-			} else {
-				port = portVal
-			}
+			port, _ = strconv.Atoi(val) // Note: the regex ensures that this is always a valid number
 		} else if val, ok := options["defaultTcpPort"]; ok && len(val) > 0 {
 			portVal, err := strconv.Atoi(val[0])
 			if err != nil {
@@ -124,6 +117,9 @@ func (m *TransportInstance) Connect() error {
 }
 
 func (m *TransportInstance) ConnectWithContext(ctx context.Context) error {
+	if m.RemoteAddress == nil {
+		return errors.New("Required remote address missing")
+	}
 	var err error
 	var d net.Dialer
 	m.tcpConn, err = d.DialContext(ctx, "tcp", m.RemoteAddress.String())

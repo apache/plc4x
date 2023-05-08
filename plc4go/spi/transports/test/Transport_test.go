@@ -23,8 +23,8 @@ import (
 	"bufio"
 	"context"
 	"github.com/apache/plc4x/plc4go/spi/transports"
+	"github.com/stretchr/testify/assert"
 	"net/url"
-	"reflect"
 	"testing"
 )
 
@@ -33,11 +33,16 @@ func TestNewTransport(t *testing.T) {
 		name string
 		want *Transport
 	}{
-		// TODO: Add test cases.
+		{
+			name: "create it",
+			want: &Transport{
+				preregisteredInstances: map[url.URL]transports.TransportInstance{},
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := NewTransport(); !reflect.DeepEqual(got, tt.want) {
+			if got := NewTransport(); !assert.Equal(t, tt.want, got) {
 				t.Errorf("NewTransport() = %v, want %v", got, tt.want)
 			}
 		})
@@ -57,7 +62,7 @@ func TestNewTransportInstance(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := NewTransportInstance(tt.args.transport); !reflect.DeepEqual(got, tt.want) {
+			if got := NewTransportInstance(tt.args.transport); !assert.Equal(t, tt.want, got) {
 				t.Errorf("NewTransportInstance() = %v, want %v", got, tt.want)
 			}
 		})
@@ -189,7 +194,7 @@ func TestTransportInstance_DrainWriteBuffer(t *testing.T) {
 				transport:        tt.fields.transport,
 				writeInterceptor: tt.fields.writeInterceptor,
 			}
-			if got := m.DrainWriteBuffer(tt.args.numBytes); !reflect.DeepEqual(got, tt.want) {
+			if got := m.DrainWriteBuffer(tt.args.numBytes); !assert.Equal(t, tt.want, got) {
 				t.Errorf("DrainWriteBuffer() = %v, want %v", got, tt.want)
 			}
 		})
@@ -396,7 +401,7 @@ func TestTransportInstance_PeekReadableBytes(t *testing.T) {
 				t.Errorf("PeekReadableBytes() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			if !reflect.DeepEqual(got, tt.want) {
+			if !assert.Equal(t, tt.want, got) {
 				t.Errorf("PeekReadableBytes() got = %v, want %v", got, tt.want)
 			}
 		})
@@ -437,7 +442,7 @@ func TestTransportInstance_Read(t *testing.T) {
 				t.Errorf("Read() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			if !reflect.DeepEqual(got, tt.want) {
+			if !assert.Equal(t, tt.want, got) {
 				t.Errorf("Read() got = %v, want %v", got, tt.want)
 			}
 		})
@@ -597,7 +602,7 @@ func TestTransport_CreateTransportInstance(t *testing.T) {
 				t.Errorf("CreateTransportInstance() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			if !reflect.DeepEqual(got, tt.want) {
+			if !assert.Equal(t, tt.want, got) {
 				t.Errorf("CreateTransportInstance() got = %v, want %v", got, tt.want)
 			}
 		})

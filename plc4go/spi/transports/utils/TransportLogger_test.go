@@ -21,8 +21,8 @@ package utils
 
 import (
 	"github.com/rs/zerolog"
+	"github.com/stretchr/testify/assert"
 	"io"
-	"reflect"
 	"testing"
 )
 
@@ -36,11 +36,14 @@ func TestNewTransportLogger(t *testing.T) {
 		args args
 		want *TransportLogger
 	}{
-		// TODO: Add test cases.
+		{
+			name: "create it",
+			want: &TransportLogger{},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := NewTransportLogger(tt.args.source, tt.args.options...); !reflect.DeepEqual(got, tt.want) {
+			if got := NewTransportLogger(tt.args.source, tt.args.options...); !assert.Equal(t, tt.want, got) {
 				t.Errorf("NewTransportLogger() = %v, want %v", got, tt.want)
 			}
 		})
@@ -155,7 +158,7 @@ func TestWithLogger(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := WithLogger(tt.args.log); !reflect.DeepEqual(got, tt.want) {
+			if got := WithLogger(tt.args.log); !assert.Equal(t, tt.want, got) {
 				t.Errorf("WithLogger() = %v, want %v", got, tt.want)
 			}
 		})

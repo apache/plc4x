@@ -22,10 +22,12 @@ package tcp
 import (
 	"bufio"
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/transports"
+	"github.com/stretchr/testify/assert"
+	"golang.org/x/net/nettest"
 	"net"
 	"net/url"
-	"reflect"
 	"testing"
 )
 
@@ -40,11 +42,18 @@ func TestNewTcpTransportInstance(t *testing.T) {
 		args args
 		want *TransportInstance
 	}{
-		// TODO: Add test cases.
+		{
+			name: "create it",
+			want: func() *TransportInstance {
+				ti := &TransportInstance{}
+				ti.DefaultBufferedTransportInstance = transports.NewDefaultBufferedTransportInstance(ti)
+				return ti
+			}(),
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := NewTcpTransportInstance(tt.args.remoteAddress, tt.args.connectTimeout, tt.args.transport); !reflect.DeepEqual(got, tt.want) {
+			if got := NewTcpTransportInstance(tt.args.remoteAddress, tt.args.connectTimeout, tt.args.transport); !assert.Equal(t, tt.want, got) {
 				t.Errorf("NewTcpTransportInstance() = %v, want %v", got, tt.want)
 			}
 		})
@@ -56,11 +65,14 @@ func TestNewTransport(t *testing.T) {
 		name string
 		want *Transport
 	}{
-		// TODO: Add test cases.
+		{
+			name: "create it",
+			want: &Transport{},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := NewTransport(); !reflect.DeepEqual(got, tt.want) {
+			if got := NewTransport(); !assert.Equal(t, tt.want, got) {
 				t.Errorf("NewTransport() = %v, want %v", got, tt.want)
 			}
 		})
@@ -82,7 +94,38 @@ func TestTransportInstance_Close(t *testing.T) {
 		fields  fields
 		wantErr bool
 	}{
-		// TODO: Add test cases.
+		{
+			name: "close it (no conn)",
+		},
+		{
+			name: "close it (broken connection)",
+			fields: fields{
+				tcpConn: &net.TCPConn{},
+			},
+			wantErr: true,
+		},
+		{
+			name: "close it",
+			fields: fields{
+				tcpConn: func() *net.TCPConn {
+					listener, err := nettest.NewLocalListener("tcp")
+					assert.NoError(t, err)
+					t.Cleanup(func() {
+						assert.NoError(t, listener.Close())
+					})
+					go func() {
+						_, _ = listener.Accept()
+					}()
+					tcp, err := net.DialTCP("tcp", nil, listener.Addr().(*net.TCPAddr))
+					assert.NoError(t, err)
+					t.Cleanup(func() {
+						// As we already closed the connection with the whole method this should error
+						assert.Error(t, tcp.Close())
+					})
+					return tcp
+				}(),
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -117,7 +160,10 @@ func TestTransportInstance_Connect(t *testing.T) {
 		fields  fields
 		wantErr bool
 	}{
-		// TODO: Add test cases.
+		{
+			name:    "connect it (failing)",
+			wantErr: true,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -156,7 +202,31 @@ func TestTransportInstance_ConnectWithContext(t *testing.T) {
 		args    args
 		wantErr bool
 	}{
-		// TODO: Add test cases.
+		{
+			name: "connect it",
+			fields: fields{
+				RemoteAddress: func() *net.TCPAddr {
+					listener, err := nettest.NewLocalListener("tcp")
+					assert.NoError(t, err)
+					t.Cleanup(func() {
+						assert.NoError(t, listener.Close())
+					})
+					go func() {
+						_, _ = listener.Accept()
+					}()
+					return listener.Addr().(*net.TCPAddr)
+				}(),
+			},
+			args: args{ctx: context.Background()},
+		},
+		{
+			name: "connect it (non existing address)",
+			fields: fields{
+				RemoteAddress: &net.TCPAddr{},
+			},
+			args:    args{ctx: context.Background()},
+			wantErr: true,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -191,7 +261,9 @@ func TestTransportInstance_GetReader(t *testing.T) {
 		fields fields
 		want   *bufio.Reader
 	}{
-		// TODO: Add test cases.
+		{
+			name: "get it",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -204,7 +276,7 @@ func TestTransportInstance_GetReader(t *testing.T) {
 				tcpConn:                          tt.fields.tcpConn,
 				reader:                           tt.fields.reader,
 			}
-			if got := m.GetReader(); !reflect.DeepEqual(got, tt.want) {
+			if got := m.GetReader(); !assert.Equal(t, tt.want, got) {
 				t.Errorf("GetReader() = %v, want %v", got, tt.want)
 			}
 		})
@@ -226,7 +298,9 @@ func TestTransportInstance_IsConnected(t *testing.T) {
 		fields fields
 		want   bool
 	}{
-		// TODO: Add test cases.
+		{
+			name: "check it",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -261,7 +335,18 @@ func TestTransportInstance_String(t *testing.T) {
 		fields fields
 		want   string
 	}{
-		// TODO: Add test cases.
+		{
+			name: "get it",
+			want: "tcp:<nil>",
+		},
+		{
+			name: "get it too",
+			fields: fields{
+				LocalAddress:  &net.TCPAddr{IP: net.IPv4(1, 2, 3, 4), Port: 5},
+				RemoteAddress: &net.TCPAddr{IP: net.IPv4(6, 7, 8, 9), Port: 10},
+			},
+			want: "tcp:1.2.3.4:5->6.7.8.9:10",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -300,7 +385,38 @@ func TestTransportInstance_Write(t *testing.T) {
 		args    args
 		wantErr bool
 	}{
-		// TODO: Add test cases.
+		{
+			name:    "write it (failing)",
+			wantErr: true,
+		},
+		{
+			name: "write it (failing with con)",
+			fields: fields{
+				tcpConn: &net.TCPConn{},
+			},
+			wantErr: true,
+		},
+		{
+			name: "write it",
+			fields: fields{
+				tcpConn: func() *net.TCPConn {
+					listener, err := nettest.NewLocalListener("tcp")
+					assert.NoError(t, err)
+					t.Cleanup(func() {
+						assert.NoError(t, listener.Close())
+					})
+					go func() {
+						_, _ = listener.Accept()
+					}()
+					tcp, err := net.DialTCP("tcp", nil, listener.Addr().(*net.TCPAddr))
+					assert.NoError(t, err)
+					t.Cleanup(func() {
+						assert.NoError(t, tcp.Close())
+					})
+					return tcp
+				}(),
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -331,7 +447,140 @@ func TestTransport_CreateTransportInstance(t *testing.T) {
 		want    transports.TransportInstance
 		wantErr bool
 	}{
-		// TODO: Add test cases.
+		{
+			name: "Create it",
+			want: func() transports.TransportInstance {
+				tcpAddr, err := net.ResolveTCPAddr("tcp", fmt.Sprintf("%s:%d", "", 0))
+				assert.NoError(t, err)
+				ti := &TransportInstance{
+					transport:      NewTransport(),
+					RemoteAddress:  tcpAddr,
+					ConnectTimeout: 1000,
+				}
+				ti.DefaultBufferedTransportInstance = transports.NewDefaultBufferedTransportInstance(ti)
+				return ti
+			}(),
+		},
+		{
+			name: "Create it with transport url",
+			args: args{
+				transportUrl: url.URL{Host: "127.0.0.1:123"},
+			},
+			want: func() transports.TransportInstance {
+				tcpAddr, err := net.ResolveTCPAddr("tcp", fmt.Sprintf("%s:%d", "127.0.0.1", 123))
+				assert.NoError(t, err)
+				ti := &TransportInstance{
+					transport:      NewTransport(),
+					RemoteAddress:  tcpAddr,
+					ConnectTimeout: 1000,
+				}
+				ti.DefaultBufferedTransportInstance = transports.NewDefaultBufferedTransportInstance(ti)
+				return ti
+			}(),
+		},
+		{
+			name: "Create it with transport url (named host)",
+			args: args{
+				transportUrl: url.URL{Host: "localhost:123"},
+			},
+			want: func() transports.TransportInstance {
+				tcpAddr, err := net.ResolveTCPAddr("tcp", fmt.Sprintf("%s:%d", "localhost", 123))
+				assert.NoError(t, err)
+				ti := &TransportInstance{
+					transport:      NewTransport(),
+					RemoteAddress:  tcpAddr,
+					ConnectTimeout: 1000,
+				}
+				ti.DefaultBufferedTransportInstance = transports.NewDefaultBufferedTransportInstance(ti)
+				return ti
+			}(),
+		},
+		{
+			name: "Create it with transport url (without port)",
+			args: args{
+				transportUrl: url.URL{Host: "127.0.0.1"},
+			},
+			wantErr: true,
+		},
+		{
+			name: "Create it with transport url (with nonsense port)",
+			args: args{
+				transportUrl: url.URL{Host: "127.0.0.1:banana"},
+			},
+			wantErr: true,
+		},
+		{
+			name: "Create it with transport url (with default port)",
+			args: args{
+				transportUrl: url.URL{Host: "127.0.0.1"},
+				options: map[string][]string{
+					"defaultTcpPort": {"123"},
+				},
+			},
+			want: func() transports.TransportInstance {
+				tcpAddr, err := net.ResolveTCPAddr("tcp", fmt.Sprintf("%s:%d", "127.0.0.1", 123))
+				assert.NoError(t, err)
+				ti := &TransportInstance{
+					transport:      NewTransport(),
+					RemoteAddress:  tcpAddr,
+					ConnectTimeout: 1000,
+				}
+				ti.DefaultBufferedTransportInstance = transports.NewDefaultBufferedTransportInstance(ti)
+				return ti
+			}(),
+		},
+		{
+			name: "Create it with transport url (with broken default port)",
+			args: args{
+				transportUrl: url.URL{Host: "127.0.0.1"},
+				options: map[string][]string{
+					"defaultTcpPort": {"default"},
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "Create it with transport url (with default port and connection timeout)",
+			args: args{
+				transportUrl: url.URL{Host: "127.0.0.1"},
+				options: map[string][]string{
+					"defaultTcpPort":  {"123"},
+					"connect-timeout": {"123"},
+				},
+			},
+			want: func() transports.TransportInstance {
+				tcpAddr, err := net.ResolveTCPAddr("tcp", fmt.Sprintf("%s:%d", "127.0.0.1", 123))
+				assert.NoError(t, err)
+				ti := &TransportInstance{
+					transport:      NewTransport(),
+					RemoteAddress:  tcpAddr,
+					ConnectTimeout: 123,
+				}
+				ti.DefaultBufferedTransportInstance = transports.NewDefaultBufferedTransportInstance(ti)
+				return ti
+			}(),
+		},
+		{
+			name: "Create it with transport url (with default port and connection timeout broken)",
+			args: args{
+				transportUrl: url.URL{Host: "127.0.0.1"},
+				options: map[string][]string{
+					"defaultTcpPort":  {"123"},
+					"connect-timeout": {"banana"},
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "Create it with unresolvable host",
+			args: args{
+				transportUrl: url.URL{Host: "plc4xhostnothere"},
+				options: map[string][]string{
+					"defaultTcpPort": {"123"},
+				},
+			},
+			wantErr: true,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -341,7 +590,7 @@ func TestTransport_CreateTransportInstance(t *testing.T) {
 				t.Errorf("CreateTransportInstance() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			if !reflect.DeepEqual(got, tt.want) {
+			if !assert.Equal(t, tt.want, got) {
 				t.Errorf("CreateTransportInstance() got = %v, want %v", got, tt.want)
 			}
 		})
@@ -353,7 +602,10 @@ func TestTransport_GetTransportCode(t *testing.T) {
 		name string
 		want string
 	}{
-		// TODO: Add test cases.
+		{
+			name: "get it",
+			want: "tcp",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -370,7 +622,10 @@ func TestTransport_GetTransportName(t *testing.T) {
 		name string
 		want string
 	}{
-		// TODO: Add test cases.
+		{
+			name: "get it",
+			want: "TCP/IP Socket Transport",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -387,7 +642,10 @@ func TestTransport_String(t *testing.T) {
 		name string
 		want string
 	}{
-		// TODO: Add test cases.
+		{
+			name: "get the string",
+			want: "tcp(TCP/IP Socket Transport)",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

@@ -23,9 +23,9 @@ import (
 	"bufio"
 	"context"
 	"github.com/apache/plc4x/plc4go/spi/transports"
+	"github.com/stretchr/testify/assert"
 	"net"
 	"net/url"
-	"reflect"
 	"testing"
 )
 
@@ -34,11 +34,14 @@ func TestNewTransport(t *testing.T) {
 		name string
 		want *Transport
 	}{
-		// TODO: Add test cases.
+		{
+			name: "create it",
+			want: &Transport{},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := NewTransport(); !reflect.DeepEqual(got, tt.want) {
+			if got := NewTransport(); !assert.Equal(t, tt.want, got) {
 				t.Errorf("NewTransport() = %v, want %v", got, tt.want)
 			}
 		})
@@ -62,7 +65,7 @@ func TestNewTransportInstance(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := NewTransportInstance(tt.args.localAddress, tt.args.remoteAddress, tt.args.connectTimeout, tt.args.soReUse, tt.args.transport); !reflect.DeepEqual(got, tt.want) {
+			if got := NewTransportInstance(tt.args.localAddress, tt.args.remoteAddress, tt.args.connectTimeout, tt.args.soReUse, tt.args.transport); !assert.Equal(t, tt.want, got) {
 				t.Errorf("NewTransportInstance() = %v, want %v", got, tt.want)
 			}
 		})
@@ -331,7 +334,7 @@ func TestTransportInstance_PeekReadableBytes(t *testing.T) {
 				t.Errorf("PeekReadableBytes() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			if !reflect.DeepEqual(got, tt.want) {
+			if !assert.Equal(t, tt.want, got) {
 				t.Errorf("PeekReadableBytes() got = %v, want %v", got, tt.want)
 			}
 		})
@@ -376,7 +379,7 @@ func TestTransportInstance_Read(t *testing.T) {
 				t.Errorf("Read() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			if !reflect.DeepEqual(got, tt.want) {
+			if !assert.Equal(t, tt.want, got) {
 				t.Errorf("Read() got = %v, want %v", got, tt.want)
 			}
 		})
@@ -478,7 +481,7 @@ func TestTransport_CreateTransportInstance(t *testing.T) {
 				t.Errorf("CreateTransportInstance() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			if !reflect.DeepEqual(got, tt.want) {
+			if !assert.Equal(t, tt.want, got) {
 				t.Errorf("CreateTransportInstance() got = %v, want %v", got, tt.want)
 			}
 		})
@@ -507,7 +510,7 @@ func TestTransport_CreateTransportInstanceForLocalAddress(t *testing.T) {
 				t.Errorf("CreateTransportInstanceForLocalAddress() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			if !reflect.DeepEqual(got, tt.want) {
+			if !assert.Equal(t, tt.want, got) {
 				t.Errorf("CreateTransportInstanceForLocalAddress() got = %v, want %v", got, tt.want)
 			}
 		})
