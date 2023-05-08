@@ -25,6 +25,7 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/rs/zerolog"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/mock"
 	"testing"
 	"time"
 )
@@ -228,16 +229,6 @@ func Test_requestTransactionManager_endRequest(t *testing.T) {
 	}
 }
 
-type _Test_requestTransactionManager_failRequest_CompletionFuture struct {
-}
-
-func (_Test_requestTransactionManager_failRequest_CompletionFuture) AwaitCompletion(ctx context.Context) error {
-	return nil
-}
-
-func (_Test_requestTransactionManager_failRequest_CompletionFuture) Cancel(interrupt bool, err error) {
-}
-
 func Test_requestTransactionManager_failRequest(t *testing.T) {
 	type fields struct {
 		runningRequests            []*requestTransaction
@@ -251,23 +242,31 @@ func Test_requestTransactionManager_failRequest(t *testing.T) {
 		err         error
 	}
 	tests := []struct {
-		name    string
-		fields  fields
-		args    args
-		wantErr bool
+		name      string
+		fields    fields
+		args      args
+		mockSetup func(t *testing.T, fields *fields, args *args)
+		wantErr   bool
 	}{
 		{
 			name: "fail a request",
 			args: args{
-				transaction: &requestTransaction{
-					completionFuture: _Test_requestTransactionManager_failRequest_CompletionFuture{},
-				},
+				transaction: &requestTransaction{},
+			},
+			mockSetup: func(t *testing.T, fields *fields, args *args) {
+				completionFuture := NewMockCompletionFuture(t)
+				expect := completionFuture.EXPECT()
+				expect.Cancel(true, nil).Return()
+				args.transaction.completionFuture = completionFuture
 			},
 			wantErr: true,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			if tt.mockSetup != nil {
+				tt.mockSetup(t, &tt.fields, &tt.args)
+			}
 			r := &requestTransactionManager{
 				runningRequests:            tt.fields.runningRequests,
 				numberOfConcurrentRequests: tt.fields.numberOfConcurrentRequests,
@@ -415,16 +414,6 @@ func Test_requestTransactionManager_submitTransaction(t *testing.T) {
 	}
 }
 
-type _Test_requestTransaction_AwaitCompletion_CompletionFuture struct {
-}
-
-func (_Test_requestTransaction_AwaitCompletion_CompletionFuture) AwaitCompletion(ctx context.Context) error {
-	return nil
-}
-
-func (_Test_requestTransaction_AwaitCompletion_CompletionFuture) Cancel(interrupt bool, err error) {
-}
-
 func Test_requestTransaction_AwaitCompletion(t1 *testing.T) {
 	type fields struct {
 		parent           *requestTransactionManager
@@ -437,10 +426,11 @@ func Test_requestTransaction_AwaitCompletion(t1 *testing.T) {
 		ctx context.Context
 	}
 	tests := []struct {
-		name    string
-		fields  fields
-		args    args
-		wantErr bool
+		name      string
+		fields    fields
+		args      args
+		mockSetup func(t *testing.T, fields *fields, args *args)
+		wantErr   bool
 	}{
 		{
 			name: "just wait",
@@ -458,7 +448,6 @@ func Test_requestTransaction_AwaitCompletion(t1 *testing.T) {
 						}(),
 					},
 				},
-				completionFuture: _Test_requestTransaction_AwaitCompletion_CompletionFuture{},
 			},
 			args: args{
 				ctx: func() context.Context {
@@ -467,10 +456,19 @@ func Test_requestTransaction_AwaitCompletion(t1 *testing.T) {
 					return ctx
 				}(),
 			},
+			mockSetup: func(t *testing.T, fields *fields, args *args) {
+				completionFuture := NewMockCompletionFuture(t)
+				expect := completionFuture.EXPECT()
+				expect.AwaitCompletion(mock.Anything).Return(nil)
+				fields.completionFuture = completionFuture
+			},
 		},
 	}
 	for _, tt := range tests {
 		t1.Run(tt.name, func(t1 *testing.T) {
+			if tt.mockSetup != nil {
+				tt.mockSetup(t1, &tt.fields, &tt.args)
+			}
 			t := &requestTransaction{
 				parent:           tt.fields.parent,
 				transactionId:    tt.fields.transactionId,
@@ -522,16 +520,6 @@ func Test_requestTransaction_EndRequest(t1 *testing.T) {
 	}
 }
 
-type _Test_requestTransaction_FailRequest_CompletionFuture struct {
-}
-
-func (_Test_requestTransaction_FailRequest_CompletionFuture) AwaitCompletion(ctx context.Context) error {
-	return nil
-}
-
-func (_Test_requestTransaction_FailRequest_CompletionFuture) Cancel(interrupt bool, err error) {
-}
-
 func Test_requestTransaction_FailRequest(t1 *testing.T) {
 	type fields struct {
 		parent           *requestTransactionManager
@@ -544,22 +532,31 @@ func Test_requestTransaction_FailRequest(t1 *testing.T) {
 		err error
 	}
 	tests := []struct {
-		name    string
-		fields  fields
-		args    args
-		wantErr bool
+		name      string
+		fields    fields
+		args      args
+		mockSetup func(t *testing.T, fields *fields, args *args)
+		wantErr   bool
 	}{
 		{
 			name: "just fail it",
 			fields: fields{
-				parent:           &requestTransactionManager{},
-				completionFuture: _Test_requestTransaction_FailRequest_CompletionFuture{},
+				parent: &requestTransactionManager{},
+			},
+			mockSetup: func(t *testing.T, fields *fields, args *args) {
+				completionFuture := NewMockCompletionFuture(t)
+				expect := completionFuture.EXPECT()
+				expect.Cancel(true, nil).Return()
+				fields.completionFuture = completionFuture
 			},
 			wantErr: true,
 		},
 	}
 	for _, tt := range tests {
 		t1.Run(tt.name, func(t1 *testing.T) {
+			if tt.mockSetup != nil {
+				tt.mockSetup(t1, &tt.fields, &tt.args)
+			}
 			t := &requestTransaction{
 				parent:           tt.fields.parent,
 				transactionId:    tt.fields.transactionId,
