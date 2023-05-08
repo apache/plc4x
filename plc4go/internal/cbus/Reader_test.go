@@ -27,7 +27,9 @@ import (
 	"github.com/apache/plc4x/plc4go/spi"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/spi/transports/test"
+	"github.com/pkg/errors"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/mock"
 	"net/url"
 	"strings"
 	"sync"
@@ -368,28 +370,6 @@ func TestReader_readSync(t *testing.T) {
 	}
 }
 
-type _TestReader_sendMessageOverTheWire_Transaction struct {
-}
-
-func (_ _TestReader_sendMessageOverTheWire_Transaction) String() string {
-	return "_TestReader_sendMessageOverTheWire_Transaction"
-}
-
-func (_ _TestReader_sendMessageOverTheWire_Transaction) FailRequest(err error) error {
-	return err
-}
-
-func (_ _TestReader_sendMessageOverTheWire_Transaction) EndRequest() error {
-	return nil
-}
-
-func (_ _TestReader_sendMessageOverTheWire_Transaction) Submit(operation spi.RequestTransactionRunnable) {
-}
-
-func (_ _TestReader_sendMessageOverTheWire_Transaction) AwaitCompletion(ctx context.Context) error {
-	return nil
-}
-
 func TestReader_sendMessageOverTheWire(t *testing.T) {
 	type fields struct {
 		alphaGenerator *AlphaGenerator
@@ -405,10 +385,11 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 		addPlcValue     func(t *testing.T, wg *sync.WaitGroup) func(name string, plcValue apiValues.PlcValue)
 	}
 	tests := []struct {
-		name   string
-		fields fields
-		args   args
-		wg     *sync.WaitGroup
+		name      string
+		fields    fields
+		args      args
+		mockSetup func(t *testing.T, fields *fields, args *args)
+		wg        *sync.WaitGroup
 	}{
 		{
 			name: "Send message empty message",
@@ -444,7 +425,6 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 					t.Cleanup(cancel)
 					return timeout
 				}(),
-				transaction:   _TestReader_sendMessageOverTheWire_Transaction{},
 				messageToSend: nil,
 				addResponseCode: func(t *testing.T, wg *sync.WaitGroup) func(name string, responseCode apiModel.PlcResponseCode) {
 					return func(name string, responseCode apiModel.PlcResponseCode) {
@@ -461,6 +441,12 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 						wg.Done()
 					}
 				},
+			},
+			mockSetup: func(t *testing.T, fields *fields, args *args) {
+				transaction := NewMockRequestTransaction(t)
+				expect := transaction.EXPECT()
+				expect.FailRequest(mock.Anything).Return(errors.New("no I say"))
+				args.transaction = transaction
 			},
 			wg: &sync.WaitGroup{},
 		},
@@ -515,7 +501,6 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 					t.Cleanup(cancel)
 					return timeout
 				}(),
-				transaction: _TestReader_sendMessageOverTheWire_Transaction{},
 				messageToSend: readWriteModel.NewCBusMessageToServer(
 					readWriteModel.NewRequestReset(
 						readWriteModel.RequestType_RESET,
@@ -547,6 +532,12 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 						wg.Done()
 					}
 				},
+			},
+			mockSetup: func(t *testing.T, fields *fields, args *args) {
+				transaction := NewMockRequestTransaction(t)
+				expect := transaction.EXPECT()
+				expect.FailRequest(mock.Anything).Return(errors.New("Nope"))
+				args.transaction = transaction
 			},
 			wg: &sync.WaitGroup{},
 		},
@@ -601,7 +592,6 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 					t.Cleanup(cancel)
 					return timeout
 				}(),
-				transaction: _TestReader_sendMessageOverTheWire_Transaction{},
 				messageToSend: readWriteModel.NewCBusMessageToServer(
 					readWriteModel.NewRequestReset(
 						readWriteModel.RequestType_RESET,
@@ -633,6 +623,12 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 						wg.Done()
 					}
 				},
+			},
+			mockSetup: func(t *testing.T, fields *fields, args *args) {
+				transaction := NewMockRequestTransaction(t)
+				expect := transaction.EXPECT()
+				expect.EndRequest().Return(nil)
+				args.transaction = transaction
 			},
 			wg: &sync.WaitGroup{},
 		},
@@ -687,7 +683,6 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 					t.Cleanup(cancel)
 					return timeout
 				}(),
-				transaction: _TestReader_sendMessageOverTheWire_Transaction{},
 				messageToSend: readWriteModel.NewCBusMessageToServer(
 					readWriteModel.NewRequestDirectCommandAccess(
 						readWriteModel.NewCALDataIdentify(
@@ -722,6 +717,12 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 						wg.Done()
 					}
 				},
+			},
+			mockSetup: func(t *testing.T, fields *fields, args *args) {
+				transaction := NewMockRequestTransaction(t)
+				expect := transaction.EXPECT()
+				expect.EndRequest().Return(nil)
+				args.transaction = transaction
 			},
 			wg: &sync.WaitGroup{},
 		},
@@ -776,7 +777,6 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 					t.Cleanup(cancel)
 					return timeout
 				}(),
-				transaction: _TestReader_sendMessageOverTheWire_Transaction{},
 				messageToSend: readWriteModel.NewCBusMessageToServer(
 					readWriteModel.NewRequestDirectCommandAccess(
 						readWriteModel.NewCALDataIdentify(
@@ -811,6 +811,12 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 						wg.Done()
 					}
 				},
+			},
+			mockSetup: func(t *testing.T, fields *fields, args *args) {
+				transaction := NewMockRequestTransaction(t)
+				expect := transaction.EXPECT()
+				expect.EndRequest().Return(nil)
+				args.transaction = transaction
 			},
 			wg: &sync.WaitGroup{},
 		},
@@ -865,7 +871,6 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 					t.Cleanup(cancel)
 					return timeout
 				}(),
-				transaction: _TestReader_sendMessageOverTheWire_Transaction{},
 				messageToSend: readWriteModel.NewCBusMessageToServer(
 					readWriteModel.NewRequestDirectCommandAccess(
 						readWriteModel.NewCALDataIdentify(
@@ -900,6 +905,12 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 						wg.Done()
 					}
 				},
+			},
+			mockSetup: func(t *testing.T, fields *fields, args *args) {
+				transaction := NewMockRequestTransaction(t)
+				expect := transaction.EXPECT()
+				expect.EndRequest().Return(nil)
+				args.transaction = transaction
 			},
 			wg: &sync.WaitGroup{},
 		},
@@ -954,7 +965,6 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 					t.Cleanup(cancel)
 					return timeout
 				}(),
-				transaction: _TestReader_sendMessageOverTheWire_Transaction{},
 				messageToSend: readWriteModel.NewCBusMessageToServer(
 					readWriteModel.NewRequestDirectCommandAccess(
 						readWriteModel.NewCALDataIdentify(
@@ -989,6 +999,12 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 						wg.Done()
 					}
 				},
+			},
+			mockSetup: func(t *testing.T, fields *fields, args *args) {
+				transaction := NewMockRequestTransaction(t)
+				expect := transaction.EXPECT()
+				expect.EndRequest().Return(nil)
+				args.transaction = transaction
 			},
 			wg: &sync.WaitGroup{},
 		},
@@ -1043,7 +1059,6 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 					t.Cleanup(cancel)
 					return timeout
 				}(),
-				transaction: _TestReader_sendMessageOverTheWire_Transaction{},
 				messageToSend: readWriteModel.NewCBusMessageToServer(
 					readWriteModel.NewRequestDirectCommandAccess(
 						readWriteModel.NewCALDataIdentify(
@@ -1078,6 +1093,12 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 						wg.Done()
 					}
 				},
+			},
+			mockSetup: func(t *testing.T, fields *fields, args *args) {
+				transaction := NewMockRequestTransaction(t)
+				expect := transaction.EXPECT()
+				expect.EndRequest().Return(nil)
+				args.transaction = transaction
 			},
 			wg: &sync.WaitGroup{},
 		},
@@ -1132,7 +1153,6 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 					t.Cleanup(cancel)
 					return timeout
 				}(),
-				transaction: _TestReader_sendMessageOverTheWire_Transaction{},
 				messageToSend: readWriteModel.NewCBusMessageToServer(
 					readWriteModel.NewRequestDirectCommandAccess(
 						readWriteModel.NewCALDataIdentify(
@@ -1168,6 +1188,12 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 					}
 				},
 			},
+			mockSetup: func(t *testing.T, fields *fields, args *args) {
+				transaction := NewMockRequestTransaction(t)
+				expect := transaction.EXPECT()
+				expect.EndRequest().Return(nil)
+				args.transaction = transaction
+			},
 			wg: func() *sync.WaitGroup {
 				wg := &sync.WaitGroup{}
 				wg.Add(1) // We getting an response and a value
@@ -1177,6 +1203,9 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			if tt.mockSetup != nil {
+				tt.mockSetup(t, &tt.fields, &tt.args)
+			}
 			m := &Reader{
 				alphaGenerator: tt.fields.alphaGenerator,
 				messageCodec:   tt.fields.messageCodec,

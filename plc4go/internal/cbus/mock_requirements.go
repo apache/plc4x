@@ -17,13 +17,13 @@
  * under the License.
  */
 
-package model
+package cbus
 
 import "github.com/apache/plc4x/plc4go/spi"
 
 // Note this file is a Helper for mockery to generate use mocks from other package
 
 // Deprecated: don't use it in productive code
-type PlcTagHandler interface {
-	spi.PlcTagHandler
+type RequestTransaction interface {
+	spi.RequestTransaction
 }
