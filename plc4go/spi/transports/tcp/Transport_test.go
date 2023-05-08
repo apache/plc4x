@@ -25,6 +25,7 @@ import (
 	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/transports"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 	"golang.org/x/net/nettest"
 	"net"
 	"net/url"
@@ -109,7 +110,7 @@ func TestTransportInstance_Close(t *testing.T) {
 			fields: fields{
 				tcpConn: func() *net.TCPConn {
 					listener, err := nettest.NewLocalListener("tcp")
-					assert.NoError(t, err)
+					require.NoError(t, err)
 					t.Cleanup(func() {
 						assert.NoError(t, listener.Close())
 					})
@@ -117,7 +118,7 @@ func TestTransportInstance_Close(t *testing.T) {
 						_, _ = listener.Accept()
 					}()
 					tcp, err := net.DialTCP("tcp", nil, listener.Addr().(*net.TCPAddr))
-					assert.NoError(t, err)
+					require.NoError(t, err)
 					t.Cleanup(func() {
 						// As we already closed the connection with the whole method this should error
 						assert.Error(t, tcp.Close())
@@ -207,7 +208,7 @@ func TestTransportInstance_ConnectWithContext(t *testing.T) {
 			fields: fields{
 				RemoteAddress: func() *net.TCPAddr {
 					listener, err := nettest.NewLocalListener("tcp")
-					assert.NoError(t, err)
+					require.NoError(t, err)
 					t.Cleanup(func() {
 						assert.NoError(t, listener.Close())
 					})
@@ -401,7 +402,7 @@ func TestTransportInstance_Write(t *testing.T) {
 			fields: fields{
 				tcpConn: func() *net.TCPConn {
 					listener, err := nettest.NewLocalListener("tcp")
-					assert.NoError(t, err)
+					require.NoError(t, err)
 					t.Cleanup(func() {
 						assert.NoError(t, listener.Close())
 					})
@@ -409,7 +410,7 @@ func TestTransportInstance_Write(t *testing.T) {
 						_, _ = listener.Accept()
 					}()
 					tcp, err := net.DialTCP("tcp", nil, listener.Addr().(*net.TCPAddr))
-					assert.NoError(t, err)
+					require.NoError(t, err)
 					t.Cleanup(func() {
 						assert.NoError(t, tcp.Close())
 					})
