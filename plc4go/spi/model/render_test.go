@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"fmt"
 	"net/url"
 	"reflect"
@@ -43,6 +44,7 @@ func TestRenderTest(t *testing.T) {
 		&DefaultArrayInfo{},
 		&DefaultPlcBrowseItem{},
 		&DefaultPlcBrowseRequest{},
+		&DefaultPlcBrowseRequestBuilder{},
 		&DefaultPlcBrowseRequestResult{},
 		&DefaultPlcBrowseResponse{},
 		&DefaultPlcBrowseResponseItem{},
@@ -111,6 +113,14 @@ func (_ _TestRenderTestCustomPlcTag) GetArrayInfo() []apiModel.ArrayInfo {
 	return nil
 }
 
+func (_ _TestRenderTestCustomPlcTag) Serialize() ([]byte, error) {
+	return nil, nil // TODO: maybe we return something here... or not
+}
+
+func (_ _TestRenderTestCustomPlcTag) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
+	return nil // TODO: maybe we return something here... or not
+}
+
 type _TestRenderTestCustomPlcBrowseItem struct {
 }
 
@@ -142,6 +152,67 @@ func (_ _TestRenderTestCustomPlcBrowseItem) GetOptions() map[string]apiValues.Pl
 	return nil // TODO: maybe we return something here... or not
 }
 
+type _TestRenderTestCustomPlcBrowseItem2 struct {
+}
+
+func (_ _TestRenderTestCustomPlcBrowseItem2) GetTag() apiModel.PlcTag {
+	return _TestRenderTestCustomPlcTag{}
+}
+
+func (_ _TestRenderTestCustomPlcBrowseItem2) GetName() string {
+	return "tagid"
+}
+
+func (_ _TestRenderTestCustomPlcBrowseItem2) IsReadable() bool {
+	return true
+}
+
+func (_ _TestRenderTestCustomPlcBrowseItem2) IsWritable() bool {
+	return true
+}
+
+func (_ _TestRenderTestCustomPlcBrowseItem2) IsSubscribable() bool {
+	return true
+}
+
+func (_ _TestRenderTestCustomPlcBrowseItem2) GetChildren() map[string]apiModel.PlcBrowseItem {
+	return nil // TODO: maybe we return something here... or not
+}
+
+func (_ _TestRenderTestCustomPlcBrowseItem2) GetOptions() map[string]apiValues.PlcValue {
+	return nil // TODO: maybe we return something here... or not
+}
+
+func (_ _TestRenderTestCustomPlcBrowseItem) Serialize() ([]byte, error) {
+	return nil, nil // TODO: maybe we return something here... or not
+}
+
+func (_ _TestRenderTestCustomPlcBrowseItem) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
+	return nil // TODO: maybe we return something here... or not
+}
+
+type _TestRenderTestCustom_TestPlcQuery struct {
+}
+
+func (_ _TestRenderTestCustom_TestPlcQuery) GetQueryString() string {
+	return "123456"
+}
+
+type _TestRenderTestCustom_TestPlcQuery2 struct {
+}
+
+func (_ _TestRenderTestCustom_TestPlcQuery2) GetQueryString() string {
+	return "123456"
+}
+
+func (_ _TestRenderTestCustom_TestPlcQuery2) Serialize() ([]byte, error) {
+	return nil, nil // TODO: maybe we return something here... or not
+}
+
+func (_ _TestRenderTestCustom_TestPlcQuery2) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
+	return nil // TODO: maybe we return something here... or not
+}
+
 // TestRenderTestCustom test some custom objects
 func TestRenderTestCustom(t *testing.T) {
 	tests := []struct {
@@ -161,10 +232,13 @@ func TestRenderTestCustom(t *testing.T) {
 				true,
 				true,
 				map[string]apiModel.PlcBrowseItem{
-					"tagid": _TestRenderTestCustomPlcBrowseItem{},
+					"tagid1": _TestRenderTestCustomPlcBrowseItem{},
+					"tagid2": _TestRenderTestCustomPlcBrowseItem2{},
 				},
 				map[string]apiValues.PlcValue{
-					"tagid": spiValue.PlcNull{},
+					"tagid1": spiValue.PlcNull{},
+					"tagid2": spiValue.PlcNull{},
+					"tagid3": nil,
 				},
 			).(interface { // TODO: workaround
 				fmt.Stringer
@@ -174,10 +248,12 @@ func TestRenderTestCustom(t *testing.T) {
 		{
 			sut: NewDefaultPlcBrowseRequest(
 				map[string]apiModel.PlcQuery{
-					"tagid": nil,
+					"tagid1": _TestRenderTestCustom_TestPlcQuery{},
+					"tagid2": _TestRenderTestCustom_TestPlcQuery2{},
 				},
 				[]string{
-					"tagid",
+					"tagid1",
+					"tagid2",
 				},
 				nil,
 			),
