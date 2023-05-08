@@ -396,6 +396,18 @@
               </packages>
             </configuration>
           </execution>
+          <execution>
+            <id>get-mockery</id>
+            <phase>initialize</phase>
+            <goals>
+              <goal>install</goal>
+            </goals>
+            <configuration>
+              <packages>
+                <package>github.com/vektra/mockery/v2@latest</package>
+              </packages>
+            </configuration>
+          </execution>
 
           <!-- Run the go code-generation -->
           <execution>
@@ -483,6 +495,22 @@
               </buildFlags>
               <packages>
                 <package>spi/testutils/steptype_string.go</package>
+              </packages>
+            </configuration>
+          </execution>
+
+          <!-- Generate mocks-->
+          <execution>
+            <id>generate-mocks</id>
+            <phase>process-sources</phase>
+            <goals>
+              <goal>custom</goal>
+            </goals>
+            <configuration>
+              <exec>mockery</exec>
+              <customCommand>--all</customCommand>
+              <packages>
+                <package>--with-expecter</package>
               </packages>
             </configuration>
           </execution>
