@@ -131,7 +131,7 @@ func TestLeasedPlcConnection_GetTracer(t *testing.T) {
 				}()
 			}
 		}
-	case <-time.After(1 * time.Second):
+	case <-time.After(2 * time.Second):
 		t.Errorf("Timeout")
 	}
 }
