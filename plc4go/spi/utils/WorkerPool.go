@@ -25,6 +25,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
+	"runtime/debug"
 	"sync"
 	"sync/atomic"
 	"time"
@@ -53,7 +54,7 @@ func (w *worker) initialize() {
 func (w *worker) work() {
 	defer func() {
 		if recovered := recover(); recovered != nil {
-			log.Error().Msgf("Recovering from panic()=%v", recovered)
+			log.Error().Msgf("Recovering from panic():%v. Stack: %s", recovered, debug.Stack())
 		}
 		if !w.shutdown.Load() {
 			// if we are not in shutdown we continue

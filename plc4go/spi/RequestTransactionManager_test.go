@@ -348,10 +348,12 @@ func Test_requestTransactionManager_processWorklog(t *testing.T) {
 				workLog: func() list.List {
 					l := list.New()
 					l.PushBack(&requestTransaction{
-						transactionId: 1,
+						transactionId:    1,
+						completionFuture: NewMockCompletionFuture(t),
 					})
 					l.PushBack(&requestTransaction{
-						transactionId: 2,
+						transactionId:    2,
+						completionFuture: NewMockCompletionFuture(t),
 					})
 					return *l
 				}(),
