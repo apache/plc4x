@@ -21,6 +21,7 @@ package _default
 
 import (
 	"context"
+	"github.com/rs/zerolog/log"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/spi"
@@ -67,6 +68,11 @@ func (m *defaultBrowser) Browse(ctx context.Context, browseRequest apiModel.PlcB
 func (m *defaultBrowser) BrowseWithInterceptor(ctx context.Context, browseRequest apiModel.PlcBrowseRequest, interceptor func(result apiModel.PlcBrowseItem) bool) <-chan apiModel.PlcBrowseRequestResult {
 	result := make(chan apiModel.PlcBrowseRequestResult)
 	go func() {
+		defer func() {
+			if err := recover(); err != nil {
+				log.Error().Interface("err", err).Msg("caught panic")
+			}
+		}()
 		responseCodes := map[string]apiModel.PlcResponseCode{}
 		results := map[string][]apiModel.PlcBrowseItem{}
 		for _, queryName := range browseRequest.GetQueryNames() {

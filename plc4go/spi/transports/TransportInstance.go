@@ -72,7 +72,7 @@ func (m *defaultBufferedTransportInstance) ConnectWithContext(ctx context.Contex
 	go func() {
 		defer func() {
 			if err := recover(); err != nil {
-				log.Fatal().Interface("err", err).Msg("connect panic-ed")
+				log.Error().Interface("err", err).Msg("connect panic-ed")
 			}
 		}()
 		ch <- m.Connect()

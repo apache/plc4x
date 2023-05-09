@@ -290,7 +290,7 @@ func TestDiscoverer_createTransportInstanceDispatcher(t *testing.T) {
 			assert.NotNilf(t, dispatcher, "createTransportInstanceDispatcher(%v, %v, %v, %v, %v)", tt.args.ctx, tt.args.wg, tt.args.ip, tt.args.tcpTransport, tt.args.transportInstances)
 			dispatcher()
 			timeout := time.NewTimer(2 * time.Second)
-			utils.CleanupTimer(timeout)
+			defer utils.CleanupTimer(timeout)
 			select {
 			case <-timeout.C:
 				t.Error("timeout")

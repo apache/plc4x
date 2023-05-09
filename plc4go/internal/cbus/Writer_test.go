@@ -82,7 +82,7 @@ func TestWriter_Write(t *testing.T) {
 			},
 			wantAsserter: func(t *testing.T, results <-chan apiModel.PlcWriteRequestResult) bool {
 				timeout := time.NewTimer(2 * time.Second)
-				utils.CleanupTimer(timeout)
+				defer utils.CleanupTimer(timeout)
 				select {
 				case <-timeout.C:
 					t.Error("timeout")
@@ -104,7 +104,7 @@ func TestWriter_Write(t *testing.T) {
 			},
 			wantAsserter: func(t *testing.T, results <-chan apiModel.PlcWriteRequestResult) bool {
 				timeout := time.NewTimer(2 * time.Second)
-				utils.CleanupTimer(timeout)
+				defer utils.CleanupTimer(timeout)
 				select {
 				case <-timeout.C:
 					t.Fatal("timeout")

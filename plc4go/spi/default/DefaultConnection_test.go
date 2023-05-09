@@ -23,6 +23,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
+	"github.com/stretchr/testify/mock"
 	"testing"
 	"time"
 
@@ -429,18 +430,26 @@ func Test_defaultConnection_BlockingClose(t *testing.T) {
 		valueHandler                  spi.PlcValueHandler
 	}
 	tests := []struct {
-		name   string
-		fields fields
+		name      string
+		fields    fields
+		mockSetup func(t *testing.T, fields *fields)
 	}{
 		{
 			name: "close",
-			fields: fields{
-				DefaultConnectionRequirements: testConnection{},
+			mockSetup: func(t *testing.T, fields *fields) {
+				requirements := NewMockDefaultConnectionRequirements(t)
+				connection := NewMockPlcConnection(t)
+				connection.EXPECT().Close().Return(nil)
+				requirements.EXPECT().GetConnection().Return(connection)
+				fields.DefaultConnectionRequirements = requirements
 			},
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			if tt.mockSetup != nil {
+				tt.mockSetup(t, &tt.fields)
+			}
 			d := &defaultConnection{
 				DefaultConnectionRequirements: tt.fields.DefaultConnectionRequirements,
 				defaultTtl:                    tt.fields.defaultTtl,
@@ -469,7 +478,7 @@ func Test_defaultConnection_BrowseRequestBuilder(t *testing.T) {
 		{
 			name: "create it",
 			fields: fields{
-				DefaultConnectionRequirements: testConnection{},
+				DefaultConnectionRequirements: NewMockDefaultConnectionRequirements(t),
 			},
 		},
 	}
@@ -505,12 +514,27 @@ func Test_defaultConnection_Close(t *testing.T) {
 	tests := []struct {
 		name         string
 		fields       fields
+		mockSetup    func(t *testing.T, fields *fields)
 		wantAsserter func(t *testing.T, results <-chan plc4go.PlcConnectionCloseResult) bool
 	}{
 		{
 			name: "close it",
-			fields: fields{
-				DefaultConnectionRequirements: testConnection{},
+			mockSetup: func(t *testing.T, fields *fields) {
+				requirements := NewMockDefaultConnectionRequirements(t)
+				codec := NewMockMessageCodec(t)
+				{
+					expect := codec.EXPECT()
+					expect.Disconnect().Return(nil)
+					instance := NewMockTransportInstance(t)
+					instance.EXPECT().Close().Return(nil)
+					expect.GetTransportInstance().Return(instance)
+				}
+				{
+					expect := requirements.EXPECT()
+					expect.GetMessageCodec().Return(codec)
+					expect.GetConnection().Return(nil)
+				}
+				fields.DefaultConnectionRequirements = requirements
 			},
 			wantAsserter: func(t *testing.T, results <-chan plc4go.PlcConnectionCloseResult) bool {
 				timeout := time.NewTimer(2 * time.Second)
@@ -527,6 +551,9 @@ func Test_defaultConnection_Close(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			if tt.mockSetup != nil {
+				tt.mockSetup(t, &tt.fields)
+			}
 			d := &defaultConnection{
 				DefaultConnectionRequirements: tt.fields.DefaultConnectionRequirements,
 				defaultTtl:                    tt.fields.defaultTtl,
@@ -550,12 +577,18 @@ func Test_defaultConnection_Connect(t *testing.T) {
 	tests := []struct {
 		name         string
 		fields       fields
+		mockSetup    func(t *testing.T, fields *fields)
 		wantAsserter func(t *testing.T, results <-chan plc4go.PlcConnectionConnectResult) bool
 	}{
 		{
 			name: "connect it",
-			fields: fields{
-				DefaultConnectionRequirements: testConnection{},
+			mockSetup: func(t *testing.T, fields *fields) {
+				requirements := NewMockDefaultConnectionRequirements(t)
+				results := make(chan plc4go.PlcConnectionConnectResult, 1)
+				results <- NewMockPlcConnectionConnectResult(t)
+				expect := requirements.EXPECT()
+				expect.ConnectWithContext(mock.Anything).Return(results)
+				fields.DefaultConnectionRequirements = requirements
 			},
 			wantAsserter: func(t *testing.T, results <-chan plc4go.PlcConnectionConnectResult) bool {
 				// Delegated call is tested below
@@ -565,6 +598,9 @@ func Test_defaultConnection_Connect(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			if tt.mockSetup != nil {
+				tt.mockSetup(t, &tt.fields)
+			}
 			d := &defaultConnection{
 				DefaultConnectionRequirements: tt.fields.DefaultConnectionRequirements,
 				defaultTtl:                    tt.fields.defaultTtl,
@@ -592,12 +628,21 @@ func Test_defaultConnection_ConnectWithContext(t *testing.T) {
 		name         string
 		fields       fields
 		args         args
+		mockSetup    func(t *testing.T, fields *fields, args *args)
 		wantAsserter func(t *testing.T, results <-chan plc4go.PlcConnectionConnectResult) bool
 	}{
 		{
 			name: "connect it",
-			fields: fields{
-				DefaultConnectionRequirements: testConnection{},
+			mockSetup: func(t *testing.T, fields *fields, args *args) {
+				requirements := NewMockDefaultConnectionRequirements(t)
+				codec := NewMockMessageCodec(t)
+				{
+					codec.EXPECT().ConnectWithContext(mock.Anything).Return(nil)
+				}
+				expect := requirements.EXPECT()
+				expect.GetMessageCodec().Return(codec)
+				expect.GetConnection().Return(NewMockPlcConnection(t))
+				fields.DefaultConnectionRequirements = requirements
 			},
 			wantAsserter: func(t *testing.T, results <-chan plc4go.PlcConnectionConnectResult) bool {
 				timeout := time.NewTimer(2 * time.Second)
@@ -614,6 +659,9 @@ func Test_defaultConnection_ConnectWithContext(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			if tt.mockSetup != nil {
+				tt.mockSetup(t, &tt.fields, &tt.args)
+			}
 			d := &defaultConnection{
 				DefaultConnectionRequirements: tt.fields.DefaultConnectionRequirements,
 				defaultTtl:                    tt.fields.defaultTtl,
@@ -728,21 +776,32 @@ func Test_defaultConnection_GetTransportInstance(t *testing.T) {
 		tagHandler                    spi.PlcTagHandler
 		valueHandler                  spi.PlcValueHandler
 	}
+	theInstance := NewMockTransportInstance(t)
 	tests := []struct {
-		name   string
-		fields fields
-		want   transports.TransportInstance
+		name      string
+		fields    fields
+		mockSetup func(t *testing.T, fields *fields)
+		want      transports.TransportInstance
 	}{
 		{
 			name: "get it",
-			fields: fields{
-				DefaultConnectionRequirements: testConnection{},
+			mockSetup: func(t *testing.T, fields *fields) {
+				requirements := NewMockDefaultConnectionRequirements(t)
+				codec := NewMockMessageCodec(t)
+				{
+					codec.EXPECT().GetTransportInstance().Return(theInstance)
+				}
+				requirements.EXPECT().GetMessageCodec().Return(codec)
+				fields.DefaultConnectionRequirements = requirements
 			},
-			want: testTransportInstance{},
+			want: theInstance,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			if tt.mockSetup != nil {
+				tt.mockSetup(t, &tt.fields)
+			}
 			d := &defaultConnection{
 				DefaultConnectionRequirements: tt.fields.DefaultConnectionRequirements,
 				defaultTtl:                    tt.fields.defaultTtl,
@@ -828,12 +887,19 @@ func Test_defaultConnection_Ping(t *testing.T) {
 	tests := []struct {
 		name         string
 		fields       fields
+		mockSetup    func(t *testing.T, fields *fields)
 		wantAsserter func(t *testing.T, results <-chan plc4go.PlcConnectionPingResult) bool
 	}{
 		{
 			name: "ping it",
-			fields: fields{
-				DefaultConnectionRequirements: testConnection{},
+			mockSetup: func(t *testing.T, fields *fields) {
+				requirements := NewMockDefaultConnectionRequirements(t)
+				connection := NewMockPlcConnection(t)
+				{
+					connection.EXPECT().IsConnected().Return(false)
+				}
+				requirements.EXPECT().GetConnection().Return(connection)
+				fields.DefaultConnectionRequirements = requirements
 			},
 			wantAsserter: func(t *testing.T, results <-chan plc4go.PlcConnectionPingResult) bool {
 				timeout := time.NewTimer(2 * time.Second)
@@ -850,10 +916,16 @@ func Test_defaultConnection_Ping(t *testing.T) {
 		{
 			name: "ping it connected",
 			fields: fields{
-				DefaultConnectionRequirements: testConnection{
-					connected: true,
-				},
 				connected: true,
+			},
+			mockSetup: func(t *testing.T, fields *fields) {
+				requirements := NewMockDefaultConnectionRequirements(t)
+				connection := NewMockPlcConnection(t)
+				{
+					connection.EXPECT().IsConnected().Return(true)
+				}
+				requirements.EXPECT().GetConnection().Return(connection)
+				fields.DefaultConnectionRequirements = requirements
 			},
 			wantAsserter: func(t *testing.T, results <-chan plc4go.PlcConnectionPingResult) bool {
 				timeout := time.NewTimer(2 * time.Second)
@@ -870,6 +942,9 @@ func Test_defaultConnection_Ping(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			if tt.mockSetup != nil {
+				tt.mockSetup(t, &tt.fields)
+			}
 			d := &defaultConnection{
 				DefaultConnectionRequirements: tt.fields.DefaultConnectionRequirements,
 				defaultTtl:                    tt.fields.defaultTtl,
@@ -1109,7 +1184,7 @@ func Test_plcConnectionCloseResult_GetErr(t *testing.T) {
 		{
 			name: "get it",
 			fields: fields{
-				connection: testConnection{},
+				connection: NewMockPlcConnection(t),
 			},
 			wantErr: assert.NoError,
 		},
@@ -1191,7 +1266,7 @@ func Test_plcConnectionConnectResult_GetErr(t *testing.T) {
 		{
 			name: "get it",
 			fields: fields{
-				connection: testConnection{},
+				connection: NewMockPlcConnection(t),
 			},
 			wantErr: assert.NoError,
 		},

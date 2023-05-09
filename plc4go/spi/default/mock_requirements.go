@@ -20,23 +20,46 @@
 package _default
 
 import (
-	"context"
-	"net/url"
-
 	plc4go "github.com/apache/plc4x/plc4go/pkg/api"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
-	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/transports"
 )
 
-// TODO: replace with proper mock
-type testDriver struct {
+// Note this file is a Helper for mockery to generate use mocks from other package
+
+// Deprecated: don't use it in productive code
+type PlcConnection interface {
+	plc4go.PlcConnection
 }
 
-func (testDriver) GetConnectionWithContext(ctx context.Context, transportUrl url.URL, transports map[string]transports.Transport, options map[string][]string) <-chan plc4go.PlcConnectionConnectResult {
-	return nil
+// Deprecated: don't use it in productive code
+type Message interface {
+	spi.Message
 }
 
-func (testDriver) DiscoverWithContext(callback context.Context, event func(event apiModel.PlcDiscoveryItem), discoveryOptions ...options.WithDiscoveryOption) error {
-	return nil
+// Deprecated: don't use it in productive code
+type MessageCodec interface {
+	spi.MessageCodec
+	spi.TransportInstanceExposer
+}
+
+// Deprecated: don't use it in productive code
+type PlcQuery interface {
+	apiModel.PlcQuery
+}
+
+// Deprecated: don't use it in productive code
+type PlcTagHandler interface {
+	spi.PlcTagHandler
+}
+
+// Deprecated: don't use it in productive code
+type TransportInstance interface {
+	transports.TransportInstance
+}
+
+// Deprecated: don't use it in productive code
+type PlcConnectionConnectResult interface {
+	plc4go.PlcConnectionConnectResult
 }

@@ -145,11 +145,10 @@ func lockupIpsUsingArp(ctx context.Context, netInterface net.Interface, ipNet *n
 				log.Trace().Msgf("Scheduling discovery for IP %s", ip)
 				timeout := time.NewTimer(2 * time.Second)
 				go func(ip net.IP) {
+					defer CleanupTimer(timeout)
 					select {
 					case <-ctx.Done():
-						CleanupTimer(timeout)
 					case foundIps <- DuplicateIP(ip):
-						CleanupTimer(timeout)
 					case <-timeout.C:
 					}
 				}(DuplicateIP(ip))
@@ -232,11 +231,10 @@ func lookupIps(ctx context.Context, ipnet *net.IPNet, foundIps chan net.IP, wg *
 		timeout := time.NewTimer(2 * time.Second)
 		go func(ip net.IP) {
 			defer func() { wg.Done() }()
+			defer CleanupTimer(timeout)
 			select {
 			case <-ctx.Done():
-				CleanupTimer(timeout)
 			case foundIps <- ip:
-				CleanupTimer(timeout)
 			case <-timeout.C:
 			}
 		}(DuplicateIP(ip))
