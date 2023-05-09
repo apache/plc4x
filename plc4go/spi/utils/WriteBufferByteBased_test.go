@@ -25,6 +25,7 @@ import (
 	"encoding/binary"
 	"fmt"
 	"github.com/icza/bitio"
+	"github.com/stretchr/testify/mock"
 	"math/big"
 	"testing"
 
@@ -842,17 +843,6 @@ func Test_byteWriteBuffer_WriteInt8(t *testing.T) {
 	}
 }
 
-type _Test_byteWriteBuffer_WriteSerializable_Serializable struct {
-}
-
-func (_Test_byteWriteBuffer_WriteSerializable_Serializable) Serialize() ([]byte, error) {
-	return nil, nil
-}
-
-func (_Test_byteWriteBuffer_WriteSerializable_Serializable) SerializeWithWriteBuffer(ctx context.Context, writeBuffer WriteBuffer) error {
-	return nil
-}
-
 func Test_byteWriteBuffer_WriteSerializable(t *testing.T) {
 	type fields struct {
 		data      *bytes.Buffer
@@ -883,7 +873,11 @@ func Test_byteWriteBuffer_WriteSerializable(t *testing.T) {
 				writer: bitio.NewWriter(new(bytes.Buffer)),
 			},
 			args: args{
-				serializable: _Test_byteWriteBuffer_WriteSerializable_Serializable{},
+				serializable: func() Serializable {
+					serializable := NewMockSerializable(t)
+					serializable.EXPECT().SerializeWithWriteBuffer(mock.Anything, mock.Anything).Return(nil)
+					return serializable
+				}(),
 			},
 			wantErr: assert.NoError,
 		},
