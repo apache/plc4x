@@ -42,32 +42,38 @@ func TestDefaultPlcBrowseRequestBuilder_AddQuery(t *testing.T) {
 		query string
 	}
 	tests := []struct {
-		name   string
-		fields fields
-		args   args
-		want   apiModel.PlcBrowseRequestBuilder
+		name      string
+		fields    fields
+		args      args
+		mockSetup func(t *testing.T, fields *fields, args *args, want *apiModel.PlcBrowseRequestBuilder)
+		want      apiModel.PlcBrowseRequestBuilder
 	}{
 		{
 			name: "add one",
 			fields: fields{
-				tagHandler:   NewMockPlcTagHandler(t),
 				queryStrings: map[string]string{},
 			},
 			args: args{
 				name:  "a name",
 				query: "a query",
 			},
-			want: &DefaultPlcBrowseRequestBuilder{
-				tagHandler: NewMockPlcTagHandler(t),
-				queryStrings: map[string]string{
-					"a name": "a query",
-				},
-				queryNames: []string{"a name"},
+			mockSetup: func(t *testing.T, fields *fields, args *args, want *apiModel.PlcBrowseRequestBuilder) {
+				fields.tagHandler = NewMockPlcTagHandler(t)
+				*want = &DefaultPlcBrowseRequestBuilder{
+					tagHandler: NewMockPlcTagHandler(t),
+					queryStrings: map[string]string{
+						"a name": "a query",
+					},
+					queryNames: []string{"a name"},
+				}
 			},
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			if tt.mockSetup != nil {
+				tt.mockSetup(t, &tt.fields, &tt.args, &tt.want)
+			}
 			d := &DefaultPlcBrowseRequestBuilder{
 				tagHandler:   tt.fields.tagHandler,
 				browser:      tt.fields.browser,

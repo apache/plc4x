@@ -141,18 +141,19 @@ func Test_defaultBrowser_BrowseWithInterceptor(t *testing.T) {
 					t.Cleanup(cancelFunc)
 					return timeout
 				}(),
-				browseRequest: spiModel.NewDefaultPlcBrowseRequest(
-					map[string]apiModel.PlcQuery{
-						"test": NewMockPlcQuery(t),
-					},
-					[]string{"test"},
-					nil,
-				),
 			},
 			mockSetup: func(t *testing.T, fields *fields, args *args) {
 				requirements := NewMockDefaultBrowserRequirements(t)
 				requirements.EXPECT().BrowseQuery(mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(0, nil)
 				fields.DefaultBrowserRequirements = requirements
+				query := NewMockPlcQuery(t)
+				args.browseRequest = spiModel.NewDefaultPlcBrowseRequest(
+					map[string]apiModel.PlcQuery{
+						"test": query,
+					},
+					[]string{"test"},
+					nil,
+				)
 			},
 			wantAsserter: func(t *testing.T, results <-chan apiModel.PlcBrowseRequestResult) bool {
 				timeout := time.NewTimer(2 * time.Second)

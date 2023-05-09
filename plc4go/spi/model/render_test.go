@@ -97,6 +97,7 @@ func TestRenderTest(t *testing.T) {
 	}
 }
 
+// TODO: ensure mocks are created in test context...
 // TestRenderTestCustom test some custom objects
 func TestRenderTestCustom(t *testing.T) {
 	tests := []struct {

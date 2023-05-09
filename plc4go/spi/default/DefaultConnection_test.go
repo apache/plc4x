@@ -471,19 +471,23 @@ func Test_defaultConnection_BrowseRequestBuilder(t *testing.T) {
 		valueHandler                  spi.PlcValueHandler
 	}
 	tests := []struct {
-		name   string
-		fields fields
-		want   model.PlcBrowseRequestBuilder
+		name      string
+		fields    fields
+		mockSetup func(t *testing.T, fields *fields)
+		want      model.PlcBrowseRequestBuilder
 	}{
 		{
 			name: "create it",
-			fields: fields{
-				DefaultConnectionRequirements: NewMockDefaultConnectionRequirements(t),
+			mockSetup: func(t *testing.T, fields *fields) {
+				fields.DefaultConnectionRequirements = NewMockDefaultConnectionRequirements(t)
 			},
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			if tt.mockSetup != nil {
+				tt.mockSetup(t, &tt.fields)
+			}
 			defer func() {
 				if err := recover(); err != nil {
 					assert.Equal(t, "not provided by actual connection", err)
@@ -776,31 +780,32 @@ func Test_defaultConnection_GetTransportInstance(t *testing.T) {
 		tagHandler                    spi.PlcTagHandler
 		valueHandler                  spi.PlcValueHandler
 	}
-	theInstance := NewMockTransportInstance(t)
+
 	tests := []struct {
 		name      string
 		fields    fields
-		mockSetup func(t *testing.T, fields *fields)
+		mockSetup func(t *testing.T, fields *fields, want *transports.TransportInstance)
 		want      transports.TransportInstance
 	}{
 		{
 			name: "get it",
-			mockSetup: func(t *testing.T, fields *fields) {
+			mockSetup: func(t *testing.T, fields *fields, want *transports.TransportInstance) {
 				requirements := NewMockDefaultConnectionRequirements(t)
 				codec := NewMockMessageCodec(t)
 				{
-					codec.EXPECT().GetTransportInstance().Return(theInstance)
+					instance := NewMockTransportInstance(t)
+					codec.EXPECT().GetTransportInstance().Return(instance)
+					*want = instance
 				}
 				requirements.EXPECT().GetMessageCodec().Return(codec)
 				fields.DefaultConnectionRequirements = requirements
 			},
-			want: theInstance,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if tt.mockSetup != nil {
-				tt.mockSetup(t, &tt.fields)
+				tt.mockSetup(t, &tt.fields, &tt.want)
 			}
 			d := &defaultConnection{
 				DefaultConnectionRequirements: tt.fields.DefaultConnectionRequirements,
@@ -1177,20 +1182,24 @@ func Test_plcConnectionCloseResult_GetErr(t *testing.T) {
 		traces     []spi.TraceEntry
 	}
 	tests := []struct {
-		name    string
-		fields  fields
-		wantErr assert.ErrorAssertionFunc
+		name      string
+		fields    fields
+		mockSetup func(t *testing.T, fields *fields)
+		wantErr   assert.ErrorAssertionFunc
 	}{
 		{
 			name: "get it",
-			fields: fields{
-				connection: NewMockPlcConnection(t),
+			mockSetup: func(t *testing.T, fields *fields) {
+				fields.connection = NewMockPlcConnection(t)
 			},
 			wantErr: assert.NoError,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			if tt.mockSetup != nil {
+				tt.mockSetup(t, &tt.fields)
+			}
 			d := &plcConnectionCloseResult{
 				connection: tt.fields.connection,
 				err:        tt.fields.err,
@@ -1259,20 +1268,24 @@ func Test_plcConnectionConnectResult_GetErr(t *testing.T) {
 		err        error
 	}
 	tests := []struct {
-		name    string
-		fields  fields
-		wantErr assert.ErrorAssertionFunc
+		name      string
+		fields    fields
+		mockSetup func(t *testing.T, fields *fields)
+		wantErr   assert.ErrorAssertionFunc
 	}{
 		{
 			name: "get it",
-			fields: fields{
-				connection: NewMockPlcConnection(t),
+			mockSetup: func(t *testing.T, fields *fields) {
+				fields.connection = NewMockPlcConnection(t)
 			},
 			wantErr: assert.NoError,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			if tt.mockSetup != nil {
+				tt.mockSetup(t, &tt.fields)
+			}
 			d := &plcConnectionConnectResult{
 				connection: tt.fields.connection,
 				err:        tt.fields.err,

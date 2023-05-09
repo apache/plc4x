@@ -402,8 +402,9 @@ func TestSingleItemRequestInterceptor_ProcessReadResponses(t *testing.T) {
 				},
 			},
 			mockSetup: func(t *testing.T, fields *fields, args *args) {
+				result := NewMockPlcReadRequestResult(t)
 				args.readResults = []apiModel.PlcReadRequestResult{
-					NewMockPlcReadRequestResult(t),
+					result,
 				}
 			},
 			wantAssert: func(t *testing.T, args args, got apiModel.PlcReadRequestResult) bool {
