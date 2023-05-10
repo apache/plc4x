@@ -55,6 +55,10 @@ jobs:
         if: matrix.os == 'macos-latest'
         run: brew install libpcap
 
+      - name: Install libpcap for windows
+        if: matrix.os == 'windows-latest'
+        run: choco install -y nmap
+
       - name: Checkout repository
         uses: actions/checkout@v3
 
