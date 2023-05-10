@@ -142,7 +142,8 @@ func (m *TransportInstance) Connect() error {
 					break
 				}
 				log.Warn().Err(err).Msg("Error reading")
-				panic(err)
+				m.connected = false
+				return
 			}
 			if lastPacketTime != nil && m.speedFactor != 0 {
 				timeToSleep := captureInfo.Timestamp.Sub(*lastPacketTime)

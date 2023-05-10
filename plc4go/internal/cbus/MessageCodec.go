@@ -234,7 +234,7 @@ lookingForTheEnd:
 
 	// Sanity check
 	if pciResponse && requestToPci {
-		panic("Invalid state... Can not be response and request at the same time")
+		return nil, errors.New("Invalid state... Can not be response and request at the same time")
 	}
 
 	// We need to ensure that there is no ! till the first /r
@@ -271,7 +271,7 @@ lookingForTheEnd:
 		log.Trace().Msgf("Read packet length %d", packetLength)
 		read, err := ti.Read(uint32(packetLength))
 		if err != nil {
-			panic("Invalid state... If we have peeked that before we should be able to read that now")
+			return nil, errors.Wrap(err, "Invalid state... If we have peeked that before we should be able to read that now")
 		}
 		rawInput = read
 	}
