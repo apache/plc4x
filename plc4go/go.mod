@@ -43,7 +43,7 @@ require (
 	github.com/viney-shih/go-lock v1.1.2
 	golang.org/x/exp v0.0.0-20230213192124-5e25df0256eb
 	golang.org/x/net v0.10.0
-	golang.org/x/tools v0.9.0
+	golang.org/x/tools v0.9.1
 	gopkg.in/yaml.v3 v3.0.1
 )
 
