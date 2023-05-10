@@ -182,6 +182,11 @@ func TestTransportInstance_Connect(t *testing.T) {
 			if err := m.Connect(); (err != nil) != tt.wantErr {
 				t.Errorf("Connect() error = %v, wantErr %v", err, tt.wantErr)
 			}
+			t.Cleanup(func() {
+				if err := m.Close(); err != nil {
+					t.Logf("Error during close %v", err)
+				}
+			})
 		})
 	}
 }
