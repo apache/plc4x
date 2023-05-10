@@ -185,7 +185,7 @@ func (m *TransportInstance) Connect() error {
 
 func (m *TransportInstance) Close() error {
 	if handle := m.handle; handle != nil {
-		m.handle.Close()
+		handle.Close()
 	}
 	m.connected = false
 	return nil
