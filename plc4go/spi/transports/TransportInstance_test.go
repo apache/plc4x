@@ -91,6 +91,7 @@ func Test_defaultBufferedTransportInstance_ConnectWithContext(t *testing.T) {
 			},
 			mockSetup: func(t *testing.T, fields *fields, args *args) {
 				requirements := NewMockDefaultBufferedTransportInstanceRequirements(t)
+				requirements.EXPECT().Connect().Return(nil).Maybe()
 				fields.DefaultBufferedTransportInstanceRequirements = requirements
 			},
 			wantErr: true,
