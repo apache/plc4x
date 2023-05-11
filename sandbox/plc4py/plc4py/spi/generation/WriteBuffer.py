@@ -119,18 +119,18 @@ class WriteBufferByteBased(WriteBuffer):
         # byte buffer need no context handling
         pass
 
-    def write_bit(self, value: c_bool, logical_name: str = "", *kwargs) -> None:
+    def write_bit(self, value: c_bool, logical_name: str = "", **kwargs) -> None:
         self.bb[self.position] = bool(value)
         self.position += 1
 
-    def write_byte(self, value: c_byte, logical_name: str = "", *kwargs) -> None:
+    def write_byte(self, value: c_byte, logical_name: str = "", **kwargs) -> None:
         self.write_signed_byte(value, logical_name, **kwargs)
 
-    def write_byte_array(self, value: List[c_byte], logical_name: str = "", *kwargs) -> None:
+    def write_byte_array(self, value: List[c_byte], logical_name: str = "", **kwargs) -> None:
         for aByte in value:
             self.write_signed_byte(aByte, logical_name, **kwargs)
 
-    def write_unsigned_byte(self, value: c_byte, bit_length: int = 8, logical_name: str = "", *kwargs) -> None:
+    def write_unsigned_byte(self, value: c_byte, bit_length: int = 8, logical_name: str = "", **kwargs) -> None:
         if bit_length <= 0:
             raise SerializationException("unsigned byte can only contain max 8 bits")
         elif bit_length > 8:
@@ -141,23 +141,28 @@ class WriteBufferByteBased(WriteBuffer):
             self.bb[self.position:bit_length] = src[:bit_length]
             self.position += bit_length
 
-    # def write_unsigned_short(self, value: c_uint16, bit_length: int = 16, logical_name: str = "", *kwargs) -> None:
-    #     if bit_length <= 0:
-    #         raise SerializationException("unsigned short can only contain max 8 bits")
-    #     elif bit_length > 8:
-    #         raise SerializationException("unsigned short can only contain max 16 bits")
-    #     else:
-    #         self.bb.append(bytes(value))
-    #         value_encoding: str = kwargs.get("encoding", "default")
-    #         if value_encoding == "ASCII":
-    #             if bit_length % 8 != 0:
-    #                 raise SerializationException("'ASCII' encoded fields must have a length that is a multiple of 8 bits long")
-    #             char_len: int = int(bit_length / 8)
-    #             max_value: int = int(10**char_len - 1)
-    #             if value > max_value:
-    #                 raise SerializationException("Provided value of " + str(value) + " exceeds the max value of " + str(max_value))
-    #             string_value: str = "{}".format(value)
-    #             self.bb.append(string_value)
-    #         elif value_encoding == "default":
-    #             self.bb[self.position:bit_length] = value
-    #             self.postion += bit_length
+    def write_unsigned_short(self, value: c_uint16, bit_length: int = 16, logical_name: str = "", **kwargs) -> None:
+        if bit_length <= 0:
+            raise SerializationException("unsigned short can only contain max 8 bits")
+        elif bit_length > 16:
+            raise SerializationException("unsigned short can only contain max 16 bits")
+        else:
+            value_encoding: str = kwargs.get("encoding", "default")
+            if value_encoding == "ASCII":
+                if bit_length % 8 != 0:
+                    raise SerializationException("'ASCII' encoded fields must have a length that is a multiple of 8 bits long")
+                char_len: int = int(bit_length / 8)
+                max_value: int = int(10**char_len - 1)
+                if value > max_value:
+                    raise SerializationException("Provided value of " + str(value) + " exceeds the max value of " + str(max_value))
+                string_value: str = "{}".format(value)
+
+                src = bitarray(endian=ByteOrder.get_short_name(self.byte_order))
+                src.frombytes(string_value)
+                self.bb[self.position:bit_length] = src[:bit_length]
+                self.position += bit_length
+            elif value_encoding == "default":
+                src = bitarray(endian=ByteOrder.get_short_name(self.byte_order))
+                src.frombytes(value)
+                self.bb[self.position:bit_length] = src[:bit_length]
+                self.position += bit_length
