@@ -49,6 +49,13 @@ class ByteOrder(Enum):
         obj._value_ = value
         return obj
 
+    @staticmethod
+    def get_short_name(order):
+        if order == ByteOrder.LITTLE_ENDIAN:
+            return "little"
+        elif order == ByteOrder.BIG_ENDIAN:
+            return "big"
+
 
 @dataclass
 class ByteOrderAware:
