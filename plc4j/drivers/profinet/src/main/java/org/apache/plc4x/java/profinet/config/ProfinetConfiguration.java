@@ -70,7 +70,7 @@ public class ProfinetConfiguration implements Configuration, RawSocketTransportC
     @Required
     @ConfigurationParameter("gsddirectory")
     @ParameterConverter(ProfinetGsdFileConvertor.class)
-    static protected GsdFileMap gsdFiles;
+    protected static GsdFileMap gsdFiles;
 
     @ConfigurationParameter("sendclockfactor")
     @IntDefaultValue(32)
@@ -90,7 +90,7 @@ public class ProfinetConfiguration implements Configuration, RawSocketTransportC
 
     public static class ProfinetDeviceConvertor implements ConfigurationParameterConverter<ProfinetDevices> {
 
-        public static final String DEVICE_STRING = "((?<devicename>[\\w- ]*){1}[, ]+(?<deviceaccess>[\\w ]*){1}[, ]+\\((?<submodules>[\\w, ]*)\\)[, ]*(?<ipaddress>[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+)?)";
+        public static final String DEVICE_STRING = "((?<devicename>[\\w- ]+)[, ]+(?<deviceaccess>[\\w ]+)[, ]+\\((?<submodules>[\\w, ]*)\\)[, ]*(?<ipaddress>\\d+\\.\\d+\\.\\d+\\.\\d+)?)";
         public static final String DEVICE_ARRAY_STRING = "^\\[(?:(\\[" + DEVICE_STRING + "{1}\\])[, ]?)+\\]";
         public static final Pattern DEVICE_NAME_ARRAY_PATTERN = Pattern.compile(DEVICE_ARRAY_STRING);
         public static final Pattern DEVICE_PARAMETERS = Pattern.compile(DEVICE_STRING);
@@ -145,8 +145,9 @@ public class ProfinetConfiguration implements Configuration, RawSocketTransportC
         @Override
         public GsdFileMap convert(String value) {
             HashMap<String, ProfinetISO15745Profile> gsdFiles = new HashMap<>();
+            DirectoryStream<Path> stream = null;
             try {
-                DirectoryStream<Path> stream = Files.newDirectoryStream(Paths.get(value));
+                stream = Files.newDirectoryStream(Paths.get(value));
                 XmlMapper xmlMapper = new XmlMapper();
                 for (Path file : stream) {
                     try {
@@ -160,6 +161,14 @@ public class ProfinetConfiguration implements Configuration, RawSocketTransportC
                 }
             } catch (IOException e) {
                 throw new RuntimeException("GSDML File directory is un-readable");
+            } finally {
+                try {
+                    if (stream != null) {
+                        stream.close();
+                    }
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
             }
             return new GsdFileMap(gsdFiles);
         }
