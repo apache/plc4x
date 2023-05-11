@@ -54,23 +54,17 @@ public class Plc4xReadResponseRecordSet implements RecordSet, Closeable {
         this.readResponse = readResponse;
         moreRows = true;
         
-        if (readResponse.getRequest() == null) {
-            isSubscription = true;
-        } else {
-            isSubscription = false;
-        }
+        isSubscription = readResponse.getRequest() == null;
 
         if (debugEnabled)
             logger.debug("Creating record schema from PlcReadResponse");
         
         Map<String, ? extends PlcValue> responseDataStructure;
 
-        if (!isSubscription) {
-            responseDataStructure = readResponse.getAsPlcValue().getStruct();
-        } else {
-            isSubscription = true;
-            responseDataStructure = Plc4xSubscriptionResponseRecordSet((DefaultPlcSubscriptionEvent) readResponse, recordSchema);
-        }
+        responseDataStructure = !isSubscription? 
+            readResponse.getAsPlcValue().getStruct():
+            plc4xSubscriptionResponseRecordSet((DefaultPlcSubscriptionEvent) readResponse);
+  
         rsColumnNames = responseDataStructure.keySet();
                
         if (recordSchema == null) {
@@ -84,7 +78,7 @@ public class Plc4xReadResponseRecordSet implements RecordSet, Closeable {
 
     }
 
-    public Map<String, PlcValue> Plc4xSubscriptionResponseRecordSet(final DefaultPlcSubscriptionEvent subscriptionEvent, RecordSchema recordSchema) throws IOException {;
+    public Map<String, PlcValue> plc4xSubscriptionResponseRecordSet(final DefaultPlcSubscriptionEvent subscriptionEvent) throws IOException {;
         moreRows = true;
         
         if (debugEnabled)
@@ -159,7 +153,7 @@ public class Plc4xReadResponseRecordSet implements RecordSet, Closeable {
                 value = null;
             }
             
-            logger.trace(String.format("Adding %s tag value to record.", tagName));
+            logger.trace("Adding {} tag value to record.", tagName);
             values.put(tagName, value);
         }
 
@@ -175,7 +169,7 @@ public class Plc4xReadResponseRecordSet implements RecordSet, Closeable {
     private Object normalizeValue(final PlcValue value) {
         Object r = Plc4xCommon.normalizeValue(value);
         if (r != null) {
-            logger.trace("Value data type: " + r.getClass());
+            logger.trace("Value data type: {}", r.getClass());
         }
         return r;
         

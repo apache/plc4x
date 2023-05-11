@@ -36,6 +36,7 @@ import java.util.stream.Collectors;
 import org.apache.nifi.annotation.behavior.InputRequirement;
 import org.apache.nifi.annotation.behavior.WritesAttribute;
 import org.apache.nifi.annotation.behavior.WritesAttributes;
+import org.apache.nifi.annotation.configuration.DefaultSchedule;
 import org.apache.nifi.annotation.documentation.CapabilityDescription;
 import org.apache.nifi.annotation.documentation.Tags;
 import org.apache.nifi.annotation.lifecycle.OnScheduled;
@@ -63,9 +64,10 @@ import org.apache.plc4x.nifi.subscription.Plc4xSubscriptionType;
 import org.apache.plc4x.nifi.record.Plc4xWriter;
 import org.apache.plc4x.nifi.record.RecordPlc4xWriter;
 
+@DefaultSchedule(period="0.1 sec")
 @Tags({"plc4x", "get", "input", "source", "listen", "record"})
 @InputRequirement(InputRequirement.Requirement.INPUT_FORBIDDEN)
-@CapabilityDescription("Processor able to read data from industrial PLCs using Apache PLC4X")
+@CapabilityDescription("Processor able to read data from industrial PLCs using Apache PLC4X subscriptions")
 @WritesAttributes({ @WritesAttribute(attribute = "value", description = "some value") })
 public class Plc4xListenRecordProcessor extends BasePlc4xProcessor {
 
@@ -77,9 +79,8 @@ public class Plc4xListenRecordProcessor extends BasePlc4xProcessor {
 
     protected Plc4xSubscriptionType subscriptionType = null;
     protected Long cyclingPollingInterval = null;
-	protected BlockingQueue<PlcSubscriptionEvent> events;
+	protected final BlockingQueue<PlcSubscriptionEvent> events = new LinkedBlockingQueue<>();
 	protected Plc4xListenerDispatcher dispatcher;
-	protected Map<String, String> addressMap;
 	protected RecordSchema recordSchema;
 	protected Thread readerThread;
 
@@ -98,14 +99,14 @@ public class Plc4xListenRecordProcessor extends BasePlc4xProcessor {
 		.description("Sets the subscription type. The subscritpion types available for each driver are stated in the documentation.")
 		.allowableValues(Plc4xSubscriptionType.values())
 		.required(true)
-        .defaultValue(Plc4xSubscriptionType.Change.name())
+        .defaultValue(Plc4xSubscriptionType.CHANGE.name())
 		.build();
 
     public static final PropertyDescriptor PLC_SUBSCRIPTION_CYCLIC_POLLING_INTERVAL = new PropertyDescriptor.Builder()
         .name("plc4x-subscription-cyclic-polling-interval")
         .displayName("Cyclic polling interval")
 		.description("In case of Cyclic subscription type a time interval must be provided.")
-		.dependsOn(PLC_SUBSCRIPTION_TYPE, Plc4xSubscriptionType.Cyclic.name())
+		.dependsOn(PLC_SUBSCRIPTION_TYPE, Plc4xSubscriptionType.CYCLIC.name())
 		.required(true)
         .addValidator(StandardValidators.POSITIVE_INTEGER_VALIDATOR)
 		.addValidator(new Validator() {
@@ -126,9 +127,6 @@ public class Plc4xListenRecordProcessor extends BasePlc4xProcessor {
         .defaultValue("10000")
 		.build();
 
-	public Plc4xListenRecordProcessor() {
-	}
-
 	@Override
 	protected void init(final ProcessorInitializationContext context) {
 		super.init(context);
@@ -144,19 +142,22 @@ public class Plc4xListenRecordProcessor extends BasePlc4xProcessor {
 		this.properties = Collections.unmodifiableList(pds);
 	}
 
+    @Override
     @OnScheduled
     public void onScheduled(final ProcessContext context) {
 		super.onScheduled(context);
-
-        subscriptionType = Plc4xSubscriptionType.valueOf(context.getProperty(PLC_SUBSCRIPTION_TYPE).getValue());
+		subscriptionType = Plc4xSubscriptionType.valueOf(context.getProperty(PLC_SUBSCRIPTION_TYPE).getValue());
         cyclingPollingInterval = context.getProperty(PLC_SUBSCRIPTION_CYCLIC_POLLING_INTERVAL).asLong();
 		addressMap = getPlcAddressMap(context, null);
 
-		events = new LinkedBlockingQueue<>();
 		createDispatcher(events);
 	}
 
     protected void createDispatcher(final BlockingQueue<PlcSubscriptionEvent> events) {
+		if (readerThread != null) {
+			return;
+		}
+
 		// create the dispatcher and calls open() to start listening to the plc subscription
         dispatcher =  new Plc4xListenerDispatcher(timeout, subscriptionType, cyclingPollingInterval, getLogger(), events);
 		try {
@@ -169,25 +170,28 @@ public class Plc4xListenRecordProcessor extends BasePlc4xProcessor {
 			throw new ProcessException(e);
 		}
 
-        readerThread = new Thread(dispatcher);
-        readerThread.setName(getClass().getName() + " [" + getIdentifier() + "]");
-        readerThread.setDaemon(true);
-        readerThread.start();
+		if (dispatcher.isRunning()) {
+			readerThread = new Thread(dispatcher);
+			readerThread.setName(getClass().getName() + " [" + getIdentifier() + "]");
+			readerThread.setDaemon(true);
+			readerThread.start();
+		}
     }
 
     @OnStopped
-    public void closeDispatcher() {
-        if (dispatcher != null) {
-            dispatcher.close();
+    public void closeDispatcher() throws ProcessException {
+		if (readerThread != null) {
 			readerThread.interrupt();
-        }
+			if (!readerThread.isAlive()){
+				readerThread = null;
+			}
+		}
     }
 
-	protected PlcSubscriptionEvent getMessage(final ProcessSession session) {
-		if (dispatcher != null) {
-			if (dispatcher.isRunning()){
-				return events.poll();
-			}
+	protected PlcSubscriptionEvent getMessage() {
+		if (readerThread != null && readerThread.isAlive()) {
+			return events.poll();
+			
 		}
 		// If dispatcher is not running the connection broke or gave a time out.
 		if (debugEnabled) {
@@ -201,7 +205,7 @@ public class Plc4xListenRecordProcessor extends BasePlc4xProcessor {
 	@Override
 	public void onTrigger(final ProcessContext context, final ProcessSession session) throws ProcessException {
 
-		DefaultPlcSubscriptionEvent event = (DefaultPlcSubscriptionEvent) getMessage(session);
+		DefaultPlcSubscriptionEvent event = (DefaultPlcSubscriptionEvent) getMessage();
 
 		if (event == null) {
 			return;
@@ -238,8 +242,7 @@ public class Plc4xListenRecordProcessor extends BasePlc4xProcessor {
 						new Function<String,PlcTag>() {
 							@Override
 							public PlcTag apply(String addr) {
-								PlcTag value = new PlcTag() {
-
+								return new PlcTag() {
 									@Override
 									public String getAddressString() {
 										return addr;
@@ -249,9 +252,7 @@ public class Plc4xListenRecordProcessor extends BasePlc4xProcessor {
 									public PlcValueType getPlcValueType() {
 										return event.getPlcValue(addr).getPlcValueType();
 									}
-									
 								};
-								return value;
 							}
 						}).collect(Collectors.toList()); 
 
@@ -273,7 +274,7 @@ public class Plc4xListenRecordProcessor extends BasePlc4xProcessor {
 			attributesToAdd.putAll(plc4xWriter.getAttributesToAdd());
 			resultSetFF = session.putAllAttributes(resultSetFF, attributesToAdd);
 			plc4xWriter.updateCounters(session);
-			getLogger().info("{} contains {} records; transferring to 'success'", new Object[] { resultSetFF, nrOfRows.get() });
+			getLogger().info("{} contains {} records; transferring to 'success'", resultSetFF, nrOfRows.get());
 			
 			session.transfer(resultSetFF, REL_SUCCESS);
 			session.commitAsync();

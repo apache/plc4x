@@ -75,9 +75,6 @@ public class Plc4xSourceRecordProcessor extends BasePlc4xProcessor {
 		.required(true)
 		.build();
 	
-	public Plc4xSourceRecordProcessor() {
-	}
-
 	@Override
 	protected void init(final ProcessorInitializationContext context) {
 		super.init(context);

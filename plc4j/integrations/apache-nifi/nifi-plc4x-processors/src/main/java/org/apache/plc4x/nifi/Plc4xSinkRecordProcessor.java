@@ -76,8 +76,6 @@ public class Plc4xSinkRecordProcessor extends BasePlc4xProcessor {
 			.required(true)
 			.build();
 
-	public Plc4xSinkRecordProcessor() {
-	}
 
 	@Override
 	protected void init(final ProcessorInitializationContext context) {
@@ -156,7 +154,6 @@ public class Plc4xSinkRecordProcessor extends BasePlc4xProcessor {
 					plcWriteResponse = writeRequest.execute().get(this.timeout, TimeUnit.MILLISECONDS);
 
 				} catch (Exception e) {
-					System.out.println(e.getMessage());
 					in.close();
 					logger.error("Exception writing the data to PLC", e);
 					session.transfer(originalFlowFile, REL_FAILURE);

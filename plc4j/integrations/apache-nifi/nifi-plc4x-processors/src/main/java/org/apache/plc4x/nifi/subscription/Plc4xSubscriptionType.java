@@ -19,7 +19,7 @@
 package org.apache.plc4x.nifi.subscription;
 
 public enum Plc4xSubscriptionType {
-    Change, // of state (Event is sent as soon as a value changes)
-    Cyclic, //(The Event is sent in regular cyclic intervals)
-    Event //(The Event is usually explicitly sent form the PLC as a signal)
+    CHANGE, // of state (Event is sent as soon as a value changes)
+    CYCLIC, //(The Event is sent in regular cyclic intervals)
+    EVENT //(The Event is usually explicitly sent form the PLC as a signal)
 }
