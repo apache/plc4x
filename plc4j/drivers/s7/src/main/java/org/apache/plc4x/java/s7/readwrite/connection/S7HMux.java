@@ -16,8 +16,14 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.plc4x.java.s7.readwrite.protocol;
+package org.apache.plc4x.java.s7.readwrite.connection;
 
-public class S7HAbortRequestException {
+import io.netty.channel.Channel;
 
+public interface S7HMux {
+    void setEmbeddedChannel(Channel embeded_channel);
+
+    void setPrimaryChannel(Channel primary_channel);
+
+    void setSecondaryChannel(Channel secondary_channel);
 }

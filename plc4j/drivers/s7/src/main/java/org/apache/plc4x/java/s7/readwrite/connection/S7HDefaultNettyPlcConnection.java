@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.plc4x.java.s7.readwrite.protocol;
+package org.apache.plc4x.java.s7.readwrite.connection;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
@@ -115,9 +115,9 @@ public class S7HDefaultNettyPlcConnection extends DefaultNettyPlcConnection impl
 
             // Inject the configuration
             ConfigurationFactory.configure(configuration, channelFactory);
-
-            if (secondaryChannelFactory != null)
+            if (secondaryChannelFactory != null) {
                 ConfigurationFactory.configure(configuration, secondaryChannelFactory);
+            }
 
             channel = new EmbeddedChannel(getChannelHandler(sessionSetupCompleteFuture, sessionDisconnectCompleteFuture, sessionDiscoveredCompleteFuture));
             channel.pipeline().addFirst(s7hmux);
@@ -133,14 +133,15 @@ public class S7HDefaultNettyPlcConnection extends DefaultNettyPlcConnection impl
             */
             doPrimaryTcpConnections();
 
-            if (secondaryChannelFactory != null)
+            if (secondaryChannelFactory != null) {
                 doSecondaryTcpConnections();
+            }
 
             //If it is not possible to generate a TCP connection.
             //Safety shutdown all executors in the channels.
             if (primary_channel == null)
                 if (secondary_channel == null) {
-                    sendChannelDisconectEvent();
+                    sendChannelDisconnectEvent();
                     throw new PlcConnectionException("Connection is not possible.");
                 }
 
@@ -241,7 +242,7 @@ public class S7HDefaultNettyPlcConnection extends DefaultNettyPlcConnection impl
      * In this way, a controlled shutdown of the execution services is achieved.
      * The user application must take the measures to make the connection again.
      */
-    protected void sendChannelDisconectEvent() {
+    protected void sendChannelDisconnectEvent() {
         logger.trace("Channels was not created, firing DisconnectEvent Event");
         // Send an event to the pipeline telling the Protocol filters what's going on.
         channel.pipeline().fireUserEventTriggered(new DisconnectEvent());

@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.plc4x.java.s7.readwrite.protocol;
+package org.apache.plc4x.java.s7.readwrite.connection;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
@@ -55,7 +55,7 @@ public class S7HMuxImpl extends MessageToMessageCodec<ByteBuf, ByteBuf> implemen
      * both TCP channels are disconnected.
      * Default value: false
      */
-    final static AttributeKey<Boolean> IS_CONNECTED = AttributeKey.valueOf("IS_CONNECTED");
+    public final static AttributeKey<Boolean> IS_CONNECTED = AttributeKey.valueOf("IS_CONNECTED");
 
     /*
      * This attribute indicates to the other handlers which channel is being used,
@@ -65,7 +65,7 @@ public class S7HMuxImpl extends MessageToMessageCodec<ByteBuf, ByteBuf> implemen
      * the correct values will be defined in the connection URL.
      * Default value: true
      */
-    final static AttributeKey<Boolean> IS_PRIMARY = AttributeKey.valueOf("IS_PRIMARY");
+    public final static AttributeKey<Boolean> IS_PRIMARY = AttributeKey.valueOf("IS_PRIMARY");
 
     /*
      * This is the maximum waiting time for reading on the TCP channel.
@@ -76,7 +76,7 @@ public class S7HMuxImpl extends MessageToMessageCodec<ByteBuf, ByteBuf> implemen
      * will be restored automatically, which is done every 4 seconds.
      * Default value: 8 sec.
      */
-    final static AttributeKey<Integer> READ_TIME_OUT = AttributeKey.valueOf("READ_TIME_OUT");
+    public final static AttributeKey<Integer> READ_TIME_OUT = AttributeKey.valueOf("READ_TIME_OUT");
 
     /*
      * If your application requires sampling times greater than the
@@ -84,7 +84,7 @@ public class S7HMuxImpl extends MessageToMessageCodec<ByteBuf, ByteBuf> implemen
      * this will prevent the TCP channel from being closed unnecessarily.
      * Default value: false
      */
-    final static AttributeKey<Boolean> IS_PING_ACTIVE = AttributeKey.valueOf("IS_PIN_ACTIVE");
+    public final static AttributeKey<Boolean> IS_PING_ACTIVE = AttributeKey.valueOf("IS_PIN_ACTIVE");
 
     /*
      * Time value in seconds at which the execution of the PING will be scheduled.
@@ -92,7 +92,7 @@ public class S7HMuxImpl extends MessageToMessageCodec<ByteBuf, ByteBuf> implemen
      * as READ_TIME_OUT / 2.
      * Default value: -1
      */
-    final static AttributeKey<Integer> PING_TIME = AttributeKey.valueOf("PING_TIME");
+    public final static AttributeKey<Integer> PING_TIME = AttributeKey.valueOf("PING_TIME");
 
     /*
      * Time for supervision of TCP channels. If the channel is not active,
@@ -100,7 +100,7 @@ public class S7HMuxImpl extends MessageToMessageCodec<ByteBuf, ByteBuf> implemen
      * no additional tasks are created.
      * Default value: 4
      */
-    final static AttributeKey<Integer> RETRY_TIME = AttributeKey.valueOf("RETRY_TIME");
+    public final static AttributeKey<Integer> RETRY_TIME = AttributeKey.valueOf("RETRY_TIME");
 
     ChannelHandlerContext embed_ctx = null;
     protected Channel embeded_channel = null;

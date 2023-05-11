@@ -33,6 +33,7 @@ import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.s7.events.S7CyclicEvent;
 import org.apache.plc4x.java.s7.readwrite.*;
+import org.apache.plc4x.java.s7.readwrite.connection.S7HMuxImpl;
 import org.apache.plc4x.java.s7.readwrite.context.S7DriverContext;
 import org.apache.plc4x.java.s7.readwrite.tag.*;
 import org.apache.plc4x.java.s7.readwrite.types.S7ControllerType;
@@ -297,14 +298,14 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
      * Maps the S7ReadResponse of a PlcReadRequest to a PlcReadResponse
      */
     private CompletableFuture<PlcReadResponse> toPlcReadResponse(PlcReadRequest readRequest, CompletableFuture<S7Message> response) {
-        CompletableFuture<PlcReadResponse> client_future = new CompletableFuture<>();
-        activeRequests.get(response).setRight(client_future);
+        CompletableFuture<PlcReadResponse> clientFuture = new CompletableFuture<>();
+        activeRequests.get(response).setRight(clientFuture);
 
         try {
             clientExecutorService.execute(() -> {
                 try {
                     PlcReadResponse plcItems = (PlcReadResponse) decodeReadResponse(response.get(), readRequest);
-                    client_future.complete(plcItems);
+                    clientFuture.complete(plcItems);
                 } catch (Exception e) {
                     logger.info("uh", e);
                 }
@@ -313,7 +314,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
             logger.info("uh", e);
         }
 
-        return client_future;
+        return clientFuture;
 
 // TODO: whoever out commented this describe why it is out commented and describe what the above does different
 //        return response
@@ -441,7 +442,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
             future.completeExceptionally(new PlcRuntimeException("Disconnected"));
             return future;
         }
-        if (!isFeatureSupported()) {
+        if (!isSubscriptionSupported()) {
             CompletableFuture<PlcSubscriptionResponse> future = new CompletableFuture<>();
             future.completeExceptionally(new PlcRuntimeException("Not Supported"));
             return future;
@@ -568,7 +569,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
             future.completeExceptionally(new PlcRuntimeException("Disconnected"));
             return future;
         }
-        if (!isFeatureSupported()) {
+        if (!isSubscriptionSupported()) {
             CompletableFuture<PlcUnsubscriptionResponse> future = new CompletableFuture<>();
             future.completeExceptionally(new PlcRuntimeException("Not Supported"));
             return future;
@@ -1401,8 +1402,6 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
             for (String tagName : plcReadRequest.getTagNames()) {
 
                 if (plcReadRequest.getTag(tagName) instanceof S7SzlTag) {
-
-                    S7SzlTag tag = (S7SzlTag) plcReadRequest.getTag(tagName);
                     S7PayloadUserDataItemCpuFunctionReadSzlResponse payloadItem = (S7PayloadUserDataItemCpuFunctionReadSzlResponse) payloadItems.get(index);
                     responseCode = decodeResponseCode(payloadItem.getReturnCode());
 
@@ -1414,18 +1413,15 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
                             for (byte b : data) plcvalues.add(new PlcSINT(b));
 
                             if (parameteritem.getLastDataUnit() == 1) {
-                                CompletableFuture<S7MessageUserData> next_future = null;
-                                S7ParameterUserData next_parameter = null;
-                                S7PayloadUserData next_payload = null;
-                                S7PayloadUserDataItemCpuFunctionReadSzlResponse next_payloadItem = null;
+                                CompletableFuture<S7MessageUserData> nextFuture;
+                                S7ParameterUserData next_parameter;
+                                S7PayloadUserData next_payload;
+                                S7PayloadUserDataItemCpuFunctionReadSzlResponse next_payloadItem;
 
                                 while (parameteritem.getLastDataUnit() == 1) {
                                     //TODO: Just wait for one answer!. Pending for other packages for rearm.
-                                    next_future = reassembledMessage(parameteritem.getSequenceNumber());
-
-                                    S7MessageUserData msg = null;
-
-                                    msg = next_future.get();
+                                    nextFuture = reassembledMessage(parameteritem.getSequenceNumber());
+                                    S7MessageUserData msg = nextFuture.get();
                                     if (msg != null) {
                                         next_parameter = (S7ParameterUserData) msg.getParameter();
                                         parameteritem = (S7ParameterUserDataItemCPUFunctions) next_parameter.getItems().get(0);
@@ -1742,7 +1738,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
     }
 
 
-    private boolean isFeatureSupported() {
+    private boolean isSubscriptionSupported() {
         return (s7DriverContext.getControllerType() == S7ControllerType.S7_300) ||
             (s7DriverContext.getControllerType() == S7ControllerType.S7_400);
     }

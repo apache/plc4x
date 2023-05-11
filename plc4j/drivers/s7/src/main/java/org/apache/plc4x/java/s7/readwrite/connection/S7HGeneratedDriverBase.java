@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.plc4x.java.s7.readwrite.protocol;
+package org.apache.plc4x.java.s7.readwrite.connection;
 
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
@@ -39,6 +39,9 @@ import java.util.regex.Pattern;
 
 import static org.apache.plc4x.java.spi.configuration.ConfigurationFactory.configure;
 
+/**
+ * Customized version of a GeneratedDriverBase that supports opening two connections to a remote host.
+ */
 public class S7HGeneratedDriverBase extends GeneratedDriverBase<TPKTPacket> {
 
     private static final Logger logger = LoggerFactory.getLogger(S7HGeneratedDriverBase.class);
@@ -51,7 +54,7 @@ public class S7HGeneratedDriverBase extends GeneratedDriverBase<TPKTPacket> {
 
     @Override
     public PlcConnection getConnection(String connectionString) throws PlcConnectionException {
-        // Split up the connection string into it's individual segments.
+        // Split up the connection string into its individual segments.
         Matcher smatcher = URI_PATTERN.matcher(connectionString);
         Matcher hmatcher = URI_H_PATTERN.matcher(connectionString);
         if (!smatcher.matches() && !hmatcher.matches()) {
@@ -106,24 +109,20 @@ public class S7HGeneratedDriverBase extends GeneratedDriverBase<TPKTPacket> {
         }
         configure(configuration, channelFactory);
 
-        // Create an instance of the communication channel which the driver should use.
+        // Give drivers the option to customize the channel.
+        initializePipeline(channelFactory);
+
+        // Create an instance of the secondary communication channel the driver should use (When using a HA connection).
         ChannelFactory secondaryChannelFactory = null;
         if (hmatcher.matches()) {
             secondaryChannelFactory = transport.createChannelFactory(transportConfig2);
             if (secondaryChannelFactory == null) {
                 logger.info("Unable to get channel factory from url " + transportConfig2);
+            } else {
+                configure(configuration, secondaryChannelFactory);
+                initializePipeline(secondaryChannelFactory);
             }
         }
-
-        if (hmatcher.matches())
-            configure(configuration, secondaryChannelFactory);
-
-        // Give drivers the option to customize the channel.
-        initializePipeline(channelFactory);
-
-        // Give drivers the option to customize the channel.
-        if (hmatcher.matches())
-            initializePipeline(secondaryChannelFactory);
 
         // Make the "await setup complete" overridable via system property.
         boolean awaitSetupComplete = awaitSetupComplete();
