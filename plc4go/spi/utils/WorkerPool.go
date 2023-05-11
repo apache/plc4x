@@ -212,6 +212,11 @@ func WithExecutorOptionTracerWorkers(traceWorkers bool) ExecutorOption {
 }
 
 func (e *executor) Submit(ctx context.Context, workItemId int32, runnable Runnable) CompletionFuture {
+	if runnable == nil {
+		value := atomic.Value{}
+		value.Store(errors.New("runnable must not be nil"))
+		return &future{err: value}
+	}
 	log.Trace().Int32("workItemId", workItemId).Msg("Submitting runnable")
 	completionFuture := &future{}
 	select {
