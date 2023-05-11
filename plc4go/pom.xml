@@ -373,14 +373,14 @@
             </configuration>
           </execution>
           <execution>
-            <id>get-goxunit</id>
+            <id>get-go-junit-report</id>
             <phase>initialize</phase>
             <goals>
               <goal>install</goal>
             </goals>
             <configuration>
               <packages>
-                <package>github.com/tebeka/go2xunit@latest</package>
+                <package>github.com/jstemmer/go-junit-report@latest</package>
               </packages>
             </configuration>
           </execution>
@@ -593,27 +593,27 @@
             </configuration>
           </execution>
 
-          <!-- Convert generated test report into xunit format and save as file -->
+          <!-- Convert generated test report into go-junit-report format and save as file -->
           <execution>
-            <id>makeXUnitReport</id>
+            <id>makeJUnitReport</id>
             <phase>test</phase>
             <goals>
               <goal>custom</goal>
             </goals>
             <configuration>
               <skip>${skipTests}</skip>
-              <exec>go2xunit</exec>
-              <customCommand>-fail</customCommand>
+              <exec>go-junit-report</exec>
+              <customCommand>-set-exit-code</customCommand>
               <buildFlags>
-                <flag>-input</flag>
+                <flag>-in</flag>
                 <flag>${project.build.directory}${file.separator}reports${file.separator}test-out-verbose.log</flag>
-                <flag>-output</flag>
+                <flag>-out</flag>
               </buildFlags>
               <echo>
-                <info>XUnit report saved as ${xunit.report}</info>
+                <info>JUnit report saved as target${file.separator}surefire-reports${file.separator}xunit.xml</info>
               </echo>
               <packages>
-                <package>target${file.separator}surefire-reports${file.separator}xuint.xml</package>
+                <package>target${file.separator}surefire-reports${file.separator}xunit.xml</package>
               </packages>
             </configuration>
           </execution>
