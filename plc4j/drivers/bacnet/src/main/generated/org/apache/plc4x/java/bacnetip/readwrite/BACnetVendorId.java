@@ -1445,8 +1445,8 @@ public enum BACnetVendorId {
   BEN_PEOPLES_INDUSTRIESLLC((int) 1257, (int) 1257, (String) "Ben Peoples Industries, LLC"),
   UNICOMM_SPZOO((int) 1258, (int) 1258, (String) "UNICOMM Sp. z o.o"),
   THING_TECHNOLOGIES_GMBH((int) 1259, (int) 1259, (String) "Thing Technologies GmbH"),
-  BEIJING_HAI_LIN_ENERGY_SAVING_TECHNOLOGY_INC(
-      (int) 1260, (int) 1260, (String) "Beijing HaiLin Energy Saving Technology, Inc."),
+  BEIJING_HAILIN_CONTROL_TECHNOLOGY_INC(
+      (int) 1260, (int) 1260, (String) "Beijing Hailin Control Technology, Inc."),
   DIGITAL_REALTY((int) 1261, (int) 1261, (String) "Digital Realty"),
   AGROWTEK_INC((int) 1262, (int) 1262, (String) "Agrowtek Inc."),
   DSP_INNOVATIONBV((int) 1263, (int) 1263, (String) "DSP Innovation BV"),
@@ -1631,6 +1631,7 @@ public enum BACnetVendorId {
   INDUSTRIAL_FLOW_SOLUTIONS((int) 1419, (int) 1419, (String) "Industrial Flow Solutions"),
   UBIQISENSE_APS((int) 1420, (int) 1420, (String) "Ubiqisense ApS"),
   TIGER_SOFT((int) 1421, (int) 1421, (String) "Tiger-Soft"),
+  ECODOM_SRL((int) 1422, (int) 1422, (String) "Ecodom Srl"),
   UNKNOWN_VENDOR((int) 0xFFFF, (int) 0xFFFF, (String) "Unknown");
   private static final Map<Integer, BACnetVendorId> map;
 

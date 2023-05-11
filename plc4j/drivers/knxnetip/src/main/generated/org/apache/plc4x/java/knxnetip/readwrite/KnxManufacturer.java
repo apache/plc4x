@@ -717,9 +717,11 @@ public enum KnxManufacturer {
   M_KFV_SIEGENIA_GRUPPE((int) 623, (int) 680, (String) "KFV (SIEGENIA GRUPPE)"),
   M_SYMCON((int) 624, (int) 681, (String) "Symcon"),
   M_I_TRUST((int) 625, (int) 682, (String) "I.Trust"),
-  M_ABB___RESERVED((int) 626, (int) 43954, (String) "ABB - reserved"),
+  M_DRD_TECHNICS((int) 626, (int) 683, (String) "DRD-Technics"),
+  M_LENGEN((int) 627, (int) 684, (String) "LENGEN"),
+  M_ABB___RESERVED((int) 628, (int) 43954, (String) "ABB - reserved"),
   M_BUSCH_JAEGER_ELEKTRO___RESERVED(
-      (int) 627, (int) 43959, (String) "Busch-Jaeger Elektro - reserved");
+      (int) 629, (int) 43959, (String) "Busch-Jaeger Elektro - reserved");
   private static final Map<Integer, KnxManufacturer> map;
 
   static {
