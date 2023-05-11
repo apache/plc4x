@@ -217,7 +217,7 @@ public class ProfinetChannel {
     }
 
     public void setConfiguredDevices(Map<String, ProfinetDevice> configuredDevices) {
-        this.devices = devices;
+        this.devices = configuredDevices;
     }
 
     private static MacAddress toPlc4xMacAddress(org.pcap4j.util.MacAddress pcap4jMacAddress) {
