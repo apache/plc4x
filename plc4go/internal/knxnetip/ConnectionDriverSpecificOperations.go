@@ -64,6 +64,11 @@ func (m *Connection) ReadGroupAddress(ctx context.Context, groupAddress []byte, 
 	}
 
 	go func() {
+		defer func() {
+			if err := recover(); err != nil {
+				log.Error().Msgf("panic-ed %v", err)
+			}
+		}()
 		groupAddressReadResponse, err := m.sendGroupAddressReadRequest(ctx, groupAddress)
 		if err != nil {
 			sendResponse(nil, 0, errors.Wrap(err, "error reading group address"))
@@ -119,6 +124,11 @@ func (m *Connection) DeviceConnect(ctx context.Context, targetAddress driverMode
 	}
 
 	go func() {
+		defer func() {
+			if err := recover(); err != nil {
+				log.Error().Msgf("panic-ed %v", err)
+			}
+		}()
 		// If we're already connected, use that connection instead.
 		if connection, ok := m.DeviceConnections[targetAddress]; ok {
 			sendResponse(connection, nil)
@@ -209,6 +219,11 @@ func (m *Connection) DeviceDisconnect(ctx context.Context, targetAddress driverM
 	}
 
 	go func() {
+		defer func() {
+			if err := recover(); err != nil {
+				log.Error().Msgf("panic-ed %v", err)
+			}
+		}()
 		if connection, ok := m.DeviceConnections[targetAddress]; ok {
 			_, err := m.sendDeviceDisconnectionRequest(ctx, targetAddress)
 
@@ -242,6 +257,11 @@ func (m *Connection) DeviceAuthenticate(ctx context.Context, targetAddress drive
 	}
 
 	go func() {
+		defer func() {
+			if err := recover(); err != nil {
+				log.Error().Msgf("panic-ed %v", err)
+			}
+		}()
 		// Check if there is already a connection available,
 		// if not, create a new one.
 		connection, ok := m.DeviceConnections[targetAddress]
@@ -297,6 +317,11 @@ func (m *Connection) DeviceReadProperty(ctx context.Context, targetAddress drive
 	}
 
 	go func() {
+		defer func() {
+			if err := recover(); err != nil {
+				log.Error().Msgf("panic-ed %v", err)
+			}
+		}()
 		// Check if there is already a connection available,
 		// if not, create a new one.
 		connection, ok := m.DeviceConnections[targetAddress]
@@ -376,6 +401,11 @@ func (m *Connection) DeviceReadPropertyDescriptor(ctx context.Context, targetAdd
 	}
 
 	go func() {
+		defer func() {
+			if err := recover(); err != nil {
+				log.Error().Msgf("panic-ed %v", err)
+			}
+		}()
 		// Check if there is already a connection available,
 		// if not, create a new one.
 		connection, ok := m.DeviceConnections[targetAddress]
@@ -436,6 +466,11 @@ func (m *Connection) DeviceReadMemory(ctx context.Context, targetAddress driverM
 	}
 
 	go func() {
+		defer func() {
+			if err := recover(); err != nil {
+				log.Error().Msgf("panic-ed %v", err)
+			}
+		}()
 		// Set a default datatype, if none is specified
 		if datapointType == nil {
 			dpt := driverModel.KnxDatapointType_USINT

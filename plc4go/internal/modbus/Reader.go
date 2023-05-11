@@ -29,7 +29,7 @@ import (
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/modbus/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
-	plc4goModel "github.com/apache/plc4x/plc4go/spi/model"
+	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 )
@@ -53,12 +53,13 @@ func (m *Reader) Read(ctx context.Context, readRequest model.PlcReadRequest) <-c
 	log.Trace().Msg("Reading")
 	result := make(chan model.PlcReadRequestResult)
 	go func() {
-		if len(readRequest.GetTagNames()) != 1 {
-			result <- &plc4goModel.DefaultPlcReadRequestResult{
-				Request:  readRequest,
-				Response: nil,
-				Err:      errors.New("modbus only supports single-item requests"),
+		defer func() {
+			if err := recover(); err != nil {
+				result <- spiModel.NewDefaultPlcReadRequestResult(readRequest, nil, errors.Errorf("panic-ed %v", err))
 			}
+		}()
+		if len(readRequest.GetTagNames()) != 1 {
+			result <- spiModel.NewDefaultPlcReadRequestResult(readRequest, nil, errors.New("modbus only supports single-item requests"))
 			log.Debug().Msgf("modbus only supports single-item requests. Got %d tags", len(readRequest.GetTagNames()))
 			return
 		}
@@ -67,7 +68,7 @@ func (m *Reader) Read(ctx context.Context, readRequest model.PlcReadRequest) <-c
 		tag := readRequest.GetTag(tagName)
 		modbusTagVar, err := CastToModbusTagFromPlcTag(tag)
 		if err != nil {
-			result <- &plc4goModel.DefaultPlcReadRequestResult{
+			result <- &spiModel.DefaultPlcReadRequestResult{
 				Request:  readRequest,
 				Response: nil,
 				Err:      errors.Wrap(err, "invalid tag item type"),
@@ -88,14 +89,14 @@ func (m *Reader) Read(ctx context.Context, readRequest model.PlcReadRequest) <-c
 		case HoldingRegister:
 			pdu = readWriteModel.NewModbusPDUReadHoldingRegistersRequest(modbusTagVar.Address, numWords)
 		case ExtendedRegister:
-			result <- &plc4goModel.DefaultPlcReadRequestResult{
+			result <- &spiModel.DefaultPlcReadRequestResult{
 				Request:  readRequest,
 				Response: nil,
 				Err:      errors.New("modbus currently doesn't support extended register requests"),
 			}
 			return
 		default:
-			result <- &plc4goModel.DefaultPlcReadRequestResult{
+			result <- &spiModel.DefaultPlcReadRequestResult{
 				Request:  readRequest,
 				Response: nil,
 				Err:      errors.Errorf("unsupported tag type %x", modbusTagVar.TagType),
@@ -131,26 +132,26 @@ func (m *Reader) Read(ctx context.Context, readRequest model.PlcReadRequest) <-c
 			readResponse, err := m.ToPlc4xReadResponse(responseAdu, readRequest)
 
 			if err != nil {
-				result <- &plc4goModel.DefaultPlcReadRequestResult{
+				result <- &spiModel.DefaultPlcReadRequestResult{
 					Request: readRequest,
 					Err:     errors.Wrap(err, "Error decoding response"),
 				}
 				// TODO: should we return the error here?
 				return nil
 			}
-			result <- &plc4goModel.DefaultPlcReadRequestResult{
+			result <- &spiModel.DefaultPlcReadRequestResult{
 				Request:  readRequest,
 				Response: readResponse,
 			}
 			return nil
 		}, func(err error) error {
-			result <- &plc4goModel.DefaultPlcReadRequestResult{
+			result <- &spiModel.DefaultPlcReadRequestResult{
 				Request: readRequest,
 				Err:     errors.Wrap(err, "got timeout while waiting for response"),
 			}
 			return nil
 		}, time.Second*1); err != nil {
-			result <- &plc4goModel.DefaultPlcReadRequestResult{
+			result <- &spiModel.DefaultPlcReadRequestResult{
 				Request:  readRequest,
 				Response: nil,
 				Err:      errors.Wrap(err, "error sending message"),
@@ -201,5 +202,5 @@ func (m *Reader) ToPlc4xReadResponse(responseAdu readWriteModel.ModbusTcpADU, re
 
 	// Return the response
 	log.Trace().Msg("Returning the response")
-	return plc4goModel.NewDefaultPlcReadResponse(readRequest, responseCodes, plcValues), nil
+	return spiModel.NewDefaultPlcReadResponse(readRequest, responseCodes, plcValues), nil
 }

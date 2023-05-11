@@ -85,6 +85,11 @@ func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.
 		}
 		wg.Add(1)
 		go func(netInterface addressProvider, interfaceLog zerolog.Logger) {
+			defer func() {
+				if err := recover(); err != nil {
+					interfaceLog.Error().Msgf("panic-ed %v", err)
+				}
+			}()
 			defer func() { wg.Done() }()
 			// Iterate over all addresses the current interface has configured
 			for _, addr := range addrs {
@@ -114,6 +119,11 @@ func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.
 				}
 				wg.Add(1)
 				go func(addressLogger zerolog.Logger) {
+					defer func() {
+						if err := recover(); err != nil {
+							addressLogger.Error().Msgf("panic-ed %v", err)
+						}
+					}()
 					defer func() { wg.Done() }()
 					for ip := range addresses {
 						addressLogger.Trace().Msgf("Handling found ip %v", ip)
@@ -142,6 +152,11 @@ func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.
 	}()
 
 	go func() {
+		defer func() {
+			if err := recover(); err != nil {
+				log.Error().Msgf("panic-ed %v", err)
+			}
+		}()
 		for transportInstance := range transportInstances {
 			log.Debug().Stringer("transportInstance", transportInstance).Msg("submitting device scan")
 			d.deviceScanningQueue.Submit(ctx, d.deviceScanningWorkItemId.Add(1), d.createDeviceScanDispatcher(transportInstance.(*tcp.TransportInstance), callback))

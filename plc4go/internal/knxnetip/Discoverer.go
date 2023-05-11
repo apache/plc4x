@@ -99,6 +99,11 @@ func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.
 		}
 		wg.Add(1)
 		go func(netInterface net.Interface) {
+			defer func() {
+				if err := recover(); err != nil {
+					log.Error().Msgf("panic-ed %v", err)
+				}
+			}()
 			defer func() { wg.Done() }()
 			// Iterate over all addresses the current interface has configured
 			// For KNX we're only interested in IPv4 addresses, as it doesn't
@@ -132,6 +137,11 @@ func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.
 	}()
 
 	go func() {
+		defer func() {
+			if err := recover(); err != nil {
+				log.Error().Msgf("panic-ed %v", err)
+			}
+		}()
 		for transportInstance := range transportInstances {
 			d.deviceScanningQueue.Submit(ctx, d.deviceScanningWorkItemId.Add(1), d.createDeviceScanDispatcher(transportInstance.(*udp.TransportInstance), callback))
 		}

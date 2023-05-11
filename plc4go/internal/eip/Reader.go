@@ -27,13 +27,14 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/apache/plc4x/plc4go/pkg/api/model"
+	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/eip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
-	plc4goModel "github.com/apache/plc4x/plc4go/spi/model"
+	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	spiValues "github.com/apache/plc4x/plc4go/spi/values"
+
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 )
@@ -54,11 +55,16 @@ func NewReader(messageCodec spi.MessageCodec, tm spi.RequestTransactionManager, 
 	}
 }
 
-func (m *Reader) Read(ctx context.Context, readRequest model.PlcReadRequest) <-chan model.PlcReadRequestResult {
+func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) <-chan apiModel.PlcReadRequestResult {
 	// TODO: handle ctx
 	log.Trace().Msg("Reading")
-	result := make(chan model.PlcReadRequestResult)
+	result := make(chan apiModel.PlcReadRequestResult)
 	go func() {
+		defer func() {
+			if err := recover(); err != nil {
+				result <- spiModel.NewDefaultPlcReadRequestResult(readRequest, nil, errors.Errorf("panic-ed %v", err))
+			}
+		}()
 		classSegment := readWriteModel.NewLogicalSegment(readWriteModel.NewClassID(0, 6))
 		instanceSegment := readWriteModel.NewLogicalSegment(readWriteModel.NewInstanceID(0, 1))
 		for _, tagName := range readRequest.GetTagNames() {
@@ -70,11 +76,7 @@ func (m *Reader) Read(ctx context.Context, readRequest model.PlcReadRequest) <-c
 			}
 			ansi, err := toAnsi(tag)
 			if err != nil {
-				result <- &plc4goModel.DefaultPlcReadRequestResult{
-					Request:  readRequest,
-					Response: nil,
-					Err:      errors.Wrapf(err, "Error encoding eip ansi for tag %s", tagName),
-				}
+				result <- spiModel.NewDefaultPlcReadRequestResult(readRequest, nil, errors.Wrapf(err, "Error encoding eip ansi for tag %s", tagName))
 				return
 			}
 			requestItem := readWriteModel.NewCipUnconnectedRequest(classSegment, instanceSegment,
@@ -106,26 +108,26 @@ func (m *Reader) Read(ctx context.Context, readRequest model.PlcReadRequest) <-c
 						log.Trace().Msg("convert response to PLC4X response")
 						readResponse, err := m.ToPlc4xReadResponse(unconnectedDataItem.GetService(), readRequest)
 						if err != nil {
-							result <- &plc4goModel.DefaultPlcReadRequestResult{
+							result <- &spiModel.DefaultPlcReadRequestResult{
 								Request: readRequest,
 								Err:     errors.Wrap(err, "Error decoding response"),
 							}
 							return transaction.EndRequest()
 						}
-						result <- &plc4goModel.DefaultPlcReadRequestResult{
+						result <- &spiModel.DefaultPlcReadRequestResult{
 							Request:  readRequest,
 							Response: readResponse,
 						}
 						return transaction.EndRequest()
 					},
 					func(err error) error {
-						result <- &plc4goModel.DefaultPlcReadRequestResult{
+						result <- &spiModel.DefaultPlcReadRequestResult{
 							Request: readRequest,
 							Err:     errors.Wrap(err, "got timeout while waiting for response"),
 						}
 						return transaction.EndRequest()
 					}, time.Second*1); err != nil {
-					result <- &plc4goModel.DefaultPlcReadRequestResult{
+					result <- &spiModel.DefaultPlcReadRequestResult{
 						Request:  readRequest,
 						Response: nil,
 						Err:      errors.Wrap(err, "error sending message"),
@@ -181,9 +183,9 @@ func toAnsi(tag string) ([]byte, error) {
 	return buffer.GetBytes(), nil
 }
 
-func (m *Reader) ToPlc4xReadResponse(response readWriteModel.CipService, readRequest model.PlcReadRequest) (model.PlcReadResponse, error) {
+func (m *Reader) ToPlc4xReadResponse(response readWriteModel.CipService, readRequest apiModel.PlcReadRequest) (apiModel.PlcReadResponse, error) {
 	plcValues := map[string]values.PlcValue{}
-	responseCodes := map[string]model.PlcResponseCode{}
+	responseCodes := map[string]apiModel.PlcResponseCode{}
 	switch response := response.(type) {
 	case readWriteModel.CipReadResponse: // only 1 tag
 		cipReadResponse := response
@@ -193,7 +195,7 @@ func (m *Reader) ToPlc4xReadResponse(response readWriteModel.CipService, readReq
 		var plcValue values.PlcValue
 		_type := cipReadResponse.GetData().GetDataType()
 		data := utils.NewReadBufferByteBased(cipReadResponse.GetData().GetData(), utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian))
-		if code == model.PlcResponseCode_OK {
+		if code == apiModel.PlcResponseCode_OK {
 			var err error
 			plcValue, err = parsePlcValue(tag, data, _type)
 			if err != nil {
@@ -232,7 +234,7 @@ func (m *Reader) ToPlc4xReadResponse(response readWriteModel.CipService, readReq
 				_type := cipReadResponse.GetData().GetDataType()
 				data := utils.NewReadBufferByteBased(cipReadResponse.GetData().GetData(), utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian))
 				var plcValue values.PlcValue
-				if code == model.PlcResponseCode_OK {
+				if code == apiModel.PlcResponseCode_OK {
 					var err error
 					plcValue, err = parsePlcValue(tag, data, _type)
 					if err != nil {
@@ -243,7 +245,7 @@ func (m *Reader) ToPlc4xReadResponse(response readWriteModel.CipService, readReq
 				plcValues[tagName] = plcValue
 				responseCodes[tagName] = code
 			} else {
-				responseCodes[tagName] = model.PlcResponseCode_INTERNAL_ERROR
+				responseCodes[tagName] = apiModel.PlcResponseCode_INTERNAL_ERROR
 			}
 		}
 	default:
@@ -252,7 +254,7 @@ func (m *Reader) ToPlc4xReadResponse(response readWriteModel.CipService, readReq
 
 	// Return the response
 	log.Trace().Msg("Returning the response")
-	return plc4goModel.NewDefaultPlcReadResponse(readRequest, responseCodes, plcValues), nil
+	return spiModel.NewDefaultPlcReadResponse(readRequest, responseCodes, plcValues), nil
 }
 
 func parsePlcValue(tag EIPPlcTag, data utils.ReadBufferByteBased, _type readWriteModel.CIPDataTypeCode) (values.PlcValue, error) {
@@ -341,12 +343,12 @@ func parsePlcValue(tag EIPPlcTag, data utils.ReadBufferByteBased, _type readWrit
 }
 
 // Helper to convert the return codes returned from the eip into one of our standard
-func decodeResponseCode(status uint8) model.PlcResponseCode {
+func decodeResponseCode(status uint8) apiModel.PlcResponseCode {
 	//TODO other status
 	switch status {
 	case 0:
-		return model.PlcResponseCode_OK
+		return apiModel.PlcResponseCode_OK
 	default:
-		return model.PlcResponseCode_INTERNAL_ERROR
+		return apiModel.PlcResponseCode_INTERNAL_ERROR
 	}
 }

@@ -157,6 +157,11 @@ func NewDynamicExecutor(maxNumberOfWorkers, queueDepth int, options ...ExecutorO
 	mutex := sync.Mutex{}
 	// Worker spawner
 	go func() {
+		defer func() {
+			if err := recover(); err != nil {
+				log.Error().Msgf("panic-ed %v", err)
+			}
+		}()
 		for {
 			time.Sleep(100 * time.Millisecond)
 			mutex.Lock()
@@ -174,6 +179,11 @@ func NewDynamicExecutor(maxNumberOfWorkers, queueDepth int, options ...ExecutorO
 	}()
 	// Worker killer
 	go func() {
+		defer func() {
+			if err := recover(); err != nil {
+				log.Error().Msgf("panic-ed %v", err)
+			}
+		}()
 		for {
 			time.Sleep(5 * time.Second)
 			mutex.Lock()

@@ -22,6 +22,7 @@ package cbus
 import (
 	"context"
 	"fmt"
+	"github.com/pkg/errors"
 	"strings"
 	"time"
 
@@ -48,6 +49,11 @@ func NewSubscriber(connection *Connection) *Subscriber {
 func (m *Subscriber) Subscribe(_ context.Context, subscriptionRequest apiModel.PlcSubscriptionRequest) <-chan apiModel.PlcSubscriptionRequestResult {
 	result := make(chan apiModel.PlcSubscriptionRequestResult)
 	go func() {
+		defer func() {
+			if err := recover(); err != nil {
+				result <- spiModel.NewDefaultPlcSubscriptionRequestResult(subscriptionRequest, nil, errors.Errorf("panic-ed %v", err))
+			}
+		}()
 		internalPlcSubscriptionRequest := subscriptionRequest.(*spiModel.DefaultPlcSubscriptionRequest)
 
 		// Add this subscriber to the connection.

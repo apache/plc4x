@@ -43,6 +43,11 @@ func (m *Connection) Write(ctx context.Context, writeRequest apiModel.PlcWriteRe
 	log.Trace().Msg("Writing")
 	result := make(chan apiModel.PlcWriteRequestResult)
 	go func() {
+		defer func() {
+			if err := recover(); err != nil {
+				result <- internalModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.Errorf("panic-ed %v", err))
+			}
+		}()
 		if len(writeRequest.GetTagNames()) <= 1 {
 			m.singleWrite(ctx, writeRequest, result)
 		} else {
@@ -54,11 +59,7 @@ func (m *Connection) Write(ctx context.Context, writeRequest apiModel.PlcWriteRe
 
 func (m *Connection) singleWrite(ctx context.Context, writeRequest apiModel.PlcWriteRequest, result chan apiModel.PlcWriteRequestResult) {
 	if len(writeRequest.GetTagNames()) != 1 {
-		result <- &internalModel.DefaultPlcWriteRequestResult{
-			Request:  writeRequest,
-			Response: nil,
-			Err:      errors.New("this part of the ads driver only supports single-item requests"),
-		}
+		result <- internalModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.New("this part of the ads driver only supports single-item requests"))
 		log.Debug().Msgf("this part of the ads driver only supports single-item requests. Got %d tags", len(writeRequest.GetTagNames()))
 		return
 	}
@@ -115,12 +116,14 @@ func (m *Connection) singleWrite(ctx context.Context, writeRequest apiModel.PlcW
 	data := io.GetBytes()
 
 	go func() {
+		defer func() {
+			if err := recover(); err != nil {
+				result <- internalModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.Errorf("panic-ed %v", err))
+			}
+		}()
 		response, err := m.ExecuteAdsWriteRequest(ctx, directAdsTag.IndexGroup, directAdsTag.IndexOffset, data)
 		if err != nil {
-			result <- &internalModel.DefaultPlcWriteRequestResult{
-				Request: writeRequest,
-				Err:     errors.Wrap(err, "got error executing the write request"),
-			}
+			result <- internalModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.Wrap(err, "got error executing the write request"))
 			return
 		}
 

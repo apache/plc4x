@@ -89,10 +89,8 @@ func (m *Driver) GetConnectionWithContext(ctx context.Context, transportUrl url.
 }
 
 func (m *Driver) reportError(err error) <-chan plc4go.PlcConnectionConnectResult {
-	ch := make(chan plc4go.PlcConnectionConnectResult)
-	go func() {
-		ch <- _default.NewDefaultPlcConnectionConnectResult(nil, err)
-	}()
+	ch := make(chan plc4go.PlcConnectionConnectResult, 1)
+	ch <- _default.NewDefaultPlcConnectionConnectResult(nil, err)
 	return ch
 }
 

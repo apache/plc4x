@@ -236,6 +236,11 @@ func (d *defaultConnection) ConnectWithContext(ctx context.Context) <-chan plc4g
 	log.Trace().Msg("Connecting")
 	ch := make(chan plc4go.PlcConnectionConnectResult)
 	go func() {
+		defer func() {
+			if err := recover(); err != nil {
+				ch <- NewDefaultPlcConnectionConnectResult(nil, errors.Errorf("panic-ed %v", err))
+			}
+		}()
 		err := d.GetMessageCodec().ConnectWithContext(ctx)
 		d.SetConnected(true)
 		connection := d.GetConnection()
@@ -268,10 +273,8 @@ func (d *defaultConnection) Close() <-chan plc4go.PlcConnectionCloseResult {
 	}
 	err := d.GetTransportInstance().Close()
 	d.SetConnected(false)
-	ch := make(chan plc4go.PlcConnectionCloseResult)
-	go func() {
-		ch <- NewDefaultPlcConnectionCloseResult(d.GetConnection(), err)
-	}()
+	ch := make(chan plc4go.PlcConnectionCloseResult, 1)
+	ch <- NewDefaultPlcConnectionCloseResult(d.GetConnection(), err)
 	return ch
 }
 
@@ -283,6 +286,11 @@ func (d *defaultConnection) IsConnected() bool {
 func (d *defaultConnection) Ping() <-chan plc4go.PlcConnectionPingResult {
 	ch := make(chan plc4go.PlcConnectionPingResult)
 	go func() {
+		defer func() {
+			if err := recover(); err != nil {
+				ch <- NewDefaultPlcConnectionPingResult(errors.Errorf("panic-ed %v", err))
+			}
+		}()
 		if d.GetConnection().IsConnected() {
 			ch <- NewDefaultPlcConnectionPingResult(nil)
 		} else {

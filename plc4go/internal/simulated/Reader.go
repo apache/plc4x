@@ -21,13 +21,14 @@ package simulated
 
 import (
 	"context"
+	"github.com/pkg/errors"
 	"strconv"
 	"time"
 
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
 	"github.com/apache/plc4x/plc4go/spi"
-	model2 "github.com/apache/plc4x/plc4go/spi/model"
+	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 )
 
 type Reader struct {
@@ -47,6 +48,11 @@ func NewReader(device *Device, options map[string][]string, tracer *spi.Tracer) 
 func (r *Reader) Read(_ context.Context, readRequest model.PlcReadRequest) <-chan model.PlcReadRequestResult {
 	ch := make(chan model.PlcReadRequestResult)
 	go func() {
+		defer func() {
+			if err := recover(); err != nil {
+				ch <- spiModel.NewDefaultPlcReadRequestResult(readRequest, nil, errors.Errorf("panic-ed %v", err))
+			}
+		}()
 		var txId string
 		if r.tracer != nil {
 			txId = r.tracer.AddTransactionalStartTrace("read", "started")
@@ -86,9 +92,9 @@ func (r *Reader) Read(_ context.Context, readRequest model.PlcReadRequest) <-cha
 			r.tracer.AddTransactionalTrace(txId, "read", "success")
 		}
 		// Emit the response
-		ch <- &model2.DefaultPlcReadRequestResult{
+		ch <- &spiModel.DefaultPlcReadRequestResult{
 			Request:  readRequest,
-			Response: model2.NewDefaultPlcReadResponse(readRequest, responseCodes, responseValues),
+			Response: spiModel.NewDefaultPlcReadResponse(readRequest, responseCodes, responseValues),
 			Err:      nil,
 		}
 	}()

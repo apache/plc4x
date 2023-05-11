@@ -110,6 +110,11 @@ func (m *Connection) ConnectWithContext(ctx context.Context) <-chan plc4go.PlcCo
 	log.Trace().Msg("Connecting")
 	ch := make(chan plc4go.PlcConnectionConnectResult)
 	go func() {
+		defer func() {
+			if err := recover(); err != nil {
+				ch <- _default.NewDefaultPlcConnectionConnectResult(nil, errors.Errorf("panic-ed %v", err))
+			}
+		}()
 		err := m.messageCodec.Connect()
 		if err != nil {
 			ch <- _default.NewDefaultPlcConnectionConnectResult(m, err)

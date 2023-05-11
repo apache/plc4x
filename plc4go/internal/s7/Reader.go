@@ -27,7 +27,7 @@ import (
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/s7/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
-	plc4goModel "github.com/apache/plc4x/plc4go/spi/model"
+	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	spiValues "github.com/apache/plc4x/plc4go/spi/values"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
@@ -52,13 +52,18 @@ func (m *Reader) Read(ctx context.Context, readRequest model.PlcReadRequest) <-c
 	log.Trace().Msg("Reading")
 	result := make(chan model.PlcReadRequestResult)
 	go func() {
+		defer func() {
+			if err := recover(); err != nil {
+				result <- spiModel.NewDefaultPlcReadRequestResult(readRequest, nil, errors.Errorf("panic-ed %v", err))
+			}
+		}()
 
 		requestItems := make([]readWriteModel.S7VarRequestParameterItem, len(readRequest.GetTagNames()))
 		for i, tagName := range readRequest.GetTagNames() {
 			tag := readRequest.GetTag(tagName)
 			address, err := encodeS7Address(tag)
 			if err != nil {
-				result <- &plc4goModel.DefaultPlcReadRequestResult{
+				result <- &spiModel.DefaultPlcReadRequestResult{
 					Request:  readRequest,
 					Response: nil,
 					Err:      errors.Wrapf(err, "Error encoding s7 address for tag %s", tagName),
@@ -124,25 +129,25 @@ func (m *Reader) Read(ctx context.Context, readRequest model.PlcReadRequest) <-c
 				readResponse, err := m.ToPlc4xReadResponse(payload, readRequest)
 
 				if err != nil {
-					result <- &plc4goModel.DefaultPlcReadRequestResult{
+					result <- &spiModel.DefaultPlcReadRequestResult{
 						Request: readRequest,
 						Err:     errors.Wrap(err, "Error decoding response"),
 					}
 					return transaction.EndRequest()
 				}
-				result <- &plc4goModel.DefaultPlcReadRequestResult{
+				result <- &spiModel.DefaultPlcReadRequestResult{
 					Request:  readRequest,
 					Response: readResponse,
 				}
 				return transaction.EndRequest()
 			}, func(err error) error {
-				result <- &plc4goModel.DefaultPlcReadRequestResult{
+				result <- &spiModel.DefaultPlcReadRequestResult{
 					Request: readRequest,
 					Err:     errors.Wrap(err, "got timeout while waiting for response"),
 				}
 				return transaction.EndRequest()
 			}, time.Second*1); err != nil {
-				result <- &plc4goModel.DefaultPlcReadRequestResult{
+				result <- &spiModel.DefaultPlcReadRequestResult{
 					Request:  readRequest,
 					Response: nil,
 					Err:      errors.Wrap(err, "error sending message"),
@@ -181,7 +186,7 @@ func (m *Reader) ToPlc4xReadResponse(response readWriteModel.S7Message, readRequ
 				plcValues[tagName] = spiValues.NewPlcNULL()
 			}
 			log.Trace().Msg("Returning the response")
-			return plc4goModel.NewDefaultPlcReadResponse(readRequest, responseCodes, plcValues), nil
+			return spiModel.NewDefaultPlcReadResponse(readRequest, responseCodes, plcValues), nil
 		} else {
 			log.Warn().Msgf("Got an unknown error response from the PLC. Error Class: %d, Error Code %d. "+
 				"We probably need to implement explicit handling for this, so please file a bug-report "+
@@ -192,7 +197,7 @@ func (m *Reader) ToPlc4xReadResponse(response readWriteModel.S7Message, readRequ
 				responseCodes[tagName] = model.PlcResponseCode_INTERNAL_ERROR
 				plcValues[tagName] = spiValues.NewPlcNULL()
 			}
-			return plc4goModel.NewDefaultPlcReadResponse(readRequest, responseCodes, plcValues), nil
+			return spiModel.NewDefaultPlcReadResponse(readRequest, responseCodes, plcValues), nil
 		}
 	}
 
@@ -226,7 +231,7 @@ func (m *Reader) ToPlc4xReadResponse(response readWriteModel.S7Message, readRequ
 
 	// Return the response
 	log.Trace().Msg("Returning the response")
-	return plc4goModel.NewDefaultPlcReadResponse(readRequest, responseCodes, plcValues), nil
+	return spiModel.NewDefaultPlcReadResponse(readRequest, responseCodes, plcValues), nil
 }
 
 // Currently we only support the S7 Any type of addresses. This helper simply converts the S7Tag from PLC4X into

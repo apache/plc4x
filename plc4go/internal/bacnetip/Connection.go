@@ -23,6 +23,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"sync"
 	"time"
 
@@ -79,8 +80,18 @@ func (c *Connection) ConnectWithContext(ctx context.Context) <-chan plc4go.PlcCo
 	log.Trace().Msg("Connecting")
 	ch := make(chan plc4go.PlcConnectionConnectResult)
 	go func() {
+		defer func() {
+			if err := recover(); err != nil {
+				ch <- _default.NewDefaultPlcConnectionConnectResult(nil, errors.Errorf("panic-ed %v", err))
+			}
+		}()
 		connectionConnectResult := <-c.DefaultConnection.ConnectWithContext(ctx)
 		go func() {
+			defer func() {
+				if err := recover(); err != nil {
+					ch <- _default.NewDefaultPlcConnectionConnectResult(nil, errors.Errorf("panic-ed %v", err))
+				}
+			}()
 			for c.IsConnected() {
 				log.Trace().Msg("Polling data")
 				incomingMessageChannel := c.messageCodec.GetDefaultIncomingMessageChannel()

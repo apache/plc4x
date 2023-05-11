@@ -142,6 +142,11 @@ func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.
 
 		// Start a worker to receive responses
 		go func(discoveryItem *discovery) {
+			defer func() {
+				if err := recover(); err != nil {
+					log.Error().Msgf("panic-ed %v", err)
+				}
+			}()
 			buf := make([]byte, 1024)
 			for {
 				length, fromAddr, err := socket.ReadFromUDP(buf)

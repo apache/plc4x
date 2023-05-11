@@ -103,6 +103,11 @@ func (m *Connection) ConnectWithContext(ctx context.Context) <-chan plc4go.PlcCo
 	m.driverContext.clear()
 
 	go func() {
+		defer func() {
+			if err := recover(); err != nil {
+				ch <- _default.NewDefaultPlcConnectionCloseResult(nil, errors.Errorf("Recovered from panic: %v", err))
+			}
+		}()
 		err := m.messageCodec.Connect()
 		if err != nil {
 			ch <- _default.NewDefaultPlcConnectionConnectResult(m, err)
@@ -155,6 +160,11 @@ func (m *Connection) setupConnection(ctx context.Context, ch chan plc4go.PlcConn
 	// (Messages that are not responses to outgoing messages)
 	defaultIncomingMessageChannel := m.messageCodec.GetDefaultIncomingMessageChannel()
 	go func() {
+		defer func() {
+			if err := recover(); err != nil {
+				log.Error().Msgf("panic-ed: %v", err)
+			}
+		}()
 		for message := range defaultIncomingMessageChannel {
 			switch message.(type) {
 			case model.AmsTCPPacket:

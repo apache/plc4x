@@ -27,7 +27,7 @@ import (
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/s7/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
-	plc4goModel "github.com/apache/plc4x/plc4go/spi/model"
+	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 )
@@ -50,6 +50,11 @@ func (m Writer) Write(ctx context.Context, writeRequest model.PlcWriteRequest) <
 	// TODO: handle context
 	result := make(chan model.PlcWriteRequestResult)
 	go func() {
+		defer func() {
+			if err := recover(); err != nil {
+				result <- spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.Errorf("panic-ed %v", err))
+			}
+		}()
 		parameterItems := make([]readWriteModel.S7VarRequestParameterItem, len(writeRequest.GetTagNames()))
 		payloadItems := make([]readWriteModel.S7VarPayloadDataItem, len(writeRequest.GetTagNames()))
 		for i, tagName := range writeRequest.GetTagNames() {
@@ -57,7 +62,7 @@ func (m Writer) Write(ctx context.Context, writeRequest model.PlcWriteRequest) <
 			plcValue := writeRequest.GetValue(tagName)
 			s7Address, err := encodeS7Address(tag)
 			if err != nil {
-				result <- &plc4goModel.DefaultPlcWriteRequestResult{
+				result <- &spiModel.DefaultPlcWriteRequestResult{
 					Request:  writeRequest,
 					Response: nil,
 					Err:      errors.Wrapf(err, "Error encoding s7 address for tag %s", tagName),
@@ -67,7 +72,7 @@ func (m Writer) Write(ctx context.Context, writeRequest model.PlcWriteRequest) <
 			parameterItems[i] = readWriteModel.NewS7VarRequestParameterItemAddress(s7Address)
 			value, err := serializePlcValue(tag, plcValue)
 			if err != nil {
-				result <- &plc4goModel.DefaultPlcWriteRequestResult{
+				result <- &spiModel.DefaultPlcWriteRequestResult{
 					Request:  writeRequest,
 					Response: nil,
 					Err:      errors.Wrapf(err, "Error encoding value for tag %s", tagName),
@@ -127,25 +132,25 @@ func (m Writer) Write(ctx context.Context, writeRequest model.PlcWriteRequest) <
 				readResponse, err := m.ToPlc4xWriteResponse(payload, writeRequest)
 
 				if err != nil {
-					result <- &plc4goModel.DefaultPlcWriteRequestResult{
+					result <- &spiModel.DefaultPlcWriteRequestResult{
 						Request: writeRequest,
 						Err:     errors.Wrap(err, "Error decoding response"),
 					}
 					return transaction.EndRequest()
 				}
-				result <- &plc4goModel.DefaultPlcWriteRequestResult{
+				result <- &spiModel.DefaultPlcWriteRequestResult{
 					Request:  writeRequest,
 					Response: readResponse,
 				}
 				return transaction.EndRequest()
 			}, func(err error) error {
-				result <- &plc4goModel.DefaultPlcWriteRequestResult{
+				result <- &spiModel.DefaultPlcWriteRequestResult{
 					Request: writeRequest,
 					Err:     errors.New("got timeout while waiting for response"),
 				}
 				return transaction.EndRequest()
 			}, time.Second*1); err != nil {
-				result <- &plc4goModel.DefaultPlcWriteRequestResult{
+				result <- &spiModel.DefaultPlcWriteRequestResult{
 					Request:  writeRequest,
 					Response: nil,
 					Err:      errors.Wrap(err, "error sending message"),
@@ -182,7 +187,7 @@ func (m Writer) ToPlc4xWriteResponse(response readWriteModel.S7Message, writeReq
 				responseCodes[tagName] = model.PlcResponseCode_ACCESS_DENIED
 			}
 			log.Trace().Msg("Returning the response")
-			return plc4goModel.NewDefaultPlcWriteResponse(writeRequest, responseCodes), nil
+			return spiModel.NewDefaultPlcWriteResponse(writeRequest, responseCodes), nil
 		} else {
 			log.Warn().Msgf("Got an unknown error response from the PLC. Error Class: %d, Error Code %d. "+
 				"We probably need to implement explicit handling for this, so please file a bug-report "+
@@ -192,7 +197,7 @@ func (m Writer) ToPlc4xWriteResponse(response readWriteModel.S7Message, writeReq
 			for _, tagName := range writeRequest.GetTagNames() {
 				responseCodes[tagName] = model.PlcResponseCode_INTERNAL_ERROR
 			}
-			return plc4goModel.NewDefaultPlcWriteResponse(writeRequest, responseCodes), nil
+			return spiModel.NewDefaultPlcWriteResponse(writeRequest, responseCodes), nil
 		}
 	}
 
@@ -218,7 +223,7 @@ func (m Writer) ToPlc4xWriteResponse(response readWriteModel.S7Message, writeReq
 
 	// Return the response
 	log.Trace().Msg("Returning the response")
-	return plc4goModel.NewDefaultPlcWriteResponse(writeRequest, responseCodes), nil
+	return spiModel.NewDefaultPlcWriteResponse(writeRequest, responseCodes), nil
 }
 
 func serializePlcValue(tag model.PlcTag, plcValue values.PlcValue) (readWriteModel.S7VarPayloadDataItem, error) {

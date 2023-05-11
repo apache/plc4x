@@ -50,6 +50,11 @@ func (m *Writer) Write(ctx context.Context, writeRequest apiModel.PlcWriteReques
 	log.Trace().Msg("Writing")
 	result := make(chan apiModel.PlcWriteRequestResult)
 	go func() {
+		defer func() {
+			if err := recover(); err != nil {
+				result <- spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.Errorf("panic-ed %v", err))
+			}
+		}()
 		numTags := len(writeRequest.GetTagNames())
 		if numTags > 20 { // letters g-z
 			result <- &spiModel.DefaultPlcWriteRequestResult{

@@ -138,6 +138,11 @@ func (d *DefaultPlcReadRequest) ExecuteWithContext(ctx context.Context) <-chan a
 	// Create a new result-channel, which completes as soon as all sub-result-channels have returned
 	resultChannel := make(chan apiModel.PlcReadRequestResult)
 	go func() {
+		defer func() {
+			if err := recover(); err != nil {
+				resultChannel <- NewDefaultPlcReadRequestResult(d, nil, errors.Errorf("panic-ed %v", err))
+			}
+		}()
 		var subResults []apiModel.PlcReadRequestResult
 		// Iterate over all sub-results
 		for _, subResultChannel := range subResultChannels {

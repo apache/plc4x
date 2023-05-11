@@ -28,8 +28,9 @@ import (
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	_default "github.com/apache/plc4x/plc4go/spi/default"
-	internalModel "github.com/apache/plc4x/plc4go/spi/model"
+	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/spi/utils"
+
 	"github.com/pkg/errors"
 )
 
@@ -79,6 +80,11 @@ func (c *Connection) Connect() <-chan plc4go.PlcConnectionConnectResult {
 func (c *Connection) ConnectWithContext(ctx context.Context) <-chan plc4go.PlcConnectionConnectResult {
 	ch := make(chan plc4go.PlcConnectionConnectResult)
 	go func() {
+		defer func() {
+			if err := recover(); err != nil {
+				ch <- _default.NewDefaultPlcConnectionCloseResult(nil, errors.Errorf("panic-ed %v", err))
+			}
+		}()
 		// Check if the connection was already connected
 		if c.connected {
 			if c.tracer != nil {
@@ -130,6 +136,11 @@ func (c *Connection) BlockingClose() {
 func (c *Connection) Close() <-chan plc4go.PlcConnectionCloseResult {
 	ch := make(chan plc4go.PlcConnectionCloseResult)
 	go func() {
+		defer func() {
+			if err := recover(); err != nil {
+				ch <- _default.NewDefaultPlcConnectionConnectResult(nil, errors.Errorf("panic-ed %v", err))
+			}
+		}()
 		// Check if the connection is connected.
 		if !c.connected {
 			if c.tracer != nil {
@@ -171,6 +182,11 @@ func (c *Connection) IsConnected() bool {
 func (c *Connection) Ping() <-chan plc4go.PlcConnectionPingResult {
 	ch := make(chan plc4go.PlcConnectionPingResult)
 	go func() {
+		defer func() {
+			if err := recover(); err != nil {
+				ch <- _default.NewDefaultPlcConnectionPingResult(errors.Errorf("panic-ed %v", err))
+			}
+		}()
 		// Check if the connection is connected
 		if !c.connected {
 			if c.tracer != nil {
@@ -229,15 +245,15 @@ func (c *Connection) GetMetadata() model.PlcConnectionMetadata {
 }
 
 func (c *Connection) ReadRequestBuilder() model.PlcReadRequestBuilder {
-	return internalModel.NewDefaultPlcReadRequestBuilder(c.tagHandler, NewReader(c.device, c.options, c.tracer))
+	return spiModel.NewDefaultPlcReadRequestBuilder(c.tagHandler, NewReader(c.device, c.options, c.tracer))
 }
 
 func (c *Connection) WriteRequestBuilder() model.PlcWriteRequestBuilder {
-	return internalModel.NewDefaultPlcWriteRequestBuilder(c.tagHandler, c.valueHandler, NewWriter(c.device, c.options, c.tracer))
+	return spiModel.NewDefaultPlcWriteRequestBuilder(c.tagHandler, c.valueHandler, NewWriter(c.device, c.options, c.tracer))
 }
 
 func (c *Connection) SubscriptionRequestBuilder() model.PlcSubscriptionRequestBuilder {
-	return internalModel.NewDefaultPlcSubscriptionRequestBuilder(c.tagHandler, c.valueHandler, NewSubscriber(c.device, c.options, c.tracer))
+	return spiModel.NewDefaultPlcSubscriptionRequestBuilder(c.tagHandler, c.valueHandler, NewSubscriber(c.device, c.options, c.tracer))
 }
 
 func (c *Connection) UnsubscriptionRequestBuilder() model.PlcUnsubscriptionRequestBuilder {

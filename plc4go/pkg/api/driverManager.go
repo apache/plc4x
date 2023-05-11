@@ -203,10 +203,8 @@ func (m *plcDriverManger) GetConnection(connectionString string) <-chan PlcConne
 	connectionUrl, err := url.Parse(connectionString)
 	if err != nil {
 		log.Error().Err(err).Msg("Error parsing connection")
-		ch := make(chan PlcConnectionConnectResult)
-		go func() {
-			ch <- &plcConnectionConnectResult{err: errors.Wrap(err, "error parsing connection string")}
-		}()
+		ch := make(chan PlcConnectionConnectResult, 1)
+		ch <- &plcConnectionConnectResult{err: errors.Wrap(err, "error parsing connection string")}
 		return ch
 	}
 	log.Debug().Stringer("connectionUrl", connectionUrl).Msg("parsed connection URL")
@@ -219,10 +217,8 @@ func (m *plcDriverManger) GetConnection(connectionString string) <-chan PlcConne
 	driver, err := m.GetDriver(driverName)
 	if err != nil {
 		log.Err(err).Str("driverName", driverName).Msgf("Couldn't get driver for %s", driverName)
-		ch := make(chan PlcConnectionConnectResult)
-		go func() {
-			ch <- &plcConnectionConnectResult{err: errors.Wrap(err, "error getting driver for connection string")}
-		}()
+		ch := make(chan PlcConnectionConnectResult, 1)
+		ch <- &plcConnectionConnectResult{err: errors.Wrap(err, "error getting driver for connection string")}
 		return ch
 	}
 	log.Debug().Stringer("connectionUrl", connectionUrl).Msgf("got driver %s", driver.GetProtocolName())
@@ -237,10 +233,8 @@ func (m *plcDriverManger) GetConnection(connectionString string) <-chan PlcConne
 		connectionUrl, err := url.Parse(connectionUrl.Opaque)
 		if err != nil {
 			log.Err(err).Str("connectionUrl.Opaque", connectionUrl.Opaque).Msg("Couldn't get transport due to parsing error")
-			ch := make(chan PlcConnectionConnectResult)
-			go func() {
-				ch <- &plcConnectionConnectResult{err: errors.Wrap(err, "error parsing connection string")}
-			}()
+			ch := make(chan PlcConnectionConnectResult, 1)
+			ch <- &plcConnectionConnectResult{err: errors.Wrap(err, "error parsing connection string")}
 			return ch
 		}
 		transportName = connectionUrl.Scheme
@@ -260,10 +254,8 @@ func (m *plcDriverManger) GetConnection(connectionString string) <-chan PlcConne
 	// If no transport has been specified explicitly or per default, we have to abort.
 	if transportName == "" {
 		log.Error().Msg("got a empty transport")
-		ch := make(chan PlcConnectionConnectResult)
-		go func() {
-			ch <- &plcConnectionConnectResult{err: errors.New("no transport specified and no default defined by driver")}
-		}()
+		ch := make(chan PlcConnectionConnectResult, 1)
+		ch <- &plcConnectionConnectResult{err: errors.New("no transport specified and no default defined by driver")}
 		return ch
 	}
 

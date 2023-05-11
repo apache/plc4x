@@ -21,6 +21,7 @@ package knxnetip
 
 import (
 	"context"
+	"github.com/pkg/errors"
 	"time"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
@@ -47,6 +48,11 @@ func (m *Subscriber) Subscribe(ctx context.Context, subscriptionRequest apiModel
 	// TODO: handle context
 	result := make(chan apiModel.PlcSubscriptionRequestResult)
 	go func() {
+		defer func() {
+			if err := recover(); err != nil {
+				result <- spiModel.NewDefaultPlcSubscriptionRequestResult(subscriptionRequest, nil, errors.Errorf("panic-ed %v", err))
+			}
+		}()
 		internalPlcSubscriptionRequest := subscriptionRequest.(*spiModel.DefaultPlcSubscriptionRequest)
 
 		// Add this subscriber to the connection.

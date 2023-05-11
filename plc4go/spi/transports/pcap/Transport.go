@@ -130,6 +130,11 @@ func (m *TransportInstance) Connect() error {
 	m.reader = bufio.NewReader(buffer)
 
 	go func(m *TransportInstance, buffer *bytes.Buffer) {
+		defer func() {
+			if err := recover(); err != nil {
+				log.Error().Msgf("panic-ed %v", err)
+			}
+		}()
 		packageCount := 0
 		var lastPacketTime *time.Time
 		for m.connected {

@@ -44,6 +44,11 @@ func (m *Connection) Read(ctx context.Context, readRequest apiModel.PlcReadReque
 	log.Trace().Msg("Reading")
 	result := make(chan apiModel.PlcReadRequestResult)
 	go func() {
+		defer func() {
+			if err := recover(); err != nil {
+				result <- internalModel.NewDefaultPlcReadRequestResult(readRequest, nil, errors.Errorf("panic-ed %v", err))
+			}
+		}()
 		if len(readRequest.GetTagNames()) <= 1 {
 			m.singleRead(ctx, readRequest, result)
 		} else {
@@ -55,11 +60,7 @@ func (m *Connection) Read(ctx context.Context, readRequest apiModel.PlcReadReque
 
 func (m *Connection) singleRead(ctx context.Context, readRequest apiModel.PlcReadRequest, result chan apiModel.PlcReadRequestResult) {
 	if len(readRequest.GetTagNames()) != 1 {
-		result <- &internalModel.DefaultPlcReadRequestResult{
-			Request:  readRequest,
-			Response: nil,
-			Err:      errors.New("this part of the ads driver only supports single-item requests"),
-		}
+		result <- internalModel.NewDefaultPlcReadRequestResult(readRequest, nil, errors.New("this part of the ads driver only supports single-item requests"))
 		log.Debug().Msgf("this part of the ads driver only supports single-item requests. Got %d tags", len(readRequest.GetTagNames()))
 		return
 	}
@@ -70,11 +71,7 @@ func (m *Connection) singleRead(ctx context.Context, readRequest apiModel.PlcRea
 	if model.NeedsResolving(tag) {
 		adsField, err := model.CastToSymbolicPlcTagFromPlcTag(tag)
 		if err != nil {
-			result <- &internalModel.DefaultPlcReadRequestResult{
-				Request:  readRequest,
-				Response: nil,
-				Err:      errors.Wrap(err, "invalid tag item type"),
-			}
+			result <- internalModel.NewDefaultPlcReadRequestResult(readRequest, nil, errors.Wrap(err, "invalid tag item type"))
 			log.Debug().Msgf("Invalid tag item type %T", tag)
 			return
 		}
@@ -92,16 +89,17 @@ func (m *Connection) singleRead(ctx context.Context, readRequest apiModel.PlcRea
 	}
 	directAdsTag, ok := tag.(*model.DirectPlcTag)
 	if !ok {
-		result <- &internalModel.DefaultPlcReadRequestResult{
-			Request:  readRequest,
-			Response: nil,
-			Err:      errors.New("invalid tag item type"),
-		}
+		result <- internalModel.NewDefaultPlcReadRequestResult(readRequest, nil, errors.New("invalid tag item type"))
 		log.Debug().Msgf("Invalid tag item type %T", tag)
 		return
 	}
 
 	go func() {
+		defer func() {
+			if err := recover(); err != nil {
+				result <- internalModel.NewDefaultPlcReadRequestResult(readRequest, nil, errors.Errorf("panic-ed %v", err))
+			}
+		}()
 		response, err := m.ExecuteAdsReadRequest(ctx, directAdsTag.IndexGroup, directAdsTag.IndexOffset, directAdsTag.DataType.GetSize())
 		if err != nil {
 			result <- &internalModel.DefaultPlcReadRequestResult{

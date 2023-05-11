@@ -28,7 +28,7 @@ import (
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/modbus/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
-	plc4goModel "github.com/apache/plc4x/plc4go/spi/model"
+	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 )
@@ -53,11 +53,7 @@ func (m Writer) Write(ctx context.Context, writeRequest model.PlcWriteRequest) <
 	go func() {
 		// If we are requesting only one tag, use a
 		if len(writeRequest.GetTagNames()) != 1 {
-			result <- &plc4goModel.DefaultPlcWriteRequestResult{
-				Request:  writeRequest,
-				Response: nil,
-				Err:      errors.New("modbus only supports single-item requests"),
-			}
+			result <- spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.New("modbus only supports single-item requests"))
 			return
 		}
 		tagName := writeRequest.GetTagNames()[0]
@@ -66,11 +62,7 @@ func (m Writer) Write(ctx context.Context, writeRequest model.PlcWriteRequest) <
 		tag := writeRequest.GetTag(tagName)
 		modbusTag, err := CastToModbusTagFromPlcTag(tag)
 		if err != nil {
-			result <- &plc4goModel.DefaultPlcWriteRequestResult{
-				Request:  writeRequest,
-				Response: nil,
-				Err:      errors.Wrap(err, "invalid tag item type"),
-			}
+			result <- spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.Wrap(err, "invalid tag item type"))
 			return
 		}
 
@@ -78,7 +70,7 @@ func (m Writer) Write(ctx context.Context, writeRequest model.PlcWriteRequest) <
 		value := writeRequest.GetValue(tagName)
 		data, err := readWriteModel.DataItemSerialize(value, modbusTag.Datatype, modbusTag.Quantity)
 		if err != nil {
-			result <- &plc4goModel.DefaultPlcWriteRequestResult{
+			result <- &spiModel.DefaultPlcWriteRequestResult{
 				Request:  writeRequest,
 				Response: nil,
 				Err:      errors.Wrap(err, "error serializing value"),
@@ -102,14 +94,14 @@ func (m Writer) Write(ctx context.Context, writeRequest model.PlcWriteRequest) <
 				numWords,
 				data)
 		case ExtendedRegister:
-			result <- &plc4goModel.DefaultPlcWriteRequestResult{
+			result <- &spiModel.DefaultPlcWriteRequestResult{
 				Request:  writeRequest,
 				Response: nil,
 				Err:      errors.New("modbus currently doesn't support extended register requests"),
 			}
 			return
 		default:
-			result <- &plc4goModel.DefaultPlcWriteRequestResult{
+			result <- &spiModel.DefaultPlcWriteRequestResult{
 				Request:  writeRequest,
 				Response: nil,
 				Err:      errors.New("unsupported tag type"),
@@ -139,19 +131,19 @@ func (m Writer) Write(ctx context.Context, writeRequest model.PlcWriteRequest) <
 			readResponse, err := m.ToPlc4xWriteResponse(requestAdu, responseAdu, writeRequest)
 
 			if err != nil {
-				result <- &plc4goModel.DefaultPlcWriteRequestResult{
+				result <- &spiModel.DefaultPlcWriteRequestResult{
 					Request: writeRequest,
 					Err:     errors.Wrap(err, "Error decoding response"),
 				}
 			} else {
-				result <- &plc4goModel.DefaultPlcWriteRequestResult{
+				result <- &spiModel.DefaultPlcWriteRequestResult{
 					Request:  writeRequest,
 					Response: readResponse,
 				}
 			}
 			return nil
 		}, func(err error) error {
-			result <- &plc4goModel.DefaultPlcWriteRequestResult{
+			result <- &spiModel.DefaultPlcWriteRequestResult{
 				Request: writeRequest,
 				Err:     errors.New("got timeout while waiting for response"),
 			}
@@ -209,5 +201,5 @@ func (m Writer) ToPlc4xWriteResponse(requestAdu readWriteModel.ModbusTcpADU, res
 
 	// Return the response
 	log.Trace().Msg("Returning the response")
-	return plc4goModel.NewDefaultPlcWriteResponse(writeRequest, responseCodes), nil
+	return spiModel.NewDefaultPlcWriteResponse(writeRequest, responseCodes), nil
 }

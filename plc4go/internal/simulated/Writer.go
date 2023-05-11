@@ -21,12 +21,13 @@ package simulated
 
 import (
 	"context"
+	"github.com/pkg/errors"
 	"strconv"
 	"time"
 
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/spi"
-	model2 "github.com/apache/plc4x/plc4go/spi/model"
+	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 )
 
 type Writer struct {
@@ -46,6 +47,11 @@ func NewWriter(device *Device, options map[string][]string, tracer *spi.Tracer) 
 func (w *Writer) Write(_ context.Context, writeRequest model.PlcWriteRequest) <-chan model.PlcWriteRequestResult {
 	ch := make(chan model.PlcWriteRequestResult)
 	go func() {
+		defer func() {
+			if err := recover(); err != nil {
+				ch <- spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.Errorf("panic-ed %v", err))
+			}
+		}()
 		var txId string
 		if w.tracer != nil {
 			txId = w.tracer.AddTransactionalStartTrace("write", "started")
@@ -78,9 +84,9 @@ func (w *Writer) Write(_ context.Context, writeRequest model.PlcWriteRequest) <-
 			w.tracer.AddTransactionalTrace(txId, "write", "success")
 		}
 		// Emit the response
-		ch <- &model2.DefaultPlcWriteRequestResult{
+		ch <- &spiModel.DefaultPlcWriteRequestResult{
 			Request:  writeRequest,
-			Response: model2.NewDefaultPlcWriteResponse(writeRequest, responseCodes),
+			Response: spiModel.NewDefaultPlcWriteResponse(writeRequest, responseCodes),
 			Err:      nil,
 		}
 	}()

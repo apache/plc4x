@@ -40,6 +40,11 @@ func GetIPAddresses(ctx context.Context, netInterface net.Interface, useArpBased
 		return nil, errors.Wrap(err, "Error getting addresses")
 	}
 	go func() {
+		defer func() {
+			if err := recover(); err != nil {
+				log.Error().Msgf("panic-ed %v", err)
+			}
+		}()
 		wg := &sync.WaitGroup{}
 		for _, address := range addrs {
 			// Check if context has been cancelled before continuing
@@ -120,6 +125,11 @@ func lockupIpsUsingArp(ctx context.Context, netInterface net.Interface, ipNet *n
 	wg.Add(1)
 	// Handler for processing incoming ARP responses.
 	go func(handle *pcap.Handle, iface net.Interface, stop chan struct{}) {
+		defer func() {
+			if err := recover(); err != nil {
+				log.Error().Msgf("panic-ed %v", err)
+			}
+		}()
 		src := gopacket.NewPacketSource(handle, layers.LayerTypeEthernet)
 		in := src.Packets()
 		for {

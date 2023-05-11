@@ -37,9 +37,10 @@ import (
 	driverModel "github.com/apache/plc4x/plc4go/protocols/knxnetip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/interceptors"
-	internalModel "github.com/apache/plc4x/plc4go/spi/model"
+	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/spi/transports"
 	"github.com/apache/plc4x/plc4go/spi/utils"
+
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 )
@@ -172,10 +173,10 @@ func NewConnection(transportInstance transports.TransportInstance, options map[s
 		tagHandler:   tagHandler,
 		valueHandler: NewValueHandler(),
 		requestInterceptor: interceptors.NewSingleItemRequestInterceptor(
-			internalModel.NewDefaultPlcReadRequest,
-			internalModel.NewDefaultPlcWriteRequest,
-			internalModel.NewDefaultPlcReadResponse,
-			internalModel.NewDefaultPlcWriteResponse,
+			spiModel.NewDefaultPlcReadRequest,
+			spiModel.NewDefaultPlcWriteRequest,
+			spiModel.NewDefaultPlcReadResponse,
+			spiModel.NewDefaultPlcWriteResponse,
 		),
 		subscribers:             []*Subscriber{},
 		valueCache:              map[uint16][]byte{},
@@ -226,6 +227,11 @@ func (m *Connection) ConnectWithContext(ctx context.Context) <-chan plc4go.PlcCo
 	}
 
 	go func() {
+		defer func() {
+			if err := recover(); err != nil {
+				result <- _default.NewDefaultPlcConnectionConnectResult(nil, errors.Errorf("panic-ed %v", err))
+			}
+		}()
 		// Open the UDP Connection
 		err := m.messageCodec.Connect()
 		if err != nil {
@@ -293,6 +299,11 @@ func (m *Connection) ConnectWithContext(ctx context.Context) <-chan plc4go.PlcCo
 				// are being handled.
 				log.Debug().Msg("Starting tunneling handler")
 				go func() {
+					defer func() {
+						if err := recover(); err != nil {
+							log.Error().Msgf("panic-ed %v", err)
+						}
+					}()
 					defaultIncomingMessageChannel := m.messageCodec.GetDefaultIncomingMessageChannel()
 					for m.handleTunnelingRequests {
 						incomingMessage := <-defaultIncomingMessageChannel
@@ -388,6 +399,11 @@ func (m *Connection) Close() <-chan plc4go.PlcConnectionCloseResult {
 	result := make(chan plc4go.PlcConnectionCloseResult)
 
 	go func() {
+		defer func() {
+			if err := recover(); err != nil {
+				result <- _default.NewDefaultPlcConnectionConnectResult(nil, errors.Errorf("panic-ed %v", err))
+			}
+		}()
 		// Stop the connection-state checker.
 		if m.connectionStateTimer != nil {
 			m.connectionStateTimer.Stop()
@@ -446,6 +462,11 @@ func (m *Connection) Ping() <-chan plc4go.PlcConnectionPingResult {
 	result := make(chan plc4go.PlcConnectionPingResult)
 
 	go func() {
+		defer func() {
+			if err := recover(); err != nil {
+				result <- _default.NewDefaultPlcConnectionPingResult(errors.Errorf("panic-ed %v", err))
+			}
+		}()
 		// Send the connection state request
 		_, err := m.sendConnectionStateRequest(ctx)
 		if err != nil {
@@ -464,26 +485,26 @@ func (m *Connection) GetMetadata() apiModel.PlcConnectionMetadata {
 }
 
 func (m *Connection) ReadRequestBuilder() apiModel.PlcReadRequestBuilder {
-	return internalModel.NewDefaultPlcReadRequestBuilder(
+	return spiModel.NewDefaultPlcReadRequestBuilder(
 		m.tagHandler, NewReader(m))
 }
 
 func (m *Connection) WriteRequestBuilder() apiModel.PlcWriteRequestBuilder {
-	return internalModel.NewDefaultPlcWriteRequestBuilder(
+	return spiModel.NewDefaultPlcWriteRequestBuilder(
 		m.tagHandler, m.valueHandler, NewWriter(m.messageCodec))
 }
 
 func (m *Connection) SubscriptionRequestBuilder() apiModel.PlcSubscriptionRequestBuilder {
-	return internalModel.NewDefaultPlcSubscriptionRequestBuilder(
+	return spiModel.NewDefaultPlcSubscriptionRequestBuilder(
 		m.tagHandler, m.valueHandler, NewSubscriber(m))
 }
 
 func (m *Connection) BrowseRequestBuilder() apiModel.PlcBrowseRequestBuilder {
-	return internalModel.NewDefaultPlcBrowseRequestBuilder(m.tagHandler, NewBrowser(m, m.messageCodec))
+	return spiModel.NewDefaultPlcBrowseRequestBuilder(m.tagHandler, NewBrowser(m, m.messageCodec))
 }
 
 func (m *Connection) UnsubscriptionRequestBuilder() apiModel.PlcUnsubscriptionRequestBuilder {
-	return nil /*internalModel.NewDefaultPlcUnsubscriptionRequestBuilder(
+	return nil /*spiModel.NewDefaultPlcUnsubscriptionRequestBuilder(
 	  m.tagHandler, m.valueHandler, NewSubscriber(m.messageCodec))*/
 }
 

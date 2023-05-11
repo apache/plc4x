@@ -55,6 +55,11 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 }
 
 func (m *Reader) readSync(ctx context.Context, readRequest apiModel.PlcReadRequest, result chan apiModel.PlcReadRequestResult) {
+	defer func() {
+		if err := recover(); err != nil {
+			result <- spiModel.NewDefaultPlcReadRequestResult(readRequest, nil, errors.Errorf("panic-ed %v", err))
+		}
+	}()
 	numTags := len(readRequest.GetTagNames())
 	if numTags > 20 { // letters g-z
 		result <- &spiModel.DefaultPlcReadRequestResult{

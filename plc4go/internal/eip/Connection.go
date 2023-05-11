@@ -106,6 +106,11 @@ func (m *Connection) ConnectWithContext(ctx context.Context) <-chan plc4go.PlcCo
 	log.Trace().Msg("Connecting")
 	ch := make(chan plc4go.PlcConnectionConnectResult)
 	go func() {
+		defer func() {
+			if err := recover(); err != nil {
+				ch <- _default.NewDefaultPlcConnectionConnectResult(nil, errors.Errorf("panic-ed %v", err))
+			}
+		}()
 		err := m.messageCodec.Connect()
 		if err != nil {
 			ch <- _default.NewDefaultPlcConnectionConnectResult(m, err)
@@ -132,6 +137,11 @@ func (m *Connection) Close() <-chan plc4go.PlcConnectionCloseResult {
 	ctx := context.TODO()
 	result := make(chan plc4go.PlcConnectionCloseResult)
 	go func() {
+		defer func() {
+			if err := recover(); err != nil {
+				result <- _default.NewDefaultPlcConnectionCloseResult(nil, errors.Errorf("panic-ed %v", err))
+			}
+		}()
 		log.Debug().Msg("Sending UnregisterSession EIP Packet")
 		_ = m.messageCodec.SendRequest(ctx, readWriteModel.NewEipDisconnectRequest(m.sessionHandle, 0, []byte(DefaultSenderContext), 0), func(message spi.Message) bool {
 			return true

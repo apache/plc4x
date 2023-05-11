@@ -51,10 +51,8 @@ func (m *Driver) GetConnectionWithContext(ctx context.Context, transportUrl url.
 	// Get an the transport specified in the url
 	transport, ok := transports[transportUrl.Scheme]
 	if !ok {
-		ch := make(chan plc4go.PlcConnectionConnectResult)
-		go func() {
-			ch <- _default.NewDefaultPlcConnectionConnectResult(nil, errors.Errorf("couldn't find transport for given transport url %#v", transportUrl))
-		}()
+		ch := make(chan plc4go.PlcConnectionConnectResult, 1)
+		ch <- _default.NewDefaultPlcConnectionConnectResult(nil, errors.Errorf("couldn't find transport for given transport url %#v", transportUrl))
 		return ch
 	}
 	// Provide a default-port to the transport, which is used, if the user doesn't provide on in the connection string.
@@ -62,10 +60,8 @@ func (m *Driver) GetConnectionWithContext(ctx context.Context, transportUrl url.
 	// Have the transport create a new transport-instance.
 	transportInstance, err := transport.CreateTransportInstance(transportUrl, options)
 	if err != nil {
-		ch := make(chan plc4go.PlcConnectionConnectResult)
-		go func() {
-			ch <- _default.NewDefaultPlcConnectionConnectResult(nil, errors.Errorf("couldn't initialize transport configuration for given transport url %#v", transportUrl))
-		}()
+		ch := make(chan plc4go.PlcConnectionConnectResult, 1)
+		ch <- _default.NewDefaultPlcConnectionConnectResult(nil, errors.Errorf("couldn't initialize transport configuration for given transport url %#v", transportUrl))
 		return ch
 	}
 

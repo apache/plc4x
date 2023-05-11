@@ -99,11 +99,16 @@ func (m *Connection) Subscribe(ctx context.Context, subscriptionRequest apiModel
 	// Create a new result-channel, which completes as soon as all sub-result-channels have returned
 	globalResultChannel := make(chan apiModel.PlcSubscriptionRequestResult)
 	go func() {
+		defer func() {
+			if err := recover(); err != nil {
+				log.Error().Msgf("panic-ed %v", err)
+			}
+		}()
 		// Iterate over all sub-results
 		for _, subResultChannel := range subResultChannels {
 			select {
 			case <-ctx.Done():
-				globalResultChannel <- &internalModel.DefaultPlcSubscriptionRequestResult{Request: subscriptionRequest, Err: ctx.Err()}
+				globalResultChannel <- internalModel.NewDefaultPlcSubscriptionRequestResult(subscriptionRequest, nil, ctx.Err())
 				return
 			case subResult := <-subResultChannel:
 				// These are all single value requests ... so it's safe to assume this shortcut.
@@ -123,6 +128,11 @@ func (m *Connection) Subscribe(ctx context.Context, subscriptionRequest apiModel
 func (m *Connection) subscribe(ctx context.Context, subscriptionRequest apiModel.PlcSubscriptionRequest) <-chan apiModel.PlcSubscriptionRequestResult {
 	responseChan := make(chan apiModel.PlcSubscriptionRequestResult)
 	go func(respChan chan apiModel.PlcSubscriptionRequestResult) {
+		defer func() {
+			if err := recover(); err != nil {
+				responseChan <- internalModel.NewDefaultPlcSubscriptionRequestResult(subscriptionRequest, nil, errors.Errorf("panic-ed %v", err))
+			}
+		}()
 		// At this point we are sure to only have single item direct tag requests.
 		tagName := subscriptionRequest.GetTagNames()[0]
 		directTag := subscriptionRequest.GetTag(tagName).(dirverModel.DirectPlcTag)

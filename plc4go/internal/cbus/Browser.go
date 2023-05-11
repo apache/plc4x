@@ -264,6 +264,11 @@ func (m Browser) getInstalledUnitAddressBytes(ctx context.Context) (map[byte]any
 	}
 	readCtx, readCtxCancel := context.WithTimeout(ctx, time.Second*2)
 	go func() {
+		defer func() {
+			if err := recover(); err != nil {
+				log.Error().Msgf("panic-ed %v", err)
+			}
+		}()
 		defer readCtxCancel()
 		readRequestResult := <-readRequest.ExecuteWithContext(readCtx)
 		if err := readRequestResult.GetErr(); err != nil {

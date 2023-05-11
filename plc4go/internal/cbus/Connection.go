@@ -111,6 +111,11 @@ func (c *Connection) ConnectWithContext(ctx context.Context) <-chan plc4go.PlcCo
 	log.Trace().Msg("Connecting")
 	ch := make(chan plc4go.PlcConnectionConnectResult)
 	go func() {
+		defer func() {
+			if err := recover(); err != nil {
+				c.fireConnectionError(errors.Errorf("panic-ed %v", err), ch)
+			}
+		}()
 		if err := c.messageCodec.Connect(); err != nil {
 			c.fireConnectionError(errors.Wrap(err, "Error connecting codec"), ch)
 			return
@@ -211,6 +216,11 @@ func (c *Connection) setupConnection(ctx context.Context, ch chan plc4go.PlcConn
 func (c *Connection) startSubscriptionHandler() {
 	log.Debug().Msg("Starting SAL handler")
 	go func() {
+		defer func() {
+			if err := recover(); err != nil {
+				log.Error().Msgf("panic-ed %v", err)
+			}
+		}()
 		log.Debug().Msg("SAL handler stated")
 		for c.IsConnected() {
 			for monitoredSal := range c.messageCodec.monitoredSALs {
@@ -226,6 +236,11 @@ func (c *Connection) startSubscriptionHandler() {
 	}()
 	log.Debug().Msg("Starting MMI handler")
 	go func() {
+		defer func() {
+			if err := recover(); err != nil {
+				log.Error().Msgf("panic-ed %v", err)
+			}
+		}()
 		log.Debug().Msg("default MMI started")
 		for c.IsConnected() {
 			for calReply := range c.messageCodec.monitoredMMIs {

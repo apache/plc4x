@@ -157,6 +157,11 @@ func (d *DefaultPlcWriteRequest) ExecuteWithContext(ctx context.Context) <-chan 
 	// Create a new result-channel, which completes as soon as all sub-result-channels have returned
 	resultChannel := make(chan apiModel.PlcWriteRequestResult)
 	go func() {
+		defer func() {
+			if err := recover(); err != nil {
+				resultChannel <- NewDefaultPlcWriteRequestResult(d, nil, errors.Errorf("panic-ed %v", err))
+			}
+		}()
 		var subResults []apiModel.PlcWriteRequestResult
 		// Iterate over all sub-results
 		for _, subResultChannel := range subResultChannels {
