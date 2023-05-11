@@ -20,49 +20,49 @@
 package knxnetip
 
 import (
-	"fmt"
+	"github.com/pkg/errors"
 	"strconv"
 
 	driverModel "github.com/apache/plc4x/plc4go/protocols/knxnetip/readwrite/model"
 )
 
-func NumericGroupAddressToString(numericAddress uint16, groupAddress GroupAddressTag) string {
+func NumericGroupAddressToString(numericAddress uint16, groupAddress GroupAddressTag) (string, error) {
 	if groupAddress == nil {
-		return ""
+		return "", nil
 	}
 	switch groupAddress.(type) {
 	case GroupAddress3LevelPlcTag:
 		main := numericAddress >> 11
 		middle := (numericAddress >> 8) & 0x07
 		sub := numericAddress & 0xFF
-		return strconv.Itoa(int(main)) + "/" + strconv.Itoa(int(middle)) + "/" + strconv.Itoa(int(sub))
+		return strconv.Itoa(int(main)) + "/" + strconv.Itoa(int(middle)) + "/" + strconv.Itoa(int(sub)), nil
 	case GroupAddress2LevelPlcTag:
 		main := numericAddress >> 11
 		sub := numericAddress & 0x07FF
-		return strconv.Itoa(int(main)) + "/" + strconv.Itoa(int(sub))
+		return strconv.Itoa(int(main)) + "/" + strconv.Itoa(int(sub)), nil
 	case GroupAddress1LevelPlcTag:
-		return strconv.Itoa(int(numericAddress))
+		return strconv.Itoa(int(numericAddress)), nil
 	default:
-		panic(fmt.Sprintf("Unmapped %T", groupAddress))
+		return "", errors.Errorf("Unmapped %T", groupAddress)
 	}
 }
 
-func GroupAddressToString(groupAddress driverModel.KnxGroupAddress) string {
+func GroupAddressToString(groupAddress driverModel.KnxGroupAddress) (string, error) {
 	if groupAddress == nil {
-		return ""
+		return "", nil
 	}
 	switch groupAddress := groupAddress.(type) {
 	case driverModel.KnxGroupAddress3Level:
 		level3 := groupAddress
-		return strconv.Itoa(int(level3.GetMainGroup())) + "/" + strconv.Itoa(int(level3.GetMiddleGroup())) + "/" + strconv.Itoa(int(level3.GetSubGroup()))
+		return strconv.Itoa(int(level3.GetMainGroup())) + "/" + strconv.Itoa(int(level3.GetMiddleGroup())) + "/" + strconv.Itoa(int(level3.GetSubGroup())), nil
 	case driverModel.KnxGroupAddress2Level:
 		level2 := groupAddress
-		return strconv.Itoa(int(level2.GetMainGroup())) + "/" + strconv.Itoa(int(level2.GetSubGroup()))
+		return strconv.Itoa(int(level2.GetMainGroup())) + "/" + strconv.Itoa(int(level2.GetSubGroup())), nil
 	case driverModel.KnxGroupAddressFreeLevel:
 		level1 := groupAddress
-		return strconv.Itoa(int(level1.GetSubGroup()))
+		return strconv.Itoa(int(level1.GetSubGroup())), nil
 	default:
-		panic(fmt.Sprintf("Unmapped %T", groupAddress))
+		return "", errors.Errorf("Unmapped %T", groupAddress)
 	}
 }
 

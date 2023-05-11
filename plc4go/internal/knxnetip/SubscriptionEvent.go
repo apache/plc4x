@@ -26,6 +26,8 @@ import (
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
 	driverModel "github.com/apache/plc4x/plc4go/protocols/knxnetip/readwrite/model"
 	internalModel "github.com/apache/plc4x/plc4go/spi/model"
+
+	"github.com/rs/zerolog/log"
 )
 
 type SubscriptionEvent struct {
@@ -57,7 +59,13 @@ func (m SubscriptionEvent) GetAddress(name string) string {
 		groupAddress, err = driverModel.KnxGroupAddressParse(rawAddress, 1)
 	}
 	if err != nil {
+		log.Debug().Err(err).Msg("error parsing")
 		return ""
 	}
-	return GroupAddressToString(groupAddress)
+	toString, err := GroupAddressToString(groupAddress)
+	if err != nil {
+		log.Debug().Err(err).Msg("error mapping")
+		return ""
+	}
+	return toString
 }
