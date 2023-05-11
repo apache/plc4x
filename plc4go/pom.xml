@@ -380,7 +380,7 @@
             </goals>
             <configuration>
               <packages>
-                <package>github.com/jstemmer/go-junit-report@latest</package>
+                <package>github.com/jstemmer/go-junit-report/v2@latest</package>
               </packages>
             </configuration>
           </execution>
@@ -610,10 +610,10 @@
                 <flag>-out</flag>
               </buildFlags>
               <echo>
-                <info>JUnit report saved as target${file.separator}surefire-reports${file.separator}xunit.xml</info>
+                <info>JUnit report saved as target${file.separator}surefire-reports${file.separator}go-junit-report.xml</info>
               </echo>
               <packages>
-                <package>target${file.separator}surefire-reports${file.separator}xunit.xml</package>
+                <package>target${file.separator}surefire-reports${file.separator}go-junit-report.xml</package>
               </packages>
             </configuration>
           </execution>
