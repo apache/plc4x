@@ -153,12 +153,11 @@ class WriteBufferByteBased(WriteBuffer):
                     raise SerializationException("'ASCII' encoded fields must have a length that is a multiple of 8 bits long")
                 char_len: int = int(bit_length / 8)
                 max_value: int = int(10**char_len - 1)
-                if value > max_value:
+                if value.value > max_value:
                     raise SerializationException("Provided value of " + str(value) + " exceeds the max value of " + str(max_value))
-                string_value: str = "{}".format(value)
-
+                string_value: str = "{}".format(value.value)
                 src = bitarray(endian=ByteOrder.get_short_name(self.byte_order))
-                src.frombytes(string_value)
+                src.frombytes(bytearray(string_value, value_encoding))
                 self.bb[self.position:bit_length] = src[:bit_length]
                 self.position += bit_length
             elif value_encoding == "default":

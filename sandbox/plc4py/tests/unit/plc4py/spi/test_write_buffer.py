@@ -104,27 +104,75 @@ def test_write_buffer_set_unsigned_byte_big_endian(mocker) -> None:
     assert (ba.obj == bitarray("00010010"))
 
 
-def test_write_buffer_set_unsigned_byte_little_endian(mocker) -> None:
+def test_write_buffer_set_unsigned_byte_little_endian_niblet(mocker) -> None:
     wb: WriteBufferByteBased = WriteBufferByteBased(1, ByteOrder.LITTLE_ENDIAN)
     wb.write_unsigned_byte(c_byte(0x12), 4, "Test String 1")
     ba: memoryview = wb.get_bytes()
     assert (ba.obj == bitarray("01000000"))
 
 
-def test_write_buffer_set_unsigned_byte_big_endian(mocker) -> None:
+def test_write_buffer_set_unsigned_byte_big_endian_niblet(mocker) -> None:
     wb: WriteBufferByteBased = WriteBufferByteBased(1, ByteOrder.BIG_ENDIAN)
     wb.write_unsigned_byte(c_byte(0x12), 4, "Test String 1")
     ba: memoryview = wb.get_bytes()
     assert (ba.obj == bitarray("00010000"))
 
-def test_write_buffer_write_unsigned_short_big_endian(mocker) -> None:
+
+def test_write_buffer_write_unsigned_short_little_endian(mocker) -> None:
     wb: WriteBufferByteBased = WriteBufferByteBased(2, ByteOrder.LITTLE_ENDIAN)
     wb.write_unsigned_short(c_uint16(0x12), 16, "Test String 1")
     ba: memoryview = wb.get_bytes()
-    assert (ba.obj == bitarray("00010010 00000000", endian="little"))
+    assert (ba.obj == bitarray("01001000 00000000", endian="little"))
+
 
 def test_write_buffer_write_unsigned_short_big_endian(mocker) -> None:
     wb: WriteBufferByteBased = WriteBufferByteBased(2, ByteOrder.BIG_ENDIAN)
     wb.write_unsigned_short(c_uint16(0x12), 16, "Test String 1")
     ba: memoryview = wb.get_bytes()
     assert (ba.obj == bitarray("00010010 00000000", endian="big"))
+
+
+def test_write_buffer_write_unsigned_short_little_endian_dual(mocker) -> None:
+    wb: WriteBufferByteBased = WriteBufferByteBased(2, ByteOrder.LITTLE_ENDIAN)
+    wb.write_unsigned_short(c_uint16(0x12), 16)
+    wb.write_unsigned_short(c_uint16(0x34), 16)
+    ba: memoryview = wb.get_bytes()
+    assert (ba.obj == bitarray("01001000 00000000 00101100 00000000", endian="little"))
+
+
+def test_write_buffer_write_unsigned_short_big_endian_dual(mocker) -> None:
+    wb: WriteBufferByteBased = WriteBufferByteBased(2, ByteOrder.BIG_ENDIAN)
+    wb.write_unsigned_short(c_uint16(0x12), 16, "Test String 1")
+    wb.write_unsigned_short(c_uint16(0x34), 16, "Test String 1")
+    ba: memoryview = wb.get_bytes()
+    assert (ba.obj == bitarray("00010010 00000000 00110100 00000000", endian="big"))
+
+
+def test_write_buffer_write_unsigned_short_big_endian_full(mocker) -> None:
+    wb: WriteBufferByteBased = WriteBufferByteBased(2, ByteOrder.BIG_ENDIAN)
+    wb.write_unsigned_short(c_uint16(-1), 16, "Test String 1")
+    ba: memoryview = wb.get_bytes()
+    assert (ba.obj == bitarray("11111111 11111111", endian="bit"))
+
+
+def test_write_buffer_write_unsigned_short_bit_big_endian_full(mocker) -> None:
+    wb: WriteBufferByteBased = WriteBufferByteBased(2, ByteOrder.BIG_ENDIAN)
+    wb.write_bit(c_bool(True), "Test String 1")
+    wb.write_bit(c_bool(False), "Test String 1")
+    wb.write_unsigned_short(c_uint16(-1), 16, "Test String 1")
+    ba: memoryview = wb.get_bytes()
+    assert (ba.obj == bitarray("10 11111111 11111111", endian="big"))
+
+
+def test_write_buffer_write_unsigned_short_ascii_encoding_little_endian(mocker) -> None:
+    wb: WriteBufferByteBased = WriteBufferByteBased(2, ByteOrder.LITTLE_ENDIAN)
+    wb.write_unsigned_short(c_uint16(1), 16, "ASCII Value of 1 - 0x31", encoding="ASCII")
+    ba: memoryview = wb.get_bytes()
+    assert (ba.obj == bitarray("10001100", endian="little"))
+
+
+def test_write_buffer_write_unsigned_short_ascii_encoding_big_endian(mocker) -> None:
+    wb: WriteBufferByteBased = WriteBufferByteBased(2, ByteOrder.BIG_ENDIAN)
+    wb.write_unsigned_short(c_uint16(1), 16, "ASCII Value of 1 - 0x31", encoding="ASCII")
+    ba: memoryview = wb.get_bytes()
+    assert (ba.obj == bitarray("00110001", endian="big"))
