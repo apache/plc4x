@@ -136,6 +136,9 @@ func (p *writeBufferPlcValueBased) WriteInt64(logicalName string, bitLength uint
 }
 
 func (p *writeBufferPlcValueBased) WriteBigInt(logicalName string, bitLength uint8, value *big.Int, _ ...utils.WithWriterArgs) error {
+	if value == nil {
+		return errors.New("value must not be nil")
+	}
 	p.move(uint(bitLength))
 	// TODO: check if we set the type dynamic here...
 	return p.appendValue(logicalName, NewPlcRawByteArray(value.Bytes()))
@@ -152,6 +155,9 @@ func (p *writeBufferPlcValueBased) WriteFloat64(logicalName string, bitLength ui
 }
 
 func (p *writeBufferPlcValueBased) WriteBigFloat(logicalName string, bitLength uint8, value *big.Float, _ ...utils.WithWriterArgs) error {
+	if value == nil {
+		return errors.New("value must not be nil")
+	}
 	p.move(uint(bitLength))
 	// TODO: check if we set the type dynamic here...
 	encode, err := value.GobEncode()
