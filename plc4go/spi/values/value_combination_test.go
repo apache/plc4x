@@ -72,6 +72,7 @@ func TestCombinations(t *testing.T) {
 			name: apiValues.BYTE,
 			arguments: []argument{
 				NewPlcBYTE(0),
+				NewPlcBYTE(1),
 				NewPlcBYTE(64),
 				NewPlcBYTE(255),
 			},
@@ -98,6 +99,7 @@ func TestCombinations(t *testing.T) {
 			name: apiValues.DINT,
 			arguments: []argument{
 				NewPlcDINT(math.MinInt32),
+				NewPlcDINT(1),
 				NewPlcDINT(64),
 				NewPlcDINT(255),
 				NewPlcDINT(math.MaxInt32),
@@ -107,6 +109,7 @@ func TestCombinations(t *testing.T) {
 			name: apiValues.DWORD,
 			arguments: []argument{
 				NewPlcDWORD(0),
+				NewPlcDWORD(1),
 				NewPlcDWORD(64),
 				NewPlcDWORD(255),
 				NewPlcDWORD(math.MaxUint32),
@@ -116,6 +119,7 @@ func TestCombinations(t *testing.T) {
 			name: apiValues.INT,
 			arguments: []argument{
 				NewPlcINT(0),
+				NewPlcINT(1),
 				NewPlcINT(64),
 				NewPlcINT(255),
 				NewPlcINT(math.MaxInt16),
@@ -137,6 +141,7 @@ func TestCombinations(t *testing.T) {
 			name: apiValues.LINT,
 			arguments: []argument{
 				NewPlcLINT(0),
+				NewPlcLINT(1),
 				NewPlcLINT(64),
 				NewPlcLINT(255),
 				NewPlcLINT(math.MaxInt64),
@@ -156,6 +161,7 @@ func TestCombinations(t *testing.T) {
 			name: apiValues.LREAL,
 			arguments: []argument{
 				NewPlcLREAL(0),
+				NewPlcLREAL(1),
 				NewPlcLREAL(64),
 				NewPlcLREAL(255),
 				NewPlcLREAL(math.MinInt64),
@@ -166,6 +172,7 @@ func TestCombinations(t *testing.T) {
 			name: apiValues.LTIME,
 			arguments: []argument{
 				NewPlcLTIME(0),
+				NewPlcLTIME(1),
 				NewPlcLTIME(64),
 				NewPlcLTIME(255),
 				//NewPlcLTIME(math.MaxUint64),
@@ -175,6 +182,7 @@ func TestCombinations(t *testing.T) {
 			name: apiValues.LWORD,
 			arguments: []argument{
 				NewPlcLWORD(0),
+				NewPlcLWORD(1),
 				NewPlcLWORD(64),
 				NewPlcLWORD(255),
 				NewPlcLWORD(0),
@@ -197,6 +205,7 @@ func TestCombinations(t *testing.T) {
 			name: apiValues.REAL,
 			arguments: []argument{
 				NewPlcREAL(0),
+				NewPlcREAL(1),
 				NewPlcREAL(64),
 				NewPlcREAL(255),
 				NewPlcREAL(math.MaxInt64),
@@ -223,6 +232,7 @@ func TestCombinations(t *testing.T) {
 				NewPlcSINT(-128),
 				NewPlcSINT(-64),
 				NewPlcSINT(0),
+				NewPlcSINT(1),
 				NewPlcSINT(64),
 				NewPlcSINT(127),
 			},
@@ -241,6 +251,7 @@ func TestCombinations(t *testing.T) {
 			name: apiValues.TIME,
 			arguments: []argument{
 				NewPlcTIME(0),
+				NewPlcTIME(1),
 				NewPlcTIME(64),
 				NewPlcTIME(255),
 				NewPlcTIME(math.MaxUint32),
@@ -251,6 +262,7 @@ func TestCombinations(t *testing.T) {
 			arguments: []argument{
 				NewPlcTIME_OF_DAY(time.Now()),
 				NewPlcTIME_OF_DAY(0),
+				NewPlcTIME_OF_DAY(1),
 				NewPlcTIME_OF_DAY(64),
 				NewPlcTIME_OF_DAY(255),
 				NewPlcTIME_OF_DAY(math.MaxUint32),
@@ -260,6 +272,7 @@ func TestCombinations(t *testing.T) {
 			name: apiValues.UDINT,
 			arguments: []argument{
 				NewPlcUDINT(0),
+				NewPlcUDINT(1),
 				NewPlcUDINT(64),
 				NewPlcUDINT(255),
 				NewPlcUDINT(math.MaxUint32),
@@ -269,6 +282,7 @@ func TestCombinations(t *testing.T) {
 			name: apiValues.UINT,
 			arguments: []argument{
 				NewPlcUINT(0),
+				NewPlcUINT(1),
 				NewPlcUINT(64),
 				NewPlcUINT(255),
 				NewPlcUINT(math.MaxUint16),
@@ -278,6 +292,7 @@ func TestCombinations(t *testing.T) {
 			name: apiValues.USINT,
 			arguments: []argument{
 				NewPlcUSINT(0),
+				NewPlcUSINT(1),
 				NewPlcUSINT(64),
 				NewPlcUSINT(255),
 				NewPlcUSINT(math.MaxUint8),
@@ -287,6 +302,7 @@ func TestCombinations(t *testing.T) {
 			name: apiValues.ULINT,
 			arguments: []argument{
 				NewPlcULINT(0),
+				NewPlcULINT(1),
 				NewPlcULINT(64),
 				NewPlcULINT(math.MaxUint8),
 			},
@@ -301,6 +317,7 @@ func TestCombinations(t *testing.T) {
 			name: apiValues.WORD,
 			arguments: []argument{
 				NewPlcWORD(0),
+				NewPlcWORD(1),
 				NewPlcWORD(64),
 				NewPlcWORD(255),
 				NewPlcWORD(math.MaxUint16),
@@ -357,6 +374,29 @@ func TestCombinations(t *testing.T) {
 							}
 						}()
 						argument.GetRaw()
+					})
+
+					t.Run("Bools", func(t *testing.T) {
+						defer func() {
+							if err := recover(); err != nil {
+								t.Log(err)
+								t.Skip("this panics and there is no was to check if it is supported") // TODO: fix that
+							}
+						}()
+						argument.GetBoolLength()
+						argument.GetBoolAt(0)
+						argument.GetBoolAt(1)
+						argument.GetBoolArray()
+					})
+
+					t.Run("Value Type", func(t *testing.T) {
+						defer func() {
+							if err := recover(); err != nil {
+								t.Log(err)
+								t.Skip("this panics and there is no was to check if it is supported") // TODO: fix that
+							}
+						}()
+						argument.GetPlcValueType()
 					})
 				})
 			}
