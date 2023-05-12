@@ -14,7 +14,8 @@
 #  KIND, either express or implied.  See the License for the
 #  specific language governing permissions and limitations
 #  under the License.
-from ctypes import c_bool, c_byte, c_ubyte, c_uint16, c_uint32, c_uint64, c_int16, c_int32, c_int64, c_float, c_double
+from ctypes import c_bool, c_byte, c_ubyte, c_uint16, c_uint32, c_uint64, c_int16, c_int32, c_int64, c_float, c_double, \
+    c_int8
 from dataclasses import dataclass
 from typing import List
 
@@ -65,7 +66,7 @@ class WriteBuffer(ByteOrderAware, PositionAware):
     def write_unsigned_long(self, value: c_uint64, bit_length: int = 64, logical_name: str = "", **kwargs) -> None:
         raise NotImplementedError
 
-    def write_signed_byte(self, value: c_byte, bit_length: int = 8, logical_name: str = "", **kwargs) -> None:
+    def write_signed_byte(self, value: c_int8, bit_length: int = 8, logical_name: str = "", **kwargs) -> None:
         raise NotImplementedError
 
     def write_short(self, value: c_int16, bit_length: int = 16, logical_name: str = "", **kwargs) -> None:
@@ -135,10 +136,7 @@ class WriteBufferByteBased(WriteBuffer):
         elif bit_length > 8:
             raise SerializationException("unsigned byte can only contain max 8 bits")
         else:
-            src = bitarray(endian=ByteOrder.get_short_name(self.byte_order))
-            src.frombytes(value)
-            self.bb[self.position:bit_length] = src[:bit_length]
-            self.position += bit_length
+            self._handle_integer_encoding(c_byte(value.value), bit_length, **kwargs)
 
     def write_unsigned_short(self, value: c_uint16, bit_length: int = 16, logical_name: str = "", **kwargs) -> None:
         if bit_length <= 0:
@@ -185,3 +183,13 @@ class WriteBufferByteBased(WriteBuffer):
             src.frombytes(value)
             self.bb[self.position:bit_length] = src[:bit_length]
             self.position += bit_length
+
+    def write_signed_byte(self, value: c_int8, bit_length: int = 8, logical_name: str = "", **kwargs) -> None:
+        if bit_length <= 0:
+            raise SerializationException("Signed byte must contain at least 1 bit")
+        elif bit_length > 8:
+            raise SerializationException("Signed byte can only contain max 8 bits")
+        src = bitarray(endian=ByteOrder.get_short_name(self.byte_order))
+        src.frombytes(value)
+        self.bb[self.position:bit_length] = src[:bit_length]
+        self.position += bit_length

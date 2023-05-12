@@ -16,7 +16,7 @@
 # specific language governing permissions and limitations
 # under the License.
 #
-from ctypes import c_bool, c_byte, c_uint16, c_uint64
+from ctypes import c_bool, c_byte, c_uint16, c_uint64, c_int8
 
 import pytest
 from bitarray import bitarray
@@ -215,8 +215,24 @@ def test_write_buffer_write_unsigned_long_ascii_encoding_little_endian(mocker) -
     assert (ba.obj == bitarray("10001100 10001100 10001100 10001100 10001100 10001100 10001100 10001100", endian="little"))
 
 
-def test_write_buffer_write_unsigned_short_ascii_encoding_big_endian(mocker) -> None:
+def test_write_buffer_write_unsigned_long_ascii_encoding_big_endian(mocker) -> None:
     wb: WriteBufferByteBased = WriteBufferByteBased(8, ByteOrder.BIG_ENDIAN)
     wb.write_unsigned_long(c_uint64(11111111), 64, "ASCII Value of 1111 1111 - 0x3131313131313131", encoding="ASCII")
     ba: memoryview = wb.get_bytes()
     assert (ba.obj == bitarray("00110001 00110001 00110001 00110001 00110001 00110001 00110001 00110001", endian="big"))
+
+
+def test_write_buffer_set_signed_byte(mocker) -> None:
+    wb: WriteBufferByteBased = WriteBufferByteBased(1, ByteOrder.LITTLE_ENDIAN)
+    wb.write_signed_byte(c_int8(-1), 8)
+    ba: memoryview = wb.get_bytes()
+    assert (ba.obj == bitarray("11111111",
+                               endian="little"))
+
+
+def test_write_buffer_set_signed_byte_three(mocker) -> None:
+    wb: WriteBufferByteBased = WriteBufferByteBased(1, ByteOrder.LITTLE_ENDIAN)
+    wb.write_signed_byte(c_int8(3), 8)
+    ba: memoryview = wb.get_bytes()
+    assert (ba.obj == bitarray("11000000",
+                               endian="little"))
