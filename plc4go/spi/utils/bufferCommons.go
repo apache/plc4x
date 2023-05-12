@@ -81,9 +81,6 @@ func (s *Stack) Push(value any) any {
 }
 
 func (s *Stack) Pop() any {
-	if s.Len() <= 0 {
-		return nil
-	}
 	element := s.Back()
 	if element == nil {
 		return nil
