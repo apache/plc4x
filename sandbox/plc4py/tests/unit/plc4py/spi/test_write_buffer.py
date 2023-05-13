@@ -16,7 +16,7 @@
 # specific language governing permissions and limitations
 # under the License.
 #
-from ctypes import c_bool, c_byte, c_uint16, c_uint64, c_int8
+from ctypes import c_bool, c_byte, c_uint16, c_uint64, c_int8, c_float
 
 import pytest
 from bitarray import bitarray
@@ -236,3 +236,17 @@ def test_write_buffer_set_signed_byte_three(mocker) -> None:
     ba: memoryview = wb.get_bytes()
     assert (ba.obj == bitarray("11000000",
                                endian="little"))
+
+def test_write_buffer_set_float_little_endian(mocker) -> None:
+    wb: WriteBufferByteBased = WriteBufferByteBased(1, ByteOrder.LITTLE_ENDIAN)
+    wb.write_float(c_float(-1), 32)
+    ba: memoryview = wb.get_bytes()
+    assert (ba.obj == bitarray("00000000000000000000000111111101",
+                               endian="little"))
+
+def test_write_buffer_set_float_big_endian(mocker) -> None:
+    wb: WriteBufferByteBased = WriteBufferByteBased(1, ByteOrder.BIG_ENDIAN)
+    wb.write_float(c_float(-1), 32)
+    ba: memoryview = wb.get_bytes()
+    assert (ba.obj == bitarray("00000000000000001000000010111111",
+                               endian="big"))
