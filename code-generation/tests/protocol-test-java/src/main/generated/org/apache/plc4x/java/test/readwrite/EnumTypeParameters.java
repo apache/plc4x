@@ -37,12 +37,12 @@ public enum EnumTypeParameters {
     }
   }
 
-  private byte value;
-  private short uintType;
-  private byte intType;
-  private String stringType;
-  private EnumType enumType;
-  private boolean bitType;
+  private final byte value;
+  private final short uintType;
+  private final byte intType;
+  private final String stringType;
+  private final EnumType enumType;
+  private final boolean bitType;
 
   EnumTypeParameters(
       byte value,
@@ -77,7 +77,7 @@ public enum EnumTypeParameters {
   }
 
   public static List<EnumTypeParameters> enumsForFieldUintType(short fieldValue) {
-    List<EnumTypeParameters> _values = new ArrayList();
+    List<EnumTypeParameters> _values = new ArrayList<>();
     for (EnumTypeParameters _val : EnumTypeParameters.values()) {
       if (_val.getUintType() == fieldValue) {
         _values.add(_val);
@@ -100,7 +100,7 @@ public enum EnumTypeParameters {
   }
 
   public static List<EnumTypeParameters> enumsForFieldIntType(byte fieldValue) {
-    List<EnumTypeParameters> _values = new ArrayList();
+    List<EnumTypeParameters> _values = new ArrayList<>();
     for (EnumTypeParameters _val : EnumTypeParameters.values()) {
       if (_val.getIntType() == fieldValue) {
         _values.add(_val);
@@ -123,7 +123,7 @@ public enum EnumTypeParameters {
   }
 
   public static List<EnumTypeParameters> enumsForFieldStringType(String fieldValue) {
-    List<EnumTypeParameters> _values = new ArrayList();
+    List<EnumTypeParameters> _values = new ArrayList<>();
     for (EnumTypeParameters _val : EnumTypeParameters.values()) {
       if (_val.getStringType().equals(fieldValue)) {
         _values.add(_val);
@@ -146,7 +146,7 @@ public enum EnumTypeParameters {
   }
 
   public static List<EnumTypeParameters> enumsForFieldEnumType(EnumType fieldValue) {
-    List<EnumTypeParameters> _values = new ArrayList();
+    List<EnumTypeParameters> _values = new ArrayList<>();
     for (EnumTypeParameters _val : EnumTypeParameters.values()) {
       if (_val.getEnumType() == fieldValue) {
         _values.add(_val);
@@ -169,7 +169,7 @@ public enum EnumTypeParameters {
   }
 
   public static List<EnumTypeParameters> enumsForFieldBitType(boolean fieldValue) {
-    List<EnumTypeParameters> _values = new ArrayList();
+    List<EnumTypeParameters> _values = new ArrayList<>();
     for (EnumTypeParameters _val : EnumTypeParameters.values()) {
       if (_val.getBitType() == fieldValue) {
         _values.add(_val);

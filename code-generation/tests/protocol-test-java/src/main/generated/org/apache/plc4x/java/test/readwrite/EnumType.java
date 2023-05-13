@@ -37,7 +37,7 @@ public enum EnumType {
     }
   }
 
-  private short value;
+  private final short value;
 
   EnumType(short value) {
     this.value = value;
