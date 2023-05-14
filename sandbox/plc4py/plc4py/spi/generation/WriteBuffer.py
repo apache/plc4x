@@ -107,7 +107,6 @@ class WriteBufferByteBased(WriteBuffer):
 
     NUMERIC_UNION = Union[c_byte, c_uint8, c_uint16, c_uint32, c_uint64, c_int8, c_int16, c_int32, c_int64, c_float, c_double]
 
-
     def __init__(self, size: int, byte_order: ByteOrder):
         self.bb = zeros(size * 8, endian=ByteOrder.get_short_name(byte_order))
         self.byte_order = byte_order
@@ -208,6 +207,7 @@ class WriteBufferByteBased(WriteBuffer):
         self._handle_numeric_encoding(c_double(value.value), bit_length, **kwargs)
 
     def _handle_numeric_encoding(self, value: NUMERIC_UNION, bit_length: int, **kwargs):
+        byte_order = kwargs.get("byte_order", self.byte_order)
         value_encoding: str = kwargs.get("encoding", "default")
         if value_encoding == "ASCII":
             if bit_length % 8 != 0:
@@ -219,12 +219,12 @@ class WriteBufferByteBased(WriteBuffer):
                 raise SerializationException(
                     "Provided value of " + str(value) + " exceeds the max value of " + str(max_value))
             string_value: str = "{}".format(value.value)
-            src = bitarray(endian=ByteOrder.get_short_name(self.byte_order))
+            src = bitarray(endian=ByteOrder.get_short_name(byte_order))
             src.frombytes(bytearray(string_value, value_encoding))
             self.bb[self.position:bit_length] = src[:bit_length]
             self.position += bit_length
         elif value_encoding == "default":
-            src = bitarray(endian=ByteOrder.get_short_name(self.byte_order))
+            src = bitarray(endian=ByteOrder.get_short_name(byte_order))
             src.frombytes(value)
             self.bb[self.position:bit_length] = src[:bit_length]
             self.position += bit_length
