@@ -60,15 +60,23 @@ github:
 
   # Attempt to make the auto-generated github emails more easily readable in email clients.
   custom_subjects:
-    new_pr: "[PR] {title} ({repository})"
-    close_pr: "Re: [PR] {title} ({repository})"
-    comment_pr: "Re: [PR] {title} ({repository})"
-    diffcomment: "Re: [PR] {title} ({repository})"
-    merge_pr: "Re: [PR] {title} ({repository})"
-    new_issue: "[I] {title} ({repository})"
-    comment_issue: "Re: [I] {title} ({repository})"
-    close_issue: "Re: [I] {title} ({repository})"
-    catchall: "[GH] {title} ({repository})"
+    new_pr: "[PR] {title}"
+    close_pr: "Re: [PR] {title}"
+    comment_pr: "Re: [PR] {title}"
+    diffcomment: "Re: [PR] {title}"
+    merge_pr: "Re: [PR] {title}"
+    new_issue: "[I] {title}"
+    comment_issue: "Re: [I] {title}"
+    close_issue: "Re: [I] {title}"
+    catchall: "[GH] {title}"
+    new_discussion: "[D] {title}"
+    edit_discussion: "Re: [D] {title}"
+    close_discussion: "Re: [D] {title}"
+    close_discussion_with_comment: "Re: [D] {title}"
+    reopen_discussion: "Re: [D] {title}"
+    new_comment_discussion: "Re: [D] {title}"
+    edit_comment_discussion: "Re: [D] {title}"
+    delete_comment_discussion: "Re: [D] {title}"
 
 notifications:
   commits:              commits@plc4x.apache.org
