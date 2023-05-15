@@ -84,7 +84,7 @@ func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.
 }
 
 func broadcastAndDiscover(ctx context.Context, communicationChannels []communicationChannel, specificOptions *protocolSpecificOptions) (chan receivedBvlcMessage, error) {
-	incomingBVLCChannel := make(chan receivedBvlcMessage, 0)
+	incomingBVLCChannel := make(chan receivedBvlcMessage)
 	for _, communicationChannelInstance := range communicationChannels {
 		// Prepare the discovery packet data
 		{
@@ -192,7 +192,7 @@ func broadcastAndDiscover(ctx context.Context, communicationChannels []communica
 
 		go func(communicationChannelInstance communicationChannel) {
 			for {
-				blockingReadChan := make(chan bool, 0)
+				blockingReadChan := make(chan bool)
 				go func() {
 					buf := make([]byte, 4096)
 					n, addr, err := communicationChannelInstance.broadcastConnection.ReadFrom(buf)

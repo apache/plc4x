@@ -46,7 +46,7 @@ func NewReader(device *Device, options map[string][]string, tracer *spi.Tracer) 
 }
 
 func (r *Reader) Read(_ context.Context, readRequest model.PlcReadRequest) <-chan model.PlcReadRequestResult {
-	ch := make(chan model.PlcReadRequestResult)
+	ch := make(chan model.PlcReadRequestResult, 1)
 	go func() {
 		defer func() {
 			if err := recover(); err != nil {

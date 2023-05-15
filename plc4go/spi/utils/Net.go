@@ -120,7 +120,7 @@ func lockupIpsUsingArp(ctx context.Context, netInterface net.Interface, ipNet *n
 	}
 
 	// Start up a goroutine to read in packet data.
-	stop := make(chan struct{})
+	stop := make(chan struct{}, 1)
 	// As we don't know how much the handler will find we use a value of 1 and set that to done after the 10 sec in the cleanup function directly after
 	wg.Add(1)
 	// Handler for processing incoming ARP responses.

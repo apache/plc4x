@@ -49,7 +49,7 @@ func NewReader(tpduGenerator *AlphaGenerator, messageCodec *MessageCodec, tm spi
 
 func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) <-chan apiModel.PlcReadRequestResult {
 	log.Trace().Msg("Reading")
-	result := make(chan apiModel.PlcReadRequestResult)
+	result := make(chan apiModel.PlcReadRequestResult, 1)
 	go m.readSync(ctx, readRequest, result)
 	return result
 }

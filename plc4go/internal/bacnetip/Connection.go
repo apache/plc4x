@@ -78,7 +78,7 @@ func (c *Connection) GetTracer() *spi.Tracer {
 
 func (c *Connection) ConnectWithContext(ctx context.Context) <-chan plc4go.PlcConnectionConnectResult {
 	log.Trace().Msg("Connecting")
-	ch := make(chan plc4go.PlcConnectionConnectResult)
+	ch := make(chan plc4go.PlcConnectionConnectResult, 1)
 	go func() {
 		defer func() {
 			if err := recover(); err != nil {

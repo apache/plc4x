@@ -108,7 +108,7 @@ func (m *Connection) GetMessageCodec() spi.MessageCodec {
 
 func (m *Connection) ConnectWithContext(ctx context.Context) <-chan plc4go.PlcConnectionConnectResult {
 	log.Trace().Msg("Connecting")
-	ch := make(chan plc4go.PlcConnectionConnectResult)
+	ch := make(chan plc4go.PlcConnectionConnectResult, 1)
 	go func() {
 		defer func() {
 			if err := recover(); err != nil {
@@ -149,8 +149,8 @@ func (m *Connection) ConnectWithContext(ctx context.Context) <-chan plc4go.PlcCo
 func (m *Connection) setupConnection(ctx context.Context, ch chan plc4go.PlcConnectionConnectResult) {
 	log.Debug().Msg("Sending COTP Connection Request")
 	// Open the session on ISO Transport Protocol first.
-	cotpConnectionResult := make(chan readWriteModel.COTPPacketConnectionResponse)
-	cotpConnectionErrorChan := make(chan error)
+	cotpConnectionResult := make(chan readWriteModel.COTPPacketConnectionResponse, 1)
+	cotpConnectionErrorChan := make(chan error, 1)
 	if err := m.messageCodec.SendRequest(ctx, readWriteModel.NewTPKTPacket(m.createCOTPConnectionRequest()), func(message spi.Message) bool {
 		tpktPacket := message.(readWriteModel.TPKTPacket)
 		if tpktPacket == nil {
@@ -180,8 +180,8 @@ func (m *Connection) setupConnection(ctx context.Context, ch chan plc4go.PlcConn
 		log.Debug().Msg("Sending S7 Connection Request")
 
 		// Send an S7 login message.
-		s7ConnectionResult := make(chan readWriteModel.S7ParameterSetupCommunication)
-		s7ConnectionErrorChan := make(chan error)
+		s7ConnectionResult := make(chan readWriteModel.S7ParameterSetupCommunication, 1)
+		s7ConnectionErrorChan := make(chan error, 1)
 		if err := m.messageCodec.SendRequest(ctx, m.createS7ConnectionRequest(cotpPacketConnectionResponse), func(message spi.Message) bool {
 			tpktPacket, ok := message.(readWriteModel.TPKTPacketExactly)
 			if !ok {
@@ -241,8 +241,8 @@ func (m *Connection) setupConnection(ctx context.Context, ch chan plc4go.PlcConn
 
 			// Prepare a message to request the remote to identify itself.
 			log.Debug().Msg("Sending S7 Identification Request")
-			s7IdentificationResult := make(chan readWriteModel.S7PayloadUserData)
-			s7IdentificationErrorChan := make(chan error)
+			s7IdentificationResult := make(chan readWriteModel.S7PayloadUserData, 1)
+			s7IdentificationErrorChan := make(chan error, 1)
 			if err := m.messageCodec.SendRequest(ctx, m.createIdentifyRemoteMessage(), func(message spi.Message) bool {
 				tpktPacket, ok := message.(readWriteModel.TPKTPacketExactly)
 				if !ok {

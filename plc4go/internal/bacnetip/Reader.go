@@ -57,7 +57,7 @@ func NewReader(invokeIdGenerator *InvokeIdGenerator, messageCodec spi.MessageCod
 func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) <-chan apiModel.PlcReadRequestResult {
 	// TODO: handle ctx
 	log.Trace().Msg("Reading")
-	result := make(chan apiModel.PlcReadRequestResult)
+	result := make(chan apiModel.PlcReadRequestResult, 1)
 	go func() {
 		if len(readRequest.GetTagNames()) == 0 {
 			result <- &spiModel.DefaultPlcReadRequestResult{

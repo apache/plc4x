@@ -48,7 +48,7 @@ func NewReader(connection *Connection) *Reader {
 
 func (m Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) <-chan apiModel.PlcReadRequestResult {
 	// TODO: handle ctx
-	resultChan := make(chan apiModel.PlcReadRequestResult)
+	resultChan := make(chan apiModel.PlcReadRequestResult, 1)
 	go func() {
 		defer func() {
 			if err := recover(); err != nil {

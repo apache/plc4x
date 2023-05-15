@@ -42,7 +42,7 @@ func (m *Connection) ReadRequestBuilder() apiModel.PlcReadRequestBuilder {
 
 func (m *Connection) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) <-chan apiModel.PlcReadRequestResult {
 	log.Trace().Msg("Reading")
-	result := make(chan apiModel.PlcReadRequestResult)
+	result := make(chan apiModel.PlcReadRequestResult, 1)
 	go func() {
 		defer func() {
 			if err := recover(); err != nil {

@@ -136,7 +136,7 @@ func (d *DefaultPlcReadRequest) ExecuteWithContext(ctx context.Context) <-chan a
 	}
 
 	// Create a new result-channel, which completes as soon as all sub-result-channels have returned
-	resultChannel := make(chan apiModel.PlcReadRequestResult)
+	resultChannel := make(chan apiModel.PlcReadRequestResult, 1)
 	go func() {
 		defer func() {
 			if err := recover(); err != nil {

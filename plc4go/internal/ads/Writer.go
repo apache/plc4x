@@ -41,7 +41,7 @@ func (m *Connection) WriteRequestBuilder() apiModel.PlcWriteRequestBuilder {
 
 func (m *Connection) Write(ctx context.Context, writeRequest apiModel.PlcWriteRequest) <-chan apiModel.PlcWriteRequestResult {
 	log.Trace().Msg("Writing")
-	result := make(chan apiModel.PlcWriteRequestResult)
+	result := make(chan apiModel.PlcWriteRequestResult, 1)
 	go func() {
 		defer func() {
 			if err := recover(); err != nil {

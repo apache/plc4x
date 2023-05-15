@@ -48,7 +48,7 @@ func NewWriter(tpduGenerator *AlphaGenerator, messageCodec *MessageCodec, tm spi
 
 func (m *Writer) Write(ctx context.Context, writeRequest apiModel.PlcWriteRequest) <-chan apiModel.PlcWriteRequestResult {
 	log.Trace().Msg("Writing")
-	result := make(chan apiModel.PlcWriteRequestResult)
+	result := make(chan apiModel.PlcWriteRequestResult, 1)
 	go func() {
 		defer func() {
 			if err := recover(); err != nil {

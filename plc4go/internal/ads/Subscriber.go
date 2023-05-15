@@ -97,7 +97,7 @@ func (m *Connection) Subscribe(ctx context.Context, subscriptionRequest apiModel
 	}
 
 	// Create a new result-channel, which completes as soon as all sub-result-channels have returned
-	globalResultChannel := make(chan apiModel.PlcSubscriptionRequestResult)
+	globalResultChannel := make(chan apiModel.PlcSubscriptionRequestResult, 1)
 	go func() {
 		defer func() {
 			if err := recover(); err != nil {
@@ -126,8 +126,8 @@ func (m *Connection) Subscribe(ctx context.Context, subscriptionRequest apiModel
 }
 
 func (m *Connection) subscribe(ctx context.Context, subscriptionRequest apiModel.PlcSubscriptionRequest) <-chan apiModel.PlcSubscriptionRequestResult {
-	responseChan := make(chan apiModel.PlcSubscriptionRequestResult)
-	go func(respChan chan apiModel.PlcSubscriptionRequestResult) {
+	responseChan := make(chan apiModel.PlcSubscriptionRequestResult, 1)
+	go func() {
 		defer func() {
 			if err := recover(); err != nil {
 				responseChan <- internalModel.NewDefaultPlcSubscriptionRequestResult(subscriptionRequest, nil, errors.Errorf("panic-ed %v", err))

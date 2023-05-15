@@ -97,7 +97,7 @@ func (m *Connection) GetConnection() plc4go.PlcConnection {
 
 func (m *Connection) ConnectWithContext(ctx context.Context) <-chan plc4go.PlcConnectionConnectResult {
 	log.Trace().Msg("Connecting")
-	ch := make(chan plc4go.PlcConnectionConnectResult)
+	ch := make(chan plc4go.PlcConnectionConnectResult, 1)
 
 	// Reset the driver context (Actually this should not be required, but just to be on the safe side)
 	m.driverContext.clear()

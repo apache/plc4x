@@ -46,7 +46,7 @@ type worker struct {
 func (w *worker) initialize() {
 	w.shutdown.Store(false)
 	w.interrupted.Store(false)
-	w.interrupter = make(chan struct{})
+	w.interrupter = make(chan struct{}, 1)
 	w.hasEnded.Store(false)
 	w.lastReceived = time.Now()
 }

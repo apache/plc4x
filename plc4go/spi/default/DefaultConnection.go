@@ -234,7 +234,7 @@ func (d *defaultConnection) Connect() <-chan plc4go.PlcConnectionConnectResult {
 
 func (d *defaultConnection) ConnectWithContext(ctx context.Context) <-chan plc4go.PlcConnectionConnectResult {
 	log.Trace().Msg("Connecting")
-	ch := make(chan plc4go.PlcConnectionConnectResult)
+	ch := make(chan plc4go.PlcConnectionConnectResult, 1)
 	go func() {
 		defer func() {
 			if err := recover(); err != nil {
@@ -284,7 +284,7 @@ func (d *defaultConnection) IsConnected() bool {
 }
 
 func (d *defaultConnection) Ping() <-chan plc4go.PlcConnectionPingResult {
-	ch := make(chan plc4go.PlcConnectionPingResult)
+	ch := make(chan plc4go.PlcConnectionPingResult, 1)
 	go func() {
 		defer func() {
 			if err := recover(); err != nil {

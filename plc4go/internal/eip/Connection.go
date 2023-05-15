@@ -104,7 +104,7 @@ func (m *Connection) GetMessageCodec() spi.MessageCodec {
 
 func (m *Connection) ConnectWithContext(ctx context.Context) <-chan plc4go.PlcConnectionConnectResult {
 	log.Trace().Msg("Connecting")
-	ch := make(chan plc4go.PlcConnectionConnectResult)
+	ch := make(chan plc4go.PlcConnectionConnectResult, 1)
 	go func() {
 		defer func() {
 			if err := recover(); err != nil {
@@ -135,7 +135,7 @@ func (m *Connection) ConnectWithContext(ctx context.Context) <-chan plc4go.PlcCo
 func (m *Connection) Close() <-chan plc4go.PlcConnectionCloseResult {
 	// TODO: use proper context
 	ctx := context.TODO()
-	result := make(chan plc4go.PlcConnectionCloseResult)
+	result := make(chan plc4go.PlcConnectionCloseResult, 1)
 	go func() {
 		defer func() {
 			if err := recover(); err != nil {

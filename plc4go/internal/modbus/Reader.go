@@ -51,7 +51,7 @@ func NewReader(unitIdentifier uint8, messageCodec spi.MessageCodec) *Reader {
 func (m *Reader) Read(ctx context.Context, readRequest model.PlcReadRequest) <-chan model.PlcReadRequestResult {
 	// TODO: handle ctx
 	log.Trace().Msg("Reading")
-	result := make(chan model.PlcReadRequestResult)
+	result := make(chan model.PlcReadRequestResult, 1)
 	go func() {
 		defer func() {
 			if err := recover(); err != nil {

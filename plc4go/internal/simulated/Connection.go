@@ -78,7 +78,7 @@ func (c *Connection) Connect() <-chan plc4go.PlcConnectionConnectResult {
 }
 
 func (c *Connection) ConnectWithContext(ctx context.Context) <-chan plc4go.PlcConnectionConnectResult {
-	ch := make(chan plc4go.PlcConnectionConnectResult)
+	ch := make(chan plc4go.PlcConnectionConnectResult, 1)
 	go func() {
 		defer func() {
 			if err := recover(); err != nil {
@@ -134,7 +134,7 @@ func (c *Connection) BlockingClose() {
 }
 
 func (c *Connection) Close() <-chan plc4go.PlcConnectionCloseResult {
-	ch := make(chan plc4go.PlcConnectionCloseResult)
+	ch := make(chan plc4go.PlcConnectionCloseResult, 1)
 	go func() {
 		defer func() {
 			if err := recover(); err != nil {
@@ -180,7 +180,7 @@ func (c *Connection) IsConnected() bool {
 }
 
 func (c *Connection) Ping() <-chan plc4go.PlcConnectionPingResult {
-	ch := make(chan plc4go.PlcConnectionPingResult)
+	ch := make(chan plc4go.PlcConnectionPingResult, 1)
 	go func() {
 		defer func() {
 			if err := recover(); err != nil {

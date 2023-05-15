@@ -47,7 +47,7 @@ func NewSubscriber(connection *Connection) *Subscriber {
 }
 
 func (m *Subscriber) Subscribe(_ context.Context, subscriptionRequest apiModel.PlcSubscriptionRequest) <-chan apiModel.PlcSubscriptionRequestResult {
-	result := make(chan apiModel.PlcSubscriptionRequestResult)
+	result := make(chan apiModel.PlcSubscriptionRequestResult, 1)
 	go func() {
 		defer func() {
 			if err := recover(); err != nil {
@@ -78,7 +78,8 @@ func (m *Subscriber) Subscribe(_ context.Context, subscriptionRequest apiModel.P
 
 func (m *Subscriber) Unsubscribe(ctx context.Context, unsubscriptionRequest apiModel.PlcUnsubscriptionRequest) <-chan apiModel.PlcUnsubscriptionRequestResult {
 	// TODO: handle context
-	result := make(chan apiModel.PlcUnsubscriptionRequestResult)
+	result := make(chan apiModel.PlcUnsubscriptionRequestResult, 1)
+	result <- spiModel.NewDefaultPlcUnsubscriptionRequestResult(unsubscriptionRequest, nil, errors.New("Not Implemented"))
 
 	// TODO: As soon as we establish a connection, we start getting data...
 	// subscriptions are more a internal handling of which values to pass where.

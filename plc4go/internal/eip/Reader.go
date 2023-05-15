@@ -58,7 +58,7 @@ func NewReader(messageCodec spi.MessageCodec, tm spi.RequestTransactionManager, 
 func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) <-chan apiModel.PlcReadRequestResult {
 	// TODO: handle ctx
 	log.Trace().Msg("Reading")
-	result := make(chan apiModel.PlcReadRequestResult)
+	result := make(chan apiModel.PlcReadRequestResult, 1)
 	go func() {
 		defer func() {
 			if err := recover(); err != nil {

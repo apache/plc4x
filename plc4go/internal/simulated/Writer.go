@@ -45,7 +45,7 @@ func NewWriter(device *Device, options map[string][]string, tracer *spi.Tracer) 
 }
 
 func (w *Writer) Write(_ context.Context, writeRequest model.PlcWriteRequest) <-chan model.PlcWriteRequestResult {
-	ch := make(chan model.PlcWriteRequestResult)
+	ch := make(chan model.PlcWriteRequestResult, 1)
 	go func() {
 		defer func() {
 			if err := recover(); err != nil {

@@ -45,7 +45,7 @@ import (
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
 func (m *Connection) ReadGroupAddress(ctx context.Context, groupAddress []byte, datapointType *driverModel.KnxDatapointType) <-chan KnxReadResult {
-	result := make(chan KnxReadResult)
+	result := make(chan KnxReadResult, 1)
 
 	sendResponse := func(value values.PlcValue, numItems uint8, err error) {
 		timeout := time.NewTimer(time.Millisecond * 10)
@@ -106,7 +106,7 @@ func (m *Connection) ReadGroupAddress(ctx context.Context, groupAddress []byte, 
 }
 
 func (m *Connection) DeviceConnect(ctx context.Context, targetAddress driverModel.KnxAddress) <-chan KnxDeviceConnectResult {
-	result := make(chan KnxDeviceConnectResult)
+	result := make(chan KnxDeviceConnectResult, 1)
 
 	sendResponse := func(connection *KnxDeviceConnection, err error) {
 		timeout := time.NewTimer(time.Millisecond * 10)
@@ -201,7 +201,7 @@ func (m *Connection) DeviceConnect(ctx context.Context, targetAddress driverMode
 }
 
 func (m *Connection) DeviceDisconnect(ctx context.Context, targetAddress driverModel.KnxAddress) <-chan KnxDeviceDisconnectResult {
-	result := make(chan KnxDeviceDisconnectResult)
+	result := make(chan KnxDeviceDisconnectResult, 1)
 
 	sendResponse := func(connection *KnxDeviceConnection, err error) {
 		timeout := time.NewTimer(time.Millisecond * 10)
@@ -240,7 +240,7 @@ func (m *Connection) DeviceDisconnect(ctx context.Context, targetAddress driverM
 }
 
 func (m *Connection) DeviceAuthenticate(ctx context.Context, targetAddress driverModel.KnxAddress, buildingKey []byte) <-chan KnxDeviceAuthenticateResult {
-	result := make(chan KnxDeviceAuthenticateResult)
+	result := make(chan KnxDeviceAuthenticateResult, 1)
 
 	sendResponse := func(err error) {
 		timeout := time.NewTimer(time.Millisecond * 10)
@@ -298,7 +298,7 @@ func (m *Connection) DeviceAuthenticate(ctx context.Context, targetAddress drive
 }
 
 func (m *Connection) DeviceReadProperty(ctx context.Context, targetAddress driverModel.KnxAddress, objectId uint8, propertyId uint8, propertyIndex uint16, numElements uint8) <-chan KnxReadResult {
-	result := make(chan KnxReadResult)
+	result := make(chan KnxReadResult, 1)
 
 	sendResponse := func(value values.PlcValue, numItems uint8, err error) {
 		timeout := time.NewTimer(time.Millisecond * 10)
@@ -382,7 +382,7 @@ func (m *Connection) DeviceReadProperty(ctx context.Context, targetAddress drive
 }
 
 func (m *Connection) DeviceReadPropertyDescriptor(ctx context.Context, targetAddress driverModel.KnxAddress, objectId uint8, propertyId uint8) <-chan KnxReadResult {
-	result := make(chan KnxReadResult)
+	result := make(chan KnxReadResult, 1)
 
 	sendResponse := func(value values.PlcValue, numItems uint8, err error) {
 		timeout := time.NewTimer(time.Millisecond * 10)
@@ -447,7 +447,7 @@ func (m *Connection) DeviceReadPropertyDescriptor(ctx context.Context, targetAdd
 }
 
 func (m *Connection) DeviceReadMemory(ctx context.Context, targetAddress driverModel.KnxAddress, address uint16, numElements uint8, datapointType *driverModel.KnxDatapointType) <-chan KnxReadResult {
-	result := make(chan KnxReadResult)
+	result := make(chan KnxReadResult, 1)
 
 	sendResponse := func(value values.PlcValue, numItems uint8, err error) {
 		timeout := time.NewTimer(time.Millisecond * 10)

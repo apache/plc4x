@@ -49,7 +49,7 @@ func NewWriter(unitIdentifier uint8, messageCodec spi.MessageCodec) Writer {
 
 func (m Writer) Write(ctx context.Context, writeRequest model.PlcWriteRequest) <-chan model.PlcWriteRequestResult {
 	// TODO: handle context
-	result := make(chan model.PlcWriteRequestResult)
+	result := make(chan model.PlcWriteRequestResult, 1)
 	go func() {
 		// If we are requesting only one tag, use a
 		if len(writeRequest.GetTagNames()) != 1 {

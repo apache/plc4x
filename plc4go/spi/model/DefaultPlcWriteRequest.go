@@ -155,7 +155,7 @@ func (d *DefaultPlcWriteRequest) ExecuteWithContext(ctx context.Context) <-chan 
 	}
 
 	// Create a new result-channel, which completes as soon as all sub-result-channels have returned
-	resultChannel := make(chan apiModel.PlcWriteRequestResult)
+	resultChannel := make(chan apiModel.PlcWriteRequestResult, 1)
 	go func() {
 		defer func() {
 			if err := recover(); err != nil {
