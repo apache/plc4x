@@ -164,7 +164,7 @@ public class Plc4xListenRecordProcessor extends BasePlc4xProcessor {
 			dispatcher.open(getConnectionString(), addressMap);
 		} catch (Exception e) {
 			if (debugEnabled) {
-				getLogger().error("Error creating a the subscription event dispatcher");
+				getLogger().debug("Error creating a the subscription event dispatcher");
 				e.printStackTrace();
 			}
 			throw new ProcessException(e);
@@ -195,7 +195,7 @@ public class Plc4xListenRecordProcessor extends BasePlc4xProcessor {
 		}
 		// If dispatcher is not running the connection broke or gave a time out.
 		if (debugEnabled) {
-			getLogger().error("Connection to Plc broke. Trying to restart connection");
+			getLogger().debug("Connection to Plc broke. Trying to restart connection");
 		}
 		closeDispatcher();
 		createDispatcher(events);

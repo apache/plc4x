@@ -127,7 +127,7 @@ public class Plc4xListenerDispatcher implements Runnable {
         try {
             connection.close();
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.debug(e.getMessage());
         }
     }
 
