@@ -218,14 +218,14 @@ func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.
 					strconv.Itoa(int(remoteAmsNetId.GetOctet4())) + ":" +
 					strconv.Itoa(int(driverModel.AdsConstants_ADSTCPDEFAULTPORT)))
 				if err2 == nil {
-					plcDiscoveryItem := &internalModel.DefaultPlcDiscoveryItem{
-						ProtocolCode:  "ads",
-						TransportCode: "tcp",
-						TransportUrl:  *remoteAddress,
-						Options:       opts,
-						Name:          hostNameBlock.GetHostName().GetText(),
-						Attributes:    attributes,
-					}
+					plcDiscoveryItem := internalModel.NewDefaultPlcDiscoveryItem(
+						"ads",
+						"tcp",
+						*remoteAddress,
+						opts,
+						hostNameBlock.GetHostName().GetText(),
+						attributes,
+					)
 
 					// Pass the event back to the callback
 					callback(plcDiscoveryItem)

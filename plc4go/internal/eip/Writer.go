@@ -86,20 +86,12 @@ func (m Writer) Write(ctx context.Context, writeRequest model.PlcWriteRequest) <
 			requestPathSize := int8(dataLength / 2)
 			data, err := encodeValue(value, eipTag.GetType(), elements)
 			if err != nil {
-				result <- &spiModel.DefaultPlcWriteRequestResult{
-					Request:  writeRequest,
-					Response: nil,
-					Err:      errors.Wrapf(err, "Error encoding value for eipTag %s", tagName),
-				}
+				result <- spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.Wrapf(err, "Error encoding value for eipTag %s", tagName))
 				return
 			}
 			ansi, err := toAnsi(tag)
 			if err != nil {
-				result <- &spiModel.DefaultPlcWriteRequestResult{
-					Request:  writeRequest,
-					Response: nil,
-					Err:      errors.Wrapf(err, "Error encoding eip ansi for eipTag %s", tagName),
-				}
+				result <- spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.Wrapf(err, "Error encoding eip ansi for eipTag %s", tagName))
 				return
 			}
 			items[i] = readWriteModel.NewCipWriteRequest(ansi, eipTag.GetType(), elements, data, uint16(requestPathSize))
@@ -174,11 +166,7 @@ func (m Writer) Write(ctx context.Context, writeRequest model.PlcWriteRequest) <
 							}
 							return transaction.EndRequest()
 						}, time.Second*1); err != nil {
-							result <- &spiModel.DefaultPlcWriteRequestResult{
-								Request:  writeRequest,
-								Response: nil,
-								Err:      errors.Wrap(err, "error sending message"),
-							}
+							result <- spiModel.NewDefaultPlcWriteRequestResult( writeRequest, nil,      errors.Wrap(err, "error sending message"))
 							_ = transaction.EndRequest()
 						}
 					})
@@ -269,11 +257,7 @@ func (m Writer) Write(ctx context.Context, writeRequest model.PlcWriteRequest) <
 							}
 							return transaction.EndRequest()
 						}, time.Second*1); err != nil {
-							result <- &spiModel.DefaultPlcWriteRequestResult{
-								Request:  writeRequest,
-								Response: nil,
-								Err:      errors.Wrap(err, "error sending message"),
-							}
+							result <- spiModel.NewDefaultPlcWriteRequestResult( writeRequest, nil,      errors.Wrap(err, "error sending message"))
 							_ = transaction.EndRequest()
 						}
 					})

@@ -61,14 +61,12 @@ func (m *Connection) Subscribe(ctx context.Context, subscriptionRequest apiModel
 			symbolicTag := tag.(dirverModel.SymbolicPlcTag)
 			directTagPtr, err := m.driverContext.getDirectTagForSymbolTag(symbolicTag)
 			if err != nil {
-				subResults[tagName] = &internalModel.DefaultPlcSubscriptionRequestResult{
-					Request: nil, Err: errors.Wrap(err, "error resolving symbolic tag")}
+				subResults[tagName] = internalModel.NewDefaultPlcSubscriptionRequestResult(subscriptionRequest, nil, errors.Wrap(err, "error resolving symbolic tag"))
 				continue
 			}
 			directTag = *directTagPtr
 		default:
-			subResults[tagName] = &internalModel.DefaultPlcSubscriptionRequestResult{
-				Request: nil, Err: errors.New("invalid tag type")}
+			subResults[tagName] = internalModel.NewDefaultPlcSubscriptionRequestResult(subscriptionRequest, nil, errors.New("invalid tag type"))
 			continue
 		}
 
@@ -142,23 +140,26 @@ func (m *Connection) subscribe(ctx context.Context, subscriptionRequest apiModel
 
 		response, err := m.ExecuteAdsAddDeviceNotificationRequest(ctx, directTag.IndexGroup, directTag.IndexOffset, directTag.DataType.GetSize(), model.AdsTransMode_ON_CHANGE, 0, 0)
 		if err != nil {
-			respChan <- &internalModel.DefaultPlcSubscriptionRequestResult{
-				Request:  subscriptionRequest,
-				Response: nil,
-				Err:      err,
-			}
+			responseChan <- internalModel.NewDefaultPlcSubscriptionRequestResult(
+				subscriptionRequest,
+				nil,
+				err,
+			)
 		}
 		// Create a new subscription handle.
 		subscriptionHandle := dirverModel.NewAdsSubscriptionHandle(m, tagName, directTag)
-		respChan <- &internalModel.DefaultPlcSubscriptionRequestResult{
-			Request: subscriptionRequest,
-			Response: internalModel.NewDefaultPlcSubscriptionResponse(subscriptionRequest,
+		responseChan <- internalModel.NewDefaultPlcSubscriptionRequestResult(
+			subscriptionRequest,
+			internalModel.NewDefaultPlcSubscriptionResponse(
+				subscriptionRequest,
 				map[string]apiModel.PlcResponseCode{tagName: apiModel.PlcResponseCode_OK},
-				map[string]apiModel.PlcSubscriptionHandle{tagName: subscriptionHandle}),
-		}
+				map[string]apiModel.PlcSubscriptionHandle{tagName: subscriptionHandle},
+			),
+			nil,
+		)
 		// Store it together with the returned ADS handle.
 		m.subscriptions[response.GetNotificationHandle()] = subscriptionHandle
-	}(responseChan)
+	}()
 	return responseChan
 }
 
@@ -199,11 +200,11 @@ func (m *Connection) processSubscriptionResponses(_ context.Context, subscriptio
 			}
 		}
 	}
-	return &internalModel.DefaultPlcSubscriptionRequestResult{
-		Request:  subscriptionRequest,
-		Response: internalModel.NewDefaultPlcSubscriptionResponse(subscriptionRequest, responseCodes, subscriptionHandles),
-		Err:      err,
-	}
+	return internalModel.NewDefaultPlcSubscriptionRequestResult(
+		subscriptionRequest,
+		internalModel.NewDefaultPlcSubscriptionResponse(subscriptionRequest, responseCodes, subscriptionHandles),
+		err,
+	)
 }
 
 func (m *Connection) handleIncomingDeviceNotificationRequest(deviceNotificationRequest model.AdsDeviceNotificationRequest) {

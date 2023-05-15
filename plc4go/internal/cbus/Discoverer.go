@@ -282,13 +282,14 @@ func (d *Discoverer) createDeviceScanDispatcher(tcpTransportInstance *tcp.Transp
 				}
 				// TODO: manufacturer + type would be good but this means two requests then
 				deviceName := identifyReplyCommand.GetManufacturerName()
-				discoveryEvent := &internalModel.DefaultPlcDiscoveryItem{
-					ProtocolCode:  "c-bus",
-					TransportCode: "tcp",
-					TransportUrl:  remoteUrl,
-					Options:       nil,
-					Name:          deviceName,
-				}
+				discoveryEvent := internalModel.NewDefaultPlcDiscoveryItem(
+					"c-bus",
+					"tcp",
+					remoteUrl,
+					nil,
+					deviceName,
+					nil,
+				)
 				// Pass the event back to the callback
 				callback(discoveryEvent)
 				continue

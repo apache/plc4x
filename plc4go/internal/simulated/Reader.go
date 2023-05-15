@@ -92,11 +92,11 @@ func (r *Reader) Read(_ context.Context, readRequest model.PlcReadRequest) <-cha
 			r.tracer.AddTransactionalTrace(txId, "read", "success")
 		}
 		// Emit the response
-		ch <- &spiModel.DefaultPlcReadRequestResult{
-			Request:  readRequest,
-			Response: spiModel.NewDefaultPlcReadResponse(readRequest, responseCodes, responseValues),
-			Err:      nil,
-		}
+		ch <- spiModel.NewDefaultPlcReadRequestResult(
+			readRequest,
+			spiModel.NewDefaultPlcReadResponse(readRequest, responseCodes, responseValues),
+			nil,
+		)
 	}()
 	return ch
 }

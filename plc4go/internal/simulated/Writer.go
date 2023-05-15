@@ -84,11 +84,7 @@ func (w *Writer) Write(_ context.Context, writeRequest model.PlcWriteRequest) <-
 			w.tracer.AddTransactionalTrace(txId, "write", "success")
 		}
 		// Emit the response
-		ch <- &spiModel.DefaultPlcWriteRequestResult{
-			Request:  writeRequest,
-			Response: spiModel.NewDefaultPlcWriteResponse(writeRequest, responseCodes),
-			Err:      nil,
-		}
+		ch <- spiModel.NewDefaultPlcWriteRequestResult(writeRequest, spiModel.NewDefaultPlcWriteResponse(writeRequest, responseCodes), nil)
 	}()
 	return ch
 }

@@ -70,11 +70,11 @@ func (m Writer) Write(ctx context.Context, writeRequest model.PlcWriteRequest) <
 		value := writeRequest.GetValue(tagName)
 		data, err := readWriteModel.DataItemSerialize(value, modbusTag.Datatype, modbusTag.Quantity)
 		if err != nil {
-			result <- &spiModel.DefaultPlcWriteRequestResult{
-				Request:  writeRequest,
-				Response: nil,
-				Err:      errors.Wrap(err, "error serializing value"),
-			}
+			result <- spiModel.NewDefaultPlcWriteRequestResult(
+				writeRequest,
+				nil,
+				errors.Wrap(err, "error serializing value"),
+			)
 			return
 		}
 
@@ -94,18 +94,10 @@ func (m Writer) Write(ctx context.Context, writeRequest model.PlcWriteRequest) <
 				numWords,
 				data)
 		case ExtendedRegister:
-			result <- &spiModel.DefaultPlcWriteRequestResult{
-				Request:  writeRequest,
-				Response: nil,
-				Err:      errors.New("modbus currently doesn't support extended register requests"),
-			}
+			result <- spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.New("modbus currently doesn't support extended register requests"))
 			return
 		default:
-			result <- &spiModel.DefaultPlcWriteRequestResult{
-				Request:  writeRequest,
-				Response: nil,
-				Err:      errors.New("unsupported tag type"),
-			}
+			result <- spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.New("unsupported tag type"))
 			return
 		}
 

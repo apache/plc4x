@@ -148,7 +148,7 @@ func (d *DefaultPlcReadRequest) ExecuteWithContext(ctx context.Context) <-chan a
 		for _, subResultChannel := range subResultChannels {
 			select {
 			case <-ctx.Done():
-				resultChannel <- &DefaultPlcReadRequestResult{Request: d, Err: ctx.Err()}
+				resultChannel <- NewDefaultPlcReadRequestResult(d, nil, ctx.Err())
 				return
 			case subResult := <-subResultChannel:
 				subResults = append(subResults, subResult)

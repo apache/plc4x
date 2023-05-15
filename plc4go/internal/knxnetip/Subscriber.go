@@ -67,11 +67,11 @@ func (m *Subscriber) Subscribe(ctx context.Context, subscriptionRequest apiModel
 			subscriptionValues[tagName] = NewSubscriptionHandle(m, tagName, internalPlcSubscriptionRequest.GetTag(tagName), tagType, internalPlcSubscriptionRequest.GetInterval(tagName))
 		}
 
-		result <- &spiModel.DefaultPlcSubscriptionRequestResult{
-			Request:  subscriptionRequest,
-			Response: spiModel.NewDefaultPlcSubscriptionResponse(subscriptionRequest, responseCodes, subscriptionValues),
-			Err:      nil,
-		}
+		result <- spiModel.NewDefaultPlcSubscriptionRequestResult(
+			subscriptionRequest,
+			spiModel.NewDefaultPlcSubscriptionResponse(subscriptionRequest, responseCodes, subscriptionValues),
+			nil,
+		)
 	}()
 	return result
 }

@@ -215,13 +215,14 @@ func (d *Discoverer) createDeviceScanDispatcher(udpTransportInstance *udp.Transp
 							continue
 						}
 						deviceName := string(bytes.Trim(searchResponse.GetDibDeviceInfo().GetDeviceFriendlyName(), "\x00"))
-						discoveryEvent := &internalModel.DefaultPlcDiscoveryItem{
-							ProtocolCode:  "knxnet-ip",
-							TransportCode: "udp",
-							TransportUrl:  *remoteUrl,
-							Options:       nil,
-							Name:          deviceName,
-						}
+						discoveryEvent := internalModel.NewDefaultPlcDiscoveryItem(
+							"knxnet-ip",
+							"udp",
+							*remoteUrl,
+							nil,
+							deviceName,
+							nil,
+						)
 						// Pass the event back to the callback
 						callback(discoveryEvent)
 					}

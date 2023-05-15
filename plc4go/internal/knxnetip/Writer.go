@@ -50,11 +50,7 @@ func (m Writer) Write(ctx context.Context, writeRequest model.PlcWriteRequest) <
 		tag := writeRequest.GetTag(tagName)
 		groupAddressTag, err := CastToGroupAddressTagFromPlcTag(tag)
 		if err != nil {
-			result <- &plc4goModel.DefaultPlcWriteRequestResult{
-				Request:  writeRequest,
-				Response: nil,
-				Err:      errors.New("invalid tag item type"),
-			}
+			result <- plc4goModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.New("invalid tag item type"))
 			return result
 		}
 
@@ -63,11 +59,7 @@ func (m Writer) Write(ctx context.Context, writeRequest model.PlcWriteRequest) <
 		tagType := groupAddressTag.GetTagType()
 		// TODO: why do we ignore the bytes here?
 		if _, err := readWriteModel.KnxDatapointSerialize(value, *tagType); err != nil {
-			result <- &plc4goModel.DefaultPlcWriteRequestResult{
-				Request:  writeRequest,
-				Response: nil,
-				Err:      errors.New("error serializing value: " + err.Error()),
-			}
+			result <- plc4goModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.New("error serializing value: "+err.Error()))
 			return result
 		}
 	}

@@ -63,11 +63,11 @@ func (m *Reader) Read(ctx context.Context, readRequest model.PlcReadRequest) <-c
 			tag := readRequest.GetTag(tagName)
 			address, err := encodeS7Address(tag)
 			if err != nil {
-				result <- &spiModel.DefaultPlcReadRequestResult{
-					Request:  readRequest,
-					Response: nil,
-					Err:      errors.Wrapf(err, "Error encoding s7 address for tag %s", tagName),
-				}
+				result <- spiModel.NewDefaultPlcReadRequestResult(
+					readRequest,
+					nil,
+					errors.Wrapf(err, "Error encoding s7 address for tag %s", tagName),
+				)
 				return
 			}
 			requestItems[i] = readWriteModel.NewS7VarRequestParameterItemAddress(address)
@@ -129,29 +129,32 @@ func (m *Reader) Read(ctx context.Context, readRequest model.PlcReadRequest) <-c
 				readResponse, err := m.ToPlc4xReadResponse(payload, readRequest)
 
 				if err != nil {
-					result <- &spiModel.DefaultPlcReadRequestResult{
-						Request: readRequest,
-						Err:     errors.Wrap(err, "Error decoding response"),
-					}
+					result <- spiModel.NewDefaultPlcReadRequestResult(
+						readRequest,
+						nil,
+						errors.Wrap(err, "Error decoding response"),
+					)
 					return transaction.EndRequest()
 				}
-				result <- &spiModel.DefaultPlcReadRequestResult{
-					Request:  readRequest,
-					Response: readResponse,
-				}
+				result <- spiModel.NewDefaultPlcReadRequestResult(
+					readRequest,
+					readResponse,
+					nil,
+				)
 				return transaction.EndRequest()
 			}, func(err error) error {
-				result <- &spiModel.DefaultPlcReadRequestResult{
-					Request: readRequest,
-					Err:     errors.Wrap(err, "got timeout while waiting for response"),
-				}
+				result <- spiModel.NewDefaultPlcReadRequestResult(
+					readRequest,
+					nil,
+					errors.Wrap(err, "got timeout while waiting for response"),
+				)
 				return transaction.EndRequest()
 			}, time.Second*1); err != nil {
-				result <- &spiModel.DefaultPlcReadRequestResult{
-					Request:  readRequest,
-					Response: nil,
-					Err:      errors.Wrap(err, "error sending message"),
-				}
+				result <- spiModel.NewDefaultPlcReadRequestResult(
+					readRequest,
+					nil,
+					errors.Wrap(err, "error sending message"),
+				)
 				_ = transaction.EndRequest()
 			}
 		})

@@ -157,7 +157,7 @@ func broadcastAndDiscover(ctx context.Context, communicationChannels []communica
 
 		go func(communicationChannelInstance communicationChannel) {
 			for {
-				blockingReadChan := make(chan bool, 0)
+				blockingReadChan := make(chan bool)
 				go func() {
 					buf := make([]byte, 4096)
 					n, addr, err := communicationChannelInstance.unicastConnection.ReadFrom(buf)
@@ -255,12 +255,14 @@ func handleIncomingBVLCs(ctx context.Context, callback func(event apiModel.PlcDi
 				if err != nil {
 					log.Debug().Err(err).Msg("Error parsing url")
 				}
-				discoveryEvent := &internalModel.DefaultPlcDiscoveryItem{
-					ProtocolCode:  "bacnet-ip",
-					TransportCode: "udp",
-					TransportUrl:  *remoteUrl,
-					Name:          fmt.Sprintf("device %v:%v", iAm.GetDeviceIdentifier().GetObjectType(), iAm.GetDeviceIdentifier().GetInstanceNumber()),
-				}
+				discoveryEvent := internalModel.NewDefaultPlcDiscoveryItem(
+					"bacnet-ip",
+					"udp",
+					*remoteUrl,
+					nil,
+					fmt.Sprintf("device %v:%v", iAm.GetDeviceIdentifier().GetObjectType(), iAm.GetDeviceIdentifier().GetInstanceNumber()),
+					nil,
+				)
 
 				// Pass the event back to the callback
 				callback(discoveryEvent)
@@ -270,12 +272,14 @@ func handleIncomingBVLCs(ctx context.Context, callback func(event apiModel.PlcDi
 				if err != nil {
 					log.Debug().Err(err).Msg("Error parsing url")
 				}
-				discoveryEvent := &internalModel.DefaultPlcDiscoveryItem{
-					ProtocolCode:  "bacnet-ip",
-					TransportCode: "udp",
-					TransportUrl:  *remoteUrl,
-					Name:          fmt.Sprintf("device %v:%v with %v:%v and %v", iHave.GetDeviceIdentifier().GetObjectType(), iHave.GetDeviceIdentifier().GetInstanceNumber(), iHave.GetObjectIdentifier().GetObjectType(), iHave.GetObjectIdentifier().GetInstanceNumber(), iHave.GetObjectName().GetValue()),
-				}
+				discoveryEvent := internalModel.NewDefaultPlcDiscoveryItem(
+					"bacnet-ip",
+					"udp",
+					*remoteUrl,
+					nil,
+					fmt.Sprintf("device %v:%v with %v:%v and %v", iHave.GetDeviceIdentifier().GetObjectType(), iHave.GetDeviceIdentifier().GetInstanceNumber(), iHave.GetObjectIdentifier().GetObjectType(), iHave.GetObjectIdentifier().GetInstanceNumber(), iHave.GetObjectName().GetValue()),
+					nil,
+				)
 
 				// Pass the event back to the callback
 				callback(discoveryEvent)

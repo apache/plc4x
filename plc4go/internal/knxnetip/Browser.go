@@ -103,13 +103,20 @@ func (m Browser) executeDeviceQuery(ctx context.Context, query DeviceQuery, inte
 			// If the request returned a connection, process it,
 			// otherwise just ignore it.
 			if deviceConnection.connection != nil {
-				queryResult := &model.DefaultPlcBrowseItem{
-					Tag: NewDeviceQuery(
+				queryResult := model.NewDefaultPlcBrowseItem(
+					NewDeviceQuery(
 						strconv.Itoa(int(knxAddress.GetMainGroup())),
 						strconv.Itoa(int(knxAddress.GetMiddleGroup())),
 						strconv.Itoa(int(knxAddress.GetSubGroup())),
 					),
-				}
+					"",
+					"",
+					false,
+					false,
+					false,
+					nil,
+					nil,
+				)
 
 				// Pass it to the callback
 				add := true
@@ -398,13 +405,16 @@ func (m Browser) executeCommunicationObjectQuery(ctx context.Context, query Comm
 					&tagType)
 			}
 
-			results = append(results, &model.DefaultPlcBrowseItem{
-				Tag:          tag,
-				Name:         fmt.Sprintf("#%d", comObjectNumber),
-				Readable:     readable,
-				Writable:     writable,
-				Subscribable: subscribable,
-			})
+			results = append(results, model.NewDefaultPlcBrowseItem(
+				tag,
+				fmt.Sprintf("#%d", comObjectNumber),
+				"",
+				readable,
+				writable,
+				subscribable,
+				nil,
+				nil,
+			))
 		}
 	} else if (m.connection.DeviceConnections[knxAddress].deviceDescriptor & 0xFFF0) == uint16(0x0700) /* System7 */ {
 		// For System 7 Devices we unfortunately can't access the information of where the memory address for the
@@ -477,13 +487,16 @@ func (m Browser) executeCommunicationObjectQuery(ctx context.Context, query Comm
 			for _, groupAddress := range groupAddresses {
 				tag := m.getTagForGroupAddress(groupAddress, tagType)
 
-				results = append(results, &model.DefaultPlcBrowseItem{
-					Tag:          tag,
-					Name:         fmt.Sprintf("#%d", comObjectNumber),
-					Readable:     readable,
-					Writable:     writable,
-					Subscribable: subscribable,
-				})
+				results = append(results, model.NewDefaultPlcBrowseItem(
+					tag,
+					fmt.Sprintf("#%d", comObjectNumber),
+					"",
+					readable,
+					writable,
+					subscribable,
+					nil,
+					nil,
+				))
 			}
 		}
 	} else {

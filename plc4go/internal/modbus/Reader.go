@@ -68,11 +68,11 @@ func (m *Reader) Read(ctx context.Context, readRequest model.PlcReadRequest) <-c
 		tag := readRequest.GetTag(tagName)
 		modbusTagVar, err := CastToModbusTagFromPlcTag(tag)
 		if err != nil {
-			result <- &spiModel.DefaultPlcReadRequestResult{
-				Request:  readRequest,
-				Response: nil,
-				Err:      errors.Wrap(err, "invalid tag item type"),
-			}
+			result <- spiModel.NewDefaultPlcReadRequestResult(
+				readRequest,
+				nil,
+				errors.Wrap(err, "invalid tag item type"),
+			)
 			log.Debug().Msgf("Invalid tag item type %T", tag)
 			return
 		}
@@ -89,18 +89,18 @@ func (m *Reader) Read(ctx context.Context, readRequest model.PlcReadRequest) <-c
 		case HoldingRegister:
 			pdu = readWriteModel.NewModbusPDUReadHoldingRegistersRequest(modbusTagVar.Address, numWords)
 		case ExtendedRegister:
-			result <- &spiModel.DefaultPlcReadRequestResult{
-				Request:  readRequest,
-				Response: nil,
-				Err:      errors.New("modbus currently doesn't support extended register requests"),
-			}
+			result <- spiModel.NewDefaultPlcReadRequestResult(
+				readRequest,
+				nil,
+				errors.New("modbus currently doesn't support extended register requests"),
+			)
 			return
 		default:
-			result <- &spiModel.DefaultPlcReadRequestResult{
-				Request:  readRequest,
-				Response: nil,
-				Err:      errors.Errorf("unsupported tag type %x", modbusTagVar.TagType),
-			}
+			result <- spiModel.NewDefaultPlcReadRequestResult(
+				readRequest,
+				nil,
+				errors.Errorf("unsupported tag type %x", modbusTagVar.TagType),
+			)
 			log.Debug().Msgf("Unsupported tag type %x", modbusTagVar.TagType)
 			return
 		}
@@ -132,30 +132,33 @@ func (m *Reader) Read(ctx context.Context, readRequest model.PlcReadRequest) <-c
 			readResponse, err := m.ToPlc4xReadResponse(responseAdu, readRequest)
 
 			if err != nil {
-				result <- &spiModel.DefaultPlcReadRequestResult{
-					Request: readRequest,
-					Err:     errors.Wrap(err, "Error decoding response"),
-				}
+				result <- spiModel.NewDefaultPlcReadRequestResult(
+					readRequest,
+					nil,
+					errors.Wrap(err, "Error decoding response"),
+				)
 				// TODO: should we return the error here?
 				return nil
 			}
-			result <- &spiModel.DefaultPlcReadRequestResult{
-				Request:  readRequest,
-				Response: readResponse,
-			}
+			result <- spiModel.NewDefaultPlcReadRequestResult(
+				readRequest,
+				readResponse,
+				nil,
+			)
 			return nil
 		}, func(err error) error {
-			result <- &spiModel.DefaultPlcReadRequestResult{
-				Request: readRequest,
-				Err:     errors.Wrap(err, "got timeout while waiting for response"),
-			}
+			result <- spiModel.NewDefaultPlcReadRequestResult(
+				readRequest,
+				nil,
+				errors.Wrap(err, "got timeout while waiting for response"),
+			)
 			return nil
 		}, time.Second*1); err != nil {
-			result <- &spiModel.DefaultPlcReadRequestResult{
-				Request:  readRequest,
-				Response: nil,
-				Err:      errors.Wrap(err, "error sending message"),
-			}
+			result <- spiModel.NewDefaultPlcReadRequestResult(
+				readRequest,
+				nil,
+				errors.Wrap(err, "error sending message"),
+			)
 		}
 	}()
 	return result

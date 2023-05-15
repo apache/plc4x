@@ -45,10 +45,7 @@ func (m *Connection) BrowseWithInterceptor(ctx context.Context, browseRequest ap
 	go func() {
 		defer func() {
 			if err := recover(); err != nil {
-				result <- &internalModel.DefaultPlcBrowseRequestResult{
-					Request: browseRequest,
-					Err:     errors.Errorf("Recovered from panic: %v", err),
-				}
+				result <- internalModel.NewDefaultPlcBrowseRequestResult(browseRequest, nil, errors.Errorf("Recovered from panic: %v", err))
 			}
 		}()
 		responseCodes := map[string]apiModel.PlcResponseCode{}
@@ -58,11 +55,7 @@ func (m *Connection) BrowseWithInterceptor(ctx context.Context, browseRequest ap
 			responseCodes[queryName], results[queryName] = m.BrowseQuery(ctx, interceptor, queryName, query)
 		}
 		browseResponse := internalModel.NewDefaultPlcBrowseResponse(browseRequest, results, responseCodes)
-		result <- &internalModel.DefaultPlcBrowseRequestResult{
-			Request:  browseRequest,
-			Response: browseResponse,
-			Err:      nil,
-		}
+		result <- internalModel.NewDefaultPlcBrowseRequestResult(browseRequest, browseResponse, nil)
 	}()
 	return result
 }
@@ -122,20 +115,21 @@ func (m *Connection) filterDataTypes(parentName string, currentType driverModel.
 				UpperBound: ai.GetUpperBound(),
 			})
 		}
-		foundTag := &internalModel.DefaultPlcBrowseItem{
-			Tag: model.SymbolicPlcTag{
+		foundTag := internalModel.NewDefaultPlcBrowseItem(
+			model.SymbolicPlcTag{
 				PlcTag: model.PlcTag{
 					ArrayInfo: arrayInfo,
 				},
 				SymbolicAddress: parentName,
 			},
-			Name:         parentName,
-			DataTypeName: currentType.GetDataTypeName(),
-			Readable:     false,
-			Writable:     false,
-			Subscribable: false,
-			Options:      nil,
-		}
+			parentName,
+			currentType.GetDataTypeName(),
+			false,
+			false,
+			false,
+			nil,
+			nil,
+		)
 		return []apiModel.PlcBrowseItem{foundTag}
 	}
 

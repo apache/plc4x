@@ -163,11 +163,11 @@ func (m Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) <
 
 		// Assemble the results
 		result := spiModel.NewDefaultPlcReadResponse(readRequest, responseCodes, plcValues)
-		resultChan <- &spiModel.DefaultPlcReadRequestResult{
-			Request:  readRequest,
-			Response: result,
-			Err:      nil,
-		}
+		resultChan <- spiModel.NewDefaultPlcReadRequestResult(
+			readRequest,
+			result,
+			nil,
+		)
 	}()
 	return resultChan
 }

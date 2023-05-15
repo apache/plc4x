@@ -62,21 +62,13 @@ func (m Writer) Write(ctx context.Context, writeRequest model.PlcWriteRequest) <
 			plcValue := writeRequest.GetValue(tagName)
 			s7Address, err := encodeS7Address(tag)
 			if err != nil {
-				result <- &spiModel.DefaultPlcWriteRequestResult{
-					Request:  writeRequest,
-					Response: nil,
-					Err:      errors.Wrapf(err, "Error encoding s7 address for tag %s", tagName),
-				}
+				result <- spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.Wrapf(err, "Error encoding s7 address for tag %s", tagName))
 				return
 			}
 			parameterItems[i] = readWriteModel.NewS7VarRequestParameterItemAddress(s7Address)
 			value, err := serializePlcValue(tag, plcValue)
 			if err != nil {
-				result <- &spiModel.DefaultPlcWriteRequestResult{
-					Request:  writeRequest,
-					Response: nil,
-					Err:      errors.Wrapf(err, "Error encoding value for tag %s", tagName),
-				}
+				result <- spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.Wrapf(err, "Error encoding value for tag %s", tagName))
 				return
 			}
 			payloadItems[i] = value
@@ -150,11 +142,7 @@ func (m Writer) Write(ctx context.Context, writeRequest model.PlcWriteRequest) <
 				}
 				return transaction.EndRequest()
 			}, time.Second*1); err != nil {
-				result <- &spiModel.DefaultPlcWriteRequestResult{
-					Request:  writeRequest,
-					Response: nil,
-					Err:      errors.Wrap(err, "error sending message"),
-				}
+				result <- spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.Wrap(err, "error sending message"))
 				_ = transaction.EndRequest()
 			}
 		})
