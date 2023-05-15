@@ -59,7 +59,6 @@
         <artifactId>maven-dependency-plugin</artifactId>
         <configuration>
           <usedDependencies>
-            <usedDependency>ch.qos.logback:logback-core</usedDependency>
             <usedDependency>org.slf4j:log4j-over-slf4j</usedDependency>
             <usedDependency>org.apache.plc4x:plc4j-driver-simulated</usedDependency>
           </usedDependencies>
@@ -113,11 +112,7 @@
     <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>ch.qos.logback</groupId>
-      <artifactId>logback-core</artifactId>
+      <!-- Explicitly override the scope to compile to include these -->
       <scope>compile</scope>
     </dependency>
 

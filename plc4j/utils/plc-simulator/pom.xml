@@ -55,15 +55,6 @@
           </execution>
         </executions>
       </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-dependency-plugin</artifactId>
-        <configuration>
-          <usedDependencies>
-            <usedDependency>ch.qos.logback:logback-core</usedDependency>
-          </usedDependencies>
-        </configuration>
-      </plugin>
     </plugins>
   </build>
 
@@ -135,11 +126,6 @@
     <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>ch.qos.logback</groupId>
-      <artifactId>logback-core</artifactId>
       <scope>compile</scope>
     </dependency>
   </dependencies>

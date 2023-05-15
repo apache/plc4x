@@ -185,8 +185,8 @@
       <artifactId>slf4j-api</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-simple</artifactId>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
     </dependency>
     <dependency>
       <groupId>commons-io</groupId>
@@ -250,7 +250,6 @@
         <artifactId>maven-dependency-plugin</artifactId>
         <configuration>
           <usedDependencies combine.children="append">
-            <usedDependency>org.slf4j:slf4j-simple</usedDependency>
             <usedDependency>org.bouncycastle:bcmail-jdk15on</usedDependency>
             <usedDependency>org.apache.plc4x:plc4j-driver-ab-eth</usedDependency>
             <usedDependency>org.apache.plc4x:plc4j-driver-ads</usedDependency>

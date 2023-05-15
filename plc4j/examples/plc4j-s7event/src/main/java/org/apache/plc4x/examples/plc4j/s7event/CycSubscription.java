@@ -26,7 +26,6 @@ import org.apache.plc4x.java.api.messages.PlcSubscriptionResponse;
 import org.apache.plc4x.java.s7.events.S7CyclicEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.simple.SimpleLogger;
 
 import java.util.Map;
 
@@ -46,7 +45,6 @@ public class CycSubscription {
      * @param args the command line arguments
      */
     public static void main(String[] args) throws Exception {
-        System.setProperty(SimpleLogger.DEFAULT_LOG_LEVEL_KEY, "trace");
 
         try (PlcConnection connection = new DefaultPlcDriverManager().getConnection("s7://10.10.1.33?remote-rack=0&remote-slot=3&controller-type=S7_400")) {
             final PlcSubscriptionRequest.Builder subscription = connection.subscriptionRequestBuilder();

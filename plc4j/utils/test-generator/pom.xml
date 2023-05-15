@@ -74,7 +74,6 @@
           <usedDependencies combine.children="append">
             <usedDependency>org.apache.plc4x:plc4j-driver-s7</usedDependency>
             <usedDependency>org.apache.plc4x:plc4j-utils-pcap-shared</usedDependency>
-            <usedDependency>org.slf4j:slf4j-simple</usedDependency>
           </usedDependencies>
         </configuration>
       </plugin>
@@ -127,8 +126,8 @@
       <artifactId>slf4j-api</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-simple</artifactId>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
     </dependency>
 
     <dependency>
