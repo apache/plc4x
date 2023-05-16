@@ -21,6 +21,7 @@ package model
 
 import (
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog/log"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 )
@@ -44,7 +45,8 @@ func NewDefaultPlcSubscriptionResponse(request apiModel.PlcSubscriptionRequest, 
 	for subscriptionTagName, consumers := range request.(*DefaultPlcSubscriptionRequest).preRegisteredConsumers {
 		subscriptionHandle, err := plcSubscriptionResponse.GetSubscriptionHandle(subscriptionTagName)
 		if subscriptionHandle == nil || err != nil {
-			panic("PlcSubscriptionHandle for " + subscriptionTagName + " not found")
+			log.Error().Msgf("PlcSubscriptionHandle for %s not found", subscriptionTagName)
+			continue
 		}
 		for _, consumer := range consumers {
 			subscriptionHandle.Register(consumer)
