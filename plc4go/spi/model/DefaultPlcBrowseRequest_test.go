@@ -22,6 +22,8 @@ package model
 import (
 	"context"
 	"fmt"
+	"github.com/pkg/errors"
+	"github.com/stretchr/testify/mock"
 	"testing"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
@@ -93,15 +95,50 @@ func TestDefaultPlcBrowseRequestBuilder_Build(t *testing.T) {
 		queryStrings map[string]string
 	}
 	tests := []struct {
-		name    string
-		fields  fields
-		want    apiModel.PlcBrowseRequest
-		wantErr assert.ErrorAssertionFunc
+		name      string
+		fields    fields
+		mockSetup func(t *testing.T, fields *fields)
+		want      apiModel.PlcBrowseRequest
+		wantErr   assert.ErrorAssertionFunc
 	}{
-		// TODO: Add test cases.
+		{
+			name:    "build it",
+			want:    NewDefaultPlcBrowseRequest(map[string]apiModel.PlcQuery{}, nil, nil),
+			wantErr: assert.NoError,
+		},
+		{
+			name: "build it with queries",
+			fields: fields{
+				queryNames:   nil,
+				queryStrings: map[string]string{"a": "a"},
+			},
+			mockSetup: func(t *testing.T, fields *fields) {
+				handler := NewMockPlcTagHandler(t)
+				handler.EXPECT().ParseQuery(mock.Anything).Return(nil, nil)
+				fields.tagHandler = handler
+			},
+			want:    NewDefaultPlcBrowseRequest(map[string]apiModel.PlcQuery{"a": nil}, nil, nil),
+			wantErr: assert.NoError,
+		},
+		{
+			name: "build it parse error",
+			fields: fields{
+				queryNames:   nil,
+				queryStrings: map[string]string{"a": "a"},
+			},
+			mockSetup: func(t *testing.T, fields *fields) {
+				handler := NewMockPlcTagHandler(t)
+				handler.EXPECT().ParseQuery(mock.Anything).Return(nil, errors.New("nope"))
+				fields.tagHandler = handler
+			},
+			wantErr: assert.Error,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			if tt.mockSetup != nil {
+				tt.mockSetup(t, &tt.fields)
+			}
 			d := &DefaultPlcBrowseRequestBuilder{
 				tagHandler:   tt.fields.tagHandler,
 				browser:      tt.fields.browser,
@@ -124,14 +161,25 @@ func TestDefaultPlcBrowseRequest_Execute(t *testing.T) {
 		queries    map[string]apiModel.PlcQuery
 	}
 	tests := []struct {
-		name   string
-		fields fields
-		want   <-chan apiModel.PlcBrowseRequestResult
+		name      string
+		fields    fields
+		mockSetup func(t *testing.T, fields *fields)
+		want      <-chan apiModel.PlcBrowseRequestResult
 	}{
-		// TODO: Add test cases.
+		{
+			name: "execute it",
+			mockSetup: func(t *testing.T, fields *fields) {
+				browser := NewMockPlcBrowser(t)
+				browser.EXPECT().Browse(mock.Anything, mock.Anything).Return(nil)
+				fields.browser = browser
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			if tt.mockSetup != nil {
+				tt.mockSetup(t, &tt.fields)
+			}
 			d := &DefaultPlcBrowseRequest{
 				browser:    tt.fields.browser,
 				queryNames: tt.fields.queryNames,
@@ -152,15 +200,26 @@ func TestDefaultPlcBrowseRequest_ExecuteWithContext(t *testing.T) {
 		ctx context.Context
 	}
 	tests := []struct {
-		name   string
-		fields fields
-		args   args
-		want   <-chan apiModel.PlcBrowseRequestResult
+		name      string
+		fields    fields
+		args      args
+		mockSetup func(t *testing.T, fields *fields)
+		want      <-chan apiModel.PlcBrowseRequestResult
 	}{
-		// TODO: Add test cases.
+		{
+			name: "execute it",
+			mockSetup: func(t *testing.T, fields *fields) {
+				browser := NewMockPlcBrowser(t)
+				browser.EXPECT().Browse(mock.Anything, mock.Anything).Return(nil)
+				fields.browser = browser
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			if tt.mockSetup != nil {
+				tt.mockSetup(t, &tt.fields)
+			}
 			d := &DefaultPlcBrowseRequest{
 				browser:    tt.fields.browser,
 				queryNames: tt.fields.queryNames,
@@ -181,15 +240,26 @@ func TestDefaultPlcBrowseRequest_ExecuteWithInterceptor(t *testing.T) {
 		interceptor func(result apiModel.PlcBrowseItem) bool
 	}
 	tests := []struct {
-		name   string
-		fields fields
-		args   args
-		want   <-chan apiModel.PlcBrowseRequestResult
+		name      string
+		fields    fields
+		args      args
+		mockSetup func(t *testing.T, fields *fields)
+		want      <-chan apiModel.PlcBrowseRequestResult
 	}{
-		// TODO: Add test cases.
+		{
+			name: "execute it",
+			mockSetup: func(t *testing.T, fields *fields) {
+				browser := NewMockPlcBrowser(t)
+				browser.EXPECT().BrowseWithInterceptor(mock.Anything, mock.Anything, mock.Anything).Return(nil)
+				fields.browser = browser
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			if tt.mockSetup != nil {
+				tt.mockSetup(t, &tt.fields)
+			}
 			d := &DefaultPlcBrowseRequest{
 				browser:    tt.fields.browser,
 				queryNames: tt.fields.queryNames,
@@ -211,15 +281,26 @@ func TestDefaultPlcBrowseRequest_ExecuteWithInterceptorWithContext(t *testing.T)
 		interceptor func(result apiModel.PlcBrowseItem) bool
 	}
 	tests := []struct {
-		name   string
-		fields fields
-		args   args
-		want   <-chan apiModel.PlcBrowseRequestResult
+		name      string
+		fields    fields
+		args      args
+		mockSetup func(t *testing.T, fields *fields)
+		want      <-chan apiModel.PlcBrowseRequestResult
 	}{
-		// TODO: Add test cases.
+		{
+			name: "execute it",
+			mockSetup: func(t *testing.T, fields *fields) {
+				browser := NewMockPlcBrowser(t)
+				browser.EXPECT().BrowseWithInterceptor(mock.Anything, mock.Anything, mock.Anything).Return(nil)
+				fields.browser = browser
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			if tt.mockSetup != nil {
+				tt.mockSetup(t, &tt.fields)
+			}
 			d := &DefaultPlcBrowseRequest{
 				browser:    tt.fields.browser,
 				queryNames: tt.fields.queryNames,
@@ -245,7 +326,9 @@ func TestDefaultPlcBrowseRequest_GetQuery(t *testing.T) {
 		args   args
 		want   apiModel.PlcQuery
 	}{
-		// TODO: Add test cases.
+		{
+			name: "get it",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -270,7 +353,9 @@ func TestDefaultPlcBrowseRequest_GetQueryNames(t *testing.T) {
 		fields fields
 		want   []string
 	}{
-		// TODO: Add test cases.
+		{
+			name: "get it",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -295,7 +380,10 @@ func TestDefaultPlcBrowseRequest_IsAPlcMessage(t *testing.T) {
 		fields fields
 		want   bool
 	}{
-		// TODO: Add test cases.
+		{
+			name: "is it",
+			want: true,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -320,7 +408,10 @@ func TestNewDefaultPlcBrowseRequest(t *testing.T) {
 		args args
 		want *DefaultPlcBrowseRequest
 	}{
-		// TODO: Add test cases.
+		{
+			name: "browse it",
+			want: &DefaultPlcBrowseRequest{},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -339,7 +430,12 @@ func TestNewDefaultPlcBrowseRequestBuilder(t *testing.T) {
 		args args
 		want apiModel.PlcBrowseRequestBuilder
 	}{
-		// TODO: Add test cases.
+		{
+			name: "get it",
+			want: &DefaultPlcBrowseRequestBuilder{
+				queryStrings: map[string]string{},
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

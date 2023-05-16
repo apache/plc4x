@@ -27,6 +27,11 @@ import (
 // Note this file is a Helper for mockery to generate use mocks from other package
 
 // Deprecated: don't use it in productive code
+type PlcBrowser interface {
+	spi.PlcBrowser
+}
+
+// Deprecated: don't use it in productive code
 type PlcTagHandler interface {
 	spi.PlcTagHandler
 }
