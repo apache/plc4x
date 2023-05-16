@@ -24,7 +24,8 @@ import (
 
 	plc4go "github.com/apache/plc4x/plc4go/pkg/api"
 	"github.com/apache/plc4x/plc4go/pkg/api/drivers"
-	"github.com/apache/plc4x/plc4go/pkg/api/model"
+	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
+
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 )
@@ -39,7 +40,7 @@ func main() {
 
 	subscriptionRequest, err := connection.GetConnection().SubscriptionRequestBuilder().
 		AddChangeOfStateTagAddress("value-int", "MAIN.rivianTest01.HorizontalPosition").
-		AddPreRegisteredConsumer("value-int", func(event model.PlcSubscriptionEvent) {
+		AddPreRegisteredConsumer("value-int", func(event apiModel.PlcSubscriptionEvent) {
 			value := event.GetValue("value-int")
 			log.Info().Msgf("Got value: %d", value.GetUint16())
 		}).

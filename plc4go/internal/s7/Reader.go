@@ -23,12 +23,13 @@ import (
 	"context"
 	"time"
 
-	"github.com/apache/plc4x/plc4go/pkg/api/model"
-	"github.com/apache/plc4x/plc4go/pkg/api/values"
+	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
+	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/s7/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	spiValues "github.com/apache/plc4x/plc4go/spi/values"
+
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 )
@@ -47,10 +48,10 @@ func NewReader(tpduGenerator *TpduGenerator, messageCodec spi.MessageCodec, tm s
 	}
 }
 
-func (m *Reader) Read(ctx context.Context, readRequest model.PlcReadRequest) <-chan model.PlcReadRequestResult {
+func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) <-chan apiModel.PlcReadRequestResult {
 	// TODO: handle ctx
 	log.Trace().Msg("Reading")
-	result := make(chan model.PlcReadRequestResult, 1)
+	result := make(chan apiModel.PlcReadRequestResult, 1)
 	go func() {
 		defer func() {
 			if err := recover(); err != nil {
@@ -162,7 +163,7 @@ func (m *Reader) Read(ctx context.Context, readRequest model.PlcReadRequest) <-c
 	return result
 }
 
-func (m *Reader) ToPlc4xReadResponse(response readWriteModel.S7Message, readRequest model.PlcReadRequest) (model.PlcReadResponse, error) {
+func (m *Reader) ToPlc4xReadResponse(response readWriteModel.S7Message, readRequest apiModel.PlcReadRequest) (apiModel.PlcReadResponse, error) {
 	var errorClass uint8
 	var errorCode uint8
 	switch messageResponseData := response.(type) {
@@ -175,8 +176,8 @@ func (m *Reader) ToPlc4xReadResponse(response readWriteModel.S7Message, readRequ
 	default:
 		return nil, errors.Errorf("unsupported response type %T", response)
 	}
-	responseCodes := map[string]model.PlcResponseCode{}
-	plcValues := map[string]values.PlcValue{}
+	responseCodes := map[string]apiModel.PlcResponseCode{}
+	plcValues := map[string]apiValues.PlcValue{}
 
 	// If the result contains any form of non-null error code, handle this instead.
 	if (errorClass != 0) || (errorCode != 0) {
@@ -185,7 +186,7 @@ func (m *Reader) ToPlc4xReadResponse(response readWriteModel.S7Message, readRequ
 			log.Warn().Msg("Got an error response from the PLC. This particular response code usually indicates " +
 				"that PUT/GET is not enabled on the PLC.")
 			for _, tagName := range readRequest.GetTagNames() {
-				responseCodes[tagName] = model.PlcResponseCode_ACCESS_DENIED
+				responseCodes[tagName] = apiModel.PlcResponseCode_ACCESS_DENIED
 				plcValues[tagName] = spiValues.NewPlcNULL()
 			}
 			log.Trace().Msg("Returning the response")
@@ -197,7 +198,7 @@ func (m *Reader) ToPlc4xReadResponse(response readWriteModel.S7Message, readRequ
 				"containing a capture of the communication.",
 				errorClass, errorCode)
 			for _, tagName := range readRequest.GetTagNames() {
-				responseCodes[tagName] = model.PlcResponseCode_INTERNAL_ERROR
+				responseCodes[tagName] = apiModel.PlcResponseCode_INTERNAL_ERROR
 				plcValues[tagName] = spiValues.NewPlcNULL()
 			}
 			return spiModel.NewDefaultPlcReadResponse(readRequest, responseCodes, plcValues), nil
@@ -223,7 +224,7 @@ func (m *Reader) ToPlc4xReadResponse(response readWriteModel.S7Message, readRequ
 		// Decode the data according to the information from the request
 		log.Trace().Msg("decode data")
 		responseCodes[tagName] = responseCode
-		if responseCode == model.PlcResponseCode_OK {
+		if responseCode == apiModel.PlcResponseCode_OK {
 			plcValue, err := readWriteModel.DataItemParse(context.Background(), payloadItem.GetData(), tag.GetDataType().DataProtocolId(), int32(tag.GetNumElements()))
 			if err != nil {
 				return nil, errors.Wrap(err, "Error parsing data item")
@@ -239,7 +240,7 @@ func (m *Reader) ToPlc4xReadResponse(response readWriteModel.S7Message, readRequ
 
 // Currently we only support the S7 Any type of addresses. This helper simply converts the S7Tag from PLC4X into
 // S7Address objects.
-func encodeS7Address(tag model.PlcTag) (readWriteModel.S7Address, error) {
+func encodeS7Address(tag apiModel.PlcTag) (readWriteModel.S7Address, error) {
 	s7Tag, ok := tag.(PlcTag)
 	if !ok {
 		return nil, errors.Errorf("Unsupported address type %t", tag)
@@ -280,17 +281,17 @@ func encodeS7Address(tag model.PlcTag) (readWriteModel.S7Address, error) {
 }
 
 // Helper to convert the return codes returned from the S7 into one of our standard
-func decodeResponseCode(dataTransportErrorCode readWriteModel.DataTransportErrorCode) model.PlcResponseCode {
+func decodeResponseCode(dataTransportErrorCode readWriteModel.DataTransportErrorCode) apiModel.PlcResponseCode {
 	switch dataTransportErrorCode {
 	case readWriteModel.DataTransportErrorCode_OK:
-		return model.PlcResponseCode_OK
+		return apiModel.PlcResponseCode_OK
 	case readWriteModel.DataTransportErrorCode_NOT_FOUND:
-		return model.PlcResponseCode_NOT_FOUND
+		return apiModel.PlcResponseCode_NOT_FOUND
 	case readWriteModel.DataTransportErrorCode_INVALID_ADDRESS:
-		return model.PlcResponseCode_INVALID_ADDRESS
+		return apiModel.PlcResponseCode_INVALID_ADDRESS
 	case readWriteModel.DataTransportErrorCode_DATA_TYPE_NOT_SUPPORTED:
-		return model.PlcResponseCode_INVALID_DATATYPE
+		return apiModel.PlcResponseCode_INVALID_DATATYPE
 	default:
-		return model.PlcResponseCode_INTERNAL_ERROR
+		return apiModel.PlcResponseCode_INTERNAL_ERROR
 	}
 }

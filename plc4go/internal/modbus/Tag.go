@@ -25,11 +25,12 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/apache/plc4x/plc4go/pkg/api/model"
-	"github.com/apache/plc4x/plc4go/pkg/api/values"
-	model2 "github.com/apache/plc4x/plc4go/protocols/modbus/readwrite/model"
-	model3 "github.com/apache/plc4x/plc4go/spi/model"
+	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
+	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
+	readWriteModel "github.com/apache/plc4x/plc4go/protocols/modbus/readwrite/model"
+	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/spi/utils"
+
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 )
@@ -39,15 +40,15 @@ const (
 )
 
 type modbusTag struct {
-	model.PlcTag
+	apiModel.PlcTag
 
 	TagType  TagType
 	Address  uint16
 	Quantity uint16
-	Datatype model2.ModbusDataType
+	Datatype readWriteModel.ModbusDataType
 }
 
-func NewTag(tagType TagType, address uint16, quantity uint16, datatype model2.ModbusDataType) modbusTag {
+func NewTag(tagType TagType, address uint16, quantity uint16, datatype readWriteModel.ModbusDataType) modbusTag {
 	return modbusTag{
 		TagType:  tagType,
 		Address:  address - AddressOffset,
@@ -56,7 +57,7 @@ func NewTag(tagType TagType, address uint16, quantity uint16, datatype model2.Mo
 	}
 }
 
-func NewModbusPlcTagFromStrings(tagType TagType, addressString string, quantityString string, datatype model2.ModbusDataType) (model.PlcTag, error) {
+func NewModbusPlcTagFromStrings(tagType TagType, addressString string, quantityString string, datatype readWriteModel.ModbusDataType) (apiModel.PlcTag, error) {
 	address, err := strconv.ParseUint(addressString, 10, 16)
 	if err != nil {
 		return nil, errors.Errorf("Couldn't parse address string '%s' into an int", addressString)
@@ -77,27 +78,27 @@ func (m modbusTag) GetAddressString() string {
 	return fmt.Sprintf("%dx%05d:%s[%d]", m.TagType, m.Address, m.Datatype.String(), m.Quantity)
 }
 
-func (m modbusTag) GetValueType() values.PlcValueType {
-	if plcValueType, ok := values.PlcValueByName(m.Datatype.String()); !ok {
-		return values.NULL
+func (m modbusTag) GetValueType() apiValues.PlcValueType {
+	if plcValueType, ok := apiValues.PlcValueByName(m.Datatype.String()); !ok {
+		return apiValues.NULL
 	} else {
 		return plcValueType
 	}
 }
 
-func (m modbusTag) GetArrayInfo() []model.ArrayInfo {
+func (m modbusTag) GetArrayInfo() []apiModel.ArrayInfo {
 	if m.Quantity != 1 {
-		return []model.ArrayInfo{
-			&model3.DefaultArrayInfo{
+		return []apiModel.ArrayInfo{
+			&spiModel.DefaultArrayInfo{
 				LowerBound: 0,
 				UpperBound: uint32(m.Quantity),
 			},
 		}
 	}
-	return []model.ArrayInfo{}
+	return []apiModel.ArrayInfo{}
 }
 
-func CastToModbusTagFromPlcTag(plcTag model.PlcTag) (modbusTag, error) {
+func CastToModbusTagFromPlcTag(plcTag apiModel.PlcTag) (modbusTag, error) {
 	if modbusTagVar, ok := plcTag.(modbusTag); ok {
 		return modbusTagVar, nil
 	}

@@ -33,7 +33,7 @@ import (
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/cbus/readwrite/model"
-	internalModel "github.com/apache/plc4x/plc4go/spi/model"
+	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/transports"
 	"github.com/apache/plc4x/plc4go/spi/utils"
@@ -282,7 +282,7 @@ func (d *Discoverer) createDeviceScanDispatcher(tcpTransportInstance *tcp.Transp
 				}
 				// TODO: manufacturer + type would be good but this means two requests then
 				deviceName := identifyReplyCommand.GetManufacturerName()
-				discoveryEvent := internalModel.NewDefaultPlcDiscoveryItem(
+				discoveryEvent := spiModel.NewDefaultPlcDiscoveryItem(
 					"c-bus",
 					"tcp",
 					remoteUrl,

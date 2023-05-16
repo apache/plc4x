@@ -31,7 +31,7 @@ import (
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/s7/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/default"
-	internalModel "github.com/apache/plc4x/plc4go/spi/model"
+	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
@@ -438,11 +438,11 @@ func (m *Connection) GetMetadata() apiModel.PlcConnectionMetadata {
 }
 
 func (m *Connection) ReadRequestBuilder() apiModel.PlcReadRequestBuilder {
-	return internalModel.NewDefaultPlcReadRequestBuilder(m.GetPlcTagHandler(), NewReader(&m.tpduGenerator, m.messageCodec, m.tm))
+	return spiModel.NewDefaultPlcReadRequestBuilder(m.GetPlcTagHandler(), NewReader(&m.tpduGenerator, m.messageCodec, m.tm))
 }
 
 func (m *Connection) WriteRequestBuilder() apiModel.PlcWriteRequestBuilder {
-	return internalModel.NewDefaultPlcWriteRequestBuilder(
+	return spiModel.NewDefaultPlcWriteRequestBuilder(
 		m.GetPlcTagHandler(), m.GetPlcValueHandler(), NewWriter(&m.tpduGenerator, m.messageCodec, m.tm))
 }
 

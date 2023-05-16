@@ -27,7 +27,7 @@ import (
 	"github.com/rs/zerolog/log"
 
 	"github.com/apache/plc4x/plc4go/pkg/api"
-	"github.com/apache/plc4x/plc4go/pkg/api/model"
+	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/transports"
@@ -304,7 +304,7 @@ func (d *defaultConnection) GetTtl() time.Duration {
 	return d.defaultTtl
 }
 
-func (d *defaultConnection) GetMetadata() model.PlcConnectionMetadata {
+func (d *defaultConnection) GetMetadata() apiModel.PlcConnectionMetadata {
 	return DefaultConnectionMetadata{
 		ConnectionAttributes: nil,
 		ProvidesReading:      false,
@@ -314,23 +314,23 @@ func (d *defaultConnection) GetMetadata() model.PlcConnectionMetadata {
 	}
 }
 
-func (d *defaultConnection) ReadRequestBuilder() model.PlcReadRequestBuilder {
+func (d *defaultConnection) ReadRequestBuilder() apiModel.PlcReadRequestBuilder {
 	panic("not provided by actual connection")
 }
 
-func (d *defaultConnection) WriteRequestBuilder() model.PlcWriteRequestBuilder {
+func (d *defaultConnection) WriteRequestBuilder() apiModel.PlcWriteRequestBuilder {
 	panic("not provided by actual connection")
 }
 
-func (d *defaultConnection) SubscriptionRequestBuilder() model.PlcSubscriptionRequestBuilder {
+func (d *defaultConnection) SubscriptionRequestBuilder() apiModel.PlcSubscriptionRequestBuilder {
 	panic("not provided by actual connection")
 }
 
-func (d *defaultConnection) UnsubscriptionRequestBuilder() model.PlcUnsubscriptionRequestBuilder {
+func (d *defaultConnection) UnsubscriptionRequestBuilder() apiModel.PlcUnsubscriptionRequestBuilder {
 	panic("not provided by actual connection")
 }
 
-func (d *defaultConnection) BrowseRequestBuilder() model.PlcBrowseRequestBuilder {
+func (d *defaultConnection) BrowseRequestBuilder() apiModel.PlcBrowseRequestBuilder {
 	panic("not provided by actual connection")
 }
 

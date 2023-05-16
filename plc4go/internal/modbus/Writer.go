@@ -25,10 +25,11 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/apache/plc4x/plc4go/pkg/api/model"
+	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/modbus/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
+
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 )
@@ -47,9 +48,9 @@ func NewWriter(unitIdentifier uint8, messageCodec spi.MessageCodec) Writer {
 	}
 }
 
-func (m Writer) Write(ctx context.Context, writeRequest model.PlcWriteRequest) <-chan model.PlcWriteRequestResult {
+func (m Writer) Write(ctx context.Context, writeRequest apiModel.PlcWriteRequest) <-chan apiModel.PlcWriteRequestResult {
 	// TODO: handle context
-	result := make(chan model.PlcWriteRequestResult, 1)
+	result := make(chan apiModel.PlcWriteRequestResult, 1)
 	go func() {
 		// If we are requesting only one tag, use a
 		if len(writeRequest.GetTagNames()) != 1 {
@@ -145,45 +146,45 @@ func (m Writer) Write(ctx context.Context, writeRequest model.PlcWriteRequest) <
 	return result
 }
 
-func (m Writer) ToPlc4xWriteResponse(requestAdu readWriteModel.ModbusTcpADU, responseAdu readWriteModel.ModbusTcpADU, writeRequest model.PlcWriteRequest) (model.PlcWriteResponse, error) {
-	responseCodes := map[string]model.PlcResponseCode{}
+func (m Writer) ToPlc4xWriteResponse(requestAdu readWriteModel.ModbusTcpADU, responseAdu readWriteModel.ModbusTcpADU, writeRequest apiModel.PlcWriteRequest) (apiModel.PlcWriteResponse, error) {
+	responseCodes := map[string]apiModel.PlcResponseCode{}
 	tagName := writeRequest.GetTagNames()[0]
 
 	// we default to an error until its proven wrong
-	responseCodes[tagName] = model.PlcResponseCode_INTERNAL_ERROR
+	responseCodes[tagName] = apiModel.PlcResponseCode_INTERNAL_ERROR
 	switch resp := responseAdu.GetPdu().(type) {
 	case readWriteModel.ModbusPDUWriteMultipleCoilsResponse:
 		req := requestAdu.GetPdu().(readWriteModel.ModbusPDUWriteMultipleCoilsRequest)
 		if req.GetQuantity() == resp.GetQuantity() {
-			responseCodes[tagName] = model.PlcResponseCode_OK
+			responseCodes[tagName] = apiModel.PlcResponseCode_OK
 		}
 	case readWriteModel.ModbusPDUWriteMultipleHoldingRegistersResponse:
 		req := requestAdu.GetPdu().(readWriteModel.ModbusPDUWriteMultipleHoldingRegistersRequest)
 		if req.GetQuantity() == resp.GetQuantity() {
-			responseCodes[tagName] = model.PlcResponseCode_OK
+			responseCodes[tagName] = apiModel.PlcResponseCode_OK
 		}
 	case readWriteModel.ModbusPDUError:
 		switch resp.GetExceptionCode() {
 		case readWriteModel.ModbusErrorCode_ILLEGAL_FUNCTION:
-			responseCodes[tagName] = model.PlcResponseCode_UNSUPPORTED
+			responseCodes[tagName] = apiModel.PlcResponseCode_UNSUPPORTED
 		case readWriteModel.ModbusErrorCode_ILLEGAL_DATA_ADDRESS:
-			responseCodes[tagName] = model.PlcResponseCode_INVALID_ADDRESS
+			responseCodes[tagName] = apiModel.PlcResponseCode_INVALID_ADDRESS
 		case readWriteModel.ModbusErrorCode_ILLEGAL_DATA_VALUE:
-			responseCodes[tagName] = model.PlcResponseCode_INVALID_DATA
+			responseCodes[tagName] = apiModel.PlcResponseCode_INVALID_DATA
 		case readWriteModel.ModbusErrorCode_SLAVE_DEVICE_FAILURE:
-			responseCodes[tagName] = model.PlcResponseCode_REMOTE_ERROR
+			responseCodes[tagName] = apiModel.PlcResponseCode_REMOTE_ERROR
 		case readWriteModel.ModbusErrorCode_ACKNOWLEDGE:
-			responseCodes[tagName] = model.PlcResponseCode_OK
+			responseCodes[tagName] = apiModel.PlcResponseCode_OK
 		case readWriteModel.ModbusErrorCode_SLAVE_DEVICE_BUSY:
-			responseCodes[tagName] = model.PlcResponseCode_REMOTE_BUSY
+			responseCodes[tagName] = apiModel.PlcResponseCode_REMOTE_BUSY
 		case readWriteModel.ModbusErrorCode_NEGATIVE_ACKNOWLEDGE:
-			responseCodes[tagName] = model.PlcResponseCode_REMOTE_ERROR
+			responseCodes[tagName] = apiModel.PlcResponseCode_REMOTE_ERROR
 		case readWriteModel.ModbusErrorCode_MEMORY_PARITY_ERROR:
-			responseCodes[tagName] = model.PlcResponseCode_INTERNAL_ERROR
+			responseCodes[tagName] = apiModel.PlcResponseCode_INTERNAL_ERROR
 		case readWriteModel.ModbusErrorCode_GATEWAY_PATH_UNAVAILABLE:
-			responseCodes[tagName] = model.PlcResponseCode_INTERNAL_ERROR
+			responseCodes[tagName] = apiModel.PlcResponseCode_INTERNAL_ERROR
 		case readWriteModel.ModbusErrorCode_GATEWAY_TARGET_DEVICE_FAILED_TO_RESPOND:
-			responseCodes[tagName] = model.PlcResponseCode_REMOTE_ERROR
+			responseCodes[tagName] = apiModel.PlcResponseCode_REMOTE_ERROR
 		default:
 			log.Debug().Msgf("Unmapped exception code %x", resp.GetExceptionCode())
 		}

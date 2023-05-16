@@ -27,7 +27,8 @@ import (
 	"time"
 
 	plc4xConfig "github.com/apache/plc4x/plc4go/pkg/api/config"
-	"github.com/apache/plc4x/plc4go/pkg/api/model"
+	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
+
 	"github.com/pkg/errors"
 	"github.com/rivo/tview"
 	"github.com/rs/zerolog"
@@ -54,7 +55,7 @@ var rootCommand = Command{
 					if !driver.SupportsDiscovery() {
 						return errors.Errorf("%s doesn't support discovery", driverId)
 					}
-					return driver.Discover(func(event model.PlcDiscoveryItem) {
+					return driver.Discover(func(event apiModel.PlcDiscoveryItem) {
 						_, _ = fmt.Fprintf(messageOutput, "%v\n", event)
 					})
 				} else {
@@ -293,7 +294,7 @@ var rootCommand = Command{
 					if err != nil {
 						return errors.Wrapf(err, "%s can't browse", connectionsString)
 					}
-					browseRequestResult := <-browseRequest.ExecuteWithInterceptor(func(result model.PlcBrowseItem) bool {
+					browseRequestResult := <-browseRequest.ExecuteWithInterceptor(func(result apiModel.PlcBrowseItem) bool {
 						// TODO: Disabled for now ... not quite sure what this is for ...
 						//numberOfMessagesReceived++
 						//messageReceived(numberOfMessagesReceived, time.Now(), result)
@@ -373,7 +374,7 @@ var rootCommand = Command{
 				} else {
 					subscriptionRequest, err := connection.SubscriptionRequestBuilder().
 						AddEventTagAddress("subscriptionField", split[1]).
-						AddPreRegisteredConsumer("subscriptionField", func(event model.PlcSubscriptionEvent) {
+						AddPreRegisteredConsumer("subscriptionField", func(event apiModel.PlcSubscriptionEvent) {
 							numberOfMessagesReceived++
 							messageReceived(numberOfMessagesReceived, time.Now(), event)
 						}).

@@ -29,7 +29,7 @@ import (
 	"time"
 
 	"github.com/IBM/netaddr"
-	internalModel "github.com/apache/plc4x/plc4go/spi/model"
+	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/libp2p/go-reuseport"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
@@ -255,7 +255,7 @@ func handleIncomingBVLCs(ctx context.Context, callback func(event apiModel.PlcDi
 				if err != nil {
 					log.Debug().Err(err).Msg("Error parsing url")
 				}
-				discoveryEvent := internalModel.NewDefaultPlcDiscoveryItem(
+				discoveryEvent := spiModel.NewDefaultPlcDiscoveryItem(
 					"bacnet-ip",
 					"udp",
 					*remoteUrl,
@@ -272,7 +272,7 @@ func handleIncomingBVLCs(ctx context.Context, callback func(event apiModel.PlcDi
 				if err != nil {
 					log.Debug().Err(err).Msg("Error parsing url")
 				}
-				discoveryEvent := internalModel.NewDefaultPlcDiscoveryItem(
+				discoveryEvent := spiModel.NewDefaultPlcDiscoveryItem(
 					"bacnet-ip",
 					"udp",
 					*remoteUrl,

@@ -33,7 +33,7 @@ import (
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
 	driverModel "github.com/apache/plc4x/plc4go/protocols/knxnetip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
-	"github.com/apache/plc4x/plc4go/spi/model"
+	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
@@ -103,7 +103,7 @@ func (m Browser) executeDeviceQuery(ctx context.Context, query DeviceQuery, inte
 			// If the request returned a connection, process it,
 			// otherwise just ignore it.
 			if deviceConnection.connection != nil {
-				queryResult := model.NewDefaultPlcBrowseItem(
+				queryResult := spiModel.NewDefaultPlcBrowseItem(
 					NewDeviceQuery(
 						strconv.Itoa(int(knxAddress.GetMainGroup())),
 						strconv.Itoa(int(knxAddress.GetMiddleGroup())),
@@ -405,7 +405,7 @@ func (m Browser) executeCommunicationObjectQuery(ctx context.Context, query Comm
 					&tagType)
 			}
 
-			results = append(results, model.NewDefaultPlcBrowseItem(
+			results = append(results, spiModel.NewDefaultPlcBrowseItem(
 				tag,
 				fmt.Sprintf("#%d", comObjectNumber),
 				"",
@@ -487,7 +487,7 @@ func (m Browser) executeCommunicationObjectQuery(ctx context.Context, query Comm
 			for _, groupAddress := range groupAddresses {
 				tag := m.getTagForGroupAddress(groupAddress, tagType)
 
-				results = append(results, model.NewDefaultPlcBrowseItem(
+				results = append(results, spiModel.NewDefaultPlcBrowseItem(
 					tag,
 					fmt.Sprintf("#%d", comObjectNumber),
 					"",

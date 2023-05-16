@@ -25,9 +25,10 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/apache/plc4x/plc4go/pkg/api/model"
+	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi/utils"
+
 	"github.com/pkg/errors"
 )
 
@@ -51,7 +52,7 @@ const (
 	ARRAY_INDEX          = "arrayIndex"
 )
 
-func (m TagHandler) ParseTag(tagString string) (model.PlcTag, error) {
+func (m TagHandler) ParseTag(tagString string) (apiModel.PlcTag, error) {
 	if addressMatch := utils.GetSubgroupMatches(m.addressPattern, tagString); addressMatch != nil {
 		var result plcTag
 		{
@@ -107,6 +108,6 @@ func (m TagHandler) ParseTag(tagString string) (model.PlcTag, error) {
 	return nil, errors.Errorf("Unable to parse %s", tagString)
 }
 
-func (m TagHandler) ParseQuery(_ string) (model.PlcQuery, error) {
+func (m TagHandler) ParseQuery(_ string) (apiModel.PlcQuery, error) {
 	return nil, fmt.Errorf("queries not supported")
 }

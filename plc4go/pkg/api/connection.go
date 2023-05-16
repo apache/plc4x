@@ -21,6 +21,7 @@ package plc4go
 
 import (
 	"context"
+
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
 )
 

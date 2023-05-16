@@ -24,14 +24,14 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/apache/plc4x/plc4go/pkg/api/model"
-	"github.com/apache/plc4x/plc4go/pkg/api/values"
+	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
+	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
 type BacNetPlcTag interface {
-	model.PlcTag
+	apiModel.PlcTag
 
 	GetObjectId() objectId
 	GetProperties() []property
@@ -110,12 +110,12 @@ func (m plcTag) GetAddressString() string {
 	return fmt.Sprintf("%v/%s", m.ObjectId, propertiesString)
 }
 
-func (m plcTag) GetValueType() values.PlcValueType {
-	return values.Struct
+func (m plcTag) GetValueType() apiValues.PlcValueType {
+	return apiValues.Struct
 }
 
-func (m plcTag) GetArrayInfo() []model.ArrayInfo {
-	return []model.ArrayInfo{}
+func (m plcTag) GetArrayInfo() []apiModel.ArrayInfo {
+	return []apiModel.ArrayInfo{}
 }
 
 func (m plcTag) GetObjectId() objectId {

@@ -21,13 +21,15 @@ package main
 
 import (
 	"fmt"
+	"os"
+	"time"
+
 	"github.com/apache/plc4x/plc4go/pkg/api"
 	"github.com/apache/plc4x/plc4go/pkg/api/drivers"
 	"github.com/apache/plc4x/plc4go/pkg/api/logging"
-	"github.com/apache/plc4x/plc4go/pkg/api/model"
+	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
+
 	"github.com/rs/zerolog/log"
-	"os"
-	"time"
 )
 
 func main() {
@@ -39,7 +41,7 @@ func main() {
 	var connectionStrings []string
 	if len(os.Args) < 2 {
 		// Try to auto-find bacnet devices via broadcast-message discovery
-		if err := driverManager.Discover(func(event model.PlcDiscoveryItem) {
+		if err := driverManager.Discover(func(event apiModel.PlcDiscoveryItem) {
 			connStr := event.GetProtocolCode() + "://" + event.GetTransportUrl().Host
 			log.Info().Str("connection string", connStr).Stringer("event", event.(fmt.Stringer)).Msg("Found Bacnet Gateway")
 

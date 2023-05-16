@@ -27,29 +27,29 @@ import (
 	"strings"
 	"time"
 
-	"github.com/apache/plc4x/plc4go/pkg/api/model"
-	"github.com/apache/plc4x/plc4go/pkg/api/values"
+	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
+	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	"github.com/rs/zerolog/log"
 )
 
 type DefaultValueHandler struct {
 }
 
-func (m DefaultValueHandler) NewPlcValue(tag model.PlcTag, value any) (values.PlcValue, error) {
+func (m DefaultValueHandler) NewPlcValue(tag apiModel.PlcTag, value any) (apiValues.PlcValue, error) {
 	return m.parseType(tag, tag.GetArrayInfo(), value)
 }
 
-func (m DefaultValueHandler) parseType(tag model.PlcTag, arrayInfo []model.ArrayInfo, value any) (values.PlcValue, error) {
+func (m DefaultValueHandler) parseType(tag apiModel.PlcTag, arrayInfo []apiModel.ArrayInfo, value any) (apiValues.PlcValue, error) {
 	valueType := tag.GetValueType()
 	if (arrayInfo != nil) && (len(arrayInfo) > 0) {
 		return m.ParseListType(tag, arrayInfo, value)
-	} else if valueType == values.Struct {
+	} else if valueType == apiValues.Struct {
 		return m.ParseStructType(tag, value)
 	}
 	return m.ParseSimpleType(tag, value)
 }
 
-func (m DefaultValueHandler) ParseListType(tag model.PlcTag, arrayInfo []model.ArrayInfo, value any) (values.PlcValue, error) {
+func (m DefaultValueHandler) ParseListType(tag apiModel.PlcTag, arrayInfo []apiModel.ArrayInfo, value any) (apiValues.PlcValue, error) {
 	// We've reached the end of the recursion.
 	if len(arrayInfo) == 0 {
 		return m.parseType(tag, arrayInfo, value)
@@ -67,14 +67,14 @@ func (m DefaultValueHandler) ParseListType(tag model.PlcTag, arrayInfo []model.A
 	curArrayInfo := arrayInfo[0]
 	restArrayInfo := arrayInfo[1:]
 
-	// Check that the current slice has enough values.
+	// Check that the current slice has enough apiValues.
 	if len(curValues) != int(curArrayInfo.GetSize()) {
-		return nil, errors.New("number of actual values " + strconv.Itoa(len(curValues)) +
+		return nil, errors.New("number of actual apiValues " + strconv.Itoa(len(curValues)) +
 			" doesn't match tag size " + strconv.Itoa(int(curArrayInfo.GetSize())))
 	}
 
 	// Actually convert the current array info level.
-	var plcValues []values.PlcValue
+	var plcValues []apiValues.PlcValue
 	for i := uint32(0); i < curArrayInfo.GetSize(); i++ {
 		curValue := curValues[i]
 		plcValue, err := m.ParseListType(tag, restArrayInfo, curValue)
@@ -86,11 +86,11 @@ func (m DefaultValueHandler) ParseListType(tag model.PlcTag, arrayInfo []model.A
 	return NewPlcList(plcValues), nil
 }
 
-func (m DefaultValueHandler) ParseStructType(_ model.PlcTag, _ any) (values.PlcValue, error) {
+func (m DefaultValueHandler) ParseStructType(_ apiModel.PlcTag, _ any) (apiValues.PlcValue, error) {
 	return nil, errors.New("structured types not supported by the base value handler")
 }
 
-func (m DefaultValueHandler) ParseSimpleType(tag model.PlcTag, value any) (values.PlcValue, error) {
+func (m DefaultValueHandler) ParseSimpleType(tag apiModel.PlcTag, value any) (apiValues.PlcValue, error) {
 	plcValue, err := m.NewPlcValueFromType(tag.GetValueType(), value)
 	if err != nil && strings.HasPrefix(err.Error(), "couldn't cast") {
 		stringValue := fmt.Sprintf("%v", value)
@@ -102,15 +102,15 @@ func (m DefaultValueHandler) ParseSimpleType(tag model.PlcTag, value any) (value
 	return plcValue, err
 }
 
-func (m DefaultValueHandler) NewPlcValueFromType(valueType values.PlcValueType, value any) (values.PlcValue, error) {
+func (m DefaultValueHandler) NewPlcValueFromType(valueType apiValues.PlcValueType, value any) (apiValues.PlcValue, error) {
 	// If the user passed in PLCValues, take a shortcut.
-	plcValue, isPlcValue := value.(values.PlcValue)
+	plcValue, isPlcValue := value.(apiValues.PlcValue)
 	if isPlcValue {
 		if plcValue.GetPlcValueType() != valueType {
 			// TODO: Check if the used PlcValueType can be casted to the target type.
-		} else if plcValue.GetPlcValueType() == values.List {
+		} else if plcValue.GetPlcValueType() == apiValues.List {
 			// TODO: Check all items
-		} else if plcValue.GetPlcValueType() == values.Struct {
+		} else if plcValue.GetPlcValueType() == apiValues.Struct {
 			// TODO: Check all children
 		}
 		return plcValue, nil
@@ -119,7 +119,7 @@ func (m DefaultValueHandler) NewPlcValueFromType(valueType values.PlcValueType, 
 	stringValue, isString := value.(string)
 	switch valueType {
 	// Bit & Bit-Strings
-	case values.BOOL:
+	case apiValues.BOOL:
 		if isString {
 			casted, err := strconv.ParseBool(stringValue)
 			if err != nil {
@@ -133,7 +133,7 @@ func (m DefaultValueHandler) NewPlcValueFromType(valueType values.PlcValueType, 
 			}
 			return NewPlcBOOL(casted), nil
 		}
-	case values.BYTE:
+	case apiValues.BYTE:
 		if isString {
 			casted, err := strconv.ParseUint(stringValue, 10, 8)
 			if err != nil {
@@ -147,7 +147,7 @@ func (m DefaultValueHandler) NewPlcValueFromType(valueType values.PlcValueType, 
 			}
 			return NewPlcBYTE(casted), nil
 		}
-	case values.WORD:
+	case apiValues.WORD:
 		if isString {
 			casted, err := strconv.ParseUint(stringValue, 10, 16)
 			if err != nil {
@@ -161,7 +161,7 @@ func (m DefaultValueHandler) NewPlcValueFromType(valueType values.PlcValueType, 
 			}
 			return NewPlcWORD(casted), nil
 		}
-	case values.DWORD:
+	case apiValues.DWORD:
 		if isString {
 			casted, err := strconv.ParseUint(stringValue, 10, 32)
 			if err != nil {
@@ -175,7 +175,7 @@ func (m DefaultValueHandler) NewPlcValueFromType(valueType values.PlcValueType, 
 			}
 			return NewPlcDWORD(casted), nil
 		}
-	case values.LWORD:
+	case apiValues.LWORD:
 		if isString {
 			casted, err := strconv.ParseUint(stringValue, 10, 64)
 			if err != nil {
@@ -191,7 +191,7 @@ func (m DefaultValueHandler) NewPlcValueFromType(valueType values.PlcValueType, 
 		}
 
 	// Integers
-	case values.USINT:
+	case apiValues.USINT:
 		if isString {
 			casted, err := strconv.ParseUint(stringValue, 10, 8)
 			if err != nil {
@@ -205,7 +205,7 @@ func (m DefaultValueHandler) NewPlcValueFromType(valueType values.PlcValueType, 
 			}
 			return NewPlcUSINT(casted), nil
 		}
-	case values.UINT:
+	case apiValues.UINT:
 		if isString {
 			casted, err := strconv.ParseUint(stringValue, 10, 16)
 			if err != nil {
@@ -219,7 +219,7 @@ func (m DefaultValueHandler) NewPlcValueFromType(valueType values.PlcValueType, 
 			}
 			return NewPlcUINT(casted), nil
 		}
-	case values.UDINT:
+	case apiValues.UDINT:
 		if isString {
 			casted, err := strconv.ParseUint(stringValue, 10, 32)
 			if err != nil {
@@ -233,7 +233,7 @@ func (m DefaultValueHandler) NewPlcValueFromType(valueType values.PlcValueType, 
 			}
 			return NewPlcUDINT(casted), nil
 		}
-	case values.ULINT:
+	case apiValues.ULINT:
 		if isString {
 			casted, err := strconv.ParseUint(stringValue, 10, 64)
 			if err != nil {
@@ -247,7 +247,7 @@ func (m DefaultValueHandler) NewPlcValueFromType(valueType values.PlcValueType, 
 			}
 			return NewPlcULINT(casted), nil
 		}
-	case values.SINT:
+	case apiValues.SINT:
 		if isString {
 			casted, err := strconv.ParseInt(stringValue, 10, 8)
 			if err != nil {
@@ -261,7 +261,7 @@ func (m DefaultValueHandler) NewPlcValueFromType(valueType values.PlcValueType, 
 			}
 			return NewPlcSINT(casted), nil
 		}
-	case values.INT:
+	case apiValues.INT:
 		if isString {
 			casted, err := strconv.ParseInt(stringValue, 10, 16)
 			if err != nil {
@@ -275,7 +275,7 @@ func (m DefaultValueHandler) NewPlcValueFromType(valueType values.PlcValueType, 
 			}
 			return NewPlcINT(casted), nil
 		}
-	case values.DINT:
+	case apiValues.DINT:
 		if isString {
 			casted, err := strconv.ParseInt(stringValue, 10, 32)
 			if err != nil {
@@ -289,7 +289,7 @@ func (m DefaultValueHandler) NewPlcValueFromType(valueType values.PlcValueType, 
 			}
 			return NewPlcDINT(casted), nil
 		}
-	case values.LINT:
+	case apiValues.LINT:
 		if isString {
 			casted, err := strconv.ParseInt(stringValue, 10, 64)
 			if err != nil {
@@ -305,7 +305,7 @@ func (m DefaultValueHandler) NewPlcValueFromType(valueType values.PlcValueType, 
 		}
 
 	// Floating Point Values
-	case values.REAL:
+	case apiValues.REAL:
 		if isString {
 			casted, err := strconv.ParseFloat(stringValue, 32)
 			if err != nil {
@@ -319,7 +319,7 @@ func (m DefaultValueHandler) NewPlcValueFromType(valueType values.PlcValueType, 
 			}
 			return NewPlcREAL(casted), nil
 		}
-	case values.LREAL:
+	case apiValues.LREAL:
 		if isString {
 			casted, err := strconv.ParseFloat(stringValue, 64)
 			if err != nil {
@@ -336,7 +336,7 @@ func (m DefaultValueHandler) NewPlcValueFromType(valueType values.PlcValueType, 
 
 	// Temporal Values
 	// - Duration
-	case values.TIME:
+	case apiValues.TIME:
 		if isString {
 			return nil, errors.New("string to IEC61131_TIME conversion not implemented")
 		} else {
@@ -347,7 +347,7 @@ func (m DefaultValueHandler) NewPlcValueFromType(valueType values.PlcValueType, 
 			return NewPlcTIME(casted), nil
 		}
 	// - Date
-	case values.DATE:
+	case apiValues.DATE:
 		if isString {
 			return nil, errors.New("string to IEC61131_DATE conversion not implemented")
 		} else {
@@ -358,7 +358,7 @@ func (m DefaultValueHandler) NewPlcValueFromType(valueType values.PlcValueType, 
 			return NewPlcDATE(casted), nil
 		}
 	// - Time
-	case values.TIME_OF_DAY:
+	case apiValues.TIME_OF_DAY:
 		if isString {
 			return nil, errors.New("string to IEC61131_TIME_OF_DAY conversion not implemented")
 		} else {
@@ -369,7 +369,7 @@ func (m DefaultValueHandler) NewPlcValueFromType(valueType values.PlcValueType, 
 			return NewPlcTIME_OF_DAY(casted), nil
 		}
 	// - Date and Time
-	case values.DATE_AND_TIME:
+	case apiValues.DATE_AND_TIME:
 		if isString {
 			return nil, errors.New("string to IEC61131_DATE_AND_TIME conversion not implemented")
 		} else {
@@ -381,7 +381,7 @@ func (m DefaultValueHandler) NewPlcValueFromType(valueType values.PlcValueType, 
 		}
 
 	// Chars and Strings
-	case values.CHAR:
+	case apiValues.CHAR:
 		if !isString {
 			return nil, errors.New("non-string to IEC61131_CHAR conversion not implemented")
 		} else if len(stringValue) > 1 {
@@ -389,7 +389,7 @@ func (m DefaultValueHandler) NewPlcValueFromType(valueType values.PlcValueType, 
 		} else {
 			return NewPlcCHAR(stringValue), nil
 		}
-	case values.WCHAR:
+	case apiValues.WCHAR:
 		if !isString {
 			return nil, errors.New("non-string to IEC61131_WCHAR conversion not implemented")
 		} else if len(stringValue) > 1 {
@@ -397,13 +397,13 @@ func (m DefaultValueHandler) NewPlcValueFromType(valueType values.PlcValueType, 
 		} else {
 			return NewPlcWCHAR(stringValue), nil
 		}
-	case values.STRING:
+	case apiValues.STRING:
 		if !isString {
 			return nil, errors.New("non-string to IEC61131_STRING conversion not implemented")
 		} else {
 			return NewPlcSTRING(stringValue), nil
 		}
-	case values.WSTRING:
+	case apiValues.WSTRING:
 		if !isString {
 			return nil, errors.New("non-string to IEC61131_WSTRING conversion not implemented")
 		} else {

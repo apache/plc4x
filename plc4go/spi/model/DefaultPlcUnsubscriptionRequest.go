@@ -21,7 +21,8 @@ package model
 
 import (
 	"context"
-	"github.com/apache/plc4x/plc4go/pkg/api/model"
+
+	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 )
 
 type DefaultPlcUnsubscriptionRequest struct {
@@ -32,12 +33,12 @@ func NewDefaultPlcUnsubscriptionRequest() *DefaultPlcUnsubscriptionRequest {
 	return &DefaultPlcUnsubscriptionRequest{}
 }
 
-func (d DefaultPlcUnsubscriptionRequest) Execute() <-chan model.PlcUnsubscriptionRequestResult {
+func (d DefaultPlcUnsubscriptionRequest) Execute() <-chan apiModel.PlcUnsubscriptionRequestResult {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (d DefaultPlcUnsubscriptionRequest) ExecuteWithContext(ctx context.Context) <-chan model.PlcUnsubscriptionRequestResult {
+func (d DefaultPlcUnsubscriptionRequest) ExecuteWithContext(ctx context.Context) <-chan apiModel.PlcUnsubscriptionRequestResult {
 	//TODO implement me
 	panic("implement me")
 }

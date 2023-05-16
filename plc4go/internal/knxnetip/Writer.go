@@ -23,10 +23,10 @@ import (
 	"context"
 	"errors"
 
-	"github.com/apache/plc4x/plc4go/pkg/api/model"
+	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/knxnetip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
-	plc4goModel "github.com/apache/plc4x/plc4go/spi/model"
+	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 )
 
 type Writer struct {
@@ -39,9 +39,9 @@ func NewWriter(messageCodec spi.MessageCodec) Writer {
 	}
 }
 
-func (m Writer) Write(ctx context.Context, writeRequest model.PlcWriteRequest) <-chan model.PlcWriteRequestResult {
+func (m Writer) Write(ctx context.Context, writeRequest apiModel.PlcWriteRequest) <-chan apiModel.PlcWriteRequestResult {
 	// TODO: handle context
-	result := make(chan model.PlcWriteRequestResult, 1)
+	result := make(chan apiModel.PlcWriteRequestResult, 1)
 	// If we are requesting only one tag, use a
 	if len(writeRequest.GetTagNames()) == 1 {
 		tagName := writeRequest.GetTagNames()[0]
@@ -50,7 +50,7 @@ func (m Writer) Write(ctx context.Context, writeRequest model.PlcWriteRequest) <
 		tag := writeRequest.GetTag(tagName)
 		groupAddressTag, err := CastToGroupAddressTagFromPlcTag(tag)
 		if err != nil {
-			result <- plc4goModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.New("invalid tag item type"))
+			result <- spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.New("invalid tag item type"))
 			return result
 		}
 
@@ -59,7 +59,7 @@ func (m Writer) Write(ctx context.Context, writeRequest model.PlcWriteRequest) <
 		tagType := groupAddressTag.GetTagType()
 		// TODO: why do we ignore the bytes here?
 		if _, err := readWriteModel.KnxDatapointSerialize(value, *tagType); err != nil {
-			result <- plc4goModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.New("error serializing value: "+err.Error()))
+			result <- spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.New("error serializing value: "+err.Error()))
 			return result
 		}
 	}

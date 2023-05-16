@@ -26,14 +26,14 @@ import (
 	dirverModel "github.com/apache/plc4x/plc4go/internal/ads/model"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/protocols/ads/readwrite/model"
-	internalModel "github.com/apache/plc4x/plc4go/spi/model"
+	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 )
 
 func (m *Connection) SubscriptionRequestBuilder() apiModel.PlcSubscriptionRequestBuilder {
-	return internalModel.NewDefaultPlcSubscriptionRequestBuilder(m.GetPlcTagHandler(), m.GetPlcValueHandler(), m)
+	return spiModel.NewDefaultPlcSubscriptionRequestBuilder(m.GetPlcTagHandler(), m.GetPlcValueHandler(), m)
 }
 
 func (m *Connection) UnsubscriptionRequestBuilder() apiModel.PlcUnsubscriptionRequestBuilder {
@@ -42,7 +42,7 @@ func (m *Connection) UnsubscriptionRequestBuilder() apiModel.PlcUnsubscriptionRe
 }
 
 func (m *Connection) Subscribe(ctx context.Context, subscriptionRequest apiModel.PlcSubscriptionRequest) <-chan apiModel.PlcSubscriptionRequestResult {
-	defaultSubscriptionRequest := subscriptionRequest.(*internalModel.DefaultPlcSubscriptionRequest)
+	defaultSubscriptionRequest := subscriptionRequest.(*spiModel.DefaultPlcSubscriptionRequest)
 
 	// Subscription requests are unfortunately now supported as multi-item requests,
 	// so we have to send one subscription request for every tag.
@@ -61,22 +61,22 @@ func (m *Connection) Subscribe(ctx context.Context, subscriptionRequest apiModel
 			symbolicTag := tag.(dirverModel.SymbolicPlcTag)
 			directTagPtr, err := m.driverContext.getDirectTagForSymbolTag(symbolicTag)
 			if err != nil {
-				subResults[tagName] = internalModel.NewDefaultPlcSubscriptionRequestResult(subscriptionRequest, nil, errors.Wrap(err, "error resolving symbolic tag"))
+				subResults[tagName] = spiModel.NewDefaultPlcSubscriptionRequestResult(subscriptionRequest, nil, errors.Wrap(err, "error resolving symbolic tag"))
 				continue
 			}
 			directTag = *directTagPtr
 		default:
-			subResults[tagName] = internalModel.NewDefaultPlcSubscriptionRequestResult(subscriptionRequest, nil, errors.New("invalid tag type"))
+			subResults[tagName] = spiModel.NewDefaultPlcSubscriptionRequestResult(subscriptionRequest, nil, errors.New("invalid tag type"))
 			continue
 		}
 
 		subscriptionType := defaultSubscriptionRequest.GetType(tagName)
 		interval := defaultSubscriptionRequest.GetInterval(tagName)
 		preRegisteredConsumers := defaultSubscriptionRequest.GetPreRegisteredConsumers(tagName)
-		subSubscriptionRequests[tagName] = internalModel.NewDefaultPlcSubscriptionRequest(m,
+		subSubscriptionRequests[tagName] = spiModel.NewDefaultPlcSubscriptionRequest(m,
 			[]string{tagName},
 			map[string]apiModel.PlcTag{tagName: directTag},
-			map[string]internalModel.SubscriptionType{tagName: subscriptionType},
+			map[string]spiModel.SubscriptionType{tagName: subscriptionType},
 			map[string]time.Duration{tagName: interval},
 			map[string][]apiModel.PlcSubscriptionEventConsumer{tagName: preRegisteredConsumers})
 	}
@@ -106,7 +106,7 @@ func (m *Connection) Subscribe(ctx context.Context, subscriptionRequest apiModel
 		for _, subResultChannel := range subResultChannels {
 			select {
 			case <-ctx.Done():
-				globalResultChannel <- internalModel.NewDefaultPlcSubscriptionRequestResult(subscriptionRequest, nil, ctx.Err())
+				globalResultChannel <- spiModel.NewDefaultPlcSubscriptionRequestResult(subscriptionRequest, nil, ctx.Err())
 				return
 			case subResult := <-subResultChannel:
 				// These are all single value requests ... so it's safe to assume this shortcut.
@@ -128,7 +128,7 @@ func (m *Connection) subscribe(ctx context.Context, subscriptionRequest apiModel
 	go func() {
 		defer func() {
 			if err := recover(); err != nil {
-				responseChan <- internalModel.NewDefaultPlcSubscriptionRequestResult(subscriptionRequest, nil, errors.Errorf("panic-ed %v", err))
+				responseChan <- spiModel.NewDefaultPlcSubscriptionRequestResult(subscriptionRequest, nil, errors.Errorf("panic-ed %v", err))
 			}
 		}()
 		// At this point we are sure to only have single item direct tag requests.
@@ -140,7 +140,7 @@ func (m *Connection) subscribe(ctx context.Context, subscriptionRequest apiModel
 
 		response, err := m.ExecuteAdsAddDeviceNotificationRequest(ctx, directTag.IndexGroup, directTag.IndexOffset, directTag.DataType.GetSize(), model.AdsTransMode_ON_CHANGE, 0, 0)
 		if err != nil {
-			responseChan <- internalModel.NewDefaultPlcSubscriptionRequestResult(
+			responseChan <- spiModel.NewDefaultPlcSubscriptionRequestResult(
 				subscriptionRequest,
 				nil,
 				err,
@@ -148,9 +148,9 @@ func (m *Connection) subscribe(ctx context.Context, subscriptionRequest apiModel
 		}
 		// Create a new subscription handle.
 		subscriptionHandle := dirverModel.NewAdsSubscriptionHandle(m, tagName, directTag)
-		responseChan <- internalModel.NewDefaultPlcSubscriptionRequestResult(
+		responseChan <- spiModel.NewDefaultPlcSubscriptionRequestResult(
 			subscriptionRequest,
-			internalModel.NewDefaultPlcSubscriptionResponse(
+			spiModel.NewDefaultPlcSubscriptionResponse(
 				subscriptionRequest,
 				map[string]apiModel.PlcResponseCode{tagName: apiModel.PlcResponseCode_OK},
 				map[string]apiModel.PlcSubscriptionHandle{tagName: subscriptionHandle},
@@ -200,9 +200,9 @@ func (m *Connection) processSubscriptionResponses(_ context.Context, subscriptio
 			}
 		}
 	}
-	return internalModel.NewDefaultPlcSubscriptionRequestResult(
+	return spiModel.NewDefaultPlcSubscriptionRequestResult(
 		subscriptionRequest,
-		internalModel.NewDefaultPlcSubscriptionResponse(subscriptionRequest, responseCodes, subscriptionHandles),
+		spiModel.NewDefaultPlcSubscriptionResponse(subscriptionRequest, responseCodes, subscriptionHandles),
 		err,
 	)
 }

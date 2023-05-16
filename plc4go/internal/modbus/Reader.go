@@ -25,11 +25,12 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/apache/plc4x/plc4go/pkg/api/model"
-	"github.com/apache/plc4x/plc4go/pkg/api/values"
+	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
+	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/modbus/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
+
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 )
@@ -48,10 +49,10 @@ func NewReader(unitIdentifier uint8, messageCodec spi.MessageCodec) *Reader {
 	}
 }
 
-func (m *Reader) Read(ctx context.Context, readRequest model.PlcReadRequest) <-chan model.PlcReadRequestResult {
+func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) <-chan apiModel.PlcReadRequestResult {
 	// TODO: handle ctx
 	log.Trace().Msg("Reading")
-	result := make(chan model.PlcReadRequestResult, 1)
+	result := make(chan apiModel.PlcReadRequestResult, 1)
 	go func() {
 		defer func() {
 			if err := recover(); err != nil {
@@ -164,7 +165,7 @@ func (m *Reader) Read(ctx context.Context, readRequest model.PlcReadRequest) <-c
 	return result
 }
 
-func (m *Reader) ToPlc4xReadResponse(responseAdu readWriteModel.ModbusTcpADU, readRequest model.PlcReadRequest) (model.PlcReadResponse, error) {
+func (m *Reader) ToPlc4xReadResponse(responseAdu readWriteModel.ModbusTcpADU, readRequest apiModel.PlcReadRequest) (apiModel.PlcReadResponse, error) {
 	var data []uint8
 	switch pdu := responseAdu.GetPdu().(type) {
 	case readWriteModel.ModbusPDUReadDiscreteInputsResponse:
@@ -198,10 +199,10 @@ func (m *Reader) ToPlc4xReadResponse(responseAdu readWriteModel.ModbusTcpADU, re
 	if err != nil {
 		return nil, errors.Wrap(err, "Error parsing data item")
 	}
-	responseCodes := map[string]model.PlcResponseCode{}
-	plcValues := map[string]values.PlcValue{}
+	responseCodes := map[string]apiModel.PlcResponseCode{}
+	plcValues := map[string]apiValues.PlcValue{}
 	plcValues[tagName] = value
-	responseCodes[tagName] = model.PlcResponseCode_OK
+	responseCodes[tagName] = apiModel.PlcResponseCode_OK
 
 	// Return the response
 	log.Trace().Msg("Returning the response")

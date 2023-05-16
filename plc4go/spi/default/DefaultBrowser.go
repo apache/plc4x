@@ -25,7 +25,7 @@ import (
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/spi"
-	"github.com/apache/plc4x/plc4go/spi/model"
+	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 )
 
 // DefaultBrowserRequirements adds required methods to Browser that are needed when using DefaultBrowser
@@ -79,8 +79,8 @@ func (m *defaultBrowser) BrowseWithInterceptor(ctx context.Context, browseReques
 			query := browseRequest.GetQuery(queryName)
 			responseCodes[queryName], results[queryName] = m.BrowseQuery(ctx, interceptor, queryName, query)
 		}
-		browseResponse := model.NewDefaultPlcBrowseResponse(browseRequest, results, responseCodes)
-		result <- model.NewDefaultPlcBrowseRequestResult(
+		browseResponse := spiModel.NewDefaultPlcBrowseResponse(browseRequest, results, responseCodes)
+		result <- spiModel.NewDefaultPlcBrowseRequestResult(
 			browseRequest,
 			browseResponse,
 			nil,

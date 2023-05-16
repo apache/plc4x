@@ -24,12 +24,12 @@ import (
 	"time"
 
 	"github.com/apache/plc4x/plc4go/internal/ads"
-	"github.com/apache/plc4x/plc4go/pkg/api/model"
+	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 )
 
 func main() {
 	discoverer := ads.NewDiscoverer()
-	discoverer.Discover(context.Background(), func(event model.PlcDiscoveryItem) {
+	discoverer.Discover(context.Background(), func(event apiModel.PlcDiscoveryItem) {
 		print(event)
 	})
 	time.Sleep(time.Second * 5)

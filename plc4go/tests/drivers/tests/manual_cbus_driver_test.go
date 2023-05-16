@@ -26,7 +26,7 @@ import (
 
 	"github.com/apache/plc4x/plc4go/internal/cbus"
 	"github.com/apache/plc4x/plc4go/pkg/api"
-	"github.com/apache/plc4x/plc4go/pkg/api/model"
+	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/pkg/api/transports"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
 	"github.com/apache/plc4x/plc4go/spi/utils"
@@ -58,7 +58,7 @@ func TestManualCBusDriverMixed(t *testing.T) {
 		subscriptionRequest, err := plcConnection.SubscriptionRequestBuilder().
 			AddEventTagAddress("mmi", "mmimonitor/*/*").
 			AddEventTagAddress("sal", "salmonitor/*/*").
-			AddPreRegisteredConsumer("mmi", func(event model.PlcSubscriptionEvent) {
+			AddPreRegisteredConsumer("mmi", func(event apiModel.PlcSubscriptionEvent) {
 				fmt.Printf("mmi:\n%s", event)
 				if _, ok := event.GetValue("mmi").GetStruct()["SALData"]; ok {
 					panic("got sal in mmi")
@@ -68,7 +68,7 @@ func TestManualCBusDriverMixed(t *testing.T) {
 				default:
 				}
 			}).
-			AddPreRegisteredConsumer("sal", func(event model.PlcSubscriptionEvent) {
+			AddPreRegisteredConsumer("sal", func(event apiModel.PlcSubscriptionEvent) {
 				fmt.Printf("sal:\n%s", event)
 				select {
 				case gotSAL <- true:
@@ -130,7 +130,7 @@ func TestManualCBusBrowse(t *testing.T) {
 	if err != nil {
 		panic(err)
 	}
-	browseRequestResult := <-browseRequest.ExecuteWithInterceptor(func(result model.PlcBrowseItem) bool {
+	browseRequestResult := <-browseRequest.ExecuteWithInterceptor(func(result apiModel.PlcBrowseItem) bool {
 		fmt.Printf("%s\n", result)
 		return true
 	})
@@ -166,7 +166,7 @@ func TestManualDiscovery(t *testing.T) {
 	driver := cbus.NewDriver()
 	driverManager.RegisterDriver(driver)
 	transports.RegisterTcpTransport(driverManager)
-	err := driver.Discover(func(event model.PlcDiscoveryItem) {
+	err := driver.Discover(func(event apiModel.PlcDiscoveryItem) {
 		println(event.(fmt.Stringer).String())
 	})
 	require.NoError(t, err)

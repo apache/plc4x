@@ -27,11 +27,11 @@ import (
 	"github.com/apache/plc4x/plc4go/internal/ads/model"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	driverModel "github.com/apache/plc4x/plc4go/protocols/ads/readwrite/model"
-	internalModel "github.com/apache/plc4x/plc4go/spi/model"
+	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 )
 
 func (m *Connection) BrowseRequestBuilder() apiModel.PlcBrowseRequestBuilder {
-	return internalModel.NewDefaultPlcBrowseRequestBuilder(m.GetPlcTagHandler(), m)
+	return spiModel.NewDefaultPlcBrowseRequestBuilder(m.GetPlcTagHandler(), m)
 }
 
 func (m *Connection) Browse(ctx context.Context, browseRequest apiModel.PlcBrowseRequest) <-chan apiModel.PlcBrowseRequestResult {
@@ -45,7 +45,7 @@ func (m *Connection) BrowseWithInterceptor(ctx context.Context, browseRequest ap
 	go func() {
 		defer func() {
 			if err := recover(); err != nil {
-				result <- internalModel.NewDefaultPlcBrowseRequestResult(browseRequest, nil, errors.Errorf("Recovered from panic: %v", err))
+				result <- spiModel.NewDefaultPlcBrowseRequestResult(browseRequest, nil, errors.Errorf("Recovered from panic: %v", err))
 			}
 		}()
 		responseCodes := map[string]apiModel.PlcResponseCode{}
@@ -54,8 +54,8 @@ func (m *Connection) BrowseWithInterceptor(ctx context.Context, browseRequest ap
 			query := browseRequest.GetQuery(queryName)
 			responseCodes[queryName], results[queryName] = m.BrowseQuery(ctx, interceptor, queryName, query)
 		}
-		browseResponse := internalModel.NewDefaultPlcBrowseResponse(browseRequest, results, responseCodes)
-		result <- internalModel.NewDefaultPlcBrowseRequestResult(browseRequest, browseResponse, nil)
+		browseResponse := spiModel.NewDefaultPlcBrowseResponse(browseRequest, results, responseCodes)
+		result <- spiModel.NewDefaultPlcBrowseRequestResult(browseRequest, browseResponse, nil)
 	}()
 	return result
 }
@@ -110,12 +110,12 @@ func (m *Connection) filterDataTypes(parentName string, currentType driverModel.
 	if len(remainingAddressSegments) == 0 {
 		arrayInfo := []apiModel.ArrayInfo{}
 		for _, ai := range currentType.GetArrayInfo() {
-			arrayInfo = append(arrayInfo, &internalModel.DefaultArrayInfo{
+			arrayInfo = append(arrayInfo, &spiModel.DefaultArrayInfo{
 				LowerBound: ai.GetLowerBound(),
 				UpperBound: ai.GetUpperBound(),
 			})
 		}
-		foundTag := internalModel.NewDefaultPlcBrowseItem(
+		foundTag := spiModel.NewDefaultPlcBrowseItem(
 			model.SymbolicPlcTag{
 				PlcTag: model.PlcTag{
 					ArrayInfo: arrayInfo,
