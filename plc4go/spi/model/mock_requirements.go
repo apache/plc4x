@@ -22,6 +22,7 @@ package model
 import (
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/spi"
+	"github.com/apache/plc4x/plc4go/spi/interceptors"
 )
 
 // Note this file is a Helper for mockery to generate use mocks from other package
@@ -29,6 +30,11 @@ import (
 // Deprecated: don't use it in productive code
 type PlcBrowser interface {
 	spi.PlcBrowser
+}
+
+// Deprecated: don't use it in productive code
+type PlcReader interface {
+	spi.PlcReader
 }
 
 // Deprecated: don't use it in productive code
@@ -49,4 +55,9 @@ type PlcBrowseItem interface {
 // Deprecated: don't use it in productive code
 type PlcQuery interface {
 	apiModel.PlcQuery
+}
+
+// Deprecated: don't use it in productive code
+type ReadRequestInterceptor interface {
+	interceptors.ReadRequestInterceptor
 }
