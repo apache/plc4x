@@ -43,6 +43,11 @@ type PlcWriter interface {
 }
 
 // Deprecated: don't use it in productive code
+type PlcSubscriber interface {
+	spi.PlcSubscriber
+}
+
+// Deprecated: don't use it in productive code
 type PlcTagHandler interface {
 	spi.PlcTagHandler
 }
