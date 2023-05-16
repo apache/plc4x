@@ -79,14 +79,22 @@ func (d *DefaultPlcSubscriptionResponse) GetTagNames() []string {
 }
 
 func (d *DefaultPlcSubscriptionResponse) GetResponseCode(name string) apiModel.PlcResponseCode {
-	return d.values[name].GetCode()
+	item, ok := d.values[name]
+	if !ok {
+		return apiModel.PlcResponseCode_NOT_FOUND
+	}
+	return item.GetCode()
 }
 
 func (d *DefaultPlcSubscriptionResponse) GetSubscriptionHandle(name string) (apiModel.PlcSubscriptionHandle, error) {
-	if d.values[name].GetCode() != apiModel.PlcResponseCode_OK {
+	item, ok := d.values[name]
+	if !ok {
+		return nil, errors.Errorf("item for %s not found", name)
+	}
+	if item.GetCode() != apiModel.PlcResponseCode_OK {
 		return nil, errors.Errorf("%s failed to subscribe", name)
 	}
-	return d.values[name].GetSubscriptionHandle(), nil
+	return item.GetSubscriptionHandle(), nil
 }
 
 func (d *DefaultPlcSubscriptionResponse) GetSubscriptionHandles() []apiModel.PlcSubscriptionHandle {
