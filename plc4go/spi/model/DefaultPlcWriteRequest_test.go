@@ -200,7 +200,6 @@ func TestDefaultPlcWriteRequestBuilder_Build(t *testing.T) {
 				valueHandler.EXPECT().NewPlcValue(mock.Anything, mock.Anything).Return(nil, errors.New("nope"))
 				fields.valueHandler = valueHandler
 			},
-			want:    NewDefaultPlcWriteRequest(map[string]apiModel.PlcTag{"a": nil}, []string{"a"}, map[string]apiValues.PlcValue{"a": nil}, nil, nil),
 			wantErr: assert.Error,
 		},
 		{
