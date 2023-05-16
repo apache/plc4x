@@ -109,7 +109,10 @@ func (m *DefaultPlcWriteRequestBuilder) Build() (apiModel.PlcWriteRequest, error
 	for name, tag := range m.tags {
 		value, err := m.valueHandler.NewPlcValue(tag, m.values[name])
 		if err != nil {
-			//			return nil, errors.Wrapf(err, "Error parsing value of type: %s", tag.GetTypeName())
+			if tag == nil {
+				return nil, errors.New("Error parsing value for nil tag")
+			}
+			return nil, errors.Wrapf(err, "Error parsing value of type: %s", tag.GetValueType())
 		}
 		plcValues[name] = value
 	}

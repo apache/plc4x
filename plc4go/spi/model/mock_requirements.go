@@ -38,8 +38,18 @@ type PlcReader interface {
 }
 
 // Deprecated: don't use it in productive code
+type PlcWriter interface {
+	spi.PlcWriter
+}
+
+// Deprecated: don't use it in productive code
 type PlcTagHandler interface {
 	spi.PlcTagHandler
+}
+
+// Deprecated: don't use it in productive code
+type PlcValueHandler interface {
+	spi.PlcValueHandler
 }
 
 // Deprecated: don't use it in productive code
@@ -60,4 +70,9 @@ type PlcQuery interface {
 // Deprecated: don't use it in productive code
 type ReadRequestInterceptor interface {
 	interceptors.ReadRequestInterceptor
+}
+
+// Deprecated: don't use it in productive code
+type WriteRequestInterceptor interface {
+	interceptors.WriteRequestInterceptor
 }
