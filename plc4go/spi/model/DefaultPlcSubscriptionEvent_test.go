@@ -276,7 +276,7 @@ func TestDefaultPlcSubscriptionEvent_GetTagNames(t *testing.T) {
 				DefaultPlcSubscriptionEventRequirements: tt.fields.DefaultPlcSubscriptionEventRequirements,
 				values:                                  tt.fields.values,
 			}
-			assert.Equalf(t, tt.want, d.GetTagNames(), "GetTagNames()")
+			assert.ElementsMatchf(t, tt.want, d.GetTagNames(), "GetTagNames()")
 		})
 	}
 }
