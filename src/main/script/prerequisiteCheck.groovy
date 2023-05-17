@@ -77,11 +77,14 @@ def checkVersionAtMost(String current, String maximum) {
 
 def checkDotnet() {
     print "Detecting Dotnet version:  "
-    def output
+    def output = new StringBuffer()
+    def errOutput = new StringBuffer()
     try {
-        output = "dotnet --version".execute().text
-    } catch (IOException ignored) {
+        def proc = "dotnet --version".execute()
+        proc.waitForProcessOutput(output, errOutput)
+    } catch (IOException e) {
         output = ""
+        errOutput.append(e)
     }
     Matcher matcher = extractVersion(output)
     if (matcher.size() > 0) {
@@ -94,6 +97,7 @@ def checkDotnet() {
         println "missing"
         println "--- output of version `dotnet --version` command ---"
         println output
+        println errOutput
         println "----------------------------------------------------"
         allConditionsMet = false
     }
@@ -141,11 +145,14 @@ def checkMavenVersion(String minVersion, String maxVersion) {
 def checkGcc() {
     print "Detecting Gcc version:     "
     // TODO: For windows, check that mingw32-make is on the PATH
-    def output
+    def output = new StringBuffer()
+    def errOutput = new StringBuffer()
     try {
-        output = "gcc --version".execute().text
+        def proc = "gcc --version".execute()
+        proc.waitForProcessOutput(output, errOutput)
     } catch (IOException ignored) {
         output = ""
+        errOutput.append(e)
     }
     Matcher matcher = extractVersion(output)
     if (matcher.size() > 0) {
@@ -158,6 +165,7 @@ def checkGcc() {
         println "missing"
         println "--- output of version `gcc --version` command ---"
         println output
+        println errOutput
         println "-------------------------------------------------"
         allConditionsMet = false
     }
@@ -165,11 +173,14 @@ def checkGcc() {
 
 def checkGit() {
     print "Detecting Git version:     "
-    def output
+    def output = new StringBuffer()
+    def errOutput = new StringBuffer()
     try {
-        output = "git --version".execute().text
+        def proc = "git --version".execute()
+        proc.waitForProcessOutput(output, errOutput)
     } catch (IOException ignored) {
         output = ""
+        errOutput.append(e)
     }
     Matcher matcher = extractVersion(output)
     if (matcher.size() > 0) {
@@ -182,6 +193,7 @@ def checkGit() {
         println "missing"
         println "--- output of version `git --version` command ---"
         println output
+        println errOutput
         println "-------------------------------------------------"
         allConditionsMet = false
     }
@@ -253,11 +265,14 @@ def checkPythonVenv() {
 // Not only should the docker executable be available, but also should the docker daemon be running.
 def checkDocker() {
     print "Detecting Docker version:  "
-    def output
+    def output = new StringBuilder()
+    def errOutput = new StringBuilder()
     try {
-        output = "docker info".execute().text
-    } catch (IOException ignored) {
+        def proc = "docker info".execute()
+        proc.waitForProcessOutput(output, errOutput)
+    } catch (IOException e) {
         output = ""
+        errOutput.append(e)
     }
     // Check if Docker is installed at all
     def matcher1 = output =~ /Server:/
@@ -278,6 +293,7 @@ def checkDocker() {
         println "missing"
         println "--- output of version `docker info` command ---"
         println output
+        println errOutput
         println "-----------------------------------------------"
         allConditionsMet = false
     }
