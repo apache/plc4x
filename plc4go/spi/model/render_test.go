@@ -30,7 +30,7 @@ import (
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	"github.com/apache/plc4x/plc4go/spi/utils"
-	spiValue "github.com/apache/plc4x/plc4go/spi/values"
+	spiValues "github.com/apache/plc4x/plc4go/spi/values"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -120,8 +120,8 @@ func TestRenderTestCustom(t *testing.T) {
 					"tagid2": NewMockPlcBrowseItem(t),
 				},
 				map[string]apiValues.PlcValue{
-					"tagid1": spiValue.PlcNull{},
-					"tagid2": spiValue.PlcNull{},
+					"tagid1": spiValues.PlcNull{},
+					"tagid2": spiValues.PlcNull{},
 					"tagid3": nil,
 				},
 			).(interface { // TODO: workaround
@@ -182,7 +182,9 @@ func TestRenderTestCustom(t *testing.T) {
 				"something",
 				"something",
 				url.URL{},
-				nil,
+				map[string][]string{
+					"something": {"else"},
+				},
 				"something",
 				nil,
 			).(interface { // TODO: workaround
