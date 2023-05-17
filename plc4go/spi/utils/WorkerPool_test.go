@@ -24,6 +24,7 @@ import (
 	"fmt"
 	"github.com/pkg/errors"
 	"github.com/stretchr/testify/assert"
+	"math/rand"
 	"testing"
 	"time"
 )
@@ -98,6 +99,13 @@ func TestExecutor_Stop(t *testing.T) {
 			fields: fields{
 				running: true,
 				queue:   make(chan workItem),
+				worker: []*worker{
+					func() *worker {
+						w := &worker{}
+						w.initialize()
+						return w
+					}(),
+				},
 			},
 			shouldRun: false,
 		},
@@ -133,9 +141,37 @@ func TestExecutor_Submit(t *testing.T) {
 		name                      string
 		fields                    fields
 		args                      args
-		completionFutureValidator func(CompletionFuture) bool
+		completionFutureValidator func(t *testing.T, future CompletionFuture) bool
 		waitForCompletion         bool
 	}{
+		{
+			name: "submitting nothing",
+			completionFutureValidator: func(t *testing.T, completionFuture CompletionFuture) bool {
+				return assert.Error(t, completionFuture.(*future).err.Load().(error))
+			},
+		},
+		{
+			name: "submit canceled",
+			fields: fields{
+				queue: make(chan workItem, 0),
+			},
+			args: args{
+				workItemId: 13,
+				runnable: func() {
+					// We do something for 3 seconds
+					<-time.NewTimer(3 * time.Second).C
+				},
+				context: func() context.Context {
+					ctx, cancelFunc := context.WithCancel(context.Background())
+					cancelFunc()
+					return ctx
+				}(),
+			},
+			completionFutureValidator: func(t *testing.T, completionFuture CompletionFuture) bool {
+				err := completionFuture.(*future).err.Load().(error)
+				return assert.Error(t, err)
+			},
+		},
 		{
 			name: "Submit something which doesn't complete",
 			fields: fields{
@@ -149,9 +185,9 @@ func TestExecutor_Submit(t *testing.T) {
 				},
 				context: context.TODO(),
 			},
-			completionFutureValidator: func(completionFuture CompletionFuture) bool {
+			completionFutureValidator: func(t *testing.T, completionFuture CompletionFuture) bool {
 				completed := completionFuture.(*future).completed.Load()
-				return !completed
+				return assert.False(t, completed)
 			},
 		},
 		{
@@ -173,9 +209,9 @@ func TestExecutor_Submit(t *testing.T) {
 				},
 				context: context.TODO(),
 			},
-			completionFutureValidator: func(completionFuture CompletionFuture) bool {
+			completionFutureValidator: func(t *testing.T, completionFuture CompletionFuture) bool {
 				completed := completionFuture.(*future).completed.Load()
-				return completed
+				return assert.True(t, completed)
 			},
 			waitForCompletion: true,
 		},
@@ -194,7 +230,7 @@ func TestExecutor_Submit(t *testing.T) {
 			if tt.waitForCompletion {
 				assert.NoError(t, completionFuture.AwaitCompletion(testContext(t)))
 			}
-			assert.True(t, tt.completionFutureValidator(completionFuture), "Submit(%v, %v)", tt.args.workItemId, tt.args.runnable)
+			assert.True(t, tt.completionFutureValidator(t, completionFuture), "Submit(%v, %v)", tt.args.workItemId, tt.args.runnable)
 		})
 	}
 }
@@ -215,7 +251,7 @@ func TestNewFixedSizeExecutor(t *testing.T) {
 			args: args{
 				numberOfWorkers: 13,
 				queueDepth:      14,
-				options:         nil,
+				options:         []ExecutorOption{WithExecutorOptionTracerWorkers(true)},
 			},
 			executorValidator: func(t *testing.T, e *executor) bool {
 				return !e.running && !e.shutdown && len(e.worker) == 13 && cap(e.queue) == 14
@@ -225,6 +261,7 @@ func TestNewFixedSizeExecutor(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			fixedSizeExecutor := NewFixedSizeExecutor(tt.args.numberOfWorkers, tt.args.queueDepth, tt.args.options...)
+			defer fixedSizeExecutor.Stop()
 			assert.True(t, tt.executorValidator(t, fixedSizeExecutor.(*executor)), "NewFixedSizeExecutor(%v, %v, %v)", tt.args.numberOfWorkers, tt.args.queueDepth, tt.args.options)
 		})
 	}
@@ -239,6 +276,7 @@ func TestNewDynamicExecutor(t *testing.T) {
 	tests := []struct {
 		name              string
 		args              args
+		manipulator       func(*testing.T, *executor)
 		executorValidator func(*testing.T, *executor) bool
 	}{
 		{
@@ -246,7 +284,7 @@ func TestNewDynamicExecutor(t *testing.T) {
 			args: args{
 				numberOfWorkers: 13,
 				queueDepth:      14,
-				options:         nil,
+				options:         []ExecutorOption{WithExecutorOptionTracerWorkers(true)},
 			},
 			executorValidator: func(t *testing.T, e *executor) bool {
 				assert.False(t, e.running)
@@ -256,10 +294,72 @@ func TestNewDynamicExecutor(t *testing.T) {
 				return true
 			},
 		},
+		{
+			name: "test scaling",
+			args: args{
+				numberOfWorkers: 2,
+				queueDepth:      2,
+				options:         []ExecutorOption{WithExecutorOptionTracerWorkers(true)},
+			},
+			manipulator: func(t *testing.T, e *executor) {
+				{
+					oldUpScaleInterval := upScaleInterval
+					t.Cleanup(func() {
+						t.Logf("Ressetting up scale interval to %v", oldUpScaleInterval)
+						upScaleInterval = oldUpScaleInterval
+					})
+					upScaleInterval = 10 * time.Millisecond
+					t.Logf("Changed up scale interval to %v", upScaleInterval)
+				}
+				{
+					oldDownScaleInterval := downScaleInterval
+					t.Cleanup(func() {
+						t.Logf("Ressetting down scale interval to %v", oldDownScaleInterval)
+						downScaleInterval = oldDownScaleInterval
+					})
+					downScaleInterval = 10 * time.Millisecond
+					t.Logf("Changed down scale interval to %v", downScaleInterval)
+				}
+				{
+					oldTimeToBecomeUnused := timeToBecomeUnused
+					t.Cleanup(func() {
+						t.Logf("Ressetting time to be become unused to %v", oldTimeToBecomeUnused)
+						timeToBecomeUnused = oldTimeToBecomeUnused
+					})
+					timeToBecomeUnused = 100 * time.Millisecond
+				}
+				t.Log("fill some jobs")
+				go func() {
+					for i := 0; i < 500; i++ {
+						e.queue <- workItem{
+							workItemId: int32(i),
+							runnable: func() {
+								max := 100
+								min := 10
+								sleepTime := time.Duration(rand.Intn(max-min)+min) * time.Millisecond
+								t.Logf("Sleeping for %v", sleepTime)
+								time.Sleep(sleepTime)
+							},
+							completionFuture: &future{},
+						}
+					}
+				}()
+			},
+			executorValidator: func(t *testing.T, e *executor) bool {
+				time.Sleep(500 * time.Millisecond)
+				assert.False(t, e.running)
+				assert.False(t, e.shutdown)
+				return true
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			fixedSizeExecutor := NewDynamicExecutor(tt.args.numberOfWorkers, tt.args.queueDepth, tt.args.options...)
+			defer fixedSizeExecutor.Stop()
+			if tt.manipulator != nil {
+				tt.manipulator(t, fixedSizeExecutor.(*executor))
+			}
 			assert.True(t, tt.executorValidator(t, fixedSizeExecutor.(*executor)), "NewFixedSizeExecutor(%v, %v, %v)", tt.args.numberOfWorkers, tt.args.queueDepth, tt.args.options)
 		})
 	}
@@ -329,6 +429,7 @@ func TestWorker_work(t *testing.T) {
 		fields                     fields
 		timeBeforeFirstValidation  time.Duration
 		firstValidation            func(*testing.T, *worker)
+		timeBeforeManipulation     time.Duration
 		manipulator                func(*worker)
 		timeBeforeSecondValidation time.Duration
 		secondValidation           func(*testing.T, *worker)
@@ -356,16 +457,18 @@ func TestWorker_work(t *testing.T) {
 			},
 			timeBeforeFirstValidation: 50 * time.Millisecond,
 			firstValidation: func(t *testing.T, w *worker) {
-				assert.False(t, w.hasEnded)
+				assert.False(t, w.hasEnded.Load(), "should not be ended")
 			},
 			manipulator: func(w *worker) {
 				w.shutdown.Store(true)
+				w.interrupter <- struct{}{}
 			},
 			timeBeforeSecondValidation: 150 * time.Millisecond,
 			secondValidation: func(t *testing.T, w *worker) {
-				assert.True(t, w.hasEnded)
+				assert.True(t, w.hasEnded.Load(), "should be ended")
 			},
-		}, {
+		},
+		{
 			name: "Worker should work till shutdown",
 			fields: fields{
 				id: 1,
@@ -388,29 +491,94 @@ func TestWorker_work(t *testing.T) {
 			},
 			timeBeforeFirstValidation: 50 * time.Millisecond,
 			firstValidation: func(t *testing.T, w *worker) {
-				assert.False(t, w.hasEnded, "should not be ended")
+				assert.False(t, w.hasEnded.Load(), "should not be ended")
 			},
 			manipulator: func(w *worker) {
 				w.shutdown.Store(true)
 			},
 			timeBeforeSecondValidation: 150 * time.Millisecond,
 			secondValidation: func(t *testing.T, w *worker) {
-				assert.True(t, w.hasEnded, "should be ended")
+				assert.True(t, w.hasEnded.Load(), "should be ended")
+			},
+		},
+		{
+			name: "Work interrupted",
+			fields: fields{
+				id: 1,
+				executor: func() *executor {
+					e := &executor{
+						queue:        make(chan workItem),
+						traceWorkers: true,
+					}
+					return e
+				}(),
+			},
+			timeBeforeFirstValidation: 50 * time.Millisecond,
+			firstValidation: func(t *testing.T, w *worker) {
+				assert.False(t, w.hasEnded.Load(), "should not be ended")
+			},
+			manipulator: func(w *worker) {
+				w.shutdown.Store(true)
+				w.interrupter <- struct{}{}
+			},
+			timeBeforeSecondValidation: 150 * time.Millisecond,
+			secondValidation: func(t *testing.T, w *worker) {
+				assert.True(t, w.hasEnded.Load(), "should be ended")
+			},
+		},
+		{
+			name: "Work on canceled",
+			fields: fields{
+				id: 1,
+				executor: func() *executor {
+					e := &executor{
+						queue:        make(chan workItem),
+						traceWorkers: true,
+					}
+					go func() {
+						completionFuture := &future{}
+						completionFuture.cancelRequested.Store(true)
+						e.queue <- workItem{
+							workItemId: 0,
+							runnable: func() {
+								time.Sleep(time.Millisecond * 70)
+							},
+							completionFuture: completionFuture,
+						}
+					}()
+					return e
+				}(),
+			},
+			timeBeforeManipulation: 50 * time.Millisecond,
+			manipulator: func(w *worker) {
+				w.shutdown.Store(true)
+				w.interrupter <- struct{}{}
 			},
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			w := &worker{
-				id:       tt.fields.id,
-				executor: tt.fields.executor,
+				id:          tt.fields.id,
+				interrupter: make(chan struct{}, 1),
+				executor:    tt.fields.executor,
 			}
 			go w.work()
-			time.Sleep(tt.timeBeforeFirstValidation)
-			tt.firstValidation(t, w)
-			tt.manipulator(w)
-			time.Sleep(tt.timeBeforeSecondValidation)
-			tt.secondValidation(t, w)
+			if tt.firstValidation != nil {
+				time.Sleep(tt.timeBeforeFirstValidation)
+				t.Logf("firstValidation after %v", tt.timeBeforeFirstValidation)
+				tt.firstValidation(t, w)
+			}
+			if tt.manipulator != nil {
+				time.Sleep(tt.timeBeforeManipulation)
+				t.Logf("manipulator after %v", tt.timeBeforeManipulation)
+				tt.manipulator(w)
+			}
+			if tt.secondValidation != nil {
+				time.Sleep(tt.timeBeforeSecondValidation)
+				t.Logf("secondValidation after %v", tt.timeBeforeSecondValidation)
+				tt.secondValidation(t, w)
+			}
 		})
 	}
 }

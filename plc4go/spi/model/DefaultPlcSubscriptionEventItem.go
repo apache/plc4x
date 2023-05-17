@@ -22,20 +22,20 @@ package model
 import (
 	"time"
 
-	"github.com/apache/plc4x/plc4go/pkg/api/model"
-	"github.com/apache/plc4x/plc4go/pkg/api/values"
+	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
+	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 )
 
 //go:generate go run ../../tools/plc4xgenerator/gen.go -type=DefaultPlcSubscriptionEventItem
 type DefaultPlcSubscriptionEventItem struct {
-	code             model.PlcResponseCode `stringer:"true"`
-	tag              model.PlcTag
+	code             apiModel.PlcResponseCode `stringer:"true"`
+	tag              apiModel.PlcTag
 	subscriptionType SubscriptionType
 	interval         time.Duration `stringer:"true"`
-	value            values.PlcValue
+	value            apiValues.PlcValue
 }
 
-func NewDefaultPlcSubscriptionEventItem(code model.PlcResponseCode, tag model.PlcTag, subscriptionType SubscriptionType, interval time.Duration, value values.PlcValue) *DefaultPlcSubscriptionEventItem {
+func NewDefaultPlcSubscriptionEventItem(code apiModel.PlcResponseCode, tag apiModel.PlcTag, subscriptionType SubscriptionType, interval time.Duration, value apiValues.PlcValue) *DefaultPlcSubscriptionEventItem {
 	return &DefaultPlcSubscriptionEventItem{
 		code:             code,
 		tag:              tag,
@@ -45,11 +45,11 @@ func NewDefaultPlcSubscriptionEventItem(code model.PlcResponseCode, tag model.Pl
 	}
 }
 
-func (d *DefaultPlcSubscriptionEventItem) GetCode() model.PlcResponseCode {
+func (d *DefaultPlcSubscriptionEventItem) GetCode() apiModel.PlcResponseCode {
 	return d.code
 }
 
-func (d *DefaultPlcSubscriptionEventItem) GetTag() model.PlcTag {
+func (d *DefaultPlcSubscriptionEventItem) GetTag() apiModel.PlcTag {
 	return d.tag
 }
 
@@ -61,6 +61,6 @@ func (d *DefaultPlcSubscriptionEventItem) GetInterval() time.Duration {
 	return d.interval
 }
 
-func (d *DefaultPlcSubscriptionEventItem) GetValue() values.PlcValue {
+func (d *DefaultPlcSubscriptionEventItem) GetValue() apiValues.PlcValue {
 	return d.value
 }

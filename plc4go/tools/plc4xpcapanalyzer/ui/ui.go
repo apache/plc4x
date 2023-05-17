@@ -22,15 +22,17 @@ package ui
 import (
 	"context"
 	"fmt"
-	"github.com/apache/plc4x/plc4go/pkg/api/model"
-	"github.com/apache/plc4x/plc4go/spi"
-	"github.com/gdamore/tcell/v2"
-	"github.com/pkg/errors"
-	"github.com/rivo/tview"
 	"math/rand"
 	"regexp"
 	"strconv"
 	"time"
+
+	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
+	"github.com/apache/plc4x/plc4go/spi"
+
+	"github.com/gdamore/tcell/v2"
+	"github.com/pkg/errors"
+	"github.com/rivo/tview"
 )
 
 func SetupApplication() *tview.Application {
@@ -287,7 +289,7 @@ func buildOutputArea(newPrimitive func(text string) tview.Primitive, application
 
 		{
 			receivedMessagesList := tview.NewList()
-			messageReceived = func(messageNumber int, receiveTime time.Time, message model.PlcMessage) {
+			messageReceived = func(messageNumber int, receiveTime time.Time, message apiModel.PlcMessage) {
 				application.QueueUpdateDraw(func() {
 					receivedMessagesList.AddItem(fmt.Sprintf("No %d @%s (api)", messageNumber, receiveTime.Format("15:04:05.999999")), "", 0x0, func() {
 						if ok := jumpToMessageItem(messageNumber); !ok {

@@ -28,7 +28,6 @@ import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.transport.serial.DummyHandler;
 import org.apache.plc4x.java.transport.serial.SerialChannel;
 import org.apache.plc4x.java.transport.serial.SerialChannelFactory;
-import org.apache.plc4x.java.transport.serial.SerialChannelHandler;
 import org.apache.plc4x.java.transport.serial.SerialSocketAddress;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;

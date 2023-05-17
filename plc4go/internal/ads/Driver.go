@@ -61,7 +61,7 @@ func (m *Driver) GetConnectionWithContext(ctx context.Context, transportUrl url.
 	transportInstance, err := transport.CreateTransportInstance(transportUrl, options)
 	if err != nil {
 		log.Error().Stringer("transportUrl", &transportUrl).Msgf("We couldn't create a transport instance for port %#v", options["defaultTcpPort"])
-		ch := make(chan plc4go.PlcConnectionConnectResult)
+		ch := make(chan plc4go.PlcConnectionConnectResult, 1)
 		ch <- _default.NewDefaultPlcConnectionConnectResult(nil, errors.New("couldn't initialize transport configuration for given transport url "+transportUrl.String()))
 		return ch
 	}
@@ -73,7 +73,7 @@ func (m *Driver) GetConnectionWithContext(ctx context.Context, transportUrl url.
 	configuration, err := model.ParseFromOptions(options)
 	if err != nil {
 		log.Error().Err(err).Msgf("Invalid options")
-		ch := make(chan plc4go.PlcConnectionConnectResult)
+		ch := make(chan plc4go.PlcConnectionConnectResult, 1)
 		ch <- _default.NewDefaultPlcConnectionConnectResult(nil, errors.Wrap(err, "invalid configuration"))
 		return ch
 	}

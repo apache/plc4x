@@ -31,7 +31,7 @@ import (
 	"github.com/apache/plc4x/plc4go/pkg/api"
 	"github.com/apache/plc4x/plc4go/pkg/api/config"
 	"github.com/apache/plc4x/plc4go/pkg/api/logging"
-	"github.com/apache/plc4x/plc4go/pkg/api/model"
+	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/transports/pcap"
 
@@ -64,7 +64,7 @@ func TestBacnetDriverWithPcap(t *testing.T) {
 	defer connection.Close()
 	build, err := connection.SubscriptionRequestBuilder().
 		AddEventTagAddress("furz", "*/*/*").
-		AddPreRegisteredConsumer("furz", func(event model.PlcSubscriptionEvent) {
+		AddPreRegisteredConsumer("furz", func(event apiModel.PlcSubscriptionEvent) {
 			println(event)
 		}).
 		Build()

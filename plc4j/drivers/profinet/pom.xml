@@ -183,24 +183,13 @@
       <scope>test</scope>
     </dependency>
 
-    <!-- If IntelliJ tells you this is duplicated ... It's not ;-) -->
-    <dependency>
-      <groupId>ch.qos.logback</groupId>
-      <artifactId>logback-classic</artifactId>
-      <!-- TODO: Just for now -->
-      <scope>compile</scope>
-    </dependency>
-    <!-- TODO: Just for now -->
-    <dependency>
-      <groupId>ch.qos.logback</groupId>
-      <artifactId>logback-core</artifactId>
-      <scope>runtime</scope>
-    </dependency>
-    <!-- TODO: Just for now -->
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
-      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
     </dependency>
 
     <dependency>

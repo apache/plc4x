@@ -107,16 +107,18 @@ func (m Browser) BrowseQuery(ctx context.Context, interceptor func(result apiMod
 					event.Msgf("unit %d: error reading tag %s. Code %s", unitAddress, attribute, code)
 					continue unitLoop
 				}
-				queryResult := &spiModel.DefaultPlcBrowseItem{
-					Tag:          NewCALIdentifyTag(unit, nil /*TODO: add bridge support*/, attribute, 1),
-					Name:         queryName,
-					Readable:     true,
-					Writable:     false,
-					Subscribable: false,
-					Options: map[string]values.PlcValue{
+				queryResult := spiModel.NewDefaultPlcBrowseItem(
+					NewCALIdentifyTag(unit, nil /*TODO: add bridge support*/, attribute, 1),
+					queryName,
+					"",
+					true,
+					false,
+					false,
+					nil,
+					map[string]values.PlcValue{
 						"CurrentValue": response.GetValue(readTagName),
 					},
-				}
+				)
 				if interceptor != nil {
 					interceptor(queryResult)
 				}

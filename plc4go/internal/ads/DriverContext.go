@@ -26,11 +26,11 @@ import (
 	"strings"
 	"sync/atomic"
 
-	model3 "github.com/apache/plc4x/plc4go/internal/ads/model"
-	"github.com/apache/plc4x/plc4go/pkg/api/model"
-	"github.com/apache/plc4x/plc4go/pkg/api/values"
+	"github.com/apache/plc4x/plc4go/internal/ads/model"
+	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
+	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	driverModel "github.com/apache/plc4x/plc4go/protocols/ads/readwrite/model"
-	model2 "github.com/apache/plc4x/plc4go/spi/model"
+	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 )
 
 type DriverContext struct {
@@ -46,7 +46,7 @@ type DriverContext struct {
 	awaitDisconnectComplete bool
 }
 
-func NewDriverContext(configuration model3.Configuration) (*DriverContext, error) {
+func NewDriverContext(configuration model.Configuration) (*DriverContext, error) {
 	return &DriverContext{
 		invokeId: 0,
 	}, nil
@@ -65,7 +65,7 @@ func (m *DriverContext) clear() {
 	m.awaitDisconnectComplete = false
 }
 
-func (m *DriverContext) getDirectTagForSymbolTag(symbolicPlcTag model3.SymbolicPlcTag) (*model3.DirectPlcTag, error) {
+func (m *DriverContext) getDirectTagForSymbolTag(symbolicPlcTag model.SymbolicPlcTag) (*model.DirectPlcTag, error) {
 	address := symbolicPlcTag.SymbolicAddress
 	addressSegments := strings.Split(address, ".")
 	var symbolName string
@@ -91,15 +91,15 @@ func (m *DriverContext) getDirectTagForSymbolTag(symbolicPlcTag model3.SymbolicP
 	return m.resolveDirectTag(remainingSegments, dataTypeEntry, symbolEntry.GetGroup(), symbolEntry.GetOffset())
 }
 
-func (m *DriverContext) resolveDirectTag(remainingSegments []string, currentDatatype driverModel.AdsDataTypeTableEntry, indexGroup uint32, indexOffset uint32) (*model3.DirectPlcTag, error) {
+func (m *DriverContext) resolveDirectTag(remainingSegments []string, currentDatatype driverModel.AdsDataTypeTableEntry, indexGroup uint32, indexOffset uint32) (*model.DirectPlcTag, error) {
 	if len(remainingSegments) == 0 {
-		return &model3.DirectPlcTag{
+		return &model.DirectPlcTag{
 			IndexGroup:   indexGroup,
 			IndexOffset:  indexOffset,
 			ValueType:    m.getDataTypeForDataTypeTableEntry(currentDatatype),
 			StringLength: m.getStringLengthForDataTypeTableEntry(currentDatatype),
 			DataType:     currentDatatype,
-			PlcTag: model3.PlcTag{
+			PlcTag: model.PlcTag{
 				ArrayInfo: m.getArrayInfoForDataTypeTableEntry(currentDatatype),
 			},
 		}, nil
@@ -119,12 +119,12 @@ func (m *DriverContext) resolveDirectTag(remainingSegments []string, currentData
 	return nil, fmt.Errorf("couldn't find child with name %s in type %s", currentSegment, currentDatatype.GetDataTypeName())
 }
 
-func (m *DriverContext) getDataTypeForDataTypeTableEntry(entry driverModel.AdsDataTypeTableEntry) values.PlcValueType {
+func (m *DriverContext) getDataTypeForDataTypeTableEntry(entry driverModel.AdsDataTypeTableEntry) apiValues.PlcValueType {
 	if entry.GetArrayInfo() != nil && len(entry.GetArrayInfo()) > 0 {
-		return values.List
+		return apiValues.List
 	}
 	if entry.GetNumChildren() > 0 {
-		return values.Struct
+		return apiValues.Struct
 	}
 	dataTypeName := entry.GetDataTypeName()
 	if strings.HasPrefix(dataTypeName, "STRING(") {
@@ -132,7 +132,7 @@ func (m *DriverContext) getDataTypeForDataTypeTableEntry(entry driverModel.AdsDa
 	} else if strings.HasPrefix(dataTypeName, "WSTRING(") {
 		dataTypeName = "WSTRING"
 	}
-	plcValueType, _ := values.PlcValueByName(dataTypeName)
+	plcValueType, _ := apiValues.PlcValueByName(dataTypeName)
 	return plcValueType
 }
 
@@ -156,10 +156,10 @@ func (m *DriverContext) getStringLengthForDataTypeTableEntry(entry driverModel.A
 	return 0
 }
 
-func (m *DriverContext) getArrayInfoForDataTypeTableEntry(entry driverModel.AdsDataTypeTableEntry) []model.ArrayInfo {
-	var arrayInfos []model.ArrayInfo
+func (m *DriverContext) getArrayInfoForDataTypeTableEntry(entry driverModel.AdsDataTypeTableEntry) []apiModel.ArrayInfo {
+	var arrayInfos []apiModel.ArrayInfo
 	for _, adsArrayInfo := range entry.GetArrayInfo() {
-		arrayInfo := model2.DefaultArrayInfo{
+		arrayInfo := spiModel.DefaultArrayInfo{
 			LowerBound: adsArrayInfo.GetLowerBound(),
 			UpperBound: adsArrayInfo.GetUpperBound(),
 		}

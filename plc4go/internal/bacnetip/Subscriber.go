@@ -21,9 +21,9 @@ package bacnetip
 
 import (
 	"context"
+	"github.com/pkg/errors"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
-	plc4goModel "github.com/apache/plc4x/plc4go/spi/model"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 )
 
@@ -40,8 +40,7 @@ func NewSubscriber(connection *Connection) *Subscriber {
 }
 
 func (m *Subscriber) Subscribe(ctx context.Context, subscriptionRequest apiModel.PlcSubscriptionRequest) <-chan apiModel.PlcSubscriptionRequestResult {
-	// TODO: handle ctx
-	result := make(chan apiModel.PlcSubscriptionRequestResult)
+	result := make(chan apiModel.PlcSubscriptionRequestResult, 1)
 	go func() {
 		internalPlcSubscriptionRequest := subscriptionRequest.(*spiModel.DefaultPlcSubscriptionRequest)
 
@@ -52,22 +51,23 @@ func (m *Subscriber) Subscribe(ctx context.Context, subscriptionRequest apiModel
 		responseCodes := map[string]apiModel.PlcResponseCode{}
 		subscriptionValues := make(map[string]apiModel.PlcSubscriptionHandle)
 		for _, tagName := range internalPlcSubscriptionRequest.GetTagNames() {
+			if err := ctx.Err(); err != nil {
+				result <- spiModel.NewDefaultPlcSubscriptionRequestResult(subscriptionRequest, nil, err)
+				return
+			}
 			responseCodes[tagName] = apiModel.PlcResponseCode_OK
 			subscriptionValues[tagName] = spiModel.NewDefaultPlcSubscriptionHandle(m)
 		}
 
-		result <- &plc4goModel.DefaultPlcSubscriptionRequestResult{
-			Request:  subscriptionRequest,
-			Response: spiModel.NewDefaultPlcSubscriptionResponse(subscriptionRequest, responseCodes, subscriptionValues),
-			Err:      nil,
-		}
+		result <- spiModel.NewDefaultPlcSubscriptionRequestResult(subscriptionRequest, spiModel.NewDefaultPlcSubscriptionResponse(subscriptionRequest, responseCodes, subscriptionValues), nil)
 	}()
 	return result
 }
 
 func (m *Subscriber) Unsubscribe(ctx context.Context, unsubscriptionRequest apiModel.PlcUnsubscriptionRequest) <-chan apiModel.PlcUnsubscriptionRequestResult {
 	// TODO: handle ctx
-	result := make(chan apiModel.PlcUnsubscriptionRequestResult)
+	result := make(chan apiModel.PlcUnsubscriptionRequestResult, 1)
+	result <- spiModel.NewDefaultPlcUnsubscriptionRequestResult(unsubscriptionRequest, nil, errors.New("not implemented"))
 
 	// TODO: As soon as we establish a connection, we start getting data...
 	// subscriptions are more an internal handling of which values to pass where.

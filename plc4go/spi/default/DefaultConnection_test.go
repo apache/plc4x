@@ -22,18 +22,18 @@ package _default
 import (
 	"context"
 	"fmt"
-	"github.com/apache/plc4x/plc4go/spi/utils"
-	"github.com/stretchr/testify/mock"
 	"testing"
 	"time"
 
-	"github.com/stretchr/testify/assert"
-
 	"github.com/apache/plc4x/plc4go/pkg/api"
-	"github.com/apache/plc4x/plc4go/pkg/api/model"
+	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/transports"
+	"github.com/apache/plc4x/plc4go/spi/utils"
+
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/mock"
 )
 
 func TestDefaultConnectionMetadata_CanBrowse(t *testing.T) {
@@ -474,7 +474,7 @@ func Test_defaultConnection_BrowseRequestBuilder(t *testing.T) {
 		name      string
 		fields    fields
 		mockSetup func(t *testing.T, fields *fields)
-		want      model.PlcBrowseRequestBuilder
+		want      apiModel.PlcBrowseRequestBuilder
 	}{
 		{
 			name: "create it",
@@ -689,7 +689,7 @@ func Test_defaultConnection_GetMetadata(t *testing.T) {
 	tests := []struct {
 		name   string
 		fields fields
-		want   model.PlcConnectionMetadata
+		want   apiModel.PlcConnectionMetadata
 	}{
 		{
 			name: "get it",
@@ -973,7 +973,7 @@ func Test_defaultConnection_ReadRequestBuilder(t *testing.T) {
 	tests := []struct {
 		name   string
 		fields fields
-		want   model.PlcReadRequestBuilder
+		want   apiModel.PlcReadRequestBuilder
 	}{
 		{
 			name: "create it",
@@ -1045,7 +1045,7 @@ func Test_defaultConnection_SubscriptionRequestBuilder(t *testing.T) {
 	tests := []struct {
 		name   string
 		fields fields
-		want   model.PlcSubscriptionRequestBuilder
+		want   apiModel.PlcSubscriptionRequestBuilder
 	}{
 		{
 			name: "create it",
@@ -1083,7 +1083,7 @@ func Test_defaultConnection_UnsubscriptionRequestBuilder(t *testing.T) {
 	tests := []struct {
 		name   string
 		fields fields
-		want   model.PlcUnsubscriptionRequestBuilder
+		want   apiModel.PlcUnsubscriptionRequestBuilder
 	}{
 		{
 			name: "create it",
@@ -1121,7 +1121,7 @@ func Test_defaultConnection_WriteRequestBuilder(t *testing.T) {
 	tests := []struct {
 		name   string
 		fields fields
-		want   model.PlcWriteRequestBuilder
+		want   apiModel.PlcWriteRequestBuilder
 	}{
 		{
 			name: "create it",

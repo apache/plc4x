@@ -54,8 +54,8 @@ func (m *Connection) sendGatewaySearchRequest(ctx context.Context) (driverModel.
 	)
 	searchRequest := driverModel.NewSearchRequest(discoveryEndpoint)
 
-	result := make(chan driverModel.SearchResponse)
-	errorResult := make(chan error)
+	result := make(chan driverModel.SearchResponse, 1)
+	errorResult := make(chan error, 1)
 	err = m.messageCodec.SendRequest(ctx, searchRequest,
 		func(message spi.Message) bool {
 			_, ok := message.(driverModel.SearchResponseExactly)
@@ -112,8 +112,8 @@ func (m *Connection) sendGatewayConnectionRequest(ctx context.Context) (driverMo
 		driverModel.NewConnectionRequestInformationTunnelConnection(driverModel.KnxLayer_TUNNEL_LINK_LAYER),
 	)
 
-	result := make(chan driverModel.ConnectionResponse)
-	errorResult := make(chan error)
+	result := make(chan driverModel.ConnectionResponse, 1)
+	errorResult := make(chan error, 1)
 	err = m.messageCodec.SendRequest(ctx, connectionRequest,
 		func(message spi.Message) bool {
 			_, ok := message.(driverModel.ConnectionResponseExactly)
@@ -162,8 +162,8 @@ func (m *Connection) sendGatewayDisconnectionRequest(ctx context.Context) (drive
 		),
 	)
 
-	result := make(chan driverModel.DisconnectResponse)
-	errorResult := make(chan error)
+	result := make(chan driverModel.DisconnectResponse, 1)
+	errorResult := make(chan error, 1)
 	err = m.messageCodec.SendRequest(ctx, disconnectRequest,
 		func(message spi.Message) bool {
 			_, ok := message.(driverModel.DisconnectResponseExactly)
@@ -210,8 +210,8 @@ func (m *Connection) sendConnectionStateRequest(ctx context.Context) (driverMode
 			driverModel.HostProtocolCode_IPV4_UDP,
 			localAddr, uint16(localAddress.Port)))
 
-	result := make(chan driverModel.ConnectionStateResponse)
-	errorResult := make(chan error)
+	result := make(chan driverModel.ConnectionStateResponse, 1)
+	errorResult := make(chan error, 1)
 	err = m.messageCodec.SendRequest(ctx, connectionStateRequest,
 		func(message spi.Message) bool {
 			_, ok := message.(driverModel.ConnectionStateResponseExactly)
@@ -269,8 +269,8 @@ func (m *Connection) sendGroupAddressReadRequest(ctx context.Context, groupAddre
 		0,
 	)
 
-	result := make(chan driverModel.ApduDataGroupValueResponse)
-	errorResult := make(chan error)
+	result := make(chan driverModel.ApduDataGroupValueResponse, 1)
+	errorResult := make(chan error, 1)
 	err := m.messageCodec.SendRequest(ctx, groupAddressReadRequest,
 		func(message spi.Message) bool {
 			tunnelingRequest, ok := message.(driverModel.TunnelingRequestExactly)
@@ -353,8 +353,8 @@ func (m *Connection) sendDeviceConnectionRequest(ctx context.Context, targetAddr
 		0,
 	)
 
-	result := make(chan driverModel.ApduControlConnect)
-	errorResult := make(chan error)
+	result := make(chan driverModel.ApduControlConnect, 1)
+	errorResult := make(chan error, 1)
 	err := m.messageCodec.SendRequest(ctx, deviceConnectionRequest,
 		func(message spi.Message) bool {
 			tunnelingRequest, ok := message.(driverModel.TunnelingRequestExactly)
@@ -443,8 +443,8 @@ func (m *Connection) sendDeviceDisconnectionRequest(ctx context.Context, targetA
 		0,
 	)
 
-	result := make(chan driverModel.ApduControlDisconnect)
-	errorResult := make(chan error)
+	result := make(chan driverModel.ApduControlDisconnect, 1)
+	errorResult := make(chan error, 1)
 	if err := m.messageCodec.SendRequest(ctx, deviceDisconnectionRequest,
 		func(message spi.Message) bool {
 			tunnelingRequest, ok := message.(driverModel.TunnelingRequestExactly)
@@ -549,8 +549,8 @@ func (m *Connection) sendDeviceAuthentication(ctx context.Context, targetAddress
 		0,
 	)
 
-	result := make(chan driverModel.ApduDataExtAuthorizeResponse)
-	errorResult := make(chan error)
+	result := make(chan driverModel.ApduDataExtAuthorizeResponse, 1)
+	errorResult := make(chan error, 1)
 	if err := m.messageCodec.SendRequest(ctx, deviceAuthenticationRequest,
 		func(message spi.Message) bool {
 			tunnelingRequest, ok := message.(driverModel.TunnelingRequestExactly)
@@ -660,8 +660,8 @@ func (m *Connection) sendDeviceDeviceDescriptorReadRequest(ctx context.Context, 
 		0,
 	)
 
-	result := make(chan driverModel.ApduDataDeviceDescriptorResponse)
-	errorResult := make(chan error)
+	result := make(chan driverModel.ApduDataDeviceDescriptorResponse, 1)
+	errorResult := make(chan error, 1)
 	err := m.messageCodec.SendRequest(ctx, deviceDescriptorReadRequest, func(message spi.Message) bool {
 		tunnelingRequest, ok := message.(driverModel.TunnelingRequestExactly)
 		if !ok || tunnelingRequest.GetTunnelingRequestDataBlock().GetCommunicationChannelId() != m.CommunicationChannelId {
@@ -768,8 +768,8 @@ func (m *Connection) sendDevicePropertyReadRequest(ctx context.Context, targetAd
 		0,
 	)
 
-	result := make(chan driverModel.ApduDataExtPropertyValueResponse)
-	errorResult := make(chan error)
+	result := make(chan driverModel.ApduDataExtPropertyValueResponse, 1)
+	errorResult := make(chan error, 1)
 	if err := m.messageCodec.SendRequest(ctx, propertyReadRequest,
 		func(message spi.Message) bool {
 			tunnelingRequest, ok := message.(driverModel.TunnelingRequestExactly)
@@ -884,8 +884,8 @@ func (m *Connection) sendDevicePropertyDescriptionReadRequest(ctx context.Contex
 		0,
 	)
 
-	result := make(chan driverModel.ApduDataExtPropertyDescriptionResponse)
-	errorResult := make(chan error)
+	result := make(chan driverModel.ApduDataExtPropertyDescriptionResponse, 1)
+	errorResult := make(chan error, 1)
 	err := m.messageCodec.SendRequest(ctx, propertyReadRequest,
 		func(message spi.Message) bool {
 			tunnelingRequest, ok := message.(driverModel.TunnelingRequestExactly)
@@ -997,8 +997,8 @@ func (m *Connection) sendDeviceMemoryReadRequest(ctx context.Context, targetAddr
 		0,
 	)
 
-	result := make(chan driverModel.ApduDataMemoryResponse)
-	errorResult := make(chan error)
+	result := make(chan driverModel.ApduDataMemoryResponse, 1)
+	errorResult := make(chan error, 1)
 	if err := m.messageCodec.SendRequest(ctx, propertyReadRequest,
 		func(message spi.Message) bool {
 			tunnelingRequest, ok := message.(driverModel.TunnelingRequestExactly)

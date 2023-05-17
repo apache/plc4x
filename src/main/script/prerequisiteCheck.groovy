@@ -284,6 +284,8 @@ def checkLibPcap(String minVersion, String os, String arch) {
             if (!result) {
                 //allConditionsMet = false
             }
+        } else {
+            println "               SKIPPED (on aarch64)"
         }
     } catch (Error e) {
         e.printStackTrace()

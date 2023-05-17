@@ -23,28 +23,28 @@ import (
 	"context"
 	"encoding/binary"
 
-	"github.com/apache/plc4x/plc4go/pkg/api/model"
-	"github.com/apache/plc4x/plc4go/pkg/api/values"
-	readWrite "github.com/apache/plc4x/plc4go/protocols/eip/readwrite/model"
+	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
+	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
+	readWriteModel "github.com/apache/plc4x/plc4go/protocols/eip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
 type EIPPlcTag interface {
-	model.PlcTag
+	apiModel.PlcTag
 	utils.Serializable
 
 	GetTag() string
-	GetType() readWrite.CIPDataTypeCode
+	GetType() readWriteModel.CIPDataTypeCode
 	GetElementNb() uint16
 }
 
 type plcTag struct {
 	Tag       string
-	Type      readWrite.CIPDataTypeCode
+	Type      readWriteModel.CIPDataTypeCode
 	ElementNb uint16
 }
 
-func NewTag(tag string, _type readWrite.CIPDataTypeCode, elementNb uint16) plcTag {
+func NewTag(tag string, _type readWriteModel.CIPDataTypeCode, elementNb uint16) plcTag {
 	return plcTag{
 		Tag:       tag,
 		Type:      _type,
@@ -56,23 +56,23 @@ func (m plcTag) GetAddressString() string {
 	return m.GetTag()
 }
 
-func (m plcTag) GetValueType() values.PlcValueType {
-	if plcValueType, ok := values.PlcValueByName(m.GetType().String()); !ok {
-		return values.NULL
+func (m plcTag) GetValueType() apiValues.PlcValueType {
+	if plcValueType, ok := apiValues.PlcValueByName(m.GetType().String()); !ok {
+		return apiValues.NULL
 	} else {
 		return plcValueType
 	}
 }
 
-func (m plcTag) GetArrayInfo() []model.ArrayInfo {
-	return []model.ArrayInfo{}
+func (m plcTag) GetArrayInfo() []apiModel.ArrayInfo {
+	return []apiModel.ArrayInfo{}
 }
 
 func (m plcTag) GetTag() string {
 	return m.Tag
 }
 
-func (m plcTag) GetType() readWrite.CIPDataTypeCode {
+func (m plcTag) GetType() readWriteModel.CIPDataTypeCode {
 	return m.Type
 }
 

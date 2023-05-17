@@ -23,9 +23,9 @@ import (
 	"time"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
-	"github.com/apache/plc4x/plc4go/pkg/api/values"
+	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	"github.com/apache/plc4x/plc4go/spi"
-	"github.com/apache/plc4x/plc4go/spi/model"
+	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 )
 
 type AdsSubscriptionHandle struct {
@@ -48,7 +48,7 @@ func NewAdsSubscriptionHandle(subscriber spi.PlcSubscriber, tagName string, dire
 
 func (t *AdsSubscriptionHandle) Register(consumer apiModel.PlcSubscriptionEventConsumer) apiModel.PlcConsumerRegistration {
 	t.consumers = append(t.consumers, consumer)
-	return model.NewDefaultPlcConsumerRegistration(t.subscriber, consumer, t)
+	return spiModel.NewDefaultPlcConsumerRegistration(t.subscriber, consumer, t)
 }
 
 func (t *AdsSubscriptionHandle) GetNumConsumers() int {
@@ -59,13 +59,13 @@ func (t *AdsSubscriptionHandle) GetDirectTag() DirectPlcTag {
 	return t.directTag
 }
 
-func (t *AdsSubscriptionHandle) PublishPlcValue(value values.PlcValue) {
+func (t *AdsSubscriptionHandle) PublishPlcValue(value apiValues.PlcValue) {
 	event := NewSubscriptionEvent(
 		map[string]apiModel.PlcTag{t.tagName: t.directTag},
-		map[string]model.SubscriptionType{t.tagName: model.SubscriptionChangeOfState},
+		map[string]spiModel.SubscriptionType{t.tagName: spiModel.SubscriptionChangeOfState},
 		map[string]time.Duration{t.tagName: time.Second},
 		map[string]apiModel.PlcResponseCode{t.tagName: apiModel.PlcResponseCode_OK},
-		map[string]values.PlcValue{t.tagName: value})
+		map[string]apiValues.PlcValue{t.tagName: value})
 	for _, consumer := range t.consumers {
 		consumer(&event)
 	}

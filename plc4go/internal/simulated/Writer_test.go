@@ -26,13 +26,13 @@ import (
 	"time"
 
 	"github.com/apache/plc4x/plc4go/internal/s7"
-	"github.com/apache/plc4x/plc4go/pkg/api/model"
-	"github.com/apache/plc4x/plc4go/pkg/api/values"
-	model4 "github.com/apache/plc4x/plc4go/protocols/s7/readwrite/model"
-	model2 "github.com/apache/plc4x/plc4go/protocols/simulated/readwrite/model"
-	model3 "github.com/apache/plc4x/plc4go/spi/model"
+	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
+	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
+	readWriteModel "github.com/apache/plc4x/plc4go/protocols/s7/readwrite/model"
+	simulatedReadWriteModel "github.com/apache/plc4x/plc4go/protocols/simulated/readwrite/model"
+	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/spi/utils"
-	values2 "github.com/apache/plc4x/plc4go/spi/values"
+	spiValues "github.com/apache/plc4x/plc4go/spi/values"
 )
 
 func TestWriter_Write(t *testing.T) {
@@ -41,16 +41,16 @@ func TestWriter_Write(t *testing.T) {
 		options map[string][]string
 	}
 	type args struct {
-		fields     map[string]model.PlcTag
-		values     map[string]values.PlcValue
+		fields     map[string]apiModel.PlcTag
+		values     map[string]apiValues.PlcValue
 		fieldNames []string
 	}
 	tests := []struct {
 		name         string
 		fields       fields
 		args         args
-		want         model.PlcWriteResponse
-		newState     map[simulatedTag]*values.PlcValue
+		want         apiModel.PlcWriteResponse
+		newState     map[simulatedTag]*apiValues.PlcValue
 		delayAtLeast time.Duration
 	}{
 		{
@@ -58,25 +58,25 @@ func TestWriter_Write(t *testing.T) {
 			fields: fields{
 				device: &Device{
 					Name:  "hurz",
-					State: map[simulatedTag]*values.PlcValue{},
+					State: map[simulatedTag]*apiValues.PlcValue{},
 				},
 				options: map[string][]string{},
 			},
 			args: args{
-				fields: map[string]model.PlcTag{
-					"test": NewSimulatedTag(TagState, "test", model2.SimulatedDataTypeSizes_BOOL, 1),
+				fields: map[string]apiModel.PlcTag{
+					"test": NewSimulatedTag(TagState, "test", simulatedReadWriteModel.SimulatedDataTypeSizes_BOOL, 1),
 				},
-				values: map[string]values.PlcValue{
-					"test": values2.NewPlcBOOL(true),
+				values: map[string]apiValues.PlcValue{
+					"test": spiValues.NewPlcBOOL(true),
 				},
 				fieldNames: []string{"test"},
 			},
-			want: model3.NewDefaultPlcWriteResponse(nil,
-				map[string]model.PlcResponseCode{
-					"test": model.PlcResponseCode_OK,
+			want: spiModel.NewDefaultPlcWriteResponse(nil,
+				map[string]apiModel.PlcResponseCode{
+					"test": apiModel.PlcResponseCode_OK,
 				}),
-			newState: map[simulatedTag]*values.PlcValue{
-				NewSimulatedTag(TagState, "test", model2.SimulatedDataTypeSizes_BOOL, 1): ToReference(values2.NewPlcBOOL(true)),
+			newState: map[simulatedTag]*apiValues.PlcValue{
+				NewSimulatedTag(TagState, "test", simulatedReadWriteModel.SimulatedDataTypeSizes_BOOL, 1): ToReference(spiValues.NewPlcBOOL(true)),
 			},
 			delayAtLeast: 0,
 		},
@@ -85,27 +85,27 @@ func TestWriter_Write(t *testing.T) {
 			fields: fields{
 				device: &Device{
 					Name: "hurz",
-					State: map[simulatedTag]*values.PlcValue{
-						NewSimulatedTag(TagState, "test", model2.SimulatedDataTypeSizes_BOOL, 1): ToReference(values2.NewPlcBOOL(true)),
+					State: map[simulatedTag]*apiValues.PlcValue{
+						NewSimulatedTag(TagState, "test", simulatedReadWriteModel.SimulatedDataTypeSizes_BOOL, 1): ToReference(spiValues.NewPlcBOOL(true)),
 					},
 				},
 				options: map[string][]string{},
 			},
 			args: args{
-				fields: map[string]model.PlcTag{
-					"test": NewSimulatedTag(TagState, "test", model2.SimulatedDataTypeSizes_BOOL, 1),
+				fields: map[string]apiModel.PlcTag{
+					"test": NewSimulatedTag(TagState, "test", simulatedReadWriteModel.SimulatedDataTypeSizes_BOOL, 1),
 				},
-				values: map[string]values.PlcValue{
-					"test": values2.NewPlcBOOL(false),
+				values: map[string]apiValues.PlcValue{
+					"test": spiValues.NewPlcBOOL(false),
 				},
 				fieldNames: []string{"test"},
 			},
-			want: model3.NewDefaultPlcWriteResponse(nil,
-				map[string]model.PlcResponseCode{
-					"test": model.PlcResponseCode_OK,
+			want: spiModel.NewDefaultPlcWriteResponse(nil,
+				map[string]apiModel.PlcResponseCode{
+					"test": apiModel.PlcResponseCode_OK,
 				}),
-			newState: map[simulatedTag]*values.PlcValue{
-				NewSimulatedTag(TagState, "test", model2.SimulatedDataTypeSizes_BOOL, 1): ToReference(values2.NewPlcBOOL(false)),
+			newState: map[simulatedTag]*apiValues.PlcValue{
+				NewSimulatedTag(TagState, "test", simulatedReadWriteModel.SimulatedDataTypeSizes_BOOL, 1): ToReference(spiValues.NewPlcBOOL(false)),
 			},
 			delayAtLeast: 0,
 		},
@@ -114,8 +114,8 @@ func TestWriter_Write(t *testing.T) {
 			fields: fields{
 				device: &Device{
 					Name: "hurz",
-					State: map[simulatedTag]*values.PlcValue{
-						NewSimulatedTag(TagState, "test", model2.SimulatedDataTypeSizes_BOOL, 1): ToReference(values2.NewPlcBOOL(true)),
+					State: map[simulatedTag]*apiValues.PlcValue{
+						NewSimulatedTag(TagState, "test", simulatedReadWriteModel.SimulatedDataTypeSizes_BOOL, 1): ToReference(spiValues.NewPlcBOOL(true)),
 					},
 				},
 				options: map[string][]string{
@@ -123,20 +123,20 @@ func TestWriter_Write(t *testing.T) {
 				},
 			},
 			args: args{
-				fields: map[string]model.PlcTag{
-					"test": NewSimulatedTag(TagState, "test", model2.SimulatedDataTypeSizes_BOOL, 1),
+				fields: map[string]apiModel.PlcTag{
+					"test": NewSimulatedTag(TagState, "test", simulatedReadWriteModel.SimulatedDataTypeSizes_BOOL, 1),
 				},
-				values: map[string]values.PlcValue{
-					"test": values2.NewPlcBOOL(false),
+				values: map[string]apiValues.PlcValue{
+					"test": spiValues.NewPlcBOOL(false),
 				},
 				fieldNames: []string{"test"},
 			},
-			want: model3.NewDefaultPlcWriteResponse(nil,
-				map[string]model.PlcResponseCode{
-					"test": model.PlcResponseCode_OK,
+			want: spiModel.NewDefaultPlcWriteResponse(nil,
+				map[string]apiModel.PlcResponseCode{
+					"test": apiModel.PlcResponseCode_OK,
 				}),
-			newState: map[simulatedTag]*values.PlcValue{
-				NewSimulatedTag(TagState, "test", model2.SimulatedDataTypeSizes_BOOL, 1): ToReference(values2.NewPlcBOOL(false)),
+			newState: map[simulatedTag]*apiValues.PlcValue{
+				NewSimulatedTag(TagState, "test", simulatedReadWriteModel.SimulatedDataTypeSizes_BOOL, 1): ToReference(spiValues.NewPlcBOOL(false)),
 			},
 			delayAtLeast: 1000,
 		},
@@ -146,27 +146,27 @@ func TestWriter_Write(t *testing.T) {
 			fields: fields{
 				device: &Device{
 					Name: "hurz",
-					State: map[simulatedTag]*values.PlcValue{
-						NewSimulatedTag(TagState, "test", model2.SimulatedDataTypeSizes_BOOL, 1): ToReference(values2.NewPlcBOOL(true)),
+					State: map[simulatedTag]*apiValues.PlcValue{
+						NewSimulatedTag(TagState, "test", simulatedReadWriteModel.SimulatedDataTypeSizes_BOOL, 1): ToReference(spiValues.NewPlcBOOL(true)),
 					},
 				},
 				options: map[string][]string{},
 			},
 			args: args{
-				fields: map[string]model.PlcTag{
-					"test": s7.NewTag(model4.MemoryArea_DATA_BLOCKS, 1, 1, 0, 1, model4.TransportSize_BOOL),
+				fields: map[string]apiModel.PlcTag{
+					"test": s7.NewTag(readWriteModel.MemoryArea_DATA_BLOCKS, 1, 1, 0, 1, readWriteModel.TransportSize_BOOL),
 				},
-				values: map[string]values.PlcValue{
-					"test": values2.NewPlcBOOL(false),
+				values: map[string]apiValues.PlcValue{
+					"test": spiValues.NewPlcBOOL(false),
 				},
 				fieldNames: []string{"test"},
 			},
-			want: model3.NewDefaultPlcWriteResponse(nil,
-				map[string]model.PlcResponseCode{
-					"test": model.PlcResponseCode_INVALID_ADDRESS,
+			want: spiModel.NewDefaultPlcWriteResponse(nil,
+				map[string]apiModel.PlcResponseCode{
+					"test": apiModel.PlcResponseCode_INVALID_ADDRESS,
 				}),
-			newState: map[simulatedTag]*values.PlcValue{
-				NewSimulatedTag(TagState, "test", model2.SimulatedDataTypeSizes_BOOL, 1): ToReference(values2.NewPlcBOOL(true)),
+			newState: map[simulatedTag]*apiValues.PlcValue{
+				NewSimulatedTag(TagState, "test", simulatedReadWriteModel.SimulatedDataTypeSizes_BOOL, 1): ToReference(spiValues.NewPlcBOOL(true)),
 			},
 			delayAtLeast: 0,
 		},
@@ -174,7 +174,7 @@ func TestWriter_Write(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			w := NewWriter(tt.fields.device, tt.fields.options, nil)
-			writeRequest := model3.NewDefaultPlcWriteRequest(tt.args.fields, tt.args.fieldNames, tt.args.values, w, nil)
+			writeRequest := spiModel.NewDefaultPlcWriteRequest(tt.args.fields, tt.args.fieldNames, tt.args.values, w, nil)
 			timeBeforeWriteRequest := time.Now()
 			writeResponseChannel := w.Write(context.TODO(), writeRequest)
 			timeout := time.NewTimer(3 * time.Second)

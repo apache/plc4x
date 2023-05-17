@@ -29,7 +29,7 @@ import (
 	"time"
 
 	"github.com/IBM/netaddr"
-	internalModel "github.com/apache/plc4x/plc4go/spi/model"
+	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/libp2p/go-reuseport"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
@@ -84,7 +84,7 @@ func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.
 }
 
 func broadcastAndDiscover(ctx context.Context, communicationChannels []communicationChannel, specificOptions *protocolSpecificOptions) (chan receivedBvlcMessage, error) {
-	incomingBVLCChannel := make(chan receivedBvlcMessage, 0)
+	incomingBVLCChannel := make(chan receivedBvlcMessage)
 	for _, communicationChannelInstance := range communicationChannels {
 		// Prepare the discovery packet data
 		{
@@ -157,7 +157,7 @@ func broadcastAndDiscover(ctx context.Context, communicationChannels []communica
 
 		go func(communicationChannelInstance communicationChannel) {
 			for {
-				blockingReadChan := make(chan bool, 0)
+				blockingReadChan := make(chan bool)
 				go func() {
 					buf := make([]byte, 4096)
 					n, addr, err := communicationChannelInstance.unicastConnection.ReadFrom(buf)
@@ -192,7 +192,7 @@ func broadcastAndDiscover(ctx context.Context, communicationChannels []communica
 
 		go func(communicationChannelInstance communicationChannel) {
 			for {
-				blockingReadChan := make(chan bool, 0)
+				blockingReadChan := make(chan bool)
 				go func() {
 					buf := make([]byte, 4096)
 					n, addr, err := communicationChannelInstance.broadcastConnection.ReadFrom(buf)
@@ -255,12 +255,14 @@ func handleIncomingBVLCs(ctx context.Context, callback func(event apiModel.PlcDi
 				if err != nil {
 					log.Debug().Err(err).Msg("Error parsing url")
 				}
-				discoveryEvent := &internalModel.DefaultPlcDiscoveryItem{
-					ProtocolCode:  "bacnet-ip",
-					TransportCode: "udp",
-					TransportUrl:  *remoteUrl,
-					Name:          fmt.Sprintf("device %v:%v", iAm.GetDeviceIdentifier().GetObjectType(), iAm.GetDeviceIdentifier().GetInstanceNumber()),
-				}
+				discoveryEvent := spiModel.NewDefaultPlcDiscoveryItem(
+					"bacnet-ip",
+					"udp",
+					*remoteUrl,
+					nil,
+					fmt.Sprintf("device %v:%v", iAm.GetDeviceIdentifier().GetObjectType(), iAm.GetDeviceIdentifier().GetInstanceNumber()),
+					nil,
+				)
 
 				// Pass the event back to the callback
 				callback(discoveryEvent)
@@ -270,12 +272,14 @@ func handleIncomingBVLCs(ctx context.Context, callback func(event apiModel.PlcDi
 				if err != nil {
 					log.Debug().Err(err).Msg("Error parsing url")
 				}
-				discoveryEvent := &internalModel.DefaultPlcDiscoveryItem{
-					ProtocolCode:  "bacnet-ip",
-					TransportCode: "udp",
-					TransportUrl:  *remoteUrl,
-					Name:          fmt.Sprintf("device %v:%v with %v:%v and %v", iHave.GetDeviceIdentifier().GetObjectType(), iHave.GetDeviceIdentifier().GetInstanceNumber(), iHave.GetObjectIdentifier().GetObjectType(), iHave.GetObjectIdentifier().GetInstanceNumber(), iHave.GetObjectName().GetValue()),
-				}
+				discoveryEvent := spiModel.NewDefaultPlcDiscoveryItem(
+					"bacnet-ip",
+					"udp",
+					*remoteUrl,
+					nil,
+					fmt.Sprintf("device %v:%v with %v:%v and %v", iHave.GetDeviceIdentifier().GetObjectType(), iHave.GetDeviceIdentifier().GetInstanceNumber(), iHave.GetObjectIdentifier().GetObjectType(), iHave.GetObjectIdentifier().GetInstanceNumber(), iHave.GetObjectName().GetValue()),
+					nil,
+				)
 
 				// Pass the event back to the callback
 				callback(discoveryEvent)

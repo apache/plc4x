@@ -25,10 +25,10 @@ import (
 	"time"
 
 	"github.com/apache/plc4x/plc4go/pkg/api"
-	"github.com/apache/plc4x/plc4go/pkg/api/model"
+	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	_default "github.com/apache/plc4x/plc4go/spi/default"
-	internalModel "github.com/apache/plc4x/plc4go/spi/model"
+	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -367,7 +367,7 @@ func TestConnection_GetMetadata(t *testing.T) {
 	tests := []struct {
 		name   string
 		fields fields
-		want   model.PlcConnectionMetadata
+		want   apiModel.PlcConnectionMetadata
 	}{
 		{
 			name:   "simple",
@@ -585,7 +585,7 @@ func TestConnection_ReadRequestBuilder(t *testing.T) {
 	tests := []struct {
 		name   string
 		fields fields
-		want   model.PlcReadRequestBuilder
+		want   apiModel.PlcReadRequestBuilder
 	}{
 		{
 			name: "simple",
@@ -596,7 +596,7 @@ func TestConnection_ReadRequestBuilder(t *testing.T) {
 				options:      map[string][]string{},
 				connected:    true,
 			},
-			want: internalModel.NewDefaultPlcReadRequestBuilder(NewTagHandler(), NewReader(NewDevice("hurz"), map[string][]string{}, nil)),
+			want: spiModel.NewDefaultPlcReadRequestBuilder(NewTagHandler(), NewReader(NewDevice("hurz"), map[string][]string{}, nil)),
 		},
 	}
 	for _, tt := range tests {
@@ -709,7 +709,7 @@ func TestConnection_WriteRequestBuilder(t *testing.T) {
 	tests := []struct {
 		name   string
 		fields fields
-		want   model.PlcWriteRequestBuilder
+		want   apiModel.PlcWriteRequestBuilder
 	}{
 		{
 			name: "simple",
@@ -720,7 +720,7 @@ func TestConnection_WriteRequestBuilder(t *testing.T) {
 				options:      map[string][]string{},
 				connected:    true,
 			},
-			want: internalModel.NewDefaultPlcWriteRequestBuilder(NewTagHandler(), NewValueHandler(), NewWriter(NewDevice("hurz"), map[string][]string{}, nil)),
+			want: spiModel.NewDefaultPlcWriteRequestBuilder(NewTagHandler(), NewValueHandler(), NewWriter(NewDevice("hurz"), map[string][]string{}, nil)),
 		},
 	}
 	for _, tt := range tests {

@@ -26,13 +26,13 @@ import (
 	"time"
 
 	"github.com/apache/plc4x/plc4go/internal/s7"
-	"github.com/apache/plc4x/plc4go/pkg/api/model"
-	"github.com/apache/plc4x/plc4go/pkg/api/values"
-	model4 "github.com/apache/plc4x/plc4go/protocols/s7/readwrite/model"
-	model2 "github.com/apache/plc4x/plc4go/protocols/simulated/readwrite/model"
-	model3 "github.com/apache/plc4x/plc4go/spi/model"
+	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
+	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
+	readWriteModel "github.com/apache/plc4x/plc4go/protocols/s7/readwrite/model"
+	simulatedReadWriteModel "github.com/apache/plc4x/plc4go/protocols/simulated/readwrite/model"
+	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/spi/utils"
-	values2 "github.com/apache/plc4x/plc4go/spi/values"
+	spiValues "github.com/apache/plc4x/plc4go/spi/values"
 )
 
 func TestReader_Read(t *testing.T) {
@@ -41,14 +41,14 @@ func TestReader_Read(t *testing.T) {
 		options map[string][]string
 	}
 	type args struct {
-		fields     map[string]model.PlcTag
+		fields     map[string]apiModel.PlcTag
 		fieldNames []string
 	}
 	tests := []struct {
 		name         string
 		fields       fields
 		args         args
-		want         model.PlcReadResponse
+		want         apiModel.PlcReadResponse
 		delayAtLeast time.Duration
 	}{
 		{
@@ -56,24 +56,24 @@ func TestReader_Read(t *testing.T) {
 			fields: fields{
 				device: &Device{
 					Name: "hurz",
-					State: map[simulatedTag]*values.PlcValue{
-						NewSimulatedTag(TagState, "test", model2.SimulatedDataTypeSizes_BOOL, 1): ToReference(values2.NewPlcBOOL(true)),
+					State: map[simulatedTag]*apiValues.PlcValue{
+						NewSimulatedTag(TagState, "test", simulatedReadWriteModel.SimulatedDataTypeSizes_BOOL, 1): ToReference(spiValues.NewPlcBOOL(true)),
 					},
 				},
 				options: map[string][]string{},
 			},
 			args: args{
-				fields: map[string]model.PlcTag{
-					"test": NewSimulatedTag(TagState, "test", model2.SimulatedDataTypeSizes_BOOL, 1),
+				fields: map[string]apiModel.PlcTag{
+					"test": NewSimulatedTag(TagState, "test", simulatedReadWriteModel.SimulatedDataTypeSizes_BOOL, 1),
 				},
 				fieldNames: []string{"test"},
 			},
-			want: model3.NewDefaultPlcReadResponse(nil,
-				map[string]model.PlcResponseCode{
-					"test": model.PlcResponseCode_OK,
+			want: spiModel.NewDefaultPlcReadResponse(nil,
+				map[string]apiModel.PlcResponseCode{
+					"test": apiModel.PlcResponseCode_OK,
 				},
-				map[string]values.PlcValue{
-					"test": values2.NewPlcBOOL(true),
+				map[string]apiValues.PlcValue{
+					"test": spiValues.NewPlcBOOL(true),
 				}),
 			delayAtLeast: 0,
 		},
@@ -82,8 +82,8 @@ func TestReader_Read(t *testing.T) {
 			fields: fields{
 				device: &Device{
 					Name: "hurz",
-					State: map[simulatedTag]*values.PlcValue{
-						NewSimulatedTag(TagState, "test", model2.SimulatedDataTypeSizes_BOOL, 1): ToReference(values2.NewPlcBOOL(true)),
+					State: map[simulatedTag]*apiValues.PlcValue{
+						NewSimulatedTag(TagState, "test", simulatedReadWriteModel.SimulatedDataTypeSizes_BOOL, 1): ToReference(spiValues.NewPlcBOOL(true)),
 					},
 				},
 				options: map[string][]string{
@@ -91,17 +91,17 @@ func TestReader_Read(t *testing.T) {
 				},
 			},
 			args: args{
-				fields: map[string]model.PlcTag{
-					"test": NewSimulatedTag(TagState, "test", model2.SimulatedDataTypeSizes_BOOL, 1),
+				fields: map[string]apiModel.PlcTag{
+					"test": NewSimulatedTag(TagState, "test", simulatedReadWriteModel.SimulatedDataTypeSizes_BOOL, 1),
 				},
 				fieldNames: []string{"test"},
 			},
-			want: model3.NewDefaultPlcReadResponse(nil,
-				map[string]model.PlcResponseCode{
-					"test": model.PlcResponseCode_OK,
+			want: spiModel.NewDefaultPlcReadResponse(nil,
+				map[string]apiModel.PlcResponseCode{
+					"test": apiModel.PlcResponseCode_OK,
 				},
-				map[string]values.PlcValue{
-					"test": values2.NewPlcBOOL(true),
+				map[string]apiValues.PlcValue{
+					"test": spiValues.NewPlcBOOL(true),
 				}),
 			delayAtLeast: 1000,
 		},
@@ -110,23 +110,23 @@ func TestReader_Read(t *testing.T) {
 			fields: fields{
 				device: &Device{
 					Name: "hurz",
-					State: map[simulatedTag]*values.PlcValue{
-						NewSimulatedTag(TagState, "test", model2.SimulatedDataTypeSizes_BOOL, 1): ToReference(values2.NewPlcBOOL(true)),
+					State: map[simulatedTag]*apiValues.PlcValue{
+						NewSimulatedTag(TagState, "test", simulatedReadWriteModel.SimulatedDataTypeSizes_BOOL, 1): ToReference(spiValues.NewPlcBOOL(true)),
 					},
 				},
 				options: map[string][]string{},
 			},
 			args: args{
-				fields: map[string]model.PlcTag{
-					"test": NewSimulatedTag(TagState, "lalala", model2.SimulatedDataTypeSizes_BOOL, 1),
+				fields: map[string]apiModel.PlcTag{
+					"test": NewSimulatedTag(TagState, "lalala", simulatedReadWriteModel.SimulatedDataTypeSizes_BOOL, 1),
 				},
 				fieldNames: []string{"test"},
 			},
-			want: model3.NewDefaultPlcReadResponse(nil,
-				map[string]model.PlcResponseCode{
-					"test": model.PlcResponseCode_NOT_FOUND,
+			want: spiModel.NewDefaultPlcReadResponse(nil,
+				map[string]apiModel.PlcResponseCode{
+					"test": apiModel.PlcResponseCode_NOT_FOUND,
 				},
-				map[string]values.PlcValue{
+				map[string]apiValues.PlcValue{
 					"test": nil,
 				}),
 			delayAtLeast: 0,
@@ -137,23 +137,23 @@ func TestReader_Read(t *testing.T) {
 			fields: fields{
 				device: &Device{
 					Name: "hurz",
-					State: map[simulatedTag]*values.PlcValue{
-						NewSimulatedTag(TagState, "test", model2.SimulatedDataTypeSizes_BOOL, 1): ToReference(values2.NewPlcBOOL(true)),
+					State: map[simulatedTag]*apiValues.PlcValue{
+						NewSimulatedTag(TagState, "test", simulatedReadWriteModel.SimulatedDataTypeSizes_BOOL, 1): ToReference(spiValues.NewPlcBOOL(true)),
 					},
 				},
 				options: map[string][]string{},
 			},
 			args: args{
-				fields: map[string]model.PlcTag{
-					"test": s7.NewTag(model4.MemoryArea_DATA_BLOCKS, 1, 1, 0, 1, model4.TransportSize_BOOL),
+				fields: map[string]apiModel.PlcTag{
+					"test": s7.NewTag(readWriteModel.MemoryArea_DATA_BLOCKS, 1, 1, 0, 1, readWriteModel.TransportSize_BOOL),
 				},
 				fieldNames: []string{"test"},
 			},
-			want: model3.NewDefaultPlcReadResponse(nil,
-				map[string]model.PlcResponseCode{
-					"test": model.PlcResponseCode_INVALID_ADDRESS,
+			want: spiModel.NewDefaultPlcReadResponse(nil,
+				map[string]apiModel.PlcResponseCode{
+					"test": apiModel.PlcResponseCode_INVALID_ADDRESS,
 				},
-				map[string]values.PlcValue{
+				map[string]apiValues.PlcValue{
 					"test": nil,
 				}),
 			delayAtLeast: 0,
@@ -162,7 +162,7 @@ func TestReader_Read(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			r := NewReader(tt.fields.device, tt.fields.options, nil)
-			readRequest := model3.NewDefaultPlcReadRequest(tt.args.fields, tt.args.fieldNames, r, nil)
+			readRequest := spiModel.NewDefaultPlcReadRequest(tt.args.fields, tt.args.fieldNames, r, nil)
 			timeBeforeReadRequest := time.Now()
 			readResponseChannel := r.Read(context.TODO(), readRequest)
 			timeout := time.NewTimer(3 * time.Second)

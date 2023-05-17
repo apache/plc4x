@@ -20,8 +20,8 @@
 package simulated
 
 import (
-	"github.com/apache/plc4x/plc4go/pkg/api/model"
-	"github.com/apache/plc4x/plc4go/pkg/api/values"
+	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
+	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 )
 
 type ValueHandler struct {
@@ -31,7 +31,7 @@ func NewValueHandler() ValueHandler {
 	return ValueHandler{}
 }
 
-func (v ValueHandler) NewPlcValue(tag model.PlcTag, value any) (values.PlcValue, error) {
+func (v ValueHandler) NewPlcValue(tag apiModel.PlcTag, value any) (apiValues.PlcValue, error) {
 	//TODO implement me
 	panic("implement me")
 }

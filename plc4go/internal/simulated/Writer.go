@@ -25,7 +25,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/apache/plc4x/plc4go/pkg/api/model"
+	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 )
@@ -44,8 +44,8 @@ func NewWriter(device *Device, options map[string][]string, tracer *spi.Tracer) 
 	}
 }
 
-func (w *Writer) Write(_ context.Context, writeRequest model.PlcWriteRequest) <-chan model.PlcWriteRequestResult {
-	ch := make(chan model.PlcWriteRequestResult)
+func (w *Writer) Write(_ context.Context, writeRequest apiModel.PlcWriteRequest) <-chan apiModel.PlcWriteRequestResult {
+	ch := make(chan apiModel.PlcWriteRequestResult, 1)
 	go func() {
 		defer func() {
 			if err := recover(); err != nil {
@@ -67,16 +67,16 @@ func (w *Writer) Write(_ context.Context, writeRequest model.PlcWriteRequest) <-
 		}
 
 		// Process the request
-		responseCodes := map[string]model.PlcResponseCode{}
+		responseCodes := map[string]apiModel.PlcResponseCode{}
 		for _, tagName := range writeRequest.GetTagNames() {
 			tag := writeRequest.GetTag(tagName)
 			simulatedTagVar, ok := tag.(simulatedTag)
 			if !ok {
-				responseCodes[tagName] = model.PlcResponseCode_INVALID_ADDRESS
+				responseCodes[tagName] = apiModel.PlcResponseCode_INVALID_ADDRESS
 			} else {
 				plcValue := writeRequest.GetValue(tagName)
 				w.device.Set(simulatedTagVar, &plcValue)
-				responseCodes[tagName] = model.PlcResponseCode_OK
+				responseCodes[tagName] = apiModel.PlcResponseCode_OK
 			}
 		}
 
@@ -84,11 +84,7 @@ func (w *Writer) Write(_ context.Context, writeRequest model.PlcWriteRequest) <-
 			w.tracer.AddTransactionalTrace(txId, "write", "success")
 		}
 		// Emit the response
-		ch <- &spiModel.DefaultPlcWriteRequestResult{
-			Request:  writeRequest,
-			Response: spiModel.NewDefaultPlcWriteResponse(writeRequest, responseCodes),
-			Err:      nil,
-		}
+		ch <- spiModel.NewDefaultPlcWriteRequestResult(writeRequest, spiModel.NewDefaultPlcWriteResponse(writeRequest, responseCodes), nil)
 	}()
 	return ch
 }

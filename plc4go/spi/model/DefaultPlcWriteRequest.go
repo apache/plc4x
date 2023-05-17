@@ -109,7 +109,10 @@ func (m *DefaultPlcWriteRequestBuilder) Build() (apiModel.PlcWriteRequest, error
 	for name, tag := range m.tags {
 		value, err := m.valueHandler.NewPlcValue(tag, m.values[name])
 		if err != nil {
-			//			return nil, errors.Wrapf(err, "Error parsing value of type: %s", tag.GetTypeName())
+			if tag == nil {
+				return nil, errors.New("Error parsing value for nil tag")
+			}
+			return nil, errors.Wrapf(err, "Error parsing value of type: %s", tag.GetValueType())
 		}
 		plcValues[name] = value
 	}
@@ -155,7 +158,7 @@ func (d *DefaultPlcWriteRequest) ExecuteWithContext(ctx context.Context) <-chan 
 	}
 
 	// Create a new result-channel, which completes as soon as all sub-result-channels have returned
-	resultChannel := make(chan apiModel.PlcWriteRequestResult)
+	resultChannel := make(chan apiModel.PlcWriteRequestResult, 1)
 	go func() {
 		defer func() {
 			if err := recover(); err != nil {

@@ -29,7 +29,7 @@ import (
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
 	driverModel "github.com/apache/plc4x/plc4go/protocols/ads/readwrite/model"
-	internalModel "github.com/apache/plc4x/plc4go/spi/model"
+	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	internalValues "github.com/apache/plc4x/plc4go/spi/values"
 	"github.com/pkg/errors"
@@ -37,16 +37,16 @@ import (
 )
 
 func (m *Connection) ReadRequestBuilder() apiModel.PlcReadRequestBuilder {
-	return internalModel.NewDefaultPlcReadRequestBuilder(m.GetPlcTagHandler(), m)
+	return spiModel.NewDefaultPlcReadRequestBuilder(m.GetPlcTagHandler(), m)
 }
 
 func (m *Connection) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) <-chan apiModel.PlcReadRequestResult {
 	log.Trace().Msg("Reading")
-	result := make(chan apiModel.PlcReadRequestResult)
+	result := make(chan apiModel.PlcReadRequestResult, 1)
 	go func() {
 		defer func() {
 			if err := recover(); err != nil {
-				result <- internalModel.NewDefaultPlcReadRequestResult(readRequest, nil, errors.Errorf("panic-ed %v", err))
+				result <- spiModel.NewDefaultPlcReadRequestResult(readRequest, nil, errors.Errorf("panic-ed %v", err))
 			}
 		}()
 		if len(readRequest.GetTagNames()) <= 1 {
@@ -60,7 +60,7 @@ func (m *Connection) Read(ctx context.Context, readRequest apiModel.PlcReadReque
 
 func (m *Connection) singleRead(ctx context.Context, readRequest apiModel.PlcReadRequest, result chan apiModel.PlcReadRequestResult) {
 	if len(readRequest.GetTagNames()) != 1 {
-		result <- internalModel.NewDefaultPlcReadRequestResult(readRequest, nil, errors.New("this part of the ads driver only supports single-item requests"))
+		result <- spiModel.NewDefaultPlcReadRequestResult(readRequest, nil, errors.New("this part of the ads driver only supports single-item requests"))
 		log.Debug().Msgf("this part of the ads driver only supports single-item requests. Got %d tags", len(readRequest.GetTagNames()))
 		return
 	}
@@ -71,25 +71,25 @@ func (m *Connection) singleRead(ctx context.Context, readRequest apiModel.PlcRea
 	if model.NeedsResolving(tag) {
 		adsField, err := model.CastToSymbolicPlcTagFromPlcTag(tag)
 		if err != nil {
-			result <- internalModel.NewDefaultPlcReadRequestResult(readRequest, nil, errors.Wrap(err, "invalid tag item type"))
+			result <- spiModel.NewDefaultPlcReadRequestResult(readRequest, nil, errors.Wrap(err, "invalid tag item type"))
 			log.Debug().Msgf("Invalid tag item type %T", tag)
 			return
 		}
 		// Replace the symbolic tag with a direct one
 		tag, err = m.resolveSymbolicTag(ctx, adsField)
 		if err != nil {
-			result <- &internalModel.DefaultPlcReadRequestResult{
-				Request:  readRequest,
-				Response: nil,
-				Err:      errors.Wrap(err, "invalid tag item type"),
-			}
+			result <- spiModel.NewDefaultPlcReadRequestResult(
+				readRequest,
+				nil,
+				errors.Wrap(err, "invalid tag item type"),
+			)
 			log.Debug().Msgf("Invalid tag item type %T", tag)
 			return
 		}
 	}
 	directAdsTag, ok := tag.(*model.DirectPlcTag)
 	if !ok {
-		result <- internalModel.NewDefaultPlcReadRequestResult(readRequest, nil, errors.New("invalid tag item type"))
+		result <- spiModel.NewDefaultPlcReadRequestResult(readRequest, nil, errors.New("invalid tag item type"))
 		log.Debug().Msgf("Invalid tag item type %T", tag)
 		return
 	}
@@ -97,15 +97,16 @@ func (m *Connection) singleRead(ctx context.Context, readRequest apiModel.PlcRea
 	go func() {
 		defer func() {
 			if err := recover(); err != nil {
-				result <- internalModel.NewDefaultPlcReadRequestResult(readRequest, nil, errors.Errorf("panic-ed %v", err))
+				result <- spiModel.NewDefaultPlcReadRequestResult(readRequest, nil, errors.Errorf("panic-ed %v", err))
 			}
 		}()
 		response, err := m.ExecuteAdsReadRequest(ctx, directAdsTag.IndexGroup, directAdsTag.IndexOffset, directAdsTag.DataType.GetSize())
 		if err != nil {
-			result <- &internalModel.DefaultPlcReadRequestResult{
-				Request: readRequest,
-				Err:     errors.Wrap(err, "got error executing the read request"),
-			}
+			result <- spiModel.NewDefaultPlcReadRequestResult(
+				readRequest,
+				nil,
+				errors.Wrap(err, "got error executing the read request"),
+			)
 			return
 		}
 
@@ -129,11 +130,11 @@ func (m *Connection) singleRead(ctx context.Context, readRequest apiModel.PlcRea
 			}
 		}
 		// Return the response to the caller.
-		result <- &internalModel.DefaultPlcReadRequestResult{
-			Request:  readRequest,
-			Response: internalModel.NewDefaultPlcReadResponse(readRequest, responseCodes, plcValues),
-			Err:      nil,
-		}
+		result <- spiModel.NewDefaultPlcReadRequestResult(
+			readRequest,
+			spiModel.NewDefaultPlcReadResponse(readRequest, responseCodes, plcValues),
+			nil,
+		)
 	}()
 }
 
@@ -148,33 +149,33 @@ func (m *Connection) multiRead(ctx context.Context, readRequest apiModel.PlcRead
 		if model.NeedsResolving(tag) {
 			adsField, err := model.CastToSymbolicPlcTagFromPlcTag(tag)
 			if err != nil {
-				result <- &internalModel.DefaultPlcReadRequestResult{
-					Request:  readRequest,
-					Response: nil,
-					Err:      errors.Wrap(err, "invalid tag item type"),
-				}
+				result <- spiModel.NewDefaultPlcReadRequestResult(
+					readRequest,
+					nil,
+					errors.Wrap(err, "invalid tag item type"),
+				)
 				log.Debug().Msgf("Invalid tag item type %T", tag)
 				return
 			}
 			// Replace the symbolic tag with a direct one
 			tag, err = m.resolveSymbolicTag(ctx, adsField)
 			if err != nil {
-				result <- &internalModel.DefaultPlcReadRequestResult{
-					Request:  readRequest,
-					Response: nil,
-					Err:      errors.Wrap(err, "invalid tag item type"),
-				}
+				result <- spiModel.NewDefaultPlcReadRequestResult(
+					readRequest,
+					nil,
+					errors.Wrap(err, "invalid tag item type"),
+				)
 				log.Debug().Msgf("Invalid tag item type %T", tag)
 				return
 			}
 		}
 		directAdsTag, ok := tag.(*model.DirectPlcTag)
 		if !ok {
-			result <- &internalModel.DefaultPlcReadRequestResult{
-				Request:  readRequest,
-				Response: nil,
-				Err:      errors.New("invalid tag item type"),
-			}
+			result <- spiModel.NewDefaultPlcReadRequestResult(
+				readRequest,
+				nil,
+				errors.New("invalid tag item type"),
+			)
 			log.Debug().Msgf("Invalid tag item type %T", tag)
 			return
 		}
@@ -201,11 +202,11 @@ func (m *Connection) multiRead(ctx context.Context, readRequest apiModel.PlcRead
 
 	response, err := m.ExecuteAdsReadWriteRequest(ctx, uint32(driverModel.ReservedIndexGroups_ADSIGRP_MULTIPLE_READ), uint32(len(directAdsTags)), expectedResponseDataSize, requestItems, nil)
 	if err != nil {
-		result <- &internalModel.DefaultPlcReadRequestResult{
-			Request:  readRequest,
-			Response: nil,
-			Err:      errors.Wrap(err, "error executing multi-item read request"),
-		}
+		result <- spiModel.NewDefaultPlcReadRequestResult(
+			readRequest,
+			nil,
+			errors.Wrap(err, "error executing multi-item read request"),
+		)
 		return
 	}
 
@@ -246,11 +247,11 @@ func (m *Connection) multiRead(ctx context.Context, readRequest apiModel.PlcRead
 	}
 
 	// Return the response to the caller.
-	result <- &internalModel.DefaultPlcReadRequestResult{
-		Request:  readRequest,
-		Response: internalModel.NewDefaultPlcReadResponse(readRequest, responseCodes, plcValues),
-		Err:      nil,
-	}
+	result <- spiModel.NewDefaultPlcReadRequestResult(
+		readRequest,
+		spiModel.NewDefaultPlcReadResponse(readRequest, responseCodes, plcValues),
+		nil,
+	)
 }
 
 func (m *Connection) parsePlcValue(dataType driverModel.AdsDataTypeTableEntry, arrayInfo []driverModel.AdsDataTypeArrayInfo, rb utils.ReadBufferByteBased) (values.PlcValue, error) {

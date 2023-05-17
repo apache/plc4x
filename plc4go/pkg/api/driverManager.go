@@ -21,12 +21,14 @@ package plc4go
 
 import (
 	"context"
+	"net/url"
+
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/transports"
+
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
-	"net/url"
 )
 
 // PlcDriverManager is the main entry point for PLC4Go applications

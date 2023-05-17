@@ -25,7 +25,7 @@ import (
 	"github.com/apache/plc4x/plc4go/pkg/api"
 	"github.com/apache/plc4x/plc4go/pkg/api/drivers"
 	"github.com/apache/plc4x/plc4go/pkg/api/logging"
-	"github.com/apache/plc4x/plc4go/pkg/api/model"
+	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 )
 
 func main() {
@@ -71,7 +71,7 @@ func main() {
 
 	// Do something with the response
 	for _, tagName := range rrr.GetResponse().GetTagNames() {
-		if rrr.GetResponse().GetResponseCode(tagName) != model.PlcResponseCode_OK {
+		if rrr.GetResponse().GetResponseCode(tagName) != apiModel.PlcResponseCode_OK {
 			fmt.Printf("error an non-ok return code for tag %s: %s\n", tagName, rrr.GetResponse().GetResponseCode(tagName).GetName())
 			continue
 		}

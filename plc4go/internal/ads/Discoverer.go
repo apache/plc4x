@@ -34,7 +34,7 @@ import (
 	"github.com/apache/plc4x/plc4go/protocols/ads/discovery/readwrite/model"
 	driverModel "github.com/apache/plc4x/plc4go/protocols/ads/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
-	internalModel "github.com/apache/plc4x/plc4go/spi/model"
+	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	values2 "github.com/apache/plc4x/plc4go/spi/values"
 	"github.com/rs/zerolog/log"
@@ -218,14 +218,14 @@ func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.
 					strconv.Itoa(int(remoteAmsNetId.GetOctet4())) + ":" +
 					strconv.Itoa(int(driverModel.AdsConstants_ADSTCPDEFAULTPORT)))
 				if err2 == nil {
-					plcDiscoveryItem := &internalModel.DefaultPlcDiscoveryItem{
-						ProtocolCode:  "ads",
-						TransportCode: "tcp",
-						TransportUrl:  *remoteAddress,
-						Options:       opts,
-						Name:          hostNameBlock.GetHostName().GetText(),
-						Attributes:    attributes,
-					}
+					plcDiscoveryItem := spiModel.NewDefaultPlcDiscoveryItem(
+						"ads",
+						"tcp",
+						*remoteAddress,
+						opts,
+						hostNameBlock.GetHostName().GetText(),
+						attributes,
+					)
 
 					// Pass the event back to the callback
 					callback(plcDiscoveryItem)

@@ -49,7 +49,7 @@ func NewReader(tpduGenerator *AlphaGenerator, messageCodec *MessageCodec, tm spi
 
 func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) <-chan apiModel.PlcReadRequestResult {
 	log.Trace().Msg("Reading")
-	result := make(chan apiModel.PlcReadRequestResult)
+	result := make(chan apiModel.PlcReadRequestResult, 1)
 	go m.readSync(ctx, readRequest, result)
 	return result
 }
@@ -62,10 +62,7 @@ func (m *Reader) readSync(ctx context.Context, readRequest apiModel.PlcReadReque
 	}()
 	numTags := len(readRequest.GetTagNames())
 	if numTags > 20 { // letters g-z
-		result <- &spiModel.DefaultPlcReadRequestResult{
-			Request: readRequest,
-			Err:     errors.New("Only 20 tags can be handled at once"),
-		}
+		result <- spiModel.NewDefaultPlcReadRequestResult(readRequest, nil, errors.New("Only 20 tags can be handled at once"))
 		return
 	}
 	messages := make(map[string]readWriteModel.CBusMessage)
@@ -74,10 +71,11 @@ func (m *Reader) readSync(ctx context.Context, readRequest apiModel.PlcReadReque
 		message, supportsRead, _, _, err := TagToCBusMessage(tag, nil, m.alphaGenerator, m.messageCodec)
 		switch {
 		case err != nil:
-			result <- &spiModel.DefaultPlcReadRequestResult{
-				Request: readRequest,
-				Err:     errors.Wrapf(err, "Error encoding cbus message for tag %s", tagName),
-			}
+			result <- spiModel.NewDefaultPlcReadRequestResult(
+				readRequest,
+				nil,
+				errors.Wrapf(err, "Error encoding cbus message for tag %s", tagName),
+			)
 			return
 		case !supportsRead: // Note this should not be reachable
 			panic("this should not be possible as we always should then get the error above")
@@ -100,19 +98,21 @@ func (m *Reader) readSync(ctx context.Context, readRequest apiModel.PlcReadReque
 	}
 	for tagName, messageToSend := range messages {
 		if err := ctx.Err(); err != nil {
-			result <- &spiModel.DefaultPlcReadRequestResult{
-				Request: readRequest,
-				Err:     err,
-			}
+			result <- spiModel.NewDefaultPlcReadRequestResult(
+				readRequest,
+				nil,
+				err,
+			)
 			return
 		}
 		m.createMessageTransactionAndWait(ctx, messageToSend, addResponseCode, tagName, addPlcValue)
 	}
 	readResponse := spiModel.NewDefaultPlcReadResponse(readRequest, responseCodes, plcValues)
-	result <- &spiModel.DefaultPlcReadRequestResult{
-		Request:  readRequest,
-		Response: readResponse,
-	}
+	result <- spiModel.NewDefaultPlcReadRequestResult(
+		readRequest,
+		readResponse,
+		nil,
+	)
 }
 
 func (m *Reader) createMessageTransactionAndWait(ctx context.Context, messageToSend readWriteModel.CBusMessage, addResponseCode func(name string, responseCode apiModel.PlcResponseCode), tagName string, addPlcValue func(name string, plcValue apiValues.PlcValue)) {

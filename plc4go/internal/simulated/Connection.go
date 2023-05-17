@@ -25,7 +25,7 @@ import (
 	"time"
 
 	"github.com/apache/plc4x/plc4go/pkg/api"
-	"github.com/apache/plc4x/plc4go/pkg/api/model"
+	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	_default "github.com/apache/plc4x/plc4go/spi/default"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
@@ -78,7 +78,7 @@ func (c *Connection) Connect() <-chan plc4go.PlcConnectionConnectResult {
 }
 
 func (c *Connection) ConnectWithContext(ctx context.Context) <-chan plc4go.PlcConnectionConnectResult {
-	ch := make(chan plc4go.PlcConnectionConnectResult)
+	ch := make(chan plc4go.PlcConnectionConnectResult, 1)
 	go func() {
 		defer func() {
 			if err := recover(); err != nil {
@@ -134,7 +134,7 @@ func (c *Connection) BlockingClose() {
 }
 
 func (c *Connection) Close() <-chan plc4go.PlcConnectionCloseResult {
-	ch := make(chan plc4go.PlcConnectionCloseResult)
+	ch := make(chan plc4go.PlcConnectionCloseResult, 1)
 	go func() {
 		defer func() {
 			if err := recover(); err != nil {
@@ -180,7 +180,7 @@ func (c *Connection) IsConnected() bool {
 }
 
 func (c *Connection) Ping() <-chan plc4go.PlcConnectionPingResult {
-	ch := make(chan plc4go.PlcConnectionPingResult)
+	ch := make(chan plc4go.PlcConnectionPingResult, 1)
 	go func() {
 		defer func() {
 			if err := recover(); err != nil {
@@ -228,7 +228,7 @@ func (c *Connection) Ping() <-chan plc4go.PlcConnectionPingResult {
 	return ch
 }
 
-func (c *Connection) GetMetadata() model.PlcConnectionMetadata {
+func (c *Connection) GetMetadata() apiModel.PlcConnectionMetadata {
 	return _default.DefaultConnectionMetadata{
 		ConnectionAttributes: map[string]string{
 			"connectionDelay": "Delay applied when connecting",
@@ -244,22 +244,22 @@ func (c *Connection) GetMetadata() model.PlcConnectionMetadata {
 	}
 }
 
-func (c *Connection) ReadRequestBuilder() model.PlcReadRequestBuilder {
+func (c *Connection) ReadRequestBuilder() apiModel.PlcReadRequestBuilder {
 	return spiModel.NewDefaultPlcReadRequestBuilder(c.tagHandler, NewReader(c.device, c.options, c.tracer))
 }
 
-func (c *Connection) WriteRequestBuilder() model.PlcWriteRequestBuilder {
+func (c *Connection) WriteRequestBuilder() apiModel.PlcWriteRequestBuilder {
 	return spiModel.NewDefaultPlcWriteRequestBuilder(c.tagHandler, c.valueHandler, NewWriter(c.device, c.options, c.tracer))
 }
 
-func (c *Connection) SubscriptionRequestBuilder() model.PlcSubscriptionRequestBuilder {
+func (c *Connection) SubscriptionRequestBuilder() apiModel.PlcSubscriptionRequestBuilder {
 	return spiModel.NewDefaultPlcSubscriptionRequestBuilder(c.tagHandler, c.valueHandler, NewSubscriber(c.device, c.options, c.tracer))
 }
 
-func (c *Connection) UnsubscriptionRequestBuilder() model.PlcUnsubscriptionRequestBuilder {
+func (c *Connection) UnsubscriptionRequestBuilder() apiModel.PlcUnsubscriptionRequestBuilder {
 	panic("not provided by simulated connection")
 }
 
-func (c *Connection) BrowseRequestBuilder() model.PlcBrowseRequestBuilder {
+func (c *Connection) BrowseRequestBuilder() apiModel.PlcBrowseRequestBuilder {
 	panic("not provided by simulated connection")
 }

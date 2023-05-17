@@ -24,7 +24,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/apache/plc4x/plc4go/pkg/api/model"
+	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/transports"
 	"github.com/apache/plc4x/plc4go/spi/utils"
@@ -62,7 +62,7 @@ func TestDriver_Discover(t *testing.T) {
 		valueHandler ValueHandler
 	}
 	type args struct {
-		callback         func(event model.PlcDiscoveryItem)
+		callback         func(event apiModel.PlcDiscoveryItem)
 		discoveryOptions []options.WithDiscoveryOption
 	}
 	tests := []struct {

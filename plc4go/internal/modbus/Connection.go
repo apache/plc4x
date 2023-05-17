@@ -96,7 +96,7 @@ func (m *Connection) Ping() <-chan plc4go.PlcConnectionPingResult {
 	// TODO: use proper context
 	ctx := context.TODO()
 	log.Trace().Msg("Pinging")
-	result := make(chan plc4go.PlcConnectionPingResult)
+	result := make(chan plc4go.PlcConnectionPingResult, 1)
 	go func() {
 		defer func() {
 			if err := recover(); err != nil {

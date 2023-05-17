@@ -33,7 +33,7 @@ import (
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	driverModel "github.com/apache/plc4x/plc4go/protocols/knxnetip/readwrite/model"
-	internalModel "github.com/apache/plc4x/plc4go/spi/model"
+	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/transports"
 	"github.com/apache/plc4x/plc4go/spi/transports/udp"
@@ -215,13 +215,14 @@ func (d *Discoverer) createDeviceScanDispatcher(udpTransportInstance *udp.Transp
 							continue
 						}
 						deviceName := string(bytes.Trim(searchResponse.GetDibDeviceInfo().GetDeviceFriendlyName(), "\x00"))
-						discoveryEvent := &internalModel.DefaultPlcDiscoveryItem{
-							ProtocolCode:  "knxnet-ip",
-							TransportCode: "udp",
-							TransportUrl:  *remoteUrl,
-							Options:       nil,
-							Name:          deviceName,
-						}
+						discoveryEvent := spiModel.NewDefaultPlcDiscoveryItem(
+							"knxnet-ip",
+							"udp",
+							*remoteUrl,
+							nil,
+							deviceName,
+							nil,
+						)
 						// Pass the event back to the callback
 						callback(discoveryEvent)
 					}

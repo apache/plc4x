@@ -639,3 +639,31 @@ func TestLeasedPlcConnection_BrowseRequestBuilder(t *testing.T) {
 		t.Errorf("Timeout")
 	}
 }
+
+func Test_plcConnectionLease_String(t1 *testing.T) {
+	type fields struct {
+		connectionContainer *connectionContainer
+		leaseId             uint32
+		connection          tracedPlcConnection
+	}
+	tests := []struct {
+		name   string
+		fields fields
+		want   string
+	}{
+		{
+			name: "String it",
+			want: "plcConnectionLease{connectionContainer: <nil>, leaseId: 0, connection: %!s(<nil>)}",
+		},
+	}
+	for _, tt := range tests {
+		t1.Run(tt.name, func(t1 *testing.T) {
+			t := &plcConnectionLease{
+				connectionContainer: tt.fields.connectionContainer,
+				leaseId:             tt.fields.leaseId,
+				connection:          tt.fields.connection,
+			}
+			assert.Equalf(t1, tt.want, t.String(), "String()")
+		})
+	}
+}
