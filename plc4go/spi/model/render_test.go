@@ -44,7 +44,6 @@ func TestRenderTest(t *testing.T) {
 		&DefaultPlcBrowseItem{},
 		&DefaultPlcBrowseRequest{},
 		&DefaultPlcBrowseRequestBuilder{},
-		&DefaultPlcBrowseRequestResult{},
 		&DefaultPlcBrowseResponse{},
 		&DefaultPlcBrowseResponseItem{},
 		&DefaultPlcConsumerRegistration{},
@@ -60,9 +59,9 @@ func TestRenderTest(t *testing.T) {
 		&DefaultPlcSubscriptionResponse{},
 		&DefaultPlcSubscriptionResponseItem{},
 		&DefaultPlcTagRequest{},
-		//&DefaultPlcUnsubscriptionRequest{}, //TODO: empty file
+		&DefaultPlcUnsubscriptionRequest{},
 		&DefaultPlcUnsubscriptionRequestResult{},
-		//&DefaultPlcUnsubscriptionResponse{}, //TODO: empty file
+		&DefaultPlcUnsubscriptionResponse{},
 		&DefaultPlcWriteRequest{DefaultPlcTagRequest: NewDefaultPlcTagRequest(nil, nil)},
 		&DefaultPlcWriteRequestResult{},
 		&DefaultPlcWriteResponse{},
