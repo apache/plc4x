@@ -20,9 +20,11 @@
 package model
 
 import (
-	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
-	"github.com/stretchr/testify/assert"
 	"testing"
+
+	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestDefaultPlcWriteResponse_GetRequest(t *testing.T) {
@@ -35,7 +37,9 @@ func TestDefaultPlcWriteResponse_GetRequest(t *testing.T) {
 		fields fields
 		want   apiModel.PlcWriteRequest
 	}{
-		// TODO: Add test cases.
+		{
+			name: "get it",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -62,7 +66,22 @@ func TestDefaultPlcWriteResponse_GetResponseCode(t *testing.T) {
 		args   args
 		want   apiModel.PlcResponseCode
 	}{
-		// TODO: Add test cases.
+		{
+			name: "get it (not found)",
+			want: apiModel.PlcResponseCode_NOT_FOUND,
+		},
+		{
+			name: "get it",
+			fields: fields{
+				responseCodes: map[string]apiModel.PlcResponseCode{
+					"something": apiModel.PlcResponseCode_OK,
+				},
+			},
+			args: args{
+				name: "something",
+			},
+			want: apiModel.PlcResponseCode_OK,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -85,7 +104,21 @@ func TestDefaultPlcWriteResponse_GetTagNames(t *testing.T) {
 		fields fields
 		want   []string
 	}{
-		// TODO: Add test cases.
+		{
+			name: "get em (none)",
+		},
+		{
+			name: "get em",
+			fields: fields{
+				request: NewDefaultPlcWriteRequest(nil, []string{"a", "b", "c"}, nil, nil, nil),
+				responseCodes: map[string]apiModel.PlcResponseCode{
+					"a": apiModel.PlcResponseCode_OK,
+					"b": apiModel.PlcResponseCode_OK,
+					"c": apiModel.PlcResponseCode_OK,
+				},
+			},
+			want: []string{"a", "b", "c"},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -108,7 +141,10 @@ func TestDefaultPlcWriteResponse_IsAPlcMessage(t *testing.T) {
 		fields fields
 		want   bool
 	}{
-		// TODO: Add test cases.
+		{
+			name: "is it",
+			want: true,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -131,7 +167,10 @@ func TestNewDefaultPlcWriteResponse(t *testing.T) {
 		args args
 		want apiModel.PlcWriteResponse
 	}{
-		// TODO: Add test cases.
+		{
+			name: "create it",
+			want: &DefaultPlcWriteResponse{},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
