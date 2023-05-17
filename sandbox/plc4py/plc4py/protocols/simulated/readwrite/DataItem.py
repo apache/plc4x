@@ -39,7 +39,7 @@ class DataItem:
         read_buffer: ReadBuffer, data_type: str, number_of_values: c_uint16
     ):
         if EvaluationHelper.equals(data_type, "_bool") and EvaluationHelper.equals(
-            number_of_values, 1
+            number_of_values, c_uint16(1)
         ):  # BOOL
             # Simple Field (value)
             value: c_bool = read_buffer.readBit("")
@@ -63,7 +63,7 @@ class DataItem:
 
             return PlcList(value)
         if EvaluationHelper.equals(data_type, "_byte") and EvaluationHelper.equals(
-            number_of_values, 1
+            number_of_values, c_uint16(1)
         ):  # BYTE
             # Simple Field (value)
             value: c_uint8 = read_buffer.readUnsignedShort("", 8)
@@ -87,7 +87,7 @@ class DataItem:
 
             return PlcList(value)
         if EvaluationHelper.equals(data_type, "_word") and EvaluationHelper.equals(
-            number_of_values, 1
+            number_of_values, c_uint16(1)
         ):  # WORD
             # Simple Field (value)
             value: c_uint16 = read_buffer.readUnsignedInt("", 16)
@@ -111,7 +111,7 @@ class DataItem:
 
             return PlcList(value)
         if EvaluationHelper.equals(data_type, "_dword") and EvaluationHelper.equals(
-            number_of_values, 1
+            number_of_values, c_uint16(1)
         ):  # DWORD
             # Simple Field (value)
             value: c_uint32 = read_buffer.readUnsignedLong("", 32)
@@ -135,7 +135,7 @@ class DataItem:
 
             return PlcList(value)
         if EvaluationHelper.equals(data_type, "_lword") and EvaluationHelper.equals(
-            number_of_values, 1
+            number_of_values, c_uint16(1)
         ):  # LWORD
             # Simple Field (value)
             value: c_uint64 = read_buffer.readUnsignedBigInteger("", 64)
@@ -161,7 +161,7 @@ class DataItem:
 
             return PlcList(value)
         if EvaluationHelper.equals(data_type, "_sint") and EvaluationHelper.equals(
-            number_of_values, 1
+            number_of_values, c_uint16(1)
         ):  # SINT
             # Simple Field (value)
             value: c_int8 = read_buffer.readSignedByte("", 8)
@@ -185,7 +185,7 @@ class DataItem:
 
             return PlcList(value)
         if EvaluationHelper.equals(data_type, "_int") and EvaluationHelper.equals(
-            number_of_values, 1
+            number_of_values, c_uint16(1)
         ):  # INT
             # Simple Field (value)
             value: c_int16 = read_buffer.readShort("", 16)
@@ -209,7 +209,7 @@ class DataItem:
 
             return PlcList(value)
         if EvaluationHelper.equals(data_type, "_dint") and EvaluationHelper.equals(
-            number_of_values, 1
+            number_of_values, c_uint16(1)
         ):  # DINT
             # Simple Field (value)
             value: c_int32 = read_buffer.readInt("", 32)
@@ -233,7 +233,7 @@ class DataItem:
 
             return PlcList(value)
         if EvaluationHelper.equals(data_type, "_lint") and EvaluationHelper.equals(
-            number_of_values, 1
+            number_of_values, c_uint16(1)
         ):  # LINT
             # Simple Field (value)
             value: c_int64 = read_buffer.readLong("", 64)
@@ -257,7 +257,7 @@ class DataItem:
 
             return PlcList(value)
         if EvaluationHelper.equals(data_type, "_usint") and EvaluationHelper.equals(
-            number_of_values, 1
+            number_of_values, c_uint16(1)
         ):  # USINT
             # Simple Field (value)
             value: c_uint8 = read_buffer.readUnsignedShort("", 8)
@@ -281,7 +281,7 @@ class DataItem:
 
             return PlcList(value)
         if EvaluationHelper.equals(data_type, "_uint") and EvaluationHelper.equals(
-            number_of_values, 1
+            number_of_values, c_uint16(1)
         ):  # UINT
             # Simple Field (value)
             value: c_uint16 = read_buffer.readUnsignedInt("", 16)
@@ -305,7 +305,7 @@ class DataItem:
 
             return PlcList(value)
         if EvaluationHelper.equals(data_type, "_udint") and EvaluationHelper.equals(
-            number_of_values, 1
+            number_of_values, c_uint16(1)
         ):  # UDINT
             # Simple Field (value)
             value: c_uint32 = read_buffer.readUnsignedLong("", 32)
@@ -329,7 +329,7 @@ class DataItem:
 
             return PlcList(value)
         if EvaluationHelper.equals(data_type, "_ulint") and EvaluationHelper.equals(
-            number_of_values, 1
+            number_of_values, c_uint16(1)
         ):  # ULINT
             # Simple Field (value)
             value: c_uint64 = read_buffer.readUnsignedBigInteger("", 64)
@@ -355,7 +355,7 @@ class DataItem:
 
             return PlcList(value)
         if EvaluationHelper.equals(data_type, "_real") and EvaluationHelper.equals(
-            number_of_values, 1
+            number_of_values, c_uint16(1)
         ):  # REAL
             # Simple Field (value)
             value: c_float = read_buffer.readFloat("", 32)
@@ -379,7 +379,7 @@ class DataItem:
 
             return PlcList(value)
         if EvaluationHelper.equals(data_type, "_lreal") and EvaluationHelper.equals(
-            number_of_values, 1
+            number_of_values, c_uint16(1)
         ):  # LREAL
             # Simple Field (value)
             value: c_double = read_buffer.readDouble("", 64)
@@ -403,7 +403,7 @@ class DataItem:
 
             return PlcList(value)
         if EvaluationHelper.equals(data_type, "_char") and EvaluationHelper.equals(
-            number_of_values, 1
+            number_of_values, c_uint16(1)
         ):  # CHAR
             # Simple Field (value)
             value: str = read_buffer.readString("", 8, "UTF-8")
@@ -427,7 +427,7 @@ class DataItem:
 
             return PlcList(value)
         if EvaluationHelper.equals(data_type, "_wchar") and EvaluationHelper.equals(
-            number_of_values, 1
+            number_of_values, c_uint16(1)
         ):  # WCHAR
             # Simple Field (value)
             value: str = read_buffer.readString("", 16, "UTF-16")
@@ -482,234 +482,234 @@ class DataItem:
         byteOrder: ByteOrder,
     ) -> None:
         if EvaluationHelper.equals(dataType, "BOOL") and EvaluationHelper.equals(
-            numberOfValues, 1
+            numberOfValues, c_uint16(1)
         ):  # BOOL
             # Simple Field (value)
             value: c_bool = _value.getC_bool()
-            writeBuffer.writeBit("", bool((value)))
+            writeBuffer.WriteBit("value", (value))
         if EvaluationHelper.equals(dataType, "BOOL"):  # List
             values: PlcList = _value
 
             for val in values.getList():
                 value: c_bool = val.getC_bool()
-                writeBuffer.writeBit("", bool((value)))
+                writeBuffer.WriteBit("value", (value))
 
         if EvaluationHelper.equals(dataType, "BYTE") and EvaluationHelper.equals(
-            numberOfValues, 1
+            numberOfValues, c_uint16(1)
         ):  # BYTE
             # Simple Field (value)
             value: c_uint8 = _value.getC_uint8()
-            writeBuffer.writeUnsignedShort("", 8, (value).shortValue())
+            writeBuffer.WriteUint8("value", 8, (value))
         if EvaluationHelper.equals(dataType, "BYTE"):  # List
             values: PlcList = _value
 
             for val in values.getList():
                 value: c_uint8 = val.getC_uint8()
-                writeBuffer.writeUnsignedShort("", 8, (value).shortValue())
+                writeBuffer.WriteUint8("value", 8, (value))
 
         if EvaluationHelper.equals(dataType, "WORD") and EvaluationHelper.equals(
-            numberOfValues, 1
+            numberOfValues, c_uint16(1)
         ):  # WORD
             # Simple Field (value)
             value: c_uint16 = _value.getC_uint16()
-            writeBuffer.writeUnsignedInt("", 16, (value).intValue())
+            writeBuffer.WriteUint16("value", 16, (value))
         if EvaluationHelper.equals(dataType, "WORD"):  # List
             values: PlcList = _value
 
             for val in values.getList():
                 value: c_uint16 = val.getC_uint16()
-                writeBuffer.writeUnsignedInt("", 16, (value).intValue())
+                writeBuffer.WriteUint16("value", 16, (value))
 
         if EvaluationHelper.equals(dataType, "DWORD") and EvaluationHelper.equals(
-            numberOfValues, 1
+            numberOfValues, c_uint16(1)
         ):  # DWORD
             # Simple Field (value)
             value: c_uint32 = _value.getC_uint32()
-            writeBuffer.writeUnsignedLong("", 32, (value).longValue())
+            writeBuffer.WriteUint32("value", 32, (value))
         if EvaluationHelper.equals(dataType, "DWORD"):  # List
             values: PlcList = _value
 
             for val in values.getList():
                 value: c_uint32 = val.getC_uint32()
-                writeBuffer.writeUnsignedLong("", 32, (value).longValue())
+                writeBuffer.WriteUint32("value", 32, (value))
 
         if EvaluationHelper.equals(dataType, "LWORD") and EvaluationHelper.equals(
-            numberOfValues, 1
+            numberOfValues, c_uint16(1)
         ):  # LWORD
             # Simple Field (value)
             value: c_uint64 = _value.getC_uint64()
-            writeBuffer.writeUnsignedBigInteger("", 64, (value))
+            writeBuffer.WriteUint64("value", 64, (value))
         if EvaluationHelper.equals(dataType, "LWORD"):  # List
             values: PlcList = _value
 
             for val in values.getList():
                 value: c_uint64 = val.getC_uint64()
-                writeBuffer.writeUnsignedBigInteger("", 64, (value))
+                writeBuffer.WriteUint64("value", 64, (value))
 
         if EvaluationHelper.equals(dataType, "SINT") and EvaluationHelper.equals(
-            numberOfValues, 1
+            numberOfValues, c_uint16(1)
         ):  # SINT
             # Simple Field (value)
             value: c_int8 = _value.getC_int8()
-            writeBuffer.writeSignedByte("", 8, (value).byteValue())
+            writeBuffer.WriteInt8("value", 8, (value))
         if EvaluationHelper.equals(dataType, "SINT"):  # List
             values: PlcList = _value
 
             for val in values.getList():
                 value: c_int8 = val.getC_int8()
-                writeBuffer.writeSignedByte("", 8, (value).byteValue())
+                writeBuffer.WriteInt8("value", 8, (value))
 
         if EvaluationHelper.equals(dataType, "INT") and EvaluationHelper.equals(
-            numberOfValues, 1
+            numberOfValues, c_uint16(1)
         ):  # INT
             # Simple Field (value)
             value: c_int16 = _value.getC_int16()
-            writeBuffer.writeShort("", 16, (value).shortValue())
+            writeBuffer.WriteInt16("value", 16, (value))
         if EvaluationHelper.equals(dataType, "INT"):  # List
             values: PlcList = _value
 
             for val in values.getList():
                 value: c_int16 = val.getC_int16()
-                writeBuffer.writeShort("", 16, (value).shortValue())
+                writeBuffer.WriteInt16("value", 16, (value))
 
         if EvaluationHelper.equals(dataType, "DINT") and EvaluationHelper.equals(
-            numberOfValues, 1
+            numberOfValues, c_uint16(1)
         ):  # DINT
             # Simple Field (value)
             value: c_int32 = _value.getC_int32()
-            writeBuffer.writeInt("", 32, (value).intValue())
+            writeBuffer.WriteInt32("value", 32, (value))
         if EvaluationHelper.equals(dataType, "DINT"):  # List
             values: PlcList = _value
 
             for val in values.getList():
                 value: c_int32 = val.getC_int32()
-                writeBuffer.writeInt("", 32, (value).intValue())
+                writeBuffer.WriteInt32("value", 32, (value))
 
         if EvaluationHelper.equals(dataType, "LINT") and EvaluationHelper.equals(
-            numberOfValues, 1
+            numberOfValues, c_uint16(1)
         ):  # LINT
             # Simple Field (value)
             value: c_int64 = _value.getC_int64()
-            writeBuffer.writeLong("", 64, (value).longValue())
+            writeBuffer.WriteInt64("value", 64, (value))
         if EvaluationHelper.equals(dataType, "LINT"):  # List
             values: PlcList = _value
 
             for val in values.getList():
                 value: c_int64 = val.getC_int64()
-                writeBuffer.writeLong("", 64, (value).longValue())
+                writeBuffer.WriteInt64("value", 64, (value))
 
         if EvaluationHelper.equals(dataType, "USINT") and EvaluationHelper.equals(
-            numberOfValues, 1
+            numberOfValues, c_uint16(1)
         ):  # USINT
             # Simple Field (value)
             value: c_uint8 = _value.getC_uint8()
-            writeBuffer.writeUnsignedShort("", 8, (value).shortValue())
+            writeBuffer.WriteUint8("value", 8, (value))
         if EvaluationHelper.equals(dataType, "USINT"):  # List
             values: PlcList = _value
 
             for val in values.getList():
                 value: c_uint8 = val.getC_uint8()
-                writeBuffer.writeUnsignedShort("", 8, (value).shortValue())
+                writeBuffer.WriteUint8("value", 8, (value))
 
         if EvaluationHelper.equals(dataType, "UINT") and EvaluationHelper.equals(
-            numberOfValues, 1
+            numberOfValues, c_uint16(1)
         ):  # UINT
             # Simple Field (value)
             value: c_uint16 = _value.getC_uint16()
-            writeBuffer.writeUnsignedInt("", 16, (value).intValue())
+            writeBuffer.WriteUint16("value", 16, (value))
         if EvaluationHelper.equals(dataType, "UINT"):  # List
             values: PlcList = _value
 
             for val in values.getList():
                 value: c_uint16 = val.getC_uint16()
-                writeBuffer.writeUnsignedInt("", 16, (value).intValue())
+                writeBuffer.WriteUint16("value", 16, (value))
 
         if EvaluationHelper.equals(dataType, "UDINT") and EvaluationHelper.equals(
-            numberOfValues, 1
+            numberOfValues, c_uint16(1)
         ):  # UDINT
             # Simple Field (value)
             value: c_uint32 = _value.getC_uint32()
-            writeBuffer.writeUnsignedLong("", 32, (value).longValue())
+            writeBuffer.WriteUint32("value", 32, (value))
         if EvaluationHelper.equals(dataType, "UDINT"):  # List
             values: PlcList = _value
 
             for val in values.getList():
                 value: c_uint32 = val.getC_uint32()
-                writeBuffer.writeUnsignedLong("", 32, (value).longValue())
+                writeBuffer.WriteUint32("value", 32, (value))
 
         if EvaluationHelper.equals(dataType, "ULINT") and EvaluationHelper.equals(
-            numberOfValues, 1
+            numberOfValues, c_uint16(1)
         ):  # ULINT
             # Simple Field (value)
             value: c_uint64 = _value.getC_uint64()
-            writeBuffer.writeUnsignedBigInteger("", 64, (value))
+            writeBuffer.WriteUint64("value", 64, (value))
         if EvaluationHelper.equals(dataType, "ULINT"):  # List
             values: PlcList = _value
 
             for val in values.getList():
                 value: c_uint64 = val.getC_uint64()
-                writeBuffer.writeUnsignedBigInteger("", 64, (value))
+                writeBuffer.WriteUint64("value", 64, (value))
 
         if EvaluationHelper.equals(dataType, "REAL") and EvaluationHelper.equals(
-            numberOfValues, 1
+            numberOfValues, c_uint16(1)
         ):  # REAL
             # Simple Field (value)
             value: c_float = _value.getC_float()
-            writeBuffer.writeFloat("", 32, (value))
+            writeBuffer.WriteFloat32("value", 32, (value))
         if EvaluationHelper.equals(dataType, "REAL"):  # List
             values: PlcList = _value
 
             for val in values.getList():
                 value: c_float = val.getC_float()
-                writeBuffer.writeFloat("", 32, (value))
+                writeBuffer.WriteFloat32("value", 32, (value))
 
         if EvaluationHelper.equals(dataType, "LREAL") and EvaluationHelper.equals(
-            numberOfValues, 1
+            numberOfValues, c_uint16(1)
         ):  # LREAL
             # Simple Field (value)
             value: c_double = _value.getC_double()
-            writeBuffer.writeDouble("", 64, (value))
+            writeBuffer.WriteFloat64("value", 64, (value))
         if EvaluationHelper.equals(dataType, "LREAL"):  # List
             values: PlcList = _value
 
             for val in values.getList():
                 value: c_double = val.getC_double()
-                writeBuffer.writeDouble("", 64, (value))
+                writeBuffer.WriteFloat64("value", 64, (value))
 
         if EvaluationHelper.equals(dataType, "CHAR") and EvaluationHelper.equals(
-            numberOfValues, 1
+            numberOfValues, c_uint16(1)
         ):  # CHAR
             # Simple Field (value)
             value: str = _value.getStr()
-            writeBuffer.writeString("", 8, "UTF-8", (String)(value))
+            writeBuffer.WriteString("value", uint32(8), "UTF-8", (value))
         if EvaluationHelper.equals(dataType, "CHAR"):  # List
             values: PlcList = _value
 
             for val in values.getList():
                 value: str = val.getStr()
-                writeBuffer.writeString("", 8, "UTF-8", (String)(value))
+                writeBuffer.WriteString("value", uint32(8), "UTF-8", (value))
 
         if EvaluationHelper.equals(dataType, "WCHAR") and EvaluationHelper.equals(
-            numberOfValues, 1
+            numberOfValues, c_uint16(1)
         ):  # WCHAR
             # Simple Field (value)
             value: str = _value.getStr()
-            writeBuffer.writeString("", 16, "UTF-16", (String)(value))
+            writeBuffer.WriteString("value", uint32(16), "UTF-16", (value))
         if EvaluationHelper.equals(dataType, "WCHAR"):  # List
             values: PlcList = _value
 
             for val in values.getList():
                 value: str = val.getStr()
-                writeBuffer.writeString("", 16, "UTF-16", (String)(value))
+                writeBuffer.WriteString("value", uint32(16), "UTF-16", (value))
 
         if EvaluationHelper.equals(dataType, "STRING"):  # STRING
             # Simple Field (value)
             value: str = _value.getStr()
-            writeBuffer.writeString("", 255, "UTF-8", (String)(value))
+            writeBuffer.WriteString("value", uint32(255), "UTF-8", (value))
         if EvaluationHelper.equals(dataType, "WSTRING"):  # STRING
             # Simple Field (value)
             value: str = _value.getStr()
-            writeBuffer.writeString("", 255, "UTF-16", (String)(value))
+            writeBuffer.WriteString("value", uint32(255), "UTF-16", (value))
 
     @staticmethod
     def get_length_in_bytes(
@@ -725,7 +725,7 @@ class DataItem:
     ) -> int:
         sizeInBits: int = 0
         if EvaluationHelper.equals(dataType, "BOOL") and EvaluationHelper.equals(
-            numberOfValues, 1
+            numberOfValues, c_uint16(1)
         ):  # BOOL
             # Simple Field (value)
             sizeInBits += 1
@@ -733,7 +733,7 @@ class DataItem:
             values: PlcList = _value
             sizeInBits += values.getList().size() * 1
         if EvaluationHelper.equals(dataType, "BYTE") and EvaluationHelper.equals(
-            numberOfValues, 1
+            numberOfValues, c_uint16(1)
         ):  # BYTE
             # Simple Field (value)
             sizeInBits += 8
@@ -741,7 +741,7 @@ class DataItem:
             values: PlcList = _value
             sizeInBits += values.getList().size() * 8
         if EvaluationHelper.equals(dataType, "WORD") and EvaluationHelper.equals(
-            numberOfValues, 1
+            numberOfValues, c_uint16(1)
         ):  # WORD
             # Simple Field (value)
             sizeInBits += 16
@@ -749,7 +749,7 @@ class DataItem:
             values: PlcList = _value
             sizeInBits += values.getList().size() * 16
         if EvaluationHelper.equals(dataType, "DWORD") and EvaluationHelper.equals(
-            numberOfValues, 1
+            numberOfValues, c_uint16(1)
         ):  # DWORD
             # Simple Field (value)
             sizeInBits += 32
@@ -757,7 +757,7 @@ class DataItem:
             values: PlcList = _value
             sizeInBits += values.getList().size() * 32
         if EvaluationHelper.equals(dataType, "LWORD") and EvaluationHelper.equals(
-            numberOfValues, 1
+            numberOfValues, c_uint16(1)
         ):  # LWORD
             # Simple Field (value)
             sizeInBits += 64
@@ -765,7 +765,7 @@ class DataItem:
             values: PlcList = _value
             sizeInBits += values.getList().size() * 64
         if EvaluationHelper.equals(dataType, "SINT") and EvaluationHelper.equals(
-            numberOfValues, 1
+            numberOfValues, c_uint16(1)
         ):  # SINT
             # Simple Field (value)
             sizeInBits += 8
@@ -773,7 +773,7 @@ class DataItem:
             values: PlcList = _value
             sizeInBits += values.getList().size() * 8
         if EvaluationHelper.equals(dataType, "INT") and EvaluationHelper.equals(
-            numberOfValues, 1
+            numberOfValues, c_uint16(1)
         ):  # INT
             # Simple Field (value)
             sizeInBits += 16
@@ -781,7 +781,7 @@ class DataItem:
             values: PlcList = _value
             sizeInBits += values.getList().size() * 16
         if EvaluationHelper.equals(dataType, "DINT") and EvaluationHelper.equals(
-            numberOfValues, 1
+            numberOfValues, c_uint16(1)
         ):  # DINT
             # Simple Field (value)
             sizeInBits += 32
@@ -789,7 +789,7 @@ class DataItem:
             values: PlcList = _value
             sizeInBits += values.getList().size() * 32
         if EvaluationHelper.equals(dataType, "LINT") and EvaluationHelper.equals(
-            numberOfValues, 1
+            numberOfValues, c_uint16(1)
         ):  # LINT
             # Simple Field (value)
             sizeInBits += 64
@@ -797,7 +797,7 @@ class DataItem:
             values: PlcList = _value
             sizeInBits += values.getList().size() * 64
         if EvaluationHelper.equals(dataType, "USINT") and EvaluationHelper.equals(
-            numberOfValues, 1
+            numberOfValues, c_uint16(1)
         ):  # USINT
             # Simple Field (value)
             sizeInBits += 8
@@ -805,7 +805,7 @@ class DataItem:
             values: PlcList = _value
             sizeInBits += values.getList().size() * 8
         if EvaluationHelper.equals(dataType, "UINT") and EvaluationHelper.equals(
-            numberOfValues, 1
+            numberOfValues, c_uint16(1)
         ):  # UINT
             # Simple Field (value)
             sizeInBits += 16
@@ -813,7 +813,7 @@ class DataItem:
             values: PlcList = _value
             sizeInBits += values.getList().size() * 16
         if EvaluationHelper.equals(dataType, "UDINT") and EvaluationHelper.equals(
-            numberOfValues, 1
+            numberOfValues, c_uint16(1)
         ):  # UDINT
             # Simple Field (value)
             sizeInBits += 32
@@ -821,7 +821,7 @@ class DataItem:
             values: PlcList = _value
             sizeInBits += values.getList().size() * 32
         if EvaluationHelper.equals(dataType, "ULINT") and EvaluationHelper.equals(
-            numberOfValues, 1
+            numberOfValues, c_uint16(1)
         ):  # ULINT
             # Simple Field (value)
             sizeInBits += 64
@@ -829,7 +829,7 @@ class DataItem:
             values: PlcList = _value
             sizeInBits += values.getList().size() * 64
         if EvaluationHelper.equals(dataType, "REAL") and EvaluationHelper.equals(
-            numberOfValues, 1
+            numberOfValues, c_uint16(1)
         ):  # REAL
             # Simple Field (value)
             sizeInBits += 32
@@ -837,7 +837,7 @@ class DataItem:
             values: PlcList = _value
             sizeInBits += values.getList().size() * 32
         if EvaluationHelper.equals(dataType, "LREAL") and EvaluationHelper.equals(
-            numberOfValues, 1
+            numberOfValues, c_uint16(1)
         ):  # LREAL
             # Simple Field (value)
             sizeInBits += 64
@@ -845,7 +845,7 @@ class DataItem:
             values: PlcList = _value
             sizeInBits += values.getList().size() * 64
         if EvaluationHelper.equals(dataType, "CHAR") and EvaluationHelper.equals(
-            numberOfValues, 1
+            numberOfValues, c_uint16(1)
         ):  # CHAR
             # Simple Field (value)
             sizeInBits += 8
@@ -853,7 +853,7 @@ class DataItem:
             values: PlcList = _value
             sizeInBits += values.getList().size() * 8
         if EvaluationHelper.equals(dataType, "WCHAR") and EvaluationHelper.equals(
-            numberOfValues, 1
+            numberOfValues, c_uint16(1)
         ):  # WCHAR
             # Simple Field (value)
             sizeInBits += 16

@@ -22,6 +22,7 @@ from dataclasses import dataclass
 from ctypes import c_byte
 from ctypes import c_uint8
 from plc4py.api.messages.PlcMessage import PlcMessage
+from plc4py.spi.generation.WriteBuffer import WriteBuffer
 from typing import List
 import math
 
@@ -35,23 +36,18 @@ class ModbusDeviceInformationObject(PlcMessage):
         super().__init__()
 
     def serialize(self, write_buffer: WriteBuffer):
-        position_aware: PositionAware = write_buffer
-        start_pos: int = position_aware.get_pos()
+        start_pos: int = write_buffer.get_pos()
         write_buffer.push_context("ModbusDeviceInformationObject")
 
         # Simple Field (objectId)
-        write_simple_field(
-            "objectId", self.object_id, write_unsigned_short(write_buffer, 8)
-        )
+        write_buffer.write_unsigned_byte(self.object_id, logical_name="objectId")
 
         # Implicit Field (object_length) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-        object_length: c_uint8 = c_uint8((COUNT(self.data())))
-        write_implicit_field(
-            "objectLength", object_length, write_unsigned_short(write_buffer, 8)
-        )
+        object_length: c_uint8 = c_uint8(len(self.data))
+        write_buffer.write_unsigned_byte(object_length, logical_name="objectLength")
 
         # Array Field (data)
-        write_byte_array_field("data", self.data, writeByteArray(write_buffer, 8))
+        write_buffer.write_byte_array(self.data, 8, logical_name="data")
 
         write_buffer.pop_context("ModbusDeviceInformationObject")
 
@@ -75,14 +71,12 @@ class ModbusDeviceInformationObject(PlcMessage):
         return length_in_bits
 
     def static_parse(read_buffer: ReadBuffer, args):
-        position_aware: PositionAware = read_buffer
         return staticParse(read_buffer)
 
     @staticmethod
     def static_parse_context(read_buffer: ReadBuffer):
         read_buffer.pull_context("ModbusDeviceInformationObject")
-        position_aware: PositionAware = read_buffer
-        start_pos: int = position_aware.get_pos()
+        start_pos: int = read_buffer.get_pos()
         cur_pos: int = 0
 
         object_id: c_uint8 = read_simple_field(

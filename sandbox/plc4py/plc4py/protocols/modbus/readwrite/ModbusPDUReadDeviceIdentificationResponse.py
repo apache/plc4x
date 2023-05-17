@@ -36,6 +36,7 @@ from plc4py.protocols.modbus.readwrite.ModbusDeviceInformationObject import (
 )
 from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDU
 from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDUBuilder
+from plc4py.spi.generation.WriteBuffer import WriteBuffer
 from typing import List
 import math
 
@@ -50,77 +51,59 @@ class ModbusPDUReadDeviceIdentificationResponse(PlcMessage, ModbusPDU):
     objects: List[ModbusDeviceInformationObject]
     MEITYPE: c_uint8 = 0x0E
     # Accessors for discriminator values.
-    error_flag: c_bool = False
+    error_flag: c_bool = c_bool(false)
     function_flag: c_uint8 = 0x2B
-    response: c_bool = True
+    response: c_bool = c_bool(true)
 
     def __post_init__(self):
         super().__init__()
 
     def serialize_modbus_pdu_child(self, write_buffer: WriteBuffer):
-        position_aware: PositionAware = write_buffer
-        start_pos: int = position_aware.get_pos()
+        start_pos: int = write_buffer.get_pos()
         write_buffer.push_context("ModbusPDUReadDeviceIdentificationResponse")
 
         # Const Field (meiType)
-        write_const_field(
-            "meiType", self.mei_type, write_unsigned_short(write_buffer, 8)
-        )
+        write_buffer.write_unsigned_byte(self.mei_type.value, logical_name="meiType")
 
         # Simple Field (level)
-        write_simple_enum_field(
-            "level",
-            "ModbusDeviceInformationLevel",
-            self.level,
-            DataWriterEnumDefault(
-                ModbusDeviceInformationLevel.value,
-                ModbusDeviceInformationLevel.name,
-                write_unsigned_short(write_buffer, 8),
-            ),
-        )
+        write_buffer.DataWriterEnumDefault(
+            ModbusDeviceInformationLevel.value,
+            ModbusDeviceInformationLevel.name,
+            write_unsigned_byte,
+        )(self.level, logical_name="level")
 
         # Simple Field (individualAccess)
-        write_simple_field(
-            "individualAccess", self.individual_access, write_boolean(write_buffer)
+        write_buffer.write_boolean(
+            self.individual_access, logical_name="individualAccess"
         )
 
         # Simple Field (conformityLevel)
-        write_simple_enum_field(
-            "conformityLevel",
-            "ModbusDeviceInformationConformityLevel",
-            self.conformity_level,
-            DataWriterEnumDefault(
-                ModbusDeviceInformationConformityLevel.value,
-                ModbusDeviceInformationConformityLevel.name,
-                write_unsigned_short(write_buffer, 7),
-            ),
-        )
+        write_buffer.DataWriterEnumDefault(
+            ModbusDeviceInformationConformityLevel.value,
+            ModbusDeviceInformationConformityLevel.name,
+            write_unsigned_byte,
+        )(self.conformity_level, logical_name="conformityLevel")
 
         # Simple Field (moreFollows)
-        write_simple_enum_field(
-            "moreFollows",
-            "ModbusDeviceInformationMoreFollows",
-            self.more_follows,
-            DataWriterEnumDefault(
-                ModbusDeviceInformationMoreFollows.value,
-                ModbusDeviceInformationMoreFollows.name,
-                write_unsigned_short(write_buffer, 8),
-            ),
-        )
+        write_buffer.DataWriterEnumDefault(
+            ModbusDeviceInformationMoreFollows.value,
+            ModbusDeviceInformationMoreFollows.name,
+            write_unsigned_byte,
+        )(self.more_follows, logical_name="moreFollows")
 
         # Simple Field (nextObjectId)
-        write_simple_field(
-            "nextObjectId", self.next_object_id, write_unsigned_short(write_buffer, 8)
+        write_buffer.write_unsigned_byte(
+            self.next_object_id, logical_name="nextObjectId"
         )
 
         # Implicit Field (number_of_objects) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-        number_of_objects: c_uint8 = c_uint8((COUNT(self.objects())))
-        write_implicit_field(
-            "numberOfObjects", number_of_objects, write_unsigned_short(write_buffer, 8)
+        number_of_objects: c_uint8 = c_uint8(len(self.objects))
+        write_buffer.write_unsigned_byte(
+            number_of_objects, logical_name="numberOfObjects"
         )
 
         # Array Field (objects)
-        write_complex_type_array_field("objects", self.objects, write_buffer)
+        write_buffer.write_complex_array(self.objects, logical_name="objects")
 
         write_buffer.pop_context("ModbusPDUReadDeviceIdentificationResponse")
 
@@ -164,8 +147,7 @@ class ModbusPDUReadDeviceIdentificationResponse(PlcMessage, ModbusPDU):
     @staticmethod
     def static_parse_builder(read_buffer: ReadBuffer, response: c_bool):
         read_buffer.pull_context("ModbusPDUReadDeviceIdentificationResponse")
-        position_aware: PositionAware = read_buffer
-        start_pos: int = position_aware.get_pos()
+        start_pos: int = read_buffer.get_pos()
         cur_pos: int = 0
 
         mei_type: c_uint8 = read_const_field(

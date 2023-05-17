@@ -27,6 +27,7 @@ from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDUBuilder
 from plc4py.protocols.modbus.readwrite.ModbusPDUWriteFileRecordResponseItem import (
     ModbusPDUWriteFileRecordResponseItem,
 )
+from plc4py.spi.generation.WriteBuffer import WriteBuffer
 from typing import List
 import math
 
@@ -35,26 +36,23 @@ import math
 class ModbusPDUWriteFileRecordResponse(PlcMessage, ModbusPDU):
     items: List[ModbusPDUWriteFileRecordResponseItem]
     # Accessors for discriminator values.
-    error_flag: c_bool = False
+    error_flag: c_bool = c_bool(false)
     function_flag: c_uint8 = 0x15
-    response: c_bool = True
+    response: c_bool = c_bool(true)
 
     def __post_init__(self):
         super().__init__()
 
     def serialize_modbus_pdu_child(self, write_buffer: WriteBuffer):
-        position_aware: PositionAware = write_buffer
-        start_pos: int = position_aware.get_pos()
+        start_pos: int = write_buffer.get_pos()
         write_buffer.push_context("ModbusPDUWriteFileRecordResponse")
 
         # Implicit Field (byte_count) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-        byte_count: c_uint8 = c_uint8((ARRAY_SIZE_IN_BYTES(self.items())))
-        write_implicit_field(
-            "byteCount", byte_count, write_unsigned_short(write_buffer, 8)
-        )
+        byte_count: c_uint8 = c_uint8(itemsArraySizeInBytes(self.items))
+        write_buffer.write_unsigned_byte(byte_count, logical_name="byteCount")
 
         # Array Field (items)
-        write_complex_type_array_field("items", self.items, write_buffer)
+        write_buffer.write_complex_array(self.items, logical_name="items")
 
         write_buffer.pop_context("ModbusPDUWriteFileRecordResponse")
 
@@ -78,8 +76,7 @@ class ModbusPDUWriteFileRecordResponse(PlcMessage, ModbusPDU):
     @staticmethod
     def static_parse_builder(read_buffer: ReadBuffer, response: c_bool):
         read_buffer.pull_context("ModbusPDUWriteFileRecordResponse")
-        position_aware: PositionAware = read_buffer
-        start_pos: int = position_aware.get_pos()
+        start_pos: int = read_buffer.get_pos()
         cur_pos: int = 0
 
         byte_count: c_uint8 = read_implicit_field(

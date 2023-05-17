@@ -27,6 +27,7 @@ from plc4py.protocols.modbus.readwrite.DriverType import DriverType
 from plc4py.protocols.modbus.readwrite.ModbusADU import ModbusADU
 from plc4py.protocols.modbus.readwrite.ModbusADU import ModbusADUBuilder
 from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDU
+from plc4py.spi.generation.WriteBuffer import WriteBuffer
 import math
 
 
@@ -37,37 +38,26 @@ class ModbusRtuADU(PlcMessage, ModbusADU):
     # Arguments.
     response: c_bool
     # Accessors for discriminator values.
-    driver_type: DriverType = DriverType.MODBUS_RTU
+    driver_type: DriverType = DriverType.get_modbu_s__rtu()
 
     def __post_init__(self):
         super().__init__(self.response)
 
     def serialize_modbus_adu_child(self, write_buffer: WriteBuffer):
-        position_aware: PositionAware = write_buffer
-        start_pos: int = position_aware.get_pos()
+        start_pos: int = write_buffer.get_pos()
         write_buffer.push_context("ModbusRtuADU")
 
         # Simple Field (address)
-        write_simple_field(
-            "address",
-            self.address,
-            write_unsigned_short(write_buffer, 8),
-            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN),
-        )
+        write_buffer.write_unsigned_byte(self.address, logical_name="address")
 
         # Simple Field (pdu)
-        write_simple_field(
-            "pdu",
-            self.pdu,
-            DataWriterComplexDefault(write_buffer),
-            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN),
+        write_buffer.DataWriterComplexDefault(write_buffer)(
+            self.pdu, logical_name="pdu"
         )
 
         # Checksum Field (checksum) (Calculated)
-        write_checksum_field(
-            "crc",
-            c_uint16(modbus.readwrite.utils.StaticHelper.rtuCrcCheck(address, pdu)),
-            write_unsigned_int(write_buffer, 16),
+        write_buffer.write_unsigned_short(
+            c_uint16(rtu_crc_check(address, pdu)), logical_name="crc"
         )
 
         write_buffer.pop_context("ModbusRtuADU")
@@ -95,14 +85,13 @@ class ModbusRtuADU(PlcMessage, ModbusADU):
         read_buffer: ReadBuffer, driver_type: DriverType, response: c_bool
     ):
         read_buffer.pull_context("ModbusRtuADU")
-        position_aware: PositionAware = read_buffer
-        start_pos: int = position_aware.get_pos()
+        start_pos: int = read_buffer.get_pos()
         cur_pos: int = 0
 
         address: c_uint8 = read_simple_field(
             "address",
             read_unsigned_short(read_buffer, 8),
-            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN),
+            WithOption.WithByteOrder(get_bi_g__endian()),
         )
 
         pdu: ModbusPDU = read_simple_field(
@@ -110,14 +99,14 @@ class ModbusRtuADU(PlcMessage, ModbusADU):
             DataReaderComplexDefault(
                 ModbusPDU.static_parse(read_buffer, c_bool(response)), read_buffer
             ),
-            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN),
+            WithOption.WithByteOrder(get_bi_g__endian()),
         )
 
         crc: c_uint16 = read_checksum_field(
             "crc",
             read_unsigned_int(read_buffer, 16),
-            (c_uint16)(modbus.readwrite.utils.StaticHelper.rtuCrcCheck(address, pdu)),
-            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN),
+            (c_uint16)(rtu_crc_check(address, pdu)),
+            WithOption.WithByteOrder(get_bi_g__endian()),
         )
 
         read_buffer.close_context("ModbusRtuADU")

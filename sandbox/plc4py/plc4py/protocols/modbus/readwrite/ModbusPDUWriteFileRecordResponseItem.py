@@ -23,6 +23,7 @@ from ctypes import c_byte
 from ctypes import c_uint16
 from ctypes import c_uint8
 from plc4py.api.messages.PlcMessage import PlcMessage
+from plc4py.spi.generation.WriteBuffer import WriteBuffer
 from typing import List
 import math
 
@@ -38,35 +39,30 @@ class ModbusPDUWriteFileRecordResponseItem(PlcMessage):
         super().__init__()
 
     def serialize(self, write_buffer: WriteBuffer):
-        position_aware: PositionAware = write_buffer
-        start_pos: int = position_aware.get_pos()
+        start_pos: int = write_buffer.get_pos()
         write_buffer.push_context("ModbusPDUWriteFileRecordResponseItem")
 
         # Simple Field (referenceType)
-        write_simple_field(
-            "referenceType", self.reference_type, write_unsigned_short(write_buffer, 8)
+        write_buffer.write_unsigned_byte(
+            self.reference_type, logical_name="referenceType"
         )
 
         # Simple Field (fileNumber)
-        write_simple_field(
-            "fileNumber", self.file_number, write_unsigned_int(write_buffer, 16)
-        )
+        write_buffer.write_unsigned_short(self.file_number, logical_name="fileNumber")
 
         # Simple Field (recordNumber)
-        write_simple_field(
-            "recordNumber", self.record_number, write_unsigned_int(write_buffer, 16)
+        write_buffer.write_unsigned_short(
+            self.record_number, logical_name="recordNumber"
         )
 
         # Implicit Field (record_length) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-        record_length: c_uint16 = c_uint16(((COUNT(self.record_data())) / (2)))
-        write_implicit_field(
-            "recordLength", record_length, write_unsigned_int(write_buffer, 16)
+        record_length: c_uint16 = c_uint16(c_uint16(len(self.record_data))) / c_uint16(
+            c_uint16(2)
         )
+        write_buffer.write_unsigned_short(record_length, logical_name="recordLength")
 
         # Array Field (recordData)
-        write_byte_array_field(
-            "recordData", self.record_data, writeByteArray(write_buffer, 8)
-        )
+        write_buffer.write_byte_array(self.record_data, 8, logical_name="recordData")
 
         write_buffer.pop_context("ModbusPDUWriteFileRecordResponseItem")
 
@@ -96,14 +92,12 @@ class ModbusPDUWriteFileRecordResponseItem(PlcMessage):
         return length_in_bits
 
     def static_parse(read_buffer: ReadBuffer, args):
-        position_aware: PositionAware = read_buffer
         return staticParse(read_buffer)
 
     @staticmethod
     def static_parse_context(read_buffer: ReadBuffer):
         read_buffer.pull_context("ModbusPDUWriteFileRecordResponseItem")
-        position_aware: PositionAware = read_buffer
-        start_pos: int = position_aware.get_pos()
+        start_pos: int = read_buffer.get_pos()
         cur_pos: int = 0
 
         reference_type: c_uint8 = read_simple_field(

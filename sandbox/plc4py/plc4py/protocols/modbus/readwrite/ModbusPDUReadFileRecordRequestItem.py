@@ -22,6 +22,7 @@ from dataclasses import dataclass
 from ctypes import c_uint16
 from ctypes import c_uint8
 from plc4py.api.messages.PlcMessage import PlcMessage
+from plc4py.spi.generation.WriteBuffer import WriteBuffer
 import math
 
 
@@ -36,28 +37,25 @@ class ModbusPDUReadFileRecordRequestItem(PlcMessage):
         super().__init__()
 
     def serialize(self, write_buffer: WriteBuffer):
-        position_aware: PositionAware = write_buffer
-        start_pos: int = position_aware.get_pos()
+        start_pos: int = write_buffer.get_pos()
         write_buffer.push_context("ModbusPDUReadFileRecordRequestItem")
 
         # Simple Field (referenceType)
-        write_simple_field(
-            "referenceType", self.reference_type, write_unsigned_short(write_buffer, 8)
+        write_buffer.write_unsigned_byte(
+            self.reference_type, logical_name="referenceType"
         )
 
         # Simple Field (fileNumber)
-        write_simple_field(
-            "fileNumber", self.file_number, write_unsigned_int(write_buffer, 16)
-        )
+        write_buffer.write_unsigned_short(self.file_number, logical_name="fileNumber")
 
         # Simple Field (recordNumber)
-        write_simple_field(
-            "recordNumber", self.record_number, write_unsigned_int(write_buffer, 16)
+        write_buffer.write_unsigned_short(
+            self.record_number, logical_name="recordNumber"
         )
 
         # Simple Field (recordLength)
-        write_simple_field(
-            "recordLength", self.record_length, write_unsigned_int(write_buffer, 16)
+        write_buffer.write_unsigned_short(
+            self.record_length, logical_name="recordLength"
         )
 
         write_buffer.pop_context("ModbusPDUReadFileRecordRequestItem")
@@ -84,14 +82,12 @@ class ModbusPDUReadFileRecordRequestItem(PlcMessage):
         return length_in_bits
 
     def static_parse(read_buffer: ReadBuffer, args):
-        position_aware: PositionAware = read_buffer
         return staticParse(read_buffer)
 
     @staticmethod
     def static_parse_context(read_buffer: ReadBuffer):
         read_buffer.pull_context("ModbusPDUReadFileRecordRequestItem")
-        position_aware: PositionAware = read_buffer
-        start_pos: int = position_aware.get_pos()
+        start_pos: int = read_buffer.get_pos()
         cur_pos: int = 0
 
         reference_type: c_uint8 = read_simple_field(
