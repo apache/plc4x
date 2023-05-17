@@ -28,7 +28,7 @@ import (
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
 	driverModel "github.com/apache/plc4x/plc4go/protocols/knxnetip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi/utils"
-	values2 "github.com/apache/plc4x/plc4go/spi/values"
+	spiValues "github.com/apache/plc4x/plc4go/spi/values"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 )
@@ -434,12 +434,12 @@ func (m *Connection) DeviceReadPropertyDescriptor(ctx context.Context, targetAdd
 		}
 
 		val := map[string]values.PlcValue{}
-		val["writable"] = values2.NewPlcBOOL(propertyDescriptionResponse.GetWriteEnabled())
-		val["dataType"] = values2.NewPlcSTRING(propertyDescriptionResponse.GetPropertyDataType().Name())
-		val["maxElements"] = values2.NewPlcUINT(propertyDescriptionResponse.GetMaxNrOfElements())
-		val["readLevel"] = values2.NewPlcSTRING(propertyDescriptionResponse.GetReadLevel().String())
-		val["writeLevel"] = values2.NewPlcSTRING(propertyDescriptionResponse.GetWriteLevel().String())
-		str := values2.NewPlcStruct(val)
+		val["writable"] = spiValues.NewPlcBOOL(propertyDescriptionResponse.GetWriteEnabled())
+		val["dataType"] = spiValues.NewPlcSTRING(propertyDescriptionResponse.GetPropertyDataType().Name())
+		val["maxElements"] = spiValues.NewPlcUINT(propertyDescriptionResponse.GetMaxNrOfElements())
+		val["readLevel"] = spiValues.NewPlcSTRING(propertyDescriptionResponse.GetReadLevel().String())
+		val["writeLevel"] = spiValues.NewPlcSTRING(propertyDescriptionResponse.GetWriteLevel().String())
+		str := spiValues.NewPlcStruct(val)
 		sendResponse(&str, 1, nil)
 	}()
 
@@ -544,7 +544,7 @@ func (m *Connection) DeviceReadMemory(ctx context.Context, targetAddress driverM
 		}
 		if len(results) > 1 {
 			var plcList values.PlcValue
-			plcList = values2.NewPlcList(results)
+			plcList = spiValues.NewPlcList(results)
 			sendResponse(plcList, 1, nil)
 		} else if len(results) == 1 {
 			sendResponse(results[0], 1, nil)

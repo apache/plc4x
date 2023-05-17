@@ -29,7 +29,7 @@ import (
 	driverModel "github.com/apache/plc4x/plc4go/protocols/knxnetip/readwrite/model"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/spi/utils"
-	values2 "github.com/apache/plc4x/plc4go/spi/values"
+	spiValues "github.com/apache/plc4x/plc4go/spi/values"
 )
 
 type Subscriber struct {
@@ -146,7 +146,7 @@ func (m *Subscriber) handleValueChange(destinationAddress []byte, payload []byte
 					if !rb.HasMore(1) {
 						rb.Reset(0)
 					}
-					plcValue := values2.NewPlcRawByteArray(rb.GetBytes())
+					plcValue := spiValues.NewPlcRawByteArray(rb.GetBytes())
 					plcValueList = append(plcValueList, plcValue)
 				} else {
 					plcValue, err2 := driverModel.KnxDatapointParseWithBuffer(context.Background(), rb, elementType)
@@ -164,7 +164,7 @@ func (m *Subscriber) handleValueChange(destinationAddress []byte, payload []byte
 				if len(plcValueList) == 1 {
 					plcValues[tagName] = plcValueList[0]
 				} else {
-					plcValues[tagName] = values2.NewPlcList(plcValueList)
+					plcValues[tagName] = spiValues.NewPlcList(plcValueList)
 				}
 			}
 			event := NewSubscriptionEvent(tags, types, intervals, responseCodes, addresses, plcValues)
