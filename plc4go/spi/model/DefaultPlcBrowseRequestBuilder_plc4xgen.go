@@ -42,44 +42,6 @@ func (d *DefaultPlcBrowseRequestBuilder) SerializeWithWriteBuffer(ctx context.Co
 	if err := writeBuffer.PushContext("PlcBrowseRequestBuilder"); err != nil {
 		return err
 	}
-
-	if d.tagHandler != nil {
-		if serializableField, ok := d.tagHandler.(utils.Serializable); ok {
-			if err := writeBuffer.PushContext("tagHandler"); err != nil {
-				return err
-			}
-			if err := serializableField.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
-				return err
-			}
-			if err := writeBuffer.PopContext("tagHandler"); err != nil {
-				return err
-			}
-		} else {
-			stringValue := fmt.Sprintf("%v", d.tagHandler)
-			if err := writeBuffer.WriteString("tagHandler", uint32(len(stringValue)*8), "UTF-8", stringValue); err != nil {
-				return err
-			}
-		}
-	}
-
-	if d.browser != nil {
-		if serializableField, ok := d.browser.(utils.Serializable); ok {
-			if err := writeBuffer.PushContext("browser"); err != nil {
-				return err
-			}
-			if err := serializableField.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
-				return err
-			}
-			if err := writeBuffer.PopContext("browser"); err != nil {
-				return err
-			}
-		} else {
-			stringValue := fmt.Sprintf("%v", d.browser)
-			if err := writeBuffer.WriteString("browser", uint32(len(stringValue)*8), "UTF-8", stringValue); err != nil {
-				return err
-			}
-		}
-	}
 	if err := writeBuffer.PushContext("queryNames", utils.WithRenderAsList(true)); err != nil {
 		return err
 	}

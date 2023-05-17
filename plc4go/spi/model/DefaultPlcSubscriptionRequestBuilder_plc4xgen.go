@@ -42,63 +42,6 @@ func (d *DefaultPlcSubscriptionRequestBuilder) SerializeWithWriteBuffer(ctx cont
 	if err := writeBuffer.PushContext("PlcSubscriptionRequestBuilder"); err != nil {
 		return err
 	}
-
-	if d.subscriber != nil {
-		if serializableField, ok := d.subscriber.(utils.Serializable); ok {
-			if err := writeBuffer.PushContext("subscriber"); err != nil {
-				return err
-			}
-			if err := serializableField.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
-				return err
-			}
-			if err := writeBuffer.PopContext("subscriber"); err != nil {
-				return err
-			}
-		} else {
-			stringValue := fmt.Sprintf("%v", d.subscriber)
-			if err := writeBuffer.WriteString("subscriber", uint32(len(stringValue)*8), "UTF-8", stringValue); err != nil {
-				return err
-			}
-		}
-	}
-
-	if d.tagHandler != nil {
-		if serializableField, ok := d.tagHandler.(utils.Serializable); ok {
-			if err := writeBuffer.PushContext("tagHandler"); err != nil {
-				return err
-			}
-			if err := serializableField.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
-				return err
-			}
-			if err := writeBuffer.PopContext("tagHandler"); err != nil {
-				return err
-			}
-		} else {
-			stringValue := fmt.Sprintf("%v", d.tagHandler)
-			if err := writeBuffer.WriteString("tagHandler", uint32(len(stringValue)*8), "UTF-8", stringValue); err != nil {
-				return err
-			}
-		}
-	}
-
-	if d.valueHandler != nil {
-		if serializableField, ok := d.valueHandler.(utils.Serializable); ok {
-			if err := writeBuffer.PushContext("valueHandler"); err != nil {
-				return err
-			}
-			if err := serializableField.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
-				return err
-			}
-			if err := writeBuffer.PopContext("valueHandler"); err != nil {
-				return err
-			}
-		} else {
-			stringValue := fmt.Sprintf("%v", d.valueHandler)
-			if err := writeBuffer.WriteString("valueHandler", uint32(len(stringValue)*8), "UTF-8", stringValue); err != nil {
-				return err
-			}
-		}
-	}
 	if err := writeBuffer.PushContext("tagNames", utils.WithRenderAsList(true)); err != nil {
 		return err
 	}

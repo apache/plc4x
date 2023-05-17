@@ -31,12 +31,12 @@ import (
 
 //go:generate go run ../../tools/plc4xgenerator/gen.go -type=DefaultPlcReadRequestBuilder
 type DefaultPlcReadRequestBuilder struct {
-	reader                 spi.PlcReader
-	tagHandler             spi.PlcTagHandler
+	reader                 spi.PlcReader     `ignore:"true"`
+	tagHandler             spi.PlcTagHandler `ignore:"true"`
 	tagNames               []string
 	tagAddresses           map[string]string
 	tags                   map[string]apiModel.PlcTag
-	readRequestInterceptor interceptors.ReadRequestInterceptor
+	readRequestInterceptor interceptors.ReadRequestInterceptor `ignore:"true"`
 }
 
 func NewDefaultPlcReadRequestBuilder(tagHandler spi.PlcTagHandler, reader spi.PlcReader) apiModel.PlcReadRequestBuilder {

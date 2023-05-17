@@ -29,8 +29,8 @@ import (
 
 //go:generate go run ../../tools/plc4xgenerator/gen.go -type=DefaultPlcBrowseRequestBuilder
 type DefaultPlcBrowseRequestBuilder struct {
-	tagHandler spi.PlcTagHandler
-	browser    spi.PlcBrowser
+	tagHandler spi.PlcTagHandler `ignore:"true"`
+	browser    spi.PlcBrowser    `ignore:"true"`
 	// The double structure is in order to preserve the order of elements.
 	queryNames   []string
 	queryStrings map[string]string
