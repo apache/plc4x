@@ -92,6 +92,9 @@ def checkDotnet() {
         }
     } else {
         println "missing"
+        println "--- output of version `dotnet --version` command ---"
+        println output
+        println "----------------------------------------------------"
         allConditionsMet = false
     }
 }
@@ -153,6 +156,9 @@ def checkGcc() {
         }
     } else {
         println "missing"
+        println "--- output of version `gcc --version` command ---"
+        println output
+        println "-------------------------------------------------"
         allConditionsMet = false
     }
 }
@@ -174,6 +180,9 @@ def checkGit() {
         }
     } else {
         println "missing"
+        println "--- output of version `git --version` command ---"
+        println output
+        println "-------------------------------------------------"
         allConditionsMet = false
     }
 }
@@ -202,6 +211,9 @@ def checkPython() {
         }
     } catch (Exception ignored) {
         println "missing"
+        println "--- output of version `${python} --version` command ---"
+        println output
+        println "----------------------------------------------------"
         allConditionsMet = false
     }
 }
@@ -220,12 +232,19 @@ def checkPythonVenv() {
         process.waitForProcessOutput(stdOut, stdErr)
         if (stdErr.contains("No module named")) {
             println "missing"
+            println "--- output of version `python -Im \"ensurepip\"` command ---"
+            println output
+            println "------------------------------------------------------------"
             allConditionsMet = false
         } else {
             println "               OK"
         }
-    } catch (Exception ignored) {
+    } catch (Exception e) {
         println "missing"
+        println "--- failed with exception ---"
+        println e
+        e.printStackTrace()
+        println "----------------------------------------------------"
         allConditionsMet = false
     }
 }
@@ -257,6 +276,9 @@ def checkDocker() {
         }
     } else {
         println "missing"
+        println "--- output of version `docker info` command ---"
+        println output
+        println "-----------------------------------------------"
         allConditionsMet = false
     }
     // TODO: Implement the actual check ...
@@ -288,9 +310,12 @@ def checkLibPcap(String minVersion, String os, String arch) {
             println "               SKIPPED (on aarch64)"
         }
     } catch (Error e) {
-        e.printStackTrace()
         output = ""
         println "missing"
+        println "--- exception ---"
+        println e
+        e.printStackTrace()
+        println "-----------------"
         allConditionsMet = false
     }
 }
