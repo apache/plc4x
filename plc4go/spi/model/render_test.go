@@ -55,7 +55,6 @@ func TestRenderTest(t *testing.T) {
 		&DefaultPlcSubscriptionEventItem{},
 		&DefaultPlcSubscriptionHandle{},
 		&DefaultPlcSubscriptionRequest{DefaultPlcTagRequest: NewDefaultPlcTagRequest(nil, nil)},
-		&DefaultPlcSubscriptionRequestResult{},
 		&DefaultPlcSubscriptionResponse{},
 		&DefaultPlcSubscriptionResponseItem{},
 		&DefaultPlcTagRequest{},

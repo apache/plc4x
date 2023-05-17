@@ -60,5 +60,6 @@ func (d *DefaultPlcWriteResponse) GetRequest() apiModel.PlcWriteRequest {
 }
 
 func (d *DefaultPlcWriteResponse) GetResponseCode(name string) apiModel.PlcResponseCode {
+	// TODO: guard
 	return d.responseCodes[name]
 }

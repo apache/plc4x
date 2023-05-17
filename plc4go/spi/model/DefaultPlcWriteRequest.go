@@ -194,5 +194,6 @@ func (d *DefaultPlcWriteRequest) GetWriteRequestInterceptor() interceptors.Write
 }
 
 func (d *DefaultPlcWriteRequest) GetValue(name string) apiValues.PlcValue {
+	// TODO: guard
 	return d.values[name]
 }
