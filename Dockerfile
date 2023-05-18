@@ -76,7 +76,7 @@ RUN ./mvnw org.apache.maven.plugins:maven-help-plugin:3.2.0:evaluate -Dexpressio
 ##########################################################################################
 
 # Move the file to a place we can reference it from without a version
-RUN PROJECT_VERSION=`cat project_version`; mv plc4j/examples/hello-integration-iotdb/target/plc4j-examples-hello-integration-iotdb-${PROJECT_VERSION}-uber-jar.jar plc4xdemo.jar
+RUN PROJECT_VERSION=`cat project_version`; mv plc4j/examples/hello-world-plc4x-read/target/plc4j-examples-hello-world-plc4x-read-${PROJECT_VERSION}-uber-jar.jar plc4xdemo.jar
 
 # Build a highly optimized JRE
 FROM alpine:3.10 as packager
@@ -110,7 +110,7 @@ COPY --from=build /ws/plc4xdemo.jar /plc4xdemo.jar
 EXPOSE 9200 9300
 
 # Allow for extra options to be passed to the jar using PLC4X_OPTIONS env variable
-ENV PLC4X_OPTIONS ""
+ENV PLC4X_OPTIONS "--connection-string simulated://127.0.0.1 --tag-addresses RANDOM/foo:UDINT"
 
 # This will be executed as soon as the container is started.
 ENTRYPOINT ["sh", "-c", "[ -f /run/plc4xdemo.env ] && . /run/plc4xdemo.env ; java -jar /plc4xdemo.jar $PLC4X_OPTIONS"]
