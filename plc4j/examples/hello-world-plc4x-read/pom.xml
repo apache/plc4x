@@ -62,18 +62,18 @@
     </dependency>
   </dependencies>
 
-  <!--build>
+  <build>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
         <configuration>
           <usedDependencies combine.children="append">
-            <usedDependency>org.slf4j:log4j-over-slf4j</usedDependency>
+            <usedDependency>ch.qos.logback:logback-core</usedDependency>
           </usedDependencies>
         </configuration>
       </plugin>
     </plugins>
-  </build-->
+  </build>
 
 </project>
