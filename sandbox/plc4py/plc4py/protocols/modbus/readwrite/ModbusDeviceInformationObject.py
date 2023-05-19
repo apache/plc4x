@@ -47,7 +47,7 @@ class ModbusDeviceInformationObject(PlcMessage):
         write_buffer.write_unsigned_byte(object_length, logical_name="objectLength")
 
         # Array Field (data)
-        write_buffer.write_byte_array(self.data, 8, logical_name="data")
+        write_buffer.write_byte_array(self.data, logical_name="data")
 
         write_buffer.pop_context("ModbusDeviceInformationObject")
 
@@ -66,7 +66,7 @@ class ModbusDeviceInformationObject(PlcMessage):
 
         # Array field
         if self.data is not None:
-            length_in_bits += 8 * self.data.length
+            length_in_bits += 8 * len(self.data)
 
         return length_in_bits
 
@@ -79,12 +79,10 @@ class ModbusDeviceInformationObject(PlcMessage):
         start_pos: int = read_buffer.get_pos()
         cur_pos: int = 0
 
-        object_id: c_uint8 = read_simple_field(
-            "objectId", read_unsigned_short(read_buffer, 8)
-        )
+        object_id: c_uint8 = read_simple_field("objectId", read_unsigned_short)
 
         object_length: c_uint8 = read_implicit_field(
-            "objectLength", read_unsigned_short(read_buffer, 8)
+            "objectLength", read_unsigned_short
         )
 
         data: List[c_byte] = read_buffer.read_byte_array("data", int(objectLength))

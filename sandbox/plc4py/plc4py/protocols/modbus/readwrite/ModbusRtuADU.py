@@ -89,9 +89,7 @@ class ModbusRtuADU(PlcMessage, ModbusADU):
         cur_pos: int = 0
 
         address: c_uint8 = read_simple_field(
-            "address",
-            read_unsigned_short(read_buffer, 8),
-            WithOption.WithByteOrder(get_bi_g__endian()),
+            "address", read_unsigned_short, WithOption.WithByteOrder(get_bi_g__endian())
         )
 
         pdu: ModbusPDU = read_simple_field(
@@ -104,7 +102,7 @@ class ModbusRtuADU(PlcMessage, ModbusADU):
 
         crc: c_uint16 = read_checksum_field(
             "crc",
-            read_unsigned_int(read_buffer, 16),
+            read_unsigned_int,
             (c_uint16)(rtu_crc_check(address, pdu)),
             WithOption.WithByteOrder(get_bi_g__endian()),
         )

@@ -32,9 +32,9 @@ import math
 class ModbusPDUReadExceptionStatusResponse(PlcMessage, ModbusPDU):
     value: c_uint8
     # Accessors for discriminator values.
-    error_flag: c_bool = c_bool(false)
+    error_flag: c_bool = False
     function_flag: c_uint8 = 0x07
-    response: c_bool = c_bool(true)
+    response: c_bool = True
 
     def __post_init__(self):
         super().__init__()
@@ -66,7 +66,7 @@ class ModbusPDUReadExceptionStatusResponse(PlcMessage, ModbusPDU):
         start_pos: int = read_buffer.get_pos()
         cur_pos: int = 0
 
-        value: c_uint8 = read_simple_field("value", read_unsigned_short(read_buffer, 8))
+        value: c_uint8 = read_simple_field("value", read_unsigned_short)
 
         read_buffer.close_context("ModbusPDUReadExceptionStatusResponse")
         # Create the instance

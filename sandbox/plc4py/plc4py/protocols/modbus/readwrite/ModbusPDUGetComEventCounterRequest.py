@@ -31,9 +31,9 @@ import math
 @dataclass
 class ModbusPDUGetComEventCounterRequest(PlcMessage, ModbusPDU):
     # Accessors for discriminator values.
-    error_flag: c_bool = c_bool(false)
+    error_flag: c_bool = False
     function_flag: c_uint8 = 0x0B
-    response: c_bool = c_bool(false)
+    response: c_bool = False
 
     def __post_init__(self):
         super().__init__()

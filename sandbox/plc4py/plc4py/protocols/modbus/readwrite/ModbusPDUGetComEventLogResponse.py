@@ -39,9 +39,9 @@ class ModbusPDUGetComEventLogResponse(PlcMessage, ModbusPDU):
     message_count: c_uint16
     events: List[c_byte]
     # Accessors for discriminator values.
-    error_flag: c_bool = c_bool(false)
+    error_flag: c_bool = False
     function_flag: c_uint8 = 0x0C
-    response: c_bool = c_bool(true)
+    response: c_bool = True
 
     def __post_init__(self):
         super().__init__()
@@ -51,7 +51,7 @@ class ModbusPDUGetComEventLogResponse(PlcMessage, ModbusPDU):
         write_buffer.push_context("ModbusPDUGetComEventLogResponse")
 
         # Implicit Field (byte_count) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-        byte_count: c_uint8 = c_uint8(c_uint8(len(self.events))) + c_uint8(c_uint8(6))
+        byte_count: c_uint8 = c_uint8(len(self.events)) + c_uint8(6)
         write_buffer.write_unsigned_byte(byte_count, logical_name="byteCount")
 
         # Simple Field (status)
@@ -66,7 +66,7 @@ class ModbusPDUGetComEventLogResponse(PlcMessage, ModbusPDU):
         )
 
         # Array Field (events)
-        write_buffer.write_byte_array(self.events, 8, logical_name="events")
+        write_buffer.write_byte_array(self.events, logical_name="events")
 
         write_buffer.pop_context("ModbusPDUGetComEventLogResponse")
 
@@ -91,7 +91,7 @@ class ModbusPDUGetComEventLogResponse(PlcMessage, ModbusPDU):
 
         # Array field
         if self.events is not None:
-            length_in_bits += 8 * self.events.length
+            length_in_bits += 8 * len(self.events)
 
         return length_in_bits
 
@@ -101,24 +101,16 @@ class ModbusPDUGetComEventLogResponse(PlcMessage, ModbusPDU):
         start_pos: int = read_buffer.get_pos()
         cur_pos: int = 0
 
-        byte_count: c_uint8 = read_implicit_field(
-            "byteCount", read_unsigned_short(read_buffer, 8)
-        )
+        byte_count: c_uint8 = read_implicit_field("byteCount", read_unsigned_short)
 
-        status: c_uint16 = read_simple_field(
-            "status", read_unsigned_int(read_buffer, 16)
-        )
+        status: c_uint16 = read_simple_field("status", read_unsigned_int)
 
-        event_count: c_uint16 = read_simple_field(
-            "eventCount", read_unsigned_int(read_buffer, 16)
-        )
+        event_count: c_uint16 = read_simple_field("eventCount", read_unsigned_int)
 
-        message_count: c_uint16 = read_simple_field(
-            "messageCount", read_unsigned_int(read_buffer, 16)
-        )
+        message_count: c_uint16 = read_simple_field("messageCount", read_unsigned_int)
 
         events: List[c_byte] = read_buffer.read_byte_array(
-            "events", int(c_int32(byteCount) - c_int32(c_int32(6)))
+            "events", int(byteCount - c_int32(6))
         )
 
         read_buffer.close_context("ModbusPDUGetComEventLogResponse")

@@ -220,7 +220,7 @@ class ${type.name}<#if type.isDiscriminatedParentTypeDefinition()></#if>(<#if ty
 
         # Array Field (${arrayField.name})
                         <#if arrayField.type.elementTypeReference.isByteBased()>
-        write_buffer.write_byte_array(self.${helper.camelCaseToSnakeCase(namedField.name)}, 8, logical_name="${namedField.name}")
+        write_buffer.write_byte_array(self.${helper.camelCaseToSnakeCase(namedField.name)}, logical_name="${namedField.name}")
                         <#elseif arrayField.type.elementTypeReference.isSimpleTypeReference()>
         write_buffer.write_simple_array(self.${helper.camelCaseToSnakeCase(namedField.name)}, ${helper.getDataWriterCall(arrayField.type.elementTypeReference, namedField.name)}, logical_name="${namedField.name}")
                         <#else>
@@ -369,12 +369,12 @@ class ${type.name}<#if type.isDiscriminatedParentTypeDefinition()></#if>(<#if ty
         if self.${helper.camelCaseToSnakeCase(arrayField.name)} is not None:
         <#if arrayElementTypeReference.isSimpleTypeReference()>
             <#assign simpleTypeReference = arrayElementTypeReference.asSimpleTypeReference().orElseThrow()>
-            length_in_bits += ${simpleTypeReference.sizeInBits} * self.${helper.camelCaseToSnakeCase(arrayField.name)}.<#if arrayElementTypeReference.isByteBased()>length<#else>size()</#if>
+            length_in_bits += ${simpleTypeReference.sizeInBits} * len(self.${helper.camelCaseToSnakeCase(arrayField.name)})
         <#elseif arrayField.isCountArrayField()>
             i: int = 0
             <#assign nonSimpleTypeReference = arrayElementTypeReference.asNonSimpleTypeReference().orElseThrow()>
             for element in self.${helper.camelCaseToSnakeCase(arrayField.name)}:
-                last: bool = ++i >= self.${helper.camelCaseToSnakeCase(arrayField.name)}.size()
+                last: bool = ++i >= len(self.${helper.camelCaseToSnakeCase(arrayField.name)})
                 length_in_bits += element.get_length_in_bits()
 
         <#else>

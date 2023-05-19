@@ -35,9 +35,9 @@ class ModbusPDUMaskWriteHoldingRegisterResponse(PlcMessage, ModbusPDU):
     and_mask: c_uint16
     or_mask: c_uint16
     # Accessors for discriminator values.
-    error_flag: c_bool = c_bool(false)
+    error_flag: c_bool = False
     function_flag: c_uint8 = 0x16
-    response: c_bool = c_bool(true)
+    response: c_bool = True
 
     def __post_init__(self):
         super().__init__()
@@ -84,16 +84,12 @@ class ModbusPDUMaskWriteHoldingRegisterResponse(PlcMessage, ModbusPDU):
         cur_pos: int = 0
 
         reference_address: c_uint16 = read_simple_field(
-            "referenceAddress", read_unsigned_int(read_buffer, 16)
+            "referenceAddress", read_unsigned_int
         )
 
-        and_mask: c_uint16 = read_simple_field(
-            "andMask", read_unsigned_int(read_buffer, 16)
-        )
+        and_mask: c_uint16 = read_simple_field("andMask", read_unsigned_int)
 
-        or_mask: c_uint16 = read_simple_field(
-            "orMask", read_unsigned_int(read_buffer, 16)
-        )
+        or_mask: c_uint16 = read_simple_field("orMask", read_unsigned_int)
 
         read_buffer.close_context("ModbusPDUMaskWriteHoldingRegisterResponse")
         # Create the instance

@@ -212,6 +212,11 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
         }
     }
 
+    public String getReservedValue(ReservedField reservedField) {
+        final String languageTypeName = getLanguageTypeNameForTypeReference(reservedField.getType());
+        return languageTypeName + "(" + reservedField.getReferenceValue() + ")";
+    }
+
     public String getFieldOptions(TypedField field, List<Argument> parserArguments) {
         StringBuilder sb = new StringBuilder();
         final Optional<Term> encodingOptional = field.getEncoding();
@@ -276,36 +281,33 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
         final int sizeInBits = simpleTypeReference.getSizeInBits();
         switch (simpleTypeReference.getBaseType()) {
             case BIT:
-                return "read_boolean(read_buffer)";
+                return "read_boolean";
             case BYTE:
-                return "read_byte(read_buffer, " + sizeInBits + ")";
+                return "read_byte";
             case UINT:
-                if (sizeInBits <= 4) return "read_unsigned_byte(read_buffer, " + sizeInBits + ")";
-                if (sizeInBits <= 8) return "read_unsigned_short(read_buffer, " + sizeInBits + ")";
-                if (sizeInBits <= 16) return "read_unsigned_int(read_buffer, " + sizeInBits + ")";
-                if (sizeInBits <= 32) return "read_unsigned_long(read_buffer, " + sizeInBits + ")";
-                return "read_unsigned_big_integer(read_buffer, " + sizeInBits + ")";
+                if (sizeInBits <= 4) return "read_unsigned_byte";
+                if (sizeInBits <= 8) return "read_unsigned_short";
+                if (sizeInBits <= 16) return "read_unsigned_int";
+                return "read_unsigned_long";
             case INT:
-                if (sizeInBits <= 8) return "read_signed_byte(read_buffer, " + sizeInBits + ")";
-                if (sizeInBits <= 16) return "read_signed_short(read_buffer, " + sizeInBits + ")";
-                if (sizeInBits <= 32) return "read_signed_int(read_buffer, " + sizeInBits + ")";
-                if (sizeInBits <= 64) return "read_signed_long(read_buffer, " + sizeInBits + ")";
-                return "read_signed_big_integer(read_buffer, " + sizeInBits + ")";
+                if (sizeInBits <= 8) return "read_signed_byte";
+                if (sizeInBits <= 16) return "read_signed_short";
+                if (sizeInBits <= 32) return "read_signed_int";
+                return "read_signed_long";
             case FLOAT:
-                if (sizeInBits <= 32) return "read_float(read_buffer, " + sizeInBits + ")";
-                if (sizeInBits <= 64) return "read_double(read_buffer, " + sizeInBits + ")";
-                return "read_big_decimal(read_buffer, " + sizeInBits + ")";
+                if (sizeInBits <= 32) return "read_float";
+                return "read_double";
             case STRING:
-                return "read_string(read_buffer, " + sizeInBits + ")";
+                return "read_string";
             case VSTRING:
                 VstringTypeReference vstringTypeReference = (VstringTypeReference) simpleTypeReference;
-                return "read_string(read_buffer, " + toParseExpression(null, INT_TYPE_REFERENCE, vstringTypeReference.getLengthExpression(), null) + ")";
+                return "read_string";
             case TIME:
-                return "read_time(read_buffer)";
+                return "read_time";
             case DATE:
-                return "read_date(read_buffer)";
+                return "read_date";
             case DATETIME:
-                return "read_date_time(read_buffer)";
+                return "read_date_time";
             default:
                 throw new UnsupportedOperationException("Unsupported type " + simpleTypeReference.getBaseType());
         }
@@ -674,31 +676,6 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
         }
     }
 
-    public String getReservedValue(ReservedField reservedField) {
-        final String languageTypeName = getLanguageTypeNameForTypeReference(reservedField.getType());
-        switch (languageTypeName) {
-            case "*big.Int":
-                emitRequiredImport("math/big");
-                return "big.NewInt(" + reservedField.getReferenceValue() + ")";
-            case "*big.Float":
-                emitRequiredImport("math/big");
-                return "*big.Float(" + reservedField.getReferenceValue() + ")";
-            default:
-                return languageTypeName + "(" + reservedField.getReferenceValue() + ")";
-        }
-    }
-
-    public String toTypeSafeCompare(ReservedField reservedField) {
-        final String languageTypeName = getLanguageTypeNameForTypeReference(reservedField.getType());
-        switch (languageTypeName) {
-            case "*big.Int":
-            case "*big.Float":
-                emitRequiredImport("math/big");
-                return "reserved.Cmp(" + getReservedValue(reservedField) + ") != 0";
-            default:
-                return "reserved != " + getReservedValue(reservedField);
-        }
-    }
 
     public String toParseExpression(Field field, TypeReference resultType, Term term, List<Argument> parserArguments) {
         Tracer tracer = Tracer.start("toParseExpression");
@@ -815,8 +792,8 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
         switch (operation) {
             case "^":
                 tracer = tracer.dive("^");
-                emitRequiredImport("math");
-                return tracer + "Math.pow(" +
+                emitRequiredImport("from math import pow");
+                return tracer + "pow(" +
                     castExpressionForTypeReference + "(" + toExpression(field, fieldType, a, parserArguments, serializerArguments, serialize, false) + "), " +
                     castExpressionForTypeReference + "(" + toExpression(field, fieldType, b, parserArguments, serializerArguments, serialize, false) + "))";
             // If we start casting for comparisons, equals or non equals, really messy things happen.
@@ -853,9 +830,9 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
                         toExpression(field, fieldType, b, parserArguments, serializerArguments, serialize, false);
                 }
                 return tracer +
-                    castExpressionForTypeReference + "(" + toExpression(field, fieldType, a, parserArguments, serializerArguments, serialize, false) + ") " +
+                    toExpression(field, fieldType, a, parserArguments, serializerArguments, serialize, false) +
                     operation + " " +
-                    castExpressionForTypeReference + "(" + toExpression(field, fieldType, b, parserArguments, serializerArguments, serialize, false) + ")";
+                    toExpression(field, fieldType, b, parserArguments, serializerArguments, serialize, false);
         }
     }
 
@@ -884,7 +861,8 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
             return tracer + "None";
         } else if (term instanceof BooleanLiteral) {
             tracer = tracer.dive("boolean literal instanceOf");
-            return tracer + getCastExpressionForTypeReference(fieldType) + "(" + ((BooleanLiteral) term).getValue() + ")";
+            String bool = Boolean.toString(((BooleanLiteral) term).getValue());
+            return tracer + bool.substring(0,1).toUpperCase() + bool.substring(1);
         } else if (term instanceof NumericLiteral) {
             tracer = tracer.dive("numeric literal instanceOf");
             if (getCastExpressionForTypeReference(fieldType).equals("string")) {
@@ -1130,8 +1108,8 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
             .stream().findFirst().orElseThrow(IllegalStateException::new);
         // The Ceil function expects 64 bit floating point values.
         TypeReference tr = new DefaultFloatTypeReference(SimpleTypeReference.SimpleBaseType.FLOAT, 64);
-        emitRequiredImport("math");
-        return tracer + "math.Ceil(" + toExpression(field, tr, va, parserArguments, serializerArguments, serialize, suppressPointerAccess) + ")";
+        emitRequiredImport("from math import ceil");
+        return tracer + "ceil(" + toExpression(field, tr, va, parserArguments, serializerArguments, serialize, suppressPointerAccess) + ")";
     }
 
     private String toArraySizeInBytesVariableExpression(Field field, TypeReference typeReference, VariableLiteral variableLiteral, List<Argument> parserArguments, List<Argument> serializerArguments, boolean suppressPointerAccess, Tracer tracer) {
@@ -1144,7 +1122,7 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
             .asVariableLiteral()
             .orElseThrow(() -> new RuntimeException("ARRAY_SIZE_IN_BYTES needs a variable literal"));
         // "io" and "m" are always available in every parser.
-        boolean isSerializerArg = "readBuffer".equals(va.getName()) || "writeBuffer".equals(va.getName()) || "m".equals(va.getName()) || "element".equals(va.getName());
+        boolean isSerializerArg = "read_buffer".equals(va.getName()) || "write_buffer".equals(va.getName()) || "self".equals(va.getName()) || "element".equals(va.getName());
         if (!isSerializerArg && serializerArguments != null) {
             for (Argument serializerArgument : serializerArguments) {
                 if (serializerArgument.getName().equals(va.getName())) {
@@ -1159,7 +1137,8 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
         } else {
             sb.append(toVariableExpression(field, typeReference, va, parserArguments, serializerArguments, true, suppressPointerAccess));
         }
-        return tracer + getCastExpressionForTypeReference(typeReference) + "(" + va.getName() + "ArraySizeInBytes(" + sb + "))";
+        emitRequiredImport("from sys import getsizeof");
+        return tracer + getCastExpressionForTypeReference(typeReference) + "(getsizeof(" + sb + "))";
     }
 
     private String toCountVariableExpression(Field field, TypeReference typeReference, VariableLiteral variableLiteral, List<Argument> parserArguments, List<Argument> serializerArguments, boolean serialize, boolean suppressPointerAccess, Tracer tracer) {
@@ -1764,26 +1743,6 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
         return extractedTrace + StringUtils.capitalize(cleanedString);
     }
 
-    public String getEndiannessOptions(boolean read, boolean separatorPrefix) {
-        return getEndiannessOptions(read, separatorPrefix, Collections.emptyList());
-    }
-
-    public String getEndiannessOptions(boolean read, boolean separatorPrefix, List<Argument> parserArguments) {
-        Optional<Term> byteOrder = thisType.getAttribute("byteOrder");
-        if (byteOrder.isPresent()) {
-            emitRequiredImport("encoding/binary");
-            if(read) {
-                return (separatorPrefix ? ", " : "") + "utils.WithByteOrderForReadBufferByteBased(" +
-                    toParseExpression(null, new DefaultByteOrderTypeReference(), byteOrder.orElseThrow(), parserArguments) +
-                    ")";
-            } else {
-                return (separatorPrefix ? ", " : "") + "utils.WithByteOrderForByteBasedBuffer(" +
-                    toSerializationExpression(null, new DefaultByteOrderTypeReference(), byteOrder.orElseThrow(), parserArguments) +
-                    ")";
-            }
-        }
-        return "";
-    }
 
     /**
      * Converts a camel-case string to snake-case.

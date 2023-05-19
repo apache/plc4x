@@ -66,7 +66,7 @@ class ModbusConstants(PlcMessage):
 
         modbus_tcp_default_port: c_uint16 = read_const_field(
             "modbusTcpDefaultPort",
-            read_unsigned_int(read_buffer, 16),
+            read_unsigned_int,
             ModbusConstants.MODBUSTCPDEFAULTPORT,
         )
 

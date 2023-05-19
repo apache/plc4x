@@ -39,9 +39,9 @@ class ModbusPDUReadWriteMultipleHoldingRegistersRequest(PlcMessage, ModbusPDU):
     write_quantity: c_uint16
     value: List[c_byte]
     # Accessors for discriminator values.
-    error_flag: c_bool = c_bool(false)
+    error_flag: c_bool = False
     function_flag: c_uint8 = 0x17
-    response: c_bool = c_bool(false)
+    response: c_bool = False
 
     def __post_init__(self):
         super().__init__()
@@ -75,7 +75,7 @@ class ModbusPDUReadWriteMultipleHoldingRegistersRequest(PlcMessage, ModbusPDU):
         write_buffer.write_unsigned_byte(byte_count, logical_name="byteCount")
 
         # Array Field (value)
-        write_buffer.write_byte_array(self.value, 8, logical_name="value")
+        write_buffer.write_byte_array(self.value, logical_name="value")
 
         write_buffer.pop_context("ModbusPDUReadWriteMultipleHoldingRegistersRequest")
 
@@ -103,7 +103,7 @@ class ModbusPDUReadWriteMultipleHoldingRegistersRequest(PlcMessage, ModbusPDU):
 
         # Array field
         if self.value is not None:
-            length_in_bits += 8 * self.value.length
+            length_in_bits += 8 * len(self.value)
 
         return length_in_bits
 
@@ -114,24 +114,18 @@ class ModbusPDUReadWriteMultipleHoldingRegistersRequest(PlcMessage, ModbusPDU):
         cur_pos: int = 0
 
         read_starting_address: c_uint16 = read_simple_field(
-            "readStartingAddress", read_unsigned_int(read_buffer, 16)
+            "readStartingAddress", read_unsigned_int
         )
 
-        read_quantity: c_uint16 = read_simple_field(
-            "readQuantity", read_unsigned_int(read_buffer, 16)
-        )
+        read_quantity: c_uint16 = read_simple_field("readQuantity", read_unsigned_int)
 
         write_starting_address: c_uint16 = read_simple_field(
-            "writeStartingAddress", read_unsigned_int(read_buffer, 16)
+            "writeStartingAddress", read_unsigned_int
         )
 
-        write_quantity: c_uint16 = read_simple_field(
-            "writeQuantity", read_unsigned_int(read_buffer, 16)
-        )
+        write_quantity: c_uint16 = read_simple_field("writeQuantity", read_unsigned_int)
 
-        byte_count: c_uint8 = read_implicit_field(
-            "byteCount", read_unsigned_short(read_buffer, 8)
-        )
+        byte_count: c_uint8 = read_implicit_field("byteCount", read_unsigned_short)
 
         value: List[c_byte] = read_buffer.read_byte_array("value", int(byteCount))
 

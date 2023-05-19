@@ -34,9 +34,9 @@ class ModbusPDUWriteSingleRegisterRequest(PlcMessage, ModbusPDU):
     address: c_uint16
     value: c_uint16
     # Accessors for discriminator values.
-    error_flag: c_bool = c_bool(false)
+    error_flag: c_bool = False
     function_flag: c_uint8 = 0x06
-    response: c_bool = c_bool(false)
+    response: c_bool = False
 
     def __post_init__(self):
         super().__init__()
@@ -74,11 +74,9 @@ class ModbusPDUWriteSingleRegisterRequest(PlcMessage, ModbusPDU):
         start_pos: int = read_buffer.get_pos()
         cur_pos: int = 0
 
-        address: c_uint16 = read_simple_field(
-            "address", read_unsigned_int(read_buffer, 16)
-        )
+        address: c_uint16 = read_simple_field("address", read_unsigned_int)
 
-        value: c_uint16 = read_simple_field("value", read_unsigned_int(read_buffer, 16))
+        value: c_uint16 = read_simple_field("value", read_unsigned_int)
 
         read_buffer.close_context("ModbusPDUWriteSingleRegisterRequest")
         # Create the instance

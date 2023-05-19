@@ -34,9 +34,9 @@ class ModbusPDUGetComEventCounterResponse(PlcMessage, ModbusPDU):
     status: c_uint16
     event_count: c_uint16
     # Accessors for discriminator values.
-    error_flag: c_bool = c_bool(false)
+    error_flag: c_bool = False
     function_flag: c_uint8 = 0x0B
-    response: c_bool = c_bool(true)
+    response: c_bool = True
 
     def __post_init__(self):
         super().__init__()
@@ -74,13 +74,9 @@ class ModbusPDUGetComEventCounterResponse(PlcMessage, ModbusPDU):
         start_pos: int = read_buffer.get_pos()
         cur_pos: int = 0
 
-        status: c_uint16 = read_simple_field(
-            "status", read_unsigned_int(read_buffer, 16)
-        )
+        status: c_uint16 = read_simple_field("status", read_unsigned_int)
 
-        event_count: c_uint16 = read_simple_field(
-            "eventCount", read_unsigned_int(read_buffer, 16)
-        )
+        event_count: c_uint16 = read_simple_field("eventCount", read_unsigned_int)
 
         read_buffer.close_context("ModbusPDUGetComEventCounterResponse")
         # Create the instance

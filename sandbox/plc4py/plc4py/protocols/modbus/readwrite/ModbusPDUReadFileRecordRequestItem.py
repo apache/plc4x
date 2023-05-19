@@ -91,20 +91,14 @@ class ModbusPDUReadFileRecordRequestItem(PlcMessage):
         cur_pos: int = 0
 
         reference_type: c_uint8 = read_simple_field(
-            "referenceType", read_unsigned_short(read_buffer, 8)
+            "referenceType", read_unsigned_short
         )
 
-        file_number: c_uint16 = read_simple_field(
-            "fileNumber", read_unsigned_int(read_buffer, 16)
-        )
+        file_number: c_uint16 = read_simple_field("fileNumber", read_unsigned_int)
 
-        record_number: c_uint16 = read_simple_field(
-            "recordNumber", read_unsigned_int(read_buffer, 16)
-        )
+        record_number: c_uint16 = read_simple_field("recordNumber", read_unsigned_int)
 
-        record_length: c_uint16 = read_simple_field(
-            "recordLength", read_unsigned_int(read_buffer, 16)
-        )
+        record_length: c_uint16 = read_simple_field("recordLength", read_unsigned_int)
 
         read_buffer.close_context("ModbusPDUReadFileRecordRequestItem")
         # Create the instance

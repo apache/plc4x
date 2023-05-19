@@ -33,7 +33,7 @@ import math
 class ModbusPDUError(PlcMessage, ModbusPDU):
     exception_code: ModbusErrorCode
     # Accessors for discriminator values.
-    error_flag: c_bool = c_bool(true)
+    error_flag: c_bool = True
     function_flag: c_uint8 = 0
     response: c_bool = False
 
@@ -72,9 +72,7 @@ class ModbusPDUError(PlcMessage, ModbusPDU):
         exception_code: ModbusErrorCode = read_enum_field(
             "exceptionCode",
             "ModbusErrorCode",
-            DataReaderEnumDefault(
-                ModbusErrorCode.enumForValue, read_unsigned_short(read_buffer, 8)
-            ),
+            DataReaderEnumDefault(ModbusErrorCode.enumForValue, read_unsigned_short),
         )
 
         read_buffer.close_context("ModbusPDUError")

@@ -63,9 +63,7 @@ class Dummy(PlcMessage):
         cur_pos: int = 0
 
         dummy: c_uint16 = read_simple_field(
-            "dummy",
-            read_unsigned_int(read_buffer, 16),
-            WithOption.WithByteOrder(get_bi_g__endian()),
+            "dummy", read_unsigned_int, WithOption.WithByteOrder(get_bi_g__endian())
         )
 
         read_buffer.close_context("Dummy")

@@ -99,15 +99,15 @@ class DataItem:
         if EvaluationHelper.equals(data_type, ModbusDataType.get_byte()):  # List
             # Array field (value)
             # Count array
-            if c_int32(numberOfValues) * c_int32(c_int32(8)) > Integer.MAX_VALUE:
+            if numberOfValues * c_int32(8) > Integer.MAX_VALUE:
                 raise ParseException(
                     "Array count of "
-                    + (c_int32(numberOfValues) * c_int32(c_int32(8)))
+                    + (numberOfValues * c_int32(8))
                     + " exceeds the maximum allowed count of "
                     + Integer.MAX_VALUE
                 )
 
-            item_count: int = int(c_int32(numberOfValues) * c_int32(c_int32(8)))
+            item_count: int = int(numberOfValues * c_int32(8))
             value: List[PlcValue] = []
             for cur_item in range(item_count):
                 value.append(PlcBOOL(c_bool(read_buffer.readBit(""))))

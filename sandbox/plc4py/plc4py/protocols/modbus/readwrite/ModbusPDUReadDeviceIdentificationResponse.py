@@ -51,9 +51,9 @@ class ModbusPDUReadDeviceIdentificationResponse(PlcMessage, ModbusPDU):
     objects: List[ModbusDeviceInformationObject]
     MEITYPE: c_uint8 = 0x0E
     # Accessors for discriminator values.
-    error_flag: c_bool = c_bool(false)
+    error_flag: c_bool = False
     function_flag: c_uint8 = 0x2B
-    response: c_bool = c_bool(true)
+    response: c_bool = True
 
     def __post_init__(self):
         super().__init__()
@@ -139,7 +139,7 @@ class ModbusPDUReadDeviceIdentificationResponse(PlcMessage, ModbusPDU):
         if self.objects is not None:
             i: int = 0
             for element in self.objects:
-                last: bool = ++i >= self.objects.size()
+                last: bool = ++i >= len(self.objects)
                 length_in_bits += element.get_length_in_bits()
 
         return length_in_bits
@@ -152,7 +152,7 @@ class ModbusPDUReadDeviceIdentificationResponse(PlcMessage, ModbusPDU):
 
         mei_type: c_uint8 = read_const_field(
             "meiType",
-            read_unsigned_short(read_buffer, 8),
+            read_unsigned_short,
             ModbusPDUReadDeviceIdentificationResponse.MEITYPE,
         )
 
@@ -160,21 +160,17 @@ class ModbusPDUReadDeviceIdentificationResponse(PlcMessage, ModbusPDU):
             "level",
             "ModbusDeviceInformationLevel",
             DataReaderEnumDefault(
-                ModbusDeviceInformationLevel.enumForValue,
-                read_unsigned_short(read_buffer, 8),
+                ModbusDeviceInformationLevel.enumForValue, read_unsigned_short
             ),
         )
 
-        individual_access: c_bool = read_simple_field(
-            "individualAccess", read_boolean(read_buffer)
-        )
+        individual_access: c_bool = read_simple_field("individualAccess", read_boolean)
 
         conformity_level: ModbusDeviceInformationConformityLevel = read_enum_field(
             "conformityLevel",
             "ModbusDeviceInformationConformityLevel",
             DataReaderEnumDefault(
-                ModbusDeviceInformationConformityLevel.enumForValue,
-                read_unsigned_short(read_buffer, 7),
+                ModbusDeviceInformationConformityLevel.enumForValue, read_unsigned_short
             ),
         )
 
@@ -182,17 +178,14 @@ class ModbusPDUReadDeviceIdentificationResponse(PlcMessage, ModbusPDU):
             "moreFollows",
             "ModbusDeviceInformationMoreFollows",
             DataReaderEnumDefault(
-                ModbusDeviceInformationMoreFollows.enumForValue,
-                read_unsigned_short(read_buffer, 8),
+                ModbusDeviceInformationMoreFollows.enumForValue, read_unsigned_short
             ),
         )
 
-        next_object_id: c_uint8 = read_simple_field(
-            "nextObjectId", read_unsigned_short(read_buffer, 8)
-        )
+        next_object_id: c_uint8 = read_simple_field("nextObjectId", read_unsigned_short)
 
         number_of_objects: c_uint8 = read_implicit_field(
-            "numberOfObjects", read_unsigned_short(read_buffer, 8)
+            "numberOfObjects", read_unsigned_short
         )
 
         objects: List[ModbusDeviceInformationObject] = read_count_array_field(

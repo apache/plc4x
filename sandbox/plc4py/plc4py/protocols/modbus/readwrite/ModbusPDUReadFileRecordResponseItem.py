@@ -41,7 +41,7 @@ class ModbusPDUReadFileRecordResponseItem(PlcMessage):
         write_buffer.push_context("ModbusPDUReadFileRecordResponseItem")
 
         # Implicit Field (data_length) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-        data_length: c_uint8 = c_uint8(c_uint8(len(self.data))) + c_uint8(c_uint8(1))
+        data_length: c_uint8 = c_uint8(len(self.data)) + c_uint8(1)
         write_buffer.write_unsigned_byte(data_length, logical_name="dataLength")
 
         # Simple Field (referenceType)
@@ -50,7 +50,7 @@ class ModbusPDUReadFileRecordResponseItem(PlcMessage):
         )
 
         # Array Field (data)
-        write_buffer.write_byte_array(self.data, 8, logical_name="data")
+        write_buffer.write_byte_array(self.data, logical_name="data")
 
         write_buffer.pop_context("ModbusPDUReadFileRecordResponseItem")
 
@@ -69,7 +69,7 @@ class ModbusPDUReadFileRecordResponseItem(PlcMessage):
 
         # Array field
         if self.data is not None:
-            length_in_bits += 8 * self.data.length
+            length_in_bits += 8 * len(self.data)
 
         return length_in_bits
 
@@ -82,16 +82,14 @@ class ModbusPDUReadFileRecordResponseItem(PlcMessage):
         start_pos: int = read_buffer.get_pos()
         cur_pos: int = 0
 
-        data_length: c_uint8 = read_implicit_field(
-            "dataLength", read_unsigned_short(read_buffer, 8)
-        )
+        data_length: c_uint8 = read_implicit_field("dataLength", read_unsigned_short)
 
         reference_type: c_uint8 = read_simple_field(
-            "referenceType", read_unsigned_short(read_buffer, 8)
+            "referenceType", read_unsigned_short
         )
 
         data: List[c_byte] = read_buffer.read_byte_array(
-            "data", int(c_int32(dataLength) - c_int32(c_int32(1)))
+            "data", int(dataLength - c_int32(1))
         )
 
         read_buffer.close_context("ModbusPDUReadFileRecordResponseItem")

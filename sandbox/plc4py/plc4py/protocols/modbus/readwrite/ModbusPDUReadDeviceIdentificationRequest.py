@@ -37,9 +37,9 @@ class ModbusPDUReadDeviceIdentificationRequest(PlcMessage, ModbusPDU):
     object_id: c_uint8
     MEITYPE: c_uint8 = 0x0E
     # Accessors for discriminator values.
-    error_flag: c_bool = c_bool(false)
+    error_flag: c_bool = False
     function_flag: c_uint8 = 0x2B
-    response: c_bool = c_bool(false)
+    response: c_bool = False
 
     def __post_init__(self):
         super().__init__()
@@ -89,7 +89,7 @@ class ModbusPDUReadDeviceIdentificationRequest(PlcMessage, ModbusPDU):
 
         mei_type: c_uint8 = read_const_field(
             "meiType",
-            read_unsigned_short(read_buffer, 8),
+            read_unsigned_short,
             ModbusPDUReadDeviceIdentificationRequest.MEITYPE,
         )
 
@@ -97,14 +97,11 @@ class ModbusPDUReadDeviceIdentificationRequest(PlcMessage, ModbusPDU):
             "level",
             "ModbusDeviceInformationLevel",
             DataReaderEnumDefault(
-                ModbusDeviceInformationLevel.enumForValue,
-                read_unsigned_short(read_buffer, 8),
+                ModbusDeviceInformationLevel.enumForValue, read_unsigned_short
             ),
         )
 
-        object_id: c_uint8 = read_simple_field(
-            "objectId", read_unsigned_short(read_buffer, 8)
-        )
+        object_id: c_uint8 = read_simple_field("objectId", read_unsigned_short)
 
         read_buffer.close_context("ModbusPDUReadDeviceIdentificationRequest")
         # Create the instance

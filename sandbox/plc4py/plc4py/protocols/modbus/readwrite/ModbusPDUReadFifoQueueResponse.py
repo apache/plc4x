@@ -34,9 +34,9 @@ import math
 class ModbusPDUReadFifoQueueResponse(PlcMessage, ModbusPDU):
     fifo_value: List[c_uint16]
     # Accessors for discriminator values.
-    error_flag: c_bool = c_bool(false)
+    error_flag: c_bool = False
     function_flag: c_uint8 = 0x18
-    response: c_bool = c_bool(true)
+    response: c_bool = True
 
     def __post_init__(self):
         super().__init__()
@@ -46,15 +46,15 @@ class ModbusPDUReadFifoQueueResponse(PlcMessage, ModbusPDU):
         write_buffer.push_context("ModbusPDUReadFifoQueueResponse")
 
         # Implicit Field (byte_count) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-        byte_count: c_uint16 = c_uint16(
-            (c_uint16(c_uint16(len(self.fifo_value))) * c_uint16(c_uint16(2)))
-        ) + c_uint16(c_uint16(2))
+        byte_count: c_uint16 = (
+            c_uint16(len(self.fifo_value)) * c_uint16(2)
+        ) + c_uint16(2)
         write_buffer.write_unsigned_short(byte_count, logical_name="byteCount")
 
         # Implicit Field (fifo_count) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-        fifo_count: c_uint16 = c_uint16(
-            (c_uint16(c_uint16(len(self.fifo_value))) * c_uint16(c_uint16(2)))
-        ) / c_uint16(c_uint16(2))
+        fifo_count: c_uint16 = (
+            c_uint16(len(self.fifo_value)) * c_uint16(2)
+        ) / c_uint16(2)
         write_buffer.write_unsigned_short(fifo_count, logical_name="fifoCount")
 
         # Array Field (fifoValue)
@@ -79,7 +79,7 @@ class ModbusPDUReadFifoQueueResponse(PlcMessage, ModbusPDU):
 
         # Array field
         if self.fifo_value is not None:
-            length_in_bits += 16 * self.fifo_value.size()
+            length_in_bits += 16 * len(self.fifo_value)
 
         return length_in_bits
 
@@ -89,16 +89,12 @@ class ModbusPDUReadFifoQueueResponse(PlcMessage, ModbusPDU):
         start_pos: int = read_buffer.get_pos()
         cur_pos: int = 0
 
-        byte_count: c_uint16 = read_implicit_field(
-            "byteCount", read_unsigned_int(read_buffer, 16)
-        )
+        byte_count: c_uint16 = read_implicit_field("byteCount", read_unsigned_int)
 
-        fifo_count: c_uint16 = read_implicit_field(
-            "fifoCount", read_unsigned_int(read_buffer, 16)
-        )
+        fifo_count: c_uint16 = read_implicit_field("fifoCount", read_unsigned_int)
 
         fifo_value: List[c_uint16] = read_count_array_field(
-            "fifoValue", read_unsigned_int(read_buffer, 16), fifo_count
+            "fifoValue", read_unsigned_int, fifo_count
         )
 
         read_buffer.close_context("ModbusPDUReadFifoQueueResponse")
