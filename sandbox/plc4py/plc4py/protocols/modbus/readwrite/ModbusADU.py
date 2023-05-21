@@ -106,11 +106,11 @@ class ModbusADU(ABC, PlcMessage):
 
         # Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
         builder: ModbusADUBuilder = None
-        if EvaluationHelper.equals(driverType66, DriverType.get_modbu_s__tcp()):
+        if EvaluationHelper.equals(driverType, DriverType.get_modbu_s__tcp()):
             builder = ModbusTcpADU.staticParseBuilder(read_buffer, driverType, response)
-        if EvaluationHelper.equals(driverType66, DriverType.get_modbu_s__rtu()):
+        if EvaluationHelper.equals(driverType, DriverType.get_modbu_s__rtu()):
             builder = ModbusRtuADU.staticParseBuilder(read_buffer, driverType, response)
-        if EvaluationHelper.equals(driverType66, DriverType.get_modbu_s__ascii()):
+        if EvaluationHelper.equals(driverType, DriverType.get_modbu_s__ascii()):
             builder = ModbusAsciiADU.staticParseBuilder(
                 read_buffer, driverType, response
             )
@@ -119,7 +119,7 @@ class ModbusADU(ABC, PlcMessage):
                 "Unsupported case for discriminated type"
                 + " parameters ["
                 + "driverType="
-                + driverType66
+                + driverType
                 + "]"
             )
 

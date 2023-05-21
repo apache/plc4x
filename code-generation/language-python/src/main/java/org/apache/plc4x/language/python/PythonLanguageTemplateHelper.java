@@ -1056,7 +1056,7 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
         if ((parserArguments != null) && parserArguments.stream()
             .anyMatch(argument -> argument.getName().equals(variableLiteralName))) {
             tracer = tracer.dive("parser argument");
-            return tracer + variableLiteralName + "66" +
+            return tracer + variableLiteralName +
                 variableLiteral.getChild()
                     .map(child -> "." + camelCaseToSnakeCase(toVariableExpression(field, typeReference, child, parserArguments, serializerArguments, false, suppressPointerAccess, true)))
                     .orElse("");
