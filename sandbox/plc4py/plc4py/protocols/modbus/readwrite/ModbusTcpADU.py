@@ -40,7 +40,7 @@ class ModbusTcpADU(PlcMessage, ModbusADU):
     response: c_bool
     PROTOCOLIDENTIFIER: c_uint16 = 0x0000
     # Accessors for discriminator values.
-    driver_type: DriverType = DriverType.get_modbu_s__tcp()
+    driver_type: DriverType = DriverType.MODBUS_TCP
 
     def __post_init__(self):
         super().__init__(self.response)
@@ -69,9 +69,7 @@ class ModbusTcpADU(PlcMessage, ModbusADU):
         )
 
         # Simple Field (pdu)
-        write_buffer.DataWriterComplexDefault(write_buffer)(
-            self.pdu, logical_name="pdu"
-        )
+        write_buffer.write_serializable(self.pdu, logical_name="pdu")
 
         write_buffer.pop_context("ModbusTcpADU")
 

@@ -89,7 +89,7 @@ class ModbusPDUReadFileRecordResponseItem(PlcMessage):
         )
 
         data: List[c_byte] = read_buffer.read_byte_array(
-            "data", int(dataLength - c_int32(1))
+            "data", int(data_length - c_int32(1))
         )
 
         read_buffer.close_context("ModbusPDUReadFileRecordResponseItem")

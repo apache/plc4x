@@ -321,7 +321,7 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
             final ArrayTypeReference arrayTypeReference = typeReference.asArrayTypeReference().orElseThrow();
             return getDataWriterCall(arrayTypeReference.getElementTypeReference(), fieldName);
         } else if (typeReference.isComplexTypeReference()) {
-            return "DataWriterComplexDefault(write_buffer)";
+            return "write_serializable";
         } else {
             throw new IllegalStateException("What is this type? " + typeReference);
         }
@@ -880,12 +880,12 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
         } else if (term instanceof VariableLiteral) {
             tracer = tracer.dive("variable literal instanceOf");
             VariableLiteral variableLiteral = (VariableLiteral) term;
-            if ("curPos".equals(((VariableLiteral) term).getName())) {
-                return "(positionAware.GetPos() - startPos)";
+            if ("cur_pos".equals(((VariableLiteral) term).getName())) {
+                return "(position_aware.get_pos() - startPos)";
             } else if ("BIG_ENDIAN".equals(((VariableLiteral) term).getName()) && (fieldType instanceof ByteOrderTypeReference)) {
-                return "binary.BigEndian";
+                return "ByteOrder.BIG_ENDIAN";
             } else if ("LITTLE_ENDIAN".equals(((VariableLiteral) term).getName()) && (fieldType instanceof ByteOrderTypeReference)) {
-                return "binary.LittleEndian";
+                return "ByteOrder.LITTLE_ENDIAN";
             }
             return tracer + toVariableExpression(field, fieldType, (VariableLiteral) term, parserArguments, serializerArguments, serialize, suppressPointerAccess);
         } else {
@@ -1032,7 +1032,7 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
                 final ImplicitField referencedImplicitField = getReferencedImplicitField(variableLiteral);
                 return tracer + toSerializationExpression(referencedImplicitField, referencedImplicitField.getType(), getReferencedImplicitField(variableLiteral).getSerializeExpression(), serializerArguments);
             } else {
-                return tracer + variableLiteralName;
+                return tracer + camelCaseToSnakeCase(variableLiteralName);
                 //return toParseExpression(getReferencedImplicitField(vl), getReferencedImplicitField(vl).getSerializeExpression(), serializerArguments);
             }
         }
@@ -1056,7 +1056,7 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
         if ((parserArguments != null) && parserArguments.stream()
             .anyMatch(argument -> argument.getName().equals(variableLiteralName))) {
             tracer = tracer.dive("parser argument");
-            return tracer + variableLiteralName +
+            return tracer + variableLiteralName + "66" +
                 variableLiteral.getChild()
                     .map(child -> "." + camelCaseToSnakeCase(toVariableExpression(field, typeReference, child, parserArguments, serializerArguments, false, suppressPointerAccess, true)))
                     .orElse("");
@@ -1235,7 +1235,7 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
                             break;
                     }
                 } else {
-                    sb.append(toVariableExpression(field, typeReference, va, parserArguments, serializerArguments, serialize, suppressPointerAccess));
+                    sb.append("self." + toVariableExpression(field, typeReference, va, parserArguments, serializerArguments, serialize, suppressPointerAccess));
                 }
             } else if (arg instanceof StringLiteral) {
                 tracer = tracer.dive("StringLiteral");

@@ -138,7 +138,7 @@ class WriteBuffer(ByteOrderAware, PositionAware):
     # @param value the value to be serialized
     # @throws SerializationException if something goes wrong
     #
-    def write_serializable(self, value) -> None:
+    def write_serializable(self, value, logical_name="") -> None:
         value.serialize(self)
 
 
@@ -287,7 +287,7 @@ class WriteBufferByteBased(WriteBuffer):
     ) -> None:
         for item in value:
             self.push_context(logical_name, **kwargs)
-            self.write_serializable(item)
+            self.write_serializable(item, logical_name="")
             self.pop_context(logical_name, **kwargs)
 
     def _handle_numeric_encoding(self, value: NUMERIC_UNION, bit_length: int, **kwargs):

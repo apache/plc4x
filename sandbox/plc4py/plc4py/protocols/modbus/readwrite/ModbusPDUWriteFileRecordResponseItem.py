@@ -109,7 +109,7 @@ class ModbusPDUWriteFileRecordResponseItem(PlcMessage):
         record_length: c_uint16 = read_implicit_field("recordLength", read_unsigned_int)
 
         record_data: List[c_byte] = read_buffer.read_byte_array(
-            "recordData", int(recordLength)
+            "recordData", int(record_length)
         )
 
         read_buffer.close_context("ModbusPDUWriteFileRecordResponseItem")

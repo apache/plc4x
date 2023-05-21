@@ -40,9 +40,9 @@ class DataItem:
         read_buffer: ReadBuffer, data_type: ModbusDataType, number_of_values: c_uint16
     ):
         if EvaluationHelper.equals(
-            data_type, ModbusDataType.get_bool()
+            data_type66, ModbusDataType.get_bool()
         ) and EvaluationHelper.equals(
-            number_of_values, c_uint16(1)
+            number_of_values66, c_uint16(1)
         ):  # BOOL
             # Reserved Field (Compartmentalized so the "reserved" variable can't leak)
             reserved: c_uint16 = read_buffer.readUnsignedInt("", 15)
@@ -59,27 +59,27 @@ class DataItem:
             value: c_bool = read_buffer.readBit("")
 
             return PlcBOOL(value)
-        if EvaluationHelper.equals(data_type, ModbusDataType.get_bool()):  # List
+        if EvaluationHelper.equals(data_type66, ModbusDataType.get_bool()):  # List
             # Array field (value)
             # Count array
-            if numberOfValues > Integer.MAX_VALUE:
+            if numberOfValues66 > Integer.MAX_VALUE:
                 raise ParseException(
                     "Array count of "
-                    + (numberOfValues)
+                    + (numberOfValues66)
                     + " exceeds the maximum allowed count of "
                     + Integer.MAX_VALUE
                 )
 
-            item_count: int = int(numberOfValues)
+            item_count: int = int(numberOfValues66)
             value: List[PlcValue] = []
             for cur_item in range(item_count):
                 value.append(PlcBOOL(c_bool(read_buffer.readBit(""))))
 
             return PlcList(value)
         if EvaluationHelper.equals(
-            data_type, ModbusDataType.get_byte()
+            data_type66, ModbusDataType.get_byte()
         ) and EvaluationHelper.equals(
-            number_of_values, c_uint16(1)
+            number_of_values66, c_uint16(1)
         ):  # BYTE
             # Reserved Field (Compartmentalized so the "reserved" variable can't leak)
             reserved: c_uint8 = read_buffer.readUnsignedShort("", 8)
@@ -96,42 +96,42 @@ class DataItem:
             value: c_uint8 = read_buffer.readUnsignedShort("", 8)
 
             return PlcBYTE(value)
-        if EvaluationHelper.equals(data_type, ModbusDataType.get_byte()):  # List
+        if EvaluationHelper.equals(data_type66, ModbusDataType.get_byte()):  # List
             # Array field (value)
             # Count array
-            if numberOfValues * c_int32(8) > Integer.MAX_VALUE:
+            if numberOfValues66 * c_int32(8) > Integer.MAX_VALUE:
                 raise ParseException(
                     "Array count of "
-                    + (numberOfValues * c_int32(8))
+                    + (numberOfValues66 * c_int32(8))
                     + " exceeds the maximum allowed count of "
                     + Integer.MAX_VALUE
                 )
 
-            item_count: int = int(numberOfValues * c_int32(8))
+            item_count: int = int(numberOfValues66 * c_int32(8))
             value: List[PlcValue] = []
             for cur_item in range(item_count):
                 value.append(PlcBOOL(c_bool(read_buffer.readBit(""))))
 
             return PlcList(value)
-        if EvaluationHelper.equals(data_type, ModbusDataType.get_word()):  # WORD
+        if EvaluationHelper.equals(data_type66, ModbusDataType.get_word()):  # WORD
             # Simple Field (value)
             value: c_uint16 = read_buffer.readUnsignedInt("", 16)
 
             return PlcWORD(value)
-        if EvaluationHelper.equals(data_type, ModbusDataType.get_dword()):  # DWORD
+        if EvaluationHelper.equals(data_type66, ModbusDataType.get_dword()):  # DWORD
             # Simple Field (value)
             value: c_uint32 = read_buffer.readUnsignedLong("", 32)
 
             return PlcDWORD(value)
-        if EvaluationHelper.equals(data_type, ModbusDataType.get_lword()):  # LWORD
+        if EvaluationHelper.equals(data_type66, ModbusDataType.get_lword()):  # LWORD
             # Simple Field (value)
             value: c_uint64 = read_buffer.readUnsignedBigInteger("", 64)
 
             return PlcLWORD(value)
         if EvaluationHelper.equals(
-            data_type, ModbusDataType.get_sint()
+            data_type66, ModbusDataType.get_sint()
         ) and EvaluationHelper.equals(
-            number_of_values, c_uint16(1)
+            number_of_values66, c_uint16(1)
         ):  # SINT
             # Reserved Field (Compartmentalized so the "reserved" variable can't leak)
             reserved: c_uint8 = read_buffer.readUnsignedShort("", 8)
@@ -148,105 +148,105 @@ class DataItem:
             value: c_int8 = read_buffer.readSignedByte("", 8)
 
             return PlcSINT(value)
-        if EvaluationHelper.equals(data_type, ModbusDataType.get_sint()):  # List
+        if EvaluationHelper.equals(data_type66, ModbusDataType.get_sint()):  # List
             # Array field (value)
             # Count array
-            if numberOfValues > Integer.MAX_VALUE:
+            if numberOfValues66 > Integer.MAX_VALUE:
                 raise ParseException(
                     "Array count of "
-                    + (numberOfValues)
+                    + (numberOfValues66)
                     + " exceeds the maximum allowed count of "
                     + Integer.MAX_VALUE
                 )
 
-            item_count: int = int(numberOfValues)
+            item_count: int = int(numberOfValues66)
             value: List[PlcValue] = []
             for cur_item in range(item_count):
                 value.append(PlcSINT(c_int8(read_buffer.readSignedByte("", 8))))
 
             return PlcList(value)
         if EvaluationHelper.equals(
-            data_type, ModbusDataType.get_int()
+            data_type66, ModbusDataType.get_int()
         ) and EvaluationHelper.equals(
-            number_of_values, c_uint16(1)
+            number_of_values66, c_uint16(1)
         ):  # INT
             # Simple Field (value)
             value: c_int16 = read_buffer.readShort("", 16)
 
             return PlcINT(value)
-        if EvaluationHelper.equals(data_type, ModbusDataType.get_int()):  # List
+        if EvaluationHelper.equals(data_type66, ModbusDataType.get_int()):  # List
             # Array field (value)
             # Count array
-            if numberOfValues > Integer.MAX_VALUE:
+            if numberOfValues66 > Integer.MAX_VALUE:
                 raise ParseException(
                     "Array count of "
-                    + (numberOfValues)
+                    + (numberOfValues66)
                     + " exceeds the maximum allowed count of "
                     + Integer.MAX_VALUE
                 )
 
-            item_count: int = int(numberOfValues)
+            item_count: int = int(numberOfValues66)
             value: List[PlcValue] = []
             for cur_item in range(item_count):
                 value.append(PlcINT(c_int16(read_buffer.readShort("", 16))))
 
             return PlcList(value)
         if EvaluationHelper.equals(
-            data_type, ModbusDataType.get_dint()
+            data_type66, ModbusDataType.get_dint()
         ) and EvaluationHelper.equals(
-            number_of_values, c_uint16(1)
+            number_of_values66, c_uint16(1)
         ):  # DINT
             # Simple Field (value)
             value: c_int32 = read_buffer.readInt("", 32)
 
             return PlcDINT(value)
-        if EvaluationHelper.equals(data_type, ModbusDataType.get_dint()):  # List
+        if EvaluationHelper.equals(data_type66, ModbusDataType.get_dint()):  # List
             # Array field (value)
             # Count array
-            if numberOfValues > Integer.MAX_VALUE:
+            if numberOfValues66 > Integer.MAX_VALUE:
                 raise ParseException(
                     "Array count of "
-                    + (numberOfValues)
+                    + (numberOfValues66)
                     + " exceeds the maximum allowed count of "
                     + Integer.MAX_VALUE
                 )
 
-            item_count: int = int(numberOfValues)
+            item_count: int = int(numberOfValues66)
             value: List[PlcValue] = []
             for cur_item in range(item_count):
                 value.append(PlcDINT(c_int32(read_buffer.readInt("", 32))))
 
             return PlcList(value)
         if EvaluationHelper.equals(
-            data_type, ModbusDataType.get_lint()
+            data_type66, ModbusDataType.get_lint()
         ) and EvaluationHelper.equals(
-            number_of_values, c_uint16(1)
+            number_of_values66, c_uint16(1)
         ):  # LINT
             # Simple Field (value)
             value: c_int64 = read_buffer.readLong("", 64)
 
             return PlcLINT(value)
-        if EvaluationHelper.equals(data_type, ModbusDataType.get_lint()):  # List
+        if EvaluationHelper.equals(data_type66, ModbusDataType.get_lint()):  # List
             # Array field (value)
             # Count array
-            if numberOfValues > Integer.MAX_VALUE:
+            if numberOfValues66 > Integer.MAX_VALUE:
                 raise ParseException(
                     "Array count of "
-                    + (numberOfValues)
+                    + (numberOfValues66)
                     + " exceeds the maximum allowed count of "
                     + Integer.MAX_VALUE
                 )
 
-            item_count: int = int(numberOfValues)
+            item_count: int = int(numberOfValues66)
             value: List[PlcValue] = []
             for cur_item in range(item_count):
                 value.append(PlcLINT(c_int64(read_buffer.readLong("", 64))))
 
             return PlcList(value)
         if EvaluationHelper.equals(
-            data_type, ModbusDataType.get_usint()
+            data_type66, ModbusDataType.get_usint()
         ) and EvaluationHelper.equals(
-            number_of_values, c_uint16(1)
+            number_of_values66, c_uint16(1)
         ):  # USINT
             # Reserved Field (Compartmentalized so the "reserved" variable can't leak)
             reserved: c_uint8 = read_buffer.readUnsignedShort("", 8)
@@ -263,96 +263,96 @@ class DataItem:
             value: c_uint8 = read_buffer.readUnsignedShort("", 8)
 
             return PlcUSINT(value)
-        if EvaluationHelper.equals(data_type, ModbusDataType.get_usint()):  # List
+        if EvaluationHelper.equals(data_type66, ModbusDataType.get_usint()):  # List
             # Array field (value)
             # Count array
-            if numberOfValues > Integer.MAX_VALUE:
+            if numberOfValues66 > Integer.MAX_VALUE:
                 raise ParseException(
                     "Array count of "
-                    + (numberOfValues)
+                    + (numberOfValues66)
                     + " exceeds the maximum allowed count of "
                     + Integer.MAX_VALUE
                 )
 
-            item_count: int = int(numberOfValues)
+            item_count: int = int(numberOfValues66)
             value: List[PlcValue] = []
             for cur_item in range(item_count):
                 value.append(PlcUINT(c_uint8(read_buffer.readUnsignedShort("", 8))))
 
             return PlcList(value)
         if EvaluationHelper.equals(
-            data_type, ModbusDataType.get_uint()
+            data_type66, ModbusDataType.get_uint()
         ) and EvaluationHelper.equals(
-            number_of_values, c_uint16(1)
+            number_of_values66, c_uint16(1)
         ):  # UINT
             # Simple Field (value)
             value: c_uint16 = read_buffer.readUnsignedInt("", 16)
 
             return PlcUINT(value)
-        if EvaluationHelper.equals(data_type, ModbusDataType.get_uint()):  # List
+        if EvaluationHelper.equals(data_type66, ModbusDataType.get_uint()):  # List
             # Array field (value)
             # Count array
-            if numberOfValues > Integer.MAX_VALUE:
+            if numberOfValues66 > Integer.MAX_VALUE:
                 raise ParseException(
                     "Array count of "
-                    + (numberOfValues)
+                    + (numberOfValues66)
                     + " exceeds the maximum allowed count of "
                     + Integer.MAX_VALUE
                 )
 
-            item_count: int = int(numberOfValues)
+            item_count: int = int(numberOfValues66)
             value: List[PlcValue] = []
             for cur_item in range(item_count):
                 value.append(PlcUDINT(c_uint16(read_buffer.readUnsignedInt("", 16))))
 
             return PlcList(value)
         if EvaluationHelper.equals(
-            data_type, ModbusDataType.get_udint()
+            data_type66, ModbusDataType.get_udint()
         ) and EvaluationHelper.equals(
-            number_of_values, c_uint16(1)
+            number_of_values66, c_uint16(1)
         ):  # UDINT
             # Simple Field (value)
             value: c_uint32 = read_buffer.readUnsignedLong("", 32)
 
             return PlcUDINT(value)
-        if EvaluationHelper.equals(data_type, ModbusDataType.get_udint()):  # List
+        if EvaluationHelper.equals(data_type66, ModbusDataType.get_udint()):  # List
             # Array field (value)
             # Count array
-            if numberOfValues > Integer.MAX_VALUE:
+            if numberOfValues66 > Integer.MAX_VALUE:
                 raise ParseException(
                     "Array count of "
-                    + (numberOfValues)
+                    + (numberOfValues66)
                     + " exceeds the maximum allowed count of "
                     + Integer.MAX_VALUE
                 )
 
-            item_count: int = int(numberOfValues)
+            item_count: int = int(numberOfValues66)
             value: List[PlcValue] = []
             for cur_item in range(item_count):
                 value.append(PlcULINT(c_uint32(read_buffer.readUnsignedLong("", 32))))
 
             return PlcList(value)
         if EvaluationHelper.equals(
-            data_type, ModbusDataType.get_ulint()
+            data_type66, ModbusDataType.get_ulint()
         ) and EvaluationHelper.equals(
-            number_of_values, c_uint16(1)
+            number_of_values66, c_uint16(1)
         ):  # ULINT
             # Simple Field (value)
             value: c_uint64 = read_buffer.readUnsignedBigInteger("", 64)
 
             return PlcULINT(value)
-        if EvaluationHelper.equals(data_type, ModbusDataType.get_ulint()):  # List
+        if EvaluationHelper.equals(data_type66, ModbusDataType.get_ulint()):  # List
             # Array field (value)
             # Count array
-            if numberOfValues > Integer.MAX_VALUE:
+            if numberOfValues66 > Integer.MAX_VALUE:
                 raise ParseException(
                     "Array count of "
-                    + (numberOfValues)
+                    + (numberOfValues66)
                     + " exceeds the maximum allowed count of "
                     + Integer.MAX_VALUE
                 )
 
-            item_count: int = int(numberOfValues)
+            item_count: int = int(numberOfValues66)
             value: List[PlcValue] = []
             for cur_item in range(item_count):
                 value.append(
@@ -361,104 +361,104 @@ class DataItem:
 
             return PlcList(value)
         if EvaluationHelper.equals(
-            data_type, ModbusDataType.get_real()
+            data_type66, ModbusDataType.get_real()
         ) and EvaluationHelper.equals(
-            number_of_values, c_uint16(1)
+            number_of_values66, c_uint16(1)
         ):  # REAL
             # Simple Field (value)
             value: c_float = read_buffer.readFloat("", 32)
 
             return PlcREAL(value)
-        if EvaluationHelper.equals(data_type, ModbusDataType.get_real()):  # List
+        if EvaluationHelper.equals(data_type66, ModbusDataType.get_real()):  # List
             # Array field (value)
             # Count array
-            if numberOfValues > Integer.MAX_VALUE:
+            if numberOfValues66 > Integer.MAX_VALUE:
                 raise ParseException(
                     "Array count of "
-                    + (numberOfValues)
+                    + (numberOfValues66)
                     + " exceeds the maximum allowed count of "
                     + Integer.MAX_VALUE
                 )
 
-            item_count: int = int(numberOfValues)
+            item_count: int = int(numberOfValues66)
             value: List[PlcValue] = []
             for cur_item in range(item_count):
                 value.append(PlcREAL(c_float(read_buffer.readFloat("", 32))))
 
             return PlcList(value)
         if EvaluationHelper.equals(
-            data_type, ModbusDataType.get_lreal()
+            data_type66, ModbusDataType.get_lreal()
         ) and EvaluationHelper.equals(
-            number_of_values, c_uint16(1)
+            number_of_values66, c_uint16(1)
         ):  # LREAL
             # Simple Field (value)
             value: c_double = read_buffer.readDouble("", 64)
 
             return PlcLREAL(value)
-        if EvaluationHelper.equals(data_type, ModbusDataType.get_lreal()):  # List
+        if EvaluationHelper.equals(data_type66, ModbusDataType.get_lreal()):  # List
             # Array field (value)
             # Count array
-            if numberOfValues > Integer.MAX_VALUE:
+            if numberOfValues66 > Integer.MAX_VALUE:
                 raise ParseException(
                     "Array count of "
-                    + (numberOfValues)
+                    + (numberOfValues66)
                     + " exceeds the maximum allowed count of "
                     + Integer.MAX_VALUE
                 )
 
-            item_count: int = int(numberOfValues)
+            item_count: int = int(numberOfValues66)
             value: List[PlcValue] = []
             for cur_item in range(item_count):
                 value.append(PlcLREAL(c_double(read_buffer.readDouble("", 64))))
 
             return PlcList(value)
         if EvaluationHelper.equals(
-            data_type, ModbusDataType.get_char()
+            data_type66, ModbusDataType.get_char()
         ) and EvaluationHelper.equals(
-            number_of_values, c_uint16(1)
+            number_of_values66, c_uint16(1)
         ):  # CHAR
             # Simple Field (value)
             value: str = read_buffer.readString("", 8, "UTF-8")
 
             return PlcCHAR(value)
-        if EvaluationHelper.equals(data_type, ModbusDataType.get_char()):  # List
+        if EvaluationHelper.equals(data_type66, ModbusDataType.get_char()):  # List
             # Array field (value)
             # Count array
-            if numberOfValues > Integer.MAX_VALUE:
+            if numberOfValues66 > Integer.MAX_VALUE:
                 raise ParseException(
                     "Array count of "
-                    + (numberOfValues)
+                    + (numberOfValues66)
                     + " exceeds the maximum allowed count of "
                     + Integer.MAX_VALUE
                 )
 
-            item_count: int = int(numberOfValues)
+            item_count: int = int(numberOfValues66)
             value: List[PlcValue] = []
             for cur_item in range(item_count):
                 value.append(PlcSTRING(str(read_buffer.readString("", 8, "UTF-8"))))
 
             return PlcList(value)
         if EvaluationHelper.equals(
-            data_type, ModbusDataType.get_wchar()
+            data_type66, ModbusDataType.get_wchar()
         ) and EvaluationHelper.equals(
-            number_of_values, c_uint16(1)
+            number_of_values66, c_uint16(1)
         ):  # WCHAR
             # Simple Field (value)
             value: str = read_buffer.readString("", 16, "UTF-16")
 
             return PlcWCHAR(value)
-        if EvaluationHelper.equals(data_type, ModbusDataType.get_wchar()):  # List
+        if EvaluationHelper.equals(data_type66, ModbusDataType.get_wchar()):  # List
             # Array field (value)
             # Count array
-            if numberOfValues > Integer.MAX_VALUE:
+            if numberOfValues66 > Integer.MAX_VALUE:
                 raise ParseException(
                     "Array count of "
-                    + (numberOfValues)
+                    + (numberOfValues66)
                     + " exceeds the maximum allowed count of "
                     + Integer.MAX_VALUE
                 )
 
-            item_count: int = int(numberOfValues)
+            item_count: int = int(numberOfValues66)
             value: List[PlcValue] = []
             for cur_item in range(item_count):
                 value.append(PlcSTRING(str(read_buffer.readString("", 16, "UTF-16"))))
@@ -486,16 +486,16 @@ class DataItem:
         byteOrder: ByteOrder,
     ) -> None:
         if EvaluationHelper.equals(
-            dataType, ModbusDataType.get_bool()
+            dataType66, ModbusDataType.get_bool()
         ) and EvaluationHelper.equals(
-            numberOfValues, c_uint16(1)
+            numberOfValues66, c_uint16(1)
         ):  # BOOL
             # Reserved Field
             writeBuffer.WriteUint16("cuint160x0000", 15, c_uint16(0x0000))
             # Simple Field (value)
             value: c_bool = _value.getC_bool()
             writeBuffer.WriteBit("value", (value))
-        if EvaluationHelper.equals(dataType, ModbusDataType.get_bool()):  # List
+        if EvaluationHelper.equals(dataType66, ModbusDataType.get_bool()):  # List
             values: PlcList = _value
 
             for val in values.getList():
@@ -503,45 +503,45 @@ class DataItem:
                 writeBuffer.WriteBit("value", (value))
 
         if EvaluationHelper.equals(
-            dataType, ModbusDataType.get_byte()
+            dataType66, ModbusDataType.get_byte()
         ) and EvaluationHelper.equals(
-            numberOfValues, c_uint16(1)
+            numberOfValues66, c_uint16(1)
         ):  # BYTE
             # Reserved Field
             writeBuffer.WriteUint8("cuint80x00", 8, c_uint8(0x00))
             # Simple Field (value)
             value: c_uint8 = _value.getC_uint8()
             writeBuffer.WriteUint8("value", 8, (value))
-        if EvaluationHelper.equals(dataType, ModbusDataType.get_byte()):  # List
+        if EvaluationHelper.equals(dataType66, ModbusDataType.get_byte()):  # List
             values: PlcList = _value
 
             for val in values.getList():
                 value: c_bool = val.getC_bool()
                 writeBuffer.WriteBit("value", (value))
 
-        if EvaluationHelper.equals(dataType, ModbusDataType.get_word()):  # WORD
+        if EvaluationHelper.equals(dataType66, ModbusDataType.get_word()):  # WORD
             # Simple Field (value)
             value: c_uint16 = _value.getC_uint16()
             writeBuffer.WriteUint16("value", 16, (value))
-        if EvaluationHelper.equals(dataType, ModbusDataType.get_dword()):  # DWORD
+        if EvaluationHelper.equals(dataType66, ModbusDataType.get_dword()):  # DWORD
             # Simple Field (value)
             value: c_uint32 = _value.getC_uint32()
             writeBuffer.WriteUint32("value", 32, (value))
-        if EvaluationHelper.equals(dataType, ModbusDataType.get_lword()):  # LWORD
+        if EvaluationHelper.equals(dataType66, ModbusDataType.get_lword()):  # LWORD
             # Simple Field (value)
             value: c_uint64 = _value.getC_uint64()
             writeBuffer.WriteUint64("value", 64, (value))
         if EvaluationHelper.equals(
-            dataType, ModbusDataType.get_sint()
+            dataType66, ModbusDataType.get_sint()
         ) and EvaluationHelper.equals(
-            numberOfValues, c_uint16(1)
+            numberOfValues66, c_uint16(1)
         ):  # SINT
             # Reserved Field
             writeBuffer.WriteUint8("cuint80x00", 8, c_uint8(0x00))
             # Simple Field (value)
             value: c_int8 = _value.getC_int8()
             writeBuffer.WriteInt8("value", 8, (value))
-        if EvaluationHelper.equals(dataType, ModbusDataType.get_sint()):  # List
+        if EvaluationHelper.equals(dataType66, ModbusDataType.get_sint()):  # List
             values: PlcList = _value
 
             for val in values.getList():
@@ -549,14 +549,14 @@ class DataItem:
                 writeBuffer.WriteInt8("value", 8, (value))
 
         if EvaluationHelper.equals(
-            dataType, ModbusDataType.get_int()
+            dataType66, ModbusDataType.get_int()
         ) and EvaluationHelper.equals(
-            numberOfValues, c_uint16(1)
+            numberOfValues66, c_uint16(1)
         ):  # INT
             # Simple Field (value)
             value: c_int16 = _value.getC_int16()
             writeBuffer.WriteInt16("value", 16, (value))
-        if EvaluationHelper.equals(dataType, ModbusDataType.get_int()):  # List
+        if EvaluationHelper.equals(dataType66, ModbusDataType.get_int()):  # List
             values: PlcList = _value
 
             for val in values.getList():
@@ -564,14 +564,14 @@ class DataItem:
                 writeBuffer.WriteInt16("value", 16, (value))
 
         if EvaluationHelper.equals(
-            dataType, ModbusDataType.get_dint()
+            dataType66, ModbusDataType.get_dint()
         ) and EvaluationHelper.equals(
-            numberOfValues, c_uint16(1)
+            numberOfValues66, c_uint16(1)
         ):  # DINT
             # Simple Field (value)
             value: c_int32 = _value.getC_int32()
             writeBuffer.WriteInt32("value", 32, (value))
-        if EvaluationHelper.equals(dataType, ModbusDataType.get_dint()):  # List
+        if EvaluationHelper.equals(dataType66, ModbusDataType.get_dint()):  # List
             values: PlcList = _value
 
             for val in values.getList():
@@ -579,14 +579,14 @@ class DataItem:
                 writeBuffer.WriteInt32("value", 32, (value))
 
         if EvaluationHelper.equals(
-            dataType, ModbusDataType.get_lint()
+            dataType66, ModbusDataType.get_lint()
         ) and EvaluationHelper.equals(
-            numberOfValues, c_uint16(1)
+            numberOfValues66, c_uint16(1)
         ):  # LINT
             # Simple Field (value)
             value: c_int64 = _value.getC_int64()
             writeBuffer.WriteInt64("value", 64, (value))
-        if EvaluationHelper.equals(dataType, ModbusDataType.get_lint()):  # List
+        if EvaluationHelper.equals(dataType66, ModbusDataType.get_lint()):  # List
             values: PlcList = _value
 
             for val in values.getList():
@@ -594,16 +594,16 @@ class DataItem:
                 writeBuffer.WriteInt64("value", 64, (value))
 
         if EvaluationHelper.equals(
-            dataType, ModbusDataType.get_usint()
+            dataType66, ModbusDataType.get_usint()
         ) and EvaluationHelper.equals(
-            numberOfValues, c_uint16(1)
+            numberOfValues66, c_uint16(1)
         ):  # USINT
             # Reserved Field
             writeBuffer.WriteUint8("cuint80x00", 8, c_uint8(0x00))
             # Simple Field (value)
             value: c_uint8 = _value.getC_uint8()
             writeBuffer.WriteUint8("value", 8, (value))
-        if EvaluationHelper.equals(dataType, ModbusDataType.get_usint()):  # List
+        if EvaluationHelper.equals(dataType66, ModbusDataType.get_usint()):  # List
             values: PlcList = _value
 
             for val in values.getList():
@@ -611,14 +611,14 @@ class DataItem:
                 writeBuffer.WriteUint8("value", 8, (value))
 
         if EvaluationHelper.equals(
-            dataType, ModbusDataType.get_uint()
+            dataType66, ModbusDataType.get_uint()
         ) and EvaluationHelper.equals(
-            numberOfValues, c_uint16(1)
+            numberOfValues66, c_uint16(1)
         ):  # UINT
             # Simple Field (value)
             value: c_uint16 = _value.getC_uint16()
             writeBuffer.WriteUint16("value", 16, (value))
-        if EvaluationHelper.equals(dataType, ModbusDataType.get_uint()):  # List
+        if EvaluationHelper.equals(dataType66, ModbusDataType.get_uint()):  # List
             values: PlcList = _value
 
             for val in values.getList():
@@ -626,14 +626,14 @@ class DataItem:
                 writeBuffer.WriteUint16("value", 16, (value))
 
         if EvaluationHelper.equals(
-            dataType, ModbusDataType.get_udint()
+            dataType66, ModbusDataType.get_udint()
         ) and EvaluationHelper.equals(
-            numberOfValues, c_uint16(1)
+            numberOfValues66, c_uint16(1)
         ):  # UDINT
             # Simple Field (value)
             value: c_uint32 = _value.getC_uint32()
             writeBuffer.WriteUint32("value", 32, (value))
-        if EvaluationHelper.equals(dataType, ModbusDataType.get_udint()):  # List
+        if EvaluationHelper.equals(dataType66, ModbusDataType.get_udint()):  # List
             values: PlcList = _value
 
             for val in values.getList():
@@ -641,14 +641,14 @@ class DataItem:
                 writeBuffer.WriteUint32("value", 32, (value))
 
         if EvaluationHelper.equals(
-            dataType, ModbusDataType.get_ulint()
+            dataType66, ModbusDataType.get_ulint()
         ) and EvaluationHelper.equals(
-            numberOfValues, c_uint16(1)
+            numberOfValues66, c_uint16(1)
         ):  # ULINT
             # Simple Field (value)
             value: c_uint64 = _value.getC_uint64()
             writeBuffer.WriteUint64("value", 64, (value))
-        if EvaluationHelper.equals(dataType, ModbusDataType.get_ulint()):  # List
+        if EvaluationHelper.equals(dataType66, ModbusDataType.get_ulint()):  # List
             values: PlcList = _value
 
             for val in values.getList():
@@ -656,14 +656,14 @@ class DataItem:
                 writeBuffer.WriteUint64("value", 64, (value))
 
         if EvaluationHelper.equals(
-            dataType, ModbusDataType.get_real()
+            dataType66, ModbusDataType.get_real()
         ) and EvaluationHelper.equals(
-            numberOfValues, c_uint16(1)
+            numberOfValues66, c_uint16(1)
         ):  # REAL
             # Simple Field (value)
             value: c_float = _value.getC_float()
             writeBuffer.WriteFloat32("value", 32, (value))
-        if EvaluationHelper.equals(dataType, ModbusDataType.get_real()):  # List
+        if EvaluationHelper.equals(dataType66, ModbusDataType.get_real()):  # List
             values: PlcList = _value
 
             for val in values.getList():
@@ -671,14 +671,14 @@ class DataItem:
                 writeBuffer.WriteFloat32("value", 32, (value))
 
         if EvaluationHelper.equals(
-            dataType, ModbusDataType.get_lreal()
+            dataType66, ModbusDataType.get_lreal()
         ) and EvaluationHelper.equals(
-            numberOfValues, c_uint16(1)
+            numberOfValues66, c_uint16(1)
         ):  # LREAL
             # Simple Field (value)
             value: c_double = _value.getC_double()
             writeBuffer.WriteFloat64("value", 64, (value))
-        if EvaluationHelper.equals(dataType, ModbusDataType.get_lreal()):  # List
+        if EvaluationHelper.equals(dataType66, ModbusDataType.get_lreal()):  # List
             values: PlcList = _value
 
             for val in values.getList():
@@ -686,14 +686,14 @@ class DataItem:
                 writeBuffer.WriteFloat64("value", 64, (value))
 
         if EvaluationHelper.equals(
-            dataType, ModbusDataType.get_char()
+            dataType66, ModbusDataType.get_char()
         ) and EvaluationHelper.equals(
-            numberOfValues, c_uint16(1)
+            numberOfValues66, c_uint16(1)
         ):  # CHAR
             # Simple Field (value)
             value: str = _value.getStr()
             writeBuffer.WriteString("value", uint32(8), "UTF-8", (value))
-        if EvaluationHelper.equals(dataType, ModbusDataType.get_char()):  # List
+        if EvaluationHelper.equals(dataType66, ModbusDataType.get_char()):  # List
             values: PlcList = _value
 
             for val in values.getList():
@@ -701,14 +701,14 @@ class DataItem:
                 writeBuffer.WriteString("value", uint32(8), "UTF-8", (value))
 
         if EvaluationHelper.equals(
-            dataType, ModbusDataType.get_wchar()
+            dataType66, ModbusDataType.get_wchar()
         ) and EvaluationHelper.equals(
-            numberOfValues, c_uint16(1)
+            numberOfValues66, c_uint16(1)
         ):  # WCHAR
             # Simple Field (value)
             value: str = _value.getStr()
             writeBuffer.WriteString("value", uint32(16), "UTF-16", (value))
-        if EvaluationHelper.equals(dataType, ModbusDataType.get_wchar()):  # List
+        if EvaluationHelper.equals(dataType66, ModbusDataType.get_wchar()):  # List
             values: PlcList = _value
 
             for val in values.getList():
@@ -729,160 +729,160 @@ class DataItem:
     ) -> int:
         sizeInBits: int = 0
         if EvaluationHelper.equals(
-            dataType, ModbusDataType.get_bool()
+            dataType66, ModbusDataType.get_bool()
         ) and EvaluationHelper.equals(
-            numberOfValues, c_uint16(1)
+            numberOfValues66, c_uint16(1)
         ):  # BOOL
             # Reserved Field
             sizeInBits += 15
             # Simple Field (value)
             sizeInBits += 1
-        if EvaluationHelper.equals(dataType, ModbusDataType.get_bool()):  # List
+        if EvaluationHelper.equals(dataType66, ModbusDataType.get_bool()):  # List
             values: PlcList = _value
             sizeInBits += values.getList().size() * 1
         if EvaluationHelper.equals(
-            dataType, ModbusDataType.get_byte()
+            dataType66, ModbusDataType.get_byte()
         ) and EvaluationHelper.equals(
-            numberOfValues, c_uint16(1)
+            numberOfValues66, c_uint16(1)
         ):  # BYTE
             # Reserved Field
             sizeInBits += 8
             # Simple Field (value)
             sizeInBits += 8
-        if EvaluationHelper.equals(dataType, ModbusDataType.get_byte()):  # List
+        if EvaluationHelper.equals(dataType66, ModbusDataType.get_byte()):  # List
             values: PlcList = _value
             sizeInBits += values.getList().size() * 1
-        if EvaluationHelper.equals(dataType, ModbusDataType.get_word()):  # WORD
+        if EvaluationHelper.equals(dataType66, ModbusDataType.get_word()):  # WORD
             # Simple Field (value)
             sizeInBits += 16
-        if EvaluationHelper.equals(dataType, ModbusDataType.get_dword()):  # DWORD
+        if EvaluationHelper.equals(dataType66, ModbusDataType.get_dword()):  # DWORD
             # Simple Field (value)
             sizeInBits += 32
-        if EvaluationHelper.equals(dataType, ModbusDataType.get_lword()):  # LWORD
+        if EvaluationHelper.equals(dataType66, ModbusDataType.get_lword()):  # LWORD
             # Simple Field (value)
             sizeInBits += 64
         if EvaluationHelper.equals(
-            dataType, ModbusDataType.get_sint()
+            dataType66, ModbusDataType.get_sint()
         ) and EvaluationHelper.equals(
-            numberOfValues, c_uint16(1)
+            numberOfValues66, c_uint16(1)
         ):  # SINT
             # Reserved Field
             sizeInBits += 8
             # Simple Field (value)
             sizeInBits += 8
-        if EvaluationHelper.equals(dataType, ModbusDataType.get_sint()):  # List
+        if EvaluationHelper.equals(dataType66, ModbusDataType.get_sint()):  # List
             values: PlcList = _value
             sizeInBits += values.getList().size() * 8
         if EvaluationHelper.equals(
-            dataType, ModbusDataType.get_int()
+            dataType66, ModbusDataType.get_int()
         ) and EvaluationHelper.equals(
-            numberOfValues, c_uint16(1)
+            numberOfValues66, c_uint16(1)
         ):  # INT
             # Simple Field (value)
             sizeInBits += 16
-        if EvaluationHelper.equals(dataType, ModbusDataType.get_int()):  # List
+        if EvaluationHelper.equals(dataType66, ModbusDataType.get_int()):  # List
             values: PlcList = _value
             sizeInBits += values.getList().size() * 16
         if EvaluationHelper.equals(
-            dataType, ModbusDataType.get_dint()
+            dataType66, ModbusDataType.get_dint()
         ) and EvaluationHelper.equals(
-            numberOfValues, c_uint16(1)
+            numberOfValues66, c_uint16(1)
         ):  # DINT
             # Simple Field (value)
             sizeInBits += 32
-        if EvaluationHelper.equals(dataType, ModbusDataType.get_dint()):  # List
+        if EvaluationHelper.equals(dataType66, ModbusDataType.get_dint()):  # List
             values: PlcList = _value
             sizeInBits += values.getList().size() * 32
         if EvaluationHelper.equals(
-            dataType, ModbusDataType.get_lint()
+            dataType66, ModbusDataType.get_lint()
         ) and EvaluationHelper.equals(
-            numberOfValues, c_uint16(1)
+            numberOfValues66, c_uint16(1)
         ):  # LINT
             # Simple Field (value)
             sizeInBits += 64
-        if EvaluationHelper.equals(dataType, ModbusDataType.get_lint()):  # List
+        if EvaluationHelper.equals(dataType66, ModbusDataType.get_lint()):  # List
             values: PlcList = _value
             sizeInBits += values.getList().size() * 64
         if EvaluationHelper.equals(
-            dataType, ModbusDataType.get_usint()
+            dataType66, ModbusDataType.get_usint()
         ) and EvaluationHelper.equals(
-            numberOfValues, c_uint16(1)
+            numberOfValues66, c_uint16(1)
         ):  # USINT
             # Reserved Field
             sizeInBits += 8
             # Simple Field (value)
             sizeInBits += 8
-        if EvaluationHelper.equals(dataType, ModbusDataType.get_usint()):  # List
+        if EvaluationHelper.equals(dataType66, ModbusDataType.get_usint()):  # List
             values: PlcList = _value
             sizeInBits += values.getList().size() * 8
         if EvaluationHelper.equals(
-            dataType, ModbusDataType.get_uint()
+            dataType66, ModbusDataType.get_uint()
         ) and EvaluationHelper.equals(
-            numberOfValues, c_uint16(1)
+            numberOfValues66, c_uint16(1)
         ):  # UINT
             # Simple Field (value)
             sizeInBits += 16
-        if EvaluationHelper.equals(dataType, ModbusDataType.get_uint()):  # List
+        if EvaluationHelper.equals(dataType66, ModbusDataType.get_uint()):  # List
             values: PlcList = _value
             sizeInBits += values.getList().size() * 16
         if EvaluationHelper.equals(
-            dataType, ModbusDataType.get_udint()
+            dataType66, ModbusDataType.get_udint()
         ) and EvaluationHelper.equals(
-            numberOfValues, c_uint16(1)
+            numberOfValues66, c_uint16(1)
         ):  # UDINT
             # Simple Field (value)
             sizeInBits += 32
-        if EvaluationHelper.equals(dataType, ModbusDataType.get_udint()):  # List
+        if EvaluationHelper.equals(dataType66, ModbusDataType.get_udint()):  # List
             values: PlcList = _value
             sizeInBits += values.getList().size() * 32
         if EvaluationHelper.equals(
-            dataType, ModbusDataType.get_ulint()
+            dataType66, ModbusDataType.get_ulint()
         ) and EvaluationHelper.equals(
-            numberOfValues, c_uint16(1)
+            numberOfValues66, c_uint16(1)
         ):  # ULINT
             # Simple Field (value)
             sizeInBits += 64
-        if EvaluationHelper.equals(dataType, ModbusDataType.get_ulint()):  # List
+        if EvaluationHelper.equals(dataType66, ModbusDataType.get_ulint()):  # List
             values: PlcList = _value
             sizeInBits += values.getList().size() * 64
         if EvaluationHelper.equals(
-            dataType, ModbusDataType.get_real()
+            dataType66, ModbusDataType.get_real()
         ) and EvaluationHelper.equals(
-            numberOfValues, c_uint16(1)
+            numberOfValues66, c_uint16(1)
         ):  # REAL
             # Simple Field (value)
             sizeInBits += 32
-        if EvaluationHelper.equals(dataType, ModbusDataType.get_real()):  # List
+        if EvaluationHelper.equals(dataType66, ModbusDataType.get_real()):  # List
             values: PlcList = _value
             sizeInBits += values.getList().size() * 32
         if EvaluationHelper.equals(
-            dataType, ModbusDataType.get_lreal()
+            dataType66, ModbusDataType.get_lreal()
         ) and EvaluationHelper.equals(
-            numberOfValues, c_uint16(1)
+            numberOfValues66, c_uint16(1)
         ):  # LREAL
             # Simple Field (value)
             sizeInBits += 64
-        if EvaluationHelper.equals(dataType, ModbusDataType.get_lreal()):  # List
+        if EvaluationHelper.equals(dataType66, ModbusDataType.get_lreal()):  # List
             values: PlcList = _value
             sizeInBits += values.getList().size() * 64
         if EvaluationHelper.equals(
-            dataType, ModbusDataType.get_char()
+            dataType66, ModbusDataType.get_char()
         ) and EvaluationHelper.equals(
-            numberOfValues, c_uint16(1)
+            numberOfValues66, c_uint16(1)
         ):  # CHAR
             # Simple Field (value)
             sizeInBits += 8
-        if EvaluationHelper.equals(dataType, ModbusDataType.get_char()):  # List
+        if EvaluationHelper.equals(dataType66, ModbusDataType.get_char()):  # List
             values: PlcList = _value
             sizeInBits += values.getList().size() * 8
         if EvaluationHelper.equals(
-            dataType, ModbusDataType.get_wchar()
+            dataType66, ModbusDataType.get_wchar()
         ) and EvaluationHelper.equals(
-            numberOfValues, c_uint16(1)
+            numberOfValues66, c_uint16(1)
         ):  # WCHAR
             # Simple Field (value)
             sizeInBits += 16
-        if EvaluationHelper.equals(dataType, ModbusDataType.get_wchar()):  # List
+        if EvaluationHelper.equals(dataType66, ModbusDataType.get_wchar()):  # List
             values: PlcList = _value
             sizeInBits += values.getList().size() * 16
         return sizeInBits

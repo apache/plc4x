@@ -109,7 +109,7 @@ class ${type.name}<#if type.isDiscriminatedParentTypeDefinition()></#if>(<#if ty
     ${helper.camelCaseToSnakeCase(discriminatorName)}: ${helper.getLanguageTypeNameForTypeReference(discriminatorType)} = <@compress single_line=true>
             <#if discriminatorValue?? && !helper.isWildcard(discriminatorValue)>
                 <#if discriminatorType.isEnumTypeReference()>
-        ${helper.getLanguageTypeNameForTypeReference(discriminatorType)}.${helper.toParseExpression(null, discriminatorType, discriminatorValue, parserArguments)}
+        ${helper.getLanguageTypeNameForTypeReference(discriminatorType)}.${discriminatorValue.name}
                 <#else>
         ${helper.toParseExpression(null, discriminatorType, discriminatorValue, parserArguments)}
                 </#if>
@@ -199,7 +199,7 @@ class ${type.name}<#if type.isDiscriminatedParentTypeDefinition()></#if>(<#if ty
     <#if type.isDiscriminatedParentTypeDefinition()>
     <@emitImport import="from abc import abstractmethod" />
     @abstractmethod
-    def serialize_${helper.camelCaseToSnakeCase(type.name)}_child(write_buffer: WriteBuffer) -> None:
+    def serialize_${helper.camelCaseToSnakeCase(type.name)}_child(self, write_buffer: WriteBuffer) -> None:
         pass
 
     </#if>
@@ -231,9 +231,10 @@ class ${type.name}<#if type.isDiscriminatedParentTypeDefinition()></#if>(<#if ty
                         <#assign checksumField = field.asChecksumField().orElseThrow()>
                         <#assign typedField = field.asTypedField().orElseThrow()>
                         <#assign namedField = field.asNamedField().orElseThrow()>
+                        <@emitImport import="from plc4py.protocols.${protocolName} import StaticHelper" />
 
         # Checksum Field (checksum) (Calculated)
-        write_buffer.${helper.getDataWriterCall(typedField.type, namedField.name)}(${helper.getLanguageTypeNameForField(field)}(${helper.toParseExpression(checksumField, checksumField.type, checksumField.checksumExpression, parserArguments)}), logical_name="${namedField.name}")
+        write_buffer.${helper.getDataWriterCall(typedField.type, namedField.name)}(${helper.getLanguageTypeNameForField(field)}(StaticHelper.${helper.toParseExpression(checksumField, checksumField.type, checksumField.checksumExpression, parserArguments)}), logical_name="${namedField.name}")
                         <#break>
                     <#case "const">
                         <#assign constField = field.asConstField().orElseThrow()>

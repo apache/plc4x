@@ -22,6 +22,7 @@ from dataclasses import dataclass
 from ctypes import c_bool
 from ctypes import c_uint8
 from plc4py.api.messages.PlcMessage import PlcMessage
+from plc4py.protocols.modbus import StaticHelper
 from plc4py.protocols.modbus.readwrite.DriverType import DriverType
 from plc4py.protocols.modbus.readwrite.ModbusADU import ModbusADU
 from plc4py.protocols.modbus.readwrite.ModbusADU import ModbusADUBuilder
@@ -37,7 +38,7 @@ class ModbusAsciiADU(PlcMessage, ModbusADU):
     # Arguments.
     response: c_bool
     # Accessors for discriminator values.
-    driver_type: DriverType = DriverType.get_modbu_s__ascii()
+    driver_type: DriverType = DriverType.MODBUS_ASCII
 
     def __post_init__(self):
         super().__init__(self.response)
@@ -50,13 +51,12 @@ class ModbusAsciiADU(PlcMessage, ModbusADU):
         write_buffer.write_unsigned_byte(self.address, logical_name="address")
 
         # Simple Field (pdu)
-        write_buffer.DataWriterComplexDefault(write_buffer)(
-            self.pdu, logical_name="pdu"
-        )
+        write_buffer.write_serializable(self.pdu, logical_name="pdu")
 
         # Checksum Field (checksum) (Calculated)
         write_buffer.write_unsigned_byte(
-            c_uint8(ascii_lrc_check(address, pdu)), logical_name="crc"
+            c_uint8(StaticHelper.ascii_lrc_check(self.address, self.pdu)),
+            logical_name="crc",
         )
 
         write_buffer.pop_context("ModbusAsciiADU")
@@ -102,7 +102,7 @@ class ModbusAsciiADU(PlcMessage, ModbusADU):
         crc: c_uint8 = read_checksum_field(
             "crc",
             read_unsigned_short,
-            (c_uint8)(ascii_lrc_check(address, pdu)),
+            (c_uint8)(ascii_lrc_check(self.address, self.pdu)),
             WithOption.WithByteOrder(get_bi_g__endian()),
         )
 

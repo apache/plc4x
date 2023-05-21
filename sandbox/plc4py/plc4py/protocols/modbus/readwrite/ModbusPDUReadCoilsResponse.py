@@ -78,7 +78,7 @@ class ModbusPDUReadCoilsResponse(PlcMessage, ModbusPDU):
 
         byte_count: c_uint8 = read_implicit_field("byteCount", read_unsigned_short)
 
-        value: List[c_byte] = read_buffer.read_byte_array("value", int(byteCount))
+        value: List[c_byte] = read_buffer.read_byte_array("value", int(byte_count))
 
         read_buffer.close_context("ModbusPDUReadCoilsResponse")
         # Create the instance
