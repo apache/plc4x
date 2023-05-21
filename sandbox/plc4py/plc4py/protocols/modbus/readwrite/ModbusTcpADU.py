@@ -46,7 +46,6 @@ class ModbusTcpADU(PlcMessage, ModbusADU):
         super().__init__(self.response)
 
     def serialize_modbus_adu_child(self, write_buffer: WriteBuffer):
-        start_pos: int = write_buffer.get_pos()
         write_buffer.push_context("ModbusTcpADU")
 
         # Simple Field (transactionIdentifier)

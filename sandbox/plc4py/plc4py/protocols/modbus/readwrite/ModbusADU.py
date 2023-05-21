@@ -47,7 +47,6 @@ class ModbusADU(ABC, PlcMessage):
         pass
 
     def serialize(self, write_buffer: WriteBuffer):
-        start_pos: int = write_buffer.get_pos()
         write_buffer.push_context("ModbusADU")
 
         # Switch field (Serialize the sub-type)

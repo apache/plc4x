@@ -39,7 +39,6 @@ class ModbusPDUWriteFileRecordResponseItem(PlcMessage):
         super().__init__()
 
     def serialize(self, write_buffer: WriteBuffer):
-        start_pos: int = write_buffer.get_pos()
         write_buffer.push_context("ModbusPDUWriteFileRecordResponseItem")
 
         # Simple Field (referenceType)

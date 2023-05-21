@@ -208,7 +208,6 @@ class ${type.name}<#if type.isDiscriminatedParentTypeDefinition()></#if>(<#if ty
         <#if helper.hasFieldOfType("unknown")>
         raise SerializationException("Unknown field not serializable")
         <#else>
-        start_pos: int = write_buffer.get_pos()
         write_buffer.push_context("${type.name}")
             <#assign reservedFieldIndex=0>
             <#list type.fields as field>

@@ -42,7 +42,6 @@ class ModbusPDUWriteSingleRegisterResponse(PlcMessage, ModbusPDU):
         super().__init__()
 
     def serialize_modbus_pdu_child(self, write_buffer: WriteBuffer):
-        start_pos: int = write_buffer.get_pos()
         write_buffer.push_context("ModbusPDUWriteSingleRegisterResponse")
 
         # Simple Field (address)

@@ -33,7 +33,6 @@ class ModbusConstants(PlcMessage):
         super().__init__()
 
     def serialize(self, write_buffer: WriteBuffer):
-        start_pos: int = write_buffer.get_pos()
         write_buffer.push_context("ModbusConstants")
 
         # Const Field (modbusTcpDefaultPort)
