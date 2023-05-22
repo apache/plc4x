@@ -56,7 +56,6 @@ public class BACnetValueSourceAddress extends BACnetValueSource implements Messa
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetValueSourceAddress");
 
     // Simple Field (address)
@@ -86,8 +85,6 @@ public class BACnetValueSourceAddress extends BACnetValueSource implements Messa
       throws ParseException {
     readBuffer.pullContext("BACnetValueSourceAddress");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetAddressEnclosed address =

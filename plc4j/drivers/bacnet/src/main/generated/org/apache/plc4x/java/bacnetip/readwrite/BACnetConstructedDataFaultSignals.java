@@ -75,7 +75,6 @@ public class BACnetConstructedDataFaultSignals extends BACnetConstructedData imp
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataFaultSignals");
 
     // Array Field (faultSignals)
@@ -114,8 +113,6 @@ public class BACnetConstructedDataFaultSignals extends BACnetConstructedData imp
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataFaultSignals");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     List<BACnetLiftFaultTagged> faultSignals =

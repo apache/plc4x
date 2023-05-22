@@ -88,7 +88,6 @@ public class SetMonitoringModeResponse extends ExtensionObjectDefinition impleme
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("SetMonitoringModeResponse");
 
     // Simple Field (responseHeader)
@@ -154,8 +153,6 @@ public class SetMonitoringModeResponse extends ExtensionObjectDefinition impleme
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("SetMonitoringModeResponse");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ExtensionObjectDefinition responseHeader =

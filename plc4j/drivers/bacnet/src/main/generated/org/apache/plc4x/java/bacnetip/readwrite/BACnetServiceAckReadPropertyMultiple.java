@@ -66,7 +66,6 @@ public class BACnetServiceAckReadPropertyMultiple extends BACnetServiceAck imple
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetServiceAckReadPropertyMultiple");
 
     // Array Field (data)
@@ -101,8 +100,6 @@ public class BACnetServiceAckReadPropertyMultiple extends BACnetServiceAck imple
       throws ParseException {
     readBuffer.pullContext("BACnetServiceAckReadPropertyMultiple");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     List<BACnetReadAccessResult> data =

@@ -59,7 +59,6 @@ public class TriggerControlDataTriggerEvent extends TriggerControlData implement
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("TriggerControlDataTriggerEvent");
 
     // Simple Field (actionSelector)
@@ -89,8 +88,6 @@ public class TriggerControlDataTriggerEvent extends TriggerControlData implement
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("TriggerControlDataTriggerEvent");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte actionSelector = readSimpleField("actionSelector", readByte(readBuffer, 8));

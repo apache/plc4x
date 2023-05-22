@@ -63,7 +63,6 @@ public class BACnetPriorityValueDouble extends BACnetPriorityValue implements Me
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetPriorityValueDouble");
 
     // Simple Field (doubleValue)
@@ -93,8 +92,6 @@ public class BACnetPriorityValueDouble extends BACnetPriorityValue implements Me
       ReadBuffer readBuffer, BACnetObjectType objectTypeArgument) throws ParseException {
     readBuffer.pullContext("BACnetPriorityValueDouble");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagDouble doubleValue =

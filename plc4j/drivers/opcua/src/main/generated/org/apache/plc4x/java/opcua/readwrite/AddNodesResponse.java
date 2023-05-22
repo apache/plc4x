@@ -88,7 +88,6 @@ public class AddNodesResponse extends ExtensionObjectDefinition implements Messa
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("AddNodesResponse");
 
     // Simple Field (responseHeader)
@@ -154,8 +153,6 @@ public class AddNodesResponse extends ExtensionObjectDefinition implements Messa
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("AddNodesResponse");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ExtensionObjectDefinition responseHeader =

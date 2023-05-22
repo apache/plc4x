@@ -80,7 +80,6 @@ public class BACnetConstructedDataUserExternalIdentifier extends BACnetConstruct
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataUserExternalIdentifier");
 
     // Simple Field (userExternalIdentifier)
@@ -124,8 +123,6 @@ public class BACnetConstructedDataUserExternalIdentifier extends BACnetConstruct
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataUserExternalIdentifier");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagCharacterString userExternalIdentifier =

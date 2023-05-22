@@ -93,7 +93,6 @@ public class PnIoCm_Submodule_OutputData extends PnIoCm_Submodule implements Mes
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("PnIoCm_Submodule_OutputData");
 
     // Const Field (inputDataDescription)
@@ -157,8 +156,6 @@ public class PnIoCm_Submodule_OutputData extends PnIoCm_Submodule implements Mes
       throws ParseException {
     readBuffer.pullContext("PnIoCm_Submodule_OutputData");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int inputDataDescription =

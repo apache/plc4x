@@ -80,7 +80,6 @@ public class BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer");
 
     // Simple Field (vendorId)
@@ -126,8 +125,6 @@ public class BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer
           ReadBuffer readBuffer, Integer serviceRequestLength) throws ParseException {
     readBuffer.pullContext("BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetVendorIdTagged vendorId =

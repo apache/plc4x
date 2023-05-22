@@ -80,7 +80,6 @@ public class BACnetConstructedDataTimeOfDeviceRestart extends BACnetConstructedD
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataTimeOfDeviceRestart");
 
     // Simple Field (timeOfDeviceRestart)
@@ -122,8 +121,6 @@ public class BACnetConstructedDataTimeOfDeviceRestart extends BACnetConstructedD
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataTimeOfDeviceRestart");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetTimeStamp timeOfDeviceRestart =

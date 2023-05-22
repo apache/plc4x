@@ -80,7 +80,6 @@ public class BACnetConstructedDataCOVResubscriptionInterval extends BACnetConstr
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataCOVResubscriptionInterval");
 
     // Simple Field (covResubscriptionInterval)
@@ -124,8 +123,6 @@ public class BACnetConstructedDataCOVResubscriptionInterval extends BACnetConstr
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataCOVResubscriptionInterval");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger covResubscriptionInterval =

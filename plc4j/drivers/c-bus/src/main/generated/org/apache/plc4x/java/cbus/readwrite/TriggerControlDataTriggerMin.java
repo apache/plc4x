@@ -49,7 +49,6 @@ public class TriggerControlDataTriggerMin extends TriggerControlData implements 
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("TriggerControlDataTriggerMin");
 
     writeBuffer.popContext("TriggerControlDataTriggerMin");
@@ -73,8 +72,6 @@ public class TriggerControlDataTriggerMin extends TriggerControlData implements 
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("TriggerControlDataTriggerMin");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("TriggerControlDataTriggerMin");

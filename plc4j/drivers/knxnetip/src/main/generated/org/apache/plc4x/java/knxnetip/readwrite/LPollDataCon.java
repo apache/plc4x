@@ -50,7 +50,6 @@ public class LPollDataCon extends CEMI implements Message {
   protected void serializeCEMIChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("LPollDataCon");
 
     writeBuffer.popContext("LPollDataCon");
@@ -74,8 +73,6 @@ public class LPollDataCon extends CEMI implements Message {
       throws ParseException {
     readBuffer.pullContext("LPollDataCon");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("LPollDataCon");

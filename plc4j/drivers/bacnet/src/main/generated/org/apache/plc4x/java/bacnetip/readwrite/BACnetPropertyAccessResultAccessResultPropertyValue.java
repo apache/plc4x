@@ -74,7 +74,6 @@ public class BACnetPropertyAccessResultAccessResultPropertyValue
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetPropertyAccessResultAccessResultPropertyValue");
 
     // Simple Field (propertyValue)
@@ -109,8 +108,6 @@ public class BACnetPropertyAccessResultAccessResultPropertyValue
           throws ParseException {
     readBuffer.pullContext("BACnetPropertyAccessResultAccessResultPropertyValue");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetConstructedData propertyValue =

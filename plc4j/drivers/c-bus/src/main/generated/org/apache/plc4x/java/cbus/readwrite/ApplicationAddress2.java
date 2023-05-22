@@ -56,7 +56,6 @@ public class ApplicationAddress2 implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("ApplicationAddress2");
 
     // Simple Field (address)
@@ -97,8 +96,6 @@ public class ApplicationAddress2 implements Message {
   public static ApplicationAddress2 staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("ApplicationAddress2");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte address = readSimpleField("address", readByte(readBuffer, 8));

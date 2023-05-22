@@ -80,7 +80,6 @@ public class BACnetConstructedDataLandingCallControl extends BACnetConstructedDa
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataLandingCallControl");
 
     // Simple Field (landingCallControl)
@@ -122,8 +121,6 @@ public class BACnetConstructedDataLandingCallControl extends BACnetConstructedDa
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataLandingCallControl");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetLandingCallStatus landingCallControl =

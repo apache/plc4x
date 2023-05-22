@@ -51,7 +51,6 @@ public class PublishedDataSetSourceDataType extends ExtensionObjectDefinition im
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("PublishedDataSetSourceDataType");
 
     writeBuffer.popContext("PublishedDataSetSourceDataType");
@@ -75,8 +74,6 @@ public class PublishedDataSetSourceDataType extends ExtensionObjectDefinition im
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("PublishedDataSetSourceDataType");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("PublishedDataSetSourceDataType");

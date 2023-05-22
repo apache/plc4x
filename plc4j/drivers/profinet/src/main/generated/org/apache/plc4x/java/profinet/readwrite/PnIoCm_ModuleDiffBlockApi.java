@@ -59,7 +59,6 @@ public class PnIoCm_ModuleDiffBlockApi implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("PnIoCm_ModuleDiffBlockApi");
 
     // Const Field (api)
@@ -123,8 +122,6 @@ public class PnIoCm_ModuleDiffBlockApi implements Message {
   public static PnIoCm_ModuleDiffBlockApi staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("PnIoCm_ModuleDiffBlockApi");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     long api =

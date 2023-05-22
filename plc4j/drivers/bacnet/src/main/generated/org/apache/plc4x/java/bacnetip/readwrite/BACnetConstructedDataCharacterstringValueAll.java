@@ -67,7 +67,6 @@ public class BACnetConstructedDataCharacterstringValueAll extends BACnetConstruc
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataCharacterstringValueAll");
 
     writeBuffer.popContext("BACnetConstructedDataCharacterstringValueAll");
@@ -96,8 +95,6 @@ public class BACnetConstructedDataCharacterstringValueAll extends BACnetConstruc
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataCharacterstringValueAll");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Validation
     if (!((1) == (2))) {

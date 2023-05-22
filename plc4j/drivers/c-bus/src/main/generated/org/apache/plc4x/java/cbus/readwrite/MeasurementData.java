@@ -61,7 +61,6 @@ public abstract class MeasurementData implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("MeasurementData");
 
     // Simple Field (commandTypeContainer)
@@ -114,8 +113,6 @@ public abstract class MeasurementData implements Message {
   public static MeasurementData staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("MeasurementData");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Validation
     if (!(org.apache.plc4x.java.cbus.readwrite.utils.StaticHelper

@@ -79,7 +79,6 @@ public class BACnetConstructedDataFaultType extends BACnetConstructedData implem
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataFaultType");
 
     // Simple Field (faultType)
@@ -120,8 +119,6 @@ public class BACnetConstructedDataFaultType extends BACnetConstructedData implem
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataFaultType");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetFaultTypeTagged faultType =

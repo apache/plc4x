@@ -65,7 +65,6 @@ public class RolePermissionType extends ExtensionObjectDefinition implements Mes
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("RolePermissionType");
 
     // Simple Field (roleId)
@@ -106,8 +105,6 @@ public class RolePermissionType extends ExtensionObjectDefinition implements Mes
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("RolePermissionType");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     NodeId roleId =

@@ -71,7 +71,6 @@ public class BACnetContextTagUnsignedInteger extends BACnetContextTag implements
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetContextTagUnsignedInteger");
 
     // Simple Field (payload)
@@ -111,8 +110,6 @@ public class BACnetContextTagUnsignedInteger extends BACnetContextTag implements
       throws ParseException {
     readBuffer.pullContext("BACnetContextTagUnsignedInteger");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetTagPayloadUnsignedInteger payload =

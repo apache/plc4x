@@ -137,7 +137,6 @@ public class FieldMetaData extends ExtensionObjectDefinition implements Message 
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("FieldMetaData");
 
     // Simple Field (name)
@@ -249,8 +248,6 @@ public class FieldMetaData extends ExtensionObjectDefinition implements Message 
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("FieldMetaData");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     PascalString name =

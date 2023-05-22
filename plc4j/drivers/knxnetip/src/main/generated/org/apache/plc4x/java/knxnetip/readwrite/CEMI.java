@@ -49,7 +49,6 @@ public abstract class CEMI implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("CEMI");
 
     // Discriminator Field (messageCode) (Used as input to a switch field)
@@ -102,8 +101,6 @@ public abstract class CEMI implements Message {
   public static CEMI staticParse(ReadBuffer readBuffer, Integer size) throws ParseException {
     readBuffer.pullContext("CEMI");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short messageCode = readDiscriminatorField("messageCode", readUnsignedShort(readBuffer, 8));

@@ -88,7 +88,6 @@ public class CreateSubscriptionResponse extends ExtensionObjectDefinition implem
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("CreateSubscriptionResponse");
 
     // Simple Field (responseHeader)
@@ -145,8 +144,6 @@ public class CreateSubscriptionResponse extends ExtensionObjectDefinition implem
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("CreateSubscriptionResponse");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ExtensionObjectDefinition responseHeader =

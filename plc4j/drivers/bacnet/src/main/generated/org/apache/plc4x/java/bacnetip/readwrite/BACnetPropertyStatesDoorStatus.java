@@ -57,7 +57,6 @@ public class BACnetPropertyStatesDoorStatus extends BACnetPropertyStates impleme
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetPropertyStatesDoorStatus");
 
     // Simple Field (doorStatus)
@@ -87,8 +86,6 @@ public class BACnetPropertyStatesDoorStatus extends BACnetPropertyStates impleme
       ReadBuffer readBuffer, Short peekedTagNumber) throws ParseException {
     readBuffer.pullContext("BACnetPropertyStatesDoorStatus");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetDoorStatusTagged doorStatus =

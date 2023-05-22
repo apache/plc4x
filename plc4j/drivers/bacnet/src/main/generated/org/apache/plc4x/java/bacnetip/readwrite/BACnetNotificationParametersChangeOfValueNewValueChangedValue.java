@@ -66,7 +66,6 @@ public class BACnetNotificationParametersChangeOfValueNewValueChangedValue
       WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetNotificationParametersChangeOfValueNewValueChangedValue");
 
     // Simple Field (changedValue)
@@ -97,8 +96,6 @@ public class BACnetNotificationParametersChangeOfValueNewValueChangedValue
           ReadBuffer readBuffer, Short peekedTagNumber, Short tagNumber) throws ParseException {
     readBuffer.pullContext("BACnetNotificationParametersChangeOfValueNewValueChangedValue");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetContextTagReal changedValue =

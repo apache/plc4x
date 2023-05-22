@@ -80,7 +80,6 @@ public class BACnetEventParameterChangeOfStatusFlags extends BACnetEventParamete
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetEventParameterChangeOfStatusFlags");
 
     // Simple Field (openingTag)
@@ -128,8 +127,6 @@ public class BACnetEventParameterChangeOfStatusFlags extends BACnetEventParamete
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetEventParameterChangeOfStatusFlags");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetOpeningTag openingTag =

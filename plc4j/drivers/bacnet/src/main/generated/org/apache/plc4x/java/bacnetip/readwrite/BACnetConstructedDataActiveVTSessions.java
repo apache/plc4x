@@ -76,7 +76,6 @@ public class BACnetConstructedDataActiveVTSessions extends BACnetConstructedData
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataActiveVTSessions");
 
     // Array Field (activeVTSession)
@@ -115,8 +114,6 @@ public class BACnetConstructedDataActiveVTSessions extends BACnetConstructedData
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataActiveVTSessions");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     List<BACnetVTSession> activeVTSession =

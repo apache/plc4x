@@ -72,7 +72,6 @@ public class ContentFilterElement extends ExtensionObjectDefinition implements M
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("ContentFilterElement");
 
     // Simple Field (filterOperator)
@@ -125,8 +124,6 @@ public class ContentFilterElement extends ExtensionObjectDefinition implements M
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("ContentFilterElement");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     FilterOperator filterOperator =

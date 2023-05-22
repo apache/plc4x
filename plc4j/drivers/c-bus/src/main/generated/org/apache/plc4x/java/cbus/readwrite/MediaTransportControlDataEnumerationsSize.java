@@ -91,7 +91,6 @@ public class MediaTransportControlDataEnumerationsSize extends MediaTransportCon
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("MediaTransportControlDataEnumerationsSize");
 
     // Simple Field (sizeType)
@@ -157,8 +156,6 @@ public class MediaTransportControlDataEnumerationsSize extends MediaTransportCon
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("MediaTransportControlDataEnumerationsSize");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte sizeType = readSimpleField("sizeType", readByte(readBuffer, 8));

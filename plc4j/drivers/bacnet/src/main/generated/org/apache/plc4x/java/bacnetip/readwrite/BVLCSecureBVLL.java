@@ -62,7 +62,6 @@ public class BVLCSecureBVLL extends BVLC implements Message {
   protected void serializeBVLCChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BVLCSecureBVLL");
 
     // Array Field (securityWrapper)
@@ -98,8 +97,6 @@ public class BVLCSecureBVLL extends BVLC implements Message {
       throws ParseException {
     readBuffer.pullContext("BVLCSecureBVLL");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte[] securityWrapper =

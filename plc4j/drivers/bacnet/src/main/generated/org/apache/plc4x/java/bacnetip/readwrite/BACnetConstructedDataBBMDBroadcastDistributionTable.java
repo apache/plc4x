@@ -76,7 +76,6 @@ public class BACnetConstructedDataBBMDBroadcastDistributionTable extends BACnetC
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataBBMDBroadcastDistributionTable");
 
     // Array Field (bbmdBroadcastDistributionTable)
@@ -116,8 +115,6 @@ public class BACnetConstructedDataBBMDBroadcastDistributionTable extends BACnetC
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataBBMDBroadcastDistributionTable");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     List<BACnetBDTEntry> bbmdBroadcastDistributionTable =

@@ -57,7 +57,6 @@ public class BACnetChannelValueBoolean extends BACnetChannelValue implements Mes
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetChannelValueBoolean");
 
     // Simple Field (booleanValue)
@@ -87,8 +86,6 @@ public class BACnetChannelValueBoolean extends BACnetChannelValue implements Mes
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetChannelValueBoolean");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagBoolean booleanValue =

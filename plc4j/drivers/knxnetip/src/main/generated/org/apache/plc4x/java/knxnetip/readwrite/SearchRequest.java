@@ -59,7 +59,6 @@ public class SearchRequest extends KnxNetIpMessage implements Message {
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("SearchRequest");
 
     // Simple Field (hpaiIDiscoveryEndpoint)
@@ -93,8 +92,6 @@ public class SearchRequest extends KnxNetIpMessage implements Message {
       throws ParseException {
     readBuffer.pullContext("SearchRequest");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     HPAIDiscoveryEndpoint hpaiIDiscoveryEndpoint =

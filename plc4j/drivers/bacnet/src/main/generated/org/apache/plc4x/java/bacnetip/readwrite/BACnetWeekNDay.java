@@ -44,7 +44,6 @@ public class BACnetWeekNDay implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetWeekNDay");
 
     writeBuffer.popContext("BACnetWeekNDay");
@@ -73,8 +72,6 @@ public class BACnetWeekNDay implements Message {
   public static BACnetWeekNDay staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetWeekNDay");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Validation
     if (!((1) == (2))) {

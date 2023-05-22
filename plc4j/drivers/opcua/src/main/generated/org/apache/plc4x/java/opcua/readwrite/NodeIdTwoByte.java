@@ -63,7 +63,6 @@ public class NodeIdTwoByte extends NodeIdTypeDefinition implements Message {
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("NodeIdTwoByte");
 
     // Simple Field (id)
@@ -99,8 +98,6 @@ public class NodeIdTwoByte extends NodeIdTypeDefinition implements Message {
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("NodeIdTwoByte");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short id = readSimpleField("id", readUnsignedShort(readBuffer, 8));

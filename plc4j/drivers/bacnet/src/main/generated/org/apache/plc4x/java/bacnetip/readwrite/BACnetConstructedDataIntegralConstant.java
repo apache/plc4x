@@ -80,7 +80,6 @@ public class BACnetConstructedDataIntegralConstant extends BACnetConstructedData
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataIntegralConstant");
 
     // Simple Field (integralConstant)
@@ -122,8 +121,6 @@ public class BACnetConstructedDataIntegralConstant extends BACnetConstructedData
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataIntegralConstant");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagReal integralConstant =

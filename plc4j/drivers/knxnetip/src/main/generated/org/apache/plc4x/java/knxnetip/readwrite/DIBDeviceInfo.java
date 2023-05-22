@@ -109,7 +109,6 @@ public class DIBDeviceInfo implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("DIBDeviceInfo");
 
     // Implicit Field (structureLength) (Used for parsing, but its value is not stored as it's
@@ -219,8 +218,6 @@ public class DIBDeviceInfo implements Message {
   public static DIBDeviceInfo staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("DIBDeviceInfo");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short structureLength = readImplicitField("structureLength", readUnsignedShort(readBuffer, 8));

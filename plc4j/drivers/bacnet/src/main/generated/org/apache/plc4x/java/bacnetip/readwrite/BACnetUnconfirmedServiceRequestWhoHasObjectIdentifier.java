@@ -58,7 +58,6 @@ public class BACnetUnconfirmedServiceRequestWhoHasObjectIdentifier
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetUnconfirmedServiceRequestWhoHasObjectIdentifier");
 
     // Simple Field (objectIdentifier)
@@ -90,8 +89,6 @@ public class BACnetUnconfirmedServiceRequestWhoHasObjectIdentifier
           throws ParseException {
     readBuffer.pullContext("BACnetUnconfirmedServiceRequestWhoHasObjectIdentifier");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetContextTagObjectIdentifier objectIdentifier =

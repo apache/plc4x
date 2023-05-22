@@ -66,7 +66,6 @@ public class SubscribeCOVPropertyMultipleError extends BACnetError implements Me
   protected void serializeBACnetErrorChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("SubscribeCOVPropertyMultipleError");
 
     // Simple Field (errorType)
@@ -105,8 +104,6 @@ public class SubscribeCOVPropertyMultipleError extends BACnetError implements Me
       ReadBuffer readBuffer, BACnetConfirmedServiceChoice errorChoice) throws ParseException {
     readBuffer.pullContext("SubscribeCOVPropertyMultipleError");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ErrorEnclosed errorType =

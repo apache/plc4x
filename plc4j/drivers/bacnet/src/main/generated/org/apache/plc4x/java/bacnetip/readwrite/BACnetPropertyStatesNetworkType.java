@@ -57,7 +57,6 @@ public class BACnetPropertyStatesNetworkType extends BACnetPropertyStates implem
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetPropertyStatesNetworkType");
 
     // Simple Field (networkType)
@@ -87,8 +86,6 @@ public class BACnetPropertyStatesNetworkType extends BACnetPropertyStates implem
       ReadBuffer readBuffer, Short peekedTagNumber) throws ParseException {
     readBuffer.pullContext("BACnetPropertyStatesNetworkType");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetNetworkTypeTagged networkType =

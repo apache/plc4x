@@ -65,7 +65,6 @@ public class InstanceID extends LogicalSegmentType implements Message {
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("InstanceID");
 
     // Simple Field (format)
@@ -101,8 +100,6 @@ public class InstanceID extends LogicalSegmentType implements Message {
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("InstanceID");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte format = readSimpleField("format", readUnsignedByte(readBuffer, 2));

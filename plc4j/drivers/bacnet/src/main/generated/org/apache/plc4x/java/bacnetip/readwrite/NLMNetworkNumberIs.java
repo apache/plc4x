@@ -71,7 +71,6 @@ public class NLMNetworkNumberIs extends NLM implements Message {
   protected void serializeNLMChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("NLMNetworkNumberIs");
 
     // Simple Field (networkNumber)
@@ -116,8 +115,6 @@ public class NLMNetworkNumberIs extends NLM implements Message {
       throws ParseException {
     readBuffer.pullContext("NLMNetworkNumberIs");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int networkNumber = readSimpleField("networkNumber", readUnsignedInt(readBuffer, 16));

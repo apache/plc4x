@@ -58,7 +58,6 @@ public class XmlElement implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("XmlElement");
 
     // Simple Field (length)
@@ -101,8 +100,6 @@ public class XmlElement implements Message {
   public static XmlElement staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("XmlElement");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int length = readSimpleField("length", readSignedInt(readBuffer, 32));

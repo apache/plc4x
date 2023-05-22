@@ -52,7 +52,6 @@ public class DceRpc_InterfaceUuid_ParameterInterface extends DceRpc_InterfaceUui
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("DceRpc_InterfaceUuid_ParameterInterface");
 
     writeBuffer.popContext("DceRpc_InterfaceUuid_ParameterInterface");
@@ -76,8 +75,6 @@ public class DceRpc_InterfaceUuid_ParameterInterface extends DceRpc_InterfaceUui
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("DceRpc_InterfaceUuid_ParameterInterface");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("DceRpc_InterfaceUuid_ParameterInterface");

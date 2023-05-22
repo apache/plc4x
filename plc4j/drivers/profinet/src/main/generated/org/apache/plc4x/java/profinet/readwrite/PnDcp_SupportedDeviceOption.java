@@ -58,7 +58,6 @@ public class PnDcp_SupportedDeviceOption implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("PnDcp_SupportedDeviceOption");
 
     // Simple Field (option)
@@ -112,8 +111,6 @@ public class PnDcp_SupportedDeviceOption implements Message {
       throws ParseException {
     readBuffer.pullContext("PnDcp_SupportedDeviceOption");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     PnDcp_BlockOptions option =

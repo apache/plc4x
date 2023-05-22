@@ -58,7 +58,6 @@ public abstract class BACnetConfirmedServiceRequest implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConfirmedServiceRequest");
 
     // Discriminator Field (serviceChoice) (Used as input to a switch field)
@@ -126,8 +125,6 @@ public abstract class BACnetConfirmedServiceRequest implements Message {
       ReadBuffer readBuffer, Long serviceRequestLength) throws ParseException {
     readBuffer.pullContext("BACnetConfirmedServiceRequest");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetConfirmedServiceChoice serviceChoice =

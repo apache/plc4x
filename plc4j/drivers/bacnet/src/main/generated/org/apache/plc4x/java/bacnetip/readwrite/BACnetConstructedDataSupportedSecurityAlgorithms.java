@@ -76,7 +76,6 @@ public class BACnetConstructedDataSupportedSecurityAlgorithms extends BACnetCons
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataSupportedSecurityAlgorithms");
 
     // Array Field (supportedSecurityAlgorithms)
@@ -116,8 +115,6 @@ public class BACnetConstructedDataSupportedSecurityAlgorithms extends BACnetCons
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataSupportedSecurityAlgorithms");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     List<BACnetApplicationTagUnsignedInteger> supportedSecurityAlgorithms =

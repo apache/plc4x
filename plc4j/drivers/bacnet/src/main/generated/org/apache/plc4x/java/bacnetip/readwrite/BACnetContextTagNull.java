@@ -55,7 +55,6 @@ public class BACnetContextTagNull extends BACnetContextTag implements Message {
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetContextTagNull");
 
     writeBuffer.popContext("BACnetContextTagNull");
@@ -83,8 +82,6 @@ public class BACnetContextTagNull extends BACnetContextTag implements Message {
       throws ParseException {
     readBuffer.pullContext("BACnetContextTagNull");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Validation
     if (!((header.getActualLength()) == (0))) {

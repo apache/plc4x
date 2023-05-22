@@ -122,7 +122,6 @@ public class BACnetTagHeader implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetTagHeader");
 
     // Simple Field (tagNumber)
@@ -251,8 +250,6 @@ public class BACnetTagHeader implements Message {
   public static BACnetTagHeader staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetTagHeader");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte tagNumber = readSimpleField("tagNumber", readUnsignedByte(readBuffer, 4));

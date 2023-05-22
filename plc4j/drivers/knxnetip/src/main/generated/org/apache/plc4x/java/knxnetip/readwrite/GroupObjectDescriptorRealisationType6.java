@@ -44,7 +44,6 @@ public class GroupObjectDescriptorRealisationType6 implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("GroupObjectDescriptorRealisationType6");
 
     writeBuffer.popContext("GroupObjectDescriptorRealisationType6");
@@ -74,8 +73,6 @@ public class GroupObjectDescriptorRealisationType6 implements Message {
       throws ParseException {
     readBuffer.pullContext("GroupObjectDescriptorRealisationType6");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("GroupObjectDescriptorRealisationType6");

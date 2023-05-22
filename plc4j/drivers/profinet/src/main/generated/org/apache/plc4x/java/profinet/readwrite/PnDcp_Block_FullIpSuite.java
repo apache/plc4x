@@ -54,7 +54,6 @@ public class PnDcp_Block_FullIpSuite extends PnDcp_Block implements Message {
   protected void serializePnDcp_BlockChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("PnDcp_Block_FullIpSuite");
 
     writeBuffer.popContext("PnDcp_Block_FullIpSuite");
@@ -78,8 +77,6 @@ public class PnDcp_Block_FullIpSuite extends PnDcp_Block implements Message {
       throws ParseException {
     readBuffer.pullContext("PnDcp_Block_FullIpSuite");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("PnDcp_Block_FullIpSuite");

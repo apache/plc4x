@@ -57,7 +57,6 @@ public class BACnetOptionalUnsignedValue extends BACnetOptionalUnsigned implemen
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetOptionalUnsignedValue");
 
     // Simple Field (unsignedValue)
@@ -87,8 +86,6 @@ public class BACnetOptionalUnsignedValue extends BACnetOptionalUnsigned implemen
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetOptionalUnsignedValue");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger unsignedValue =

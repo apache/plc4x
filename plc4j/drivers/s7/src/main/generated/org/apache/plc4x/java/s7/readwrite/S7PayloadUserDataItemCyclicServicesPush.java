@@ -79,7 +79,6 @@ public class S7PayloadUserDataItemCyclicServicesPush extends S7PayloadUserDataIt
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("S7PayloadUserDataItemCyclicServicesPush");
 
     // Simple Field (itemsCount)
@@ -122,8 +121,6 @@ public class S7PayloadUserDataItemCyclicServicesPush extends S7PayloadUserDataIt
       throws ParseException {
     readBuffer.pullContext("S7PayloadUserDataItemCyclicServicesPush");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int itemsCount = readSimpleField("itemsCount", readUnsignedInt(readBuffer, 16));

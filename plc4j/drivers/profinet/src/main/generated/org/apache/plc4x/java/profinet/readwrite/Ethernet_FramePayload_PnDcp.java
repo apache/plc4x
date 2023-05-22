@@ -59,7 +59,6 @@ public class Ethernet_FramePayload_PnDcp extends Ethernet_FramePayload implement
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("Ethernet_FramePayload_PnDcp");
 
     // Simple Field (pdu)
@@ -89,8 +88,6 @@ public class Ethernet_FramePayload_PnDcp extends Ethernet_FramePayload implement
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("Ethernet_FramePayload_PnDcp");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     PnDcp_Pdu pdu =

@@ -80,7 +80,6 @@ public class BACnetConstructedDataBACnetIPNATTraversal extends BACnetConstructed
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataBACnetIPNATTraversal");
 
     // Simple Field (bacnetIPNATTraversal)
@@ -122,8 +121,6 @@ public class BACnetConstructedDataBACnetIPNATTraversal extends BACnetConstructed
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataBACnetIPNATTraversal");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagBoolean bacnetIPNATTraversal =

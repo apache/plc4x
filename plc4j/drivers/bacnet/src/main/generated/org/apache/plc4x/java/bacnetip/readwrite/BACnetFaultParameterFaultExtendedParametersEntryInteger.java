@@ -58,7 +58,6 @@ public class BACnetFaultParameterFaultExtendedParametersEntryInteger
       WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetFaultParameterFaultExtendedParametersEntryInteger");
 
     // Simple Field (integerValue)
@@ -89,8 +88,6 @@ public class BACnetFaultParameterFaultExtendedParametersEntryInteger
           throws ParseException {
     readBuffer.pullContext("BACnetFaultParameterFaultExtendedParametersEntryInteger");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagSignedInteger integerValue =

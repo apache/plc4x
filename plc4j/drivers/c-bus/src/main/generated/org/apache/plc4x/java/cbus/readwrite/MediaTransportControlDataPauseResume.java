@@ -68,7 +68,6 @@ public class MediaTransportControlDataPauseResume extends MediaTransportControlD
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("MediaTransportControlDataPauseResume");
 
     // Simple Field (operation)
@@ -110,8 +109,6 @@ public class MediaTransportControlDataPauseResume extends MediaTransportControlD
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("MediaTransportControlDataPauseResume");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte operation = readSimpleField("operation", readByte(readBuffer, 8));

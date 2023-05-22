@@ -85,7 +85,6 @@ public class PnIoCm_Submodule_NoInputNoOutputData extends PnIoCm_Submodule imple
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("PnIoCm_Submodule_NoInputNoOutputData");
 
     // Const Field (dataDescription)
@@ -149,8 +148,6 @@ public class PnIoCm_Submodule_NoInputNoOutputData extends PnIoCm_Submodule imple
       throws ParseException {
     readBuffer.pullContext("PnIoCm_Submodule_NoInputNoOutputData");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int dataDescription =

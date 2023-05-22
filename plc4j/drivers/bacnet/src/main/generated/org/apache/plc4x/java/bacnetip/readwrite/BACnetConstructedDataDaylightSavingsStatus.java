@@ -80,7 +80,6 @@ public class BACnetConstructedDataDaylightSavingsStatus extends BACnetConstructe
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataDaylightSavingsStatus");
 
     // Simple Field (daylightSavingsStatus)
@@ -124,8 +123,6 @@ public class BACnetConstructedDataDaylightSavingsStatus extends BACnetConstructe
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataDaylightSavingsStatus");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagBoolean daylightSavingsStatus =

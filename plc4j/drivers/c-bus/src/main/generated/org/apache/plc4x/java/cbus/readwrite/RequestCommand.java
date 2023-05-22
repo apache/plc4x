@@ -95,7 +95,6 @@ public class RequestCommand extends Request implements Message {
   protected void serializeRequestChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("RequestCommand");
 
     // Const Field (initiator)
@@ -167,8 +166,6 @@ public class RequestCommand extends Request implements Message {
       ReadBuffer readBuffer, CBusOptions cBusOptions) throws ParseException {
     readBuffer.pullContext("RequestCommand");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte initiator = readConstField("initiator", readByte(readBuffer, 8), RequestCommand.INITIATOR);

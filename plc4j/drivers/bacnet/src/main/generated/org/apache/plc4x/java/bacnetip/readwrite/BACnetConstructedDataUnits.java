@@ -79,7 +79,6 @@ public class BACnetConstructedDataUnits extends BACnetConstructedData implements
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataUnits");
 
     // Simple Field (units)
@@ -120,8 +119,6 @@ public class BACnetConstructedDataUnits extends BACnetConstructedData implements
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataUnits");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetEngineeringUnitsTagged units =

@@ -79,7 +79,6 @@ public class BACnetConstructedDataBias extends BACnetConstructedData implements 
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataBias");
 
     // Simple Field (bias)
@@ -120,8 +119,6 @@ public class BACnetConstructedDataBias extends BACnetConstructedData implements 
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataBias");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagReal bias =

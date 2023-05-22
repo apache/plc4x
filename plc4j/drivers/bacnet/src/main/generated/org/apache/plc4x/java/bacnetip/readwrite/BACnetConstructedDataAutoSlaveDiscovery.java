@@ -80,7 +80,6 @@ public class BACnetConstructedDataAutoSlaveDiscovery extends BACnetConstructedDa
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataAutoSlaveDiscovery");
 
     // Simple Field (autoSlaveDiscovery)
@@ -122,8 +121,6 @@ public class BACnetConstructedDataAutoSlaveDiscovery extends BACnetConstructedDa
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataAutoSlaveDiscovery");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagBoolean autoSlaveDiscovery =

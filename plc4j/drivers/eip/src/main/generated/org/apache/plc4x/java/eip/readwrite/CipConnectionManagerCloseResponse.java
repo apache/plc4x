@@ -102,7 +102,6 @@ public class CipConnectionManagerCloseResponse extends CipService implements Mes
   protected void serializeCipServiceChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("CipConnectionManagerCloseResponse");
 
     // Reserved Field (reserved)
@@ -178,8 +177,6 @@ public class CipConnectionManagerCloseResponse extends CipService implements Mes
       ReadBuffer readBuffer, Boolean connected, Integer serviceLen) throws ParseException {
     readBuffer.pullContext("CipConnectionManagerCloseResponse");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     Short reservedField0 =

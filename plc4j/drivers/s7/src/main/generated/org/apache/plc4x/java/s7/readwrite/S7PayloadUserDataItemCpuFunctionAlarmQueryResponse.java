@@ -72,7 +72,6 @@ public class S7PayloadUserDataItemCpuFunctionAlarmQueryResponse extends S7Payloa
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("S7PayloadUserDataItemCpuFunctionAlarmQueryResponse");
 
     // Array Field (items)
@@ -109,8 +108,6 @@ public class S7PayloadUserDataItemCpuFunctionAlarmQueryResponse extends S7Payloa
       throws ParseException {
     readBuffer.pullContext("S7PayloadUserDataItemCpuFunctionAlarmQueryResponse");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte[] items = readBuffer.readByteArray("items", Math.toIntExact(dataLength));

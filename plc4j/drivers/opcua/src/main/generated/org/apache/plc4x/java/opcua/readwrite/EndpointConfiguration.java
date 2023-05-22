@@ -116,7 +116,6 @@ public class EndpointConfiguration extends ExtensionObjectDefinition implements 
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("EndpointConfiguration");
 
     // Simple Field (operationTimeout)
@@ -201,8 +200,6 @@ public class EndpointConfiguration extends ExtensionObjectDefinition implements 
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("EndpointConfiguration");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int operationTimeout = readSimpleField("operationTimeout", readSignedInt(readBuffer, 32));

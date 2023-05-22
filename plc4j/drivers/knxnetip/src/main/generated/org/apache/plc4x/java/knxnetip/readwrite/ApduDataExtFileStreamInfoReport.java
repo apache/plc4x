@@ -50,7 +50,6 @@ public class ApduDataExtFileStreamInfoReport extends ApduDataExt implements Mess
   protected void serializeApduDataExtChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("ApduDataExtFileStreamInfoReport");
 
     writeBuffer.popContext("ApduDataExtFileStreamInfoReport");
@@ -74,8 +73,6 @@ public class ApduDataExtFileStreamInfoReport extends ApduDataExt implements Mess
       ReadBuffer readBuffer, Short length) throws ParseException {
     readBuffer.pullContext("ApduDataExtFileStreamInfoReport");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("ApduDataExtFileStreamInfoReport");

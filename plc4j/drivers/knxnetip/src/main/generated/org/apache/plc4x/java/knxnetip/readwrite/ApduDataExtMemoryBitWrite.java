@@ -50,7 +50,6 @@ public class ApduDataExtMemoryBitWrite extends ApduDataExt implements Message {
   protected void serializeApduDataExtChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("ApduDataExtMemoryBitWrite");
 
     writeBuffer.popContext("ApduDataExtMemoryBitWrite");
@@ -74,8 +73,6 @@ public class ApduDataExtMemoryBitWrite extends ApduDataExt implements Message {
       ReadBuffer readBuffer, Short length) throws ParseException {
     readBuffer.pullContext("ApduDataExtMemoryBitWrite");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("ApduDataExtMemoryBitWrite");

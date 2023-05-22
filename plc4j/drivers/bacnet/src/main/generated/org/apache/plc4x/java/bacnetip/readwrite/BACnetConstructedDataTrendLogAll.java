@@ -66,7 +66,6 @@ public class BACnetConstructedDataTrendLogAll extends BACnetConstructedData impl
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataTrendLogAll");
 
     writeBuffer.popContext("BACnetConstructedDataTrendLogAll");
@@ -95,8 +94,6 @@ public class BACnetConstructedDataTrendLogAll extends BACnetConstructedData impl
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataTrendLogAll");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Validation
     if (!((1) == (2))) {

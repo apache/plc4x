@@ -59,7 +59,6 @@ public class X509IdentityToken extends UserIdentityTokenDefinition implements Me
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("X509IdentityToken");
 
     // Simple Field (certificateData)
@@ -90,8 +89,6 @@ public class X509IdentityToken extends UserIdentityTokenDefinition implements Me
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("X509IdentityToken");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     PascalByteString certificateData =

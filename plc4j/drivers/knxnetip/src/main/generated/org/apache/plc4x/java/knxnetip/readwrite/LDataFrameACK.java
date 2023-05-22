@@ -59,7 +59,6 @@ public class LDataFrameACK extends LDataFrame implements Message {
   protected void serializeLDataFrameChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("LDataFrameACK");
 
     writeBuffer.popContext("LDataFrameACK");
@@ -83,8 +82,6 @@ public class LDataFrameACK extends LDataFrame implements Message {
       throws ParseException {
     readBuffer.pullContext("LDataFrameACK");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("LDataFrameACK");

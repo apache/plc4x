@@ -52,7 +52,6 @@ public class TwoByteNodeId implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("TwoByteNodeId");
 
     // Simple Field (identifier)
@@ -87,8 +86,6 @@ public class TwoByteNodeId implements Message {
   public static TwoByteNodeId staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("TwoByteNodeId");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short identifier = readSimpleField("identifier", readUnsignedShort(readBuffer, 8));

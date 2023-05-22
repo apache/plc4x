@@ -80,7 +80,6 @@ public class BACnetConstructedDataAllWritesSuccessful extends BACnetConstructedD
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataAllWritesSuccessful");
 
     // Simple Field (allWritesSuccessful)
@@ -122,8 +121,6 @@ public class BACnetConstructedDataAllWritesSuccessful extends BACnetConstructedD
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataAllWritesSuccessful");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagBoolean allWritesSuccessful =

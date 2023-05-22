@@ -63,7 +63,6 @@ public class BACnetPriorityValueReal extends BACnetPriorityValue implements Mess
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetPriorityValueReal");
 
     // Simple Field (realValue)
@@ -93,8 +92,6 @@ public class BACnetPriorityValueReal extends BACnetPriorityValue implements Mess
       ReadBuffer readBuffer, BACnetObjectType objectTypeArgument) throws ParseException {
     readBuffer.pullContext("BACnetPriorityValueReal");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagReal realValue =

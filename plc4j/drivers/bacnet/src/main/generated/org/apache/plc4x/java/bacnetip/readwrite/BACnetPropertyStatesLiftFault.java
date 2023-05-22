@@ -57,7 +57,6 @@ public class BACnetPropertyStatesLiftFault extends BACnetPropertyStates implemen
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetPropertyStatesLiftFault");
 
     // Simple Field (liftFault)
@@ -87,8 +86,6 @@ public class BACnetPropertyStatesLiftFault extends BACnetPropertyStates implemen
       ReadBuffer readBuffer, Short peekedTagNumber) throws ParseException {
     readBuffer.pullContext("BACnetPropertyStatesLiftFault");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetLiftFaultTagged liftFault =

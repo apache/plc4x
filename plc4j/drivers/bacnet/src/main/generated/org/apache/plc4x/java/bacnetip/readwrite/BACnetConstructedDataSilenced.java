@@ -79,7 +79,6 @@ public class BACnetConstructedDataSilenced extends BACnetConstructedData impleme
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataSilenced");
 
     // Simple Field (silenced)
@@ -120,8 +119,6 @@ public class BACnetConstructedDataSilenced extends BACnetConstructedData impleme
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataSilenced");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetSilencedStateTagged silenced =

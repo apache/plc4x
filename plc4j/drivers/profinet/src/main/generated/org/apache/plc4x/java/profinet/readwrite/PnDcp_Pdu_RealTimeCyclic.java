@@ -111,7 +111,6 @@ public class PnDcp_Pdu_RealTimeCyclic extends PnDcp_Pdu implements Message {
   protected void serializePnDcp_PduChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("PnDcp_Pdu_RealTimeCyclic");
 
     // Manual Field (dataUnit)
@@ -247,8 +246,6 @@ public class PnDcp_Pdu_RealTimeCyclic extends PnDcp_Pdu implements Message {
       throws ParseException {
     readBuffer.pullContext("PnDcp_Pdu_RealTimeCyclic");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     PnIo_CyclicServiceDataUnit dataUnit =

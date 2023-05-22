@@ -64,7 +64,6 @@ public class BACnetServiceAckAtomicWriteFile extends BACnetServiceAck implements
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetServiceAckAtomicWriteFile");
 
     // Simple Field (fileStartPosition)
@@ -95,8 +94,6 @@ public class BACnetServiceAckAtomicWriteFile extends BACnetServiceAck implements
       ReadBuffer readBuffer, Long serviceAckLength) throws ParseException {
     readBuffer.pullContext("BACnetServiceAckAtomicWriteFile");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetContextTagSignedInteger fileStartPosition =

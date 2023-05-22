@@ -80,7 +80,6 @@ public class BACnetConstructedDataBinaryInputInterfaceValue extends BACnetConstr
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataBinaryInputInterfaceValue");
 
     // Simple Field (interfaceValue)
@@ -121,8 +120,6 @@ public class BACnetConstructedDataBinaryInputInterfaceValue extends BACnetConstr
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataBinaryInputInterfaceValue");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetOptionalBinaryPV interfaceValue =

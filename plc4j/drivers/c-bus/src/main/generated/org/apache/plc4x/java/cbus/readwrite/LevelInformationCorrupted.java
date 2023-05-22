@@ -79,7 +79,6 @@ public class LevelInformationCorrupted extends LevelInformation implements Messa
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("LevelInformationCorrupted");
 
     // Simple Field (corruptedNibble1)
@@ -127,8 +126,6 @@ public class LevelInformationCorrupted extends LevelInformation implements Messa
       throws ParseException {
     readBuffer.pullContext("LevelInformationCorrupted");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte corruptedNibble1 = readSimpleField("corruptedNibble1", readUnsignedByte(readBuffer, 4));

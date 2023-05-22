@@ -66,7 +66,6 @@ public class OpenProtocolMessageDisableToolRev1 extends OpenProtocolMessageDisab
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("OpenProtocolMessageDisableToolRev1");
 
     writeBuffer.popContext("OpenProtocolMessageDisableToolRev1");
@@ -91,8 +90,6 @@ public class OpenProtocolMessageDisableToolRev1 extends OpenProtocolMessageDisab
           throws ParseException {
     readBuffer.pullContext("OpenProtocolMessageDisableToolRev1");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("OpenProtocolMessageDisableToolRev1");

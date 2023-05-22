@@ -65,7 +65,6 @@ public class StatusChangeNotification extends ExtensionObjectDefinition implemen
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("StatusChangeNotification");
 
     // Implicit Field (notificationLength) (Used for parsing, but its value is not stored as it's
@@ -109,8 +108,6 @@ public class StatusChangeNotification extends ExtensionObjectDefinition implemen
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("StatusChangeNotification");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int notificationLength = readImplicitField("notificationLength", readSignedInt(readBuffer, 32));

@@ -59,7 +59,6 @@ public class AdsDiscoveryBlockFingerprint extends AdsDiscoveryBlock implements M
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("AdsDiscoveryBlockFingerprint");
 
     // Implicit Field (dataLen) (Used for parsing, but its value is not stored as it's implicitly
@@ -99,8 +98,6 @@ public class AdsDiscoveryBlockFingerprint extends AdsDiscoveryBlock implements M
       throws ParseException {
     readBuffer.pullContext("AdsDiscoveryBlockFingerprint");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int dataLen = readImplicitField("dataLen", readUnsignedInt(readBuffer, 16));

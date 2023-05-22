@@ -56,7 +56,6 @@ public class BACnetLogDataLogDataEntryFailure extends BACnetLogDataLogDataEntry 
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetLogDataLogDataEntryFailure");
 
     // Simple Field (failure)
@@ -86,8 +85,6 @@ public class BACnetLogDataLogDataEntryFailure extends BACnetLogDataLogDataEntry 
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetLogDataLogDataEntryFailure");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ErrorEnclosed failure =

@@ -80,7 +80,6 @@ public class BACnetConstructedDataLargeAnalogValueMaxPresValue extends BACnetCon
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataLargeAnalogValueMaxPresValue");
 
     // Simple Field (maxPresValue)
@@ -121,8 +120,6 @@ public class BACnetConstructedDataLargeAnalogValueMaxPresValue extends BACnetCon
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataLargeAnalogValueMaxPresValue");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagDouble maxPresValue =

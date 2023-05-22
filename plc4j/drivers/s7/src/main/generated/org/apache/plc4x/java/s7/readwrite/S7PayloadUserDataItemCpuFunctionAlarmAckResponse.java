@@ -79,7 +79,6 @@ public class S7PayloadUserDataItemCpuFunctionAlarmAckResponse extends S7PayloadU
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("S7PayloadUserDataItemCpuFunctionAlarmAckResponse");
 
     // Simple Field (functionId)
@@ -126,8 +125,6 @@ public class S7PayloadUserDataItemCpuFunctionAlarmAckResponse extends S7PayloadU
       throws ParseException {
     readBuffer.pullContext("S7PayloadUserDataItemCpuFunctionAlarmAckResponse");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short functionId = readSimpleField("functionId", readUnsignedShort(readBuffer, 8));

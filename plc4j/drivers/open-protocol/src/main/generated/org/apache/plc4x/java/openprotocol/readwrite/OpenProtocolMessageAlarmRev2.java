@@ -129,7 +129,6 @@ public class OpenProtocolMessageAlarmRev2 extends OpenProtocolMessageAlarm imple
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("OpenProtocolMessageAlarmRev2");
 
     // Const Field (blockIdErrorCode)
@@ -248,8 +247,6 @@ public class OpenProtocolMessageAlarmRev2 extends OpenProtocolMessageAlarm imple
       ReadBuffer readBuffer, Long revision) throws ParseException {
     readBuffer.pullContext("OpenProtocolMessageAlarmRev2");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int blockIdErrorCode =

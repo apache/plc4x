@@ -80,7 +80,6 @@ public class BACnetConstructedDataNetworkNumberQuality extends BACnetConstructed
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataNetworkNumberQuality");
 
     // Simple Field (networkNumberQuality)
@@ -122,8 +121,6 @@ public class BACnetConstructedDataNetworkNumberQuality extends BACnetConstructed
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataNetworkNumberQuality");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetNetworkNumberQualityTagged networkNumberQuality =

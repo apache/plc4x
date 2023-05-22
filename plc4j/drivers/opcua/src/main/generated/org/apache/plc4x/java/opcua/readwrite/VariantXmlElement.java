@@ -70,7 +70,6 @@ public class VariantXmlElement extends Variant implements Message {
   protected void serializeVariantChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("VariantXmlElement");
 
     // Optional Field (arrayLength) (Can be skipped, if the value is null)
@@ -114,8 +113,6 @@ public class VariantXmlElement extends Variant implements Message {
       ReadBuffer readBuffer, Boolean arrayLengthSpecified) throws ParseException {
     readBuffer.pullContext("VariantXmlElement");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     Integer arrayLength =

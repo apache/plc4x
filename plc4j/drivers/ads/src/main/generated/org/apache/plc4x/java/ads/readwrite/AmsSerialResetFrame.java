@@ -88,7 +88,6 @@ public class AmsSerialResetFrame implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("AmsSerialResetFrame");
 
     // Simple Field (magicCookie)
@@ -153,8 +152,6 @@ public class AmsSerialResetFrame implements Message {
   public static AmsSerialResetFrame staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("AmsSerialResetFrame");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int magicCookie = readSimpleField("magicCookie", readUnsignedInt(readBuffer, 16));

@@ -65,7 +65,6 @@ public class BACnetLogRecordLogDatumAnyValue extends BACnetLogRecordLogDatum imp
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetLogRecordLogDatumAnyValue");
 
     // Optional Field (anyValue) (Can be skipped, if the value is null)
@@ -97,8 +96,6 @@ public class BACnetLogRecordLogDatumAnyValue extends BACnetLogRecordLogDatum imp
       ReadBuffer readBuffer, Short tagNumber) throws ParseException {
     readBuffer.pullContext("BACnetLogRecordLogDatumAnyValue");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetConstructedData anyValue =

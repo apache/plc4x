@@ -67,7 +67,6 @@ public class BACnetAbortReasonTagged implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetAbortReasonTagged");
 
     // Manual Field (value)
@@ -139,8 +138,6 @@ public class BACnetAbortReasonTagged implements Message {
       throws ParseException {
     readBuffer.pullContext("BACnetAbortReasonTagged");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetAbortReason value =

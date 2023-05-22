@@ -70,7 +70,6 @@ public class SDOSegmentUploadResponse extends SDOResponse implements Message {
   protected void serializeSDOResponseChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("SDOSegmentUploadResponse");
 
     // Simple Field (toggle)
@@ -132,8 +131,6 @@ public class SDOSegmentUploadResponse extends SDOResponse implements Message {
       ReadBuffer readBuffer, SDOResponseCommand command) throws ParseException {
     readBuffer.pullContext("SDOSegmentUploadResponse");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     boolean toggle = readSimpleField("toggle", readBoolean(readBuffer));

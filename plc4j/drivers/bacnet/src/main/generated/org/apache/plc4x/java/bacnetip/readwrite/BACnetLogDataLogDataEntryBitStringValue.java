@@ -58,7 +58,6 @@ public class BACnetLogDataLogDataEntryBitStringValue extends BACnetLogDataLogDat
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetLogDataLogDataEntryBitStringValue");
 
     // Simple Field (bitStringValue)
@@ -88,8 +87,6 @@ public class BACnetLogDataLogDataEntryBitStringValue extends BACnetLogDataLogDat
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetLogDataLogDataEntryBitStringValue");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetContextTagBitString bitStringValue =

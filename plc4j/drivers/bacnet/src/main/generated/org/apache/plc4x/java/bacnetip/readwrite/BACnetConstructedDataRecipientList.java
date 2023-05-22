@@ -75,7 +75,6 @@ public class BACnetConstructedDataRecipientList extends BACnetConstructedData im
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataRecipientList");
 
     // Array Field (recipientList)
@@ -114,8 +113,6 @@ public class BACnetConstructedDataRecipientList extends BACnetConstructedData im
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataRecipientList");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     List<BACnetDestination> recipientList =

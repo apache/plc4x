@@ -80,7 +80,6 @@ public class BACnetConstructedDataLightingCommandDefaultPriority extends BACnetC
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataLightingCommandDefaultPriority");
 
     // Simple Field (lightingCommandDefaultPriority)
@@ -124,8 +123,6 @@ public class BACnetConstructedDataLightingCommandDefaultPriority extends BACnetC
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataLightingCommandDefaultPriority");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger lightingCommandDefaultPriority =

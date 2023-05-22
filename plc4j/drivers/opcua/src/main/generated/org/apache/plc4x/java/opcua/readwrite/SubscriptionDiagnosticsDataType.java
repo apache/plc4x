@@ -270,7 +270,6 @@ public class SubscriptionDiagnosticsDataType extends ExtensionObjectDefinition i
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("SubscriptionDiagnosticsDataType");
 
     // Simple Field (sessionId)
@@ -520,8 +519,6 @@ public class SubscriptionDiagnosticsDataType extends ExtensionObjectDefinition i
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("SubscriptionDiagnosticsDataType");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     NodeId sessionId =

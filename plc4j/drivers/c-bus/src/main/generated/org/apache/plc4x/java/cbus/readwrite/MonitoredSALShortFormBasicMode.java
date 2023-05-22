@@ -97,7 +97,6 @@ public class MonitoredSALShortFormBasicMode extends MonitoredSAL implements Mess
   protected void serializeMonitoredSALChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("MonitoredSALShortFormBasicMode");
 
     // Optional Field (bridgeCount) (Can be skipped, if the value is null)
@@ -171,8 +170,6 @@ public class MonitoredSALShortFormBasicMode extends MonitoredSAL implements Mess
       ReadBuffer readBuffer, CBusOptions cBusOptions) throws ParseException {
     readBuffer.pullContext("MonitoredSALShortFormBasicMode");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte counts = readPeekField("counts", readByte(readBuffer, 8));

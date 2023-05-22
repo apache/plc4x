@@ -71,7 +71,6 @@ public abstract class OpenProtocolMessageAlarm extends OpenProtocolMessage imple
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("OpenProtocolMessageAlarm");
 
     // Switch field (Serialize the sub-type)
@@ -100,8 +99,6 @@ public abstract class OpenProtocolMessageAlarm extends OpenProtocolMessage imple
       ReadBuffer readBuffer, Long revision) throws ParseException {
     readBuffer.pullContext("OpenProtocolMessageAlarm");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)

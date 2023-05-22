@@ -81,7 +81,6 @@ public abstract class BACnetEventLogRecordLogDatum implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetEventLogRecordLogDatum");
 
     // Simple Field (openingTag)
@@ -148,8 +147,6 @@ public abstract class BACnetEventLogRecordLogDatum implements Message {
       throws ParseException {
     readBuffer.pullContext("BACnetEventLogRecordLogDatum");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetOpeningTag openingTag =

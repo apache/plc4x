@@ -61,7 +61,6 @@ public class ErrorReportingSystemCategoryTypeSupportUnits extends ErrorReporting
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("ErrorReportingSystemCategoryTypeSupportUnits");
 
     // Simple Field (categoryForType)
@@ -101,8 +100,6 @@ public class ErrorReportingSystemCategoryTypeSupportUnits extends ErrorReporting
           throws ParseException {
     readBuffer.pullContext("ErrorReportingSystemCategoryTypeSupportUnits");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ErrorReportingSystemCategoryTypeForSupportUnits categoryForType =

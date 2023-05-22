@@ -57,7 +57,6 @@ public abstract class StatusRequest implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("StatusRequest");
 
     // Switch field (Serialize the sub-type)
@@ -91,8 +90,6 @@ public abstract class StatusRequest implements Message {
   public static StatusRequest staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("StatusRequest");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte statusType = readPeekField("statusType", readByte(readBuffer, 8));

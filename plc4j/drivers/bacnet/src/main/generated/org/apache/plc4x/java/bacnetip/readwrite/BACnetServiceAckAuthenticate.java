@@ -66,7 +66,6 @@ public class BACnetServiceAckAuthenticate extends BACnetServiceAck implements Me
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetServiceAckAuthenticate");
 
     // Array Field (bytesOfRemovedService)
@@ -100,8 +99,6 @@ public class BACnetServiceAckAuthenticate extends BACnetServiceAck implements Me
       throws ParseException {
     readBuffer.pullContext("BACnetServiceAckAuthenticate");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte[] bytesOfRemovedService =

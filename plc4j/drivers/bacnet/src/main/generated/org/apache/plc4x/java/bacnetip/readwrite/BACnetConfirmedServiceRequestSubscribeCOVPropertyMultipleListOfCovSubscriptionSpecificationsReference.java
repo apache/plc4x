@@ -70,7 +70,6 @@ class BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscrip
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext(
         "BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsReference");
 
@@ -127,8 +126,6 @@ class BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscrip
     readBuffer.pullContext(
         "BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsReference");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetPropertyReferenceEnclosed monitoredProperty =

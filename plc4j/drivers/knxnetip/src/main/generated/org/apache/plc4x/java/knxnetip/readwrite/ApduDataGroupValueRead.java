@@ -50,7 +50,6 @@ public class ApduDataGroupValueRead extends ApduData implements Message {
   protected void serializeApduDataChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("ApduDataGroupValueRead");
 
     // Reserved Field (reserved)
@@ -80,8 +79,6 @@ public class ApduDataGroupValueRead extends ApduData implements Message {
       throws ParseException {
     readBuffer.pullContext("ApduDataGroupValueRead");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     Short reservedField0 =

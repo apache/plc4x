@@ -60,7 +60,6 @@ public class ConnectionResponseDataBlockTunnelConnection extends ConnectionRespo
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("ConnectionResponseDataBlockTunnelConnection");
 
     // Simple Field (knxAddress)
@@ -90,8 +89,6 @@ public class ConnectionResponseDataBlockTunnelConnection extends ConnectionRespo
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("ConnectionResponseDataBlockTunnelConnection");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     KnxAddress knxAddress =

@@ -65,7 +65,6 @@ public class PortSegmentNormal extends PortSegmentType implements Message {
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("PortSegmentNormal");
 
     // Simple Field (port)
@@ -101,8 +100,6 @@ public class PortSegmentNormal extends PortSegmentType implements Message {
       throws ParseException {
     readBuffer.pullContext("PortSegmentNormal");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte port = readSimpleField("port", readUnsignedByte(readBuffer, 4));

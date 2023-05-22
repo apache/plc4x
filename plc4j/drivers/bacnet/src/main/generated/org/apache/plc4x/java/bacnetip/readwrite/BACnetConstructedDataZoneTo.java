@@ -79,7 +79,6 @@ public class BACnetConstructedDataZoneTo extends BACnetConstructedData implement
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataZoneTo");
 
     // Simple Field (zoneTo)
@@ -120,8 +119,6 @@ public class BACnetConstructedDataZoneTo extends BACnetConstructedData implement
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataZoneTo");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetDeviceObjectReference zoneTo =

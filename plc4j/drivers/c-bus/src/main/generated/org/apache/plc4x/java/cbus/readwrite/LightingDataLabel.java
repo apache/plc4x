@@ -78,7 +78,6 @@ public class LightingDataLabel extends LightingData implements Message {
   protected void serializeLightingDataChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("LightingDataLabel");
 
     // Simple Field (group)
@@ -137,8 +136,6 @@ public class LightingDataLabel extends LightingData implements Message {
       throws ParseException {
     readBuffer.pullContext("LightingDataLabel");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte group = readSimpleField("group", readByte(readBuffer, 8));

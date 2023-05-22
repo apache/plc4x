@@ -64,7 +64,6 @@ public class BACnetTimerStateChangeValueUnsigned extends BACnetTimerStateChangeV
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetTimerStateChangeValueUnsigned");
 
     // Simple Field (unsignedValue)
@@ -94,8 +93,6 @@ public class BACnetTimerStateChangeValueUnsigned extends BACnetTimerStateChangeV
       ReadBuffer readBuffer, BACnetObjectType objectTypeArgument) throws ParseException {
     readBuffer.pullContext("BACnetTimerStateChangeValueUnsigned");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger unsignedValue =

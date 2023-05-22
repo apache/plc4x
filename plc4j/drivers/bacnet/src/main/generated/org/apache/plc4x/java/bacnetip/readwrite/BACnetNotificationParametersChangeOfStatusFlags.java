@@ -90,7 +90,6 @@ public class BACnetNotificationParametersChangeOfStatusFlags extends BACnetNotif
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetNotificationParametersChangeOfStatusFlags");
 
     // Simple Field (innerOpeningTag)
@@ -145,8 +144,6 @@ public class BACnetNotificationParametersChangeOfStatusFlags extends BACnetNotif
       throws ParseException {
     readBuffer.pullContext("BACnetNotificationParametersChangeOfStatusFlags");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetOpeningTag innerOpeningTag =

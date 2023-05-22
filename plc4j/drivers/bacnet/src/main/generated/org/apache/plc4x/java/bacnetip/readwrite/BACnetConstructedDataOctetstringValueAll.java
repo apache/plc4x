@@ -67,7 +67,6 @@ public class BACnetConstructedDataOctetstringValueAll extends BACnetConstructedD
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataOctetstringValueAll");
 
     writeBuffer.popContext("BACnetConstructedDataOctetstringValueAll");
@@ -96,8 +95,6 @@ public class BACnetConstructedDataOctetstringValueAll extends BACnetConstructedD
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataOctetstringValueAll");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Validation
     if (!((1) == (2))) {

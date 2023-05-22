@@ -66,7 +66,6 @@ public class ConnectionStateRequest extends KnxNetIpMessage implements Message {
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("ConnectionStateRequest");
 
     // Simple Field (communicationChannelId)
@@ -120,8 +119,6 @@ public class ConnectionStateRequest extends KnxNetIpMessage implements Message {
       throws ParseException {
     readBuffer.pullContext("ConnectionStateRequest");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short communicationChannelId =

@@ -59,7 +59,6 @@ public class HistoryUpdateDetails extends ExtensionObjectDefinition implements M
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("HistoryUpdateDetails");
 
     // Simple Field (nodeId)
@@ -89,8 +88,6 @@ public class HistoryUpdateDetails extends ExtensionObjectDefinition implements M
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("HistoryUpdateDetails");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     NodeId nodeId =

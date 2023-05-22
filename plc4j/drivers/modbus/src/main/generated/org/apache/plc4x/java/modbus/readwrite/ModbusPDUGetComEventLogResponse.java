@@ -85,7 +85,6 @@ public class ModbusPDUGetComEventLogResponse extends ModbusPDU implements Messag
   protected void serializeModbusPDUChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("ModbusPDUGetComEventLogResponse");
 
     // Implicit Field (byteCount) (Used for parsing, but its value is not stored as it's implicitly
@@ -143,8 +142,6 @@ public class ModbusPDUGetComEventLogResponse extends ModbusPDU implements Messag
       ReadBuffer readBuffer, Boolean response) throws ParseException {
     readBuffer.pullContext("ModbusPDUGetComEventLogResponse");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short byteCount = readImplicitField("byteCount", readUnsignedShort(readBuffer, 8));

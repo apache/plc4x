@@ -262,7 +262,6 @@ public class OpenProtocolMessageApplicationCommunicationStartAcknowledgeRev6
       WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("OpenProtocolMessageApplicationCommunicationStartAcknowledgeRev6");
 
     // Const Field (blockIdCellId)
@@ -596,8 +595,6 @@ public class OpenProtocolMessageApplicationCommunicationStartAcknowledgeRev6
           ReadBuffer readBuffer, Long revision) throws ParseException {
     readBuffer.pullContext("OpenProtocolMessageApplicationCommunicationStartAcknowledgeRev6");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int blockIdCellId =

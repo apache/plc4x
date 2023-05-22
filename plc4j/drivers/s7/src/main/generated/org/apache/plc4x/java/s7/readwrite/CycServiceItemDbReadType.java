@@ -63,7 +63,6 @@ public class CycServiceItemDbReadType extends CycServiceItemType implements Mess
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("CycServiceItemDbReadType");
 
     // Simple Field (numberOfAreas)
@@ -105,8 +104,6 @@ public class CycServiceItemDbReadType extends CycServiceItemType implements Mess
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("CycServiceItemDbReadType");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short numberOfAreas = readSimpleField("numberOfAreas", readUnsignedShort(readBuffer, 8));

@@ -59,7 +59,6 @@ public class COTPParameterChecksum extends COTPParameter implements Message {
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("COTPParameterChecksum");
 
     // Simple Field (crc)
@@ -89,8 +88,6 @@ public class COTPParameterChecksum extends COTPParameter implements Message {
       ReadBuffer readBuffer, Short rest) throws ParseException {
     readBuffer.pullContext("COTPParameterChecksum");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short crc = readSimpleField("crc", readUnsignedShort(readBuffer, 8));

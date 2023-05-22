@@ -55,7 +55,6 @@ public class PnDcp_Block_DhcpOptionVendorSpecificInformation extends PnDcp_Block
   protected void serializePnDcp_BlockChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("PnDcp_Block_DhcpOptionVendorSpecificInformation");
 
     writeBuffer.popContext("PnDcp_Block_DhcpOptionVendorSpecificInformation");
@@ -79,8 +78,6 @@ public class PnDcp_Block_DhcpOptionVendorSpecificInformation extends PnDcp_Block
       throws ParseException {
     readBuffer.pullContext("PnDcp_Block_DhcpOptionVendorSpecificInformation");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("PnDcp_Block_DhcpOptionVendorSpecificInformation");

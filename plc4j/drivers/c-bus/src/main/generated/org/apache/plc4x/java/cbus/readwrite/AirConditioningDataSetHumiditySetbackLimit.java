@@ -80,7 +80,6 @@ public class AirConditioningDataSetHumiditySetbackLimit extends AirConditioningD
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("AirConditioningDataSetHumiditySetbackLimit");
 
     // Simple Field (zoneGroup)
@@ -129,8 +128,6 @@ public class AirConditioningDataSetHumiditySetbackLimit extends AirConditioningD
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("AirConditioningDataSetHumiditySetbackLimit");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte zoneGroup = readSimpleField("zoneGroup", readByte(readBuffer, 8));

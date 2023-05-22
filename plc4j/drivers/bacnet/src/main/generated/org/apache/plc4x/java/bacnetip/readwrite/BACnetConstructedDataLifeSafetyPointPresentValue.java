@@ -80,7 +80,6 @@ public class BACnetConstructedDataLifeSafetyPointPresentValue extends BACnetCons
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataLifeSafetyPointPresentValue");
 
     // Simple Field (presentValue)
@@ -121,8 +120,6 @@ public class BACnetConstructedDataLifeSafetyPointPresentValue extends BACnetCons
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataLifeSafetyPointPresentValue");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetLifeSafetyStateTagged presentValue =

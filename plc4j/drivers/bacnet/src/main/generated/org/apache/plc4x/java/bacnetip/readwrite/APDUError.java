@@ -80,7 +80,6 @@ public class APDUError extends APDU implements Message {
   protected void serializeAPDUChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("APDUError");
 
     // Reserved Field (reserved)
@@ -138,8 +137,6 @@ public class APDUError extends APDU implements Message {
       throws ParseException {
     readBuffer.pullContext("APDUError");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     Byte reservedField0 =

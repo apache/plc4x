@@ -57,7 +57,6 @@ public class BACnetPropertyStatesRestartReason extends BACnetPropertyStates impl
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetPropertyStatesRestartReason");
 
     // Simple Field (restartReason)
@@ -87,8 +86,6 @@ public class BACnetPropertyStatesRestartReason extends BACnetPropertyStates impl
       ReadBuffer readBuffer, Short peekedTagNumber) throws ParseException {
     readBuffer.pullContext("BACnetPropertyStatesRestartReason");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetRestartReasonTagged restartReason =

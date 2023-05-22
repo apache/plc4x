@@ -63,7 +63,6 @@ public class BACnetPriorityValueObjectidentifier extends BACnetPriorityValue imp
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetPriorityValueObjectidentifier");
 
     // Simple Field (objectidentifierValue)
@@ -96,8 +95,6 @@ public class BACnetPriorityValueObjectidentifier extends BACnetPriorityValue imp
       ReadBuffer readBuffer, BACnetObjectType objectTypeArgument) throws ParseException {
     readBuffer.pullContext("BACnetPriorityValueObjectidentifier");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagObjectIdentifier objectidentifierValue =

@@ -80,7 +80,6 @@ public class BACnetConstructedDataAuthenticationStatus extends BACnetConstructed
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataAuthenticationStatus");
 
     // Simple Field (authenticationStatus)
@@ -122,8 +121,6 @@ public class BACnetConstructedDataAuthenticationStatus extends BACnetConstructed
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataAuthenticationStatus");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetAuthenticationStatusTagged authenticationStatus =

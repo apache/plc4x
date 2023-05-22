@@ -48,7 +48,6 @@ public class BACnetApplicationTagNull extends BACnetApplicationTag implements Me
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetApplicationTagNull");
 
     writeBuffer.popContext("BACnetApplicationTagNull");
@@ -72,8 +71,6 @@ public class BACnetApplicationTagNull extends BACnetApplicationTag implements Me
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetApplicationTagNull");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("BACnetApplicationTagNull");

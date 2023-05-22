@@ -65,7 +65,6 @@ public class TlvProfibusSubTypeMrpPortStatus extends TlvOrgSpecificProfibusUnit 
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("TlvProfibusSubTypeMrpPortStatus");
 
     // Simple Field (macAddress)
@@ -101,8 +100,6 @@ public class TlvProfibusSubTypeMrpPortStatus extends TlvOrgSpecificProfibusUnit 
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("TlvProfibusSubTypeMrpPortStatus");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     Uuid macAddress =

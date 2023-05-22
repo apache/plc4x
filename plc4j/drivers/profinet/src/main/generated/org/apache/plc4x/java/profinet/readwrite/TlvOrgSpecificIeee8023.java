@@ -59,7 +59,6 @@ public class TlvOrgSpecificIeee8023 extends TlvOrganizationSpecificUnit implemen
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("TlvOrgSpecificIeee8023");
 
     // Simple Field (specificUnit)
@@ -89,8 +88,6 @@ public class TlvOrgSpecificIeee8023 extends TlvOrganizationSpecificUnit implemen
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("TlvOrgSpecificIeee8023");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     TlvOrgSpecificIeee8023Unit specificUnit =

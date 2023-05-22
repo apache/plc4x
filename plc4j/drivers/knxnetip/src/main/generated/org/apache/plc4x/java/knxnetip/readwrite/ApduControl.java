@@ -50,7 +50,6 @@ public abstract class ApduControl implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("ApduControl");
 
     // Discriminator Field (controlType) (Used as input to a switch field)
@@ -90,8 +89,6 @@ public abstract class ApduControl implements Message {
   public static ApduControl staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("ApduControl");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte controlType = readDiscriminatorField("controlType", readUnsignedByte(readBuffer, 2));

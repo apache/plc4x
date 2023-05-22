@@ -77,7 +77,6 @@ public abstract class CBusPointToPointToMultiPointCommand implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("CBusPointToPointToMultiPointCommand");
 
     // Simple Field (bridgeAddress)
@@ -136,8 +135,6 @@ public abstract class CBusPointToPointToMultiPointCommand implements Message {
       ReadBuffer readBuffer, CBusOptions cBusOptions) throws ParseException {
     readBuffer.pullContext("CBusPointToPointToMultiPointCommand");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BridgeAddress bridgeAddress =

@@ -50,7 +50,6 @@ public abstract class PortSegmentType implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("PortSegmentType");
 
     // Discriminator Field (extendedLinkAddress) (Used as input to a switch field)
@@ -91,8 +90,6 @@ public abstract class PortSegmentType implements Message {
   public static PortSegmentType staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("PortSegmentType");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     boolean extendedLinkAddress =

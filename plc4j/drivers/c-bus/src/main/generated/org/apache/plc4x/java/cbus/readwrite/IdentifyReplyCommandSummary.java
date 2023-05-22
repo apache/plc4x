@@ -76,7 +76,6 @@ public class IdentifyReplyCommandSummary extends IdentifyReplyCommand implements
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("IdentifyReplyCommandSummary");
 
     // Simple Field (partName)
@@ -118,8 +117,6 @@ public class IdentifyReplyCommandSummary extends IdentifyReplyCommand implements
       ReadBuffer readBuffer, Attribute attribute, Short numBytes) throws ParseException {
     readBuffer.pullContext("IdentifyReplyCommandSummary");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     String partName = readSimpleField("partName", readString(readBuffer, 48));

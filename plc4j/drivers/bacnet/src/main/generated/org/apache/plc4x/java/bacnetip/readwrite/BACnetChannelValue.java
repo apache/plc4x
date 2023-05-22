@@ -65,7 +65,6 @@ public abstract class BACnetChannelValue implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetChannelValue");
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
@@ -111,8 +110,6 @@ public abstract class BACnetChannelValue implements Message {
   public static BACnetChannelValue staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetChannelValue");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetTagHeader peekedTagHeader =

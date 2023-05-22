@@ -78,7 +78,6 @@ public class CBusPointToPointCommandIndirect extends CBusPointToPointCommand imp
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("CBusPointToPointCommandIndirect");
 
     // Simple Field (bridgeAddress)
@@ -120,8 +119,6 @@ public class CBusPointToPointCommandIndirect extends CBusPointToPointCommand imp
       ReadBuffer readBuffer, CBusOptions cBusOptions) throws ParseException {
     readBuffer.pullContext("CBusPointToPointCommandIndirect");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BridgeAddress bridgeAddress =

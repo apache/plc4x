@@ -50,7 +50,6 @@ public class ApduDataExtWriteRouterMemoryRequest extends ApduDataExt implements 
   protected void serializeApduDataExtChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("ApduDataExtWriteRouterMemoryRequest");
 
     writeBuffer.popContext("ApduDataExtWriteRouterMemoryRequest");
@@ -74,8 +73,6 @@ public class ApduDataExtWriteRouterMemoryRequest extends ApduDataExt implements 
       ReadBuffer readBuffer, Short length) throws ParseException {
     readBuffer.pullContext("ApduDataExtWriteRouterMemoryRequest");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("ApduDataExtWriteRouterMemoryRequest");

@@ -80,7 +80,6 @@ public class BACnetConstructedDataOperationExpected extends BACnetConstructedDat
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataOperationExpected");
 
     // Simple Field (lifeSafetyOperations)
@@ -122,8 +121,6 @@ public class BACnetConstructedDataOperationExpected extends BACnetConstructedDat
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataOperationExpected");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetLifeSafetyOperationTagged lifeSafetyOperations =

@@ -63,7 +63,6 @@ public class BVLCReadForeignDeviceTableAck extends BVLC implements Message {
   protected void serializeBVLCChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BVLCReadForeignDeviceTableAck");
 
     // Array Field (table)
@@ -98,8 +97,6 @@ public class BVLCReadForeignDeviceTableAck extends BVLC implements Message {
       throws ParseException {
     readBuffer.pullContext("BVLCReadForeignDeviceTableAck");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     List<BVLCForeignDeviceTableEntry> table =

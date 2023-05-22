@@ -80,7 +80,6 @@ public class BACnetConstructedDataAccessDoorRelinquishDefault extends BACnetCons
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataAccessDoorRelinquishDefault");
 
     // Simple Field (relinquishDefault)
@@ -122,8 +121,6 @@ public class BACnetConstructedDataAccessDoorRelinquishDefault extends BACnetCons
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataAccessDoorRelinquishDefault");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetDoorValueTagged relinquishDefault =

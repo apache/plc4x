@@ -61,7 +61,6 @@ public class BACnetApplicationTagEnumerated extends BACnetApplicationTag impleme
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetApplicationTagEnumerated");
 
     // Simple Field (payload)
@@ -97,8 +96,6 @@ public class BACnetApplicationTagEnumerated extends BACnetApplicationTag impleme
       ReadBuffer readBuffer, BACnetTagHeader header) throws ParseException {
     readBuffer.pullContext("BACnetApplicationTagEnumerated");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetTagPayloadEnumerated payload =

@@ -80,7 +80,6 @@ public class BACnetConstructedDataDefaultStepIncrement extends BACnetConstructed
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataDefaultStepIncrement");
 
     // Simple Field (defaultStepIncrement)
@@ -122,8 +121,6 @@ public class BACnetConstructedDataDefaultStepIncrement extends BACnetConstructed
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataDefaultStepIncrement");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagReal defaultStepIncrement =

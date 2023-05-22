@@ -62,7 +62,6 @@ public class SysexCommandExtendedId extends SysexCommand implements Message {
   protected void serializeSysexCommandChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("SysexCommandExtendedId");
 
     // Array Field (id)
@@ -94,8 +93,6 @@ public class SysexCommandExtendedId extends SysexCommand implements Message {
       ReadBuffer readBuffer, Boolean response) throws ParseException {
     readBuffer.pullContext("SysexCommandExtendedId");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     List<Byte> id = readCountArrayField("id", readSignedByte(readBuffer, 8), 2);

@@ -57,7 +57,6 @@ public class BACnetPropertyStatesTimerState extends BACnetPropertyStates impleme
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetPropertyStatesTimerState");
 
     // Simple Field (timerState)
@@ -87,8 +86,6 @@ public class BACnetPropertyStatesTimerState extends BACnetPropertyStates impleme
       ReadBuffer readBuffer, Short peekedTagNumber) throws ParseException {
     readBuffer.pullContext("BACnetPropertyStatesTimerState");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetTimerStateTagged timerState =

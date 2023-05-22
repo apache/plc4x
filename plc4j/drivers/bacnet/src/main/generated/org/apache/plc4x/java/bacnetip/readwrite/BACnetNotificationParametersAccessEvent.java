@@ -118,7 +118,6 @@ public class BACnetNotificationParametersAccessEvent extends BACnetNotificationP
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetNotificationParametersAccessEvent");
 
     // Simple Field (innerOpeningTag)
@@ -201,8 +200,6 @@ public class BACnetNotificationParametersAccessEvent extends BACnetNotificationP
       throws ParseException {
     readBuffer.pullContext("BACnetNotificationParametersAccessEvent");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetOpeningTag innerOpeningTag =

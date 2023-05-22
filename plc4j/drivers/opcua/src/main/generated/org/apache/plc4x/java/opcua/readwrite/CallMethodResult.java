@@ -102,7 +102,6 @@ public class CallMethodResult extends ExtensionObjectDefinition implements Messa
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("CallMethodResult");
 
     // Simple Field (statusCode)
@@ -191,8 +190,6 @@ public class CallMethodResult extends ExtensionObjectDefinition implements Messa
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("CallMethodResult");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     StatusCode statusCode =

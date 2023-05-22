@@ -58,7 +58,6 @@ public class BACnetLogDataLogDataEntryUnsignedValue extends BACnetLogDataLogData
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetLogDataLogDataEntryUnsignedValue");
 
     // Simple Field (unsignedValue)
@@ -88,8 +87,6 @@ public class BACnetLogDataLogDataEntryUnsignedValue extends BACnetLogDataLogData
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetLogDataLogDataEntryUnsignedValue");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetContextTagUnsignedInteger unsignedValue =

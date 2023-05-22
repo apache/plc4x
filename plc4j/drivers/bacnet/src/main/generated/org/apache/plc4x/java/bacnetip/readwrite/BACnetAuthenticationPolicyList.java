@@ -72,7 +72,6 @@ public class BACnetAuthenticationPolicyList implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetAuthenticationPolicyList");
 
     // Simple Field (openingTag)
@@ -138,8 +137,6 @@ public class BACnetAuthenticationPolicyList implements Message {
       throws ParseException {
     readBuffer.pullContext("BACnetAuthenticationPolicyList");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetOpeningTag openingTag =

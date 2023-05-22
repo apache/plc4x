@@ -89,7 +89,6 @@ public class BACnetConstructedDataWeeklySchedule extends BACnetConstructedData i
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataWeeklySchedule");
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
@@ -146,8 +145,6 @@ public class BACnetConstructedDataWeeklySchedule extends BACnetConstructedData i
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataWeeklySchedule");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     BigInteger zero = readVirtualField("zero", BigInteger.class, 0L);
 

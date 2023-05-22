@@ -51,7 +51,6 @@ public class WriterGroupMessageDataType extends ExtensionObjectDefinition implem
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("WriterGroupMessageDataType");
 
     writeBuffer.popContext("WriterGroupMessageDataType");
@@ -75,8 +74,6 @@ public class WriterGroupMessageDataType extends ExtensionObjectDefinition implem
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("WriterGroupMessageDataType");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("WriterGroupMessageDataType");

@@ -79,7 +79,6 @@ public class BACnetConstructedDataBlinkWarnEnable extends BACnetConstructedData 
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataBlinkWarnEnable");
 
     // Simple Field (blinkWarnEnable)
@@ -121,8 +120,6 @@ public class BACnetConstructedDataBlinkWarnEnable extends BACnetConstructedData 
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataBlinkWarnEnable");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagBoolean blinkWarnEnable =

@@ -80,7 +80,6 @@ public class BACnetConstructedDataAuthorizationMode extends BACnetConstructedDat
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataAuthorizationMode");
 
     // Simple Field (authorizationMode)
@@ -122,8 +121,6 @@ public class BACnetConstructedDataAuthorizationMode extends BACnetConstructedDat
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataAuthorizationMode");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetAuthorizationModeTagged authorizationMode =

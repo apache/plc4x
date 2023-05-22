@@ -58,7 +58,6 @@ public class BACnetPropertyStatesLightningOperation extends BACnetPropertyStates
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetPropertyStatesLightningOperation");
 
     // Simple Field (lightningOperation)
@@ -89,8 +88,6 @@ public class BACnetPropertyStatesLightningOperation extends BACnetPropertyStates
       ReadBuffer readBuffer, Short peekedTagNumber) throws ParseException {
     readBuffer.pullContext("BACnetPropertyStatesLightningOperation");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetLightingOperationTagged lightningOperation =

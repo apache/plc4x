@@ -48,7 +48,6 @@ public class SecurityDataOtherAlarmRaised extends SecurityData implements Messag
   protected void serializeSecurityDataChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("SecurityDataOtherAlarmRaised");
 
     writeBuffer.popContext("SecurityDataOtherAlarmRaised");
@@ -72,8 +71,6 @@ public class SecurityDataOtherAlarmRaised extends SecurityData implements Messag
       throws ParseException {
     readBuffer.pullContext("SecurityDataOtherAlarmRaised");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("SecurityDataOtherAlarmRaised");

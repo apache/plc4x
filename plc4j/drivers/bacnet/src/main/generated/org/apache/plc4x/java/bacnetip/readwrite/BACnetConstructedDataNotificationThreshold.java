@@ -80,7 +80,6 @@ public class BACnetConstructedDataNotificationThreshold extends BACnetConstructe
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataNotificationThreshold");
 
     // Simple Field (notificationThreshold)
@@ -124,8 +123,6 @@ public class BACnetConstructedDataNotificationThreshold extends BACnetConstructe
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataNotificationThreshold");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger notificationThreshold =

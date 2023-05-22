@@ -69,7 +69,6 @@ public class BACnetNotificationParametersComplexEventType extends BACnetNotifica
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetNotificationParametersComplexEventType");
 
     // Simple Field (listOfValues)
@@ -103,8 +102,6 @@ public class BACnetNotificationParametersComplexEventType extends BACnetNotifica
       throws ParseException {
     readBuffer.pullContext("BACnetNotificationParametersComplexEventType");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetPropertyValues listOfValues =

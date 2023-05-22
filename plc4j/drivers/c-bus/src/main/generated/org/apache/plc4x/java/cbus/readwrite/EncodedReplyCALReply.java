@@ -62,7 +62,6 @@ public class EncodedReplyCALReply extends EncodedReply implements Message {
   protected void serializeEncodedReplyChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("EncodedReplyCALReply");
 
     // Simple Field (calReply)
@@ -93,8 +92,6 @@ public class EncodedReplyCALReply extends EncodedReply implements Message {
       throws ParseException {
     readBuffer.pullContext("EncodedReplyCALReply");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     CALReply calReply =

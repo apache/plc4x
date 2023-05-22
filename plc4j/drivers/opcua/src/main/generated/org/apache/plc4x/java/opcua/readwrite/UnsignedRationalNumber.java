@@ -65,7 +65,6 @@ public class UnsignedRationalNumber extends ExtensionObjectDefinition implements
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("UnsignedRationalNumber");
 
     // Simple Field (numerator)
@@ -101,8 +100,6 @@ public class UnsignedRationalNumber extends ExtensionObjectDefinition implements
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("UnsignedRationalNumber");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     long numerator = readSimpleField("numerator", readUnsignedLong(readBuffer, 32));

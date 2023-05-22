@@ -66,7 +66,6 @@ public class OpenProtocolMessageAlarmAcknowledgeRev1 extends OpenProtocolMessage
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("OpenProtocolMessageAlarmAcknowledgeRev1");
 
     writeBuffer.popContext("OpenProtocolMessageAlarmAcknowledgeRev1");
@@ -91,8 +90,6 @@ public class OpenProtocolMessageAlarmAcknowledgeRev1 extends OpenProtocolMessage
           throws ParseException {
     readBuffer.pullContext("OpenProtocolMessageAlarmAcknowledgeRev1");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("OpenProtocolMessageAlarmAcknowledgeRev1");

@@ -44,7 +44,6 @@ public class Index implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("Index");
 
     writeBuffer.popContext("Index");
@@ -72,8 +71,6 @@ public class Index implements Message {
   public static Index staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("Index");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("Index");

@@ -86,7 +86,6 @@ public class SubscribeCOVPropertyMultipleErrorFirstFailedSubscription implements
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("SubscribeCOVPropertyMultipleErrorFirstFailedSubscription");
 
     // Simple Field (openingTag)
@@ -166,8 +165,6 @@ public class SubscribeCOVPropertyMultipleErrorFirstFailedSubscription implements
       ReadBuffer readBuffer, Short tagNumber) throws ParseException {
     readBuffer.pullContext("SubscribeCOVPropertyMultipleErrorFirstFailedSubscription");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetOpeningTag openingTag =

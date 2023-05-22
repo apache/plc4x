@@ -79,7 +79,6 @@ public class S7PayloadUserDataItemCpuFunctionReadSzlRequest extends S7PayloadUse
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("S7PayloadUserDataItemCpuFunctionReadSzlRequest");
 
     // Simple Field (szlId)
@@ -116,8 +115,6 @@ public class S7PayloadUserDataItemCpuFunctionReadSzlRequest extends S7PayloadUse
       throws ParseException {
     readBuffer.pullContext("S7PayloadUserDataItemCpuFunctionReadSzlRequest");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     SzlId szlId =

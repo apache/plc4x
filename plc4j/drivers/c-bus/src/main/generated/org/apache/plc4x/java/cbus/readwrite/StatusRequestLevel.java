@@ -67,7 +67,6 @@ public class StatusRequestLevel extends StatusRequest implements Message {
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("StatusRequestLevel");
 
     // Reserved Field (reserved)
@@ -129,8 +128,6 @@ public class StatusRequestLevel extends StatusRequest implements Message {
       throws ParseException {
     readBuffer.pullContext("StatusRequestLevel");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     Byte reservedField0 = readReservedField("reserved", readByte(readBuffer, 8), (byte) 0x73);

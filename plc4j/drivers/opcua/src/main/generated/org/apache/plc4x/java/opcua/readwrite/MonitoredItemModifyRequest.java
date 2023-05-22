@@ -66,7 +66,6 @@ public class MonitoredItemModifyRequest extends ExtensionObjectDefinition implem
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("MonitoredItemModifyRequest");
 
     // Simple Field (monitoredItemId)
@@ -103,8 +102,6 @@ public class MonitoredItemModifyRequest extends ExtensionObjectDefinition implem
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("MonitoredItemModifyRequest");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     long monitoredItemId = readSimpleField("monitoredItemId", readUnsignedLong(readBuffer, 32));

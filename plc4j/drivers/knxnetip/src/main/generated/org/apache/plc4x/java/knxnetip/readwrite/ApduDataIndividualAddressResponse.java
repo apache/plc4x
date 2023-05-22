@@ -50,7 +50,6 @@ public class ApduDataIndividualAddressResponse extends ApduData implements Messa
   protected void serializeApduDataChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("ApduDataIndividualAddressResponse");
 
     writeBuffer.popContext("ApduDataIndividualAddressResponse");
@@ -74,8 +73,6 @@ public class ApduDataIndividualAddressResponse extends ApduData implements Messa
       throws ParseException {
     readBuffer.pullContext("ApduDataIndividualAddressResponse");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("ApduDataIndividualAddressResponse");

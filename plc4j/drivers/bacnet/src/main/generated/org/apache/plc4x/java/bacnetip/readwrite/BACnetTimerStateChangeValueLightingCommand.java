@@ -64,7 +64,6 @@ public class BACnetTimerStateChangeValueLightingCommand extends BACnetTimerState
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetTimerStateChangeValueLightingCommand");
 
     // Simple Field (ligthingCommandValue)
@@ -95,8 +94,6 @@ public class BACnetTimerStateChangeValueLightingCommand extends BACnetTimerState
       ReadBuffer readBuffer, BACnetObjectType objectTypeArgument) throws ParseException {
     readBuffer.pullContext("BACnetTimerStateChangeValueLightingCommand");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetLightingCommandEnclosed ligthingCommandValue =

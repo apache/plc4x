@@ -1198,6 +1198,55 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
         return sb.toString() + sizeInBits;
     }
 
+    public boolean requiresCurPos() {
+        if (thisType instanceof ComplexTypeDefinition) {
+            ComplexTypeDefinition complexTypeDefinition = (ComplexTypeDefinition) this.thisType;
+            for (Field curField : complexTypeDefinition.getFields()) {
+                if (requiresVariable(curField, "curPos")) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public boolean requiresStartPos() {
+        if (thisType instanceof ComplexTypeDefinition) {
+            ComplexTypeDefinition complexTypeDefinition = (ComplexTypeDefinition) this.thisType;
+            for (Field curField : complexTypeDefinition.getFields()) {
+                if (requiresVariable(curField, "startPos")) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public boolean requiresVariable(Field curField, String variable) {
+        if (curField.isArrayField()) {
+            ArrayField arrayField = (ArrayField) curField;
+            if (arrayField.getLoopExpression().contains(variable)) {
+                return true;
+            }
+        } else if (curField.isOptionalField()) {
+            OptionalField optionalField = (OptionalField) curField;
+            if (optionalField.getConditionExpression().isPresent() && optionalField.getConditionExpression().orElseThrow(IllegalStateException::new).contains(variable)) {
+                return true;
+            }
+        }
+        return curField.asTypedField()
+            .map(typedField -> typedField.getType().asNonSimpleTypeReference()
+                .map(nonSimpleTypeReference -> nonSimpleTypeReference.getParams()
+                    .map(params -> params.stream()
+                        .anyMatch(param -> param.contains(variable))
+                    )
+                    .orElse(false)
+                )
+                .orElse(false)
+            )
+            .orElse(false);
+    }
+
     public String escapeValue(TypeReference typeReference, String valueString) {
         if (valueString == null) {
             return null;

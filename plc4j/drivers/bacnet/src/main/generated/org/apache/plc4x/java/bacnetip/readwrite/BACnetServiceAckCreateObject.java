@@ -64,7 +64,6 @@ public class BACnetServiceAckCreateObject extends BACnetServiceAck implements Me
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetServiceAckCreateObject");
 
     // Simple Field (objectIdentifier)
@@ -95,8 +94,6 @@ public class BACnetServiceAckCreateObject extends BACnetServiceAck implements Me
       ReadBuffer readBuffer, Long serviceAckLength) throws ParseException {
     readBuffer.pullContext("BACnetServiceAckCreateObject");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagObjectIdentifier objectIdentifier =

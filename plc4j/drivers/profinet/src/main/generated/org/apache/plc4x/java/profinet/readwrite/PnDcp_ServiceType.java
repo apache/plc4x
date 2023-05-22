@@ -62,7 +62,6 @@ public class PnDcp_ServiceType implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("PnDcp_ServiceType");
 
     // Reserved Field (reserved)
@@ -131,8 +130,6 @@ public class PnDcp_ServiceType implements Message {
   public static PnDcp_ServiceType staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("PnDcp_ServiceType");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     Short reservedField0 =

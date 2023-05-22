@@ -58,7 +58,6 @@ public class ApduControlContainer extends Apdu implements Message {
   protected void serializeApduChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("ApduControlContainer");
 
     // Simple Field (controlApdu)
@@ -88,8 +87,6 @@ public class ApduControlContainer extends Apdu implements Message {
       throws ParseException {
     readBuffer.pullContext("ApduControlContainer");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ApduControl controlApdu =

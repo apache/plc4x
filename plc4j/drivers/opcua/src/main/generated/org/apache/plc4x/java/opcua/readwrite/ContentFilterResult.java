@@ -81,7 +81,6 @@ public class ContentFilterResult extends ExtensionObjectDefinition implements Me
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("ContentFilterResult");
 
     // Simple Field (noOfElementResults)
@@ -142,8 +141,6 @@ public class ContentFilterResult extends ExtensionObjectDefinition implements Me
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("ContentFilterResult");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int noOfElementResults = readSimpleField("noOfElementResults", readSignedInt(readBuffer, 32));

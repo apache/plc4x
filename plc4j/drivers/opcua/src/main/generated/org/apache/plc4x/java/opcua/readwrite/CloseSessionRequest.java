@@ -65,7 +65,6 @@ public class CloseSessionRequest extends ExtensionObjectDefinition implements Me
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("CloseSessionRequest");
 
     // Simple Field (requestHeader)
@@ -107,8 +106,6 @@ public class CloseSessionRequest extends ExtensionObjectDefinition implements Me
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("CloseSessionRequest");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ExtensionObjectDefinition requestHeader =

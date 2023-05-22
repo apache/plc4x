@@ -87,7 +87,6 @@ public class BACnetConfirmedServiceRequestRemoveListElement extends BACnetConfir
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConfirmedServiceRequestRemoveListElement");
 
     // Simple Field (objectIdentifier)
@@ -143,8 +142,6 @@ public class BACnetConfirmedServiceRequestRemoveListElement extends BACnetConfir
           ReadBuffer readBuffer, Long serviceRequestLength) throws ParseException {
     readBuffer.pullContext("BACnetConfirmedServiceRequestRemoveListElement");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetContextTagObjectIdentifier objectIdentifier =

@@ -80,7 +80,6 @@ public class BACnetConstructedDataAccompanimentTime extends BACnetConstructedDat
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataAccompanimentTime");
 
     // Simple Field (accompanimentTime)
@@ -122,8 +121,6 @@ public class BACnetConstructedDataAccompanimentTime extends BACnetConstructedDat
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataAccompanimentTime");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger accompanimentTime =

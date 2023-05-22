@@ -51,7 +51,6 @@ public class RoutingIndication extends KnxNetIpMessage implements Message {
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("RoutingIndication");
 
     writeBuffer.popContext("RoutingIndication");
@@ -75,8 +74,6 @@ public class RoutingIndication extends KnxNetIpMessage implements Message {
       throws ParseException {
     readBuffer.pullContext("RoutingIndication");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("RoutingIndication");

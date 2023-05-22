@@ -67,7 +67,6 @@ public class BACnetConstructedDataMultiStateInputAll extends BACnetConstructedDa
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataMultiStateInputAll");
 
     writeBuffer.popContext("BACnetConstructedDataMultiStateInputAll");
@@ -96,8 +95,6 @@ public class BACnetConstructedDataMultiStateInputAll extends BACnetConstructedDa
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataMultiStateInputAll");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Validation
     if (!((1) == (2))) {

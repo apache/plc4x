@@ -61,7 +61,6 @@ public abstract class BACnetHostAddress implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetHostAddress");
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
@@ -101,8 +100,6 @@ public abstract class BACnetHostAddress implements Message {
   public static BACnetHostAddress staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetHostAddress");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetTagHeader peekedTagHeader =

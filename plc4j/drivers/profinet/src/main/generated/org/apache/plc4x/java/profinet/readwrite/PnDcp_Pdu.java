@@ -62,7 +62,6 @@ public abstract class PnDcp_Pdu implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("PnDcp_Pdu");
 
     // Simple Field (frameIdValue)
@@ -111,8 +110,6 @@ public abstract class PnDcp_Pdu implements Message {
   public static PnDcp_Pdu staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("PnDcp_Pdu");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int frameIdValue =

@@ -92,7 +92,6 @@ public class DceRpc_ObjectUuid implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("DceRpc_ObjectUuid");
 
     // Const Field (data1)
@@ -189,8 +188,6 @@ public class DceRpc_ObjectUuid implements Message {
   public static DceRpc_ObjectUuid staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("DceRpc_ObjectUuid");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     long data1 = readConstField("data1", readUnsignedLong(readBuffer, 32), DceRpc_ObjectUuid.DATA1);

@@ -69,7 +69,6 @@ public class BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOf
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext(
         "BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged");
 
@@ -143,8 +142,6 @@ public class BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOf
     readBuffer.pullContext(
         "BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetTagHeader header =

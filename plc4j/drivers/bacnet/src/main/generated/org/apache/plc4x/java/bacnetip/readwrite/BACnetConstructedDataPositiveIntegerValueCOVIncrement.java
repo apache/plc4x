@@ -80,7 +80,6 @@ public class BACnetConstructedDataPositiveIntegerValueCOVIncrement extends BACne
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataPositiveIntegerValueCOVIncrement");
 
     // Simple Field (covIncrement)
@@ -121,8 +120,6 @@ public class BACnetConstructedDataPositiveIntegerValueCOVIncrement extends BACne
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataPositiveIntegerValueCOVIncrement");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger covIncrement =

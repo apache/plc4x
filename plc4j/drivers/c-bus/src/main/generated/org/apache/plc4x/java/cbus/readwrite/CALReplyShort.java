@@ -54,7 +54,6 @@ public class CALReplyShort extends CALReply implements Message {
   protected void serializeCALReplyChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("CALReplyShort");
 
     writeBuffer.popContext("CALReplyShort");
@@ -79,8 +78,6 @@ public class CALReplyShort extends CALReply implements Message {
       throws ParseException {
     readBuffer.pullContext("CALReplyShort");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("CALReplyShort");

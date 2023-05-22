@@ -71,7 +71,6 @@ public class NLMRequestMasterKey extends NLM implements Message {
   protected void serializeNLMChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("NLMRequestMasterKey");
 
     // Simple Field (numberOfSupportedKeyAlgorithms)
@@ -115,8 +114,6 @@ public class NLMRequestMasterKey extends NLM implements Message {
       throws ParseException {
     readBuffer.pullContext("NLMRequestMasterKey");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short numberOfSupportedKeyAlgorithms =

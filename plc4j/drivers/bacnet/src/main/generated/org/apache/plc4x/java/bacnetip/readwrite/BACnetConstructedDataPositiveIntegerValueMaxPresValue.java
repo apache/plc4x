@@ -80,7 +80,6 @@ public class BACnetConstructedDataPositiveIntegerValueMaxPresValue extends BACne
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataPositiveIntegerValueMaxPresValue");
 
     // Simple Field (maxPresValue)
@@ -121,8 +120,6 @@ public class BACnetConstructedDataPositiveIntegerValueMaxPresValue extends BACne
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataPositiveIntegerValueMaxPresValue");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger maxPresValue =

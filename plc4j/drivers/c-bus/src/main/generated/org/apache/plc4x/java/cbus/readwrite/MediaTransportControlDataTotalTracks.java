@@ -81,7 +81,6 @@ public class MediaTransportControlDataTotalTracks extends MediaTransportControlD
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("MediaTransportControlDataTotalTracks");
 
     // Simple Field (totalTracksMSB)
@@ -129,8 +128,6 @@ public class MediaTransportControlDataTotalTracks extends MediaTransportControlD
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("MediaTransportControlDataTotalTracks");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte totalTracksMSB = readSimpleField("totalTracksMSB", readByte(readBuffer, 8));

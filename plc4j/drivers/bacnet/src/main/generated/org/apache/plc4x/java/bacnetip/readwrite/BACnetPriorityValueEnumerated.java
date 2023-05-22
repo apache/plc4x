@@ -63,7 +63,6 @@ public class BACnetPriorityValueEnumerated extends BACnetPriorityValue implement
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetPriorityValueEnumerated");
 
     // Simple Field (enumeratedValue)
@@ -94,8 +93,6 @@ public class BACnetPriorityValueEnumerated extends BACnetPriorityValue implement
       ReadBuffer readBuffer, BACnetObjectType objectTypeArgument) throws ParseException {
     readBuffer.pullContext("BACnetPriorityValueEnumerated");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagEnumerated enumeratedValue =

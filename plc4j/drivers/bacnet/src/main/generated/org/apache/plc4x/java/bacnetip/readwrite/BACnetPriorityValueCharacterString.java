@@ -63,7 +63,6 @@ public class BACnetPriorityValueCharacterString extends BACnetPriorityValue impl
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetPriorityValueCharacterString");
 
     // Simple Field (characterStringValue)
@@ -94,8 +93,6 @@ public class BACnetPriorityValueCharacterString extends BACnetPriorityValue impl
       ReadBuffer readBuffer, BACnetObjectType objectTypeArgument) throws ParseException {
     readBuffer.pullContext("BACnetPriorityValueCharacterString");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagCharacterString characterStringValue =

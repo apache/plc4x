@@ -76,7 +76,6 @@ public class BACnetConstructedDataTimerAlarmValues extends BACnetConstructedData
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataTimerAlarmValues");
 
     // Array Field (alarmValues)
@@ -115,8 +114,6 @@ public class BACnetConstructedDataTimerAlarmValues extends BACnetConstructedData
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataTimerAlarmValues");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     List<BACnetTimerStateTagged> alarmValues =

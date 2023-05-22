@@ -50,7 +50,6 @@ public abstract class ServiceId implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("ServiceId");
 
     // Discriminator Field (serviceType) (Used as input to a switch field)
@@ -89,8 +88,6 @@ public abstract class ServiceId implements Message {
   public static ServiceId staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("ServiceId");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short serviceType = readDiscriminatorField("serviceType", readUnsignedShort(readBuffer, 8));

@@ -79,7 +79,6 @@ public class BACnetConstructedDataActivationTime extends BACnetConstructedData i
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataActivationTime");
 
     // Simple Field (activationTime)
@@ -120,8 +119,6 @@ public class BACnetConstructedDataActivationTime extends BACnetConstructedData i
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataActivationTime");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetDateTime activationTime =

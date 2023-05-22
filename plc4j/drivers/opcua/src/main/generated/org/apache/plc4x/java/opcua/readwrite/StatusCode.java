@@ -52,7 +52,6 @@ public class StatusCode implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("StatusCode");
 
     // Simple Field (statusCode)
@@ -87,8 +86,6 @@ public class StatusCode implements Message {
   public static StatusCode staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("StatusCode");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     long statusCode = readSimpleField("statusCode", readUnsignedLong(readBuffer, 32));

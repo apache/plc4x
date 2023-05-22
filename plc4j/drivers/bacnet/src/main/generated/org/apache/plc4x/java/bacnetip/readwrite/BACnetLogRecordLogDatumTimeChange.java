@@ -65,7 +65,6 @@ public class BACnetLogRecordLogDatumTimeChange extends BACnetLogRecordLogDatum i
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetLogRecordLogDatumTimeChange");
 
     // Simple Field (timeChange)
@@ -95,8 +94,6 @@ public class BACnetLogRecordLogDatumTimeChange extends BACnetLogRecordLogDatum i
       ReadBuffer readBuffer, Short tagNumber) throws ParseException {
     readBuffer.pullContext("BACnetLogRecordLogDatumTimeChange");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetContextTagReal timeChange =

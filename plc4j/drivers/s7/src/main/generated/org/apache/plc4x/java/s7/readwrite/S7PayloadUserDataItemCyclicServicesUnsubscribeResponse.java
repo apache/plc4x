@@ -61,7 +61,6 @@ public class S7PayloadUserDataItemCyclicServicesUnsubscribeResponse extends S7Pa
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("S7PayloadUserDataItemCyclicServicesUnsubscribeResponse");
 
     writeBuffer.popContext("S7PayloadUserDataItemCyclicServicesUnsubscribeResponse");
@@ -86,8 +85,6 @@ public class S7PayloadUserDataItemCyclicServicesUnsubscribeResponse extends S7Pa
       throws ParseException {
     readBuffer.pullContext("S7PayloadUserDataItemCyclicServicesUnsubscribeResponse");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("S7PayloadUserDataItemCyclicServicesUnsubscribeResponse");

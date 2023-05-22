@@ -79,7 +79,6 @@ public class BACnetConstructedDataCarMode extends BACnetConstructedData implemen
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataCarMode");
 
     // Simple Field (carMode)
@@ -120,8 +119,6 @@ public class BACnetConstructedDataCarMode extends BACnetConstructedData implemen
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataCarMode");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetLiftCarModeTagged carMode =

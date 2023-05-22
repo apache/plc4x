@@ -65,7 +65,6 @@ public class EndpointUrlListDataType extends ExtensionObjectDefinition implement
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("EndpointUrlListDataType");
 
     // Simple Field (noOfEndpointUrlList)
@@ -107,8 +106,6 @@ public class EndpointUrlListDataType extends ExtensionObjectDefinition implement
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("EndpointUrlListDataType");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int noOfEndpointUrlList = readSimpleField("noOfEndpointUrlList", readSignedInt(readBuffer, 32));

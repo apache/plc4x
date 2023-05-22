@@ -65,7 +65,6 @@ public class IssuedIdentityToken extends UserIdentityTokenDefinition implements 
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("IssuedIdentityToken");
 
     // Simple Field (tokenData)
@@ -102,8 +101,6 @@ public class IssuedIdentityToken extends UserIdentityTokenDefinition implements 
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("IssuedIdentityToken");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     PascalByteString tokenData =

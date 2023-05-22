@@ -60,7 +60,6 @@ public class TelephonyDataRinging extends TelephonyData implements Message {
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("TelephonyDataRinging");
 
     // Reserved Field (reserved)
@@ -103,8 +102,6 @@ public class TelephonyDataRinging extends TelephonyData implements Message {
       throws ParseException {
     readBuffer.pullContext("TelephonyDataRinging");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     Byte reservedField0 = readReservedField("reserved", readByte(readBuffer, 8), (byte) 0x01);

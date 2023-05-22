@@ -64,7 +64,6 @@ public class DF1CommandRequestMessage extends DF1RequestMessage implements Messa
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("DF1CommandRequestMessage");
 
     // Simple Field (command)
@@ -94,8 +93,6 @@ public class DF1CommandRequestMessage extends DF1RequestMessage implements Messa
       throws ParseException {
     readBuffer.pullContext("DF1CommandRequestMessage");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     DF1RequestCommand command =

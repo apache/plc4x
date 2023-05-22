@@ -116,7 +116,6 @@ public class DeviceDescriptorType2 implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("DeviceDescriptorType2");
 
     // Simple Field (manufacturerId)
@@ -205,8 +204,6 @@ public class DeviceDescriptorType2 implements Message {
   public static DeviceDescriptorType2 staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("DeviceDescriptorType2");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int manufacturerId = readSimpleField("manufacturerId", readUnsignedInt(readBuffer, 16));

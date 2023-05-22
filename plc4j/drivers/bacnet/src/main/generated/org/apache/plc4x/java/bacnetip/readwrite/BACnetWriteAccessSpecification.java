@@ -74,7 +74,6 @@ public class BACnetWriteAccessSpecification implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetWriteAccessSpecification");
 
     // Simple Field (objectIdentifier)
@@ -134,8 +133,6 @@ public class BACnetWriteAccessSpecification implements Message {
       throws ParseException {
     readBuffer.pullContext("BACnetWriteAccessSpecification");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetContextTagObjectIdentifier objectIdentifier =

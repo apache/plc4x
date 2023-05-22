@@ -72,7 +72,6 @@ public class GetAttributeAllRequest extends CipService implements Message {
   protected void serializeCipServiceChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("GetAttributeAllRequest");
 
     // Implicit Field (requestPathSize) (Used for parsing, but its value is not stored as it's
@@ -120,8 +119,6 @@ public class GetAttributeAllRequest extends CipService implements Message {
       ReadBuffer readBuffer, Boolean connected, Integer serviceLen) throws ParseException {
     readBuffer.pullContext("GetAttributeAllRequest");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short requestPathSize = readImplicitField("requestPathSize", readUnsignedShort(readBuffer, 8));

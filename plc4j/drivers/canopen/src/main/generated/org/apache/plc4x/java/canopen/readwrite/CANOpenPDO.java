@@ -52,7 +52,6 @@ public class CANOpenPDO implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("CANOpenPDO");
 
     // Array Field (data)
@@ -89,8 +88,6 @@ public class CANOpenPDO implements Message {
   public static CANOpenPDO staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("CANOpenPDO");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte[] data = readBuffer.readByteArray("data", Math.toIntExact(8));

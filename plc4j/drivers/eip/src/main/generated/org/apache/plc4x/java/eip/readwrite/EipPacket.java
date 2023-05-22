@@ -80,7 +80,6 @@ public abstract class EipPacket implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("EipPacket");
 
     // Discriminator Field (command) (Used as input to a switch field)
@@ -168,8 +167,6 @@ public abstract class EipPacket implements Message {
       throws ParseException {
     readBuffer.pullContext("EipPacket");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int command = readDiscriminatorField("command", readUnsignedInt(readBuffer, 16));

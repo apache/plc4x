@@ -59,7 +59,6 @@ public class KnxGroupAddressFreeLevel extends KnxGroupAddress implements Message
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("KnxGroupAddressFreeLevel");
 
     // Simple Field (subGroup)
@@ -89,8 +88,6 @@ public class KnxGroupAddressFreeLevel extends KnxGroupAddress implements Message
       ReadBuffer readBuffer, Byte numLevels) throws ParseException {
     readBuffer.pullContext("KnxGroupAddressFreeLevel");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int subGroup = readSimpleField("subGroup", readUnsignedInt(readBuffer, 16));

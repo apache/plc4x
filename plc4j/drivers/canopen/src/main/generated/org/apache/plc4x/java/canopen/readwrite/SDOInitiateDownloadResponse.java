@@ -58,7 +58,6 @@ public class SDOInitiateDownloadResponse extends SDOResponse implements Message 
   protected void serializeSDOResponseChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("SDOInitiateDownloadResponse");
 
     // Reserved Field (reserved)
@@ -100,8 +99,6 @@ public class SDOInitiateDownloadResponse extends SDOResponse implements Message 
       ReadBuffer readBuffer, SDOResponseCommand command) throws ParseException {
     readBuffer.pullContext("SDOInitiateDownloadResponse");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     Short reservedField0 =

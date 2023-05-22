@@ -56,7 +56,6 @@ public class BACnetCalendarEntryDate extends BACnetCalendarEntry implements Mess
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetCalendarEntryDate");
 
     // Simple Field (dateValue)
@@ -86,8 +85,6 @@ public class BACnetCalendarEntryDate extends BACnetCalendarEntry implements Mess
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetCalendarEntryDate");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetContextTagDate dateValue =

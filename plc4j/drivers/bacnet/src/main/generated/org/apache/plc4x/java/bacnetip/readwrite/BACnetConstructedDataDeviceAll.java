@@ -66,7 +66,6 @@ public class BACnetConstructedDataDeviceAll extends BACnetConstructedData implem
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataDeviceAll");
 
     writeBuffer.popContext("BACnetConstructedDataDeviceAll");
@@ -95,8 +94,6 @@ public class BACnetConstructedDataDeviceAll extends BACnetConstructedData implem
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataDeviceAll");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Validation
     if (!((1) == (2))) {

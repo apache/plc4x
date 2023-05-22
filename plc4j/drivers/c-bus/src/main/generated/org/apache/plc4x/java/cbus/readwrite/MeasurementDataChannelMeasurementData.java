@@ -101,7 +101,6 @@ public class MeasurementDataChannelMeasurementData extends MeasurementData imple
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("MeasurementDataChannelMeasurementData");
 
     // Simple Field (deviceId)
@@ -180,8 +179,6 @@ public class MeasurementDataChannelMeasurementData extends MeasurementData imple
       throws ParseException {
     readBuffer.pullContext("MeasurementDataChannelMeasurementData");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short deviceId = readSimpleField("deviceId", readUnsignedShort(readBuffer, 8));

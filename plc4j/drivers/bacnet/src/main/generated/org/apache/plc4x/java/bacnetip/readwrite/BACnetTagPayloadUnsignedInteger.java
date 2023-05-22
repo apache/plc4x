@@ -161,7 +161,6 @@ public class BACnetTagPayloadUnsignedInteger implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetTagPayloadUnsignedInteger");
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
@@ -330,8 +329,6 @@ public class BACnetTagPayloadUnsignedInteger implements Message {
       ReadBuffer readBuffer, Long actualLength) throws ParseException {
     readBuffer.pullContext("BACnetTagPayloadUnsignedInteger");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     boolean isUint8 = readVirtualField("isUint8", boolean.class, (actualLength) == (1));
 

@@ -82,7 +82,6 @@ public class OpenProtocolMessageLinkLevelNegativeAcknowledgeRev1
       WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("OpenProtocolMessageLinkLevelNegativeAcknowledgeRev1");
 
     // Simple Field (midNumber)
@@ -132,8 +131,6 @@ public class OpenProtocolMessageLinkLevelNegativeAcknowledgeRev1
           ReadBuffer readBuffer, Long revision) throws ParseException {
     readBuffer.pullContext("OpenProtocolMessageLinkLevelNegativeAcknowledgeRev1");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     Mid midNumber =

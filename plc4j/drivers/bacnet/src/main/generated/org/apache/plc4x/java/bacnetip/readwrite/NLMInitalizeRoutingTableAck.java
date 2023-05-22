@@ -71,7 +71,6 @@ public class NLMInitalizeRoutingTableAck extends NLM implements Message {
   protected void serializeNLMChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("NLMInitalizeRoutingTableAck");
 
     // Simple Field (numberOfPorts)
@@ -113,8 +112,6 @@ public class NLMInitalizeRoutingTableAck extends NLM implements Message {
       throws ParseException {
     readBuffer.pullContext("NLMInitalizeRoutingTableAck");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short numberOfPorts = readSimpleField("numberOfPorts", readUnsignedShort(readBuffer, 8));

@@ -59,7 +59,6 @@ public class TelephonyDataDialInFailure extends TelephonyData implements Message
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("TelephonyDataDialInFailure");
 
     // Simple Field (reason)
@@ -96,8 +95,6 @@ public class TelephonyDataDialInFailure extends TelephonyData implements Message
       throws ParseException {
     readBuffer.pullContext("TelephonyDataDialInFailure");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     DialInFailureReason reason =

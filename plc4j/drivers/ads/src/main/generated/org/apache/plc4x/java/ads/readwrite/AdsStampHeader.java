@@ -66,7 +66,6 @@ public class AdsStampHeader implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("AdsStampHeader");
 
     // Simple Field (timestamp)
@@ -119,8 +118,6 @@ public class AdsStampHeader implements Message {
   public static AdsStampHeader staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("AdsStampHeader");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BigInteger timestamp = readSimpleField("timestamp", readUnsignedBigInteger(readBuffer, 64));

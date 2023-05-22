@@ -80,7 +80,6 @@ public class BACnetConstructedDataTrendLogLogDeviceObjectProperty extends BACnet
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataTrendLogLogDeviceObjectProperty");
 
     // Simple Field (logDeviceObjectProperty)
@@ -124,8 +123,6 @@ public class BACnetConstructedDataTrendLogLogDeviceObjectProperty extends BACnet
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataTrendLogLogDeviceObjectProperty");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetDeviceObjectPropertyReference logDeviceObjectProperty =

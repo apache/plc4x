@@ -80,7 +80,6 @@ public class BACnetConstructedDataNotificationClass extends BACnetConstructedDat
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataNotificationClass");
 
     // Simple Field (notificationClass)
@@ -122,8 +121,6 @@ public class BACnetConstructedDataNotificationClass extends BACnetConstructedDat
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataNotificationClass");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger notificationClass =

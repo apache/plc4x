@@ -58,7 +58,6 @@ public class EipDisconnectRequest extends EipPacket implements Message {
   protected void serializeEipPacketChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("EipDisconnectRequest");
 
     writeBuffer.popContext("EipDisconnectRequest");
@@ -82,8 +81,6 @@ public class EipDisconnectRequest extends EipPacket implements Message {
       ReadBuffer readBuffer, Boolean response) throws ParseException {
     readBuffer.pullContext("EipDisconnectRequest");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("EipDisconnectRequest");

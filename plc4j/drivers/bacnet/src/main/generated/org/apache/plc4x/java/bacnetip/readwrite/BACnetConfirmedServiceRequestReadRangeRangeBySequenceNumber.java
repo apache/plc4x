@@ -68,7 +68,6 @@ public class BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber");
 
     // Simple Field (referenceSequenceNumber)
@@ -108,8 +107,6 @@ public class BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber
           throws ParseException {
     readBuffer.pullContext("BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger referenceSequenceNumber =

@@ -102,7 +102,6 @@ public class RequestHeader extends ExtensionObjectDefinition implements Message 
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("RequestHeader");
 
     // Simple Field (authenticationToken)
@@ -170,8 +169,6 @@ public class RequestHeader extends ExtensionObjectDefinition implements Message 
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("RequestHeader");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     NodeId authenticationToken =

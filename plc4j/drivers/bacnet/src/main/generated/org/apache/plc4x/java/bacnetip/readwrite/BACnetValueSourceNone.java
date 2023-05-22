@@ -56,7 +56,6 @@ public class BACnetValueSourceNone extends BACnetValueSource implements Message 
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetValueSourceNone");
 
     // Simple Field (none)
@@ -86,8 +85,6 @@ public class BACnetValueSourceNone extends BACnetValueSource implements Message 
       throws ParseException {
     readBuffer.pullContext("BACnetValueSourceNone");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetContextTagNull none =

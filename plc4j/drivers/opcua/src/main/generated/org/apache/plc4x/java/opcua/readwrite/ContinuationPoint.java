@@ -44,7 +44,6 @@ public class ContinuationPoint implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("ContinuationPoint");
 
     writeBuffer.popContext("ContinuationPoint");
@@ -73,8 +72,6 @@ public class ContinuationPoint implements Message {
   public static ContinuationPoint staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("ContinuationPoint");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("ContinuationPoint");

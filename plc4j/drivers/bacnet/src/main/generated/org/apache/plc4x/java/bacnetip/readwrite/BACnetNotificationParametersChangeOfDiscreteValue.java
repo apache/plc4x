@@ -90,7 +90,6 @@ public class BACnetNotificationParametersChangeOfDiscreteValue extends BACnetNot
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetNotificationParametersChangeOfDiscreteValue");
 
     // Simple Field (innerOpeningTag)
@@ -144,8 +143,6 @@ public class BACnetNotificationParametersChangeOfDiscreteValue extends BACnetNot
       throws ParseException {
     readBuffer.pullContext("BACnetNotificationParametersChangeOfDiscreteValue");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetOpeningTag innerOpeningTag =

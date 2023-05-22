@@ -63,7 +63,6 @@ public class BACnetPriorityValueUnsigned extends BACnetPriorityValue implements 
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetPriorityValueUnsigned");
 
     // Simple Field (unsignedValue)
@@ -93,8 +92,6 @@ public class BACnetPriorityValueUnsigned extends BACnetPriorityValue implements 
       ReadBuffer readBuffer, BACnetObjectType objectTypeArgument) throws ParseException {
     readBuffer.pullContext("BACnetPriorityValueUnsigned");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger unsignedValue =

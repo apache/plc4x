@@ -79,7 +79,6 @@ public class BACnetConstructedDataPower extends BACnetConstructedData implements
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataPower");
 
     // Simple Field (power)
@@ -120,8 +119,6 @@ public class BACnetConstructedDataPower extends BACnetConstructedData implements
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataPower");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagReal power =

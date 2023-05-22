@@ -67,7 +67,6 @@ public class CEMIAdditionalInformationRelativeTimestamp extends CEMIAdditionalIn
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("CEMIAdditionalInformationRelativeTimestamp");
 
     // Const Field (len)
@@ -104,8 +103,6 @@ public class CEMIAdditionalInformationRelativeTimestamp extends CEMIAdditionalIn
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("CEMIAdditionalInformationRelativeTimestamp");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short len =

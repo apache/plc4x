@@ -65,7 +65,6 @@ public class SignedSoftwareCertificate extends ExtensionObjectDefinition impleme
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("SignedSoftwareCertificate");
 
     // Simple Field (certificateData)
@@ -102,8 +101,6 @@ public class SignedSoftwareCertificate extends ExtensionObjectDefinition impleme
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("SignedSoftwareCertificate");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     PascalByteString certificateData =

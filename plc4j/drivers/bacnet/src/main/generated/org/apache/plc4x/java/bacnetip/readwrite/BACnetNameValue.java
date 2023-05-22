@@ -58,7 +58,6 @@ public class BACnetNameValue implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetNameValue");
 
     // Simple Field (name)
@@ -101,8 +100,6 @@ public class BACnetNameValue implements Message {
   public static BACnetNameValue staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetNameValue");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetContextTagCharacterString name =

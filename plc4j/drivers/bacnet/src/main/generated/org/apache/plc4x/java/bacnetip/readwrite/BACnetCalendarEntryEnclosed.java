@@ -72,7 +72,6 @@ public class BACnetCalendarEntryEnclosed implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetCalendarEntryEnclosed");
 
     // Simple Field (openingTag)
@@ -134,8 +133,6 @@ public class BACnetCalendarEntryEnclosed implements Message {
       throws ParseException {
     readBuffer.pullContext("BACnetCalendarEntryEnclosed");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetOpeningTag openingTag =

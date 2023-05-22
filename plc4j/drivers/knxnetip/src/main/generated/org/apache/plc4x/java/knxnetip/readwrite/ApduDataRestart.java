@@ -50,7 +50,6 @@ public class ApduDataRestart extends ApduData implements Message {
   protected void serializeApduDataChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("ApduDataRestart");
 
     writeBuffer.popContext("ApduDataRestart");
@@ -74,8 +73,6 @@ public class ApduDataRestart extends ApduData implements Message {
       throws ParseException {
     readBuffer.pullContext("ApduDataRestart");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("ApduDataRestart");

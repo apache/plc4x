@@ -97,7 +97,6 @@ public class BACnetNotificationParametersCommandFailure extends BACnetNotificati
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetNotificationParametersCommandFailure");
 
     // Simple Field (innerOpeningTag)
@@ -157,8 +156,6 @@ public class BACnetNotificationParametersCommandFailure extends BACnetNotificati
       throws ParseException {
     readBuffer.pullContext("BACnetNotificationParametersCommandFailure");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetOpeningTag innerOpeningTag =

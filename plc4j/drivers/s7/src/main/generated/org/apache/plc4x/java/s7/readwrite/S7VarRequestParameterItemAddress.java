@@ -59,7 +59,6 @@ public class S7VarRequestParameterItemAddress extends S7VarRequestParameterItem 
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("S7VarRequestParameterItemAddress");
 
     // Implicit Field (itemLength) (Used for parsing, but its value is not stored as it's implicitly
@@ -97,8 +96,6 @@ public class S7VarRequestParameterItemAddress extends S7VarRequestParameterItem 
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("S7VarRequestParameterItemAddress");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short itemLength = readImplicitField("itemLength", readUnsignedShort(readBuffer, 8));

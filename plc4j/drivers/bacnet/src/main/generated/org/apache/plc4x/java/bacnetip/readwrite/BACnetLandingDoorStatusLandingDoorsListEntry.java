@@ -59,7 +59,6 @@ public class BACnetLandingDoorStatusLandingDoorsListEntry implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetLandingDoorStatusLandingDoorsListEntry");
 
     // Simple Field (floorNumber)
@@ -101,8 +100,6 @@ public class BACnetLandingDoorStatusLandingDoorsListEntry implements Message {
       throws ParseException {
     readBuffer.pullContext("BACnetLandingDoorStatusLandingDoorsListEntry");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetContextTagUnsignedInteger floorNumber =

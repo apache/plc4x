@@ -58,7 +58,6 @@ public class GuidNodeId implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("GuidNodeId");
 
     // Simple Field (namespaceIndex)
@@ -99,8 +98,6 @@ public class GuidNodeId implements Message {
   public static GuidNodeId staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("GuidNodeId");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int namespaceIndex = readSimpleField("namespaceIndex", readUnsignedInt(readBuffer, 16));

@@ -76,7 +76,6 @@ public class AdsAddDeviceNotificationResponse extends AmsPacket implements Messa
   protected void serializeAmsPacketChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("AdsAddDeviceNotificationResponse");
 
     // Simple Field (result)
@@ -117,8 +116,6 @@ public class AdsAddDeviceNotificationResponse extends AmsPacket implements Messa
       throws ParseException {
     readBuffer.pullContext("AdsAddDeviceNotificationResponse");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ReturnCode result =

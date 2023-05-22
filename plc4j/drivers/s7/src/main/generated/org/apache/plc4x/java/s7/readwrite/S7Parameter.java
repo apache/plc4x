@@ -52,7 +52,6 @@ public abstract class S7Parameter implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("S7Parameter");
 
     // Discriminator Field (parameterType) (Used as input to a switch field)
@@ -108,8 +107,6 @@ public abstract class S7Parameter implements Message {
       throws ParseException {
     readBuffer.pullContext("S7Parameter");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short parameterType = readDiscriminatorField("parameterType", readUnsignedShort(readBuffer, 8));

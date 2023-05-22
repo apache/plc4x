@@ -71,7 +71,6 @@ public class ModbusPDUWriteFileRecordResponseItem implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("ModbusPDUWriteFileRecordResponseItem");
 
     // Simple Field (referenceType)
@@ -135,8 +134,6 @@ public class ModbusPDUWriteFileRecordResponseItem implements Message {
       throws ParseException {
     readBuffer.pullContext("ModbusPDUWriteFileRecordResponseItem");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short referenceType = readSimpleField("referenceType", readUnsignedShort(readBuffer, 8));

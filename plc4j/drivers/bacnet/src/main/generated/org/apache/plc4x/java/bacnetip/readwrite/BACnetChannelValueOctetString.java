@@ -57,7 +57,6 @@ public class BACnetChannelValueOctetString extends BACnetChannelValue implements
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetChannelValueOctetString");
 
     // Simple Field (octetStringValue)
@@ -88,8 +87,6 @@ public class BACnetChannelValueOctetString extends BACnetChannelValue implements
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetChannelValueOctetString");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagOctetString octetStringValue =

@@ -58,7 +58,6 @@ public class BACnetLogDataLogDataEntryAnyValue extends BACnetLogDataLogDataEntry
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetLogDataLogDataEntryAnyValue");
 
     // Optional Field (anyValue) (Can be skipped, if the value is null)
@@ -90,8 +89,6 @@ public class BACnetLogDataLogDataEntryAnyValue extends BACnetLogDataLogDataEntry
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetLogDataLogDataEntryAnyValue");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetConstructedData anyValue =

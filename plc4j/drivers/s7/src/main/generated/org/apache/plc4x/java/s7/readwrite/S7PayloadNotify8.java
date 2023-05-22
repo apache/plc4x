@@ -71,7 +71,6 @@ public class S7PayloadNotify8 extends S7PayloadUserDataItem implements Message {
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("S7PayloadNotify8");
 
     // Simple Field (alarmMessage)
@@ -102,8 +101,6 @@ public class S7PayloadNotify8 extends S7PayloadUserDataItem implements Message {
       throws ParseException {
     readBuffer.pullContext("S7PayloadNotify8");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     AlarmMessagePushType alarmMessage =

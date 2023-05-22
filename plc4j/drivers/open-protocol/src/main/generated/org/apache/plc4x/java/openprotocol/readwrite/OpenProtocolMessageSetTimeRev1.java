@@ -74,7 +74,6 @@ public class OpenProtocolMessageSetTimeRev1 extends OpenProtocolMessageSetTime i
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("OpenProtocolMessageSetTimeRev1");
 
     // Simple Field (timeToSet)
@@ -105,8 +104,6 @@ public class OpenProtocolMessageSetTimeRev1 extends OpenProtocolMessageSetTime i
       ReadBuffer readBuffer, Long revision) throws ParseException {
     readBuffer.pullContext("OpenProtocolMessageSetTimeRev1");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     String timeToSet =

@@ -56,7 +56,6 @@ public class BACnetEventParameterNone extends BACnetEventParameter implements Me
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetEventParameterNone");
 
     // Simple Field (none)
@@ -86,8 +85,6 @@ public class BACnetEventParameterNone extends BACnetEventParameter implements Me
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetEventParameterNone");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetContextTagNull none =

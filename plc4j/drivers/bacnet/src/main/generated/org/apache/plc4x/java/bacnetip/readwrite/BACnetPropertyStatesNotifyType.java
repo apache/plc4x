@@ -57,7 +57,6 @@ public class BACnetPropertyStatesNotifyType extends BACnetPropertyStates impleme
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetPropertyStatesNotifyType");
 
     // Simple Field (notifyType)
@@ -87,8 +86,6 @@ public class BACnetPropertyStatesNotifyType extends BACnetPropertyStates impleme
       ReadBuffer readBuffer, Short peekedTagNumber) throws ParseException {
     readBuffer.pullContext("BACnetPropertyStatesNotifyType");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetNotifyTypeTagged notifyType =

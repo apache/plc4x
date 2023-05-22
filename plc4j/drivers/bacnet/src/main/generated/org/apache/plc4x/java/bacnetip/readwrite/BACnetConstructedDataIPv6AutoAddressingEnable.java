@@ -80,7 +80,6 @@ public class BACnetConstructedDataIPv6AutoAddressingEnable extends BACnetConstru
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataIPv6AutoAddressingEnable");
 
     // Simple Field (autoAddressingEnable)
@@ -122,8 +121,6 @@ public class BACnetConstructedDataIPv6AutoAddressingEnable extends BACnetConstru
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataIPv6AutoAddressingEnable");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagBoolean autoAddressingEnable =

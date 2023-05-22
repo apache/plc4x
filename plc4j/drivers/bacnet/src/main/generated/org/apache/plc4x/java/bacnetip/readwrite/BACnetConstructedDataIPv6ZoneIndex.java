@@ -79,7 +79,6 @@ public class BACnetConstructedDataIPv6ZoneIndex extends BACnetConstructedData im
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataIPv6ZoneIndex");
 
     // Simple Field (ipv6ZoneIndex)
@@ -120,8 +119,6 @@ public class BACnetConstructedDataIPv6ZoneIndex extends BACnetConstructedData im
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataIPv6ZoneIndex");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagCharacterString ipv6ZoneIndex =

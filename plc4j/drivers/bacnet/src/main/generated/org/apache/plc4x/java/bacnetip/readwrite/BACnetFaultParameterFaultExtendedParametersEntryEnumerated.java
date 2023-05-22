@@ -58,7 +58,6 @@ public class BACnetFaultParameterFaultExtendedParametersEntryEnumerated
       WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetFaultParameterFaultExtendedParametersEntryEnumerated");
 
     // Simple Field (enumeratedValue)
@@ -90,8 +89,6 @@ public class BACnetFaultParameterFaultExtendedParametersEntryEnumerated
           throws ParseException {
     readBuffer.pullContext("BACnetFaultParameterFaultExtendedParametersEntryEnumerated");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagEnumerated enumeratedValue =

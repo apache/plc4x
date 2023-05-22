@@ -80,7 +80,6 @@ public class BACnetConstructedDataDescriptionOfHalt extends BACnetConstructedDat
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataDescriptionOfHalt");
 
     // Simple Field (descriptionForHalt)
@@ -122,8 +121,6 @@ public class BACnetConstructedDataDescriptionOfHalt extends BACnetConstructedDat
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataDescriptionOfHalt");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagCharacterString descriptionForHalt =

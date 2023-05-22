@@ -79,7 +79,6 @@ public class BACnetConstructedDataDefaultRampRate extends BACnetConstructedData 
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataDefaultRampRate");
 
     // Simple Field (defaultRampRate)
@@ -121,8 +120,6 @@ public class BACnetConstructedDataDefaultRampRate extends BACnetConstructedData 
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataDefaultRampRate");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagReal defaultRampRate =

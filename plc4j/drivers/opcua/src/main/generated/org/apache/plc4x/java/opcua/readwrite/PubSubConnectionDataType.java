@@ -137,7 +137,6 @@ public class PubSubConnectionDataType extends ExtensionObjectDefinition implemen
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("PubSubConnectionDataType");
 
     // Simple Field (name)
@@ -260,8 +259,6 @@ public class PubSubConnectionDataType extends ExtensionObjectDefinition implemen
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("PubSubConnectionDataType");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     PascalString name =

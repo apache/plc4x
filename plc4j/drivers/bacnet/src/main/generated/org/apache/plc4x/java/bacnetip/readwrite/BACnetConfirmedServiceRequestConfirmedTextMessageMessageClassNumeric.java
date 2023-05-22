@@ -66,7 +66,6 @@ public class BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeri
       WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric");
 
     // Simple Field (numericValue)
@@ -97,8 +96,6 @@ public class BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeri
           ReadBuffer readBuffer, Short tagNumber) throws ParseException {
     readBuffer.pullContext("BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetContextTagUnsignedInteger numericValue =

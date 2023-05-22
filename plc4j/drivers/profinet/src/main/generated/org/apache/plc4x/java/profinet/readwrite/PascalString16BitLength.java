@@ -56,7 +56,6 @@ public class PascalString16BitLength implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("PascalString16BitLength");
 
     // Implicit Field (sLength) (Used for parsing, but its value is not stored as it's implicitly
@@ -112,8 +111,6 @@ public class PascalString16BitLength implements Message {
   public static PascalString16BitLength staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("PascalString16BitLength");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short sLength = readImplicitField("sLength", readSignedShort(readBuffer, 16));

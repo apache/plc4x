@@ -80,7 +80,6 @@ public class BACnetConstructedDataIntegralConstantUnits extends BACnetConstructe
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataIntegralConstantUnits");
 
     // Simple Field (units)
@@ -121,8 +120,6 @@ public class BACnetConstructedDataIntegralConstantUnits extends BACnetConstructe
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataIntegralConstantUnits");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetEngineeringUnitsTagged units =

@@ -57,7 +57,6 @@ public class BACnetShedLevelPercent extends BACnetShedLevel implements Message {
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetShedLevelPercent");
 
     // Simple Field (percent)
@@ -87,8 +86,6 @@ public class BACnetShedLevelPercent extends BACnetShedLevel implements Message {
       throws ParseException {
     readBuffer.pullContext("BACnetShedLevelPercent");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetContextTagUnsignedInteger percent =

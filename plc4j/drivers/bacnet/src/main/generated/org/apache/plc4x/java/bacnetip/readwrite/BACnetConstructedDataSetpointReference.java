@@ -80,7 +80,6 @@ public class BACnetConstructedDataSetpointReference extends BACnetConstructedDat
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataSetpointReference");
 
     // Simple Field (setpointReference)
@@ -122,8 +121,6 @@ public class BACnetConstructedDataSetpointReference extends BACnetConstructedDat
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataSetpointReference");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetSetpointReference setpointReference =

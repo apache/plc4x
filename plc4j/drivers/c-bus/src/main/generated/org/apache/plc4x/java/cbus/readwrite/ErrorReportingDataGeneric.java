@@ -119,7 +119,6 @@ public class ErrorReportingDataGeneric extends ErrorReportingData implements Mes
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("ErrorReportingDataGeneric");
 
     // Simple Field (systemCategory)
@@ -216,8 +215,6 @@ public class ErrorReportingDataGeneric extends ErrorReportingData implements Mes
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("ErrorReportingDataGeneric");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ErrorReportingSystemCategory systemCategory =

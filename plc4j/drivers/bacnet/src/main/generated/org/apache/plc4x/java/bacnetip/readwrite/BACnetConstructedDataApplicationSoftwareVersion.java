@@ -80,7 +80,6 @@ public class BACnetConstructedDataApplicationSoftwareVersion extends BACnetConst
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataApplicationSoftwareVersion");
 
     // Simple Field (applicationSoftwareVersion)
@@ -124,8 +123,6 @@ public class BACnetConstructedDataApplicationSoftwareVersion extends BACnetConst
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataApplicationSoftwareVersion");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagCharacterString applicationSoftwareVersion =

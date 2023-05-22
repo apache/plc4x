@@ -44,7 +44,6 @@ public class VersionTime implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("VersionTime");
 
     writeBuffer.popContext("VersionTime");
@@ -73,8 +72,6 @@ public class VersionTime implements Message {
   public static VersionTime staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("VersionTime");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("VersionTime");

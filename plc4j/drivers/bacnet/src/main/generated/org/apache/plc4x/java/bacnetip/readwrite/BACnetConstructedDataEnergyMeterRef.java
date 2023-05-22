@@ -79,7 +79,6 @@ public class BACnetConstructedDataEnergyMeterRef extends BACnetConstructedData i
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataEnergyMeterRef");
 
     // Simple Field (energyMeterRef)
@@ -120,8 +119,6 @@ public class BACnetConstructedDataEnergyMeterRef extends BACnetConstructedData i
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataEnergyMeterRef");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetDeviceObjectReference energyMeterRef =

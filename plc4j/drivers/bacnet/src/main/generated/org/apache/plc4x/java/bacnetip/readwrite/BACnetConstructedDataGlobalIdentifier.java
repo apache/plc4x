@@ -80,7 +80,6 @@ public class BACnetConstructedDataGlobalIdentifier extends BACnetConstructedData
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataGlobalIdentifier");
 
     // Simple Field (globalIdentifier)
@@ -122,8 +121,6 @@ public class BACnetConstructedDataGlobalIdentifier extends BACnetConstructedData
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataGlobalIdentifier");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger globalIdentifier =

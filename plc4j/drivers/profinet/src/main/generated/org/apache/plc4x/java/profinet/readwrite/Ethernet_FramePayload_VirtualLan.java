@@ -78,7 +78,6 @@ public class Ethernet_FramePayload_VirtualLan extends Ethernet_FramePayload impl
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("Ethernet_FramePayload_VirtualLan");
 
     // Simple Field (priority)
@@ -133,8 +132,6 @@ public class Ethernet_FramePayload_VirtualLan extends Ethernet_FramePayload impl
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("Ethernet_FramePayload_VirtualLan");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     VirtualLanPriority priority =

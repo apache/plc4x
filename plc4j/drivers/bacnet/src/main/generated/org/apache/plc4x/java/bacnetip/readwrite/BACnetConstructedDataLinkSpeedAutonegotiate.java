@@ -80,7 +80,6 @@ public class BACnetConstructedDataLinkSpeedAutonegotiate extends BACnetConstruct
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataLinkSpeedAutonegotiate");
 
     // Simple Field (linkSpeedAutonegotiate)
@@ -124,8 +123,6 @@ public class BACnetConstructedDataLinkSpeedAutonegotiate extends BACnetConstruct
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataLinkSpeedAutonegotiate");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagBoolean linkSpeedAutonegotiate =

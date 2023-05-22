@@ -84,7 +84,6 @@ public class MediaTransportControlDataEnumerateCategoriesSelectionTracks
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("MediaTransportControlDataEnumerateCategoriesSelectionTracks");
 
     // Simple Field (enumerateType)
@@ -144,8 +143,6 @@ public class MediaTransportControlDataEnumerateCategoriesSelectionTracks
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("MediaTransportControlDataEnumerateCategoriesSelectionTracks");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte enumerateType = readSimpleField("enumerateType", readByte(readBuffer, 8));

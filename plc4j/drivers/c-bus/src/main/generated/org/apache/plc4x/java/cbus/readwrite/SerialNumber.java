@@ -70,7 +70,6 @@ public class SerialNumber implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("SerialNumber");
 
     // Simple Field (octet1)
@@ -123,8 +122,6 @@ public class SerialNumber implements Message {
   public static SerialNumber staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("SerialNumber");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte octet1 = readSimpleField("octet1", readByte(readBuffer, 8));

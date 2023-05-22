@@ -85,7 +85,6 @@ public class CipRRData extends EipPacket implements Message {
   protected void serializeEipPacketChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("CipRRData");
 
     // Simple Field (interfaceHandle)
@@ -141,8 +140,6 @@ public class CipRRData extends EipPacket implements Message {
       ReadBuffer readBuffer, Boolean response) throws ParseException {
     readBuffer.pullContext("CipRRData");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     long interfaceHandle = readSimpleField("interfaceHandle", readUnsignedLong(readBuffer, 32));

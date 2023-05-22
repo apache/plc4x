@@ -79,7 +79,6 @@ public class BACnetEventParameterAccessEvent extends BACnetEventParameter implem
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetEventParameterAccessEvent");
 
     // Simple Field (openingTag)
@@ -131,8 +130,6 @@ public class BACnetEventParameterAccessEvent extends BACnetEventParameter implem
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetEventParameterAccessEvent");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetOpeningTag openingTag =

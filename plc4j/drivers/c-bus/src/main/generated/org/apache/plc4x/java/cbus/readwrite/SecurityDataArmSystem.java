@@ -82,7 +82,6 @@ public class SecurityDataArmSystem extends SecurityData implements Message {
   protected void serializeSecurityDataChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("SecurityDataArmSystem");
 
     // Simple Field (armMode)
@@ -148,8 +147,6 @@ public class SecurityDataArmSystem extends SecurityData implements Message {
       throws ParseException {
     readBuffer.pullContext("SecurityDataArmSystem");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte armMode = readSimpleField("armMode", readByte(readBuffer, 8));

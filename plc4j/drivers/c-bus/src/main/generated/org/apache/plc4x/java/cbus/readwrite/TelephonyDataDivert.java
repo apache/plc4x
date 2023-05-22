@@ -57,7 +57,6 @@ public class TelephonyDataDivert extends TelephonyData implements Message {
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("TelephonyDataDivert");
 
     // Simple Field (number)
@@ -91,8 +90,6 @@ public class TelephonyDataDivert extends TelephonyData implements Message {
       throws ParseException {
     readBuffer.pullContext("TelephonyDataDivert");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     String number =

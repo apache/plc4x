@@ -80,7 +80,6 @@ public class BACnetConstructedDataPulseConverterAdjustValue extends BACnetConstr
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataPulseConverterAdjustValue");
 
     // Simple Field (adjustValue)
@@ -121,8 +120,6 @@ public class BACnetConstructedDataPulseConverterAdjustValue extends BACnetConstr
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataPulseConverterAdjustValue");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagReal adjustValue =

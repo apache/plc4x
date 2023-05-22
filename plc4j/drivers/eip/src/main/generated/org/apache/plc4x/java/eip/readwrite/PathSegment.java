@@ -50,7 +50,6 @@ public abstract class PathSegment implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("PathSegment");
 
     // Discriminator Field (pathSegment) (Used as input to a switch field)
@@ -90,8 +89,6 @@ public abstract class PathSegment implements Message {
   public static PathSegment staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("PathSegment");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte pathSegment = readDiscriminatorField("pathSegment", readUnsignedByte(readBuffer, 3));

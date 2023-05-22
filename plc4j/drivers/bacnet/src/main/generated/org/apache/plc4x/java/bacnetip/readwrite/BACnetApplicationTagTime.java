@@ -56,7 +56,6 @@ public class BACnetApplicationTagTime extends BACnetApplicationTag implements Me
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetApplicationTagTime");
 
     // Simple Field (payload)
@@ -86,8 +85,6 @@ public class BACnetApplicationTagTime extends BACnetApplicationTag implements Me
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetApplicationTagTime");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetTagPayloadTime payload =

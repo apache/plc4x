@@ -72,7 +72,6 @@ public class BACnetServiceAckAtomicReadFile extends BACnetServiceAck implements 
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetServiceAckAtomicReadFile");
 
     // Simple Field (endOfFile)
@@ -108,8 +107,6 @@ public class BACnetServiceAckAtomicReadFile extends BACnetServiceAck implements 
       ReadBuffer readBuffer, Long serviceAckLength) throws ParseException {
     readBuffer.pullContext("BACnetServiceAckAtomicReadFile");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagBoolean endOfFile =

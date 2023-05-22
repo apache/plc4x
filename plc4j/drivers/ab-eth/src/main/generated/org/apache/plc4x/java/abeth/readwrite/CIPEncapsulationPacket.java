@@ -77,7 +77,6 @@ public abstract class CIPEncapsulationPacket implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("CIPEncapsulationPacket");
 
     // Discriminator Field (commandType) (Used as input to a switch field)
@@ -185,8 +184,6 @@ public abstract class CIPEncapsulationPacket implements Message {
   public static CIPEncapsulationPacket staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("CIPEncapsulationPacket");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int commandType =

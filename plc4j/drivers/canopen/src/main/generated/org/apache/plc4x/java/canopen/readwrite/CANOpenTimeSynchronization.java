@@ -59,7 +59,6 @@ public class CANOpenTimeSynchronization extends CANOpenPayload implements Messag
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("CANOpenTimeSynchronization");
 
     // Simple Field (timeOfDay)
@@ -89,8 +88,6 @@ public class CANOpenTimeSynchronization extends CANOpenPayload implements Messag
       ReadBuffer readBuffer, CANOpenService service) throws ParseException {
     readBuffer.pullContext("CANOpenTimeSynchronization");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     CANOpenTime timeOfDay =

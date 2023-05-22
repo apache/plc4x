@@ -80,7 +80,6 @@ public class BACnetConstructedDataAPDUSegmentTimeout extends BACnetConstructedDa
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataAPDUSegmentTimeout");
 
     // Simple Field (apduSegmentTimeout)
@@ -122,8 +121,6 @@ public class BACnetConstructedDataAPDUSegmentTimeout extends BACnetConstructedDa
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataAPDUSegmentTimeout");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger apduSegmentTimeout =

@@ -56,7 +56,6 @@ public class MeteringDataOtherWaterConsumption extends MeteringData implements M
   protected void serializeMeteringDataChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("MeteringDataOtherWaterConsumption");
 
     // Simple Field (kL)
@@ -86,8 +85,6 @@ public class MeteringDataOtherWaterConsumption extends MeteringData implements M
       throws ParseException {
     readBuffer.pullContext("MeteringDataOtherWaterConsumption");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     long kL = readSimpleField("kL", readUnsignedLong(readBuffer, 32));

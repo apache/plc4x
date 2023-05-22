@@ -80,7 +80,6 @@ public class BACnetConstructedDataProtocolRevision extends BACnetConstructedData
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataProtocolRevision");
 
     // Simple Field (protocolRevision)
@@ -122,8 +121,6 @@ public class BACnetConstructedDataProtocolRevision extends BACnetConstructedData
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataProtocolRevision");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger protocolRevision =

@@ -84,7 +84,6 @@ public class RequestDirectCommandAccess extends Request implements Message {
   protected void serializeRequestChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("RequestDirectCommandAccess");
 
     // Const Field (at)
@@ -139,8 +138,6 @@ public class RequestDirectCommandAccess extends Request implements Message {
       ReadBuffer readBuffer, CBusOptions cBusOptions) throws ParseException {
     readBuffer.pullContext("RequestDirectCommandAccess");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte at = readConstField("at", readByte(readBuffer, 8), RequestDirectCommandAccess.AT);

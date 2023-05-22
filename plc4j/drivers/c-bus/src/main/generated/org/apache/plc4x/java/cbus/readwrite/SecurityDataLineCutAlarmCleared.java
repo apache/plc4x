@@ -48,7 +48,6 @@ public class SecurityDataLineCutAlarmCleared extends SecurityData implements Mes
   protected void serializeSecurityDataChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("SecurityDataLineCutAlarmCleared");
 
     writeBuffer.popContext("SecurityDataLineCutAlarmCleared");
@@ -72,8 +71,6 @@ public class SecurityDataLineCutAlarmCleared extends SecurityData implements Mes
       throws ParseException {
     readBuffer.pullContext("SecurityDataLineCutAlarmCleared");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("SecurityDataLineCutAlarmCleared");

@@ -86,7 +86,6 @@ public class BACnetServiceAckReadProperty extends BACnetServiceAck implements Me
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetServiceAckReadProperty");
 
     // Simple Field (objectIdentifier)
@@ -140,8 +139,6 @@ public class BACnetServiceAckReadProperty extends BACnetServiceAck implements Me
       ReadBuffer readBuffer, Long serviceAckLength) throws ParseException {
     readBuffer.pullContext("BACnetServiceAckReadProperty");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetContextTagObjectIdentifier objectIdentifier =

@@ -59,7 +59,6 @@ public class BACnetRecipientProcess implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetRecipientProcess");
 
     // Simple Field (recipient)
@@ -103,8 +102,6 @@ public class BACnetRecipientProcess implements Message {
   public static BACnetRecipientProcess staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetRecipientProcess");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetRecipientEnclosed recipient =

@@ -116,7 +116,6 @@ public class HVACModeAndFlags implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("HVACModeAndFlags");
 
     // Reserved Field (reserved)
@@ -239,8 +238,6 @@ public class HVACModeAndFlags implements Message {
   public static HVACModeAndFlags staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("HVACModeAndFlags");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     Boolean reservedField0 =

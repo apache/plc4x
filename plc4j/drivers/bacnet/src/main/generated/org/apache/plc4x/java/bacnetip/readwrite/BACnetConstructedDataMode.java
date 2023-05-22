@@ -79,7 +79,6 @@ public class BACnetConstructedDataMode extends BACnetConstructedData implements 
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataMode");
 
     // Simple Field (mode)
@@ -120,8 +119,6 @@ public class BACnetConstructedDataMode extends BACnetConstructedData implements 
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataMode");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetLifeSafetyModeTagged mode =

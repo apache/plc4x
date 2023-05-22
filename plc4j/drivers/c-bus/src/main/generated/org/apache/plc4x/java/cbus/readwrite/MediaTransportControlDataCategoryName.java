@@ -60,7 +60,6 @@ public class MediaTransportControlDataCategoryName extends MediaTransportControl
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("MediaTransportControlDataCategoryName");
 
     // Simple Field (categoryName)
@@ -94,8 +93,6 @@ public class MediaTransportControlDataCategoryName extends MediaTransportControl
       throws ParseException {
     readBuffer.pullContext("MediaTransportControlDataCategoryName");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     String categoryName =

@@ -63,7 +63,6 @@ public class PnIoCm_DataUnitDataObject implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("PnIoCm_DataUnitDataObject");
 
     // Array Field (dataState)
@@ -129,8 +128,6 @@ public class PnIoCm_DataUnitDataObject implements Message {
       ReadBuffer readBuffer, Integer dataObjectLength) throws ParseException {
     readBuffer.pullContext("PnIoCm_DataUnitDataObject");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte[] dataState =

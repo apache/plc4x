@@ -66,7 +66,6 @@ public class BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterS
       WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext(
         "BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterString");
 
@@ -101,8 +100,6 @@ public class BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterS
     readBuffer.pullContext(
         "BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterString");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagCharacterString characterStringValue =

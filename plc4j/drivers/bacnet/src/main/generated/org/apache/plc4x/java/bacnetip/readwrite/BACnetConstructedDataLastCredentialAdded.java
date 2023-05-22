@@ -80,7 +80,6 @@ public class BACnetConstructedDataLastCredentialAdded extends BACnetConstructedD
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataLastCredentialAdded");
 
     // Simple Field (lastCredentialAdded)
@@ -122,8 +121,6 @@ public class BACnetConstructedDataLastCredentialAdded extends BACnetConstructedD
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataLastCredentialAdded");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetDeviceObjectReference lastCredentialAdded =

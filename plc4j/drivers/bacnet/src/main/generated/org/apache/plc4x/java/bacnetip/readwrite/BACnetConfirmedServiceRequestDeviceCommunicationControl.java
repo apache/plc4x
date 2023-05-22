@@ -82,7 +82,6 @@ public class BACnetConfirmedServiceRequestDeviceCommunicationControl
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConfirmedServiceRequestDeviceCommunicationControl");
 
     // Optional Field (timeDuration) (Can be skipped, if the value is null)
@@ -129,8 +128,6 @@ public class BACnetConfirmedServiceRequestDeviceCommunicationControl
           ReadBuffer readBuffer, Long serviceRequestLength) throws ParseException {
     readBuffer.pullContext("BACnetConfirmedServiceRequestDeviceCommunicationControl");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetContextTagUnsignedInteger timeDuration =

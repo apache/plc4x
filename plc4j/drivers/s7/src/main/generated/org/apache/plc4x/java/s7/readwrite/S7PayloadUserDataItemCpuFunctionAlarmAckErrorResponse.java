@@ -61,7 +61,6 @@ public class S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse extends S7Pay
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse");
 
     writeBuffer.popContext("S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse");
@@ -86,8 +85,6 @@ public class S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse extends S7Pay
       throws ParseException {
     readBuffer.pullContext("S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse");

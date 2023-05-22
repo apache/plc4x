@@ -50,7 +50,6 @@ public class NullAddressItem extends TypeId implements Message {
   protected void serializeTypeIdChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("NullAddressItem");
 
     // Reserved Field (reserved)
@@ -80,8 +79,6 @@ public class NullAddressItem extends TypeId implements Message {
       throws ParseException {
     readBuffer.pullContext("NullAddressItem");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     Integer reservedField0 =

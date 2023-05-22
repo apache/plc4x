@@ -79,7 +79,6 @@ public class BACnetConstructedDataWindowSamples extends BACnetConstructedData im
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataWindowSamples");
 
     // Simple Field (windowSamples)
@@ -120,8 +119,6 @@ public class BACnetConstructedDataWindowSamples extends BACnetConstructedData im
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataWindowSamples");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger windowSamples =

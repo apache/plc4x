@@ -68,7 +68,6 @@ public class NLMSecurityPayload extends NLM implements Message {
   protected void serializeNLMChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("NLMSecurityPayload");
 
     // Simple Field (payloadLength)
@@ -106,8 +105,6 @@ public class NLMSecurityPayload extends NLM implements Message {
       throws ParseException {
     readBuffer.pullContext("NLMSecurityPayload");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int payloadLength = readSimpleField("payloadLength", readUnsignedInt(readBuffer, 16));

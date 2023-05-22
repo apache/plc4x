@@ -64,7 +64,6 @@ public class HPAIDiscoveryEndpoint implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("HPAIDiscoveryEndpoint");
 
     // Implicit Field (structureLength) (Used for parsing, but its value is not stored as it's
@@ -126,8 +125,6 @@ public class HPAIDiscoveryEndpoint implements Message {
   public static HPAIDiscoveryEndpoint staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("HPAIDiscoveryEndpoint");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short structureLength = readImplicitField("structureLength", readUnsignedShort(readBuffer, 8));

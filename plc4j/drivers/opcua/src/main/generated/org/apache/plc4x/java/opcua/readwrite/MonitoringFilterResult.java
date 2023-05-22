@@ -51,7 +51,6 @@ public class MonitoringFilterResult extends ExtensionObjectDefinition implements
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("MonitoringFilterResult");
 
     writeBuffer.popContext("MonitoringFilterResult");
@@ -75,8 +74,6 @@ public class MonitoringFilterResult extends ExtensionObjectDefinition implements
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("MonitoringFilterResult");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("MonitoringFilterResult");

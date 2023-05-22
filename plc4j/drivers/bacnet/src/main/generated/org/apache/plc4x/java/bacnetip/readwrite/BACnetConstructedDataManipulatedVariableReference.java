@@ -80,7 +80,6 @@ public class BACnetConstructedDataManipulatedVariableReference extends BACnetCon
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataManipulatedVariableReference");
 
     // Simple Field (manipulatedVariableReference)
@@ -124,8 +123,6 @@ public class BACnetConstructedDataManipulatedVariableReference extends BACnetCon
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataManipulatedVariableReference");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetObjectPropertyReference manipulatedVariableReference =

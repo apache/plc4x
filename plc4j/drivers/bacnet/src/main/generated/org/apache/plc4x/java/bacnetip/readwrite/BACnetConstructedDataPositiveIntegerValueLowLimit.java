@@ -80,7 +80,6 @@ public class BACnetConstructedDataPositiveIntegerValueLowLimit extends BACnetCon
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataPositiveIntegerValueLowLimit");
 
     // Simple Field (lowLimit)
@@ -121,8 +120,6 @@ public class BACnetConstructedDataPositiveIntegerValueLowLimit extends BACnetCon
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataPositiveIntegerValueLowLimit");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger lowLimit =

@@ -76,7 +76,6 @@ public class BACnetConstructedDataAccessDoorFaultValues extends BACnetConstructe
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataAccessDoorFaultValues");
 
     // Array Field (faultValues)
@@ -115,8 +114,6 @@ public class BACnetConstructedDataAccessDoorFaultValues extends BACnetConstructe
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataAccessDoorFaultValues");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     List<BACnetDoorAlarmStateTagged> faultValues =

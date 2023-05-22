@@ -79,7 +79,6 @@ public class BACnetConstructedDataMaxActualValue extends BACnetConstructedData i
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataMaxActualValue");
 
     // Simple Field (maxActualValue)
@@ -120,8 +119,6 @@ public class BACnetConstructedDataMaxActualValue extends BACnetConstructedData i
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataMaxActualValue");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagReal maxActualValue =

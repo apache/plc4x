@@ -80,7 +80,6 @@ public class ReplyEncodedReply extends Reply implements Message {
   protected void serializeReplyChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("ReplyEncodedReply");
 
     // Manual Field (encodedReply)
@@ -139,8 +138,6 @@ public class ReplyEncodedReply extends Reply implements Message {
       throws ParseException {
     readBuffer.pullContext("ReplyEncodedReply");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     EncodedReply encodedReply =

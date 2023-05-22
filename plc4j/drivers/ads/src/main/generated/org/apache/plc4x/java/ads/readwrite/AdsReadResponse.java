@@ -76,7 +76,6 @@ public class AdsReadResponse extends AmsPacket implements Message {
   protected void serializeAmsPacketChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("AdsReadResponse");
 
     // Simple Field (result)
@@ -127,8 +126,6 @@ public class AdsReadResponse extends AmsPacket implements Message {
       throws ParseException {
     readBuffer.pullContext("AdsReadResponse");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ReturnCode result =

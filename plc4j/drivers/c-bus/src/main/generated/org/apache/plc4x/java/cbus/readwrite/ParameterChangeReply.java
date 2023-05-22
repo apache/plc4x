@@ -65,7 +65,6 @@ public class ParameterChangeReply extends Reply implements Message {
   protected void serializeReplyChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("ParameterChangeReply");
 
     // Simple Field (parameterChange)
@@ -97,8 +96,6 @@ public class ParameterChangeReply extends Reply implements Message {
       throws ParseException {
     readBuffer.pullContext("ParameterChangeReply");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ParameterChange parameterChange =

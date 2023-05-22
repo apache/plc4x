@@ -79,7 +79,6 @@ public class BACnetConstructedDataOccupancyState extends BACnetConstructedData i
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataOccupancyState");
 
     // Simple Field (occupancyState)
@@ -120,8 +119,6 @@ public class BACnetConstructedDataOccupancyState extends BACnetConstructedData i
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataOccupancyState");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetAccessZoneOccupancyStateTagged occupancyState =

@@ -85,7 +85,6 @@ public class NPDUControl implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("NPDUControl");
 
     // Simple Field (messageTypeFieldPresent)
@@ -169,8 +168,6 @@ public class NPDUControl implements Message {
   public static NPDUControl staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("NPDUControl");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     boolean messageTypeFieldPresent =

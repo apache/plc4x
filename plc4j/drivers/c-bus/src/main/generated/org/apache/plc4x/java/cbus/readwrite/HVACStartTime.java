@@ -72,7 +72,6 @@ public class HVACStartTime implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("HVACStartTime");
 
     // Simple Field (minutesSinceSunday12AM)
@@ -138,8 +137,6 @@ public class HVACStartTime implements Message {
   public static HVACStartTime staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("HVACStartTime");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int minutesSinceSunday12AM =

@@ -63,7 +63,6 @@ public class BACnetPriorityValueBoolean extends BACnetPriorityValue implements M
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetPriorityValueBoolean");
 
     // Simple Field (booleanValue)
@@ -93,8 +92,6 @@ public class BACnetPriorityValueBoolean extends BACnetPriorityValue implements M
       ReadBuffer readBuffer, BACnetObjectType objectTypeArgument) throws ParseException {
     readBuffer.pullContext("BACnetPriorityValueBoolean");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagBoolean booleanValue =

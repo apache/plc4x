@@ -58,7 +58,6 @@ public class FourByteNodeId implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("FourByteNodeId");
 
     // Simple Field (namespaceIndex)
@@ -99,8 +98,6 @@ public class FourByteNodeId implements Message {
   public static FourByteNodeId staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("FourByteNodeId");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short namespaceIndex = readSimpleField("namespaceIndex", readUnsignedShort(readBuffer, 8));

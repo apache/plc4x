@@ -64,7 +64,6 @@ public class TransportType implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("TransportType");
 
     // Simple Field (direction)
@@ -111,8 +110,6 @@ public class TransportType implements Message {
   public static TransportType staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("TransportType");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     boolean direction = readSimpleField("direction", readBoolean(readBuffer));

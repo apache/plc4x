@@ -69,7 +69,6 @@ public class S7MessageResponse extends S7Message implements Message {
   protected void serializeS7MessageChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("S7MessageResponse");
 
     // Simple Field (errorClass)
@@ -105,8 +104,6 @@ public class S7MessageResponse extends S7Message implements Message {
       throws ParseException {
     readBuffer.pullContext("S7MessageResponse");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short errorClass = readSimpleField("errorClass", readUnsignedShort(readBuffer, 8));

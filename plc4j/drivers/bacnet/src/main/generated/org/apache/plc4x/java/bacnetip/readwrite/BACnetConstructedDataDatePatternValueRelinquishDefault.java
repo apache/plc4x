@@ -80,7 +80,6 @@ public class BACnetConstructedDataDatePatternValueRelinquishDefault extends BACn
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataDatePatternValueRelinquishDefault");
 
     // Simple Field (relinquishDefault)
@@ -122,8 +121,6 @@ public class BACnetConstructedDataDatePatternValueRelinquishDefault extends BACn
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataDatePatternValueRelinquishDefault");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagDate relinquishDefault =

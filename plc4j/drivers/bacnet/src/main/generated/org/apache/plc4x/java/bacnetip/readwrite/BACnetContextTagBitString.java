@@ -64,7 +64,6 @@ public class BACnetContextTagBitString extends BACnetContextTag implements Messa
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetContextTagBitString");
 
     // Simple Field (payload)
@@ -98,8 +97,6 @@ public class BACnetContextTagBitString extends BACnetContextTag implements Messa
       throws ParseException {
     readBuffer.pullContext("BACnetContextTagBitString");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetTagPayloadBitString payload =

@@ -80,7 +80,6 @@ public class BACnetConstructedDataFullDutyBaseline extends BACnetConstructedData
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataFullDutyBaseline");
 
     // Simple Field (fullDutyBaseLine)
@@ -122,8 +121,6 @@ public class BACnetConstructedDataFullDutyBaseline extends BACnetConstructedData
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataFullDutyBaseline");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagReal fullDutyBaseLine =

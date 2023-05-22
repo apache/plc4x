@@ -48,7 +48,6 @@ public class SecurityDataLowBatteryCorrected extends SecurityData implements Mes
   protected void serializeSecurityDataChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("SecurityDataLowBatteryCorrected");
 
     writeBuffer.popContext("SecurityDataLowBatteryCorrected");
@@ -72,8 +71,6 @@ public class SecurityDataLowBatteryCorrected extends SecurityData implements Mes
       throws ParseException {
     readBuffer.pullContext("SecurityDataLowBatteryCorrected");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("SecurityDataLowBatteryCorrected");

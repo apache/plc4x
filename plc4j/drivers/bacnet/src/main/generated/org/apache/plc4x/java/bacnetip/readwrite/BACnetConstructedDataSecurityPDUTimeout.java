@@ -80,7 +80,6 @@ public class BACnetConstructedDataSecurityPDUTimeout extends BACnetConstructedDa
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataSecurityPDUTimeout");
 
     // Simple Field (securityPduTimeout)
@@ -122,8 +121,6 @@ public class BACnetConstructedDataSecurityPDUTimeout extends BACnetConstructedDa
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataSecurityPDUTimeout");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger securityPduTimeout =

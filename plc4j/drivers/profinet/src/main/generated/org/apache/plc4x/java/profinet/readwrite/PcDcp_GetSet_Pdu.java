@@ -90,7 +90,6 @@ public class PcDcp_GetSet_Pdu extends PnDcp_Pdu implements Message {
   protected void serializePnDcp_PduChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("PcDcp_GetSet_Pdu");
 
     // Const Field (serviceId)
@@ -207,8 +206,6 @@ public class PcDcp_GetSet_Pdu extends PnDcp_Pdu implements Message {
       throws ParseException {
     readBuffer.pullContext("PcDcp_GetSet_Pdu");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short serviceId =

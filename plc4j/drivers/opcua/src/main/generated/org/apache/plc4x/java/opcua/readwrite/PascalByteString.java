@@ -58,7 +58,6 @@ public class PascalByteString implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("PascalByteString");
 
     // Simple Field (stringLength)
@@ -101,8 +100,6 @@ public class PascalByteString implements Message {
   public static PascalByteString staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("PascalByteString");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int stringLength = readSimpleField("stringLength", readSignedInt(readBuffer, 32));

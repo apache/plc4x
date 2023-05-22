@@ -57,7 +57,6 @@ public class BACnetPropertyStatesLockStatus extends BACnetPropertyStates impleme
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetPropertyStatesLockStatus");
 
     // Simple Field (lockStatus)
@@ -87,8 +86,6 @@ public class BACnetPropertyStatesLockStatus extends BACnetPropertyStates impleme
       ReadBuffer readBuffer, Short peekedTagNumber) throws ParseException {
     readBuffer.pullContext("BACnetPropertyStatesLockStatus");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetLockStatusTagged lockStatus =

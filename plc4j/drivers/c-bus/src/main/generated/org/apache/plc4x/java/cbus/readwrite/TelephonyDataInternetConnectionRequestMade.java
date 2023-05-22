@@ -49,7 +49,6 @@ public class TelephonyDataInternetConnectionRequestMade extends TelephonyData im
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("TelephonyDataInternetConnectionRequestMade");
 
     writeBuffer.popContext("TelephonyDataInternetConnectionRequestMade");
@@ -73,8 +72,6 @@ public class TelephonyDataInternetConnectionRequestMade extends TelephonyData im
       throws ParseException {
     readBuffer.pullContext("TelephonyDataInternetConnectionRequestMade");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("TelephonyDataInternetConnectionRequestMade");

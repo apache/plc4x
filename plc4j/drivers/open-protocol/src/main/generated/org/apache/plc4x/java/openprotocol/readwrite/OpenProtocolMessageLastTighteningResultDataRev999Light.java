@@ -167,7 +167,6 @@ public class OpenProtocolMessageLastTighteningResultDataRev999Light
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("OpenProtocolMessageLastTighteningResultDataRev999Light");
 
     // Simple Field (vinNumber)
@@ -328,8 +327,6 @@ public class OpenProtocolMessageLastTighteningResultDataRev999Light
           ReadBuffer readBuffer, Long revision) throws ParseException {
     readBuffer.pullContext("OpenProtocolMessageLastTighteningResultDataRev999Light");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     String vinNumber =

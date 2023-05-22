@@ -58,7 +58,6 @@ public class GetAttributeListRequest extends CipService implements Message {
   protected void serializeCipServiceChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("GetAttributeListRequest");
 
     writeBuffer.popContext("GetAttributeListRequest");
@@ -82,8 +81,6 @@ public class GetAttributeListRequest extends CipService implements Message {
       ReadBuffer readBuffer, Boolean connected, Integer serviceLen) throws ParseException {
     readBuffer.pullContext("GetAttributeListRequest");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("GetAttributeListRequest");

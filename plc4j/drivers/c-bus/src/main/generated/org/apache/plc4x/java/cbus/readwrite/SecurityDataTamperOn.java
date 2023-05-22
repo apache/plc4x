@@ -47,7 +47,6 @@ public class SecurityDataTamperOn extends SecurityData implements Message {
   protected void serializeSecurityDataChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("SecurityDataTamperOn");
 
     writeBuffer.popContext("SecurityDataTamperOn");
@@ -71,8 +70,6 @@ public class SecurityDataTamperOn extends SecurityData implements Message {
       throws ParseException {
     readBuffer.pullContext("SecurityDataTamperOn");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("SecurityDataTamperOn");

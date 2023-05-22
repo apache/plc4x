@@ -65,7 +65,6 @@ public class DisconnectRequest extends KnxNetIpMessage implements Message {
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("DisconnectRequest");
 
     // Simple Field (communicationChannelId)
@@ -119,8 +118,6 @@ public class DisconnectRequest extends KnxNetIpMessage implements Message {
       throws ParseException {
     readBuffer.pullContext("DisconnectRequest");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short communicationChannelId =

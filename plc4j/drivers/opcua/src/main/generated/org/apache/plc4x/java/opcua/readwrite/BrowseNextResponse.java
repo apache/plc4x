@@ -88,7 +88,6 @@ public class BrowseNextResponse extends ExtensionObjectDefinition implements Mes
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BrowseNextResponse");
 
     // Simple Field (responseHeader)
@@ -154,8 +153,6 @@ public class BrowseNextResponse extends ExtensionObjectDefinition implements Mes
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("BrowseNextResponse");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ExtensionObjectDefinition responseHeader =

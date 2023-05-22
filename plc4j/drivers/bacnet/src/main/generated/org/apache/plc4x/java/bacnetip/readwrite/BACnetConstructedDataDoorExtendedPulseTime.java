@@ -80,7 +80,6 @@ public class BACnetConstructedDataDoorExtendedPulseTime extends BACnetConstructe
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataDoorExtendedPulseTime");
 
     // Simple Field (doorExtendedPulseTime)
@@ -124,8 +123,6 @@ public class BACnetConstructedDataDoorExtendedPulseTime extends BACnetConstructe
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataDoorExtendedPulseTime");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger doorExtendedPulseTime =

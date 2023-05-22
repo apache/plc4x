@@ -59,7 +59,6 @@ public class COTPParameterTpduSize extends COTPParameter implements Message {
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("COTPParameterTpduSize");
 
     // Simple Field (tpduSize)
@@ -94,8 +93,6 @@ public class COTPParameterTpduSize extends COTPParameter implements Message {
       ReadBuffer readBuffer, Short rest) throws ParseException {
     readBuffer.pullContext("COTPParameterTpduSize");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     COTPTpduSize tpduSize =

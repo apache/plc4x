@@ -80,7 +80,6 @@ public class BACnetConstructedDataDerivativeConstant extends BACnetConstructedDa
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataDerivativeConstant");
 
     // Simple Field (derivativeConstant)
@@ -122,8 +121,6 @@ public class BACnetConstructedDataDerivativeConstant extends BACnetConstructedDa
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataDerivativeConstant");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagReal derivativeConstant =

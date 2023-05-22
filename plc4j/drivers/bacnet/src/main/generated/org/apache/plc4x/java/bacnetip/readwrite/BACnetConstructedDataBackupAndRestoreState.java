@@ -80,7 +80,6 @@ public class BACnetConstructedDataBackupAndRestoreState extends BACnetConstructe
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataBackupAndRestoreState");
 
     // Simple Field (backupAndRestoreState)
@@ -124,8 +123,6 @@ public class BACnetConstructedDataBackupAndRestoreState extends BACnetConstructe
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataBackupAndRestoreState");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetBackupStateTagged backupAndRestoreState =

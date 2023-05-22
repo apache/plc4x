@@ -58,7 +58,6 @@ public class BACnetOptionalCharacterStringNull extends BACnetOptionalCharacterSt
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetOptionalCharacterStringNull");
 
     // Simple Field (nullValue)
@@ -88,8 +87,6 @@ public class BACnetOptionalCharacterStringNull extends BACnetOptionalCharacterSt
       staticParseBACnetOptionalCharacterStringBuilder(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetOptionalCharacterStringNull");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagNull nullValue =

@@ -80,7 +80,6 @@ public class BACnetConstructedDataSlaveProxyEnable extends BACnetConstructedData
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataSlaveProxyEnable");
 
     // Simple Field (slaveProxyEnable)
@@ -122,8 +121,6 @@ public class BACnetConstructedDataSlaveProxyEnable extends BACnetConstructedData
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataSlaveProxyEnable");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagBoolean slaveProxyEnable =

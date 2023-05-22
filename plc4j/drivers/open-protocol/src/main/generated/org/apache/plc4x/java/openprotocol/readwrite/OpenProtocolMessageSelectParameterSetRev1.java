@@ -75,7 +75,6 @@ public class OpenProtocolMessageSelectParameterSetRev1 extends OpenProtocolMessa
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("OpenProtocolMessageSelectParameterSetRev1");
 
     // Simple Field (parameterSetId)
@@ -110,8 +109,6 @@ public class OpenProtocolMessageSelectParameterSetRev1 extends OpenProtocolMessa
           throws ParseException {
     readBuffer.pullContext("OpenProtocolMessageSelectParameterSetRev1");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     long parameterSetId =

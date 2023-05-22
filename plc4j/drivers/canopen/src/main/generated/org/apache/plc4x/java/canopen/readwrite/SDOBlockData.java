@@ -58,7 +58,6 @@ public class SDOBlockData implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("SDOBlockData");
 
     // Simple Field (flags)
@@ -101,8 +100,6 @@ public class SDOBlockData implements Message {
   public static SDOBlockData staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("SDOBlockData");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short flags = readSimpleField("flags", readUnsignedShort(readBuffer, 5));

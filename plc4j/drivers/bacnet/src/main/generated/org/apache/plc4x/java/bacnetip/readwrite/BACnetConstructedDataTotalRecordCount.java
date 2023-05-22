@@ -80,7 +80,6 @@ public class BACnetConstructedDataTotalRecordCount extends BACnetConstructedData
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataTotalRecordCount");
 
     // Simple Field (totalRecordCount)
@@ -122,8 +121,6 @@ public class BACnetConstructedDataTotalRecordCount extends BACnetConstructedData
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataTotalRecordCount");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger totalRecordCount =

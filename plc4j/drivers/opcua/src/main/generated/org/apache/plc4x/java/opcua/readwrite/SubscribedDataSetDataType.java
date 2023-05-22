@@ -51,7 +51,6 @@ public class SubscribedDataSetDataType extends ExtensionObjectDefinition impleme
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("SubscribedDataSetDataType");
 
     writeBuffer.popContext("SubscribedDataSetDataType");
@@ -75,8 +74,6 @@ public class SubscribedDataSetDataType extends ExtensionObjectDefinition impleme
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("SubscribedDataSetDataType");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("SubscribedDataSetDataType");

@@ -80,7 +80,6 @@ public class BACnetConstructedDataPacketReorderTime extends BACnetConstructedDat
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataPacketReorderTime");
 
     // Simple Field (packetReorderTime)
@@ -122,8 +121,6 @@ public class BACnetConstructedDataPacketReorderTime extends BACnetConstructedDat
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataPacketReorderTime");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger packetReorderTime =

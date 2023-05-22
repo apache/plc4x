@@ -67,7 +67,6 @@ public class BACnetConstructedDataLargeAnalogValueAll extends BACnetConstructedD
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataLargeAnalogValueAll");
 
     writeBuffer.popContext("BACnetConstructedDataLargeAnalogValueAll");
@@ -96,8 +95,6 @@ public class BACnetConstructedDataLargeAnalogValueAll extends BACnetConstructedD
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataLargeAnalogValueAll");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Validation
     if (!((1) == (2))) {

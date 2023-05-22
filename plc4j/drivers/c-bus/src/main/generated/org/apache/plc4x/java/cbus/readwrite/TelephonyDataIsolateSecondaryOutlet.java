@@ -65,7 +65,6 @@ public class TelephonyDataIsolateSecondaryOutlet extends TelephonyData implement
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("TelephonyDataIsolateSecondaryOutlet");
 
     // Simple Field (isolateStatus)
@@ -107,8 +106,6 @@ public class TelephonyDataIsolateSecondaryOutlet extends TelephonyData implement
       throws ParseException {
     readBuffer.pullContext("TelephonyDataIsolateSecondaryOutlet");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte isolateStatus = readSimpleField("isolateStatus", readByte(readBuffer, 8));

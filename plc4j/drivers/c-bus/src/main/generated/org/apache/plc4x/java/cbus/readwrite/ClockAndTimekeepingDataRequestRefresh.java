@@ -50,7 +50,6 @@ public class ClockAndTimekeepingDataRequestRefresh extends ClockAndTimekeepingDa
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("ClockAndTimekeepingDataRequestRefresh");
 
     writeBuffer.popContext("ClockAndTimekeepingDataRequestRefresh");
@@ -74,8 +73,6 @@ public class ClockAndTimekeepingDataRequestRefresh extends ClockAndTimekeepingDa
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("ClockAndTimekeepingDataRequestRefresh");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("ClockAndTimekeepingDataRequestRefresh");

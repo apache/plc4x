@@ -80,7 +80,6 @@ public class BACnetConstructedDataFirmwareRevision extends BACnetConstructedData
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataFirmwareRevision");
 
     // Simple Field (firmwareRevision)
@@ -122,8 +121,6 @@ public class BACnetConstructedDataFirmwareRevision extends BACnetConstructedData
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataFirmwareRevision");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagCharacterString firmwareRevision =

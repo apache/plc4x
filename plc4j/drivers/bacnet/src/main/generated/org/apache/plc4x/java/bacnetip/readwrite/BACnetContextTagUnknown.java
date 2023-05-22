@@ -66,7 +66,6 @@ public class BACnetContextTagUnknown extends BACnetContextTag implements Message
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetContextTagUnknown");
 
     // Array Field (unknownData)
@@ -99,8 +98,6 @@ public class BACnetContextTagUnknown extends BACnetContextTag implements Message
       throws ParseException {
     readBuffer.pullContext("BACnetContextTagUnknown");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte[] unknownData = readBuffer.readByteArray("unknownData", Math.toIntExact(actualLength));

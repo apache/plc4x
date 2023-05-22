@@ -58,7 +58,6 @@ public class BACnetFaultParameterFaultExtendedParametersEntryCharacterString
       WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetFaultParameterFaultExtendedParametersEntryCharacterString");
 
     // Simple Field (characterStringValue)
@@ -90,8 +89,6 @@ public class BACnetFaultParameterFaultExtendedParametersEntryCharacterString
           throws ParseException {
     readBuffer.pullContext("BACnetFaultParameterFaultExtendedParametersEntryCharacterString");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagCharacterString characterStringValue =

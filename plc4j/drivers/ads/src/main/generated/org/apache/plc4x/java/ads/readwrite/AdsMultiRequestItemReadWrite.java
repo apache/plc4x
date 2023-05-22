@@ -78,7 +78,6 @@ public class AdsMultiRequestItemReadWrite extends AdsMultiRequestItem implements
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("AdsMultiRequestItemReadWrite");
 
     // Simple Field (itemIndexGroup)
@@ -126,8 +125,6 @@ public class AdsMultiRequestItemReadWrite extends AdsMultiRequestItem implements
       ReadBuffer readBuffer, Long indexGroup) throws ParseException {
     readBuffer.pullContext("AdsMultiRequestItemReadWrite");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     long itemIndexGroup = readSimpleField("itemIndexGroup", readUnsignedLong(readBuffer, 32));

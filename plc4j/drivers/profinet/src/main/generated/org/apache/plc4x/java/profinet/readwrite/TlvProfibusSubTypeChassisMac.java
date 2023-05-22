@@ -59,7 +59,6 @@ public class TlvProfibusSubTypeChassisMac extends TlvOrgSpecificProfibusUnit imp
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("TlvProfibusSubTypeChassisMac");
 
     // Simple Field (macAddress)
@@ -89,8 +88,6 @@ public class TlvProfibusSubTypeChassisMac extends TlvOrgSpecificProfibusUnit imp
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("TlvProfibusSubTypeChassisMac");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     MacAddress macAddress =

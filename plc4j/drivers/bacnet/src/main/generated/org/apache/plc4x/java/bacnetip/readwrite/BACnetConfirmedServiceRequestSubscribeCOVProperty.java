@@ -101,7 +101,6 @@ public class BACnetConfirmedServiceRequestSubscribeCOVProperty extends BACnetCon
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConfirmedServiceRequestSubscribeCOVProperty");
 
     // Simple Field (subscriberProcessIdentifier)
@@ -180,8 +179,6 @@ public class BACnetConfirmedServiceRequestSubscribeCOVProperty extends BACnetCon
           ReadBuffer readBuffer, Long serviceRequestLength) throws ParseException {
     readBuffer.pullContext("BACnetConfirmedServiceRequestSubscribeCOVProperty");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetContextTagUnsignedInteger subscriberProcessIdentifier =

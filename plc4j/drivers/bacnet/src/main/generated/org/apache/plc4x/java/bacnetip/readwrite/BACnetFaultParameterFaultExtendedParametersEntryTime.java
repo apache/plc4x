@@ -58,7 +58,6 @@ public class BACnetFaultParameterFaultExtendedParametersEntryTime
       WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetFaultParameterFaultExtendedParametersEntryTime");
 
     // Simple Field (timeValue)
@@ -89,8 +88,6 @@ public class BACnetFaultParameterFaultExtendedParametersEntryTime
           throws ParseException {
     readBuffer.pullContext("BACnetFaultParameterFaultExtendedParametersEntryTime");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagTime timeValue =

@@ -79,7 +79,6 @@ public class BACnetConstructedDataIPSubnetMask extends BACnetConstructedData imp
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataIPSubnetMask");
 
     // Simple Field (ipSubnetMask)
@@ -120,8 +119,6 @@ public class BACnetConstructedDataIPSubnetMask extends BACnetConstructedData imp
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataIPSubnetMask");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagOctetString ipSubnetMask =

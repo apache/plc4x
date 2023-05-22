@@ -80,7 +80,6 @@ public class BACnetConstructedDataLargeAnalogValueRelinquishDefault extends BACn
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataLargeAnalogValueRelinquishDefault");
 
     // Simple Field (relinquishDefault)
@@ -122,8 +121,6 @@ public class BACnetConstructedDataLargeAnalogValueRelinquishDefault extends BACn
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataLargeAnalogValueRelinquishDefault");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagDouble relinquishDefault =

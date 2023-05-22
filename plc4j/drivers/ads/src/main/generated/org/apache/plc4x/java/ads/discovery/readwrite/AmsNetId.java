@@ -83,7 +83,6 @@ public class AmsNetId implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("AmsNetId");
 
     // Simple Field (octet1)
@@ -147,8 +146,6 @@ public class AmsNetId implements Message {
   public static AmsNetId staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("AmsNetId");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short octet1 = readSimpleField("octet1", readUnsignedShort(readBuffer, 8));

@@ -52,7 +52,6 @@ public abstract class PnDcp_Block implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("PnDcp_Block");
 
     // Discriminator Field (option) (Used as input to a switch field)
@@ -122,8 +121,6 @@ public abstract class PnDcp_Block implements Message {
   public static PnDcp_Block staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("PnDcp_Block");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     PnDcp_BlockOptions option =

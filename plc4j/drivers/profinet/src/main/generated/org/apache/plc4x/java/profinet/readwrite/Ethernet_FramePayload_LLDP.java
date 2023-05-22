@@ -59,7 +59,6 @@ public class Ethernet_FramePayload_LLDP extends Ethernet_FramePayload implements
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("Ethernet_FramePayload_LLDP");
 
     // Simple Field (pdu)
@@ -89,8 +88,6 @@ public class Ethernet_FramePayload_LLDP extends Ethernet_FramePayload implements
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("Ethernet_FramePayload_LLDP");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     Lldp_Pdu pdu =

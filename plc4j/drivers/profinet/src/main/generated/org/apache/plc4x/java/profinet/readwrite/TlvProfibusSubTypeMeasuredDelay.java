@@ -88,7 +88,6 @@ public class TlvProfibusSubTypeMeasuredDelay extends TlvOrgSpecificProfibusUnit 
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("TlvProfibusSubTypeMeasuredDelay");
 
     // Simple Field (localPortRxDelay)
@@ -142,8 +141,6 @@ public class TlvProfibusSubTypeMeasuredDelay extends TlvOrgSpecificProfibusUnit 
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("TlvProfibusSubTypeMeasuredDelay");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     long localPortRxDelay = readSimpleField("localPortRxDelay", readUnsignedLong(readBuffer, 32));

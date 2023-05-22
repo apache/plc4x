@@ -80,7 +80,6 @@ public class BACnetConstructedDataCredentialDisable extends BACnetConstructedDat
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataCredentialDisable");
 
     // Simple Field (credentialDisable)
@@ -122,8 +121,6 @@ public class BACnetConstructedDataCredentialDisable extends BACnetConstructedDat
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataCredentialDisable");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetAccessCredentialDisableTagged credentialDisable =

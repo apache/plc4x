@@ -74,7 +74,6 @@ public abstract class BACnetServiceAckAtomicReadFileStreamOrRecord implements Me
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetServiceAckAtomicReadFileStreamOrRecord");
 
     // Simple Field (openingTag)
@@ -127,8 +126,6 @@ public abstract class BACnetServiceAckAtomicReadFileStreamOrRecord implements Me
       throws ParseException {
     readBuffer.pullContext("BACnetServiceAckAtomicReadFileStreamOrRecord");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetTagHeader peekedTagHeader =

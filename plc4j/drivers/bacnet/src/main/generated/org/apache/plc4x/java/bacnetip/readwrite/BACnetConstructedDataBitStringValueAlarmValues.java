@@ -90,7 +90,6 @@ public class BACnetConstructedDataBitStringValueAlarmValues extends BACnetConstr
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataBitStringValueAlarmValues");
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
@@ -147,8 +146,6 @@ public class BACnetConstructedDataBitStringValueAlarmValues extends BACnetConstr
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataBitStringValueAlarmValues");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     BigInteger zero = readVirtualField("zero", BigInteger.class, 0L);
 

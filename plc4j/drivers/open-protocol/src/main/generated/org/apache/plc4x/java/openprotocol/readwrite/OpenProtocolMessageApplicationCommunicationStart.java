@@ -66,7 +66,6 @@ public class OpenProtocolMessageApplicationCommunicationStart extends OpenProtoc
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("OpenProtocolMessageApplicationCommunicationStart");
 
     writeBuffer.popContext("OpenProtocolMessageApplicationCommunicationStart");
@@ -90,8 +89,6 @@ public class OpenProtocolMessageApplicationCommunicationStart extends OpenProtoc
       ReadBuffer readBuffer, Long revision) throws ParseException {
     readBuffer.pullContext("OpenProtocolMessageApplicationCommunicationStart");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("OpenProtocolMessageApplicationCommunicationStart");

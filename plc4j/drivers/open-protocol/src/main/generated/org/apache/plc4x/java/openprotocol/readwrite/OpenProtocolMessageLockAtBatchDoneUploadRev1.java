@@ -75,7 +75,6 @@ public class OpenProtocolMessageLockAtBatchDoneUploadRev1
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("OpenProtocolMessageLockAtBatchDoneUploadRev1");
 
     // Simple Field (relayStatus)
@@ -110,8 +109,6 @@ public class OpenProtocolMessageLockAtBatchDoneUploadRev1
           ReadBuffer readBuffer, Long revision) throws ParseException {
     readBuffer.pullContext("OpenProtocolMessageLockAtBatchDoneUploadRev1");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short relayStatus =

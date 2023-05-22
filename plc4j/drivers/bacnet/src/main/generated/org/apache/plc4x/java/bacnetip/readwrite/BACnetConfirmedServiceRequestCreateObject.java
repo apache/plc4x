@@ -73,7 +73,6 @@ public class BACnetConfirmedServiceRequestCreateObject extends BACnetConfirmedSe
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConfirmedServiceRequestCreateObject");
 
     // Simple Field (objectSpecifier)
@@ -113,8 +112,6 @@ public class BACnetConfirmedServiceRequestCreateObject extends BACnetConfirmedSe
           ReadBuffer readBuffer, Long serviceRequestLength) throws ParseException {
     readBuffer.pullContext("BACnetConfirmedServiceRequestCreateObject");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetConfirmedServiceRequestCreateObjectObjectSpecifier objectSpecifier =

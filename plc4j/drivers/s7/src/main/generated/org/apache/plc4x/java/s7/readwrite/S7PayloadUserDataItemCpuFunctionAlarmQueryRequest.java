@@ -108,7 +108,6 @@ public class S7PayloadUserDataItemCpuFunctionAlarmQueryRequest extends S7Payload
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("S7PayloadUserDataItemCpuFunctionAlarmQueryRequest");
 
     // Const Field (functionId)
@@ -202,8 +201,6 @@ public class S7PayloadUserDataItemCpuFunctionAlarmQueryRequest extends S7Payload
       throws ParseException {
     readBuffer.pullContext("S7PayloadUserDataItemCpuFunctionAlarmQueryRequest");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short functionId =

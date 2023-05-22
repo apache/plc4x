@@ -57,7 +57,6 @@ public class BACnetCalendarEntryWeekNDay extends BACnetCalendarEntry implements 
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetCalendarEntryWeekNDay");
 
     // Simple Field (weekNDay)
@@ -87,8 +86,6 @@ public class BACnetCalendarEntryWeekNDay extends BACnetCalendarEntry implements 
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetCalendarEntryWeekNDay");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetWeekNDayTagged weekNDay =

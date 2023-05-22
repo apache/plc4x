@@ -102,7 +102,6 @@ public class State implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("State");
 
     // Simple Field (SIG_8)
@@ -178,8 +177,6 @@ public class State implements Message {
   public static State staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("State");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     boolean SIG_8 = readSimpleField("SIG_8", readBoolean(readBuffer));

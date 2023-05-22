@@ -58,7 +58,6 @@ public class ProjectInstallationIdentifier implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("ProjectInstallationIdentifier");
 
     // Simple Field (projectNumber)
@@ -100,8 +99,6 @@ public class ProjectInstallationIdentifier implements Message {
       throws ParseException {
     readBuffer.pullContext("ProjectInstallationIdentifier");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short projectNumber = readSimpleField("projectNumber", readUnsignedShort(readBuffer, 8));

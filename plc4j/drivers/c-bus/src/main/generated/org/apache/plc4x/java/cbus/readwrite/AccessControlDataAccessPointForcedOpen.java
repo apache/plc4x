@@ -49,7 +49,6 @@ public class AccessControlDataAccessPointForcedOpen extends AccessControlData im
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("AccessControlDataAccessPointForcedOpen");
 
     writeBuffer.popContext("AccessControlDataAccessPointForcedOpen");
@@ -73,8 +72,6 @@ public class AccessControlDataAccessPointForcedOpen extends AccessControlData im
       throws ParseException {
     readBuffer.pullContext("AccessControlDataAccessPointForcedOpen");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("AccessControlDataAccessPointForcedOpen");

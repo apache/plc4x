@@ -57,7 +57,6 @@ public abstract class NLM implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("NLM");
 
     // Discriminator Field (messageType) (Used as input to a switch field)
@@ -116,8 +115,6 @@ public abstract class NLM implements Message {
   public static NLM staticParse(ReadBuffer readBuffer, Integer apduLength) throws ParseException {
     readBuffer.pullContext("NLM");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short messageType = readDiscriminatorField("messageType", readUnsignedShort(readBuffer, 8));

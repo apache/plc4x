@@ -56,7 +56,6 @@ public class ResponseTermination implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("ResponseTermination");
 
     // Const Field (cr)
@@ -97,8 +96,6 @@ public class ResponseTermination implements Message {
   public static ResponseTermination staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("ResponseTermination");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte cr = readConstField("cr", readByte(readBuffer, 8), ResponseTermination.CR);

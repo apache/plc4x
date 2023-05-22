@@ -89,7 +89,6 @@ public class OpenProtocolMessageParameterSetIdUploadReplyRev3
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("OpenProtocolMessageParameterSetIdUploadReplyRev3");
 
     // Implicit Field (numParameters) (Used for parsing, but its value is not stored as it's
@@ -162,8 +161,6 @@ public class OpenProtocolMessageParameterSetIdUploadReplyRev3
           ReadBuffer readBuffer, Long revision) throws ParseException {
     readBuffer.pullContext("OpenProtocolMessageParameterSetIdUploadReplyRev3");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     long numParameters =

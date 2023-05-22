@@ -65,7 +65,6 @@ public class GenericAttributeValue extends ExtensionObjectDefinition implements 
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("GenericAttributeValue");
 
     // Simple Field (attributeId)
@@ -101,8 +100,6 @@ public class GenericAttributeValue extends ExtensionObjectDefinition implements 
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("GenericAttributeValue");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     long attributeId = readSimpleField("attributeId", readUnsignedLong(readBuffer, 32));

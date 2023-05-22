@@ -65,7 +65,6 @@ public class TunnelingRequest extends KnxNetIpMessage implements Message {
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("TunnelingRequest");
 
     // Simple Field (tunnelingRequestDataBlock)
@@ -109,8 +108,6 @@ public class TunnelingRequest extends KnxNetIpMessage implements Message {
       ReadBuffer readBuffer, Integer totalLength) throws ParseException {
     readBuffer.pullContext("TunnelingRequest");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     TunnelingRequestDataBlock tunnelingRequestDataBlock =

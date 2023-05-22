@@ -64,7 +64,6 @@ public class CIPEncapsulationReadRequest extends CIPEncapsulationPacket implemen
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("CIPEncapsulationReadRequest");
 
     // Simple Field (request)
@@ -98,8 +97,6 @@ public class CIPEncapsulationReadRequest extends CIPEncapsulationPacket implemen
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("CIPEncapsulationReadRequest");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     DF1RequestMessage request =

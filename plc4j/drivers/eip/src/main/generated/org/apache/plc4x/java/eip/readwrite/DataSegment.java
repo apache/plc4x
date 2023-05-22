@@ -58,7 +58,6 @@ public class DataSegment extends PathSegment implements Message {
   protected void serializePathSegmentChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("DataSegment");
 
     // Simple Field (segmentType)
@@ -88,8 +87,6 @@ public class DataSegment extends PathSegment implements Message {
       throws ParseException {
     readBuffer.pullContext("DataSegment");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     DataSegmentType segmentType =

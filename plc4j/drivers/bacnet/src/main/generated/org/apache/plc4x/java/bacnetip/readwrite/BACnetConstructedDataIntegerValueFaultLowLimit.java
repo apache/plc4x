@@ -80,7 +80,6 @@ public class BACnetConstructedDataIntegerValueFaultLowLimit extends BACnetConstr
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataIntegerValueFaultLowLimit");
 
     // Simple Field (faultLowLimit)
@@ -121,8 +120,6 @@ public class BACnetConstructedDataIntegerValueFaultLowLimit extends BACnetConstr
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataIntegerValueFaultLowLimit");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagSignedInteger faultLowLimit =

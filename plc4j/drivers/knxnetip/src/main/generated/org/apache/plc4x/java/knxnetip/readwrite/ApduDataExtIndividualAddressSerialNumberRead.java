@@ -50,7 +50,6 @@ public class ApduDataExtIndividualAddressSerialNumberRead extends ApduDataExt im
   protected void serializeApduDataExtChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("ApduDataExtIndividualAddressSerialNumberRead");
 
     writeBuffer.popContext("ApduDataExtIndividualAddressSerialNumberRead");
@@ -74,8 +73,6 @@ public class ApduDataExtIndividualAddressSerialNumberRead extends ApduDataExt im
       ReadBuffer readBuffer, Short length) throws ParseException {
     readBuffer.pullContext("ApduDataExtIndividualAddressSerialNumberRead");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("ApduDataExtIndividualAddressSerialNumberRead");

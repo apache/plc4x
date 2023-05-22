@@ -80,7 +80,6 @@ public class BACnetConstructedDataIPv6PrefixLength extends BACnetConstructedData
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataIPv6PrefixLength");
 
     // Simple Field (ipv6PrefixLength)
@@ -122,8 +121,6 @@ public class BACnetConstructedDataIPv6PrefixLength extends BACnetConstructedData
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataIPv6PrefixLength");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger ipv6PrefixLength =

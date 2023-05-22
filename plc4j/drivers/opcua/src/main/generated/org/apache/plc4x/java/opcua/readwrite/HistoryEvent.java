@@ -65,7 +65,6 @@ public class HistoryEvent extends ExtensionObjectDefinition implements Message {
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("HistoryEvent");
 
     // Simple Field (noOfEvents)
@@ -107,8 +106,6 @@ public class HistoryEvent extends ExtensionObjectDefinition implements Message {
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("HistoryEvent");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int noOfEvents = readSimpleField("noOfEvents", readSignedInt(readBuffer, 32));

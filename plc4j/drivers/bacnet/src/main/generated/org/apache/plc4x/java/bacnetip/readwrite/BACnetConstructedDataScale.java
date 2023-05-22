@@ -79,7 +79,6 @@ public class BACnetConstructedDataScale extends BACnetConstructedData implements
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataScale");
 
     // Simple Field (scale)
@@ -120,8 +119,6 @@ public class BACnetConstructedDataScale extends BACnetConstructedData implements
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataScale");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetScale scale =

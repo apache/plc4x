@@ -80,7 +80,6 @@ public class BACnetConstructedDataCountBeforeChange extends BACnetConstructedDat
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataCountBeforeChange");
 
     // Simple Field (countBeforeChange)
@@ -122,8 +121,6 @@ public class BACnetConstructedDataCountBeforeChange extends BACnetConstructedDat
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataCountBeforeChange");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger countBeforeChange =

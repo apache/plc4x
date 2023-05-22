@@ -80,7 +80,6 @@ public class TriggerControlDataLabel extends TriggerControlData implements Messa
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("TriggerControlDataLabel");
 
     // Simple Field (triggerControlOptions)
@@ -142,8 +141,6 @@ public class TriggerControlDataLabel extends TriggerControlData implements Messa
       throws ParseException {
     readBuffer.pullContext("TriggerControlDataLabel");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     TriggerControlLabelOptions triggerControlOptions =

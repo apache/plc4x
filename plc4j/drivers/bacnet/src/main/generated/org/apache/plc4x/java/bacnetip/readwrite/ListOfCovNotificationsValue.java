@@ -79,7 +79,6 @@ public class ListOfCovNotificationsValue implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("ListOfCovNotificationsValue");
 
     // Simple Field (propertyIdentifier)
@@ -153,8 +152,6 @@ public class ListOfCovNotificationsValue implements Message {
       ReadBuffer readBuffer, BACnetObjectType objectTypeArgument) throws ParseException {
     readBuffer.pullContext("ListOfCovNotificationsValue");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetPropertyIdentifierTagged propertyIdentifier =

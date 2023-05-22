@@ -227,7 +227,6 @@ public class OpenProtocolMessageParameterSetSelectedRev2
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("OpenProtocolMessageParameterSetSelectedRev2");
 
     // Const Field (blockIdParameterSetId)
@@ -516,8 +515,6 @@ public class OpenProtocolMessageParameterSetSelectedRev2
           ReadBuffer readBuffer, Long revision) throws ParseException {
     readBuffer.pullContext("OpenProtocolMessageParameterSetSelectedRev2");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int blockIdParameterSetId =

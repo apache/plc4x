@@ -80,7 +80,6 @@ public class ServicesResponse extends TypeId implements Message {
   protected void serializeTypeIdChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("ServicesResponse");
 
     // Implicit Field (serviceLen) (Used for parsing, but its value is not stored as it's implicitly
@@ -152,8 +151,6 @@ public class ServicesResponse extends TypeId implements Message {
       throws ParseException {
     readBuffer.pullContext("ServicesResponse");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int serviceLen = readImplicitField("serviceLen", readUnsignedInt(readBuffer, 16));

@@ -80,7 +80,6 @@ public class BACnetConstructedDataBACnetIPv6UDPPort extends BACnetConstructedDat
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataBACnetIPv6UDPPort");
 
     // Simple Field (ipv6UdpPort)
@@ -121,8 +120,6 @@ public class BACnetConstructedDataBACnetIPv6UDPPort extends BACnetConstructedDat
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataBACnetIPv6UDPPort");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger ipv6UdpPort =

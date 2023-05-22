@@ -52,7 +52,6 @@ public class RelativeTimestamp implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("RelativeTimestamp");
 
     // Simple Field (timestamp)
@@ -87,8 +86,6 @@ public class RelativeTimestamp implements Message {
   public static RelativeTimestamp staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("RelativeTimestamp");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int timestamp = readSimpleField("timestamp", readUnsignedInt(readBuffer, 16));

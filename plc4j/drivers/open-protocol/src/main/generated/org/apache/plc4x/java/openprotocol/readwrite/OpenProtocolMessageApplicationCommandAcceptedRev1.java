@@ -75,7 +75,6 @@ public class OpenProtocolMessageApplicationCommandAcceptedRev1
       WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("OpenProtocolMessageApplicationCommandAcceptedRev1");
 
     // Simple Field (midNumberAccepted)
@@ -111,8 +110,6 @@ public class OpenProtocolMessageApplicationCommandAcceptedRev1
           ReadBuffer readBuffer, Long revision) throws ParseException {
     readBuffer.pullContext("OpenProtocolMessageApplicationCommandAcceptedRev1");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     Mid midNumberAccepted =

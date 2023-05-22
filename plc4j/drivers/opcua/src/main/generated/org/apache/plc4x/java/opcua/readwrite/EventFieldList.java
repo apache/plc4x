@@ -71,7 +71,6 @@ public class EventFieldList extends ExtensionObjectDefinition implements Message
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("EventFieldList");
 
     // Simple Field (clientHandle)
@@ -119,8 +118,6 @@ public class EventFieldList extends ExtensionObjectDefinition implements Message
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("EventFieldList");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     long clientHandle = readSimpleField("clientHandle", readUnsignedLong(readBuffer, 32));

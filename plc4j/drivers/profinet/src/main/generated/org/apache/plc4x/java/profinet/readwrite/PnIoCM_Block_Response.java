@@ -98,7 +98,6 @@ public class PnIoCM_Block_Response extends PnIoCm_Block implements Message {
   protected void serializePnIoCm_BlockChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("PnIoCM_Block_Response");
 
     // Implicit Field (blockLength) (Used for parsing, but its value is not stored as it's
@@ -214,8 +213,6 @@ public class PnIoCM_Block_Response extends PnIoCm_Block implements Message {
       throws ParseException {
     readBuffer.pullContext("PnIoCM_Block_Response");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int blockLength =

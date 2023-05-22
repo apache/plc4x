@@ -105,7 +105,6 @@ public class AdsAddDeviceNotificationRequest extends AmsPacket implements Messag
   protected void serializeAmsPacketChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("AdsAddDeviceNotificationRequest");
 
     // Simple Field (indexGroup)
@@ -184,8 +183,6 @@ public class AdsAddDeviceNotificationRequest extends AmsPacket implements Messag
       throws ParseException {
     readBuffer.pullContext("AdsAddDeviceNotificationRequest");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     long indexGroup = readSimpleField("indexGroup", readUnsignedLong(readBuffer, 32));

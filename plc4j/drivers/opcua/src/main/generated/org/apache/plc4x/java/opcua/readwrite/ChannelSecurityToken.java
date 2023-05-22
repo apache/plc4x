@@ -77,7 +77,6 @@ public class ChannelSecurityToken extends ExtensionObjectDefinition implements M
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("ChannelSecurityToken");
 
     // Simple Field (channelId)
@@ -125,8 +124,6 @@ public class ChannelSecurityToken extends ExtensionObjectDefinition implements M
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("ChannelSecurityToken");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     long channelId = readSimpleField("channelId", readUnsignedLong(readBuffer, 32));

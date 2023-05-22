@@ -95,7 +95,6 @@ public class OpenSecureChannelRequest extends ExtensionObjectDefinition implemen
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("OpenSecureChannelRequest");
 
     // Simple Field (requestHeader)
@@ -170,8 +169,6 @@ public class OpenSecureChannelRequest extends ExtensionObjectDefinition implemen
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("OpenSecureChannelRequest");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ExtensionObjectDefinition requestHeader =

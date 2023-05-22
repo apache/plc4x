@@ -59,7 +59,6 @@ public class NullEipConnectionResponse extends EipPacket implements Message {
   protected void serializeEipPacketChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("NullEipConnectionResponse");
 
     writeBuffer.popContext("NullEipConnectionResponse");
@@ -83,8 +82,6 @@ public class NullEipConnectionResponse extends EipPacket implements Message {
       ReadBuffer readBuffer, Boolean response) throws ParseException {
     readBuffer.pullContext("NullEipConnectionResponse");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("NullEipConnectionResponse");

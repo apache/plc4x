@@ -71,7 +71,6 @@ public class AdsMultiRequestItemWrite extends AdsMultiRequestItem implements Mes
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("AdsMultiRequestItemWrite");
 
     // Simple Field (itemIndexGroup)
@@ -113,8 +112,6 @@ public class AdsMultiRequestItemWrite extends AdsMultiRequestItem implements Mes
       ReadBuffer readBuffer, Long indexGroup) throws ParseException {
     readBuffer.pullContext("AdsMultiRequestItemWrite");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     long itemIndexGroup = readSimpleField("itemIndexGroup", readUnsignedLong(readBuffer, 32));

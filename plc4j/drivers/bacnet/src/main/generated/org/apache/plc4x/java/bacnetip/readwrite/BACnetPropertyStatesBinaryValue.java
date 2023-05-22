@@ -57,7 +57,6 @@ public class BACnetPropertyStatesBinaryValue extends BACnetPropertyStates implem
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetPropertyStatesBinaryValue");
 
     // Simple Field (binaryValue)
@@ -87,8 +86,6 @@ public class BACnetPropertyStatesBinaryValue extends BACnetPropertyStates implem
       ReadBuffer readBuffer, Short peekedTagNumber) throws ParseException {
     readBuffer.pullContext("BACnetPropertyStatesBinaryValue");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetBinaryPVTagged binaryValue =

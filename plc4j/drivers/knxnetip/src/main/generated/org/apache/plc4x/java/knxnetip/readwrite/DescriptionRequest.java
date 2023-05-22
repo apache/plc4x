@@ -59,7 +59,6 @@ public class DescriptionRequest extends KnxNetIpMessage implements Message {
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("DescriptionRequest");
 
     // Simple Field (hpaiControlEndpoint)
@@ -93,8 +92,6 @@ public class DescriptionRequest extends KnxNetIpMessage implements Message {
       throws ParseException {
     readBuffer.pullContext("DescriptionRequest");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     HPAIControlEndpoint hpaiControlEndpoint =
