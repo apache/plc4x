@@ -19,7 +19,10 @@
 
 package utils
 
-import "regexp"
+import (
+	"regexp"
+	"strconv"
+)
 
 func GetSubgroupMatches(r *regexp.Regexp, query string) map[string]string {
 	match := r.FindStringSubmatch(query)
@@ -27,10 +30,12 @@ func GetSubgroupMatches(r *regexp.Regexp, query string) map[string]string {
 		return nil
 	}
 	subMatchMap := make(map[string]string)
-	for i, name := range r.SubexpNames() {
-		if i != 0 {
-			subMatchMap[name] = match[i]
+	for i, name := range r.SubexpNames()[1:] {
+		groupIndex := i + 1
+		if name == "" {
+			name = "_" + strconv.Itoa(groupIndex)
 		}
+		subMatchMap[name] = match[groupIndex]
 	}
 	return subMatchMap
 }
