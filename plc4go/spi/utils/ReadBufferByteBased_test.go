@@ -1535,9 +1535,26 @@ func TestReadBuffer_ReadString(t *testing.T) {
 	}{
 		{
 			name: "read it",
+			args: args{bitLength: 8},
 			fields: fields{
 				reader: bitio.NewReader(bytes.NewBuffer([]byte{0x0})),
 			},
+		},
+		{
+			name: "read it (null terminated)",
+			args: args{bitLength: 8},
+			fields: fields{
+				reader: bitio.NewReader(bytes.NewBuffer([]byte{0x70, 0x0})),
+			},
+			want: "p",
+		},
+		{
+			name: "read it",
+			args: args{bitLength: 8},
+			fields: fields{
+				reader: bitio.NewReader(bytes.NewBuffer([]byte{0x70})),
+			},
+			want: "p",
 		},
 	}
 	for _, tt := range tests {
