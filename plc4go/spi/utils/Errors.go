@@ -43,13 +43,17 @@ func (m MultiError) Error() string {
 	if m.MainError != nil {
 		mainErrorText = fmt.Sprintf("Main Error: %v\nChild errors:\n", m.MainError)
 	}
-	return mainErrorText + strings.Join(func(errors []error) []string {
+	childErrorText := strings.Join(func(errors []error) []string {
 		result := make([]string, len(errors))
 		for i, errorElement := range errors {
 			result[i] = errorElement.Error()
 		}
 		return result
 	}(m.Errors), "\n")
+	if childErrorText == "" {
+		childErrorText = "No errors"
+	}
+	return mainErrorText + childErrorText
 }
 
 type ParseAssertError struct {
