@@ -39,8 +39,6 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/interceptors"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/spi/transports"
-	"github.com/apache/plc4x/plc4go/spi/utils"
-
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 )
@@ -68,9 +66,9 @@ func (m ConnectionMetadata) GetConnectionAttributes() map[string]string {
 
 		"ProjectNumber":          strconv.Itoa(int(m.ProjectNumber)),
 		"InstallationNumber":     strconv.Itoa(int(m.InstallationNumber)),
-		"DeviceSerialNumber":     utils.ByteArrayToString(m.DeviceSerialNumber, " "),
-		"DeviceMulticastAddress": utils.ByteArrayToString(m.DeviceSerialNumber, "."),
-		"DeviceMacAddress":       utils.ByteArrayToString(m.DeviceSerialNumber, ":"),
+		"DeviceSerialNumber":     ByteArrayToString(m.DeviceSerialNumber, " "),
+		"DeviceMulticastAddress": ByteArrayToString(m.DeviceSerialNumber, "."),
+		"DeviceMacAddress":       ByteArrayToString(m.DeviceSerialNumber, ":"),
 		"SupportedServices":      strings.Join(m.SupportedServices, ", "),
 	}
 }
@@ -521,4 +519,17 @@ func (m *Connection) GetPlcTagHandler() spi.PlcTagHandler {
 
 func (m *Connection) GetPlcValueHandler() spi.PlcValueHandler {
 	return m.valueHandler
+}
+
+func ByteArrayToString(data []byte, separator string) string {
+	var sb strings.Builder
+	if data != nil {
+		for i, element := range data {
+			sb.WriteString(strconv.Itoa(int(element)))
+			if i < (len(data) - 1) {
+				sb.WriteString(separator)
+			}
+		}
+	}
+	return sb.String()
 }

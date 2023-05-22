@@ -531,7 +531,7 @@ func (m *Connection) sendDeviceAuthentication(ctx context.Context, targetAddress
 				driverModel.NewKnxAddress(0, 0, 0), KnxAddressToByteArray(targetAddress),
 				driverModel.NewApduDataContainer(
 					driverModel.NewApduDataOther(
-						driverModel.NewApduDataExtAuthorizeRequest(authenticationLevel, utils.ByteArrayToUint8Array(buildingKey), 0),
+						driverModel.NewApduDataExtAuthorizeRequest(authenticationLevel, buildingKey, 0),
 						0,
 					),
 					true,
