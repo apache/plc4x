@@ -30,9 +30,10 @@ func TestBufferCommons_ExtractAdditionalStringRepresentation(t *testing.T) {
 		readerWriterArgs []WithReaderWriterArgs
 	}
 	tests := []struct {
-		name string
-		args args
-		want string
+		name      string
+		args      args
+		want      string
+		wantPanic bool
 	}{
 		{
 			name: "extract nothing",
@@ -46,9 +47,43 @@ func TestBufferCommons_ExtractAdditionalStringRepresentation(t *testing.T) {
 			},
 			want: "plc4xftw",
 		},
+		{
+			name: "broken arg",
+			args: args{
+				readerWriterArgs: []WithReaderWriterArgs{
+					readerWriterArg{},
+				},
+			},
+			wantPanic: true,
+		},
+		{
+			name: "it is as reader arg",
+			args: args{
+				readerWriterArgs: []WithReaderWriterArgs{
+					readerWriterArg{WithReaderArgs: withAdditionalStringRepresentation{stringRepresentation: "plc4xftw"}},
+				},
+			},
+			want: "plc4xftw",
+		},
+		{
+			name: "it is as writer arg",
+			args: args{
+				readerWriterArgs: []WithReaderWriterArgs{
+					readerWriterArg{WithWriterArgs: withAdditionalStringRepresentation{stringRepresentation: "plc4xftw"}},
+				},
+			},
+			want: "plc4xftw",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			defer func() {
+				if tt.wantPanic {
+					assert.NotNil(t, recover(), "we expected a panic")
+				} else {
+					assert.Nil(t, recover(), "we don't expected a panic")
+				}
+			}()
 			b := BufferCommons{}
 			assert.Equalf(t, tt.want, b.ExtractAdditionalStringRepresentation(tt.args.readerWriterArgs...), "ExtractAdditionalStringRepresentation(%v)", tt.args.readerWriterArgs)
 		})
@@ -60,9 +95,10 @@ func TestBufferCommons_IsToBeRenderedAsList(t *testing.T) {
 		readerWriterArgs []WithReaderWriterArgs
 	}
 	tests := []struct {
-		name string
-		args args
-		want bool
+		name      string
+		args      args
+		want      bool
+		wantPanic bool
 	}{
 		{
 			name: "nope",
@@ -84,9 +120,43 @@ func TestBufferCommons_IsToBeRenderedAsList(t *testing.T) {
 			},
 			want: true,
 		},
+		{
+			name: "broken arg",
+			args: args{
+				readerWriterArgs: []WithReaderWriterArgs{
+					readerWriterArg{},
+				},
+			},
+			wantPanic: true,
+		},
+		{
+			name: "it is as reader arg",
+			args: args{
+				readerWriterArgs: []WithReaderWriterArgs{
+					readerWriterArg{WithReaderArgs: withRenderAsList{renderAsList: true}},
+				},
+			},
+			want: true,
+		},
+		{
+			name: "it is as writer arg",
+			args: args{
+				readerWriterArgs: []WithReaderWriterArgs{
+					readerWriterArg{WithWriterArgs: withRenderAsList{renderAsList: true}},
+				},
+			},
+			want: true,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			defer func() {
+				if tt.wantPanic {
+					assert.NotNil(t, recover(), "we expected a panic")
+				} else {
+					assert.Nil(t, recover(), "we don't expected a panic")
+				}
+			}()
 			b := BufferCommons{}
 			assert.Equalf(t, tt.want, b.IsToBeRenderedAsList(tt.args.readerWriterArgs...), "IsToBeRenderedAsList(%v)", tt.args.readerWriterArgs)
 		})
