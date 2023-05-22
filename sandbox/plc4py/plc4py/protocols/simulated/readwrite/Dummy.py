@@ -58,7 +58,6 @@ class Dummy(PlcMessage):
     @staticmethod
     def static_parse_context(read_buffer: ReadBuffer):
         read_buffer.pull_context("Dummy")
-        start_pos: int = read_buffer.get_pos()
         cur_pos: int = 0
 
         dummy: c_uint16 = read_simple_field(

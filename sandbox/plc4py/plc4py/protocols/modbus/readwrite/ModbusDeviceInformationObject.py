@@ -75,7 +75,6 @@ class ModbusDeviceInformationObject(PlcMessage):
     @staticmethod
     def static_parse_context(read_buffer: ReadBuffer):
         read_buffer.pull_context("ModbusDeviceInformationObject")
-        start_pos: int = read_buffer.get_pos()
         cur_pos: int = 0
 
         object_id: c_uint8 = read_simple_field("objectId", read_unsigned_short)

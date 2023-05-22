@@ -101,7 +101,6 @@ class ModbusTcpADU(PlcMessage, ModbusADU):
         read_buffer: ReadBuffer, driver_type: DriverType, response: c_bool
     ):
         read_buffer.pull_context("ModbusTcpADU")
-        start_pos: int = read_buffer.get_pos()
         cur_pos: int = 0
 
         transaction_identifier: c_uint16 = read_simple_field(

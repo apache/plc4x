@@ -83,7 +83,6 @@ class ModbusPDUReadDeviceIdentificationRequest(PlcMessage, ModbusPDU):
     @staticmethod
     def static_parse_builder(read_buffer: ReadBuffer, response: c_bool):
         read_buffer.pull_context("ModbusPDUReadDeviceIdentificationRequest")
-        start_pos: int = read_buffer.get_pos()
         cur_pos: int = 0
 
         mei_type: c_uint8 = read_const_field(

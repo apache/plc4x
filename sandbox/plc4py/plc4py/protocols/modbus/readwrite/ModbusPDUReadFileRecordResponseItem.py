@@ -78,7 +78,6 @@ class ModbusPDUReadFileRecordResponseItem(PlcMessage):
     @staticmethod
     def static_parse_context(read_buffer: ReadBuffer):
         read_buffer.pull_context("ModbusPDUReadFileRecordResponseItem")
-        start_pos: int = read_buffer.get_pos()
         cur_pos: int = 0
 
         data_length: c_uint8 = read_implicit_field("dataLength", read_unsigned_short)

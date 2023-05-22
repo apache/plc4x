@@ -60,7 +60,6 @@ class ModbusConstants(PlcMessage):
     @staticmethod
     def static_parse_context(read_buffer: ReadBuffer):
         read_buffer.pull_context("ModbusConstants")
-        start_pos: int = read_buffer.get_pos()
         cur_pos: int = 0
 
         modbus_tcp_default_port: c_uint16 = read_const_field(

@@ -72,7 +72,6 @@ class ModbusPDUReadHoldingRegistersRequest(PlcMessage, ModbusPDU):
     @staticmethod
     def static_parse_builder(read_buffer: ReadBuffer, response: c_bool):
         read_buffer.pull_context("ModbusPDUReadHoldingRegistersRequest")
-        start_pos: int = read_buffer.get_pos()
         cur_pos: int = 0
 
         starting_address: c_uint16 = read_simple_field(

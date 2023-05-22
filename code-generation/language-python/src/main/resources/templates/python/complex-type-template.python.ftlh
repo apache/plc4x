@@ -208,6 +208,9 @@ class ${type.name}<#if type.isDiscriminatedParentTypeDefinition()></#if>(<#if ty
         <#if helper.hasFieldOfType("unknown")>
         raise SerializationException("Unknown field not serializable")
         <#else>
+        <#if helper.requiresStartPos() || helper.requiresCurPos()>
+            start_pos: int = write_buffer.get_pos()
+        </#if>
         write_buffer.push_context("${type.name}")
             <#assign reservedFieldIndex=0>
             <#list type.fields as field>
@@ -562,7 +565,9 @@ class ${type.name}<#if type.isDiscriminatedParentTypeDefinition()></#if>(<#if ty
     @staticmethod
     def <#if type.isDiscriminatedChildTypeDefinition()>static_parse_builder<#else>static_parse_context</#if>(read_buffer: ReadBuffer<#if hasParserArguments>, ${parserArgumentList}</#if>):
         read_buffer.pull_context("${type.name}")
+        <#if helper.requiresStartPos() || helper.requiresCurPos()>
         start_pos: int = read_buffer.get_pos()
+        </#if>
         cur_pos: int = 0
     <#assign reservedFieldIndex=0>
     <#list type.fields as field>

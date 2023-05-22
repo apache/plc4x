@@ -72,7 +72,6 @@ class ModbusPDUReadCoilsResponse(PlcMessage, ModbusPDU):
     @staticmethod
     def static_parse_builder(read_buffer: ReadBuffer, response: c_bool):
         read_buffer.pull_context("ModbusPDUReadCoilsResponse")
-        start_pos: int = read_buffer.get_pos()
         cur_pos: int = 0
 
         byte_count: c_uint8 = read_implicit_field("byteCount", read_unsigned_short)

@@ -83,7 +83,6 @@ class ModbusAsciiADU(PlcMessage, ModbusADU):
         read_buffer: ReadBuffer, driver_type: DriverType, response: c_bool
     ):
         read_buffer.pull_context("ModbusAsciiADU")
-        start_pos: int = read_buffer.get_pos()
         cur_pos: int = 0
 
         address: c_uint8 = read_simple_field(

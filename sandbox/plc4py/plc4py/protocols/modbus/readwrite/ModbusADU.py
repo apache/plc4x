@@ -100,7 +100,6 @@ class ModbusADU(ABC, PlcMessage):
         read_buffer: ReadBuffer, driver_type: DriverType, response: c_bool
     ):
         read_buffer.pull_context("ModbusADU")
-        start_pos: int = read_buffer.get_pos()
         cur_pos: int = 0
 
         # Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
