@@ -41,9 +41,10 @@ func TestBufferCommons_ExtractAdditionalStringRepresentation(t *testing.T) {
 			name: "extract the argument",
 			args: args{
 				readerWriterArgs: []WithReaderWriterArgs{
-					withAdditionalStringRepresentation{},
+					withAdditionalStringRepresentation{readerWriterArg: readerWriterArg{readerArg{}, writerArg{}}, stringRepresentation: "plc4xftw"},
 				},
 			},
+			want: "plc4xftw",
 		},
 	}
 	for _, tt := range tests {
@@ -70,7 +71,7 @@ func TestBufferCommons_IsToBeRenderedAsList(t *testing.T) {
 			name: "it is not",
 			args: args{
 				readerWriterArgs: []WithReaderWriterArgs{
-					withRenderAsList{},
+					withRenderAsList{readerWriterArg: readerWriterArg{readerArg{}, writerArg{}}},
 				},
 			},
 		},
@@ -78,7 +79,7 @@ func TestBufferCommons_IsToBeRenderedAsList(t *testing.T) {
 			name: "it is",
 			args: args{
 				readerWriterArgs: []WithReaderWriterArgs{
-					withRenderAsList{renderAsList: true},
+					withRenderAsList{readerWriterArg: readerWriterArg{readerArg{}, writerArg{}}, renderAsList: true},
 				},
 			},
 			want: true,

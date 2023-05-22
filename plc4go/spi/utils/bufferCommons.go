@@ -50,9 +50,18 @@ func (b BufferCommons) IsToBeRenderedAsList(readerWriterArgs ...WithReaderWriter
 		if !arg.isWriterArgs() && !arg.isReaderArgs() {
 			panic("not a reader or writer arg")
 		}
-		switch arg.(type) {
+		switch rwArg := arg.(type) {
 		case withRenderAsList:
-			return arg.(withRenderAsList).renderAsList
+			return rwArg.renderAsList
+		case readerWriterArg:
+			switch rArg := rwArg.WithReaderArgs.(type) {
+			case withRenderAsList:
+				return rArg.renderAsList
+			}
+			switch wArg := rwArg.WithWriterArgs.(type) {
+			case withRenderAsList:
+				return wArg.renderAsList
+			}
 		}
 	}
 	return false
@@ -63,9 +72,18 @@ func (b BufferCommons) ExtractAdditionalStringRepresentation(readerWriterArgs ..
 		if !arg.isWriterArgs() && !arg.isReaderArgs() {
 			panic("not a reader or writer arg")
 		}
-		switch arg.(type) {
+		switch rwArg := arg.(type) {
 		case withAdditionalStringRepresentation:
-			return arg.(withAdditionalStringRepresentation).stringRepresentation
+			return rwArg.stringRepresentation
+		case readerWriterArg:
+			switch rArg := rwArg.WithReaderArgs.(type) {
+			case withAdditionalStringRepresentation:
+				return rArg.stringRepresentation
+			}
+			switch wArg := rwArg.WithWriterArgs.(type) {
+			case withAdditionalStringRepresentation:
+				return wArg.stringRepresentation
+			}
 		}
 	}
 	return ""

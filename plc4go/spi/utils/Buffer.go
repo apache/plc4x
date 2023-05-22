@@ -27,12 +27,12 @@ type WithReaderWriterArgs interface {
 
 // WithAdditionalStringRepresentation can be used by e.g. enums to supply an additional string representation
 func WithAdditionalStringRepresentation(stringRepresentation string) WithReaderWriterArgs {
-	return withAdditionalStringRepresentation{stringRepresentation: stringRepresentation}
+	return withAdditionalStringRepresentation{readerWriterArg: readerWriterArg{WithReaderArgs: readerArg{}, WithWriterArgs: writerArg{}}, stringRepresentation: stringRepresentation}
 }
 
 // WithRenderAsList indicates that an element can be rendered as list
 func WithRenderAsList(renderAsList bool) WithReaderWriterArgs {
-	return withRenderAsList{renderAsList: renderAsList}
+	return withRenderAsList{readerWriterArg: readerWriterArg{WithReaderArgs: readerArg{}, WithWriterArgs: writerArg{}}, renderAsList: renderAsList}
 }
 
 ///////////////////////////////////////
@@ -42,8 +42,16 @@ func WithRenderAsList(renderAsList bool) WithReaderWriterArgs {
 //
 
 type readerWriterArg struct {
-	readerArg
-	writerArg
+	WithReaderArgs
+	WithWriterArgs
+}
+
+func (r readerWriterArg) isReaderArgs() bool {
+	return r.WithReaderArgs != nil
+}
+
+func (r readerWriterArg) isWriterArgs() bool {
+	return r.WithWriterArgs != nil
 }
 
 type withAdditionalStringRepresentation struct {
@@ -65,7 +73,7 @@ type withRenderAsList struct {
 func UpcastReaderArgs(args ...WithReaderArgs) []WithReaderWriterArgs {
 	result := make([]WithReaderWriterArgs, len(args))
 	for i, arg := range args {
-		result[i] = arg.(WithReaderWriterArgs)
+		result[i] = readerWriterArg{arg, writerArg{}}
 	}
 	return result
 }
@@ -73,7 +81,7 @@ func UpcastReaderArgs(args ...WithReaderArgs) []WithReaderWriterArgs {
 func UpcastWriterArgs(args ...WithWriterArgs) []WithReaderWriterArgs {
 	result := make([]WithReaderWriterArgs, len(args))
 	for i, arg := range args {
-		result[i] = arg.(WithReaderWriterArgs)
+		result[i] = readerWriterArg{readerArg{}, arg}
 	}
 	return result
 }
