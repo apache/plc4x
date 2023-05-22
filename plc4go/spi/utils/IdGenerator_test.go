@@ -20,17 +20,33 @@
 package utils
 
 import (
-	"encoding/hex"
-	"math/rand"
-
-	"github.com/rs/zerolog/log"
+	"github.com/stretchr/testify/assert"
+	"testing"
 )
 
-var randomByteFiller = rand.Read
-
-func GenerateId(numBytes int) string {
-	transactionIdBytes := make([]byte, numBytes)
-	n, err := randomByteFiller(transactionIdBytes)
-	log.Trace().Err(err).Msgf("Read %d bytes", n)
-	return hex.EncodeToString(transactionIdBytes)
+func TestGenerateId(t *testing.T) {
+	type args struct {
+		numBytes int
+	}
+	tests := []struct {
+		name string
+		args args
+		want string
+	}{
+		{
+			name: "generate it",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			oldRandomByteFiller := randomByteFiller
+			t.Cleanup(func() {
+				randomByteFiller = oldRandomByteFiller
+			})
+			randomByteFiller = func(_ []byte) (n int, err error) {
+				return 0, nil
+			}
+			assert.Equalf(t, tt.want, GenerateId(tt.args.numBytes), "GenerateId(%v)", tt.args.numBytes)
+		})
+	}
 }
