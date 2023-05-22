@@ -50,7 +50,6 @@ public abstract class SimpleDiscriminatedType implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("SimpleDiscriminatedType");
 
     // Discriminator Field (discr) (Used as input to a switch field)
@@ -90,8 +89,6 @@ public abstract class SimpleDiscriminatedType implements Message {
   public static SimpleDiscriminatedType staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("SimpleDiscriminatedType");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short discr = readDiscriminatorField("discr", readUnsignedShort(readBuffer, 8));

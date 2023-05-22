@@ -52,7 +52,6 @@ public class LengthLoopTest implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("LengthLoopTest");
 
     // Simple Field (commandType)
@@ -95,8 +94,6 @@ public class LengthLoopTest implements Message {
   public static LengthLoopTest staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("LengthLoopTest");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int commandType = readSimpleField("commandType", readUnsignedInt(readBuffer, 16));

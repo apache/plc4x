@@ -197,8 +197,6 @@ public class FieldTypeTest implements Message {
   public static FieldTypeTest staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("FieldTypeTest");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short simpleField = readSimpleField("simpleField", readUnsignedShort(readBuffer, 8));

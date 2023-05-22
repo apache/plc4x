@@ -52,7 +52,6 @@ public abstract class EnumDiscriminatedTypeParameterMultiple implements Message 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("EnumDiscriminatedTypeParameterMultiple");
 
     // Switch field (Serialize the sub-type)
@@ -111,8 +110,6 @@ public abstract class EnumDiscriminatedTypeParameterMultiple implements Message 
       ReadBuffer readBuffer, EnumType discr1, EnumTypeInt discr2) throws ParseException {
     readBuffer.pullContext("EnumDiscriminatedTypeParameterMultiple");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)

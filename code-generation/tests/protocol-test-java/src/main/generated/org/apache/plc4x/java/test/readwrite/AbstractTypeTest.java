@@ -69,7 +69,6 @@ public abstract class AbstractTypeTest implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("AbstractTypeTest");
 
     // Simple Field (simpleField)
@@ -109,8 +108,6 @@ public abstract class AbstractTypeTest implements Message {
   public static AbstractTypeTest staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("AbstractTypeTest");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short simpleField = readSimpleField("simpleField", readUnsignedShort(readBuffer, 8));

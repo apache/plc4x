@@ -58,7 +58,6 @@ public class PascalStringTypeTest implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("PascalStringTypeTest");
 
     // Simple Field (stringLength)
@@ -99,8 +98,6 @@ public class PascalStringTypeTest implements Message {
   public static PascalStringTypeTest staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("PascalStringTypeTest");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte stringLength = readSimpleField("stringLength", readSignedByte(readBuffer, 8));

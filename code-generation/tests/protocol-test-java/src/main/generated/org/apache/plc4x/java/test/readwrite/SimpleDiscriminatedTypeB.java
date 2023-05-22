@@ -59,7 +59,6 @@ public class SimpleDiscriminatedTypeB extends SimpleDiscriminatedType implements
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("SimpleDiscriminatedTypeB");
 
     // Simple Field (simpB)
@@ -89,8 +88,6 @@ public class SimpleDiscriminatedTypeB extends SimpleDiscriminatedType implements
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("SimpleDiscriminatedTypeB");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short simpB = readSimpleField("simpB", readUnsignedShort(readBuffer, 8));

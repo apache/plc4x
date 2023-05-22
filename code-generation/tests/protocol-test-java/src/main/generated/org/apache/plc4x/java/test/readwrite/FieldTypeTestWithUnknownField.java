@@ -144,8 +144,6 @@ public class FieldTypeTestWithUnknownField implements Message {
       throws ParseException {
     readBuffer.pullContext("FieldTypeTestWithUnknownField");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short simpleField = readSimpleField("simpleField", readUnsignedShort(readBuffer, 8));

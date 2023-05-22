@@ -52,7 +52,6 @@ public class ComplexOfComplexUsageC implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("ComplexOfComplexUsageC");
 
     // Simple Field (irrelevant)
@@ -87,8 +86,6 @@ public class ComplexOfComplexUsageC implements Message {
   public static ComplexOfComplexUsageC staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("ComplexOfComplexUsageC");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short irrelevant = readSimpleField("irrelevant", readUnsignedShort(readBuffer, 8));
