@@ -79,7 +79,6 @@ public class BACnetConstructedDataWriteStatus extends BACnetConstructedData impl
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataWriteStatus");
 
     // Simple Field (writeStatus)
@@ -120,8 +119,6 @@ public class BACnetConstructedDataWriteStatus extends BACnetConstructedData impl
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataWriteStatus");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetWriteStatusTagged writeStatus =

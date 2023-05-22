@@ -79,7 +79,6 @@ public class SecurityDataStatusReport1 extends SecurityData implements Message {
   protected void serializeSecurityDataChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("SecurityDataStatusReport1");
 
     // Simple Field (armCodeType)
@@ -133,8 +132,6 @@ public class SecurityDataStatusReport1 extends SecurityData implements Message {
       throws ParseException {
     readBuffer.pullContext("SecurityDataStatusReport1");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     SecurityArmCode armCodeType =

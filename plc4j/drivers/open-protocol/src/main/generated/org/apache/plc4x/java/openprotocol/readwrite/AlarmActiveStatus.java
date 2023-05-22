@@ -35,7 +35,7 @@ public enum AlarmActiveStatus {
     }
   }
 
-  private short value;
+  private final short value;
 
   AlarmActiveStatus(short value) {
     this.value = value;

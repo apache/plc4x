@@ -323,7 +323,7 @@ func (m DriverTestsuite) ExecuteStep(t *testing.T, connection plc4go.PlcConnecti
 		}
 		actualRawOutput := testTransportInstance.DrainWriteBuffer(expectedRawOutputLength)
 		if testTransportInstance.GetNumDrainableBytes() != 0 {
-			//panic(fmt.Sprintf("leftover drainable bytes (%d)", testTransportInstance.GetNumDrainableBytes()))
+			t.Logf("leftover drainable bytes (%d)", testTransportInstance.GetNumDrainableBytes())
 		}
 
 		var bufferFactory func([]byte, ...utils.ReadBufferByteBasedOptions) utils.ReadBufferByteBased

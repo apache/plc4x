@@ -107,7 +107,6 @@ public class CALDataStatusExtended extends CALData implements Message {
   protected void serializeCALDataChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("CALDataStatusExtended");
 
     // Simple Field (coding)
@@ -200,8 +199,6 @@ public class CALDataStatusExtended extends CALData implements Message {
       throws ParseException {
     readBuffer.pullContext("CALDataStatusExtended");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     StatusCoding coding =

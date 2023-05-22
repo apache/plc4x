@@ -75,7 +75,6 @@ public class BACnetConstructedDataEntryPoints extends BACnetConstructedData impl
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataEntryPoints");
 
     // Array Field (entryPoints)
@@ -114,8 +113,6 @@ public class BACnetConstructedDataEntryPoints extends BACnetConstructedData impl
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataEntryPoints");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     List<BACnetDeviceObjectReference> entryPoints =

@@ -66,7 +66,6 @@ public class OpenProtocolMessageResultTracesCurveRev1 extends OpenProtocolMessag
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("OpenProtocolMessageResultTracesCurveRev1");
 
     writeBuffer.popContext("OpenProtocolMessageResultTracesCurveRev1");
@@ -91,8 +90,6 @@ public class OpenProtocolMessageResultTracesCurveRev1 extends OpenProtocolMessag
           throws ParseException {
     readBuffer.pullContext("OpenProtocolMessageResultTracesCurveRev1");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("OpenProtocolMessageResultTracesCurveRev1");

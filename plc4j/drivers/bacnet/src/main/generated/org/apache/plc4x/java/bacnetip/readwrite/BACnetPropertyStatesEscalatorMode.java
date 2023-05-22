@@ -57,7 +57,6 @@ public class BACnetPropertyStatesEscalatorMode extends BACnetPropertyStates impl
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetPropertyStatesEscalatorMode");
 
     // Simple Field (escalatorMode)
@@ -87,8 +86,6 @@ public class BACnetPropertyStatesEscalatorMode extends BACnetPropertyStates impl
       ReadBuffer readBuffer, Short peekedTagNumber) throws ParseException {
     readBuffer.pullContext("BACnetPropertyStatesEscalatorMode");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetEscalatorModeTagged escalatorMode =

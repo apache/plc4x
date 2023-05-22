@@ -285,7 +285,6 @@ public class OpenProtocolMessageExecuteDynamicJobRequestRev999
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("OpenProtocolMessageExecuteDynamicJobRequestRev999");
 
     // Const Field (blockIdJobId)
@@ -686,8 +685,6 @@ public class OpenProtocolMessageExecuteDynamicJobRequestRev999
           ReadBuffer readBuffer, Long revision) throws ParseException {
     readBuffer.pullContext("OpenProtocolMessageExecuteDynamicJobRequestRev999");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int blockIdJobId =

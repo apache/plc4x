@@ -69,7 +69,6 @@ public class AdsDeleteDeviceNotificationRequest extends AmsPacket implements Mes
   protected void serializeAmsPacketChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("AdsDeleteDeviceNotificationRequest");
 
     // Simple Field (notificationHandle)
@@ -99,8 +98,6 @@ public class AdsDeleteDeviceNotificationRequest extends AmsPacket implements Mes
       throws ParseException {
     readBuffer.pullContext("AdsDeleteDeviceNotificationRequest");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     long notificationHandle =

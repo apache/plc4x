@@ -50,7 +50,6 @@ public abstract class DataSegmentType implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("DataSegmentType");
 
     // Discriminator Field (dataSegmentType) (Used as input to a switch field)
@@ -91,8 +90,6 @@ public abstract class DataSegmentType implements Message {
   public static DataSegmentType staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("DataSegmentType");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short dataSegmentType =

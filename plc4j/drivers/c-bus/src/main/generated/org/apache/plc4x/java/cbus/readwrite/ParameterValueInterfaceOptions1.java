@@ -69,7 +69,6 @@ public class ParameterValueInterfaceOptions1 extends ParameterValue implements M
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("ParameterValueInterfaceOptions1");
 
     // Simple Field (value)
@@ -107,8 +106,6 @@ public class ParameterValueInterfaceOptions1 extends ParameterValue implements M
       ReadBuffer readBuffer, ParameterType parameterType, Short numBytes) throws ParseException {
     readBuffer.pullContext("ParameterValueInterfaceOptions1");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Validation
     if (!((numBytes) >= (1))) {

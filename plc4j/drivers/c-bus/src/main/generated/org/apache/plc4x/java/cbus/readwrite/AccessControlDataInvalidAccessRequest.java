@@ -67,7 +67,6 @@ public class AccessControlDataInvalidAccessRequest extends AccessControlData imp
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("AccessControlDataInvalidAccessRequest");
 
     // Simple Field (accessControlDirection)
@@ -113,8 +112,6 @@ public class AccessControlDataInvalidAccessRequest extends AccessControlData imp
       throws ParseException {
     readBuffer.pullContext("AccessControlDataInvalidAccessRequest");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     AccessControlDirection accessControlDirection =

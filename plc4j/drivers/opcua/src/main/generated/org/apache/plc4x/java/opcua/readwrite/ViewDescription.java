@@ -71,7 +71,6 @@ public class ViewDescription extends ExtensionObjectDefinition implements Messag
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("ViewDescription");
 
     // Simple Field (viewId)
@@ -113,8 +112,6 @@ public class ViewDescription extends ExtensionObjectDefinition implements Messag
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("ViewDescription");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     NodeId viewId =

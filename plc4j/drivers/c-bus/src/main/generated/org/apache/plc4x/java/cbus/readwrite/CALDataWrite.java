@@ -77,7 +77,6 @@ public class CALDataWrite extends CALData implements Message {
   protected void serializeCALDataChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("CALDataWrite");
 
     // Simple Field (paramNo)
@@ -127,8 +126,6 @@ public class CALDataWrite extends CALData implements Message {
       throws ParseException {
     readBuffer.pullContext("CALDataWrite");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     Parameter paramNo =

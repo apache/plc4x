@@ -60,11 +60,11 @@ public class FirmataProtocolLogic extends Plc4xProtocolBase<FirmataMessage> impl
 
     public static final Duration REQUEST_TIMEOUT = Duration.ofMillis(10000);
 
-    private AtomicBoolean connected = new AtomicBoolean(false);
-    private Map<Integer, AtomicInteger> analogValues = new HashMap<>();
-    private BitSet digitalValues = new BitSet();
+    private final AtomicBoolean connected = new AtomicBoolean(false);
+    private final Map<Integer, AtomicInteger> analogValues = new HashMap<>();
+    private final BitSet digitalValues = new BitSet();
 
-    private Map<DefaultPlcConsumerRegistration, Consumer<PlcSubscriptionEvent>> consumers = new ConcurrentHashMap<>();
+    private final Map<DefaultPlcConsumerRegistration, Consumer<PlcSubscriptionEvent>> consumers = new ConcurrentHashMap<>();
 
     @Override
     public void onConnect(ConversationContext<FirmataMessage> context) {

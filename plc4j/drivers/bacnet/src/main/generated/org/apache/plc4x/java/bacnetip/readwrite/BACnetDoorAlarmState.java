@@ -43,7 +43,7 @@ public enum BACnetDoorAlarmState {
     }
   }
 
-  private short value;
+  private final short value;
 
   BACnetDoorAlarmState(short value) {
     this.value = value;

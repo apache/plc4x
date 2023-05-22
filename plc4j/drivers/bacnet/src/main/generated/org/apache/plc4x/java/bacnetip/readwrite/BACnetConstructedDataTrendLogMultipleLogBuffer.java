@@ -76,7 +76,6 @@ public class BACnetConstructedDataTrendLogMultipleLogBuffer extends BACnetConstr
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataTrendLogMultipleLogBuffer");
 
     // Array Field (floorText)
@@ -115,8 +114,6 @@ public class BACnetConstructedDataTrendLogMultipleLogBuffer extends BACnetConstr
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataTrendLogMultipleLogBuffer");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     List<BACnetLogMultipleRecord> floorText =

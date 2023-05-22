@@ -87,7 +87,6 @@ public class BACnetConfirmedServiceRequestLifeSafetyOperation extends BACnetConf
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConfirmedServiceRequestLifeSafetyOperation");
 
     // Simple Field (requestingProcessIdentifier)
@@ -143,8 +142,6 @@ public class BACnetConfirmedServiceRequestLifeSafetyOperation extends BACnetConf
           ReadBuffer readBuffer, Long serviceRequestLength) throws ParseException {
     readBuffer.pullContext("BACnetConfirmedServiceRequestLifeSafetyOperation");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetContextTagUnsignedInteger requestingProcessIdentifier =

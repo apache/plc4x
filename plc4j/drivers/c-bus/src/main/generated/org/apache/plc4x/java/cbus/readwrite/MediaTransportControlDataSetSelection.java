@@ -67,7 +67,6 @@ public class MediaTransportControlDataSetSelection extends MediaTransportControl
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("MediaTransportControlDataSetSelection");
 
     // Simple Field (selectionHi)
@@ -103,8 +102,6 @@ public class MediaTransportControlDataSetSelection extends MediaTransportControl
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("MediaTransportControlDataSetSelection");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte selectionHi = readSimpleField("selectionHi", readByte(readBuffer, 8));

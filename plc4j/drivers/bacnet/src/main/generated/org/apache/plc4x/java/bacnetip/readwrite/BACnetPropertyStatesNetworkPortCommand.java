@@ -58,7 +58,6 @@ public class BACnetPropertyStatesNetworkPortCommand extends BACnetPropertyStates
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetPropertyStatesNetworkPortCommand");
 
     // Simple Field (networkPortCommand)
@@ -89,8 +88,6 @@ public class BACnetPropertyStatesNetworkPortCommand extends BACnetPropertyStates
       ReadBuffer readBuffer, Short peekedTagNumber) throws ParseException {
     readBuffer.pullContext("BACnetPropertyStatesNetworkPortCommand");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetNetworkPortCommandTagged networkPortCommand =

@@ -292,7 +292,7 @@
             [implicit      uint 16          blockLength      'lengthInBytes - 4']
             [simple        uint 8           blockVersionHigh                    ]
             [simple        uint 8           blockVersionLow                     ]
-            [simple   PascalString                    stationName                                   ]
+            [simple   PascalString16BitLength            stationName            ]
             [padding  uint 8      pad '0x00'          '20 - 6 - (stationName.stringLength)'              ]
         ]
     ]
@@ -437,6 +437,7 @@
     ['0x03'     WAITAPPLRDY]
     ['0x04'     APPLRDY]
     ['0x05'     CYCLICDATA]
+    ['0x06'     SET_IP]
     ['0xFF'     ABORT]
 ]
 

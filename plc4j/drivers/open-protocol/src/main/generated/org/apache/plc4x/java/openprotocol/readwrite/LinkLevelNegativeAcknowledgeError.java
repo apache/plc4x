@@ -38,7 +38,7 @@ public enum LinkLevelNegativeAcknowledgeError {
     }
   }
 
-  private long value;
+  private final long value;
 
   LinkLevelNegativeAcknowledgeError(long value) {
     this.value = value;

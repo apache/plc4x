@@ -44,7 +44,6 @@ public class ImageBMP implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("ImageBMP");
 
     writeBuffer.popContext("ImageBMP");
@@ -72,8 +71,6 @@ public class ImageBMP implements Message {
   public static ImageBMP staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("ImageBMP");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("ImageBMP");

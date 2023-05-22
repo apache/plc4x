@@ -51,7 +51,6 @@ public class BacnetConstants implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BacnetConstants");
 
     // Const Field (bacnetUdpDefaultPort)
@@ -87,8 +86,6 @@ public class BacnetConstants implements Message {
   public static BacnetConstants staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BacnetConstants");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int bacnetUdpDefaultPort =

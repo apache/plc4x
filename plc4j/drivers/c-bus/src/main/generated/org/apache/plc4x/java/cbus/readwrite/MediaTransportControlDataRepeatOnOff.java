@@ -72,7 +72,6 @@ public class MediaTransportControlDataRepeatOnOff extends MediaTransportControlD
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("MediaTransportControlDataRepeatOnOff");
 
     // Simple Field (repeatType)
@@ -120,8 +119,6 @@ public class MediaTransportControlDataRepeatOnOff extends MediaTransportControlD
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("MediaTransportControlDataRepeatOnOff");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte repeatType = readSimpleField("repeatType", readByte(readBuffer, 8));

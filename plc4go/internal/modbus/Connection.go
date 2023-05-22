@@ -30,7 +30,8 @@ import (
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/default"
 	"github.com/apache/plc4x/plc4go/spi/interceptors"
-	internalModel "github.com/apache/plc4x/plc4go/spi/model"
+	spiModel "github.com/apache/plc4x/plc4go/spi/model"
+
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 )
@@ -52,10 +53,10 @@ func NewConnection(unitIdentifier uint8, messageCodec spi.MessageCodec, options 
 		messageCodec:   messageCodec,
 		options:        options,
 		requestInterceptor: interceptors.NewSingleItemRequestInterceptor(
-			internalModel.NewDefaultPlcReadRequest,
-			internalModel.NewDefaultPlcWriteRequest,
-			internalModel.NewDefaultPlcReadResponse,
-			internalModel.NewDefaultPlcWriteResponse,
+			spiModel.NewDefaultPlcReadRequest,
+			spiModel.NewDefaultPlcWriteRequest,
+			spiModel.NewDefaultPlcReadResponse,
+			spiModel.NewDefaultPlcWriteResponse,
 		),
 	}
 	if traceEnabledOption, ok := options["traceEnabled"]; ok {
@@ -95,8 +96,13 @@ func (m *Connection) Ping() <-chan plc4go.PlcConnectionPingResult {
 	// TODO: use proper context
 	ctx := context.TODO()
 	log.Trace().Msg("Pinging")
-	result := make(chan plc4go.PlcConnectionPingResult)
+	result := make(chan plc4go.PlcConnectionPingResult, 1)
 	go func() {
+		defer func() {
+			if err := recover(); err != nil {
+				result <- _default.NewDefaultPlcConnectionPingResult(errors.Errorf("panic-ed %v", err))
+			}
+		}()
 		diagnosticRequestPdu := readWriteModel.NewModbusPDUDiagnosticRequest(0, 0x42)
 		pingRequest := readWriteModel.NewModbusTcpADU(1, m.unitIdentifier, diagnosticRequestPdu, false)
 		if err := m.messageCodec.SendRequest(ctx, pingRequest,
@@ -140,7 +146,7 @@ func (m *Connection) GetMetadata() apiModel.PlcConnectionMetadata {
 }
 
 func (m *Connection) ReadRequestBuilder() apiModel.PlcReadRequestBuilder {
-	return internalModel.NewDefaultPlcReadRequestBuilderWithInterceptor(
+	return spiModel.NewDefaultPlcReadRequestBuilderWithInterceptor(
 		m.GetPlcTagHandler(),
 		NewReader(m.unitIdentifier, m.messageCodec),
 		m.requestInterceptor,
@@ -148,7 +154,7 @@ func (m *Connection) ReadRequestBuilder() apiModel.PlcReadRequestBuilder {
 }
 
 func (m *Connection) WriteRequestBuilder() apiModel.PlcWriteRequestBuilder {
-	return internalModel.NewDefaultPlcWriteRequestBuilderWithInterceptor(
+	return spiModel.NewDefaultPlcWriteRequestBuilderWithInterceptor(
 		m.GetPlcTagHandler(),
 		m.GetPlcValueHandler(),
 		NewWriter(m.unitIdentifier, m.messageCodec),

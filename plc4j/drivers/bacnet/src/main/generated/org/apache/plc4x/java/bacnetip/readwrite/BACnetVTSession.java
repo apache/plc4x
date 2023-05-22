@@ -67,7 +67,6 @@ public class BACnetVTSession implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetVTSession");
 
     // Simple Field (localVtSessionId)
@@ -117,8 +116,6 @@ public class BACnetVTSession implements Message {
   public static BACnetVTSession staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetVTSession");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger localVtSessionId =

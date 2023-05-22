@@ -69,7 +69,6 @@ public class IdentifyReplyCommandDelays extends IdentifyReplyCommand implements 
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("IdentifyReplyCommandDelays");
 
     // Array Field (terminalLevels)
@@ -107,8 +106,6 @@ public class IdentifyReplyCommandDelays extends IdentifyReplyCommand implements 
       ReadBuffer readBuffer, Attribute attribute, Short numBytes) throws ParseException {
     readBuffer.pullContext("IdentifyReplyCommandDelays");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte[] terminalLevels =

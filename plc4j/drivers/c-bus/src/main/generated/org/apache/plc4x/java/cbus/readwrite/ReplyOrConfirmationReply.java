@@ -73,7 +73,6 @@ public class ReplyOrConfirmationReply extends ReplyOrConfirmation implements Mes
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("ReplyOrConfirmationReply");
 
     // Simple Field (reply)
@@ -110,8 +109,6 @@ public class ReplyOrConfirmationReply extends ReplyOrConfirmation implements Mes
       throws ParseException {
     readBuffer.pullContext("ReplyOrConfirmationReply");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     Reply reply =

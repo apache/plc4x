@@ -64,7 +64,6 @@ public class NLMUpdateKeyUpdateKeyEntry implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("NLMUpdateKeyUpdateKeyEntry");
 
     // Simple Field (keyIdentifier)
@@ -114,8 +113,6 @@ public class NLMUpdateKeyUpdateKeyEntry implements Message {
       throws ParseException {
     readBuffer.pullContext("NLMUpdateKeyUpdateKeyEntry");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int keyIdentifier = readSimpleField("keyIdentifier", readUnsignedInt(readBuffer, 16));

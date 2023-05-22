@@ -150,7 +150,6 @@ public class BACnetConfirmedServiceRequestConfirmedEventNotification
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConfirmedServiceRequestConfirmedEventNotification");
 
     // Simple Field (processIdentifier)
@@ -269,8 +268,6 @@ public class BACnetConfirmedServiceRequestConfirmedEventNotification
           ReadBuffer readBuffer, Long serviceRequestLength) throws ParseException {
     readBuffer.pullContext("BACnetConfirmedServiceRequestConfirmedEventNotification");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetContextTagUnsignedInteger processIdentifier =

@@ -80,7 +80,6 @@ public class BACnetConstructedDataLargeAnalogValuePresentValue extends BACnetCon
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataLargeAnalogValuePresentValue");
 
     // Simple Field (presentValue)
@@ -121,8 +120,6 @@ public class BACnetConstructedDataLargeAnalogValuePresentValue extends BACnetCon
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataLargeAnalogValuePresentValue");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagDouble presentValue =

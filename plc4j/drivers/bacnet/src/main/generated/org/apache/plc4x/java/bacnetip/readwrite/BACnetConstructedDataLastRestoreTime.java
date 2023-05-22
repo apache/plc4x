@@ -79,7 +79,6 @@ public class BACnetConstructedDataLastRestoreTime extends BACnetConstructedData 
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataLastRestoreTime");
 
     // Simple Field (lastRestoreTime)
@@ -121,8 +120,6 @@ public class BACnetConstructedDataLastRestoreTime extends BACnetConstructedData 
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataLastRestoreTime");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetTimeStamp lastRestoreTime =

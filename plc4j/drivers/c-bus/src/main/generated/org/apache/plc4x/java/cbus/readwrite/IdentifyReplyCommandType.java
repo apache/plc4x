@@ -63,7 +63,6 @@ public class IdentifyReplyCommandType extends IdentifyReplyCommand implements Me
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("IdentifyReplyCommandType");
 
     // Simple Field (unitType)
@@ -93,8 +92,6 @@ public class IdentifyReplyCommandType extends IdentifyReplyCommand implements Me
       ReadBuffer readBuffer, Attribute attribute, Short numBytes) throws ParseException {
     readBuffer.pullContext("IdentifyReplyCommandType");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     String unitType = readSimpleField("unitType", readString(readBuffer, 64));

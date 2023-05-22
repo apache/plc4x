@@ -50,7 +50,6 @@ public class LRawCon extends CEMI implements Message {
   protected void serializeCEMIChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("LRawCon");
 
     writeBuffer.popContext("LRawCon");
@@ -74,8 +73,6 @@ public class LRawCon extends CEMI implements Message {
       throws ParseException {
     readBuffer.pullContext("LRawCon");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("LRawCon");

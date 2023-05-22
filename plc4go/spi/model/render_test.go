@@ -30,7 +30,7 @@ import (
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	"github.com/apache/plc4x/plc4go/spi/utils"
-	spiValue "github.com/apache/plc4x/plc4go/spi/values"
+	spiValues "github.com/apache/plc4x/plc4go/spi/values"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -43,6 +43,7 @@ func TestRenderTest(t *testing.T) {
 		&DefaultArrayInfo{},
 		&DefaultPlcBrowseItem{},
 		&DefaultPlcBrowseRequest{},
+		&DefaultPlcBrowseRequestBuilder{},
 		&DefaultPlcBrowseRequestResult{},
 		&DefaultPlcBrowseResponse{},
 		&DefaultPlcBrowseResponseItem{},
@@ -59,12 +60,13 @@ func TestRenderTest(t *testing.T) {
 		&DefaultPlcSubscriptionResponse{},
 		&DefaultPlcSubscriptionResponseItem{},
 		&DefaultPlcTagRequest{},
-		//&DefaultPlcUnsubscriptionRequest{}, //TODO: empty file
+		&DefaultPlcUnsubscriptionRequest{},
 		&DefaultPlcUnsubscriptionRequestResult{},
-		//&DefaultPlcUnsubscriptionResponse{}, //TODO: empty file
+		&DefaultPlcUnsubscriptionResponse{},
 		&DefaultPlcWriteRequest{DefaultPlcTagRequest: NewDefaultPlcTagRequest(nil, nil)},
 		&DefaultPlcWriteRequestResult{},
 		&DefaultPlcWriteResponse{},
+		&ResponseItem{},
 	}
 	for _, sut := range suts {
 		t.Run(fmt.Sprintf("%T", sut), func(t *testing.T) {
@@ -95,52 +97,7 @@ func TestRenderTest(t *testing.T) {
 	}
 }
 
-type _TestRenderTestCustomPlcTag struct {
-}
-
-func (_ _TestRenderTestCustomPlcTag) GetAddressString() string {
-	return "address string"
-}
-
-func (_ _TestRenderTestCustomPlcTag) GetValueType() apiValues.PlcValueType {
-	return 1
-}
-
-func (_ _TestRenderTestCustomPlcTag) GetArrayInfo() []apiModel.ArrayInfo {
-	return nil
-}
-
-type _TestRenderTestCustomPlcBrowseItem struct {
-}
-
-func (_ _TestRenderTestCustomPlcBrowseItem) GetTag() apiModel.PlcTag {
-	return _TestRenderTestCustomPlcTag{}
-}
-
-func (_ _TestRenderTestCustomPlcBrowseItem) GetName() string {
-	return "tagid"
-}
-
-func (_ _TestRenderTestCustomPlcBrowseItem) IsReadable() bool {
-	return true
-}
-
-func (_ _TestRenderTestCustomPlcBrowseItem) IsWritable() bool {
-	return true
-}
-
-func (_ _TestRenderTestCustomPlcBrowseItem) IsSubscribable() bool {
-	return true
-}
-
-func (_ _TestRenderTestCustomPlcBrowseItem) GetChildren() map[string]apiModel.PlcBrowseItem {
-	return nil // TODO: maybe we return something here... or not
-}
-
-func (_ _TestRenderTestCustomPlcBrowseItem) GetOptions() map[string]apiValues.PlcValue {
-	return nil // TODO: maybe we return something here... or not
-}
-
+// TODO: ensure mocks are created in test context...
 // TestRenderTestCustom test some custom objects
 func TestRenderTestCustom(t *testing.T) {
 	tests := []struct {
@@ -153,17 +110,20 @@ func TestRenderTestCustom(t *testing.T) {
 	}{
 		{
 			sut: NewDefaultPlcBrowseItem(
-				_TestRenderTestCustomPlcTag{},
+				NewMockPlcTag(t),
 				"some name",
 				"some datatype",
 				true,
 				true,
 				true,
 				map[string]apiModel.PlcBrowseItem{
-					"tagid": _TestRenderTestCustomPlcBrowseItem{},
+					"tagid1": NewMockPlcBrowseItem(t),
+					"tagid2": NewMockPlcBrowseItem(t),
 				},
 				map[string]apiValues.PlcValue{
-					"tagid": spiValue.PlcNull{},
+					"tagid1": spiValues.PlcNull{},
+					"tagid2": spiValues.PlcNull{},
+					"tagid3": nil,
 				},
 			).(interface { // TODO: workaround
 				fmt.Stringer
@@ -173,10 +133,12 @@ func TestRenderTestCustom(t *testing.T) {
 		{
 			sut: NewDefaultPlcBrowseRequest(
 				map[string]apiModel.PlcQuery{
-					"tagid": nil,
+					"tagid1": NewMockPlcQuery(t),
+					"tagid2": NewMockPlcQuery(t),
 				},
 				[]string{
-					"tagid",
+					"tagid1",
+					"tagid2",
 				},
 				nil,
 			),
@@ -221,7 +183,9 @@ func TestRenderTestCustom(t *testing.T) {
 				"something",
 				"something",
 				url.URL{},
-				nil,
+				map[string][]string{
+					"something": {"else"},
+				},
 				"something",
 				nil,
 			).(interface { // TODO: workaround

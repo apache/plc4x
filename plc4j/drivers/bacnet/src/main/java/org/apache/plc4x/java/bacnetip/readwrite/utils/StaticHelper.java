@@ -31,10 +31,7 @@ import org.slf4j.LoggerFactory;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static org.apache.plc4x.java.spi.generation.WithReaderWriterArgs.WithAdditionalStringRepresentation;
 
@@ -189,10 +186,7 @@ public class StaticHelper {
                     paramValue = (int) rawValue;
                 }
                 Object result = method.invoke(null, paramValue);
-                if (result == null) {
-                    return Enum.valueOf(template.getDeclaringClass(), "VENDOR_PROPRIETARY_VALUE");
-                }
-                return result;
+                return Objects.requireNonNullElseGet(result, () -> Enum.valueOf(template.getDeclaringClass(), "VENDOR_PROPRIETARY_VALUE"));
             } catch (IllegalAccessException | InvocationTargetException e) {
                 throw new ParseException("error invoking method", e);
             }

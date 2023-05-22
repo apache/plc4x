@@ -22,12 +22,12 @@ package cache
 import (
 	"context"
 	"fmt"
+	"time"
+
 	plc4go "github.com/apache/plc4x/plc4go/pkg/api"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	_default "github.com/apache/plc4x/plc4go/spi/default"
-	"github.com/apache/plc4x/plc4go/spi/utils"
-	"time"
 )
 
 type plcConnectionLease struct {
@@ -93,7 +93,7 @@ func (t *plcConnectionLease) Close() <-chan plc4go.PlcConnectionCloseResult {
 		panic("Called 'Close' on a closed cached connection")
 	}
 
-	result := make(chan plc4go.PlcConnectionCloseResult)
+	result := make(chan plc4go.PlcConnectionCloseResult, 1)
 
 	go func() {
 		// Check if the connection is still alive, if it is, put it back into the cache
@@ -133,16 +133,11 @@ func (t *plcConnectionLease) Close() <-chan plc4go.PlcConnectionCloseResult {
 		// Return the connection to the connection container and don't actually close it.
 		err := t.connectionContainer.returnConnection(newState)
 
-		// Finish closing the connection.
-		timeout := time.NewTimer(10 * time.Millisecond)
-		defer utils.CleanupTimer(timeout)
-		select {
-		case result <- _default.NewDefaultPlcConnectionCloseResultWithTraces(t, err, traces):
-		case <-timeout.C:
-		}
-
 		// Detach the connection from this lease, so it can no longer be used by the client.
 		t.connection = nil
+
+		// Finish closing the connection.
+		result <- _default.NewDefaultPlcConnectionCloseResultWithTraces(t, err, traces)
 	}()
 
 	return result

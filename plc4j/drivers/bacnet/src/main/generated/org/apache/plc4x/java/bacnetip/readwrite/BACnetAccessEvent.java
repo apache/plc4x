@@ -88,7 +88,7 @@ public enum BACnetAccessEvent {
     }
   }
 
-  private int value;
+  private final int value;
 
   BACnetAccessEvent(int value) {
     this.value = value;

@@ -60,7 +60,7 @@ public class FxmlController {
 
     @FXML
     public void initialize() throws Exception {
-        plcTreeView.setCellFactory(treeEntryTreeView -> new TextFieldTreeCell<>(new StringConverter<TreeEntry>(){
+        plcTreeView.setCellFactory(treeEntryTreeView -> new TextFieldTreeCell<>(new StringConverter<>() {
             @Override
             public String toString(TreeEntry treeEntry) {
                 return treeEntry.getName();
@@ -129,9 +129,7 @@ public class FxmlController {
                             controller.setConnection(selectedItem.getName(), connection);
 
                             connectionTabs.getTabs().add(connectionTab);
-                        } catch (PlcConnectionException e) {
-                            throw new RuntimeException(e);
-                        } catch (IOException e) {
+                        } catch (PlcConnectionException | IOException e) {
                             throw new RuntimeException(e);
                         }
                     }

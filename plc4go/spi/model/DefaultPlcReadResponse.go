@@ -21,7 +21,8 @@ package model
 
 import (
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
-	"github.com/apache/plc4x/plc4go/pkg/api/values"
+	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
+	spiValues "github.com/apache/plc4x/plc4go/spi/values"
 )
 
 //go:generate go run ../../tools/plc4xgenerator/gen.go -type=DefaultPlcReadResponse
@@ -30,7 +31,7 @@ type DefaultPlcReadResponse struct {
 	values  map[string]*ResponseItem
 }
 
-func NewDefaultPlcReadResponse(request apiModel.PlcReadRequest, responseCodes map[string]apiModel.PlcResponseCode, values map[string]values.PlcValue) apiModel.PlcReadResponse {
+func NewDefaultPlcReadResponse(request apiModel.PlcReadRequest, responseCodes map[string]apiModel.PlcResponseCode, values map[string]apiValues.PlcValue) apiModel.PlcReadResponse {
 	valueMap := map[string]*ResponseItem{}
 	for name, code := range responseCodes {
 		value := values[name]
@@ -66,9 +67,17 @@ func (d *DefaultPlcReadResponse) GetRequest() apiModel.PlcReadRequest {
 }
 
 func (d *DefaultPlcReadResponse) GetResponseCode(name string) apiModel.PlcResponseCode {
-	return d.values[name].GetCode()
+	item, ok := d.values[name]
+	if !ok {
+		return apiModel.PlcResponseCode_NOT_FOUND
+	}
+	return item.GetCode()
 }
 
-func (d *DefaultPlcReadResponse) GetValue(name string) values.PlcValue {
-	return d.values[name].GetValue()
+func (d *DefaultPlcReadResponse) GetValue(name string) apiValues.PlcValue {
+	item, ok := d.values[name]
+	if !ok {
+		return spiValues.PlcNull{}
+	}
+	return item.GetValue()
 }

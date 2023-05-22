@@ -64,7 +64,6 @@ public class BACnetTimerStateChangeValueDate extends BACnetTimerStateChangeValue
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetTimerStateChangeValueDate");
 
     // Simple Field (dateValue)
@@ -94,8 +93,6 @@ public class BACnetTimerStateChangeValueDate extends BACnetTimerStateChangeValue
       ReadBuffer readBuffer, BACnetObjectType objectTypeArgument) throws ParseException {
     readBuffer.pullContext("BACnetTimerStateChangeValueDate");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagDate dateValue =

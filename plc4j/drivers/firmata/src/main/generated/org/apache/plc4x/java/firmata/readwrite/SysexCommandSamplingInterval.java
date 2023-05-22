@@ -54,7 +54,6 @@ public class SysexCommandSamplingInterval extends SysexCommand implements Messag
   protected void serializeSysexCommandChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("SysexCommandSamplingInterval");
 
     writeBuffer.popContext("SysexCommandSamplingInterval");
@@ -78,8 +77,6 @@ public class SysexCommandSamplingInterval extends SysexCommand implements Messag
       ReadBuffer readBuffer, Boolean response) throws ParseException {
     readBuffer.pullContext("SysexCommandSamplingInterval");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("SysexCommandSamplingInterval");

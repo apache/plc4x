@@ -70,7 +70,6 @@ public class StatusByte implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("StatusByte");
 
     // Simple Field (gav3)
@@ -143,8 +142,6 @@ public class StatusByte implements Message {
   public static StatusByte staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("StatusByte");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     GAVState gav3 =

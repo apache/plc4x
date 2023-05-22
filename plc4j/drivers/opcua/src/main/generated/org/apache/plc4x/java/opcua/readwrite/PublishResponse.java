@@ -123,7 +123,6 @@ public class PublishResponse extends ExtensionObjectDefinition implements Messag
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("PublishResponse");
 
     // Simple Field (responseHeader)
@@ -232,8 +231,6 @@ public class PublishResponse extends ExtensionObjectDefinition implements Messag
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("PublishResponse");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ExtensionObjectDefinition responseHeader =

@@ -68,7 +68,6 @@ public class PnDcp_Block_DevicePropertiesAliasName extends PnDcp_Block implement
   protected void serializePnDcp_BlockChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("PnDcp_Block_DevicePropertiesAliasName");
 
     // Reserved Field (reserved)
@@ -135,8 +134,6 @@ public class PnDcp_Block_DevicePropertiesAliasName extends PnDcp_Block implement
       ReadBuffer readBuffer, Integer blockLength) throws ParseException {
     readBuffer.pullContext("PnDcp_Block_DevicePropertiesAliasName");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     Integer reservedField0 =

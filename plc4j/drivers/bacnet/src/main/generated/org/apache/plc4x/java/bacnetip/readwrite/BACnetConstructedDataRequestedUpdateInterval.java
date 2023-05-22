@@ -80,7 +80,6 @@ public class BACnetConstructedDataRequestedUpdateInterval extends BACnetConstruc
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataRequestedUpdateInterval");
 
     // Simple Field (requestedUpdateInterval)
@@ -124,8 +123,6 @@ public class BACnetConstructedDataRequestedUpdateInterval extends BACnetConstruc
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataRequestedUpdateInterval");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger requestedUpdateInterval =

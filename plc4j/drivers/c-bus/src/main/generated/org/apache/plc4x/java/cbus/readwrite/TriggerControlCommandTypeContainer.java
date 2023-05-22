@@ -105,9 +105,9 @@ public enum TriggerControlCommandTypeContainer {
     }
   }
 
-  private short value;
-  private short numBytes;
-  private TriggerControlCommandType commandType;
+  private final short value;
+  private final short numBytes;
+  private final TriggerControlCommandType commandType;
 
   TriggerControlCommandTypeContainer(
       short value, short numBytes, TriggerControlCommandType commandType) {
@@ -134,7 +134,7 @@ public enum TriggerControlCommandTypeContainer {
   }
 
   public static List<TriggerControlCommandTypeContainer> enumsForFieldNumBytes(short fieldValue) {
-    List<TriggerControlCommandTypeContainer> _values = new ArrayList();
+    List<TriggerControlCommandTypeContainer> _values = new ArrayList<>();
     for (TriggerControlCommandTypeContainer _val : TriggerControlCommandTypeContainer.values()) {
       if (_val.getNumBytes() == fieldValue) {
         _values.add(_val);
@@ -159,7 +159,7 @@ public enum TriggerControlCommandTypeContainer {
 
   public static List<TriggerControlCommandTypeContainer> enumsForFieldCommandType(
       TriggerControlCommandType fieldValue) {
-    List<TriggerControlCommandTypeContainer> _values = new ArrayList();
+    List<TriggerControlCommandTypeContainer> _values = new ArrayList<>();
     for (TriggerControlCommandTypeContainer _val : TriggerControlCommandTypeContainer.values()) {
       if (_val.getCommandType() == fieldValue) {
         _values.add(_val);

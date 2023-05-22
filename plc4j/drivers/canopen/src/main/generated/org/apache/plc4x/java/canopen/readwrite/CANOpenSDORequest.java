@@ -65,7 +65,6 @@ public class CANOpenSDORequest extends CANOpenPayload implements Message {
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("CANOpenSDORequest");
 
     // Simple Field (command)
@@ -108,8 +107,6 @@ public class CANOpenSDORequest extends CANOpenPayload implements Message {
       ReadBuffer readBuffer, CANOpenService service) throws ParseException {
     readBuffer.pullContext("CANOpenSDORequest");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     SDORequestCommand command =

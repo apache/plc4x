@@ -185,7 +185,7 @@ public class S7DriverContext implements DriverContext, HasConfiguration<S7Config
     }
 
     public int getRetryTime() {
-        return pingTime;
+        return retryTime;
     }
 
     public void setRetryTime(int retryTime) {

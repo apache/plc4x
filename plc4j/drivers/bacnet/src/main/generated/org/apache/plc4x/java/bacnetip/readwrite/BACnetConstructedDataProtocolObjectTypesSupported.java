@@ -80,7 +80,6 @@ public class BACnetConstructedDataProtocolObjectTypesSupported extends BACnetCon
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataProtocolObjectTypesSupported");
 
     // Simple Field (protocolObjectTypesSupported)
@@ -124,8 +123,6 @@ public class BACnetConstructedDataProtocolObjectTypesSupported extends BACnetCon
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataProtocolObjectTypesSupported");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetObjectTypesSupportedTagged protocolObjectTypesSupported =

@@ -51,7 +51,6 @@ public class PnIoCm_Packet_Ping extends PnIoCm_Packet implements Message {
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("PnIoCm_Packet_Ping");
 
     writeBuffer.popContext("PnIoCm_Packet_Ping");
@@ -75,8 +74,6 @@ public class PnIoCm_Packet_Ping extends PnIoCm_Packet implements Message {
       ReadBuffer readBuffer, DceRpc_PacketType packetType) throws ParseException {
     readBuffer.pullContext("PnIoCm_Packet_Ping");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("PnIoCm_Packet_Ping");

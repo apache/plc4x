@@ -69,7 +69,6 @@ public class NodeIdFourByte extends NodeIdTypeDefinition implements Message {
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("NodeIdFourByte");
 
     // Simple Field (namespaceIndex)
@@ -111,8 +110,6 @@ public class NodeIdFourByte extends NodeIdTypeDefinition implements Message {
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("NodeIdFourByte");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short namespaceIndex = readSimpleField("namespaceIndex", readUnsignedShort(readBuffer, 8));

@@ -57,7 +57,6 @@ public class BACnetCalendarEntryDateRange extends BACnetCalendarEntry implements
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetCalendarEntryDateRange");
 
     // Simple Field (dateRange)
@@ -87,8 +86,6 @@ public class BACnetCalendarEntryDateRange extends BACnetCalendarEntry implements
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetCalendarEntryDateRange");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetDateRangeEnclosed dateRange =

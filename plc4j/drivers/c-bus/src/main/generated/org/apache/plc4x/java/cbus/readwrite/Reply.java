@@ -63,7 +63,6 @@ public abstract class Reply implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("Reply");
 
     // Switch field (Serialize the sub-type)
@@ -118,8 +117,6 @@ public abstract class Reply implements Message {
       throws ParseException {
     readBuffer.pullContext("Reply");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte peekedByte = readPeekField("peekedByte", readByte(readBuffer, 8));

@@ -88,7 +88,6 @@ public class SessionlessInvokeResponseType extends ExtensionObjectDefinition imp
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("SessionlessInvokeResponseType");
 
     // Simple Field (noOfNamespaceUris)
@@ -154,8 +153,6 @@ public class SessionlessInvokeResponseType extends ExtensionObjectDefinition imp
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("SessionlessInvokeResponseType");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int noOfNamespaceUris = readSimpleField("noOfNamespaceUris", readSignedInt(readBuffer, 32));

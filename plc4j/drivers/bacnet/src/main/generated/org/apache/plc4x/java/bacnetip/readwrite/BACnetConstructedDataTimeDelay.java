@@ -79,7 +79,6 @@ public class BACnetConstructedDataTimeDelay extends BACnetConstructedData implem
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataTimeDelay");
 
     // Simple Field (timeDelay)
@@ -120,8 +119,6 @@ public class BACnetConstructedDataTimeDelay extends BACnetConstructedData implem
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataTimeDelay");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger timeDelay =

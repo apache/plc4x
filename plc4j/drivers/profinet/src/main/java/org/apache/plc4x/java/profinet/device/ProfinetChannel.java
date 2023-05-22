@@ -19,8 +19,7 @@
 
 package org.apache.plc4x.java.profinet.device;
 
-import org.apache.commons.codec.binary.Hex;
-import org.apache.plc4x.java.profinet.config.ProfinetConfiguration;
+import org.apache.plc4x.java.profinet.config.ProfinetDevices;
 import org.apache.plc4x.java.profinet.discovery.ProfinetPlcDiscoverer;
 import org.apache.plc4x.java.profinet.readwrite.*;
 import org.apache.plc4x.java.spi.generation.*;
@@ -32,7 +31,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
-import java.util.function.Function;
 
 public class ProfinetChannel {
 
@@ -40,11 +38,11 @@ public class ProfinetChannel {
     private static final EtherType PN_EtherType = EtherType.getInstance((short) 0x8892);
     private static final EtherType LLDP_EtherType = EtherType.getInstance((short) 0x88cc);
     private ProfinetPlcDiscoverer discoverer = null;
-    private Map<MacAddress, PcapHandle> openHandles;
-    private ProfinetDevices configuredDevices;
+    private final Map<MacAddress, PcapHandle> openHandles;
+    private Map<String, ProfinetDevice> devices;
 
-    public ProfinetChannel(List<PcapNetworkInterface> devs, ProfinetDevices devices) {
-        this.configuredDevices = devices;
+    public ProfinetChannel(List<PcapNetworkInterface> devs, Map<String, ProfinetDevice> devices) {
+        this.devices = devices;
         this.openHandles = getInterfaceHandles(devs);
         startListener();
     }
@@ -123,29 +121,36 @@ public class ProfinetChannel {
                                     if (discoverer != null) {
                                         discoverer.processPnDcp(pdu, ethernetPacket);
                                     }
-                                }  else if (pdu.getFrameId() == PnDcp_FrameId.Alarm_Low) {
-                                    for (Map.Entry<String, ProfinetDevice> device : this.configuredDevices.getConfiguredDevices().entrySet()) {
+                                } else if (pdu.getFrameId() == PnDcp_FrameId.DCP_GetSet_PDU) {
+                                    for (Map.Entry<String, ProfinetDevice> device : devices.entrySet()) {
                                         if (Arrays.equals(device.getValue().getDeviceContext().getMacAddress().getAddress(), ethernetFrame.getSource().getAddress())) {
-                                            PnDcp_Pdu_AlarmLow alarmPdu = (PnDcp_Pdu_AlarmLow) pdu;
-                                            device.getValue().handleAlarmResponse(alarmPdu);
+                                            PcDcp_GetSet_Pdu getSetPdu = (PcDcp_GetSet_Pdu) pdu;
+                                            device.getValue().handleSetIpAddressResponse(getSetPdu);
                                         }
                                     }
-                                }
-                                else if (pdu.getFrameId() == PnDcp_FrameId.RT_CLASS_1) {
-                                    for (Map.Entry<String, ProfinetDevice> device : this.configuredDevices.getConfiguredDevices().entrySet()) {
-                                        if (Arrays.equals(device.getValue().getDeviceContext().getMacAddress().getAddress(), ethernetFrame.getSource().getAddress())) {
-                                            PnDcp_Pdu_RealTimeCyclic cyclicPdu = (PnDcp_Pdu_RealTimeCyclic) pdu;
-                                            device.getValue().handleRealTimeResponse(cyclicPdu);
+                                } else if (pdu.getFrameId() == PnDcp_FrameId.Alarm_Low) {
+                                        for (Map.Entry<String, ProfinetDevice> device : devices.entrySet()) {
+                                            if (Arrays.equals(device.getValue().getDeviceContext().getMacAddress().getAddress(), ethernetFrame.getSource().getAddress())) {
+                                                PnDcp_Pdu_AlarmLow alarmPdu = (PnDcp_Pdu_AlarmLow) pdu;
+                                                device.getValue().handleAlarmResponse(alarmPdu);
+                                            }
                                         }
                                     }
-                                }
+                                    else if (pdu.getFrameId() == PnDcp_FrameId.RT_CLASS_1) {
+                                        for (Map.Entry<String, ProfinetDevice> device : devices.entrySet()) {
+                                            if (Arrays.equals(device.getValue().getDeviceContext().getMacAddress().getAddress(), ethernetFrame.getSource().getAddress())) {
+                                                PnDcp_Pdu_RealTimeCyclic cyclicPdu = (PnDcp_Pdu_RealTimeCyclic) pdu;
+                                                device.getValue().handleRealTimeResponse(cyclicPdu);
+                                            }
+                                        }
+                                    }
                             } else if (payload instanceof Ethernet_FramePayload_LLDP) {
                                 Lldp_Pdu pdu = ((Ethernet_FramePayload_LLDP) payload).getPdu();
                                 if (discoverer != null) {
                                     discoverer.processLldp(pdu);
                                 }
                             } else if (payload instanceof Ethernet_FramePayload_IPv4) {
-                                for (Map.Entry<String, ProfinetDevice> device : this.configuredDevices.getConfiguredDevices().entrySet()) {
+                                for (Map.Entry<String, ProfinetDevice> device : devices.entrySet()) {
                                     if (Arrays.equals(device.getValue().getDeviceContext().getMacAddress().getAddress(), ethernetFrame.getSource().getAddress())) {
                                         device.getValue().handleResponse((Ethernet_FramePayload_IPv4) payload);
                                     }
@@ -211,8 +216,8 @@ public class ProfinetChannel {
         return openHandles;
     }
 
-    public void setConfiguredDevices(ProfinetDevices configuredDevices) {
-        this.configuredDevices = configuredDevices;
+    public void setConfiguredDevices(Map<String, ProfinetDevice> configuredDevices) {
+        this.devices = configuredDevices;
     }
 
     private static MacAddress toPlc4xMacAddress(org.pcap4j.util.MacAddress pcap4jMacAddress) {

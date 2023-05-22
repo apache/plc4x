@@ -52,7 +52,6 @@ public class AmsTCPPacket implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("AmsTCPPacket");
 
     // Reserved Field (reserved)
@@ -113,8 +112,6 @@ public class AmsTCPPacket implements Message {
   public static AmsTCPPacket staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("AmsTCPPacket");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     Integer reservedField0 =

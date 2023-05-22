@@ -200,7 +200,6 @@ public class IdentifyReplyCommandExtendedDiagnosticSummary extends IdentifyReply
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("IdentifyReplyCommandExtendedDiagnosticSummary");
 
     // Simple Field (lowApplication)
@@ -385,8 +384,6 @@ public class IdentifyReplyCommandExtendedDiagnosticSummary extends IdentifyReply
       ReadBuffer readBuffer, Attribute attribute, Short numBytes) throws ParseException {
     readBuffer.pullContext("IdentifyReplyCommandExtendedDiagnosticSummary");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ApplicationIdContainer lowApplication =

@@ -60,7 +60,6 @@ public class CBusCommandPointToMultiPoint extends CBusCommand implements Message
   protected void serializeCBusCommandChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("CBusCommandPointToMultiPoint");
 
     // Simple Field (command)
@@ -90,8 +89,6 @@ public class CBusCommandPointToMultiPoint extends CBusCommand implements Message
       ReadBuffer readBuffer, CBusOptions cBusOptions) throws ParseException {
     readBuffer.pullContext("CBusCommandPointToMultiPoint");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     CBusPointToMultiPointCommand command =

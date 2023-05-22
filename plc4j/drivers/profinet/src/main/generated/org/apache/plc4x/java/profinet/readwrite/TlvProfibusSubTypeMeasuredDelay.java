@@ -47,17 +47,20 @@ public class TlvProfibusSubTypeMeasuredDelay extends TlvOrgSpecificProfibusUnit 
   protected final long remotePortRxDelay;
   protected final long localPortTxDelay;
   protected final long remotePortTxDelay;
+  protected final long portCableDelay;
 
   public TlvProfibusSubTypeMeasuredDelay(
       long localPortRxDelay,
       long remotePortRxDelay,
       long localPortTxDelay,
-      long remotePortTxDelay) {
+      long remotePortTxDelay,
+      long portCableDelay) {
     super();
     this.localPortRxDelay = localPortRxDelay;
     this.remotePortRxDelay = remotePortRxDelay;
     this.localPortTxDelay = localPortTxDelay;
     this.remotePortTxDelay = remotePortTxDelay;
+    this.portCableDelay = portCableDelay;
   }
 
   public long getLocalPortRxDelay() {
@@ -76,12 +79,15 @@ public class TlvProfibusSubTypeMeasuredDelay extends TlvOrgSpecificProfibusUnit 
     return remotePortTxDelay;
   }
 
+  public long getPortCableDelay() {
+    return portCableDelay;
+  }
+
   @Override
   protected void serializeTlvOrgSpecificProfibusUnitChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("TlvProfibusSubTypeMeasuredDelay");
 
     // Simple Field (localPortRxDelay)
@@ -95,6 +101,9 @@ public class TlvProfibusSubTypeMeasuredDelay extends TlvOrgSpecificProfibusUnit 
 
     // Simple Field (remotePortTxDelay)
     writeSimpleField("remotePortTxDelay", remotePortTxDelay, writeUnsignedLong(writeBuffer, 32));
+
+    // Simple Field (portCableDelay)
+    writeSimpleField("portCableDelay", portCableDelay, writeUnsignedLong(writeBuffer, 32));
 
     writeBuffer.popContext("TlvProfibusSubTypeMeasuredDelay");
   }
@@ -122,6 +131,9 @@ public class TlvProfibusSubTypeMeasuredDelay extends TlvOrgSpecificProfibusUnit 
     // Simple field (remotePortTxDelay)
     lengthInBits += 32;
 
+    // Simple field (portCableDelay)
+    lengthInBits += 32;
+
     return lengthInBits;
   }
 
@@ -129,8 +141,6 @@ public class TlvProfibusSubTypeMeasuredDelay extends TlvOrgSpecificProfibusUnit 
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("TlvProfibusSubTypeMeasuredDelay");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     long localPortRxDelay = readSimpleField("localPortRxDelay", readUnsignedLong(readBuffer, 32));
@@ -141,10 +151,12 @@ public class TlvProfibusSubTypeMeasuredDelay extends TlvOrgSpecificProfibusUnit 
 
     long remotePortTxDelay = readSimpleField("remotePortTxDelay", readUnsignedLong(readBuffer, 32));
 
+    long portCableDelay = readSimpleField("portCableDelay", readUnsignedLong(readBuffer, 32));
+
     readBuffer.closeContext("TlvProfibusSubTypeMeasuredDelay");
     // Create the instance
     return new TlvProfibusSubTypeMeasuredDelayBuilderImpl(
-        localPortRxDelay, remotePortRxDelay, localPortTxDelay, remotePortTxDelay);
+        localPortRxDelay, remotePortRxDelay, localPortTxDelay, remotePortTxDelay, portCableDelay);
   }
 
   public static class TlvProfibusSubTypeMeasuredDelayBuilderImpl
@@ -153,22 +165,29 @@ public class TlvProfibusSubTypeMeasuredDelay extends TlvOrgSpecificProfibusUnit 
     private final long remotePortRxDelay;
     private final long localPortTxDelay;
     private final long remotePortTxDelay;
+    private final long portCableDelay;
 
     public TlvProfibusSubTypeMeasuredDelayBuilderImpl(
         long localPortRxDelay,
         long remotePortRxDelay,
         long localPortTxDelay,
-        long remotePortTxDelay) {
+        long remotePortTxDelay,
+        long portCableDelay) {
       this.localPortRxDelay = localPortRxDelay;
       this.remotePortRxDelay = remotePortRxDelay;
       this.localPortTxDelay = localPortTxDelay;
       this.remotePortTxDelay = remotePortTxDelay;
+      this.portCableDelay = portCableDelay;
     }
 
     public TlvProfibusSubTypeMeasuredDelay build() {
       TlvProfibusSubTypeMeasuredDelay tlvProfibusSubTypeMeasuredDelay =
           new TlvProfibusSubTypeMeasuredDelay(
-              localPortRxDelay, remotePortRxDelay, localPortTxDelay, remotePortTxDelay);
+              localPortRxDelay,
+              remotePortRxDelay,
+              localPortTxDelay,
+              remotePortTxDelay,
+              portCableDelay);
       return tlvProfibusSubTypeMeasuredDelay;
     }
   }
@@ -186,6 +205,7 @@ public class TlvProfibusSubTypeMeasuredDelay extends TlvOrgSpecificProfibusUnit 
         && (getRemotePortRxDelay() == that.getRemotePortRxDelay())
         && (getLocalPortTxDelay() == that.getLocalPortTxDelay())
         && (getRemotePortTxDelay() == that.getRemotePortTxDelay())
+        && (getPortCableDelay() == that.getPortCableDelay())
         && super.equals(that)
         && true;
   }
@@ -197,7 +217,8 @@ public class TlvProfibusSubTypeMeasuredDelay extends TlvOrgSpecificProfibusUnit 
         getLocalPortRxDelay(),
         getRemotePortRxDelay(),
         getLocalPortTxDelay(),
-        getRemotePortTxDelay());
+        getRemotePortTxDelay(),
+        getPortCableDelay());
   }
 
   @Override

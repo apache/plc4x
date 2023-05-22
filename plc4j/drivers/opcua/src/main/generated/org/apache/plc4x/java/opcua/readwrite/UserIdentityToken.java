@@ -66,7 +66,6 @@ public class UserIdentityToken extends ExtensionObjectDefinition implements Mess
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("UserIdentityToken");
 
     // Implicit Field (policyLength) (Used for parsing, but its value is not stored as it's
@@ -116,8 +115,6 @@ public class UserIdentityToken extends ExtensionObjectDefinition implements Mess
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("UserIdentityToken");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int policyLength = readImplicitField("policyLength", readSignedInt(readBuffer, 32));

@@ -57,7 +57,6 @@ public class BACnetHostAddressName extends BACnetHostAddress implements Message 
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetHostAddressName");
 
     // Simple Field (name)
@@ -87,8 +86,6 @@ public class BACnetHostAddressName extends BACnetHostAddress implements Message 
       throws ParseException {
     readBuffer.pullContext("BACnetHostAddressName");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetContextTagCharacterString name =

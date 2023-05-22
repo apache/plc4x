@@ -60,7 +60,6 @@ public class ComObjectTableRealisationType6 extends ComObjectTable implements Me
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("ComObjectTableRealisationType6");
 
     // Simple Field (comObjectDescriptors)
@@ -91,8 +90,6 @@ public class ComObjectTableRealisationType6 extends ComObjectTable implements Me
       ReadBuffer readBuffer, FirmwareType firmwareType) throws ParseException {
     readBuffer.pullContext("ComObjectTableRealisationType6");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     GroupObjectDescriptorRealisationType6 comObjectDescriptors =

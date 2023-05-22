@@ -43,7 +43,7 @@ public enum BrowseResultMask {
     }
   }
 
-  private long value;
+  private final long value;
 
   BrowseResultMask(long value) {
     this.value = value;

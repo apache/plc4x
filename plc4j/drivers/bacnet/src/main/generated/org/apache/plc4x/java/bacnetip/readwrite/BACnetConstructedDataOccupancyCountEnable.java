@@ -80,7 +80,6 @@ public class BACnetConstructedDataOccupancyCountEnable extends BACnetConstructed
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataOccupancyCountEnable");
 
     // Simple Field (occupancyCountEnable)
@@ -122,8 +121,6 @@ public class BACnetConstructedDataOccupancyCountEnable extends BACnetConstructed
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataOccupancyCountEnable");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagBoolean occupancyCountEnable =

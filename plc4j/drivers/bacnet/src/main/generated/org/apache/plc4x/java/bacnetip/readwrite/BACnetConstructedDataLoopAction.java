@@ -79,7 +79,6 @@ public class BACnetConstructedDataLoopAction extends BACnetConstructedData imple
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataLoopAction");
 
     // Simple Field (action)
@@ -120,8 +119,6 @@ public class BACnetConstructedDataLoopAction extends BACnetConstructedData imple
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataLoopAction");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetActionTagged action =

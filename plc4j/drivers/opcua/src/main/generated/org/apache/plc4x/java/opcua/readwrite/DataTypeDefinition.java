@@ -51,7 +51,6 @@ public class DataTypeDefinition extends ExtensionObjectDefinition implements Mes
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("DataTypeDefinition");
 
     writeBuffer.popContext("DataTypeDefinition");
@@ -75,8 +74,6 @@ public class DataTypeDefinition extends ExtensionObjectDefinition implements Mes
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("DataTypeDefinition");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("DataTypeDefinition");

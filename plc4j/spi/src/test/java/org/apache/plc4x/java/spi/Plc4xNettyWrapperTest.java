@@ -78,15 +78,9 @@ class Plc4xNettyWrapperTest {
     void conversationTimeoutTest() throws Exception {
         ConversationContext.ContextHandler handler = conversationContext.sendRequest(new Date())
             .expectResponse(Date.class, Duration.ofMillis(500))
-            .onTimeout(e -> {
-                timeout.set(true);
-            })
-            .onError((value, throwable) -> {
-                error.set(true);
-            })
-            .handle((answer) -> {
-                handled.set(true);
-            });
+            .onTimeout(e -> timeout.set(true))
+            .onError((value, throwable) -> error.set(true))
+            .handle((answer) -> handled.set(true));
 
         Thread.sleep(750);
 
@@ -100,15 +94,9 @@ class Plc4xNettyWrapperTest {
     void conversationWithNoTimeoutTest() throws Exception {
         ConversationContext.ContextHandler handler = conversationContext.sendRequest(new Date())
             .expectResponse(Date.class, Duration.ofMillis(500))
-            .onTimeout(e -> {
-                timeout.set(true);
-            })
-            .onError((value, throwable) -> {
-                error.set(true);
-            })
-            .handle((answer) -> {
-                handled.set(true);
-            });
+            .onTimeout(e -> timeout.set(true))
+            .onError((value, throwable) -> error.set(true))
+            .handle((answer) -> handled.set(true));
 
         verify(false, false, false);
         wrapper.decode(channelHandlerContext, new Date(), new ArrayList<>());

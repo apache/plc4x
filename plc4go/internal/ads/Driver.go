@@ -51,10 +51,8 @@ func (m *Driver) GetConnectionWithContext(ctx context.Context, transportUrl url.
 	transport, ok := transports[transportUrl.Scheme]
 	if !ok {
 		log.Error().Stringer("transportUrl", &transportUrl).Msgf("We couldn't find a transport for scheme %s", transportUrl.Scheme)
-		ch := make(chan plc4go.PlcConnectionConnectResult)
-		go func() {
-			ch <- _default.NewDefaultPlcConnectionConnectResult(nil, errors.Errorf("couldn't find transport for given transport url %#v", transportUrl))
-		}()
+		ch := make(chan plc4go.PlcConnectionConnectResult, 1)
+		ch <- _default.NewDefaultPlcConnectionConnectResult(nil, errors.Errorf("couldn't find transport for given transport url %#v", transportUrl))
 		return ch
 	}
 	// Provide a default-port to the transport, which is used, if the user doesn't provide on in the connection string.
@@ -63,7 +61,7 @@ func (m *Driver) GetConnectionWithContext(ctx context.Context, transportUrl url.
 	transportInstance, err := transport.CreateTransportInstance(transportUrl, options)
 	if err != nil {
 		log.Error().Stringer("transportUrl", &transportUrl).Msgf("We couldn't create a transport instance for port %#v", options["defaultTcpPort"])
-		ch := make(chan plc4go.PlcConnectionConnectResult)
+		ch := make(chan plc4go.PlcConnectionConnectResult, 1)
 		ch <- _default.NewDefaultPlcConnectionConnectResult(nil, errors.New("couldn't initialize transport configuration for given transport url "+transportUrl.String()))
 		return ch
 	}
@@ -75,7 +73,7 @@ func (m *Driver) GetConnectionWithContext(ctx context.Context, transportUrl url.
 	configuration, err := model.ParseFromOptions(options)
 	if err != nil {
 		log.Error().Err(err).Msgf("Invalid options")
-		ch := make(chan plc4go.PlcConnectionConnectResult)
+		ch := make(chan plc4go.PlcConnectionConnectResult, 1)
 		ch <- _default.NewDefaultPlcConnectionConnectResult(nil, errors.Wrap(err, "invalid configuration"))
 		return ch
 	}
@@ -83,10 +81,8 @@ func (m *Driver) GetConnectionWithContext(ctx context.Context, transportUrl url.
 	// Create the new connection
 	connection, err := NewConnection(codec, configuration, options)
 	if err != nil {
-		ch := make(chan plc4go.PlcConnectionConnectResult)
-		go func() {
-			ch <- _default.NewDefaultPlcConnectionConnectResult(nil, errors.Wrap(err, "couldn't create connection"))
-		}()
+		ch := make(chan plc4go.PlcConnectionConnectResult, 1)
+		ch <- _default.NewDefaultPlcConnectionConnectResult(nil, errors.Wrap(err, "couldn't create connection"))
 		return ch
 	}
 	log.Debug().Stringer("connection", connection).Msg("created connection, connecting now")

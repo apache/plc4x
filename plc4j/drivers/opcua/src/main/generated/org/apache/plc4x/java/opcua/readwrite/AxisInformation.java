@@ -95,7 +95,6 @@ public class AxisInformation extends ExtensionObjectDefinition implements Messag
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("AxisInformation");
 
     // Simple Field (engineeringUnits)
@@ -165,8 +164,6 @@ public class AxisInformation extends ExtensionObjectDefinition implements Messag
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("AxisInformation");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ExtensionObjectDefinition engineeringUnits =

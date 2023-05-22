@@ -49,7 +49,6 @@ public class TelephonyDataLineOnHook extends TelephonyData implements Message {
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("TelephonyDataLineOnHook");
 
     writeBuffer.popContext("TelephonyDataLineOnHook");
@@ -73,8 +72,6 @@ public class TelephonyDataLineOnHook extends TelephonyData implements Message {
       throws ParseException {
     readBuffer.pullContext("TelephonyDataLineOnHook");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("TelephonyDataLineOnHook");

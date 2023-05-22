@@ -74,7 +74,6 @@ public class ConnectionRequest extends KnxNetIpMessage implements Message {
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("ConnectionRequest");
 
     // Simple Field (hpaiDiscoveryEndpoint)
@@ -128,8 +127,6 @@ public class ConnectionRequest extends KnxNetIpMessage implements Message {
       throws ParseException {
     readBuffer.pullContext("ConnectionRequest");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     HPAIDiscoveryEndpoint hpaiDiscoveryEndpoint =

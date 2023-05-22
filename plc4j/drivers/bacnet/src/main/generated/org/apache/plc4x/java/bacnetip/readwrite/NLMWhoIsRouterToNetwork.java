@@ -62,7 +62,6 @@ public class NLMWhoIsRouterToNetwork extends NLM implements Message {
   protected void serializeNLMChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("NLMWhoIsRouterToNetwork");
 
     // Optional Field (destinationNetworkAddress) (Can be skipped, if the value is null)
@@ -95,8 +94,6 @@ public class NLMWhoIsRouterToNetwork extends NLM implements Message {
       throws ParseException {
     readBuffer.pullContext("NLMWhoIsRouterToNetwork");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     Integer destinationNetworkAddress =

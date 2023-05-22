@@ -102,7 +102,7 @@ public enum Language {
     }
   }
 
-  private short value;
+  private final short value;
 
   Language(short value) {
     this.value = value;

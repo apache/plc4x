@@ -63,7 +63,7 @@ func CreateRequestContextWithInfoCallback(cBusMessage readWriteModel.CBusMessage
 			return readWriteModel.NewRequestContext(sendIdentifyRequestBefore)
 		}
 	case readWriteModel.CBusMessageToClientExactly:
-		// We received a request so we need to reset our flags
+		// We received a request, so we need to reset our flags
 		return readWriteModel.NewRequestContext(false)
 	}
 	return readWriteModel.NewRequestContext(false)

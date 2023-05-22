@@ -57,7 +57,6 @@ public class BACnetOptionalBinaryPVNull extends BACnetOptionalBinaryPV implement
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetOptionalBinaryPVNull");
 
     // Simple Field (nullValue)
@@ -87,8 +86,6 @@ public class BACnetOptionalBinaryPVNull extends BACnetOptionalBinaryPV implement
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetOptionalBinaryPVNull");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagNull nullValue =

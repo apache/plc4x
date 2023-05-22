@@ -24,7 +24,7 @@ import org.apache.plc4x.java.api.metadata.PlcDriverMetadata;
 import org.apache.plc4x.java.profinet.config.ProfinetConfiguration;
 import org.apache.plc4x.java.profinet.context.ProfinetDriverContext;
 import org.apache.plc4x.java.profinet.device.ProfinetChannel;
-import org.apache.plc4x.java.profinet.device.ProfinetDevices;
+import org.apache.plc4x.java.profinet.config.ProfinetDevices;
 import org.apache.plc4x.java.profinet.discovery.ProfinetPlcDiscoverer;
 import org.apache.plc4x.java.profinet.protocol.ProfinetProtocolLogic;
 import org.apache.plc4x.java.profinet.readwrite.Ethernet_Frame;
@@ -38,8 +38,6 @@ import org.apache.plc4x.java.spi.optimizer.SingleTagOptimizer;
 import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.optimizer.BaseOptimizer;
 import org.pcap4j.core.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.function.ToIntFunction;
@@ -60,18 +58,13 @@ public class ProfinetDriver extends GeneratedDriverBase<Ethernet_Frame> {
 
     @Override
     public PlcDriverMetadata getMetadata() {
-        return new PlcDriverMetadata() {
-            @Override
-            public boolean canDiscover() {
-                return true;
-            }
-        };
+        return () -> true;
     }
 
     @Override
     public PlcDiscoveryRequest.Builder discoveryRequestBuilder() {
         try {
-            ProfinetChannel channel = new ProfinetChannel(Pcaps.findAllDevs(), new ProfinetDevices(new HashMap<>()));
+            ProfinetChannel channel = new ProfinetChannel(Pcaps.findAllDevs(), new HashMap<>());
             ProfinetPlcDiscoverer discoverer = new ProfinetPlcDiscoverer(channel);
             channel.setDiscoverer(discoverer);
             return new DefaultPlcDiscoveryRequest.Builder(discoverer);

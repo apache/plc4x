@@ -36,7 +36,7 @@ public enum BACnetRouterEntryStatus {
     }
   }
 
-  private short value;
+  private final short value;
 
   BACnetRouterEntryStatus(short value) {
     this.value = value;

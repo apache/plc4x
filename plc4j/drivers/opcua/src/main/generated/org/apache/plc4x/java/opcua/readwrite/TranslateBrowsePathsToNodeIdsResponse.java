@@ -89,7 +89,6 @@ public class TranslateBrowsePathsToNodeIdsResponse extends ExtensionObjectDefini
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("TranslateBrowsePathsToNodeIdsResponse");
 
     // Simple Field (responseHeader)
@@ -155,8 +154,6 @@ public class TranslateBrowsePathsToNodeIdsResponse extends ExtensionObjectDefini
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("TranslateBrowsePathsToNodeIdsResponse");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ExtensionObjectDefinition responseHeader =

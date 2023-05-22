@@ -75,7 +75,6 @@ public class OpenProtocolMessageParameterSetDataUploadRequestRev2
       WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("OpenProtocolMessageParameterSetDataUploadRequestRev2");
 
     // Simple Field (parameterSetId)
@@ -110,8 +109,6 @@ public class OpenProtocolMessageParameterSetDataUploadRequestRev2
           ReadBuffer readBuffer, Long revision) throws ParseException {
     readBuffer.pullContext("OpenProtocolMessageParameterSetDataUploadRequestRev2");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     long parameterSetId =

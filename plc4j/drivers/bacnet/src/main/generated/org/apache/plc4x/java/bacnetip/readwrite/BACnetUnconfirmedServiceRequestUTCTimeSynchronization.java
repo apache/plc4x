@@ -73,7 +73,6 @@ public class BACnetUnconfirmedServiceRequestUTCTimeSynchronization
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetUnconfirmedServiceRequestUTCTimeSynchronization");
 
     // Simple Field (synchronizedDate)
@@ -112,8 +111,6 @@ public class BACnetUnconfirmedServiceRequestUTCTimeSynchronization
           ReadBuffer readBuffer, Integer serviceRequestLength) throws ParseException {
     readBuffer.pullContext("BACnetUnconfirmedServiceRequestUTCTimeSynchronization");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagDate synchronizedDate =

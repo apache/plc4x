@@ -26,9 +26,10 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/apache/plc4x/plc4go/pkg/api/model"
+	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/s7/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi/utils"
+
 	"github.com/pkg/errors"
 )
 
@@ -76,7 +77,7 @@ const (
 	MEMORY_AREA        = "memoryArea"
 )
 
-func (m TagHandler) ParseTag(tagAddress string) (model.PlcTag, error) {
+func (m TagHandler) ParseTag(tagAddress string) (apiModel.PlcTag, error) {
 	if match := utils.GetSubgroupMatches(m.dataBlockStringAddressPattern, tagAddress); match != nil {
 		dataType, ok := readWriteModel.TransportSizeByName(match[DATA_TYPE])
 		if !ok {
@@ -319,7 +320,7 @@ func (m TagHandler) ParseTag(tagAddress string) (model.PlcTag, error) {
 	return nil, errors.Errorf("Unable to parse %s", tagAddress)
 }
 
-func (m TagHandler) ParseQuery(query string) (model.PlcQuery, error) {
+func (m TagHandler) ParseQuery(query string) (apiModel.PlcQuery, error) {
 	return nil, fmt.Errorf("queries not supported")
 }
 

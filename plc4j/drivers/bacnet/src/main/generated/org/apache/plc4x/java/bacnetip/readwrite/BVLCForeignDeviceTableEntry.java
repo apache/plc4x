@@ -71,7 +71,6 @@ public class BVLCForeignDeviceTableEntry implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BVLCForeignDeviceTableEntry");
 
     // Array Field (ip)
@@ -130,8 +129,6 @@ public class BVLCForeignDeviceTableEntry implements Message {
       throws ParseException {
     readBuffer.pullContext("BVLCForeignDeviceTableEntry");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     List<Short> ip = readCountArrayField("ip", readUnsignedShort(readBuffer, 8), 4);

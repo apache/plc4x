@@ -74,7 +74,6 @@ public class PnIoCm_ModuleDiffBlockApi_Module implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("PnIoCm_ModuleDiffBlockApi_Module");
 
     // Simple Field (slotNumber)
@@ -163,8 +162,6 @@ public class PnIoCm_ModuleDiffBlockApi_Module implements Message {
       throws ParseException {
     readBuffer.pullContext("PnIoCm_ModuleDiffBlockApi_Module");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int slotNumber =

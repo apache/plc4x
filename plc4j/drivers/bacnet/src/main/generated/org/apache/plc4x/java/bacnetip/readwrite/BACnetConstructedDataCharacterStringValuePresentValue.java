@@ -80,7 +80,6 @@ public class BACnetConstructedDataCharacterStringValuePresentValue extends BACne
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataCharacterStringValuePresentValue");
 
     // Simple Field (presentValue)
@@ -121,8 +120,6 @@ public class BACnetConstructedDataCharacterStringValuePresentValue extends BACne
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataCharacterStringValuePresentValue");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagCharacterString presentValue =

@@ -72,7 +72,6 @@ public class BACnetFaultParameterFaultState extends BACnetFaultParameter impleme
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetFaultParameterFaultState");
 
     // Simple Field (openingTag)
@@ -115,8 +114,6 @@ public class BACnetFaultParameterFaultState extends BACnetFaultParameter impleme
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetFaultParameterFaultState");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetOpeningTag openingTag =

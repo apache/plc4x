@@ -109,7 +109,6 @@ public class DataTypeSchemaHeader extends ExtensionObjectDefinition implements M
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("DataTypeSchemaHeader");
 
     // Simple Field (noOfNamespaces)
@@ -206,8 +205,6 @@ public class DataTypeSchemaHeader extends ExtensionObjectDefinition implements M
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("DataTypeSchemaHeader");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int noOfNamespaces = readSimpleField("noOfNamespaces", readSignedInt(readBuffer, 32));

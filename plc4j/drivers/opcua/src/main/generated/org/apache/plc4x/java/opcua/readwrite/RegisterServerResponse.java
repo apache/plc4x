@@ -59,7 +59,6 @@ public class RegisterServerResponse extends ExtensionObjectDefinition implements
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("RegisterServerResponse");
 
     // Simple Field (responseHeader)
@@ -89,8 +88,6 @@ public class RegisterServerResponse extends ExtensionObjectDefinition implements
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("RegisterServerResponse");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ExtensionObjectDefinition responseHeader =

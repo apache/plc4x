@@ -68,7 +68,6 @@ public class BACnetConfirmedServiceRequestReadRangeRangeByTime
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConfirmedServiceRequestReadRangeRangeByTime");
 
     // Simple Field (referenceTime)
@@ -105,8 +104,6 @@ public class BACnetConfirmedServiceRequestReadRangeRangeByTime
           throws ParseException {
     readBuffer.pullContext("BACnetConfirmedServiceRequestReadRangeRangeByTime");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetDateTime referenceTime =

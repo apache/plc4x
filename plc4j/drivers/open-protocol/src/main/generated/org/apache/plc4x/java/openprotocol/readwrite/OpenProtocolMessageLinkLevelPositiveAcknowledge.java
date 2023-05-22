@@ -42,6 +42,7 @@ public abstract class OpenProtocolMessageLinkLevelPositiveAcknowledge extends Op
   public Mid getMid() {
     return Mid.LinkLevelPositiveAcknowledge;
   }
+
   // Abstract accessors for discriminator values.
   public abstract Long getRevision();
 
@@ -71,7 +72,6 @@ public abstract class OpenProtocolMessageLinkLevelPositiveAcknowledge extends Op
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("OpenProtocolMessageLinkLevelPositiveAcknowledge");
 
     // Switch field (Serialize the sub-type)
@@ -100,8 +100,6 @@ public abstract class OpenProtocolMessageLinkLevelPositiveAcknowledge extends Op
       ReadBuffer readBuffer, Long revision) throws ParseException {
     readBuffer.pullContext("OpenProtocolMessageLinkLevelPositiveAcknowledge");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)

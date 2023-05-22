@@ -66,7 +66,6 @@ public class BACnetLogRecordLogDatumIntegerValue extends BACnetLogRecordLogDatum
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetLogRecordLogDatumIntegerValue");
 
     // Simple Field (integerValue)
@@ -96,8 +95,6 @@ public class BACnetLogRecordLogDatumIntegerValue extends BACnetLogRecordLogDatum
       ReadBuffer readBuffer, Short tagNumber) throws ParseException {
     readBuffer.pullContext("BACnetLogRecordLogDatumIntegerValue");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetContextTagSignedInteger integerValue =

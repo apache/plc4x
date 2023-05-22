@@ -80,7 +80,6 @@ public class BACnetConstructedDataPriorityForWriting extends BACnetConstructedDa
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataPriorityForWriting");
 
     // Simple Field (priorityForWriting)
@@ -122,8 +121,6 @@ public class BACnetConstructedDataPriorityForWriting extends BACnetConstructedDa
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataPriorityForWriting");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger priorityForWriting =

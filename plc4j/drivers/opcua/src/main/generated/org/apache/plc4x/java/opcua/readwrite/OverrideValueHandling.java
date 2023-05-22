@@ -36,7 +36,7 @@ public enum OverrideValueHandling {
     }
   }
 
-  private long value;
+  private final long value;
 
   OverrideValueHandling(long value) {
     this.value = value;

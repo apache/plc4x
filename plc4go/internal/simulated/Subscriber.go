@@ -23,6 +23,8 @@ import (
 	"context"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/spi"
+	spiModel "github.com/apache/plc4x/plc4go/spi/model"
+	"github.com/pkg/errors"
 )
 
 type Subscriber struct {
@@ -40,13 +42,19 @@ func NewSubscriber(device *Device, options map[string][]string, tracer *spi.Trac
 }
 
 func (r Subscriber) Subscribe(_ context.Context, subscriptionRequest apiModel.PlcSubscriptionRequest) <-chan apiModel.PlcSubscriptionRequestResult {
+	// TODO: handle context
+	result := make(chan apiModel.PlcSubscriptionRequestResult)
+	result <- spiModel.NewDefaultPlcSubscriptionRequestResult(subscriptionRequest, nil, errors.New("Not Implemented"))
 	// TODO: implement me
-	return make(chan apiModel.PlcSubscriptionRequestResult)
+	return result
 }
 
 func (r Subscriber) Unsubscribe(_ context.Context, unsubscriptionRequest apiModel.PlcUnsubscriptionRequest) <-chan apiModel.PlcUnsubscriptionRequestResult {
+	// TODO: handle context
+	result := make(chan apiModel.PlcUnsubscriptionRequestResult, 1)
+	result <- spiModel.NewDefaultPlcUnsubscriptionRequestResult(unsubscriptionRequest, nil, errors.New("Not Implemented"))
 	// TODO: implement me
-	return make(chan apiModel.PlcUnsubscriptionRequestResult)
+	return result
 }
 
 func (r Subscriber) Register(consumer apiModel.PlcSubscriptionEventConsumer, handles []apiModel.PlcSubscriptionHandle) apiModel.PlcConsumerRegistration {

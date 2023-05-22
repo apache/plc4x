@@ -19,6 +19,7 @@
 
 package org.apache.plc4x.java.profinet;
 
+import org.apache.plc4x.java.profinet.config.ConfigurationProfinetDevice;
 import org.apache.plc4x.java.profinet.config.ProfinetConfiguration;
 import org.apache.plc4x.java.profinet.device.ProfinetDevice;
 import org.apache.plc4x.java.profinet.device.ProfinetEmptyModule;
@@ -29,7 +30,9 @@ import org.apache.plc4x.java.spi.configuration.ConfigurationFactory;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
@@ -42,7 +45,22 @@ public class ProfinetDeviceContextTests {
         ProfinetConfiguration configuration = new ConfigurationFactory().createConfiguration(
             ProfinetConfiguration.class, "gsddirectory=src/test/resources/&devices=[[device_name_1, PLC4X_1, (PLC4X_DUMMY_MODULE, PLC4X_DUMMY_MODULE, PLC4X_DUMMY_MODULE, PLC4X_DUMMY_MODULE)]]");
 
-        ProfinetDevice device = configuration.getDevices().getConfiguredDevices().get("DEVICE_NAME_1");
+        Map<String, ConfigurationProfinetDevice> configuredDevices = configuration.getDevices().getConfiguredDevices();
+        Map<String, ProfinetDevice> devices = new HashMap<>();
+        for (Map.Entry<String, ConfigurationProfinetDevice> entry : configuredDevices.entrySet()) {
+            devices.put(entry.getKey(),
+                new ProfinetDevice(
+                    new DummyMessageWrapper(),
+                    entry.getValue().getDevicename(),
+                    entry.getValue().getDeviceaccess(),
+                    entry.getValue().getSubmodules(),
+                    entry.getValue().getGsdHandler()
+                )
+            );
+            devices.get(entry.getValue().getDevicename()).setIpAddress(entry.getValue().getIpaddress());
+        }
+
+        ProfinetDevice device =devices.get("DEVICE_NAME_1");
         device.setVendorDeviceId("CAFE", "0001");
 
         ProfinetModule[] modules = device.getDeviceContext().getModules();
@@ -55,7 +73,22 @@ public class ProfinetDeviceContextTests {
         ProfinetConfiguration configuration = new ConfigurationFactory().createConfiguration(
             ProfinetConfiguration.class, "gsddirectory=src/test/resources/&devices=[[device_name_1, PLC4X_1, (PLC4X_DUMMY_MODULE, PLC4X_DUMMY_MODULE, PLC4X_DUMMY_MODULE, PLC4X_DUMMY_MODULE)]]");
 
-        ProfinetDevice device = configuration.getDevices().getConfiguredDevices().get("DEVICE_NAME_1");
+        Map<String, ConfigurationProfinetDevice> configuredDevices = configuration.getDevices().getConfiguredDevices();
+        Map<String, ProfinetDevice> devices = new HashMap<>();
+        for (Map.Entry<String, ConfigurationProfinetDevice> entry : configuredDevices.entrySet()) {
+            devices.put(entry.getKey(),
+                new ProfinetDevice(
+                    new DummyMessageWrapper(),
+                    entry.getValue().getDevicename(),
+                    entry.getValue().getDeviceaccess(),
+                    entry.getValue().getSubmodules(),
+                    entry.getValue().getGsdHandler()
+                )
+            );
+            devices.get(entry.getValue().getDevicename()).setIpAddress(entry.getValue().getIpaddress());
+        }
+
+        ProfinetDevice device = devices.get("DEVICE_NAME_1");
         device.setVendorDeviceId("CAFE", "0001");
 
         ProfinetModule[] modules = device.getDeviceContext().getModules();
@@ -73,7 +106,22 @@ public class ProfinetDeviceContextTests {
         ProfinetConfiguration configuration = new ConfigurationFactory().createConfiguration(
             ProfinetConfiguration.class, "gsddirectory=src/test/resources/&devices=[[device_name_1, PLC4X_1, (PLC4X_DUMMY_MODULE, , PLC4X_DUMMY_MODULE, PLC4X_DUMMY_MODULE)]]");
 
-        ProfinetDevice device = configuration.getDevices().getConfiguredDevices().get("DEVICE_NAME_1");
+        Map<String, ConfigurationProfinetDevice> configuredDevices = configuration.getDevices().getConfiguredDevices();
+        Map<String, ProfinetDevice> devices = new HashMap<>();
+        for (Map.Entry<String, ConfigurationProfinetDevice> entry : configuredDevices.entrySet()) {
+            devices.put(entry.getKey(),
+                new ProfinetDevice(
+                    new DummyMessageWrapper(),
+                    entry.getValue().getDevicename(),
+                    entry.getValue().getDeviceaccess(),
+                    entry.getValue().getSubmodules(),
+                    entry.getValue().getGsdHandler()
+                )
+            );
+            devices.get(entry.getValue().getDevicename()).setIpAddress(entry.getValue().getIpaddress());
+        }
+
+        ProfinetDevice device = devices.get("DEVICE_NAME_1");
         device.setVendorDeviceId("CAFE", "0001");
 
         ProfinetModule[] modules = device.getDeviceContext().getModules();
@@ -91,7 +139,22 @@ public class ProfinetDeviceContextTests {
         ProfinetConfiguration configuration = new ConfigurationFactory().createConfiguration(
             ProfinetConfiguration.class, "gsddirectory=src/test/resources/&devices=[[device_name_1, PLC4X_1, (PLC4X_DUMMY_MODULE, , PLC4X_DUMMY_MODULE, PLC4X_DUMMY_MODULE)]]");
 
-        ProfinetDevice device = configuration.getDevices().getConfiguredDevices().get("DEVICE_NAME_1");
+        Map<String, ConfigurationProfinetDevice> configuredDevices = configuration.getDevices().getConfiguredDevices();
+        Map<String, ProfinetDevice> devices = new HashMap<>();
+        for (Map.Entry<String, ConfigurationProfinetDevice> entry : configuredDevices.entrySet()) {
+            devices.put(entry.getKey(),
+                new ProfinetDevice(
+                    new DummyMessageWrapper(),
+                    entry.getValue().getDevicename(),
+                    entry.getValue().getDeviceaccess(),
+                    entry.getValue().getSubmodules(),
+                    entry.getValue().getGsdHandler()
+                )
+            );
+            devices.get(entry.getValue().getDevicename()).setIpAddress(entry.getValue().getIpaddress());
+        }
+
+        ProfinetDevice device = devices.get("DEVICE_NAME_1");
         device.setVendorDeviceId("CAFE", "0001");
 
         List<PnIoCm_Block_ExpectedSubmoduleReq> moduleReq = device.getDeviceContext().getExpectedSubmoduleReq();

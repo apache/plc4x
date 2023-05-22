@@ -69,7 +69,6 @@ public class ParameterValueSerialNumber extends ParameterValue implements Messag
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("ParameterValueSerialNumber");
 
     // Simple Field (value)
@@ -107,8 +106,6 @@ public class ParameterValueSerialNumber extends ParameterValue implements Messag
       ReadBuffer readBuffer, ParameterType parameterType, Short numBytes) throws ParseException {
     readBuffer.pullContext("ParameterValueSerialNumber");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Validation
     if (!((numBytes) >= (4))) {

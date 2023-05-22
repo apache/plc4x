@@ -97,7 +97,7 @@ func TestInlineIf(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			assert.Equalf(t, tt.want, InlineIf(tt.args.test, tt.args.a, tt.args.b), "InlineIf(%v, %v, %v)", tt.args.test, tt.args.a, tt.args.b)
+			assert.Equalf(t, tt.want, InlineIf(tt.args.test, tt.args.a, tt.args.b), "InlineIf(%v, func(), func())", tt.args.test)
 		})
 	}
 }

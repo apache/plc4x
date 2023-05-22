@@ -72,7 +72,6 @@ public class TlvIeee8023MacPhyConfigStatus extends TlvOrgSpecificIeee8023Unit im
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("TlvIeee8023MacPhyConfigStatus");
 
     // Simple Field (negotiationSupport)
@@ -115,8 +114,6 @@ public class TlvIeee8023MacPhyConfigStatus extends TlvOrgSpecificIeee8023Unit im
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("TlvIeee8023MacPhyConfigStatus");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short negotiationSupport =

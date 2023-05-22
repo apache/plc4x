@@ -58,7 +58,6 @@ public class ChannelInformation implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("ChannelInformation");
 
     // Simple Field (numChannels)
@@ -99,8 +98,6 @@ public class ChannelInformation implements Message {
   public static ChannelInformation staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("ChannelInformation");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte numChannels = readSimpleField("numChannels", readUnsignedByte(readBuffer, 3));

@@ -75,7 +75,6 @@ public class BACnetConstructedDataRoutingTable extends BACnetConstructedData imp
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataRoutingTable");
 
     // Array Field (routingTable)
@@ -114,8 +113,6 @@ public class BACnetConstructedDataRoutingTable extends BACnetConstructedData imp
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataRoutingTable");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     List<BACnetRouterEntry> routingTable =

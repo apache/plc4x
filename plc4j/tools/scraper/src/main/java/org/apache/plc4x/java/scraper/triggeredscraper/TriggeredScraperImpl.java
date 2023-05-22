@@ -77,7 +77,7 @@ public class TriggeredScraperImpl implements Scraper, TriggeredScraperMBean {
     private final List<ScrapeJob> jobs;
     private MBeanServer mBeanServer;
 
-    private long futureTimeOut;
+    private final long futureTimeOut;
 
     private final TriggerCollector triggerCollector;
 
@@ -297,11 +297,7 @@ public class TriggeredScraperImpl implements Scraper, TriggeredScraperMBean {
         CompletableFuture<PlcConnection> future = CompletableFuture.supplyAsync(() -> {
             try {
                 return plcConnectionManager.getConnection(connectionString);
-            } catch (PlcConnectionException e) {
-                LOGGER.warn("Unable to instantiate connection to " + connectionString, e);
-                throw new PlcRuntimeException(e);
-            }
-            catch (Exception e){
+            } catch (Exception e){
                 LOGGER.warn("Unable to instantiate connection to " + connectionString, e);
                 throw new PlcRuntimeException(e);
             }

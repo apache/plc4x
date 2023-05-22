@@ -71,7 +71,6 @@ public class Plc4xTagValueResponse implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("Plc4xTagValueResponse");
 
     // Simple Field (tag)
@@ -143,8 +142,6 @@ public class Plc4xTagValueResponse implements Message {
   public static Plc4xTagValueResponse staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("Plc4xTagValueResponse");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     Plc4xTag tag =

@@ -28,7 +28,7 @@
   <!-- TODO: why doesn't this work? log won't be switched off-->
   <logger name="org.apache.plc4x.java.bacnetip.RandomPackagesTest" level="OFF"/>
 
-  <root level="ERROR">
+  <root level="error">
     <appender-ref ref="STDOUT" />
   </root>
 

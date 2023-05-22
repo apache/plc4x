@@ -74,7 +74,6 @@ public class CBusHeader implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("CBusHeader");
 
     // Simple Field (priorityClass)
@@ -139,8 +138,6 @@ public class CBusHeader implements Message {
   public static CBusHeader staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("CBusHeader");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     PriorityClass priorityClass =

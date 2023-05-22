@@ -44,6 +44,7 @@ setup(
         "black",
         "pip",
         "aenum",
+        "bitarray",
     ],
     extras_require={
         "dev": [

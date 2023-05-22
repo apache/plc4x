@@ -57,7 +57,6 @@ public class BACnetRecipientDevice extends BACnetRecipient implements Message {
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetRecipientDevice");
 
     // Simple Field (deviceValue)
@@ -87,8 +86,6 @@ public class BACnetRecipientDevice extends BACnetRecipient implements Message {
       throws ParseException {
     readBuffer.pullContext("BACnetRecipientDevice");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetContextTagObjectIdentifier deviceValue =

@@ -71,7 +71,6 @@ public class ExtensionObject implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("ExtensionObject");
 
     // Simple Field (typeId)
@@ -141,8 +140,6 @@ public class ExtensionObject implements Message {
       throws ParseException {
     readBuffer.pullContext("ExtensionObject");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ExpandedNodeId typeId =

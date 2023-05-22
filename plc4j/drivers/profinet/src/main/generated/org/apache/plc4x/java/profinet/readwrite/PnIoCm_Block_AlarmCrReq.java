@@ -139,7 +139,6 @@ public class PnIoCm_Block_AlarmCrReq extends PnIoCm_Block implements Message {
   protected void serializePnIoCm_BlockChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("PnIoCm_Block_AlarmCrReq");
 
     // Implicit Field (blockLength) (Used for parsing, but its value is not stored as it's
@@ -309,8 +308,6 @@ public class PnIoCm_Block_AlarmCrReq extends PnIoCm_Block implements Message {
       throws ParseException {
     readBuffer.pullContext("PnIoCm_Block_AlarmCrReq");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int blockLength =

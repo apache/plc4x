@@ -58,7 +58,6 @@ public class BACnetLandingCallStatusCommandDirection extends BACnetLandingCallSt
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetLandingCallStatusCommandDirection");
 
     // Simple Field (direction)
@@ -89,8 +88,6 @@ public class BACnetLandingCallStatusCommandDirection extends BACnetLandingCallSt
           throws ParseException {
     readBuffer.pullContext("BACnetLandingCallStatusCommandDirection");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetLiftCarDirectionTagged direction =

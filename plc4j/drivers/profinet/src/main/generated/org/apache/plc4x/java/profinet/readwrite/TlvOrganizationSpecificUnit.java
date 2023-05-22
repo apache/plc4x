@@ -50,7 +50,6 @@ public abstract class TlvOrganizationSpecificUnit implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("TlvOrganizationSpecificUnit");
 
     // Discriminator Field (uniqueCode) (Used as input to a switch field)
@@ -91,8 +90,6 @@ public abstract class TlvOrganizationSpecificUnit implements Message {
       throws ParseException {
     readBuffer.pullContext("TlvOrganizationSpecificUnit");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     long uniqueCode = readDiscriminatorField("uniqueCode", readUnsignedLong(readBuffer, 24));

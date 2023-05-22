@@ -59,7 +59,6 @@ public class BACnetPropertyStatesAccessCredentialDisableReason extends BACnetPro
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetPropertyStatesAccessCredentialDisableReason");
 
     // Simple Field (accessCredentialDisableReason)
@@ -92,8 +91,6 @@ public class BACnetPropertyStatesAccessCredentialDisableReason extends BACnetPro
       ReadBuffer readBuffer, Short peekedTagNumber) throws ParseException {
     readBuffer.pullContext("BACnetPropertyStatesAccessCredentialDisableReason");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetAccessCredentialDisableReasonTagged accessCredentialDisableReason =

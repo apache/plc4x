@@ -79,7 +79,6 @@ public class BACnetConstructedDataAdjustValue extends BACnetConstructedData impl
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataAdjustValue");
 
     // Simple Field (adjustValue)
@@ -120,8 +119,6 @@ public class BACnetConstructedDataAdjustValue extends BACnetConstructedData impl
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataAdjustValue");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagSignedInteger adjustValue =

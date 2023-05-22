@@ -244,13 +244,12 @@ func TestDiscoverer_createTransportInstanceDispatcher(t *testing.T) {
 				cBusPort: func() uint16 {
 					listen, err := net.Listen("tcp", "127.0.0.1:0")
 					if err != nil {
-						t.Error(err)
-						t.FailNow()
+						t.Fatal(err)
 					}
 					go func() {
 						conn, err := listen.Accept()
 						if err != nil {
-							t.Error(err)
+							t.Log(err)
 							return
 						}
 						write, err := conn.Write([]byte("x.890050435F434E49454422\r\n"))
@@ -267,13 +266,11 @@ func TestDiscoverer_createTransportInstanceDispatcher(t *testing.T) {
 					})
 					parse, err := url.Parse("tcp://" + listen.Addr().String())
 					if err != nil {
-						t.Error(err)
-						t.FailNow()
+						t.Fatal(err)
 					}
 					port, err := strconv.ParseUint(parse.Port(), 10, 16)
 					if err != nil {
-						t.Error(err)
-						t.FailNow()
+						t.Fatal(err)
 					}
 					return uint16(port)
 				}(),
@@ -290,7 +287,7 @@ func TestDiscoverer_createTransportInstanceDispatcher(t *testing.T) {
 			assert.NotNilf(t, dispatcher, "createTransportInstanceDispatcher(%v, %v, %v, %v, %v)", tt.args.ctx, tt.args.wg, tt.args.ip, tt.args.tcpTransport, tt.args.transportInstances)
 			dispatcher()
 			timeout := time.NewTimer(2 * time.Second)
-			utils.CleanupTimer(timeout)
+			defer utils.CleanupTimer(timeout)
 			select {
 			case <-timeout.C:
 				t.Error("timeout")

@@ -80,7 +80,6 @@ public class BACnetConstructedDataInstantaneousPower extends BACnetConstructedDa
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataInstantaneousPower");
 
     // Simple Field (instantaneousPower)
@@ -122,8 +121,6 @@ public class BACnetConstructedDataInstantaneousPower extends BACnetConstructedDa
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataInstantaneousPower");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagReal instantaneousPower =

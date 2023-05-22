@@ -36,7 +36,7 @@ public enum DeadbandType {
     }
   }
 
-  private long value;
+  private final long value;
 
   DeadbandType(long value) {
     this.value = value;

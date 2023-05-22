@@ -80,7 +80,6 @@ public class BACnetConstructedDataUserInformationReference extends BACnetConstru
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataUserInformationReference");
 
     // Simple Field (userInformationReference)
@@ -124,8 +123,6 @@ public class BACnetConstructedDataUserInformationReference extends BACnetConstru
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataUserInformationReference");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagCharacterString userInformationReference =

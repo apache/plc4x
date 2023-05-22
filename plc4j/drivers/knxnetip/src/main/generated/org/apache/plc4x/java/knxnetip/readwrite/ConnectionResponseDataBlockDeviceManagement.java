@@ -52,7 +52,6 @@ public class ConnectionResponseDataBlockDeviceManagement extends ConnectionRespo
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("ConnectionResponseDataBlockDeviceManagement");
 
     writeBuffer.popContext("ConnectionResponseDataBlockDeviceManagement");
@@ -76,8 +75,6 @@ public class ConnectionResponseDataBlockDeviceManagement extends ConnectionRespo
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("ConnectionResponseDataBlockDeviceManagement");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("ConnectionResponseDataBlockDeviceManagement");

@@ -27,7 +27,7 @@ import (
 	"github.com/rs/zerolog/log"
 
 	"github.com/apache/plc4x/plc4go/pkg/api"
-	"github.com/apache/plc4x/plc4go/pkg/api/model"
+	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/transports"
@@ -234,8 +234,13 @@ func (d *defaultConnection) Connect() <-chan plc4go.PlcConnectionConnectResult {
 
 func (d *defaultConnection) ConnectWithContext(ctx context.Context) <-chan plc4go.PlcConnectionConnectResult {
 	log.Trace().Msg("Connecting")
-	ch := make(chan plc4go.PlcConnectionConnectResult)
+	ch := make(chan plc4go.PlcConnectionConnectResult, 1)
 	go func() {
+		defer func() {
+			if err := recover(); err != nil {
+				ch <- NewDefaultPlcConnectionConnectResult(nil, errors.Errorf("panic-ed %v", err))
+			}
+		}()
 		err := d.GetMessageCodec().ConnectWithContext(ctx)
 		d.SetConnected(true)
 		connection := d.GetConnection()
@@ -268,10 +273,8 @@ func (d *defaultConnection) Close() <-chan plc4go.PlcConnectionCloseResult {
 	}
 	err := d.GetTransportInstance().Close()
 	d.SetConnected(false)
-	ch := make(chan plc4go.PlcConnectionCloseResult)
-	go func() {
-		ch <- NewDefaultPlcConnectionCloseResult(d.GetConnection(), err)
-	}()
+	ch := make(chan plc4go.PlcConnectionCloseResult, 1)
+	ch <- NewDefaultPlcConnectionCloseResult(d.GetConnection(), err)
 	return ch
 }
 
@@ -281,8 +284,13 @@ func (d *defaultConnection) IsConnected() bool {
 }
 
 func (d *defaultConnection) Ping() <-chan plc4go.PlcConnectionPingResult {
-	ch := make(chan plc4go.PlcConnectionPingResult)
+	ch := make(chan plc4go.PlcConnectionPingResult, 1)
 	go func() {
+		defer func() {
+			if err := recover(); err != nil {
+				ch <- NewDefaultPlcConnectionPingResult(errors.Errorf("panic-ed %v", err))
+			}
+		}()
 		if d.GetConnection().IsConnected() {
 			ch <- NewDefaultPlcConnectionPingResult(nil)
 		} else {
@@ -296,7 +304,7 @@ func (d *defaultConnection) GetTtl() time.Duration {
 	return d.defaultTtl
 }
 
-func (d *defaultConnection) GetMetadata() model.PlcConnectionMetadata {
+func (d *defaultConnection) GetMetadata() apiModel.PlcConnectionMetadata {
 	return DefaultConnectionMetadata{
 		ConnectionAttributes: nil,
 		ProvidesReading:      false,
@@ -306,24 +314,24 @@ func (d *defaultConnection) GetMetadata() model.PlcConnectionMetadata {
 	}
 }
 
-func (d *defaultConnection) ReadRequestBuilder() model.PlcReadRequestBuilder {
-	panic("not implemented")
+func (d *defaultConnection) ReadRequestBuilder() apiModel.PlcReadRequestBuilder {
+	panic("not provided by actual connection")
 }
 
-func (d *defaultConnection) WriteRequestBuilder() model.PlcWriteRequestBuilder {
-	panic("not implemented")
+func (d *defaultConnection) WriteRequestBuilder() apiModel.PlcWriteRequestBuilder {
+	panic("not provided by actual connection")
 }
 
-func (d *defaultConnection) SubscriptionRequestBuilder() model.PlcSubscriptionRequestBuilder {
-	panic("not implemented")
+func (d *defaultConnection) SubscriptionRequestBuilder() apiModel.PlcSubscriptionRequestBuilder {
+	panic("not provided by actual connection")
 }
 
-func (d *defaultConnection) UnsubscriptionRequestBuilder() model.PlcUnsubscriptionRequestBuilder {
-	panic("not implemented")
+func (d *defaultConnection) UnsubscriptionRequestBuilder() apiModel.PlcUnsubscriptionRequestBuilder {
+	panic("not provided by actual connection")
 }
 
-func (d *defaultConnection) BrowseRequestBuilder() model.PlcBrowseRequestBuilder {
-	panic("not implemented")
+func (d *defaultConnection) BrowseRequestBuilder() apiModel.PlcBrowseRequestBuilder {
+	panic("not provided by actual connection")
 }
 
 func (d *defaultConnection) GetTransportInstance() transports.TransportInstance {

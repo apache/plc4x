@@ -54,7 +54,6 @@ public class PnDcp_Block_ControlOptionSignal extends PnDcp_Block implements Mess
   protected void serializePnDcp_BlockChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("PnDcp_Block_ControlOptionSignal");
 
     writeBuffer.popContext("PnDcp_Block_ControlOptionSignal");
@@ -78,8 +77,6 @@ public class PnDcp_Block_ControlOptionSignal extends PnDcp_Block implements Mess
       throws ParseException {
     readBuffer.pullContext("PnDcp_Block_ControlOptionSignal");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("PnDcp_Block_ControlOptionSignal");

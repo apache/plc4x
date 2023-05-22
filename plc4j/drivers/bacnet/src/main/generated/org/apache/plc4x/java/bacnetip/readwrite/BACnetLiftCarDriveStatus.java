@@ -44,7 +44,7 @@ public enum BACnetLiftCarDriveStatus {
     }
   }
 
-  private int value;
+  private final int value;
 
   BACnetLiftCarDriveStatus(int value) {
     this.value = value;

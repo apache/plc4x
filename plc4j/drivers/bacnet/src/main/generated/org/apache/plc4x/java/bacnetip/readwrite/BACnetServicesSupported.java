@@ -74,7 +74,7 @@ public enum BACnetServicesSupported {
     }
   }
 
-  private short value;
+  private final short value;
 
   BACnetServicesSupported(short value) {
     this.value = value;

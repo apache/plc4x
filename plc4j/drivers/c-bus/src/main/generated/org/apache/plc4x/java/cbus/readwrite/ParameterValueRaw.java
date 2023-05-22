@@ -63,7 +63,6 @@ public class ParameterValueRaw extends ParameterValue implements Message {
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("ParameterValueRaw");
 
     // Array Field (data)
@@ -95,8 +94,6 @@ public class ParameterValueRaw extends ParameterValue implements Message {
       ReadBuffer readBuffer, ParameterType parameterType, Short numBytes) throws ParseException {
     readBuffer.pullContext("ParameterValueRaw");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte[] data = readBuffer.readByteArray("data", Math.toIntExact(numBytes));

@@ -115,6 +115,7 @@
             [simple     uint 32                         remotePortRxDelay]
             [simple     uint 32                         localPortTxDelay]
             [simple     uint 32                         remotePortTxDelay]
+            [simple     uint 32                         portCableDelay]
         ]
         ['PORT_STATUS'  TlvProfibusSubTypePortStatus
             [simple     uint 16                         rtClass2PortStatus]

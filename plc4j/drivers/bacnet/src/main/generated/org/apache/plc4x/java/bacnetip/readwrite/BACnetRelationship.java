@@ -64,7 +64,7 @@ public enum BACnetRelationship {
     }
   }
 
-  private int value;
+  private final int value;
 
   BACnetRelationship(int value) {
     this.value = value;

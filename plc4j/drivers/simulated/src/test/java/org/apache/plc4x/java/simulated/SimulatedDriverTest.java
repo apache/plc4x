@@ -25,7 +25,7 @@ import org.junit.jupiter.api.Test;
 
 class SimulatedDriverTest implements WithAssertions {
 
-    SimulatedDriver SUT = new SimulatedDriver();
+    final SimulatedDriver SUT = new SimulatedDriver();
 
     @Test
     void getProtocolCode() {

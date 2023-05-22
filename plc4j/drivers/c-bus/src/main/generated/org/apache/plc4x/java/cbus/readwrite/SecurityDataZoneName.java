@@ -65,7 +65,6 @@ public class SecurityDataZoneName extends SecurityData implements Message {
   protected void serializeSecurityDataChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("SecurityDataZoneName");
 
     // Simple Field (zoneNumber)
@@ -101,8 +100,6 @@ public class SecurityDataZoneName extends SecurityData implements Message {
       throws ParseException {
     readBuffer.pullContext("SecurityDataZoneName");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short zoneNumber = readSimpleField("zoneNumber", readUnsignedShort(readBuffer, 8));

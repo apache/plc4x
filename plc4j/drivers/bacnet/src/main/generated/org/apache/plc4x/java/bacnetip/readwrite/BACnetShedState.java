@@ -37,7 +37,7 @@ public enum BACnetShedState {
     }
   }
 
-  private short value;
+  private final short value;
 
   BACnetShedState(short value) {
     this.value = value;

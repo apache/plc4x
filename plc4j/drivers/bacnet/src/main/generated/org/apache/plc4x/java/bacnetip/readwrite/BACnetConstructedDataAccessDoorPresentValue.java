@@ -80,7 +80,6 @@ public class BACnetConstructedDataAccessDoorPresentValue extends BACnetConstruct
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataAccessDoorPresentValue");
 
     // Simple Field (presentValue)
@@ -121,8 +120,6 @@ public class BACnetConstructedDataAccessDoorPresentValue extends BACnetConstruct
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataAccessDoorPresentValue");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetDoorValueTagged presentValue =

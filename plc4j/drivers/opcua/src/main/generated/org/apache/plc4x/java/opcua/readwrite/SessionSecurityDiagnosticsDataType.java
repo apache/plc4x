@@ -124,7 +124,6 @@ public class SessionSecurityDiagnosticsDataType extends ExtensionObjectDefinitio
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("SessionSecurityDiagnosticsDataType");
 
     // Simple Field (sessionId)
@@ -231,8 +230,6 @@ public class SessionSecurityDiagnosticsDataType extends ExtensionObjectDefinitio
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("SessionSecurityDiagnosticsDataType");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     NodeId sessionId =

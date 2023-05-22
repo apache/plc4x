@@ -62,8 +62,8 @@ public enum ModbusDataType {
     }
   }
 
-  private short value;
-  private short dataTypeSize;
+  private final short value;
+  private final short dataTypeSize;
 
   ModbusDataType(short value, short dataTypeSize) {
     this.value = value;
@@ -88,7 +88,7 @@ public enum ModbusDataType {
   }
 
   public static List<ModbusDataType> enumsForFieldDataTypeSize(short fieldValue) {
-    List<ModbusDataType> _values = new ArrayList();
+    List<ModbusDataType> _values = new ArrayList<>();
     for (ModbusDataType _val : ModbusDataType.values()) {
       if (_val.getDataTypeSize() == fieldValue) {
         _values.add(_val);

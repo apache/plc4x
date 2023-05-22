@@ -39,7 +39,7 @@ public enum DeviceDescriptorMediumType {
     }
   }
 
-  private byte value;
+  private final byte value;
 
   DeviceDescriptorMediumType(byte value) {
     this.value = value;

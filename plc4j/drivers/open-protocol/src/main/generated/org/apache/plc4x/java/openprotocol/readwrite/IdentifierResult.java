@@ -35,7 +35,7 @@ public enum IdentifierResult {
     }
   }
 
-  private short value;
+  private final short value;
 
   IdentifierResult(short value) {
     this.value = value;

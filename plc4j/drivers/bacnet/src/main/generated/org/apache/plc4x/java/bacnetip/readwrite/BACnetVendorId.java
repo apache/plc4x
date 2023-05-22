@@ -1445,8 +1445,8 @@ public enum BACnetVendorId {
   BEN_PEOPLES_INDUSTRIESLLC((int) 1257, (int) 1257, (String) "Ben Peoples Industries, LLC"),
   UNICOMM_SPZOO((int) 1258, (int) 1258, (String) "UNICOMM Sp. z o.o"),
   THING_TECHNOLOGIES_GMBH((int) 1259, (int) 1259, (String) "Thing Technologies GmbH"),
-  BEIJING_HAI_LIN_ENERGY_SAVING_TECHNOLOGY_INC(
-      (int) 1260, (int) 1260, (String) "Beijing HaiLin Energy Saving Technology, Inc."),
+  BEIJING_HAILIN_CONTROL_TECHNOLOGY_INC(
+      (int) 1260, (int) 1260, (String) "Beijing Hailin Control Technology, Inc."),
   DIGITAL_REALTY((int) 1261, (int) 1261, (String) "Digital Realty"),
   AGROWTEK_INC((int) 1262, (int) 1262, (String) "Agrowtek Inc."),
   DSP_INNOVATIONBV((int) 1263, (int) 1263, (String) "DSP Innovation BV"),
@@ -1628,6 +1628,10 @@ public enum BACnetVendorId {
   OLYMPIA_ELECTRONICS((int) 1416, (int) 1416, (String) "Olympia Electronics"),
   NORMAL_SOFTWARE_INC((int) 1417, (int) 1417, (String) "Normal Software, Inc."),
   ST_ENGINEERING_SOLUTIONJSC((int) 1418, (int) 1418, (String) "ST Engineering Solution JSC"),
+  INDUSTRIAL_FLOW_SOLUTIONS((int) 1419, (int) 1419, (String) "Industrial Flow Solutions"),
+  UBIQISENSE_APS((int) 1420, (int) 1420, (String) "Ubiqisense ApS"),
+  TIGER_SOFT((int) 1421, (int) 1421, (String) "Tiger-Soft"),
+  ECODOM_SRL((int) 1422, (int) 1422, (String) "Ecodom Srl"),
   UNKNOWN_VENDOR((int) 0xFFFF, (int) 0xFFFF, (String) "Unknown");
   private static final Map<Integer, BACnetVendorId> map;
 
@@ -1638,9 +1642,9 @@ public enum BACnetVendorId {
     }
   }
 
-  private int value;
-  private int vendorId;
-  private String vendorName;
+  private final int value;
+  private final int vendorId;
+  private final String vendorName;
 
   BACnetVendorId(int value, int vendorId, String vendorName) {
     this.value = value;
@@ -1666,7 +1670,7 @@ public enum BACnetVendorId {
   }
 
   public static List<BACnetVendorId> enumsForFieldVendorId(int fieldValue) {
-    List<BACnetVendorId> _values = new ArrayList();
+    List<BACnetVendorId> _values = new ArrayList<>();
     for (BACnetVendorId _val : BACnetVendorId.values()) {
       if (_val.getVendorId() == fieldValue) {
         _values.add(_val);
@@ -1689,7 +1693,7 @@ public enum BACnetVendorId {
   }
 
   public static List<BACnetVendorId> enumsForFieldVendorName(String fieldValue) {
-    List<BACnetVendorId> _values = new ArrayList();
+    List<BACnetVendorId> _values = new ArrayList<>();
     for (BACnetVendorId _val : BACnetVendorId.values()) {
       if (_val.getVendorName().equals(fieldValue)) {
         _values.add(_val);

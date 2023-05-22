@@ -50,7 +50,6 @@ public class MPropInfoInd extends CEMI implements Message {
   protected void serializeCEMIChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("MPropInfoInd");
 
     writeBuffer.popContext("MPropInfoInd");
@@ -74,8 +73,6 @@ public class MPropInfoInd extends CEMI implements Message {
       throws ParseException {
     readBuffer.pullContext("MPropInfoInd");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("MPropInfoInd");

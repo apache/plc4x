@@ -25,6 +25,7 @@ import (
 	"encoding/binary"
 	"fmt"
 	"github.com/icza/bitio"
+	"github.com/stretchr/testify/mock"
 	"math/big"
 	"testing"
 
@@ -842,17 +843,6 @@ func Test_byteWriteBuffer_WriteInt8(t *testing.T) {
 	}
 }
 
-type _Test_byteWriteBuffer_WriteSerializable_Serializable struct {
-}
-
-func (_Test_byteWriteBuffer_WriteSerializable_Serializable) Serialize() ([]byte, error) {
-	return nil, nil
-}
-
-func (_Test_byteWriteBuffer_WriteSerializable_Serializable) SerializeWithWriteBuffer(ctx context.Context, writeBuffer WriteBuffer) error {
-	return nil
-}
-
 func Test_byteWriteBuffer_WriteSerializable(t *testing.T) {
 	type fields struct {
 		data      *bytes.Buffer
@@ -865,10 +855,11 @@ func Test_byteWriteBuffer_WriteSerializable(t *testing.T) {
 		serializable Serializable
 	}
 	tests := []struct {
-		name    string
-		fields  fields
-		args    args
-		wantErr assert.ErrorAssertionFunc
+		name      string
+		fields    fields
+		args      args
+		mockSetup func(t *testing.T, fields *fields, args *args)
+		wantErr   assert.ErrorAssertionFunc
 	}{
 		{
 			name: "write it",
@@ -882,14 +873,19 @@ func Test_byteWriteBuffer_WriteSerializable(t *testing.T) {
 			fields: fields{
 				writer: bitio.NewWriter(new(bytes.Buffer)),
 			},
-			args: args{
-				serializable: _Test_byteWriteBuffer_WriteSerializable_Serializable{},
+			mockSetup: func(t *testing.T, fields *fields, args *args) {
+				serializable := NewMockSerializable(t)
+				serializable.EXPECT().SerializeWithWriteBuffer(mock.Anything, mock.Anything).Return(nil)
+				args.serializable = serializable
 			},
 			wantErr: assert.NoError,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			if tt.mockSetup != nil {
+				tt.mockSetup(t, &tt.fields, &tt.args)
+			}
 			wb := &byteWriteBuffer{
 				data:      tt.fields.data,
 				writer:    tt.fields.writer,

@@ -33,3 +33,7 @@ class PlcFieldParseException(Exception):
 
 class PlcNotImplementedException(Exception):
     pass
+
+
+class SerializationException(Exception):
+    pass

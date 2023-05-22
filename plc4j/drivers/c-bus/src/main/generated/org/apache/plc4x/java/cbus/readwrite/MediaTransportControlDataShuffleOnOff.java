@@ -68,7 +68,6 @@ public class MediaTransportControlDataShuffleOnOff extends MediaTransportControl
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("MediaTransportControlDataShuffleOnOff");
 
     // Simple Field (state)
@@ -110,8 +109,6 @@ public class MediaTransportControlDataShuffleOnOff extends MediaTransportControl
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("MediaTransportControlDataShuffleOnOff");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte state = readSimpleField("state", readByte(readBuffer, 8));

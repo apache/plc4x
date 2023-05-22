@@ -80,7 +80,6 @@ public class BACnetConstructedDataTimeOfActiveTimeReset extends BACnetConstructe
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataTimeOfActiveTimeReset");
 
     // Simple Field (timeOfActiveTimeReset)
@@ -124,8 +123,6 @@ public class BACnetConstructedDataTimeOfActiveTimeReset extends BACnetConstructe
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataTimeOfActiveTimeReset");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetDateTime timeOfActiveTimeReset =

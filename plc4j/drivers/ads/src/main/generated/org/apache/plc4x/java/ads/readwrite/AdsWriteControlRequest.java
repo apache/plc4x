@@ -83,7 +83,6 @@ public class AdsWriteControlRequest extends AmsPacket implements Message {
   protected void serializeAmsPacketChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("AdsWriteControlRequest");
 
     // Simple Field (adsState)
@@ -135,8 +134,6 @@ public class AdsWriteControlRequest extends AmsPacket implements Message {
       throws ParseException {
     readBuffer.pullContext("AdsWriteControlRequest");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int adsState = readSimpleField("adsState", readUnsignedInt(readBuffer, 16));

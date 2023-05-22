@@ -68,7 +68,6 @@ public class Confirmation implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("Confirmation");
 
     // Simple Field (alpha)
@@ -128,8 +127,6 @@ public class Confirmation implements Message {
   public static Confirmation staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("Confirmation");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     Alpha alpha =

@@ -60,7 +60,6 @@ public class BACnetApplicationTagDouble extends BACnetApplicationTag implements 
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetApplicationTagDouble");
 
     // Simple Field (payload)
@@ -96,8 +95,6 @@ public class BACnetApplicationTagDouble extends BACnetApplicationTag implements 
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetApplicationTagDouble");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetTagPayloadDouble payload =

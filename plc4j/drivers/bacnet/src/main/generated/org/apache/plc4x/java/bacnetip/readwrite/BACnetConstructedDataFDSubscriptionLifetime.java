@@ -80,7 +80,6 @@ public class BACnetConstructedDataFDSubscriptionLifetime extends BACnetConstruct
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataFDSubscriptionLifetime");
 
     // Simple Field (fdSubscriptionLifetime)
@@ -124,8 +123,6 @@ public class BACnetConstructedDataFDSubscriptionLifetime extends BACnetConstruct
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataFDSubscriptionLifetime");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger fdSubscriptionLifetime =

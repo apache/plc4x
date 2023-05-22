@@ -25,6 +25,7 @@ from ctypes import c_uint8
 from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDU
 from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDUBuilder
+from plc4py.spi.generation.WriteBuffer import WriteBuffer
 import math
 
 
@@ -42,24 +43,18 @@ class ModbusPDUMaskWriteHoldingRegisterResponse(PlcMessage, ModbusPDU):
         super().__init__()
 
     def serialize_modbus_pdu_child(self, write_buffer: WriteBuffer):
-        position_aware: PositionAware = write_buffer
-        start_pos: int = position_aware.get_pos()
         write_buffer.push_context("ModbusPDUMaskWriteHoldingRegisterResponse")
 
         # Simple Field (referenceAddress)
-        write_simple_field(
-            "referenceAddress",
-            self.reference_address,
-            write_unsigned_int(write_buffer, 16),
+        write_buffer.write_unsigned_short(
+            self.reference_address, logical_name="referenceAddress"
         )
 
         # Simple Field (andMask)
-        write_simple_field(
-            "andMask", self.and_mask, write_unsigned_int(write_buffer, 16)
-        )
+        write_buffer.write_unsigned_short(self.and_mask, logical_name="andMask")
 
         # Simple Field (orMask)
-        write_simple_field("orMask", self.or_mask, write_unsigned_int(write_buffer, 16))
+        write_buffer.write_unsigned_short(self.or_mask, logical_name="orMask")
 
         write_buffer.pop_context("ModbusPDUMaskWriteHoldingRegisterResponse")
 
@@ -84,21 +79,15 @@ class ModbusPDUMaskWriteHoldingRegisterResponse(PlcMessage, ModbusPDU):
     @staticmethod
     def static_parse_builder(read_buffer: ReadBuffer, response: c_bool):
         read_buffer.pull_context("ModbusPDUMaskWriteHoldingRegisterResponse")
-        position_aware: PositionAware = read_buffer
-        start_pos: int = position_aware.get_pos()
         cur_pos: int = 0
 
         reference_address: c_uint16 = read_simple_field(
-            "referenceAddress", read_unsigned_int(read_buffer, 16)
+            "referenceAddress", read_unsigned_int
         )
 
-        and_mask: c_uint16 = read_simple_field(
-            "andMask", read_unsigned_int(read_buffer, 16)
-        )
+        and_mask: c_uint16 = read_simple_field("andMask", read_unsigned_int)
 
-        or_mask: c_uint16 = read_simple_field(
-            "orMask", read_unsigned_int(read_buffer, 16)
-        )
+        or_mask: c_uint16 = read_simple_field("orMask", read_unsigned_int)
 
         read_buffer.close_context("ModbusPDUMaskWriteHoldingRegisterResponse")
         # Create the instance

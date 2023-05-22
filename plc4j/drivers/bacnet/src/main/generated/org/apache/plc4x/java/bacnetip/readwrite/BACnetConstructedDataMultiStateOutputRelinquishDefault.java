@@ -80,7 +80,6 @@ public class BACnetConstructedDataMultiStateOutputRelinquishDefault extends BACn
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataMultiStateOutputRelinquishDefault");
 
     // Simple Field (relinquishDefault)
@@ -122,8 +121,6 @@ public class BACnetConstructedDataMultiStateOutputRelinquishDefault extends BACn
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataMultiStateOutputRelinquishDefault");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger relinquishDefault =

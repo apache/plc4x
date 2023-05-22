@@ -21,6 +21,7 @@ package knxnetip
 
 import (
 	"context"
+	"github.com/pkg/errors"
 	"time"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
@@ -28,7 +29,7 @@ import (
 	driverModel "github.com/apache/plc4x/plc4go/protocols/knxnetip/readwrite/model"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/spi/utils"
-	values2 "github.com/apache/plc4x/plc4go/spi/values"
+	spiValues "github.com/apache/plc4x/plc4go/spi/values"
 )
 
 type Subscriber struct {
@@ -45,8 +46,13 @@ func NewSubscriber(connection *Connection) *Subscriber {
 
 func (m *Subscriber) Subscribe(ctx context.Context, subscriptionRequest apiModel.PlcSubscriptionRequest) <-chan apiModel.PlcSubscriptionRequestResult {
 	// TODO: handle context
-	result := make(chan apiModel.PlcSubscriptionRequestResult)
+	result := make(chan apiModel.PlcSubscriptionRequestResult, 1)
 	go func() {
+		defer func() {
+			if err := recover(); err != nil {
+				result <- spiModel.NewDefaultPlcSubscriptionRequestResult(subscriptionRequest, nil, errors.Errorf("panic-ed %v", err))
+			}
+		}()
 		internalPlcSubscriptionRequest := subscriptionRequest.(*spiModel.DefaultPlcSubscriptionRequest)
 
 		// Add this subscriber to the connection.
@@ -61,19 +67,19 @@ func (m *Subscriber) Subscribe(ctx context.Context, subscriptionRequest apiModel
 			subscriptionValues[tagName] = NewSubscriptionHandle(m, tagName, internalPlcSubscriptionRequest.GetTag(tagName), tagType, internalPlcSubscriptionRequest.GetInterval(tagName))
 		}
 
-		result <- &spiModel.DefaultPlcSubscriptionRequestResult{
-			Request:  subscriptionRequest,
-			Response: spiModel.NewDefaultPlcSubscriptionResponse(subscriptionRequest, responseCodes, subscriptionValues),
-			Err:      nil,
-		}
+		result <- spiModel.NewDefaultPlcSubscriptionRequestResult(
+			subscriptionRequest,
+			spiModel.NewDefaultPlcSubscriptionResponse(subscriptionRequest, responseCodes, subscriptionValues),
+			nil,
+		)
 	}()
 	return result
 }
 
 func (m *Subscriber) Unsubscribe(ctx context.Context, unsubscriptionRequest apiModel.PlcUnsubscriptionRequest) <-chan apiModel.PlcUnsubscriptionRequestResult {
 	// TODO: handle context
-	result := make(chan apiModel.PlcUnsubscriptionRequestResult)
-
+	result := make(chan apiModel.PlcUnsubscriptionRequestResult, 1)
+	result <- spiModel.NewDefaultPlcUnsubscriptionRequestResult(unsubscriptionRequest, nil, errors.New("Not Implemented"))
 	// TODO: As soon as we establish a connection, we start getting data...
 	// subscriptions are more an internal handling of which values to pass where.
 
@@ -140,7 +146,7 @@ func (m *Subscriber) handleValueChange(destinationAddress []byte, payload []byte
 					if !rb.HasMore(1) {
 						rb.Reset(0)
 					}
-					plcValue := values2.NewPlcRawByteArray(rb.GetBytes())
+					plcValue := spiValues.NewPlcRawByteArray(rb.GetBytes())
 					plcValueList = append(plcValueList, plcValue)
 				} else {
 					plcValue, err2 := driverModel.KnxDatapointParseWithBuffer(context.Background(), rb, elementType)
@@ -158,7 +164,7 @@ func (m *Subscriber) handleValueChange(destinationAddress []byte, payload []byte
 				if len(plcValueList) == 1 {
 					plcValues[tagName] = plcValueList[0]
 				} else {
-					plcValues[tagName] = values2.NewPlcList(plcValueList)
+					plcValues[tagName] = spiValues.NewPlcList(plcValueList)
 				}
 			}
 			event := NewSubscriptionEvent(tags, types, intervals, responseCodes, addresses, plcValues)

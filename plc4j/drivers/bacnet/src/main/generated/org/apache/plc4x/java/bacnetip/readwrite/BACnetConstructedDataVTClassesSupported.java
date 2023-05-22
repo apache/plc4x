@@ -76,7 +76,6 @@ public class BACnetConstructedDataVTClassesSupported extends BACnetConstructedDa
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataVTClassesSupported");
 
     // Array Field (vtClassesSupported)
@@ -115,8 +114,6 @@ public class BACnetConstructedDataVTClassesSupported extends BACnetConstructedDa
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataVTClassesSupported");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     List<BACnetVTClassTagged> vtClassesSupported =

@@ -35,7 +35,7 @@ public enum HostProtocolCode {
     }
   }
 
-  private short value;
+  private final short value;
 
   HostProtocolCode(short value) {
     this.value = value;

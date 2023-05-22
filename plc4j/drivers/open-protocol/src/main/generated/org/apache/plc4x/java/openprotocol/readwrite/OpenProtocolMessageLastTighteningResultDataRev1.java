@@ -347,7 +347,6 @@ public class OpenProtocolMessageLastTighteningResultDataRev1
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("OpenProtocolMessageLastTighteningResultDataRev1");
 
     // Const Field (blockIdCellId)
@@ -825,8 +824,6 @@ public class OpenProtocolMessageLastTighteningResultDataRev1
           ReadBuffer readBuffer, Long revision) throws ParseException {
     readBuffer.pullContext("OpenProtocolMessageLastTighteningResultDataRev1");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int blockIdCellId =

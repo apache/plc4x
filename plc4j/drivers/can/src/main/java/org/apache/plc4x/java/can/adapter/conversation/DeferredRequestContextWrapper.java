@@ -30,9 +30,9 @@ import org.apache.plc4x.java.spi.ConversationContext.SendRequestContext;
 public class DeferredRequestContextWrapper<T> implements SendRequestContext<T> {
 
     private final SendRequestContext<T> delegate;
-    private Function<SendRequestContext<?>, SendRequestContext<?>> completer;
-    protected Consumer<TimeoutException> onTimeoutConsumer;
-    protected BiConsumer<?, ? extends Throwable> errorConsumer;
+    private final Function<SendRequestContext<?>, SendRequestContext<?>> completer;
+    protected final Consumer<TimeoutException> onTimeoutConsumer;
+    protected final BiConsumer<?, ? extends Throwable> errorConsumer;
 
     public DeferredRequestContextWrapper(SendRequestContext<T> delegate, Function<SendRequestContext<?>, SendRequestContext<?>> completer,
         Consumer<TimeoutException> onTimeoutConsumer, BiConsumer<?, ? extends Throwable> errorConsumer) {

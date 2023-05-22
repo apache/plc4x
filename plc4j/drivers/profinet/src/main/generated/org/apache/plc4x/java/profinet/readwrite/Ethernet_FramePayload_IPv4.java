@@ -151,7 +151,6 @@ public class Ethernet_FramePayload_IPv4 extends Ethernet_FramePayload implements
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("Ethernet_FramePayload_IPv4");
 
     // Const Field (version)
@@ -328,8 +327,6 @@ public class Ethernet_FramePayload_IPv4 extends Ethernet_FramePayload implements
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("Ethernet_FramePayload_IPv4");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte version =

@@ -88,7 +88,6 @@ public class FindServersOnNetworkRequest extends ExtensionObjectDefinition imple
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("FindServersOnNetworkRequest");
 
     // Simple Field (requestHeader)
@@ -149,8 +148,6 @@ public class FindServersOnNetworkRequest extends ExtensionObjectDefinition imple
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("FindServersOnNetworkRequest");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ExtensionObjectDefinition requestHeader =

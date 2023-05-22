@@ -59,7 +59,6 @@ public class BACnetPropertyStatesEscalatorOperationDirection extends BACnetPrope
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetPropertyStatesEscalatorOperationDirection");
 
     // Simple Field (escalatorOperationDirection)
@@ -92,8 +91,6 @@ public class BACnetPropertyStatesEscalatorOperationDirection extends BACnetPrope
       ReadBuffer readBuffer, Short peekedTagNumber) throws ParseException {
     readBuffer.pullContext("BACnetPropertyStatesEscalatorOperationDirection");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetEscalatorOperationDirectionTagged escalatorOperationDirection =

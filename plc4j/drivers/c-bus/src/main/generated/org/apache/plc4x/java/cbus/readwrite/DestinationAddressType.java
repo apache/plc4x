@@ -36,7 +36,7 @@ public enum DestinationAddressType {
     }
   }
 
-  private byte value;
+  private final byte value;
 
   DestinationAddressType(byte value) {
     this.value = value;

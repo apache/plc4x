@@ -116,7 +116,6 @@ public class QueryFirstResponse extends ExtensionObjectDefinition implements Mes
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("QueryFirstResponse");
 
     // Simple Field (responseHeader)
@@ -213,8 +212,6 @@ public class QueryFirstResponse extends ExtensionObjectDefinition implements Mes
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("QueryFirstResponse");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ExtensionObjectDefinition responseHeader =

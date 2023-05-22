@@ -59,7 +59,7 @@ public enum SzlSublist {
     }
   }
 
-  private short value;
+  private final short value;
 
   SzlSublist(short value) {
     this.value = value;

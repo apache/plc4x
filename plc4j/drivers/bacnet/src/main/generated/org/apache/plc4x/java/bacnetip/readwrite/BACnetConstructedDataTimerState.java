@@ -79,7 +79,6 @@ public class BACnetConstructedDataTimerState extends BACnetConstructedData imple
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataTimerState");
 
     // Simple Field (timerState)
@@ -120,8 +119,6 @@ public class BACnetConstructedDataTimerState extends BACnetConstructedData imple
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataTimerState");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetTimerStateTagged timerState =

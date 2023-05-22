@@ -36,7 +36,7 @@ public enum Duplex {
     }
   }
 
-  private long value;
+  private final long value;
 
   Duplex(long value) {
     this.value = value;

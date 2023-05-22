@@ -45,7 +45,7 @@ public enum Plc4xRequestType {
     }
   }
 
-  private short value;
+  private final short value;
 
   Plc4xRequestType(short value) {
     this.value = value;

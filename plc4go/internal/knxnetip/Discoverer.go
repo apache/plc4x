@@ -33,7 +33,7 @@ import (
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	driverModel "github.com/apache/plc4x/plc4go/protocols/knxnetip/readwrite/model"
-	internalModel "github.com/apache/plc4x/plc4go/spi/model"
+	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/transports"
 	"github.com/apache/plc4x/plc4go/spi/transports/udp"
@@ -99,6 +99,11 @@ func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.
 		}
 		wg.Add(1)
 		go func(netInterface net.Interface) {
+			defer func() {
+				if err := recover(); err != nil {
+					log.Error().Msgf("panic-ed %v", err)
+				}
+			}()
 			defer func() { wg.Done() }()
 			// Iterate over all addresses the current interface has configured
 			// For KNX we're only interested in IPv4 addresses, as it doesn't
@@ -132,6 +137,11 @@ func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.
 	}()
 
 	go func() {
+		defer func() {
+			if err := recover(); err != nil {
+				log.Error().Msgf("panic-ed %v", err)
+			}
+		}()
 		for transportInstance := range transportInstances {
 			d.deviceScanningQueue.Submit(ctx, d.deviceScanningWorkItemId.Add(1), d.createDeviceScanDispatcher(transportInstance.(*udp.TransportInstance), callback))
 		}
@@ -205,13 +215,14 @@ func (d *Discoverer) createDeviceScanDispatcher(udpTransportInstance *udp.Transp
 							continue
 						}
 						deviceName := string(bytes.Trim(searchResponse.GetDibDeviceInfo().GetDeviceFriendlyName(), "\x00"))
-						discoveryEvent := &internalModel.DefaultPlcDiscoveryItem{
-							ProtocolCode:  "knxnet-ip",
-							TransportCode: "udp",
-							TransportUrl:  *remoteUrl,
-							Options:       nil,
-							Name:          deviceName,
-						}
+						discoveryEvent := spiModel.NewDefaultPlcDiscoveryItem(
+							"knxnet-ip",
+							"udp",
+							*remoteUrl,
+							nil,
+							deviceName,
+							nil,
+						)
 						// Pass the event back to the callback
 						callback(discoveryEvent)
 					}

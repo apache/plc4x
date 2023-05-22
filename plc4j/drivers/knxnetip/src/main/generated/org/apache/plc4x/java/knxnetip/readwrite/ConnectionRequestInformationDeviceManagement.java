@@ -52,7 +52,6 @@ public class ConnectionRequestInformationDeviceManagement extends ConnectionRequ
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("ConnectionRequestInformationDeviceManagement");
 
     writeBuffer.popContext("ConnectionRequestInformationDeviceManagement");
@@ -76,8 +75,6 @@ public class ConnectionRequestInformationDeviceManagement extends ConnectionRequ
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("ConnectionRequestInformationDeviceManagement");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("ConnectionRequestInformationDeviceManagement");

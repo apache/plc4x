@@ -165,7 +165,6 @@ public class ProgramDiagnostic2DataType extends ExtensionObjectDefinition implem
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("ProgramDiagnostic2DataType");
 
     // Simple Field (createSessionId)
@@ -324,8 +323,6 @@ public class ProgramDiagnostic2DataType extends ExtensionObjectDefinition implem
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("ProgramDiagnostic2DataType");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     NodeId createSessionId =

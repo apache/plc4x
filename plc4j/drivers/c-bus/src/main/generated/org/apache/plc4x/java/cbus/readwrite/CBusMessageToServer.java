@@ -65,7 +65,6 @@ public class CBusMessageToServer extends CBusMessage implements Message {
   protected void serializeCBusMessageChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("CBusMessageToServer");
 
     // Simple Field (request)
@@ -99,8 +98,6 @@ public class CBusMessageToServer extends CBusMessage implements Message {
       throws ParseException {
     readBuffer.pullContext("CBusMessageToServer");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     Request request =

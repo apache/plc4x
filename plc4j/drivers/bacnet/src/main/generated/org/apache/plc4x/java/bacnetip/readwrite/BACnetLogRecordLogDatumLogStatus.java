@@ -65,7 +65,6 @@ public class BACnetLogRecordLogDatumLogStatus extends BACnetLogRecordLogDatum im
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetLogRecordLogDatumLogStatus");
 
     // Simple Field (logStatus)
@@ -95,8 +94,6 @@ public class BACnetLogRecordLogDatumLogStatus extends BACnetLogRecordLogDatum im
       ReadBuffer readBuffer, Short tagNumber) throws ParseException {
     readBuffer.pullContext("BACnetLogRecordLogDatumLogStatus");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetLogStatusTagged logStatus =

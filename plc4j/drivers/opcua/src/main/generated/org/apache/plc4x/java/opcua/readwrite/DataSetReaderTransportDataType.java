@@ -51,7 +51,6 @@ public class DataSetReaderTransportDataType extends ExtensionObjectDefinition im
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("DataSetReaderTransportDataType");
 
     writeBuffer.popContext("DataSetReaderTransportDataType");
@@ -75,8 +74,6 @@ public class DataSetReaderTransportDataType extends ExtensionObjectDefinition im
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("DataSetReaderTransportDataType");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("DataSetReaderTransportDataType");

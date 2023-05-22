@@ -79,7 +79,6 @@ public class BACnetConstructedDataReliability extends BACnetConstructedData impl
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataReliability");
 
     // Simple Field (reliability)
@@ -120,8 +119,6 @@ public class BACnetConstructedDataReliability extends BACnetConstructedData impl
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataReliability");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetReliabilityTagged reliability =

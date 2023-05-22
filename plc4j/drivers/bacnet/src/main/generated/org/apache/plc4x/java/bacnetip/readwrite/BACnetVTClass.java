@@ -41,7 +41,7 @@ public enum BACnetVTClass {
     }
   }
 
-  private int value;
+  private final int value;
 
   BACnetVTClass(int value) {
     this.value = value;

@@ -80,7 +80,6 @@ public class BACnetConstructedDataNextStoppingFloor extends BACnetConstructedDat
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataNextStoppingFloor");
 
     // Simple Field (nextStoppingFloor)
@@ -122,8 +121,6 @@ public class BACnetConstructedDataNextStoppingFloor extends BACnetConstructedDat
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataNextStoppingFloor");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger nextStoppingFloor =

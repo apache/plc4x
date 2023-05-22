@@ -198,17 +198,15 @@ func (j *jsonWriteBuffer) PopContext(logicalName string, _ ...WithWriterArgs) er
 	pop := j.Pop()
 	var poppedName string
 	var unwrapped any
-	switch pop.(type) {
+	switch _context := pop.(type) {
 	case *elementContext:
-		context := pop.(*elementContext)
-		poppedName = context.logicalName
-		unwrapped = context.properties
+		poppedName = _context.logicalName
+		unwrapped = _context.properties
 	case *listContext:
-		context := pop.(*listContext)
-		poppedName = context.logicalName
-		unwrapped = context.list
+		poppedName = _context.logicalName
+		unwrapped = _context.list
 	default:
-		panic("broken context")
+		return errors.New("broken context")
 	}
 	if poppedName != logicalName {
 		return errors.Errorf("unexpected closing context %s, expected %s", poppedName, logicalName)
@@ -220,17 +218,15 @@ func (j *jsonWriteBuffer) PopContext(logicalName string, _ ...WithWriterArgs) er
 		return nil
 	}
 	j.rootNode = j.Peek()
-	switch j.rootNode.(type) {
+	switch _context := j.rootNode.(type) {
 	case *elementContext:
-		context := j.rootNode.(*elementContext)
-		context.properties[logicalName] = unwrapped
+		_context.properties[logicalName] = unwrapped
 	case *listContext:
-		context := j.rootNode.(*listContext)
 		wrappedWrap := make(map[string]any)
 		wrappedWrap[logicalName] = unwrapped
-		context.list = append(context.list, wrappedWrap)
+		_context.list = append(_context.list, wrappedWrap)
 	default:
-		panic("broken context")
+		return errors.New("broken context")
 	}
 	return nil
 }
@@ -249,30 +245,28 @@ func (j *jsonWriteBuffer) GetJsonString() (string, error) {
 func (j *jsonWriteBuffer) encodeNode(logicalName string, value any, attr map[string]any, _ ...WithWriterArgs) error {
 	logicalName = j.SanitizeLogicalName(logicalName)
 	peek := j.Peek()
-	switch peek.(type) {
+	switch _context := peek.(type) {
 	case *elementContext:
-		context := peek.(*elementContext)
-		context.properties[logicalName] = value
+		_context.properties[logicalName] = value
 		for key, attrValue := range attr {
-			context.properties[key] = attrValue
+			_context.properties[key] = attrValue
 		}
 		return nil
 	case *listContext:
-		context := peek.(*listContext)
 		m := make(map[string]any)
 		m[logicalName] = value
 		for attrKey, attrValue := range attr {
 			m[attrKey] = attrValue
 		}
-		context.list = append(context.list, m)
+		_context.list = append(_context.list, m)
 		return nil
 	default:
-		context := &elementContext{logicalName, make(map[string]any)}
-		context.properties[logicalName] = value
+		newContext := &elementContext{logicalName, make(map[string]any)}
+		newContext.properties[logicalName] = value
 		for key, attrValue := range attr {
-			context.properties[key] = attrValue
+			newContext.properties[key] = attrValue
 		}
-		j.Push(context)
+		j.Push(newContext)
 		return nil
 	}
 }

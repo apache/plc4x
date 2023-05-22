@@ -49,7 +49,6 @@ public class AccessControlDataRequestToExit extends AccessControlData implements
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("AccessControlDataRequestToExit");
 
     writeBuffer.popContext("AccessControlDataRequestToExit");
@@ -73,8 +72,6 @@ public class AccessControlDataRequestToExit extends AccessControlData implements
       throws ParseException {
     readBuffer.pullContext("AccessControlDataRequestToExit");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("AccessControlDataRequestToExit");

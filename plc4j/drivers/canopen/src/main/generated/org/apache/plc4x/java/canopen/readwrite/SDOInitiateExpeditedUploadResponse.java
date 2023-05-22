@@ -64,7 +64,6 @@ public class SDOInitiateExpeditedUploadResponse extends SDOInitiateUploadRespons
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("SDOInitiateExpeditedUploadResponse");
 
     // Array Field (data)
@@ -108,8 +107,6 @@ public class SDOInitiateExpeditedUploadResponse extends SDOInitiateUploadRespons
           throws ParseException {
     readBuffer.pullContext("SDOInitiateExpeditedUploadResponse");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte[] data = readBuffer.readByteArray("data", Math.toIntExact((4) - (size)));

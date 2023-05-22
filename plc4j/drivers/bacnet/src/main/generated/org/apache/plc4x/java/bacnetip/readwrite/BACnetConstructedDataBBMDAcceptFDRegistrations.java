@@ -80,7 +80,6 @@ public class BACnetConstructedDataBBMDAcceptFDRegistrations extends BACnetConstr
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataBBMDAcceptFDRegistrations");
 
     // Simple Field (bbmdAcceptFDRegistrations)
@@ -124,8 +123,6 @@ public class BACnetConstructedDataBBMDAcceptFDRegistrations extends BACnetConstr
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataBBMDAcceptFDRegistrations");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagBoolean bbmdAcceptFDRegistrations =

@@ -58,7 +58,6 @@ public class KnxNetRemoteLogging extends ServiceId implements Message {
   protected void serializeServiceIdChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("KnxNetRemoteLogging");
 
     // Simple Field (version)
@@ -88,8 +87,6 @@ public class KnxNetRemoteLogging extends ServiceId implements Message {
       throws ParseException {
     readBuffer.pullContext("KnxNetRemoteLogging");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short version = readSimpleField("version", readUnsignedShort(readBuffer, 8));

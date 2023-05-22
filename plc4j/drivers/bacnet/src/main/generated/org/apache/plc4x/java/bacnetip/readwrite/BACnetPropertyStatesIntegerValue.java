@@ -57,7 +57,6 @@ public class BACnetPropertyStatesIntegerValue extends BACnetPropertyStates imple
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetPropertyStatesIntegerValue");
 
     // Simple Field (integerValue)
@@ -87,8 +86,6 @@ public class BACnetPropertyStatesIntegerValue extends BACnetPropertyStates imple
       ReadBuffer readBuffer, Short peekedTagNumber) throws ParseException {
     readBuffer.pullContext("BACnetPropertyStatesIntegerValue");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetContextTagSignedInteger integerValue =

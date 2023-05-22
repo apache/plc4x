@@ -36,7 +36,7 @@ public enum BACnetResultFlags {
     }
   }
 
-  private short value;
+  private final short value;
 
   BACnetResultFlags(short value) {
     this.value = value;

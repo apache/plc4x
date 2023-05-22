@@ -39,7 +39,7 @@ public enum BACnetProgramRequest {
     }
   }
 
-  private short value;
+  private final short value;
 
   BACnetProgramRequest(short value) {
     this.value = value;

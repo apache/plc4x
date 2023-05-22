@@ -38,7 +38,7 @@ public enum DiagnosticsLevel {
     }
   }
 
-  private long value;
+  private final long value;
 
   DiagnosticsLevel(long value) {
     this.value = value;

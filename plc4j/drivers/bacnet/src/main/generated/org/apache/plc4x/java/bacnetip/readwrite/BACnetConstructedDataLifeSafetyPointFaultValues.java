@@ -76,7 +76,6 @@ public class BACnetConstructedDataLifeSafetyPointFaultValues extends BACnetConst
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataLifeSafetyPointFaultValues");
 
     // Array Field (faultValues)
@@ -115,8 +114,6 @@ public class BACnetConstructedDataLifeSafetyPointFaultValues extends BACnetConst
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataLifeSafetyPointFaultValues");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     List<BACnetLifeSafetyStateTagged> faultValues =

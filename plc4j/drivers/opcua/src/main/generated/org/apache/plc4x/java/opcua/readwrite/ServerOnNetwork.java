@@ -88,7 +88,6 @@ public class ServerOnNetwork extends ExtensionObjectDefinition implements Messag
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("ServerOnNetwork");
 
     // Simple Field (recordId)
@@ -149,8 +148,6 @@ public class ServerOnNetwork extends ExtensionObjectDefinition implements Messag
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("ServerOnNetwork");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     long recordId = readSimpleField("recordId", readUnsignedLong(readBuffer, 32));

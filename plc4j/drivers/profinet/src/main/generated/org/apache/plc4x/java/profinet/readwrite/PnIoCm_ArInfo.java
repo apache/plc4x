@@ -34,7 +34,7 @@ public enum PnIoCm_ArInfo {
     }
   }
 
-  private byte value;
+  private final byte value;
 
   PnIoCm_ArInfo(byte value) {
     this.value = value;

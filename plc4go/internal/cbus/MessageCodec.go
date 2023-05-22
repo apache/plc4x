@@ -116,7 +116,7 @@ func (m *MessageCodec) Receive() (spi.Message, error) {
 				return true
 			}
 		}); err != nil {
-			return nil, errors.Wrap(err, "error filling buffer")
+			log.Debug().Err(err).Msg("Error filling buffer")
 		}
 	}
 	log.Trace().Msg("Buffer filled")
@@ -184,8 +184,13 @@ lookingForTheEnd:
 		return nil, err
 	}
 	if indexOfCR+1 == indexOfLF {
+		log.Trace().Msg("pci response for sure")
 		// This means a <cr> is directly followed by a <lf> which means that we know for sure this is a response
 		pciResponse = true
+	} else if indexOfCR >= 0 && int(readableBytes) >= indexOfCR+2 && peekedBytes[+indexOfCR+1] != '\n' {
+		log.Trace().Msg("pci request for sure")
+		// We got a request to pci for sure because the cr is followed by something else than \n
+		requestToPci = true
 	}
 	const numberOfCyclesToWait = 15
 	const estimatedElapsedTime = numberOfCyclesToWait * 10
@@ -229,7 +234,7 @@ lookingForTheEnd:
 
 	// Sanity check
 	if pciResponse && requestToPci {
-		panic("Invalid state... Can not be response and request at the same time")
+		return nil, errors.New("Invalid state... Can not be response and request at the same time")
 	}
 
 	// We need to ensure that there is no ! till the first /r
@@ -266,7 +271,7 @@ lookingForTheEnd:
 		log.Trace().Msgf("Read packet length %d", packetLength)
 		read, err := ti.Read(uint32(packetLength))
 		if err != nil {
-			panic("Invalid state... If we have peeked that before we should be able to read that now")
+			return nil, errors.Wrap(err, "Invalid state... If we have peeked that before we should be able to read that now")
 		}
 		rawInput = read
 	}

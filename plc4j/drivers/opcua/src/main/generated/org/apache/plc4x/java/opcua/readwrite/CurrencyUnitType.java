@@ -78,7 +78,6 @@ public class CurrencyUnitType extends ExtensionObjectDefinition implements Messa
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("CurrencyUnitType");
 
     // Simple Field (numericCode)
@@ -126,8 +125,6 @@ public class CurrencyUnitType extends ExtensionObjectDefinition implements Messa
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("CurrencyUnitType");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short numericCode = readSimpleField("numericCode", readSignedShort(readBuffer, 16));

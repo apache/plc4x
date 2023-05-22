@@ -65,7 +65,6 @@ public class Range extends ExtensionObjectDefinition implements Message {
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("Range");
 
     // Simple Field (low)
@@ -101,8 +100,6 @@ public class Range extends ExtensionObjectDefinition implements Message {
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("Range");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     double low = readSimpleField("low", readDouble(readBuffer, 64));

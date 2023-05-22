@@ -60,7 +60,7 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OpcuaProtocolLogic.class);
     protected static final PascalString NULL_STRING = new PascalString("");
-    private static ExpandedNodeId NULL_EXPANDED_NODEID = new ExpandedNodeId(false,
+    private static final ExpandedNodeId NULL_EXPANDED_NODEID = new ExpandedNodeId(false,
         false,
         new NodeIdTwoByte((short) 0),
         null,
@@ -74,9 +74,9 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
 
     private static final long EPOCH_OFFSET = 116444736000000000L;         //Offset between OPC UA epoch time and linux epoch time.
     private OpcuaConfiguration configuration;
-    private Map<Long, OpcuaSubscriptionHandle> subscriptions = new HashMap<>();
+    private final Map<Long, OpcuaSubscriptionHandle> subscriptions = new HashMap<>();
     private SecureChannel channel;
-    private AtomicBoolean securedConnection = new AtomicBoolean(false);
+    private final AtomicBoolean securedConnection = new AtomicBoolean(false);
 
     @Override
     public void setConfiguration(OpcuaConfiguration configuration) {
@@ -198,7 +198,6 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
                 } catch (ParseException e) {
                     future.completeExceptionally(new PlcRuntimeException(e));
                 }
-                ;
             };
 
             /* Functional Consumer example using inner class */
@@ -381,11 +380,11 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
                 } else if (variant instanceof VariantByteString) {
                     PlcList plcList = new PlcList();
                     List<ByteStringArray> array = ((VariantByteString) variant).getValue();
-                    for (int k = 0; k < array.size(); k++) {
-                        int length = array.get(k).getValue().size();
+                    for (ByteStringArray byteStringArray : array) {
+                        int length = byteStringArray.getValue().size();
                         Short[] tmpValue = new Short[length];
                         for (int i = 0; i < length; i++) {
-                            tmpValue[i] = array.get(k).getValue().get(i);
+                            tmpValue[i] = byteStringArray.getValue().get(i);
                         }
                         plcList.add(PlcValueHandler.of(tmpValue));
                     }

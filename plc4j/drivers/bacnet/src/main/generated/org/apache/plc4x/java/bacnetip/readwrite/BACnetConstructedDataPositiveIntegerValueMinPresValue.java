@@ -80,7 +80,6 @@ public class BACnetConstructedDataPositiveIntegerValueMinPresValue extends BACne
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataPositiveIntegerValueMinPresValue");
 
     // Simple Field (minPresValue)
@@ -121,8 +120,6 @@ public class BACnetConstructedDataPositiveIntegerValueMinPresValue extends BACne
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataPositiveIntegerValueMinPresValue");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger minPresValue =

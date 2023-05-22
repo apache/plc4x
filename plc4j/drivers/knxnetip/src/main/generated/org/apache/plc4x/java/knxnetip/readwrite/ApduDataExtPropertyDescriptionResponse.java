@@ -108,7 +108,6 @@ public class ApduDataExtPropertyDescriptionResponse extends ApduDataExt implemen
   protected void serializeApduDataExtChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("ApduDataExtPropertyDescriptionResponse");
 
     // Simple Field (objectIndex)
@@ -209,8 +208,6 @@ public class ApduDataExtPropertyDescriptionResponse extends ApduDataExt implemen
       ReadBuffer readBuffer, Short length) throws ParseException {
     readBuffer.pullContext("ApduDataExtPropertyDescriptionResponse");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short objectIndex = readSimpleField("objectIndex", readUnsignedShort(readBuffer, 8));

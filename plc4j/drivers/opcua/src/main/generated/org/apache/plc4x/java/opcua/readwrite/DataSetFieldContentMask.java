@@ -40,7 +40,7 @@ public enum DataSetFieldContentMask {
     }
   }
 
-  private long value;
+  private final long value;
 
   DataSetFieldContentMask(long value) {
     this.value = value;

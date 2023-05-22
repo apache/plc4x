@@ -80,7 +80,6 @@ public class BACnetConstructedDataLastRestartReason extends BACnetConstructedDat
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataLastRestartReason");
 
     // Simple Field (lastRestartReason)
@@ -122,8 +121,6 @@ public class BACnetConstructedDataLastRestartReason extends BACnetConstructedDat
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataLastRestartReason");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetRestartReasonTagged lastRestartReason =

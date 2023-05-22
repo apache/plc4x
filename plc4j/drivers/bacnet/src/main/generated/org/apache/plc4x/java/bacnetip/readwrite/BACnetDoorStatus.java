@@ -44,7 +44,7 @@ public enum BACnetDoorStatus {
     }
   }
 
-  private int value;
+  private final int value;
 
   BACnetDoorStatus(int value) {
     this.value = value;

@@ -72,7 +72,6 @@ public class RedundantServerDataType extends ExtensionObjectDefinition implement
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("RedundantServerDataType");
 
     // Simple Field (serverId)
@@ -119,8 +118,6 @@ public class RedundantServerDataType extends ExtensionObjectDefinition implement
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("RedundantServerDataType");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     PascalString serverId =

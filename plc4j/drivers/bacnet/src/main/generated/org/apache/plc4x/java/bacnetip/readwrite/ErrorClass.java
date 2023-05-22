@@ -42,7 +42,7 @@ public enum ErrorClass {
     }
   }
 
-  private int value;
+  private final int value;
 
   ErrorClass(int value) {
     this.value = value;

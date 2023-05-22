@@ -50,7 +50,6 @@ public class ApduDataExtNetworkParameterRead extends ApduDataExt implements Mess
   protected void serializeApduDataExtChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("ApduDataExtNetworkParameterRead");
 
     writeBuffer.popContext("ApduDataExtNetworkParameterRead");
@@ -74,8 +73,6 @@ public class ApduDataExtNetworkParameterRead extends ApduDataExt implements Mess
       ReadBuffer readBuffer, Short length) throws ParseException {
     readBuffer.pullContext("ApduDataExtNetworkParameterRead");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("ApduDataExtNetworkParameterRead");

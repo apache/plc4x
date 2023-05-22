@@ -56,7 +56,6 @@ public class MeteringDataOilConsumption extends MeteringData implements Message 
   protected void serializeMeteringDataChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("MeteringDataOilConsumption");
 
     // Simple Field (L)
@@ -86,8 +85,6 @@ public class MeteringDataOilConsumption extends MeteringData implements Message 
       throws ParseException {
     readBuffer.pullContext("MeteringDataOilConsumption");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     long L = readSimpleField("L", readUnsignedLong(readBuffer, 32));

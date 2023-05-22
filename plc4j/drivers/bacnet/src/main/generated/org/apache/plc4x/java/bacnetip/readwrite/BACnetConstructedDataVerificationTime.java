@@ -80,7 +80,6 @@ public class BACnetConstructedDataVerificationTime extends BACnetConstructedData
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataVerificationTime");
 
     // Simple Field (verificationTime)
@@ -122,8 +121,6 @@ public class BACnetConstructedDataVerificationTime extends BACnetConstructedData
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataVerificationTime");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagSignedInteger verificationTime =

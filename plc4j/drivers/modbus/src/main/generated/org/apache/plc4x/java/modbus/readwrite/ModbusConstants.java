@@ -51,7 +51,6 @@ public class ModbusConstants implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("ModbusConstants");
 
     // Const Field (modbusTcpDefaultPort)
@@ -87,8 +86,6 @@ public class ModbusConstants implements Message {
   public static ModbusConstants staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("ModbusConstants");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int modbusTcpDefaultPort =

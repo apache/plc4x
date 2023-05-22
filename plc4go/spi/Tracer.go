@@ -101,25 +101,17 @@ func (t *Tracer) FilterTraces(traces []TraceEntry, connectionIdFilter string, tr
 	var result []TraceEntry
 traceFiltering:
 	for _, trace := range traces {
-		if connectionIdFilter != "" {
-			if trace.ConnectionId != connectionIdFilter {
-				continue traceFiltering
-			}
+		if connectionIdFilter != "" && trace.ConnectionId != connectionIdFilter {
+			continue traceFiltering
 		}
-		if transactionIdFilter != "" {
-			if trace.TransactionId != transactionIdFilter {
-				continue traceFiltering
-			}
+		if transactionIdFilter != "" && trace.TransactionId != transactionIdFilter {
+			continue traceFiltering
 		}
-		if operationFilter != "" {
-			if trace.Operation != operationFilter {
-				continue traceFiltering
-			}
+		if operationFilter != "" && trace.Operation != operationFilter {
+			continue traceFiltering
 		}
-		if messageFilter != "" {
-			if trace.Message != messageFilter {
-				continue traceFiltering
-			}
+		if messageFilter != "" && trace.Message != messageFilter {
+			continue traceFiltering
 		}
 		result = append(result, trace)
 	}

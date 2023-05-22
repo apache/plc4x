@@ -65,7 +65,6 @@ public abstract class Plc4xMessage implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("Plc4xMessage");
 
     // Const Field (version)
@@ -143,8 +142,6 @@ public abstract class Plc4xMessage implements Message {
   public static Plc4xMessage staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("Plc4xMessage");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short version =

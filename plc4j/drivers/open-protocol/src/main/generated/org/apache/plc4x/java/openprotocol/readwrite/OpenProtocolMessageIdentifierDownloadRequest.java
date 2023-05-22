@@ -42,6 +42,7 @@ public abstract class OpenProtocolMessageIdentifierDownloadRequest extends OpenP
   public Mid getMid() {
     return Mid.IdentifierDownloadRequest;
   }
+
   // Abstract accessors for discriminator values.
   public abstract Long getRevision();
 
@@ -71,7 +72,6 @@ public abstract class OpenProtocolMessageIdentifierDownloadRequest extends OpenP
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("OpenProtocolMessageIdentifierDownloadRequest");
 
     // Switch field (Serialize the sub-type)
@@ -100,8 +100,6 @@ public abstract class OpenProtocolMessageIdentifierDownloadRequest extends OpenP
       ReadBuffer readBuffer, Long revision) throws ParseException {
     readBuffer.pullContext("OpenProtocolMessageIdentifierDownloadRequest");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)

@@ -58,7 +58,6 @@ public class ModbusPDUReportServerIdRequest extends ModbusPDU implements Message
   protected void serializeModbusPDUChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("ModbusPDUReportServerIdRequest");
 
     writeBuffer.popContext("ModbusPDUReportServerIdRequest");
@@ -82,8 +81,6 @@ public class ModbusPDUReportServerIdRequest extends ModbusPDU implements Message
       ReadBuffer readBuffer, Boolean response) throws ParseException {
     readBuffer.pullContext("ModbusPDUReportServerIdRequest");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("ModbusPDUReportServerIdRequest");

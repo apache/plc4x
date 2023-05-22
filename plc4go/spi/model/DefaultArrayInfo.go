@@ -25,14 +25,14 @@ type DefaultArrayInfo struct {
 	UpperBound uint32
 }
 
-func (t DefaultArrayInfo) GetSize() uint32 {
+func (t *DefaultArrayInfo) GetSize() uint32 {
 	return t.UpperBound - t.LowerBound
 }
 
-func (t DefaultArrayInfo) GetLowerBound() uint32 {
+func (t *DefaultArrayInfo) GetLowerBound() uint32 {
 	return t.LowerBound
 }
 
-func (t DefaultArrayInfo) GetUpperBound() uint32 {
+func (t *DefaultArrayInfo) GetUpperBound() uint32 {
 	return t.UpperBound
 }

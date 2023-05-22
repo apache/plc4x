@@ -109,7 +109,6 @@ public class CBusOptions implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("CBusOptions");
 
     // Simple Field (connect)
@@ -192,8 +191,6 @@ public class CBusOptions implements Message {
   public static CBusOptions staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("CBusOptions");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     boolean connect = readSimpleField("connect", readBoolean(readBuffer));

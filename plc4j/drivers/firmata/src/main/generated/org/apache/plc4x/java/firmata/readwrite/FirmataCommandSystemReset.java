@@ -51,7 +51,6 @@ public class FirmataCommandSystemReset extends FirmataCommand implements Message
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("FirmataCommandSystemReset");
 
     writeBuffer.popContext("FirmataCommandSystemReset");
@@ -75,8 +74,6 @@ public class FirmataCommandSystemReset extends FirmataCommand implements Message
       ReadBuffer readBuffer, Boolean response) throws ParseException {
     readBuffer.pullContext("FirmataCommandSystemReset");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("FirmataCommandSystemReset");

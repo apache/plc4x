@@ -48,7 +48,6 @@ public class SecurityDataStatus1Request extends SecurityData implements Message 
   protected void serializeSecurityDataChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("SecurityDataStatus1Request");
 
     writeBuffer.popContext("SecurityDataStatus1Request");
@@ -72,8 +71,6 @@ public class SecurityDataStatus1Request extends SecurityData implements Message 
       throws ParseException {
     readBuffer.pullContext("SecurityDataStatus1Request");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("SecurityDataStatus1Request");

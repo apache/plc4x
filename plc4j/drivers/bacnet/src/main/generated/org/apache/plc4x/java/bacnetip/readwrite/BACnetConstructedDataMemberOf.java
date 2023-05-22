@@ -75,7 +75,6 @@ public class BACnetConstructedDataMemberOf extends BACnetConstructedData impleme
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataMemberOf");
 
     // Array Field (zones)
@@ -114,8 +113,6 @@ public class BACnetConstructedDataMemberOf extends BACnetConstructedData impleme
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataMemberOf");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     List<BACnetDeviceObjectReference> zones =

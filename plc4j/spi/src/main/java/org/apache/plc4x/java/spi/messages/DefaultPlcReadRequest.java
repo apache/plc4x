@@ -42,7 +42,7 @@ public class DefaultPlcReadRequest implements PlcReadRequest, PlcTagRequest, Ser
 
     private final PlcReader reader;
     // This is intentionally a linked hash map in order to keep the order of how elements were added.
-    private LinkedHashMap<String, PlcTag> tags;
+    private final LinkedHashMap<String, PlcTag> tags;
 
     public DefaultPlcReadRequest(PlcReader reader,
                                  LinkedHashMap<String, PlcTag> tags) {
@@ -135,9 +135,7 @@ public class DefaultPlcReadRequest implements PlcReadRequest, PlcTagRequest, Ser
         @Override
         public PlcReadRequest build() {
             LinkedHashMap<String, PlcTag> parsedTags = new LinkedHashMap<>();
-            tags.forEach((name, tagQuery) -> {
-                parsedTags.put(name, tagQuery.get());
-            });
+            tags.forEach((name, tagQuery) -> parsedTags.put(name, tagQuery.get()));
             return new DefaultPlcReadRequest(reader, parsedTags);
         }
 

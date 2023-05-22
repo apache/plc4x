@@ -57,7 +57,6 @@ public class BACnetPropertyStatesFileAccessMethod extends BACnetPropertyStates i
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetPropertyStatesFileAccessMethod");
 
     // Simple Field (fileAccessMethod)
@@ -88,8 +87,6 @@ public class BACnetPropertyStatesFileAccessMethod extends BACnetPropertyStates i
       ReadBuffer readBuffer, Short peekedTagNumber) throws ParseException {
     readBuffer.pullContext("BACnetPropertyStatesFileAccessMethod");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetFileAccessMethodTagged fileAccessMethod =

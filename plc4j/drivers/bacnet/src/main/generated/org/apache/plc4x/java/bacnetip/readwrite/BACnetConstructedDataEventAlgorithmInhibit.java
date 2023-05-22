@@ -80,7 +80,6 @@ public class BACnetConstructedDataEventAlgorithmInhibit extends BACnetConstructe
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataEventAlgorithmInhibit");
 
     // Simple Field (eventAlgorithmInhibit)
@@ -124,8 +123,6 @@ public class BACnetConstructedDataEventAlgorithmInhibit extends BACnetConstructe
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataEventAlgorithmInhibit");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagBoolean eventAlgorithmInhibit =

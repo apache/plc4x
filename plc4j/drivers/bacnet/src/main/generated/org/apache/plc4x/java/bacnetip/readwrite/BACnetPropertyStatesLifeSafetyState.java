@@ -57,7 +57,6 @@ public class BACnetPropertyStatesLifeSafetyState extends BACnetPropertyStates im
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetPropertyStatesLifeSafetyState");
 
     // Simple Field (lifeSafetyState)
@@ -88,8 +87,6 @@ public class BACnetPropertyStatesLifeSafetyState extends BACnetPropertyStates im
       ReadBuffer readBuffer, Short peekedTagNumber) throws ParseException {
     readBuffer.pullContext("BACnetPropertyStatesLifeSafetyState");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetLifeSafetyStateTagged lifeSafetyState =

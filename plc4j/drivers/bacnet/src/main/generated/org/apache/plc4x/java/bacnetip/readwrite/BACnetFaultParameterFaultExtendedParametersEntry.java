@@ -65,7 +65,6 @@ public abstract class BACnetFaultParameterFaultExtendedParametersEntry implement
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetFaultParameterFaultExtendedParametersEntry");
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
@@ -112,8 +111,6 @@ public abstract class BACnetFaultParameterFaultExtendedParametersEntry implement
       throws ParseException {
     readBuffer.pullContext("BACnetFaultParameterFaultExtendedParametersEntry");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetTagHeader peekedTagHeader =

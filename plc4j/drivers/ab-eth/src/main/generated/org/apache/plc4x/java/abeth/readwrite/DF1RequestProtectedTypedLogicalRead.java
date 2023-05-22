@@ -88,7 +88,6 @@ public class DF1RequestProtectedTypedLogicalRead extends DF1RequestCommand imple
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("DF1RequestProtectedTypedLogicalRead");
 
     // Simple Field (byteSize)
@@ -142,8 +141,6 @@ public class DF1RequestProtectedTypedLogicalRead extends DF1RequestCommand imple
       throws ParseException {
     readBuffer.pullContext("DF1RequestProtectedTypedLogicalRead");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short byteSize = readSimpleField("byteSize", readUnsignedShort(readBuffer, 8));

@@ -63,7 +63,6 @@ public class NLMRouterAvailableToNetwork extends NLM implements Message {
   protected void serializeNLMChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("NLMRouterAvailableToNetwork");
 
     // Array Field (destinationNetworkAddresses)
@@ -98,8 +97,6 @@ public class NLMRouterAvailableToNetwork extends NLM implements Message {
       throws ParseException {
     readBuffer.pullContext("NLMRouterAvailableToNetwork");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     List<Integer> destinationNetworkAddresses =

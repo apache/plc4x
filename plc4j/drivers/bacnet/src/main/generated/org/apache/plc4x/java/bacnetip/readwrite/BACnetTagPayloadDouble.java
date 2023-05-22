@@ -52,7 +52,6 @@ public class BACnetTagPayloadDouble implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetTagPayloadDouble");
 
     // Simple Field (value)
@@ -87,8 +86,6 @@ public class BACnetTagPayloadDouble implements Message {
   public static BACnetTagPayloadDouble staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetTagPayloadDouble");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     double value = readSimpleField("value", readDouble(readBuffer, 64));

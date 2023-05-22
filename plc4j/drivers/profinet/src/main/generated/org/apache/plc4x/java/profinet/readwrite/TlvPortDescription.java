@@ -58,7 +58,6 @@ public class TlvPortDescription extends LldpUnit implements Message {
   protected void serializeLldpUnitChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("TlvPortDescription");
 
     // Simple Field (chassisId)
@@ -88,8 +87,6 @@ public class TlvPortDescription extends LldpUnit implements Message {
       ReadBuffer readBuffer, Integer tlvIdLength) throws ParseException {
     readBuffer.pullContext("TlvPortDescription");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     String chassisId = readSimpleField("chassisId", readString(readBuffer, ((tlvIdLength)) * (8)));

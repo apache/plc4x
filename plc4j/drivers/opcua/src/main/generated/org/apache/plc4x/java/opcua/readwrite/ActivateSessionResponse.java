@@ -95,7 +95,6 @@ public class ActivateSessionResponse extends ExtensionObjectDefinition implement
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("ActivateSessionResponse");
 
     // Simple Field (responseHeader)
@@ -167,8 +166,6 @@ public class ActivateSessionResponse extends ExtensionObjectDefinition implement
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("ActivateSessionResponse");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ExtensionObjectDefinition responseHeader =

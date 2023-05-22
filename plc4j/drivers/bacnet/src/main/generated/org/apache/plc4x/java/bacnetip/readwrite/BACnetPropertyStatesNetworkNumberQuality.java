@@ -58,7 +58,6 @@ public class BACnetPropertyStatesNetworkNumberQuality extends BACnetPropertyStat
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetPropertyStatesNetworkNumberQuality");
 
     // Simple Field (networkNumberQuality)
@@ -89,8 +88,6 @@ public class BACnetPropertyStatesNetworkNumberQuality extends BACnetPropertyStat
       ReadBuffer readBuffer, Short peekedTagNumber) throws ParseException {
     readBuffer.pullContext("BACnetPropertyStatesNetworkNumberQuality");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetNetworkNumberQualityTagged networkNumberQuality =

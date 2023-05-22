@@ -51,7 +51,7 @@ public class TriggerConfiguration{
     private final TriggerType triggerType;
     private final Long scrapeInterval;
     private TriggeredScrapeJobImpl triggeredScrapeJobImpl;
-    private List<TriggerElement> triggerElementList;
+    private final List<TriggerElement> triggerElementList;
 
     /**
      * default constructor when a tag should be used for triggering
@@ -175,8 +175,8 @@ public class TriggerConfiguration{
      * nested class performing the trigger evaluation
      */
     class TriggerEvaluation{
-        private List<Object> acquiredValuesList;
-        private List<TriggerElement> triggerElementList;
+        private final List<Object> acquiredValuesList;
+        private final List<TriggerElement> triggerElementList;
 
         TriggerEvaluation(List<Object> acquiredValuesList, List<TriggerElement> triggerElementList) {
             this.acquiredValuesList = acquiredValuesList;

@@ -37,7 +37,7 @@ public enum NMTState {
     }
   }
 
-  private short value;
+  private final short value;
 
   NMTState(short value) {
     this.value = value;

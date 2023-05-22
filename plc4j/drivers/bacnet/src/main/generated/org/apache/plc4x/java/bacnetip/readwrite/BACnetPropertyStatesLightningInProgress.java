@@ -58,7 +58,6 @@ public class BACnetPropertyStatesLightningInProgress extends BACnetPropertyState
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetPropertyStatesLightningInProgress");
 
     // Simple Field (lightningInProgress)
@@ -89,8 +88,6 @@ public class BACnetPropertyStatesLightningInProgress extends BACnetPropertyState
       ReadBuffer readBuffer, Short peekedTagNumber) throws ParseException {
     readBuffer.pullContext("BACnetPropertyStatesLightningInProgress");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetLightingInProgressTagged lightningInProgress =

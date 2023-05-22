@@ -64,7 +64,6 @@ public class ApduDataMemoryResponse extends ApduData implements Message {
   protected void serializeApduDataChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("ApduDataMemoryResponse");
 
     // Implicit Field (numBytes) (Used for parsing, but its value is not stored as it's implicitly
@@ -110,8 +109,6 @@ public class ApduDataMemoryResponse extends ApduData implements Message {
       throws ParseException {
     readBuffer.pullContext("ApduDataMemoryResponse");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short numBytes = readImplicitField("numBytes", readUnsignedShort(readBuffer, 6));

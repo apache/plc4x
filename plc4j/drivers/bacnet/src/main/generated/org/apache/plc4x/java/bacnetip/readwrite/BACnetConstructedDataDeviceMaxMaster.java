@@ -79,7 +79,6 @@ public class BACnetConstructedDataDeviceMaxMaster extends BACnetConstructedData 
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataDeviceMaxMaster");
 
     // Simple Field (maxMaster)
@@ -120,8 +119,6 @@ public class BACnetConstructedDataDeviceMaxMaster extends BACnetConstructedData 
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataDeviceMaxMaster");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger maxMaster =

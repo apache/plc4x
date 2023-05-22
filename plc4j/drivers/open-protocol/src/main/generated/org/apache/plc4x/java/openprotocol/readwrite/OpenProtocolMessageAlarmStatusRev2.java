@@ -130,7 +130,6 @@ public class OpenProtocolMessageAlarmStatusRev2 extends OpenProtocolMessageAlarm
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("OpenProtocolMessageAlarmStatusRev2");
 
     // Const Field (blockIdAlarmStatus)
@@ -257,8 +256,6 @@ public class OpenProtocolMessageAlarmStatusRev2 extends OpenProtocolMessageAlarm
           throws ParseException {
     readBuffer.pullContext("OpenProtocolMessageAlarmStatusRev2");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int blockIdAlarmStatus =

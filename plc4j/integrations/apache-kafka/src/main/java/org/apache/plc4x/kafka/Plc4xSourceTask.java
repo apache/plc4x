@@ -137,7 +137,7 @@ public class Plc4xSourceTask extends SourceTask {
                 String[] tagSegments = jobConfigSegments[i].split("#");
                 if (tagSegments.length != 2) {
                     log.warn("Error in job configuration '{}'. " +
-                            "The tag segment expects a format {tag-alias}#{tag-address}, but got '%s'",
+                            "The tag segment expects a format {tag-alias}#{tag-address}, but got '{}'",
                         jobName, jobConfigSegments[i]);
                     continue;
                 }

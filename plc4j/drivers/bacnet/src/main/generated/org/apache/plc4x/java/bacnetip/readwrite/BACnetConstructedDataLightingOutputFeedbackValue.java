@@ -80,7 +80,6 @@ public class BACnetConstructedDataLightingOutputFeedbackValue extends BACnetCons
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataLightingOutputFeedbackValue");
 
     // Simple Field (feedbackValue)
@@ -121,8 +120,6 @@ public class BACnetConstructedDataLightingOutputFeedbackValue extends BACnetCons
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataLightingOutputFeedbackValue");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagReal feedbackValue =

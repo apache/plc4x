@@ -72,7 +72,6 @@ public class ModbusPDUDiagnosticRequest extends ModbusPDU implements Message {
   protected void serializeModbusPDUChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("ModbusPDUDiagnosticRequest");
 
     // Simple Field (subFunction)
@@ -108,8 +107,6 @@ public class ModbusPDUDiagnosticRequest extends ModbusPDU implements Message {
       ReadBuffer readBuffer, Boolean response) throws ParseException {
     readBuffer.pullContext("ModbusPDUDiagnosticRequest");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int subFunction = readSimpleField("subFunction", readUnsignedInt(readBuffer, 16));

@@ -79,7 +79,6 @@ public class BACnetConstructedDataBitMask extends BACnetConstructedData implemen
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataBitMask");
 
     // Simple Field (bitString)
@@ -120,8 +119,6 @@ public class BACnetConstructedDataBitMask extends BACnetConstructedData implemen
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataBitMask");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagBitString bitString =

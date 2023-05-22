@@ -65,7 +65,6 @@ public class DataTypeDescription extends ExtensionObjectDefinition implements Me
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("DataTypeDescription");
 
     // Simple Field (dataTypeId)
@@ -101,8 +100,6 @@ public class DataTypeDescription extends ExtensionObjectDefinition implements Me
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("DataTypeDescription");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     NodeId dataTypeId =

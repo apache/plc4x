@@ -34,7 +34,7 @@ public enum PnIoCm_RtClass {
     }
   }
 
-  private byte value;
+  private final byte value;
 
   PnIoCm_RtClass(byte value) {
     this.value = value;

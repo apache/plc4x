@@ -80,7 +80,6 @@ public class BACnetConstructedDataLargeAnalogValueFaultHighLimit extends BACnetC
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataLargeAnalogValueFaultHighLimit");
 
     // Simple Field (faultHighLimit)
@@ -121,8 +120,6 @@ public class BACnetConstructedDataLargeAnalogValueFaultHighLimit extends BACnetC
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataLargeAnalogValueFaultHighLimit");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagDouble faultHighLimit =

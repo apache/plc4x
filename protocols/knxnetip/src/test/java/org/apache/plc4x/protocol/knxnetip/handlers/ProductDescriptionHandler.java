@@ -28,7 +28,7 @@ import java.util.Map;
 
 public class ProductDescriptionHandler extends DefaultHandler {
 
-    private Map<String, Integer> addresses = new HashMap<>();
+    private final Map<String, Integer> addresses = new HashMap<>();
     private String maskVersion = null;
     private String name = null;
     private String[] replacesVersions;

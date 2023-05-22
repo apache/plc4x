@@ -102,7 +102,6 @@ public class PnIoCm_Packet_Res extends PnIoCm_Packet implements Message {
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("PnIoCm_Packet_Res");
 
     // Simple Field (errorCode2)
@@ -194,8 +193,6 @@ public class PnIoCm_Packet_Res extends PnIoCm_Packet implements Message {
       ReadBuffer readBuffer, DceRpc_PacketType packetType) throws ParseException {
     readBuffer.pullContext("PnIoCm_Packet_Res");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short errorCode2 = readSimpleField("errorCode2", readUnsignedShort(readBuffer, 8));

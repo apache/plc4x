@@ -25,20 +25,22 @@ import (
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
 	driverModel "github.com/apache/plc4x/plc4go/protocols/knxnetip/readwrite/model"
-	internalModel "github.com/apache/plc4x/plc4go/spi/model"
+	spiModel "github.com/apache/plc4x/plc4go/spi/model"
+
+	"github.com/rs/zerolog/log"
 )
 
 type SubscriptionEvent struct {
-	*internalModel.DefaultPlcSubscriptionEvent
+	*spiModel.DefaultPlcSubscriptionEvent
 	addresses map[string][]byte
 }
 
-func NewSubscriptionEvent(tags map[string]apiModel.PlcTag, types map[string]internalModel.SubscriptionType,
+func NewSubscriptionEvent(tags map[string]apiModel.PlcTag, types map[string]spiModel.SubscriptionType,
 	intervals map[string]time.Duration, responseCodes map[string]apiModel.PlcResponseCode,
 	addresses map[string][]byte, values map[string]values.PlcValue) SubscriptionEvent {
 	subscriptionEvent := SubscriptionEvent{addresses: addresses}
-	event := internalModel.NewDefaultPlcSubscriptionEvent(&subscriptionEvent, tags, types, intervals, responseCodes, values)
-	subscriptionEvent.DefaultPlcSubscriptionEvent = event.(*internalModel.DefaultPlcSubscriptionEvent)
+	event := spiModel.NewDefaultPlcSubscriptionEvent(&subscriptionEvent, tags, types, intervals, responseCodes, values)
+	subscriptionEvent.DefaultPlcSubscriptionEvent = event.(*spiModel.DefaultPlcSubscriptionEvent)
 	return subscriptionEvent
 }
 
@@ -57,7 +59,13 @@ func (m SubscriptionEvent) GetAddress(name string) string {
 		groupAddress, err = driverModel.KnxGroupAddressParse(rawAddress, 1)
 	}
 	if err != nil {
+		log.Debug().Err(err).Msg("error parsing")
 		return ""
 	}
-	return GroupAddressToString(groupAddress)
+	toString, err := GroupAddressToString(groupAddress)
+	if err != nil {
+		log.Debug().Err(err).Msg("error mapping")
+		return ""
+	}
+	return toString
 }

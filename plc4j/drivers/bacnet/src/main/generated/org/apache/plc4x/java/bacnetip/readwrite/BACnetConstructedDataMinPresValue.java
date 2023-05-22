@@ -79,7 +79,6 @@ public class BACnetConstructedDataMinPresValue extends BACnetConstructedData imp
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataMinPresValue");
 
     // Simple Field (minPresValue)
@@ -120,8 +119,6 @@ public class BACnetConstructedDataMinPresValue extends BACnetConstructedData imp
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataMinPresValue");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagReal minPresValue =

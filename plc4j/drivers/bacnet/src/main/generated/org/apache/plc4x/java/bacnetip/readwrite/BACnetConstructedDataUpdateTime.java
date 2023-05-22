@@ -79,7 +79,6 @@ public class BACnetConstructedDataUpdateTime extends BACnetConstructedData imple
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataUpdateTime");
 
     // Simple Field (updateTime)
@@ -120,8 +119,6 @@ public class BACnetConstructedDataUpdateTime extends BACnetConstructedData imple
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataUpdateTime");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetDateTime updateTime =

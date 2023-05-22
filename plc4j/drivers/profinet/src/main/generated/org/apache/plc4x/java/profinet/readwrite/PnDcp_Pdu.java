@@ -62,7 +62,6 @@ public abstract class PnDcp_Pdu implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("PnDcp_Pdu");
 
     // Simple Field (frameIdValue)
@@ -111,8 +110,6 @@ public abstract class PnDcp_Pdu implements Message {
   public static PnDcp_Pdu staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("PnDcp_Pdu");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int frameIdValue =
@@ -131,6 +128,8 @@ public abstract class PnDcp_Pdu implements Message {
     PnDcp_PduBuilder builder = null;
     if (EvaluationHelper.equals(frameId, PnDcp_FrameId.RT_CLASS_1)) {
       builder = PnDcp_Pdu_RealTimeCyclic.staticParsePnDcp_PduBuilder(readBuffer);
+    } else if (EvaluationHelper.equals(frameId, PnDcp_FrameId.DCP_GetSet_PDU)) {
+      builder = PcDcp_GetSet_Pdu.staticParsePnDcp_PduBuilder(readBuffer);
     } else if (EvaluationHelper.equals(frameId, PnDcp_FrameId.PTCP_DelayReqPDU)) {
       builder = PcDcp_Pdu_DelayReq.staticParsePnDcp_PduBuilder(readBuffer);
     } else if (EvaluationHelper.equals(frameId, PnDcp_FrameId.Alarm_Low)) {

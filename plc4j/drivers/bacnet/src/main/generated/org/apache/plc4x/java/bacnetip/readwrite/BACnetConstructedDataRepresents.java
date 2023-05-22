@@ -79,7 +79,6 @@ public class BACnetConstructedDataRepresents extends BACnetConstructedData imple
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataRepresents");
 
     // Simple Field (represents)
@@ -120,8 +119,6 @@ public class BACnetConstructedDataRepresents extends BACnetConstructedData imple
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataRepresents");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetDeviceObjectReference represents =

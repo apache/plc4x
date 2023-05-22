@@ -67,7 +67,6 @@ public class BACnetConstructedDataEventEnrollmentAll extends BACnetConstructedDa
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataEventEnrollmentAll");
 
     writeBuffer.popContext("BACnetConstructedDataEventEnrollmentAll");
@@ -96,8 +95,6 @@ public class BACnetConstructedDataEventEnrollmentAll extends BACnetConstructedDa
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataEventEnrollmentAll");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Validation
     if (!((1) == (2))) {

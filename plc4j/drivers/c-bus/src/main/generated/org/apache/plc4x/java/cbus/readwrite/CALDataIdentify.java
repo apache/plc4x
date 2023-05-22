@@ -63,7 +63,6 @@ public class CALDataIdentify extends CALData implements Message {
   protected void serializeCALDataChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("CALDataIdentify");
 
     // Simple Field (attribute)
@@ -98,8 +97,6 @@ public class CALDataIdentify extends CALData implements Message {
       ReadBuffer readBuffer, RequestContext requestContext) throws ParseException {
     readBuffer.pullContext("CALDataIdentify");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     Attribute attribute =

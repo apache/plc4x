@@ -25,6 +25,7 @@ from ctypes import c_uint8
 from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDU
 from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDUBuilder
+from plc4py.spi.generation.WriteBuffer import WriteBuffer
 import math
 
 
@@ -41,17 +42,13 @@ class ModbusPDUWriteSingleCoilResponse(PlcMessage, ModbusPDU):
         super().__init__()
 
     def serialize_modbus_pdu_child(self, write_buffer: WriteBuffer):
-        position_aware: PositionAware = write_buffer
-        start_pos: int = position_aware.get_pos()
         write_buffer.push_context("ModbusPDUWriteSingleCoilResponse")
 
         # Simple Field (address)
-        write_simple_field(
-            "address", self.address, write_unsigned_int(write_buffer, 16)
-        )
+        write_buffer.write_unsigned_short(self.address, logical_name="address")
 
         # Simple Field (value)
-        write_simple_field("value", self.value, write_unsigned_int(write_buffer, 16))
+        write_buffer.write_unsigned_short(self.value, logical_name="value")
 
         write_buffer.pop_context("ModbusPDUWriteSingleCoilResponse")
 
@@ -73,15 +70,11 @@ class ModbusPDUWriteSingleCoilResponse(PlcMessage, ModbusPDU):
     @staticmethod
     def static_parse_builder(read_buffer: ReadBuffer, response: c_bool):
         read_buffer.pull_context("ModbusPDUWriteSingleCoilResponse")
-        position_aware: PositionAware = read_buffer
-        start_pos: int = position_aware.get_pos()
         cur_pos: int = 0
 
-        address: c_uint16 = read_simple_field(
-            "address", read_unsigned_int(read_buffer, 16)
-        )
+        address: c_uint16 = read_simple_field("address", read_unsigned_int)
 
-        value: c_uint16 = read_simple_field("value", read_unsigned_int(read_buffer, 16))
+        value: c_uint16 = read_simple_field("value", read_unsigned_int)
 
         read_buffer.close_context("ModbusPDUWriteSingleCoilResponse")
         # Create the instance

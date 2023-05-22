@@ -39,7 +39,7 @@ public enum BACnetProgramError {
     }
   }
 
-  private int value;
+  private final int value;
 
   BACnetProgramError(int value) {
     this.value = value;

@@ -58,9 +58,9 @@ ${import}
 </#macro>
 <#macro emitImport import>${helper.emitRequiredImport(import)}</#macro>
 <@importSectionWithContentBelow>
-<@emitImport import="from enum import Enum" />
+<@emitImport import="from enum import IntEnum" />
 
-class ${type.name}(Enum):
+class ${type.name}(IntEnum):
     <#list type.enumValues as enumValue>
     ${enumValue.name}: <@compress single_line=true>
             <#if type.type.isPresent()>
@@ -95,7 +95,7 @@ class ${type.name}(Enum):
     <#if type.constantNames?has_content>
     def __new__(cls, value, <@compress single_line=true>
         <#list type.constantNames as constantName>
-            ${constantName}
+            ${helper.camelCaseToSnakeCase(constantName)}
             <#sep>, </#sep>
         </#list>):
         </@compress>

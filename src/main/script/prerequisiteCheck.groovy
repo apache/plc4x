@@ -77,11 +77,14 @@ def checkVersionAtMost(String current, String maximum) {
 
 def checkDotnet() {
     print "Detecting Dotnet version:  "
-    def output
+    def output = new StringBuffer()
+    def errOutput = new StringBuffer()
     try {
-        output = "dotnet --version".execute().text
-    } catch (IOException ignored) {
+        def proc = "dotnet --version".execute()
+        proc.waitForProcessOutput(output, errOutput)
+    } catch (IOException e) {
         output = ""
+        errOutput.append(e)
     }
     Matcher matcher = extractVersion(output)
     if (matcher.size() > 0) {
@@ -92,6 +95,10 @@ def checkDotnet() {
         }
     } else {
         println "missing"
+        println "--- output of version `dotnet --version` command ---"
+        println output
+        println errOutput
+        println "----------------------------------------------------"
         allConditionsMet = false
     }
 }
@@ -138,11 +145,14 @@ def checkMavenVersion(String minVersion, String maxVersion) {
 def checkGcc() {
     print "Detecting Gcc version:     "
     // TODO: For windows, check that mingw32-make is on the PATH
-    def output
+    def output = new StringBuffer()
+    def errOutput = new StringBuffer()
     try {
-        output = "gcc --version".execute().text
+        def proc = "gcc --version".execute()
+        proc.waitForProcessOutput(output, errOutput)
     } catch (IOException ignored) {
         output = ""
+        errOutput.append(e)
     }
     Matcher matcher = extractVersion(output)
     if (matcher.size() > 0) {
@@ -153,17 +163,24 @@ def checkGcc() {
         }
     } else {
         println "missing"
+        println "--- output of version `gcc --version` command ---"
+        println output
+        println errOutput
+        println "-------------------------------------------------"
         allConditionsMet = false
     }
 }
 
 def checkGit() {
     print "Detecting Git version:     "
-    def output
+    def output = new StringBuffer()
+    def errOutput = new StringBuffer()
     try {
-        output = "git --version".execute().text
+        def proc = "git --version".execute()
+        proc.waitForProcessOutput(output, errOutput)
     } catch (IOException ignored) {
         output = ""
+        errOutput.append(e)
     }
     Matcher matcher = extractVersion(output)
     if (matcher.size() > 0) {
@@ -174,6 +191,10 @@ def checkGit() {
         }
     } else {
         println "missing"
+        println "--- output of version `git --version` command ---"
+        println output
+        println errOutput
+        println "-------------------------------------------------"
         allConditionsMet = false
     }
 }
@@ -202,6 +223,9 @@ def checkPython() {
         }
     } catch (Exception ignored) {
         println "missing"
+        println "--- output of version `${python} --version` command ---"
+        println output
+        println "----------------------------------------------------"
         allConditionsMet = false
     }
 }
@@ -220,12 +244,19 @@ def checkPythonVenv() {
         process.waitForProcessOutput(stdOut, stdErr)
         if (stdErr.contains("No module named")) {
             println "missing"
+            println "--- output of version `python -Im \"ensurepip\"` command ---"
+            println output
+            println "------------------------------------------------------------"
             allConditionsMet = false
         } else {
             println "               OK"
         }
-    } catch (Exception ignored) {
+    } catch (Exception e) {
         println "missing"
+        println "--- failed with exception ---"
+        println e
+        e.printStackTrace()
+        println "----------------------------------------------------"
         allConditionsMet = false
     }
 }
@@ -234,11 +265,14 @@ def checkPythonVenv() {
 // Not only should the docker executable be available, but also should the docker daemon be running.
 def checkDocker() {
     print "Detecting Docker version:  "
-    def output
+    def output = new StringBuilder()
+    def errOutput = new StringBuilder()
     try {
-        output = "docker info".execute().text
-    } catch (IOException ignored) {
+        def proc = "docker info".execute()
+        proc.waitForProcessOutput(output, errOutput)
+    } catch (IOException e) {
         output = ""
+        errOutput.append(e)
     }
     // Check if Docker is installed at all
     def matcher1 = output =~ /Server:/
@@ -257,6 +291,10 @@ def checkDocker() {
         }
     } else {
         println "missing"
+        println "--- output of version `docker info` command ---"
+        println output
+        println errOutput
+        println "-----------------------------------------------"
         allConditionsMet = false
     }
     // TODO: Implement the actual check ...
@@ -284,11 +322,16 @@ def checkLibPcap(String minVersion, String os, String arch) {
             if (!result) {
                 //allConditionsMet = false
             }
+        } else {
+            println "               SKIPPED (on aarch64)"
         }
     } catch (Error e) {
-        e.printStackTrace()
         output = ""
         println "missing"
+        println "--- exception ---"
+        println e
+        e.printStackTrace()
+        println "-----------------"
         allConditionsMet = false
     }
 }

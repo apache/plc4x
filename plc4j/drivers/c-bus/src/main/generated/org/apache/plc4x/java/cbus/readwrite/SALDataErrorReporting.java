@@ -58,7 +58,6 @@ public class SALDataErrorReporting extends SALData implements Message {
   protected void serializeSALDataChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("SALDataErrorReporting");
 
     // Simple Field (errorReportingData)
@@ -89,8 +88,6 @@ public class SALDataErrorReporting extends SALData implements Message {
       ReadBuffer readBuffer, ApplicationId applicationId) throws ParseException {
     readBuffer.pullContext("SALDataErrorReporting");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ErrorReportingData errorReportingData =

@@ -59,7 +59,6 @@ public class AdsDiscoveryBlockOsData extends AdsDiscoveryBlock implements Messag
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("AdsDiscoveryBlockOsData");
 
     // Implicit Field (osDataLen) (Used for parsing, but its value is not stored as it's implicitly
@@ -99,8 +98,6 @@ public class AdsDiscoveryBlockOsData extends AdsDiscoveryBlock implements Messag
       throws ParseException {
     readBuffer.pullContext("AdsDiscoveryBlockOsData");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int osDataLen = readImplicitField("osDataLen", readUnsignedInt(readBuffer, 16));

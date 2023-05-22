@@ -21,16 +21,17 @@ package ads
 
 import (
 	"context"
+	"github.com/pkg/errors"
 	"strings"
 
 	"github.com/apache/plc4x/plc4go/internal/ads/model"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	driverModel "github.com/apache/plc4x/plc4go/protocols/ads/readwrite/model"
-	internalModel "github.com/apache/plc4x/plc4go/spi/model"
+	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 )
 
 func (m *Connection) BrowseRequestBuilder() apiModel.PlcBrowseRequestBuilder {
-	return internalModel.NewDefaultPlcBrowseRequestBuilder(m.GetPlcTagHandler(), m)
+	return spiModel.NewDefaultPlcBrowseRequestBuilder(m.GetPlcTagHandler(), m)
 }
 
 func (m *Connection) Browse(ctx context.Context, browseRequest apiModel.PlcBrowseRequest) <-chan apiModel.PlcBrowseRequestResult {
@@ -40,20 +41,21 @@ func (m *Connection) Browse(ctx context.Context, browseRequest apiModel.PlcBrows
 }
 
 func (m *Connection) BrowseWithInterceptor(ctx context.Context, browseRequest apiModel.PlcBrowseRequest, interceptor func(result apiModel.PlcBrowseItem) bool) <-chan apiModel.PlcBrowseRequestResult {
-	result := make(chan apiModel.PlcBrowseRequestResult)
+	result := make(chan apiModel.PlcBrowseRequestResult, 1)
 	go func() {
+		defer func() {
+			if err := recover(); err != nil {
+				result <- spiModel.NewDefaultPlcBrowseRequestResult(browseRequest, nil, errors.Errorf("Recovered from panic: %v", err))
+			}
+		}()
 		responseCodes := map[string]apiModel.PlcResponseCode{}
 		results := map[string][]apiModel.PlcBrowseItem{}
 		for _, queryName := range browseRequest.GetQueryNames() {
 			query := browseRequest.GetQuery(queryName)
 			responseCodes[queryName], results[queryName] = m.BrowseQuery(ctx, interceptor, queryName, query)
 		}
-		browseResponse := internalModel.NewDefaultPlcBrowseResponse(browseRequest, results, responseCodes)
-		result <- &internalModel.DefaultPlcBrowseRequestResult{
-			Request:  browseRequest,
-			Response: browseResponse,
-			Err:      nil,
-		}
+		browseResponse := spiModel.NewDefaultPlcBrowseResponse(browseRequest, results, responseCodes)
+		result <- spiModel.NewDefaultPlcBrowseRequestResult(browseRequest, browseResponse, nil)
 	}()
 	return result
 }
@@ -108,25 +110,26 @@ func (m *Connection) filterDataTypes(parentName string, currentType driverModel.
 	if len(remainingAddressSegments) == 0 {
 		arrayInfo := []apiModel.ArrayInfo{}
 		for _, ai := range currentType.GetArrayInfo() {
-			arrayInfo = append(arrayInfo, internalModel.DefaultArrayInfo{
+			arrayInfo = append(arrayInfo, &spiModel.DefaultArrayInfo{
 				LowerBound: ai.GetLowerBound(),
 				UpperBound: ai.GetUpperBound(),
 			})
 		}
-		foundTag := &internalModel.DefaultPlcBrowseItem{
-			Tag: model.SymbolicPlcTag{
+		foundTag := spiModel.NewDefaultPlcBrowseItem(
+			model.SymbolicPlcTag{
 				PlcTag: model.PlcTag{
 					ArrayInfo: arrayInfo,
 				},
 				SymbolicAddress: parentName,
 			},
-			Name:         parentName,
-			DataTypeName: currentType.GetDataTypeName(),
-			Readable:     false,
-			Writable:     false,
-			Subscribable: false,
-			Options:      nil,
-		}
+			parentName,
+			currentType.GetDataTypeName(),
+			false,
+			false,
+			false,
+			nil,
+			nil,
+		)
 		return []apiModel.PlcBrowseItem{foundTag}
 	}
 

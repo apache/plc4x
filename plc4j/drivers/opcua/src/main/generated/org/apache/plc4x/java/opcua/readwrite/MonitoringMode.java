@@ -36,7 +36,7 @@ public enum MonitoringMode {
     }
   }
 
-  private long value;
+  private final long value;
 
   MonitoringMode(long value) {
     this.value = value;

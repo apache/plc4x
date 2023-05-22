@@ -73,7 +73,6 @@ public class ReplyOrConfirmationConfirmation extends ReplyOrConfirmation impleme
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("ReplyOrConfirmationConfirmation");
 
     // Simple Field (confirmation)
@@ -112,8 +111,6 @@ public class ReplyOrConfirmationConfirmation extends ReplyOrConfirmation impleme
       throws ParseException {
     readBuffer.pullContext("ReplyOrConfirmationConfirmation");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     Confirmation confirmation =

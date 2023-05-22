@@ -89,7 +89,6 @@ public class BACnetConfirmedServiceRequestConfirmedTextMessage extends BACnetCon
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConfirmedServiceRequestConfirmedTextMessage");
 
     // Simple Field (textMessageSourceDevice)
@@ -144,8 +143,6 @@ public class BACnetConfirmedServiceRequestConfirmedTextMessage extends BACnetCon
           ReadBuffer readBuffer, Long serviceRequestLength) throws ParseException {
     readBuffer.pullContext("BACnetConfirmedServiceRequestConfirmedTextMessage");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetContextTagObjectIdentifier textMessageSourceDevice =

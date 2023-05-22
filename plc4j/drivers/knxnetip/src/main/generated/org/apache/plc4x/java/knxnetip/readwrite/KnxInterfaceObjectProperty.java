@@ -1331,11 +1331,11 @@ public enum KnxInterfaceObjectProperty {
     }
   }
 
-  private long value;
-  private KnxPropertyDataType propertyDataType;
-  private String name;
-  private short propertyId;
-  private KnxInterfaceObjectType objectType;
+  private final long value;
+  private final KnxPropertyDataType propertyDataType;
+  private final String name;
+  private final short propertyId;
+  private final KnxInterfaceObjectType objectType;
 
   KnxInterfaceObjectProperty(
       long value,
@@ -1370,7 +1370,7 @@ public enum KnxInterfaceObjectProperty {
 
   public static List<KnxInterfaceObjectProperty> enumsForFieldPropertyDataType(
       KnxPropertyDataType fieldValue) {
-    List<KnxInterfaceObjectProperty> _values = new ArrayList();
+    List<KnxInterfaceObjectProperty> _values = new ArrayList<>();
     for (KnxInterfaceObjectProperty _val : KnxInterfaceObjectProperty.values()) {
       if (_val.getPropertyDataType() == fieldValue) {
         _values.add(_val);
@@ -1393,7 +1393,7 @@ public enum KnxInterfaceObjectProperty {
   }
 
   public static List<KnxInterfaceObjectProperty> enumsForFieldName(String fieldValue) {
-    List<KnxInterfaceObjectProperty> _values = new ArrayList();
+    List<KnxInterfaceObjectProperty> _values = new ArrayList<>();
     for (KnxInterfaceObjectProperty _val : KnxInterfaceObjectProperty.values()) {
       if (_val.getName().equals(fieldValue)) {
         _values.add(_val);
@@ -1416,7 +1416,7 @@ public enum KnxInterfaceObjectProperty {
   }
 
   public static List<KnxInterfaceObjectProperty> enumsForFieldPropertyId(short fieldValue) {
-    List<KnxInterfaceObjectProperty> _values = new ArrayList();
+    List<KnxInterfaceObjectProperty> _values = new ArrayList<>();
     for (KnxInterfaceObjectProperty _val : KnxInterfaceObjectProperty.values()) {
       if (_val.getPropertyId() == fieldValue) {
         _values.add(_val);
@@ -1441,7 +1441,7 @@ public enum KnxInterfaceObjectProperty {
 
   public static List<KnxInterfaceObjectProperty> enumsForFieldObjectType(
       KnxInterfaceObjectType fieldValue) {
-    List<KnxInterfaceObjectProperty> _values = new ArrayList();
+    List<KnxInterfaceObjectProperty> _values = new ArrayList<>();
     for (KnxInterfaceObjectProperty _val : KnxInterfaceObjectProperty.values()) {
       if (_val.getObjectType() == fieldValue) {
         _values.add(_val);

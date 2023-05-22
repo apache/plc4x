@@ -80,7 +80,6 @@ public class BACnetConstructedDataExpectedShedLevel extends BACnetConstructedDat
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataExpectedShedLevel");
 
     // Simple Field (expectedShedLevel)
@@ -122,8 +121,6 @@ public class BACnetConstructedDataExpectedShedLevel extends BACnetConstructedDat
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataExpectedShedLevel");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetShedLevel expectedShedLevel =

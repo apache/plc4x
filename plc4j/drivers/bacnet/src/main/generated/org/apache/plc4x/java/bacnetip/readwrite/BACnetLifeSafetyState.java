@@ -58,7 +58,7 @@ public enum BACnetLifeSafetyState {
     }
   }
 
-  private int value;
+  private final int value;
 
   BACnetLifeSafetyState(int value) {
     this.value = value;

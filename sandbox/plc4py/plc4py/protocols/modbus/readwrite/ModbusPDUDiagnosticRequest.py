@@ -25,6 +25,7 @@ from ctypes import c_uint8
 from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDU
 from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDUBuilder
+from plc4py.spi.generation.WriteBuffer import WriteBuffer
 import math
 
 
@@ -41,17 +42,13 @@ class ModbusPDUDiagnosticRequest(PlcMessage, ModbusPDU):
         super().__init__()
 
     def serialize_modbus_pdu_child(self, write_buffer: WriteBuffer):
-        position_aware: PositionAware = write_buffer
-        start_pos: int = position_aware.get_pos()
         write_buffer.push_context("ModbusPDUDiagnosticRequest")
 
         # Simple Field (subFunction)
-        write_simple_field(
-            "subFunction", self.sub_function, write_unsigned_int(write_buffer, 16)
-        )
+        write_buffer.write_unsigned_short(self.sub_function, logical_name="subFunction")
 
         # Simple Field (data)
-        write_simple_field("data", self.data, write_unsigned_int(write_buffer, 16))
+        write_buffer.write_unsigned_short(self.data, logical_name="data")
 
         write_buffer.pop_context("ModbusPDUDiagnosticRequest")
 
@@ -73,15 +70,11 @@ class ModbusPDUDiagnosticRequest(PlcMessage, ModbusPDU):
     @staticmethod
     def static_parse_builder(read_buffer: ReadBuffer, response: c_bool):
         read_buffer.pull_context("ModbusPDUDiagnosticRequest")
-        position_aware: PositionAware = read_buffer
-        start_pos: int = position_aware.get_pos()
         cur_pos: int = 0
 
-        sub_function: c_uint16 = read_simple_field(
-            "subFunction", read_unsigned_int(read_buffer, 16)
-        )
+        sub_function: c_uint16 = read_simple_field("subFunction", read_unsigned_int)
 
-        data: c_uint16 = read_simple_field("data", read_unsigned_int(read_buffer, 16))
+        data: c_uint16 = read_simple_field("data", read_unsigned_int)
 
         read_buffer.close_context("ModbusPDUDiagnosticRequest")
         # Create the instance

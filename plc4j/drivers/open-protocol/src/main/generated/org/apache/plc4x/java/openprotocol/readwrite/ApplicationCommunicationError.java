@@ -122,7 +122,7 @@ public enum ApplicationCommunicationError {
     }
   }
 
-  private int value;
+  private final int value;
 
   ApplicationCommunicationError(int value) {
     this.value = value;

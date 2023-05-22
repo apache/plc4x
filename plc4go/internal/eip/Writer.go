@@ -24,12 +24,13 @@ import (
 	"encoding/binary"
 	"strings"
 
-	"github.com/apache/plc4x/plc4go/pkg/api/model"
-	"github.com/apache/plc4x/plc4go/pkg/api/values"
+	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
+	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/eip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
-	plc4goModel "github.com/apache/plc4x/plc4go/spi/model"
+	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/spi/utils"
+
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 )
@@ -52,10 +53,15 @@ func NewWriter(messageCodec spi.MessageCodec, tm spi.RequestTransactionManager, 
 	}
 }
 
-func (m Writer) Write(ctx context.Context, writeRequest model.PlcWriteRequest) <-chan model.PlcWriteRequestResult {
+func (m Writer) Write(ctx context.Context, writeRequest apiModel.PlcWriteRequest) <-chan apiModel.PlcWriteRequestResult {
 	// TODO: handle context
-	result := make(chan model.PlcWriteRequestResult)
+	result := make(chan apiModel.PlcWriteRequestResult, 1)
 	go func() {
+		defer func() {
+			if err := recover(); err != nil {
+				result <- spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.Errorf("panic-ed %v", err))
+			}
+		}()
 		items := make([]readWriteModel.CipService, len(writeRequest.GetTagNames()))
 		for i, tagName := range writeRequest.GetTagNames() {
 			eipTag := writeRequest.GetTag(tagName).(EIPPlcTag)
@@ -80,20 +86,12 @@ func (m Writer) Write(ctx context.Context, writeRequest model.PlcWriteRequest) <
 			requestPathSize := int8(dataLength / 2)
 			data, err := encodeValue(value, eipTag.GetType(), elements)
 			if err != nil {
-				result <- &plc4goModel.DefaultPlcWriteRequestResult{
-					Request:  writeRequest,
-					Response: nil,
-					Err:      errors.Wrapf(err, "Error encoding value for eipTag %s", tagName),
-				}
+				result <- spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.Wrapf(err, "Error encoding value for eipTag %s", tagName))
 				return
 			}
 			ansi, err := toAnsi(tag)
 			if err != nil {
-				result <- &plc4goModel.DefaultPlcWriteRequestResult{
-					Request:  writeRequest,
-					Response: nil,
-					Err:      errors.Wrapf(err, "Error encoding eip ansi for eipTag %s", tagName),
-				}
+				result <- spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.Wrapf(err, "Error encoding eip ansi for eipTag %s", tagName))
 				return
 			}
 			items[i] = readWriteModel.NewCipWriteRequest(ansi, eipTag.GetType(), elements, data, uint16(requestPathSize))
@@ -120,7 +118,7 @@ func (m Writer) Write(ctx context.Context, writeRequest model.PlcWriteRequest) <
 					)
 					// Start a new request-transaction (Is ended in the response-handler)
 					transaction := m.tm.StartTransaction()
-					transaction.Submit(func() {
+					transaction.Submit(func(transaction spi.RequestTransaction) {
 						// Send the  over the wire
 						if err := m.messageCodec.SendRequest(ctx, pkt, func(message spi.Message) bool {
 							eipPacket := message.(readWriteModel.EipPacket)
@@ -150,29 +148,25 @@ func (m Writer) Write(ctx context.Context, writeRequest model.PlcWriteRequest) <
 							readResponse, err := m.ToPlc4xWriteResponse(cipWriteResponse, writeRequest)
 
 							if err != nil {
-								result <- &plc4goModel.DefaultPlcWriteRequestResult{
+								result <- &spiModel.DefaultPlcWriteRequestResult{
 									Request: writeRequest,
 									Err:     errors.Wrap(err, "Error decoding response"),
 								}
 								return transaction.EndRequest()
 							}
-							result <- &plc4goModel.DefaultPlcWriteRequestResult{
+							result <- &spiModel.DefaultPlcWriteRequestResult{
 								Request:  writeRequest,
 								Response: readResponse,
 							}
 							return transaction.EndRequest()
 						}, func(err error) error {
-							result <- &plc4goModel.DefaultPlcWriteRequestResult{
+							result <- &spiModel.DefaultPlcWriteRequestResult{
 								Request: writeRequest,
 								Err:     errors.New("got timeout while waiting for response"),
 							}
 							return transaction.EndRequest()
 						}, time.Second*1); err != nil {
-							result <- &plc4goModel.DefaultPlcWriteRequestResult{
-								Request:  writeRequest,
-								Response: nil,
-								Err:      errors.Wrap(err, "error sending message"),
-							}
+							result <- spiModel.NewDefaultPlcWriteRequestResult( writeRequest, nil,      errors.Wrap(err, "error sending message"))
 							_ = transaction.EndRequest()
 						}
 					})
@@ -212,7 +206,7 @@ func (m Writer) Write(ctx context.Context, writeRequest model.PlcWriteRequest) <
 					)
 					// Start a new request-transaction (Is ended in the response-handler)
 					transaction := m.tm.StartTransaction()
-					transaction.Submit(func() {
+					transaction.Submit(func(transaction spi.RequestTransaction) {
 						// Send the  over the wire
 						if err := m.messageCodec.SendRequest(ctx, pkt, func(message spi.Message) bool {
 							eipPacket := message.(readWriteModel.EipPacket)
@@ -245,29 +239,25 @@ func (m Writer) Write(ctx context.Context, writeRequest model.PlcWriteRequest) <
 							readResponse, err := m.ToPlc4xWriteResponse(multipleServiceResponse, writeRequest)
 
 							if err != nil {
-								result <- &plc4goModel.DefaultPlcWriteRequestResult{
+								result <- &spiModel.DefaultPlcWriteRequestResult{
 									Request: writeRequest,
 									Err:     errors.Wrap(err, "Error decoding response"),
 								}
 								return transaction.EndRequest()
 							}
-							result <- &plc4goModel.DefaultPlcWriteRequestResult{
+							result <- &spiModel.DefaultPlcWriteRequestResult{
 								Request:  writeRequest,
 								Response: readResponse,
 							}
 							return transaction.EndRequest()
 						}, func(err error) error {
-							result <- &plc4goModel.DefaultPlcWriteRequestResult{
+							result <- &spiModel.DefaultPlcWriteRequestResult{
 								Request: writeRequest,
 								Err:     errors.New("got timeout while waiting for response"),
 							}
 							return transaction.EndRequest()
 						}, time.Second*1); err != nil {
-							result <- &plc4goModel.DefaultPlcWriteRequestResult{
-								Request:  writeRequest,
-								Response: nil,
-								Err:      errors.Wrap(err, "error sending message"),
-							}
+							result <- spiModel.NewDefaultPlcWriteRequestResult( writeRequest, nil,      errors.Wrap(err, "error sending message"))
 							_ = transaction.EndRequest()
 						}
 					})
@@ -276,7 +266,7 @@ func (m Writer) Write(ctx context.Context, writeRequest model.PlcWriteRequest) <
 	return result
 }
 
-func encodeValue(value values.PlcValue, _type readWriteModel.CIPDataTypeCode, elements uint16) ([]byte, error) {
+func encodeValue(value apiValues.PlcValue, _type readWriteModel.CIPDataTypeCode, elements uint16) ([]byte, error) {
 	buffer := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.LittleEndian))
 	switch _type {
 	case readWriteModel.CIPDataTypeCode_SINT:
@@ -306,8 +296,8 @@ func encodeValue(value values.PlcValue, _type readWriteModel.CIPDataTypeCode, el
 	return buffer.GetBytes(), nil
 }
 
-func (m Writer) ToPlc4xWriteResponse(response readWriteModel.CipService, writeRequest model.PlcWriteRequest) (model.PlcWriteResponse, error) {
-	responseCodes := map[string]model.PlcResponseCode{}
+func (m Writer) ToPlc4xWriteResponse(response readWriteModel.CipService, writeRequest apiModel.PlcWriteRequest) (apiModel.PlcWriteResponse, error) {
+	responseCodes := map[string]apiModel.PlcResponseCode{}
 	switch response := response.(type) {
 	case readWriteModel.CipWriteResponse: // only 1 tag
 		cipReadResponse := response
@@ -341,7 +331,7 @@ func (m Writer) ToPlc4xWriteResponse(response readWriteModel.CipService, writeRe
 						code := decodeResponseCode(writeResponse.GetStatus())
 						responseCodes[tagName] = code
 					} else {
-						responseCodes[tagName] = model.PlcResponseCode_INTERNAL_ERROR
+						responseCodes[tagName] = apiModel.PlcResponseCode_INTERNAL_ERROR
 					}
 				}*/
 	default:
@@ -350,5 +340,5 @@ func (m Writer) ToPlc4xWriteResponse(response readWriteModel.CipService, writeRe
 
 	// Return the response
 	log.Trace().Msg("Returning the response")
-	return plc4goModel.NewDefaultPlcWriteResponse(writeRequest, responseCodes), nil
+	return spiModel.NewDefaultPlcWriteResponse(writeRequest, responseCodes), nil
 }

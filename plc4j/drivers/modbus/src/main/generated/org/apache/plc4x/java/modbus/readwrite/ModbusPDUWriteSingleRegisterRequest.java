@@ -72,7 +72,6 @@ public class ModbusPDUWriteSingleRegisterRequest extends ModbusPDU implements Me
   protected void serializeModbusPDUChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("ModbusPDUWriteSingleRegisterRequest");
 
     // Simple Field (address)
@@ -108,8 +107,6 @@ public class ModbusPDUWriteSingleRegisterRequest extends ModbusPDU implements Me
       ReadBuffer readBuffer, Boolean response) throws ParseException {
     readBuffer.pullContext("ModbusPDUWriteSingleRegisterRequest");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int address = readSimpleField("address", readUnsignedInt(readBuffer, 16));

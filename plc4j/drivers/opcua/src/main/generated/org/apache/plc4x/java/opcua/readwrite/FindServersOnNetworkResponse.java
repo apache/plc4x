@@ -81,7 +81,6 @@ public class FindServersOnNetworkResponse extends ExtensionObjectDefinition impl
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("FindServersOnNetworkResponse");
 
     // Simple Field (responseHeader)
@@ -136,8 +135,6 @@ public class FindServersOnNetworkResponse extends ExtensionObjectDefinition impl
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("FindServersOnNetworkResponse");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ExtensionObjectDefinition responseHeader =

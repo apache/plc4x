@@ -54,7 +54,6 @@ public class PnDcp_Block_ControlOptionResetToFactory extends PnDcp_Block impleme
   protected void serializePnDcp_BlockChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("PnDcp_Block_ControlOptionResetToFactory");
 
     writeBuffer.popContext("PnDcp_Block_ControlOptionResetToFactory");
@@ -78,8 +77,6 @@ public class PnDcp_Block_ControlOptionResetToFactory extends PnDcp_Block impleme
       throws ParseException {
     readBuffer.pullContext("PnDcp_Block_ControlOptionResetToFactory");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("PnDcp_Block_ControlOptionResetToFactory");

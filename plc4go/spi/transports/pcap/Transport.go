@@ -39,8 +39,9 @@ import (
 type TransportType string
 
 const (
-	UDP TransportType = "udp"
-	TCP TransportType = "tcp"
+	UDP  TransportType = "udp"
+	TCP  TransportType = "tcp"
+	PCAP TransportType = "pcap"
 )
 
 type Transport struct {
@@ -59,7 +60,7 @@ func (m Transport) GetTransportName() string {
 }
 
 func (m Transport) CreateTransportInstance(transportUrl url.URL, options map[string][]string) (transports.TransportInstance, error) {
-	var transportType = TCP
+	var transportType = PCAP
 	if val, ok := options["transport-type"]; ok {
 		transportType = TransportType(val[0])
 	}
@@ -129,6 +130,11 @@ func (m *TransportInstance) Connect() error {
 	m.reader = bufio.NewReader(buffer)
 
 	go func(m *TransportInstance, buffer *bytes.Buffer) {
+		defer func() {
+			if err := recover(); err != nil {
+				log.Error().Msgf("panic-ed %v", err)
+			}
+		}()
 		packageCount := 0
 		var lastPacketTime *time.Time
 		for m.connected {
@@ -141,7 +147,8 @@ func (m *TransportInstance) Connect() error {
 					break
 				}
 				log.Warn().Err(err).Msg("Error reading")
-				panic(err)
+				m.connected = false
+				return
 			}
 			if lastPacketTime != nil && m.speedFactor != 0 {
 				timeToSleep := captureInfo.Timestamp.Sub(*lastPacketTime)
@@ -182,7 +189,9 @@ func (m *TransportInstance) Connect() error {
 }
 
 func (m *TransportInstance) Close() error {
-	m.handle.Close()
+	if handle := m.handle; handle != nil {
+		handle.Close()
+	}
 	m.connected = false
 	return nil
 }
@@ -192,7 +201,7 @@ func (m *TransportInstance) IsConnected() bool {
 }
 
 func (m *TransportInstance) Write(_ []byte) error {
-	panic("Write to pcap not supported")
+	return errors.New("Write to pcap not supported")
 }
 
 func (m *TransportInstance) GetReader() *bufio.Reader {

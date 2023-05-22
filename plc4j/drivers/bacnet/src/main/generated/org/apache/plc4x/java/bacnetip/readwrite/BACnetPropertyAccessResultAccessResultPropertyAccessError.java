@@ -74,7 +74,6 @@ public class BACnetPropertyAccessResultAccessResultPropertyAccessError
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetPropertyAccessResultAccessResultPropertyAccessError");
 
     // Simple Field (propertyAccessError)
@@ -110,8 +109,6 @@ public class BACnetPropertyAccessResultAccessResultPropertyAccessError
           throws ParseException {
     readBuffer.pullContext("BACnetPropertyAccessResultAccessResultPropertyAccessError");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ErrorEnclosed propertyAccessError =

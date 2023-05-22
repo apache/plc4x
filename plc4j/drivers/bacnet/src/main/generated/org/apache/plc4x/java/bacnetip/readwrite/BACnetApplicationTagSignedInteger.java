@@ -64,7 +64,6 @@ public class BACnetApplicationTagSignedInteger extends BACnetApplicationTag impl
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetApplicationTagSignedInteger");
 
     // Simple Field (payload)
@@ -100,8 +99,6 @@ public class BACnetApplicationTagSignedInteger extends BACnetApplicationTag impl
       ReadBuffer readBuffer, BACnetTagHeader header) throws ParseException {
     readBuffer.pullContext("BACnetApplicationTagSignedInteger");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetTagPayloadSignedInteger payload =

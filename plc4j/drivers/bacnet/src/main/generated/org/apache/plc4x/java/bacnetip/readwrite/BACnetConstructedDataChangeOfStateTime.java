@@ -80,7 +80,6 @@ public class BACnetConstructedDataChangeOfStateTime extends BACnetConstructedDat
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataChangeOfStateTime");
 
     // Simple Field (changeOfStateTime)
@@ -122,8 +121,6 @@ public class BACnetConstructedDataChangeOfStateTime extends BACnetConstructedDat
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataChangeOfStateTime");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetDateTime changeOfStateTime =

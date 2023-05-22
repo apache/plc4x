@@ -80,7 +80,6 @@ public class ModbusPDUReadDeviceIdentificationRequest extends ModbusPDU implemen
   protected void serializeModbusPDUChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("ModbusPDUReadDeviceIdentificationRequest");
 
     // Const Field (meiType)
@@ -129,8 +128,6 @@ public class ModbusPDUReadDeviceIdentificationRequest extends ModbusPDU implemen
       ReadBuffer readBuffer, Boolean response) throws ParseException {
     readBuffer.pullContext("ModbusPDUReadDeviceIdentificationRequest");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short meiType =

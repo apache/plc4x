@@ -65,7 +65,6 @@ public class HistoryEventFieldList extends ExtensionObjectDefinition implements 
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("HistoryEventFieldList");
 
     // Simple Field (noOfEventFields)
@@ -107,8 +106,6 @@ public class HistoryEventFieldList extends ExtensionObjectDefinition implements 
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("HistoryEventFieldList");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int noOfEventFields = readSimpleField("noOfEventFields", readSignedInt(readBuffer, 32));

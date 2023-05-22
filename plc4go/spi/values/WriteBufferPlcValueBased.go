@@ -136,6 +136,9 @@ func (p *writeBufferPlcValueBased) WriteInt64(logicalName string, bitLength uint
 }
 
 func (p *writeBufferPlcValueBased) WriteBigInt(logicalName string, bitLength uint8, value *big.Int, _ ...utils.WithWriterArgs) error {
+	if value == nil {
+		return errors.New("value must not be nil")
+	}
 	p.move(uint(bitLength))
 	// TODO: check if we set the type dynamic here...
 	return p.appendValue(logicalName, NewPlcRawByteArray(value.Bytes()))
@@ -152,6 +155,9 @@ func (p *writeBufferPlcValueBased) WriteFloat64(logicalName string, bitLength ui
 }
 
 func (p *writeBufferPlcValueBased) WriteBigFloat(logicalName string, bitLength uint8, value *big.Float, _ ...utils.WithWriterArgs) error {
+	if value == nil {
+		return errors.New("value must not be nil")
+	}
 	p.move(uint(bitLength))
 	// TODO: check if we set the type dynamic here...
 	encode, err := value.GobEncode()
@@ -182,17 +188,15 @@ func (p *writeBufferPlcValueBased) PopContext(logicalName string, _ ...utils.Wit
 	pop := p.Pop()
 	var poppedName string
 	var unwrapped apiValues.PlcValue
-	switch pop.(type) {
+	switch _context := pop.(type) {
 	case *plcValueContext:
-		context := pop.(*plcValueContext)
-		poppedName = context.logicalName
-		unwrapped = NewPlcStruct(context.properties)
+		poppedName = _context.logicalName
+		unwrapped = NewPlcStruct(_context.properties)
 	case *plcListContext:
-		context := pop.(*plcListContext)
-		poppedName = context.logicalName
-		unwrapped = NewPlcList(context.list)
+		poppedName = _context.logicalName
+		unwrapped = NewPlcList(_context.list)
 	default:
-		panic("broken context")
+		return errors.New("broken context")
 	}
 	if poppedName != logicalName {
 		return errors.Errorf("unexpected closing context %s, expected %s", poppedName, logicalName)
@@ -201,13 +205,13 @@ func (p *writeBufferPlcValueBased) PopContext(logicalName string, _ ...utils.Wit
 		p.rootNode = NewPlcStruct(map[string]apiValues.PlcValue{logicalName: unwrapped})
 		return nil
 	}
-	switch context := p.Peek().(type) {
+	switch _context := p.Peek().(type) {
 	case *plcValueContext:
-		context.properties[logicalName] = unwrapped
+		_context.properties[logicalName] = unwrapped
 	case *plcListContext:
-		context.list = append(context.list, NewPlcStruct(map[string]apiValues.PlcValue{logicalName: unwrapped}))
+		_context.list = append(_context.list, NewPlcStruct(map[string]apiValues.PlcValue{logicalName: unwrapped}))
 	default:
-		panic("broken context")
+		return errors.New("broken context")
 	}
 	return nil
 }
@@ -219,19 +223,17 @@ func (p *writeBufferPlcValueBased) GetPlcValue() apiValues.PlcValue {
 func (p *writeBufferPlcValueBased) appendValue(logicalName string, value apiValues.PlcValue) error {
 	logicalName = p.SanitizeLogicalName(logicalName)
 	peek := p.Peek()
-	switch peek.(type) {
+	switch _context := peek.(type) {
 	case *plcValueContext:
-		context := peek.(*plcValueContext)
-		context.properties[logicalName] = value
+		_context.properties[logicalName] = value
 		return nil
 	case *plcListContext:
-		context := peek.(*plcListContext)
-		context.list = append(context.list, value)
+		_context.list = append(_context.list, value)
 		return nil
 	default:
-		context := &plcValueContext{logicalName, make(map[string]apiValues.PlcValue)}
-		context.properties[logicalName] = value
-		p.Push(context)
+		newContext := &plcValueContext{logicalName, make(map[string]apiValues.PlcValue)}
+		newContext.properties[logicalName] = value
+		p.Push(newContext)
 		return nil
 	}
 }

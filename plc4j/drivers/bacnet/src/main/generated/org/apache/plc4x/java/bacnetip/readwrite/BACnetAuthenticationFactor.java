@@ -67,7 +67,6 @@ public class BACnetAuthenticationFactor implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetAuthenticationFactor");
 
     // Simple Field (formatType)
@@ -115,8 +114,6 @@ public class BACnetAuthenticationFactor implements Message {
       throws ParseException {
     readBuffer.pullContext("BACnetAuthenticationFactor");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetAuthenticationFactorTypeTagged formatType =

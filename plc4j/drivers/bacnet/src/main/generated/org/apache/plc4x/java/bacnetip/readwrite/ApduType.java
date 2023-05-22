@@ -49,7 +49,7 @@ public enum ApduType {
     }
   }
 
-  private byte value;
+  private final byte value;
 
   ApduType(byte value) {
     this.value = value;

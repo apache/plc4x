@@ -79,7 +79,6 @@ public class BACnetConstructedDataMACAddress extends BACnetConstructedData imple
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataMACAddress");
 
     // Simple Field (macAddress)
@@ -120,8 +119,6 @@ public class BACnetConstructedDataMACAddress extends BACnetConstructedData imple
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataMACAddress");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagOctetString macAddress =

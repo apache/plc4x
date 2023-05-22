@@ -87,7 +87,6 @@ public class BACnetUnconfirmedServiceRequestIAm extends BACnetUnconfirmedService
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetUnconfirmedServiceRequestIAm");
 
     // Simple Field (deviceIdentifier)
@@ -143,8 +142,6 @@ public class BACnetUnconfirmedServiceRequestIAm extends BACnetUnconfirmedService
           ReadBuffer readBuffer, Integer serviceRequestLength) throws ParseException {
     readBuffer.pullContext("BACnetUnconfirmedServiceRequestIAm");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagObjectIdentifier deviceIdentifier =

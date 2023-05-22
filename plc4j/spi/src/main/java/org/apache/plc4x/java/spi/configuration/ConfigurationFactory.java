@@ -33,6 +33,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -92,7 +93,7 @@ public class ConfigurationFactory {
                 if (paramStringValues.containsKey(configName)) {
                     String stringValue = paramStringValues.get(configName).get(0);
                     // As the arguments might be URL encoded, be sure it's decoded.
-                    stringValue = URLDecoder.decode(stringValue, "UTF-8");
+                    stringValue = URLDecoder.decode(stringValue, StandardCharsets.UTF_8);
                     FieldUtils.writeField(instance, field.getName(), toFieldValue(field, stringValue), true);
                     missingFieldNames.remove(configName);
                 } else {
@@ -111,8 +112,6 @@ public class ConfigurationFactory {
             }
         } catch (IllegalAccessException e) {
             throw new IllegalArgumentException("Unable to access all fields from Configuration Class '" + pClazz.getSimpleName() + "'", e);
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalArgumentException("Unsupported encoding");
         }
         return instance;
     }

@@ -66,7 +66,6 @@ public class ModbusPDUReadFifoQueueResponse extends ModbusPDU implements Message
   protected void serializeModbusPDUChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("ModbusPDUReadFifoQueueResponse");
 
     // Implicit Field (byteCount) (Used for parsing, but its value is not stored as it's implicitly
@@ -114,8 +113,6 @@ public class ModbusPDUReadFifoQueueResponse extends ModbusPDU implements Message
       ReadBuffer readBuffer, Boolean response) throws ParseException {
     readBuffer.pullContext("ModbusPDUReadFifoQueueResponse");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int byteCount = readImplicitField("byteCount", readUnsignedInt(readBuffer, 16));

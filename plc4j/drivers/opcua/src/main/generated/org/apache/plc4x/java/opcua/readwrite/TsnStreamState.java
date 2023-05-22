@@ -38,7 +38,7 @@ public enum TsnStreamState {
     }
   }
 
-  private long value;
+  private final long value;
 
   TsnStreamState(long value) {
     this.value = value;

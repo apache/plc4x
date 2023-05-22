@@ -25,6 +25,7 @@ from ctypes import c_uint8
 from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDU
 from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDUBuilder
+from plc4py.spi.generation.WriteBuffer import WriteBuffer
 import math
 
 
@@ -41,21 +42,15 @@ class ModbusPDUWriteMultipleCoilsResponse(PlcMessage, ModbusPDU):
         super().__init__()
 
     def serialize_modbus_pdu_child(self, write_buffer: WriteBuffer):
-        position_aware: PositionAware = write_buffer
-        start_pos: int = position_aware.get_pos()
         write_buffer.push_context("ModbusPDUWriteMultipleCoilsResponse")
 
         # Simple Field (startingAddress)
-        write_simple_field(
-            "startingAddress",
-            self.starting_address,
-            write_unsigned_int(write_buffer, 16),
+        write_buffer.write_unsigned_short(
+            self.starting_address, logical_name="startingAddress"
         )
 
         # Simple Field (quantity)
-        write_simple_field(
-            "quantity", self.quantity, write_unsigned_int(write_buffer, 16)
-        )
+        write_buffer.write_unsigned_short(self.quantity, logical_name="quantity")
 
         write_buffer.pop_context("ModbusPDUWriteMultipleCoilsResponse")
 
@@ -77,17 +72,13 @@ class ModbusPDUWriteMultipleCoilsResponse(PlcMessage, ModbusPDU):
     @staticmethod
     def static_parse_builder(read_buffer: ReadBuffer, response: c_bool):
         read_buffer.pull_context("ModbusPDUWriteMultipleCoilsResponse")
-        position_aware: PositionAware = read_buffer
-        start_pos: int = position_aware.get_pos()
         cur_pos: int = 0
 
         starting_address: c_uint16 = read_simple_field(
-            "startingAddress", read_unsigned_int(read_buffer, 16)
+            "startingAddress", read_unsigned_int
         )
 
-        quantity: c_uint16 = read_simple_field(
-            "quantity", read_unsigned_int(read_buffer, 16)
-        )
+        quantity: c_uint16 = read_simple_field("quantity", read_unsigned_int)
 
         read_buffer.close_context("ModbusPDUWriteMultipleCoilsResponse")
         # Create the instance

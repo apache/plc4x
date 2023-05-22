@@ -82,7 +82,6 @@ public class OpenProtocolMessageApplicationCommandErrorRev1
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("OpenProtocolMessageApplicationCommandErrorRev1");
 
     // Simple Field (requestMid)
@@ -132,8 +131,6 @@ public class OpenProtocolMessageApplicationCommandErrorRev1
           ReadBuffer readBuffer, Long revision) throws ParseException {
     readBuffer.pullContext("OpenProtocolMessageApplicationCommandErrorRev1");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     Mid requestMid =

@@ -58,7 +58,6 @@ public class ModbusPDUReadFileRecordResponseItem implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("ModbusPDUReadFileRecordResponseItem");
 
     // Implicit Field (dataLength) (Used for parsing, but its value is not stored as it's implicitly
@@ -110,8 +109,6 @@ public class ModbusPDUReadFileRecordResponseItem implements Message {
       throws ParseException {
     readBuffer.pullContext("ModbusPDUReadFileRecordResponseItem");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short dataLength = readImplicitField("dataLength", readUnsignedShort(readBuffer, 8));

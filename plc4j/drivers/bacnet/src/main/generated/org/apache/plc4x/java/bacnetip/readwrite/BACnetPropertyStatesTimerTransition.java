@@ -57,7 +57,6 @@ public class BACnetPropertyStatesTimerTransition extends BACnetPropertyStates im
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetPropertyStatesTimerTransition");
 
     // Simple Field (timerTransition)
@@ -88,8 +87,6 @@ public class BACnetPropertyStatesTimerTransition extends BACnetPropertyStates im
       ReadBuffer readBuffer, Short peekedTagNumber) throws ParseException {
     readBuffer.pullContext("BACnetPropertyStatesTimerTransition");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetTimerTransitionTagged timerTransition =

@@ -79,7 +79,6 @@ public class BACnetConstructedDataAverageValue extends BACnetConstructedData imp
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataAverageValue");
 
     // Simple Field (averageValue)
@@ -120,8 +119,6 @@ public class BACnetConstructedDataAverageValue extends BACnetConstructedData imp
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataAverageValue");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagReal averageValue =

@@ -36,8 +36,8 @@ public enum TelephonyCommandType {
     }
   }
 
-  private byte value;
-  private short numberOfArguments;
+  private final byte value;
+  private final short numberOfArguments;
 
   TelephonyCommandType(byte value, short numberOfArguments) {
     this.value = value;
@@ -62,7 +62,7 @@ public enum TelephonyCommandType {
   }
 
   public static List<TelephonyCommandType> enumsForFieldNumberOfArguments(short fieldValue) {
-    List<TelephonyCommandType> _values = new ArrayList();
+    List<TelephonyCommandType> _values = new ArrayList<>();
     for (TelephonyCommandType _val : TelephonyCommandType.values()) {
       if (_val.getNumberOfArguments() == fieldValue) {
         _values.add(_val);

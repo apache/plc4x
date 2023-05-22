@@ -40,9 +40,9 @@ public enum ErrorReportingCommandTypeContainer {
     }
   }
 
-  private short value;
-  private short numBytes;
-  private ErrorReportingCommandType commandType;
+  private final short value;
+  private final short numBytes;
+  private final ErrorReportingCommandType commandType;
 
   ErrorReportingCommandTypeContainer(
       short value, short numBytes, ErrorReportingCommandType commandType) {
@@ -69,7 +69,7 @@ public enum ErrorReportingCommandTypeContainer {
   }
 
   public static List<ErrorReportingCommandTypeContainer> enumsForFieldNumBytes(short fieldValue) {
-    List<ErrorReportingCommandTypeContainer> _values = new ArrayList();
+    List<ErrorReportingCommandTypeContainer> _values = new ArrayList<>();
     for (ErrorReportingCommandTypeContainer _val : ErrorReportingCommandTypeContainer.values()) {
       if (_val.getNumBytes() == fieldValue) {
         _values.add(_val);
@@ -94,7 +94,7 @@ public enum ErrorReportingCommandTypeContainer {
 
   public static List<ErrorReportingCommandTypeContainer> enumsForFieldCommandType(
       ErrorReportingCommandType fieldValue) {
-    List<ErrorReportingCommandTypeContainer> _values = new ArrayList();
+    List<ErrorReportingCommandTypeContainer> _values = new ArrayList<>();
     for (ErrorReportingCommandTypeContainer _val : ErrorReportingCommandTypeContainer.values()) {
       if (_val.getCommandType() == fieldValue) {
         _values.add(_val);

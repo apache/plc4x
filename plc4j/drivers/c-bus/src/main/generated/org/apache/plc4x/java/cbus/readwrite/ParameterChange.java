@@ -56,7 +56,6 @@ public class ParameterChange implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("ParameterChange");
 
     // Const Field (specialChar1)
@@ -97,8 +96,6 @@ public class ParameterChange implements Message {
   public static ParameterChange staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("ParameterChange");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte specialChar1 =

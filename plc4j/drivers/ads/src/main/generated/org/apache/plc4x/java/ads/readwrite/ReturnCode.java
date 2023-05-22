@@ -155,7 +155,7 @@ public enum ReturnCode {
     }
   }
 
-  private long value;
+  private final long value;
 
   ReturnCode(long value) {
     this.value = value;

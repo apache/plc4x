@@ -65,7 +65,6 @@ public class AnsiExtendedSymbolSegment extends DataSegmentType implements Messag
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("AnsiExtendedSymbolSegment");
 
     // Implicit Field (dataSize) (Used for parsing, but its value is not stored as it's implicitly
@@ -111,8 +110,6 @@ public class AnsiExtendedSymbolSegment extends DataSegmentType implements Messag
       throws ParseException {
     readBuffer.pullContext("AnsiExtendedSymbolSegment");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short dataSize = readImplicitField("dataSize", readUnsignedShort(readBuffer, 8));

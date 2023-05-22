@@ -1453,7 +1453,7 @@ func TestMapEncodedReply(t *testing.T) {
 				transaction: func() spi.RequestTransaction {
 					transactionManager := spi.NewRequestTransactionManager(1)
 					transaction := transactionManager.StartTransaction()
-					transaction.Submit(func() {
+					transaction.Submit(func(transaction spi.RequestTransaction) {
 						// NO-OP
 					})
 					return transaction
@@ -1478,7 +1478,7 @@ func TestMapEncodedReply(t *testing.T) {
 				transaction: func() spi.RequestTransaction {
 					transactionManager := spi.NewRequestTransactionManager(1)
 					transaction := transactionManager.StartTransaction()
-					transaction.Submit(func() {
+					transaction.Submit(func(transaction spi.RequestTransaction) {
 						// NO-OP
 					})
 					return transaction
@@ -1540,7 +1540,7 @@ func TestMapEncodedReply(t *testing.T) {
 				transaction: func() spi.RequestTransaction {
 					transactionManager := spi.NewRequestTransactionManager(1)
 					transaction := transactionManager.StartTransaction()
-					transaction.Submit(func() {
+					transaction.Submit(func(transaction spi.RequestTransaction) {
 						// NO-OP
 					})
 					return transaction
@@ -1602,7 +1602,7 @@ func TestMapEncodedReply(t *testing.T) {
 				transaction: func() spi.RequestTransaction {
 					transactionManager := spi.NewRequestTransactionManager(1)
 					transaction := transactionManager.StartTransaction()
-					transaction.Submit(func() {
+					transaction.Submit(func(transaction spi.RequestTransaction) {
 						// NO-OP
 					})
 					return transaction
@@ -1656,7 +1656,7 @@ func TestMapEncodedReply(t *testing.T) {
 				transaction: func() spi.RequestTransaction {
 					transactionManager := spi.NewRequestTransactionManager(1)
 					transaction := transactionManager.StartTransaction()
-					transaction.Submit(func() {
+					transaction.Submit(func(transaction spi.RequestTransaction) {
 						// NO-OP
 					})
 					return transaction
@@ -1700,7 +1700,7 @@ func TestMapEncodedReply(t *testing.T) {
 				transaction: func() spi.RequestTransaction {
 					transactionManager := spi.NewRequestTransactionManager(1)
 					transaction := transactionManager.StartTransaction()
-					transaction.Submit(func() {
+					transaction.Submit(func(transaction spi.RequestTransaction) {
 						// NO-OP
 					})
 					return transaction
@@ -1747,7 +1747,7 @@ func TestMapEncodedReply(t *testing.T) {
 				transaction: func() spi.RequestTransaction {
 					transactionManager := spi.NewRequestTransactionManager(1)
 					transaction := transactionManager.StartTransaction()
-					transaction.Submit(func() {
+					transaction.Submit(func(transaction spi.RequestTransaction) {
 						// NO-OP
 					})
 					return transaction
@@ -1814,7 +1814,7 @@ func TestMapEncodedReply(t *testing.T) {
 				transaction: func() spi.RequestTransaction {
 					transactionManager := spi.NewRequestTransactionManager(1)
 					transaction := transactionManager.StartTransaction()
-					transaction.Submit(func() {
+					transaction.Submit(func(transaction spi.RequestTransaction) {
 						// NO-OP
 					})
 					return transaction
@@ -1899,7 +1899,7 @@ func TestMapEncodedReply(t *testing.T) {
 				transaction: func() spi.RequestTransaction {
 					transactionManager := spi.NewRequestTransactionManager(1)
 					transaction := transactionManager.StartTransaction()
-					transaction.Submit(func() {
+					transaction.Submit(func(transaction spi.RequestTransaction) {
 						// NO-OP
 					})
 					return transaction
@@ -1947,7 +1947,7 @@ func TestMapEncodedReply(t *testing.T) {
 				transaction: func() spi.RequestTransaction {
 					transactionManager := spi.NewRequestTransactionManager(1)
 					transaction := transactionManager.StartTransaction()
-					transaction.Submit(func() {
+					transaction.Submit(func(transaction spi.RequestTransaction) {
 						// NO-OP
 					})
 					return transaction
@@ -1991,7 +1991,7 @@ func TestMapEncodedReply(t *testing.T) {
 				transaction: func() spi.RequestTransaction {
 					transactionManager := spi.NewRequestTransactionManager(1)
 					transaction := transactionManager.StartTransaction()
-					transaction.Submit(func() {
+					transaction.Submit(func(transaction spi.RequestTransaction) {
 						// NO-OP
 					})
 					return transaction
@@ -2035,7 +2035,7 @@ func TestMapEncodedReply(t *testing.T) {
 				transaction: func() spi.RequestTransaction {
 					transactionManager := spi.NewRequestTransactionManager(1)
 					transaction := transactionManager.StartTransaction()
-					transaction.Submit(func() {
+					transaction.Submit(func(transaction spi.RequestTransaction) {
 						// NO-OP
 					})
 					return transaction
@@ -2079,7 +2079,7 @@ func TestMapEncodedReply(t *testing.T) {
 				transaction: func() spi.RequestTransaction {
 					transactionManager := spi.NewRequestTransactionManager(1)
 					transaction := transactionManager.StartTransaction()
-					transaction.Submit(func() {
+					transaction.Submit(func(transaction spi.RequestTransaction) {
 						// NO-OP
 					})
 					return transaction
@@ -2123,7 +2123,7 @@ func TestMapEncodedReply(t *testing.T) {
 				transaction: func() spi.RequestTransaction {
 					transactionManager := spi.NewRequestTransactionManager(1)
 					transaction := transactionManager.StartTransaction()
-					transaction.Submit(func() {
+					transaction.Submit(func(transaction spi.RequestTransaction) {
 						// NO-OP
 					})
 					return transaction
@@ -2187,7 +2187,7 @@ func TestMapEncodedReply(t *testing.T) {
 				transaction: func() spi.RequestTransaction {
 					transactionManager := spi.NewRequestTransactionManager(1)
 					transaction := transactionManager.StartTransaction()
-					transaction.Submit(func() {
+					transaction.Submit(func(transaction spi.RequestTransaction) {
 						// NO-OP
 					})
 					return transaction
@@ -2231,7 +2231,7 @@ func TestMapEncodedReply(t *testing.T) {
 				transaction: func() spi.RequestTransaction {
 					transactionManager := spi.NewRequestTransactionManager(1)
 					transaction := transactionManager.StartTransaction()
-					transaction.Submit(func() {
+					transaction.Submit(func(transaction spi.RequestTransaction) {
 						// NO-OP
 					})
 					return transaction
@@ -2275,7 +2275,7 @@ func TestMapEncodedReply(t *testing.T) {
 				transaction: func() spi.RequestTransaction {
 					transactionManager := spi.NewRequestTransactionManager(1)
 					transaction := transactionManager.StartTransaction()
-					transaction.Submit(func() {
+					transaction.Submit(func(transaction spi.RequestTransaction) {
 						// NO-OP
 					})
 					return transaction
@@ -2319,7 +2319,7 @@ func TestMapEncodedReply(t *testing.T) {
 				transaction: func() spi.RequestTransaction {
 					transactionManager := spi.NewRequestTransactionManager(1)
 					transaction := transactionManager.StartTransaction()
-					transaction.Submit(func() {
+					transaction.Submit(func(transaction spi.RequestTransaction) {
 						// NO-OP
 					})
 					return transaction
@@ -2363,7 +2363,7 @@ func TestMapEncodedReply(t *testing.T) {
 				transaction: func() spi.RequestTransaction {
 					transactionManager := spi.NewRequestTransactionManager(1)
 					transaction := transactionManager.StartTransaction()
-					transaction.Submit(func() {
+					transaction.Submit(func(transaction spi.RequestTransaction) {
 						// NO-OP
 					})
 					return transaction
@@ -2407,7 +2407,7 @@ func TestMapEncodedReply(t *testing.T) {
 				transaction: func() spi.RequestTransaction {
 					transactionManager := spi.NewRequestTransactionManager(1)
 					transaction := transactionManager.StartTransaction()
-					transaction.Submit(func() {
+					transaction.Submit(func(transaction spi.RequestTransaction) {
 						// NO-OP
 					})
 					return transaction
@@ -2467,7 +2467,7 @@ func TestMapEncodedReply(t *testing.T) {
 				transaction: func() spi.RequestTransaction {
 					transactionManager := spi.NewRequestTransactionManager(1)
 					transaction := transactionManager.StartTransaction()
-					transaction.Submit(func() {
+					transaction.Submit(func(transaction spi.RequestTransaction) {
 						// NO-OP
 					})
 					return transaction
@@ -2511,7 +2511,7 @@ func TestMapEncodedReply(t *testing.T) {
 				transaction: func() spi.RequestTransaction {
 					transactionManager := spi.NewRequestTransactionManager(1)
 					transaction := transactionManager.StartTransaction()
-					transaction.Submit(func() {
+					transaction.Submit(func(transaction spi.RequestTransaction) {
 						// NO-OP
 					})
 					return transaction

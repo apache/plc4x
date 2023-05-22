@@ -79,7 +79,6 @@ public class BACnetConstructedDataProfileLocation extends BACnetConstructedData 
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataProfileLocation");
 
     // Simple Field (profileLocation)
@@ -121,8 +120,6 @@ public class BACnetConstructedDataProfileLocation extends BACnetConstructedData 
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataProfileLocation");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagCharacterString profileLocation =

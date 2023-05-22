@@ -51,6 +51,17 @@
             // which PLC4X will never be able to support
             [reserved uint 8                     '0x00'                   ] // transferStatus
         ]
+        ['DCP_GetSet_PDU' PcDcp_GetSet_Pdu
+            [const    uint 8      serviceId                    0x04                                ]
+            [reserved uint 5      '0x00'                                                           ]
+            [simple   bit         notSupported                                                     ]
+            [reserved uint 1      '0x00'                                                           ]
+            [simple   bit         response                                                         ]
+            [simple   uint 32     xid                                                              ]
+            [reserved uint 16      '0x0000'                                                        ]
+            [implicit uint 16     dcpDataLength                'lengthInBytes - 12'                ]
+            [array    PnDcp_Block blocks                        length              'dcpDataLength']
+        ]
         ['PTCP_DelayReqPDU' PcDcp_Pdu_DelayReq
             // Header Start
             [reserved uint 32 '0x00000000']

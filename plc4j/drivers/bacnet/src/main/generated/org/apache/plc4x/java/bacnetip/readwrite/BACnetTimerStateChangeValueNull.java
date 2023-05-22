@@ -64,7 +64,6 @@ public class BACnetTimerStateChangeValueNull extends BACnetTimerStateChangeValue
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetTimerStateChangeValueNull");
 
     // Simple Field (nullValue)
@@ -94,8 +93,6 @@ public class BACnetTimerStateChangeValueNull extends BACnetTimerStateChangeValue
       ReadBuffer readBuffer, BACnetObjectType objectTypeArgument) throws ParseException {
     readBuffer.pullContext("BACnetTimerStateChangeValueNull");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagNull nullValue =

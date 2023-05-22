@@ -79,7 +79,6 @@ public class BACnetConstructedDataSetting extends BACnetConstructedData implemen
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataSetting");
 
     // Simple Field (setting)
@@ -120,8 +119,6 @@ public class BACnetConstructedDataSetting extends BACnetConstructedData implemen
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataSetting");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger setting =

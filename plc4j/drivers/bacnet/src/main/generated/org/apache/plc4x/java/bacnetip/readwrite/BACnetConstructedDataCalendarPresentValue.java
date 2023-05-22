@@ -80,7 +80,6 @@ public class BACnetConstructedDataCalendarPresentValue extends BACnetConstructed
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataCalendarPresentValue");
 
     // Simple Field (presentValue)
@@ -121,8 +120,6 @@ public class BACnetConstructedDataCalendarPresentValue extends BACnetConstructed
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataCalendarPresentValue");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagBoolean presentValue =

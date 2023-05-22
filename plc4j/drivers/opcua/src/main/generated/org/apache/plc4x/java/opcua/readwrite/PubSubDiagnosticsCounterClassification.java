@@ -36,7 +36,7 @@ public enum PubSubDiagnosticsCounterClassification {
     }
   }
 
-  private long value;
+  private final long value;
 
   PubSubDiagnosticsCounterClassification(long value) {
     this.value = value;

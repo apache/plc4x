@@ -37,7 +37,7 @@ public enum BACnetDoorValue {
     }
   }
 
-  private short value;
+  private final short value;
 
   BACnetDoorValue(short value) {
     this.value = value;

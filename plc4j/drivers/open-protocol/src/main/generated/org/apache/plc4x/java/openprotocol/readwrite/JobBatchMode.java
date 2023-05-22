@@ -35,7 +35,7 @@ public enum JobBatchMode {
     }
   }
 
-  private short value;
+  private final short value;
 
   JobBatchMode(short value) {
     this.value = value;

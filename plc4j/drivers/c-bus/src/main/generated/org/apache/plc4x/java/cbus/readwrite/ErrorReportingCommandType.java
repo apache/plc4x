@@ -39,8 +39,8 @@ public enum ErrorReportingCommandType {
     }
   }
 
-  private byte value;
-  private short numberOfArguments;
+  private final byte value;
+  private final short numberOfArguments;
 
   ErrorReportingCommandType(byte value, short numberOfArguments) {
     this.value = value;
@@ -65,7 +65,7 @@ public enum ErrorReportingCommandType {
   }
 
   public static List<ErrorReportingCommandType> enumsForFieldNumberOfArguments(short fieldValue) {
-    List<ErrorReportingCommandType> _values = new ArrayList();
+    List<ErrorReportingCommandType> _values = new ArrayList<>();
     for (ErrorReportingCommandType _val : ErrorReportingCommandType.values()) {
       if (_val.getNumberOfArguments() == fieldValue) {
         _values.add(_val);

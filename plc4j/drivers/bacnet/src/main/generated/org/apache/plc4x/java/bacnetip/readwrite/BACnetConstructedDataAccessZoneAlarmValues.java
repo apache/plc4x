@@ -76,7 +76,6 @@ public class BACnetConstructedDataAccessZoneAlarmValues extends BACnetConstructe
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataAccessZoneAlarmValues");
 
     // Array Field (alarmValues)
@@ -115,8 +114,6 @@ public class BACnetConstructedDataAccessZoneAlarmValues extends BACnetConstructe
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataAccessZoneAlarmValues");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     List<BACnetAccessZoneOccupancyStateTagged> alarmValues =

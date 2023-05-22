@@ -80,7 +80,7 @@ public class ManualPLC4XOpcua {
     //Don't exists
     private static final String DOES_NOT_EXIST_IDENTIFIER = "ns=2;i=12512623";
 
-    public static void main(String args[]) {
+    public static void main(String... args) {
         try {
             // When switching JDK versions from a newer to an older version,
             // this can cause the server to not start correctly.

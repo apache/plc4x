@@ -61,7 +61,6 @@ public class ServerErrorReply extends ReplyOrConfirmation implements Message {
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("ServerErrorReply");
 
     // Const Field (errorMarker)
@@ -92,8 +91,6 @@ public class ServerErrorReply extends ReplyOrConfirmation implements Message {
       throws ParseException {
     readBuffer.pullContext("ServerErrorReply");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte errorMarker =

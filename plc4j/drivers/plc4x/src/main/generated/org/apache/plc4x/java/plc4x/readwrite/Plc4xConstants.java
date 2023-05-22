@@ -51,7 +51,6 @@ public class Plc4xConstants implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("Plc4xConstants");
 
     // Const Field (plc4xTcpDefaultPort)
@@ -86,8 +85,6 @@ public class Plc4xConstants implements Message {
   public static Plc4xConstants staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("Plc4xConstants");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int plc4xTcpDefaultPort =

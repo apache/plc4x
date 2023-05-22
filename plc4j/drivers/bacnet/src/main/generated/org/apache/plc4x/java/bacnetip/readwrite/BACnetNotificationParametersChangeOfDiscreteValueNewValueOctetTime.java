@@ -66,7 +66,6 @@ public class BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime
       WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime");
 
     // Simple Field (timeValue)
@@ -97,8 +96,6 @@ public class BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime
           ReadBuffer readBuffer, Short tagNumber) throws ParseException {
     readBuffer.pullContext("BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagTime timeValue =

@@ -67,7 +67,6 @@ public class BACnetConstructedDataNotificationClassAll extends BACnetConstructed
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataNotificationClassAll");
 
     writeBuffer.popContext("BACnetConstructedDataNotificationClassAll");
@@ -96,8 +95,6 @@ public class BACnetConstructedDataNotificationClassAll extends BACnetConstructed
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataNotificationClassAll");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Validation
     if (!((1) == (2))) {

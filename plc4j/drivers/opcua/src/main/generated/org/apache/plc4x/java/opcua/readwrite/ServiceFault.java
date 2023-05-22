@@ -59,7 +59,6 @@ public class ServiceFault extends ExtensionObjectDefinition implements Message {
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("ServiceFault");
 
     // Simple Field (responseHeader)
@@ -89,8 +88,6 @@ public class ServiceFault extends ExtensionObjectDefinition implements Message {
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("ServiceFault");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ExtensionObjectDefinition responseHeader =

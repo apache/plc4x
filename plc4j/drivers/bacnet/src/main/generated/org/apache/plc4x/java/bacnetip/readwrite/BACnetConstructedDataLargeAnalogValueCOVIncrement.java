@@ -80,7 +80,6 @@ public class BACnetConstructedDataLargeAnalogValueCOVIncrement extends BACnetCon
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataLargeAnalogValueCOVIncrement");
 
     // Simple Field (covIncrement)
@@ -121,8 +120,6 @@ public class BACnetConstructedDataLargeAnalogValueCOVIncrement extends BACnetCon
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataLargeAnalogValueCOVIncrement");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagDouble covIncrement =

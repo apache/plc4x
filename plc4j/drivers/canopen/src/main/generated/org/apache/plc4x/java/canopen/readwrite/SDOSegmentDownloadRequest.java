@@ -70,7 +70,6 @@ public class SDOSegmentDownloadRequest extends SDORequest implements Message {
   protected void serializeSDORequestChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("SDOSegmentDownloadRequest");
 
     // Simple Field (toggle)
@@ -132,8 +131,6 @@ public class SDOSegmentDownloadRequest extends SDORequest implements Message {
       ReadBuffer readBuffer, SDORequestCommand command) throws ParseException {
     readBuffer.pullContext("SDOSegmentDownloadRequest");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     boolean toggle = readSimpleField("toggle", readBoolean(readBuffer));

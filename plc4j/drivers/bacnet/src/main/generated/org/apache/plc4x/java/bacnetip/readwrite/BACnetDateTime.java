@@ -58,7 +58,6 @@ public class BACnetDateTime implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetDateTime");
 
     // Simple Field (dateValue)
@@ -99,8 +98,6 @@ public class BACnetDateTime implements Message {
   public static BACnetDateTime staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetDateTime");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagDate dateValue =

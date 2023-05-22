@@ -78,7 +78,6 @@ public class CallMethodRequest extends ExtensionObjectDefinition implements Mess
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("CallMethodRequest");
 
     // Simple Field (objectId)
@@ -132,8 +131,6 @@ public class CallMethodRequest extends ExtensionObjectDefinition implements Mess
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("CallMethodRequest");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     NodeId objectId =

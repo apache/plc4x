@@ -57,7 +57,6 @@ public class BACnetTimeStampSequence extends BACnetTimeStamp implements Message 
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetTimeStampSequence");
 
     // Simple Field (sequenceNumber)
@@ -87,8 +86,6 @@ public class BACnetTimeStampSequence extends BACnetTimeStamp implements Message 
       throws ParseException {
     readBuffer.pullContext("BACnetTimeStampSequence");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetContextTagUnsignedInteger sequenceNumber =

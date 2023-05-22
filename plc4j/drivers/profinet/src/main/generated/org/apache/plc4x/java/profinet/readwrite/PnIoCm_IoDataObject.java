@@ -64,7 +64,6 @@ public class PnIoCm_IoDataObject implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("PnIoCm_IoDataObject");
 
     // Simple Field (slotNumber)
@@ -123,8 +122,6 @@ public class PnIoCm_IoDataObject implements Message {
   public static PnIoCm_IoDataObject staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("PnIoCm_IoDataObject");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int slotNumber =

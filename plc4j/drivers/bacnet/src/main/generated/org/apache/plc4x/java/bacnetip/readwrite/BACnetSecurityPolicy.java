@@ -37,7 +37,7 @@ public enum BACnetSecurityPolicy {
     }
   }
 
-  private short value;
+  private final short value;
 
   BACnetSecurityPolicy(short value) {
     this.value = value;

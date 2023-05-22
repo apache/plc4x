@@ -50,7 +50,6 @@ public class ApduDataExtNetworkParameterResponse extends ApduDataExt implements 
   protected void serializeApduDataExtChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("ApduDataExtNetworkParameterResponse");
 
     writeBuffer.popContext("ApduDataExtNetworkParameterResponse");
@@ -74,8 +73,6 @@ public class ApduDataExtNetworkParameterResponse extends ApduDataExt implements 
       ReadBuffer readBuffer, Short length) throws ParseException {
     readBuffer.pullContext("ApduDataExtNetworkParameterResponse");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("ApduDataExtNetworkParameterResponse");

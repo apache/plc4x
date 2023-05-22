@@ -65,7 +65,6 @@ public class BACnetLogRecordLogDatumFailure extends BACnetLogRecordLogDatum impl
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetLogRecordLogDatumFailure");
 
     // Simple Field (failure)
@@ -95,8 +94,6 @@ public class BACnetLogRecordLogDatumFailure extends BACnetLogRecordLogDatum impl
       ReadBuffer readBuffer, Short tagNumber) throws ParseException {
     readBuffer.pullContext("BACnetLogRecordLogDatumFailure");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ErrorEnclosed failure =

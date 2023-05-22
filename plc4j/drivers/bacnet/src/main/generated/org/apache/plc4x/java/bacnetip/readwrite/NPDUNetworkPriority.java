@@ -37,7 +37,7 @@ public enum NPDUNetworkPriority {
     }
   }
 
-  private byte value;
+  private final byte value;
 
   NPDUNetworkPriority(byte value) {
     this.value = value;

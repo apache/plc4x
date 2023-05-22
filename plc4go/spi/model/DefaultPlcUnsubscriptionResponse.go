@@ -19,8 +19,10 @@
 
 package model
 
+//go:generate go run ../../tools/plc4xgenerator/gen.go -type=DefaultPlcUnsubscriptionResponse
 type DefaultPlcUnsubscriptionResponse struct {
-	// TODO: implement me
+	// TODO: implement
+	implementMe string
 }
 
 func NewDefaultPlcUnsubscriptionResponse() *DefaultPlcUnsubscriptionResponse {

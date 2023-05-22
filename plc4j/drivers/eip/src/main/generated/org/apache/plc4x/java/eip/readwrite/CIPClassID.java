@@ -103,7 +103,7 @@ public enum CIPClassID {
     }
   }
 
-  private int value;
+  private final int value;
 
   CIPClassID(int value) {
     this.value = value;

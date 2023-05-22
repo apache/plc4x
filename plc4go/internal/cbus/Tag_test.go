@@ -291,7 +291,7 @@ func Test_calGetStatusTag_GetArrayInfo(t *testing.T) {
 		{
 			name: "get array info",
 			want: []apiModel.ArrayInfo{
-				spiModel.DefaultArrayInfo{},
+				&spiModel.DefaultArrayInfo{},
 			},
 		},
 		{
@@ -607,7 +607,7 @@ func Test_calIdentifyTag_GetArrayInfo(t *testing.T) {
 		{
 			name: "get empty array info",
 			want: []apiModel.ArrayInfo{
-				spiModel.DefaultArrayInfo{},
+				&spiModel.DefaultArrayInfo{},
 			},
 		},
 		{
@@ -880,7 +880,7 @@ func Test_calRecallTag_GetArrayInfo(t *testing.T) {
 		{
 			name: "empty array info",
 			want: []apiModel.ArrayInfo{
-				spiModel.DefaultArrayInfo{},
+				&spiModel.DefaultArrayInfo{},
 			},
 		},
 		{
@@ -1388,7 +1388,7 @@ func Test_mmiMonitorTag_GetArrayInfo(t *testing.T) {
 		{
 			name: "mmi monitor tag",
 			want: []apiModel.ArrayInfo{
-				spiModel.DefaultArrayInfo{},
+				&spiModel.DefaultArrayInfo{},
 			},
 		},
 		{
@@ -1704,7 +1704,7 @@ func Test_salMonitorTag_GetArrayInfo(t *testing.T) {
 		{
 			name: "get empty array info",
 			want: []apiModel.ArrayInfo{
-				spiModel.DefaultArrayInfo{},
+				&spiModel.DefaultArrayInfo{},
 			},
 		},
 		{
@@ -2014,7 +2014,7 @@ func Test_salTag_GetArrayInfo(t *testing.T) {
 		{
 			name: "get empty array info",
 			want: []apiModel.ArrayInfo{
-				spiModel.DefaultArrayInfo{},
+				&spiModel.DefaultArrayInfo{},
 			},
 		},
 		{
@@ -2415,7 +2415,7 @@ func Test_statusTag_GetArrayInfo(t *testing.T) {
 		{
 			name: "get empty array info",
 			want: []apiModel.ArrayInfo{
-				spiModel.DefaultArrayInfo{},
+				&spiModel.DefaultArrayInfo{},
 			},
 		},
 		{

@@ -90,7 +90,6 @@ public class BACnetTagPayloadTime implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetTagPayloadTime");
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
@@ -173,8 +172,6 @@ public class BACnetTagPayloadTime implements Message {
   public static BACnetTagPayloadTime staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetTagPayloadTime");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     short wildcard = readVirtualField("wildcard", short.class, 0xFF);
 

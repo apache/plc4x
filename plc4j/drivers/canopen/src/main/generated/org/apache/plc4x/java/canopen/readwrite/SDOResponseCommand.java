@@ -39,7 +39,7 @@ public enum SDOResponseCommand {
     }
   }
 
-  private byte value;
+  private final byte value;
 
   SDOResponseCommand(byte value) {
     this.value = value;

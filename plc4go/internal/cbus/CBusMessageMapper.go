@@ -96,7 +96,8 @@ func TagToCBusMessage(tag apiModel.PlcTag, value apiValues.PlcValue, alphaGenera
 		var salData readWriteModel.SALData
 		switch tagType.application.ApplicationId() {
 		case readWriteModel.ApplicationId_FREE_USAGE:
-			panic("Not yet implemented") // TODO: implement
+			err = errors.New("Not yet implemented") // TODO: implement
+			return
 		case readWriteModel.ApplicationId_TEMPERATURE_BROADCAST:
 			var temperatureBroadcastData readWriteModel.TemperatureBroadcastData
 			switch salCommand {
@@ -114,7 +115,8 @@ func TagToCBusMessage(tag apiModel.PlcTag, value apiValues.PlcValue, alphaGenera
 			}
 			salData = readWriteModel.NewSALDataTemperatureBroadcast(temperatureBroadcastData, nil)
 		case readWriteModel.ApplicationId_ROOM_CONTROL_SYSTEM:
-			panic("Implement me")
+			err = errors.New("Not yet implemented") // TODO: implement
+			return
 		case
 			readWriteModel.ApplicationId_LIGHTING,
 			readWriteModel.ApplicationId_VENTILATION,
@@ -166,35 +168,48 @@ func TagToCBusMessage(tag apiModel.PlcTag, value apiValues.PlcValue, alphaGenera
 				lightingData = readWriteModel.NewLightingDataTerminateRamp(group, commandTypeContainer)
 				supportsWrite = true
 			case readWriteModel.LightingCommandType_LABEL.PLC4XEnumName():
-				panic("Implement me")
+				err = errors.New("Not yet implemented") // TODO: implement
+				return
 			default:
 				return nil, false, false, false, errors.Errorf("Unsupported command %s for %s", salCommand, tagType.application.ApplicationId())
 			}
 			salData = readWriteModel.NewSALDataLighting(lightingData, nil)
 		case readWriteModel.ApplicationId_AIR_CONDITIONING:
-			panic("Implement me")
+			err = errors.New("Not yet implemented") // TODO: implement
+			return
 		case readWriteModel.ApplicationId_TRIGGER_CONTROL:
-			panic("Implement me")
+			err = errors.New("Not yet implemented") // TODO: implement
+			return
 		case readWriteModel.ApplicationId_ENABLE_CONTROL:
-			panic("Implement me")
+			err = errors.New("Not yet implemented") // TODO: implement
+			return
 		case readWriteModel.ApplicationId_SECURITY:
-			panic("Implement me")
+			err = errors.New("Not yet implemented") // TODO: implement
+			return
 		case readWriteModel.ApplicationId_METERING:
-			panic("Implement me")
+			err = errors.New("Not yet implemented") // TODO: implement
+			return
 		case readWriteModel.ApplicationId_ACCESS_CONTROL:
-			panic("Implement me")
+			err = errors.New("Not yet implemented") // TODO: implement
+			return
 		case readWriteModel.ApplicationId_CLOCK_AND_TIMEKEEPING:
-			panic("Implement me")
+			err = errors.New("Not yet implemented") // TODO: implement
+			return
 		case readWriteModel.ApplicationId_TELEPHONY_STATUS_AND_CONTROL:
-			panic("Implement me")
+			err = errors.New("Not yet implemented") // TODO: implement
+			return
 		case readWriteModel.ApplicationId_MEASUREMENT:
-			panic("Implement me")
+			err = errors.New("Not yet implemented") // TODO: implement
+			return
 		case readWriteModel.ApplicationId_TESTING:
-			panic("Implement me")
+			err = errors.New("Not yet implemented") // TODO: implement
+			return
 		case readWriteModel.ApplicationId_MEDIA_TRANSPORT_CONTROL:
-			panic("Implement me")
+			err = errors.New("Not yet implemented") // TODO: implement
+			return
 		case readWriteModel.ApplicationId_ERROR_REPORTING:
-			panic("Implement me")
+			err = errors.New("Not yet implemented") // TODO: implement
+			return
 		default:
 			return nil, false, false, false, errors.Errorf("No support for %s", tagType.application)
 		}

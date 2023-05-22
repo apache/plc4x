@@ -69,7 +69,6 @@ public class BACnetConfirmedServiceRequestVTClose extends BACnetConfirmedService
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConfirmedServiceRequestVTClose");
 
     // Array Field (listOfRemoteVtSessionIdentifiers)
@@ -106,8 +105,6 @@ public class BACnetConfirmedServiceRequestVTClose extends BACnetConfirmedService
           throws ParseException {
     readBuffer.pullContext("BACnetConfirmedServiceRequestVTClose");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     List<BACnetApplicationTagUnsignedInteger> listOfRemoteVtSessionIdentifiers =

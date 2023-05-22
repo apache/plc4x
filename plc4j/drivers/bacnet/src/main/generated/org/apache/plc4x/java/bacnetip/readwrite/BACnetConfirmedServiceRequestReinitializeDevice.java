@@ -76,7 +76,6 @@ public class BACnetConfirmedServiceRequestReinitializeDevice extends BACnetConfi
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConfirmedServiceRequestReinitializeDevice");
 
     // Simple Field (reinitializedStateOfDevice)
@@ -118,8 +117,6 @@ public class BACnetConfirmedServiceRequestReinitializeDevice extends BACnetConfi
           ReadBuffer readBuffer, Long serviceRequestLength) throws ParseException {
     readBuffer.pullContext("BACnetConfirmedServiceRequestReinitializeDevice");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged

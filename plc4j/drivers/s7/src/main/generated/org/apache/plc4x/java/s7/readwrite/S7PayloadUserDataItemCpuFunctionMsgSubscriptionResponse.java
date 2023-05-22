@@ -61,7 +61,6 @@ public class S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse extends S7P
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse");
 
     writeBuffer.popContext("S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse");
@@ -86,8 +85,6 @@ public class S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse extends S7P
       throws ParseException {
     readBuffer.pullContext("S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse");

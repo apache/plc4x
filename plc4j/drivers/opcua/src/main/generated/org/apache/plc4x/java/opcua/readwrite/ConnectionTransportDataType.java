@@ -51,7 +51,6 @@ public class ConnectionTransportDataType extends ExtensionObjectDefinition imple
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("ConnectionTransportDataType");
 
     writeBuffer.popContext("ConnectionTransportDataType");
@@ -75,8 +74,6 @@ public class ConnectionTransportDataType extends ExtensionObjectDefinition imple
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("ConnectionTransportDataType");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("ConnectionTransportDataType");

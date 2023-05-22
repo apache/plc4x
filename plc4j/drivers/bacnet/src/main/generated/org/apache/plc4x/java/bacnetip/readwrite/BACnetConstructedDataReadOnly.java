@@ -79,7 +79,6 @@ public class BACnetConstructedDataReadOnly extends BACnetConstructedData impleme
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataReadOnly");
 
     // Simple Field (readOnly)
@@ -120,8 +119,6 @@ public class BACnetConstructedDataReadOnly extends BACnetConstructedData impleme
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataReadOnly");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagBoolean readOnly =

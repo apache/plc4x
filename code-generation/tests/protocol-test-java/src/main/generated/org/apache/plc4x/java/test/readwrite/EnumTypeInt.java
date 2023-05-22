@@ -36,7 +36,7 @@ public enum EnumTypeInt {
     }
   }
 
-  private byte value;
+  private final byte value;
 
   EnumTypeInt(byte value) {
     this.value = value;

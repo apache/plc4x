@@ -79,7 +79,6 @@ public class BACnetConstructedDataCarDoorZone extends BACnetConstructedData impl
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataCarDoorZone");
 
     // Simple Field (carDoorZone)
@@ -120,8 +119,6 @@ public class BACnetConstructedDataCarDoorZone extends BACnetConstructedData impl
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataCarDoorZone");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagBoolean carDoorZone =

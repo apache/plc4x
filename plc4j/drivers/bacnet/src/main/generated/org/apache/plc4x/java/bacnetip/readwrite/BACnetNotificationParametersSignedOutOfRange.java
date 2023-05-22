@@ -104,7 +104,6 @@ public class BACnetNotificationParametersSignedOutOfRange extends BACnetNotifica
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetNotificationParametersSignedOutOfRange");
 
     // Simple Field (innerOpeningTag)
@@ -170,8 +169,6 @@ public class BACnetNotificationParametersSignedOutOfRange extends BACnetNotifica
       throws ParseException {
     readBuffer.pullContext("BACnetNotificationParametersSignedOutOfRange");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetOpeningTag innerOpeningTag =

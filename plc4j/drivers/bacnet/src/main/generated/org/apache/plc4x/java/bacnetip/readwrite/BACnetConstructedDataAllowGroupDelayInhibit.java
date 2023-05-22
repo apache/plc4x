@@ -80,7 +80,6 @@ public class BACnetConstructedDataAllowGroupDelayInhibit extends BACnetConstruct
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataAllowGroupDelayInhibit");
 
     // Simple Field (allowGroupDelayInhibit)
@@ -124,8 +123,6 @@ public class BACnetConstructedDataAllowGroupDelayInhibit extends BACnetConstruct
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataAllowGroupDelayInhibit");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagBoolean allowGroupDelayInhibit =

@@ -79,7 +79,6 @@ public class BACnetConstructedDataProtocolVersion extends BACnetConstructedData 
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataProtocolVersion");
 
     // Simple Field (protocolVersion)
@@ -121,8 +120,6 @@ public class BACnetConstructedDataProtocolVersion extends BACnetConstructedData 
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataProtocolVersion");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger protocolVersion =

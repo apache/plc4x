@@ -66,7 +66,6 @@ public class S7MessageObjectResponse extends S7DataAlarmMessage implements Messa
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("S7MessageObjectResponse");
 
     // Simple Field (returnCode)
@@ -122,8 +121,6 @@ public class S7MessageObjectResponse extends S7DataAlarmMessage implements Messa
       ReadBuffer readBuffer, Byte cpuFunctionType) throws ParseException {
     readBuffer.pullContext("S7MessageObjectResponse");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     DataTransportErrorCode returnCode =

@@ -24,6 +24,7 @@ from abc import abstractmethod
 from ctypes import c_bool
 from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.protocols.modbus.readwrite.DriverType import DriverType
+from plc4py.spi.generation.WriteBuffer import WriteBuffer
 import math
 
 
@@ -42,12 +43,10 @@ class ModbusADU(ABC, PlcMessage):
         pass
 
     @abstractmethod
-    def serialize_modbus_aduChild(write_buffer: WriteBuffer) -> None:
+    def serialize_modbus_adu_child(self, write_buffer: WriteBuffer) -> None:
         pass
 
     def serialize(self, write_buffer: WriteBuffer):
-        position_aware: PositionAware = write_buffer
-        start_pos: int = position_aware.get_pos()
         write_buffer.push_context("ModbusADU")
 
         # Switch field (Serialize the sub-type)
@@ -67,7 +66,6 @@ class ModbusADU(ABC, PlcMessage):
         return length_in_bits
 
     def static_parse(read_buffer: ReadBuffer, args):
-        position_aware: PositionAware = read_buffer
         if (args is None) or (args.length is not 2):
             raise PlcRuntimeException(
                 "Wrong number of arguments, expected 2, but got " + args.length
@@ -102,17 +100,15 @@ class ModbusADU(ABC, PlcMessage):
         read_buffer: ReadBuffer, driver_type: DriverType, response: c_bool
     ):
         read_buffer.pull_context("ModbusADU")
-        position_aware: PositionAware = read_buffer
-        start_pos: int = position_aware.get_pos()
         cur_pos: int = 0
 
         # Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
         builder: ModbusADUBuilder = None
-        if EvaluationHelper.equals(driverType, DriverType.MODBUS_TCP):
+        if EvaluationHelper.equals(driverType, DriverType.get_modbu_s__tcp()):
             builder = ModbusTcpADU.staticParseBuilder(read_buffer, driverType, response)
-        if EvaluationHelper.equals(driverType, DriverType.MODBUS_RTU):
+        if EvaluationHelper.equals(driverType, DriverType.get_modbu_s__rtu()):
             builder = ModbusRtuADU.staticParseBuilder(read_buffer, driverType, response)
-        if EvaluationHelper.equals(driverType, DriverType.MODBUS_ASCII):
+        if EvaluationHelper.equals(driverType, DriverType.get_modbu_s__ascii()):
             builder = ModbusAsciiADU.staticParseBuilder(
                 read_buffer, driverType, response
             )

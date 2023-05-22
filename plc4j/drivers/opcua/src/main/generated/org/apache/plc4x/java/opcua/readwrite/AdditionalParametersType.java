@@ -65,7 +65,6 @@ public class AdditionalParametersType extends ExtensionObjectDefinition implemen
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("AdditionalParametersType");
 
     // Simple Field (noOfParameters)
@@ -107,8 +106,6 @@ public class AdditionalParametersType extends ExtensionObjectDefinition implemen
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("AdditionalParametersType");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int noOfParameters = readSimpleField("noOfParameters", readSignedInt(readBuffer, 32));

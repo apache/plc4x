@@ -64,7 +64,6 @@ public class SDOInitiateSegmentedUploadResponse extends SDOInitiateUploadRespons
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("SDOInitiateSegmentedUploadResponse");
 
     // Simple Field (bytes)
@@ -96,8 +95,6 @@ public class SDOInitiateSegmentedUploadResponse extends SDOInitiateUploadRespons
           throws ParseException {
     readBuffer.pullContext("SDOInitiateSegmentedUploadResponse");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     long bytes = readSimpleField("bytes", readUnsignedLong(readBuffer, 32));

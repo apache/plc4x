@@ -80,7 +80,6 @@ public class BACnetConstructedDataNumberOfAuthenticationPolicies extends BACnetC
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataNumberOfAuthenticationPolicies");
 
     // Simple Field (numberOfAuthenticationPolicies)
@@ -124,8 +123,6 @@ public class BACnetConstructedDataNumberOfAuthenticationPolicies extends BACnetC
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataNumberOfAuthenticationPolicies");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger numberOfAuthenticationPolicies =

@@ -169,7 +169,6 @@ public class TlvSystemCapabilities extends LldpUnit implements Message {
   protected void serializeLldpUnitChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("TlvSystemCapabilities");
 
     // Reserved Field (reserved)
@@ -309,8 +308,6 @@ public class TlvSystemCapabilities extends LldpUnit implements Message {
       throws ParseException {
     readBuffer.pullContext("TlvSystemCapabilities");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     Short reservedField0 =

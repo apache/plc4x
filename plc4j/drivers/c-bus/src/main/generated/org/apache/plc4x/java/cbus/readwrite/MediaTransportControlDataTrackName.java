@@ -60,7 +60,6 @@ public class MediaTransportControlDataTrackName extends MediaTransportControlDat
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("MediaTransportControlDataTrackName");
 
     // Simple Field (trackName)
@@ -94,8 +93,6 @@ public class MediaTransportControlDataTrackName extends MediaTransportControlDat
       throws ParseException {
     readBuffer.pullContext("MediaTransportControlDataTrackName");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     String trackName =

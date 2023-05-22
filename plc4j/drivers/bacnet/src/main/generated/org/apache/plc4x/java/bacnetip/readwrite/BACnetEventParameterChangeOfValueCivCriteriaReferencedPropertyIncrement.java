@@ -66,7 +66,6 @@ public class BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncre
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext(
         "BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement");
 
@@ -103,8 +102,6 @@ public class BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncre
     readBuffer.pullContext(
         "BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetContextTagReal referencedPropertyIncrement =

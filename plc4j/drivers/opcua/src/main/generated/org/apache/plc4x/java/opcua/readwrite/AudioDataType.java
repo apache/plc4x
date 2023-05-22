@@ -44,7 +44,6 @@ public class AudioDataType implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("AudioDataType");
 
     writeBuffer.popContext("AudioDataType");
@@ -73,8 +72,6 @@ public class AudioDataType implements Message {
   public static AudioDataType staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("AudioDataType");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("AudioDataType");

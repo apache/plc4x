@@ -25,11 +25,12 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/apache/plc4x/plc4go/pkg/api/model"
-	"github.com/apache/plc4x/plc4go/pkg/api/values"
+	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
+	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/modbus/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
-	plc4goModel "github.com/apache/plc4x/plc4go/spi/model"
+	spiModel "github.com/apache/plc4x/plc4go/spi/model"
+
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 )
@@ -48,17 +49,18 @@ func NewReader(unitIdentifier uint8, messageCodec spi.MessageCodec) *Reader {
 	}
 }
 
-func (m *Reader) Read(ctx context.Context, readRequest model.PlcReadRequest) <-chan model.PlcReadRequestResult {
+func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) <-chan apiModel.PlcReadRequestResult {
 	// TODO: handle ctx
 	log.Trace().Msg("Reading")
-	result := make(chan model.PlcReadRequestResult)
+	result := make(chan apiModel.PlcReadRequestResult, 1)
 	go func() {
-		if len(readRequest.GetTagNames()) != 1 {
-			result <- &plc4goModel.DefaultPlcReadRequestResult{
-				Request:  readRequest,
-				Response: nil,
-				Err:      errors.New("modbus only supports single-item requests"),
+		defer func() {
+			if err := recover(); err != nil {
+				result <- spiModel.NewDefaultPlcReadRequestResult(readRequest, nil, errors.Errorf("panic-ed %v", err))
 			}
+		}()
+		if len(readRequest.GetTagNames()) != 1 {
+			result <- spiModel.NewDefaultPlcReadRequestResult(readRequest, nil, errors.New("modbus only supports single-item requests"))
 			log.Debug().Msgf("modbus only supports single-item requests. Got %d tags", len(readRequest.GetTagNames()))
 			return
 		}
@@ -67,11 +69,11 @@ func (m *Reader) Read(ctx context.Context, readRequest model.PlcReadRequest) <-c
 		tag := readRequest.GetTag(tagName)
 		modbusTagVar, err := CastToModbusTagFromPlcTag(tag)
 		if err != nil {
-			result <- &plc4goModel.DefaultPlcReadRequestResult{
-				Request:  readRequest,
-				Response: nil,
-				Err:      errors.Wrap(err, "invalid tag item type"),
-			}
+			result <- spiModel.NewDefaultPlcReadRequestResult(
+				readRequest,
+				nil,
+				errors.Wrap(err, "invalid tag item type"),
+			)
 			log.Debug().Msgf("Invalid tag item type %T", tag)
 			return
 		}
@@ -88,18 +90,18 @@ func (m *Reader) Read(ctx context.Context, readRequest model.PlcReadRequest) <-c
 		case HoldingRegister:
 			pdu = readWriteModel.NewModbusPDUReadHoldingRegistersRequest(modbusTagVar.Address, numWords)
 		case ExtendedRegister:
-			result <- &plc4goModel.DefaultPlcReadRequestResult{
-				Request:  readRequest,
-				Response: nil,
-				Err:      errors.New("modbus currently doesn't support extended register requests"),
-			}
+			result <- spiModel.NewDefaultPlcReadRequestResult(
+				readRequest,
+				nil,
+				errors.New("modbus currently doesn't support extended register requests"),
+			)
 			return
 		default:
-			result <- &plc4goModel.DefaultPlcReadRequestResult{
-				Request:  readRequest,
-				Response: nil,
-				Err:      errors.Errorf("unsupported tag type %x", modbusTagVar.TagType),
-			}
+			result <- spiModel.NewDefaultPlcReadRequestResult(
+				readRequest,
+				nil,
+				errors.Errorf("unsupported tag type %x", modbusTagVar.TagType),
+			)
 			log.Debug().Msgf("Unsupported tag type %x", modbusTagVar.TagType)
 			return
 		}
@@ -131,36 +133,39 @@ func (m *Reader) Read(ctx context.Context, readRequest model.PlcReadRequest) <-c
 			readResponse, err := m.ToPlc4xReadResponse(responseAdu, readRequest)
 
 			if err != nil {
-				result <- &plc4goModel.DefaultPlcReadRequestResult{
-					Request: readRequest,
-					Err:     errors.Wrap(err, "Error decoding response"),
-				}
+				result <- spiModel.NewDefaultPlcReadRequestResult(
+					readRequest,
+					nil,
+					errors.Wrap(err, "Error decoding response"),
+				)
 				// TODO: should we return the error here?
 				return nil
 			}
-			result <- &plc4goModel.DefaultPlcReadRequestResult{
-				Request:  readRequest,
-				Response: readResponse,
-			}
+			result <- spiModel.NewDefaultPlcReadRequestResult(
+				readRequest,
+				readResponse,
+				nil,
+			)
 			return nil
 		}, func(err error) error {
-			result <- &plc4goModel.DefaultPlcReadRequestResult{
-				Request: readRequest,
-				Err:     errors.Wrap(err, "got timeout while waiting for response"),
-			}
+			result <- spiModel.NewDefaultPlcReadRequestResult(
+				readRequest,
+				nil,
+				errors.Wrap(err, "got timeout while waiting for response"),
+			)
 			return nil
 		}, time.Second*1); err != nil {
-			result <- &plc4goModel.DefaultPlcReadRequestResult{
-				Request:  readRequest,
-				Response: nil,
-				Err:      errors.Wrap(err, "error sending message"),
-			}
+			result <- spiModel.NewDefaultPlcReadRequestResult(
+				readRequest,
+				nil,
+				errors.Wrap(err, "error sending message"),
+			)
 		}
 	}()
 	return result
 }
 
-func (m *Reader) ToPlc4xReadResponse(responseAdu readWriteModel.ModbusTcpADU, readRequest model.PlcReadRequest) (model.PlcReadResponse, error) {
+func (m *Reader) ToPlc4xReadResponse(responseAdu readWriteModel.ModbusTcpADU, readRequest apiModel.PlcReadRequest) (apiModel.PlcReadResponse, error) {
 	var data []uint8
 	switch pdu := responseAdu.GetPdu().(type) {
 	case readWriteModel.ModbusPDUReadDiscreteInputsResponse:
@@ -194,12 +199,12 @@ func (m *Reader) ToPlc4xReadResponse(responseAdu readWriteModel.ModbusTcpADU, re
 	if err != nil {
 		return nil, errors.Wrap(err, "Error parsing data item")
 	}
-	responseCodes := map[string]model.PlcResponseCode{}
-	plcValues := map[string]values.PlcValue{}
+	responseCodes := map[string]apiModel.PlcResponseCode{}
+	plcValues := map[string]apiValues.PlcValue{}
 	plcValues[tagName] = value
-	responseCodes[tagName] = model.PlcResponseCode_OK
+	responseCodes[tagName] = apiModel.PlcResponseCode_OK
 
 	// Return the response
 	log.Trace().Msg("Returning the response")
-	return plc4goModel.NewDefaultPlcReadResponse(readRequest, responseCodes, plcValues), nil
+	return spiModel.NewDefaultPlcReadResponse(readRequest, responseCodes, plcValues), nil
 }

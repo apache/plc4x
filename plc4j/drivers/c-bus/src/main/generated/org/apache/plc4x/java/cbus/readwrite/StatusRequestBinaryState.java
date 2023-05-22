@@ -60,7 +60,6 @@ public class StatusRequestBinaryState extends StatusRequest implements Message {
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("StatusRequestBinaryState");
 
     // Reserved Field (reserved)
@@ -115,8 +114,6 @@ public class StatusRequestBinaryState extends StatusRequest implements Message {
       throws ParseException {
     readBuffer.pullContext("StatusRequestBinaryState");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     Byte reservedField0 = readReservedField("reserved", readByte(readBuffer, 8), (byte) 0x7A);

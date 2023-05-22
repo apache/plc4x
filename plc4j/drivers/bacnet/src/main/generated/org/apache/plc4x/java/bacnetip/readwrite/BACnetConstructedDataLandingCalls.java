@@ -75,7 +75,6 @@ public class BACnetConstructedDataLandingCalls extends BACnetConstructedData imp
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataLandingCalls");
 
     // Array Field (landingCallStatus)
@@ -114,8 +113,6 @@ public class BACnetConstructedDataLandingCalls extends BACnetConstructedData imp
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataLandingCalls");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     List<BACnetLandingCallStatus> landingCallStatus =

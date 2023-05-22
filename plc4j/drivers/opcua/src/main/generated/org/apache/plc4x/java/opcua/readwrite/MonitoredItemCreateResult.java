@@ -88,7 +88,6 @@ public class MonitoredItemCreateResult extends ExtensionObjectDefinition impleme
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("MonitoredItemCreateResult");
 
     // Simple Field (statusCode)
@@ -143,8 +142,6 @@ public class MonitoredItemCreateResult extends ExtensionObjectDefinition impleme
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("MonitoredItemCreateResult");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     StatusCode statusCode =

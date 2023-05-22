@@ -59,7 +59,6 @@ public class AdsDiscoveryBlockUserName extends AdsDiscoveryBlock implements Mess
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("AdsDiscoveryBlockUserName");
 
     // Simple Field (userName)
@@ -89,8 +88,6 @@ public class AdsDiscoveryBlockUserName extends AdsDiscoveryBlock implements Mess
       throws ParseException {
     readBuffer.pullContext("AdsDiscoveryBlockUserName");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     AmsString userName =

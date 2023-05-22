@@ -53,8 +53,8 @@ public enum Attribute {
     }
   }
 
-  private short value;
-  private short bytesReturned;
+  private final short value;
+  private final short bytesReturned;
 
   Attribute(short value, short bytesReturned) {
     this.value = value;
@@ -79,7 +79,7 @@ public enum Attribute {
   }
 
   public static List<Attribute> enumsForFieldBytesReturned(short fieldValue) {
-    List<Attribute> _values = new ArrayList();
+    List<Attribute> _values = new ArrayList<>();
     for (Attribute _val : Attribute.values()) {
       if (_val.getBytesReturned() == fieldValue) {
         _values.add(_val);

@@ -56,7 +56,6 @@ public class PnIo_CyclicServiceDataUnit implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("PnIo_CyclicServiceDataUnit");
 
     // Array Field (data)
@@ -108,8 +107,6 @@ public class PnIo_CyclicServiceDataUnit implements Message {
       throws ParseException {
     readBuffer.pullContext("PnIo_CyclicServiceDataUnit");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte[] data = readBuffer.readByteArray("data", Math.toIntExact(dataUnitLength));

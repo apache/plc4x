@@ -59,7 +59,6 @@ public class AdsDiscoveryBlockRouteName extends AdsDiscoveryBlock implements Mes
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("AdsDiscoveryBlockRouteName");
 
     // Simple Field (routeName)
@@ -89,8 +88,6 @@ public class AdsDiscoveryBlockRouteName extends AdsDiscoveryBlock implements Mes
       throws ParseException {
     readBuffer.pullContext("AdsDiscoveryBlockRouteName");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     AmsString routeName =

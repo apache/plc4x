@@ -65,7 +65,6 @@ public class PnDcp_Block_IpMacAddress extends PnDcp_Block implements Message {
   protected void serializePnDcp_BlockChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("PnDcp_Block_IpMacAddress");
 
     // Reserved Field (reserved)
@@ -109,8 +108,6 @@ public class PnDcp_Block_IpMacAddress extends PnDcp_Block implements Message {
       throws ParseException {
     readBuffer.pullContext("PnDcp_Block_IpMacAddress");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     Integer reservedField0 =

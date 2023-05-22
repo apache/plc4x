@@ -80,7 +80,6 @@ public class BACnetConstructedDataAnalogOutputPresentValue extends BACnetConstru
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataAnalogOutputPresentValue");
 
     // Simple Field (presentValue)
@@ -121,8 +120,6 @@ public class BACnetConstructedDataAnalogOutputPresentValue extends BACnetConstru
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataAnalogOutputPresentValue");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagReal presentValue =

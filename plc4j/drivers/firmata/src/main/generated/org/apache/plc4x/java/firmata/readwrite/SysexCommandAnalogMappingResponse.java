@@ -54,7 +54,6 @@ public class SysexCommandAnalogMappingResponse extends SysexCommand implements M
   protected void serializeSysexCommandChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("SysexCommandAnalogMappingResponse");
 
     writeBuffer.popContext("SysexCommandAnalogMappingResponse");
@@ -78,8 +77,6 @@ public class SysexCommandAnalogMappingResponse extends SysexCommand implements M
       ReadBuffer readBuffer, Boolean response) throws ParseException {
     readBuffer.pullContext("SysexCommandAnalogMappingResponse");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("SysexCommandAnalogMappingResponse");

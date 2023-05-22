@@ -29,8 +29,8 @@ import (
 
 	"github.com/apache/plc4x/plc4go/internal/ads/model"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
-	"github.com/apache/plc4x/plc4go/pkg/api/values"
-	model2 "github.com/apache/plc4x/plc4go/spi/model"
+	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
+	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -106,7 +106,7 @@ func (m TagHandler) ParseTag(query string) (apiModel.PlcTag, error) {
 		if adsDataTypeName == "" {
 			return nil, errors.Errorf("Missing ads data type")
 		}
-		plcValueType, ok := values.PlcValueByName(adsDataTypeName)
+		plcValueType, ok := apiValues.PlcValueByName(adsDataTypeName)
 		if !ok {
 			return nil, fmt.Errorf("invalid ads data type")
 		}
@@ -140,7 +140,7 @@ func (m TagHandler) ParseTag(query string) (apiModel.PlcTag, error) {
 						if err != nil {
 							return nil, fmt.Errorf("error parsing array info: %s, got error: %v", currentSegment, err)
 						}
-						arrayInfo = append(arrayInfo, model2.DefaultArrayInfo{
+						arrayInfo = append(arrayInfo, &spiModel.DefaultArrayInfo{
 							LowerBound: startElement,
 							UpperBound: endElement,
 						})
@@ -153,7 +153,7 @@ func (m TagHandler) ParseTag(query string) (apiModel.PlcTag, error) {
 						if err != nil {
 							return nil, fmt.Errorf("error parsing array info: %s, got error: %v", currentSegment, err)
 						}
-						arrayInfo = append(arrayInfo, model2.DefaultArrayInfo{
+						arrayInfo = append(arrayInfo, &spiModel.DefaultArrayInfo{
 							LowerBound: startElement,
 							UpperBound: startElement + numElements,
 						})
@@ -162,7 +162,7 @@ func (m TagHandler) ParseTag(query string) (apiModel.PlcTag, error) {
 						if err != nil {
 							return nil, fmt.Errorf("error parsing array info: %s, got error: %v", currentSegment, err)
 						}
-						arrayInfo = append(arrayInfo, model2.DefaultArrayInfo{
+						arrayInfo = append(arrayInfo, &spiModel.DefaultArrayInfo{
 							LowerBound: 0,
 							UpperBound: numElements,
 						})
@@ -213,7 +213,7 @@ func (m TagHandler) ParseTag(query string) (apiModel.PlcTag, error) {
 		if adsDataTypeName == "" {
 			return nil, errors.Errorf("Missing ads data type")
 		}
-		plcValueType, ok := values.PlcValueByName(adsDataTypeName)
+		plcValueType, ok := apiValues.PlcValueByName(adsDataTypeName)
 		if !ok {
 			return nil, fmt.Errorf("invalid ads data type")
 		}
@@ -240,7 +240,7 @@ func (m TagHandler) ParseTag(query string) (apiModel.PlcTag, error) {
 						if err != nil {
 							return nil, fmt.Errorf("error parsing array info: %s, got error: %v", currentSegment, err)
 						}
-						arrayInfo = append(arrayInfo, model2.DefaultArrayInfo{
+						arrayInfo = append(arrayInfo, &spiModel.DefaultArrayInfo{
 							LowerBound: startElement,
 							UpperBound: endElement,
 						})
@@ -253,7 +253,7 @@ func (m TagHandler) ParseTag(query string) (apiModel.PlcTag, error) {
 						if err != nil {
 							return nil, fmt.Errorf("error parsing array info: %s, got error: %v", currentSegment, err)
 						}
-						arrayInfo = append(arrayInfo, model2.DefaultArrayInfo{
+						arrayInfo = append(arrayInfo, &spiModel.DefaultArrayInfo{
 							LowerBound: startElement,
 							UpperBound: startElement + numElements,
 						})
@@ -262,7 +262,7 @@ func (m TagHandler) ParseTag(query string) (apiModel.PlcTag, error) {
 						if err != nil {
 							return nil, fmt.Errorf("error parsing array info: %s, got error: %v", currentSegment, err)
 						}
-						arrayInfo = append(arrayInfo, model2.DefaultArrayInfo{
+						arrayInfo = append(arrayInfo, &spiModel.DefaultArrayInfo{
 							LowerBound: 0,
 							UpperBound: numElements,
 						})
@@ -295,7 +295,7 @@ func (m TagHandler) ParseTag(query string) (apiModel.PlcTag, error) {
 						if err != nil {
 							return nil, fmt.Errorf("error parsing array info: %s, got error: %v", currentSegment, err)
 						}
-						arrayInfo = append(arrayInfo, model2.DefaultArrayInfo{
+						arrayInfo = append(arrayInfo, &spiModel.DefaultArrayInfo{
 							LowerBound: startElement,
 							UpperBound: endElement,
 						})
@@ -308,7 +308,7 @@ func (m TagHandler) ParseTag(query string) (apiModel.PlcTag, error) {
 						if err != nil {
 							return nil, fmt.Errorf("error parsing array info: %s, got error: %v", currentSegment, err)
 						}
-						arrayInfo = append(arrayInfo, model2.DefaultArrayInfo{
+						arrayInfo = append(arrayInfo, &spiModel.DefaultArrayInfo{
 							LowerBound: startElement,
 							UpperBound: startElement + numElements,
 						})
@@ -317,7 +317,7 @@ func (m TagHandler) ParseTag(query string) (apiModel.PlcTag, error) {
 						if err != nil {
 							return nil, fmt.Errorf("error parsing array info: %s, got error: %v", currentSegment, err)
 						}
-						arrayInfo = append(arrayInfo, model2.DefaultArrayInfo{
+						arrayInfo = append(arrayInfo, &spiModel.DefaultArrayInfo{
 							LowerBound: 0,
 							UpperBound: numElements,
 						})

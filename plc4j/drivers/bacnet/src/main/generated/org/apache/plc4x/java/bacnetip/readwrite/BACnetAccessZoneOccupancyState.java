@@ -41,7 +41,7 @@ public enum BACnetAccessZoneOccupancyState {
     }
   }
 
-  private int value;
+  private final int value;
 
   BACnetAccessZoneOccupancyState(int value) {
     this.value = value;

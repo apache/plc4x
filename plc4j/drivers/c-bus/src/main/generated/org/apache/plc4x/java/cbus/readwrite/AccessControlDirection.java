@@ -36,7 +36,7 @@ public enum AccessControlDirection {
     }
   }
 
-  private short value;
+  private final short value;
 
   AccessControlDirection(short value) {
     this.value = value;

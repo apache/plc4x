@@ -67,7 +67,6 @@ public class BACnetConstructedDataAccessCredentialAll extends BACnetConstructedD
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataAccessCredentialAll");
 
     writeBuffer.popContext("BACnetConstructedDataAccessCredentialAll");
@@ -96,8 +95,6 @@ public class BACnetConstructedDataAccessCredentialAll extends BACnetConstructedD
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataAccessCredentialAll");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Validation
     if (!((1) == (2))) {

@@ -44,8 +44,8 @@ public enum MemoryArea {
     }
   }
 
-  private short value;
-  private String shortName;
+  private final short value;
+  private final String shortName;
 
   MemoryArea(short value, String shortName) {
     this.value = value;
@@ -70,7 +70,7 @@ public enum MemoryArea {
   }
 
   public static List<MemoryArea> enumsForFieldShortName(String fieldValue) {
-    List<MemoryArea> _values = new ArrayList();
+    List<MemoryArea> _values = new ArrayList<>();
     for (MemoryArea _val : MemoryArea.values()) {
       if (_val.getShortName().equals(fieldValue)) {
         _values.add(_val);

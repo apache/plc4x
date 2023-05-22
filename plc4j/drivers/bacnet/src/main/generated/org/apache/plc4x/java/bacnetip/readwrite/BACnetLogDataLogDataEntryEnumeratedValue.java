@@ -58,7 +58,6 @@ public class BACnetLogDataLogDataEntryEnumeratedValue extends BACnetLogDataLogDa
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetLogDataLogDataEntryEnumeratedValue");
 
     // Simple Field (enumeratedValue)
@@ -89,8 +88,6 @@ public class BACnetLogDataLogDataEntryEnumeratedValue extends BACnetLogDataLogDa
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetLogDataLogDataEntryEnumeratedValue");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetContextTagEnumerated enumeratedValue =

@@ -38,7 +38,7 @@ public enum COTPProtocolClass {
     }
   }
 
-  private short value;
+  private final short value;
 
   COTPProtocolClass(short value) {
     this.value = value;

@@ -37,7 +37,7 @@ public enum BrowseDirection {
     }
   }
 
-  private long value;
+  private final long value;
 
   BrowseDirection(long value) {
     this.value = value;

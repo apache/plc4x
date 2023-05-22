@@ -80,7 +80,6 @@ public class BACnetConstructedDataOccupancyLowerLimitEnforced extends BACnetCons
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataOccupancyLowerLimitEnforced");
 
     // Simple Field (occupancyLowerLimitEnforced)
@@ -124,8 +123,6 @@ public class BACnetConstructedDataOccupancyLowerLimitEnforced extends BACnetCons
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataOccupancyLowerLimitEnforced");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagBoolean occupancyLowerLimitEnforced =

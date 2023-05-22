@@ -48,7 +48,6 @@ public class SecurityDataMainsRestoredOrApplied extends SecurityData implements 
   protected void serializeSecurityDataChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("SecurityDataMainsRestoredOrApplied");
 
     writeBuffer.popContext("SecurityDataMainsRestoredOrApplied");
@@ -72,8 +71,6 @@ public class SecurityDataMainsRestoredOrApplied extends SecurityData implements 
       throws ParseException {
     readBuffer.pullContext("SecurityDataMainsRestoredOrApplied");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("SecurityDataMainsRestoredOrApplied");

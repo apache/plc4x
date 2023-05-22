@@ -63,7 +63,6 @@ public class IdentifyReplyCommandManufacturer extends IdentifyReplyCommand imple
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("IdentifyReplyCommandManufacturer");
 
     // Simple Field (manufacturerName)
@@ -93,8 +92,6 @@ public class IdentifyReplyCommandManufacturer extends IdentifyReplyCommand imple
       ReadBuffer readBuffer, Attribute attribute, Short numBytes) throws ParseException {
     readBuffer.pullContext("IdentifyReplyCommandManufacturer");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     String manufacturerName = readSimpleField("manufacturerName", readString(readBuffer, 64));

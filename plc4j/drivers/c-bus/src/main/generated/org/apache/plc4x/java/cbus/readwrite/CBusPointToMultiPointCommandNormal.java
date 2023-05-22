@@ -73,7 +73,6 @@ public class CBusPointToMultiPointCommandNormal extends CBusPointToMultiPointCom
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("CBusPointToMultiPointCommandNormal");
 
     // Simple Field (application)
@@ -125,8 +124,6 @@ public class CBusPointToMultiPointCommandNormal extends CBusPointToMultiPointCom
       ReadBuffer readBuffer, CBusOptions cBusOptions) throws ParseException {
     readBuffer.pullContext("CBusPointToMultiPointCommandNormal");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ApplicationIdContainer application =

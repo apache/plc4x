@@ -77,7 +77,6 @@ public abstract class S7Message implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("S7Message");
 
     // Const Field (protocolId)
@@ -167,8 +166,6 @@ public abstract class S7Message implements Message {
   public static S7Message staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("S7Message");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short protocolId =

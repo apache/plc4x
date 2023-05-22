@@ -57,7 +57,6 @@ public class BACnetPropertyStatesNodeType extends BACnetPropertyStates implement
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetPropertyStatesNodeType");
 
     // Simple Field (nodeType)
@@ -87,8 +86,6 @@ public class BACnetPropertyStatesNodeType extends BACnetPropertyStates implement
       ReadBuffer readBuffer, Short peekedTagNumber) throws ParseException {
     readBuffer.pullContext("BACnetPropertyStatesNodeType");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetNodeTypeTagged nodeType =

@@ -51,9 +51,9 @@ func (s SubscriptionType) String() string {
 
 //go:generate go run ../../tools/plc4xgenerator/gen.go -type=DefaultPlcSubscriptionRequestBuilder
 type DefaultPlcSubscriptionRequestBuilder struct {
-	subscriber             spi.PlcSubscriber
-	tagHandler             spi.PlcTagHandler
-	valueHandler           spi.PlcValueHandler
+	subscriber             spi.PlcSubscriber   `ignore:"true"`
+	tagHandler             spi.PlcTagHandler   `ignore:"true"`
+	valueHandler           spi.PlcValueHandler `ignore:"true"`
 	tagNames               []string
 	tagAddresses           map[string]string
 	tags                   map[string]apiModel.PlcTag

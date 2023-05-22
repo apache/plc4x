@@ -36,7 +36,7 @@ public enum UnitStatus {
     }
   }
 
-  private short value;
+  private final short value;
 
   UnitStatus(short value) {
     this.value = value;

@@ -88,7 +88,6 @@ public class AlarmMessageQueryType implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("AlarmMessageQueryType");
 
     // Simple Field (functionId)
@@ -173,8 +172,6 @@ public class AlarmMessageQueryType implements Message {
   public static AlarmMessageQueryType staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("AlarmMessageQueryType");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short functionId = readSimpleField("functionId", readUnsignedShort(readBuffer, 8));

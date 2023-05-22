@@ -36,7 +36,7 @@ public enum Status {
     }
   }
 
-  private long value;
+  private final long value;
 
   Status(long value) {
     this.value = value;

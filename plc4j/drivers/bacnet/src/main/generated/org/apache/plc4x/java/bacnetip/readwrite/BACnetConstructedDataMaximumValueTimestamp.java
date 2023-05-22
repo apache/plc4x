@@ -80,7 +80,6 @@ public class BACnetConstructedDataMaximumValueTimestamp extends BACnetConstructe
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataMaximumValueTimestamp");
 
     // Simple Field (maximumValueTimestamp)
@@ -124,8 +123,6 @@ public class BACnetConstructedDataMaximumValueTimestamp extends BACnetConstructe
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataMaximumValueTimestamp");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetDateTime maximumValueTimestamp =

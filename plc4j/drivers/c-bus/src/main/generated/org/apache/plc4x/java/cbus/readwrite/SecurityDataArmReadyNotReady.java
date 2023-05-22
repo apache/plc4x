@@ -56,7 +56,6 @@ public class SecurityDataArmReadyNotReady extends SecurityData implements Messag
   protected void serializeSecurityDataChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("SecurityDataArmReadyNotReady");
 
     // Simple Field (zoneNumber)
@@ -86,8 +85,6 @@ public class SecurityDataArmReadyNotReady extends SecurityData implements Messag
       throws ParseException {
     readBuffer.pullContext("SecurityDataArmReadyNotReady");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short zoneNumber = readSimpleField("zoneNumber", readUnsignedShort(readBuffer, 8));

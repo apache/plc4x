@@ -79,7 +79,6 @@ public class BACnetConstructedDataMinimumOutput extends BACnetConstructedData im
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataMinimumOutput");
 
     // Simple Field (minimumOutput)
@@ -120,8 +119,6 @@ public class BACnetConstructedDataMinimumOutput extends BACnetConstructedData im
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataMinimumOutput");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagReal minimumOutput =

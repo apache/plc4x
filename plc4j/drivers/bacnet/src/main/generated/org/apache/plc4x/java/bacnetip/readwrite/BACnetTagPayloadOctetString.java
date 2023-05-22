@@ -56,7 +56,6 @@ public class BACnetTagPayloadOctetString implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetTagPayloadOctetString");
 
     // Array Field (octets)
@@ -108,8 +107,6 @@ public class BACnetTagPayloadOctetString implements Message {
       throws ParseException {
     readBuffer.pullContext("BACnetTagPayloadOctetString");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte[] octets = readBuffer.readByteArray("octets", Math.toIntExact(actualLength));

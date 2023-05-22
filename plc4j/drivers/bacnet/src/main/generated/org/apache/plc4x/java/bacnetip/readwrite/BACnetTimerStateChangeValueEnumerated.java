@@ -64,7 +64,6 @@ public class BACnetTimerStateChangeValueEnumerated extends BACnetTimerStateChang
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetTimerStateChangeValueEnumerated");
 
     // Simple Field (enumeratedValue)
@@ -95,8 +94,6 @@ public class BACnetTimerStateChangeValueEnumerated extends BACnetTimerStateChang
       ReadBuffer readBuffer, BACnetObjectType objectTypeArgument) throws ParseException {
     readBuffer.pullContext("BACnetTimerStateChangeValueEnumerated");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagEnumerated enumeratedValue =

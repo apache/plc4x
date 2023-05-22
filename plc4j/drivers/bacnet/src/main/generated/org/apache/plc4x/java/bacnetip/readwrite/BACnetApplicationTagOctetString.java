@@ -57,7 +57,6 @@ public class BACnetApplicationTagOctetString extends BACnetApplicationTag implem
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetApplicationTagOctetString");
 
     // Simple Field (payload)
@@ -87,8 +86,6 @@ public class BACnetApplicationTagOctetString extends BACnetApplicationTag implem
       ReadBuffer readBuffer, BACnetTagHeader header) throws ParseException {
     readBuffer.pullContext("BACnetApplicationTagOctetString");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetTagPayloadOctetString payload =

@@ -55,9 +55,9 @@ public enum GenericCANDataType {
     }
   }
 
-  private long value;
-  private String plcValueName;
-  private short numBits;
+  private final long value;
+  private final String plcValueName;
+  private final short numBits;
 
   GenericCANDataType(long value, String plcValueName, short numBits) {
     this.value = value;
@@ -83,7 +83,7 @@ public enum GenericCANDataType {
   }
 
   public static List<GenericCANDataType> enumsForFieldPlcValueName(String fieldValue) {
-    List<GenericCANDataType> _values = new ArrayList();
+    List<GenericCANDataType> _values = new ArrayList<>();
     for (GenericCANDataType _val : GenericCANDataType.values()) {
       if (_val.getPlcValueName().equals(fieldValue)) {
         _values.add(_val);
@@ -106,7 +106,7 @@ public enum GenericCANDataType {
   }
 
   public static List<GenericCANDataType> enumsForFieldNumBits(short fieldValue) {
-    List<GenericCANDataType> _values = new ArrayList();
+    List<GenericCANDataType> _values = new ArrayList<>();
     for (GenericCANDataType _val : GenericCANDataType.values()) {
       if (_val.getNumBits() == fieldValue) {
         _values.add(_val);

@@ -24,7 +24,7 @@ import (
 
 	"github.com/apache/plc4x/plc4go/pkg/api"
 	"github.com/apache/plc4x/plc4go/pkg/api/drivers"
-	"github.com/apache/plc4x/plc4go/pkg/api/model"
+	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 )
 
 func main() {
@@ -64,7 +64,7 @@ func main() {
 		return
 	}
 
-	if wrr.GetResponse().GetResponseCode("tag") != model.PlcResponseCode_OK {
+	if wrr.GetResponse().GetResponseCode("tag") != apiModel.PlcResponseCode_OK {
 		fmt.Printf("error an non-ok return code: %s", wrr.GetResponse().GetResponseCode("tag").GetName())
 		return
 	}

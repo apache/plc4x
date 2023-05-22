@@ -25,11 +25,12 @@ import (
 	"time"
 
 	"github.com/apache/plc4x/plc4go/pkg/api"
-	"github.com/apache/plc4x/plc4go/pkg/api/model"
+	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	_default "github.com/apache/plc4x/plc4go/spi/default"
-	internalModel "github.com/apache/plc4x/plc4go/spi/model"
+	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/spi/utils"
+
 	"github.com/pkg/errors"
 )
 
@@ -77,8 +78,13 @@ func (c *Connection) Connect() <-chan plc4go.PlcConnectionConnectResult {
 }
 
 func (c *Connection) ConnectWithContext(ctx context.Context) <-chan plc4go.PlcConnectionConnectResult {
-	ch := make(chan plc4go.PlcConnectionConnectResult)
+	ch := make(chan plc4go.PlcConnectionConnectResult, 1)
 	go func() {
+		defer func() {
+			if err := recover(); err != nil {
+				ch <- _default.NewDefaultPlcConnectionCloseResult(nil, errors.Errorf("panic-ed %v", err))
+			}
+		}()
 		// Check if the connection was already connected
 		if c.connected {
 			if c.tracer != nil {
@@ -128,8 +134,13 @@ func (c *Connection) BlockingClose() {
 }
 
 func (c *Connection) Close() <-chan plc4go.PlcConnectionCloseResult {
-	ch := make(chan plc4go.PlcConnectionCloseResult)
+	ch := make(chan plc4go.PlcConnectionCloseResult, 1)
 	go func() {
+		defer func() {
+			if err := recover(); err != nil {
+				ch <- _default.NewDefaultPlcConnectionConnectResult(nil, errors.Errorf("panic-ed %v", err))
+			}
+		}()
 		// Check if the connection is connected.
 		if !c.connected {
 			if c.tracer != nil {
@@ -169,8 +180,13 @@ func (c *Connection) IsConnected() bool {
 }
 
 func (c *Connection) Ping() <-chan plc4go.PlcConnectionPingResult {
-	ch := make(chan plc4go.PlcConnectionPingResult)
+	ch := make(chan plc4go.PlcConnectionPingResult, 1)
 	go func() {
+		defer func() {
+			if err := recover(); err != nil {
+				ch <- _default.NewDefaultPlcConnectionPingResult(errors.Errorf("panic-ed %v", err))
+			}
+		}()
 		// Check if the connection is connected
 		if !c.connected {
 			if c.tracer != nil {
@@ -212,7 +228,7 @@ func (c *Connection) Ping() <-chan plc4go.PlcConnectionPingResult {
 	return ch
 }
 
-func (c *Connection) GetMetadata() model.PlcConnectionMetadata {
+func (c *Connection) GetMetadata() apiModel.PlcConnectionMetadata {
 	return _default.DefaultConnectionMetadata{
 		ConnectionAttributes: map[string]string{
 			"connectionDelay": "Delay applied when connecting",
@@ -228,22 +244,22 @@ func (c *Connection) GetMetadata() model.PlcConnectionMetadata {
 	}
 }
 
-func (c *Connection) ReadRequestBuilder() model.PlcReadRequestBuilder {
-	return internalModel.NewDefaultPlcReadRequestBuilder(c.tagHandler, NewReader(c.device, c.options, c.tracer))
+func (c *Connection) ReadRequestBuilder() apiModel.PlcReadRequestBuilder {
+	return spiModel.NewDefaultPlcReadRequestBuilder(c.tagHandler, NewReader(c.device, c.options, c.tracer))
 }
 
-func (c *Connection) WriteRequestBuilder() model.PlcWriteRequestBuilder {
-	return internalModel.NewDefaultPlcWriteRequestBuilder(c.tagHandler, c.valueHandler, NewWriter(c.device, c.options, c.tracer))
+func (c *Connection) WriteRequestBuilder() apiModel.PlcWriteRequestBuilder {
+	return spiModel.NewDefaultPlcWriteRequestBuilder(c.tagHandler, c.valueHandler, NewWriter(c.device, c.options, c.tracer))
 }
 
-func (c *Connection) SubscriptionRequestBuilder() model.PlcSubscriptionRequestBuilder {
-	return internalModel.NewDefaultPlcSubscriptionRequestBuilder(c.tagHandler, c.valueHandler, NewSubscriber(c.device, c.options, c.tracer))
+func (c *Connection) SubscriptionRequestBuilder() apiModel.PlcSubscriptionRequestBuilder {
+	return spiModel.NewDefaultPlcSubscriptionRequestBuilder(c.tagHandler, c.valueHandler, NewSubscriber(c.device, c.options, c.tracer))
 }
 
-func (c *Connection) UnsubscriptionRequestBuilder() model.PlcUnsubscriptionRequestBuilder {
-	panic("not implemented")
+func (c *Connection) UnsubscriptionRequestBuilder() apiModel.PlcUnsubscriptionRequestBuilder {
+	panic("not provided by simulated connection")
 }
 
-func (c *Connection) BrowseRequestBuilder() model.PlcBrowseRequestBuilder {
-	panic("not implemented")
+func (c *Connection) BrowseRequestBuilder() apiModel.PlcBrowseRequestBuilder {
+	panic("not provided by simulated connection")
 }

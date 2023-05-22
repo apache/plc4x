@@ -80,7 +80,6 @@ public class BACnetConstructedDataRestoreCompletionTime extends BACnetConstructe
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataRestoreCompletionTime");
 
     // Simple Field (completionTime)
@@ -121,8 +120,6 @@ public class BACnetConstructedDataRestoreCompletionTime extends BACnetConstructe
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataRestoreCompletionTime");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger completionTime =

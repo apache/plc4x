@@ -79,7 +79,6 @@ public class BACnetConstructedDataTimerResolution extends BACnetConstructedData 
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataTimerResolution");
 
     // Simple Field (resolution)
@@ -120,8 +119,6 @@ public class BACnetConstructedDataTimerResolution extends BACnetConstructedData 
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataTimerResolution");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger resolution =

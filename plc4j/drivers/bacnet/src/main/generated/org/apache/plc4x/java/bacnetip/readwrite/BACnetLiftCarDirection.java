@@ -40,7 +40,7 @@ public enum BACnetLiftCarDirection {
     }
   }
 
-  private int value;
+  private final int value;
 
   BACnetLiftCarDirection(int value) {
     this.value = value;

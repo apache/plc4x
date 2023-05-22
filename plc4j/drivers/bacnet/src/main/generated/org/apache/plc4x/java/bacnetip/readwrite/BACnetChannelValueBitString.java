@@ -57,7 +57,6 @@ public class BACnetChannelValueBitString extends BACnetChannelValue implements M
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetChannelValueBitString");
 
     // Simple Field (bitStringValue)
@@ -87,8 +86,6 @@ public class BACnetChannelValueBitString extends BACnetChannelValue implements M
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetChannelValueBitString");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagBitString bitStringValue =

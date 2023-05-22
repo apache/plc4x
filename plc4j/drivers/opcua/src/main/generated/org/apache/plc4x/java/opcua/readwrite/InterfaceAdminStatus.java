@@ -36,7 +36,7 @@ public enum InterfaceAdminStatus {
     }
   }
 
-  private long value;
+  private final long value;
 
   InterfaceAdminStatus(long value) {
     this.value = value;

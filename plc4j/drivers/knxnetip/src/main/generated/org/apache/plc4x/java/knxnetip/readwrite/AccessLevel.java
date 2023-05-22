@@ -40,9 +40,9 @@ public enum AccessLevel {
     }
   }
 
-  private byte value;
-  private String purpose;
-  private boolean needsAuthentication;
+  private final byte value;
+  private final String purpose;
+  private final boolean needsAuthentication;
 
   AccessLevel(byte value, String purpose, boolean needsAuthentication) {
     this.value = value;
@@ -68,7 +68,7 @@ public enum AccessLevel {
   }
 
   public static List<AccessLevel> enumsForFieldPurpose(String fieldValue) {
-    List<AccessLevel> _values = new ArrayList();
+    List<AccessLevel> _values = new ArrayList<>();
     for (AccessLevel _val : AccessLevel.values()) {
       if (_val.getPurpose().equals(fieldValue)) {
         _values.add(_val);
@@ -91,7 +91,7 @@ public enum AccessLevel {
   }
 
   public static List<AccessLevel> enumsForFieldNeedsAuthentication(boolean fieldValue) {
-    List<AccessLevel> _values = new ArrayList();
+    List<AccessLevel> _values = new ArrayList<>();
     for (AccessLevel _val : AccessLevel.values()) {
       if (_val.getNeedsAuthentication() == fieldValue) {
         _values.add(_val);

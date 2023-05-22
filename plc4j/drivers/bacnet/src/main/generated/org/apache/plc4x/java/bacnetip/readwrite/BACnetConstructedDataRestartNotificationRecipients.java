@@ -76,7 +76,6 @@ public class BACnetConstructedDataRestartNotificationRecipients extends BACnetCo
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataRestartNotificationRecipients");
 
     // Array Field (restartNotificationRecipients)
@@ -116,8 +115,6 @@ public class BACnetConstructedDataRestartNotificationRecipients extends BACnetCo
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataRestartNotificationRecipients");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     List<BACnetRecipient> restartNotificationRecipients =

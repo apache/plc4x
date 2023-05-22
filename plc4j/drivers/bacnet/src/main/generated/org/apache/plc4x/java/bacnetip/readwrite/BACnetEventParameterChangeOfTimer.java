@@ -86,7 +86,6 @@ public class BACnetEventParameterChangeOfTimer extends BACnetEventParameter impl
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetEventParameterChangeOfTimer");
 
     // Simple Field (openingTag)
@@ -141,8 +140,6 @@ public class BACnetEventParameterChangeOfTimer extends BACnetEventParameter impl
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetEventParameterChangeOfTimer");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetOpeningTag openingTag =

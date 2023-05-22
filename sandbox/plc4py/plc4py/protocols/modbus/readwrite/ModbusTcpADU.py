@@ -27,6 +27,7 @@ from plc4py.protocols.modbus.readwrite.DriverType import DriverType
 from plc4py.protocols.modbus.readwrite.ModbusADU import ModbusADU
 from plc4py.protocols.modbus.readwrite.ModbusADU import ModbusADUBuilder
 from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDU
+from plc4py.spi.generation.WriteBuffer import WriteBuffer
 import math
 
 
@@ -45,44 +46,29 @@ class ModbusTcpADU(PlcMessage, ModbusADU):
         super().__init__(self.response)
 
     def serialize_modbus_adu_child(self, write_buffer: WriteBuffer):
-        position_aware: PositionAware = write_buffer
-        start_pos: int = position_aware.get_pos()
         write_buffer.push_context("ModbusTcpADU")
 
         # Simple Field (transactionIdentifier)
-        write_simple_field(
-            "transactionIdentifier",
-            self.transaction_identifier,
-            write_unsigned_int(write_buffer, 16),
-            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN),
+        write_buffer.write_unsigned_short(
+            self.transaction_identifier, logical_name="transactionIdentifier"
         )
 
         # Const Field (protocolIdentifier)
-        write_const_field(
-            "protocolIdentifier",
-            self.protocol_identifier,
-            write_unsigned_int(write_buffer, 16),
+        write_buffer.write_unsigned_short(
+            self.protocol_identifier.value, logical_name="protocolIdentifier"
         )
 
         # Implicit Field (length) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-        length: c_uint16 = c_uint16(((self.pdu().self.length_in_bytes()) + (1)))
-        write_implicit_field("length", length, write_unsigned_int(write_buffer, 16))
+        length: c_uint16 = self.pdu.getlength_in_bytes(ctx) + c_uint16(1)
+        write_buffer.write_unsigned_short(length, logical_name="length")
 
         # Simple Field (unitIdentifier)
-        write_simple_field(
-            "unitIdentifier",
-            self.unit_identifier,
-            write_unsigned_short(write_buffer, 8),
-            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN),
+        write_buffer.write_unsigned_byte(
+            self.unit_identifier, logical_name="unitIdentifier"
         )
 
         # Simple Field (pdu)
-        write_simple_field(
-            "pdu",
-            self.pdu,
-            DataWriterComplexDefault(write_buffer),
-            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN),
-        )
+        write_buffer.write_serializable(self.pdu, logical_name="pdu")
 
         write_buffer.pop_context("ModbusTcpADU")
 
@@ -115,33 +101,29 @@ class ModbusTcpADU(PlcMessage, ModbusADU):
         read_buffer: ReadBuffer, driver_type: DriverType, response: c_bool
     ):
         read_buffer.pull_context("ModbusTcpADU")
-        position_aware: PositionAware = read_buffer
-        start_pos: int = position_aware.get_pos()
         cur_pos: int = 0
 
         transaction_identifier: c_uint16 = read_simple_field(
             "transactionIdentifier",
-            read_unsigned_int(read_buffer, 16),
-            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN),
+            read_unsigned_int,
+            WithOption.WithByteOrder(get_bi_g__endian()),
         )
 
         protocol_identifier: c_uint16 = read_const_field(
             "protocolIdentifier",
-            read_unsigned_int(read_buffer, 16),
+            read_unsigned_int,
             ModbusTcpADU.PROTOCOLIDENTIFIER,
-            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN),
+            WithOption.WithByteOrder(get_bi_g__endian()),
         )
 
         length: c_uint16 = read_implicit_field(
-            "length",
-            read_unsigned_int(read_buffer, 16),
-            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN),
+            "length", read_unsigned_int, WithOption.WithByteOrder(get_bi_g__endian())
         )
 
         unit_identifier: c_uint8 = read_simple_field(
             "unitIdentifier",
-            read_unsigned_short(read_buffer, 8),
-            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN),
+            read_unsigned_short,
+            WithOption.WithByteOrder(get_bi_g__endian()),
         )
 
         pdu: ModbusPDU = read_simple_field(
@@ -149,7 +131,7 @@ class ModbusTcpADU(PlcMessage, ModbusADU):
             DataReaderComplexDefault(
                 ModbusPDU.static_parse(read_buffer, c_bool(response)), read_buffer
             ),
-            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN),
+            WithOption.WithByteOrder(get_bi_g__endian()),
         )
 
         read_buffer.close_context("ModbusTcpADU")

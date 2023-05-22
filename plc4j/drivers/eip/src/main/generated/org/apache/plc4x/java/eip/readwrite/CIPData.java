@@ -58,7 +58,6 @@ public class CIPData implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("CIPData");
 
     // Simple Field (dataType)
@@ -120,8 +119,6 @@ public class CIPData implements Message {
       throws ParseException {
     readBuffer.pullContext("CIPData");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     CIPDataTypeCode dataType =

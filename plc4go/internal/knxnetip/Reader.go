@@ -21,7 +21,6 @@ package knxnetip
 
 import (
 	"context"
-	"errors"
 	"strconv"
 	"strings"
 	"time"
@@ -29,9 +28,12 @@ import (
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	driverModel "github.com/apache/plc4x/plc4go/protocols/knxnetip/readwrite/model"
-	internalModel "github.com/apache/plc4x/plc4go/spi/model"
+	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/spi/utils"
-	internalValues "github.com/apache/plc4x/plc4go/spi/values"
+	spiValues "github.com/apache/plc4x/plc4go/spi/values"
+
+	"github.com/pkg/errors"
+	"github.com/rs/zerolog/log"
 )
 
 type Reader struct {
@@ -46,8 +48,13 @@ func NewReader(connection *Connection) *Reader {
 
 func (m Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) <-chan apiModel.PlcReadRequestResult {
 	// TODO: handle ctx
-	resultChan := make(chan apiModel.PlcReadRequestResult)
+	resultChan := make(chan apiModel.PlcReadRequestResult, 1)
 	go func() {
+		defer func() {
+			if err := recover(); err != nil {
+				resultChan <- spiModel.NewDefaultPlcReadRequestResult(readRequest, nil, errors.Errorf("panic-ed %v", err))
+			}
+		}()
 		responseCodes := map[string]apiModel.PlcResponseCode{}
 		plcValues := map[string]apiValues.PlcValue{}
 
@@ -155,12 +162,12 @@ func (m Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) <
 		}
 
 		// Assemble the results
-		result := internalModel.NewDefaultPlcReadResponse(readRequest, responseCodes, plcValues)
-		resultChan <- &internalModel.DefaultPlcReadRequestResult{
-			Request:  readRequest,
-			Response: result,
-			Err:      nil,
-		}
+		result := spiModel.NewDefaultPlcReadResponse(readRequest, responseCodes, plcValues)
+		resultChan <- spiModel.NewDefaultPlcReadRequestResult(
+			readRequest,
+			result,
+			nil,
+		)
 	}()
 	return resultChan
 }
@@ -168,6 +175,7 @@ func (m Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) <
 func (m Reader) readGroupAddress(ctx context.Context, tag GroupAddressTag) (apiModel.PlcResponseCode, apiValues.PlcValue) {
 	rawAddresses, err := m.resolveAddresses(tag)
 	if err != nil {
+		log.Debug().Err(err).Msg("error resolving addresses")
 		return apiModel.PlcResponseCode_INVALID_ADDRESS, nil
 	}
 
@@ -178,8 +186,11 @@ func (m Reader) readGroupAddress(ctx context.Context, tag GroupAddressTag) (apiM
 	returnCodes := map[string]apiModel.PlcResponseCode{}
 	for _, numericAddress := range rawAddresses {
 		// Create a string representation of this numeric address depending on the type of requested address
-		stringAddress := NumericGroupAddressToString(numericAddress, tag)
-
+		stringAddress, err := NumericGroupAddressToString(numericAddress, tag)
+		if err != nil {
+			log.Debug().Err(err).Msg("error mapping addresses")
+			return apiModel.PlcResponseCode_INVALID_ADDRESS, nil
+		}
 		// Try to get a value from the cache
 		m.connection.valueCacheMutex.RLock()
 		int8s, ok := m.connection.valueCache[numericAddress]
@@ -209,7 +220,7 @@ func (m Reader) readGroupAddress(ctx context.Context, tag GroupAddressTag) (apiM
 		} else {
 			// If we don't have any tag-type information, add the raw data
 			if tag.GetTagType() == nil {
-				values[stringAddress] = internalValues.NewPlcRawByteArray(int8s)
+				values[stringAddress] = spiValues.NewPlcRawByteArray(int8s)
 			} else {
 				// Decode the data according to the tags type
 				rb := utils.NewReadBufferByteBased(int8s)
@@ -233,11 +244,15 @@ func (m Reader) readGroupAddress(ctx context.Context, tag GroupAddressTag) (apiM
 	// If there is only one address to read, return this directly.
 	// Otherwise, return a struct, with the keys being the string representations of the address.
 	if len(rawAddresses) == 1 {
-		stringAddress := NumericGroupAddressToString(rawAddresses[0], tag)
+		stringAddress, err := NumericGroupAddressToString(rawAddresses[0], tag)
+		if err != nil {
+			log.Debug().Err(err).Msg("error mapping addresses")
+			return apiModel.PlcResponseCode_INVALID_ADDRESS, nil
+		}
 		return apiModel.PlcResponseCode_OK, values[stringAddress]
 	} else if len(rawAddresses) > 1 {
 		// Add it to the result
-		return apiModel.PlcResponseCode_OK, internalValues.NewPlcStruct(values)
+		return apiModel.PlcResponseCode_OK, spiValues.NewPlcStruct(values)
 	} else {
 		// Add it to the result
 		return apiModel.PlcResponseCode_NOT_FOUND, nil

@@ -65,7 +65,6 @@ public class IdentityMappingRuleType extends ExtensionObjectDefinition implement
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("IdentityMappingRuleType");
 
     // Simple Field (criteriaType)
@@ -108,8 +107,6 @@ public class IdentityMappingRuleType extends ExtensionObjectDefinition implement
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("IdentityMappingRuleType");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     IdentityCriteriaType criteriaType =

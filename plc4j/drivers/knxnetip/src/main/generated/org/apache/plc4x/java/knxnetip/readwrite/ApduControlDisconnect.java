@@ -50,7 +50,6 @@ public class ApduControlDisconnect extends ApduControl implements Message {
   protected void serializeApduControlChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("ApduControlDisconnect");
 
     writeBuffer.popContext("ApduControlDisconnect");
@@ -74,8 +73,6 @@ public class ApduControlDisconnect extends ApduControl implements Message {
       throws ParseException {
     readBuffer.pullContext("ApduControlDisconnect");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("ApduControlDisconnect");

@@ -78,7 +78,6 @@ public class VariableDataField implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("VariableDataField");
 
     // Simple Field (parameterId)
@@ -159,8 +158,6 @@ public class VariableDataField implements Message {
   public static VariableDataField staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("VariableDataField");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BigInteger parameterId =

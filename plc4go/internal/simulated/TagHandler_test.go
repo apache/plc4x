@@ -23,8 +23,8 @@ import (
 	"github.com/stretchr/testify/assert"
 	"testing"
 
-	"github.com/apache/plc4x/plc4go/pkg/api/model"
-	model2 "github.com/apache/plc4x/plc4go/protocols/simulated/readwrite/model"
+	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
+	readWriteModel "github.com/apache/plc4x/plc4go/protocols/simulated/readwrite/model"
 )
 
 func TestFieldHandler_ParseQuery(t *testing.T) {
@@ -34,7 +34,7 @@ func TestFieldHandler_ParseQuery(t *testing.T) {
 	tests := []struct {
 		name    string
 		args    args
-		want    model.PlcTag
+		want    apiModel.PlcTag
 		wantErr bool
 	}{
 		{
@@ -42,7 +42,7 @@ func TestFieldHandler_ParseQuery(t *testing.T) {
 			args: args{
 				query: "RANDOM/test_random:BOOL",
 			},
-			want:    NewSimulatedTag(TagRandom, "test_random", model2.SimulatedDataTypeSizes_BOOL, 1),
+			want:    NewSimulatedTag(TagRandom, "test_random", readWriteModel.SimulatedDataTypeSizes_BOOL, 1),
 			wantErr: false,
 		},
 		{
@@ -50,7 +50,7 @@ func TestFieldHandler_ParseQuery(t *testing.T) {
 			args: args{
 				query: "RANDOM/test_random:BOOL[10]",
 			},
-			want:    NewSimulatedTag(TagRandom, "test_random", model2.SimulatedDataTypeSizes_BOOL, 10),
+			want:    NewSimulatedTag(TagRandom, "test_random", readWriteModel.SimulatedDataTypeSizes_BOOL, 10),
 			wantErr: false,
 		},
 		{
@@ -58,7 +58,7 @@ func TestFieldHandler_ParseQuery(t *testing.T) {
 			args: args{
 				query: "STATE/test_state:BOOL",
 			},
-			want:    NewSimulatedTag(TagState, "test_state", model2.SimulatedDataTypeSizes_BOOL, 1),
+			want:    NewSimulatedTag(TagState, "test_state", readWriteModel.SimulatedDataTypeSizes_BOOL, 1),
 			wantErr: false,
 		},
 		{
@@ -66,7 +66,7 @@ func TestFieldHandler_ParseQuery(t *testing.T) {
 			args: args{
 				query: "STATE/test_state:BOOL[42]",
 			},
-			want:    NewSimulatedTag(TagState, "test_state", model2.SimulatedDataTypeSizes_BOOL, 42),
+			want:    NewSimulatedTag(TagState, "test_state", readWriteModel.SimulatedDataTypeSizes_BOOL, 42),
 			wantErr: false,
 		},
 		{
@@ -74,7 +74,7 @@ func TestFieldHandler_ParseQuery(t *testing.T) {
 			args: args{
 				query: "STDOUT/test_stdout:BOOL",
 			},
-			want:    NewSimulatedTag(TagStdOut, "test_stdout", model2.SimulatedDataTypeSizes_BOOL, 1),
+			want:    NewSimulatedTag(TagStdOut, "test_stdout", readWriteModel.SimulatedDataTypeSizes_BOOL, 1),
 			wantErr: false,
 		},
 		{
@@ -82,7 +82,7 @@ func TestFieldHandler_ParseQuery(t *testing.T) {
 			args: args{
 				query: "STDOUT/test_stdout:BOOL[23]",
 			},
-			want:    NewSimulatedTag(TagStdOut, "test_stdout", model2.SimulatedDataTypeSizes_BOOL, 23),
+			want:    NewSimulatedTag(TagStdOut, "test_stdout", readWriteModel.SimulatedDataTypeSizes_BOOL, 23),
 			wantErr: false,
 		},
 		{

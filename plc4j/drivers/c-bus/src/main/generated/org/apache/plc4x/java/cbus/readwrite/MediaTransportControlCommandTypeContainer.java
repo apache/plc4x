@@ -264,9 +264,9 @@ public enum MediaTransportControlCommandTypeContainer {
     }
   }
 
-  private short value;
-  private short numBytes;
-  private MediaTransportControlCommandType commandType;
+  private final short value;
+  private final short numBytes;
+  private final MediaTransportControlCommandType commandType;
 
   MediaTransportControlCommandTypeContainer(
       short value, short numBytes, MediaTransportControlCommandType commandType) {
@@ -296,7 +296,7 @@ public enum MediaTransportControlCommandTypeContainer {
 
   public static List<MediaTransportControlCommandTypeContainer> enumsForFieldNumBytes(
       short fieldValue) {
-    List<MediaTransportControlCommandTypeContainer> _values = new ArrayList();
+    List<MediaTransportControlCommandTypeContainer> _values = new ArrayList<>();
     for (MediaTransportControlCommandTypeContainer _val :
         MediaTransportControlCommandTypeContainer.values()) {
       if (_val.getNumBytes() == fieldValue) {
@@ -323,7 +323,7 @@ public enum MediaTransportControlCommandTypeContainer {
 
   public static List<MediaTransportControlCommandTypeContainer> enumsForFieldCommandType(
       MediaTransportControlCommandType fieldValue) {
-    List<MediaTransportControlCommandTypeContainer> _values = new ArrayList();
+    List<MediaTransportControlCommandTypeContainer> _values = new ArrayList<>();
     for (MediaTransportControlCommandTypeContainer _val :
         MediaTransportControlCommandTypeContainer.values()) {
       if (_val.getCommandType() == fieldValue) {

@@ -57,7 +57,6 @@ public class BACnetPropertyStatesMaintenance extends BACnetPropertyStates implem
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetPropertyStatesMaintenance");
 
     // Simple Field (maintenance)
@@ -87,8 +86,6 @@ public class BACnetPropertyStatesMaintenance extends BACnetPropertyStates implem
       ReadBuffer readBuffer, Short peekedTagNumber) throws ParseException {
     readBuffer.pullContext("BACnetPropertyStatesMaintenance");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetMaintenanceTagged maintenance =

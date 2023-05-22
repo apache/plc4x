@@ -56,7 +56,6 @@ public class HVACTemperature implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("HVACTemperature");
 
     // Simple Field (temperatureValue)
@@ -97,8 +96,6 @@ public class HVACTemperature implements Message {
   public static HVACTemperature staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("HVACTemperature");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short temperatureValue = readSimpleField("temperatureValue", readSignedShort(readBuffer, 16));

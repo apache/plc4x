@@ -75,7 +75,6 @@ public class OpenProtocolMessageIdentifierDownloadRequestRev1
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("OpenProtocolMessageIdentifierDownloadRequestRev1");
 
     // Simple Field (identifierData)
@@ -110,8 +109,6 @@ public class OpenProtocolMessageIdentifierDownloadRequestRev1
           ReadBuffer readBuffer, Long revision) throws ParseException {
     readBuffer.pullContext("OpenProtocolMessageIdentifierDownloadRequestRev1");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     String identifierData =

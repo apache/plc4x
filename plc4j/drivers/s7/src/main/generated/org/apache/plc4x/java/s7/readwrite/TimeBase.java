@@ -36,7 +36,7 @@ public enum TimeBase {
     }
   }
 
-  private short value;
+  private final short value;
 
   TimeBase(short value) {
     this.value = value;

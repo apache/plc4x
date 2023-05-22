@@ -59,7 +59,6 @@ public class TlvOrganizationSpecific extends LldpUnit implements Message {
   protected void serializeLldpUnitChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("TlvOrganizationSpecific");
 
     // Simple Field (organizationSpecificUnit)
@@ -92,8 +91,6 @@ public class TlvOrganizationSpecific extends LldpUnit implements Message {
       throws ParseException {
     readBuffer.pullContext("TlvOrganizationSpecific");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     TlvOrganizationSpecificUnit organizationSpecificUnit =

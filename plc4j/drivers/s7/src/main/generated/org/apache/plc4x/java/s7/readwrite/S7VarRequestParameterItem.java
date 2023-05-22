@@ -50,7 +50,6 @@ public abstract class S7VarRequestParameterItem implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("S7VarRequestParameterItem");
 
     // Discriminator Field (itemType) (Used as input to a switch field)
@@ -90,8 +89,6 @@ public abstract class S7VarRequestParameterItem implements Message {
   public static S7VarRequestParameterItem staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("S7VarRequestParameterItem");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short itemType = readDiscriminatorField("itemType", readUnsignedShort(readBuffer, 8));

@@ -43,7 +43,7 @@ public enum CommandId {
     }
   }
 
-  private int value;
+  private final int value;
 
   CommandId(int value) {
     this.value = value;

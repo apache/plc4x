@@ -62,7 +62,6 @@ public class S7PayloadWriteVarResponse extends S7Payload implements Message {
   protected void serializeS7PayloadChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("S7PayloadWriteVarResponse");
 
     // Array Field (items)
@@ -98,8 +97,6 @@ public class S7PayloadWriteVarResponse extends S7Payload implements Message {
       ReadBuffer readBuffer, Short messageType, S7Parameter parameter) throws ParseException {
     readBuffer.pullContext("S7PayloadWriteVarResponse");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     List<S7VarPayloadStatusItem> items =

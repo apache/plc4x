@@ -90,7 +90,6 @@ public class BACnetConstructedDataSubordinateRelationships extends BACnetConstru
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataSubordinateRelationships");
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
@@ -147,8 +146,6 @@ public class BACnetConstructedDataSubordinateRelationships extends BACnetConstru
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataSubordinateRelationships");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     BigInteger zero = readVirtualField("zero", BigInteger.class, 0L);
 

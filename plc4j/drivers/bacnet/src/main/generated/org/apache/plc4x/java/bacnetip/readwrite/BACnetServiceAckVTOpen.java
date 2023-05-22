@@ -64,7 +64,6 @@ public class BACnetServiceAckVTOpen extends BACnetServiceAck implements Message 
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetServiceAckVTOpen");
 
     // Simple Field (remoteVtSessionIdentifier)
@@ -97,8 +96,6 @@ public class BACnetServiceAckVTOpen extends BACnetServiceAck implements Message 
       ReadBuffer readBuffer, Long serviceAckLength) throws ParseException {
     readBuffer.pullContext("BACnetServiceAckVTOpen");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger remoteVtSessionIdentifier =

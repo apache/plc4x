@@ -64,7 +64,6 @@ public class ApduDataGroupValueResponse extends ApduData implements Message {
   protected void serializeApduDataChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("ApduDataGroupValueResponse");
 
     // Simple Field (dataFirstByte)
@@ -102,8 +101,6 @@ public class ApduDataGroupValueResponse extends ApduData implements Message {
       throws ParseException {
     readBuffer.pullContext("ApduDataGroupValueResponse");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte dataFirstByte = readSimpleField("dataFirstByte", readSignedByte(readBuffer, 6));

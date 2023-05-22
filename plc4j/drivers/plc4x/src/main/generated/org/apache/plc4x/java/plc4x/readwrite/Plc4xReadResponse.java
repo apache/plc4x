@@ -74,7 +74,6 @@ public class Plc4xReadResponse extends Plc4xMessage implements Message {
   protected void serializePlc4xMessageChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("Plc4xReadResponse");
 
     // Simple Field (connectionId)
@@ -147,8 +146,6 @@ public class Plc4xReadResponse extends Plc4xMessage implements Message {
       throws ParseException {
     readBuffer.pullContext("Plc4xReadResponse");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int connectionId =

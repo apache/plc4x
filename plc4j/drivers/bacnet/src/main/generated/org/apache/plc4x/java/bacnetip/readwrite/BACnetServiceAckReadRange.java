@@ -107,7 +107,6 @@ public class BACnetServiceAckReadRange extends BACnetServiceAck implements Messa
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetServiceAckReadRange");
 
     // Simple Field (objectIdentifier)
@@ -183,8 +182,6 @@ public class BACnetServiceAckReadRange extends BACnetServiceAck implements Messa
       ReadBuffer readBuffer, Long serviceAckLength) throws ParseException {
     readBuffer.pullContext("BACnetServiceAckReadRange");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetContextTagObjectIdentifier objectIdentifier =

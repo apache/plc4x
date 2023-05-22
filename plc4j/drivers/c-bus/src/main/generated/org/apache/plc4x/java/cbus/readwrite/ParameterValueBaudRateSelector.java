@@ -69,7 +69,6 @@ public class ParameterValueBaudRateSelector extends ParameterValue implements Me
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("ParameterValueBaudRateSelector");
 
     // Simple Field (value)
@@ -114,8 +113,6 @@ public class ParameterValueBaudRateSelector extends ParameterValue implements Me
       ReadBuffer readBuffer, ParameterType parameterType, Short numBytes) throws ParseException {
     readBuffer.pullContext("ParameterValueBaudRateSelector");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Validation
     if (!((numBytes) >= (1))) {

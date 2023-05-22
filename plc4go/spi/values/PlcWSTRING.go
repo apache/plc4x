@@ -49,7 +49,7 @@ func (m PlcWSTRING) IsString() bool {
 }
 
 func (m PlcWSTRING) GetString() string {
-	return string(m.value)
+	return m.value
 }
 
 func (m PlcWSTRING) GetPlcValueType() apiValues.PlcValueType {
@@ -65,7 +65,7 @@ func (m PlcWSTRING) Serialize() ([]byte, error) {
 }
 
 func (m PlcWSTRING) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteString("PlcSTRING", uint32(len(m.value)*8), "UTF-8", string(m.value))
+	return writeBuffer.WriteString("PlcSTRING", uint32(len(m.value)*8), "UTF-8", m.value)
 }
 
 func (m PlcWSTRING) String() string {

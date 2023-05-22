@@ -103,7 +103,6 @@ public class LDataExtended extends LDataFrame implements Message {
   protected void serializeLDataFrameChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("LDataExtended");
 
     // Simple Field (groupAddress)
@@ -173,8 +172,6 @@ public class LDataExtended extends LDataFrame implements Message {
       throws ParseException {
     readBuffer.pullContext("LDataExtended");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     boolean groupAddress = readSimpleField("groupAddress", readBoolean(readBuffer));

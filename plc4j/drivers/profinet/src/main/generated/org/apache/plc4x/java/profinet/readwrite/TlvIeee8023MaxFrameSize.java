@@ -59,7 +59,6 @@ public class TlvIeee8023MaxFrameSize extends TlvOrgSpecificIeee8023Unit implemen
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("TlvIeee8023MaxFrameSize");
 
     // Simple Field (maxSize)
@@ -89,8 +88,6 @@ public class TlvIeee8023MaxFrameSize extends TlvOrgSpecificIeee8023Unit implemen
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("TlvIeee8023MaxFrameSize");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int maxSize = readSimpleField("maxSize", readUnsignedInt(readBuffer, 16));

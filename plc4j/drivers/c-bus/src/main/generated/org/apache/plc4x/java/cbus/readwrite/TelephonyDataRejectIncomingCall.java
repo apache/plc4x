@@ -49,7 +49,6 @@ public class TelephonyDataRejectIncomingCall extends TelephonyData implements Me
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("TelephonyDataRejectIncomingCall");
 
     writeBuffer.popContext("TelephonyDataRejectIncomingCall");
@@ -73,8 +72,6 @@ public class TelephonyDataRejectIncomingCall extends TelephonyData implements Me
       throws ParseException {
     readBuffer.pullContext("TelephonyDataRejectIncomingCall");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("TelephonyDataRejectIncomingCall");

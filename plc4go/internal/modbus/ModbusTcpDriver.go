@@ -48,10 +48,8 @@ func (m ModbusTcpDriver) GetConnectionWithContext(ctx context.Context, transport
 	transport, ok := transports[transportUrl.Scheme]
 	if !ok {
 		log.Error().Stringer("transportUrl", &transportUrl).Msgf("We couldn't find a transport for scheme %s", transportUrl.Scheme)
-		ch := make(chan plc4go.PlcConnectionConnectResult)
-		go func() {
-			ch <- _default.NewDefaultPlcConnectionConnectResult(nil, errors.Errorf("couldn't find transport for given transport url %#v", transportUrl))
-		}()
+		ch := make(chan plc4go.PlcConnectionConnectResult, 1)
+		ch <- _default.NewDefaultPlcConnectionConnectResult(nil, errors.Errorf("couldn't find transport for given transport url %#v", transportUrl))
 		return ch
 	}
 	// Provide a default-port to the transport, which is used, if the user doesn't provide on in the connection string.
@@ -60,10 +58,8 @@ func (m ModbusTcpDriver) GetConnectionWithContext(ctx context.Context, transport
 	transportInstance, err := transport.CreateTransportInstance(transportUrl, options)
 	if err != nil {
 		log.Error().Stringer("transportUrl", &transportUrl).Msgf("We couldn't create a transport instance for port %#v", options["defaultTcpPort"])
-		ch := make(chan plc4go.PlcConnectionConnectResult)
-		go func() {
-			ch <- _default.NewDefaultPlcConnectionConnectResult(nil, errors.New("couldn't initialize transport configuration for given transport url "+transportUrl.String()))
-		}()
+		ch := make(chan plc4go.PlcConnectionConnectResult, 1)
+		ch <- _default.NewDefaultPlcConnectionConnectResult(nil, errors.New("couldn't initialize transport configuration for given transport url "+transportUrl.String()))
 		return ch
 	}
 
@@ -71,6 +67,11 @@ func (m ModbusTcpDriver) GetConnectionWithContext(ctx context.Context, transport
 	// TODO: the code below looks strange: where is defaultChanel being used?
 	defaultChanel := make(chan any)
 	go func() {
+		defer func() {
+			if err := recover(); err != nil {
+				log.Error().Msgf("panic-ed %v", err)
+			}
+		}()
 		for {
 			msg := <-defaultChanel
 			adu := msg.(model.ModbusTcpADU)

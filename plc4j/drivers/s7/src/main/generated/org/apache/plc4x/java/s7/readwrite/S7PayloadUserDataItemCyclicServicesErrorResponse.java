@@ -61,7 +61,6 @@ public class S7PayloadUserDataItemCyclicServicesErrorResponse extends S7PayloadU
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("S7PayloadUserDataItemCyclicServicesErrorResponse");
 
     writeBuffer.popContext("S7PayloadUserDataItemCyclicServicesErrorResponse");
@@ -86,8 +85,6 @@ public class S7PayloadUserDataItemCyclicServicesErrorResponse extends S7PayloadU
       throws ParseException {
     readBuffer.pullContext("S7PayloadUserDataItemCyclicServicesErrorResponse");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("S7PayloadUserDataItemCyclicServicesErrorResponse");

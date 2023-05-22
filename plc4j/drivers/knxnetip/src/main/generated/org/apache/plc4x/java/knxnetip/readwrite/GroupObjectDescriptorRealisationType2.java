@@ -109,7 +109,6 @@ public class GroupObjectDescriptorRealisationType2 implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("GroupObjectDescriptorRealisationType2");
 
     // Simple Field (dataPointer)
@@ -205,8 +204,6 @@ public class GroupObjectDescriptorRealisationType2 implements Message {
       throws ParseException {
     readBuffer.pullContext("GroupObjectDescriptorRealisationType2");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short dataPointer = readSimpleField("dataPointer", readUnsignedShort(readBuffer, 8));

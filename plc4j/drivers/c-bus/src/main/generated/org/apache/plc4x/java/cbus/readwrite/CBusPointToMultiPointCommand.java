@@ -61,7 +61,6 @@ public abstract class CBusPointToMultiPointCommand implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("CBusPointToMultiPointCommand");
 
     // Switch field (Serialize the sub-type)
@@ -108,8 +107,6 @@ public abstract class CBusPointToMultiPointCommand implements Message {
       ReadBuffer readBuffer, CBusOptions cBusOptions) throws ParseException {
     readBuffer.pullContext("CBusPointToMultiPointCommand");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte peekedApplication = readPeekField("peekedApplication", readByte(readBuffer, 8));

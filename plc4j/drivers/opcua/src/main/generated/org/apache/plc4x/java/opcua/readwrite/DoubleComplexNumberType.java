@@ -65,7 +65,6 @@ public class DoubleComplexNumberType extends ExtensionObjectDefinition implement
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("DoubleComplexNumberType");
 
     // Simple Field (real)
@@ -101,8 +100,6 @@ public class DoubleComplexNumberType extends ExtensionObjectDefinition implement
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("DoubleComplexNumberType");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     double real = readSimpleField("real", readDouble(readBuffer, 64));

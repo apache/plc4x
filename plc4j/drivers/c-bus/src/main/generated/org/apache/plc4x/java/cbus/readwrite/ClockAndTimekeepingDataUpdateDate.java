@@ -87,7 +87,6 @@ public class ClockAndTimekeepingDataUpdateDate extends ClockAndTimekeepingData i
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("ClockAndTimekeepingDataUpdateDate");
 
     // Simple Field (yearHigh)
@@ -141,8 +140,6 @@ public class ClockAndTimekeepingDataUpdateDate extends ClockAndTimekeepingData i
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("ClockAndTimekeepingDataUpdateDate");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte yearHigh = readSimpleField("yearHigh", readByte(readBuffer, 8));

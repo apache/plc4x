@@ -49,7 +49,6 @@ public class AccessControlDataLockAccessPoint extends AccessControlData implemen
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("AccessControlDataLockAccessPoint");
 
     writeBuffer.popContext("AccessControlDataLockAccessPoint");
@@ -73,8 +72,6 @@ public class AccessControlDataLockAccessPoint extends AccessControlData implemen
       throws ParseException {
     readBuffer.pullContext("AccessControlDataLockAccessPoint");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("AccessControlDataLockAccessPoint");

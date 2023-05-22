@@ -57,7 +57,6 @@ public class BACnetChannelValueObjectidentifier extends BACnetChannelValue imple
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetChannelValueObjectidentifier");
 
     // Simple Field (objectidentifierValue)
@@ -90,8 +89,6 @@ public class BACnetChannelValueObjectidentifier extends BACnetChannelValue imple
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetChannelValueObjectidentifier");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagObjectIdentifier objectidentifierValue =

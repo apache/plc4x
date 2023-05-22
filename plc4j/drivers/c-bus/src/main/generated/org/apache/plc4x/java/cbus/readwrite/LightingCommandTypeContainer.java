@@ -87,9 +87,9 @@ public enum LightingCommandTypeContainer {
     }
   }
 
-  private short value;
-  private short numBytes;
-  private LightingCommandType commandType;
+  private final short value;
+  private final short numBytes;
+  private final LightingCommandType commandType;
 
   LightingCommandTypeContainer(short value, short numBytes, LightingCommandType commandType) {
     this.value = value;
@@ -115,7 +115,7 @@ public enum LightingCommandTypeContainer {
   }
 
   public static List<LightingCommandTypeContainer> enumsForFieldNumBytes(short fieldValue) {
-    List<LightingCommandTypeContainer> _values = new ArrayList();
+    List<LightingCommandTypeContainer> _values = new ArrayList<>();
     for (LightingCommandTypeContainer _val : LightingCommandTypeContainer.values()) {
       if (_val.getNumBytes() == fieldValue) {
         _values.add(_val);
@@ -140,7 +140,7 @@ public enum LightingCommandTypeContainer {
 
   public static List<LightingCommandTypeContainer> enumsForFieldCommandType(
       LightingCommandType fieldValue) {
-    List<LightingCommandTypeContainer> _values = new ArrayList();
+    List<LightingCommandTypeContainer> _values = new ArrayList<>();
     for (LightingCommandTypeContainer _val : LightingCommandTypeContainer.values()) {
       if (_val.getCommandType() == fieldValue) {
         _values.add(_val);

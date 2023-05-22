@@ -58,7 +58,6 @@ public class BACnetErrorGeneral extends BACnetError implements Message {
   protected void serializeBACnetErrorChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetErrorGeneral");
 
     // Simple Field (error)
@@ -88,8 +87,6 @@ public class BACnetErrorGeneral extends BACnetError implements Message {
       ReadBuffer readBuffer, BACnetConfirmedServiceChoice errorChoice) throws ParseException {
     readBuffer.pullContext("BACnetErrorGeneral");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     Error error =

@@ -52,7 +52,6 @@ public abstract class S7Payload implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("S7Payload");
 
     // Switch field (Serialize the sub-type)
@@ -108,8 +107,6 @@ public abstract class S7Payload implements Message {
       ReadBuffer readBuffer, Short messageType, S7Parameter parameter) throws ParseException {
     readBuffer.pullContext("S7Payload");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)

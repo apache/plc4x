@@ -65,7 +65,6 @@ public class ParameterValueInterfaceOptions1PowerUpSettings extends ParameterVal
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("ParameterValueInterfaceOptions1PowerUpSettings");
 
     // Simple Field (value)
@@ -95,8 +94,6 @@ public class ParameterValueInterfaceOptions1PowerUpSettings extends ParameterVal
       ReadBuffer readBuffer, ParameterType parameterType, Short numBytes) throws ParseException {
     readBuffer.pullContext("ParameterValueInterfaceOptions1PowerUpSettings");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Validation
     if (!((numBytes) >= (1))) {

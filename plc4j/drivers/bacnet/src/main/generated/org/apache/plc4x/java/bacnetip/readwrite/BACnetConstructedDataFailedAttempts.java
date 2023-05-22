@@ -79,7 +79,6 @@ public class BACnetConstructedDataFailedAttempts extends BACnetConstructedData i
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataFailedAttempts");
 
     // Simple Field (failedAttempts)
@@ -120,8 +119,6 @@ public class BACnetConstructedDataFailedAttempts extends BACnetConstructedData i
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataFailedAttempts");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger failedAttempts =

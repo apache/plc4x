@@ -56,7 +56,7 @@ public abstract class Plc4xBaseTable extends AbstractTable {
     private final JobConfiguration conf;
     private final long tableCutoff;
     private Plc4xSchema.Record current;
-    private List<String> names;
+    private final List<String> names;
 
     public Plc4xBaseTable(BlockingQueue<Plc4xSchema.Record> queue, JobConfiguration conf, long tableCutoff) {
         this.tableCutoff = tableCutoff;
@@ -129,10 +129,10 @@ public abstract class Plc4xBaseTable extends AbstractTable {
      * if tableCutoff is positive, then the row gets limited to that.
      */
     public Enumerable<Object[]> scan(DataContext root) {
-        return new AbstractEnumerable<Object[]>() {
+        return new AbstractEnumerable<>() {
             @Override
             public Enumerator<Object[]> enumerator() {
-                return new Enumerator<Object[]>() {
+                return new Enumerator<>() {
 
                     private final AtomicLong counter = new AtomicLong(0);
 

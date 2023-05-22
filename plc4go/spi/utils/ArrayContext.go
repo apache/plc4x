@@ -33,8 +33,8 @@ type arrayInfo struct {
 }
 
 // CreateArrayContext creates a new context, which contains information on the size and the current position in the array.
-func CreateArrayContext(parent context.Context, numItems int, curItem int) context.Context {
-	return context.WithValue(parent, keyArrayInfo, arrayInfo{
+func CreateArrayContext(ctx context.Context, numItems int, curItem int) context.Context {
+	return context.WithValue(ctx, keyArrayInfo, arrayInfo{
 		numItems: numItems,
 		curItem:  curItem,
 	})

@@ -45,7 +45,7 @@ public enum HVACType {
     }
   }
 
-  private short value;
+  private final short value;
 
   HVACType(short value) {
     this.value = value;

@@ -49,7 +49,6 @@ public class MediaTransportControlDataStop extends MediaTransportControlData imp
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("MediaTransportControlDataStop");
 
     writeBuffer.popContext("MediaTransportControlDataStop");
@@ -73,8 +72,6 @@ public class MediaTransportControlDataStop extends MediaTransportControlData imp
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("MediaTransportControlDataStop");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("MediaTransportControlDataStop");

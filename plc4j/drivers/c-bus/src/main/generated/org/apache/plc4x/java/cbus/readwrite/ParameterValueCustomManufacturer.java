@@ -63,7 +63,6 @@ public class ParameterValueCustomManufacturer extends ParameterValue implements 
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("ParameterValueCustomManufacturer");
 
     // Simple Field (value)
@@ -93,8 +92,6 @@ public class ParameterValueCustomManufacturer extends ParameterValue implements 
       ReadBuffer readBuffer, ParameterType parameterType, Short numBytes) throws ParseException {
     readBuffer.pullContext("ParameterValueCustomManufacturer");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     CustomManufacturer value =

@@ -67,7 +67,6 @@ public class TelephonyDataRecallLastNumberRequest extends TelephonyData implemen
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("TelephonyDataRecallLastNumberRequest");
 
     // Simple Field (recallLastNumberType)
@@ -109,8 +108,6 @@ public class TelephonyDataRecallLastNumberRequest extends TelephonyData implemen
       throws ParseException {
     readBuffer.pullContext("TelephonyDataRecallLastNumberRequest");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte recallLastNumberType = readSimpleField("recallLastNumberType", readByte(readBuffer, 8));

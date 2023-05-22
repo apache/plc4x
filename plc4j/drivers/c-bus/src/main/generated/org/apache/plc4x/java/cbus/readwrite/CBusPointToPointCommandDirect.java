@@ -66,7 +66,6 @@ public class CBusPointToPointCommandDirect extends CBusPointToPointCommand imple
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("CBusPointToPointCommandDirect");
 
     // Simple Field (unitAddress)
@@ -105,8 +104,6 @@ public class CBusPointToPointCommandDirect extends CBusPointToPointCommand imple
       ReadBuffer readBuffer, CBusOptions cBusOptions) throws ParseException {
     readBuffer.pullContext("CBusPointToPointCommandDirect");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     UnitAddress unitAddress =

@@ -60,7 +60,6 @@ public class ErrorReportingSystemCategoryTypeReserved extends ErrorReportingSyst
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("ErrorReportingSystemCategoryTypeReserved");
 
     // Simple Field (reservedValue)
@@ -93,8 +92,6 @@ public class ErrorReportingSystemCategoryTypeReserved extends ErrorReportingSyst
           throws ParseException {
     readBuffer.pullContext("ErrorReportingSystemCategoryTypeReserved");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte reservedValue = readSimpleField("reservedValue", readUnsignedByte(readBuffer, 4));

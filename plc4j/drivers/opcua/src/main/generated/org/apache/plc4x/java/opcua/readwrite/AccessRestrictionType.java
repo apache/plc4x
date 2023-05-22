@@ -38,7 +38,7 @@ public enum AccessRestrictionType {
     }
   }
 
-  private int value;
+  private final int value;
 
   AccessRestrictionType(int value) {
     this.value = value;

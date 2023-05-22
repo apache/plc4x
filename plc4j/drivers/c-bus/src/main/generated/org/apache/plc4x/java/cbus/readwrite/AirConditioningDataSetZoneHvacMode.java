@@ -100,7 +100,6 @@ public class AirConditioningDataSetZoneHvacMode extends AirConditioningData impl
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("AirConditioningDataSetZoneHvacMode");
 
     // Simple Field (zoneGroup)
@@ -190,8 +189,6 @@ public class AirConditioningDataSetZoneHvacMode extends AirConditioningData impl
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("AirConditioningDataSetZoneHvacMode");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte zoneGroup = readSimpleField("zoneGroup", readByte(readBuffer, 8));

@@ -58,7 +58,6 @@ public class Plc4xTag implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("Plc4xTag");
 
     // Implicit Field (nameLen) (Used for parsing, but its value is not stored as it's implicitly
@@ -114,8 +113,6 @@ public class Plc4xTag implements Message {
   public static Plc4xTag staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("Plc4xTag");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short nameLen = readImplicitField("nameLen", readUnsignedShort(readBuffer, 8));

@@ -79,7 +79,6 @@ public class BACnetConstructedDataTrackingValue extends BACnetConstructedData im
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataTrackingValue");
 
     // Simple Field (trackingValue)
@@ -120,8 +119,6 @@ public class BACnetConstructedDataTrackingValue extends BACnetConstructedData im
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataTrackingValue");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetLifeSafetyStateTagged trackingValue =

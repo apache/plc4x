@@ -37,7 +37,7 @@ public enum MessageSecurityMode {
     }
   }
 
-  private long value;
+  private final long value;
 
   MessageSecurityMode(long value) {
     this.value = value;

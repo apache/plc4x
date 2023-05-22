@@ -24,10 +24,10 @@ import (
 	"regexp"
 	"testing"
 
-	model2 "github.com/apache/plc4x/plc4go/internal/ads/model"
-	"github.com/apache/plc4x/plc4go/pkg/api/model"
-	"github.com/apache/plc4x/plc4go/pkg/api/values"
-	model3 "github.com/apache/plc4x/plc4go/spi/model"
+	"github.com/apache/plc4x/plc4go/internal/ads/model"
+	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
+	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
+	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 )
 
 func TestTagHandler_ParseQuery(t *testing.T) {
@@ -43,7 +43,7 @@ func TestTagHandler_ParseQuery(t *testing.T) {
 		name    string
 		tags    tags
 		args    args
-		want    model.PlcTag
+		want    apiModel.PlcTag
 		wantErr bool
 	}{
 		// All tests without any array notation.
@@ -52,11 +52,11 @@ func TestTagHandler_ParseQuery(t *testing.T) {
 			args: args{
 				query: "1234/5678:BOOL",
 			},
-			want: model2.DirectPlcTag{
+			want: model.DirectPlcTag{
 				IndexGroup:   1234,
 				IndexOffset:  5678,
-				ValueType:    values.BOOL,
-				StringLength: model2.NONE,
+				ValueType:    apiValues.BOOL,
+				StringLength: model.NONE,
 			},
 		},
 		{
@@ -64,11 +64,11 @@ func TestTagHandler_ParseQuery(t *testing.T) {
 			args: args{
 				query: "0x04D2/0x162E:BOOL",
 			},
-			want: model2.DirectPlcTag{
+			want: model.DirectPlcTag{
 				IndexGroup:   1234,
 				IndexOffset:  5678,
-				ValueType:    values.BOOL,
-				StringLength: model2.NONE,
+				ValueType:    apiValues.BOOL,
+				StringLength: model.NONE,
 			},
 		},
 		{
@@ -76,10 +76,10 @@ func TestTagHandler_ParseQuery(t *testing.T) {
 			args: args{
 				query: "1234/5678:STRING(80)",
 			},
-			want: model2.DirectPlcTag{
+			want: model.DirectPlcTag{
 				IndexGroup:   1234,
 				IndexOffset:  5678,
-				ValueType:    values.STRING,
+				ValueType:    apiValues.STRING,
 				StringLength: 80,
 			},
 		},
@@ -88,10 +88,10 @@ func TestTagHandler_ParseQuery(t *testing.T) {
 			args: args{
 				query: "0x04D2/0x162E:WSTRING(80)",
 			},
-			want: model2.DirectPlcTag{
+			want: model.DirectPlcTag{
 				IndexGroup:   1234,
 				IndexOffset:  5678,
-				ValueType:    values.WSTRING,
+				ValueType:    apiValues.WSTRING,
 				StringLength: 80,
 			},
 		},
@@ -100,7 +100,7 @@ func TestTagHandler_ParseQuery(t *testing.T) {
 			args: args{
 				query: "MAIN.testVariable",
 			},
-			want: model2.SymbolicPlcTag{
+			want: model.SymbolicPlcTag{
 				SymbolicAddress: "MAIN.testVariable",
 			},
 		},
@@ -110,10 +110,10 @@ func TestTagHandler_ParseQuery(t *testing.T) {
 			args: args{
 				query: "1234/5678:BOOL[42]",
 			},
-			want: model2.DirectPlcTag{
-				PlcTag: model2.PlcTag{
-					ArrayInfo: []model.ArrayInfo{
-						model3.DefaultArrayInfo{
+			want: model.DirectPlcTag{
+				PlcTag: model.PlcTag{
+					ArrayInfo: []apiModel.ArrayInfo{
+						&spiModel.DefaultArrayInfo{
 							LowerBound: 0,
 							UpperBound: 42,
 						},
@@ -121,8 +121,8 @@ func TestTagHandler_ParseQuery(t *testing.T) {
 				},
 				IndexGroup:   1234,
 				IndexOffset:  5678,
-				ValueType:    values.BOOL,
-				StringLength: model2.NONE,
+				ValueType:    apiValues.BOOL,
+				StringLength: model.NONE,
 			},
 		},
 		{
@@ -130,10 +130,10 @@ func TestTagHandler_ParseQuery(t *testing.T) {
 			args: args{
 				query: "0x04D2/0x162E:BOOL[42]",
 			},
-			want: model2.DirectPlcTag{
-				PlcTag: model2.PlcTag{
-					ArrayInfo: []model.ArrayInfo{
-						model3.DefaultArrayInfo{
+			want: model.DirectPlcTag{
+				PlcTag: model.PlcTag{
+					ArrayInfo: []apiModel.ArrayInfo{
+						&spiModel.DefaultArrayInfo{
 							LowerBound: 0,
 							UpperBound: 42,
 						},
@@ -141,8 +141,8 @@ func TestTagHandler_ParseQuery(t *testing.T) {
 				},
 				IndexGroup:   1234,
 				IndexOffset:  5678,
-				ValueType:    values.BOOL,
-				StringLength: model2.NONE,
+				ValueType:    apiValues.BOOL,
+				StringLength: model.NONE,
 			},
 		},
 		{
@@ -150,10 +150,10 @@ func TestTagHandler_ParseQuery(t *testing.T) {
 			args: args{
 				query: "1234/5678:STRING(80)[42]",
 			},
-			want: model2.DirectPlcTag{
-				PlcTag: model2.PlcTag{
-					ArrayInfo: []model.ArrayInfo{
-						model3.DefaultArrayInfo{
+			want: model.DirectPlcTag{
+				PlcTag: model.PlcTag{
+					ArrayInfo: []apiModel.ArrayInfo{
+						&spiModel.DefaultArrayInfo{
 							LowerBound: 0,
 							UpperBound: 42,
 						},
@@ -161,7 +161,7 @@ func TestTagHandler_ParseQuery(t *testing.T) {
 				},
 				IndexGroup:   1234,
 				IndexOffset:  5678,
-				ValueType:    values.STRING,
+				ValueType:    apiValues.STRING,
 				StringLength: 80,
 			},
 		},
@@ -170,10 +170,10 @@ func TestTagHandler_ParseQuery(t *testing.T) {
 			args: args{
 				query: "0x04D2/0x162E:WSTRING(80)[42]",
 			},
-			want: model2.DirectPlcTag{
-				PlcTag: model2.PlcTag{
-					ArrayInfo: []model.ArrayInfo{
-						model3.DefaultArrayInfo{
+			want: model.DirectPlcTag{
+				PlcTag: model.PlcTag{
+					ArrayInfo: []apiModel.ArrayInfo{
+						&spiModel.DefaultArrayInfo{
 							LowerBound: 0,
 							UpperBound: 42,
 						},
@@ -181,7 +181,7 @@ func TestTagHandler_ParseQuery(t *testing.T) {
 				},
 				IndexGroup:   1234,
 				IndexOffset:  5678,
-				ValueType:    values.WSTRING,
+				ValueType:    apiValues.WSTRING,
 				StringLength: 80,
 			},
 		},
@@ -190,10 +190,10 @@ func TestTagHandler_ParseQuery(t *testing.T) {
 			args: args{
 				query: "MAIN.testVariable[42]",
 			},
-			want: model2.SymbolicPlcTag{
-				PlcTag: model2.PlcTag{
-					ArrayInfo: []model.ArrayInfo{
-						model3.DefaultArrayInfo{
+			want: model.SymbolicPlcTag{
+				PlcTag: model.PlcTag{
+					ArrayInfo: []apiModel.ArrayInfo{
+						&spiModel.DefaultArrayInfo{
 							LowerBound: 0,
 							UpperBound: 42,
 						},
@@ -208,10 +208,10 @@ func TestTagHandler_ParseQuery(t *testing.T) {
 			args: args{
 				query: "1234/5678:BOOL[23..42]",
 			},
-			want: model2.DirectPlcTag{
-				PlcTag: model2.PlcTag{
-					ArrayInfo: []model.ArrayInfo{
-						model3.DefaultArrayInfo{
+			want: model.DirectPlcTag{
+				PlcTag: model.PlcTag{
+					ArrayInfo: []apiModel.ArrayInfo{
+						&spiModel.DefaultArrayInfo{
 							LowerBound: 23,
 							UpperBound: 42,
 						},
@@ -219,8 +219,8 @@ func TestTagHandler_ParseQuery(t *testing.T) {
 				},
 				IndexGroup:   1234,
 				IndexOffset:  5678,
-				ValueType:    values.BOOL,
-				StringLength: model2.NONE,
+				ValueType:    apiValues.BOOL,
+				StringLength: model.NONE,
 			},
 		},
 		{
@@ -228,10 +228,10 @@ func TestTagHandler_ParseQuery(t *testing.T) {
 			args: args{
 				query: "0x04D2/0x162E:BOOL[23..42]",
 			},
-			want: model2.DirectPlcTag{
-				PlcTag: model2.PlcTag{
-					ArrayInfo: []model.ArrayInfo{
-						model3.DefaultArrayInfo{
+			want: model.DirectPlcTag{
+				PlcTag: model.PlcTag{
+					ArrayInfo: []apiModel.ArrayInfo{
+						&spiModel.DefaultArrayInfo{
 							LowerBound: 23,
 							UpperBound: 42,
 						},
@@ -239,8 +239,8 @@ func TestTagHandler_ParseQuery(t *testing.T) {
 				},
 				IndexGroup:   1234,
 				IndexOffset:  5678,
-				ValueType:    values.BOOL,
-				StringLength: model2.NONE,
+				ValueType:    apiValues.BOOL,
+				StringLength: model.NONE,
 			},
 		},
 		{
@@ -248,10 +248,10 @@ func TestTagHandler_ParseQuery(t *testing.T) {
 			args: args{
 				query: "1234/5678:STRING(80)[23..42]",
 			},
-			want: model2.DirectPlcTag{
-				PlcTag: model2.PlcTag{
-					ArrayInfo: []model.ArrayInfo{
-						model3.DefaultArrayInfo{
+			want: model.DirectPlcTag{
+				PlcTag: model.PlcTag{
+					ArrayInfo: []apiModel.ArrayInfo{
+						&spiModel.DefaultArrayInfo{
 							LowerBound: 23,
 							UpperBound: 42,
 						},
@@ -259,7 +259,7 @@ func TestTagHandler_ParseQuery(t *testing.T) {
 				},
 				IndexGroup:   1234,
 				IndexOffset:  5678,
-				ValueType:    values.STRING,
+				ValueType:    apiValues.STRING,
 				StringLength: 80,
 			},
 		},
@@ -268,10 +268,10 @@ func TestTagHandler_ParseQuery(t *testing.T) {
 			args: args{
 				query: "0x04D2/0x162E:WSTRING(80)[23..42]",
 			},
-			want: model2.DirectPlcTag{
-				PlcTag: model2.PlcTag{
-					ArrayInfo: []model.ArrayInfo{
-						model3.DefaultArrayInfo{
+			want: model.DirectPlcTag{
+				PlcTag: model.PlcTag{
+					ArrayInfo: []apiModel.ArrayInfo{
+						&spiModel.DefaultArrayInfo{
 							LowerBound: 23,
 							UpperBound: 42,
 						},
@@ -279,7 +279,7 @@ func TestTagHandler_ParseQuery(t *testing.T) {
 				},
 				IndexGroup:   1234,
 				IndexOffset:  5678,
-				ValueType:    values.WSTRING,
+				ValueType:    apiValues.WSTRING,
 				StringLength: 80,
 			},
 		},
@@ -288,10 +288,10 @@ func TestTagHandler_ParseQuery(t *testing.T) {
 			args: args{
 				query: "MAIN.testVariable[23..42]",
 			},
-			want: model2.SymbolicPlcTag{
-				PlcTag: model2.PlcTag{
-					ArrayInfo: []model.ArrayInfo{
-						model3.DefaultArrayInfo{
+			want: model.SymbolicPlcTag{
+				PlcTag: model.PlcTag{
+					ArrayInfo: []apiModel.ArrayInfo{
+						&spiModel.DefaultArrayInfo{
 							LowerBound: 23,
 							UpperBound: 42,
 						},
@@ -306,10 +306,10 @@ func TestTagHandler_ParseQuery(t *testing.T) {
 			args: args{
 				query: "1234/5678:BOOL[23:42]",
 			},
-			want: model2.DirectPlcTag{
-				PlcTag: model2.PlcTag{
-					ArrayInfo: []model.ArrayInfo{
-						model3.DefaultArrayInfo{
+			want: model.DirectPlcTag{
+				PlcTag: model.PlcTag{
+					ArrayInfo: []apiModel.ArrayInfo{
+						&spiModel.DefaultArrayInfo{
 							LowerBound: 23,
 							UpperBound: 65,
 						},
@@ -317,8 +317,8 @@ func TestTagHandler_ParseQuery(t *testing.T) {
 				},
 				IndexGroup:   1234,
 				IndexOffset:  5678,
-				ValueType:    values.BOOL,
-				StringLength: model2.NONE,
+				ValueType:    apiValues.BOOL,
+				StringLength: model.NONE,
 			},
 		},
 		{
@@ -326,10 +326,10 @@ func TestTagHandler_ParseQuery(t *testing.T) {
 			args: args{
 				query: "0x04D2/0x162E:BOOL[23:42]",
 			},
-			want: model2.DirectPlcTag{
-				PlcTag: model2.PlcTag{
-					ArrayInfo: []model.ArrayInfo{
-						model3.DefaultArrayInfo{
+			want: model.DirectPlcTag{
+				PlcTag: model.PlcTag{
+					ArrayInfo: []apiModel.ArrayInfo{
+						&spiModel.DefaultArrayInfo{
 							LowerBound: 23,
 							UpperBound: 65,
 						},
@@ -337,8 +337,8 @@ func TestTagHandler_ParseQuery(t *testing.T) {
 				},
 				IndexGroup:   1234,
 				IndexOffset:  5678,
-				ValueType:    values.BOOL,
-				StringLength: model2.NONE,
+				ValueType:    apiValues.BOOL,
+				StringLength: model.NONE,
 			},
 		},
 		{
@@ -346,10 +346,10 @@ func TestTagHandler_ParseQuery(t *testing.T) {
 			args: args{
 				query: "1234/5678:STRING(80)[23:42]",
 			},
-			want: model2.DirectPlcTag{
-				PlcTag: model2.PlcTag{
-					ArrayInfo: []model.ArrayInfo{
-						model3.DefaultArrayInfo{
+			want: model.DirectPlcTag{
+				PlcTag: model.PlcTag{
+					ArrayInfo: []apiModel.ArrayInfo{
+						&spiModel.DefaultArrayInfo{
 							LowerBound: 23,
 							UpperBound: 65,
 						},
@@ -357,7 +357,7 @@ func TestTagHandler_ParseQuery(t *testing.T) {
 				},
 				IndexGroup:   1234,
 				IndexOffset:  5678,
-				ValueType:    values.STRING,
+				ValueType:    apiValues.STRING,
 				StringLength: 80,
 			},
 		},
@@ -366,10 +366,10 @@ func TestTagHandler_ParseQuery(t *testing.T) {
 			args: args{
 				query: "0x04D2/0x162E:WSTRING(80)[23:42]",
 			},
-			want: model2.DirectPlcTag{
-				PlcTag: model2.PlcTag{
-					ArrayInfo: []model.ArrayInfo{
-						model3.DefaultArrayInfo{
+			want: model.DirectPlcTag{
+				PlcTag: model.PlcTag{
+					ArrayInfo: []apiModel.ArrayInfo{
+						&spiModel.DefaultArrayInfo{
 							LowerBound: 23,
 							UpperBound: 65,
 						},
@@ -377,7 +377,7 @@ func TestTagHandler_ParseQuery(t *testing.T) {
 				},
 				IndexGroup:   1234,
 				IndexOffset:  5678,
-				ValueType:    values.WSTRING,
+				ValueType:    apiValues.WSTRING,
 				StringLength: 80,
 			},
 		},
@@ -386,10 +386,10 @@ func TestTagHandler_ParseQuery(t *testing.T) {
 			args: args{
 				query: "MAIN.testVariable[23:42]",
 			},
-			want: model2.SymbolicPlcTag{
-				PlcTag: model2.PlcTag{
-					ArrayInfo: []model.ArrayInfo{
-						model3.DefaultArrayInfo{
+			want: model.SymbolicPlcTag{
+				PlcTag: model.PlcTag{
+					ArrayInfo: []apiModel.ArrayInfo{
+						&spiModel.DefaultArrayInfo{
 							LowerBound: 23,
 							UpperBound: 65,
 						},

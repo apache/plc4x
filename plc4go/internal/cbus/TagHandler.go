@@ -145,8 +145,8 @@ func (m TagHandler) handleStatusRequestPattern(match map[string]string) (apiMode
 		} else if levelArgument := match["startingGroupAddressLabel"]; levelArgument != "" {
 			statusRequestType = StatusRequestTypeLevel
 			decodedHex, _ := hex.DecodeString(levelArgument)
-			if len(decodedHex) != 1 {
-				panic("invalid state. Should have exactly 1")
+			if hexLength := len(decodedHex); hexLength != 1 {
+				return nil, errors.Errorf("invalid state. Should have exactly 1. Actual length %d", hexLength)
 			}
 			startingGroupAddressLabel = &decodedHex[0]
 		} else {
@@ -177,7 +177,7 @@ func (m TagHandler) handleCalPattern(match map[string]string) (apiModel.PlcTag, 
 	calTypeArgument := match["calType"]
 	switch {
 	case strings.HasPrefix(calTypeArgument, "reset"):
-		panic("Not implemented") // TODO: implement me
+		return nil, errors.New("Not implemented") // TODO: implement me
 	case strings.HasPrefix(calTypeArgument, "recall="):
 		var recalParamNo readWriteModel.Parameter
 		recallParamNoArgument := match["recallParamNo"]
@@ -263,15 +263,15 @@ func (m TagHandler) handleCalPattern(match map[string]string) (apiModel.PlcTag, 
 		count = uint8(atoi)
 		return NewCALGetStatusTag(unitAddress, bridgeAddresses, recalParamNo, count, 1), nil
 	case strings.HasPrefix(calTypeArgument, "write="):
-		panic("Not implemented") // TODO: implement me
+		return nil, errors.New("Not implemented") // TODO: implement me
 	case strings.HasPrefix(calTypeArgument, "identifyReply="):
-		panic("Not implemented") // TODO: implement me
+		return nil, errors.New("Not implemented") // TODO: implement me
 	case strings.HasPrefix(calTypeArgument, "reply="):
-		panic("Not implemented") // TODO: implement me
+		return nil, errors.New("Not implemented") // TODO: implement me
 	case strings.HasPrefix(calTypeArgument, "status="):
-		panic("Not implemented") // TODO: implement me
+		return nil, errors.New("Not implemented") // TODO: implement me
 	case strings.HasPrefix(calTypeArgument, "statusExtended="):
-		panic("Not implemented") // TODO: implement me
+		return nil, errors.New("Not implemented") // TODO: implement me
 	default:
 		return nil, errors.Errorf("Invalid cal type %s", calTypeArgument)
 	}

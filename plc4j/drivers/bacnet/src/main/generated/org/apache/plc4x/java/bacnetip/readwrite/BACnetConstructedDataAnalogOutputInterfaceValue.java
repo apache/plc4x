@@ -80,7 +80,6 @@ public class BACnetConstructedDataAnalogOutputInterfaceValue extends BACnetConst
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataAnalogOutputInterfaceValue");
 
     // Simple Field (interfaceValue)
@@ -121,8 +120,6 @@ public class BACnetConstructedDataAnalogOutputInterfaceValue extends BACnetConst
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataAnalogOutputInterfaceValue");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetOptionalREAL interfaceValue =

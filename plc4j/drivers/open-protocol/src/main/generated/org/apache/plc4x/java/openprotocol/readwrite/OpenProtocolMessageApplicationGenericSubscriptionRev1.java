@@ -89,7 +89,6 @@ public class OpenProtocolMessageApplicationGenericSubscriptionRev1
       WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("OpenProtocolMessageApplicationGenericSubscriptionRev1");
 
     // Simple Field (subscriptionMid)
@@ -155,8 +154,6 @@ public class OpenProtocolMessageApplicationGenericSubscriptionRev1
           ReadBuffer readBuffer, Long revision) throws ParseException {
     readBuffer.pullContext("OpenProtocolMessageApplicationGenericSubscriptionRev1");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     Mid subscriptionMid =

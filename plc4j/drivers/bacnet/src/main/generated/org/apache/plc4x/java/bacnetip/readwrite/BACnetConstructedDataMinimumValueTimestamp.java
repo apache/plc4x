@@ -80,7 +80,6 @@ public class BACnetConstructedDataMinimumValueTimestamp extends BACnetConstructe
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataMinimumValueTimestamp");
 
     // Simple Field (minimumValueTimestamp)
@@ -124,8 +123,6 @@ public class BACnetConstructedDataMinimumValueTimestamp extends BACnetConstructe
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataMinimumValueTimestamp");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetDateTime minimumValueTimestamp =

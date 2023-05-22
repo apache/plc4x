@@ -37,7 +37,7 @@ public enum UserTokenType {
     }
   }
 
-  private long value;
+  private final long value;
 
   UserTokenType(long value) {
     this.value = value;

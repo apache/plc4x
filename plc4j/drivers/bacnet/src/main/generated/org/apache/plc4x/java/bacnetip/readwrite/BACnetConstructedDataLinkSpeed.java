@@ -79,7 +79,6 @@ public class BACnetConstructedDataLinkSpeed extends BACnetConstructedData implem
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataLinkSpeed");
 
     // Simple Field (linkSpeed)
@@ -120,8 +119,6 @@ public class BACnetConstructedDataLinkSpeed extends BACnetConstructedData implem
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataLinkSpeed");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagReal linkSpeed =

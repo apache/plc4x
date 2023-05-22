@@ -34,7 +34,7 @@ public enum PnIoCm_State {
     }
   }
 
-  private byte value;
+  private final byte value;
 
   PnIoCm_State(byte value) {
     this.value = value;

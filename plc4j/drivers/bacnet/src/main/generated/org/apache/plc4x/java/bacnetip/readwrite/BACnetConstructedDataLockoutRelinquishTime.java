@@ -80,7 +80,6 @@ public class BACnetConstructedDataLockoutRelinquishTime extends BACnetConstructe
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataLockoutRelinquishTime");
 
     // Simple Field (lockoutRelinquishTime)
@@ -124,8 +123,6 @@ public class BACnetConstructedDataLockoutRelinquishTime extends BACnetConstructe
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataLockoutRelinquishTime");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger lockoutRelinquishTime =

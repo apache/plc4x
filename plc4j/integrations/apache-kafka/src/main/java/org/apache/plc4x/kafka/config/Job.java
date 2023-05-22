@@ -85,7 +85,7 @@ public class Job extends AbstractConfig{
     @Override
     public String toString() {
         StringBuilder query = new StringBuilder();
-        query.append("\t\t" + name + "." + INTERVAL_CONFIG + "=" + interval + ",\n");
+        query.append("\t\t").append(name).append(".").append(INTERVAL_CONFIG).append("=").append(interval).append(",\n");
         for (Tag tag : tags) {
             query.append(tag.toString());
         }

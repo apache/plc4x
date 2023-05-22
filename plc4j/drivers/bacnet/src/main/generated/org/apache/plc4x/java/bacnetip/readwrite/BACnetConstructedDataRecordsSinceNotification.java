@@ -80,7 +80,6 @@ public class BACnetConstructedDataRecordsSinceNotification extends BACnetConstru
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataRecordsSinceNotification");
 
     // Simple Field (recordsSinceNotifications)
@@ -124,8 +123,6 @@ public class BACnetConstructedDataRecordsSinceNotification extends BACnetConstru
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataRecordsSinceNotification");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger recordsSinceNotifications =

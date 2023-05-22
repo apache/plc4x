@@ -1293,7 +1293,7 @@ const (
 	BACnetVendorId_BEN_PEOPLES_INDUSTRIESLLC                                                    BACnetVendorId = 1257
 	BACnetVendorId_UNICOMM_SPZOO                                                                BACnetVendorId = 1258
 	BACnetVendorId_THING_TECHNOLOGIES_GMBH                                                      BACnetVendorId = 1259
-	BACnetVendorId_BEIJING_HAI_LIN_ENERGY_SAVING_TECHNOLOGY_INC                                 BACnetVendorId = 1260
+	BACnetVendorId_BEIJING_HAILIN_CONTROL_TECHNOLOGY_INC                                        BACnetVendorId = 1260
 	BACnetVendorId_DIGITAL_REALTY                                                               BACnetVendorId = 1261
 	BACnetVendorId_AGROWTEK_INC                                                                 BACnetVendorId = 1262
 	BACnetVendorId_DSP_INNOVATIONBV                                                             BACnetVendorId = 1263
@@ -1450,6 +1450,10 @@ const (
 	BACnetVendorId_OLYMPIA_ELECTRONICS                                                          BACnetVendorId = 1416
 	BACnetVendorId_NORMAL_SOFTWARE_INC                                                          BACnetVendorId = 1417
 	BACnetVendorId_ST_ENGINEERING_SOLUTIONJSC                                                   BACnetVendorId = 1418
+	BACnetVendorId_INDUSTRIAL_FLOW_SOLUTIONS                                                    BACnetVendorId = 1419
+	BACnetVendorId_UBIQISENSE_APS                                                               BACnetVendorId = 1420
+	BACnetVendorId_TIGER_SOFT                                                                   BACnetVendorId = 1421
+	BACnetVendorId_ECODOM_SRL                                                                   BACnetVendorId = 1422
 	BACnetVendorId_UNKNOWN_VENDOR                                                               BACnetVendorId = 0xFFFF
 )
 
@@ -2711,7 +2715,7 @@ func init() {
 		BACnetVendorId_BEN_PEOPLES_INDUSTRIESLLC,
 		BACnetVendorId_UNICOMM_SPZOO,
 		BACnetVendorId_THING_TECHNOLOGIES_GMBH,
-		BACnetVendorId_BEIJING_HAI_LIN_ENERGY_SAVING_TECHNOLOGY_INC,
+		BACnetVendorId_BEIJING_HAILIN_CONTROL_TECHNOLOGY_INC,
 		BACnetVendorId_DIGITAL_REALTY,
 		BACnetVendorId_AGROWTEK_INC,
 		BACnetVendorId_DSP_INNOVATIONBV,
@@ -2868,6 +2872,10 @@ func init() {
 		BACnetVendorId_OLYMPIA_ELECTRONICS,
 		BACnetVendorId_NORMAL_SOFTWARE_INC,
 		BACnetVendorId_ST_ENGINEERING_SOLUTIONJSC,
+		BACnetVendorId_INDUSTRIAL_FLOW_SOLUTIONS,
+		BACnetVendorId_UBIQISENSE_APS,
+		BACnetVendorId_TIGER_SOFT,
+		BACnetVendorId_ECODOM_SRL,
 		BACnetVendorId_UNKNOWN_VENDOR,
 	}
 }
@@ -4738,9 +4746,25 @@ func (e BACnetVendorId) VendorId() uint16 {
 		{ /* '1418' */
 			return 1418
 		}
+	case 1419:
+		{ /* '1419' */
+			return 1419
+		}
 	case 142:
 		{ /* '142' */
 			return 142
+		}
+	case 1420:
+		{ /* '1420' */
+			return 1420
+		}
+	case 1421:
+		{ /* '1421' */
+			return 1421
+		}
+	case 1422:
+		{ /* '1422' */
+			return 1422
 		}
 	case 143:
 		{ /* '143' */
@@ -9706,7 +9730,7 @@ func (e BACnetVendorId) VendorName() string {
 		}
 	case 1260:
 		{ /* '1260' */
-			return "Beijing HaiLin Energy Saving Technology, Inc."
+			return "Beijing Hailin Control Technology, Inc."
 		}
 	case 1261:
 		{ /* '1261' */
@@ -10400,9 +10424,25 @@ func (e BACnetVendorId) VendorName() string {
 		{ /* '1418' */
 			return "ST Engineering Solution JSC"
 		}
+	case 1419:
+		{ /* '1419' */
+			return "Industrial Flow Solutions"
+		}
 	case 142:
 		{ /* '142' */
 			return "DEOS control systems GmbH"
+		}
+	case 1420:
+		{ /* '1420' */
+			return "Ubiqisense ApS"
+		}
+	case 1421:
+		{ /* '1421' */
+			return "Tiger-Soft"
+		}
+	case 1422:
+		{ /* '1422' */
+			return "Ecodom Srl"
 		}
 	case 143:
 		{ /* '143' */
@@ -14782,7 +14822,7 @@ func BACnetVendorIdByValue(value uint16) (enum BACnetVendorId, ok bool) {
 	case 126:
 		return BACnetVendorId_DATA_AIRE_INC, true
 	case 1260:
-		return BACnetVendorId_BEIJING_HAI_LIN_ENERGY_SAVING_TECHNOLOGY_INC, true
+		return BACnetVendorId_BEIJING_HAILIN_CONTROL_TECHNOLOGY_INC, true
 	case 1261:
 		return BACnetVendorId_DIGITAL_REALTY, true
 	case 1262:
@@ -15129,8 +15169,16 @@ func BACnetVendorIdByValue(value uint16) (enum BACnetVendorId, ok bool) {
 		return BACnetVendorId_NORMAL_SOFTWARE_INC, true
 	case 1418:
 		return BACnetVendorId_ST_ENGINEERING_SOLUTIONJSC, true
+	case 1419:
+		return BACnetVendorId_INDUSTRIAL_FLOW_SOLUTIONS, true
 	case 142:
 		return BACnetVendorId_DEO_SCONTROLSYSTEMS_GMBH, true
+	case 1420:
+		return BACnetVendorId_UBIQISENSE_APS, true
+	case 1421:
+		return BACnetVendorId_TIGER_SOFT, true
+	case 1422:
+		return BACnetVendorId_ECODOM_SRL, true
 	case 143:
 		return BACnetVendorId_DIGITALE_MESSUND_STEUERSYSTEMEAG, true
 	case 144:
@@ -17609,8 +17657,8 @@ func BACnetVendorIdByName(value string) (enum BACnetVendorId, ok bool) {
 		return BACnetVendorId_THING_TECHNOLOGIES_GMBH, true
 	case "DATA_AIRE_INC":
 		return BACnetVendorId_DATA_AIRE_INC, true
-	case "BEIJING_HAI_LIN_ENERGY_SAVING_TECHNOLOGY_INC":
-		return BACnetVendorId_BEIJING_HAI_LIN_ENERGY_SAVING_TECHNOLOGY_INC, true
+	case "BEIJING_HAILIN_CONTROL_TECHNOLOGY_INC":
+		return BACnetVendorId_BEIJING_HAILIN_CONTROL_TECHNOLOGY_INC, true
 	case "DIGITAL_REALTY":
 		return BACnetVendorId_DIGITAL_REALTY, true
 	case "AGROWTEK_INC":
@@ -17957,8 +18005,16 @@ func BACnetVendorIdByName(value string) (enum BACnetVendorId, ok bool) {
 		return BACnetVendorId_NORMAL_SOFTWARE_INC, true
 	case "ST_ENGINEERING_SOLUTIONJSC":
 		return BACnetVendorId_ST_ENGINEERING_SOLUTIONJSC, true
+	case "INDUSTRIAL_FLOW_SOLUTIONS":
+		return BACnetVendorId_INDUSTRIAL_FLOW_SOLUTIONS, true
 	case "DEO_SCONTROLSYSTEMS_GMBH":
 		return BACnetVendorId_DEO_SCONTROLSYSTEMS_GMBH, true
+	case "UBIQISENSE_APS":
+		return BACnetVendorId_UBIQISENSE_APS, true
+	case "TIGER_SOFT":
+		return BACnetVendorId_TIGER_SOFT, true
+	case "ECODOM_SRL":
+		return BACnetVendorId_ECODOM_SRL, true
 	case "DIGITALE_MESSUND_STEUERSYSTEMEAG":
 		return BACnetVendorId_DIGITALE_MESSUND_STEUERSYSTEMEAG, true
 	case "FUJITSU_GENERAL_LIMITED":
@@ -20494,8 +20550,8 @@ func (e BACnetVendorId) PLC4XEnumName() string {
 		return "THING_TECHNOLOGIES_GMBH"
 	case BACnetVendorId_DATA_AIRE_INC:
 		return "DATA_AIRE_INC"
-	case BACnetVendorId_BEIJING_HAI_LIN_ENERGY_SAVING_TECHNOLOGY_INC:
-		return "BEIJING_HAI_LIN_ENERGY_SAVING_TECHNOLOGY_INC"
+	case BACnetVendorId_BEIJING_HAILIN_CONTROL_TECHNOLOGY_INC:
+		return "BEIJING_HAILIN_CONTROL_TECHNOLOGY_INC"
 	case BACnetVendorId_DIGITAL_REALTY:
 		return "DIGITAL_REALTY"
 	case BACnetVendorId_AGROWTEK_INC:
@@ -20842,8 +20898,16 @@ func (e BACnetVendorId) PLC4XEnumName() string {
 		return "NORMAL_SOFTWARE_INC"
 	case BACnetVendorId_ST_ENGINEERING_SOLUTIONJSC:
 		return "ST_ENGINEERING_SOLUTIONJSC"
+	case BACnetVendorId_INDUSTRIAL_FLOW_SOLUTIONS:
+		return "INDUSTRIAL_FLOW_SOLUTIONS"
 	case BACnetVendorId_DEO_SCONTROLSYSTEMS_GMBH:
 		return "DEO_SCONTROLSYSTEMS_GMBH"
+	case BACnetVendorId_UBIQISENSE_APS:
+		return "UBIQISENSE_APS"
+	case BACnetVendorId_TIGER_SOFT:
+		return "TIGER_SOFT"
+	case BACnetVendorId_ECODOM_SRL:
+		return "ECODOM_SRL"
 	case BACnetVendorId_DIGITALE_MESSUND_STEUERSYSTEMEAG:
 		return "DIGITALE_MESSUND_STEUERSYSTEMEAG"
 	case BACnetVendorId_FUJITSU_GENERAL_LIMITED:

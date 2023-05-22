@@ -80,7 +80,6 @@ public class BACnetConstructedDataChannelPresentValue extends BACnetConstructedD
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataChannelPresentValue");
 
     // Simple Field (presentValue)
@@ -121,8 +120,6 @@ public class BACnetConstructedDataChannelPresentValue extends BACnetConstructedD
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataChannelPresentValue");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetChannelValue presentValue =

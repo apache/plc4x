@@ -50,8 +50,8 @@ public enum ComObjectValueType {
     }
   }
 
-  private short value;
-  private short sizeInBytes;
+  private final short value;
+  private final short sizeInBytes;
 
   ComObjectValueType(short value, short sizeInBytes) {
     this.value = value;
@@ -76,7 +76,7 @@ public enum ComObjectValueType {
   }
 
   public static List<ComObjectValueType> enumsForFieldSizeInBytes(short fieldValue) {
-    List<ComObjectValueType> _values = new ArrayList();
+    List<ComObjectValueType> _values = new ArrayList<>();
     for (ComObjectValueType _val : ComObjectValueType.values()) {
       if (_val.getSizeInBytes() == fieldValue) {
         _values.add(_val);

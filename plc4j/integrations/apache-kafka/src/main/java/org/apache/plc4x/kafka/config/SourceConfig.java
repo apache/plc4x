@@ -60,9 +60,10 @@ public class SourceConfig extends AbstractConfig{
             source.validate();
             for (JobReference jobReference : source.getJobReferences()) {
                 Boolean found = false;
-                for (Job job : jobs) {                    
+                for (Job job : jobs) {
                     if (jobReference.getName().equals(job.getName())) {
                         found = true;
+                        break;
                     }
                 }
                 if (!found) {
@@ -119,7 +120,7 @@ public class SourceConfig extends AbstractConfig{
     @Override
     public String toString() {
         StringBuilder query = new StringBuilder();
-        query.append(Constants.DEFAULT_TOPIC_CONFIG + "=" + defaultTopic + ",\n");
+        query.append(Constants.DEFAULT_TOPIC_CONFIG + "=").append(defaultTopic).append(",\n");
         for (Source source : sources) {
             query.append(source.toString());
         }

@@ -80,7 +80,6 @@ public class BACnetConstructedDataAckedTransitions extends BACnetConstructedData
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataAckedTransitions");
 
     // Simple Field (ackedTransitions)
@@ -122,8 +121,6 @@ public class BACnetConstructedDataAckedTransitions extends BACnetConstructedData
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataAckedTransitions");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetEventTransitionBitsTagged ackedTransitions =

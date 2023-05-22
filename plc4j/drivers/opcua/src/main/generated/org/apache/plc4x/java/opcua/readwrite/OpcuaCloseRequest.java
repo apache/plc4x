@@ -98,7 +98,6 @@ public class OpcuaCloseRequest extends MessagePDU implements Message {
   protected void serializeMessagePDUChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("OpcuaCloseRequest");
 
     // Simple Field (chunk)
@@ -166,8 +165,6 @@ public class OpcuaCloseRequest extends MessagePDU implements Message {
       ReadBuffer readBuffer, Boolean response) throws ParseException {
     readBuffer.pullContext("OpcuaCloseRequest");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     String chunk = readSimpleField("chunk", readString(readBuffer, 8));

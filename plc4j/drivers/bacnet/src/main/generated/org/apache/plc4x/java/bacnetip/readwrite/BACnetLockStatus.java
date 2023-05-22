@@ -38,7 +38,7 @@ public enum BACnetLockStatus {
     }
   }
 
-  private short value;
+  private final short value;
 
   BACnetLockStatus(short value) {
     this.value = value;

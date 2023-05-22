@@ -37,7 +37,7 @@ public enum BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority {
     }
   }
 
-  private short value;
+  private final short value;
 
   BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority(short value) {
     this.value = value;

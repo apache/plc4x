@@ -29,8 +29,8 @@ import (
 	"time"
 
 	"github.com/apache/plc4x/plc4go/pkg/api"
-	"github.com/apache/plc4x/plc4go/pkg/api/model"
-	"github.com/apache/plc4x/plc4go/spi/values"
+	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
+	spiValues "github.com/apache/plc4x/plc4go/spi/values"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -112,14 +112,14 @@ func (m *ManualTestSuite) runSingleTest(t *testing.T, connection plc4go.PlcConne
 	readRequestBuilder.AddTagAddress(tagName, testCase.Address)
 	readRequest, err := readRequestBuilder.Build()
 	if err != nil {
-		panic(err)
+		t.Fatal(err)
+		return
 	}
 
 	// Execute the read request
 	readResponseResult := <-readRequest.Execute()
 	if readResponseResult.GetErr() != nil {
-		t.Errorf("Error getting response %v", readResponseResult.GetErr())
-		t.FailNow()
+		t.Fatalf("Error getting response %v", readResponseResult.GetErr())
 		return
 	}
 	readResponse := readResponseResult.GetResponse()
@@ -127,7 +127,7 @@ func (m *ManualTestSuite) runSingleTest(t *testing.T, connection plc4go.PlcConne
 	// Check the result
 	assert.Equalf(t, 1, len(readResponse.GetTagNames()), "response should have a tag for %s", tagName)
 	assert.Equalf(t, tagName, readResponse.GetTagNames()[0], "first tag should be equal to %s", tagName)
-	assert.Equalf(t, model.PlcResponseCode_OK, readResponse.GetResponseCode(tagName), "response code should be ok for %s", tagName)
+	assert.Equalf(t, apiModel.PlcResponseCode_OK, readResponse.GetResponseCode(tagName), "response code should be ok for %s", tagName)
 	assert.NotNil(t, readResponse.GetValue(tagName), tagName)
 	expectation := reflect.ValueOf(testCase.ExpectedReadValue)
 	if readResponse.GetValue(tagName).IsList() && (expectation.Kind() == reflect.Slice || expectation.Kind() == reflect.Array) {
@@ -137,9 +137,9 @@ func (m *ManualTestSuite) runSingleTest(t *testing.T, connection plc4go.PlcConne
 			actual = plcList[j]
 			if testCase.UnwrappedValue {
 				switch actualCasted := actual.(type) {
-				case values.PlcBOOL:
+				case spiValues.PlcBOOL:
 					actual = actualCasted.GetBool()
-				case values.PlcWORD:
+				case spiValues.PlcWORD:
 					actual = actualCasted.GetInt8()
 				default:
 					t.Fatalf("%T not yet mapped", actualCasted)
@@ -194,7 +194,7 @@ func (m *ManualTestSuite) runBurstTest(t *testing.T, connection plc4go.PlcConnec
 		assert.Equal(t, len(shuffledTestcases), len(readResponse.GetTagNames()))
 		for _, testCase := range shuffledTestcases {
 			tagName := testCase.Address
-			assert.Equalf(t, model.PlcResponseCode_OK, readResponse.GetResponseCode(tagName), "response code should be ok for %s", tagName)
+			assert.Equalf(t, apiModel.PlcResponseCode_OK, readResponse.GetResponseCode(tagName), "response code should be ok for %s", tagName)
 			assert.NotNil(t, readResponse.GetValue(tagName))
 			expectation := reflect.ValueOf(testCase.ExpectedReadValue)
 			if readResponse.GetValue(tagName).IsList() && (expectation.Kind() == reflect.Slice || expectation.Kind() == reflect.Array) {
@@ -204,9 +204,9 @@ func (m *ManualTestSuite) runBurstTest(t *testing.T, connection plc4go.PlcConnec
 					actual = plcList[j]
 					if testCase.UnwrappedValue {
 						switch actualCasted := actual.(type) {
-						case values.PlcBOOL:
+						case spiValues.PlcBOOL:
 							actual = actualCasted.GetBool()
-						case values.PlcWORD:
+						case spiValues.PlcWORD:
 							actual = actualCasted.GetInt8()
 						default:
 							t.Fatalf("%T not yet mapped", actualCasted)

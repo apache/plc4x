@@ -74,7 +74,6 @@ public class ClassSegment implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("ClassSegment");
 
     // Simple Field (pathSegmentType)
@@ -128,8 +127,6 @@ public class ClassSegment implements Message {
   public static ClassSegment staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("ClassSegment");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte pathSegmentType = readSimpleField("pathSegmentType", readUnsignedByte(readBuffer, 3));

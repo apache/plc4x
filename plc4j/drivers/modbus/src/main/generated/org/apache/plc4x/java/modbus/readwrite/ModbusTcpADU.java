@@ -77,7 +77,6 @@ public class ModbusTcpADU extends ModbusADU implements Message {
   protected void serializeModbusADUChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("ModbusTcpADU");
 
     // Simple Field (transactionIdentifier)
@@ -153,8 +152,6 @@ public class ModbusTcpADU extends ModbusADU implements Message {
       ReadBuffer readBuffer, DriverType driverType, Boolean response) throws ParseException {
     readBuffer.pullContext("ModbusTcpADU");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int transactionIdentifier =

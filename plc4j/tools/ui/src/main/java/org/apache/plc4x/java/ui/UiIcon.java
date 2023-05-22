@@ -24,8 +24,8 @@ public enum UiIcon implements Ikon {
 
     FOLDER("ui-icon-folder", '\ue815');
 
-    private String description;
-    private char icon;
+    private final String description;
+    private final char icon;
 
     UiIcon(String description, char icon) {
         this.description = description;

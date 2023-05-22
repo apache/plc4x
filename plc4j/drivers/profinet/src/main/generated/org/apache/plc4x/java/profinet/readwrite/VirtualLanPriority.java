@@ -43,8 +43,8 @@ public enum VirtualLanPriority {
     }
   }
 
-  private byte value;
-  private String acronym;
+  private final byte value;
+  private final String acronym;
 
   VirtualLanPriority(byte value, String acronym) {
     this.value = value;
@@ -69,7 +69,7 @@ public enum VirtualLanPriority {
   }
 
   public static List<VirtualLanPriority> enumsForFieldAcronym(String fieldValue) {
-    List<VirtualLanPriority> _values = new ArrayList();
+    List<VirtualLanPriority> _values = new ArrayList<>();
     for (VirtualLanPriority _val : VirtualLanPriority.values()) {
       if (_val.getAcronym().equals(fieldValue)) {
         _values.add(_val);

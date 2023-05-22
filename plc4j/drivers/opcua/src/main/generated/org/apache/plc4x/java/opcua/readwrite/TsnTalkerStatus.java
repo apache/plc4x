@@ -36,7 +36,7 @@ public enum TsnTalkerStatus {
     }
   }
 
-  private long value;
+  private final long value;
 
   TsnTalkerStatus(long value) {
     this.value = value;

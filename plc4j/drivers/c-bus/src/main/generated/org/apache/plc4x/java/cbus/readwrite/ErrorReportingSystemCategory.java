@@ -67,7 +67,6 @@ public class ErrorReportingSystemCategory implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("ErrorReportingSystemCategory");
 
     // Simple Field (systemCategoryClass)
@@ -130,8 +129,6 @@ public class ErrorReportingSystemCategory implements Message {
       throws ParseException {
     readBuffer.pullContext("ErrorReportingSystemCategory");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ErrorReportingSystemCategoryClass systemCategoryClass =

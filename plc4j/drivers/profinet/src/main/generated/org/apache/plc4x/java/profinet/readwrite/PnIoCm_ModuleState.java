@@ -34,7 +34,7 @@ public enum PnIoCm_ModuleState {
     }
   }
 
-  private int value;
+  private final int value;
 
   PnIoCm_ModuleState(int value) {
     this.value = value;

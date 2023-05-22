@@ -109,7 +109,6 @@ public class ApplicationDescription extends ExtensionObjectDefinition implements
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("ApplicationDescription");
 
     // Simple Field (applicationUri)
@@ -195,8 +194,6 @@ public class ApplicationDescription extends ExtensionObjectDefinition implements
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("ApplicationDescription");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     PascalString applicationUri =

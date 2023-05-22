@@ -40,7 +40,7 @@ public class WriteBufferByteBased implements WriteBuffer, BufferCommons {
 
     public WriteBufferByteBased(int size, ByteOrder byteOrder) {
         bb = ByteBuffer.allocate(size);
-        BufferByteOutput<?> bbo = new BufferByteOutput<>(bb);
+        BufferByteOutput<ByteBuffer> bbo = new BufferByteOutput<>(bb);
         bo = new MyDefaultBitOutput(bbo);
         this.byteOrder = byteOrder;
     }

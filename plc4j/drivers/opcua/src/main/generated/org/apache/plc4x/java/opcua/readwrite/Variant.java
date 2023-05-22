@@ -80,7 +80,6 @@ public abstract class Variant implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("Variant");
 
     // Simple Field (arrayLengthSpecified)
@@ -148,8 +147,6 @@ public abstract class Variant implements Message {
   public static Variant staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("Variant");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     boolean arrayLengthSpecified = readSimpleField("arrayLengthSpecified", readBoolean(readBuffer));

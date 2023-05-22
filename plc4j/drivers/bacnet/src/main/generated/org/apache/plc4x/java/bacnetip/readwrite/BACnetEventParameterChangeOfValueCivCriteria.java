@@ -81,7 +81,6 @@ public abstract class BACnetEventParameterChangeOfValueCivCriteria implements Me
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetEventParameterChangeOfValueCivCriteria");
 
     // Simple Field (openingTag)
@@ -148,8 +147,6 @@ public abstract class BACnetEventParameterChangeOfValueCivCriteria implements Me
       ReadBuffer readBuffer, Short tagNumber) throws ParseException {
     readBuffer.pullContext("BACnetEventParameterChangeOfValueCivCriteria");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetOpeningTag openingTag =

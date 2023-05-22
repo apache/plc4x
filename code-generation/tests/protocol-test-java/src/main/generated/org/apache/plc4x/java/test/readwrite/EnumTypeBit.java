@@ -35,7 +35,7 @@ public enum EnumTypeBit {
     }
   }
 
-  private boolean value;
+  private final boolean value;
 
   EnumTypeBit(boolean value) {
     this.value = value;

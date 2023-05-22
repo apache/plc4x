@@ -69,7 +69,6 @@ public class ParameterValueApplicationAddress1 extends ParameterValue implements
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("ParameterValueApplicationAddress1");
 
     // Simple Field (value)
@@ -107,8 +106,6 @@ public class ParameterValueApplicationAddress1 extends ParameterValue implements
       ReadBuffer readBuffer, ParameterType parameterType, Short numBytes) throws ParseException {
     readBuffer.pullContext("ParameterValueApplicationAddress1");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Validation
     if (!((numBytes) >= (1))) {

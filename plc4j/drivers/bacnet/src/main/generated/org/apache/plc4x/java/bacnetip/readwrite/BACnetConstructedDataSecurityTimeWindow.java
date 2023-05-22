@@ -80,7 +80,6 @@ public class BACnetConstructedDataSecurityTimeWindow extends BACnetConstructedDa
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataSecurityTimeWindow");
 
     // Simple Field (securityTimeWindow)
@@ -122,8 +121,6 @@ public class BACnetConstructedDataSecurityTimeWindow extends BACnetConstructedDa
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataSecurityTimeWindow");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger securityTimeWindow =

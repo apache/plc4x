@@ -50,7 +50,6 @@ public class ApduDataExtKeyResponse extends ApduDataExt implements Message {
   protected void serializeApduDataExtChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("ApduDataExtKeyResponse");
 
     writeBuffer.popContext("ApduDataExtKeyResponse");
@@ -74,8 +73,6 @@ public class ApduDataExtKeyResponse extends ApduDataExt implements Message {
       ReadBuffer readBuffer, Short length) throws ParseException {
     readBuffer.pullContext("ApduDataExtKeyResponse");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("ApduDataExtKeyResponse");

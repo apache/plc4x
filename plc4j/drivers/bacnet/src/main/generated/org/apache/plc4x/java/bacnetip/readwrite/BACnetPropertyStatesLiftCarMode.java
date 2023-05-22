@@ -57,7 +57,6 @@ public class BACnetPropertyStatesLiftCarMode extends BACnetPropertyStates implem
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetPropertyStatesLiftCarMode");
 
     // Simple Field (liftCarMode)
@@ -87,8 +86,6 @@ public class BACnetPropertyStatesLiftCarMode extends BACnetPropertyStates implem
       ReadBuffer readBuffer, Short peekedTagNumber) throws ParseException {
     readBuffer.pullContext("BACnetPropertyStatesLiftCarMode");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetLiftCarModeTagged liftCarMode =

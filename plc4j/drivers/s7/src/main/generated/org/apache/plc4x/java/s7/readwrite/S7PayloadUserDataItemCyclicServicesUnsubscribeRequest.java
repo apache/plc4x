@@ -79,7 +79,6 @@ public class S7PayloadUserDataItemCyclicServicesUnsubscribeRequest extends S7Pay
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("S7PayloadUserDataItemCyclicServicesUnsubscribeRequest");
 
     // Simple Field (function)
@@ -116,8 +115,6 @@ public class S7PayloadUserDataItemCyclicServicesUnsubscribeRequest extends S7Pay
       throws ParseException {
     readBuffer.pullContext("S7PayloadUserDataItemCyclicServicesUnsubscribeRequest");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short function = readSimpleField("function", readUnsignedShort(readBuffer, 8));

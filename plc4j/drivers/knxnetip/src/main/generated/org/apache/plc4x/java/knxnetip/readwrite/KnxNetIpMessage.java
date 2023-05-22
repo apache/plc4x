@@ -57,7 +57,6 @@ public abstract class KnxNetIpMessage implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("KnxNetIpMessage");
 
     // Implicit Field (headerLength) (Used for parsing, but its value is not stored as it's
@@ -135,8 +134,6 @@ public abstract class KnxNetIpMessage implements Message {
   public static KnxNetIpMessage staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("KnxNetIpMessage");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short headerLength =

@@ -79,7 +79,6 @@ public class BACnetConstructedDataChannelNumber extends BACnetConstructedData im
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataChannelNumber");
 
     // Simple Field (channelNumber)
@@ -120,8 +119,6 @@ public class BACnetConstructedDataChannelNumber extends BACnetConstructedData im
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataChannelNumber");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger channelNumber =

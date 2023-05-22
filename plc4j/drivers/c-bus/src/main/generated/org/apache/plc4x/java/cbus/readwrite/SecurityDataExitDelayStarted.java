@@ -48,7 +48,6 @@ public class SecurityDataExitDelayStarted extends SecurityData implements Messag
   protected void serializeSecurityDataChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("SecurityDataExitDelayStarted");
 
     writeBuffer.popContext("SecurityDataExitDelayStarted");
@@ -72,8 +71,6 @@ public class SecurityDataExitDelayStarted extends SecurityData implements Messag
       throws ParseException {
     readBuffer.pullContext("SecurityDataExitDelayStarted");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("SecurityDataExitDelayStarted");

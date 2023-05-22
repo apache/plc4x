@@ -31,12 +31,12 @@ import (
 
 //go:generate go run ../../tools/plc4xgenerator/gen.go -type=DefaultPlcReadRequestBuilder
 type DefaultPlcReadRequestBuilder struct {
-	reader                 spi.PlcReader
-	tagHandler             spi.PlcTagHandler
+	reader                 spi.PlcReader     `ignore:"true"`
+	tagHandler             spi.PlcTagHandler `ignore:"true"`
 	tagNames               []string
 	tagAddresses           map[string]string
 	tags                   map[string]apiModel.PlcTag
-	readRequestInterceptor interceptors.ReadRequestInterceptor
+	readRequestInterceptor interceptors.ReadRequestInterceptor `ignore:"true"`
 }
 
 func NewDefaultPlcReadRequestBuilder(tagHandler spi.PlcTagHandler, reader spi.PlcReader) apiModel.PlcReadRequestBuilder {
@@ -136,14 +136,19 @@ func (d *DefaultPlcReadRequest) ExecuteWithContext(ctx context.Context) <-chan a
 	}
 
 	// Create a new result-channel, which completes as soon as all sub-result-channels have returned
-	resultChannel := make(chan apiModel.PlcReadRequestResult)
+	resultChannel := make(chan apiModel.PlcReadRequestResult, 1)
 	go func() {
+		defer func() {
+			if err := recover(); err != nil {
+				resultChannel <- NewDefaultPlcReadRequestResult(d, nil, errors.Errorf("panic-ed %v", err))
+			}
+		}()
 		var subResults []apiModel.PlcReadRequestResult
 		// Iterate over all sub-results
 		for _, subResultChannel := range subResultChannels {
 			select {
 			case <-ctx.Done():
-				resultChannel <- &DefaultPlcReadRequestResult{Request: d, Err: ctx.Err()}
+				resultChannel <- NewDefaultPlcReadRequestResult(d, nil, ctx.Err())
 				return
 			case subResult := <-subResultChannel:
 				subResults = append(subResults, subResult)

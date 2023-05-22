@@ -43,9 +43,9 @@ public enum MeteringCommandTypeContainer {
     }
   }
 
-  private short value;
-  private short numBytes;
-  private MeteringCommandType commandType;
+  private final short value;
+  private final short numBytes;
+  private final MeteringCommandType commandType;
 
   MeteringCommandTypeContainer(short value, short numBytes, MeteringCommandType commandType) {
     this.value = value;
@@ -71,7 +71,7 @@ public enum MeteringCommandTypeContainer {
   }
 
   public static List<MeteringCommandTypeContainer> enumsForFieldNumBytes(short fieldValue) {
-    List<MeteringCommandTypeContainer> _values = new ArrayList();
+    List<MeteringCommandTypeContainer> _values = new ArrayList<>();
     for (MeteringCommandTypeContainer _val : MeteringCommandTypeContainer.values()) {
       if (_val.getNumBytes() == fieldValue) {
         _values.add(_val);
@@ -96,7 +96,7 @@ public enum MeteringCommandTypeContainer {
 
   public static List<MeteringCommandTypeContainer> enumsForFieldCommandType(
       MeteringCommandType fieldValue) {
-    List<MeteringCommandTypeContainer> _values = new ArrayList();
+    List<MeteringCommandTypeContainer> _values = new ArrayList<>();
     for (MeteringCommandTypeContainer _val : MeteringCommandTypeContainer.values()) {
       if (_val.getCommandType() == fieldValue) {
         _values.add(_val);

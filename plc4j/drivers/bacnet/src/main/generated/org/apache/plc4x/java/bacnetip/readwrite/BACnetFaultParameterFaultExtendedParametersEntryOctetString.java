@@ -58,7 +58,6 @@ public class BACnetFaultParameterFaultExtendedParametersEntryOctetString
       WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetFaultParameterFaultExtendedParametersEntryOctetString");
 
     // Simple Field (octetStringValue)
@@ -90,8 +89,6 @@ public class BACnetFaultParameterFaultExtendedParametersEntryOctetString
           throws ParseException {
     readBuffer.pullContext("BACnetFaultParameterFaultExtendedParametersEntryOctetString");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagOctetString octetStringValue =

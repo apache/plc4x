@@ -79,7 +79,6 @@ public class BACnetConstructedDataLoggingObject extends BACnetConstructedData im
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataLoggingObject");
 
     // Simple Field (loggingObject)
@@ -120,8 +119,6 @@ public class BACnetConstructedDataLoggingObject extends BACnetConstructedData im
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataLoggingObject");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagObjectIdentifier loggingObject =

@@ -82,7 +82,6 @@ public class SamplingIntervalDiagnosticsDataType extends ExtensionObjectDefiniti
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("SamplingIntervalDiagnosticsDataType");
 
     // Simple Field (samplingInterval)
@@ -134,8 +133,6 @@ public class SamplingIntervalDiagnosticsDataType extends ExtensionObjectDefiniti
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("SamplingIntervalDiagnosticsDataType");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     double samplingInterval = readSimpleField("samplingInterval", readDouble(readBuffer, 64));

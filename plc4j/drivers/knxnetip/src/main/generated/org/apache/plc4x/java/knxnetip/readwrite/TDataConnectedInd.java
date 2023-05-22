@@ -50,7 +50,6 @@ public class TDataConnectedInd extends CEMI implements Message {
   protected void serializeCEMIChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("TDataConnectedInd");
 
     writeBuffer.popContext("TDataConnectedInd");
@@ -74,8 +73,6 @@ public class TDataConnectedInd extends CEMI implements Message {
       throws ParseException {
     readBuffer.pullContext("TDataConnectedInd");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("TDataConnectedInd");

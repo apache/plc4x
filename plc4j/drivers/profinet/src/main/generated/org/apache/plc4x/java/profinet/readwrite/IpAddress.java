@@ -52,7 +52,6 @@ public class IpAddress implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("IpAddress");
 
     // Array Field (data)
@@ -88,8 +87,6 @@ public class IpAddress implements Message {
   public static IpAddress staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("IpAddress");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte[] data = readBuffer.readByteArray("data", Math.toIntExact(4));

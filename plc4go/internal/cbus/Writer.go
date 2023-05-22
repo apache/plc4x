@@ -48,15 +48,20 @@ func NewWriter(tpduGenerator *AlphaGenerator, messageCodec *MessageCodec, tm spi
 
 func (m *Writer) Write(ctx context.Context, writeRequest apiModel.PlcWriteRequest) <-chan apiModel.PlcWriteRequestResult {
 	log.Trace().Msg("Writing")
-	result := make(chan apiModel.PlcWriteRequestResult)
+	result := make(chan apiModel.PlcWriteRequestResult, 1)
 	go func() {
+		defer func() {
+			if err := recover(); err != nil {
+				result <- spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.Errorf("panic-ed %v", err))
+			}
+		}()
 		numTags := len(writeRequest.GetTagNames())
 		if numTags > 20 { // letters g-z
-			result <- &spiModel.DefaultPlcWriteRequestResult{
-				Request:  writeRequest,
-				Response: nil,
-				Err:      errors.New("Only 20 tags can be handled at once"),
-			}
+			result <- spiModel.NewDefaultPlcWriteRequestResult(
+				writeRequest,
+				nil,
+				errors.New("Only 20 tags can be handled at once"),
+			)
 			return
 		}
 
@@ -66,19 +71,19 @@ func (m *Writer) Write(ctx context.Context, writeRequest apiModel.PlcWriteReques
 			plcValue := writeRequest.GetValue(tagName)
 			message, _, supportsWrite, _, err := TagToCBusMessage(tag, plcValue, m.alphaGenerator, m.messageCodec)
 			if !supportsWrite {
-				result <- &spiModel.DefaultPlcWriteRequestResult{
-					Request:  writeRequest,
-					Response: nil,
-					Err:      errors.Wrapf(err, "Error encoding cbus message for tag %s. Tag is not meant to be written.", tagName),
-				}
+				result <- spiModel.NewDefaultPlcWriteRequestResult(
+					writeRequest,
+					nil,
+					errors.Wrapf(err, "Error encoding cbus message for tag %s. Tag is not meant to be written.", tagName),
+				)
 				return
 			}
 			if err != nil {
-				result <- &spiModel.DefaultPlcWriteRequestResult{
-					Request:  writeRequest,
-					Response: nil,
-					Err:      errors.Wrapf(err, "Error encoding cbus message for tag %s", tagName),
-				}
+				result <- spiModel.NewDefaultPlcWriteRequestResult(
+					writeRequest,
+					nil,
+					errors.Wrapf(err, "Error encoding cbus message for tag %s", tagName),
+				)
 				return
 			}
 			messages[tagName] = message
@@ -92,16 +97,13 @@ func (m *Writer) Write(ctx context.Context, writeRequest apiModel.PlcWriteReques
 		}
 		for tagName, messageToSend := range messages {
 			if err := ctx.Err(); err != nil {
-				result <- &spiModel.DefaultPlcWriteRequestResult{
-					Request: writeRequest,
-					Err:     err,
-				}
+				result <- spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, err)
 				return
 			}
 			tagNameCopy := tagName
 			// Start a new request-transaction (Is ended in the response-handler)
 			transaction := m.tm.StartTransaction()
-			transaction.Submit(func() {
+			transaction.Submit(func(transaction spi.RequestTransaction) {
 				// Send the  over the wire
 				log.Trace().Msg("Send ")
 				if err := m.messageCodec.SendRequest(ctx, messageToSend, func(receivedMessage spi.Message) bool {
@@ -141,10 +143,7 @@ func (m *Writer) Write(ctx context.Context, writeRequest apiModel.PlcWriteReques
 			})
 		}
 		readResponse := spiModel.NewDefaultPlcWriteResponse(writeRequest, responseCodes)
-		result <- &spiModel.DefaultPlcWriteRequestResult{
-			Request:  writeRequest,
-			Response: readResponse,
-		}
+		result <- spiModel.NewDefaultPlcWriteRequestResult(writeRequest, readResponse, nil)
 	}()
 	return result
 }

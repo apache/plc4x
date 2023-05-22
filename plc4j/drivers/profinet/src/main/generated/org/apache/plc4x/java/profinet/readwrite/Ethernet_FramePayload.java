@@ -50,7 +50,6 @@ public abstract class Ethernet_FramePayload implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("Ethernet_FramePayload");
 
     // Discriminator Field (packetType) (Used as input to a switch field)
@@ -90,8 +89,6 @@ public abstract class Ethernet_FramePayload implements Message {
   public static Ethernet_FramePayload staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("Ethernet_FramePayload");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int packetType = readDiscriminatorField("packetType", readUnsignedInt(readBuffer, 16));

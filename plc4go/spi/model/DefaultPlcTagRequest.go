@@ -42,8 +42,9 @@ func (d *DefaultPlcTagRequest) GetTagNames() []string {
 }
 
 func (d *DefaultPlcTagRequest) GetTag(name string) apiModel.PlcTag {
-	if tag, ok := d.tags[name]; ok {
-		return tag
+	tag, ok := d.tags[name]
+	if !ok {
+		return nil
 	}
-	return nil
+	return tag
 }

@@ -30,6 +30,7 @@ public enum ProfinetDeviceState {
   WAITAPPLRDY((short) 0x03),
   APPLRDY((short) 0x04),
   CYCLICDATA((short) 0x05),
+  SET_IP((short) 0x06),
   ABORT((short) 0xFF);
   private static final Map<Short, ProfinetDeviceState> map;
 
@@ -40,7 +41,7 @@ public enum ProfinetDeviceState {
     }
   }
 
-  private short value;
+  private final short value;
 
   ProfinetDeviceState(short value) {
     this.value = value;

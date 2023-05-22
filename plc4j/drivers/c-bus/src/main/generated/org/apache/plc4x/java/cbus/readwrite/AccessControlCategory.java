@@ -35,7 +35,7 @@ public enum AccessControlCategory {
     }
   }
 
-  private byte value;
+  private final byte value;
 
   AccessControlCategory(byte value) {
     this.value = value;

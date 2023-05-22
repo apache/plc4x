@@ -59,7 +59,6 @@ public class AdsDiscoveryBlockVersion extends AdsDiscoveryBlock implements Messa
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("AdsDiscoveryBlockVersion");
 
     // Implicit Field (versionDataLen) (Used for parsing, but its value is not stored as it's
@@ -99,8 +98,6 @@ public class AdsDiscoveryBlockVersion extends AdsDiscoveryBlock implements Messa
       throws ParseException {
     readBuffer.pullContext("AdsDiscoveryBlockVersion");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int versionDataLen = readImplicitField("versionDataLen", readUnsignedInt(readBuffer, 16));

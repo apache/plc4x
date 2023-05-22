@@ -60,5 +60,9 @@ func (d *DefaultPlcWriteResponse) GetRequest() apiModel.PlcWriteRequest {
 }
 
 func (d *DefaultPlcWriteResponse) GetResponseCode(name string) apiModel.PlcResponseCode {
-	return d.responseCodes[name]
+	code, ok := d.responseCodes[name]
+	if !ok {
+		return apiModel.PlcResponseCode_NOT_FOUND
+	}
+	return code
 }

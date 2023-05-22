@@ -76,34 +76,29 @@ public class SocketCANTransport implements CANTransport<SocketCANFrame> {
 
     @Override
     public Function<SocketCANFrame, FrameData> adapter() {
-        return new Function<SocketCANFrame, FrameData>() {
+        return frame -> new FrameData() {
             @Override
-            public FrameData apply(SocketCANFrame frame) {
-                return new FrameData() {
-                    @Override
-                    public int getNodeId() {
-                        return frame.getIdentifier();
-                    }
+            public int getNodeId() {
+                return frame.getIdentifier();
+            }
 
-                    @Override
-                    public int getDataLength() {
-                        return frame.getData().length;
-                    }
+            @Override
+            public int getDataLength() {
+                return frame.getData().length;
+            }
 
-                    @Override
-                    public byte[] getData() {
-                        return frame.getData();
-                    }
+            @Override
+            public byte[] getData() {
+                return frame.getData();
+            }
 
-                    @Override
-                    public <T extends Message> T read(MessageInput<T> input, Object... args) {
-                        try {
-                            return input.parse(new ReadBufferByteBased(frame.getData(), ByteOrder.LITTLE_ENDIAN), args);
-                        } catch (ParseException e) {
-                            throw new PlcRuntimeException(e);
-                        }
-                    }
-                };
+            @Override
+            public <T extends Message> T read(MessageInput<T> input, Object... args) {
+                try {
+                    return input.parse(new ReadBufferByteBased(frame.getData(), ByteOrder.LITTLE_ENDIAN), args);
+                } catch (ParseException e) {
+                    throw new PlcRuntimeException(e);
+                }
             }
         };
     }

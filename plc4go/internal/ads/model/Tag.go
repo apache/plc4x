@@ -25,22 +25,23 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/apache/plc4x/plc4go/pkg/api/model"
-	"github.com/apache/plc4x/plc4go/pkg/api/values"
-	driverModel "github.com/apache/plc4x/plc4go/protocols/ads/readwrite/model"
+	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
+	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
+	readWriteModel "github.com/apache/plc4x/plc4go/protocols/ads/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi/utils"
+
 	"github.com/pkg/errors"
 )
 
 const NONE = int32(-1)
 
 type PlcTag struct {
-	model.PlcTag
+	apiModel.PlcTag
 
-	ArrayInfo []model.ArrayInfo
+	ArrayInfo []apiModel.ArrayInfo
 }
 
-func NeedsResolving(plcTag model.PlcTag) bool {
+func NeedsResolving(plcTag apiModel.PlcTag) bool {
 	switch plcTag.(type) {
 	case SymbolicPlcTag:
 		return true
@@ -56,12 +57,12 @@ type DirectPlcTag struct {
 
 	IndexGroup   uint32
 	IndexOffset  uint32
-	ValueType    values.PlcValueType
+	ValueType    apiValues.PlcValueType
 	StringLength int32
-	DataType     driverModel.AdsDataTypeTableEntry
+	DataType     readWriteModel.AdsDataTypeTableEntry
 }
 
-func NewDirectAdsPlcTag(indexGroup uint32, indexOffset uint32, valueType values.PlcValueType, stringLength int32, arrayInfo []model.ArrayInfo) (model.PlcTag, error) {
+func NewDirectAdsPlcTag(indexGroup uint32, indexOffset uint32, valueType apiValues.PlcValueType, stringLength int32, arrayInfo []apiModel.ArrayInfo) (apiModel.PlcTag, error) {
 	return DirectPlcTag{
 		IndexGroup:   indexGroup,
 		IndexOffset:  indexOffset,
@@ -73,7 +74,7 @@ func NewDirectAdsPlcTag(indexGroup uint32, indexOffset uint32, valueType values.
 	}, nil
 }
 
-func CastToDirectAdsTagFromPlcTag(plcTag model.PlcTag) (DirectPlcTag, error) {
+func CastToDirectAdsTagFromPlcTag(plcTag apiModel.PlcTag) (DirectPlcTag, error) {
 	if adsTag, ok := plcTag.(DirectPlcTag); ok {
 		return adsTag, nil
 	}
@@ -82,7 +83,7 @@ func CastToDirectAdsTagFromPlcTag(plcTag model.PlcTag) (DirectPlcTag, error) {
 
 func (m DirectPlcTag) GetAddressString() string {
 	address := fmt.Sprintf("0x%d/%d:%s", m.IndexGroup, m.IndexOffset, m.ValueType.String())
-	if m.ValueType == values.STRING || m.ValueType == values.WSTRING {
+	if m.ValueType == apiValues.STRING || m.ValueType == apiValues.WSTRING {
 		address = address + "(" + strconv.Itoa(int(m.StringLength)) + ")"
 	}
 	if len(m.ArrayInfo) > 0 {
@@ -93,12 +94,12 @@ func (m DirectPlcTag) GetAddressString() string {
 	return address
 }
 
-func (m DirectPlcTag) GetValueType() values.PlcValueType {
+func (m DirectPlcTag) GetValueType() apiValues.PlcValueType {
 	return m.ValueType
 }
 
-func (m DirectPlcTag) GetArrayInfo() []model.ArrayInfo {
-	return []model.ArrayInfo{}
+func (m DirectPlcTag) GetArrayInfo() []apiModel.ArrayInfo {
+	return []apiModel.ArrayInfo{}
 }
 
 func (m DirectPlcTag) Serialize() ([]byte, error) {
@@ -123,7 +124,7 @@ func (m DirectPlcTag) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) er
 	if err := writeBuffer.WriteString("adsDatatypeName", uint32(len([]rune(m.ValueType.String()))*8), "UTF-8", m.ValueType.String()); err != nil {
 		return err
 	}
-	if (m.ValueType == values.STRING || m.ValueType == values.WSTRING) && (m.StringLength != NONE) {
+	if (m.ValueType == apiValues.STRING || m.ValueType == apiValues.WSTRING) && (m.StringLength != NONE) {
 		if err := writeBuffer.WriteInt32("stringLength", 32, m.StringLength); err != nil {
 			return err
 		}
@@ -158,7 +159,7 @@ func (m DirectPlcTag) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) er
 }
 
 func (m DirectPlcTag) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	panic(name)
+	return xml.Attr{}, errors.Errorf("%s", name) // TODO: why did this panic before
 }
 
 type SymbolicPlcTag struct {
@@ -167,7 +168,7 @@ type SymbolicPlcTag struct {
 	SymbolicAddress string
 }
 
-func NewAdsSymbolicPlcTag(symbolicAddress string, arrayInfo []model.ArrayInfo) (model.PlcTag, error) {
+func NewAdsSymbolicPlcTag(symbolicAddress string, arrayInfo []apiModel.ArrayInfo) (apiModel.PlcTag, error) {
 	return SymbolicPlcTag{
 		SymbolicAddress: symbolicAddress,
 		PlcTag: PlcTag{
@@ -176,7 +177,7 @@ func NewAdsSymbolicPlcTag(symbolicAddress string, arrayInfo []model.ArrayInfo) (
 	}, nil
 }
 
-func CastToSymbolicPlcTagFromPlcTag(plcTag model.PlcTag) (SymbolicPlcTag, error) {
+func CastToSymbolicPlcTagFromPlcTag(plcTag apiModel.PlcTag) (SymbolicPlcTag, error) {
 	if adsTag, ok := plcTag.(SymbolicPlcTag); ok {
 		return adsTag, nil
 	}
@@ -187,12 +188,12 @@ func (m SymbolicPlcTag) GetAddressString() string {
 	return m.SymbolicAddress
 }
 
-func (m SymbolicPlcTag) GetValueType() values.PlcValueType {
-	return values.NULL
+func (m SymbolicPlcTag) GetValueType() apiValues.PlcValueType {
+	return apiValues.NULL
 }
 
-func (m SymbolicPlcTag) GetArrayInfo() []model.ArrayInfo {
-	return []model.ArrayInfo{}
+func (m SymbolicPlcTag) GetArrayInfo() []apiModel.ArrayInfo {
+	return []apiModel.ArrayInfo{}
 }
 
 func (m SymbolicPlcTag) Serialize() ([]byte, error) {

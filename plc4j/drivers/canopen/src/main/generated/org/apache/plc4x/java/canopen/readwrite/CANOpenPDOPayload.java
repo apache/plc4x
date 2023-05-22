@@ -59,7 +59,6 @@ public class CANOpenPDOPayload extends CANOpenPayload implements Message {
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("CANOpenPDOPayload");
 
     // Simple Field (pdo)
@@ -89,8 +88,6 @@ public class CANOpenPDOPayload extends CANOpenPayload implements Message {
       ReadBuffer readBuffer, CANOpenService service) throws ParseException {
     readBuffer.pullContext("CANOpenPDOPayload");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     CANOpenPDO pdo =

@@ -80,7 +80,6 @@ public class BACnetConstructedDataLastCredentialRemoved extends BACnetConstructe
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataLastCredentialRemoved");
 
     // Simple Field (lastCredentialRemoved)
@@ -124,8 +123,6 @@ public class BACnetConstructedDataLastCredentialRemoved extends BACnetConstructe
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataLastCredentialRemoved");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetDeviceObjectReference lastCredentialRemoved =

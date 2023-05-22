@@ -80,7 +80,6 @@ public class SDOInitiateDownloadRequest extends SDORequest implements Message {
   protected void serializeSDORequestChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("SDOInitiateDownloadRequest");
 
     // Reserved Field (reserved)
@@ -145,8 +144,6 @@ public class SDOInitiateDownloadRequest extends SDORequest implements Message {
       ReadBuffer readBuffer, SDORequestCommand command) throws ParseException {
     readBuffer.pullContext("SDOInitiateDownloadRequest");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     Byte reservedField0 =

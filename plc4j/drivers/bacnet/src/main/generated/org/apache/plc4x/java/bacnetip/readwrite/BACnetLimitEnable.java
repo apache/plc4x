@@ -35,7 +35,7 @@ public enum BACnetLimitEnable {
     }
   }
 
-  private short value;
+  private final short value;
 
   BACnetLimitEnable(short value) {
     this.value = value;

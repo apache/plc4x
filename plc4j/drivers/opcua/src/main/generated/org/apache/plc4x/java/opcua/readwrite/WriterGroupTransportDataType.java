@@ -51,7 +51,6 @@ public class WriterGroupTransportDataType extends ExtensionObjectDefinition impl
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("WriterGroupTransportDataType");
 
     writeBuffer.popContext("WriterGroupTransportDataType");
@@ -75,8 +74,6 @@ public class WriterGroupTransportDataType extends ExtensionObjectDefinition impl
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("WriterGroupTransportDataType");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("WriterGroupTransportDataType");

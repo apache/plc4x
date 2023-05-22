@@ -80,7 +80,6 @@ public class BACnetConstructedDataOperationDirection extends BACnetConstructedDa
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataOperationDirection");
 
     // Simple Field (operationDirection)
@@ -122,8 +121,6 @@ public class BACnetConstructedDataOperationDirection extends BACnetConstructedDa
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataOperationDirection");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetEscalatorOperationDirectionTagged operationDirection =

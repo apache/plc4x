@@ -83,7 +83,6 @@ public class S7MessageObjectRequest extends S7DataAlarmMessage implements Messag
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("S7MessageObjectRequest");
 
     // Const Field (variableSpec)
@@ -164,8 +163,6 @@ public class S7MessageObjectRequest extends S7DataAlarmMessage implements Messag
       ReadBuffer readBuffer, Byte cpuFunctionType) throws ParseException {
     readBuffer.pullContext("S7MessageObjectRequest");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short variableSpec =

@@ -60,9 +60,9 @@ public enum CANOpenDataType {
     }
   }
 
-  private long value;
-  private String plcValueName;
-  private short numBits;
+  private final long value;
+  private final String plcValueName;
+  private final short numBits;
 
   CANOpenDataType(long value, String plcValueName, short numBits) {
     this.value = value;
@@ -88,7 +88,7 @@ public enum CANOpenDataType {
   }
 
   public static List<CANOpenDataType> enumsForFieldPlcValueName(String fieldValue) {
-    List<CANOpenDataType> _values = new ArrayList();
+    List<CANOpenDataType> _values = new ArrayList<>();
     for (CANOpenDataType _val : CANOpenDataType.values()) {
       if (_val.getPlcValueName().equals(fieldValue)) {
         _values.add(_val);
@@ -111,7 +111,7 @@ public enum CANOpenDataType {
   }
 
   public static List<CANOpenDataType> enumsForFieldNumBits(short fieldValue) {
-    List<CANOpenDataType> _values = new ArrayList();
+    List<CANOpenDataType> _values = new ArrayList<>();
     for (CANOpenDataType _val : CANOpenDataType.values()) {
       if (_val.getNumBits() == fieldValue) {
         _values.add(_val);

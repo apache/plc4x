@@ -57,7 +57,6 @@ public class BACnetPropertyStatesZoneOccupanyState extends BACnetPropertyStates 
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetPropertyStatesZoneOccupanyState");
 
     // Simple Field (zoneOccupanyState)
@@ -88,8 +87,6 @@ public class BACnetPropertyStatesZoneOccupanyState extends BACnetPropertyStates 
       ReadBuffer readBuffer, Short peekedTagNumber) throws ParseException {
     readBuffer.pullContext("BACnetPropertyStatesZoneOccupanyState");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetAccessZoneOccupancyStateTagged zoneOccupanyState =

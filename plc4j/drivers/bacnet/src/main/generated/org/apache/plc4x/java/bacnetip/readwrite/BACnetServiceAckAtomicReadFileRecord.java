@@ -75,7 +75,6 @@ public class BACnetServiceAckAtomicReadFileRecord
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetServiceAckAtomicReadFileRecord");
 
     // Simple Field (fileStartRecord)
@@ -126,8 +125,6 @@ public class BACnetServiceAckAtomicReadFileRecord
           throws ParseException {
     readBuffer.pullContext("BACnetServiceAckAtomicReadFileRecord");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagSignedInteger fileStartRecord =

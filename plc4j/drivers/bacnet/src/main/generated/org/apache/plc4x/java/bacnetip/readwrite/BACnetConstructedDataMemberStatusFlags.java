@@ -80,7 +80,6 @@ public class BACnetConstructedDataMemberStatusFlags extends BACnetConstructedDat
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataMemberStatusFlags");
 
     // Simple Field (statusFlags)
@@ -121,8 +120,6 @@ public class BACnetConstructedDataMemberStatusFlags extends BACnetConstructedDat
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataMemberStatusFlags");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetStatusFlagsTagged statusFlags =

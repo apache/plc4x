@@ -80,7 +80,6 @@ public class BACnetConstructedDataCarMovingDirection extends BACnetConstructedDa
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataCarMovingDirection");
 
     // Simple Field (carMovingDirection)
@@ -122,8 +121,6 @@ public class BACnetConstructedDataCarMovingDirection extends BACnetConstructedDa
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataCarMovingDirection");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetLiftCarDirectionTagged carMovingDirection =

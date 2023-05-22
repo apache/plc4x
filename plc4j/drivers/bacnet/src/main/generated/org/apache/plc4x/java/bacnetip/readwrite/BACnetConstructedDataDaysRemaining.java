@@ -79,7 +79,6 @@ public class BACnetConstructedDataDaysRemaining extends BACnetConstructedData im
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataDaysRemaining");
 
     // Simple Field (daysRemaining)
@@ -120,8 +119,6 @@ public class BACnetConstructedDataDaysRemaining extends BACnetConstructedData im
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataDaysRemaining");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagSignedInteger daysRemaining =

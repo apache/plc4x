@@ -67,7 +67,6 @@ public class BACnetRejectReasonTagged implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetRejectReasonTagged");
 
     // Manual Field (value)
@@ -139,8 +138,6 @@ public class BACnetRejectReasonTagged implements Message {
       throws ParseException {
     readBuffer.pullContext("BACnetRejectReasonTagged");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetRejectReason value =

@@ -79,7 +79,6 @@ public class BACnetConstructedDataLimitEnable extends BACnetConstructedData impl
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataLimitEnable");
 
     // Simple Field (limitEnable)
@@ -120,8 +119,6 @@ public class BACnetConstructedDataLimitEnable extends BACnetConstructedData impl
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataLimitEnable");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetLimitEnableTagged limitEnable =

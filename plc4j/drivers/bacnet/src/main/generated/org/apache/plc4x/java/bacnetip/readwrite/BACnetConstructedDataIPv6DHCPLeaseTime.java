@@ -80,7 +80,6 @@ public class BACnetConstructedDataIPv6DHCPLeaseTime extends BACnetConstructedDat
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataIPv6DHCPLeaseTime");
 
     // Simple Field (ipv6DhcpLeaseTime)
@@ -122,8 +121,6 @@ public class BACnetConstructedDataIPv6DHCPLeaseTime extends BACnetConstructedDat
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataIPv6DHCPLeaseTime");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger ipv6DhcpLeaseTime =

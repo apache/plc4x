@@ -26,8 +26,9 @@ import (
 	"github.com/apache/plc4x/plc4go/pkg/api"
 	"github.com/apache/plc4x/plc4go/pkg/api/drivers"
 	"github.com/apache/plc4x/plc4go/pkg/api/logging"
-	"github.com/apache/plc4x/plc4go/pkg/api/model"
+	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/spi/utils"
+
 	"github.com/rs/zerolog/log"
 )
 
@@ -41,7 +42,7 @@ func main() {
 	var connectionStrings []string
 	if len(os.Args) < 2 {
 		// Try to auto-find KNX gateways via broadcast-message discovery
-		_ = driverManager.Discover(func(event model.PlcDiscoveryItem) {
+		_ = driverManager.Discover(func(event apiModel.PlcDiscoveryItem) {
 			connStr := event.GetProtocolCode() + "://" + event.GetTransportUrl().Host
 			log.Info().Str("connection string", connStr).Msg("Found KNX Gateway")
 
@@ -79,7 +80,7 @@ func main() {
 			log.Error().Err(err).Msg("error creating browse request")
 			return
 		}
-		brr := browseRequest.ExecuteWithInterceptor(func(result model.PlcBrowseItem) bool {
+		brr := browseRequest.ExecuteWithInterceptor(func(result apiModel.PlcBrowseItem) bool {
 			knxTag := result.GetTag()
 			knxAddress := knxTag.GetAddressString()
 			log.Info().Msgf("Inspecting detected Device at KNX Address: %s", knxAddress)
@@ -136,12 +137,12 @@ func main() {
 			}
 			readResponse := readRequestResult.GetResponse()
 			var programVersion []byte
-			if readResponse.GetResponseCode("applicationProgramVersion") == model.PlcResponseCode_OK {
+			if readResponse.GetResponseCode("applicationProgramVersion") == apiModel.PlcResponseCode_OK {
 				programVersion = utils.PlcValueUint8ListToByteArray(readResponse.GetValue("applicationProgramVersion"))
-			} else if readResponse.GetResponseCode("interfaceProgramVersion") == model.PlcResponseCode_OK {
+			} else if readResponse.GetResponseCode("interfaceProgramVersion") == apiModel.PlcResponseCode_OK {
 				programVersion = utils.PlcValueUint8ListToByteArray(readResponse.GetValue("interfaceProgramVersion"))
 			}
-			rb := utils.NewReadBufferByteBased(utils.ByteArrayToUint8Array(programVersion))
+			rb := utils.NewReadBufferByteBased(programVersion)
 			manufacturerId := uint16(0)
 			applicationId := uint16(0)
 			applicationVersionMajor := uint8(0)

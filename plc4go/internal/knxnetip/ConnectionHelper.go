@@ -53,6 +53,11 @@ func (m *Connection) castIpToKnxAddress(ip net.IP) driverModel.IPAddress {
 
 func (m *Connection) handleIncomingTunnelingRequest(ctx context.Context, tunnelingRequest driverModel.TunnelingRequest) {
 	go func() {
+		defer func() {
+			if err := recover(); err != nil {
+				log.Error().Msgf("panic-ed %v", err)
+			}
+		}()
 		lDataInd, ok := tunnelingRequest.GetCemi().(driverModel.LDataIndExactly)
 		if !ok {
 			return

@@ -76,7 +76,6 @@ public class BACnetConstructedDataEventLogLogBuffer extends BACnetConstructedDat
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataEventLogLogBuffer");
 
     // Array Field (floorText)
@@ -115,8 +114,6 @@ public class BACnetConstructedDataEventLogLogBuffer extends BACnetConstructedDat
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataEventLogLogBuffer");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     List<BACnetEventLogRecord> floorText =

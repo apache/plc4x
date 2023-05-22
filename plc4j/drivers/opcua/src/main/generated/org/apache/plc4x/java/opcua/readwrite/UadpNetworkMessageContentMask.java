@@ -45,7 +45,7 @@ public enum UadpNetworkMessageContentMask {
     }
   }
 
-  private long value;
+  private final long value;
 
   UadpNetworkMessageContentMask(long value) {
     this.value = value;

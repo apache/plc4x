@@ -66,7 +66,6 @@ public class BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated
       WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated");
 
     // Simple Field (enumeratedValue)
@@ -98,8 +97,6 @@ public class BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated
           ReadBuffer readBuffer, Short tagNumber) throws ParseException {
     readBuffer.pullContext("BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagEnumerated enumeratedValue =

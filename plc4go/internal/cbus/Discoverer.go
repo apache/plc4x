@@ -33,7 +33,7 @@ import (
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/cbus/readwrite/model"
-	internalModel "github.com/apache/plc4x/plc4go/spi/model"
+	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/transports"
 	"github.com/apache/plc4x/plc4go/spi/utils"
@@ -85,6 +85,11 @@ func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.
 		}
 		wg.Add(1)
 		go func(netInterface addressProvider, interfaceLog zerolog.Logger) {
+			defer func() {
+				if err := recover(); err != nil {
+					interfaceLog.Error().Msgf("panic-ed %v", err)
+				}
+			}()
 			defer func() { wg.Done() }()
 			// Iterate over all addresses the current interface has configured
 			for _, addr := range addrs {
@@ -114,6 +119,11 @@ func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.
 				}
 				wg.Add(1)
 				go func(addressLogger zerolog.Logger) {
+					defer func() {
+						if err := recover(); err != nil {
+							addressLogger.Error().Msgf("panic-ed %v", err)
+						}
+					}()
 					defer func() { wg.Done() }()
 					for ip := range addresses {
 						addressLogger.Trace().Msgf("Handling found ip %v", ip)
@@ -142,6 +152,11 @@ func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.
 	}()
 
 	go func() {
+		defer func() {
+			if err := recover(); err != nil {
+				log.Error().Msgf("panic-ed %v", err)
+			}
+		}()
 		for transportInstance := range transportInstances {
 			log.Debug().Stringer("transportInstance", transportInstance).Msg("submitting device scan")
 			d.deviceScanningQueue.Submit(ctx, d.deviceScanningWorkItemId.Add(1), d.createDeviceScanDispatcher(transportInstance.(*tcp.TransportInstance), callback))
@@ -267,13 +282,14 @@ func (d *Discoverer) createDeviceScanDispatcher(tcpTransportInstance *tcp.Transp
 				}
 				// TODO: manufacturer + type would be good but this means two requests then
 				deviceName := identifyReplyCommand.GetManufacturerName()
-				discoveryEvent := &internalModel.DefaultPlcDiscoveryItem{
-					ProtocolCode:  "c-bus",
-					TransportCode: "tcp",
-					TransportUrl:  remoteUrl,
-					Options:       nil,
-					Name:          deviceName,
-				}
+				discoveryEvent := spiModel.NewDefaultPlcDiscoveryItem(
+					"c-bus",
+					"tcp",
+					remoteUrl,
+					nil,
+					deviceName,
+					nil,
+				)
 				// Pass the event back to the callback
 				callback(discoveryEvent)
 				continue

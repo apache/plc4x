@@ -52,7 +52,6 @@ public class CIPEncapsulationConnectionResponse extends CIPEncapsulationPacket i
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("CIPEncapsulationConnectionResponse");
 
     writeBuffer.popContext("CIPEncapsulationConnectionResponse");
@@ -76,8 +75,6 @@ public class CIPEncapsulationConnectionResponse extends CIPEncapsulationPacket i
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("CIPEncapsulationConnectionResponse");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("CIPEncapsulationConnectionResponse");

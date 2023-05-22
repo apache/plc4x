@@ -93,7 +93,6 @@ public class BACnetConfirmedServiceRequestCreateObjectObjectSpecifier implements
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConfirmedServiceRequestCreateObjectObjectSpecifier");
 
     // Simple Field (openingTag)
@@ -184,8 +183,6 @@ public class BACnetConfirmedServiceRequestCreateObjectObjectSpecifier implements
       ReadBuffer readBuffer, Short tagNumber) throws ParseException {
     readBuffer.pullContext("BACnetConfirmedServiceRequestCreateObjectObjectSpecifier");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetOpeningTag openingTag =

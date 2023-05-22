@@ -65,7 +65,6 @@ public class FirmataMessageDigitalIO extends FirmataMessage implements Message {
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("FirmataMessageDigitalIO");
 
     // Simple Field (pinBlock)
@@ -111,8 +110,6 @@ public class FirmataMessageDigitalIO extends FirmataMessage implements Message {
       ReadBuffer readBuffer, Boolean response) throws ParseException {
     readBuffer.pullContext("FirmataMessageDigitalIO");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte pinBlock =

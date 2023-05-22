@@ -74,7 +74,6 @@ public class BACnetSecurityKeySet implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetSecurityKeySet");
 
     // Simple Field (keyRevision)
@@ -127,8 +126,6 @@ public class BACnetSecurityKeySet implements Message {
   public static BACnetSecurityKeySet staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetSecurityKeySet");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetContextTagUnsignedInteger keyRevision =

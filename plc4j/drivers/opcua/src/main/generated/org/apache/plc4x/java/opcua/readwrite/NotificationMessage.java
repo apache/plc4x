@@ -81,7 +81,6 @@ public class NotificationMessage extends ExtensionObjectDefinition implements Me
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("NotificationMessage");
 
     // Simple Field (sequenceNumber)
@@ -135,8 +134,6 @@ public class NotificationMessage extends ExtensionObjectDefinition implements Me
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("NotificationMessage");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     long sequenceNumber = readSimpleField("sequenceNumber", readUnsignedLong(readBuffer, 32));

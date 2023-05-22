@@ -63,7 +63,6 @@ public class IdentifyReplyCommandTerminalLevels extends IdentifyReplyCommand imp
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("IdentifyReplyCommandTerminalLevels");
 
     // Array Field (terminalLevels)
@@ -95,8 +94,6 @@ public class IdentifyReplyCommandTerminalLevels extends IdentifyReplyCommand imp
       ReadBuffer readBuffer, Attribute attribute, Short numBytes) throws ParseException {
     readBuffer.pullContext("IdentifyReplyCommandTerminalLevels");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte[] terminalLevels = readBuffer.readByteArray("terminalLevels", Math.toIntExact(numBytes));

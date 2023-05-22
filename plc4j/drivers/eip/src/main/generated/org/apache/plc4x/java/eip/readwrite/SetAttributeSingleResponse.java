@@ -58,7 +58,6 @@ public class SetAttributeSingleResponse extends CipService implements Message {
   protected void serializeCipServiceChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("SetAttributeSingleResponse");
 
     writeBuffer.popContext("SetAttributeSingleResponse");
@@ -82,8 +81,6 @@ public class SetAttributeSingleResponse extends CipService implements Message {
       ReadBuffer readBuffer, Boolean connected, Integer serviceLen) throws ParseException {
     readBuffer.pullContext("SetAttributeSingleResponse");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("SetAttributeSingleResponse");

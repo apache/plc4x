@@ -57,7 +57,6 @@ public class BACnetTimeStampDateTime extends BACnetTimeStamp implements Message 
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetTimeStampDateTime");
 
     // Simple Field (dateTimeValue)
@@ -87,8 +86,6 @@ public class BACnetTimeStampDateTime extends BACnetTimeStamp implements Message 
       throws ParseException {
     readBuffer.pullContext("BACnetTimeStampDateTime");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetDateTimeEnclosed dateTimeValue =

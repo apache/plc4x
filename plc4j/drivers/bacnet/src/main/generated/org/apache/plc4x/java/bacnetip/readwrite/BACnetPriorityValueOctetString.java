@@ -63,7 +63,6 @@ public class BACnetPriorityValueOctetString extends BACnetPriorityValue implemen
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetPriorityValueOctetString");
 
     // Simple Field (octetStringValue)
@@ -94,8 +93,6 @@ public class BACnetPriorityValueOctetString extends BACnetPriorityValue implemen
       ReadBuffer readBuffer, BACnetObjectType objectTypeArgument) throws ParseException {
     readBuffer.pullContext("BACnetPriorityValueOctetString");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagOctetString octetStringValue =

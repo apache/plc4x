@@ -24,6 +24,7 @@ import (
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/mock"
 	"testing"
 	"time"
 
@@ -75,7 +76,7 @@ func Test_defaultBrowser_Browse(t *testing.T) {
 			},
 			wantAsserter: func(t *testing.T, results <-chan apiModel.PlcBrowseRequestResult) bool {
 				timeout := time.NewTimer(2 * time.Second)
-				utils.CleanupTimer(timeout)
+				defer utils.CleanupTimer(timeout)
 				select {
 				case result := <-results:
 					assert.NotNil(t, result)
@@ -110,6 +111,7 @@ func Test_defaultBrowser_BrowseWithInterceptor(t *testing.T) {
 		name         string
 		fields       fields
 		args         args
+		mockSetup    func(t *testing.T, fields *fields, args *args)
 		wantAsserter func(t *testing.T, results <-chan apiModel.PlcBrowseRequestResult) bool
 	}{
 		{
@@ -120,7 +122,7 @@ func Test_defaultBrowser_BrowseWithInterceptor(t *testing.T) {
 			},
 			wantAsserter: func(t *testing.T, results <-chan apiModel.PlcBrowseRequestResult) bool {
 				timeout := time.NewTimer(2 * time.Second)
-				utils.CleanupTimer(timeout)
+				defer utils.CleanupTimer(timeout)
 				select {
 				case result := <-results:
 					assert.NotNil(t, result)
@@ -133,22 +135,29 @@ func Test_defaultBrowser_BrowseWithInterceptor(t *testing.T) {
 		},
 		{
 			name: "Browse something",
-			fields: fields{
-				DefaultBrowserRequirements: testBrowser{},
-			},
 			args: args{
-				ctx: context.Background(),
-				browseRequest: spiModel.NewDefaultPlcBrowseRequest(
+				ctx: func() context.Context {
+					timeout, cancelFunc := context.WithTimeout(context.Background(), 1*time.Second)
+					t.Cleanup(cancelFunc)
+					return timeout
+				}(),
+			},
+			mockSetup: func(t *testing.T, fields *fields, args *args) {
+				requirements := NewMockDefaultBrowserRequirements(t)
+				requirements.EXPECT().BrowseQuery(mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(0, nil)
+				fields.DefaultBrowserRequirements = requirements
+				query := NewMockPlcQuery(t)
+				args.browseRequest = spiModel.NewDefaultPlcBrowseRequest(
 					map[string]apiModel.PlcQuery{
-						"test": testQuery{},
+						"test": query,
 					},
 					[]string{"test"},
 					nil,
-				),
+				)
 			},
 			wantAsserter: func(t *testing.T, results <-chan apiModel.PlcBrowseRequestResult) bool {
 				timeout := time.NewTimer(2 * time.Second)
-				utils.CleanupTimer(timeout)
+				defer utils.CleanupTimer(timeout)
 				select {
 				case result := <-results:
 					assert.NotNil(t, result)
@@ -162,6 +171,9 @@ func Test_defaultBrowser_BrowseWithInterceptor(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			if tt.mockSetup != nil {
+				tt.mockSetup(t, &tt.fields, &tt.args)
+			}
 			m := &defaultBrowser{
 				DefaultBrowserRequirements: tt.fields.DefaultBrowserRequirements,
 			}

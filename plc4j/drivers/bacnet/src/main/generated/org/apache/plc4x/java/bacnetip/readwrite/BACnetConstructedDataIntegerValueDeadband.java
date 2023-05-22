@@ -80,7 +80,6 @@ public class BACnetConstructedDataIntegerValueDeadband extends BACnetConstructed
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataIntegerValueDeadband");
 
     // Simple Field (deadband)
@@ -121,8 +120,6 @@ public class BACnetConstructedDataIntegerValueDeadband extends BACnetConstructed
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataIntegerValueDeadband");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger deadband =

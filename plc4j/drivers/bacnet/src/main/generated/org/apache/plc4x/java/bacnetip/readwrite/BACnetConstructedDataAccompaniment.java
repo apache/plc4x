@@ -79,7 +79,6 @@ public class BACnetConstructedDataAccompaniment extends BACnetConstructedData im
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataAccompaniment");
 
     // Simple Field (accompaniment)
@@ -120,8 +119,6 @@ public class BACnetConstructedDataAccompaniment extends BACnetConstructedData im
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataAccompaniment");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetDeviceObjectReference accompaniment =

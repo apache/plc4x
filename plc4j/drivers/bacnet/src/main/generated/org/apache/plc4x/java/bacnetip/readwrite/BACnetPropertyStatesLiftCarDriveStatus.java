@@ -58,7 +58,6 @@ public class BACnetPropertyStatesLiftCarDriveStatus extends BACnetPropertyStates
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetPropertyStatesLiftCarDriveStatus");
 
     // Simple Field (liftCarDriveStatus)
@@ -89,8 +88,6 @@ public class BACnetPropertyStatesLiftCarDriveStatus extends BACnetPropertyStates
       ReadBuffer readBuffer, Short peekedTagNumber) throws ParseException {
     readBuffer.pullContext("BACnetPropertyStatesLiftCarDriveStatus");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetLiftCarDriveStatusTagged liftCarDriveStatus =

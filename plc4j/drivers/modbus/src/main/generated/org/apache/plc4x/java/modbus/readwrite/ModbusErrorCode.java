@@ -43,7 +43,7 @@ public enum ModbusErrorCode {
     }
   }
 
-  private short value;
+  private final short value;
 
   ModbusErrorCode(short value) {
     this.value = value;

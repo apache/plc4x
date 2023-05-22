@@ -68,7 +68,7 @@ public enum NodeAttributesMask {
     }
   }
 
-  private long value;
+  private final long value;
 
   NodeAttributesMask(long value) {
     this.value = value;

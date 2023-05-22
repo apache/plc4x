@@ -80,7 +80,6 @@ public class BACnetConstructedDataTimeSynchronizationInterval extends BACnetCons
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataTimeSynchronizationInterval");
 
     // Simple Field (timeSynchronization)
@@ -122,8 +121,6 @@ public class BACnetConstructedDataTimeSynchronizationInterval extends BACnetCons
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataTimeSynchronizationInterval");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger timeSynchronization =

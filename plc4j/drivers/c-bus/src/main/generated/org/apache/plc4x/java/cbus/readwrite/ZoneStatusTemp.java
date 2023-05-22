@@ -37,7 +37,7 @@ public enum ZoneStatusTemp {
     }
   }
 
-  private byte value;
+  private final byte value;
 
   ZoneStatusTemp(byte value) {
     this.value = value;

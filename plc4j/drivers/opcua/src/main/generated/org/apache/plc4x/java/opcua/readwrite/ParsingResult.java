@@ -88,7 +88,6 @@ public class ParsingResult extends ExtensionObjectDefinition implements Message 
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("ParsingResult");
 
     // Simple Field (statusCode)
@@ -155,8 +154,6 @@ public class ParsingResult extends ExtensionObjectDefinition implements Message 
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("ParsingResult");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     StatusCode statusCode =

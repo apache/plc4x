@@ -80,7 +80,6 @@ public class BACnetConstructedDataBaseDeviceSecurityPolicy extends BACnetConstru
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataBaseDeviceSecurityPolicy");
 
     // Simple Field (baseDeviceSecurityPolicy)
@@ -124,8 +123,6 @@ public class BACnetConstructedDataBaseDeviceSecurityPolicy extends BACnetConstru
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataBaseDeviceSecurityPolicy");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetSecurityLevelTagged baseDeviceSecurityPolicy =

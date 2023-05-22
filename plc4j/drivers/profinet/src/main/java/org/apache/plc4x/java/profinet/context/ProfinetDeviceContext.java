@@ -33,6 +33,7 @@ import org.apache.plc4x.java.spi.generation.*;
 
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
@@ -72,7 +73,7 @@ public class ProfinetDeviceContext implements DriverContext, HasConfiguration<Pr
     private MacAddress localMacAddress;
     private final DceRpc_ActivityUuid uuid;
     private ProfinetConfiguration configuration;
-    private InetAddress localIpAddress;
+
     private DatagramSocket socket;
     private ProfinetChannel channel;
     private MacAddress macAddress;
@@ -81,27 +82,30 @@ public class ProfinetDeviceContext implements DriverContext, HasConfiguration<Pr
     private boolean lldpReceived = false;
     private boolean dcpReceived = false;
     private String ipAddress;
+    private String subnetMask;
+    private String gateway;
     private String portId;
     private PnIoCm_Block_IoCrReq inputReq = null;
     private PnIoCm_Block_IoCrReq outputReq = null;
     private String[] subModules;
-    private AtomicInteger sessionKeyGenerator = new AtomicInteger(1);
-    private AtomicInteger identificationGenerator = new AtomicInteger(1);
+    private final AtomicInteger sessionKeyGenerator = new AtomicInteger(1);
+    private final AtomicInteger identificationGenerator = new AtomicInteger(1);
     private String deviceTypeName;
     private String deviceName;
     private ProfinetISO15745Profile gsdFile;
     private boolean nonLegacyStartupMode = false;
     private int frameId = 0xBBF0;
-    private Map<Long, ProfinetCallable<DceRpc_Packet>> queue = new HashMap<>();
+    private final Map<Long, ProfinetCallable<DceRpc_Packet>> queue = new HashMap<>();
     private int sessionKey;
     private int sourcePort = DEFAULT_SEND_UDP_PORT;
     private int destinationPort = DEFAULT_UDP_PORT;
-    private Map<String, ProfinetSubscriptionHandle> subscriptionHandles = new HashMap<>();
+    private final Map<String, ProfinetSubscriptionHandle> subscriptionHandles = new HashMap<>();
     private String deviceAccess;
     private ProfinetDeviceAccessPointItem deviceAccessItem;
     private ProfinetModule[] modules;
     private long sequenceNumber;
     private  DceRpc_ActivityUuid activityUuid;
+    private NetworkInterface networkInterface;
 
     public ProfinetDeviceContext() {
         // Generate a new Activity Id, which will be used throughout the connection.
@@ -167,14 +171,6 @@ public class ProfinetDeviceContext implements DriverContext, HasConfiguration<Pr
         return configuration;
     }
 
-    public InetAddress getLocalIpAddress() {
-        return localIpAddress;
-    }
-
-    public void setLocalIpAddress(InetAddress localIpAddress) {
-        this.localIpAddress = localIpAddress;
-    }
-
     public ProfinetChannel getChannel() {
         return channel;
     }
@@ -229,6 +225,27 @@ public class ProfinetDeviceContext implements DriverContext, HasConfiguration<Pr
 
     public void setIpAddress(String ipAddress) {
         this.ipAddress = ipAddress;
+    }
+
+    public byte[] getIpAddressAsByteArray() throws UnknownHostException {
+        if (this.ipAddress != null) {
+            return InetAddress.getByName(this.ipAddress).getAddress();
+        }
+        return new byte[4];
+    }
+
+    public byte[] getSubnetAsByteArray() throws UnknownHostException {
+        if (this.ipAddress != null) {
+            return InetAddress.getByName("255.255.255.0").getAddress();
+        }
+        return new byte[4];
+    }
+
+    public byte[] getGatewayAsByteArray() throws UnknownHostException {
+        if (this.ipAddress != null) {
+            return InetAddress.getByName("0.0.0.0").getAddress();
+        }
+        return new byte[4];
     }
 
     public String getPortId() {
@@ -532,5 +549,13 @@ public class ProfinetDeviceContext implements DriverContext, HasConfiguration<Pr
 
     public void removeSubscriptionHandle(String tag) {
         subscriptionHandles.remove(tag);
+    }
+
+    public void setNetworkInterface(NetworkInterface networkInterface) {
+        this.networkInterface = networkInterface;
+    }
+
+    public NetworkInterface getNetworkInterface() {
+        return this.networkInterface;
     }
 }

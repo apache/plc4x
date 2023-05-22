@@ -66,7 +66,6 @@ public class OpenProtocolMessageLockAtBatchDoneSubscribeRev1
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("OpenProtocolMessageLockAtBatchDoneSubscribeRev1");
 
     writeBuffer.popContext("OpenProtocolMessageLockAtBatchDoneSubscribeRev1");
@@ -91,8 +90,6 @@ public class OpenProtocolMessageLockAtBatchDoneSubscribeRev1
           ReadBuffer readBuffer, Long revision) throws ParseException {
     readBuffer.pullContext("OpenProtocolMessageLockAtBatchDoneSubscribeRev1");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("OpenProtocolMessageLockAtBatchDoneSubscribeRev1");

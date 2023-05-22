@@ -48,7 +48,6 @@ public class MeteringDataMeasureOtherWater extends MeteringData implements Messa
   protected void serializeMeteringDataChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("MeteringDataMeasureOtherWater");
 
     writeBuffer.popContext("MeteringDataMeasureOtherWater");
@@ -72,8 +71,6 @@ public class MeteringDataMeasureOtherWater extends MeteringData implements Messa
       throws ParseException {
     readBuffer.pullContext("MeteringDataMeasureOtherWater");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("MeteringDataMeasureOtherWater");

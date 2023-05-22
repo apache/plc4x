@@ -58,7 +58,6 @@ public class ExtensionHeader implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("ExtensionHeader");
 
     // Reserved Field (reserved)
@@ -105,8 +104,6 @@ public class ExtensionHeader implements Message {
   public static ExtensionHeader staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("ExtensionHeader");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     Byte reservedField0 = readReservedField("reserved", readSignedByte(readBuffer, 5), (byte) 0x00);

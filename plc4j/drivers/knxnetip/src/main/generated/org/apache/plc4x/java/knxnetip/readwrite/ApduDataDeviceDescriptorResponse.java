@@ -64,7 +64,6 @@ public class ApduDataDeviceDescriptorResponse extends ApduData implements Messag
   protected void serializeApduDataChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("ApduDataDeviceDescriptorResponse");
 
     // Simple Field (descriptorType)
@@ -102,8 +101,6 @@ public class ApduDataDeviceDescriptorResponse extends ApduData implements Messag
       throws ParseException {
     readBuffer.pullContext("ApduDataDeviceDescriptorResponse");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short descriptorType = readSimpleField("descriptorType", readUnsignedShort(readBuffer, 6));

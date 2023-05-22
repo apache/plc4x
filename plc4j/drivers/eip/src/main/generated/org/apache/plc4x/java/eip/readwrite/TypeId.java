@@ -50,7 +50,6 @@ public abstract class TypeId implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("TypeId");
 
     // Discriminator Field (id) (Used as input to a switch field)
@@ -89,8 +88,6 @@ public abstract class TypeId implements Message {
   public static TypeId staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("TypeId");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int id = readDiscriminatorField("id", readUnsignedInt(readBuffer, 16));

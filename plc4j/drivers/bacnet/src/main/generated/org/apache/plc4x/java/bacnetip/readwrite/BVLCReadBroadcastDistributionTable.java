@@ -50,7 +50,6 @@ public class BVLCReadBroadcastDistributionTable extends BVLC implements Message 
   protected void serializeBVLCChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BVLCReadBroadcastDistributionTable");
 
     writeBuffer.popContext("BVLCReadBroadcastDistributionTable");
@@ -73,8 +72,6 @@ public class BVLCReadBroadcastDistributionTable extends BVLC implements Message 
   public static BVLCBuilder staticParseBVLCBuilder(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BVLCReadBroadcastDistributionTable");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("BVLCReadBroadcastDistributionTable");

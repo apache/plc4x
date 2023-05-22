@@ -63,7 +63,6 @@ public class IdentifyReplyCommandMaximumLevels extends IdentifyReplyCommand impl
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("IdentifyReplyCommandMaximumLevels");
 
     // Array Field (maximumLevels)
@@ -95,8 +94,6 @@ public class IdentifyReplyCommandMaximumLevels extends IdentifyReplyCommand impl
       ReadBuffer readBuffer, Attribute attribute, Short numBytes) throws ParseException {
     readBuffer.pullContext("IdentifyReplyCommandMaximumLevels");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte[] maximumLevels = readBuffer.readByteArray("maximumLevels", Math.toIntExact(numBytes));

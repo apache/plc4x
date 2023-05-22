@@ -65,7 +65,6 @@ public class BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntr
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry");
 
     // Simple Field (monitoredObjectIdentifier)
@@ -111,8 +110,6 @@ public class BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntr
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetContextTagObjectIdentifier monitoredObjectIdentifier =

@@ -54,7 +54,6 @@ public class SysexCommandExtendedAnalog extends SysexCommand implements Message 
   protected void serializeSysexCommandChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("SysexCommandExtendedAnalog");
 
     writeBuffer.popContext("SysexCommandExtendedAnalog");
@@ -78,8 +77,6 @@ public class SysexCommandExtendedAnalog extends SysexCommand implements Message 
       ReadBuffer readBuffer, Boolean response) throws ParseException {
     readBuffer.pullContext("SysexCommandExtendedAnalog");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("SysexCommandExtendedAnalog");

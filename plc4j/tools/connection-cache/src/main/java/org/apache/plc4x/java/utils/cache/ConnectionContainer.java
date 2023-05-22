@@ -91,9 +91,7 @@ class ConnectionContainer {
                 connection = connectionManager.getConnection(connectionUrl);
             } catch (PlcConnectionException e) {
                 // If something goes wrong, close all waiting futures exceptionally.
-                queue.forEach(future -> {
-                    future.completeExceptionally(e);
-                });
+                queue.forEach(future -> future.completeExceptionally(e));
             }
         }
 

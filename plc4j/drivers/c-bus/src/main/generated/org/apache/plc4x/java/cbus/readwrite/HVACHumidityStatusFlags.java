@@ -106,7 +106,6 @@ public class HVACHumidityStatusFlags implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("HVACHumidityStatusFlags");
 
     // Simple Field (expansion)
@@ -198,8 +197,6 @@ public class HVACHumidityStatusFlags implements Message {
   public static HVACHumidityStatusFlags staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("HVACHumidityStatusFlags");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     boolean expansion = readSimpleField("expansion", readBoolean(readBuffer));

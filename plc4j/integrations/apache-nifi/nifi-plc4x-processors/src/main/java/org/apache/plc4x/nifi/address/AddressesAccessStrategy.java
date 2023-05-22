@@ -16,11 +16,11 @@
  */
 package org.apache.plc4x.nifi.address;
 
-import java.util.Map;
-
 import org.apache.nifi.flowfile.FlowFile;
 import org.apache.nifi.processor.ProcessContext;
 
+import java.util.Map;
+
 public interface AddressesAccessStrategy {
-    public Map<String,String> extractAddresses(final ProcessContext context, final FlowFile flowFile);
+    Map<String, String> extractAddresses(final ProcessContext context, final FlowFile flowFile);
 }

@@ -29,8 +29,8 @@ import java.math.BigInteger;
 public class PlcREAL extends PlcIECValue<Float> {
 
     private static final String VALUE_OUT_OF_RANGE = "Value of type %s is out of range %f - %f for a %s Value";
-    static Float minValue = -Float.MAX_VALUE;
-    static Float maxValue = Float.MAX_VALUE;
+    static final Float minValue = -Float.MAX_VALUE;
+    static final Float maxValue = Float.MAX_VALUE;
 
     public static PlcREAL of(Object value) {
         if (value instanceof Boolean) {

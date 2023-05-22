@@ -110,7 +110,6 @@ public class S7ParameterUserDataItemCPUFunctions extends S7ParameterUserDataItem
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("S7ParameterUserDataItemCPUFunctions");
 
     // Implicit Field (itemLength) (Used for parsing, but its value is not stored as it's implicitly
@@ -197,8 +196,6 @@ public class S7ParameterUserDataItemCPUFunctions extends S7ParameterUserDataItem
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("S7ParameterUserDataItemCPUFunctions");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short itemLength = readImplicitField("itemLength", readUnsignedShort(readBuffer, 8));

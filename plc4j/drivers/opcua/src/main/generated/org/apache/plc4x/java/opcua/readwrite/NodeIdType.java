@@ -39,7 +39,7 @@ public enum NodeIdType {
     }
   }
 
-  private short value;
+  private final short value;
 
   NodeIdType(short value) {
     this.value = value;

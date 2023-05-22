@@ -31,7 +31,7 @@ import java.util.ServiceLoader;
 
 public class DriverActivator implements BundleActivator {
 
-    private List<ServiceRegistration<PlcDriver>> registrations = new ArrayList<>();
+    private final List<ServiceRegistration<PlcDriver>> registrations = new ArrayList<>();
     public static final String PROTOCOL_NAME = "org.apache.plc4x.driver.name";
     public static final String PROTOCOL_CODE = "org.apache.plc4x.driver.code";
 

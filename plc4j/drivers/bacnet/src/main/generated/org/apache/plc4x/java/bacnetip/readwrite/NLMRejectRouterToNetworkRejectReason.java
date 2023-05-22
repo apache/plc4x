@@ -41,7 +41,7 @@ public enum NLMRejectRouterToNetworkRejectReason {
     }
   }
 
-  private short value;
+  private final short value;
 
   NLMRejectRouterToNetworkRejectReason(short value) {
     this.value = value;

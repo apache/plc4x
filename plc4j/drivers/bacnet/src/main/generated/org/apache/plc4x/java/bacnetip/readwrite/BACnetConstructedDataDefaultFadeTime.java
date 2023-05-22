@@ -79,7 +79,6 @@ public class BACnetConstructedDataDefaultFadeTime extends BACnetConstructedData 
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataDefaultFadeTime");
 
     // Simple Field (defaultFadeTime)
@@ -121,8 +120,6 @@ public class BACnetConstructedDataDefaultFadeTime extends BACnetConstructedData 
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataDefaultFadeTime");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger defaultFadeTime =

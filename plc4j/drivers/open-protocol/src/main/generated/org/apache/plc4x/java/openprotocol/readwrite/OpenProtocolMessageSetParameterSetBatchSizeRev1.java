@@ -82,7 +82,6 @@ public class OpenProtocolMessageSetParameterSetBatchSizeRev1
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("OpenProtocolMessageSetParameterSetBatchSizeRev1");
 
     // Simple Field (parameterSetId)
@@ -127,8 +126,6 @@ public class OpenProtocolMessageSetParameterSetBatchSizeRev1
           ReadBuffer readBuffer, Long revision) throws ParseException {
     readBuffer.pullContext("OpenProtocolMessageSetParameterSetBatchSizeRev1");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     long parameterSetId =

@@ -57,7 +57,6 @@ public class BACnetChannelValueTime extends BACnetChannelValue implements Messag
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetChannelValueTime");
 
     // Simple Field (timeValue)
@@ -87,8 +86,6 @@ public class BACnetChannelValueTime extends BACnetChannelValue implements Messag
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetChannelValueTime");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagTime timeValue =

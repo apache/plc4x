@@ -65,7 +65,6 @@ public class FirmataCommandProtocolVersion extends FirmataCommand implements Mes
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("FirmataCommandProtocolVersion");
 
     // Simple Field (majorVersion)
@@ -101,8 +100,6 @@ public class FirmataCommandProtocolVersion extends FirmataCommand implements Mes
       ReadBuffer readBuffer, Boolean response) throws ParseException {
     readBuffer.pullContext("FirmataCommandProtocolVersion");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short majorVersion = readSimpleField("majorVersion", readUnsignedShort(readBuffer, 8));

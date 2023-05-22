@@ -173,7 +173,7 @@ public enum HVACError {
     }
   }
 
-  private short value;
+  private final short value;
 
   HVACError(short value) {
     this.value = value;

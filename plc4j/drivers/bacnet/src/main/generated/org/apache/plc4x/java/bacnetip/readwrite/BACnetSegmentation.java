@@ -37,7 +37,7 @@ public enum BACnetSegmentation {
     }
   }
 
-  private short value;
+  private final short value;
 
   BACnetSegmentation(short value) {
     this.value = value;

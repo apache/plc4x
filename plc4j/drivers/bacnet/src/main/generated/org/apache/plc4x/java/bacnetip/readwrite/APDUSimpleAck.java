@@ -71,7 +71,6 @@ public class APDUSimpleAck extends APDU implements Message {
   protected void serializeAPDUChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("APDUSimpleAck");
 
     // Reserved Field (reserved)
@@ -123,8 +122,6 @@ public class APDUSimpleAck extends APDU implements Message {
       throws ParseException {
     readBuffer.pullContext("APDUSimpleAck");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     Byte reservedField0 = readReservedField("reserved", readUnsignedByte(readBuffer, 4), (byte) 0);

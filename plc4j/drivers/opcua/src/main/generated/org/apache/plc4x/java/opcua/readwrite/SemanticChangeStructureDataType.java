@@ -65,7 +65,6 @@ public class SemanticChangeStructureDataType extends ExtensionObjectDefinition i
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("SemanticChangeStructureDataType");
 
     // Simple Field (affected)
@@ -101,8 +100,6 @@ public class SemanticChangeStructureDataType extends ExtensionObjectDefinition i
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("SemanticChangeStructureDataType");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     NodeId affected =

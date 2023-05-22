@@ -58,7 +58,6 @@ public abstract class BACnetServiceAck implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetServiceAck");
 
     // Discriminator Field (serviceChoice) (Used as input to a switch field)
@@ -126,8 +125,6 @@ public abstract class BACnetServiceAck implements Message {
       throws ParseException {
     readBuffer.pullContext("BACnetServiceAck");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetConfirmedServiceChoice serviceChoice =

@@ -61,7 +61,6 @@ public class ErrorReportingSystemCategoryTypeClimateControllers
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("ErrorReportingSystemCategoryTypeClimateControllers");
 
     // Simple Field (categoryForType)
@@ -101,8 +100,6 @@ public class ErrorReportingSystemCategoryTypeClimateControllers
           throws ParseException {
     readBuffer.pullContext("ErrorReportingSystemCategoryTypeClimateControllers");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ErrorReportingSystemCategoryTypeForClimateControllers categoryForType =

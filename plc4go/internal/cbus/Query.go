@@ -76,7 +76,7 @@ func (u unitInfoQuery) GetArrayInfo() []apiModel.ArrayInfo {
 		return []apiModel.ArrayInfo{}
 	}
 	return []apiModel.ArrayInfo{
-		spiModel.DefaultArrayInfo{
+		&spiModel.DefaultArrayInfo{
 			LowerBound: 0,
 			UpperBound: uint32(u.numElements),
 		},

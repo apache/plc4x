@@ -73,7 +73,6 @@ public class LDataInd extends CEMI implements Message {
   protected void serializeCEMIChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("LDataInd");
 
     // Simple Field (additionalInformationLength)
@@ -122,8 +121,6 @@ public class LDataInd extends CEMI implements Message {
       throws ParseException {
     readBuffer.pullContext("LDataInd");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short additionalInformationLength =

@@ -64,7 +64,6 @@ public class IdentifyReplyCommandGAVPhysicalAddresses extends IdentifyReplyComma
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("IdentifyReplyCommandGAVPhysicalAddresses");
 
     // Array Field (values)
@@ -96,8 +95,6 @@ public class IdentifyReplyCommandGAVPhysicalAddresses extends IdentifyReplyComma
       ReadBuffer readBuffer, Attribute attribute, Short numBytes) throws ParseException {
     readBuffer.pullContext("IdentifyReplyCommandGAVPhysicalAddresses");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte[] values = readBuffer.readByteArray("values", Math.toIntExact(numBytes));

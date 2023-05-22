@@ -40,12 +40,12 @@ public class ProfinetModuleImpl implements ProfinetModule {
     private final int ioCsOffset;
     private final int ioPsOffset;
     private final int slot;
-    private List<PnIoCm_IoDataObject> inputIoPsApiBlocks = new ArrayList<>();
-    private List<PnIoCm_IoCs> outputIoCsApiBlocks = new ArrayList<>();
-    private List<PnIoCm_Submodule> expectedSubModuleApiBlocks = new ArrayList<>();
+    private final List<PnIoCm_IoDataObject> inputIoPsApiBlocks = new ArrayList<>();
+    private final List<PnIoCm_IoCs> outputIoCsApiBlocks = new ArrayList<>();
+    private final List<PnIoCm_Submodule> expectedSubModuleApiBlocks = new ArrayList<>();
 
-    private List<PnIoCm_IoCs> inputIoCsApiBlocks = new ArrayList<>();
-    private List<PnIoCm_IoDataObject> outputIoPsApiBlocks = new ArrayList<>();
+    private final List<PnIoCm_IoCs> inputIoCsApiBlocks = new ArrayList<>();
+    private final List<PnIoCm_IoDataObject> outputIoPsApiBlocks = new ArrayList<>();
     private int ioPsSize;
     private int ioCsSize;
     private Integer inputCsSize = 0;

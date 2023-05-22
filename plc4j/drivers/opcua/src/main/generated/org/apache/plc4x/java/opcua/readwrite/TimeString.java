@@ -44,7 +44,6 @@ public class TimeString implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("TimeString");
 
     writeBuffer.popContext("TimeString");
@@ -73,8 +72,6 @@ public class TimeString implements Message {
   public static TimeString staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("TimeString");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("TimeString");

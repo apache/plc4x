@@ -58,7 +58,6 @@ public class SDOBlockRequest extends SDORequest implements Message {
   protected void serializeSDORequestChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("SDOBlockRequest");
 
     // Simple Field (block)
@@ -88,8 +87,6 @@ public class SDOBlockRequest extends SDORequest implements Message {
       ReadBuffer readBuffer, SDORequestCommand command) throws ParseException {
     readBuffer.pullContext("SDOBlockRequest");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     SDOBlockData block =

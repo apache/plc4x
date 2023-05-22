@@ -75,7 +75,6 @@ public class COTPPacketDisconnectRequest extends COTPPacket implements Message {
   protected void serializeCOTPPacketChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("COTPPacketDisconnectRequest");
 
     // Simple Field (destinationReference)
@@ -125,8 +124,6 @@ public class COTPPacketDisconnectRequest extends COTPPacket implements Message {
       ReadBuffer readBuffer, Integer cotpLen) throws ParseException {
     readBuffer.pullContext("COTPPacketDisconnectRequest");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int destinationReference =

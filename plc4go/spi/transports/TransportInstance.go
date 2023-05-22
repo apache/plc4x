@@ -24,6 +24,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog/log"
 )
 
 type TransportInstance interface {
@@ -69,6 +70,11 @@ type defaultBufferedTransportInstance struct {
 func (m *defaultBufferedTransportInstance) ConnectWithContext(ctx context.Context) error {
 	ch := make(chan error, 1)
 	go func() {
+		defer func() {
+			if err := recover(); err != nil {
+				log.Error().Interface("err", err).Msg("connect panic-ed")
+			}
+		}()
 		ch <- m.Connect()
 		close(ch)
 	}()

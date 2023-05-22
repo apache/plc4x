@@ -50,7 +50,6 @@ public abstract class ApduDataExt implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("ApduDataExt");
 
     // Discriminator Field (extApciType) (Used as input to a switch field)
@@ -104,8 +103,6 @@ public abstract class ApduDataExt implements Message {
   public static ApduDataExt staticParse(ReadBuffer readBuffer, Short length) throws ParseException {
     readBuffer.pullContext("ApduDataExt");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short extApciType = readDiscriminatorField("extApciType", readUnsignedShort(readBuffer, 6));

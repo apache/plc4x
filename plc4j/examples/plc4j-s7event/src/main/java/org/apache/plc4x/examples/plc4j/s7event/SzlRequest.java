@@ -28,7 +28,6 @@ import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.s7.readwrite.utils.StaticHelper.SZL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.simple.SimpleLogger;
 
 import java.util.Collection;
 
@@ -47,7 +46,6 @@ public class SzlRequest {
      * @param args the command line arguments
      */
     public static void main(String[] args) throws Exception {
-        System.setProperty(SimpleLogger.DEFAULT_LOG_LEVEL_KEY, "trace");
 
         System.out.println("******************************************************************************************");
         System.out.println("Before using, take a look at:");
@@ -69,7 +67,7 @@ public class SzlRequest {
             if (szlresponse.getResponseCode("MySZL") == PlcResponseCode.OK) { //(06)
 
                 Collection<Byte> data = szlresponse.getAllBytes("MySZL"); //(07)
-                byte[] dbytes = ArrayUtils.toPrimitive(data.toArray(new Byte[data.size()])); //(08)
+                byte[] dbytes = ArrayUtils.toPrimitive(data.toArray(new Byte[0])); //(08)
 
                 SZL szl = SZL.valueOf(0x0022); //(09)
                 ByteBuf wb = wrappedBuffer(dbytes); //(10)

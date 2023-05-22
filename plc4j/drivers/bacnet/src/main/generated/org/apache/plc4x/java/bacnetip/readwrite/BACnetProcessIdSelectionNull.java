@@ -57,7 +57,6 @@ public class BACnetProcessIdSelectionNull extends BACnetProcessIdSelection imple
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetProcessIdSelectionNull");
 
     // Simple Field (nullValue)
@@ -87,8 +86,6 @@ public class BACnetProcessIdSelectionNull extends BACnetProcessIdSelection imple
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetProcessIdSelectionNull");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagNull nullValue =

@@ -20,9 +20,11 @@
 package model
 
 import (
+	"net/url"
+	"strings"
+
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
-	"net/url"
 )
 
 //go:generate go run ../../tools/plc4xgenerator/gen.go -type=DefaultPlcDiscoveryItem
@@ -78,8 +80,15 @@ func (d *DefaultPlcDiscoveryItem) GetAttributes() map[string]apiValues.PlcValue 
 }
 
 func (d *DefaultPlcDiscoveryItem) GetConnectionUrl() string {
+	options := ""
 	if d.Options != nil {
-		panic("Not implemented")
+		var flatOptions []string
+		for k, vl := range d.Options {
+			for _, v := range vl {
+				flatOptions = append(flatOptions, url.QueryEscape(k)+"="+url.QueryEscape(v))
+			}
+		}
+		options += "?" + strings.Join(flatOptions, "&")
 	}
-	return d.ProtocolCode + ":" + d.TransportCode + "//" + d.TransportUrl.Host
+	return d.ProtocolCode + ":" + d.TransportCode + "//" + d.TransportUrl.Host + options
 }

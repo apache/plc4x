@@ -100,7 +100,6 @@ public class S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse");
 
     // Simple Field (result)
@@ -160,8 +159,6 @@ public class S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse
       throws ParseException {
     readBuffer.pullContext("S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short result = readSimpleField("result", readUnsignedShort(readBuffer, 8));

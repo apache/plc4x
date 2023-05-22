@@ -35,7 +35,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class Plc4xSinkRecordProcessorTest {
 	
     private TestRunner testRunner;
-    private static int NUMBER_OF_CALLS = 5;
+    private static final int NUMBER_OF_CALLS = 5;
 
 	private final AvroReader readerService = new AvroReader();
     

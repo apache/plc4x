@@ -106,7 +106,6 @@ public class BACnetConfirmedServiceRequestGetEnrollmentSummary extends BACnetCon
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConfirmedServiceRequestGetEnrollmentSummary");
 
     // Simple Field (acknowledgmentFilter)
@@ -185,8 +184,6 @@ public class BACnetConfirmedServiceRequestGetEnrollmentSummary extends BACnetCon
           ReadBuffer readBuffer, Long serviceRequestLength) throws ParseException {
     readBuffer.pullContext("BACnetConfirmedServiceRequestGetEnrollmentSummary");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged

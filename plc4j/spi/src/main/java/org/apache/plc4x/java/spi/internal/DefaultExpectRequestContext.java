@@ -37,9 +37,9 @@ public class DefaultExpectRequestContext<T> implements ConversationContext.Expec
 
     protected final Consumer<HandlerRegistration> finisher;
 
-    private final ConversationContext context;
+    private final ConversationContext<T> context;
 
-    protected Class<?> expectClazz;
+    protected final Class<?> expectClazz;
 
     protected Consumer<?> packetConsumer;
 
@@ -47,17 +47,17 @@ public class DefaultExpectRequestContext<T> implements ConversationContext.Expec
 
     protected BiConsumer<?, ? extends Throwable> errorConsumer;
 
-    protected Duration timeout;
+    protected final Duration timeout;
     private HandlerRegistration registration;
 
-    public DefaultExpectRequestContext(Consumer<HandlerRegistration> finisher, Class<T> expectClazz, Duration timeout, ConversationContext context) {
+    public DefaultExpectRequestContext(Consumer<HandlerRegistration> finisher, Class<T> expectClazz, Duration timeout, ConversationContext<T> context) {
         this.finisher = finisher;
         this.expectClazz = expectClazz;
         this.timeout = timeout;
         this.context = context;
     }
 
-    protected DefaultExpectRequestContext(Deque<Either<Function<?, ?>, Predicate<?>>> commands, Duration timeout, Consumer<HandlerRegistration> finisher, ConversationContext<?> context, Class<?> expectClazz, Consumer<?> packetConsumer, Consumer<TimeoutException> onTimeoutConsumer, BiConsumer<?, ? extends Throwable> errorConsumer) {
+    protected DefaultExpectRequestContext(Deque<Either<Function<?, ?>, Predicate<?>>> commands, Duration timeout, Consumer<HandlerRegistration> finisher, ConversationContext<T> context, Class<?> expectClazz, Consumer<?> packetConsumer, Consumer<TimeoutException> onTimeoutConsumer, BiConsumer<?, ? extends Throwable> errorConsumer) {
         this.commands = commands;
         this.timeout = timeout;
         this.finisher = finisher;
@@ -114,7 +114,7 @@ public class DefaultExpectRequestContext<T> implements ConversationContext.Expec
             };
         }
         commands.addLast(Either.left(unwrapper));
-        return new DefaultExpectRequestContext<>(commands, timeout, finisher, context, expectClazz, packetConsumer, onTimeoutConsumer, errorConsumer);
+        return new DefaultExpectRequestContext<>(commands, timeout, finisher, (ConversationContext<R>) context, expectClazz, packetConsumer, onTimeoutConsumer, errorConsumer);
     }
 
 }

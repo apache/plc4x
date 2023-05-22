@@ -109,7 +109,6 @@ public class AlarmMessageObjectQueryType implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("AlarmMessageObjectQueryType");
 
     // Simple Field (lengthDataset)
@@ -199,8 +198,6 @@ public class AlarmMessageObjectQueryType implements Message {
       throws ParseException {
     readBuffer.pullContext("AlarmMessageObjectQueryType");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short lengthDataset = readSimpleField("lengthDataset", readUnsignedShort(readBuffer, 8));

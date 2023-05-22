@@ -68,7 +68,6 @@ public class BACnetContextTagEnumerated extends BACnetContextTag implements Mess
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetContextTagEnumerated");
 
     // Simple Field (payload)
@@ -108,8 +107,6 @@ public class BACnetContextTagEnumerated extends BACnetContextTag implements Mess
       throws ParseException {
     readBuffer.pullContext("BACnetContextTagEnumerated");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetTagPayloadEnumerated payload =

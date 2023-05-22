@@ -61,11 +61,11 @@ public class EdeParser {
     private List<File> findAllEdeFiles(File curDir) {
         List<File> edeFiles = new LinkedList<>();
         try {
-            Files.walkFileTree(curDir.toPath(), new SimpleFileVisitor<Path>() {
+            Files.walkFileTree(curDir.toPath(), new SimpleFileVisitor<>() {
                 @Override
                 public FileVisitResult visitFile(Path path, BasicFileAttributes attrs) {
                     final File file = path.toFile();
-                    if(file.isFile()) {
+                    if (file.isFile()) {
                         // If the name starts with "edeDataText" this is probably an EDE file.
                         if (file.getName().startsWith("edeDataText")) {
                             String suffix = file.getName().substring("edeDataText".length());

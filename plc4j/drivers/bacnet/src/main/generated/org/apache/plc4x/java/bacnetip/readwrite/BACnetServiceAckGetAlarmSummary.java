@@ -79,7 +79,6 @@ public class BACnetServiceAckGetAlarmSummary extends BACnetServiceAck implements
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetServiceAckGetAlarmSummary");
 
     // Simple Field (objectIdentifier)
@@ -125,8 +124,6 @@ public class BACnetServiceAckGetAlarmSummary extends BACnetServiceAck implements
       ReadBuffer readBuffer, Long serviceAckLength) throws ParseException {
     readBuffer.pullContext("BACnetServiceAckGetAlarmSummary");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagObjectIdentifier objectIdentifier =

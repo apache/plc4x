@@ -56,7 +56,6 @@ public class HVACHumidity implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("HVACHumidity");
 
     // Simple Field (humidityValue)
@@ -97,8 +96,6 @@ public class HVACHumidity implements Message {
   public static HVACHumidity staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("HVACHumidity");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int humidityValue = readSimpleField("humidityValue", readUnsignedInt(readBuffer, 16));

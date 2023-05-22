@@ -50,7 +50,6 @@ public abstract class FirmataMessage implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("FirmataMessage");
 
     // Discriminator Field (messageType) (Used as input to a switch field)
@@ -109,8 +108,6 @@ public abstract class FirmataMessage implements Message {
       throws ParseException {
     readBuffer.pullContext("FirmataMessage");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte messageType =

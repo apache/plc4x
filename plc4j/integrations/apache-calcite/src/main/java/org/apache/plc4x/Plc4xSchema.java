@@ -49,7 +49,7 @@ public class Plc4xSchema extends AbstractSchema {
         this.queues = configuration.getJobConfigurations().stream()
             .collect(Collectors.toMap(
                 JobConfiguration::getName,
-                conf -> new ArrayBlockingQueue<Record>(1000)
+                conf -> new ArrayBlockingQueue<>(1000)
             ));
         // Create the tables
         this.tableMap = configuration.getJobConfigurations().stream()

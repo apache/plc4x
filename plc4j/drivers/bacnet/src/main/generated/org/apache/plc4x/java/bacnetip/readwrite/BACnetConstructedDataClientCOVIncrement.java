@@ -80,7 +80,6 @@ public class BACnetConstructedDataClientCOVIncrement extends BACnetConstructedDa
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataClientCOVIncrement");
 
     // Simple Field (covIncrement)
@@ -121,8 +120,6 @@ public class BACnetConstructedDataClientCOVIncrement extends BACnetConstructedDa
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataClientCOVIncrement");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetClientCOV covIncrement =

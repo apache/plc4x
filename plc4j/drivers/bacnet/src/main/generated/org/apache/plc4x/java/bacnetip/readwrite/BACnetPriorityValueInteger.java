@@ -63,7 +63,6 @@ public class BACnetPriorityValueInteger extends BACnetPriorityValue implements M
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetPriorityValueInteger");
 
     // Simple Field (integerValue)
@@ -93,8 +92,6 @@ public class BACnetPriorityValueInteger extends BACnetPriorityValue implements M
       ReadBuffer readBuffer, BACnetObjectType objectTypeArgument) throws ParseException {
     readBuffer.pullContext("BACnetPriorityValueInteger");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagSignedInteger integerValue =

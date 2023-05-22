@@ -65,7 +65,6 @@ public class MonitoredSALReply extends EncodedReply implements Message {
   protected void serializeEncodedReplyChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("MonitoredSALReply");
 
     // Simple Field (monitoredSAL)
@@ -96,8 +95,6 @@ public class MonitoredSALReply extends EncodedReply implements Message {
       throws ParseException {
     readBuffer.pullContext("MonitoredSALReply");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     MonitoredSAL monitoredSAL =

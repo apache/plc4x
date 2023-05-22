@@ -42,8 +42,8 @@ public enum RequestType {
     }
   }
 
-  private short value;
-  private short controlChar;
+  private final short value;
+  private final short controlChar;
 
   RequestType(short value, short controlChar) {
     this.value = value;
@@ -68,7 +68,7 @@ public enum RequestType {
   }
 
   public static List<RequestType> enumsForFieldControlChar(short fieldValue) {
-    List<RequestType> _values = new ArrayList();
+    List<RequestType> _values = new ArrayList<>();
     for (RequestType _val : RequestType.values()) {
       if (_val.getControlChar() == fieldValue) {
         _values.add(_val);

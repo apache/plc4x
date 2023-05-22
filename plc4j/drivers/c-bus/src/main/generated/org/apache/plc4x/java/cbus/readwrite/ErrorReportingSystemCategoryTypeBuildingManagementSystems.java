@@ -61,7 +61,6 @@ public class ErrorReportingSystemCategoryTypeBuildingManagementSystems
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("ErrorReportingSystemCategoryTypeBuildingManagementSystems");
 
     // Simple Field (categoryForType)
@@ -101,8 +100,6 @@ public class ErrorReportingSystemCategoryTypeBuildingManagementSystems
           throws ParseException {
     readBuffer.pullContext("ErrorReportingSystemCategoryTypeBuildingManagementSystems");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ErrorReportingSystemCategoryTypeForBuildingManagementSystems categoryForType =

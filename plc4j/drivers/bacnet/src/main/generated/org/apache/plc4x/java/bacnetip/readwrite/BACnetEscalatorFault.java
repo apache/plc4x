@@ -43,7 +43,7 @@ public enum BACnetEscalatorFault {
     }
   }
 
-  private int value;
+  private final int value;
 
   BACnetEscalatorFault(int value) {
     this.value = value;

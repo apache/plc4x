@@ -66,7 +66,6 @@ public class ModbusPDUReadDiscreteInputsResponse extends ModbusPDU implements Me
   protected void serializeModbusPDUChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("ModbusPDUReadDiscreteInputsResponse");
 
     // Implicit Field (byteCount) (Used for parsing, but its value is not stored as it's implicitly
@@ -106,8 +105,6 @@ public class ModbusPDUReadDiscreteInputsResponse extends ModbusPDU implements Me
       ReadBuffer readBuffer, Boolean response) throws ParseException {
     readBuffer.pullContext("ModbusPDUReadDiscreteInputsResponse");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short byteCount = readImplicitField("byteCount", readUnsignedShort(readBuffer, 8));

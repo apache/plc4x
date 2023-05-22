@@ -79,7 +79,6 @@ public class BACnetConstructedDataAccessEvent extends BACnetConstructedData impl
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataAccessEvent");
 
     // Simple Field (accessEvent)
@@ -120,8 +119,6 @@ public class BACnetConstructedDataAccessEvent extends BACnetConstructedData impl
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataAccessEvent");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetAccessEventTagged accessEvent =

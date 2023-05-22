@@ -59,7 +59,6 @@ public class UnregisterNodesResponse extends ExtensionObjectDefinition implement
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("UnregisterNodesResponse");
 
     // Simple Field (responseHeader)
@@ -89,8 +88,6 @@ public class UnregisterNodesResponse extends ExtensionObjectDefinition implement
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("UnregisterNodesResponse");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ExtensionObjectDefinition responseHeader =

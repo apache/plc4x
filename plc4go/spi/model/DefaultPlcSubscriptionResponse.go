@@ -21,6 +21,7 @@ package model
 
 import (
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog/log"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 )
@@ -44,7 +45,8 @@ func NewDefaultPlcSubscriptionResponse(request apiModel.PlcSubscriptionRequest, 
 	for subscriptionTagName, consumers := range request.(*DefaultPlcSubscriptionRequest).preRegisteredConsumers {
 		subscriptionHandle, err := plcSubscriptionResponse.GetSubscriptionHandle(subscriptionTagName)
 		if subscriptionHandle == nil || err != nil {
-			panic("PlcSubscriptionHandle for " + subscriptionTagName + " not found")
+			log.Error().Msgf("PlcSubscriptionHandle for %s not found", subscriptionTagName)
+			continue
 		}
 		for _, consumer := range consumers {
 			subscriptionHandle.Register(consumer)
@@ -77,14 +79,22 @@ func (d *DefaultPlcSubscriptionResponse) GetTagNames() []string {
 }
 
 func (d *DefaultPlcSubscriptionResponse) GetResponseCode(name string) apiModel.PlcResponseCode {
-	return d.values[name].GetCode()
+	item, ok := d.values[name]
+	if !ok {
+		return apiModel.PlcResponseCode_NOT_FOUND
+	}
+	return item.GetCode()
 }
 
 func (d *DefaultPlcSubscriptionResponse) GetSubscriptionHandle(name string) (apiModel.PlcSubscriptionHandle, error) {
-	if d.values[name].GetCode() != apiModel.PlcResponseCode_OK {
+	item, ok := d.values[name]
+	if !ok {
+		return nil, errors.Errorf("item for %s not found", name)
+	}
+	if item.GetCode() != apiModel.PlcResponseCode_OK {
 		return nil, errors.Errorf("%s failed to subscribe", name)
 	}
-	return d.values[name].GetSubscriptionHandle(), nil
+	return item.GetSubscriptionHandle(), nil
 }
 
 func (d *DefaultPlcSubscriptionResponse) GetSubscriptionHandles() []apiModel.PlcSubscriptionHandle {

@@ -50,7 +50,6 @@ public abstract class COTPParameter implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("COTPParameter");
 
     // Discriminator Field (parameterType) (Used as input to a switch field)
@@ -113,8 +112,6 @@ public abstract class COTPParameter implements Message {
   public static COTPParameter staticParse(ReadBuffer readBuffer, Short rest) throws ParseException {
     readBuffer.pullContext("COTPParameter");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short parameterType = readDiscriminatorField("parameterType", readUnsignedShort(readBuffer, 8));

@@ -37,7 +37,7 @@ public enum LightingCompatible {
     }
   }
 
-  private byte value;
+  private final byte value;
 
   LightingCompatible(byte value) {
     this.value = value;

@@ -37,7 +37,7 @@ public enum PnIoCm_SubmoduleType {
     }
   }
 
-  private byte value;
+  private final byte value;
 
   PnIoCm_SubmoduleType(byte value) {
     this.value = value;

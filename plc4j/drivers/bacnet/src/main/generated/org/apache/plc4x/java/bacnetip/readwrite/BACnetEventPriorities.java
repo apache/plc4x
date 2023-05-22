@@ -86,7 +86,6 @@ public class BACnetEventPriorities implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetEventPriorities");
 
     // Simple Field (openingTag)
@@ -160,8 +159,6 @@ public class BACnetEventPriorities implements Message {
       throws ParseException {
     readBuffer.pullContext("BACnetEventPriorities");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetOpeningTag openingTag =

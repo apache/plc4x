@@ -38,7 +38,7 @@ public enum NegotiationStatus {
     }
   }
 
-  private long value;
+  private final long value;
 
   NegotiationStatus(long value) {
     this.value = value;

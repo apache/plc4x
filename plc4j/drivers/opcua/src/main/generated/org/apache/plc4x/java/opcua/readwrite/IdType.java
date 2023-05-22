@@ -37,7 +37,7 @@ public enum IdType {
     }
   }
 
-  private long value;
+  private final long value;
 
   IdType(long value) {
     this.value = value;

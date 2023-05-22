@@ -60,7 +60,6 @@ public class BACnetCredentialAuthenticationFactor implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetCredentialAuthenticationFactor");
 
     // Simple Field (disable)
@@ -103,8 +102,6 @@ public class BACnetCredentialAuthenticationFactor implements Message {
       throws ParseException {
     readBuffer.pullContext("BACnetCredentialAuthenticationFactor");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetAccessAuthenticationFactorDisableTagged disable =

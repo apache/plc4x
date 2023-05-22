@@ -40,7 +40,7 @@ public enum BVLCResultCode {
     }
   }
 
-  private int value;
+  private final int value;
 
   BVLCResultCode(int value) {
     this.value = value;

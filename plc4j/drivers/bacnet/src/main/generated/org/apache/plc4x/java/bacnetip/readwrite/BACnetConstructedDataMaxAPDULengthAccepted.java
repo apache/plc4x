@@ -80,7 +80,6 @@ public class BACnetConstructedDataMaxAPDULengthAccepted extends BACnetConstructe
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataMaxAPDULengthAccepted");
 
     // Simple Field (maxApduLengthAccepted)
@@ -124,8 +123,6 @@ public class BACnetConstructedDataMaxAPDULengthAccepted extends BACnetConstructe
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataMaxAPDULengthAccepted");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger maxApduLengthAccepted =

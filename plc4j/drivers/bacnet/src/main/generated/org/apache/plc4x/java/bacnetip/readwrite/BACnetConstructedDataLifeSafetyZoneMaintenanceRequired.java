@@ -80,7 +80,6 @@ public class BACnetConstructedDataLifeSafetyZoneMaintenanceRequired extends BACn
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataLifeSafetyZoneMaintenanceRequired");
 
     // Simple Field (maintenanceRequired)
@@ -122,8 +121,6 @@ public class BACnetConstructedDataLifeSafetyZoneMaintenanceRequired extends BACn
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataLifeSafetyZoneMaintenanceRequired");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagBoolean maintenanceRequired =

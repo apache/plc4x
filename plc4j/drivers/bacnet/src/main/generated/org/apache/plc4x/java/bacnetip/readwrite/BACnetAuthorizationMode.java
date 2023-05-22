@@ -40,7 +40,7 @@ public enum BACnetAuthorizationMode {
     }
   }
 
-  private int value;
+  private final int value;
 
   BACnetAuthorizationMode(int value) {
     this.value = value;

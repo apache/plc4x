@@ -59,7 +59,6 @@ public class SALDataPoolsSpasPondsFountainsControl extends SALData implements Me
   protected void serializeSALDataChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("SALDataPoolsSpasPondsFountainsControl");
 
     // Simple Field (poolsSpaPondsFountainsData)
@@ -92,8 +91,6 @@ public class SALDataPoolsSpasPondsFountainsControl extends SALData implements Me
       ReadBuffer readBuffer, ApplicationId applicationId) throws ParseException {
     readBuffer.pullContext("SALDataPoolsSpasPondsFountainsControl");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     LightingData poolsSpaPondsFountainsData =

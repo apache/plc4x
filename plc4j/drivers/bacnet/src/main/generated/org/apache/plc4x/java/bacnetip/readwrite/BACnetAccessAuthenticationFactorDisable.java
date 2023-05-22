@@ -41,7 +41,7 @@ public enum BACnetAccessAuthenticationFactorDisable {
     }
   }
 
-  private int value;
+  private final int value;
 
   BACnetAccessAuthenticationFactorDisable(int value) {
     this.value = value;

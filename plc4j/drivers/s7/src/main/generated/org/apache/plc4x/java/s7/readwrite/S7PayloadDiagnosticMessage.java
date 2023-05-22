@@ -113,7 +113,6 @@ public class S7PayloadDiagnosticMessage extends S7PayloadUserDataItem implements
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("S7PayloadDiagnosticMessage");
 
     // Simple Field (EventId)
@@ -180,8 +179,6 @@ public class S7PayloadDiagnosticMessage extends S7PayloadUserDataItem implements
       throws ParseException {
     readBuffer.pullContext("S7PayloadDiagnosticMessage");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int EventId = readSimpleField("EventId", readUnsignedInt(readBuffer, 16));

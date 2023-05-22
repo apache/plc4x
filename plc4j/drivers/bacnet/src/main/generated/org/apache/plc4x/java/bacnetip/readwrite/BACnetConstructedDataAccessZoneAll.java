@@ -66,7 +66,6 @@ public class BACnetConstructedDataAccessZoneAll extends BACnetConstructedData im
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataAccessZoneAll");
 
     writeBuffer.popContext("BACnetConstructedDataAccessZoneAll");
@@ -95,8 +94,6 @@ public class BACnetConstructedDataAccessZoneAll extends BACnetConstructedData im
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataAccessZoneAll");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Validation
     if (!((1) == (2))) {

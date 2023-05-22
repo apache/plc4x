@@ -64,7 +64,6 @@ public class TlvChassisId extends LldpUnit implements Message {
   protected void serializeLldpUnitChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("TlvChassisId");
 
     // Simple Field (chassisIdSubType)
@@ -101,8 +100,6 @@ public class TlvChassisId extends LldpUnit implements Message {
       ReadBuffer readBuffer, Integer tlvIdLength) throws ParseException {
     readBuffer.pullContext("TlvChassisId");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short chassisIdSubType = readSimpleField("chassisIdSubType", readUnsignedShort(readBuffer, 8));

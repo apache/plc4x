@@ -66,7 +66,6 @@ public class OpenProtocolMessageParameterSetSelectedUnsubscribeRev1
       WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("OpenProtocolMessageParameterSetSelectedUnsubscribeRev1");
 
     writeBuffer.popContext("OpenProtocolMessageParameterSetSelectedUnsubscribeRev1");
@@ -91,8 +90,6 @@ public class OpenProtocolMessageParameterSetSelectedUnsubscribeRev1
           ReadBuffer readBuffer, Long revision) throws ParseException {
     readBuffer.pullContext("OpenProtocolMessageParameterSetSelectedUnsubscribeRev1");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("OpenProtocolMessageParameterSetSelectedUnsubscribeRev1");

@@ -48,7 +48,6 @@ public class MeteringDataMeasureDrinkingWater extends MeteringData implements Me
   protected void serializeMeteringDataChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("MeteringDataMeasureDrinkingWater");
 
     writeBuffer.popContext("MeteringDataMeasureDrinkingWater");
@@ -72,8 +71,6 @@ public class MeteringDataMeasureDrinkingWater extends MeteringData implements Me
       throws ParseException {
     readBuffer.pullContext("MeteringDataMeasureDrinkingWater");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("MeteringDataMeasureDrinkingWater");

@@ -46,7 +46,7 @@ public enum AdsPortNumbers {
     }
   }
 
-  private int value;
+  private final int value;
 
   AdsPortNumbers(int value) {
     this.value = value;

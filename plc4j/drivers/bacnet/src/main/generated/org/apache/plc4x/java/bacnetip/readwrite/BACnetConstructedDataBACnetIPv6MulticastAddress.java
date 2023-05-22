@@ -80,7 +80,6 @@ public class BACnetConstructedDataBACnetIPv6MulticastAddress extends BACnetConst
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataBACnetIPv6MulticastAddress");
 
     // Simple Field (ipv6MulticastAddress)
@@ -122,8 +121,6 @@ public class BACnetConstructedDataBACnetIPv6MulticastAddress extends BACnetConst
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataBACnetIPv6MulticastAddress");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagOctetString ipv6MulticastAddress =

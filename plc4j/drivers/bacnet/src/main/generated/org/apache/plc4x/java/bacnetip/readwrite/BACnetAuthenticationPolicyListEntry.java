@@ -60,7 +60,6 @@ public class BACnetAuthenticationPolicyListEntry implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetAuthenticationPolicyListEntry");
 
     // Simple Field (credentialDataInput)
@@ -103,8 +102,6 @@ public class BACnetAuthenticationPolicyListEntry implements Message {
       throws ParseException {
     readBuffer.pullContext("BACnetAuthenticationPolicyListEntry");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetDeviceObjectReferenceEnclosed credentialDataInput =

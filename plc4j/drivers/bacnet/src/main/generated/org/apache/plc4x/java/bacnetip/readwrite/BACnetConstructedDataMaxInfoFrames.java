@@ -79,7 +79,6 @@ public class BACnetConstructedDataMaxInfoFrames extends BACnetConstructedData im
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataMaxInfoFrames");
 
     // Simple Field (maxInfoFrames)
@@ -120,8 +119,6 @@ public class BACnetConstructedDataMaxInfoFrames extends BACnetConstructedData im
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataMaxInfoFrames");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger maxInfoFrames =

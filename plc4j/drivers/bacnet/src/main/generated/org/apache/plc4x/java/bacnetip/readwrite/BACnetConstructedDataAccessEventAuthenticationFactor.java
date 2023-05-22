@@ -80,7 +80,6 @@ public class BACnetConstructedDataAccessEventAuthenticationFactor extends BACnet
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataAccessEventAuthenticationFactor");
 
     // Simple Field (accessEventAuthenticationFactor)
@@ -124,8 +123,6 @@ public class BACnetConstructedDataAccessEventAuthenticationFactor extends BACnet
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataAccessEventAuthenticationFactor");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetAuthenticationFactor accessEventAuthenticationFactor =

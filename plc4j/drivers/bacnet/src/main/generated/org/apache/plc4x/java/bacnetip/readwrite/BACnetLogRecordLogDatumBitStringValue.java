@@ -66,7 +66,6 @@ public class BACnetLogRecordLogDatumBitStringValue extends BACnetLogRecordLogDat
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetLogRecordLogDatumBitStringValue");
 
     // Simple Field (bitStringValue)
@@ -96,8 +95,6 @@ public class BACnetLogRecordLogDatumBitStringValue extends BACnetLogRecordLogDat
       ReadBuffer readBuffer, Short tagNumber) throws ParseException {
     readBuffer.pullContext("BACnetLogRecordLogDatumBitStringValue");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetContextTagBitString bitStringValue =

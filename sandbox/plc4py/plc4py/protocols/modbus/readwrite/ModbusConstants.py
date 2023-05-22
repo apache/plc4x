@@ -21,26 +21,23 @@ from dataclasses import dataclass
 
 from ctypes import c_uint16
 from plc4py.api.messages.PlcMessage import PlcMessage
+from plc4py.spi.generation.WriteBuffer import WriteBuffer
 import math
 
 
 @dataclass
 class ModbusConstants(PlcMessage):
-    MODBUSTCPDEFAULTPORT: c_uint16 = 502
+    MODBUSTCPDEFAULTPORT: c_uint16 = c_uint16(502)
 
     def __post_init__(self):
         super().__init__()
 
     def serialize(self, write_buffer: WriteBuffer):
-        position_aware: PositionAware = write_buffer
-        start_pos: int = position_aware.get_pos()
         write_buffer.push_context("ModbusConstants")
 
         # Const Field (modbusTcpDefaultPort)
-        write_const_field(
-            "modbusTcpDefaultPort",
-            self.modbus_tcp_default_port,
-            write_unsigned_int(write_buffer, 16),
+        write_buffer.write_unsigned_short(
+            self.modbus_tcp_default_port.value, logical_name="modbusTcpDefaultPort"
         )
 
         write_buffer.pop_context("ModbusConstants")
@@ -58,19 +55,16 @@ class ModbusConstants(PlcMessage):
         return length_in_bits
 
     def static_parse(read_buffer: ReadBuffer, args):
-        position_aware: PositionAware = read_buffer
         return staticParse(read_buffer)
 
     @staticmethod
     def static_parse_context(read_buffer: ReadBuffer):
         read_buffer.pull_context("ModbusConstants")
-        position_aware: PositionAware = read_buffer
-        start_pos: int = position_aware.get_pos()
         cur_pos: int = 0
 
         modbus_tcp_default_port: c_uint16 = read_const_field(
             "modbusTcpDefaultPort",
-            read_unsigned_int(read_buffer, 16),
+            read_unsigned_int,
             ModbusConstants.MODBUSTCPDEFAULTPORT,
         )
 

@@ -67,7 +67,6 @@ public class ListServicesResponse extends EipPacket implements Message {
   protected void serializeEipPacketChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("ListServicesResponse");
 
     // Implicit Field (typeIdCount) (Used for parsing, but its value is not stored as it's
@@ -111,8 +110,6 @@ public class ListServicesResponse extends EipPacket implements Message {
       ReadBuffer readBuffer, Boolean response) throws ParseException {
     readBuffer.pullContext("ListServicesResponse");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int typeIdCount = readImplicitField("typeIdCount", readUnsignedInt(readBuffer, 16));

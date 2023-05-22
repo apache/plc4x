@@ -97,7 +97,6 @@ public class BACnetNotificationParametersUnsignedRange extends BACnetNotificatio
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetNotificationParametersUnsignedRange");
 
     // Simple Field (innerOpeningTag)
@@ -157,8 +156,6 @@ public class BACnetNotificationParametersUnsignedRange extends BACnetNotificatio
       throws ParseException {
     readBuffer.pullContext("BACnetNotificationParametersUnsignedRange");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetOpeningTag innerOpeningTag =

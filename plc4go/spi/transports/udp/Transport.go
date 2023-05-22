@@ -139,11 +139,11 @@ func (m *TransportInstance) Connect() error {
 func (m *TransportInstance) ConnectWithContext(ctx context.Context) error {
 	// If we haven't provided a local address, have the system figure it out by dialing
 	// the remote address and then using that connections local address as local address.
-	if m.LocalAddress == nil {
+	if m.LocalAddress == nil && m.RemoteAddress != nil {
 		var d net.Dialer
 		udpTest, err := d.DialContext(ctx, "udp", m.RemoteAddress.String())
 		if err != nil {
-			return errors.Wrap(err, "error connecting to remote address")
+			return errors.Wrapf(err, "error connecting to remote address '%s'", m.RemoteAddress)
 		}
 		m.LocalAddress = udpTest.LocalAddr().(*net.UDPAddr)
 		err = udpTest.Close()
@@ -156,17 +156,17 @@ func (m *TransportInstance) ConnectWithContext(ctx context.Context) error {
 	var err error
 	if m.RemoteAddress != nil {
 		if m.udpConn, err = net.DialUDP("udp", m.LocalAddress, m.RemoteAddress); err != nil {
-			return errors.Wrap(err, "error connecting to remote address")
+			return errors.Wrapf(err, "error connecting to remote address '%s'", m.RemoteAddress)
 		}
-	} else if m.SoReUse {
+	} else if m.SoReUse && m.LocalAddress != nil {
 		if packetConn, err := reuseport.ListenPacket("udp", m.LocalAddress.String()); err != nil {
-			return errors.Wrap(err, "error connecting to local address")
+			return errors.Wrapf(err, "error connecting to local address '%s'", m.LocalAddress)
 		} else {
 			m.udpConn = packetConn.(*net.UDPConn)
 		}
 	} else {
 		if m.udpConn, err = net.ListenUDP("udp", m.LocalAddress); err != nil {
-			return errors.Wrap(err, "error connecting to local address")
+			return errors.Wrapf(err, "error connecting to local address '%s'", m.LocalAddress)
 		}
 	}
 
@@ -251,19 +251,17 @@ func (m *TransportInstance) Write(data []byte) error {
 	}
 	var num int
 	var err error
-	if m.RemoteAddress != nil {
-
+	if m.RemoteAddress == nil {
 		// TODO: usually this happens on the dial port... is there a better way to catch that?
 		num, err = m.udpConn.Write(data)
 	} else {
 		num, err = m.udpConn.WriteToUDP(data, m.RemoteAddress)
 	}
-
 	if err != nil {
-		return errors.Wrap(err, "error writing")
+		return errors.Wrapf(err, "error writing (remote address: %s)", m.RemoteAddress)
 	}
 	if num != len(data) {
-		return errors.New("error writing: not all bytes written")
+		return errors.Errorf("error writing: not all bytes written (Expected %d, Actual %d)", len(data), num)
 	}
 	return nil
 }

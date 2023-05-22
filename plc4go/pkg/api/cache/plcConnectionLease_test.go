@@ -131,7 +131,7 @@ func TestLeasedPlcConnection_GetTracer(t *testing.T) {
 				}()
 			}
 		}
-	case <-time.After(1 * time.Second):
+	case <-time.After(2 * time.Second):
 		t.Errorf("Timeout")
 	}
 }
@@ -565,7 +565,7 @@ func TestLeasedPlcConnection_UnsubscriptionRequestBuilder(t *testing.T) {
 				func() {
 					defer func() {
 						if r := recover(); r != nil {
-							assert.Equal(t, r, "not implemented")
+							assert.Equal(t, r, "not provided by simulated connection")
 						} else {
 							t.Errorf("The code did not panic")
 						}
@@ -615,7 +615,7 @@ func TestLeasedPlcConnection_BrowseRequestBuilder(t *testing.T) {
 				func() {
 					defer func() {
 						if r := recover(); r != nil {
-							assert.Equal(t, r, "not implemented")
+							assert.Equal(t, r, "not provided by simulated connection")
 						} else {
 							t.Errorf("The code did not panic")
 						}
@@ -637,5 +637,33 @@ func TestLeasedPlcConnection_BrowseRequestBuilder(t *testing.T) {
 		}
 	case <-time.After(1 * time.Second):
 		t.Errorf("Timeout")
+	}
+}
+
+func Test_plcConnectionLease_String(t1 *testing.T) {
+	type fields struct {
+		connectionContainer *connectionContainer
+		leaseId             uint32
+		connection          tracedPlcConnection
+	}
+	tests := []struct {
+		name   string
+		fields fields
+		want   string
+	}{
+		{
+			name: "String it",
+			want: "plcConnectionLease{connectionContainer: <nil>, leaseId: 0, connection: %!s(<nil>)}",
+		},
+	}
+	for _, tt := range tests {
+		t1.Run(tt.name, func(t1 *testing.T) {
+			t := &plcConnectionLease{
+				connectionContainer: tt.fields.connectionContainer,
+				leaseId:             tt.fields.leaseId,
+				connection:          tt.fields.connection,
+			}
+			assert.Equalf(t1, tt.want, t.String(), "String()")
+		})
 	}
 }

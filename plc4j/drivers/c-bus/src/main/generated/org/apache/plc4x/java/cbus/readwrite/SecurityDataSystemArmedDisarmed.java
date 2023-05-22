@@ -58,7 +58,6 @@ public class SecurityDataSystemArmedDisarmed extends SecurityData implements Mes
   protected void serializeSecurityDataChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("SecurityDataSystemArmedDisarmed");
 
     // Simple Field (armCodeType)
@@ -88,8 +87,6 @@ public class SecurityDataSystemArmedDisarmed extends SecurityData implements Mes
       throws ParseException {
     readBuffer.pullContext("SecurityDataSystemArmedDisarmed");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     SecurityArmCode armCodeType =

@@ -66,7 +66,6 @@ public class BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned
       WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned");
 
     // Simple Field (unsignedValue)
@@ -97,8 +96,6 @@ public class BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned
           ReadBuffer readBuffer, Short tagNumber) throws ParseException {
     readBuffer.pullContext("BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger unsignedValue =

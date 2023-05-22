@@ -36,7 +36,7 @@ public enum BACnetLiftCarDoorCommand {
     }
   }
 
-  private short value;
+  private final short value;
 
   BACnetLiftCarDoorCommand(short value) {
     this.value = value;

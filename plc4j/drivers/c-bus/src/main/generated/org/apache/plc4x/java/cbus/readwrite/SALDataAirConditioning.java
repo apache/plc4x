@@ -58,7 +58,6 @@ public class SALDataAirConditioning extends SALData implements Message {
   protected void serializeSALDataChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("SALDataAirConditioning");
 
     // Simple Field (airConditioningData)
@@ -89,8 +88,6 @@ public class SALDataAirConditioning extends SALData implements Message {
       ReadBuffer readBuffer, ApplicationId applicationId) throws ParseException {
     readBuffer.pullContext("SALDataAirConditioning");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     AirConditioningData airConditioningData =

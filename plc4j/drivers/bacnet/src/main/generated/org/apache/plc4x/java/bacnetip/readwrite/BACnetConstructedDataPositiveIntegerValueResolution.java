@@ -80,7 +80,6 @@ public class BACnetConstructedDataPositiveIntegerValueResolution extends BACnetC
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataPositiveIntegerValueResolution");
 
     // Simple Field (resolution)
@@ -121,8 +120,6 @@ public class BACnetConstructedDataPositiveIntegerValueResolution extends BACnetC
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataPositiveIntegerValueResolution");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger resolution =

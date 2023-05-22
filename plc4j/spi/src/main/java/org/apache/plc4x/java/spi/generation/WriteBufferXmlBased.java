@@ -33,6 +33,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.Optional;
@@ -237,11 +238,7 @@ public class WriteBufferXmlBased implements WriteBuffer, BufferCommons {
     }
 
     public String getXmlString() {
-        try {
-            return byteArrayOutputStream.toString("UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new PlcRuntimeException(e);
-        }
+        return byteArrayOutputStream.toString(StandardCharsets.UTF_8);
     }
 
     private void move(int bits) {

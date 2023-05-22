@@ -56,7 +56,6 @@ public class BACnetShedLevelAmount extends BACnetShedLevel implements Message {
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetShedLevelAmount");
 
     // Simple Field (amount)
@@ -86,8 +85,6 @@ public class BACnetShedLevelAmount extends BACnetShedLevel implements Message {
       throws ParseException {
     readBuffer.pullContext("BACnetShedLevelAmount");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetContextTagReal amount =

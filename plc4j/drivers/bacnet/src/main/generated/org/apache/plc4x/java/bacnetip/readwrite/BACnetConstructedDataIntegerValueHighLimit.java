@@ -80,7 +80,6 @@ public class BACnetConstructedDataIntegerValueHighLimit extends BACnetConstructe
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataIntegerValueHighLimit");
 
     // Simple Field (highLimit)
@@ -121,8 +120,6 @@ public class BACnetConstructedDataIntegerValueHighLimit extends BACnetConstructe
       throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataIntegerValueHighLimit");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagSignedInteger highLimit =

@@ -65,7 +65,6 @@ public class FirmataCommandSetDigitalPinValue extends FirmataCommand implements 
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("FirmataCommandSetDigitalPinValue");
 
     // Simple Field (pin)
@@ -107,8 +106,6 @@ public class FirmataCommandSetDigitalPinValue extends FirmataCommand implements 
       ReadBuffer readBuffer, Boolean response) throws ParseException {
     readBuffer.pullContext("FirmataCommandSetDigitalPinValue");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short pin = readSimpleField("pin", readUnsignedShort(readBuffer, 8));

@@ -332,13 +332,13 @@ mainLoop:
 		if !messageHandled {
 			workerLog.Trace().Msg("Message was not handled")
 			timeout := time.NewTimer(time.Millisecond * 40)
+			defer utils.CleanupTimer(timeout)
 			select {
 			case m.defaultIncomingMessageChannel <- message:
 			case <-timeout.C:
 				timeout.Stop()
 				workerLog.Warn().Msgf("Message discarded\n%s", message)
 			}
-			utils.CleanupTimer(timeout)
 		}
 	}
 }

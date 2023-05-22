@@ -58,7 +58,6 @@ public class TlvTimeToLive extends LldpUnit implements Message {
   protected void serializeLldpUnitChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("TlvTimeToLive");
 
     // Simple Field (tlvTimeToLiveUnit)
@@ -88,8 +87,6 @@ public class TlvTimeToLive extends LldpUnit implements Message {
       throws ParseException {
     readBuffer.pullContext("TlvTimeToLive");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int tlvTimeToLiveUnit = readSimpleField("tlvTimeToLiveUnit", readUnsignedInt(readBuffer, 16));

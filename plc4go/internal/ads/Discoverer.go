@@ -23,19 +23,20 @@ import (
 	"context"
 	"encoding/binary"
 	"fmt"
+	"github.com/pkg/errors"
 	"net"
 	"net/url"
 	"strconv"
 	"time"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
-	"github.com/apache/plc4x/plc4go/pkg/api/values"
+	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	"github.com/apache/plc4x/plc4go/protocols/ads/discovery/readwrite/model"
 	driverModel "github.com/apache/plc4x/plc4go/protocols/ads/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
-	internalModel "github.com/apache/plc4x/plc4go/spi/model"
+	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/spi/options"
-	values2 "github.com/apache/plc4x/plc4go/spi/values"
+	spiValues "github.com/apache/plc4x/plc4go/spi/values"
 	"github.com/rs/zerolog/log"
 )
 
@@ -131,16 +132,21 @@ func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.
 	for _, discoveryItem := range discoveryItems {
 		responseAddr, err := net.ResolveUDPAddr("udp4", fmt.Sprintf("%s:%d", discoveryItem.localAddress, model.AdsDiscoveryConstants_ADSDISCOVERYUDPDEFAULTPORT))
 		if err != nil {
-			panic(err)
+			return errors.Wrap(err, "error resolving udp")
 		}
 		socket, err := net.ListenUDP("udp4", responseAddr)
 		if err != nil {
-			panic(err)
+			return errors.Wrap(err, "error listening udp")
 		}
 		discoveryItem.socket = socket
 
 		// Start a worker to receive responses
 		go func(discoveryItem *discovery) {
+			defer func() {
+				if err := recover(); err != nil {
+					log.Error().Msgf("panic-ed %v", err)
+				}
+			}()
 			buf := make([]byte, 1024)
 			for {
 				length, fromAddr, err := socket.ReadFromUDP(buf)
@@ -193,15 +199,15 @@ func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.
 				// TODO: Check if this is legit, or if we can get the information from somewhere.
 				opts["targetAmsPort"] = []string{"851"}
 
-				attributes := make(map[string]values.PlcValue)
-				attributes["hostName"] = values2.NewPlcSTRING(hostNameBlock.GetHostName().GetText())
+				attributes := make(map[string]apiValues.PlcValue)
+				attributes["hostName"] = spiValues.NewPlcSTRING(hostNameBlock.GetHostName().GetText())
 				if versionBlock != nil {
 					versionData := versionBlock.GetVersionData()
 					patchVersion := (int(versionData[3])&0xFF)<<8 | (int(versionData[2]) & 0xFF)
-					attributes["twinCatVersion"] = values2.NewPlcSTRING(fmt.Sprintf("%d.%d.%d", int(versionData[0])&0xFF, int(versionData[1])&0xFF, patchVersion))
+					attributes["twinCatVersion"] = spiValues.NewPlcSTRING(fmt.Sprintf("%d.%d.%d", int(versionData[0])&0xFF, int(versionData[1])&0xFF, patchVersion))
 				}
 				if fingerprintBlock != nil {
-					attributes["fingerprint"] = values2.NewPlcSTRING(string(fingerprintBlock.GetData()))
+					attributes["fingerprint"] = spiValues.NewPlcSTRING(string(fingerprintBlock.GetData()))
 				}
 				// TODO: Find out how to handle the OS Data
 
@@ -212,14 +218,14 @@ func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.
 					strconv.Itoa(int(remoteAmsNetId.GetOctet4())) + ":" +
 					strconv.Itoa(int(driverModel.AdsConstants_ADSTCPDEFAULTPORT)))
 				if err2 == nil {
-					plcDiscoveryItem := &internalModel.DefaultPlcDiscoveryItem{
-						ProtocolCode:  "ads",
-						TransportCode: "tcp",
-						TransportUrl:  *remoteAddress,
-						Options:       opts,
-						Name:          hostNameBlock.GetHostName().GetText(),
-						Attributes:    attributes,
-					}
+					plcDiscoveryItem := spiModel.NewDefaultPlcDiscoveryItem(
+						"ads",
+						"tcp",
+						*remoteAddress,
+						opts,
+						hostNameBlock.GetHostName().GetText(),
+						attributes,
+					)
 
 					// Pass the event back to the callback
 					callback(plcDiscoveryItem)

@@ -75,7 +75,6 @@ public class BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification imp
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification");
 
     // Simple Field (openingTag)
@@ -144,8 +143,6 @@ public class BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification imp
       ReadBuffer readBuffer, Short tagNumber) throws ParseException {
     readBuffer.pullContext("BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetOpeningTag openingTag =
