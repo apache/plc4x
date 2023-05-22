@@ -55,7 +55,7 @@ public class Plc4xListenRecordProcessorTest {
     }
 
     public void testAvroRecordWriterProcessor() throws InitializationException {  	
-        // TODO: at some point there should be some testing here
+        // TODO: when simulated driver supports listening this should be uncommented
     	// testRunner.run(NUMBER_OF_CALLS,true, true);
     	// //validations
     	// testRunner.assertTransferCount(Plc4xListenRecordProcessor.REL_SUCCESS, NUMBER_OF_CALLS);
