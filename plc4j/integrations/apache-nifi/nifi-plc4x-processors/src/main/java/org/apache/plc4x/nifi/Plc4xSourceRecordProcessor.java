@@ -33,6 +33,7 @@ import org.apache.nifi.annotation.behavior.InputRequirement;
 import org.apache.nifi.annotation.behavior.WritesAttribute;
 import org.apache.nifi.annotation.behavior.WritesAttributes;
 import org.apache.nifi.annotation.documentation.CapabilityDescription;
+import org.apache.nifi.annotation.documentation.SeeAlso;
 import org.apache.nifi.annotation.documentation.Tags;
 import org.apache.nifi.annotation.lifecycle.OnScheduled;
 import org.apache.nifi.components.PropertyDescriptor;
@@ -56,17 +57,19 @@ import org.apache.plc4x.nifi.record.Plc4xWriter;
 import org.apache.plc4x.nifi.record.RecordPlc4xWriter;
 
 @Tags({"plc4x", "get", "input", "source", "record"})
+@SeeAlso({Plc4xSinkRecordProcessor.class, Plc4xListenRecordProcessor.class})
 @InputRequirement(InputRequirement.Requirement.INPUT_ALLOWED)
 @CapabilityDescription("Processor able to read data from industrial PLCs using Apache PLC4X")
-@WritesAttributes({ @WritesAttribute(attribute = "value", description = "some value") })
+@WritesAttributes({ 
+	@WritesAttribute(attribute = Plc4xSourceRecordProcessor.RESULT_ROW_COUNT, description = "Number of rows written into the output FlowFile"),
+	@WritesAttribute(attribute = Plc4xSourceRecordProcessor.RESULT_QUERY_EXECUTION_TIME, description = "Time between request and response from the PLC"),
+	@WritesAttribute(attribute = Plc4xSourceRecordProcessor.INPUT_FLOWFILE_UUID, description = "UUID of the input FlowFile")
+ })
 public class Plc4xSourceRecordProcessor extends BasePlc4xProcessor {
 
 	public static final String RESULT_ROW_COUNT = "plc4x.read.row.count";
-	public static final String RESULT_QUERY_DURATION = "plc4x.read.query.duration";
 	public static final String RESULT_QUERY_EXECUTION_TIME = "plc4x.read.query.executiontime";
-	public static final String RESULT_QUERY_FETCH_TIME = "plc4x.read.query.fetchtime";
 	public static final String INPUT_FLOWFILE_UUID = "input.flowfile.uuid";
-	public static final String RESULT_ERROR_MESSAGE = "plc4x.read.error.message";
 
 	public static final PropertyDescriptor PLC_RECORD_WRITER_FACTORY = new PropertyDescriptor.Builder().name("plc4x-record-writer").displayName("Record Writer")
 		.description("Specifies the Controller Service to use for writing results to a FlowFile. The Record Writer may use Inherit Schema to emulate the inferred schema behavior, i.e. "

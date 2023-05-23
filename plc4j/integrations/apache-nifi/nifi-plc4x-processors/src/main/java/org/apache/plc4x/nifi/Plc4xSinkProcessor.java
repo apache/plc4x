@@ -26,6 +26,7 @@ import org.apache.nifi.annotation.behavior.ReadsAttribute;
 import org.apache.nifi.annotation.behavior.ReadsAttributes;
 import org.apache.nifi.annotation.behavior.TriggerSerially;
 import org.apache.nifi.annotation.documentation.CapabilityDescription;
+import org.apache.nifi.annotation.documentation.SeeAlso;
 import org.apache.nifi.annotation.documentation.Tags;
 import org.apache.nifi.flowfile.FlowFile;
 import org.apache.nifi.logging.ComponentLog;
@@ -40,6 +41,7 @@ import org.apache.plc4x.java.api.model.PlcTag;
 
 @TriggerSerially
 @Tags({"plc4x", "put", "sink"})
+@SeeAlso({Plc4xSourceProcessor.class})
 @InputRequirement(InputRequirement.Requirement.INPUT_REQUIRED)
 @CapabilityDescription("Processor able to write data to industrial PLCs using Apache PLC4X")
 @ReadsAttributes({@ReadsAttribute(attribute="value", description="some value")})

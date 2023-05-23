@@ -38,6 +38,7 @@ import org.apache.nifi.annotation.behavior.WritesAttribute;
 import org.apache.nifi.annotation.behavior.WritesAttributes;
 import org.apache.nifi.annotation.configuration.DefaultSchedule;
 import org.apache.nifi.annotation.documentation.CapabilityDescription;
+import org.apache.nifi.annotation.documentation.SeeAlso;
 import org.apache.nifi.annotation.documentation.Tags;
 import org.apache.nifi.annotation.lifecycle.OnScheduled;
 import org.apache.nifi.annotation.lifecycle.OnStopped;
@@ -66,16 +67,17 @@ import org.apache.plc4x.nifi.record.RecordPlc4xWriter;
 
 @DefaultSchedule(period="0.1 sec")
 @Tags({"plc4x", "get", "input", "source", "listen", "record"})
+@SeeAlso({Plc4xSourceRecordProcessor.class, Plc4xSinkRecordProcessor.class})
 @InputRequirement(InputRequirement.Requirement.INPUT_FORBIDDEN)
 @CapabilityDescription("Processor able to read data from industrial PLCs using Apache PLC4X subscriptions")
-@WritesAttributes({ @WritesAttribute(attribute = "value", description = "some value") })
+@WritesAttributes({ 
+	@WritesAttribute(attribute = Plc4xListenRecordProcessor.RESULT_ROW_COUNT, description = "Number of rows written into the output FlowFile"),
+	@WritesAttribute(attribute = Plc4xListenRecordProcessor.RESULT_LAST_EVENT, description = "Time elapsed from last subscription event")
+ })
 public class Plc4xListenRecordProcessor extends BasePlc4xProcessor {
 
-	public static final String RESULT_ROW_COUNT = "plc4x.read.row.count";
-	public static final String RESULT_QUERY_DURATION = "plc4x.read.query.duration";
-	public static final String RESULT_QUERY_EXECUTION_TIME = "plc4x.read.query.executiontime";
-	public static final String RESULT_QUERY_FETCH_TIME = "plc4x.read.query.fetchtime";
-	public static final String RESULT_ERROR_MESSAGE = "plc4x.read.error.message";
+	public static final String RESULT_ROW_COUNT = "plc4x.listen.row.count";
+	public static final String RESULT_LAST_EVENT = "plc4x.listen.lastEvent";
 
     protected Plc4xSubscriptionType subscriptionType = null;
     protected Long cyclingPollingInterval = null;
@@ -83,6 +85,7 @@ public class Plc4xListenRecordProcessor extends BasePlc4xProcessor {
 	protected Plc4xListenerDispatcher dispatcher;
 	protected RecordSchema recordSchema;
 	protected Thread readerThread;
+	final StopWatch executeTime = new StopWatch(false);
 
 	public static final PropertyDescriptor PLC_RECORD_WRITER_FACTORY = new PropertyDescriptor.Builder()
         .name("plc4x-record-writer")
@@ -180,6 +183,7 @@ public class Plc4xListenRecordProcessor extends BasePlc4xProcessor {
 
     @OnStopped
     public void closeDispatcher() throws ProcessException {
+		executeTime.stop();
 		if (readerThread != null) {
 			readerThread.interrupt();
 			if (!readerThread.isAlive()){
@@ -213,8 +217,8 @@ public class Plc4xListenRecordProcessor extends BasePlc4xProcessor {
 			session.adjustCounter("Messages Received", 1L, false);
 		}
 
+
 		final AtomicLong nrOfRows = new AtomicLong(0L);
-		final StopWatch executeTime = new StopWatch(true);
 
 		FlowFile resultSetFF;
 		resultSetFF = session.create();
@@ -265,19 +269,23 @@ public class Plc4xListenRecordProcessor extends BasePlc4xProcessor {
 					recordSchema = getSchemaCache().retrieveSchema(addressMap);
 				}
 			});
-
 			long executionTimeElapsed = executeTime.getElapsed(TimeUnit.MILLISECONDS);
+			executeTime.stop();
+			
 			final Map<String, String> attributesToAdd = new HashMap<>();
 			attributesToAdd.put(RESULT_ROW_COUNT, String.valueOf(nrOfRows.get()));
-			attributesToAdd.put(RESULT_QUERY_EXECUTION_TIME, String.valueOf(executionTimeElapsed));
+			attributesToAdd.put(RESULT_LAST_EVENT, String.valueOf(executionTimeElapsed));
 
 			attributesToAdd.putAll(plc4xWriter.getAttributesToAdd());
 			resultSetFF = session.putAllAttributes(resultSetFF, attributesToAdd);
 			plc4xWriter.updateCounters(session);
 			getLogger().info("{} contains {} records; transferring to 'success'", resultSetFF, nrOfRows.get());
 			
+			session.getProvenanceReporter().receive(resultSetFF, "Retrieved " + nrOfRows.get() + " rows from subscription", executionTimeElapsed);
 			session.transfer(resultSetFF, REL_SUCCESS);
 			session.commitAsync();
+
+			executeTime.start();
 
 		} catch (Exception e) {
 			getLogger().error("Got an error while trying to get a subscription event", e);

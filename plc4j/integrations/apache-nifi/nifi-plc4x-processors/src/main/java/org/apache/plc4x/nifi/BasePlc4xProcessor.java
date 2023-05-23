@@ -170,7 +170,7 @@ public abstract class BasePlc4xProcessor extends AbstractProcessor {
 		connectionString = context.getProperty(PLC_CONNECTION_STRING.getName()).getValue();
         schemaCache.restartCache(context.getProperty(PLC_SCHEMA_CACHE_SIZE).asInteger());
         debugEnabled = getLogger().isDebugEnabled();
-        timeout = Long.valueOf(context.getProperty(PLC_FUTURE_TIMEOUT_MILISECONDS.getName()).getValue());
+        timeout = context.getProperty(PLC_FUTURE_TIMEOUT_MILISECONDS.getName()).asLong();
     }
 
     @Override
