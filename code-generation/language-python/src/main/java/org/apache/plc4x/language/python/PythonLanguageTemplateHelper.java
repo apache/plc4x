@@ -678,57 +678,57 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
 
 
     public String toParseExpression(Field field, TypeReference resultType, Term term, List<Argument> parserArguments) {
-        Tracer tracer = Tracer.start("toParseExpression");
+        Tracer tracer = pythonTracerStart("toParseExpression");
         return tracer + toTypedParseExpression(field, resultType, term, parserArguments);
     }
 
     public String toParseExpression(Field field, TypeReference resultType, Term term, List<Argument> parserArguments, boolean suppressPointerAccess) {
-        Tracer tracer = Tracer.start("toParseExpression");
+        Tracer tracer = pythonTracerStart("toParseExpression");
         return tracer + toTypedParseExpression(field, resultType, term, parserArguments, suppressPointerAccess);
     }
 
     public String toSerializationExpression(Field field, TypeReference resultType, Term term, List<Argument> serializerArguments) {
-        Tracer tracer = Tracer.start("toSerializationExpression");
+        Tracer tracer = pythonTracerStart("toSerializationExpression");
         return tracer + toTypedSerializationExpression(field, resultType, term, serializerArguments);
     }
 
     public String toBooleanParseExpression(Field field, Term term, List<Argument> parserArguments) {
-        Tracer tracer = Tracer.start("toBooleanParseExpression");
+        Tracer tracer = pythonTracerStart("toBooleanParseExpression");
         return tracer + toTypedParseExpression(field, new DefaultBooleanTypeReference(), term, parserArguments);
     }
 
     public String toBooleanSerializationExpression(Field field, Term term, List<Argument> serializerArguments) {
-        Tracer tracer = Tracer.start("toBooleanSerializationExpression");
+        Tracer tracer = pythonTracerStart("toBooleanSerializationExpression");
         return tracer + toTypedSerializationExpression(field, new DefaultBooleanTypeReference(), term, serializerArguments);
     }
 
     public String toIntegerParseExpression(Field field, int sizeInBits, Term term, List<Argument> parserArguments) {
-        Tracer tracer = Tracer.start("toIntegerParseExpression");
+        Tracer tracer = pythonTracerStart("toIntegerParseExpression");
         return tracer + toTypedParseExpression(field, new DefaultIntegerTypeReference(SimpleTypeReference.SimpleBaseType.UINT, sizeInBits), term, parserArguments);
     }
 
     public String toIntegerSerializationExpression(Field field, int sizeInBits, Term term, List<Argument> serializerArguments) {
-        Tracer tracer = Tracer.start("toIntegerSerializationExpression");
+        Tracer tracer = pythonTracerStart("toIntegerSerializationExpression");
         return tracer + toTypedSerializationExpression(field, new DefaultIntegerTypeReference(SimpleTypeReference.SimpleBaseType.UINT, sizeInBits), term, serializerArguments);
     }
 
     public String toTypedParseExpression(Field field, TypeReference fieldType, Term term, List<Argument> parserArguments) {
-        Tracer tracer = Tracer.start("toTypedParseExpression");
+        Tracer tracer = pythonTracerStart("toTypedParseExpression");
         return tracer + toExpression(field, fieldType, term, parserArguments, null, false, fieldType != null && fieldType.isComplexTypeReference());
     }
 
     public String toTypedParseExpression(Field field, TypeReference fieldType, Term term, List<Argument> parserArguments, boolean suppressPointerAccess) {
-        Tracer tracer = Tracer.start("toTypedParseExpression");
+        Tracer tracer = pythonTracerStart("toTypedParseExpression");
         return tracer + toExpression(field, fieldType, term, parserArguments, null, false, suppressPointerAccess);
     }
 
     public String toTypedSerializationExpression(Field field, TypeReference fieldType, Term term, List<Argument> serializerArguments) {
-        Tracer tracer = Tracer.start("toTypedSerializationExpression");
+        Tracer tracer = pythonTracerStart("toTypedSerializationExpression");
         return tracer + toExpression(field, fieldType, term, null, serializerArguments, true, false);
     }
 
     String getCastExpressionForTypeReference(TypeReference typeReference) {
-        Tracer tracer = Tracer.start("castExpression");
+        Tracer tracer = pythonTracerStart("castExpression");
         if (typeReference instanceof SimpleTypeReference) {
             return tracer.dive("simpleTypeRef") + getLanguageTypeNameForTypeReference(typeReference);
         } else if (typeReference instanceof ByteOrderTypeReference) {
@@ -741,7 +741,7 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
     }
 
     private String toExpression(Field field, TypeReference fieldType, Term term, List<Argument> parserArguments, List<Argument> serializerArguments, boolean serialize, boolean suppressPointerAccess) {
-        Tracer tracer = Tracer.start("toExpression(suppressPointerAccess=" + suppressPointerAccess + ")");
+        Tracer tracer = pythonTracerStart("toExpression(suppressPointerAccess=" + suppressPointerAccess + ")");
         if (term == null) {
             return "";
         }
@@ -898,7 +898,7 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
     }
 
     private String toVariableExpression(Field field, TypeReference typeReference, VariableLiteral variableLiteral, List<Argument> parserArguments, List<Argument> serializerArguments, boolean serialize, boolean suppressPointerAccess, boolean isChild) {
-        Tracer tracer = Tracer.start("toVariableExpression(serialize=" + serialize + ")");
+        Tracer tracer = pythonTracerStart("toVariableExpression(serialize=" + serialize + ")");
         String variableLiteralName = variableLiteral.getName();
         boolean isEnumTypeReference = typeReference != null && typeReference.isEnumTypeReference();
         if ("lengthInBytes".equals(variableLiteralName)) {
@@ -1737,7 +1737,7 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
     }
 
     public String capitalize(String str) {
-        Tracer dummyTracer = Tracer.start("");
+        Tracer dummyTracer = pythonTracerStart("");
         String extractedTrace = dummyTracer.extractTraces(str);
         String cleanedString = dummyTracer.removeTraces(str);
         return extractedTrace + StringUtils.capitalize(cleanedString);
@@ -1776,6 +1776,22 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
             return snakeCase.substring(1);
         }
         return snakeCase.toString();
+    }
+
+    public Tracer pythonTracerStart(String base) {
+        return new Tracer(base) {
+            protected String separator() {
+                return "/";
+            }
+
+            protected String prefix() {
+                return "\"\"\"";
+            }
+
+            protected String suffix() {
+                return "\"\"\"";
+            }
+        };
     }
 
 }
