@@ -28,7 +28,7 @@ public class EipTagHandler implements PlcTagHandler {
 
     @Override
     public PlcTag parseTag(String tagAddress) {
-        return new EipTag(tagAddress);
+        return EipTag.of(tagAddress);
     }
 
     @Override

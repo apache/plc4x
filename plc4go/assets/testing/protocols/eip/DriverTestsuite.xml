@@ -400,6 +400,7 @@
                   <hurz>
                     <EipTag>
                       <node dataType="string" bitLength="40" encoding="UTF-8">%rate</node>
+                      <type dataType="string" bitLength="32" encoding="UTF-8">DINT</type>
                       <elementNb dataType="uint" bitLength="16">1</elementNb>
                     </EipTag>
                   </hurz>

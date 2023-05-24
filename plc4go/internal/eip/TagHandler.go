@@ -21,6 +21,7 @@ package eip
 
 import (
 	"fmt"
+	"github.com/apache/plc4x/plc4go/protocols/eip/readwrite/model"
 	"regexp"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
@@ -44,7 +45,7 @@ const (
 
 func (m TagHandler) ParseTag(tagAddress string) (apiModel.PlcTag, error) {
 	// TODO: This isn't pretty ...
-	return NewTag(tagAddress, 0, uint16(1)), nil
+	return NewTag(tagAddress, model.CIPDataTypeCode_DINT, uint16(1)), nil
 }
 
 func (m TagHandler) ParseQuery(query string) (apiModel.PlcQuery, error) {

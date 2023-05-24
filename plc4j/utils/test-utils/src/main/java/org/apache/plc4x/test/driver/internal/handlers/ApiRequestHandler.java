@@ -52,7 +52,7 @@ public class ApiRequestHandler {
                     }
                 }
                 final PlcReadRequest plc4xRequest = builder.build();
-                // Currently we can only process one response at at time, throw an error if more
+                // Currently we can only process one response at a time, throw an error if more
                 // are submitted.
                 if (synchronizer.responseFuture != null) {
                     throw new DriverTestsuiteException("Previous response not handled.");
