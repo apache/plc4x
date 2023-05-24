@@ -258,7 +258,7 @@ func (p PlcValueType) String() string {
 	return "Unknown"
 }
 
-func PlcValueByName(value string) (PlcValueType, bool) {
+func PlcValueByName(value string) (valueType PlcValueType, ok bool) {
 	switch value {
 	case "NULL":
 		return NULL, true
