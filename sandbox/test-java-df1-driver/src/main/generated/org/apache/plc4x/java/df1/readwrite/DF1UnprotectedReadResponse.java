@@ -58,7 +58,6 @@ public class DF1UnprotectedReadResponse extends DF1Command implements Message {
   protected void serializeDF1CommandChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("DF1UnprotectedReadResponse");
 
     // Manual Array Field (data)
@@ -93,8 +92,6 @@ public class DF1UnprotectedReadResponse extends DF1Command implements Message {
       throws ParseException {
     readBuffer.pullContext("DF1UnprotectedReadResponse");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte[] data =

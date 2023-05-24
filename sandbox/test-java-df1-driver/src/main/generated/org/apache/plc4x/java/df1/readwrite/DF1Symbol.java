@@ -57,7 +57,6 @@ public abstract class DF1Symbol implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("DF1Symbol");
 
     // Const Field (messageStart)
@@ -110,8 +109,6 @@ public abstract class DF1Symbol implements Message {
   public static DF1Symbol staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("DF1Symbol");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short messageStart =

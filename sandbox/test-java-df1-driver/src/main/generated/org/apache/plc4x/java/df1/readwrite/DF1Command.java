@@ -64,7 +64,6 @@ public abstract class DF1Command implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("DF1Command");
 
     // Discriminator Field (commandCode) (Used as input to a switch field)
@@ -116,8 +115,6 @@ public abstract class DF1Command implements Message {
   public static DF1Command staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("DF1Command");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short commandCode = readDiscriminatorField("commandCode", readUnsignedShort(readBuffer, 8));
