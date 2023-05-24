@@ -94,7 +94,7 @@
     <project.build.outputTimestamp>1664467011</project.build.outputTimestamp>
 
     <!-- Exclude all generated code -->
-    <sonar.exclusions>**/generated-sources,**/plc4go/protocols/**</sonar.exclusions>
+    <sonar.exclusions>**/generated-sources,plc4go/protocols/**</sonar.exclusions>
     <sonar.cfamily.build-wrapper-output>${project.basedir}/plc4c/target/build-wrapper-output</sonar.cfamily.build-wrapper-output>
 
     <plc4x-code-generation.version>1.7.0-SNAPSHOT</plc4x-code-generation.version>
