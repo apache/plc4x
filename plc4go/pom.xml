@@ -37,7 +37,7 @@
     <!-- Tell Sonar where to find the sources -->
     <sonar.sources>.</sonar.sources>
     <sonar.inclusions>**</sonar.inclusions>
-    <sonar.exclusions>${project.basedir}/protocols/**</sonar.exclusions>
+    <sonar.exclusions>plc4go/protocols/**</sonar.exclusions>
 
     <sonar.tests>.</sonar.tests>
     <sonar.test.inclusions>**/*_test.go</sonar.test.inclusions>
