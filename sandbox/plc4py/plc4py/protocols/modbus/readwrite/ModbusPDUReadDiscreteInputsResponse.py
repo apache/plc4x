@@ -19,9 +19,6 @@
 
 from dataclasses import dataclass
 
-from ctypes import c_bool
-from ctypes import c_byte
-from ctypes import c_uint8
 from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDU
 from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDUBuilder
@@ -32,11 +29,11 @@ import math
 
 @dataclass
 class ModbusPDUReadDiscreteInputsResponse(PlcMessage, ModbusPDU):
-    value: List[c_byte]
+    value: List[int]
     # Accessors for discriminator values.
-    error_flag: c_bool = False
-    function_flag: c_uint8 = 0x02
-    response: c_bool = True
+    error_flag: bool = False
+    function_flag: int = 0x02
+    response: bool = True
 
     def __post_init__(self):
         super().__init__()
@@ -45,7 +42,7 @@ class ModbusPDUReadDiscreteInputsResponse(PlcMessage, ModbusPDU):
         write_buffer.push_context("ModbusPDUReadDiscreteInputsResponse")
 
         # Implicit Field (byte_count) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-        byte_count: c_uint8 = c_uint8(len(self.value))
+        byte_count: int = int(len(self.value))
         write_buffer.write_unsigned_byte(byte_count, logical_name="byteCount")
 
         # Array Field (value)
@@ -70,11 +67,11 @@ class ModbusPDUReadDiscreteInputsResponse(PlcMessage, ModbusPDU):
         return length_in_bits
 
     @staticmethod
-    def static_parse_builder(read_buffer: ReadBuffer, response: c_bool):
+    def static_parse_builder(read_buffer: ReadBuffer, response: bool):
         read_buffer.pull_context("ModbusPDUReadDiscreteInputsResponse")
         cur_pos: int = 0
 
-        byte_count: c_uint8 = read_implicit_field("byteCount", read_unsigned_short)
+        byte_count: int = read_implicit_field("byteCount", read_unsigned_short)
 
         value: List[c_byte] = read_buffer.read_byte_array("value", int(byte_count))
 
@@ -109,7 +106,7 @@ class ModbusPDUReadDiscreteInputsResponse(PlcMessage, ModbusPDU):
 
 @dataclass
 class ModbusPDUReadDiscreteInputsResponseBuilder(ModbusPDUBuilder):
-    value: List[c_byte]
+    value: List[int]
 
     def __post_init__(self):
         pass

@@ -15,7 +15,6 @@
 #  specific language governing permissions and limitations
 #  under the License.
 from ctypes import (
-    c_bool,
     c_byte,
     c_ubyte,
     c_uint16,
@@ -148,6 +147,7 @@ class WriteBufferByteBased(WriteBuffer):
     bb: bitarray
 
     NUMERIC_UNION = Union[
+        c_ubyte,
         c_byte,
         c_uint8,
         c_uint16,
@@ -196,7 +196,7 @@ class WriteBufferByteBased(WriteBuffer):
         elif bit_length > 8:
             raise SerializationException("unsigned byte can only contain max 8 bits")
         else:
-            self._handle_numeric_encoding(c_byte(value), bit_length, **kwargs)
+            self._handle_numeric_encoding(c_ubyte(value), bit_length, **kwargs)
 
     def write_unsigned_short(
         self, value: int, bit_length: int = 16, logical_name: str = "", **kwargs

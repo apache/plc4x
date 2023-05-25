@@ -19,8 +19,6 @@
 
 from dataclasses import dataclass
 
-from ctypes import c_uint16
-from ctypes import c_uint8
 from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
 import math
@@ -28,10 +26,10 @@ import math
 
 @dataclass
 class ModbusPDUReadFileRecordRequestItem(PlcMessage):
-    reference_type: c_uint8
-    file_number: c_uint16
-    record_number: c_uint16
-    record_length: c_uint16
+    reference_type: int
+    file_number: int
+    record_number: int
+    record_length: int
 
     def __post_init__(self):
         super().__init__()
@@ -88,15 +86,13 @@ class ModbusPDUReadFileRecordRequestItem(PlcMessage):
         read_buffer.pull_context("ModbusPDUReadFileRecordRequestItem")
         cur_pos: int = 0
 
-        reference_type: c_uint8 = read_simple_field(
-            "referenceType", read_unsigned_short
-        )
+        reference_type: int = read_simple_field("referenceType", read_unsigned_short)
 
-        file_number: c_uint16 = read_simple_field("fileNumber", read_unsigned_int)
+        file_number: int = read_simple_field("fileNumber", read_unsigned_int)
 
-        record_number: c_uint16 = read_simple_field("recordNumber", read_unsigned_int)
+        record_number: int = read_simple_field("recordNumber", read_unsigned_int)
 
-        record_length: c_uint16 = read_simple_field("recordLength", read_unsigned_int)
+        record_length: int = read_simple_field("recordLength", read_unsigned_int)
 
         read_buffer.close_context("ModbusPDUReadFileRecordRequestItem")
         # Create the instance

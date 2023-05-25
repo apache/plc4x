@@ -19,9 +19,6 @@
 
 from dataclasses import dataclass
 
-from ctypes import c_bool
-from ctypes import c_uint16
-from ctypes import c_uint8
 from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDU
 from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDUBuilder
@@ -31,12 +28,12 @@ import math
 
 @dataclass
 class ModbusPDUWriteMultipleCoilsResponse(PlcMessage, ModbusPDU):
-    starting_address: c_uint16
-    quantity: c_uint16
+    starting_address: int
+    quantity: int
     # Accessors for discriminator values.
-    error_flag: c_bool = False
-    function_flag: c_uint8 = 0x0F
-    response: c_bool = True
+    error_flag: bool = False
+    function_flag: int = 0x0F
+    response: bool = True
 
     def __post_init__(self):
         super().__init__()
@@ -70,15 +67,13 @@ class ModbusPDUWriteMultipleCoilsResponse(PlcMessage, ModbusPDU):
         return length_in_bits
 
     @staticmethod
-    def static_parse_builder(read_buffer: ReadBuffer, response: c_bool):
+    def static_parse_builder(read_buffer: ReadBuffer, response: bool):
         read_buffer.pull_context("ModbusPDUWriteMultipleCoilsResponse")
         cur_pos: int = 0
 
-        starting_address: c_uint16 = read_simple_field(
-            "startingAddress", read_unsigned_int
-        )
+        starting_address: int = read_simple_field("startingAddress", read_unsigned_int)
 
-        quantity: c_uint16 = read_simple_field("quantity", read_unsigned_int)
+        quantity: int = read_simple_field("quantity", read_unsigned_int)
 
         read_buffer.close_context("ModbusPDUWriteMultipleCoilsResponse")
         # Create the instance
@@ -116,8 +111,8 @@ class ModbusPDUWriteMultipleCoilsResponse(PlcMessage, ModbusPDU):
 
 @dataclass
 class ModbusPDUWriteMultipleCoilsResponseBuilder(ModbusPDUBuilder):
-    startingAddress: c_uint16
-    quantity: c_uint16
+    startingAddress: int
+    quantity: int
 
     def __post_init__(self):
         pass

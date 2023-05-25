@@ -19,8 +19,6 @@
 
 from dataclasses import dataclass
 
-from ctypes import c_bool
-from ctypes import c_uint8
 from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDU
 from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDUBuilder
@@ -37,9 +35,9 @@ import math
 class ModbusPDUReadFileRecordRequest(PlcMessage, ModbusPDU):
     items: List[ModbusPDUReadFileRecordRequestItem]
     # Accessors for discriminator values.
-    error_flag: c_bool = False
-    function_flag: c_uint8 = 0x14
-    response: c_bool = False
+    error_flag: bool = False
+    function_flag: int = 0x14
+    response: bool = False
 
     def __post_init__(self):
         super().__init__()
@@ -48,7 +46,7 @@ class ModbusPDUReadFileRecordRequest(PlcMessage, ModbusPDU):
         write_buffer.push_context("ModbusPDUReadFileRecordRequest")
 
         # Implicit Field (byte_count) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-        byte_count: c_uint8 = c_uint8(getsizeof(self.items))
+        byte_count: int = int(getsizeof(self.items))
         write_buffer.write_unsigned_byte(byte_count, logical_name="byteCount")
 
         # Array Field (items)
@@ -74,11 +72,11 @@ class ModbusPDUReadFileRecordRequest(PlcMessage, ModbusPDU):
         return length_in_bits
 
     @staticmethod
-    def static_parse_builder(read_buffer: ReadBuffer, response: c_bool):
+    def static_parse_builder(read_buffer: ReadBuffer, response: bool):
         read_buffer.pull_context("ModbusPDUReadFileRecordRequest")
         cur_pos: int = 0
 
-        byte_count: c_uint8 = read_implicit_field("byteCount", read_unsigned_short)
+        byte_count: int = read_implicit_field("byteCount", read_unsigned_short)
 
         items: List[ModbusPDUReadFileRecordRequestItem] = read_length_array_field(
             "items",

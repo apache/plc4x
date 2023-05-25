@@ -19,9 +19,6 @@
 
 from dataclasses import dataclass
 
-from ctypes import c_bool
-from ctypes import c_uint16
-from ctypes import c_uint8
 from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDU
 from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDUBuilder
@@ -31,12 +28,12 @@ import math
 
 @dataclass
 class ModbusPDUWriteSingleCoilRequest(PlcMessage, ModbusPDU):
-    address: c_uint16
-    value: c_uint16
+    address: int
+    value: int
     # Accessors for discriminator values.
-    error_flag: c_bool = False
-    function_flag: c_uint8 = 0x05
-    response: c_bool = False
+    error_flag: bool = False
+    function_flag: int = 0x05
+    response: bool = False
 
     def __post_init__(self):
         super().__init__()
@@ -68,13 +65,13 @@ class ModbusPDUWriteSingleCoilRequest(PlcMessage, ModbusPDU):
         return length_in_bits
 
     @staticmethod
-    def static_parse_builder(read_buffer: ReadBuffer, response: c_bool):
+    def static_parse_builder(read_buffer: ReadBuffer, response: bool):
         read_buffer.pull_context("ModbusPDUWriteSingleCoilRequest")
         cur_pos: int = 0
 
-        address: c_uint16 = read_simple_field("address", read_unsigned_int)
+        address: int = read_simple_field("address", read_unsigned_int)
 
-        value: c_uint16 = read_simple_field("value", read_unsigned_int)
+        value: int = read_simple_field("value", read_unsigned_int)
 
         read_buffer.close_context("ModbusPDUWriteSingleCoilRequest")
         # Create the instance
@@ -110,8 +107,8 @@ class ModbusPDUWriteSingleCoilRequest(PlcMessage, ModbusPDU):
 
 @dataclass
 class ModbusPDUWriteSingleCoilRequestBuilder(ModbusPDUBuilder):
-    address: c_uint16
-    value: c_uint16
+    address: int
+    value: int
 
     def __post_init__(self):
         pass

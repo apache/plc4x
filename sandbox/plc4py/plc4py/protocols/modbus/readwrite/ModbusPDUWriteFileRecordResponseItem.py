@@ -19,9 +19,6 @@
 
 from dataclasses import dataclass
 
-from ctypes import c_byte
-from ctypes import c_uint16
-from ctypes import c_uint8
 from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
 from typing import List
@@ -30,10 +27,10 @@ import math
 
 @dataclass
 class ModbusPDUWriteFileRecordResponseItem(PlcMessage):
-    reference_type: c_uint8
-    file_number: c_uint16
-    record_number: c_uint16
-    record_data: List[c_byte]
+    reference_type: int
+    file_number: int
+    record_number: int
+    record_data: List[int]
 
     def __post_init__(self):
         super().__init__()
@@ -55,7 +52,7 @@ class ModbusPDUWriteFileRecordResponseItem(PlcMessage):
         )
 
         # Implicit Field (record_length) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-        record_length: c_uint16 = c_uint16(len(self.record_data)) / c_uint16(2)
+        record_length: int = int(len(self.record_data)) / int(2)
         write_buffer.write_unsigned_short(record_length, logical_name="recordLength")
 
         # Array Field (recordData)
@@ -96,15 +93,13 @@ class ModbusPDUWriteFileRecordResponseItem(PlcMessage):
         read_buffer.pull_context("ModbusPDUWriteFileRecordResponseItem")
         cur_pos: int = 0
 
-        reference_type: c_uint8 = read_simple_field(
-            "referenceType", read_unsigned_short
-        )
+        reference_type: int = read_simple_field("referenceType", read_unsigned_short)
 
-        file_number: c_uint16 = read_simple_field("fileNumber", read_unsigned_int)
+        file_number: int = read_simple_field("fileNumber", read_unsigned_int)
 
-        record_number: c_uint16 = read_simple_field("recordNumber", read_unsigned_int)
+        record_number: int = read_simple_field("recordNumber", read_unsigned_int)
 
-        record_length: c_uint16 = read_implicit_field("recordLength", read_unsigned_int)
+        record_length: int = read_implicit_field("recordLength", read_unsigned_int)
 
         record_data: List[c_byte] = read_buffer.read_byte_array(
             "recordData", int(record_length)

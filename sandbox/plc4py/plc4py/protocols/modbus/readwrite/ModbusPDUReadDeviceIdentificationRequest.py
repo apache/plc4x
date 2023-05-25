@@ -19,8 +19,6 @@
 
 from dataclasses import dataclass
 
-from ctypes import c_bool
-from ctypes import c_uint8
 from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.protocols.modbus.readwrite.ModbusDeviceInformationLevel import (
     ModbusDeviceInformationLevel,
@@ -34,12 +32,12 @@ import math
 @dataclass
 class ModbusPDUReadDeviceIdentificationRequest(PlcMessage, ModbusPDU):
     level: ModbusDeviceInformationLevel
-    object_id: c_uint8
-    MEITYPE: c_uint8 = 0x0E
+    object_id: int
+    MEITYPE: int = 0x0E
     # Accessors for discriminator values.
-    error_flag: c_bool = False
-    function_flag: c_uint8 = 0x2B
-    response: c_bool = False
+    error_flag: bool = False
+    function_flag: int = 0x2B
+    response: bool = False
 
     def __post_init__(self):
         super().__init__()
@@ -81,11 +79,11 @@ class ModbusPDUReadDeviceIdentificationRequest(PlcMessage, ModbusPDU):
         return length_in_bits
 
     @staticmethod
-    def static_parse_builder(read_buffer: ReadBuffer, response: c_bool):
+    def static_parse_builder(read_buffer: ReadBuffer, response: bool):
         read_buffer.pull_context("ModbusPDUReadDeviceIdentificationRequest")
         cur_pos: int = 0
 
-        mei_type: c_uint8 = read_const_field(
+        mei_type: int = read_const_field(
             "meiType",
             read_unsigned_short,
             ModbusPDUReadDeviceIdentificationRequest.MEITYPE,
@@ -99,7 +97,7 @@ class ModbusPDUReadDeviceIdentificationRequest(PlcMessage, ModbusPDU):
             ),
         )
 
-        object_id: c_uint8 = read_simple_field("objectId", read_unsigned_short)
+        object_id: int = read_simple_field("objectId", read_unsigned_short)
 
         read_buffer.close_context("ModbusPDUReadDeviceIdentificationRequest")
         # Create the instance
@@ -138,7 +136,7 @@ class ModbusPDUReadDeviceIdentificationRequest(PlcMessage, ModbusPDU):
 @dataclass
 class ModbusPDUReadDeviceIdentificationRequestBuilder(ModbusPDUBuilder):
     level: ModbusDeviceInformationLevel
-    objectId: c_uint8
+    objectId: int
 
     def __post_init__(self):
         pass

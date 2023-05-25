@@ -19,8 +19,6 @@
 
 from dataclasses import dataclass
 
-from ctypes import c_bool
-from ctypes import c_uint8
 from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.protocols.modbus import StaticHelper
 from plc4py.protocols.modbus.readwrite.DriverType import DriverType
@@ -33,10 +31,10 @@ import math
 
 @dataclass
 class ModbusAsciiADU(PlcMessage, ModbusADU):
-    address: c_uint8
+    address: int
     pdu: ModbusPDU
     # Arguments.
-    response: c_bool
+    response: bool
     # Accessors for discriminator values.
     driver_type: DriverType = DriverType.MODBUS_ASCII
 
@@ -54,7 +52,7 @@ class ModbusAsciiADU(PlcMessage, ModbusADU):
 
         # Checksum Field (checksum) (Calculated)
         write_buffer.write_unsigned_byte(
-            c_uint8(StaticHelper.ascii_lrc_check(self.address, self.pdu)),
+            int(StaticHelper.ascii_lrc_check(self.address, self.pdu)),
             logical_name="crc",
         )
 
@@ -80,27 +78,27 @@ class ModbusAsciiADU(PlcMessage, ModbusADU):
 
     @staticmethod
     def static_parse_builder(
-        read_buffer: ReadBuffer, driver_type: DriverType, response: c_bool
+        read_buffer: ReadBuffer, driver_type: DriverType, response: bool
     ):
         read_buffer.pull_context("ModbusAsciiADU")
         cur_pos: int = 0
 
-        address: c_uint8 = read_simple_field(
+        address: int = read_simple_field(
             "address", read_unsigned_short, WithOption.WithByteOrder(get_bi_g__endian())
         )
 
         pdu: ModbusPDU = read_simple_field(
             "pdu",
             DataReaderComplexDefault(
-                ModbusPDU.static_parse(read_buffer, c_bool(response)), read_buffer
+                ModbusPDU.static_parse(read_buffer, bool(response)), read_buffer
             ),
             WithOption.WithByteOrder(get_bi_g__endian()),
         )
 
-        crc: c_uint8 = read_checksum_field(
+        crc: int = read_checksum_field(
             "crc",
             read_unsigned_short,
-            (c_uint8)(ascii_lrc_check(self.address, self.pdu)),
+            (int)(ascii_lrc_check(self.address, self.pdu)),
             WithOption.WithByteOrder(get_bi_g__endian()),
         )
 
@@ -138,14 +136,14 @@ class ModbusAsciiADU(PlcMessage, ModbusADU):
 
 @dataclass
 class ModbusAsciiADUBuilder(ModbusADUBuilder):
-    address: c_uint8
+    address: int
     pdu: ModbusPDU
-    response: c_bool
+    response: bool
 
     def __post_init__(self):
         pass
 
-    def build(self, response: c_bool) -> ModbusAsciiADU:
+    def build(self, response: bool) -> ModbusAsciiADU:
         modbus_ascii_adu: ModbusAsciiADU = ModbusAsciiADU(
             self.address, self.pdu, response
         )

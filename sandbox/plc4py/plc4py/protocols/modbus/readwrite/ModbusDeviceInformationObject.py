@@ -19,8 +19,6 @@
 
 from dataclasses import dataclass
 
-from ctypes import c_byte
-from ctypes import c_uint8
 from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
 from typing import List
@@ -29,8 +27,8 @@ import math
 
 @dataclass
 class ModbusDeviceInformationObject(PlcMessage):
-    object_id: c_uint8
-    data: List[c_byte]
+    object_id: int
+    data: List[int]
 
     def __post_init__(self):
         super().__init__()
@@ -42,7 +40,7 @@ class ModbusDeviceInformationObject(PlcMessage):
         write_buffer.write_unsigned_byte(self.object_id, logical_name="objectId")
 
         # Implicit Field (object_length) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-        object_length: c_uint8 = c_uint8(len(self.data))
+        object_length: int = int(len(self.data))
         write_buffer.write_unsigned_byte(object_length, logical_name="objectLength")
 
         # Array Field (data)
@@ -77,11 +75,9 @@ class ModbusDeviceInformationObject(PlcMessage):
         read_buffer.pull_context("ModbusDeviceInformationObject")
         cur_pos: int = 0
 
-        object_id: c_uint8 = read_simple_field("objectId", read_unsigned_short)
+        object_id: int = read_simple_field("objectId", read_unsigned_short)
 
-        object_length: c_uint8 = read_implicit_field(
-            "objectLength", read_unsigned_short
-        )
+        object_length: int = read_implicit_field("objectLength", read_unsigned_short)
 
         data: List[c_byte] = read_buffer.read_byte_array("data", int(object_length))
 

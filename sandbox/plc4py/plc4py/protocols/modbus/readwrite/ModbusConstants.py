@@ -19,7 +19,6 @@
 
 from dataclasses import dataclass
 
-from ctypes import c_uint16
 from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
 import math
@@ -27,7 +26,7 @@ import math
 
 @dataclass
 class ModbusConstants(PlcMessage):
-    MODBUSTCPDEFAULTPORT: c_uint16 = c_uint16(502)
+    MODBUSTCPDEFAULTPORT: int = int(502)
 
     def __post_init__(self):
         super().__init__()
@@ -62,7 +61,7 @@ class ModbusConstants(PlcMessage):
         read_buffer.pull_context("ModbusConstants")
         cur_pos: int = 0
 
-        modbus_tcp_default_port: c_uint16 = read_const_field(
+        modbus_tcp_default_port: int = read_const_field(
             "modbusTcpDefaultPort",
             read_unsigned_int,
             ModbusConstants.MODBUSTCPDEFAULTPORT,

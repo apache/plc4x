@@ -19,8 +19,6 @@
 
 from dataclasses import dataclass
 
-from ctypes import c_bool
-from ctypes import c_uint8
 from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.protocols.modbus.readwrite.ModbusErrorCode import ModbusErrorCode
 from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDU
@@ -33,9 +31,9 @@ import math
 class ModbusPDUError(PlcMessage, ModbusPDU):
     exception_code: ModbusErrorCode
     # Accessors for discriminator values.
-    error_flag: c_bool = True
-    function_flag: c_uint8 = 0
-    response: c_bool = False
+    error_flag: bool = True
+    function_flag: int = 0
+    response: bool = False
 
     def __post_init__(self):
         super().__init__()
@@ -63,7 +61,7 @@ class ModbusPDUError(PlcMessage, ModbusPDU):
         return length_in_bits
 
     @staticmethod
-    def static_parse_builder(read_buffer: ReadBuffer, response: c_bool):
+    def static_parse_builder(read_buffer: ReadBuffer, response: bool):
         read_buffer.pull_context("ModbusPDUError")
         cur_pos: int = 0
 

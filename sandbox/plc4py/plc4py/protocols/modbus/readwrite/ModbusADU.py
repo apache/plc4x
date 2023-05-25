@@ -21,7 +21,6 @@ from dataclasses import dataclass
 
 from abc import ABC
 from abc import abstractmethod
-from ctypes import c_bool
 from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.protocols.modbus.readwrite.DriverType import DriverType
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
@@ -31,7 +30,7 @@ import math
 @dataclass
 class ModbusADU(ABC, PlcMessage):
     # Arguments.
-    response: c_bool
+    response: bool
 
     def __post_init__(self):
         super().__init__()
@@ -82,14 +81,14 @@ class ModbusADU(ABC, PlcMessage):
                 + args[0].getClass().getName()
             )
 
-        response: c_bool = None
-        if isinstance(args[1], c_bool):
-            response = c_bool(args[1])
+        response: bool = None
+        if isinstance(args[1], bool):
+            response = bool(args[1])
         elif isinstance(args[1], str):
-            response = c_bool.valueOf(str(args[1]))
+            response = bool.valueOf(str(args[1]))
         else:
             raise PlcRuntimeException(
-                "Argument 1 expected to be of type c_bool or a string which is parseable but was "
+                "Argument 1 expected to be of type bool or a string which is parseable but was "
                 + args[1].getClass().getName()
             )
 
@@ -97,7 +96,7 @@ class ModbusADU(ABC, PlcMessage):
 
     @staticmethod
     def static_parse_context(
-        read_buffer: ReadBuffer, driver_type: DriverType, response: c_bool
+        read_buffer: ReadBuffer, driver_type: DriverType, response: bool
     ):
         read_buffer.pull_context("ModbusADU")
         cur_pos: int = 0
@@ -150,5 +149,5 @@ class ModbusADU(ABC, PlcMessage):
 
 
 class ModbusADUBuilder:
-    def build(self, response: c_bool) -> ModbusADU:
+    def build(self, response: bool) -> ModbusADU:
         pass

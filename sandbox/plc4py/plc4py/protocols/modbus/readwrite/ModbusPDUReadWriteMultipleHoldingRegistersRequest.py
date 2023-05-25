@@ -19,10 +19,6 @@
 
 from dataclasses import dataclass
 
-from ctypes import c_bool
-from ctypes import c_byte
-from ctypes import c_uint16
-from ctypes import c_uint8
 from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDU
 from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDUBuilder
@@ -33,15 +29,15 @@ import math
 
 @dataclass
 class ModbusPDUReadWriteMultipleHoldingRegistersRequest(PlcMessage, ModbusPDU):
-    read_starting_address: c_uint16
-    read_quantity: c_uint16
-    write_starting_address: c_uint16
-    write_quantity: c_uint16
-    value: List[c_byte]
+    read_starting_address: int
+    read_quantity: int
+    write_starting_address: int
+    write_quantity: int
+    value: List[int]
     # Accessors for discriminator values.
-    error_flag: c_bool = False
-    function_flag: c_uint8 = 0x17
-    response: c_bool = False
+    error_flag: bool = False
+    function_flag: int = 0x17
+    response: bool = False
 
     def __post_init__(self):
         super().__init__()
@@ -70,7 +66,7 @@ class ModbusPDUReadWriteMultipleHoldingRegistersRequest(PlcMessage, ModbusPDU):
         )
 
         # Implicit Field (byte_count) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-        byte_count: c_uint8 = c_uint8(len(self.value))
+        byte_count: int = int(len(self.value))
         write_buffer.write_unsigned_byte(byte_count, logical_name="byteCount")
 
         # Array Field (value)
@@ -107,23 +103,23 @@ class ModbusPDUReadWriteMultipleHoldingRegistersRequest(PlcMessage, ModbusPDU):
         return length_in_bits
 
     @staticmethod
-    def static_parse_builder(read_buffer: ReadBuffer, response: c_bool):
+    def static_parse_builder(read_buffer: ReadBuffer, response: bool):
         read_buffer.pull_context("ModbusPDUReadWriteMultipleHoldingRegistersRequest")
         cur_pos: int = 0
 
-        read_starting_address: c_uint16 = read_simple_field(
+        read_starting_address: int = read_simple_field(
             "readStartingAddress", read_unsigned_int
         )
 
-        read_quantity: c_uint16 = read_simple_field("readQuantity", read_unsigned_int)
+        read_quantity: int = read_simple_field("readQuantity", read_unsigned_int)
 
-        write_starting_address: c_uint16 = read_simple_field(
+        write_starting_address: int = read_simple_field(
             "writeStartingAddress", read_unsigned_int
         )
 
-        write_quantity: c_uint16 = read_simple_field("writeQuantity", read_unsigned_int)
+        write_quantity: int = read_simple_field("writeQuantity", read_unsigned_int)
 
-        byte_count: c_uint8 = read_implicit_field("byteCount", read_unsigned_short)
+        byte_count: int = read_implicit_field("byteCount", read_unsigned_short)
 
         value: List[c_byte] = read_buffer.read_byte_array("value", int(byte_count))
 
@@ -172,11 +168,11 @@ class ModbusPDUReadWriteMultipleHoldingRegistersRequest(PlcMessage, ModbusPDU):
 
 @dataclass
 class ModbusPDUReadWriteMultipleHoldingRegistersRequestBuilder(ModbusPDUBuilder):
-    readStartingAddress: c_uint16
-    readQuantity: c_uint16
-    writeStartingAddress: c_uint16
-    writeQuantity: c_uint16
-    value: List[c_byte]
+    readStartingAddress: int
+    readQuantity: int
+    writeStartingAddress: int
+    writeQuantity: int
+    value: List[int]
 
     def __post_init__(self):
         pass

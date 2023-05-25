@@ -19,7 +19,6 @@
 
 from dataclasses import dataclass
 
-from ctypes import c_uint16
 from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
 import math
@@ -27,7 +26,7 @@ import math
 
 @dataclass
 class Dummy(PlcMessage):
-    dummy: c_uint16
+    dummy: int
 
     def __post_init__(self):
         super().__init__()
@@ -60,7 +59,7 @@ class Dummy(PlcMessage):
         read_buffer.pull_context("Dummy")
         cur_pos: int = 0
 
-        dummy: c_uint16 = read_simple_field(
+        dummy: int = read_simple_field(
             "dummy", read_unsigned_int, WithOption.WithByteOrder(get_bi_g__endian())
         )
 

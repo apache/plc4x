@@ -141,65 +141,50 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
         SimpleTypeReference simpleTypeReference = typeReference.asSimpleTypeReference().orElseThrow();
         switch (simpleTypeReference.getBaseType()) {
             case BIT:
-                emitRequiredImport("from ctypes import c_bool");
-                return "c_bool";
+                return "bool";
             case BYTE:
-                emitRequiredImport("from ctypes import c_byte");
-                return "c_byte";
+                return "int";
             case UINT:
                 IntegerTypeReference unsignedIntegerTypeReference = simpleTypeReference.asIntegerTypeReference().orElseThrow();
                 if (unsignedIntegerTypeReference.getSizeInBits() <= 8) {
-                    emitRequiredImport("from ctypes import c_uint8");
-                    return "c_uint8";
+                    return "int";
                 }
                 if (unsignedIntegerTypeReference.getSizeInBits() <= 16) {
-                    emitRequiredImport("from ctypes import c_uint16");
-                    return "c_uint16";
+                    return "int";
                 }
                 if (unsignedIntegerTypeReference.getSizeInBits() <= 32) {
-                    emitRequiredImport("from ctypes import c_uint32");
-                    return "c_uint32";
+                    return "int";
                 }
                 if (unsignedIntegerTypeReference.getSizeInBits() <= 64) {
-                    emitRequiredImport("from ctypes import c_uint64");
-                    return "c_uint64";
+                    return "int";
                 }
-                emitRequiredImport("from ctypes import c_longlong");
-                return "c_longlong";
+                return "int";
             case INT:
                 IntegerTypeReference integerTypeReference = simpleTypeReference.asIntegerTypeReference().orElseThrow();
                 if (integerTypeReference.getSizeInBits() <= 8) {
-                    emitRequiredImport("from ctypes import c_int8");
-                    return "c_int8";
+                    return "int";
                 }
                 if (integerTypeReference.getSizeInBits() <= 16) {
-                    emitRequiredImport("from ctypes import c_int16");
-                    return "c_int16";
+                    return "int";
                 }
                 if (integerTypeReference.getSizeInBits() <= 32) {
-                    emitRequiredImport("from ctypes import c_int32");
-                    return "c_int32";
+                    return "int";
                 }
                 if (integerTypeReference.getSizeInBits() <= 64) {
-                    emitRequiredImport("from ctypes import c_int64");
-                    return "c_int64";
+                    return "int";
                 }
-                emitRequiredImport("from ctypes import c_longlong");
-                return "c_longlong";
+                return "int";
             case FLOAT:
             case UFLOAT:
                 FloatTypeReference floatTypeReference = simpleTypeReference.asFloatTypeReference().orElseThrow();
                 int sizeInBits = floatTypeReference.getSizeInBits();
                 if (sizeInBits <= 32) {
-                    emitRequiredImport("from ctypes import c_float");
-                    return "c_float";
+                    return "float";
                 }
                 if (sizeInBits <= 64) {
-                    emitRequiredImport("from ctypes import c_double");
-                    return "c_double";
+                    return "float";
                 }
-                emitRequiredImport("from ctypes import c_longdouble");
-                return "c_longdouble";
+                return "float";
             case STRING:
             case VSTRING:
                 return "str";

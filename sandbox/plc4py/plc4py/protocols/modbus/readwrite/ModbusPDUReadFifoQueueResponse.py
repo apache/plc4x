@@ -19,9 +19,6 @@
 
 from dataclasses import dataclass
 
-from ctypes import c_bool
-from ctypes import c_uint16
-from ctypes import c_uint8
 from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDU
 from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDUBuilder
@@ -32,11 +29,11 @@ import math
 
 @dataclass
 class ModbusPDUReadFifoQueueResponse(PlcMessage, ModbusPDU):
-    fifo_value: List[c_uint16]
+    fifo_value: List[int]
     # Accessors for discriminator values.
-    error_flag: c_bool = False
-    function_flag: c_uint8 = 0x18
-    response: c_bool = True
+    error_flag: bool = False
+    function_flag: int = 0x18
+    response: bool = True
 
     def __post_init__(self):
         super().__init__()
@@ -45,15 +42,11 @@ class ModbusPDUReadFifoQueueResponse(PlcMessage, ModbusPDU):
         write_buffer.push_context("ModbusPDUReadFifoQueueResponse")
 
         # Implicit Field (byte_count) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-        byte_count: c_uint16 = (
-            c_uint16(len(self.fifo_value)) * c_uint16(2)
-        ) + c_uint16(2)
+        byte_count: int = (int(len(self.fifo_value)) * int(2)) + int(2)
         write_buffer.write_unsigned_short(byte_count, logical_name="byteCount")
 
         # Implicit Field (fifo_count) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-        fifo_count: c_uint16 = (
-            c_uint16(len(self.fifo_value)) * c_uint16(2)
-        ) / c_uint16(2)
+        fifo_count: int = (int(len(self.fifo_value)) * int(2)) / int(2)
         write_buffer.write_unsigned_short(fifo_count, logical_name="fifoCount")
 
         # Array Field (fifoValue)
@@ -83,15 +76,15 @@ class ModbusPDUReadFifoQueueResponse(PlcMessage, ModbusPDU):
         return length_in_bits
 
     @staticmethod
-    def static_parse_builder(read_buffer: ReadBuffer, response: c_bool):
+    def static_parse_builder(read_buffer: ReadBuffer, response: bool):
         read_buffer.pull_context("ModbusPDUReadFifoQueueResponse")
         cur_pos: int = 0
 
-        byte_count: c_uint16 = read_implicit_field("byteCount", read_unsigned_int)
+        byte_count: int = read_implicit_field("byteCount", read_unsigned_int)
 
-        fifo_count: c_uint16 = read_implicit_field("fifoCount", read_unsigned_int)
+        fifo_count: int = read_implicit_field("fifoCount", read_unsigned_int)
 
-        fifo_value: List[c_uint16] = read_count_array_field(
+        fifo_value: List[int] = read_count_array_field(
             "fifoValue", read_unsigned_int, fifo_count
         )
 
@@ -124,7 +117,7 @@ class ModbusPDUReadFifoQueueResponse(PlcMessage, ModbusPDU):
 
 @dataclass
 class ModbusPDUReadFifoQueueResponseBuilder(ModbusPDUBuilder):
-    fifoValue: List[c_uint16]
+    fifoValue: List[int]
 
     def __post_init__(self):
         pass

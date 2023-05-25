@@ -19,9 +19,6 @@
 
 from dataclasses import dataclass
 
-from ctypes import c_bool
-from ctypes import c_uint16
-from ctypes import c_uint8
 from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDU
 from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDUBuilder
@@ -31,12 +28,12 @@ import math
 
 @dataclass
 class ModbusPDUDiagnosticRequest(PlcMessage, ModbusPDU):
-    sub_function: c_uint16
-    data: c_uint16
+    sub_function: int
+    data: int
     # Accessors for discriminator values.
-    error_flag: c_bool = False
-    function_flag: c_uint8 = 0x08
-    response: c_bool = False
+    error_flag: bool = False
+    function_flag: int = 0x08
+    response: bool = False
 
     def __post_init__(self):
         super().__init__()
@@ -68,13 +65,13 @@ class ModbusPDUDiagnosticRequest(PlcMessage, ModbusPDU):
         return length_in_bits
 
     @staticmethod
-    def static_parse_builder(read_buffer: ReadBuffer, response: c_bool):
+    def static_parse_builder(read_buffer: ReadBuffer, response: bool):
         read_buffer.pull_context("ModbusPDUDiagnosticRequest")
         cur_pos: int = 0
 
-        sub_function: c_uint16 = read_simple_field("subFunction", read_unsigned_int)
+        sub_function: int = read_simple_field("subFunction", read_unsigned_int)
 
-        data: c_uint16 = read_simple_field("data", read_unsigned_int)
+        data: int = read_simple_field("data", read_unsigned_int)
 
         read_buffer.close_context("ModbusPDUDiagnosticRequest")
         # Create the instance
@@ -110,8 +107,8 @@ class ModbusPDUDiagnosticRequest(PlcMessage, ModbusPDU):
 
 @dataclass
 class ModbusPDUDiagnosticRequestBuilder(ModbusPDUBuilder):
-    subFunction: c_uint16
-    data: c_uint16
+    subFunction: int
+    data: int
 
     def __post_init__(self):
         pass
