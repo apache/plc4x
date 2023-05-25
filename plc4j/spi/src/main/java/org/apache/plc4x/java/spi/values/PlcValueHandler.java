@@ -83,6 +83,9 @@ public class PlcValueHandler implements org.apache.plc4x.java.api.value.PlcValue
         if (value instanceof Long) {
             return PlcLINT.of(value);
         }
+        if (value instanceof BigInteger) {
+            return PlcDINT.of(value);
+        }
         if (value instanceof Float) {
             return PlcREAL.of(value);
         }

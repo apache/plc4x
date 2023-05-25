@@ -195,7 +195,7 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
                         future.complete(new DefaultPlcReadResponse(request, status));
                         return;
                     }
-                } catch (ParseException e) {
+                } catch (Exception e) {
                     future.completeExceptionally(new PlcRuntimeException(e));
                 }
             };
