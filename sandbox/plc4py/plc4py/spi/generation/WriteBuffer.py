@@ -79,7 +79,7 @@ class WriteBuffer(ByteOrderAware, PositionAware):
         raise NotImplementedError
 
     def write_unsigned_int(
-        self, value: c_uint32, bit_length: int = 32, logical_name: str = "", **kwargs
+        self, value: int, bit_length: int = 32, logical_name: str = "", **kwargs
     ) -> None:
         raise NotImplementedError
 
