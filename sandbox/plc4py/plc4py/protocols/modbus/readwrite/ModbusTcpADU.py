@@ -24,6 +24,7 @@ from plc4py.protocols.modbus.readwrite.DriverType import DriverType
 from plc4py.protocols.modbus.readwrite.ModbusADU import ModbusADU
 from plc4py.protocols.modbus.readwrite.ModbusADU import ModbusADUBuilder
 from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDU
+from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
 import math
 
@@ -97,16 +98,15 @@ class ModbusTcpADU(PlcMessage, ModbusADU):
     def static_parse_builder(
         read_buffer: ReadBuffer, driver_type: DriverType, response: bool
     ):
-        read_buffer.pull_context("ModbusTcpADU")
-        cur_pos: int = 0
+        read_buffer.push_context("ModbusTcpADU")
 
-        transaction_identifier: int = read_simple_field(
+        self.transaction_identifier = read_simple_field(
             "transactionIdentifier",
             read_unsigned_int,
             WithOption.WithByteOrder(get_bi_g__endian()),
         )
 
-        protocol_identifier: int = read_const_field(
+        self.protocol_identifier: int = read_const_field(
             "protocolIdentifier",
             read_unsigned_int,
             ModbusTcpADU.PROTOCOLIDENTIFIER,
@@ -117,13 +117,13 @@ class ModbusTcpADU(PlcMessage, ModbusADU):
             "length", read_unsigned_int, WithOption.WithByteOrder(get_bi_g__endian())
         )
 
-        unit_identifier: int = read_simple_field(
+        self.unit_identifier = read_simple_field(
             "unitIdentifier",
             read_unsigned_short,
             WithOption.WithByteOrder(get_bi_g__endian()),
         )
 
-        pdu: ModbusPDU = read_simple_field(
+        self.pdu = read_simple_field(
             "pdu",
             DataReaderComplexDefault(
                 ModbusPDU.static_parse(read_buffer, bool(response)), read_buffer
@@ -131,7 +131,7 @@ class ModbusTcpADU(PlcMessage, ModbusADU):
             WithOption.WithByteOrder(get_bi_g__endian()),
         )
 
-        read_buffer.close_context("ModbusTcpADU")
+        read_buffer.pop_context("ModbusTcpADU")
         # Create the instance
         return ModbusTcpADUBuilder(
             transaction_identifier, unit_identifier, pdu, response

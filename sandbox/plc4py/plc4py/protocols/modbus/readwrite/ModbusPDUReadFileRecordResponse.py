@@ -25,6 +25,7 @@ from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDUBuilder
 from plc4py.protocols.modbus.readwrite.ModbusPDUReadFileRecordResponseItem import (
     ModbusPDUReadFileRecordResponseItem,
 )
+from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
 from sys import getsizeof
 from typing import List
@@ -65,7 +66,7 @@ class ModbusPDUReadFileRecordResponse(PlcMessage, ModbusPDU):
         length_in_bits += 8
 
         # Array field
-        if self.items is not None:
+        if self.items != None:
             for element in self.items:
                 length_in_bits += element.get_length_in_bits()
 
@@ -73,12 +74,11 @@ class ModbusPDUReadFileRecordResponse(PlcMessage, ModbusPDU):
 
     @staticmethod
     def static_parse_builder(read_buffer: ReadBuffer, response: bool):
-        read_buffer.pull_context("ModbusPDUReadFileRecordResponse")
-        cur_pos: int = 0
+        read_buffer.push_context("ModbusPDUReadFileRecordResponse")
 
         byte_count: int = read_implicit_field("byteCount", read_unsigned_short)
 
-        items: List[ModbusPDUReadFileRecordResponseItem] = read_length_array_field(
+        self.items = read_length_array_field(
             "items",
             DataReaderComplexDefault(
                 ModbusPDUReadFileRecordResponseItem.static_parse(read_buffer),
@@ -87,7 +87,7 @@ class ModbusPDUReadFileRecordResponse(PlcMessage, ModbusPDU):
             byte_count,
         )
 
-        read_buffer.close_context("ModbusPDUReadFileRecordResponse")
+        read_buffer.pop_context("ModbusPDUReadFileRecordResponse")
         # Create the instance
         return ModbusPDUReadFileRecordResponseBuilder(items)
 

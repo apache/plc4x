@@ -266,7 +266,7 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
         final int sizeInBits = simpleTypeReference.getSizeInBits();
         switch (simpleTypeReference.getBaseType()) {
             case BIT:
-                return "read_boolean";
+                return "read_bit";
             case BYTE:
                 return "read_byte";
             case UINT:
@@ -499,46 +499,46 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
     public String getReadBufferReadMethodCall(String logicalName, SimpleTypeReference simpleTypeReference, String valueString, TypedField field) {
         switch (simpleTypeReference.getBaseType()) {
             case BIT:
-                String bitType = "Bit";
-                return "read_buffer.read" + bitType + "(\"" + logicalName + "\")";
+                String bitType = "bit";
+                return "read_buffer.read_" + bitType + "(\"" + logicalName + "\")";
             case BYTE:
-                String byteType = "Byte";
-                return "read_buffer.read" + byteType + "(\"" + logicalName + "\")";
+                String byteType = "byte";
+                return "read_buffer.read_" + byteType + "(\"" + logicalName + "\")";
             case UINT:
                 String unsignedIntegerType;
                 IntegerTypeReference unsignedIntegerTypeReference = (IntegerTypeReference) simpleTypeReference;
                 if (unsignedIntegerTypeReference.getSizeInBits() <= 4) {
-                    unsignedIntegerType = "UnsignedByte";
+                    unsignedIntegerType = "unsigned_byte";
                 } else if (unsignedIntegerTypeReference.getSizeInBits() <= 8) {
-                    unsignedIntegerType = "UnsignedShort";
+                    unsignedIntegerType = "unsigned_short";
                 } else if (unsignedIntegerTypeReference.getSizeInBits() <= 16) {
-                    unsignedIntegerType = "UnsignedInt";
+                    unsignedIntegerType = "unsigned_int";
                 } else if (unsignedIntegerTypeReference.getSizeInBits() <= 32) {
-                    unsignedIntegerType = "UnsignedLong";
+                    unsignedIntegerType = "unsigned_long";
                 } else {
-                    unsignedIntegerType = "UnsignedBigInteger";
+                    unsignedIntegerType = "unsigned_big_integer";
                 }
-                return "read_buffer.read" + unsignedIntegerType + "(\"" + logicalName + "\", " + simpleTypeReference.getSizeInBits() + ")";
+                return "read_buffer.read_" + unsignedIntegerType + "(" + simpleTypeReference.getSizeInBits() + ", logical_name=\"" + logicalName + "\")";
             case INT:
                 String integerType;
                 if (simpleTypeReference.getSizeInBits() <= 8) {
-                    integerType = "SignedByte";
+                    integerType = "signed_byte";
                 } else if (simpleTypeReference.getSizeInBits() <= 16) {
-                    integerType = "Short";
+                    integerType = "short";
                 } else if (simpleTypeReference.getSizeInBits() <= 32) {
-                    integerType = "Int";
+                    integerType = "int";
                 } else if (simpleTypeReference.getSizeInBits() <= 64) {
-                    integerType = "Long";
+                    integerType = "long";
                 } else {
-                    integerType = "BigInteger";
+                    integerType = "big_integer";
                 }
-                return "read_buffer.read" + integerType + "(\"" + logicalName + "\", " + simpleTypeReference.getSizeInBits() + ")";
+                return "read_buffer.read_" + integerType + "(" + simpleTypeReference.getSizeInBits() + ", logical_name=\"" + logicalName + "\")";
             case FLOAT:
-                String floatType = (simpleTypeReference.getSizeInBits() <= 32) ? "Float" : "Double";
-                return "read_buffer.read" + floatType + "(\"" + logicalName + "\", " + simpleTypeReference.getSizeInBits() + ")";
+                String floatType = (simpleTypeReference.getSizeInBits() <= 32) ? "float" : "double";
+                return "read_buffer.read_" + floatType + "(" + simpleTypeReference.getSizeInBits() + ", logical_name=\"" + logicalName + "\")";
             case STRING:
             case VSTRING:
-                String stringType = "String";
+                String stringType = "string";
                 final Term encodingTerm = field.getEncoding().orElse(new DefaultStringLiteral("UTF-8"));
                 if (!(encodingTerm instanceof StringLiteral)) {
                     throw new RuntimeException("Encoding must be a quoted string value");
@@ -549,8 +549,8 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
                     VstringTypeReference vstringTypeReference = (VstringTypeReference) simpleTypeReference;
                     length = toParseExpression(field, INT_TYPE_REFERENCE, vstringTypeReference.getLengthExpression(), null);
                 }
-                return "read_buffer.read" + stringType + "(\"" + logicalName + "\", " + length + ", \"" +
-                    encoding + "\")";
+                return "read_buffer.read_" + stringType + "(" + simpleTypeReference.getSizeInBits() + ", logical_name=\"" + logicalName + "\", encoding=" + "\"\")";
+
             default:
                 return "";
         }

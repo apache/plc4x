@@ -22,6 +22,7 @@ from dataclasses import dataclass
 from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDU
 from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDUBuilder
+from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
 from typing import List
 import math
@@ -84,29 +85,26 @@ class ModbusPDUGetComEventLogResponse(PlcMessage, ModbusPDU):
         length_in_bits += 16
 
         # Array field
-        if self.events is not None:
+        if self.events != None:
             length_in_bits += 8 * len(self.events)
 
         return length_in_bits
 
     @staticmethod
     def static_parse_builder(read_buffer: ReadBuffer, response: bool):
-        read_buffer.pull_context("ModbusPDUGetComEventLogResponse")
-        cur_pos: int = 0
+        read_buffer.push_context("ModbusPDUGetComEventLogResponse")
 
         byte_count: int = read_implicit_field("byteCount", read_unsigned_short)
 
-        status: int = read_simple_field("status", read_unsigned_int)
+        self.status = read_simple_field("status", read_unsigned_int)
 
-        event_count: int = read_simple_field("eventCount", read_unsigned_int)
+        self.event_count = read_simple_field("eventCount", read_unsigned_int)
 
-        message_count: int = read_simple_field("messageCount", read_unsigned_int)
+        self.message_count = read_simple_field("messageCount", read_unsigned_int)
 
-        events: List[c_byte] = read_buffer.read_byte_array(
-            "events", int(byte_count - int(6))
-        )
+        self.events = read_buffer.read_byte_array("events", int(byte_count - int(6)))
 
-        read_buffer.close_context("ModbusPDUGetComEventLogResponse")
+        read_buffer.pop_context("ModbusPDUGetComEventLogResponse")
         # Create the instance
         return ModbusPDUGetComEventLogResponseBuilder(
             status, event_count, message_count, events

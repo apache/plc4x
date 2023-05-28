@@ -21,7 +21,9 @@ from dataclasses import dataclass
 
 from abc import ABC
 from abc import abstractmethod
+from plc4py.api.exceptions.exceptions import PlcRuntimeException
 from plc4py.api.messages.PlcMessage import PlcMessage
+from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
 import math
 
@@ -84,31 +86,34 @@ class ModbusPDU(ABC, PlcMessage):
 
         return length_in_bits
 
-    def static_parse(read_buffer: ReadBuffer, args):
-        if (args is None) or (args.length is not 1):
+    def static_parse(self, read_buffer: ReadBuffer, args):
+        if args is None:
             raise PlcRuntimeException(
-                "Wrong number of arguments, expected 1, but got " + args.length
+                "Wrong number of arguments, expected 1, but got None"
+            )
+        elif args.length != 1:
+            raise PlcRuntimeException(
+                "Wrong number of arguments, expected 1, but got " + str(len(args))
             )
 
-        response: bool = None
+        response: bool = False
         if isinstance(args[0], bool):
             response = bool(args[0])
         elif isinstance(args[0], str):
-            response = bool.valueOf(str(args[0]))
+            response = bool(str(args[0]))
         else:
             raise PlcRuntimeException(
                 "Argument 0 expected to be of type bool or a string which is parseable but was "
                 + args[0].getClass().getName()
             )
 
-        return staticParse(read_buffer, response)
+        return self.static_parse_context(read_buffer, response)
 
     @staticmethod
     def static_parse_context(read_buffer: ReadBuffer, response: bool):
-        read_buffer.pull_context("ModbusPDU")
-        cur_pos: int = 0
+        read_buffer.push_context("ModbusPDU")
 
-        error_flag: bool = read_discriminator_field("errorFlag", read_boolean)
+        error_flag: bool = read_discriminator_field("errorFlag", read_bit)
 
         function_flag: int = read_discriminator_field(
             "functionFlag", read_unsigned_short
@@ -441,7 +446,7 @@ class ModbusPDU(ABC, PlcMessage):
                 + "]"
             )
 
-        read_buffer.close_context("ModbusPDU")
+        read_buffer.pop_context("ModbusPDU")
         # Create the instance
         _modbus_pdu: ModbusPDU = builder.build()
         return _modbus_pdu

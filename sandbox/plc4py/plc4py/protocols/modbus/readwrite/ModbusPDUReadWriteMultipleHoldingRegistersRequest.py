@@ -22,6 +22,7 @@ from dataclasses import dataclass
 from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDU
 from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDUBuilder
+from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
 from typing import List
 import math
@@ -97,33 +98,32 @@ class ModbusPDUReadWriteMultipleHoldingRegistersRequest(PlcMessage, ModbusPDU):
         length_in_bits += 8
 
         # Array field
-        if self.value is not None:
+        if self.value != None:
             length_in_bits += 8 * len(self.value)
 
         return length_in_bits
 
     @staticmethod
     def static_parse_builder(read_buffer: ReadBuffer, response: bool):
-        read_buffer.pull_context("ModbusPDUReadWriteMultipleHoldingRegistersRequest")
-        cur_pos: int = 0
+        read_buffer.push_context("ModbusPDUReadWriteMultipleHoldingRegistersRequest")
 
-        read_starting_address: int = read_simple_field(
+        self.read_starting_address = read_simple_field(
             "readStartingAddress", read_unsigned_int
         )
 
-        read_quantity: int = read_simple_field("readQuantity", read_unsigned_int)
+        self.read_quantity = read_simple_field("readQuantity", read_unsigned_int)
 
-        write_starting_address: int = read_simple_field(
+        self.write_starting_address = read_simple_field(
             "writeStartingAddress", read_unsigned_int
         )
 
-        write_quantity: int = read_simple_field("writeQuantity", read_unsigned_int)
+        self.write_quantity = read_simple_field("writeQuantity", read_unsigned_int)
 
         byte_count: int = read_implicit_field("byteCount", read_unsigned_short)
 
-        value: List[c_byte] = read_buffer.read_byte_array("value", int(byte_count))
+        self.value = read_buffer.read_byte_array("value", int(byte_count))
 
-        read_buffer.close_context("ModbusPDUReadWriteMultipleHoldingRegistersRequest")
+        read_buffer.pop_context("ModbusPDUReadWriteMultipleHoldingRegistersRequest")
         # Create the instance
         return ModbusPDUReadWriteMultipleHoldingRegistersRequestBuilder(
             read_starting_address,

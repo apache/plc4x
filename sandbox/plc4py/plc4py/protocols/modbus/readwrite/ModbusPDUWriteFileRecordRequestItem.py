@@ -20,6 +20,7 @@
 from dataclasses import dataclass
 
 from plc4py.api.messages.PlcMessage import PlcMessage
+from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
 from typing import List
 import math
@@ -80,32 +81,31 @@ class ModbusPDUWriteFileRecordRequestItem(PlcMessage):
         length_in_bits += 16
 
         # Array field
-        if self.record_data is not None:
+        if self.record_data != None:
             length_in_bits += 8 * len(self.record_data)
 
         return length_in_bits
 
-    def static_parse(read_buffer: ReadBuffer, args):
-        return staticParse(read_buffer)
+    def static_parse(self, read_buffer: ReadBuffer, args):
+        return self.static_parse_context(read_buffer)
 
     @staticmethod
     def static_parse_context(read_buffer: ReadBuffer):
-        read_buffer.pull_context("ModbusPDUWriteFileRecordRequestItem")
-        cur_pos: int = 0
+        read_buffer.push_context("ModbusPDUWriteFileRecordRequestItem")
 
-        reference_type: int = read_simple_field("referenceType", read_unsigned_short)
+        self.reference_type = read_simple_field("referenceType", read_unsigned_short)
 
-        file_number: int = read_simple_field("fileNumber", read_unsigned_int)
+        self.file_number = read_simple_field("fileNumber", read_unsigned_int)
 
-        record_number: int = read_simple_field("recordNumber", read_unsigned_int)
+        self.record_number = read_simple_field("recordNumber", read_unsigned_int)
 
         record_length: int = read_implicit_field("recordLength", read_unsigned_int)
 
-        record_data: List[c_byte] = read_buffer.read_byte_array(
+        self.record_data = read_buffer.read_byte_array(
             "recordData", int(record_length * int(2))
         )
 
-        read_buffer.close_context("ModbusPDUWriteFileRecordRequestItem")
+        read_buffer.pop_context("ModbusPDUWriteFileRecordRequestItem")
         # Create the instance
         _modbus_pdu_write_file_record_request_item: ModbusPDUWriteFileRecordRequestItem = ModbusPDUWriteFileRecordRequestItem(
             reference_type, file_number, record_number, record_data

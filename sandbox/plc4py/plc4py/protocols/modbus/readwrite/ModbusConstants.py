@@ -20,6 +20,7 @@
 from dataclasses import dataclass
 
 from plc4py.api.messages.PlcMessage import PlcMessage
+from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
 import math
 
@@ -53,21 +54,20 @@ class ModbusConstants(PlcMessage):
 
         return length_in_bits
 
-    def static_parse(read_buffer: ReadBuffer, args):
-        return staticParse(read_buffer)
+    def static_parse(self, read_buffer: ReadBuffer, args):
+        return self.static_parse_context(read_buffer)
 
     @staticmethod
     def static_parse_context(read_buffer: ReadBuffer):
-        read_buffer.pull_context("ModbusConstants")
-        cur_pos: int = 0
+        read_buffer.push_context("ModbusConstants")
 
-        modbus_tcp_default_port: int = read_const_field(
+        self.modbus_tcp_default_port: int = read_const_field(
             "modbusTcpDefaultPort",
             read_unsigned_int,
             ModbusConstants.MODBUSTCPDEFAULTPORT,
         )
 
-        read_buffer.close_context("ModbusConstants")
+        read_buffer.pop_context("ModbusConstants")
         # Create the instance
         _modbus_constants: ModbusConstants = ModbusConstants()
         return _modbus_constants

@@ -23,6 +23,10 @@ class PlcException(Exception):
     pass
 
 
+class PlcRuntimeException(PlcException):
+    pass
+
+
 class PlcConnectionException(Exception):
     logging.error("Unable to establish a connection to the plc")
 

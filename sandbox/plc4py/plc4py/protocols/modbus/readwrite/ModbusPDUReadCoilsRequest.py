@@ -22,6 +22,7 @@ from dataclasses import dataclass
 from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDU
 from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDUBuilder
+from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
 import math
 
@@ -68,14 +69,13 @@ class ModbusPDUReadCoilsRequest(PlcMessage, ModbusPDU):
 
     @staticmethod
     def static_parse_builder(read_buffer: ReadBuffer, response: bool):
-        read_buffer.pull_context("ModbusPDUReadCoilsRequest")
-        cur_pos: int = 0
+        read_buffer.push_context("ModbusPDUReadCoilsRequest")
 
-        starting_address: int = read_simple_field("startingAddress", read_unsigned_int)
+        self.starting_address = read_simple_field("startingAddress", read_unsigned_int)
 
-        quantity: int = read_simple_field("quantity", read_unsigned_int)
+        self.quantity = read_simple_field("quantity", read_unsigned_int)
 
-        read_buffer.close_context("ModbusPDUReadCoilsRequest")
+        read_buffer.pop_context("ModbusPDUReadCoilsRequest")
         # Create the instance
         return ModbusPDUReadCoilsRequestBuilder(starting_address, quantity)
 

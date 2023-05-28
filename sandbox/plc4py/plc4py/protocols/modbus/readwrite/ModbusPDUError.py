@@ -23,6 +23,7 @@ from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.protocols.modbus.readwrite.ModbusErrorCode import ModbusErrorCode
 from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDU
 from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDUBuilder
+from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
 import math
 
@@ -62,16 +63,15 @@ class ModbusPDUError(PlcMessage, ModbusPDU):
 
     @staticmethod
     def static_parse_builder(read_buffer: ReadBuffer, response: bool):
-        read_buffer.pull_context("ModbusPDUError")
-        cur_pos: int = 0
+        read_buffer.push_context("ModbusPDUError")
 
-        exception_code: ModbusErrorCode = read_enum_field(
+        self.exception_code = read_enum_field(
             "exceptionCode",
             "ModbusErrorCode",
             DataReaderEnumDefault(ModbusErrorCode.enumForValue, read_unsigned_short),
         )
 
-        read_buffer.close_context("ModbusPDUError")
+        read_buffer.pop_context("ModbusPDUError")
         # Create the instance
         return ModbusPDUErrorBuilder(exception_code)
 
