@@ -113,16 +113,6 @@
 			</dependency>
 			<dependency>
 				<groupId>org.apache.nifi</groupId>
-				<artifactId>nifi-event-transport</artifactId>
-				<version>${nifi.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.apache.nifi</groupId>
-				<artifactId>nifi-event-listen</artifactId>
-				<version>${nifi.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.apache.nifi</groupId>
 				<artifactId>nifi-standard-nar</artifactId>
 				<version>${nifi.version}</version>
 				<type>nar</type>

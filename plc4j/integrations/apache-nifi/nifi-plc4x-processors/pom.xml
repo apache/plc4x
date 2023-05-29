@@ -64,14 +64,6 @@
 		</dependency>
 		<dependency>
 			<groupId>org.apache.nifi</groupId>
-			<artifactId>nifi-event-transport</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.nifi</groupId>
-			<artifactId>nifi-event-listen</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.nifi</groupId>
 			<artifactId>nifi-json-utils</artifactId>
 		</dependency>
 		<dependency>
