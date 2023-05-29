@@ -25,6 +25,7 @@ import org.apache.nifi.util.TestRunners;
 import org.apache.plc4x.nifi.address.AddressesAccessUtils;
 import org.apache.plc4x.nifi.util.Plc4xCommonTest;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -55,15 +56,13 @@ public class Plc4xListenRecordProcessorTest {
     }
 
     public void testAvroRecordWriterProcessor() throws InitializationException {  	
-        // TODO: when simulated driver supports listening this should be uncommented
-    	// testRunner.run(NUMBER_OF_CALLS,true, true);
-    	// //validations
-    	// testRunner.assertTransferCount(Plc4xListenRecordProcessor.REL_SUCCESS, NUMBER_OF_CALLS);
-
-		// Plc4xCommonTest.assertAvroContent(testRunner.getFlowFilesForRelationship(Plc4xSourceProcessor.REL_SUCCESS), false, true);
+    	testRunner.run(NUMBER_OF_CALLS,true, true);
+    	//validations
+		Plc4xCommonTest.assertAvroContent(testRunner.getFlowFilesForRelationship(Plc4xSourceProcessor.REL_SUCCESS), false, true);
     }
 
 	// Test dynamic properties addressess access strategy
+    @Disabled // Until simulated driver supports subscription
 	@Test
     public void testWithAddressProperties() throws InitializationException {
         testRunner.setProperty(AddressesAccessUtils.PLC_ADDRESS_ACCESS_STRATEGY, AddressesAccessUtils.ADDRESS_PROPERTY);
@@ -71,6 +70,7 @@ public class Plc4xListenRecordProcessorTest {
     }
 
 	// Test addressess text property access strategy
+    @Disabled // Until simulated driver supports subscription
     @Test
     public void testWithAddressText() throws InitializationException, JsonProcessingException { 
         testRunner.setProperty(AddressesAccessUtils.PLC_ADDRESS_ACCESS_STRATEGY, AddressesAccessUtils.ADDRESS_TEXT);

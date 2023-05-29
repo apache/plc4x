@@ -179,6 +179,7 @@ public class Plc4xListenRecordProcessor extends BasePlc4xProcessor {
 			readerThread.setDaemon(true);
 			readerThread.start();
 		}
+		executeTime.start();
     }
 
     @OnStopped
@@ -186,6 +187,11 @@ public class Plc4xListenRecordProcessor extends BasePlc4xProcessor {
 		executeTime.stop();
 		if (readerThread != null) {
 			readerThread.interrupt();
+			try {
+				readerThread.join();
+			} catch (InterruptedException e) {
+				throw new ProcessException(e);
+			}
 			if (!readerThread.isAlive()){
 				readerThread = null;
 			}
