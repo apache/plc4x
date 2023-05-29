@@ -19,6 +19,8 @@
 
 package options
 
+import "fmt"
+
 // WithDiscoveryOption is a marker interface for options regarding discovery
 type WithDiscoveryOption interface {
 	isDiscoveryOption() bool
@@ -153,6 +155,10 @@ func (d discoveryOptionProtocol) GetProtocolName() string {
 	return d.protocolName
 }
 
+func (d discoveryOptionProtocol) String() string {
+	return d.protocolName
+}
+
 type DiscoveryOptionTransport interface {
 	GetTransportName() string
 }
@@ -163,6 +169,10 @@ type discoveryOptionTransport struct {
 }
 
 func (d discoveryOptionTransport) GetTransportName() string {
+	return d.transportName
+}
+
+func (d discoveryOptionTransport) String() string {
 	return d.transportName
 }
 
@@ -179,6 +189,10 @@ func (d discoveryOptionDeviceName) GetDeviceName() string {
 	return d.deviceName
 }
 
+func (d discoveryOptionDeviceName) String() string {
+	return d.deviceName
+}
+
 type DiscoveryOptionLocalAddress interface {
 	GetLocalAddress() string
 }
@@ -192,6 +206,10 @@ func (d discoveryOptionLocalAddress) GetLocalAddress() string {
 	return d.localAddress
 }
 
+func (d discoveryOptionLocalAddress) String() string {
+	return d.localAddress
+}
+
 type DiscoveryOptionRemoteAddress interface {
 	GetRemoteAddress() string
 }
@@ -202,6 +220,10 @@ type discoveryOptionRemoteAddress struct {
 }
 
 func (d discoveryOptionRemoteAddress) GetRemoteAddress() string {
+	return d.remoteAddress
+}
+
+func (d discoveryOptionRemoteAddress) String() string {
 	return d.remoteAddress
 }
 
@@ -222,6 +244,10 @@ func (d discoveryOptionProtocolSpecific) GetKey() string {
 
 func (d discoveryOptionProtocolSpecific) GetValue() any {
 	return d.value
+}
+
+func (d discoveryOptionProtocolSpecific) String() any {
+	return fmt.Sprintf("%s:%v", d.key, d.value)
 }
 
 //

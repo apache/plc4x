@@ -21,9 +21,10 @@ from dataclasses import dataclass
 
 from abc import ABC
 from abc import abstractmethod
-from ctypes import c_bool
+from plc4py.api.exceptions.exceptions import PlcRuntimeException
 from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.protocols.modbus.readwrite.DriverType import DriverType
+from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
 import math
 
@@ -31,7 +32,7 @@ import math
 @dataclass
 class ModbusADU(ABC, PlcMessage):
     # Arguments.
-    response: c_bool
+    response: bool
 
     def __post_init__(self):
         super().__init__()
@@ -65,42 +66,45 @@ class ModbusADU(ABC, PlcMessage):
 
         return length_in_bits
 
-    def static_parse(read_buffer: ReadBuffer, args):
-        if (args is None) or (args.length is not 2):
+    def static_parse(self, read_buffer: ReadBuffer, args):
+        if args is None:
             raise PlcRuntimeException(
-                "Wrong number of arguments, expected 2, but got " + args.length
+                "Wrong number of arguments, expected 2, but got None"
+            )
+        elif args.length != 2:
+            raise PlcRuntimeException(
+                "Wrong number of arguments, expected 2, but got " + str(len(args))
             )
 
-        driverType: DriverType = None
+        driverType: DriverType = 0
         if isinstance(args[0], DriverType):
             driverType = DriverType(args[0])
         elif isinstance(args[0], str):
-            driverType = DriverType.valueOf(str(args[0]))
+            driverType = DriverType(str(args[0]))
         else:
             raise PlcRuntimeException(
                 "Argument 0 expected to be of type DriverType or a string which is parseable but was "
                 + args[0].getClass().getName()
             )
 
-        response: c_bool = None
-        if isinstance(args[1], c_bool):
-            response = c_bool(args[1])
+        response: bool = False
+        if isinstance(args[1], bool):
+            response = bool(args[1])
         elif isinstance(args[1], str):
-            response = c_bool.valueOf(str(args[1]))
+            response = bool(str(args[1]))
         else:
             raise PlcRuntimeException(
-                "Argument 1 expected to be of type c_bool or a string which is parseable but was "
+                "Argument 1 expected to be of type bool or a string which is parseable but was "
                 + args[1].getClass().getName()
             )
 
-        return staticParse(read_buffer, driverType, response)
+        return self.static_parse_context(read_buffer, driverType, response)
 
     @staticmethod
     def static_parse_context(
-        read_buffer: ReadBuffer, driver_type: DriverType, response: c_bool
+        read_buffer: ReadBuffer, driver_type: DriverType, response: bool
     ):
-        read_buffer.pull_context("ModbusADU")
-        cur_pos: int = 0
+        read_buffer.push_context("ModbusADU")
 
         # Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
         builder: ModbusADUBuilder = None
@@ -121,7 +125,7 @@ class ModbusADU(ABC, PlcMessage):
                 + "]"
             )
 
-        read_buffer.close_context("ModbusADU")
+        read_buffer.pop_context("ModbusADU")
         # Create the instance
         _modbus_adu: ModbusADU = builder.build(response)
         return _modbus_adu
@@ -150,5 +154,5 @@ class ModbusADU(ABC, PlcMessage):
 
 
 class ModbusADUBuilder:
-    def build(self, response: c_bool) -> ModbusADU:
+    def build(self, response: bool) -> ModbusADU:
         pass

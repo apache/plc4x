@@ -37,7 +37,7 @@ import java.util.regex.Pattern;
 public class EipTag implements PlcTag, Serializable {
 
     private static final Pattern ADDRESS_PATTERN =
-        Pattern.compile("^(?<tag>[a-zA-Z_.0-9]+\\[?[0-9]*\\]?):?(?<dataType>[A-Z]*):?(?<elementNb>[0-9]*)");
+        Pattern.compile("^(?<tag>[%a-zA-Z_.0-9]+\\[?[0-9]*]?):?(?<dataType>[A-Z]*):?(?<elementNb>[0-9]*)");
 
     private static final String TAG = "tag";
     private static final String ELEMENTS = "elementNb";

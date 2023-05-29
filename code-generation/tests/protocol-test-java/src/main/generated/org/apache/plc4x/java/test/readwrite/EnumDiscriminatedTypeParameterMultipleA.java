@@ -64,7 +64,6 @@ public class EnumDiscriminatedTypeParameterMultipleA extends EnumDiscriminatedTy
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("EnumDiscriminatedTypeParameterMultipleA");
 
     // Simple Field (simpA)
@@ -95,8 +94,6 @@ public class EnumDiscriminatedTypeParameterMultipleA extends EnumDiscriminatedTy
           ReadBuffer readBuffer, EnumType discr1, EnumTypeInt discr2) throws ParseException {
     readBuffer.pullContext("EnumDiscriminatedTypeParameterMultipleA");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short simpA = readSimpleField("simpA", readUnsignedShort(readBuffer, 8));

@@ -50,7 +50,6 @@ public abstract class EnumDiscriminatedTypeParameter implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("EnumDiscriminatedTypeParameter");
 
     // Switch field (Serialize the sub-type)
@@ -99,8 +98,6 @@ public abstract class EnumDiscriminatedTypeParameter implements Message {
       throws ParseException {
     readBuffer.pullContext("EnumDiscriminatedTypeParameter");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)

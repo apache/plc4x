@@ -201,7 +201,6 @@
               <arguments>
                 <argument>-m</argument>
                 <argument>pytest</argument>
-                <argument>-v</argument>
                 <argument>tests</argument>
               </arguments>
             </configuration>

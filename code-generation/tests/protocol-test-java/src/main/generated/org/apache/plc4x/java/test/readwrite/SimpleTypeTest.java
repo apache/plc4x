@@ -95,7 +95,6 @@ public class SimpleTypeTest implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("SimpleTypeTest");
 
     // Simple Field (bitField)
@@ -166,8 +165,6 @@ public class SimpleTypeTest implements Message {
   public static SimpleTypeTest staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("SimpleTypeTest");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     boolean bitField = readSimpleField("bitField", readBoolean(readBuffer));

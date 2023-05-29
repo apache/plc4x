@@ -19,24 +19,22 @@
 
 from dataclasses import dataclass
 
-from ctypes import c_bool
-from ctypes import c_uint16
-from ctypes import c_uint8
 from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDU
 from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDUBuilder
+from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
 import math
 
 
 @dataclass
 class ModbusPDUDiagnosticResponse(PlcMessage, ModbusPDU):
-    sub_function: c_uint16
-    data: c_uint16
+    sub_function: int
+    data: int
     # Accessors for discriminator values.
-    error_flag: c_bool = False
-    function_flag: c_uint8 = 0x08
-    response: c_bool = True
+    error_flag: bool = False
+    function_flag: int = 0x08
+    response: bool = True
 
     def __post_init__(self):
         super().__init__()
@@ -68,15 +66,14 @@ class ModbusPDUDiagnosticResponse(PlcMessage, ModbusPDU):
         return length_in_bits
 
     @staticmethod
-    def static_parse_builder(read_buffer: ReadBuffer, response: c_bool):
-        read_buffer.pull_context("ModbusPDUDiagnosticResponse")
-        cur_pos: int = 0
+    def static_parse_builder(read_buffer: ReadBuffer, response: bool):
+        read_buffer.push_context("ModbusPDUDiagnosticResponse")
 
-        sub_function: c_uint16 = read_simple_field("subFunction", read_unsigned_int)
+        self.sub_function = read_simple_field("subFunction", read_unsigned_int)
 
-        data: c_uint16 = read_simple_field("data", read_unsigned_int)
+        self.data = read_simple_field("data", read_unsigned_int)
 
-        read_buffer.close_context("ModbusPDUDiagnosticResponse")
+        read_buffer.pop_context("ModbusPDUDiagnosticResponse")
         # Create the instance
         return ModbusPDUDiagnosticResponseBuilder(sub_function, data)
 
@@ -110,8 +107,8 @@ class ModbusPDUDiagnosticResponse(PlcMessage, ModbusPDU):
 
 @dataclass
 class ModbusPDUDiagnosticResponseBuilder(ModbusPDUBuilder):
-    subFunction: c_uint16
-    data: c_uint16
+    subFunction: int
+    data: int
 
     def __post_init__(self):
         pass

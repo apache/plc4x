@@ -50,7 +50,6 @@ public class DF1SymbolMessageFrameNAK extends DF1Symbol implements Message {
   protected void serializeDF1SymbolChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("DF1SymbolMessageFrameNAK");
 
     writeBuffer.popContext("DF1SymbolMessageFrameNAK");
@@ -74,8 +73,6 @@ public class DF1SymbolMessageFrameNAK extends DF1Symbol implements Message {
       throws ParseException {
     readBuffer.pullContext("DF1SymbolMessageFrameNAK");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("DF1SymbolMessageFrameNAK");

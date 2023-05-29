@@ -59,7 +59,6 @@ public class EnumDiscriminatedTypeA extends EnumDiscriminatedType implements Mes
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("EnumDiscriminatedTypeA");
 
     // Simple Field (simpA)
@@ -89,8 +88,6 @@ public class EnumDiscriminatedTypeA extends EnumDiscriminatedType implements Mes
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("EnumDiscriminatedTypeA");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short simpA = readSimpleField("simpA", readUnsignedShort(readBuffer, 8));

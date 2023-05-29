@@ -93,7 +93,6 @@ public class AbstractTypeTestSubType extends AbstractTypeTest implements Message
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("AbstractTypeTestSubType");
 
     // Simple Field (abstractBitField)
@@ -153,8 +152,6 @@ public class AbstractTypeTestSubType extends AbstractTypeTest implements Message
       throws ParseException {
     readBuffer.pullContext("AbstractTypeTestSubType");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     boolean abstractBitField = readSimpleField("abstractBitField", readBoolean(readBuffer));

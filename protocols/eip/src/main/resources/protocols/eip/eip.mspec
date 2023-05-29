@@ -333,11 +333,11 @@
 ]
 
 [type   CIPAttributes(uint 16 packetLength)
-    [implicit   uint    16              numberOfClasses 'COUNT(classId)']
-    [array      uint    16              classId count   'numberOfClasses']
-    [simple     uint    16              numberAvailable]
-    [simple     uint    16              numberActive]
-    [array      byte                    data count 'packetLength - 2 - (COUNT(classId) * 2) - 4']
+    [implicit   uint    16              numberOfClasses 'COUNT(classId)'                             ]
+    [array      uint    16              classId count   'numberOfClasses'                            ]
+    [optional   uint    16              numberAvailable 'packetLength >= ((numberOfClasses * 2) + 4)']
+    [optional   uint    16              numberActive    'packetLength >= ((numberOfClasses * 2) + 6)']
+    [array      byte                    data    count   '(packetLength > ((numberOfClasses * 2) + 6)) ? packetLength - ((numberOfClasses * 2) + 6) : 0']
 ]
 
 [type   CIPData(uint 16 packetLength)

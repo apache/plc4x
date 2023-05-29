@@ -14,7 +14,6 @@
 #  KIND, either express or implied.  See the License for the
 #  specific language governing permissions and limitations
 #  under the License.
-from ctypes import c_uint16, c_byte, c_uint8
 
 from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDU
 from plc4py.spi.generation.WriteBuffer import WriteBufferByteBased
@@ -63,7 +62,7 @@ auch_crc_lo: bytearray = bytearray(
 )
 
 
-def rtu_crc_check(address: c_uint16, pdu: ModbusPDU) -> int:
+def rtu_crc_check(address: int, pdu: ModbusPDU) -> int:
     # Using the algorithm from PI_MBUS_300.pdf page 121
     write_buffer: WriteBufferByteBased = WriteBufferByteBased(
         pdu.length_in_bytes() + 2, byte_order=ByteOrder.LITTLE_ENDIAN
@@ -71,18 +70,18 @@ def rtu_crc_check(address: c_uint16, pdu: ModbusPDU) -> int:
     write_buffer.write_unsigned_short(address, 8)
     pdu.serialize(write_buffer)
     m_view: memoryview = write_buffer.get_bytes()
-    uch_crc_hi: c_byte = c_byte(0xFF)
-    uch_crc_lo: c_byte = c_byte(0xFF)
-    u_index: int = 0
+    uch_crc_hi: int = 0xFF
+    uch_crc_lo: int = 0xFF
+    u_index: int
     for b in m_view:
-        u_index = (int(uch_crc_hi.value) ^ b) & 0xFF
-        uch_crc_hi = c_byte(int(uch_crc_lo.value) ^ auch_crc_hi[u_index])
-        uch_crc_lo = c_byte(auch_crc_lo[u_index])
-    return ((int(uch_crc_hi.value) << 8) & 0xFFFF) | (int(uch_crc_lo.value) & 0x00FF)
+        u_index = (uch_crc_hi ^ b) & 0xFF
+        uch_crc_hi = uch_crc_lo ^ auch_crc_hi[u_index]
+        uch_crc_lo = auch_crc_lo[u_index]
+    return ((uch_crc_hi << 8) & 0xFFFF) | (uch_crc_lo & 0x00FF)
 
 
 # 8 Bit checksum, (byte) transported as 2 characters
-def ascii_lrc_check(address: c_uint8, pdu: ModbusPDU) -> int:
+def ascii_lrc_check(address: int, pdu: ModbusPDU) -> int:
     write_buffer: WriteBufferByteBased = WriteBufferByteBased(
         pdu.length_in_bytes() + 2, byte_order=ByteOrder.LITTLE_ENDIAN
     )

@@ -48,7 +48,6 @@ public class ReservedTypeTestChild extends ReservedTypeTestParent implements Mes
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("ReservedTypeTestChild");
 
     // Reserved Field (reserved)
@@ -78,8 +77,6 @@ public class ReservedTypeTestChild extends ReservedTypeTestParent implements Mes
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("ReservedTypeTestChild");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     Short reservedField0 =

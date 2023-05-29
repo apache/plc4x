@@ -37,7 +37,7 @@
       <plugin>
         <groupId>org.codehaus.gmavenplus</groupId>
         <artifactId>gmavenplus-plugin</artifactId>
-        <version>2.1.0</version>
+        <version>3.0.0</version>
         <executions>
           <execution>
             <goals>
@@ -73,6 +73,7 @@
         <configuration>
           <usedDependencies combine.children="append">
             <usedDependency>org.apache.plc4x:plc4j-driver-s7</usedDependency>
+            <usedDependency>org.apache.plc4x:plc4j-driver-eip</usedDependency>
             <usedDependency>org.apache.plc4x:plc4j-utils-pcap-shared</usedDependency>
           </usedDependencies>
         </configuration>
@@ -133,6 +134,11 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-s7</artifactId>
+      <version>0.11.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-driver-eip</artifactId>
       <version>0.11.0-SNAPSHOT</version>
     </dependency>
 

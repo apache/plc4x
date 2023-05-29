@@ -19,15 +19,15 @@
 
 from dataclasses import dataclass
 
-from ctypes import c_uint16
 from plc4py.api.messages.PlcMessage import PlcMessage
+from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
 import math
 
 
 @dataclass
 class Dummy(PlcMessage):
-    dummy: c_uint16
+    dummy: int
 
     def __post_init__(self):
         super().__init__()
@@ -52,19 +52,18 @@ class Dummy(PlcMessage):
 
         return length_in_bits
 
-    def static_parse(read_buffer: ReadBuffer, args):
-        return staticParse(read_buffer)
+    def static_parse(self, read_buffer: ReadBuffer, args):
+        return self.static_parse_context(read_buffer)
 
     @staticmethod
     def static_parse_context(read_buffer: ReadBuffer):
-        read_buffer.pull_context("Dummy")
-        cur_pos: int = 0
+        read_buffer.push_context("Dummy")
 
-        dummy: c_uint16 = read_simple_field(
+        self.dummy = read_simple_field(
             "dummy", read_unsigned_int, WithOption.WithByteOrder(get_bi_g__endian())
         )
 
-        read_buffer.close_context("Dummy")
+        read_buffer.pop_context("Dummy")
         # Create the instance
         _dummy: Dummy = Dummy(dummy)
         return _dummy

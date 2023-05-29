@@ -82,7 +82,6 @@ public class DF1SymbolMessageFrame extends DF1Symbol implements Message {
   protected void serializeDF1SymbolChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("DF1SymbolMessageFrame");
 
     // Simple Field (destinationAddress)
@@ -168,8 +167,6 @@ public class DF1SymbolMessageFrame extends DF1Symbol implements Message {
       throws ParseException {
     readBuffer.pullContext("DF1SymbolMessageFrame");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short destinationAddress =

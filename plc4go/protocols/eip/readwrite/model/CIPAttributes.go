@@ -36,9 +36,9 @@ type CIPAttributes interface {
 	// GetClassId returns ClassId (property field)
 	GetClassId() []uint16
 	// GetNumberAvailable returns NumberAvailable (property field)
-	GetNumberAvailable() uint16
+	GetNumberAvailable() *uint16
 	// GetNumberActive returns NumberActive (property field)
-	GetNumberActive() uint16
+	GetNumberActive() *uint16
 	// GetData returns Data (property field)
 	GetData() []byte
 }
@@ -53,8 +53,8 @@ type CIPAttributesExactly interface {
 // _CIPAttributes is the data-structure of this message
 type _CIPAttributes struct {
 	ClassId         []uint16
-	NumberAvailable uint16
-	NumberActive    uint16
+	NumberAvailable *uint16
+	NumberActive    *uint16
 	Data            []byte
 
 	// Arguments.
@@ -70,11 +70,11 @@ func (m *_CIPAttributes) GetClassId() []uint16 {
 	return m.ClassId
 }
 
-func (m *_CIPAttributes) GetNumberAvailable() uint16 {
+func (m *_CIPAttributes) GetNumberAvailable() *uint16 {
 	return m.NumberAvailable
 }
 
-func (m *_CIPAttributes) GetNumberActive() uint16 {
+func (m *_CIPAttributes) GetNumberActive() *uint16 {
 	return m.NumberActive
 }
 
@@ -88,7 +88,7 @@ func (m *_CIPAttributes) GetData() []byte {
 ///////////////////////////////////////////////////////////
 
 // NewCIPAttributes factory function for _CIPAttributes
-func NewCIPAttributes(classId []uint16, numberAvailable uint16, numberActive uint16, data []byte, packetLength uint16) *_CIPAttributes {
+func NewCIPAttributes(classId []uint16, numberAvailable *uint16, numberActive *uint16, data []byte, packetLength uint16) *_CIPAttributes {
 	return &_CIPAttributes{ClassId: classId, NumberAvailable: numberAvailable, NumberActive: numberActive, Data: data, PacketLength: packetLength}
 }
 
@@ -118,11 +118,15 @@ func (m *_CIPAttributes) GetLengthInBits(ctx context.Context) uint16 {
 		lengthInBits += 16 * uint16(len(m.ClassId))
 	}
 
-	// Simple field (numberAvailable)
-	lengthInBits += 16
+	// Optional Field (numberAvailable)
+	if m.NumberAvailable != nil {
+		lengthInBits += 16
+	}
 
-	// Simple field (numberActive)
-	lengthInBits += 16
+	// Optional Field (numberActive)
+	if m.NumberActive != nil {
+		lengthInBits += 16
+	}
 
 	// Array field
 	if len(m.Data) > 0 {
@@ -183,21 +187,29 @@ func CIPAttributesParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 		return nil, errors.Wrap(closeErr, "Error closing for classId")
 	}
 
-	// Simple Field (numberAvailable)
-	_numberAvailable, _numberAvailableErr := readBuffer.ReadUint16("numberAvailable", 16)
-	if _numberAvailableErr != nil {
-		return nil, errors.Wrap(_numberAvailableErr, "Error parsing 'numberAvailable' field of CIPAttributes")
+	// Optional Field (numberAvailable) (Can be skipped, if a given expression evaluates to false)
+	var numberAvailable *uint16 = nil
+	if bool((packetLength) >= (((numberOfClasses) * (2)) + (4))) {
+		_val, _err := readBuffer.ReadUint16("numberAvailable", 16)
+		if _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing 'numberAvailable' field of CIPAttributes")
+		}
+		numberAvailable = &_val
 	}
-	numberAvailable := _numberAvailable
 
-	// Simple Field (numberActive)
-	_numberActive, _numberActiveErr := readBuffer.ReadUint16("numberActive", 16)
-	if _numberActiveErr != nil {
-		return nil, errors.Wrap(_numberActiveErr, "Error parsing 'numberActive' field of CIPAttributes")
+	// Optional Field (numberActive) (Can be skipped, if a given expression evaluates to false)
+	var numberActive *uint16 = nil
+	if bool((packetLength) >= (((numberOfClasses) * (2)) + (6))) {
+		_val, _err := readBuffer.ReadUint16("numberActive", 16)
+		if _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing 'numberActive' field of CIPAttributes")
+		}
+		numberActive = &_val
 	}
-	numberActive := _numberActive
 	// Byte Array field (data)
-	numberOfBytesdata := int(uint16(uint16(uint16(packetLength)-uint16(uint16(2)))-uint16((uint16(uint16(len(classId)))*uint16(uint16(2))))) - uint16(uint16(4)))
+	numberOfBytesdata := int(utils.InlineIf((bool((packetLength) > (((numberOfClasses) * (2)) + (6)))), func() any {
+		return uint16(uint16(packetLength) - uint16((uint16((uint16(numberOfClasses) * uint16(uint16(2)))) + uint16(uint16(6)))))
+	}, func() any { return uint16(uint16(0)) }).(uint16))
 	data, _readArrayErr := readBuffer.ReadByteArray("data", numberOfBytesdata)
 	if _readArrayErr != nil {
 		return nil, errors.Wrap(_readArrayErr, "Error parsing 'data' field of CIPAttributes")
@@ -254,18 +266,24 @@ func (m *_CIPAttributes) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 		return errors.Wrap(popErr, "Error popping for classId")
 	}
 
-	// Simple Field (numberAvailable)
-	numberAvailable := uint16(m.GetNumberAvailable())
-	_numberAvailableErr := writeBuffer.WriteUint16("numberAvailable", 16, (numberAvailable))
-	if _numberAvailableErr != nil {
-		return errors.Wrap(_numberAvailableErr, "Error serializing 'numberAvailable' field")
+	// Optional Field (numberAvailable) (Can be skipped, if the value is null)
+	var numberAvailable *uint16 = nil
+	if m.GetNumberAvailable() != nil {
+		numberAvailable = m.GetNumberAvailable()
+		_numberAvailableErr := writeBuffer.WriteUint16("numberAvailable", 16, *(numberAvailable))
+		if _numberAvailableErr != nil {
+			return errors.Wrap(_numberAvailableErr, "Error serializing 'numberAvailable' field")
+		}
 	}
 
-	// Simple Field (numberActive)
-	numberActive := uint16(m.GetNumberActive())
-	_numberActiveErr := writeBuffer.WriteUint16("numberActive", 16, (numberActive))
-	if _numberActiveErr != nil {
-		return errors.Wrap(_numberActiveErr, "Error serializing 'numberActive' field")
+	// Optional Field (numberActive) (Can be skipped, if the value is null)
+	var numberActive *uint16 = nil
+	if m.GetNumberActive() != nil {
+		numberActive = m.GetNumberActive()
+		_numberActiveErr := writeBuffer.WriteUint16("numberActive", 16, *(numberActive))
+		if _numberActiveErr != nil {
+			return errors.Wrap(_numberActiveErr, "Error serializing 'numberActive' field")
+		}
 	}
 
 	// Array Field (data)

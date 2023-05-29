@@ -19,10 +19,8 @@
 
 from dataclasses import dataclass
 
-from ctypes import c_byte
-from ctypes import c_uint16
-from ctypes import c_uint8
 from plc4py.api.messages.PlcMessage import PlcMessage
+from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
 from typing import List
 import math
@@ -30,10 +28,10 @@ import math
 
 @dataclass
 class ModbusPDUWriteFileRecordResponseItem(PlcMessage):
-    reference_type: c_uint8
-    file_number: c_uint16
-    record_number: c_uint16
-    record_data: List[c_byte]
+    reference_type: int
+    file_number: int
+    record_number: int
+    record_data: List[int]
 
     def __post_init__(self):
         super().__init__()
@@ -55,7 +53,7 @@ class ModbusPDUWriteFileRecordResponseItem(PlcMessage):
         )
 
         # Implicit Field (record_length) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-        record_length: c_uint16 = c_uint16(len(self.record_data)) / c_uint16(2)
+        record_length: int = int(len(self.record_data)) / int(2)
         write_buffer.write_unsigned_short(record_length, logical_name="recordLength")
 
         # Array Field (recordData)
@@ -83,34 +81,29 @@ class ModbusPDUWriteFileRecordResponseItem(PlcMessage):
         length_in_bits += 16
 
         # Array field
-        if self.record_data is not None:
+        if self.record_data != None:
             length_in_bits += 8 * len(self.record_data)
 
         return length_in_bits
 
-    def static_parse(read_buffer: ReadBuffer, args):
-        return staticParse(read_buffer)
+    def static_parse(self, read_buffer: ReadBuffer, args):
+        return self.static_parse_context(read_buffer)
 
     @staticmethod
     def static_parse_context(read_buffer: ReadBuffer):
-        read_buffer.pull_context("ModbusPDUWriteFileRecordResponseItem")
-        cur_pos: int = 0
+        read_buffer.push_context("ModbusPDUWriteFileRecordResponseItem")
 
-        reference_type: c_uint8 = read_simple_field(
-            "referenceType", read_unsigned_short
-        )
+        self.reference_type = read_simple_field("referenceType", read_unsigned_short)
 
-        file_number: c_uint16 = read_simple_field("fileNumber", read_unsigned_int)
+        self.file_number = read_simple_field("fileNumber", read_unsigned_int)
 
-        record_number: c_uint16 = read_simple_field("recordNumber", read_unsigned_int)
+        self.record_number = read_simple_field("recordNumber", read_unsigned_int)
 
-        record_length: c_uint16 = read_implicit_field("recordLength", read_unsigned_int)
+        record_length: int = read_implicit_field("recordLength", read_unsigned_int)
 
-        record_data: List[c_byte] = read_buffer.read_byte_array(
-            "recordData", int(record_length)
-        )
+        self.record_data = read_buffer.read_byte_array("recordData", int(record_length))
 
-        read_buffer.close_context("ModbusPDUWriteFileRecordResponseItem")
+        read_buffer.pop_context("ModbusPDUWriteFileRecordResponseItem")
         # Create the instance
         _modbus_pdu_write_file_record_response_item: ModbusPDUWriteFileRecordResponseItem = ModbusPDUWriteFileRecordResponseItem(
             reference_type, file_number, record_number, record_data

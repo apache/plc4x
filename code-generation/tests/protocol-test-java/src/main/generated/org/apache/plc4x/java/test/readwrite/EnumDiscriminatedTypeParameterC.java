@@ -60,7 +60,6 @@ public class EnumDiscriminatedTypeParameterC extends EnumDiscriminatedTypeParame
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("EnumDiscriminatedTypeParameterC");
 
     // Simple Field (simpC)
@@ -91,8 +90,6 @@ public class EnumDiscriminatedTypeParameterC extends EnumDiscriminatedTypeParame
           throws ParseException {
     readBuffer.pullContext("EnumDiscriminatedTypeParameterC");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short simpC = readSimpleField("simpC", readUnsignedShort(readBuffer, 8));

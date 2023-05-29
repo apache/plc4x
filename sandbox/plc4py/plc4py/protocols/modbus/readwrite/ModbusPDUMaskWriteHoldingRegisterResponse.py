@@ -19,25 +19,23 @@
 
 from dataclasses import dataclass
 
-from ctypes import c_bool
-from ctypes import c_uint16
-from ctypes import c_uint8
 from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDU
 from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDUBuilder
+from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
 import math
 
 
 @dataclass
 class ModbusPDUMaskWriteHoldingRegisterResponse(PlcMessage, ModbusPDU):
-    reference_address: c_uint16
-    and_mask: c_uint16
-    or_mask: c_uint16
+    reference_address: int
+    and_mask: int
+    or_mask: int
     # Accessors for discriminator values.
-    error_flag: c_bool = False
-    function_flag: c_uint8 = 0x16
-    response: c_bool = True
+    error_flag: bool = False
+    function_flag: int = 0x16
+    response: bool = True
 
     def __post_init__(self):
         super().__init__()
@@ -77,19 +75,18 @@ class ModbusPDUMaskWriteHoldingRegisterResponse(PlcMessage, ModbusPDU):
         return length_in_bits
 
     @staticmethod
-    def static_parse_builder(read_buffer: ReadBuffer, response: c_bool):
-        read_buffer.pull_context("ModbusPDUMaskWriteHoldingRegisterResponse")
-        cur_pos: int = 0
+    def static_parse_builder(read_buffer: ReadBuffer, response: bool):
+        read_buffer.push_context("ModbusPDUMaskWriteHoldingRegisterResponse")
 
-        reference_address: c_uint16 = read_simple_field(
+        self.reference_address = read_simple_field(
             "referenceAddress", read_unsigned_int
         )
 
-        and_mask: c_uint16 = read_simple_field("andMask", read_unsigned_int)
+        self.and_mask = read_simple_field("andMask", read_unsigned_int)
 
-        or_mask: c_uint16 = read_simple_field("orMask", read_unsigned_int)
+        self.or_mask = read_simple_field("orMask", read_unsigned_int)
 
-        read_buffer.close_context("ModbusPDUMaskWriteHoldingRegisterResponse")
+        read_buffer.pop_context("ModbusPDUMaskWriteHoldingRegisterResponse")
         # Create the instance
         return ModbusPDUMaskWriteHoldingRegisterResponseBuilder(
             reference_address, and_mask, or_mask
@@ -128,9 +125,9 @@ class ModbusPDUMaskWriteHoldingRegisterResponse(PlcMessage, ModbusPDU):
 
 @dataclass
 class ModbusPDUMaskWriteHoldingRegisterResponseBuilder(ModbusPDUBuilder):
-    referenceAddress: c_uint16
-    andMask: c_uint16
-    orMask: c_uint16
+    referenceAddress: int
+    andMask: int
+    orMask: int
 
     def __post_init__(self):
         pass

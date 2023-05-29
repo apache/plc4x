@@ -349,7 +349,7 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
                 String stringType = "String";
                 final Term encodingTerm = field.getEncoding().orElse(new DefaultStringLiteral("UTF-8"));
                 if (!(encodingTerm instanceof StringLiteral)) {
-                    throw new RuntimeException("Encoding must be a quoted string value");
+                    throw new IllegalArgumentException("Encoding must be a quoted string value");
                 }
                 String encoding = ((StringLiteral) encodingTerm).getValue();
                 String length = Integer.toString(simpleTypeReference.getSizeInBits());
@@ -963,10 +963,11 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
     private String toFunctionCallParseExpression(Field field, TypeReference resultType, VariableLiteral variableLiteral, List<Argument> parserArguments, Tracer tracer) {
         tracer = tracer.dive("FunctionCall");
         StringBuilder sb = new StringBuilder(variableLiteral.getName());
-        if (variableLiteral.getArgs().isPresent()) {
+        Optional<List<Term>> args = variableLiteral.getArgs();
+        if (args.isPresent()) {
             sb.append("(");
             boolean firstArg = true;
-            for (Term arg : variableLiteral.getArgs().get()) {
+            for (Term arg : args.get()) {
                 if (!firstArg) {
                     sb.append(", ");
                 }
@@ -1035,10 +1036,11 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
     private String toGlobalFunctionCallSerializationExpression(Field field, TypeReference resultType, VariableLiteral variableLiteral, List<Argument> serialzerArguments, Tracer tracer) {
         tracer = tracer.dive("GLOBAL_FUNCTION_CALL");
         StringBuilder sb = new StringBuilder(variableLiteral.getName());
-        if (variableLiteral.getArgs().isPresent()) {
+        Optional<List<Term>> args = variableLiteral.getArgs();
+        if (args.isPresent()) {
             sb.append("(");
             boolean firstArg = true;
-            for (Term arg : variableLiteral.getArgs().get()) {
+            for (Term arg : args.get()) {
                 if (!firstArg) {
                     sb.append(", ");
                 }

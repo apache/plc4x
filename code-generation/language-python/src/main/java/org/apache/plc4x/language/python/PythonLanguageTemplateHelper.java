@@ -141,65 +141,50 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
         SimpleTypeReference simpleTypeReference = typeReference.asSimpleTypeReference().orElseThrow();
         switch (simpleTypeReference.getBaseType()) {
             case BIT:
-                emitRequiredImport("from ctypes import c_bool");
-                return "c_bool";
+                return "bool";
             case BYTE:
-                emitRequiredImport("from ctypes import c_byte");
-                return "c_byte";
+                return "int";
             case UINT:
                 IntegerTypeReference unsignedIntegerTypeReference = simpleTypeReference.asIntegerTypeReference().orElseThrow();
                 if (unsignedIntegerTypeReference.getSizeInBits() <= 8) {
-                    emitRequiredImport("from ctypes import c_uint8");
-                    return "c_uint8";
+                    return "int";
                 }
                 if (unsignedIntegerTypeReference.getSizeInBits() <= 16) {
-                    emitRequiredImport("from ctypes import c_uint16");
-                    return "c_uint16";
+                    return "int";
                 }
                 if (unsignedIntegerTypeReference.getSizeInBits() <= 32) {
-                    emitRequiredImport("from ctypes import c_uint32");
-                    return "c_uint32";
+                    return "int";
                 }
                 if (unsignedIntegerTypeReference.getSizeInBits() <= 64) {
-                    emitRequiredImport("from ctypes import c_uint64");
-                    return "c_uint64";
+                    return "int";
                 }
-                emitRequiredImport("from ctypes import c_longlong");
-                return "c_longlong";
+                return "int";
             case INT:
                 IntegerTypeReference integerTypeReference = simpleTypeReference.asIntegerTypeReference().orElseThrow();
                 if (integerTypeReference.getSizeInBits() <= 8) {
-                    emitRequiredImport("from ctypes import c_int8");
-                    return "c_int8";
+                    return "int";
                 }
                 if (integerTypeReference.getSizeInBits() <= 16) {
-                    emitRequiredImport("from ctypes import c_int16");
-                    return "c_int16";
+                    return "int";
                 }
                 if (integerTypeReference.getSizeInBits() <= 32) {
-                    emitRequiredImport("from ctypes import c_int32");
-                    return "c_int32";
+                    return "int";
                 }
                 if (integerTypeReference.getSizeInBits() <= 64) {
-                    emitRequiredImport("from ctypes import c_int64");
-                    return "c_int64";
+                    return "int";
                 }
-                emitRequiredImport("from ctypes import c_longlong");
-                return "c_longlong";
+                return "int";
             case FLOAT:
             case UFLOAT:
                 FloatTypeReference floatTypeReference = simpleTypeReference.asFloatTypeReference().orElseThrow();
                 int sizeInBits = floatTypeReference.getSizeInBits();
                 if (sizeInBits <= 32) {
-                    emitRequiredImport("from ctypes import c_float");
-                    return "c_float";
+                    return "float";
                 }
                 if (sizeInBits <= 64) {
-                    emitRequiredImport("from ctypes import c_double");
-                    return "c_double";
+                    return "float";
                 }
-                emitRequiredImport("from ctypes import c_longdouble");
-                return "c_longdouble";
+                return "float";
             case STRING:
             case VSTRING:
                 return "str";
@@ -281,7 +266,7 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
         final int sizeInBits = simpleTypeReference.getSizeInBits();
         switch (simpleTypeReference.getBaseType()) {
             case BIT:
-                return "read_boolean";
+                return "read_bit";
             case BYTE:
                 return "read_byte";
             case UINT:
@@ -514,46 +499,46 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
     public String getReadBufferReadMethodCall(String logicalName, SimpleTypeReference simpleTypeReference, String valueString, TypedField field) {
         switch (simpleTypeReference.getBaseType()) {
             case BIT:
-                String bitType = "Bit";
-                return "read_buffer.read" + bitType + "(\"" + logicalName + "\")";
+                String bitType = "bit";
+                return "read_buffer.read_" + bitType + "(\"" + logicalName + "\")";
             case BYTE:
-                String byteType = "Byte";
-                return "read_buffer.read" + byteType + "(\"" + logicalName + "\")";
+                String byteType = "byte";
+                return "read_buffer.read_" + byteType + "(\"" + logicalName + "\")";
             case UINT:
                 String unsignedIntegerType;
                 IntegerTypeReference unsignedIntegerTypeReference = (IntegerTypeReference) simpleTypeReference;
                 if (unsignedIntegerTypeReference.getSizeInBits() <= 4) {
-                    unsignedIntegerType = "UnsignedByte";
+                    unsignedIntegerType = "unsigned_byte";
                 } else if (unsignedIntegerTypeReference.getSizeInBits() <= 8) {
-                    unsignedIntegerType = "UnsignedShort";
+                    unsignedIntegerType = "unsigned_short";
                 } else if (unsignedIntegerTypeReference.getSizeInBits() <= 16) {
-                    unsignedIntegerType = "UnsignedInt";
+                    unsignedIntegerType = "unsigned_int";
                 } else if (unsignedIntegerTypeReference.getSizeInBits() <= 32) {
-                    unsignedIntegerType = "UnsignedLong";
+                    unsignedIntegerType = "unsigned_long";
                 } else {
-                    unsignedIntegerType = "UnsignedBigInteger";
+                    unsignedIntegerType = "unsigned_big_integer";
                 }
-                return "read_buffer.read" + unsignedIntegerType + "(\"" + logicalName + "\", " + simpleTypeReference.getSizeInBits() + ")";
+                return "read_buffer.read_" + unsignedIntegerType + "(" + simpleTypeReference.getSizeInBits() + ", logical_name=\"" + logicalName + "\")";
             case INT:
                 String integerType;
                 if (simpleTypeReference.getSizeInBits() <= 8) {
-                    integerType = "SignedByte";
+                    integerType = "signed_byte";
                 } else if (simpleTypeReference.getSizeInBits() <= 16) {
-                    integerType = "Short";
+                    integerType = "short";
                 } else if (simpleTypeReference.getSizeInBits() <= 32) {
-                    integerType = "Int";
+                    integerType = "int";
                 } else if (simpleTypeReference.getSizeInBits() <= 64) {
-                    integerType = "Long";
+                    integerType = "long";
                 } else {
-                    integerType = "BigInteger";
+                    integerType = "big_integer";
                 }
-                return "read_buffer.read" + integerType + "(\"" + logicalName + "\", " + simpleTypeReference.getSizeInBits() + ")";
+                return "read_buffer.read_" + integerType + "(" + simpleTypeReference.getSizeInBits() + ", logical_name=\"" + logicalName + "\")";
             case FLOAT:
-                String floatType = (simpleTypeReference.getSizeInBits() <= 32) ? "Float" : "Double";
-                return "read_buffer.read" + floatType + "(\"" + logicalName + "\", " + simpleTypeReference.getSizeInBits() + ")";
+                String floatType = (simpleTypeReference.getSizeInBits() <= 32) ? "float" : "double";
+                return "read_buffer.read_" + floatType + "(" + simpleTypeReference.getSizeInBits() + ", logical_name=\"" + logicalName + "\")";
             case STRING:
             case VSTRING:
-                String stringType = "String";
+                String stringType = "string";
                 final Term encodingTerm = field.getEncoding().orElse(new DefaultStringLiteral("UTF-8"));
                 if (!(encodingTerm instanceof StringLiteral)) {
                     throw new RuntimeException("Encoding must be a quoted string value");
@@ -564,8 +549,8 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
                     VstringTypeReference vstringTypeReference = (VstringTypeReference) simpleTypeReference;
                     length = toParseExpression(field, INT_TYPE_REFERENCE, vstringTypeReference.getLengthExpression(), null);
                 }
-                return "read_buffer.read" + stringType + "(\"" + logicalName + "\", " + length + ", \"" +
-                    encoding + "\")";
+                return "read_buffer.read_" + stringType + "(" + simpleTypeReference.getSizeInBits() + ", logical_name=\"" + logicalName + "\", encoding=" + "\"\")";
+
             default:
                 return "";
         }
@@ -678,57 +663,57 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
 
 
     public String toParseExpression(Field field, TypeReference resultType, Term term, List<Argument> parserArguments) {
-        Tracer tracer = Tracer.start("toParseExpression");
+        Tracer tracer = pythonTracerStart("toParseExpression");
         return tracer + toTypedParseExpression(field, resultType, term, parserArguments);
     }
 
     public String toParseExpression(Field field, TypeReference resultType, Term term, List<Argument> parserArguments, boolean suppressPointerAccess) {
-        Tracer tracer = Tracer.start("toParseExpression");
+        Tracer tracer = pythonTracerStart("toParseExpression");
         return tracer + toTypedParseExpression(field, resultType, term, parserArguments, suppressPointerAccess);
     }
 
     public String toSerializationExpression(Field field, TypeReference resultType, Term term, List<Argument> serializerArguments) {
-        Tracer tracer = Tracer.start("toSerializationExpression");
+        Tracer tracer = pythonTracerStart("toSerializationExpression");
         return tracer + toTypedSerializationExpression(field, resultType, term, serializerArguments);
     }
 
     public String toBooleanParseExpression(Field field, Term term, List<Argument> parserArguments) {
-        Tracer tracer = Tracer.start("toBooleanParseExpression");
+        Tracer tracer = pythonTracerStart("toBooleanParseExpression");
         return tracer + toTypedParseExpression(field, new DefaultBooleanTypeReference(), term, parserArguments);
     }
 
     public String toBooleanSerializationExpression(Field field, Term term, List<Argument> serializerArguments) {
-        Tracer tracer = Tracer.start("toBooleanSerializationExpression");
+        Tracer tracer = pythonTracerStart("toBooleanSerializationExpression");
         return tracer + toTypedSerializationExpression(field, new DefaultBooleanTypeReference(), term, serializerArguments);
     }
 
     public String toIntegerParseExpression(Field field, int sizeInBits, Term term, List<Argument> parserArguments) {
-        Tracer tracer = Tracer.start("toIntegerParseExpression");
+        Tracer tracer = pythonTracerStart("toIntegerParseExpression");
         return tracer + toTypedParseExpression(field, new DefaultIntegerTypeReference(SimpleTypeReference.SimpleBaseType.UINT, sizeInBits), term, parserArguments);
     }
 
     public String toIntegerSerializationExpression(Field field, int sizeInBits, Term term, List<Argument> serializerArguments) {
-        Tracer tracer = Tracer.start("toIntegerSerializationExpression");
+        Tracer tracer = pythonTracerStart("toIntegerSerializationExpression");
         return tracer + toTypedSerializationExpression(field, new DefaultIntegerTypeReference(SimpleTypeReference.SimpleBaseType.UINT, sizeInBits), term, serializerArguments);
     }
 
     public String toTypedParseExpression(Field field, TypeReference fieldType, Term term, List<Argument> parserArguments) {
-        Tracer tracer = Tracer.start("toTypedParseExpression");
+        Tracer tracer = pythonTracerStart("toTypedParseExpression");
         return tracer + toExpression(field, fieldType, term, parserArguments, null, false, fieldType != null && fieldType.isComplexTypeReference());
     }
 
     public String toTypedParseExpression(Field field, TypeReference fieldType, Term term, List<Argument> parserArguments, boolean suppressPointerAccess) {
-        Tracer tracer = Tracer.start("toTypedParseExpression");
+        Tracer tracer = pythonTracerStart("toTypedParseExpression");
         return tracer + toExpression(field, fieldType, term, parserArguments, null, false, suppressPointerAccess);
     }
 
     public String toTypedSerializationExpression(Field field, TypeReference fieldType, Term term, List<Argument> serializerArguments) {
-        Tracer tracer = Tracer.start("toTypedSerializationExpression");
+        Tracer tracer = pythonTracerStart("toTypedSerializationExpression");
         return tracer + toExpression(field, fieldType, term, null, serializerArguments, true, false);
     }
 
     String getCastExpressionForTypeReference(TypeReference typeReference) {
-        Tracer tracer = Tracer.start("castExpression");
+        Tracer tracer = pythonTracerStart("castExpression");
         if (typeReference instanceof SimpleTypeReference) {
             return tracer.dive("simpleTypeRef") + getLanguageTypeNameForTypeReference(typeReference);
         } else if (typeReference instanceof ByteOrderTypeReference) {
@@ -741,7 +726,7 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
     }
 
     private String toExpression(Field field, TypeReference fieldType, Term term, List<Argument> parserArguments, List<Argument> serializerArguments, boolean serialize, boolean suppressPointerAccess) {
-        Tracer tracer = Tracer.start("toExpression(suppressPointerAccess=" + suppressPointerAccess + ")");
+        Tracer tracer = pythonTracerStart("toExpression(suppressPointerAccess=" + suppressPointerAccess + ")");
         if (term == null) {
             return "";
         }
@@ -898,7 +883,7 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
     }
 
     private String toVariableExpression(Field field, TypeReference typeReference, VariableLiteral variableLiteral, List<Argument> parserArguments, List<Argument> serializerArguments, boolean serialize, boolean suppressPointerAccess, boolean isChild) {
-        Tracer tracer = Tracer.start("toVariableExpression(serialize=" + serialize + ")");
+        Tracer tracer = pythonTracerStart("toVariableExpression(serialize=" + serialize + ")");
         String variableLiteralName = variableLiteral.getName();
         boolean isEnumTypeReference = typeReference != null && typeReference.isEnumTypeReference();
         if ("lengthInBytes".equals(variableLiteralName)) {
@@ -1737,7 +1722,7 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
     }
 
     public String capitalize(String str) {
-        Tracer dummyTracer = Tracer.start("");
+        Tracer dummyTracer = pythonTracerStart("");
         String extractedTrace = dummyTracer.extractTraces(str);
         String cleanedString = dummyTracer.removeTraces(str);
         return extractedTrace + StringUtils.capitalize(cleanedString);
@@ -1776,6 +1761,22 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
             return snakeCase.substring(1);
         }
         return snakeCase.toString();
+    }
+
+    public Tracer pythonTracerStart(String base) {
+        return new Tracer(base) {
+            protected String separator() {
+                return "/";
+            }
+
+            protected String prefix() {
+                return "\"\"\"";
+            }
+
+            protected String suffix() {
+                return "\"\"\"";
+            }
+        };
     }
 
 }

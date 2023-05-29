@@ -19,26 +19,24 @@
 
 from dataclasses import dataclass
 
-from ctypes import c_bool
-from ctypes import c_uint16
-from ctypes import c_uint8
 from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.protocols.modbus.readwrite.DriverType import DriverType
 from plc4py.protocols.modbus.readwrite.ModbusADU import ModbusADU
 from plc4py.protocols.modbus.readwrite.ModbusADU import ModbusADUBuilder
 from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDU
+from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
 import math
 
 
 @dataclass
 class ModbusTcpADU(PlcMessage, ModbusADU):
-    transaction_identifier: c_uint16
-    unit_identifier: c_uint8
+    transaction_identifier: int
+    unit_identifier: int
     pdu: ModbusPDU
     # Arguments.
-    response: c_bool
-    PROTOCOLIDENTIFIER: c_uint16 = 0x0000
+    response: bool
+    PROTOCOLIDENTIFIER: int = 0x0000
     # Accessors for discriminator values.
     driver_type: DriverType = DriverType.MODBUS_TCP
 
@@ -59,7 +57,7 @@ class ModbusTcpADU(PlcMessage, ModbusADU):
         )
 
         # Implicit Field (length) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-        length: c_uint16 = self.pdu.getlength_in_bytes(ctx) + c_uint16(1)
+        length: int = self.pdu.getlength_in_bytes(ctx) + int(1)
         write_buffer.write_unsigned_short(length, logical_name="length")
 
         # Simple Field (unitIdentifier)
@@ -98,43 +96,42 @@ class ModbusTcpADU(PlcMessage, ModbusADU):
 
     @staticmethod
     def static_parse_builder(
-        read_buffer: ReadBuffer, driver_type: DriverType, response: c_bool
+        read_buffer: ReadBuffer, driver_type: DriverType, response: bool
     ):
-        read_buffer.pull_context("ModbusTcpADU")
-        cur_pos: int = 0
+        read_buffer.push_context("ModbusTcpADU")
 
-        transaction_identifier: c_uint16 = read_simple_field(
+        self.transaction_identifier = read_simple_field(
             "transactionIdentifier",
             read_unsigned_int,
             WithOption.WithByteOrder(get_bi_g__endian()),
         )
 
-        protocol_identifier: c_uint16 = read_const_field(
+        self.protocol_identifier: int = read_const_field(
             "protocolIdentifier",
             read_unsigned_int,
             ModbusTcpADU.PROTOCOLIDENTIFIER,
             WithOption.WithByteOrder(get_bi_g__endian()),
         )
 
-        length: c_uint16 = read_implicit_field(
+        length: int = read_implicit_field(
             "length", read_unsigned_int, WithOption.WithByteOrder(get_bi_g__endian())
         )
 
-        unit_identifier: c_uint8 = read_simple_field(
+        self.unit_identifier = read_simple_field(
             "unitIdentifier",
             read_unsigned_short,
             WithOption.WithByteOrder(get_bi_g__endian()),
         )
 
-        pdu: ModbusPDU = read_simple_field(
+        self.pdu = read_simple_field(
             "pdu",
             DataReaderComplexDefault(
-                ModbusPDU.static_parse(read_buffer, c_bool(response)), read_buffer
+                ModbusPDU.static_parse(read_buffer, bool(response)), read_buffer
             ),
             WithOption.WithByteOrder(get_bi_g__endian()),
         )
 
-        read_buffer.close_context("ModbusTcpADU")
+        read_buffer.pop_context("ModbusTcpADU")
         # Create the instance
         return ModbusTcpADUBuilder(
             transaction_identifier, unit_identifier, pdu, response
@@ -171,15 +168,15 @@ class ModbusTcpADU(PlcMessage, ModbusADU):
 
 @dataclass
 class ModbusTcpADUBuilder(ModbusADUBuilder):
-    transactionIdentifier: c_uint16
-    unitIdentifier: c_uint8
+    transactionIdentifier: int
+    unitIdentifier: int
     pdu: ModbusPDU
-    response: c_bool
+    response: bool
 
     def __post_init__(self):
         pass
 
-    def build(self, response: c_bool) -> ModbusTcpADU:
+    def build(self, response: bool) -> ModbusTcpADU:
         modbus_tcp_adu: ModbusTcpADU = ModbusTcpADU(
             self.transaction_identifier, self.unit_identifier, self.pdu, response
         )

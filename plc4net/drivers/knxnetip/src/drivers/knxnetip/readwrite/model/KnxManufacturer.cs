@@ -652,8 +652,10 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
         M_I_TRUST = 625,
         M_DRD_TECHNICS = 626,
         M_LENGEN = 627,
-        M_ABB___RESERVED = 628,
-        M_BUSCH_JAEGER_ELEKTRO___RESERVED = 629,
+        M_SHENZHEN_EXC_LED_TECHNOLOGY_CO__LTD = 628,
+        M_VIBROXX_FZCO = 629,
+        M_ABB___RESERVED = 630,
+        M_BUSCH_JAEGER_ELEKTRO___RESERVED = 631,
     }
 
     public static class KnxManufacturerInfo
@@ -2427,14 +2429,20 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxManufacturer.M_LENGEN: { /* '627' */
                     return 684;
                 }
-                case KnxManufacturer.M_ABB___RESERVED: { /* '628' */
-                    return 43954;
+                case KnxManufacturer.M_SHENZHEN_EXC_LED_TECHNOLOGY_CO__LTD: { /* '628' */
+                    return 685;
                 }
-                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '629' */
-                    return 43959;
+                case KnxManufacturer.M_VIBROXX_FZCO: { /* '629' */
+                    return 686;
                 }
                 case KnxManufacturer.M_WHD_WILHELM_HUBER_Plus_SOEHNE: { /* '63' */
                     return 101;
+                }
+                case KnxManufacturer.M_ABB___RESERVED: { /* '630' */
+                    return 43954;
+                }
+                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '631' */
+                    return 43959;
                 }
                 case KnxManufacturer.M_BISCHOFF_ELEKTRONIK: { /* '64' */
                     return 102;
@@ -4327,14 +4335,20 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxManufacturer.M_LENGEN: { /* '627' */
                     return "LENGEN";
                 }
-                case KnxManufacturer.M_ABB___RESERVED: { /* '628' */
-                    return "ABB - reserved";
+                case KnxManufacturer.M_SHENZHEN_EXC_LED_TECHNOLOGY_CO__LTD: { /* '628' */
+                    return "Shenzhen EXC-LED Technology Co.,LTD";
                 }
-                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '629' */
-                    return "Busch-Jaeger Elektro - reserved";
+                case KnxManufacturer.M_VIBROXX_FZCO: { /* '629' */
+                    return "Vibroxx-FZCO";
                 }
                 case KnxManufacturer.M_WHD_WILHELM_HUBER_Plus_SOEHNE: { /* '63' */
                     return "WHD Wilhelm Huber + Söhne";
+                }
+                case KnxManufacturer.M_ABB___RESERVED: { /* '630' */
+                    return "ABB - reserved";
+                }
+                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '631' */
+                    return "Busch-Jaeger Elektro - reserved";
                 }
                 case KnxManufacturer.M_BISCHOFF_ELEKTRONIK: { /* '64' */
                     return "Bischoff Elektronik";

@@ -146,11 +146,11 @@ func (rb *byteReadBuffer) ReadByteArray(_ string, numberOfBytes int, _ ...WithRe
 
 func (rb *byteReadBuffer) ReadUint8(_ string, bitLength uint8, _ ...WithReaderArgs) (uint8, error) {
 	rb.pos += uint64(bitLength)
-	res := uint8(rb.reader.TryReadBits(bitLength))
-	if rb.reader.TryError != nil {
-		return 0, rb.reader.TryError
+	res, err := rb.reader.ReadBits(bitLength)
+	if err != nil {
+		return 0, errors.Wrapf(err, "error reading %d bits", bitLength)
 	}
-	return res, nil
+	return uint8(res), nil
 }
 
 func (rb *byteReadBuffer) ReadUint16(logicalName string, bitLength uint8, _ ...WithReaderArgs) (uint16, error) {
@@ -163,11 +163,11 @@ func (rb *byteReadBuffer) ReadUint16(logicalName string, bitLength uint8, _ ...W
 		return uint16(bigInt.Uint64()), nil
 	}
 	rb.pos += uint64(bitLength)
-	res := uint16(rb.reader.TryReadBits(bitLength))
-	if rb.reader.TryError != nil {
-		return 0, rb.reader.TryError
+	res, err := rb.reader.ReadBits(bitLength)
+	if err != nil {
+		return 0, errors.Wrapf(err, "error reading %d bits", bitLength)
 	}
-	return res, nil
+	return uint16(res), nil
 }
 
 func (rb *byteReadBuffer) ReadUint32(logicalName string, bitLength uint8, _ ...WithReaderArgs) (uint32, error) {
@@ -180,11 +180,11 @@ func (rb *byteReadBuffer) ReadUint32(logicalName string, bitLength uint8, _ ...W
 		return uint32(bigInt.Uint64()), nil
 	}
 	rb.pos += uint64(bitLength)
-	res := uint32(rb.reader.TryReadBits(bitLength))
-	if rb.reader.TryError != nil {
-		return 0, rb.reader.TryError
+	res, err := rb.reader.ReadBits(bitLength)
+	if err != nil {
+		return 0, errors.Wrapf(err, "error reading %d bits", bitLength)
 	}
-	return res, nil
+	return uint32(res), nil
 }
 
 func (rb *byteReadBuffer) ReadUint64(logicalName string, bitLength uint8, _ ...WithReaderArgs) (uint64, error) {
@@ -197,20 +197,20 @@ func (rb *byteReadBuffer) ReadUint64(logicalName string, bitLength uint8, _ ...W
 		return bigInt.Uint64(), nil
 	}
 	rb.pos += uint64(bitLength)
-	res := rb.reader.TryReadBits(bitLength)
-	if rb.reader.TryError != nil {
-		return 0, rb.reader.TryError
+	res, err := rb.reader.ReadBits(bitLength)
+	if err != nil {
+		return 0, errors.Wrapf(err, "error reading %d bits", bitLength)
 	}
 	return res, nil
 }
 
 func (rb *byteReadBuffer) ReadInt8(_ string, bitLength uint8, _ ...WithReaderArgs) (int8, error) {
 	rb.pos += uint64(bitLength)
-	res := int8(rb.reader.TryReadBits(bitLength))
-	if rb.reader.TryError != nil {
-		return 0, rb.reader.TryError
+	res, err := rb.reader.ReadBits(bitLength)
+	if err != nil {
+		return 0, errors.Wrapf(err, "error reading %d bits", bitLength)
 	}
-	return res, nil
+	return int8(res), nil
 }
 
 func (rb *byteReadBuffer) ReadInt16(logicalName string, bitLength uint8, _ ...WithReaderArgs) (int16, error) {
@@ -223,11 +223,11 @@ func (rb *byteReadBuffer) ReadInt16(logicalName string, bitLength uint8, _ ...Wi
 		return int16(bigInt.Int64()), nil
 	}
 	rb.pos += uint64(bitLength)
-	res := int16(rb.reader.TryReadBits(bitLength))
-	if rb.reader.TryError != nil {
-		return 0, rb.reader.TryError
+	res, err := rb.reader.ReadBits(bitLength)
+	if err != nil {
+		return 0, errors.Wrapf(err, "error reading %d bits", bitLength)
 	}
-	return res, nil
+	return int16(res), nil
 }
 
 func (rb *byteReadBuffer) ReadInt32(logicalName string, bitLength uint8, _ ...WithReaderArgs) (int32, error) {
@@ -240,11 +240,11 @@ func (rb *byteReadBuffer) ReadInt32(logicalName string, bitLength uint8, _ ...Wi
 		return int32(bigInt.Int64()), nil
 	}
 	rb.pos += uint64(bitLength)
-	res := int32(rb.reader.TryReadBits(bitLength))
-	if rb.reader.TryError != nil {
-		return 0, rb.reader.TryError
+	res, err := rb.reader.ReadBits(bitLength)
+	if err != nil {
+		return 0, errors.Wrapf(err, "error reading %d bits", bitLength)
 	}
-	return res, nil
+	return int32(res), nil
 }
 
 func (rb *byteReadBuffer) ReadInt64(logicalName string, bitLength uint8, _ ...WithReaderArgs) (int64, error) {
@@ -257,11 +257,11 @@ func (rb *byteReadBuffer) ReadInt64(logicalName string, bitLength uint8, _ ...Wi
 		return bigInt.Int64(), nil
 	}
 	rb.pos += uint64(bitLength)
-	res := int64(rb.reader.TryReadBits(bitLength))
-	if rb.reader.TryError != nil {
-		return 0, rb.reader.TryError
+	res, err := rb.reader.ReadBits(bitLength)
+	if err != nil {
+		return 0, errors.Wrapf(err, "error reading %d bits", bitLength)
 	}
-	return res, nil
+	return int64(res), nil
 }
 
 func (rb *byteReadBuffer) ReadBigInt(_ string, bitLength uint64, _ ...WithReaderArgs) (*big.Int, error) {
@@ -279,7 +279,10 @@ func (rb *byteReadBuffer) ReadBigInt(_ string, bitLength uint64, _ ...WithReader
 			bitToRead = uint8(remainingBits)
 		}
 		// we now read the bits
-		data := rb.reader.TryReadBits(bitToRead)
+		data, err := rb.reader.ReadBits(bitToRead)
+		if err != nil {
+			return nil, errors.Wrapf(err, "error reading %d bits", bitLength)
+		}
 		rb.pos += bitLength
 
 		// and check for uneven bits for a right shift at the end
@@ -290,9 +293,6 @@ func (rb *byteReadBuffer) ReadBigInt(_ string, bitLength uint64, _ ...WithReader
 		binary.BigEndian.PutUint64(dataBytes, data)
 		rawBytes = append(rawBytes, dataBytes...)
 
-		if rb.reader.TryError != nil {
-			return big.NewInt(0), rb.reader.TryError
-		}
 		remainingBits -= uint64(bitToRead)
 	}
 
@@ -319,17 +319,18 @@ func (rb *byteReadBuffer) ReadBigInt(_ string, bitLength uint64, _ ...WithReader
 func (rb *byteReadBuffer) ReadFloat32(logicalName string, bitLength uint8, _ ...WithReaderArgs) (float32, error) {
 	if bitLength == 32 {
 		rb.pos += uint64(bitLength)
-		uintValue := uint32(rb.reader.TryReadBits(bitLength))
+		var uintValue uint32
+		_uintValue, err := rb.reader.ReadBits(bitLength)
+		if err != nil {
+			return 0, errors.Wrapf(err, "error reading %d bits", bitLength)
+		}
+		uintValue = uint32(_uintValue)
 		if rb.byteOrder == binary.LittleEndian {
 			array := make([]byte, 4)
 			binary.LittleEndian.PutUint32(array, uintValue)
 			uintValue = binary.BigEndian.Uint32(array)
 		}
-		res := math.Float32frombits(uintValue)
-		if rb.reader.TryError != nil {
-			return 0, rb.reader.TryError
-		}
-		return res, nil
+		return math.Float32frombits(uintValue), nil
 	} else if bitLength < 32 {
 		// TODO: Note ... this is the format as described in the KNX specification
 		var err error
@@ -355,16 +356,16 @@ func (rb *byteReadBuffer) ReadFloat32(logicalName string, bitLength uint8, _ ...
 
 func (rb *byteReadBuffer) ReadFloat64(_ string, bitLength uint8, _ ...WithReaderArgs) (float64, error) {
 	rb.pos += uint64(bitLength)
-	uintValue := rb.reader.TryReadBits(bitLength)
+	uintValue, err := rb.reader.ReadBits(bitLength)
+	if err != nil {
+		return 0, errors.Wrapf(err, "error reading %d bits", bitLength)
+	}
 	if rb.byteOrder == binary.LittleEndian {
 		array := make([]byte, 8)
 		binary.LittleEndian.PutUint64(array, uintValue)
 		uintValue = binary.BigEndian.Uint64(array)
 	}
 	res := math.Float64frombits(uintValue)
-	if rb.reader.TryError != nil {
-		return 0, rb.reader.TryError
-	}
 	return res, nil
 }
 
