@@ -30,8 +30,11 @@ type PlcValue interface {
 	////
 	// Simple Types
 
+	// IsSimple tells if this value is a simple datatype
 	IsSimple() bool
+	// IsNullable tells if this value is nullable
 	IsNullable() bool
+	// IsNull tells if this value is null
 	IsNull() bool
 	//
 	///
@@ -39,10 +42,15 @@ type PlcValue interface {
 	////
 	// Boolean
 
+	// IsBool tells if this value is a bool
 	IsBool() bool
+	// GetBoolLength return the bool length. Attention: Before using check with IsBool otherwise it might panic.
 	GetBoolLength() uint32
+	// GetBool return the bool. Attention: Before using check with IsBool otherwise it might panic.
 	GetBool() bool
+	// GetBoolAt return the bool at specified index. Attention: Before using check with IsBool otherwise it might panic.
 	GetBoolAt(index uint32) bool
+	// GetBoolArray return an array of bool. Attention: Before using check with IsBool otherwise it might panic.
 	GetBoolArray() []bool
 	//
 	///
@@ -50,7 +58,9 @@ type PlcValue interface {
 	////
 	// Byte
 
+	// IsByte tells if this is a byte
 	IsByte() bool
+	// GetByte return the byte length. Attention: Before using check with IsByte otherwise it might panic.
 	GetByte() byte
 	//
 	///
@@ -58,21 +68,37 @@ type PlcValue interface {
 	////
 	// Integer
 
+	// IsUint8 tells if this is an uint8
 	IsUint8() bool
+	// GetUint8 return the uint8. Attention: Before using check with IsUint8 otherwise it might panic.
 	GetUint8() uint8
+	// IsUint16 tells if this is an uint16
 	IsUint16() bool
+	// GetUint16 return the uint16. Attention: Before using check with IsUint16 otherwise it might panic.
 	GetUint16() uint16
+	// IsUint32 tells if this is an uint32
 	IsUint32() bool
+	// GetUint32 return the uint32. Attention: Before using check with IsUint32 otherwise it might panic.
 	GetUint32() uint32
+	// IsUint64 tells if this is an uint64
 	IsUint64() bool
+	// GetUint64 return the uint64. Attention: Before using check with IsUint64 otherwise it might panic.
 	GetUint64() uint64
+	// IsInt8 tells if this is an int8
 	IsInt8() bool
+	// GetInt8 return the int8. Attention: Before using check with IsInt8 otherwise it might panic.
 	GetInt8() int8
+	// IsInt16 tells if this is an int16
 	IsInt16() bool
+	// GetInt16 return the int16. Attention: Before using check with IsInt16 otherwise it might panic.
 	GetInt16() int16
+	// IsInt32 tells if this is an int32
 	IsInt32() bool
+	// GetInt32 return the int32. Attention: Before using check with IsInt32 otherwise it might panic.
 	GetInt32() int32
+	// IsInt64 tells if this is an int64
 	IsInt64() bool
+	// GetInt64 return the int64. Attention: Before using check with IsInt64 otherwise it might panic.
 	GetInt64() int64
 	//
 	///
@@ -80,9 +106,13 @@ type PlcValue interface {
 	////
 	// Floating Point
 
+	// IsFloat32 tells if this is a float32
 	IsFloat32() bool
+	// GetFloat32 return the float32. Attention: Before using check with IsFloat32 otherwise it might panic.
 	GetFloat32() float32
+	// IsFloat64 tells if this is a float64
 	IsFloat64() bool
+	// GetFloat64 return the float64. Attention: Before using check with IsFloat64 otherwise it might panic.
 	GetFloat64() float64
 	//
 	///
@@ -90,7 +120,9 @@ type PlcValue interface {
 	////
 	// String
 
+	// IsString tells if this is a string
 	IsString() bool
+	// GetString return the string. Attention: Before using check with IsString otherwise it might panic.
 	GetString() string
 	//
 	///
@@ -98,13 +130,21 @@ type PlcValue interface {
 	////
 	// Time
 
+	// IsTime tells if this is a time.Time
 	IsTime() bool
+	// GetTime return the time.Time. Attention: Before using check with IsTime otherwise it might panic.
 	GetTime() time.Time
+	// IsDuration tells if this is a time.Duration
 	IsDuration() bool
+	// GetDuration return the time.Duration. Attention: Before using check with IsDuration otherwise it might panic.
 	GetDuration() time.Duration
+	// IsDate tells if this is a time.Time
 	IsDate() bool
+	// GetDate return the time.Time. Attention: Before using check with IsDate otherwise it might panic.
 	GetDate() time.Time
+	// IsDateTime tells if this is a time.Time
 	IsDateTime() bool
+	// GetDateTime return the time.Time. Attention: Before using check with IsDateTime otherwise it might panic.
 	GetDateTime() time.Time
 	//
 	///
@@ -112,7 +152,9 @@ type PlcValue interface {
 	////
 	// Raw Access
 
+	// IsRaw tells if this is a raw value
 	IsRaw() bool
+	// GetRaw return the []byte. Attention: Before using check with IsRaw otherwise it might panic.
 	GetRaw() []byte
 	//
 	///
@@ -120,9 +162,13 @@ type PlcValue interface {
 	////
 	// List Methods
 
+	// IsList tells if this is a list
 	IsList() bool
+	// GetLength return the length of list. Attention: Before using check with IsList otherwise it might panic.
 	GetLength() uint32
+	// GetIndex return the element at index or nil if not found. Attention: Before using check with IsList otherwise it might panic.
 	GetIndex(i uint32) PlcValue
+	// GetList return the list. Attention: Before using check with IsList otherwise it might panic.
 	GetList() []PlcValue
 	//
 	///
@@ -130,14 +176,20 @@ type PlcValue interface {
 	////
 	// Struct Methods
 
+	// IsStruct tells if this is a struct (map)
 	IsStruct() bool
+	// GetKeys return the keys of the struct. Attention: Before using check with IsStruct otherwise it might panic.
 	GetKeys() []string
+	// HasKey returns true if it has the key. Attention: Before using check with IsStruct otherwise it might panic.
 	HasKey(key string) bool
+	// GetValue return the value of the struct or nil if not found. Attention: Before using check with IsStruct otherwise it might panic.
 	GetValue(key string) PlcValue
+	// GetStruct return the struct map. Attention: Before using check with IsStruct otherwise it might panic.
 	GetStruct() map[string]PlcValue
 	//
 	///
 
+	// GetPlcValueType returns the PlcValueType
 	GetPlcValueType() PlcValueType
 }
 
