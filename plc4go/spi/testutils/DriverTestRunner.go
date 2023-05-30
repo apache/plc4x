@@ -71,7 +71,7 @@ func (_option) isOption() bool {
 	return true
 }
 
-// WithRootTypeParser can be used to output the root type of a protocol for better debugging
+// WithRootTypeParser can be used to output the root type of protocol for better debugging
 func WithRootTypeParser(rootTypeParser func(utils.ReadBufferByteBased) (any, error)) WithOption {
 	return withRootTypeParser{rootTypeParser: rootTypeParser}
 }
