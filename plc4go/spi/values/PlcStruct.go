@@ -71,6 +71,10 @@ func (m PlcStruct) GetStruct() map[string]apiValues.PlcValue {
 	return m.values
 }
 
+func (m PlcStruct) IsString() bool {
+	return true
+}
+
 func (m PlcStruct) GetString() string {
 	var sb strings.Builder
 	sb.WriteString("PlcStruct{\n")

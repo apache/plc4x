@@ -99,6 +99,7 @@ func TestCombinations(t *testing.T) {
 			name: apiValues.DINT,
 			arguments: []argument{
 				NewPlcDINT(math.MinInt32),
+				NewPlcDINT(0),
 				NewPlcDINT(1),
 				NewPlcDINT(64),
 				NewPlcDINT(255),
@@ -266,6 +267,17 @@ func TestCombinations(t *testing.T) {
 				NewPlcTIME_OF_DAY(64),
 				NewPlcTIME_OF_DAY(255),
 				NewPlcTIME_OF_DAY(math.MaxUint32),
+			},
+		},
+		{
+			name: apiValues.LTIME_OF_DAY,
+			arguments: []argument{
+				NewPlcLTIME_OF_DAY(time.Now()),
+				NewPlcLTIME_OF_DAY(0),
+				NewPlcLTIME_OF_DAY(1),
+				NewPlcLTIME_OF_DAY(64),
+				NewPlcLTIME_OF_DAY(255),
+				NewPlcLTIME_OF_DAY(math.MaxUint32),
 			},
 		},
 		{
