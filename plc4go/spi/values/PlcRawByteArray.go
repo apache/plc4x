@@ -38,6 +38,10 @@ func NewPlcRawByteArray(values []byte) PlcRawByteArray {
 	}
 }
 
+func (m PlcRawByteArray) IsRaw() bool {
+	return true
+}
+
 func (m PlcRawByteArray) GetRaw() []byte {
 	return m.Values
 }

@@ -40,6 +40,10 @@ func NewPlcWORD(value uint16) PlcWORD {
 	}
 }
 
+func (m PlcWORD) IsRaw() bool {
+	return true
+}
+
 func (m PlcWORD) GetRaw() []byte {
 	theBytes, _ := m.Serialize()
 	return theBytes

@@ -112,6 +112,7 @@ type PlcValue interface {
 	////
 	// Raw Access
 
+	IsRaw() bool
 	GetRaw() []byte
 	//
 	///

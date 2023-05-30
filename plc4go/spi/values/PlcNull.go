@@ -36,6 +36,10 @@ func NewPlcNULL() PlcNull {
 	return PlcNull{}
 }
 
+func (m PlcNull) IsRaw() bool {
+	return true
+}
+
 func (m PlcNull) GetRaw() []byte {
 	return []byte{}
 }

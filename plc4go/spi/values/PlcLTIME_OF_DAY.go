@@ -60,6 +60,10 @@ func NewPlcLTIME_OF_DAYFromNanosecondsSinceMidnight(nanosecondsSinceMidnight uin
 	return NewPlcLTIME_OF_DAY(nanosecondsSinceMidnight)
 }
 
+func (m PlcLTIME_OF_DAY) IsRaw() bool {
+	return true
+}
+
 func (m PlcLTIME_OF_DAY) GetRaw() []byte {
 	theBytes, _ := m.Serialize()
 	return theBytes

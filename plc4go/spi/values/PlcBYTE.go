@@ -40,6 +40,10 @@ func NewPlcBYTE(value uint8) PlcBYTE {
 	}
 }
 
+func (m PlcBYTE) IsRaw() bool {
+	return true
+}
+
 func (m PlcBYTE) GetRaw() []byte {
 	return []byte{m.value}
 }

@@ -41,6 +41,10 @@ func NewPlcDINT(value int32) PlcDINT {
 	}
 }
 
+func (m PlcDINT) IsRaw() bool {
+	return true
+}
+
 func (m PlcDINT) GetRaw() []byte {
 	theBytes, _ := m.Serialize()
 	return theBytes

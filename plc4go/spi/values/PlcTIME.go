@@ -44,6 +44,10 @@ func NewPlcTIMEFromMilliseconds(milliseconds uint32) PlcTIME {
 	return NewPlcTIME(time.Duration(milliseconds) * time.Millisecond)
 }
 
+func (m PlcTIME) IsRaw() bool {
+	return true
+}
+
 func (m PlcTIME) GetRaw() []byte {
 	theBytes, _ := m.Serialize()
 	return theBytes

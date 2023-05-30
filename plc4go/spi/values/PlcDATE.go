@@ -68,6 +68,10 @@ func NewPlcDATEFromDaysSinceSiemensEpoch(daysSinceSiemensEpoch uint16) PlcDATE {
 	return NewPlcDATEFromDaysSinceEpoch(daysSinceSiemensEpoch + 7305)
 }
 
+func (m PlcDATE) IsRaw() bool {
+	return true
+}
+
 func (m PlcDATE) GetRaw() []byte {
 	theBytes, _ := m.Serialize()
 	return theBytes

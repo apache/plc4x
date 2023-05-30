@@ -55,6 +55,10 @@ func NewPlcLDATE_AND_TIMEFromNanosecondsSinceEpoch(nanosecondsSinceEpoch uint64)
 	return NewPlcLDATE_AND_TIME(nanosecondsSinceEpoch)
 }
 
+func (m PlcLDATE_AND_TIME) IsRaw() bool {
+	return true
+}
+
 func (m PlcLDATE_AND_TIME) GetRaw() []byte {
 	theBytes, _ := m.Serialize()
 	return theBytes

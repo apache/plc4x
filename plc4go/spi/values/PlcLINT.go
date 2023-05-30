@@ -41,6 +41,10 @@ func NewPlcLINT(value int64) PlcLINT {
 	}
 }
 
+func (m PlcLINT) IsRaw() bool {
+	return true
+}
+
 func (m PlcLINT) GetRaw() []byte {
 	theBytes, _ := m.Serialize()
 	return theBytes

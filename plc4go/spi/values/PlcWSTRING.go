@@ -39,6 +39,10 @@ func NewPlcWSTRING(value string) PlcWSTRING {
 	}
 }
 
+func (m PlcWSTRING) IsRaw() bool {
+	return true
+}
+
 func (m PlcWSTRING) GetRaw() []byte {
 	theBytes, _ := m.Serialize()
 	return theBytes

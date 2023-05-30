@@ -39,6 +39,10 @@ func NewPlcBOOL(value bool) PlcBOOL {
 	}
 }
 
+func (m PlcBOOL) IsRaw() bool {
+	return true
+}
+
 func (m PlcBOOL) GetRaw() []byte {
 	if m.value {
 		return []byte{0x01}

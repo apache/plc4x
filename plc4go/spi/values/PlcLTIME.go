@@ -44,6 +44,10 @@ func NewPlcLTIMEFromNanoseconds(nanoseconds uint64) PlcLTIME {
 	return NewPlcLTIME(time.Duration(nanoseconds) * time.Nanosecond)
 }
 
+func (m PlcLTIME) IsRaw() bool {
+	return true
+}
+
 func (m PlcLTIME) GetRaw() []byte {
 	theBytes, _ := m.Serialize()
 	return theBytes

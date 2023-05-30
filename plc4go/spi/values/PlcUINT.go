@@ -41,6 +41,10 @@ func NewPlcUINT(value uint16) PlcUINT {
 	}
 }
 
+func (m PlcUINT) IsRaw() bool {
+	return true
+}
+
 func (m PlcUINT) GetRaw() []byte {
 	theBytes, _ := m.Serialize()
 	return theBytes

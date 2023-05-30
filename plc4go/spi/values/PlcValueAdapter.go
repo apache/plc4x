@@ -185,6 +185,10 @@ func (m PlcValueAdapter) GetDuration() time.Duration {
 // Raw access
 //
 
+func (m PlcValueAdapter) IsRaw() bool {
+	return false
+}
+
 func (m PlcValueAdapter) GetRaw() []byte {
 	panic("GetRaw not implemented")
 }

@@ -1821,6 +1821,47 @@ func (_c *MockRawPlcValue_IsNullable_Call) RunAndReturn(run func() bool) *MockRa
 	return _c
 }
 
+// IsRaw provides a mock function with given fields:
+func (_m *MockRawPlcValue) IsRaw() bool {
+	ret := _m.Called()
+
+	var r0 bool
+	if rf, ok := ret.Get(0).(func() bool); ok {
+		r0 = rf()
+	} else {
+		r0 = ret.Get(0).(bool)
+	}
+
+	return r0
+}
+
+// MockRawPlcValue_IsRaw_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'IsRaw'
+type MockRawPlcValue_IsRaw_Call struct {
+	*mock.Call
+}
+
+// IsRaw is a helper method to define mock.On call
+func (_e *MockRawPlcValue_Expecter) IsRaw() *MockRawPlcValue_IsRaw_Call {
+	return &MockRawPlcValue_IsRaw_Call{Call: _e.mock.On("IsRaw")}
+}
+
+func (_c *MockRawPlcValue_IsRaw_Call) Run(run func()) *MockRawPlcValue_IsRaw_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run()
+	})
+	return _c
+}
+
+func (_c *MockRawPlcValue_IsRaw_Call) Return(_a0 bool) *MockRawPlcValue_IsRaw_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockRawPlcValue_IsRaw_Call) RunAndReturn(run func() bool) *MockRawPlcValue_IsRaw_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // IsSimple provides a mock function with given fields:
 func (_m *MockRawPlcValue) IsSimple() bool {
 	ret := _m.Called()

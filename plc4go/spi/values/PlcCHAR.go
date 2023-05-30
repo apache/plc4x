@@ -40,6 +40,10 @@ func NewPlcCHAR(value string) PlcCHAR {
 	}
 }
 
+func (m PlcCHAR) IsRaw() bool {
+	return true
+}
+
 func (m PlcCHAR) GetRaw() []byte {
 	return []byte(m.value)
 }

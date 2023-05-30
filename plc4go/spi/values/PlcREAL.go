@@ -40,6 +40,10 @@ func NewPlcREAL(value float32) PlcREAL {
 	}
 }
 
+func (m PlcREAL) IsRaw() bool {
+	return true
+}
+
 func (m PlcREAL) GetRaw() []byte {
 	theBytes, _ := m.Serialize()
 	return theBytes
