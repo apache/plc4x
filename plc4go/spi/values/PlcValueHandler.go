@@ -407,7 +407,7 @@ func (m DefaultValueHandler) NewPlcValueFromType(valueType apiValues.PlcValueTyp
 		if !isString {
 			return nil, errors.New("non-string to IEC61131_WSTRING conversion not implemented")
 		} else {
-			return NewPlcSTRING(stringValue), nil
+			return NewPlcWSTRING(stringValue), nil
 		}
 	}
 
