@@ -30,20 +30,23 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.apache.nifi.annotation.behavior.InputRequirement;
+import org.apache.nifi.annotation.behavior.ReadsAttribute;
+import org.apache.nifi.annotation.behavior.ReadsAttributes;
 import org.apache.nifi.annotation.behavior.TriggerSerially;
 import org.apache.nifi.annotation.behavior.WritesAttribute;
 import org.apache.nifi.annotation.behavior.WritesAttributes;
 import org.apache.nifi.annotation.documentation.CapabilityDescription;
+import org.apache.nifi.annotation.documentation.SeeAlso;
 import org.apache.nifi.annotation.documentation.Tags;
 import org.apache.nifi.components.PropertyDescriptor;
 import org.apache.nifi.flowfile.FlowFile;
+import org.apache.nifi.flowfile.attributes.CoreAttributes;
 import org.apache.nifi.logging.ComponentLog;
 import org.apache.nifi.processor.ProcessContext;
 import org.apache.nifi.processor.ProcessSession;
 import org.apache.nifi.processor.ProcessorInitializationContext;
 import org.apache.nifi.processor.Relationship;
 import org.apache.nifi.processor.exception.ProcessException;
-import org.apache.nifi.processor.util.StandardValidators;
 import org.apache.nifi.serialization.RecordReader;
 import org.apache.nifi.serialization.RecordReaderFactory;
 import org.apache.nifi.serialization.record.Record;
@@ -56,17 +59,20 @@ import org.apache.plc4x.java.api.types.PlcResponseCode;
 
 @TriggerSerially
 @Tags({"plc4x", "put", "sink", "record"})
+@SeeAlso({Plc4xSourceRecordProcessor.class, Plc4xListenRecordProcessor.class})
 @InputRequirement(InputRequirement.Requirement.INPUT_REQUIRED)
 @CapabilityDescription("Processor able to write data to industrial PLCs using Apache PLC4X")
-@WritesAttributes({ @WritesAttribute(attribute = "value", description = "some value") })
+@ReadsAttributes({@ReadsAttribute(attribute="value", description="some value")})
+@WritesAttributes({ 
+	@WritesAttribute(attribute = Plc4xSinkRecordProcessor.RESULT_ROW_COUNT, description = "Number of rows from the input FlowFile written into the PLC"),
+	@WritesAttribute(attribute = Plc4xSinkRecordProcessor.RESULT_QUERY_EXECUTION_TIME, description = "Time between request and response from the PLC"),
+	@WritesAttribute(attribute = Plc4xSinkRecordProcessor.INPUT_FLOWFILE_UUID, description = "UUID of the input FlowFile")
+ })
 public class Plc4xSinkRecordProcessor extends BasePlc4xProcessor {
 
 	public static final String RESULT_ROW_COUNT = "plc4x.write.row.count";
-	public static final String RESULT_QUERY_DURATION = "plc4x.write.query.duration";
 	public static final String RESULT_QUERY_EXECUTION_TIME = "plc4x.write.query.executiontime";
-	public static final String RESULT_QUERY_FETCH_TIME = "plc4x.write.query.fetchtime";
 	public static final String INPUT_FLOWFILE_UUID = "input.flowfile.uuid";
-	public static final String RESULT_ERROR_MESSAGE = "plc4x.write.error.message";
 	
 	public static final PropertyDescriptor PLC_RECORD_READER_FACTORY = new PropertyDescriptor.Builder()
 			.name("record-reader").displayName("Record Reader")
@@ -77,16 +83,6 @@ public class Plc4xSinkRecordProcessor extends BasePlc4xProcessor {
 			.required(true)
 			.build();
 
-	public static final PropertyDescriptor PLC_WRITE_FUTURE_TIMEOUT_MILISECONDS = new PropertyDescriptor.Builder().name("plc4x-record-write-timeout").displayName("Write timeout (miliseconds)")
-			.description("Write timeout in miliseconds")
-			.defaultValue("10000")
-			.required(true)
-			.addValidator(StandardValidators.POSITIVE_INTEGER_VALIDATOR)
-			.build();
-	
-
-	public Plc4xSinkRecordProcessor() {
-	}
 
 	@Override
 	protected void init(final ProcessorInitializationContext context) {
@@ -96,7 +92,6 @@ public class Plc4xSinkRecordProcessor extends BasePlc4xProcessor {
 
         final List<PropertyDescriptor> pds = new ArrayList<>(super.getSupportedPropertyDescriptors());
 		pds.add(PLC_RECORD_READER_FACTORY);
-		pds.add(PLC_WRITE_FUTURE_TIMEOUT_MILISECONDS);
 		this.properties = Collections.unmodifiableList(pds);
 	}
 
@@ -161,11 +156,9 @@ public class Plc4xSinkRecordProcessor extends BasePlc4xProcessor {
 					}
 					writeRequest = builder.build();
 
-					plcWriteResponse = writeRequest.execute().get(
-						context.getProperty(PLC_WRITE_FUTURE_TIMEOUT_MILISECONDS.getName()).asInteger(), TimeUnit.MILLISECONDS
-						);
+					plcWriteResponse = writeRequest.execute().get(this.timeout, TimeUnit.MILLISECONDS);
+
 				} catch (Exception e) {
-					System.out.println(e.getMessage());
 					in.close();
 					logger.error("Exception writing the data to PLC", e);
 					session.transfer(originalFlowFile, REL_FAILURE);
@@ -208,7 +201,8 @@ public class Plc4xSinkRecordProcessor extends BasePlc4xProcessor {
 		final Map<String, String> attributesToAdd = new HashMap<>();
 		attributesToAdd.put(RESULT_ROW_COUNT, String.valueOf(nrOfRows.get()));
 		attributesToAdd.put(RESULT_QUERY_EXECUTION_TIME, String.valueOf(executionTimeElapsed));
-
+		attributesToAdd.put(INPUT_FLOWFILE_UUID, fileToProcess.getAttribute(CoreAttributes.UUID.key()));
+		
 		FlowFile resultSetFF = session.putAllAttributes(originalFlowFile, attributesToAdd);
 
 		logger.info("Writing {} fields from {} records; transferring to 'success'", new Object[] { nrOfRows.get(), resultSetFF });

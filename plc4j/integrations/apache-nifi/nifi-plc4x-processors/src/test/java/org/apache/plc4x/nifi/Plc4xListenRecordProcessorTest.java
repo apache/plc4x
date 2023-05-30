@@ -25,54 +25,52 @@ import org.apache.nifi.util.TestRunners;
 import org.apache.plc4x.nifi.address.AddressesAccessUtils;
 import org.apache.plc4x.nifi.util.Plc4xCommonTest;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class Plc4xSourceRecordProcessorTest {
+public class Plc4xListenRecordProcessorTest {
 	
     private TestRunner testRunner;
-    private static final int NUMBER_OF_CALLS = 5;
+    private static int NUMBER_OF_CALLS = 5;
 
     private final AvroRecordSetWriter writerService = new  AvroRecordSetWriter();
     
     @BeforeEach
     public void init() throws InitializationException {
-    	testRunner = TestRunners.newTestRunner(Plc4xSourceRecordProcessor.class);
+    	testRunner = TestRunners.newTestRunner(Plc4xListenRecordProcessor.class);
     	testRunner.setIncomingConnection(false);
     	testRunner.setValidateExpressionUsage(false);
 
-    	testRunner.setProperty(Plc4xSourceRecordProcessor.PLC_FUTURE_TIMEOUT_MILISECONDS, "100");
-    	testRunner.setProperty(Plc4xSourceRecordProcessor.PLC_CONNECTION_STRING, "simulated://127.0.0.1");
-		testRunner.setProperty(Plc4xSourceRecordProcessor.PLC_SCHEMA_CACHE_SIZE, "1");
+    	testRunner.setProperty(Plc4xListenRecordProcessor.PLC_FUTURE_TIMEOUT_MILISECONDS, "30000");
+    	testRunner.setProperty(Plc4xListenRecordProcessor.PLC_CONNECTION_STRING, "simulated://127.0.0.1");
+		testRunner.setProperty(Plc4xListenRecordProcessor.PLC_SCHEMA_CACHE_SIZE, "1");
 
-    	testRunner.addConnection(Plc4xSourceRecordProcessor.REL_SUCCESS);
-    	testRunner.addConnection(Plc4xSourceRecordProcessor.REL_FAILURE);
+    	testRunner.addConnection(Plc4xListenRecordProcessor.REL_SUCCESS);
 
 		testRunner.addControllerService("writer", writerService);
     	testRunner.enableControllerService(writerService);
-		testRunner.setProperty(Plc4xSourceRecordProcessor.PLC_RECORD_WRITER_FACTORY.getName(), "writer");
+		testRunner.setProperty(Plc4xListenRecordProcessor.PLC_RECORD_WRITER_FACTORY.getName(), "writer");
     }
 
     public void testAvroRecordWriterProcessor() throws InitializationException {  	
     	testRunner.run(NUMBER_OF_CALLS,true, true);
     	//validations
-    	testRunner.assertTransferCount(Plc4xSourceRecordProcessor.REL_FAILURE, 0);
-    	testRunner.assertTransferCount(Plc4xSourceRecordProcessor.REL_SUCCESS, NUMBER_OF_CALLS);
-
 		Plc4xCommonTest.assertAvroContent(testRunner.getFlowFilesForRelationship(Plc4xSourceProcessor.REL_SUCCESS), false, true);
     }
 
 	// Test dynamic properties addressess access strategy
+    @Disabled // Until simulated driver supports subscription
 	@Test
     public void testWithAddressProperties() throws InitializationException {
         testRunner.setProperty(AddressesAccessUtils.PLC_ADDRESS_ACCESS_STRATEGY, AddressesAccessUtils.ADDRESS_PROPERTY);
-        Plc4xCommonTest.getAddressMap().forEach((k,v) -> testRunner.setProperty(k, v));
         testAvroRecordWriterProcessor();
     }
 
 	// Test addressess text property access strategy
+    @Disabled // Until simulated driver supports subscription
     @Test
     public void testWithAddressText() throws InitializationException, JsonProcessingException { 
         testRunner.setProperty(AddressesAccessUtils.PLC_ADDRESS_ACCESS_STRATEGY, AddressesAccessUtils.ADDRESS_TEXT);

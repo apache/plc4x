@@ -33,6 +33,7 @@ import org.apache.nifi.annotation.behavior.InputRequirement;
 import org.apache.nifi.annotation.behavior.WritesAttribute;
 import org.apache.nifi.annotation.behavior.WritesAttributes;
 import org.apache.nifi.annotation.documentation.CapabilityDescription;
+import org.apache.nifi.annotation.documentation.SeeAlso;
 import org.apache.nifi.annotation.documentation.Tags;
 import org.apache.nifi.annotation.lifecycle.OnScheduled;
 import org.apache.nifi.components.PropertyDescriptor;
@@ -44,7 +45,6 @@ import org.apache.nifi.processor.ProcessSession;
 import org.apache.nifi.processor.ProcessorInitializationContext;
 import org.apache.nifi.processor.Relationship;
 import org.apache.nifi.processor.exception.ProcessException;
-import org.apache.nifi.processor.util.StandardValidators;
 import org.apache.nifi.serialization.RecordSetWriterFactory;
 import org.apache.nifi.serialization.record.RecordSchema;
 import org.apache.nifi.util.StopWatch;
@@ -57,17 +57,19 @@ import org.apache.plc4x.nifi.record.Plc4xWriter;
 import org.apache.plc4x.nifi.record.RecordPlc4xWriter;
 
 @Tags({"plc4x", "get", "input", "source", "record"})
+@SeeAlso({Plc4xSinkRecordProcessor.class, Plc4xListenRecordProcessor.class})
 @InputRequirement(InputRequirement.Requirement.INPUT_ALLOWED)
 @CapabilityDescription("Processor able to read data from industrial PLCs using Apache PLC4X")
-@WritesAttributes({ @WritesAttribute(attribute = "value", description = "some value") })
+@WritesAttributes({ 
+	@WritesAttribute(attribute = Plc4xSourceRecordProcessor.RESULT_ROW_COUNT, description = "Number of rows written into the output FlowFile"),
+	@WritesAttribute(attribute = Plc4xSourceRecordProcessor.RESULT_QUERY_EXECUTION_TIME, description = "Time between request and response from the PLC"),
+	@WritesAttribute(attribute = Plc4xSourceRecordProcessor.INPUT_FLOWFILE_UUID, description = "UUID of the input FlowFile")
+ })
 public class Plc4xSourceRecordProcessor extends BasePlc4xProcessor {
 
 	public static final String RESULT_ROW_COUNT = "plc4x.read.row.count";
-	public static final String RESULT_QUERY_DURATION = "plc4x.read.query.duration";
 	public static final String RESULT_QUERY_EXECUTION_TIME = "plc4x.read.query.executiontime";
-	public static final String RESULT_QUERY_FETCH_TIME = "plc4x.read.query.fetchtime";
 	public static final String INPUT_FLOWFILE_UUID = "input.flowfile.uuid";
-	public static final String RESULT_ERROR_MESSAGE = "plc4x.read.error.message";
 
 	public static final PropertyDescriptor PLC_RECORD_WRITER_FACTORY = new PropertyDescriptor.Builder().name("plc4x-record-writer").displayName("Record Writer")
 		.description("Specifies the Controller Service to use for writing results to a FlowFile. The Record Writer may use Inherit Schema to emulate the inferred schema behavior, i.e. "
@@ -76,17 +78,6 @@ public class Plc4xSourceRecordProcessor extends BasePlc4xProcessor {
 		.required(true)
 		.build();
 	
-	public static final PropertyDescriptor PLC_READ_FUTURE_TIMEOUT_MILISECONDS = new PropertyDescriptor.Builder().name("plc4x-record-read-timeout").displayName("Read timeout (miliseconds)")
-		.description("Read timeout in miliseconds")
-		.defaultValue("10000")
-		.required(true)
-		.addValidator(StandardValidators.POSITIVE_INTEGER_VALIDATOR)
-		.build();
-
-	Integer readTimeout;
-	public Plc4xSourceRecordProcessor() {
-	}
-
 	@Override
 	protected void init(final ProcessorInitializationContext context) {
 		super.init(context);
@@ -95,7 +86,6 @@ public class Plc4xSourceRecordProcessor extends BasePlc4xProcessor {
 
         final List<PropertyDescriptor> pds = new ArrayList<>(super.getSupportedPropertyDescriptors());
 		pds.add(PLC_RECORD_WRITER_FACTORY);
-		pds.add(PLC_READ_FUTURE_TIMEOUT_MILISECONDS);
 		this.properties = Collections.unmodifiableList(pds);
 	}
 
@@ -103,8 +93,6 @@ public class Plc4xSourceRecordProcessor extends BasePlc4xProcessor {
 	@Override
 	public void onScheduled(final ProcessContext context) {
 		super.onScheduled(context);
-        super.connectionString = context.getProperty(PLC_CONNECTION_STRING.getName()).getValue();
-        this.readTimeout = context.getProperty(PLC_READ_FUTURE_TIMEOUT_MILISECONDS.getName()).asInteger();
 	}
 	
 	@Override
@@ -163,7 +151,7 @@ public class Plc4xSourceRecordProcessor extends BasePlc4xProcessor {
 			final FlowFile originalFlowFile = fileToProcess;
 			resultSetFF = session.write(resultSetFF, out -> {
 				try {
-					PlcReadResponse readResponse = readRequest.execute().get(this.readTimeout, TimeUnit.MILLISECONDS);
+					PlcReadResponse readResponse = readRequest.execute().get(this.timeout, TimeUnit.MILLISECONDS);
 					
 					if(originalFlowFile == null) //there is no inherit attributes to use in writer service 
 						nrOfRows.set(plc4xWriter.writePlcReadResponse(readResponse, out, logger, null, recordSchema));

@@ -19,12 +19,14 @@
 package org.apache.plc4x.nifi;
 
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.nifi.annotation.behavior.InputRequirement;
 import org.apache.nifi.annotation.behavior.ReadsAttribute;
 import org.apache.nifi.annotation.behavior.ReadsAttributes;
 import org.apache.nifi.annotation.behavior.TriggerSerially;
 import org.apache.nifi.annotation.documentation.CapabilityDescription;
+import org.apache.nifi.annotation.documentation.SeeAlso;
 import org.apache.nifi.annotation.documentation.Tags;
 import org.apache.nifi.flowfile.FlowFile;
 import org.apache.nifi.logging.ComponentLog;
@@ -39,6 +41,7 @@ import org.apache.plc4x.java.api.model.PlcTag;
 
 @TriggerSerially
 @Tags({"plc4x", "put", "sink"})
+@SeeAlso({Plc4xSourceProcessor.class})
 @InputRequirement(InputRequirement.Requirement.INPUT_REQUIRED)
 @CapabilityDescription("Processor able to write data to industrial PLCs using Apache PLC4X")
 @ReadsAttributes({@ReadsAttribute(attribute="value", description="some value")})
@@ -88,7 +91,7 @@ public class Plc4xSinkProcessor extends BasePlc4xProcessor {
 
             // Send the request to the PLC.
             try {
-                final PlcWriteResponse plcWriteResponse = writeRequest.execute().get();
+                final PlcWriteResponse plcWriteResponse = writeRequest.execute().get(this.timeout, TimeUnit.MILLISECONDS);
                 PlcResponseCode code = null;
 
                 for (String tag : plcWriteResponse.getTagNames()) {
@@ -112,7 +115,6 @@ public class Plc4xSinkProcessor extends BasePlc4xProcessor {
                         null
                     );
                 }
-                
             } catch (Exception e) {
                 flowFile = session.putAttribute(flowFile, "exception", e.getLocalizedMessage());
                 session.transfer(flowFile, REL_FAILURE);
