@@ -50,7 +50,7 @@ func (m PlcULINT) GetRaw() []byte {
 	return theBytes
 }
 
-func (m PlcULINT) GetBoolean() bool {
+func (m PlcULINT) GetBool() bool {
 	if m.value == 0 {
 		return false
 	}

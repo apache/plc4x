@@ -192,14 +192,21 @@ func (m PlcLWORD) GetInt64() int64 {
 	return 0
 }
 
+func (m PlcLWORD) IsFloat32() bool {
+	return m.IsUint32()
+}
+
 func (m PlcLWORD) GetFloat32() float32 {
 	//TODO: Check if this is ok
-	return float32(m.GetUint32())
+	return float32(m.value)
+}
+func (m PlcLWORD) IsFloat64() bool {
+	return true
 }
 
 func (m PlcLWORD) GetFloat64() float64 {
 	//TODO: Check if this is ok
-	return float64(m.GetUint32())
+	return float64(m.value)
 }
 
 func (m PlcLWORD) IsString() bool {

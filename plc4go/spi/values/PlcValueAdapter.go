@@ -204,8 +204,8 @@ func (m PlcValueAdapter) IsList() bool {
 func (m PlcValueAdapter) GetLength() uint32 {
 	panic("GetLength not implemented")
 }
-func (m PlcValueAdapter) GetIndex(i uint32) apiValues.PlcValue {
-	return nil
+func (m PlcValueAdapter) GetIndex(_ uint32) apiValues.PlcValue {
+	panic("GetIndex not Implemented")
 }
 func (m PlcValueAdapter) GetList() []apiValues.PlcValue {
 	panic("GetList not implemented")
@@ -223,7 +223,7 @@ func (m PlcValueAdapter) GetKeys() []string {
 	panic("GetKeys not implemented")
 }
 func (m PlcValueAdapter) HasKey(_ string) bool {
-	return false
+	panic("HasKey not implemented")
 }
 func (m PlcValueAdapter) GetValue(_ string) apiValues.PlcValue {
 	panic("GetValue not implemented")

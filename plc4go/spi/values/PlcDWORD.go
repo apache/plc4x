@@ -158,13 +158,27 @@ func (m PlcDWORD) GetInt32() int32 {
 	return 0
 }
 
+func (m PlcDWORD) IsInt64() bool {
+	return m.value < math.MaxUint32
+}
+
 func (m PlcDWORD) GetInt64() int64 {
 	return int64(m.GetUint32())
+}
+
+func (m PlcDWORD) IsFloat32() bool {
+	//TODO: Check if this is ok
+	return true
 }
 
 func (m PlcDWORD) GetFloat32() float32 {
 	//TODO: Check if this is ok
 	return float32(m.GetUint32())
+}
+
+func (m PlcDWORD) IsFloat64() bool {
+	//TODO: Check if this is ok
+	return true
 }
 
 func (m PlcDWORD) GetFloat64() float64 {
