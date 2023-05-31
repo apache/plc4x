@@ -199,6 +199,12 @@ public abstract class EipPacket implements Message {
     } else if (EvaluationHelper.equals(command, (int) 0x0004)
         && EvaluationHelper.equals(response, (boolean) true)) {
       builder = ListServicesResponse.staticParseEipPacketBuilder(readBuffer, response);
+    } else if (EvaluationHelper.equals(command, (int) 0x0063)
+        && EvaluationHelper.equals(response, (boolean) false)) {
+      builder = EipListIdentityRequest.staticParseEipPacketBuilder(readBuffer, response);
+    } else if (EvaluationHelper.equals(command, (int) 0x0063)
+        && EvaluationHelper.equals(response, (boolean) true)) {
+      builder = EipListIdentityResponse.staticParseEipPacketBuilder(readBuffer, response);
     } else if (EvaluationHelper.equals(command, (int) 0x0065)
         && EvaluationHelper.equals(response, (boolean) false)) {
       builder = EipConnectionRequest.staticParseEipPacketBuilder(readBuffer, response);

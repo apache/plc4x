@@ -180,6 +180,8 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
                         logger.debug("Device is capable of CIP over EIP encapsulation");
                     }
                     this.cipEncapsulationAvailable = listServicesResponse.getSupportsCIPEncapsulation();
+                } else if (p.getStatus() == CIPStatus.InvalidCommandWithWrongEndianess.getValue()) {
+                    throw new PlcRuntimeException("The remote device doesn't seem to use " + configuration.getByteOrder().name() + " byte order.");
                 } else {
                     throw new PlcRuntimeException("Got status code while polling for supported EIP services [" + p.getStatus() + "]");
                 }
@@ -218,7 +220,10 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
                 if (p.getStatus() == CIPStatus.Success.getValue()) {
                     UnConnectedDataItem dataItem = (UnConnectedDataItem) ((CipRRData) p).getTypeIds().get(1);
                     GetAttributeAllResponse response = (GetAttributeAllResponse) dataItem.getService();
-                    if ( (long) response.getStatus() != CIPStatus.Success.getValue()) {
+                    if ((long) response.getStatus() == CIPStatus.ServiceNotSupported.getValue()) {
+                        context.fireConnected();
+                        return;
+                    } else if ( (long) response.getStatus() != CIPStatus.Success.getValue()) {
                         throw new PlcRuntimeException("Got status code while polling for supported CIP attributes [" + response.getStatus() + "]");
                     }
                     if (response.getAttributes() != null) {
@@ -468,6 +473,12 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
                         // Finish the request-transaction.
                         transaction.endRequest();
                     }));
+                // TODO: Remove this ...
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
             } catch (SerializationException e) {
                 e.printStackTrace();
             }

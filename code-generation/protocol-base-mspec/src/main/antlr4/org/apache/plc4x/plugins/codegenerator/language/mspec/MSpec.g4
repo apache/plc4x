@@ -42,7 +42,7 @@ batchSetDefinition
  ;
 
 dataIoDefinition
-// TODO: remove typeSwitchField as it's a uncessary indirection
+// TODO: remove typeSwitchField as it's a unnecessary indirection
  : LBRACKET typeSwitchField (LBRACKET params=multipleExpressions RBRACKET)? RBRACKET
  ;
 

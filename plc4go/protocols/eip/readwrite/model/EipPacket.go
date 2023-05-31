@@ -235,6 +235,10 @@ func EipPacketParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, 
 		_childTemp, typeSwitchError = NullListServicesResponseParseWithBuffer(ctx, readBuffer, response)
 	case command == 0x0004 && response == bool(true): // ListServicesResponse
 		_childTemp, typeSwitchError = ListServicesResponseParseWithBuffer(ctx, readBuffer, response)
+	case command == 0x0063 && response == bool(false): // EipListIdentityRequest
+		_childTemp, typeSwitchError = EipListIdentityRequestParseWithBuffer(ctx, readBuffer, response)
+	case command == 0x0063 && response == bool(true): // EipListIdentityResponse
+		_childTemp, typeSwitchError = EipListIdentityResponseParseWithBuffer(ctx, readBuffer, response)
 	case command == 0x0065 && response == bool(false): // EipConnectionRequest
 		_childTemp, typeSwitchError = EipConnectionRequestParseWithBuffer(ctx, readBuffer, response)
 	case command == 0x0065 && response == bool(true) && packetLength == uint16(0): // NullEipConnectionResponse

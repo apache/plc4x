@@ -38,38 +38,39 @@ type ICIPStatus interface {
 }
 
 const (
-	CIPStatus_Success                       CIPStatus = 0x00000000
-	CIPStatus_ConnectionFailure             CIPStatus = 0x00000001
-	CIPStatus_ResourceUnAvailable           CIPStatus = 0x00000002
-	CIPStatus_InvalidParameterValue         CIPStatus = 0x00000003
-	CIPStatus_PathSegmentError              CIPStatus = 0x00000004
-	CIPStatus_PathDestinationUnknown        CIPStatus = 0x00000005
-	CIPStatus_PartialTransfer               CIPStatus = 0x00000006
-	CIPStatus_ConnectionIDNotValid          CIPStatus = 0x00000007
-	CIPStatus_ServiceNotSupported           CIPStatus = 0x00000008
-	CIPStatus_InvalidAttributeValue         CIPStatus = 0x00000009
-	CIPStatus_AttributeListError            CIPStatus = 0x0000000A
-	CIPStatus_AlreadyInRequestedState       CIPStatus = 0x0000000B
-	CIPStatus_ObjectStateConflict           CIPStatus = 0x0000000C
-	CIPStatus_ObjectAlreadyExists           CIPStatus = 0x0000000D
-	CIPStatus_AttributeNotSettable          CIPStatus = 0x0000000E
-	CIPStatus_PrivilegeViolation            CIPStatus = 0x0000000F
-	CIPStatus_DeviceStateConflict           CIPStatus = 0x00000010
-	CIPStatus_ReplyDataTooLarge             CIPStatus = 0x00000011
-	CIPStatus_FragmentationOfPrimitiveValue CIPStatus = 0x00000012
-	CIPStatus_NotEnoughData                 CIPStatus = 0x00000013
-	CIPStatus_AttributeNotSupported         CIPStatus = 0x00000014
-	CIPStatus_TooMuchData                   CIPStatus = 0x00000015
-	CIPStatus_ObjectDoesNotExist            CIPStatus = 0x00000016
-	CIPStatus_ServiceFragmentation          CIPStatus = 0x00000017
-	CIPStatus_NoStoredAttributeData         CIPStatus = 0x00000018
-	CIPStatus_StoreOperationFailure         CIPStatus = 0x00000019
-	CIPStatus_RequestPacketTooLarge         CIPStatus = 0x0000001A
-	CIPStatus_ResponsePacketTooLarge        CIPStatus = 0x0000001B
-	CIPStatus_MissingAttributeListEntryData CIPStatus = 0x0000001C
-	CIPStatus_InvalidAttributeValueList     CIPStatus = 0x0000001D
-	CIPStatus_EmbeddedServiceError          CIPStatus = 0x0000001E
-	CIPStatus_VendorSpecificError           CIPStatus = 0x0000001F
+	CIPStatus_Success                          CIPStatus = 0x00000000
+	CIPStatus_ConnectionFailure                CIPStatus = 0x00000001
+	CIPStatus_ResourceUnAvailable              CIPStatus = 0x00000002
+	CIPStatus_InvalidParameterValue            CIPStatus = 0x00000003
+	CIPStatus_PathSegmentError                 CIPStatus = 0x00000004
+	CIPStatus_PathDestinationUnknown           CIPStatus = 0x00000005
+	CIPStatus_PartialTransfer                  CIPStatus = 0x00000006
+	CIPStatus_ConnectionIDNotValid             CIPStatus = 0x00000007
+	CIPStatus_ServiceNotSupported              CIPStatus = 0x00000008
+	CIPStatus_InvalidAttributeValue            CIPStatus = 0x00000009
+	CIPStatus_AttributeListError               CIPStatus = 0x0000000A
+	CIPStatus_AlreadyInRequestedState          CIPStatus = 0x0000000B
+	CIPStatus_ObjectStateConflict              CIPStatus = 0x0000000C
+	CIPStatus_ObjectAlreadyExists              CIPStatus = 0x0000000D
+	CIPStatus_AttributeNotSettable             CIPStatus = 0x0000000E
+	CIPStatus_PrivilegeViolation               CIPStatus = 0x0000000F
+	CIPStatus_DeviceStateConflict              CIPStatus = 0x00000010
+	CIPStatus_ReplyDataTooLarge                CIPStatus = 0x00000011
+	CIPStatus_FragmentationOfPrimitiveValue    CIPStatus = 0x00000012
+	CIPStatus_NotEnoughData                    CIPStatus = 0x00000013
+	CIPStatus_AttributeNotSupported            CIPStatus = 0x00000014
+	CIPStatus_TooMuchData                      CIPStatus = 0x00000015
+	CIPStatus_ObjectDoesNotExist               CIPStatus = 0x00000016
+	CIPStatus_ServiceFragmentation             CIPStatus = 0x00000017
+	CIPStatus_NoStoredAttributeData            CIPStatus = 0x00000018
+	CIPStatus_StoreOperationFailure            CIPStatus = 0x00000019
+	CIPStatus_RequestPacketTooLarge            CIPStatus = 0x0000001A
+	CIPStatus_ResponsePacketTooLarge           CIPStatus = 0x0000001B
+	CIPStatus_MissingAttributeListEntryData    CIPStatus = 0x0000001C
+	CIPStatus_InvalidAttributeValueList        CIPStatus = 0x0000001D
+	CIPStatus_EmbeddedServiceError             CIPStatus = 0x0000001E
+	CIPStatus_VendorSpecificError              CIPStatus = 0x0000001F
+	CIPStatus_InvalidCommandWithWrongEndianess CIPStatus = 0x01000000
 )
 
 var CIPStatusValues []CIPStatus
@@ -109,6 +110,7 @@ func init() {
 		CIPStatus_InvalidAttributeValueList,
 		CIPStatus_EmbeddedServiceError,
 		CIPStatus_VendorSpecificError,
+		CIPStatus_InvalidCommandWithWrongEndianess,
 	}
 }
 
@@ -178,6 +180,8 @@ func CIPStatusByValue(value uint32) (enum CIPStatus, ok bool) {
 		return CIPStatus_EmbeddedServiceError, true
 	case 0x0000001F:
 		return CIPStatus_VendorSpecificError, true
+	case 0x01000000:
+		return CIPStatus_InvalidCommandWithWrongEndianess, true
 	}
 	return 0, false
 }
@@ -248,6 +252,8 @@ func CIPStatusByName(value string) (enum CIPStatus, ok bool) {
 		return CIPStatus_EmbeddedServiceError, true
 	case "VendorSpecificError":
 		return CIPStatus_VendorSpecificError, true
+	case "InvalidCommandWithWrongEndianess":
+		return CIPStatus_InvalidCommandWithWrongEndianess, true
 	}
 	return 0, false
 }
@@ -375,6 +381,8 @@ func (e CIPStatus) PLC4XEnumName() string {
 		return "EmbeddedServiceError"
 	case CIPStatus_VendorSpecificError:
 		return "VendorSpecificError"
+	case CIPStatus_InvalidCommandWithWrongEndianess:
+		return "InvalidCommandWithWrongEndianess"
 	}
 	return ""
 }

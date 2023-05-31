@@ -36,6 +36,8 @@ func (m EipParserHelper) Parse(typeName string, arguments []string, io utils.Rea
 	switch typeName {
 	case "PathSegment":
 		return model.PathSegmentParseWithBuffer(context.Background(), io)
+	case "EipConstants":
+		return model.EipConstantsParseWithBuffer(context.Background(), io)
 	case "TransportType":
 		return model.TransportTypeParseWithBuffer(context.Background(), io)
 	case "PortSegmentType":
@@ -76,6 +78,8 @@ func (m EipParserHelper) Parse(typeName string, arguments []string, io utils.Rea
 			return nil, errors.Wrap(err, "Error parsing")
 		}
 		return model.CipServiceParseWithBuffer(context.Background(), io, connected, serviceLen)
+	case "CommandSpecificDataItem":
+		return model.CommandSpecificDataItemParseWithBuffer(context.Background(), io)
 	case "Services":
 		servicesLen, err := utils.StrToUint16(arguments[0])
 		if err != nil {

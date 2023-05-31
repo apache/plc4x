@@ -55,7 +55,8 @@ public enum CIPStatus {
   MissingAttributeListEntryData((long) 0x0000001CL),
   InvalidAttributeValueList((long) 0x0000001DL),
   EmbeddedServiceError((long) 0x0000001EL),
-  VendorSpecificError((long) 0x0000001FL);
+  VendorSpecificError((long) 0x0000001FL),
+  InvalidCommandWithWrongEndianess((long) 0x01000000L);
   private static final Map<Long, CIPStatus> map;
 
   static {

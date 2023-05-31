@@ -46,6 +46,8 @@ func (m EipXmlParserHelper) Parse(typeName string, xmlString string, parserArgum
 	switch typeName {
 	case "PathSegment":
 		return model.PathSegmentParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "EipConstants":
+		return model.EipConstantsParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "TransportType":
 		return model.TransportTypeParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "PortSegmentType":
@@ -83,6 +85,8 @@ func (m EipXmlParserHelper) Parse(typeName string, xmlString string, parserArgum
 		}
 		serviceLen := uint16(parsedUint1)
 		return model.CipServiceParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), connected, serviceLen)
+	case "CommandSpecificDataItem":
+		return model.CommandSpecificDataItemParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "Services":
 		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 16)
 		if err != nil {

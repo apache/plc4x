@@ -17,6 +17,11 @@
  * under the License.
  */
 
+ [type EipConstants
+     [const          uint 16     eipUdpDiscoveryDefaultPort 44818]
+     [const          uint 16     eipTcpDefaultPort 44818]
+ ]
+
 //////////////////////////////////////////////////////////////////
 ///EthernetIP Header of size 24
 /////////////////////////////////////////////////////////////////
@@ -40,6 +45,12 @@
         ['0x0004','true' ListServicesResponse
             [implicit uint    16   typeIdCount  'COUNT(typeIds)'                                                       ]
             [array    TypeId       typeIds   count   'typeIdCount'                                                     ]
+        ]
+        ['0x0063','false' EipListIdentityRequest
+        ]
+        ['0x0063','true'  EipListIdentityResponse
+            [implicit uint    16   itemCount 'COUNT(items)'                                                            ]
+            [array    CommandSpecificDataItem items     count          'itemCount'                                                ]
         ]
         ['0x0065','false' EipConnectionRequest
             [const    uint    16   protocolVersion   0x01                                                              ]
@@ -272,6 +283,35 @@
     ]
 ]
 
+[discriminatedType CommandSpecificDataItem
+    [discriminator uint 16 itemType]
+    [typeSwitch itemType
+        ['0x000C' CipIdentity
+            [implicit uint 16 itemLength                   '34 + productNameLength'                       ]
+            [simple   uint 16 encapsulationProtocolVersion                          byteOrder='BIG_ENDIAN']
+            [simple   uint 16 socketAddressFamily                                   byteOrder='BIG_ENDIAN']
+            [simple   uint 16 socketAddressPort                                     byteOrder='BIG_ENDIAN']
+            [array    uint 8  socketAddressAddress         count        '4'                               ]
+            [const    uint 32 zeroes1                      0x00000000                                     ]
+            [const    uint 32 zeroes2                      0x00000000                                     ]
+            [simple   uint 16 vendorId                                                                    ]
+            [simple   uint 16 deviceType                                                                  ]
+            [simple   uint 16 productCode                                                                 ]
+            [simple   uint 8  revisionMajor                                                               ]
+            [simple   uint 8  revisionMinor                                                               ]
+            [simple   uint 16 status                                                                      ]
+            [simple   uint 32 serialNumber                                                                ]
+            [implicit uint 8  productNameLength            'STR_LEN(productName)'                         ]
+            [simple   vstring 'productNameLength * 8' productName                                         ]
+            [simple   uint 8  state                                                                       ]
+        ]
+        ['0x0086' CipSecurityInformation
+            [implicit uint 16 itemLength                   'COUNT(todoImplement)'                         ]
+            [array    uint 8  todoImplement         count        'itemLength'                             ]
+        ]
+    ]
+]
+
 [discriminatedType PathSegment
     [discriminator  uint    3   pathSegment         ]
     [typeSwitch pathSegment
@@ -439,38 +479,39 @@
 ]
 
 [enum   uint    32  CIPStatus
-    ['0x00000000'   Success                      ]
-    ['0x00000001'   ConnectionFailure            ]
-    ['0x00000002'   ResourceUnAvailable          ]
-    ['0x00000003'   InvalidParameterValue        ]
-    ['0x00000004'   PathSegmentError             ]
-    ['0x00000005'   PathDestinationUnknown       ]
-    ['0x00000006'   PartialTransfer              ]
-    ['0x00000007'   ConnectionIDNotValid         ]
-    ['0x00000008'   ServiceNotSupported          ]
-    ['0x00000009'   InvalidAttributeValue        ]
-    ['0x0000000A'   AttributeListError           ]
-    ['0x0000000B'   AlreadyInRequestedState      ]
-    ['0x0000000C'   ObjectStateConflict          ]
-    ['0x0000000D'   ObjectAlreadyExists          ]
-    ['0x0000000E'   AttributeNotSettable         ]
-    ['0x0000000F'   PrivilegeViolation           ]
-    ['0x00000010'   DeviceStateConflict          ]
-    ['0x00000011'   ReplyDataTooLarge            ]
-    ['0x00000012'   FragmentationOfPrimitiveValue]
-    ['0x00000013'   NotEnoughData                ]
-    ['0x00000014'   AttributeNotSupported        ]
-    ['0x00000015'   TooMuchData                  ]
-    ['0x00000016'   ObjectDoesNotExist           ]
-    ['0x00000017'   ServiceFragmentation         ]
-    ['0x00000018'   NoStoredAttributeData        ]
-    ['0x00000019'   StoreOperationFailure        ]
-    ['0x0000001A'   RequestPacketTooLarge        ]
-    ['0x0000001B'   ResponsePacketTooLarge       ]
-    ['0x0000001C'   MissingAttributeListEntryData]
-    ['0x0000001D'   InvalidAttributeValueList    ]
-    ['0x0000001E'   EmbeddedServiceError         ]
-    ['0x0000001F'   VendorSpecificError          ]
+    ['0x00000000'   Success                         ]
+    ['0x00000001'   ConnectionFailure               ]
+    ['0x00000002'   ResourceUnAvailable             ]
+    ['0x00000003'   InvalidParameterValue           ]
+    ['0x00000004'   PathSegmentError                ]
+    ['0x00000005'   PathDestinationUnknown          ]
+    ['0x00000006'   PartialTransfer                 ]
+    ['0x00000007'   ConnectionIDNotValid            ]
+    ['0x00000008'   ServiceNotSupported             ]
+    ['0x00000009'   InvalidAttributeValue           ]
+    ['0x0000000A'   AttributeListError              ]
+    ['0x0000000B'   AlreadyInRequestedState         ]
+    ['0x0000000C'   ObjectStateConflict             ]
+    ['0x0000000D'   ObjectAlreadyExists             ]
+    ['0x0000000E'   AttributeNotSettable            ]
+    ['0x0000000F'   PrivilegeViolation              ]
+    ['0x00000010'   DeviceStateConflict             ]
+    ['0x00000011'   ReplyDataTooLarge               ]
+    ['0x00000012'   FragmentationOfPrimitiveValue   ]
+    ['0x00000013'   NotEnoughData                   ]
+    ['0x00000014'   AttributeNotSupported           ]
+    ['0x00000015'   TooMuchData                     ]
+    ['0x00000016'   ObjectDoesNotExist              ]
+    ['0x00000017'   ServiceFragmentation            ]
+    ['0x00000018'   NoStoredAttributeData           ]
+    ['0x00000019'   StoreOperationFailure           ]
+    ['0x0000001A'   RequestPacketTooLarge           ]
+    ['0x0000001B'   ResponsePacketTooLarge          ]
+    ['0x0000001C'   MissingAttributeListEntryData   ]
+    ['0x0000001D'   InvalidAttributeValueList       ]
+    ['0x0000001E'   EmbeddedServiceError            ]
+    ['0x0000001F'   VendorSpecificError             ]
+    ['0x01000000'   InvalidCommandWithWrongEndianess]
 ]
 
 [enum   uint    16  CIPClassID
