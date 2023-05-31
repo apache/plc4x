@@ -90,6 +90,7 @@
         ['0x00120F' TlvOrgSpecificIeee8023
             [simple     TlvOrgSpecificIeee8023Unit      specificUnit               ]
         ]
+//        ['0x0012BB' TODO: Seen this code, but not sure where it's defined ...
     ]
 ]
 

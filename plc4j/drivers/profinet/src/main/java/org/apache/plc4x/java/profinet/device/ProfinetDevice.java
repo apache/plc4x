@@ -172,6 +172,7 @@ public class ProfinetDevice implements PlcSubscriber {
     }
 
     public boolean onConnect() throws ExecutionException, InterruptedException, TimeoutException {
+        // If an explicit address is provided, the driver tries to explicitily configure the device to that address.
         if (this.setIpAddress) {
             deviceContext.setState(ProfinetDeviceState.SET_IP);
         }
@@ -191,21 +192,32 @@ public class ProfinetDevice implements PlcSubscriber {
                 while (deviceContext.getState() != ProfinetDeviceState.ABORT) {
                     try {
                         switch (deviceContext.getState()) {
+                            // If an ipAddress is specified in the device config, we use PN DCP to set the IP
+                            // address of the PN device identified by the name to that given IP address.
                             case SET_IP:
                                 ProfinetMessageDcpIp setIpMessage = new ProfinetMessageDcpIp();
                                 this.messageWrapper.sendPnioMessage(setIpMessage, deviceContext);
                                 deviceContext.setState(ProfinetDeviceState.IDLE);
                                 break;
+                            // Set up a PN-IO connection, subscribing to the stuff passed in with the connection
+                            // string and also tell the device about the data we'll be publishing.
                             case IDLE:
                                 CreateConnection createConnection = new CreateConnection();
+                                // Send the packet ...
                                 recordIdAndSend(createConnection);
+                                // Wait for the response ...
                                 createConnection.getResponseHandled().get(timeout, TimeUnit.NANOSECONDS);
                                 break;
+                            // TODO: It seems this state is never used?
+                            // It seems that in this step we would be setting parameters in the PN device (hereby configuring it)
+                            // This should probably be done using the PLC4X Write API anyway.
                             case STARTUP:
                                 WriteParameters writeParameters = new WriteParameters();
                                 recordIdAndSend(writeParameters);
                                 writeParameters.getResponseHandled().get(timeout, TimeUnit.NANOSECONDS);
                                 break;
+                            // Send a CONTROL packet
+                            // TODO: I assume this tells the PN device that we'll be the new "master"
                             case PREMED:
                                 WriteParametersEnd writeParametersEnd = new WriteParametersEnd();
                                 recordIdAndSend(writeParametersEnd);
@@ -595,8 +607,9 @@ public class ProfinetDevice implements PlcSubscriber {
                     if (connectResponse.getErrorCode() == 0) {
                         // TODO:- Re-enable the Write Parameters step if need be. Need a pcap of a simocode connection.
                         deviceContext.setState(ProfinetDeviceState.PREMED);
-                        responseHandled.complete(true);
+                        // Check the types of the block in the response match the expected ones.
                         for (PnIoCm_Block module : connectResponse.getBlocks()) {
+                            // TODO: Find out what a MODULE_DIFF_BLOCK is ...
                             if (module.getBlockType() == PnIoCm_BlockType.MODULE_DIFF_BLOCK) {
                                 PnIoCm_Block_ModuleDiff diffModule = (PnIoCm_Block_ModuleDiff) module;
                                 logger.error("Module is different to what is expected in slot {}", diffModule.getApis().get(0).getModules().get(0).getSlotNumber());
@@ -607,22 +620,19 @@ public class ProfinetDevice implements PlcSubscriber {
                         deviceContext.setState(ProfinetDeviceState.ABORT);
                         // TODO:- Introduce the error code lookups
                         logger.error("Error {} - {} in Response from {} ", connectResponse.getErrorCode1(), connectResponse.getErrorCode2(), deviceContext.getDeviceName());
-                        responseHandled.complete(true);
                     }
                 } else {
                     deviceContext.setState(ProfinetDeviceState.ABORT);
                     logger.error("Received Incorrect Packet Type for Create Connection Response");
-                    responseHandled.complete(true);
                 }
             } else if (dceRpc_packet.getPacketType() == DceRpc_PacketType.REJECT) {
                 deviceContext.setState(ProfinetDeviceState.ABORT);
                 logger.error("Device rejected connection request");
-                responseHandled.complete(true);
             } else {
                 deviceContext.setState(ProfinetDeviceState.ABORT);
                 logger.error("Unexpected Response");
-                responseHandled.complete(true);
             }
+            responseHandled.complete(true);
         }
     }
 
@@ -809,27 +819,23 @@ public class ProfinetDevice implements PlcSubscriber {
                     final PnIoCm_Packet_Res connectResponse = (PnIoCm_Packet_Res) dceRpc_packet.getPayload();
                     if (connectResponse.getErrorCode() == 0) {
                         deviceContext.setState(ProfinetDeviceState.WAITAPPLRDY);
-                        responseHandled.complete(true);
                     } else {
                         deviceContext.setState(ProfinetDeviceState.ABORT);
                         // TODO:- Introduce the error code lookups
                         logger.error("Error {} - {} in Response from {} during Write Parameters End", connectResponse.getErrorCode1(), connectResponse.getErrorCode2(), deviceContext.getDeviceName());
-                        responseHandled.complete(true);
                     }
                 } else {
                     deviceContext.setState(ProfinetDeviceState.ABORT);
                     logger.error("Received Incorrect Packet Type for Write Parameters Ed Response");
-                    responseHandled.complete(true);
                 }
             } else if (dceRpc_packet.getPacketType() == DceRpc_PacketType.REJECT) {
                 deviceContext.setState(ProfinetDeviceState.ABORT);
                 logger.error("Device rejected write parameter end request");
-                responseHandled.complete(true);
             } else {
                 deviceContext.setState(ProfinetDeviceState.ABORT);
                 logger.error("Unexpected Response");
-                responseHandled.complete(true);
             }
+            responseHandled.complete(true);
         }
     }
 

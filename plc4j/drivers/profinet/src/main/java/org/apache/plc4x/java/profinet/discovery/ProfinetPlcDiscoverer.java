@@ -117,6 +117,7 @@ public class ProfinetPlcDiscoverer implements PlcDiscoverer {
         return future;
     }
 
+    // TODO: It seems this is simply a discovery that doesn't return a future ...
     public void ongoingDiscoverWithHandler(PlcDiscoveryRequest discoveryRequest, PlcDiscoveryItemHandler handler, long lldpPeriod, long dcpPeriod) {
         this.handler = handler;
         startLldpPoll(lldpPeriod);

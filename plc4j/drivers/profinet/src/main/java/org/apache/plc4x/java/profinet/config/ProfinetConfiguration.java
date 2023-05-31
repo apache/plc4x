@@ -144,6 +144,10 @@ public class ProfinetConfiguration implements Configuration, RawSocketTransportC
 
         @Override
         public GsdFileMap convert(String value) {
+            if(value.startsWith("~")) {
+                String homeDirectory = System.getProperty("user.home");
+                value = value.replaceAll("~", homeDirectory);
+            }
             HashMap<String, ProfinetISO15745Profile> gsdFiles = new HashMap<>();
             DirectoryStream<Path> stream = null;
             try {
