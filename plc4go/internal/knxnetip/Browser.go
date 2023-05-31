@@ -23,6 +23,7 @@ import (
 	"context"
 	"encoding/hex"
 	"fmt"
+	"github.com/apache/plc4x/plc4go/spi/options"
 	"strconv"
 	"strings"
 	"time"
@@ -46,13 +47,13 @@ type Browser struct {
 	sequenceCounter uint8
 }
 
-func NewBrowser(connection *Connection, messageCodec spi.MessageCodec) *Browser {
+func NewBrowser(connection *Connection, messageCodec spi.MessageCodec, _options ...options.WithOption) *Browser {
 	browser := Browser{
 		connection:      connection,
 		messageCodec:    messageCodec,
 		sequenceCounter: 0,
 	}
-	browser.DefaultBrowser = _default.NewDefaultBrowser(browser)
+	browser.DefaultBrowser = _default.NewDefaultBrowser(browser, _options...)
 	return &browser
 }
 

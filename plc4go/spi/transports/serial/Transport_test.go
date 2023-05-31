@@ -22,6 +22,7 @@ package serial
 import (
 	"bufio"
 	"github.com/apache/plc4x/plc4go/spi/transports"
+	transportUtils "github.com/apache/plc4x/plc4go/spi/transports/utils"
 	"github.com/stretchr/testify/assert"
 	"io"
 	"net"
@@ -73,7 +74,7 @@ func TestNewTransportInstance(t *testing.T) {
 
 func TestTransportInstance_Close(t *testing.T) {
 	type fields struct {
-		DefaultBufferedTransportInstance transports.DefaultBufferedTransportInstance
+		DefaultBufferedTransportInstance transportUtils.DefaultBufferedTransportInstance
 		SerialPortName                   string
 		BaudRate                         uint
 		ConnectTimeout                   uint32
@@ -108,7 +109,7 @@ func TestTransportInstance_Close(t *testing.T) {
 
 func TestTransportInstance_Connect(t *testing.T) {
 	type fields struct {
-		DefaultBufferedTransportInstance transports.DefaultBufferedTransportInstance
+		DefaultBufferedTransportInstance transportUtils.DefaultBufferedTransportInstance
 		SerialPortName                   string
 		BaudRate                         uint
 		ConnectTimeout                   uint32
@@ -143,7 +144,7 @@ func TestTransportInstance_Connect(t *testing.T) {
 
 func TestTransportInstance_GetReader(t *testing.T) {
 	type fields struct {
-		DefaultBufferedTransportInstance transports.DefaultBufferedTransportInstance
+		DefaultBufferedTransportInstance transportUtils.DefaultBufferedTransportInstance
 		SerialPortName                   string
 		BaudRate                         uint
 		ConnectTimeout                   uint32
@@ -178,7 +179,7 @@ func TestTransportInstance_GetReader(t *testing.T) {
 
 func TestTransportInstance_IsConnected(t *testing.T) {
 	type fields struct {
-		DefaultBufferedTransportInstance transports.DefaultBufferedTransportInstance
+		DefaultBufferedTransportInstance transportUtils.DefaultBufferedTransportInstance
 		SerialPortName                   string
 		BaudRate                         uint
 		ConnectTimeout                   uint32
@@ -213,7 +214,7 @@ func TestTransportInstance_IsConnected(t *testing.T) {
 
 func TestTransportInstance_String(t *testing.T) {
 	type fields struct {
-		DefaultBufferedTransportInstance transports.DefaultBufferedTransportInstance
+		DefaultBufferedTransportInstance transportUtils.DefaultBufferedTransportInstance
 		SerialPortName                   string
 		BaudRate                         uint
 		ConnectTimeout                   uint32
@@ -248,7 +249,7 @@ func TestTransportInstance_String(t *testing.T) {
 
 func TestTransportInstance_Write(t *testing.T) {
 	type fields struct {
-		DefaultBufferedTransportInstance transports.DefaultBufferedTransportInstance
+		DefaultBufferedTransportInstance transportUtils.DefaultBufferedTransportInstance
 		SerialPortName                   string
 		BaudRate                         uint
 		ConnectTimeout                   uint32

@@ -141,11 +141,11 @@ type requestTransactionManager struct {
 ///////////////////////////////////////
 
 func (r *requestTransactionManager) SetNumberOfConcurrentRequests(numberOfConcurrentRequests int) {
-	log.Info().Msgf("Setting new number of concurrent requests %d", numberOfConcurrentRequests)
+	r.log.Info().Msgf("Setting new number of concurrent requests %d", numberOfConcurrentRequests)
 	// If we reduced the number of concurrent requests and more requests are in-flight
 	// than should be, at least log a warning.
 	if numberOfConcurrentRequests < len(r.runningRequests) {
-		log.Warn().Msg("The number of concurrent requests was reduced and currently more requests are in flight.")
+		r.log.Warn().Msg("The number of concurrent requests was reduced and currently more requests are in flight.")
 	}
 
 	r.numberOfConcurrentRequests = numberOfConcurrentRequests
@@ -167,11 +167,11 @@ func (r *requestTransactionManager) submitTransaction(transaction *requestTransa
 func (r *requestTransactionManager) processWorklog() {
 	r.workLogMutex.RLock()
 	defer r.workLogMutex.RUnlock()
-	log.Debug().Msgf("Processing work log with size of %d (%d concurrent requests allowed)", r.workLog.Len(), r.numberOfConcurrentRequests)
+	r.log.Debug().Msgf("Processing work log with size of %d (%d concurrent requests allowed)", r.workLog.Len(), r.numberOfConcurrentRequests)
 	for len(r.runningRequests) < r.numberOfConcurrentRequests && r.workLog.Len() > 0 {
 		front := r.workLog.Front()
 		next := front.Value.(*requestTransaction)
-		log.Debug().Msgf("Handling next %v. (Adding to running requests (length: %d))", next, len(r.runningRequests))
+		r.log.Debug().Msgf("Handling next %v. (Adding to running requests (length: %d))", next, len(r.runningRequests))
 		r.runningRequests = append(r.runningRequests, next)
 		completionFuture := r.executor.Submit(context.Background(), next.transactionId, next.operation)
 		next.completionFuture = completionFuture
@@ -258,7 +258,7 @@ func (r *requestTransactionManager) CloseGraceful(timeout time.Duration) error {
 		}()
 		select {
 		case <-timer.C:
-			log.Warn().Msgf("timout after %d", timeout)
+			r.log.Warn().Msgf("timout after %d", timeout)
 		case <-signal:
 		}
 	}
@@ -283,7 +283,7 @@ func (t *requestTransaction) EndRequest() error {
 
 func (t *requestTransaction) Submit(operation RequestTransactionRunnable) {
 	if t.operation != nil {
-		log.Warn().Msg("Operation already set")
+		t.transactionLog.Warn().Msg("Operation already set")
 	}
 	t.transactionLog.Trace().Msgf("Submission of transaction %d", t.transactionId)
 	t.operation = func() {

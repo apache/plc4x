@@ -25,6 +25,7 @@ import (
 	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/transports"
+	transportUtils "github.com/apache/plc4x/plc4go/spi/transports/utils"
 	"github.com/gopacket/gopacket"
 	"github.com/gopacket/gopacket/layers"
 	"github.com/gopacket/gopacket/pcap"
@@ -89,7 +90,7 @@ func (m Transport) String() string {
 }
 
 type TransportInstance struct {
-	transports.DefaultBufferedTransportInstance
+	transportUtils.DefaultBufferedTransportInstance
 	transportFile string
 	transportType TransportType
 	portRange     string
@@ -113,7 +114,7 @@ func NewPcapTransportInstance(transportFile string, transportType TransportType,
 
 		log: options.ExtractCustomLogger(_options...),
 	}
-	transportInstance.DefaultBufferedTransportInstance = transports.NewDefaultBufferedTransportInstance(transportInstance)
+	transportInstance.DefaultBufferedTransportInstance = transportUtils.NewDefaultBufferedTransportInstance(transportInstance, _options...)
 	return transportInstance
 }
 

@@ -20,20 +20,23 @@
 package testutils
 
 import (
-	"github.com/ajankovic/xdiff"
-	"github.com/ajankovic/xdiff/parser"
-	"github.com/apache/plc4x/plc4go/spi/utils"
-	"github.com/pkg/errors"
-	"github.com/rs/zerolog"
-	"github.com/rs/zerolog/log"
-	"github.com/stretchr/testify/assert"
 	"os"
 	"runtime/debug"
 	"strings"
 	"testing"
+
+	"github.com/apache/plc4x/plc4go/spi/utils"
+
+	"github.com/ajankovic/xdiff"
+	"github.com/ajankovic/xdiff/parser"
+	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
+	"github.com/stretchr/testify/assert"
 )
 
 func CompareResults(t *testing.T, actualString []byte, referenceString []byte) error {
+	localLog := ProduceTestingLogger(t)
 	// Now parse the xml strings of the actual and the reference in xdiff's dom
 	p := parser.New()
 	actual, err := p.ParseBytes(actualString)
@@ -56,7 +59,7 @@ func CompareResults(t *testing.T, actualString []byte, referenceString []byte) e
 	cleanDiff := make([]xdiff.Delta, 0)
 	for _, delta := range diff {
 		if delta.Operation == xdiff.Delete && delta.Subject.Value == nil || delta.Operation == xdiff.Insert && delta.Subject.Value == nil {
-			log.Info().Msgf("We ignore empty elements which should be deleted %v", delta)
+			localLog.Info().Msgf("We ignore empty elements which should be deleted %v", delta)
 			continue
 		}
 		// Workaround for different precisions on float
@@ -66,7 +69,7 @@ func CompareResults(t *testing.T, actualString []byte, referenceString []byte) e
 			string(delta.Object.Parent.FirstChild.Name) == "dataType" &&
 			string(delta.Object.Parent.FirstChild.Value) == "float" {
 			if strings.Contains(string(delta.Subject.Value), string(delta.Object.Value)) || strings.Contains(string(delta.Object.Value), string(delta.Subject.Value)) {
-				log.Info().Msgf("We ignore precision diffs %v", delta)
+				localLog.Info().Msgf("We ignore precision diffs %v", delta)
 				continue
 			}
 		}
@@ -76,7 +79,7 @@ func CompareResults(t *testing.T, actualString []byte, referenceString []byte) e
 			string(delta.Object.Parent.FirstChild.Name) == "dataType" &&
 			string(delta.Object.Parent.FirstChild.Value) == "string" {
 			if diff, err := xdiff.Compare(delta.Subject, delta.Object); diff == nil && err == nil {
-				log.Info().Msgf("We ignore newline diffs %v", delta)
+				localLog.Info().Msgf("We ignore newline diffs %v", delta)
 				continue
 			}
 		}
@@ -88,7 +91,7 @@ func CompareResults(t *testing.T, actualString []byte, referenceString []byte) e
 		return errors.Wrap(err, "Error outputting results")
 	}
 	if len(cleanDiff) <= 0 {
-		log.Warn().Msg("We only found non relevant changes")
+		localLog.Warn().Msg("We only found non relevant changes")
 		return nil
 	}
 

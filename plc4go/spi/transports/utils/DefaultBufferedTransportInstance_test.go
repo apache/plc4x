@@ -17,15 +17,16 @@
  * under the License.
  */
 
-package transports
+package utils
 
 import (
 	"bufio"
 	"bytes"
 	"context"
-	"github.com/stretchr/testify/assert"
 	"testing"
 	"time"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestNewDefaultBufferedTransportInstance(t *testing.T) {

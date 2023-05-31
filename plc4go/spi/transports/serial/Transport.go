@@ -22,6 +22,7 @@ package serial
 import (
 	"bufio"
 	"fmt"
+	transportUtils "github.com/apache/plc4x/plc4go/spi/transports/utils"
 	"io"
 	"net"
 	"net/url"
@@ -88,7 +89,7 @@ func (m Transport) String() string {
 }
 
 type TransportInstance struct {
-	transports.DefaultBufferedTransportInstance
+	transportUtils.DefaultBufferedTransportInstance
 	SerialPortName string
 	BaudRate       uint
 	ConnectTimeout uint32
@@ -108,7 +109,7 @@ func NewTransportInstance(serialPortName string, baudRate uint, connectTimeout u
 
 		log: options.ExtractCustomLogger(_options...),
 	}
-	transportInstance.DefaultBufferedTransportInstance = transports.NewDefaultBufferedTransportInstance(transportInstance)
+	transportInstance.DefaultBufferedTransportInstance = transportUtils.NewDefaultBufferedTransportInstance(transportInstance, _options...)
 	return transportInstance
 }
 

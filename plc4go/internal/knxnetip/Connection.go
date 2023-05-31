@@ -24,6 +24,7 @@ import (
 	"context"
 	"encoding/hex"
 	"fmt"
+	"github.com/apache/plc4x/plc4go/spi/options"
 	"strconv"
 	"strings"
 	"sync"
@@ -165,7 +166,7 @@ type InternalResult struct {
 	err             error
 }
 
-func NewConnection(transportInstance transports.TransportInstance, options map[string][]string, tagHandler spi.PlcTagHandler) *Connection {
+func NewConnection(transportInstance transports.TransportInstance, options map[string][]string, tagHandler spi.PlcTagHandler, _options ...options.WithOption) *Connection {
 	connection := &Connection{
 		options:      options,
 		tagHandler:   tagHandler,
@@ -175,6 +176,7 @@ func NewConnection(transportInstance transports.TransportInstance, options map[s
 			spiModel.NewDefaultPlcWriteRequest,
 			spiModel.NewDefaultPlcReadResponse,
 			spiModel.NewDefaultPlcWriteResponse,
+			_options...,
 		),
 		subscribers:             []*Subscriber{},
 		valueCache:              map[uint16][]byte{},

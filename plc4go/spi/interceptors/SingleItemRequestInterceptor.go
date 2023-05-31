@@ -25,8 +25,9 @@ import (
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
 	"github.com/apache/plc4x/plc4go/spi"
+	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/utils"
-	"github.com/rs/zerolog/log"
+	"github.com/rs/zerolog"
 )
 
 type ReaderExposer interface {
@@ -74,10 +75,18 @@ type SingleItemRequestInterceptor struct {
 	writeRequestFactory  writeRequestFactory
 	readResponseFactory  readResponseFactory
 	writeResponseFactory writeResponseFactory
+
+	log zerolog.Logger
 }
 
-func NewSingleItemRequestInterceptor(readRequestFactory readRequestFactory, writeRequestFactory writeRequestFactory, readResponseFactory readResponseFactory, writeResponseFactory writeResponseFactory) SingleItemRequestInterceptor {
-	return SingleItemRequestInterceptor{readRequestFactory, writeRequestFactory, readResponseFactory, writeResponseFactory}
+func NewSingleItemRequestInterceptor(readRequestFactory readRequestFactory, writeRequestFactory writeRequestFactory, readResponseFactory readResponseFactory, writeResponseFactory writeResponseFactory, _options ...options.WithOption) SingleItemRequestInterceptor {
+	return SingleItemRequestInterceptor{
+		readRequestFactory:   readRequestFactory,
+		writeRequestFactory:  writeRequestFactory,
+		readResponseFactory:  readResponseFactory,
+		writeResponseFactory: writeResponseFactory,
+		log:                  options.ExtractCustomLogger(_options...),
+	}
 }
 
 ///////////////////////////////////////
@@ -134,18 +143,18 @@ func (m SingleItemRequestInterceptor) InterceptReadRequest(ctx context.Context, 
 	}
 	// If this request just has one tag, go the shortcut
 	if len(readRequest.GetTagNames()) == 1 {
-		log.Debug().Msg("We got only one request, no splitting required")
+		m.log.Debug().Msg("We got only one request, no splitting required")
 		return []apiModel.PlcReadRequest{readRequest}
 	}
-	log.Trace().Msg("Splitting requests")
+	m.log.Trace().Msg("Splitting requests")
 	// In all other cases, create a new read request containing only one item
 	var readRequests []apiModel.PlcReadRequest
 	for _, tagName := range readRequest.GetTagNames() {
 		if err := ctx.Err(); err != nil {
-			log.Warn().Err(err).Msg("aborting early")
+			m.log.Warn().Err(err).Msg("aborting early")
 			return nil
 		}
-		log.Debug().Str("tagName", tagName).Msg("Splitting into own request")
+		m.log.Debug().Str("tagName", tagName).Msg("Splitting into own request")
 		tag := readRequest.GetTag(tagName)
 		subReadRequest := m.readRequestFactory(
 			map[string]apiModel.PlcTag{tagName: tag},
@@ -160,16 +169,16 @@ func (m SingleItemRequestInterceptor) InterceptReadRequest(ctx context.Context, 
 
 func (m SingleItemRequestInterceptor) ProcessReadResponses(ctx context.Context, readRequest apiModel.PlcReadRequest, readResults []apiModel.PlcReadRequestResult) apiModel.PlcReadRequestResult {
 	if len(readResults) == 1 {
-		log.Debug().Msg("We got only one response, no merging required")
+		m.log.Debug().Msg("We got only one response, no merging required")
 		return readResults[0]
 	}
-	log.Trace().Msg("Merging requests")
+	m.log.Trace().Msg("Merging requests")
 	responseCodes := map[string]apiModel.PlcResponseCode{}
 	val := map[string]values.PlcValue{}
 	var err error = nil
 	for _, readResult := range readResults {
 		if ctxErr := ctx.Err(); ctxErr != nil {
-			log.Warn().Err(ctxErr).Msg("aborting early")
+			m.log.Warn().Err(ctxErr).Msg("aborting early")
 			if err != nil {
 				multiError := err.(utils.MultiError)
 				multiError.Errors = append(multiError.Errors, ctxErr)
@@ -179,7 +188,7 @@ func (m SingleItemRequestInterceptor) ProcessReadResponses(ctx context.Context, 
 			break
 		}
 		if readResult.GetErr() != nil {
-			log.Debug().Err(readResult.GetErr()).Msgf("Error during read")
+			m.log.Debug().Err(readResult.GetErr()).Msgf("Error during read")
 			if err == nil {
 				// Lazy initialization of multi error
 				err = utils.MultiError{MainError: errors.New("while aggregating results"), Errors: []error{readResult.GetErr()}}
@@ -190,7 +199,7 @@ func (m SingleItemRequestInterceptor) ProcessReadResponses(ctx context.Context, 
 		} else if response := readResult.GetResponse(); response != nil {
 			request := response.GetRequest()
 			if len(request.GetTagNames()) > 1 {
-				log.Error().Int("numberOfTags", len(request.GetTagNames())).Msg("We should only get 1")
+				m.log.Error().Int("numberOfTags", len(request.GetTagNames())).Msg("We should only get 1")
 			}
 			for _, tagName := range request.GetTagNames() {
 				responseCodes[tagName] = response.GetResponseCode(tagName)
@@ -211,18 +220,18 @@ func (m SingleItemRequestInterceptor) InterceptWriteRequest(ctx context.Context,
 	}
 	// If this request just has one tag, go the shortcut
 	if len(writeRequest.GetTagNames()) == 1 {
-		log.Debug().Msg("We got only one request, no splitting required")
+		m.log.Debug().Msg("We got only one request, no splitting required")
 		return []apiModel.PlcWriteRequest{writeRequest}
 	}
-	log.Trace().Msg("Splitting requests")
+	m.log.Trace().Msg("Splitting requests")
 	// In all other cases, create a new write request containing only one item
 	var writeRequests []apiModel.PlcWriteRequest
 	for _, tagName := range writeRequest.GetTagNames() {
 		if err := ctx.Err(); err != nil {
-			log.Warn().Err(err).Msg("aborting early")
+			m.log.Warn().Err(err).Msg("aborting early")
 			return nil
 		}
-		log.Debug().Str("tagName", tagName).Msg("Splitting into own request")
+		m.log.Debug().Str("tagName", tagName).Msg("Splitting into own request")
 		tag := writeRequest.GetTag(tagName)
 		subWriteRequest := m.writeRequestFactory(
 			map[string]apiModel.PlcTag{tagName: tag},
@@ -238,15 +247,15 @@ func (m SingleItemRequestInterceptor) InterceptWriteRequest(ctx context.Context,
 
 func (m SingleItemRequestInterceptor) ProcessWriteResponses(ctx context.Context, writeRequest apiModel.PlcWriteRequest, writeResults []apiModel.PlcWriteRequestResult) apiModel.PlcWriteRequestResult {
 	if len(writeResults) == 1 {
-		log.Debug().Msg("We got only one response, no merging required")
+		m.log.Debug().Msg("We got only one response, no merging required")
 		return writeResults[0]
 	}
-	log.Trace().Msg("Merging requests")
+	m.log.Trace().Msg("Merging requests")
 	responseCodes := map[string]apiModel.PlcResponseCode{}
 	var err error = nil
 	for _, writeResult := range writeResults {
 		if ctxErr := ctx.Err(); ctxErr != nil {
-			log.Warn().Err(ctxErr).Msg("aborting early")
+			m.log.Warn().Err(ctxErr).Msg("aborting early")
 			if err != nil {
 				multiError := err.(utils.MultiError)
 				multiError.Errors = append(multiError.Errors, ctxErr)
@@ -256,7 +265,7 @@ func (m SingleItemRequestInterceptor) ProcessWriteResponses(ctx context.Context,
 			break
 		}
 		if writeResult.GetErr() != nil {
-			log.Debug().Err(writeResult.GetErr()).Msgf("Error during write")
+			m.log.Debug().Err(writeResult.GetErr()).Msgf("Error during write")
 			if err == nil {
 				// Lazy initialization of multi error
 				err = utils.MultiError{MainError: errors.New("while aggregating results"), Errors: []error{writeResult.GetErr()}}
@@ -266,7 +275,7 @@ func (m SingleItemRequestInterceptor) ProcessWriteResponses(ctx context.Context,
 			}
 		} else if writeResult.GetResponse() != nil {
 			if len(writeResult.GetResponse().GetRequest().GetTagNames()) > 1 {
-				log.Error().Int("numberOfTags", len(writeResult.GetResponse().GetRequest().GetTagNames())).Msg("We should only get 1")
+				m.log.Error().Int("numberOfTags", len(writeResult.GetResponse().GetRequest().GetTagNames())).Msg("We should only get 1")
 			}
 			for _, tagName := range writeResult.GetResponse().GetRequest().GetTagNames() {
 				responseCodes[tagName] = writeResult.GetResponse().GetResponseCode(tagName)

@@ -22,6 +22,7 @@ package pcap
 import (
 	"bufio"
 	"github.com/apache/plc4x/plc4go/spi/transports"
+	transportUtils "github.com/apache/plc4x/plc4go/spi/transports/utils"
 	"github.com/gopacket/gopacket"
 	"github.com/gopacket/gopacket/layers"
 	"github.com/gopacket/gopacket/pcap"
@@ -50,7 +51,7 @@ func TestNewPcapTransportInstance(t *testing.T) {
 			name: "create it",
 			want: func() *TransportInstance {
 				ti := &TransportInstance{}
-				ti.DefaultBufferedTransportInstance = transports.NewDefaultBufferedTransportInstance(ti)
+				ti.DefaultBufferedTransportInstance = transportUtils.NewDefaultBufferedTransportInstance(ti)
 				return ti
 			}(),
 		},
@@ -85,7 +86,7 @@ func TestNewTransport(t *testing.T) {
 
 func TestTransportInstance_Close(t *testing.T) {
 	type fields struct {
-		DefaultBufferedTransportInstance transports.DefaultBufferedTransportInstance
+		DefaultBufferedTransportInstance transportUtils.DefaultBufferedTransportInstance
 		transportFile                    string
 		transportType                    TransportType
 		portRange                        string
@@ -129,7 +130,7 @@ func TestTransportInstance_Close(t *testing.T) {
 
 func TestTransportInstance_Connect(t *testing.T) {
 	type fields struct {
-		DefaultBufferedTransportInstance transports.DefaultBufferedTransportInstance
+		DefaultBufferedTransportInstance transportUtils.DefaultBufferedTransportInstance
 		transportFile                    string
 		transportType                    TransportType
 		portRange                        string
@@ -193,7 +194,7 @@ func TestTransportInstance_Connect(t *testing.T) {
 
 func TestTransportInstance_GetReader(t *testing.T) {
 	type fields struct {
-		DefaultBufferedTransportInstance transports.DefaultBufferedTransportInstance
+		DefaultBufferedTransportInstance transportUtils.DefaultBufferedTransportInstance
 		transportFile                    string
 		transportType                    TransportType
 		portRange                        string
@@ -234,7 +235,7 @@ func TestTransportInstance_GetReader(t *testing.T) {
 
 func TestTransportInstance_IsConnected(t *testing.T) {
 	type fields struct {
-		DefaultBufferedTransportInstance transports.DefaultBufferedTransportInstance
+		DefaultBufferedTransportInstance transportUtils.DefaultBufferedTransportInstance
 		transportFile                    string
 		transportType                    TransportType
 		portRange                        string
@@ -275,7 +276,7 @@ func TestTransportInstance_IsConnected(t *testing.T) {
 
 func TestTransportInstance_String(t *testing.T) {
 	type fields struct {
-		DefaultBufferedTransportInstance transports.DefaultBufferedTransportInstance
+		DefaultBufferedTransportInstance transportUtils.DefaultBufferedTransportInstance
 		transportFile                    string
 		transportType                    TransportType
 		portRange                        string
@@ -322,7 +323,7 @@ func TestTransportInstance_String(t *testing.T) {
 
 func TestTransportInstance_Write(t *testing.T) {
 	type fields struct {
-		DefaultBufferedTransportInstance transports.DefaultBufferedTransportInstance
+		DefaultBufferedTransportInstance transportUtils.DefaultBufferedTransportInstance
 		transportFile                    string
 		transportType                    TransportType
 		portRange                        string
@@ -393,7 +394,7 @@ func TestTransport_CreateTransportInstance(t *testing.T) {
 					transport:     NewTransport(),
 					portRange:     "1-3",
 				}
-				ti.DefaultBufferedTransportInstance = transports.NewDefaultBufferedTransportInstance(ti)
+				ti.DefaultBufferedTransportInstance = transportUtils.NewDefaultBufferedTransportInstance(ti)
 				return ti
 			}(),
 		},

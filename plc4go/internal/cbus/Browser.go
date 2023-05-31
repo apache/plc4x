@@ -51,7 +51,7 @@ func NewBrowser(connection plc4go.PlcConnection, _options ...options.WithOption)
 
 		log: options.ExtractCustomLogger(_options...),
 	}
-	browser.DefaultBrowser = _default.NewDefaultBrowser(browser)
+	browser.DefaultBrowser = _default.NewDefaultBrowser(browser, _options...)
 	return &browser
 }
 

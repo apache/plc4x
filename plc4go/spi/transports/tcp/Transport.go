@@ -30,6 +30,7 @@ import (
 
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/transports"
+	transportUtils "github.com/apache/plc4x/plc4go/spi/transports/utils"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 
 	"github.com/pkg/errors"
@@ -99,7 +100,7 @@ func (m Transport) String() string {
 }
 
 type TransportInstance struct {
-	transports.DefaultBufferedTransportInstance
+	transportUtils.DefaultBufferedTransportInstance
 	RemoteAddress  *net.TCPAddr
 	LocalAddress   *net.TCPAddr
 	ConnectTimeout uint32
@@ -118,7 +119,7 @@ func NewTcpTransportInstance(remoteAddress *net.TCPAddr, connectTimeout uint32, 
 
 		log: options.ExtractCustomLogger(_options...),
 	}
-	transportInstance.DefaultBufferedTransportInstance = transports.NewDefaultBufferedTransportInstance(transportInstance)
+	transportInstance.DefaultBufferedTransportInstance = transportUtils.NewDefaultBufferedTransportInstance(transportInstance, _options...)
 	return transportInstance
 }
 

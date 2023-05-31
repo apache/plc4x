@@ -24,6 +24,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/transports"
+	transportUtils "github.com/apache/plc4x/plc4go/spi/transports/utils"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"golang.org/x/net/nettest"
@@ -47,7 +48,7 @@ func TestNewTcpTransportInstance(t *testing.T) {
 			name: "create it",
 			want: func() *TransportInstance {
 				ti := &TransportInstance{}
-				ti.DefaultBufferedTransportInstance = transports.NewDefaultBufferedTransportInstance(ti)
+				ti.DefaultBufferedTransportInstance = transportUtils.NewDefaultBufferedTransportInstance(ti)
 				return ti
 			}(),
 		},
@@ -82,7 +83,7 @@ func TestNewTransport(t *testing.T) {
 
 func TestTransportInstance_Close(t *testing.T) {
 	type fields struct {
-		DefaultBufferedTransportInstance transports.DefaultBufferedTransportInstance
+		DefaultBufferedTransportInstance transportUtils.DefaultBufferedTransportInstance
 		RemoteAddress                    *net.TCPAddr
 		LocalAddress                     *net.TCPAddr
 		ConnectTimeout                   uint32
@@ -148,7 +149,7 @@ func TestTransportInstance_Close(t *testing.T) {
 
 func TestTransportInstance_Connect(t *testing.T) {
 	type fields struct {
-		DefaultBufferedTransportInstance transports.DefaultBufferedTransportInstance
+		DefaultBufferedTransportInstance transportUtils.DefaultBufferedTransportInstance
 		RemoteAddress                    *net.TCPAddr
 		LocalAddress                     *net.TCPAddr
 		ConnectTimeout                   uint32
@@ -186,7 +187,7 @@ func TestTransportInstance_Connect(t *testing.T) {
 
 func TestTransportInstance_ConnectWithContext(t *testing.T) {
 	type fields struct {
-		DefaultBufferedTransportInstance transports.DefaultBufferedTransportInstance
+		DefaultBufferedTransportInstance transportUtils.DefaultBufferedTransportInstance
 		RemoteAddress                    *net.TCPAddr
 		LocalAddress                     *net.TCPAddr
 		ConnectTimeout                   uint32
@@ -249,7 +250,7 @@ func TestTransportInstance_ConnectWithContext(t *testing.T) {
 
 func TestTransportInstance_GetReader(t *testing.T) {
 	type fields struct {
-		DefaultBufferedTransportInstance transports.DefaultBufferedTransportInstance
+		DefaultBufferedTransportInstance transportUtils.DefaultBufferedTransportInstance
 		RemoteAddress                    *net.TCPAddr
 		LocalAddress                     *net.TCPAddr
 		ConnectTimeout                   uint32
@@ -286,7 +287,7 @@ func TestTransportInstance_GetReader(t *testing.T) {
 
 func TestTransportInstance_IsConnected(t *testing.T) {
 	type fields struct {
-		DefaultBufferedTransportInstance transports.DefaultBufferedTransportInstance
+		DefaultBufferedTransportInstance transportUtils.DefaultBufferedTransportInstance
 		RemoteAddress                    *net.TCPAddr
 		LocalAddress                     *net.TCPAddr
 		ConnectTimeout                   uint32
@@ -323,7 +324,7 @@ func TestTransportInstance_IsConnected(t *testing.T) {
 
 func TestTransportInstance_String(t *testing.T) {
 	type fields struct {
-		DefaultBufferedTransportInstance transports.DefaultBufferedTransportInstance
+		DefaultBufferedTransportInstance transportUtils.DefaultBufferedTransportInstance
 		RemoteAddress                    *net.TCPAddr
 		LocalAddress                     *net.TCPAddr
 		ConnectTimeout                   uint32
@@ -369,7 +370,7 @@ func TestTransportInstance_String(t *testing.T) {
 
 func TestTransportInstance_Write(t *testing.T) {
 	type fields struct {
-		DefaultBufferedTransportInstance transports.DefaultBufferedTransportInstance
+		DefaultBufferedTransportInstance transportUtils.DefaultBufferedTransportInstance
 		RemoteAddress                    *net.TCPAddr
 		LocalAddress                     *net.TCPAddr
 		ConnectTimeout                   uint32
@@ -458,7 +459,7 @@ func TestTransport_CreateTransportInstance(t *testing.T) {
 					RemoteAddress:  tcpAddr,
 					ConnectTimeout: 1000,
 				}
-				ti.DefaultBufferedTransportInstance = transports.NewDefaultBufferedTransportInstance(ti)
+				ti.DefaultBufferedTransportInstance = transportUtils.NewDefaultBufferedTransportInstance(ti)
 				return ti
 			}(),
 		},
@@ -475,7 +476,7 @@ func TestTransport_CreateTransportInstance(t *testing.T) {
 					RemoteAddress:  tcpAddr,
 					ConnectTimeout: 1000,
 				}
-				ti.DefaultBufferedTransportInstance = transports.NewDefaultBufferedTransportInstance(ti)
+				ti.DefaultBufferedTransportInstance = transportUtils.NewDefaultBufferedTransportInstance(ti)
 				return ti
 			}(),
 		},
@@ -492,7 +493,7 @@ func TestTransport_CreateTransportInstance(t *testing.T) {
 					RemoteAddress:  tcpAddr,
 					ConnectTimeout: 1000,
 				}
-				ti.DefaultBufferedTransportInstance = transports.NewDefaultBufferedTransportInstance(ti)
+				ti.DefaultBufferedTransportInstance = transportUtils.NewDefaultBufferedTransportInstance(ti)
 				return ti
 			}(),
 		},
@@ -526,7 +527,7 @@ func TestTransport_CreateTransportInstance(t *testing.T) {
 					RemoteAddress:  tcpAddr,
 					ConnectTimeout: 1000,
 				}
-				ti.DefaultBufferedTransportInstance = transports.NewDefaultBufferedTransportInstance(ti)
+				ti.DefaultBufferedTransportInstance = transportUtils.NewDefaultBufferedTransportInstance(ti)
 				return ti
 			}(),
 		},
@@ -557,7 +558,7 @@ func TestTransport_CreateTransportInstance(t *testing.T) {
 					RemoteAddress:  tcpAddr,
 					ConnectTimeout: 123,
 				}
-				ti.DefaultBufferedTransportInstance = transports.NewDefaultBufferedTransportInstance(ti)
+				ti.DefaultBufferedTransportInstance = transportUtils.NewDefaultBufferedTransportInstance(ti)
 				return ti
 			}(),
 		},

@@ -22,6 +22,7 @@ package modbus
 import (
 	"context"
 	"fmt"
+	"github.com/apache/plc4x/plc4go/spi/options"
 	"time"
 
 	"github.com/apache/plc4x/plc4go/pkg/api"
@@ -47,7 +48,7 @@ type Connection struct {
 	tracer       *spi.Tracer
 }
 
-func NewConnection(unitIdentifier uint8, messageCodec spi.MessageCodec, options map[string][]string, tagHandler spi.PlcTagHandler) *Connection {
+func NewConnection(unitIdentifier uint8, messageCodec spi.MessageCodec, options map[string][]string, tagHandler spi.PlcTagHandler, _options ...options.WithOption) *Connection {
 	connection := &Connection{
 		unitIdentifier: unitIdentifier,
 		messageCodec:   messageCodec,
@@ -57,6 +58,7 @@ func NewConnection(unitIdentifier uint8, messageCodec spi.MessageCodec, options 
 			spiModel.NewDefaultPlcWriteRequest,
 			spiModel.NewDefaultPlcReadResponse,
 			spiModel.NewDefaultPlcWriteResponse,
+			_options...,
 		),
 	}
 	if traceEnabledOption, ok := options["traceEnabled"]; ok {
