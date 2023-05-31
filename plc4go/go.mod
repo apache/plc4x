@@ -37,7 +37,7 @@ require (
 	github.com/schollz/progressbar/v3 v3.13.1
 	github.com/snksoft/crc v1.1.0
 	github.com/spf13/cobra v1.7.0
-	github.com/spf13/viper v1.15.0
+	github.com/spf13/viper v1.16.0
 	github.com/stretchr/testify v1.8.4
 	github.com/subchen/go-xmldom v1.1.2
 	github.com/viney-shih/go-lock v1.1.2
@@ -61,11 +61,11 @@ require (
 	github.com/mattn/go-runewidth v0.0.14 // indirect
 	github.com/mitchellh/colorstring v0.0.0-20190213212951-d06e56a500db // indirect
 	github.com/mitchellh/mapstructure v1.5.0 // indirect
-	github.com/pelletier/go-toml/v2 v2.0.6 // indirect
+	github.com/pelletier/go-toml/v2 v2.0.8 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/rivo/uniseg v0.4.3 // indirect
-	github.com/spf13/afero v1.9.3 // indirect
-	github.com/spf13/cast v1.5.0 // indirect
+	github.com/spf13/afero v1.9.5 // indirect
+	github.com/spf13/cast v1.5.1 // indirect
 	github.com/spf13/jwalterweatherman v1.1.0 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/stretchr/objx v0.5.0 // indirect
