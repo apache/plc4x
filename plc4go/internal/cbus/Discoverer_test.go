@@ -22,22 +22,25 @@ package cbus
 import (
 	"context"
 	"fmt"
-	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
-	"github.com/apache/plc4x/plc4go/spi/options"
-	"github.com/apache/plc4x/plc4go/spi/pool"
-	"github.com/apache/plc4x/plc4go/spi/testutils"
-	"github.com/apache/plc4x/plc4go/spi/transports"
-	"github.com/apache/plc4x/plc4go/spi/transports/tcp"
-	"github.com/apache/plc4x/plc4go/spi/utils"
-	"github.com/rs/zerolog"
-	"github.com/stretchr/testify/assert"
-	"golang.org/x/net/nettest"
 	"net"
 	"net/url"
 	"strconv"
 	"sync"
 	"testing"
 	"time"
+
+	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
+	readWriteModel "github.com/apache/plc4x/plc4go/protocols/cbus/readwrite/model"
+	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/apache/plc4x/plc4go/spi/pool"
+	"github.com/apache/plc4x/plc4go/spi/testutils"
+	"github.com/apache/plc4x/plc4go/spi/transports"
+	"github.com/apache/plc4x/plc4go/spi/transports/tcp"
+	"github.com/apache/plc4x/plc4go/spi/utils"
+
+	"github.com/rs/zerolog"
+	"github.com/stretchr/testify/assert"
+	"golang.org/x/net/nettest"
 )
 
 func TestNewDiscoverer(t *testing.T) {
@@ -151,55 +154,67 @@ func TestDiscoverer_createDeviceScanDispatcher(t *testing.T) {
 		name   string
 		fields fields
 		args   args
+		setup  func(t *testing.T, fields *fields, args *args)
 	}{
 		{
 			name: "create a dispatcher",
 			args: args{
-				tcpTransportInstance: func() *tcp.TransportInstance {
-					listen, err := net.Listen("tcp", "127.0.0.1:0")
-					if err != nil {
-						t.Error(err)
-						t.FailNow()
-					}
-					go func() {
-						conn, err := listen.Accept()
-						if err != nil {
-							t.Error(err)
-							return
-						}
-						write, err := conn.Write([]byte("x.890050435F434E49454422\r\n"))
-						if err != nil {
-							t.Error(err)
-							return
-						}
-						t.Logf("%d written", write)
-					}()
-					t.Cleanup(func() {
-						if err := listen.Close(); err != nil {
-							t.Error(err)
-						}
-					})
-					transport := tcp.NewTransport()
-					parse, err := url.Parse("tcp://" + listen.Addr().String())
-					if err != nil {
-						t.Error(err)
-						t.FailNow()
-					}
-					instance, err := transport.CreateTransportInstance(*parse, nil)
-					if err != nil {
-						t.Error(err)
-						t.FailNow()
-					}
-					return instance.(*tcp.TransportInstance)
-				}(),
 				callback: func(t *testing.T, event apiModel.PlcDiscoveryItem) {
 					assert.NotNil(t, event)
 				},
+			},
+			setup: func(t *testing.T, fields *fields, args *args) {
+				listen, err := net.Listen("tcp", "127.0.0.1:0")
+				if err != nil {
+					t.Error(err)
+					t.FailNow()
+				}
+				go func() {
+					conn, err := listen.Accept()
+					if err != nil {
+						t.Error(err)
+						return
+					}
+					write, err := conn.Write([]byte("x.890050435F434E49454422\r\n"))
+					if err != nil {
+						t.Error(err)
+						return
+					}
+					t.Logf("%d written", write)
+				}()
+				t.Cleanup(func() {
+					if err := listen.Close(); err != nil {
+						t.Error(err)
+					}
+				})
+
+				// Setup logger
+				logger := testutils.ProduceTestingLogger(t)
+
+				// Set the model logger to the logger above
+				testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
+
+				loggerOption := options.WithCustomLogger(logger)
+				transport := tcp.NewTransport(loggerOption)
+				parse, err := url.Parse("tcp://" + listen.Addr().String())
+				if err != nil {
+					t.Error(err)
+					t.FailNow()
+				}
+				instance, err := transport.CreateTransportInstance(*parse, nil, loggerOption)
+				if err != nil {
+					t.Error(err)
+					t.FailNow()
+				}
+				args.tcpTransportInstance = instance.(*tcp.TransportInstance)
 			},
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			if tt.setup != nil {
+				tt.setup(t, &tt.fields, &tt.args)
+			}
 			d := &Discoverer{
 				transportInstanceCreationQueue: tt.fields.transportInstanceCreationQueue,
 				deviceScanningQueue:            tt.fields.deviceScanningQueue,
@@ -232,6 +247,7 @@ func TestDiscoverer_createTransportInstanceDispatcher(t *testing.T) {
 		name   string
 		fields fields
 		args   args
+		setup  func(t *testing.T, fields *fields, args *args)
 	}{
 		{
 			name: "create a dispatcher",
@@ -242,7 +258,6 @@ func TestDiscoverer_createTransportInstanceDispatcher(t *testing.T) {
 					return &wg
 				}(),
 				ip:                 net.IPv4(127, 0, 0, 1),
-				tcpTransport:       tcp.NewTransport(),
 				transportInstances: make(chan transports.TransportInstance, 1),
 				cBusPort: func() uint16 {
 					listen, err := net.Listen("tcp", "127.0.0.1:0")
@@ -278,10 +293,16 @@ func TestDiscoverer_createTransportInstanceDispatcher(t *testing.T) {
 					return uint16(port)
 				}(),
 			},
+			setup: func(t *testing.T, fields *fields, args *args) {
+				args.tcpTransport = tcp.NewTransport(options.WithCustomLogger(testutils.ProduceTestingLogger(t)))
+			},
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			if tt.setup != nil {
+				tt.setup(t, &tt.fields, &tt.args)
+			}
 			d := &Discoverer{
 				transportInstanceCreationQueue: tt.fields.transportInstanceCreationQueue,
 				deviceScanningQueue:            tt.fields.deviceScanningQueue,

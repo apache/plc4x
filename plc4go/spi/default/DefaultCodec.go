@@ -172,6 +172,10 @@ func (m *defaultCodec) ConnectWithContext(ctx context.Context) error {
 func (m *defaultCodec) Disconnect() error {
 	m.log.Trace().Msg("Disconnecting")
 	m.running = false
+	if m.transportInstance == nil {
+		// TODO: check if we move that case to the constructor
+		return nil
+	}
 	return m.transportInstance.Close()
 }
 

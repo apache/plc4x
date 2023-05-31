@@ -19,7 +19,9 @@
 
 package cbus
 
+import "github.com/apache/plc4x/plc4go/spi/testutils"
+
 // This ensures that we don't global log
 func init() {
-	//testutils.ExplodingGlobalLogger(true)
+	testutils.ExplodingGlobalLogger(true)
 }

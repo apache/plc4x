@@ -22,6 +22,7 @@ package utils
 import (
 	"bytes"
 	"context"
+	"github.com/rs/zerolog"
 	"net"
 	"sync"
 	"time"
@@ -30,10 +31,9 @@ import (
 	"github.com/gopacket/gopacket/layers"
 	"github.com/gopacket/gopacket/pcap"
 	"github.com/pkg/errors"
-	"github.com/rs/zerolog/log"
 )
 
-func GetIPAddresses(ctx context.Context, netInterface net.Interface, useArpBasedScan bool) (foundIps chan net.IP, err error) {
+func GetIPAddresses(log zerolog.Logger, ctx context.Context, netInterface net.Interface, useArpBasedScan bool) (foundIps chan net.IP, err error) {
 	foundIps = make(chan net.IP, 65536)
 	addrs, err := netInterface.Addrs()
 	if err != nil {
@@ -71,13 +71,13 @@ func GetIPAddresses(ctx context.Context, netInterface net.Interface, useArpBased
 
 			log.Debug().Stringer("IP", ipnet.IP).Stringer("Mask", ipnet.Mask).Msg("Expanding local subnet")
 			if useArpBasedScan {
-				if err := lockupIpsUsingArp(ctx, netInterface, ipnet, foundIps, wg); err != nil {
+				if err := lockupIpsUsingArp(log, ctx, netInterface, ipnet, foundIps, wg); err != nil {
 					log.Error().Err(err).Msg("failing to resolve using arp scan. Falling back to ip based scan")
 					useArpBasedScan = false
 				}
 			}
 			if !useArpBasedScan {
-				if err := lookupIps(ctx, ipnet, foundIps, wg); err != nil {
+				if err := lookupIps(log, ctx, ipnet, foundIps, wg); err != nil {
 					log.Error().Err(err).Msg("error looking up ips")
 				}
 			}
@@ -92,7 +92,7 @@ func GetIPAddresses(ctx context.Context, netInterface net.Interface, useArpBased
 // As PING operations might be blocked by a firewall, responding to ARP packets is mandatory for IP based
 // systems. So we are using an ARP scan to resolve the ethernet hardware addresses of each possible ip in range
 // Only for devices that respond will we schedule a discovery.
-func lockupIpsUsingArp(ctx context.Context, netInterface net.Interface, ipNet *net.IPNet, foundIps chan net.IP, wg *sync.WaitGroup) error {
+func lockupIpsUsingArp(log zerolog.Logger, ctx context.Context, netInterface net.Interface, ipNet *net.IPNet, foundIps chan net.IP, wg *sync.WaitGroup) error {
 	// We add on signal for error handling
 	wg.Add(1)
 	go func() { wg.Done() }()
@@ -225,7 +225,7 @@ func lockupIpsUsingArp(ctx context.Context, netInterface net.Interface, ipNet *n
 }
 
 // Simply takes the IP address and the netmask and schedules one discovery task for every possible IP
-func lookupIps(ctx context.Context, ipnet *net.IPNet, foundIps chan net.IP, wg *sync.WaitGroup) error {
+func lookupIps(log zerolog.Logger, ctx context.Context, ipnet *net.IPNet, foundIps chan net.IP, wg *sync.WaitGroup) error {
 	log.Debug().Msgf("Scanning all IP addresses for network: %s", ipnet)
 	// expand CIDR-block into one target for each IP
 	// Remark: The last IP address a network contains is a special broadcast address. We don't want to check that one.

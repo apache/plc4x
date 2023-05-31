@@ -24,6 +24,8 @@ import (
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/cbus/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	_default "github.com/apache/plc4x/plc4go/spi/default"
+	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/apache/plc4x/plc4go/spi/testutils"
 	"github.com/apache/plc4x/plc4go/spi/transports"
 	"github.com/apache/plc4x/plc4go/spi/transports/test"
 	"github.com/stretchr/testify/assert"
@@ -48,6 +50,7 @@ func TestMessageCodec_Send(t *testing.T) {
 		name    string
 		fields  fields
 		args    args
+		setup   func(t *testing.T, fields *fields, args *args)
 		wantErr assert.ErrorAssertionFunc
 	}{
 		{
@@ -56,19 +59,36 @@ func TestMessageCodec_Send(t *testing.T) {
 		},
 		{
 			name: "a cbus message",
-			fields: fields{
-				DefaultCodec: NewMessageCodec(test.NewTransportInstance(test.NewTransport())),
-			},
 			args: args{message: readWriteModel.NewCBusMessageToClient(
 				readWriteModel.NewReplyOrConfirmationConfirmation(
 					readWriteModel.NewConfirmation(readWriteModel.NewAlpha('!'), nil, readWriteModel.ConfirmationType_CHECKSUM_FAILURE), nil, 0x00, nil, nil,
 				), nil, nil,
 			)},
+			setup: func(t *testing.T, fields *fields, args *args) {
+				// Setup logger
+				logger := testutils.ProduceTestingLogger(t)
+
+				loggerOption := options.WithCustomLogger(logger)
+
+				// Set the model logger to the logger above
+				testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
+
+				transport := test.NewTransport(loggerOption)
+				instance := test.NewTransportInstance(transport, loggerOption)
+				codec := NewMessageCodec(instance, loggerOption)
+				t.Cleanup(func() {
+					assert.NoError(t, codec.Disconnect())
+				})
+				fields.DefaultCodec = codec
+			},
 			wantErr: assert.NoError,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			if tt.setup != nil {
+				tt.setup(t, &tt.fields, &tt.args)
+			}
 			m := &MessageCodec{
 				DefaultCodec:                  tt.fields.DefaultCodec,
 				requestContext:                tt.fields.requestContext,
@@ -101,17 +121,13 @@ func TestMessageCodec_Receive(t *testing.T) {
 	tests := []struct {
 		name    string
 		fields  fields
+		setup   func(t *testing.T, fields *fields)
 		want    spi.Message
 		wantErr assert.ErrorAssertionFunc
 	}{
 		{
 			name: "No data",
 			fields: fields{
-				DefaultCodec: NewMessageCodec(func() transports.TransportInstance {
-					transport := test.NewTransport()
-					transportInstance := test.NewTransportInstance(transport)
-					return transportInstance
-				}()),
 				requestContext:                requestContext,
 				cbusOptions:                   cbusOptions,
 				monitoredMMIs:                 nil,
@@ -120,17 +136,28 @@ func TestMessageCodec_Receive(t *testing.T) {
 				hashEncountered:               0,
 				currentlyReportedServerErrors: 0,
 			},
+			setup: func(t *testing.T, fields *fields) {
+				// Setup logger
+				logger := testutils.ProduceTestingLogger(t)
+
+				loggerOption := options.WithCustomLogger(logger)
+
+				// Set the model logger to the logger above
+				testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
+
+				transport := test.NewTransport(loggerOption)
+				instance := test.NewTransportInstance(transport, loggerOption)
+				codec := NewMessageCodec(instance, loggerOption)
+				t.Cleanup(func() {
+					assert.NoError(t, codec.Disconnect())
+				})
+				fields.DefaultCodec = codec
+			},
 			wantErr: assert.NoError,
 		},
 		{
 			name: "checksum error",
 			fields: fields{
-				DefaultCodec: NewMessageCodec(func() transports.TransportInstance {
-					transport := test.NewTransport()
-					transportInstance := test.NewTransportInstance(transport)
-					transportInstance.FillReadBuffer([]byte("!"))
-					return transportInstance
-				}()),
 				requestContext:                requestContext,
 				cbusOptions:                   cbusOptions,
 				monitoredMMIs:                 nil,
@@ -145,17 +172,29 @@ func TestMessageCodec_Receive(t *testing.T) {
 				),
 				requestContext, cbusOptions,
 			),
+			setup: func(t *testing.T, fields *fields) {
+				// Setup logger
+				logger := testutils.ProduceTestingLogger(t)
+
+				loggerOption := options.WithCustomLogger(logger)
+
+				// Set the model logger to the logger above
+				testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
+
+				transport := test.NewTransport(loggerOption)
+				instance := test.NewTransportInstance(transport, loggerOption)
+				instance.FillReadBuffer([]byte("!"))
+				codec := NewMessageCodec(instance, loggerOption)
+				t.Cleanup(func() {
+					assert.NoError(t, codec.Disconnect())
+				})
+				fields.DefaultCodec = codec
+			},
 			wantErr: assert.NoError,
 		},
 		{
 			name: "A21 echo",
 			fields: fields{
-				DefaultCodec: NewMessageCodec(func() transports.TransportInstance {
-					transport := test.NewTransport()
-					transportInstance := test.NewTransportInstance(transport)
-					transportInstance.FillReadBuffer([]byte("@A62120\r@A62120\r"))
-					return transportInstance
-				}()),
 				requestContext:                requestContext,
 				cbusOptions:                   cbusOptions,
 				monitoredMMIs:                 nil,
@@ -163,18 +202,30 @@ func TestMessageCodec_Receive(t *testing.T) {
 				lastPackageHash:               0,
 				hashEncountered:               0,
 				currentlyReportedServerErrors: 0,
+			},
+			setup: func(t *testing.T, fields *fields) {
+				// Setup logger
+				logger := testutils.ProduceTestingLogger(t)
+
+				loggerOption := options.WithCustomLogger(logger)
+
+				// Set the model logger to the logger above
+				testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
+
+				transport := test.NewTransport(loggerOption)
+				instance := test.NewTransportInstance(transport, loggerOption)
+				instance.FillReadBuffer([]byte("@A62120\r@A62120\r"))
+				codec := NewMessageCodec(instance, loggerOption)
+				t.Cleanup(func() {
+					assert.NoError(t, codec.Disconnect())
+				})
+				fields.DefaultCodec = codec
 			},
 			wantErr: assert.NoError,
 		},
 		{
 			name: "garbage",
 			fields: fields{
-				DefaultCodec: NewMessageCodec(func() transports.TransportInstance {
-					transport := test.NewTransport()
-					transportInstance := test.NewTransportInstance(transport)
-					transportInstance.FillReadBuffer([]byte("what on earth\n\r"))
-					return transportInstance
-				}()),
 				requestContext:                requestContext,
 				cbusOptions:                   cbusOptions,
 				monitoredMMIs:                 nil,
@@ -183,17 +234,29 @@ func TestMessageCodec_Receive(t *testing.T) {
 				hashEncountered:               0,
 				currentlyReportedServerErrors: 0,
 			},
+			setup: func(t *testing.T, fields *fields) {
+				// Setup logger
+				logger := testutils.ProduceTestingLogger(t)
+
+				loggerOption := options.WithCustomLogger(logger)
+
+				// Set the model logger to the logger above
+				testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
+
+				transport := test.NewTransport(loggerOption)
+				instance := test.NewTransportInstance(transport, loggerOption)
+				instance.FillReadBuffer([]byte("what on earth\n\r"))
+				codec := NewMessageCodec(instance, loggerOption)
+				t.Cleanup(func() {
+					assert.NoError(t, codec.Disconnect())
+				})
+				fields.DefaultCodec = codec
+			},
 			wantErr: assert.NoError,
 		},
 		{
 			name: "error encountered multiple time",
 			fields: fields{
-				DefaultCodec: NewMessageCodec(func() transports.TransportInstance {
-					transport := test.NewTransport()
-					transportInstance := test.NewTransportInstance(transport)
-					transportInstance.FillReadBuffer([]byte("AFFE!!!\r"))
-					return transportInstance
-				}()),
 				requestContext:                requestContext,
 				cbusOptions:                   cbusOptions,
 				monitoredMMIs:                 nil,
@@ -201,6 +264,24 @@ func TestMessageCodec_Receive(t *testing.T) {
 				lastPackageHash:               0,
 				hashEncountered:               9999,
 				currentlyReportedServerErrors: 0,
+			},
+			setup: func(t *testing.T, fields *fields) {
+				// Setup logger
+				logger := testutils.ProduceTestingLogger(t)
+
+				loggerOption := options.WithCustomLogger(logger)
+
+				// Set the model logger to the logger above
+				testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
+
+				transport := test.NewTransport(loggerOption)
+				instance := test.NewTransportInstance(transport, loggerOption)
+				instance.FillReadBuffer([]byte("AFFE!!!\r"))
+				codec := NewMessageCodec(instance, loggerOption)
+				t.Cleanup(func() {
+					assert.NoError(t, codec.Disconnect())
+				})
+				fields.DefaultCodec = codec
 			},
 			want: readWriteModel.NewCBusMessageToClient(
 				readWriteModel.NewServerErrorReply(
@@ -213,12 +294,6 @@ func TestMessageCodec_Receive(t *testing.T) {
 		{
 			name: "error encountered and reported multiple time",
 			fields: fields{
-				DefaultCodec: NewMessageCodec(func() transports.TransportInstance {
-					transport := test.NewTransport()
-					transportInstance := test.NewTransportInstance(transport)
-					transportInstance.FillReadBuffer([]byte("@1A2001!!!\r"))
-					return transportInstance
-				}()),
 				requestContext:                requestContext,
 				cbusOptions:                   cbusOptions,
 				monitoredMMIs:                 nil,
@@ -246,17 +321,29 @@ func TestMessageCodec_Receive(t *testing.T) {
 				),
 				requestContext, cbusOptions,
 			),
+			setup: func(t *testing.T, fields *fields) {
+				// Setup logger
+				logger := testutils.ProduceTestingLogger(t)
+
+				loggerOption := options.WithCustomLogger(logger)
+
+				// Set the model logger to the logger above
+				testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
+
+				transport := test.NewTransport(loggerOption)
+				instance := test.NewTransportInstance(transport, loggerOption)
+				instance.FillReadBuffer([]byte("@1A2001!!!\r"))
+				codec := NewMessageCodec(instance, loggerOption)
+				t.Cleanup(func() {
+					assert.NoError(t, codec.Disconnect())
+				})
+				fields.DefaultCodec = codec
+			},
 			wantErr: assert.NoError,
 		},
 		{
 			name: "mmi",
 			fields: fields{
-				DefaultCodec: NewMessageCodec(func() transports.TransportInstance {
-					transport := test.NewTransport()
-					transportInstance := test.NewTransportInstance(transport)
-					transportInstance.FillReadBuffer([]byte("86040200F940380001000000000000000008000000000000000000000000FA\r\n"))
-					return transportInstance
-				}()),
 				requestContext:                requestContext,
 				cbusOptions:                   cbusOptions,
 				monitoredMMIs:                 nil,
@@ -264,6 +351,24 @@ func TestMessageCodec_Receive(t *testing.T) {
 				lastPackageHash:               0,
 				hashEncountered:               9999,
 				currentlyReportedServerErrors: 9999,
+			},
+			setup: func(t *testing.T, fields *fields) {
+				// Setup logger
+				logger := testutils.ProduceTestingLogger(t)
+
+				loggerOption := options.WithCustomLogger(logger)
+
+				// Set the model logger to the logger above
+				testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
+
+				transport := test.NewTransport(loggerOption)
+				instance := test.NewTransportInstance(transport, loggerOption)
+				instance.FillReadBuffer([]byte("86040200F940380001000000000000000008000000000000000000000000FA\r\n"))
+				codec := NewMessageCodec(instance, loggerOption)
+				t.Cleanup(func() {
+					assert.NoError(t, codec.Disconnect())
+				})
+				fields.DefaultCodec = codec
 			},
 			want: readWriteModel.NewCBusMessageToClient(
 				readWriteModel.NewReplyOrConfirmationReply(
@@ -447,12 +552,6 @@ func TestMessageCodec_Receive(t *testing.T) {
 		{
 			name: "sal",
 			fields: fields{
-				DefaultCodec: NewMessageCodec(func() transports.TransportInstance {
-					transport := test.NewTransport()
-					transportInstance := test.NewTransportInstance(transport)
-					transportInstance.FillReadBuffer([]byte("0531AC0079042F0401430316000011\r\n"))
-					return transportInstance
-				}()),
 				requestContext:                requestContext,
 				cbusOptions:                   cbusOptions,
 				monitoredMMIs:                 nil,
@@ -460,6 +559,24 @@ func TestMessageCodec_Receive(t *testing.T) {
 				lastPackageHash:               0,
 				hashEncountered:               9999,
 				currentlyReportedServerErrors: 9999,
+			},
+			setup: func(t *testing.T, fields *fields) {
+				// Setup logger
+				logger := testutils.ProduceTestingLogger(t)
+
+				loggerOption := options.WithCustomLogger(logger)
+
+				// Set the model logger to the logger above
+				testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
+
+				transport := test.NewTransport(loggerOption)
+				instance := test.NewTransportInstance(transport, loggerOption)
+				instance.FillReadBuffer([]byte("0531AC0079042F0401430316000011\r\n"))
+				codec := NewMessageCodec(instance, loggerOption)
+				t.Cleanup(func() {
+					assert.NoError(t, codec.Disconnect())
+				})
+				fields.DefaultCodec = codec
 			},
 			want: readWriteModel.NewCBusMessageToClient(
 				readWriteModel.NewReplyOrConfirmationReply(
@@ -518,6 +635,9 @@ func TestMessageCodec_Receive(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			if tt.setup != nil {
+				tt.setup(t, &tt.fields)
+			}
 			m := &MessageCodec{
 				DefaultCodec:                  tt.fields.DefaultCodec,
 				requestContext:                tt.fields.requestContext,
@@ -539,9 +659,20 @@ func TestMessageCodec_Receive(t *testing.T) {
 
 func TestMessageCodec_Receive_Delayed_Response(t *testing.T) {
 	t.Run("instant data", func(t *testing.T) {
+		// Setup logger
+		logger := testutils.ProduceTestingLogger(t)
+
+		loggerOption := options.WithCustomLogger(logger)
+
+		// Set the model logger to the logger above
+		testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
+
 		transport := test.NewTransport()
 		transportInstance := test.NewTransportInstance(transport)
-		codec := NewMessageCodec(transportInstance)
+		codec := NewMessageCodec(transportInstance, loggerOption)
+		t.Cleanup(func() {
+			assert.NoError(t, codec.Disconnect())
+		})
 		codec.requestContext = readWriteModel.NewRequestContext(true)
 
 		var msg spi.Message
@@ -570,9 +701,20 @@ func TestMessageCodec_Receive_Delayed_Response(t *testing.T) {
 		assert.True(t, msg.(readWriteModel.CBusMessageToClient).GetReply().GetIsAlpha())
 	})
 	t.Run("data after 6 times", func(t *testing.T) {
+		// Setup logger
+		logger := testutils.ProduceTestingLogger(t)
+
+		loggerOption := options.WithCustomLogger(logger)
+
+		// Set the model logger to the logger above
+		testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
+
 		transport := test.NewTransport()
 		transportInstance := test.NewTransportInstance(transport)
-		codec := NewMessageCodec(transportInstance)
+		codec := NewMessageCodec(transportInstance, loggerOption)
+		t.Cleanup(func() {
+			assert.NoError(t, codec.Disconnect())
+		})
 		codec.requestContext = readWriteModel.NewRequestContext(true)
 
 		var msg spi.Message
@@ -604,9 +746,20 @@ func TestMessageCodec_Receive_Delayed_Response(t *testing.T) {
 		assert.True(t, msg.(readWriteModel.CBusMessageToClient).GetReply().GetIsAlpha())
 	})
 	t.Run("data after 16 times", func(t *testing.T) {
+		// Setup logger
+		logger := testutils.ProduceTestingLogger(t)
+
+		loggerOption := options.WithCustomLogger(logger)
+
+		// Set the model logger to the logger above
+		testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
+
 		transport := test.NewTransport()
 		transportInstance := test.NewTransportInstance(transport)
-		codec := NewMessageCodec(transportInstance)
+		codec := NewMessageCodec(transportInstance, loggerOption)
+		t.Cleanup(func() {
+			assert.NoError(t, codec.Disconnect())
+		})
 		codec.requestContext = readWriteModel.NewRequestContext(true)
 
 		var msg spi.Message
@@ -663,7 +816,11 @@ func TestNewMessageCodec(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			assert.NotNilf(t, NewMessageCodec(tt.args.transportInstance), "NewMessageCodec(%v)", tt.args.transportInstance)
+			codec := NewMessageCodec(tt.args.transportInstance)
+			t.Cleanup(func() {
+				assert.NoError(t, codec.Disconnect())
+			})
+			assert.NotNilf(t, codec, "NewMessageCodec(%v)", tt.args.transportInstance)
 		})
 	}
 }

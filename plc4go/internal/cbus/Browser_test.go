@@ -22,9 +22,11 @@ package cbus
 import (
 	"context"
 	"fmt"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"net/url"
 	"sync/atomic"
 	"testing"
+	"time"
 
 	plc4go "github.com/apache/plc4x/plc4go/pkg/api"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
@@ -101,6 +103,9 @@ func TestBrowser_BrowseQuery(t *testing.T) {
 					t.Error(err)
 					t.FailNow()
 				}
+				t.Cleanup(func() {
+					assert.NoError(t, transportInstance.Close())
+				})
 				type MockState uint8
 				const (
 					RESET MockState = iota
@@ -161,12 +166,24 @@ func TestBrowser_BrowseQuery(t *testing.T) {
 					t.Error(err)
 					t.FailNow()
 				}
-				connectionConnectResult := <-NewDriver(loggerOption).GetConnection(transportUrl, map[string]transports.Transport{"test": transport}, map[string][]string{})
+				driver := NewDriver(loggerOption)
+				connectionConnectResult := <-driver.GetConnection(transportUrl, map[string]transports.Transport{"test": transport}, map[string][]string{})
 				if err := connectionConnectResult.GetErr(); err != nil {
 					t.Error(err)
 					t.FailNow()
 				}
 				fields.connection = connectionConnectResult.GetConnection()
+				t.Cleanup(func() {
+					timer := time.NewTimer(1 * time.Second)
+					t.Cleanup(func() {
+						utils.CleanupTimer(timer)
+					})
+					select {
+					case <-fields.connection.Close():
+					case <-timer.C:
+						t.Error("timeout")
+					}
+				})
 			},
 			want: apiModel.PlcResponseCode_OK,
 			want1: []apiModel.PlcBrowseItem{
@@ -367,6 +384,9 @@ func TestBrowser_getInstalledUnitAddressBytes(t *testing.T) {
 					t.Error(err)
 					t.FailNow()
 				}
+				t.Cleanup(func() {
+					assert.NoError(t, transportInstance.Close())
+				})
 				type MockState uint8
 				const (
 					RESET MockState = iota
@@ -428,6 +448,17 @@ func TestBrowser_getInstalledUnitAddressBytes(t *testing.T) {
 					t.FailNow()
 				}
 				fields.connection = connectionConnectResult.GetConnection()
+				t.Cleanup(func() {
+					timer := time.NewTimer(1 * time.Second)
+					t.Cleanup(func() {
+						utils.CleanupTimer(timer)
+					})
+					select {
+					case <-fields.connection.Close():
+					case <-timer.C:
+						t.Error("timeout")
+					}
+				})
 			},
 			want: map[byte]any{
 				1:  true,

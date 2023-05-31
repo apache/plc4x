@@ -238,41 +238,6 @@ func TestReader_readSync(t *testing.T) {
 			name: "read identify type",
 			fields: fields{
 				alphaGenerator: &AlphaGenerator{currentAlpha: 'g'},
-				messageCodec: func() *MessageCodec {
-					transport := test.NewTransport()
-					transportUrl := url.URL{Scheme: "test"}
-					transportInstance, err := transport.CreateTransportInstance(transportUrl, nil)
-					if err != nil {
-						t.Error(err)
-						t.FailNow()
-						return nil
-					}
-					type MockState uint8
-					const (
-						INITIAL MockState = iota
-						DONE
-					)
-					currentState := atomic.Value{}
-					currentState.Store(INITIAL)
-					transportInstance.(*test.TransportInstance).SetWriteInterceptor(func(transportInstance *test.TransportInstance, data []byte) {
-						switch currentState.Load().(MockState) {
-						case INITIAL:
-							t.Log("Dispatching read response")
-							transportInstance.FillReadBuffer([]byte("g.890150435F434E49454421\r\n"))
-							currentState.Store(DONE)
-						case DONE:
-							t.Log("Done")
-						}
-					})
-					codec := NewMessageCodec(transportInstance)
-					err = codec.Connect()
-					if err != nil {
-						t.Error(err)
-						t.FailNow()
-						return nil
-					}
-					return codec
-				}(),
 			},
 			args: args{
 				ctx: func() context.Context {
@@ -293,7 +258,46 @@ func TestReader_readSync(t *testing.T) {
 				result: make(chan apiModel.PlcReadRequestResult, 1),
 			},
 			setup: func(t *testing.T, fields *fields) {
-				fields.tm = transactions.NewRequestTransactionManager(10, options.WithCustomLogger(testutils.ProduceTestingLogger(t)))
+				// Setup logger
+				logger := testutils.ProduceTestingLogger(t)
+
+				loggerOption := options.WithCustomLogger(logger)
+
+				// Set the model logger to the logger above
+				testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
+
+				fields.tm = transactions.NewRequestTransactionManager(10, loggerOption)
+				transport := test.NewTransport()
+				transportUrl := url.URL{Scheme: "test"}
+				transportInstance, err := transport.CreateTransportInstance(transportUrl, nil, loggerOption)
+				if err != nil {
+					t.Error(err)
+					t.FailNow()
+				}
+				type MockState uint8
+				const (
+					INITIAL MockState = iota
+					DONE
+				)
+				currentState := atomic.Value{}
+				currentState.Store(INITIAL)
+				transportInstance.(*test.TransportInstance).SetWriteInterceptor(func(transportInstance *test.TransportInstance, data []byte) {
+					switch currentState.Load().(MockState) {
+					case INITIAL:
+						t.Log("Dispatching read response")
+						transportInstance.FillReadBuffer([]byte("g.890150435F434E49454421\r\n"))
+						currentState.Store(DONE)
+					case DONE:
+						t.Log("Done")
+					}
+				})
+				codec := NewMessageCodec(transportInstance, loggerOption)
+				err = codec.Connect()
+				if err != nil {
+					t.Error(err)
+					t.FailNow()
+				}
+				fields.messageCodec = codec
 			},
 			resultEvaluator: func(t *testing.T, results chan apiModel.PlcReadRequestResult) bool {
 				timer := time.NewTimer(2 * time.Second)
@@ -316,24 +320,6 @@ func TestReader_readSync(t *testing.T) {
 			name: "read identify type aborted",
 			fields: fields{
 				alphaGenerator: &AlphaGenerator{currentAlpha: 'g'},
-				messageCodec: func() *MessageCodec {
-					transport := test.NewTransport()
-					transportUrl := url.URL{Scheme: "test"}
-					transportInstance, err := transport.CreateTransportInstance(transportUrl, nil)
-					if err != nil {
-						t.Error(err)
-						t.FailNow()
-						return nil
-					}
-					codec := NewMessageCodec(transportInstance)
-					err = codec.Connect()
-					if err != nil {
-						t.Error(err)
-						t.FailNow()
-						return nil
-					}
-					return codec
-				}(),
 			},
 			args: args{
 				ctx: func() context.Context {
@@ -355,6 +341,30 @@ func TestReader_readSync(t *testing.T) {
 			},
 			setup: func(t *testing.T, fields *fields) {
 				fields.tm = transactions.NewRequestTransactionManager(10, options.WithCustomLogger(testutils.ProduceTestingLogger(t)))
+
+				// Setup logger
+				logger := testutils.ProduceTestingLogger(t)
+
+				loggerOption := options.WithCustomLogger(logger)
+
+				// Set the model logger to the logger above
+				testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
+
+				transport := test.NewTransport()
+				transportUrl := url.URL{Scheme: "test"}
+				transportInstance, err := transport.CreateTransportInstance(transportUrl, nil, loggerOption)
+				if err != nil {
+					t.Error(err)
+					t.FailNow()
+				}
+				codec := NewMessageCodec(transportInstance, loggerOption)
+				err = codec.Connect()
+				if err != nil {
+					t.Error(err)
+					t.FailNow()
+				}
+
+				fields.messageCodec = codec
 			},
 			resultEvaluator: func(t *testing.T, results chan apiModel.PlcReadRequestResult) bool {
 				timer := time.NewTimer(2 * time.Second)
@@ -400,11 +410,11 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 		addPlcValue     func(t *testing.T, wg *sync.WaitGroup) func(name string, plcValue apiValues.PlcValue)
 	}
 	tests := []struct {
-		name      string
-		fields    fields
-		args      args
-		mockSetup func(t *testing.T, fields *fields, args *args)
-		wg        *sync.WaitGroup
+		name   string
+		fields fields
+		args   args
+		setup  func(t *testing.T, fields *fields, args *args)
+		wg     *sync.WaitGroup
 	}{
 		{
 			name: "Send message empty message",
@@ -457,7 +467,7 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 					}
 				},
 			},
-			mockSetup: func(t *testing.T, fields *fields, args *args) {
+			setup: func(t *testing.T, fields *fields, args *args) {
 				transaction := NewMockRequestTransaction(t)
 				expect := transaction.EXPECT()
 				expect.FailRequest(mock.Anything).Return(errors.New("no I say"))
@@ -548,7 +558,7 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 					}
 				},
 			},
-			mockSetup: func(t *testing.T, fields *fields, args *args) {
+			setup: func(t *testing.T, fields *fields, args *args) {
 				transaction := NewMockRequestTransaction(t)
 				expect := transaction.EXPECT()
 				expect.FailRequest(mock.Anything).Return(errors.New("Nope"))
@@ -639,7 +649,7 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 					}
 				},
 			},
-			mockSetup: func(t *testing.T, fields *fields, args *args) {
+			setup: func(t *testing.T, fields *fields, args *args) {
 				transaction := NewMockRequestTransaction(t)
 				expect := transaction.EXPECT()
 				expect.EndRequest().Return(nil)
@@ -651,46 +661,6 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 			name: "Send message which responds with too many retransmissions",
 			fields: fields{
 				alphaGenerator: &AlphaGenerator{currentAlpha: 'g'},
-				messageCodec: func() *MessageCodec {
-					transport := test.NewTransport()
-					transportUrl := url.URL{Scheme: "test"}
-					transportInstance, err := transport.CreateTransportInstance(transportUrl, nil)
-					if err != nil {
-						t.Error(err)
-						t.FailNow()
-						return nil
-					}
-					type MockState uint8
-					const (
-						INITIAL MockState = iota
-						DONE
-					)
-					currentState := atomic.Value{}
-					currentState.Store(INITIAL)
-					transportInstance.(*test.TransportInstance).SetWriteInterceptor(func(transportInstance *test.TransportInstance, data []byte) {
-						switch currentState.Load().(MockState) {
-						case INITIAL:
-							t.Log("Dispatching read response")
-							transportInstance.FillReadBuffer([]byte("g#\r\n"))
-							currentState.Store(DONE)
-						case DONE:
-							t.Log("Done")
-						}
-					})
-					codec := NewMessageCodec(transportInstance)
-					t.Cleanup(func() {
-						if err := codec.Disconnect(); err != nil {
-							t.Error(err)
-						}
-					})
-					err = codec.Connect()
-					if err != nil {
-						t.Error(err)
-						t.FailNow()
-						return nil
-					}
-					return codec
-				}(),
 			},
 			args: args{
 				ctx: func() context.Context {
@@ -733,11 +703,56 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 					}
 				},
 			},
-			mockSetup: func(t *testing.T, fields *fields, args *args) {
+			setup: func(t *testing.T, fields *fields, args *args) {
 				transaction := NewMockRequestTransaction(t)
 				expect := transaction.EXPECT()
 				expect.EndRequest().Return(nil)
 				args.transaction = transaction
+
+				// Setup logger
+				logger := testutils.ProduceTestingLogger(t)
+
+				loggerOption := options.WithCustomLogger(logger)
+
+				// Set the model logger to the logger above
+				testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
+
+				transport := test.NewTransport(loggerOption)
+				transportUrl := url.URL{Scheme: "test"}
+				transportInstance, err := transport.CreateTransportInstance(transportUrl, nil, loggerOption)
+				if err != nil {
+					t.Error(err)
+					t.FailNow()
+				}
+				type MockState uint8
+				const (
+					INITIAL MockState = iota
+					DONE
+				)
+				currentState := atomic.Value{}
+				currentState.Store(INITIAL)
+				transportInstance.(*test.TransportInstance).SetWriteInterceptor(func(transportInstance *test.TransportInstance, data []byte) {
+					switch currentState.Load().(MockState) {
+					case INITIAL:
+						t.Log("Dispatching read response")
+						transportInstance.FillReadBuffer([]byte("g#\r\n"))
+						currentState.Store(DONE)
+					case DONE:
+						t.Log("Done")
+					}
+				})
+				codec := NewMessageCodec(transportInstance, loggerOption)
+				t.Cleanup(func() {
+					if err := codec.Disconnect(); err != nil {
+						t.Error(err)
+					}
+				})
+				err = codec.Connect()
+				if err != nil {
+					t.Error(err)
+					t.FailNow()
+				}
+				fields.messageCodec = codec
 			},
 			wg: &sync.WaitGroup{},
 		},
@@ -745,46 +760,6 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 			name: "Send message which responds with corruption",
 			fields: fields{
 				alphaGenerator: &AlphaGenerator{currentAlpha: 'g'},
-				messageCodec: func() *MessageCodec {
-					transport := test.NewTransport()
-					transportUrl := url.URL{Scheme: "test"}
-					transportInstance, err := transport.CreateTransportInstance(transportUrl, nil)
-					if err != nil {
-						t.Error(err)
-						t.FailNow()
-						return nil
-					}
-					type MockState uint8
-					const (
-						INITIAL MockState = iota
-						DONE
-					)
-					currentState := atomic.Value{}
-					currentState.Store(INITIAL)
-					transportInstance.(*test.TransportInstance).SetWriteInterceptor(func(transportInstance *test.TransportInstance, data []byte) {
-						switch currentState.Load().(MockState) {
-						case INITIAL:
-							t.Log("Dispatching read response")
-							transportInstance.FillReadBuffer([]byte("g$\r\n"))
-							currentState.Store(DONE)
-						case DONE:
-							t.Log("Done")
-						}
-					})
-					codec := NewMessageCodec(transportInstance)
-					t.Cleanup(func() {
-						if err := codec.Disconnect(); err != nil {
-							t.Error(err)
-						}
-					})
-					err = codec.Connect()
-					if err != nil {
-						t.Error(err)
-						t.FailNow()
-						return nil
-					}
-					return codec
-				}(),
 			},
 			args: args{
 				ctx: func() context.Context {
@@ -827,11 +802,56 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 					}
 				},
 			},
-			mockSetup: func(t *testing.T, fields *fields, args *args) {
+			setup: func(t *testing.T, fields *fields, args *args) {
 				transaction := NewMockRequestTransaction(t)
 				expect := transaction.EXPECT()
 				expect.EndRequest().Return(nil)
 				args.transaction = transaction
+
+				// Setup logger
+				logger := testutils.ProduceTestingLogger(t)
+
+				loggerOption := options.WithCustomLogger(logger)
+
+				// Set the model logger to the logger above
+				testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
+
+				transport := test.NewTransport(loggerOption)
+				transportUrl := url.URL{Scheme: "test"}
+				transportInstance, err := transport.CreateTransportInstance(transportUrl, nil, loggerOption)
+				if err != nil {
+					t.Error(err)
+					t.FailNow()
+				}
+				type MockState uint8
+				const (
+					INITIAL MockState = iota
+					DONE
+				)
+				currentState := atomic.Value{}
+				currentState.Store(INITIAL)
+				transportInstance.(*test.TransportInstance).SetWriteInterceptor(func(transportInstance *test.TransportInstance, data []byte) {
+					switch currentState.Load().(MockState) {
+					case INITIAL:
+						t.Log("Dispatching read response")
+						transportInstance.FillReadBuffer([]byte("g$\r\n"))
+						currentState.Store(DONE)
+					case DONE:
+						t.Log("Done")
+					}
+				})
+				codec := NewMessageCodec(transportInstance, loggerOption)
+				t.Cleanup(func() {
+					if err := codec.Disconnect(); err != nil {
+						t.Error(err)
+					}
+				})
+				err = codec.Connect()
+				if err != nil {
+					t.Error(err)
+					t.FailNow()
+				}
+				fields.messageCodec = codec
 			},
 			wg: &sync.WaitGroup{},
 		},
@@ -839,46 +859,6 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 			name: "Send message which responds with sync loss",
 			fields: fields{
 				alphaGenerator: &AlphaGenerator{currentAlpha: 'g'},
-				messageCodec: func() *MessageCodec {
-					transport := test.NewTransport()
-					transportUrl := url.URL{Scheme: "test"}
-					transportInstance, err := transport.CreateTransportInstance(transportUrl, nil)
-					if err != nil {
-						t.Error(err)
-						t.FailNow()
-						return nil
-					}
-					type MockState uint8
-					const (
-						INITIAL MockState = iota
-						DONE
-					)
-					currentState := atomic.Value{}
-					currentState.Store(INITIAL)
-					transportInstance.(*test.TransportInstance).SetWriteInterceptor(func(transportInstance *test.TransportInstance, data []byte) {
-						switch currentState.Load().(MockState) {
-						case INITIAL:
-							t.Log("Dispatching read response")
-							transportInstance.FillReadBuffer([]byte("g%\r\n"))
-							currentState.Store(DONE)
-						case DONE:
-							t.Log("Done")
-						}
-					})
-					codec := NewMessageCodec(transportInstance)
-					t.Cleanup(func() {
-						if err := codec.Disconnect(); err != nil {
-							t.Error(err)
-						}
-					})
-					err = codec.Connect()
-					if err != nil {
-						t.Error(err)
-						t.FailNow()
-						return nil
-					}
-					return codec
-				}(),
 			},
 			args: args{
 				ctx: func() context.Context {
@@ -921,11 +901,56 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 					}
 				},
 			},
-			mockSetup: func(t *testing.T, fields *fields, args *args) {
+			setup: func(t *testing.T, fields *fields, args *args) {
 				transaction := NewMockRequestTransaction(t)
 				expect := transaction.EXPECT()
 				expect.EndRequest().Return(nil)
 				args.transaction = transaction
+
+				// Setup logger
+				logger := testutils.ProduceTestingLogger(t)
+
+				loggerOption := options.WithCustomLogger(logger)
+
+				// Set the model logger to the logger above
+				testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
+
+				transport := test.NewTransport(loggerOption)
+				transportUrl := url.URL{Scheme: "test"}
+				transportInstance, err := transport.CreateTransportInstance(transportUrl, nil, loggerOption)
+				if err != nil {
+					t.Error(err)
+					t.FailNow()
+				}
+				type MockState uint8
+				const (
+					INITIAL MockState = iota
+					DONE
+				)
+				currentState := atomic.Value{}
+				currentState.Store(INITIAL)
+				transportInstance.(*test.TransportInstance).SetWriteInterceptor(func(transportInstance *test.TransportInstance, data []byte) {
+					switch currentState.Load().(MockState) {
+					case INITIAL:
+						t.Log("Dispatching read response")
+						transportInstance.FillReadBuffer([]byte("g%\r\n"))
+						currentState.Store(DONE)
+					case DONE:
+						t.Log("Done")
+					}
+				})
+				codec := NewMessageCodec(transportInstance, loggerOption)
+				t.Cleanup(func() {
+					if err := codec.Disconnect(); err != nil {
+						t.Error(err)
+					}
+				})
+				err = codec.Connect()
+				if err != nil {
+					t.Error(err)
+					t.FailNow()
+				}
+				fields.messageCodec = codec
 			},
 			wg: &sync.WaitGroup{},
 		},
@@ -933,46 +958,6 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 			name: "Send message which responds with too long",
 			fields: fields{
 				alphaGenerator: &AlphaGenerator{currentAlpha: 'g'},
-				messageCodec: func() *MessageCodec {
-					transport := test.NewTransport()
-					transportUrl := url.URL{Scheme: "test"}
-					transportInstance, err := transport.CreateTransportInstance(transportUrl, nil)
-					if err != nil {
-						t.Error(err)
-						t.FailNow()
-						return nil
-					}
-					type MockState uint8
-					const (
-						INITIAL MockState = iota
-						DONE
-					)
-					currentState := atomic.Value{}
-					currentState.Store(INITIAL)
-					transportInstance.(*test.TransportInstance).SetWriteInterceptor(func(transportInstance *test.TransportInstance, data []byte) {
-						switch currentState.Load().(MockState) {
-						case INITIAL:
-							t.Log("Dispatching read response")
-							transportInstance.FillReadBuffer([]byte("g'\r\n"))
-							currentState.Store(DONE)
-						case DONE:
-							t.Log("Done")
-						}
-					})
-					codec := NewMessageCodec(transportInstance)
-					t.Cleanup(func() {
-						if err := codec.Disconnect(); err != nil {
-							t.Error(err)
-						}
-					})
-					err = codec.Connect()
-					if err != nil {
-						t.Error(err)
-						t.FailNow()
-						return nil
-					}
-					return codec
-				}(),
 			},
 			args: args{
 				ctx: func() context.Context {
@@ -1015,11 +1000,56 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 					}
 				},
 			},
-			mockSetup: func(t *testing.T, fields *fields, args *args) {
+			setup: func(t *testing.T, fields *fields, args *args) {
 				transaction := NewMockRequestTransaction(t)
 				expect := transaction.EXPECT()
 				expect.EndRequest().Return(nil)
 				args.transaction = transaction
+
+				// Setup logger
+				logger := testutils.ProduceTestingLogger(t)
+
+				loggerOption := options.WithCustomLogger(logger)
+
+				// Set the model logger to the logger above
+				testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
+
+				transport := test.NewTransport(loggerOption)
+				transportUrl := url.URL{Scheme: "test"}
+				transportInstance, err := transport.CreateTransportInstance(transportUrl, nil, loggerOption)
+				if err != nil {
+					t.Error(err)
+					t.FailNow()
+				}
+				type MockState uint8
+				const (
+					INITIAL MockState = iota
+					DONE
+				)
+				currentState := atomic.Value{}
+				currentState.Store(INITIAL)
+				transportInstance.(*test.TransportInstance).SetWriteInterceptor(func(transportInstance *test.TransportInstance, data []byte) {
+					switch currentState.Load().(MockState) {
+					case INITIAL:
+						t.Log("Dispatching read response")
+						transportInstance.FillReadBuffer([]byte("g'\r\n"))
+						currentState.Store(DONE)
+					case DONE:
+						t.Log("Done")
+					}
+				})
+				codec := NewMessageCodec(transportInstance, loggerOption)
+				t.Cleanup(func() {
+					if err := codec.Disconnect(); err != nil {
+						t.Error(err)
+					}
+				})
+				err = codec.Connect()
+				if err != nil {
+					t.Error(err)
+					t.FailNow()
+				}
+				fields.messageCodec = codec
 			},
 			wg: &sync.WaitGroup{},
 		},
@@ -1027,46 +1057,6 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 			name: "Send message which responds with confirm only",
 			fields: fields{
 				alphaGenerator: &AlphaGenerator{currentAlpha: 'g'},
-				messageCodec: func() *MessageCodec {
-					transport := test.NewTransport()
-					transportUrl := url.URL{Scheme: "test"}
-					transportInstance, err := transport.CreateTransportInstance(transportUrl, nil)
-					if err != nil {
-						t.Error(err)
-						t.FailNow()
-						return nil
-					}
-					type MockState uint8
-					const (
-						INITIAL MockState = iota
-						DONE
-					)
-					currentState := atomic.Value{}
-					currentState.Store(INITIAL)
-					transportInstance.(*test.TransportInstance).SetWriteInterceptor(func(transportInstance *test.TransportInstance, data []byte) {
-						switch currentState.Load().(MockState) {
-						case INITIAL:
-							t.Log("Dispatching read response")
-							transportInstance.FillReadBuffer([]byte("g.\r\n"))
-							currentState.Store(DONE)
-						case DONE:
-							t.Log("Done")
-						}
-					})
-					codec := NewMessageCodec(transportInstance)
-					t.Cleanup(func() {
-						if err := codec.Disconnect(); err != nil {
-							t.Error(err)
-						}
-					})
-					err = codec.Connect()
-					if err != nil {
-						t.Error(err)
-						t.FailNow()
-						return nil
-					}
-					return codec
-				}(),
 			},
 			args: args{
 				ctx: func() context.Context {
@@ -1109,11 +1099,56 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 					}
 				},
 			},
-			mockSetup: func(t *testing.T, fields *fields, args *args) {
+			setup: func(t *testing.T, fields *fields, args *args) {
 				transaction := NewMockRequestTransaction(t)
 				expect := transaction.EXPECT()
 				expect.EndRequest().Return(nil)
 				args.transaction = transaction
+
+				// Setup logger
+				logger := testutils.ProduceTestingLogger(t)
+
+				loggerOption := options.WithCustomLogger(logger)
+
+				// Set the model logger to the logger above
+				testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
+
+				transport := test.NewTransport(loggerOption)
+				transportUrl := url.URL{Scheme: "test"}
+				transportInstance, err := transport.CreateTransportInstance(transportUrl, nil, loggerOption)
+				if err != nil {
+					t.Error(err)
+					t.FailNow()
+				}
+				type MockState uint8
+				const (
+					INITIAL MockState = iota
+					DONE
+				)
+				currentState := atomic.Value{}
+				currentState.Store(INITIAL)
+				transportInstance.(*test.TransportInstance).SetWriteInterceptor(func(transportInstance *test.TransportInstance, data []byte) {
+					switch currentState.Load().(MockState) {
+					case INITIAL:
+						t.Log("Dispatching read response")
+						transportInstance.FillReadBuffer([]byte("g.\r\n"))
+						currentState.Store(DONE)
+					case DONE:
+						t.Log("Done")
+					}
+				})
+				codec := NewMessageCodec(transportInstance, loggerOption)
+				t.Cleanup(func() {
+					if err := codec.Disconnect(); err != nil {
+						t.Error(err)
+					}
+				})
+				err = codec.Connect()
+				if err != nil {
+					t.Error(err)
+					t.FailNow()
+				}
+				fields.messageCodec = codec
 			},
 			wg: &sync.WaitGroup{},
 		},
@@ -1121,46 +1156,6 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 			name: "Send message which responds with ok",
 			fields: fields{
 				alphaGenerator: &AlphaGenerator{currentAlpha: 'g'},
-				messageCodec: func() *MessageCodec {
-					transport := test.NewTransport()
-					transportUrl := url.URL{Scheme: "test"}
-					transportInstance, err := transport.CreateTransportInstance(transportUrl, nil)
-					if err != nil {
-						t.Error(err)
-						t.FailNow()
-						return nil
-					}
-					type MockState uint8
-					const (
-						INITIAL MockState = iota
-						DONE
-					)
-					currentState := atomic.Value{}
-					currentState.Store(INITIAL)
-					transportInstance.(*test.TransportInstance).SetWriteInterceptor(func(transportInstance *test.TransportInstance, data []byte) {
-						switch currentState.Load().(MockState) {
-						case INITIAL:
-							t.Log("Dispatching read response")
-							transportInstance.FillReadBuffer([]byte("g.890150435F434E49454421\r\n"))
-							currentState.Store(DONE)
-						case DONE:
-							t.Log("Done")
-						}
-					})
-					codec := NewMessageCodec(transportInstance)
-					t.Cleanup(func() {
-						if err := codec.Disconnect(); err != nil {
-							t.Error(err)
-						}
-					})
-					err = codec.Connect()
-					if err != nil {
-						t.Error(err)
-						t.FailNow()
-						return nil
-					}
-					return codec
-				}(),
 			},
 			args: args{
 				ctx: func() context.Context {
@@ -1203,11 +1198,56 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 					}
 				},
 			},
-			mockSetup: func(t *testing.T, fields *fields, args *args) {
+			setup: func(t *testing.T, fields *fields, args *args) {
 				transaction := NewMockRequestTransaction(t)
 				expect := transaction.EXPECT()
 				expect.EndRequest().Return(nil)
 				args.transaction = transaction
+
+				// Setup logger
+				logger := testutils.ProduceTestingLogger(t)
+
+				loggerOption := options.WithCustomLogger(logger)
+
+				// Set the model logger to the logger above
+				testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
+
+				transport := test.NewTransport(loggerOption)
+				transportUrl := url.URL{Scheme: "test"}
+				transportInstance, err := transport.CreateTransportInstance(transportUrl, nil, loggerOption)
+				if err != nil {
+					t.Error(err)
+					t.FailNow()
+				}
+				type MockState uint8
+				const (
+					INITIAL MockState = iota
+					DONE
+				)
+				currentState := atomic.Value{}
+				currentState.Store(INITIAL)
+				transportInstance.(*test.TransportInstance).SetWriteInterceptor(func(transportInstance *test.TransportInstance, data []byte) {
+					switch currentState.Load().(MockState) {
+					case INITIAL:
+						t.Log("Dispatching read response")
+						transportInstance.FillReadBuffer([]byte("g.890150435F434E49454421\r\n"))
+						currentState.Store(DONE)
+					case DONE:
+						t.Log("Done")
+					}
+				})
+				codec := NewMessageCodec(transportInstance, loggerOption)
+				t.Cleanup(func() {
+					if err := codec.Disconnect(); err != nil {
+						t.Error(err)
+					}
+				})
+				err = codec.Connect()
+				if err != nil {
+					t.Error(err)
+					t.FailNow()
+				}
+				fields.messageCodec = codec
 			},
 			wg: func() *sync.WaitGroup {
 				wg := &sync.WaitGroup{}
@@ -1218,8 +1258,8 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if tt.mockSetup != nil {
-				tt.mockSetup(t, &tt.fields, &tt.args)
+			if tt.setup != nil {
+				tt.setup(t, &tt.fields, &tt.args)
 			}
 			m := &Reader{
 				alphaGenerator: tt.fields.alphaGenerator,

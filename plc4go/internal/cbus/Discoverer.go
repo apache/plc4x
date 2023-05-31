@@ -38,8 +38,6 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/transports"
 	"github.com/apache/plc4x/plc4go/spi/utils"
-
-	"github.com/rs/zerolog/log"
 )
 
 type Discoverer struct {
@@ -70,7 +68,7 @@ func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.
 	if err != nil {
 		return errors.Wrap(err, "error getting addresses")
 	}
-	if log.Debug().Enabled() {
+	if d.log.Debug().Enabled() {
 		for _, provider := range interfaces {
 			d.log.Debug().Msgf("Discover on %s", provider)
 			d.log.Trace().Msgf("Discover on %#v", provider.containedInterface())
@@ -82,7 +80,7 @@ func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.
 	tcpTransport := tcp.NewTransport()
 	// Iterate over all network devices of this system.
 	for _, netInterface := range interfaces {
-		interfaceLog := log.With().Stringer("interface", netInterface).Logger()
+		interfaceLog := d.log.With().Stringer("interface", netInterface).Logger()
 		interfaceLog.Debug().Msg("Scanning")
 		addrs, err := netInterface.Addrs()
 		if err != nil {
@@ -117,7 +115,7 @@ func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.
 				if ipv4Addr == nil || ipv4Addr.IsLoopback() {
 					continue
 				}
-				addresses, err := utils.GetIPAddresses(ctx, netInterface.containedInterface(), false)
+				addresses, err := utils.GetIPAddresses(d.log, ctx, netInterface.containedInterface(), false)
 				if err != nil {
 					addressLogger.Warn().Err(err).Msgf("Can't get addresses for %v", netInterface)
 					continue
@@ -206,7 +204,7 @@ func (d *Discoverer) createTransportInstanceDispatcher(ctx context.Context, wg *
 
 func (d *Discoverer) createDeviceScanDispatcher(tcpTransportInstance *tcp.TransportInstance, callback func(event apiModel.PlcDiscoveryItem)) pool.Runnable {
 	return func() {
-		transportInstanceLogger := log.With().Stringer("transportInstance", tcpTransportInstance).Logger()
+		transportInstanceLogger := d.log.With().Stringer("transportInstance", tcpTransportInstance).Logger()
 		transportInstanceLogger.Debug().Msgf("Scanning %v", tcpTransportInstance)
 		// Create a codec for sending and receiving messages.
 		codec := NewMessageCodec(tcpTransportInstance, options.WithCustomLogger(d.log))

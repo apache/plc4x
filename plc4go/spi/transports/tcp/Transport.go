@@ -40,8 +40,10 @@ type Transport struct {
 	log zerolog.Logger
 }
 
-func NewTransport() *Transport {
-	return &Transport{}
+func NewTransport(_options ...options.WithOption) *Transport {
+	return &Transport{
+		log: options.ExtractCustomLogger(_options...),
+	}
 }
 
 func (m Transport) GetTransportCode() string {
