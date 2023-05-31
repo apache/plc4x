@@ -73,7 +73,8 @@
         [const        uint 8             authProto                      0x00                 ]
     ]
     // RPCSerialLow 4.10.3.2.7
-    [const            uint 8             serialLow                      0x00                 ]
+    // REMARK: In general this would be a constant value of 0, but it seems that the PN device sends back PING packets which have non 0 values.
+    [simple           uint 8             serialLow                                           ]
 // RPC Header }
 // RPC Payload {
     [simple PnIoCm_Packet('packetType') payload byteOrder='integerEncoding == IntegerEncoding.BIG_ENDIAN ? BIG_ENDIAN : LITTLE_ENDIAN' ]

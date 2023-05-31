@@ -393,6 +393,7 @@ public class ProfinetPlcDiscoverer implements PlcDiscoverer {
                                         new TlvManagementAddress(
                                             12,
                                             ManagementAddressSubType.IPV4,
+                                            // 192.168.90.110
                                             new IpAddress(Hex.decodeHex("c0a85a6e")),
                                             (short) 0x03,
                                             0x01L,

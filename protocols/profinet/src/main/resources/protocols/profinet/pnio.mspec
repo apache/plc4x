@@ -59,6 +59,8 @@
         ['REJECT'   PnIoCm_Packet_Rej
             [simple uint 32      status                               ]
         ]
+        ['WORKING'  PnIoCm_Packet_Working
+        ]
     ]
 ]
 

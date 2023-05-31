@@ -49,7 +49,6 @@ public class DceRpc_Packet implements Message {
   public static final Integer ACTIVITYHINT = 0xFFFF;
   public static final Integer FRAGMENTNUM = 0x0000;
   public static final Short AUTHPROTO = 0x00;
-  public static final Short SERIALLOW = 0x00;
 
   // Properties.
   protected final DceRpc_PacketType packetType;
@@ -65,6 +64,7 @@ public class DceRpc_Packet implements Message {
   protected final long serverBootTime;
   protected final long sequenceNumber;
   protected final DceRpc_Operation operation;
+  protected final short serialLow;
   protected final PnIoCm_Packet payload;
 
   // Reserved Fields
@@ -88,6 +88,7 @@ public class DceRpc_Packet implements Message {
       long serverBootTime,
       long sequenceNumber,
       DceRpc_Operation operation,
+      short serialLow,
       PnIoCm_Packet payload) {
     super();
     this.packetType = packetType;
@@ -103,6 +104,7 @@ public class DceRpc_Packet implements Message {
     this.serverBootTime = serverBootTime;
     this.sequenceNumber = sequenceNumber;
     this.operation = operation;
+    this.serialLow = serialLow;
     this.payload = payload;
   }
 
@@ -158,6 +160,10 @@ public class DceRpc_Packet implements Message {
     return operation;
   }
 
+  public short getSerialLow() {
+    return serialLow;
+  }
+
   public PnIoCm_Packet getPayload() {
     return payload;
   }
@@ -204,10 +210,6 @@ public class DceRpc_Packet implements Message {
 
   public short getAuthProto() {
     return AUTHPROTO;
-  }
-
-  public short getSerialLow() {
-    return SERIALLOW;
   }
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
@@ -476,10 +478,10 @@ public class DceRpc_Packet implements Message {
                 ? ByteOrder.BIG_ENDIAN
                 : ByteOrder.LITTLE_ENDIAN)));
 
-    // Const Field (serialLow)
-    writeConstField(
+    // Simple Field (serialLow)
+    writeSimpleField(
         "serialLow",
-        SERIALLOW,
+        serialLow,
         writeUnsignedShort(writeBuffer, 8),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
@@ -597,7 +599,7 @@ public class DceRpc_Packet implements Message {
     // Const Field (authProto)
     lengthInBits += 8;
 
-    // Const Field (serialLow)
+    // Simple field (serialLow)
     lengthInBits += 8;
 
     // Simple field (payload)
@@ -861,10 +863,9 @@ public class DceRpc_Packet implements Message {
                     : ByteOrder.LITTLE_ENDIAN)));
 
     short serialLow =
-        readConstField(
+        readSimpleField(
             "serialLow",
             readUnsignedShort(readBuffer, 8),
-            DceRpc_Packet.SERIALLOW,
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     PnIoCm_Packet payload =
@@ -896,6 +897,7 @@ public class DceRpc_Packet implements Message {
             serverBootTime,
             sequenceNumber,
             operation,
+            serialLow,
             payload);
     _dceRpc_Packet.reservedField0 = reservedField0;
     _dceRpc_Packet.reservedField1 = reservedField1;
@@ -927,6 +929,7 @@ public class DceRpc_Packet implements Message {
         && (getServerBootTime() == that.getServerBootTime())
         && (getSequenceNumber() == that.getSequenceNumber())
         && (getOperation() == that.getOperation())
+        && (getSerialLow() == that.getSerialLow())
         && (getPayload() == that.getPayload())
         && true;
   }
@@ -947,6 +950,7 @@ public class DceRpc_Packet implements Message {
         getServerBootTime(),
         getSequenceNumber(),
         getOperation(),
+        getSerialLow(),
         getPayload());
   }
 

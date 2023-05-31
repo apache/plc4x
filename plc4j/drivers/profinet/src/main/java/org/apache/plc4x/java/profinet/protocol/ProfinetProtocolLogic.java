@@ -130,15 +130,24 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
         boolean discovered = false;
         int count = 0;
         while (!discovered) {
+            List<ProfinetDevice> missingDevices = new ArrayList<>();
             discovered = true;
-            // Check for each device, if there was an incoming response for an LLDP or DCP search request.
+            // Check for each device, if there was an incoming response for an LLDP and DCP search request.
+            // It seems that we need information from both the LLDP and the DCP response, so we need
+            // to check if both have been received.
             for (Map.Entry<String, ProfinetDevice> device : devices.entrySet()) {
                 if (!device.getValue().hasLldpPdu() || !device.getValue().hasDcpPdu()) {
                     discovered = false;
+                    missingDevices.add(device.getValue());
                 }
             }
             // If we've come past this more than 5 times (15 seconds), give up.
             if (count > 5) {
+                for (ProfinetDevice missingDevice : missingDevices) {
+                    if(missingDevice.hasDcpPdu() && !missingDevice.hasLldpPdu()) {
+                        LOGGER.info("- For device {} we only managed to get a DCP discovery response, is the device possibly not connected via an LLDP enables switch?", missingDevice.getDeviceId());
+                    }
+                }
                 throw new PlcConnectionException("One device failed to respond to discovery packet");
             }
             // If at least one device hasn't responded yet, we'll wait for 3 more seconds and then check again.

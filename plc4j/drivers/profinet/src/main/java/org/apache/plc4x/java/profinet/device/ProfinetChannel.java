@@ -138,7 +138,9 @@ public class ProfinetChannel {
                                     }
                                     else if (pdu.getFrameId() == PnDcp_FrameId.RT_CLASS_1) {
                                         for (Map.Entry<String, ProfinetDevice> device : devices.entrySet()) {
-                                            if (Arrays.equals(device.getValue().getDeviceContext().getMacAddress().getAddress(), ethernetFrame.getSource().getAddress())) {
+                                            if (device.getValue().getDeviceContext().getMacAddress() == null) {
+                                                logger.info("Hurz");
+                                            } else if (Arrays.equals(device.getValue().getDeviceContext().getMacAddress().getAddress(), ethernetFrame.getSource().getAddress())) {
                                                 PnDcp_Pdu_RealTimeCyclic cyclicPdu = (PnDcp_Pdu_RealTimeCyclic) pdu;
                                                 device.getValue().handleRealTimeResponse(cyclicPdu);
                                             }
@@ -150,9 +152,30 @@ public class ProfinetChannel {
                                     discoverer.processLldp(pdu);
                                 }
                             } else if (payload instanceof Ethernet_FramePayload_IPv4) {
-                                for (Map.Entry<String, ProfinetDevice> device : devices.entrySet()) {
-                                    if (Arrays.equals(device.getValue().getDeviceContext().getMacAddress().getAddress(), ethernetFrame.getSource().getAddress())) {
-                                        device.getValue().handleResponse((Ethernet_FramePayload_IPv4) payload);
+                                Ethernet_FramePayload_IPv4 payloadIPv4 = (Ethernet_FramePayload_IPv4) payload;
+                                if (payloadIPv4.getPayload().getPacketType() == DceRpc_PacketType.PING) {
+                                    DceRpc_Packet pingRequest = payloadIPv4.getPayload();
+                                    // Intercept ping packets that originated from the PN device itself.
+                                    // TODO: Find out how to react to PING messages.
+                                    // According to https://pubs.opengroup.org/onlinepubs/9629399/chap12.htm the correct response for us to such a ping message would be a "working" response
+                                    Ethernet_Frame pingResponse = new Ethernet_Frame(ethernetFrame.getSource(), ethernetFrame.getDestination(),
+                                        new Ethernet_FramePayload_IPv4(payloadIPv4.getIdentification(), false, false,
+                                            payloadIPv4.getTimeToLive(), payloadIPv4.getDestinationAddress(),
+                                            payloadIPv4.getSourceAddress(), payloadIPv4.getDestinationPort(),
+                                            payloadIPv4.getSourcePort(), new DceRpc_Packet(DceRpc_PacketType.WORKING,
+                                            false, false, false,
+                                            IntegerEncoding.BIG_ENDIAN, CharacterEncoding.ASCII, FloatingPointEncoding.IEEE,
+                                            pingRequest.getObjectUuid(), pingRequest.getInterfaceUuid(), pingRequest.getActivityUuid(),
+                                            0L, 0L, DceRpc_Operation.CONNECT, (short) 0, new PnIoCm_Packet_Working())
+                                            ));
+                                    this.send(pingResponse);
+
+                                    logger.info("Received PING packet: {}", packet);
+                                } else {
+                                    for (Map.Entry<String, ProfinetDevice> device : devices.entrySet()) {
+                                        if (Arrays.equals(device.getValue().getDeviceContext().getMacAddress().getAddress(), ethernetFrame.getSource().getAddress())) {
+                                            device.getValue().handleResponse(payloadIPv4);
+                                        }
                                     }
                                 }
                             }

@@ -596,6 +596,7 @@ public class ProfinetDevice implements PlcSubscriber {
                 0,
                 id,
                 DceRpc_Operation.CONNECT,
+                (short) 0,
                 new PnIoCm_Packet_Req(ProfinetDeviceContext.DEFAULT_ARGS_MAXIMUM, ProfinetDeviceContext.DEFAULT_MAX_ARRAY_COUNT, 0, blocks)
             );
         }
@@ -738,6 +739,7 @@ public class ProfinetDevice implements PlcSubscriber {
                 0,
                 id,
                 DceRpc_Operation.WRITE,
+                (short) 0,
                 new PnIoCm_Packet_Req(16696, 16696, 0,
                     requests)
             );
@@ -798,6 +800,7 @@ public class ProfinetDevice implements PlcSubscriber {
                 0,
                 id,
                 DceRpc_Operation.CONTROL,
+                (short) 0,
                 new PnIoCm_Packet_Req(16696, 16696, 0,
                     Collections.singletonList(
                         new PnIoCm_Control_Request(
@@ -873,6 +876,7 @@ public class ProfinetDevice implements PlcSubscriber {
                 0,
                 id,
                 DceRpc_Operation.CONTROL,
+                (short) 0,
                 new PnIoCm_Packet_Res(
                     (short) 0,
                     (short) 0,
@@ -932,6 +936,7 @@ public class ProfinetDevice implements PlcSubscriber {
                 0,
                 id,
                 DceRpc_Operation.CONTROL,
+                (short) 0,
                 new PnIoCm_Packet_NoCall()
             );
         }

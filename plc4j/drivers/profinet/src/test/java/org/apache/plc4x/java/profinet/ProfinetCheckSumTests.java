@@ -49,6 +49,7 @@ public class ProfinetCheckSumTests {
             0,
             0,
             DceRpc_Operation.CONNECT,
+            (short) 0,
             new PnIoCm_Packet_Req(
                 16696,
                 16696,
