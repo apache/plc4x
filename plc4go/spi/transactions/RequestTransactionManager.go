@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package spi
+package transactions
 
 import (
 	"container/list"
@@ -42,7 +42,7 @@ func init() {
 	sharedExecutorInstance.Start()
 }
 
-type RequestTransactionRunnable func(transaction RequestTransaction)
+type RequestTransactionRunnable func(RequestTransaction)
 
 // RequestTransaction represents a transaction
 type RequestTransaction interface {
@@ -107,7 +107,7 @@ type requestTransaction struct {
 
 type requestTransactionManager struct {
 	runningRequests []*requestTransaction
-	// How many Transactions are allowed to run at the same time?
+	// How many transactions are allowed to run at the same time?
 	numberOfConcurrentRequests int
 	// Assigns each request a Unique Transaction Id, especially important for failure handling
 	transactionId    int32
@@ -139,12 +139,12 @@ func (r *requestTransactionManager) SetNumberOfConcurrentRequests(numberOfConcur
 }
 
 func (r *requestTransactionManager) submitTransaction(transaction *requestTransaction) {
-	// Add this Request with this transaction i the Worklog
-	// Put Transaction into Worklog
+	// Add this Request with the transaction i the work log
+	// Put Transaction into work log
 	r.workLogMutex.Lock()
 	r.workLog.PushFront(transaction)
 	r.workLogMutex.Unlock()
-	// Try to Process the Worklog
+	// Try to Process the work log
 	r.processWorklog()
 }
 

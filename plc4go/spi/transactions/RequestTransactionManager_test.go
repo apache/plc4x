@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package spi
+package transactions
 
 import (
 	"container/list"
@@ -443,7 +443,7 @@ func Test_requestTransaction_AwaitCompletion(t1 *testing.T) {
 							r := &requestTransaction{}
 							go func() {
 								time.Sleep(100 * time.Millisecond)
-								// We fake a ending transaction like that
+								// We fake an ending transaction like that
 								r.transactionId = 1
 							}()
 							return r
