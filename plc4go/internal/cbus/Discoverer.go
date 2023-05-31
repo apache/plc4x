@@ -213,6 +213,12 @@ func (d *Discoverer) createDeviceScanDispatcher(tcpTransportInstance *tcp.Transp
 			transportInstanceLogger.Debug().Err(err).Msg("Error connecting")
 			return
 		}
+		defer func() {
+			// Disconnect codec when done
+			if err := codec.Disconnect(); err != nil {
+				d.log.Warn().Err(err).Msg("Error disconnecting codec")
+			}
+		}()
 
 		// Prepare the discovery packet data
 		cBusOptions := readWriteModel.NewCBusOptions(false, false, false, false, false, false, false, false, true)

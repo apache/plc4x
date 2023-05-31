@@ -21,6 +21,9 @@ package cbus
 
 import (
 	"context"
+	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/apache/plc4x/plc4go/spi/testutils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"testing"
 	"time"
 
@@ -67,16 +70,38 @@ func TestSubscriber_Subscribe(t *testing.T) {
 		name         string
 		fields       fields
 		args         args
+		setup        func(t *testing.T, fields *fields, args *args)
 		wantAsserter func(t *testing.T, results <-chan apiModel.PlcSubscriptionRequestResult) bool
 	}{
 		{
 			name: "just subscribe",
-			fields: fields{
-				connection: NewConnection(nil, Configuration{}, DriverContext{}, nil, nil, nil),
-			},
 			args: args{
 				in0:                 context.Background(),
 				subscriptionRequest: spiModel.NewDefaultPlcSubscriptionRequest(nil, []string{"blub"}, map[string]apiModel.PlcTag{"blub": NewMMIMonitorTag(readWriteModel.NewUnitAddress(1), nil, 1)}, nil, nil, nil),
+			},
+			setup: func(t *testing.T, fields *fields, args *args) {
+				// Setup logger
+				logger := testutils.ProduceTestingLogger(t)
+
+				loggerOption := options.WithCustomLogger(logger)
+
+				// Set the model logger to the logger above
+				testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
+
+				codec := NewMessageCodec(nil, loggerOption)
+				connection := NewConnection(codec, Configuration{}, DriverContext{}, nil, nil, nil, loggerOption)
+				t.Cleanup(func() {
+					timer := time.NewTimer(1 * time.Second)
+					t.Cleanup(func() {
+						utils.CleanupTimer(timer)
+					})
+					select {
+					case <-connection.Close():
+					case <-timer.C:
+						t.Error("timeout")
+					}
+				})
+				fields.connection = connection
 			},
 			wantAsserter: func(t *testing.T, results <-chan apiModel.PlcSubscriptionRequestResult) bool {
 				timer := time.NewTimer(2 * time.Second)
@@ -94,6 +119,9 @@ func TestSubscriber_Subscribe(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			if tt.setup != nil {
+				tt.setup(t, &tt.fields, &tt.args)
+			}
 			m := &Subscriber{
 				connection: tt.fields.connection,
 				consumers:  tt.fields.consumers,

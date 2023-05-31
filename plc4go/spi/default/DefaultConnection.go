@@ -271,10 +271,15 @@ func (d *defaultConnection) BlockingClose() {
 
 func (d *defaultConnection) Close() <-chan plc4go.PlcConnectionCloseResult {
 	d.log.Trace().Msg("close connection")
-	if err := d.GetMessageCodec().Disconnect(); err != nil {
-		d.log.Warn().Err(err).Msg("Error disconnecting message code")
+	if messageCodec := d.GetMessageCodec(); messageCodec != nil {
+		if err := messageCodec.Disconnect(); err != nil {
+			d.log.Warn().Err(err).Msg("Error disconnecting message code")
+		}
 	}
-	err := d.GetTransportInstance().Close()
+	var err error
+	if transportInstance := d.GetTransportInstance(); transportInstance != nil {
+		err = transportInstance.Close()
+	}
 	d.SetConnected(false)
 	ch := make(chan plc4go.PlcConnectionCloseResult, 1)
 	ch <- NewDefaultPlcConnectionCloseResult(d.GetConnection(), err)
