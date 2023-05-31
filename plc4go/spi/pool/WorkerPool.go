@@ -17,14 +17,16 @@
  * under the License.
  */
 
-package utils
+package pool
 
 import (
 	"context"
 	"fmt"
+	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
+	"io"
 	"runtime/debug"
 	"sync"
 	"sync/atomic"
@@ -41,6 +43,8 @@ type worker struct {
 	executor     *executor
 	hasEnded     atomic.Bool
 	lastReceived time.Time
+
+	log zerolog.Logger
 }
 
 func (w *worker) initialize() {
@@ -54,7 +58,7 @@ func (w *worker) initialize() {
 func (w *worker) work() {
 	defer func() {
 		if recovered := recover(); recovered != nil {
-			log.Error().Msgf("Recovering from panic():%v. Stack: %s", recovered, debug.Stack())
+			w.log.Error().Msgf("Recovering from panic():%v. Stack: %s", recovered, debug.Stack())
 		}
 		if !w.shutdown.Load() {
 			// if we are not in shutdown we continue
@@ -72,7 +76,7 @@ func (w *worker) work() {
 	for !w.shutdown.Load() {
 		workerLog.Debug().Msg("Working")
 		select {
-		case _workItem := <-w.executor.queue:
+		case _workItem := <-w.executor.workItems:
 			w.lastReceived = time.Now()
 			workerLog.Debug().Msgf("Got work item %v", _workItem)
 			if _workItem.completionFuture.cancelRequested.Load() || (w.shutdown.Load() && w.interrupted.Load()) {
@@ -103,6 +107,7 @@ func (w *workItem) String() string {
 }
 
 type Executor interface {
+	io.Closer
 	Start()
 	Stop()
 	Submit(ctx context.Context, workItemId int32, runnable Runnable) CompletionFuture
@@ -115,24 +120,32 @@ type executor struct {
 	shutdown           bool
 	stateChange        sync.Mutex
 	worker             []*worker
-	queue              chan workItem
+	workItems          chan workItem
 	traceWorkers       bool
+
+	log zerolog.Logger
 }
 
-func NewFixedSizeExecutor(numberOfWorkers, queueDepth int, options ...ExecutorOption) Executor {
+func NewFixedSizeExecutor(numberOfWorkers, queueDepth int, _options ...options.WithOption) Executor {
 	workers := make([]*worker, numberOfWorkers)
+	customLogger := options.ExtractCustomLogger(_options...)
 	for i := 0; i < numberOfWorkers; i++ {
 		workers[i] = &worker{
-			id: i,
+			id:  i,
+			log: customLogger,
 		}
 	}
 	_executor := &executor{
 		maxNumberOfWorkers: numberOfWorkers,
-		queue:              make(chan workItem, queueDepth),
+		workItems:          make(chan workItem, queueDepth),
 		worker:             workers,
+		log:                customLogger,
 	}
-	for _, option := range options {
-		option(_executor)
+	for _, option := range _options {
+		switch option := option.(type) {
+		case *tracerWorkersOption:
+			_executor.traceWorkers = option.traceWorkers
+		}
 	}
 	for i := 0; i < numberOfWorkers; i++ {
 		workers[i].executor = _executor
@@ -144,14 +157,19 @@ var upScaleInterval = 100 * time.Millisecond
 var downScaleInterval = 5 * time.Second
 var timeToBecomeUnused = 5 * time.Second
 
-func NewDynamicExecutor(maxNumberOfWorkers, queueDepth int, options ...ExecutorOption) Executor {
+func NewDynamicExecutor(maxNumberOfWorkers, queueDepth int, _options ...options.WithOption) Executor {
+	customLogger := options.ExtractCustomLogger(_options...)
 	_executor := &executor{
 		maxNumberOfWorkers: maxNumberOfWorkers,
-		queue:              make(chan workItem, queueDepth),
+		workItems:          make(chan workItem, queueDepth),
 		worker:             make([]*worker, 0),
+		log:                customLogger,
 	}
-	for _, option := range options {
-		option(_executor)
+	for _, option := range _options {
+		switch option := option.(type) {
+		case *tracerWorkersOption:
+			_executor.traceWorkers = option.traceWorkers
+		}
 	}
 	// We spawn one initial worker
 	_executor.worker = append(_executor.worker, &worker{
@@ -159,13 +177,14 @@ func NewDynamicExecutor(maxNumberOfWorkers, queueDepth int, options ...ExecutorO
 		interrupter:  make(chan struct{}, 1),
 		executor:     _executor,
 		lastReceived: time.Now(),
+		log:          customLogger,
 	})
 	mutex := sync.Mutex{}
 	// Worker spawner
 	go func() {
 		defer func() {
 			if err := recover(); err != nil {
-				log.Error().Msgf("panic-ed %v", err)
+				customLogger.Error().Msgf("panic-ed %v", err)
 			}
 		}()
 		workerLog := log.With().Str("Worker type", "spawner").Logger()
@@ -176,7 +195,7 @@ func NewDynamicExecutor(maxNumberOfWorkers, queueDepth int, options ...ExecutorO
 			workerLog.Debug().Msgf("Sleeping for %v", upScaleInterval)
 			time.Sleep(upScaleInterval)
 			mutex.Lock()
-			numberOfItemsInQueue := len(_executor.queue)
+			numberOfItemsInQueue := len(_executor.workItems)
 			numberOfWorkers := len(_executor.worker)
 			workerLog.Debug().Msgf("Checking if %d > %d && %d < %d", numberOfItemsInQueue, numberOfWorkers, numberOfWorkers, maxNumberOfWorkers)
 			if numberOfItemsInQueue > numberOfWorkers && numberOfWorkers < maxNumberOfWorkers {
@@ -185,6 +204,7 @@ func NewDynamicExecutor(maxNumberOfWorkers, queueDepth int, options ...ExecutorO
 					interrupter:  make(chan struct{}, 1),
 					executor:     _executor,
 					lastReceived: time.Now(),
+					log:          customLogger,
 				}
 				_executor.worker = append(_executor.worker, _worker)
 				_worker.initialize()
@@ -200,7 +220,7 @@ func NewDynamicExecutor(maxNumberOfWorkers, queueDepth int, options ...ExecutorO
 	go func() {
 		defer func() {
 			if err := recover(); err != nil {
-				log.Error().Msgf("panic-ed %v", err)
+				_executor.log.Error().Msgf("panic-ed %v", err)
 			}
 		}()
 		workerLog := log.With().Str("Worker type", "killer").Logger()
@@ -231,12 +251,13 @@ func NewDynamicExecutor(maxNumberOfWorkers, queueDepth int, options ...ExecutorO
 	return _executor
 }
 
-type ExecutorOption func(*executor)
+func WithExecutorOptionTracerWorkers(traceWorkers bool) options.WithOption {
+	return &tracerWorkersOption{traceWorkers: traceWorkers}
+}
 
-func WithExecutorOptionTracerWorkers(traceWorkers bool) ExecutorOption {
-	return func(executor *executor) {
-		executor.traceWorkers = traceWorkers
-	}
+type tracerWorkersOption struct {
+	options.Option
+	traceWorkers bool
 }
 
 func (e *executor) Submit(ctx context.Context, workItemId int32, runnable Runnable) CompletionFuture {
@@ -245,20 +266,24 @@ func (e *executor) Submit(ctx context.Context, workItemId int32, runnable Runnab
 		value.Store(errors.New("runnable must not be nil"))
 		return &future{err: value}
 	}
-	log.Trace().Int32("workItemId", workItemId).Msg("Submitting runnable")
+	e.log.Trace().Int32("workItemId", workItemId).Msg("Submitting runnable")
 	completionFuture := &future{}
+	if e.shutdown {
+		completionFuture.Cancel(false, errors.New("executor in shutdown"))
+		return completionFuture
+	}
 	select {
-	case e.queue <- workItem{
+	case e.workItems <- workItem{
 		workItemId:       workItemId,
 		runnable:         runnable,
 		completionFuture: completionFuture,
 	}:
-		log.Trace().Msg("Item added")
+		e.log.Trace().Msg("Item added")
 	case <-ctx.Done():
 		completionFuture.Cancel(false, ctx.Err())
 	}
 
-	log.Trace().Int32("workItemId", workItemId).Msg("runnable queued")
+	e.log.Trace().Int32("workItemId", workItemId).Msg("runnable queued")
 	return completionFuture
 }
 
@@ -284,15 +309,20 @@ func (e *executor) Stop() {
 		return
 	}
 	e.shutdown = true
-	close(e.queue)
 	for i := 0; i < len(e.worker); i++ {
 		worker := e.worker[i]
 		worker.shutdown.Store(true)
 		worker.interrupted.Store(true)
 		close(worker.interrupter)
 	}
+	close(e.workItems)
 	e.running = false
 	e.shutdown = false
+}
+
+func (e *executor) Close() error {
+	e.Stop()
+	return nil
 }
 
 func (e *executor) IsRunning() bool {

@@ -17,11 +17,12 @@
  * under the License.
  */
 
-package utils
+package pool
 
 import (
 	"context"
 	"fmt"
+	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/pkg/errors"
 	"github.com/stretchr/testify/assert"
 	"math/rand"
@@ -68,7 +69,7 @@ func TestExecutor_Start(t *testing.T) {
 				running:      tt.fields.running,
 				shutdown:     tt.fields.shutdown,
 				worker:       tt.fields.worker,
-				queue:        tt.fields.queue,
+				workItems:    tt.fields.queue,
 				traceWorkers: tt.fields.traceWorkers,
 			}
 			e.Start()
@@ -116,7 +117,7 @@ func TestExecutor_Stop(t *testing.T) {
 				running:      tt.fields.running,
 				shutdown:     tt.fields.shutdown,
 				worker:       tt.fields.worker,
-				queue:        tt.fields.queue,
+				workItems:    tt.fields.queue,
 				traceWorkers: tt.fields.traceWorkers,
 			}
 			e.Stop()
@@ -198,7 +199,7 @@ func TestExecutor_Submit(t *testing.T) {
 					running:      executor.running,
 					shutdown:     executor.shutdown,
 					worker:       executor.worker,
-					queue:        executor.queue,
+					queue:        executor.workItems,
 					traceWorkers: true,
 				}
 			}(),
@@ -222,7 +223,7 @@ func TestExecutor_Submit(t *testing.T) {
 				running:      tt.fields.running,
 				shutdown:     tt.fields.shutdown,
 				worker:       tt.fields.worker,
-				queue:        tt.fields.queue,
+				workItems:    tt.fields.queue,
 				traceWorkers: tt.fields.traceWorkers,
 			}
 			e.Start()
@@ -239,7 +240,7 @@ func TestNewFixedSizeExecutor(t *testing.T) {
 	type args struct {
 		numberOfWorkers int
 		queueDepth      int
-		options         []ExecutorOption
+		options         []options.WithOption
 	}
 	tests := []struct {
 		name              string
@@ -251,10 +252,10 @@ func TestNewFixedSizeExecutor(t *testing.T) {
 			args: args{
 				numberOfWorkers: 13,
 				queueDepth:      14,
-				options:         []ExecutorOption{WithExecutorOptionTracerWorkers(true)},
+				options:         []options.WithOption{WithExecutorOptionTracerWorkers(true)},
 			},
 			executorValidator: func(t *testing.T, e *executor) bool {
-				return !e.running && !e.shutdown && len(e.worker) == 13 && cap(e.queue) == 14
+				return !e.running && !e.shutdown && len(e.worker) == 13 && cap(e.workItems) == 14
 			},
 		},
 	}
@@ -271,7 +272,7 @@ func TestNewDynamicExecutor(t *testing.T) {
 	type args struct {
 		numberOfWorkers int
 		queueDepth      int
-		options         []ExecutorOption
+		options         []options.WithOption
 	}
 	tests := []struct {
 		name              string
@@ -284,13 +285,13 @@ func TestNewDynamicExecutor(t *testing.T) {
 			args: args{
 				numberOfWorkers: 13,
 				queueDepth:      14,
-				options:         []ExecutorOption{WithExecutorOptionTracerWorkers(true)},
+				options:         []options.WithOption{WithExecutorOptionTracerWorkers(true)},
 			},
 			executorValidator: func(t *testing.T, e *executor) bool {
 				assert.False(t, e.running)
 				assert.False(t, e.shutdown)
 				assert.Len(t, e.worker, 1)
-				assert.Equal(t, cap(e.queue), 14)
+				assert.Equal(t, cap(e.workItems), 14)
 				return true
 			},
 		},
@@ -299,7 +300,7 @@ func TestNewDynamicExecutor(t *testing.T) {
 			args: args{
 				numberOfWorkers: 2,
 				queueDepth:      2,
-				options:         []ExecutorOption{WithExecutorOptionTracerWorkers(true)},
+				options:         []options.WithOption{WithExecutorOptionTracerWorkers(true)},
 			},
 			manipulator: func(t *testing.T, e *executor) {
 				{
@@ -331,7 +332,7 @@ func TestNewDynamicExecutor(t *testing.T) {
 				t.Log("fill some jobs")
 				go func() {
 					for i := 0; i < 500; i++ {
-						e.queue <- workItem{
+						e.workItems <- workItem{
 							workItemId: int32(i),
 							runnable: func() {
 								max := 100
@@ -372,21 +373,17 @@ func TestWithExecutorOptionTracerWorkers(t *testing.T) {
 	tests := []struct {
 		name              string
 		args              args
-		executorValidator func(*testing.T, *executor) bool
+		executorValidator options.WithOption
 	}{
 		{
-			name: "option should set option",
-			args: args{traceWorkers: true},
-			executorValidator: func(t *testing.T, e *executor) bool {
-				return e.traceWorkers == true
-			},
+			name:              "option should set option",
+			args:              args{traceWorkers: true},
+			executorValidator: &tracerWorkersOption{traceWorkers: true},
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			var _executor executor
-			WithExecutorOptionTracerWorkers(tt.args.traceWorkers)(&_executor)
-			assert.True(t, tt.executorValidator(t, &_executor))
+			assert.Equal(t, tt.executorValidator, WithExecutorOptionTracerWorkers(tt.args.traceWorkers))
 		})
 	}
 }
@@ -440,11 +437,11 @@ func TestWorker_work(t *testing.T) {
 				id: 0,
 				executor: func() *executor {
 					e := &executor{
-						queue:        make(chan workItem),
+						workItems:    make(chan workItem),
 						traceWorkers: true,
 					}
 					go func() {
-						e.queue <- workItem{
+						e.workItems <- workItem{
 							workItemId: 0,
 							runnable: func() {
 								panic("Oh no what should I do???")
@@ -474,11 +471,11 @@ func TestWorker_work(t *testing.T) {
 				id: 1,
 				executor: func() *executor {
 					e := &executor{
-						queue:        make(chan workItem),
+						workItems:    make(chan workItem),
 						traceWorkers: true,
 					}
 					go func() {
-						e.queue <- workItem{
+						e.workItems <- workItem{
 							workItemId: 0,
 							runnable: func() {
 								time.Sleep(time.Millisecond * 70)
@@ -507,7 +504,7 @@ func TestWorker_work(t *testing.T) {
 				id: 1,
 				executor: func() *executor {
 					e := &executor{
-						queue:        make(chan workItem),
+						workItems:    make(chan workItem),
 						traceWorkers: true,
 					}
 					return e
@@ -532,13 +529,13 @@ func TestWorker_work(t *testing.T) {
 				id: 1,
 				executor: func() *executor {
 					e := &executor{
-						queue:        make(chan workItem),
+						workItems:    make(chan workItem),
 						traceWorkers: true,
 					}
 					go func() {
 						completionFuture := &future{}
 						completionFuture.cancelRequested.Store(true)
-						e.queue <- workItem{
+						e.workItems <- workItem{
 							workItemId: 0,
 							runnable: func() {
 								time.Sleep(time.Millisecond * 70)
