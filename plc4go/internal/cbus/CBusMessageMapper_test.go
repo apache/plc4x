@@ -24,7 +24,10 @@ import (
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/cbus/readwrite/model"
-	"github.com/apache/plc4x/plc4go/spi"
+	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/apache/plc4x/plc4go/spi/pool"
+	"github.com/apache/plc4x/plc4go/spi/testutils"
+	"github.com/apache/plc4x/plc4go/spi/transactions"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	spiValues "github.com/apache/plc4x/plc4go/spi/values"
 	"github.com/stretchr/testify/assert"
@@ -1436,7 +1439,7 @@ func Test_producePointToMultiPointCommandNormal(t *testing.T) {
 
 func TestMapEncodedReply(t *testing.T) {
 	type args struct {
-		transaction     spi.RequestTransaction
+		transaction     transactions.RequestTransaction
 		encodedReply    readWriteModel.EncodedReply
 		tagName         string
 		addResponseCode func(t *testing.T) func(name string, responseCode apiModel.PlcResponseCode)
@@ -1445,19 +1448,12 @@ func TestMapEncodedReply(t *testing.T) {
 	tests := []struct {
 		name    string
 		args    args
+		setup   func(t *testing.T, args *args)
 		wantErr bool
 	}{
 		{
 			name: "empty input",
 			args: args{
-				transaction: func() spi.RequestTransaction {
-					transactionManager := spi.NewRequestTransactionManager(1)
-					transaction := transactionManager.StartTransaction()
-					transaction.Submit(func(transaction spi.RequestTransaction) {
-						// NO-OP
-					})
-					return transaction
-				}(),
 				encodedReply: nil,
 				tagName:      "",
 				addResponseCode: func(t *testing.T) func(name string, responseCode apiModel.PlcResponseCode) {
@@ -1471,18 +1467,27 @@ func TestMapEncodedReply(t *testing.T) {
 					}
 				},
 			},
+			setup: func(t *testing.T, args *args) {
+				transactionManager := transactions.NewRequestTransactionManager(
+					1,
+					options.WithCustomLogger(testutils.ProduceTestingLogger(t)),
+					transactions.WithCustomExecutor(pool.NewFixedSizeExecutor(10, 50, options.WithCustomLogger(testutils.ProduceTestingLogger(t)))),
+				)
+				t.Cleanup(func() {
+					t.Log("Closing transaction manager now")
+					assert.NoError(t, transactionManager.Close())
+				})
+				transaction := transactionManager.StartTransaction()
+				t.Logf("Submitting No-Op to transaction %v", transaction)
+				transaction.Submit(func(transaction transactions.RequestTransaction) {
+					// NO-OP
+				})
+				args.transaction = transaction
+			},
 		},
 		{
 			name: "CALDataStatus",
 			args: args{
-				transaction: func() spi.RequestTransaction {
-					transactionManager := spi.NewRequestTransactionManager(1)
-					transaction := transactionManager.StartTransaction()
-					transaction.Submit(func(transaction spi.RequestTransaction) {
-						// NO-OP
-					})
-					return transaction
-				}(),
 				encodedReply: func() readWriteModel.EncodedReplyCALReply {
 					statusBytes := []readWriteModel.StatusByte{
 						readWriteModel.NewStatusByte(readWriteModel.GAVState_ON, readWriteModel.GAVState_ERROR, readWriteModel.GAVState_DOES_NOT_EXIST, readWriteModel.GAVState_OFF),
@@ -1533,18 +1538,31 @@ func TestMapEncodedReply(t *testing.T) {
 					}
 				},
 			},
+			setup: func(t *testing.T, args *args) {
+				transactionManager := transactions.NewRequestTransactionManager(
+					1,
+					options.WithCustomLogger(testutils.ProduceTestingLogger(t)),
+					transactions.WithCustomExecutor(
+						pool.NewFixedSizeExecutor(10, 50, options.WithCustomLogger(testutils.ProduceTestingLogger(t)), pool.WithExecutorOptionTracerWorkers(true)),
+					),
+				)
+				t.Cleanup(func() {
+					t.Log("Closing transaction manager now")
+					assert.NoError(t, transactionManager.Close())
+				})
+				transaction := transactionManager.StartTransaction()
+				t.Logf("Submitting No-Op to transaction %v", transaction)
+				transaction.Submit(func(transaction transactions.RequestTransaction) {
+					// NO-OP
+					t.Log("No op-ing")
+				})
+				t.Logf("Submitted to transaction %v", transaction)
+				args.transaction = transaction
+			},
 		},
 		{
 			name: "CALDataStatusExtendedExactly (binary)",
 			args: args{
-				transaction: func() spi.RequestTransaction {
-					transactionManager := spi.NewRequestTransactionManager(1)
-					transaction := transactionManager.StartTransaction()
-					transaction.Submit(func(transaction spi.RequestTransaction) {
-						// NO-OP
-					})
-					return transaction
-				}(),
 				encodedReply: func() readWriteModel.EncodedReplyCALReply {
 					statusBytes := []readWriteModel.StatusByte{
 						readWriteModel.NewStatusByte(readWriteModel.GAVState_ON, readWriteModel.GAVState_ERROR, readWriteModel.GAVState_DOES_NOT_EXIST, readWriteModel.GAVState_OFF),
@@ -1595,18 +1613,28 @@ func TestMapEncodedReply(t *testing.T) {
 					}
 				},
 			},
+			setup: func(t *testing.T, args *args) {
+				transactionManager := transactions.NewRequestTransactionManager(
+					1,
+					options.WithCustomLogger(testutils.ProduceTestingLogger(t)),
+					transactions.WithCustomExecutor(
+						pool.NewFixedSizeExecutor(10, 50, options.WithCustomLogger(testutils.ProduceTestingLogger(t)), pool.WithExecutorOptionTracerWorkers(true)),
+					),
+				)
+				t.Cleanup(func() {
+					t.Log("Closing transaction manager now")
+					assert.NoError(t, transactionManager.Close())
+				})
+				transaction := transactionManager.StartTransaction()
+				transaction.Submit(func(transaction transactions.RequestTransaction) {
+					// NO-OP
+				})
+				args.transaction = transaction
+			},
 		},
 		{
 			name: "CALDataStatusExtendedExactly (level)",
 			args: args{
-				transaction: func() spi.RequestTransaction {
-					transactionManager := spi.NewRequestTransactionManager(1)
-					transaction := transactionManager.StartTransaction()
-					transaction.Submit(func(transaction spi.RequestTransaction) {
-						// NO-OP
-					})
-					return transaction
-				}(),
 				encodedReply: func() readWriteModel.EncodedReplyCALReply {
 					levelInformation := []readWriteModel.LevelInformation{
 						readWriteModel.NewLevelInformationNormal(readWriteModel.LevelInformationNibblePair_Value_A, readWriteModel.LevelInformationNibblePair_Value_F, 13),
@@ -1649,18 +1677,28 @@ func TestMapEncodedReply(t *testing.T) {
 					}
 				},
 			},
+			setup: func(t *testing.T, args *args) {
+				transactionManager := transactions.NewRequestTransactionManager(
+					1,
+					options.WithCustomLogger(testutils.ProduceTestingLogger(t)),
+					transactions.WithCustomExecutor(
+						pool.NewFixedSizeExecutor(10, 50, options.WithCustomLogger(testutils.ProduceTestingLogger(t)), pool.WithExecutorOptionTracerWorkers(true)),
+					),
+				)
+				t.Cleanup(func() {
+					t.Log("Closing transaction manager now")
+					assert.NoError(t, transactionManager.Close())
+				})
+				transaction := transactionManager.StartTransaction()
+				transaction.Submit(func(transaction transactions.RequestTransaction) {
+					// NO-OP
+				})
+				args.transaction = transaction
+			},
 		},
 		{
 			name: "CALDataIdentifyReplyExactly (sense levels)",
 			args: args{
-				transaction: func() spi.RequestTransaction {
-					transactionManager := spi.NewRequestTransactionManager(1)
-					transaction := transactionManager.StartTransaction()
-					transaction.Submit(func(transaction spi.RequestTransaction) {
-						// NO-OP
-					})
-					return transaction
-				}(),
 				encodedReply: func() readWriteModel.EncodedReplyCALReply {
 					command := readWriteModel.NewIdentifyReplyCommandCurrentSenseLevels([]byte{1, 2, 3, 4}, 4)
 					calDataIdentify := readWriteModel.NewCALDataIdentifyReply(readWriteModel.Attribute_CurrentSenseLevels, command, readWriteModel.CALCommandTypeContainer_CALCommandIdentify, nil, nil)
@@ -1693,18 +1731,28 @@ func TestMapEncodedReply(t *testing.T) {
 					}
 				},
 			},
+			setup: func(t *testing.T, args *args) {
+				transactionManager := transactions.NewRequestTransactionManager(
+					1,
+					options.WithCustomLogger(testutils.ProduceTestingLogger(t)),
+					transactions.WithCustomExecutor(
+						pool.NewFixedSizeExecutor(10, 50, options.WithCustomLogger(testutils.ProduceTestingLogger(t)), pool.WithExecutorOptionTracerWorkers(true)),
+					),
+				)
+				t.Cleanup(func() {
+					t.Log("Closing transaction manager now")
+					assert.NoError(t, transactionManager.Close())
+				})
+				transaction := transactionManager.StartTransaction()
+				transaction.Submit(func(transaction transactions.RequestTransaction) {
+					// NO-OP
+				})
+				args.transaction = transaction
+			},
 		},
 		{
 			name: "CALDataIdentifyReplyExactly (delays)",
 			args: args{
-				transaction: func() spi.RequestTransaction {
-					transactionManager := spi.NewRequestTransactionManager(1)
-					transaction := transactionManager.StartTransaction()
-					transaction.Submit(func(transaction spi.RequestTransaction) {
-						// NO-OP
-					})
-					return transaction
-				}(),
 				encodedReply: func() readWriteModel.EncodedReplyCALReply {
 					command := readWriteModel.NewIdentifyReplyCommandDelays([]byte{1, 2, 3, 4}, 5, 5)
 					calDataIdentify := readWriteModel.NewCALDataIdentifyReply(readWriteModel.Attribute_Delays, command, readWriteModel.CALCommandTypeContainer_CALCommandIdentify, nil, nil)
@@ -1740,18 +1788,28 @@ func TestMapEncodedReply(t *testing.T) {
 					}
 				},
 			},
+			setup: func(t *testing.T, args *args) {
+				transactionManager := transactions.NewRequestTransactionManager(
+					1,
+					options.WithCustomLogger(testutils.ProduceTestingLogger(t)),
+					transactions.WithCustomExecutor(
+						pool.NewFixedSizeExecutor(10, 50, options.WithCustomLogger(testutils.ProduceTestingLogger(t)), pool.WithExecutorOptionTracerWorkers(true)),
+					),
+				)
+				t.Cleanup(func() {
+					t.Log("Closing transaction manager now")
+					assert.NoError(t, transactionManager.Close())
+				})
+				transaction := transactionManager.StartTransaction()
+				transaction.Submit(func(transaction transactions.RequestTransaction) {
+					// NO-OP
+				})
+				args.transaction = transaction
+			},
 		},
 		{
 			name: "CALDataIdentifyReplyExactly (dsi status)",
 			args: args{
-				transaction: func() spi.RequestTransaction {
-					transactionManager := spi.NewRequestTransactionManager(1)
-					transaction := transactionManager.StartTransaction()
-					transaction.Submit(func(transaction spi.RequestTransaction) {
-						// NO-OP
-					})
-					return transaction
-				}(),
 				encodedReply: func() readWriteModel.EncodedReplyCALReply {
 					command := readWriteModel.NewIdentifyReplyCommandDSIStatus(
 						readWriteModel.ChannelStatus_OK,
@@ -1807,18 +1865,28 @@ func TestMapEncodedReply(t *testing.T) {
 					}
 				},
 			},
+			setup: func(t *testing.T, args *args) {
+				transactionManager := transactions.NewRequestTransactionManager(
+					1,
+					options.WithCustomLogger(testutils.ProduceTestingLogger(t)),
+					transactions.WithCustomExecutor(
+						pool.NewFixedSizeExecutor(10, 50, options.WithCustomLogger(testutils.ProduceTestingLogger(t)), pool.WithExecutorOptionTracerWorkers(true)),
+					),
+				)
+				t.Cleanup(func() {
+					t.Log("Closing transaction manager now")
+					assert.NoError(t, transactionManager.Close())
+				})
+				transaction := transactionManager.StartTransaction()
+				transaction.Submit(func(transaction transactions.RequestTransaction) {
+					// NO-OP
+				})
+				args.transaction = transaction
+			},
 		},
 		{
 			name: "CALDataIdentifyReplyExactly (extended diagnostic summary)",
 			args: args{
-				transaction: func() spi.RequestTransaction {
-					transactionManager := spi.NewRequestTransactionManager(1)
-					transaction := transactionManager.StartTransaction()
-					transaction.Submit(func(transaction spi.RequestTransaction) {
-						// NO-OP
-					})
-					return transaction
-				}(),
 				encodedReply: func() readWriteModel.EncodedReplyCALReply {
 					command := readWriteModel.NewIdentifyReplyCommandExtendedDiagnosticSummary(
 						readWriteModel.ApplicationIdContainer_LIGHTING_3B,
@@ -1892,18 +1960,28 @@ func TestMapEncodedReply(t *testing.T) {
 					}
 				},
 			},
+			setup: func(t *testing.T, args *args) {
+				transactionManager := transactions.NewRequestTransactionManager(
+					1,
+					options.WithCustomLogger(testutils.ProduceTestingLogger(t)),
+					transactions.WithCustomExecutor(
+						pool.NewFixedSizeExecutor(10, 50, options.WithCustomLogger(testutils.ProduceTestingLogger(t)), pool.WithExecutorOptionTracerWorkers(true)),
+					),
+				)
+				t.Cleanup(func() {
+					t.Log("Closing transaction manager now")
+					assert.NoError(t, transactionManager.Close())
+				})
+				transaction := transactionManager.StartTransaction()
+				transaction.Submit(func(transaction transactions.RequestTransaction) {
+					// NO-OP
+				})
+				args.transaction = transaction
+			},
 		},
 		{
 			name: "CALDataIdentifyReplyExactly (summary)",
 			args: args{
-				transaction: func() spi.RequestTransaction {
-					transactionManager := spi.NewRequestTransactionManager(1)
-					transaction := transactionManager.StartTransaction()
-					transaction.Submit(func(transaction spi.RequestTransaction) {
-						// NO-OP
-					})
-					return transaction
-				}(),
 				encodedReply: func() readWriteModel.EncodedReplyCALReply {
 					command := readWriteModel.NewIdentifyReplyCommandSummary("pineapple", 1, "13", 3)
 					calDataIdentify := readWriteModel.NewCALDataIdentifyReply(readWriteModel.Attribute_DSIStatus, command, readWriteModel.CALCommandTypeContainer_CALCommandIdentify, nil, nil)
@@ -1940,18 +2018,28 @@ func TestMapEncodedReply(t *testing.T) {
 					}
 				},
 			},
+			setup: func(t *testing.T, args *args) {
+				transactionManager := transactions.NewRequestTransactionManager(
+					1,
+					options.WithCustomLogger(testutils.ProduceTestingLogger(t)),
+					transactions.WithCustomExecutor(
+						pool.NewFixedSizeExecutor(10, 50, options.WithCustomLogger(testutils.ProduceTestingLogger(t)), pool.WithExecutorOptionTracerWorkers(true)),
+					),
+				)
+				t.Cleanup(func() {
+					t.Log("Closing transaction manager now")
+					assert.NoError(t, transactionManager.Close())
+				})
+				transaction := transactionManager.StartTransaction()
+				transaction.Submit(func(transaction transactions.RequestTransaction) {
+					// NO-OP
+				})
+				args.transaction = transaction
+			},
 		},
 		{
 			name: "CALDataIdentifyReplyExactly (firmware version)",
 			args: args{
-				transaction: func() spi.RequestTransaction {
-					transactionManager := spi.NewRequestTransactionManager(1)
-					transaction := transactionManager.StartTransaction()
-					transaction.Submit(func(transaction spi.RequestTransaction) {
-						// NO-OP
-					})
-					return transaction
-				}(),
 				encodedReply: func() readWriteModel.EncodedReplyCALReply {
 					command := readWriteModel.NewIdentifyReplyCommandFirmwareVersion("13", 1)
 					calDataIdentify := readWriteModel.NewCALDataIdentifyReply(readWriteModel.Attribute_DSIStatus, command, readWriteModel.CALCommandTypeContainer_CALCommandIdentify, nil, nil)
@@ -1984,18 +2072,28 @@ func TestMapEncodedReply(t *testing.T) {
 					}
 				},
 			},
+			setup: func(t *testing.T, args *args) {
+				transactionManager := transactions.NewRequestTransactionManager(
+					1,
+					options.WithCustomLogger(testutils.ProduceTestingLogger(t)),
+					transactions.WithCustomExecutor(
+						pool.NewFixedSizeExecutor(10, 50, options.WithCustomLogger(testutils.ProduceTestingLogger(t)), pool.WithExecutorOptionTracerWorkers(true)),
+					),
+				)
+				t.Cleanup(func() {
+					t.Log("Closing transaction manager now")
+					assert.NoError(t, transactionManager.Close())
+				})
+				transaction := transactionManager.StartTransaction()
+				transaction.Submit(func(transaction transactions.RequestTransaction) {
+					// NO-OP
+				})
+				args.transaction = transaction
+			},
 		},
 		{
 			name: "CALDataIdentifyReplyExactly (GAV physical addresses)",
 			args: args{
-				transaction: func() spi.RequestTransaction {
-					transactionManager := spi.NewRequestTransactionManager(1)
-					transaction := transactionManager.StartTransaction()
-					transaction.Submit(func(transaction spi.RequestTransaction) {
-						// NO-OP
-					})
-					return transaction
-				}(),
 				encodedReply: func() readWriteModel.EncodedReplyCALReply {
 					command := readWriteModel.NewIdentifyReplyCommandGAVPhysicalAddresses([]byte{1, 2, 3, 4}, 4)
 					calDataIdentify := readWriteModel.NewCALDataIdentifyReply(readWriteModel.Attribute_DSIStatus, command, readWriteModel.CALCommandTypeContainer_CALCommandIdentify, nil, nil)
@@ -2028,18 +2126,28 @@ func TestMapEncodedReply(t *testing.T) {
 					}
 				},
 			},
+			setup: func(t *testing.T, args *args) {
+				transactionManager := transactions.NewRequestTransactionManager(
+					1,
+					options.WithCustomLogger(testutils.ProduceTestingLogger(t)),
+					transactions.WithCustomExecutor(
+						pool.NewFixedSizeExecutor(10, 50, options.WithCustomLogger(testutils.ProduceTestingLogger(t)), pool.WithExecutorOptionTracerWorkers(true)),
+					),
+				)
+				t.Cleanup(func() {
+					t.Log("Closing transaction manager now")
+					assert.NoError(t, transactionManager.Close())
+				})
+				transaction := transactionManager.StartTransaction()
+				transaction.Submit(func(transaction transactions.RequestTransaction) {
+					// NO-OP
+				})
+				args.transaction = transaction
+			},
 		},
 		{
 			name: "CALDataIdentifyReplyExactly (GAV values current)",
 			args: args{
-				transaction: func() spi.RequestTransaction {
-					transactionManager := spi.NewRequestTransactionManager(1)
-					transaction := transactionManager.StartTransaction()
-					transaction.Submit(func(transaction spi.RequestTransaction) {
-						// NO-OP
-					})
-					return transaction
-				}(),
 				encodedReply: func() readWriteModel.EncodedReplyCALReply {
 					command := readWriteModel.NewIdentifyReplyCommandGAVValuesCurrent([]byte{1, 2, 3, 4}, 4)
 					calDataIdentify := readWriteModel.NewCALDataIdentifyReply(readWriteModel.Attribute_DSIStatus, command, readWriteModel.CALCommandTypeContainer_CALCommandIdentify, nil, nil)
@@ -2072,18 +2180,28 @@ func TestMapEncodedReply(t *testing.T) {
 					}
 				},
 			},
+			setup: func(t *testing.T, args *args) {
+				transactionManager := transactions.NewRequestTransactionManager(
+					1,
+					options.WithCustomLogger(testutils.ProduceTestingLogger(t)),
+					transactions.WithCustomExecutor(
+						pool.NewFixedSizeExecutor(10, 50, options.WithCustomLogger(testutils.ProduceTestingLogger(t)), pool.WithExecutorOptionTracerWorkers(true)),
+					),
+				)
+				t.Cleanup(func() {
+					t.Log("Closing transaction manager now")
+					assert.NoError(t, transactionManager.Close())
+				})
+				transaction := transactionManager.StartTransaction()
+				transaction.Submit(func(transaction transactions.RequestTransaction) {
+					// NO-OP
+				})
+				args.transaction = transaction
+			},
 		},
 		{
 			name: "CALDataIdentifyReplyExactly (GAV values stored)",
 			args: args{
-				transaction: func() spi.RequestTransaction {
-					transactionManager := spi.NewRequestTransactionManager(1)
-					transaction := transactionManager.StartTransaction()
-					transaction.Submit(func(transaction spi.RequestTransaction) {
-						// NO-OP
-					})
-					return transaction
-				}(),
 				encodedReply: func() readWriteModel.EncodedReplyCALReply {
 					command := readWriteModel.NewIdentifyReplyCommandGAVValuesStored([]byte{1, 2, 3, 4}, 4)
 					calDataIdentify := readWriteModel.NewCALDataIdentifyReply(readWriteModel.Attribute_DSIStatus, command, readWriteModel.CALCommandTypeContainer_CALCommandIdentify, nil, nil)
@@ -2116,18 +2234,28 @@ func TestMapEncodedReply(t *testing.T) {
 					}
 				},
 			},
+			setup: func(t *testing.T, args *args) {
+				transactionManager := transactions.NewRequestTransactionManager(
+					1,
+					options.WithCustomLogger(testutils.ProduceTestingLogger(t)),
+					transactions.WithCustomExecutor(
+						pool.NewFixedSizeExecutor(10, 50, options.WithCustomLogger(testutils.ProduceTestingLogger(t)), pool.WithExecutorOptionTracerWorkers(true)),
+					),
+				)
+				t.Cleanup(func() {
+					t.Log("Closing transaction manager now")
+					assert.NoError(t, transactionManager.Close())
+				})
+				transaction := transactionManager.StartTransaction()
+				transaction.Submit(func(transaction transactions.RequestTransaction) {
+					// NO-OP
+				})
+				args.transaction = transaction
+			},
 		},
 		{
 			name: "CALDataIdentifyReplyExactly (logical assignment)",
 			args: args{
-				transaction: func() spi.RequestTransaction {
-					transactionManager := spi.NewRequestTransactionManager(1)
-					transaction := transactionManager.StartTransaction()
-					transaction.Submit(func(transaction spi.RequestTransaction) {
-						// NO-OP
-					})
-					return transaction
-				}(),
 				encodedReply: func() readWriteModel.EncodedReplyCALReply {
 					command := readWriteModel.NewIdentifyReplyCommandLogicalAssignment([]readWriteModel.LogicAssignment{
 						readWriteModel.NewLogicAssignment(true, true, true, true, true, true),
@@ -2180,18 +2308,28 @@ func TestMapEncodedReply(t *testing.T) {
 					}
 				},
 			},
+			setup: func(t *testing.T, args *args) {
+				transactionManager := transactions.NewRequestTransactionManager(
+					1,
+					options.WithCustomLogger(testutils.ProduceTestingLogger(t)),
+					transactions.WithCustomExecutor(
+						pool.NewFixedSizeExecutor(10, 50, options.WithCustomLogger(testutils.ProduceTestingLogger(t)), pool.WithExecutorOptionTracerWorkers(true)),
+					),
+				)
+				t.Cleanup(func() {
+					t.Log("Closing transaction manager now")
+					assert.NoError(t, transactionManager.Close())
+				})
+				transaction := transactionManager.StartTransaction()
+				transaction.Submit(func(transaction transactions.RequestTransaction) {
+					// NO-OP
+				})
+				args.transaction = transaction
+			},
 		},
 		{
 			name: "CALDataIdentifyReplyExactly (manufacturer)",
 			args: args{
-				transaction: func() spi.RequestTransaction {
-					transactionManager := spi.NewRequestTransactionManager(1)
-					transaction := transactionManager.StartTransaction()
-					transaction.Submit(func(transaction spi.RequestTransaction) {
-						// NO-OP
-					})
-					return transaction
-				}(),
 				encodedReply: func() readWriteModel.EncodedReplyCALReply {
 					command := readWriteModel.NewIdentifyReplyCommandManufacturer("Apache", 13)
 					calDataIdentify := readWriteModel.NewCALDataIdentifyReply(readWriteModel.Attribute_DSIStatus, command, readWriteModel.CALCommandTypeContainer_CALCommandIdentify, nil, nil)
@@ -2224,18 +2362,28 @@ func TestMapEncodedReply(t *testing.T) {
 					}
 				},
 			},
+			setup: func(t *testing.T, args *args) {
+				transactionManager := transactions.NewRequestTransactionManager(
+					1,
+					options.WithCustomLogger(testutils.ProduceTestingLogger(t)),
+					transactions.WithCustomExecutor(
+						pool.NewFixedSizeExecutor(10, 50, options.WithCustomLogger(testutils.ProduceTestingLogger(t)), pool.WithExecutorOptionTracerWorkers(true)),
+					),
+				)
+				t.Cleanup(func() {
+					t.Log("Closing transaction manager now")
+					assert.NoError(t, transactionManager.Close())
+				})
+				transaction := transactionManager.StartTransaction()
+				transaction.Submit(func(transaction transactions.RequestTransaction) {
+					// NO-OP
+				})
+				args.transaction = transaction
+			},
 		},
 		{
 			name: "CALDataIdentifyReplyExactly (maximum levels)",
 			args: args{
-				transaction: func() spi.RequestTransaction {
-					transactionManager := spi.NewRequestTransactionManager(1)
-					transaction := transactionManager.StartTransaction()
-					transaction.Submit(func(transaction spi.RequestTransaction) {
-						// NO-OP
-					})
-					return transaction
-				}(),
 				encodedReply: func() readWriteModel.EncodedReplyCALReply {
 					command := readWriteModel.NewIdentifyReplyCommandMaximumLevels([]byte{1, 2, 3, 4}, 1)
 					calDataIdentify := readWriteModel.NewCALDataIdentifyReply(readWriteModel.Attribute_DSIStatus, command, readWriteModel.CALCommandTypeContainer_CALCommandIdentify, nil, nil)
@@ -2268,18 +2416,28 @@ func TestMapEncodedReply(t *testing.T) {
 					}
 				},
 			},
+			setup: func(t *testing.T, args *args) {
+				transactionManager := transactions.NewRequestTransactionManager(
+					1,
+					options.WithCustomLogger(testutils.ProduceTestingLogger(t)),
+					transactions.WithCustomExecutor(
+						pool.NewFixedSizeExecutor(10, 50, options.WithCustomLogger(testutils.ProduceTestingLogger(t)), pool.WithExecutorOptionTracerWorkers(true)),
+					),
+				)
+				t.Cleanup(func() {
+					t.Log("Closing transaction manager now")
+					assert.NoError(t, transactionManager.Close())
+				})
+				transaction := transactionManager.StartTransaction()
+				transaction.Submit(func(transaction transactions.RequestTransaction) {
+					// NO-OP
+				})
+				args.transaction = transaction
+			},
 		},
 		{
 			name: "CALDataIdentifyReplyExactly (minimum levels)",
 			args: args{
-				transaction: func() spi.RequestTransaction {
-					transactionManager := spi.NewRequestTransactionManager(1)
-					transaction := transactionManager.StartTransaction()
-					transaction.Submit(func(transaction spi.RequestTransaction) {
-						// NO-OP
-					})
-					return transaction
-				}(),
 				encodedReply: func() readWriteModel.EncodedReplyCALReply {
 					command := readWriteModel.NewIdentifyReplyCommandMinimumLevels([]byte{1, 2, 3, 4}, 1)
 					calDataIdentify := readWriteModel.NewCALDataIdentifyReply(readWriteModel.Attribute_DSIStatus, command, readWriteModel.CALCommandTypeContainer_CALCommandIdentify, nil, nil)
@@ -2312,18 +2470,28 @@ func TestMapEncodedReply(t *testing.T) {
 					}
 				},
 			},
+			setup: func(t *testing.T, args *args) {
+				transactionManager := transactions.NewRequestTransactionManager(
+					1,
+					options.WithCustomLogger(testutils.ProduceTestingLogger(t)),
+					transactions.WithCustomExecutor(
+						pool.NewFixedSizeExecutor(10, 50, options.WithCustomLogger(testutils.ProduceTestingLogger(t)), pool.WithExecutorOptionTracerWorkers(true)),
+					),
+				)
+				t.Cleanup(func() {
+					t.Log("Closing transaction manager now")
+					assert.NoError(t, transactionManager.Close())
+				})
+				transaction := transactionManager.StartTransaction()
+				transaction.Submit(func(transaction transactions.RequestTransaction) {
+					// NO-OP
+				})
+				args.transaction = transaction
+			},
 		},
 		{
 			name: "CALDataIdentifyReplyExactly (network terminal levels)",
 			args: args{
-				transaction: func() spi.RequestTransaction {
-					transactionManager := spi.NewRequestTransactionManager(1)
-					transaction := transactionManager.StartTransaction()
-					transaction.Submit(func(transaction spi.RequestTransaction) {
-						// NO-OP
-					})
-					return transaction
-				}(),
 				encodedReply: func() readWriteModel.EncodedReplyCALReply {
 					command := readWriteModel.NewIdentifyReplyCommandNetworkTerminalLevels([]byte{1, 2, 3, 4}, 1)
 					calDataIdentify := readWriteModel.NewCALDataIdentifyReply(readWriteModel.Attribute_DSIStatus, command, readWriteModel.CALCommandTypeContainer_CALCommandIdentify, nil, nil)
@@ -2356,18 +2524,28 @@ func TestMapEncodedReply(t *testing.T) {
 					}
 				},
 			},
+			setup: func(t *testing.T, args *args) {
+				transactionManager := transactions.NewRequestTransactionManager(
+					1,
+					options.WithCustomLogger(testutils.ProduceTestingLogger(t)),
+					transactions.WithCustomExecutor(
+						pool.NewFixedSizeExecutor(10, 50, options.WithCustomLogger(testutils.ProduceTestingLogger(t)), pool.WithExecutorOptionTracerWorkers(true)),
+					),
+				)
+				t.Cleanup(func() {
+					t.Log("Closing transaction manager now")
+					assert.NoError(t, transactionManager.Close())
+				})
+				transaction := transactionManager.StartTransaction()
+				transaction.Submit(func(transaction transactions.RequestTransaction) {
+					// NO-OP
+				})
+				args.transaction = transaction
+			},
 		},
 		{
 			name: "CALDataIdentifyReplyExactly (network voltage)",
 			args: args{
-				transaction: func() spi.RequestTransaction {
-					transactionManager := spi.NewRequestTransactionManager(1)
-					transaction := transactionManager.StartTransaction()
-					transaction.Submit(func(transaction spi.RequestTransaction) {
-						// NO-OP
-					})
-					return transaction
-				}(),
 				encodedReply: func() readWriteModel.EncodedReplyCALReply {
 					command := readWriteModel.NewIdentifyReplyCommandNetworkVoltage("13.3", "3", 3)
 					calDataIdentify := readWriteModel.NewCALDataIdentifyReply(readWriteModel.Attribute_DSIStatus, command, readWriteModel.CALCommandTypeContainer_CALCommandIdentify, nil, nil)
@@ -2400,18 +2578,28 @@ func TestMapEncodedReply(t *testing.T) {
 					}
 				},
 			},
+			setup: func(t *testing.T, args *args) {
+				transactionManager := transactions.NewRequestTransactionManager(
+					1,
+					options.WithCustomLogger(testutils.ProduceTestingLogger(t)),
+					transactions.WithCustomExecutor(
+						pool.NewFixedSizeExecutor(10, 50, options.WithCustomLogger(testutils.ProduceTestingLogger(t)), pool.WithExecutorOptionTracerWorkers(true)),
+					),
+				)
+				t.Cleanup(func() {
+					t.Log("Closing transaction manager now")
+					assert.NoError(t, transactionManager.Close())
+				})
+				transaction := transactionManager.StartTransaction()
+				transaction.Submit(func(transaction transactions.RequestTransaction) {
+					// NO-OP
+				})
+				args.transaction = transaction
+			},
 		},
 		{
 			name: "CALDataIdentifyReplyExactly (output unit summary)",
 			args: args{
-				transaction: func() spi.RequestTransaction {
-					transactionManager := spi.NewRequestTransactionManager(1)
-					transaction := transactionManager.StartTransaction()
-					transaction.Submit(func(transaction spi.RequestTransaction) {
-						// NO-OP
-					})
-					return transaction
-				}(),
 				encodedReply: func() readWriteModel.EncodedReplyCALReply {
 					gavStoreEnabledByte1 := byte(2)
 					gavStoreEnabledByte2 := byte(3)
@@ -2460,18 +2648,28 @@ func TestMapEncodedReply(t *testing.T) {
 					}
 				},
 			},
+			setup: func(t *testing.T, args *args) {
+				transactionManager := transactions.NewRequestTransactionManager(
+					1,
+					options.WithCustomLogger(testutils.ProduceTestingLogger(t)),
+					transactions.WithCustomExecutor(
+						pool.NewFixedSizeExecutor(10, 50, options.WithCustomLogger(testutils.ProduceTestingLogger(t)), pool.WithExecutorOptionTracerWorkers(true)),
+					),
+				)
+				t.Cleanup(func() {
+					t.Log("Closing transaction manager now")
+					assert.NoError(t, transactionManager.Close())
+				})
+				transaction := transactionManager.StartTransaction()
+				transaction.Submit(func(transaction transactions.RequestTransaction) {
+					// NO-OP
+				})
+				args.transaction = transaction
+			},
 		},
 		{
 			name: "CALDataIdentifyReplyExactly (terminal levels)",
 			args: args{
-				transaction: func() spi.RequestTransaction {
-					transactionManager := spi.NewRequestTransactionManager(1)
-					transaction := transactionManager.StartTransaction()
-					transaction.Submit(func(transaction spi.RequestTransaction) {
-						// NO-OP
-					})
-					return transaction
-				}(),
 				encodedReply: func() readWriteModel.EncodedReplyCALReply {
 					command := readWriteModel.NewIdentifyReplyCommandTerminalLevels([]byte{1, 2, 3, 4}, 4)
 					calDataIdentify := readWriteModel.NewCALDataIdentifyReply(readWriteModel.Attribute_DSIStatus, command, readWriteModel.CALCommandTypeContainer_CALCommandIdentify, nil, nil)
@@ -2504,18 +2702,28 @@ func TestMapEncodedReply(t *testing.T) {
 					}
 				},
 			},
+			setup: func(t *testing.T, args *args) {
+				transactionManager := transactions.NewRequestTransactionManager(
+					1,
+					options.WithCustomLogger(testutils.ProduceTestingLogger(t)),
+					transactions.WithCustomExecutor(
+						pool.NewFixedSizeExecutor(10, 50, options.WithCustomLogger(testutils.ProduceTestingLogger(t)), pool.WithExecutorOptionTracerWorkers(true)),
+					),
+				)
+				t.Cleanup(func() {
+					t.Log("Closing transaction manager now")
+					assert.NoError(t, transactionManager.Close())
+				})
+				transaction := transactionManager.StartTransaction()
+				transaction.Submit(func(transaction transactions.RequestTransaction) {
+					// NO-OP
+				})
+				args.transaction = transaction
+			},
 		},
 		{
 			name: "CALDataIdentifyReplyExactly (type)",
 			args: args{
-				transaction: func() spi.RequestTransaction {
-					transactionManager := spi.NewRequestTransactionManager(1)
-					transaction := transactionManager.StartTransaction()
-					transaction.Submit(func(transaction spi.RequestTransaction) {
-						// NO-OP
-					})
-					return transaction
-				}(),
 				encodedReply: func() readWriteModel.EncodedReplyCALReply {
 					command := readWriteModel.NewIdentifyReplyCommandType("chonkers", 4)
 					calDataIdentify := readWriteModel.NewCALDataIdentifyReply(readWriteModel.Attribute_DSIStatus, command, readWriteModel.CALCommandTypeContainer_CALCommandIdentify, nil, nil)
@@ -2548,11 +2756,34 @@ func TestMapEncodedReply(t *testing.T) {
 					}
 				},
 			},
+			setup: func(t *testing.T, args *args) {
+				transactionManager := transactions.NewRequestTransactionManager(
+					1,
+					options.WithCustomLogger(testutils.ProduceTestingLogger(t)),
+					transactions.WithCustomExecutor(
+						pool.NewFixedSizeExecutor(10, 50, options.WithCustomLogger(testutils.ProduceTestingLogger(t)), pool.WithExecutorOptionTracerWorkers(true)),
+					),
+				)
+				t.Cleanup(func() {
+					t.Log("Closing transaction manager now")
+					assert.NoError(t, transactionManager.Close())
+				})
+				transaction := transactionManager.StartTransaction()
+				transaction.Submit(func(transaction transactions.RequestTransaction) {
+					// NO-OP
+				})
+				args.transaction = transaction
+			},
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if err := MapEncodedReply(tt.args.transaction, tt.args.encodedReply, tt.args.tagName, tt.args.addResponseCode(t), tt.args.addPlcValue(t)); (err != nil) != tt.wantErr {
+			testingLogger := testutils.ProduceTestingLogger(t)
+			testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
+			if tt.setup != nil {
+				tt.setup(t, &tt.args)
+			}
+			if err := MapEncodedReply(testingLogger, tt.args.transaction, tt.args.encodedReply, tt.args.tagName, tt.args.addResponseCode(t), tt.args.addPlcValue(t)); (err != nil) != tt.wantErr {
 				t.Errorf("MapEncodedReply() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})

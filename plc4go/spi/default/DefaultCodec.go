@@ -22,18 +22,17 @@ package _default
 import (
 	"context"
 	"fmt"
-	"github.com/apache/plc4x/plc4go/spi/utils"
 	"runtime/debug"
 	"time"
 
-	"github.com/apache/plc4x/plc4go/spi/options"
-
 	"github.com/apache/plc4x/plc4go/pkg/api/config"
 	"github.com/apache/plc4x/plc4go/spi"
+	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/transports"
+	"github.com/apache/plc4x/plc4go/spi/utils"
+
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
-	"github.com/rs/zerolog/log"
 )
 
 // DefaultCodecRequirements adds required methods to MessageCodec that are needed when using DefaultCodec
@@ -84,25 +83,29 @@ type defaultCodec struct {
 	expectations                  []spi.Expectation
 	running                       bool
 	customMessageHandling         func(codec DefaultCodecRequirements, message spi.Message) bool
+
+	log zerolog.Logger
 }
 
-func buildDefaultCodec(defaultCodecRequirements DefaultCodecRequirements, transportInstance transports.TransportInstance, options ...options.WithOption) DefaultCodec {
+func buildDefaultCodec(defaultCodecRequirements DefaultCodecRequirements, transportInstance transports.TransportInstance, _options ...options.WithOption) DefaultCodec {
 	var customMessageHandler func(codec DefaultCodecRequirements, message spi.Message) bool
+	var logger = options.ExtractCustomLogger(_options...)
 
-	for _, option := range options {
-		switch option.(type) {
+	for _, option := range _options {
+		switch option := option.(type) {
 		case withCustomMessageHandler:
-			customMessageHandler = option.(withCustomMessageHandler).customMessageHandler
+			customMessageHandler = option.customMessageHandler
 		}
 	}
 
 	return &defaultCodec{
-		defaultCodecRequirements,
-		transportInstance,
-		make(chan spi.Message),
-		[]spi.Expectation{},
-		false,
-		customMessageHandler,
+		DefaultCodecRequirements:      defaultCodecRequirements,
+		transportInstance:             transportInstance,
+		defaultIncomingMessageChannel: make(chan spi.Message),
+		expectations:                  []spi.Expectation{},
+		running:                       false,
+		customMessageHandling:         customMessageHandler,
+		log:                           logger,
 	}
 }
 
@@ -149,17 +152,17 @@ func (m *defaultCodec) Connect() error {
 }
 
 func (m *defaultCodec) ConnectWithContext(ctx context.Context) error {
-	log.Trace().Msg("Connecting")
+	m.log.Trace().Msg("Connecting")
 	if !m.transportInstance.IsConnected() {
 		if err := m.transportInstance.ConnectWithContext(ctx); err != nil {
 			return err
 		}
 	} else {
-		log.Info().Msg("Transport instance already connected")
+		m.log.Info().Msg("Transport instance already connected")
 	}
 
 	if !m.running {
-		log.Debug().Msg("Message codec currently not running, starting worker now")
+		m.log.Debug().Msg("Message codec currently not running, starting worker now")
 		go m.Work(m.DefaultCodecRequirements)
 	}
 	m.running = true
@@ -167,7 +170,7 @@ func (m *defaultCodec) ConnectWithContext(ctx context.Context) error {
 }
 
 func (m *defaultCodec) Disconnect() error {
-	log.Trace().Msg("Disconnecting")
+	m.log.Trace().Msg("Disconnecting")
 	m.running = false
 	return m.transportInstance.Close()
 }
@@ -192,7 +195,7 @@ func (m *defaultCodec) SendRequest(ctx context.Context, message spi.Message, acc
 	if err := ctx.Err(); err != nil {
 		return errors.Wrap(err, "Not sending message as context is aborted")
 	}
-	log.Trace().Msg("Sending request")
+	m.log.Trace().Msg("Sending request")
 	// Send the actual message
 	err := m.Send(message)
 	if err != nil {
@@ -212,7 +215,7 @@ func (m *defaultCodec) TimeoutExpectations(now time.Time) {
 			// Call the error handler.
 			go func(expectation spi.Expectation) {
 				if err := expectation.GetHandleError()(utils.NewTimeoutError(now.Sub(expectation.GetExpiration()))); err != nil {
-					log.Error().Err(err).Msg("Got an error handling error on expectation")
+					m.log.Error().Err(err).Msg("Got an error handling error on expectation")
 				}
 			}(expectation)
 			continue
@@ -223,7 +226,7 @@ func (m *defaultCodec) TimeoutExpectations(now time.Time) {
 			i--
 			go func(expectation spi.Expectation) {
 				if err := expectation.GetHandleError()(err); err != nil {
-					log.Error().Err(err).Msg("Got an error handling error on expectation")
+					m.log.Error().Err(err).Msg("Got an error handling error on expectation")
 				}
 			}(expectation)
 			continue
@@ -233,12 +236,12 @@ func (m *defaultCodec) TimeoutExpectations(now time.Time) {
 
 func (m *defaultCodec) HandleMessages(message spi.Message) bool {
 	messageHandled := false
-	log.Trace().Msgf("Current number of expectations: %d", len(m.expectations))
+	m.log.Trace().Msgf("Current number of expectations: %d", len(m.expectations))
 	for index, expectation := range m.expectations {
 		// Check if the current message matches the expectations
 		// If it does, let it handle the message.
 		if accepts := expectation.GetAcceptsMessage()(message); accepts {
-			log.Debug().Stringer("expectation", expectation).Msg("accepts message")
+			m.log.Debug().Stringer("expectation", expectation).Msg("accepts message")
 			// TODO: decouple from worker thread
 			err := expectation.GetHandleMessage()(message)
 			if err != nil {
@@ -246,7 +249,7 @@ func (m *defaultCodec) HandleMessages(message spi.Message) bool {
 				// TODO: decouple from worker thread
 				err := expectation.GetHandleError()(err)
 				if err != nil {
-					log.Error().Err(err).Msg("Got an error handling error on expectation")
+					m.log.Error().Err(err).Msg("Got an error handling error on expectation")
 				}
 				continue
 			}
@@ -263,7 +266,7 @@ func (m *defaultCodec) HandleMessages(message spi.Message) bool {
 }
 
 func (m *defaultCodec) Work(codec DefaultCodecRequirements) {
-	workerLog := log.With().Logger()
+	workerLog := m.log.With().Logger()
 	if !config.TraceDefaultMessageCodecWorker {
 		workerLog = zerolog.Nop()
 	}
@@ -271,7 +274,7 @@ func (m *defaultCodec) Work(codec DefaultCodecRequirements) {
 	defer func(workerLog zerolog.Logger) {
 		if err := recover(); err != nil {
 			// TODO: If this is an error, cast it to an error and log it with "Err(err)"
-			log.Error().Msgf("recovered from: %#v at %s", err, string(debug.Stack()))
+			m.log.Error().Msgf("recovered from: %#v at %s", err, string(debug.Stack()))
 		}
 		if m.running {
 			workerLog.Warn().Msg("Keep running")

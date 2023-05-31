@@ -22,6 +22,7 @@ package eip
 import (
 	"context"
 	"encoding/binary"
+	"github.com/apache/plc4x/plc4go/spi/transactions"
 	"strings"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
@@ -37,13 +38,13 @@ import (
 
 type Writer struct {
 	messageCodec  spi.MessageCodec
-	tm            spi.RequestTransactionManager
+	tm            transactions.RequestTransactionManager
 	configuration Configuration
 	sessionHandle *uint32
 	senderContext *[]uint8
 }
 
-func NewWriter(messageCodec spi.MessageCodec, tm spi.RequestTransactionManager, configuration Configuration, sessionHandle *uint32, senderContext *[]uint8) Writer {
+func NewWriter(messageCodec spi.MessageCodec, tm transactions.RequestTransactionManager, configuration Configuration, sessionHandle *uint32, senderContext *[]uint8) Writer {
 	return Writer{
 		messageCodec:  messageCodec,
 		tm:            tm,
@@ -118,7 +119,7 @@ func (m Writer) Write(ctx context.Context, writeRequest apiModel.PlcWriteRequest
 					)
 					// Start a new request-transaction (Is ended in the response-handler)
 					transaction := m.tm.StartTransaction()
-					transaction.Submit(func(transaction spi.RequestTransaction) {
+					transaction.Submit(func(transaction transactions.RequestTransaction) {
 						// Send the  over the wire
 						if err := m.messageCodec.SendRequest(ctx, pkt, func(message spi.Message) bool {
 							eipPacket := message.(readWriteModel.EipPacket)
@@ -206,7 +207,7 @@ func (m Writer) Write(ctx context.Context, writeRequest apiModel.PlcWriteRequest
 					)
 					// Start a new request-transaction (Is ended in the response-handler)
 					transaction := m.tm.StartTransaction()
-					transaction.Submit(func(transaction spi.RequestTransaction) {
+					transaction.Submit(func(transaction transactions.RequestTransaction) {
 						// Send the  over the wire
 						if err := m.messageCodec.SendRequest(ctx, pkt, func(message spi.Message) bool {
 							eipPacket := message.(readWriteModel.EipPacket)

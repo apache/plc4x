@@ -22,20 +22,25 @@ package cbus
 import (
 	"context"
 	"fmt"
+	"net/url"
+	"sync/atomic"
+	"testing"
+
 	plc4go "github.com/apache/plc4x/plc4go/pkg/api"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/cbus/readwrite/model"
 	_default "github.com/apache/plc4x/plc4go/spi/default"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
+	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/apache/plc4x/plc4go/spi/testutils"
 	"github.com/apache/plc4x/plc4go/spi/transports"
 	"github.com/apache/plc4x/plc4go/spi/transports/test"
 	spiValues "github.com/apache/plc4x/plc4go/spi/values"
+
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
 	"github.com/stretchr/testify/assert"
-	"net/url"
-	"sync/atomic"
-	"testing"
 )
 
 func TestNewBrowser(t *testing.T) {
@@ -47,6 +52,7 @@ func TestBrowser_BrowseQuery(t *testing.T) {
 		DefaultBrowser  _default.DefaultBrowser
 		connection      plc4go.PlcConnection
 		sequenceCounter uint8
+		log             zerolog.Logger
 	}
 	type args struct {
 		ctx         context.Context
@@ -58,6 +64,7 @@ func TestBrowser_BrowseQuery(t *testing.T) {
 		name   string
 		fields fields
 		args   args
+		setup  func(t *testing.T, fields *fields)
 		want   apiModel.PlcResponseCode
 		want1  []apiModel.PlcBrowseItem
 	}{
@@ -67,88 +74,6 @@ func TestBrowser_BrowseQuery(t *testing.T) {
 		},
 		{
 			name: "non responding browse",
-			fields: fields{
-				DefaultBrowser: nil,
-				connection: func() plc4go.PlcConnection {
-					transport := test.NewTransport()
-					transportUrl := url.URL{Scheme: "test"}
-					transportInstance, err := transport.CreateTransportInstance(transportUrl, nil)
-					if err != nil {
-						t.Error(err)
-						t.FailNow()
-						return nil
-					}
-					type MockState uint8
-					const (
-						RESET MockState = iota
-						APPLICATION_FILTER_1
-						APPLICATION_FILTER_2
-						INTERFACE_OPTIONS_3
-						INTERFACE_OPTIONS_1_PUN
-						INTERFACE_OPTIONS_1
-						MANUFACTURER
-						DONE
-					)
-					currentState := atomic.Value{}
-					currentState.Store(RESET)
-					transportInstance.(*test.TransportInstance).SetWriteInterceptor(func(transportInstance *test.TransportInstance, data []byte) {
-						switch currentState.Load().(MockState) {
-						case RESET:
-							t.Log("Dispatching reset echo")
-							transportInstance.FillReadBuffer([]byte("~~~\r"))
-							currentState.Store(APPLICATION_FILTER_1)
-						case APPLICATION_FILTER_1:
-							t.Log("Dispatching app1 echo and confirm")
-							transportInstance.FillReadBuffer([]byte("@A32100FF\r"))
-							transportInstance.FillReadBuffer([]byte("322100AD\r\n"))
-							currentState.Store(APPLICATION_FILTER_2)
-						case APPLICATION_FILTER_2:
-							t.Log("Dispatching app2 echo and confirm")
-							transportInstance.FillReadBuffer([]byte("@A32200FF\r"))
-							transportInstance.FillReadBuffer([]byte("322200AC\r\n"))
-							currentState.Store(INTERFACE_OPTIONS_3)
-						case INTERFACE_OPTIONS_3:
-							t.Log("Dispatching interface 3 echo and confirm")
-							transportInstance.FillReadBuffer([]byte("@A342000A\r"))
-							transportInstance.FillReadBuffer([]byte("3242008C\r\n"))
-							currentState.Store(INTERFACE_OPTIONS_1_PUN)
-						case INTERFACE_OPTIONS_1_PUN:
-							t.Log("Dispatching interface 1 PUN echo and confirm???")
-							transportInstance.FillReadBuffer([]byte("@A3410079\r"))
-							transportInstance.FillReadBuffer([]byte("3241008D\r\n"))
-							currentState.Store(INTERFACE_OPTIONS_1)
-						case INTERFACE_OPTIONS_1:
-							t.Log("Dispatching interface 1 echo and confirm???")
-							transportInstance.FillReadBuffer([]byte("@A3300079\r"))
-							transportInstance.FillReadBuffer([]byte("3230009E\r\n"))
-							currentState.Store(MANUFACTURER)
-						case MANUFACTURER:
-							t.Log("Dispatching manufacturer")
-							transportInstance.FillReadBuffer([]byte("g.890050435F434E49454422\r\n"))
-							currentState.Store(DONE)
-						case DONE:
-							t.Log("Dispatching 3 MMI segments")
-							transportInstance.FillReadBuffer([]byte("86020200F900FF0094120006000000000000000008000000000000000000CA\r\n"))
-							transportInstance.FillReadBuffer([]byte("86020200F900FF580000000000000000000000000000000000000000000026\r\n"))
-							transportInstance.FillReadBuffer([]byte("86020200F700FFB00000000000000000000000000000000000000000D0\r\n"))
-						}
-					})
-					err = transport.AddPreregisteredInstances(transportUrl, transportInstance)
-					if err != nil {
-						t.Error(err)
-						t.FailNow()
-						return nil
-					}
-					connectionConnectResult := <-NewDriver().GetConnection(transportUrl, map[string]transports.Transport{"test": transport}, map[string][]string{})
-					if err := connectionConnectResult.GetErr(); err != nil {
-						t.Error(err)
-						t.FailNow()
-						return nil
-					}
-					return connectionConnectResult.GetConnection()
-				}(),
-				sequenceCounter: 0,
-			},
 			args: args{
 				ctx: context.Background(),
 				interceptor: func(result apiModel.PlcBrowseItem) bool {
@@ -157,6 +82,91 @@ func TestBrowser_BrowseQuery(t *testing.T) {
 				},
 				queryName: "testQuery",
 				query:     NewUnitInfoQuery(readWriteModel.NewUnitAddress(2), nil, 1),
+			},
+			setup: func(t *testing.T, fields *fields) {
+				// Setup logger
+				logger := testutils.ProduceTestingLogger(t)
+				fields.log = logger
+
+				// Set the model logger to the logger above
+				testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
+
+				// Custom option for that
+				loggerOption := options.WithCustomLogger(logger)
+
+				transport := test.NewTransport(loggerOption)
+				transportUrl := url.URL{Scheme: "test"}
+				transportInstance, err := transport.CreateTransportInstance(transportUrl, nil, loggerOption)
+				if err != nil {
+					t.Error(err)
+					t.FailNow()
+				}
+				type MockState uint8
+				const (
+					RESET MockState = iota
+					APPLICATION_FILTER_1
+					APPLICATION_FILTER_2
+					INTERFACE_OPTIONS_3
+					INTERFACE_OPTIONS_1_PUN
+					INTERFACE_OPTIONS_1
+					MANUFACTURER
+					DONE
+				)
+				currentState := atomic.Value{}
+				currentState.Store(RESET)
+				transportInstance.(*test.TransportInstance).SetWriteInterceptor(func(transportInstance *test.TransportInstance, data []byte) {
+					switch currentState.Load().(MockState) {
+					case RESET:
+						t.Log("Dispatching reset echo")
+						transportInstance.FillReadBuffer([]byte("~~~\r"))
+						currentState.Store(APPLICATION_FILTER_1)
+					case APPLICATION_FILTER_1:
+						t.Log("Dispatching app1 echo and confirm")
+						transportInstance.FillReadBuffer([]byte("@A32100FF\r"))
+						transportInstance.FillReadBuffer([]byte("322100AD\r\n"))
+						currentState.Store(APPLICATION_FILTER_2)
+					case APPLICATION_FILTER_2:
+						t.Log("Dispatching app2 echo and confirm")
+						transportInstance.FillReadBuffer([]byte("@A32200FF\r"))
+						transportInstance.FillReadBuffer([]byte("322200AC\r\n"))
+						currentState.Store(INTERFACE_OPTIONS_3)
+					case INTERFACE_OPTIONS_3:
+						t.Log("Dispatching interface 3 echo and confirm")
+						transportInstance.FillReadBuffer([]byte("@A342000A\r"))
+						transportInstance.FillReadBuffer([]byte("3242008C\r\n"))
+						currentState.Store(INTERFACE_OPTIONS_1_PUN)
+					case INTERFACE_OPTIONS_1_PUN:
+						t.Log("Dispatching interface 1 PUN echo and confirm???")
+						transportInstance.FillReadBuffer([]byte("@A3410079\r"))
+						transportInstance.FillReadBuffer([]byte("3241008D\r\n"))
+						currentState.Store(INTERFACE_OPTIONS_1)
+					case INTERFACE_OPTIONS_1:
+						t.Log("Dispatching interface 1 echo and confirm???")
+						transportInstance.FillReadBuffer([]byte("@A3300079\r"))
+						transportInstance.FillReadBuffer([]byte("3230009E\r\n"))
+						currentState.Store(MANUFACTURER)
+					case MANUFACTURER:
+						t.Log("Dispatching manufacturer")
+						transportInstance.FillReadBuffer([]byte("g.890050435F434E49454422\r\n"))
+						currentState.Store(DONE)
+					case DONE:
+						t.Log("Dispatching 3 MMI segments")
+						transportInstance.FillReadBuffer([]byte("86020200F900FF0094120006000000000000000008000000000000000000CA\r\n"))
+						transportInstance.FillReadBuffer([]byte("86020200F900FF580000000000000000000000000000000000000000000026\r\n"))
+						transportInstance.FillReadBuffer([]byte("86020200F700FFB00000000000000000000000000000000000000000D0\r\n"))
+					}
+				})
+				err = transport.AddPreregisteredInstances(transportUrl, transportInstance)
+				if err != nil {
+					t.Error(err)
+					t.FailNow()
+				}
+				connectionConnectResult := <-NewDriver(loggerOption).GetConnection(transportUrl, map[string]transports.Transport{"test": transport}, map[string][]string{})
+				if err := connectionConnectResult.GetErr(); err != nil {
+					t.Error(err)
+					t.FailNow()
+				}
+				fields.connection = connectionConnectResult.GetConnection()
 			},
 			want: apiModel.PlcResponseCode_OK,
 			want1: []apiModel.PlcBrowseItem{
@@ -173,10 +183,14 @@ func TestBrowser_BrowseQuery(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			if tt.setup != nil {
+				tt.setup(t, &tt.fields)
+			}
 			m := Browser{
 				DefaultBrowser:  tt.fields.DefaultBrowser,
 				connection:      tt.fields.connection,
 				sequenceCounter: tt.fields.sequenceCounter,
+				log:             tt.fields.log,
 			}
 			got, got1 := m.BrowseQuery(tt.args.ctx, tt.args.interceptor, tt.args.queryName, tt.args.query)
 			assert.Equalf(t, tt.want, got, "BrowseQuery(%v, func(), %v,\n%v\n)", tt.args.ctx, tt.args.queryName, tt.args.query)
@@ -190,6 +204,7 @@ func TestBrowser_extractUnits(t *testing.T) {
 		DefaultBrowser  _default.DefaultBrowser
 		connection      plc4go.PlcConnection
 		sequenceCounter uint8
+		log             zerolog.Logger
 	}
 	type args struct {
 		ctx                          context.Context
@@ -247,6 +262,7 @@ func TestBrowser_extractUnits(t *testing.T) {
 				DefaultBrowser:  tt.fields.DefaultBrowser,
 				connection:      tt.fields.connection,
 				sequenceCounter: tt.fields.sequenceCounter,
+				log:             tt.fields.log,
 			}
 			got, got1, err := m.extractUnits(tt.args.ctx, tt.args.query, tt.args.getInstalledUnitAddressBytes)
 			if !tt.wantErr(t, err, fmt.Sprintf("extractUnits(%v, \n%v, func())", tt.args.ctx, tt.args.query)) {
@@ -263,6 +279,7 @@ func TestBrowser_extractAttributes(t *testing.T) {
 		DefaultBrowser  _default.DefaultBrowser
 		connection      plc4go.PlcConnection
 		sequenceCounter uint8
+		log             zerolog.Logger
 	}
 	type args struct {
 		query *unitInfoQuery
@@ -300,6 +317,7 @@ func TestBrowser_extractAttributes(t *testing.T) {
 				DefaultBrowser:  tt.fields.DefaultBrowser,
 				connection:      tt.fields.connection,
 				sequenceCounter: tt.fields.sequenceCounter,
+				log:             tt.fields.log,
 			}
 			got, got1 := m.extractAttributes(tt.args.query)
 			assert.Equalf(t, tt.want, got, "extractAttributes(\n%v)", tt.args.query)
@@ -313,6 +331,7 @@ func TestBrowser_getInstalledUnitAddressBytes(t *testing.T) {
 		DefaultBrowser  _default.DefaultBrowser
 		connection      plc4go.PlcConnection
 		sequenceCounter uint8
+		log             zerolog.Logger
 	}
 	type args struct {
 		ctx context.Context
@@ -321,90 +340,94 @@ func TestBrowser_getInstalledUnitAddressBytes(t *testing.T) {
 		name    string
 		fields  fields
 		args    args
+		setup   func(t *testing.T, fields *fields)
 		want    map[byte]any
 		wantErr assert.ErrorAssertionFunc
 	}{
 		{
 			name: "get units",
-			fields: fields{
-				DefaultBrowser: nil,
-				connection: func() plc4go.PlcConnection {
-					transport := test.NewTransport()
-					transportUrl := url.URL{Scheme: "test"}
-					transportInstance, err := transport.CreateTransportInstance(transportUrl, nil)
-					if err != nil {
-						t.Error(err)
-						t.FailNow()
-						return nil
-					}
-					type MockState uint8
-					const (
-						RESET MockState = iota
-						APPLICATION_FILTER_1
-						APPLICATION_FILTER_2
-						INTERFACE_OPTIONS_3
-						INTERFACE_OPTIONS_1_PUN
-						INTERFACE_OPTIONS_1
-						DONE
-					)
-					currentState := atomic.Value{}
-					currentState.Store(RESET)
-					transportInstance.(*test.TransportInstance).SetWriteInterceptor(func(transportInstance *test.TransportInstance, data []byte) {
-						switch currentState.Load().(MockState) {
-						case RESET:
-							t.Log("Dispatching reset echo")
-							transportInstance.FillReadBuffer([]byte("~~~\r"))
-							currentState.Store(APPLICATION_FILTER_1)
-						case APPLICATION_FILTER_1:
-							t.Log("Dispatching app1 echo and confirm")
-							transportInstance.FillReadBuffer([]byte("@A32100FF\r"))
-							transportInstance.FillReadBuffer([]byte("322100AD\r\n"))
-							currentState.Store(APPLICATION_FILTER_2)
-						case APPLICATION_FILTER_2:
-							t.Log("Dispatching app2 echo and confirm")
-							transportInstance.FillReadBuffer([]byte("@A32200FF\r"))
-							transportInstance.FillReadBuffer([]byte("322200AC\r\n"))
-							currentState.Store(INTERFACE_OPTIONS_3)
-						case INTERFACE_OPTIONS_3:
-							t.Log("Dispatching interface 3 echo and confirm")
-							transportInstance.FillReadBuffer([]byte("@A342000A\r"))
-							transportInstance.FillReadBuffer([]byte("3242008C\r\n"))
-							currentState.Store(INTERFACE_OPTIONS_1_PUN)
-						case INTERFACE_OPTIONS_1_PUN:
-							t.Log("Dispatching interface 1 PUN echo and confirm???")
-							transportInstance.FillReadBuffer([]byte("@A3410079\r"))
-							transportInstance.FillReadBuffer([]byte("3241008D\r\n"))
-							currentState.Store(INTERFACE_OPTIONS_1)
-						case INTERFACE_OPTIONS_1:
-							t.Log("Dispatching interface 1 echo and confirm???")
-							transportInstance.FillReadBuffer([]byte("@A3300079\r"))
-							transportInstance.FillReadBuffer([]byte("3230009E\r\n"))
-							currentState.Store(DONE)
-						case DONE:
-							t.Log("Dispatching 3 MMI segments")
-							transportInstance.FillReadBuffer([]byte("86020200F900FF0094120006000000000000000008000000000000000000CA\r\n"))
-							transportInstance.FillReadBuffer([]byte("86020200F900FF580000000000000000000000000000000000000000000026\r\n"))
-							transportInstance.FillReadBuffer([]byte("86020200F700FFB00000000000000000000000000000000000000000D0\r\n"))
-						}
-					})
-					err = transport.AddPreregisteredInstances(transportUrl, transportInstance)
-					if err != nil {
-						t.Error(err)
-						t.FailNow()
-						return nil
-					}
-					connectionConnectResult := <-NewDriver().GetConnection(transportUrl, map[string]transports.Transport{"test": transport}, map[string][]string{})
-					if err := connectionConnectResult.GetErr(); err != nil {
-						t.Error(err)
-						t.FailNow()
-						return nil
-					}
-					return connectionConnectResult.GetConnection()
-				}(),
-				sequenceCounter: 0,
-			},
 			args: args{
 				ctx: context.Background(),
+			},
+			setup: func(t *testing.T, fields *fields) {
+				// Setup logger
+				logger := testutils.ProduceTestingLogger(t)
+				fields.log = logger
+
+				// Set the model logger to the logger above
+				testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
+
+				// Custom option for that
+				loggerOption := options.WithCustomLogger(logger)
+
+				transport := test.NewTransport(loggerOption)
+				transportUrl := url.URL{Scheme: "test"}
+				transportInstance, err := transport.CreateTransportInstance(transportUrl, nil, loggerOption)
+				if err != nil {
+					t.Error(err)
+					t.FailNow()
+				}
+				type MockState uint8
+				const (
+					RESET MockState = iota
+					APPLICATION_FILTER_1
+					APPLICATION_FILTER_2
+					INTERFACE_OPTIONS_3
+					INTERFACE_OPTIONS_1_PUN
+					INTERFACE_OPTIONS_1
+					DONE
+				)
+				currentState := atomic.Value{}
+				currentState.Store(RESET)
+				transportInstance.(*test.TransportInstance).SetWriteInterceptor(func(transportInstance *test.TransportInstance, data []byte) {
+					switch currentState.Load().(MockState) {
+					case RESET:
+						t.Log("Dispatching reset echo")
+						transportInstance.FillReadBuffer([]byte("~~~\r"))
+						currentState.Store(APPLICATION_FILTER_1)
+					case APPLICATION_FILTER_1:
+						t.Log("Dispatching app1 echo and confirm")
+						transportInstance.FillReadBuffer([]byte("@A32100FF\r"))
+						transportInstance.FillReadBuffer([]byte("322100AD\r\n"))
+						currentState.Store(APPLICATION_FILTER_2)
+					case APPLICATION_FILTER_2:
+						t.Log("Dispatching app2 echo and confirm")
+						transportInstance.FillReadBuffer([]byte("@A32200FF\r"))
+						transportInstance.FillReadBuffer([]byte("322200AC\r\n"))
+						currentState.Store(INTERFACE_OPTIONS_3)
+					case INTERFACE_OPTIONS_3:
+						t.Log("Dispatching interface 3 echo and confirm")
+						transportInstance.FillReadBuffer([]byte("@A342000A\r"))
+						transportInstance.FillReadBuffer([]byte("3242008C\r\n"))
+						currentState.Store(INTERFACE_OPTIONS_1_PUN)
+					case INTERFACE_OPTIONS_1_PUN:
+						t.Log("Dispatching interface 1 PUN echo and confirm???")
+						transportInstance.FillReadBuffer([]byte("@A3410079\r"))
+						transportInstance.FillReadBuffer([]byte("3241008D\r\n"))
+						currentState.Store(INTERFACE_OPTIONS_1)
+					case INTERFACE_OPTIONS_1:
+						t.Log("Dispatching interface 1 echo and confirm???")
+						transportInstance.FillReadBuffer([]byte("@A3300079\r"))
+						transportInstance.FillReadBuffer([]byte("3230009E\r\n"))
+						currentState.Store(DONE)
+					case DONE:
+						t.Log("Dispatching 3 MMI segments")
+						transportInstance.FillReadBuffer([]byte("86020200F900FF0094120006000000000000000008000000000000000000CA\r\n"))
+						transportInstance.FillReadBuffer([]byte("86020200F900FF580000000000000000000000000000000000000000000026\r\n"))
+						transportInstance.FillReadBuffer([]byte("86020200F700FFB00000000000000000000000000000000000000000D0\r\n"))
+					}
+				})
+				err = transport.AddPreregisteredInstances(transportUrl, transportInstance)
+				if err != nil {
+					t.Error(err)
+					t.FailNow()
+				}
+				connectionConnectResult := <-NewDriver(loggerOption).GetConnection(transportUrl, map[string]transports.Transport{"test": transport}, map[string][]string{})
+				if err := connectionConnectResult.GetErr(); err != nil {
+					t.Error(err)
+					t.FailNow()
+				}
+				fields.connection = connectionConnectResult.GetConnection()
 			},
 			want: map[byte]any{
 				1:  true,
@@ -421,10 +444,14 @@ func TestBrowser_getInstalledUnitAddressBytes(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			if tt.setup != nil {
+				tt.setup(t, &tt.fields)
+			}
 			m := Browser{
 				DefaultBrowser:  tt.fields.DefaultBrowser,
 				connection:      tt.fields.connection,
 				sequenceCounter: tt.fields.sequenceCounter,
+				log:             tt.fields.log,
 			}
 			got, err := m.getInstalledUnitAddressBytes(tt.args.ctx)
 			if !tt.wantErr(t, err, fmt.Sprintf("getInstalledUnitAddressBytes(%v)", tt.args.ctx)) {

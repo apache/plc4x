@@ -22,6 +22,7 @@ package cbus
 import (
 	"context"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
+	"github.com/apache/plc4x/plc4go/spi/transactions"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/stretchr/testify/assert"
 	"strings"
@@ -29,14 +30,13 @@ import (
 	"time"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
-	"github.com/apache/plc4x/plc4go/spi"
 )
 
 func TestNewWriter(t *testing.T) {
 	type args struct {
 		tpduGenerator *AlphaGenerator
 		messageCodec  *MessageCodec
-		tm            spi.RequestTransactionManager
+		tm            transactions.RequestTransactionManager
 	}
 	tests := []struct {
 		name string
@@ -62,7 +62,7 @@ func TestWriter_Write(t *testing.T) {
 	type fields struct {
 		alphaGenerator *AlphaGenerator
 		messageCodec   *MessageCodec
-		tm             spi.RequestTransactionManager
+		tm             transactions.RequestTransactionManager
 	}
 	type args struct {
 		ctx          context.Context

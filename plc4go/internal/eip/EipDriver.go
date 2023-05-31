@@ -21,10 +21,10 @@ package eip
 
 import (
 	"context"
+	"github.com/apache/plc4x/plc4go/spi/transactions"
 	"net/url"
 
 	"github.com/apache/plc4x/plc4go/pkg/api"
-	"github.com/apache/plc4x/plc4go/spi"
 	_default "github.com/apache/plc4x/plc4go/spi/default"
 	"github.com/apache/plc4x/plc4go/spi/transports"
 	"github.com/pkg/errors"
@@ -33,14 +33,14 @@ import (
 
 type Driver struct {
 	_default.DefaultDriver
-	tm                      spi.RequestTransactionManager
+	tm                      transactions.RequestTransactionManager
 	awaitSetupComplete      bool
 	awaitDisconnectComplete bool
 }
 
 func NewDriver() plc4go.PlcDriver {
 	driver := &Driver{
-		tm:                      spi.NewRequestTransactionManager(1),
+		tm:                      transactions.NewRequestTransactionManager(1),
 		awaitSetupComplete:      true,
 		awaitDisconnectComplete: true,
 	}

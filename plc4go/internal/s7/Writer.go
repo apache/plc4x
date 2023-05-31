@@ -21,6 +21,7 @@ package s7
 
 import (
 	"context"
+	"github.com/apache/plc4x/plc4go/spi/transactions"
 	"time"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
@@ -36,10 +37,10 @@ import (
 type Writer struct {
 	tpduGenerator *TpduGenerator
 	messageCodec  spi.MessageCodec
-	tm            spi.RequestTransactionManager
+	tm            transactions.RequestTransactionManager
 }
 
-func NewWriter(tpduGenerator *TpduGenerator, messageCodec spi.MessageCodec, tm spi.RequestTransactionManager) Writer {
+func NewWriter(tpduGenerator *TpduGenerator, messageCodec spi.MessageCodec, tm transactions.RequestTransactionManager) Writer {
 	return Writer{
 		tpduGenerator: tpduGenerator,
 		messageCodec:  messageCodec,
@@ -98,7 +99,7 @@ func (m Writer) Write(ctx context.Context, writeRequest apiModel.PlcWriteRequest
 
 		// Start a new request-transaction (Is ended in the response-handler)
 		transaction := m.tm.StartTransaction()
-		transaction.Submit(func(transaction spi.RequestTransaction) {
+		transaction.Submit(func(transaction transactions.RequestTransaction) {
 			// Send the  over the wire
 			if err := m.messageCodec.SendRequest(ctx, tpktPacket, func(message spi.Message) bool {
 				tpktPacket, ok := message.(readWriteModel.TPKTPacketExactly)

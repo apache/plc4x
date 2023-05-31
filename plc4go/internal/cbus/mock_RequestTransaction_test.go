@@ -24,7 +24,7 @@ package cbus
 import (
 	context "context"
 
-	spi "github.com/apache/plc4x/plc4go/spi"
+	transactions "github.com/apache/plc4x/plc4go/spi/transactions"
 	mock "github.com/stretchr/testify/mock"
 )
 
@@ -208,7 +208,7 @@ func (_c *MockRequestTransaction_String_Call) RunAndReturn(run func() string) *M
 }
 
 // Submit provides a mock function with given fields: operation
-func (_m *MockRequestTransaction) Submit(operation spi.RequestTransactionRunnable) {
+func (_m *MockRequestTransaction) Submit(operation transactions.RequestTransactionRunnable) {
 	_m.Called(operation)
 }
 
@@ -218,14 +218,14 @@ type MockRequestTransaction_Submit_Call struct {
 }
 
 // Submit is a helper method to define mock.On call
-//   - operation spi.RequestTransactionRunnable
+//   - operation transactions.RequestTransactionRunnable
 func (_e *MockRequestTransaction_Expecter) Submit(operation interface{}) *MockRequestTransaction_Submit_Call {
 	return &MockRequestTransaction_Submit_Call{Call: _e.mock.On("Submit", operation)}
 }
 
-func (_c *MockRequestTransaction_Submit_Call) Run(run func(operation spi.RequestTransactionRunnable)) *MockRequestTransaction_Submit_Call {
+func (_c *MockRequestTransaction_Submit_Call) Run(run func(operation transactions.RequestTransactionRunnable)) *MockRequestTransaction_Submit_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(spi.RequestTransactionRunnable))
+		run(args[0].(transactions.RequestTransactionRunnable))
 	})
 	return _c
 }
@@ -235,7 +235,7 @@ func (_c *MockRequestTransaction_Submit_Call) Return() *MockRequestTransaction_S
 	return _c
 }
 
-func (_c *MockRequestTransaction_Submit_Call) RunAndReturn(run func(spi.RequestTransactionRunnable)) *MockRequestTransaction_Submit_Call {
+func (_c *MockRequestTransaction_Submit_Call) RunAndReturn(run func(transactions.RequestTransactionRunnable)) *MockRequestTransaction_Submit_Call {
 	_c.Call.Return(run)
 	return _c
 }

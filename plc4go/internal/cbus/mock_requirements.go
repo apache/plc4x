@@ -19,11 +19,13 @@
 
 package cbus
 
-import "github.com/apache/plc4x/plc4go/spi"
+import (
+	"github.com/apache/plc4x/plc4go/spi/transactions"
+)
 
 // Note this file is a Helper for mockery to generate use mocks from other package
 
 // Deprecated: don't use it in productive code
 type RequestTransaction interface {
-	spi.RequestTransaction
+	transactions.RequestTransaction
 }

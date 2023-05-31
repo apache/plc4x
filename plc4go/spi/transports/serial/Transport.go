@@ -22,20 +22,27 @@ package serial
 import (
 	"bufio"
 	"fmt"
-	"github.com/apache/plc4x/plc4go/spi/transports"
-	"github.com/jacobsa/go-serial/serial"
-	"github.com/pkg/errors"
 	"io"
 	"net"
 	"net/url"
 	"strconv"
+
+	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/apache/plc4x/plc4go/spi/transports"
+
+	"github.com/jacobsa/go-serial/serial"
+	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
 )
 
 type Transport struct {
+	log zerolog.Logger
 }
 
-func NewTransport() *Transport {
-	return &Transport{}
+func NewTransport(_options ...options.WithOption) *Transport {
+	return &Transport{
+		log: options.ExtractCustomLogger(_options...),
+	}
 }
 
 func (m Transport) GetTransportCode() string {
@@ -46,11 +53,11 @@ func (m Transport) GetTransportName() string {
 	return "Serial Transport"
 }
 
-func (m Transport) CreateTransportInstance(transportUrl url.URL, options map[string][]string) (transports.TransportInstance, error) {
-	return m.CreateTransportInstanceForLocalAddress(transportUrl, options, nil)
+func (m Transport) CreateTransportInstance(transportUrl url.URL, options map[string][]string, _options ...options.WithOption) (transports.TransportInstance, error) {
+	return m.CreateTransportInstanceForLocalAddress(transportUrl, options, nil, _options...)
 }
 
-func (m Transport) CreateTransportInstanceForLocalAddress(transportUrl url.URL, options map[string][]string, _ *net.UDPAddr) (transports.TransportInstance, error) {
+func (m Transport) CreateTransportInstanceForLocalAddress(transportUrl url.URL, options map[string][]string, _ *net.UDPAddr, _options ...options.WithOption) (transports.TransportInstance, error) {
 	var serialPortName = transportUrl.Path
 
 	var baudRate = uint(115200)
@@ -73,7 +80,7 @@ func (m Transport) CreateTransportInstanceForLocalAddress(transportUrl url.URL, 
 		}
 	}
 
-	return NewTransportInstance(serialPortName, baudRate, connectTimeout, &m), nil
+	return NewTransportInstance(serialPortName, baudRate, connectTimeout, &m, _options...), nil
 }
 
 func (m Transport) String() string {
@@ -88,14 +95,18 @@ type TransportInstance struct {
 	transport      *Transport
 	serialPort     io.ReadWriteCloser
 	reader         *bufio.Reader
+
+	log zerolog.Logger
 }
 
-func NewTransportInstance(serialPortName string, baudRate uint, connectTimeout uint32, transport *Transport) *TransportInstance {
+func NewTransportInstance(serialPortName string, baudRate uint, connectTimeout uint32, transport *Transport, _options ...options.WithOption) *TransportInstance {
 	transportInstance := &TransportInstance{
 		SerialPortName: serialPortName,
 		BaudRate:       baudRate,
 		ConnectTimeout: connectTimeout,
 		transport:      transport,
+
+		log: options.ExtractCustomLogger(_options...),
 	}
 	transportInstance.DefaultBufferedTransportInstance = transports.NewDefaultBufferedTransportInstance(transportInstance)
 	return transportInstance
@@ -111,11 +122,11 @@ func (m *TransportInstance) Connect() error {
 	// Add a logging layer ...
 	/*logFile, err := ioutil.TempFile(os.TempDir(), "transport-logger")
 	if err != nil {
-		log.Error().Msg("Error creating file for logging transport requests")
+		m.log.Error().Msg("Error creating file for logging transport requests")
 	} else {
 		fileLogger := zerolog.New(logFile).With().Logger()
 		m.serialPort = utils.NewTransportLogger(m.serialPort, utils.WithLogger(fileLogger))
-		log.Trace().Msgf("Logging Transport to file %s", logFile.Name())
+		m.log.Trace().Msgf("Logging Transport to file %s", logFile.Name())
 	}*/
 	m.reader = bufio.NewReader(m.serialPort)
 

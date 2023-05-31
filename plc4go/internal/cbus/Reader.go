@@ -21,6 +21,9 @@ package cbus
 
 import (
 	"context"
+	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/apache/plc4x/plc4go/spi/transactions"
+	"github.com/rs/zerolog"
 	"sync"
 	"time"
 
@@ -30,25 +33,28 @@ import (
 	"github.com/apache/plc4x/plc4go/spi"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/pkg/errors"
-	"github.com/rs/zerolog/log"
 )
 
 type Reader struct {
 	alphaGenerator *AlphaGenerator
 	messageCodec   *MessageCodec
-	tm             spi.RequestTransactionManager
+	tm             transactions.RequestTransactionManager
+
+	log zerolog.Logger
 }
 
-func NewReader(tpduGenerator *AlphaGenerator, messageCodec *MessageCodec, tm spi.RequestTransactionManager) *Reader {
+func NewReader(tpduGenerator *AlphaGenerator, messageCodec *MessageCodec, tm transactions.RequestTransactionManager, _options ...options.WithOption) *Reader {
 	return &Reader{
 		alphaGenerator: tpduGenerator,
 		messageCodec:   messageCodec,
 		tm:             tm,
+
+		log: options.ExtractCustomLogger(_options...),
 	}
 }
 
 func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) <-chan apiModel.PlcReadRequestResult {
-	log.Trace().Msg("Reading")
+	m.log.Trace().Msg("Reading")
 	result := make(chan apiModel.PlcReadRequestResult, 1)
 	go m.readSync(ctx, readRequest, result)
 	return result
@@ -118,17 +124,17 @@ func (m *Reader) readSync(ctx context.Context, readRequest apiModel.PlcReadReque
 func (m *Reader) createMessageTransactionAndWait(ctx context.Context, messageToSend readWriteModel.CBusMessage, addResponseCode func(name string, responseCode apiModel.PlcResponseCode), tagName string, addPlcValue func(name string, plcValue apiValues.PlcValue)) {
 	// Start a new request-transaction (Is ended in the response-handler)
 	transaction := m.tm.StartTransaction()
-	transaction.Submit(func(transaction spi.RequestTransaction) {
+	transaction.Submit(func(transaction transactions.RequestTransaction) {
 		m.sendMessageOverTheWire(ctx, transaction, messageToSend, addResponseCode, tagName, addPlcValue)
 	})
 	if err := transaction.AwaitCompletion(ctx); err != nil {
-		log.Warn().Err(err).Msg("Error while awaiting completion")
+		m.log.Warn().Err(err).Msg("Error while awaiting completion")
 	}
 }
 
-func (m *Reader) sendMessageOverTheWire(ctx context.Context, transaction spi.RequestTransaction, messageToSend readWriteModel.CBusMessage, addResponseCode func(name string, responseCode apiModel.PlcResponseCode), tagName string, addPlcValue func(name string, plcValue apiValues.PlcValue)) {
+func (m *Reader) sendMessageOverTheWire(ctx context.Context, transaction transactions.RequestTransaction, messageToSend readWriteModel.CBusMessage, addResponseCode func(name string, responseCode apiModel.PlcResponseCode), tagName string, addPlcValue func(name string, plcValue apiValues.PlcValue)) {
 	// Send the  over the wire
-	log.Trace().Msg("Send ")
+	m.log.Trace().Msg("Send ")
 	if err := m.messageCodec.SendRequest(ctx, messageToSend, func(cbusMessage spi.Message) bool {
 		messageToClient, ok := cbusMessage.(readWriteModel.CBusMessageToClientExactly)
 		if !ok {
@@ -149,15 +155,15 @@ func (m *Reader) sendMessageOverTheWire(ctx context.Context, transaction spi.Req
 		expectedAlpha := messageToSend.(readWriteModel.CBusMessageToServer).GetRequest().(interface{ GetAlpha() readWriteModel.Alpha }).GetAlpha().GetCharacter()
 		return actualAlpha == expectedAlpha
 	}, func(receivedMessage spi.Message) error {
-		defer func(transaction spi.RequestTransaction) {
+		defer func(transaction transactions.RequestTransaction) {
 			// This is just to make sure we don't forget to close the transaction here
 			_ = transaction.EndRequest()
 		}(transaction)
 		// Convert the response into an
-		log.Trace().Msg("convert response to ")
+		m.log.Trace().Msg("convert response to ")
 		messageToClient := receivedMessage.(readWriteModel.CBusMessageToClient)
 		if _, ok := messageToClient.GetReply().(readWriteModel.ServerErrorReplyExactly); ok {
-			log.Trace().Msg("We got a server failure")
+			m.log.Trace().Msg("We got a server failure")
 			addResponseCode(tagName, apiModel.PlcResponseCode_INVALID_DATA)
 			return transaction.EndRequest()
 		}
@@ -176,7 +182,7 @@ func (m *Reader) sendMessageOverTheWire(ctx context.Context, transaction spi.Req
 			default:
 				return transaction.FailRequest(errors.Errorf("Every code should be mapped here: %v", replyOrConfirmationConfirmation.GetConfirmation().GetConfirmationType()))
 			}
-			log.Trace().Msgf("Was no success %s:%v", tagName, responseCode)
+			m.log.Trace().Msgf("Was no success %s:%v", tagName, responseCode)
 			addResponseCode(tagName, responseCode)
 			return transaction.EndRequest()
 		}
@@ -185,15 +191,15 @@ func (m *Reader) sendMessageOverTheWire(ctx context.Context, transaction spi.Req
 		// TODO: it could be double confirmed but this is not implemented yet
 		embeddedReply, ok := replyOrConfirmationConfirmation.GetEmbeddedReply().(readWriteModel.ReplyOrConfirmationReplyExactly)
 		if !ok {
-			log.Trace().Msgf("Is a confirm only, no data. Alpha: %c", alpha.GetCharacter())
+			m.log.Trace().Msgf("Is a confirm only, no data. Alpha: %c", alpha.GetCharacter())
 			addResponseCode(tagName, apiModel.PlcResponseCode_NOT_FOUND)
 			return transaction.EndRequest()
 		}
 
-		log.Trace().Msg("Handling confirmed data")
+		m.log.Trace().Msg("Handling confirmed data")
 		// TODO: check if we can use a plcValueSerializer
 		encodedReply := embeddedReply.GetReply().(readWriteModel.ReplyEncodedReply).GetEncodedReply()
-		if err := MapEncodedReply(transaction, encodedReply, tagName, addResponseCode, addPlcValue); err != nil {
+		if err := MapEncodedReply(m.log, transaction, encodedReply, tagName, addResponseCode, addPlcValue); err != nil {
 			return errors.Wrap(err, "error encoding reply")
 		}
 		return transaction.EndRequest()
@@ -201,10 +207,10 @@ func (m *Reader) sendMessageOverTheWire(ctx context.Context, transaction spi.Req
 		addResponseCode(tagName, apiModel.PlcResponseCode_REQUEST_TIMEOUT)
 		return transaction.FailRequest(err)
 	}, time.Second*1); err != nil {
-		log.Debug().Err(err).Msgf("Error sending message for tag %s", tagName)
+		m.log.Debug().Err(err).Msgf("Error sending message for tag %s", tagName)
 		addResponseCode(tagName, apiModel.PlcResponseCode_INTERNAL_ERROR)
 		if err := transaction.FailRequest(errors.Errorf("timeout after %s", time.Second*1)); err != nil {
-			log.Debug().Err(err).Msg("Error failing request")
+			m.log.Debug().Err(err).Msg("Error failing request")
 		}
 	}
 }

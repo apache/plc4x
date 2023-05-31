@@ -21,6 +21,7 @@ package cbus
 
 import (
 	"fmt"
+	"github.com/apache/plc4x/plc4go/spi/testutils"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
@@ -131,7 +132,7 @@ func TestParseFromOptions(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := ParseFromOptions(tt.args.options)
+			got, err := ParseFromOptions(testutils.ProduceTestingLogger(t), tt.args.options)
 			if !tt.wantErr(t, err, fmt.Sprintf("ParseFromOptions(%v)", tt.args.options)) {
 				return
 			}
@@ -196,7 +197,7 @@ func Test_getFromOptions(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			assert.Equalf(t, tt.want, getFromOptions(tt.args.options, tt.args.key), "getFromOptions(%v, %v)", tt.args.options, tt.args.key)
+			assert.Equalf(t, tt.want, getFromOptions(testutils.ProduceTestingLogger(t), tt.args.options, tt.args.key), "getFromOptions(%v, %v)", tt.args.options, tt.args.key)
 		})
 	}
 }

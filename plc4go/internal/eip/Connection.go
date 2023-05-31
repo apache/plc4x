@@ -22,6 +22,7 @@ package eip
 import (
 	"context"
 	"fmt"
+	"github.com/apache/plc4x/plc4go/spi/transactions"
 
 	"github.com/apache/plc4x/plc4go/pkg/api"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
@@ -45,7 +46,7 @@ type Connection struct {
 	messageCodec              spi.MessageCodec
 	configuration             Configuration
 	driverContext             DriverContext
-	tm                        spi.RequestTransactionManager
+	tm                        transactions.RequestTransactionManager
 	sessionHandle             uint32
 	senderContext             []uint8
 	connectionId              uint32
@@ -58,7 +59,7 @@ type Connection struct {
 	tracer                    *spi.Tracer
 }
 
-func NewConnection(messageCodec spi.MessageCodec, configuration Configuration, driverContext DriverContext, tagHandler spi.PlcTagHandler, tm spi.RequestTransactionManager, options map[string][]string) *Connection {
+func NewConnection(messageCodec spi.MessageCodec, configuration Configuration, driverContext DriverContext, tagHandler spi.PlcTagHandler, tm transactions.RequestTransactionManager, options map[string][]string) *Connection {
 	connection := &Connection{
 		messageCodec:  messageCodec,
 		configuration: configuration,

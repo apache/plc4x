@@ -22,7 +22,9 @@ package cbus
 import (
 	"context"
 	"fmt"
+	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
 	"strings"
 	"time"
 
@@ -31,18 +33,21 @@ import (
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/cbus/readwrite/model"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	spiValues "github.com/apache/plc4x/plc4go/spi/values"
-	"github.com/rs/zerolog/log"
 )
 
 type Subscriber struct {
 	connection *Connection
 	consumers  map[*spiModel.DefaultPlcConsumerRegistration]apiModel.PlcSubscriptionEventConsumer
+
+	log zerolog.Logger
 }
 
-func NewSubscriber(connection *Connection) *Subscriber {
+func NewSubscriber(connection *Connection, _options ...options.WithOption) *Subscriber {
 	return &Subscriber{
 		connection: connection,
 		consumers:  make(map[*spiModel.DefaultPlcConsumerRegistration]apiModel.PlcSubscriptionEventConsumer),
+
+		log: options.ExtractCustomLogger(_options...),
 	}
 }
 
@@ -119,7 +124,7 @@ func (m *Subscriber) handleMonitoredMMI(calReply readWriteModel.CALReply) bool {
 func (m *Subscriber) offerMMI(unitAddressString string, calData readWriteModel.CALData, subscriptionHandle *SubscriptionHandle, consumer apiModel.PlcSubscriptionEventConsumer) bool {
 	tag, ok := subscriptionHandle.tag.(*mmiMonitorTag)
 	if !ok {
-		log.Debug().Msgf("Unusable tag for mmi subscription %s", subscriptionHandle.tag)
+		m.log.Debug().Msgf("Unusable tag for mmi subscription %s", subscriptionHandle.tag)
 		return false
 	}
 
@@ -135,7 +140,7 @@ func (m *Subscriber) offerMMI(unitAddressString string, calData readWriteModel.C
 	if unitAddress := tag.GetUnitAddress(); unitAddress != nil {
 		unitSuffix := fmt.Sprintf("u%d", unitAddress.GetAddress())
 		if !strings.HasSuffix(unitAddressString, unitSuffix) {
-			log.Debug().Msgf("Current address string %s has not the suffix %s", unitAddressString, unitSuffix)
+			m.log.Debug().Msgf("Current address string %s has not the suffix %s", unitAddressString, unitSuffix)
 			return false
 		}
 	}
@@ -217,12 +222,12 @@ func (m *Subscriber) offerMMI(unitAddressString string, calData readWriteModel.C
 			plcValues[tagName] = spiValues.NewPlcList(plcListValues)
 		}
 	default:
-		log.Error().Msgf("Unmapped type %T", calData)
+		m.log.Error().Msgf("Unmapped type %T", calData)
 		return false
 	}
 	if application := tag.GetApplication(); application != nil {
 		if actualApplicationIdString := application.ApplicationId().String(); applicationString != actualApplicationIdString {
-			log.Debug().Msgf("Current application id %s  doesn't match actual id %s", unitAddressString, actualApplicationIdString)
+			m.log.Debug().Msgf("Current application id %s  doesn't match actual id %s", unitAddressString, actualApplicationIdString)
 			return false
 		}
 	}
@@ -251,7 +256,7 @@ func (m *Subscriber) handleMonitoredSAL(sal readWriteModel.MonitoredSAL) bool {
 func (m *Subscriber) offerSAL(sal readWriteModel.MonitoredSAL, subscriptionHandle *SubscriptionHandle, consumer apiModel.PlcSubscriptionEventConsumer) bool {
 	tag, ok := subscriptionHandle.tag.(*salMonitorTag)
 	if !ok {
-		log.Debug().Msgf("Unusable tag for mmi subscription %s", subscriptionHandle.tag)
+		m.log.Debug().Msgf("Unusable tag for mmi subscription %s", subscriptionHandle.tag)
 		return false
 	}
 	tags := map[string]apiModel.PlcTag{}
@@ -295,7 +300,7 @@ func (m *Subscriber) offerSAL(sal readWriteModel.MonitoredSAL, subscriptionHandl
 	if unitAddress := tag.GetUnitAddress(); unitAddress != nil {
 		unitSuffix := fmt.Sprintf("u%d", unitAddress.GetAddress())
 		if !strings.HasSuffix(unitAddressString, unitSuffix) {
-			log.Debug().Msgf("Current address string %s has not the suffix %s", unitAddressString, unitSuffix)
+			m.log.Debug().Msgf("Current address string %s has not the suffix %s", unitAddressString, unitSuffix)
 			return false
 		}
 	}
@@ -303,7 +308,7 @@ func (m *Subscriber) offerSAL(sal readWriteModel.MonitoredSAL, subscriptionHandl
 
 	if application := tag.GetApplication(); application != nil {
 		if actualApplicationIdString := application.ApplicationId().String(); applicationString != actualApplicationIdString {
-			log.Debug().Msgf("Current application id %s  doesn't match actual id %s", unitAddressString, actualApplicationIdString)
+			m.log.Debug().Msgf("Current application id %s  doesn't match actual id %s", unitAddressString, actualApplicationIdString)
 			return false
 		}
 	}
@@ -325,7 +330,7 @@ func (m *Subscriber) offerSAL(sal readWriteModel.MonitoredSAL, subscriptionHandl
 	case readWriteModel.SALDataErrorReportingExactly:
 		commandTypeGetter = salData.GetErrorReportingData().GetCommandType()
 	case readWriteModel.SALDataFreeUsageExactly:
-		log.Info().Msg("Unknown command type")
+		m.log.Info().Msg("Unknown command type")
 	case readWriteModel.SALDataHeatingExactly:
 		commandTypeGetter = salData.GetHeatingData().GetCommandType()
 	case readWriteModel.SALDataHvacActuatorExactly:
@@ -343,9 +348,9 @@ func (m *Subscriber) offerSAL(sal readWriteModel.MonitoredSAL, subscriptionHandl
 	case readWriteModel.SALDataPoolsSpasPondsFountainsControlExactly:
 		commandTypeGetter = salData.GetPoolsSpaPondsFountainsData().GetCommandType()
 	case readWriteModel.SALDataReservedExactly:
-		log.Info().Msg("Unknown command type")
+		m.log.Info().Msg("Unknown command type")
 	case readWriteModel.SALDataRoomControlSystemExactly:
-		log.Info().Msg("Unknown command type not implemented yet") // TODO: implement once there
+		m.log.Info().Msg("Unknown command type not implemented yet") // TODO: implement once there
 	case readWriteModel.SALDataSecurityExactly:
 		commandTypeGetter = salData.GetSecurityData().GetCommandType()
 	case readWriteModel.SALDataTelephonyStatusAndControlExactly:
@@ -353,13 +358,13 @@ func (m *Subscriber) offerSAL(sal readWriteModel.MonitoredSAL, subscriptionHandl
 	case readWriteModel.SALDataTemperatureBroadcastExactly:
 		commandTypeGetter = salData.GetTemperatureBroadcastData().GetCommandType()
 	case readWriteModel.SALDataTestingExactly:
-		log.Info().Msg("Unknown command type not implemented yet") // TODO: implement once there
+		m.log.Info().Msg("Unknown command type not implemented yet") // TODO: implement once there
 	case readWriteModel.SALDataTriggerControlExactly:
 		commandTypeGetter = salData.GetTriggerControlData().GetCommandType()
 	case readWriteModel.SALDataVentilationExactly:
 		commandTypeGetter = salData.GetVentilationData().GetCommandType()
 	default:
-		log.Error().Msgf("Unmapped type %T", salData)
+		m.log.Error().Msgf("Unmapped type %T", salData)
 	}
 	commandType := "Unknown"
 	if commandTypeGetter != nil {
@@ -372,7 +377,7 @@ func (m *Subscriber) offerSAL(sal readWriteModel.MonitoredSAL, subscriptionHandl
 	rbvb := spiValues.NewWriteBufferPlcValueBased()
 	err := salData.SerializeWithWriteBuffer(context.Background(), rbvb)
 	if err != nil {
-		log.Error().Err(err).Msg("Error serializing to plc value... just returning it as string")
+		m.log.Error().Err(err).Msg("Error serializing to plc value... just returning it as string")
 		plcValues[tagName] = spiValues.NewPlcSTRING(fmt.Sprintf("%s", salData))
 	} else {
 		plcValues[tagName] = rbvb.GetPlcValue()

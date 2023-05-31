@@ -23,10 +23,12 @@ import (
 	"bufio"
 	"context"
 	"fmt"
+	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/transports"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/libp2p/go-reuseport"
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
 	"net"
 	"net/url"
 	"regexp"
@@ -34,10 +36,13 @@ import (
 )
 
 type Transport struct {
+	log zerolog.Logger
 }
 
-func NewTransport() *Transport {
-	return &Transport{}
+func NewTransport(_options ...options.WithOption) *Transport {
+	return &Transport{
+		log: options.ExtractCustomLogger(_options...),
+	}
 }
 
 func (m Transport) GetTransportCode() string {
@@ -48,11 +53,11 @@ func (m Transport) GetTransportName() string {
 	return "UDP Datagram Transport"
 }
 
-func (m Transport) CreateTransportInstance(transportUrl url.URL, options map[string][]string) (transports.TransportInstance, error) {
-	return m.CreateTransportInstanceForLocalAddress(transportUrl, options, nil)
+func (m Transport) CreateTransportInstance(transportUrl url.URL, options map[string][]string, _options ...options.WithOption) (transports.TransportInstance, error) {
+	return m.CreateTransportInstanceForLocalAddress(transportUrl, options, nil, _options...)
 }
 
-func (m Transport) CreateTransportInstanceForLocalAddress(transportUrl url.URL, options map[string][]string, localAddress *net.UDPAddr) (transports.TransportInstance, error) {
+func (m Transport) CreateTransportInstanceForLocalAddress(transportUrl url.URL, options map[string][]string, localAddress *net.UDPAddr, _options ...options.WithOption) (transports.TransportInstance, error) {
 	connectionStringRegexp := regexp.MustCompile(`^((?P<ip>[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3})|(?P<hostname>[a-zA-Z0-9.\-]+))(:(?P<port>[0-9]{1,5}))?`)
 	var remoteAddressString string
 	var remotePort int
@@ -105,7 +110,7 @@ func (m Transport) CreateTransportInstanceForLocalAddress(transportUrl url.URL, 
 		return nil, errors.Wrap(err, "error resolving typ address")
 	}
 
-	return NewTransportInstance(localAddress, remoteAddress, connectTimeout, soReUse, &m), nil
+	return NewTransportInstance(localAddress, remoteAddress, connectTimeout, soReUse, &m, _options...), nil
 }
 
 func (m Transport) String() string {
@@ -120,15 +125,19 @@ type TransportInstance struct {
 	transport      *Transport
 	udpConn        *net.UDPConn
 	reader         *bufio.Reader
+
+	log zerolog.Logger
 }
 
-func NewTransportInstance(localAddress *net.UDPAddr, remoteAddress *net.UDPAddr, connectTimeout uint32, soReUse bool, transport *Transport) *TransportInstance {
+func NewTransportInstance(localAddress *net.UDPAddr, remoteAddress *net.UDPAddr, connectTimeout uint32, soReUse bool, transport *Transport, _options ...options.WithOption) *TransportInstance {
 	return &TransportInstance{
 		LocalAddress:   localAddress,
 		RemoteAddress:  remoteAddress,
 		ConnectTimeout: connectTimeout,
 		SoReUse:        soReUse,
 		transport:      transport,
+
+		log: options.ExtractCustomLogger(_options...),
 	}
 }
 

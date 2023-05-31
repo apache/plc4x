@@ -19,6 +19,8 @@
 
 package options
 
+import "github.com/rs/zerolog"
+
 // WithOption is a marker interface for options supplied by the builders like WithDefaultTtl
 type WithOption interface {
 	isOption() bool
@@ -31,3 +33,36 @@ type Option struct {
 func (_ Option) isOption() bool {
 	return true
 }
+
+// WithCustomLogger is a global option to supply a custom logger
+func WithCustomLogger(logger zerolog.Logger) WithOption {
+	return withCustomLogger{logger: logger}
+}
+
+// ExtractCustomLogger can be used to extract the custom logger
+func ExtractCustomLogger(options ...WithOption) (customLogger zerolog.Logger) {
+	for _, option := range options {
+		switch option := option.(type) {
+		case withCustomLogger:
+			customLogger = option.logger
+			return
+		}
+	}
+	return
+}
+
+///////////////////////////////////////
+///////////////////////////////////////
+//
+// Internal section
+//
+
+type withCustomLogger struct {
+	Option
+	logger zerolog.Logger
+}
+
+//
+//
+///////////////////////////////////////
+///////////////////////////////////////

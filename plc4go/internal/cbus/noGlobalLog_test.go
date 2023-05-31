@@ -17,18 +17,9 @@
  * under the License.
  */
 
-package transports
+package cbus
 
-import (
-	"github.com/apache/plc4x/plc4go/spi/options"
-	"net/url"
-)
-
-type Transport interface {
-	// GetTransportCode Get the short code used to identify this transport (As used in the connection string)
-	GetTransportCode() string
-	// GetTransportName Get a human-readable name for this transport
-	GetTransportName() string
-	// CreateTransportInstance creates transport instance
-	CreateTransportInstance(transportUrl url.URL, options map[string][]string, _options ...options.WithOption) (TransportInstance, error)
+// This ensures that we don't global log
+func init() {
+	//testutils.ExplodingGlobalLogger(true)
 }

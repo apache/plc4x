@@ -22,9 +22,9 @@ package cbus
 import (
 	"context"
 	"fmt"
-	"github.com/apache/plc4x/plc4go/spi"
+	"github.com/apache/plc4x/plc4go/spi/transactions"
 	spiValues "github.com/apache/plc4x/plc4go/spi/values"
-	"github.com/rs/zerolog/log"
+	"github.com/rs/zerolog"
 	"strconv"
 	"strings"
 
@@ -277,7 +277,7 @@ func producePointToMultiPointCommandNormal(bridgeAddresses []readWriteModel.Brid
 	return readWriteModel.NewCBusCommandPointToMultiPoint(command, header, cbusOptions), nil
 }
 
-func MapEncodedReply(transaction spi.RequestTransaction, encodedReply readWriteModel.EncodedReply, tagName string, addResponseCode func(name string, responseCode apiModel.PlcResponseCode), addPlcValue func(name string, plcValue apiValues.PlcValue)) error {
+func MapEncodedReply(localLog zerolog.Logger, transaction transactions.RequestTransaction, encodedReply readWriteModel.EncodedReply, tagName string, addResponseCode func(name string, responseCode apiModel.PlcResponseCode), addPlcValue func(name string, plcValue apiValues.PlcValue)) error {
 	switch reply := encodedReply.(type) {
 	case readWriteModel.EncodedReplyCALReplyExactly:
 		calData := reply.GetCalReply().GetCalData()
@@ -479,7 +479,7 @@ func MapEncodedReply(transaction spi.RequestTransaction, encodedReply readWriteM
 		default:
 			wbpcb := spiValues.NewWriteBufferPlcValueBased()
 			if err := calData.SerializeWithWriteBuffer(context.Background(), wbpcb); err != nil {
-				log.Warn().Err(err).Msgf("Unmapped cal data type %T. Returning raw to string", calData)
+				localLog.Warn().Err(err).Msgf("Unmapped cal data type %T. Returning raw to string", calData)
 				addPlcValue(tagName, spiValues.NewPlcSTRING(fmt.Sprintf("%s", calData)))
 			} else {
 				addPlcValue(tagName, wbpcb.GetPlcValue())

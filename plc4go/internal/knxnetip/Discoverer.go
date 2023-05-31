@@ -23,7 +23,7 @@ import (
 	"bytes"
 	"context"
 	"fmt"
-	"github.com/apache/plc4x/plc4go/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/pool"
 	"github.com/rs/zerolog/log"
 	"net"
 	"net/url"
@@ -41,16 +41,16 @@ import (
 
 type Discoverer struct {
 	transportInstanceCreationWorkItemId atomic.Int32
-	transportInstanceCreationQueue      utils.Executor
+	transportInstanceCreationQueue      pool.Executor
 	deviceScanningWorkItemId            atomic.Int32
-	deviceScanningQueue                 utils.Executor
+	deviceScanningQueue                 pool.Executor
 }
 
 func NewDiscoverer() *Discoverer {
 	return &Discoverer{
 		// TODO: maybe a dynamic executor would be better to not waste cycles when not in use
-		transportInstanceCreationQueue: utils.NewFixedSizeExecutor(50, 100),
-		deviceScanningQueue:            utils.NewFixedSizeExecutor(50, 100),
+		transportInstanceCreationQueue: pool.NewFixedSizeExecutor(50, 100),
+		deviceScanningQueue:            pool.NewFixedSizeExecutor(50, 100),
 	}
 }
 
@@ -149,7 +149,7 @@ func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.
 	return nil
 }
 
-func (d *Discoverer) createTransportInstanceDispatcher(ctx context.Context, wg *sync.WaitGroup, connectionUrl *url.URL, ipv4Addr net.IP, udpTransport *udp.Transport, transportInstances chan transports.TransportInstance) utils.Runnable {
+func (d *Discoverer) createTransportInstanceDispatcher(ctx context.Context, wg *sync.WaitGroup, connectionUrl *url.URL, ipv4Addr net.IP, udpTransport *udp.Transport, transportInstances chan transports.TransportInstance) pool.Runnable {
 	wg.Add(1)
 	return func() {
 		defer wg.Done()
@@ -171,7 +171,7 @@ func (d *Discoverer) createTransportInstanceDispatcher(ctx context.Context, wg *
 	}
 }
 
-func (d *Discoverer) createDeviceScanDispatcher(udpTransportInstance *udp.TransportInstance, callback func(event apiModel.PlcDiscoveryItem)) utils.Runnable {
+func (d *Discoverer) createDeviceScanDispatcher(udpTransportInstance *udp.TransportInstance, callback func(event apiModel.PlcDiscoveryItem)) pool.Runnable {
 	return func() {
 		log.Debug().Msgf("Scanning %v", udpTransportInstance)
 		// Create a codec for sending and receiving messages.

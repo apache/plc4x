@@ -24,9 +24,9 @@ import (
 	"fmt"
 	plc4go "github.com/apache/plc4x/plc4go/pkg/api"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
-	"github.com/apache/plc4x/plc4go/spi"
 	_default "github.com/apache/plc4x/plc4go/spi/default"
 	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/apache/plc4x/plc4go/spi/transactions"
 	"github.com/apache/plc4x/plc4go/spi/transports"
 	"github.com/apache/plc4x/plc4go/spi/transports/test"
 	"github.com/apache/plc4x/plc4go/spi/utils"
@@ -40,7 +40,7 @@ import (
 func TestDriver_DiscoverWithContext(t *testing.T) {
 	type fields struct {
 		DefaultDriver           _default.DefaultDriver
-		tm                      spi.RequestTransactionManager
+		tm                      transactions.RequestTransactionManager
 		awaitSetupComplete      bool
 		awaitDisconnectComplete bool
 	}
@@ -83,7 +83,7 @@ func TestDriver_DiscoverWithContext(t *testing.T) {
 func TestDriver_GetConnectionWithContext(t *testing.T) {
 	type fields struct {
 		DefaultDriver           _default.DefaultDriver
-		tm                      spi.RequestTransactionManager
+		tm                      transactions.RequestTransactionManager
 		awaitSetupComplete      bool
 		awaitDisconnectComplete bool
 	}
@@ -273,7 +273,7 @@ func TestNewDriver(t *testing.T) {
 func TestDriver_reportError(t *testing.T) {
 	type fields struct {
 		DefaultDriver           _default.DefaultDriver
-		tm                      spi.RequestTransactionManager
+		tm                      transactions.RequestTransactionManager
 		awaitSetupComplete      bool
 		awaitDisconnectComplete bool
 	}

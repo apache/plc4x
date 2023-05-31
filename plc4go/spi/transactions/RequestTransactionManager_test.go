@@ -22,7 +22,8 @@ package transactions
 import (
 	"container/list"
 	"context"
-	"github.com/apache/plc4x/plc4go/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/apache/plc4x/plc4go/spi/pool"
 	"github.com/rs/zerolog"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
@@ -33,7 +34,7 @@ import (
 func TestNewRequestTransactionManager(t *testing.T) {
 	type args struct {
 		numberOfConcurrentRequests       int
-		requestTransactionManagerOptions []RequestTransactionManagerOption
+		requestTransactionManagerOptions []options.WithOption
 	}
 	tests := []struct {
 		name string
@@ -51,7 +52,7 @@ func TestNewRequestTransactionManager(t *testing.T) {
 			name: "just create one with option",
 			args: args{
 				numberOfConcurrentRequests: 2,
-				requestTransactionManagerOptions: []RequestTransactionManagerOption{
+				requestTransactionManagerOptions: []options.WithOption{
 					WithCustomExecutor(sharedExecutorInstance),
 				},
 			},
@@ -73,12 +74,12 @@ func TestNewRequestTransactionManager(t *testing.T) {
 
 func TestWithCustomExecutor(t *testing.T) {
 	type args struct {
-		executor utils.Executor
+		executor pool.Executor
 	}
 	tests := []struct {
 		name string
 		args args
-		want RequestTransactionManagerOption
+		want options.WithOption
 	}{
 		{
 			name: "with a option",
@@ -102,7 +103,7 @@ func Test_requestTransactionManager_SetNumberOfConcurrentRequests(t *testing.T) 
 		numberOfConcurrentRequests int
 		transactionId              int32
 		workLog                    list.List
-		executor                   utils.Executor
+		executor                   pool.Executor
 	}
 	type args struct {
 		numberOfConcurrentRequests int
@@ -144,7 +145,7 @@ func Test_requestTransactionManager_StartTransaction(t *testing.T) {
 		numberOfConcurrentRequests int
 		transactionId              int32
 		workLog                    list.List
-		executor                   utils.Executor
+		executor                   pool.Executor
 	}
 	tests := []struct {
 		name   string
@@ -183,7 +184,7 @@ func Test_requestTransactionManager_endRequest(t *testing.T) {
 		numberOfConcurrentRequests int
 		transactionId              int32
 		workLog                    list.List
-		executor                   utils.Executor
+		executor                   pool.Executor
 	}
 	type args struct {
 		transaction *requestTransaction
@@ -235,7 +236,7 @@ func Test_requestTransactionManager_failRequest(t *testing.T) {
 		numberOfConcurrentRequests int
 		transactionId              int32
 		workLog                    list.List
-		executor                   utils.Executor
+		executor                   pool.Executor
 	}
 	type args struct {
 		transaction *requestTransaction
@@ -287,7 +288,7 @@ func Test_requestTransactionManager_getNumberOfActiveRequests(t *testing.T) {
 		numberOfConcurrentRequests int
 		transactionId              int32
 		workLog                    list.List
-		executor                   utils.Executor
+		executor                   pool.Executor
 	}
 	tests := []struct {
 		name   string
@@ -320,7 +321,7 @@ func Test_requestTransactionManager_processWorklog(t *testing.T) {
 		numberOfConcurrentRequests int
 		transactionId              int32
 		workLog                    list.List
-		executor                   utils.Executor
+		executor                   pool.Executor
 	}
 	tests := []struct {
 		name   string
@@ -381,7 +382,7 @@ func Test_requestTransactionManager_submitTransaction(t *testing.T) {
 		numberOfConcurrentRequests int
 		transactionId              int32
 		workLog                    list.List
-		executor                   utils.Executor
+		executor                   pool.Executor
 	}
 	type args struct {
 		handle *requestTransaction
@@ -420,8 +421,8 @@ func Test_requestTransaction_AwaitCompletion(t1 *testing.T) {
 	type fields struct {
 		parent           *requestTransactionManager
 		transactionId    int32
-		operation        utils.Runnable
-		completionFuture utils.CompletionFuture
+		operation        pool.Runnable
+		completionFuture pool.CompletionFuture
 		transactionLog   zerolog.Logger
 	}
 	type args struct {
@@ -489,8 +490,8 @@ func Test_requestTransaction_EndRequest(t1 *testing.T) {
 	type fields struct {
 		parent           *requestTransactionManager
 		transactionId    int32
-		operation        utils.Runnable
-		completionFuture utils.CompletionFuture
+		operation        pool.Runnable
+		completionFuture pool.CompletionFuture
 		transactionLog   zerolog.Logger
 	}
 	tests := []struct {
@@ -526,8 +527,8 @@ func Test_requestTransaction_FailRequest(t1 *testing.T) {
 	type fields struct {
 		parent           *requestTransactionManager
 		transactionId    int32
-		operation        utils.Runnable
-		completionFuture utils.CompletionFuture
+		operation        pool.Runnable
+		completionFuture pool.CompletionFuture
 		transactionLog   zerolog.Logger
 	}
 	type args struct {
@@ -577,8 +578,8 @@ func Test_requestTransaction_String(t1 *testing.T) {
 	type fields struct {
 		parent           *requestTransactionManager
 		transactionId    int32
-		operation        utils.Runnable
-		completionFuture utils.CompletionFuture
+		operation        pool.Runnable
+		completionFuture pool.CompletionFuture
 		transactionLog   zerolog.Logger
 	}
 	tests := []struct {
@@ -611,8 +612,8 @@ func Test_requestTransaction_Submit(t1 *testing.T) {
 	type fields struct {
 		parent           *requestTransactionManager
 		transactionId    int32
-		operation        utils.Runnable
-		completionFuture utils.CompletionFuture
+		operation        pool.Runnable
+		completionFuture pool.CompletionFuture
 		transactionLog   zerolog.Logger
 	}
 	type args struct {

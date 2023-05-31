@@ -21,6 +21,9 @@ package cbus
 
 import (
 	"context"
+	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/apache/plc4x/plc4go/spi/transactions"
+	"github.com/rs/zerolog"
 	"sync"
 	"time"
 
@@ -29,25 +32,28 @@ import (
 	"github.com/apache/plc4x/plc4go/spi"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/pkg/errors"
-	"github.com/rs/zerolog/log"
 )
 
 type Writer struct {
 	alphaGenerator *AlphaGenerator
 	messageCodec   *MessageCodec
-	tm             spi.RequestTransactionManager
+	tm             transactions.RequestTransactionManager
+
+	log zerolog.Logger
 }
 
-func NewWriter(tpduGenerator *AlphaGenerator, messageCodec *MessageCodec, tm spi.RequestTransactionManager) *Writer {
+func NewWriter(tpduGenerator *AlphaGenerator, messageCodec *MessageCodec, tm transactions.RequestTransactionManager, _options ...options.WithOption) *Writer {
 	return &Writer{
 		alphaGenerator: tpduGenerator,
 		messageCodec:   messageCodec,
 		tm:             tm,
+
+		log: options.ExtractCustomLogger(_options...),
 	}
 }
 
 func (m *Writer) Write(ctx context.Context, writeRequest apiModel.PlcWriteRequest) <-chan apiModel.PlcWriteRequestResult {
-	log.Trace().Msg("Writing")
+	m.log.Trace().Msg("Writing")
 	result := make(chan apiModel.PlcWriteRequestResult, 1)
 	go func() {
 		defer func() {
@@ -103,9 +109,9 @@ func (m *Writer) Write(ctx context.Context, writeRequest apiModel.PlcWriteReques
 			tagNameCopy := tagName
 			// Start a new request-transaction (Is ended in the response-handler)
 			transaction := m.tm.StartTransaction()
-			transaction.Submit(func(transaction spi.RequestTransaction) {
+			transaction.Submit(func(transaction transactions.RequestTransaction) {
 				// Send the  over the wire
-				log.Trace().Msg("Send ")
+				m.log.Trace().Msg("Send ")
 				if err := m.messageCodec.SendRequest(ctx, messageToSend, func(receivedMessage spi.Message) bool {
 					cbusMessage, ok := receivedMessage.(readWriteModel.CBusMessageExactly)
 					if !ok {
@@ -131,12 +137,12 @@ func (m *Writer) Write(ctx context.Context, writeRequest apiModel.PlcWriteReques
 					addResponseCode(tagName, apiModel.PlcResponseCode_OK)
 					return transaction.EndRequest()
 				}, func(err error) error {
-					log.Debug().Msgf("Error waiting for tag %s", tagNameCopy)
+					m.log.Debug().Msgf("Error waiting for tag %s", tagNameCopy)
 					addResponseCode(tagNameCopy, apiModel.PlcResponseCode_REQUEST_TIMEOUT)
 					// TODO: ok or not ok?
 					return transaction.EndRequest()
 				}, time.Second*1); err != nil {
-					log.Debug().Err(err).Msgf("Error sending message for tag %s", tagNameCopy)
+					m.log.Debug().Err(err).Msgf("Error sending message for tag %s", tagNameCopy)
 					addResponseCode(tagNameCopy, apiModel.PlcResponseCode_INTERNAL_ERROR)
 					_ = transaction.EndRequest()
 				}

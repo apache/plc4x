@@ -24,8 +24,10 @@ import (
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/cbus/readwrite/model"
-	"github.com/apache/plc4x/plc4go/spi"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
+	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/apache/plc4x/plc4go/spi/testutils"
+	"github.com/apache/plc4x/plc4go/spi/transactions"
 	"github.com/apache/plc4x/plc4go/spi/transports/test"
 	"github.com/pkg/errors"
 	"github.com/stretchr/testify/assert"
@@ -42,7 +44,7 @@ func TestNewReader(t *testing.T) {
 	type args struct {
 		tpduGenerator *AlphaGenerator
 		messageCodec  *MessageCodec
-		tm            spi.RequestTransactionManager
+		tm            transactions.RequestTransactionManager
 	}
 	tests := []struct {
 		name string
@@ -60,7 +62,10 @@ func TestNewReader(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			assert.Equalf(t, tt.want, NewReader(tt.args.tpduGenerator, tt.args.messageCodec, tt.args.tm), "NewReader(%v, %v, %v)", tt.args.tpduGenerator, tt.args.messageCodec, tt.args.tm)
+			logger := testutils.ProduceTestingLogger(t)
+			reader := NewReader(tt.args.tpduGenerator, tt.args.messageCodec, tt.args.tm, options.WithCustomLogger(logger))
+			tt.want.log = logger
+			assert.Equalf(t, tt.want, reader, "NewReader(%v, %v, %v)", tt.args.tpduGenerator, tt.args.messageCodec, tt.args.tm)
 		})
 	}
 }
@@ -69,7 +74,7 @@ func TestReader_Read(t *testing.T) {
 	type fields struct {
 		alphaGenerator *AlphaGenerator
 		messageCodec   *MessageCodec
-		tm             spi.RequestTransactionManager
+		tm             transactions.RequestTransactionManager
 	}
 	type args struct {
 		ctx         context.Context
@@ -118,7 +123,7 @@ func TestReader_readSync(t *testing.T) {
 	type fields struct {
 		alphaGenerator *AlphaGenerator
 		messageCodec   *MessageCodec
-		tm             spi.RequestTransactionManager
+		tm             transactions.RequestTransactionManager
 	}
 	type args struct {
 		ctx         context.Context
@@ -129,6 +134,7 @@ func TestReader_readSync(t *testing.T) {
 		name            string
 		fields          fields
 		args            args
+		setup           func(t *testing.T, fields *fields)
 		resultEvaluator func(t *testing.T, results chan apiModel.PlcReadRequestResult) bool
 	}{
 		{
@@ -173,7 +179,6 @@ func TestReader_readSync(t *testing.T) {
 					}
 					return codec
 				}(),
-				tm: spi.NewRequestTransactionManager(10),
 			},
 			args: args{
 				ctx: context.Background(),
@@ -188,6 +193,9 @@ func TestReader_readSync(t *testing.T) {
 					nil,
 				),
 				result: make(chan apiModel.PlcReadRequestResult, 1),
+			},
+			setup: func(t *testing.T, fields *fields) {
+				fields.tm = transactions.NewRequestTransactionManager(10, options.WithCustomLogger(testutils.ProduceTestingLogger(t)))
 			},
 			resultEvaluator: func(t *testing.T, results chan apiModel.PlcReadRequestResult) bool {
 				timer := time.NewTimer(2 * time.Second)
@@ -265,7 +273,6 @@ func TestReader_readSync(t *testing.T) {
 					}
 					return codec
 				}(),
-				tm: spi.NewRequestTransactionManager(10),
 			},
 			args: args{
 				ctx: func() context.Context {
@@ -284,6 +291,9 @@ func TestReader_readSync(t *testing.T) {
 					nil,
 				),
 				result: make(chan apiModel.PlcReadRequestResult, 1),
+			},
+			setup: func(t *testing.T, fields *fields) {
+				fields.tm = transactions.NewRequestTransactionManager(10, options.WithCustomLogger(testutils.ProduceTestingLogger(t)))
 			},
 			resultEvaluator: func(t *testing.T, results chan apiModel.PlcReadRequestResult) bool {
 				timer := time.NewTimer(2 * time.Second)
@@ -324,7 +334,6 @@ func TestReader_readSync(t *testing.T) {
 					}
 					return codec
 				}(),
-				tm: spi.NewRequestTransactionManager(10),
 			},
 			args: args{
 				ctx: func() context.Context {
@@ -344,6 +353,9 @@ func TestReader_readSync(t *testing.T) {
 				),
 				result: make(chan apiModel.PlcReadRequestResult, 1),
 			},
+			setup: func(t *testing.T, fields *fields) {
+				fields.tm = transactions.NewRequestTransactionManager(10, options.WithCustomLogger(testutils.ProduceTestingLogger(t)))
+			},
 			resultEvaluator: func(t *testing.T, results chan apiModel.PlcReadRequestResult) bool {
 				timer := time.NewTimer(2 * time.Second)
 				defer timer.Stop()
@@ -359,6 +371,9 @@ func TestReader_readSync(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			if tt.setup != nil {
+				tt.setup(t, &tt.fields)
+			}
 			m := &Reader{
 				alphaGenerator: tt.fields.alphaGenerator,
 				messageCodec:   tt.fields.messageCodec,
@@ -374,11 +389,11 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 	type fields struct {
 		alphaGenerator *AlphaGenerator
 		messageCodec   *MessageCodec
-		tm             spi.RequestTransactionManager
+		tm             transactions.RequestTransactionManager
 	}
 	type args struct {
 		ctx             context.Context
-		transaction     spi.RequestTransaction
+		transaction     transactions.RequestTransaction
 		messageToSend   readWriteModel.CBusMessage
 		addResponseCode func(t *testing.T, wg *sync.WaitGroup) func(name string, responseCode apiModel.PlcResponseCode)
 		tagName         string

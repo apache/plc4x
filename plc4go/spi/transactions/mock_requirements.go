@@ -20,12 +20,12 @@
 package transactions
 
 import (
-	"github.com/apache/plc4x/plc4go/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/pool"
 )
 
 // Note this file is a Helper for mockery to generate use mocks from other package
 
 // Deprecated: don't use it in productive code
 type CompletionFuture interface {
-	utils.CompletionFuture
+	pool.CompletionFuture
 }

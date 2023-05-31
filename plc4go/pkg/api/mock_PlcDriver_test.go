@@ -292,13 +292,13 @@ func (_c *MockPlcDriver_GetConnection_Call) RunAndReturn(run func(url.URL, map[s
 	return _c
 }
 
-// GetConnectionWithContext provides a mock function with given fields: ctx, transportUrl, _a2, _a3
-func (_m *MockPlcDriver) GetConnectionWithContext(ctx context.Context, transportUrl url.URL, _a2 map[string]transports.Transport, _a3 map[string][]string) <-chan PlcConnectionConnectResult {
-	ret := _m.Called(ctx, transportUrl, _a2, _a3)
+// GetConnectionWithContext provides a mock function with given fields: ctx, transportUrl, _a2, driverOptions
+func (_m *MockPlcDriver) GetConnectionWithContext(ctx context.Context, transportUrl url.URL, _a2 map[string]transports.Transport, driverOptions map[string][]string) <-chan PlcConnectionConnectResult {
+	ret := _m.Called(ctx, transportUrl, _a2, driverOptions)
 
 	var r0 <-chan PlcConnectionConnectResult
 	if rf, ok := ret.Get(0).(func(context.Context, url.URL, map[string]transports.Transport, map[string][]string) <-chan PlcConnectionConnectResult); ok {
-		r0 = rf(ctx, transportUrl, _a2, _a3)
+		r0 = rf(ctx, transportUrl, _a2, driverOptions)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(<-chan PlcConnectionConnectResult)
@@ -317,12 +317,12 @@ type MockPlcDriver_GetConnectionWithContext_Call struct {
 //   - ctx context.Context
 //   - transportUrl url.URL
 //   - _a2 map[string]transports.Transport
-//   - _a3 map[string][]string
-func (_e *MockPlcDriver_Expecter) GetConnectionWithContext(ctx interface{}, transportUrl interface{}, _a2 interface{}, _a3 interface{}) *MockPlcDriver_GetConnectionWithContext_Call {
-	return &MockPlcDriver_GetConnectionWithContext_Call{Call: _e.mock.On("GetConnectionWithContext", ctx, transportUrl, _a2, _a3)}
+//   - driverOptions map[string][]string
+func (_e *MockPlcDriver_Expecter) GetConnectionWithContext(ctx interface{}, transportUrl interface{}, _a2 interface{}, driverOptions interface{}) *MockPlcDriver_GetConnectionWithContext_Call {
+	return &MockPlcDriver_GetConnectionWithContext_Call{Call: _e.mock.On("GetConnectionWithContext", ctx, transportUrl, _a2, driverOptions)}
 }
 
-func (_c *MockPlcDriver_GetConnectionWithContext_Call) Run(run func(ctx context.Context, transportUrl url.URL, _a2 map[string]transports.Transport, _a3 map[string][]string)) *MockPlcDriver_GetConnectionWithContext_Call {
+func (_c *MockPlcDriver_GetConnectionWithContext_Call) Run(run func(ctx context.Context, transportUrl url.URL, _a2 map[string]transports.Transport, driverOptions map[string][]string)) *MockPlcDriver_GetConnectionWithContext_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		run(args[0].(context.Context), args[1].(url.URL), args[2].(map[string]transports.Transport), args[3].(map[string][]string))
 	})

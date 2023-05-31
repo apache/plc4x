@@ -24,9 +24,11 @@ import (
 	"github.com/ajankovic/xdiff/parser"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"github.com/stretchr/testify/assert"
 	"os"
+	"runtime/debug"
 	"strings"
 	"testing"
 )
@@ -97,4 +99,36 @@ func CompareResults(t *testing.T, actualString []byte, referenceString []byte) e
 	boxSideBySide := asciiBoxWriter.BoxSideBySide(expectedBox, gotBox)
 	_ = boxSideBySide // TODO: xml too distorted, we need a don't center option
 	return errors.New("there were differences: Expected: \n" + string(referenceString) + "\nBut Got: \n" + string(actualString))
+}
+
+// ProduceTestingLogger produces a logger which redirects to testing.T
+func ProduceTestingLogger(t *testing.T) zerolog.Logger {
+	return zerolog.New(zerolog.NewConsoleWriter(zerolog.ConsoleTestWriter(t)))
+}
+
+// SetToTestingLogger sets logger to  ProduceTestingLogger and resets it on cleanup
+func SetToTestingLogger(t *testing.T, logger *zerolog.Logger) {
+	oldLogger := *logger
+	t.Cleanup(func() {
+		*logger = oldLogger
+	})
+	newLogger := ProduceTestingLogger(t)
+	*logger = newLogger
+}
+
+type _explodingGlobalLogger struct {
+	hardExplode bool
+}
+
+func (e _explodingGlobalLogger) Write(_ []byte) (_ int, err error) {
+	if e.hardExplode {
+		debug.PrintStack()
+		panic("found a global log usage")
+	}
+	return 0, errors.New("found a global log usage")
+}
+
+// ExplodingGlobalLogger Useful to find unredirected logs
+func ExplodingGlobalLogger(hardExplode bool) {
+	log.Logger = zerolog.New(_explodingGlobalLogger{hardExplode: hardExplode})
 }

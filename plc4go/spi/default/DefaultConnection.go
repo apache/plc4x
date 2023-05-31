@@ -21,16 +21,15 @@ package _default
 
 import (
 	"context"
+	"github.com/rs/zerolog"
 	"time"
-
-	"github.com/pkg/errors"
-	"github.com/rs/zerolog/log"
 
 	"github.com/apache/plc4x/plc4go/pkg/api"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/transports"
+	"github.com/pkg/errors"
 )
 
 // DefaultConnectionRequirements defines the required at a implementing connection when using DefaultConnection
@@ -152,14 +151,16 @@ type defaultConnection struct {
 	connected    bool
 	tagHandler   spi.PlcTagHandler
 	valueHandler spi.PlcValueHandler
+
+	log zerolog.Logger
 }
 
-func buildDefaultConnection(requirements DefaultConnectionRequirements, options ...options.WithOption) DefaultConnection {
+func buildDefaultConnection(requirements DefaultConnectionRequirements, _options ...options.WithOption) DefaultConnection {
 	defaultTtl := time.Second * 10
 	var tagHandler spi.PlcTagHandler
 	var valueHandler spi.PlcValueHandler
 
-	for _, option := range options {
+	for _, option := range _options {
 		switch option.(type) {
 		case withDefaultTtl:
 			defaultTtl = option.(withDefaultTtl).defaultTtl
@@ -171,11 +172,13 @@ func buildDefaultConnection(requirements DefaultConnectionRequirements, options 
 	}
 
 	return &defaultConnection{
-		requirements,
-		defaultTtl,
-		false,
-		tagHandler,
-		valueHandler,
+		DefaultConnectionRequirements: requirements,
+		defaultTtl:                    defaultTtl,
+		connected:                     false,
+		tagHandler:                    tagHandler,
+		valueHandler:                  valueHandler,
+
+		log: options.ExtractCustomLogger(_options...),
 	}
 }
 
@@ -233,7 +236,7 @@ func (d *defaultConnection) Connect() <-chan plc4go.PlcConnectionConnectResult {
 }
 
 func (d *defaultConnection) ConnectWithContext(ctx context.Context) <-chan plc4go.PlcConnectionConnectResult {
-	log.Trace().Msg("Connecting")
+	d.log.Trace().Msg("Connecting")
 	ch := make(chan plc4go.PlcConnectionConnectResult, 1)
 	go func() {
 		defer func() {
@@ -250,7 +253,7 @@ func (d *defaultConnection) ConnectWithContext(ctx context.Context) <-chan plc4g
 }
 
 func (d *defaultConnection) BlockingClose() {
-	log.Trace().Msg("blocking close connection")
+	d.log.Trace().Msg("blocking close connection")
 	closeResults := d.GetConnection().Close()
 	timeout := time.NewTimer(d.GetTtl())
 	d.SetConnected(false)
@@ -267,9 +270,9 @@ func (d *defaultConnection) BlockingClose() {
 }
 
 func (d *defaultConnection) Close() <-chan plc4go.PlcConnectionCloseResult {
-	log.Trace().Msg("close connection")
+	d.log.Trace().Msg("close connection")
 	if err := d.GetMessageCodec().Disconnect(); err != nil {
-		log.Warn().Err(err).Msg("Error disconnecting message code")
+		d.log.Warn().Err(err).Msg("Error disconnecting message code")
 	}
 	err := d.GetTransportInstance().Close()
 	d.SetConnected(false)

@@ -23,6 +23,9 @@ import (
 	"container/list"
 	"context"
 	"fmt"
+	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/apache/plc4x/plc4go/spi/pool"
+	"io"
 	"runtime"
 	"sync"
 	"time"
@@ -35,10 +38,10 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-var sharedExecutorInstance utils.Executor // shared instance
+var sharedExecutorInstance pool.Executor // shared instance
 
 func init() {
-	sharedExecutorInstance = utils.NewFixedSizeExecutor(runtime.NumCPU(), 100, utils.WithExecutorOptionTracerWorkers(config.TraceTransactionManagerWorkers))
+	sharedExecutorInstance = pool.NewFixedSizeExecutor(runtime.NumCPU(), 100, pool.WithExecutorOptionTracerWorkers(config.TraceTransactionManagerWorkers))
 	sharedExecutorInstance.Start()
 }
 
@@ -59,6 +62,9 @@ type RequestTransaction interface {
 
 // RequestTransactionManager handles transactions
 type RequestTransactionManager interface {
+	io.Closer
+	// CloseGraceful gives some time opposed to io.Closer
+	CloseGraceful(timeout time.Duration) error
 	// SetNumberOfConcurrentRequests sets the number of concurrent requests that will be sent out to a device
 	SetNumberOfConcurrentRequests(numberOfConcurrentRequests int)
 	// StartTransaction starts a RequestTransaction
@@ -66,26 +72,27 @@ type RequestTransactionManager interface {
 }
 
 // NewRequestTransactionManager creates a new RequestTransactionManager
-func NewRequestTransactionManager(numberOfConcurrentRequests int, requestTransactionManagerOptions ...RequestTransactionManagerOption) RequestTransactionManager {
+func NewRequestTransactionManager(numberOfConcurrentRequests int, _options ...options.WithOption) RequestTransactionManager {
 	_requestTransactionManager := &requestTransactionManager{
 		numberOfConcurrentRequests: numberOfConcurrentRequests,
 		transactionId:              0,
 		workLog:                    *list.New(),
 		executor:                   sharedExecutorInstance,
+
+		log: options.ExtractCustomLogger(_options...),
 	}
-	for _, requestTransactionManagerOption := range requestTransactionManagerOptions {
-		requestTransactionManagerOption(_requestTransactionManager)
+	for _, option := range _options {
+		switch option := option.(type) {
+		case *withCustomExecutor:
+			_requestTransactionManager.executor = option.executor
+		}
 	}
 	return _requestTransactionManager
 }
 
-type RequestTransactionManagerOption func(requestTransactionManager *requestTransactionManager)
-
 // WithCustomExecutor sets a custom Executor for the RequestTransactionManager
-func WithCustomExecutor(executor utils.Executor) RequestTransactionManagerOption {
-	return func(requestTransactionManager *requestTransactionManager) {
-		requestTransactionManager.executor = executor
-	}
+func WithCustomExecutor(executor pool.Executor) options.WithOption {
+	return &withCustomExecutor{executor: executor}
 }
 
 ///////////////////////////////////////
@@ -94,13 +101,18 @@ func WithCustomExecutor(executor utils.Executor) RequestTransactionManagerOption
 // Internal section
 //
 
+type withCustomExecutor struct {
+	options.Option
+	executor pool.Executor
+}
+
 type requestTransaction struct {
 	parent        *requestTransactionManager
 	transactionId int32
 
 	/** The initial operation to perform to kick off the request */
-	operation        utils.Runnable
-	completionFuture utils.CompletionFuture
+	operation        pool.Runnable
+	completionFuture pool.CompletionFuture
 
 	transactionLog zerolog.Logger
 }
@@ -115,7 +127,11 @@ type requestTransactionManager struct {
 	// Important, this is a FIFO Queue for Fairness!
 	workLog      list.List
 	workLogMutex sync.RWMutex
-	executor     utils.Executor
+	executor     pool.Executor
+
+	shutdown bool
+
+	log zerolog.Logger
 }
 
 //
@@ -172,13 +188,19 @@ func (r *requestTransactionManager) StartTransaction() RequestTransaction {
 	if !config.TraceTransactionManagerTransactions {
 		transactionLogger = zerolog.Nop()
 	}
-	return &requestTransaction{
+	transaction := &requestTransaction{
 		r,
 		currentTransactionId,
 		nil,
 		nil,
 		transactionLogger,
 	}
+	if r.shutdown {
+		if err := r.failRequest(transaction, errors.New("request transaction manager in shutdown")); err != nil {
+			r.log.Error().Err(err).Msg("error shutting down transaction")
+		}
+	}
+	return transaction
 }
 
 func (r *requestTransactionManager) getNumberOfActiveRequests() int {
@@ -213,6 +235,39 @@ func (r *requestTransactionManager) endRequest(transaction *requestTransaction) 
 	transaction.transactionLog.Debug().Msg("Processing the workLog")
 	r.processWorklog()
 	return nil
+}
+
+func (r *requestTransactionManager) Close() error {
+	return r.CloseGraceful(0)
+}
+
+func (r *requestTransactionManager) CloseGraceful(timeout time.Duration) error {
+	r.shutdown = true
+	if timeout > 0 {
+		timer := time.NewTimer(timeout)
+		defer utils.CleanupTimer(timer)
+		signal := make(chan struct{})
+		go func() {
+			for {
+				if len(r.runningRequests) == 0 {
+					break
+				}
+				time.Sleep(10 * time.Millisecond)
+			}
+			close(signal)
+		}()
+		select {
+		case <-timer.C:
+			log.Warn().Msgf("timout after %d", timeout)
+		case <-signal:
+		}
+	}
+	r.transactionMutex.Lock()
+	defer r.transactionMutex.Unlock()
+	r.workLogMutex.RLock()
+	defer r.workLogMutex.RUnlock()
+	r.runningRequests = nil
+	return r.executor.Close()
 }
 
 func (t *requestTransaction) FailRequest(err error) error {
