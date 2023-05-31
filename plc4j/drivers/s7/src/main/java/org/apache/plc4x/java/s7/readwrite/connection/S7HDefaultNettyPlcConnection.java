@@ -119,6 +119,10 @@ public class S7HDefaultNettyPlcConnection extends DefaultNettyPlcConnection impl
                 ConfigurationFactory.configure(configuration, secondaryChannelFactory);
             }
 
+            // The embedded channel will be used by the driver for IO and the
+            // S7Mux will pass any incoming message from any of the connections
+            // to this as well as handle passing messages from the protocol logic
+            // to the right connection.
             channel = new EmbeddedChannel(getChannelHandler(sessionSetupCompleteFuture, sessionDisconnectCompleteFuture, sessionDiscoveredCompleteFuture));
             channel.pipeline().addFirst(s7hmux);
             ((S7HMux) s7hmux).setEmbeddedChannel(channel);
