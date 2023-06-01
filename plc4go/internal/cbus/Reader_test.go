@@ -445,6 +445,8 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 				},
 			},
 			setup: func(t *testing.T, fields *fields, args *args) {
+				testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
+
 				loggerOption := options.WithCustomLogger(testutils.ProduceTestingLogger(t))
 
 				transport := test.NewTransport(loggerOption)
@@ -558,6 +560,8 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 				},
 			},
 			setup: func(t *testing.T, fields *fields, args *args) {
+				testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
+
 				transaction := NewMockRequestTransaction(t)
 				expect := transaction.EXPECT()
 				expect.FailRequest(mock.Anything).Return(errors.New("Nope"))
@@ -649,6 +653,8 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 				},
 			},
 			setup: func(t *testing.T, fields *fields, args *args) {
+				testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
+
 				transaction := NewMockRequestTransaction(t)
 				expect := transaction.EXPECT()
 				expect.EndRequest().Return(nil)

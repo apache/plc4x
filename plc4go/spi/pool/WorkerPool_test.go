@@ -24,6 +24,7 @@ import (
 	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
 	"github.com/stretchr/testify/assert"
 	"math/rand"
 	"testing"
@@ -277,6 +278,7 @@ func TestNewDynamicExecutor(t *testing.T) {
 	tests := []struct {
 		name              string
 		args              args
+		setup             func(*testing.T, *args)
 		manipulator       func(*testing.T, *executor)
 		executorValidator func(*testing.T, *executor) bool
 	}{
@@ -286,6 +288,9 @@ func TestNewDynamicExecutor(t *testing.T) {
 				numberOfWorkers: 13,
 				queueDepth:      14,
 				options:         []options.WithOption{WithExecutorOptionTracerWorkers(true)},
+			},
+			setup: func(t *testing.T, args *args) {
+				args.options = append(args.options, options.WithCustomLogger(zerolog.New(zerolog.NewConsoleWriter(zerolog.ConsoleTestWriter(t)))))
 			},
 			executorValidator: func(t *testing.T, e *executor) bool {
 				assert.False(t, e.running)
@@ -301,6 +306,9 @@ func TestNewDynamicExecutor(t *testing.T) {
 				numberOfWorkers: 2,
 				queueDepth:      2,
 				options:         []options.WithOption{WithExecutorOptionTracerWorkers(true)},
+			},
+			setup: func(t *testing.T, args *args) {
+				args.options = append(args.options, options.WithCustomLogger(zerolog.New(zerolog.NewConsoleWriter(zerolog.ConsoleTestWriter(t)))))
 			},
 			manipulator: func(t *testing.T, e *executor) {
 				{
@@ -356,6 +364,9 @@ func TestNewDynamicExecutor(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			if tt.setup != nil {
+				tt.setup(t, &tt.args)
+			}
 			fixedSizeExecutor := NewDynamicExecutor(tt.args.numberOfWorkers, tt.args.queueDepth, tt.args.options...)
 			defer fixedSizeExecutor.Stop()
 			if tt.manipulator != nil {

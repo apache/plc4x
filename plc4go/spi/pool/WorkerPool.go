@@ -25,7 +25,6 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
-	"github.com/rs/zerolog/log"
 	"io"
 	"runtime/debug"
 	"sync"
@@ -65,7 +64,7 @@ func (w *worker) work() {
 			w.work()
 		}
 	}()
-	workerLog := log.With().Int("Worker id", w.id).Logger()
+	workerLog := w.log.With().Int("Worker id", w.id).Logger()
 	if !w.executor.traceWorkers {
 		workerLog = zerolog.Nop()
 	}
@@ -187,7 +186,7 @@ func NewDynamicExecutor(maxNumberOfWorkers, queueDepth int, _options ...options.
 				customLogger.Error().Msgf("panic-ed %v", err)
 			}
 		}()
-		workerLog := log.With().Str("Worker type", "spawner").Logger()
+		workerLog := customLogger.With().Str("Worker type", "spawner").Logger()
 		if !_executor.traceWorkers {
 			workerLog = zerolog.Nop()
 		}
@@ -223,7 +222,7 @@ func NewDynamicExecutor(maxNumberOfWorkers, queueDepth int, _options ...options.
 				_executor.log.Error().Msgf("panic-ed %v", err)
 			}
 		}()
-		workerLog := log.With().Str("Worker type", "killer").Logger()
+		workerLog := customLogger.With().Str("Worker type", "killer").Logger()
 		if !_executor.traceWorkers {
 			workerLog = zerolog.Nop()
 		}
