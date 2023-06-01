@@ -22,6 +22,8 @@ package eip
 import (
 	"context"
 	"encoding/binary"
+	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/rs/zerolog"
 
 	"github.com/apache/plc4x/plc4go/protocols/eip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
@@ -29,16 +31,18 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/transports"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
-	"github.com/rs/zerolog/log"
 )
 
 type MessageCodec struct {
 	_default.DefaultCodec
+	log zerolog.Logger
 }
 
-func NewMessageCodec(transportInstance transports.TransportInstance) *MessageCodec {
-	codec := &MessageCodec{}
-	codec.DefaultCodec = _default.NewDefaultCodec(codec, transportInstance)
+func NewMessageCodec(transportInstance transports.TransportInstance, _options ...options.WithOption) *MessageCodec {
+	codec := &MessageCodec{
+		log: options.ExtractCustomLogger(_options...),
+	}
+	codec.DefaultCodec = _default.NewDefaultCodec(codec, transportInstance, _options...)
 	return codec
 }
 
@@ -47,7 +51,7 @@ func (m *MessageCodec) GetCodec() spi.MessageCodec {
 }
 
 func (m *MessageCodec) Send(message spi.Message) error {
-	log.Trace().Msg("Sending message")
+	m.log.Trace().Msg("Sending message")
 	// Cast the message to the correct type of struct
 	eipPacket := message.(model.EipPacket)
 	// Serialize the request
@@ -68,35 +72,35 @@ func (m *MessageCodec) Send(message spi.Message) error {
 func (m *MessageCodec) Receive() (spi.Message, error) {
 	// We need at least 6 bytes in order to know how big the packet is in total
 	if num, err := m.GetTransportInstance().GetNumBytesAvailableInBuffer(); (err == nil) && (num >= 4) {
-		log.Debug().Msgf("we got %d readable bytes", num)
+		m.log.Debug().Msgf("we got %d readable bytes", num)
 		data, err := m.GetTransportInstance().PeekReadableBytes(4)
 		if err != nil {
-			log.Warn().Err(err).Msg("error peeking")
+			m.log.Warn().Err(err).Msg("error peeking")
 			// TODO: Possibly clean up ...
 			return nil, nil
 		}
 		//Second byte for the size and then add the header size 24
 		packetSize := uint32(((uint16(data[3]) << 8) + uint16(data[2])) + 24)
 		if num < packetSize {
-			log.Debug().Msgf("Not enough bytes. Got: %d Need: %d\n", num, packetSize)
+			m.log.Debug().Msgf("Not enough bytes. Got: %d Need: %d\n", num, packetSize)
 			return nil, nil
 		}
 		data, err = m.GetTransportInstance().Read(packetSize)
 		if err != nil {
-			log.Debug().Err(err).Msg("Error reading")
+			m.log.Debug().Err(err).Msg("Error reading")
 			// TODO: Possibly clean up ...
 			return nil, nil
 		}
 		rb := utils.NewReadBufferByteBased(data, utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian))
 		eipPacket, err := model.EipPacketParseWithBuffer(context.Background(), rb, true)
 		if err != nil {
-			log.Warn().Err(err).Msg("error parsing")
+			m.log.Warn().Err(err).Msg("error parsing")
 			// TODO: Possibly clean up ...
 			return nil, nil
 		}
 		return eipPacket, nil
 	} else if err != nil {
-		log.Warn().Err(err).Msg("Got error reading")
+		m.log.Warn().Err(err).Msg("Got error reading")
 		return nil, nil
 	}
 	// TODO: maybe we return here a not enough error error

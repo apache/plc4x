@@ -29,7 +29,6 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/transports"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
-	"github.com/rs/zerolog/log"
 	"net/url"
 	"strconv"
 )
@@ -48,22 +47,22 @@ func NewModbusAsciiDriver(_options ...options.WithOption) *ModbusAsciiDriver {
 	return driver
 }
 
-func (m ModbusAsciiDriver) GetConnectionWithContext(ctx context.Context, transportUrl url.URL, transports map[string]transports.Transport, options map[string][]string) <-chan plc4go.PlcConnectionConnectResult {
-	log.Debug().Stringer("transportUrl", &transportUrl).Msgf("Get connection for transport url with %d transport(s) and %d option(s)", len(transports), len(options))
+func (m ModbusAsciiDriver) GetConnectionWithContext(ctx context.Context, transportUrl url.URL, transports map[string]transports.Transport, connectionOptions map[string][]string) <-chan plc4go.PlcConnectionConnectResult {
+	m.log.Debug().Stringer("transportUrl", &transportUrl).Msgf("Get connection for transport url with %d transport(s) and %d option(s)", len(transports), len(connectionOptions))
 	// Get an the transport specified in the url
 	transport, ok := transports[transportUrl.Scheme]
 	if !ok {
-		log.Error().Stringer("transportUrl", &transportUrl).Msgf("We couldn't find a transport for scheme %s", transportUrl.Scheme)
+		m.log.Error().Stringer("transportUrl", &transportUrl).Msgf("We couldn't find a transport for scheme %s", transportUrl.Scheme)
 		ch := make(chan plc4go.PlcConnectionConnectResult, 1)
 		ch <- _default.NewDefaultPlcConnectionConnectResult(nil, errors.Errorf("couldn't find transport for given transport url %#v", transportUrl))
 		return ch
 	}
 	// Provide a default-port to the transport, which is used, if the user doesn't provide on in the connection string.
-	options["defaultTcpPort"] = []string{"502"}
+	connectionOptions["defaultTcpPort"] = []string{"502"}
 	// Have the transport create a new transport-instance.
-	transportInstance, err := transport.CreateTransportInstance(transportUrl, options)
+	transportInstance, err := transport.CreateTransportInstance(transportUrl, connectionOptions)
 	if err != nil {
-		log.Error().Stringer("transportUrl", &transportUrl).Msgf("We couldn't create a transport instance for port %#v", options["defaultTcpPort"])
+		m.log.Error().Stringer("transportUrl", &transportUrl).Msgf("We couldn't create a transport instance for port %#v", connectionOptions["defaultTcpPort"])
 		ch := make(chan plc4go.PlcConnectionConnectResult, 1)
 		ch <- _default.NewDefaultPlcConnectionConnectResult(nil, errors.New("couldn't initialize transport configuration for given transport url "+transportUrl.String()))
 		return ch
@@ -75,7 +74,7 @@ func (m ModbusAsciiDriver) GetConnectionWithContext(ctx context.Context, transpo
 	go func() {
 		defer func() {
 			if err := recover(); err != nil {
-				log.Error().Msgf("panic-ed %v", err)
+				m.log.Error().Msgf("panic-ed %v", err)
 			}
 		}()
 		for {
@@ -83,28 +82,28 @@ func (m ModbusAsciiDriver) GetConnectionWithContext(ctx context.Context, transpo
 			adu := msg.(model.ModbusTcpADU)
 			serialized, err := json.Marshal(adu)
 			if err != nil {
-				log.Error().Err(err).Msg("got error serializing adu")
+				m.log.Error().Err(err).Msg("got error serializing adu")
 			} else {
-				log.Debug().Msgf("got message in the default handler %s\n", serialized)
+				m.log.Debug().Msgf("got message in the default handler %s\n", serialized)
 			}
 		}
 	}()
-	codec := NewMessageCodec(transportInstance)
-	log.Debug().Msgf("working with codec %#v", codec)
+	codec := NewMessageCodec(transportInstance, options.WithCustomLogger(m.log))
+	m.log.Debug().Msgf("working with codec %#v", codec)
 
 	// If a unit-identifier was provided in the connection string use this, otherwise use the default of 1
 	unitIdentifier := uint8(1)
-	if value, ok := options["unit-identifier"]; ok {
+	if value, ok := connectionOptions["unit-identifier"]; ok {
 		var intValue uint64
 		intValue, err = strconv.ParseUint(value[0], 10, 8)
 		if err == nil {
 			unitIdentifier = uint8(intValue)
 		}
 	}
-	log.Debug().Uint8("unitIdentifier", unitIdentifier).Msgf("using unit identifier %d", unitIdentifier)
+	m.log.Debug().Uint8("unitIdentifier", unitIdentifier).Msgf("using unit identifier %d", unitIdentifier)
 
 	// Create the new connection
-	connection := NewConnection(unitIdentifier, codec, options, m.GetPlcTagHandler())
-	log.Debug().Stringer("connection", connection).Msg("created connection, connecting now")
+	connection := NewConnection(unitIdentifier, codec, connectionOptions, m.GetPlcTagHandler())
+	m.log.Debug().Stringer("connection", connection).Msg("created connection, connecting now")
 	return connection.ConnectWithContext(ctx)
 }

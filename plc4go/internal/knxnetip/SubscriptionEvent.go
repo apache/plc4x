@@ -20,26 +20,34 @@
 package knxnetip
 
 import (
+	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/rs/zerolog"
 	"time"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
 	driverModel "github.com/apache/plc4x/plc4go/protocols/knxnetip/readwrite/model"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
-
-	"github.com/rs/zerolog/log"
 )
 
 type SubscriptionEvent struct {
 	*spiModel.DefaultPlcSubscriptionEvent
 	addresses map[string][]byte
+
+	log zerolog.Logger
 }
 
-func NewSubscriptionEvent(tags map[string]apiModel.PlcTag, types map[string]spiModel.SubscriptionType,
-	intervals map[string]time.Duration, responseCodes map[string]apiModel.PlcResponseCode,
-	addresses map[string][]byte, values map[string]values.PlcValue) SubscriptionEvent {
+func NewSubscriptionEvent(
+	tags map[string]apiModel.PlcTag,
+	types map[string]spiModel.SubscriptionType,
+	intervals map[string]time.Duration,
+	responseCodes map[string]apiModel.PlcResponseCode,
+	addresses map[string][]byte,
+	values map[string]values.PlcValue,
+	_options ...options.WithOption,
+) SubscriptionEvent {
 	subscriptionEvent := SubscriptionEvent{addresses: addresses}
-	event := spiModel.NewDefaultPlcSubscriptionEvent(&subscriptionEvent, tags, types, intervals, responseCodes, values)
+	event := spiModel.NewDefaultPlcSubscriptionEvent(&subscriptionEvent, tags, types, intervals, responseCodes, values, _options...)
 	subscriptionEvent.DefaultPlcSubscriptionEvent = event.(*spiModel.DefaultPlcSubscriptionEvent)
 	return subscriptionEvent
 }
@@ -59,12 +67,12 @@ func (m SubscriptionEvent) GetAddress(name string) string {
 		groupAddress, err = driverModel.KnxGroupAddressParse(rawAddress, 1)
 	}
 	if err != nil {
-		log.Debug().Err(err).Msg("error parsing")
+		m.log.Debug().Err(err).Msg("error parsing")
 		return ""
 	}
 	toString, err := GroupAddressToString(groupAddress)
 	if err != nil {
-		log.Debug().Err(err).Msg("error mapping")
+		m.log.Debug().Err(err).Msg("error mapping")
 		return ""
 	}
 	return toString

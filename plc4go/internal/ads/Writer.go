@@ -33,7 +33,6 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/utils"
 
 	"github.com/pkg/errors"
-	"github.com/rs/zerolog/log"
 )
 
 func (m *Connection) WriteRequestBuilder() apiModel.PlcWriteRequestBuilder {
@@ -41,7 +40,7 @@ func (m *Connection) WriteRequestBuilder() apiModel.PlcWriteRequestBuilder {
 }
 
 func (m *Connection) Write(ctx context.Context, writeRequest apiModel.PlcWriteRequest) <-chan apiModel.PlcWriteRequestResult {
-	log.Trace().Msg("Writing")
+	m.log.Trace().Msg("Writing")
 	result := make(chan apiModel.PlcWriteRequestResult, 1)
 	go func() {
 		defer func() {
@@ -61,7 +60,7 @@ func (m *Connection) Write(ctx context.Context, writeRequest apiModel.PlcWriteRe
 func (m *Connection) singleWrite(ctx context.Context, writeRequest apiModel.PlcWriteRequest, result chan apiModel.PlcWriteRequestResult) {
 	if len(writeRequest.GetTagNames()) != 1 {
 		result <- spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.New("this part of the ads driver only supports single-item requests"))
-		log.Debug().Msgf("this part of the ads driver only supports single-item requests. Got %d tags", len(writeRequest.GetTagNames()))
+		m.log.Debug().Msgf("this part of the ads driver only supports single-item requests. Got %d tags", len(writeRequest.GetTagNames()))
 		return
 	}
 
@@ -76,21 +75,21 @@ func (m *Connection) singleWrite(ctx context.Context, writeRequest apiModel.PlcW
 				nil,
 				errors.Wrap(err, "invalid tag item type"),
 			)
-			log.Debug().Msgf("Invalid tag item type %T", tag)
+			m.log.Debug().Msgf("Invalid tag item type %T", tag)
 			return
 		}
 		// Replace the symbolic tag with a direct one
 		tag, err = m.resolveSymbolicTag(ctx, adsField)
 		if err != nil {
 			result <- spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.Wrap(err, "invalid tag item type"))
-			log.Debug().Msgf("Invalid tag item type %T", tag)
+			m.log.Debug().Msgf("Invalid tag item type %T", tag)
 			return
 		}
 	}
 	directAdsTag, ok := tag.(*model.DirectPlcTag)
 	if !ok {
 		result <- spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.New("invalid tag item type"))
-		log.Debug().Msgf("Invalid tag item type %T", tag)
+		m.log.Debug().Msgf("Invalid tag item type %T", tag)
 		return
 	}
 
@@ -145,21 +144,21 @@ func (m *Connection) multiWrite(ctx context.Context, writeRequest apiModel.PlcWr
 			adsField, err := model.CastToSymbolicPlcTagFromPlcTag(tag)
 			if err != nil {
 				result <- spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.Wrap(err, "invalid tag item type"))
-				log.Debug().Msgf("Invalid tag item type %T", tag)
+				m.log.Debug().Msgf("Invalid tag item type %T", tag)
 				return
 			}
 			// Replace the symbolic tag with a direct one
 			tag, err = m.resolveSymbolicTag(ctx, adsField)
 			if err != nil {
 				result <- spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.Wrap(err, "invalid tag item type"))
-				log.Debug().Msgf("Invalid tag item type %T", tag)
+				m.log.Debug().Msgf("Invalid tag item type %T", tag)
 				return
 			}
 		}
 		directAdsTag, ok := tag.(*model.DirectPlcTag)
 		if !ok {
 			result <- spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.New("invalid tag item type"))
-			log.Debug().Msgf("Invalid tag item type %T", tag)
+			m.log.Debug().Msgf("Invalid tag item type %T", tag)
 			return
 		}
 

@@ -33,13 +33,12 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/transports"
 	"github.com/pkg/errors"
-	"github.com/rs/zerolog/log"
 )
 
 type Driver struct {
 	_default.DefaultDriver
 
-	log zerolog.Logger // TODO: use it
+	log zerolog.Logger
 }
 
 func NewDriver(_options ...options.WithOption) plc4go.PlcDriver {
@@ -51,11 +50,11 @@ func NewDriver(_options ...options.WithOption) plc4go.PlcDriver {
 }
 
 func (m *Driver) GetConnectionWithContext(ctx context.Context, transportUrl url.URL, transports map[string]transports.Transport, options map[string][]string) <-chan plc4go.PlcConnectionConnectResult {
-	log.Debug().Stringer("transportUrl", &transportUrl).Msgf("Get connection for transport url with %d transport(s) and %d option(s)", len(transports), len(options))
+	m.log.Debug().Stringer("transportUrl", &transportUrl).Msgf("Get connection for transport url with %d transport(s) and %d option(s)", len(transports), len(options))
 	// Get the transport specified in the url
 	transport, ok := transports[transportUrl.Scheme]
 	if !ok {
-		log.Error().Stringer("transportUrl", &transportUrl).Msgf("We couldn't find a transport for scheme %s", transportUrl.Scheme)
+		m.log.Error().Stringer("transportUrl", &transportUrl).Msgf("We couldn't find a transport for scheme %s", transportUrl.Scheme)
 		ch := make(chan plc4go.PlcConnectionConnectResult, 1)
 		ch <- _default.NewDefaultPlcConnectionConnectResult(nil, errors.Errorf("couldn't find transport for given transport url %#v", transportUrl))
 		return ch
@@ -65,7 +64,7 @@ func (m *Driver) GetConnectionWithContext(ctx context.Context, transportUrl url.
 	// Have the transport create a new transport-instance.
 	transportInstance, err := transport.CreateTransportInstance(transportUrl, options)
 	if err != nil {
-		log.Error().Stringer("transportUrl", &transportUrl).Msgf("We couldn't create a transport instance for port %#v", options["defaultTcpPort"])
+		m.log.Error().Stringer("transportUrl", &transportUrl).Msgf("We couldn't create a transport instance for port %#v", options["defaultTcpPort"])
 		ch := make(chan plc4go.PlcConnectionConnectResult, 1)
 		ch <- _default.NewDefaultPlcConnectionConnectResult(nil, errors.New("couldn't initialize transport configuration for given transport url "+transportUrl.String()))
 		return ch
@@ -73,11 +72,11 @@ func (m *Driver) GetConnectionWithContext(ctx context.Context, transportUrl url.
 
 	// Create a new codec for taking care of encoding/decoding of messages
 	codec := NewMessageCodec(transportInstance)
-	log.Debug().Msgf("working with codec %#v", codec)
+	m.log.Debug().Msgf("working with codec %#v", codec)
 
-	configuration, err := model.ParseFromOptions(options)
+	configuration, err := model.ParseFromOptions(m.log, options)
 	if err != nil {
-		log.Error().Err(err).Msgf("Invalid options")
+		m.log.Error().Err(err).Msgf("Invalid options")
 		ch := make(chan plc4go.PlcConnectionConnectResult, 1)
 		ch <- _default.NewDefaultPlcConnectionConnectResult(nil, errors.Wrap(err, "invalid configuration"))
 		return ch
@@ -90,7 +89,7 @@ func (m *Driver) GetConnectionWithContext(ctx context.Context, transportUrl url.
 		ch <- _default.NewDefaultPlcConnectionConnectResult(nil, errors.Wrap(err, "couldn't create connection"))
 		return ch
 	}
-	log.Debug().Stringer("connection", connection).Msg("created connection, connecting now")
+	m.log.Debug().Stringer("connection", connection).Msg("created connection, connecting now")
 	return connection.ConnectWithContext(ctx)
 }
 
@@ -99,5 +98,5 @@ func (m *Driver) SupportsDiscovery() bool {
 }
 
 func (m *Driver) DiscoverWithContext(ctx context.Context, callback func(event apiModel.PlcDiscoveryItem), discoveryOptions ...options.WithDiscoveryOption) error {
-	return NewDiscoverer().Discover(ctx, callback, discoveryOptions...)
+	return NewDiscoverer(options.WithCustomLogger(m.log)).Discover(ctx, callback, discoveryOptions...)
 }

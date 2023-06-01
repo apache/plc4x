@@ -61,7 +61,9 @@ type DefaultExpectation struct {
 	HandleError    spi.HandleError
 }
 
-func WithCustomMessageHandler(customMessageHandler func(codec DefaultCodecRequirements, message spi.Message) bool) options.WithOption {
+type CustomMessageHandler func(codec DefaultCodecRequirements, message spi.Message) bool
+
+func WithCustomMessageHandler(customMessageHandler CustomMessageHandler) options.WithOption {
 	return withCustomMessageHandler{customMessageHandler: customMessageHandler}
 }
 

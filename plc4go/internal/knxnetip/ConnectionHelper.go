@@ -32,7 +32,6 @@ import (
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/transports/udp"
 	"github.com/pkg/errors"
-	"github.com/rs/zerolog/log"
 )
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -55,7 +54,7 @@ func (m *Connection) handleIncomingTunnelingRequest(ctx context.Context, tunneli
 	go func() {
 		defer func() {
 			if err := recover(); err != nil {
-				log.Error().Msgf("panic-ed %v", err)
+				m.log.Error().Msgf("panic-ed %v", err)
 			}
 		}()
 		lDataInd, ok := tunnelingRequest.GetCemi().(driverModel.LDataIndExactly)
@@ -88,7 +87,7 @@ func (m *Connection) handleIncomingTunnelingRequest(ctx context.Context, tunneli
 					// If this is an individual address, and it is targeted at us, we need to ack that.
 					targetAddress := ByteArrayToKnxAddress(dataFrame.GetDestinationAddress())
 					if targetAddress == m.ClientKnxAddress {
-						log.Info().Msg("Acknowleding an unhandled data message.")
+						m.log.Info().Msg("Acknowleding an unhandled data message.")
 						_ = m.sendDeviceAck(ctx, dataFrame.GetSourceAddress(), dataFrame.GetApdu().GetCounter(), func(err error) {})
 					}
 				}
@@ -99,12 +98,12 @@ func (m *Connection) handleIncomingTunnelingRequest(ctx context.Context, tunneli
 				// If this is an individual address, and it is targeted at us, we need to ack that.
 				targetAddress := ByteArrayToKnxAddress(dataFrame.GetDestinationAddress())
 				if targetAddress == m.ClientKnxAddress {
-					log.Info().Msg("Acknowleding an unhandled contol message.")
+					m.log.Info().Msg("Acknowleding an unhandled contol message.")
 					_ = m.sendDeviceAck(ctx, dataFrame.GetSourceAddress(), dataFrame.GetApdu().GetCounter(), func(err error) {})
 				}
 			}
 		default:
-			log.Info().Msg("Unknown unhandled message.")
+			m.log.Info().Msg("Unknown unhandled message.")
 		}
 	}()
 }
@@ -153,7 +152,7 @@ func (m *Connection) resetTimeout() {
 }
 
 func (m *Connection) resetConnection() {
-	log.Warn().Msg("Reset connection")
+	m.log.Warn().Msg("Reset connection")
 }
 
 func (m *Connection) getGroupAddressNumLevels() uint8 {
@@ -170,7 +169,7 @@ func (m *Connection) getGroupAddressNumLevels() uint8 {
 func (m *Connection) addSubscriber(subscriber *Subscriber) {
 	for _, sub := range m.subscribers {
 		if sub == subscriber {
-			log.Debug().Msgf("Subscriber %v already added", subscriber)
+			m.log.Debug().Msgf("Subscriber %v already added", subscriber)
 			return
 		}
 	}

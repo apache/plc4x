@@ -20,13 +20,16 @@
 package eip
 
 import (
-	"github.com/apache/plc4x/plc4go/spi/values"
+	"github.com/apache/plc4x/plc4go/spi/options"
+	spiValues "github.com/apache/plc4x/plc4go/spi/values"
 )
 
 type ValueHandler struct {
-	values.DefaultValueHandler
+	spiValues.DefaultValueHandler
 }
 
-func NewValueHandler() ValueHandler {
-	return ValueHandler{}
+func NewValueHandler(_options ...options.WithOption) ValueHandler {
+	return ValueHandler{
+		spiValues.NewDefaultValueHandler(_options...),
+	}
 }

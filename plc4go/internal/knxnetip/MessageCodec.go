@@ -23,25 +23,29 @@ import (
 	"github.com/apache/plc4x/plc4go/protocols/knxnetip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/default"
+	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/transports"
 	"github.com/pkg/errors"
-	"github.com/rs/zerolog/log"
+	"github.com/rs/zerolog"
 )
 
 type MessageCodec struct {
 	_default.DefaultCodec
 	sequenceCounter    int32
 	messageInterceptor func(message spi.Message)
+
+	log zerolog.Logger
 }
 
-func NewMessageCodec(transportInstance transports.TransportInstance, messageInterceptor func(message spi.Message)) *MessageCodec {
+func NewMessageCodec(transportInstance transports.TransportInstance, messageInterceptor func(message spi.Message), _options ...options.WithOption) *MessageCodec {
 	codec := &MessageCodec{
 		messageInterceptor: messageInterceptor,
+		log:                options.ExtractCustomLogger(_options...),
 	}
 	codec.DefaultCodec = _default.NewDefaultCodec(
 		codec,
 		transportInstance,
-		_default.WithCustomMessageHandler(CustomMessageHandling),
+		append(_options, _default.WithCustomMessageHandler(CustomMessageHandling(options.ExtractCustomLogger(_options...))))...,
 	)
 	return codec
 }
@@ -51,7 +55,7 @@ func (m *MessageCodec) GetCodec() spi.MessageCodec {
 }
 
 func (m *MessageCodec) Send(message spi.Message) error {
-	log.Trace().Msg("Sending message")
+	m.log.Trace().Msg("Sending message")
 	// Cast the message to the correct type of struct
 	knxMessage := message.(model.KnxNetIpMessage)
 	// Serialize the request
@@ -71,66 +75,68 @@ func (m *MessageCodec) Send(message spi.Message) error {
 func (m *MessageCodec) Receive() (spi.Message, error) {
 	// We need at least 6 bytes in order to know how big the packet is in total
 	if num, err := m.GetTransportInstance().GetNumBytesAvailableInBuffer(); (err == nil) && (num >= 6) {
-		log.Debug().Msgf("we got %d readable bytes", num)
+		m.log.Debug().Msgf("we got %d readable bytes", num)
 		data, err := m.GetTransportInstance().PeekReadableBytes(6)
 		if err != nil {
-			log.Warn().Err(err).Msg("error peeking")
+			m.log.Warn().Err(err).Msg("error peeking")
 			// TODO: Possibly clean up ...
 			return nil, nil
 		}
 		// Get the size of the entire packet
 		packetSize := (uint32(data[4]) << 8) + uint32(data[5])
 		if num < packetSize {
-			log.Trace().Msgf("Not enough bytes. Got: %d Need: %d\n", num, packetSize)
+			m.log.Trace().Msgf("Not enough bytes. Got: %d Need: %d\n", num, packetSize)
 			return nil, nil
 		}
 		data, err = m.GetTransportInstance().Read(packetSize)
 		if err != nil {
-			log.Warn().Err(err).Msg("error reading")
+			m.log.Warn().Err(err).Msg("error reading")
 			// TODO: Possibly clean up ...
 			return nil, nil
 		}
 		knxMessage, err := model.KnxNetIpMessageParse(data)
 		if err != nil {
-			log.Warn().Err(err).Msg("error parsing message")
+			m.log.Warn().Err(err).Msg("error parsing message")
 			// TODO: Possibly clean up ...
 			return nil, nil
 		}
 		return knxMessage, nil
 	} else if err != nil {
-		log.Warn().Err(err).Msg("Got error reading")
+		m.log.Warn().Err(err).Msg("Got error reading")
 		return nil, nil
 	}
 	return nil, nil
 }
 
-func CustomMessageHandling(codec _default.DefaultCodecRequirements, message spi.Message) bool {
-	// If this message is a simple KNXNet/IP UDP Ack, ignore it for now
-	tunnelingResponse := message.(model.TunnelingResponse)
-	if tunnelingResponse != nil {
-		return true
-	}
-
-	// If this is an incoming tunneling request, automatically send a tunneling ACK back to the gateway
-	tunnelingRequest := message.(model.TunnelingRequest)
-	if tunnelingRequest != nil {
-		response := model.NewTunnelingResponse(
-			model.NewTunnelingResponseDataBlock(
-				tunnelingRequest.GetTunnelingRequestDataBlock().GetCommunicationChannelId(),
-				tunnelingRequest.GetTunnelingRequestDataBlock().GetSequenceCounter(),
-				model.Status_NO_ERROR),
-		)
-		err := codec.Send(response)
-		if err != nil {
-			log.Warn().Err(err).Msg("got an error sending ACK from transport")
+func CustomMessageHandling(localLog zerolog.Logger) _default.CustomMessageHandler {
+	return func(codec _default.DefaultCodecRequirements, message spi.Message) bool {
+		// If this message is a simple KNXNet/IP UDP Ack, ignore it for now
+		tunnelingResponse := message.(model.TunnelingResponse)
+		if tunnelingResponse != nil {
+			return true
 		}
-	}
 
-	localCodec := codec.(*MessageCodec)
-	// Handle the packet itself
-	// Give a message interceptor a chance to intercept
-	if (*localCodec).messageInterceptor != nil {
-		(*localCodec).messageInterceptor(message)
+		// If this is an incoming tunneling request, automatically send a tunneling ACK back to the gateway
+		tunnelingRequest := message.(model.TunnelingRequest)
+		if tunnelingRequest != nil {
+			response := model.NewTunnelingResponse(
+				model.NewTunnelingResponseDataBlock(
+					tunnelingRequest.GetTunnelingRequestDataBlock().GetCommunicationChannelId(),
+					tunnelingRequest.GetTunnelingRequestDataBlock().GetSequenceCounter(),
+					model.Status_NO_ERROR),
+			)
+			err := codec.Send(response)
+			if err != nil {
+				localLog.Warn().Err(err).Msg("got an error sending ACK from transport")
+			}
+		}
+
+		localCodec := codec.(*MessageCodec)
+		// Handle the packet itself
+		// Give a message interceptor a chance to intercept
+		if (*localCodec).messageInterceptor != nil {
+			(*localCodec).messageInterceptor(message)
+		}
+		return false
 	}
-	return false
 }

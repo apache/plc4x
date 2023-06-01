@@ -91,7 +91,7 @@ func NewConnection(messageCodec *MessageCodec, configuration Configuration, driv
 		connection,
 		append(_options,
 			_default.WithPlcTagHandler(tagHandler),
-			_default.WithPlcValueHandler(NewValueHandler()),
+			_default.WithPlcValueHandler(NewValueHandler(_options...)),
 		)...,
 	)
 	return connection

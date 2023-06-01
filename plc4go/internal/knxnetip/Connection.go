@@ -26,6 +26,7 @@ import (
 	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/tracer"
+	"github.com/rs/zerolog"
 	"strconv"
 	"strings"
 	"sync"
@@ -42,7 +43,6 @@ import (
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/spi/transports"
 	"github.com/pkg/errors"
-	"github.com/rs/zerolog/log"
 )
 
 type ConnectionMetadata struct {
@@ -136,6 +136,8 @@ type Connection struct {
 
 	connectionId string
 	tracer       *tracer.Tracer
+
+	log zerolog.Logger
 }
 
 func (m *Connection) String() string {
@@ -163,13 +165,13 @@ type KnxDeviceAuthenticateResult struct {
 }
 
 type InternalResult struct {
-	responsemessage spi.Message
+	responseMessage spi.Message
 	err             error
 }
 
-func NewConnection(transportInstance transports.TransportInstance, options map[string][]string, tagHandler spi.PlcTagHandler, _options ...options.WithOption) *Connection {
+func NewConnection(transportInstance transports.TransportInstance, connectionOptions map[string][]string, tagHandler spi.PlcTagHandler, _options ...options.WithOption) *Connection {
 	connection := &Connection{
-		options:      options,
+		options:      connectionOptions,
 		tagHandler:   tagHandler,
 		valueHandler: NewValueHandler(),
 		requestInterceptor: interceptors.NewSingleItemRequestInterceptor(
@@ -186,16 +188,17 @@ func NewConnection(transportInstance transports.TransportInstance, options map[s
 		defaultTtl:              time.Second * 10,
 		DeviceConnections:       map[driverModel.KnxAddress]*KnxDeviceConnection{},
 		handleTunnelingRequests: true,
+		log:                     options.ExtractCustomLogger(_options...),
 	}
 	connection.connectionTtl = connection.defaultTtl * 2
 
-	if traceEnabledOption, ok := options["traceEnabled"]; ok {
+	if traceEnabledOption, ok := connectionOptions["traceEnabled"]; ok {
 		if len(traceEnabledOption) == 1 {
 			connection.tracer = tracer.NewTracer(connection.connectionId, _options...)
 		}
 	}
 	// If a building key was provided, save that in a dedicated variable
-	if buildingKey, ok := options["buildingKey"]; ok {
+	if buildingKey, ok := connectionOptions["buildingKey"]; ok {
 		bc, err := hex.DecodeString(buildingKey[0])
 		if err == nil {
 			connection.buildingKey = bc
@@ -298,11 +301,11 @@ func (m *Connection) ConnectWithContext(ctx context.Context) <-chan plc4go.PlcCo
 				// Create a go routine to handle incoming tunneling-requests which haven't been
 				// handled by any other handler. This is where usually the GroupValueWrite messages
 				// are being handled.
-				log.Debug().Msg("Starting tunneling handler")
+				m.log.Debug().Msg("Starting tunneling handler")
 				go func() {
 					defer func() {
 						if err := recover(); err != nil {
-							log.Error().Msgf("panic-ed %v", err)
+							m.log.Error().Msgf("panic-ed %v", err)
 						}
 					}()
 					defaultIncomingMessageChannel := m.messageCodec.GetDefaultIncomingMessageChannel()
@@ -312,15 +315,15 @@ func (m *Connection) ConnectWithContext(ctx context.Context) <-chan plc4go.PlcCo
 						if !ok {
 							tunnelingResponse, ok := incomingMessage.(driverModel.TunnelingResponseExactly)
 							if ok {
-								log.Warn().Msgf("Got an unhandled TunnelingResponse message %v\n", tunnelingResponse)
+								m.log.Warn().Msgf("Got an unhandled TunnelingResponse message %v\n", tunnelingResponse)
 							} else {
-								log.Warn().Msgf("Not a TunnelingRequest or TunnelingResponse message %v\n", incomingMessage)
+								m.log.Warn().Msgf("Not a TunnelingRequest or TunnelingResponse message %v\n", incomingMessage)
 							}
 							continue
 						}
 
 						if tunnelingRequest.GetTunnelingRequestDataBlock().GetCommunicationChannelId() != m.CommunicationChannelId {
-							log.Warn().Msgf("Not for this connection %v\n", tunnelingRequest)
+							m.log.Warn().Msgf("Not for this connection %v\n", tunnelingRequest)
 							continue
 						}
 
@@ -353,7 +356,7 @@ func (m *Connection) ConnectWithContext(ctx context.Context) <-chan plc4go.PlcCo
 							m.handleIncomingTunnelingRequest(ctx, tunnelingRequest)
 						}
 					}
-					log.Warn().Msg("Tunneling handler shat down")
+					m.log.Warn().Msg("Tunneling handler shat down")
 				}()
 
 				// Fire the "connected" event
@@ -375,7 +378,7 @@ func (m *Connection) doSomethingAndClose(something func()) {
 	something()
 	err := m.messageCodec.Disconnect()
 	if err != nil {
-		log.Warn().Msgf("error closing connection: %s", err)
+		m.log.Warn().Msgf("error closing connection: %s", err)
 	}
 }
 
@@ -422,7 +425,7 @@ func (m *Connection) Close() <-chan plc4go.PlcConnectionCloseResult {
 			case <-ttlTimer.C:
 				ttlTimer.Stop()
 				// If we got a timeout here, well just continue the device will just auto disconnect.
-				log.Debug().Msgf("Timeout disconnecting from device %s.", KnxAddressToString(targetAddress))
+				m.log.Debug().Msgf("Timeout disconnecting from device %s.", KnxAddressToString(targetAddress))
 			}
 		}
 
@@ -497,7 +500,7 @@ func (m *Connection) WriteRequestBuilder() apiModel.PlcWriteRequestBuilder {
 
 func (m *Connection) SubscriptionRequestBuilder() apiModel.PlcSubscriptionRequestBuilder {
 	return spiModel.NewDefaultPlcSubscriptionRequestBuilder(
-		m.tagHandler, m.valueHandler, NewSubscriber(m))
+		m.tagHandler, m.valueHandler, NewSubscriber(m, options.WithCustomLogger(m.log)))
 }
 
 func (m *Connection) BrowseRequestBuilder() apiModel.PlcBrowseRequestBuilder {

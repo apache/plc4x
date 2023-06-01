@@ -25,6 +25,7 @@ import (
 	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/tracer"
+	"github.com/rs/zerolog"
 	"strconv"
 	"strings"
 
@@ -41,7 +42,6 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/utils"
 
 	"github.com/pkg/errors"
-	"github.com/rs/zerolog/log"
 )
 
 type Connection struct {
@@ -54,9 +54,11 @@ type Connection struct {
 	tracer             *tracer.Tracer
 
 	subscriptions map[uint32]apiModel.PlcSubscriptionHandle
+
+	log zerolog.Logger
 }
 
-func NewConnection(messageCodec spi.MessageCodec, configuration model.Configuration, options map[string][]string, _options ...options.WithOption) (*Connection, error) {
+func NewConnection(messageCodec spi.MessageCodec, configuration model.Configuration, connectionOptions map[string][]string, _options ...options.WithOption) (*Connection, error) {
 	driverContext, err := NewDriverContext(configuration)
 	if err != nil {
 		return nil, err
@@ -66,18 +68,21 @@ func NewConnection(messageCodec spi.MessageCodec, configuration model.Configurat
 		configuration: configuration,
 		driverContext: driverContext,
 		subscriptions: map[uint32]apiModel.PlcSubscriptionHandle{},
+		log:           options.ExtractCustomLogger(_options...),
 	}
-	if traceEnabledOption, ok := options["traceEnabled"]; ok {
+	if traceEnabledOption, ok := connectionOptions["traceEnabled"]; ok {
 		if len(traceEnabledOption) == 1 {
 			// TODO: Connection Id is probably "" all the time.
 			connection.tracer = tracer.NewTracer(driverContext.connectionId, _options...)
 		}
 	}
 	tagHandler := NewTagHandlerWithDriverContext(driverContext)
-	valueHandler := NewValueHandlerWithDriverContext(driverContext, tagHandler)
+	valueHandler := NewValueHandlerWithDriverContext(driverContext, tagHandler, _options...)
 	connection.DefaultConnection = _default.NewDefaultConnection(connection,
-		_default.WithPlcTagHandler(tagHandler),
-		_default.WithPlcValueHandler(valueHandler),
+		append(_options,
+			_default.WithPlcTagHandler(tagHandler),
+			_default.WithPlcValueHandler(valueHandler),
+		)...,
 	)
 	return connection, nil
 }
@@ -99,7 +104,7 @@ func (m *Connection) GetConnection() plc4go.PlcConnection {
 }
 
 func (m *Connection) ConnectWithContext(ctx context.Context) <-chan plc4go.PlcConnectionConnectResult {
-	log.Trace().Msg("Connecting")
+	m.log.Trace().Msg("Connecting")
 	ch := make(chan plc4go.PlcConnectionConnectResult, 1)
 
 	// Reset the driver context (Actually this should not be required, but just to be on the safe side)
@@ -165,7 +170,7 @@ func (m *Connection) setupConnection(ctx context.Context, ch chan plc4go.PlcConn
 	go func() {
 		defer func() {
 			if err := recover(); err != nil {
-				log.Error().Msgf("panic-ed: %v", err)
+				m.log.Error().Msgf("panic-ed: %v", err)
 			}
 		}()
 		for message := range defaultIncomingMessageChannel {
@@ -178,13 +183,13 @@ func (m *Connection) setupConnection(ctx context.Context, ch chan plc4go.PlcConn
 					m.handleIncomingDeviceNotificationRequest(
 						amsTCPPacket.GetUserdata().(readWriteModel.AdsDeviceNotificationRequest))
 				default:
-					log.Warn().Msgf("Got unexpected type of incoming ADS message %v", message)
+					m.log.Warn().Msgf("Got unexpected type of incoming ADS message %v", message)
 				}
 			default:
-				log.Warn().Msgf("Got unexpected type of incoming ADS message %v", message)
+				m.log.Warn().Msgf("Got unexpected type of incoming ADS message %v", message)
 			}
 		}
-		log.Info().Msg("Done waiting for messages ...")
+		m.log.Info().Msg("Done waiting for messages ...")
 	}()
 
 	// Subscribe for changes to the symbol or the offline-versions
@@ -194,10 +199,10 @@ func (m *Connection) setupConnection(ctx context.Context, ch chan plc4go.PlcConn
 			if event.GetResponseCode("offlineVersion") == apiModel.PlcResponseCode_OK {
 				newVersion := event.GetValue("offlineVersion").GetUint8()
 				if newVersion != m.driverContext.symbolVersion {
-					log.Info().Msg("detected offline version change: reloading symbol- and data-type-table.")
+					m.log.Info().Msg("detected offline version change: reloading symbol- and data-type-table.")
 					err := m.readSymbolTableAndDatatypeTable(ctx)
 					if err != nil {
-						log.Error().Err(err).Msg("error updating data-type and symbol tables")
+						m.log.Error().Err(err).Msg("error updating data-type and symbol tables")
 					}
 				}
 			}
@@ -207,10 +212,10 @@ func (m *Connection) setupConnection(ctx context.Context, ch chan plc4go.PlcConn
 			if event.GetResponseCode("onlineVersion") == apiModel.PlcResponseCode_OK {
 				newVersion := event.GetValue("onlineVersion").GetUint32()
 				if newVersion != m.driverContext.onlineVersion {
-					log.Info().Msg("detected online version change: reloading symbol- and data-type-table.")
+					m.log.Info().Msg("detected online version change: reloading symbol- and data-type-table.")
 					err := m.readSymbolTableAndDatatypeTable(ctx)
 					if err != nil {
-						log.Error().Err(err).Msg("error updating data-type and symbol tables")
+						m.log.Error().Err(err).Msg("error updating data-type and symbol tables")
 					}
 				}
 			}

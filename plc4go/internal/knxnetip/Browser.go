@@ -24,6 +24,7 @@ import (
 	"encoding/hex"
 	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/rs/zerolog"
 	"strconv"
 	"strings"
 	"time"
@@ -37,7 +38,6 @@ import (
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
-	"github.com/rs/zerolog/log"
 )
 
 type Browser struct {
@@ -45,6 +45,8 @@ type Browser struct {
 	connection      *Connection
 	messageCodec    spi.MessageCodec
 	sequenceCounter uint8
+
+	log zerolog.Logger
 }
 
 func NewBrowser(connection *Connection, messageCodec spi.MessageCodec, _options ...options.WithOption) *Browser {
@@ -52,6 +54,7 @@ func NewBrowser(connection *Connection, messageCodec spi.MessageCodec, _options 
 		connection:      connection,
 		messageCodec:    messageCodec,
 		sequenceCounter: 0,
+		log:             options.ExtractCustomLogger(_options...),
 	}
 	browser.DefaultBrowser = _default.NewDefaultBrowser(browser, _options...)
 	return &browser
@@ -62,7 +65,7 @@ func (m Browser) BrowseQuery(ctx context.Context, interceptor func(result apiMod
 	case DeviceQuery:
 		queryResults, err := m.executeDeviceQuery(ctx, query.(DeviceQuery), interceptor)
 		if err != nil {
-			log.Warn().Err(err).Msg("Error executing device query")
+			m.log.Warn().Err(err).Msg("Error executing device query")
 			return apiModel.PlcResponseCode_INTERNAL_ERROR, nil
 		} else {
 			return apiModel.PlcResponseCode_OK, queryResults
@@ -70,7 +73,7 @@ func (m Browser) BrowseQuery(ctx context.Context, interceptor func(result apiMod
 	case CommunicationObjectQuery:
 		queryResults, err := m.executeCommunicationObjectQuery(ctx, query.(CommunicationObjectQuery))
 		if err != nil {
-			log.Warn().Err(err).Msg("Error executing device query")
+			m.log.Warn().Err(err).Msg("Error executing device query")
 			return apiModel.PlcResponseCode_INTERNAL_ERROR, nil
 		} else {
 			return apiModel.PlcResponseCode_OK, queryResults
@@ -377,7 +380,7 @@ func (m Browser) executeCommunicationObjectQuery(ctx context.Context, query Comm
 			data := []uint8{uint8((comObjectSettings >> 8) & 0xFF), uint8(comObjectSettings & 0xFF)}
 			descriptor, err := driverModel.GroupObjectDescriptorRealisationTypeBParse(data)
 			if err != nil {
-				log.Info().Err(err).Msg("error parsing com object descriptor")
+				m.log.Info().Err(err).Msg("error parsing com object descriptor")
 				continue
 			}
 
@@ -511,7 +514,7 @@ func (m Browser) executeCommunicationObjectQuery(ctx context.Context, query Comm
 		readResult = <-rrr
 		if readResult.GetResponse().GetResponseCode("comObjectTableAddress") == apiModel.PlcResponseCode_OK {
 			comObjectTableAddress := readResult.GetResponse().GetValue("comObjectTableAddress").GetUint16()
-			log.Info().Msgf("Com Object Table Address: %x", comObjectTableAddress)
+			m.log.Info().Msgf("Com Object Table Address: %x", comObjectTableAddress)
 		}
 	}
 

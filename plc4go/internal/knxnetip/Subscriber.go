@@ -21,7 +21,9 @@ package knxnetip
 
 import (
 	"context"
+	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
 	"time"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
@@ -35,12 +37,15 @@ import (
 type Subscriber struct {
 	connection *Connection
 	consumers  map[*spiModel.DefaultPlcConsumerRegistration]apiModel.PlcSubscriptionEventConsumer
+
+	log zerolog.Logger
 }
 
-func NewSubscriber(connection *Connection) *Subscriber {
+func NewSubscriber(connection *Connection, _options ...options.WithOption) *Subscriber {
 	return &Subscriber{
 		connection: connection,
 		consumers:  make(map[*spiModel.DefaultPlcConsumerRegistration]apiModel.PlcSubscriptionEventConsumer),
+		log:        options.ExtractCustomLogger(_options...),
 	}
 }
 
@@ -69,7 +74,12 @@ func (m *Subscriber) Subscribe(ctx context.Context, subscriptionRequest apiModel
 
 		result <- spiModel.NewDefaultPlcSubscriptionRequestResult(
 			subscriptionRequest,
-			spiModel.NewDefaultPlcSubscriptionResponse(subscriptionRequest, responseCodes, subscriptionValues),
+			spiModel.NewDefaultPlcSubscriptionResponse(
+				subscriptionRequest,
+				responseCodes,
+				subscriptionValues,
+				options.WithCustomLogger(m.log),
+			),
 			nil,
 		)
 	}()

@@ -20,12 +20,12 @@
 package model
 
 import (
+	"github.com/rs/zerolog"
 	"strconv"
 	"strings"
 
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/ads/readwrite/model"
 	"github.com/pkg/errors"
-	"github.com/rs/zerolog/log"
 )
 
 type Configuration struct {
@@ -35,10 +35,10 @@ type Configuration struct {
 	TargetAmsPort  uint16
 }
 
-func ParseFromOptions(options map[string][]string) (Configuration, error) {
+func ParseFromOptions(localLogger zerolog.Logger, options map[string][]string) (Configuration, error) {
 	configuration := Configuration{}
 
-	sourceAmsNetId := getFromOptions(options, "sourceAmsNetId")
+	sourceAmsNetId := getFromOptions(localLogger, options, "sourceAmsNetId")
 	if sourceAmsNetId == "" {
 		return Configuration{}, errors.New("Required parameter sourceAmsNetId missing")
 	}
@@ -75,7 +75,7 @@ func ParseFromOptions(options map[string][]string) (Configuration, error) {
 		uint8(octet5),
 		uint8(octet6),
 	)
-	sourceAmsPort := getFromOptions(options, "sourceAmsPort")
+	sourceAmsPort := getFromOptions(localLogger, options, "sourceAmsPort")
 	if sourceAmsPort == "" {
 		return Configuration{}, errors.New("Required parameter sourceAmsPort missing")
 	}
@@ -84,7 +84,7 @@ func ParseFromOptions(options map[string][]string) (Configuration, error) {
 		return Configuration{}, errors.Wrap(err, "error parsing sourceAmsPort")
 	}
 	configuration.SourceAmsPort = uint16(parsedUint)
-	targetAmsNetId := getFromOptions(options, "targetAmsNetId")
+	targetAmsNetId := getFromOptions(localLogger, options, "targetAmsNetId")
 	if sourceAmsNetId == "" {
 		return Configuration{}, errors.New("Required parameter targetAmsNetId missing")
 	}
@@ -121,7 +121,7 @@ func ParseFromOptions(options map[string][]string) (Configuration, error) {
 		uint8(octet5),
 		uint8(octet6),
 	)
-	targetAmsPort := getFromOptions(options, "targetAmsPort")
+	targetAmsPort := getFromOptions(localLogger, options, "targetAmsPort")
 	if targetAmsPort == "" {
 		return Configuration{}, errors.New("Required parameter targetAmsPort missing")
 	}
@@ -134,13 +134,13 @@ func ParseFromOptions(options map[string][]string) (Configuration, error) {
 	return configuration, nil
 }
 
-func getFromOptions(options map[string][]string, key string) string {
+func getFromOptions(localLogger zerolog.Logger, options map[string][]string, key string) string {
 	if optionValues, ok := options[key]; ok {
 		if len(optionValues) <= 0 {
 			return ""
 		}
 		if len(optionValues) > 1 {
-			log.Warn().Msgf("Options %s must be unique", key)
+			localLogger.Warn().Msgf("Options %s must be unique", key)
 		}
 		return optionValues[0]
 	}

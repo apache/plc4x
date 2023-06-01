@@ -20,10 +20,10 @@
 package s7
 
 import (
+	"github.com/rs/zerolog"
 	"strconv"
 
 	"github.com/pkg/errors"
-	"github.com/rs/zerolog/log"
 )
 
 type Configuration struct {
@@ -37,7 +37,7 @@ type Configuration struct {
 	controllerType ControllerType
 }
 
-func ParseFromOptions(options map[string][]string) (Configuration, error) {
+func ParseFromOptions(localLog zerolog.Logger, options map[string][]string) (Configuration, error) {
 	configuration := Configuration{
 		localRack:      1,
 		localSlot:      1,
@@ -48,35 +48,35 @@ func ParseFromOptions(options map[string][]string) (Configuration, error) {
 		maxAmqCallee:   8,
 		controllerType: ControllerType_UNKNOWN,
 	}
-	if localRackString := getFromOptions(options, "local-rack"); localRackString != "" {
+	if localRackString := getFromOptions(localLog, options, "local-rack"); localRackString != "" {
 		parsedInt, err := strconv.ParseInt(localRackString, 10, 32)
 		if err != nil {
 			return Configuration{}, errors.Wrap(err, "Error parsing local-rack")
 		}
 		configuration.localRack = int32(parsedInt)
 	}
-	if localSlotString := getFromOptions(options, "local-slot"); localSlotString != "" {
+	if localSlotString := getFromOptions(localLog, options, "local-slot"); localSlotString != "" {
 		parsedInt, err := strconv.ParseInt(localSlotString, 10, 32)
 		if err != nil {
 			return Configuration{}, errors.Wrap(err, "Error parsing local-slot")
 		}
 		configuration.localSlot = int32(parsedInt)
 	}
-	if remoteRackString := getFromOptions(options, "remote-rack"); remoteRackString != "" {
+	if remoteRackString := getFromOptions(localLog, options, "remote-rack"); remoteRackString != "" {
 		parsedInt, err := strconv.ParseInt(remoteRackString, 10, 32)
 		if err != nil {
 			return Configuration{}, errors.Wrap(err, "Error parsing remote-rack")
 		}
 		configuration.remoteRack = int32(parsedInt)
 	}
-	if remoteSlotString := getFromOptions(options, "remote-slot"); remoteSlotString != "" {
+	if remoteSlotString := getFromOptions(localLog, options, "remote-slot"); remoteSlotString != "" {
 		parsedInt, err := strconv.ParseInt(remoteSlotString, 10, 32)
 		if err != nil {
 			return Configuration{}, errors.Wrap(err, "Error parsing remote-slot")
 		}
 		configuration.remoteSlot = int32(parsedInt)
 	}
-	if controllerTypeString := getFromOptions(options, "controller-type"); controllerTypeString != "" {
+	if controllerTypeString := getFromOptions(localLog, options, "controller-type"); controllerTypeString != "" {
 		switch controllerTypeString {
 		case "ANY":
 			configuration.controllerType = ControllerType_ANY
@@ -97,7 +97,7 @@ func ParseFromOptions(options map[string][]string) (Configuration, error) {
 		}
 	}
 
-	pduSizeString := getFromOptions(options, "pdu-size")
+	pduSizeString := getFromOptions(localLog, options, "pdu-size")
 	if pduSizeString != "" {
 		parsedUint, err := strconv.ParseUint(pduSizeString, 10, 16)
 		if err != nil {
@@ -106,7 +106,7 @@ func ParseFromOptions(options map[string][]string) (Configuration, error) {
 		configuration.pduSize = uint16(parsedUint)
 	}
 
-	if maxAmqCallerString := getFromOptions(options, "max-amq-caller"); maxAmqCallerString != "" {
+	if maxAmqCallerString := getFromOptions(localLog, options, "max-amq-caller"); maxAmqCallerString != "" {
 		parsedUint, err := strconv.ParseUint(maxAmqCallerString, 10, 16)
 		if err != nil {
 			return Configuration{}, errors.Wrapf(err, "Error parsing max-amq-caller %s", maxAmqCallerString)
@@ -114,7 +114,7 @@ func ParseFromOptions(options map[string][]string) (Configuration, error) {
 		configuration.maxAmqCaller = uint16(parsedUint)
 	}
 
-	if maxAmqCalleeString := getFromOptions(options, "max-amq-callee"); maxAmqCalleeString != "" {
+	if maxAmqCalleeString := getFromOptions(localLog, options, "max-amq-callee"); maxAmqCalleeString != "" {
 		parsedUint, err := strconv.ParseUint(maxAmqCalleeString, 10, 16)
 		if err != nil {
 			return Configuration{}, errors.Wrapf(err, "Error parsing max-amq-callee %s", maxAmqCalleeString)
@@ -124,13 +124,13 @@ func ParseFromOptions(options map[string][]string) (Configuration, error) {
 	return configuration, nil
 }
 
-func getFromOptions(options map[string][]string, key string) string {
+func getFromOptions(localLog zerolog.Logger, options map[string][]string, key string) string {
 	if optionValues, ok := options[key]; ok {
 		if len(optionValues) <= 0 {
 			return ""
 		}
 		if len(optionValues) > 1 {
-			log.Warn().Msgf("Options %s must be unique", key)
+			localLog.Warn().Msgf("Options %s must be unique", key)
 		}
 		return optionValues[0]
 	}

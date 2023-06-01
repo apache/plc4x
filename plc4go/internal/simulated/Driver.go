@@ -47,8 +47,8 @@ func NewDriver(_options ...options.WithOption) plc4go.PlcDriver {
 	return driver
 }
 
-func (d *Driver) GetConnectionWithContext(ctx context.Context, _ url.URL, _ map[string]transports.Transport, options map[string][]string) <-chan plc4go.PlcConnectionConnectResult {
-	connection := NewConnection(NewDevice("test"), d.GetPlcTagHandler(), d.valueHandler, options)
+func (d *Driver) GetConnectionWithContext(ctx context.Context, _ url.URL, _ map[string]transports.Transport, driverOptions map[string][]string) <-chan plc4go.PlcConnectionConnectResult {
+	connection := NewConnection(NewDevice("test", options.WithCustomLogger(d.log)), d.GetPlcTagHandler(), d.valueHandler, driverOptions)
 	d.log.Debug().Msgf("Connecting and returning connection %v", connection)
 	return connection.ConnectWithContext(ctx)
 }

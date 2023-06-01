@@ -20,10 +20,10 @@
 package eip
 
 import (
+	"github.com/rs/zerolog"
 	"strconv"
 
 	"github.com/pkg/errors"
-	"github.com/rs/zerolog/log"
 )
 
 type Configuration struct {
@@ -31,19 +31,19 @@ type Configuration struct {
 	slot      int8
 }
 
-func ParseFromOptions(options map[string][]string) (Configuration, error) {
+func ParseFromOptions(localLogger zerolog.Logger, options map[string][]string) (Configuration, error) {
 	configuration := Configuration{
 		backplane: 1,
 		slot:      0,
 	}
-	if localRackString := getFromOptions(options, "backplane"); localRackString != "" {
+	if localRackString := getFromOptions(localLogger, options, "backplane"); localRackString != "" {
 		parsedBackplane, err := strconv.ParseInt(localRackString, 10, 8)
 		if err != nil {
 			return Configuration{}, errors.Wrap(err, "Error parsing backplane")
 		}
 		configuration.backplane = int8(parsedBackplane)
 	}
-	if localSlotString := getFromOptions(options, "slot"); localSlotString != "" {
+	if localSlotString := getFromOptions(localLogger, options, "slot"); localSlotString != "" {
 		parsedSlot, err := strconv.ParseInt(localSlotString, 10, 8)
 		if err != nil {
 			return Configuration{}, errors.Wrap(err, "Error parsing slot")
@@ -53,13 +53,13 @@ func ParseFromOptions(options map[string][]string) (Configuration, error) {
 	return configuration, nil
 }
 
-func getFromOptions(options map[string][]string, key string) string {
+func getFromOptions(localLogger zerolog.Logger, options map[string][]string, key string) string {
 	if optionValues, ok := options[key]; ok {
 		if len(optionValues) <= 0 {
 			return ""
 		}
 		if len(optionValues) > 1 {
-			log.Warn().Msgf("Options %s must be unique", key)
+			localLogger.Warn().Msgf("Options %s must be unique", key)
 		}
 		return optionValues[0]
 	}

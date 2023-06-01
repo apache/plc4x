@@ -24,7 +24,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/pool"
-	"github.com/rs/zerolog/log"
+	"github.com/rs/zerolog"
 	"net"
 	"net/url"
 	"sync"
@@ -44,13 +44,16 @@ type Discoverer struct {
 	transportInstanceCreationQueue      pool.Executor
 	deviceScanningWorkItemId            atomic.Int32
 	deviceScanningQueue                 pool.Executor
+
+	log zerolog.Logger
 }
 
-func NewDiscoverer() *Discoverer {
+func NewDiscoverer(_options ...options.WithOption) *Discoverer {
 	return &Discoverer{
 		// TODO: maybe a dynamic executor would be better to not waste cycles when not in use
-		transportInstanceCreationQueue: pool.NewFixedSizeExecutor(50, 100),
-		deviceScanningQueue:            pool.NewFixedSizeExecutor(50, 100),
+		transportInstanceCreationQueue: pool.NewFixedSizeExecutor(50, 100, _options...),
+		deviceScanningQueue:            pool.NewFixedSizeExecutor(50, 100, _options...),
+		log:                            options.ExtractCustomLogger(_options...),
 	}
 }
 
@@ -101,7 +104,7 @@ func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.
 		go func(netInterface net.Interface) {
 			defer func() {
 				if err := recover(); err != nil {
-					log.Error().Msgf("panic-ed %v", err)
+					d.log.Error().Msgf("panic-ed %v", err)
 				}
 			}()
 			defer func() { wg.Done() }()
@@ -132,14 +135,14 @@ func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.
 	}
 	go func() {
 		wg.Wait()
-		log.Trace().Msg("Closing transport instance channel")
+		d.log.Trace().Msg("Closing transport instance channel")
 		close(transportInstances)
 	}()
 
 	go func() {
 		defer func() {
 			if err := recover(); err != nil {
-				log.Error().Msgf("panic-ed %v", err)
+				d.log.Error().Msgf("panic-ed %v", err)
 			}
 		}()
 		for transportInstance := range transportInstances {
@@ -158,27 +161,27 @@ func (d *Discoverer) createTransportInstanceDispatcher(ctx context.Context, wg *
 			udpTransport.CreateTransportInstanceForLocalAddress(*connectionUrl, nil,
 				&net.UDPAddr{IP: ipv4Addr, Port: 0})
 		if err != nil {
-			log.Error().Err(err).Msg("error creating transport instance")
+			d.log.Error().Err(err).Msg("error creating transport instance")
 			return
 		}
 		err = transportInstance.ConnectWithContext(ctx)
 		if err != nil {
-			log.Debug().Err(err).Msg("Error Connecting")
+			d.log.Debug().Err(err).Msg("Error Connecting")
 			return
 		}
-		log.Debug().Msgf("Adding transport instance to scan %v", transportInstance)
+		d.log.Debug().Msgf("Adding transport instance to scan %v", transportInstance)
 		transportInstances <- transportInstance
 	}
 }
 
 func (d *Discoverer) createDeviceScanDispatcher(udpTransportInstance *udp.TransportInstance, callback func(event apiModel.PlcDiscoveryItem)) pool.Runnable {
 	return func() {
-		log.Debug().Msgf("Scanning %v", udpTransportInstance)
+		d.log.Debug().Msgf("Scanning %v", udpTransportInstance)
 		// Create a codec for sending and receiving messages.
 		codec := NewMessageCodec(udpTransportInstance, nil)
 		// Explicitly start the worker
 		if err := codec.Connect(); err != nil {
-			log.Error().Err(err).Msg("Error connecting")
+			d.log.Error().Err(err).Msg("Error connecting")
 			return
 		}
 
@@ -191,7 +194,7 @@ func (d *Discoverer) createDeviceScanDispatcher(udpTransportInstance *udp.Transp
 		searchRequestMessage := driverModel.NewSearchRequest(discoveryEndpoint)
 		// Send the search request.
 		if err := codec.Send(searchRequestMessage); err != nil {
-			log.Debug().Err(err).Msgf("Error sending message:\n%s", searchRequestMessage)
+			d.log.Debug().Err(err).Msgf("Error sending message:\n%s", searchRequestMessage)
 			return
 		}
 		// Keep on reading responses till the timeout is done.

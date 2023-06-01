@@ -21,6 +21,7 @@ package ads
 
 import (
 	"fmt"
+	"github.com/apache/plc4x/plc4go/spi/options"
 	"reflect"
 	"strconv"
 
@@ -40,14 +41,17 @@ type ValueHandler struct {
 	tagHandler    TagHandler
 }
 
-func NewValueHandler() ValueHandler {
-	return ValueHandler{}
+func NewValueHandler(_options ...options.WithOption) ValueHandler {
+	return ValueHandler{
+		DefaultValueHandler: spiValues.NewDefaultValueHandler(_options...),
+	}
 }
 
-func NewValueHandlerWithDriverContext(driverContext *DriverContext, tagHandler TagHandler) ValueHandler {
+func NewValueHandlerWithDriverContext(driverContext *DriverContext, tagHandler TagHandler, _options ...options.WithOption) ValueHandler {
 	return ValueHandler{
-		driverContext: driverContext,
-		tagHandler:    tagHandler,
+		DefaultValueHandler: spiValues.NewDefaultValueHandler(_options...),
+		driverContext:       driverContext,
+		tagHandler:          tagHandler,
 	}
 }
 

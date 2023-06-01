@@ -21,6 +21,8 @@ package modbus
 
 import (
 	"fmt"
+	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/rs/zerolog"
 	"regexp"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
@@ -56,9 +58,11 @@ type TagHandler struct {
 	numericHoldingRegisterPattern  *regexp.Regexp
 	plc4xExtendedRegisterPattern   *regexp.Regexp
 	numericExtendedRegisterPattern *regexp.Regexp
+
+	log zerolog.Logger
 }
 
-func NewTagHandler() TagHandler {
+func NewTagHandler(_options ...options.WithOption) TagHandler {
 	generalAddressPattern := `(?P<address>\d+)(:(?P<datatype>[a-zA-Z_]+))?(\[(?P<quantity>\d+)])?$`
 	generalFixedDigitAddressPattern := `(?P<address>\d{4,5})?(:(?P<datatype>[a-zA-Z_]+))?(\[(?P<quantity>\d+)])?$`
 	return TagHandler{
@@ -72,6 +76,7 @@ func NewTagHandler() TagHandler {
 		numericHoldingRegisterPattern:  regexp.MustCompile("^4[xX]?" + generalFixedDigitAddressPattern),
 		plc4xExtendedRegisterPattern:   regexp.MustCompile("^extended-register:" + generalAddressPattern),
 		numericExtendedRegisterPattern: regexp.MustCompile("^6[xX]?" + generalFixedDigitAddressPattern),
+		log:                            options.ExtractCustomLogger(_options...),
 	}
 }
 

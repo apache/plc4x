@@ -20,6 +20,7 @@
 package cbus
 
 import (
+	"github.com/apache/plc4x/plc4go/spi/options"
 	"time"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
@@ -40,12 +41,14 @@ func NewSubscriptionEvent(
 	responseCodes map[string]apiModel.PlcResponseCode,
 	address map[string]string,
 	sources map[string]string,
-	values map[string]apiValues.PlcValue) SubscriptionEvent {
+	values map[string]apiValues.PlcValue,
+	_options ...options.WithOption,
+) SubscriptionEvent {
 	subscriptionEvent := SubscriptionEvent{
 		address: address,
 		sources: sources,
 	}
-	event := spiModel.NewDefaultPlcSubscriptionEvent(&subscriptionEvent, tags, types, intervals, responseCodes, values)
+	event := spiModel.NewDefaultPlcSubscriptionEvent(&subscriptionEvent, tags, types, intervals, responseCodes, values, _options...)
 	subscriptionEvent.DefaultPlcSubscriptionEvent = event.(*spiModel.DefaultPlcSubscriptionEvent)
 	return subscriptionEvent
 }

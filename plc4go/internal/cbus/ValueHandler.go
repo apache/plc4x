@@ -20,6 +20,7 @@
 package cbus
 
 import (
+	"github.com/apache/plc4x/plc4go/spi/options"
 	"reflect"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
@@ -33,8 +34,10 @@ type ValueHandler struct {
 	spiValues.DefaultValueHandler
 }
 
-func NewValueHandler() ValueHandler {
-	return ValueHandler{}
+func NewValueHandler(_options ...options.WithOption) ValueHandler {
+	return ValueHandler{
+		spiValues.NewDefaultValueHandler(_options...),
+	}
 }
 
 func (m ValueHandler) NewPlcValue(tag apiModel.PlcTag, value any) (apiValues.PlcValue, error) {

@@ -30,7 +30,6 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/transports"
 	"github.com/pkg/errors"
-	"github.com/rs/zerolog/log"
 )
 
 type Driver struct {
@@ -72,7 +71,7 @@ func (m *Driver) GetConnectionWithContext(ctx context.Context, transportUrl url.
 
 	// Create the new connection
 	connection := NewConnection(transportInstance, options, m.GetPlcTagHandler())
-	log.Trace().Str("transport", transportUrl.String()).Stringer("connection", connection).Msg("created new connection instance, trying to connect now")
+	m.log.Trace().Str("transport", transportUrl.String()).Stringer("connection", connection).Msg("created new connection instance, trying to connect now")
 	return connection.ConnectWithContext(ctx)
 }
 

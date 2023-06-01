@@ -23,6 +23,7 @@ import (
 	"context"
 	"encoding/binary"
 	"fmt"
+	"github.com/apache/plc4x/plc4go/spi/options"
 	"strconv"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
@@ -32,7 +33,6 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/utils"
 
 	"github.com/pkg/errors"
-	"github.com/rs/zerolog/log"
 )
 
 const (
@@ -57,18 +57,19 @@ func NewTag(tagType TagType, address uint16, quantity uint16, datatype readWrite
 	}
 }
 
-func NewModbusPlcTagFromStrings(tagType TagType, addressString string, quantityString string, datatype readWriteModel.ModbusDataType) (apiModel.PlcTag, error) {
+func NewModbusPlcTagFromStrings(tagType TagType, addressString string, quantityString string, datatype readWriteModel.ModbusDataType, _options ...options.WithOption) (apiModel.PlcTag, error) {
 	address, err := strconv.ParseUint(addressString, 10, 16)
 	if err != nil {
 		return nil, errors.Errorf("Couldn't parse address string '%s' into an int", addressString)
 	}
+	localLogger := options.ExtractCustomLogger(_options...)
 	if quantityString == "" {
-		log.Debug().Msg("No quantity supplied, assuming 1")
+		localLogger.Debug().Msg("No quantity supplied, assuming 1")
 		quantityString = "1"
 	}
 	quantity, err := strconv.ParseUint(quantityString, 10, 16)
 	if err != nil {
-		log.Warn().Err(err).Msgf("Error during parsing for %s. Falling back to 1", quantityString)
+		localLogger.Warn().Err(err).Msgf("Error during parsing for %s. Falling back to 1", quantityString)
 		quantity = 1
 	}
 	return NewTag(tagType, uint16(address), uint16(quantity), datatype), nil

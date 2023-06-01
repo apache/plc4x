@@ -74,7 +74,12 @@ func (m *Subscriber) Subscribe(_ context.Context, subscriptionRequest apiModel.P
 
 		result <- spiModel.NewDefaultPlcSubscriptionRequestResult(
 			subscriptionRequest,
-			spiModel.NewDefaultPlcSubscriptionResponse(subscriptionRequest, responseCodes, subscriptionValues),
+			spiModel.NewDefaultPlcSubscriptionResponse(
+				subscriptionRequest,
+				responseCodes,
+				subscriptionValues,
+				options.WithCustomLogger(m.log),
+			),
 			nil,
 		)
 	}()

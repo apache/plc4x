@@ -23,19 +23,23 @@ import (
 	"github.com/apache/plc4x/plc4go/protocols/modbus/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/default"
+	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/transports"
 	"github.com/pkg/errors"
-	"github.com/rs/zerolog/log"
+	"github.com/rs/zerolog"
 )
 
 type MessageCodec struct {
 	_default.DefaultCodec
 	expectationCounter int32
+
+	log zerolog.Logger
 }
 
-func NewMessageCodec(transportInstance transports.TransportInstance) *MessageCodec {
+func NewMessageCodec(transportInstance transports.TransportInstance, _options ...options.WithOption) *MessageCodec {
 	codec := &MessageCodec{
 		expectationCounter: 1,
+		log:                options.ExtractCustomLogger(_options...),
 	}
 	codec.DefaultCodec = _default.NewDefaultCodec(codec, transportInstance)
 	return codec
@@ -46,7 +50,7 @@ func (m *MessageCodec) GetCodec() spi.MessageCodec {
 }
 
 func (m *MessageCodec) Send(message spi.Message) error {
-	log.Trace().Msg("Sending message")
+	m.log.Trace().Msg("Sending message")
 	// Cast the message to the correct type of struct
 	tcpAdu := message.(model.ModbusTcpADU)
 	// Serialize the request
@@ -66,17 +70,17 @@ func (m *MessageCodec) Send(message spi.Message) error {
 func (m *MessageCodec) Receive() (spi.Message, error) {
 	// We need at least 6 bytes in order to know how big the packet is in total
 	if num, err := m.GetTransportInstance().GetNumBytesAvailableInBuffer(); (err == nil) && (num >= 6) {
-		log.Debug().Msgf("we got %d readable bytes", num)
+		m.log.Debug().Msgf("we got %d readable bytes", num)
 		data, err := m.GetTransportInstance().PeekReadableBytes(6)
 		if err != nil {
-			log.Warn().Err(err).Msg("error peeking")
+			m.log.Warn().Err(err).Msg("error peeking")
 			// TODO: Possibly clean up ...
 			return nil, nil
 		}
 		// Get the size of the entire packet
 		packetSize := (uint32(data[4]) << 8) + uint32(data[5]) + 6
 		if num < packetSize {
-			log.Debug().Msgf("Not enough bytes. Got: %d Need: %d\n", num, packetSize)
+			m.log.Debug().Msgf("Not enough bytes. Got: %d Need: %d\n", num, packetSize)
 			return nil, nil
 		}
 		data, err = m.GetTransportInstance().Read(packetSize)
@@ -86,13 +90,13 @@ func (m *MessageCodec) Receive() (spi.Message, error) {
 		}
 		tcpAdu, err := model.ModbusTcpADUParse(data, model.DriverType_MODBUS_TCP, true)
 		if err != nil {
-			log.Warn().Err(err).Msg("error parsing")
+			m.log.Warn().Err(err).Msg("error parsing")
 			// TODO: Possibly clean up ...
 			return nil, nil
 		}
 		return tcpAdu, nil
 	} else if err != nil {
-		log.Warn().Err(err).Msg("Got error reading")
+		m.log.Warn().Err(err).Msg("Got error reading")
 		return nil, nil
 	}
 	// TODO: maybe we return here a not enough error error

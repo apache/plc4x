@@ -20,10 +20,9 @@
 package model
 
 import (
-	"github.com/pkg/errors"
-	"github.com/rs/zerolog/log"
-
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
+	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/pkg/errors"
 )
 
 //go:generate go run ../../tools/plc4xgenerator/gen.go -type=DefaultPlcSubscriptionResponse
@@ -32,7 +31,12 @@ type DefaultPlcSubscriptionResponse struct {
 	values  map[string]*DefaultPlcSubscriptionResponseItem
 }
 
-func NewDefaultPlcSubscriptionResponse(request apiModel.PlcSubscriptionRequest, responseCodes map[string]apiModel.PlcResponseCode, values map[string]apiModel.PlcSubscriptionHandle) apiModel.PlcSubscriptionResponse {
+func NewDefaultPlcSubscriptionResponse(
+	request apiModel.PlcSubscriptionRequest,
+	responseCodes map[string]apiModel.PlcResponseCode,
+	values map[string]apiModel.PlcSubscriptionHandle,
+	_options ...options.WithOption,
+) apiModel.PlcSubscriptionResponse {
 	valueMap := map[string]*DefaultPlcSubscriptionResponseItem{}
 	for name, code := range responseCodes {
 		value := values[name]
@@ -42,10 +46,11 @@ func NewDefaultPlcSubscriptionResponse(request apiModel.PlcSubscriptionRequest, 
 		request: request,
 		values:  valueMap,
 	}
+	localLog := options.ExtractCustomLogger(_options...)
 	for subscriptionTagName, consumers := range request.(*DefaultPlcSubscriptionRequest).preRegisteredConsumers {
 		subscriptionHandle, err := plcSubscriptionResponse.GetSubscriptionHandle(subscriptionTagName)
 		if subscriptionHandle == nil || err != nil {
-			log.Error().Msgf("PlcSubscriptionHandle for %s not found", subscriptionTagName)
+			localLog.Error().Msgf("PlcSubscriptionHandle for %s not found", subscriptionTagName)
 			continue
 		}
 		for _, consumer := range consumers {

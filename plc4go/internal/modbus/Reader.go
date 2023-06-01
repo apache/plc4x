@@ -21,6 +21,8 @@ package modbus
 
 import (
 	"context"
+	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/rs/zerolog"
 	"math"
 	"sync/atomic"
 	"time"
@@ -32,26 +34,28 @@ import (
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 
 	"github.com/pkg/errors"
-	"github.com/rs/zerolog/log"
 )
 
 type Reader struct {
 	transactionIdentifier int32
 	unitIdentifier        uint8
 	messageCodec          spi.MessageCodec
+
+	log zerolog.Logger
 }
 
-func NewReader(unitIdentifier uint8, messageCodec spi.MessageCodec) *Reader {
+func NewReader(unitIdentifier uint8, messageCodec spi.MessageCodec, _options ...options.WithOption) *Reader {
 	return &Reader{
 		transactionIdentifier: 0,
 		unitIdentifier:        unitIdentifier,
 		messageCodec:          messageCodec,
+		log:                   options.ExtractCustomLogger(_options...),
 	}
 }
 
 func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) <-chan apiModel.PlcReadRequestResult {
 	// TODO: handle ctx
-	log.Trace().Msg("Reading")
+	m.log.Trace().Msg("Reading")
 	result := make(chan apiModel.PlcReadRequestResult, 1)
 	go func() {
 		defer func() {
@@ -61,7 +65,7 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 		}()
 		if len(readRequest.GetTagNames()) != 1 {
 			result <- spiModel.NewDefaultPlcReadRequestResult(readRequest, nil, errors.New("modbus only supports single-item requests"))
-			log.Debug().Msgf("modbus only supports single-item requests. Got %d tags", len(readRequest.GetTagNames()))
+			m.log.Debug().Msgf("modbus only supports single-item requests. Got %d tags", len(readRequest.GetTagNames()))
 			return
 		}
 		// If we are requesting only one tag, use a
@@ -74,11 +78,11 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 				nil,
 				errors.Wrap(err, "invalid tag item type"),
 			)
-			log.Debug().Msgf("Invalid tag item type %T", tag)
+			m.log.Debug().Msgf("Invalid tag item type %T", tag)
 			return
 		}
 		numWords := uint16(math.Ceil(float64(modbusTagVar.Quantity*uint16(modbusTagVar.Datatype.DataTypeSize())) / float64(2)))
-		log.Debug().Msgf("Working with %d words", numWords)
+		m.log.Debug().Msgf("Working with %d words", numWords)
 		var pdu readWriteModel.ModbusPDU = nil
 		switch modbusTagVar.TagType {
 		case Coil:
@@ -102,7 +106,7 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 				nil,
 				errors.Errorf("unsupported tag type %x", modbusTagVar.TagType),
 			)
-			log.Debug().Msgf("Unsupported tag type %x", modbusTagVar.TagType)
+			m.log.Debug().Msgf("Unsupported tag type %x", modbusTagVar.TagType)
 			return
 		}
 
@@ -112,24 +116,24 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 			transactionIdentifier = 1
 			atomic.StoreInt32(&m.transactionIdentifier, 1)
 		}
-		log.Debug().Msgf("Calculated transaction identifier %x", transactionIdentifier)
+		m.log.Debug().Msgf("Calculated transaction identifier %x", transactionIdentifier)
 
 		// Assemble the finished ADU
-		log.Trace().Msg("Assemble ADU")
+		m.log.Trace().Msg("Assemble ADU")
 		requestAdu := readWriteModel.NewModbusTcpADU(uint16(transactionIdentifier), m.unitIdentifier, pdu, false)
 
 		// Send the ADU over the wire
-		log.Trace().Msg("Send ADU")
+		m.log.Trace().Msg("Send ADU")
 		if err = m.messageCodec.SendRequest(ctx, requestAdu, func(message spi.Message) bool {
 			responseAdu := message.(readWriteModel.ModbusTcpADU)
 			return responseAdu.GetTransactionIdentifier() == uint16(transactionIdentifier) &&
 				responseAdu.GetUnitIdentifier() == requestAdu.UnitIdentifier
 		}, func(message spi.Message) error {
 			// Convert the response into an ADU
-			log.Trace().Msg("convert response to ADU")
+			m.log.Trace().Msg("convert response to ADU")
 			responseAdu := message.(readWriteModel.ModbusTcpADU)
 			// Convert the modbus response into a PLC4X response
-			log.Trace().Msg("convert response to PLC4X response")
+			m.log.Trace().Msg("convert response to PLC4X response")
 			readResponse, err := m.ToPlc4xReadResponse(responseAdu, readRequest)
 
 			if err != nil {
@@ -186,7 +190,7 @@ func (m *Reader) ToPlc4xReadResponse(responseAdu readWriteModel.ModbusTcpADU, re
 	}
 
 	// Get the tag from the request
-	log.Trace().Msg("get a tag from request")
+	m.log.Trace().Msg("get a tag from request")
 	tagName := readRequest.GetTagNames()[0]
 	tag, err := CastToModbusTagFromPlcTag(readRequest.GetTag(tagName))
 	if err != nil {
@@ -194,7 +198,7 @@ func (m *Reader) ToPlc4xReadResponse(responseAdu readWriteModel.ModbusTcpADU, re
 	}
 
 	// Decode the data according to the information from the request
-	log.Trace().Msg("decode data")
+	m.log.Trace().Msg("decode data")
 	value, err := readWriteModel.DataItemParse(context.Background(), data, tag.Datatype, tag.Quantity)
 	if err != nil {
 		return nil, errors.Wrap(err, "Error parsing data item")
@@ -205,6 +209,6 @@ func (m *Reader) ToPlc4xReadResponse(responseAdu readWriteModel.ModbusTcpADU, re
 	responseCodes[tagName] = apiModel.PlcResponseCode_OK
 
 	// Return the response
-	log.Trace().Msg("Returning the response")
+	m.log.Trace().Msg("Returning the response")
 	return spiModel.NewDefaultPlcReadResponse(readRequest, responseCodes, plcValues), nil
 }

@@ -21,50 +21,54 @@ package simulated
 
 import (
 	"context"
+	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/rs/zerolog"
 	"math/rand"
 
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
 	"github.com/apache/plc4x/plc4go/protocols/simulated/readwrite/model"
-	"github.com/rs/zerolog/log"
 )
 
 type Device struct {
 	Name  string
 	State map[simulatedTag]*values.PlcValue
+
+	log zerolog.Logger
 }
 
-func NewDevice(name string) *Device {
+func NewDevice(name string, _options ...options.WithOption) *Device {
 	return &Device{
 		Name:  name,
 		State: make(map[simulatedTag]*values.PlcValue),
+		log:   options.ExtractCustomLogger(_options...),
 	}
 }
 
-func (t *Device) Get(tag simulatedTag) *values.PlcValue {
+func (d *Device) Get(tag simulatedTag) *values.PlcValue {
 	switch tag.TagType {
 	case TagState:
-		return t.State[tag]
+		return d.State[tag]
 	case TagRandom:
-		return t.getRandomValue(tag)
+		return d.getRandomValue(tag)
 	}
 	return nil
 }
 
-func (t *Device) Set(tag simulatedTag, value *values.PlcValue) {
+func (d *Device) Set(tag simulatedTag, value *values.PlcValue) {
 	switch tag.TagType {
 	case TagState:
-		t.State[tag] = value
+		d.State[tag] = value
 		break
 	case TagRandom:
-		// TODO: Doesn't really make any sense to write a random
+		// TODO: Doesn'd really make any sense to write a random
 		break
 	case TagStdOut:
-		log.Debug().Msgf("TEST PLC STDOUT [%s]: %s", tag.Name, (*value).GetString())
+		d.log.Debug().Msgf("TEST PLC STDOUT [%s]: %s", tag.Name, (*value).GetString())
 		break
 	}
 }
 
-func (t *Device) getRandomValue(tag simulatedTag) *values.PlcValue {
+func (d *Device) getRandomValue(tag simulatedTag) *values.PlcValue {
 	size := tag.GetDataTypeSize().DataTypeSize()
 	data := make([]byte, uint16(size)*tag.Quantity)
 	rand.Read(data)

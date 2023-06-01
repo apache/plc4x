@@ -22,6 +22,8 @@ package values
 import (
 	"errors"
 	"fmt"
+	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/rs/zerolog"
 	"reflect"
 	"strconv"
 	"strings"
@@ -29,10 +31,16 @@ import (
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
-	"github.com/rs/zerolog/log"
 )
 
 type DefaultValueHandler struct {
+	log zerolog.Logger
+}
+
+func NewDefaultValueHandler(_options ...options.WithOption) DefaultValueHandler {
+	return DefaultValueHandler{
+		log: options.ExtractCustomLogger(_options...),
+	}
 }
 
 func (m DefaultValueHandler) NewPlcValue(tag apiModel.PlcTag, value any) (apiValues.PlcValue, error) {
@@ -96,7 +104,7 @@ func (m DefaultValueHandler) ParseSimpleType(tag apiModel.PlcTag, value any) (ap
 		stringValue := fmt.Sprintf("%v", value)
 		plcValue, err = m.NewPlcValueFromType(tag.GetValueType(), stringValue)
 		if err == nil {
-			log.Debug().Msgf("had to convert %v into %v by using string conversion", value, plcValue)
+			m.log.Debug().Msgf("had to convert %v into %v by using string conversion", value, plcValue)
 		}
 	}
 	return plcValue, err

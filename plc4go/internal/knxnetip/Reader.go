@@ -21,6 +21,8 @@ package knxnetip
 
 import (
 	"context"
+	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/rs/zerolog"
 	"strconv"
 	"strings"
 	"time"
@@ -33,16 +35,18 @@ import (
 	spiValues "github.com/apache/plc4x/plc4go/spi/values"
 
 	"github.com/pkg/errors"
-	"github.com/rs/zerolog/log"
 )
 
 type Reader struct {
 	connection *Connection
+
+	log zerolog.Logger
 }
 
-func NewReader(connection *Connection) *Reader {
+func NewReader(connection *Connection, _options ...options.WithOption) *Reader {
 	return &Reader{
 		connection: connection,
+		log:        options.ExtractCustomLogger(_options...),
 	}
 }
 
@@ -175,7 +179,7 @@ func (m Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) <
 func (m Reader) readGroupAddress(ctx context.Context, tag GroupAddressTag) (apiModel.PlcResponseCode, apiValues.PlcValue) {
 	rawAddresses, err := m.resolveAddresses(tag)
 	if err != nil {
-		log.Debug().Err(err).Msg("error resolving addresses")
+		m.log.Debug().Err(err).Msg("error resolving addresses")
 		return apiModel.PlcResponseCode_INVALID_ADDRESS, nil
 	}
 
@@ -188,7 +192,7 @@ func (m Reader) readGroupAddress(ctx context.Context, tag GroupAddressTag) (apiM
 		// Create a string representation of this numeric address depending on the type of requested address
 		stringAddress, err := NumericGroupAddressToString(numericAddress, tag)
 		if err != nil {
-			log.Debug().Err(err).Msg("error mapping addresses")
+			m.log.Debug().Err(err).Msg("error mapping addresses")
 			return apiModel.PlcResponseCode_INVALID_ADDRESS, nil
 		}
 		// Try to get a value from the cache
@@ -246,7 +250,7 @@ func (m Reader) readGroupAddress(ctx context.Context, tag GroupAddressTag) (apiM
 	if len(rawAddresses) == 1 {
 		stringAddress, err := NumericGroupAddressToString(rawAddresses[0], tag)
 		if err != nil {
-			log.Debug().Err(err).Msg("error mapping addresses")
+			m.log.Debug().Err(err).Msg("error mapping addresses")
 			return apiModel.PlcResponseCode_INVALID_ADDRESS, nil
 		}
 		return apiModel.PlcResponseCode_OK, values[stringAddress]

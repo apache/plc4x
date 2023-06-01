@@ -23,7 +23,9 @@ import (
 	"context"
 	"encoding/binary"
 	"fmt"
+	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/transactions"
+	"github.com/rs/zerolog"
 	"regexp"
 	"strconv"
 	"time"
@@ -37,7 +39,6 @@ import (
 	spiValues "github.com/apache/plc4x/plc4go/spi/values"
 
 	"github.com/pkg/errors"
-	"github.com/rs/zerolog/log"
 )
 
 type Reader struct {
@@ -45,20 +46,24 @@ type Reader struct {
 	tm            transactions.RequestTransactionManager
 	configuration Configuration
 	sessionHandle *uint32
+
+	log zerolog.Logger
 }
 
-func NewReader(messageCodec spi.MessageCodec, tm transactions.RequestTransactionManager, configuration Configuration, sessionHandle *uint32) *Reader {
+func NewReader(messageCodec spi.MessageCodec, tm transactions.RequestTransactionManager, configuration Configuration, sessionHandle *uint32, _options ...options.WithOption) *Reader {
 	return &Reader{
 		messageCodec:  messageCodec,
 		tm:            tm,
 		configuration: configuration,
 		sessionHandle: sessionHandle,
+
+		log: options.ExtractCustomLogger(_options...),
 	}
 }
 
 func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) <-chan apiModel.PlcReadRequestResult {
 	// TODO: handle ctx
-	log.Trace().Msg("Reading")
+	m.log.Trace().Msg("Reading")
 	result := make(chan apiModel.PlcReadRequestResult, 1)
 	go func() {
 		defer func() {
@@ -106,7 +111,7 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 						cipRRData := message.(readWriteModel.CipRRData)
 						unconnectedDataItem := cipRRData.GetTypeIds()[1].(readWriteModel.UnConnectedDataItem)
 						// Convert the eip response into a PLC4X response
-						log.Trace().Msg("convert response to PLC4X response")
+						m.log.Trace().Msg("convert response to PLC4X response")
 						readResponse, err := m.ToPlc4xReadResponse(unconnectedDataItem.GetService(), readRequest)
 						if err != nil {
 							result <- spiModel.NewDefaultPlcReadRequestResult(
@@ -257,7 +262,7 @@ func (m *Reader) ToPlc4xReadResponse(response readWriteModel.CipService, readReq
 	}
 
 	// Return the response
-	log.Trace().Msg("Returning the response")
+	m.log.Trace().Msg("Returning the response")
 	return spiModel.NewDefaultPlcReadResponse(readRequest, responseCodes, plcValues), nil
 }
 

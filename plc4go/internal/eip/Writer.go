@@ -22,7 +22,9 @@ package eip
 import (
 	"context"
 	"encoding/binary"
+	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/transactions"
+	"github.com/rs/zerolog"
 	"strings"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
@@ -33,7 +35,6 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/utils"
 
 	"github.com/pkg/errors"
-	"github.com/rs/zerolog/log"
 )
 
 type Writer struct {
@@ -42,15 +43,18 @@ type Writer struct {
 	configuration Configuration
 	sessionHandle *uint32
 	senderContext *[]uint8
+
+	log zerolog.Logger
 }
 
-func NewWriter(messageCodec spi.MessageCodec, tm transactions.RequestTransactionManager, configuration Configuration, sessionHandle *uint32, senderContext *[]uint8) Writer {
+func NewWriter(messageCodec spi.MessageCodec, tm transactions.RequestTransactionManager, configuration Configuration, sessionHandle *uint32, senderContext *[]uint8, _options ...options.WithOption) Writer {
 	return Writer{
 		messageCodec:  messageCodec,
 		tm:            tm,
 		configuration: configuration,
 		sessionHandle: sessionHandle,
 		senderContext: senderContext,
+		log:           options.ExtractCustomLogger(_options...),
 	}
 }
 
@@ -100,7 +104,7 @@ func (m Writer) Write(ctx context.Context, writeRequest apiModel.PlcWriteRequest
 
 		/*		if len(items) == 1 {
 					// Assemble the finished paket
-					log.Trace().Msg("Assemble paket")
+				m.log.Trace().Msg("Assemble paket")
 					pkt := readWriteModel.NewCipRRData(
 						readWriteModel.NewCipExchange(
 							readWriteModel.NewCipUnconnectedRequest(
@@ -140,12 +144,12 @@ func (m Writer) Write(ctx context.Context, writeRequest apiModel.PlcWriteRequest
 							return true
 						}, func(message spi.Message) error {
 							// Convert the response into an
-							log.Trace().Msg("convert response to ")
+						m.log.Trace().Msg("convert response to ")
 							eipPacket := message.(readWriteModel.EipPacket)
 							cipRRData := eipPacket.(readWriteModel.CipRRData)
 							cipWriteResponse := cipRRData.GetExchange().GetService().(readWriteModel.CipWriteResponse)
 							// Convert the eip response into a PLC4X response
-							log.Trace().Msg("convert response to PLC4X response")
+						m.log.Trace().Msg("convert response to PLC4X response")
 							readResponse, err := m.ToPlc4xWriteResponse(cipWriteResponse, writeRequest)
 
 							if err != nil {
@@ -188,7 +192,7 @@ func (m Writer) Write(ctx context.Context, writeRequest apiModel.PlcWriteRequest
 					data := readWriteModel.NewServices(nb, offsets, serviceArr, 0)
 
 					// Assemble the finished paket
-					log.Trace().Msg("Assemble paket")
+				m.log.Trace().Msg("Assemble paket")
 					pkt := readWriteModel.NewCipRRData(
 						readWriteModel.NewCipExchange(
 							readWriteModel.NewCipUnconnectedRequest(
@@ -231,12 +235,12 @@ func (m Writer) Write(ctx context.Context, writeRequest apiModel.PlcWriteRequest
 							return true
 						}, func(message spi.Message) error {
 							// Convert the response into an
-							log.Trace().Msg("convert response to ")
+						m.log.Trace().Msg("convert response to ")
 							eipPacket := message.(readWriteModel.EipPacket)
 							cipRRData := eipPacket.(readWriteModel.CipRRData)
 							multipleServiceResponse := cipRRData.GetExchange().GetService().(readWriteModel.MultipleServiceResponse)
 							// Convert the eip response into a PLC4X response
-							log.Trace().Msg("convert response to PLC4X response")
+						m.log.Trace().Msg("convert response to PLC4X response")
 							readResponse, err := m.ToPlc4xWriteResponse(multipleServiceResponse, writeRequest)
 
 							if err != nil {
@@ -340,6 +344,6 @@ func (m Writer) ToPlc4xWriteResponse(response readWriteModel.CipService, writeRe
 	}
 
 	// Return the response
-	log.Trace().Msg("Returning the response")
+	m.log.Trace().Msg("Returning the response")
 	return spiModel.NewDefaultPlcWriteResponse(writeRequest, responseCodes), nil
 }

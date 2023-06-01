@@ -20,20 +20,22 @@
 package model
 
 import (
+	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/rs/zerolog"
 	"time"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	spiValues "github.com/apache/plc4x/plc4go/spi/values"
-
-	"github.com/rs/zerolog/log"
 )
 
 //go:generate go run ../../tools/plc4xgenerator/gen.go -type=DefaultPlcSubscriptionEvent
 type DefaultPlcSubscriptionEvent struct {
 	DefaultPlcSubscriptionEventRequirements `ignore:"true"` // Avoid recursion
 	values                                  map[string]*DefaultPlcSubscriptionEventItem
+
+	log zerolog.Logger `ignore:"true"`
 }
 
 type DefaultPlcSubscriptionEventRequirements interface {
@@ -48,6 +50,7 @@ func NewDefaultPlcSubscriptionEvent(
 	intervals map[string]time.Duration,
 	responseCodes map[string]apiModel.PlcResponseCode,
 	values map[string]apiValues.PlcValue,
+	_options ...options.WithOption,
 ) apiModel.PlcSubscriptionEvent {
 
 	valueMap := map[string]*DefaultPlcSubscriptionEventItem{}
@@ -62,6 +65,7 @@ func NewDefaultPlcSubscriptionEvent(
 	return &DefaultPlcSubscriptionEvent{
 		DefaultPlcSubscriptionEventRequirements: defaultPlcSubscriptionEventRequirements,
 		values:                                  valueMap,
+		log:                                     options.ExtractCustomLogger(_options...),
 	}
 }
 
@@ -88,7 +92,7 @@ func (d *DefaultPlcSubscriptionEvent) GetResponseCode(name string) apiModel.PlcR
 func (d *DefaultPlcSubscriptionEvent) GetTag(name string) apiModel.PlcTag {
 	item := d.values[name]
 	if item == nil {
-		log.Warn().Msgf("field for %s not found", name)
+		d.log.Warn().Msgf("field for %s not found", name)
 		return nil
 	}
 	return item.GetTag()
@@ -97,7 +101,7 @@ func (d *DefaultPlcSubscriptionEvent) GetTag(name string) apiModel.PlcTag {
 func (d *DefaultPlcSubscriptionEvent) GetType(name string) SubscriptionType {
 	item := d.values[name]
 	if item == nil {
-		log.Warn().Msgf("field for %s not found", name)
+		d.log.Warn().Msgf("field for %s not found", name)
 		return 0
 	}
 	return item.GetSubscriptionType()
@@ -106,7 +110,7 @@ func (d *DefaultPlcSubscriptionEvent) GetType(name string) SubscriptionType {
 func (d *DefaultPlcSubscriptionEvent) GetInterval(name string) time.Duration {
 	item := d.values[name]
 	if item == nil {
-		log.Warn().Msgf("field for %s not found", name)
+		d.log.Warn().Msgf("field for %s not found", name)
 		return -1
 	}
 	return item.GetInterval()
@@ -115,7 +119,7 @@ func (d *DefaultPlcSubscriptionEvent) GetInterval(name string) time.Duration {
 func (d *DefaultPlcSubscriptionEvent) GetValue(name string) apiValues.PlcValue {
 	item := d.values[name]
 	if item == nil {
-		log.Warn().Msgf("field for %s not found", name)
+		d.log.Warn().Msgf("field for %s not found", name)
 		return spiValues.PlcNull{}
 	}
 	return item.GetValue()

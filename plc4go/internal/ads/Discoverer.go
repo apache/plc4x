@@ -24,6 +24,7 @@ import (
 	"encoding/binary"
 	"fmt"
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
 	"net"
 	"net/url"
 	"strconv"
@@ -33,11 +34,9 @@ import (
 	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	"github.com/apache/plc4x/plc4go/protocols/ads/discovery/readwrite/model"
 	driverModel "github.com/apache/plc4x/plc4go/protocols/ads/readwrite/model"
-	"github.com/apache/plc4x/plc4go/spi"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	spiValues "github.com/apache/plc4x/plc4go/spi/values"
-	"github.com/rs/zerolog/log"
 )
 
 type discovery struct {
@@ -48,11 +47,13 @@ type discovery struct {
 }
 
 type Discoverer struct {
-	messageCodec spi.MessageCodec
+	log zerolog.Logger
 }
 
-func NewDiscoverer() *Discoverer {
-	return &Discoverer{}
+func NewDiscoverer(_options ...options.WithOption) *Discoverer {
+	return &Discoverer{
+		log: options.ExtractCustomLogger(_options...),
+	}
 }
 
 func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.PlcDiscoveryItem), discoveryOptions ...options.WithDiscoveryOption) error {
@@ -144,7 +145,7 @@ func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.
 		go func(discoveryItem *discovery) {
 			defer func() {
 				if err := recover(); err != nil {
-					log.Error().Msgf("panic-ed %v", err)
+					d.log.Error().Msgf("panic-ed %v", err)
 				}
 			}()
 			buf := make([]byte, 1024)
@@ -155,7 +156,7 @@ func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.
 				}
 				discoveryResponse, err := model.AdsDiscoveryParse(buf[0:length])
 				if err != nil {
-					log.Error().Err(err).Str("src-ip", fromAddr.String()).Msg("error decoding response")
+					d.log.Error().Err(err).Str("src-ip", fromAddr.String()).Msg("error decoding response")
 					continue
 				}
 
@@ -254,24 +255,24 @@ func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.
 		// Serialize the message
 		bytes, err := discoveryRequestMessage.Serialize()
 		if err != nil {
-			log.Error().Err(err).Str("broadcast-ip", discoveryItem.broadcastAddress.String()).Msg("Error serialising broadcast search packet")
+			d.log.Error().Err(err).Str("broadcast-ip", discoveryItem.broadcastAddress.String()).Msg("Error serialising broadcast search packet")
 			continue
 		}
 
 		// Create a not-connected UDP connection to the broadcast address
 		requestAddr, err := net.ResolveUDPAddr("udp4", fmt.Sprintf("%s:%d", discoveryItem.broadcastAddress.String(), model.AdsDiscoveryConstants_ADSDISCOVERYUDPDEFAULTPORT))
 		if err != nil {
-			log.Error().Err(err).Str("broadcast-ip", discoveryItem.broadcastAddress.String()).Msg("Error resolving target socket for broadcast search")
+			d.log.Error().Err(err).Str("broadcast-ip", discoveryItem.broadcastAddress.String()).Msg("Error resolving target socket for broadcast search")
 			continue
 		}
 		/*localAddr, err := net.ResolveUDPAddr("udp4", fmt.Sprintf("%s:%d", ipv4Addr.String(), model.AdsDiscoveryConstants_ADSDISCOVERYUDPDEFAULTPORT))
 		if err != nil {
-			log.Error().Err(err).Str("local-ip", ipv4Addr.String()).Msg("Error resolving local address for broadcast search")
+		m.log.Error().Err(err).Str("local-ip", ipv4Addr.String()).Msg("Error resolving local address for broadcast search")
 			continue
 		}
 		udp, err := net.DialUDP("udp4", localAddr, requestAddr)
 		if err != nil {
-			log.Error().Err(err).Str("local-ip", ipv4Addr.String()).Str("broadcast-ip", broadcastAddress.String()).
+		m.log.Error().Err(err).Str("local-ip", ipv4Addr.String()).Str("broadcast-ip", broadcastAddress.String()).
 				Msg("Error creating sending udp socket for broadcast search")
 			continue
 		}*/
@@ -279,7 +280,7 @@ func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.
 		// Send out the message.
 		_, err = discoveryItem.socket.WriteTo(bytes, requestAddr)
 		if err != nil {
-			log.Error().Err(err).Str("broadcast-ip", discoveryItem.broadcastAddress.String()).Msg("Error sending request for broadcast search")
+			d.log.Error().Err(err).Str("broadcast-ip", discoveryItem.broadcastAddress.String()).Msg("Error sending request for broadcast search")
 			continue
 		}
 	}

@@ -23,6 +23,8 @@ import (
 	"bufio"
 	"context"
 	"encoding/binary"
+	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/rs/zerolog"
 
 	"github.com/apache/plc4x/plc4go/protocols/ads/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
@@ -30,22 +32,31 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/transports"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
-	"github.com/rs/zerolog/log"
 )
 
 type MessageCodec struct {
 	_default.DefaultCodec
+
+	log zerolog.Logger
 }
 
-func NewMessageCodec(transportInstance transports.TransportInstance) *MessageCodec {
-	codec := &MessageCodec{}
-	codec.DefaultCodec = _default.NewDefaultCodec(codec, transportInstance, _default.WithCustomMessageHandler(
-		// This just prevents the loop from aborting in the start and by returning false,
-		// it makes the message go to the default channel, as this means:
-		// The handler hasn't handled the message
-		func(codec _default.DefaultCodecRequirements, message spi.Message) bool {
-			return false
-		}))
+func NewMessageCodec(transportInstance transports.TransportInstance, _options ...options.WithOption) *MessageCodec {
+	codec := &MessageCodec{
+		log: options.ExtractCustomLogger(_options...),
+	}
+	codec.DefaultCodec = _default.NewDefaultCodec(
+		codec,
+		transportInstance,
+		append(_options,
+			_default.WithCustomMessageHandler(
+				// This just prevents the loop from aborting in the start and by returning false,
+				// it makes the message go to the default channel, as this means:
+				// The handler hasn't handled the message
+				func(codec _default.DefaultCodecRequirements, message spi.Message) bool {
+					return false
+				}),
+		)...,
+	)
 	return codec
 }
 
@@ -54,7 +65,7 @@ func (m *MessageCodec) GetCodec() spi.MessageCodec {
 }
 
 func (m *MessageCodec) Send(message spi.Message) error {
-	log.Trace().Msg("Sending message")
+	m.log.Trace().Msg("Sending message")
 	// Cast the message to the correct type of struct
 	tcpPaket := message.(model.AmsTCPPacket)
 	// Serialize the request
@@ -83,15 +94,15 @@ func (m *MessageCodec) Receive() (spi.Message, error) {
 			}
 			return numBytesAvailable < 6
 		}); err != nil {
-		log.Warn().Err(err).Msg("error filling buffer")
+		m.log.Warn().Err(err).Msg("error filling buffer")
 	}
 
 	// We need at least 6 bytes in order to know how big the packet is in total
 	if num, err := transportInstance.GetNumBytesAvailableInBuffer(); (err == nil) && (num >= 6) {
-		log.Debug().Msgf("we got %d readable bytes", num)
+		m.log.Debug().Msgf("we got %d readable bytes", num)
 		data, err := transportInstance.PeekReadableBytes(6)
 		if err != nil {
-			log.Warn().Err(err).Msg("error peeking")
+			m.log.Warn().Err(err).Msg("error peeking")
 			// TODO: Possibly clean up ...
 			return nil, nil
 		}
@@ -106,7 +117,7 @@ func (m *MessageCodec) Receive() (spi.Message, error) {
 					}
 					return numBytesAvailable < packetSize
 				}); err != nil {
-				log.Warn().Err(err).Msg("error filling buffer")
+				m.log.Warn().Err(err).Msg("error filling buffer")
 			}
 		}
 		data, err = transportInstance.Read(packetSize)
@@ -117,13 +128,13 @@ func (m *MessageCodec) Receive() (spi.Message, error) {
 		rb := utils.NewReadBufferByteBased(data, utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian))
 		tcpPacket, err := model.AmsTCPPacketParseWithBuffer(context.Background(), rb)
 		if err != nil {
-			log.Warn().Err(err).Msg("error parsing")
+			m.log.Warn().Err(err).Msg("error parsing")
 			// TODO: Possibly clean up ...
 			return nil, nil
 		}
 		return tcpPacket, nil
 	} else if err != nil {
-		log.Warn().Err(err).Msg("Got error reading")
+		m.log.Warn().Err(err).Msg("Got error reading")
 		return nil, nil
 	}
 	// TODO: maybe we return here a not enough error error
