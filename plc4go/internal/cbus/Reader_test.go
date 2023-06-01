@@ -420,29 +420,6 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 			name: "Send message empty message",
 			fields: fields{
 				alphaGenerator: &AlphaGenerator{currentAlpha: 'g'},
-				messageCodec: func() *MessageCodec {
-					transport := test.NewTransport()
-					transportUrl := url.URL{Scheme: "test"}
-					transportInstance, err := transport.CreateTransportInstance(transportUrl, nil)
-					if err != nil {
-						t.Error(err)
-						t.FailNow()
-						return nil
-					}
-					codec := NewMessageCodec(transportInstance)
-					t.Cleanup(func() {
-						if err := codec.Disconnect(); err != nil {
-							t.Error(err)
-						}
-					})
-					err = codec.Connect()
-					if err != nil {
-						t.Error(err)
-						t.FailNow()
-						return nil
-					}
-					return codec
-				}(),
 			},
 			args: args{
 				ctx: func() context.Context {
@@ -468,6 +445,28 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 				},
 			},
 			setup: func(t *testing.T, fields *fields, args *args) {
+				loggerOption := options.WithCustomLogger(testutils.ProduceTestingLogger(t))
+
+				transport := test.NewTransport(loggerOption)
+				transportUrl := url.URL{Scheme: "test"}
+				transportInstance, err := transport.CreateTransportInstance(transportUrl, nil, loggerOption)
+				if err != nil {
+					t.Error(err)
+					t.FailNow()
+				}
+				codec := NewMessageCodec(transportInstance, loggerOption)
+				t.Cleanup(func() {
+					if err := codec.Disconnect(); err != nil {
+						t.Error(err)
+					}
+				})
+				err = codec.Connect()
+				if err != nil {
+					t.Error(err)
+					t.FailNow()
+				}
+				fields.messageCodec = codec
+
 				transaction := NewMockRequestTransaction(t)
 				expect := transaction.EXPECT()
 				expect.FailRequest(mock.Anything).Return(errors.New("no I say"))

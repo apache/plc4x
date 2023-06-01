@@ -22,6 +22,7 @@ package eip
 import (
 	"context"
 	"fmt"
+	"github.com/apache/plc4x/plc4go/spi/tracer"
 	"github.com/apache/plc4x/plc4go/spi/transactions"
 
 	"github.com/apache/plc4x/plc4go/pkg/api"
@@ -56,7 +57,7 @@ type Connection struct {
 	useMessageRouter          bool
 	useConnectionManager      bool
 	routingAddress            []readWriteModel.PathSegment
-	tracer                    *spi.Tracer
+	tracer                    *tracer.Tracer
 }
 
 func NewConnection(messageCodec spi.MessageCodec, configuration Configuration, driverContext DriverContext, tagHandler spi.PlcTagHandler, tm transactions.RequestTransactionManager, options map[string][]string) *Connection {
@@ -91,7 +92,7 @@ func (m *Connection) IsTraceEnabled() bool {
 	return m.tracer != nil
 }
 
-func (m *Connection) GetTracer() *spi.Tracer {
+func (m *Connection) GetTracer() *tracer.Tracer {
 	return m.tracer
 }
 

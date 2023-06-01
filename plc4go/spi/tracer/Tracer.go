@@ -17,11 +17,16 @@
  * under the License.
  */
 
-package spi
+package tracer
 
 import (
-	"github.com/apache/plc4x/plc4go/spi/utils"
+	"fmt"
 	"time"
+
+	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/apache/plc4x/plc4go/spi/utils"
+
+	"github.com/rs/zerolog"
 )
 
 type TraceEntry struct {
@@ -40,12 +45,15 @@ type TracerProvider interface {
 type Tracer struct {
 	connectionId string
 	traceEntries []TraceEntry
+
+	log zerolog.Logger
 }
 
-func NewTracer(connectionId string) *Tracer {
+func NewTracer(connectionId string, _options ...options.WithOption) *Tracer {
 	return &Tracer{
 		connectionId: connectionId,
 		traceEntries: []TraceEntry{},
+		log:          options.ExtractCustomLogger(_options...),
 	}
 }
 
@@ -76,7 +84,7 @@ func (t *Tracer) AddTrace(operation string, message string) {
 }
 
 func (t *Tracer) AddTransactionalStartTrace(operation string, message string) string {
-	transactionId := utils.GenerateId(4)
+	transactionId := utils.GenerateId(t.log, 4)
 	t.traceEntries = append(t.traceEntries, TraceEntry{
 		Timestamp:     time.Now(),
 		ConnectionId:  t.connectionId,
@@ -116,4 +124,8 @@ traceFiltering:
 		result = append(result, trace)
 	}
 	return result
+}
+
+func (t *Tracer) String() string {
+	return fmt.Sprintf("Tracer for %s", t.connectionId)
 }

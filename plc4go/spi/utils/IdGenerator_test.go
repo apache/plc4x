@@ -20,6 +20,7 @@
 package utils
 
 import (
+	"github.com/rs/zerolog"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
@@ -46,7 +47,7 @@ func TestGenerateId(t *testing.T) {
 			randomByteFiller = func(_ []byte) (n int, err error) {
 				return 0, nil
 			}
-			assert.Equalf(t, tt.want, GenerateId(tt.args.numBytes), "GenerateId(%v)", tt.args.numBytes)
+			assert.Equalf(t, tt.want, GenerateId(zerolog.New(zerolog.NewConsoleWriter(zerolog.ConsoleTestWriter(t))), tt.args.numBytes), "GenerateId(%v)", tt.args.numBytes)
 		})
 	}
 }

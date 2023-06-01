@@ -21,6 +21,7 @@ package _default
 
 import (
 	"context"
+	"github.com/apache/plc4x/plc4go/spi/tracer"
 	"github.com/rs/zerolog"
 	"time"
 
@@ -92,7 +93,7 @@ func NewDefaultPlcConnectionConnectResult(connection plc4go.PlcConnection, err e
 
 type DefaultPlcConnectionCloseResult interface {
 	plc4go.PlcConnectionCloseResult
-	GetTraces() []spi.TraceEntry
+	GetTraces() []tracer.TraceEntry
 }
 
 func NewDefaultPlcConnectionCloseResult(connection plc4go.PlcConnection, err error) plc4go.PlcConnectionCloseResult {
@@ -103,7 +104,7 @@ func NewDefaultPlcConnectionCloseResult(connection plc4go.PlcConnection, err err
 	}
 }
 
-func NewDefaultPlcConnectionCloseResultWithTraces(connection plc4go.PlcConnection, err error, traces []spi.TraceEntry) plc4go.PlcConnectionCloseResult {
+func NewDefaultPlcConnectionCloseResultWithTraces(connection plc4go.PlcConnection, err error, traces []tracer.TraceEntry) plc4go.PlcConnectionCloseResult {
 	return &plcConnectionCloseResult{
 		connection: connection,
 		err:        err,
@@ -198,7 +199,7 @@ func (d *plcConnectionConnectResult) GetErr() error {
 type plcConnectionCloseResult struct {
 	connection plc4go.PlcConnection
 	err        error
-	traces     []spi.TraceEntry
+	traces     []tracer.TraceEntry
 }
 
 func (d *plcConnectionCloseResult) GetConnection() plc4go.PlcConnection {
@@ -209,7 +210,7 @@ func (d *plcConnectionCloseResult) GetErr() error {
 	return d.err
 }
 
-func (d *plcConnectionCloseResult) GetTraces() []spi.TraceEntry {
+func (d *plcConnectionCloseResult) GetTraces() []tracer.TraceEntry {
 	return d.traces
 }
 

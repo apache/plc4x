@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package spi
+package tracer
 
 import (
 	"github.com/stretchr/testify/assert"

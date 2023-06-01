@@ -22,6 +22,7 @@ package _default
 import (
 	"context"
 	"fmt"
+	"github.com/apache/plc4x/plc4go/spi/tracer"
 	"testing"
 	"time"
 
@@ -241,7 +242,7 @@ func TestNewDefaultPlcConnectionCloseResultWithTraces(t *testing.T) {
 	type args struct {
 		connection plc4go.PlcConnection
 		err        error
-		traces     []spi.TraceEntry
+		traces     []tracer.TraceEntry
 	}
 	tests := []struct {
 		name string
@@ -1152,7 +1153,7 @@ func Test_plcConnectionCloseResult_GetConnection(t *testing.T) {
 	type fields struct {
 		connection plc4go.PlcConnection
 		err        error
-		traces     []spi.TraceEntry
+		traces     []tracer.TraceEntry
 	}
 	tests := []struct {
 		name   string
@@ -1179,7 +1180,7 @@ func Test_plcConnectionCloseResult_GetErr(t *testing.T) {
 	type fields struct {
 		connection plc4go.PlcConnection
 		err        error
-		traces     []spi.TraceEntry
+		traces     []tracer.TraceEntry
 	}
 	tests := []struct {
 		name      string
@@ -1214,12 +1215,12 @@ func Test_plcConnectionCloseResult_GetTraces(t *testing.T) {
 	type fields struct {
 		connection plc4go.PlcConnection
 		err        error
-		traces     []spi.TraceEntry
+		traces     []tracer.TraceEntry
 	}
 	tests := []struct {
 		name   string
 		fields fields
-		want   []spi.TraceEntry
+		want   []tracer.TraceEntry
 	}{
 		{
 			name: "get it",

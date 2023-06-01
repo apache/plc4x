@@ -21,23 +21,23 @@ package simulated
 
 import (
 	"context"
+	"github.com/apache/plc4x/plc4go/spi/tracer"
 	"github.com/pkg/errors"
 	"strconv"
 	"time"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
-	"github.com/apache/plc4x/plc4go/spi"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 )
 
 type Reader struct {
 	device  *Device
 	options map[string][]string
-	tracer  *spi.Tracer
+	tracer  *tracer.Tracer
 }
 
-func NewReader(device *Device, options map[string][]string, tracer *spi.Tracer) *Reader {
+func NewReader(device *Device, options map[string][]string, tracer *tracer.Tracer) *Reader {
 	return &Reader{
 		device:  device,
 		options: options,

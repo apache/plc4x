@@ -29,7 +29,6 @@ import (
 )
 
 type connectionContainer struct {
-	cacheLog         *zerolog.Logger
 	lock             lock.RWMutex
 	connectionString string
 	driverManager    plc4go.PlcDriverManager
@@ -43,11 +42,12 @@ type connectionContainer struct {
 	queue []chan plc4go.PlcConnectionConnectResult
 	// Listeners for connection events.
 	listeners []connectionListener
+
+	log zerolog.Logger
 }
 
-func newConnectionContainer(cacheLog *zerolog.Logger, driverManager plc4go.PlcDriverManager, connectionString string) *connectionContainer {
+func newConnectionContainer(log zerolog.Logger, driverManager plc4go.PlcDriverManager, connectionString string) *connectionContainer {
 	return &connectionContainer{
-		cacheLog:         cacheLog,
 		driverManager:    driverManager,
 		connectionString: connectionString,
 		lock:             lock.NewCASMutex(),
@@ -55,13 +55,15 @@ func newConnectionContainer(cacheLog *zerolog.Logger, driverManager plc4go.PlcDr
 		closed:           false,
 		state:            StateInitialized,
 		queue:            []chan plc4go.PlcConnectionConnectResult{},
+
+		log: log,
 	}
 }
 
-func (t *connectionContainer) connect() {
-	t.cacheLog.Debug().Str("connectionString", t.connectionString).Msg("Connecting new cached connection ...")
+func (c *connectionContainer) connect() {
+	c.log.Debug().Str("connectionString", c.connectionString).Msg("Connecting new cached connection ...")
 	// Initialize the new connection.
-	connectionResultChan := t.driverManager.GetConnection(t.connectionString)
+	connectionResultChan := c.driverManager.GetConnection(c.connectionString)
 
 	// Allow us to finish this function and return the lock quickly
 	// Wait for the connection to be established.
@@ -69,85 +71,85 @@ func (t *connectionContainer) connect() {
 	connectionResult := <-connectionResultChan
 
 	// Get the lock.
-	t.lock.Lock()
-	defer t.lock.Unlock()
+	c.lock.Lock()
+	defer c.lock.Unlock()
 
 	// If the connection was successful, pass the active connection into the container.
 	// If something went wrong, we have to remove the connection from the cache and return the error.
 	if err := connectionResult.GetErr(); err != nil {
-		t.cacheLog.Debug().Str("connectionString", t.connectionString).
+		c.log.Debug().Str("connectionString", c.connectionString).
 			Err(err).
 			Msg("Error connecting new cached connection.")
 		// Tell the connection cache that the connection is no longer available.
-		if t.listeners != nil {
+		if c.listeners != nil {
 			event := connectionErrorEvent{
-				conn: *t,
+				conn: *c,
 				err:  err,
 			}
-			for _, listener := range t.listeners {
+			for _, listener := range c.listeners {
 				listener.onConnectionEvent(event)
 			}
 		}
 
 		// Send a failure to all waiting clients.
-		if len(t.queue) > 0 {
-			for _, waitingClient := range t.queue {
+		if len(c.queue) > 0 {
+			for _, waitingClient := range c.queue {
 				waitingClient <- _default.NewDefaultPlcConnectionConnectResult(nil, err)
 			}
-			t.queue = nil
+			c.queue = nil
 		}
 		return
 	}
 
-	t.cacheLog.Debug().Str("connectionString", t.connectionString).Msg("Successfully connected new cached connection.")
+	c.log.Debug().Str("connectionString", c.connectionString).Msg("Successfully connected new cached connection.")
 	// Inject the real connection into the container.
 	if connection, ok := connectionResult.GetConnection().(tracedPlcConnection); !ok {
-		panic("Return connection doesn't implement the cache.tracedPlcConnection interface")
+		panic("Return connection doesn'c implement the cache.tracedPlcConnection interface")
 	} else {
-		t.connection = connection
+		c.connection = connection
 	}
-	t.tracerEnabled = t.connection.IsTraceEnabled()
+	c.tracerEnabled = c.connection.IsTraceEnabled()
 	// Mark the connection as idle for now.
-	t.state = StateIdle
+	c.state = StateIdle
 	// If there is a request in the queue, hand out the connection to that.
-	if len(t.queue) > 0 {
+	if len(c.queue) > 0 {
 		// Get the first in the queue.
-		queueHead := t.queue[0]
-		t.queue = t.queue[1:]
+		queueHead := c.queue[0]
+		c.queue = c.queue[1:]
 		// Mark the connection as being used.
-		t.state = StateInUse
+		c.state = StateInUse
 		// Return the lease to the caller.
-		connection := newPlcConnectionLease(t, t.leaseCounter, t.connection)
-		// In this case we don't need to check for blocks
+		connection := newPlcConnectionLease(c, c.leaseCounter, c.connection)
+		// In this case we don'c need to check for blocks
 		// as the getConnection function of the connection cache
 		// is definitely eagerly waiting for input.
 		queueHead <- _default.NewDefaultPlcConnectionConnectResult(connection, nil)
 	}
 }
 
-func (t *connectionContainer) addListener(listener connectionListener) {
+func (c *connectionContainer) addListener(listener connectionListener) {
 	// Get the lock.
-	t.lock.Lock()
-	defer t.lock.Unlock()
+	c.lock.Lock()
+	defer c.lock.Unlock()
 	// Add the listener to the queue
-	t.listeners = append(t.listeners, listener)
+	c.listeners = append(c.listeners, listener)
 }
 
-func (t *connectionContainer) lease() <-chan plc4go.PlcConnectionConnectResult {
-	t.lock.Lock()
-	defer t.lock.Unlock()
+func (c *connectionContainer) lease() <-chan plc4go.PlcConnectionConnectResult {
+	c.lock.Lock()
+	defer c.lock.Unlock()
 
 	ch := make(chan plc4go.PlcConnectionConnectResult)
 	// Check if the connection is available.
-	switch t.state {
+	switch c.state {
 	case StateIdle:
-		t.leaseCounter++
-		connection := newPlcConnectionLease(t, t.leaseCounter, t.connection)
-		t.state = StateInUse
-		// In this case we don't need to check for blocks
+		c.leaseCounter++
+		connection := newPlcConnectionLease(c, c.leaseCounter, c.connection)
+		c.state = StateInUse
+		// In this case we don'c need to check for blocks
 		// as the getConnection function of the connection cache
 		// is definitely eagerly waiting for input.
-		t.cacheLog.Debug().Str("connectionString", t.connectionString).
+		c.log.Debug().Str("connectionString", c.connectionString).
 			Msg("Got lease instantly as connection was idle.")
 		go func() {
 			ch <- _default.NewDefaultPlcConnectionConnectResult(connection, nil)
@@ -155,17 +157,17 @@ func (t *connectionContainer) lease() <-chan plc4go.PlcConnectionConnectResult {
 	case StateInUse, StateInitialized:
 		// If the connection is currently busy or not finished initializing,
 		// add the new channel to the queue for this connection.
-		t.queue = append(t.queue, ch)
-		t.cacheLog.Debug().Str("connectionString", t.connectionString).
-			Int("waiting-queue-size", len(t.queue)).
+		c.queue = append(c.queue, ch)
+		c.log.Debug().Str("connectionString", c.connectionString).
+			Int("waiting-queue-size", len(c.queue)).
 			Msg("Added lease-request to queue.")
 	case StateInvalid:
-		t.cacheLog.Debug().Str("connectionString", t.connectionString).Msg("No lease because invalid")
+		c.log.Debug().Str("connectionString", c.connectionString).Msg("No lease because invalid")
 	}
 	return ch
 }
 
-func (t *connectionContainer) returnConnection(newState cachedPlcConnectionState) error {
+func (c *connectionContainer) returnConnection(newState cachedPlcConnectionState) error {
 	// Intentionally not locking anything, as there are two cases, where the connection is returned:
 	// 1) The connection failed to get established (No connection has a lock anyway)
 	// 2) The connection is returned, then the one returning it already has a lock on it.
@@ -173,47 +175,47 @@ func (t *connectionContainer) returnConnection(newState cachedPlcConnectionState
 	switch newState {
 	case StateInitialized, StateInvalid:
 		// TODO: Perhaps do a maximum number of retries and then call failConnection()
-		t.cacheLog.Debug().Str("connectionString", t.connectionString).
+		c.log.Debug().Str("connectionString", c.connectionString).
 			Msgf("Client returned a %s connection, reconnecting.", newState)
-		t.connect()
+		c.connect()
 	default:
-		t.cacheLog.Debug().Str("connectionString", t.connectionString).Msg("Client returned valid connection.")
+		c.log.Debug().Str("connectionString", c.connectionString).Msg("Client returned valid connection.")
 	}
-	t.lock.Lock()
-	defer t.lock.Unlock()
-	if t.connection == nil {
-		t.state = StateInvalid
-		return errors.New("Can't return a broken connection")
+	c.lock.Lock()
+	defer c.lock.Unlock()
+	if c.connection == nil {
+		c.state = StateInvalid
+		return errors.New("Can'c return a broken connection")
 	}
 
 	// Check how many others are waiting for this connection.
-	if len(t.queue) > 0 {
+	if len(c.queue) > 0 {
 		// There are waiting clients, give the connection to the next client in the line.
-		next := t.queue[0]
-		t.queue = t.queue[1:]
-		t.leaseCounter++
-		connection := newPlcConnectionLease(t, t.leaseCounter, t.connection)
+		next := c.queue[0]
+		c.queue = c.queue[1:]
+		c.leaseCounter++
+		connection := newPlcConnectionLease(c, c.leaseCounter, c.connection)
 		// Send asynchronously as the receiver might have given up waiting,
-		// and we don't want anything to block here. 1ms should be enough for
+		// and we don'c want anything to block here. 1ms should be enough for
 		// the calling process to reach the blocking read.
 		go func() {
-			// In this case we don't need to check for blocks
+			// In this case we don'c need to check for blocks
 			// as the getConnection function of the connection cache
 			// is definitely eagerly waiting for input.
 			next <- _default.NewDefaultPlcConnectionConnectResult(connection, nil)
-			t.cacheLog.Debug().Str("connectionString", t.connectionString).
-				Int("waiting-queue-size", len(t.queue)).
+			c.log.Debug().Str("connectionString", c.connectionString).
+				Int("waiting-queue-size", len(c.queue)).
 				Msg("Returned connection to the next client waiting.")
 		}()
 	} else {
 		// Otherwise, just mark the connection as idle.
-		t.cacheLog.Debug().Str("connectionString", t.connectionString).
+		c.log.Debug().Str("connectionString", c.connectionString).
 			Msg("Connection set to 'idle'.")
-		t.state = StateIdle
+		c.state = StateIdle
 	}
 	return nil
 }
 
-func (t *connectionContainer) String() string {
-	return fmt.Sprintf("connectionContainer{%s:%s, leaseCounter: %d, closed: %t, state: %s}", t.connectionString, t.connection, t.leaseCounter, t.closed, t.state)
+func (c *connectionContainer) String() string {
+	return fmt.Sprintf("connectionContainer{%s:%s, leaseCounter: %d, closed: %t, state: %s}", c.connectionString, c.connection, c.leaseCounter, c.closed, c.state)
 }

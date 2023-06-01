@@ -19,15 +19,9 @@
 
 package cache
 
-import (
-	"github.com/apache/plc4x/plc4go/pkg/api"
-	"github.com/apache/plc4x/plc4go/spi/tracer"
-)
+import "github.com/apache/plc4x/plc4go/spi/testutils"
 
-type tracedPlcConnection interface {
-	plc4go.PlcConnection
-
-	GetConnectionId() string
-	IsTraceEnabled() bool
-	GetTracer() *tracer.Tracer
+// This ensures that we don't global log
+func init() {
+	testutils.ExplodingGlobalLogger(true)
 }

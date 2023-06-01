@@ -25,6 +25,7 @@ import (
 	"encoding/hex"
 	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/apache/plc4x/plc4go/spi/tracer"
 	"strconv"
 	"strings"
 	"sync"
@@ -134,7 +135,7 @@ type Connection struct {
 	handleTunnelingRequests bool
 
 	connectionId string
-	tracer       *spi.Tracer
+	tracer       *tracer.Tracer
 }
 
 func (m *Connection) String() string {
@@ -190,7 +191,7 @@ func NewConnection(transportInstance transports.TransportInstance, options map[s
 
 	if traceEnabledOption, ok := options["traceEnabled"]; ok {
 		if len(traceEnabledOption) == 1 {
-			connection.tracer = spi.NewTracer(connection.connectionId, _options...)
+			connection.tracer = tracer.NewTracer(connection.connectionId, _options...)
 		}
 	}
 	// If a building key was provided, save that in a dedicated variable
@@ -212,7 +213,7 @@ func (m *Connection) IsTraceEnabled() bool {
 	return m.tracer != nil
 }
 
-func (m *Connection) GetTracer() *spi.Tracer {
+func (m *Connection) GetTracer() *tracer.Tracer {
 	return m.tracer
 }
 

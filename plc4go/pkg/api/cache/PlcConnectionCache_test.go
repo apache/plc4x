@@ -20,12 +20,15 @@
 package cache
 
 import (
+	"github.com/apache/plc4x/plc4go/pkg/api/config"
+	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/apache/plc4x/plc4go/spi/testutils"
+	"github.com/apache/plc4x/plc4go/spi/tracer"
 	"testing"
 	"time"
 
 	"github.com/apache/plc4x/plc4go/internal/simulated"
 	"github.com/apache/plc4x/plc4go/pkg/api"
-	"github.com/apache/plc4x/plc4go/spi"
 	_default "github.com/apache/plc4x/plc4go/spi/default"
 	"github.com/stretchr/testify/assert"
 	"github.com/viney-shih/go-lock"
@@ -44,33 +47,34 @@ func TestPlcConnectionCache_GetConnection(t *testing.T) {
 		name        string
 		fields      fields
 		args        args
+		setup       func(t *testing.T, fields *fields, args *args)
 		wantErr     bool
 		wantTimeout bool
 	}{
 		{
 			name: "simple",
-			fields: fields{
-				driverManager: func() plc4go.PlcDriverManager {
-					driverManager := plc4go.NewPlcDriverManager()
-					driverManager.RegisterDriver(simulated.NewDriver())
-					return driverManager
-				}(),
-			}, args: args{
+			args: args{
 				connectionString: "simulated://1.2.3.4:42",
+			},
+			setup: func(t *testing.T, fields *fields, args *args) {
+				logger := testutils.ProduceTestingLogger(t)
+				driverManager := plc4go.NewPlcDriverManager(config.WithCustomLogger(logger))
+				driverManager.RegisterDriver(simulated.NewDriver(options.WithCustomLogger(logger)))
+				fields.driverManager = driverManager
 			},
 			wantErr:     false,
 			wantTimeout: false,
 		},
 		{
 			name: "simpleWithTimeout",
-			fields: fields{
-				driverManager: func() plc4go.PlcDriverManager {
-					driverManager := plc4go.NewPlcDriverManager()
-					driverManager.RegisterDriver(simulated.NewDriver())
-					return driverManager
-				}(),
-			}, args: args{
+			args: args{
 				connectionString: "simulated://1.2.3.4:42?connectionDelay=5",
+			},
+			setup: func(t *testing.T, fields *fields, args *args) {
+				logger := testutils.ProduceTestingLogger(t)
+				driverManager := plc4go.NewPlcDriverManager(config.WithCustomLogger(logger))
+				driverManager.RegisterDriver(simulated.NewDriver(options.WithCustomLogger(logger)))
+				fields.driverManager = driverManager
 			},
 			wantErr:     false,
 			wantTimeout: true,
@@ -78,7 +82,10 @@ func TestPlcConnectionCache_GetConnection(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			cc := NewPlcConnectionCache(tt.fields.driverManager)
+			if tt.setup != nil {
+				tt.setup(t, &tt.fields, &tt.args)
+			}
+			cc := NewPlcConnectionCache(tt.fields.driverManager, WithCustomLogger(testutils.ProduceTestingLogger(t)))
 			got := cc.GetConnection(tt.args.connectionString)
 			select {
 			case connectResult := <-got:
@@ -182,8 +189,8 @@ func TestPlcConnectionCache_Close(t *testing.T) {
 	}
 }
 
-func readFromPlc(t *testing.T, cache plcConnectionCache, connectionString string, resourceString string) <-chan []spi.TraceEntry {
-	ch := make(chan []spi.TraceEntry)
+func readFromPlc(t *testing.T, cache plcConnectionCache, connectionString string, resourceString string) <-chan []tracer.TraceEntry {
+	ch := make(chan []tracer.TraceEntry)
 
 	// Get a connection
 	connectionResultChan := cache.GetConnection(connectionString)

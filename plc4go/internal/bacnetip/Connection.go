@@ -23,6 +23,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/apache/plc4x/plc4go/spi/tracer"
 	"github.com/apache/plc4x/plc4go/spi/transactions"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
@@ -45,7 +46,7 @@ type Connection struct {
 	tm                transactions.RequestTransactionManager
 
 	connectionId string
-	tracer       *spi.Tracer
+	tracer       *tracer.Tracer
 }
 
 func NewConnection(messageCodec spi.MessageCodec, tagHandler spi.PlcTagHandler, tm transactions.RequestTransactionManager, options map[string][]string, _options ...options.WithOption) *Connection {
@@ -56,7 +57,7 @@ func NewConnection(messageCodec spi.MessageCodec, tagHandler spi.PlcTagHandler, 
 	}
 	if traceEnabledOption, ok := options["traceEnabled"]; ok {
 		if len(traceEnabledOption) == 1 {
-			connection.tracer = spi.NewTracer(connection.connectionId, _options...)
+			connection.tracer = tracer.NewTracer(connection.connectionId, _options...)
 		}
 	}
 	connection.DefaultConnection = _default.NewDefaultConnection(connection,
@@ -74,7 +75,7 @@ func (c *Connection) IsTraceEnabled() bool {
 	return c.tracer != nil
 }
 
-func (c *Connection) GetTracer() *spi.Tracer {
+func (c *Connection) GetTracer() *tracer.Tracer {
 	return c.tracer
 }
 

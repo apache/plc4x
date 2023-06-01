@@ -21,6 +21,7 @@ package simulated
 
 import (
 	"context"
+	"github.com/apache/plc4x/plc4go/spi/tracer"
 	"strconv"
 	"time"
 
@@ -43,7 +44,7 @@ type Connection struct {
 	options      map[string][]string
 	connected    bool
 	connectionId string
-	tracer       *spi.Tracer
+	tracer       *tracer.Tracer
 
 	log zerolog.Logger
 }
@@ -62,7 +63,7 @@ func NewConnection(device *Device, tagHandler spi.PlcTagHandler, valueHandler sp
 	}
 	if traceEnabledOption, ok := connectionOptions["traceEnabled"]; ok {
 		if len(traceEnabledOption) == 1 {
-			connection.tracer = spi.NewTracer(connection.connectionId, _options...)
+			connection.tracer = tracer.NewTracer(connection.connectionId, _options...)
 		}
 	}
 	return connection
@@ -76,7 +77,7 @@ func (c *Connection) IsTraceEnabled() bool {
 	return c.tracer != nil
 }
 
-func (c *Connection) GetTracer() *spi.Tracer {
+func (c *Connection) GetTracer() *tracer.Tracer {
 	return c.tracer
 }
 

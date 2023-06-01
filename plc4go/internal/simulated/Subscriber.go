@@ -22,18 +22,18 @@ package simulated
 import (
 	"context"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
-	"github.com/apache/plc4x/plc4go/spi"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
+	"github.com/apache/plc4x/plc4go/spi/tracer"
 	"github.com/pkg/errors"
 )
 
 type Subscriber struct {
 	device  *Device
 	options map[string][]string
-	tracer  *spi.Tracer
+	tracer  *tracer.Tracer
 }
 
-func NewSubscriber(device *Device, options map[string][]string, tracer *spi.Tracer) *Subscriber {
+func NewSubscriber(device *Device, options map[string][]string, tracer *tracer.Tracer) *Subscriber {
 	return &Subscriber{
 		device:  device,
 		options: options,

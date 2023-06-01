@@ -21,22 +21,22 @@ package simulated
 
 import (
 	"context"
+	"github.com/apache/plc4x/plc4go/spi/tracer"
 	"github.com/pkg/errors"
 	"strconv"
 	"time"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
-	"github.com/apache/plc4x/plc4go/spi"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 )
 
 type Writer struct {
 	device  *Device
 	options map[string][]string
-	tracer  *spi.Tracer
+	tracer  *tracer.Tracer
 }
 
-func NewWriter(device *Device, options map[string][]string, tracer *spi.Tracer) *Writer {
+func NewWriter(device *Device, options map[string][]string, tracer *tracer.Tracer) *Writer {
 	return &Writer{
 		device:  device,
 		options: options,
