@@ -23,6 +23,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/transactions"
+	"github.com/rs/zerolog"
 	"math"
 	"net"
 	"net/url"
@@ -46,9 +47,11 @@ type Driver struct {
 	tm                      transactions.RequestTransactionManager
 	awaitSetupComplete      bool
 	awaitDisconnectComplete bool
+
+	log zerolog.Logger // TODO: use it
 }
 
-func NewDriver() plc4go.PlcDriver {
+func NewDriver(_options ...options.WithOption) plc4go.PlcDriver {
 	driver := &Driver{
 		applicationManager: ApplicationManager{
 			applications: map[string]*ApplicationLayerMessageCodec{},
@@ -56,6 +59,8 @@ func NewDriver() plc4go.PlcDriver {
 		tm:                      transactions.NewRequestTransactionManager(math.MaxInt),
 		awaitSetupComplete:      true,
 		awaitDisconnectComplete: true,
+
+		log: options.ExtractCustomLogger(_options...),
 	}
 	driver.DefaultDriver = _default.NewDefaultDriver(driver, "bacnet-ip", "BACnet/IP", "udp", NewTagHandler())
 	return driver

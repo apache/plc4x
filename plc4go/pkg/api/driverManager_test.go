@@ -21,7 +21,9 @@ package plc4go
 
 import (
 	"context"
+	"github.com/apache/plc4x/plc4go/pkg/api/config"
 	"github.com/apache/plc4x/plc4go/spi/utils"
+	"github.com/rs/zerolog"
 	"testing"
 	"time"
 
@@ -44,12 +46,13 @@ func TestNewPlcDriverManager(t *testing.T) {
 			want: &plcDriverManger{
 				drivers:    map[string]PlcDriver{},
 				transports: map[string]transports.Transport{},
+				log:        zerolog.Nop(),
 			},
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := NewPlcDriverManager(); !assert.Equal(t, got, tt.want) {
+			if got := NewPlcDriverManager(config.WithCustomLogger(zerolog.Nop())); !assert.Equal(t, got, tt.want) {
 				t.Errorf("NewPlcDriverManager() = %v, want %v", got, tt.want)
 			}
 		})

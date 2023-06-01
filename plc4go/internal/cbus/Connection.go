@@ -78,10 +78,12 @@ func NewConnection(messageCodec *MessageCodec, configuration Configuration, driv
 		configuration:  configuration,
 		driverContext:  driverContext,
 		tm:             tm,
+
+		log: options.ExtractCustomLogger(_options...),
 	}
 	if traceEnabledOption, ok := connectionOptions["traceEnabled"]; ok {
 		if len(traceEnabledOption) == 1 {
-			connection.tracer = spi.NewTracer(connection.connectionId)
+			connection.tracer = spi.NewTracer(connection.connectionId, _options...)
 		}
 	}
 	connection.DefaultConnection = _default.NewDefaultConnection(

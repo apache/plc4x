@@ -26,37 +26,44 @@ import (
 
 var oldLogger zerolog.Logger
 
+// Deprecated: use config.WithCustomLogger
 // init is used for _ imports for easy log config
 func init() {
 	oldLogger = log.Logger
 	log.Logger = log.Logger.Level(zerolog.ErrorLevel)
 }
 
+// Deprecated: use config.WithCustomLogger
 // ErrorLevel configures zerolog to WarnLevel
 func ErrorLevel() {
 	log.Logger = log.Logger.Level(zerolog.ErrorLevel)
 }
 
+// Deprecated: use config.WithCustomLogger
 // WarnLevel configures zerolog to WarnLevel
 func WarnLevel() {
 	log.Logger = log.Logger.Level(zerolog.WarnLevel)
 }
 
+// Deprecated: use config.WithCustomLogger
 // InfoLevel configures zerolog to InfoLevel
 func InfoLevel() {
 	log.Logger = log.Logger.Level(zerolog.InfoLevel)
 }
 
+// Deprecated: use config.WithCustomLogger
 // DebugLevel configures zerolog to DebugLevel
 func DebugLevel() {
 	log.Logger = log.Logger.Level(zerolog.DebugLevel)
 }
 
+// Deprecated: use config.WithCustomLogger
 // TraceLevel configures zerolog to TraceLevel
 func TraceLevel() {
 	log.Logger = log.Logger.Level(zerolog.TraceLevel)
 }
 
+// Deprecated: use config.WithCustomLogger
 // ResetLogging can be used to reset to the old log settings
 func ResetLogging() {
 	log.Logger = oldLogger

@@ -21,7 +21,9 @@ package s7
 
 import (
 	"context"
+	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/transactions"
+	"github.com/rs/zerolog"
 	"net/url"
 
 	"github.com/apache/plc4x/plc4go/pkg/api"
@@ -36,13 +38,17 @@ type Driver struct {
 	tm                      transactions.RequestTransactionManager
 	awaitSetupComplete      bool
 	awaitDisconnectComplete bool
+
+	log zerolog.Logger // TODO: use it
 }
 
-func NewDriver() plc4go.PlcDriver {
+func NewDriver(_options ...options.WithOption) plc4go.PlcDriver {
 	driver := &Driver{
 		tm:                      transactions.NewRequestTransactionManager(1),
 		awaitSetupComplete:      true,
 		awaitDisconnectComplete: true,
+
+		log: options.ExtractCustomLogger(_options...),
 	}
 	driver.DefaultDriver = _default.NewDefaultDriver(driver, "s7", "Siemens S7 (Basic)", "tcp", NewTagHandler())
 	return driver

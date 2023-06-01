@@ -23,6 +23,7 @@ import (
 	"context"
 	"encoding/binary"
 	"fmt"
+	"github.com/apache/plc4x/plc4go/spi/options"
 	"strconv"
 	"strings"
 
@@ -54,7 +55,7 @@ type Connection struct {
 	subscriptions map[uint32]apiModel.PlcSubscriptionHandle
 }
 
-func NewConnection(messageCodec spi.MessageCodec, configuration model.Configuration, options map[string][]string) (*Connection, error) {
+func NewConnection(messageCodec spi.MessageCodec, configuration model.Configuration, options map[string][]string, _options ...options.WithOption) (*Connection, error) {
 	driverContext, err := NewDriverContext(configuration)
 	if err != nil {
 		return nil, err
@@ -68,7 +69,7 @@ func NewConnection(messageCodec spi.MessageCodec, configuration model.Configurat
 	if traceEnabledOption, ok := options["traceEnabled"]; ok {
 		if len(traceEnabledOption) == 1 {
 			// TODO: Connection Id is probably "" all the time.
-			connection.tracer = spi.NewTracer(driverContext.connectionId)
+			connection.tracer = spi.NewTracer(driverContext.connectionId, _options...)
 		}
 	}
 	tagHandler := NewTagHandlerWithDriverContext(driverContext)

@@ -25,8 +25,10 @@ import (
 	"github.com/apache/plc4x/plc4go/pkg/api"
 	"github.com/apache/plc4x/plc4go/protocols/modbus/readwrite/model"
 	_default "github.com/apache/plc4x/plc4go/spi/default"
+	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/transports"
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"net/url"
 	"strconv"
@@ -34,10 +36,14 @@ import (
 
 type ModbusAsciiDriver struct {
 	_default.DefaultDriver
+
+	log zerolog.Logger // TODO: use it
 }
 
-func NewModbusAsciiDriver() *ModbusAsciiDriver {
-	driver := &ModbusAsciiDriver{}
+func NewModbusAsciiDriver(_options ...options.WithOption) *ModbusAsciiDriver {
+	driver := &ModbusAsciiDriver{
+		log: options.ExtractCustomLogger(_options...),
+	}
 	driver.DefaultDriver = _default.NewDefaultDriver(driver, "modbus-ascii", "Modbus ASCII", "serial", NewTagHandler())
 	return driver
 }

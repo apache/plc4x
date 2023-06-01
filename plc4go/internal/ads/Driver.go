@@ -21,6 +21,7 @@ package ads
 
 import (
 	"context"
+	"github.com/rs/zerolog"
 	"net/url"
 	"strconv"
 
@@ -37,10 +38,14 @@ import (
 
 type Driver struct {
 	_default.DefaultDriver
+
+	log zerolog.Logger // TODO: use it
 }
 
-func NewDriver() plc4go.PlcDriver {
-	driver := &Driver{}
+func NewDriver(_options ...options.WithOption) plc4go.PlcDriver {
+	driver := &Driver{
+		log: options.ExtractCustomLogger(_options...),
+	}
 	driver.DefaultDriver = _default.NewDefaultDriver(driver, "ads", "Beckhoff TwinCat ADS", "tcp", NewTagHandler())
 	return driver
 }

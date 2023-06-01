@@ -17,31 +17,18 @@
  * under the License.
  */
 
-package config
+package converter
 
 import (
+	"github.com/apache/plc4x/plc4go/pkg/api/config"
 	"github.com/apache/plc4x/plc4go/spi/options"
-	"github.com/rs/zerolog"
 )
 
-// TraceTransactionManagerWorkers when set to true the transaction manager displays worker states in log
-var (
-	TraceTransactionManagerWorkers      bool
-	TraceTransactionManagerTransactions bool
-	TraceDefaultMessageCodecWorker      bool
-)
-
-// TraceConnectionCache when set to true the connection cache outputs logs by default
-var (
-	TraceConnectionCache bool
-)
-
-// WithCustomLogger is a global option to supply a custom logger
-func WithCustomLogger(logger zerolog.Logger) WithOption {
-	return options.WithCustomLogger(logger)
-}
-
-// WithOption is a marker interface for options
-type WithOption interface {
-	options.WithOption
+// WithOptionToInternal transform API options to SPI options
+func WithOptionToInternal(_options ...config.WithOption) []options.WithOption {
+	withOptions := make([]options.WithOption, len(_options))
+	for i, option := range _options {
+		withOptions[i] = option
+	}
+	return withOptions
 }

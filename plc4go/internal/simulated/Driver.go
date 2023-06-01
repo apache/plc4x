@@ -21,6 +21,8 @@ package simulated
 
 import (
 	"context"
+	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/rs/zerolog"
 	"net/url"
 
 	"github.com/apache/plc4x/plc4go/pkg/api"
@@ -31,11 +33,15 @@ import (
 type Driver struct {
 	_default.DefaultDriver
 	valueHandler ValueHandler
+
+	log zerolog.Logger
 }
 
-func NewDriver() plc4go.PlcDriver {
+func NewDriver(_options ...options.WithOption) plc4go.PlcDriver {
 	driver := &Driver{
 		valueHandler: NewValueHandler(),
+
+		log: options.ExtractCustomLogger(_options...),
 	}
 	driver.DefaultDriver = _default.NewDefaultDriver(driver, "simulated", "Simulated PLC4X Datasource", "none", NewTagHandler())
 	return driver
@@ -43,6 +49,7 @@ func NewDriver() plc4go.PlcDriver {
 
 func (d *Driver) GetConnectionWithContext(ctx context.Context, _ url.URL, _ map[string]transports.Transport, options map[string][]string) <-chan plc4go.PlcConnectionConnectResult {
 	connection := NewConnection(NewDevice("test"), d.GetPlcTagHandler(), d.valueHandler, options)
+	d.log.Debug().Msgf("Connecting and returning connection %v", connection)
 	return connection.ConnectWithContext(ctx)
 }
 

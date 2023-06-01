@@ -21,20 +21,22 @@ package transports
 
 import (
 	"github.com/apache/plc4x/plc4go/pkg/api"
+	"github.com/apache/plc4x/plc4go/pkg/api/config"
 	"github.com/apache/plc4x/plc4go/spi"
+	"github.com/apache/plc4x/plc4go/spi/options/converter"
 	"github.com/apache/plc4x/plc4go/spi/transports/serial"
 	"github.com/apache/plc4x/plc4go/spi/transports/tcp"
 	"github.com/apache/plc4x/plc4go/spi/transports/udp"
 )
 
-func RegisterTcpTransport(driverManager plc4go.PlcDriverManager) {
-	driverManager.(spi.TransportAware).RegisterTransport(tcp.NewTransport())
+func RegisterTcpTransport(driverManager plc4go.PlcDriverManager, _options ...config.WithOption) {
+	driverManager.(spi.TransportAware).RegisterTransport(tcp.NewTransport(converter.WithOptionToInternal(_options...)...))
 }
 
-func RegisterUdpTransport(driverManager plc4go.PlcDriverManager) {
-	driverManager.(spi.TransportAware).RegisterTransport(udp.NewTransport())
+func RegisterUdpTransport(driverManager plc4go.PlcDriverManager, _options ...config.WithOption) {
+	driverManager.(spi.TransportAware).RegisterTransport(udp.NewTransport(converter.WithOptionToInternal(_options...)...))
 }
 
-func RegisterSerialTransport(driverManager plc4go.PlcDriverManager) {
-	driverManager.(spi.TransportAware).RegisterTransport(serial.NewTransport())
+func RegisterSerialTransport(driverManager plc4go.PlcDriverManager, _options ...config.WithOption) {
+	driverManager.(spi.TransportAware).RegisterTransport(serial.NewTransport(converter.WithOptionToInternal(_options...)...))
 }

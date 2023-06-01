@@ -21,6 +21,9 @@ package plc4go
 
 import (
 	"context"
+	"github.com/apache/plc4x/plc4go/pkg/api/config"
+	"github.com/apache/plc4x/plc4go/spi/options/converter"
+	"github.com/rs/zerolog"
 	"net/url"
 
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
@@ -28,7 +31,6 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/transports"
 
 	"github.com/pkg/errors"
-	"github.com/rs/zerolog/log"
 )
 
 // PlcDriverManager is the main entry point for PLC4Go applications
@@ -49,11 +51,14 @@ type PlcDriverManager interface {
 	DiscoverWithContext(ctx context.Context, callback func(event model.PlcDiscoveryItem), discoveryOptions ...WithDiscoveryOption) error
 }
 
-func NewPlcDriverManager() PlcDriverManager {
-	log.Trace().Msg("Creating plc driver manager")
+func NewPlcDriverManager(_options ...config.WithOption) PlcDriverManager {
+	localLog := options.ExtractCustomLogger(converter.WithOptionToInternal(_options...)...)
+	localLog.Trace().Msg("Creating plc driver manager")
 	return &plcDriverManger{
 		drivers:    map[string]PlcDriver{},
 		transports: map[string]transports.Transport{},
+
+		log: localLog,
 	}
 }
 
@@ -101,6 +106,8 @@ type WithDiscoveryOption interface {
 type plcDriverManger struct {
 	drivers    map[string]PlcDriver
 	transports map[string]transports.Transport
+
+	log zerolog.Logger
 }
 
 type plcConnectionConnectResult struct {
@@ -139,25 +146,25 @@ func convertToInternalOptions(withDiscoveryOptions ...WithDiscoveryOption) []opt
 ///////////////////////////////////////
 
 func (m *plcDriverManger) RegisterDriver(driver PlcDriver) {
-	log.Debug().Str("protocolName", driver.GetProtocolName()).Msg("Registering driver")
+	m.log.Debug().Str("protocolName", driver.GetProtocolName()).Msg("Registering driver")
 	// If this driver is already registered, just skip resetting it
 	for driverName := range m.drivers {
 		if driverName == driver.GetProtocolCode() {
-			log.Warn().Str("protocolName", driver.GetProtocolName()).Msg("Already registered")
+			m.log.Warn().Str("protocolName", driver.GetProtocolName()).Msg("Already registered")
 			return
 		}
 	}
 	m.drivers[driver.GetProtocolCode()] = driver
-	log.Info().Str("protocolName", driver.GetProtocolName()).Msgf("Driver for %s registered", driver.GetProtocolName())
+	m.log.Info().Str("protocolName", driver.GetProtocolName()).Msgf("Driver for %s registered", driver.GetProtocolName())
 }
 
 func (m *plcDriverManger) ListDriverNames() []string {
-	log.Trace().Msg("Listing driver names")
+	m.log.Trace().Msg("Listing driver names")
 	var driverNames []string
 	for driverName := range m.drivers {
 		driverNames = append(driverNames, driverName)
 	}
-	log.Trace().Msgf("Found %d driver(s)", len(driverNames))
+	m.log.Trace().Msgf("Found %d driver(s)", len(driverNames))
 	return driverNames
 }
 
@@ -169,47 +176,47 @@ func (m *plcDriverManger) GetDriver(driverName string) (PlcDriver, error) {
 }
 
 func (m *plcDriverManger) RegisterTransport(transport transports.Transport) {
-	log.Debug().Str("transportName", transport.GetTransportName()).Msg("Registering transport")
+	m.log.Debug().Str("transportName", transport.GetTransportName()).Msg("Registering transport")
 	// If this transport is already registered, just skip resetting it
 	for transportName := range m.transports {
 		if transportName == transport.GetTransportCode() {
-			log.Warn().Str("transportName", transport.GetTransportName()).Msg("Transport already registered")
+			m.log.Warn().Str("transportName", transport.GetTransportName()).Msg("Transport already registered")
 			return
 		}
 	}
 	m.transports[transport.GetTransportCode()] = transport
-	log.Info().Str("transportName", transport.GetTransportName()).Msgf("Transport for %s registered", transport.GetTransportName())
+	m.log.Info().Str("transportName", transport.GetTransportName()).Msgf("Transport for %s registered", transport.GetTransportName())
 }
 
 func (m *plcDriverManger) ListTransportNames() []string {
-	log.Trace().Msg("Listing transport names")
+	m.log.Trace().Msg("Listing transport names")
 	var transportNames []string
 	for transportName := range m.transports {
 		transportNames = append(transportNames, transportName)
 	}
-	log.Trace().Msgf("Found %d transports", len(transportNames))
+	m.log.Trace().Msgf("Found %d transports", len(transportNames))
 	return transportNames
 }
 
 func (m *plcDriverManger) GetTransport(transportName string, _ string, _ map[string][]string) (transports.Transport, error) {
 	if val, ok := m.transports[transportName]; ok {
-		log.Debug().Str("transportName", transportName).Msg("Returning transport")
+		m.log.Debug().Str("transportName", transportName).Msg("Returning transport")
 		return val, nil
 	}
 	return nil, errors.Errorf("couldn't find transport %s", transportName)
 }
 
 func (m *plcDriverManger) GetConnection(connectionString string) <-chan PlcConnectionConnectResult {
-	log.Debug().Str("connectionString", connectionString).Msgf("Getting connection for %s", connectionString)
+	m.log.Debug().Str("connectionString", connectionString).Msgf("Getting connection for %s", connectionString)
 	// Parse the connection string.
 	connectionUrl, err := url.Parse(connectionString)
 	if err != nil {
-		log.Error().Err(err).Msg("Error parsing connection")
+		m.log.Error().Err(err).Msg("Error parsing connection")
 		ch := make(chan PlcConnectionConnectResult, 1)
 		ch <- &plcConnectionConnectResult{err: errors.Wrap(err, "error parsing connection string")}
 		return ch
 	}
-	log.Debug().Stringer("connectionUrl", connectionUrl).Msg("parsed connection URL")
+	m.log.Debug().Stringer("connectionUrl", connectionUrl).Msg("parsed connection URL")
 
 	// The options will be used to configure both the transports as well as the connections/drivers
 	configOptions := connectionUrl.Query()
@@ -218,12 +225,12 @@ func (m *plcDriverManger) GetConnection(connectionString string) <-chan PlcConne
 	driverName := connectionUrl.Scheme
 	driver, err := m.GetDriver(driverName)
 	if err != nil {
-		log.Err(err).Str("driverName", driverName).Msgf("Couldn't get driver for %s", driverName)
+		m.log.Err(err).Str("driverName", driverName).Msgf("Couldn't get driver for %s", driverName)
 		ch := make(chan PlcConnectionConnectResult, 1)
 		ch <- &plcConnectionConnectResult{err: errors.Wrap(err, "error getting driver for connection string")}
 		return ch
 	}
-	log.Debug().Stringer("connectionUrl", connectionUrl).Msgf("got driver %s", driver.GetProtocolName())
+	m.log.Debug().Stringer("connectionUrl", connectionUrl).Msgf("got driver %s", driver.GetProtocolName())
 
 	// If a transport is provided alongside the driver, the URL content is decoded as "opaque" data
 	// Then we have to re-parse that to get the transport code as well as the host & port information.
@@ -231,10 +238,10 @@ func (m *plcDriverManger) GetConnection(connectionString string) <-chan PlcConne
 	var transportConnectionString string
 	var transportPath string
 	if len(connectionUrl.Opaque) > 0 {
-		log.Trace().Msg("we handling a opaque connectionUrl")
+		m.log.Trace().Msg("we handling a opaque connectionUrl")
 		connectionUrl, err := url.Parse(connectionUrl.Opaque)
 		if err != nil {
-			log.Err(err).Str("connectionUrl.Opaque", connectionUrl.Opaque).Msg("Couldn't get transport due to parsing error")
+			m.log.Err(err).Str("connectionUrl.Opaque", connectionUrl.Opaque).Msg("Couldn't get transport due to parsing error")
 			ch := make(chan PlcConnectionConnectResult, 1)
 			ch <- &plcConnectionConnectResult{err: errors.Wrap(err, "error parsing connection string")}
 			return ch
@@ -243,19 +250,19 @@ func (m *plcDriverManger) GetConnection(connectionString string) <-chan PlcConne
 		transportConnectionString = connectionUrl.Host
 		transportPath = connectionUrl.Path
 	} else {
-		log.Trace().Msg("we handling a non-opaque connectionUrl")
+		m.log.Trace().Msg("we handling a non-opaque connectionUrl")
 		// If no transport was provided the driver has to provide a default transport.
 		transportName = driver.GetDefaultTransport()
 		transportConnectionString = connectionUrl.Host
 		transportPath = connectionUrl.Path
 	}
-	log.Debug().
+	m.log.Debug().
 		Str("transportName", transportName).
 		Str("transportConnectionString", transportConnectionString).
 		Msgf("got a transport %s", transportName)
 	// If no transport has been specified explicitly or per default, we have to abort.
 	if transportName == "" {
-		log.Error().Msg("got a empty transport")
+		m.log.Error().Msg("got a empty transport")
 		ch := make(chan PlcConnectionConnectResult, 1)
 		ch <- &plcConnectionConnectResult{err: errors.New("no transport specified and no default defined by driver")}
 		return ch
@@ -267,7 +274,7 @@ func (m *plcDriverManger) GetConnection(connectionString string) <-chan PlcConne
 		Host:   transportConnectionString,
 		Path:   transportPath,
 	}
-	log.Debug().Stringer("transportUrl", &transportUrl).Msg("Assembled transport url")
+	m.log.Debug().Stringer("transportUrl", &transportUrl).Msg("Assembled transport url")
 
 	// Create a new connection
 	return driver.GetConnection(transportUrl, m.transports, configOptions)

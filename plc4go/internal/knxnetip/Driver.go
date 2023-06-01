@@ -21,6 +21,7 @@ package knxnetip
 
 import (
 	"context"
+	"github.com/rs/zerolog"
 	"net/url"
 
 	"github.com/apache/plc4x/plc4go/pkg/api"
@@ -34,10 +35,14 @@ import (
 
 type Driver struct {
 	_default.DefaultDriver
+
+	log zerolog.Logger // TODO: use it
 }
 
-func NewDriver() *Driver {
-	driver := &Driver{}
+func NewDriver(_options ...options.WithOption) *Driver {
+	driver := &Driver{
+		log: options.ExtractCustomLogger(_options...),
+	}
 	driver.DefaultDriver = _default.NewDefaultDriver(driver, "knxnet-ip", "KNXNet/IP", "udp", NewTagHandler())
 	return driver
 }

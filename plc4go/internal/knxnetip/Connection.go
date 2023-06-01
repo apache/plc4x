@@ -190,7 +190,7 @@ func NewConnection(transportInstance transports.TransportInstance, options map[s
 
 	if traceEnabledOption, ok := options["traceEnabled"]; ok {
 		if len(traceEnabledOption) == 1 {
-			connection.tracer = spi.NewTracer(connection.connectionId)
+			connection.tracer = spi.NewTracer(connection.connectionId, _options...)
 		}
 	}
 	// If a building key was provided, save that in a dedicated variable
