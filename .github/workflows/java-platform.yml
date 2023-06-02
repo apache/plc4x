@@ -139,7 +139,7 @@ jobs:
         if: success() || failure()
         with:
           name: Surefire Java Tests
-          path: '**/surefire-reports/*.xml'
+          path: '**/surefire-reports/TEST-*.xml'
           reporter: java-junit
 
       - name: Failsafe Test Report
@@ -147,7 +147,7 @@ jobs:
         if: success() || failure()
         with:
           name: Failsafe Java Tests
-          path: '**/failsafe-reports/*.xml'
+          path: '**/failsafe-reports/TEST-*.xml'
           reporter: java-junit
 
       - name: Perform CodeQL Analysis
