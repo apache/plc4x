@@ -112,7 +112,9 @@ func ProduceTestingLogger(t *testing.T) zerolog.Logger {
 			func(w *zerolog.ConsoleWriter) {
 				// TODO: this is really an issue with go-junit-report not sanitizing output before dumping into xml...
 				onJenkins := os.Getenv("JENKINS_URL") != ""
-				if onJenkins {
+				onGithubAction := os.Getenv("GITHUB_ACTIONS") != ""
+				onCI := os.Getenv("CI") != ""
+				if onJenkins || onGithubAction || onCI {
 					w.NoColor = true
 				}
 			},
