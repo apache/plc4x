@@ -165,6 +165,47 @@ func (_c *MockRequestTransaction_FailRequest_Call) RunAndReturn(run func(error) 
 	return _c
 }
 
+// IsCompleted provides a mock function with given fields:
+func (_m *MockRequestTransaction) IsCompleted() bool {
+	ret := _m.Called()
+
+	var r0 bool
+	if rf, ok := ret.Get(0).(func() bool); ok {
+		r0 = rf()
+	} else {
+		r0 = ret.Get(0).(bool)
+	}
+
+	return r0
+}
+
+// MockRequestTransaction_IsCompleted_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'IsCompleted'
+type MockRequestTransaction_IsCompleted_Call struct {
+	*mock.Call
+}
+
+// IsCompleted is a helper method to define mock.On call
+func (_e *MockRequestTransaction_Expecter) IsCompleted() *MockRequestTransaction_IsCompleted_Call {
+	return &MockRequestTransaction_IsCompleted_Call{Call: _e.mock.On("IsCompleted")}
+}
+
+func (_c *MockRequestTransaction_IsCompleted_Call) Run(run func()) *MockRequestTransaction_IsCompleted_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run()
+	})
+	return _c
+}
+
+func (_c *MockRequestTransaction_IsCompleted_Call) Return(_a0 bool) *MockRequestTransaction_IsCompleted_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockRequestTransaction_IsCompleted_Call) RunAndReturn(run func() bool) *MockRequestTransaction_IsCompleted_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // String provides a mock function with given fields:
 func (_m *MockRequestTransaction) String() string {
 	ret := _m.Called()

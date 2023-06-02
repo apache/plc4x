@@ -35,7 +35,6 @@ import (
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
-	"github.com/rs/zerolog/log"
 )
 
 var sharedExecutorInstance pool.Executor // shared instance
@@ -58,6 +57,8 @@ type RequestTransaction interface {
 	Submit(operation RequestTransactionRunnable)
 	// AwaitCompletion wait for this RequestTransaction to finish. Returns an error if it finished unsuccessful
 	AwaitCompletion(ctx context.Context) error
+	// IsCompleted indicates that the that this RequestTransaction is completed
+	IsCompleted() bool
 }
 
 // RequestTransactionManager handles transactions
@@ -78,6 +79,8 @@ func NewRequestTransactionManager(numberOfConcurrentRequests int, _options ...op
 		transactionId:              0,
 		workLog:                    *list.New(),
 		executor:                   sharedExecutorInstance,
+
+		traceTransactionManagerTransactions: config.TraceTransactionManagerTransactions,
 
 		log: options.ExtractCustomLogger(_options...),
 	}
@@ -114,6 +117,9 @@ type requestTransaction struct {
 	operation        pool.Runnable
 	completionFuture pool.CompletionFuture
 
+	stateChangeMutex sync.Mutex
+	completed        bool
+
 	transactionLog zerolog.Logger
 }
 
@@ -129,7 +135,11 @@ type requestTransactionManager struct {
 	workLogMutex sync.RWMutex
 	executor     pool.Executor
 
+	// Indicates it this rtm is in shutdown
 	shutdown bool
+
+	// flag set to true if it should trace transactions
+	traceTransactionManagerTransactions bool
 
 	log zerolog.Logger
 }
@@ -179,26 +189,35 @@ func (r *requestTransactionManager) processWorklog() {
 	}
 }
 
+type completedFuture struct {
+	err error
+}
+
+func (c completedFuture) AwaitCompletion(_ context.Context) error {
+	return c.err
+}
+
+func (completedFuture) Cancel(_ bool, _ error) {
+	// No op
+}
+
 func (r *requestTransactionManager) StartTransaction() RequestTransaction {
 	r.transactionMutex.Lock()
 	defer r.transactionMutex.Unlock()
 	currentTransactionId := r.transactionId
 	r.transactionId += 1
-	transactionLogger := log.With().Int32("transactionId", currentTransactionId).Logger()
-	if !config.TraceTransactionManagerTransactions {
+	transactionLogger := r.log.With().Int32("transactionId", currentTransactionId).Logger()
+	if !r.traceTransactionManagerTransactions {
 		transactionLogger = zerolog.Nop()
 	}
 	transaction := &requestTransaction{
-		r,
-		currentTransactionId,
-		nil,
-		nil,
-		transactionLogger,
+		parent:         r,
+		transactionId:  currentTransactionId,
+		transactionLog: transactionLogger,
 	}
 	if r.shutdown {
-		if err := r.failRequest(transaction, errors.New("request transaction manager in shutdown")); err != nil {
-			r.log.Error().Err(err).Msg("error shutting down transaction")
-		}
+		transaction.completed = true
+		transaction.completionFuture = completedFuture{errors.New("request transaction manager in shutdown")}
 	}
 	return transaction
 }
@@ -271,17 +290,35 @@ func (r *requestTransactionManager) CloseGraceful(timeout time.Duration) error {
 }
 
 func (t *requestTransaction) FailRequest(err error) error {
+	t.stateChangeMutex.Lock()
+	defer t.stateChangeMutex.Unlock()
+	if t.completed {
+		return errors.Wrap(err, "calling fail on a already completed transaction")
+	}
 	t.transactionLog.Trace().Msg("Fail the request")
+	t.completed = true
 	return t.parent.failRequest(t, err)
 }
 
 func (t *requestTransaction) EndRequest() error {
+	t.stateChangeMutex.Lock()
+	defer t.stateChangeMutex.Unlock()
+	if t.completed {
+		return errors.New("calling end on a already completed transaction")
+	}
 	t.transactionLog.Trace().Msg("Ending the request")
+	t.completed = true
 	// Remove it from Running Requests
 	return t.parent.endRequest(t)
 }
 
 func (t *requestTransaction) Submit(operation RequestTransactionRunnable) {
+	t.stateChangeMutex.Lock()
+	defer t.stateChangeMutex.Unlock()
+	if t.completed {
+		t.transactionLog.Warn().Msg("calling submit on a already completed transaction")
+		return
+	}
 	if t.operation != nil {
 		t.transactionLog.Warn().Msg("Operation already set")
 	}
@@ -313,6 +350,10 @@ func (t *requestTransaction) AwaitCompletion(ctx context.Context) error {
 		}
 	}
 	return nil
+}
+
+func (t *requestTransaction) IsCompleted() bool {
+	return t.completed
 }
 
 func (t *requestTransaction) String() string {

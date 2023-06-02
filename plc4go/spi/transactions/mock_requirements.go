@@ -29,3 +29,8 @@ import (
 type CompletionFuture interface {
 	pool.CompletionFuture
 }
+
+// Deprecated: don't use it in productive code
+type Executor interface {
+	pool.Executor
+}
