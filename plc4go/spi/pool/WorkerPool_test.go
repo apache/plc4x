@@ -279,8 +279,8 @@ func TestNewDynamicExecutor(t *testing.T) {
 		name              string
 		args              args
 		setup             func(*testing.T, *args)
-		manipulator       func(*testing.T, *executor)
-		executorValidator func(*testing.T, *executor) bool
+		manipulator       func(*testing.T, *dynamicExecutor)
+		executorValidator func(*testing.T, *dynamicExecutor) bool
 	}{
 		{
 			name: "new Executor",
@@ -292,7 +292,7 @@ func TestNewDynamicExecutor(t *testing.T) {
 			setup: func(t *testing.T, args *args) {
 				args.options = append(args.options, options.WithCustomLogger(zerolog.New(zerolog.NewConsoleWriter(zerolog.ConsoleTestWriter(t)))))
 			},
-			executorValidator: func(t *testing.T, e *executor) bool {
+			executorValidator: func(t *testing.T, e *dynamicExecutor) bool {
 				assert.False(t, e.running)
 				assert.False(t, e.shutdown)
 				assert.Len(t, e.worker, 1)
@@ -310,7 +310,7 @@ func TestNewDynamicExecutor(t *testing.T) {
 			setup: func(t *testing.T, args *args) {
 				args.options = append(args.options, options.WithCustomLogger(zerolog.New(zerolog.NewConsoleWriter(zerolog.ConsoleTestWriter(t)))))
 			},
-			manipulator: func(t *testing.T, e *executor) {
+			manipulator: func(t *testing.T, e *dynamicExecutor) {
 				{
 					oldUpScaleInterval := upScaleInterval
 					t.Cleanup(func() {
@@ -354,7 +354,7 @@ func TestNewDynamicExecutor(t *testing.T) {
 					}
 				}()
 			},
-			executorValidator: func(t *testing.T, e *executor) bool {
+			executorValidator: func(t *testing.T, e *dynamicExecutor) bool {
 				time.Sleep(500 * time.Millisecond)
 				assert.False(t, e.running)
 				assert.False(t, e.shutdown)
@@ -367,12 +367,12 @@ func TestNewDynamicExecutor(t *testing.T) {
 			if tt.setup != nil {
 				tt.setup(t, &tt.args)
 			}
-			fixedSizeExecutor := NewDynamicExecutor(tt.args.numberOfWorkers, tt.args.queueDepth, tt.args.options...)
-			defer fixedSizeExecutor.Stop()
+			dynamicSizedExecutor := NewDynamicExecutor(tt.args.numberOfWorkers, tt.args.queueDepth, tt.args.options...)
+			defer dynamicSizedExecutor.Stop()
 			if tt.manipulator != nil {
-				tt.manipulator(t, fixedSizeExecutor.(*executor))
+				tt.manipulator(t, dynamicSizedExecutor.(*dynamicExecutor))
 			}
-			assert.True(t, tt.executorValidator(t, fixedSizeExecutor.(*executor)), "NewFixedSizeExecutor(%v, %v, %v)", tt.args.numberOfWorkers, tt.args.queueDepth, tt.args.options)
+			assert.True(t, tt.executorValidator(t, dynamicSizedExecutor.(*dynamicExecutor)), "NewFixedSizeExecutor(%v, %v, %v)", tt.args.numberOfWorkers, tt.args.queueDepth, tt.args.options)
 		})
 	}
 }
