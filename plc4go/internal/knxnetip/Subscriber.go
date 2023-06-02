@@ -177,7 +177,7 @@ func (m *Subscriber) handleValueChange(destinationAddress []byte, payload []byte
 					plcValues[tagName] = spiValues.NewPlcList(plcValueList)
 				}
 			}
-			event := NewSubscriptionEvent(tags, types, intervals, responseCodes, addresses, plcValues)
+			event := NewSubscriptionEvent(tags, types, intervals, responseCodes, addresses, plcValues, options.WithCustomLogger(m.log))
 			consumer(&event)
 		}
 	}

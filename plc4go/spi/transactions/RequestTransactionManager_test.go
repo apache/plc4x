@@ -37,9 +37,10 @@ func TestNewRequestTransactionManager(t *testing.T) {
 		requestTransactionManagerOptions []options.WithOption
 	}
 	tests := []struct {
-		name string
-		args args
-		want RequestTransactionManager
+		name  string
+		args  args
+		setup func(t *testing.T, args *args)
+		want  RequestTransactionManager
 	}{
 		{
 			name: "just create one",
@@ -65,6 +66,9 @@ func TestNewRequestTransactionManager(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			if tt.setup != nil {
+				tt.setup(t, &tt.args)
+			}
 			if got := NewRequestTransactionManager(tt.args.numberOfConcurrentRequests, tt.args.requestTransactionManagerOptions...); !assert.Equal(t, tt.want, got) {
 				t.Errorf("NewRequestTransactionManager() = %v, want %v", got, tt.want)
 			}

@@ -96,7 +96,7 @@ func (m *Driver) GetConnectionWithContext(ctx context.Context, transportUrl url.
 	driverContext.awaitDisconnectComplete = m.awaitDisconnectComplete
 
 	// Create the new connection
-	connection := NewConnection(codec, configuration, driverContext, m.GetPlcTagHandler(), m.tm, driverOptions)
+	connection := NewConnection(codec, configuration, driverContext, m.GetPlcTagHandler(), m.tm, driverOptions, options.WithCustomLogger(m.log))
 	m.log.Debug().Msg("created connection, connecting now")
 	return connection.ConnectWithContext(ctx)
 }

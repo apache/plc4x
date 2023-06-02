@@ -63,7 +63,7 @@ func (m *Transport) CreateTransportInstance(transportUrl url.URL, options map[st
 		return preregisteredInstance, nil
 	}
 	m.log.Trace().Msg("create transport instance")
-	return NewTransportInstance(m), nil
+	return NewTransportInstance(m, _options...), nil
 }
 
 func (m *Transport) AddPreregisteredInstances(transportUrl url.URL, preregisteredInstance transports.TransportInstance) error {

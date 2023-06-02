@@ -51,7 +51,7 @@ func (m *Driver) CheckQuery(query string) error {
 	return err
 }
 
-func (m *Driver) GetConnectionWithContext(ctx context.Context, transportUrl url.URL, transports map[string]transports.Transport, options map[string][]string) <-chan plc4go.PlcConnectionConnectResult {
+func (m *Driver) GetConnectionWithContext(ctx context.Context, transportUrl url.URL, transports map[string]transports.Transport, driverOptions map[string][]string) <-chan plc4go.PlcConnectionConnectResult {
 	// Get an the transport specified in the url
 	transport, ok := transports[transportUrl.Scheme]
 	if !ok {
@@ -60,9 +60,9 @@ func (m *Driver) GetConnectionWithContext(ctx context.Context, transportUrl url.
 		return ch
 	}
 	// Provide a default-port to the transport, which is used, if the user doesn't provide on in the connection string.
-	options["defaultUdpPort"] = []string{"3671"}
+	driverOptions["defaultUdpPort"] = []string{"3671"}
 	// Have the transport create a new transport-instance.
-	transportInstance, err := transport.CreateTransportInstance(transportUrl, options)
+	transportInstance, err := transport.CreateTransportInstance(transportUrl, driverOptions, options.WithCustomLogger(m.log))
 	if err != nil {
 		ch := make(chan plc4go.PlcConnectionConnectResult, 1)
 		ch <- _default.NewDefaultPlcConnectionConnectResult(nil, errors.Errorf("couldn't initialize transport configuration for given transport url %#v", transportUrl))
@@ -70,7 +70,7 @@ func (m *Driver) GetConnectionWithContext(ctx context.Context, transportUrl url.
 	}
 
 	// Create the new connection
-	connection := NewConnection(transportInstance, options, m.GetPlcTagHandler())
+	connection := NewConnection(transportInstance, driverOptions, m.GetPlcTagHandler(), options.WithCustomLogger(m.log))
 	m.log.Trace().Str("transport", transportUrl.String()).Stringer("connection", connection).Msg("created new connection instance, trying to connect now")
 	return connection.ConnectWithContext(ctx)
 }

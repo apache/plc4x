@@ -20,6 +20,8 @@
 package model
 
 import (
+	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/rs/zerolog"
 	"time"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
@@ -34,15 +36,16 @@ type AdsSubscriptionHandle struct {
 	directTag  DirectPlcTag
 	consumers  []apiModel.PlcSubscriptionEventConsumer
 
-	apiModel.PlcSubscriptionHandle
+	log zerolog.Logger
 }
 
-func NewAdsSubscriptionHandle(subscriber spi.PlcSubscriber, tagName string, directTag DirectPlcTag) *AdsSubscriptionHandle {
+func NewAdsSubscriptionHandle(subscriber spi.PlcSubscriber, tagName string, directTag DirectPlcTag, _options ...options.WithOption) *AdsSubscriptionHandle {
 	return &AdsSubscriptionHandle{
 		subscriber: subscriber,
 		tagName:    tagName,
 		directTag:  directTag,
 		consumers:  []apiModel.PlcSubscriptionEventConsumer{},
+		log:        options.ExtractCustomLogger(_options...),
 	}
 }
 
@@ -65,7 +68,9 @@ func (t *AdsSubscriptionHandle) PublishPlcValue(value apiValues.PlcValue) {
 		map[string]spiModel.SubscriptionType{t.tagName: spiModel.SubscriptionChangeOfState},
 		map[string]time.Duration{t.tagName: time.Second},
 		map[string]apiModel.PlcResponseCode{t.tagName: apiModel.PlcResponseCode_OK},
-		map[string]apiValues.PlcValue{t.tagName: value})
+		map[string]apiValues.PlcValue{t.tagName: value},
+		options.WithCustomLogger(t.log),
+	)
 	for _, consumer := range t.consumers {
 		consumer(&event)
 	}

@@ -20,6 +20,7 @@
 package simulated
 
 import (
+	"github.com/apache/plc4x/plc4go/spi/testutils"
 	"net/url"
 	"testing"
 	"time"
@@ -49,7 +50,7 @@ func TestDriver_CheckQuery(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			d := NewDriver()
+			d := NewDriver(options.WithCustomLogger(testutils.ProduceTestingLogger(t)))
 			if err := d.CheckTagAddress(tt.args.query); (err != nil) != tt.wantErr {
 				t.Errorf("CheckTagAddress() error = %v, wantErr %v", err, tt.wantErr)
 			}
@@ -86,7 +87,7 @@ func TestDriver_Discover(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			d := NewDriver()
+			d := NewDriver(options.WithCustomLogger(testutils.ProduceTestingLogger(t)))
 			if err := d.Discover(tt.args.callback, tt.args.discoveryOptions...); (err != nil) != tt.wantErr {
 				t.Errorf("Discover() error = %v, wantErr %v", err, tt.wantErr)
 			}
@@ -130,7 +131,7 @@ func TestDriver_GetConnection(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			d := NewDriver()
+			d := NewDriver(options.WithCustomLogger(testutils.ProduceTestingLogger(t)))
 			connectionChan := d.GetConnection(tt.args.in0, tt.args.in1, tt.args.options)
 			timeout := time.NewTimer(3 * time.Second)
 			defer utils.CleanupTimer(timeout)
@@ -160,7 +161,7 @@ func TestDriver_GetDefaultTransport(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			d := NewDriver()
+			d := NewDriver(options.WithCustomLogger(testutils.ProduceTestingLogger(t)))
 			if got := d.GetDefaultTransport(); got != tt.want {
 				t.Errorf("GetDefaultTransport() = %v, want %v", got, tt.want)
 			}
@@ -180,7 +181,7 @@ func TestDriver_GetProtocolCode(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			d := NewDriver()
+			d := NewDriver(options.WithCustomLogger(testutils.ProduceTestingLogger(t)))
 			if got := d.GetProtocolCode(); got != tt.want {
 				t.Errorf("GetProtocolCode() = %v, want %v", got, tt.want)
 			}
@@ -200,7 +201,7 @@ func TestDriver_GetProtocolName(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			d := NewDriver()
+			d := NewDriver(options.WithCustomLogger(testutils.ProduceTestingLogger(t)))
 			if got := d.GetProtocolName(); got != tt.want {
 				t.Errorf("GetProtocolName() = %v, want %v", got, tt.want)
 			}

@@ -21,8 +21,10 @@ package simulated
 
 import (
 	"context"
+	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/tracer"
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
 	"strconv"
 	"time"
 
@@ -35,13 +37,17 @@ type Reader struct {
 	device  *Device
 	options map[string][]string
 	tracer  *tracer.Tracer
+
+	log zerolog.Logger
 }
 
-func NewReader(device *Device, options map[string][]string, tracer *tracer.Tracer) *Reader {
+func NewReader(device *Device, readerOptions map[string][]string, tracer *tracer.Tracer, _options ...options.WithOption) *Reader {
 	return &Reader{
 		device:  device,
-		options: options,
+		options: readerOptions,
 		tracer:  tracer,
+
+		log: options.ExtractCustomLogger(_options...),
 	}
 }
 

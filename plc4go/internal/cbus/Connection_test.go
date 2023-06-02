@@ -30,11 +30,11 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/testutils"
 	"github.com/apache/plc4x/plc4go/spi/tracer"
 	"github.com/apache/plc4x/plc4go/spi/transactions"
-	"github.com/apache/plc4x/plc4go/spi/transports"
 	"github.com/apache/plc4x/plc4go/spi/transports/test"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/rs/zerolog"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 	"net/url"
 	"sync/atomic"
 	"testing"
@@ -187,15 +187,10 @@ func TestConnection_ConnectWithContext(t *testing.T) {
 
 				// Build the default connection
 				fields.DefaultConnection = _default.NewDefaultConnection(nil, loggerOption)
-				codec := NewMessageCodec(func() transports.TransportInstance {
-					transport := test.NewTransport(loggerOption)
-					ti, err := transport.CreateTransportInstance(url.URL{Scheme: "test"}, nil, loggerOption)
-					if err != nil {
-						t.Error(err)
-						t.FailNow()
-					}
-					return ti
-				}(), loggerOption)
+				transport := test.NewTransport(loggerOption)
+				ti, err := transport.CreateTransportInstance(url.URL{Scheme: "test"}, nil, loggerOption)
+				require.NoError(t, err)
+				codec := NewMessageCodec(ti, loggerOption)
 				t.Cleanup(func() {
 					assert.NoError(t, codec.Disconnect())
 				})
@@ -850,15 +845,10 @@ func TestConnection_fireConnectionError(t *testing.T) {
 				testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
 
 				fields.DefaultConnection = _default.NewDefaultConnection(nil, loggerOption)
-				codec := NewMessageCodec(func() transports.TransportInstance {
-					transport := test.NewTransport()
-					ti, err := transport.CreateTransportInstance(url.URL{Scheme: "test"}, nil)
-					if err != nil {
-						t.Error(err)
-						t.FailNow()
-					}
-					return ti
-				}(), loggerOption)
+				transport := test.NewTransport(loggerOption)
+				ti, err := transport.CreateTransportInstance(url.URL{Scheme: "test"}, nil, loggerOption)
+				require.NoError(t, err)
+				codec := NewMessageCodec(ti, loggerOption)
 				t.Cleanup(func() {
 					assert.NoError(t, codec.Disconnect())
 				})
@@ -885,15 +875,10 @@ func TestConnection_fireConnectionError(t *testing.T) {
 				testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
 
 				fields.DefaultConnection = _default.NewDefaultConnection(nil, loggerOption)
-				codec := NewMessageCodec(func() transports.TransportInstance {
-					transport := test.NewTransport()
-					ti, err := transport.CreateTransportInstance(url.URL{Scheme: "test"}, nil)
-					if err != nil {
-						t.Error(err)
-						t.FailNow()
-					}
-					return ti
-				}(), loggerOption)
+				transport := test.NewTransport(loggerOption)
+				ti, err := transport.CreateTransportInstance(url.URL{Scheme: "test"}, nil, loggerOption)
+				require.NoError(t, err)
+				codec := NewMessageCodec(ti, loggerOption)
 				t.Cleanup(func() {
 					assert.NoError(t, codec.Disconnect())
 				})
@@ -982,15 +967,10 @@ func TestConnection_sendCalDataWrite(t *testing.T) {
 				loggerOption := options.WithCustomLogger(logger)
 
 				fields.DefaultConnection = _default.NewDefaultConnection(nil, loggerOption)
-				codec := NewMessageCodec(func() transports.TransportInstance {
-					transport := test.NewTransport(loggerOption)
-					ti, err := transport.CreateTransportInstance(url.URL{Scheme: "test"}, nil, loggerOption)
-					if err != nil {
-						t.Error(err)
-						t.FailNow()
-					}
-					return ti
-				}())
+				transport := test.NewTransport(loggerOption)
+				ti, err := transport.CreateTransportInstance(url.URL{Scheme: "test"}, nil, loggerOption)
+				require.NoError(t, err)
+				codec := NewMessageCodec(ti, loggerOption)
 				t.Cleanup(func() {
 					assert.NoError(t, codec.Disconnect())
 				})
@@ -1071,15 +1051,10 @@ func TestConnection_sendReset(t *testing.T) {
 				testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
 
 				fields.DefaultConnection = _default.NewDefaultConnection(nil, loggerOption)
-				codec := NewMessageCodec(func() transports.TransportInstance {
-					transport := test.NewTransport()
-					ti, err := transport.CreateTransportInstance(url.URL{Scheme: "test"}, nil)
-					if err != nil {
-						t.Error(err)
-						t.FailNow()
-					}
-					return ti
-				}(), loggerOption)
+				transport := test.NewTransport(loggerOption)
+				ti, err := transport.CreateTransportInstance(url.URL{Scheme: "test"}, nil, loggerOption)
+				require.NoError(t, err)
+				codec := NewMessageCodec(ti, loggerOption)
 				t.Cleanup(func() {
 					assert.NoError(t, codec.Disconnect())
 				})
@@ -1160,15 +1135,10 @@ func TestConnection_setApplicationFilter(t *testing.T) {
 
 				// Setup connection
 				fields.DefaultConnection = _default.NewDefaultConnection(nil, loggerOption)
-				codec := NewMessageCodec(func() transports.TransportInstance {
-					transport := test.NewTransport(loggerOption)
-					ti, err := transport.CreateTransportInstance(url.URL{Scheme: "test"}, nil, loggerOption)
-					if err != nil {
-						t.Error(err)
-						t.FailNow()
-					}
-					return ti
-				}(), loggerOption)
+				transport := test.NewTransport(loggerOption)
+				ti, err := transport.CreateTransportInstance(url.URL{Scheme: "test"}, nil, loggerOption)
+				require.NoError(t, err)
+				codec := NewMessageCodec(ti, loggerOption)
 				t.Cleanup(func() {
 					assert.NoError(t, codec.Disconnect())
 				})
@@ -1249,15 +1219,10 @@ func TestConnection_setInterface1PowerUpSettings(t *testing.T) {
 
 				// Setup connection
 				fields.DefaultConnection = _default.NewDefaultConnection(nil, loggerOption)
-				codec := NewMessageCodec(func() transports.TransportInstance {
-					transport := test.NewTransport(loggerOption)
-					ti, err := transport.CreateTransportInstance(url.URL{Scheme: "test"}, nil, loggerOption)
-					if err != nil {
-						t.Error(err)
-						t.FailNow()
-					}
-					return ti
-				}(), loggerOption)
+				transport := test.NewTransport(loggerOption)
+				ti, err := transport.CreateTransportInstance(url.URL{Scheme: "test"}, nil, loggerOption)
+				require.NoError(t, err)
+				codec := NewMessageCodec(ti, loggerOption)
 				t.Cleanup(func() {
 					assert.NoError(t, codec.Disconnect())
 				})
@@ -1338,15 +1303,10 @@ func TestConnection_setInterfaceOptions1(t *testing.T) {
 
 				// Setup connection
 				fields.DefaultConnection = _default.NewDefaultConnection(nil, loggerOption)
-				codec := NewMessageCodec(func() transports.TransportInstance {
-					transport := test.NewTransport(loggerOption)
-					ti, err := transport.CreateTransportInstance(url.URL{Scheme: "test"}, nil, loggerOption)
-					if err != nil {
-						t.Error(err)
-						t.FailNow()
-					}
-					return ti
-				}(), loggerOption)
+				transport := test.NewTransport(loggerOption)
+				ti, err := transport.CreateTransportInstance(url.URL{Scheme: "test"}, nil, loggerOption)
+				require.NoError(t, err)
+				codec := NewMessageCodec(ti, loggerOption)
 				t.Cleanup(func() {
 					assert.NoError(t, codec.Disconnect())
 				})
@@ -1427,15 +1387,10 @@ func TestConnection_setInterfaceOptions3(t *testing.T) {
 
 				// Setup connection
 				fields.DefaultConnection = _default.NewDefaultConnection(nil, loggerOption)
-				codec := NewMessageCodec(func() transports.TransportInstance {
-					transport := test.NewTransport(loggerOption)
-					ti, err := transport.CreateTransportInstance(url.URL{Scheme: "test"}, nil, loggerOption)
-					if err != nil {
-						t.Error(err)
-						t.FailNow()
-					}
-					return ti
-				}(), loggerOption)
+				transport := test.NewTransport(loggerOption)
+				ti, err := transport.CreateTransportInstance(url.URL{Scheme: "test"}, nil, loggerOption)
+				require.NoError(t, err)
+				codec := NewMessageCodec(ti, loggerOption)
 				t.Cleanup(func() {
 					assert.NoError(t, codec.Disconnect())
 				})
@@ -1505,15 +1460,10 @@ func TestConnection_setupConnection(t *testing.T) {
 
 				// Setup connection
 				fields.DefaultConnection = _default.NewDefaultConnection(nil, loggerOption)
-				codec := NewMessageCodec(func() transports.TransportInstance {
-					transport := test.NewTransport(loggerOption)
-					ti, err := transport.CreateTransportInstance(url.URL{Scheme: "test"}, nil, loggerOption)
-					if err != nil {
-						t.Error(err)
-						t.FailNow()
-					}
-					return ti
-				}(), loggerOption)
+				transport := test.NewTransport(loggerOption)
+				ti, err := transport.CreateTransportInstance(url.URL{Scheme: "test"}, nil, loggerOption)
+				require.NoError(t, err)
+				codec := NewMessageCodec(ti, loggerOption)
 				t.Cleanup(func() {
 					assert.NoError(t, codec.Disconnect())
 				})
@@ -1542,11 +1492,8 @@ func TestConnection_setupConnection(t *testing.T) {
 				// Build the message codec
 				transport := test.NewTransport(loggerOption)
 				transportUrl := url.URL{Scheme: "test"}
-				transportInstance, err := transport.CreateTransportInstance(transportUrl, nil, loggerOption)
-				if err != nil {
-					t.Error(err)
-					t.FailNow()
-				}
+				ti, err := transport.CreateTransportInstance(transportUrl, nil, loggerOption)
+				require.NoError(t, err)
 				type MockState uint8
 				const (
 					RESET MockState = iota
@@ -1554,7 +1501,7 @@ func TestConnection_setupConnection(t *testing.T) {
 				)
 				currentState := atomic.Value{}
 				currentState.Store(RESET)
-				transportInstance.(*test.TransportInstance).SetWriteInterceptor(func(transportInstance *test.TransportInstance, data []byte) {
+				ti.(*test.TransportInstance).SetWriteInterceptor(func(transportInstance *test.TransportInstance, data []byte) {
 					switch currentState.Load().(MockState) {
 					case RESET:
 						t.Log("Dispatching reset echo")
@@ -1564,12 +1511,9 @@ func TestConnection_setupConnection(t *testing.T) {
 						t.Log("Done")
 					}
 				})
-				codec := NewMessageCodec(transportInstance, loggerOption)
+				codec := NewMessageCodec(ti, loggerOption)
 				err = codec.Connect()
-				if err != nil {
-					t.Error(err)
-					t.FailNow()
-				}
+				require.NoError(t, err)
 				t.Cleanup(func() {
 					assert.NoError(t, codec.Disconnect())
 				})
@@ -1599,11 +1543,8 @@ func TestConnection_setupConnection(t *testing.T) {
 				// Build the message codec
 				transport := test.NewTransport(loggerOption)
 				transportUrl := url.URL{Scheme: "test"}
-				transportInstance, err := transport.CreateTransportInstance(transportUrl, nil, loggerOption)
-				if err != nil {
-					t.Error(err)
-					t.FailNow()
-				}
+				ti, err := transport.CreateTransportInstance(transportUrl, nil, loggerOption)
+				require.NoError(t, err)
 				type MockState uint8
 				const (
 					RESET MockState = iota
@@ -1613,7 +1554,7 @@ func TestConnection_setupConnection(t *testing.T) {
 				)
 				currentState := atomic.Value{}
 				currentState.Store(RESET)
-				transportInstance.(*test.TransportInstance).SetWriteInterceptor(func(transportInstance *test.TransportInstance, data []byte) {
+				ti.(*test.TransportInstance).SetWriteInterceptor(func(transportInstance *test.TransportInstance, data []byte) {
 					switch currentState.Load().(MockState) {
 					case RESET:
 						t.Log("Dispatching reset echo")
@@ -1633,12 +1574,9 @@ func TestConnection_setupConnection(t *testing.T) {
 						t.Log("Done")
 					}
 				})
-				codec := NewMessageCodec(transportInstance, loggerOption)
+				codec := NewMessageCodec(ti, loggerOption)
 				err = codec.Connect()
-				if err != nil {
-					t.Error(err)
-					t.FailNow()
-				}
+				require.NoError(t, err)
 				t.Cleanup(func() {
 					assert.NoError(t, codec.Disconnect())
 				})
@@ -1668,11 +1606,8 @@ func TestConnection_setupConnection(t *testing.T) {
 				// Build the message codec
 				transport := test.NewTransport(loggerOption)
 				transportUrl := url.URL{Scheme: "test"}
-				transportInstance, err := transport.CreateTransportInstance(transportUrl, nil, loggerOption)
-				if err != nil {
-					t.Error(err)
-					t.FailNow()
-				}
+				ti, err := transport.CreateTransportInstance(transportUrl, nil, loggerOption)
+				require.NoError(t, err)
 				type MockState uint8
 				const (
 					RESET MockState = iota
@@ -1683,7 +1618,7 @@ func TestConnection_setupConnection(t *testing.T) {
 				)
 				currentState := atomic.Value{}
 				currentState.Store(RESET)
-				transportInstance.(*test.TransportInstance).SetWriteInterceptor(func(transportInstance *test.TransportInstance, data []byte) {
+				ti.(*test.TransportInstance).SetWriteInterceptor(func(transportInstance *test.TransportInstance, data []byte) {
 					switch currentState.Load().(MockState) {
 					case RESET:
 						t.Log("Dispatching reset echo")
@@ -1708,12 +1643,9 @@ func TestConnection_setupConnection(t *testing.T) {
 						t.Log("Done")
 					}
 				})
-				codec := NewMessageCodec(transportInstance, loggerOption)
+				codec := NewMessageCodec(ti, loggerOption)
 				err = codec.Connect()
-				if err != nil {
-					t.Error(err)
-					t.FailNow()
-				}
+				require.NoError(t, err)
 				t.Cleanup(func() {
 					assert.NoError(t, codec.Disconnect())
 				})
@@ -1743,11 +1675,8 @@ func TestConnection_setupConnection(t *testing.T) {
 				// Build the message codec
 				transport := test.NewTransport(loggerOption)
 				transportUrl := url.URL{Scheme: "test"}
-				transportInstance, err := transport.CreateTransportInstance(transportUrl, nil, loggerOption)
-				if err != nil {
-					t.Error(err)
-					t.FailNow()
-				}
+				ti, err := transport.CreateTransportInstance(transportUrl, nil, loggerOption)
+				require.NoError(t, err)
 				type MockState uint8
 				const (
 					RESET MockState = iota
@@ -1759,7 +1688,7 @@ func TestConnection_setupConnection(t *testing.T) {
 				)
 				currentState := atomic.Value{}
 				currentState.Store(RESET)
-				transportInstance.(*test.TransportInstance).SetWriteInterceptor(func(transportInstance *test.TransportInstance, data []byte) {
+				ti.(*test.TransportInstance).SetWriteInterceptor(func(transportInstance *test.TransportInstance, data []byte) {
 					switch currentState.Load().(MockState) {
 					case RESET:
 						t.Log("Dispatching reset echo")
@@ -1789,12 +1718,9 @@ func TestConnection_setupConnection(t *testing.T) {
 						t.Log("Done")
 					}
 				})
-				codec := NewMessageCodec(transportInstance, loggerOption)
+				codec := NewMessageCodec(ti, loggerOption)
 				err = codec.Connect()
-				if err != nil {
-					t.Error(err)
-					t.FailNow()
-				}
+				require.NoError(t, err)
 				t.Cleanup(func() {
 					assert.NoError(t, codec.Disconnect())
 				})
@@ -1807,9 +1733,17 @@ func TestConnection_setupConnection(t *testing.T) {
 			fields: fields{
 				DefaultConnection: _default.NewDefaultConnection(nil),
 				messageCodec: func() *MessageCodec {
+					// Setup logger
+					logger := testutils.ProduceTestingLogger(t)
+
+					testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
+
+					// Custom option for that
+					loggerOption := options.WithCustomLogger(logger)
+
 					transport := test.NewTransport()
 					transportUrl := url.URL{Scheme: "test"}
-					transportInstance, err := transport.CreateTransportInstance(transportUrl, nil)
+					ti, err := transport.CreateTransportInstance(transportUrl, nil, loggerOption)
 					if err != nil {
 						t.Error(err)
 						t.FailNow()
@@ -1827,7 +1761,7 @@ func TestConnection_setupConnection(t *testing.T) {
 					)
 					currentState := atomic.Value{}
 					currentState.Store(RESET)
-					transportInstance.(*test.TransportInstance).SetWriteInterceptor(func(transportInstance *test.TransportInstance, data []byte) {
+					ti.(*test.TransportInstance).SetWriteInterceptor(func(transportInstance *test.TransportInstance, data []byte) {
 						switch currentState.Load().(MockState) {
 						case RESET:
 							t.Log("Dispatching reset echo")
@@ -1862,7 +1796,7 @@ func TestConnection_setupConnection(t *testing.T) {
 							t.Log("Done")
 						}
 					})
-					codec := NewMessageCodec(transportInstance)
+					codec := NewMessageCodec(ti, loggerOption)
 					if err = codec.Connect(); err != nil {
 						t.Error(err)
 						t.FailNow()
@@ -1893,15 +1827,10 @@ func TestConnection_setupConnection(t *testing.T) {
 				fields.DefaultConnection = _default.NewDefaultConnection(nil, loggerOption)
 
 				// Build the message codec
-				codec := NewMessageCodec(func() transports.TransportInstance {
-					transport := test.NewTransport()
-					ti, err := transport.CreateTransportInstance(url.URL{Scheme: "test"}, nil)
-					if err != nil {
-						t.Error(err)
-						t.FailNow()
-					}
-					return ti
-				}(), loggerOption)
+				transport := test.NewTransport(loggerOption)
+				ti, err := transport.CreateTransportInstance(url.URL{Scheme: "test"}, nil, loggerOption)
+				require.NoError(t, err)
+				codec := NewMessageCodec(ti, loggerOption)
 				t.Cleanup(func() {
 					assert.NoError(t, codec.Disconnect())
 				})

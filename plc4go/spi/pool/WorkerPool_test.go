@@ -247,6 +247,7 @@ func TestNewFixedSizeExecutor(t *testing.T) {
 	tests := []struct {
 		name              string
 		args              args
+		setup             func(t *testing.T, args *args)
 		executorValidator func(*testing.T, *executor) bool
 	}{
 		{
@@ -256,6 +257,9 @@ func TestNewFixedSizeExecutor(t *testing.T) {
 				queueDepth:      14,
 				options:         []options.WithOption{WithExecutorOptionTracerWorkers(true)},
 			},
+			setup: func(t *testing.T, args *args) {
+				args.options = append(args.options, options.WithCustomLogger(produceTestLogger(t)))
+			},
 			executorValidator: func(t *testing.T, e *executor) bool {
 				return !e.running && !e.shutdown && len(e.worker) == 13 && cap(e.workItems) == 14
 			},
@@ -263,6 +267,9 @@ func TestNewFixedSizeExecutor(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			if tt.setup != nil {
+				tt.setup(t, &tt.args)
+			}
 			fixedSizeExecutor := NewFixedSizeExecutor(tt.args.numberOfWorkers, tt.args.queueDepth, tt.args.options...)
 			defer fixedSizeExecutor.Stop()
 			assert.True(t, tt.executorValidator(t, fixedSizeExecutor.(*executor)), "NewFixedSizeExecutor(%v, %v, %v)", tt.args.numberOfWorkers, tt.args.queueDepth, tt.args.options)

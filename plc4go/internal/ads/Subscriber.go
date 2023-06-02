@@ -147,7 +147,7 @@ func (m *Connection) subscribe(ctx context.Context, subscriptionRequest apiModel
 			)
 		}
 		// Create a new subscription handle.
-		subscriptionHandle := dirverModel.NewAdsSubscriptionHandle(m, tagName, directTag)
+		subscriptionHandle := dirverModel.NewAdsSubscriptionHandle(m, tagName, directTag, options.WithCustomLogger(m.log))
 		responseChan <- spiModel.NewDefaultPlcSubscriptionRequestResult(
 			subscriptionRequest,
 			spiModel.NewDefaultPlcSubscriptionResponse(

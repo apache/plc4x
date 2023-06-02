@@ -33,6 +33,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
+	"github.com/stretchr/testify/require"
 	"net/url"
 	"strings"
 	"sync/atomic"
@@ -160,26 +161,6 @@ func TestReader_readSync(t *testing.T) {
 		},
 		{
 			name: "unmapped tag",
-			fields: fields{
-				messageCodec: func() *MessageCodec {
-					transport := test.NewTransport()
-					transportUrl := url.URL{Scheme: "test"}
-					transportInstance, err := transport.CreateTransportInstance(transportUrl, nil)
-					if err != nil {
-						t.Error(err)
-						t.FailNow()
-						return nil
-					}
-					codec := NewMessageCodec(transportInstance)
-					err = codec.Connect()
-					if err != nil {
-						t.Error(err)
-						t.FailNow()
-						return nil
-					}
-					return codec
-				}(),
-			},
 			args: args{
 				ctx: context.Background(),
 				readRequest: spiModel.NewDefaultPlcReadRequest(
@@ -195,6 +176,25 @@ func TestReader_readSync(t *testing.T) {
 				result: make(chan apiModel.PlcReadRequestResult, 1),
 			},
 			setup: func(t *testing.T, fields *fields) {
+				// Setup logger
+				logger := testutils.ProduceTestingLogger(t)
+
+				testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
+
+				// Custom option for that
+				loggerOption := options.WithCustomLogger(logger)
+
+				transport := test.NewTransport()
+				transportUrl := url.URL{Scheme: "test"}
+				transportInstance, err := transport.CreateTransportInstance(transportUrl, nil)
+				require.NoError(t, err)
+				codec := NewMessageCodec(transportInstance, loggerOption)
+				err = codec.Connect()
+				require.NoError(t, err)
+				t.Cleanup(func() {
+					assert.NoError(t, codec.Disconnect())
+				})
+				fields.messageCodec = codec
 				fields.tm = transactions.NewRequestTransactionManager(10, options.WithCustomLogger(testutils.ProduceTestingLogger(t)))
 			},
 			resultEvaluator: func(t *testing.T, results chan apiModel.PlcReadRequestResult) bool {
@@ -270,10 +270,7 @@ func TestReader_readSync(t *testing.T) {
 				transport := test.NewTransport()
 				transportUrl := url.URL{Scheme: "test"}
 				transportInstance, err := transport.CreateTransportInstance(transportUrl, nil, loggerOption)
-				if err != nil {
-					t.Error(err)
-					t.FailNow()
-				}
+				require.NoError(t, err)
 				type MockState uint8
 				const (
 					INITIAL MockState = iota
@@ -293,10 +290,10 @@ func TestReader_readSync(t *testing.T) {
 				})
 				codec := NewMessageCodec(transportInstance, loggerOption)
 				err = codec.Connect()
-				if err != nil {
-					t.Error(err)
-					t.FailNow()
-				}
+				require.NoError(t, err)
+				t.Cleanup(func() {
+					assert.NoError(t, codec.Disconnect())
+				})
 				fields.messageCodec = codec
 			},
 			resultEvaluator: func(t *testing.T, results chan apiModel.PlcReadRequestResult) bool {
@@ -353,17 +350,13 @@ func TestReader_readSync(t *testing.T) {
 				transport := test.NewTransport()
 				transportUrl := url.URL{Scheme: "test"}
 				transportInstance, err := transport.CreateTransportInstance(transportUrl, nil, loggerOption)
-				if err != nil {
-					t.Error(err)
-					t.FailNow()
-				}
+				require.NoError(t, err)
 				codec := NewMessageCodec(transportInstance, loggerOption)
 				err = codec.Connect()
-				if err != nil {
-					t.Error(err)
-					t.FailNow()
-				}
-
+				require.NoError(t, err)
+				t.Cleanup(func() {
+					assert.NoError(t, codec.Disconnect())
+				})
 				fields.messageCodec = codec
 			},
 			resultEvaluator: func(t *testing.T, results chan apiModel.PlcReadRequestResult) bool {
@@ -449,21 +442,13 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 				transport := test.NewTransport(loggerOption)
 				transportUrl := url.URL{Scheme: "test"}
 				transportInstance, err := transport.CreateTransportInstance(transportUrl, nil, loggerOption)
-				if err != nil {
-					t.Error(err)
-					t.FailNow()
-				}
+				require.NoError(t, err)
 				codec := NewMessageCodec(transportInstance, loggerOption)
-				t.Cleanup(func() {
-					if err := codec.Disconnect(); err != nil {
-						t.Error(err)
-					}
-				})
 				err = codec.Connect()
-				if err != nil {
-					t.Error(err)
-					t.FailNow()
-				}
+				require.NoError(t, err)
+				t.Cleanup(func() {
+					assert.NoError(t, codec.Disconnect())
+				})
 				fields.messageCodec = codec
 
 				transaction := NewMockRequestTransaction(t)
@@ -478,46 +463,6 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 			name: "Send message which responds with message to client",
 			fields: fields{
 				alphaGenerator: &AlphaGenerator{currentAlpha: 'g'},
-				messageCodec: func() *MessageCodec {
-					transport := test.NewTransport()
-					transportUrl := url.URL{Scheme: "test"}
-					transportInstance, err := transport.CreateTransportInstance(transportUrl, nil)
-					if err != nil {
-						t.Error(err)
-						t.FailNow()
-						return nil
-					}
-					type MockState uint8
-					const (
-						INITIAL MockState = iota
-						DONE
-					)
-					currentState := atomic.Value{}
-					currentState.Store(INITIAL)
-					transportInstance.(*test.TransportInstance).SetWriteInterceptor(func(transportInstance *test.TransportInstance, data []byte) {
-						switch currentState.Load().(MockState) {
-						case INITIAL:
-							t.Log("Dispatching read response")
-							transportInstance.FillReadBuffer([]byte("@1A2001\r@"))
-							currentState.Store(DONE)
-						case DONE:
-							t.Log("Done")
-						}
-					})
-					codec := NewMessageCodec(transportInstance)
-					t.Cleanup(func() {
-						if err := codec.Disconnect(); err != nil {
-							t.Error(err)
-						}
-					})
-					err = codec.Connect()
-					if err != nil {
-						t.Error(err)
-						t.FailNow()
-						return nil
-					}
-					return codec
-				}(),
 			},
 			args: args{
 				ctx: func() context.Context {
@@ -556,7 +501,13 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 				},
 			},
 			setup: func(t *testing.T, fields *fields, args *args, ch chan struct{}) {
+				// Setup logger
+				logger := testutils.ProduceTestingLogger(t)
+
 				testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
+
+				// Custom option for that
+				loggerOption := options.WithCustomLogger(logger)
 
 				transaction := NewMockRequestTransaction(t)
 				expect := transaction.EXPECT()
@@ -564,6 +515,35 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 					close(ch)
 				})
 				args.transaction = transaction
+
+				transport := test.NewTransport(loggerOption)
+				transportUrl := url.URL{Scheme: "test"}
+				transportInstance, err := transport.CreateTransportInstance(transportUrl, nil, loggerOption)
+				require.NoError(t, err)
+				type MockState uint8
+				const (
+					INITIAL MockState = iota
+					DONE
+				)
+				currentState := atomic.Value{}
+				currentState.Store(INITIAL)
+				transportInstance.(*test.TransportInstance).SetWriteInterceptor(func(transportInstance *test.TransportInstance, data []byte) {
+					switch currentState.Load().(MockState) {
+					case INITIAL:
+						t.Log("Dispatching read response")
+						transportInstance.FillReadBuffer([]byte("@1A2001\r@"))
+						currentState.Store(DONE)
+					case DONE:
+						t.Log("Done")
+					}
+				})
+				codec := NewMessageCodec(transportInstance, loggerOption)
+				err = codec.Connect()
+				require.NoError(t, err)
+				t.Cleanup(func() {
+					assert.NoError(t, codec.Disconnect())
+				})
+				fields.messageCodec = codec
 			},
 		},
 		{
@@ -571,14 +551,18 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 			fields: fields{
 				alphaGenerator: &AlphaGenerator{currentAlpha: 'g'},
 				messageCodec: func() *MessageCodec {
-					transport := test.NewTransport()
+					// Setup logger
+					logger := testutils.ProduceTestingLogger(t)
+
+					testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
+
+					// Custom option for that
+					loggerOption := options.WithCustomLogger(logger)
+
+					transport := test.NewTransport(loggerOption)
 					transportUrl := url.URL{Scheme: "test"}
-					transportInstance, err := transport.CreateTransportInstance(transportUrl, nil)
-					if err != nil {
-						t.Error(err)
-						t.FailNow()
-						return nil
-					}
+					transportInstance, err := transport.CreateTransportInstance(transportUrl, nil, loggerOption)
+					require.NoError(t, err)
 					type MockState uint8
 					const (
 						INITIAL MockState = iota
@@ -596,18 +580,12 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 							t.Log("Done")
 						}
 					})
-					codec := NewMessageCodec(transportInstance)
-					t.Cleanup(func() {
-						if err := codec.Disconnect(); err != nil {
-							t.Error(err)
-						}
-					})
+					codec := NewMessageCodec(transportInstance, loggerOption)
 					err = codec.Connect()
-					if err != nil {
-						t.Error(err)
-						t.FailNow()
-						return nil
-					}
+					require.NoError(t, err)
+					t.Cleanup(func() {
+						assert.NoError(t, codec.Disconnect())
+					})
 					return codec
 				}(),
 			},
@@ -721,10 +699,7 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 				transport := test.NewTransport(loggerOption)
 				transportUrl := url.URL{Scheme: "test"}
 				transportInstance, err := transport.CreateTransportInstance(transportUrl, nil, loggerOption)
-				if err != nil {
-					t.Error(err)
-					t.FailNow()
-				}
+				require.NoError(t, err)
 				type MockState uint8
 				const (
 					INITIAL MockState = iota
@@ -743,16 +718,11 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 					}
 				})
 				codec := NewMessageCodec(transportInstance, loggerOption)
-				t.Cleanup(func() {
-					if err := codec.Disconnect(); err != nil {
-						t.Error(err)
-					}
-				})
 				err = codec.Connect()
-				if err != nil {
-					t.Error(err)
-					t.FailNow()
-				}
+				require.NoError(t, err)
+				t.Cleanup(func() {
+					assert.NoError(t, codec.Disconnect())
+				})
 				fields.messageCodec = codec
 			},
 		},
@@ -819,10 +789,7 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 				transport := test.NewTransport(loggerOption)
 				transportUrl := url.URL{Scheme: "test"}
 				transportInstance, err := transport.CreateTransportInstance(transportUrl, nil, loggerOption)
-				if err != nil {
-					t.Error(err)
-					t.FailNow()
-				}
+				require.NoError(t, err)
 				type MockState uint8
 				const (
 					INITIAL MockState = iota
@@ -841,16 +808,11 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 					}
 				})
 				codec := NewMessageCodec(transportInstance, loggerOption)
-				t.Cleanup(func() {
-					if err := codec.Disconnect(); err != nil {
-						t.Error(err)
-					}
-				})
 				err = codec.Connect()
-				if err != nil {
-					t.Error(err)
-					t.FailNow()
-				}
+				require.NoError(t, err)
+				t.Cleanup(func() {
+					assert.NoError(t, codec.Disconnect())
+				})
 				fields.messageCodec = codec
 			},
 		},
@@ -917,10 +879,7 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 				transport := test.NewTransport(loggerOption)
 				transportUrl := url.URL{Scheme: "test"}
 				transportInstance, err := transport.CreateTransportInstance(transportUrl, nil, loggerOption)
-				if err != nil {
-					t.Error(err)
-					t.FailNow()
-				}
+				require.NoError(t, err)
 				type MockState uint8
 				const (
 					INITIAL MockState = iota
@@ -939,16 +898,11 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 					}
 				})
 				codec := NewMessageCodec(transportInstance, loggerOption)
-				t.Cleanup(func() {
-					if err := codec.Disconnect(); err != nil {
-						t.Error(err)
-					}
-				})
 				err = codec.Connect()
-				if err != nil {
-					t.Error(err)
-					t.FailNow()
-				}
+				require.NoError(t, err)
+				t.Cleanup(func() {
+					assert.NoError(t, codec.Disconnect())
+				})
 				fields.messageCodec = codec
 			},
 		},
@@ -1015,10 +969,7 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 				transport := test.NewTransport(loggerOption)
 				transportUrl := url.URL{Scheme: "test"}
 				transportInstance, err := transport.CreateTransportInstance(transportUrl, nil, loggerOption)
-				if err != nil {
-					t.Error(err)
-					t.FailNow()
-				}
+				require.NoError(t, err)
 				type MockState uint8
 				const (
 					INITIAL MockState = iota
@@ -1037,16 +988,11 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 					}
 				})
 				codec := NewMessageCodec(transportInstance, loggerOption)
-				t.Cleanup(func() {
-					if err := codec.Disconnect(); err != nil {
-						t.Error(err)
-					}
-				})
 				err = codec.Connect()
-				if err != nil {
-					t.Error(err)
-					t.FailNow()
-				}
+				require.NoError(t, err)
+				t.Cleanup(func() {
+					assert.NoError(t, codec.Disconnect())
+				})
 				fields.messageCodec = codec
 			},
 		},
@@ -1113,10 +1059,7 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 				transport := test.NewTransport(loggerOption)
 				transportUrl := url.URL{Scheme: "test"}
 				transportInstance, err := transport.CreateTransportInstance(transportUrl, nil, loggerOption)
-				if err != nil {
-					t.Error(err)
-					t.FailNow()
-				}
+				require.NoError(t, err)
 				type MockState uint8
 				const (
 					INITIAL MockState = iota
@@ -1135,16 +1078,11 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 					}
 				})
 				codec := NewMessageCodec(transportInstance, loggerOption)
-				t.Cleanup(func() {
-					if err := codec.Disconnect(); err != nil {
-						t.Error(err)
-					}
-				})
 				err = codec.Connect()
-				if err != nil {
-					t.Error(err)
-					t.FailNow()
-				}
+				require.NoError(t, err)
+				t.Cleanup(func() {
+					assert.NoError(t, codec.Disconnect())
+				})
 				fields.messageCodec = codec
 			},
 		},
@@ -1211,10 +1149,7 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 				transport := test.NewTransport(loggerOption)
 				transportUrl := url.URL{Scheme: "test"}
 				transportInstance, err := transport.CreateTransportInstance(transportUrl, nil, loggerOption)
-				if err != nil {
-					t.Error(err)
-					t.FailNow()
-				}
+				require.NoError(t, err)
 				type MockState uint8
 				const (
 					INITIAL MockState = iota
@@ -1233,16 +1168,11 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 					}
 				})
 				codec := NewMessageCodec(transportInstance, loggerOption)
-				t.Cleanup(func() {
-					if err := codec.Disconnect(); err != nil {
-						t.Error(err)
-					}
-				})
 				err = codec.Connect()
-				if err != nil {
-					t.Error(err)
-					t.FailNow()
-				}
+				require.NoError(t, err)
+				t.Cleanup(func() {
+					assert.NoError(t, codec.Disconnect())
+				})
 				fields.messageCodec = codec
 			},
 		},

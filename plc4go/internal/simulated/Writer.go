@@ -21,8 +21,10 @@ package simulated
 
 import (
 	"context"
+	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/tracer"
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
 	"strconv"
 	"time"
 
@@ -34,13 +36,17 @@ type Writer struct {
 	device  *Device
 	options map[string][]string
 	tracer  *tracer.Tracer
+
+	log zerolog.Logger
 }
 
-func NewWriter(device *Device, options map[string][]string, tracer *tracer.Tracer) *Writer {
+func NewWriter(device *Device, writerOptions map[string][]string, tracer *tracer.Tracer, _options ...options.WithOption) *Writer {
 	return &Writer{
 		device:  device,
-		options: options,
+		options: writerOptions,
 		tracer:  tracer,
+
+		log: options.ExtractCustomLogger(_options...),
 	}
 }
 
