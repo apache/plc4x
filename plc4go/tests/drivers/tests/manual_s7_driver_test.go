@@ -20,18 +20,19 @@
 package tests
 
 import (
+	readWriteModel "github.com/apache/plc4x/plc4go/protocols/s7/readwrite/model"
+	"github.com/apache/plc4x/plc4go/spi/options"
 	"testing"
 
 	"github.com/apache/plc4x/plc4go/internal/s7"
 	"github.com/apache/plc4x/plc4go/pkg/api"
 	"github.com/apache/plc4x/plc4go/pkg/api/transports"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
-	_ "github.com/apache/plc4x/plc4go/tests/initializetest"
 )
 
 func TestManualS7Driver(t *testing.T) {
 	t.Skip()
-
+	testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
 	/*
 		Test program code on the PLC with the test-data.
 		Located in "main"
@@ -68,10 +69,11 @@ func TestManualS7Driver(t *testing.T) {
 	*/
 
 	connectionString := "s7://192.168.23.30"
-	driverManager := plc4go.NewPlcDriverManager()
-	driverManager.RegisterDriver(s7.NewDriver())
-	transports.RegisterTcpTransport(driverManager)
-	test := testutils.NewManualTestSuite(connectionString, driverManager, t)
+	withCustomLogger := options.WithCustomLogger(testutils.ProduceTestingLogger(t))
+	driverManager := plc4go.NewPlcDriverManager(withCustomLogger)
+	driverManager.RegisterDriver(s7.NewDriver(withCustomLogger))
+	transports.RegisterTcpTransport(driverManager, withCustomLogger)
+	test := testutils.NewManualTestSuite(t, connectionString, driverManager)
 
 	test.AddTestCase("%DB4:0.0:BOOL", true)
 	test.AddTestCase("%DB4:1:BYTE", []bool{false, false, true, false, true, false, true, false})
@@ -109,5 +111,5 @@ func TestManualS7Driver(t *testing.T) {
 	test.AddTestCase("%DB4:140:STRING(10)", "hurz")
 	test.AddTestCase("%DB4:396:WSTRING(10)", "wolf")
 
-	test.Run(t)
+	test.Run()
 }

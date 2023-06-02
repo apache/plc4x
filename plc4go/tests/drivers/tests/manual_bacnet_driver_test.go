@@ -25,21 +25,24 @@ import (
 	"github.com/apache/plc4x/plc4go/internal/bacnetip"
 	"github.com/apache/plc4x/plc4go/pkg/api"
 	"github.com/apache/plc4x/plc4go/pkg/api/transports"
+	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
+	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
-	_ "github.com/apache/plc4x/plc4go/tests/initializetest"
 )
 
 func TestManualBacnetDriver(t *testing.T) {
 	t.Skip()
 
+	testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
 	connectionString := "bacnet-ip://192.168.178.101"
-	driverManager := plc4go.NewPlcDriverManager()
-	driverManager.RegisterDriver(bacnetip.NewDriver())
-	transports.RegisterUdpTransport(driverManager)
-	test := testutils.NewManualTestSuite(connectionString, driverManager, t)
+	withCustomLogger := options.WithCustomLogger(testutils.ProduceTestingLogger(t))
+	driverManager := plc4go.NewPlcDriverManager(withCustomLogger)
+	driverManager.RegisterDriver(bacnetip.NewDriver(withCustomLogger))
+	transports.RegisterUdpTransport(driverManager, withCustomLogger)
+	test := testutils.NewManualTestSuite(t, connectionString, driverManager)
 
 	test.AddTestCase("ANALOG_OUTPUT,133/PRESENT_VALUE", true)
 	test.AddTestCase("DEVICE,133/LOCATION&DESCRIPTION", true)
 
-	test.Run(t)
+	test.Run()
 }

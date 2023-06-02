@@ -23,10 +23,15 @@ import (
 	"testing"
 
 	abethIO "github.com/apache/plc4x/plc4go/protocols/abeth/readwrite"
+	readWriteModel "github.com/apache/plc4x/plc4go/protocols/abeth/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
-	_ "github.com/apache/plc4x/plc4go/tests/initializetest"
 )
 
 func TestAbEthParserSerializer(t *testing.T) {
-	testutils.RunParserSerializerTestsuite(t, "assets/testing/protocols/abeth/ParserSerializerTestsuite.xml", abethIO.AbethParserHelper{})
+	testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
+	testutils.RunParserSerializerTestsuite(
+		t,
+		"assets/testing/protocols/abeth/ParserSerializerTestsuite.xml",
+		abethIO.AbethParserHelper{},
+	)
 }

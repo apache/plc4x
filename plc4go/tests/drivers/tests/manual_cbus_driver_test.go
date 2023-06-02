@@ -21,6 +21,7 @@ package tests
 
 import (
 	"fmt"
+	"github.com/apache/plc4x/plc4go/spi/options"
 	"testing"
 	"time"
 
@@ -28,9 +29,9 @@ import (
 	"github.com/apache/plc4x/plc4go/pkg/api"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/pkg/api/transports"
+	readWriteModel "github.com/apache/plc4x/plc4go/protocols/cbus/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
 	"github.com/apache/plc4x/plc4go/spi/utils"
-	_ "github.com/apache/plc4x/plc4go/tests/initializetest"
 
 	"github.com/stretchr/testify/require"
 )
@@ -38,11 +39,15 @@ import (
 func TestManualCBusDriverMixed(t *testing.T) {
 	t.Skip()
 
+	testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
+
+	withCustomLogger := options.WithCustomLogger(testutils.ProduceTestingLogger(t))
+
 	connectionString := "c-bus://192.168.178.101"
-	driverManager := plc4go.NewPlcDriverManager()
-	driverManager.RegisterDriver(cbus.NewDriver())
-	transports.RegisterTcpTransport(driverManager)
-	test := testutils.NewManualTestSuite(connectionString, driverManager, t)
+	driverManager := plc4go.NewPlcDriverManager(withCustomLogger)
+	driverManager.RegisterDriver(cbus.NewDriver(withCustomLogger))
+	transports.RegisterTcpTransport(driverManager, withCustomLogger)
+	test := testutils.NewManualTestSuite(t, connectionString, driverManager)
 
 	// TODO: fix those test cases
 	//test.AddTestCase("status/binary/0x04", "PlcStruct{\n  application: \"LIGHTING_38\"\n  blockStart: \"false, false, false, false, false, false, false, false\"\n  values: \"DOES_NOT_EXIST, OFF, ERROR, ON, DOES_NOT_EXIST, OFF, ERROR, ON, DOES_NOT_EXIST, OFF, ERROR, ON, DOES_NOT_EXIST, OFF, ERROR, ON, DOES_NOT_EXIST, OFF, ERROR, ON, DOES_NOT_EXIST, OFF, ERROR, ON, DOES_NOT_EXIST, OFF, ERROR, ON, DOES_NOT_EXIST, OFF, ERROR, ON, DOES_NOT_EXIST, OFF, ERROR, ON, DOES_NOT_EXIST, OFF, ERROR, ON, DOES_NOT_EXIST, OFF, ERROR, ON, DOES_NOT_EXIST, OFF, ERROR, ON, DOES_NOT_EXIST, OFF, ERROR, ON, DOES_NOT_EXIST, OFF, ERROR, ON, DOES_NOT_EXIST, OFF, ERROR, ON, DOES_NOT_EXIST, OFF, ERROR, ON, DOES_NOT_EXIST, OFF, ERROR, ON, DOES_NOT_EXIST, OFF, ERROR, ON, DOES_NOT_EXIST, OFF, ERROR, ON, DOES_NOT_EXIST, OFF, ERROR, ON, DOES_NOT_EXIST, OFF, ERROR, ON, DOES_NOT_EXIST, OFF, ERROR, ON\"\n}")
@@ -51,7 +56,7 @@ func TestManualCBusDriverMixed(t *testing.T) {
 	//test.AddTestCase("cal/0/identify=[FirmwareVersion]", true)
 	//test.AddTestCase("cal/0/gestatus=[0xFF, 1]", true)
 
-	plcConnection := test.Run(t)
+	plcConnection := test.Run()
 	t.Run("Subscription test", func(t *testing.T) {
 		gotMMI := make(chan bool)
 		gotSAL := make(chan bool)
@@ -113,10 +118,14 @@ func TestManualCBusDriverMixed(t *testing.T) {
 func TestManualCBusBrowse(t *testing.T) {
 	t.Skip()
 
+	testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
+
+	withCustomLogger := options.WithCustomLogger(testutils.ProduceTestingLogger(t))
+
 	connectionString := "c-bus://192.168.178.101?Monitor=false&MonitoredApplication1=0x00&MonitoredApplication2=0x00"
-	driverManager := plc4go.NewPlcDriverManager()
-	driverManager.RegisterDriver(cbus.NewDriver())
-	transports.RegisterTcpTransport(driverManager)
+	driverManager := plc4go.NewPlcDriverManager(withCustomLogger)
+	driverManager.RegisterDriver(cbus.NewDriver(withCustomLogger))
+	transports.RegisterTcpTransport(driverManager, withCustomLogger)
 	connectionResult := <-driverManager.GetConnection(connectionString)
 	if err := connectionResult.GetErr(); err != nil {
 		t.Error(err)
@@ -140,10 +149,14 @@ func TestManualCBusBrowse(t *testing.T) {
 func TestManualCBusRead(t *testing.T) {
 	t.Skip()
 
+	testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
+
+	withCustomLogger := options.WithCustomLogger(testutils.ProduceTestingLogger(t))
+
 	connectionString := "c-bus://192.168.178.101?Monitor=false&MonitoredApplication1=0x00&MonitoredApplication2=0x00"
-	driverManager := plc4go.NewPlcDriverManager()
-	driverManager.RegisterDriver(cbus.NewDriver())
-	transports.RegisterTcpTransport(driverManager)
+	driverManager := plc4go.NewPlcDriverManager(withCustomLogger)
+	driverManager.RegisterDriver(cbus.NewDriver(withCustomLogger))
+	transports.RegisterTcpTransport(driverManager, withCustomLogger)
 	connectionResult := <-driverManager.GetConnection(connectionString)
 	if err := connectionResult.GetErr(); err != nil {
 		t.Error(err)
@@ -162,12 +175,16 @@ func TestManualCBusRead(t *testing.T) {
 func TestManualDiscovery(t *testing.T) {
 	t.Skip()
 
-	driverManager := plc4go.NewPlcDriverManager()
-	driver := cbus.NewDriver()
+	testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
+
+	withCustomLogger := options.WithCustomLogger(testutils.ProduceTestingLogger(t))
+
+	driverManager := plc4go.NewPlcDriverManager(withCustomLogger)
+	driver := cbus.NewDriver(withCustomLogger)
 	driverManager.RegisterDriver(driver)
-	transports.RegisterTcpTransport(driverManager)
+	transports.RegisterTcpTransport(driverManager, withCustomLogger)
 	err := driver.Discover(func(event apiModel.PlcDiscoveryItem) {
-		println(event.(fmt.Stringer).String())
+		t.Log(event.(fmt.Stringer).String())
 	})
 	require.NoError(t, err)
 }

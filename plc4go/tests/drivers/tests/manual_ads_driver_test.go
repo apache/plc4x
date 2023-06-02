@@ -26,13 +26,14 @@ import (
 	"github.com/apache/plc4x/plc4go/internal/ads"
 	"github.com/apache/plc4x/plc4go/pkg/api"
 	"github.com/apache/plc4x/plc4go/pkg/api/transports"
+	readWriteModel "github.com/apache/plc4x/plc4go/protocols/ads/readwrite/model"
+	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
-	_ "github.com/apache/plc4x/plc4go/tests/initializetest"
 )
 
 func TestManualAds(t *testing.T) {
 	t.Skip()
-
+	testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
 	/*
 		     * Test program code on the PLC with the test-data.
 		     *
@@ -83,10 +84,11 @@ func TestManualAds(t *testing.T) {
 	targetAmsNetId := spsIp + ".1.1"
 	targetAmsPort := 851
 	connectionString := fmt.Sprintf("ads:tcp://%s?sourceAmsNetId=%s&sourceAmsPort=%d&targetAmsNetId=%s&targetAmsPort=%d", spsIp, sourceAmsNetId, sourceAmsPort, targetAmsNetId, targetAmsPort)
-	driverManager := plc4go.NewPlcDriverManager()
-	driverManager.RegisterDriver(ads.NewDriver())
-	transports.RegisterTcpTransport(driverManager)
-	test := testutils.NewManualTestSuite(connectionString, driverManager, t)
+	withCustomLogger := options.WithCustomLogger(testutils.ProduceTestingLogger(t))
+	driverManager := plc4go.NewPlcDriverManager(withCustomLogger)
+	driverManager.RegisterDriver(ads.NewDriver(withCustomLogger))
+	transports.RegisterTcpTransport(driverManager, withCustomLogger)
+	test := testutils.NewManualTestSuite(t, connectionString, driverManager)
 	test.AddTestCase("main.hurz_BOOL:BOOL", true)
 	test.AddTestCase("main.hurz_BYTE:BYTE", []bool{false, false, true, false, true, false, true, false})
 	test.AddTestCase("main.hurz_WORD:WORD", []bool{true, false, true, false, false, true, false, true, true, false, true, true, true, false, false, false})
@@ -110,5 +112,5 @@ func TestManualAds(t *testing.T) {
 	test.AddTestCase("main.hurz_TOD:TOD", "16:17:18.123")
 	test.AddTestCase("main.hurz_DATE_AND_TIME:DATE_AND_TIME", "1996-05-06T15:36:30")
 	test.AddTestCase("main.hurz_DT:DT", "1972-03-29T00:00")
-	test.Run(t)
+	test.Run()
 }

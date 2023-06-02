@@ -24,11 +24,18 @@ import (
 
 	"github.com/apache/plc4x/plc4go/internal/ads"
 	abethIO "github.com/apache/plc4x/plc4go/protocols/abeth/readwrite"
+	readWriteModel "github.com/apache/plc4x/plc4go/protocols/abeth/readwrite/model"
+	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
-	_ "github.com/apache/plc4x/plc4go/tests/initializetest"
 )
 
 func TestAbEthDriver(t *testing.T) {
 	t.Skip("No test yet available")
-	testutils.RunDriverTestsuite(t, ads.NewDriver(), "assets/testing/protocols/abeth/DriverTestsuite.xml", abethIO.AbethXmlParserHelper{})
+	testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
+	testutils.RunDriverTestsuite(
+		t,
+		ads.NewDriver(options.WithCustomLogger(testutils.ProduceTestingLogger(t))),
+		"assets/testing/protocols/abeth/DriverTestsuite.xml",
+		abethIO.AbethXmlParserHelper{},
+	)
 }

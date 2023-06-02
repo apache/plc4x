@@ -23,10 +23,15 @@ import (
 	"testing"
 
 	firmataIO "github.com/apache/plc4x/plc4go/protocols/firmata/readwrite"
+	readWriteModel "github.com/apache/plc4x/plc4go/protocols/firmata/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
-	_ "github.com/apache/plc4x/plc4go/tests/initializetest"
 )
 
 func TestFirmataParserSerializer(t *testing.T) {
-	testutils.RunParserSerializerTestsuite(t, "assets/testing/protocols/firmata/ParserSerializerTestsuite.xml", firmataIO.FirmataParserHelper{})
+	testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
+	testutils.RunParserSerializerTestsuite(
+		t,
+		"assets/testing/protocols/firmata/ParserSerializerTestsuite.xml",
+		firmataIO.FirmataParserHelper{},
+	)
 }

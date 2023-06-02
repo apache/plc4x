@@ -49,7 +49,7 @@ type ManualTestSuite struct {
 	t                *testing.T
 }
 
-func NewManualTestSuite(connectionString string, driverManager plc4go.PlcDriverManager, t *testing.T) *ManualTestSuite {
+func NewManualTestSuite(t *testing.T, connectionString string, driverManager plc4go.PlcDriverManager) *ManualTestSuite {
 	return &ManualTestSuite{
 		ConnectionString: connectionString,
 		DriverManager:    driverManager,
@@ -74,7 +74,7 @@ func WithUnwrappedValue(unwrap bool) WithTestCaseOption {
 	}
 }
 
-func (m *ManualTestSuite) Run(t *testing.T) plc4go.PlcConnection {
+func (m *ManualTestSuite) Run() plc4go.PlcConnection {
 	connectionResult := <-m.DriverManager.GetConnection(m.ConnectionString)
 	if err := connectionResult.GetErr(); err != nil {
 		tracer, ok := errors.Cause(err).(interface{ StackTrace() errors.StackTrace })
@@ -92,7 +92,7 @@ func (m *ManualTestSuite) Run(t *testing.T) plc4go.PlcConnection {
 	m.t.Cleanup(func() {
 		connection.Close()
 	})
-	t.Log("Reading all types in separate requests")
+	m.t.Log("Reading all types in separate requests")
 	// Run all entries separately:
 	for _, testCase := range m.TestCases {
 		tagName := testCase.Address

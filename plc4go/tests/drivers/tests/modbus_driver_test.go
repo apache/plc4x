@@ -25,15 +25,22 @@ import (
 
 	"github.com/apache/plc4x/plc4go/internal/modbus"
 	modbusIO "github.com/apache/plc4x/plc4go/protocols/modbus/readwrite"
-	modbusModel "github.com/apache/plc4x/plc4go/protocols/modbus/readwrite/model"
+	readWriteModel "github.com/apache/plc4x/plc4go/protocols/modbus/readwrite/model"
+	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
 	"github.com/apache/plc4x/plc4go/spi/utils"
-	_ "github.com/apache/plc4x/plc4go/tests/initializetest"
 )
 
 func TestModbusDriver(t *testing.T) {
+	testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
 	parser := func(readBufferByteBased utils.ReadBufferByteBased) (any, error) {
-		return modbusModel.ModbusTcpADUParseWithBuffer(context.Background(), readBufferByteBased, modbusModel.DriverType_MODBUS_TCP, false)
+		return readWriteModel.ModbusTcpADUParseWithBuffer(context.Background(), readBufferByteBased, readWriteModel.DriverType_MODBUS_TCP, false)
 	}
-	testutils.RunDriverTestsuite(t, modbus.NewModbusTcpDriver(), "assets/testing/protocols/modbus/tcp/DriverTestsuite.xml", modbusIO.ModbusXmlParserHelper{}, testutils.WithRootTypeParser(parser))
+	testutils.RunDriverTestsuite(
+		t,
+		modbus.NewModbusTcpDriver(options.WithCustomLogger(testutils.ProduceTestingLogger(t))),
+		"assets/testing/protocols/modbus/tcp/DriverTestsuite.xml",
+		modbusIO.ModbusXmlParserHelper{},
+		testutils.WithRootTypeParser(parser),
+	)
 }

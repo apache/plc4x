@@ -23,11 +23,15 @@ import (
 	"testing"
 
 	df1IO "github.com/apache/plc4x/plc4go/protocols/df1/readwrite"
+	readWriteModel "github.com/apache/plc4x/plc4go/protocols/df1/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
-	_ "github.com/apache/plc4x/plc4go/tests/initializetest"
 )
 
 func TestDf1ParserSerializer(t *testing.T) {
-	//t.Skip("Still a WIP")
-	testutils.RunParserSerializerTestsuite(t, "assets/testing/protocols/df1/ParserSerializerTestsuite.xml", df1IO.Df1ParserHelper{})
+	testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
+	testutils.RunParserSerializerTestsuite(
+		t,
+		"assets/testing/protocols/df1/ParserSerializerTestsuite.xml",
+		df1IO.Df1ParserHelper{},
+	)
 }
