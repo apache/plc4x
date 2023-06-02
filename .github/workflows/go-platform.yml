@@ -141,7 +141,7 @@ jobs:
         uses: dorny/test-reporter@v1
         if: success() || failure()
         with:
-          name: Golang Tests
+          name: "Golang Tests (OS: ${{ matrix.os }})"
           path: '**/go-junit-report.xml'
           reporter: java-junit
 

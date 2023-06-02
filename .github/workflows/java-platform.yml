@@ -138,7 +138,7 @@ jobs:
         uses: dorny/test-reporter@v1
         if: success() || failure()
         with:
-          name: Java Tests
+          name: "Java Tests (OS: ${{ matrix.os }}, Java: ${{ matrix.java }})"
           path: '**/(surefire|failsafe)-reports/TEST-*.xml'
           reporter: java-junit
 
