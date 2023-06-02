@@ -73,20 +73,27 @@ func TestDiscoverer_Discover(t *testing.T) {
 		fields   fields
 		args     args
 		wantErr  assert.ErrorAssertionFunc
-		setup    func(t *testing.T, fields *fields) (params []any)
+		setup    func(t *testing.T, fields *fields, args *args) (params []any)
 		teardown func(params []any)
 	}{
 		{
 			name: "discover unknown device",
 			args: args{
-				ctx: context.Background(),
 				callback: func(_ apiModel.PlcDiscoveryItem) {
 				},
 				discoveryOptions: []options.WithDiscoveryOption{
 					options.WithDiscoveryOptionDeviceName("blub"),
 				},
 			},
-			setup: func(t *testing.T, fields *fields) (params []any) {
+			setup: func(t *testing.T, fields *fields, args *args) (params []any) {
+				ctx, cancelFunc := context.WithCancel(context.Background())
+				t.Cleanup(func() {
+					cancelFunc()
+					// We give it on second to settle, so it can stop everything
+					time.Sleep(1 * time.Second)
+				})
+				args.ctx = ctx
+
 				fields.transportInstanceCreationQueue = pool.NewFixedSizeExecutor(50, 100, options.WithCustomLogger(testutils.ProduceTestingLogger(t)))
 				fields.deviceScanningQueue = pool.NewFixedSizeExecutor(50, 100, options.WithCustomLogger(testutils.ProduceTestingLogger(t)))
 				return nil
@@ -96,7 +103,6 @@ func TestDiscoverer_Discover(t *testing.T) {
 		{
 			name: "test with loopback",
 			args: args{
-				ctx: context.Background(),
 				callback: func(_ apiModel.PlcDiscoveryItem) {
 				},
 				discoveryOptions: []options.WithDiscoveryOption{
@@ -104,7 +110,14 @@ func TestDiscoverer_Discover(t *testing.T) {
 				},
 			},
 			wantErr: assert.NoError,
-			setup: func(t *testing.T, fields *fields) (params []any) {
+			setup: func(t *testing.T, fields *fields, args *args) (params []any) {
+				ctx, cancelFunc := context.WithCancel(context.Background())
+				t.Cleanup(func() {
+					cancelFunc()
+					// We give it on second to settle, so it can stop everything
+					time.Sleep(1 * time.Second)
+				})
+				args.ctx = ctx
 				fields.transportInstanceCreationQueue = pool.NewFixedSizeExecutor(50, 100, options.WithCustomLogger(testutils.ProduceTestingLogger(t)))
 				fields.deviceScanningQueue = pool.NewFixedSizeExecutor(50, 100, options.WithCustomLogger(testutils.ProduceTestingLogger(t)))
 				oldaddressProviderRetriever := addressProviderRetriever
@@ -126,7 +139,7 @@ func TestDiscoverer_Discover(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			var params []any
 			if tt.setup != nil {
-				params = tt.setup(t, &tt.fields)
+				params = tt.setup(t, &tt.fields, &tt.args)
 			}
 			d := &Discoverer{
 				transportInstanceCreationQueue: tt.fields.transportInstanceCreationQueue,

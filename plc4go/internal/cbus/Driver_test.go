@@ -60,11 +60,19 @@ func TestDriver_DiscoverWithContext(t *testing.T) {
 		{
 			name: "localhost discovery",
 			args: args{
-				ctx: context.Background(),
 				callback: func(event apiModel.PlcDiscoveryItem) {
 					t.Log(event)
 				},
 				discoveryOptions: []options.WithDiscoveryOption{options.WithDiscoveryOptionLocalAddress("localhost")},
+			},
+			setup: func(t *testing.T, fields *fields, args *args) {
+				ctx, cancelFunc := context.WithCancel(context.Background())
+				t.Cleanup(func() {
+					cancelFunc()
+					// We give it on second to settle, so it can stop everything
+					time.Sleep(200 * time.Millisecond)
+				})
+				args.ctx = ctx
 			},
 			wantErr: assert.NoError,
 		},
