@@ -127,7 +127,7 @@ func (c *Connection) GetMessageCodec() spi.MessageCodec {
 }
 
 func (c *Connection) ReadRequestBuilder() apiModel.PlcReadRequestBuilder {
-	return spiModel.NewDefaultPlcReadRequestBuilder(c.GetPlcTagHandler(), NewReader(&c.invokeIdGenerator, c.messageCodec, c.tm))
+	return spiModel.NewDefaultPlcReadRequestBuilder(c.GetPlcTagHandler(), NewReader(&c.invokeIdGenerator, c.messageCodec, c.tm, options.WithCustomLogger(c.log)))
 }
 
 func (c *Connection) SubscriptionRequestBuilder() apiModel.PlcSubscriptionRequestBuilder {

@@ -161,7 +161,9 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 					nil,
 					errors.Wrap(err, "error sending message"),
 				)
-				_ = transaction.EndRequest()
+				if err := transaction.FailRequest(errors.Errorf("timeout after %s", time.Second*1)); err != nil {
+					m.log.Debug().Err(err).Msg("Error failing request")
+				}
 			}
 		})
 	}()

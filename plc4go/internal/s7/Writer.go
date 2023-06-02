@@ -149,7 +149,9 @@ func (m Writer) Write(ctx context.Context, writeRequest apiModel.PlcWriteRequest
 				return transaction.EndRequest()
 			}, time.Second*1); err != nil {
 				result <- spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.Wrap(err, "error sending message"))
-				_ = transaction.EndRequest()
+				if err := transaction.FailRequest(errors.Errorf("timeout after %s", time.Second*1)); err != nil {
+					m.log.Debug().Err(err).Msg("Error failing request")
+				}
 			}
 		})
 	}()

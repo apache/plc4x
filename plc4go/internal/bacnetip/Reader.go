@@ -22,7 +22,9 @@ package bacnetip
 import (
 	"context"
 	"fmt"
+	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/transactions"
+	"github.com/rs/zerolog"
 	"time"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
@@ -42,9 +44,11 @@ type Reader struct {
 
 	maxSegmentsAccepted   readWriteModel.MaxSegmentsAccepted
 	maxApduLengthAccepted readWriteModel.MaxApduLengthAccepted
+
+	log zerolog.Logger
 }
 
-func NewReader(invokeIdGenerator *InvokeIdGenerator, messageCodec spi.MessageCodec, tm transactions.RequestTransactionManager) *Reader {
+func NewReader(invokeIdGenerator *InvokeIdGenerator, messageCodec spi.MessageCodec, tm transactions.RequestTransactionManager, _options ...options.WithOption) *Reader {
 	return &Reader{
 		invokeIdGenerator: invokeIdGenerator,
 		messageCodec:      messageCodec,
@@ -52,6 +56,8 @@ func NewReader(invokeIdGenerator *InvokeIdGenerator, messageCodec spi.MessageCod
 
 		maxSegmentsAccepted:   readWriteModel.MaxSegmentsAccepted_MORE_THAN_64_SEGMENTS,
 		maxApduLengthAccepted: readWriteModel.MaxApduLengthAccepted_NUM_OCTETS_1476,
+
+		log: options.ExtractCustomLogger(_options...),
 	}
 }
 
@@ -190,7 +196,9 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 					nil,
 					errors.Wrap(err, "error sending message"),
 				)
-				_ = transaction.EndRequest()
+				if err := transaction.FailRequest(errors.Errorf("timeout after %s", time.Second*1)); err != nil {
+					m.log.Debug().Err(err).Msg("Error failing request")
+				}
 			}
 		})
 	}()

@@ -156,10 +156,6 @@ func (m *Reader) sendMessageOverTheWire(ctx context.Context, transaction transac
 		expectedAlpha := messageToSend.(readWriteModel.CBusMessageToServer).GetRequest().(interface{ GetAlpha() readWriteModel.Alpha }).GetAlpha().GetCharacter()
 		return actualAlpha == expectedAlpha
 	}, func(receivedMessage spi.Message) error {
-		defer func(transaction transactions.RequestTransaction) {
-			// This is just to make sure we don't forget to close the transaction here
-			_ = transaction.EndRequest()
-		}(transaction)
 		// Convert the response into an
 		m.log.Trace().Msg("convert response to ")
 		messageToClient := receivedMessage.(readWriteModel.CBusMessageToClient)

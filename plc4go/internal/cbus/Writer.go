@@ -144,7 +144,9 @@ func (m *Writer) Write(ctx context.Context, writeRequest apiModel.PlcWriteReques
 				}, time.Second*1); err != nil {
 					m.log.Debug().Err(err).Msgf("Error sending message for tag %s", tagNameCopy)
 					addResponseCode(tagNameCopy, apiModel.PlcResponseCode_INTERNAL_ERROR)
-					_ = transaction.EndRequest()
+					if err := transaction.FailRequest(errors.Errorf("timeout after %s", time.Second*1)); err != nil {
+						m.log.Debug().Err(err).Msg("Error failing request")
+					}
 				}
 			})
 		}
