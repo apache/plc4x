@@ -133,6 +133,14 @@ jobs:
         run: |
           ./mvnw${{ steps.platform_suffix.outputs.platform_suffix }} ${{ steps.extra_options.outputs.extra_options }} -B -P'with-go,enable-all-checks' -pl :plc4go -am ${{ steps.platform_opts.outputs.platform_opts }} install
 
+      - name: Test Report (first failure)
+        uses: dorny/test-reporter@v1
+        if: failure()
+        with:
+          name: "Golang Tests (OS: ${{ matrix.os }}) (first failure)"
+          path: '**/go-junit-report.xml'
+          reporter: java-junit
+
       - name: Run mvnv without BacNet regression tests
         if: ${{ failure() }}
         run: ./mvnw${{ steps.platform_suffix.outputs.platform_suffix }} ${{ steps.extra_options.outputs.extra_options }} -B -P'with-go,skip-bacnet-regression-test' -pl :plc4go -am ${{ steps.platform_opts.outputs.platform_opts }} install
