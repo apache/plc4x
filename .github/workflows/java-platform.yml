@@ -136,7 +136,8 @@ jobs:
 
       - name: Test Report
         uses: dorny/test-reporter@v1
-        if: success() || failure()
+        # TODO: apparently the reporter only works on windows
+        if: (success() || failure()) && matrix.os == 'windows-latest'
         with:
           name: "Java Tests (OS: ${{ matrix.os }}, Java: ${{ matrix.java }})"
           path: '**/(surefire|failsafe)-reports/TEST-*.xml'
