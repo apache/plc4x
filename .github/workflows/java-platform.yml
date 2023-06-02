@@ -134,5 +134,21 @@ jobs:
         if: ${{ failure() }}
         run: ./mvnw${{ steps.platform_suffix.outputs.platform_suffix }} ${{ steps.extra_options.outputs.extra_options }} -B -P'skip-bacnet-regression-test' ${{ steps.platform_opts.outputs.platform_opts }} install
 
+      - name: Surefire Test Report
+        uses: dorny/test-reporter@v1
+        if: success() || failure()
+        with:
+          name: Surefire Java Tests
+          path: '**/surefire-reports/*.xml'
+          reporter: java-junit
+
+      - name: Failsafe Test Report
+        uses: dorny/test-reporter@v1
+        if: success() || failure()
+        with:
+          name: Failsafe Java Tests
+          path: '**/failsafe-reports/*.xml'
+          reporter: java-junit
+
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v2
