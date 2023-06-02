@@ -27,6 +27,7 @@ import (
 	"github.com/rs/zerolog"
 	"github.com/stretchr/testify/assert"
 	"math/rand"
+	"os"
 	"testing"
 	"time"
 )
@@ -290,7 +291,7 @@ func TestNewDynamicExecutor(t *testing.T) {
 				options:         []options.WithOption{WithExecutorOptionTracerWorkers(true)},
 			},
 			setup: func(t *testing.T, args *args) {
-				args.options = append(args.options, options.WithCustomLogger(zerolog.New(zerolog.NewConsoleWriter(zerolog.ConsoleTestWriter(t)))))
+				args.options = append(args.options, options.WithCustomLogger(produceTestLogger(t)))
 			},
 			executorValidator: func(t *testing.T, e *dynamicExecutor) bool {
 				assert.False(t, e.running)
@@ -308,7 +309,7 @@ func TestNewDynamicExecutor(t *testing.T) {
 				options:         []options.WithOption{WithExecutorOptionTracerWorkers(true)},
 			},
 			setup: func(t *testing.T, args *args) {
-				args.options = append(args.options, options.WithCustomLogger(zerolog.New(zerolog.NewConsoleWriter(zerolog.ConsoleTestWriter(t)))))
+				args.options = append(args.options, options.WithCustomLogger(produceTestLogger(t)))
 			},
 			manipulator: func(t *testing.T, e *dynamicExecutor) {
 				{
@@ -740,4 +741,18 @@ func testContext(t *testing.T) context.Context {
 	ctx, cancel := context.WithCancel(context.Background())
 	t.Cleanup(cancel)
 	return ctx
+}
+
+// note: we can't use testutils here due to import cycle
+func produceTestLogger(t *testing.T) zerolog.Logger {
+	return zerolog.New(zerolog.NewConsoleWriter(zerolog.ConsoleTestWriter(t),
+		func(w *zerolog.ConsoleWriter) {
+			// TODO: this is really an issue with go-junit-report not sanitizing output before dumping into xml...
+			onJenkins := os.Getenv("JENKINS_URL") != ""
+			onGithubAction := os.Getenv("GITHUB_ACTIONS") != ""
+			onCI := os.Getenv("CI") != ""
+			if onJenkins || onGithubAction || onCI {
+				w.NoColor = true
+			}
+		}))
 }

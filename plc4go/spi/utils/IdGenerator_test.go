@@ -22,6 +22,7 @@ package utils
 import (
 	"github.com/rs/zerolog"
 	"github.com/stretchr/testify/assert"
+	"os"
 	"testing"
 )
 
@@ -47,7 +48,21 @@ func TestGenerateId(t *testing.T) {
 			randomByteFiller = func(_ []byte) (n int, err error) {
 				return 0, nil
 			}
-			assert.Equalf(t, tt.want, GenerateId(zerolog.New(zerolog.NewConsoleWriter(zerolog.ConsoleTestWriter(t))), tt.args.numBytes), "GenerateId(%v)", tt.args.numBytes)
+			assert.Equalf(t, tt.want, GenerateId(produceTestLogger(t), tt.args.numBytes), "GenerateId(%v)", tt.args.numBytes)
 		})
 	}
+}
+
+// note: we can't use testutils here due to import cycle
+func produceTestLogger(t *testing.T) zerolog.Logger {
+	return zerolog.New(zerolog.NewConsoleWriter(zerolog.ConsoleTestWriter(t),
+		func(w *zerolog.ConsoleWriter) {
+			// TODO: this is really an issue with go-junit-report not sanitizing output before dumping into xml...
+			onJenkins := os.Getenv("JENKINS_URL") != ""
+			onGithubAction := os.Getenv("GITHUB_ACTIONS") != ""
+			onCI := os.Getenv("CI") != ""
+			if onJenkins || onGithubAction || onCI {
+				w.NoColor = true
+			}
+		}))
 }

@@ -20,6 +20,7 @@
 package testutils
 
 import (
+	"context"
 	"github.com/rs/zerolog/log"
 	"os"
 	"runtime/debug"
@@ -102,6 +103,13 @@ func CompareResults(t *testing.T, actualString []byte, referenceString []byte) e
 	boxSideBySide := asciiBoxWriter.BoxSideBySide(expectedBox, gotBox)
 	_ = boxSideBySide // TODO: xml too distorted, we need a don't center option
 	return errors.New("there were differences: Expected: \n" + string(referenceString) + "\nBut Got: \n" + string(actualString))
+}
+
+// TestContext produces a context which is getting cleaned up by testing.T
+func TestContext(t *testing.T) context.Context {
+	ctx, cancel := context.WithCancel(context.Background())
+	t.Cleanup(cancel)
+	return ctx
 }
 
 // ProduceTestingLogger produces a logger which redirects to testing.T
