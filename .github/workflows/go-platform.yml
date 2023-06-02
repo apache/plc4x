@@ -140,6 +140,7 @@ jobs:
           name: "Golang Tests (OS: ${{ matrix.os }}) (first failure)"
           path: '**/go-junit-report.xml'
           reporter: java-junit
+          fail-on-error: false
 
       - name: Run mvnv without BacNet regression tests
         if: ${{ failure() }}
