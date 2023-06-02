@@ -142,7 +142,7 @@ jobs:
         if: success() || failure()
         with:
           name: Golang Tests
-          path: target/surefire-reports/go-junit-report.xml
+          path: plc4x/plc4go/target/surefire-reports/go-junit-report.xml
           reporter: java-junit
 
       - name: Perform CodeQL Analysis
