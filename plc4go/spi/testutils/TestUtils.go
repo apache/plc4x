@@ -106,7 +106,17 @@ func CompareResults(t *testing.T, actualString []byte, referenceString []byte) e
 
 // ProduceTestingLogger produces a logger which redirects to testing.T
 func ProduceTestingLogger(t *testing.T) zerolog.Logger {
-	return zerolog.New(zerolog.NewConsoleWriter(zerolog.ConsoleTestWriter(t)))
+	return zerolog.New(
+		zerolog.NewConsoleWriter(
+			zerolog.ConsoleTestWriter(t),
+			func(w *zerolog.ConsoleWriter) {
+				onJenkins := os.Getenv("JENKINS_URL") != ""
+				if onJenkins {
+					w.NoColor = true
+				}
+			},
+		),
+	)
 }
 
 // SetToTestingLogger sets logger to  ProduceTestingLogger and resets it on cleanup
