@@ -137,13 +137,5 @@ jobs:
         if: ${{ failure() }}
         run: ./mvnw${{ steps.platform_suffix.outputs.platform_suffix }} ${{ steps.extra_options.outputs.extra_options }} -B -P'with-go,skip-bacnet-regression-test' -pl :plc4go -am ${{ steps.platform_opts.outputs.platform_opts }} install
 
-      - name: Test Report
-        uses: dorny/test-reporter@v1
-        if: success() || failure()
-        with:
-          name: Golang Tests
-          path: plc4x/plc4go/target/surefire-reports/go-junit-report.xml
-          reporter: java-junit
-
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v2
