@@ -328,9 +328,8 @@ mainLoop:
 			if m.customMessageHandling(codec, message) {
 				workerLog.Trace().Msg("Custom handling handled the message")
 				continue mainLoop
-			} else {
-				workerLog.Trace().Msg("Custom handling didn't handle the message")
 			}
+			workerLog.Trace().Msg("Custom handling didn't handle the message")
 		}
 
 		workerLog.Trace().Msg("Handle message")
@@ -340,14 +339,18 @@ mainLoop:
 		// If the message has not been handled and a default handler is provided, call this ...
 		if !messageHandled {
 			workerLog.Trace().Msg("Message was not handled")
-			timeout := time.NewTimer(time.Millisecond * 40)
-			defer utils.CleanupTimer(timeout)
-			select {
-			case m.defaultIncomingMessageChannel <- message:
-			case <-timeout.C:
-				timeout.Stop()
-				workerLog.Warn().Msgf("Message discarded\n%s", message)
-			}
+			m.passToDefaultIncomingMessageChannel(workerLog, message)
 		}
+	}
+}
+
+func (m *defaultCodec) passToDefaultIncomingMessageChannel(workerLog zerolog.Logger, message spi.Message) {
+	timeout := time.NewTimer(time.Millisecond * 40)
+	defer utils.CleanupTimer(timeout)
+	select {
+	case m.defaultIncomingMessageChannel <- message:
+	case <-timeout.C:
+		timeout.Stop()
+		workerLog.Warn().Msgf("Message discarded\n%s", message)
 	}
 }

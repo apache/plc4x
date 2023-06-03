@@ -68,7 +68,7 @@ func main() {
 		}
 		log.Info().Str("connection string", connStr).Msg("Connected")
 		connection := connectionResult.GetConnection()
-		defer connection.BlockingClose()
+		connection.BlockingClose()
 
 		// Try to find all KNX devices on the current network
 		browseRequest, err := connection.BrowseRequestBuilder().

@@ -35,16 +35,16 @@ func NewDefaultPlcUnsubscriptionRequest() *DefaultPlcUnsubscriptionRequest {
 	return &DefaultPlcUnsubscriptionRequest{}
 }
 
-func (d DefaultPlcUnsubscriptionRequest) Execute() <-chan apiModel.PlcUnsubscriptionRequestResult {
+func (d *DefaultPlcUnsubscriptionRequest) Execute() <-chan apiModel.PlcUnsubscriptionRequestResult {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (d DefaultPlcUnsubscriptionRequest) ExecuteWithContext(ctx context.Context) <-chan apiModel.PlcUnsubscriptionRequestResult {
+func (d *DefaultPlcUnsubscriptionRequest) ExecuteWithContext(ctx context.Context) <-chan apiModel.PlcUnsubscriptionRequestResult {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (d DefaultPlcUnsubscriptionRequest) IsAPlcMessage() bool {
+func (d *DefaultPlcUnsubscriptionRequest) IsAPlcMessage() bool {
 	return true
 }

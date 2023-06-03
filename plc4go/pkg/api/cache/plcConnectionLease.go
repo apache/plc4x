@@ -121,13 +121,13 @@ func (t *plcConnectionLease) Close() <-chan plc4go.PlcConnectionCloseResult {
 		// Extract the trace entries from the connection.
 		var traces []tracer.TraceEntry
 		if t.IsTraceEnabled() {
-			tracer := t.GetTracer()
+			_tracer := t.GetTracer()
 			// Save all traces.
-			traces = tracer.GetTraces()
+			traces = _tracer.GetTraces()
 			// Clear the log.
-			tracer.ResetTraces()
+			_tracer.ResetTraces()
 			// Reset the connection id back to the one without the lease-id.
-			tracer.SetConnectionId(t.connection.GetConnectionId())
+			_tracer.SetConnectionId(t.connection.GetConnectionId())
 		}
 
 		// Return the connection to the connection container and don't actually close it.

@@ -436,7 +436,7 @@ func TestDefaultPlcSubscriptionRequestBuilder_AddPreRegisteredConsumer(t *testin
 				intervals:              tt.fields.intervals,
 				preRegisteredConsumers: tt.fields.preRegisteredConsumers,
 			}
-			assert.Equalf(t, tt.want, d.AddPreRegisteredConsumer(tt.args.name, tt.args.consumer), "AddPreRegisteredConsumer(%v, %v)", tt.args.name, tt.args.consumer)
+			assert.Equalf(t, tt.want, d.AddPreRegisteredConsumer(tt.args.name, tt.args.consumer), "AddPreRegisteredConsumer(%v, func(%t))", tt.args.name, tt.args.consumer != nil)
 		})
 	}
 }

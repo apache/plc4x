@@ -101,21 +101,26 @@ func (c *Connection) ConnectWithContext(ctx context.Context) <-chan plc4go.PlcCo
 			}()
 			for c.IsConnected() {
 				c.log.Trace().Msg("Polling data")
-				incomingMessageChannel := c.messageCodec.GetDefaultIncomingMessageChannel()
-				timeout := time.NewTimer(20 * time.Millisecond)
-				defer utils.CleanupTimer(timeout)
-				select {
-				case message := <-incomingMessageChannel:
-					// TODO: implement mapping to subscribers
-					log.Info().Msgf("Received \n%v", message)
-				case <-timeout.C:
-				}
+				c.passToDefaultIncomingMessageChannel()
 			}
 			c.log.Info().Msg("Ending incoming message transfer")
 		}()
 		ch <- connectionConnectResult
 	}()
 	return ch
+}
+
+func (c *Connection) passToDefaultIncomingMessageChannel() {
+	incomingMessageChannel := c.messageCodec.GetDefaultIncomingMessageChannel()
+	timeout := time.NewTimer(20 * time.Millisecond)
+	defer utils.CleanupTimer(timeout)
+	select {
+	case message := <-incomingMessageChannel:
+		// TODO: implement mapping to subscribers
+		log.Info().Msgf("Received \n%v", message)
+	case <-timeout.C:
+		log.Info().Msg("Message was not handled")
+	}
 }
 
 func (c *Connection) GetConnection() plc4go.PlcConnection {

@@ -112,7 +112,11 @@ func (m *ApplicationLayerMessageCodec) Send(message spi.Message) error {
 		return errors.Wrap(err, "error creating IOCB")
 	}
 	go func() {
-		go m.bipSimpleApplication.RequestIO(iocb)
+		go func() {
+			if err := m.bipSimpleApplication.RequestIO(iocb); err != nil {
+				log.Debug().Err(err).Msg("errored")
+			}
+		}()
 		iocb.Wait()
 		if iocb.ioError != nil {
 			// TODO: handle error
@@ -142,7 +146,11 @@ func (m *ApplicationLayerMessageCodec) SendRequest(ctx context.Context, message 
 		return errors.Wrap(err, "error creating IOCB")
 	}
 	go func() {
-		go m.bipSimpleApplication.RequestIO(iocb)
+		go func() {
+			if err := m.bipSimpleApplication.RequestIO(iocb); err != nil {
+
+			}
+		}()
 		iocb.Wait()
 		if err := iocb.ioError; err != nil {
 			if err := handleError(err); err != nil {

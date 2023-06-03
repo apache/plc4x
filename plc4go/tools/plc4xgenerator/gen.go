@@ -138,7 +138,7 @@ type Generator struct {
 }
 
 func (g *Generator) Printf(format string, args ...any) {
-	fmt.Fprintf(&g.buf, format, args...)
+	_, _ = fmt.Fprintf(&g.buf, format, args...)
 }
 
 // File holds a single parsed file and associated data.

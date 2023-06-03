@@ -78,6 +78,6 @@ func main() {
 		}
 		log.Info().Str("connection string", connStr).Msg("Connected")
 		connection := connectionResult.GetConnection()
-		defer connection.BlockingClose()
+		connection.BlockingClose()
 	}
 }

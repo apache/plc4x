@@ -237,7 +237,9 @@ func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.
 	defer func() {
 		for _, discoveryItem := range discoveryItems {
 			if discoveryItem.socket != nil {
-				discoveryItem.socket.Close()
+				if err := discoveryItem.socket.Close(); err != nil {
+					d.log.Debug().Err(err).Msg("errored")
+				}
 			}
 		}
 	}()

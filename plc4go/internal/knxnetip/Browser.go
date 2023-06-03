@@ -554,10 +554,10 @@ func (m Browser) calculateAddresses(query DeviceQuery) ([]driverModel.KnxAddress
 }
 
 func (m Browser) explodeSegment(segment string, min uint8, max uint8) ([]uint8, error) {
-	var options []uint8
+	var segmentOptions []uint8
 	if strings.Contains(segment, "*") {
 		for i := min; i <= max; i++ {
-			options = append(options, i)
+			segmentOptions = append(segmentOptions, i)
 		}
 	} else if strings.HasPrefix(segment, "[") && strings.HasSuffix(segment, "]") {
 		segment = strings.TrimPrefix(segment, "[")
@@ -574,14 +574,14 @@ func (m Browser) explodeSegment(segment string, min uint8, max uint8) ([]uint8, 
 					return nil, err
 				}
 				for i := localMin; i <= localMax; i++ {
-					options = append(options, uint8(i))
+					segmentOptions = append(segmentOptions, uint8(i))
 				}
 			} else {
 				option, err := strconv.ParseUint(segment, 10, 8)
 				if err != nil {
 					return nil, err
 				}
-				options = append(options, uint8(option))
+				segmentOptions = append(segmentOptions, uint8(option))
 			}
 		}
 	} else {
@@ -590,10 +590,10 @@ func (m Browser) explodeSegment(segment string, min uint8, max uint8) ([]uint8, 
 			return nil, err
 		}
 		if uint8(value) >= min && uint8(value) <= max {
-			options = append(options, uint8(value))
+			segmentOptions = append(segmentOptions, uint8(value))
 		}
 	}
-	return options, nil
+	return segmentOptions, nil
 }
 
 func (m Browser) parseAssociationTable(deviceDescriptor uint16, knxGroupAddresses []driverModel.KnxGroupAddress, value values.PlcValue) (driverModel.KnxGroupAddress, uint16) {

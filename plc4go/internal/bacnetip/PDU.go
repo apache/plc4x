@@ -209,7 +209,7 @@ func (a *Address) decodeAddress(addr any) error {
 			if m {
 				log.Debug().Msg("combined pattern")
 				groups := combined_pattern.FindStringSubmatch(addr)
-				net := groups[0]
+				_net := groups[0]
 				global_broadcast := groups[1]
 				local_broadcast := groups[2]
 				local_addr := groups[3]
@@ -223,7 +223,7 @@ func (a *Address) decodeAddress(addr any) error {
 				a := func(...any) {
 
 				}
-				a(net, global_broadcast, local_broadcast, local_addr, local_ip_addr, local_ip_net, local_ip_port, route_addr, route_ip_addr, route_ip_port)
+				a(_net, global_broadcast, local_broadcast, local_addr, local_ip_addr, local_ip_net, local_ip_port, route_addr, route_ip_addr, route_ip_port)
 			}
 			panic("parsing not yet ported")
 		case AddressTuple[string, uint16]:

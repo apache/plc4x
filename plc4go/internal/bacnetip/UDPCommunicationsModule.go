@@ -277,7 +277,11 @@ func (d *UDPDirector) handleRead() {
 	}
 	pdu := NewPDU(bvlc, WithPDUSource(saddr), WithPDUDestination(daddr))
 	// send the PDU up to the client
-	go d._response(pdu)
+	go func() {
+		if err := d._response(pdu); err != nil {
+			log.Debug().Err(err).Msg("errored")
+		}
+	}()
 }
 
 func (d *UDPDirector) handleError(err error) {

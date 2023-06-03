@@ -29,7 +29,7 @@ import (
 
 func main() {
 	discoverer := ads.NewDiscoverer()
-	discoverer.Discover(context.Background(), func(event apiModel.PlcDiscoveryItem) {
+	_ = discoverer.Discover(context.Background(), func(event apiModel.PlcDiscoveryItem) {
 		print(event)
 	})
 	time.Sleep(time.Second * 5)

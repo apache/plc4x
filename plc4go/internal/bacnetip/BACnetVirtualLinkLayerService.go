@@ -165,9 +165,13 @@ func (m *UDPMultiplexer) Close() error {
 	log.Debug().Msg("Close")
 
 	// pass along the close to the director(s)
-	m.directPort.Close()
+	if err := m.directPort.Close(); err != nil {
+		log.Debug().Err(err).Msg("errored")
+	}
 	if m.broadcastPort != nil {
-		m.broadcastPort.Close()
+		if err := m.broadcastPort.Close(); err != nil {
+			log.Debug().Err(err).Msg("errored")
+		}
 	}
 	return nil
 }

@@ -265,7 +265,7 @@ func TestDefaultPlcBrowseRequest_ExecuteWithInterceptor(t *testing.T) {
 				queryNames: tt.fields.queryNames,
 				queries:    tt.fields.queries,
 			}
-			assert.Equalf(t, tt.want, d.ExecuteWithInterceptor(tt.args.interceptor), "ExecuteWithInterceptor(%v)", tt.args.interceptor)
+			assert.Equalf(t, tt.want, d.ExecuteWithInterceptor(tt.args.interceptor), "ExecuteWithInterceptor(func(%t))", tt.args.interceptor != nil)
 		})
 	}
 }
@@ -306,7 +306,7 @@ func TestDefaultPlcBrowseRequest_ExecuteWithInterceptorWithContext(t *testing.T)
 				queryNames: tt.fields.queryNames,
 				queries:    tt.fields.queries,
 			}
-			assert.Equalf(t, tt.want, d.ExecuteWithInterceptorWithContext(tt.args.ctx, tt.args.interceptor), "ExecuteWithInterceptorWithContext(%v, %v)", tt.args.ctx, tt.args.interceptor)
+			assert.Equalf(t, tt.want, d.ExecuteWithInterceptorWithContext(tt.args.ctx, tt.args.interceptor), "ExecuteWithInterceptorWithContext(%v, func(%t))", tt.args.ctx, tt.args.interceptor != nil)
 		})
 	}
 }
