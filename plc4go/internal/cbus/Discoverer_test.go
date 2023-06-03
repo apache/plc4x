@@ -40,6 +40,7 @@ import (
 
 	"github.com/rs/zerolog"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 	"golang.org/x/net/nettest"
 )
 
@@ -178,10 +179,7 @@ func TestDiscoverer_createDeviceScanDispatcher(t *testing.T) {
 			},
 			setup: func(t *testing.T, fields *fields, args *args) {
 				listen, err := net.Listen("tcp", "127.0.0.1:0")
-				if err != nil {
-					t.Error(err)
-					t.FailNow()
-				}
+				require.NoError(t, err)
 				go func() {
 					conn, err := listen.Accept()
 					if err != nil {
@@ -210,15 +208,9 @@ func TestDiscoverer_createDeviceScanDispatcher(t *testing.T) {
 				loggerOption := options.WithCustomLogger(logger)
 				transport := tcp.NewTransport(loggerOption)
 				parse, err := url.Parse("tcp://" + listen.Addr().String())
-				if err != nil {
-					t.Error(err)
-					t.FailNow()
-				}
+				require.NoError(t, err)
 				instance, err := transport.CreateTransportInstance(*parse, nil, loggerOption)
-				if err != nil {
-					t.Error(err)
-					t.FailNow()
-				}
+				require.NoError(t, err)
 				args.tcpTransportInstance = instance.(*tcp.TransportInstance)
 			},
 		},

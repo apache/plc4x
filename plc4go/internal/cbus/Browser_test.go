@@ -22,7 +22,6 @@ package cbus
 import (
 	"context"
 	"fmt"
-	"github.com/apache/plc4x/plc4go/spi/utils"
 	"net/url"
 	"sync/atomic"
 	"testing"
@@ -38,11 +37,13 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/testutils"
 	"github.com/apache/plc4x/plc4go/spi/transports"
 	"github.com/apache/plc4x/plc4go/spi/transports/test"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	spiValues "github.com/apache/plc4x/plc4go/spi/values"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestNewBrowser(t *testing.T) {
@@ -99,10 +100,7 @@ func TestBrowser_BrowseQuery(t *testing.T) {
 				transport := test.NewTransport(loggerOption)
 				transportUrl := url.URL{Scheme: "test"}
 				transportInstance, err := transport.CreateTransportInstance(transportUrl, nil, loggerOption)
-				if err != nil {
-					t.Error(err)
-					t.FailNow()
-				}
+				require.NoError(t, err)
 				t.Cleanup(func() {
 					assert.NoError(t, transportInstance.Close())
 				})
@@ -162,10 +160,7 @@ func TestBrowser_BrowseQuery(t *testing.T) {
 					}
 				})
 				err = transport.AddPreregisteredInstances(transportUrl, transportInstance)
-				if err != nil {
-					t.Error(err)
-					t.FailNow()
-				}
+				require.NoError(t, err)
 				driver := NewDriver(loggerOption)
 				connectionConnectResult := <-driver.GetConnection(transportUrl, map[string]transports.Transport{"test": transport}, map[string][]string{})
 				if err := connectionConnectResult.GetErr(); err != nil {
@@ -380,10 +375,7 @@ func TestBrowser_getInstalledUnitAddressBytes(t *testing.T) {
 				transport := test.NewTransport(loggerOption)
 				transportUrl := url.URL{Scheme: "test"}
 				transportInstance, err := transport.CreateTransportInstance(transportUrl, nil, loggerOption)
-				if err != nil {
-					t.Error(err)
-					t.FailNow()
-				}
+				require.NoError(t, err)
 				t.Cleanup(func() {
 					assert.NoError(t, transportInstance.Close())
 				})
@@ -438,10 +430,7 @@ func TestBrowser_getInstalledUnitAddressBytes(t *testing.T) {
 					}
 				})
 				err = transport.AddPreregisteredInstances(transportUrl, transportInstance)
-				if err != nil {
-					t.Error(err)
-					t.FailNow()
-				}
+				require.NoError(t, err)
 				connectionConnectResult := <-NewDriver(loggerOption).GetConnection(transportUrl, map[string]transports.Transport{"test": transport}, map[string][]string{})
 				if err := connectionConnectResult.GetErr(); err != nil {
 					t.Error(err)
