@@ -654,8 +654,12 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
         M_LENGEN = 627,
         M_SHENZHEN_EXC_LED_TECHNOLOGY_CO__LTD = 628,
         M_VIBROXX_FZCO = 629,
-        M_ABB___RESERVED = 630,
-        M_BUSCH_JAEGER_ELEKTRO___RESERVED = 631,
+        M_SUZHOU_HONGYUN_INTELLIGENT_TECHNOLOGYCO___LTD = 630,
+        M_PASSIV_ENERGIE_GMBH = 631,
+        M_PAYNE_TECHNOLOGIES_LTD = 632,
+        M_GUANGDONG_YOZEWIT_INTELLIGENT_TECHNOLOGY_CO__LTD_ = 633,
+        M_ABB___RESERVED = 634,
+        M_BUSCH_JAEGER_ELEKTRO___RESERVED = 635,
     }
 
     public static class KnxManufacturerInfo
@@ -2438,10 +2442,22 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxManufacturer.M_WHD_WILHELM_HUBER_Plus_SOEHNE: { /* '63' */
                     return 101;
                 }
-                case KnxManufacturer.M_ABB___RESERVED: { /* '630' */
+                case KnxManufacturer.M_SUZHOU_HONGYUN_INTELLIGENT_TECHNOLOGYCO___LTD: { /* '630' */
+                    return 687;
+                }
+                case KnxManufacturer.M_PASSIV_ENERGIE_GMBH: { /* '631' */
+                    return 688;
+                }
+                case KnxManufacturer.M_PAYNE_TECHNOLOGIES_LTD: { /* '632' */
+                    return 689;
+                }
+                case KnxManufacturer.M_GUANGDONG_YOZEWIT_INTELLIGENT_TECHNOLOGY_CO__LTD_: { /* '633' */
+                    return 690;
+                }
+                case KnxManufacturer.M_ABB___RESERVED: { /* '634' */
                     return 43954;
                 }
-                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '631' */
+                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '635' */
                     return 43959;
                 }
                 case KnxManufacturer.M_BISCHOFF_ELEKTRONIK: { /* '64' */
@@ -4344,10 +4360,22 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxManufacturer.M_WHD_WILHELM_HUBER_Plus_SOEHNE: { /* '63' */
                     return "WHD Wilhelm Huber + Söhne";
                 }
-                case KnxManufacturer.M_ABB___RESERVED: { /* '630' */
+                case KnxManufacturer.M_SUZHOU_HONGYUN_INTELLIGENT_TECHNOLOGYCO___LTD: { /* '630' */
+                    return "Suzhou Hongyun Intelligent TechnologyCo., Ltd";
+                }
+                case KnxManufacturer.M_PASSIV_ENERGIE_GMBH: { /* '631' */
+                    return "Passiv Energie GmbH";
+                }
+                case KnxManufacturer.M_PAYNE_TECHNOLOGIES_LTD: { /* '632' */
+                    return "Payne Technologies Ltd";
+                }
+                case KnxManufacturer.M_GUANGDONG_YOZEWIT_INTELLIGENT_TECHNOLOGY_CO__LTD_: { /* '633' */
+                    return "Guangdong Yozewit Intelligent Technology Co.,Ltd.";
+                }
+                case KnxManufacturer.M_ABB___RESERVED: { /* '634' */
                     return "ABB - reserved";
                 }
-                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '631' */
+                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '635' */
                     return "Busch-Jaeger Elektro - reserved";
                 }
                 case KnxManufacturer.M_BISCHOFF_ELEKTRONIK: { /* '64' */
