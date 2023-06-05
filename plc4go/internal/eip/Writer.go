@@ -126,11 +126,11 @@ func (m Writer) Write(ctx context.Context, writeRequest apiModel.PlcWriteRequest
 					transaction.Submit(func(transaction transactions.RequestTransaction) {
 						// Send the  over the wire
 						if err := m.messageCodec.SendRequest(ctx, pkt, func(message spi.Message) bool {
-							eipPacket := message.(readWriteModel.EipPacket)
+							eipPacket := message.(readWriteModel.EipPacketExactly)
 							if eipPacket == nil {
 								return false
 							}
-							cipRRData := eipPacket.(readWriteModel.CipRRData)
+							cipRRData := eipPacket.(readWriteModel.CipRRDataExactly)
 							if cipRRData == nil {
 								return false
 							}
@@ -215,19 +215,22 @@ func (m Writer) Write(ctx context.Context, writeRequest apiModel.PlcWriteRequest
 					transaction := m.tm.StartTransaction()
 					transaction.Submit(func(transaction transactions.RequestTransaction) {
 						// Send the  over the wire
-						if err := m.messageCodec.SendRequest(ctx, pkt, func(message spi.Message) bool {
-							eipPacket := message.(readWriteModel.EipPacket)
+						if err := m.messageCodec.SendRequest(
+							ctx,
+							pkt,
+							func(message spi.Message) bool {
+							eipPacket := message.(readWriteModel.EipPacketExactly)
 							if eipPacket == nil {
 								return false
 							}
-							cipRRData := eipPacket.(readWriteModel.CipRRData)
+							cipRRData := eipPacket.(readWriteModel.CipRRDataExactly)
 							if cipRRData == nil {
 								return false
 							}
 							if eipPacket.GetSessionHandle() != *m.sessionHandle {
 								return false
 							}
-							multipleServiceResponse := cipRRData.GetExchange().GetService().(readWriteModel.MultipleServiceResponse)
+							multipleServiceResponse := cipRRData.GetExchange().GetService().(readWriteModel.MultipleServiceResponseExactly)
 							if multipleServiceResponse == nil {
 								return false
 							}
@@ -235,7 +238,8 @@ func (m Writer) Write(ctx context.Context, writeRequest apiModel.PlcWriteRequest
 								return false
 							}
 							return true
-						}, func(message spi.Message) error {
+						},
+						func(message spi.Message) error {
 							// Convert the response into an
 						m.log.Trace().Msg("convert response to ")
 							eipPacket := message.(readWriteModel.EipPacket)
@@ -257,13 +261,15 @@ func (m Writer) Write(ctx context.Context, writeRequest apiModel.PlcWriteRequest
 								Response: readResponse,
 							}
 							return transaction.EndRequest()
-						}, func(err error) error {
+						},
+						func(err error) error {
 							result <- &spiModel.DefaultPlcWriteRequestResult{
 								Request: writeRequest,
 								Err:     errors.New("got timeout while waiting for response"),
 							}
 							return transaction.EndRequest()
-						}, time.Second*1); err != nil {
+						},
+						time.Second*1); err != nil {
 							result <- spiModel.NewDefaultPlcWriteRequestResult( writeRequest, nil,      errors.Wrap(err, "error sending message"))
 							if err := transaction.FailRequest(errors.Errorf("timeout after %s", time.Second*1)); err != nil {
 								m.log.Debug().Err(err).Msg("Error failing request")
