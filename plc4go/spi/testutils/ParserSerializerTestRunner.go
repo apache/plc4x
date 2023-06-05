@@ -81,6 +81,8 @@ func (p *ParserSerializerTestsuite) Run(t *testing.T, testcase ParserSerializerT
 	if err != nil {
 		return errors.Wrap(err, "Error parsing input data")
 	}
+	t.Logf("Parsed Message(%T)", msg)
+	t.Logf("\n%s", msg)
 
 	t.Log("Try serializing")
 	{
