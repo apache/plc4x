@@ -308,12 +308,12 @@ func encodeValue(value apiValues.PlcValue, _type readWriteModel.CIPDataTypeCode,
 func (m Writer) ToPlc4xWriteResponse(response readWriteModel.CipService, writeRequest apiModel.PlcWriteRequest) (apiModel.PlcWriteResponse, error) {
 	responseCodes := map[string]apiModel.PlcResponseCode{}
 	switch response := response.(type) {
-	case readWriteModel.CipWriteResponse: // only 1 tag
+	case readWriteModel.CipWriteResponseExactly: // only 1 tag
 		cipReadResponse := response
 		tagName := writeRequest.GetTagNames()[0]
 		code := decodeResponseCode(cipReadResponse.GetStatus())
 		responseCodes[tagName] = code
-	case readWriteModel.MultipleServiceResponse: //Multiple response
+	case readWriteModel.MultipleServiceResponseExactly: //Multiple response
 		/*		multipleServiceResponse := response
 						nb := multipleServiceResponse.GetServiceNb()
 						arr := make([]readWriteModel.CipService, nb)

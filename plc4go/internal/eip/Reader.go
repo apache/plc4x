@@ -198,7 +198,7 @@ func (m *Reader) ToPlc4xReadResponse(response readWriteModel.CipService, readReq
 	plcValues := map[string]values.PlcValue{}
 	responseCodes := map[string]apiModel.PlcResponseCode{}
 	switch response := response.(type) {
-	case readWriteModel.CipReadResponse: // only 1 tag
+	case readWriteModel.CipReadResponseExactly: // only 1 tag
 		cipReadResponse := response
 		tagName := readRequest.GetTagNames()[0]
 		tag := readRequest.GetTag(tagName).(EIPPlcTag)
@@ -215,7 +215,7 @@ func (m *Reader) ToPlc4xReadResponse(response readWriteModel.CipService, readReq
 		}
 		plcValues[tagName] = plcValue
 		responseCodes[tagName] = code
-	case readWriteModel.MultipleServiceResponse: //Multiple response
+	case readWriteModel.MultipleServiceResponseExactly: //Multiple response
 		multipleServiceResponse := response
 		nb := multipleServiceResponse.GetServiceNb()
 		arr := make([]readWriteModel.CipService, nb)
