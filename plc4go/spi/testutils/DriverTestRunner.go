@@ -185,11 +185,13 @@ func (m DriverTestsuite) ExecuteStep(t *testing.T, connection plc4go.PlcConnecti
 			}
 
 			// Execute the read-request and store the response-channel in the testcase.
-			t.Log("Execute read request")
+			t.Logf("Execute read request (%T)", readRequest)
+			t.Logf("\n%s", readRequest)
 			if testcase.readRequestResultChannel != nil {
 				return errors.New("testcase read-request result channel already occupied")
 			}
 			testcase.readRequestResultChannel = readRequest.Execute()
+			t.Log("request executed")
 		case "TestWriteRequest":
 			t.Log("Assemble write request")
 			wrb := connection.WriteRequestBuilder()
@@ -220,11 +222,13 @@ func (m DriverTestsuite) ExecuteStep(t *testing.T, connection plc4go.PlcConnecti
 			if err != nil {
 				return errors.Wrap(err, "Error creating write-request")
 			}
-			t.Log("Execute write request")
+			t.Logf("Execute write request (%T)", writeRequest)
+			t.Logf("\n%s", writeRequest)
 			if testcase.writeRequestResultChannel != nil {
 				return errors.New("testcase write-request result channel already occupied")
 			}
 			testcase.writeRequestResultChannel = writeRequest.Execute()
+			t.Log("request executed")
 		}
 	case StepTypeApiResponse:
 		switch step.payload.Name {
@@ -239,7 +243,10 @@ func (m DriverTestsuite) ExecuteStep(t *testing.T, connection plc4go.PlcConnecti
 			}
 			// Serialize the response to XML
 			xmlWriteBuffer := utils.NewXmlWriteBuffer()
-			err := readRequestResult.GetResponse().(utils.Serializable).SerializeWithWriteBuffer(context.Background(), xmlWriteBuffer)
+			response := readRequestResult.GetResponse()
+			t.Logf("Got response (%T)", response)
+			t.Logf("\n%s", response)
+			err := response.(utils.Serializable).SerializeWithWriteBuffer(context.Background(), xmlWriteBuffer)
 			if err != nil {
 				return errors.Wrap(err, "error serializing response")
 			}
@@ -264,7 +271,10 @@ func (m DriverTestsuite) ExecuteStep(t *testing.T, connection plc4go.PlcConnecti
 			}
 			// Serialize the response to XML
 			xmlWriteBuffer := utils.NewXmlWriteBuffer()
-			err := writeResponseResult.GetResponse().(utils.Serializable).SerializeWithWriteBuffer(context.Background(), xmlWriteBuffer)
+			response := writeResponseResult.GetResponse()
+			t.Logf("Got response (%T)", response)
+			t.Logf("\n%s", response)
+			err := response.(utils.Serializable).SerializeWithWriteBuffer(context.Background(), xmlWriteBuffer)
 			if err != nil {
 				return errors.Wrap(err, "error serializing response")
 			}
@@ -289,6 +299,8 @@ func (m DriverTestsuite) ExecuteStep(t *testing.T, connection plc4go.PlcConnecti
 		if err != nil {
 			return errors.Wrap(err, "Error parsing message")
 		}
+		t.Logf("Parsed message (%T)", expectedMessage)
+		t.Logf("\n%s", expectedMessage)
 
 		// Serialize the model into bytes
 		t.Log("Write to bytes")
@@ -374,6 +386,8 @@ func (m DriverTestsuite) ExecuteStep(t *testing.T, connection plc4go.PlcConnecti
 		if err != nil {
 			return errors.Wrap(err, "error parsing message")
 		}
+		t.Logf("Parsed message (%T)", expectedMessage)
+		t.Logf("\n%s", expectedMessage)
 
 		// Serialize the model into bytes
 		t.Log("Serializing bytes")
