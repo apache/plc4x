@@ -380,7 +380,8 @@
             </goals>
             <configuration>
               <packages>
-                <package>github.com/jstemmer/go-junit-report/v2@latest</package>
+                <!-- use fork till https://github.com/jstemmer/go-junit-report/pull/162 is merged-->
+                <package>github.com/sruehl/go-junit-report/v2@latest</package>
               </packages>
             </configuration>
           </execution>

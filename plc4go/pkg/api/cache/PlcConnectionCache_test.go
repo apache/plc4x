@@ -20,16 +20,17 @@
 package cache
 
 import (
-	"github.com/apache/plc4x/plc4go/pkg/api/config"
-	"github.com/apache/plc4x/plc4go/spi/options"
-	"github.com/apache/plc4x/plc4go/spi/testutils"
-	"github.com/apache/plc4x/plc4go/spi/tracer"
 	"testing"
 	"time"
 
 	"github.com/apache/plc4x/plc4go/internal/simulated"
 	"github.com/apache/plc4x/plc4go/pkg/api"
+	"github.com/apache/plc4x/plc4go/pkg/api/config"
 	_default "github.com/apache/plc4x/plc4go/spi/default"
+	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/apache/plc4x/plc4go/spi/testutils"
+	"github.com/apache/plc4x/plc4go/spi/tracer"
+
 	"github.com/stretchr/testify/assert"
 	"github.com/viney-shih/go-lock"
 )
