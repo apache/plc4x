@@ -68,8 +68,7 @@ public class ProfinetModuleItem implements ProfinetDeviceItem {
         if (dt == null) {
             throw new UnsupportedOperationException("Data type " + dataType + " not supported");
         }
-        Integer dataTypeSize = (int) dt.getDataTypeSize();
-        return dataTypeSize;
+        return dt.getDataTypeSize();
     }
 
     public Integer getInputDataLength() {

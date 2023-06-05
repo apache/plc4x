@@ -172,7 +172,7 @@ public class ProfinetDevice implements PlcSubscriber {
     }
 
     public boolean onConnect() throws ExecutionException, InterruptedException, TimeoutException {
-        // If an explicit address is provided, the driver tries to explicitily configure the device to that address.
+        // If an explicit address is provided, the driver tries to explicitly configure the device to that address.
         if (this.setIpAddress) {
             deviceContext.setState(ProfinetDeviceState.SET_IP);
         }
@@ -542,7 +542,7 @@ public class ProfinetDevice implements PlcSubscriber {
                 deviceContext.getConfiguration().getReductionRatio(),
                 1,
                 0,
-                0xffffffff,
+                0xffffffffL,
                 deviceContext.getConfiguration().getWatchdogFactor(),
                 deviceContext.getConfiguration().getDataHoldFactor(),
                 0xC000,
@@ -570,7 +570,7 @@ public class ProfinetDevice implements PlcSubscriber {
                 deviceContext.getConfiguration().getReductionRatio(),
                 1,
                 0,
-                0xffffffff,
+                0xffffffffL,
                 deviceContext.getConfiguration().getWatchdogFactor(),
                 deviceContext.getConfiguration().getDataHoldFactor(),
                 0xC000,
@@ -885,7 +885,7 @@ public class ProfinetDevice implements PlcSubscriber {
                     ProfinetDeviceContext.DEFAULT_MAX_ARRAY_COUNT,
                     0,
                     Collections.singletonList(
-                        new PnIoCM_Block_Response(
+                        new PnIoCM_Block_ResponseConnect(
                             (short) 1,
                             (short) 0,
                             ProfinetDeviceContext.ARUUID,

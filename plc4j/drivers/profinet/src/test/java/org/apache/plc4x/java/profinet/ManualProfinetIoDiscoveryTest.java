@@ -20,6 +20,7 @@ package org.apache.plc4x.java.profinet;
 
 import org.apache.plc4x.java.DefaultPlcDriverManager;
 import org.apache.plc4x.java.api.PlcDriver;
+import org.apache.plc4x.java.api.messages.PlcDiscoveryItem;
 import org.apache.plc4x.java.api.messages.PlcDiscoveryResponse;
 
 public class ManualProfinetIoDiscoveryTest {
@@ -27,7 +28,9 @@ public class ManualProfinetIoDiscoveryTest {
     public static void main(String[] args) throws Exception {
         final PlcDriver profinetDriver = new DefaultPlcDriverManager().getDriver("profinet");
         final PlcDiscoveryResponse plcDiscoveryResponse = profinetDriver.discoveryRequestBuilder().build().execute().get();
-        System.out.println(plcDiscoveryResponse);
+        for (PlcDiscoveryItem responseValue : plcDiscoveryResponse.getValues()) {
+            System.out.println(responseValue.getConnectionUrl());
+        }
     }
 
 }

@@ -21,6 +21,7 @@ package org.apache.plc4x.java.profinet.readwrite.utils;
 import org.apache.plc4x.java.profinet.readwrite.*;
 import org.apache.plc4x.java.spi.generation.*;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class StaticHelper {
@@ -251,6 +252,12 @@ public class StaticHelper {
         int dataUnitLength = readBuffer.getPos() - initialPos - NO_TRAILING_BYTES;
         readBuffer.reset(initialPos);
         return PnIo_CyclicServiceDataUnit.staticParse(readBuffer, (short) dataUnitLength);
+    }
+
+    private static final byte[] nullUuid = new byte[] {0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00};
+
+    public static boolean isNullUuid(Uuid uuid) {
+        return Arrays.equals(uuid.getData(), nullUuid);
     }
 
 }

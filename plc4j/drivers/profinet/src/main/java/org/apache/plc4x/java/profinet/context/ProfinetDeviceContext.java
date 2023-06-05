@@ -142,7 +142,7 @@ public class ProfinetDeviceContext implements DriverContext, HasConfiguration<Pr
 
     public int getAndIncrementSessionKey() {
         // Generate a new session key.
-        Integer sessionKey = sessionKeyGenerator.getAndIncrement();
+        int sessionKey = sessionKeyGenerator.getAndIncrement();
         // Reset the session key as soon as it reaches the max for a 16 bit uint
         if (sessionKeyGenerator.get() == 0xFFFF) {
             sessionKeyGenerator.set(1);

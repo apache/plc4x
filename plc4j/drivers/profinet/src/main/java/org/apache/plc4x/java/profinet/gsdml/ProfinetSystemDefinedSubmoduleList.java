@@ -24,7 +24,6 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
 import java.util.List;
 
-
 public class ProfinetSystemDefinedSubmoduleList {
 
     @JacksonXmlProperty(localName="InterfaceSubmoduleItem")

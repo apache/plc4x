@@ -43,6 +43,12 @@ public class ArpUtils {
 
     private static final Logger logger = LoggerFactory.getLogger(ArpUtils.class);
 
+    /**
+     * Scans the network for alive IP addresses.
+     *
+     * @param nif network device
+     * @return ip address
+     */
     public static Set<InetAddress> scanNetworkDevice(PcapNetworkInterface nif) {
         // Check if libpcap is available.
         try {
@@ -199,10 +205,21 @@ public class ArpUtils {
             }
         } catch (NotOpenException | PcapNativeException e) {
             return Collections.emptySet();
+        } catch (Exception e) {
+            logger.error("", e);
         }
         return foundAddresses;
     }
 
+    /**
+     * Used to get the mac address for a given IP address.
+     *
+     * @param nif network device
+     * @param remoteAddress remote ip address that we want to get the mac address for
+     * @param localAddress local ip address of the device asking the question
+     * @param localMacAddress local mac address of the device asking the question
+     * @return optional that possibly contains the mac address we were looking for.
+     */
     public static Optional<MacAddress> resolveMacAddress(PcapNetworkInterface nif, InetSocketAddress remoteAddress, InetSocketAddress localAddress, MacAddress localMacAddress) {
         try {
             // This handle will be used for receiving response packets.
@@ -312,14 +329,6 @@ public class ArpUtils {
             }
         }
         return currentSegments.length >= minimumSegments.length;
-    }
-
-    public static void main(String[] args) throws Exception {
-        for (PcapNetworkInterface dev : Pcaps.findAllDevs()) {
-            final Set<InetAddress> inetAddresses = scanNetworkDevice(dev);
-            final List<Integer> inetAddresses1 = inetAddresses.stream().map(address -> (short) address.getAddress()[3] & 0xFF).sorted().collect(Collectors.toList());
-            System.out.printf("Found %d ip addresses with device %s:\n  %s%n", inetAddresses.size(), dev, inetAddresses1);
-        }
     }
 
 }
