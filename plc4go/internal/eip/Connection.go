@@ -198,8 +198,8 @@ func (m *Connection) setupConnection(ctx context.Context, ch chan plc4go.PlcConn
 
 func (m *Connection) listServiceRequest(ctx context.Context, ch chan plc4go.PlcConnectionConnectResult) error {
 	m.log.Debug().Msg("Sending ListServices Request")
-	listServicesResultChan := make(chan readWriteModel.ListServicesResponse)
-	listServicesResultErrorChan := make(chan error)
+	listServicesResultChan := make(chan readWriteModel.ListServicesResponse, 1)
+	listServicesResultErrorChan := make(chan error, 1)
 	if err := m.messageCodec.SendRequest(ctx, readWriteModel.NewListServicesRequest(EmptySessionHandle, uint32(readWriteModel.CIPStatus_Success), []byte(DefaultSenderContext), uint32(0)), func(message spi.Message) bool {
 		eipPacket := message.(readWriteModel.EipPacket)
 		if eipPacket == nil {
@@ -242,8 +242,8 @@ func (m *Connection) listServiceRequest(ctx context.Context, ch chan plc4go.PlcC
 
 func (m *Connection) connectRegisterSession(ctx context.Context, ch chan plc4go.PlcConnectionConnectResult) error {
 	m.log.Debug().Msg("Sending EipConnectionRequest")
-	connectionResponseChan := make(chan readWriteModel.EipConnectionResponse)
-	connectionResponseErrorChan := make(chan error)
+	connectionResponseChan := make(chan readWriteModel.EipConnectionResponse, 1)
+	connectionResponseErrorChan := make(chan error, 1)
 	if err := m.messageCodec.SendRequest(ctx, readWriteModel.NewEipConnectionRequest(EmptySessionHandle, uint32(readWriteModel.CIPStatus_Success), []byte(DefaultSenderContext), uint32(0)), func(message spi.Message) bool {
 		eipPacket := message.(readWriteModel.EipPacket)
 		return eipPacket != nil
@@ -334,8 +334,8 @@ func (m *Connection) connectRegisterSession(ctx context.Context, ch chan plc4go.
 
 func (m *Connection) listAllAttributes(ctx context.Context, ch chan plc4go.PlcConnectionConnectResult) error {
 	m.log.Debug().Msg("Sending ListAllAttributes Request")
-	listAllAttributesResponseChan := make(chan readWriteModel.GetAttributeAllResponse)
-	listAllAttributesErrorChan := make(chan error)
+	listAllAttributesResponseChan := make(chan readWriteModel.GetAttributeAllResponse, 1)
+	listAllAttributesErrorChan := make(chan error, 1)
 	classSegment := readWriteModel.NewLogicalSegment(readWriteModel.NewClassID(uint8(0), uint8(2)))
 	instanceSegment := readWriteModel.NewLogicalSegment(readWriteModel.NewInstanceID(uint8(0), uint8(1)))
 	if err := m.messageCodec.SendRequest(ctx, readWriteModel.NewCipRRData(EmptyInterfaceHandle, 0,
