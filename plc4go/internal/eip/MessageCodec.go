@@ -71,9 +71,10 @@ func (m *MessageCodec) Send(message spi.Message) error {
 
 func (m *MessageCodec) Receive() (spi.Message, error) {
 	// We need at least 6 bytes in order to know how big the packet is in total
-	if num, err := m.GetTransportInstance().GetNumBytesAvailableInBuffer(); (err == nil) && (num >= 4) {
+	transportInstance := m.GetTransportInstance()
+	if num, err := transportInstance.GetNumBytesAvailableInBuffer(); (err == nil) && (num >= 4) {
 		m.log.Debug().Msgf("we got %d readable bytes", num)
-		data, err := m.GetTransportInstance().PeekReadableBytes(4)
+		data, err := transportInstance.PeekReadableBytes(4)
 		if err != nil {
 			m.log.Warn().Err(err).Msg("error peeking")
 			// TODO: Possibly clean up ...
@@ -85,7 +86,7 @@ func (m *MessageCodec) Receive() (spi.Message, error) {
 			m.log.Debug().Msgf("Not enough bytes. Got: %d Need: %d\n", num, packetSize)
 			return nil, nil
 		}
-		data, err = m.GetTransportInstance().Read(packetSize)
+		data, err = transportInstance.Read(packetSize)
 		if err != nil {
 			m.log.Debug().Err(err).Msg("Error reading")
 			// TODO: Possibly clean up ...
