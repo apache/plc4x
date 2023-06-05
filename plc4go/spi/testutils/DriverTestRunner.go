@@ -366,6 +366,7 @@ func (m DriverTestsuite) ExecuteStep(t *testing.T, connection plc4go.PlcConnecti
 		if err != nil {
 			return errors.Wrap(err, "error decoding hex-encoded byte data")
 		}
+		t.Logf("\n%s", hex.Dump(expectedRawInput))
 		rawInput := testTransportInstance.DrainWriteBuffer(uint32(len(expectedRawInput)))
 
 		// Compare the bytes read with the ones we expect
@@ -408,7 +409,9 @@ func (m DriverTestsuite) ExecuteStep(t *testing.T, connection plc4go.PlcConnecti
 
 		// Send these bytes to the transport
 		t.Log("Writing to transport")
-		testTransportInstance.FillReadBuffer(wb.GetBytes())
+		_bytes := wb.GetBytes()
+		t.Logf("\n%s", hex.Dump(_bytes))
+		testTransportInstance.FillReadBuffer(_bytes)
 	case StepTypeIncomingPlcBytes:
 		// Get the raw hex-data.
 		t.Log("Get hex data")
@@ -419,6 +422,7 @@ func (m DriverTestsuite) ExecuteStep(t *testing.T, connection plc4go.PlcConnecti
 
 		// Send these bytes to the transport
 		t.Log("Writing bytes to transport")
+		t.Logf("\n%s", hex.Dump(rawInput))
 		testTransportInstance.FillReadBuffer(rawInput)
 	case StepTypeDelay:
 		// Get the number of milliseconds
