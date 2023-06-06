@@ -389,6 +389,7 @@ public class ProfinetDeviceContext implements DriverContext, HasConfiguration<Pr
         int numberOfSlots = matcher.group("to") != null ? Integer.parseInt(matcher.group("to")) : 0;
 
         this.modules = new ProfinetModule[numberOfSlots];
+        // The DAP is always in slot 0
         this.modules[deviceAccessItem.getFixedInSlots()] = new ProfinetModuleImpl(deviceAccessItem, 0, 0, deviceAccessItem.getFixedInSlots());
 
         List<ProfinetModuleItemRef> usableSubModules = this.deviceAccessItem.getUseableModules();

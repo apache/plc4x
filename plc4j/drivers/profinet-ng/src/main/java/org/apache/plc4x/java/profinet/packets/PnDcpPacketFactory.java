@@ -25,17 +25,13 @@ import org.apache.plc4x.java.profinet.readwrite.*;
 import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.utils.rawsockets.netty.RawSocketChannel;
 
-import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.time.Duration;
 import java.util.Collections;
 import java.util.Random;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Future;
 
 public class PnDcpPacketFactory {
-
-    public static final int DEFAULT_UDP_PORT = 34964;
 
     public static Ethernet_Frame createIdentificationRequest(MacAddress localMacAddress, MacAddress remoteMacAddress) {
         // Construct and send the search request.

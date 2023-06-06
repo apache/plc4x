@@ -258,6 +258,8 @@ public class ProfinetDevice implements PlcSubscriber {
         options.put("device_id", new PlcSTRING(deviceIdentity.getDeviceID()));
         options.put("vendor_id", new PlcSTRING(deviceIdentity.getVendorId()));
         options.put("vendor_name", new PlcSTRING(deviceIdentity.getVendorName().getValue()));
+
+        // Look up the human readable text value for the given device identity
         if (deviceIdentity.getInfoText() != null && deviceIdentity.getInfoText().getTextId() != null) {
             String key = deviceIdentity.getInfoText().getTextId();
             ProfinetExternalTextList externaltextList = this.deviceContext.getGsdFile().getProfileBody().getApplicationProcess().getExternalTextList();
