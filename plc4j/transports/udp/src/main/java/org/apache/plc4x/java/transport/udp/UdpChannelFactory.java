@@ -36,8 +36,12 @@ public class UdpChannelFactory extends NettyChannelFactory implements HasConfigu
 
     private UdpTransportConfiguration configuration;
 
-    public UdpChannelFactory(SocketAddress address) {
-        super(address);
+    public UdpChannelFactory(SocketAddress remoteAddress) {
+        super(remoteAddress);
+    }
+
+    public UdpChannelFactory(SocketAddress localAddress, SocketAddress remoteAddress) {
+        super(localAddress, remoteAddress);
     }
 
     @Override

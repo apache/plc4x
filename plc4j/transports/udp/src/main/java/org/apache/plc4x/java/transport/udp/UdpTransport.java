@@ -62,20 +62,27 @@ public class UdpTransport implements Transport, HasConfiguration<UdpTransportCon
 
         // If the port wasn't specified, try to get a default port from the configuration.
         int port;
+        int localPort = UdpTransportConfiguration.NO_DEFAULT_PORT;
         if(portString != null) {
             port = Integer.parseInt(portString);
-        } else if ((configuration != null) &&
-            (configuration.getDefaultPort() != UdpTransportConfiguration.NO_DEFAULT_PORT)) {
+        } else if ((configuration != null) &&  (configuration.getDefaultPort() != UdpTransportConfiguration.NO_DEFAULT_PORT)) {
             port = configuration.getDefaultPort();
         } else {
             throw new PlcRuntimeException("No port defined");
         }
+        if (configuration != null) {
+            localPort = configuration.getLocalPort();
+        }
 
         // Create the fully qualified remote socket address which we should connect to.
-        SocketAddress address = new InetSocketAddress((ip == null) ? hostname : ip, port);
+        SocketAddress remoteAddress = new InetSocketAddress((ip == null) ? hostname : ip, port);
+        if(localPort != UdpTransportConfiguration.NO_DEFAULT_PORT) {
+            SocketAddress localAddress = new InetSocketAddress(localPort);
+            return new UdpChannelFactory(localAddress, remoteAddress);
+        }
 
         // Initialize the channel factory with the default socket address we want to connect to.
-        return new UdpChannelFactory(address);
+        return new UdpChannelFactory(remoteAddress);
     }
 
 }

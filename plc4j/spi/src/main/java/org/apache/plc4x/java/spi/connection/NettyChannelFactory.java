@@ -44,13 +44,16 @@ public abstract class NettyChannelFactory implements ChannelFactory {
 
     private final Map<Channel, EventLoopGroup> eventLoops = new ConcurrentHashMap<>();
 
-    /**
-     * TODO should be removed together with the Constructor.
-     */
-    private final SocketAddress address;
+    private final SocketAddress localAddress;
+    private final SocketAddress remoteAddress;
 
-    protected NettyChannelFactory(SocketAddress address) {
-        this.address = address;
+    protected NettyChannelFactory(SocketAddress remoteAddress) {
+        this(null, remoteAddress);
+    }
+
+    protected NettyChannelFactory(SocketAddress localAddress, SocketAddress remoteAddress) {
+        this.localAddress = localAddress;
+        this.remoteAddress = remoteAddress;
     }
 
     /**
@@ -83,7 +86,7 @@ public abstract class NettyChannelFactory implements ChannelFactory {
      * Has to be in accordance with {@link #getChannel()}
      * otherwise a Runtime Exception will be produced by Netty
      * <p>
-     * By Default Nettys {@link NioEventLoopGroup} is used.
+     * By Default Netty's {@link NioEventLoopGroup} is used.
      * Transports which have to use a different EventLoopGroup have to override {#getEventLoopGroup()}.
      */
     public EventLoopGroup getEventLoopGroup() {
@@ -106,7 +109,8 @@ public abstract class NettyChannelFactory implements ChannelFactory {
             configureBootstrap(bootstrap);
             bootstrap.handler(channelHandler);
             // Start the client.
-            final ChannelFuture f = bootstrap.connect(address);
+            final ChannelFuture f = (localAddress == null) ?
+                bootstrap.connect(remoteAddress) : bootstrap.connect(remoteAddress, localAddress);
             f.addListener(future -> {
                 if (!future.isSuccess()) {
                     logger.info("Unable to connect, shutting down worker thread.");
