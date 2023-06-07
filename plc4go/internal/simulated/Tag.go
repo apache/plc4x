@@ -31,9 +31,9 @@ import (
 type Tag interface {
 	apiModel.PlcTag
 
-	GetTagType() *TagType
+	GetTagType() TagType
 	GetName() string
-	GetDataTypeSize() *model.SimulatedDataTypeSizes
+	GetDataTypeSize() model.SimulatedDataTypeSizes
 }
 
 type simulatedTag struct {
@@ -43,7 +43,7 @@ type simulatedTag struct {
 	Quantity     uint16
 }
 
-func NewSimulatedTag(tagType TagType, name string, dataTypeSize model.SimulatedDataTypeSizes, quantity uint16) simulatedTag {
+func NewSimulatedTag(tagType TagType, name string, dataTypeSize model.SimulatedDataTypeSizes, quantity uint16) Tag {
 	return simulatedTag{
 		TagType:      tagType,
 		Name:         name,

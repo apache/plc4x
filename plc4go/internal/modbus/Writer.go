@@ -65,7 +65,7 @@ func (m Writer) Write(ctx context.Context, writeRequest apiModel.PlcWriteRequest
 
 		// Get the modbus tag instance from the request
 		tag := writeRequest.GetTag(tagName)
-		modbusTag, err := CastToModbusTagFromPlcTag(tag)
+		modbusTag, err := castToModbusTagFromPlcTag(tag)
 		if err != nil {
 			result <- spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.Wrap(err, "invalid tag item type"))
 			return

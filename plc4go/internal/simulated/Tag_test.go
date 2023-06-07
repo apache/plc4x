@@ -36,7 +36,7 @@ func TestNewSimulatedField(t *testing.T) {
 	tests := []struct {
 		name string
 		args args
-		want simulatedTag
+		want Tag
 	}{
 		{
 			name: "simple",

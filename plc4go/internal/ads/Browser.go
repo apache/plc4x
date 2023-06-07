@@ -109,7 +109,7 @@ func (m *Connection) filterSymbols(filterExpression string) []apiModel.PlcBrowse
 
 func (m *Connection) filterDataTypes(parentName string, currentType driverModel.AdsDataTypeTableEntry, currentPath string, remainingAddressSegments []string) []apiModel.PlcBrowseItem {
 	if len(remainingAddressSegments) == 0 {
-		arrayInfo := []apiModel.ArrayInfo{}
+		var arrayInfo []apiModel.ArrayInfo
 		for _, ai := range currentType.GetArrayInfo() {
 			arrayInfo = append(arrayInfo, &spiModel.DefaultArrayInfo{
 				LowerBound: ai.GetLowerBound(),

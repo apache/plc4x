@@ -48,7 +48,7 @@ type modbusTag struct {
 	Datatype readWriteModel.ModbusDataType
 }
 
-func NewTag(tagType TagType, address uint16, quantity uint16, datatype readWriteModel.ModbusDataType) modbusTag {
+func NewTag(tagType TagType, address uint16, quantity uint16, datatype readWriteModel.ModbusDataType) apiModel.PlcTag {
 	return modbusTag{
 		TagType:  tagType,
 		Address:  address - AddressOffset,
@@ -99,7 +99,7 @@ func (m modbusTag) GetArrayInfo() []apiModel.ArrayInfo {
 	return []apiModel.ArrayInfo{}
 }
 
-func CastToModbusTagFromPlcTag(plcTag apiModel.PlcTag) (modbusTag, error) {
+func castToModbusTagFromPlcTag(plcTag apiModel.PlcTag) (modbusTag, error) {
 	if modbusTagVar, ok := plcTag.(modbusTag); ok {
 		return modbusTagVar, nil
 	}

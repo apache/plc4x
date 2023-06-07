@@ -59,7 +59,7 @@ func TestReader_Read(t *testing.T) {
 				device: &Device{
 					Name: "hurz",
 					State: map[simulatedTag]*apiValues.PlcValue{
-						NewSimulatedTag(TagState, "test", simulatedReadWriteModel.SimulatedDataTypeSizes_BOOL, 1): ToReference(spiValues.NewPlcBOOL(true)),
+						NewSimulatedTag(TagState, "test", simulatedReadWriteModel.SimulatedDataTypeSizes_BOOL, 1).(simulatedTag): ToReference(spiValues.NewPlcBOOL(true)),
 					},
 				},
 				options: map[string][]string{},
@@ -85,7 +85,7 @@ func TestReader_Read(t *testing.T) {
 				device: &Device{
 					Name: "hurz",
 					State: map[simulatedTag]*apiValues.PlcValue{
-						NewSimulatedTag(TagState, "test", simulatedReadWriteModel.SimulatedDataTypeSizes_BOOL, 1): ToReference(spiValues.NewPlcBOOL(true)),
+						NewSimulatedTag(TagState, "test", simulatedReadWriteModel.SimulatedDataTypeSizes_BOOL, 1).(simulatedTag): ToReference(spiValues.NewPlcBOOL(true)),
 					},
 				},
 				options: map[string][]string{
@@ -113,7 +113,7 @@ func TestReader_Read(t *testing.T) {
 				device: &Device{
 					Name: "hurz",
 					State: map[simulatedTag]*apiValues.PlcValue{
-						NewSimulatedTag(TagState, "test", simulatedReadWriteModel.SimulatedDataTypeSizes_BOOL, 1): ToReference(spiValues.NewPlcBOOL(true)),
+						NewSimulatedTag(TagState, "test", simulatedReadWriteModel.SimulatedDataTypeSizes_BOOL, 1).(simulatedTag): ToReference(spiValues.NewPlcBOOL(true)),
 					},
 				},
 				options: map[string][]string{},
@@ -140,7 +140,7 @@ func TestReader_Read(t *testing.T) {
 				device: &Device{
 					Name: "hurz",
 					State: map[simulatedTag]*apiValues.PlcValue{
-						NewSimulatedTag(TagState, "test", simulatedReadWriteModel.SimulatedDataTypeSizes_BOOL, 1): ToReference(spiValues.NewPlcBOOL(true)),
+						NewSimulatedTag(TagState, "test", simulatedReadWriteModel.SimulatedDataTypeSizes_BOOL, 1).(simulatedTag): ToReference(spiValues.NewPlcBOOL(true)),
 					},
 				},
 				options: map[string][]string{},

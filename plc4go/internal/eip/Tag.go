@@ -29,7 +29,7 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
-type EIPPlcTag interface {
+type PlcTag interface {
 	apiModel.PlcTag
 	utils.Serializable
 
@@ -44,7 +44,7 @@ type plcTag struct {
 	ElementNb uint16
 }
 
-func NewTag(tag string, _type readWriteModel.CIPDataTypeCode, elementNb uint16) plcTag {
+func NewTag(tag string, _type readWriteModel.CIPDataTypeCode, elementNb uint16) PlcTag {
 	return plcTag{
 		Tag:       tag,
 		Type:      _type,

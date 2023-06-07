@@ -77,7 +77,9 @@ func TestDefaultPlcTagRequest_GetTagNames(t *testing.T) {
 		fields fields
 		want   []string
 	}{
-		// TODO: Add test cases.
+		{
+			name: "get em",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -100,7 +102,10 @@ func TestDefaultPlcTagRequest_IsAPlcMessage(t *testing.T) {
 		fields fields
 		want   bool
 	}{
-		// TODO: Add test cases.
+		{
+			name: "it is",
+			want: true,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -123,7 +128,13 @@ func TestNewDefaultPlcTagRequest(t *testing.T) {
 		args args
 		want *DefaultPlcTagRequest
 	}{
-		// TODO: Add test cases.
+		{
+			name: "create it",
+			want: &DefaultPlcTagRequest{
+				tags:     func() map[string]apiModel.PlcTag { return nil }(),
+				tagNames: func() []string { return nil }(),
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

@@ -498,7 +498,7 @@ func whoHasObjectName(objectName string) option {
 	}
 }
 
-func NewProtocolSpecificOptions(options ...option) (*protocolSpecificOptions, error) {
+func newProtocolSpecificOptions(options ...option) (*protocolSpecificOptions, error) {
 	var specificOptions protocolSpecificOptions
 	for _, _option := range options {
 		if parseErr := _option(&specificOptions); parseErr != nil {
@@ -620,7 +620,7 @@ func extractProtocolSpecificOptions(discoveryOptions []options.WithDiscoveryOpti
 			collectedOptions = append(collectedOptions, whoHasObjectName(name))
 		}
 	}
-	return NewProtocolSpecificOptions(collectedOptions...)
+	return newProtocolSpecificOptions(collectedOptions...)
 }
 
 func exactlyOneInt(filteredOptionMap map[string][]any, key string) (int, error) {

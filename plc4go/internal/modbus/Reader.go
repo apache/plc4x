@@ -72,7 +72,7 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 		// If we are requesting only one tag, use a
 		tagName := readRequest.GetTagNames()[0]
 		tag := readRequest.GetTag(tagName)
-		modbusTagVar, err := CastToModbusTagFromPlcTag(tag)
+		modbusTagVar, err := castToModbusTagFromPlcTag(tag)
 		if err != nil {
 			result <- spiModel.NewDefaultPlcReadRequestResult(
 				readRequest,
@@ -193,7 +193,7 @@ func (m *Reader) ToPlc4xReadResponse(responseAdu readWriteModel.ModbusTcpADU, re
 	// Get the tag from the request
 	m.log.Trace().Msg("get a tag from request")
 	tagName := readRequest.GetTagNames()[0]
-	tag, err := CastToModbusTagFromPlcTag(readRequest.GetTag(tagName))
+	tag, err := castToModbusTagFromPlcTag(readRequest.GetTag(tagName))
 	if err != nil {
 		return nil, errors.Wrap(err, "error casting to modbus-tag")
 	}

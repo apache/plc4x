@@ -21,17 +21,17 @@ package simulated
 
 import (
 	"context"
-	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/rs/zerolog"
 	"math/rand"
 
-	"github.com/apache/plc4x/plc4go/pkg/api/values"
-	"github.com/apache/plc4x/plc4go/protocols/simulated/readwrite/model"
+	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
+	readWriteModel "github.com/apache/plc4x/plc4go/protocols/simulated/readwrite/model"
+	"github.com/apache/plc4x/plc4go/spi/options"
 )
 
 type Device struct {
 	Name  string
-	State map[simulatedTag]*values.PlcValue
+	State map[simulatedTag]*apiValues.PlcValue
 
 	log zerolog.Logger
 }
@@ -39,12 +39,12 @@ type Device struct {
 func NewDevice(name string, _options ...options.WithOption) *Device {
 	return &Device{
 		Name:  name,
-		State: make(map[simulatedTag]*values.PlcValue),
+		State: make(map[simulatedTag]*apiValues.PlcValue),
 		log:   options.ExtractCustomLogger(_options...),
 	}
 }
 
-func (d *Device) Get(tag simulatedTag) *values.PlcValue {
+func (d *Device) Get(tag simulatedTag) *apiValues.PlcValue {
 	switch tag.TagType {
 	case TagState:
 		return d.State[tag]
@@ -54,7 +54,7 @@ func (d *Device) Get(tag simulatedTag) *values.PlcValue {
 	return nil
 }
 
-func (d *Device) Set(tag simulatedTag, value *values.PlcValue) {
+func (d *Device) Set(tag simulatedTag, value *apiValues.PlcValue) {
 	switch tag.TagType {
 	case TagState:
 		d.State[tag] = value
@@ -68,13 +68,14 @@ func (d *Device) Set(tag simulatedTag, value *values.PlcValue) {
 	}
 }
 
-func (d *Device) getRandomValue(tag simulatedTag) *values.PlcValue {
+func (d *Device) getRandomValue(tag simulatedTag) *apiValues.PlcValue {
 	size := tag.GetDataTypeSize().DataTypeSize()
 	data := make([]byte, uint16(size)*tag.Quantity)
 	rand.Read(data)
-	plcValue, err := model.DataItemParse(context.Background(), data, tag.DataTypeSize.String(), tag.Quantity)
+	plcValue, err := readWriteModel.DataItemParse(context.Background(), data, tag.DataTypeSize.String(), tag.Quantity)
 	if err != nil {
-		panic("Unable to parse random bytes")
+		d.log.Err(err).Msg("Unable to parse random bytes")
+		return nil
 	}
 	return &plcValue
 }

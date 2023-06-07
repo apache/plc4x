@@ -70,7 +70,7 @@ func (m Writer) Write(ctx context.Context, writeRequest apiModel.PlcWriteRequest
 		}()
 		items := make([]readWriteModel.CipService, len(writeRequest.GetTagNames()))
 		for i, tagName := range writeRequest.GetTagNames() {
-			eipTag := writeRequest.GetTag(tagName).(EIPPlcTag)
+			eipTag := writeRequest.GetTag(tagName).(PlcTag)
 			value := writeRequest.GetValue(tagName)
 			tag := eipTag.GetTag()
 			elements := uint16(1)

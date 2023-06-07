@@ -75,7 +75,7 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 		classSegment := readWriteModel.NewLogicalSegment(readWriteModel.NewClassID(0, 6))
 		instanceSegment := readWriteModel.NewLogicalSegment(readWriteModel.NewInstanceID(0, 1))
 		for _, tagName := range readRequest.GetTagNames() {
-			plcTag := readRequest.GetTag(tagName).(EIPPlcTag)
+			plcTag := readRequest.GetTag(tagName).(PlcTag)
 			tag := plcTag.GetTag()
 			elementsNb := uint16(1)
 			if plcTag.GetElementNb() > 1 {
@@ -206,7 +206,7 @@ func (m *Reader) ToPlc4xReadResponse(response readWriteModel.CipService, readReq
 	case readWriteModel.CipReadResponseExactly: // only 1 tag
 		cipReadResponse := response
 		tagName := readRequest.GetTagNames()[0]
-		tag := readRequest.GetTag(tagName).(EIPPlcTag)
+		tag := readRequest.GetTag(tagName).(PlcTag)
 		code := decodeResponseCode(cipReadResponse.GetStatus())
 		var plcValue values.PlcValue
 		_type := cipReadResponse.GetData().GetDataType()
@@ -244,7 +244,7 @@ func (m *Reader) ToPlc4xReadResponse(response readWriteModel.CipService, readReq
 		}
 		services := readWriteModel.NewServices(multipleServiceResponse.GetOffsets(), arr, uint16(0))
 		for i, tagName := range readRequest.GetTagNames() {
-			tag := readRequest.GetTag(tagName).(EIPPlcTag)
+			tag := readRequest.GetTag(tagName).(PlcTag)
 			if cipReadResponse, ok := services.Services[i].(readWriteModel.CipReadResponse); ok {
 				code := decodeResponseCode(cipReadResponse.GetStatus())
 				_type := cipReadResponse.GetData().GetDataType()
@@ -273,7 +273,7 @@ func (m *Reader) ToPlc4xReadResponse(response readWriteModel.CipService, readReq
 	return spiModel.NewDefaultPlcReadResponse(readRequest, responseCodes, plcValues), nil
 }
 
-func parsePlcValue(tag EIPPlcTag, data utils.ReadBufferByteBased, _type readWriteModel.CIPDataTypeCode) (values.PlcValue, error) {
+func parsePlcValue(tag PlcTag, data utils.ReadBufferByteBased, _type readWriteModel.CIPDataTypeCode) (values.PlcValue, error) {
 	nb := tag.GetElementNb()
 	if nb > 1 {
 		list := make([]values.PlcValue, 0)

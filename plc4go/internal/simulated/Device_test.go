@@ -20,6 +20,7 @@
 package simulated
 
 import (
+	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/stretchr/testify/assert"
 	"testing"
 
@@ -48,11 +49,11 @@ func TestDevice_Get(t1 *testing.T) {
 			fields: fields{
 				Name: "hurz",
 				State: map[simulatedTag]*apiValues.PlcValue{
-					NewSimulatedTag(TagState, "boolTag", readWriteModel.SimulatedDataTypeSizes_BOOL, 1): ToReference(spiValues.NewPlcBOOL(true)),
+					NewSimulatedTag(TagState, "boolTag", readWriteModel.SimulatedDataTypeSizes_BOOL, 1).(simulatedTag): ToReference(spiValues.NewPlcBOOL(true)),
 				},
 			},
 			args: args{
-				field:        NewSimulatedTag(TagState, "boolTag", readWriteModel.SimulatedDataTypeSizes_BOOL, 1),
+				field:        NewSimulatedTag(TagState, "boolTag", readWriteModel.SimulatedDataTypeSizes_BOOL, 1).(simulatedTag),
 				verifyOutput: true,
 			},
 			want: ToReference(spiValues.NewPlcBOOL(true)),
@@ -64,7 +65,7 @@ func TestDevice_Get(t1 *testing.T) {
 				State: map[simulatedTag]*apiValues.PlcValue{},
 			},
 			args: args{
-				field:        NewSimulatedTag(TagRandom, "boolTag", readWriteModel.SimulatedDataTypeSizes_BOOL, 1),
+				field:        NewSimulatedTag(TagRandom, "boolTag", readWriteModel.SimulatedDataTypeSizes_BOOL, 1).(simulatedTag),
 				verifyOutput: false,
 			},
 			want: ToReference(spiValues.NewPlcBOOL(true)),
@@ -76,7 +77,7 @@ func TestDevice_Get(t1 *testing.T) {
 				State: map[simulatedTag]*apiValues.PlcValue{},
 			},
 			args: args{
-				field:        NewSimulatedTag(TagStdOut, "boolTag", readWriteModel.SimulatedDataTypeSizes_BOOL, 1),
+				field:        NewSimulatedTag(TagStdOut, "boolTag", readWriteModel.SimulatedDataTypeSizes_BOOL, 1).(simulatedTag),
 				verifyOutput: false,
 			},
 			want: nil,
@@ -127,7 +128,7 @@ func TestDevice_Random(t *testing.T) {
 				State: map[simulatedTag]*apiValues.PlcValue{},
 			},
 			args: args{
-				field:   NewSimulatedTag(TagRandom, "boolTag", readWriteModel.SimulatedDataTypeSizes_BOOL, 1),
+				field:   NewSimulatedTag(TagRandom, "boolTag", readWriteModel.SimulatedDataTypeSizes_BOOL, 1).(simulatedTag),
 				numRuns: 1000,
 			},
 			want: ToReference(spiValues.NewPlcBOOL(true)),
@@ -181,7 +182,7 @@ func TestDevice_Set(t1 *testing.T) {
 				State: map[simulatedTag]*apiValues.PlcValue{},
 			},
 			args: args{
-				field:         NewSimulatedTag(TagState, "boolTag", readWriteModel.SimulatedDataTypeSizes_BOOL, 1),
+				field:         NewSimulatedTag(TagState, "boolTag", readWriteModel.SimulatedDataTypeSizes_BOOL, 1).(simulatedTag),
 				value:         ToReference(spiValues.NewPlcBOOL(true)),
 				shouldBeSaved: true,
 			},
@@ -193,7 +194,7 @@ func TestDevice_Set(t1 *testing.T) {
 				State: map[simulatedTag]*apiValues.PlcValue{},
 			},
 			args: args{
-				field:         NewSimulatedTag(TagRandom, "boolTag", readWriteModel.SimulatedDataTypeSizes_BOOL, 1),
+				field:         NewSimulatedTag(TagRandom, "boolTag", readWriteModel.SimulatedDataTypeSizes_BOOL, 1).(simulatedTag),
 				value:         ToReference(spiValues.NewPlcBOOL(true)),
 				shouldBeSaved: false,
 			},
@@ -205,7 +206,7 @@ func TestDevice_Set(t1 *testing.T) {
 				State: map[simulatedTag]*apiValues.PlcValue{},
 			},
 			args: args{
-				field:         NewSimulatedTag(TagStdOut, "boolTag", readWriteModel.SimulatedDataTypeSizes_BOOL, 1),
+				field:         NewSimulatedTag(TagStdOut, "boolTag", readWriteModel.SimulatedDataTypeSizes_BOOL, 1).(simulatedTag),
 				value:         ToReference(spiValues.NewPlcBOOL(true)),
 				shouldBeSaved: false,
 			},
@@ -248,7 +249,9 @@ func TestDevice_getRandomValue(t1 *testing.T) {
 		args   args
 		want   *apiValues.PlcValue
 	}{
-		// TODO: Add test cases.
+		{
+			name: "get it",
+		},
 	}
 	for _, tt := range tests {
 		t1.Run(tt.name, func(t1 *testing.T) {
@@ -272,7 +275,14 @@ func TestNewDevice(t *testing.T) {
 		args args
 		want *Device
 	}{
-		// TODO: Add test cases.
+		{
+			name: "create it",
+			want: &Device{
+				Name:  "",
+				State: make(map[simulatedTag]*apiValues.PlcValue),
+				log:   options.ExtractCustomLogger(),
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

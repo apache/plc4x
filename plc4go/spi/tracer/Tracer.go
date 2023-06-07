@@ -37,7 +37,7 @@ type TraceEntry struct {
 	Message       string
 }
 
-type TracerProvider interface {
+type Provider interface {
 	EnableTracer()
 	GetTracer() *Tracer
 }

@@ -105,7 +105,12 @@ func Test_connectionContainer_addListener(t1 *testing.T) {
 		fields fields
 		args   args
 	}{
-		// TODO: Add test cases.
+		{
+			name: "add it",
+			fields: fields{
+				lock: lock.NewCASMutex(),
+			},
+		},
 	}
 	for _, tt := range tests {
 		t1.Run(tt.name, func(t1 *testing.T) {

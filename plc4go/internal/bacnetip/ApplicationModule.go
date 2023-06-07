@@ -355,7 +355,7 @@ func (a *Application) IterObjects() []*LocalDeviceObject {
 // TODO: match that with readWriteModel.BACnetServicesSupported
 func (a *Application) GetServicesSupported() []string {
 	servicesSupported := make([]string, 0, len(a.helpers))
-	for key, _ := range a.helpers {
+	for key := range a.helpers {
 		servicesSupported = append(servicesSupported, key)
 	}
 	return servicesSupported
