@@ -34,22 +34,22 @@ import (
 	"strconv"
 )
 
-type ModbusRtuDriver struct {
+type AsciiDriver struct {
 	_default.DefaultDriver
 
 	log zerolog.Logger // TODO: use it
 }
 
-func NewModbusRtuDriver(_options ...options.WithOption) *ModbusRtuDriver {
-	driver := &ModbusRtuDriver{
+func NewModbusAsciiDriver(_options ...options.WithOption) *AsciiDriver {
+	driver := &AsciiDriver{
 		log: options.ExtractCustomLogger(_options...),
 	}
-	driver.DefaultDriver = _default.NewDefaultDriver(driver, "modbus-rtu", "Modbus RTU", "serial", NewTagHandler())
+	driver.DefaultDriver = _default.NewDefaultDriver(driver, "modbus-ascii", "Modbus ASCII", "serial", NewTagHandler())
 	return driver
 }
 
-func (m ModbusRtuDriver) GetConnectionWithContext(ctx context.Context, transportUrl url.URL, transports map[string]transports.Transport, driverOptions map[string][]string) <-chan plc4go.PlcConnectionConnectResult {
-	m.log.Debug().Stringer("transportUrl", &transportUrl).Msgf("Get connection for transport url with %d transport(s) and %d option(s)", len(transports), len(driverOptions))
+func (m AsciiDriver) GetConnectionWithContext(ctx context.Context, transportUrl url.URL, transports map[string]transports.Transport, connectionOptions map[string][]string) <-chan plc4go.PlcConnectionConnectResult {
+	m.log.Debug().Stringer("transportUrl", &transportUrl).Msgf("Get connection for transport url with %d transport(s) and %d option(s)", len(transports), len(connectionOptions))
 	// Get an the transport specified in the url
 	transport, ok := transports[transportUrl.Scheme]
 	if !ok {
@@ -59,11 +59,11 @@ func (m ModbusRtuDriver) GetConnectionWithContext(ctx context.Context, transport
 		return ch
 	}
 	// Provide a default-port to the transport, which is used, if the user doesn't provide on in the connection string.
-	driverOptions["defaultTcpPort"] = []string{"502"}
+	connectionOptions["defaultTcpPort"] = []string{"502"}
 	// Have the transport create a new transport-instance.
-	transportInstance, err := transport.CreateTransportInstance(transportUrl, driverOptions)
+	transportInstance, err := transport.CreateTransportInstance(transportUrl, connectionOptions)
 	if err != nil {
-		m.log.Error().Stringer("transportUrl", &transportUrl).Msgf("We couldn't create a transport instance for port %#v", driverOptions["defaultTcpPort"])
+		m.log.Error().Stringer("transportUrl", &transportUrl).Msgf("We couldn't create a transport instance for port %#v", connectionOptions["defaultTcpPort"])
 		ch := make(chan plc4go.PlcConnectionConnectResult, 1)
 		ch <- _default.NewDefaultPlcConnectionConnectResult(nil, errors.New("couldn't initialize transport configuration for given transport url "+transportUrl.String()))
 		return ch
@@ -94,7 +94,7 @@ func (m ModbusRtuDriver) GetConnectionWithContext(ctx context.Context, transport
 
 	// If a unit-identifier was provided in the connection string use this, otherwise use the default of 1
 	unitIdentifier := uint8(1)
-	if value, ok := driverOptions["unit-identifier"]; ok {
+	if value, ok := connectionOptions["unit-identifier"]; ok {
 		var intValue uint64
 		intValue, err = strconv.ParseUint(value[0], 10, 8)
 		if err == nil {
@@ -104,7 +104,7 @@ func (m ModbusRtuDriver) GetConnectionWithContext(ctx context.Context, transport
 	m.log.Debug().Uint8("unitIdentifier", unitIdentifier).Msgf("using unit identifier %d", unitIdentifier)
 
 	// Create the new connection
-	connection := NewConnection(unitIdentifier, codec, driverOptions, m.GetPlcTagHandler(), options.WithCustomLogger(m.log))
+	connection := NewConnection(unitIdentifier, codec, connectionOptions, m.GetPlcTagHandler(), options.WithCustomLogger(m.log))
 	m.log.Debug().Stringer("connection", connection).Msg("created connection, connecting now")
 	return connection.ConnectWithContext(ctx)
 }

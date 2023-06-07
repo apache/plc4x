@@ -34,21 +34,21 @@ import (
 	"strconv"
 )
 
-type ModbusTcpDriver struct {
+type RtuDriver struct {
 	_default.DefaultDriver
 
 	log zerolog.Logger // TODO: use it
 }
 
-func NewModbusTcpDriver(_options ...options.WithOption) *ModbusTcpDriver {
-	driver := &ModbusTcpDriver{
+func NewModbusRtuDriver(_options ...options.WithOption) *RtuDriver {
+	driver := &RtuDriver{
 		log: options.ExtractCustomLogger(_options...),
 	}
-	driver.DefaultDriver = _default.NewDefaultDriver(driver, "modbus-tcp", "Modbus TCP", "tcp", NewTagHandler())
+	driver.DefaultDriver = _default.NewDefaultDriver(driver, "modbus-rtu", "Modbus RTU", "serial", NewTagHandler())
 	return driver
 }
 
-func (m ModbusTcpDriver) GetConnectionWithContext(ctx context.Context, transportUrl url.URL, transports map[string]transports.Transport, driverOptions map[string][]string) <-chan plc4go.PlcConnectionConnectResult {
+func (m RtuDriver) GetConnectionWithContext(ctx context.Context, transportUrl url.URL, transports map[string]transports.Transport, driverOptions map[string][]string) <-chan plc4go.PlcConnectionConnectResult {
 	m.log.Debug().Stringer("transportUrl", &transportUrl).Msgf("Get connection for transport url with %d transport(s) and %d option(s)", len(transports), len(driverOptions))
 	// Get an the transport specified in the url
 	transport, ok := transports[transportUrl.Scheme]
