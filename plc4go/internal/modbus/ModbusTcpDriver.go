@@ -30,6 +30,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 	"net/url"
+	"runtime/debug"
 	"strconv"
 )
 
@@ -74,7 +75,7 @@ func (m ModbusTcpDriver) GetConnectionWithContext(ctx context.Context, transport
 	go func() {
 		defer func() {
 			if err := recover(); err != nil {
-				m.log.Error().Msgf("panic-ed %v", err)
+				m.log.Error().Msgf("panic-ed %v. Stack: %s", err, debug.Stack())
 			}
 		}()
 		for {

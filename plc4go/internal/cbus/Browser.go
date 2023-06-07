@@ -22,6 +22,7 @@ package cbus
 import (
 	"context"
 	"fmt"
+	"runtime/debug"
 	"time"
 
 	plc4go "github.com/apache/plc4x/plc4go/pkg/api"
@@ -273,7 +274,7 @@ func (m Browser) getInstalledUnitAddressBytes(ctx context.Context) (map[byte]any
 	go func() {
 		defer func() {
 			if err := recover(); err != nil {
-				m.log.Error().Msgf("panic-ed %v", err)
+				m.log.Error().Msgf("panic-ed %v. Stack:\n%s", err, debug.Stack())
 			}
 		}()
 		defer readCtxCancel()

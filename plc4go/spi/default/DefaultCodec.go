@@ -280,7 +280,7 @@ func (m *defaultCodec) Work(codec DefaultCodecRequirements) {
 	defer func(workerLog zerolog.Logger) {
 		if err := recover(); err != nil {
 			// TODO: If this is an error, cast it to an error and log it with "Err(err)"
-			m.log.Error().Msgf("recovered from: %#v at %s", err, string(debug.Stack()))
+			m.log.Error().Msgf("panic-ed %v. Stack: %s", err, debug.Stack())
 		}
 		if m.running {
 			workerLog.Warn().Msg("Keep running")

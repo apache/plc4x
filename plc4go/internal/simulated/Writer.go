@@ -25,6 +25,7 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/tracer"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
+	"runtime/debug"
 	"strconv"
 	"time"
 
@@ -55,7 +56,7 @@ func (w *Writer) Write(_ context.Context, writeRequest apiModel.PlcWriteRequest)
 	go func() {
 		defer func() {
 			if err := recover(); err != nil {
-				ch <- spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.Errorf("panic-ed %v", err))
+				ch <- spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack()))
 			}
 		}()
 		var txId string

@@ -26,6 +26,7 @@ import (
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/rs/zerolog"
+	"runtime/debug"
 )
 
 // DefaultBrowserRequirements adds required methods to Browser that are needed when using DefaultBrowser
@@ -74,7 +75,7 @@ func (m *defaultBrowser) BrowseWithInterceptor(ctx context.Context, browseReques
 	go func() {
 		defer func() {
 			if err := recover(); err != nil {
-				m.log.Error().Interface("err", err).Msg("caught panic")
+				m.log.Error().Msgf("panic-ed %v. Stack: %s", err, debug.Stack())
 			}
 		}()
 		responseCodes := map[string]apiModel.PlcResponseCode{}

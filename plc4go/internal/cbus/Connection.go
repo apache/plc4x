@@ -26,6 +26,7 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/tracer"
 	"github.com/apache/plc4x/plc4go/spi/transactions"
 	"github.com/rs/zerolog"
+	"runtime/debug"
 	"sync"
 	"time"
 
@@ -123,7 +124,7 @@ func (c *Connection) ConnectWithContext(ctx context.Context) <-chan plc4go.PlcCo
 	go func() {
 		defer func() {
 			if err := recover(); err != nil {
-				c.fireConnectionError(errors.Errorf("panic-ed %v", err), ch)
+				c.fireConnectionError(errors.Errorf("panic-ed %v. Stack:\n%s", err, debug.Stack()), ch)
 			}
 		}()
 		if err := c.messageCodec.Connect(); err != nil {
@@ -228,7 +229,7 @@ func (c *Connection) startSubscriptionHandler() {
 	go func() {
 		defer func() {
 			if err := recover(); err != nil {
-				c.log.Error().Msgf("panic-ed %v", err)
+				c.log.Error().Msgf("panic-ed %v. Stack:\n%s", err, debug.Stack())
 			}
 		}()
 		c.log.Debug().Msg("SAL handler stated")
@@ -248,7 +249,7 @@ func (c *Connection) startSubscriptionHandler() {
 	go func() {
 		defer func() {
 			if err := recover(); err != nil {
-				c.log.Error().Msgf("panic-ed %v", err)
+				c.log.Error().Msgf("panic-ed %v. Stack:\n%s", err, debug.Stack())
 			}
 		}()
 		c.log.Debug().Msg("default MMI started")

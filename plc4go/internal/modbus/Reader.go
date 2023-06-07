@@ -24,6 +24,7 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/rs/zerolog"
 	"math"
+	"runtime/debug"
 	"sync/atomic"
 	"time"
 
@@ -60,7 +61,7 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 	go func() {
 		defer func() {
 			if err := recover(); err != nil {
-				result <- spiModel.NewDefaultPlcReadRequestResult(readRequest, nil, errors.Errorf("panic-ed %v", err))
+				result <- spiModel.NewDefaultPlcReadRequestResult(readRequest, nil, errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack()))
 			}
 		}()
 		if len(readRequest.GetTagNames()) != 1 {

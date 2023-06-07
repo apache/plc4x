@@ -22,6 +22,7 @@ package utils
 import (
 	"bufio"
 	"context"
+	"runtime/debug"
 
 	"github.com/apache/plc4x/plc4go/spi/options"
 
@@ -61,7 +62,7 @@ func (m *defaultBufferedTransportInstance) ConnectWithContext(ctx context.Contex
 	go func() {
 		defer func() {
 			if err := recover(); err != nil {
-				m.log.Error().Interface("err", err).Msg("connect panic-ed")
+				m.log.Error().Msgf("panic-ed %v. Stack: %s", err, debug.Stack())
 			}
 		}()
 		ch <- m.Connect()

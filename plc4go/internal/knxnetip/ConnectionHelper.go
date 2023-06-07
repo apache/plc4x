@@ -24,6 +24,7 @@ import (
 	"fmt"
 	"math"
 	"net"
+	"runtime/debug"
 	"strconv"
 	"sync/atomic"
 	"time"
@@ -54,7 +55,7 @@ func (m *Connection) handleIncomingTunnelingRequest(ctx context.Context, tunneli
 	go func() {
 		defer func() {
 			if err := recover(); err != nil {
-				m.log.Error().Msgf("panic-ed %v", err)
+				m.log.Error().Msgf("panic-ed %v. Stack: %s", err, debug.Stack())
 			}
 		}()
 		lDataInd, ok := tunnelingRequest.GetCemi().(driverModel.LDataIndExactly)

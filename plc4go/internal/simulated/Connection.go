@@ -22,6 +22,7 @@ package simulated
 import (
 	"context"
 	"github.com/apache/plc4x/plc4go/spi/tracer"
+	"runtime/debug"
 	"strconv"
 	"time"
 
@@ -90,7 +91,7 @@ func (c *Connection) ConnectWithContext(_ context.Context) <-chan plc4go.PlcConn
 	go func() {
 		defer func() {
 			if err := recover(); err != nil {
-				ch <- _default.NewDefaultPlcConnectionCloseResult(nil, errors.Errorf("panic-ed %v", err))
+				ch <- _default.NewDefaultPlcConnectionCloseResult(nil, errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack()))
 			}
 		}()
 		// Check if the connection was already connected
@@ -146,7 +147,7 @@ func (c *Connection) Close() <-chan plc4go.PlcConnectionCloseResult {
 	go func() {
 		defer func() {
 			if err := recover(); err != nil {
-				ch <- _default.NewDefaultPlcConnectionConnectResult(nil, errors.Errorf("panic-ed %v", err))
+				ch <- _default.NewDefaultPlcConnectionConnectResult(nil, errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack()))
 			}
 		}()
 		// Check if the connection is connected.
@@ -192,7 +193,7 @@ func (c *Connection) Ping() <-chan plc4go.PlcConnectionPingResult {
 	go func() {
 		defer func() {
 			if err := recover(); err != nil {
-				ch <- _default.NewDefaultPlcConnectionPingResult(errors.Errorf("panic-ed %v", err))
+				ch <- _default.NewDefaultPlcConnectionPingResult(errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack()))
 			}
 		}()
 		// Check if the connection is connected

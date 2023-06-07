@@ -25,6 +25,7 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/tracer"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
+	"runtime/debug"
 	"strconv"
 	"time"
 
@@ -56,7 +57,7 @@ func (r *Reader) Read(_ context.Context, readRequest apiModel.PlcReadRequest) <-
 	go func() {
 		defer func() {
 			if err := recover(); err != nil {
-				ch <- spiModel.NewDefaultPlcReadRequestResult(readRequest, nil, errors.Errorf("panic-ed %v", err))
+				ch <- spiModel.NewDefaultPlcReadRequestResult(readRequest, nil, errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack()))
 			}
 		}()
 		var txId string

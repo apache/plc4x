@@ -27,6 +27,7 @@ import (
 	"github.com/rs/zerolog"
 	"net"
 	"net/url"
+	"runtime/debug"
 	"sync"
 	"sync/atomic"
 	"time"
@@ -104,7 +105,7 @@ func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.
 		go func(netInterface net.Interface) {
 			defer func() {
 				if err := recover(); err != nil {
-					d.log.Error().Msgf("panic-ed %v", err)
+					d.log.Error().Msgf("panic-ed %v. Stack: %s", err, debug.Stack())
 				}
 			}()
 			defer func() { wg.Done() }()
@@ -142,7 +143,7 @@ func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.
 	go func() {
 		defer func() {
 			if err := recover(); err != nil {
-				d.log.Error().Msgf("panic-ed %v", err)
+				d.log.Error().Msgf("panic-ed %v. Stack: %s", err, debug.Stack())
 			}
 		}()
 		for transportInstance := range transportInstances {

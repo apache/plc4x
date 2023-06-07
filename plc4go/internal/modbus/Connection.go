@@ -25,6 +25,7 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/tracer"
 	"github.com/rs/zerolog"
+	"runtime/debug"
 	"time"
 
 	"github.com/apache/plc4x/plc4go/pkg/api"
@@ -106,7 +107,7 @@ func (m *Connection) Ping() <-chan plc4go.PlcConnectionPingResult {
 	go func() {
 		defer func() {
 			if err := recover(); err != nil {
-				result <- _default.NewDefaultPlcConnectionPingResult(errors.Errorf("panic-ed %v", err))
+				result <- _default.NewDefaultPlcConnectionPingResult(errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack()))
 			}
 		}()
 		diagnosticRequestPdu := readWriteModel.NewModbusPDUDiagnosticRequest(0, 0x42)

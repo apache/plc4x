@@ -26,6 +26,7 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/tracer"
 	"github.com/apache/plc4x/plc4go/spi/transactions"
 	"github.com/rs/zerolog"
+	"runtime/debug"
 	"time"
 
 	"github.com/apache/plc4x/plc4go/pkg/api"
@@ -125,7 +126,7 @@ func (m *Connection) ConnectWithContext(ctx context.Context) <-chan plc4go.PlcCo
 	go func() {
 		defer func() {
 			if err := recover(); err != nil {
-				ch <- _default.NewDefaultPlcConnectionConnectResult(nil, errors.Errorf("panic-ed %v", err))
+				ch <- _default.NewDefaultPlcConnectionConnectResult(nil, errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack()))
 			}
 		}()
 		err := m.messageCodec.Connect()
@@ -156,7 +157,7 @@ func (m *Connection) Close() <-chan plc4go.PlcConnectionCloseResult {
 	go func() {
 		defer func() {
 			if err := recover(); err != nil {
-				result <- _default.NewDefaultPlcConnectionCloseResult(nil, errors.Errorf("panic-ed %v", err))
+				result <- _default.NewDefaultPlcConnectionCloseResult(nil, errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack()))
 			}
 		}()
 		m.log.Debug().Msg("Sending UnregisterSession EIP Packet")

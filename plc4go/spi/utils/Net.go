@@ -24,6 +24,7 @@ import (
 	"context"
 	"github.com/rs/zerolog"
 	"net"
+	"runtime/debug"
 	"sync"
 	"time"
 
@@ -42,7 +43,7 @@ func GetIPAddresses(localLog zerolog.Logger, ctx context.Context, netInterface n
 	go func() {
 		defer func() {
 			if err := recover(); err != nil {
-				localLog.Error().Msgf("panic-ed %v", err)
+				localLog.Error().Msgf("panic-ed %v. Stack: %s", err, debug.Stack())
 			}
 		}()
 		wg := &sync.WaitGroup{}
@@ -127,7 +128,7 @@ func lockupIpsUsingArp(localLog zerolog.Logger, ctx context.Context, netInterfac
 	go func(handle *pcap.Handle, iface net.Interface, stop chan struct{}) {
 		defer func() {
 			if err := recover(); err != nil {
-				localLog.Error().Msgf("panic-ed %v", err)
+				localLog.Error().Msgf("panic-ed %v. Stack: %s", err, debug.Stack())
 			}
 		}()
 		src := gopacket.NewPacketSource(handle, layers.LayerTypeEthernet)

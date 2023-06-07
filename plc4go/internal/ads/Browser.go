@@ -22,6 +22,7 @@ package ads
 import (
 	"context"
 	"github.com/pkg/errors"
+	"runtime/debug"
 	"strings"
 
 	"github.com/apache/plc4x/plc4go/internal/ads/model"
@@ -45,7 +46,7 @@ func (m *Connection) BrowseWithInterceptor(ctx context.Context, browseRequest ap
 	go func() {
 		defer func() {
 			if err := recover(); err != nil {
-				result <- spiModel.NewDefaultPlcBrowseRequestResult(browseRequest, nil, errors.Errorf("Recovered from panic: %v", err))
+				result <- spiModel.NewDefaultPlcBrowseRequestResult(browseRequest, nil, errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack()))
 			}
 		}()
 		responseCodes := map[string]apiModel.PlcResponseCode{}

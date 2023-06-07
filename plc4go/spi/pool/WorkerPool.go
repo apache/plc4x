@@ -63,8 +63,8 @@ func (w *worker) work() {
 	w.executor.getWorkerWaitGroup().Add(1)
 	defer w.executor.getWorkerWaitGroup().Done()
 	defer func() {
-		if recovered := recover(); recovered != nil {
-			w.log.Error().Msgf("Recovering from panic():%v. Stack: %s", recovered, debug.Stack())
+		if err := recover(); err != nil {
+			w.log.Error().Msgf("panic-ed %v. Stack: %s", err, debug.Stack())
 		}
 		if !w.shutdown.Load() {
 			// if we are not in shutdown we continue
@@ -289,7 +289,7 @@ func (e *dynamicExecutor) Start() {
 		defer e.dynamicWorkers.Done()
 		defer func() {
 			if err := recover(); err != nil {
-				e.log.Error().Msgf("panic-ed %v", err)
+				e.log.Error().Msgf("panic-ed %v. Stack: %s", err, debug.Stack())
 			}
 		}()
 		workerLog := e.log.With().Str("Worker type", "spawner").Logger()
@@ -339,7 +339,7 @@ func (e *dynamicExecutor) Start() {
 		defer e.dynamicWorkers.Done()
 		defer func() {
 			if err := recover(); err != nil {
-				e.log.Error().Msgf("panic-ed %v", err)
+				e.log.Error().Msgf("panic-ed %v. Stack: %s", err, debug.Stack())
 			}
 		}()
 		workerLog := e.log.With().Str("Worker type", "killer").Logger()

@@ -27,6 +27,7 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/tracer"
 	"github.com/rs/zerolog"
+	"runtime/debug"
 	"strconv"
 	"strings"
 	"sync"
@@ -233,7 +234,7 @@ func (m *Connection) ConnectWithContext(ctx context.Context) <-chan plc4go.PlcCo
 	go func() {
 		defer func() {
 			if err := recover(); err != nil {
-				result <- _default.NewDefaultPlcConnectionConnectResult(nil, errors.Errorf("panic-ed %v", err))
+				result <- _default.NewDefaultPlcConnectionConnectResult(nil, errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack()))
 			}
 		}()
 		// Open the UDP Connection
@@ -305,7 +306,7 @@ func (m *Connection) ConnectWithContext(ctx context.Context) <-chan plc4go.PlcCo
 				go func() {
 					defer func() {
 						if err := recover(); err != nil {
-							m.log.Error().Msgf("panic-ed %v", err)
+							m.log.Error().Msgf("panic-ed %v. Stack: %s", err, debug.Stack())
 						}
 					}()
 					defaultIncomingMessageChannel := m.messageCodec.GetDefaultIncomingMessageChannel()
@@ -405,7 +406,7 @@ func (m *Connection) Close() <-chan plc4go.PlcConnectionCloseResult {
 	go func() {
 		defer func() {
 			if err := recover(); err != nil {
-				result <- _default.NewDefaultPlcConnectionConnectResult(nil, errors.Errorf("panic-ed %v", err))
+				result <- _default.NewDefaultPlcConnectionConnectResult(nil, errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack()))
 			}
 		}()
 		// Stop the connection-state checker.
@@ -468,7 +469,7 @@ func (m *Connection) Ping() <-chan plc4go.PlcConnectionPingResult {
 	go func() {
 		defer func() {
 			if err := recover(); err != nil {
-				result <- _default.NewDefaultPlcConnectionPingResult(errors.Errorf("panic-ed %v", err))
+				result <- _default.NewDefaultPlcConnectionPingResult(errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack()))
 			}
 		}()
 		// Send the connection state request

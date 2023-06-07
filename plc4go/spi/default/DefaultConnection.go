@@ -23,6 +23,7 @@ import (
 	"context"
 	"github.com/apache/plc4x/plc4go/spi/tracer"
 	"github.com/rs/zerolog"
+	"runtime/debug"
 	"time"
 
 	"github.com/apache/plc4x/plc4go/pkg/api"
@@ -242,7 +243,7 @@ func (d *defaultConnection) ConnectWithContext(ctx context.Context) <-chan plc4g
 	go func() {
 		defer func() {
 			if err := recover(); err != nil {
-				ch <- NewDefaultPlcConnectionConnectResult(nil, errors.Errorf("panic-ed %v", err))
+				ch <- NewDefaultPlcConnectionConnectResult(nil, errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack()))
 			}
 		}()
 		err := d.GetMessageCodec().ConnectWithContext(ctx)
@@ -297,7 +298,7 @@ func (d *defaultConnection) Ping() <-chan plc4go.PlcConnectionPingResult {
 	go func() {
 		defer func() {
 			if err := recover(); err != nil {
-				ch <- NewDefaultPlcConnectionPingResult(errors.Errorf("panic-ed %v", err))
+				ch <- NewDefaultPlcConnectionPingResult(errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack()))
 			}
 		}()
 		if d.GetConnection().IsConnected() {

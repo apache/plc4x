@@ -22,6 +22,7 @@ package ads
 import (
 	"context"
 	"github.com/apache/plc4x/plc4go/spi/options"
+	"runtime/debug"
 	"time"
 
 	dirverModel "github.com/apache/plc4x/plc4go/internal/ads/model"
@@ -99,7 +100,7 @@ func (m *Connection) Subscribe(ctx context.Context, subscriptionRequest apiModel
 	go func() {
 		defer func() {
 			if err := recover(); err != nil {
-				m.log.Error().Msgf("panic-ed %v", err)
+				m.log.Error().Msgf("panic-ed %v. Stack: %s", err, debug.Stack())
 			}
 		}()
 		// Iterate over all sub-results
@@ -128,7 +129,7 @@ func (m *Connection) subscribe(ctx context.Context, subscriptionRequest apiModel
 	go func() {
 		defer func() {
 			if err := recover(); err != nil {
-				responseChan <- spiModel.NewDefaultPlcSubscriptionRequestResult(subscriptionRequest, nil, errors.Errorf("panic-ed %v", err))
+				responseChan <- spiModel.NewDefaultPlcSubscriptionRequestResult(subscriptionRequest, nil, errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack()))
 			}
 		}()
 		// At this point we are sure to only have single item direct tag requests.

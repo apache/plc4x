@@ -33,6 +33,7 @@ import (
 	"github.com/rs/zerolog"
 	"io"
 	"net/url"
+	"runtime/debug"
 	"strconv"
 	"sync"
 	"time"
@@ -141,7 +142,7 @@ func (m *TransportInstance) Connect() error {
 	go func(m *TransportInstance, buffer *bytes.Buffer) {
 		defer func() {
 			if err := recover(); err != nil {
-				m.log.Error().Msgf("panic-ed %v", err)
+				m.log.Error().Msgf("panic-ed %v. Stack: %s", err, debug.Stack())
 			}
 		}()
 		packageCount := 0
