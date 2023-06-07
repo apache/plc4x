@@ -16,7 +16,7 @@
 # specific language governing permissions and limitations
 # under the License.
 # ----------------------------------------------------------------------------
-name: 'Golang Platform Test Report'
+name: 'Go Platform Test Report'
 
 on:
   workflow_run:
