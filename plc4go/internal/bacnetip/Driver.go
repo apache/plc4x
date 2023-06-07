@@ -123,6 +123,7 @@ type ApplicationManager struct {
 func (a *ApplicationManager) getApplicationLayerMessageCodec(transport *udp.Transport, transportUrl url.URL, options map[string][]string) (*ApplicationLayerMessageCodec, error) {
 	var localAddress *net.UDPAddr
 	var remoteAddr *net.UDPAddr
+	// Find out the remote and the local ip address by opening an UPD port (which is instantly closed)
 	{
 		host := transportUrl.Host
 		port := transportUrl.Port()
@@ -134,6 +135,7 @@ func (a *ApplicationManager) getApplicationLayerMessageCodec(transport *udp.Tran
 		} else {
 			remoteAddr = resolvedRemoteAddr
 		}
+		// TODO: Possibly do with with ip-address matching similar to the raw-socket impl in Java.
 		if dial, err := net.DialUDP("udp", nil, remoteAddr); err != nil {
 			return nil, errors.Errorf("couldn't dial to host %#v", transportUrl.Host)
 		} else {
