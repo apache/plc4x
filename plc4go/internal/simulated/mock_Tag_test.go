@@ -128,16 +128,14 @@ func (_c *MockTag_GetArrayInfo_Call) RunAndReturn(run func() []model.ArrayInfo) 
 }
 
 // GetDataTypeSize provides a mock function with given fields:
-func (_m *MockTag) GetDataTypeSize() *readwritemodel.SimulatedDataTypeSizes {
+func (_m *MockTag) GetDataTypeSize() readwritemodel.SimulatedDataTypeSizes {
 	ret := _m.Called()
 
-	var r0 *readwritemodel.SimulatedDataTypeSizes
-	if rf, ok := ret.Get(0).(func() *readwritemodel.SimulatedDataTypeSizes); ok {
+	var r0 readwritemodel.SimulatedDataTypeSizes
+	if rf, ok := ret.Get(0).(func() readwritemodel.SimulatedDataTypeSizes); ok {
 		r0 = rf()
 	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*readwritemodel.SimulatedDataTypeSizes)
-		}
+		r0 = ret.Get(0).(readwritemodel.SimulatedDataTypeSizes)
 	}
 
 	return r0
@@ -160,12 +158,12 @@ func (_c *MockTag_GetDataTypeSize_Call) Run(run func()) *MockTag_GetDataTypeSize
 	return _c
 }
 
-func (_c *MockTag_GetDataTypeSize_Call) Return(_a0 *readwritemodel.SimulatedDataTypeSizes) *MockTag_GetDataTypeSize_Call {
+func (_c *MockTag_GetDataTypeSize_Call) Return(_a0 readwritemodel.SimulatedDataTypeSizes) *MockTag_GetDataTypeSize_Call {
 	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *MockTag_GetDataTypeSize_Call) RunAndReturn(run func() *readwritemodel.SimulatedDataTypeSizes) *MockTag_GetDataTypeSize_Call {
+func (_c *MockTag_GetDataTypeSize_Call) RunAndReturn(run func() readwritemodel.SimulatedDataTypeSizes) *MockTag_GetDataTypeSize_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -212,16 +210,14 @@ func (_c *MockTag_GetName_Call) RunAndReturn(run func() string) *MockTag_GetName
 }
 
 // GetTagType provides a mock function with given fields:
-func (_m *MockTag) GetTagType() *TagType {
+func (_m *MockTag) GetTagType() TagType {
 	ret := _m.Called()
 
-	var r0 *TagType
-	if rf, ok := ret.Get(0).(func() *TagType); ok {
+	var r0 TagType
+	if rf, ok := ret.Get(0).(func() TagType); ok {
 		r0 = rf()
 	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*TagType)
-		}
+		r0 = ret.Get(0).(TagType)
 	}
 
 	return r0
@@ -244,12 +240,12 @@ func (_c *MockTag_GetTagType_Call) Run(run func()) *MockTag_GetTagType_Call {
 	return _c
 }
 
-func (_c *MockTag_GetTagType_Call) Return(_a0 *TagType) *MockTag_GetTagType_Call {
+func (_c *MockTag_GetTagType_Call) Return(_a0 TagType) *MockTag_GetTagType_Call {
 	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *MockTag_GetTagType_Call) RunAndReturn(run func() *TagType) *MockTag_GetTagType_Call {
+func (_c *MockTag_GetTagType_Call) RunAndReturn(run func() TagType) *MockTag_GetTagType_Call {
 	_c.Call.Return(run)
 	return _c
 }

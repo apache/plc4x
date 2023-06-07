@@ -35,12 +35,26 @@ func TestCalculateChecksum(t *testing.T) {
 	tests := []struct {
 		name    string
 		args    args
+		setup   func(t *testing.T, args *args)
 		wantErr bool
 	}{
-		// TODO: Add test cases.
+		{
+			name: "check it (not enabled)",
+		},
+		{
+			name: "check it",
+			args: args{
+				writeBuffer: utils.NewWriteBufferByteBased(),
+				message:     NewZoneStatus(1),
+				srchk:       true,
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			if tt.setup != nil {
+				tt.setup(t, &tt.args)
+			}
 			if err := CalculateChecksum(tt.args.writeBuffer, tt.args.message, tt.args.srchk); (err != nil) != tt.wantErr {
 				t.Errorf("CalculateChecksum() error = %v, wantErr %v", err, tt.wantErr)
 			}
@@ -57,7 +71,12 @@ func TestKnowsAccessControlCommandTypeContainer(t *testing.T) {
 		args args
 		want bool
 	}{
-		// TODO: Add test cases.
+		{
+			name: "no",
+			args: args{
+				readBuffer: utils.NewReadBufferByteBased([]byte{1, 2, 3, 4}),
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -77,7 +96,13 @@ func TestKnowsAirConditioningCommandTypeContainer(t *testing.T) {
 		args args
 		want bool
 	}{
-		// TODO: Add test cases.
+		{
+			name: "yes",
+			args: args{
+				readBuffer: utils.NewReadBufferByteBased([]byte{1, 2, 3, 4}),
+			},
+			want: true,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -97,7 +122,12 @@ func TestKnowsCALCommandTypeContainer(t *testing.T) {
 		args args
 		want bool
 	}{
-		// TODO: Add test cases.
+		{
+			name: "no",
+			args: args{
+				readBuffer: utils.NewReadBufferByteBased([]byte{1, 2, 3, 4}),
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -117,7 +147,12 @@ func TestKnowsClockAndTimekeepingCommandTypeContainer(t *testing.T) {
 		args args
 		want bool
 	}{
-		// TODO: Add test cases.
+		{
+			name: "no",
+			args: args{
+				readBuffer: utils.NewReadBufferByteBased([]byte{1, 2, 3, 4}),
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -137,7 +172,12 @@ func TestKnowsEnableControlCommandTypeContainer(t *testing.T) {
 		args args
 		want bool
 	}{
-		// TODO: Add test cases.
+		{
+			name: "no",
+			args: args{
+				readBuffer: utils.NewReadBufferByteBased([]byte{1, 2, 3, 4}),
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -157,7 +197,12 @@ func TestKnowsErrorReportingCommandTypeContainer(t *testing.T) {
 		args args
 		want bool
 	}{
-		// TODO: Add test cases.
+		{
+			name: "no",
+			args: args{
+				readBuffer: utils.NewReadBufferByteBased([]byte{1, 2, 3, 4}),
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -177,7 +222,13 @@ func TestKnowsLightingCommandTypeContainer(t *testing.T) {
 		args args
 		want bool
 	}{
-		// TODO: Add test cases.
+		{
+			name: "yes",
+			args: args{
+				readBuffer: utils.NewReadBufferByteBased([]byte{1, 2, 3, 4}),
+			},
+			want: true,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -197,7 +248,12 @@ func TestKnowsMeasurementCommandTypeContainer(t *testing.T) {
 		args args
 		want bool
 	}{
-		// TODO: Add test cases.
+		{
+			name: "no",
+			args: args{
+				readBuffer: utils.NewReadBufferByteBased([]byte{1, 2, 3, 4}),
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -217,7 +273,13 @@ func TestKnowsMediaTransportControlCommandTypeContainer(t *testing.T) {
 		args args
 		want bool
 	}{
-		// TODO: Add test cases.
+		{
+			name: "yes",
+			args: args{
+				readBuffer: utils.NewReadBufferByteBased([]byte{1, 2, 3, 4}),
+			},
+			want: true,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -237,7 +299,12 @@ func TestKnowsMeteringCommandTypeContainer(t *testing.T) {
 		args args
 		want bool
 	}{
-		// TODO: Add test cases.
+		{
+			name: "no",
+			args: args{
+				readBuffer: utils.NewReadBufferByteBased([]byte{1, 2, 3, 4}),
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -257,7 +324,13 @@ func TestKnowsSecurityCommandTypeContainer(t *testing.T) {
 		args args
 		want bool
 	}{
-		// TODO: Add test cases.
+		{
+			name: "yes",
+			args: args{
+				readBuffer: utils.NewReadBufferByteBased([]byte{1, 2, 3, 4}),
+			},
+			want: true,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -277,7 +350,12 @@ func TestKnowsTelephonyCommandTypeContainer(t *testing.T) {
 		args args
 		want bool
 	}{
-		// TODO: Add test cases.
+		{
+			name: "no",
+			args: args{
+				readBuffer: utils.NewReadBufferByteBased([]byte{1, 2, 3, 4}),
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -297,7 +375,12 @@ func TestKnowsTemperatureBroadcastCommandTypeContainer(t *testing.T) {
 		args args
 		want bool
 	}{
-		// TODO: Add test cases.
+		{
+			name: "no",
+			args: args{
+				readBuffer: utils.NewReadBufferByteBased([]byte{1, 2, 3, 4}),
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -317,7 +400,13 @@ func TestKnowsTriggerControlCommandTypeContainer(t *testing.T) {
 		args args
 		want bool
 	}{
-		// TODO: Add test cases.
+		{
+			name: "yes",
+			args: args{
+				readBuffer: utils.NewReadBufferByteBased([]byte{1, 2, 3, 4}),
+			},
+			want: true,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -340,7 +429,37 @@ func TestReadAndValidateChecksum(t *testing.T) {
 		want    Checksum
 		wantErr bool
 	}{
-		// TODO: Add test cases.
+		{
+			name: "don't do it",
+		},
+		{
+			name: "do it wrong message",
+			args: args{
+				readBuffer: utils.NewReadBufferByteBased([]byte{1, 2, 3, 4}),
+				message:    nil,
+				srchk:      true,
+			},
+			wantErr: true,
+		},
+		{
+			name: "do it",
+			args: args{
+				readBuffer: utils.NewReadBufferByteBased([]byte("00")),
+				message:    NewZoneStatus(12),
+				srchk:      true,
+			},
+			want:    NewChecksum(0),
+			wantErr: false,
+		},
+		{
+			name: "do it wrong checksum",
+			args: args{
+				readBuffer: utils.NewReadBufferByteBased([]byte("AFFE")),
+				message:    NewZoneStatus(12),
+				srchk:      true,
+			},
+			wantErr: true,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -350,7 +469,7 @@ func TestReadAndValidateChecksum(t *testing.T) {
 				return
 			}
 			if !assert.Equal(t, tt.want, got) {
-				t.Errorf("ReadAndValidateChecksum() got = %v, want %v", got, tt.want)
+				t.Errorf("ReadAndValidateChecksum() got = \n%v, want \n%v", got, tt.want)
 			}
 		})
 	}
@@ -366,7 +485,20 @@ func TestReadCALData(t *testing.T) {
 		want    CALData
 		wantErr bool
 	}{
-		// TODO: Add test cases.
+		{
+			name: "failing",
+			args: args{
+				readBuffer: utils.NewReadBufferByteBased([]byte{1, 2, 3, 4}),
+			},
+			wantErr: true,
+		},
+		{
+			name: "cal data",
+			args: args{
+				readBuffer: utils.NewReadBufferByteBased([]byte("2101")),
+			},
+			want: NewCALDataIdentify(Attribute_Type, CALCommandTypeContainer_CALCommandIdentify, nil, nil),
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -394,7 +526,43 @@ func TestReadCBusCommand(t *testing.T) {
 		want    CBusCommand
 		wantErr bool
 	}{
-		// TODO: Add test cases.
+		{
+			name: "failing",
+			args: args{
+				readBuffer: utils.NewReadBufferByteBased([]byte{1, 2, 3, 4}),
+			},
+			wantErr: true,
+		},
+		{
+			name: "cbus command data",
+			args: args{
+				readBuffer: utils.NewReadBufferByteBased([]byte("46310900A400410600")),
+			},
+			want: NewCBusCommandPointToPoint(
+				NewCBusPointToPointCommandIndirect(
+					NewBridgeAddress(49),
+					NewNetworkRoute(NewNetworkProtocolControlInformation(1, 1), nil),
+					NewUnitAddress(0),
+					12553,
+					NewCALDataWrite(
+						Parameter_UNKNOWN_01,
+						65,
+						NewParameterValueRaw([]byte{6, 00}, 2),
+						CALCommandTypeContainer_CALCommandWrite_4Bytes,
+						nil,
+						nil,
+					),
+					nil,
+				),
+				NewCBusHeader(
+					PriorityClass_Class3,
+					false,
+					0,
+					DestinationAddressType_PointToPoint,
+				),
+				nil,
+			),
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -404,7 +572,7 @@ func TestReadCBusCommand(t *testing.T) {
 				return
 			}
 			if !assert.Equal(t, tt.want, got) {
-				t.Errorf("ReadCBusCommand() got = %v, want %v", got, tt.want)
+				t.Errorf("ReadCBusCommand() got = \n%v, want \n%v", got, tt.want)
 			}
 		})
 	}
@@ -423,7 +591,22 @@ func TestReadEncodedReply(t *testing.T) {
 		want    EncodedReply
 		wantErr bool
 	}{
-		// TODO: Add test cases.
+		{
+			name: "failing",
+			args: args{
+				readBuffer: utils.NewReadBufferByteBased([]byte{1, 2, 3, 4}),
+			},
+			wantErr: true,
+		},
+		{
+			name: "encoded reply",
+			args: args{
+				readBuffer:     utils.NewReadBufferByteBased([]byte("8510020000FF6A")),
+				options:        NewCBusOptions(false, false, false, false, false, false, false, false, false),
+				requestContext: NewRequestContext(false),
+			},
+			wantErr: true,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -449,7 +632,13 @@ func TestWriteCALData(t *testing.T) {
 		args    args
 		wantErr bool
 	}{
-		// TODO: Add test cases.
+		{
+			name: "write something",
+			args: args{
+				writeBuffer: utils.NewWriteBufferBoxBased(),
+				calData:     NewCALDataReset(0, nil, nil),
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -470,7 +659,13 @@ func TestWriteCBusCommand(t *testing.T) {
 		args    args
 		wantErr bool
 	}{
-		// TODO: Add test cases.
+		{
+			name: "write something",
+			args: args{
+				writeBuffer: utils.NewWriteBufferBoxBased(),
+				cbusCommand: NewCBusCommandDeviceManagement(0, 0, NewCBusHeader(0, false, 0, 0), nil),
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -491,7 +686,27 @@ func TestWriteEncodedReply(t *testing.T) {
 		args    args
 		wantErr bool
 	}{
-		// TODO: Add test cases.
+		{
+			name: "write something",
+			args: args{
+				writeBuffer: utils.NewWriteBufferBoxBased(),
+				encodedReply: NewEncodedReplyCALReply(
+					NewCALReplyShort(
+						0,
+						NewCALDataReset(
+							0,
+							nil,
+							NewRequestContext(false),
+						),
+						nil,
+						NewRequestContext(false),
+					),
+					0,
+					nil,
+					NewRequestContext(false),
+				),
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -512,7 +727,9 @@ func Test_encodeHexUpperCase(t *testing.T) {
 		args args
 		want int
 	}{
-		// TODO: Add test cases.
+		{
+			name: "encode nothing",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -557,7 +774,13 @@ func Test_getChecksum(t *testing.T) {
 		want    byte
 		wantErr bool
 	}{
-		// TODO: Add test cases.
+		{
+			name: "get it",
+			args: args{
+				message: NewZoneStatus(0),
+			},
+			wantErr: false,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -585,7 +808,14 @@ func Test_readBytesFromHex(t *testing.T) {
 		want    []byte
 		wantErr bool
 	}{
-		// TODO: Add test cases.
+		{
+			name: "read it",
+			args: args{
+				readBuffer: utils.NewReadBufferByteBased([]byte{1, 2, 3, 4}),
+			},
+			wantErr: true,
+		},
+		// TODO: add more tests
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -612,7 +842,13 @@ func Test_writeSerializableToHex(t *testing.T) {
 		args    args
 		wantErr bool
 	}{
-		// TODO: Add test cases.
+		{
+			name: "write it",
+			args: args{
+				writeBuffer:  utils.NewWriteBufferBoxBased(),
+				serializable: NewZoneStatus(0),
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -634,7 +870,13 @@ func Test_writeToHex(t *testing.T) {
 		args    args
 		wantErr bool
 	}{
-		// TODO: Add test cases.
+		{
+			name: "write it",
+			args: args{
+				writeBuffer:  utils.NewWriteBufferBoxBased(),
+				bytesToWrite: []byte{1, 2, 3, 4},
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
