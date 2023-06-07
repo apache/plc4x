@@ -133,26 +133,23 @@ jobs:
         run: |
           ./mvnw${{ steps.platform_suffix.outputs.platform_suffix }} ${{ steps.extra_options.outputs.extra_options }} -B -P'with-go,enable-all-checks' -pl :plc4go -am ${{ steps.platform_opts.outputs.platform_opts }} install
 
-      - name: Test Report (first failure)
-        uses: dorny/test-reporter@v1
+      - name: Upload Test Report (first failure)
+        uses: actions/upload-artifact@v3
         if: failure()
         with:
-          name: "Golang Tests (OS: ${{ matrix.os }}) (first failure)"
+          name: "golang-test-report-first-failure-${{ matrix.os }}"
           path: '**/go-junit-report.xml'
-          reporter: java-junit
-          fail-on-error: false
 
       - name: Run mvnv without BacNet regression tests
         if: ${{ failure() }}
         run: ./mvnw${{ steps.platform_suffix.outputs.platform_suffix }} ${{ steps.extra_options.outputs.extra_options }} -B -P'with-go,skip-bacnet-regression-test' -pl :plc4go -am ${{ steps.platform_opts.outputs.platform_opts }} install
 
-      - name: Test Report
-        uses: dorny/test-reporter@v1
+      - name: Upload Test Report
+        uses: actions/upload-artifact@v3
         if: success() || failure()
         with:
-          name: "Golang Tests (OS: ${{ matrix.os }})"
+          name: "golang-test-report-${{ matrix.os }}"
           path: '**/go-junit-report.xml'
-          reporter: java-junit
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v2

@@ -130,18 +130,23 @@ jobs:
         run: |
           ./mvnw${{ steps.platform_suffix.outputs.platform_suffix }} ${{ steps.extra_options.outputs.extra_options }} -B -P'enable-all-checks' ${{ steps.platform_opts.outputs.platform_opts }} install
 
+      - name: Upload Test Report (first failure)
+        uses: actions/upload-artifact@v3
+        if: failure()
+        with:
+          name: "java-test-report-first-failure-${{ matrix.os }}-java-${{ matrix.java }}"
+          path: '**/(surefire|failsafe)-reports/TEST-*.xml'
+
       - name: Run mvnv without BacNet regression tests
         if: ${{ failure() }}
         run: ./mvnw${{ steps.platform_suffix.outputs.platform_suffix }} ${{ steps.extra_options.outputs.extra_options }} -B -P'skip-bacnet-regression-test' ${{ steps.platform_opts.outputs.platform_opts }} install
 
-      - name: Test Report
-        uses: dorny/test-reporter@v1
-        # TODO: apparently the reporter only works on windows
-        if: (success() || failure()) && matrix.os == 'windows-latest'
+      - name: Upload Test Report
+        uses: actions/upload-artifact@v3
+        if: success() || failure()
         with:
-          name: "Java Tests (OS: ${{ matrix.os }}, Java: ${{ matrix.java }})"
+          name: "java-test-report-${{ matrix.os }}-java-${{ matrix.java }}"
           path: '**/(surefire|failsafe)-reports/TEST-*.xml'
-          reporter: java-junit
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v2
