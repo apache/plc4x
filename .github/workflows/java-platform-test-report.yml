@@ -29,7 +29,9 @@ jobs:
       matrix:
         # 8 not anymore supported for building
         java: [ 11, 17, 18 ]
-        os: [ ubuntu-latest, macos-latest, windows-latest ]
+        # TODO: only works on windows due to https://github.com/dorny/test-reporter/issues/249
+        #os: [ ubuntu-latest, macos-latest, windows-latest ]
+        os: [ windows-latest ]
       fail-fast: false
     runs-on: ${{ matrix.os }}
     steps:
