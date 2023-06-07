@@ -138,7 +138,9 @@ jobs:
         if: failure()
         with:
           name: "golang-test-report-first-failure-${{ matrix.os }}"
-          path: '**/go-junit-report.xml'
+          path: |
+            **/surefire-reports/go-junit-report.xml
+            **/reports/test-out-verbose.log
 
       - name: Run mvnv without BacNet regression tests
         if: ${{ failure() }}
@@ -149,7 +151,9 @@ jobs:
         if: success() || failure()
         with:
           name: "golang-test-report-${{ matrix.os }}"
-          path: '**/go-junit-report.xml'
+          path: |
+            **/surefire-reports/go-junit-report.xml
+            **/reports/test-out-verbose.log
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v2

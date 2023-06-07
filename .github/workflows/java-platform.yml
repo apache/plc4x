@@ -135,7 +135,9 @@ jobs:
         if: failure()
         with:
           name: "java-test-report-first-failure-${{ matrix.os }}-java-${{ matrix.java }}"
-          path: '**/(surefire|failsafe)-reports/TEST-*.xml'
+          path: |
+            **/surefire-reports/TEST-*.xml
+            **/failsafe-reports/TEST-*.xml
 
       - name: Run mvnv without BacNet regression tests
         if: ${{ failure() }}
@@ -146,7 +148,9 @@ jobs:
         if: success() || failure()
         with:
           name: "java-test-report-${{ matrix.os }}-java-${{ matrix.java }}"
-          path: '**/(surefire|failsafe)-reports/TEST-*.xml'
+          path: |
+            **/surefire-reports/TEST-*.xml
+            **/failsafe-reports/TEST-*.xml
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v2
