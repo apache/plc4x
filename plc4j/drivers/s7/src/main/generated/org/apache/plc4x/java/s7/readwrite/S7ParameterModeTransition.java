@@ -91,7 +91,6 @@ public class S7ParameterModeTransition extends S7Parameter implements Message {
   protected void serializeS7ParameterChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("S7ParameterModeTransition");
 
     // Reserved Field (reserved)
@@ -159,8 +158,6 @@ public class S7ParameterModeTransition extends S7Parameter implements Message {
       ReadBuffer readBuffer, Short messageType) throws ParseException {
     readBuffer.pullContext("S7ParameterModeTransition");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     Integer reservedField0 =

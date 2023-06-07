@@ -285,10 +285,10 @@
     ]
 ]
 
-//TODO: Se debe modificar el calculo para incluir el tipo
-//      . si es tipo 4 usa el desplazamiento
-//      . si es tipo 3, la longitud es la indicada
-//      . verificar calculo con los otros tipos
+//TODO: The calculation must be modified to include the type
+//      . if it is type 0x07(REAL) or 0x09 (OCTET_STRING), the length is indicated
+//      . another type uses scrolling
+//      . verify calculation with the other types
 [type AssociatedValueType
     [simple DataTransportErrorCode returnCode]
     [simple DataTransportSize      transportSize]
@@ -439,7 +439,8 @@
     [simple   uint 8 syntaxId]
     [typeSwitch syntaxId
         ['0x10' CycServiceItemAnyType
-            [simple  TransportSize   transportSize]
+            //[simple  TransportSize   transportSize]
+            [enum     TransportSize transportSize code]
             [simple uint 16 length]
             [simple uint 16 dbNumber]            
             [simple MemoryArea memoryArea]

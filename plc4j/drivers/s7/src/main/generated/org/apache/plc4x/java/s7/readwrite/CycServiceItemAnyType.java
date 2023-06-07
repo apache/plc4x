@@ -87,16 +87,15 @@ public class CycServiceItemAnyType extends CycServiceItemType implements Message
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("CycServiceItemAnyType");
 
-    // Simple Field (transportSize)
-    writeSimpleEnumField(
+    // Enum field (transportSize)
+    writeEnumField(
         "transportSize",
         "TransportSize",
         transportSize,
         new DataWriterEnumDefault<>(
-            TransportSize::getValue, TransportSize::name, writeUnsignedShort(writeBuffer, 8)));
+            TransportSize::getCode, TransportSize::name, writeUnsignedShort(writeBuffer, 8)));
 
     // Simple Field (length)
     writeSimpleField("length", length, writeUnsignedInt(writeBuffer, 16));
@@ -129,7 +128,7 @@ public class CycServiceItemAnyType extends CycServiceItemType implements Message
     CycServiceItemAnyType _value = this;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    // Simple field (transportSize)
+    // Enum Field (transportSize)
     lengthInBits += 8;
 
     // Simple field (length)
@@ -151,16 +150,13 @@ public class CycServiceItemAnyType extends CycServiceItemType implements Message
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("CycServiceItemAnyType");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     TransportSize transportSize =
         readEnumField(
             "transportSize",
             "TransportSize",
-            new DataReaderEnumDefault<>(
-                TransportSize::enumForValue, readUnsignedShort(readBuffer, 8)));
+            readEnum(TransportSize::firstEnumForFieldCode, readUnsignedShort(readBuffer, 8)));
 
     int length = readSimpleField("length", readUnsignedInt(readBuffer, 16));
 

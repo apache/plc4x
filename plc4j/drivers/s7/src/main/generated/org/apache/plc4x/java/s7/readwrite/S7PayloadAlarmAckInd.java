@@ -71,7 +71,6 @@ public class S7PayloadAlarmAckInd extends S7PayloadUserDataItem implements Messa
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("S7PayloadAlarmAckInd");
 
     // Simple Field (alarmMessage)
@@ -102,8 +101,6 @@ public class S7PayloadAlarmAckInd extends S7PayloadUserDataItem implements Messa
       throws ParseException {
     readBuffer.pullContext("S7PayloadAlarmAckInd");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     AlarmMessageAckPushType alarmMessage =

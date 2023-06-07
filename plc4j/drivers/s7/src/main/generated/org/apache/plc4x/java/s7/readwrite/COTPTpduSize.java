@@ -42,8 +42,8 @@ public enum COTPTpduSize {
     }
   }
 
-  private short value;
-  private int sizeInBytes;
+  private final short value;
+  private final int sizeInBytes;
 
   COTPTpduSize(short value, int sizeInBytes) {
     this.value = value;
@@ -68,7 +68,7 @@ public enum COTPTpduSize {
   }
 
   public static List<COTPTpduSize> enumsForFieldSizeInBytes(int fieldValue) {
-    List<COTPTpduSize> _values = new ArrayList();
+    List<COTPTpduSize> _values = new ArrayList<>();
     for (COTPTpduSize _val : COTPTpduSize.values()) {
       if (_val.getSizeInBytes() == fieldValue) {
         _values.add(_val);

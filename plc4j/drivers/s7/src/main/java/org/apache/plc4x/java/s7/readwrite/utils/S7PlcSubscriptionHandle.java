@@ -25,14 +25,26 @@ import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionHandle;
 public class S7PlcSubscriptionHandle extends DefaultPlcSubscriptionHandle {
     
     private EventType eventtype;
+    private final String id;
 
     public S7PlcSubscriptionHandle(EventType eventtype, PlcSubscriber plcSubscriber) {
         super(plcSubscriber);
         this.eventtype = eventtype;
+        this.id = null;
     }
+    
+    public S7PlcSubscriptionHandle(String id, EventType eventtype, PlcSubscriber plcSubscriber) {
+        super(plcSubscriber);
+        this.eventtype = eventtype;
+        this.id = id;
+    }    
     
     public EventType getEventType() {
         return eventtype;   
     }
+    
+    public String getEventId() {
+        return id;   
+    }    
     
 }

@@ -62,7 +62,6 @@ public class S7ParameterReadVarResponse extends S7Parameter implements Message {
   protected void serializeS7ParameterChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("S7ParameterReadVarResponse");
 
     // Simple Field (numItems)
@@ -92,8 +91,6 @@ public class S7ParameterReadVarResponse extends S7Parameter implements Message {
       ReadBuffer readBuffer, Short messageType) throws ParseException {
     readBuffer.pullContext("S7ParameterReadVarResponse");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short numItems = readSimpleField("numItems", readUnsignedShort(readBuffer, 8));

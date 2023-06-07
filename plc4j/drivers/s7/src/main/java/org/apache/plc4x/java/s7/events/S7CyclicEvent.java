@@ -23,6 +23,7 @@ import io.netty.buffer.Unpooled;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.nio.charset.Charset;
+import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -44,6 +45,7 @@ import org.apache.plc4x.java.s7.readwrite.S7PayloadUserDataItemCyclicServicesCha
 import org.apache.plc4x.java.s7.readwrite.S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponse;
 import org.apache.plc4x.java.s7.readwrite.S7PayloadUserDataItemCyclicServicesPush;
 import org.apache.plc4x.java.s7.readwrite.S7PayloadUserDataItemCyclicServicesSubscribeResponse;
+import org.apache.plc4x.java.s7.readwrite.utils.StaticHelper;
 
 /**
  *
@@ -73,13 +75,15 @@ public class S7CyclicEvent implements S7Event {
     public S7CyclicEvent(PlcSubscriptionRequest request, short jobid, S7PayloadUserDataItemCyclicServicesPush event) {
         this.map = new HashMap();
         this.timeStamp = Instant.now(); 
-        this.request = request;
+        this.request = request;       
         map.put(Fields.TYPE.name(), "CYCEVENT");         
         map.put(Fields.TIMESTAMP.name(),this.timeStamp);
         map.put(Fields.JOBID.name(), jobid);
-        map.put(Fields.ITEMSCOUNT.name(), event.getItemsCount());        
-        for (int i=0; i<event.getItemsCount(); i++){
-            //map.put(Fields.RETURNCODE_.name()+i, event.getItems()[i].getReturnCode().getValue());
+        map.put(Fields.ITEMSCOUNT.name(), event.getItemsCount());  
+        int[] n = new int[1];
+        n[0] = 0;
+        request.getTagNames().forEach(tagname -> {
+            int i = n[0];
             map.put(Fields.RETURNCODE_.name()+i, event.getItems().get(i).getReturnCode().getValue());
             map.put(Fields.TRANSPORTSIZE_.name()+i, event.getItems().get(i).getTransportSize().getValue());
             byte[] buffer = new byte[event.getItems().get(i).getData().size()];
@@ -88,8 +92,23 @@ public class S7CyclicEvent implements S7Event {
                     buffer[j] = s.byteValue();
                     j ++;                
                 });
-            map.put(Fields.DATA_.name()+i, buffer);  
-        }
+            map.put(tagname, buffer); 
+            n[0]++;
+        });          
+        
+        
+//        for (int i=0; i<event.getItemsCount(); i++){
+//            //map.put(Fields.RETURNCODE_.name()+i, event.getItems()[i].getReturnCode().getValue());
+//            map.put(Fields.RETURNCODE_.name()+i, event.getItems().get(i).getReturnCode().getValue());
+//            map.put(Fields.TRANSPORTSIZE_.name()+i, event.getItems().get(i).getTransportSize().getValue());
+//            byte[] buffer = new byte[event.getItems().get(i).getData().size()];
+//            j = 0;
+//            event.getItems().get(i).getData().forEach(s->{
+//                    buffer[j] = s.byteValue();
+//                    j ++;                
+//                });
+//            map.put(Fields.DATA_.name()+i, buffer);  
+//        }
     }
     
     public S7CyclicEvent(PlcSubscriptionRequest request, short jobid, S7PayloadUserDataItemCyclicServicesChangeDrivenPush event) {
@@ -99,8 +118,11 @@ public class S7CyclicEvent implements S7Event {
         map.put(Fields.TYPE.name(), "CYCEVENT");         
         map.put(Fields.TIMESTAMP.name(),this.timeStamp);
         map.put(Fields.JOBID.name(), jobid);
-        map.put(Fields.ITEMSCOUNT.name(), event.getItemsCount());        
-        for (int i=0; i<event.getItemsCount(); i++){
+        map.put(Fields.ITEMSCOUNT.name(), event.getItemsCount());  
+        int[] n = new int[1];
+        n[0] = 0;
+        request.getTagNames().forEach(tagname -> {
+            int i = n[0];
             map.put(Fields.RETURNCODE_.name()+i, event.getItems().get(i).getReturnCode().getValue());
             map.put(Fields.TRANSPORTSIZE_.name()+i, event.getItems().get(i).getTransportSize().getValue());
             byte[] buffer = new byte[event.getItems().get(i).getData().size()];
@@ -109,8 +131,20 @@ public class S7CyclicEvent implements S7Event {
                     buffer[j] = s.byteValue();
                     j ++;                
                 });
-            map.put(Fields.DATA_.name()+i, buffer);  
-        }
+            map.put(tagname, buffer); 
+            n[0]++;
+        });        
+//        for (int i=0; i<event.getItemsCount(); i++){
+//            map.put(Fields.RETURNCODE_.name()+i, event.getItems().get(i).getReturnCode().getValue());
+//            map.put(Fields.TRANSPORTSIZE_.name()+i, event.getItems().get(i).getTransportSize().getValue());
+//            byte[] buffer = new byte[event.getItems().get(i).getData().size()];
+//            j = 0;
+//            event.getItems().get(i).getData().forEach(s->{
+//                    buffer[j] = s.byteValue();
+//                    j ++;                
+//                });
+//            map.put(Fields.DATA_.name()+i, buffer);  
+//        }
     }    
     
     public S7CyclicEvent(PlcSubscriptionRequest request, short jobid, S7PayloadUserDataItemCyclicServicesSubscribeResponse event) {
@@ -121,7 +155,10 @@ public class S7CyclicEvent implements S7Event {
         map.put(Fields.TIMESTAMP.name(),this.timeStamp);
         map.put(Fields.JOBID.name(), jobid);
         map.put(Fields.ITEMSCOUNT.name(), event.getItemsCount());
-        for (int i=0; i<event.getItemsCount(); i++){
+        int[] n = new int[1];
+        n[0] = 0;
+        request.getTagNames().forEach(tagname -> {
+            int i = n[0];
             map.put(Fields.RETURNCODE_.name()+i, event.getItems().get(i).getReturnCode().getValue());
             map.put(Fields.TRANSPORTSIZE_.name()+i, event.getItems().get(i).getTransportSize().getValue());
             byte[] buffer = new byte[event.getItems().get(i).getData().size()];
@@ -130,8 +167,20 @@ public class S7CyclicEvent implements S7Event {
                     buffer[j] = s.byteValue();
                     j ++;                
                 });
-            map.put(Fields.DATA_.name()+i, buffer); 
-        }            
+            map.put(tagname, buffer); 
+            n[0]++;
+        });
+//        for (int i=0; i<event.getItemsCount(); i++){
+//            map.put(Fields.RETURNCODE_.name()+i, event.getItems().get(i).getReturnCode().getValue());
+//            map.put(Fields.TRANSPORTSIZE_.name()+i, event.getItems().get(i).getTransportSize().getValue());
+//            byte[] buffer = new byte[event.getItems().get(i).getData().size()];
+//            j = 0;
+//            event.getItems().get(i).getData().forEach(s->{
+//                    buffer[j] = s.byteValue();
+//                    j ++;                
+//                });
+//            map.put(Fields.DATA_.name()+i, buffer); 
+//        }            
     }
 
     public S7CyclicEvent(PlcSubscriptionRequest request, short jobid, S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponse event) {
@@ -142,7 +191,10 @@ public class S7CyclicEvent implements S7Event {
         map.put(Fields.TIMESTAMP.name(),this.timeStamp);
         map.put(Fields.JOBID.name(), jobid);
         map.put(Fields.ITEMSCOUNT.name(), event.getItemsCount());
-        for (int i=0; i<event.getItemsCount(); i++){
+        int[] n = new int[1];
+        n[0] = 0;
+        request.getTagNames().forEach(tagname -> {
+            int i = n[0];
             map.put(Fields.RETURNCODE_.name()+i, event.getItems().get(i).getReturnCode().getValue());
             map.put(Fields.TRANSPORTSIZE_.name()+i, event.getItems().get(i).getTransportSize().getValue());
             byte[] buffer = new byte[event.getItems().get(i).getData().size()];
@@ -151,8 +203,20 @@ public class S7CyclicEvent implements S7Event {
                     buffer[j] = s.byteValue();
                     j ++;                
                 });
-            map.put(Fields.DATA_.name()+i, buffer); 
-        }            
+            map.put(tagname, buffer); 
+            n[0]++;
+        });             
+//        for (int i=0; i<event.getItemsCount(); i++){
+//            map.put(Fields.RETURNCODE_.name()+i, event.getItems().get(i).getReturnCode().getValue());
+//            map.put(Fields.TRANSPORTSIZE_.name()+i, event.getItems().get(i).getTransportSize().getValue());
+//            byte[] buffer = new byte[event.getItems().get(i).getData().size()];
+//            j = 0;
+//            event.getItems().get(i).getData().forEach(s->{
+//                    buffer[j] = s.byteValue();
+//                    j ++;                
+//                });
+//            map.put(Fields.DATA_.name()+i, buffer); 
+//        }            
     }    
     
     @Override
@@ -167,22 +231,22 @@ public class S7CyclicEvent implements S7Event {
 
     @Override
     public PlcReadRequest getRequest() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     public PlcValue getAsPlcValue() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     public PlcValue getPlcValue(String name) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     public int getNumberOfValues(String name) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException("Not supported yet."); 
     }
 
     @Override
@@ -193,54 +257,66 @@ public class S7CyclicEvent implements S7Event {
 
     @Override
     public Object getObject(String name, int index) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     public Collection<Object> getAllObjects(String name) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     public boolean isValidBoolean(String name) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return isValidBoolean(name, 0);
     }
 
     @Override
     public boolean isValidBoolean(String name, int index) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+       try {
+           boolean dummy = getBoolean(name, index);
+           return true;
+       } catch (Exception ex) {
+           return false;
+       }
     }
 
     @Override
     public Boolean getBoolean(String name) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return getBoolean(name, 0);
     }
 
     @Override
     public Boolean getBoolean(String name, int index) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+       if (!(map.get(name) instanceof byte[])) 
+            throw new UnsupportedOperationException("Field is not a buffer of bytes. Required byte[] type.");     
+        ByteBuf byteBuf = Unpooled.wrappedBuffer((byte[]) map.get(name));
+        int pos = index * 1;
+        return byteBuf.getBoolean(pos);
     }
 
     @Override
     public Collection<Boolean> getAllBooleans(String name) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     public boolean isValidByte(String name) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return isValidByte(name, 0);
     }
 
     @Override
     public boolean isValidByte(String name, int index) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+       try {
+           byte dummy = getByte(name, index);
+           return true;
+       } catch (Exception ex) {
+           return false;
+       }
     }
 
     @Override
     public Byte getByte(String name) {
-       if (!(map.get(name) instanceof Byte)) 
-            throw new UnsupportedOperationException("Field is not a Byte. Required Byte type.");
-        return (byte) map.get(name);
+        return getByte(name, 0);
     }
 
     @Override
@@ -248,7 +324,7 @@ public class S7CyclicEvent implements S7Event {
        if (!(map.get(name) instanceof byte[])) 
             throw new UnsupportedOperationException("Field is not a buffer of bytes. Required byte[] type.");     
         ByteBuf byteBuf = Unpooled.wrappedBuffer((byte[]) map.get(name));
-        int pos = index*Byte.BYTES;
+        int pos = index * Byte.BYTES;
         return byteBuf.getByte(pos);
     }
 
@@ -266,18 +342,22 @@ public class S7CyclicEvent implements S7Event {
 
     @Override
     public boolean isValidShort(String name) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return isValidShort(name, 0);
     }
 
     @Override
     public boolean isValidShort(String name, int index) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+       try {
+           short dummy = getShort(name, index);
+           return true;
+       } catch (Exception ex) {
+           return false;
+       }
     }
 
     @Override
     public Short getShort(String name) {
-        if (!(map.get(name) instanceof Short)) return null;
-        return (short) map.get(name);
+        return getShort(name, 0);
     }
 
     @Override
@@ -285,8 +365,8 @@ public class S7CyclicEvent implements S7Event {
        if (!(map.get(name) instanceof byte[])) 
             throw new UnsupportedOperationException("Field is not a buffer of bytes. Required byte[] type.");    
         ByteBuf byteBuf = Unpooled.wrappedBuffer((byte[]) map.get(name));
-        int pos = index*Short.BYTES;
-        return byteBuf.getShort(index);
+        int pos = index * Short.BYTES;
+        return byteBuf.getShort(pos);
     }
 
     @Override
@@ -301,17 +381,22 @@ public class S7CyclicEvent implements S7Event {
 
     @Override
     public boolean isValidInteger(String name) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return  isValidInteger(name, 0);
     }
 
     @Override
     public boolean isValidInteger(String name, int index) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+       try {
+           int dummy = getInteger(name, index);
+           return true;
+       } catch (Exception ex) {
+           return false;
+       }
     }
 
     @Override
     public Integer getInteger(String name) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return getInteger(name, 0);
     }
 
     @Override
@@ -319,7 +404,7 @@ public class S7CyclicEvent implements S7Event {
        if (!(map.get(name) instanceof byte[])) 
             throw new UnsupportedOperationException("Field is not a buffer of bytes. Required byte[] type.");     
         ByteBuf byteBuf = Unpooled.wrappedBuffer((byte[]) map.get(name));
-        int pos = index*Integer.BYTES;
+        int pos = index * Integer.BYTES;
         return byteBuf.getInt(pos);
     }
 
@@ -335,42 +420,47 @@ public class S7CyclicEvent implements S7Event {
 
     @Override
     public boolean isValidBigInteger(String name) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     public boolean isValidBigInteger(String name, int index) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException("Not supported yet."); 
     }
 
     @Override
     public BigInteger getBigInteger(String name) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     public BigInteger getBigInteger(String name, int index) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     public Collection<BigInteger> getAllBigIntegers(String name) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     public boolean isValidLong(String name) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return isValidLong(name, 0);
     }
 
     @Override
     public boolean isValidLong(String name, int index) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+       try {
+           long dummy = getLong(name, index);
+           return true;
+       } catch (Exception ex) {
+           return false;
+       }
     }
 
     @Override
     public Long getLong(String name) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return getLong(name, 0);
     }
 
     @Override
@@ -394,17 +484,22 @@ public class S7CyclicEvent implements S7Event {
 
     @Override
     public boolean isValidFloat(String name) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return isValidFloat(name, 0);
     }
 
     @Override
     public boolean isValidFloat(String name, int index) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+       try {
+           float dummy = getFloat(name, index);
+           return true;
+       } catch (Exception ex) {
+           return false;
+       }
     }
 
     @Override
     public Float getFloat(String name) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return getFloat(name, 0);
     }
 
     @Override
@@ -428,17 +523,22 @@ public class S7CyclicEvent implements S7Event {
 
     @Override
     public boolean isValidDouble(String name) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return isValidDouble(name, 0);
     }
 
     @Override
     public boolean isValidDouble(String name, int index) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+       try {
+           double dummy = getDouble(name, index);
+           return true;
+       } catch (Exception ex) {
+           return false;
+       }
     }
 
     @Override
     public Double getDouble(String name) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return getDouble(name, 0);
     }
 
     @Override
@@ -462,37 +562,42 @@ public class S7CyclicEvent implements S7Event {
 
     @Override
     public boolean isValidBigDecimal(String name) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     public boolean isValidBigDecimal(String name, int index) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     public BigDecimal getBigDecimal(String name) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     public BigDecimal getBigDecimal(String name, int index) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     public Collection<BigDecimal> getAllBigDecimals(String name) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     public boolean isValidString(String name) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return isValidString(name, 0);
     }
 
     @Override
     public boolean isValidString(String name, int index) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        try {
+            String dummy = getString(name, index);
+            return true;
+        } catch (Exception ex) {
+            return false;
+        }
     }
 
     @Override
@@ -505,102 +610,175 @@ public class S7CyclicEvent implements S7Event {
 
     @Override
     public String getString(String name, int index) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     public Collection<String> getAllStrings(String name) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     public boolean isValidTime(String name) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return isValidTime(name, 0);
     }
 
     @Override
     public boolean isValidTime(String name, int index) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        try {
+            LocalTime dummy = getTime(name, index);
+            return true;
+        } catch (Exception ex) {
+            return false;
+        }
     }
 
     @Override
     public LocalTime getTime(String name) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return getTime(name, 0);
     }
 
+    /*
+    * In S7, data type TIME occupies one double word.
+    * The value is in milliseconds (ms).
+    */
     @Override
     public LocalTime getTime(String name, int index) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+       if (!(map.get(name) instanceof byte[])) 
+            throw new UnsupportedOperationException("Field is not a buffer of bytes. Required byte[] type.");     
+        ByteBuf byteBuf = Unpooled.wrappedBuffer((byte[]) map.get(name));
+        int pos = index * Integer.BYTES;
+        int value = byteBuf.getInt(pos);
+        Duration dr = StaticHelper.S7TimeToDuration(value);
+        LocalTime time = LocalTime.of((int) dr.toHoursPart(), (int) dr.toMinutesPart(), (int) dr.toSecondsPart(), (int) dr.toNanosPart());
+        return time;
     }
 
     @Override
     public Collection<LocalTime> getAllTimes(String name) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if (!(map.get(name) instanceof byte[])) 
+            throw new UnsupportedOperationException("Field is not a buffer of bytes. Required byte[] type.");  
+        ByteBuf byteBuf = Unpooled.wrappedBuffer((byte[]) map.get(name));
+        int nitems = (byteBuf.capacity() / Integer.BYTES);
+        
+        List<LocalTime> items = new ArrayList();
+        
+        for (int i = 0; i < nitems; i++) {
+            items.add(getTime(name, i));
+        }
+       
+       return items;
     }
 
     @Override
     public boolean isValidDate(String name) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return isValidDate(name, 0);
     }
 
     @Override
     public boolean isValidDate(String name, int index) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        try {
+            LocalDate dummy = getDate(name, index);
+            return true;
+        } catch (Exception ex) {
+            return false;
+        }
     }
 
     @Override
     public LocalDate getDate(String name) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return getDate(name, 0);
     }
 
     @Override
     public LocalDate getDate(String name, int index) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+       if (!(map.get(name) instanceof byte[])) 
+            throw new UnsupportedOperationException("Field is not a buffer of bytes. Required byte[] type.");     
+        ByteBuf byteBuf = Unpooled.wrappedBuffer((byte[]) map.get(name));
+        int pos = index * Short.BYTES;
+        short value = byteBuf.getShort(pos);
+        LocalDate date = StaticHelper.S7DateToLocalDate(value);
+
+        return date;
     }
 
     @Override
     public Collection<LocalDate> getAllDates(String name) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if (!(map.get(name) instanceof byte[])) 
+            throw new UnsupportedOperationException("Field is not a buffer of bytes. Required byte[] type.");  
+        ByteBuf byteBuf = Unpooled.wrappedBuffer((byte[]) map.get(name));
+        int nitems = (byteBuf.capacity() / Short.BYTES);
+        
+        List<LocalDate> items = new ArrayList();
+        
+        for (int i = 0; i < nitems; i++) {
+            items.add(getDate(name, i));
+        }
+       
+       return items;
     }
 
     @Override
     public boolean isValidDateTime(String name) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return isValidDateTime(name, 0);
     }
 
     @Override
     public boolean isValidDateTime(String name, int index) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        try {
+            LocalDateTime dummy = getDateTime(name, index);
+            return true;
+        } catch (Exception ex) {
+            return false;
+        }
     }
 
     @Override
     public LocalDateTime getDateTime(String name) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return getDateTime(name, 0);
     }
 
     @Override
     public LocalDateTime getDateTime(String name, int index) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+       if (!(map.get(name) instanceof byte[])) 
+            throw new UnsupportedOperationException("Field is not a buffer of bytes. Required byte[] type.");     
+        ByteBuf byteBuf = Unpooled.wrappedBuffer((byte[]) map.get(name));
+        int pos = index * Long.BYTES;
+
+        LocalDateTime datetime = StaticHelper.S7DateTimeToLocalDateTime(byteBuf.slice(pos, Long.BYTES));
+
+        return datetime;
     }
 
     @Override
     public Collection<LocalDateTime> getAllDateTimes(String name) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if (!(map.get(name) instanceof byte[])) 
+            throw new UnsupportedOperationException("Field is not a buffer of bytes. Required byte[] type.");  
+        ByteBuf byteBuf = Unpooled.wrappedBuffer((byte[]) map.get(name));
+        int nitems = (byteBuf.capacity() / Long.BYTES);
+        
+        List<LocalDateTime> items = new ArrayList();
+        
+        for (int i = 0; i < nitems; i++) {
+            items.add(getDateTime(name, i));
+        }
+       
+       return items;
     }
 
     @Override
     public Collection<String> getTagNames() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     public PlcTag getTag(String name) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        throw new UnsupportedOperationException("Not supported yet.");
     }      
 
     @Override
     public PlcResponseCode getResponseCode(String name) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException("Not supported yet.");
     }  
   
     

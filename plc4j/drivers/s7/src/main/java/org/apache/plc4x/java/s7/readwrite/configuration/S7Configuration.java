@@ -76,20 +76,20 @@ public class S7Configuration implements Configuration, TcpTransportConfiguration
     public String controllerType;
     
     @ConfigurationParameter("read-timeout")
-    @IntDefaultValue(8)    
-    public int readTimeout = 8;
+    @IntDefaultValue(0)    
+    public int readTimeout = 0;
 
     @ConfigurationParameter("ping")  
     @BooleanDefaultValue(false)    
     public boolean ping = false;    
     
     @ConfigurationParameter("ping-time")  
-    @IntDefaultValue(-1)      
-    public int pingTime = -1; 
+    @IntDefaultValue(0)      
+    public int pingTime = 0; 
     
     @ConfigurationParameter("retry-time")  
-    @IntDefaultValue(4)      
-    public int retryTime = 4;    
+    @IntDefaultValue(0)      
+    public int retryTime = 0;    
     
 
     public int getLocalRack() {
@@ -213,7 +213,7 @@ public class S7Configuration implements Configuration, TcpTransportConfiguration
     }      
        
     public int getRetryTime() {
-        return pingTime;
+        return retryTime;
     }
 
     public void setRetryTime(int retryTime) {

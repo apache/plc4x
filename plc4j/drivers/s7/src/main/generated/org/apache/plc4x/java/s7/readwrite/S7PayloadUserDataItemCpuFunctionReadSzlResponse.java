@@ -72,7 +72,6 @@ public class S7PayloadUserDataItemCpuFunctionReadSzlResponse extends S7PayloadUs
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("S7PayloadUserDataItemCpuFunctionReadSzlResponse");
 
     // Array Field (items)
@@ -109,8 +108,6 @@ public class S7PayloadUserDataItemCpuFunctionReadSzlResponse extends S7PayloadUs
       throws ParseException {
     readBuffer.pullContext("S7PayloadUserDataItemCpuFunctionReadSzlResponse");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte[] items = readBuffer.readByteArray("items", Math.toIntExact(dataLength));

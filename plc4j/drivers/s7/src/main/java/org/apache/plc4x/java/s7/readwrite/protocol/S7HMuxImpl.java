@@ -30,8 +30,11 @@ import io.netty.handler.timeout.ReadTimeoutHandler;
 import io.netty.util.AttributeKey;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import org.apache.plc4x.java.spi.events.ConnectEvent;
+import org.apache.plc4x.java.spi.events.ConnectedEvent;
 import org.apache.plc4x.java.spi.events.DisconnectEvent;
+import org.apache.plc4x.java.spi.events.DisconnectedEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -59,6 +62,15 @@ public class S7HMuxImpl extends MessageToMessageCodec<ByteBuf, ByteBuf> implemen
     * Default value: false
     */
     final static AttributeKey<Boolean> IS_CONNECTED = AttributeKey.valueOf("IS_CONNECTED");
+    
+    /*
+    * This attribute indicates to the other handlers that the channel is connected
+    * or disconnected because a switch is being made between TCP channels or 
+    * both TCP channels are disconnected.
+    * Default value: false
+    */
+    final static AttributeKey<Boolean> WAS_CONNECTED = AttributeKey.valueOf("WAS_CONNECTED");    
+    
     
     /*
     * This attribute indicates to the other handlers which channel is being used,
@@ -118,7 +130,6 @@ public class S7HMuxImpl extends MessageToMessageCodec<ByteBuf, ByteBuf> implemen
     */
     @Override
     protected void encode(ChannelHandlerContext ctx, ByteBuf outbb, List<Object> list) throws Exception { 
-        //System.out.println("Llego aqui: " + ByteBufUtil.hexDump(outbb));
         if ((embed_ctx == null) && (ctx.channel() instanceof EmbeddedChannel)) embed_ctx = ctx;
         if ((tcp_channel != null)  && (embed_ctx == ctx)){  
             tcp_channel.writeAndFlush(outbb.copy());
@@ -133,7 +144,7 @@ public class S7HMuxImpl extends MessageToMessageCodec<ByteBuf, ByteBuf> implemen
     * the pipeline of the channel "embeded_channel"
     */
     @Override
-    protected void decode(ChannelHandlerContext ctx, ByteBuf inbb, List<Object> list) throws Exception {    
+    protected void decode(ChannelHandlerContext ctx, ByteBuf inbb, List<Object> list) throws Exception {   
         embed_ctx.fireChannelRead(inbb.copy());
     }
 
@@ -157,28 +168,31 @@ public class S7HMuxImpl extends MessageToMessageCodec<ByteBuf, ByteBuf> implemen
 
     /*
     * The events detected here flow from the S7ProtocolLogic object.
-    * Upon receiving the "ConnectEvent" event, we must safely add the watchdog 
+    * Upon receiving the "ConnectedEvent" event, we must safely add the watchdog 
     * to the pipeline of the "tcp_channel" connection.
     * The supervision time can be defined in the connection URL, 
-    * the default value being 8 secs, this value being defined experimentally.
+    * the default value being 0 secs disabling this function.
+    * This value being defined experimentally, a typical value is 8 seconds.
     */
     @Override
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
         super.userEventTriggered(ctx, evt); 
         logger.info(LocalTime.now().toString() + " userEventTriggered: " + ctx.name() + " Event: "  + evt);         
-        if (evt instanceof ConnectEvent) {
+            if (evt instanceof ConnectedEvent) {
             try {
                 tcp_channel.pipeline().remove("watchdog");                 
             } catch (Exception ex){
                 logger.info(ex.toString());
             }
             try {
-                tcp_channel.pipeline().addFirst("watchdog", new ReadTimeoutHandler(30)); 
+                if (embeded_channel.attr(READ_TIME_OUT).get() > 0)
+                    tcp_channel.pipeline().addFirst("watchdog", 
+                            new ReadTimeoutHandler(embeded_channel.attr(READ_TIME_OUT).get())); 
                 if (tcp_channel.isActive()) {
-                    embeded_channel.attr(IS_CONNECTED).set(true);
+                    embeded_channel.attr(IS_CONNECTED).set(true);                   
                  } else {
                     embeded_channel.attr(IS_CONNECTED).set(false);
-                }               
+                }     
             } catch (Exception ex){
                 logger.info(ex.toString());                
             }            
@@ -213,47 +227,53 @@ public class S7HMuxImpl extends MessageToMessageCodec<ByteBuf, ByteBuf> implemen
         super.channelUnregistered(ctx); 
         logger.debug(LocalTime.now().toString() + " channelUnregistered: " + ctx.name() );        
         String strCanal = (tcp_channel == primary_channel)?"PRIMARY":"SECONDARY";
-        logger.debug("Unregistered of channel: " + strCanal);
+        logger.info("Unregistered of channel: " + strCanal);
         //TODO: If embedded channel is closed, we need close all channels
         if (ctx == embed_ctx) return;        
         
-        if (tcp_channel == ctx.channel())
-        embeded_channel.attr(IS_CONNECTED).set(false);
+        if (tcp_channel == ctx.channel()) {
+            embeded_channel.attr(IS_CONNECTED).set(false);  
+            embeded_channel.attr(WAS_CONNECTED).set(true);              
+            embeded_channel.pipeline().fireUserEventTriggered(new DisconnectedEvent());           
+        }
         
         logger.info(embed_ctx.executor().toString());
                 
         if ((tcp_channel == primary_channel) &&
             (primary_channel == ctx.channel()))
         if ((!primary_channel.isActive()) &&
-            (secondary_channel != null)) {
-        if (secondary_channel.isActive())
+            (secondary_channel != null)) 
+        if (secondary_channel.isActive()) {
             synchronized(tcp_channel) {
                 logger.info("Using secondary TCP channel.");
                 tcp_channel =  secondary_channel;
                 embeded_channel.attr(IS_PRIMARY).set(false);
-                embeded_channel.pipeline().fireUserEventTriggered(new ConnectEvent());   
+                embeded_channel.pipeline().fireUserEventTriggered(new ConnectEvent());           
             }
         };
-
+        
 
         if ((tcp_channel == secondary_channel) &&
             (secondary_channel == ctx.channel()))
-        if ((!secondary_channel.isActive() &&
-            (primary_channel.isActive()))) {
-            synchronized(tcp_channel) {         
+        if ((!secondary_channel.isActive()) &&
+            (primary_channel != null)) 
+        if (primary_channel.isActive()) {
+            synchronized(tcp_channel) { 
                 logger.info("Using primary TCP channel.");               
                 tcp_channel = primary_channel;
-                embeded_channel.attr(IS_PRIMARY).set(true);                
-                embeded_channel.pipeline().fireUserEventTriggered(new ConnectEvent());             
+                embeded_channel.attr(IS_PRIMARY).set(true);                             
+                embeded_channel.pipeline().fireUserEventTriggered(new ConnectEvent());            
             }
-        } 
+        }
+
     }
 
 
     @Override
     public void setEmbededhannel(Channel embeded_channel) {
         this.embeded_channel = embeded_channel;
-        this.embeded_channel.attr(IS_CONNECTED).set(false);  
+        this.embeded_channel.attr(IS_CONNECTED).set(false); 
+        this.embeded_channel.attr(WAS_CONNECTED).set(false);        
         this.embeded_channel.attr(IS_PRIMARY).set(true);         
         this.embeded_channel.attr(READ_TIME_OUT).set(8);
         this.embeded_channel.attr(IS_PING_ACTIVE).set(false); 
@@ -261,25 +281,35 @@ public class S7HMuxImpl extends MessageToMessageCodec<ByteBuf, ByteBuf> implemen
         this.embeded_channel.attr(RETRY_TIME).set(8); 
     }        
     
+    @Override   
     public void setPrimaryChannel(Channel primary_channel) {       
         if ((this.primary_channel == null) && (tcp_channel == null)){
             if (primary_channel != null){    
                 this.primary_channel = primary_channel;
                 tcp_channel = primary_channel; 
-                embeded_channel.attr(IS_PRIMARY).set(true);                 
+                embeded_channel.attr(IS_PRIMARY).set(true);              
             }
-        } else if ((!this.primary_channel.isActive()) && (tcp_channel == secondary_channel)){
+        } else if ((this.primary_channel == null) || 
+                  ((tcp_channel == secondary_channel)) && (tcp_channel.isActive())){
+            this.primary_channel = primary_channel;    
+            
+        } else if ((!this.primary_channel.isActive()) && (tcp_channel == secondary_channel)){          
             this.primary_channel = primary_channel;
-        }  else if ((!this.primary_channel.isActive()) && (tcp_channel == this.primary_channel)){
+            
+        }  else if (((!this.primary_channel.isActive()) && (tcp_channel == this.primary_channel)) ||
+                    (primary_channel.isActive())) {
             synchronized(tcp_channel) {
                 tcp_channel.close();
                 this.primary_channel = primary_channel;
                 tcp_channel =  primary_channel;
-                embeded_channel.attr(IS_PRIMARY).set(true);                
-                if (tcp_channel.isActive()) {
-                    embed_ctx.fireUserEventTriggered(new ConnectEvent());                               
+                embeded_channel.attr(IS_PRIMARY).set(true);
+                
+                if (tcp_channel.isActive()) {                
+                    embed_ctx.fireUserEventTriggered(new ConnectEvent()); 
                 }
             }
+        } else if (primary_channel.isActive()) {
+
         }        
     }
 
@@ -291,11 +321,16 @@ public class S7HMuxImpl extends MessageToMessageCodec<ByteBuf, ByteBuf> implemen
                 tcp_channel =  secondary_channel;    
                 embeded_channel.attr(IS_PRIMARY).set(false);                
             }
-        } else if ((this.secondary_channel == null) || (tcp_channel == primary_channel)){
+            
+        } else if ((this.secondary_channel == null) || 
+                  ((tcp_channel == primary_channel)) && (tcp_channel.isActive())){
             this.secondary_channel = secondary_channel;
+            
         } else if ((!this.secondary_channel.isActive()) && (tcp_channel == primary_channel)){
             this.secondary_channel = secondary_channel;
-        }  else if ((!this.secondary_channel.isActive()) && (tcp_channel == this.secondary_channel)){
+            
+        }  else if (((!this.secondary_channel.isActive()) && (tcp_channel == this.secondary_channel)) ||
+                    (secondary_channel.isActive())){
             synchronized(tcp_channel) {
                 tcp_channel.close();                
                 this.secondary_channel = secondary_channel;
@@ -306,6 +341,11 @@ public class S7HMuxImpl extends MessageToMessageCodec<ByteBuf, ByteBuf> implemen
                 embed_ctx.fireUserEventTriggered(new ConnectEvent());                               
             }                 
         }
+    }
+
+    @Override
+    public Channel getTCPChannel() {
+        return tcp_channel;
     }
              
     

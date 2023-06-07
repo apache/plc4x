@@ -93,7 +93,6 @@ public class S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest extends S7Pa
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest");
 
     // Simple Field (Subscription)
@@ -158,8 +157,6 @@ public class S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest extends S7Pa
       throws ParseException {
     readBuffer.pullContext("S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short Subscription = readSimpleField("Subscription", readUnsignedShort(readBuffer, 8));

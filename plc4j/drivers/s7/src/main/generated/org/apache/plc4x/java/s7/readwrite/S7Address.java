@@ -50,7 +50,6 @@ public abstract class S7Address implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("S7Address");
 
     // Discriminator Field (addressType) (Used as input to a switch field)
@@ -89,8 +88,6 @@ public abstract class S7Address implements Message {
   public static S7Address staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("S7Address");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short addressType = readDiscriminatorField("addressType", readUnsignedShort(readBuffer, 8));

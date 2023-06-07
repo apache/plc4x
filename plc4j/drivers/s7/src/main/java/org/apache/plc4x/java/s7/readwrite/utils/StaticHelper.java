@@ -2138,7 +2138,8 @@ public class StaticHelper {
     
     public static int RightShift3(final ReadBuffer buffer, DataTransportSize tsize) throws ParseException {
         int value = 0;
-        if (tsize == DataTransportSize.OCTET_STRING){
+        if ((tsize == DataTransportSize.OCTET_STRING) ||
+            (tsize == DataTransportSize.REAL))    {
             value = buffer.readUnsignedInt(16);
         } else {
             value = buffer.readUnsignedInt(16) >> 3;

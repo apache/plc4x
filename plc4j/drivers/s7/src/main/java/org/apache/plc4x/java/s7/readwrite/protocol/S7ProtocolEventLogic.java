@@ -28,6 +28,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionEvent;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionResponse;
@@ -57,8 +58,8 @@ public class S7ProtocolEventLogic implements PlcSubscriber {
     private Map<EventType, Map<PlcConsumerRegistration, Consumer>> mapIndex = new HashMap(); 
     private Map<EventType, PlcSubscriptionHandle> eventtypehandles =  new HashMap(); ;
     
-    private final Runnable runnProcessor;
-    private final Runnable runnDispacher;
+    private final Runnable runProcessor;
+    private final Runnable runDispacher;
 
     
     private Thread processor;
@@ -66,10 +67,21 @@ public class S7ProtocolEventLogic implements PlcSubscriber {
 
     public S7ProtocolEventLogic(BlockingQueue eventqueue) {
         this.eventqueue = eventqueue;
-        runnProcessor = new ObjectProcessor(eventqueue,dispachqueue);
-        runnDispacher = new EventDispacher(dispachqueue);
-        processor = new Thread(runnProcessor);
-        dispacher = new Thread(runnDispacher);        
+        runProcessor = new ObjectProcessor(eventqueue,dispachqueue);
+        runDispacher = new EventDispacher(dispachqueue);
+//        processor = new Thread(runnProcessor);
+//        dispacher = new Thread(runnDispacher);    
+        processor = new BasicThreadFactory.Builder()
+                .namingPattern("plc4x-evt-processor-thread-%d")
+                .daemon(true)
+                .priority(Thread.MAX_PRIORITY)
+                .build().newThread(runProcessor);
+        
+        dispacher = new BasicThreadFactory.Builder()
+                .namingPattern("plc4x-evt-dispacher-thread-%d")
+                .daemon(true)
+                .priority(Thread.MAX_PRIORITY)
+                .build().newThread(runDispacher);        
     }
     
     public void start() {
@@ -78,8 +90,8 @@ public class S7ProtocolEventLogic implements PlcSubscriber {
     }
     
     public void stop(){
-        ((ObjectProcessor) runnProcessor).doShutdown();
-        ((EventDispacher) runnDispacher).doShutdown();
+        ((ObjectProcessor) runProcessor).doShutdown();
+        ((EventDispacher) runDispacher).doShutdown();
     }
     
     @Override
@@ -158,7 +170,7 @@ public class S7ProtocolEventLogic implements PlcSubscriber {
                     Logger.getLogger(S7ProtocolEventLogic.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-            System.out.println("ObjectProcessor Bye!");            
+            logger.info("ObjectProcessor Bye!");            
         }
 
         public void doShutdown(){
@@ -209,12 +221,19 @@ public class S7ProtocolEventLogic implements PlcSubscriber {
                             }
                         }else if (obj instanceof S7CyclicEvent) {  
                             if (mapIndex.containsKey(EventType.CYC)) {
+                                
                                 Map<PlcConsumerRegistration, Consumer> mapConsumers = mapIndex.get(EventType.CYC);
                                     if (cycDelayedObject != null) {                                                                          
                                         mapConsumers.forEach((x,y) -> y.accept(cycDelayedObject)); 
                                         cycDelayedObject = null;
                                     }                                                                       
-                                    mapConsumers.forEach((x,y) -> y.accept(obj)); 
+                                    mapConsumers.forEach((x,y) -> {
+                                        S7PlcSubscriptionHandle sh = (S7PlcSubscriptionHandle) x.getSubscriptionHandles().get(0);
+                                        Short id = Short.parseShort(sh.getEventId());
+                                        if (((S7CyclicEvent) obj).getMap().get("JOBID") == id)
+                                        y.accept(obj);
+                                    }); 
+                                    
                             } else {
                                 cycDelayedObject = obj;
                             }                           
@@ -224,7 +243,7 @@ public class S7ProtocolEventLogic implements PlcSubscriber {
                     Logger.getLogger(S7ProtocolEventLogic.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-            System.out.println("EventDispacher Bye!");
+            logger.info("EventDispacher Bye!");
         }
 
         public void doShutdown(){

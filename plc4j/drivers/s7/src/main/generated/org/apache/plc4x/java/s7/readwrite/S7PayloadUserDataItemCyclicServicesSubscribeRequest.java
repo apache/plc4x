@@ -93,7 +93,6 @@ public class S7PayloadUserDataItemCyclicServicesSubscribeRequest extends S7Paylo
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("S7PayloadUserDataItemCyclicServicesSubscribeRequest");
 
     // Simple Field (itemsCount)
@@ -153,8 +152,6 @@ public class S7PayloadUserDataItemCyclicServicesSubscribeRequest extends S7Paylo
       throws ParseException {
     readBuffer.pullContext("S7PayloadUserDataItemCyclicServicesSubscribeRequest");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int itemsCount = readSimpleField("itemsCount", readUnsignedInt(readBuffer, 16));

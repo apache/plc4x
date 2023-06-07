@@ -236,6 +236,151 @@ Default value: -1 seconds
 |===
 
 
+[plantuml, target="../../dt01", format=png, align="center"]
+....
+@startuml
+Title S7-comm driver diagram
+clock clk with period 1
+binary "PING" as PING
+binary "READ_TIMEOUT" as RTOUT
+binary "CONNECT" as CONNECT
+concise "tcp channel" as db
+
+@0
+PING is low
+CONNECT is high
+db is {-}
+
+@1
+CONNECT is low
+db is "0101"
+
+@2
+db is {-}
+
+@3
+db is "0101"
+
+@4
+
+@5
+PING is high
+db is "0101"
+
+@6
+PING is low
+db is "0101"
+
+@7
+
+@8
+
+
+@9
+PING is low
+db is {-}
+
+@10
+PING is high
+db is "0101"
+
+@11
+PING is low
+db is {-}
+
+@12
+
+@13
+PING is low
+db is "1010"
+
+@16
+db is {-}
+
+@PING
+@1<->@+4 : {ping-time}
+@enduml
+....
+
+[plantuml, target="../../dt02", format=png, align="center"]
+....
+
+Title S7-comm driver reconnection diagram
+clock clk with period 1
+binary "PING" as PING
+binary "READ_TIMEOUT" as RTOUT
+binary "CONNECT" as CONNECT
+concise "tcp channel" as db
+
+@0
+PING is low
+CONNECT is high
+db is {-}
+
+@1
+CONNECT is low
+
+@2
+db is {-}
+
+@3
+
+@4
+
+@5
+PING is high
+db is "0101"
+
+@6
+PING is low
+db is {-}
+
+@7
+
+@8
+
+@9
+PING is high : rise timeout
+
+@10
+PING is low
+RTOUT is low
+
+@11
+CONNECT is low
+
+@12
+
+@13
+PING is high : rise timeout
+
+@14
+PING is low
+RTOUT is high
+
+
+@15
+PING is low
+RTOUT is low
+CONNECT is high
+
+@16
+CONNECT is low
+db is "1010"
+
+@PING
+@1<->@+4 : {ping-time}
+
+@RTOUT
+@6<->@+8 : {read-timeout}
+
+highlight 14 to 16 : reconnect
+@enduml
+....
+
+
+
+
 ==== TWO
 
 After defining the URL, the connection is made. Driver selection from the URL is done via PLC4X's SPI support, so driver instantiation and mapping originating from the URL is done transparently by the Java SPI services.

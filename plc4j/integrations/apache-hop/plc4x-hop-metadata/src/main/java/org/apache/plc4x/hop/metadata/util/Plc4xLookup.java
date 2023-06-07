@@ -35,7 +35,7 @@ import org.openide.util.lookup.InstanceContent.Convertor;
 */
 public class Plc4xLookup extends AbstractLookup {
     private InstanceContent content = null;
-    private static Plc4xLookup def = new Plc4xLookup (); 
+    private static Plc4xLookup INSTANCE = new Plc4xLookup (); 
     
     public Plc4xLookup(InstanceContent content) {
         super(content);
@@ -61,7 +61,7 @@ public class Plc4xLookup extends AbstractLookup {
     }
 
     public static Plc4xLookup getDefault(){
-        return def;
+        return INSTANCE;
     }  
  
     private static final Convertor<Plc4xWrapperConnection , Plc4xWrapperConnection>  Plc4xConvertor = 

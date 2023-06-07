@@ -38,7 +38,7 @@ public enum EventType {
     }
   }
 
-  private short value;
+  private final short value;
 
   EventType(short value) {
     this.value = value;

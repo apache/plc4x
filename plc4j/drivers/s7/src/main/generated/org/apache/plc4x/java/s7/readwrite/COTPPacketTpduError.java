@@ -68,7 +68,6 @@ public class COTPPacketTpduError extends COTPPacket implements Message {
   protected void serializeCOTPPacketChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("COTPPacketTpduError");
 
     // Simple Field (destinationReference)
@@ -105,8 +104,6 @@ public class COTPPacketTpduError extends COTPPacket implements Message {
       ReadBuffer readBuffer, Integer cotpLen) throws ParseException {
     readBuffer.pullContext("COTPPacketTpduError");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int destinationReference =

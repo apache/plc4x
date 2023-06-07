@@ -61,7 +61,6 @@ public class S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest extends S7Payl
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest");
 
     writeBuffer.popContext("S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest");
@@ -86,8 +85,6 @@ public class S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest extends S7Payl
       throws ParseException {
     readBuffer.pullContext("S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest");

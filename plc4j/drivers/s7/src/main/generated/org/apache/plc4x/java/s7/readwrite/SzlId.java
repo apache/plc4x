@@ -64,7 +64,6 @@ public class SzlId implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("SzlId");
 
     // Simple Field (typeClass)
@@ -122,8 +121,6 @@ public class SzlId implements Message {
   public static SzlId staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("SzlId");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     SzlModuleTypeClass typeClass =

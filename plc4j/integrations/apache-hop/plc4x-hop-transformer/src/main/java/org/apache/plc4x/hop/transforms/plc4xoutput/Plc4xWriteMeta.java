@@ -185,7 +185,7 @@ public class Plc4xWriteMeta extends BaseTransformMeta<Plc4xWrite, Plc4xWriteData
    */
   @Override
   public ITransformIOMeta getTransformIOMeta() {
-    return new TransformIOMeta(false, true, false, false, false, false);
+    return new TransformIOMeta(true, true, false, false, false, false);
   }
 
   /**
@@ -295,10 +295,15 @@ public class Plc4xWriteMeta extends BaseTransformMeta<Plc4xWrite, Plc4xWriteData
   public List<Plc4xGeneratorField> getFields() {
     return fields;
   }  
-  
+
   /** @param fields The fields to set */
   public void setFields(List<Plc4xGeneratorField> fields) {
     this.fields = fields;
   }  
+  
+    @Override
+    public boolean supportsErrorHandling() {
+        return true;
+    }
   
 }
