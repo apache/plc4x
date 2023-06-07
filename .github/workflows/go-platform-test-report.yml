@@ -37,5 +37,5 @@ jobs:
         with:
           artifact: "golang-test-report-${{ matrix.os }}"
           name: "Golang Tests (OS: ${{ matrix.os }})"
-          path: '*.xml'
+          path: '**/*.xml'
           reporter: java-junit
