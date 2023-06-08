@@ -29,17 +29,12 @@ import org.apache.plc4x.java.profinet.device.*;
 import org.apache.plc4x.java.spi.configuration.ConfigurationFactory;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
-import org.pcap4j.core.PcapNativeException;
-import org.pcap4j.core.PcapNetworkInterface;
-import org.pcap4j.core.Pcaps;
-import org.pcap4j.util.Inet4NetworkAddress;
 
 import java.io.File;
-import java.net.Inet4Address;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
+import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -166,7 +161,7 @@ public class ProfinetConfigurationTests {
         }
 
         XmlMapper xmlMapper = new XmlMapper();
-        assertDoesNotThrow(() -> devices.get("DEVICE_NAME_1").getDeviceContext().setGsdFile(xmlMapper.readValue(new File("src/test/resources/gsdml.xml"), ProfinetISO15745Profile.class)));
+        assertDoesNotThrow(() -> devices.get("DEVICE_NAME_1").getDeviceContext().setGsdFile(xmlMapper.readValue(new InputStreamReader(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("gsdml.xml"))), ProfinetISO15745Profile.class)));
     }
 
     @Test
@@ -190,7 +185,7 @@ public class ProfinetConfigurationTests {
         }
 
         XmlMapper xmlMapper = new XmlMapper();
-        assertDoesNotThrow(() -> devices.get("DEVICE_NAME_1").getDeviceContext().setGsdFile(xmlMapper.readValue(new File("src/test/resources/gsdml.xml"), ProfinetISO15745Profile.class)));
+        assertDoesNotThrow(() -> devices.get("DEVICE_NAME_1").getDeviceContext().setGsdFile(xmlMapper.readValue(new InputStreamReader(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("gsdml.xml"))), ProfinetISO15745Profile.class)));
     }
 
     @Test
@@ -300,7 +295,7 @@ public class ProfinetConfigurationTests {
         }
         XmlMapper xmlMapper = new XmlMapper();
 
-        assertDoesNotThrow(() -> devices.get("DEVICE NAME 1").getDeviceContext().setGsdFile(xmlMapper.readValue(new File("src/test/resources/gsdml.xml"), ProfinetISO15745Profile.class)));
+        assertDoesNotThrow(() -> devices.get("DEVICE NAME 1").getDeviceContext().setGsdFile(xmlMapper.readValue(new InputStreamReader(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("gsdml.xml"))), ProfinetISO15745Profile.class)));
 
         for (String deviceName : deviceNames) {
             assert(devices.containsKey(deviceName));

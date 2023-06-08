@@ -24,8 +24,9 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 
-import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -38,7 +39,7 @@ public class ProfinetGSDMLParseTest {
     public void setUp() {
         try {
             XmlMapper xmlMapper = new XmlMapper();
-            this.gsdml = xmlMapper.readValue(new File("src/test/resources/gsdml.xml"), ProfinetISO15745Profile.class);
+            this.gsdml = xmlMapper.readValue(new InputStreamReader(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("gsdml.xml"))), ProfinetISO15745Profile.class);
         } catch(IOException e) {
             assert false;
         }
@@ -51,7 +52,7 @@ public class ProfinetGSDMLParseTest {
 
     @Test
     public void readGsdmlFileStartupMode()  {
-        ProfinetInterfaceSubmoduleItem interfaceModule = (ProfinetInterfaceSubmoduleItem) this.gsdml.getProfileBody().getApplicationProcess().getDeviceAccessPointList().get(0).getSystemDefinedSubmoduleList().getInterfaceSubmodules().get(0);
+        ProfinetInterfaceSubmoduleItem interfaceModule = this.gsdml.getProfileBody().getApplicationProcess().getDeviceAccessPointList().get(0).getSystemDefinedSubmoduleList().getInterfaceSubmodules().get(0);
         assertEquals(interfaceModule.getApplicationRelations().getStartupMode(), "Advanced");
     }
 

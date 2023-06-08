@@ -20,10 +20,7 @@ package org.apache.plc4x.java.profinet;
 
 import org.apache.plc4x.java.DefaultPlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
-import org.apache.plc4x.java.api.messages.PlcBrowseRequest;
-import org.apache.plc4x.java.api.messages.PlcBrowseResponse;
-import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
-import org.apache.plc4x.java.api.messages.PlcSubscriptionResponse;
+import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.profinet.device.ProfinetSubscriptionHandle;
 import org.apache.plc4x.java.profinet.tag.ProfinetTag;
@@ -45,6 +42,11 @@ public class ManualProfinetIoTest {
 
         PlcBrowseRequest browseRequest = connection.browseRequestBuilder().addQuery("all", "*").build();
         PlcBrowseResponse plcBrowseResponse = browseRequest.execute().get(4000, TimeUnit.MILLISECONDS);
+        for (String queryName : plcBrowseResponse.getQueryNames()) {
+            for (PlcBrowseItem value : plcBrowseResponse.getValues(queryName)) {
+                System.out.println(value.getTag().getAddressString());
+            }
+        }
         System.out.println(plcBrowseResponse);
         // Wireshark filters:
         // - S7 1200: eth.addr == 001c0605bcdc
