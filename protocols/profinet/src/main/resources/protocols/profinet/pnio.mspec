@@ -315,19 +315,27 @@
             [array    PnIoCm_ExpectedSubmoduleBlockReqApi apis   count         'numberOfApis'       ]
         ]
         ['MODULE_DIFF_BLOCK' PnIoCm_Block_ModuleDiff
-            [implicit      uint 16          blockLength      'lengthInBytes - 4']
-            [simple        uint 8           blockVersionHigh                    ]
-            [simple        uint 8           blockVersionLow                     ]
-            [implicit uint 16                numberOfApis         'COUNT(apis)'                     ]
-            [array    PnIoCm_ModuleDiffBlockApi apis              count         'numberOfApis'      ]
+            [implicit uint 16                   blockLength      'lengthInBytes - 4'          ]
+            [simple   uint 8                    blockVersionHigh                              ]
+            [simple   uint 8                    blockVersionLow                               ]
+            [implicit uint 16                   numApis          'COUNT(apis)'                ]
+            [array    PnIoCm_ModuleDiffBlockApi apis             count               'numApis']
         ]
         ['AR_SERVER_BLOCK' PnIoCm_Block_ArServer
-            [implicit      uint 16          blockLength      'lengthInBytes - 4']
-            [simple        uint 8           blockVersionHigh                    ]
-            [simple        uint 8           blockVersionLow                     ]
-            [simple   PascalString16BitLength            stationName            ]
-            [padding  uint 8      pad '0x00'          '20 - 6 - (stationName.stringLength)'              ]
+            [implicit uint 16                 blockLength      'lengthInBytes - 4'                                      ]
+            [simple   uint 8                  blockVersionHigh                                                          ]
+            [simple   uint 8                  blockVersionLow                                                           ]
+            [simple   PascalString16BitLength stationName                                                               ]
+            [padding  uint 8                  pad              '0x00'              '20 - 6 - (stationName.stringLength)']
         ]
+        ['REAL_IDENTIFICATION_DATA' PnIoCm_Block_RealIdentificationData
+            [implicit uint 16                      blockLength      'lengthInBytes - 4'          ]
+            [simple   uint 8                       blockVersionHigh                              ]
+            [simple   uint 8                       blockVersionLow                               ]
+            [implicit uint 16                      numApis          'COUNT(apis)'                ]
+            [array    PnIoCm_RealIdentificationApi apis             count               'numApis']
+        ]
+
         // https://cache.industry.siemens.com/dl/files/491/26435491/att_859456/v1/PGH_IO-Base_0.pdf (page 231)
         ['I_AND_M_0' PnIoCm_Block_IAndM0
             [implicit      uint   16        blockLength      'lengthInBytes - 4']
@@ -443,6 +451,24 @@
     [simple bit              maintenanceRequired ]
     [simple bit              qualifiedInfo       ]
     [simple PnIoCm_AddInfo   addInfo             ]
+]
+
+[type PnIoCm_RealIdentificationApi byteOrder='BIG_ENDIAN'
+    [const    uint 32                           api      0x00000000               ]
+    [implicit uint 16                           numSlots 'COUNT(slots)'           ]
+    [array    PnIoCm_RealIdentificationApi_Slot slots    count          'numSlots']
+]
+
+[type PnIoCm_RealIdentificationApi_Slot byteOrder='BIG_ENDIAN'
+    [simple   uint 16                              slotNumber                                       ]
+    [simple   uint 32                              moduleIdentNumber                                ]
+    [implicit uint 16                              numSubslots       'COUNT(subslots)'              ]
+    [array    PnIoCm_RealIdentificationApi_Subslot subslots          count             'numSubslots']
+]
+
+[type PnIoCm_RealIdentificationApi_Subslot byteOrder='BIG_ENDIAN'
+    [simple        uint 16                subslotNumber                 ]
+    [simple        uint 32                submoduleIdentNumber          ]
 ]
 
 [discriminatedType PnIoCm_Submodule byteOrder='BIG_ENDIAN'

@@ -21,26 +21,29 @@ package org.apache.plc4x.java.profinet.protocol;
 
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
+import org.apache.plc4x.java.api.messages.PlcBrowseItem;
 import org.apache.plc4x.java.api.messages.PlcBrowseRequest;
 import org.apache.plc4x.java.api.messages.PlcBrowseResponse;
+import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.profinet.config.ProfinetConfiguration;
 import org.apache.plc4x.java.profinet.context.ProfinetDriverContext;
 import org.apache.plc4x.java.profinet.discovery.ProfinetDiscoverer;
 import org.apache.plc4x.java.profinet.gsdml.*;
 import org.apache.plc4x.java.profinet.packets.PnDcpPacketFactory;
 import org.apache.plc4x.java.profinet.readwrite.*;
+import org.apache.plc4x.java.profinet.tag.ProfinetTag;
+import org.apache.plc4x.java.profinet.utils.ProfinetDataTypeMapper;
 import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
 import org.apache.plc4x.java.spi.configuration.HasConfiguration;
 import org.apache.plc4x.java.spi.context.DriverContext;
+import org.apache.plc4x.java.spi.messages.DefaultPlcBrowseItem;
+import org.apache.plc4x.java.spi.messages.DefaultPlcBrowseResponse;
 import org.apache.plc4x.java.utils.rawsockets.netty.RawSocketChannel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> implements HasConfiguration<ProfinetConfiguration> {
@@ -76,7 +79,8 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
         MacAddress localMacAddress = new MacAddress(rawSocketChannel.getLocalMacAddress().getAddress());
 
         // Construct and send the search request.
-        CompletableFuture<PnDcp_Pdu_IdentifyRes> future = PnDcpPacketFactory.sendIdentificationRequest(context, localMacAddress, remoteMacAddress);
+        CompletableFuture<PnDcp_Pdu_IdentifyRes> future =
+            PnDcpPacketFactory.sendIdentificationRequest(context, localMacAddress, remoteMacAddress);
         future.whenComplete((identifyRes, throwable) -> {
             if(throwable != null) {
                 logger.error("Unable to determine vendor-id or product-id, closing channel...", throwable);
@@ -96,9 +100,11 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
             }
 
             // Look up the GSD file for this device ...
-            ProfinetISO15745Profile deviceProfile = configuration.getGsdProfile(driverContext.getVendorId(), driverContext.getDeviceId());
+            ProfinetISO15745Profile deviceProfile =
+                configuration.getGsdProfile(driverContext.getVendorId(), driverContext.getDeviceId());
             if (deviceProfile == null) {
-                logger.error("Unable to find GSD profile for device with vendor-id {} and device-id {}", driverContext.getVendorId(), driverContext.getDeviceId());
+                logger.error("Unable to find GSD profile for device with vendor-id {} and device-id {}",
+                    driverContext.getVendorId(), driverContext.getDeviceId());
                 context.getChannel().close();
                 return;
             }
@@ -134,8 +140,58 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
             // which allows us to find out which DAP to use.
             else if(deviceProfile.getProfileBody().getApplicationProcess().getDeviceAccessPointList().size() > 1) {
                 RawSocketChannel pnChannel = ((RawSocketChannel) context.getChannel());
+                // Try to read the RealIdentificationData ...
+                CompletableFuture<PnIoCm_Block_RealIdentificationData> future1 =
+                    PnDcpPacketFactory.sendRealIdentificationDataRequest(context, pnChannel, driverContext);
+                future1.whenComplete((realIdentificationData, throwable1) -> {
+                    if(throwable1 != null) {
+                        logger.error("Unable to detect device access point, closing channel...", throwable1);
+                        context.getChannel().close();
+                        return;
+                    }
+                    driverContext.setIdentificationData(realIdentificationData);
+
+                    // Get the module identification number of slot 0 (Which is always the DAP)
+                    long dapModuleIdentificationNumber = 0;
+                    outerLoop:
+                    for (PnIoCm_RealIdentificationApi api : realIdentificationData.getApis()) {
+                        for (PnIoCm_RealIdentificationApi_Slot slot : api.getSlots()) {
+                            if(slot.getSlotNumber() == 0) {
+                                dapModuleIdentificationNumber = slot.getModuleIdentNumber();
+                                break outerLoop;
+                            }
+                        }
+                    }
+                    if(dapModuleIdentificationNumber == 0){
+                        logger.error("Unable to detect device access point, closing channel...", throwable1);
+                        context.getChannel().close();
+                        return;
+                    }
+
+                    // Iterate through all available DAPs and find the one with the matching module ident number.
+                    for (ProfinetDeviceAccessPointItem curDap : deviceProfile.getProfileBody().getApplicationProcess().getDeviceAccessPointList()) {
+                        String moduleIdentNumberStr = curDap.getModuleIdentNumber();
+                        if(moduleIdentNumberStr.startsWith("0x") || moduleIdentNumberStr.startsWith("0X")) {
+                            moduleIdentNumberStr = moduleIdentNumberStr.substring(2);
+                        }
+                        long moduleIdentNumber = Long.parseLong(moduleIdentNumberStr, 16);
+                        if(moduleIdentNumber == dapModuleIdentificationNumber) {
+                            driverContext.setDapId(curDap.getId());
+                            break;
+                        }
+                    }
+                    // Abort, if we weren't able to detect a DAP.
+                    if(driverContext.getDapId() == null) {
+                        logger.error("Unable to auto-detect the device access point, closing channel...");
+                        context.getChannel().close();
+                        return;
+                    }
+
+                    context.fireConnected();
+                });
                 // Try to read the I&M0 block
-                CompletableFuture<PnIoCm_Block_IAndM0> pnIoCmBlockIAndM0CompletableFuture = PnDcpPacketFactory.sendReadIAndM0BlockRequest(context, pnChannel, driverContext);
+                // * Commented out this code, as here it performed the same task as the ReadRealIdentificationData approach and If the other has side-effects, I can roll-back to this.
+                /*CompletableFuture<PnIoCm_Block_IAndM0> pnIoCmBlockIAndM0CompletableFuture = PnDcpPacketFactory.sendReadIAndM0BlockRequest(context, pnChannel, driverContext);
                 pnIoCmBlockIAndM0CompletableFuture.whenComplete((pnIoCmBlockIAndM0, throwable1) -> {
                     if(throwable1 != null) {
                         logger.error("Unable to detect device access point, closing channel...", throwable1);
@@ -164,16 +220,20 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
                     if(driverContext.getDapId() == null) {
                         logger.error("Unable to auto-detect the device access point, closing channel...");
                         context.getChannel().close();
-                    } else {
-                        context.fireConnected();
+                        return;
                     }
-                });
+
+                    context.fireConnected();
+                });*/
             }
+
             // If the current device only has one DAP (like most devices), simply use that.
             else if (deviceProfile.getProfileBody().getApplicationProcess().getDeviceAccessPointList().size() == 1) {
                 driverContext.setDapId(deviceProfile.getProfileBody().getApplicationProcess().getDeviceAccessPointList().get(0).getId());
                 context.fireConnected();
-            } else {
+            }
+
+            else {
                 logger.error("GSD descriptor doesn't contain any device access points");
                 context.getChannel().close();
             }
@@ -190,18 +250,109 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
         if (driverContext.getDeviceProfile() == null) {
             return CompletableFuture.failedFuture(new PlcConnectionException("Unable to find GSD file for given device"));
         }
+        if (driverContext.getDapId() == null) {
+            return CompletableFuture.failedFuture(new PlcConnectionException("DAP not set"));
+        }
 
         ProfinetISO15745Profile deviceProfile = driverContext.getDeviceProfile();
-        for (ProfinetModuleItem module : deviceProfile.getProfileBody().getApplicationProcess().getModuleList()) {
-            for (ProfinetVirtualSubmoduleItem submodule : module.getVirtualSubmoduleList()) {
 
+        // Build an index of all modules.
+        Map<Long, ProfinetModuleItem> moduleMap = new HashMap<>();
+        for (ProfinetModuleItem profinetModuleItem : deviceProfile.getProfileBody().getApplicationProcess().getModuleList()) {
+            String moduleIdentNumberString = profinetModuleItem.getModuleIdentNumber();
+            if(moduleIdentNumberString.startsWith("0x") || moduleIdentNumberString.startsWith("0X")) {
+                moduleIdentNumberString = moduleIdentNumberString.substring(2);
             }
+            long moduleIdentNumber = Long.parseLong(moduleIdentNumberString,16);
+            moduleMap.put(moduleIdentNumber, profinetModuleItem);
         }
-        return super.browse(browseRequest);
+
+        // Build an index of the String names.
+        Map<String, String> textMapping = new HashMap<>();
+        for (ProfinetTextIdValue profinetTextIdValue : deviceProfile.getProfileBody().getApplicationProcess().getExternalTextList().getPrimaryLanguage().getText()) {
+            textMapping.put(profinetTextIdValue.getTextId(), profinetTextIdValue.getValue());
+        }
+
+        Map<String, PlcResponseCode> responseCodes = new HashMap<>();
+        Map<String, List<PlcBrowseItem>> values = new HashMap<>();
+        for (String queryName : browseRequest.getQueryNames()) {
+            List<PlcBrowseItem> items = new ArrayList<>();
+            for (PnIoCm_RealIdentificationApi api : driverContext.getIdentificationData().getApis()) {
+                for (PnIoCm_RealIdentificationApi_Slot slot : api.getSlots()) {
+                    // Slot 0 is always the DAP module, I haven't come across any DataItems here ...
+                    if(slot.getSlotNumber() == 0) {
+                        continue;
+                    }
+
+                    // Find the matching module.
+                    long moduleIdentNumber = slot.getModuleIdentNumber();
+                    ProfinetModuleItem slotModule = moduleMap.get(moduleIdentNumber);
+                    if(slotModule == null) {
+                        return CompletableFuture.failedFuture(new PlcRuntimeException(
+                            "Module with ident number " + moduleIdentNumber + " not found in GSD."));
+                    }
+
+                    for (PnIoCm_RealIdentificationApi_Subslot subslot : slot.getSubslots()) {
+                        // Find the submodule
+                        ProfinetVirtualSubmoduleItem subSlotSubModule = null;
+                        String moduleIdentNumberHex = String.format("0x%08X", subslot.getSubmoduleIdentNumber());
+                        for (ProfinetVirtualSubmoduleItem virtualSubmoduleItem : slotModule.getVirtualSubmoduleList()) {
+                            if (virtualSubmoduleItem.getSubmoduleIdentNumber().equalsIgnoreCase(moduleIdentNumberHex)) {
+                                subSlotSubModule = virtualSubmoduleItem;
+                                break;
+                            }
+                        }
+                        if (subSlotSubModule == null) {
+                            return CompletableFuture.failedFuture(new PlcRuntimeException(
+                                "SubModule with ident number " + subslot.getSubmoduleIdentNumber() + " not found in GSD."));
+                       }
+
+                        // Add all the input tags.
+                        for (ProfinetIoDataInput profinetIoDataInput : subSlotSubModule.getIoData().getInput()) {
+                            for (int i = 0; i < profinetIoDataInput.getDataItemList().size(); i++) {
+                                ProfinetDataItem profinetDataItem = profinetIoDataInput.getDataItemList().get(i);
+                                ProfinetDataTypeMapper.DataTypeInformation dataTypeInformation =
+                                    ProfinetDataTypeMapper.getPlcValueType(profinetDataItem);
+                                String name = profinetDataItem.getTextId();
+                                // Try to replace the text id with a meaningful value.
+                                if (textMapping.containsKey(name)) {
+                                    name = textMapping.get(name);
+                                }
+                                items.add(new DefaultPlcBrowseItem(new ProfinetTag(
+                                    slot.getSlotNumber(), subslot.getSubslotNumber(), ProfinetTag.Direction.INPUT,
+                                    i, dataTypeInformation.getPlcValueType(), dataTypeInformation.getNumElements()),
+                                    name, false, true, true,
+                                    Collections.emptyMap(), Collections.emptyMap()));
+                            }
+                        }
+
+                        // Add all the output tags.
+                        for (ProfinetIoDataOutput profinetIoDataOutput : subSlotSubModule.getIoData().getOutput()) {
+                            for (int i = 0; i < profinetIoDataOutput.getDataItemList().size(); i++) {
+                                ProfinetDataItem profinetDataItem = profinetIoDataOutput.getDataItemList().get(i);
+                                ProfinetDataTypeMapper.DataTypeInformation dataTypeInformation =
+                                    ProfinetDataTypeMapper.getPlcValueType(profinetDataItem);
+                                String name = profinetDataItem.getTextId();
+                                // Try to replace the text id with a meaningful value.
+                                if (textMapping.containsKey(name)) {
+                                    name = textMapping.get(name);
+                                }
+                                items.add(new DefaultPlcBrowseItem(new ProfinetTag(
+                                    slot.getSlotNumber(), subslot.getSubslotNumber(), ProfinetTag.Direction.OUTPUT,
+                                    i, dataTypeInformation.getPlcValueType(), dataTypeInformation.getNumElements()),
+                                    name, false, true, true,
+                                    Collections.emptyMap(), Collections.emptyMap()));
+                            }
+                        }
+                    }
+                }
+            }
+            responseCodes.put(queryName, PlcResponseCode.OK);
+            values.put(queryName, items);
+        }
+        PlcBrowseResponse response = new DefaultPlcBrowseResponse(browseRequest, responseCodes, values);
+        return CompletableFuture.completedFuture(response);
     }
-
-
-
 
     protected void extractBlockInfo(List<PnDcp_Block> blocks) {
         // Index the blocks of the response
@@ -212,17 +363,20 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
         }
 
         if (blockMap.containsKey(ProfinetDiscoverer.DEVICE_TYPE_NAME)) {
-            PnDcp_Block_DevicePropertiesDeviceVendor block = (PnDcp_Block_DevicePropertiesDeviceVendor) blockMap.get(ProfinetDiscoverer.DEVICE_TYPE_NAME);
+            PnDcp_Block_DevicePropertiesDeviceVendor block =
+                (PnDcp_Block_DevicePropertiesDeviceVendor) blockMap.get(ProfinetDiscoverer.DEVICE_TYPE_NAME);
             driverContext.setDeviceType(new String(block.getDeviceVendorValue()));
         }
 
         if (blockMap.containsKey(ProfinetDiscoverer.DEVICE_NAME_OF_STATION)) {
-            PnDcp_Block_DevicePropertiesNameOfStation block = (PnDcp_Block_DevicePropertiesNameOfStation) blockMap.get(ProfinetDiscoverer.DEVICE_NAME_OF_STATION);
+            PnDcp_Block_DevicePropertiesNameOfStation block =
+                (PnDcp_Block_DevicePropertiesNameOfStation) blockMap.get(ProfinetDiscoverer.DEVICE_NAME_OF_STATION);
             driverContext.setDeviceName(new String(block.getNameOfStation()));
         }
 
         if (blockMap.containsKey(ProfinetDiscoverer.DEVICE_ROLE)) {
-            PnDcp_Block_DevicePropertiesDeviceRole block = (PnDcp_Block_DevicePropertiesDeviceRole) blockMap.get(ProfinetDiscoverer.DEVICE_ROLE);
+            PnDcp_Block_DevicePropertiesDeviceRole block =
+                (PnDcp_Block_DevicePropertiesDeviceRole) blockMap.get(ProfinetDiscoverer.DEVICE_ROLE);
             List<String> roles = new ArrayList<>();
             if (block.getPnioSupervisor()) {
                 roles.add("SUPERVISOR");
@@ -240,7 +394,8 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
         }
 
         if (blockMap.containsKey(ProfinetDiscoverer.DEVICE_ID)) {
-            PnDcp_Block_DevicePropertiesDeviceId block = (PnDcp_Block_DevicePropertiesDeviceId) blockMap.get(ProfinetDiscoverer.DEVICE_ID);
+            PnDcp_Block_DevicePropertiesDeviceId block =
+                (PnDcp_Block_DevicePropertiesDeviceId) blockMap.get(ProfinetDiscoverer.DEVICE_ID);
             driverContext.setVendorId(block.getVendorId());
             driverContext.setDeviceId(block.getDeviceId());
         }

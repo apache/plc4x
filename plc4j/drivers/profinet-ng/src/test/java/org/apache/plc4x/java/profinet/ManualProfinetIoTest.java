@@ -21,17 +21,26 @@ package org.apache.plc4x.java.profinet;
 
 import org.apache.plc4x.java.DefaultPlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
+import org.apache.plc4x.java.api.messages.PlcBrowseItem;
 import org.apache.plc4x.java.api.messages.PlcBrowseRequest;
 import org.apache.plc4x.java.api.messages.PlcBrowseResponse;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class ManualProfinetIoTest {
 
     public static void main(String[] args) throws Exception {
+        //try(PlcConnection connection =  new DefaultPlcDriverManager().getConnection("profinet:raw://192.168.24.41")) {
         try(PlcConnection connection =  new DefaultPlcDriverManager().getConnection("profinet:raw://192.168.24.31")) {
             PlcBrowseRequest browseRequest = connection.browseRequestBuilder().addQuery("all", "*").build();
-            Thread.sleep(10000);
+            PlcBrowseResponse plcBrowseResponse = browseRequest.execute().get();
+            for (String queryName : plcBrowseResponse.getQueryNames()) {
+                List<PlcBrowseItem> values = plcBrowseResponse.getValues(queryName);
+                for (PlcBrowseItem value : values) {
+                    System.out.println(value.getName() + ": " + value.getTag().getAddressString());
+                }
+            }
             /*PlcBrowseResponse plcBrowseResponse = browseRequest.execute().get(30000, TimeUnit.MILLISECONDS);
             System.out.println(plcBrowseResponse);*/
         }

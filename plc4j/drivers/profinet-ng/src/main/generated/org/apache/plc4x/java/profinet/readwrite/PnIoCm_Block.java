@@ -147,6 +147,8 @@ public abstract class PnIoCm_Block implements Message {
       builder = PnIoCm_Block_ModuleDiff.staticParsePnIoCm_BlockBuilder(readBuffer);
     } else if (EvaluationHelper.equals(blockType, PnIoCm_BlockType.AR_SERVER_BLOCK)) {
       builder = PnIoCm_Block_ArServer.staticParsePnIoCm_BlockBuilder(readBuffer);
+    } else if (EvaluationHelper.equals(blockType, PnIoCm_BlockType.REAL_IDENTIFICATION_DATA)) {
+      builder = PnIoCm_Block_RealIdentificationData.staticParsePnIoCm_BlockBuilder(readBuffer);
     } else if (EvaluationHelper.equals(blockType, PnIoCm_BlockType.I_AND_M_0)) {
       builder = PnIoCm_Block_IAndM0.staticParsePnIoCm_BlockBuilder(readBuffer);
     } else if (EvaluationHelper.equals(blockType, PnIoCm_BlockType.I_AND_M_1)) {

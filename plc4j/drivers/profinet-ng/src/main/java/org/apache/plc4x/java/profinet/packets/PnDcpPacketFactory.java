@@ -70,8 +70,6 @@ public class PnDcpPacketFactory {
     }
 
     public static Ethernet_Frame createReadIAndM0BlockRequest(RawSocketChannel pnChannel, ProfinetDriverContext driverContext) {
-        Random rand = new Random();
-
         InetSocketAddress localAddress = (InetSocketAddress) pnChannel.getLocalAddress();
         InetSocketAddress remoteAddress = (InetSocketAddress) pnChannel.getRemoteAddress();
 
@@ -95,6 +93,7 @@ public class PnDcpPacketFactory {
         );
 
         // Serialize it to a byte-payload
+        Random rand = new Random();
         Ethernet_FramePayload_IPv4 udpFrame = new Ethernet_FramePayload_IPv4(
             rand.nextInt(65536),
             true,
@@ -115,6 +114,7 @@ public class PnDcpPacketFactory {
     }
 
     public static CompletableFuture<PnIoCm_Block_IAndM0> sendReadIAndM0BlockRequest(ConversationContext<Ethernet_Frame> context, RawSocketChannel pnChannel, ProfinetDriverContext driverContext) {
+        // TODO: Handle error responses quickly (If the device doesn't support PN CM, then we can abort a lot quicker.
         CompletableFuture<PnIoCm_Block_IAndM0> future = new CompletableFuture<>();
         context.sendRequest(PnDcpPacketFactory.createReadIAndM0BlockRequest(pnChannel, driverContext))
             .expectResponse(Ethernet_Frame.class, Duration.ofMillis(6000))
@@ -146,6 +146,94 @@ public class PnDcpPacketFactory {
                 }
                 PnIoCm_Block_IAndM0 iAndM0 = (PnIoCm_Block_IAndM0) dceRpcPacketRes.getBlocks().get(1);
                 future.complete(iAndM0);
+            });
+        return future;
+    }
+
+    public static Ethernet_Frame createReadRealIdentificationDataRequest(RawSocketChannel pnChannel, ProfinetDriverContext driverContext) {
+        InetSocketAddress localAddress = (InetSocketAddress) pnChannel.getLocalAddress();
+        InetSocketAddress remoteAddress = (InetSocketAddress) pnChannel.getRemoteAddress();
+
+        DceRpc_Packet packet = new DceRpc_Packet(
+            DceRpc_PacketType.REQUEST, true, false, false,
+            IntegerEncoding.LITTLE_ENDIAN, CharacterEncoding.ASCII, FloatingPointEncoding.IEEE,
+            new DceRpc_ObjectUuid((byte) 0x00, 0x0001, driverContext.getDeviceId(), driverContext.getVendorId()),
+            new DceRpc_InterfaceUuid_DeviceInterface(),
+            driverContext.getActivityUuid(),
+            0,
+            driverContext.getAndIncrementIdentification(),
+            DceRpc_Operation.READ_IMPLICIT,
+            (short) 0,
+            new PnIoCm_Packet_Req(16696, 16696, 0,
+                Collections.singletonList(
+                    new IODReadRequestHeader((short) 1, (short) 0, 0,
+                        new Uuid(new byte[]{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}),
+                        0, 0, 1, 0xF000, 16696,
+                        new Uuid(new byte[]{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}))
+                ))
+        );
+
+        // Serialize it to a byte-payload
+        Random rand = new Random();
+        Ethernet_FramePayload_IPv4 udpFrame = new Ethernet_FramePayload_IPv4(
+            rand.nextInt(65536),
+            true,
+            false,
+            (short) 64,
+            new IpAddress(localAddress.getAddress().getAddress()),
+            new IpAddress(remoteAddress.getAddress().getAddress()),
+            driverContext.getLocalPort(),
+            driverContext.getRemotePortImplicitCommunication(),
+            packet
+        );
+        MacAddress srcAddress = new MacAddress(pnChannel.getLocalMacAddress().getAddress());
+        MacAddress dstAddress = new MacAddress(pnChannel.getRemoteMacAddress().getAddress());
+        return new Ethernet_Frame(
+            dstAddress,
+            srcAddress,
+            udpFrame);
+    }
+
+    public static CompletableFuture<PnIoCm_Block_RealIdentificationData> sendRealIdentificationDataRequest(ConversationContext<Ethernet_Frame> context, RawSocketChannel pnChannel, ProfinetDriverContext driverContext) {
+        CompletableFuture<PnIoCm_Block_RealIdentificationData> future = new CompletableFuture<>();
+        context.sendRequest(PnDcpPacketFactory.createReadRealIdentificationDataRequest(pnChannel, driverContext))
+            .expectResponse(Ethernet_Frame.class, Duration.ofMillis(6000))
+            .onTimeout(future::completeExceptionally)
+            .onError((ethernetFrame, throwable) -> future.completeExceptionally(throwable))
+            .unwrap(ethernetFrame -> {
+                if(ethernetFrame.getPayload() instanceof Ethernet_FramePayload_VirtualLan) {
+                    return ((Ethernet_FramePayload_VirtualLan) ethernetFrame.getPayload()).getPayload();
+                }
+                return ethernetFrame.getPayload();
+            })
+            .check(ethernetFramePayload -> ethernetFramePayload instanceof Ethernet_FramePayload_IPv4)
+            .unwrap(ethernetFramePayload -> (Ethernet_FramePayload_IPv4) ethernetFramePayload)
+            .unwrap(Ethernet_FramePayload_IPv4::getPayload)
+            .unwrap(DceRpc_Packet::getPayload)
+            .handle(dceRpcPacket -> {
+                if(dceRpcPacket instanceof PnIoCm_Packet_Rej) {
+                    future.completeExceptionally(new PlcRuntimeException("PN CM not supported"));
+                    return;
+                }
+                if(!(dceRpcPacket instanceof PnIoCm_Packet_Res)) {
+                    future.completeExceptionally(new PlcRuntimeException("Unexpected response type"));
+                    return;
+                }
+                PnIoCm_Packet_Res dceRpcPacketRes = (PnIoCm_Packet_Res) dceRpcPacket;
+                if(dceRpcPacketRes.getBlocks().size() != 2) {
+                    future.completeExceptionally(new PlcRuntimeException("Expected 2 blocks in the response"));
+                    return;
+                }
+                if(!(dceRpcPacketRes.getBlocks().get(0) instanceof IODReadResponseHeader)) {
+                    future.completeExceptionally(new PlcRuntimeException("The first block was expected to be of type IODReadResponseHeader"));
+                    return;
+                }
+                if(!(dceRpcPacketRes.getBlocks().get(1) instanceof PnIoCm_Block_RealIdentificationData)) {
+                    future.completeExceptionally(new PlcRuntimeException("The second block was expected to be of type PnIoCm_Block_RealIdentificationData"));
+                    return;
+                }
+                PnIoCm_Block_RealIdentificationData realIdentificationData = (PnIoCm_Block_RealIdentificationData) dceRpcPacketRes.getBlocks().get(1);
+                future.complete(realIdentificationData);
             });
         return future;
     }

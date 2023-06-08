@@ -29,18 +29,24 @@ import java.util.regex.Pattern;
 
 public class ProfinetTag implements PlcTag {
 
-    public static final Pattern ADDRESS_PATTERN = Pattern.compile("(?<address>[\\w\\-. ]+)(:(?<datatype>[a-zA-Z_]+)){1}(\\[(?<quantity>\\d+)])?");
-    private final String address;
-    private final int quantity;
+    public static final Pattern ADDRESS_PATTERN = Pattern.compile("(?<slot>\\d+).(?<subSlot>\\d+).(?<direction>INPUT|OUTPUT)(.(?<index>\\d+))?:(?<dataType>[a-zA-Z_]+)(\\[(?<numElements>\\d+)])?");
+    private final int slot;
+    private final int subSlot;
+    private final Direction direction;
+    private final int index;
     private final PlcValueType dataType;
+    private final int numElements;
 
-    protected ProfinetTag(String address, Integer quantity, PlcValueType dataType) {
-        this.address = address;
-        this.quantity = (quantity != null) ? quantity : 1;
-        if (this.quantity <= 0) {
-            throw new IllegalArgumentException("quantity must be greater than zero. Was " + this.quantity);
-        }
+    public ProfinetTag(int slot, int subSlot, Direction direction, int index, PlcValueType dataType, int numElements) {
+        this.slot = slot;
+        this.subSlot = subSlot;
+        this.direction = direction;
+        this.index = index;
         this.dataType = dataType;
+        this.numElements = numElements;
+        if (this.numElements <= 0) {
+            throw new IllegalArgumentException("numElements must be greater than zero. Was " + this.numElements);
+        }
     }
 
     public static ProfinetTag of(String addressString) {
@@ -49,15 +55,43 @@ public class ProfinetTag implements PlcTag {
             throw new PlcInvalidTagException(addressString, ADDRESS_PATTERN);
         }
 
-        String quantity = matcher.group("quantity") == null ? "1" :  matcher.group("quantity");
-        PlcValueType plcValueType = PlcValueType.valueOf(matcher.group("datatype"));
+        int slot = Integer.parseInt(matcher.group("slot"));
+        int subSlot = Integer.parseInt(matcher.group("subSlot"));
+        Direction direction = Direction.valueOf(matcher.group("direction"));
+        int index = Integer.parseInt(matcher.group("index"));
+        PlcValueType dataType = PlcValueType.valueOf(matcher.group("dataType"));
+        int numElements = (matcher.group("numElements") != null) ? Integer.parseInt(matcher.group("numElements")) : 1;
 
-        return new ProfinetTag(matcher.group("address"), Integer.parseInt(quantity), plcValueType);
+        return new ProfinetTag(slot, subSlot, direction, index, dataType, numElements);
+    }
+
+    public int getSlot() {
+        return slot;
+    }
+
+    public int getSubSlot() {
+        return subSlot;
+    }
+
+    public Direction getDirection() {
+        return direction;
+    }
+
+    public int getIndex() {
+        return index;
+    }
+
+    public PlcValueType getDataType() {
+        return dataType;
+    }
+
+    public int getNumElements() {
+        return numElements;
     }
 
     @Override
     public String getAddressString() {
-        return address;
+        return String.format("%d.%d.%s.%d:%s%s", slot, subSlot, direction, index, dataType, (numElements > 1) ? "[" + numElements + "]" : "");
     }
 
     @Override
@@ -69,4 +103,10 @@ public class ProfinetTag implements PlcTag {
     public List<ArrayInfo> getArrayInfo() {
         return PlcTag.super.getArrayInfo();
     }
+
+    public static enum Direction {
+        INPUT,
+        OUTPUT
+    }
+
 }

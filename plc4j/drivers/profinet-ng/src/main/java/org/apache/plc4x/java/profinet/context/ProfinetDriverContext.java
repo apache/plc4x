@@ -24,6 +24,7 @@ import org.apache.commons.codec.binary.Hex;
 import org.apache.plc4x.java.profinet.gsdml.ProfinetISO15745Profile;
 import org.apache.plc4x.java.profinet.readwrite.DceRpc_ActivityUuid;
 import org.apache.plc4x.java.profinet.readwrite.DceRpc_Packet;
+import org.apache.plc4x.java.profinet.readwrite.PnIoCm_Block_RealIdentificationData;
 import org.apache.plc4x.java.profinet.readwrite.Uuid;
 import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.context.DriverContext;
@@ -51,6 +52,7 @@ public class ProfinetDriverContext implements DriverContext {
     private int remotePortImplicitCommunication;
 
     private ProfinetISO15745Profile deviceProfile;
+    private PnIoCm_Block_RealIdentificationData identificationData;
 
     // PN-CM Related:
     private final DceRpc_ActivityUuid activityUuid;
@@ -146,6 +148,14 @@ public class ProfinetDriverContext implements DriverContext {
 
     public void setDeviceProfile(ProfinetISO15745Profile deviceProfile) {
         this.deviceProfile = deviceProfile;
+    }
+
+    public PnIoCm_Block_RealIdentificationData getIdentificationData() {
+        return identificationData;
+    }
+
+    public void setIdentificationData(PnIoCm_Block_RealIdentificationData identificationData) {
+        this.identificationData = identificationData;
     }
 
     public DceRpc_ActivityUuid getActivityUuid() {

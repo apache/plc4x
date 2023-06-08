@@ -96,12 +96,12 @@ public class PnIoCm_Block_ModuleDiff extends PnIoCm_Block implements Message {
         writeUnsignedShort(writeBuffer, 8),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
-    // Implicit Field (numberOfApis) (Used for parsing, but its value is not stored as it's
-    // implicitly given by the objects content)
-    int numberOfApis = (int) (COUNT(getApis()));
+    // Implicit Field (numApis) (Used for parsing, but its value is not stored as it's implicitly
+    // given by the objects content)
+    int numApis = (int) (COUNT(getApis()));
     writeImplicitField(
-        "numberOfApis",
-        numberOfApis,
+        "numApis",
+        numApis,
         writeUnsignedInt(writeBuffer, 16),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
@@ -132,7 +132,7 @@ public class PnIoCm_Block_ModuleDiff extends PnIoCm_Block implements Message {
     // Simple field (blockVersionLow)
     lengthInBits += 8;
 
-    // Implicit Field (numberOfApis)
+    // Implicit Field (numApis)
     lengthInBits += 16;
 
     // Array field
@@ -171,9 +171,9 @@ public class PnIoCm_Block_ModuleDiff extends PnIoCm_Block implements Message {
             readUnsignedShort(readBuffer, 8),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
-    int numberOfApis =
+    int numApis =
         readImplicitField(
-            "numberOfApis",
+            "numApis",
             readUnsignedInt(readBuffer, 16),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
@@ -182,7 +182,7 @@ public class PnIoCm_Block_ModuleDiff extends PnIoCm_Block implements Message {
             "apis",
             new DataReaderComplexDefault<>(
                 () -> PnIoCm_ModuleDiffBlockApi.staticParse(readBuffer), readBuffer),
-            numberOfApis,
+            numApis,
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     readBuffer.closeContext("PnIoCm_Block_ModuleDiff");
