@@ -14,7 +14,7 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 //
-:imagesdir: ../../images/users/protocols
+:imagesdir: ../../images/
 :icons: image
 :iconsdir: ../../images/users/protocols
 :source-highlighter: rouge
@@ -393,7 +393,7 @@ Not all S7 device types support the same full set of memory areas, so the last c
 
 |DB
 |DATA_BLOCKS
-|Memory areas containing user-defined data structures usually accessed by the integer data block number. Please note that data block addresses have a little more complex address format.
+|Memory areas containing user-defined data structures usually accessed by the integer data block number. antease note that data block addresses have a little more complex address format.
 |All
 
 |DBI
@@ -461,7 +461,7 @@ Here we will assume that you use standard technological functions/libraries with
 The different actors involved in communication are shown in image 1.
 
 
-[plantuml, target="../../image01", format=png, align="center"]
+[plantuml,s7h_image01, format=png, align="center"]
 ....
 autonumber "<b>(00)"
 title Participants in the communication model of the S7 driver.
@@ -495,7 +495,7 @@ endbox
 
 
 
-[plantuml, target="../../image02", format=png, align="center"]
+[plantuml,s7h_image02, format=png, align="center"]
 ....
 autonumber "<b>(00)"
 title PLC4X Simatic S7 <b>MODE</b> Suscription.
@@ -586,7 +586,7 @@ In the use of a unified Siemens architecture, the operator panels (HMI) and WinC
 In the case of an application developed with PLC4X, the use of MODE events will allow your application to indicate to users the quality of the points used, and that by design the quality is not updated in the controller.
 
 
-[plantuml, target="../../image03", format=png, align="center"]
+[plantuml, s7h_image03, format=png, align="center"]
 ....
 autonumber "<b>(00)"
 title PLC4X Simatic S7 <b>MODE</b> Suscription.
@@ -692,7 +692,7 @@ public class PLCEventModeSubscription {
 
 System events allow to receive asynchronously any event that affects the operation of the controller, or any of its peripheral equipment that is capable of sending events through a PROFIBUS or Profinet fieldbus.
 
-[plantuml, target="../../image04", format=png, align="center"]
+[plantuml, s7h_image04, format=png, align="center"]
 ....
 autonumber "<b>(00)"
 title PLC4X Simatic S7 System Event <b>SYS</b> subscription.
@@ -724,7 +724,7 @@ PLC4X --> App : to consumer
 
 A first example of its use is the change of state of a CP, IM or FM within the architecture of the controller. This will allow the application to indicate that there is an effect on the system that may affect the quality of the signals used, allowing preventive or corrective actions to be taken as required.
 
-[plantuml, target="../../image05", format=png, align="center"]
+[plantuml, s7h_image05, format=png, align="center"]
 ....
 autonumber "<b>(00)"
 title PLC4X User Event <b>USR</b> subscription.
@@ -920,7 +920,7 @@ By having INFO1 and INFO2 in the *S7App* program, the user can transfer data ass
 
 
 
-[plantuml, target="../../image06", format=png, align="center"]
+[plantuml, s7h_image06, format=png, align="center"]
 ....
 autonumber "<b>(00)"
 title PLC4X Simatic S7 Alarm Event <b>ALM</b> suscription.
@@ -1036,7 +1036,7 @@ TODO: Example code
 
 The cyclical subscription allows the acquisition of data in passive mode, that is, the data is sent from the PLC in a cyclical and synchronous way.
 
-[plantuml, target="../../image07", format=png, align="center"]
+[plantuml, s7h_image07, format=png, align="center"]
 ....
 autonumber "<b>(00)"
 title Participants in the communication model of the S7 driver.
@@ -1195,7 +1195,7 @@ In case of not being able to process the request, it is detected in (13) to take
 The following diagram represents the information in JSON format.
 
 
-[plantuml, target="../../szlxy11demo", format=png, align="center"]
+[plantuml, s7h_szlxy11demo, format=png, align="center"]
 ....
 @startjson
 {"RECORDS":[{"AUSBG2":0,"AUSBG1":61,"BGTYP":130,"INDEX":1,"MIFB":"6ES7 417-4XT05-0AB0 "},{"AUSBG2":0,"AUSBG1":2,"BGTYP":130,"INDEX":6,"MIFB":"6ES7 417-4XT05-0AB0 "},{"AUSBG2":768,"AUSBG1":22021,"BGTYP":0,"INDEX":7,"MIFB":"                    "},{"AUSBG2":3,"AUSBG1":22021,"BGTYP":0,"INDEX":129,"MIFB":"Boot Loader         "}],"LENGTHDR":28,"SZL-ID":17,"INDEX":0,"N_DR":4}
@@ -1241,11 +1241,11 @@ From the obtained StringBuilder, you can use the JSON processor of your choice t
 Especially when it comes to the input- and output addresses for analog channels, the start addresses are configurable and hereby don't always start at the same address.
 In order to find out what addresses these ports have, please go to the `device setting` of your PLC in `TIA Portal`
 
-image::s7-tia-device-settings.png[devsettings,640,480]
+image::s7-tia-device-settings.png[devsettings,640,480,,align="center"]
 
 Especially pay attention to this part:
 
-image::s7-tia-io-settings.png[iosettings,600,144]
+image::s7-tia-io-settings.png[iosettings,600,144,,align="center"]
 
 In above image you can see that this device has 8 digital inputs (`DI 8`) and 2 analog inputs (`AI 2_1`) as well as 6 digital outputs (`DQ 6`).
 
