@@ -133,7 +133,11 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
             // correct port, and we can calculate the object id based on the vendor id and device id, which we
             // already have from the discovery.
 
-            // If there's more at least one DAP, read the real identification data and prepare all the data-structures.
+            // If we've found a device profile with at least one dap, we request the "real identification data" from the
+            // device. The response contains information about which slots are present and which module identifiers
+            // apply to them as well as which subslots are present and which submodule identifiers these have.
+            // In this part of the code, we simply look up the gsd dap, modules and submodules that match these
+            // identifiers and save them in an easily accessible format in the deviceContext.
             else if(deviceProfile.getProfileBody().getApplicationProcess().getDeviceAccessPointList().size() > 0) {
                 // Build an index of the String names.
                 Map<String, String> textMapping = new HashMap<>();
