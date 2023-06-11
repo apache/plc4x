@@ -70,7 +70,11 @@ public class ProfinetDataTypeMapper {
                 case "VisibleString":
                     break;
                 case "OctetString":
-                    return new DataTypeInformation(PlcValueType.BOOL, dataItem.getLength());
+                    if(dataItem.isUseAsBits()) {
+                        return new DataTypeInformation(PlcValueType.List, dataItem.getLength() * 8);
+                    } else {
+                        return new DataTypeInformation(PlcValueType.List, dataItem.getLength());
+                    }
                 case "Unsigned8+Unsigned8":
                 case "Float32+Unsigned8":
                 case "Float32+Status8":

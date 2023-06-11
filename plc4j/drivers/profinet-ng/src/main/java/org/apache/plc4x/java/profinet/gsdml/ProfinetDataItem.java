@@ -54,6 +54,10 @@ public class ProfinetDataItem {
         return textId;
     }
 
+    public void setTextId(String textId) {
+        this.textId = textId;
+    }
+
     public int getLength() {
         return length;
     }

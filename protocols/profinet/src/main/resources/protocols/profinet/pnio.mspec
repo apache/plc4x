@@ -335,6 +335,9 @@
             [implicit uint 16                      numApis          'COUNT(apis)'                ]
             [array    PnIoCm_RealIdentificationApi apis             count               'numApis']
         ]
+        ['IOD_BLOCK_REQ_PLUGIN_ALARM_APPLICATION_READY' PnIoCm_Block_ReqPluginAlarmApplicationReady
+            // TODO: Implement ...
+        ]
 
         // https://cache.industry.siemens.com/dl/files/491/26435491/att_859456/v1/PGH_IO-Base_0.pdf (page 231)
         ['I_AND_M_0' PnIoCm_Block_IAndM0

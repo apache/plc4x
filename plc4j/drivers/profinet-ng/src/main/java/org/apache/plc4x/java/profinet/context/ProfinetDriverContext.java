@@ -21,18 +21,16 @@ package org.apache.plc4x.java.profinet.context;
 
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
-import org.apache.plc4x.java.profinet.gsdml.ProfinetISO15745Profile;
+import org.apache.plc4x.java.profinet.gsdml.ProfinetDeviceAccessPointItem;
+import org.apache.plc4x.java.profinet.gsdml.ProfinetModuleItem;
+import org.apache.plc4x.java.profinet.gsdml.ProfinetVirtualSubmoduleItem;
 import org.apache.plc4x.java.profinet.readwrite.DceRpc_ActivityUuid;
-import org.apache.plc4x.java.profinet.readwrite.DceRpc_Packet;
-import org.apache.plc4x.java.profinet.readwrite.PnIoCm_Block_RealIdentificationData;
 import org.apache.plc4x.java.profinet.readwrite.Uuid;
-import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.context.DriverContext;
 import org.apache.plc4x.java.spi.generation.*;
 
-import java.net.DatagramSocket;
-import java.net.SocketException;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -47,12 +45,12 @@ public class ProfinetDriverContext implements DriverContext {
     private int deviceId;
 
     private String dapId;
+    private ProfinetDeviceAccessPointItem dap;
+    private Map<Integer, ProfinetModuleItem> moduleIndex;
+    private Map<Integer, Map<Integer, ProfinetVirtualSubmoduleItem>> submoduleIndex;
 
     private int localPort;
     private int remotePortImplicitCommunication;
-
-    private ProfinetISO15745Profile deviceProfile;
-    private PnIoCm_Block_RealIdentificationData identificationData;
 
     // PN-CM Related:
     private final DceRpc_ActivityUuid activityUuid;
@@ -142,20 +140,28 @@ public class ProfinetDriverContext implements DriverContext {
         this.dapId = dapId;
     }
 
-    public ProfinetISO15745Profile getDeviceProfile() {
-        return deviceProfile;
+    public ProfinetDeviceAccessPointItem getDap() {
+        return dap;
     }
 
-    public void setDeviceProfile(ProfinetISO15745Profile deviceProfile) {
-        this.deviceProfile = deviceProfile;
+    public void setDap(ProfinetDeviceAccessPointItem dap) {
+        this.dap = dap;
     }
 
-    public PnIoCm_Block_RealIdentificationData getIdentificationData() {
-        return identificationData;
+    public Map<Integer, ProfinetModuleItem> getModuleIndex() {
+        return moduleIndex;
     }
 
-    public void setIdentificationData(PnIoCm_Block_RealIdentificationData identificationData) {
-        this.identificationData = identificationData;
+    public void setModuleIndex(Map<Integer, ProfinetModuleItem> moduleIndex) {
+        this.moduleIndex = moduleIndex;
+    }
+
+    public Map<Integer, Map<Integer, ProfinetVirtualSubmoduleItem>> getSubmoduleIndex() {
+        return submoduleIndex;
+    }
+
+    public void setSubmoduleIndex(Map<Integer, Map<Integer, ProfinetVirtualSubmoduleItem>> submoduleIndex) {
+        this.submoduleIndex = submoduleIndex;
     }
 
     public DceRpc_ActivityUuid getActivityUuid() {
