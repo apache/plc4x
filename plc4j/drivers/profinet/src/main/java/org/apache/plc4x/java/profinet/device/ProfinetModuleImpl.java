@@ -60,7 +60,9 @@ public class ProfinetModuleImpl implements ProfinetModule {
     }
 
     private void populateNode() {
+        // IOPS = IO Producer Status
         int inputIoPsOffset = ioPsOffset;
+        // IOCS = IO Consumer Status
         int outputIoCsOffset = ioCsOffset;
 
         for (ProfinetVirtualSubmoduleItem virtualItem : module.getVirtualSubmoduleList()) {

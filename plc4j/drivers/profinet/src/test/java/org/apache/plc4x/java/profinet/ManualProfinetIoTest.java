@@ -47,14 +47,11 @@ public class ManualProfinetIoTest {
                 System.out.println(value.getTag().getAddressString());
             }
         }
-        System.out.println(plcBrowseResponse);
         // Wireshark filters:
         // - S7 1200: eth.addr == 001c0605bcdc
         // - Simocode: eth.addr == 883f990006ef
         // - Adam Analog Input: eth.addr == 74fe4863f6c2
         // - Adam Digital I/O: eth.addr == 74fe48824a7c
-        //PlcBrowseRequest browseRequest = connection.browseRequestBuilder().addQuery("Browse", "").build();
-        //final PlcBrowseResponse browseResponse = browseRequest.execute().get();
         PlcSubscriptionRequest.Builder builder = connection.subscriptionRequestBuilder();
         builder.addChangeOfStateTag("Input 4", ProfinetTag.of("cdxb195b3.1.1.Inputs.2:BOOL"));
         PlcSubscriptionRequest request = builder.build();

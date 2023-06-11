@@ -203,9 +203,9 @@ public class ProfinetDevice implements PlcSubscriber {
                             // string and also tell the device about the data we'll be publishing.
                             case IDLE:
                                 CreateConnection createConnection = new CreateConnection();
-                                // Send the packet ...
+                                // Send the packet and process the response ...
                                 recordIdAndSend(createConnection);
-                                // Wait for the response ...
+                                // Wait for it to be finished processing ...
                                 createConnection.getResponseHandled().get(timeout, TimeUnit.NANOSECONDS);
                                 break;
                             // TODO: It seems this state is never used?
@@ -520,13 +520,6 @@ public class ProfinetDevice implements PlcSubscriber {
                     deviceContext.getInputIoCsApiBlocks())
             );
 
-            List<PnIoCm_IoCrBlockReqApi> outputApis = Collections.singletonList(
-                new PnIoCm_IoCrBlockReqApi(
-                    deviceContext.getOutputIoPsApiBlocks(),
-                    deviceContext.getOutputIoCsApiBlocks()
-                )
-            );
-
             deviceContext.setInputReq(new PnIoCm_Block_IoCrReq(
                 (short) 1,
                 (short) 0,
@@ -554,6 +547,13 @@ public class ProfinetDevice implements PlcSubscriber {
             ));
 
             blocks.add(deviceContext.getInputReq());
+
+            List<PnIoCm_IoCrBlockReqApi> outputApis = Collections.singletonList(
+                new PnIoCm_IoCrBlockReqApi(
+                    deviceContext.getOutputIoPsApiBlocks(),
+                    deviceContext.getOutputIoCsApiBlocks()
+                )
+            );
 
             deviceContext.setOutputReq(new PnIoCm_Block_IoCrReq(
                 (short) 1,
