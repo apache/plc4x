@@ -66,7 +66,7 @@ func (m *Driver) GetConnectionWithContext(ctx context.Context, transportUrl url.
 	// Provide a default-port to the transport, which is used, if the user doesn't provide on in the connection string.
 	driverOptions["defaultTcpPort"] = []string{"102"}
 	// Have the transport create a new transport-instance.
-	transportInstance, err := transport.CreateTransportInstance(transportUrl, driverOptions)
+	transportInstance, err := transport.CreateTransportInstance(transportUrl, driverOptions, options.WithCustomLogger(m.log))
 	if err != nil {
 		m.log.Error().Stringer("transportUrl", &transportUrl).Msgf("We couldn't create a transport instance for port %#v", driverOptions["defaultTcpPort"])
 		ch := make(chan plc4go.PlcConnectionConnectResult, 1)

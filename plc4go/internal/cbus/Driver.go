@@ -66,7 +66,7 @@ func (m *Driver) GetConnectionWithContext(ctx context.Context, transportUrl url.
 	// Provide a default-port to the transport, which is used, if the user doesn't provide on in the connection string.
 	driverOptions["defaultTcpPort"] = []string{strconv.FormatUint(uint64(readWriteModel.CBusConstants_CBUSTCPDEFAULTPORT), 10)}
 	// Have the transport create a new transport-instance.
-	transportInstance, err := transport.CreateTransportInstance(transportUrl, driverOptions)
+	transportInstance, err := transport.CreateTransportInstance(transportUrl, driverOptions, options.WithCustomLogger(m.log))
 	if err != nil {
 		m.log.Error().Err(err).Stringer("transportUrl", &transportUrl).Msgf("We couldn't create a transport instance for port %#v", driverOptions["defaultTcpPort"])
 		return m.reportError(errors.Wrapf(err, "couldn't initialize transport configuration for given transport url %s", transportUrl.String()))
