@@ -37,11 +37,13 @@ func TestAdsDriver(t *testing.T) {
 	parser := func(readBufferByteBased utils.ReadBufferByteBased) (any, error) {
 		return readWriteModel.AmsTCPPacketParseWithBuffer(context.Background(), readBufferByteBased)
 	}
+	withCustomLogger := options.WithCustomLogger(testutils.ProduceTestingLogger(t))
 	testutils.RunDriverTestsuite(
 		t,
-		ads.NewDriver(options.WithCustomLogger(testutils.ProduceTestingLogger(t))),
+		ads.NewDriver(withCustomLogger),
 		"assets/testing/protocols/ads/DriverTestsuite.xml",
 		adsIO.AdsXmlParserHelper{},
 		testutils.WithRootTypeParser(parser),
+		withCustomLogger,
 	)
 }

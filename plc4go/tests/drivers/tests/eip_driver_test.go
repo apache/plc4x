@@ -31,10 +31,12 @@ import (
 
 func TestEIPDriver(t *testing.T) {
 	testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
+	withCustomLogger := options.WithCustomLogger(testutils.ProduceTestingLogger(t))
 	testutils.RunDriverTestsuite(
 		t,
-		eip.NewDriver(options.WithCustomLogger(testutils.ProduceTestingLogger(t))),
+		eip.NewDriver(withCustomLogger),
 		"assets/testing/protocols/eip/DriverTestsuite.xml",
 		eipIO.EipXmlParserHelper{},
+		withCustomLogger,
 	)
 }

@@ -32,10 +32,12 @@ import (
 func TestDf1Driver(t *testing.T) {
 	t.Skip("No test yet")
 	testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
+	withCustomLogger := options.WithCustomLogger(testutils.ProduceTestingLogger(t))
 	testutils.RunDriverTestsuite(
 		t,
-		ads.NewDriver(options.WithCustomLogger(testutils.ProduceTestingLogger(t))),
+		ads.NewDriver(withCustomLogger),
 		"assets/testing/protocols/df1/DriverTestsuite.xml",
 		df1IO.Df1XmlParserHelper{},
+		withCustomLogger,
 	)
 }

@@ -24,6 +24,9 @@ import (
 	"encoding/binary"
 	"encoding/hex"
 	"fmt"
+	"github.com/apache/plc4x/plc4go/pkg/api/config"
+	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/apache/plc4x/plc4go/spi/options/converter"
 	"os"
 	"runtime/debug"
 	"strconv"
@@ -60,34 +63,23 @@ type XmlParser interface {
 	Parse(typeName string, xmlString string, parserArguments ...string) (any, error)
 }
 
-type WithOption interface {
-	isOption() bool
-}
-
-type _option struct {
-}
-
-func (_option) isOption() bool {
-	return true
-}
-
 // WithRootTypeParser can be used to output the root type of protocol for better debugging
-func WithRootTypeParser(rootTypeParser func(utils.ReadBufferByteBased) (any, error)) WithOption {
+func WithRootTypeParser(rootTypeParser func(utils.ReadBufferByteBased) (any, error)) config.WithOption {
 	return withRootTypeParser{rootTypeParser: rootTypeParser}
 }
 
 type withRootTypeParser struct {
-	_option
+	options.Option
 	rootTypeParser func(utils.ReadBufferByteBased) (any, error)
 }
 
 // WithSkippedTestCases can be used to skip test cases
-func WithSkippedTestCases(skippedTestCases ...string) WithOption {
+func WithSkippedTestCases(skippedTestCases ...string) config.WithOption {
 	return withSkippedTestCases{skippedTestCases: skippedTestCases}
 }
 
 type withSkippedTestCases struct {
-	_option
+	options.Option
 	skippedTestCases []string
 }
 
@@ -485,11 +477,11 @@ const (
 	StepTypeTerminate          StepType = 0x08
 )
 
-func RunDriverTestsuite(t *testing.T, driver plc4go.PlcDriver, testPath string, parser XmlParser, options ...WithOption) {
-	t.Log("Extract testsuite options")
+func RunDriverTestsuite(t *testing.T, driver plc4go.PlcDriver, testPath string, parser XmlParser, _options ...config.WithOption) {
+	t.Log("Extract testsuite _options")
 	var rootTypeParser func(utils.ReadBufferByteBased) (any, error)
 	skippedTestCasesMap := map[string]bool{}
-	for _, withOption := range options {
+	for _, withOption := range _options {
 		switch option := withOption.(type) {
 		case withRootTypeParser:
 			t.Logf("Using root type parser for better output")
@@ -515,8 +507,9 @@ func RunDriverTestsuite(t *testing.T, driver plc4go.PlcDriver, testPath string, 
 	}
 
 	// Initialize the driver manager
-	driverManager := plc4go.NewPlcDriverManager()
-	driverManager.(spi.TransportAware).RegisterTransport(test.NewTransport())
+	driverManager := plc4go.NewPlcDriverManager(_options...)
+	transport := test.NewTransport(converter.WithOptionToInternal(_options...)...)
+	driverManager.(spi.TransportAware).RegisterTransport(transport)
 	driverManager.RegisterDriver(driver)
 
 	t.Logf("Running %d testcases", len(testsuite.testcases))

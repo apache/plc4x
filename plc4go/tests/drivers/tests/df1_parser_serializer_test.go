@@ -20,6 +20,7 @@
 package tests
 
 import (
+	"github.com/apache/plc4x/plc4go/spi/options"
 	"testing"
 
 	df1IO "github.com/apache/plc4x/plc4go/protocols/df1/readwrite"
@@ -33,5 +34,6 @@ func TestDf1ParserSerializer(t *testing.T) {
 		t,
 		"assets/testing/protocols/df1/ParserSerializerTestsuite.xml",
 		df1IO.Df1ParserHelper{},
+		options.WithCustomLogger(testutils.ProduceTestingLogger(t)),
 	)
 }

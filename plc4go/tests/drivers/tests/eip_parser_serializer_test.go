@@ -20,6 +20,7 @@
 package tests
 
 import (
+	"github.com/apache/plc4x/plc4go/spi/options"
 	"testing"
 
 	eipIO "github.com/apache/plc4x/plc4go/protocols/eip/readwrite"
@@ -33,6 +34,7 @@ func TestEipParserSerializerBigEndian(t *testing.T) {
 		t,
 		"assets/testing/protocols/eip/ParserSerializerTestsuiteBigEndian.xml",
 		eipIO.EipParserHelper{},
+		options.WithCustomLogger(testutils.ProduceTestingLogger(t)),
 	)
 }
 
@@ -42,5 +44,6 @@ func TestEipParserSerializerLittleEndian(t *testing.T) {
 		t,
 		"assets/testing/protocols/eip/ParserSerializerTestsuiteLittleEndian.xml",
 		eipIO.EipParserHelper{},
+		options.WithCustomLogger(testutils.ProduceTestingLogger(t)),
 	)
 }

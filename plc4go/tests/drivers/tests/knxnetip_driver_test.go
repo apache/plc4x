@@ -37,11 +37,13 @@ func TestKNXNetIPDriver(t *testing.T) {
 	parser := func(readBufferByteBased utils.ReadBufferByteBased) (any, error) {
 		return readWriteModel.KnxNetIpMessageParseWithBuffer(context.Background(), readBufferByteBased)
 	}
+	withCustomLogger := options.WithCustomLogger(testutils.ProduceTestingLogger(t))
 	testutils.RunDriverTestsuite(
 		t,
-		knxnetip.NewDriver(options.WithCustomLogger(testutils.ProduceTestingLogger(t))),
+		knxnetip.NewDriver(withCustomLogger),
 		"assets/testing/protocols/knxnetip/DriverTestsuite.xml",
 		knxIO.KnxnetipXmlParserHelper{},
 		testutils.WithRootTypeParser(parser),
+		withCustomLogger,
 	)
 }

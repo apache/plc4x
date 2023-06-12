@@ -36,9 +36,10 @@ func TestS7Driver(t *testing.T) {
 	parser := func(readBufferByteBased utils.ReadBufferByteBased) (any, error) {
 		return readWriteModel.TPKTPacketParseWithBuffer(context.Background(), readBufferByteBased)
 	}
+	withCustomLogger := options.WithCustomLogger(testutils.ProduceTestingLogger(t))
 	testutils.RunDriverTestsuite(
 		t,
-		s7.NewDriver(options.WithCustomLogger(testutils.ProduceTestingLogger(t))),
+		s7.NewDriver(withCustomLogger),
 		"assets/testing/protocols/s7/DriverTestsuite.xml",
 		s7IO.S7XmlParserHelper{},
 		testutils.WithRootTypeParser(parser),
@@ -47,5 +48,6 @@ func TestS7Driver(t *testing.T) {
 			"Single element read request",
 			"Single element read request with disabled PUT/GET",
 		),
+		withCustomLogger,
 	)
 }

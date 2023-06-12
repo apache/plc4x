@@ -20,6 +20,7 @@
 package tests
 
 import (
+	"github.com/apache/plc4x/plc4go/spi/options"
 	"testing"
 
 	modbusIO "github.com/apache/plc4x/plc4go/protocols/modbus/readwrite"
@@ -35,5 +36,6 @@ func TestModbusParserSerializer(t *testing.T) {
 		t,
 		"assets/testing/protocols/modbus/tcp/ParserSerializerTestsuite.xml",
 		modbusIO.ModbusParserHelper{},
+		options.WithCustomLogger(testutils.ProduceTestingLogger(t)),
 	)
 }

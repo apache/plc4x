@@ -36,11 +36,13 @@ func TestModbusDriver(t *testing.T) {
 	parser := func(readBufferByteBased utils.ReadBufferByteBased) (any, error) {
 		return readWriteModel.ModbusTcpADUParseWithBuffer(context.Background(), readBufferByteBased, readWriteModel.DriverType_MODBUS_TCP, false)
 	}
+	withCustomLogger := options.WithCustomLogger(testutils.ProduceTestingLogger(t))
 	testutils.RunDriverTestsuite(
 		t,
-		modbus.NewModbusTcpDriver(options.WithCustomLogger(testutils.ProduceTestingLogger(t))),
+		modbus.NewModbusTcpDriver(withCustomLogger),
 		"assets/testing/protocols/modbus/tcp/DriverTestsuite.xml",
 		modbusIO.ModbusXmlParserHelper{},
 		testutils.WithRootTypeParser(parser),
+		withCustomLogger,
 	)
 }

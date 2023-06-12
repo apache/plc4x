@@ -32,10 +32,12 @@ import (
 func TestAbEthDriver(t *testing.T) {
 	t.Skip("No test yet available")
 	testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
+	withCustomLogger := options.WithCustomLogger(testutils.ProduceTestingLogger(t))
 	testutils.RunDriverTestsuite(
 		t,
-		ads.NewDriver(options.WithCustomLogger(testutils.ProduceTestingLogger(t))),
+		ads.NewDriver(withCustomLogger),
 		"assets/testing/protocols/abeth/DriverTestsuite.xml",
 		abethIO.AbethXmlParserHelper{},
+		withCustomLogger,
 	)
 }

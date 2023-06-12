@@ -20,6 +20,7 @@
 package tests
 
 import (
+	"github.com/apache/plc4x/plc4go/spi/options"
 	"testing"
 
 	knxIO "github.com/apache/plc4x/plc4go/protocols/knxnetip/readwrite"
@@ -33,5 +34,6 @@ func TestKNXNetIPParserSerializer(t *testing.T) {
 		t,
 		"assets/testing/protocols/knxnetip/ParserSerializerTestsuite.xml",
 		knxIO.KnxnetipParserHelper{},
+		options.WithCustomLogger(testutils.ProduceTestingLogger(t)),
 	)
 }
