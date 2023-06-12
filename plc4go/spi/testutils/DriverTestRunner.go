@@ -478,7 +478,7 @@ const (
 )
 
 func RunDriverTestsuite(t *testing.T, driver plc4go.PlcDriver, testPath string, parser XmlParser, _options ...config.WithOption) {
-	t.Log("Extract testsuite _options")
+	t.Log("Extract testsuite options")
 	var rootTypeParser func(utils.ReadBufferByteBased) (any, error)
 	skippedTestCasesMap := map[string]bool{}
 	for _, withOption := range _options {
@@ -494,18 +494,22 @@ func RunDriverTestsuite(t *testing.T, driver plc4go.PlcDriver, testPath string, 
 			}
 		}
 	}
+	t.Log("Read the test-specification as XML file")
 	// Read the test-specification as XML file
 	rootNode := ParseDriverTestsuiteXml(t, testPath)
 
+	t.Log("Parse the contents of the test-specification")
 	// Parse the contents of the test-specification
 	testsuite := ParseDriverTestsuite(t, *rootNode, parser, rootTypeParser)
 
 	// We don't want to await completion of connection initialization
 	if connectionConnectAwaiter, ok := driver.(ConnectionConnectAwaiter); ok {
+		t.Log("We don't wait for setup and disconnect")
 		connectionConnectAwaiter.SetAwaitSetupComplete(false)
 		connectionConnectAwaiter.SetAwaitDisconnectComplete(false)
 	}
 
+	t.Log("Initialize the driver manager")
 	// Initialize the driver manager
 	driverManager := plc4go.NewPlcDriverManager(_options...)
 	transport := test.NewTransport(converter.WithOptionToInternal(_options...)...)

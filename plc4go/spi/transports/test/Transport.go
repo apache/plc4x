@@ -23,6 +23,7 @@ import (
 	"bufio"
 	"bytes"
 	"context"
+	"encoding/hex"
 	"math"
 	"net/url"
 
@@ -126,13 +127,16 @@ func (m *TransportInstance) GetNumBytesAvailableInBuffer() (uint32, error) {
 }
 
 func (m *TransportInstance) FillBuffer(until func(pos uint, currentByte byte, reader *bufio.Reader) bool) error {
+	m.log.Trace().Msg("Fill the buffer")
 	nBytes := uint32(1)
 	for {
+		m.log.Trace().Msgf("Peeking %d bytes", nBytes)
 		_bytes, err := m.PeekReadableBytes(nBytes)
 		if err != nil {
 			return errors.Wrap(err, "Error while peeking")
 		}
 		if keepGoing := until(uint(nBytes-1), _bytes[len(_bytes)-1], bufio.NewReader(bytes.NewReader(m.readBuffer))); !keepGoing {
+			m.log.Trace().Msgf("Stopped after %d bytes", nBytes)
 			return nil
 		}
 		nBytes++
@@ -147,15 +151,17 @@ func (m *TransportInstance) PeekReadableBytes(numBytes uint32) ([]byte, error) {
 		err = errors.New("not enough bytes available")
 	}
 	if availableBytes == 0 {
+		m.log.Trace().Msg("No bytes available")
 		return nil, err
 	}
 	return m.readBuffer[0:availableBytes], err
 }
 
 func (m *TransportInstance) Read(numBytes uint32) ([]byte, error) {
-	m.log.Trace().Msgf("Read num bytes %d", numBytes)
+	m.log.Trace().Msgf("Read num bytes %d (of %d available)", numBytes, len(m.readBuffer))
 	data := m.readBuffer[0:int(numBytes)]
 	m.readBuffer = m.readBuffer[int(numBytes):]
+	m.log.Trace().Msgf("New buffer size %d", len(m.readBuffer))
 	return data, nil
 }
 
@@ -167,13 +173,13 @@ func (m *TransportInstance) Write(data []byte) error {
 	if m.writeInterceptor != nil {
 		m.writeInterceptor(m, data)
 	}
-	m.log.Trace().Msgf("Write data %#x", data)
+	m.log.Trace().Msgf("Write data\n%s", hex.Dump(data))
 	m.writeBuffer = append(m.writeBuffer, data...)
 	return nil
 }
 
 func (m *TransportInstance) FillReadBuffer(data []byte) {
-	m.log.Trace().Msgf("FillReadBuffer with %#x", data)
+	m.log.Trace().Msgf("fill read buffer with \n%s (%d bytes). (Adding to %d bytes existing)", hex.Dump(data), len(data), len(m.readBuffer))
 	m.readBuffer = append(m.readBuffer, data...)
 }
 
