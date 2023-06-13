@@ -56,7 +56,7 @@ func NewMessageCodec(transportInstance transports.TransportInstance, _options ..
 		monitoredSALs:  make(chan readWriteModel.MonitoredSAL, 100),
 		log:            options.ExtractCustomLogger(_options...),
 	}
-	codec.DefaultCodec = _default.NewDefaultCodec(codec, transportInstance, append(_options, _default.WithCustomMessageHandler(extractMMIAndSAL))...)
+	codec.DefaultCodec = _default.NewDefaultCodec(codec, transportInstance, append(_options, _default.WithCustomMessageHandler(extractMMIAndSAL(codec.log)))...)
 	return codec
 }
 
@@ -296,6 +296,7 @@ lookingForTheEnd:
 			requestContext := readWriteModel.NewRequestContext(false)
 			cBusMessage, secondErr := readWriteModel.CBusMessageParse(sanitizedInput, pciResponse, requestContext, m.cbusOptions)
 			if secondErr == nil {
+				m.log.Trace().Msgf("Parsed message as SAL:\n%s", cBusMessage)
 				return cBusMessage, nil
 			} else {
 				m.log.Debug().Err(secondErr).Msg("SAL parse failed too")
@@ -306,6 +307,7 @@ lookingForTheEnd:
 			cbusOptions := readWriteModel.NewCBusOptions(false, false, false, false, false, false, false, false, false)
 			cBusMessage, secondErr := readWriteModel.CBusMessageParse(sanitizedInput, true, requestContext, cbusOptions)
 			if secondErr == nil {
+				m.log.Trace().Msgf("Parsed message as MMI:\n%s", cBusMessage)
 				return cBusMessage, nil
 			} else {
 				m.log.Debug().Err(secondErr).Msg("CAL parse failed too")
@@ -315,29 +317,46 @@ lookingForTheEnd:
 		m.log.Warn().Err(err).Msg("error parsing")
 		return nil, nil
 	}
+
+	m.log.Trace().Msgf("Parsed message:\n%s", cBusMessage)
 	return cBusMessage, nil
 }
 
-func extractMMIAndSAL(codec _default.DefaultCodecRequirements, message spi.Message) bool {
-	switch message := message.(type) {
-	case readWriteModel.CBusMessageToClientExactly:
-		switch reply := message.GetReply().(type) {
-		case readWriteModel.ReplyOrConfirmationReplyExactly:
-			switch reply := reply.GetReply().(type) {
-			case readWriteModel.ReplyEncodedReplyExactly:
-				switch encodedReply := reply.GetEncodedReply().(type) {
-				case readWriteModel.MonitoredSALReplyExactly:
-					codec.(*MessageCodec).monitoredSALs <- encodedReply.GetMonitoredSAL()
-				case readWriteModel.EncodedReplyCALReplyExactly:
-					calData := encodedReply.GetCalReply().GetCalData()
-					switch calData.(type) {
-					case readWriteModel.CALDataStatusExactly, readWriteModel.CALDataStatusExtendedExactly:
-						codec.(*MessageCodec).monitoredMMIs <- encodedReply.GetCalReply()
+func extractMMIAndSAL(log zerolog.Logger) _default.CustomMessageHandler {
+	return func(codec _default.DefaultCodecRequirements, message spi.Message) bool {
+		log.Trace().Msgf("Custom handling message:\n%s", message)
+		switch message := message.(type) {
+		case readWriteModel.CBusMessageToClientExactly:
+			switch reply := message.GetReply().(type) {
+			case readWriteModel.ReplyOrConfirmationReplyExactly:
+				switch reply := reply.GetReply().(type) {
+				case readWriteModel.ReplyEncodedReplyExactly:
+					switch encodedReply := reply.GetEncodedReply().(type) {
+					case readWriteModel.MonitoredSALReplyExactly:
+						log.Trace().Msg("Feed to monitored SALs")
+						codec.(*MessageCodec).monitoredSALs <- encodedReply.GetMonitoredSAL()
+					case readWriteModel.EncodedReplyCALReplyExactly:
+						calData := encodedReply.GetCalReply().GetCalData()
+						switch calData.(type) {
+						case readWriteModel.CALDataStatusExactly, readWriteModel.CALDataStatusExtendedExactly:
+							log.Trace().Msg("Feed to monitored MMIs")
+							codec.(*MessageCodec).monitoredMMIs <- encodedReply.GetCalReply()
+						default:
+							log.Trace().Msgf("Not a CALDataStatusExactly or CALDataStatusExtendedExactly. Actual type %T", calData)
+						}
+					default:
+						log.Trace().Msgf("Not a MonitoredSALReply or EncodedReplyCALReply. Actual type %T", encodedReply)
 					}
+				default:
+					log.Trace().Msgf("Not a ReplyEncodedReply. Actual type %T", reply)
 				}
+			default:
+				log.Trace().Msgf("Not a ReplyOrConfirmationReply. Actual type %T", reply)
 			}
+		default:
+			log.Trace().Msgf("Not a CBusMessageToClient. Actual type %T", message)
 		}
+		// We never handle mmi or sal here as we might want to read them in a read-request too
+		return false
 	}
-	// We never handle mmi or sal here as we might want to read them in a read-request too
-	return false
 }

@@ -60,6 +60,7 @@ func (m Browser) BrowseQuery(ctx context.Context, interceptor func(result apiMod
 	var queryResults []apiModel.PlcBrowseItem
 	switch query := query.(type) {
 	case *unitInfoQuery:
+		m.log.Trace().Msg("extract units")
 		units, allUnits, err := m.extractUnits(ctx, query, m.getInstalledUnitAddressBytes)
 		if err != nil {
 			m.log.Error().Err(err).Msg("Error extracting units")
@@ -72,6 +73,7 @@ func (m Browser) BrowseQuery(ctx context.Context, interceptor func(result apiMod
 		}
 	unitLoop:
 		for _, unit := range units {
+			m.log.Trace().Msgf("checking unit:\n%s", unit)
 			if err := ctx.Err(); err != nil {
 				m.log.Info().Err(err).Msgf("Aborting scan at unit %s", unit)
 				return apiModel.PlcResponseCode_INVALID_ADDRESS, nil
@@ -95,12 +97,15 @@ func (m Browser) BrowseQuery(ctx context.Context, interceptor func(result apiMod
 				} else {
 					event.Msgf("unit %d: Query %s", unitAddress, attribute)
 				}
+				m.log.Trace().Msg("Building request")
 				readTagName := fmt.Sprintf("%s/%d/%s", queryName, unitAddress, attribute)
 				readRequest, _ := m.connection.ReadRequestBuilder().
 					AddTag(readTagName, NewCALIdentifyTag(unit, nil /*TODO: add bridge support*/, attribute, 1)).
 					Build()
 				timeoutCtx, timeoutCancel := context.WithTimeout(ctx, time.Second*2)
+				m.log.Trace().Msgf("Executing readRequest\n%s\nwith timeout %s", readRequest, timeoutCtx)
 				requestResult := <-readRequest.ExecuteWithContext(timeoutCtx)
+				m.log.Trace().Msg("got a response")
 				timeoutCancel()
 				if err := requestResult.GetErr(); err != nil {
 					if !allUnits && !allAttributes {
@@ -126,14 +131,17 @@ func (m Browser) BrowseQuery(ctx context.Context, interceptor func(result apiMod
 					},
 				)
 				if interceptor != nil {
+					m.log.Trace().Msg("forwarding query result to interceptor")
 					interceptor(queryResult)
 				}
 				queryResults = append(queryResults, queryResult)
 			}
 		}
 	default:
+		m.log.Warn().Msgf("unsupported query type supplied %T", query)
 		return apiModel.PlcResponseCode_INVALID_ADDRESS, nil
 	}
+	m.log.Trace().Msgf("Browse done with \n%s", queryResults)
 	return apiModel.PlcResponseCode_OK, queryResults
 }
 
