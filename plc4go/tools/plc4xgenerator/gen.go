@@ -248,7 +248,7 @@ func (g *Generator) generate(typeName string) {
 			case "error":
 				g.Printf(errorFieldSerialize, "d."+field.name, fieldNameUntitled)
 			default:
-				fmt.Printf("\t no support implemented %v\n", fieldType)
+				fmt.Printf("\t no support implemented for Ident with type %v\n", fieldType)
 				g.Printf("_value := fmt.Sprintf(\"%%v\", d.%s)\n", fieldName)
 				g.Printf(stringFieldSerialize, "_value", fieldNameUntitled)
 			}
@@ -270,7 +270,7 @@ func (g *Generator) generate(typeName string) {
 				case "error":
 					g.Printf(errorFieldSerialize, "elem", "\"\"")
 				default:
-					fmt.Printf("\t no support implemented %v\n", fieldType)
+					fmt.Printf("\t no support implemented for Ident within ArrayType for %v\n", fieldType)
 					g.Printf("_value := fmt.Sprintf(\"%%v\", elem)\n")
 					g.Printf(stringFieldSerialize, "_value", fieldNameUntitled)
 				}
@@ -312,17 +312,21 @@ func (g *Generator) generate(typeName string) {
 				case "error":
 					g.Printf(errorFieldSerialize, "elem", "name")
 				default:
-					fmt.Printf("\t no support implemented %v\n", fieldType)
+					fmt.Printf("\t no support implemented for Ident within MapType for %v\n", fieldType)
 					g.Printf("\t\t_value := fmt.Sprintf(\"%%v\", elem)\n")
 					g.Printf(stringFieldSerialize, "_value", "name")
 				}
 			default:
-				fmt.Printf("\t no support implemented %v\n", fieldType)
+				fmt.Printf("\t no support implemented within MapType %v\n", fieldType.Value)
 				g.Printf("\t\t_value := fmt.Sprintf(\"%%v\", elem)\n")
 				g.Printf(stringFieldSerialize, "_value", "name")
 			}
 			g.Printf("\t}\n")
 			g.Printf("if err := writeBuffer.PopContext(%s, utils.WithRenderAsList(true)); err != nil {\n\t\treturn err\n\t}\n", fieldNameUntitled)
+		case *ast.ChanType:
+			g.Printf(chanFieldSerialize, "d."+field.name, fieldNameUntitled, field.name)
+		case *ast.FuncType:
+			g.Printf(funcFieldSerialize, "d."+field.name, fieldNameUntitled)
 		default:
 			fmt.Printf("no support implemented %#v\n", fieldType)
 		}
@@ -505,6 +509,19 @@ var errorFieldSerialize = `
 		if err := writeBuffer.WriteString(%[2]s, uint32(len(%[1]s.Error())*8), "UTF-8", %[1]s.Error()); err != nil {
 			return err
 		}
+	}
+`
+
+var chanFieldSerialize = `
+	_%[3]s_plx4gen_description := fmt.Sprintf("%%d element(s)", len(%[1]s))
+    if err := writeBuffer.WriteString(%[2]s, uint32(len(_%[3]s_plx4gen_description)*8), "UTF-8", _%[3]s_plx4gen_description); err != nil {
+		return err
+	}
+`
+
+var funcFieldSerialize = `
+	if err := writeBuffer.WriteBit(%[2]s, %[1]s != nil); err != nil {
+		return err
 	}
 `
 
