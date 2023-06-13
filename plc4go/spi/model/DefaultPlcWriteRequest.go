@@ -137,11 +137,14 @@ func (d *DefaultPlcWriteRequest) Execute() <-chan apiModel.PlcWriteRequestResult
 }
 
 func (d *DefaultPlcWriteRequest) ExecuteWithContext(ctx context.Context) <-chan apiModel.PlcWriteRequestResult {
-	// Shortcut, if no interceptor is defined
-	if d.writeRequestInterceptor == nil {
-		return d.writer.Write(ctx, d)
+	if d.writeRequestInterceptor != nil {
+		return d.ExecuteWithContextAndInterceptor(ctx)
 	}
 
+	return d.writer.Write(ctx, d)
+}
+
+func (d *DefaultPlcWriteRequest) ExecuteWithContextAndInterceptor(ctx context.Context) <-chan apiModel.PlcWriteRequestResult {
 	// Split the requests up into multiple ones.
 	writeRequests := d.writeRequestInterceptor.InterceptWriteRequest(ctx, d)
 	// Shortcut for single-request-requests
@@ -182,7 +185,6 @@ func (d *DefaultPlcWriteRequest) ExecuteWithContext(ctx context.Context) <-chan 
 		// Return the final result
 		resultChannel <- result
 	}()
-
 	return resultChannel
 }
 

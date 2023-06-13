@@ -115,13 +115,17 @@ func (d *DefaultPlcReadRequest) Execute() <-chan apiModel.PlcReadRequestResult {
 }
 
 func (d *DefaultPlcReadRequest) ExecuteWithContext(ctx context.Context) <-chan apiModel.PlcReadRequestResult {
-	// Shortcut, if no interceptor is defined
-	if d.readRequestInterceptor == nil {
-		return d.reader.Read(ctx, d)
+	if d.readRequestInterceptor != nil {
+		return d.ExecuteWithContextAndInterceptor(ctx)
 	}
 
+	return d.reader.Read(ctx, d)
+}
+
+func (d *DefaultPlcReadRequest) ExecuteWithContextAndInterceptor(ctx context.Context) <-chan apiModel.PlcReadRequestResult {
 	// Split the requests up into multiple ones.
 	readRequests := d.readRequestInterceptor.InterceptReadRequest(ctx, d)
+
 	// Shortcut for single-request-requests
 	if len(readRequests) == 1 {
 		return d.reader.Read(ctx, readRequests[0])
@@ -160,6 +164,5 @@ func (d *DefaultPlcReadRequest) ExecuteWithContext(ctx context.Context) <-chan a
 		// Return the final result
 		resultChannel <- result
 	}()
-
 	return resultChannel
 }
