@@ -108,9 +108,10 @@ func (m Browser) BrowseQuery(ctx context.Context, interceptor func(result apiMod
 				m.log.Trace().Msg("got a response")
 				timeoutCancel()
 				if err := requestResult.GetErr(); err != nil {
-					if !allUnits && !allAttributes {
-						event.Err(err).Msgf("unit %d: Can't read attribute %s", unitAddress, attribute)
+					if allUnits || allAttributes {
+						event = m.log.Trace()
 					}
+					event.Err(err).Msgf("unit %d: Can't read attribute %s", unitAddress, attribute)
 					continue unitLoop
 				}
 				response := requestResult.GetResponse()
