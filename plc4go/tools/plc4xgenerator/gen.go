@@ -272,6 +272,8 @@ func (g *Generator) generate(typeName string) {
 			g.Printf(serializableFieldTemplate, "d."+field.name, fieldNameUntitled)
 		case *ast.Ident:
 			switch fieldType.Name {
+			case "byte":
+				g.Printf(byteFieldSerialize, "d."+field.name, fieldNameUntitled)
 			case "int":
 				g.Printf(int64FieldSerialize, "int64(d."+field.name+")", fieldNameUntitled)
 			case "int32":
@@ -531,6 +533,12 @@ var serializableFieldTemplate = `
 				return err
 			}
 		}
+	}
+`
+
+var byteFieldSerialize = `
+	if err := writeBuffer.WriteByte(%[2]s, %[1]s); err != nil {
+		return err
 	}
 `
 
