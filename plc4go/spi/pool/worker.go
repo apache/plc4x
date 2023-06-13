@@ -20,7 +20,6 @@
 package pool
 
 import (
-	"fmt"
 	"runtime/debug"
 	"sync"
 	"sync/atomic"
@@ -29,6 +28,7 @@ import (
 	"github.com/rs/zerolog"
 )
 
+//go:generate go run ../../tools/plc4xgenerator/gen.go -type=worker
 type worker struct {
 	id          int
 	shutdown    atomic.Bool
@@ -40,9 +40,9 @@ type worker struct {
 		getWorkerWaitGroup() *sync.WaitGroup
 	}
 	hasEnded     atomic.Bool
-	lastReceived time.Time
+	lastReceived time.Time `stringer:"true"`
 
-	log zerolog.Logger
+	log zerolog.Logger `ignore:"true"`
 }
 
 func (w *worker) initialize() {
@@ -94,20 +94,4 @@ func (w *worker) work() {
 	}
 	w.hasEnded.Store(true)
 	workerLog.Debug().Msg("setting to ended")
-}
-
-func (w *worker) String() string {
-	return fmt.Sprintf("worker{\n"+
-		"\tid: %d,\n"+
-		"\tshutdown: %v,\n"+
-		"\tinterrupted: %t,\n"+
-		"\thasEnded: %t,\n"+
-		"\tlastReceived: %s,\n"+
-		"}",
-		w.id,
-		w.shutdown.Load(),
-		w.interrupted.Load(),
-		w.hasEnded.Load(),
-		w.lastReceived,
-	)
 }

@@ -42,38 +42,49 @@ type Provider interface {
 	GetTracer() *Tracer
 }
 
-type Tracer struct {
-	connectionId string
-	traceEntries []TraceEntry
-
-	log zerolog.Logger
+type Tracer interface {
+	GetConnectionId() string
+	SetConnectionId(connectionId string)
+	ResetTraces()
+	GetTraces() []TraceEntry
+	AddTrace(operation string, message string)
+	AddTransactionalStartTrace(operation string, message string) string
+	AddTransactionalTrace(transactionId string, operation string, message string)
+	FilterTraces(traces []TraceEntry, connectionIdFilter string, transactionIdFilter string, operationFilter string, messageFilter string) []TraceEntry
 }
 
-func NewTracer(connectionId string, _options ...options.WithOption) *Tracer {
-	return &Tracer{
+func NewTracer(connectionId string, _options ...options.WithOption) Tracer {
+	return &tracer{
 		connectionId: connectionId,
 		traceEntries: []TraceEntry{},
 		log:          options.ExtractCustomLogger(_options...),
 	}
 }
 
-func (t *Tracer) GetConnectionId() string {
+type tracer struct {
+	connectionId string
+	traceEntries []TraceEntry
+
+	log zerolog.Logger
+}
+
+func (t *tracer) GetConnectionId() string {
 	return t.connectionId
 }
 
-func (t *Tracer) SetConnectionId(connectionId string) {
+func (t *tracer) SetConnectionId(connectionId string) {
 	t.connectionId = connectionId
 }
 
-func (t *Tracer) ResetTraces() {
+func (t *tracer) ResetTraces() {
 	t.traceEntries = []TraceEntry{}
 }
 
-func (t *Tracer) GetTraces() []TraceEntry {
+func (t *tracer) GetTraces() []TraceEntry {
 	return t.traceEntries
 }
 
-func (t *Tracer) AddTrace(operation string, message string) {
+func (t *tracer) AddTrace(operation string, message string) {
 	t.traceEntries = append(t.traceEntries, TraceEntry{
 		Timestamp:     time.Now(),
 		ConnectionId:  t.connectionId,
@@ -83,7 +94,7 @@ func (t *Tracer) AddTrace(operation string, message string) {
 	})
 }
 
-func (t *Tracer) AddTransactionalStartTrace(operation string, message string) string {
+func (t *tracer) AddTransactionalStartTrace(operation string, message string) string {
 	transactionId := utils.GenerateId(t.log, 4)
 	t.traceEntries = append(t.traceEntries, TraceEntry{
 		Timestamp:     time.Now(),
@@ -95,7 +106,7 @@ func (t *Tracer) AddTransactionalStartTrace(operation string, message string) st
 	return transactionId
 }
 
-func (t *Tracer) AddTransactionalTrace(transactionId string, operation string, message string) {
+func (t *tracer) AddTransactionalTrace(transactionId string, operation string, message string) {
 	t.traceEntries = append(t.traceEntries, TraceEntry{
 		Timestamp:     time.Now(),
 		ConnectionId:  t.connectionId,
@@ -105,7 +116,7 @@ func (t *Tracer) AddTransactionalTrace(transactionId string, operation string, m
 	})
 }
 
-func (t *Tracer) FilterTraces(traces []TraceEntry, connectionIdFilter string, transactionIdFilter string, operationFilter string, messageFilter string) []TraceEntry {
+func (t *tracer) FilterTraces(traces []TraceEntry, connectionIdFilter string, transactionIdFilter string, operationFilter string, messageFilter string) []TraceEntry {
 	var result []TraceEntry
 traceFiltering:
 	for _, trace := range traces {
@@ -126,6 +137,6 @@ traceFiltering:
 	return result
 }
 
-func (t *Tracer) String() string {
+func (t *tracer) String() string {
 	return fmt.Sprintf("Tracer for %s", t.connectionId)
 }

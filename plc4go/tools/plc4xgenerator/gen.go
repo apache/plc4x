@@ -574,7 +574,8 @@ var stringFieldSerialize = `
 
 var errorFieldSerialize = `
 	if %[1]s != nil {
-		if err := writeBuffer.WriteString(%[2]s, uint32(len(%[1]s.Error())*8), "UTF-8", %[1]s.Error()); err != nil {
+		_errString := %[1]s.Error()
+		if err := writeBuffer.WriteString(%[2]s, uint32(len(_errString)*8), "UTF-8", _errString); err != nil {
 			return err
 		}
 	}

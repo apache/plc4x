@@ -30,10 +30,10 @@ import (
 type Subscriber struct {
 	device  *Device
 	options map[string][]string
-	tracer  *tracer.Tracer
+	tracer  tracer.Tracer
 }
 
-func NewSubscriber(device *Device, options map[string][]string, tracer *tracer.Tracer) *Subscriber {
+func NewSubscriber(device *Device, options map[string][]string, tracer tracer.Tracer) *Subscriber {
 	return &Subscriber{
 		device:  device,
 		options: options,

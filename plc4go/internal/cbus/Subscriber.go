@@ -36,11 +36,12 @@ import (
 	spiValues "github.com/apache/plc4x/plc4go/spi/values"
 )
 
+//go:generate go run ../../tools/plc4xgenerator/gen.go -type=Subscriber
 type Subscriber struct {
-	consumers     map[*spiModel.DefaultPlcConsumerRegistration]apiModel.PlcSubscriptionEventConsumer
+	consumers     map[*spiModel.DefaultPlcConsumerRegistration]apiModel.PlcSubscriptionEventConsumer `ignore:"true"`
 	addSubscriber func(subscriber *Subscriber)
 
-	log zerolog.Logger
+	log zerolog.Logger `ignore:"true"`
 }
 
 func NewSubscriber(addSubscriber func(subscriber *Subscriber), _options ...options.WithOption) *Subscriber {
@@ -405,8 +406,4 @@ func (s *Subscriber) Register(consumer apiModel.PlcSubscriptionEventConsumer, ha
 
 func (s *Subscriber) Unregister(registration apiModel.PlcConsumerRegistration) {
 	delete(s.consumers, registration.(*spiModel.DefaultPlcConsumerRegistration))
-}
-
-func (s *Subscriber) String() string {
-	return fmt.Sprintf("cbus.Subcriber{\n\tconsumers: %d elements\n}", len(s.consumers))
 }

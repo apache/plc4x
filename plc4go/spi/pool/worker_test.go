@@ -238,7 +238,12 @@ func Test_worker_String(t *testing.T) {
 	}{
 		{
 			name: "string it",
-			want: "worker{\n\tid: 0,\n\tshutdown: false,\n\tinterrupted: false,\n\thasEnded: false,\n\tlastReceived: 0001-01-01 00:00:00 +0000 UTC,\n}",
+			want: `
+╔═worker════════════════════════════════════════════════════════════════════════════════════════════════╗
+║╔═id═════════════════╗╔═shutdown╗╔═interrupted╗╔═interrupter╗╔═hasEnded╗╔═lastReceived════════════════╗║
+║║0x0000000000000000 0║║b0 false ║║  b0 false  ║║0 element(s)║║b0 false ║║0001-01-01 00:00:00 +0000 UTC║║
+║╚════════════════════╝╚═════════╝╚════════════╝╚════════════╝╚═════════╝╚═════════════════════════════╝║
+╚═══════════════════════════════════════════════════════════════════════════════════════════════════════╝`[1:],
 		},
 	}
 	for _, tt := range tests {

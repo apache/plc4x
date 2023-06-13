@@ -106,7 +106,7 @@ type plcConnectionCache struct {
 
 	cacheLock   lock.RWMutex
 	connections map[string]*connectionContainer
-	tracer      *tracer.Tracer
+	tracer      tracer.Tracer
 
 	log zerolog.Logger
 }
@@ -131,7 +131,7 @@ func (t *plcConnectionCache) EnableTracer() {
 	t.tracer = tracer.NewTracer("cache", options.WithCustomLogger(t.log))
 }
 
-func (t *plcConnectionCache) GetTracer() *tracer.Tracer {
+func (t *plcConnectionCache) GetTracer() tracer.Tracer {
 	return t.tracer
 }
 

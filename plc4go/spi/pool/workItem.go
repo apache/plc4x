@@ -19,22 +19,9 @@
 
 package pool
 
-import "fmt"
-
+//go:generate go run ../../tools/plc4xgenerator/gen.go -type=workItem
 type workItem struct {
 	workItemId       int32
-	runnable         Runnable
+	runnable         Runnable `ignore:"true"`
 	completionFuture *future
-}
-
-func (w workItem) String() string {
-	return fmt.Sprintf("workItem{\n"+
-		"\twid: %d,\n"+
-		"\trunnable: %t,\n"+
-		"\tcompletionFuture: %s,\n"+
-		"}",
-		w.workItemId,
-		w.runnable != nil,
-		w.completionFuture,
-	)
 }

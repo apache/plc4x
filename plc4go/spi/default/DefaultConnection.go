@@ -21,8 +21,8 @@ package _default
 
 import (
 	"context"
-	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/tracer"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/rs/zerolog"
 	"runtime/debug"
 	"time"
@@ -48,6 +48,7 @@ type DefaultConnectionRequirements interface {
 
 // DefaultConnection should be used as an embedded struct. All defined methods here have default implementations
 type DefaultConnection interface {
+	utils.Serializable
 	plc4go.PlcConnection
 	spi.TransportInstanceExposer
 	spi.HandlerExposer
@@ -146,16 +147,17 @@ type withPlcValueHandler struct {
 	plcValueHandler spi.PlcValueHandler
 }
 
+//go:generate go run ../../tools/plc4xgenerator/gen.go -type=defaultConnection
 type defaultConnection struct {
-	DefaultConnectionRequirements
+	DefaultConnectionRequirements `ignore:"true"`
 	// defaultTtl the time to live after a close
-	defaultTtl time.Duration
+	defaultTtl time.Duration `stringer:"true"`
 	// connected indicates if a connection is connected
 	connected    bool
 	tagHandler   spi.PlcTagHandler
 	valueHandler spi.PlcValueHandler
 
-	log zerolog.Logger
+	log zerolog.Logger `ignore:"true"`
 }
 
 func buildDefaultConnection(requirements DefaultConnectionRequirements, _options ...options.WithOption) DefaultConnection {
@@ -358,20 +360,6 @@ func (d *defaultConnection) GetPlcTagHandler() spi.PlcTagHandler {
 
 func (d *defaultConnection) GetPlcValueHandler() spi.PlcValueHandler {
 	return d.valueHandler
-}
-
-func (d *defaultConnection) String() string {
-	return fmt.Sprintf("DefaultConnection{\n"+
-		"\tttl: %s,\n"+
-		"\tconnected: %t,\n"+
-		"\ttagHandler: %s,\n"+
-		"\tvalueHandler: %s,\n"+
-		"}",
-		d.defaultTtl,
-		d.connected,
-		d.tagHandler,
-		d.valueHandler,
-	)
 }
 
 func (m DefaultConnectionMetadata) GetConnectionAttributes() map[string]string {

@@ -1337,12 +1337,17 @@ func Test_defaultConnection_String(t *testing.T) {
 	}{
 		{
 			name: "string it",
-			want: "DefaultConnection{\n" +
-				"\tttl: 0s,\n" +
-				"\tconnected: false,\n" +
-				"\ttagHandler: %!s(<nil>),\n" +
-				"\tvalueHandler: %!s(<nil>),\n" +
-				"}",
+			fields: fields{
+				defaultTtl: 20 * time.Hour,
+				connected:  true,
+				log:        zerolog.Logger{},
+			},
+			want: `
+╔═defaultConnection═══════╗
+║╔═defaultTtl╗╔═connected╗║
+║║  20h0m0s  ║║ b1 true  ║║
+║╚═══════════╝╚══════════╝║
+╚═════════════════════════╝`[1:],
 		},
 	}
 	for _, tt := range tests {

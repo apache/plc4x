@@ -51,18 +51,19 @@ type RequestTransaction interface {
 // Internal section
 //
 
+//go:generate go run ../../tools/plc4xgenerator/gen.go -type=requestTransaction
 type requestTransaction struct {
-	parent        *requestTransactionManager
+	parent        *requestTransactionManager `ignore:"true"`
 	transactionId int32
 
 	/** The initial operation to perform to kick off the request */
-	operation        pool.Runnable
+	operation        pool.Runnable `ignore:"true"` // TODO: maybe we can treat this as a function some day if we are able to check the definition in gen
 	completionFuture pool.CompletionFuture
 
 	stateChangeMutex sync.Mutex
 	completed        bool
 
-	transactionLog zerolog.Logger
+	transactionLog zerolog.Logger `ignore:"true"`
 }
 
 //
@@ -141,8 +142,4 @@ func (t *requestTransaction) AwaitCompletion(ctx context.Context) error {
 
 func (t *requestTransaction) IsCompleted() bool {
 	return t.completed
-}
-
-func (t *requestTransaction) String() string {
-	return fmt.Sprintf("Transaction{tid:%d}", t.transactionId)
 }

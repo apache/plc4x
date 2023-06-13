@@ -28,6 +28,11 @@ import (
 
 type Runnable func()
 
+type CompletionFuture interface {
+	AwaitCompletion(ctx context.Context) error
+	Cancel(interrupt bool, err error)
+}
+
 type Executor interface {
 	io.Closer
 	Start()

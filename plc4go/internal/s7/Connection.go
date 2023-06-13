@@ -67,7 +67,7 @@ type Connection struct {
 	tm            transactions.RequestTransactionManager
 
 	connectionId string
-	tracer       *tracer.Tracer
+	tracer       tracer.Tracer
 
 	log zerolog.Logger
 }
@@ -101,7 +101,7 @@ func (m *Connection) IsTraceEnabled() bool {
 	return m.tracer != nil
 }
 
-func (m *Connection) GetTracer() *tracer.Tracer {
+func (m *Connection) GetTracer() tracer.Tracer {
 	return m.tracer
 }
 

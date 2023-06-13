@@ -156,7 +156,12 @@ func Test_requestTransaction_String(t1 *testing.T) {
 	}{
 		{
 			name: "give a string",
-			want: "Transaction{tid:0}",
+			want: `
+╔═requestTransaction═════════╗
+║╔═transactionId╗╔═completed╗║
+║║ 0x00000000 0 ║║ b0 false ║║
+║╚══════════════╝╚══════════╝║
+╚════════════════════════════╝`[1:],
 		},
 	}
 	for _, tt := range tests {
@@ -169,7 +174,7 @@ func Test_requestTransaction_String(t1 *testing.T) {
 				transactionLog:   tt.fields.transactionLog,
 			}
 			if got := t.String(); got != tt.want {
-				t1.Errorf("String() = %v, want %v", got, tt.want)
+				t1.Errorf("String() = \n%v, want \n%v", got, tt.want)
 			}
 		})
 	}

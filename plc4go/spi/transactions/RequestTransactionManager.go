@@ -22,7 +22,6 @@ package transactions
 import (
 	"container/list"
 	"context"
-	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/pool"
 	"io"
@@ -94,6 +93,7 @@ type withCustomExecutor struct {
 	executor pool.Executor
 }
 
+//go:generate go run ../../tools/plc4xgenerator/gen.go -type=requestTransactionManager
 type requestTransactionManager struct {
 	runningRequests []*requestTransaction
 	// How many transactions are allowed to run at the same time?
@@ -102,7 +102,7 @@ type requestTransactionManager struct {
 	currentTransactionId int32
 	transactionMutex     sync.RWMutex
 	// Important, this is a FIFO Queue for Fairness!
-	workLog      list.List
+	workLog      list.List `ignore:"true"` // TODO: no support for list yet
 	workLogMutex sync.RWMutex
 	executor     pool.Executor
 
@@ -112,7 +112,7 @@ type requestTransactionManager struct {
 	// flag set to true if it should trace transactions
 	traceTransactionManagerTransactions bool
 
-	log zerolog.Logger
+	log zerolog.Logger `ignore:"true"`
 }
 
 //
@@ -176,7 +176,7 @@ func (r *requestTransactionManager) StartTransaction() RequestTransaction {
 	}
 	if r.shutdown {
 		transaction.completed = true
-		transaction.completionFuture = completedFuture{errors.New("request transaction manager in shutdown")}
+		transaction.completionFuture = &completedFuture{errors.New("request transaction manager in shutdown")}
 	}
 	return transaction
 }
@@ -246,24 +246,4 @@ func (r *requestTransactionManager) CloseGraceful(timeout time.Duration) error {
 	defer r.workLogMutex.RUnlock()
 	r.runningRequests = nil
 	return r.executor.Close()
-}
-
-func (r *requestTransactionManager) String() string {
-	return fmt.Sprintf("RequestTransactionManager{\n"+
-		"\trunningRequests: %s,\n"+
-		"\tnumberOfConcurrentRequests: %d,\n"+
-		"\tcurrentTransactionId: %d,\n"+
-		"\tworkLog: %d elements,\n"+
-		"\texecutor: %s,\n"+
-		"\tshutdown: %t,\n"+
-		"\ttraceTransactionManagerTransactions: %t,\n"+
-		"}",
-		r.runningRequests,
-		r.numberOfConcurrentRequests,
-		r.currentTransactionId,
-		r.workLog.Len(),
-		r.executor,
-		r.shutdown,
-		r.traceTransactionManagerTransactions,
-	)
 }

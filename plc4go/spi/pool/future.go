@@ -21,18 +21,13 @@ package pool
 
 import (
 	"context"
-	"fmt"
 	"sync/atomic"
 	"time"
 
 	"github.com/pkg/errors"
 )
 
-type CompletionFuture interface {
-	AwaitCompletion(ctx context.Context) error
-	Cancel(interrupt bool, err error)
-}
-
+//go:generate go run ../../tools/plc4xgenerator/gen.go -type=future
 type future struct {
 	cancelRequested    atomic.Bool
 	interruptRequested atomic.Bool
@@ -71,20 +66,4 @@ func (f *future) AwaitCompletion(ctx context.Context) error {
 		return Canceled
 	}
 	return nil
-}
-
-func (f *future) String() string {
-	return fmt.Sprintf("future{\n"+
-		"\tcancelRequested: %t,\n"+
-		"\tinterruptRequested: %t,\n"+
-		"\tcompleted: %t,\n"+
-		"\terrored: %t,\n"+
-		"\terr: %v,\n"+
-		"}",
-		f.cancelRequested.Load(),
-		f.interruptRequested.Load(),
-		f.completed.Load(),
-		f.errored.Load(),
-		f.err.Load(),
-	)
 }

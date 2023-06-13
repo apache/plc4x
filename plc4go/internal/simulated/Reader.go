@@ -37,12 +37,12 @@ import (
 type Reader struct {
 	device  *Device
 	options map[string][]string
-	tracer  *tracer.Tracer
+	tracer  tracer.Tracer
 
 	log zerolog.Logger
 }
 
-func NewReader(device *Device, readerOptions map[string][]string, tracer *tracer.Tracer, _options ...options.WithOption) *Reader {
+func NewReader(device *Device, readerOptions map[string][]string, tracer tracer.Tracer, _options ...options.WithOption) *Reader {
 	return &Reader{
 		device:  device,
 		options: readerOptions,

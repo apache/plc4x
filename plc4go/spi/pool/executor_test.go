@@ -445,21 +445,20 @@ func Test_executor_String(t *testing.T) {
 				queueDepth:   2,
 				traceWorkers: true,
 			},
-			want: "executor{\n" +
-				"\trunning: true,\n" +
-				"\tshutdown: true,\n" +
-				"\tworker: [worker{\n" +
-				"\tid: 1,\n" +
-				"\tshutdown: false,\n" +
-				"\tinterrupted: false,\n" +
-				"\thasEnded: false,\n" +
-				"\tlastReceived: 0001-01-01 00:00:00 +0000 UTC,\n" +
-				"}],\n" +
-				"\tqueueDepth: 2,\n" +
-				"\tworkItems: 0 elements,\n" +
-				"\ttraceWorkers: true,\n" +
-				"\n" +
-				"}",
+			want: `
+╔═executor════════════════════════════════════════════════════════════════════════════════════════════════╗
+║╔═running╗╔═shutdown╗                                                                                    ║
+║║b1 true ║║ b1 true ║                                                                                    ║
+║╚════════╝╚═════════╝                                                                                    ║
+║╔═worker/value/worker═══════════════════════════════════════════════════════════════════════════════════╗║
+║║╔═id═════════════════╗╔═shutdown╗╔═interrupted╗╔═interrupter╗╔═hasEnded╗╔═lastReceived════════════════╗║║
+║║║0x0000000000000001 1║║b0 false ║║  b0 false  ║║0 element(s)║║b0 false ║║0001-01-01 00:00:00 +0000 UTC║║║
+║║╚════════════════════╝╚═════════╝╚════════════╝╚════════════╝╚═════════╝╚═════════════════════════════╝║║
+║╚═══════════════════════════════════════════════════════════════════════════════════════════════════════╝║
+║╔═queueDepth═════════╗╔═workItems══╗╔═traceWorkers╗                                                      ║
+║║0x0000000000000002 2║║0 element(s)║║   b1 true   ║                                                      ║
+║╚════════════════════╝╚════════════╝╚═════════════╝                                                      ║
+╚═════════════════════════════════════════════════════════════════════════════════════════════════════════╝`[1:],
 		},
 	}
 	for _, tt := range tests {

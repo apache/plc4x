@@ -613,29 +613,30 @@ func Test_requestTransactionManager_String(t *testing.T) {
 				shutdown:                            true,
 				traceTransactionManagerTransactions: true,
 			},
-			want: "RequestTransactionManager{\n" +
-				"\trunningRequests: [Transaction{tid:2}],\n" +
-				"\tnumberOfConcurrentRequests: 3,\n" +
-				"\tcurrentTransactionId: 4,\n" +
-				"\tworkLog: 1 elements,\n" +
-				"\texecutor: executor{\n" +
-				"\trunning: false,\n" +
-				"\tshutdown: false,\n" +
-				"\tworker: [worker{\n" +
-				"\tid: 0,\n" +
-				"\tshutdown: false,\n" +
-				"\tinterrupted: false,\n" +
-				"\thasEnded: false,\n" +
-				"\tlastReceived: 0001-01-01 00:00:00 +0000 UTC,\n" +
-				"}],\n" +
-				"\tqueueDepth: 1,\n" +
-				"\tworkItems: 0 elements,\n" +
-				"\ttraceWorkers: false,\n" +
-				"\n" +
-				"},\n" +
-				"\tshutdown: true,\n" +
-				"\ttraceTransactionManagerTransactions: true,\n" +
-				"}",
+			want: `
+╔═requestTransactionManager════════════════════════════════════════════════════════════════════════════════════════════╗
+║╔═runningRequests/value/requestTransaction╗╔═numberOfConcurrentRequests╗╔═currentTransactionId╗                       ║
+║║      ╔═transactionId╗╔═completed╗       ║║   0x0000000000000003 3    ║║    0x00000004 4     ║                       ║
+║║      ║ 0x00000002 2 ║║ b0 false ║       ║╚═══════════════════════════╝╚═════════════════════╝                       ║
+║║      ╚══════════════╝╚══════════╝       ║                                                                           ║
+║╚═════════════════════════════════════════╝                                                                           ║
+║╔═executor/executor═══════════════════════════════════════════════════════════════════════════════════════╗╔═shutdown╗║
+║║╔═running╗╔═shutdown╗                                                                                    ║║ b1 true ║║
+║║║b0 false║║b0 false ║                                                                                    ║╚═════════╝║
+║║╚════════╝╚═════════╝                                                                                    ║           ║
+║║╔═worker/value/worker═══════════════════════════════════════════════════════════════════════════════════╗║           ║
+║║║╔═id═════════════════╗╔═shutdown╗╔═interrupted╗╔═interrupter╗╔═hasEnded╗╔═lastReceived════════════════╗║║           ║
+║║║║0x0000000000000000 0║║b0 false ║║  b0 false  ║║0 element(s)║║b0 false ║║0001-01-01 00:00:00 +0000 UTC║║║           ║
+║║║╚════════════════════╝╚═════════╝╚════════════╝╚════════════╝╚═════════╝╚═════════════════════════════╝║║           ║
+║║╚═══════════════════════════════════════════════════════════════════════════════════════════════════════╝║           ║
+║║╔═queueDepth═════════╗╔═workItems══╗╔═traceWorkers╗                                                      ║           ║
+║║║0x0000000000000001 1║║0 element(s)║║  b0 false   ║                                                      ║           ║
+║║╚════════════════════╝╚════════════╝╚═════════════╝                                                      ║           ║
+║╚═════════════════════════════════════════════════════════════════════════════════════════════════════════╝           ║
+║╔═traceTransactionManagerTransactions╗                                                                                ║
+║║              b1 true               ║                                                                                ║
+║╚════════════════════════════════════╝                                                                                ║
+╚══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝`[1:],
 		},
 	}
 	for _, tt := range tests {

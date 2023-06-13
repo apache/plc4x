@@ -44,6 +44,7 @@ type DefaultCodecRequirements interface {
 
 // DefaultCodec is a default codec implementation which has so sensitive defaults for message handling and a built-in worker
 type DefaultCodec interface {
+	utils.Serializable
 	spi.MessageCodec
 	spi.TransportInstanceExposer
 }
@@ -78,15 +79,16 @@ type withCustomMessageHandler struct {
 	customMessageHandler func(codec DefaultCodecRequirements, message spi.Message) bool
 }
 
+//go:generate go run ../../tools/plc4xgenerator/gen.go -type=defaultCodec
 type defaultCodec struct {
-	DefaultCodecRequirements
+	DefaultCodecRequirements      `ignore:"true"`
 	transportInstance             transports.TransportInstance
 	defaultIncomingMessageChannel chan spi.Message
 	expectations                  []spi.Expectation
 	running                       bool
 	customMessageHandling         func(codec DefaultCodecRequirements, message spi.Message) bool
 
-	log zerolog.Logger
+	log zerolog.Logger `ignore:"true"`
 }
 
 func buildDefaultCodec(defaultCodecRequirements DefaultCodecRequirements, transportInstance transports.TransportInstance, _options ...options.WithOption) DefaultCodec {
@@ -354,20 +356,4 @@ func (m *defaultCodec) passToDefaultIncomingMessageChannel(workerLog zerolog.Log
 		timeout.Stop()
 		workerLog.Warn().Msgf("Message discarded\n%s", message)
 	}
-}
-
-func (m *defaultCodec) String() string {
-	return fmt.Sprintf("DefaultCodec{\n"+
-		"\tTransportInstance: %s,\n"+
-		"\tDefaultIncomingMessageChannel: %d elements,\n"+
-		"\tExpectations: %s,\n"+
-		"\trunning: %t,\n"+
-		"\tcustomMessageHandling: %t,\n"+
-		"}",
-		m.transportInstance,
-		len(m.defaultIncomingMessageChannel),
-		m.expectations,
-		m.running,
-		m.customMessageHandling != nil,
-	)
 }

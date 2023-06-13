@@ -36,12 +36,12 @@ import (
 type Writer struct {
 	device  *Device
 	options map[string][]string
-	tracer  *tracer.Tracer
+	tracer  tracer.Tracer
 
 	log zerolog.Logger
 }
 
-func NewWriter(device *Device, writerOptions map[string][]string, tracer *tracer.Tracer, _options ...options.WithOption) *Writer {
+func NewWriter(device *Device, writerOptions map[string][]string, tracer tracer.Tracer, _options ...options.WithOption) *Writer {
 	return &Writer{
 		device:  device,
 		options: writerOptions,

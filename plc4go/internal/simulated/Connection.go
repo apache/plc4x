@@ -45,7 +45,7 @@ type Connection struct {
 	options      map[string][]string
 	connected    bool
 	connectionId string
-	tracer       *tracer.Tracer
+	tracer       tracer.Tracer
 
 	log zerolog.Logger
 }
@@ -78,7 +78,7 @@ func (c *Connection) IsTraceEnabled() bool {
 	return c.tracer != nil
 }
 
-func (c *Connection) GetTracer() *tracer.Tracer {
+func (c *Connection) GetTracer() tracer.Tracer {
 	return c.tracer
 }
 

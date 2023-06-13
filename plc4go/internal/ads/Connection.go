@@ -52,7 +52,7 @@ type Connection struct {
 	requestInterceptor interceptors.RequestInterceptor
 	configuration      model.Configuration
 	driverContext      *DriverContext
-	tracer             *tracer.Tracer
+	tracer             tracer.Tracer
 
 	subscriptions map[uint32]apiModel.PlcSubscriptionHandle
 
@@ -96,7 +96,7 @@ func (m *Connection) IsTraceEnabled() bool {
 	return m.tracer != nil
 }
 
-func (m *Connection) GetTracer() *tracer.Tracer {
+func (m *Connection) GetTracer() tracer.Tracer {
 	return m.tracer
 }
 

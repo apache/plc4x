@@ -58,7 +58,7 @@ func (t *plcConnectionLease) IsTraceEnabled() bool {
 	return t.connection.IsTraceEnabled()
 }
 
-func (t *plcConnectionLease) GetTracer() *tracer.Tracer {
+func (t *plcConnectionLease) GetTracer() tracer.Tracer {
 	if t.connection == nil {
 		panic("Called 'GetTracer' on a closed cached connection")
 	}

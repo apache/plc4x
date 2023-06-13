@@ -21,21 +21,17 @@ package transactions
 
 import (
 	"context"
-	"fmt"
 )
 
+//go:generate go run ../../tools/plc4xgenerator/gen.go -type=completedFuture
 type completedFuture struct {
 	err error
 }
 
-func (c completedFuture) AwaitCompletion(_ context.Context) error {
+func (c *completedFuture) AwaitCompletion(_ context.Context) error {
 	return c.err
 }
 
-func (completedFuture) Cancel(_ bool, _ error) {
+func (*completedFuture) Cancel(_ bool, _ error) {
 	// No op
-}
-
-func (c completedFuture) String() string {
-	return fmt.Sprintf("completedFuture{\n\terr: %v,\n}", c.err)
 }

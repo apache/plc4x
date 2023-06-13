@@ -32,11 +32,11 @@ func TestNewTracer(t *testing.T) {
 	tests := []struct {
 		name string
 		args args
-		want *Tracer
+		want Tracer
 	}{
 		{
 			name: "create it",
-			want: &Tracer{
+			want: &tracer{
 				traceEntries: []TraceEntry{},
 			},
 		},
@@ -48,7 +48,7 @@ func TestNewTracer(t *testing.T) {
 	}
 }
 
-func TestTracer_AddTrace(t1 *testing.T) {
+func Test_tracer_AddTrace(t1 *testing.T) {
 	type fields struct {
 		connectionId string
 		traceEntries []TraceEntry
@@ -68,7 +68,7 @@ func TestTracer_AddTrace(t1 *testing.T) {
 	}
 	for _, tt := range tests {
 		t1.Run(tt.name, func(t1 *testing.T) {
-			t := &Tracer{
+			t := &tracer{
 				connectionId: tt.fields.connectionId,
 				traceEntries: tt.fields.traceEntries,
 			}
@@ -77,7 +77,7 @@ func TestTracer_AddTrace(t1 *testing.T) {
 	}
 }
 
-func TestTracer_AddTransactionalStartTrace(t1 *testing.T) {
+func Test_tracer_AddTransactionalStartTrace(t1 *testing.T) {
 	type fields struct {
 		connectionId string
 		traceEntries []TraceEntry
@@ -97,7 +97,7 @@ func TestTracer_AddTransactionalStartTrace(t1 *testing.T) {
 	}
 	for _, tt := range tests {
 		t1.Run(tt.name, func(t1 *testing.T) {
-			t := &Tracer{
+			t := &tracer{
 				connectionId: tt.fields.connectionId,
 				traceEntries: tt.fields.traceEntries,
 			}
@@ -107,7 +107,7 @@ func TestTracer_AddTransactionalStartTrace(t1 *testing.T) {
 	}
 }
 
-func TestTracer_AddTransactionalTrace(t1 *testing.T) {
+func Test_tracer_AddTransactionalTrace(t1 *testing.T) {
 	type fields struct {
 		connectionId string
 		traceEntries []TraceEntry
@@ -128,7 +128,7 @@ func TestTracer_AddTransactionalTrace(t1 *testing.T) {
 	}
 	for _, tt := range tests {
 		t1.Run(tt.name, func(t1 *testing.T) {
-			t := &Tracer{
+			t := &tracer{
 				connectionId: tt.fields.connectionId,
 				traceEntries: tt.fields.traceEntries,
 			}
@@ -137,7 +137,7 @@ func TestTracer_AddTransactionalTrace(t1 *testing.T) {
 	}
 }
 
-func TestTracer_FilterTraces(t1 *testing.T) {
+func Test_tracer_FilterTraces(t1 *testing.T) {
 	type fields struct {
 		connectionId string
 		traceEntries []TraceEntry
@@ -213,7 +213,7 @@ func TestTracer_FilterTraces(t1 *testing.T) {
 	}
 	for _, tt := range tests {
 		t1.Run(tt.name, func(t1 *testing.T) {
-			t := &Tracer{
+			t := &tracer{
 				connectionId: tt.fields.connectionId,
 				traceEntries: tt.fields.traceEntries,
 			}
@@ -222,7 +222,7 @@ func TestTracer_FilterTraces(t1 *testing.T) {
 	}
 }
 
-func TestTracer_GetConnectionId(t1 *testing.T) {
+func Test_tracer_GetConnectionId(t1 *testing.T) {
 	type fields struct {
 		connectionId string
 		traceEntries []TraceEntry
@@ -238,7 +238,7 @@ func TestTracer_GetConnectionId(t1 *testing.T) {
 	}
 	for _, tt := range tests {
 		t1.Run(tt.name, func(t1 *testing.T) {
-			t := &Tracer{
+			t := &tracer{
 				connectionId: tt.fields.connectionId,
 				traceEntries: tt.fields.traceEntries,
 			}
@@ -247,7 +247,7 @@ func TestTracer_GetConnectionId(t1 *testing.T) {
 	}
 }
 
-func TestTracer_GetTraces(t1 *testing.T) {
+func Test_tracer_GetTraces(t1 *testing.T) {
 	type fields struct {
 		connectionId string
 		traceEntries []TraceEntry
@@ -263,7 +263,7 @@ func TestTracer_GetTraces(t1 *testing.T) {
 	}
 	for _, tt := range tests {
 		t1.Run(tt.name, func(t1 *testing.T) {
-			t := &Tracer{
+			t := &tracer{
 				connectionId: tt.fields.connectionId,
 				traceEntries: tt.fields.traceEntries,
 			}
@@ -272,7 +272,7 @@ func TestTracer_GetTraces(t1 *testing.T) {
 	}
 }
 
-func TestTracer_ResetTraces(t1 *testing.T) {
+func Test_tracer_ResetTraces(t1 *testing.T) {
 	type fields struct {
 		connectionId string
 		traceEntries []TraceEntry
@@ -287,7 +287,7 @@ func TestTracer_ResetTraces(t1 *testing.T) {
 	}
 	for _, tt := range tests {
 		t1.Run(tt.name, func(t1 *testing.T) {
-			t := &Tracer{
+			t := &tracer{
 				connectionId: tt.fields.connectionId,
 				traceEntries: tt.fields.traceEntries,
 			}
@@ -296,7 +296,7 @@ func TestTracer_ResetTraces(t1 *testing.T) {
 	}
 }
 
-func TestTracer_SetConnectionId(t1 *testing.T) {
+func Test_tracer_SetConnectionId(t1 *testing.T) {
 	type fields struct {
 		connectionId string
 		traceEntries []TraceEntry
@@ -315,7 +315,7 @@ func TestTracer_SetConnectionId(t1 *testing.T) {
 	}
 	for _, tt := range tests {
 		t1.Run(tt.name, func(t1 *testing.T) {
-			t := &Tracer{
+			t := &tracer{
 				connectionId: tt.fields.connectionId,
 				traceEntries: tt.fields.traceEntries,
 			}

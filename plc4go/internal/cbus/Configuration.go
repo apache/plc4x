@@ -20,7 +20,6 @@
 package cbus
 
 import (
-	"fmt"
 	"github.com/rs/zerolog"
 	"reflect"
 	"strconv"
@@ -28,6 +27,7 @@ import (
 	"github.com/pkg/errors"
 )
 
+//go:generate go run ../../tools/plc4xgenerator/gen.go -type=Configuration
 type Configuration struct {
 	Srchk    bool
 	Exstat   bool
@@ -98,8 +98,4 @@ func getFromOptions(localLog zerolog.Logger, options map[string][]string, key st
 		return optionValues[0]
 	}
 	return ""
-}
-
-func (c Configuration) String() string {
-	return fmt.Sprintf("%#v", c)
 }

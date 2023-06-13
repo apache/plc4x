@@ -183,22 +183,32 @@ func Test_dynamicExecutor_String(t *testing.T) {
 		{
 			name: "string it",
 			fields: fields{
-				executor:           &executor{},
+				executor: &executor{
+					worker: []*worker{
+						{},
+					},
+				},
 				maxNumberOfWorkers: 3,
 			},
-			want: "dynamicExecutor{\n" +
-				"\texecutor: executor{\n" +
-				"\trunning: false,\n" +
-				"\tshutdown: false,\n" +
-				"\tworker: [],\n" +
-				"\tqueueDepth: 0,\n" +
-				"\tworkItems: 0 elements,\n" +
-				"\ttraceWorkers: false,\n" +
-				"\n" +
-				"}\n" +
-				"\tmaxNumberOfWorkers: 3\n" +
-				"\tcurrentNumberOfWorkers: 0\n" +
-				"}",
+			want: `
+╔═dynamicExecutor═══════════════════════════════════════════════════════════════════════════════════════════╗
+║╔═executor════════════════════════════════════════════════════════════════════════════════════════════════╗║
+║║╔═running╗╔═shutdown╗                                                                                    ║║
+║║║b0 false║║b0 false ║                                                                                    ║║
+║║╚════════╝╚═════════╝                                                                                    ║║
+║║╔═worker/value/worker═══════════════════════════════════════════════════════════════════════════════════╗║║
+║║║╔═id═════════════════╗╔═shutdown╗╔═interrupted╗╔═interrupter╗╔═hasEnded╗╔═lastReceived════════════════╗║║║
+║║║║0x0000000000000000 0║║b0 false ║║  b0 false  ║║0 element(s)║║b0 false ║║0001-01-01 00:00:00 +0000 UTC║║║║
+║║║╚════════════════════╝╚═════════╝╚════════════╝╚════════════╝╚═════════╝╚═════════════════════════════╝║║║
+║║╚═══════════════════════════════════════════════════════════════════════════════════════════════════════╝║║
+║║╔═queueDepth═════════╗╔═workItems══╗╔═traceWorkers╗                                                      ║║
+║║║0x0000000000000000 0║║0 element(s)║║  b0 false   ║                                                      ║║
+║║╚════════════════════╝╚════════════╝╚═════════════╝                                                      ║║
+║╚═════════════════════════════════════════════════════════════════════════════════════════════════════════╝║
+║╔═maxNumberOfWorkers═╗╔═currentNumberOfWorkers╗╔═interrupter╗                                              ║
+║║0x0000000000000003 3║║     0x00000000 0      ║║0 element(s)║                                              ║
+║╚════════════════════╝╚═══════════════════════╝╚════════════╝                                              ║
+╚═══════════════════════════════════════════════════════════════════════════════════════════════════════════╝`[1:],
 		},
 	}
 	for _, tt := range tests {

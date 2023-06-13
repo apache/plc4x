@@ -94,7 +94,7 @@ func TestConnection_BrowseRequestBuilder(t *testing.T) {
 		configuration     Configuration
 		driverContext     DriverContext
 		connectionId      string
-		tracer            *tracer.Tracer
+		tracer            tracer.Tracer
 		log               zerolog.Logger
 	}
 	tests := []struct {
@@ -139,7 +139,7 @@ func TestConnection_ConnectWithContext(t *testing.T) {
 		configuration     Configuration
 		driverContext     DriverContext
 		connectionId      string
-		tracer            *tracer.Tracer
+		tracer            tracer.Tracer
 		log               zerolog.Logger
 	}
 	type args struct {
@@ -236,7 +236,7 @@ func TestConnection_GetConnection(t *testing.T) {
 		configuration     Configuration
 		driverContext     DriverContext
 		connectionId      string
-		tracer            *tracer.Tracer
+		tracer            tracer.Tracer
 		log               zerolog.Logger
 	}
 	tests := []struct {
@@ -278,7 +278,7 @@ func TestConnection_GetConnectionId(t *testing.T) {
 		configuration     Configuration
 		driverContext     DriverContext
 		connectionId      string
-		tracer            *tracer.Tracer
+		tracer            tracer.Tracer
 		log               zerolog.Logger
 	}
 	tests := []struct {
@@ -317,7 +317,7 @@ func TestConnection_GetMessageCodec(t *testing.T) {
 		configuration     Configuration
 		driverContext     DriverContext
 		connectionId      string
-		tracer            *tracer.Tracer
+		tracer            tracer.Tracer
 		log               zerolog.Logger
 	}
 	tests := []struct {
@@ -360,7 +360,7 @@ func TestConnection_GetMetadata(t *testing.T) {
 		configuration     Configuration
 		driverContext     DriverContext
 		connectionId      string
-		tracer            *tracer.Tracer
+		tracer            tracer.Tracer
 		log               zerolog.Logger
 	}
 	tests := []struct {
@@ -406,13 +406,13 @@ func TestConnection_GetTracer(t *testing.T) {
 		configuration     Configuration
 		driverContext     DriverContext
 		connectionId      string
-		tracer            *tracer.Tracer
+		tracer            tracer.Tracer
 		log               zerolog.Logger
 	}
 	tests := []struct {
 		name   string
 		fields fields
-		want   *tracer.Tracer
+		want   tracer.Tracer
 	}{
 		{
 			name: "just nil",
@@ -445,7 +445,7 @@ func TestConnection_IsTraceEnabled(t *testing.T) {
 		configuration     Configuration
 		driverContext     DriverContext
 		connectionId      string
-		tracer            *tracer.Tracer
+		tracer            tracer.Tracer
 		log               zerolog.Logger
 	}
 	tests := []struct {
@@ -484,7 +484,7 @@ func TestConnection_ReadRequestBuilder(t *testing.T) {
 		configuration     Configuration
 		driverContext     DriverContext
 		connectionId      string
-		tracer            *tracer.Tracer
+		tracer            tracer.Tracer
 		log               zerolog.Logger
 	}
 	tests := []struct {
@@ -529,7 +529,7 @@ func TestConnection_String(t *testing.T) {
 		configuration     Configuration
 		driverContext     DriverContext
 		connectionId      string
-		tracer            *tracer.Tracer
+		tracer            tracer.Tracer
 		log               zerolog.Logger
 	}
 	tests := []struct {
@@ -539,22 +539,41 @@ func TestConnection_String(t *testing.T) {
 	}{
 		{
 			name: "a string",
-			want: "cbus.Connection{\n" +
-				"\tDefaultConnection: %!s(<nil>),\n" +
-				"\tAlphaGenerator: AlphaGenerator(currentAlpha: \x00)\n" +
-				"\tMessageCodec: <nil>\n" +
-				"\tsubscribers: []\n" +
-				"\ttm: %!s(<nil>)\n" +
-				"\tconfiguration: cbus.Configuration{Srchk:false, Exstat:false, Pun:false, LocalSal:false, Pcn:false, Idmon:false, Monitor:false, Smart:false, XonXoff:false, Connect:false, MonitoredApplication1:0x0, MonitoredApplication2:0x0}\n\tdriverContext: cbus.DriverContext{awaitSetupComplete:false, awaitDisconnectComplete:false}\n" +
-				"\tconnectionId: \n" +
-				"\ttracer: <nil>\n" +
-				"}",
+			fields: fields{
+				DefaultConnection: _default.NewDefaultConnection(nil),
+			},
+			want: `
+╔═Connection══════════════════════════════════════════════════════════════════════════════════════════════╗
+║╔═defaultConnection═══════╗╔═alphaGenerator════════════════════╗╔═messageCodec╗                          ║
+║║╔═defaultTtl╗╔═connected╗║║╔═AlphaGenerator/currentAlpha═════╗║║    <nil>    ║                          ║
+║║║    10s    ║║ b0 false ║║║║            0x67 'g'             ║║╚═════════════╝                          ║
+║║╚═══════════╝╚══════════╝║║╚═════════════════════════════════╝║                                         ║
+║╚═════════════════════════╝╚═══════════════════════════════════╝                                         ║
+║╔═configuration═════════════════════════════════════════════════════════════════════════════════════════╗║
+║║╔═Configuration═══════════════════════════════════════════════════════════════════════════════════════╗║║
+║║║╔═srchk══╗╔═exstat═╗╔═pun════╗╔═localSal╗╔═pcn════╗╔═idmon══╗╔═monitor╗╔═smart══╗╔═xonXoff╗╔═connect╗║║║
+║║║║b0 false║║b0 false║║b0 false║║b0 false ║║b0 false║║b0 false║║b0 false║║b0 false║║b0 false║║b0 false║║║║
+║║║╚════════╝╚════════╝╚════════╝╚═════════╝╚════════╝╚════════╝╚════════╝╚════════╝╚════════╝╚════════╝║║║
+║║║╔═monitoredApplication1╗╔═monitoredApplication2╗                                                     ║║║
+║║║║       0x00 '.'       ║║       0x00 '.'       ║                                                     ║║║
+║║║╚══════════════════════╝╚══════════════════════╝                                                     ║║║
+║║╚═════════════════════════════════════════════════════════════════════════════════════════════════════╝║║
+║╚═══════════════════════════════════════════════════════════════════════════════════════════════════════╝║
+║╔═driverContext═══════════════════════════════════╗                                                      ║
+║║╔═DriverContext═════════════════════════════════╗║                                                      ║
+║║║╔═awaitSetupComplete╗╔═awaitDisconnectComplete╗║║                                                      ║
+║║║║     b0 false      ║║        b0 false        ║║║                                                      ║
+║║║╚═══════════════════╝╚════════════════════════╝║║                                                      ║
+║║╚═══════════════════════════════════════════════╝║                                                      ║
+║╚═════════════════════════════════════════════════╝                                                      ║
+╚═════════════════════════════════════════════════════════════════════════════════════════════════════════╝`[1:], // TODO: configuration is not redered right now
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			c := &Connection{
 				DefaultConnection: tt.fields.DefaultConnection,
+				alphaGenerator:    AlphaGenerator{currentAlpha: 'g'},
 				messageCodec:      tt.fields.messageCodec,
 				subscribers:       tt.fields.subscribers,
 				tm:                tt.fields.tm,
@@ -578,7 +597,7 @@ func TestConnection_SubscriptionRequestBuilder(t *testing.T) {
 		configuration     Configuration
 		driverContext     DriverContext
 		connectionId      string
-		tracer            *tracer.Tracer
+		tracer            tracer.Tracer
 		log               zerolog.Logger
 	}
 	tests := []struct {
@@ -623,7 +642,7 @@ func TestConnection_UnsubscriptionRequestBuilder(t *testing.T) {
 		configuration     Configuration
 		driverContext     DriverContext
 		connectionId      string
-		tracer            *tracer.Tracer
+		tracer            tracer.Tracer
 		log               zerolog.Logger
 	}
 	tests := []struct {
@@ -662,7 +681,7 @@ func TestConnection_WriteRequestBuilder(t *testing.T) {
 		configuration     Configuration
 		driverContext     DriverContext
 		connectionId      string
-		tracer            *tracer.Tracer
+		tracer            tracer.Tracer
 		log               zerolog.Logger
 	}
 	tests := []struct {
@@ -707,7 +726,7 @@ func TestConnection_addSubscriber(t *testing.T) {
 		configuration     Configuration
 		driverContext     DriverContext
 		connectionId      string
-		tracer            *tracer.Tracer
+		tracer            tracer.Tracer
 		log               zerolog.Logger
 	}
 	type args struct {
@@ -764,7 +783,7 @@ func TestConnection_fireConnected(t *testing.T) {
 		configuration     Configuration
 		driverContext     DriverContext
 		connectionId      string
-		tracer            *tracer.Tracer
+		tracer            tracer.Tracer
 		log               zerolog.Logger
 	}
 	type args struct {
@@ -828,7 +847,7 @@ func TestConnection_fireConnectionError(t *testing.T) {
 		configuration     Configuration
 		driverContext     DriverContext
 		connectionId      string
-		tracer            *tracer.Tracer
+		tracer            tracer.Tracer
 		log               zerolog.Logger
 	}
 	type args struct {
@@ -931,7 +950,7 @@ func TestConnection_sendCalDataWrite(t *testing.T) {
 		configuration     Configuration
 		driverContext     DriverContext
 		connectionId      string
-		tracer            *tracer.Tracer
+		tracer            tracer.Tracer
 		log               zerolog.Logger
 	}
 	type args struct {
@@ -1018,7 +1037,7 @@ func TestConnection_sendReset(t *testing.T) {
 		configuration     Configuration
 		driverContext     DriverContext
 		connectionId      string
-		tracer            *tracer.Tracer
+		tracer            tracer.Tracer
 		log               zerolog.Logger
 	}
 	type args struct {
@@ -1102,7 +1121,7 @@ func TestConnection_setApplicationFilter(t *testing.T) {
 		configuration     Configuration
 		driverContext     DriverContext
 		connectionId      string
-		tracer            *tracer.Tracer
+		tracer            tracer.Tracer
 		log               zerolog.Logger
 	}
 	type args struct {
@@ -1186,7 +1205,7 @@ func TestConnection_setInterface1PowerUpSettings(t *testing.T) {
 		configuration     Configuration
 		driverContext     DriverContext
 		connectionId      string
-		tracer            *tracer.Tracer
+		tracer            tracer.Tracer
 		log               zerolog.Logger
 	}
 	type args struct {
@@ -1270,7 +1289,7 @@ func TestConnection_setInterfaceOptions1(t *testing.T) {
 		configuration     Configuration
 		driverContext     DriverContext
 		connectionId      string
-		tracer            *tracer.Tracer
+		tracer            tracer.Tracer
 		log               zerolog.Logger
 	}
 	type args struct {
@@ -1354,7 +1373,7 @@ func TestConnection_setInterfaceOptions3(t *testing.T) {
 		configuration     Configuration
 		driverContext     DriverContext
 		connectionId      string
-		tracer            *tracer.Tracer
+		tracer            tracer.Tracer
 		log               zerolog.Logger
 	}
 	type args struct {
@@ -1438,7 +1457,7 @@ func TestConnection_setupConnection(t *testing.T) {
 		configuration     Configuration
 		driverContext     DriverContext
 		connectionId      string
-		tracer            *tracer.Tracer
+		tracer            tracer.Tracer
 		log               zerolog.Logger
 	}
 	type args struct {
@@ -1877,7 +1896,7 @@ func TestConnection_startSubscriptionHandler(t *testing.T) {
 		configuration     Configuration
 		driverContext     DriverContext
 		connectionId      string
-		tracer            *tracer.Tracer
+		tracer            tracer.Tracer
 		log               zerolog.Logger
 	}
 	tests := []struct {

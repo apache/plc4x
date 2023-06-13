@@ -238,7 +238,15 @@ func TestConfiguration_String(t *testing.T) {
 				MonitoredApplication1: 2,
 				MonitoredApplication2: 3,
 			},
-			want: "cbus.Configuration{Srchk:true, Exstat:true, Pun:true, LocalSal:true, Pcn:true, Idmon:true, Monitor:true, Smart:true, XonXoff:true, Connect:true, MonitoredApplication1:0x2, MonitoredApplication2:0x3}",
+			want: `
+╔═Configuration═════════════════════════════════════════════════════════════════════════════════╗
+║╔═srchk═╗╔═exstat╗╔═pun═══╗╔═localSal╗╔═pcn═══╗╔═idmon═╗╔═monitor╗╔═smart═╗╔═xonXoff╗╔═connect╗║
+║║b1 true║║b1 true║║b1 true║║ b1 true ║║b1 true║║b1 true║║b1 true ║║b1 true║║b1 true ║║b1 true ║║
+║╚═══════╝╚═══════╝╚═══════╝╚═════════╝╚═══════╝╚═══════╝╚════════╝╚═══════╝╚════════╝╚════════╝║
+║╔═monitoredApplication1╗╔═monitoredApplication2╗                                               ║
+║║       0x02 '.'       ║║       0x03 '.'       ║                                               ║
+║╚══════════════════════╝╚══════════════════════╝                                               ║
+╚═══════════════════════════════════════════════════════════════════════════════════════════════╝`[1:],
 		},
 	}
 	for _, tt := range tests {

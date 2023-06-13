@@ -21,7 +21,6 @@ package cbus
 
 import (
 	"context"
-	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/tracer"
 	"github.com/apache/plc4x/plc4go/spi/transactions"
@@ -41,6 +40,7 @@ import (
 	"github.com/pkg/errors"
 )
 
+//go:generate go run ../../tools/plc4xgenerator/gen.go -type=AlphaGenerator
 type AlphaGenerator struct {
 	currentAlpha byte
 	lock         sync.Mutex
@@ -58,24 +58,21 @@ func (t *AlphaGenerator) getAndIncrement() byte {
 	return result
 }
 
-func (t *AlphaGenerator) String() string {
-	return fmt.Sprintf("AlphaGenerator(currentAlpha: %c)", t.currentAlpha)
-}
-
+//go:generate go run ../../tools/plc4xgenerator/gen.go -type=Connection
 type Connection struct {
 	_default.DefaultConnection
-	alphaGenerator AlphaGenerator
+	alphaGenerator AlphaGenerator `stringer:"true"`
 	messageCodec   *MessageCodec
 	subscribers    []*Subscriber
 	tm             transactions.RequestTransactionManager
 
-	configuration Configuration
-	driverContext DriverContext
+	configuration Configuration `stringer:"true"`
+	driverContext DriverContext `stringer:"true"`
 
 	connectionId string
-	tracer       *tracer.Tracer
+	tracer       tracer.Tracer
 
-	log zerolog.Logger
+	log zerolog.Logger `ignore:"true"`
 }
 
 func NewConnection(messageCodec *MessageCodec, configuration Configuration, driverContext DriverContext, tagHandler spi.PlcTagHandler, tm transactions.RequestTransactionManager, connectionOptions map[string][]string, _options ...options.WithOption) *Connection {
@@ -111,7 +108,7 @@ func (c *Connection) IsTraceEnabled() bool {
 	return c.tracer != nil
 }
 
-func (c *Connection) GetTracer() *tracer.Tracer {
+func (c *Connection) GetTracer() tracer.Tracer {
 	return c.tracer
 }
 
@@ -195,31 +192,6 @@ func (c *Connection) addSubscriber(subscriber *Subscriber) {
 		}
 	}
 	c.subscribers = append(c.subscribers, subscriber)
-}
-
-func (c *Connection) String() string {
-	return fmt.Sprintf(
-		"cbus.Connection{\n"+
-			"\tDefaultConnection: %s,\n"+
-			"\tAlphaGenerator: %s\n"+
-			"\tMessageCodec: %s\n"+
-			"\tsubscribers: %s\n"+
-			"\ttm: %s\n"+
-			"\tconfiguration: %s\n"+
-			"\tdriverContext: %s\n"+
-			"\tconnectionId: %s\n"+
-			"\ttracer: %s\n"+
-			"}",
-		c.DefaultConnection,
-		&c.alphaGenerator,
-		c.messageCodec,
-		c.subscribers,
-		c.tm,
-		c.configuration,
-		c.driverContext,
-		c.connectionId,
-		c.tracer,
-	)
 }
 
 func (c *Connection) setupConnection(ctx context.Context, ch chan plc4go.PlcConnectionConnectResult) {

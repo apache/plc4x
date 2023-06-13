@@ -21,7 +21,6 @@ package pool
 
 import (
 	"context"
-	"fmt"
 	"sync"
 	"sync/atomic"
 
@@ -29,6 +28,7 @@ import (
 	"github.com/rs/zerolog"
 )
 
+//go:generate go run ../../tools/plc4xgenerator/gen.go -type=executor
 type executor struct {
 	running      bool
 	shutdown     bool
@@ -40,7 +40,7 @@ type executor struct {
 
 	workerWaitGroup sync.WaitGroup
 
-	log zerolog.Logger
+	log zerolog.Logger `ignore:"true"`
 }
 
 func (e *executor) isTraceWorkers() bool {
@@ -127,22 +127,4 @@ func (e *executor) Close() error {
 
 func (e *executor) IsRunning() bool {
 	return e.running && !e.shutdown
-}
-
-func (e *executor) String() string {
-	return fmt.Sprintf("executor{\n"+
-		"\trunning: %t,\n"+
-		"\tshutdown: %t,\n"+
-		"\tworker: %s,\n"+
-		"\tqueueDepth: %d,\n"+
-		"\tworkItems: %d elements,\n"+
-		"\ttraceWorkers: %t,\n"+
-		"\n}",
-		e.running,
-		e.shutdown,
-		e.worker,
-		e.queueDepth,
-		len(e.workItems),
-		e.traceWorkers,
-	)
 }

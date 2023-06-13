@@ -899,15 +899,35 @@ func TestMessageCodec_String(t *testing.T) {
 	}{
 		{
 			name: "string it",
-			want: "MessageCodec{\n" +
-				"\tDefaultCodec: %!s(<nil>),\n" +
-				"\trequestContext: %!s(<nil>),\n" +
-				"\tcbusOptions: %!s(<nil>),\n" +
-				"\tmonitoredMMIs: 0 elements,\n" +
-				"\tmonitoredSALs: 0 elements,\n" +
-				"\tlastPackageHash: 0,\n" +
-				"\thashEncountered: 0,\n" +
-				"}",
+			fields: fields{
+				DefaultCodec:                  _default.NewDefaultCodec(nil, test.NewTransportInstance(test.NewTransport())),
+				requestContext:                readWriteModel.NewRequestContext(true),
+				cbusOptions:                   readWriteModel.NewCBusOptions(true, true, true, true, true, true, true, true, true),
+				monitoredMMIs:                 nil,
+				monitoredSALs:                 nil,
+				lastPackageHash:               2,
+				hashEncountered:               3,
+				currentlyReportedServerErrors: 4,
+			},
+			want: `
+╔═MessageCodec════════════════════════════════════════════════════════════════════════════════════════════════════════╗
+║╔═defaultCodec═════════════════════════════════════════════════════════════════════════╗                             ║
+║║╔═transportInstance╗╔═defaultIncomingMessageChannel╗╔═running╗╔═customMessageHandling╗║                             ║
+║║║       test       ║║         0 element(s)         ║║b0 false║║       b0 false       ║║                             ║
+║║╚══════════════════╝╚══════════════════════════════╝╚════════╝╚══════════════════════╝║                             ║
+║╚══════════════════════════════════════════════════════════════════════════════════════╝                             ║
+║╔═requestContext/RequestContext/sendIdentifyRequestBefore═════════════════════════════════════════════════════╗      ║
+║║                                                   b1 true                                                   ║      ║
+║╚═════════════════════════════════════════════════════════════════════════════════════════════════════════════╝      ║
+║╔═cbusOptions/CBusOptions═══════════════════════════════════════════════════════════╗╔═monitoredMMIs╗╔═monitoredSALs╗║
+║║╔═connect╗╔═smart═╗╔═idmon═╗╔═exstat╗╔═monitor╗╔═monall╗╔═pun═══╗╔═pcn═══╗╔═srchk═╗║║ 0 element(s) ║║ 0 element(s) ║║
+║║║b1 true ║║b1 true║║b1 true║║b1 true║║b1 true ║║b1 true║║b1 true║║b1 true║║b1 true║║╚══════════════╝╚══════════════╝║
+║║╚════════╝╚═══════╝╚═══════╝╚═══════╝╚════════╝╚═══════╝╚═══════╝╚═══════╝╚═══════╝║                                ║
+║╚═══════════════════════════════════════════════════════════════════════════════════╝                                ║
+║╔═lastPackageHash╗╔═hashEncountered╗╔═currentlyReportedServerErrors╗                                                 ║
+║║  0x00000002 2  ║║       3        ║║              4               ║                                                 ║
+║╚════════════════╝╚════════════════╝╚══════════════════════════════╝                                                 ║
+╚═════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝`[1:],
 		},
 	}
 	for _, tt := range tests {

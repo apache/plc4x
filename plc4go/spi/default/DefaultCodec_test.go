@@ -25,6 +25,7 @@ import (
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/transports"
+	"github.com/apache/plc4x/plc4go/spi/transports/test"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 	"github.com/stretchr/testify/assert"
@@ -1213,13 +1214,37 @@ func Test_defaultCodec_String(t *testing.T) {
 	}{
 		{
 			name: "string it",
-			want: "DefaultCodec{\n" +
-				"\tTransportInstance: %!s(<nil>),\n" +
-				"\tDefaultIncomingMessageChannel: 0 elements,\n" +
-				"\tExpectations: [],\n" +
-				"\trunning: false,\n" +
-				"\tcustomMessageHandling: false,\n" +
-				"}",
+			fields: fields{
+				transportInstance: test.NewTransportInstance(test.NewTransport()),
+				defaultIncomingMessageChannel: func() chan spi.Message {
+					messages := make(chan spi.Message, 1)
+					messages <- NewMockMessage(t)
+					return messages
+				}(),
+				expectations: []spi.Expectation{
+					func() spi.Expectation {
+						expectation := NewMockExpectation(t)
+						expectation.EXPECT().String().Return("yoink1")
+						return expectation
+					}(),
+					func() spi.Expectation {
+						expectation := NewMockExpectation(t)
+						expectation.EXPECT().String().Return("yoink2")
+						return expectation
+					}(),
+				},
+				running:               false,
+				customMessageHandling: nil,
+				log:                   zerolog.Logger{},
+			},
+			want: `
+╔═defaultCodec═══════════════════════════════════════════════════════════════════════════════════════════╗
+║╔═transportInstance╗╔═defaultIncomingMessageChannel╗╔═expectations═══╗╔═running╗╔═customMessageHandling╗║
+║║       test       ║║         1 element(s)         ║║╔═value╗╔═value╗║║b0 false║║       b0 false       ║║
+║╚══════════════════╝╚══════════════════════════════╝║║yoink1║║yoink2║║╚════════╝╚══════════════════════╝║
+║                                                    ║╚══════╝╚══════╝║                                  ║
+║                                                    ╚════════════════╝                                  ║
+╚════════════════════════════════════════════════════════════════════════════════════════════════════════╝`[1:],
 		},
 	}
 	for _, tt := range tests {

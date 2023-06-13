@@ -82,7 +82,8 @@ func (d *DefaultPlcSubscriptionRequestResult) SerializeWithWriteBuffer(ctx conte
 	}
 
 	if d.Err != nil {
-		if err := writeBuffer.WriteString("err", uint32(len(d.Err.Error())*8), "UTF-8", d.Err.Error()); err != nil {
+		_errString := d.Err.Error()
+		if err := writeBuffer.WriteString("err", uint32(len(_errString)*8), "UTF-8", _errString); err != nil {
 			return err
 		}
 	}

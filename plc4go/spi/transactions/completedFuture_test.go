@@ -22,6 +22,7 @@ package transactions
 import (
 	"context"
 	"fmt"
+	"github.com/pkg/errors"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
@@ -91,8 +92,18 @@ func Test_completedFuture_String(t *testing.T) {
 		want   string
 	}{
 		{
-			name: "gives the error",
-			want: "completedFuture{\n\terr: <nil>,\n}",
+			name: "no error == empty",
+			want: "<nil>",
+		},
+		{
+			name: "with error",
+			fields: fields{
+				err: errors.New("asd"),
+			},
+			want: `
+╔═completedFuture/err═╗
+║         asd         ║
+╚═════════════════════╝`[1:],
 		},
 	}
 	for _, tt := range tests {

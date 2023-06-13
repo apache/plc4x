@@ -158,7 +158,12 @@ func Test_future_String(t *testing.T) {
 	}{
 		{
 			name: "string it",
-			want: "future{\n\tcancelRequested: false,\n\tinterruptRequested: false,\n\tcompleted: false,\n\terrored: false,\n\terr: <nil>,\n}",
+			want: `
+╔═future══════════════════════════════════════════════════════╗
+║╔═cancelRequested╗╔═interruptRequested╗╔═completed╗╔═errored╗║
+║║    b0 false    ║║     b0 false      ║║ b0 false ║║b0 false║║
+║╚════════════════╝╚═══════════════════╝╚══════════╝╚════════╝║
+╚═════════════════════════════════════════════════════════════╝`[1:],
 		},
 	}
 	for _, tt := range tests {

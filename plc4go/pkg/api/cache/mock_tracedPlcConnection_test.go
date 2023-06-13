@@ -335,15 +335,15 @@ func (_c *mockTracedPlcConnection_GetMetadata_Call) RunAndReturn(run func() mode
 }
 
 // GetTracer provides a mock function with given fields:
-func (_m *mockTracedPlcConnection) GetTracer() *tracer.Tracer {
+func (_m *mockTracedPlcConnection) GetTracer() tracer.Tracer {
 	ret := _m.Called()
 
-	var r0 *tracer.Tracer
-	if rf, ok := ret.Get(0).(func() *tracer.Tracer); ok {
+	var r0 tracer.Tracer
+	if rf, ok := ret.Get(0).(func() tracer.Tracer); ok {
 		r0 = rf()
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*tracer.Tracer)
+			r0 = ret.Get(0).(tracer.Tracer)
 		}
 	}
 
@@ -367,12 +367,12 @@ func (_c *mockTracedPlcConnection_GetTracer_Call) Run(run func()) *mockTracedPlc
 	return _c
 }
 
-func (_c *mockTracedPlcConnection_GetTracer_Call) Return(_a0 *tracer.Tracer) *mockTracedPlcConnection_GetTracer_Call {
+func (_c *mockTracedPlcConnection_GetTracer_Call) Return(_a0 tracer.Tracer) *mockTracedPlcConnection_GetTracer_Call {
 	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *mockTracedPlcConnection_GetTracer_Call) RunAndReturn(run func() *tracer.Tracer) *mockTracedPlcConnection_GetTracer_Call {
+func (_c *mockTracedPlcConnection_GetTracer_Call) RunAndReturn(run func() tracer.Tracer) *mockTracedPlcConnection_GetTracer_Call {
 	_c.Call.Return(run)
 	return _c
 }

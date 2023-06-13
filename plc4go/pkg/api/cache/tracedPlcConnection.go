@@ -29,5 +29,5 @@ type tracedPlcConnection interface {
 
 	GetConnectionId() string
 	IsTraceEnabled() bool
-	GetTracer() *tracer.Tracer
+	GetTracer() tracer.Tracer
 }
