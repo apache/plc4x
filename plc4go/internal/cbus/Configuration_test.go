@@ -201,3 +201,63 @@ func Test_getFromOptions(t *testing.T) {
 		})
 	}
 }
+
+func TestConfiguration_String(t *testing.T) {
+	type fields struct {
+		Srchk                 bool
+		Exstat                bool
+		Pun                   bool
+		LocalSal              bool
+		Pcn                   bool
+		Idmon                 bool
+		Monitor               bool
+		Smart                 bool
+		XonXoff               bool
+		Connect               bool
+		MonitoredApplication1 byte
+		MonitoredApplication2 byte
+	}
+	tests := []struct {
+		name   string
+		fields fields
+		want   string
+	}{
+		{
+			name: "string it",
+			fields: fields{
+				Srchk:                 true,
+				Exstat:                true,
+				Pun:                   true,
+				LocalSal:              true,
+				Pcn:                   true,
+				Idmon:                 true,
+				Monitor:               true,
+				Smart:                 true,
+				XonXoff:               true,
+				Connect:               true,
+				MonitoredApplication1: 2,
+				MonitoredApplication2: 3,
+			},
+			want: "cbus.Configuration{Srchk:true, Exstat:true, Pun:true, LocalSal:true, Pcn:true, Idmon:true, Monitor:true, Smart:true, XonXoff:true, Connect:true, MonitoredApplication1:0x2, MonitoredApplication2:0x3}",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			c := Configuration{
+				Srchk:                 tt.fields.Srchk,
+				Exstat:                tt.fields.Exstat,
+				Pun:                   tt.fields.Pun,
+				LocalSal:              tt.fields.LocalSal,
+				Pcn:                   tt.fields.Pcn,
+				Idmon:                 tt.fields.Idmon,
+				Monitor:               tt.fields.Monitor,
+				Smart:                 tt.fields.Smart,
+				XonXoff:               tt.fields.XonXoff,
+				Connect:               tt.fields.Connect,
+				MonitoredApplication1: tt.fields.MonitoredApplication1,
+				MonitoredApplication2: tt.fields.MonitoredApplication2,
+			}
+			assert.Equalf(t, tt.want, c.String(), "String()")
+		})
+	}
+}

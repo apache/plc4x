@@ -19,6 +19,8 @@
 
 package cbus
 
+import "fmt"
+
 type DriverContext struct {
 	awaitSetupComplete      bool
 	awaitDisconnectComplete bool
@@ -26,4 +28,8 @@ type DriverContext struct {
 
 func NewDriverContext(_ Configuration) DriverContext {
 	return DriverContext{}
+}
+
+func (d DriverContext) String() string {
+	return fmt.Sprintf("%#v", d)
 }

@@ -21,6 +21,7 @@ package cbus
 
 import (
 	"bufio"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/rs/zerolog"
 	"hash/crc32"
@@ -320,6 +321,26 @@ lookingForTheEnd:
 
 	m.log.Trace().Msgf("Parsed message:\n%s", cBusMessage)
 	return cBusMessage, nil
+}
+
+func (m *MessageCodec) String() string {
+	return fmt.Sprintf("MessageCodec{\n"+
+		"\tDefaultCodec: %s,\n"+
+		"\trequestContext: %s,\n"+
+		"\tcbusOptions: %s,\n"+
+		"\tmonitoredMMIs: %d elements,\n"+
+		"\tmonitoredSALs: %d elements,\n"+
+		"\tlastPackageHash: %d,\n"+
+		"\thashEncountered: %d,\n"+
+		"}",
+		m.DefaultCodec,
+		m.requestContext,
+		m.cbusOptions,
+		len(m.monitoredSALs),
+		len(m.monitoredSALs),
+		m.lastPackageHash,
+		m.hashEncountered,
+	)
 }
 
 func extractMMIAndSAL(log zerolog.Logger) _default.CustomMessageHandler {

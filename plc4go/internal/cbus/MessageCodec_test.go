@@ -28,6 +28,7 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/testutils"
 	"github.com/apache/plc4x/plc4go/spi/transports"
 	"github.com/apache/plc4x/plc4go/spi/transports/test"
+	"github.com/rs/zerolog"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
@@ -875,6 +876,54 @@ func Test_extractMMIAndSAL(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			assert.Equalf(t, tt.want, extractMMIAndSAL(testutils.ProduceTestingLogger(t))(tt.args.codec, tt.args.message), "extractMMIAndSAL(%v, %v)", tt.args.codec, tt.args.message)
+		})
+	}
+}
+
+func TestMessageCodec_String(t *testing.T) {
+	type fields struct {
+		DefaultCodec                  _default.DefaultCodec
+		requestContext                readWriteModel.RequestContext
+		cbusOptions                   readWriteModel.CBusOptions
+		monitoredMMIs                 chan readWriteModel.CALReply
+		monitoredSALs                 chan readWriteModel.MonitoredSAL
+		lastPackageHash               uint32
+		hashEncountered               uint
+		currentlyReportedServerErrors uint
+		log                           zerolog.Logger
+	}
+	tests := []struct {
+		name   string
+		fields fields
+		want   string
+	}{
+		{
+			name: "string it",
+			want: "MessageCodec{\n" +
+				"\tDefaultCodec: %!s(<nil>),\n" +
+				"\trequestContext: %!s(<nil>),\n" +
+				"\tcbusOptions: %!s(<nil>),\n" +
+				"\tmonitoredMMIs: 0 elements,\n" +
+				"\tmonitoredSALs: 0 elements,\n" +
+				"\tlastPackageHash: 0,\n" +
+				"\thashEncountered: 0,\n" +
+				"}",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			m := &MessageCodec{
+				DefaultCodec:                  tt.fields.DefaultCodec,
+				requestContext:                tt.fields.requestContext,
+				cbusOptions:                   tt.fields.cbusOptions,
+				monitoredMMIs:                 tt.fields.monitoredMMIs,
+				monitoredSALs:                 tt.fields.monitoredSALs,
+				lastPackageHash:               tt.fields.lastPackageHash,
+				hashEncountered:               tt.fields.hashEncountered,
+				currentlyReportedServerErrors: tt.fields.currentlyReportedServerErrors,
+				log:                           tt.fields.log,
+			}
+			assert.Equalf(t, tt.want, m.String(), "String()")
 		})
 	}
 }

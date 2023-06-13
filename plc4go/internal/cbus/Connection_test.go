@@ -539,7 +539,16 @@ func TestConnection_String(t *testing.T) {
 	}{
 		{
 			name: "a string",
-			want: "cbus.Connection",
+			want: "cbus.Connection{\n" +
+				"\tDefaultConnection: %!s(<nil>),\n" +
+				"\tAlphaGenerator: AlphaGenerator(currentAlpha: \x00)\n" +
+				"\tMessageCodec: <nil>\n" +
+				"\tsubscribers: []\n" +
+				"\ttm: %!s(<nil>)\n" +
+				"\tconfiguration: cbus.Configuration{Srchk:false, Exstat:false, Pun:false, LocalSal:false, Pcn:false, Idmon:false, Monitor:false, Smart:false, XonXoff:false, Connect:false, MonitoredApplication1:0x0, MonitoredApplication2:0x0}\n\tdriverContext: cbus.DriverContext{awaitSetupComplete:false, awaitDisconnectComplete:false}\n" +
+				"\tconnectionId: \n" +
+				"\ttracer: <nil>\n" +
+				"}",
 		},
 	}
 	for _, tt := range tests {

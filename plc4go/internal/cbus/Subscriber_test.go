@@ -21,9 +21,6 @@ package cbus
 
 import (
 	"context"
-	"github.com/apache/plc4x/plc4go/spi/options"
-	"github.com/apache/plc4x/plc4go/spi/testutils"
-	"github.com/apache/plc4x/plc4go/spi/utils"
 	"testing"
 	"time"
 
@@ -36,7 +33,7 @@ import (
 
 func TestNewSubscriber(t *testing.T) {
 	type args struct {
-		connection *Connection
+		addSubscriber func(subscriber *Subscriber)
 	}
 	tests := []struct {
 		name string
@@ -52,15 +49,15 @@ func TestNewSubscriber(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			assert.Equalf(t, tt.want, NewSubscriber(tt.args.connection), "NewSubscriber(%v)", tt.args.connection)
+			assert.Equalf(t, tt.want, NewSubscriber(tt.args.addSubscriber), "NewSubscriber(%t)", tt.args.addSubscriber != nil)
 		})
 	}
 }
 
 func TestSubscriber_Subscribe(t *testing.T) {
 	type fields struct {
-		connection *Connection
-		consumers  map[*spiModel.DefaultPlcConsumerRegistration]apiModel.PlcSubscriptionEventConsumer
+		addSubscriber func(subscriber *Subscriber)
+		consumers     map[*spiModel.DefaultPlcConsumerRegistration]apiModel.PlcSubscriptionEventConsumer
 	}
 	type args struct {
 		in0                 context.Context
@@ -80,28 +77,9 @@ func TestSubscriber_Subscribe(t *testing.T) {
 				subscriptionRequest: spiModel.NewDefaultPlcSubscriptionRequest(nil, []string{"blub"}, map[string]apiModel.PlcTag{"blub": NewMMIMonitorTag(readWriteModel.NewUnitAddress(1), nil, 1)}, nil, nil, nil),
 			},
 			setup: func(t *testing.T, fields *fields, args *args) {
-				// Setup logger
-				logger := testutils.ProduceTestingLogger(t)
-
-				loggerOption := options.WithCustomLogger(logger)
-
-				// Set the model logger to the logger above
-				testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
-
-				codec := NewMessageCodec(nil, loggerOption)
-				connection := NewConnection(codec, Configuration{}, DriverContext{}, nil, nil, nil, loggerOption)
-				t.Cleanup(func() {
-					timer := time.NewTimer(1 * time.Second)
-					t.Cleanup(func() {
-						utils.CleanupTimer(timer)
-					})
-					select {
-					case <-connection.Close():
-					case <-timer.C:
-						t.Error("timeout")
-					}
-				})
-				fields.connection = connection
+				fields.addSubscriber = func(subscriber *Subscriber) {
+					assert.NotNil(t, subscriber)
+				}
 			},
 			wantAsserter: func(t *testing.T, results <-chan apiModel.PlcSubscriptionRequestResult) bool {
 				timer := time.NewTimer(2 * time.Second)
@@ -123,8 +101,8 @@ func TestSubscriber_Subscribe(t *testing.T) {
 				tt.setup(t, &tt.fields, &tt.args)
 			}
 			m := &Subscriber{
-				connection: tt.fields.connection,
-				consumers:  tt.fields.consumers,
+				addSubscriber: tt.fields.addSubscriber,
+				consumers:     tt.fields.consumers,
 			}
 			assert.Truef(t, tt.wantAsserter(t, m.Subscribe(tt.args.in0, tt.args.subscriptionRequest)), "Subscribe(%v, %v)", tt.args.in0, tt.args.subscriptionRequest)
 		})
@@ -133,8 +111,8 @@ func TestSubscriber_Subscribe(t *testing.T) {
 
 func TestSubscriber_Unsubscribe(t *testing.T) {
 	type fields struct {
-		connection *Connection
-		consumers  map[*spiModel.DefaultPlcConsumerRegistration]apiModel.PlcSubscriptionEventConsumer
+		addSubscriber func(subscriber *Subscriber)
+		consumers     map[*spiModel.DefaultPlcConsumerRegistration]apiModel.PlcSubscriptionEventConsumer
 	}
 	type args struct {
 		ctx                   context.Context
@@ -158,8 +136,8 @@ func TestSubscriber_Unsubscribe(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			m := &Subscriber{
-				connection: tt.fields.connection,
-				consumers:  tt.fields.consumers,
+				addSubscriber: tt.fields.addSubscriber,
+				consumers:     tt.fields.consumers,
 			}
 			assert.Truef(t, tt.wantAsserter(t, m.Unsubscribe(tt.args.ctx, tt.args.unsubscriptionRequest)), "Unsubscribe(%v, %v)", tt.args.ctx, tt.args.unsubscriptionRequest)
 		})
@@ -168,8 +146,8 @@ func TestSubscriber_Unsubscribe(t *testing.T) {
 
 func TestSubscriber_handleMonitoredMMI(t *testing.T) {
 	type fields struct {
-		connection *Connection
-		consumers  map[*spiModel.DefaultPlcConsumerRegistration]apiModel.PlcSubscriptionEventConsumer
+		addSubscriber func(subscriber *Subscriber)
+		consumers     map[*spiModel.DefaultPlcConsumerRegistration]apiModel.PlcSubscriptionEventConsumer
 	}
 	type args struct {
 		calReply model.CALReply
@@ -249,8 +227,8 @@ func TestSubscriber_handleMonitoredMMI(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			m := &Subscriber{
-				connection: tt.fields.connection,
-				consumers:  tt.fields.consumers,
+				addSubscriber: tt.fields.addSubscriber,
+				consumers:     tt.fields.consumers,
 			}
 			assert.Equalf(t, tt.want, m.handleMonitoredMMI(tt.args.calReply), "handleMonitoredMMI(%v)", tt.args.calReply)
 		})
@@ -259,8 +237,8 @@ func TestSubscriber_handleMonitoredMMI(t *testing.T) {
 
 func TestSubscriber_offerMMI(t *testing.T) {
 	type fields struct {
-		connection *Connection
-		consumers  map[*spiModel.DefaultPlcConsumerRegistration]apiModel.PlcSubscriptionEventConsumer
+		addSubscriber func(subscriber *Subscriber)
+		consumers     map[*spiModel.DefaultPlcConsumerRegistration]apiModel.PlcSubscriptionEventConsumer
 	}
 	type args struct {
 		unitAddressString  string
@@ -501,8 +479,8 @@ func TestSubscriber_offerMMI(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			m := &Subscriber{
-				connection: tt.fields.connection,
-				consumers:  tt.fields.consumers,
+				addSubscriber: tt.fields.addSubscriber,
+				consumers:     tt.fields.consumers,
 			}
 			assert.Equalf(t, tt.want, m.offerMMI(tt.args.unitAddressString, tt.args.calData, tt.args.subscriptionHandle, tt.args.consumerProvider(t)), "offerMMI(%v,\n%v\n, \n%v\n, func())", tt.args.unitAddressString, tt.args.calData, tt.args.subscriptionHandle)
 		})
@@ -511,8 +489,8 @@ func TestSubscriber_offerMMI(t *testing.T) {
 
 func TestSubscriber_handleMonitoredSAL(t *testing.T) {
 	type fields struct {
-		connection *Connection
-		consumers  map[*spiModel.DefaultPlcConsumerRegistration]apiModel.PlcSubscriptionEventConsumer
+		addSubscriber func(subscriber *Subscriber)
+		consumers     map[*spiModel.DefaultPlcConsumerRegistration]apiModel.PlcSubscriptionEventConsumer
 	}
 	type args struct {
 		sal model.MonitoredSAL
@@ -546,8 +524,8 @@ func TestSubscriber_handleMonitoredSAL(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			m := &Subscriber{
-				connection: tt.fields.connection,
-				consumers:  tt.fields.consumers,
+				addSubscriber: tt.fields.addSubscriber,
+				consumers:     tt.fields.consumers,
 			}
 			assert.Equalf(t, tt.want, m.handleMonitoredSAL(tt.args.sal), "handleMonitoredSAL(%v)", tt.args.sal)
 		})
@@ -556,8 +534,8 @@ func TestSubscriber_handleMonitoredSAL(t *testing.T) {
 
 func TestSubscriber_offerSAL(t *testing.T) {
 	type fields struct {
-		connection *Connection
-		consumers  map[*spiModel.DefaultPlcConsumerRegistration]apiModel.PlcSubscriptionEventConsumer
+		addSubscriber func(subscriber *Subscriber)
+		consumers     map[*spiModel.DefaultPlcConsumerRegistration]apiModel.PlcSubscriptionEventConsumer
 	}
 	type args struct {
 		sal                model.MonitoredSAL
@@ -1368,8 +1346,8 @@ func TestSubscriber_offerSAL(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			m := &Subscriber{
-				connection: tt.fields.connection,
-				consumers:  tt.fields.consumers,
+				addSubscriber: tt.fields.addSubscriber,
+				consumers:     tt.fields.consumers,
 			}
 			assert.Equalf(t, tt.want, m.offerSAL(tt.args.sal, tt.args.subscriptionHandle, tt.args.consumerProvider(t)), "offerSAL(\n%v\n, \n%v\n)", tt.args.sal, tt.args.subscriptionHandle)
 		})
@@ -1378,8 +1356,8 @@ func TestSubscriber_offerSAL(t *testing.T) {
 
 func TestSubscriber_Register(t *testing.T) {
 	type fields struct {
-		connection *Connection
-		consumers  map[*spiModel.DefaultPlcConsumerRegistration]apiModel.PlcSubscriptionEventConsumer
+		addSubscriber func(subscriber *Subscriber)
+		consumers     map[*spiModel.DefaultPlcConsumerRegistration]apiModel.PlcSubscriptionEventConsumer
 	}
 	type args struct {
 		consumer apiModel.PlcSubscriptionEventConsumer
@@ -1400,8 +1378,8 @@ func TestSubscriber_Register(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			m := &Subscriber{
-				connection: tt.fields.connection,
-				consumers:  tt.fields.consumers,
+				addSubscriber: tt.fields.addSubscriber,
+				consumers:     tt.fields.consumers,
 			}
 			assert.NotNilf(t, m.Register(tt.args.consumer, tt.args.handles), "Register(func(), %v)", tt.args.handles)
 		})
@@ -1410,8 +1388,8 @@ func TestSubscriber_Register(t *testing.T) {
 
 func TestSubscriber_Unregister(t *testing.T) {
 	type fields struct {
-		connection *Connection
-		consumers  map[*spiModel.DefaultPlcConsumerRegistration]apiModel.PlcSubscriptionEventConsumer
+		addSubscriber func(subscriber *Subscriber)
+		consumers     map[*spiModel.DefaultPlcConsumerRegistration]apiModel.PlcSubscriptionEventConsumer
 	}
 	type args struct {
 		registration apiModel.PlcConsumerRegistration
@@ -1431,8 +1409,8 @@ func TestSubscriber_Unregister(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			m := &Subscriber{
-				connection: tt.fields.connection,
-				consumers:  tt.fields.consumers,
+				addSubscriber: tt.fields.addSubscriber,
+				consumers:     tt.fields.consumers,
 			}
 			m.Unregister(tt.args.registration)
 		})

@@ -20,6 +20,7 @@
 package cbus
 
 import (
+	"fmt"
 	"github.com/rs/zerolog"
 	"reflect"
 	"strconv"
@@ -97,4 +98,8 @@ func getFromOptions(localLog zerolog.Logger, options map[string][]string, key st
 		return optionValues[0]
 	}
 	return ""
+}
+
+func (c Configuration) String() string {
+	return fmt.Sprintf("%#v", c)
 }

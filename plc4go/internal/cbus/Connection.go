@@ -26,6 +26,7 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/tracer"
 	"github.com/apache/plc4x/plc4go/spi/transactions"
 	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
 	"runtime/debug"
 	"sync"
 	"time"
@@ -55,6 +56,10 @@ func (t *AlphaGenerator) getAndIncrement() byte {
 	result := t.currentAlpha
 	t.currentAlpha += 1
 	return result
+}
+
+func (t *AlphaGenerator) String() string {
+	return fmt.Sprintf("AlphaGenerator(currentAlpha: %c)", t.currentAlpha)
 }
 
 type Connection struct {
@@ -166,7 +171,11 @@ func (c *Connection) WriteRequestBuilder() apiModel.PlcWriteRequestBuilder {
 }
 
 func (c *Connection) SubscriptionRequestBuilder() apiModel.PlcSubscriptionRequestBuilder {
-	return spiModel.NewDefaultPlcSubscriptionRequestBuilder(c.GetPlcTagHandler(), c.GetPlcValueHandler(), NewSubscriber(c, options.WithCustomLogger(c.log)))
+	return spiModel.NewDefaultPlcSubscriptionRequestBuilder(
+		c.GetPlcTagHandler(),
+		c.GetPlcValueHandler(),
+		NewSubscriber(c.addSubscriber, options.WithCustomLogger(c.log)),
+	)
 }
 
 func (c *Connection) UnsubscriptionRequestBuilder() apiModel.PlcUnsubscriptionRequestBuilder {
@@ -189,7 +198,28 @@ func (c *Connection) addSubscriber(subscriber *Subscriber) {
 }
 
 func (c *Connection) String() string {
-	return fmt.Sprintf("cbus.Connection")
+	return fmt.Sprintf(
+		"cbus.Connection{\n"+
+			"\tDefaultConnection: %s,\n"+
+			"\tAlphaGenerator: %s\n"+
+			"\tMessageCodec: %s\n"+
+			"\tsubscribers: %s\n"+
+			"\ttm: %s\n"+
+			"\tconfiguration: %s\n"+
+			"\tdriverContext: %s\n"+
+			"\tconnectionId: %s\n"+
+			"\ttracer: %s\n"+
+			"}",
+		c.DefaultConnection,
+		&c.alphaGenerator,
+		c.messageCodec,
+		c.subscribers,
+		c.tm,
+		c.configuration,
+		c.driverContext,
+		c.connectionId,
+		c.tracer,
+	)
 }
 
 func (c *Connection) setupConnection(ctx context.Context, ch chan plc4go.PlcConnectionConnectResult) {
@@ -235,11 +265,15 @@ func (c *Connection) startSubscriptionHandler() {
 		c.log.Debug().Msg("SAL handler stated")
 		for c.IsConnected() {
 			for monitoredSal := range c.messageCodec.monitoredSALs {
+				handled := false
 				for _, subscriber := range c.subscribers {
 					if ok := subscriber.handleMonitoredSAL(monitoredSal); ok {
 						c.log.Debug().Msgf("%v handled\n%s", subscriber, monitoredSal)
-						continue
+						handled = true
 					}
+				}
+				if !handled {
+					log.Debug().Msgf("SAL was not handled:\n%s", monitoredSal)
 				}
 			}
 		}
@@ -255,11 +289,15 @@ func (c *Connection) startSubscriptionHandler() {
 		c.log.Debug().Msg("default MMI started")
 		for c.IsConnected() {
 			for calReply := range c.messageCodec.monitoredMMIs {
+				handled := false
 				for _, subscriber := range c.subscribers {
 					if ok := subscriber.handleMonitoredMMI(calReply); ok {
 						c.log.Debug().Msgf("%v handled\n%s", subscriber, calReply)
-						continue
+						handled = true
 					}
+				}
+				if !handled {
+					log.Debug().Msgf("MMI was not handled:\n%s", calReply)
 				}
 			}
 		}
