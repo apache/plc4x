@@ -22,7 +22,6 @@ package transactions
 import (
 	"container/list"
 	"context"
-	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/pool"
 	"io"
@@ -45,21 +44,6 @@ func init() {
 }
 
 type RequestTransactionRunnable func(RequestTransaction)
-
-// RequestTransaction represents a transaction
-type RequestTransaction interface {
-	fmt.Stringer
-	// FailRequest signals that this transaction has failed
-	FailRequest(err error) error
-	// EndRequest signals that this transaction is done
-	EndRequest() error
-	// Submit submits a RequestTransactionRunnable to the RequestTransactionManager
-	Submit(operation RequestTransactionRunnable)
-	// AwaitCompletion wait for this RequestTransaction to finish. Returns an error if it finished unsuccessful
-	AwaitCompletion(ctx context.Context) error
-	// IsCompleted indicates that the that this RequestTransaction is completed
-	IsCompleted() bool
-}
 
 // RequestTransactionManager handles transactions
 type RequestTransactionManager interface {
@@ -107,20 +91,6 @@ func WithCustomExecutor(executor pool.Executor) options.WithOption {
 type withCustomExecutor struct {
 	options.Option
 	executor pool.Executor
-}
-
-type requestTransaction struct {
-	parent        *requestTransactionManager
-	transactionId int32
-
-	/** The initial operation to perform to kick off the request */
-	operation        pool.Runnable
-	completionFuture pool.CompletionFuture
-
-	stateChangeMutex sync.Mutex
-	completed        bool
-
-	transactionLog zerolog.Logger
 }
 
 type requestTransactionManager struct {
@@ -187,18 +157,6 @@ func (r *requestTransactionManager) processWorklog() {
 		next.completionFuture = completionFuture
 		r.workLog.Remove(front)
 	}
-}
-
-type completedFuture struct {
-	err error
-}
-
-func (c completedFuture) AwaitCompletion(_ context.Context) error {
-	return c.err
-}
-
-func (completedFuture) Cancel(_ bool, _ error) {
-	// No op
 }
 
 func (r *requestTransactionManager) StartTransaction() RequestTransaction {
@@ -287,75 +245,4 @@ func (r *requestTransactionManager) CloseGraceful(timeout time.Duration) error {
 	defer r.workLogMutex.RUnlock()
 	r.runningRequests = nil
 	return r.executor.Close()
-}
-
-func (t *requestTransaction) FailRequest(err error) error {
-	t.stateChangeMutex.Lock()
-	defer t.stateChangeMutex.Unlock()
-	if t.completed {
-		return errors.Wrap(err, "calling fail on a already completed transaction")
-	}
-	t.transactionLog.Trace().Msg("Fail the request")
-	t.completed = true
-	return t.parent.failRequest(t, err)
-}
-
-func (t *requestTransaction) EndRequest() error {
-	t.stateChangeMutex.Lock()
-	defer t.stateChangeMutex.Unlock()
-	if t.completed {
-		return errors.New("calling end on a already completed transaction")
-	}
-	t.transactionLog.Trace().Msg("Ending the request")
-	t.completed = true
-	// Remove it from Running Requests
-	return t.parent.endRequest(t)
-}
-
-func (t *requestTransaction) Submit(operation RequestTransactionRunnable) {
-	t.stateChangeMutex.Lock()
-	defer t.stateChangeMutex.Unlock()
-	if t.completed {
-		t.transactionLog.Warn().Msg("calling submit on a already completed transaction")
-		return
-	}
-	if t.operation != nil {
-		t.transactionLog.Warn().Msg("Operation already set")
-	}
-	t.transactionLog.Trace().Msgf("Submission of transaction %d", t.transactionId)
-	t.operation = func() {
-		t.transactionLog.Trace().Msgf("Start execution of transaction %d", t.transactionId)
-		operation(t)
-		t.transactionLog.Trace().Msgf("Completed execution of transaction %d", t.transactionId)
-	}
-	t.parent.submitTransaction(t)
-}
-
-func (t *requestTransaction) AwaitCompletion(ctx context.Context) error {
-	for t.completionFuture == nil {
-		time.Sleep(time.Millisecond * 10)
-		// TODO: this should timeout and not loop infinite...
-	}
-	if err := t.completionFuture.AwaitCompletion(ctx); err != nil {
-		return err
-	}
-	stillActive := true
-	for stillActive {
-		stillActive = false
-		for _, runningRequest := range t.parent.runningRequests {
-			if runningRequest.transactionId == t.transactionId {
-				stillActive = true
-				break
-			}
-		}
-	}
-	return nil
-}
-
-func (t *requestTransaction) IsCompleted() bool {
-	return t.completed
-}
-
-func (t *requestTransaction) String() string {
-	return fmt.Sprintf("Transaction{tid:%d}", t.transactionId)
 }
