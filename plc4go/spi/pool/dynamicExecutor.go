@@ -20,6 +20,7 @@
 package pool
 
 import (
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/rs/zerolog"
 	"runtime/debug"
@@ -170,4 +171,16 @@ func (e *dynamicExecutor) Stop() {
 	e.log.Debug().Msgf("waiting for %d dynamic workers to stop", e.currentNumberOfWorkers.Load())
 	e.dynamicWorkers.Wait()
 	e.log.Trace().Msg("stopped")
+}
+
+func (e *dynamicExecutor) String() string {
+	return fmt.Sprintf("dynamicExecutor{\n"+
+		"\texecutor: %s\n"+
+		"\tmaxNumberOfWorkers: %d\n"+
+		"\tcurrentNumberOfWorkers: %d\n"+
+		"}",
+		e.executor,
+		e.maxNumberOfWorkers,
+		e.currentNumberOfWorkers.Load(),
+	)
 }

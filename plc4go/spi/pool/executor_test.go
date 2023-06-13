@@ -25,6 +25,7 @@ import (
 	"github.com/rs/zerolog"
 	"github.com/stretchr/testify/assert"
 	"sync"
+	"sync/atomic"
 	"testing"
 	"time"
 )
@@ -408,6 +409,71 @@ func Test_executor_isTraceWorkers(t *testing.T) {
 				log:          tt.fields.log,
 			}
 			assert.Equalf(t, tt.want, e.isTraceWorkers(), "isTraceWorkers()")
+		})
+	}
+}
+
+func Test_executor_String(t *testing.T) {
+	type fields struct {
+		running      bool
+		shutdown     bool
+		worker       []*worker
+		queueDepth   int
+		workItems    chan workItem
+		traceWorkers bool
+		log          zerolog.Logger
+	}
+	tests := []struct {
+		name   string
+		fields fields
+		want   string
+	}{
+		{
+			name: "string it",
+			fields: fields{
+				running:  true,
+				shutdown: true,
+				worker: []*worker{
+					{
+						id:           1,
+						shutdown:     atomic.Bool{},
+						interrupted:  atomic.Bool{},
+						hasEnded:     atomic.Bool{},
+						lastReceived: time.Time{},
+					},
+				},
+				queueDepth:   2,
+				traceWorkers: true,
+			},
+			want: "executor{\n" +
+				"\trunning: true,\n" +
+				"\tshutdown: true,\n" +
+				"\tworker: [worker{\n" +
+				"\tid: 1,\n" +
+				"\tshutdown: false,\n" +
+				"\tinterrupted: false,\n" +
+				"\thasEnded: false,\n" +
+				"\tlastReceived: 0001-01-01 00:00:00 +0000 UTC,\n" +
+				"}],\n" +
+				"\tqueueDepth: 2,\n" +
+				"\tworkItems: 0 elements,\n" +
+				"\ttraceWorkers: true,\n" +
+				"\n" +
+				"}",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			e := &executor{
+				running:      tt.fields.running,
+				shutdown:     tt.fields.shutdown,
+				worker:       tt.fields.worker,
+				queueDepth:   tt.fields.queueDepth,
+				workItems:    tt.fields.workItems,
+				traceWorkers: tt.fields.traceWorkers,
+				log:          tt.fields.log,
+			}
+			assert.Equalf(t, tt.want, e.String(), "String()")
 		})
 	}
 }

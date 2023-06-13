@@ -21,6 +21,7 @@ package _default
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/tracer"
 	"github.com/rs/zerolog"
 	"runtime/debug"
@@ -357,6 +358,20 @@ func (d *defaultConnection) GetPlcTagHandler() spi.PlcTagHandler {
 
 func (d *defaultConnection) GetPlcValueHandler() spi.PlcValueHandler {
 	return d.valueHandler
+}
+
+func (d *defaultConnection) String() string {
+	return fmt.Sprintf("DefaultConnection{\n"+
+		"\tttl: %s,\n"+
+		"\tconnected: %t,\n"+
+		"\ttagHandler: %s,\n"+
+		"\tvalueHandler: %s,\n"+
+		"}",
+		d.defaultTtl,
+		d.connected,
+		d.tagHandler,
+		d.valueHandler,
+	)
 }
 
 func (m DefaultConnectionMetadata) GetConnectionAttributes() map[string]string {

@@ -106,7 +106,7 @@ func Test_requestTransactionManager_SetNumberOfConcurrentRequests(t *testing.T) 
 	type fields struct {
 		runningRequests            []*requestTransaction
 		numberOfConcurrentRequests int
-		transactionId              int32
+		currentTransactionId       int32
 		workLog                    list.List
 		executor                   pool.Executor
 	}
@@ -135,7 +135,7 @@ func Test_requestTransactionManager_SetNumberOfConcurrentRequests(t *testing.T) 
 			r := &requestTransactionManager{
 				runningRequests:            tt.fields.runningRequests,
 				numberOfConcurrentRequests: tt.fields.numberOfConcurrentRequests,
-				transactionId:              tt.fields.transactionId,
+				currentTransactionId:       tt.fields.currentTransactionId,
 				workLog:                    tt.fields.workLog,
 				executor:                   tt.fields.executor,
 			}
@@ -148,7 +148,7 @@ func Test_requestTransactionManager_StartTransaction(t *testing.T) {
 	type fields struct {
 		runningRequests                     []*requestTransaction
 		numberOfConcurrentRequests          int
-		transactionId                       int32
+		currentTransactionId                int32
 		workLog                             list.List
 		executor                            pool.Executor
 		shutdown                            bool
@@ -194,7 +194,7 @@ func Test_requestTransactionManager_StartTransaction(t *testing.T) {
 			r := &requestTransactionManager{
 				runningRequests:                     tt.fields.runningRequests,
 				numberOfConcurrentRequests:          tt.fields.numberOfConcurrentRequests,
-				transactionId:                       tt.fields.transactionId,
+				currentTransactionId:                tt.fields.currentTransactionId,
 				workLog:                             tt.fields.workLog,
 				executor:                            tt.fields.executor,
 				shutdown:                            tt.fields.shutdown,
@@ -212,7 +212,7 @@ func Test_requestTransactionManager_endRequest(t *testing.T) {
 	type fields struct {
 		runningRequests            []*requestTransaction
 		numberOfConcurrentRequests int
-		transactionId              int32
+		currentTransactionId       int32
 		workLog                    list.List
 		executor                   pool.Executor
 	}
@@ -249,7 +249,7 @@ func Test_requestTransactionManager_endRequest(t *testing.T) {
 			r := &requestTransactionManager{
 				runningRequests:            tt.fields.runningRequests,
 				numberOfConcurrentRequests: tt.fields.numberOfConcurrentRequests,
-				transactionId:              tt.fields.transactionId,
+				currentTransactionId:       tt.fields.currentTransactionId,
 				workLog:                    tt.fields.workLog,
 				executor:                   tt.fields.executor,
 			}
@@ -264,7 +264,7 @@ func Test_requestTransactionManager_failRequest(t *testing.T) {
 	type fields struct {
 		runningRequests            []*requestTransaction
 		numberOfConcurrentRequests int
-		transactionId              int32
+		currentTransactionId       int32
 		workLog                    list.List
 		executor                   pool.Executor
 		log                        zerolog.Logger
@@ -304,7 +304,7 @@ func Test_requestTransactionManager_failRequest(t *testing.T) {
 			r := &requestTransactionManager{
 				runningRequests:            tt.fields.runningRequests,
 				numberOfConcurrentRequests: tt.fields.numberOfConcurrentRequests,
-				transactionId:              tt.fields.transactionId,
+				currentTransactionId:       tt.fields.currentTransactionId,
 				workLog:                    tt.fields.workLog,
 				executor:                   tt.fields.executor,
 				log:                        tt.fields.log,
@@ -320,7 +320,7 @@ func Test_requestTransactionManager_getNumberOfActiveRequests(t *testing.T) {
 	type fields struct {
 		runningRequests            []*requestTransaction
 		numberOfConcurrentRequests int
-		transactionId              int32
+		currentTransactionId       int32
 		workLog                    list.List
 		executor                   pool.Executor
 	}
@@ -338,7 +338,7 @@ func Test_requestTransactionManager_getNumberOfActiveRequests(t *testing.T) {
 			r := &requestTransactionManager{
 				runningRequests:            tt.fields.runningRequests,
 				numberOfConcurrentRequests: tt.fields.numberOfConcurrentRequests,
-				transactionId:              tt.fields.transactionId,
+				currentTransactionId:       tt.fields.currentTransactionId,
 				workLog:                    tt.fields.workLog,
 				executor:                   tt.fields.executor,
 			}
@@ -353,7 +353,7 @@ func Test_requestTransactionManager_processWorklog(t *testing.T) {
 	type fields struct {
 		runningRequests            []*requestTransaction
 		numberOfConcurrentRequests int
-		transactionId              int32
+		currentTransactionId       int32
 		workLog                    list.List
 		executor                   pool.Executor
 	}
@@ -401,7 +401,7 @@ func Test_requestTransactionManager_processWorklog(t *testing.T) {
 			r := &requestTransactionManager{
 				runningRequests:            tt.fields.runningRequests,
 				numberOfConcurrentRequests: tt.fields.numberOfConcurrentRequests,
-				transactionId:              tt.fields.transactionId,
+				currentTransactionId:       tt.fields.currentTransactionId,
 				workLog:                    tt.fields.workLog,
 				executor:                   tt.fields.executor,
 			}
@@ -414,7 +414,7 @@ func Test_requestTransactionManager_submitTransaction(t *testing.T) {
 	type fields struct {
 		runningRequests            []*requestTransaction
 		numberOfConcurrentRequests int
-		transactionId              int32
+		currentTransactionId       int32
 		workLog                    list.List
 		executor                   pool.Executor
 	}
@@ -442,7 +442,7 @@ func Test_requestTransactionManager_submitTransaction(t *testing.T) {
 			r := &requestTransactionManager{
 				runningRequests:            tt.fields.runningRequests,
 				numberOfConcurrentRequests: tt.fields.numberOfConcurrentRequests,
-				transactionId:              tt.fields.transactionId,
+				currentTransactionId:       tt.fields.currentTransactionId,
 				workLog:                    tt.fields.workLog,
 				executor:                   tt.fields.executor,
 			}
@@ -455,7 +455,7 @@ func Test_requestTransactionManager_Close(t *testing.T) {
 	type fields struct {
 		runningRequests                     []*requestTransaction
 		numberOfConcurrentRequests          int
-		transactionId                       int32
+		currentTransactionId                int32
 		workLog                             list.List
 		executor                            pool.Executor
 		shutdown                            bool
@@ -486,7 +486,7 @@ func Test_requestTransactionManager_Close(t *testing.T) {
 			r := &requestTransactionManager{
 				runningRequests:                     tt.fields.runningRequests,
 				numberOfConcurrentRequests:          tt.fields.numberOfConcurrentRequests,
-				transactionId:                       tt.fields.transactionId,
+				currentTransactionId:                tt.fields.currentTransactionId,
 				workLog:                             tt.fields.workLog,
 				executor:                            tt.fields.executor,
 				shutdown:                            tt.fields.shutdown,
@@ -502,7 +502,7 @@ func Test_requestTransactionManager_CloseGraceful(t *testing.T) {
 	type fields struct {
 		runningRequests                     []*requestTransaction
 		numberOfConcurrentRequests          int
-		transactionId                       int32
+		currentTransactionId                int32
 		workLog                             list.List
 		executor                            pool.Executor
 		shutdown                            bool
@@ -566,7 +566,7 @@ func Test_requestTransactionManager_CloseGraceful(t *testing.T) {
 			r := &requestTransactionManager{
 				runningRequests:                     tt.fields.runningRequests,
 				numberOfConcurrentRequests:          tt.fields.numberOfConcurrentRequests,
-				transactionId:                       tt.fields.transactionId,
+				currentTransactionId:                tt.fields.currentTransactionId,
 				workLog:                             tt.fields.workLog,
 				executor:                            tt.fields.executor,
 				shutdown:                            tt.fields.shutdown,
@@ -574,6 +574,83 @@ func Test_requestTransactionManager_CloseGraceful(t *testing.T) {
 				log:                                 tt.fields.log,
 			}
 			tt.wantErr(t, r.CloseGraceful(tt.args.timeout), fmt.Sprintf("CloseGraceful(%v)", tt.args.timeout))
+		})
+	}
+}
+
+func Test_requestTransactionManager_String(t *testing.T) {
+	type fields struct {
+		runningRequests                     []*requestTransaction
+		numberOfConcurrentRequests          int
+		currentTransactionId                int32
+		workLog                             list.List
+		executor                            pool.Executor
+		shutdown                            bool
+		traceTransactionManagerTransactions bool
+		log                                 zerolog.Logger
+	}
+	tests := []struct {
+		name   string
+		fields fields
+		want   string
+	}{
+		{
+			name: "string it",
+			fields: fields{
+				runningRequests: []*requestTransaction{
+					{
+						transactionId: 2,
+					},
+				},
+				numberOfConcurrentRequests: 3,
+				currentTransactionId:       4,
+				workLog: func() list.List {
+					v := list.List{}
+					v.PushBack(nil)
+					return v
+				}(),
+				executor:                            pool.NewFixedSizeExecutor(1, 1),
+				shutdown:                            true,
+				traceTransactionManagerTransactions: true,
+			},
+			want: "RequestTransactionManager{\n" +
+				"\trunningRequests: [Transaction{tid:2}],\n" +
+				"\tnumberOfConcurrentRequests: 3,\n" +
+				"\tcurrentTransactionId: 4,\n" +
+				"\tworkLog: 1 elements,\n" +
+				"\texecutor: executor{\n" +
+				"\trunning: false,\n" +
+				"\tshutdown: false,\n" +
+				"\tworker: [worker{\n" +
+				"\tid: 0,\n" +
+				"\tshutdown: false,\n" +
+				"\tinterrupted: false,\n" +
+				"\thasEnded: false,\n" +
+				"\tlastReceived: 0001-01-01 00:00:00 +0000 UTC,\n" +
+				"}],\n" +
+				"\tqueueDepth: 1,\n" +
+				"\tworkItems: 0 elements,\n" +
+				"\ttraceWorkers: false,\n" +
+				"\n" +
+				"},\n" +
+				"\tshutdown: true,\n" +
+				"\ttraceTransactionManagerTransactions: true,\n" +
+				"}",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			r := &requestTransactionManager{
+				runningRequests:                     tt.fields.runningRequests,
+				numberOfConcurrentRequests:          tt.fields.numberOfConcurrentRequests,
+				currentTransactionId:                tt.fields.currentTransactionId,
+				workLog:                             tt.fields.workLog,
+				executor:                            tt.fields.executor,
+				shutdown:                            tt.fields.shutdown,
+				traceTransactionManagerTransactions: tt.fields.traceTransactionManagerTransactions,
+				log:                                 tt.fields.log,
+			}
+			assert.Equalf(t, tt.want, r.String(), "String()")
 		})
 	}
 }

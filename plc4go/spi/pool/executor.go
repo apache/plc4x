@@ -21,6 +21,7 @@ package pool
 
 import (
 	"context"
+	"fmt"
 	"sync"
 	"sync/atomic"
 
@@ -126,4 +127,22 @@ func (e *executor) Close() error {
 
 func (e *executor) IsRunning() bool {
 	return e.running && !e.shutdown
+}
+
+func (e *executor) String() string {
+	return fmt.Sprintf("executor{\n"+
+		"\trunning: %t,\n"+
+		"\tshutdown: %t,\n"+
+		"\tworker: %s,\n"+
+		"\tqueueDepth: %d,\n"+
+		"\tworkItems: %d elements,\n"+
+		"\ttraceWorkers: %t,\n"+
+		"\n}",
+		e.running,
+		e.shutdown,
+		e.worker,
+		e.queueDepth,
+		len(e.workItems),
+		e.traceWorkers,
+	)
 }

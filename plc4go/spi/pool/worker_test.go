@@ -225,3 +225,29 @@ func Test_worker_work(t *testing.T) {
 		})
 	}
 }
+
+func Test_worker_String(t *testing.T) {
+	type fields struct {
+		id           int
+		lastReceived time.Time
+	}
+	tests := []struct {
+		name   string
+		fields fields
+		want   string
+	}{
+		{
+			name: "string it",
+			want: "worker{\n\tid: 0,\n\tshutdown: false,\n\tinterrupted: false,\n\thasEnded: false,\n\tlastReceived: 0001-01-01 00:00:00 +0000 UTC,\n}",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			w := &worker{
+				id:           tt.fields.id,
+				lastReceived: tt.fields.lastReceived,
+			}
+			assert.Equalf(t, tt.want, w.String(), "String()")
+		})
+	}
+}

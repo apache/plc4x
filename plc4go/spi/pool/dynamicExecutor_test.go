@@ -20,6 +20,7 @@
 package pool
 
 import (
+	"github.com/stretchr/testify/assert"
 	"testing"
 	"time"
 )
@@ -165,6 +166,48 @@ func Test_dynamicExecutor_Stop(t *testing.T) {
 			if tt.stopTwice {
 				e.Stop()
 			}
+		})
+	}
+}
+
+func Test_dynamicExecutor_String(t *testing.T) {
+	type fields struct {
+		executor           *executor
+		maxNumberOfWorkers int
+	}
+	tests := []struct {
+		name   string
+		fields fields
+		want   string
+	}{
+		{
+			name: "string it",
+			fields: fields{
+				executor:           &executor{},
+				maxNumberOfWorkers: 3,
+			},
+			want: "dynamicExecutor{\n" +
+				"\texecutor: executor{\n" +
+				"\trunning: false,\n" +
+				"\tshutdown: false,\n" +
+				"\tworker: [],\n" +
+				"\tqueueDepth: 0,\n" +
+				"\tworkItems: 0 elements,\n" +
+				"\ttraceWorkers: false,\n" +
+				"\n" +
+				"}\n" +
+				"\tmaxNumberOfWorkers: 3\n" +
+				"\tcurrentNumberOfWorkers: 0\n" +
+				"}",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			e := &dynamicExecutor{
+				executor:           tt.fields.executor,
+				maxNumberOfWorkers: tt.fields.maxNumberOfWorkers,
+			}
+			assert.Equalf(t, tt.want, e.String(), "String()")
 		})
 	}
 }

@@ -22,6 +22,7 @@ package transactions
 import (
 	"container/list"
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/pool"
 	"io"
@@ -60,7 +61,7 @@ type RequestTransactionManager interface {
 func NewRequestTransactionManager(numberOfConcurrentRequests int, _options ...options.WithOption) RequestTransactionManager {
 	_requestTransactionManager := &requestTransactionManager{
 		numberOfConcurrentRequests: numberOfConcurrentRequests,
-		transactionId:              0,
+		currentTransactionId:       0,
 		workLog:                    *list.New(),
 		executor:                   sharedExecutorInstance,
 
@@ -98,8 +99,8 @@ type requestTransactionManager struct {
 	// How many transactions are allowed to run at the same time?
 	numberOfConcurrentRequests int
 	// Assigns each request a Unique Transaction Id, especially important for failure handling
-	transactionId    int32
-	transactionMutex sync.RWMutex
+	currentTransactionId int32
+	transactionMutex     sync.RWMutex
 	// Important, this is a FIFO Queue for Fairness!
 	workLog      list.List
 	workLogMutex sync.RWMutex
@@ -162,9 +163,9 @@ func (r *requestTransactionManager) processWorklog() {
 func (r *requestTransactionManager) StartTransaction() RequestTransaction {
 	r.transactionMutex.Lock()
 	defer r.transactionMutex.Unlock()
-	currentTransactionId := r.transactionId
-	r.transactionId += 1
-	transactionLogger := r.log.With().Int32("transactionId", currentTransactionId).Logger()
+	currentTransactionId := r.currentTransactionId
+	r.currentTransactionId += 1
+	transactionLogger := r.log.With().Int32("currentTransactionId", currentTransactionId).Logger()
 	if !r.traceTransactionManagerTransactions {
 		transactionLogger = zerolog.Nop()
 	}
@@ -245,4 +246,24 @@ func (r *requestTransactionManager) CloseGraceful(timeout time.Duration) error {
 	defer r.workLogMutex.RUnlock()
 	r.runningRequests = nil
 	return r.executor.Close()
+}
+
+func (r *requestTransactionManager) String() string {
+	return fmt.Sprintf("RequestTransactionManager{\n"+
+		"\trunningRequests: %s,\n"+
+		"\tnumberOfConcurrentRequests: %d,\n"+
+		"\tcurrentTransactionId: %d,\n"+
+		"\tworkLog: %d elements,\n"+
+		"\texecutor: %s,\n"+
+		"\tshutdown: %t,\n"+
+		"\ttraceTransactionManagerTransactions: %t,\n"+
+		"}",
+		r.runningRequests,
+		r.numberOfConcurrentRequests,
+		r.currentTransactionId,
+		r.workLog.Len(),
+		r.executor,
+		r.shutdown,
+		r.traceTransactionManagerTransactions,
+	)
 }

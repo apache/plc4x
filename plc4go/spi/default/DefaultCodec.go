@@ -244,6 +244,7 @@ func (m *defaultCodec) HandleMessages(message spi.Message) bool {
 	messageHandled := false
 	m.log.Trace().Msgf("Current number of expectations: %d", len(m.expectations))
 	for index, expectation := range m.expectations {
+		m.log.Trace().Msgf("Checking expectation %s", expectation)
 		// Check if the current message matches the expectations
 		// If it does, let it handle the message.
 		if accepts := expectation.GetAcceptsMessage()(message); accepts {
@@ -353,4 +354,20 @@ func (m *defaultCodec) passToDefaultIncomingMessageChannel(workerLog zerolog.Log
 		timeout.Stop()
 		workerLog.Warn().Msgf("Message discarded\n%s", message)
 	}
+}
+
+func (m *defaultCodec) String() string {
+	return fmt.Sprintf("DefaultCodec{\n"+
+		"\tTransportInstance: %s,\n"+
+		"\tDefaultIncomingMessageChannel: %d elements,\n"+
+		"\tExpectations: %s,\n"+
+		"\trunning: %t,\n"+
+		"\tcustomMessageHandling: %t,\n"+
+		"}",
+		m.transportInstance,
+		len(m.defaultIncomingMessageChannel),
+		m.expectations,
+		m.running,
+		m.customMessageHandling != nil,
+	)
 }

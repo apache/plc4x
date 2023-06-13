@@ -28,5 +28,13 @@ type workItem struct {
 }
 
 func (w workItem) String() string {
-	return fmt.Sprintf("Workitem{wid:%d, runnable(%t)}, completionFuture(%v)}", w.workItemId, w.runnable != nil, w.completionFuture)
+	return fmt.Sprintf("workItem{\n"+
+		"\twid: %d,\n"+
+		"\trunnable: %t,\n"+
+		"\tcompletionFuture: %s,\n"+
+		"}",
+		w.workItemId,
+		w.runnable != nil,
+		w.completionFuture,
+	)
 }

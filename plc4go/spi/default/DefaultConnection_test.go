@@ -23,6 +23,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/tracer"
+	"github.com/rs/zerolog"
 	"testing"
 	"time"
 
@@ -1316,6 +1317,45 @@ func Test_plcConnectionPingResult_GetErr(t *testing.T) {
 				err: tt.fields.err,
 			}
 			tt.wantErr(t, d.GetErr(), fmt.Sprintf("GetErr()"))
+		})
+	}
+}
+
+func Test_defaultConnection_String(t *testing.T) {
+	type fields struct {
+		DefaultConnectionRequirements DefaultConnectionRequirements
+		defaultTtl                    time.Duration
+		connected                     bool
+		tagHandler                    spi.PlcTagHandler
+		valueHandler                  spi.PlcValueHandler
+		log                           zerolog.Logger
+	}
+	tests := []struct {
+		name   string
+		fields fields
+		want   string
+	}{
+		{
+			name: "string it",
+			want: "DefaultConnection{\n" +
+				"\tttl: 0s,\n" +
+				"\tconnected: false,\n" +
+				"\ttagHandler: %!s(<nil>),\n" +
+				"\tvalueHandler: %!s(<nil>),\n" +
+				"}",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			d := &defaultConnection{
+				DefaultConnectionRequirements: tt.fields.DefaultConnectionRequirements,
+				defaultTtl:                    tt.fields.defaultTtl,
+				connected:                     tt.fields.connected,
+				tagHandler:                    tt.fields.tagHandler,
+				valueHandler:                  tt.fields.valueHandler,
+				log:                           tt.fields.log,
+			}
+			assert.Equalf(t, tt.want, d.String(), "String()")
 		})
 	}
 }

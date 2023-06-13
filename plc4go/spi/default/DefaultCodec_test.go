@@ -26,6 +26,7 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/transports"
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"testing"
@@ -1191,6 +1192,48 @@ func Test_defaultCodec_Work(t *testing.T) {
 				m.running = false
 			}()
 			m.Work(tt.args.codec)
+		})
+	}
+}
+
+func Test_defaultCodec_String(t *testing.T) {
+	type fields struct {
+		DefaultCodecRequirements      DefaultCodecRequirements
+		transportInstance             transports.TransportInstance
+		defaultIncomingMessageChannel chan spi.Message
+		expectations                  []spi.Expectation
+		running                       bool
+		customMessageHandling         func(codec DefaultCodecRequirements, message spi.Message) bool
+		log                           zerolog.Logger
+	}
+	tests := []struct {
+		name   string
+		fields fields
+		want   string
+	}{
+		{
+			name: "string it",
+			want: "DefaultCodec{\n" +
+				"\tTransportInstance: %!s(<nil>),\n" +
+				"\tDefaultIncomingMessageChannel: 0 elements,\n" +
+				"\tExpectations: [],\n" +
+				"\trunning: false,\n" +
+				"\tcustomMessageHandling: false,\n" +
+				"}",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			m := &defaultCodec{
+				DefaultCodecRequirements:      tt.fields.DefaultCodecRequirements,
+				transportInstance:             tt.fields.transportInstance,
+				defaultIncomingMessageChannel: tt.fields.defaultIncomingMessageChannel,
+				expectations:                  tt.fields.expectations,
+				running:                       tt.fields.running,
+				customMessageHandling:         tt.fields.customMessageHandling,
+				log:                           tt.fields.log,
+			}
+			assert.Equalf(t, tt.want, m.String(), "String()")
 		})
 	}
 }

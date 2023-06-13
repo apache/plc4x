@@ -37,7 +37,11 @@ func Test_workItem_String(t *testing.T) {
 	}{
 		{
 			name: "Simple test",
-			want: "Workitem{wid:0, runnable(false)}, completionFuture(<nil>)}",
+			want: "workItem{\n" +
+				"\twid: 0,\n" +
+				"\trunnable: false,\n" +
+				"\tcompletionFuture: <nil>,\n" +
+				"}",
 		},
 	}
 	for _, tt := range tests {
