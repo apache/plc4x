@@ -21,6 +21,7 @@ package tracer
 
 import (
 	"fmt"
+	"sync"
 	"time"
 
 	"github.com/apache/plc4x/plc4go/spi/options"
@@ -64,6 +65,7 @@ func NewTracer(connectionId string, _options ...options.WithOption) Tracer {
 type tracer struct {
 	connectionId string
 	traceEntries []TraceEntry
+	m            sync.Mutex
 
 	log zerolog.Logger
 }
@@ -77,14 +79,20 @@ func (t *tracer) SetConnectionId(connectionId string) {
 }
 
 func (t *tracer) ResetTraces() {
+	t.m.Lock()
 	t.traceEntries = []TraceEntry{}
+	t.m.Unlock()
 }
 
 func (t *tracer) GetTraces() []TraceEntry {
-	return t.traceEntries
+	t.m.Lock()
+	entries := t.traceEntries
+	t.m.Unlock()
+	return entries
 }
 
 func (t *tracer) AddTrace(operation string, message string) {
+	t.m.Lock()
 	t.traceEntries = append(t.traceEntries, TraceEntry{
 		Timestamp:     time.Now(),
 		ConnectionId:  t.connectionId,
@@ -92,9 +100,11 @@ func (t *tracer) AddTrace(operation string, message string) {
 		Operation:     operation,
 		Message:       message,
 	})
+	t.m.Unlock()
 }
 
 func (t *tracer) AddTransactionalStartTrace(operation string, message string) string {
+	t.m.Lock()
 	transactionId := utils.GenerateId(t.log, 4)
 	t.traceEntries = append(t.traceEntries, TraceEntry{
 		Timestamp:     time.Now(),
@@ -103,10 +113,12 @@ func (t *tracer) AddTransactionalStartTrace(operation string, message string) st
 		Operation:     operation,
 		Message:       message,
 	})
+	t.m.Unlock()
 	return transactionId
 }
 
 func (t *tracer) AddTransactionalTrace(transactionId string, operation string, message string) {
+	t.m.Lock()
 	t.traceEntries = append(t.traceEntries, TraceEntry{
 		Timestamp:     time.Now(),
 		ConnectionId:  t.connectionId,
@@ -114,6 +126,7 @@ func (t *tracer) AddTransactionalTrace(transactionId string, operation string, m
 		Operation:     operation,
 		Message:       message,
 	})
+	t.m.Unlock()
 }
 
 func (t *tracer) FilterTraces(traces []TraceEntry, connectionIdFilter string, transactionIdFilter string, operationFilter string, messageFilter string) []TraceEntry {

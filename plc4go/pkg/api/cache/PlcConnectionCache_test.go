@@ -456,6 +456,8 @@ func TestPlcConnectionCache_ReturningConnectionWithPingError(t *testing.T) {
 		t.Errorf("Expected %d connections in the cache but got %d", 0, len(cache.connections))
 	}
 
+	// In the connection string, we tell the driver to return an error with
+	// the given message on executing a ping operation.
 	connectionResultChan := cache.GetConnection("simulated://1.2.3.4:42?pingError=hurz&traceEnabled=true")
 	select {
 	case connectResult := <-connectionResultChan:
@@ -484,6 +486,8 @@ func TestPlcConnectionCache_ReturningConnectionWithPingError(t *testing.T) {
 				if traces[3].Operation+"-"+traces[3].Message != "ping-error: hurz" {
 					t.Errorf("Expected '%s' as fourth trace message, but got '%s'", "ping-error: hurz", traces[3])
 				}
+			} else {
+				t.Errorf("Expected a result, but got nil")
 			}
 		}
 	case <-time.After(20 * time.Second):
