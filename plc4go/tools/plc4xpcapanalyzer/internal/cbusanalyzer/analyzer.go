@@ -20,6 +20,7 @@
 package cbusanalyzer
 
 import (
+	"context"
 	"fmt"
 	"net"
 	"reflect"
@@ -92,9 +93,9 @@ func (a *Analyzer) PackageParse(packetInformation common.PacketInformation, payl
 		return nil, common.ErrEcho
 	}
 	a.lastParsePayload = currentPayload
-	parse, err := model.CBusMessageParse(currentPayload, isResponse, a.requestContext, cBusOptions)
+	parse, err := model.CBusMessageParse(context.TODO(), currentPayload, isResponse, a.requestContext, cBusOptions)
 	if err != nil {
-		if secondParse, err := model.CBusMessageParse(currentPayload, isResponse, model.NewRequestContext(false), model.NewCBusOptions(false, false, false, false, false, false, false, false, false)); err != nil {
+		if secondParse, err := model.CBusMessageParse(context.TODO(), currentPayload, isResponse, model.NewRequestContext(false), model.NewCBusOptions(false, false, false, false, false, false, false, false, false)); err != nil {
 			log.Debug().Err(err).Msg("Second parse failed too")
 			return nil, errors.Wrap(err, "Error parsing CBusCommand")
 		} else {

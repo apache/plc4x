@@ -122,8 +122,8 @@ func (m *_SecurityDataSystemArmedDisarmed) GetLengthInBytes(ctx context.Context)
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func SecurityDataSystemArmedDisarmedParse(theBytes []byte) (SecurityDataSystemArmedDisarmed, error) {
-	return SecurityDataSystemArmedDisarmedParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func SecurityDataSystemArmedDisarmedParse(ctx context.Context, theBytes []byte) (SecurityDataSystemArmedDisarmed, error) {
+	return SecurityDataSystemArmedDisarmedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func SecurityDataSystemArmedDisarmedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityDataSystemArmedDisarmed, error) {

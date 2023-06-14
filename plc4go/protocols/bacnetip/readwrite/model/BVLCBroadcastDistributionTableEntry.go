@@ -120,8 +120,8 @@ func (m *_BVLCBroadcastDistributionTableEntry) GetLengthInBytes(ctx context.Cont
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BVLCBroadcastDistributionTableEntryParse(theBytes []byte) (BVLCBroadcastDistributionTableEntry, error) {
-	return BVLCBroadcastDistributionTableEntryParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func BVLCBroadcastDistributionTableEntryParse(ctx context.Context, theBytes []byte) (BVLCBroadcastDistributionTableEntry, error) {
+	return BVLCBroadcastDistributionTableEntryParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func BVLCBroadcastDistributionTableEntryParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BVLCBroadcastDistributionTableEntry, error) {

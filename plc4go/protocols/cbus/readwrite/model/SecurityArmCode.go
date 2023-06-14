@@ -155,8 +155,8 @@ func (m *_SecurityArmCode) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func SecurityArmCodeParse(theBytes []byte) (SecurityArmCode, error) {
-	return SecurityArmCodeParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func SecurityArmCodeParse(ctx context.Context, theBytes []byte) (SecurityArmCode, error) {
+	return SecurityArmCodeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func SecurityArmCodeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityArmCode, error) {

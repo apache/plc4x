@@ -139,8 +139,8 @@ func (m *_APDUReject) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func APDURejectParse(theBytes []byte, apduLength uint16) (APDUReject, error) {
-	return APDURejectParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), apduLength)
+func APDURejectParse(ctx context.Context, theBytes []byte, apduLength uint16) (APDUReject, error) {
+	return APDURejectParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), apduLength)
 }
 
 func APDURejectParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, apduLength uint16) (APDUReject, error) {

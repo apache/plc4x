@@ -149,8 +149,8 @@ func (m *_BACnetConfirmedServiceRequestConfirmedPrivateTransfer) GetLengthInByte
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConfirmedServiceRequestConfirmedPrivateTransferParse(theBytes []byte, serviceRequestLength uint32) (BACnetConfirmedServiceRequestConfirmedPrivateTransfer, error) {
-	return BACnetConfirmedServiceRequestConfirmedPrivateTransferParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), serviceRequestLength)
+func BACnetConfirmedServiceRequestConfirmedPrivateTransferParse(ctx context.Context, theBytes []byte, serviceRequestLength uint32) (BACnetConfirmedServiceRequestConfirmedPrivateTransfer, error) {
+	return BACnetConfirmedServiceRequestConfirmedPrivateTransferParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), serviceRequestLength)
 }
 
 func BACnetConfirmedServiceRequestConfirmedPrivateTransferParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, serviceRequestLength uint32) (BACnetConfirmedServiceRequestConfirmedPrivateTransfer, error) {

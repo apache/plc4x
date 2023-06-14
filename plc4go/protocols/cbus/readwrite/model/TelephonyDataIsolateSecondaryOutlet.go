@@ -151,8 +151,8 @@ func (m *_TelephonyDataIsolateSecondaryOutlet) GetLengthInBytes(ctx context.Cont
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func TelephonyDataIsolateSecondaryOutletParse(theBytes []byte) (TelephonyDataIsolateSecondaryOutlet, error) {
-	return TelephonyDataIsolateSecondaryOutletParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func TelephonyDataIsolateSecondaryOutletParse(ctx context.Context, theBytes []byte) (TelephonyDataIsolateSecondaryOutlet, error) {
+	return TelephonyDataIsolateSecondaryOutletParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func TelephonyDataIsolateSecondaryOutletParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (TelephonyDataIsolateSecondaryOutlet, error) {

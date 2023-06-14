@@ -267,8 +267,8 @@ func (m *_BACnetTagHeader) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetTagHeaderParse(theBytes []byte) (BACnetTagHeader, error) {
-	return BACnetTagHeaderParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func BACnetTagHeaderParse(ctx context.Context, theBytes []byte) (BACnetTagHeader, error) {
+	return BACnetTagHeaderParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func BACnetTagHeaderParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetTagHeader, error) {

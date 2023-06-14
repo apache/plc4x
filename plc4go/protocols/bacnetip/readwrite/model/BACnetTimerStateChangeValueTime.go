@@ -121,8 +121,8 @@ func (m *_BACnetTimerStateChangeValueTime) GetLengthInBytes(ctx context.Context)
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetTimerStateChangeValueTimeParse(theBytes []byte, objectTypeArgument BACnetObjectType) (BACnetTimerStateChangeValueTime, error) {
-	return BACnetTimerStateChangeValueTimeParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), objectTypeArgument)
+func BACnetTimerStateChangeValueTimeParse(ctx context.Context, theBytes []byte, objectTypeArgument BACnetObjectType) (BACnetTimerStateChangeValueTime, error) {
+	return BACnetTimerStateChangeValueTimeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), objectTypeArgument)
 }
 
 func BACnetTimerStateChangeValueTimeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (BACnetTimerStateChangeValueTime, error) {

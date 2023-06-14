@@ -123,8 +123,8 @@ func (m *_AdsDiscoveryBlockHostName) GetLengthInBytes(ctx context.Context) uint1
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func AdsDiscoveryBlockHostNameParse(theBytes []byte) (AdsDiscoveryBlockHostName, error) {
-	return AdsDiscoveryBlockHostNameParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func AdsDiscoveryBlockHostNameParse(ctx context.Context, theBytes []byte) (AdsDiscoveryBlockHostName, error) {
+	return AdsDiscoveryBlockHostNameParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func AdsDiscoveryBlockHostNameParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AdsDiscoveryBlockHostName, error) {

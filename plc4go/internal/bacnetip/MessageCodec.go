@@ -256,7 +256,7 @@ func (m *MessageCodec) Receive() (spi.Message, error) {
 			// TODO: Possibly clean up ...
 			return nil, nil
 		}
-		bvlcPacket, err := model.BVLCParse(data)
+		bvlcPacket, err := model.BVLCParse(context.TODO(), data)
 		if err != nil {
 			log.Warn().Err(err).Msg("error parsing")
 			// TODO: Possibly clean up ...

@@ -167,8 +167,8 @@ func (m *_DF1RequestProtectedTypedLogicalRead) GetLengthInBytes(ctx context.Cont
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func DF1RequestProtectedTypedLogicalReadParse(theBytes []byte) (DF1RequestProtectedTypedLogicalRead, error) {
-	return DF1RequestProtectedTypedLogicalReadParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func DF1RequestProtectedTypedLogicalReadParse(ctx context.Context, theBytes []byte) (DF1RequestProtectedTypedLogicalRead, error) {
+	return DF1RequestProtectedTypedLogicalReadParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func DF1RequestProtectedTypedLogicalReadParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (DF1RequestProtectedTypedLogicalRead, error) {

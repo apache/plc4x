@@ -189,8 +189,8 @@ func (m *_NLMRequestKeyUpdate) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func NLMRequestKeyUpdateParse(theBytes []byte, apduLength uint16) (NLMRequestKeyUpdate, error) {
-	return NLMRequestKeyUpdateParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), apduLength)
+func NLMRequestKeyUpdateParse(ctx context.Context, theBytes []byte, apduLength uint16) (NLMRequestKeyUpdate, error) {
+	return NLMRequestKeyUpdateParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), apduLength)
 }
 
 func NLMRequestKeyUpdateParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, apduLength uint16) (NLMRequestKeyUpdate, error) {

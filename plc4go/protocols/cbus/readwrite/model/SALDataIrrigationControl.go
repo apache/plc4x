@@ -125,8 +125,8 @@ func (m *_SALDataIrrigationControl) GetLengthInBytes(ctx context.Context) uint16
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func SALDataIrrigationControlParse(theBytes []byte, applicationId ApplicationId) (SALDataIrrigationControl, error) {
-	return SALDataIrrigationControlParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), applicationId)
+func SALDataIrrigationControlParse(ctx context.Context, theBytes []byte, applicationId ApplicationId) (SALDataIrrigationControl, error) {
+	return SALDataIrrigationControlParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), applicationId)
 }
 
 func SALDataIrrigationControlParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataIrrigationControl, error) {

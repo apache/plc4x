@@ -110,8 +110,8 @@ func (m *_GetAttributeSingleRequest) GetLengthInBytes(ctx context.Context) uint1
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func GetAttributeSingleRequestParse(theBytes []byte, connected bool, serviceLen uint16) (GetAttributeSingleRequest, error) {
-	return GetAttributeSingleRequestParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), connected, serviceLen)
+func GetAttributeSingleRequestParse(ctx context.Context, theBytes []byte, connected bool, serviceLen uint16) (GetAttributeSingleRequest, error) {
+	return GetAttributeSingleRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), connected, serviceLen)
 }
 
 func GetAttributeSingleRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, connected bool, serviceLen uint16) (GetAttributeSingleRequest, error) {

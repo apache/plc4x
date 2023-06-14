@@ -107,8 +107,8 @@ func (m *_NullAddressItem) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func NullAddressItemParse(theBytes []byte) (NullAddressItem, error) {
-	return NullAddressItemParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func NullAddressItemParse(ctx context.Context, theBytes []byte) (NullAddressItem, error) {
+	return NullAddressItemParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func NullAddressItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (NullAddressItem, error) {

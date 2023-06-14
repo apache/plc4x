@@ -128,8 +128,8 @@ func (m *_BACnetServiceAckRequestKey) GetLengthInBytes(ctx context.Context) uint
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetServiceAckRequestKeyParse(theBytes []byte, serviceAckPayloadLength uint32, serviceAckLength uint32) (BACnetServiceAckRequestKey, error) {
-	return BACnetServiceAckRequestKeyParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), serviceAckPayloadLength, serviceAckLength)
+func BACnetServiceAckRequestKeyParse(ctx context.Context, theBytes []byte, serviceAckPayloadLength uint32, serviceAckLength uint32) (BACnetServiceAckRequestKey, error) {
+	return BACnetServiceAckRequestKeyParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), serviceAckPayloadLength, serviceAckLength)
 }
 
 func BACnetServiceAckRequestKeyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, serviceAckPayloadLength uint32, serviceAckLength uint32) (BACnetServiceAckRequestKey, error) {

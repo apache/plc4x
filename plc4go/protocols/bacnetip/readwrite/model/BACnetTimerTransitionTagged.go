@@ -110,8 +110,8 @@ func (m *_BACnetTimerTransitionTagged) GetLengthInBytes(ctx context.Context) uin
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetTimerTransitionTaggedParse(theBytes []byte, tagNumber uint8, tagClass TagClass) (BACnetTimerTransitionTagged, error) {
-	return BACnetTimerTransitionTaggedParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, tagClass)
+func BACnetTimerTransitionTaggedParse(ctx context.Context, theBytes []byte, tagNumber uint8, tagClass TagClass) (BACnetTimerTransitionTagged, error) {
+	return BACnetTimerTransitionTaggedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, tagClass)
 }
 
 func BACnetTimerTransitionTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetTimerTransitionTagged, error) {

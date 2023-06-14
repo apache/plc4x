@@ -129,8 +129,8 @@ func (m *_ConnectionRequestInformationTunnelConnection) GetLengthInBytes(ctx con
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ConnectionRequestInformationTunnelConnectionParse(theBytes []byte) (ConnectionRequestInformationTunnelConnection, error) {
-	return ConnectionRequestInformationTunnelConnectionParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func ConnectionRequestInformationTunnelConnectionParse(ctx context.Context, theBytes []byte) (ConnectionRequestInformationTunnelConnection, error) {
+	return ConnectionRequestInformationTunnelConnectionParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func ConnectionRequestInformationTunnelConnectionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ConnectionRequestInformationTunnelConnection, error) {

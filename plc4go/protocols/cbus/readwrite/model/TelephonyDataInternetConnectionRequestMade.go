@@ -101,8 +101,8 @@ func (m *_TelephonyDataInternetConnectionRequestMade) GetLengthInBytes(ctx conte
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func TelephonyDataInternetConnectionRequestMadeParse(theBytes []byte) (TelephonyDataInternetConnectionRequestMade, error) {
-	return TelephonyDataInternetConnectionRequestMadeParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func TelephonyDataInternetConnectionRequestMadeParse(ctx context.Context, theBytes []byte) (TelephonyDataInternetConnectionRequestMade, error) {
+	return TelephonyDataInternetConnectionRequestMadeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func TelephonyDataInternetConnectionRequestMadeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (TelephonyDataInternetConnectionRequestMade, error) {

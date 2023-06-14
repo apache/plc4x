@@ -128,8 +128,8 @@ func (m *_BACnetServiceAckReadPropertyConditional) GetLengthInBytes(ctx context.
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetServiceAckReadPropertyConditionalParse(theBytes []byte, serviceAckPayloadLength uint32, serviceAckLength uint32) (BACnetServiceAckReadPropertyConditional, error) {
-	return BACnetServiceAckReadPropertyConditionalParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), serviceAckPayloadLength, serviceAckLength)
+func BACnetServiceAckReadPropertyConditionalParse(ctx context.Context, theBytes []byte, serviceAckPayloadLength uint32, serviceAckLength uint32) (BACnetServiceAckReadPropertyConditional, error) {
+	return BACnetServiceAckReadPropertyConditionalParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), serviceAckPayloadLength, serviceAckLength)
 }
 
 func BACnetServiceAckReadPropertyConditionalParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, serviceAckPayloadLength uint32, serviceAckLength uint32) (BACnetServiceAckReadPropertyConditional, error) {

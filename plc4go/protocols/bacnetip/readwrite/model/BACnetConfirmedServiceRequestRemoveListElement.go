@@ -162,8 +162,8 @@ func (m *_BACnetConfirmedServiceRequestRemoveListElement) GetLengthInBytes(ctx c
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConfirmedServiceRequestRemoveListElementParse(theBytes []byte, serviceRequestLength uint32) (BACnetConfirmedServiceRequestRemoveListElement, error) {
-	return BACnetConfirmedServiceRequestRemoveListElementParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), serviceRequestLength)
+func BACnetConfirmedServiceRequestRemoveListElementParse(ctx context.Context, theBytes []byte, serviceRequestLength uint32) (BACnetConfirmedServiceRequestRemoveListElement, error) {
+	return BACnetConfirmedServiceRequestRemoveListElementParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), serviceRequestLength)
 }
 
 func BACnetConfirmedServiceRequestRemoveListElementParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, serviceRequestLength uint32) (BACnetConfirmedServiceRequestRemoveListElement, error) {

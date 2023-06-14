@@ -166,8 +166,8 @@ func (m *_IdentifyReplyCommandUnitSummary) GetLengthInBytes(ctx context.Context)
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func IdentifyReplyCommandUnitSummaryParse(theBytes []byte) (IdentifyReplyCommandUnitSummary, error) {
-	return IdentifyReplyCommandUnitSummaryParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func IdentifyReplyCommandUnitSummaryParse(ctx context.Context, theBytes []byte) (IdentifyReplyCommandUnitSummary, error) {
+	return IdentifyReplyCommandUnitSummaryParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func IdentifyReplyCommandUnitSummaryParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (IdentifyReplyCommandUnitSummary, error) {

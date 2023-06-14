@@ -137,8 +137,8 @@ func (m *_S7PayloadUserDataItemCpuFunctionAlarmQueryResponse) GetLengthInBytes(c
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func S7PayloadUserDataItemCpuFunctionAlarmQueryResponseParse(theBytes []byte, dataLength uint16, cpuFunctionGroup uint8, cpuFunctionType uint8, cpuSubfunction uint8) (S7PayloadUserDataItemCpuFunctionAlarmQueryResponse, error) {
-	return S7PayloadUserDataItemCpuFunctionAlarmQueryResponseParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), dataLength, cpuFunctionGroup, cpuFunctionType, cpuSubfunction)
+func S7PayloadUserDataItemCpuFunctionAlarmQueryResponseParse(ctx context.Context, theBytes []byte, dataLength uint16, cpuFunctionGroup uint8, cpuFunctionType uint8, cpuSubfunction uint8) (S7PayloadUserDataItemCpuFunctionAlarmQueryResponse, error) {
+	return S7PayloadUserDataItemCpuFunctionAlarmQueryResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), dataLength, cpuFunctionGroup, cpuFunctionType, cpuSubfunction)
 }
 
 func S7PayloadUserDataItemCpuFunctionAlarmQueryResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, dataLength uint16, cpuFunctionGroup uint8, cpuFunctionType uint8, cpuSubfunction uint8) (S7PayloadUserDataItemCpuFunctionAlarmQueryResponse, error) {

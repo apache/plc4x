@@ -263,8 +263,8 @@ func (m *_NLMUpdateKeyUpdate) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func NLMUpdateKeyUpdateParse(theBytes []byte, apduLength uint16) (NLMUpdateKeyUpdate, error) {
-	return NLMUpdateKeyUpdateParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), apduLength)
+func NLMUpdateKeyUpdateParse(ctx context.Context, theBytes []byte, apduLength uint16) (NLMUpdateKeyUpdate, error) {
+	return NLMUpdateKeyUpdateParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), apduLength)
 }
 
 func NLMUpdateKeyUpdateParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, apduLength uint16) (NLMUpdateKeyUpdate, error) {

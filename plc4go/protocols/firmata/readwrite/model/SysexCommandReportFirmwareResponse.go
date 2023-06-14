@@ -149,8 +149,8 @@ func (m *_SysexCommandReportFirmwareResponse) GetLengthInBytes(ctx context.Conte
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func SysexCommandReportFirmwareResponseParse(theBytes []byte, response bool) (SysexCommandReportFirmwareResponse, error) {
-	return SysexCommandReportFirmwareResponseParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), response)
+func SysexCommandReportFirmwareResponseParse(ctx context.Context, theBytes []byte, response bool) (SysexCommandReportFirmwareResponse, error) {
+	return SysexCommandReportFirmwareResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), response)
 }
 
 func SysexCommandReportFirmwareResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (SysexCommandReportFirmwareResponse, error) {

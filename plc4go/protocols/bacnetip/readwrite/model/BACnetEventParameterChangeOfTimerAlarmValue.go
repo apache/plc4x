@@ -123,8 +123,8 @@ func (m *_BACnetEventParameterChangeOfTimerAlarmValue) GetLengthInBytes(ctx cont
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetEventParameterChangeOfTimerAlarmValueParse(theBytes []byte, tagNumber uint8) (BACnetEventParameterChangeOfTimerAlarmValue, error) {
-	return BACnetEventParameterChangeOfTimerAlarmValueParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber)
+func BACnetEventParameterChangeOfTimerAlarmValueParse(ctx context.Context, theBytes []byte, tagNumber uint8) (BACnetEventParameterChangeOfTimerAlarmValue, error) {
+	return BACnetEventParameterChangeOfTimerAlarmValueParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber)
 }
 
 func BACnetEventParameterChangeOfTimerAlarmValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetEventParameterChangeOfTimerAlarmValue, error) {

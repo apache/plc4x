@@ -123,8 +123,8 @@ func (m *_BACnetLandingDoorStatusLandingDoorsList) GetLengthInBytes(ctx context.
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetLandingDoorStatusLandingDoorsListParse(theBytes []byte, tagNumber uint8) (BACnetLandingDoorStatusLandingDoorsList, error) {
-	return BACnetLandingDoorStatusLandingDoorsListParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber)
+func BACnetLandingDoorStatusLandingDoorsListParse(ctx context.Context, theBytes []byte, tagNumber uint8) (BACnetLandingDoorStatusLandingDoorsList, error) {
+	return BACnetLandingDoorStatusLandingDoorsListParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber)
 }
 
 func BACnetLandingDoorStatusLandingDoorsListParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetLandingDoorStatusLandingDoorsList, error) {

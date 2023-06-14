@@ -127,8 +127,8 @@ func (m *_CBusPointToPointCommandDirect) GetLengthInBytes(ctx context.Context) u
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func CBusPointToPointCommandDirectParse(theBytes []byte, cBusOptions CBusOptions) (CBusPointToPointCommandDirect, error) {
-	return CBusPointToPointCommandDirectParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), cBusOptions)
+func CBusPointToPointCommandDirectParse(ctx context.Context, theBytes []byte, cBusOptions CBusOptions) (CBusPointToPointCommandDirect, error) {
+	return CBusPointToPointCommandDirectParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), cBusOptions)
 }
 
 func CBusPointToPointCommandDirectParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (CBusPointToPointCommandDirect, error) {

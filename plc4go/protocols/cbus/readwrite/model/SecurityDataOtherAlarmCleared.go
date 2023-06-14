@@ -101,8 +101,8 @@ func (m *_SecurityDataOtherAlarmCleared) GetLengthInBytes(ctx context.Context) u
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func SecurityDataOtherAlarmClearedParse(theBytes []byte) (SecurityDataOtherAlarmCleared, error) {
-	return SecurityDataOtherAlarmClearedParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func SecurityDataOtherAlarmClearedParse(ctx context.Context, theBytes []byte) (SecurityDataOtherAlarmCleared, error) {
+	return SecurityDataOtherAlarmClearedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func SecurityDataOtherAlarmClearedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityDataOtherAlarmCleared, error) {

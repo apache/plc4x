@@ -133,8 +133,8 @@ func (m *_BACnetPropertyStates) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetPropertyStatesParse(theBytes []byte) (BACnetPropertyStates, error) {
-	return BACnetPropertyStatesParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func BACnetPropertyStatesParse(ctx context.Context, theBytes []byte) (BACnetPropertyStates, error) {
+	return BACnetPropertyStatesParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func BACnetPropertyStatesParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetPropertyStates, error) {

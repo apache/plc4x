@@ -121,8 +121,8 @@ func (m *_BACnetPropertyStatesExtendedValue) GetLengthInBytes(ctx context.Contex
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetPropertyStatesExtendedValueParse(theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesExtendedValue, error) {
-	return BACnetPropertyStatesExtendedValueParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
+func BACnetPropertyStatesExtendedValueParse(ctx context.Context, theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesExtendedValue, error) {
+	return BACnetPropertyStatesExtendedValueParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
 }
 
 func BACnetPropertyStatesExtendedValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesExtendedValue, error) {

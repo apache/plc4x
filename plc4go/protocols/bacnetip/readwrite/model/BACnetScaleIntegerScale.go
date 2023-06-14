@@ -121,8 +121,8 @@ func (m *_BACnetScaleIntegerScale) GetLengthInBytes(ctx context.Context) uint16 
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetScaleIntegerScaleParse(theBytes []byte) (BACnetScaleIntegerScale, error) {
-	return BACnetScaleIntegerScaleParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func BACnetScaleIntegerScaleParse(ctx context.Context, theBytes []byte) (BACnetScaleIntegerScale, error) {
+	return BACnetScaleIntegerScaleParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func BACnetScaleIntegerScaleParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetScaleIntegerScale, error) {

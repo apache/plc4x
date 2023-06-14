@@ -102,8 +102,8 @@ func (m *_ApduDataExtDomainAddressSerialNumberRead) GetLengthInBytes(ctx context
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ApduDataExtDomainAddressSerialNumberReadParse(theBytes []byte, length uint8) (ApduDataExtDomainAddressSerialNumberRead, error) {
-	return ApduDataExtDomainAddressSerialNumberReadParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), length)
+func ApduDataExtDomainAddressSerialNumberReadParse(ctx context.Context, theBytes []byte, length uint8) (ApduDataExtDomainAddressSerialNumberRead, error) {
+	return ApduDataExtDomainAddressSerialNumberReadParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), length)
 }
 
 func ApduDataExtDomainAddressSerialNumberReadParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, length uint8) (ApduDataExtDomainAddressSerialNumberRead, error) {

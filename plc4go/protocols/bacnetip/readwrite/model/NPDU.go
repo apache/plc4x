@@ -299,8 +299,8 @@ func (m *_NPDU) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func NPDUParse(theBytes []byte, npduLength uint16) (NPDU, error) {
-	return NPDUParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), npduLength)
+func NPDUParse(ctx context.Context, theBytes []byte, npduLength uint16) (NPDU, error) {
+	return NPDUParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), npduLength)
 }
 
 func NPDUParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, npduLength uint16) (NPDU, error) {

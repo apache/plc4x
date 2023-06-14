@@ -110,8 +110,8 @@ func (m *_BACnetNetworkNumberQualityTagged) GetLengthInBytes(ctx context.Context
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetNetworkNumberQualityTaggedParse(theBytes []byte, tagNumber uint8, tagClass TagClass) (BACnetNetworkNumberQualityTagged, error) {
-	return BACnetNetworkNumberQualityTaggedParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, tagClass)
+func BACnetNetworkNumberQualityTaggedParse(ctx context.Context, theBytes []byte, tagNumber uint8, tagClass TagClass) (BACnetNetworkNumberQualityTagged, error) {
+	return BACnetNetworkNumberQualityTaggedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, tagClass)
 }
 
 func BACnetNetworkNumberQualityTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetNetworkNumberQualityTagged, error) {

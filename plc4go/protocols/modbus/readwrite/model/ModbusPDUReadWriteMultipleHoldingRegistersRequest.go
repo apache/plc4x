@@ -180,8 +180,8 @@ func (m *_ModbusPDUReadWriteMultipleHoldingRegistersRequest) GetLengthInBytes(ct
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ModbusPDUReadWriteMultipleHoldingRegistersRequestParse(theBytes []byte, response bool) (ModbusPDUReadWriteMultipleHoldingRegistersRequest, error) {
-	return ModbusPDUReadWriteMultipleHoldingRegistersRequestParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), response)
+func ModbusPDUReadWriteMultipleHoldingRegistersRequestParse(ctx context.Context, theBytes []byte, response bool) (ModbusPDUReadWriteMultipleHoldingRegistersRequest, error) {
+	return ModbusPDUReadWriteMultipleHoldingRegistersRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), response)
 }
 
 func ModbusPDUReadWriteMultipleHoldingRegistersRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (ModbusPDUReadWriteMultipleHoldingRegistersRequest, error) {

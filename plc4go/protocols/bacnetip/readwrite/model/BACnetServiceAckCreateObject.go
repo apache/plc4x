@@ -123,8 +123,8 @@ func (m *_BACnetServiceAckCreateObject) GetLengthInBytes(ctx context.Context) ui
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetServiceAckCreateObjectParse(theBytes []byte, serviceAckLength uint32) (BACnetServiceAckCreateObject, error) {
-	return BACnetServiceAckCreateObjectParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), serviceAckLength)
+func BACnetServiceAckCreateObjectParse(ctx context.Context, theBytes []byte, serviceAckLength uint32) (BACnetServiceAckCreateObject, error) {
+	return BACnetServiceAckCreateObjectParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), serviceAckLength)
 }
 
 func BACnetServiceAckCreateObjectParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, serviceAckLength uint32) (BACnetServiceAckCreateObject, error) {

@@ -161,8 +161,8 @@ func (m *_ReplyEncodedReply) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ReplyEncodedReplyParse(theBytes []byte, cBusOptions CBusOptions, requestContext RequestContext) (ReplyEncodedReply, error) {
-	return ReplyEncodedReplyParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), cBusOptions, requestContext)
+func ReplyEncodedReplyParse(ctx context.Context, theBytes []byte, cBusOptions CBusOptions, requestContext RequestContext) (ReplyEncodedReply, error) {
+	return ReplyEncodedReplyParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), cBusOptions, requestContext)
 }
 
 func ReplyEncodedReplyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions, requestContext RequestContext) (ReplyEncodedReply, error) {

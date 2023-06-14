@@ -106,8 +106,8 @@ func (m *_SysexCommandSamplingInterval) GetLengthInBytes(ctx context.Context) ui
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func SysexCommandSamplingIntervalParse(theBytes []byte, response bool) (SysexCommandSamplingInterval, error) {
-	return SysexCommandSamplingIntervalParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), response)
+func SysexCommandSamplingIntervalParse(ctx context.Context, theBytes []byte, response bool) (SysexCommandSamplingInterval, error) {
+	return SysexCommandSamplingIntervalParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), response)
 }
 
 func SysexCommandSamplingIntervalParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (SysexCommandSamplingInterval, error) {

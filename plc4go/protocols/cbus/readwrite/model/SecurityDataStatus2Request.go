@@ -101,8 +101,8 @@ func (m *_SecurityDataStatus2Request) GetLengthInBytes(ctx context.Context) uint
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func SecurityDataStatus2RequestParse(theBytes []byte) (SecurityDataStatus2Request, error) {
-	return SecurityDataStatus2RequestParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func SecurityDataStatus2RequestParse(ctx context.Context, theBytes []byte) (SecurityDataStatus2Request, error) {
+	return SecurityDataStatus2RequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func SecurityDataStatus2RequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityDataStatus2Request, error) {

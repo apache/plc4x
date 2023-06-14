@@ -131,8 +131,8 @@ func (m *_BVLCWriteBroadcastDistributionTable) GetLengthInBytes(ctx context.Cont
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BVLCWriteBroadcastDistributionTableParse(theBytes []byte, bvlcPayloadLength uint16) (BVLCWriteBroadcastDistributionTable, error) {
-	return BVLCWriteBroadcastDistributionTableParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), bvlcPayloadLength)
+func BVLCWriteBroadcastDistributionTableParse(ctx context.Context, theBytes []byte, bvlcPayloadLength uint16) (BVLCWriteBroadcastDistributionTable, error) {
+	return BVLCWriteBroadcastDistributionTableParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), bvlcPayloadLength)
 }
 
 func BVLCWriteBroadcastDistributionTableParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, bvlcPayloadLength uint16) (BVLCWriteBroadcastDistributionTable, error) {

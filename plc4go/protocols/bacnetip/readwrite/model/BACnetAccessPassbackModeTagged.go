@@ -110,8 +110,8 @@ func (m *_BACnetAccessPassbackModeTagged) GetLengthInBytes(ctx context.Context) 
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetAccessPassbackModeTaggedParse(theBytes []byte, tagNumber uint8, tagClass TagClass) (BACnetAccessPassbackModeTagged, error) {
-	return BACnetAccessPassbackModeTaggedParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, tagClass)
+func BACnetAccessPassbackModeTaggedParse(ctx context.Context, theBytes []byte, tagNumber uint8, tagClass TagClass) (BACnetAccessPassbackModeTagged, error) {
+	return BACnetAccessPassbackModeTaggedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, tagClass)
 }
 
 func BACnetAccessPassbackModeTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetAccessPassbackModeTagged, error) {

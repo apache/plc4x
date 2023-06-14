@@ -115,8 +115,8 @@ func (m *_NullListServicesResponse) GetLengthInBytes(ctx context.Context) uint16
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func NullListServicesResponseParse(theBytes []byte, response bool) (NullListServicesResponse, error) {
-	return NullListServicesResponseParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), response)
+func NullListServicesResponseParse(ctx context.Context, theBytes []byte, response bool) (NullListServicesResponse, error) {
+	return NullListServicesResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), response)
 }
 
 func NullListServicesResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (NullListServicesResponse, error) {

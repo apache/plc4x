@@ -121,8 +121,8 @@ func (m *_BACnetChannelValueObjectidentifier) GetLengthInBytes(ctx context.Conte
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetChannelValueObjectidentifierParse(theBytes []byte) (BACnetChannelValueObjectidentifier, error) {
-	return BACnetChannelValueObjectidentifierParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func BACnetChannelValueObjectidentifierParse(ctx context.Context, theBytes []byte) (BACnetChannelValueObjectidentifier, error) {
+	return BACnetChannelValueObjectidentifierParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func BACnetChannelValueObjectidentifierParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetChannelValueObjectidentifier, error) {

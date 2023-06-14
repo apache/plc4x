@@ -167,7 +167,7 @@ func broadcastAndDiscover(ctx context.Context, communicationChannels []communica
 						return
 					}
 					log.Debug().Stringer("addr", addr).Msg("Received broadcast bvlc")
-					incomingBvlc, err := driverModel.BVLCParse(buf[:n])
+					incomingBvlc, err := driverModel.BVLCParse(ctx, buf[:n])
 					if err != nil {
 						log.Warn().Err(err).Msg("Could not parse bvlc")
 						blockingReadChan <- true
@@ -202,7 +202,7 @@ func broadcastAndDiscover(ctx context.Context, communicationChannels []communica
 						return
 					}
 					log.Debug().Stringer("addr", addr).Msg("Received broadcast bvlc")
-					incomingBvlc, err := driverModel.BVLCParse(buf[:n])
+					incomingBvlc, err := driverModel.BVLCParse(ctx, buf[:n])
 					if err != nil {
 						log.Warn().Err(err).Msg("Could not parse bvlc")
 						blockingReadChan <- true

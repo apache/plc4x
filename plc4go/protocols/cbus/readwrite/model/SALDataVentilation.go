@@ -125,8 +125,8 @@ func (m *_SALDataVentilation) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func SALDataVentilationParse(theBytes []byte, applicationId ApplicationId) (SALDataVentilation, error) {
-	return SALDataVentilationParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), applicationId)
+func SALDataVentilationParse(ctx context.Context, theBytes []byte, applicationId ApplicationId) (SALDataVentilation, error) {
+	return SALDataVentilationParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), applicationId)
 }
 
 func SALDataVentilationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataVentilation, error) {

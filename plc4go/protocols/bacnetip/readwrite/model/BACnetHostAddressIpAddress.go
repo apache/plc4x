@@ -121,8 +121,8 @@ func (m *_BACnetHostAddressIpAddress) GetLengthInBytes(ctx context.Context) uint
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetHostAddressIpAddressParse(theBytes []byte) (BACnetHostAddressIpAddress, error) {
-	return BACnetHostAddressIpAddressParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func BACnetHostAddressIpAddressParse(ctx context.Context, theBytes []byte) (BACnetHostAddressIpAddress, error) {
+	return BACnetHostAddressIpAddressParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func BACnetHostAddressIpAddressParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetHostAddressIpAddress, error) {

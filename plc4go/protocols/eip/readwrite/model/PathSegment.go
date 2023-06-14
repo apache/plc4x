@@ -101,8 +101,8 @@ func (m *_PathSegment) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func PathSegmentParse(theBytes []byte) (PathSegment, error) {
-	return PathSegmentParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func PathSegmentParse(ctx context.Context, theBytes []byte) (PathSegment, error) {
+	return PathSegmentParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func PathSegmentParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (PathSegment, error) {

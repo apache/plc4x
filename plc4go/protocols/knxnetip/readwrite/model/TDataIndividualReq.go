@@ -102,8 +102,8 @@ func (m *_TDataIndividualReq) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func TDataIndividualReqParse(theBytes []byte, size uint16) (TDataIndividualReq, error) {
-	return TDataIndividualReqParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), size)
+func TDataIndividualReqParse(ctx context.Context, theBytes []byte, size uint16) (TDataIndividualReq, error) {
+	return TDataIndividualReqParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), size)
 }
 
 func TDataIndividualReqParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, size uint16) (TDataIndividualReq, error) {

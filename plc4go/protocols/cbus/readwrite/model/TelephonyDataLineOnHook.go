@@ -101,8 +101,8 @@ func (m *_TelephonyDataLineOnHook) GetLengthInBytes(ctx context.Context) uint16 
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func TelephonyDataLineOnHookParse(theBytes []byte) (TelephonyDataLineOnHook, error) {
-	return TelephonyDataLineOnHookParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func TelephonyDataLineOnHookParse(ctx context.Context, theBytes []byte) (TelephonyDataLineOnHook, error) {
+	return TelephonyDataLineOnHookParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func TelephonyDataLineOnHookParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (TelephonyDataLineOnHook, error) {

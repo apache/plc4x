@@ -102,8 +102,8 @@ func (m *_MResetInd) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func MResetIndParse(theBytes []byte, size uint16) (MResetInd, error) {
-	return MResetIndParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), size)
+func MResetIndParse(ctx context.Context, theBytes []byte, size uint16) (MResetInd, error) {
+	return MResetIndParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), size)
 }
 
 func MResetIndParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, size uint16) (MResetInd, error) {

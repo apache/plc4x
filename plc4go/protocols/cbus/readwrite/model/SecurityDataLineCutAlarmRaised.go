@@ -101,8 +101,8 @@ func (m *_SecurityDataLineCutAlarmRaised) GetLengthInBytes(ctx context.Context) 
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func SecurityDataLineCutAlarmRaisedParse(theBytes []byte) (SecurityDataLineCutAlarmRaised, error) {
-	return SecurityDataLineCutAlarmRaisedParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func SecurityDataLineCutAlarmRaisedParse(ctx context.Context, theBytes []byte) (SecurityDataLineCutAlarmRaised, error) {
+	return SecurityDataLineCutAlarmRaisedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func SecurityDataLineCutAlarmRaisedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityDataLineCutAlarmRaised, error) {

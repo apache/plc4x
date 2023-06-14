@@ -123,8 +123,8 @@ func (m *_KnxNetIpTunneling) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func KnxNetIpTunnelingParse(theBytes []byte) (KnxNetIpTunneling, error) {
-	return KnxNetIpTunnelingParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func KnxNetIpTunnelingParse(ctx context.Context, theBytes []byte) (KnxNetIpTunneling, error) {
+	return KnxNetIpTunnelingParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func KnxNetIpTunnelingParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (KnxNetIpTunneling, error) {

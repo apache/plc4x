@@ -136,8 +136,8 @@ func (m *_BACnetCOVMultipleSubscription) GetLengthInBytes(ctx context.Context) u
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetCOVMultipleSubscriptionParse(theBytes []byte) (BACnetCOVMultipleSubscription, error) {
-	return BACnetCOVMultipleSubscriptionParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func BACnetCOVMultipleSubscriptionParse(ctx context.Context, theBytes []byte) (BACnetCOVMultipleSubscription, error) {
+	return BACnetCOVMultipleSubscriptionParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func BACnetCOVMultipleSubscriptionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetCOVMultipleSubscription, error) {

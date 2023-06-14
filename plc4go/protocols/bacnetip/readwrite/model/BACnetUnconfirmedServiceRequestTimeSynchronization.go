@@ -135,8 +135,8 @@ func (m *_BACnetUnconfirmedServiceRequestTimeSynchronization) GetLengthInBytes(c
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetUnconfirmedServiceRequestTimeSynchronizationParse(theBytes []byte, serviceRequestLength uint16) (BACnetUnconfirmedServiceRequestTimeSynchronization, error) {
-	return BACnetUnconfirmedServiceRequestTimeSynchronizationParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), serviceRequestLength)
+func BACnetUnconfirmedServiceRequestTimeSynchronizationParse(ctx context.Context, theBytes []byte, serviceRequestLength uint16) (BACnetUnconfirmedServiceRequestTimeSynchronization, error) {
+	return BACnetUnconfirmedServiceRequestTimeSynchronizationParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), serviceRequestLength)
 }
 
 func BACnetUnconfirmedServiceRequestTimeSynchronizationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, serviceRequestLength uint16) (BACnetUnconfirmedServiceRequestTimeSynchronization, error) {

@@ -125,8 +125,8 @@ func (m *_SALDataPoolsSpasPondsFountainsControl) GetLengthInBytes(ctx context.Co
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func SALDataPoolsSpasPondsFountainsControlParse(theBytes []byte, applicationId ApplicationId) (SALDataPoolsSpasPondsFountainsControl, error) {
-	return SALDataPoolsSpasPondsFountainsControlParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), applicationId)
+func SALDataPoolsSpasPondsFountainsControlParse(ctx context.Context, theBytes []byte, applicationId ApplicationId) (SALDataPoolsSpasPondsFountainsControl, error) {
+	return SALDataPoolsSpasPondsFountainsControlParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), applicationId)
 }
 
 func SALDataPoolsSpasPondsFountainsControlParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataPoolsSpasPondsFountainsControl, error) {

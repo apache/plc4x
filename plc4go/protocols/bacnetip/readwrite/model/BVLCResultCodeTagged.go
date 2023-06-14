@@ -110,8 +110,8 @@ func (m *_BVLCResultCodeTagged) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BVLCResultCodeTaggedParse(theBytes []byte, tagNumber uint8, tagClass TagClass) (BVLCResultCodeTagged, error) {
-	return BVLCResultCodeTaggedParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, tagClass)
+func BVLCResultCodeTaggedParse(ctx context.Context, theBytes []byte, tagNumber uint8, tagClass TagClass) (BVLCResultCodeTagged, error) {
+	return BVLCResultCodeTaggedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, tagClass)
 }
 
 func BVLCResultCodeTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BVLCResultCodeTagged, error) {

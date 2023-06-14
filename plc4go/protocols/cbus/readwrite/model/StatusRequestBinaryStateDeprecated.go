@@ -130,8 +130,8 @@ func (m *_StatusRequestBinaryStateDeprecated) GetLengthInBytes(ctx context.Conte
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func StatusRequestBinaryStateDeprecatedParse(theBytes []byte) (StatusRequestBinaryStateDeprecated, error) {
-	return StatusRequestBinaryStateDeprecatedParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func StatusRequestBinaryStateDeprecatedParse(ctx context.Context, theBytes []byte) (StatusRequestBinaryStateDeprecated, error) {
+	return StatusRequestBinaryStateDeprecatedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func StatusRequestBinaryStateDeprecatedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (StatusRequestBinaryStateDeprecated, error) {

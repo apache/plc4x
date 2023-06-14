@@ -136,8 +136,8 @@ func (m *_NLMVendorProprietaryMessage) GetLengthInBytes(ctx context.Context) uin
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func NLMVendorProprietaryMessageParse(theBytes []byte, apduLength uint16) (NLMVendorProprietaryMessage, error) {
-	return NLMVendorProprietaryMessageParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), apduLength)
+func NLMVendorProprietaryMessageParse(ctx context.Context, theBytes []byte, apduLength uint16) (NLMVendorProprietaryMessage, error) {
+	return NLMVendorProprietaryMessageParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), apduLength)
 }
 
 func NLMVendorProprietaryMessageParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, apduLength uint16) (NLMVendorProprietaryMessage, error) {

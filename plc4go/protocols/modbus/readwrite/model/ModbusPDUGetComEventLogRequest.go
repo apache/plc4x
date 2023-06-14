@@ -110,8 +110,8 @@ func (m *_ModbusPDUGetComEventLogRequest) GetLengthInBytes(ctx context.Context) 
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ModbusPDUGetComEventLogRequestParse(theBytes []byte, response bool) (ModbusPDUGetComEventLogRequest, error) {
-	return ModbusPDUGetComEventLogRequestParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), response)
+func ModbusPDUGetComEventLogRequestParse(ctx context.Context, theBytes []byte, response bool) (ModbusPDUGetComEventLogRequest, error) {
+	return ModbusPDUGetComEventLogRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), response)
 }
 
 func ModbusPDUGetComEventLogRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (ModbusPDUGetComEventLogRequest, error) {

@@ -111,8 +111,8 @@ func (m *_CIPData) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func CIPDataParse(theBytes []byte, packetLength uint16) (CIPData, error) {
-	return CIPDataParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), packetLength)
+func CIPDataParse(ctx context.Context, theBytes []byte, packetLength uint16) (CIPData, error) {
+	return CIPDataParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), packetLength)
 }
 
 func CIPDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, packetLength uint16) (CIPData, error) {

@@ -116,8 +116,8 @@ func (m *_SzlId) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func SzlIdParse(theBytes []byte) (SzlId, error) {
-	return SzlIdParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func SzlIdParse(ctx context.Context, theBytes []byte) (SzlId, error) {
+	return SzlIdParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func SzlIdParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SzlId, error) {

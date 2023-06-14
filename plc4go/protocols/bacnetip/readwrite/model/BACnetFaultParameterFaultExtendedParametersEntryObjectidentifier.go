@@ -121,8 +121,8 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier) GetL
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetFaultParameterFaultExtendedParametersEntryObjectidentifierParse(theBytes []byte) (BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier, error) {
-	return BACnetFaultParameterFaultExtendedParametersEntryObjectidentifierParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func BACnetFaultParameterFaultExtendedParametersEntryObjectidentifierParse(ctx context.Context, theBytes []byte) (BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier, error) {
+	return BACnetFaultParameterFaultExtendedParametersEntryObjectidentifierParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func BACnetFaultParameterFaultExtendedParametersEntryObjectidentifierParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier, error) {

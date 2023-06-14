@@ -101,8 +101,8 @@ func (m *_ServiceId) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ServiceIdParse(theBytes []byte) (ServiceId, error) {
-	return ServiceIdParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func ServiceIdParse(ctx context.Context, theBytes []byte) (ServiceId, error) {
+	return ServiceIdParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func ServiceIdParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ServiceId, error) {

@@ -104,8 +104,8 @@ func (m *_ResponseTermination) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ResponseTerminationParse(theBytes []byte) (ResponseTermination, error) {
-	return ResponseTerminationParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func ResponseTerminationParse(ctx context.Context, theBytes []byte) (ResponseTermination, error) {
+	return ResponseTerminationParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func ResponseTerminationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ResponseTermination, error) {

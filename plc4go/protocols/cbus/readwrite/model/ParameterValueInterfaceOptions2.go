@@ -136,8 +136,8 @@ func (m *_ParameterValueInterfaceOptions2) GetLengthInBytes(ctx context.Context)
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ParameterValueInterfaceOptions2Parse(theBytes []byte, parameterType ParameterType, numBytes uint8) (ParameterValueInterfaceOptions2, error) {
-	return ParameterValueInterfaceOptions2ParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), parameterType, numBytes)
+func ParameterValueInterfaceOptions2Parse(ctx context.Context, theBytes []byte, parameterType ParameterType, numBytes uint8) (ParameterValueInterfaceOptions2, error) {
+	return ParameterValueInterfaceOptions2ParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), parameterType, numBytes)
 }
 
 func ParameterValueInterfaceOptions2ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, parameterType ParameterType, numBytes uint8) (ParameterValueInterfaceOptions2, error) {

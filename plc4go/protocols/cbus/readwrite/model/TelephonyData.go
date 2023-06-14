@@ -147,8 +147,8 @@ func (m *_TelephonyData) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func TelephonyDataParse(theBytes []byte) (TelephonyData, error) {
-	return TelephonyDataParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func TelephonyDataParse(ctx context.Context, theBytes []byte) (TelephonyData, error) {
+	return TelephonyDataParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func TelephonyDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (TelephonyData, error) {

@@ -115,8 +115,8 @@ func (m *_EipDisconnectRequest) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func EipDisconnectRequestParse(theBytes []byte, response bool) (EipDisconnectRequest, error) {
-	return EipDisconnectRequestParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), response)
+func EipDisconnectRequestParse(ctx context.Context, theBytes []byte, response bool) (EipDisconnectRequest, error) {
+	return EipDisconnectRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), response)
 }
 
 func EipDisconnectRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (EipDisconnectRequest, error) {

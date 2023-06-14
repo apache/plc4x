@@ -203,8 +203,8 @@ func (m *_AirConditioningDataHumidityScheduleEntry) GetLengthInBytes(ctx context
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func AirConditioningDataHumidityScheduleEntryParse(theBytes []byte) (AirConditioningDataHumidityScheduleEntry, error) {
-	return AirConditioningDataHumidityScheduleEntryParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func AirConditioningDataHumidityScheduleEntryParse(ctx context.Context, theBytes []byte) (AirConditioningDataHumidityScheduleEntry, error) {
+	return AirConditioningDataHumidityScheduleEntryParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func AirConditioningDataHumidityScheduleEntryParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AirConditioningDataHumidityScheduleEntry, error) {

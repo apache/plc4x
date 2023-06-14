@@ -136,8 +136,8 @@ func (m *_ParameterValueApplicationAddress2) GetLengthInBytes(ctx context.Contex
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ParameterValueApplicationAddress2Parse(theBytes []byte, parameterType ParameterType, numBytes uint8) (ParameterValueApplicationAddress2, error) {
-	return ParameterValueApplicationAddress2ParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), parameterType, numBytes)
+func ParameterValueApplicationAddress2Parse(ctx context.Context, theBytes []byte, parameterType ParameterType, numBytes uint8) (ParameterValueApplicationAddress2, error) {
+	return ParameterValueApplicationAddress2ParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), parameterType, numBytes)
 }
 
 func ParameterValueApplicationAddress2ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, parameterType ParameterType, numBytes uint8) (ParameterValueApplicationAddress2, error) {

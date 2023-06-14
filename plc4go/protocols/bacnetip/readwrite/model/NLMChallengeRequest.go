@@ -145,8 +145,8 @@ func (m *_NLMChallengeRequest) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func NLMChallengeRequestParse(theBytes []byte, apduLength uint16) (NLMChallengeRequest, error) {
-	return NLMChallengeRequestParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), apduLength)
+func NLMChallengeRequestParse(ctx context.Context, theBytes []byte, apduLength uint16) (NLMChallengeRequest, error) {
+	return NLMChallengeRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), apduLength)
 }
 
 func NLMChallengeRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, apduLength uint16) (NLMChallengeRequest, error) {

@@ -124,8 +124,8 @@ func (m *_ConnectionResponseDataBlockTunnelConnection) GetLengthInBytes(ctx cont
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ConnectionResponseDataBlockTunnelConnectionParse(theBytes []byte) (ConnectionResponseDataBlockTunnelConnection, error) {
-	return ConnectionResponseDataBlockTunnelConnectionParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func ConnectionResponseDataBlockTunnelConnectionParse(ctx context.Context, theBytes []byte) (ConnectionResponseDataBlockTunnelConnection, error) {
+	return ConnectionResponseDataBlockTunnelConnectionParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func ConnectionResponseDataBlockTunnelConnectionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ConnectionResponseDataBlockTunnelConnection, error) {

@@ -145,8 +145,8 @@ func (m *_NPDUControl) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func NPDUControlParse(theBytes []byte) (NPDUControl, error) {
-	return NPDUControlParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func NPDUControlParse(ctx context.Context, theBytes []byte) (NPDUControl, error) {
+	return NPDUControlParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func NPDUControlParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (NPDUControl, error) {

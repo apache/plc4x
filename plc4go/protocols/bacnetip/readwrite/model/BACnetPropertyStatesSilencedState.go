@@ -121,8 +121,8 @@ func (m *_BACnetPropertyStatesSilencedState) GetLengthInBytes(ctx context.Contex
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetPropertyStatesSilencedStateParse(theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesSilencedState, error) {
-	return BACnetPropertyStatesSilencedStateParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
+func BACnetPropertyStatesSilencedStateParse(ctx context.Context, theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesSilencedState, error) {
+	return BACnetPropertyStatesSilencedStateParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
 }
 
 func BACnetPropertyStatesSilencedStateParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesSilencedState, error) {

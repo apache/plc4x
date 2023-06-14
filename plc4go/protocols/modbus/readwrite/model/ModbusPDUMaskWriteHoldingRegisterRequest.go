@@ -153,8 +153,8 @@ func (m *_ModbusPDUMaskWriteHoldingRegisterRequest) GetLengthInBytes(ctx context
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ModbusPDUMaskWriteHoldingRegisterRequestParse(theBytes []byte, response bool) (ModbusPDUMaskWriteHoldingRegisterRequest, error) {
-	return ModbusPDUMaskWriteHoldingRegisterRequestParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), response)
+func ModbusPDUMaskWriteHoldingRegisterRequestParse(ctx context.Context, theBytes []byte, response bool) (ModbusPDUMaskWriteHoldingRegisterRequest, error) {
+	return ModbusPDUMaskWriteHoldingRegisterRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), response)
 }
 
 func ModbusPDUMaskWriteHoldingRegisterRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (ModbusPDUMaskWriteHoldingRegisterRequest, error) {

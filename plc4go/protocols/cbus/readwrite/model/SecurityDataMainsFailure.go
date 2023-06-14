@@ -101,8 +101,8 @@ func (m *_SecurityDataMainsFailure) GetLengthInBytes(ctx context.Context) uint16
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func SecurityDataMainsFailureParse(theBytes []byte) (SecurityDataMainsFailure, error) {
-	return SecurityDataMainsFailureParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func SecurityDataMainsFailureParse(ctx context.Context, theBytes []byte) (SecurityDataMainsFailure, error) {
+	return SecurityDataMainsFailureParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func SecurityDataMainsFailureParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityDataMainsFailure, error) {

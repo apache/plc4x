@@ -139,8 +139,8 @@ func (m *_BACnetRelationshipTagged) GetLengthInBytes(ctx context.Context) uint16
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetRelationshipTaggedParse(theBytes []byte, tagNumber uint8, tagClass TagClass) (BACnetRelationshipTagged, error) {
-	return BACnetRelationshipTaggedParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, tagClass)
+func BACnetRelationshipTaggedParse(ctx context.Context, theBytes []byte, tagNumber uint8, tagClass TagClass) (BACnetRelationshipTagged, error) {
+	return BACnetRelationshipTaggedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, tagClass)
 }
 
 func BACnetRelationshipTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetRelationshipTagged, error) {

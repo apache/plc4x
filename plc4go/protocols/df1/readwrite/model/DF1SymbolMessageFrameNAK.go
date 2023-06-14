@@ -103,8 +103,8 @@ func (m *_DF1SymbolMessageFrameNAK) GetLengthInBytes(ctx context.Context) uint16
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func DF1SymbolMessageFrameNAKParse(theBytes []byte) (DF1SymbolMessageFrameNAK, error) {
-	return DF1SymbolMessageFrameNAKParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
+func DF1SymbolMessageFrameNAKParse(ctx context.Context, theBytes []byte) (DF1SymbolMessageFrameNAK, error) {
+	return DF1SymbolMessageFrameNAKParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
 }
 
 func DF1SymbolMessageFrameNAKParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (DF1SymbolMessageFrameNAK, error) {

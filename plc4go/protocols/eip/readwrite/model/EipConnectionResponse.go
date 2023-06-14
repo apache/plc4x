@@ -143,8 +143,8 @@ func (m *_EipConnectionResponse) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func EipConnectionResponseParse(theBytes []byte, response bool) (EipConnectionResponse, error) {
-	return EipConnectionResponseParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), response)
+func EipConnectionResponseParse(ctx context.Context, theBytes []byte, response bool) (EipConnectionResponse, error) {
+	return EipConnectionResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), response)
 }
 
 func EipConnectionResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (EipConnectionResponse, error) {

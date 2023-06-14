@@ -119,8 +119,8 @@ func (m *_HPAIDiscoveryEndpoint) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func HPAIDiscoveryEndpointParse(theBytes []byte) (HPAIDiscoveryEndpoint, error) {
-	return HPAIDiscoveryEndpointParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func HPAIDiscoveryEndpointParse(ctx context.Context, theBytes []byte) (HPAIDiscoveryEndpoint, error) {
+	return HPAIDiscoveryEndpointParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func HPAIDiscoveryEndpointParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (HPAIDiscoveryEndpoint, error) {

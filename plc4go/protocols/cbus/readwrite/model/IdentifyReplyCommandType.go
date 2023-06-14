@@ -123,8 +123,8 @@ func (m *_IdentifyReplyCommandType) GetLengthInBytes(ctx context.Context) uint16
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func IdentifyReplyCommandTypeParse(theBytes []byte, attribute Attribute, numBytes uint8) (IdentifyReplyCommandType, error) {
-	return IdentifyReplyCommandTypeParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), attribute, numBytes)
+func IdentifyReplyCommandTypeParse(ctx context.Context, theBytes []byte, attribute Attribute, numBytes uint8) (IdentifyReplyCommandType, error) {
+	return IdentifyReplyCommandTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), attribute, numBytes)
 }
 
 func IdentifyReplyCommandTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, attribute Attribute, numBytes uint8) (IdentifyReplyCommandType, error) {

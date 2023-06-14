@@ -115,8 +115,8 @@ func (m *_NullCommandResponse) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func NullCommandResponseParse(theBytes []byte, response bool) (NullCommandResponse, error) {
-	return NullCommandResponseParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), response)
+func NullCommandResponseParse(ctx context.Context, theBytes []byte, response bool) (NullCommandResponse, error) {
+	return NullCommandResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), response)
 }
 
 func NullCommandResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (NullCommandResponse, error) {

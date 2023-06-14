@@ -123,8 +123,8 @@ func (m *_BACnetNameValueCollection) GetLengthInBytes(ctx context.Context) uint1
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetNameValueCollectionParse(theBytes []byte, tagNumber uint8) (BACnetNameValueCollection, error) {
-	return BACnetNameValueCollectionParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber)
+func BACnetNameValueCollectionParse(ctx context.Context, theBytes []byte, tagNumber uint8) (BACnetNameValueCollection, error) {
+	return BACnetNameValueCollectionParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber)
 }
 
 func BACnetNameValueCollectionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetNameValueCollection, error) {

@@ -133,8 +133,8 @@ func (m *_CALDataAcknowledge) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func CALDataAcknowledgeParse(theBytes []byte, requestContext RequestContext) (CALDataAcknowledge, error) {
-	return CALDataAcknowledgeParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), requestContext)
+func CALDataAcknowledgeParse(ctx context.Context, theBytes []byte, requestContext RequestContext) (CALDataAcknowledge, error) {
+	return CALDataAcknowledgeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), requestContext)
 }
 
 func CALDataAcknowledgeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, requestContext RequestContext) (CALDataAcknowledge, error) {

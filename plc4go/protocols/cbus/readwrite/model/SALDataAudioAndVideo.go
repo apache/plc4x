@@ -125,8 +125,8 @@ func (m *_SALDataAudioAndVideo) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func SALDataAudioAndVideoParse(theBytes []byte, applicationId ApplicationId) (SALDataAudioAndVideo, error) {
-	return SALDataAudioAndVideoParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), applicationId)
+func SALDataAudioAndVideoParse(ctx context.Context, theBytes []byte, applicationId ApplicationId) (SALDataAudioAndVideo, error) {
+	return SALDataAudioAndVideoParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), applicationId)
 }
 
 func SALDataAudioAndVideoParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataAudioAndVideo, error) {

@@ -158,8 +158,8 @@ func (m *_MultipleServiceRequest) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func MultipleServiceRequestParse(theBytes []byte, connected bool, serviceLen uint16) (MultipleServiceRequest, error) {
-	return MultipleServiceRequestParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), connected, serviceLen)
+func MultipleServiceRequestParse(ctx context.Context, theBytes []byte, connected bool, serviceLen uint16) (MultipleServiceRequest, error) {
+	return MultipleServiceRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), connected, serviceLen)
 }
 
 func MultipleServiceRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, connected bool, serviceLen uint16) (MultipleServiceRequest, error) {

@@ -121,8 +121,8 @@ func (m *_BACnetOptionalCharacterStringValue) GetLengthInBytes(ctx context.Conte
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetOptionalCharacterStringValueParse(theBytes []byte) (BACnetOptionalCharacterStringValue, error) {
-	return BACnetOptionalCharacterStringValueParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func BACnetOptionalCharacterStringValueParse(ctx context.Context, theBytes []byte) (BACnetOptionalCharacterStringValue, error) {
+	return BACnetOptionalCharacterStringValueParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func BACnetOptionalCharacterStringValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetOptionalCharacterStringValue, error) {

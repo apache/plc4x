@@ -122,8 +122,8 @@ func (m *_TriggerControlDataTriggerEvent) GetLengthInBytes(ctx context.Context) 
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func TriggerControlDataTriggerEventParse(theBytes []byte) (TriggerControlDataTriggerEvent, error) {
-	return TriggerControlDataTriggerEventParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func TriggerControlDataTriggerEventParse(ctx context.Context, theBytes []byte) (TriggerControlDataTriggerEvent, error) {
+	return TriggerControlDataTriggerEventParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func TriggerControlDataTriggerEventParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (TriggerControlDataTriggerEvent, error) {

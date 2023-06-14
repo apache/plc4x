@@ -106,8 +106,8 @@ func (m *_SysexCommandCapabilityResponse) GetLengthInBytes(ctx context.Context) 
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func SysexCommandCapabilityResponseParse(theBytes []byte, response bool) (SysexCommandCapabilityResponse, error) {
-	return SysexCommandCapabilityResponseParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), response)
+func SysexCommandCapabilityResponseParse(ctx context.Context, theBytes []byte, response bool) (SysexCommandCapabilityResponse, error) {
+	return SysexCommandCapabilityResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), response)
 }
 
 func SysexCommandCapabilityResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (SysexCommandCapabilityResponse, error) {

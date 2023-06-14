@@ -124,8 +124,8 @@ func (m *_BACnetConfirmedServiceRequestDeleteObject) GetLengthInBytes(ctx contex
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConfirmedServiceRequestDeleteObjectParse(theBytes []byte, serviceRequestLength uint32) (BACnetConfirmedServiceRequestDeleteObject, error) {
-	return BACnetConfirmedServiceRequestDeleteObjectParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), serviceRequestLength)
+func BACnetConfirmedServiceRequestDeleteObjectParse(ctx context.Context, theBytes []byte, serviceRequestLength uint32) (BACnetConfirmedServiceRequestDeleteObject, error) {
+	return BACnetConfirmedServiceRequestDeleteObjectParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), serviceRequestLength)
 }
 
 func BACnetConfirmedServiceRequestDeleteObjectParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, serviceRequestLength uint32) (BACnetConfirmedServiceRequestDeleteObject, error) {

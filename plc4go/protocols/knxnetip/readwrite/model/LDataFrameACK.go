@@ -112,8 +112,8 @@ func (m *_LDataFrameACK) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func LDataFrameACKParse(theBytes []byte) (LDataFrameACK, error) {
-	return LDataFrameACKParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func LDataFrameACKParse(ctx context.Context, theBytes []byte) (LDataFrameACK, error) {
+	return LDataFrameACKParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func LDataFrameACKParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (LDataFrameACK, error) {

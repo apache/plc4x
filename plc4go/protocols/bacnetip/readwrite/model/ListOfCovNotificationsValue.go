@@ -134,8 +134,8 @@ func (m *_ListOfCovNotificationsValue) GetLengthInBytes(ctx context.Context) uin
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ListOfCovNotificationsValueParse(theBytes []byte, objectTypeArgument BACnetObjectType) (ListOfCovNotificationsValue, error) {
-	return ListOfCovNotificationsValueParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), objectTypeArgument)
+func ListOfCovNotificationsValueParse(ctx context.Context, theBytes []byte, objectTypeArgument BACnetObjectType) (ListOfCovNotificationsValue, error) {
+	return ListOfCovNotificationsValueParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), objectTypeArgument)
 }
 
 func ListOfCovNotificationsValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (ListOfCovNotificationsValue, error) {

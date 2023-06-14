@@ -125,8 +125,8 @@ func (m *_NLMRouterBusyToNetwork) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func NLMRouterBusyToNetworkParse(theBytes []byte, apduLength uint16) (NLMRouterBusyToNetwork, error) {
-	return NLMRouterBusyToNetworkParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), apduLength)
+func NLMRouterBusyToNetworkParse(ctx context.Context, theBytes []byte, apduLength uint16) (NLMRouterBusyToNetwork, error) {
+	return NLMRouterBusyToNetworkParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), apduLength)
 }
 
 func NLMRouterBusyToNetworkParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, apduLength uint16) (NLMRouterBusyToNetwork, error) {

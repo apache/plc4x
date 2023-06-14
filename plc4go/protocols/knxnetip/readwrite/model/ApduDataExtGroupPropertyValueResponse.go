@@ -102,8 +102,8 @@ func (m *_ApduDataExtGroupPropertyValueResponse) GetLengthInBytes(ctx context.Co
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ApduDataExtGroupPropertyValueResponseParse(theBytes []byte, length uint8) (ApduDataExtGroupPropertyValueResponse, error) {
-	return ApduDataExtGroupPropertyValueResponseParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), length)
+func ApduDataExtGroupPropertyValueResponseParse(ctx context.Context, theBytes []byte, length uint8) (ApduDataExtGroupPropertyValueResponse, error) {
+	return ApduDataExtGroupPropertyValueResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), length)
 }
 
 func ApduDataExtGroupPropertyValueResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, length uint8) (ApduDataExtGroupPropertyValueResponse, error) {

@@ -20,10 +20,12 @@
 package knxnetip
 
 import (
-	"github.com/pkg/errors"
+	"context"
 	"strconv"
 
 	driverModel "github.com/apache/plc4x/plc4go/protocols/knxnetip/readwrite/model"
+
+	"github.com/pkg/errors"
 )
 
 func NumericGroupAddressToString(numericAddress uint16, groupAddress GroupAddressTag) (string, error) {
@@ -66,8 +68,8 @@ func GroupAddressToString(groupAddress driverModel.KnxGroupAddress) (string, err
 	}
 }
 
-func ByteArrayToKnxAddress(data []byte) driverModel.KnxAddress {
-	knxAddress, err := driverModel.KnxAddressParse(data)
+func ByteArrayToKnxAddress(ctx context.Context, data []byte) driverModel.KnxAddress {
+	knxAddress, err := driverModel.KnxAddressParse(ctx, data)
 	if err != nil {
 		return nil
 	}
@@ -93,11 +95,11 @@ func Uint16ToKnxAddress(data uint16) driverModel.KnxAddress {
 	return knxAddress
 }
 
-func Uint16ToKnxGroupAddress(data uint16, numLevels uint8) driverModel.KnxGroupAddress {
+func Uint16ToKnxGroupAddress(ctx context.Context, data uint16, numLevels uint8) driverModel.KnxGroupAddress {
 	rawData := make([]uint8, 2)
 	rawData[0] = uint8(data >> 8)
 	rawData[1] = uint8(data & 0xFF)
-	knxGroupAddress, err := driverModel.KnxGroupAddressParse(rawData, numLevels)
+	knxGroupAddress, err := driverModel.KnxGroupAddressParse(ctx, rawData, numLevels)
 	if err != nil {
 		return nil
 	}

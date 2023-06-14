@@ -99,8 +99,8 @@ func (m *_CustomTypes) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func CustomTypesParse(theBytes []byte, numBytes uint8) (CustomTypes, error) {
-	return CustomTypesParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), numBytes)
+func CustomTypesParse(ctx context.Context, theBytes []byte, numBytes uint8) (CustomTypes, error) {
+	return CustomTypesParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), numBytes)
 }
 
 func CustomTypesParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, numBytes uint8) (CustomTypes, error) {

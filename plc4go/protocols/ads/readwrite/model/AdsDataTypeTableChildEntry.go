@@ -307,8 +307,8 @@ func (m *_AdsDataTypeTableChildEntry) GetLengthInBytes(ctx context.Context) uint
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func AdsDataTypeTableChildEntryParse(theBytes []byte) (AdsDataTypeTableChildEntry, error) {
-	return AdsDataTypeTableChildEntryParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian)))
+func AdsDataTypeTableChildEntryParse(ctx context.Context, theBytes []byte) (AdsDataTypeTableChildEntry, error) {
+	return AdsDataTypeTableChildEntryParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian)))
 }
 
 func AdsDataTypeTableChildEntryParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AdsDataTypeTableChildEntry, error) {

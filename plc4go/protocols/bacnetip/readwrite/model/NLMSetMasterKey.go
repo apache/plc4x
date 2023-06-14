@@ -123,8 +123,8 @@ func (m *_NLMSetMasterKey) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func NLMSetMasterKeyParse(theBytes []byte, apduLength uint16) (NLMSetMasterKey, error) {
-	return NLMSetMasterKeyParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), apduLength)
+func NLMSetMasterKeyParse(ctx context.Context, theBytes []byte, apduLength uint16) (NLMSetMasterKey, error) {
+	return NLMSetMasterKeyParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), apduLength)
 }
 
 func NLMSetMasterKeyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, apduLength uint16) (NLMSetMasterKey, error) {

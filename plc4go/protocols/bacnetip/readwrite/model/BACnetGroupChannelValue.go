@@ -119,8 +119,8 @@ func (m *_BACnetGroupChannelValue) GetLengthInBytes(ctx context.Context) uint16 
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetGroupChannelValueParse(theBytes []byte) (BACnetGroupChannelValue, error) {
-	return BACnetGroupChannelValueParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func BACnetGroupChannelValueParse(ctx context.Context, theBytes []byte) (BACnetGroupChannelValue, error) {
+	return BACnetGroupChannelValueParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func BACnetGroupChannelValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetGroupChannelValue, error) {

@@ -99,8 +99,8 @@ func (m *_BACnetClosingTag) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetClosingTagParse(theBytes []byte, tagNumberArgument uint8) (BACnetClosingTag, error) {
-	return BACnetClosingTagParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumberArgument)
+func BACnetClosingTagParse(ctx context.Context, theBytes []byte, tagNumberArgument uint8) (BACnetClosingTag, error) {
+	return BACnetClosingTagParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumberArgument)
 }
 
 func BACnetClosingTagParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumberArgument uint8) (BACnetClosingTag, error) {

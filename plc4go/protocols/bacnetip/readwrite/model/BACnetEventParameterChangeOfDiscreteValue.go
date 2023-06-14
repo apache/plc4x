@@ -143,8 +143,8 @@ func (m *_BACnetEventParameterChangeOfDiscreteValue) GetLengthInBytes(ctx contex
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetEventParameterChangeOfDiscreteValueParse(theBytes []byte) (BACnetEventParameterChangeOfDiscreteValue, error) {
-	return BACnetEventParameterChangeOfDiscreteValueParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func BACnetEventParameterChangeOfDiscreteValueParse(ctx context.Context, theBytes []byte) (BACnetEventParameterChangeOfDiscreteValue, error) {
+	return BACnetEventParameterChangeOfDiscreteValueParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func BACnetEventParameterChangeOfDiscreteValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetEventParameterChangeOfDiscreteValue, error) {

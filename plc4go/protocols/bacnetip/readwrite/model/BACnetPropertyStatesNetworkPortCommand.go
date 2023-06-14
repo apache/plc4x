@@ -121,8 +121,8 @@ func (m *_BACnetPropertyStatesNetworkPortCommand) GetLengthInBytes(ctx context.C
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetPropertyStatesNetworkPortCommandParse(theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesNetworkPortCommand, error) {
-	return BACnetPropertyStatesNetworkPortCommandParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
+func BACnetPropertyStatesNetworkPortCommandParse(ctx context.Context, theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesNetworkPortCommand, error) {
+	return BACnetPropertyStatesNetworkPortCommandParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
 }
 
 func BACnetPropertyStatesNetworkPortCommandParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesNetworkPortCommand, error) {

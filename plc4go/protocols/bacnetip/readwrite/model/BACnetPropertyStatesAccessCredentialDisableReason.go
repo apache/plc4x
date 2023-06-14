@@ -121,8 +121,8 @@ func (m *_BACnetPropertyStatesAccessCredentialDisableReason) GetLengthInBytes(ct
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetPropertyStatesAccessCredentialDisableReasonParse(theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesAccessCredentialDisableReason, error) {
-	return BACnetPropertyStatesAccessCredentialDisableReasonParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
+func BACnetPropertyStatesAccessCredentialDisableReasonParse(ctx context.Context, theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesAccessCredentialDisableReason, error) {
+	return BACnetPropertyStatesAccessCredentialDisableReasonParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
 }
 
 func BACnetPropertyStatesAccessCredentialDisableReasonParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesAccessCredentialDisableReason, error) {

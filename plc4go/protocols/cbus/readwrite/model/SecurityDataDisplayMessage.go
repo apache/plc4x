@@ -122,8 +122,8 @@ func (m *_SecurityDataDisplayMessage) GetLengthInBytes(ctx context.Context) uint
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func SecurityDataDisplayMessageParse(theBytes []byte, commandTypeContainer SecurityCommandTypeContainer) (SecurityDataDisplayMessage, error) {
-	return SecurityDataDisplayMessageParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), commandTypeContainer)
+func SecurityDataDisplayMessageParse(ctx context.Context, theBytes []byte, commandTypeContainer SecurityCommandTypeContainer) (SecurityDataDisplayMessage, error) {
+	return SecurityDataDisplayMessageParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), commandTypeContainer)
 }
 
 func SecurityDataDisplayMessageParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, commandTypeContainer SecurityCommandTypeContainer) (SecurityDataDisplayMessage, error) {

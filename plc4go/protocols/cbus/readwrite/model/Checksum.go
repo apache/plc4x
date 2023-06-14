@@ -96,8 +96,8 @@ func (m *_Checksum) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ChecksumParse(theBytes []byte) (Checksum, error) {
-	return ChecksumParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func ChecksumParse(ctx context.Context, theBytes []byte) (Checksum, error) {
+	return ChecksumParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func ChecksumParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (Checksum, error) {

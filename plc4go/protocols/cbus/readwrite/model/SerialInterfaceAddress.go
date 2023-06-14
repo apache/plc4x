@@ -96,8 +96,8 @@ func (m *_SerialInterfaceAddress) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func SerialInterfaceAddressParse(theBytes []byte) (SerialInterfaceAddress, error) {
-	return SerialInterfaceAddressParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func SerialInterfaceAddressParse(ctx context.Context, theBytes []byte) (SerialInterfaceAddress, error) {
+	return SerialInterfaceAddressParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func SerialInterfaceAddressParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SerialInterfaceAddress, error) {

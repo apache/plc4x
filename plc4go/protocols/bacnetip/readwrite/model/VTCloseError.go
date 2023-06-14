@@ -137,8 +137,8 @@ func (m *_VTCloseError) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func VTCloseErrorParse(theBytes []byte, errorChoice BACnetConfirmedServiceChoice) (VTCloseError, error) {
-	return VTCloseErrorParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), errorChoice)
+func VTCloseErrorParse(ctx context.Context, theBytes []byte, errorChoice BACnetConfirmedServiceChoice) (VTCloseError, error) {
+	return VTCloseErrorParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), errorChoice)
 }
 
 func VTCloseErrorParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, errorChoice BACnetConfirmedServiceChoice) (VTCloseError, error) {

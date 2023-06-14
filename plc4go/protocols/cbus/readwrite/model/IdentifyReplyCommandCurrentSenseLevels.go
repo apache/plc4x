@@ -125,8 +125,8 @@ func (m *_IdentifyReplyCommandCurrentSenseLevels) GetLengthInBytes(ctx context.C
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func IdentifyReplyCommandCurrentSenseLevelsParse(theBytes []byte, attribute Attribute, numBytes uint8) (IdentifyReplyCommandCurrentSenseLevels, error) {
-	return IdentifyReplyCommandCurrentSenseLevelsParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), attribute, numBytes)
+func IdentifyReplyCommandCurrentSenseLevelsParse(ctx context.Context, theBytes []byte, attribute Attribute, numBytes uint8) (IdentifyReplyCommandCurrentSenseLevels, error) {
+	return IdentifyReplyCommandCurrentSenseLevelsParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), attribute, numBytes)
 }
 
 func IdentifyReplyCommandCurrentSenseLevelsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, attribute Attribute, numBytes uint8) (IdentifyReplyCommandCurrentSenseLevels, error) {

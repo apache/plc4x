@@ -139,8 +139,8 @@ func (m *_ErrorClassTagged) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ErrorClassTaggedParse(theBytes []byte, tagNumber uint8, tagClass TagClass) (ErrorClassTagged, error) {
-	return ErrorClassTaggedParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, tagClass)
+func ErrorClassTaggedParse(ctx context.Context, theBytes []byte, tagNumber uint8, tagClass TagClass) (ErrorClassTagged, error) {
+	return ErrorClassTaggedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, tagClass)
 }
 
 func ErrorClassTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (ErrorClassTagged, error) {

@@ -370,7 +370,7 @@ func (m *Connection) sendDeviceConnectionRequest(ctx context.Context, targetAddr
 				return false
 			}
 			// Check if the address matches
-			if ByteArrayToKnxAddress(lDataFrameExt.GetDestinationAddress()) != targetAddress {
+			if ByteArrayToKnxAddress(ctx, lDataFrameExt.GetDestinationAddress()) != targetAddress {
 				return false
 			}
 			apduControlContainer, ok := lDataFrameExt.GetApdu().(driverModel.ApduControlContainerExactly)
@@ -459,7 +459,7 @@ func (m *Connection) sendDeviceDisconnectionRequest(ctx context.Context, targetA
 			if !ok {
 				return false
 			}
-			curTargetAddress := ByteArrayToKnxAddress(dataFrameExt.GetDestinationAddress())
+			curTargetAddress := ByteArrayToKnxAddress(ctx, dataFrameExt.GetDestinationAddress())
 			// Check if the address matches
 			if curTargetAddress != targetAddress {
 				return false
@@ -577,7 +577,7 @@ func (m *Connection) sendDeviceAuthentication(ctx context.Context, targetAddress
 			if !ok {
 				return false
 			}
-			curTargetAddress := ByteArrayToKnxAddress(dataFrameExt.GetDestinationAddress())
+			curTargetAddress := ByteArrayToKnxAddress(ctx, dataFrameExt.GetDestinationAddress())
 			// Check if the addresses match
 			if curTargetAddress != m.ClientKnxAddress {
 				return false
@@ -1117,7 +1117,7 @@ func (m *Connection) sendDeviceAck(ctx context.Context, targetAddress driverMode
 			if dataFrameExt.GetSourceAddress() != m.ClientKnxAddress {
 				return false
 			}
-			curTargetAddress := ByteArrayToKnxAddress(dataFrameExt.GetDestinationAddress())
+			curTargetAddress := ByteArrayToKnxAddress(ctx, dataFrameExt.GetDestinationAddress())
 			if curTargetAddress != targetAddress {
 				return false
 			}

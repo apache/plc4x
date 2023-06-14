@@ -128,8 +128,8 @@ func (m *_NLMInitalizeRoutingTablePortMapping) GetLengthInBytes(ctx context.Cont
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func NLMInitalizeRoutingTablePortMappingParse(theBytes []byte) (NLMInitalizeRoutingTablePortMapping, error) {
-	return NLMInitalizeRoutingTablePortMappingParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func NLMInitalizeRoutingTablePortMappingParse(ctx context.Context, theBytes []byte) (NLMInitalizeRoutingTablePortMapping, error) {
+	return NLMInitalizeRoutingTablePortMappingParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func NLMInitalizeRoutingTablePortMappingParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (NLMInitalizeRoutingTablePortMapping, error) {

@@ -176,8 +176,8 @@ func (m *_BACnetEventParameterOutOfRange) GetLengthInBytes(ctx context.Context) 
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetEventParameterOutOfRangeParse(theBytes []byte) (BACnetEventParameterOutOfRange, error) {
-	return BACnetEventParameterOutOfRangeParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func BACnetEventParameterOutOfRangeParse(ctx context.Context, theBytes []byte) (BACnetEventParameterOutOfRange, error) {
+	return BACnetEventParameterOutOfRangeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func BACnetEventParameterOutOfRangeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetEventParameterOutOfRange, error) {

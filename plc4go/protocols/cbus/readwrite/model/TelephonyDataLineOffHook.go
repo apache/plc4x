@@ -133,8 +133,8 @@ func (m *_TelephonyDataLineOffHook) GetLengthInBytes(ctx context.Context) uint16
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func TelephonyDataLineOffHookParse(theBytes []byte, commandTypeContainer TelephonyCommandTypeContainer) (TelephonyDataLineOffHook, error) {
-	return TelephonyDataLineOffHookParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), commandTypeContainer)
+func TelephonyDataLineOffHookParse(ctx context.Context, theBytes []byte, commandTypeContainer TelephonyCommandTypeContainer) (TelephonyDataLineOffHook, error) {
+	return TelephonyDataLineOffHookParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), commandTypeContainer)
 }
 
 func TelephonyDataLineOffHookParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, commandTypeContainer TelephonyCommandTypeContainer) (TelephonyDataLineOffHook, error) {

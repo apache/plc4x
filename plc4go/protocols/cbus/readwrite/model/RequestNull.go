@@ -124,8 +124,8 @@ func (m *_RequestNull) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func RequestNullParse(theBytes []byte, cBusOptions CBusOptions) (RequestNull, error) {
-	return RequestNullParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), cBusOptions)
+func RequestNullParse(ctx context.Context, theBytes []byte, cBusOptions CBusOptions) (RequestNull, error) {
+	return RequestNullParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), cBusOptions)
 }
 
 func RequestNullParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (RequestNull, error) {

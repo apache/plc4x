@@ -167,8 +167,8 @@ func (m *_BACnetNotificationParametersChangeOfCharacterString) GetLengthInBytes(
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetNotificationParametersChangeOfCharacterStringParse(theBytes []byte, peekedTagNumber uint8, tagNumber uint8, objectTypeArgument BACnetObjectType) (BACnetNotificationParametersChangeOfCharacterString, error) {
-	return BACnetNotificationParametersChangeOfCharacterStringParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), peekedTagNumber, tagNumber, objectTypeArgument)
+func BACnetNotificationParametersChangeOfCharacterStringParse(ctx context.Context, theBytes []byte, peekedTagNumber uint8, tagNumber uint8, objectTypeArgument BACnetObjectType) (BACnetNotificationParametersChangeOfCharacterString, error) {
+	return BACnetNotificationParametersChangeOfCharacterStringParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), peekedTagNumber, tagNumber, objectTypeArgument)
 }
 
 func BACnetNotificationParametersChangeOfCharacterStringParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8, tagNumber uint8, objectTypeArgument BACnetObjectType) (BACnetNotificationParametersChangeOfCharacterString, error) {

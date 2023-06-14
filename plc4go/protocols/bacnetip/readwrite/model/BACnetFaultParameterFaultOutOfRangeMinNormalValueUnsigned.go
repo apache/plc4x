@@ -123,8 +123,8 @@ func (m *_BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned) GetLengthIn
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsignedParse(theBytes []byte, tagNumber uint8) (BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned, error) {
-	return BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsignedParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber)
+func BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsignedParse(ctx context.Context, theBytes []byte, tagNumber uint8) (BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned, error) {
+	return BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsignedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber)
 }
 
 func BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsignedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned, error) {

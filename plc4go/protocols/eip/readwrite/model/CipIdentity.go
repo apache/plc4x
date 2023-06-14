@@ -290,8 +290,8 @@ func (m *_CipIdentity) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func CipIdentityParse(theBytes []byte) (CipIdentity, error) {
-	return CipIdentityParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func CipIdentityParse(ctx context.Context, theBytes []byte) (CipIdentity, error) {
+	return CipIdentityParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func CipIdentityParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (CipIdentity, error) {

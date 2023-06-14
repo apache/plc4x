@@ -166,8 +166,8 @@ func (m *_NLMUpdateKeyUpdateControlFlags) GetLengthInBytes(ctx context.Context) 
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func NLMUpdateKeyUpdateControlFlagsParse(theBytes []byte) (NLMUpdateKeyUpdateControlFlags, error) {
-	return NLMUpdateKeyUpdateControlFlagsParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func NLMUpdateKeyUpdateControlFlagsParse(ctx context.Context, theBytes []byte) (NLMUpdateKeyUpdateControlFlags, error) {
+	return NLMUpdateKeyUpdateControlFlagsParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func NLMUpdateKeyUpdateControlFlagsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (NLMUpdateKeyUpdateControlFlags, error) {

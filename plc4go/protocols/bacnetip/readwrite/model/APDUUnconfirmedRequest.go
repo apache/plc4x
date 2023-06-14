@@ -128,8 +128,8 @@ func (m *_APDUUnconfirmedRequest) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func APDUUnconfirmedRequestParse(theBytes []byte, apduLength uint16) (APDUUnconfirmedRequest, error) {
-	return APDUUnconfirmedRequestParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), apduLength)
+func APDUUnconfirmedRequestParse(ctx context.Context, theBytes []byte, apduLength uint16) (APDUUnconfirmedRequest, error) {
+	return APDUUnconfirmedRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), apduLength)
 }
 
 func APDUUnconfirmedRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, apduLength uint16) (APDUUnconfirmedRequest, error) {

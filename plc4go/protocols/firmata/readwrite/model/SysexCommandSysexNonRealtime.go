@@ -106,8 +106,8 @@ func (m *_SysexCommandSysexNonRealtime) GetLengthInBytes(ctx context.Context) ui
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func SysexCommandSysexNonRealtimeParse(theBytes []byte, response bool) (SysexCommandSysexNonRealtime, error) {
-	return SysexCommandSysexNonRealtimeParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), response)
+func SysexCommandSysexNonRealtimeParse(ctx context.Context, theBytes []byte, response bool) (SysexCommandSysexNonRealtime, error) {
+	return SysexCommandSysexNonRealtimeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), response)
 }
 
 func SysexCommandSysexNonRealtimeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (SysexCommandSysexNonRealtime, error) {

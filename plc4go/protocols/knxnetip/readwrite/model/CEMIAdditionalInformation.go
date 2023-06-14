@@ -101,8 +101,8 @@ func (m *_CEMIAdditionalInformation) GetLengthInBytes(ctx context.Context) uint1
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func CEMIAdditionalInformationParse(theBytes []byte) (CEMIAdditionalInformation, error) {
-	return CEMIAdditionalInformationParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func CEMIAdditionalInformationParse(ctx context.Context, theBytes []byte) (CEMIAdditionalInformation, error) {
+	return CEMIAdditionalInformationParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func CEMIAdditionalInformationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (CEMIAdditionalInformation, error) {

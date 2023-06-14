@@ -101,8 +101,8 @@ func (m *_SecurityDataCurrentAlarmType) GetLengthInBytes(ctx context.Context) ui
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func SecurityDataCurrentAlarmTypeParse(theBytes []byte) (SecurityDataCurrentAlarmType, error) {
-	return SecurityDataCurrentAlarmTypeParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func SecurityDataCurrentAlarmTypeParse(ctx context.Context, theBytes []byte) (SecurityDataCurrentAlarmType, error) {
+	return SecurityDataCurrentAlarmTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func SecurityDataCurrentAlarmTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityDataCurrentAlarmType, error) {

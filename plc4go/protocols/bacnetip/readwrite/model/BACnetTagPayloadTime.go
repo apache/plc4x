@@ -185,8 +185,8 @@ func (m *_BACnetTagPayloadTime) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetTagPayloadTimeParse(theBytes []byte) (BACnetTagPayloadTime, error) {
-	return BACnetTagPayloadTimeParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func BACnetTagPayloadTimeParse(ctx context.Context, theBytes []byte) (BACnetTagPayloadTime, error) {
+	return BACnetTagPayloadTimeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func BACnetTagPayloadTimeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetTagPayloadTime, error) {

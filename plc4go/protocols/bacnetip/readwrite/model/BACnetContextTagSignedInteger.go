@@ -144,8 +144,8 @@ func (m *_BACnetContextTagSignedInteger) GetLengthInBytes(ctx context.Context) u
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetContextTagSignedIntegerParse(theBytes []byte, header BACnetTagHeader, tagNumberArgument uint8, dataType BACnetDataType) (BACnetContextTagSignedInteger, error) {
-	return BACnetContextTagSignedIntegerParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), header, tagNumberArgument, dataType)
+func BACnetContextTagSignedIntegerParse(ctx context.Context, theBytes []byte, header BACnetTagHeader, tagNumberArgument uint8, dataType BACnetDataType) (BACnetContextTagSignedInteger, error) {
+	return BACnetContextTagSignedIntegerParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), header, tagNumberArgument, dataType)
 }
 
 func BACnetContextTagSignedIntegerParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, header BACnetTagHeader, tagNumberArgument uint8, dataType BACnetDataType) (BACnetContextTagSignedInteger, error) {

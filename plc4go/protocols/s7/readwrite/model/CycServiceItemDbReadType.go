@@ -140,8 +140,8 @@ func (m *_CycServiceItemDbReadType) GetLengthInBytes(ctx context.Context) uint16
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func CycServiceItemDbReadTypeParse(theBytes []byte) (CycServiceItemDbReadType, error) {
-	return CycServiceItemDbReadTypeParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func CycServiceItemDbReadTypeParse(ctx context.Context, theBytes []byte) (CycServiceItemDbReadType, error) {
+	return CycServiceItemDbReadTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func CycServiceItemDbReadTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (CycServiceItemDbReadType, error) {

@@ -149,8 +149,8 @@ func (m *_LDataCon) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func LDataConParse(theBytes []byte, size uint16) (LDataCon, error) {
-	return LDataConParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), size)
+func LDataConParse(ctx context.Context, theBytes []byte, size uint16) (LDataCon, error) {
+	return LDataConParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), size)
 }
 
 func LDataConParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, size uint16) (LDataCon, error) {

@@ -134,8 +134,8 @@ func (m *_FirmataCommandProtocolVersion) GetLengthInBytes(ctx context.Context) u
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func FirmataCommandProtocolVersionParse(theBytes []byte, response bool) (FirmataCommandProtocolVersion, error) {
-	return FirmataCommandProtocolVersionParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), response)
+func FirmataCommandProtocolVersionParse(ctx context.Context, theBytes []byte, response bool) (FirmataCommandProtocolVersion, error) {
+	return FirmataCommandProtocolVersionParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), response)
 }
 
 func FirmataCommandProtocolVersionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (FirmataCommandProtocolVersion, error) {

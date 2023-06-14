@@ -106,8 +106,8 @@ func (m *_ChannelInformation) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ChannelInformationParse(theBytes []byte) (ChannelInformation, error) {
-	return ChannelInformationParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func ChannelInformationParse(ctx context.Context, theBytes []byte) (ChannelInformation, error) {
+	return ChannelInformationParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func ChannelInformationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ChannelInformation, error) {

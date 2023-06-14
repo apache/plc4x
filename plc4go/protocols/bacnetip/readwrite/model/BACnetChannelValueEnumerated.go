@@ -121,8 +121,8 @@ func (m *_BACnetChannelValueEnumerated) GetLengthInBytes(ctx context.Context) ui
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetChannelValueEnumeratedParse(theBytes []byte) (BACnetChannelValueEnumerated, error) {
-	return BACnetChannelValueEnumeratedParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func BACnetChannelValueEnumeratedParse(ctx context.Context, theBytes []byte) (BACnetChannelValueEnumerated, error) {
+	return BACnetChannelValueEnumeratedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func BACnetChannelValueEnumeratedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetChannelValueEnumerated, error) {

@@ -211,8 +211,8 @@ func (m *_MediaTransportControlDataRewind) GetLengthInBytes(ctx context.Context)
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func MediaTransportControlDataRewindParse(theBytes []byte) (MediaTransportControlDataRewind, error) {
-	return MediaTransportControlDataRewindParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func MediaTransportControlDataRewindParse(ctx context.Context, theBytes []byte) (MediaTransportControlDataRewind, error) {
+	return MediaTransportControlDataRewindParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func MediaTransportControlDataRewindParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (MediaTransportControlDataRewind, error) {

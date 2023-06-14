@@ -102,8 +102,8 @@ func (m *_ApduDataExtMemoryBitWrite) GetLengthInBytes(ctx context.Context) uint1
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ApduDataExtMemoryBitWriteParse(theBytes []byte, length uint8) (ApduDataExtMemoryBitWrite, error) {
-	return ApduDataExtMemoryBitWriteParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), length)
+func ApduDataExtMemoryBitWriteParse(ctx context.Context, theBytes []byte, length uint8) (ApduDataExtMemoryBitWrite, error) {
+	return ApduDataExtMemoryBitWriteParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), length)
 }
 
 func ApduDataExtMemoryBitWriteParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, length uint8) (ApduDataExtMemoryBitWrite, error) {

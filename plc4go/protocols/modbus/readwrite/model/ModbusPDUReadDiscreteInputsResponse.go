@@ -136,8 +136,8 @@ func (m *_ModbusPDUReadDiscreteInputsResponse) GetLengthInBytes(ctx context.Cont
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ModbusPDUReadDiscreteInputsResponseParse(theBytes []byte, response bool) (ModbusPDUReadDiscreteInputsResponse, error) {
-	return ModbusPDUReadDiscreteInputsResponseParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), response)
+func ModbusPDUReadDiscreteInputsResponseParse(ctx context.Context, theBytes []byte, response bool) (ModbusPDUReadDiscreteInputsResponse, error) {
+	return ModbusPDUReadDiscreteInputsResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), response)
 }
 
 func ModbusPDUReadDiscreteInputsResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (ModbusPDUReadDiscreteInputsResponse, error) {

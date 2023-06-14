@@ -121,8 +121,8 @@ func (m *_BACnetChannelValueBitString) GetLengthInBytes(ctx context.Context) uin
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetChannelValueBitStringParse(theBytes []byte) (BACnetChannelValueBitString, error) {
-	return BACnetChannelValueBitStringParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func BACnetChannelValueBitStringParse(ctx context.Context, theBytes []byte) (BACnetChannelValueBitString, error) {
+	return BACnetChannelValueBitStringParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func BACnetChannelValueBitStringParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetChannelValueBitString, error) {

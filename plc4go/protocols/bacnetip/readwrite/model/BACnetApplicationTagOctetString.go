@@ -121,8 +121,8 @@ func (m *_BACnetApplicationTagOctetString) GetLengthInBytes(ctx context.Context)
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetApplicationTagOctetStringParse(theBytes []byte, header BACnetTagHeader) (BACnetApplicationTagOctetString, error) {
-	return BACnetApplicationTagOctetStringParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), header)
+func BACnetApplicationTagOctetStringParse(ctx context.Context, theBytes []byte, header BACnetTagHeader) (BACnetApplicationTagOctetString, error) {
+	return BACnetApplicationTagOctetStringParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), header)
 }
 
 func BACnetApplicationTagOctetStringParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, header BACnetTagHeader) (BACnetApplicationTagOctetString, error) {

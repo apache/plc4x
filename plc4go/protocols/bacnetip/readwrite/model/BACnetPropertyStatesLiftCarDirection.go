@@ -121,8 +121,8 @@ func (m *_BACnetPropertyStatesLiftCarDirection) GetLengthInBytes(ctx context.Con
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetPropertyStatesLiftCarDirectionParse(theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesLiftCarDirection, error) {
-	return BACnetPropertyStatesLiftCarDirectionParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
+func BACnetPropertyStatesLiftCarDirectionParse(ctx context.Context, theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesLiftCarDirection, error) {
+	return BACnetPropertyStatesLiftCarDirectionParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
 }
 
 func BACnetPropertyStatesLiftCarDirectionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesLiftCarDirection, error) {

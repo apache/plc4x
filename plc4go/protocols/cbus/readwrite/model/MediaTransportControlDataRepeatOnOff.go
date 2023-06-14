@@ -161,8 +161,8 @@ func (m *_MediaTransportControlDataRepeatOnOff) GetLengthInBytes(ctx context.Con
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func MediaTransportControlDataRepeatOnOffParse(theBytes []byte) (MediaTransportControlDataRepeatOnOff, error) {
-	return MediaTransportControlDataRepeatOnOffParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func MediaTransportControlDataRepeatOnOffParse(ctx context.Context, theBytes []byte) (MediaTransportControlDataRepeatOnOff, error) {
+	return MediaTransportControlDataRepeatOnOffParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func MediaTransportControlDataRepeatOnOffParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (MediaTransportControlDataRepeatOnOff, error) {

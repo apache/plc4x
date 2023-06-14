@@ -123,8 +123,8 @@ func (m *_COTPParameterChecksum) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func COTPParameterChecksumParse(theBytes []byte, rest uint8) (COTPParameterChecksum, error) {
-	return COTPParameterChecksumParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), rest)
+func COTPParameterChecksumParse(ctx context.Context, theBytes []byte, rest uint8) (COTPParameterChecksum, error) {
+	return COTPParameterChecksumParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), rest)
 }
 
 func COTPParameterChecksumParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, rest uint8) (COTPParameterChecksum, error) {

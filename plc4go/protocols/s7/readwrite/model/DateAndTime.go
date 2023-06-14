@@ -166,8 +166,8 @@ func (m *_DateAndTime) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func DateAndTimeParse(theBytes []byte) (DateAndTime, error) {
-	return DateAndTimeParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func DateAndTimeParse(ctx context.Context, theBytes []byte) (DateAndTime, error) {
+	return DateAndTimeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func DateAndTimeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (DateAndTime, error) {

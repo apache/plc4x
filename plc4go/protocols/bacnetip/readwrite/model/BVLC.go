@@ -144,8 +144,8 @@ func (m *_BVLC) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BVLCParse(theBytes []byte) (BVLC, error) {
-	return BVLCParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
+func BVLCParse(ctx context.Context, theBytes []byte) (BVLC, error) {
+	return BVLCParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
 }
 
 func BVLCParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BVLC, error) {

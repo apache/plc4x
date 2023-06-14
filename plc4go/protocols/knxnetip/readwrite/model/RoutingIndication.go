@@ -103,8 +103,8 @@ func (m *_RoutingIndication) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func RoutingIndicationParse(theBytes []byte) (RoutingIndication, error) {
-	return RoutingIndicationParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
+func RoutingIndicationParse(ctx context.Context, theBytes []byte) (RoutingIndication, error) {
+	return RoutingIndicationParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
 }
 
 func RoutingIndicationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (RoutingIndication, error) {

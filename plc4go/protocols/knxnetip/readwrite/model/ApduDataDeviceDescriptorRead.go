@@ -123,8 +123,8 @@ func (m *_ApduDataDeviceDescriptorRead) GetLengthInBytes(ctx context.Context) ui
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ApduDataDeviceDescriptorReadParse(theBytes []byte, dataLength uint8) (ApduDataDeviceDescriptorRead, error) {
-	return ApduDataDeviceDescriptorReadParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), dataLength)
+func ApduDataDeviceDescriptorReadParse(ctx context.Context, theBytes []byte, dataLength uint8) (ApduDataDeviceDescriptorRead, error) {
+	return ApduDataDeviceDescriptorReadParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), dataLength)
 }
 
 func ApduDataDeviceDescriptorReadParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, dataLength uint8) (ApduDataDeviceDescriptorRead, error) {

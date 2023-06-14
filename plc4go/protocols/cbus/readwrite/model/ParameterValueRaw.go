@@ -125,8 +125,8 @@ func (m *_ParameterValueRaw) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ParameterValueRawParse(theBytes []byte, parameterType ParameterType, numBytes uint8) (ParameterValueRaw, error) {
-	return ParameterValueRawParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), parameterType, numBytes)
+func ParameterValueRawParse(ctx context.Context, theBytes []byte, parameterType ParameterType, numBytes uint8) (ParameterValueRaw, error) {
+	return ParameterValueRawParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), parameterType, numBytes)
 }
 
 func ParameterValueRawParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, parameterType ParameterType, numBytes uint8) (ParameterValueRaw, error) {

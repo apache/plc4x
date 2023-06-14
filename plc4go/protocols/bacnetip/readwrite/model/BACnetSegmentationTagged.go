@@ -110,8 +110,8 @@ func (m *_BACnetSegmentationTagged) GetLengthInBytes(ctx context.Context) uint16
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetSegmentationTaggedParse(theBytes []byte, tagNumber uint8, tagClass TagClass) (BACnetSegmentationTagged, error) {
-	return BACnetSegmentationTaggedParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, tagClass)
+func BACnetSegmentationTaggedParse(ctx context.Context, theBytes []byte, tagNumber uint8, tagClass TagClass) (BACnetSegmentationTagged, error) {
+	return BACnetSegmentationTaggedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, tagClass)
 }
 
 func BACnetSegmentationTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetSegmentationTagged, error) {

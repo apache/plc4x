@@ -150,8 +150,8 @@ func (m *_APDUError) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func APDUErrorParse(theBytes []byte, apduLength uint16) (APDUError, error) {
-	return APDUErrorParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), apduLength)
+func APDUErrorParse(ctx context.Context, theBytes []byte, apduLength uint16) (APDUError, error) {
+	return APDUErrorParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), apduLength)
 }
 
 func APDUErrorParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, apduLength uint16) (APDUError, error) {

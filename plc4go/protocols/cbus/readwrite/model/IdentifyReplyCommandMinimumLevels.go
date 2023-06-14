@@ -125,8 +125,8 @@ func (m *_IdentifyReplyCommandMinimumLevels) GetLengthInBytes(ctx context.Contex
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func IdentifyReplyCommandMinimumLevelsParse(theBytes []byte, attribute Attribute, numBytes uint8) (IdentifyReplyCommandMinimumLevels, error) {
-	return IdentifyReplyCommandMinimumLevelsParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), attribute, numBytes)
+func IdentifyReplyCommandMinimumLevelsParse(ctx context.Context, theBytes []byte, attribute Attribute, numBytes uint8) (IdentifyReplyCommandMinimumLevels, error) {
+	return IdentifyReplyCommandMinimumLevelsParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), attribute, numBytes)
 }
 
 func IdentifyReplyCommandMinimumLevelsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, attribute Attribute, numBytes uint8) (IdentifyReplyCommandMinimumLevels, error) {

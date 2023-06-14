@@ -182,8 +182,8 @@ func (m *_MediaTransportControlDataEnumerateCategoriesSelectionTracks) GetLength
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func MediaTransportControlDataEnumerateCategoriesSelectionTracksParse(theBytes []byte) (MediaTransportControlDataEnumerateCategoriesSelectionTracks, error) {
-	return MediaTransportControlDataEnumerateCategoriesSelectionTracksParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func MediaTransportControlDataEnumerateCategoriesSelectionTracksParse(ctx context.Context, theBytes []byte) (MediaTransportControlDataEnumerateCategoriesSelectionTracks, error) {
+	return MediaTransportControlDataEnumerateCategoriesSelectionTracksParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func MediaTransportControlDataEnumerateCategoriesSelectionTracksParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (MediaTransportControlDataEnumerateCategoriesSelectionTracks, error) {

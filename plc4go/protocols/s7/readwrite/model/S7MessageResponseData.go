@@ -138,8 +138,8 @@ func (m *_S7MessageResponseData) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func S7MessageResponseDataParse(theBytes []byte) (S7MessageResponseData, error) {
-	return S7MessageResponseDataParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func S7MessageResponseDataParse(ctx context.Context, theBytes []byte) (S7MessageResponseData, error) {
+	return S7MessageResponseDataParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func S7MessageResponseDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (S7MessageResponseData, error) {

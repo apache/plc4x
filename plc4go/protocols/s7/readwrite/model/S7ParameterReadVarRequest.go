@@ -137,8 +137,8 @@ func (m *_S7ParameterReadVarRequest) GetLengthInBytes(ctx context.Context) uint1
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func S7ParameterReadVarRequestParse(theBytes []byte, messageType uint8) (S7ParameterReadVarRequest, error) {
-	return S7ParameterReadVarRequestParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), messageType)
+func S7ParameterReadVarRequestParse(ctx context.Context, theBytes []byte, messageType uint8) (S7ParameterReadVarRequest, error) {
+	return S7ParameterReadVarRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), messageType)
 }
 
 func S7ParameterReadVarRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, messageType uint8) (S7ParameterReadVarRequest, error) {

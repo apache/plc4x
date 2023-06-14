@@ -160,8 +160,8 @@ func (m *_BACnetUnconfirmedServiceRequestWriteGroup) GetLengthInBytes(ctx contex
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetUnconfirmedServiceRequestWriteGroupParse(theBytes []byte, serviceRequestLength uint16) (BACnetUnconfirmedServiceRequestWriteGroup, error) {
-	return BACnetUnconfirmedServiceRequestWriteGroupParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), serviceRequestLength)
+func BACnetUnconfirmedServiceRequestWriteGroupParse(ctx context.Context, theBytes []byte, serviceRequestLength uint16) (BACnetUnconfirmedServiceRequestWriteGroup, error) {
+	return BACnetUnconfirmedServiceRequestWriteGroupParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), serviceRequestLength)
 }
 
 func BACnetUnconfirmedServiceRequestWriteGroupParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, serviceRequestLength uint16) (BACnetUnconfirmedServiceRequestWriteGroup, error) {

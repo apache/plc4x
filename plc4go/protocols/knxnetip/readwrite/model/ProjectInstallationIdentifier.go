@@ -106,8 +106,8 @@ func (m *_ProjectInstallationIdentifier) GetLengthInBytes(ctx context.Context) u
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ProjectInstallationIdentifierParse(theBytes []byte) (ProjectInstallationIdentifier, error) {
-	return ProjectInstallationIdentifierParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func ProjectInstallationIdentifierParse(ctx context.Context, theBytes []byte) (ProjectInstallationIdentifier, error) {
+	return ProjectInstallationIdentifierParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func ProjectInstallationIdentifierParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ProjectInstallationIdentifier, error) {

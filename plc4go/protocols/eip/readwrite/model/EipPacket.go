@@ -162,8 +162,8 @@ func (m *_EipPacket) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func EipPacketParse(theBytes []byte, response bool) (EipPacket, error) {
-	return EipPacketParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), response)
+func EipPacketParse(ctx context.Context, theBytes []byte, response bool) (EipPacket, error) {
+	return EipPacketParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), response)
 }
 
 func EipPacketParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (EipPacket, error) {

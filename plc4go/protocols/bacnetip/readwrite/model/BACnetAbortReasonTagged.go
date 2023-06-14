@@ -128,8 +128,8 @@ func (m *_BACnetAbortReasonTagged) GetLengthInBytes(ctx context.Context) uint16 
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetAbortReasonTaggedParse(theBytes []byte, actualLength uint32) (BACnetAbortReasonTagged, error) {
-	return BACnetAbortReasonTaggedParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), actualLength)
+func BACnetAbortReasonTaggedParse(ctx context.Context, theBytes []byte, actualLength uint32) (BACnetAbortReasonTagged, error) {
+	return BACnetAbortReasonTaggedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), actualLength)
 }
 
 func BACnetAbortReasonTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, actualLength uint32) (BACnetAbortReasonTagged, error) {

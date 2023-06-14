@@ -160,8 +160,8 @@ func (m *_RequestObsolete) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func RequestObsoleteParse(theBytes []byte, cBusOptions CBusOptions) (RequestObsolete, error) {
-	return RequestObsoleteParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), cBusOptions)
+func RequestObsoleteParse(ctx context.Context, theBytes []byte, cBusOptions CBusOptions) (RequestObsolete, error) {
+	return RequestObsoleteParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), cBusOptions)
 }
 
 func RequestObsoleteParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (RequestObsolete, error) {

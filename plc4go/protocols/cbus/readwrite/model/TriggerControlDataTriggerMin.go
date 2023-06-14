@@ -101,8 +101,8 @@ func (m *_TriggerControlDataTriggerMin) GetLengthInBytes(ctx context.Context) ui
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func TriggerControlDataTriggerMinParse(theBytes []byte) (TriggerControlDataTriggerMin, error) {
-	return TriggerControlDataTriggerMinParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func TriggerControlDataTriggerMinParse(ctx context.Context, theBytes []byte) (TriggerControlDataTriggerMin, error) {
+	return TriggerControlDataTriggerMinParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func TriggerControlDataTriggerMinParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (TriggerControlDataTriggerMin, error) {

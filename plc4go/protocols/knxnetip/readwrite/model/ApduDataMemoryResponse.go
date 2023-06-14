@@ -139,8 +139,8 @@ func (m *_ApduDataMemoryResponse) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ApduDataMemoryResponseParse(theBytes []byte, dataLength uint8) (ApduDataMemoryResponse, error) {
-	return ApduDataMemoryResponseParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), dataLength)
+func ApduDataMemoryResponseParse(ctx context.Context, theBytes []byte, dataLength uint8) (ApduDataMemoryResponse, error) {
+	return ApduDataMemoryResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), dataLength)
 }
 
 func ApduDataMemoryResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, dataLength uint8) (ApduDataMemoryResponse, error) {

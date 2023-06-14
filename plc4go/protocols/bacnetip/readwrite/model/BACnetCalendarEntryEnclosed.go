@@ -119,8 +119,8 @@ func (m *_BACnetCalendarEntryEnclosed) GetLengthInBytes(ctx context.Context) uin
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetCalendarEntryEnclosedParse(theBytes []byte, tagNumber uint8) (BACnetCalendarEntryEnclosed, error) {
-	return BACnetCalendarEntryEnclosedParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber)
+func BACnetCalendarEntryEnclosedParse(ctx context.Context, theBytes []byte, tagNumber uint8) (BACnetCalendarEntryEnclosed, error) {
+	return BACnetCalendarEntryEnclosedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber)
 }
 
 func BACnetCalendarEntryEnclosedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetCalendarEntryEnclosed, error) {

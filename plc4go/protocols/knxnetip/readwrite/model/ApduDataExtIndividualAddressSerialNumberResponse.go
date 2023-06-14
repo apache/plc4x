@@ -102,8 +102,8 @@ func (m *_ApduDataExtIndividualAddressSerialNumberResponse) GetLengthInBytes(ctx
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ApduDataExtIndividualAddressSerialNumberResponseParse(theBytes []byte, length uint8) (ApduDataExtIndividualAddressSerialNumberResponse, error) {
-	return ApduDataExtIndividualAddressSerialNumberResponseParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), length)
+func ApduDataExtIndividualAddressSerialNumberResponseParse(ctx context.Context, theBytes []byte, length uint8) (ApduDataExtIndividualAddressSerialNumberResponse, error) {
+	return ApduDataExtIndividualAddressSerialNumberResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), length)
 }
 
 func ApduDataExtIndividualAddressSerialNumberResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, length uint8) (ApduDataExtIndividualAddressSerialNumberResponse, error) {

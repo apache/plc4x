@@ -123,8 +123,8 @@ func (m *_BACnetSpecialEventListOfTimeValues) GetLengthInBytes(ctx context.Conte
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetSpecialEventListOfTimeValuesParse(theBytes []byte, tagNumber uint8) (BACnetSpecialEventListOfTimeValues, error) {
-	return BACnetSpecialEventListOfTimeValuesParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber)
+func BACnetSpecialEventListOfTimeValuesParse(ctx context.Context, theBytes []byte, tagNumber uint8) (BACnetSpecialEventListOfTimeValues, error) {
+	return BACnetSpecialEventListOfTimeValuesParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber)
 }
 
 func BACnetSpecialEventListOfTimeValuesParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetSpecialEventListOfTimeValues, error) {

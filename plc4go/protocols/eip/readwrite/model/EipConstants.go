@@ -104,8 +104,8 @@ func (m *_EipConstants) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func EipConstantsParse(theBytes []byte) (EipConstants, error) {
-	return EipConstantsParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func EipConstantsParse(ctx context.Context, theBytes []byte) (EipConstants, error) {
+	return EipConstantsParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func EipConstantsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (EipConstants, error) {

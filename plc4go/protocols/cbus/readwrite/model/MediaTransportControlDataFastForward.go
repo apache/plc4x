@@ -211,8 +211,8 @@ func (m *_MediaTransportControlDataFastForward) GetLengthInBytes(ctx context.Con
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func MediaTransportControlDataFastForwardParse(theBytes []byte) (MediaTransportControlDataFastForward, error) {
-	return MediaTransportControlDataFastForwardParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func MediaTransportControlDataFastForwardParse(ctx context.Context, theBytes []byte) (MediaTransportControlDataFastForward, error) {
+	return MediaTransportControlDataFastForwardParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func MediaTransportControlDataFastForwardParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (MediaTransportControlDataFastForward, error) {

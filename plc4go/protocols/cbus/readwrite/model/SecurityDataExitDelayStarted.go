@@ -101,8 +101,8 @@ func (m *_SecurityDataExitDelayStarted) GetLengthInBytes(ctx context.Context) ui
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func SecurityDataExitDelayStartedParse(theBytes []byte) (SecurityDataExitDelayStarted, error) {
-	return SecurityDataExitDelayStartedParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func SecurityDataExitDelayStartedParse(ctx context.Context, theBytes []byte) (SecurityDataExitDelayStarted, error) {
+	return SecurityDataExitDelayStartedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func SecurityDataExitDelayStartedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityDataExitDelayStarted, error) {

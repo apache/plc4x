@@ -156,8 +156,8 @@ func (m *_BACnetDestination) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetDestinationParse(theBytes []byte) (BACnetDestination, error) {
-	return BACnetDestinationParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func BACnetDestinationParse(ctx context.Context, theBytes []byte) (BACnetDestination, error) {
+	return BACnetDestinationParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func BACnetDestinationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetDestination, error) {

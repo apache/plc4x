@@ -121,8 +121,8 @@ func (m *_BACnetPriorityValueDate) GetLengthInBytes(ctx context.Context) uint16 
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetPriorityValueDateParse(theBytes []byte, objectTypeArgument BACnetObjectType) (BACnetPriorityValueDate, error) {
-	return BACnetPriorityValueDateParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), objectTypeArgument)
+func BACnetPriorityValueDateParse(ctx context.Context, theBytes []byte, objectTypeArgument BACnetObjectType) (BACnetPriorityValueDate, error) {
+	return BACnetPriorityValueDateParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), objectTypeArgument)
 }
 
 func BACnetPriorityValueDateParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (BACnetPriorityValueDate, error) {

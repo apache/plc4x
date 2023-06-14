@@ -127,8 +127,8 @@ func (m *_BACnetConfirmedServiceRequestGetEventInformation) GetLengthInBytes(ctx
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConfirmedServiceRequestGetEventInformationParse(theBytes []byte, serviceRequestLength uint32) (BACnetConfirmedServiceRequestGetEventInformation, error) {
-	return BACnetConfirmedServiceRequestGetEventInformationParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), serviceRequestLength)
+func BACnetConfirmedServiceRequestGetEventInformationParse(ctx context.Context, theBytes []byte, serviceRequestLength uint32) (BACnetConfirmedServiceRequestGetEventInformation, error) {
+	return BACnetConfirmedServiceRequestGetEventInformationParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), serviceRequestLength)
 }
 
 func BACnetConfirmedServiceRequestGetEventInformationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, serviceRequestLength uint32) (BACnetConfirmedServiceRequestGetEventInformation, error) {

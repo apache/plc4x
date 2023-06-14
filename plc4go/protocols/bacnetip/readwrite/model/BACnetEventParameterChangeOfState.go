@@ -154,8 +154,8 @@ func (m *_BACnetEventParameterChangeOfState) GetLengthInBytes(ctx context.Contex
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetEventParameterChangeOfStateParse(theBytes []byte) (BACnetEventParameterChangeOfState, error) {
-	return BACnetEventParameterChangeOfStateParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func BACnetEventParameterChangeOfStateParse(ctx context.Context, theBytes []byte) (BACnetEventParameterChangeOfState, error) {
+	return BACnetEventParameterChangeOfStateParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func BACnetEventParameterChangeOfStateParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetEventParameterChangeOfState, error) {

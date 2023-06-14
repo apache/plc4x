@@ -104,8 +104,8 @@ func (m *_CEMI) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func CEMIParse(theBytes []byte, size uint16) (CEMI, error) {
-	return CEMIParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), size)
+func CEMIParse(ctx context.Context, theBytes []byte, size uint16) (CEMI, error) {
+	return CEMIParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), size)
 }
 
 func CEMIParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, size uint16) (CEMI, error) {

@@ -166,8 +166,8 @@ func (m *_LDataFrame) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func LDataFrameParse(theBytes []byte) (LDataFrame, error) {
-	return LDataFrameParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func LDataFrameParse(ctx context.Context, theBytes []byte) (LDataFrame, error) {
+	return LDataFrameParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func LDataFrameParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (LDataFrame, error) {

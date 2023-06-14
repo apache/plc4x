@@ -125,8 +125,8 @@ func (m *_SALDataHvacActuator) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func SALDataHvacActuatorParse(theBytes []byte, applicationId ApplicationId) (SALDataHvacActuator, error) {
-	return SALDataHvacActuatorParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), applicationId)
+func SALDataHvacActuatorParse(ctx context.Context, theBytes []byte, applicationId ApplicationId) (SALDataHvacActuator, error) {
+	return SALDataHvacActuatorParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), applicationId)
 }
 
 func SALDataHvacActuatorParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataHvacActuator, error) {

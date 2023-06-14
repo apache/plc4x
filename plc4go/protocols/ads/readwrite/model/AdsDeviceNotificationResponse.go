@@ -113,8 +113,8 @@ func (m *_AdsDeviceNotificationResponse) GetLengthInBytes(ctx context.Context) u
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func AdsDeviceNotificationResponseParse(theBytes []byte) (AdsDeviceNotificationResponse, error) {
-	return AdsDeviceNotificationResponseParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func AdsDeviceNotificationResponseParse(ctx context.Context, theBytes []byte) (AdsDeviceNotificationResponse, error) {
+	return AdsDeviceNotificationResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func AdsDeviceNotificationResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AdsDeviceNotificationResponse, error) {

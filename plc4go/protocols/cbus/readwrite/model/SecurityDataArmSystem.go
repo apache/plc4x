@@ -191,8 +191,8 @@ func (m *_SecurityDataArmSystem) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func SecurityDataArmSystemParse(theBytes []byte) (SecurityDataArmSystem, error) {
-	return SecurityDataArmSystemParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func SecurityDataArmSystemParse(ctx context.Context, theBytes []byte) (SecurityDataArmSystem, error) {
+	return SecurityDataArmSystemParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func SecurityDataArmSystemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityDataArmSystem, error) {

@@ -172,8 +172,8 @@ func (m *_APDUSegmentAck) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func APDUSegmentAckParse(theBytes []byte, apduLength uint16) (APDUSegmentAck, error) {
-	return APDUSegmentAckParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), apduLength)
+func APDUSegmentAckParse(ctx context.Context, theBytes []byte, apduLength uint16) (APDUSegmentAck, error) {
+	return APDUSegmentAckParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), apduLength)
 }
 
 func APDUSegmentAckParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, apduLength uint16) (APDUSegmentAck, error) {

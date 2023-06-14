@@ -121,8 +121,8 @@ func (m *_EncodedReplyCALReply) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func EncodedReplyCALReplyParse(theBytes []byte, cBusOptions CBusOptions, requestContext RequestContext) (EncodedReplyCALReply, error) {
-	return EncodedReplyCALReplyParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), cBusOptions, requestContext)
+func EncodedReplyCALReplyParse(ctx context.Context, theBytes []byte, cBusOptions CBusOptions, requestContext RequestContext) (EncodedReplyCALReply, error) {
+	return EncodedReplyCALReplyParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), cBusOptions, requestContext)
 }
 
 func EncodedReplyCALReplyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions, requestContext RequestContext) (EncodedReplyCALReply, error) {

@@ -198,8 +198,8 @@ func (m *_CEMIAdditionalInformationBusmonitorInfo) GetLengthInBytes(ctx context.
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func CEMIAdditionalInformationBusmonitorInfoParse(theBytes []byte) (CEMIAdditionalInformationBusmonitorInfo, error) {
-	return CEMIAdditionalInformationBusmonitorInfoParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func CEMIAdditionalInformationBusmonitorInfoParse(ctx context.Context, theBytes []byte) (CEMIAdditionalInformationBusmonitorInfo, error) {
+	return CEMIAdditionalInformationBusmonitorInfoParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func CEMIAdditionalInformationBusmonitorInfoParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (CEMIAdditionalInformationBusmonitorInfo, error) {

@@ -110,8 +110,8 @@ func (m *_BACnetUnconfirmedServiceChoiceTagged) GetLengthInBytes(ctx context.Con
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetUnconfirmedServiceChoiceTaggedParse(theBytes []byte, tagNumber uint8, tagClass TagClass) (BACnetUnconfirmedServiceChoiceTagged, error) {
-	return BACnetUnconfirmedServiceChoiceTaggedParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, tagClass)
+func BACnetUnconfirmedServiceChoiceTaggedParse(ctx context.Context, theBytes []byte, tagNumber uint8, tagClass TagClass) (BACnetUnconfirmedServiceChoiceTagged, error) {
+	return BACnetUnconfirmedServiceChoiceTaggedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, tagClass)
 }
 
 func BACnetUnconfirmedServiceChoiceTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetUnconfirmedServiceChoiceTagged, error) {

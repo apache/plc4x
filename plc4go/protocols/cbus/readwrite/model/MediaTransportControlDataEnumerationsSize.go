@@ -193,8 +193,8 @@ func (m *_MediaTransportControlDataEnumerationsSize) GetLengthInBytes(ctx contex
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func MediaTransportControlDataEnumerationsSizeParse(theBytes []byte) (MediaTransportControlDataEnumerationsSize, error) {
-	return MediaTransportControlDataEnumerationsSizeParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func MediaTransportControlDataEnumerationsSizeParse(ctx context.Context, theBytes []byte) (MediaTransportControlDataEnumerationsSize, error) {
+	return MediaTransportControlDataEnumerationsSizeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func MediaTransportControlDataEnumerationsSizeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (MediaTransportControlDataEnumerationsSize, error) {

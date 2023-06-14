@@ -137,8 +137,8 @@ func (m *_DF1UnprotectedReadRequest) GetLengthInBytes(ctx context.Context) uint1
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func DF1UnprotectedReadRequestParse(theBytes []byte) (DF1UnprotectedReadRequest, error) {
-	return DF1UnprotectedReadRequestParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func DF1UnprotectedReadRequestParse(ctx context.Context, theBytes []byte) (DF1UnprotectedReadRequest, error) {
+	return DF1UnprotectedReadRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func DF1UnprotectedReadRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (DF1UnprotectedReadRequest, error) {

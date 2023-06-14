@@ -111,8 +111,8 @@ func (m *_ModbusDeviceInformationObject) GetLengthInBytes(ctx context.Context) u
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ModbusDeviceInformationObjectParse(theBytes []byte) (ModbusDeviceInformationObject, error) {
-	return ModbusDeviceInformationObjectParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func ModbusDeviceInformationObjectParse(ctx context.Context, theBytes []byte) (ModbusDeviceInformationObject, error) {
+	return ModbusDeviceInformationObjectParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func ModbusDeviceInformationObjectParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ModbusDeviceInformationObject, error) {

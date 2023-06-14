@@ -151,8 +151,8 @@ func (m *_CBusCommandDeviceManagement) GetLengthInBytes(ctx context.Context) uin
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func CBusCommandDeviceManagementParse(theBytes []byte, cBusOptions CBusOptions) (CBusCommandDeviceManagement, error) {
-	return CBusCommandDeviceManagementParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), cBusOptions)
+func CBusCommandDeviceManagementParse(ctx context.Context, theBytes []byte, cBusOptions CBusOptions) (CBusCommandDeviceManagement, error) {
+	return CBusCommandDeviceManagementParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), cBusOptions)
 }
 
 func CBusCommandDeviceManagementParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (CBusCommandDeviceManagement, error) {

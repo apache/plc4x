@@ -151,8 +151,8 @@ func (m *_MediaTransportControlDataNextPreviousSelection) GetLengthInBytes(ctx c
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func MediaTransportControlDataNextPreviousSelectionParse(theBytes []byte) (MediaTransportControlDataNextPreviousSelection, error) {
-	return MediaTransportControlDataNextPreviousSelectionParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func MediaTransportControlDataNextPreviousSelectionParse(ctx context.Context, theBytes []byte) (MediaTransportControlDataNextPreviousSelection, error) {
+	return MediaTransportControlDataNextPreviousSelectionParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func MediaTransportControlDataNextPreviousSelectionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (MediaTransportControlDataNextPreviousSelection, error) {

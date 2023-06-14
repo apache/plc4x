@@ -408,8 +408,8 @@ func (m *_BACnetNotificationParametersExtendedParameters) GetLengthInBytes(ctx c
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetNotificationParametersExtendedParametersParse(theBytes []byte, tagNumber uint8) (BACnetNotificationParametersExtendedParameters, error) {
-	return BACnetNotificationParametersExtendedParametersParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber)
+func BACnetNotificationParametersExtendedParametersParse(ctx context.Context, theBytes []byte, tagNumber uint8) (BACnetNotificationParametersExtendedParameters, error) {
+	return BACnetNotificationParametersExtendedParametersParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber)
 }
 
 func BACnetNotificationParametersExtendedParametersParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetNotificationParametersExtendedParameters, error) {

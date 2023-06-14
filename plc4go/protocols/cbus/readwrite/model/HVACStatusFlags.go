@@ -190,8 +190,8 @@ func (m *_HVACStatusFlags) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func HVACStatusFlagsParse(theBytes []byte) (HVACStatusFlags, error) {
-	return HVACStatusFlagsParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func HVACStatusFlagsParse(ctx context.Context, theBytes []byte) (HVACStatusFlags, error) {
+	return HVACStatusFlagsParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func HVACStatusFlagsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (HVACStatusFlags, error) {

@@ -140,8 +140,8 @@ func (m *_BACnetApplicationTagUnsignedInteger) GetLengthInBytes(ctx context.Cont
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetApplicationTagUnsignedIntegerParse(theBytes []byte, header BACnetTagHeader) (BACnetApplicationTagUnsignedInteger, error) {
-	return BACnetApplicationTagUnsignedIntegerParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), header)
+func BACnetApplicationTagUnsignedIntegerParse(ctx context.Context, theBytes []byte, header BACnetTagHeader) (BACnetApplicationTagUnsignedInteger, error) {
+	return BACnetApplicationTagUnsignedIntegerParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), header)
 }
 
 func BACnetApplicationTagUnsignedIntegerParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, header BACnetTagHeader) (BACnetApplicationTagUnsignedInteger, error) {

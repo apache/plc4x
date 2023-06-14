@@ -162,8 +162,8 @@ func (m *_SecurityDataStatusReport1) GetLengthInBytes(ctx context.Context) uint1
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func SecurityDataStatusReport1Parse(theBytes []byte) (SecurityDataStatusReport1, error) {
-	return SecurityDataStatusReport1ParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func SecurityDataStatusReport1Parse(ctx context.Context, theBytes []byte) (SecurityDataStatusReport1, error) {
+	return SecurityDataStatusReport1ParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func SecurityDataStatusReport1ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityDataStatusReport1, error) {

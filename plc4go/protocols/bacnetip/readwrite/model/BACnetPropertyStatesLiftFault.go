@@ -121,8 +121,8 @@ func (m *_BACnetPropertyStatesLiftFault) GetLengthInBytes(ctx context.Context) u
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetPropertyStatesLiftFaultParse(theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesLiftFault, error) {
-	return BACnetPropertyStatesLiftFaultParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
+func BACnetPropertyStatesLiftFaultParse(ctx context.Context, theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesLiftFault, error) {
+	return BACnetPropertyStatesLiftFaultParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
 }
 
 func BACnetPropertyStatesLiftFaultParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesLiftFault, error) {

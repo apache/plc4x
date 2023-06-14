@@ -149,8 +149,8 @@ func (m *_NetworkConnectionParameters) GetLengthInBytes(ctx context.Context) uin
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func NetworkConnectionParametersParse(theBytes []byte) (NetworkConnectionParameters, error) {
-	return NetworkConnectionParametersParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func NetworkConnectionParametersParse(ctx context.Context, theBytes []byte) (NetworkConnectionParameters, error) {
+	return NetworkConnectionParametersParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func NetworkConnectionParametersParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (NetworkConnectionParameters, error) {

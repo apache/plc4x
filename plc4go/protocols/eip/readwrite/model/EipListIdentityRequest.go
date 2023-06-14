@@ -115,8 +115,8 @@ func (m *_EipListIdentityRequest) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func EipListIdentityRequestParse(theBytes []byte, response bool) (EipListIdentityRequest, error) {
-	return EipListIdentityRequestParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), response)
+func EipListIdentityRequestParse(ctx context.Context, theBytes []byte, response bool) (EipListIdentityRequest, error) {
+	return EipListIdentityRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), response)
 }
 
 func EipListIdentityRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (EipListIdentityRequest, error) {

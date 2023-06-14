@@ -96,8 +96,8 @@ func (m *_ModbusConstants) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ModbusConstantsParse(theBytes []byte) (ModbusConstants, error) {
-	return ModbusConstantsParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func ModbusConstantsParse(ctx context.Context, theBytes []byte) (ModbusConstants, error) {
+	return ModbusConstantsParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func ModbusConstantsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ModbusConstants, error) {

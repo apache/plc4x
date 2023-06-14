@@ -123,8 +123,8 @@ func (m *_ParameterValueCustomTypes) GetLengthInBytes(ctx context.Context) uint1
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ParameterValueCustomTypesParse(theBytes []byte, parameterType ParameterType, numBytes uint8) (ParameterValueCustomTypes, error) {
-	return ParameterValueCustomTypesParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), parameterType, numBytes)
+func ParameterValueCustomTypesParse(ctx context.Context, theBytes []byte, parameterType ParameterType, numBytes uint8) (ParameterValueCustomTypes, error) {
+	return ParameterValueCustomTypesParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), parameterType, numBytes)
 }
 
 func ParameterValueCustomTypesParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, parameterType ParameterType, numBytes uint8) (ParameterValueCustomTypes, error) {

@@ -125,8 +125,8 @@ func (m *_SALDataTelephonyStatusAndControl) GetLengthInBytes(ctx context.Context
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func SALDataTelephonyStatusAndControlParse(theBytes []byte, applicationId ApplicationId) (SALDataTelephonyStatusAndControl, error) {
-	return SALDataTelephonyStatusAndControlParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), applicationId)
+func SALDataTelephonyStatusAndControlParse(ctx context.Context, theBytes []byte, applicationId ApplicationId) (SALDataTelephonyStatusAndControl, error) {
+	return SALDataTelephonyStatusAndControlParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), applicationId)
 }
 
 func SALDataTelephonyStatusAndControlParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataTelephonyStatusAndControl, error) {

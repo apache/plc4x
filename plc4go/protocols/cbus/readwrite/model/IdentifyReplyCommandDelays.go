@@ -136,8 +136,8 @@ func (m *_IdentifyReplyCommandDelays) GetLengthInBytes(ctx context.Context) uint
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func IdentifyReplyCommandDelaysParse(theBytes []byte, attribute Attribute, numBytes uint8) (IdentifyReplyCommandDelays, error) {
-	return IdentifyReplyCommandDelaysParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), attribute, numBytes)
+func IdentifyReplyCommandDelaysParse(ctx context.Context, theBytes []byte, attribute Attribute, numBytes uint8) (IdentifyReplyCommandDelays, error) {
+	return IdentifyReplyCommandDelaysParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), attribute, numBytes)
 }
 
 func IdentifyReplyCommandDelaysParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, attribute Attribute, numBytes uint8) (IdentifyReplyCommandDelays, error) {

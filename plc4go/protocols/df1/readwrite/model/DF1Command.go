@@ -131,8 +131,8 @@ func (m *_DF1Command) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func DF1CommandParse(theBytes []byte) (DF1Command, error) {
-	return DF1CommandParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func DF1CommandParse(ctx context.Context, theBytes []byte) (DF1Command, error) {
+	return DF1CommandParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func DF1CommandParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (DF1Command, error) {

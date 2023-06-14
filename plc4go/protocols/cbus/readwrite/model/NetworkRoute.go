@@ -113,8 +113,8 @@ func (m *_NetworkRoute) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func NetworkRouteParse(theBytes []byte) (NetworkRoute, error) {
-	return NetworkRouteParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func NetworkRouteParse(ctx context.Context, theBytes []byte) (NetworkRoute, error) {
+	return NetworkRouteParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func NetworkRouteParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (NetworkRoute, error) {

@@ -123,8 +123,8 @@ func (m *_AdsDiscoveryBlockPassword) GetLengthInBytes(ctx context.Context) uint1
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func AdsDiscoveryBlockPasswordParse(theBytes []byte) (AdsDiscoveryBlockPassword, error) {
-	return AdsDiscoveryBlockPasswordParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func AdsDiscoveryBlockPasswordParse(ctx context.Context, theBytes []byte) (AdsDiscoveryBlockPassword, error) {
+	return AdsDiscoveryBlockPasswordParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func AdsDiscoveryBlockPasswordParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AdsDiscoveryBlockPassword, error) {

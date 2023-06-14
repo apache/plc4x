@@ -156,8 +156,8 @@ func (m *_BACnetNotificationParametersChangeOfStatusFlags) GetLengthInBytes(ctx 
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetNotificationParametersChangeOfStatusFlagsParse(theBytes []byte, peekedTagNumber uint8, tagNumber uint8, objectTypeArgument BACnetObjectType) (BACnetNotificationParametersChangeOfStatusFlags, error) {
-	return BACnetNotificationParametersChangeOfStatusFlagsParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), peekedTagNumber, tagNumber, objectTypeArgument)
+func BACnetNotificationParametersChangeOfStatusFlagsParse(ctx context.Context, theBytes []byte, peekedTagNumber uint8, tagNumber uint8, objectTypeArgument BACnetObjectType) (BACnetNotificationParametersChangeOfStatusFlags, error) {
+	return BACnetNotificationParametersChangeOfStatusFlagsParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), peekedTagNumber, tagNumber, objectTypeArgument)
 }
 
 func BACnetNotificationParametersChangeOfStatusFlagsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8, tagNumber uint8, objectTypeArgument BACnetObjectType) (BACnetNotificationParametersChangeOfStatusFlags, error) {

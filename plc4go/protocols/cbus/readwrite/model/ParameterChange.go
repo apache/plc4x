@@ -104,8 +104,8 @@ func (m *_ParameterChange) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ParameterChangeParse(theBytes []byte) (ParameterChange, error) {
-	return ParameterChangeParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func ParameterChangeParse(ctx context.Context, theBytes []byte) (ParameterChange, error) {
+	return ParameterChangeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func ParameterChangeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ParameterChange, error) {

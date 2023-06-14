@@ -121,8 +121,8 @@ func (m *_BACnetChannelValueUnsigned) GetLengthInBytes(ctx context.Context) uint
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetChannelValueUnsignedParse(theBytes []byte) (BACnetChannelValueUnsigned, error) {
-	return BACnetChannelValueUnsignedParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func BACnetChannelValueUnsignedParse(ctx context.Context, theBytes []byte) (BACnetChannelValueUnsigned, error) {
+	return BACnetChannelValueUnsignedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func BACnetChannelValueUnsignedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetChannelValueUnsigned, error) {

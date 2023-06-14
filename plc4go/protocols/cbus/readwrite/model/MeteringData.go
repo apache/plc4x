@@ -147,8 +147,8 @@ func (m *_MeteringData) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func MeteringDataParse(theBytes []byte) (MeteringData, error) {
-	return MeteringDataParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func MeteringDataParse(ctx context.Context, theBytes []byte) (MeteringData, error) {
+	return MeteringDataParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func MeteringDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (MeteringData, error) {

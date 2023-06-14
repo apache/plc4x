@@ -161,8 +161,8 @@ func (m *_AdsWriteControlRequest) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func AdsWriteControlRequestParse(theBytes []byte) (AdsWriteControlRequest, error) {
-	return AdsWriteControlRequestParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func AdsWriteControlRequestParse(ctx context.Context, theBytes []byte) (AdsWriteControlRequest, error) {
+	return AdsWriteControlRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func AdsWriteControlRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AdsWriteControlRequest, error) {

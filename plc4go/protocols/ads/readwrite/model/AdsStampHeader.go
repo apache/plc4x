@@ -123,8 +123,8 @@ func (m *_AdsStampHeader) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func AdsStampHeaderParse(theBytes []byte) (AdsStampHeader, error) {
-	return AdsStampHeaderParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func AdsStampHeaderParse(ctx context.Context, theBytes []byte) (AdsStampHeader, error) {
+	return AdsStampHeaderParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func AdsStampHeaderParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AdsStampHeader, error) {

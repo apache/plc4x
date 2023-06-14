@@ -151,8 +151,8 @@ func (m *_TelephonyDataRecallLastNumberRequest) GetLengthInBytes(ctx context.Con
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func TelephonyDataRecallLastNumberRequestParse(theBytes []byte) (TelephonyDataRecallLastNumberRequest, error) {
-	return TelephonyDataRecallLastNumberRequestParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func TelephonyDataRecallLastNumberRequestParse(ctx context.Context, theBytes []byte) (TelephonyDataRecallLastNumberRequest, error) {
+	return TelephonyDataRecallLastNumberRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func TelephonyDataRecallLastNumberRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (TelephonyDataRecallLastNumberRequest, error) {

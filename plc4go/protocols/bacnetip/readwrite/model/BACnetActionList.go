@@ -120,8 +120,8 @@ func (m *_BACnetActionList) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetActionListParse(theBytes []byte) (BACnetActionList, error) {
-	return BACnetActionListParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func BACnetActionListParse(ctx context.Context, theBytes []byte) (BACnetActionList, error) {
+	return BACnetActionListParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func BACnetActionListParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetActionList, error) {

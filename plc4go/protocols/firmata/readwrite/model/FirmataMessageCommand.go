@@ -124,8 +124,8 @@ func (m *_FirmataMessageCommand) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func FirmataMessageCommandParse(theBytes []byte, response bool) (FirmataMessageCommand, error) {
-	return FirmataMessageCommandParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), response)
+func FirmataMessageCommandParse(ctx context.Context, theBytes []byte, response bool) (FirmataMessageCommand, error) {
+	return FirmataMessageCommandParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), response)
 }
 
 func FirmataMessageCommandParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (FirmataMessageCommand, error) {

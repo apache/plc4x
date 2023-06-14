@@ -114,8 +114,8 @@ func (m *_DeviceConfigurationRequestDataBlock) GetLengthInBytes(ctx context.Cont
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func DeviceConfigurationRequestDataBlockParse(theBytes []byte) (DeviceConfigurationRequestDataBlock, error) {
-	return DeviceConfigurationRequestDataBlockParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func DeviceConfigurationRequestDataBlockParse(ctx context.Context, theBytes []byte) (DeviceConfigurationRequestDataBlock, error) {
+	return DeviceConfigurationRequestDataBlockParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func DeviceConfigurationRequestDataBlockParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (DeviceConfigurationRequestDataBlock, error) {

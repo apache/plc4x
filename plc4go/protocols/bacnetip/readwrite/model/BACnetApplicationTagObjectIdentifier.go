@@ -150,8 +150,8 @@ func (m *_BACnetApplicationTagObjectIdentifier) GetLengthInBytes(ctx context.Con
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetApplicationTagObjectIdentifierParse(theBytes []byte) (BACnetApplicationTagObjectIdentifier, error) {
-	return BACnetApplicationTagObjectIdentifierParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func BACnetApplicationTagObjectIdentifierParse(ctx context.Context, theBytes []byte) (BACnetApplicationTagObjectIdentifier, error) {
+	return BACnetApplicationTagObjectIdentifierParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func BACnetApplicationTagObjectIdentifierParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetApplicationTagObjectIdentifier, error) {

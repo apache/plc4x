@@ -121,8 +121,8 @@ func (m *_BACnetValueSourceAddress) GetLengthInBytes(ctx context.Context) uint16
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetValueSourceAddressParse(theBytes []byte) (BACnetValueSourceAddress, error) {
-	return BACnetValueSourceAddressParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func BACnetValueSourceAddressParse(ctx context.Context, theBytes []byte) (BACnetValueSourceAddress, error) {
+	return BACnetValueSourceAddressParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func BACnetValueSourceAddressParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetValueSourceAddress, error) {

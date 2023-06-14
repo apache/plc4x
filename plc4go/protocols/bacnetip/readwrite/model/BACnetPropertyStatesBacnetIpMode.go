@@ -121,8 +121,8 @@ func (m *_BACnetPropertyStatesBacnetIpMode) GetLengthInBytes(ctx context.Context
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetPropertyStatesBacnetIpModeParse(theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesBacnetIpMode, error) {
-	return BACnetPropertyStatesBacnetIpModeParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
+func BACnetPropertyStatesBacnetIpModeParse(ctx context.Context, theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesBacnetIpMode, error) {
+	return BACnetPropertyStatesBacnetIpModeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
 }
 
 func BACnetPropertyStatesBacnetIpModeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesBacnetIpMode, error) {

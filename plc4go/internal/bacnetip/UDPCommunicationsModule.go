@@ -20,6 +20,7 @@
 package bacnetip
 
 import (
+	"context"
 	"fmt"
 	"net"
 	"time"
@@ -256,7 +257,7 @@ func (d *UDPDirector) handleRead() {
 		sourceAddr = addr
 	}
 
-	bvlc, err := model.BVLCParse(readBytes)
+	bvlc, err := model.BVLCParse(context.TODO(), readBytes)
 	if err != nil {
 		// pass along to a handler
 		d.handleError(errors.Wrap(err, "error parsing bvlc"))

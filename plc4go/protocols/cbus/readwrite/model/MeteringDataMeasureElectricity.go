@@ -101,8 +101,8 @@ func (m *_MeteringDataMeasureElectricity) GetLengthInBytes(ctx context.Context) 
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func MeteringDataMeasureElectricityParse(theBytes []byte) (MeteringDataMeasureElectricity, error) {
-	return MeteringDataMeasureElectricityParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func MeteringDataMeasureElectricityParse(ctx context.Context, theBytes []byte) (MeteringDataMeasureElectricity, error) {
+	return MeteringDataMeasureElectricityParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func MeteringDataMeasureElectricityParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (MeteringDataMeasureElectricity, error) {

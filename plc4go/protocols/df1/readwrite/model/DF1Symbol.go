@@ -122,8 +122,8 @@ func (m *_DF1Symbol) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func DF1SymbolParse(theBytes []byte) (DF1Symbol, error) {
-	return DF1SymbolParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
+func DF1SymbolParse(ctx context.Context, theBytes []byte) (DF1Symbol, error) {
+	return DF1SymbolParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
 }
 
 func DF1SymbolParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (DF1Symbol, error) {

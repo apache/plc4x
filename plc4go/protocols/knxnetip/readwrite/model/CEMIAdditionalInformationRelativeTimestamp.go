@@ -143,8 +143,8 @@ func (m *_CEMIAdditionalInformationRelativeTimestamp) GetLengthInBytes(ctx conte
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func CEMIAdditionalInformationRelativeTimestampParse(theBytes []byte) (CEMIAdditionalInformationRelativeTimestamp, error) {
-	return CEMIAdditionalInformationRelativeTimestampParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func CEMIAdditionalInformationRelativeTimestampParse(ctx context.Context, theBytes []byte) (CEMIAdditionalInformationRelativeTimestamp, error) {
+	return CEMIAdditionalInformationRelativeTimestampParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func CEMIAdditionalInformationRelativeTimestampParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (CEMIAdditionalInformationRelativeTimestamp, error) {

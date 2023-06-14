@@ -170,8 +170,8 @@ func (m *_BACnetServiceAckGetEnrollmentSummary) GetLengthInBytes(ctx context.Con
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetServiceAckGetEnrollmentSummaryParse(theBytes []byte, serviceAckLength uint32) (BACnetServiceAckGetEnrollmentSummary, error) {
-	return BACnetServiceAckGetEnrollmentSummaryParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), serviceAckLength)
+func BACnetServiceAckGetEnrollmentSummaryParse(ctx context.Context, theBytes []byte, serviceAckLength uint32) (BACnetServiceAckGetEnrollmentSummary, error) {
+	return BACnetServiceAckGetEnrollmentSummaryParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), serviceAckLength)
 }
 
 func BACnetServiceAckGetEnrollmentSummaryParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, serviceAckLength uint32) (BACnetServiceAckGetEnrollmentSummary, error) {

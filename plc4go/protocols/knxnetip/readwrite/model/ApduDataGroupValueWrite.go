@@ -136,8 +136,8 @@ func (m *_ApduDataGroupValueWrite) GetLengthInBytes(ctx context.Context) uint16 
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ApduDataGroupValueWriteParse(theBytes []byte, dataLength uint8) (ApduDataGroupValueWrite, error) {
-	return ApduDataGroupValueWriteParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), dataLength)
+func ApduDataGroupValueWriteParse(ctx context.Context, theBytes []byte, dataLength uint8) (ApduDataGroupValueWrite, error) {
+	return ApduDataGroupValueWriteParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), dataLength)
 }
 
 func ApduDataGroupValueWriteParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, dataLength uint8) (ApduDataGroupValueWrite, error) {

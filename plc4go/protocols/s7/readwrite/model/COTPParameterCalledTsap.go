@@ -123,8 +123,8 @@ func (m *_COTPParameterCalledTsap) GetLengthInBytes(ctx context.Context) uint16 
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func COTPParameterCalledTsapParse(theBytes []byte, rest uint8) (COTPParameterCalledTsap, error) {
-	return COTPParameterCalledTsapParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), rest)
+func COTPParameterCalledTsapParse(ctx context.Context, theBytes []byte, rest uint8) (COTPParameterCalledTsap, error) {
+	return COTPParameterCalledTsapParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), rest)
 }
 
 func COTPParameterCalledTsapParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, rest uint8) (COTPParameterCalledTsap, error) {

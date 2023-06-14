@@ -128,8 +128,8 @@ func (m *_BACnetRejectReasonTagged) GetLengthInBytes(ctx context.Context) uint16
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetRejectReasonTaggedParse(theBytes []byte, actualLength uint32) (BACnetRejectReasonTagged, error) {
-	return BACnetRejectReasonTaggedParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), actualLength)
+func BACnetRejectReasonTaggedParse(ctx context.Context, theBytes []byte, actualLength uint32) (BACnetRejectReasonTagged, error) {
+	return BACnetRejectReasonTaggedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), actualLength)
 }
 
 func BACnetRejectReasonTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, actualLength uint32) (BACnetRejectReasonTagged, error) {

@@ -156,8 +156,8 @@ func (m *_BACnetEventParameterChangeOfValueCivCriteria) GetLengthInBytes(ctx con
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetEventParameterChangeOfValueCivCriteriaParse(theBytes []byte, tagNumber uint8) (BACnetEventParameterChangeOfValueCivCriteria, error) {
-	return BACnetEventParameterChangeOfValueCivCriteriaParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber)
+func BACnetEventParameterChangeOfValueCivCriteriaParse(ctx context.Context, theBytes []byte, tagNumber uint8) (BACnetEventParameterChangeOfValueCivCriteria, error) {
+	return BACnetEventParameterChangeOfValueCivCriteriaParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber)
 }
 
 func BACnetEventParameterChangeOfValueCivCriteriaParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetEventParameterChangeOfValueCivCriteria, error) {

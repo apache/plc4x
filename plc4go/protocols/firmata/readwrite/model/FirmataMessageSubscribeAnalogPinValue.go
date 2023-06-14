@@ -140,8 +140,8 @@ func (m *_FirmataMessageSubscribeAnalogPinValue) GetLengthInBytes(ctx context.Co
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func FirmataMessageSubscribeAnalogPinValueParse(theBytes []byte, response bool) (FirmataMessageSubscribeAnalogPinValue, error) {
-	return FirmataMessageSubscribeAnalogPinValueParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), response)
+func FirmataMessageSubscribeAnalogPinValueParse(ctx context.Context, theBytes []byte, response bool) (FirmataMessageSubscribeAnalogPinValue, error) {
+	return FirmataMessageSubscribeAnalogPinValueParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), response)
 }
 
 func FirmataMessageSubscribeAnalogPinValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (FirmataMessageSubscribeAnalogPinValue, error) {

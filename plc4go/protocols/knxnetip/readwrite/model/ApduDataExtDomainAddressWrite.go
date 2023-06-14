@@ -102,8 +102,8 @@ func (m *_ApduDataExtDomainAddressWrite) GetLengthInBytes(ctx context.Context) u
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ApduDataExtDomainAddressWriteParse(theBytes []byte, length uint8) (ApduDataExtDomainAddressWrite, error) {
-	return ApduDataExtDomainAddressWriteParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), length)
+func ApduDataExtDomainAddressWriteParse(ctx context.Context, theBytes []byte, length uint8) (ApduDataExtDomainAddressWrite, error) {
+	return ApduDataExtDomainAddressWriteParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), length)
 }
 
 func ApduDataExtDomainAddressWriteParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, length uint8) (ApduDataExtDomainAddressWrite, error) {

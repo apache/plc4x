@@ -121,8 +121,8 @@ func (m *_BACnetApplicationTagBitString) GetLengthInBytes(ctx context.Context) u
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetApplicationTagBitStringParse(theBytes []byte, header BACnetTagHeader) (BACnetApplicationTagBitString, error) {
-	return BACnetApplicationTagBitStringParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), header)
+func BACnetApplicationTagBitStringParse(ctx context.Context, theBytes []byte, header BACnetTagHeader) (BACnetApplicationTagBitString, error) {
+	return BACnetApplicationTagBitStringParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), header)
 }
 
 func BACnetApplicationTagBitStringParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, header BACnetTagHeader) (BACnetApplicationTagBitString, error) {

@@ -158,8 +158,8 @@ func (m *_NLMSecurityResponse) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func NLMSecurityResponseParse(theBytes []byte, apduLength uint16) (NLMSecurityResponse, error) {
-	return NLMSecurityResponseParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), apduLength)
+func NLMSecurityResponseParse(ctx context.Context, theBytes []byte, apduLength uint16) (NLMSecurityResponse, error) {
+	return NLMSecurityResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), apduLength)
 }
 
 func NLMSecurityResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, apduLength uint16) (NLMSecurityResponse, error) {

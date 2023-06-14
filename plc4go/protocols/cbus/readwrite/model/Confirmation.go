@@ -140,8 +140,8 @@ func (m *_Confirmation) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ConfirmationParse(theBytes []byte) (Confirmation, error) {
-	return ConfirmationParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func ConfirmationParse(ctx context.Context, theBytes []byte) (Confirmation, error) {
+	return ConfirmationParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func ConfirmationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (Confirmation, error) {

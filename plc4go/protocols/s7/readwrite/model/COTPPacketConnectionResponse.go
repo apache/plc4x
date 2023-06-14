@@ -148,8 +148,8 @@ func (m *_COTPPacketConnectionResponse) GetLengthInBytes(ctx context.Context) ui
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func COTPPacketConnectionResponseParse(theBytes []byte, cotpLen uint16) (COTPPacketConnectionResponse, error) {
-	return COTPPacketConnectionResponseParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), cotpLen)
+func COTPPacketConnectionResponseParse(ctx context.Context, theBytes []byte, cotpLen uint16) (COTPPacketConnectionResponse, error) {
+	return COTPPacketConnectionResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), cotpLen)
 }
 
 func COTPPacketConnectionResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cotpLen uint16) (COTPPacketConnectionResponse, error) {

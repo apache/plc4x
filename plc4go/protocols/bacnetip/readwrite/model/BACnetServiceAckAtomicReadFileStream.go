@@ -134,8 +134,8 @@ func (m *_BACnetServiceAckAtomicReadFileStream) GetLengthInBytes(ctx context.Con
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetServiceAckAtomicReadFileStreamParse(theBytes []byte) (BACnetServiceAckAtomicReadFileStream, error) {
-	return BACnetServiceAckAtomicReadFileStreamParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func BACnetServiceAckAtomicReadFileStreamParse(ctx context.Context, theBytes []byte) (BACnetServiceAckAtomicReadFileStream, error) {
+	return BACnetServiceAckAtomicReadFileStreamParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func BACnetServiceAckAtomicReadFileStreamParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetServiceAckAtomicReadFileStream, error) {

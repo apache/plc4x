@@ -132,8 +132,8 @@ func (m *_LightingDataRampToLevel) GetLengthInBytes(ctx context.Context) uint16 
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func LightingDataRampToLevelParse(theBytes []byte) (LightingDataRampToLevel, error) {
-	return LightingDataRampToLevelParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func LightingDataRampToLevelParse(ctx context.Context, theBytes []byte) (LightingDataRampToLevel, error) {
+	return LightingDataRampToLevelParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func LightingDataRampToLevelParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (LightingDataRampToLevel, error) {

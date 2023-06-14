@@ -137,8 +137,8 @@ func (m *_FirmataMessageAnalogIO) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func FirmataMessageAnalogIOParse(theBytes []byte, response bool) (FirmataMessageAnalogIO, error) {
-	return FirmataMessageAnalogIOParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), response)
+func FirmataMessageAnalogIOParse(ctx context.Context, theBytes []byte, response bool) (FirmataMessageAnalogIO, error) {
+	return FirmataMessageAnalogIOParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), response)
 }
 
 func FirmataMessageAnalogIOParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (FirmataMessageAnalogIO, error) {

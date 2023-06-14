@@ -127,8 +127,8 @@ func (m *_TelephonyDataRinging) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func TelephonyDataRingingParse(theBytes []byte, commandTypeContainer TelephonyCommandTypeContainer) (TelephonyDataRinging, error) {
-	return TelephonyDataRingingParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), commandTypeContainer)
+func TelephonyDataRingingParse(ctx context.Context, theBytes []byte, commandTypeContainer TelephonyCommandTypeContainer) (TelephonyDataRinging, error) {
+	return TelephonyDataRingingParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), commandTypeContainer)
 }
 
 func TelephonyDataRingingParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, commandTypeContainer TelephonyCommandTypeContainer) (TelephonyDataRinging, error) {

@@ -135,8 +135,8 @@ func (m *_TamperStatus) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func TamperStatusParse(theBytes []byte) (TamperStatus, error) {
-	return TamperStatusParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func TamperStatusParse(ctx context.Context, theBytes []byte) (TamperStatus, error) {
+	return TamperStatusParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func TamperStatusParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (TamperStatus, error) {

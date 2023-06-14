@@ -116,8 +116,8 @@ func (m *_SubItem) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func SubItemParse(theBytes []byte) (SubItem, error) {
-	return SubItemParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func SubItemParse(ctx context.Context, theBytes []byte) (SubItem, error) {
+	return SubItemParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func SubItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SubItem, error) {

@@ -101,8 +101,8 @@ func (m *_CommandSpecificDataItem) GetLengthInBytes(ctx context.Context) uint16 
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func CommandSpecificDataItemParse(theBytes []byte) (CommandSpecificDataItem, error) {
-	return CommandSpecificDataItemParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func CommandSpecificDataItemParse(ctx context.Context, theBytes []byte) (CommandSpecificDataItem, error) {
+	return CommandSpecificDataItemParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func CommandSpecificDataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (CommandSpecificDataItem, error) {

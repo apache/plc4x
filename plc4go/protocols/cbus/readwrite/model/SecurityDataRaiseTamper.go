@@ -101,8 +101,8 @@ func (m *_SecurityDataRaiseTamper) GetLengthInBytes(ctx context.Context) uint16 
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func SecurityDataRaiseTamperParse(theBytes []byte) (SecurityDataRaiseTamper, error) {
-	return SecurityDataRaiseTamperParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func SecurityDataRaiseTamperParse(ctx context.Context, theBytes []byte) (SecurityDataRaiseTamper, error) {
+	return SecurityDataRaiseTamperParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func SecurityDataRaiseTamperParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityDataRaiseTamper, error) {

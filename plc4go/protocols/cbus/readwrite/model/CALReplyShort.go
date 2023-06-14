@@ -101,8 +101,8 @@ func (m *_CALReplyShort) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func CALReplyShortParse(theBytes []byte, cBusOptions CBusOptions, requestContext RequestContext) (CALReplyShort, error) {
-	return CALReplyShortParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), cBusOptions, requestContext)
+func CALReplyShortParse(ctx context.Context, theBytes []byte, cBusOptions CBusOptions, requestContext RequestContext) (CALReplyShort, error) {
+	return CALReplyShortParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), cBusOptions, requestContext)
 }
 
 func CALReplyShortParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions, requestContext RequestContext) (CALReplyShort, error) {

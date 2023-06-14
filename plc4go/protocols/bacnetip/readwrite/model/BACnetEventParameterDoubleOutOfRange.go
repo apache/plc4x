@@ -176,8 +176,8 @@ func (m *_BACnetEventParameterDoubleOutOfRange) GetLengthInBytes(ctx context.Con
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetEventParameterDoubleOutOfRangeParse(theBytes []byte) (BACnetEventParameterDoubleOutOfRange, error) {
-	return BACnetEventParameterDoubleOutOfRangeParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func BACnetEventParameterDoubleOutOfRangeParse(ctx context.Context, theBytes []byte) (BACnetEventParameterDoubleOutOfRange, error) {
+	return BACnetEventParameterDoubleOutOfRangeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func BACnetEventParameterDoubleOutOfRangeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetEventParameterDoubleOutOfRange, error) {

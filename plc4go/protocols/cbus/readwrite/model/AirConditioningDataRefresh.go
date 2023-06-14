@@ -121,8 +121,8 @@ func (m *_AirConditioningDataRefresh) GetLengthInBytes(ctx context.Context) uint
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func AirConditioningDataRefreshParse(theBytes []byte) (AirConditioningDataRefresh, error) {
-	return AirConditioningDataRefreshParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func AirConditioningDataRefreshParse(ctx context.Context, theBytes []byte) (AirConditioningDataRefresh, error) {
+	return AirConditioningDataRefreshParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func AirConditioningDataRefreshParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AirConditioningDataRefresh, error) {

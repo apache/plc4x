@@ -134,8 +134,8 @@ func (m *_CreateObjectError) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func CreateObjectErrorParse(theBytes []byte, errorChoice BACnetConfirmedServiceChoice) (CreateObjectError, error) {
-	return CreateObjectErrorParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), errorChoice)
+func CreateObjectErrorParse(ctx context.Context, theBytes []byte, errorChoice BACnetConfirmedServiceChoice) (CreateObjectError, error) {
+	return CreateObjectErrorParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), errorChoice)
 }
 
 func CreateObjectErrorParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, errorChoice BACnetConfirmedServiceChoice) (CreateObjectError, error) {

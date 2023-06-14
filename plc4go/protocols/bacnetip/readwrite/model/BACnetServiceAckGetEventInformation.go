@@ -134,8 +134,8 @@ func (m *_BACnetServiceAckGetEventInformation) GetLengthInBytes(ctx context.Cont
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetServiceAckGetEventInformationParse(theBytes []byte, serviceAckLength uint32) (BACnetServiceAckGetEventInformation, error) {
-	return BACnetServiceAckGetEventInformationParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), serviceAckLength)
+func BACnetServiceAckGetEventInformationParse(ctx context.Context, theBytes []byte, serviceAckLength uint32) (BACnetServiceAckGetEventInformation, error) {
+	return BACnetServiceAckGetEventInformationParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), serviceAckLength)
 }
 
 func BACnetServiceAckGetEventInformationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, serviceAckLength uint32) (BACnetServiceAckGetEventInformation, error) {

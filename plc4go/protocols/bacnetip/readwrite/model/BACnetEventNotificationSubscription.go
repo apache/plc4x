@@ -129,8 +129,8 @@ func (m *_BACnetEventNotificationSubscription) GetLengthInBytes(ctx context.Cont
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetEventNotificationSubscriptionParse(theBytes []byte) (BACnetEventNotificationSubscription, error) {
-	return BACnetEventNotificationSubscriptionParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func BACnetEventNotificationSubscriptionParse(ctx context.Context, theBytes []byte) (BACnetEventNotificationSubscription, error) {
+	return BACnetEventNotificationSubscriptionParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func BACnetEventNotificationSubscriptionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetEventNotificationSubscription, error) {

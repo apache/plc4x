@@ -119,8 +119,8 @@ func (m *_BACnetLightingCommandEnclosed) GetLengthInBytes(ctx context.Context) u
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetLightingCommandEnclosedParse(theBytes []byte, tagNumber uint8) (BACnetLightingCommandEnclosed, error) {
-	return BACnetLightingCommandEnclosedParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber)
+func BACnetLightingCommandEnclosedParse(ctx context.Context, theBytes []byte, tagNumber uint8) (BACnetLightingCommandEnclosed, error) {
+	return BACnetLightingCommandEnclosedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber)
 }
 
 func BACnetLightingCommandEnclosedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetLightingCommandEnclosed, error) {

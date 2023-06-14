@@ -126,8 +126,8 @@ func (m *_CBusHeader) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func CBusHeaderParse(theBytes []byte) (CBusHeader, error) {
-	return CBusHeaderParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func CBusHeaderParse(ctx context.Context, theBytes []byte) (CBusHeader, error) {
+	return CBusHeaderParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func CBusHeaderParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (CBusHeader, error) {

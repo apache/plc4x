@@ -126,8 +126,8 @@ func (m *_InstanceSegment) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func InstanceSegmentParse(theBytes []byte) (InstanceSegment, error) {
-	return InstanceSegmentParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func InstanceSegmentParse(ctx context.Context, theBytes []byte) (InstanceSegment, error) {
+	return InstanceSegmentParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func InstanceSegmentParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (InstanceSegment, error) {

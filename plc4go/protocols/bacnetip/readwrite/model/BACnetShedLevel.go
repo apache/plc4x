@@ -133,8 +133,8 @@ func (m *_BACnetShedLevel) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetShedLevelParse(theBytes []byte) (BACnetShedLevel, error) {
-	return BACnetShedLevelParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func BACnetShedLevelParse(ctx context.Context, theBytes []byte) (BACnetShedLevel, error) {
+	return BACnetShedLevelParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func BACnetShedLevelParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetShedLevel, error) {

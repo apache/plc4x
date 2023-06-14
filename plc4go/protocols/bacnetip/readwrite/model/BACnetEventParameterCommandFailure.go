@@ -154,8 +154,8 @@ func (m *_BACnetEventParameterCommandFailure) GetLengthInBytes(ctx context.Conte
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetEventParameterCommandFailureParse(theBytes []byte) (BACnetEventParameterCommandFailure, error) {
-	return BACnetEventParameterCommandFailureParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func BACnetEventParameterCommandFailureParse(ctx context.Context, theBytes []byte) (BACnetEventParameterCommandFailure, error) {
+	return BACnetEventParameterCommandFailureParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func BACnetEventParameterCommandFailureParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetEventParameterCommandFailure, error) {

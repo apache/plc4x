@@ -116,8 +116,8 @@ func (m *_ErrorReportingSystemCategory) GetLengthInBytes(ctx context.Context) ui
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ErrorReportingSystemCategoryParse(theBytes []byte) (ErrorReportingSystemCategory, error) {
-	return ErrorReportingSystemCategoryParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func ErrorReportingSystemCategoryParse(ctx context.Context, theBytes []byte) (ErrorReportingSystemCategory, error) {
+	return ErrorReportingSystemCategoryParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func ErrorReportingSystemCategoryParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ErrorReportingSystemCategory, error) {

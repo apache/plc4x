@@ -104,8 +104,8 @@ func (m *_SALDataRoomControlSystem) GetLengthInBytes(ctx context.Context) uint16
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func SALDataRoomControlSystemParse(theBytes []byte, applicationId ApplicationId) (SALDataRoomControlSystem, error) {
-	return SALDataRoomControlSystemParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), applicationId)
+func SALDataRoomControlSystemParse(ctx context.Context, theBytes []byte, applicationId ApplicationId) (SALDataRoomControlSystem, error) {
+	return SALDataRoomControlSystemParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), applicationId)
 }
 
 func SALDataRoomControlSystemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataRoomControlSystem, error) {

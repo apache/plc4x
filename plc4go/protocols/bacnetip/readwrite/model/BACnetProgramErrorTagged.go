@@ -139,8 +139,8 @@ func (m *_BACnetProgramErrorTagged) GetLengthInBytes(ctx context.Context) uint16
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetProgramErrorTaggedParse(theBytes []byte, tagNumber uint8, tagClass TagClass) (BACnetProgramErrorTagged, error) {
-	return BACnetProgramErrorTaggedParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, tagClass)
+func BACnetProgramErrorTaggedParse(ctx context.Context, theBytes []byte, tagNumber uint8, tagClass TagClass) (BACnetProgramErrorTagged, error) {
+	return BACnetProgramErrorTaggedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, tagClass)
 }
 
 func BACnetProgramErrorTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetProgramErrorTagged, error) {

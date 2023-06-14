@@ -229,8 +229,8 @@ func (m *_MonitoredSALLongFormSmartMode) GetLengthInBytes(ctx context.Context) u
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func MonitoredSALLongFormSmartModeParse(theBytes []byte, cBusOptions CBusOptions) (MonitoredSALLongFormSmartMode, error) {
-	return MonitoredSALLongFormSmartModeParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), cBusOptions)
+func MonitoredSALLongFormSmartModeParse(ctx context.Context, theBytes []byte, cBusOptions CBusOptions) (MonitoredSALLongFormSmartMode, error) {
+	return MonitoredSALLongFormSmartModeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), cBusOptions)
 }
 
 func MonitoredSALLongFormSmartModeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (MonitoredSALLongFormSmartMode, error) {

@@ -156,8 +156,8 @@ func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass) GetLeng
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassParse(theBytes []byte, tagNumber uint8) (BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass, error) {
-	return BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber)
+func BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassParse(ctx context.Context, theBytes []byte, tagNumber uint8) (BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass, error) {
+	return BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber)
 }
 
 func BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass, error) {

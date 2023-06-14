@@ -123,8 +123,8 @@ func (m *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification) GetLe
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationParse(theBytes []byte, tagNumber uint8) (BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification, error) {
-	return BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber)
+func BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationParse(ctx context.Context, theBytes []byte, tagNumber uint8) (BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification, error) {
+	return BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber)
 }
 
 func BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification, error) {

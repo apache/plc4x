@@ -182,8 +182,8 @@ func (m *_MonitoredSALShortFormBasicMode) GetLengthInBytes(ctx context.Context) 
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func MonitoredSALShortFormBasicModeParse(theBytes []byte, cBusOptions CBusOptions) (MonitoredSALShortFormBasicMode, error) {
-	return MonitoredSALShortFormBasicModeParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), cBusOptions)
+func MonitoredSALShortFormBasicModeParse(ctx context.Context, theBytes []byte, cBusOptions CBusOptions) (MonitoredSALShortFormBasicMode, error) {
+	return MonitoredSALShortFormBasicModeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), cBusOptions)
 }
 
 func MonitoredSALShortFormBasicModeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (MonitoredSALShortFormBasicMode, error) {

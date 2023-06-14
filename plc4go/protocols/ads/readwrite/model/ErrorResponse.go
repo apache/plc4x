@@ -113,8 +113,8 @@ func (m *_ErrorResponse) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ErrorResponseParse(theBytes []byte) (ErrorResponse, error) {
-	return ErrorResponseParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func ErrorResponseParse(ctx context.Context, theBytes []byte) (ErrorResponse, error) {
+	return ErrorResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func ErrorResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ErrorResponse, error) {

@@ -121,8 +121,8 @@ func (m *_AirConditioningDataSetZoneGroupOn) GetLengthInBytes(ctx context.Contex
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func AirConditioningDataSetZoneGroupOnParse(theBytes []byte) (AirConditioningDataSetZoneGroupOn, error) {
-	return AirConditioningDataSetZoneGroupOnParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func AirConditioningDataSetZoneGroupOnParse(ctx context.Context, theBytes []byte) (AirConditioningDataSetZoneGroupOn, error) {
+	return AirConditioningDataSetZoneGroupOnParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func AirConditioningDataSetZoneGroupOnParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AirConditioningDataSetZoneGroupOn, error) {

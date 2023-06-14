@@ -20,6 +20,7 @@
 package s7
 
 import (
+	"context"
 	"encoding/hex"
 	"fmt"
 	"regexp"
@@ -254,7 +255,7 @@ func (m TagHandler) ParseTag(tagAddress string) (apiModel.PlcTag, error) {
 		if err != nil {
 			return nil, errors.Wrapf(err, "Unable to parse address: %s", tagAddress)
 		}
-		s7Address, err := readWriteModel.S7AddressAnyParse(addressData)
+		s7Address, err := readWriteModel.S7AddressAnyParse(context.TODO(), addressData)
 		if err != nil {
 			return nil, errors.Wrapf(err, "Unable to parse address: %s", tagAddress)
 		}

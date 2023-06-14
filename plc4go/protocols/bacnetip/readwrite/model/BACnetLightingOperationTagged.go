@@ -139,8 +139,8 @@ func (m *_BACnetLightingOperationTagged) GetLengthInBytes(ctx context.Context) u
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetLightingOperationTaggedParse(theBytes []byte, tagNumber uint8, tagClass TagClass) (BACnetLightingOperationTagged, error) {
-	return BACnetLightingOperationTaggedParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, tagClass)
+func BACnetLightingOperationTaggedParse(ctx context.Context, theBytes []byte, tagNumber uint8, tagClass TagClass) (BACnetLightingOperationTagged, error) {
+	return BACnetLightingOperationTaggedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, tagClass)
 }
 
 func BACnetLightingOperationTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetLightingOperationTagged, error) {

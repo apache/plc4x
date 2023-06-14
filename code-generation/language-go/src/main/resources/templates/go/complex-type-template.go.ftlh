@@ -749,8 +749,8 @@ func (m *_${type.name}) GetLengthInBytes(ctx context.Context) uint16 {
 <#assign hasParserArguments=parserArguments?has_content/>
 <#assign parserArgumentList><#if hasParserArguments><#list parserArguments as parserArgument>${parserArgument.name} ${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}<#sep>, </#sep></#list></#if></#assign>
 <#assign parserArgumentNameList><#if hasParserArguments><#list parserArguments as parserArgument>${parserArgument.name}<#sep>, </#sep></#list></#if></#assign>
-func ${type.name}Parse(theBytes []byte<#if hasParserArguments>, ${parserArgumentList}</#if>) (${type.name}, error) {
-	return ${type.name}ParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes${helper.getEndiannessOptions(true, true, parserArguments)})<#if hasParserArguments>, ${parserArgumentNameList}</#if>)
+func ${type.name}Parse(ctx context.Context, theBytes []byte<#if hasParserArguments>, ${parserArgumentList}</#if>) (${type.name}, error) {
+	return ${type.name}ParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes${helper.getEndiannessOptions(true, true, parserArguments)})<#if hasParserArguments>, ${parserArgumentNameList}</#if>)
 }
 
 func ${type.name}ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer<#if hasParserArguments>, ${parserArgumentList}</#if>) (${type.name}, error) {

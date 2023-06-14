@@ -110,8 +110,8 @@ func (m *_BACnetAuthenticationStatusTagged) GetLengthInBytes(ctx context.Context
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetAuthenticationStatusTaggedParse(theBytes []byte, tagNumber uint8, tagClass TagClass) (BACnetAuthenticationStatusTagged, error) {
-	return BACnetAuthenticationStatusTaggedParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, tagClass)
+func BACnetAuthenticationStatusTaggedParse(ctx context.Context, theBytes []byte, tagNumber uint8, tagClass TagClass) (BACnetAuthenticationStatusTagged, error) {
+	return BACnetAuthenticationStatusTaggedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, tagClass)
 }
 
 func BACnetAuthenticationStatusTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetAuthenticationStatusTagged, error) {

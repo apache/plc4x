@@ -101,8 +101,8 @@ func (m *_SecurityDataLowBatteryCorrected) GetLengthInBytes(ctx context.Context)
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func SecurityDataLowBatteryCorrectedParse(theBytes []byte) (SecurityDataLowBatteryCorrected, error) {
-	return SecurityDataLowBatteryCorrectedParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func SecurityDataLowBatteryCorrectedParse(ctx context.Context, theBytes []byte) (SecurityDataLowBatteryCorrected, error) {
+	return SecurityDataLowBatteryCorrectedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func SecurityDataLowBatteryCorrectedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityDataLowBatteryCorrected, error) {

@@ -123,8 +123,8 @@ func (m *_KnxNetRemoteLogging) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func KnxNetRemoteLoggingParse(theBytes []byte) (KnxNetRemoteLogging, error) {
-	return KnxNetRemoteLoggingParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func KnxNetRemoteLoggingParse(ctx context.Context, theBytes []byte) (KnxNetRemoteLogging, error) {
+	return KnxNetRemoteLoggingParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func KnxNetRemoteLoggingParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (KnxNetRemoteLogging, error) {

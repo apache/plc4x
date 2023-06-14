@@ -110,8 +110,8 @@ func (m *_BACnetFaultTypeTagged) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetFaultTypeTaggedParse(theBytes []byte, tagNumber uint8, tagClass TagClass) (BACnetFaultTypeTagged, error) {
-	return BACnetFaultTypeTaggedParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, tagClass)
+func BACnetFaultTypeTaggedParse(ctx context.Context, theBytes []byte, tagNumber uint8, tagClass TagClass) (BACnetFaultTypeTagged, error) {
+	return BACnetFaultTypeTaggedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, tagClass)
 }
 
 func BACnetFaultTypeTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetFaultTypeTagged, error) {

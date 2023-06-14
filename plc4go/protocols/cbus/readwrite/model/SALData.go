@@ -122,8 +122,8 @@ func (m *_SALData) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func SALDataParse(theBytes []byte, applicationId ApplicationId) (SALData, error) {
-	return SALDataParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), applicationId)
+func SALDataParse(ctx context.Context, theBytes []byte, applicationId ApplicationId) (SALData, error) {
+	return SALDataParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), applicationId)
 }
 
 func SALDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALData, error) {

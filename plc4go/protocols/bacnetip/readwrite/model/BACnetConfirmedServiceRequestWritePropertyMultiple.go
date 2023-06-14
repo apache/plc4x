@@ -131,8 +131,8 @@ func (m *_BACnetConfirmedServiceRequestWritePropertyMultiple) GetLengthInBytes(c
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConfirmedServiceRequestWritePropertyMultipleParse(theBytes []byte, serviceRequestPayloadLength uint32, serviceRequestLength uint32) (BACnetConfirmedServiceRequestWritePropertyMultiple, error) {
-	return BACnetConfirmedServiceRequestWritePropertyMultipleParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), serviceRequestPayloadLength, serviceRequestLength)
+func BACnetConfirmedServiceRequestWritePropertyMultipleParse(ctx context.Context, theBytes []byte, serviceRequestPayloadLength uint32, serviceRequestLength uint32) (BACnetConfirmedServiceRequestWritePropertyMultiple, error) {
+	return BACnetConfirmedServiceRequestWritePropertyMultipleParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), serviceRequestPayloadLength, serviceRequestLength)
 }
 
 func BACnetConfirmedServiceRequestWritePropertyMultipleParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, serviceRequestPayloadLength uint32, serviceRequestLength uint32) (BACnetConfirmedServiceRequestWritePropertyMultiple, error) {

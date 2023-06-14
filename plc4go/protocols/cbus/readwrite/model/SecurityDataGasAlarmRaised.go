@@ -101,8 +101,8 @@ func (m *_SecurityDataGasAlarmRaised) GetLengthInBytes(ctx context.Context) uint
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func SecurityDataGasAlarmRaisedParse(theBytes []byte) (SecurityDataGasAlarmRaised, error) {
-	return SecurityDataGasAlarmRaisedParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func SecurityDataGasAlarmRaisedParse(ctx context.Context, theBytes []byte) (SecurityDataGasAlarmRaised, error) {
+	return SecurityDataGasAlarmRaisedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func SecurityDataGasAlarmRaisedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityDataGasAlarmRaised, error) {

@@ -138,8 +138,8 @@ func (m *_DeviceConfigurationRequest) GetLengthInBytes(ctx context.Context) uint
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func DeviceConfigurationRequestParse(theBytes []byte, totalLength uint16) (DeviceConfigurationRequest, error) {
-	return DeviceConfigurationRequestParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), totalLength)
+func DeviceConfigurationRequestParse(ctx context.Context, theBytes []byte, totalLength uint16) (DeviceConfigurationRequest, error) {
+	return DeviceConfigurationRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), totalLength)
 }
 
 func DeviceConfigurationRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, totalLength uint16) (DeviceConfigurationRequest, error) {

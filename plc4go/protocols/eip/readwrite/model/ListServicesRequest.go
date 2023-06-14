@@ -115,8 +115,8 @@ func (m *_ListServicesRequest) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ListServicesRequestParse(theBytes []byte, response bool) (ListServicesRequest, error) {
-	return ListServicesRequestParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), response)
+func ListServicesRequestParse(ctx context.Context, theBytes []byte, response bool) (ListServicesRequest, error) {
+	return ListServicesRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), response)
 }
 
 func ListServicesRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (ListServicesRequest, error) {

@@ -139,8 +139,8 @@ func (m *_APDUSimpleAck) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func APDUSimpleAckParse(theBytes []byte, apduLength uint16) (APDUSimpleAck, error) {
-	return APDUSimpleAckParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), apduLength)
+func APDUSimpleAckParse(ctx context.Context, theBytes []byte, apduLength uint16) (APDUSimpleAck, error) {
+	return APDUSimpleAckParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), apduLength)
 }
 
 func APDUSimpleAckParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, apduLength uint16) (APDUSimpleAck, error) {

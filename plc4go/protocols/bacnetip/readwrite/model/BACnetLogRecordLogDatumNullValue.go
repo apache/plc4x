@@ -123,8 +123,8 @@ func (m *_BACnetLogRecordLogDatumNullValue) GetLengthInBytes(ctx context.Context
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetLogRecordLogDatumNullValueParse(theBytes []byte, tagNumber uint8) (BACnetLogRecordLogDatumNullValue, error) {
-	return BACnetLogRecordLogDatumNullValueParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber)
+func BACnetLogRecordLogDatumNullValueParse(ctx context.Context, theBytes []byte, tagNumber uint8) (BACnetLogRecordLogDatumNullValue, error) {
+	return BACnetLogRecordLogDatumNullValueParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber)
 }
 
 func BACnetLogRecordLogDatumNullValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetLogRecordLogDatumNullValue, error) {

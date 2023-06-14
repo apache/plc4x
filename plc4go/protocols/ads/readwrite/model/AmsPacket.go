@@ -260,8 +260,8 @@ func (m *_AmsPacket) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func AmsPacketParse(theBytes []byte) (AmsPacket, error) {
-	return AmsPacketParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func AmsPacketParse(ctx context.Context, theBytes []byte) (AmsPacket, error) {
+	return AmsPacketParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func AmsPacketParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AmsPacket, error) {

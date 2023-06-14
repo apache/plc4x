@@ -125,8 +125,8 @@ func (m *_SALDataTemperatureBroadcast) GetLengthInBytes(ctx context.Context) uin
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func SALDataTemperatureBroadcastParse(theBytes []byte, applicationId ApplicationId) (SALDataTemperatureBroadcast, error) {
-	return SALDataTemperatureBroadcastParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), applicationId)
+func SALDataTemperatureBroadcastParse(ctx context.Context, theBytes []byte, applicationId ApplicationId) (SALDataTemperatureBroadcast, error) {
+	return SALDataTemperatureBroadcastParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), applicationId)
 }
 
 func SALDataTemperatureBroadcastParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataTemperatureBroadcast, error) {

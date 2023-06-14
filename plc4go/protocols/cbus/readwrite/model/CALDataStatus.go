@@ -151,8 +151,8 @@ func (m *_CALDataStatus) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func CALDataStatusParse(theBytes []byte, commandTypeContainer CALCommandTypeContainer, requestContext RequestContext) (CALDataStatus, error) {
-	return CALDataStatusParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), commandTypeContainer, requestContext)
+func CALDataStatusParse(ctx context.Context, theBytes []byte, commandTypeContainer CALCommandTypeContainer, requestContext RequestContext) (CALDataStatus, error) {
+	return CALDataStatusParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), commandTypeContainer, requestContext)
 }
 
 func CALDataStatusParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, commandTypeContainer CALCommandTypeContainer, requestContext RequestContext) (CALDataStatus, error) {

@@ -101,8 +101,8 @@ func (m *_MeteringDataMeasureGas) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func MeteringDataMeasureGasParse(theBytes []byte) (MeteringDataMeasureGas, error) {
-	return MeteringDataMeasureGasParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func MeteringDataMeasureGasParse(ctx context.Context, theBytes []byte) (MeteringDataMeasureGas, error) {
+	return MeteringDataMeasureGasParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func MeteringDataMeasureGasParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (MeteringDataMeasureGas, error) {

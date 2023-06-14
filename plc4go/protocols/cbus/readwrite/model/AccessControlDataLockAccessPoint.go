@@ -102,8 +102,8 @@ func (m *_AccessControlDataLockAccessPoint) GetLengthInBytes(ctx context.Context
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func AccessControlDataLockAccessPointParse(theBytes []byte) (AccessControlDataLockAccessPoint, error) {
-	return AccessControlDataLockAccessPointParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func AccessControlDataLockAccessPointParse(ctx context.Context, theBytes []byte) (AccessControlDataLockAccessPoint, error) {
+	return AccessControlDataLockAccessPointParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func AccessControlDataLockAccessPointParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AccessControlDataLockAccessPoint, error) {

@@ -126,8 +126,8 @@ func (m *_DF1UnprotectedReadResponse) GetLengthInBytes(ctx context.Context) uint
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func DF1UnprotectedReadResponseParse(theBytes []byte) (DF1UnprotectedReadResponse, error) {
-	return DF1UnprotectedReadResponseParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func DF1UnprotectedReadResponseParse(ctx context.Context, theBytes []byte) (DF1UnprotectedReadResponse, error) {
+	return DF1UnprotectedReadResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func DF1UnprotectedReadResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (DF1UnprotectedReadResponse, error) {

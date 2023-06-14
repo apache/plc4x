@@ -96,8 +96,8 @@ func (m *_InterfaceOptions1PowerUpSettings) GetLengthInBytes(ctx context.Context
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func InterfaceOptions1PowerUpSettingsParse(theBytes []byte) (InterfaceOptions1PowerUpSettings, error) {
-	return InterfaceOptions1PowerUpSettingsParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func InterfaceOptions1PowerUpSettingsParse(ctx context.Context, theBytes []byte) (InterfaceOptions1PowerUpSettings, error) {
+	return InterfaceOptions1PowerUpSettingsParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func InterfaceOptions1PowerUpSettingsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (InterfaceOptions1PowerUpSettings, error) {

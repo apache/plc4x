@@ -125,8 +125,8 @@ func (m *_SALDataHeating) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func SALDataHeatingParse(theBytes []byte, applicationId ApplicationId) (SALDataHeating, error) {
-	return SALDataHeatingParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), applicationId)
+func SALDataHeatingParse(ctx context.Context, theBytes []byte, applicationId ApplicationId) (SALDataHeating, error) {
+	return SALDataHeatingParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), applicationId)
 }
 
 func SALDataHeatingParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataHeating, error) {

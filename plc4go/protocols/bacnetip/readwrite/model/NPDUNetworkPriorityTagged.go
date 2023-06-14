@@ -110,8 +110,8 @@ func (m *_NPDUNetworkPriorityTagged) GetLengthInBytes(ctx context.Context) uint1
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func NPDUNetworkPriorityTaggedParse(theBytes []byte, tagNumber uint8, tagClass TagClass) (NPDUNetworkPriorityTagged, error) {
-	return NPDUNetworkPriorityTaggedParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, tagClass)
+func NPDUNetworkPriorityTaggedParse(ctx context.Context, theBytes []byte, tagNumber uint8, tagClass TagClass) (NPDUNetworkPriorityTagged, error) {
+	return NPDUNetworkPriorityTaggedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, tagClass)
 }
 
 func NPDUNetworkPriorityTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (NPDUNetworkPriorityTagged, error) {

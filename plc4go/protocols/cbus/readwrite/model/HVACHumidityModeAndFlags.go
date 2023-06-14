@@ -230,8 +230,8 @@ func (m *_HVACHumidityModeAndFlags) GetLengthInBytes(ctx context.Context) uint16
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func HVACHumidityModeAndFlagsParse(theBytes []byte) (HVACHumidityModeAndFlags, error) {
-	return HVACHumidityModeAndFlagsParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func HVACHumidityModeAndFlagsParse(ctx context.Context, theBytes []byte) (HVACHumidityModeAndFlags, error) {
+	return HVACHumidityModeAndFlagsParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func HVACHumidityModeAndFlagsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (HVACHumidityModeAndFlags, error) {

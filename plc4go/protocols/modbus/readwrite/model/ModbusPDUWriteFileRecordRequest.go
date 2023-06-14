@@ -138,8 +138,8 @@ func (m *_ModbusPDUWriteFileRecordRequest) GetLengthInBytes(ctx context.Context)
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ModbusPDUWriteFileRecordRequestParse(theBytes []byte, response bool) (ModbusPDUWriteFileRecordRequest, error) {
-	return ModbusPDUWriteFileRecordRequestParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), response)
+func ModbusPDUWriteFileRecordRequestParse(ctx context.Context, theBytes []byte, response bool) (ModbusPDUWriteFileRecordRequest, error) {
+	return ModbusPDUWriteFileRecordRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), response)
 }
 
 func ModbusPDUWriteFileRecordRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (ModbusPDUWriteFileRecordRequest, error) {

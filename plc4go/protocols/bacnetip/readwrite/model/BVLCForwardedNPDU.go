@@ -151,8 +151,8 @@ func (m *_BVLCForwardedNPDU) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BVLCForwardedNPDUParse(theBytes []byte, bvlcPayloadLength uint16) (BVLCForwardedNPDU, error) {
-	return BVLCForwardedNPDUParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), bvlcPayloadLength)
+func BVLCForwardedNPDUParse(ctx context.Context, theBytes []byte, bvlcPayloadLength uint16) (BVLCForwardedNPDU, error) {
+	return BVLCForwardedNPDUParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), bvlcPayloadLength)
 }
 
 func BVLCForwardedNPDUParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, bvlcPayloadLength uint16) (BVLCForwardedNPDU, error) {

@@ -121,8 +121,8 @@ func (m *_BACnetPropertyStatesTimerTransition) GetLengthInBytes(ctx context.Cont
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetPropertyStatesTimerTransitionParse(theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesTimerTransition, error) {
-	return BACnetPropertyStatesTimerTransitionParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
+func BACnetPropertyStatesTimerTransitionParse(ctx context.Context, theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesTimerTransition, error) {
+	return BACnetPropertyStatesTimerTransitionParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
 }
 
 func BACnetPropertyStatesTimerTransitionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesTimerTransition, error) {

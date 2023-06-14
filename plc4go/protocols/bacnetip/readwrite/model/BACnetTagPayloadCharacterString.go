@@ -128,8 +128,8 @@ func (m *_BACnetTagPayloadCharacterString) GetLengthInBytes(ctx context.Context)
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetTagPayloadCharacterStringParse(theBytes []byte, actualLength uint32) (BACnetTagPayloadCharacterString, error) {
-	return BACnetTagPayloadCharacterStringParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), actualLength)
+func BACnetTagPayloadCharacterStringParse(ctx context.Context, theBytes []byte, actualLength uint32) (BACnetTagPayloadCharacterString, error) {
+	return BACnetTagPayloadCharacterStringParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), actualLength)
 }
 
 func BACnetTagPayloadCharacterStringParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, actualLength uint32) (BACnetTagPayloadCharacterString, error) {

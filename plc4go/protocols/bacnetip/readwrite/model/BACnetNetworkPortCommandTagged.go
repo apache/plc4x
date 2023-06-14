@@ -139,8 +139,8 @@ func (m *_BACnetNetworkPortCommandTagged) GetLengthInBytes(ctx context.Context) 
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetNetworkPortCommandTaggedParse(theBytes []byte, tagNumber uint8, tagClass TagClass) (BACnetNetworkPortCommandTagged, error) {
-	return BACnetNetworkPortCommandTaggedParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, tagClass)
+func BACnetNetworkPortCommandTaggedParse(ctx context.Context, theBytes []byte, tagNumber uint8, tagClass TagClass) (BACnetNetworkPortCommandTagged, error) {
+	return BACnetNetworkPortCommandTaggedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, tagClass)
 }
 
 func BACnetNetworkPortCommandTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetNetworkPortCommandTagged, error) {

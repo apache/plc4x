@@ -187,8 +187,8 @@ func (m *_BACnetEventParameterFloatingLimit) GetLengthInBytes(ctx context.Contex
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetEventParameterFloatingLimitParse(theBytes []byte) (BACnetEventParameterFloatingLimit, error) {
-	return BACnetEventParameterFloatingLimitParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func BACnetEventParameterFloatingLimitParse(ctx context.Context, theBytes []byte) (BACnetEventParameterFloatingLimit, error) {
+	return BACnetEventParameterFloatingLimitParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func BACnetEventParameterFloatingLimitParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetEventParameterFloatingLimit, error) {

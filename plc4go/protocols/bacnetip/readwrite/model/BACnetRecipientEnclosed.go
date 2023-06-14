@@ -119,8 +119,8 @@ func (m *_BACnetRecipientEnclosed) GetLengthInBytes(ctx context.Context) uint16 
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetRecipientEnclosedParse(theBytes []byte, tagNumber uint8) (BACnetRecipientEnclosed, error) {
-	return BACnetRecipientEnclosedParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber)
+func BACnetRecipientEnclosedParse(ctx context.Context, theBytes []byte, tagNumber uint8) (BACnetRecipientEnclosed, error) {
+	return BACnetRecipientEnclosedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber)
 }
 
 func BACnetRecipientEnclosedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetRecipientEnclosed, error) {

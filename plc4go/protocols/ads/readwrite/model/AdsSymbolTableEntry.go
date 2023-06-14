@@ -362,8 +362,8 @@ func (m *_AdsSymbolTableEntry) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func AdsSymbolTableEntryParse(theBytes []byte) (AdsSymbolTableEntry, error) {
-	return AdsSymbolTableEntryParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian)))
+func AdsSymbolTableEntryParse(ctx context.Context, theBytes []byte) (AdsSymbolTableEntry, error) {
+	return AdsSymbolTableEntryParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian)))
 }
 
 func AdsSymbolTableEntryParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AdsSymbolTableEntry, error) {

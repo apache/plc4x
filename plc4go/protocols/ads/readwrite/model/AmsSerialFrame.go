@@ -156,8 +156,8 @@ func (m *_AmsSerialFrame) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func AmsSerialFrameParse(theBytes []byte) (AmsSerialFrame, error) {
-	return AmsSerialFrameParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func AmsSerialFrameParse(ctx context.Context, theBytes []byte) (AmsSerialFrame, error) {
+	return AmsSerialFrameParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func AmsSerialFrameParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AmsSerialFrame, error) {

@@ -76,8 +76,8 @@ func (m *_BACnetWeekNDay) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetWeekNDayParse(theBytes []byte) (BACnetWeekNDay, error) {
-	return BACnetWeekNDayParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func BACnetWeekNDayParse(ctx context.Context, theBytes []byte) (BACnetWeekNDay, error) {
+	return BACnetWeekNDayParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func BACnetWeekNDayParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetWeekNDay, error) {

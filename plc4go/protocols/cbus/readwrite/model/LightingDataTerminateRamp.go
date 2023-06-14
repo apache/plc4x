@@ -121,8 +121,8 @@ func (m *_LightingDataTerminateRamp) GetLengthInBytes(ctx context.Context) uint1
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func LightingDataTerminateRampParse(theBytes []byte) (LightingDataTerminateRamp, error) {
-	return LightingDataTerminateRampParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func LightingDataTerminateRampParse(ctx context.Context, theBytes []byte) (LightingDataTerminateRamp, error) {
+	return LightingDataTerminateRampParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func LightingDataTerminateRampParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (LightingDataTerminateRamp, error) {

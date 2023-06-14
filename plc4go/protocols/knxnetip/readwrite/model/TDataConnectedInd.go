@@ -102,8 +102,8 @@ func (m *_TDataConnectedInd) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func TDataConnectedIndParse(theBytes []byte, size uint16) (TDataConnectedInd, error) {
-	return TDataConnectedIndParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), size)
+func TDataConnectedIndParse(ctx context.Context, theBytes []byte, size uint16) (TDataConnectedInd, error) {
+	return TDataConnectedIndParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), size)
 }
 
 func TDataConnectedIndParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, size uint16) (TDataConnectedInd, error) {

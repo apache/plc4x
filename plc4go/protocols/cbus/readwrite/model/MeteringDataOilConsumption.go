@@ -122,8 +122,8 @@ func (m *_MeteringDataOilConsumption) GetLengthInBytes(ctx context.Context) uint
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func MeteringDataOilConsumptionParse(theBytes []byte) (MeteringDataOilConsumption, error) {
-	return MeteringDataOilConsumptionParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func MeteringDataOilConsumptionParse(ctx context.Context, theBytes []byte) (MeteringDataOilConsumption, error) {
+	return MeteringDataOilConsumptionParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func MeteringDataOilConsumptionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (MeteringDataOilConsumption, error) {

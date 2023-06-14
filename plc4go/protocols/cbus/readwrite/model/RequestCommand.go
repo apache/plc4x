@@ -202,8 +202,8 @@ func (m *_RequestCommand) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func RequestCommandParse(theBytes []byte, cBusOptions CBusOptions) (RequestCommand, error) {
-	return RequestCommandParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), cBusOptions)
+func RequestCommandParse(ctx context.Context, theBytes []byte, cBusOptions CBusOptions) (RequestCommand, error) {
+	return RequestCommandParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), cBusOptions)
 }
 
 func RequestCommandParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (RequestCommand, error) {

@@ -145,8 +145,8 @@ func (m *_BACnetAddress) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetAddressParse(theBytes []byte) (BACnetAddress, error) {
-	return BACnetAddressParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func BACnetAddressParse(ctx context.Context, theBytes []byte) (BACnetAddress, error) {
+	return BACnetAddressParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func BACnetAddressParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetAddress, error) {

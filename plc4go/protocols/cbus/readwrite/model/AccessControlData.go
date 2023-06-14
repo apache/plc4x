@@ -156,8 +156,8 @@ func (m *_AccessControlData) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func AccessControlDataParse(theBytes []byte) (AccessControlData, error) {
-	return AccessControlDataParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func AccessControlDataParse(ctx context.Context, theBytes []byte) (AccessControlData, error) {
+	return AccessControlDataParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func AccessControlDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AccessControlData, error) {

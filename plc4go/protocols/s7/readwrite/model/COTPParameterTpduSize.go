@@ -123,8 +123,8 @@ func (m *_COTPParameterTpduSize) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func COTPParameterTpduSizeParse(theBytes []byte, rest uint8) (COTPParameterTpduSize, error) {
-	return COTPParameterTpduSizeParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), rest)
+func COTPParameterTpduSizeParse(ctx context.Context, theBytes []byte, rest uint8) (COTPParameterTpduSize, error) {
+	return COTPParameterTpduSizeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), rest)
 }
 
 func COTPParameterTpduSizeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, rest uint8) (COTPParameterTpduSize, error) {

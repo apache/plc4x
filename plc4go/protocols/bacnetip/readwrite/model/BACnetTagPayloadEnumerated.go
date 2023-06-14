@@ -120,8 +120,8 @@ func (m *_BACnetTagPayloadEnumerated) GetLengthInBytes(ctx context.Context) uint
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetTagPayloadEnumeratedParse(theBytes []byte, actualLength uint32) (BACnetTagPayloadEnumerated, error) {
-	return BACnetTagPayloadEnumeratedParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), actualLength)
+func BACnetTagPayloadEnumeratedParse(ctx context.Context, theBytes []byte, actualLength uint32) (BACnetTagPayloadEnumerated, error) {
+	return BACnetTagPayloadEnumeratedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), actualLength)
 }
 
 func BACnetTagPayloadEnumeratedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, actualLength uint32) (BACnetTagPayloadEnumerated, error) {

@@ -110,8 +110,8 @@ func (m *_BACnetLightingInProgressTagged) GetLengthInBytes(ctx context.Context) 
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetLightingInProgressTaggedParse(theBytes []byte, tagNumber uint8, tagClass TagClass) (BACnetLightingInProgressTagged, error) {
-	return BACnetLightingInProgressTaggedParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, tagClass)
+func BACnetLightingInProgressTaggedParse(ctx context.Context, theBytes []byte, tagNumber uint8, tagClass TagClass) (BACnetLightingInProgressTagged, error) {
+	return BACnetLightingInProgressTaggedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, tagClass)
 }
 
 func BACnetLightingInProgressTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetLightingInProgressTagged, error) {

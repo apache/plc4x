@@ -129,8 +129,8 @@ func (m *_BACnetConfirmedServiceRequestAuthenticate) GetLengthInBytes(ctx contex
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConfirmedServiceRequestAuthenticateParse(theBytes []byte, serviceRequestPayloadLength uint32, serviceRequestLength uint32) (BACnetConfirmedServiceRequestAuthenticate, error) {
-	return BACnetConfirmedServiceRequestAuthenticateParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), serviceRequestPayloadLength, serviceRequestLength)
+func BACnetConfirmedServiceRequestAuthenticateParse(ctx context.Context, theBytes []byte, serviceRequestPayloadLength uint32, serviceRequestLength uint32) (BACnetConfirmedServiceRequestAuthenticate, error) {
+	return BACnetConfirmedServiceRequestAuthenticateParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), serviceRequestPayloadLength, serviceRequestLength)
 }
 
 func BACnetConfirmedServiceRequestAuthenticateParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, serviceRequestPayloadLength uint32, serviceRequestLength uint32) (BACnetConfirmedServiceRequestAuthenticate, error) {

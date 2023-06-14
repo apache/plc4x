@@ -151,8 +151,8 @@ func (m *_MediaTransportControlDataNextPreviousTrack) GetLengthInBytes(ctx conte
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func MediaTransportControlDataNextPreviousTrackParse(theBytes []byte) (MediaTransportControlDataNextPreviousTrack, error) {
-	return MediaTransportControlDataNextPreviousTrackParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func MediaTransportControlDataNextPreviousTrackParse(ctx context.Context, theBytes []byte) (MediaTransportControlDataNextPreviousTrack, error) {
+	return MediaTransportControlDataNextPreviousTrackParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func MediaTransportControlDataNextPreviousTrackParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (MediaTransportControlDataNextPreviousTrack, error) {

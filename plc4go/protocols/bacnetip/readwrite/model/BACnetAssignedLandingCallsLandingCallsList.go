@@ -123,8 +123,8 @@ func (m *_BACnetAssignedLandingCallsLandingCallsList) GetLengthInBytes(ctx conte
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetAssignedLandingCallsLandingCallsListParse(theBytes []byte, tagNumber uint8) (BACnetAssignedLandingCallsLandingCallsList, error) {
-	return BACnetAssignedLandingCallsLandingCallsListParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber)
+func BACnetAssignedLandingCallsLandingCallsListParse(ctx context.Context, theBytes []byte, tagNumber uint8) (BACnetAssignedLandingCallsLandingCallsList, error) {
+	return BACnetAssignedLandingCallsLandingCallsListParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber)
 }
 
 func BACnetAssignedLandingCallsLandingCallsListParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetAssignedLandingCallsLandingCallsList, error) {

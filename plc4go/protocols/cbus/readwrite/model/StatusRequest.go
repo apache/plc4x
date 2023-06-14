@@ -114,8 +114,8 @@ func (m *_StatusRequest) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func StatusRequestParse(theBytes []byte) (StatusRequest, error) {
-	return StatusRequestParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func StatusRequestParse(ctx context.Context, theBytes []byte) (StatusRequest, error) {
+	return StatusRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func StatusRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (StatusRequest, error) {

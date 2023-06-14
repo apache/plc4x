@@ -121,8 +121,8 @@ func (m *_BACnetPropertyStatesLifeSafetyMode) GetLengthInBytes(ctx context.Conte
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetPropertyStatesLifeSafetyModeParse(theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesLifeSafetyMode, error) {
-	return BACnetPropertyStatesLifeSafetyModeParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
+func BACnetPropertyStatesLifeSafetyModeParse(ctx context.Context, theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesLifeSafetyMode, error) {
+	return BACnetPropertyStatesLifeSafetyModeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
 }
 
 func BACnetPropertyStatesLifeSafetyModeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesLifeSafetyMode, error) {

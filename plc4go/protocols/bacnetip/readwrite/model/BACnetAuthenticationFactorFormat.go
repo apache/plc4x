@@ -121,8 +121,8 @@ func (m *_BACnetAuthenticationFactorFormat) GetLengthInBytes(ctx context.Context
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetAuthenticationFactorFormatParse(theBytes []byte) (BACnetAuthenticationFactorFormat, error) {
-	return BACnetAuthenticationFactorFormatParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func BACnetAuthenticationFactorFormatParse(ctx context.Context, theBytes []byte) (BACnetAuthenticationFactorFormat, error) {
+	return BACnetAuthenticationFactorFormatParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func BACnetAuthenticationFactorFormatParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetAuthenticationFactorFormat, error) {

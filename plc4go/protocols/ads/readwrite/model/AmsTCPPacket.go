@@ -105,8 +105,8 @@ func (m *_AmsTCPPacket) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func AmsTCPPacketParse(theBytes []byte) (AmsTCPPacket, error) {
-	return AmsTCPPacketParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian)))
+func AmsTCPPacketParse(ctx context.Context, theBytes []byte) (AmsTCPPacket, error) {
+	return AmsTCPPacketParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian)))
 }
 
 func AmsTCPPacketParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AmsTCPPacket, error) {

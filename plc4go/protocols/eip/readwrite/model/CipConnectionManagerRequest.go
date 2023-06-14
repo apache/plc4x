@@ -330,8 +330,8 @@ func (m *_CipConnectionManagerRequest) GetLengthInBytes(ctx context.Context) uin
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func CipConnectionManagerRequestParse(theBytes []byte, connected bool, serviceLen uint16) (CipConnectionManagerRequest, error) {
-	return CipConnectionManagerRequestParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), connected, serviceLen)
+func CipConnectionManagerRequestParse(ctx context.Context, theBytes []byte, connected bool, serviceLen uint16) (CipConnectionManagerRequest, error) {
+	return CipConnectionManagerRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), connected, serviceLen)
 }
 
 func CipConnectionManagerRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, connected bool, serviceLen uint16) (CipConnectionManagerRequest, error) {

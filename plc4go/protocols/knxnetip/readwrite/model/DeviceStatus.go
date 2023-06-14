@@ -101,8 +101,8 @@ func (m *_DeviceStatus) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func DeviceStatusParse(theBytes []byte) (DeviceStatus, error) {
-	return DeviceStatusParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func DeviceStatusParse(ctx context.Context, theBytes []byte) (DeviceStatus, error) {
+	return DeviceStatusParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func DeviceStatusParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (DeviceStatus, error) {

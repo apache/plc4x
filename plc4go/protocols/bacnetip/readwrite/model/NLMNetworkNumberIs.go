@@ -139,8 +139,8 @@ func (m *_NLMNetworkNumberIs) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func NLMNetworkNumberIsParse(theBytes []byte, apduLength uint16) (NLMNetworkNumberIs, error) {
-	return NLMNetworkNumberIsParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), apduLength)
+func NLMNetworkNumberIsParse(ctx context.Context, theBytes []byte, apduLength uint16) (NLMNetworkNumberIs, error) {
+	return NLMNetworkNumberIsParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), apduLength)
 }
 
 func NLMNetworkNumberIsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, apduLength uint16) (NLMNetworkNumberIs, error) {

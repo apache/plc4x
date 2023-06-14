@@ -222,8 +222,8 @@ func (m *_IdentifyReplyCommandDSIStatus) GetLengthInBytes(ctx context.Context) u
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func IdentifyReplyCommandDSIStatusParse(theBytes []byte, attribute Attribute, numBytes uint8) (IdentifyReplyCommandDSIStatus, error) {
-	return IdentifyReplyCommandDSIStatusParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), attribute, numBytes)
+func IdentifyReplyCommandDSIStatusParse(ctx context.Context, theBytes []byte, attribute Attribute, numBytes uint8) (IdentifyReplyCommandDSIStatus, error) {
+	return IdentifyReplyCommandDSIStatusParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), attribute, numBytes)
 }
 
 func IdentifyReplyCommandDSIStatusParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, attribute Attribute, numBytes uint8) (IdentifyReplyCommandDSIStatus, error) {

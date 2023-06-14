@@ -134,8 +134,8 @@ func (m *_ClassID) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ClassIDParse(theBytes []byte) (ClassID, error) {
-	return ClassIDParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func ClassIDParse(ctx context.Context, theBytes []byte) (ClassID, error) {
+	return ClassIDParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func ClassIDParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ClassID, error) {

@@ -157,8 +157,8 @@ func (m *_BACnetUnconfirmedServiceRequestIAm) GetLengthInBytes(ctx context.Conte
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetUnconfirmedServiceRequestIAmParse(theBytes []byte, serviceRequestLength uint16) (BACnetUnconfirmedServiceRequestIAm, error) {
-	return BACnetUnconfirmedServiceRequestIAmParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), serviceRequestLength)
+func BACnetUnconfirmedServiceRequestIAmParse(ctx context.Context, theBytes []byte, serviceRequestLength uint16) (BACnetUnconfirmedServiceRequestIAm, error) {
+	return BACnetUnconfirmedServiceRequestIAmParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), serviceRequestLength)
 }
 
 func BACnetUnconfirmedServiceRequestIAmParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, serviceRequestLength uint16) (BACnetUnconfirmedServiceRequestIAm, error) {

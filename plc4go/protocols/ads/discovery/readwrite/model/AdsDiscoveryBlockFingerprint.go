@@ -128,8 +128,8 @@ func (m *_AdsDiscoveryBlockFingerprint) GetLengthInBytes(ctx context.Context) ui
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func AdsDiscoveryBlockFingerprintParse(theBytes []byte) (AdsDiscoveryBlockFingerprint, error) {
-	return AdsDiscoveryBlockFingerprintParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func AdsDiscoveryBlockFingerprintParse(ctx context.Context, theBytes []byte) (AdsDiscoveryBlockFingerprint, error) {
+	return AdsDiscoveryBlockFingerprintParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func AdsDiscoveryBlockFingerprintParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AdsDiscoveryBlockFingerprint, error) {

@@ -193,8 +193,8 @@ func (m *_LDataExtended) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func LDataExtendedParse(theBytes []byte) (LDataExtended, error) {
-	return LDataExtendedParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func LDataExtendedParse(ctx context.Context, theBytes []byte) (LDataExtended, error) {
+	return LDataExtendedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func LDataExtendedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (LDataExtended, error) {

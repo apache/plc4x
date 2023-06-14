@@ -124,8 +124,8 @@ func (m *_SecurityDataOn) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func SecurityDataOnParse(theBytes []byte, commandTypeContainer SecurityCommandTypeContainer) (SecurityDataOn, error) {
-	return SecurityDataOnParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), commandTypeContainer)
+func SecurityDataOnParse(ctx context.Context, theBytes []byte, commandTypeContainer SecurityCommandTypeContainer) (SecurityDataOn, error) {
+	return SecurityDataOnParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), commandTypeContainer)
 }
 
 func SecurityDataOnParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, commandTypeContainer SecurityCommandTypeContainer) (SecurityDataOn, error) {

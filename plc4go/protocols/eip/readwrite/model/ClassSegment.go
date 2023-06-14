@@ -126,8 +126,8 @@ func (m *_ClassSegment) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ClassSegmentParse(theBytes []byte) (ClassSegment, error) {
-	return ClassSegmentParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func ClassSegmentParse(ctx context.Context, theBytes []byte) (ClassSegment, error) {
+	return ClassSegmentParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func ClassSegmentParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ClassSegment, error) {

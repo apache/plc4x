@@ -99,8 +99,8 @@ func (m *_BACnetSetpointReference) GetLengthInBytes(ctx context.Context) uint16 
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetSetpointReferenceParse(theBytes []byte) (BACnetSetpointReference, error) {
-	return BACnetSetpointReferenceParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func BACnetSetpointReferenceParse(ctx context.Context, theBytes []byte) (BACnetSetpointReference, error) {
+	return BACnetSetpointReferenceParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func BACnetSetpointReferenceParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetSetpointReference, error) {

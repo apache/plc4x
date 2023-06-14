@@ -123,8 +123,8 @@ func (m *_AdsDiscoveryBlockRouteName) GetLengthInBytes(ctx context.Context) uint
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func AdsDiscoveryBlockRouteNameParse(theBytes []byte) (AdsDiscoveryBlockRouteName, error) {
-	return AdsDiscoveryBlockRouteNameParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func AdsDiscoveryBlockRouteNameParse(ctx context.Context, theBytes []byte) (AdsDiscoveryBlockRouteName, error) {
+	return AdsDiscoveryBlockRouteNameParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func AdsDiscoveryBlockRouteNameParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AdsDiscoveryBlockRouteName, error) {

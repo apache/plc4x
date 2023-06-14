@@ -128,8 +128,8 @@ func (m *_KnxNetIpMessage) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func KnxNetIpMessageParse(theBytes []byte) (KnxNetIpMessage, error) {
-	return KnxNetIpMessageParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
+func KnxNetIpMessageParse(ctx context.Context, theBytes []byte) (KnxNetIpMessage, error) {
+	return KnxNetIpMessageParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
 }
 
 func KnxNetIpMessageParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (KnxNetIpMessage, error) {

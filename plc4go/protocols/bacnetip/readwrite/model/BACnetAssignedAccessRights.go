@@ -106,8 +106,8 @@ func (m *_BACnetAssignedAccessRights) GetLengthInBytes(ctx context.Context) uint
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetAssignedAccessRightsParse(theBytes []byte) (BACnetAssignedAccessRights, error) {
-	return BACnetAssignedAccessRightsParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func BACnetAssignedAccessRightsParse(ctx context.Context, theBytes []byte) (BACnetAssignedAccessRights, error) {
+	return BACnetAssignedAccessRightsParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func BACnetAssignedAccessRightsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetAssignedAccessRights, error) {

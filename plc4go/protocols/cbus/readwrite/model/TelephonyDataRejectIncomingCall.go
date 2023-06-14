@@ -101,8 +101,8 @@ func (m *_TelephonyDataRejectIncomingCall) GetLengthInBytes(ctx context.Context)
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func TelephonyDataRejectIncomingCallParse(theBytes []byte) (TelephonyDataRejectIncomingCall, error) {
-	return TelephonyDataRejectIncomingCallParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func TelephonyDataRejectIncomingCallParse(ctx context.Context, theBytes []byte) (TelephonyDataRejectIncomingCall, error) {
+	return TelephonyDataRejectIncomingCallParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func TelephonyDataRejectIncomingCallParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (TelephonyDataRejectIncomingCall, error) {

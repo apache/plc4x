@@ -186,8 +186,8 @@ func (m *_DeviceDescriptorType2) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func DeviceDescriptorType2Parse(theBytes []byte) (DeviceDescriptorType2, error) {
-	return DeviceDescriptorType2ParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func DeviceDescriptorType2Parse(ctx context.Context, theBytes []byte) (DeviceDescriptorType2, error) {
+	return DeviceDescriptorType2ParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func DeviceDescriptorType2ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (DeviceDescriptorType2, error) {

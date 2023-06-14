@@ -106,8 +106,8 @@ func (m *_BACnetAddressBinding) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetAddressBindingParse(theBytes []byte) (BACnetAddressBinding, error) {
-	return BACnetAddressBindingParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func BACnetAddressBindingParse(ctx context.Context, theBytes []byte) (BACnetAddressBinding, error) {
+	return BACnetAddressBindingParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func BACnetAddressBindingParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetAddressBinding, error) {

@@ -121,8 +121,8 @@ func (m *_BACnetPriorityValueObjectidentifier) GetLengthInBytes(ctx context.Cont
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetPriorityValueObjectidentifierParse(theBytes []byte, objectTypeArgument BACnetObjectType) (BACnetPriorityValueObjectidentifier, error) {
-	return BACnetPriorityValueObjectidentifierParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), objectTypeArgument)
+func BACnetPriorityValueObjectidentifierParse(ctx context.Context, theBytes []byte, objectTypeArgument BACnetObjectType) (BACnetPriorityValueObjectidentifier, error) {
+	return BACnetPriorityValueObjectidentifierParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), objectTypeArgument)
 }
 
 func BACnetPriorityValueObjectidentifierParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (BACnetPriorityValueObjectidentifier, error) {

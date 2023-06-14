@@ -145,8 +145,8 @@ func (m *_KnxGroupAddress3Level) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func KnxGroupAddress3LevelParse(theBytes []byte, numLevels uint8) (KnxGroupAddress3Level, error) {
-	return KnxGroupAddress3LevelParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), numLevels)
+func KnxGroupAddress3LevelParse(ctx context.Context, theBytes []byte, numLevels uint8) (KnxGroupAddress3Level, error) {
+	return KnxGroupAddress3LevelParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), numLevels)
 }
 
 func KnxGroupAddress3LevelParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, numLevels uint8) (KnxGroupAddress3Level, error) {

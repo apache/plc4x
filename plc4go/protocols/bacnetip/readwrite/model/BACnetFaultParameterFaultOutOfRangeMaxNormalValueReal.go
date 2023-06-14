@@ -123,8 +123,8 @@ func (m *_BACnetFaultParameterFaultOutOfRangeMaxNormalValueReal) GetLengthInByte
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetFaultParameterFaultOutOfRangeMaxNormalValueRealParse(theBytes []byte, tagNumber uint8) (BACnetFaultParameterFaultOutOfRangeMaxNormalValueReal, error) {
-	return BACnetFaultParameterFaultOutOfRangeMaxNormalValueRealParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber)
+func BACnetFaultParameterFaultOutOfRangeMaxNormalValueRealParse(ctx context.Context, theBytes []byte, tagNumber uint8) (BACnetFaultParameterFaultOutOfRangeMaxNormalValueReal, error) {
+	return BACnetFaultParameterFaultOutOfRangeMaxNormalValueRealParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber)
 }
 
 func BACnetFaultParameterFaultOutOfRangeMaxNormalValueRealParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetFaultParameterFaultOutOfRangeMaxNormalValueReal, error) {

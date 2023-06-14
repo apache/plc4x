@@ -167,8 +167,8 @@ func (m *_MPropReadReq) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func MPropReadReqParse(theBytes []byte, size uint16) (MPropReadReq, error) {
-	return MPropReadReqParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), size)
+func MPropReadReqParse(ctx context.Context, theBytes []byte, size uint16) (MPropReadReq, error) {
+	return MPropReadReqParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), size)
 }
 
 func MPropReadReqParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, size uint16) (MPropReadReq, error) {

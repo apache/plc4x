@@ -130,8 +130,8 @@ func (m *_StatusRequestBinaryState) GetLengthInBytes(ctx context.Context) uint16
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func StatusRequestBinaryStateParse(theBytes []byte) (StatusRequestBinaryState, error) {
-	return StatusRequestBinaryStateParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func StatusRequestBinaryStateParse(ctx context.Context, theBytes []byte) (StatusRequestBinaryState, error) {
+	return StatusRequestBinaryStateParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func StatusRequestBinaryStateParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (StatusRequestBinaryState, error) {

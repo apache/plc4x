@@ -202,8 +202,8 @@ func (m *_AlarmMessageObjectPushType) GetLengthInBytes(ctx context.Context) uint
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func AlarmMessageObjectPushTypeParse(theBytes []byte) (AlarmMessageObjectPushType, error) {
-	return AlarmMessageObjectPushTypeParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func AlarmMessageObjectPushTypeParse(ctx context.Context, theBytes []byte) (AlarmMessageObjectPushType, error) {
+	return AlarmMessageObjectPushTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func AlarmMessageObjectPushTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AlarmMessageObjectPushType, error) {

@@ -123,8 +123,8 @@ func (m *_KnxNetObjectServer) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func KnxNetObjectServerParse(theBytes []byte) (KnxNetObjectServer, error) {
-	return KnxNetObjectServerParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func KnxNetObjectServerParse(ctx context.Context, theBytes []byte) (KnxNetObjectServer, error) {
+	return KnxNetObjectServerParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func KnxNetObjectServerParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (KnxNetObjectServer, error) {

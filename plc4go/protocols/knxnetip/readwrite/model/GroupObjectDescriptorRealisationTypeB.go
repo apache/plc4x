@@ -166,8 +166,8 @@ func (m *_GroupObjectDescriptorRealisationTypeB) GetLengthInBytes(ctx context.Co
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func GroupObjectDescriptorRealisationTypeBParse(theBytes []byte) (GroupObjectDescriptorRealisationTypeB, error) {
-	return GroupObjectDescriptorRealisationTypeBParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func GroupObjectDescriptorRealisationTypeBParse(ctx context.Context, theBytes []byte) (GroupObjectDescriptorRealisationTypeB, error) {
+	return GroupObjectDescriptorRealisationTypeBParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func GroupObjectDescriptorRealisationTypeBParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (GroupObjectDescriptorRealisationTypeB, error) {

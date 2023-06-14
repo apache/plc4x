@@ -139,8 +139,8 @@ func (m *_BACnetCOVSubscription) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetCOVSubscriptionParse(theBytes []byte) (BACnetCOVSubscription, error) {
-	return BACnetCOVSubscriptionParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func BACnetCOVSubscriptionParse(ctx context.Context, theBytes []byte) (BACnetCOVSubscription, error) {
+	return BACnetCOVSubscriptionParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func BACnetCOVSubscriptionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetCOVSubscription, error) {

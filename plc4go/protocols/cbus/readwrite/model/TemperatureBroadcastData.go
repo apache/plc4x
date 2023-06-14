@@ -145,8 +145,8 @@ func (m *_TemperatureBroadcastData) GetLengthInBytes(ctx context.Context) uint16
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func TemperatureBroadcastDataParse(theBytes []byte) (TemperatureBroadcastData, error) {
-	return TemperatureBroadcastDataParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func TemperatureBroadcastDataParse(ctx context.Context, theBytes []byte) (TemperatureBroadcastData, error) {
+	return TemperatureBroadcastDataParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func TemperatureBroadcastDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (TemperatureBroadcastData, error) {

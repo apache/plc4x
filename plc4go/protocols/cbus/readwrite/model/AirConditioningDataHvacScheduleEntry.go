@@ -203,8 +203,8 @@ func (m *_AirConditioningDataHvacScheduleEntry) GetLengthInBytes(ctx context.Con
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func AirConditioningDataHvacScheduleEntryParse(theBytes []byte) (AirConditioningDataHvacScheduleEntry, error) {
-	return AirConditioningDataHvacScheduleEntryParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func AirConditioningDataHvacScheduleEntryParse(ctx context.Context, theBytes []byte) (AirConditioningDataHvacScheduleEntry, error) {
+	return AirConditioningDataHvacScheduleEntryParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func AirConditioningDataHvacScheduleEntryParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AirConditioningDataHvacScheduleEntry, error) {

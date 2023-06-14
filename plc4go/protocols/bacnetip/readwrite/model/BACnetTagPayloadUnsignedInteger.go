@@ -440,8 +440,8 @@ func (m *_BACnetTagPayloadUnsignedInteger) GetLengthInBytes(ctx context.Context)
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetTagPayloadUnsignedIntegerParse(theBytes []byte, actualLength uint32) (BACnetTagPayloadUnsignedInteger, error) {
-	return BACnetTagPayloadUnsignedIntegerParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), actualLength)
+func BACnetTagPayloadUnsignedIntegerParse(ctx context.Context, theBytes []byte, actualLength uint32) (BACnetTagPayloadUnsignedInteger, error) {
+	return BACnetTagPayloadUnsignedIntegerParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), actualLength)
 }
 
 func BACnetTagPayloadUnsignedIntegerParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, actualLength uint32) (BACnetTagPayloadUnsignedInteger, error) {

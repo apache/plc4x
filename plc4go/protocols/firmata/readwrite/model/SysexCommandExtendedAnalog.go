@@ -106,8 +106,8 @@ func (m *_SysexCommandExtendedAnalog) GetLengthInBytes(ctx context.Context) uint
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func SysexCommandExtendedAnalogParse(theBytes []byte, response bool) (SysexCommandExtendedAnalog, error) {
-	return SysexCommandExtendedAnalogParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), response)
+func SysexCommandExtendedAnalogParse(ctx context.Context, theBytes []byte, response bool) (SysexCommandExtendedAnalog, error) {
+	return SysexCommandExtendedAnalogParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), response)
 }
 
 func SysexCommandExtendedAnalogParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (SysexCommandExtendedAnalog, error) {

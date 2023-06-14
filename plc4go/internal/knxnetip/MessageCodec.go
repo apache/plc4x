@@ -20,11 +20,14 @@
 package knxnetip
 
 import (
+	"context"
+
 	"github.com/apache/plc4x/plc4go/protocols/knxnetip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/default"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/transports"
+
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 )
@@ -94,7 +97,7 @@ func (m *MessageCodec) Receive() (spi.Message, error) {
 			// TODO: Possibly clean up ...
 			return nil, nil
 		}
-		knxMessage, err := model.KnxNetIpMessageParse(data)
+		knxMessage, err := model.KnxNetIpMessageParse(context.TODO(), data)
 		if err != nil {
 			m.log.Warn().Err(err).Msg("error parsing message")
 			// TODO: Possibly clean up ...

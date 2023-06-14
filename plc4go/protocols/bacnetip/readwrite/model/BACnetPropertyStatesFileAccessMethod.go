@@ -121,8 +121,8 @@ func (m *_BACnetPropertyStatesFileAccessMethod) GetLengthInBytes(ctx context.Con
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetPropertyStatesFileAccessMethodParse(theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesFileAccessMethod, error) {
-	return BACnetPropertyStatesFileAccessMethodParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
+func BACnetPropertyStatesFileAccessMethodParse(ctx context.Context, theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesFileAccessMethod, error) {
+	return BACnetPropertyStatesFileAccessMethodParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
 }
 
 func BACnetPropertyStatesFileAccessMethodParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesFileAccessMethod, error) {

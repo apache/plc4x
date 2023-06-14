@@ -20,6 +20,7 @@
 package bacnetanalyzer
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/tools/plc4xpcapanalyzer/internal/common"
@@ -29,7 +30,7 @@ import (
 
 func PackageParse(packetInformation common.PacketInformation, payload []byte) (spi.Message, error) {
 	log.Debug().Msgf("Parsing %s", packetInformation)
-	parse, err := model.BVLCParse(payload)
+	parse, err := model.BVLCParse(context.TODO(), payload)
 	if err != nil {
 		return nil, errors.Wrap(err, "Error parsing bvlc")
 	}

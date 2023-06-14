@@ -137,8 +137,8 @@ func (m *_ConnectedDataItem) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ConnectedDataItemParse(theBytes []byte) (ConnectedDataItem, error) {
-	return ConnectedDataItemParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func ConnectedDataItemParse(ctx context.Context, theBytes []byte) (ConnectedDataItem, error) {
+	return ConnectedDataItemParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func ConnectedDataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ConnectedDataItem, error) {

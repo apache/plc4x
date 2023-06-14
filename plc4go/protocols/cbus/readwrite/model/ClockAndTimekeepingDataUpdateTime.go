@@ -204,8 +204,8 @@ func (m *_ClockAndTimekeepingDataUpdateTime) GetLengthInBytes(ctx context.Contex
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ClockAndTimekeepingDataUpdateTimeParse(theBytes []byte) (ClockAndTimekeepingDataUpdateTime, error) {
-	return ClockAndTimekeepingDataUpdateTimeParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func ClockAndTimekeepingDataUpdateTimeParse(ctx context.Context, theBytes []byte) (ClockAndTimekeepingDataUpdateTime, error) {
+	return ClockAndTimekeepingDataUpdateTimeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func ClockAndTimekeepingDataUpdateTimeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ClockAndTimekeepingDataUpdateTime, error) {

@@ -123,8 +123,8 @@ func (m *_BACnetGroupChannelValueList) GetLengthInBytes(ctx context.Context) uin
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetGroupChannelValueListParse(theBytes []byte, tagNumber uint8) (BACnetGroupChannelValueList, error) {
-	return BACnetGroupChannelValueListParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber)
+func BACnetGroupChannelValueListParse(ctx context.Context, theBytes []byte, tagNumber uint8) (BACnetGroupChannelValueList, error) {
+	return BACnetGroupChannelValueListParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber)
 }
 
 func BACnetGroupChannelValueListParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetGroupChannelValueList, error) {

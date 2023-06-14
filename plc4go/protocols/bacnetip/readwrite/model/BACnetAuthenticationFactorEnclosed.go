@@ -119,8 +119,8 @@ func (m *_BACnetAuthenticationFactorEnclosed) GetLengthInBytes(ctx context.Conte
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetAuthenticationFactorEnclosedParse(theBytes []byte, tagNumber uint8) (BACnetAuthenticationFactorEnclosed, error) {
-	return BACnetAuthenticationFactorEnclosedParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber)
+func BACnetAuthenticationFactorEnclosedParse(ctx context.Context, theBytes []byte, tagNumber uint8) (BACnetAuthenticationFactorEnclosed, error) {
+	return BACnetAuthenticationFactorEnclosedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber)
 }
 
 func BACnetAuthenticationFactorEnclosedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetAuthenticationFactorEnclosed, error) {

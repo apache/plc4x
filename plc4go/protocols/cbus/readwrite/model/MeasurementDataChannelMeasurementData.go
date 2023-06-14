@@ -205,8 +205,8 @@ func (m *_MeasurementDataChannelMeasurementData) GetLengthInBytes(ctx context.Co
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func MeasurementDataChannelMeasurementDataParse(theBytes []byte) (MeasurementDataChannelMeasurementData, error) {
-	return MeasurementDataChannelMeasurementDataParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func MeasurementDataChannelMeasurementDataParse(ctx context.Context, theBytes []byte) (MeasurementDataChannelMeasurementData, error) {
+	return MeasurementDataChannelMeasurementDataParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func MeasurementDataChannelMeasurementDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (MeasurementDataChannelMeasurementData, error) {

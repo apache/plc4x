@@ -129,8 +129,8 @@ func (m *_UnknownMessage) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func UnknownMessageParse(theBytes []byte, totalLength uint16) (UnknownMessage, error) {
-	return UnknownMessageParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), totalLength)
+func UnknownMessageParse(ctx context.Context, theBytes []byte, totalLength uint16) (UnknownMessage, error) {
+	return UnknownMessageParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), totalLength)
 }
 
 func UnknownMessageParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, totalLength uint16) (UnknownMessage, error) {

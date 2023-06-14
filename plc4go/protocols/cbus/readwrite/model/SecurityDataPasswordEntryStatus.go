@@ -181,8 +181,8 @@ func (m *_SecurityDataPasswordEntryStatus) GetLengthInBytes(ctx context.Context)
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func SecurityDataPasswordEntryStatusParse(theBytes []byte) (SecurityDataPasswordEntryStatus, error) {
-	return SecurityDataPasswordEntryStatusParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func SecurityDataPasswordEntryStatusParse(ctx context.Context, theBytes []byte) (SecurityDataPasswordEntryStatus, error) {
+	return SecurityDataPasswordEntryStatusParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func SecurityDataPasswordEntryStatusParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityDataPasswordEntryStatus, error) {

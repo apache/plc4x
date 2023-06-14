@@ -128,8 +128,8 @@ func (m *_AssociatedValueType) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func AssociatedValueTypeParse(theBytes []byte) (AssociatedValueType, error) {
-	return AssociatedValueTypeParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func AssociatedValueTypeParse(ctx context.Context, theBytes []byte) (AssociatedValueType, error) {
+	return AssociatedValueTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func AssociatedValueTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AssociatedValueType, error) {

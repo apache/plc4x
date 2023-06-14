@@ -133,8 +133,8 @@ func (m *_BACnetClientCOV) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetClientCOVParse(theBytes []byte) (BACnetClientCOV, error) {
-	return BACnetClientCOVParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func BACnetClientCOVParse(ctx context.Context, theBytes []byte) (BACnetClientCOV, error) {
+	return BACnetClientCOVParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func BACnetClientCOVParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetClientCOV, error) {

@@ -102,8 +102,8 @@ func (m *_FirmataCommandSystemReset) GetLengthInBytes(ctx context.Context) uint1
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func FirmataCommandSystemResetParse(theBytes []byte, response bool) (FirmataCommandSystemReset, error) {
-	return FirmataCommandSystemResetParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), response)
+func FirmataCommandSystemResetParse(ctx context.Context, theBytes []byte, response bool) (FirmataCommandSystemReset, error) {
+	return FirmataCommandSystemResetParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), response)
 }
 
 func FirmataCommandSystemResetParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (FirmataCommandSystemReset, error) {

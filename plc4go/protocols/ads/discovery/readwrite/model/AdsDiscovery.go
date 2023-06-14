@@ -166,8 +166,8 @@ func (m *_AdsDiscovery) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func AdsDiscoveryParse(theBytes []byte) (AdsDiscovery, error) {
-	return AdsDiscoveryParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian)))
+func AdsDiscoveryParse(ctx context.Context, theBytes []byte) (AdsDiscovery, error) {
+	return AdsDiscoveryParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian)))
 }
 
 func AdsDiscoveryParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AdsDiscovery, error) {

@@ -139,8 +139,8 @@ func (m *_BACnetAccessZoneOccupancyStateTagged) GetLengthInBytes(ctx context.Con
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetAccessZoneOccupancyStateTaggedParse(theBytes []byte, tagNumber uint8, tagClass TagClass) (BACnetAccessZoneOccupancyStateTagged, error) {
-	return BACnetAccessZoneOccupancyStateTaggedParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, tagClass)
+func BACnetAccessZoneOccupancyStateTaggedParse(ctx context.Context, theBytes []byte, tagNumber uint8, tagClass TagClass) (BACnetAccessZoneOccupancyStateTagged, error) {
+	return BACnetAccessZoneOccupancyStateTaggedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, tagClass)
 }
 
 func BACnetAccessZoneOccupancyStateTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetAccessZoneOccupancyStateTagged, error) {

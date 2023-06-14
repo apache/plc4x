@@ -122,8 +122,8 @@ func (m *_SecurityDataZoneUnsealed) GetLengthInBytes(ctx context.Context) uint16
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func SecurityDataZoneUnsealedParse(theBytes []byte) (SecurityDataZoneUnsealed, error) {
-	return SecurityDataZoneUnsealedParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func SecurityDataZoneUnsealedParse(ctx context.Context, theBytes []byte) (SecurityDataZoneUnsealed, error) {
+	return SecurityDataZoneUnsealedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func SecurityDataZoneUnsealedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityDataZoneUnsealed, error) {

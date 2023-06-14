@@ -123,8 +123,8 @@ func (m *_BACnetEventParameterChangeOfBitstringListOfBitstringValues) GetLengthI
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetEventParameterChangeOfBitstringListOfBitstringValuesParse(theBytes []byte, tagNumber uint8) (BACnetEventParameterChangeOfBitstringListOfBitstringValues, error) {
-	return BACnetEventParameterChangeOfBitstringListOfBitstringValuesParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber)
+func BACnetEventParameterChangeOfBitstringListOfBitstringValuesParse(ctx context.Context, theBytes []byte, tagNumber uint8) (BACnetEventParameterChangeOfBitstringListOfBitstringValues, error) {
+	return BACnetEventParameterChangeOfBitstringListOfBitstringValuesParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber)
 }
 
 func BACnetEventParameterChangeOfBitstringListOfBitstringValuesParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetEventParameterChangeOfBitstringListOfBitstringValues, error) {

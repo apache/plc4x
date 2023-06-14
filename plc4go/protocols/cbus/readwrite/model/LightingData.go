@@ -136,8 +136,8 @@ func (m *_LightingData) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func LightingDataParse(theBytes []byte) (LightingData, error) {
-	return LightingDataParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func LightingDataParse(ctx context.Context, theBytes []byte) (LightingData, error) {
+	return LightingDataParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func LightingDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (LightingData, error) {

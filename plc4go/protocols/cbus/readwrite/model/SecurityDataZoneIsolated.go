@@ -122,8 +122,8 @@ func (m *_SecurityDataZoneIsolated) GetLengthInBytes(ctx context.Context) uint16
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func SecurityDataZoneIsolatedParse(theBytes []byte) (SecurityDataZoneIsolated, error) {
-	return SecurityDataZoneIsolatedParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func SecurityDataZoneIsolatedParse(ctx context.Context, theBytes []byte) (SecurityDataZoneIsolated, error) {
+	return SecurityDataZoneIsolatedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func SecurityDataZoneIsolatedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityDataZoneIsolated, error) {

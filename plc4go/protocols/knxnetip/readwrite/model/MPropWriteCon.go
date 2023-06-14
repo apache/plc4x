@@ -102,8 +102,8 @@ func (m *_MPropWriteCon) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func MPropWriteConParse(theBytes []byte, size uint16) (MPropWriteCon, error) {
-	return MPropWriteConParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), size)
+func MPropWriteConParse(ctx context.Context, theBytes []byte, size uint16) (MPropWriteCon, error) {
+	return MPropWriteConParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), size)
 }
 
 func MPropWriteConParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, size uint16) (MPropWriteCon, error) {

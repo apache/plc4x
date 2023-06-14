@@ -98,8 +98,8 @@ func (m *_MACAddress) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func MACAddressParse(theBytes []byte) (MACAddress, error) {
-	return MACAddressParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func MACAddressParse(ctx context.Context, theBytes []byte) (MACAddress, error) {
+	return MACAddressParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func MACAddressParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (MACAddress, error) {

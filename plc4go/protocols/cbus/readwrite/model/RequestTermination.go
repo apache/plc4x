@@ -96,8 +96,8 @@ func (m *_RequestTermination) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func RequestTerminationParse(theBytes []byte) (RequestTermination, error) {
-	return RequestTerminationParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func RequestTerminationParse(ctx context.Context, theBytes []byte) (RequestTermination, error) {
+	return RequestTerminationParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func RequestTerminationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (RequestTermination, error) {

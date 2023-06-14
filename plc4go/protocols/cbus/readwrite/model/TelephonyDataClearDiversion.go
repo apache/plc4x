@@ -101,8 +101,8 @@ func (m *_TelephonyDataClearDiversion) GetLengthInBytes(ctx context.Context) uin
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func TelephonyDataClearDiversionParse(theBytes []byte) (TelephonyDataClearDiversion, error) {
-	return TelephonyDataClearDiversionParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func TelephonyDataClearDiversionParse(ctx context.Context, theBytes []byte) (TelephonyDataClearDiversion, error) {
+	return TelephonyDataClearDiversionParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func TelephonyDataClearDiversionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (TelephonyDataClearDiversion, error) {

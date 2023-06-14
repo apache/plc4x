@@ -123,8 +123,8 @@ func (m *_BACnetNotificationParametersChangeOfValueNewValueChangedBits) GetLengt
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetNotificationParametersChangeOfValueNewValueChangedBitsParse(theBytes []byte, peekedTagNumber uint8, tagNumber uint8) (BACnetNotificationParametersChangeOfValueNewValueChangedBits, error) {
-	return BACnetNotificationParametersChangeOfValueNewValueChangedBitsParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), peekedTagNumber, tagNumber)
+func BACnetNotificationParametersChangeOfValueNewValueChangedBitsParse(ctx context.Context, theBytes []byte, peekedTagNumber uint8, tagNumber uint8) (BACnetNotificationParametersChangeOfValueNewValueChangedBits, error) {
+	return BACnetNotificationParametersChangeOfValueNewValueChangedBitsParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), peekedTagNumber, tagNumber)
 }
 
 func BACnetNotificationParametersChangeOfValueNewValueChangedBitsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8, tagNumber uint8) (BACnetNotificationParametersChangeOfValueNewValueChangedBits, error) {

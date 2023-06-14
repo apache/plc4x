@@ -138,8 +138,8 @@ func (m *_SzlDataTreeItem) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func SzlDataTreeItemParse(theBytes []byte) (SzlDataTreeItem, error) {
-	return SzlDataTreeItemParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func SzlDataTreeItemParse(ctx context.Context, theBytes []byte) (SzlDataTreeItem, error) {
+	return SzlDataTreeItemParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func SzlDataTreeItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SzlDataTreeItem, error) {

@@ -96,8 +96,8 @@ func (m *_ZoneStatus) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ZoneStatusParse(theBytes []byte) (ZoneStatus, error) {
-	return ZoneStatusParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func ZoneStatusParse(ctx context.Context, theBytes []byte) (ZoneStatus, error) {
+	return ZoneStatusParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func ZoneStatusParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ZoneStatus, error) {

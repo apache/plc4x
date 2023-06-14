@@ -102,8 +102,8 @@ func (m *_ApduDataExtKeyWrite) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ApduDataExtKeyWriteParse(theBytes []byte, length uint8) (ApduDataExtKeyWrite, error) {
-	return ApduDataExtKeyWriteParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), length)
+func ApduDataExtKeyWriteParse(ctx context.Context, theBytes []byte, length uint8) (ApduDataExtKeyWrite, error) {
+	return ApduDataExtKeyWriteParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), length)
 }
 
 func ApduDataExtKeyWriteParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, length uint8) (ApduDataExtKeyWrite, error) {

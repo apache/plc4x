@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"encoding/hex"
 
 	"github.com/apache/plc4x/plc4go/spi"
@@ -82,7 +83,7 @@ func ReadCBusCommand(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, srchk
 	if err != nil {
 		return nil, errors.Wrap(err, "Error getting hex")
 	}
-	return CBusCommandParse(rawBytes, cBusOptions)
+	return CBusCommandParse(context.TODO(), rawBytes, cBusOptions)
 }
 
 func WriteEncodedReply(writeBuffer utils.WriteBuffer, encodedReply EncodedReply) error {
@@ -94,7 +95,7 @@ func ReadEncodedReply(readBuffer utils.ReadBuffer, options CBusOptions, requestC
 	if err != nil {
 		return nil, errors.Wrap(err, "Error getting hex")
 	}
-	return EncodedReplyParse(rawBytes, options, requestContext)
+	return EncodedReplyParse(context.TODO(), rawBytes, options, requestContext)
 }
 
 func WriteCALData(writeBuffer utils.WriteBuffer, calData CALData) error {
@@ -106,7 +107,7 @@ func ReadCALData(readBuffer utils.ReadBuffer) (CALData, error) {
 	if err != nil {
 		return nil, errors.Wrap(err, "Error getting hex")
 	}
-	return CALDataParse(rawBytes, nil)
+	return CALDataParse(context.TODO(), rawBytes, nil)
 }
 
 func readBytesFromHex(logicalName string, readBuffer utils.ReadBuffer, srchk bool) ([]byte, error) {

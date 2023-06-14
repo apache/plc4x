@@ -142,8 +142,8 @@ func (m *_ModbusPDUWriteSingleCoilResponse) GetLengthInBytes(ctx context.Context
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ModbusPDUWriteSingleCoilResponseParse(theBytes []byte, response bool) (ModbusPDUWriteSingleCoilResponse, error) {
-	return ModbusPDUWriteSingleCoilResponseParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), response)
+func ModbusPDUWriteSingleCoilResponseParse(ctx context.Context, theBytes []byte, response bool) (ModbusPDUWriteSingleCoilResponse, error) {
+	return ModbusPDUWriteSingleCoilResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), response)
 }
 
 func ModbusPDUWriteSingleCoilResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (ModbusPDUWriteSingleCoilResponse, error) {

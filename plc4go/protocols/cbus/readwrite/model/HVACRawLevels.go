@@ -115,8 +115,8 @@ func (m *_HVACRawLevels) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func HVACRawLevelsParse(theBytes []byte) (HVACRawLevels, error) {
-	return HVACRawLevelsParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func HVACRawLevelsParse(ctx context.Context, theBytes []byte) (HVACRawLevels, error) {
+	return HVACRawLevelsParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func HVACRawLevelsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (HVACRawLevels, error) {

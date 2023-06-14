@@ -162,8 +162,8 @@ func (m *_LPollData) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func LPollDataParse(theBytes []byte) (LPollData, error) {
-	return LPollDataParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func LPollDataParse(ctx context.Context, theBytes []byte) (LPollData, error) {
+	return LPollDataParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func LPollDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (LPollData, error) {

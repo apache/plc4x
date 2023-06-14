@@ -121,8 +121,8 @@ func (m *_BACnetOptionalUnsignedValue) GetLengthInBytes(ctx context.Context) uin
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetOptionalUnsignedValueParse(theBytes []byte) (BACnetOptionalUnsignedValue, error) {
-	return BACnetOptionalUnsignedValueParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func BACnetOptionalUnsignedValueParse(ctx context.Context, theBytes []byte) (BACnetOptionalUnsignedValue, error) {
+	return BACnetOptionalUnsignedValueParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func BACnetOptionalUnsignedValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetOptionalUnsignedValue, error) {

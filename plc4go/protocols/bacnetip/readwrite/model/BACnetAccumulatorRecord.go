@@ -126,8 +126,8 @@ func (m *_BACnetAccumulatorRecord) GetLengthInBytes(ctx context.Context) uint16 
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetAccumulatorRecordParse(theBytes []byte) (BACnetAccumulatorRecord, error) {
-	return BACnetAccumulatorRecordParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func BACnetAccumulatorRecordParse(ctx context.Context, theBytes []byte) (BACnetAccumulatorRecord, error) {
+	return BACnetAccumulatorRecordParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func BACnetAccumulatorRecordParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetAccumulatorRecord, error) {

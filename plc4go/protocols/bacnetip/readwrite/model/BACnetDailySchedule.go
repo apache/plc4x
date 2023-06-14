@@ -120,8 +120,8 @@ func (m *_BACnetDailySchedule) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetDailyScheduleParse(theBytes []byte) (BACnetDailySchedule, error) {
-	return BACnetDailyScheduleParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func BACnetDailyScheduleParse(ctx context.Context, theBytes []byte) (BACnetDailySchedule, error) {
+	return BACnetDailyScheduleParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func BACnetDailyScheduleParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetDailySchedule, error) {

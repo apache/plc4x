@@ -136,8 +136,8 @@ func (m *_NLMSecurityPayload) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func NLMSecurityPayloadParse(theBytes []byte, apduLength uint16) (NLMSecurityPayload, error) {
-	return NLMSecurityPayloadParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), apduLength)
+func NLMSecurityPayloadParse(ctx context.Context, theBytes []byte, apduLength uint16) (NLMSecurityPayload, error) {
+	return NLMSecurityPayloadParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), apduLength)
 }
 
 func NLMSecurityPayloadParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, apduLength uint16) (NLMSecurityPayload, error) {

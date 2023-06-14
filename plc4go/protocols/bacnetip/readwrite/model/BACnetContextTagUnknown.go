@@ -130,8 +130,8 @@ func (m *_BACnetContextTagUnknown) GetLengthInBytes(ctx context.Context) uint16 
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetContextTagUnknownParse(theBytes []byte, actualLength uint32, tagNumberArgument uint8, dataType BACnetDataType) (BACnetContextTagUnknown, error) {
-	return BACnetContextTagUnknownParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), actualLength, tagNumberArgument, dataType)
+func BACnetContextTagUnknownParse(ctx context.Context, theBytes []byte, actualLength uint32, tagNumberArgument uint8, dataType BACnetDataType) (BACnetContextTagUnknown, error) {
+	return BACnetContextTagUnknownParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), actualLength, tagNumberArgument, dataType)
 }
 
 func BACnetContextTagUnknownParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, actualLength uint32, tagNumberArgument uint8, dataType BACnetDataType) (BACnetContextTagUnknown, error) {

@@ -123,8 +123,8 @@ func (m *_KnxNetIpRouting) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func KnxNetIpRoutingParse(theBytes []byte) (KnxNetIpRouting, error) {
-	return KnxNetIpRoutingParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func KnxNetIpRoutingParse(ctx context.Context, theBytes []byte) (KnxNetIpRouting, error) {
+	return KnxNetIpRoutingParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func KnxNetIpRoutingParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (KnxNetIpRouting, error) {

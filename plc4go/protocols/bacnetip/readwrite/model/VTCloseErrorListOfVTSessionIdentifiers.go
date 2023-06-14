@@ -123,8 +123,8 @@ func (m *_VTCloseErrorListOfVTSessionIdentifiers) GetLengthInBytes(ctx context.C
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func VTCloseErrorListOfVTSessionIdentifiersParse(theBytes []byte, tagNumber uint8) (VTCloseErrorListOfVTSessionIdentifiers, error) {
-	return VTCloseErrorListOfVTSessionIdentifiersParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber)
+func VTCloseErrorListOfVTSessionIdentifiersParse(ctx context.Context, theBytes []byte, tagNumber uint8) (VTCloseErrorListOfVTSessionIdentifiers, error) {
+	return VTCloseErrorListOfVTSessionIdentifiersParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber)
 }
 
 func VTCloseErrorListOfVTSessionIdentifiersParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (VTCloseErrorListOfVTSessionIdentifiers, error) {

@@ -131,8 +131,8 @@ func (m *_ModbusPDUReadFifoQueueRequest) GetLengthInBytes(ctx context.Context) u
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ModbusPDUReadFifoQueueRequestParse(theBytes []byte, response bool) (ModbusPDUReadFifoQueueRequest, error) {
-	return ModbusPDUReadFifoQueueRequestParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), response)
+func ModbusPDUReadFifoQueueRequestParse(ctx context.Context, theBytes []byte, response bool) (ModbusPDUReadFifoQueueRequest, error) {
+	return ModbusPDUReadFifoQueueRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), response)
 }
 
 func ModbusPDUReadFifoQueueRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (ModbusPDUReadFifoQueueRequest, error) {

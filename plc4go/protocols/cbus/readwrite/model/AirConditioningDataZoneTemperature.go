@@ -154,8 +154,8 @@ func (m *_AirConditioningDataZoneTemperature) GetLengthInBytes(ctx context.Conte
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func AirConditioningDataZoneTemperatureParse(theBytes []byte) (AirConditioningDataZoneTemperature, error) {
-	return AirConditioningDataZoneTemperatureParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func AirConditioningDataZoneTemperatureParse(ctx context.Context, theBytes []byte) (AirConditioningDataZoneTemperature, error) {
+	return AirConditioningDataZoneTemperatureParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func AirConditioningDataZoneTemperatureParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AirConditioningDataZoneTemperature, error) {

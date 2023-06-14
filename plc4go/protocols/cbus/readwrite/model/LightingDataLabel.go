@@ -158,8 +158,8 @@ func (m *_LightingDataLabel) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func LightingDataLabelParse(theBytes []byte, commandTypeContainer LightingCommandTypeContainer) (LightingDataLabel, error) {
-	return LightingDataLabelParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), commandTypeContainer)
+func LightingDataLabelParse(ctx context.Context, theBytes []byte, commandTypeContainer LightingCommandTypeContainer) (LightingDataLabel, error) {
+	return LightingDataLabelParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), commandTypeContainer)
 }
 
 func LightingDataLabelParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, commandTypeContainer LightingCommandTypeContainer) (LightingDataLabel, error) {

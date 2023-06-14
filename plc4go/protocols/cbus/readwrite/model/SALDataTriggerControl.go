@@ -125,8 +125,8 @@ func (m *_SALDataTriggerControl) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func SALDataTriggerControlParse(theBytes []byte, applicationId ApplicationId) (SALDataTriggerControl, error) {
-	return SALDataTriggerControlParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), applicationId)
+func SALDataTriggerControlParse(ctx context.Context, theBytes []byte, applicationId ApplicationId) (SALDataTriggerControl, error) {
+	return SALDataTriggerControlParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), applicationId)
 }
 
 func SALDataTriggerControlParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataTriggerControl, error) {

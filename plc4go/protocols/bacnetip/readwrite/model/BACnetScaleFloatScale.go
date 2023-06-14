@@ -121,8 +121,8 @@ func (m *_BACnetScaleFloatScale) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetScaleFloatScaleParse(theBytes []byte) (BACnetScaleFloatScale, error) {
-	return BACnetScaleFloatScaleParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func BACnetScaleFloatScaleParse(ctx context.Context, theBytes []byte) (BACnetScaleFloatScale, error) {
+	return BACnetScaleFloatScaleParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func BACnetScaleFloatScaleParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetScaleFloatScale, error) {

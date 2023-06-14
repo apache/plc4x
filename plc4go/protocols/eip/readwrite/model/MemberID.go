@@ -134,8 +134,8 @@ func (m *_MemberID) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func MemberIDParse(theBytes []byte) (MemberID, error) {
-	return MemberIDParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func MemberIDParse(ctx context.Context, theBytes []byte) (MemberID, error) {
+	return MemberIDParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func MemberIDParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (MemberID, error) {

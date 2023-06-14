@@ -140,8 +140,8 @@ func (m *_CIPAttributes) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func CIPAttributesParse(theBytes []byte, packetLength uint16) (CIPAttributes, error) {
-	return CIPAttributesParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), packetLength)
+func CIPAttributesParse(ctx context.Context, theBytes []byte, packetLength uint16) (CIPAttributes, error) {
+	return CIPAttributesParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), packetLength)
 }
 
 func CIPAttributesParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, packetLength uint16) (CIPAttributes, error) {

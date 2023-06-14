@@ -131,8 +131,8 @@ func (m *_InterfaceOptions2) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func InterfaceOptions2Parse(theBytes []byte) (InterfaceOptions2, error) {
-	return InterfaceOptions2ParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func InterfaceOptions2Parse(ctx context.Context, theBytes []byte) (InterfaceOptions2, error) {
+	return InterfaceOptions2ParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func InterfaceOptions2ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (InterfaceOptions2, error) {

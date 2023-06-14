@@ -128,8 +128,8 @@ func (m *_AssociatedQueryValueType) GetLengthInBytes(ctx context.Context) uint16
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func AssociatedQueryValueTypeParse(theBytes []byte) (AssociatedQueryValueType, error) {
-	return AssociatedQueryValueTypeParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func AssociatedQueryValueTypeParse(ctx context.Context, theBytes []byte) (AssociatedQueryValueType, error) {
+	return AssociatedQueryValueTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func AssociatedQueryValueTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AssociatedQueryValueType, error) {

@@ -241,8 +241,8 @@ func (m *_SecurityDataEmulatedKeypad) GetLengthInBytes(ctx context.Context) uint
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func SecurityDataEmulatedKeypadParse(theBytes []byte) (SecurityDataEmulatedKeypad, error) {
-	return SecurityDataEmulatedKeypadParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func SecurityDataEmulatedKeypadParse(ctx context.Context, theBytes []byte) (SecurityDataEmulatedKeypad, error) {
+	return SecurityDataEmulatedKeypadParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func SecurityDataEmulatedKeypadParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityDataEmulatedKeypad, error) {

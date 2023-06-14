@@ -175,8 +175,8 @@ func (m *_S7PayloadUserDataItemCyclicServicesSubscribeRequest) GetLengthInBytes(
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func S7PayloadUserDataItemCyclicServicesSubscribeRequestParse(theBytes []byte, cpuFunctionGroup uint8, cpuFunctionType uint8, cpuSubfunction uint8) (S7PayloadUserDataItemCyclicServicesSubscribeRequest, error) {
-	return S7PayloadUserDataItemCyclicServicesSubscribeRequestParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), cpuFunctionGroup, cpuFunctionType, cpuSubfunction)
+func S7PayloadUserDataItemCyclicServicesSubscribeRequestParse(ctx context.Context, theBytes []byte, cpuFunctionGroup uint8, cpuFunctionType uint8, cpuSubfunction uint8) (S7PayloadUserDataItemCyclicServicesSubscribeRequest, error) {
+	return S7PayloadUserDataItemCyclicServicesSubscribeRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), cpuFunctionGroup, cpuFunctionType, cpuSubfunction)
 }
 
 func S7PayloadUserDataItemCyclicServicesSubscribeRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cpuFunctionGroup uint8, cpuFunctionType uint8, cpuSubfunction uint8) (S7PayloadUserDataItemCyclicServicesSubscribeRequest, error) {

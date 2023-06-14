@@ -145,8 +145,8 @@ func (m *_AdsMultiRequestItemWrite) GetLengthInBytes(ctx context.Context) uint16
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func AdsMultiRequestItemWriteParse(theBytes []byte, indexGroup uint32) (AdsMultiRequestItemWrite, error) {
-	return AdsMultiRequestItemWriteParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), indexGroup)
+func AdsMultiRequestItemWriteParse(ctx context.Context, theBytes []byte, indexGroup uint32) (AdsMultiRequestItemWrite, error) {
+	return AdsMultiRequestItemWriteParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), indexGroup)
 }
 
 func AdsMultiRequestItemWriteParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, indexGroup uint32) (AdsMultiRequestItemWrite, error) {

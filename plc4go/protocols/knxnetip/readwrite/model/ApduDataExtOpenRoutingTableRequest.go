@@ -102,8 +102,8 @@ func (m *_ApduDataExtOpenRoutingTableRequest) GetLengthInBytes(ctx context.Conte
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ApduDataExtOpenRoutingTableRequestParse(theBytes []byte, length uint8) (ApduDataExtOpenRoutingTableRequest, error) {
-	return ApduDataExtOpenRoutingTableRequestParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), length)
+func ApduDataExtOpenRoutingTableRequestParse(ctx context.Context, theBytes []byte, length uint8) (ApduDataExtOpenRoutingTableRequest, error) {
+	return ApduDataExtOpenRoutingTableRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), length)
 }
 
 func ApduDataExtOpenRoutingTableRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, length uint8) (ApduDataExtOpenRoutingTableRequest, error) {

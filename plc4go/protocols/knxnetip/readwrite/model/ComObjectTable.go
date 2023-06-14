@@ -99,8 +99,8 @@ func (m *_ComObjectTable) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ComObjectTableParse(theBytes []byte, firmwareType FirmwareType) (ComObjectTable, error) {
-	return ComObjectTableParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), firmwareType)
+func ComObjectTableParse(ctx context.Context, theBytes []byte, firmwareType FirmwareType) (ComObjectTable, error) {
+	return ComObjectTableParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), firmwareType)
 }
 
 func ComObjectTableParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, firmwareType FirmwareType) (ComObjectTable, error) {

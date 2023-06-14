@@ -155,8 +155,8 @@ func (m *_HVACStartTime) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func HVACStartTimeParse(theBytes []byte) (HVACStartTime, error) {
-	return HVACStartTimeParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func HVACStartTimeParse(ctx context.Context, theBytes []byte) (HVACStartTime, error) {
+	return HVACStartTimeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func HVACStartTimeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (HVACStartTime, error) {

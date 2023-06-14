@@ -176,8 +176,8 @@ func (m *_BACnetEventParameterChangeOfLifeSavety) GetLengthInBytes(ctx context.C
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetEventParameterChangeOfLifeSavetyParse(theBytes []byte) (BACnetEventParameterChangeOfLifeSavety, error) {
-	return BACnetEventParameterChangeOfLifeSavetyParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func BACnetEventParameterChangeOfLifeSavetyParse(ctx context.Context, theBytes []byte) (BACnetEventParameterChangeOfLifeSavety, error) {
+	return BACnetEventParameterChangeOfLifeSavetyParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func BACnetEventParameterChangeOfLifeSavetyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetEventParameterChangeOfLifeSavety, error) {

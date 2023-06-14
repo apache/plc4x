@@ -123,8 +123,8 @@ func (m *_BACnetFaultParameterFaultStateListOfFaultValues) GetLengthInBytes(ctx 
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetFaultParameterFaultStateListOfFaultValuesParse(theBytes []byte, tagNumber uint8) (BACnetFaultParameterFaultStateListOfFaultValues, error) {
-	return BACnetFaultParameterFaultStateListOfFaultValuesParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber)
+func BACnetFaultParameterFaultStateListOfFaultValuesParse(ctx context.Context, theBytes []byte, tagNumber uint8) (BACnetFaultParameterFaultStateListOfFaultValues, error) {
+	return BACnetFaultParameterFaultStateListOfFaultValuesParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber)
 }
 
 func BACnetFaultParameterFaultStateListOfFaultValuesParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetFaultParameterFaultStateListOfFaultValues, error) {

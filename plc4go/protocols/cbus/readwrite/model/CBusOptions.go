@@ -176,8 +176,8 @@ func (m *_CBusOptions) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func CBusOptionsParse(theBytes []byte) (CBusOptions, error) {
-	return CBusOptionsParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func CBusOptionsParse(ctx context.Context, theBytes []byte) (CBusOptions, error) {
+	return CBusOptionsParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func CBusOptionsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (CBusOptions, error) {

@@ -131,8 +131,8 @@ func (m *_BVLCReadBroadcastDistributionTableAck) GetLengthInBytes(ctx context.Co
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BVLCReadBroadcastDistributionTableAckParse(theBytes []byte, bvlcPayloadLength uint16) (BVLCReadBroadcastDistributionTableAck, error) {
-	return BVLCReadBroadcastDistributionTableAckParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), bvlcPayloadLength)
+func BVLCReadBroadcastDistributionTableAckParse(ctx context.Context, theBytes []byte, bvlcPayloadLength uint16) (BVLCReadBroadcastDistributionTableAck, error) {
+	return BVLCReadBroadcastDistributionTableAckParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), bvlcPayloadLength)
 }
 
 func BVLCReadBroadcastDistributionTableAckParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, bvlcPayloadLength uint16) (BVLCReadBroadcastDistributionTableAck, error) {

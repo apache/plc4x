@@ -147,8 +147,8 @@ func (m *_ClockAndTimekeepingData) GetLengthInBytes(ctx context.Context) uint16 
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ClockAndTimekeepingDataParse(theBytes []byte) (ClockAndTimekeepingData, error) {
-	return ClockAndTimekeepingDataParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func ClockAndTimekeepingDataParse(ctx context.Context, theBytes []byte) (ClockAndTimekeepingData, error) {
+	return ClockAndTimekeepingDataParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func ClockAndTimekeepingDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ClockAndTimekeepingData, error) {

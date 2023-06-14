@@ -102,8 +102,8 @@ func (m *_ApduDataExtLinkResponse) GetLengthInBytes(ctx context.Context) uint16 
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ApduDataExtLinkResponseParse(theBytes []byte, length uint8) (ApduDataExtLinkResponse, error) {
-	return ApduDataExtLinkResponseParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), length)
+func ApduDataExtLinkResponseParse(ctx context.Context, theBytes []byte, length uint8) (ApduDataExtLinkResponse, error) {
+	return ApduDataExtLinkResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), length)
 }
 
 func ApduDataExtLinkResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, length uint8) (ApduDataExtLinkResponse, error) {

@@ -155,8 +155,8 @@ func (m *_LogicAssignment) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func LogicAssignmentParse(theBytes []byte) (LogicAssignment, error) {
-	return LogicAssignmentParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func LogicAssignmentParse(ctx context.Context, theBytes []byte) (LogicAssignment, error) {
+	return LogicAssignmentParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func LogicAssignmentParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (LogicAssignment, error) {

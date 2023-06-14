@@ -160,8 +160,8 @@ func (m *_HVACAuxiliaryLevel) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func HVACAuxiliaryLevelParse(theBytes []byte) (HVACAuxiliaryLevel, error) {
-	return HVACAuxiliaryLevelParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func HVACAuxiliaryLevelParse(ctx context.Context, theBytes []byte) (HVACAuxiliaryLevel, error) {
+	return HVACAuxiliaryLevelParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func HVACAuxiliaryLevelParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (HVACAuxiliaryLevel, error) {

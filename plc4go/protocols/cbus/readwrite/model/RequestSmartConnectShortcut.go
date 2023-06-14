@@ -154,8 +154,8 @@ func (m *_RequestSmartConnectShortcut) GetLengthInBytes(ctx context.Context) uin
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func RequestSmartConnectShortcutParse(theBytes []byte, cBusOptions CBusOptions) (RequestSmartConnectShortcut, error) {
-	return RequestSmartConnectShortcutParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), cBusOptions)
+func RequestSmartConnectShortcutParse(ctx context.Context, theBytes []byte, cBusOptions CBusOptions) (RequestSmartConnectShortcut, error) {
+	return RequestSmartConnectShortcutParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), cBusOptions)
 }
 
 func RequestSmartConnectShortcutParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (RequestSmartConnectShortcut, error) {

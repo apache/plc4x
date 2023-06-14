@@ -135,8 +135,8 @@ func (m *_EnableControlData) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func EnableControlDataParse(theBytes []byte) (EnableControlData, error) {
-	return EnableControlDataParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func EnableControlDataParse(ctx context.Context, theBytes []byte) (EnableControlData, error) {
+	return EnableControlDataParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func EnableControlDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (EnableControlData, error) {

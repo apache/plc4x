@@ -102,8 +102,8 @@ func (m *_AccessControlDataRequestToExit) GetLengthInBytes(ctx context.Context) 
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func AccessControlDataRequestToExitParse(theBytes []byte) (AccessControlDataRequestToExit, error) {
-	return AccessControlDataRequestToExitParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func AccessControlDataRequestToExitParse(ctx context.Context, theBytes []byte) (AccessControlDataRequestToExit, error) {
+	return AccessControlDataRequestToExitParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func AccessControlDataRequestToExitParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AccessControlDataRequestToExit, error) {

@@ -123,8 +123,8 @@ func (m *_AlarmMessageAckType) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func AlarmMessageAckTypeParse(theBytes []byte) (AlarmMessageAckType, error) {
-	return AlarmMessageAckTypeParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func AlarmMessageAckTypeParse(ctx context.Context, theBytes []byte) (AlarmMessageAckType, error) {
+	return AlarmMessageAckTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func AlarmMessageAckTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AlarmMessageAckType, error) {

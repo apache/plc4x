@@ -110,8 +110,8 @@ func (m *_BACnetProtocolLevelTagged) GetLengthInBytes(ctx context.Context) uint1
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetProtocolLevelTaggedParse(theBytes []byte, tagNumber uint8, tagClass TagClass) (BACnetProtocolLevelTagged, error) {
-	return BACnetProtocolLevelTaggedParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, tagClass)
+func BACnetProtocolLevelTaggedParse(ctx context.Context, theBytes []byte, tagNumber uint8, tagClass TagClass) (BACnetProtocolLevelTagged, error) {
+	return BACnetProtocolLevelTaggedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, tagClass)
 }
 
 func BACnetProtocolLevelTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetProtocolLevelTagged, error) {

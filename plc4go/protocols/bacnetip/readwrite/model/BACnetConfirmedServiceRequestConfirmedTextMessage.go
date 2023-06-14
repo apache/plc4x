@@ -160,8 +160,8 @@ func (m *_BACnetConfirmedServiceRequestConfirmedTextMessage) GetLengthInBytes(ct
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConfirmedServiceRequestConfirmedTextMessageParse(theBytes []byte, serviceRequestLength uint32) (BACnetConfirmedServiceRequestConfirmedTextMessage, error) {
-	return BACnetConfirmedServiceRequestConfirmedTextMessageParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), serviceRequestLength)
+func BACnetConfirmedServiceRequestConfirmedTextMessageParse(ctx context.Context, theBytes []byte, serviceRequestLength uint32) (BACnetConfirmedServiceRequestConfirmedTextMessage, error) {
+	return BACnetConfirmedServiceRequestConfirmedTextMessageParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), serviceRequestLength)
 }
 
 func BACnetConfirmedServiceRequestConfirmedTextMessageParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, serviceRequestLength uint32) (BACnetConfirmedServiceRequestConfirmedTextMessage, error) {

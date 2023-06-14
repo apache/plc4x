@@ -134,8 +134,8 @@ func (m *_ChangeListRemoveError) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ChangeListRemoveErrorParse(theBytes []byte, errorChoice BACnetConfirmedServiceChoice) (ChangeListRemoveError, error) {
-	return ChangeListRemoveErrorParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), errorChoice)
+func ChangeListRemoveErrorParse(ctx context.Context, theBytes []byte, errorChoice BACnetConfirmedServiceChoice) (ChangeListRemoveError, error) {
+	return ChangeListRemoveErrorParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), errorChoice)
 }
 
 func ChangeListRemoveErrorParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, errorChoice BACnetConfirmedServiceChoice) (ChangeListRemoveError, error) {

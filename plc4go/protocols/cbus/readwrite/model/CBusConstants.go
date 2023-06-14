@@ -96,8 +96,8 @@ func (m *_CBusConstants) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func CBusConstantsParse(theBytes []byte) (CBusConstants, error) {
-	return CBusConstantsParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func CBusConstantsParse(ctx context.Context, theBytes []byte) (CBusConstants, error) {
+	return CBusConstantsParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func CBusConstantsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (CBusConstants, error) {

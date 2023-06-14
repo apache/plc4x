@@ -139,8 +139,8 @@ func (m *_BACnetLoggingTypeTagged) GetLengthInBytes(ctx context.Context) uint16 
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetLoggingTypeTaggedParse(theBytes []byte, tagNumber uint8, tagClass TagClass) (BACnetLoggingTypeTagged, error) {
-	return BACnetLoggingTypeTaggedParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, tagClass)
+func BACnetLoggingTypeTaggedParse(ctx context.Context, theBytes []byte, tagNumber uint8, tagClass TagClass) (BACnetLoggingTypeTagged, error) {
+	return BACnetLoggingTypeTaggedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, tagClass)
 }
 
 func BACnetLoggingTypeTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetLoggingTypeTagged, error) {

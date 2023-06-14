@@ -106,8 +106,8 @@ func (m *_BACnetHostNPort) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetHostNPortParse(theBytes []byte) (BACnetHostNPort, error) {
-	return BACnetHostNPortParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func BACnetHostNPortParse(ctx context.Context, theBytes []byte) (BACnetHostNPort, error) {
+	return BACnetHostNPortParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func BACnetHostNPortParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetHostNPort, error) {

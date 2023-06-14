@@ -261,7 +261,7 @@ func (m *Connection) readDataTypeTableAndSymbolTableSizes(ctx context.Context) (
 	}
 
 	// Parse and process the response
-	tableSizes, err := readWriteModel.AdsTableSizesParse(response.GetData())
+	tableSizes, err := readWriteModel.AdsTableSizesParse(ctx, response.GetData())
 	if err != nil {
 		return nil, fmt.Errorf("error parsing table: %v", err)
 	}

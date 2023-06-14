@@ -104,8 +104,8 @@ func (m *_PowerUp) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func PowerUpParse(theBytes []byte) (PowerUp, error) {
-	return PowerUpParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func PowerUpParse(ctx context.Context, theBytes []byte) (PowerUp, error) {
+	return PowerUpParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func PowerUpParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (PowerUp, error) {

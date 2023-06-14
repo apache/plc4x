@@ -124,8 +124,8 @@ func (m *_DeviceConfigurationAck) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func DeviceConfigurationAckParse(theBytes []byte) (DeviceConfigurationAck, error) {
-	return DeviceConfigurationAckParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
+func DeviceConfigurationAckParse(ctx context.Context, theBytes []byte) (DeviceConfigurationAck, error) {
+	return DeviceConfigurationAckParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
 }
 
 func DeviceConfigurationAckParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (DeviceConfigurationAck, error) {

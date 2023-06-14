@@ -209,8 +209,8 @@ func (m *_ApduDataExtPropertyDescriptionResponse) GetLengthInBytes(ctx context.C
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ApduDataExtPropertyDescriptionResponseParse(theBytes []byte, length uint8) (ApduDataExtPropertyDescriptionResponse, error) {
-	return ApduDataExtPropertyDescriptionResponseParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), length)
+func ApduDataExtPropertyDescriptionResponseParse(ctx context.Context, theBytes []byte, length uint8) (ApduDataExtPropertyDescriptionResponse, error) {
+	return ApduDataExtPropertyDescriptionResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), length)
 }
 
 func ApduDataExtPropertyDescriptionResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, length uint8) (ApduDataExtPropertyDescriptionResponse, error) {

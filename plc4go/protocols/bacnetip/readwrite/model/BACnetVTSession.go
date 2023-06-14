@@ -116,8 +116,8 @@ func (m *_BACnetVTSession) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetVTSessionParse(theBytes []byte) (BACnetVTSession, error) {
-	return BACnetVTSessionParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func BACnetVTSessionParse(ctx context.Context, theBytes []byte) (BACnetVTSession, error) {
+	return BACnetVTSessionParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func BACnetVTSessionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetVTSession, error) {

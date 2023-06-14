@@ -101,8 +101,8 @@ func (m *_SecurityDataEntryDelayStarted) GetLengthInBytes(ctx context.Context) u
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func SecurityDataEntryDelayStartedParse(theBytes []byte) (SecurityDataEntryDelayStarted, error) {
-	return SecurityDataEntryDelayStartedParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func SecurityDataEntryDelayStartedParse(ctx context.Context, theBytes []byte) (SecurityDataEntryDelayStarted, error) {
+	return SecurityDataEntryDelayStartedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func SecurityDataEntryDelayStartedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityDataEntryDelayStarted, error) {

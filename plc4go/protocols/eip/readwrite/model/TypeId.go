@@ -101,8 +101,8 @@ func (m *_TypeId) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func TypeIdParse(theBytes []byte) (TypeId, error) {
-	return TypeIdParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func TypeIdParse(ctx context.Context, theBytes []byte) (TypeId, error) {
+	return TypeIdParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func TypeIdParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (TypeId, error) {

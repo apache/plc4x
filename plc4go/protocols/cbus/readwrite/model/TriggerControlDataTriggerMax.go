@@ -101,8 +101,8 @@ func (m *_TriggerControlDataTriggerMax) GetLengthInBytes(ctx context.Context) ui
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func TriggerControlDataTriggerMaxParse(theBytes []byte) (TriggerControlDataTriggerMax, error) {
-	return TriggerControlDataTriggerMaxParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func TriggerControlDataTriggerMaxParse(ctx context.Context, theBytes []byte) (TriggerControlDataTriggerMax, error) {
+	return TriggerControlDataTriggerMaxParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func TriggerControlDataTriggerMaxParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (TriggerControlDataTriggerMax, error) {

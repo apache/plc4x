@@ -146,8 +146,8 @@ func (m *_AmsNetId) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func AmsNetIdParse(theBytes []byte) (AmsNetId, error) {
-	return AmsNetIdParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func AmsNetIdParse(ctx context.Context, theBytes []byte) (AmsNetId, error) {
+	return AmsNetIdParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func AmsNetIdParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AmsNetId, error) {

@@ -147,8 +147,8 @@ func (m *_AdsTableSizes) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func AdsTableSizesParse(theBytes []byte) (AdsTableSizes, error) {
-	return AdsTableSizesParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian)))
+func AdsTableSizesParse(ctx context.Context, theBytes []byte) (AdsTableSizes, error) {
+	return AdsTableSizesParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian)))
 }
 
 func AdsTableSizesParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AdsTableSizes, error) {

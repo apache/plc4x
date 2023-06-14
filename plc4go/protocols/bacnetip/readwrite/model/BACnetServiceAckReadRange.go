@@ -196,8 +196,8 @@ func (m *_BACnetServiceAckReadRange) GetLengthInBytes(ctx context.Context) uint1
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetServiceAckReadRangeParse(theBytes []byte, serviceAckLength uint32) (BACnetServiceAckReadRange, error) {
-	return BACnetServiceAckReadRangeParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), serviceAckLength)
+func BACnetServiceAckReadRangeParse(ctx context.Context, theBytes []byte, serviceAckLength uint32) (BACnetServiceAckReadRange, error) {
+	return BACnetServiceAckReadRangeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), serviceAckLength)
 }
 
 func BACnetServiceAckReadRangeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, serviceAckLength uint32) (BACnetServiceAckReadRange, error) {

@@ -146,8 +146,8 @@ func (m *_CycServiceItemType) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func CycServiceItemTypeParse(theBytes []byte) (CycServiceItemType, error) {
-	return CycServiceItemTypeParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func CycServiceItemTypeParse(ctx context.Context, theBytes []byte) (CycServiceItemType, error) {
+	return CycServiceItemTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func CycServiceItemTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (CycServiceItemType, error) {

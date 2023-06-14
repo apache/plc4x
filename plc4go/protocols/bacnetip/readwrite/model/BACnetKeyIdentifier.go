@@ -106,8 +106,8 @@ func (m *_BACnetKeyIdentifier) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetKeyIdentifierParse(theBytes []byte) (BACnetKeyIdentifier, error) {
-	return BACnetKeyIdentifierParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func BACnetKeyIdentifierParse(ctx context.Context, theBytes []byte) (BACnetKeyIdentifier, error) {
+	return BACnetKeyIdentifierParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func BACnetKeyIdentifierParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetKeyIdentifier, error) {

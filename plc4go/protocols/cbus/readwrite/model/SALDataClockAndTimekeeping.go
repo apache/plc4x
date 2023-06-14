@@ -125,8 +125,8 @@ func (m *_SALDataClockAndTimekeeping) GetLengthInBytes(ctx context.Context) uint
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func SALDataClockAndTimekeepingParse(theBytes []byte, applicationId ApplicationId) (SALDataClockAndTimekeeping, error) {
-	return SALDataClockAndTimekeepingParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), applicationId)
+func SALDataClockAndTimekeepingParse(ctx context.Context, theBytes []byte, applicationId ApplicationId) (SALDataClockAndTimekeeping, error) {
+	return SALDataClockAndTimekeepingParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), applicationId)
 }
 
 func SALDataClockAndTimekeepingParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataClockAndTimekeeping, error) {

@@ -159,8 +159,8 @@ func (m *_TriggerControlDataLabel) GetLengthInBytes(ctx context.Context) uint16 
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func TriggerControlDataLabelParse(theBytes []byte, commandTypeContainer TriggerControlCommandTypeContainer) (TriggerControlDataLabel, error) {
-	return TriggerControlDataLabelParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), commandTypeContainer)
+func TriggerControlDataLabelParse(ctx context.Context, theBytes []byte, commandTypeContainer TriggerControlCommandTypeContainer) (TriggerControlDataLabel, error) {
+	return TriggerControlDataLabelParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), commandTypeContainer)
 }
 
 func TriggerControlDataLabelParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, commandTypeContainer TriggerControlCommandTypeContainer) (TriggerControlDataLabel, error) {

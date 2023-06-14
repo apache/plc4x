@@ -122,8 +122,8 @@ func (m *_SecurityDataZoneSealed) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func SecurityDataZoneSealedParse(theBytes []byte) (SecurityDataZoneSealed, error) {
-	return SecurityDataZoneSealedParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func SecurityDataZoneSealedParse(ctx context.Context, theBytes []byte) (SecurityDataZoneSealed, error) {
+	return SecurityDataZoneSealedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func SecurityDataZoneSealedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityDataZoneSealed, error) {

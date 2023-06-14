@@ -139,8 +139,8 @@ func (m *_BACnetSilencedStateTagged) GetLengthInBytes(ctx context.Context) uint1
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetSilencedStateTaggedParse(theBytes []byte, tagNumber uint8, tagClass TagClass) (BACnetSilencedStateTagged, error) {
-	return BACnetSilencedStateTaggedParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, tagClass)
+func BACnetSilencedStateTaggedParse(ctx context.Context, theBytes []byte, tagNumber uint8, tagClass TagClass) (BACnetSilencedStateTagged, error) {
+	return BACnetSilencedStateTaggedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, tagClass)
 }
 
 func BACnetSilencedStateTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetSilencedStateTagged, error) {

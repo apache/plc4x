@@ -115,8 +115,8 @@ func (m *_HVACTemperature) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func HVACTemperatureParse(theBytes []byte) (HVACTemperature, error) {
-	return HVACTemperatureParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func HVACTemperatureParse(ctx context.Context, theBytes []byte) (HVACTemperature, error) {
+	return HVACTemperatureParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func HVACTemperatureParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (HVACTemperature, error) {

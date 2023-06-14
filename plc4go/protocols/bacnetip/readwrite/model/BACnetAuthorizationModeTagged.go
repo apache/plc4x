@@ -139,8 +139,8 @@ func (m *_BACnetAuthorizationModeTagged) GetLengthInBytes(ctx context.Context) u
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetAuthorizationModeTaggedParse(theBytes []byte, tagNumber uint8, tagClass TagClass) (BACnetAuthorizationModeTagged, error) {
-	return BACnetAuthorizationModeTaggedParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, tagClass)
+func BACnetAuthorizationModeTaggedParse(ctx context.Context, theBytes []byte, tagNumber uint8, tagClass TagClass) (BACnetAuthorizationModeTagged, error) {
+	return BACnetAuthorizationModeTaggedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, tagClass)
 }
 
 func BACnetAuthorizationModeTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetAuthorizationModeTagged, error) {

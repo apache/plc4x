@@ -165,8 +165,8 @@ func (m *_BACnetEventParameterUnsignedRange) GetLengthInBytes(ctx context.Contex
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetEventParameterUnsignedRangeParse(theBytes []byte) (BACnetEventParameterUnsignedRange, error) {
-	return BACnetEventParameterUnsignedRangeParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func BACnetEventParameterUnsignedRangeParse(ctx context.Context, theBytes []byte) (BACnetEventParameterUnsignedRange, error) {
+	return BACnetEventParameterUnsignedRangeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func BACnetEventParameterUnsignedRangeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetEventParameterUnsignedRange, error) {

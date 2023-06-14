@@ -115,8 +115,8 @@ func (m *_ApplicationAddress1) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ApplicationAddress1Parse(theBytes []byte) (ApplicationAddress1, error) {
-	return ApplicationAddress1ParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func ApplicationAddress1Parse(ctx context.Context, theBytes []byte) (ApplicationAddress1, error) {
+	return ApplicationAddress1ParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func ApplicationAddress1ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ApplicationAddress1, error) {

@@ -134,8 +134,8 @@ func (m *_WritePropertyMultipleError) GetLengthInBytes(ctx context.Context) uint
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func WritePropertyMultipleErrorParse(theBytes []byte, errorChoice BACnetConfirmedServiceChoice) (WritePropertyMultipleError, error) {
-	return WritePropertyMultipleErrorParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), errorChoice)
+func WritePropertyMultipleErrorParse(ctx context.Context, theBytes []byte, errorChoice BACnetConfirmedServiceChoice) (WritePropertyMultipleError, error) {
+	return WritePropertyMultipleErrorParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), errorChoice)
 }
 
 func WritePropertyMultipleErrorParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, errorChoice BACnetConfirmedServiceChoice) (WritePropertyMultipleError, error) {

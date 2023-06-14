@@ -249,11 +249,11 @@ func (m Browser) executeCommunicationObjectQuery(ctx context.Context, query Comm
 	var knxGroupAddresses []driverModel.KnxGroupAddress
 	if readResult.GetResponse().GetValue("groupAddressTable").IsList() {
 		for _, groupAddress := range readResult.GetResponse().GetValue("groupAddressTable").GetList() {
-			groupAddress := Uint16ToKnxGroupAddress(groupAddress.GetUint16(), 3)
+			groupAddress := Uint16ToKnxGroupAddress(ctx, groupAddress.GetUint16(), 3)
 			knxGroupAddresses = append(knxGroupAddresses, groupAddress)
 		}
 	} else {
-		groupAddress := Uint16ToKnxGroupAddress(readResult.GetResponse().GetValue("groupAddressTable").GetUint16(), 3)
+		groupAddress := Uint16ToKnxGroupAddress(ctx, readResult.GetResponse().GetValue("groupAddressTable").GetUint16(), 3)
 		knxGroupAddresses = append(knxGroupAddresses, groupAddress)
 	}
 
@@ -378,7 +378,7 @@ func (m Browser) executeCommunicationObjectQuery(ctx context.Context, query Comm
 			}
 			comObjectSettings := readResult.GetResponse().GetValue(strconv.Itoa(int(comObjectNumber))).GetUint16()
 			data := []uint8{uint8((comObjectSettings >> 8) & 0xFF), uint8(comObjectSettings & 0xFF)}
-			descriptor, err := driverModel.GroupObjectDescriptorRealisationTypeBParse(data)
+			descriptor, err := driverModel.GroupObjectDescriptorRealisationTypeBParse(ctx, data)
 			if err != nil {
 				m.log.Info().Err(err).Msg("error parsing com object descriptor")
 				continue
@@ -472,7 +472,7 @@ func (m Browser) executeCommunicationObjectQuery(ctx context.Context, query Comm
 
 		for _, tagName := range readResult.GetResponse().GetTagNames() {
 			array := utils.PlcValueUint8ListToByteArray(readResult.GetResponse().GetValue(tagName))
-			descriptor, err := driverModel.GroupObjectDescriptorRealisationType7Parse(array)
+			descriptor, err := driverModel.GroupObjectDescriptorRealisationType7Parse(ctx, array)
 			if err != nil {
 				return nil, errors.Wrap(err, "error creating read request")
 			}

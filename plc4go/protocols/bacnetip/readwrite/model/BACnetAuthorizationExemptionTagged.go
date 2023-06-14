@@ -139,8 +139,8 @@ func (m *_BACnetAuthorizationExemptionTagged) GetLengthInBytes(ctx context.Conte
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetAuthorizationExemptionTaggedParse(theBytes []byte, tagNumber uint8, tagClass TagClass) (BACnetAuthorizationExemptionTagged, error) {
-	return BACnetAuthorizationExemptionTaggedParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, tagClass)
+func BACnetAuthorizationExemptionTaggedParse(ctx context.Context, theBytes []byte, tagNumber uint8, tagClass TagClass) (BACnetAuthorizationExemptionTagged, error) {
+	return BACnetAuthorizationExemptionTaggedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, tagClass)
 }
 
 func BACnetAuthorizationExemptionTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetAuthorizationExemptionTagged, error) {

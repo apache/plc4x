@@ -104,8 +104,8 @@ func (m *_RequestEmpty) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func RequestEmptyParse(theBytes []byte, cBusOptions CBusOptions) (RequestEmpty, error) {
-	return RequestEmptyParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), cBusOptions)
+func RequestEmptyParse(ctx context.Context, theBytes []byte, cBusOptions CBusOptions) (RequestEmpty, error) {
+	return RequestEmptyParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), cBusOptions)
 }
 
 func RequestEmptyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (RequestEmpty, error) {

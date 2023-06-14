@@ -183,8 +183,8 @@ func (m *_S7AddressAny) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func S7AddressAnyParse(theBytes []byte) (S7AddressAny, error) {
-	return S7AddressAnyParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func S7AddressAnyParse(ctx context.Context, theBytes []byte) (S7AddressAny, error) {
+	return S7AddressAnyParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func S7AddressAnyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (S7AddressAny, error) {

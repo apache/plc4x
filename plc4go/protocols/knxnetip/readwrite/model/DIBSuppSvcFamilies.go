@@ -113,8 +113,8 @@ func (m *_DIBSuppSvcFamilies) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func DIBSuppSvcFamiliesParse(theBytes []byte) (DIBSuppSvcFamilies, error) {
-	return DIBSuppSvcFamiliesParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func DIBSuppSvcFamiliesParse(ctx context.Context, theBytes []byte) (DIBSuppSvcFamilies, error) {
+	return DIBSuppSvcFamiliesParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func DIBSuppSvcFamiliesParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (DIBSuppSvcFamilies, error) {

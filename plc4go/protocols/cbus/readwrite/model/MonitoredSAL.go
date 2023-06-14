@@ -117,8 +117,8 @@ func (m *_MonitoredSAL) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func MonitoredSALParse(theBytes []byte, cBusOptions CBusOptions) (MonitoredSAL, error) {
-	return MonitoredSALParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), cBusOptions)
+func MonitoredSALParse(ctx context.Context, theBytes []byte, cBusOptions CBusOptions) (MonitoredSAL, error) {
+	return MonitoredSALParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), cBusOptions)
 }
 
 func MonitoredSALParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (MonitoredSAL, error) {

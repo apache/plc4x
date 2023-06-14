@@ -109,8 +109,8 @@ func (m *_BACnetPropertyReference) GetLengthInBytes(ctx context.Context) uint16 
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetPropertyReferenceParse(theBytes []byte) (BACnetPropertyReference, error) {
-	return BACnetPropertyReferenceParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func BACnetPropertyReferenceParse(ctx context.Context, theBytes []byte) (BACnetPropertyReference, error) {
+	return BACnetPropertyReferenceParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func BACnetPropertyReferenceParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetPropertyReference, error) {

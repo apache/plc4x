@@ -128,8 +128,8 @@ func (m *_ConnectedAddressItem) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ConnectedAddressItemParse(theBytes []byte) (ConnectedAddressItem, error) {
-	return ConnectedAddressItemParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func ConnectedAddressItemParse(ctx context.Context, theBytes []byte) (ConnectedAddressItem, error) {
+	return ConnectedAddressItemParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func ConnectedAddressItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ConnectedAddressItem, error) {

@@ -106,8 +106,8 @@ func (m *_BACnetDateRange) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetDateRangeParse(theBytes []byte) (BACnetDateRange, error) {
-	return BACnetDateRangeParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func BACnetDateRangeParse(ctx context.Context, theBytes []byte) (BACnetDateRange, error) {
+	return BACnetDateRangeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func BACnetDateRangeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetDateRange, error) {

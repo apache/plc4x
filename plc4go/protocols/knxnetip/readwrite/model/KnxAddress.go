@@ -116,8 +116,8 @@ func (m *_KnxAddress) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func KnxAddressParse(theBytes []byte) (KnxAddress, error) {
-	return KnxAddressParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func KnxAddressParse(ctx context.Context, theBytes []byte) (KnxAddress, error) {
+	return KnxAddressParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func KnxAddressParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (KnxAddress, error) {

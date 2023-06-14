@@ -139,8 +139,8 @@ func (m *_BACnetAccessEventTagged) GetLengthInBytes(ctx context.Context) uint16 
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetAccessEventTaggedParse(theBytes []byte, tagNumber uint8, tagClass TagClass) (BACnetAccessEventTagged, error) {
-	return BACnetAccessEventTaggedParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, tagClass)
+func BACnetAccessEventTaggedParse(ctx context.Context, theBytes []byte, tagNumber uint8, tagClass TagClass) (BACnetAccessEventTagged, error) {
+	return BACnetAccessEventTaggedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, tagClass)
 }
 
 func BACnetAccessEventTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetAccessEventTagged, error) {

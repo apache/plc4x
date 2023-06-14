@@ -118,8 +118,8 @@ func (m *_AdsNotificationSample) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func AdsNotificationSampleParse(theBytes []byte) (AdsNotificationSample, error) {
-	return AdsNotificationSampleParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func AdsNotificationSampleParse(ctx context.Context, theBytes []byte) (AdsNotificationSample, error) {
+	return AdsNotificationSampleParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func AdsNotificationSampleParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AdsNotificationSample, error) {

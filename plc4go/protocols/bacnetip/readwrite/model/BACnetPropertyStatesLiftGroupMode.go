@@ -121,8 +121,8 @@ func (m *_BACnetPropertyStatesLiftGroupMode) GetLengthInBytes(ctx context.Contex
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetPropertyStatesLiftGroupModeParse(theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesLiftGroupMode, error) {
-	return BACnetPropertyStatesLiftGroupModeParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
+func BACnetPropertyStatesLiftGroupModeParse(ctx context.Context, theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesLiftGroupMode, error) {
+	return BACnetPropertyStatesLiftGroupModeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
 }
 
 func BACnetPropertyStatesLiftGroupModeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesLiftGroupMode, error) {

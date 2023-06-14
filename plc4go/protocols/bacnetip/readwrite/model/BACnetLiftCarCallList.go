@@ -96,8 +96,8 @@ func (m *_BACnetLiftCarCallList) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetLiftCarCallListParse(theBytes []byte) (BACnetLiftCarCallList, error) {
-	return BACnetLiftCarCallListParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func BACnetLiftCarCallListParse(ctx context.Context, theBytes []byte) (BACnetLiftCarCallList, error) {
+	return BACnetLiftCarCallListParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func BACnetLiftCarCallListParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetLiftCarCallList, error) {

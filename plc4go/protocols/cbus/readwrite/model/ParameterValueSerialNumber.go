@@ -136,8 +136,8 @@ func (m *_ParameterValueSerialNumber) GetLengthInBytes(ctx context.Context) uint
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ParameterValueSerialNumberParse(theBytes []byte, parameterType ParameterType, numBytes uint8) (ParameterValueSerialNumber, error) {
-	return ParameterValueSerialNumberParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), parameterType, numBytes)
+func ParameterValueSerialNumberParse(ctx context.Context, theBytes []byte, parameterType ParameterType, numBytes uint8) (ParameterValueSerialNumber, error) {
+	return ParameterValueSerialNumberParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), parameterType, numBytes)
 }
 
 func ParameterValueSerialNumberParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, parameterType ParameterType, numBytes uint8) (ParameterValueSerialNumber, error) {

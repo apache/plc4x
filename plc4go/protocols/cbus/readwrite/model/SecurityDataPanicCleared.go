@@ -101,8 +101,8 @@ func (m *_SecurityDataPanicCleared) GetLengthInBytes(ctx context.Context) uint16
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func SecurityDataPanicClearedParse(theBytes []byte) (SecurityDataPanicCleared, error) {
-	return SecurityDataPanicClearedParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func SecurityDataPanicClearedParse(ctx context.Context, theBytes []byte) (SecurityDataPanicCleared, error) {
+	return SecurityDataPanicClearedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func SecurityDataPanicClearedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityDataPanicCleared, error) {

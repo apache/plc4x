@@ -146,8 +146,8 @@ func (m *_SearchResponse) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func SearchResponseParse(theBytes []byte) (SearchResponse, error) {
-	return SearchResponseParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
+func SearchResponseParse(ctx context.Context, theBytes []byte) (SearchResponse, error) {
+	return SearchResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
 }
 
 func SearchResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SearchResponse, error) {

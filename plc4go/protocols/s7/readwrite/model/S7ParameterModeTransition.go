@@ -179,8 +179,8 @@ func (m *_S7ParameterModeTransition) GetLengthInBytes(ctx context.Context) uint1
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func S7ParameterModeTransitionParse(theBytes []byte, messageType uint8) (S7ParameterModeTransition, error) {
-	return S7ParameterModeTransitionParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), messageType)
+func S7ParameterModeTransitionParse(ctx context.Context, theBytes []byte, messageType uint8) (S7ParameterModeTransition, error) {
+	return S7ParameterModeTransitionParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), messageType)
 }
 
 func S7ParameterModeTransitionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, messageType uint8) (S7ParameterModeTransition, error) {

@@ -128,8 +128,8 @@ func (m *_CBusPointToPointToMultiPointCommandStatus) GetLengthInBytes(ctx contex
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func CBusPointToPointToMultiPointCommandStatusParse(theBytes []byte, cBusOptions CBusOptions) (CBusPointToPointToMultiPointCommandStatus, error) {
-	return CBusPointToPointToMultiPointCommandStatusParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), cBusOptions)
+func CBusPointToPointToMultiPointCommandStatusParse(ctx context.Context, theBytes []byte, cBusOptions CBusOptions) (CBusPointToPointToMultiPointCommandStatus, error) {
+	return CBusPointToPointToMultiPointCommandStatusParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), cBusOptions)
 }
 
 func CBusPointToPointToMultiPointCommandStatusParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (CBusPointToPointToMultiPointCommandStatus, error) {

@@ -134,8 +134,8 @@ func (m *_SubscribeCOVPropertyMultipleError) GetLengthInBytes(ctx context.Contex
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func SubscribeCOVPropertyMultipleErrorParse(theBytes []byte, errorChoice BACnetConfirmedServiceChoice) (SubscribeCOVPropertyMultipleError, error) {
-	return SubscribeCOVPropertyMultipleErrorParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), errorChoice)
+func SubscribeCOVPropertyMultipleErrorParse(ctx context.Context, theBytes []byte, errorChoice BACnetConfirmedServiceChoice) (SubscribeCOVPropertyMultipleError, error) {
+	return SubscribeCOVPropertyMultipleErrorParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), errorChoice)
 }
 
 func SubscribeCOVPropertyMultipleErrorParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, errorChoice BACnetConfirmedServiceChoice) (SubscribeCOVPropertyMultipleError, error) {

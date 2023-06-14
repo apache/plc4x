@@ -125,8 +125,8 @@ func (m *_SALDataMediaTransport) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func SALDataMediaTransportParse(theBytes []byte, applicationId ApplicationId) (SALDataMediaTransport, error) {
-	return SALDataMediaTransportParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), applicationId)
+func SALDataMediaTransportParse(ctx context.Context, theBytes []byte, applicationId ApplicationId) (SALDataMediaTransport, error) {
+	return SALDataMediaTransportParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), applicationId)
 }
 
 func SALDataMediaTransportParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataMediaTransport, error) {

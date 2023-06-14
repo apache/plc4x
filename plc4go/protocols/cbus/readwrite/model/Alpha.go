@@ -96,8 +96,8 @@ func (m *_Alpha) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func AlphaParse(theBytes []byte) (Alpha, error) {
-	return AlphaParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func AlphaParse(ctx context.Context, theBytes []byte) (Alpha, error) {
+	return AlphaParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func AlphaParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (Alpha, error) {

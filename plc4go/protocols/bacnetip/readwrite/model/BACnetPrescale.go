@@ -106,8 +106,8 @@ func (m *_BACnetPrescale) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetPrescaleParse(theBytes []byte) (BACnetPrescale, error) {
-	return BACnetPrescaleParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func BACnetPrescaleParse(ctx context.Context, theBytes []byte) (BACnetPrescale, error) {
+	return BACnetPrescaleParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func BACnetPrescaleParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetPrescale, error) {

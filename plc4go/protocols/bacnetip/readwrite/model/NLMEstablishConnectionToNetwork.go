@@ -134,8 +134,8 @@ func (m *_NLMEstablishConnectionToNetwork) GetLengthInBytes(ctx context.Context)
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func NLMEstablishConnectionToNetworkParse(theBytes []byte, apduLength uint16) (NLMEstablishConnectionToNetwork, error) {
-	return NLMEstablishConnectionToNetworkParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), apduLength)
+func NLMEstablishConnectionToNetworkParse(ctx context.Context, theBytes []byte, apduLength uint16) (NLMEstablishConnectionToNetwork, error) {
+	return NLMEstablishConnectionToNetworkParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), apduLength)
 }
 
 func NLMEstablishConnectionToNetworkParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, apduLength uint16) (NLMEstablishConnectionToNetwork, error) {

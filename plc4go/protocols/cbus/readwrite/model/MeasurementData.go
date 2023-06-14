@@ -136,8 +136,8 @@ func (m *_MeasurementData) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func MeasurementDataParse(theBytes []byte) (MeasurementData, error) {
-	return MeasurementDataParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func MeasurementDataParse(ctx context.Context, theBytes []byte) (MeasurementData, error) {
+	return MeasurementDataParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func MeasurementDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (MeasurementData, error) {

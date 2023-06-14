@@ -96,8 +96,8 @@ func (m *_RequestContext) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func RequestContextParse(theBytes []byte) (RequestContext, error) {
-	return RequestContextParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func RequestContextParse(ctx context.Context, theBytes []byte) (RequestContext, error) {
+	return RequestContextParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func RequestContextParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (RequestContext, error) {

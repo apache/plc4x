@@ -139,8 +139,8 @@ func (m *_BACnetLifeSafetyModeTagged) GetLengthInBytes(ctx context.Context) uint
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetLifeSafetyModeTaggedParse(theBytes []byte, tagNumber uint8, tagClass TagClass) (BACnetLifeSafetyModeTagged, error) {
-	return BACnetLifeSafetyModeTaggedParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, tagClass)
+func BACnetLifeSafetyModeTaggedParse(ctx context.Context, theBytes []byte, tagNumber uint8, tagClass TagClass) (BACnetLifeSafetyModeTagged, error) {
+	return BACnetLifeSafetyModeTaggedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, tagClass)
 }
 
 func BACnetLifeSafetyModeTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetLifeSafetyModeTagged, error) {

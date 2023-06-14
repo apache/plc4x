@@ -161,8 +161,8 @@ func (m *_IdentifyReplyCommandNetworkVoltage) GetLengthInBytes(ctx context.Conte
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func IdentifyReplyCommandNetworkVoltageParse(theBytes []byte, attribute Attribute, numBytes uint8) (IdentifyReplyCommandNetworkVoltage, error) {
-	return IdentifyReplyCommandNetworkVoltageParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), attribute, numBytes)
+func IdentifyReplyCommandNetworkVoltageParse(ctx context.Context, theBytes []byte, attribute Attribute, numBytes uint8) (IdentifyReplyCommandNetworkVoltage, error) {
+	return IdentifyReplyCommandNetworkVoltageParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), attribute, numBytes)
 }
 
 func IdentifyReplyCommandNetworkVoltageParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, attribute Attribute, numBytes uint8) (IdentifyReplyCommandNetworkVoltage, error) {

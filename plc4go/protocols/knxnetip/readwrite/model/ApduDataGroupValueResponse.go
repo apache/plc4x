@@ -136,8 +136,8 @@ func (m *_ApduDataGroupValueResponse) GetLengthInBytes(ctx context.Context) uint
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ApduDataGroupValueResponseParse(theBytes []byte, dataLength uint8) (ApduDataGroupValueResponse, error) {
-	return ApduDataGroupValueResponseParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), dataLength)
+func ApduDataGroupValueResponseParse(ctx context.Context, theBytes []byte, dataLength uint8) (ApduDataGroupValueResponse, error) {
+	return ApduDataGroupValueResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), dataLength)
 }
 
 func ApduDataGroupValueResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, dataLength uint8) (ApduDataGroupValueResponse, error) {

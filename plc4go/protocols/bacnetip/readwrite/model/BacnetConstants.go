@@ -96,8 +96,8 @@ func (m *_BacnetConstants) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BacnetConstantsParse(theBytes []byte) (BacnetConstants, error) {
-	return BacnetConstantsParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func BacnetConstantsParse(ctx context.Context, theBytes []byte) (BacnetConstants, error) {
+	return BacnetConstantsParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func BacnetConstantsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BacnetConstants, error) {

@@ -168,8 +168,8 @@ func (m *_CipRRData) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func CipRRDataParse(theBytes []byte, response bool) (CipRRData, error) {
-	return CipRRDataParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), response)
+func CipRRDataParse(ctx context.Context, theBytes []byte, response bool) (CipRRData, error) {
+	return CipRRDataParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), response)
 }
 
 func CipRRDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (CipRRData, error) {

@@ -151,8 +151,8 @@ func (m *_BACnetConfirmedServiceRequestDeviceCommunicationControl) GetLengthInBy
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConfirmedServiceRequestDeviceCommunicationControlParse(theBytes []byte, serviceRequestLength uint32) (BACnetConfirmedServiceRequestDeviceCommunicationControl, error) {
-	return BACnetConfirmedServiceRequestDeviceCommunicationControlParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), serviceRequestLength)
+func BACnetConfirmedServiceRequestDeviceCommunicationControlParse(ctx context.Context, theBytes []byte, serviceRequestLength uint32) (BACnetConfirmedServiceRequestDeviceCommunicationControl, error) {
+	return BACnetConfirmedServiceRequestDeviceCommunicationControlParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), serviceRequestLength)
 }
 
 func BACnetConfirmedServiceRequestDeviceCommunicationControlParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, serviceRequestLength uint32) (BACnetConfirmedServiceRequestDeviceCommunicationControl, error) {

@@ -123,8 +123,8 @@ func (m *_DataSegment) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func DataSegmentParse(theBytes []byte) (DataSegment, error) {
-	return DataSegmentParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func DataSegmentParse(ctx context.Context, theBytes []byte) (DataSegment, error) {
+	return DataSegmentParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func DataSegmentParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (DataSegment, error) {

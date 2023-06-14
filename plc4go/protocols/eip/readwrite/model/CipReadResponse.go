@@ -161,8 +161,8 @@ func (m *_CipReadResponse) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func CipReadResponseParse(theBytes []byte, connected bool, serviceLen uint16) (CipReadResponse, error) {
-	return CipReadResponseParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), connected, serviceLen)
+func CipReadResponseParse(ctx context.Context, theBytes []byte, connected bool, serviceLen uint16) (CipReadResponse, error) {
+	return CipReadResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), connected, serviceLen)
 }
 
 func CipReadResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, connected bool, serviceLen uint16) (CipReadResponse, error) {

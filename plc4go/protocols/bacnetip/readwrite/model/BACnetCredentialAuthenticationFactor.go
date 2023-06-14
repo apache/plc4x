@@ -106,8 +106,8 @@ func (m *_BACnetCredentialAuthenticationFactor) GetLengthInBytes(ctx context.Con
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetCredentialAuthenticationFactorParse(theBytes []byte) (BACnetCredentialAuthenticationFactor, error) {
-	return BACnetCredentialAuthenticationFactorParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func BACnetCredentialAuthenticationFactorParse(ctx context.Context, theBytes []byte) (BACnetCredentialAuthenticationFactor, error) {
+	return BACnetCredentialAuthenticationFactorParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func BACnetCredentialAuthenticationFactorParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetCredentialAuthenticationFactor, error) {

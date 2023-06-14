@@ -123,8 +123,8 @@ func (m *_CBusMessageToServer) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func CBusMessageToServerParse(theBytes []byte, isResponse bool, requestContext RequestContext, cBusOptions CBusOptions) (CBusMessageToServer, error) {
-	return CBusMessageToServerParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), isResponse, requestContext, cBusOptions)
+func CBusMessageToServerParse(ctx context.Context, theBytes []byte, isResponse bool, requestContext RequestContext, cBusOptions CBusOptions) (CBusMessageToServer, error) {
+	return CBusMessageToServerParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), isResponse, requestContext, cBusOptions)
 }
 
 func CBusMessageToServerParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, isResponse bool, requestContext RequestContext, cBusOptions CBusOptions) (CBusMessageToServer, error) {

@@ -80,13 +80,13 @@ func (m *Connection) handleIncomingTunnelingRequest(ctx context.Context, tunneli
 					payload = append(payload, byte(groupValueWrite.GetDataFirstByte()))
 					payload = append(payload, groupValueWrite.GetData()...)
 
-					m.handleValueCacheUpdate(destinationAddress, payload)
+					m.handleValueCacheUpdate(ctx, destinationAddress, payload)
 				default:
 					if dataFrame.GetGroupAddress() {
 						return
 					}
 					// If this is an individual address, and it is targeted at us, we need to ack that.
-					targetAddress := ByteArrayToKnxAddress(dataFrame.GetDestinationAddress())
+					targetAddress := ByteArrayToKnxAddress(ctx, dataFrame.GetDestinationAddress())
 					if targetAddress == m.ClientKnxAddress {
 						m.log.Info().Msg("Acknowleding an unhandled data message.")
 						_ = m.sendDeviceAck(ctx, dataFrame.GetSourceAddress(), dataFrame.GetApdu().GetCounter(), func(err error) {})
@@ -97,7 +97,7 @@ func (m *Connection) handleIncomingTunnelingRequest(ctx context.Context, tunneli
 					return
 				}
 				// If this is an individual address, and it is targeted at us, we need to ack that.
-				targetAddress := ByteArrayToKnxAddress(dataFrame.GetDestinationAddress())
+				targetAddress := ByteArrayToKnxAddress(ctx, dataFrame.GetDestinationAddress())
 				if targetAddress == m.ClientKnxAddress {
 					m.log.Info().Msg("Acknowleding an unhandled contol message.")
 					_ = m.sendDeviceAck(ctx, dataFrame.GetSourceAddress(), dataFrame.GetApdu().GetCounter(), func(err error) {})
@@ -109,7 +109,7 @@ func (m *Connection) handleIncomingTunnelingRequest(ctx context.Context, tunneli
 	}()
 }
 
-func (m *Connection) handleValueCacheUpdate(destinationAddress []byte, payload []byte) {
+func (m *Connection) handleValueCacheUpdate(ctx context.Context, destinationAddress []byte, payload []byte) {
 	addressData := uint16(destinationAddress[0])<<8 | (uint16(destinationAddress[1]) & 0xFF)
 
 	m.valueCacheMutex.RLock()
@@ -124,7 +124,7 @@ func (m *Connection) handleValueCacheUpdate(destinationAddress []byte, payload [
 	}
 	if m.subscribers != nil {
 		for _, subscriber := range m.subscribers {
-			subscriber.handleValueChange(destinationAddress, payload, changed)
+			subscriber.handleValueChange(ctx, destinationAddress, payload, changed)
 		}
 	}
 }

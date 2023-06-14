@@ -250,8 +250,8 @@ func (m *_CipConnectionManagerCloseRequest) GetLengthInBytes(ctx context.Context
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func CipConnectionManagerCloseRequestParse(theBytes []byte, connected bool, serviceLen uint16) (CipConnectionManagerCloseRequest, error) {
-	return CipConnectionManagerCloseRequestParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), connected, serviceLen)
+func CipConnectionManagerCloseRequestParse(ctx context.Context, theBytes []byte, connected bool, serviceLen uint16) (CipConnectionManagerCloseRequest, error) {
+	return CipConnectionManagerCloseRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), connected, serviceLen)
 }
 
 func CipConnectionManagerCloseRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, connected bool, serviceLen uint16) (CipConnectionManagerCloseRequest, error) {

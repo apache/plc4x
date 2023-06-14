@@ -149,8 +149,8 @@ func (m *_BACnetConfirmedServiceRequestReadProperty) GetLengthInBytes(ctx contex
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConfirmedServiceRequestReadPropertyParse(theBytes []byte, serviceRequestLength uint32) (BACnetConfirmedServiceRequestReadProperty, error) {
-	return BACnetConfirmedServiceRequestReadPropertyParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), serviceRequestLength)
+func BACnetConfirmedServiceRequestReadPropertyParse(ctx context.Context, theBytes []byte, serviceRequestLength uint32) (BACnetConfirmedServiceRequestReadProperty, error) {
+	return BACnetConfirmedServiceRequestReadPropertyParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), serviceRequestLength)
 }
 
 func BACnetConfirmedServiceRequestReadPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, serviceRequestLength uint32) (BACnetConfirmedServiceRequestReadProperty, error) {

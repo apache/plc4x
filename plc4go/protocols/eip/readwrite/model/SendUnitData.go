@@ -176,8 +176,8 @@ func (m *_SendUnitData) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func SendUnitDataParse(theBytes []byte, response bool) (SendUnitData, error) {
-	return SendUnitDataParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), response)
+func SendUnitDataParse(ctx context.Context, theBytes []byte, response bool) (SendUnitData, error) {
+	return SendUnitDataParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), response)
 }
 
 func SendUnitDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (SendUnitData, error) {

@@ -140,8 +140,8 @@ func (m *_FirmataMessageSubscribeDigitalPinValue) GetLengthInBytes(ctx context.C
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func FirmataMessageSubscribeDigitalPinValueParse(theBytes []byte, response bool) (FirmataMessageSubscribeDigitalPinValue, error) {
-	return FirmataMessageSubscribeDigitalPinValueParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), response)
+func FirmataMessageSubscribeDigitalPinValueParse(ctx context.Context, theBytes []byte, response bool) (FirmataMessageSubscribeDigitalPinValue, error) {
+	return FirmataMessageSubscribeDigitalPinValueParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), response)
 }
 
 func FirmataMessageSubscribeDigitalPinValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (FirmataMessageSubscribeDigitalPinValue, error) {

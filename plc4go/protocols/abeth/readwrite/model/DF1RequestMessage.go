@@ -156,8 +156,8 @@ func (m *_DF1RequestMessage) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func DF1RequestMessageParse(theBytes []byte) (DF1RequestMessage, error) {
-	return DF1RequestMessageParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func DF1RequestMessageParse(ctx context.Context, theBytes []byte) (DF1RequestMessage, error) {
+	return DF1RequestMessageParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func DF1RequestMessageParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (DF1RequestMessage, error) {

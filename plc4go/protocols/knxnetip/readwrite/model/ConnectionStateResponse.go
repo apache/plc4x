@@ -135,8 +135,8 @@ func (m *_ConnectionStateResponse) GetLengthInBytes(ctx context.Context) uint16 
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ConnectionStateResponseParse(theBytes []byte) (ConnectionStateResponse, error) {
-	return ConnectionStateResponseParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
+func ConnectionStateResponseParse(ctx context.Context, theBytes []byte) (ConnectionStateResponse, error) {
+	return ConnectionStateResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
 }
 
 func ConnectionStateResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ConnectionStateResponse, error) {

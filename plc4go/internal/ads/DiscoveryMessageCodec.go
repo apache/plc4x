@@ -20,6 +20,8 @@
 package ads
 
 import (
+	"context"
+
 	"github.com/apache/plc4x/plc4go/protocols/ads/discovery/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/default"
@@ -86,7 +88,7 @@ func (m *DiscoveryMessageCodec) Receive() (spi.Message, error) {
 			// TODO: Possibly clean up ...
 			return nil, nil
 		}
-		tcpPacket, err := model.AdsDiscoveryParse(data)
+		tcpPacket, err := model.AdsDiscoveryParse(context.TODO(), data)
 		if err != nil {
 			m.log.Warn().Err(err).Msg("error parsing")
 			// TODO: Possibly clean up ...

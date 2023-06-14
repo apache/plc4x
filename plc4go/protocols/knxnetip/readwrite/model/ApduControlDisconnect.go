@@ -102,8 +102,8 @@ func (m *_ApduControlDisconnect) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ApduControlDisconnectParse(theBytes []byte) (ApduControlDisconnect, error) {
-	return ApduControlDisconnectParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func ApduControlDisconnectParse(ctx context.Context, theBytes []byte) (ApduControlDisconnect, error) {
+	return ApduControlDisconnectParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func ApduControlDisconnectParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ApduControlDisconnect, error) {

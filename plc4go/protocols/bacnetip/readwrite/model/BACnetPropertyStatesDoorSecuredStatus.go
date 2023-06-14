@@ -121,8 +121,8 @@ func (m *_BACnetPropertyStatesDoorSecuredStatus) GetLengthInBytes(ctx context.Co
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetPropertyStatesDoorSecuredStatusParse(theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesDoorSecuredStatus, error) {
-	return BACnetPropertyStatesDoorSecuredStatusParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
+func BACnetPropertyStatesDoorSecuredStatusParse(ctx context.Context, theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesDoorSecuredStatus, error) {
+	return BACnetPropertyStatesDoorSecuredStatusParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
 }
 
 func BACnetPropertyStatesDoorSecuredStatusParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesDoorSecuredStatus, error) {

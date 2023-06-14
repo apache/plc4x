@@ -111,8 +111,8 @@ func (m *_NetworkProtocolControlInformation) GetLengthInBytes(ctx context.Contex
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func NetworkProtocolControlInformationParse(theBytes []byte) (NetworkProtocolControlInformation, error) {
-	return NetworkProtocolControlInformationParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func NetworkProtocolControlInformationParse(ctx context.Context, theBytes []byte) (NetworkProtocolControlInformation, error) {
+	return NetworkProtocolControlInformationParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func NetworkProtocolControlInformationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (NetworkProtocolControlInformation, error) {

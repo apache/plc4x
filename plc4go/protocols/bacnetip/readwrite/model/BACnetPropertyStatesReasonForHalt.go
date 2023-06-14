@@ -121,8 +121,8 @@ func (m *_BACnetPropertyStatesReasonForHalt) GetLengthInBytes(ctx context.Contex
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetPropertyStatesReasonForHaltParse(theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesReasonForHalt, error) {
-	return BACnetPropertyStatesReasonForHaltParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
+func BACnetPropertyStatesReasonForHaltParse(ctx context.Context, theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesReasonForHalt, error) {
+	return BACnetPropertyStatesReasonForHaltParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
 }
 
 func BACnetPropertyStatesReasonForHaltParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesReasonForHalt, error) {

@@ -133,8 +133,8 @@ func (m *_BACnetFaultParameter) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetFaultParameterParse(theBytes []byte) (BACnetFaultParameter, error) {
-	return BACnetFaultParameterParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func BACnetFaultParameterParse(ctx context.Context, theBytes []byte) (BACnetFaultParameter, error) {
+	return BACnetFaultParameterParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func BACnetFaultParameterParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetFaultParameter, error) {

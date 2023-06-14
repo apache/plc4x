@@ -114,8 +114,8 @@ func (m *_TunnelingRequestDataBlock) GetLengthInBytes(ctx context.Context) uint1
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func TunnelingRequestDataBlockParse(theBytes []byte) (TunnelingRequestDataBlock, error) {
-	return TunnelingRequestDataBlockParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func TunnelingRequestDataBlockParse(ctx context.Context, theBytes []byte) (TunnelingRequestDataBlock, error) {
+	return TunnelingRequestDataBlockParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func TunnelingRequestDataBlockParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (TunnelingRequestDataBlock, error) {

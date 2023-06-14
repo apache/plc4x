@@ -124,8 +124,8 @@ func (m *_DescriptionRequest) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func DescriptionRequestParse(theBytes []byte) (DescriptionRequest, error) {
-	return DescriptionRequestParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
+func DescriptionRequestParse(ctx context.Context, theBytes []byte) (DescriptionRequest, error) {
+	return DescriptionRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
 }
 
 func DescriptionRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (DescriptionRequest, error) {

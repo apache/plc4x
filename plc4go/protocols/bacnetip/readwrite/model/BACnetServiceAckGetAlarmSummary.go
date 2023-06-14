@@ -145,8 +145,8 @@ func (m *_BACnetServiceAckGetAlarmSummary) GetLengthInBytes(ctx context.Context)
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetServiceAckGetAlarmSummaryParse(theBytes []byte, serviceAckLength uint32) (BACnetServiceAckGetAlarmSummary, error) {
-	return BACnetServiceAckGetAlarmSummaryParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), serviceAckLength)
+func BACnetServiceAckGetAlarmSummaryParse(ctx context.Context, theBytes []byte, serviceAckLength uint32) (BACnetServiceAckGetAlarmSummary, error) {
+	return BACnetServiceAckGetAlarmSummaryParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), serviceAckLength)
 }
 
 func BACnetServiceAckGetAlarmSummaryParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, serviceAckLength uint32) (BACnetServiceAckGetAlarmSummary, error) {

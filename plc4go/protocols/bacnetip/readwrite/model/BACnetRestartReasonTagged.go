@@ -139,8 +139,8 @@ func (m *_BACnetRestartReasonTagged) GetLengthInBytes(ctx context.Context) uint1
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetRestartReasonTaggedParse(theBytes []byte, tagNumber uint8, tagClass TagClass) (BACnetRestartReasonTagged, error) {
-	return BACnetRestartReasonTaggedParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, tagClass)
+func BACnetRestartReasonTaggedParse(ctx context.Context, theBytes []byte, tagNumber uint8, tagClass TagClass) (BACnetRestartReasonTagged, error) {
+	return BACnetRestartReasonTaggedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, tagClass)
 }
 
 func BACnetRestartReasonTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetRestartReasonTagged, error) {

@@ -135,8 +135,8 @@ func (m *_DisconnectResponse) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func DisconnectResponseParse(theBytes []byte) (DisconnectResponse, error) {
-	return DisconnectResponseParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
+func DisconnectResponseParse(ctx context.Context, theBytes []byte) (DisconnectResponse, error) {
+	return DisconnectResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
 }
 
 func DisconnectResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (DisconnectResponse, error) {

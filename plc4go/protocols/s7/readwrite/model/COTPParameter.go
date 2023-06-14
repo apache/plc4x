@@ -107,8 +107,8 @@ func (m *_COTPParameter) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func COTPParameterParse(theBytes []byte, rest uint8) (COTPParameter, error) {
-	return COTPParameterParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), rest)
+func COTPParameterParse(ctx context.Context, theBytes []byte, rest uint8) (COTPParameter, error) {
+	return COTPParameterParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), rest)
 }
 
 func COTPParameterParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, rest uint8) (COTPParameter, error) {

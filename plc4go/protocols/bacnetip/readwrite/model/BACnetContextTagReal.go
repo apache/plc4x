@@ -144,8 +144,8 @@ func (m *_BACnetContextTagReal) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetContextTagRealParse(theBytes []byte, tagNumberArgument uint8, dataType BACnetDataType) (BACnetContextTagReal, error) {
-	return BACnetContextTagRealParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumberArgument, dataType)
+func BACnetContextTagRealParse(ctx context.Context, theBytes []byte, tagNumberArgument uint8, dataType BACnetDataType) (BACnetContextTagReal, error) {
+	return BACnetContextTagRealParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumberArgument, dataType)
 }
 
 func BACnetContextTagRealParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumberArgument uint8, dataType BACnetDataType) (BACnetContextTagReal, error) {

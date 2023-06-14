@@ -130,8 +130,8 @@ func (m *_BACnetReadAccessSpecification) GetLengthInBytes(ctx context.Context) u
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetReadAccessSpecificationParse(theBytes []byte) (BACnetReadAccessSpecification, error) {
-	return BACnetReadAccessSpecificationParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func BACnetReadAccessSpecificationParse(ctx context.Context, theBytes []byte) (BACnetReadAccessSpecification, error) {
+	return BACnetReadAccessSpecificationParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func BACnetReadAccessSpecificationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetReadAccessSpecification, error) {

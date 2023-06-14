@@ -125,8 +125,8 @@ func (m *_BACnetContextTagTime) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetContextTagTimeParse(theBytes []byte, tagNumberArgument uint8, dataType BACnetDataType) (BACnetContextTagTime, error) {
-	return BACnetContextTagTimeParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumberArgument, dataType)
+func BACnetContextTagTimeParse(ctx context.Context, theBytes []byte, tagNumberArgument uint8, dataType BACnetDataType) (BACnetContextTagTime, error) {
+	return BACnetContextTagTimeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumberArgument, dataType)
 }
 
 func BACnetContextTagTimeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumberArgument uint8, dataType BACnetDataType) (BACnetContextTagTime, error) {

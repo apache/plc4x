@@ -100,8 +100,8 @@ func (m *_BACnetApplicationTagNull) GetLengthInBytes(ctx context.Context) uint16
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetApplicationTagNullParse(theBytes []byte) (BACnetApplicationTagNull, error) {
-	return BACnetApplicationTagNullParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func BACnetApplicationTagNullParse(ctx context.Context, theBytes []byte) (BACnetApplicationTagNull, error) {
+	return BACnetApplicationTagNullParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func BACnetApplicationTagNullParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetApplicationTagNull, error) {

@@ -116,8 +116,8 @@ func (m *_TransportType) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func TransportTypeParse(theBytes []byte) (TransportType, error) {
-	return TransportTypeParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func TransportTypeParse(ctx context.Context, theBytes []byte) (TransportType, error) {
+	return TransportTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func TransportTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (TransportType, error) {

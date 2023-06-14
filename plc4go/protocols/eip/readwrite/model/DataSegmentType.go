@@ -101,8 +101,8 @@ func (m *_DataSegmentType) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func DataSegmentTypeParse(theBytes []byte) (DataSegmentType, error) {
-	return DataSegmentTypeParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func DataSegmentTypeParse(ctx context.Context, theBytes []byte) (DataSegmentType, error) {
+	return DataSegmentTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func DataSegmentTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (DataSegmentType, error) {

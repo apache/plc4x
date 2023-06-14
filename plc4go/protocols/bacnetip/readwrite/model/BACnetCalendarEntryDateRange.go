@@ -121,8 +121,8 @@ func (m *_BACnetCalendarEntryDateRange) GetLengthInBytes(ctx context.Context) ui
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetCalendarEntryDateRangeParse(theBytes []byte) (BACnetCalendarEntryDateRange, error) {
-	return BACnetCalendarEntryDateRangeParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func BACnetCalendarEntryDateRangeParse(ctx context.Context, theBytes []byte) (BACnetCalendarEntryDateRange, error) {
+	return BACnetCalendarEntryDateRangeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func BACnetCalendarEntryDateRangeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetCalendarEntryDateRange, error) {

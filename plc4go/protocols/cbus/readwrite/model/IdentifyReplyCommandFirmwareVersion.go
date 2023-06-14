@@ -123,8 +123,8 @@ func (m *_IdentifyReplyCommandFirmwareVersion) GetLengthInBytes(ctx context.Cont
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func IdentifyReplyCommandFirmwareVersionParse(theBytes []byte, attribute Attribute, numBytes uint8) (IdentifyReplyCommandFirmwareVersion, error) {
-	return IdentifyReplyCommandFirmwareVersionParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), attribute, numBytes)
+func IdentifyReplyCommandFirmwareVersionParse(ctx context.Context, theBytes []byte, attribute Attribute, numBytes uint8) (IdentifyReplyCommandFirmwareVersion, error) {
+	return IdentifyReplyCommandFirmwareVersionParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), attribute, numBytes)
 }
 
 func IdentifyReplyCommandFirmwareVersionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, attribute Attribute, numBytes uint8) (IdentifyReplyCommandFirmwareVersion, error) {

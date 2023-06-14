@@ -261,8 +261,8 @@ func (m *_APDUComplexAck) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func APDUComplexAckParse(theBytes []byte, apduLength uint16) (APDUComplexAck, error) {
-	return APDUComplexAckParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), apduLength)
+func APDUComplexAckParse(ctx context.Context, theBytes []byte, apduLength uint16) (APDUComplexAck, error) {
+	return APDUComplexAckParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), apduLength)
 }
 
 func APDUComplexAckParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, apduLength uint16) (APDUComplexAck, error) {

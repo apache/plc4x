@@ -225,8 +225,8 @@ func (m *_ConfirmedEventNotificationRequest) GetLengthInBytes(ctx context.Contex
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ConfirmedEventNotificationRequestParse(theBytes []byte) (ConfirmedEventNotificationRequest, error) {
-	return ConfirmedEventNotificationRequestParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func ConfirmedEventNotificationRequestParse(ctx context.Context, theBytes []byte) (ConfirmedEventNotificationRequest, error) {
+	return ConfirmedEventNotificationRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func ConfirmedEventNotificationRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ConfirmedEventNotificationRequest, error) {

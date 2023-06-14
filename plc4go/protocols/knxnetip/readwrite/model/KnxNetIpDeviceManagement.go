@@ -123,8 +123,8 @@ func (m *_KnxNetIpDeviceManagement) GetLengthInBytes(ctx context.Context) uint16
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func KnxNetIpDeviceManagementParse(theBytes []byte) (KnxNetIpDeviceManagement, error) {
-	return KnxNetIpDeviceManagementParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func KnxNetIpDeviceManagementParse(ctx context.Context, theBytes []byte) (KnxNetIpDeviceManagement, error) {
+	return KnxNetIpDeviceManagementParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func KnxNetIpDeviceManagementParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (KnxNetIpDeviceManagement, error) {

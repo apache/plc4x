@@ -160,8 +160,8 @@ func (m *_BACnetConfirmedServiceRequestLifeSafetyOperation) GetLengthInBytes(ctx
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConfirmedServiceRequestLifeSafetyOperationParse(theBytes []byte, serviceRequestLength uint32) (BACnetConfirmedServiceRequestLifeSafetyOperation, error) {
-	return BACnetConfirmedServiceRequestLifeSafetyOperationParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), serviceRequestLength)
+func BACnetConfirmedServiceRequestLifeSafetyOperationParse(ctx context.Context, theBytes []byte, serviceRequestLength uint32) (BACnetConfirmedServiceRequestLifeSafetyOperation, error) {
+	return BACnetConfirmedServiceRequestLifeSafetyOperationParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), serviceRequestLength)
 }
 
 func BACnetConfirmedServiceRequestLifeSafetyOperationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, serviceRequestLength uint32) (BACnetConfirmedServiceRequestLifeSafetyOperation, error) {

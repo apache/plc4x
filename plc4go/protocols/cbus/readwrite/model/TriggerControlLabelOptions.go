@@ -123,8 +123,8 @@ func (m *_TriggerControlLabelOptions) GetLengthInBytes(ctx context.Context) uint
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func TriggerControlLabelOptionsParse(theBytes []byte) (TriggerControlLabelOptions, error) {
-	return TriggerControlLabelOptionsParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func TriggerControlLabelOptionsParse(ctx context.Context, theBytes []byte) (TriggerControlLabelOptions, error) {
+	return TriggerControlLabelOptionsParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func TriggerControlLabelOptionsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (TriggerControlLabelOptions, error) {

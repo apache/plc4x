@@ -96,8 +96,8 @@ func (m *_AdsConstants) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func AdsConstantsParse(theBytes []byte) (AdsConstants, error) {
-	return AdsConstantsParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func AdsConstantsParse(ctx context.Context, theBytes []byte) (AdsConstants, error) {
+	return AdsConstantsParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func AdsConstantsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AdsConstants, error) {

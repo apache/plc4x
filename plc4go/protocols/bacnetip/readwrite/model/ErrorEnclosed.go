@@ -119,8 +119,8 @@ func (m *_ErrorEnclosed) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ErrorEnclosedParse(theBytes []byte, tagNumber uint8) (ErrorEnclosed, error) {
-	return ErrorEnclosedParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber)
+func ErrorEnclosedParse(ctx context.Context, theBytes []byte, tagNumber uint8) (ErrorEnclosed, error) {
+	return ErrorEnclosedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber)
 }
 
 func ErrorEnclosedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (ErrorEnclosed, error) {

@@ -152,8 +152,8 @@ func (m *_ComObjectTableRealisationType1) GetLengthInBytes(ctx context.Context) 
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ComObjectTableRealisationType1Parse(theBytes []byte, firmwareType FirmwareType) (ComObjectTableRealisationType1, error) {
-	return ComObjectTableRealisationType1ParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), firmwareType)
+func ComObjectTableRealisationType1Parse(ctx context.Context, theBytes []byte, firmwareType FirmwareType) (ComObjectTableRealisationType1, error) {
+	return ComObjectTableRealisationType1ParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), firmwareType)
 }
 
 func ComObjectTableRealisationType1ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, firmwareType FirmwareType) (ComObjectTableRealisationType1, error) {

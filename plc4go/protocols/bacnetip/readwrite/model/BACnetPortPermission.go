@@ -109,8 +109,8 @@ func (m *_BACnetPortPermission) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetPortPermissionParse(theBytes []byte) (BACnetPortPermission, error) {
-	return BACnetPortPermissionParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func BACnetPortPermissionParse(ctx context.Context, theBytes []byte) (BACnetPortPermission, error) {
+	return BACnetPortPermissionParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func BACnetPortPermissionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetPortPermission, error) {

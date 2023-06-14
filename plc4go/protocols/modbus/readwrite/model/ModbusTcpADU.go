@@ -168,8 +168,8 @@ func (m *_ModbusTcpADU) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ModbusTcpADUParse(theBytes []byte, driverType DriverType, response bool) (ModbusTcpADU, error) {
-	return ModbusTcpADUParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), driverType, response)
+func ModbusTcpADUParse(ctx context.Context, theBytes []byte, driverType DriverType, response bool) (ModbusTcpADU, error) {
+	return ModbusTcpADUParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), driverType, response)
 }
 
 func ModbusTcpADUParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, driverType DriverType, response bool) (ModbusTcpADU, error) {

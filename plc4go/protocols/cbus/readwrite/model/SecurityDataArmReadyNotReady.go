@@ -122,8 +122,8 @@ func (m *_SecurityDataArmReadyNotReady) GetLengthInBytes(ctx context.Context) ui
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func SecurityDataArmReadyNotReadyParse(theBytes []byte) (SecurityDataArmReadyNotReady, error) {
-	return SecurityDataArmReadyNotReadyParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func SecurityDataArmReadyNotReadyParse(ctx context.Context, theBytes []byte) (SecurityDataArmReadyNotReady, error) {
+	return SecurityDataArmReadyNotReadyParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func SecurityDataArmReadyNotReadyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityDataArmReadyNotReady, error) {

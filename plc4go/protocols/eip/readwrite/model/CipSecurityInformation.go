@@ -128,8 +128,8 @@ func (m *_CipSecurityInformation) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func CipSecurityInformationParse(theBytes []byte) (CipSecurityInformation, error) {
-	return CipSecurityInformationParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func CipSecurityInformationParse(ctx context.Context, theBytes []byte) (CipSecurityInformation, error) {
+	return CipSecurityInformationParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func CipSecurityInformationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (CipSecurityInformation, error) {

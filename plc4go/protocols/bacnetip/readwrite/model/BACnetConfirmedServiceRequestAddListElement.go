@@ -162,8 +162,8 @@ func (m *_BACnetConfirmedServiceRequestAddListElement) GetLengthInBytes(ctx cont
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConfirmedServiceRequestAddListElementParse(theBytes []byte, serviceRequestLength uint32) (BACnetConfirmedServiceRequestAddListElement, error) {
-	return BACnetConfirmedServiceRequestAddListElementParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), serviceRequestLength)
+func BACnetConfirmedServiceRequestAddListElementParse(ctx context.Context, theBytes []byte, serviceRequestLength uint32) (BACnetConfirmedServiceRequestAddListElement, error) {
+	return BACnetConfirmedServiceRequestAddListElementParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), serviceRequestLength)
 }
 
 func BACnetConfirmedServiceRequestAddListElementParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, serviceRequestLength uint32) (BACnetConfirmedServiceRequestAddListElement, error) {

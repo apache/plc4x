@@ -159,8 +159,8 @@ func (m *_ConfirmedPrivateTransferError) GetLengthInBytes(ctx context.Context) u
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ConfirmedPrivateTransferErrorParse(theBytes []byte, errorChoice BACnetConfirmedServiceChoice) (ConfirmedPrivateTransferError, error) {
-	return ConfirmedPrivateTransferErrorParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), errorChoice)
+func ConfirmedPrivateTransferErrorParse(ctx context.Context, theBytes []byte, errorChoice BACnetConfirmedServiceChoice) (ConfirmedPrivateTransferError, error) {
+	return ConfirmedPrivateTransferErrorParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), errorChoice)
 }
 
 func ConfirmedPrivateTransferErrorParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, errorChoice BACnetConfirmedServiceChoice) (ConfirmedPrivateTransferError, error) {

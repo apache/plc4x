@@ -133,8 +133,8 @@ func (m *_BACnetOptionalREAL) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetOptionalREALParse(theBytes []byte) (BACnetOptionalREAL, error) {
-	return BACnetOptionalREALParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func BACnetOptionalREALParse(ctx context.Context, theBytes []byte) (BACnetOptionalREAL, error) {
+	return BACnetOptionalREALParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func BACnetOptionalREALParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetOptionalREAL, error) {

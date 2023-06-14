@@ -126,8 +126,8 @@ func (m *_SerialNumber) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func SerialNumberParse(theBytes []byte) (SerialNumber, error) {
-	return SerialNumberParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func SerialNumberParse(ctx context.Context, theBytes []byte) (SerialNumber, error) {
+	return SerialNumberParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func SerialNumberParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SerialNumber, error) {

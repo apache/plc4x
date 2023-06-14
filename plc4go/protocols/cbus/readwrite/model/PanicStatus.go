@@ -135,8 +135,8 @@ func (m *_PanicStatus) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func PanicStatusParse(theBytes []byte) (PanicStatus, error) {
-	return PanicStatusParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func PanicStatusParse(ctx context.Context, theBytes []byte) (PanicStatus, error) {
+	return PanicStatusParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func PanicStatusParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (PanicStatus, error) {

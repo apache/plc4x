@@ -106,8 +106,8 @@ func (m *_ReplyNetwork) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ReplyNetworkParse(theBytes []byte) (ReplyNetwork, error) {
-	return ReplyNetworkParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func ReplyNetworkParse(ctx context.Context, theBytes []byte) (ReplyNetwork, error) {
+	return ReplyNetworkParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func ReplyNetworkParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ReplyNetwork, error) {

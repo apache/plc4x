@@ -96,8 +96,8 @@ func (m *_RelativeTimestamp) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func RelativeTimestampParse(theBytes []byte) (RelativeTimestamp, error) {
-	return RelativeTimestampParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func RelativeTimestampParse(ctx context.Context, theBytes []byte) (RelativeTimestamp, error) {
+	return RelativeTimestampParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func RelativeTimestampParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (RelativeTimestamp, error) {

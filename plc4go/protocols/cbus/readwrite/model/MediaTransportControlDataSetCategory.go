@@ -122,8 +122,8 @@ func (m *_MediaTransportControlDataSetCategory) GetLengthInBytes(ctx context.Con
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func MediaTransportControlDataSetCategoryParse(theBytes []byte) (MediaTransportControlDataSetCategory, error) {
-	return MediaTransportControlDataSetCategoryParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func MediaTransportControlDataSetCategoryParse(ctx context.Context, theBytes []byte) (MediaTransportControlDataSetCategory, error) {
+	return MediaTransportControlDataSetCategoryParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func MediaTransportControlDataSetCategoryParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (MediaTransportControlDataSetCategory, error) {

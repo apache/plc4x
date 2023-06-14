@@ -121,8 +121,8 @@ func (m *_BACnetLogDataLogDataEntryIntegerValue) GetLengthInBytes(ctx context.Co
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetLogDataLogDataEntryIntegerValueParse(theBytes []byte) (BACnetLogDataLogDataEntryIntegerValue, error) {
-	return BACnetLogDataLogDataEntryIntegerValueParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func BACnetLogDataLogDataEntryIntegerValueParse(ctx context.Context, theBytes []byte) (BACnetLogDataLogDataEntryIntegerValue, error) {
+	return BACnetLogDataLogDataEntryIntegerValueParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func BACnetLogDataLogDataEntryIntegerValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetLogDataLogDataEntryIntegerValue, error) {

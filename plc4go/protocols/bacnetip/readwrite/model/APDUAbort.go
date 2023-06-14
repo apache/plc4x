@@ -150,8 +150,8 @@ func (m *_APDUAbort) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func APDUAbortParse(theBytes []byte, apduLength uint16) (APDUAbort, error) {
-	return APDUAbortParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), apduLength)
+func APDUAbortParse(ctx context.Context, theBytes []byte, apduLength uint16) (APDUAbort, error) {
+	return APDUAbortParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), apduLength)
 }
 
 func APDUAbortParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, apduLength uint16) (APDUAbort, error) {

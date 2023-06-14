@@ -136,8 +136,8 @@ func (m *_ParameterValueBaudRateSelector) GetLengthInBytes(ctx context.Context) 
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ParameterValueBaudRateSelectorParse(theBytes []byte, parameterType ParameterType, numBytes uint8) (ParameterValueBaudRateSelector, error) {
-	return ParameterValueBaudRateSelectorParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), parameterType, numBytes)
+func ParameterValueBaudRateSelectorParse(ctx context.Context, theBytes []byte, parameterType ParameterType, numBytes uint8) (ParameterValueBaudRateSelector, error) {
+	return ParameterValueBaudRateSelectorParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), parameterType, numBytes)
 }
 
 func ParameterValueBaudRateSelectorParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, parameterType ParameterType, numBytes uint8) (ParameterValueBaudRateSelector, error) {

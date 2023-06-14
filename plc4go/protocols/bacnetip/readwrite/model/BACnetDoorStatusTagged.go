@@ -139,8 +139,8 @@ func (m *_BACnetDoorStatusTagged) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetDoorStatusTaggedParse(theBytes []byte, tagNumber uint8, tagClass TagClass) (BACnetDoorStatusTagged, error) {
-	return BACnetDoorStatusTaggedParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, tagClass)
+func BACnetDoorStatusTaggedParse(ctx context.Context, theBytes []byte, tagNumber uint8, tagClass TagClass) (BACnetDoorStatusTagged, error) {
+	return BACnetDoorStatusTaggedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, tagClass)
 }
 
 func BACnetDoorStatusTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetDoorStatusTagged, error) {

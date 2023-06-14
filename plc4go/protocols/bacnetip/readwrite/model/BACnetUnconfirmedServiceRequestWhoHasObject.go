@@ -133,8 +133,8 @@ func (m *_BACnetUnconfirmedServiceRequestWhoHasObject) GetLengthInBytes(ctx cont
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetUnconfirmedServiceRequestWhoHasObjectParse(theBytes []byte) (BACnetUnconfirmedServiceRequestWhoHasObject, error) {
-	return BACnetUnconfirmedServiceRequestWhoHasObjectParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func BACnetUnconfirmedServiceRequestWhoHasObjectParse(ctx context.Context, theBytes []byte) (BACnetUnconfirmedServiceRequestWhoHasObject, error) {
+	return BACnetUnconfirmedServiceRequestWhoHasObjectParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func BACnetUnconfirmedServiceRequestWhoHasObjectParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetUnconfirmedServiceRequestWhoHasObject, error) {

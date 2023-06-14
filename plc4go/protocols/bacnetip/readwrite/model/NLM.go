@@ -125,8 +125,8 @@ func (m *_NLM) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func NLMParse(theBytes []byte, apduLength uint16) (NLM, error) {
-	return NLMParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), apduLength)
+func NLMParse(ctx context.Context, theBytes []byte, apduLength uint16) (NLM, error) {
+	return NLMParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), apduLength)
 }
 
 func NLMParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, apduLength uint16) (NLM, error) {

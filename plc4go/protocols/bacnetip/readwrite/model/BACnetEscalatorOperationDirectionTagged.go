@@ -139,8 +139,8 @@ func (m *_BACnetEscalatorOperationDirectionTagged) GetLengthInBytes(ctx context.
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetEscalatorOperationDirectionTaggedParse(theBytes []byte, tagNumber uint8, tagClass TagClass) (BACnetEscalatorOperationDirectionTagged, error) {
-	return BACnetEscalatorOperationDirectionTaggedParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, tagClass)
+func BACnetEscalatorOperationDirectionTaggedParse(ctx context.Context, theBytes []byte, tagNumber uint8, tagClass TagClass) (BACnetEscalatorOperationDirectionTagged, error) {
+	return BACnetEscalatorOperationDirectionTaggedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, tagClass)
 }
 
 func BACnetEscalatorOperationDirectionTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetEscalatorOperationDirectionTagged, error) {

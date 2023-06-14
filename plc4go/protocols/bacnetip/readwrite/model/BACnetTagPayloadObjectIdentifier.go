@@ -135,8 +135,8 @@ func (m *_BACnetTagPayloadObjectIdentifier) GetLengthInBytes(ctx context.Context
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetTagPayloadObjectIdentifierParse(theBytes []byte) (BACnetTagPayloadObjectIdentifier, error) {
-	return BACnetTagPayloadObjectIdentifierParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func BACnetTagPayloadObjectIdentifierParse(ctx context.Context, theBytes []byte) (BACnetTagPayloadObjectIdentifier, error) {
+	return BACnetTagPayloadObjectIdentifierParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func BACnetTagPayloadObjectIdentifierParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetTagPayloadObjectIdentifier, error) {

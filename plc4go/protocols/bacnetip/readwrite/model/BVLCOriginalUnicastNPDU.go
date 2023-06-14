@@ -127,8 +127,8 @@ func (m *_BVLCOriginalUnicastNPDU) GetLengthInBytes(ctx context.Context) uint16 
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BVLCOriginalUnicastNPDUParse(theBytes []byte, bvlcPayloadLength uint16) (BVLCOriginalUnicastNPDU, error) {
-	return BVLCOriginalUnicastNPDUParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), bvlcPayloadLength)
+func BVLCOriginalUnicastNPDUParse(ctx context.Context, theBytes []byte, bvlcPayloadLength uint16) (BVLCOriginalUnicastNPDU, error) {
+	return BVLCOriginalUnicastNPDUParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), bvlcPayloadLength)
 }
 
 func BVLCOriginalUnicastNPDUParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, bvlcPayloadLength uint16) (BVLCOriginalUnicastNPDU, error) {

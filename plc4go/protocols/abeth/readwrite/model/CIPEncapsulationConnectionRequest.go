@@ -108,8 +108,8 @@ func (m *_CIPEncapsulationConnectionRequest) GetLengthInBytes(ctx context.Contex
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func CIPEncapsulationConnectionRequestParse(theBytes []byte) (CIPEncapsulationConnectionRequest, error) {
-	return CIPEncapsulationConnectionRequestParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
+func CIPEncapsulationConnectionRequestParse(ctx context.Context, theBytes []byte) (CIPEncapsulationConnectionRequest, error) {
+	return CIPEncapsulationConnectionRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
 }
 
 func CIPEncapsulationConnectionRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (CIPEncapsulationConnectionRequest, error) {

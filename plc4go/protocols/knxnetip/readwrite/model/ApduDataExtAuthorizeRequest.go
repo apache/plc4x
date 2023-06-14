@@ -136,8 +136,8 @@ func (m *_ApduDataExtAuthorizeRequest) GetLengthInBytes(ctx context.Context) uin
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ApduDataExtAuthorizeRequestParse(theBytes []byte, length uint8) (ApduDataExtAuthorizeRequest, error) {
-	return ApduDataExtAuthorizeRequestParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), length)
+func ApduDataExtAuthorizeRequestParse(ctx context.Context, theBytes []byte, length uint8) (ApduDataExtAuthorizeRequest, error) {
+	return ApduDataExtAuthorizeRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), length)
 }
 
 func ApduDataExtAuthorizeRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, length uint8) (ApduDataExtAuthorizeRequest, error) {

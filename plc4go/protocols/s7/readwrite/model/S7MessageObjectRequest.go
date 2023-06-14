@@ -181,8 +181,8 @@ func (m *_S7MessageObjectRequest) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func S7MessageObjectRequestParse(theBytes []byte, cpuFunctionType uint8) (S7MessageObjectRequest, error) {
-	return S7MessageObjectRequestParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), cpuFunctionType)
+func S7MessageObjectRequestParse(ctx context.Context, theBytes []byte, cpuFunctionType uint8) (S7MessageObjectRequest, error) {
+	return S7MessageObjectRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), cpuFunctionType)
 }
 
 func S7MessageObjectRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cpuFunctionType uint8) (S7MessageObjectRequest, error) {

@@ -121,8 +121,8 @@ func (m *_ParameterChangeReply) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ParameterChangeReplyParse(theBytes []byte, cBusOptions CBusOptions, requestContext RequestContext) (ParameterChangeReply, error) {
-	return ParameterChangeReplyParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), cBusOptions, requestContext)
+func ParameterChangeReplyParse(ctx context.Context, theBytes []byte, cBusOptions CBusOptions, requestContext RequestContext) (ParameterChangeReply, error) {
+	return ParameterChangeReplyParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), cBusOptions, requestContext)
 }
 
 func ParameterChangeReplyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions, requestContext RequestContext) (ParameterChangeReply, error) {

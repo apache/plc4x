@@ -103,8 +103,8 @@ func (m *_DF1SymbolMessageFrameACK) GetLengthInBytes(ctx context.Context) uint16
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func DF1SymbolMessageFrameACKParse(theBytes []byte) (DF1SymbolMessageFrameACK, error) {
-	return DF1SymbolMessageFrameACKParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
+func DF1SymbolMessageFrameACKParse(ctx context.Context, theBytes []byte) (DF1SymbolMessageFrameACK, error) {
+	return DF1SymbolMessageFrameACKParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
 }
 
 func DF1SymbolMessageFrameACKParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (DF1SymbolMessageFrameACK, error) {

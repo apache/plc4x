@@ -96,8 +96,8 @@ func (m *_BridgeAddress) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BridgeAddressParse(theBytes []byte) (BridgeAddress, error) {
-	return BridgeAddressParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func BridgeAddressParse(ctx context.Context, theBytes []byte) (BridgeAddress, error) {
+	return BridgeAddressParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func BridgeAddressParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BridgeAddress, error) {

@@ -116,8 +116,8 @@ func (m *_BACnetSpecialEvent) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetSpecialEventParse(theBytes []byte) (BACnetSpecialEvent, error) {
-	return BACnetSpecialEventParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func BACnetSpecialEventParse(ctx context.Context, theBytes []byte) (BACnetSpecialEvent, error) {
+	return BACnetSpecialEventParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func BACnetSpecialEventParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetSpecialEvent, error) {

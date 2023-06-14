@@ -121,8 +121,8 @@ func (m *_BACnetTimeStampSequence) GetLengthInBytes(ctx context.Context) uint16 
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetTimeStampSequenceParse(theBytes []byte) (BACnetTimeStampSequence, error) {
-	return BACnetTimeStampSequenceParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func BACnetTimeStampSequenceParse(ctx context.Context, theBytes []byte) (BACnetTimeStampSequence, error) {
+	return BACnetTimeStampSequenceParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func BACnetTimeStampSequenceParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetTimeStampSequence, error) {

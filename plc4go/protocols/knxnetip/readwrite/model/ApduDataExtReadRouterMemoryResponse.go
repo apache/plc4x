@@ -102,8 +102,8 @@ func (m *_ApduDataExtReadRouterMemoryResponse) GetLengthInBytes(ctx context.Cont
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ApduDataExtReadRouterMemoryResponseParse(theBytes []byte, length uint8) (ApduDataExtReadRouterMemoryResponse, error) {
-	return ApduDataExtReadRouterMemoryResponseParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), length)
+func ApduDataExtReadRouterMemoryResponseParse(ctx context.Context, theBytes []byte, length uint8) (ApduDataExtReadRouterMemoryResponse, error) {
+	return ApduDataExtReadRouterMemoryResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), length)
 }
 
 func ApduDataExtReadRouterMemoryResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, length uint8) (ApduDataExtReadRouterMemoryResponse, error) {

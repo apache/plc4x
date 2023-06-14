@@ -151,8 +151,8 @@ func (m *_MediaTransportControlDataShuffleOnOff) GetLengthInBytes(ctx context.Co
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func MediaTransportControlDataShuffleOnOffParse(theBytes []byte) (MediaTransportControlDataShuffleOnOff, error) {
-	return MediaTransportControlDataShuffleOnOffParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func MediaTransportControlDataShuffleOnOffParse(ctx context.Context, theBytes []byte) (MediaTransportControlDataShuffleOnOff, error) {
+	return MediaTransportControlDataShuffleOnOffParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func MediaTransportControlDataShuffleOnOffParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (MediaTransportControlDataShuffleOnOff, error) {

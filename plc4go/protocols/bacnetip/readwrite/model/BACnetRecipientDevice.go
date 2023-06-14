@@ -121,8 +121,8 @@ func (m *_BACnetRecipientDevice) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetRecipientDeviceParse(theBytes []byte) (BACnetRecipientDevice, error) {
-	return BACnetRecipientDeviceParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func BACnetRecipientDeviceParse(ctx context.Context, theBytes []byte) (BACnetRecipientDevice, error) {
+	return BACnetRecipientDeviceParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func BACnetRecipientDeviceParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetRecipientDevice, error) {

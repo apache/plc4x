@@ -119,8 +119,8 @@ func (m *_BACnetDateTimeEnclosed) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetDateTimeEnclosedParse(theBytes []byte, tagNumber uint8) (BACnetDateTimeEnclosed, error) {
-	return BACnetDateTimeEnclosedParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber)
+func BACnetDateTimeEnclosedParse(ctx context.Context, theBytes []byte, tagNumber uint8) (BACnetDateTimeEnclosed, error) {
+	return BACnetDateTimeEnclosedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber)
 }
 
 func BACnetDateTimeEnclosedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetDateTimeEnclosed, error) {

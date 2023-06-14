@@ -149,8 +149,8 @@ func (m *_LDataReq) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func LDataReqParse(theBytes []byte, size uint16) (LDataReq, error) {
-	return LDataReqParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), size)
+func LDataReqParse(ctx context.Context, theBytes []byte, size uint16) (LDataReq, error) {
+	return LDataReqParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), size)
 }
 
 func LDataReqParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, size uint16) (LDataReq, error) {

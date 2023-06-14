@@ -119,8 +119,8 @@ func (m *_BACnetHostNPortEnclosed) GetLengthInBytes(ctx context.Context) uint16 
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetHostNPortEnclosedParse(theBytes []byte, tagNumber uint8) (BACnetHostNPortEnclosed, error) {
-	return BACnetHostNPortEnclosedParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber)
+func BACnetHostNPortEnclosedParse(ctx context.Context, theBytes []byte, tagNumber uint8) (BACnetHostNPortEnclosed, error) {
+	return BACnetHostNPortEnclosedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber)
 }
 
 func BACnetHostNPortEnclosedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetHostNPortEnclosed, error) {

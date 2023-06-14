@@ -123,8 +123,8 @@ func (m *_KnxGroupAddressFreeLevel) GetLengthInBytes(ctx context.Context) uint16
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func KnxGroupAddressFreeLevelParse(theBytes []byte, numLevels uint8) (KnxGroupAddressFreeLevel, error) {
-	return KnxGroupAddressFreeLevelParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), numLevels)
+func KnxGroupAddressFreeLevelParse(ctx context.Context, theBytes []byte, numLevels uint8) (KnxGroupAddressFreeLevel, error) {
+	return KnxGroupAddressFreeLevelParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), numLevels)
 }
 
 func KnxGroupAddressFreeLevelParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, numLevels uint8) (KnxGroupAddressFreeLevel, error) {

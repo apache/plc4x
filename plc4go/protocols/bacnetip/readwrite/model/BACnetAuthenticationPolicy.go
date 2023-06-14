@@ -116,8 +116,8 @@ func (m *_BACnetAuthenticationPolicy) GetLengthInBytes(ctx context.Context) uint
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetAuthenticationPolicyParse(theBytes []byte) (BACnetAuthenticationPolicy, error) {
-	return BACnetAuthenticationPolicyParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func BACnetAuthenticationPolicyParse(ctx context.Context, theBytes []byte) (BACnetAuthenticationPolicy, error) {
+	return BACnetAuthenticationPolicyParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func BACnetAuthenticationPolicyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetAuthenticationPolicy, error) {

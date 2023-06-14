@@ -408,8 +408,8 @@ func (m *_BACnetEventParameterExtendedParameters) GetLengthInBytes(ctx context.C
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetEventParameterExtendedParametersParse(theBytes []byte, tagNumber uint8) (BACnetEventParameterExtendedParameters, error) {
-	return BACnetEventParameterExtendedParametersParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber)
+func BACnetEventParameterExtendedParametersParse(ctx context.Context, theBytes []byte, tagNumber uint8) (BACnetEventParameterExtendedParameters, error) {
+	return BACnetEventParameterExtendedParametersParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber)
 }
 
 func BACnetEventParameterExtendedParametersParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetEventParameterExtendedParameters, error) {

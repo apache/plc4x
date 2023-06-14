@@ -123,8 +123,8 @@ func (m *_KnxNetIpCore) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func KnxNetIpCoreParse(theBytes []byte) (KnxNetIpCore, error) {
-	return KnxNetIpCoreParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func KnxNetIpCoreParse(ctx context.Context, theBytes []byte) (KnxNetIpCore, error) {
+	return KnxNetIpCoreParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func KnxNetIpCoreParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (KnxNetIpCore, error) {

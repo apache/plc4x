@@ -128,8 +128,8 @@ func (m *_S7VarPayloadDataItem) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func S7VarPayloadDataItemParse(theBytes []byte) (S7VarPayloadDataItem, error) {
-	return S7VarPayloadDataItemParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func S7VarPayloadDataItemParse(ctx context.Context, theBytes []byte) (S7VarPayloadDataItem, error) {
+	return S7VarPayloadDataItemParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func S7VarPayloadDataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (S7VarPayloadDataItem, error) {

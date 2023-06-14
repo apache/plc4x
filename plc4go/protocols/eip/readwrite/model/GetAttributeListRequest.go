@@ -110,8 +110,8 @@ func (m *_GetAttributeListRequest) GetLengthInBytes(ctx context.Context) uint16 
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func GetAttributeListRequestParse(theBytes []byte, connected bool, serviceLen uint16) (GetAttributeListRequest, error) {
-	return GetAttributeListRequestParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), connected, serviceLen)
+func GetAttributeListRequestParse(ctx context.Context, theBytes []byte, connected bool, serviceLen uint16) (GetAttributeListRequest, error) {
+	return GetAttributeListRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), connected, serviceLen)
 }
 
 func GetAttributeListRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, connected bool, serviceLen uint16) (GetAttributeListRequest, error) {

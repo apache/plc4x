@@ -102,8 +102,8 @@ func (m *_ApduDataUserMessage) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ApduDataUserMessageParse(theBytes []byte, dataLength uint8) (ApduDataUserMessage, error) {
-	return ApduDataUserMessageParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), dataLength)
+func ApduDataUserMessageParse(ctx context.Context, theBytes []byte, dataLength uint8) (ApduDataUserMessage, error) {
+	return ApduDataUserMessageParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), dataLength)
 }
 
 func ApduDataUserMessageParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, dataLength uint8) (ApduDataUserMessage, error) {

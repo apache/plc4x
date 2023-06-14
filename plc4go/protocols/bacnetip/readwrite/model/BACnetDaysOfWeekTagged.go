@@ -189,8 +189,8 @@ func (m *_BACnetDaysOfWeekTagged) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetDaysOfWeekTaggedParse(theBytes []byte, tagNumber uint8, tagClass TagClass) (BACnetDaysOfWeekTagged, error) {
-	return BACnetDaysOfWeekTaggedParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, tagClass)
+func BACnetDaysOfWeekTaggedParse(ctx context.Context, theBytes []byte, tagNumber uint8, tagClass TagClass) (BACnetDaysOfWeekTagged, error) {
+	return BACnetDaysOfWeekTaggedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, tagClass)
 }
 
 func BACnetDaysOfWeekTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetDaysOfWeekTagged, error) {

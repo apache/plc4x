@@ -125,8 +125,8 @@ func (m *_IdentifyReplyCommandGAVPhysicalAddresses) GetLengthInBytes(ctx context
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func IdentifyReplyCommandGAVPhysicalAddressesParse(theBytes []byte, attribute Attribute, numBytes uint8) (IdentifyReplyCommandGAVPhysicalAddresses, error) {
-	return IdentifyReplyCommandGAVPhysicalAddressesParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), attribute, numBytes)
+func IdentifyReplyCommandGAVPhysicalAddressesParse(ctx context.Context, theBytes []byte, attribute Attribute, numBytes uint8) (IdentifyReplyCommandGAVPhysicalAddresses, error) {
+	return IdentifyReplyCommandGAVPhysicalAddressesParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), attribute, numBytes)
 }
 
 func IdentifyReplyCommandGAVPhysicalAddressesParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, attribute Attribute, numBytes uint8) (IdentifyReplyCommandGAVPhysicalAddresses, error) {

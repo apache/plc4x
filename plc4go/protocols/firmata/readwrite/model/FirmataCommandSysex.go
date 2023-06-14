@@ -128,8 +128,8 @@ func (m *_FirmataCommandSysex) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func FirmataCommandSysexParse(theBytes []byte, response bool) (FirmataCommandSysex, error) {
-	return FirmataCommandSysexParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), response)
+func FirmataCommandSysexParse(ctx context.Context, theBytes []byte, response bool) (FirmataCommandSysex, error) {
+	return FirmataCommandSysexParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), response)
 }
 
 func FirmataCommandSysexParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (FirmataCommandSysex, error) {

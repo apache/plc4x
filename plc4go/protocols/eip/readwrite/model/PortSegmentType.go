@@ -101,8 +101,8 @@ func (m *_PortSegmentType) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func PortSegmentTypeParse(theBytes []byte) (PortSegmentType, error) {
-	return PortSegmentTypeParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func PortSegmentTypeParse(ctx context.Context, theBytes []byte) (PortSegmentType, error) {
+	return PortSegmentTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func PortSegmentTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (PortSegmentType, error) {

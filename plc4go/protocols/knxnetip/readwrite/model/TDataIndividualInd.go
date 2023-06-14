@@ -102,8 +102,8 @@ func (m *_TDataIndividualInd) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func TDataIndividualIndParse(theBytes []byte, size uint16) (TDataIndividualInd, error) {
-	return TDataIndividualIndParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), size)
+func TDataIndividualIndParse(ctx context.Context, theBytes []byte, size uint16) (TDataIndividualInd, error) {
+	return TDataIndividualIndParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), size)
 }
 
 func TDataIndividualIndParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, size uint16) (TDataIndividualInd, error) {

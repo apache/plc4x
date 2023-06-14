@@ -110,8 +110,8 @@ func (m *_BACnetBinaryPVTagged) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetBinaryPVTaggedParse(theBytes []byte, tagNumber uint8, tagClass TagClass) (BACnetBinaryPVTagged, error) {
-	return BACnetBinaryPVTaggedParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, tagClass)
+func BACnetBinaryPVTaggedParse(ctx context.Context, theBytes []byte, tagNumber uint8, tagClass TagClass) (BACnetBinaryPVTagged, error) {
+	return BACnetBinaryPVTaggedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, tagClass)
 }
 
 func BACnetBinaryPVTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetBinaryPVTagged, error) {

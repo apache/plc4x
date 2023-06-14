@@ -101,8 +101,8 @@ func (m *_SecurityDataArmFailedCleared) GetLengthInBytes(ctx context.Context) ui
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func SecurityDataArmFailedClearedParse(theBytes []byte) (SecurityDataArmFailedCleared, error) {
-	return SecurityDataArmFailedClearedParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func SecurityDataArmFailedClearedParse(ctx context.Context, theBytes []byte) (SecurityDataArmFailedCleared, error) {
+	return SecurityDataArmFailedClearedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func SecurityDataArmFailedClearedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityDataArmFailedCleared, error) {

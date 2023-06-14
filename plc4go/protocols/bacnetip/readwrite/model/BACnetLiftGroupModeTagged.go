@@ -110,8 +110,8 @@ func (m *_BACnetLiftGroupModeTagged) GetLengthInBytes(ctx context.Context) uint1
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetLiftGroupModeTaggedParse(theBytes []byte, tagNumber uint8, tagClass TagClass) (BACnetLiftGroupModeTagged, error) {
-	return BACnetLiftGroupModeTaggedParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, tagClass)
+func BACnetLiftGroupModeTaggedParse(ctx context.Context, theBytes []byte, tagNumber uint8, tagClass TagClass) (BACnetLiftGroupModeTagged, error) {
+	return BACnetLiftGroupModeTaggedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, tagClass)
 }
 
 func BACnetLiftGroupModeTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetLiftGroupModeTagged, error) {

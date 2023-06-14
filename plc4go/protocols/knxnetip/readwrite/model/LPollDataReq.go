@@ -102,8 +102,8 @@ func (m *_LPollDataReq) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func LPollDataReqParse(theBytes []byte, size uint16) (LPollDataReq, error) {
-	return LPollDataReqParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), size)
+func LPollDataReqParse(ctx context.Context, theBytes []byte, size uint16) (LPollDataReq, error) {
+	return LPollDataReqParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), size)
 }
 
 func LPollDataReqParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, size uint16) (LPollDataReq, error) {

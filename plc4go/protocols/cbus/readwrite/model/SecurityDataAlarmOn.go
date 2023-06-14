@@ -101,8 +101,8 @@ func (m *_SecurityDataAlarmOn) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func SecurityDataAlarmOnParse(theBytes []byte) (SecurityDataAlarmOn, error) {
-	return SecurityDataAlarmOnParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func SecurityDataAlarmOnParse(ctx context.Context, theBytes []byte) (SecurityDataAlarmOn, error) {
+	return SecurityDataAlarmOnParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func SecurityDataAlarmOnParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityDataAlarmOn, error) {

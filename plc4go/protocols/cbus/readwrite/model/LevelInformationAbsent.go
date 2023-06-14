@@ -105,8 +105,8 @@ func (m *_LevelInformationAbsent) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func LevelInformationAbsentParse(theBytes []byte) (LevelInformationAbsent, error) {
-	return LevelInformationAbsentParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func LevelInformationAbsentParse(ctx context.Context, theBytes []byte) (LevelInformationAbsent, error) {
+	return LevelInformationAbsentParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func LevelInformationAbsentParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (LevelInformationAbsent, error) {

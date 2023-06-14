@@ -106,8 +106,8 @@ func (m *_BACnetNetworkSecurityPolicy) GetLengthInBytes(ctx context.Context) uin
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetNetworkSecurityPolicyParse(theBytes []byte) (BACnetNetworkSecurityPolicy, error) {
-	return BACnetNetworkSecurityPolicyParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func BACnetNetworkSecurityPolicyParse(ctx context.Context, theBytes []byte) (BACnetNetworkSecurityPolicy, error) {
+	return BACnetNetworkSecurityPolicyParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func BACnetNetworkSecurityPolicyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetNetworkSecurityPolicy, error) {

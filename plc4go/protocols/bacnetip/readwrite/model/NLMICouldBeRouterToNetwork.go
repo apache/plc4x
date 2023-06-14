@@ -134,8 +134,8 @@ func (m *_NLMICouldBeRouterToNetwork) GetLengthInBytes(ctx context.Context) uint
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func NLMICouldBeRouterToNetworkParse(theBytes []byte, apduLength uint16) (NLMICouldBeRouterToNetwork, error) {
-	return NLMICouldBeRouterToNetworkParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), apduLength)
+func NLMICouldBeRouterToNetworkParse(ctx context.Context, theBytes []byte, apduLength uint16) (NLMICouldBeRouterToNetwork, error) {
+	return NLMICouldBeRouterToNetworkParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), apduLength)
 }
 
 func NLMICouldBeRouterToNetworkParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, apduLength uint16) (NLMICouldBeRouterToNetwork, error) {

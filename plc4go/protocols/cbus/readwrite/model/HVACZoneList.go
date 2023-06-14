@@ -185,8 +185,8 @@ func (m *_HVACZoneList) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func HVACZoneListParse(theBytes []byte) (HVACZoneList, error) {
-	return HVACZoneListParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func HVACZoneListParse(ctx context.Context, theBytes []byte) (HVACZoneList, error) {
+	return HVACZoneListParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func HVACZoneListParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (HVACZoneList, error) {

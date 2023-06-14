@@ -126,8 +126,8 @@ func (m *_AdsDataTypeArrayInfo) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func AdsDataTypeArrayInfoParse(theBytes []byte) (AdsDataTypeArrayInfo, error) {
-	return AdsDataTypeArrayInfoParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian)))
+func AdsDataTypeArrayInfoParse(ctx context.Context, theBytes []byte) (AdsDataTypeArrayInfo, error) {
+	return AdsDataTypeArrayInfoParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian)))
 }
 
 func AdsDataTypeArrayInfoParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AdsDataTypeArrayInfo, error) {

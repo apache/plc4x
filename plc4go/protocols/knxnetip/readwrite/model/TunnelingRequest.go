@@ -138,8 +138,8 @@ func (m *_TunnelingRequest) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func TunnelingRequestParse(theBytes []byte, totalLength uint16) (TunnelingRequest, error) {
-	return TunnelingRequestParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), totalLength)
+func TunnelingRequestParse(ctx context.Context, theBytes []byte, totalLength uint16) (TunnelingRequest, error) {
+	return TunnelingRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), totalLength)
 }
 
 func TunnelingRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, totalLength uint16) (TunnelingRequest, error) {

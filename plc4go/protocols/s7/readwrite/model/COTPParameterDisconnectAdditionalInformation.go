@@ -125,8 +125,8 @@ func (m *_COTPParameterDisconnectAdditionalInformation) GetLengthInBytes(ctx con
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func COTPParameterDisconnectAdditionalInformationParse(theBytes []byte, rest uint8) (COTPParameterDisconnectAdditionalInformation, error) {
-	return COTPParameterDisconnectAdditionalInformationParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), rest)
+func COTPParameterDisconnectAdditionalInformationParse(ctx context.Context, theBytes []byte, rest uint8) (COTPParameterDisconnectAdditionalInformation, error) {
+	return COTPParameterDisconnectAdditionalInformationParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), rest)
 }
 
 func COTPParameterDisconnectAdditionalInformationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, rest uint8) (COTPParameterDisconnectAdditionalInformation, error) {

@@ -119,8 +119,8 @@ func (m *_BACnetTimeStampEnclosed) GetLengthInBytes(ctx context.Context) uint16 
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetTimeStampEnclosedParse(theBytes []byte, tagNumber uint8) (BACnetTimeStampEnclosed, error) {
-	return BACnetTimeStampEnclosedParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber)
+func BACnetTimeStampEnclosedParse(ctx context.Context, theBytes []byte, tagNumber uint8) (BACnetTimeStampEnclosed, error) {
+	return BACnetTimeStampEnclosedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber)
 }
 
 func BACnetTimeStampEnclosedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetTimeStampEnclosed, error) {

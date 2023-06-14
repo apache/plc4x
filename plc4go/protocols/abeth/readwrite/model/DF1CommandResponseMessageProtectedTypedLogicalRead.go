@@ -130,8 +130,8 @@ func (m *_DF1CommandResponseMessageProtectedTypedLogicalRead) GetLengthInBytes(c
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func DF1CommandResponseMessageProtectedTypedLogicalReadParse(theBytes []byte, payloadLength uint16) (DF1CommandResponseMessageProtectedTypedLogicalRead, error) {
-	return DF1CommandResponseMessageProtectedTypedLogicalReadParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), payloadLength)
+func DF1CommandResponseMessageProtectedTypedLogicalReadParse(ctx context.Context, theBytes []byte, payloadLength uint16) (DF1CommandResponseMessageProtectedTypedLogicalRead, error) {
+	return DF1CommandResponseMessageProtectedTypedLogicalReadParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), payloadLength)
 }
 
 func DF1CommandResponseMessageProtectedTypedLogicalReadParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, payloadLength uint16) (DF1CommandResponseMessageProtectedTypedLogicalRead, error) {

@@ -124,8 +124,8 @@ func (m *_BVLCRegisterForeignDevice) GetLengthInBytes(ctx context.Context) uint1
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BVLCRegisterForeignDeviceParse(theBytes []byte) (BVLCRegisterForeignDevice, error) {
-	return BVLCRegisterForeignDeviceParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
+func BVLCRegisterForeignDeviceParse(ctx context.Context, theBytes []byte) (BVLCRegisterForeignDevice, error) {
+	return BVLCRegisterForeignDeviceParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
 }
 
 func BVLCRegisterForeignDeviceParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BVLCRegisterForeignDevice, error) {

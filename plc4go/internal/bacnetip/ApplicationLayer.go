@@ -20,6 +20,7 @@
 package bacnetip
 
 import (
+	"context"
 	"time"
 
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
@@ -926,7 +927,7 @@ func (c *ClientSSM) segmentedConfirmation(apdu _PDU) error {
 		}
 		// TODO: this is nonsense... We need to parse the service and the apdu not sure where to get it from now...
 		// TODO: it should be the original apdu, we might just need to use that as base and forward it as non segmented
-		parse, err := readWriteModel.APDUParse(c.segmentAPDU.serviceBytes, uint16(len(c.segmentAPDU.serviceBytes)))
+		parse, err := readWriteModel.APDUParse(context.TODO(), c.segmentAPDU.serviceBytes, uint16(len(c.segmentAPDU.serviceBytes)))
 		if err != nil {
 			return errors.Wrap(err, "error parsing apdu")
 		}
@@ -1390,7 +1391,7 @@ func (s *ServerSSM) segmentedRequest(apdu _PDU) error {
 		// TODO: here we need to rebuild again yada yada
 		// TODO: this is nonsense... We need to parse the service and the apdu not sure where to get it from now..
 		// TODO: it should be the original apdu, we might just need to use that as base and forward it as non segmented
-		parse, err := readWriteModel.APDUParse(s.segmentAPDU.serviceBytes, uint16(len(s.segmentAPDU.serviceBytes)))
+		parse, err := readWriteModel.APDUParse(context.TODO(), s.segmentAPDU.serviceBytes, uint16(len(s.segmentAPDU.serviceBytes)))
 		if err != nil {
 			return errors.Wrap(err, "error parsing apdu")
 		}

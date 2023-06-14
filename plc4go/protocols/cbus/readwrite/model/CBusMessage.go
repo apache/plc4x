@@ -103,8 +103,8 @@ func (m *_CBusMessage) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func CBusMessageParse(theBytes []byte, isResponse bool, requestContext RequestContext, cBusOptions CBusOptions) (CBusMessage, error) {
-	return CBusMessageParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), isResponse, requestContext, cBusOptions)
+func CBusMessageParse(ctx context.Context, theBytes []byte, isResponse bool, requestContext RequestContext, cBusOptions CBusOptions) (CBusMessage, error) {
+	return CBusMessageParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), isResponse, requestContext, cBusOptions)
 }
 
 func CBusMessageParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, isResponse bool, requestContext RequestContext, cBusOptions CBusOptions) (CBusMessage, error) {

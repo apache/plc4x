@@ -121,8 +121,8 @@ func (m *_BACnetLandingCallStatusCommandDestination) GetLengthInBytes(ctx contex
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetLandingCallStatusCommandDestinationParse(theBytes []byte) (BACnetLandingCallStatusCommandDestination, error) {
-	return BACnetLandingCallStatusCommandDestinationParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func BACnetLandingCallStatusCommandDestinationParse(ctx context.Context, theBytes []byte) (BACnetLandingCallStatusCommandDestination, error) {
+	return BACnetLandingCallStatusCommandDestinationParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func BACnetLandingCallStatusCommandDestinationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetLandingCallStatusCommandDestination, error) {

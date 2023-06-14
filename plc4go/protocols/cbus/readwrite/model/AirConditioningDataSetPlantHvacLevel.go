@@ -194,8 +194,8 @@ func (m *_AirConditioningDataSetPlantHvacLevel) GetLengthInBytes(ctx context.Con
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func AirConditioningDataSetPlantHvacLevelParse(theBytes []byte) (AirConditioningDataSetPlantHvacLevel, error) {
-	return AirConditioningDataSetPlantHvacLevelParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func AirConditioningDataSetPlantHvacLevelParse(ctx context.Context, theBytes []byte) (AirConditioningDataSetPlantHvacLevel, error) {
+	return AirConditioningDataSetPlantHvacLevelParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func AirConditioningDataSetPlantHvacLevelParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AirConditioningDataSetPlantHvacLevel, error) {

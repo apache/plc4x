@@ -133,8 +133,8 @@ func (m *_AlarmMessageAckPushType) GetLengthInBytes(ctx context.Context) uint16 
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func AlarmMessageAckPushTypeParse(theBytes []byte) (AlarmMessageAckPushType, error) {
-	return AlarmMessageAckPushTypeParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func AlarmMessageAckPushTypeParse(ctx context.Context, theBytes []byte) (AlarmMessageAckPushType, error) {
+	return AlarmMessageAckPushTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func AlarmMessageAckPushTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AlarmMessageAckPushType, error) {

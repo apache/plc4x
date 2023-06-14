@@ -153,8 +153,8 @@ func (m *_BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord) GetLengthIn
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordParse(theBytes []byte) (BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord, error) {
-	return BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordParse(ctx context.Context, theBytes []byte) (BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord, error) {
+	return BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord, error) {

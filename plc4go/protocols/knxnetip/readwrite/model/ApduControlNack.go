@@ -102,8 +102,8 @@ func (m *_ApduControlNack) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ApduControlNackParse(theBytes []byte) (ApduControlNack, error) {
-	return ApduControlNackParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func ApduControlNackParse(ctx context.Context, theBytes []byte) (ApduControlNack, error) {
+	return ApduControlNackParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func ApduControlNackParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ApduControlNack, error) {

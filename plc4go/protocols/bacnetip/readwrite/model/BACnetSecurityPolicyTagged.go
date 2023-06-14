@@ -110,8 +110,8 @@ func (m *_BACnetSecurityPolicyTagged) GetLengthInBytes(ctx context.Context) uint
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetSecurityPolicyTaggedParse(theBytes []byte, tagNumber uint8, tagClass TagClass) (BACnetSecurityPolicyTagged, error) {
-	return BACnetSecurityPolicyTaggedParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, tagClass)
+func BACnetSecurityPolicyTaggedParse(ctx context.Context, theBytes []byte, tagNumber uint8, tagClass TagClass) (BACnetSecurityPolicyTagged, error) {
+	return BACnetSecurityPolicyTaggedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, tagClass)
 }
 
 func BACnetSecurityPolicyTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetSecurityPolicyTagged, error) {

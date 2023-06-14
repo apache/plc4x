@@ -123,8 +123,8 @@ func (m *_KnxNetRemoteConfigurationAndDiagnosis) GetLengthInBytes(ctx context.Co
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func KnxNetRemoteConfigurationAndDiagnosisParse(theBytes []byte) (KnxNetRemoteConfigurationAndDiagnosis, error) {
-	return KnxNetRemoteConfigurationAndDiagnosisParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func KnxNetRemoteConfigurationAndDiagnosisParse(ctx context.Context, theBytes []byte) (KnxNetRemoteConfigurationAndDiagnosis, error) {
+	return KnxNetRemoteConfigurationAndDiagnosisParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func KnxNetRemoteConfigurationAndDiagnosisParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (KnxNetRemoteConfigurationAndDiagnosis, error) {

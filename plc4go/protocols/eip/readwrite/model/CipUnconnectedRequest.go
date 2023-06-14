@@ -205,8 +205,8 @@ func (m *_CipUnconnectedRequest) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func CipUnconnectedRequestParse(theBytes []byte, connected bool, serviceLen uint16) (CipUnconnectedRequest, error) {
-	return CipUnconnectedRequestParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), connected, serviceLen)
+func CipUnconnectedRequestParse(ctx context.Context, theBytes []byte, connected bool, serviceLen uint16) (CipUnconnectedRequest, error) {
+	return CipUnconnectedRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), connected, serviceLen)
 }
 
 func CipUnconnectedRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, connected bool, serviceLen uint16) (CipUnconnectedRequest, error) {

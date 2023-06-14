@@ -180,8 +180,8 @@ func (m *_AdsReadDeviceInfoResponse) GetLengthInBytes(ctx context.Context) uint1
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func AdsReadDeviceInfoResponseParse(theBytes []byte) (AdsReadDeviceInfoResponse, error) {
-	return AdsReadDeviceInfoResponseParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func AdsReadDeviceInfoResponseParse(ctx context.Context, theBytes []byte) (AdsReadDeviceInfoResponse, error) {
+	return AdsReadDeviceInfoResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func AdsReadDeviceInfoResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AdsReadDeviceInfoResponse, error) {

@@ -115,8 +115,8 @@ func (m *_NullEipConnectionResponse) GetLengthInBytes(ctx context.Context) uint1
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func NullEipConnectionResponseParse(theBytes []byte, response bool) (NullEipConnectionResponse, error) {
-	return NullEipConnectionResponseParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), response)
+func NullEipConnectionResponseParse(ctx context.Context, theBytes []byte, response bool) (NullEipConnectionResponse, error) {
+	return NullEipConnectionResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), response)
 }
 
 func NullEipConnectionResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (NullEipConnectionResponse, error) {

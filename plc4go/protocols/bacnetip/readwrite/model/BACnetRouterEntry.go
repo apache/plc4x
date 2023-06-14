@@ -129,8 +129,8 @@ func (m *_BACnetRouterEntry) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetRouterEntryParse(theBytes []byte) (BACnetRouterEntry, error) {
-	return BACnetRouterEntryParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func BACnetRouterEntryParse(ctx context.Context, theBytes []byte) (BACnetRouterEntry, error) {
+	return BACnetRouterEntryParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func BACnetRouterEntryParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetRouterEntry, error) {

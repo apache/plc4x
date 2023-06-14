@@ -109,8 +109,8 @@ func (m *_ModbusPDU) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ModbusPDUParse(theBytes []byte, response bool) (ModbusPDU, error) {
-	return ModbusPDUParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), response)
+func ModbusPDUParse(ctx context.Context, theBytes []byte, response bool) (ModbusPDU, error) {
+	return ModbusPDUParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), response)
 }
 
 func ModbusPDUParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (ModbusPDU, error) {

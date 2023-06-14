@@ -126,8 +126,8 @@ func (m *_ApduDataContainer) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ApduDataContainerParse(theBytes []byte, dataLength uint8) (ApduDataContainer, error) {
-	return ApduDataContainerParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), dataLength)
+func ApduDataContainerParse(ctx context.Context, theBytes []byte, dataLength uint8) (ApduDataContainer, error) {
+	return ApduDataContainerParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), dataLength)
 }
 
 func ApduDataContainerParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, dataLength uint8) (ApduDataContainer, error) {

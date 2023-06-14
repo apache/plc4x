@@ -121,8 +121,8 @@ func (m *_BACnetTimerStateChangeValueLightingCommand) GetLengthInBytes(ctx conte
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetTimerStateChangeValueLightingCommandParse(theBytes []byte, objectTypeArgument BACnetObjectType) (BACnetTimerStateChangeValueLightingCommand, error) {
-	return BACnetTimerStateChangeValueLightingCommandParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), objectTypeArgument)
+func BACnetTimerStateChangeValueLightingCommandParse(ctx context.Context, theBytes []byte, objectTypeArgument BACnetObjectType) (BACnetTimerStateChangeValueLightingCommand, error) {
+	return BACnetTimerStateChangeValueLightingCommandParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), objectTypeArgument)
 }
 
 func BACnetTimerStateChangeValueLightingCommandParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (BACnetTimerStateChangeValueLightingCommand, error) {

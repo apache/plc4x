@@ -101,8 +101,8 @@ func (m *_TriggerControlDataIndicatorKill) GetLengthInBytes(ctx context.Context)
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func TriggerControlDataIndicatorKillParse(theBytes []byte) (TriggerControlDataIndicatorKill, error) {
-	return TriggerControlDataIndicatorKillParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func TriggerControlDataIndicatorKillParse(ctx context.Context, theBytes []byte) (TriggerControlDataIndicatorKill, error) {
+	return TriggerControlDataIndicatorKillParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func TriggerControlDataIndicatorKillParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (TriggerControlDataIndicatorKill, error) {

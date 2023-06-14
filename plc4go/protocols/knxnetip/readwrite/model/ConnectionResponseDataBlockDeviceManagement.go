@@ -103,8 +103,8 @@ func (m *_ConnectionResponseDataBlockDeviceManagement) GetLengthInBytes(ctx cont
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ConnectionResponseDataBlockDeviceManagementParse(theBytes []byte) (ConnectionResponseDataBlockDeviceManagement, error) {
-	return ConnectionResponseDataBlockDeviceManagementParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func ConnectionResponseDataBlockDeviceManagementParse(ctx context.Context, theBytes []byte) (ConnectionResponseDataBlockDeviceManagement, error) {
+	return ConnectionResponseDataBlockDeviceManagementParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func ConnectionResponseDataBlockDeviceManagementParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ConnectionResponseDataBlockDeviceManagement, error) {

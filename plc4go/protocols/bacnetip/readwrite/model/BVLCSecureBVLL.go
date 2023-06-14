@@ -129,8 +129,8 @@ func (m *_BVLCSecureBVLL) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BVLCSecureBVLLParse(theBytes []byte, bvlcPayloadLength uint16) (BVLCSecureBVLL, error) {
-	return BVLCSecureBVLLParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), bvlcPayloadLength)
+func BVLCSecureBVLLParse(ctx context.Context, theBytes []byte, bvlcPayloadLength uint16) (BVLCSecureBVLL, error) {
+	return BVLCSecureBVLLParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), bvlcPayloadLength)
 }
 
 func BVLCSecureBVLLParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, bvlcPayloadLength uint16) (BVLCSecureBVLL, error) {

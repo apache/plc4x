@@ -127,8 +127,8 @@ func (m *_S7DataAlarmMessage) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func S7DataAlarmMessageParse(theBytes []byte, cpuFunctionType uint8) (S7DataAlarmMessage, error) {
-	return S7DataAlarmMessageParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), cpuFunctionType)
+func S7DataAlarmMessageParse(ctx context.Context, theBytes []byte, cpuFunctionType uint8) (S7DataAlarmMessage, error) {
+	return S7DataAlarmMessageParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), cpuFunctionType)
 }
 
 func S7DataAlarmMessageParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cpuFunctionType uint8) (S7DataAlarmMessage, error) {

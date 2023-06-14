@@ -102,8 +102,8 @@ func (m *_ApduDataExtNetworkParameterRead) GetLengthInBytes(ctx context.Context)
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ApduDataExtNetworkParameterReadParse(theBytes []byte, length uint8) (ApduDataExtNetworkParameterRead, error) {
-	return ApduDataExtNetworkParameterReadParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), length)
+func ApduDataExtNetworkParameterReadParse(ctx context.Context, theBytes []byte, length uint8) (ApduDataExtNetworkParameterRead, error) {
+	return ApduDataExtNetworkParameterReadParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), length)
 }
 
 func ApduDataExtNetworkParameterReadParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, length uint8) (ApduDataExtNetworkParameterRead, error) {

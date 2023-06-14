@@ -102,8 +102,8 @@ func (m *_ApduDataExtFileStreamInfoReport) GetLengthInBytes(ctx context.Context)
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ApduDataExtFileStreamInfoReportParse(theBytes []byte, length uint8) (ApduDataExtFileStreamInfoReport, error) {
-	return ApduDataExtFileStreamInfoReportParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), length)
+func ApduDataExtFileStreamInfoReportParse(ctx context.Context, theBytes []byte, length uint8) (ApduDataExtFileStreamInfoReport, error) {
+	return ApduDataExtFileStreamInfoReportParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), length)
 }
 
 func ApduDataExtFileStreamInfoReportParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, length uint8) (ApduDataExtFileStreamInfoReport, error) {

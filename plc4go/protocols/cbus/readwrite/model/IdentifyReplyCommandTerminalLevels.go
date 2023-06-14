@@ -125,8 +125,8 @@ func (m *_IdentifyReplyCommandTerminalLevels) GetLengthInBytes(ctx context.Conte
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func IdentifyReplyCommandTerminalLevelsParse(theBytes []byte, attribute Attribute, numBytes uint8) (IdentifyReplyCommandTerminalLevels, error) {
-	return IdentifyReplyCommandTerminalLevelsParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), attribute, numBytes)
+func IdentifyReplyCommandTerminalLevelsParse(ctx context.Context, theBytes []byte, attribute Attribute, numBytes uint8) (IdentifyReplyCommandTerminalLevels, error) {
+	return IdentifyReplyCommandTerminalLevelsParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), attribute, numBytes)
 }
 
 func IdentifyReplyCommandTerminalLevelsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, attribute Attribute, numBytes uint8) (IdentifyReplyCommandTerminalLevels, error) {

@@ -121,8 +121,8 @@ func (m *_PowerUpReply) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func PowerUpReplyParse(theBytes []byte, cBusOptions CBusOptions, requestContext RequestContext) (PowerUpReply, error) {
-	return PowerUpReplyParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), cBusOptions, requestContext)
+func PowerUpReplyParse(ctx context.Context, theBytes []byte, cBusOptions CBusOptions, requestContext RequestContext) (PowerUpReply, error) {
+	return PowerUpReplyParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), cBusOptions, requestContext)
 }
 
 func PowerUpReplyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions, requestContext RequestContext) (PowerUpReply, error) {

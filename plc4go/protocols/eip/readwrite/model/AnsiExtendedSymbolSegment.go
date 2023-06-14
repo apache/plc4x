@@ -139,8 +139,8 @@ func (m *_AnsiExtendedSymbolSegment) GetLengthInBytes(ctx context.Context) uint1
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func AnsiExtendedSymbolSegmentParse(theBytes []byte) (AnsiExtendedSymbolSegment, error) {
-	return AnsiExtendedSymbolSegmentParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func AnsiExtendedSymbolSegmentParse(ctx context.Context, theBytes []byte) (AnsiExtendedSymbolSegment, error) {
+	return AnsiExtendedSymbolSegmentParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func AnsiExtendedSymbolSegmentParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AnsiExtendedSymbolSegment, error) {

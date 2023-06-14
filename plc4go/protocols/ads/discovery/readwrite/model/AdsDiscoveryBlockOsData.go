@@ -128,8 +128,8 @@ func (m *_AdsDiscoveryBlockOsData) GetLengthInBytes(ctx context.Context) uint16 
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func AdsDiscoveryBlockOsDataParse(theBytes []byte) (AdsDiscoveryBlockOsData, error) {
-	return AdsDiscoveryBlockOsDataParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func AdsDiscoveryBlockOsDataParse(ctx context.Context, theBytes []byte) (AdsDiscoveryBlockOsData, error) {
+	return AdsDiscoveryBlockOsDataParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func AdsDiscoveryBlockOsDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AdsDiscoveryBlockOsData, error) {

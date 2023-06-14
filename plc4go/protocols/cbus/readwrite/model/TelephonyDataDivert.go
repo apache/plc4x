@@ -122,8 +122,8 @@ func (m *_TelephonyDataDivert) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func TelephonyDataDivertParse(theBytes []byte, commandTypeContainer TelephonyCommandTypeContainer) (TelephonyDataDivert, error) {
-	return TelephonyDataDivertParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), commandTypeContainer)
+func TelephonyDataDivertParse(ctx context.Context, theBytes []byte, commandTypeContainer TelephonyCommandTypeContainer) (TelephonyDataDivert, error) {
+	return TelephonyDataDivertParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), commandTypeContainer)
 }
 
 func TelephonyDataDivertParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, commandTypeContainer TelephonyCommandTypeContainer) (TelephonyDataDivert, error) {

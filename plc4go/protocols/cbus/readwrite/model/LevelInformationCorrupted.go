@@ -154,8 +154,8 @@ func (m *_LevelInformationCorrupted) GetLengthInBytes(ctx context.Context) uint1
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func LevelInformationCorruptedParse(theBytes []byte) (LevelInformationCorrupted, error) {
-	return LevelInformationCorruptedParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func LevelInformationCorruptedParse(ctx context.Context, theBytes []byte) (LevelInformationCorrupted, error) {
+	return LevelInformationCorruptedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func LevelInformationCorruptedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (LevelInformationCorrupted, error) {

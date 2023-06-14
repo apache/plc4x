@@ -119,8 +119,8 @@ func (m *_BACnetTagPayloadBoolean) GetLengthInBytes(ctx context.Context) uint16 
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetTagPayloadBooleanParse(theBytes []byte, actualLength uint32) (BACnetTagPayloadBoolean, error) {
-	return BACnetTagPayloadBooleanParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), actualLength)
+func BACnetTagPayloadBooleanParse(ctx context.Context, theBytes []byte, actualLength uint32) (BACnetTagPayloadBoolean, error) {
+	return BACnetTagPayloadBooleanParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), actualLength)
 }
 
 func BACnetTagPayloadBooleanParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, actualLength uint32) (BACnetTagPayloadBoolean, error) {

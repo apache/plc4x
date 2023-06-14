@@ -139,8 +139,8 @@ func (m *_SubscribeCOVPropertyMultipleErrorFirstFailedSubscription) GetLengthInB
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func SubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionParse(theBytes []byte, tagNumber uint8) (SubscribeCOVPropertyMultipleErrorFirstFailedSubscription, error) {
-	return SubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber)
+func SubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionParse(ctx context.Context, theBytes []byte, tagNumber uint8) (SubscribeCOVPropertyMultipleErrorFirstFailedSubscription, error) {
+	return SubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber)
 }
 
 func SubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (SubscribeCOVPropertyMultipleErrorFirstFailedSubscription, error) {

@@ -102,8 +102,8 @@ func (m *_MPropInfoInd) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func MPropInfoIndParse(theBytes []byte, size uint16) (MPropInfoInd, error) {
-	return MPropInfoIndParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), size)
+func MPropInfoIndParse(ctx context.Context, theBytes []byte, size uint16) (MPropInfoInd, error) {
+	return MPropInfoIndParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), size)
 }
 
 func MPropInfoIndParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, size uint16) (MPropInfoInd, error) {

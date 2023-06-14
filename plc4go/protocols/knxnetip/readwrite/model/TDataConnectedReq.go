@@ -102,8 +102,8 @@ func (m *_TDataConnectedReq) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func TDataConnectedReqParse(theBytes []byte, size uint16) (TDataConnectedReq, error) {
-	return TDataConnectedReqParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), size)
+func TDataConnectedReqParse(ctx context.Context, theBytes []byte, size uint16) (TDataConnectedReq, error) {
+	return TDataConnectedReqParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), size)
 }
 
 func TDataConnectedReqParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, size uint16) (TDataConnectedReq, error) {

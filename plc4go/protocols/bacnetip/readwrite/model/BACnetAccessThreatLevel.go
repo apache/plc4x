@@ -96,8 +96,8 @@ func (m *_BACnetAccessThreatLevel) GetLengthInBytes(ctx context.Context) uint16 
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetAccessThreatLevelParse(theBytes []byte) (BACnetAccessThreatLevel, error) {
-	return BACnetAccessThreatLevelParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func BACnetAccessThreatLevelParse(ctx context.Context, theBytes []byte) (BACnetAccessThreatLevel, error) {
+	return BACnetAccessThreatLevelParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func BACnetAccessThreatLevelParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetAccessThreatLevel, error) {

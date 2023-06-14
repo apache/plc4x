@@ -110,8 +110,8 @@ func (m *_BACnetRouterEntryStatusTagged) GetLengthInBytes(ctx context.Context) u
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetRouterEntryStatusTaggedParse(theBytes []byte, tagNumber uint8, tagClass TagClass) (BACnetRouterEntryStatusTagged, error) {
-	return BACnetRouterEntryStatusTaggedParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, tagClass)
+func BACnetRouterEntryStatusTaggedParse(ctx context.Context, theBytes []byte, tagNumber uint8, tagClass TagClass) (BACnetRouterEntryStatusTagged, error) {
+	return BACnetRouterEntryStatusTaggedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, tagClass)
 }
 
 func BACnetRouterEntryStatusTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetRouterEntryStatusTagged, error) {

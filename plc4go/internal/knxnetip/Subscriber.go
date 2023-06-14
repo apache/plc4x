@@ -100,10 +100,10 @@ func (m *Subscriber) Unsubscribe(ctx context.Context, unsubscriptionRequest apiM
 /*
  * Callback for incoming value change events from the KNX bus
  */
-func (m *Subscriber) handleValueChange(destinationAddress []byte, payload []byte, changed bool) {
+func (m *Subscriber) handleValueChange(ctx context.Context, destinationAddress []byte, payload []byte, changed bool) {
 	// Decode the group-address according to the settings in the driver
 	// Group addresses can be 1, 2 or 3 levels (3 being the default)
-	groupAddress, err := driverModel.KnxGroupAddressParse(destinationAddress, m.connection.getGroupAddressNumLevels())
+	groupAddress, err := driverModel.KnxGroupAddressParse(ctx, destinationAddress, m.connection.getGroupAddressNumLevels())
 	if err != nil {
 		return
 	}

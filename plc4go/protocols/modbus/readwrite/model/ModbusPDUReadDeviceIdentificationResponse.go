@@ -215,8 +215,8 @@ func (m *_ModbusPDUReadDeviceIdentificationResponse) GetLengthInBytes(ctx contex
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ModbusPDUReadDeviceIdentificationResponseParse(theBytes []byte, response bool) (ModbusPDUReadDeviceIdentificationResponse, error) {
-	return ModbusPDUReadDeviceIdentificationResponseParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), response)
+func ModbusPDUReadDeviceIdentificationResponseParse(ctx context.Context, theBytes []byte, response bool) (ModbusPDUReadDeviceIdentificationResponse, error) {
+	return ModbusPDUReadDeviceIdentificationResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), response)
 }
 
 func ModbusPDUReadDeviceIdentificationResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (ModbusPDUReadDeviceIdentificationResponse, error) {

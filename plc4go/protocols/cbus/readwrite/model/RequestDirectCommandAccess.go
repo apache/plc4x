@@ -179,8 +179,8 @@ func (m *_RequestDirectCommandAccess) GetLengthInBytes(ctx context.Context) uint
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func RequestDirectCommandAccessParse(theBytes []byte, cBusOptions CBusOptions) (RequestDirectCommandAccess, error) {
-	return RequestDirectCommandAccessParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), cBusOptions)
+func RequestDirectCommandAccessParse(ctx context.Context, theBytes []byte, cBusOptions CBusOptions) (RequestDirectCommandAccess, error) {
+	return RequestDirectCommandAccessParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), cBusOptions)
 }
 
 func RequestDirectCommandAccessParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (RequestDirectCommandAccess, error) {

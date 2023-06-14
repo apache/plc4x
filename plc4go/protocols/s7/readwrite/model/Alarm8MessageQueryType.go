@@ -153,8 +153,8 @@ func (m *_Alarm8MessageQueryType) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func Alarm8MessageQueryTypeParse(theBytes []byte) (Alarm8MessageQueryType, error) {
-	return Alarm8MessageQueryTypeParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func Alarm8MessageQueryTypeParse(ctx context.Context, theBytes []byte) (Alarm8MessageQueryType, error) {
+	return Alarm8MessageQueryTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func Alarm8MessageQueryTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (Alarm8MessageQueryType, error) {

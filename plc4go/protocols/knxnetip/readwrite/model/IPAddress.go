@@ -98,8 +98,8 @@ func (m *_IPAddress) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func IPAddressParse(theBytes []byte) (IPAddress, error) {
-	return IPAddressParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func IPAddressParse(ctx context.Context, theBytes []byte) (IPAddress, error) {
+	return IPAddressParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func IPAddressParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (IPAddress, error) {

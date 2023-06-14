@@ -138,8 +138,8 @@ func (m *_BACnetConfirmedServiceRequestCreateObject) GetLengthInBytes(ctx contex
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConfirmedServiceRequestCreateObjectParse(theBytes []byte, serviceRequestLength uint32) (BACnetConfirmedServiceRequestCreateObject, error) {
-	return BACnetConfirmedServiceRequestCreateObjectParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), serviceRequestLength)
+func BACnetConfirmedServiceRequestCreateObjectParse(ctx context.Context, theBytes []byte, serviceRequestLength uint32) (BACnetConfirmedServiceRequestCreateObject, error) {
+	return BACnetConfirmedServiceRequestCreateObjectParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), serviceRequestLength)
 }
 
 func BACnetConfirmedServiceRequestCreateObjectParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, serviceRequestLength uint32) (BACnetConfirmedServiceRequestCreateObject, error) {

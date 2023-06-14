@@ -141,8 +141,8 @@ func (m *_NLMInitalizeRoutingTableAck) GetLengthInBytes(ctx context.Context) uin
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func NLMInitalizeRoutingTableAckParse(theBytes []byte, apduLength uint16) (NLMInitalizeRoutingTableAck, error) {
-	return NLMInitalizeRoutingTableAckParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), apduLength)
+func NLMInitalizeRoutingTableAckParse(ctx context.Context, theBytes []byte, apduLength uint16) (NLMInitalizeRoutingTableAck, error) {
+	return NLMInitalizeRoutingTableAckParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), apduLength)
 }
 
 func NLMInitalizeRoutingTableAckParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, apduLength uint16) (NLMInitalizeRoutingTableAck, error) {

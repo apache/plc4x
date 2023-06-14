@@ -194,8 +194,8 @@ func (m *_AirConditioningDataSetZoneHumidityMode) GetLengthInBytes(ctx context.C
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func AirConditioningDataSetZoneHumidityModeParse(theBytes []byte) (AirConditioningDataSetZoneHumidityMode, error) {
-	return AirConditioningDataSetZoneHumidityModeParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func AirConditioningDataSetZoneHumidityModeParse(ctx context.Context, theBytes []byte) (AirConditioningDataSetZoneHumidityMode, error) {
+	return AirConditioningDataSetZoneHumidityModeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func AirConditioningDataSetZoneHumidityModeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AirConditioningDataSetZoneHumidityMode, error) {

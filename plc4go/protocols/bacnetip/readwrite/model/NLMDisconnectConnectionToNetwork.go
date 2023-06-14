@@ -123,8 +123,8 @@ func (m *_NLMDisconnectConnectionToNetwork) GetLengthInBytes(ctx context.Context
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func NLMDisconnectConnectionToNetworkParse(theBytes []byte, apduLength uint16) (NLMDisconnectConnectionToNetwork, error) {
-	return NLMDisconnectConnectionToNetworkParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), apduLength)
+func NLMDisconnectConnectionToNetworkParse(ctx context.Context, theBytes []byte, apduLength uint16) (NLMDisconnectConnectionToNetwork, error) {
+	return NLMDisconnectConnectionToNetworkParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), apduLength)
 }
 
 func NLMDisconnectConnectionToNetworkParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, apduLength uint16) (NLMDisconnectConnectionToNetwork, error) {

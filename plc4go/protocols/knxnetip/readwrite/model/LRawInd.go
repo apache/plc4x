@@ -102,8 +102,8 @@ func (m *_LRawInd) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func LRawIndParse(theBytes []byte, size uint16) (LRawInd, error) {
-	return LRawIndParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), size)
+func LRawIndParse(ctx context.Context, theBytes []byte, size uint16) (LRawInd, error) {
+	return LRawIndParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), size)
 }
 
 func LRawIndParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, size uint16) (LRawInd, error) {

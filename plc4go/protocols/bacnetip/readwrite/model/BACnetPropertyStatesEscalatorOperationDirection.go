@@ -121,8 +121,8 @@ func (m *_BACnetPropertyStatesEscalatorOperationDirection) GetLengthInBytes(ctx 
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetPropertyStatesEscalatorOperationDirectionParse(theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesEscalatorOperationDirection, error) {
-	return BACnetPropertyStatesEscalatorOperationDirectionParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
+func BACnetPropertyStatesEscalatorOperationDirectionParse(ctx context.Context, theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesEscalatorOperationDirection, error) {
+	return BACnetPropertyStatesEscalatorOperationDirectionParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
 }
 
 func BACnetPropertyStatesEscalatorOperationDirectionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesEscalatorOperationDirection, error) {

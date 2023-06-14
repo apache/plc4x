@@ -157,8 +157,8 @@ func (m *_BACnetLightingCommand) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetLightingCommandParse(theBytes []byte) (BACnetLightingCommand, error) {
-	return BACnetLightingCommandParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func BACnetLightingCommandParse(ctx context.Context, theBytes []byte) (BACnetLightingCommand, error) {
+	return BACnetLightingCommandParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func BACnetLightingCommandParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetLightingCommand, error) {

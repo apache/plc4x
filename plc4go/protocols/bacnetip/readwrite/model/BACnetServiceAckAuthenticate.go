@@ -128,8 +128,8 @@ func (m *_BACnetServiceAckAuthenticate) GetLengthInBytes(ctx context.Context) ui
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetServiceAckAuthenticateParse(theBytes []byte, serviceAckPayloadLength uint32, serviceAckLength uint32) (BACnetServiceAckAuthenticate, error) {
-	return BACnetServiceAckAuthenticateParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), serviceAckPayloadLength, serviceAckLength)
+func BACnetServiceAckAuthenticateParse(ctx context.Context, theBytes []byte, serviceAckPayloadLength uint32, serviceAckLength uint32) (BACnetServiceAckAuthenticate, error) {
+	return BACnetServiceAckAuthenticateParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), serviceAckPayloadLength, serviceAckLength)
 }
 
 func BACnetServiceAckAuthenticateParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, serviceAckPayloadLength uint32, serviceAckLength uint32) (BACnetServiceAckAuthenticate, error) {

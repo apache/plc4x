@@ -121,8 +121,8 @@ func (m *_BACnetPropertyStatesLightningTransition) GetLengthInBytes(ctx context.
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetPropertyStatesLightningTransitionParse(theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesLightningTransition, error) {
-	return BACnetPropertyStatesLightningTransitionParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
+func BACnetPropertyStatesLightningTransitionParse(ctx context.Context, theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesLightningTransition, error) {
+	return BACnetPropertyStatesLightningTransitionParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
 }
 
 func BACnetPropertyStatesLightningTransitionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesLightningTransition, error) {

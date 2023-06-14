@@ -134,8 +134,8 @@ func (m *_FirmataCommandSetPinMode) GetLengthInBytes(ctx context.Context) uint16
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func FirmataCommandSetPinModeParse(theBytes []byte, response bool) (FirmataCommandSetPinMode, error) {
-	return FirmataCommandSetPinModeParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), response)
+func FirmataCommandSetPinModeParse(ctx context.Context, theBytes []byte, response bool) (FirmataCommandSetPinMode, error) {
+	return FirmataCommandSetPinModeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), response)
 }
 
 func FirmataCommandSetPinModeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (FirmataCommandSetPinMode, error) {

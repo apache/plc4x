@@ -123,8 +123,8 @@ func (m *_BACnetEventSummariesList) GetLengthInBytes(ctx context.Context) uint16
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetEventSummariesListParse(theBytes []byte, tagNumber uint8) (BACnetEventSummariesList, error) {
-	return BACnetEventSummariesListParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber)
+func BACnetEventSummariesListParse(ctx context.Context, theBytes []byte, tagNumber uint8) (BACnetEventSummariesList, error) {
+	return BACnetEventSummariesListParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber)
 }
 
 func BACnetEventSummariesListParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetEventSummariesList, error) {

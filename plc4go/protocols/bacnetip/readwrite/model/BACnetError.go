@@ -99,8 +99,8 @@ func (m *_BACnetError) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetErrorParse(theBytes []byte, errorChoice BACnetConfirmedServiceChoice) (BACnetError, error) {
-	return BACnetErrorParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), errorChoice)
+func BACnetErrorParse(ctx context.Context, theBytes []byte, errorChoice BACnetConfirmedServiceChoice) (BACnetError, error) {
+	return BACnetErrorParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), errorChoice)
 }
 
 func BACnetErrorParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, errorChoice BACnetConfirmedServiceChoice) (BACnetError, error) {

@@ -110,8 +110,8 @@ func (m *_ModbusPDUReportServerIdRequest) GetLengthInBytes(ctx context.Context) 
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ModbusPDUReportServerIdRequestParse(theBytes []byte, response bool) (ModbusPDUReportServerIdRequest, error) {
-	return ModbusPDUReportServerIdRequestParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), response)
+func ModbusPDUReportServerIdRequestParse(ctx context.Context, theBytes []byte, response bool) (ModbusPDUReportServerIdRequest, error) {
+	return ModbusPDUReportServerIdRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), response)
 }
 
 func ModbusPDUReportServerIdRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (ModbusPDUReportServerIdRequest, error) {

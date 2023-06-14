@@ -146,8 +146,8 @@ func (m *_BACnetUnconfirmedServiceRequestIHave) GetLengthInBytes(ctx context.Con
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetUnconfirmedServiceRequestIHaveParse(theBytes []byte, serviceRequestLength uint16) (BACnetUnconfirmedServiceRequestIHave, error) {
-	return BACnetUnconfirmedServiceRequestIHaveParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), serviceRequestLength)
+func BACnetUnconfirmedServiceRequestIHaveParse(ctx context.Context, theBytes []byte, serviceRequestLength uint16) (BACnetUnconfirmedServiceRequestIHave, error) {
+	return BACnetUnconfirmedServiceRequestIHaveParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), serviceRequestLength)
 }
 
 func BACnetUnconfirmedServiceRequestIHaveParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, serviceRequestLength uint16) (BACnetUnconfirmedServiceRequestIHave, error) {

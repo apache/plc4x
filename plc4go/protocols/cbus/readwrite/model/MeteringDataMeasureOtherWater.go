@@ -101,8 +101,8 @@ func (m *_MeteringDataMeasureOtherWater) GetLengthInBytes(ctx context.Context) u
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func MeteringDataMeasureOtherWaterParse(theBytes []byte) (MeteringDataMeasureOtherWater, error) {
-	return MeteringDataMeasureOtherWaterParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func MeteringDataMeasureOtherWaterParse(ctx context.Context, theBytes []byte) (MeteringDataMeasureOtherWater, error) {
+	return MeteringDataMeasureOtherWaterParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func MeteringDataMeasureOtherWaterParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (MeteringDataMeasureOtherWater, error) {

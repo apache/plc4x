@@ -121,8 +121,8 @@ func (m *_BACnetProcessIdSelectionValue) GetLengthInBytes(ctx context.Context) u
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetProcessIdSelectionValueParse(theBytes []byte) (BACnetProcessIdSelectionValue, error) {
-	return BACnetProcessIdSelectionValueParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func BACnetProcessIdSelectionValueParse(ctx context.Context, theBytes []byte) (BACnetProcessIdSelectionValue, error) {
+	return BACnetProcessIdSelectionValueParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func BACnetProcessIdSelectionValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetProcessIdSelectionValue, error) {

@@ -127,8 +127,8 @@ func (m *_SysexCommandPinStateQuery) GetLengthInBytes(ctx context.Context) uint1
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func SysexCommandPinStateQueryParse(theBytes []byte, response bool) (SysexCommandPinStateQuery, error) {
-	return SysexCommandPinStateQueryParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), response)
+func SysexCommandPinStateQueryParse(ctx context.Context, theBytes []byte, response bool) (SysexCommandPinStateQuery, error) {
+	return SysexCommandPinStateQueryParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), response)
 }
 
 func SysexCommandPinStateQueryParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (SysexCommandPinStateQuery, error) {

@@ -139,8 +139,8 @@ func (m *_BACnetAccessCredentialDisableTagged) GetLengthInBytes(ctx context.Cont
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetAccessCredentialDisableTaggedParse(theBytes []byte, tagNumber uint8, tagClass TagClass) (BACnetAccessCredentialDisableTagged, error) {
-	return BACnetAccessCredentialDisableTaggedParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, tagClass)
+func BACnetAccessCredentialDisableTaggedParse(ctx context.Context, theBytes []byte, tagNumber uint8, tagClass TagClass) (BACnetAccessCredentialDisableTagged, error) {
+	return BACnetAccessCredentialDisableTaggedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, tagClass)
 }
 
 func BACnetAccessCredentialDisableTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetAccessCredentialDisableTagged, error) {

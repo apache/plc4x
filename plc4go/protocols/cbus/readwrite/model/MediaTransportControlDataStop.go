@@ -101,8 +101,8 @@ func (m *_MediaTransportControlDataStop) GetLengthInBytes(ctx context.Context) u
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func MediaTransportControlDataStopParse(theBytes []byte) (MediaTransportControlDataStop, error) {
-	return MediaTransportControlDataStopParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func MediaTransportControlDataStopParse(ctx context.Context, theBytes []byte) (MediaTransportControlDataStop, error) {
+	return MediaTransportControlDataStopParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func MediaTransportControlDataStopParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (MediaTransportControlDataStop, error) {

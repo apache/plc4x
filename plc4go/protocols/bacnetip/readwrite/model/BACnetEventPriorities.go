@@ -139,8 +139,8 @@ func (m *_BACnetEventPriorities) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetEventPrioritiesParse(theBytes []byte, tagNumber uint8) (BACnetEventPriorities, error) {
-	return BACnetEventPrioritiesParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber)
+func BACnetEventPrioritiesParse(ctx context.Context, theBytes []byte, tagNumber uint8) (BACnetEventPriorities, error) {
+	return BACnetEventPrioritiesParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber)
 }
 
 func BACnetEventPrioritiesParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetEventPriorities, error) {

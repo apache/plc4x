@@ -113,8 +113,8 @@ func (m *_AdsInvalidRequest) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func AdsInvalidRequestParse(theBytes []byte) (AdsInvalidRequest, error) {
-	return AdsInvalidRequestParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func AdsInvalidRequestParse(ctx context.Context, theBytes []byte) (AdsInvalidRequest, error) {
+	return AdsInvalidRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func AdsInvalidRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AdsInvalidRequest, error) {

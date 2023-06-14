@@ -125,8 +125,8 @@ func (m *_NLMReserved) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func NLMReservedParse(theBytes []byte, apduLength uint16) (NLMReserved, error) {
-	return NLMReservedParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), apduLength)
+func NLMReservedParse(ctx context.Context, theBytes []byte, apduLength uint16) (NLMReserved, error) {
+	return NLMReservedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), apduLength)
 }
 
 func NLMReservedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, apduLength uint16) (NLMReserved, error) {

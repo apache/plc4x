@@ -20,11 +20,14 @@
 package modbus
 
 import (
+	"context"
+
 	"github.com/apache/plc4x/plc4go/protocols/modbus/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/default"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/transports"
+
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 )
@@ -88,7 +91,7 @@ func (m *MessageCodec) Receive() (spi.Message, error) {
 			// TODO: Possibly clean up ...
 			return nil, nil
 		}
-		tcpAdu, err := model.ModbusTcpADUParse(data, model.DriverType_MODBUS_TCP, true)
+		tcpAdu, err := model.ModbusTcpADUParse(context.TODO(), data, model.DriverType_MODBUS_TCP, true)
 		if err != nil {
 			m.log.Warn().Err(err).Msg("error parsing")
 			// TODO: Possibly clean up ...

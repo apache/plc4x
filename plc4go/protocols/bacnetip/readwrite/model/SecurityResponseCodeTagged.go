@@ -110,8 +110,8 @@ func (m *_SecurityResponseCodeTagged) GetLengthInBytes(ctx context.Context) uint
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func SecurityResponseCodeTaggedParse(theBytes []byte, tagNumber uint8, tagClass TagClass) (SecurityResponseCodeTagged, error) {
-	return SecurityResponseCodeTaggedParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, tagClass)
+func SecurityResponseCodeTaggedParse(ctx context.Context, theBytes []byte, tagNumber uint8, tagClass TagClass) (SecurityResponseCodeTagged, error) {
+	return SecurityResponseCodeTaggedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, tagClass)
 }
 
 func SecurityResponseCodeTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (SecurityResponseCodeTagged, error) {

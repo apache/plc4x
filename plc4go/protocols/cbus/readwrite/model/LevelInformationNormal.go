@@ -161,8 +161,8 @@ func (m *_LevelInformationNormal) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func LevelInformationNormalParse(theBytes []byte) (LevelInformationNormal, error) {
-	return LevelInformationNormalParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func LevelInformationNormalParse(ctx context.Context, theBytes []byte) (LevelInformationNormal, error) {
+	return LevelInformationNormalParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func LevelInformationNormalParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (LevelInformationNormal, error) {

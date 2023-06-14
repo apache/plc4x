@@ -183,8 +183,8 @@ func (m *_DIBDeviceInfo) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func DIBDeviceInfoParse(theBytes []byte) (DIBDeviceInfo, error) {
-	return DIBDeviceInfoParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func DIBDeviceInfoParse(ctx context.Context, theBytes []byte) (DIBDeviceInfo, error) {
+	return DIBDeviceInfoParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func DIBDeviceInfoParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (DIBDeviceInfo, error) {

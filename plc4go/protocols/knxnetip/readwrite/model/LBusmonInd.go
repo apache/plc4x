@@ -162,8 +162,8 @@ func (m *_LBusmonInd) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func LBusmonIndParse(theBytes []byte, size uint16) (LBusmonInd, error) {
-	return LBusmonIndParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), size)
+func LBusmonIndParse(ctx context.Context, theBytes []byte, size uint16) (LBusmonInd, error) {
+	return LBusmonIndParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), size)
 }
 
 func LBusmonIndParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, size uint16) (LBusmonInd, error) {

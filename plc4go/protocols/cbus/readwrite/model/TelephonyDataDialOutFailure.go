@@ -122,8 +122,8 @@ func (m *_TelephonyDataDialOutFailure) GetLengthInBytes(ctx context.Context) uin
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func TelephonyDataDialOutFailureParse(theBytes []byte) (TelephonyDataDialOutFailure, error) {
-	return TelephonyDataDialOutFailureParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func TelephonyDataDialOutFailureParse(ctx context.Context, theBytes []byte) (TelephonyDataDialOutFailure, error) {
+	return TelephonyDataDialOutFailureParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func TelephonyDataDialOutFailureParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (TelephonyDataDialOutFailure, error) {

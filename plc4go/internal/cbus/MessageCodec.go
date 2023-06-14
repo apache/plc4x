@@ -21,15 +21,17 @@ package cbus
 
 import (
 	"bufio"
-	"github.com/apache/plc4x/plc4go/spi/options"
-	"github.com/rs/zerolog"
-	"hash/crc32"
+	"context"
 
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/cbus/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/default"
+	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/transports"
+
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
+	"hash/crc32"
 )
 
 //go:generate go run ../../tools/plc4xgenerator/gen.go -type=MessageCodec
@@ -146,7 +148,7 @@ func (m *MessageCodec) Receive() (spi.Message, error) {
 	if bytes, err := ti.PeekReadableBytes(1); err == nil && (bytes[0] == byte(readWriteModel.ConfirmationType_CHECKSUM_FAILURE)) {
 		_, _ = ti.Read(1)
 		// Report one Error at a time
-		return readWriteModel.CBusMessageParse(bytes, true, m.requestContext, m.cbusOptions)
+		return readWriteModel.CBusMessageParse(context.TODO(), bytes, true, m.requestContext, m.cbusOptions)
 	}
 
 	peekedBytes, err := ti.PeekReadableBytes(readableBytes)
@@ -262,7 +264,7 @@ lookingForTheEnd:
 		if foundErrors > m.currentlyReportedServerErrors {
 			m.log.Debug().Msgf("We found %d errors in the current message. We have %d reported already", foundErrors, m.currentlyReportedServerErrors)
 			m.currentlyReportedServerErrors++
-			return readWriteModel.CBusMessageParse([]byte{'!'}, true, m.requestContext, m.cbusOptions)
+			return readWriteModel.CBusMessageParse(context.TODO(), []byte{'!'}, true, m.requestContext, m.cbusOptions)
 		}
 		if foundErrors > 0 {
 			m.log.Debug().Msgf("We should have reported all errors by now (%d in total which we reported %d), so we resetting the count", foundErrors, m.currentlyReportedServerErrors)
@@ -290,12 +292,12 @@ lookingForTheEnd:
 		}
 	}
 	m.log.Debug().Msgf("Parsing %q", sanitizedInput)
-	cBusMessage, err := readWriteModel.CBusMessageParse(sanitizedInput, pciResponse, m.requestContext, m.cbusOptions)
+	cBusMessage, err := readWriteModel.CBusMessageParse(context.TODO(), sanitizedInput, pciResponse, m.requestContext, m.cbusOptions)
 	if err != nil {
 		m.log.Debug().Err(err).Msg("First Parse Failed")
 		{ // Try SAL
 			requestContext := readWriteModel.NewRequestContext(false)
-			cBusMessage, secondErr := readWriteModel.CBusMessageParse(sanitizedInput, pciResponse, requestContext, m.cbusOptions)
+			cBusMessage, secondErr := readWriteModel.CBusMessageParse(context.TODO(), sanitizedInput, pciResponse, requestContext, m.cbusOptions)
 			if secondErr == nil {
 				m.log.Trace().Msgf("Parsed message as SAL:\n%s", cBusMessage)
 				return cBusMessage, nil
@@ -306,7 +308,7 @@ lookingForTheEnd:
 		{ // Try MMI
 			requestContext := readWriteModel.NewRequestContext(false)
 			cbusOptions := readWriteModel.NewCBusOptions(false, false, false, false, false, false, false, false, false)
-			cBusMessage, secondErr := readWriteModel.CBusMessageParse(sanitizedInput, true, requestContext, cbusOptions)
+			cBusMessage, secondErr := readWriteModel.CBusMessageParse(context.TODO(), sanitizedInput, true, requestContext, cbusOptions)
 			if secondErr == nil {
 				m.log.Trace().Msgf("Parsed message as MMI:\n%s", cBusMessage)
 				return cBusMessage, nil

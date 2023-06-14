@@ -190,8 +190,8 @@ func (m *_AlarmMessageObjectQueryType) GetLengthInBytes(ctx context.Context) uin
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func AlarmMessageObjectQueryTypeParse(theBytes []byte) (AlarmMessageObjectQueryType, error) {
-	return AlarmMessageObjectQueryTypeParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func AlarmMessageObjectQueryTypeParse(ctx context.Context, theBytes []byte) (AlarmMessageObjectQueryType, error) {
+	return AlarmMessageObjectQueryTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func AlarmMessageObjectQueryTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AlarmMessageObjectQueryType, error) {

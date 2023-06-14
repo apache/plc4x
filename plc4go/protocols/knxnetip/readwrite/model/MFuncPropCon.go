@@ -102,8 +102,8 @@ func (m *_MFuncPropCon) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func MFuncPropConParse(theBytes []byte, size uint16) (MFuncPropCon, error) {
-	return MFuncPropConParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), size)
+func MFuncPropConParse(ctx context.Context, theBytes []byte, size uint16) (MFuncPropCon, error) {
+	return MFuncPropConParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), size)
 }
 
 func MFuncPropConParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, size uint16) (MFuncPropCon, error) {

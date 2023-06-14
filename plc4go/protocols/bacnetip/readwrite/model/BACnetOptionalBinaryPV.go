@@ -133,8 +133,8 @@ func (m *_BACnetOptionalBinaryPV) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetOptionalBinaryPVParse(theBytes []byte) (BACnetOptionalBinaryPV, error) {
-	return BACnetOptionalBinaryPVParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func BACnetOptionalBinaryPVParse(ctx context.Context, theBytes []byte) (BACnetOptionalBinaryPV, error) {
+	return BACnetOptionalBinaryPVParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func BACnetOptionalBinaryPVParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetOptionalBinaryPV, error) {

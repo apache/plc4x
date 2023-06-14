@@ -155,7 +155,7 @@ func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.
 				if length == 0 {
 					continue
 				}
-				discoveryResponse, err := model.AdsDiscoveryParse(buf[0:length])
+				discoveryResponse, err := model.AdsDiscoveryParse(ctx, buf[0:length])
 				if err != nil {
 					d.log.Error().Err(err).Str("src-ip", fromAddr.String()).Msg("error decoding response")
 					continue

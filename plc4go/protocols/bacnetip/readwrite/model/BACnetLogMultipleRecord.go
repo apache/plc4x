@@ -106,8 +106,8 @@ func (m *_BACnetLogMultipleRecord) GetLengthInBytes(ctx context.Context) uint16 
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetLogMultipleRecordParse(theBytes []byte) (BACnetLogMultipleRecord, error) {
-	return BACnetLogMultipleRecordParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func BACnetLogMultipleRecordParse(ctx context.Context, theBytes []byte) (BACnetLogMultipleRecord, error) {
+	return BACnetLogMultipleRecordParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func BACnetLogMultipleRecordParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetLogMultipleRecord, error) {

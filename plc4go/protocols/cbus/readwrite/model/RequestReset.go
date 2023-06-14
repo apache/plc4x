@@ -156,8 +156,8 @@ func (m *_RequestReset) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func RequestResetParse(theBytes []byte, cBusOptions CBusOptions) (RequestReset, error) {
-	return RequestResetParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), cBusOptions)
+func RequestResetParse(ctx context.Context, theBytes []byte, cBusOptions CBusOptions) (RequestReset, error) {
+	return RequestResetParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), cBusOptions)
 }
 
 func RequestResetParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (RequestReset, error) {

@@ -209,8 +209,8 @@ func (m *_S7ParameterUserDataItemCPUFunctions) GetLengthInBytes(ctx context.Cont
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func S7ParameterUserDataItemCPUFunctionsParse(theBytes []byte) (S7ParameterUserDataItemCPUFunctions, error) {
-	return S7ParameterUserDataItemCPUFunctionsParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func S7ParameterUserDataItemCPUFunctionsParse(ctx context.Context, theBytes []byte) (S7ParameterUserDataItemCPUFunctions, error) {
+	return S7ParameterUserDataItemCPUFunctionsParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func S7ParameterUserDataItemCPUFunctionsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (S7ParameterUserDataItemCPUFunctions, error) {

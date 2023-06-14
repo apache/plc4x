@@ -102,8 +102,8 @@ func (m *_ApduDataExtDomainAddressSelectiveRead) GetLengthInBytes(ctx context.Co
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ApduDataExtDomainAddressSelectiveReadParse(theBytes []byte, length uint8) (ApduDataExtDomainAddressSelectiveRead, error) {
-	return ApduDataExtDomainAddressSelectiveReadParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), length)
+func ApduDataExtDomainAddressSelectiveReadParse(ctx context.Context, theBytes []byte, length uint8) (ApduDataExtDomainAddressSelectiveRead, error) {
+	return ApduDataExtDomainAddressSelectiveReadParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), length)
 }
 
 func ApduDataExtDomainAddressSelectiveReadParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, length uint8) (ApduDataExtDomainAddressSelectiveRead, error) {
