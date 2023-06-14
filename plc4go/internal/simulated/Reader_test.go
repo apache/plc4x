@@ -20,7 +20,6 @@
 package simulated
 
 import (
-	"context"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
 	"github.com/stretchr/testify/assert"
@@ -166,7 +165,7 @@ func TestReader_Read(t *testing.T) {
 			r := NewReader(tt.fields.device, tt.fields.options, nil, options.WithCustomLogger(testutils.ProduceTestingLogger(t)))
 			readRequest := spiModel.NewDefaultPlcReadRequest(tt.args.fields, tt.args.fieldNames, r, nil)
 			timeBeforeReadRequest := time.Now()
-			readResponseChannel := r.Read(context.TODO(), readRequest)
+			readResponseChannel := r.Read(testutils.TestContext(t), readRequest)
 			timeout := time.NewTimer(3 * time.Second)
 			defer utils.CleanupTimer(timeout)
 			select {

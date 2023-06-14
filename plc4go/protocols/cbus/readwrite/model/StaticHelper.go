@@ -107,7 +107,7 @@ func ReadCALData(ctx context.Context, readBuffer utils.ReadBuffer) (CALData, err
 	if err != nil {
 		return nil, errors.Wrap(err, "Error getting hex")
 	}
-	return CALDataParse(context.TODO(), rawBytes, nil)
+	return CALDataParse(ctx, rawBytes, nil)
 }
 
 func readBytesFromHex(ctx context.Context, logicalName string, readBuffer utils.ReadBuffer, srchk bool) ([]byte, error) {

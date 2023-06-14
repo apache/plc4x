@@ -20,7 +20,6 @@
 package simulated
 
 import (
-	"context"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
 	"github.com/stretchr/testify/assert"
@@ -178,7 +177,7 @@ func TestWriter_Write(t *testing.T) {
 			w := NewWriter(tt.fields.device, tt.fields.options, nil, options.WithCustomLogger(testutils.ProduceTestingLogger(t)))
 			writeRequest := spiModel.NewDefaultPlcWriteRequest(tt.args.fields, tt.args.fieldNames, tt.args.values, w, nil)
 			timeBeforeWriteRequest := time.Now()
-			writeResponseChannel := w.Write(context.TODO(), writeRequest)
+			writeResponseChannel := w.Write(testutils.TestContext(t), writeRequest)
 			timeout := time.NewTimer(3 * time.Second)
 			defer utils.CleanupTimer(timeout)
 			select {
