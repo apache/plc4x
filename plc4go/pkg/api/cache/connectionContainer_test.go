@@ -215,11 +215,6 @@ func Test_connectionContainer_lease(t1 *testing.T) {
 		{
 			name: "lease fresh",
 			fields: fields{
-				driverManager: func() plc4go.PlcDriverManager {
-					driverManager := plc4go.NewPlcDriverManager()
-					driverManager.RegisterDriver(simulated.NewDriver())
-					return driverManager
-				}(),
 				connectionString: "simulated://1.2.3.4:42",
 				lock:             lock.NewCASMutex(),
 				queue:            []chan plc4go.PlcConnectionConnectResult{},
