@@ -130,12 +130,14 @@ func (t *requestTransaction) AwaitCompletion(ctx context.Context) error {
 	stillActive := true
 	for stillActive {
 		stillActive = false
+		t.parent.runningRequestMutex.RLock()
 		for _, runningRequest := range t.parent.runningRequests {
 			if runningRequest.transactionId == t.transactionId {
 				stillActive = true
 				break
 			}
 		}
+		t.parent.runningRequestMutex.RUnlock()
 	}
 	return nil
 }

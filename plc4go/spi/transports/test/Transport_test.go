@@ -483,7 +483,8 @@ func TestTransportInstance_Read(t *testing.T) {
 		wantErr bool
 	}{
 		{
-			name: "read it",
+			name:    "read it",
+			wantErr: true,
 		},
 	}
 	for _, tt := range tests {

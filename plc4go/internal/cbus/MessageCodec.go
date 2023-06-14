@@ -22,6 +22,7 @@ package cbus
 import (
 	"bufio"
 	"context"
+	"sync/atomic"
 
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/cbus/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
@@ -43,10 +44,10 @@ type MessageCodec struct {
 
 	monitoredMMIs   chan readWriteModel.CALReply
 	monitoredSALs   chan readWriteModel.MonitoredSAL
-	lastPackageHash uint32
-	hashEncountered uint
+	lastPackageHash atomic.Uint32
+	hashEncountered atomic.Uint64
 
-	currentlyReportedServerErrors uint
+	currentlyReportedServerErrors atomic.Uint64
 
 	log zerolog.Logger `ignore:"true"`
 }
@@ -206,18 +207,19 @@ lookingForTheEnd:
 		hash := crc32.NewIEEE()
 		_, _ = hash.Write(peekedBytes)
 		newPackageHash := hash.Sum32()
-		if newPackageHash == m.lastPackageHash {
-			m.hashEncountered++
+		if newPackageHash == m.lastPackageHash.Load() {
+			m.hashEncountered.Add(1)
 		}
-		m.log.Trace().Msgf("new hash %x, last hash %x, seen %d times", newPackageHash, m.lastPackageHash, m.hashEncountered)
-		m.lastPackageHash = newPackageHash
-		if m.hashEncountered < numberOfCyclesToWait {
+		m.log.Trace().Msgf("new hash %x, last hash %x, seen %d times", newPackageHash, m.lastPackageHash.Load(), m.hashEncountered.Load())
+		m.lastPackageHash.Store(newPackageHash)
+		if m.hashEncountered.Load() < numberOfCyclesToWait {
 			m.log.Trace().Msg("Waiting for more data")
 			return nil, nil
 		} else {
-			m.log.Trace().Msgf("stopping after ~%dms", estimatedElapsedTime)
+			m.log.Trace().Msgf("stopping after ~%dms (%d cycles)", estimatedElapsedTime, numberOfCyclesToWait)
 			// after numberOfCyclesToWait*10 ms we give up finding a lf
-			m.lastPackageHash, m.hashEncountered = 0, 0
+			m.lastPackageHash.Store(0)
+			m.hashEncountered.Store(0)
 			if indexOfCR >= 0 {
 				m.log.Trace().Msg("setting requestToPci")
 				requestToPci = true
@@ -251,7 +253,7 @@ lookingForTheEnd:
 			return nil, err
 		}
 		// We check in the current stream for reported errors
-		foundErrors := uint(0)
+		foundErrors := uint64(0)
 		for _, peekedByte := range peekedBytes {
 			if peekedByte == '!' {
 				foundErrors++
@@ -261,16 +263,16 @@ lookingForTheEnd:
 			}
 		}
 		// Now we report the errors one by one so for every request we get a proper rejection
-		if foundErrors > m.currentlyReportedServerErrors {
-			m.log.Debug().Msgf("We found %d errors in the current message. We have %d reported already", foundErrors, m.currentlyReportedServerErrors)
-			m.currentlyReportedServerErrors++
+		if foundErrors > m.currentlyReportedServerErrors.Load() {
+			m.log.Debug().Msgf("We found %d errors in the current message. We have %d reported already", foundErrors, m.currentlyReportedServerErrors.Load())
+			m.currentlyReportedServerErrors.Add(1)
 			return readWriteModel.CBusMessageParse(context.TODO(), []byte{'!'}, true, m.requestContext, m.cbusOptions)
 		}
 		if foundErrors > 0 {
-			m.log.Debug().Msgf("We should have reported all errors by now (%d in total which we reported %d), so we resetting the count", foundErrors, m.currentlyReportedServerErrors)
-			m.currentlyReportedServerErrors = 0
+			m.log.Debug().Msgf("We should have reported all errors by now (%d in total which we reported %d), so we resetting the count", foundErrors, m.currentlyReportedServerErrors.Load())
+			m.currentlyReportedServerErrors.Store(0)
 		}
-		m.log.Trace().Msgf("currentlyReportedServerErrors %d should be 0", m.currentlyReportedServerErrors)
+		m.log.Trace().Msgf("currentlyReportedServerErrors %d should be 0", m.currentlyReportedServerErrors.Load())
 	}
 
 	var rawInput []byte

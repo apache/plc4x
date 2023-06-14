@@ -21,6 +21,7 @@ package tracer
 
 import (
 	"github.com/stretchr/testify/assert"
+	"sync/atomic"
 	"testing"
 	"time"
 )
@@ -38,6 +39,11 @@ func TestNewTracer(t *testing.T) {
 			name: "create it",
 			want: &tracer{
 				traceEntries: []TraceEntry{},
+				connectionId: func() atomic.Value {
+					value := atomic.Value{}
+					value.Store("")
+					return value
+				}(),
 			},
 		},
 	}
@@ -50,7 +56,6 @@ func TestNewTracer(t *testing.T) {
 
 func Test_tracer_AddTrace(t1 *testing.T) {
 	type fields struct {
-		connectionId string
 		traceEntries []TraceEntry
 	}
 	type args struct {
@@ -69,8 +74,12 @@ func Test_tracer_AddTrace(t1 *testing.T) {
 	for _, tt := range tests {
 		t1.Run(tt.name, func(t1 *testing.T) {
 			t := &tracer{
-				connectionId: tt.fields.connectionId,
 				traceEntries: tt.fields.traceEntries,
+				connectionId: func() atomic.Value {
+					value := atomic.Value{}
+					value.Store("")
+					return value
+				}(),
 			}
 			t.AddTrace(tt.args.operation, tt.args.message)
 		})
@@ -79,7 +88,6 @@ func Test_tracer_AddTrace(t1 *testing.T) {
 
 func Test_tracer_AddTransactionalStartTrace(t1 *testing.T) {
 	type fields struct {
-		connectionId string
 		traceEntries []TraceEntry
 	}
 	type args struct {
@@ -98,8 +106,12 @@ func Test_tracer_AddTransactionalStartTrace(t1 *testing.T) {
 	for _, tt := range tests {
 		t1.Run(tt.name, func(t1 *testing.T) {
 			t := &tracer{
-				connectionId: tt.fields.connectionId,
 				traceEntries: tt.fields.traceEntries,
+				connectionId: func() atomic.Value {
+					value := atomic.Value{}
+					value.Store("")
+					return value
+				}(),
 			}
 			id := t.AddTransactionalStartTrace(tt.args.operation, tt.args.message)
 			assert.NotNil(t1, id, "AddTransactionalStartTrace(%v, %v)", tt.args.operation, tt.args.message)
@@ -109,7 +121,6 @@ func Test_tracer_AddTransactionalStartTrace(t1 *testing.T) {
 
 func Test_tracer_AddTransactionalTrace(t1 *testing.T) {
 	type fields struct {
-		connectionId string
 		traceEntries []TraceEntry
 	}
 	type args struct {
@@ -129,8 +140,12 @@ func Test_tracer_AddTransactionalTrace(t1 *testing.T) {
 	for _, tt := range tests {
 		t1.Run(tt.name, func(t1 *testing.T) {
 			t := &tracer{
-				connectionId: tt.fields.connectionId,
 				traceEntries: tt.fields.traceEntries,
+				connectionId: func() atomic.Value {
+					value := atomic.Value{}
+					value.Store("")
+					return value
+				}(),
 			}
 			t.AddTransactionalTrace(tt.args.transactionId, tt.args.operation, tt.args.message)
 		})
@@ -139,7 +154,6 @@ func Test_tracer_AddTransactionalTrace(t1 *testing.T) {
 
 func Test_tracer_FilterTraces(t1 *testing.T) {
 	type fields struct {
-		connectionId string
 		traceEntries []TraceEntry
 	}
 	type args struct {
@@ -214,8 +228,12 @@ func Test_tracer_FilterTraces(t1 *testing.T) {
 	for _, tt := range tests {
 		t1.Run(tt.name, func(t1 *testing.T) {
 			t := &tracer{
-				connectionId: tt.fields.connectionId,
 				traceEntries: tt.fields.traceEntries,
+				connectionId: func() atomic.Value {
+					value := atomic.Value{}
+					value.Store("")
+					return value
+				}(),
 			}
 			assert.Equalf(t1, tt.want, t.FilterTraces(tt.args.traces, tt.args.connectionIdFilter, tt.args.transactionIdFilter, tt.args.operationFilter, tt.args.messageFilter), "FilterTraces(%v, %v, %v, %v, %v)", tt.args.traces, tt.args.connectionIdFilter, tt.args.transactionIdFilter, tt.args.operationFilter, tt.args.messageFilter)
 		})
@@ -224,7 +242,6 @@ func Test_tracer_FilterTraces(t1 *testing.T) {
 
 func Test_tracer_GetConnectionId(t1 *testing.T) {
 	type fields struct {
-		connectionId string
 		traceEntries []TraceEntry
 	}
 	tests := []struct {
@@ -239,8 +256,12 @@ func Test_tracer_GetConnectionId(t1 *testing.T) {
 	for _, tt := range tests {
 		t1.Run(tt.name, func(t1 *testing.T) {
 			t := &tracer{
-				connectionId: tt.fields.connectionId,
 				traceEntries: tt.fields.traceEntries,
+				connectionId: func() atomic.Value {
+					value := atomic.Value{}
+					value.Store("")
+					return value
+				}(),
 			}
 			assert.Equalf(t1, tt.want, t.GetConnectionId(), "GetConnectionId()")
 		})
@@ -249,7 +270,6 @@ func Test_tracer_GetConnectionId(t1 *testing.T) {
 
 func Test_tracer_GetTraces(t1 *testing.T) {
 	type fields struct {
-		connectionId string
 		traceEntries []TraceEntry
 	}
 	tests := []struct {
@@ -264,8 +284,12 @@ func Test_tracer_GetTraces(t1 *testing.T) {
 	for _, tt := range tests {
 		t1.Run(tt.name, func(t1 *testing.T) {
 			t := &tracer{
-				connectionId: tt.fields.connectionId,
 				traceEntries: tt.fields.traceEntries,
+				connectionId: func() atomic.Value {
+					value := atomic.Value{}
+					value.Store("")
+					return value
+				}(),
 			}
 			assert.Equalf(t1, tt.want, t.GetTraces(), "GetTraces()")
 		})
@@ -274,7 +298,6 @@ func Test_tracer_GetTraces(t1 *testing.T) {
 
 func Test_tracer_ResetTraces(t1 *testing.T) {
 	type fields struct {
-		connectionId string
 		traceEntries []TraceEntry
 	}
 	tests := []struct {
@@ -288,8 +311,12 @@ func Test_tracer_ResetTraces(t1 *testing.T) {
 	for _, tt := range tests {
 		t1.Run(tt.name, func(t1 *testing.T) {
 			t := &tracer{
-				connectionId: tt.fields.connectionId,
 				traceEntries: tt.fields.traceEntries,
+				connectionId: func() atomic.Value {
+					value := atomic.Value{}
+					value.Store("")
+					return value
+				}(),
 			}
 			t.ResetTraces()
 		})
@@ -298,7 +325,6 @@ func Test_tracer_ResetTraces(t1 *testing.T) {
 
 func Test_tracer_SetConnectionId(t1 *testing.T) {
 	type fields struct {
-		connectionId string
 		traceEntries []TraceEntry
 	}
 	type args struct {
@@ -316,8 +342,12 @@ func Test_tracer_SetConnectionId(t1 *testing.T) {
 	for _, tt := range tests {
 		t1.Run(tt.name, func(t1 *testing.T) {
 			t := &tracer{
-				connectionId: tt.fields.connectionId,
 				traceEntries: tt.fields.traceEntries,
+				connectionId: func() atomic.Value {
+					value := atomic.Value{}
+					value.Store("")
+					return value
+				}(),
 			}
 			t.SetConnectionId(tt.args.connectionId)
 		})

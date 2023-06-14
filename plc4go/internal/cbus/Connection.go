@@ -21,11 +21,6 @@ package cbus
 
 import (
 	"context"
-	"github.com/apache/plc4x/plc4go/spi/options"
-	"github.com/apache/plc4x/plc4go/spi/tracer"
-	"github.com/apache/plc4x/plc4go/spi/transactions"
-	"github.com/rs/zerolog"
-	"github.com/rs/zerolog/log"
 	"runtime/debug"
 	"sync"
 	"time"
@@ -36,8 +31,13 @@ import (
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/default"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
+	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/apache/plc4x/plc4go/spi/tracer"
+	"github.com/apache/plc4x/plc4go/spi/transactions"
+
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
 )
 
 //go:generate go run ../../tools/plc4xgenerator/gen.go -type=AlphaGenerator
@@ -248,7 +248,7 @@ func (c *Connection) startSubscriptionHandler() {
 					}
 				}
 				if !handled {
-					log.Debug().Msgf("SAL was not handled:\n%s", monitoredSal)
+					c.log.Debug().Msgf("SAL was not handled:\n%s", monitoredSal)
 				}
 			}
 		}
@@ -272,7 +272,7 @@ func (c *Connection) startSubscriptionHandler() {
 					}
 				}
 				if !handled {
-					log.Debug().Msgf("MMI was not handled:\n%s", calReply)
+					c.log.Debug().Msgf("MMI was not handled:\n%s", calReply)
 				}
 			}
 		}

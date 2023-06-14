@@ -61,11 +61,6 @@ func (d *defaultCodec) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 			}
 		}
 	}
-
-	_defaultIncomingMessageChannel_plx4gen_description := fmt.Sprintf("%d element(s)", len(d.defaultIncomingMessageChannel))
-	if err := writeBuffer.WriteString("defaultIncomingMessageChannel", uint32(len(_defaultIncomingMessageChannel_plx4gen_description)*8), "UTF-8", _defaultIncomingMessageChannel_plx4gen_description); err != nil {
-		return err
-	}
 	if err := writeBuffer.PushContext("expectations", utils.WithRenderAsList(true)); err != nil {
 		return err
 	}
@@ -95,11 +90,16 @@ func (d *defaultCodec) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 		return err
 	}
 
-	if err := writeBuffer.WriteBit("running", d.running); err != nil {
+	_defaultIncomingMessageChannel_plx4gen_description := fmt.Sprintf("%d element(s)", len(d.defaultIncomingMessageChannel))
+	if err := writeBuffer.WriteString("defaultIncomingMessageChannel", uint32(len(_defaultIncomingMessageChannel_plx4gen_description)*8), "UTF-8", _defaultIncomingMessageChannel_plx4gen_description); err != nil {
 		return err
 	}
 
 	if err := writeBuffer.WriteBit("customMessageHandling", d.customMessageHandling != nil); err != nil {
+		return err
+	}
+
+	if err := writeBuffer.WriteBit("running", d.running.Load()); err != nil {
 		return err
 	}
 	if err := writeBuffer.PopContext("defaultCodec"); err != nil {

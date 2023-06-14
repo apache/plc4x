@@ -94,22 +94,16 @@ func (d *MessageCodec) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 		return err
 	}
 
-	if err := writeBuffer.WriteUint32("lastPackageHash", 32, d.lastPackageHash); err != nil {
+	if err := writeBuffer.WriteUint32("lastPackageHash", 32, d.lastPackageHash.Load()); err != nil {
 		return err
 	}
-	{
-		_value := fmt.Sprintf("%v", d.hashEncountered)
 
-		if err := writeBuffer.WriteString("hashEncountered", uint32(len(_value)*8), "UTF-8", _value); err != nil {
-			return err
-		}
+	if err := writeBuffer.WriteUint64("hashEncountered", 64, d.hashEncountered.Load()); err != nil {
+		return err
 	}
-	{
-		_value := fmt.Sprintf("%v", d.currentlyReportedServerErrors)
 
-		if err := writeBuffer.WriteString("currentlyReportedServerErrors", uint32(len(_value)*8), "UTF-8", _value); err != nil {
-			return err
-		}
+	if err := writeBuffer.WriteUint64("currentlyReportedServerErrors", 64, d.currentlyReportedServerErrors.Load()); err != nil {
+		return err
 	}
 	if err := writeBuffer.PopContext("MessageCodec"); err != nil {
 		return err

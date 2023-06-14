@@ -22,6 +22,7 @@ package tracer
 import (
 	"fmt"
 	"sync"
+	"sync/atomic"
 	"time"
 
 	"github.com/apache/plc4x/plc4go/spi/options"
@@ -55,15 +56,16 @@ type Tracer interface {
 }
 
 func NewTracer(connectionId string, _options ...options.WithOption) Tracer {
-	return &tracer{
-		connectionId: connectionId,
+	t := tracer{
 		traceEntries: []TraceEntry{},
 		log:          options.ExtractCustomLogger(_options...),
 	}
+	t.connectionId.Store(connectionId)
+	return &t
 }
 
 type tracer struct {
-	connectionId string
+	connectionId atomic.Value
 	traceEntries []TraceEntry
 	m            sync.Mutex
 
@@ -71,65 +73,64 @@ type tracer struct {
 }
 
 func (t *tracer) GetConnectionId() string {
-	return t.connectionId
+	return t.connectionId.Load().(string)
 }
 
 func (t *tracer) SetConnectionId(connectionId string) {
-	t.connectionId = connectionId
+	t.connectionId.Store(connectionId)
 }
 
 func (t *tracer) ResetTraces() {
 	t.m.Lock()
+	defer t.m.Unlock()
 	t.traceEntries = []TraceEntry{}
-	t.m.Unlock()
 }
 
 func (t *tracer) GetTraces() []TraceEntry {
 	t.m.Lock()
-	entries := t.traceEntries
-	t.m.Unlock()
-	return entries
+	defer t.m.Unlock()
+	return t.traceEntries
 }
 
 func (t *tracer) AddTrace(operation string, message string) {
 	t.m.Lock()
+	defer t.m.Unlock()
 	t.traceEntries = append(t.traceEntries, TraceEntry{
 		Timestamp:     time.Now(),
-		ConnectionId:  t.connectionId,
+		ConnectionId:  t.connectionId.Load().(string),
 		TransactionId: "",
 		Operation:     operation,
 		Message:       message,
 	})
-	t.m.Unlock()
 }
 
 func (t *tracer) AddTransactionalStartTrace(operation string, message string) string {
 	t.m.Lock()
+	defer t.m.Unlock()
 	transactionId := utils.GenerateId(t.log, 4)
 	t.traceEntries = append(t.traceEntries, TraceEntry{
 		Timestamp:     time.Now(),
-		ConnectionId:  t.connectionId,
+		ConnectionId:  t.connectionId.Load().(string),
 		TransactionId: transactionId,
 		Operation:     operation,
 		Message:       message,
 	})
-	t.m.Unlock()
 	return transactionId
 }
 
 func (t *tracer) AddTransactionalTrace(transactionId string, operation string, message string) {
 	t.m.Lock()
+	defer t.m.Unlock()
 	t.traceEntries = append(t.traceEntries, TraceEntry{
 		Timestamp:     time.Now(),
-		ConnectionId:  t.connectionId,
+		ConnectionId:  t.connectionId.Load().(string),
 		TransactionId: transactionId,
 		Operation:     operation,
 		Message:       message,
 	})
-	t.m.Unlock()
 }
 
-func (t *tracer) FilterTraces(traces []TraceEntry, connectionIdFilter string, transactionIdFilter string, operationFilter string, messageFilter string) []TraceEntry {
+func (*tracer) FilterTraces(traces []TraceEntry, connectionIdFilter string, transactionIdFilter string, operationFilter string, messageFilter string) []TraceEntry {
 	var result []TraceEntry
 traceFiltering:
 	for _, trace := range traces {
@@ -151,5 +152,5 @@ traceFiltering:
 }
 
 func (t *tracer) String() string {
-	return fmt.Sprintf("Tracer for %s", t.connectionId)
+	return fmt.Sprintf("Tracer for %s", t.connectionId.Load())
 }

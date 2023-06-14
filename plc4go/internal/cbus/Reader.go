@@ -132,6 +132,7 @@ func (m *Reader) createMessageTransactionAndWait(ctx context.Context, messageToS
 	if err := transaction.AwaitCompletion(ctx); err != nil {
 		m.log.Warn().Err(err).Msg("Error while awaiting completion")
 	}
+	m.log.Trace().Msg("Finished waiting")
 }
 
 func (m *Reader) sendMessageOverTheWire(ctx context.Context, transaction transactions.RequestTransaction, messageToSend readWriteModel.CBusMessage, addResponseCode func(name string, responseCode apiModel.PlcResponseCode), tagName string, addPlcValue func(name string, plcValue apiValues.PlcValue)) {

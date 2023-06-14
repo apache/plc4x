@@ -91,7 +91,7 @@ func TestReader_Read(t *testing.T) {
 		{
 			name: "read and bail",
 			args: args{
-				ctx: context.Background(),
+				ctx: testutils.TestContext(t),
 				readRequest: spiModel.NewDefaultPlcReadRequest(nil, func() []string {
 					return strings.Split(strings.Repeat("asd,", 40), ",")
 				}(), nil, nil),
@@ -142,7 +142,7 @@ func TestReader_readSync(t *testing.T) {
 		{
 			name: "too many tags",
 			args: args{
-				ctx: context.Background(),
+				ctx: testutils.TestContext(t),
 				readRequest: spiModel.NewDefaultPlcReadRequest(nil, func() []string {
 					return strings.Split(strings.Repeat("asd,", 40), ",")
 				}(), nil, nil),
@@ -163,7 +163,7 @@ func TestReader_readSync(t *testing.T) {
 		{
 			name: "unmapped tag",
 			args: args{
-				ctx: context.Background(),
+				ctx: testutils.TestContext(t),
 				readRequest: spiModel.NewDefaultPlcReadRequest(
 					map[string]apiModel.PlcTag{
 						"asd": nil,
@@ -190,8 +190,7 @@ func TestReader_readSync(t *testing.T) {
 				transportInstance, err := transport.CreateTransportInstance(transportUrl, nil)
 				require.NoError(t, err)
 				codec := NewMessageCodec(transportInstance, loggerOption)
-				err = codec.Connect()
-				require.NoError(t, err)
+				require.NoError(t, codec.Connect())
 				t.Cleanup(func() {
 					assert.NoError(t, codec.Disconnect())
 				})
@@ -213,7 +212,7 @@ func TestReader_readSync(t *testing.T) {
 		{
 			name: "read something without any tag",
 			args: args{
-				ctx: context.Background(),
+				ctx: testutils.TestContext(t),
 				readRequest: spiModel.NewDefaultPlcReadRequest(
 					map[string]apiModel.PlcTag{},
 					[]string{},
@@ -293,8 +292,7 @@ func TestReader_readSync(t *testing.T) {
 					}
 				})
 				codec := NewMessageCodec(transportInstance, loggerOption)
-				err = codec.Connect()
-				require.NoError(t, err)
+				require.NoError(t, codec.Connect())
 				t.Cleanup(func() {
 					assert.NoError(t, codec.Disconnect())
 				})
@@ -356,8 +354,7 @@ func TestReader_readSync(t *testing.T) {
 				transportInstance, err := transport.CreateTransportInstance(transportUrl, nil, loggerOption)
 				require.NoError(t, err)
 				codec := NewMessageCodec(transportInstance, loggerOption)
-				err = codec.Connect()
-				require.NoError(t, err)
+				require.NoError(t, codec.Connect())
 				t.Cleanup(func() {
 					assert.NoError(t, codec.Disconnect())
 				})
@@ -448,8 +445,7 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 				transportInstance, err := transport.CreateTransportInstance(transportUrl, nil, loggerOption)
 				require.NoError(t, err)
 				codec := NewMessageCodec(transportInstance, loggerOption)
-				err = codec.Connect()
-				require.NoError(t, err)
+				require.NoError(t, codec.Connect())
 				t.Cleanup(func() {
 					assert.NoError(t, codec.Disconnect())
 				})
@@ -545,8 +541,7 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 					}
 				})
 				codec := NewMessageCodec(transportInstance, loggerOption)
-				err = codec.Connect()
-				require.NoError(t, err)
+				require.NoError(t, codec.Connect())
 				t.Cleanup(func() {
 					assert.NoError(t, codec.Disconnect())
 				})
@@ -557,47 +552,6 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 			name: "Send message which responds with server error",
 			fields: fields{
 				alphaGenerator: &AlphaGenerator{currentAlpha: 'g'},
-				messageCodec: func() *MessageCodec {
-					// Setup logger
-					logger := testutils.ProduceTestingLogger(t)
-
-					testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
-
-					// Custom option for that
-					loggerOption := options.WithCustomLogger(logger)
-
-					transport := test.NewTransport(loggerOption)
-					transportUrl := url.URL{Scheme: "test"}
-					transportInstance, err := transport.CreateTransportInstance(transportUrl, nil, loggerOption)
-					require.NoError(t, err)
-					type MockState uint8
-					const (
-						INITIAL MockState = iota
-						DONE
-					)
-					currentState := atomic.Value{}
-					currentState.Store(INITIAL)
-					stateChangeMutex := sync.Mutex{}
-					transportInstance.(*test.TransportInstance).SetWriteInterceptor(func(transportInstance *test.TransportInstance, data []byte) {
-						stateChangeMutex.Lock()
-						defer stateChangeMutex.Unlock()
-						switch currentState.Load().(MockState) {
-						case INITIAL:
-							t.Log("Dispatching read response")
-							transportInstance.FillReadBuffer([]byte("!"))
-							currentState.Store(DONE)
-						case DONE:
-							t.Log("Done")
-						}
-					})
-					codec := NewMessageCodec(transportInstance, loggerOption)
-					err = codec.Connect()
-					require.NoError(t, err)
-					t.Cleanup(func() {
-						assert.NoError(t, codec.Disconnect())
-					})
-					return codec
-				}(),
 			},
 			args: args{
 				ctx: func() context.Context {
@@ -636,7 +590,44 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 				},
 			},
 			setup: func(t *testing.T, fields *fields, args *args, ch chan struct{}) {
+				// Setup logger
+				logger := testutils.ProduceTestingLogger(t)
+
 				testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
+
+				// Custom option for that
+				loggerOption := options.WithCustomLogger(logger)
+
+				transport := test.NewTransport(loggerOption)
+				transportUrl := url.URL{Scheme: "test"}
+				transportInstance, err := transport.CreateTransportInstance(transportUrl, nil, loggerOption)
+				require.NoError(t, err)
+				type MockState uint8
+				const (
+					INITIAL MockState = iota
+					DONE
+				)
+				currentState := atomic.Value{}
+				currentState.Store(INITIAL)
+				stateChangeMutex := sync.Mutex{}
+				transportInstance.(*test.TransportInstance).SetWriteInterceptor(func(transportInstance *test.TransportInstance, data []byte) {
+					stateChangeMutex.Lock()
+					defer stateChangeMutex.Unlock()
+					switch currentState.Load().(MockState) {
+					case INITIAL:
+						t.Log("Dispatching read response")
+						transportInstance.FillReadBuffer([]byte("!"))
+						currentState.Store(DONE)
+					case DONE:
+						t.Log("Done")
+					}
+				})
+				codec := NewMessageCodec(transportInstance, loggerOption)
+				require.NoError(t, codec.Connect())
+				t.Cleanup(func() {
+					assert.NoError(t, codec.Disconnect())
+				})
+				fields.messageCodec = codec
 
 				transaction := NewMockRequestTransaction(t)
 				expect := transaction.EXPECT()
@@ -731,8 +722,7 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 					}
 				})
 				codec := NewMessageCodec(transportInstance, loggerOption)
-				err = codec.Connect()
-				require.NoError(t, err)
+				require.NoError(t, codec.Connect())
 				t.Cleanup(func() {
 					assert.NoError(t, codec.Disconnect())
 				})
@@ -824,8 +814,7 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 					}
 				})
 				codec := NewMessageCodec(transportInstance, loggerOption)
-				err = codec.Connect()
-				require.NoError(t, err)
+				require.NoError(t, codec.Connect())
 				t.Cleanup(func() {
 					assert.NoError(t, codec.Disconnect())
 				})
@@ -917,8 +906,7 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 					}
 				})
 				codec := NewMessageCodec(transportInstance, loggerOption)
-				err = codec.Connect()
-				require.NoError(t, err)
+				require.NoError(t, codec.Connect())
 				t.Cleanup(func() {
 					assert.NoError(t, codec.Disconnect())
 				})
@@ -1010,8 +998,7 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 					}
 				})
 				codec := NewMessageCodec(transportInstance, loggerOption)
-				err = codec.Connect()
-				require.NoError(t, err)
+				require.NoError(t, codec.Connect())
 				t.Cleanup(func() {
 					assert.NoError(t, codec.Disconnect())
 				})
@@ -1103,8 +1090,7 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 					}
 				})
 				codec := NewMessageCodec(transportInstance, loggerOption)
-				err = codec.Connect()
-				require.NoError(t, err)
+				require.NoError(t, codec.Connect())
 				t.Cleanup(func() {
 					assert.NoError(t, codec.Disconnect())
 				})
@@ -1196,8 +1182,7 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 					}
 				})
 				codec := NewMessageCodec(transportInstance, loggerOption)
-				err = codec.Connect()
-				require.NoError(t, err)
+				require.NoError(t, codec.Connect())
 				t.Cleanup(func() {
 					assert.NoError(t, codec.Disconnect())
 				})

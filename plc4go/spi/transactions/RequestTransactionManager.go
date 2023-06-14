@@ -95,22 +95,22 @@ type withCustomExecutor struct {
 
 //go:generate go run ../../tools/plc4xgenerator/gen.go -type=requestTransactionManager
 type requestTransactionManager struct {
-	runningRequests []*requestTransaction
-	// How many transactions are allowed to run at the same time?
-	numberOfConcurrentRequests int
-	// Assigns each request a Unique Transaction Id, especially important for failure handling
-	currentTransactionId int32
+	runningRequests     []*requestTransaction
+	runningRequestMutex sync.RWMutex
+
+	numberOfConcurrentRequests int // How many transactions are allowed to run at the same time?
+
+	currentTransactionId int32 // Assigns each request a Unique Transaction Id, especially important for failure handling
 	transactionMutex     sync.RWMutex
-	// Important, this is a FIFO Queue for Fairness!
-	workLog      list.List `ignore:"true"` // TODO: no support for list yet
+
+	workLog      list.List `ignore:"true"` // Important, this is a FIFO Queue for Fairness! // TODO: no support for list yet
 	workLogMutex sync.RWMutex
-	executor     pool.Executor
 
-	// Indicates it this rtm is in shutdown
-	shutdown bool
+	executor pool.Executor
 
-	// flag set to true if it should trace transactions
-	traceTransactionManagerTransactions bool
+	shutdown bool // Indicates it this rtm is in shutdown
+
+	traceTransactionManagerTransactions bool // flag set to true if it should trace transactions
 
 	log zerolog.Logger `ignore:"true"`
 }
@@ -125,11 +125,14 @@ func (r *requestTransactionManager) SetNumberOfConcurrentRequests(numberOfConcur
 	r.log.Info().Msgf("Setting new number of concurrent requests %d", numberOfConcurrentRequests)
 	// If we reduced the number of concurrent requests and more requests are in-flight
 	// than should be, at least log a warning.
-	if numberOfConcurrentRequests < len(r.runningRequests) {
+	r.runningRequestMutex.Lock()
+	runningRequestLength := len(r.runningRequests)
+	if numberOfConcurrentRequests < runningRequestLength {
 		r.log.Warn().Msg("The number of concurrent requests was reduced and currently more requests are in flight.")
 	}
 
 	r.numberOfConcurrentRequests = numberOfConcurrentRequests
+	r.runningRequestMutex.Unlock()
 
 	// As we might have increased the number, try to send some more requests.
 	r.processWorklog()
@@ -148,6 +151,8 @@ func (r *requestTransactionManager) submitTransaction(transaction *requestTransa
 func (r *requestTransactionManager) processWorklog() {
 	r.workLogMutex.RLock()
 	defer r.workLogMutex.RUnlock()
+	r.runningRequestMutex.Lock()
+	defer r.runningRequestMutex.Unlock()
 	r.log.Debug().Msgf("Processing work log with size of %d (%d concurrent requests allowed)", r.workLog.Len(), r.numberOfConcurrentRequests)
 	for len(r.runningRequests) < r.numberOfConcurrentRequests && r.workLog.Len() > 0 {
 		front := r.workLog.Front()
@@ -182,6 +187,8 @@ func (r *requestTransactionManager) StartTransaction() RequestTransaction {
 }
 
 func (r *requestTransactionManager) getNumberOfActiveRequests() int {
+	r.runningRequestMutex.RLock()
+	defer r.runningRequestMutex.RUnlock()
 	return len(r.runningRequests)
 }
 
@@ -193,6 +200,7 @@ func (r *requestTransactionManager) failRequest(transaction *requestTransaction,
 }
 
 func (r *requestTransactionManager) endRequest(transaction *requestTransaction) error {
+	r.runningRequestMutex.Lock()
 	transaction.transactionLog.Debug().Msg("Trying to find a existing transaction")
 	found := false
 	index := -1
@@ -209,6 +217,7 @@ func (r *requestTransactionManager) endRequest(transaction *requestTransaction) 
 	}
 	transaction.transactionLog.Debug().Msg("Removing the existing transaction transaction")
 	r.runningRequests = append(r.runningRequests[:index], r.runningRequests[index+1:]...)
+	r.runningRequestMutex.Unlock()
 	// Process the workLog, a slot should be free now
 	transaction.transactionLog.Debug().Msg("Processing the workLog")
 	r.processWorklog()
@@ -224,26 +233,29 @@ func (r *requestTransactionManager) CloseGraceful(timeout time.Duration) error {
 	if timeout > 0 {
 		timer := time.NewTimer(timeout)
 		defer utils.CleanupTimer(timer)
-		signal := make(chan struct{})
-		go func() {
-			for {
-				if len(r.runningRequests) == 0 {
-					break
-				}
+	gracefulLoop:
+		for {
+			r.runningRequestMutex.RLock()
+			numberRunningRequest := len(r.runningRequests)
+			r.runningRequestMutex.RUnlock()
+			if numberRunningRequest == 0 {
+				break gracefulLoop
+			}
+			select {
+			case <-timer.C:
+				r.log.Warn().Msgf("timeout after %d", timeout)
+				break gracefulLoop
+			default:
 				time.Sleep(10 * time.Millisecond)
 			}
-			close(signal)
-		}()
-		select {
-		case <-timer.C:
-			r.log.Warn().Msgf("timout after %d", timeout)
-		case <-signal:
 		}
 	}
 	r.transactionMutex.Lock()
 	defer r.transactionMutex.Unlock()
-	r.workLogMutex.RLock()
-	defer r.workLogMutex.RUnlock()
+	r.workLogMutex.Lock()
+	defer r.workLogMutex.Unlock()
+	r.runningRequestMutex.Lock()
+	defer r.runningRequestMutex.Unlock()
 	r.runningRequests = nil
 	return r.executor.Close()
 }

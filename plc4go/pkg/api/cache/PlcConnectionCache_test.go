@@ -471,9 +471,7 @@ func TestPlcConnectionCache_ReturningConnectionWithPingError(t *testing.T) {
 			if closeResult != nil {
 				traces := (closeResult.(_default.DefaultPlcConnectionCloseResult)).GetTraces()
 				// We expect 4 traces (Connect start & success and Ping start and error.
-				if len(traces) != 4 {
-					t.Errorf("Expected %d trace entries but got %d", 4, len(traces))
-				}
+				require.Len(t, traces, 4, "Expected %d trace entries but got %d", 4, len(traces))
 				if traces[0].Operation+"-"+traces[0].Message != "connect-started" {
 					t.Errorf("Expected '%s' as first trace message, but got '%s'", "connect-started", traces[0])
 				}

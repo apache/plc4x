@@ -569,6 +569,7 @@
             <configuration>
               <buildFlags>
                 <flag>-v</flag>
+                <flag>-race</flag>
                 <flag>${go.cover.flag}</flag>
               </buildFlags>
               <outLogFile>test-out-verbose.log</outLogFile>

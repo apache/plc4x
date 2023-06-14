@@ -25,6 +25,7 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/rs/zerolog"
 	"runtime/debug"
+	"sync/atomic"
 	"time"
 
 	"github.com/apache/plc4x/plc4go/pkg/api"
@@ -153,7 +154,7 @@ type defaultConnection struct {
 	// defaultTtl the time to live after a close
 	defaultTtl time.Duration `stringer:"true"`
 	// connected indicates if a connection is connected
-	connected    bool
+	connected    atomic.Bool
 	tagHandler   spi.PlcTagHandler
 	valueHandler spi.PlcValueHandler
 
@@ -179,7 +180,6 @@ func buildDefaultConnection(requirements DefaultConnectionRequirements, _options
 	return &defaultConnection{
 		DefaultConnectionRequirements: requirements,
 		defaultTtl:                    defaultTtl,
-		connected:                     false,
 		tagHandler:                    tagHandler,
 		valueHandler:                  valueHandler,
 
@@ -233,7 +233,7 @@ func (d *plcConnectionPingResult) GetErr() error {
 ///////////////////////////////////////
 
 func (d *defaultConnection) SetConnected(connected bool) {
-	d.connected = connected
+	d.connected.Store(connected)
 }
 
 func (d *defaultConnection) Connect() <-chan plc4go.PlcConnectionConnectResult {
@@ -293,7 +293,7 @@ func (d *defaultConnection) Close() <-chan plc4go.PlcConnectionCloseResult {
 
 func (d *defaultConnection) IsConnected() bool {
 	// TODO: should we check here if the transport is connected?
-	return d.connected
+	return d.connected.Load()
 }
 
 func (d *defaultConnection) Ping() <-chan plc4go.PlcConnectionPingResult {

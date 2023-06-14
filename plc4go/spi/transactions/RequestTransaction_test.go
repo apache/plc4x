@@ -266,27 +266,18 @@ func Test_requestTransaction_AwaitCompletion(t1 *testing.T) {
 		ctx context.Context
 	}
 	tests := []struct {
-		name      string
-		fields    fields
-		args      args
-		mockSetup func(t *testing.T, fields *fields, args *args)
-		wantErr   bool
+		name        string
+		fields      fields
+		args        args
+		mockSetup   func(t *testing.T, fields *fields, args *args)
+		manipulator func(t *testing.T, transaction *requestTransaction)
+		wantErr     bool
 	}{
 		{
 			name: "just wait",
 			fields: fields{
 				parent: &requestTransactionManager{
-					runningRequests: []*requestTransaction{
-						func() *requestTransaction {
-							r := &requestTransaction{}
-							go func() {
-								time.Sleep(100 * time.Millisecond)
-								// We fake an ending transaction like that
-								r.transactionId = 1
-							}()
-							return r
-						}(),
-					},
+					runningRequests: []*requestTransaction{},
 				},
 			},
 			args: args{
@@ -301,6 +292,15 @@ func Test_requestTransaction_AwaitCompletion(t1 *testing.T) {
 				expect := completionFuture.EXPECT()
 				expect.AwaitCompletion(mock.Anything).Return(nil)
 				fields.completionFuture = completionFuture
+			},
+			manipulator: func(t *testing.T, transaction *requestTransaction) {
+				go func() {
+					time.Sleep(100 * time.Millisecond)
+					r := transaction.parent
+					r.workLogMutex.RLock()
+					defer r.workLogMutex.RUnlock()
+					r.runningRequests = append(r.runningRequests, &requestTransaction{transactionId: 1})
+				}()
 			},
 		},
 	}

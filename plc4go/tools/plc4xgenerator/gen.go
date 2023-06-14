@@ -250,6 +250,14 @@ func (g *Generator) generate(typeName string) {
 				xIdent, xIsIdent := x.(*ast.Ident)
 				if xIsIdent {
 					if xIdent.Name == "atomic" {
+						if sel.Name == "Uint32" {
+							g.Printf(uint32FieldSerialize, "d."+field.name+".Load()", fieldNameUntitled)
+							continue
+						}
+						if sel.Name == "Uint64" {
+							g.Printf(uint64FieldSerialize, "d."+field.name+".Load()", fieldNameUntitled)
+							continue
+						}
 						if sel.Name == "Int32" {
 							g.Printf(int32FieldSerialize, "d."+field.name+".Load()", fieldNameUntitled)
 							continue
@@ -556,6 +564,12 @@ var int64FieldSerialize = `
 
 var uint32FieldSerialize = `
 	if err := writeBuffer.WriteUint32(%[2]s, 32, %[1]s); err != nil {
+		return err
+	}
+`
+
+var uint64FieldSerialize = `
+	if err := writeBuffer.WriteUint64(%[2]s, 64, %[1]s); err != nil {
 		return err
 	}
 `

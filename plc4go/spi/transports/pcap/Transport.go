@@ -23,20 +23,23 @@ import (
 	"bufio"
 	"bytes"
 	"fmt"
-	"github.com/apache/plc4x/plc4go/spi/options"
-	"github.com/apache/plc4x/plc4go/spi/transports"
-	transportUtils "github.com/apache/plc4x/plc4go/spi/transports/utils"
-	"github.com/gopacket/gopacket"
-	"github.com/gopacket/gopacket/layers"
-	"github.com/gopacket/gopacket/pcap"
-	"github.com/pkg/errors"
-	"github.com/rs/zerolog"
 	"io"
 	"net/url"
 	"runtime/debug"
 	"strconv"
 	"sync"
+	"sync/atomic"
 	"time"
+
+	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/apache/plc4x/plc4go/spi/transports"
+	transportUtils "github.com/apache/plc4x/plc4go/spi/transports/utils"
+
+	"github.com/gopacket/gopacket"
+	"github.com/gopacket/gopacket/layers"
+	"github.com/gopacket/gopacket/pcap"
+	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
 )
 
 type TransportType string
@@ -96,11 +99,13 @@ type TransportInstance struct {
 	transportType TransportType
 	portRange     string
 	speedFactor   float32
-	connected     bool
-	transport     *Transport
-	handle        *pcap.Handle
-	mutex         sync.Mutex
-	reader        *bufio.Reader
+
+	connected        atomic.Bool
+	stateChangeMutex sync.Mutex
+
+	transport *Transport
+	handle    *pcap.Handle
+	reader    *bufio.Reader
 
 	log zerolog.Logger
 }
@@ -120,7 +125,9 @@ func NewPcapTransportInstance(transportFile string, transportType TransportType,
 }
 
 func (m *TransportInstance) Connect() error {
-	if m.connected {
+	m.stateChangeMutex.Lock()
+	defer m.stateChangeMutex.Unlock()
+	if m.connected.Load() {
 		return errors.New("Already connected")
 	}
 	handle, err := pcap.OpenOffline(m.transportFile)
@@ -135,7 +142,7 @@ func (m *TransportInstance) Connect() error {
 		return err
 	}
 	m.handle = handle
-	m.connected = true
+	m.connected.Store(true)
 	buffer := new(bytes.Buffer)
 	m.reader = bufio.NewReader(buffer)
 
@@ -147,7 +154,7 @@ func (m *TransportInstance) Connect() error {
 		}()
 		packageCount := 0
 		var lastPacketTime *time.Time
-		for m.connected {
+		for m.connected.Load() {
 			packetData, captureInfo, err := m.handle.ReadPacketData()
 			packageCount++
 			m.log.Info().Msgf("Read new package (nr. %d) %#v", packageCount, captureInfo)
@@ -157,7 +164,7 @@ func (m *TransportInstance) Connect() error {
 					break
 				}
 				m.log.Warn().Err(err).Msg("Error reading")
-				m.connected = false
+				m.connected.Store(false)
 				return
 			}
 			if lastPacketTime != nil && m.speedFactor != 0 {
@@ -199,15 +206,17 @@ func (m *TransportInstance) Connect() error {
 }
 
 func (m *TransportInstance) Close() error {
+	m.stateChangeMutex.Lock()
+	defer m.stateChangeMutex.Unlock()
 	if handle := m.handle; handle != nil {
 		handle.Close()
 	}
-	m.connected = false
+	m.connected.Store(false)
 	return nil
 }
 
 func (m *TransportInstance) IsConnected() bool {
-	return m.connected
+	return m.connected.Load()
 }
 
 func (m *TransportInstance) Write(_ []byte) error {

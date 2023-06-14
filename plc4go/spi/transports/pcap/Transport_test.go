@@ -91,7 +91,6 @@ func TestTransportInstance_Close(t *testing.T) {
 		transportType                    TransportType
 		portRange                        string
 		speedFactor                      float32
-		connected                        bool
 		transport                        *Transport
 		handle                           *pcap.Handle
 		reader                           *bufio.Reader
@@ -116,7 +115,6 @@ func TestTransportInstance_Close(t *testing.T) {
 				transportType:                    tt.fields.transportType,
 				portRange:                        tt.fields.portRange,
 				speedFactor:                      tt.fields.speedFactor,
-				connected:                        tt.fields.connected,
 				transport:                        tt.fields.transport,
 				handle:                           tt.fields.handle,
 				reader:                           tt.fields.reader,
@@ -135,21 +133,21 @@ func TestTransportInstance_Connect(t *testing.T) {
 		transportType                    TransportType
 		portRange                        string
 		speedFactor                      float32
-		connected                        bool
 		transport                        *Transport
 		handle                           *pcap.Handle
 		reader                           *bufio.Reader
 	}
 	tests := []struct {
-		name      string
-		fields    fields
-		mockSetup func(t *testing.T, fields *fields)
-		wantErr   bool
+		name        string
+		fields      fields
+		mockSetup   func(t *testing.T, fields *fields)
+		manipulator func(t *testing.T, transportInstance *TransportInstance)
+		wantErr     bool
 	}{
 		{
 			name: "already connected",
-			fields: fields{
-				connected: true,
+			manipulator: func(t *testing.T, transportInstance *TransportInstance) {
+				transportInstance.connected.Store(true)
 			},
 			wantErr: true,
 		},
@@ -175,10 +173,12 @@ func TestTransportInstance_Connect(t *testing.T) {
 				transportType:                    tt.fields.transportType,
 				portRange:                        tt.fields.portRange,
 				speedFactor:                      tt.fields.speedFactor,
-				connected:                        tt.fields.connected,
 				transport:                        tt.fields.transport,
 				handle:                           tt.fields.handle,
 				reader:                           tt.fields.reader,
+			}
+			if tt.manipulator != nil {
+				tt.manipulator(t, m)
 			}
 			if err := m.Connect(); (err != nil) != tt.wantErr {
 				t.Errorf("Connect() error = %v, wantErr %v", err, tt.wantErr)
@@ -199,7 +199,6 @@ func TestTransportInstance_GetReader(t *testing.T) {
 		transportType                    TransportType
 		portRange                        string
 		speedFactor                      float32
-		connected                        bool
 		transport                        *Transport
 		handle                           *pcap.Handle
 		reader                           *bufio.Reader
@@ -221,7 +220,6 @@ func TestTransportInstance_GetReader(t *testing.T) {
 				transportType:                    tt.fields.transportType,
 				portRange:                        tt.fields.portRange,
 				speedFactor:                      tt.fields.speedFactor,
-				connected:                        tt.fields.connected,
 				transport:                        tt.fields.transport,
 				handle:                           tt.fields.handle,
 				reader:                           tt.fields.reader,
@@ -240,7 +238,6 @@ func TestTransportInstance_IsConnected(t *testing.T) {
 		transportType                    TransportType
 		portRange                        string
 		speedFactor                      float32
-		connected                        bool
 		transport                        *Transport
 		handle                           *pcap.Handle
 		reader                           *bufio.Reader
@@ -262,7 +259,6 @@ func TestTransportInstance_IsConnected(t *testing.T) {
 				transportType:                    tt.fields.transportType,
 				portRange:                        tt.fields.portRange,
 				speedFactor:                      tt.fields.speedFactor,
-				connected:                        tt.fields.connected,
 				transport:                        tt.fields.transport,
 				handle:                           tt.fields.handle,
 				reader:                           tt.fields.reader,
@@ -281,7 +277,6 @@ func TestTransportInstance_String(t *testing.T) {
 		transportType                    TransportType
 		portRange                        string
 		speedFactor                      float32
-		connected                        bool
 		transport                        *Transport
 		handle                           *pcap.Handle
 		reader                           *bufio.Reader
@@ -309,7 +304,6 @@ func TestTransportInstance_String(t *testing.T) {
 				transportType:                    tt.fields.transportType,
 				portRange:                        tt.fields.portRange,
 				speedFactor:                      tt.fields.speedFactor,
-				connected:                        tt.fields.connected,
 				transport:                        tt.fields.transport,
 				handle:                           tt.fields.handle,
 				reader:                           tt.fields.reader,
@@ -328,7 +322,6 @@ func TestTransportInstance_Write(t *testing.T) {
 		transportType                    TransportType
 		portRange                        string
 		speedFactor                      float32
-		connected                        bool
 		transport                        *Transport
 		handle                           *pcap.Handle
 		reader                           *bufio.Reader
@@ -355,7 +348,6 @@ func TestTransportInstance_Write(t *testing.T) {
 				transportType:                    tt.fields.transportType,
 				portRange:                        tt.fields.portRange,
 				speedFactor:                      tt.fields.speedFactor,
-				connected:                        tt.fields.connected,
 				transport:                        tt.fields.transport,
 				handle:                           tt.fields.handle,
 				reader:                           tt.fields.reader,
