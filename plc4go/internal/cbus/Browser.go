@@ -209,6 +209,7 @@ func (m Browser) getInstalledUnitAddressBytes(ctx context.Context) (map[byte]any
 	blockOffset176ReceivedChan := make(chan any, 100) // We only expect one, but we make it a bit bigger to no clog up
 	result := make(map[byte]any)
 	plcConsumerRegistration := subscriptionHandle.Register(func(event apiModel.PlcSubscriptionEvent) {
+		m.log.Trace().Msgf("handling event:\n%s", event)
 		if responseCode := event.GetResponseCode("installationMMIMonitor"); responseCode != apiModel.PlcResponseCode_OK {
 			m.log.Warn().Msgf("Ignoring %v", event)
 			return
