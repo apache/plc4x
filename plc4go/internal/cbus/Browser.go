@@ -254,19 +254,22 @@ func (m Browser) getInstalledUnitAddressBytes(ctx context.Context) (map[byte]any
 		}
 		// We notify here so we don't exit to early
 		switch blockStart {
+		case 0:
+			select {
+			case blockOffset0ReceivedChan <- true:
+				m.log.Trace().Msg("0 notified")
+			default:
+			}
 		case 88:
 			select {
 			case blockOffset88ReceivedChan <- true:
+				m.log.Trace().Msg("88 notified")
 			default:
 			}
 		case 176:
 			select {
 			case blockOffset176ReceivedChan <- true:
-			default:
-			}
-		case 0:
-			select {
-			case blockOffset0ReceivedChan <- true:
+				m.log.Trace().Msg("176 notified")
 			default:
 			}
 		}
@@ -292,8 +295,9 @@ func (m Browser) getInstalledUnitAddressBytes(ctx context.Context) (map[byte]any
 			m.log.Warn().Err(err).Msg("Error reading the mmi")
 			return
 		}
-		if responseCode := readRequestResult.GetResponse().GetResponseCode("installationMMI"); responseCode == apiModel.PlcResponseCode_OK {
-			rootValue := readRequestResult.GetResponse().GetValue("installationMMI")
+		response := readRequestResult.GetResponse()
+		if responseCode := response.GetResponseCode("installationMMI"); responseCode == apiModel.PlcResponseCode_OK {
+			rootValue := response.GetValue("installationMMI")
 			if !rootValue.IsStruct() {
 				m.log.Warn().Err(err).Msgf("%v should be a struct", rootValue)
 				return
@@ -310,6 +314,7 @@ func (m Browser) getInstalledUnitAddressBytes(ctx context.Context) (map[byte]any
 			} else {
 				blockStart = int(blockStartValue.GetByte())
 			}
+			m.log.Debug().Msgf("Read MMI with block start %d", blockStart)
 
 			if plcListValue := rootStruct["values"]; plcListValue == nil || !plcListValue.IsList() {
 				m.log.Warn().Err(err).Msgf("%v should contain a values tag of type list", rootStruct)
@@ -335,10 +340,13 @@ func (m Browser) getInstalledUnitAddressBytes(ctx context.Context) (map[byte]any
 			switch blockStart {
 			case 0:
 				blockOffset0Received = true
+				m.log.Trace().Msg("block 0 read by read")
 			case 88:
 				blockOffset88Received = true
+				m.log.Trace().Msg("block 88 read by read")
 			case 176:
 				blockOffset176Received = true
+				m.log.Trace().Msg("block 176 read by read")
 			}
 
 		} else {
