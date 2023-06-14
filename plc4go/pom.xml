@@ -17,7 +17,8 @@
   specific language governing permissions and limitations
   under the License.
   -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
 
@@ -41,7 +42,8 @@
 
     <sonar.tests>.</sonar.tests>
     <sonar.test.inclusions>**/*_test.go</sonar.test.inclusions>
-    <sonar.coverage.exclusions>**/*_test.go,spi/testutils/*,**/*_plc4xgen.go,examples/**/*,tests/**/*,tools/**/*</sonar.coverage.exclusions>
+    <sonar.coverage.exclusions>**/*_test.go,spi/testutils/*,**/*_plc4xgen.go,examples/**/*,tests/**/*,tools/**/*
+    </sonar.coverage.exclusions>
 
     <sonar.go.exclusions>**/vendor/**,**/*_mock.go</sonar.go.exclusions>
     <!-- TODO: add json output to sonar.go.tests.reportPaths=${project.basedir}/target/go-test-report.out-->
@@ -50,6 +52,8 @@
     <maven.install.skip>true</maven.install.skip>
     <!-- The deploy-goal of the go plugin uses go install to install the result, unfortunately disabling the deploy, disables the go install. -->
     <!--maven.deploy.skip>true</maven.deploy.skip-->
+
+    <go.cover.flag>-coverprofile=target/coverage.out</go.cover.flag>
   </properties>
 
   <build>
@@ -195,7 +199,7 @@
               <outputDir>${project.basedir}/protocols</outputDir>
             </configuration>
           </execution>
-           <execution>
+          <execution>
             <id>generate-driver-ads</id>
             <phase>generate-sources</phase>
             <goals>
@@ -565,7 +569,7 @@
             <configuration>
               <buildFlags>
                 <flag>-v</flag>
-                <flag>-coverprofile=target/coverage.out</flag>
+                <flag>${go.cover.flag}</flag>
               </buildFlags>
               <outLogFile>test-out-verbose.log</outLogFile>
               <ignoreErrorExitCode>true</ignoreErrorExitCode>
@@ -611,7 +615,9 @@
                 <flag>-out</flag>
               </buildFlags>
               <echo>
-                <info>JUnit report saved as target${file.separator}surefire-reports${file.separator}go-junit-report.xml</info>
+                <info>JUnit report saved as
+                  target${file.separator}surefire-reports${file.separator}go-junit-report.xml
+                </info>
               </echo>
               <packages>
                 <package>target${file.separator}surefire-reports${file.separator}go-junit-report.xml</package>
@@ -653,7 +659,7 @@
             </goals>
             <configuration>
               <target>
-                <mkdir dir="target${file.separator}surefire-reports" />
+                <mkdir dir="target${file.separator}surefire-reports"/>
               </target>
             </configuration>
           </execution>
@@ -759,5 +765,20 @@
       <scope>provided</scope>
     </dependency>
   </dependencies>
+
+  <profiles>
+    <profile>
+      <id>os-windows</id>
+      <activation>
+        <os>
+          <family>windows</family>
+        </os>
+      </activation>
+      <properties>
+        <!-- Coverage doesn't work in windows because of a long path issue in cover.exe -->
+        <go.cover.flag>-v</go.cover.flag>
+      </properties>
+    </profile>
+  </profiles>
 
 </project>
