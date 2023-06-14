@@ -291,27 +291,47 @@ func (c *Connection) sendReset(ctx context.Context, ch chan plc4go.PlcConnection
 	if err := c.messageCodec.SendRequest(ctx, cBusMessage, func(message spi.Message) bool {
 		switch message := message.(type) {
 		case readWriteModel.CBusMessageToClientExactly:
-			if reply, ok := message.GetReply().(readWriteModel.ReplyOrConfirmationReplyExactly); ok {
-				_, ok := reply.GetReply().(readWriteModel.PowerUpReplyExactly)
-				return ok
+			switch reply := message.GetReply().(type) {
+			case readWriteModel.ReplyOrConfirmationReplyExactly:
+				switch reply.GetReply().(type) {
+				case readWriteModel.PowerUpReplyExactly:
+					c.log.Debug().Msg("Received a PUN reply")
+					return true
+				default:
+					c.log.Trace().Msgf("%T not relevant", reply)
+					return false
+				}
+			default:
+				c.log.Trace().Msgf("%T not relevant", reply)
+				return false
 			}
 		case readWriteModel.CBusMessageToServerExactly:
-			_, ok = message.GetRequest().(readWriteModel.RequestResetExactly)
-			return ok
+			switch request := message.GetRequest().(type) {
+			case readWriteModel.RequestResetExactly:
+				c.log.Debug().Msg("Received a Reset reply")
+				return true
+			default:
+				c.log.Trace().Msgf("%T not relevant", request)
+				return false
+			}
+		default:
+			c.log.Trace().Msgf("%T not relevant", message)
+			return false
 		}
-		return false
 	}, func(message spi.Message) error {
 		switch message.(type) {
 		case readWriteModel.CBusMessageToClientExactly:
 			// This is the powerup notification
 			select {
 			case receivedResetEchoChan <- false:
+				c.log.Trace().Msg("notified reset chan from message to client")
 			default:
 			}
 		case readWriteModel.CBusMessageToServerExactly:
 			// This is the echo
 			select {
 			case receivedResetEchoChan <- true:
+				c.log.Trace().Msg("notified reset chan from message to server")
 			default:
 			}
 		default:
@@ -321,6 +341,7 @@ func (c *Connection) sendReset(ctx context.Context, ch chan plc4go.PlcConnection
 	}, func(err error) error {
 		select {
 		case receivedResetEchoErrorChan <- errors.Wrap(err, "got error processing request"):
+			c.log.Trace().Msg("notified error chan")
 		default:
 		}
 		return nil
