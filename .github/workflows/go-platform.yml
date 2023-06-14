@@ -128,6 +128,12 @@ jobs:
         with:
           languages: go
 
+      # This step runs an compile on windows to try to fix the memory issue on golang compile
+      - name: Run mvnw (precompile)
+        if: matrix.os == 'windows-latest'
+        run: |
+          ./mvnw${{ steps.platform_suffix.outputs.platform_suffix }} ${{ steps.extra_options.outputs.extra_options }} -B -P'with-go,enable-all-checks' -pl :plc4go -am ${{ steps.platform_opts.outputs.platform_opts }} compile || true
+
       # Note: due to github has no concept of recovering from a fail even if we have our fallback below we append a second un-parallel run behind this to be sure that it works with all checks. Only if that fails too we are ok with a "red" (which should be yellow) cross indicating a problem
       - name: Run mvnw
         run: |
