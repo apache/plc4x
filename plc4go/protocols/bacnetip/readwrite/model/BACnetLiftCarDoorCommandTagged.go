@@ -147,7 +147,7 @@ func BACnetLiftCarDoorCommandTaggedParseWithBuffer(ctx context.Context, readBuff
 	}
 
 	// Manual Field (value)
-	_value, _valueErr := ReadEnumGenericFailing(readBuffer, header.GetActualLength(), BACnetLiftCarDoorCommand_NONE)
+	_value, _valueErr := ReadEnumGenericFailing(ctx, readBuffer, header.GetActualLength(), BACnetLiftCarDoorCommand_NONE)
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetLiftCarDoorCommandTagged")
 	}
@@ -197,7 +197,7 @@ func (m *_BACnetLiftCarDoorCommandTagged) SerializeWithWriteBuffer(ctx context.C
 	}
 
 	// Manual Field (value)
-	_valueErr := WriteEnumGeneric(writeBuffer, m.GetValue())
+	_valueErr := WriteEnumGeneric(ctx, writeBuffer, m.GetValue())
 	if _valueErr != nil {
 		return errors.Wrap(_valueErr, "Error serializing 'value' field")
 	}

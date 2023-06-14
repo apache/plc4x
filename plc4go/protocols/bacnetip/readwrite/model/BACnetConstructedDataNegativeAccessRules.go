@@ -217,7 +217,7 @@ func BACnetConstructedDataNegativeAccessRulesParseWithBuffer(ctx context.Context
 	// Terminated array
 	var negativeAccessRules []BACnetAccessRule
 	{
-		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
+		for !bool(IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber)) {
 			_item, _err := BACnetAccessRuleParseWithBuffer(ctx, readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'negativeAccessRules' field of BACnetConstructedDataNegativeAccessRules")

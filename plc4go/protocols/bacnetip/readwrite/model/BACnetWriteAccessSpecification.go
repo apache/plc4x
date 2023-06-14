@@ -176,7 +176,7 @@ func BACnetWriteAccessSpecificationParseWithBuffer(ctx context.Context, readBuff
 	// Terminated array
 	var listOfPropertyWriteDefinition []BACnetPropertyWriteDefinition
 	{
-		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, 1)) {
+		for !bool(IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, 1)) {
 			_item, _err := BACnetPropertyWriteDefinitionParseWithBuffer(ctx, readBuffer, objectIdentifier.GetObjectType())
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'listOfPropertyWriteDefinition' field of BACnetWriteAccessSpecification")

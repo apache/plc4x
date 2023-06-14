@@ -20,12 +20,13 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"time"
 )
 
-func ParseTiaTime(io utils.ReadBuffer) (uint32, error) {
+func ParseTiaTime(ctx context.Context, io utils.ReadBuffer) (uint32, error) {
 	/*try {
 	      int millisSinceMidnight = io.readInt(32);
 	      return LocalTime.now().withHour(0).withMinute(0).withSecond(0).withNano(0).plus(
@@ -36,12 +37,12 @@ func ParseTiaTime(io utils.ReadBuffer) (uint32, error) {
 	return 0, nil
 }
 
-func SerializeTiaTime(io utils.WriteBuffer, value values.PlcValue) error {
+func SerializeTiaTime(ctx context.Context, io utils.WriteBuffer, value values.PlcValue) error {
 	//throw new NotImplementedException("Serializing TIME not implemented");
 	return nil
 }
 
-func ParseS5Time(io utils.ReadBuffer) (uint32, error) {
+func ParseS5Time(ctx context.Context, io utils.ReadBuffer) (uint32, error) {
 	/*try {
 	      int stuff = io.readInt(16);
 	      // TODO: Implement this correctly.
@@ -52,22 +53,22 @@ func ParseS5Time(io utils.ReadBuffer) (uint32, error) {
 	return 0, nil
 }
 
-func SerializeS5Time(io utils.WriteBuffer, value values.PlcValue) error {
+func SerializeS5Time(ctx context.Context, io utils.WriteBuffer, value values.PlcValue) error {
 	//throw new NotImplementedException("Serializing S5TIME not implemented");
 	return nil
 }
 
-func ParseTiaLTime(io utils.ReadBuffer) (uint32, error) {
+func ParseTiaLTime(ctx context.Context, io utils.ReadBuffer) (uint32, error) {
 	//throw new NotImplementedException("LTIME not implemented");
 	return 0, nil
 }
 
-func SerializeTiaLTime(io utils.WriteBuffer, value values.PlcValue) error {
+func SerializeTiaLTime(ctx context.Context, io utils.WriteBuffer, value values.PlcValue) error {
 	//throw new NotImplementedException("Serializing LTIME not implemented");
 	return nil
 }
 
-func ParseTiaTimeOfDay(io utils.ReadBuffer) (time.Time, error) {
+func ParseTiaTimeOfDay(ctx context.Context, io utils.ReadBuffer) (time.Time, error) {
 	/*try {
 	      long millisSinceMidnight = io.readUnsignedLong(32);
 	      return LocalTime.now().withHour(0).withMinute(0).withSecond(0).withNano(0).plus(
@@ -78,12 +79,12 @@ func ParseTiaTimeOfDay(io utils.ReadBuffer) (time.Time, error) {
 	return time.Time{}, nil
 }
 
-func SerializeTiaTimeOfDay(io utils.WriteBuffer, value values.PlcValue) error {
+func SerializeTiaTimeOfDay(ctx context.Context, io utils.WriteBuffer, value values.PlcValue) error {
 	//throw new NotImplementedException("Serializing TIME_OF_DAY not implemented");
 	return nil
 }
 
-func ParseTiaDate(io utils.ReadBuffer) (time.Time, error) {
+func ParseTiaDate(ctx context.Context, io utils.ReadBuffer) (time.Time, error) {
 	/*try {
 	      int daysSince1990 = io.readUnsignedInt(16);
 	      return LocalDate.now().withYear(1990).withDayOfMonth(1).withMonth(1).plus(daysSince1990, ChronoUnit.DAYS);
@@ -93,12 +94,12 @@ func ParseTiaDate(io utils.ReadBuffer) (time.Time, error) {
 	return time.Time{}, nil
 }
 
-func SerializeTiaDate(io utils.WriteBuffer, value values.PlcValue) error {
+func SerializeTiaDate(ctx context.Context, io utils.WriteBuffer, value values.PlcValue) error {
 	//throw new NotImplementedException("Serializing DATE not implemented");
 	return nil
 }
 
-func ParseTiaDateTime(io utils.ReadBuffer) (time.Time, error) {
+func ParseTiaDateTime(ctx context.Context, io utils.ReadBuffer) (time.Time, error) {
 	/*try {
 	      int year = io.readUnsignedInt(16);
 	      int month = io.readUnsignedInt(8);
@@ -117,12 +118,12 @@ func ParseTiaDateTime(io utils.ReadBuffer) (time.Time, error) {
 	return time.Time{}, nil
 }
 
-func SerializeTiaDateTime(io utils.WriteBuffer, value values.PlcValue) error {
+func SerializeTiaDateTime(ctx context.Context, io utils.WriteBuffer, value values.PlcValue) error {
 	//throw new NotImplementedException("Serializing DATE_AND_TIME not implemented");
 	return nil
 }
 
-func ParseS7String(io utils.ReadBuffer, stringLength int32, encoding string) (string, error) {
+func ParseS7String(ctx context.Context, io utils.ReadBuffer, stringLength int32, encoding string) (string, error) {
 	var multiplier int32
 	switch encoding {
 	case "UTF-8":
@@ -133,7 +134,7 @@ func ParseS7String(io utils.ReadBuffer, stringLength int32, encoding string) (st
 	return io.ReadString("", uint32(stringLength*multiplier), encoding)
 }
 
-func SerializeS7String(io utils.WriteBuffer, value values.PlcValue, stringLength int32, encoding string) error {
+func SerializeS7String(ctx context.Context, io utils.WriteBuffer, value values.PlcValue, stringLength int32, encoding string) error {
 	var multiplier int32
 	switch encoding {
 	case "UTF-8":
@@ -144,38 +145,38 @@ func SerializeS7String(io utils.WriteBuffer, value values.PlcValue, stringLength
 	return io.WriteString("", uint32(stringLength*multiplier), encoding, value.GetString())
 }
 
-func ParseS7Char(io utils.ReadBuffer, encoding string) (uint8, error) {
+func ParseS7Char(ctx context.Context, io utils.ReadBuffer, encoding string) (uint8, error) {
 	return io.ReadUint8("", 8)
 }
 
-func SerializeS7Char(io utils.WriteBuffer, value values.PlcValue, encoding string) error {
+func SerializeS7Char(ctx context.Context, io utils.WriteBuffer, value values.PlcValue, encoding string) error {
 	return io.WriteUint8("", 8, value.GetUint8())
 }
 
-func RightShift3(readBuffer utils.ReadBuffer, dataTransportSize DataTransportSize) (any, error) {
+func RightShift3(ctx context.Context, readBuffer utils.ReadBuffer, dataTransportSize DataTransportSize) (any, error) {
 	return uint16(0), nil
 }
 
-func LeftShift3(writeBuffer utils.WriteBuffer, valueLength uint16) error {
+func LeftShift3(ctx context.Context, writeBuffer utils.WriteBuffer, valueLength uint16) error {
 	return nil
 }
 
-func EventItemLength(readBuffer utils.ReadBuffer, valueLength uint16) uint16 {
+func EventItemLength(ctx context.Context, readBuffer utils.ReadBuffer, valueLength uint16) uint16 {
 	return 0
 }
 
-func BcdToInt(readBuffer utils.ReadBuffer) (any, error) {
+func BcdToInt(ctx context.Context, readBuffer utils.ReadBuffer) (any, error) {
 	return uint8(0), nil
 }
 
-func ByteToBcd(writeBuffer utils.WriteBuffer, value uint8) error {
+func ByteToBcd(ctx context.Context, writeBuffer utils.WriteBuffer, value uint8) error {
 	return nil
 }
 
-func S7msecToInt(readBuffer utils.ReadBuffer) (any, error) {
+func S7msecToInt(ctx context.Context, readBuffer utils.ReadBuffer) (any, error) {
 	return uint16(0), nil
 }
 
-func IntToS7msec(writeBuffer utils.WriteBuffer, value uint16) error {
+func IntToS7msec(ctx context.Context, writeBuffer utils.WriteBuffer, value uint16) error {
 	return nil
 }

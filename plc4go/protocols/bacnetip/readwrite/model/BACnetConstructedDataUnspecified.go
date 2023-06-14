@@ -217,7 +217,7 @@ func BACnetConstructedDataUnspecifiedParseWithBuffer(ctx context.Context, readBu
 	// Terminated array
 	var data []BACnetConstructedDataElement
 	{
-		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
+		for !bool(IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber)) {
 			_item, _err := BACnetConstructedDataElementParseWithBuffer(ctx, readBuffer, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'data' field of BACnetConstructedDataUnspecified")

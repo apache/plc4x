@@ -117,7 +117,7 @@ func (m *_DF1UnprotectedReadResponse) GetLengthInBits(ctx context.Context) uint1
 	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Manual Array Field (data)
-	lengthInBits += uint16(DataLength(m.GetData()))
+	lengthInBits += uint16(DataLength(ctx, m.GetData()))
 
 	return lengthInBits
 }
@@ -147,8 +147,8 @@ func DF1UnprotectedReadResponseParseWithBuffer(ctx context.Context, readBuffer u
 	{
 		_values := &_dataList
 		_ = _values
-		for !((bool)(DataTerminate(readBuffer))) {
-			_dataList = append(_dataList, ((byte)(ReadData(readBuffer))))
+		for !((bool)(DataTerminate(ctx, readBuffer))) {
+			_dataList = append(_dataList, ((byte)(ReadData(ctx, readBuffer))))
 
 		}
 	}
@@ -191,7 +191,7 @@ func (m *_DF1UnprotectedReadResponse) SerializeWithWriteBuffer(ctx context.Conte
 			return errors.Wrap(pushErr, "Error pushing for data")
 		}
 		for _, m := range m.GetData() {
-			WriteData(writeBuffer, m)
+			WriteData(ctx, writeBuffer, m)
 		}
 		if popErr := writeBuffer.PopContext("data", utils.WithRenderAsList(true)); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for data")

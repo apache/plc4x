@@ -147,7 +147,7 @@ func BACnetTimerTransitionTaggedParseWithBuffer(ctx context.Context, readBuffer 
 	}
 
 	// Manual Field (value)
-	_value, _valueErr := ReadEnumGenericFailing(readBuffer, header.GetActualLength(), BACnetTimerTransition_NONE)
+	_value, _valueErr := ReadEnumGenericFailing(ctx, readBuffer, header.GetActualLength(), BACnetTimerTransition_NONE)
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetTimerTransitionTagged")
 	}
@@ -197,7 +197,7 @@ func (m *_BACnetTimerTransitionTagged) SerializeWithWriteBuffer(ctx context.Cont
 	}
 
 	// Manual Field (value)
-	_valueErr := WriteEnumGeneric(writeBuffer, m.GetValue())
+	_valueErr := WriteEnumGeneric(ctx, writeBuffer, m.GetValue())
 	if _valueErr != nil {
 		return errors.Wrap(_valueErr, "Error serializing 'value' field")
 	}

@@ -156,7 +156,7 @@ func VTCloseErrorListOfVTSessionIdentifiersParseWithBuffer(ctx context.Context, 
 	// Terminated array
 	var listOfVtSessionIdentifiers []BACnetApplicationTagUnsignedInteger
 	{
-		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, 1)) {
+		for !bool(IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, 1)) {
 			_item, _err := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'listOfVtSessionIdentifiers' field of VTCloseErrorListOfVTSessionIdentifiers")

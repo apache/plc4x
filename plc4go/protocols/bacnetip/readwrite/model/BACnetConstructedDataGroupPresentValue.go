@@ -155,7 +155,7 @@ func BACnetConstructedDataGroupPresentValueParseWithBuffer(ctx context.Context, 
 	// Terminated array
 	var presentValue []BACnetReadAccessResult
 	{
-		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
+		for !bool(IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber)) {
 			_item, _err := BACnetReadAccessResultParseWithBuffer(ctx, readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'presentValue' field of BACnetConstructedDataGroupPresentValue")

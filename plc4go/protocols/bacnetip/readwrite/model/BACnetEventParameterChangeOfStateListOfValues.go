@@ -156,7 +156,7 @@ func BACnetEventParameterChangeOfStateListOfValuesParseWithBuffer(ctx context.Co
 	// Terminated array
 	var listOfValues []BACnetPropertyStates
 	{
-		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
+		for !bool(IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber)) {
 			_item, _err := BACnetPropertyStatesParseWithBuffer(ctx, readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'listOfValues' field of BACnetEventParameterChangeOfStateListOfValues")

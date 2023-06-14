@@ -217,7 +217,7 @@ func BACnetConstructedDataBitStringValueAlarmValuesParseWithBuffer(ctx context.C
 	// Terminated array
 	var alarmValues []BACnetApplicationTagBitString
 	{
-		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
+		for !bool(IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber)) {
 			_item, _err := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'alarmValues' field of BACnetConstructedDataBitStringValueAlarmValues")

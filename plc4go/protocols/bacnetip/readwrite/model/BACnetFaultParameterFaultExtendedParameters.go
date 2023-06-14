@@ -156,7 +156,7 @@ func BACnetFaultParameterFaultExtendedParametersParseWithBuffer(ctx context.Cont
 	// Terminated array
 	var parameters []BACnetFaultParameterFaultExtendedParametersEntry
 	{
-		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
+		for !bool(IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber)) {
 			_item, _err := BACnetFaultParameterFaultExtendedParametersEntryParseWithBuffer(ctx, readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'parameters' field of BACnetFaultParameterFaultExtendedParameters")

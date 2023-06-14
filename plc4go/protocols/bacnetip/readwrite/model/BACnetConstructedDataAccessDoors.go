@@ -217,7 +217,7 @@ func BACnetConstructedDataAccessDoorsParseWithBuffer(ctx context.Context, readBu
 	// Terminated array
 	var accessDoors []BACnetDeviceObjectReference
 	{
-		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
+		for !bool(IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber)) {
 			_item, _err := BACnetDeviceObjectReferenceParseWithBuffer(ctx, readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'accessDoors' field of BACnetConstructedDataAccessDoors")

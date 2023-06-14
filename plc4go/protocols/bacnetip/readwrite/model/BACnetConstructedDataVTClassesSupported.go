@@ -155,7 +155,7 @@ func BACnetConstructedDataVTClassesSupportedParseWithBuffer(ctx context.Context,
 	// Terminated array
 	var vtClassesSupported []BACnetVTClassTagged
 	{
-		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
+		for !bool(IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber)) {
 			_item, _err := BACnetVTClassTaggedParseWithBuffer(ctx, readBuffer, uint8(0), TagClass_APPLICATION_TAGS)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'vtClassesSupported' field of BACnetConstructedDataVTClassesSupported")

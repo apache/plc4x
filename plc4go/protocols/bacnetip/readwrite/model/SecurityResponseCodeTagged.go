@@ -147,7 +147,7 @@ func SecurityResponseCodeTaggedParseWithBuffer(ctx context.Context, readBuffer u
 	}
 
 	// Manual Field (value)
-	_value, _valueErr := ReadEnumGenericFailing(readBuffer, header.GetActualLength(), SecurityResponseCode_SUCCESS)
+	_value, _valueErr := ReadEnumGenericFailing(ctx, readBuffer, header.GetActualLength(), SecurityResponseCode_SUCCESS)
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of SecurityResponseCodeTagged")
 	}
@@ -197,7 +197,7 @@ func (m *_SecurityResponseCodeTagged) SerializeWithWriteBuffer(ctx context.Conte
 	}
 
 	// Manual Field (value)
-	_valueErr := WriteEnumGeneric(writeBuffer, m.GetValue())
+	_valueErr := WriteEnumGeneric(ctx, writeBuffer, m.GetValue())
 	if _valueErr != nil {
 		return errors.Wrap(_valueErr, "Error serializing 'value' field")
 	}

@@ -25,10 +25,10 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
-func NoMorePathSegments(readBuffer utils.ReadBuffer) bool {
+func NoMorePathSegments(ctx context.Context, readBuffer utils.ReadBuffer) bool {
 	initialPos := readBuffer.GetPos()
 	defer readBuffer.Reset(initialPos)
 
-	_, err := PathSegmentParseWithBuffer(context.Background(), readBuffer)
+	_, err := PathSegmentParseWithBuffer(ctx, readBuffer)
 	return err != nil
 }

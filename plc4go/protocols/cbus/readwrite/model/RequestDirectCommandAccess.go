@@ -202,7 +202,7 @@ func RequestDirectCommandAccessParseWithBuffer(ctx context.Context, readBuffer u
 	}
 
 	// Manual Field (calData)
-	_calData, _calDataErr := ReadCALData(readBuffer)
+	_calData, _calDataErr := ReadCALData(ctx, readBuffer)
 	if _calDataErr != nil {
 		return nil, errors.Wrap(_calDataErr, "Error parsing 'calData' field of RequestDirectCommandAccess")
 	}
@@ -277,7 +277,7 @@ func (m *_RequestDirectCommandAccess) SerializeWithWriteBuffer(ctx context.Conte
 		}
 
 		// Manual Field (calData)
-		_calDataErr := WriteCALData(writeBuffer, m.GetCalData())
+		_calDataErr := WriteCALData(ctx, writeBuffer, m.GetCalData())
 		if _calDataErr != nil {
 			return errors.Wrap(_calDataErr, "Error serializing 'calData' field")
 		}

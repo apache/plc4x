@@ -175,7 +175,7 @@ func ReplyEncodedReplyParseWithBuffer(ctx context.Context, readBuffer utils.Read
 	_ = currentPos
 
 	// Manual Field (encodedReply)
-	_encodedReply, _encodedReplyErr := ReadEncodedReply(readBuffer, cBusOptions, requestContext, cBusOptions.GetSrchk())
+	_encodedReply, _encodedReplyErr := ReadEncodedReply(ctx, readBuffer, cBusOptions, requestContext, cBusOptions.GetSrchk())
 	if _encodedReplyErr != nil {
 		return nil, errors.Wrap(_encodedReplyErr, "Error parsing 'encodedReply' field of ReplyEncodedReply")
 	}
@@ -190,7 +190,7 @@ func ReplyEncodedReplyParseWithBuffer(ctx context.Context, readBuffer utils.Read
 	_ = encodedReplyDecoded
 
 	// Manual Field (chksum)
-	_chksum, _chksumErr := ReadAndValidateChecksum(readBuffer, encodedReply, cBusOptions.GetSrchk())
+	_chksum, _chksumErr := ReadAndValidateChecksum(ctx, readBuffer, encodedReply, cBusOptions.GetSrchk())
 	if _chksumErr != nil {
 		return nil, errors.Wrap(_chksumErr, "Error parsing 'chksum' field of ReplyEncodedReply")
 	}
@@ -238,7 +238,7 @@ func (m *_ReplyEncodedReply) SerializeWithWriteBuffer(ctx context.Context, write
 		}
 
 		// Manual Field (encodedReply)
-		_encodedReplyErr := WriteEncodedReply(writeBuffer, m.GetEncodedReply())
+		_encodedReplyErr := WriteEncodedReply(ctx, writeBuffer, m.GetEncodedReply())
 		if _encodedReplyErr != nil {
 			return errors.Wrap(_encodedReplyErr, "Error serializing 'encodedReply' field")
 		}
@@ -248,7 +248,7 @@ func (m *_ReplyEncodedReply) SerializeWithWriteBuffer(ctx context.Context, write
 		}
 
 		// Manual Field (chksum)
-		_chksumErr := CalculateChecksum(writeBuffer, m.GetEncodedReply(), m.CBusOptions.GetSrchk())
+		_chksumErr := CalculateChecksum(ctx, writeBuffer, m.GetEncodedReply(), m.CBusOptions.GetSrchk())
 		if _chksumErr != nil {
 			return errors.Wrap(_chksumErr, "Error serializing 'chksum' field")
 		}

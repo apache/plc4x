@@ -147,7 +147,7 @@ func BACnetFileAccessMethodTaggedParseWithBuffer(ctx context.Context, readBuffer
 	}
 
 	// Manual Field (value)
-	_value, _valueErr := ReadEnumGenericFailing(readBuffer, header.GetActualLength(), BACnetFileAccessMethod_RECORD_ACCESS)
+	_value, _valueErr := ReadEnumGenericFailing(ctx, readBuffer, header.GetActualLength(), BACnetFileAccessMethod_RECORD_ACCESS)
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetFileAccessMethodTagged")
 	}
@@ -197,7 +197,7 @@ func (m *_BACnetFileAccessMethodTagged) SerializeWithWriteBuffer(ctx context.Con
 	}
 
 	// Manual Field (value)
-	_valueErr := WriteEnumGeneric(writeBuffer, m.GetValue())
+	_valueErr := WriteEnumGeneric(ctx, writeBuffer, m.GetValue())
 	if _valueErr != nil {
 		return errors.Wrap(_valueErr, "Error serializing 'value' field")
 	}

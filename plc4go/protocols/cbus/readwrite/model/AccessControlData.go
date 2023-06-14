@@ -170,7 +170,7 @@ func AccessControlDataParseWithBuffer(ctx context.Context, readBuffer utils.Read
 	_ = currentPos
 
 	// Validation
-	if !(KnowsAccessControlCommandTypeContainer(readBuffer)) {
+	if !(KnowsAccessControlCommandTypeContainer(ctx, readBuffer)) {
 		return nil, errors.WithStack(utils.ParseAssertError{"no command type could be found"})
 	}
 

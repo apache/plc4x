@@ -155,7 +155,7 @@ func BACnetConstructedDataListOfGroupMembersParseWithBuffer(ctx context.Context,
 	// Terminated array
 	var listOfGroupMembers []BACnetReadAccessSpecification
 	{
-		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
+		for !bool(IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber)) {
 			_item, _err := BACnetReadAccessSpecificationParseWithBuffer(ctx, readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'listOfGroupMembers' field of BACnetConstructedDataListOfGroupMembers")

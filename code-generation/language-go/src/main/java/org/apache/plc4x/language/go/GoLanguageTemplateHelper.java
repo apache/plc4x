@@ -1032,7 +1032,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
             .asStringLiteral()
             .orElseThrow(() -> new RuntimeException("Expecting the first argument of a 'STATIC_CALL' to be a StringLiteral")).
             getValue();
-        sb.append(capitalize(staticCall)).append("(");
+        sb.append(capitalize(staticCall)).append("(").append("ctx, ");
         for (int i = 1; i < arguments.size(); i++) {
             Term arg = arguments.get(i);
             if (i > 1) {

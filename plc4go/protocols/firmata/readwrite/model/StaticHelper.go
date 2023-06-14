@@ -19,13 +19,17 @@
 
 package model
 
-import "github.com/apache/plc4x/plc4go/spi/utils"
+import (
+	"context"
 
-func IsSysexEnd(io utils.ReadBuffer) bool {
+	"github.com/apache/plc4x/plc4go/spi/utils"
+)
+
+func IsSysexEnd(ctx context.Context, io utils.ReadBuffer) bool {
 	return io.(utils.ReadBufferByteBased).PeekByte(0) == 0xF7
 }
 
-func ParseSysexString(io utils.ReadBuffer) int8 {
+func ParseSysexString(ctx context.Context, io utils.ReadBuffer) int8 {
 	aByte, err := io.ReadInt8("", 8)
 	if err != nil {
 		return 0
@@ -35,11 +39,11 @@ func ParseSysexString(io utils.ReadBuffer) int8 {
 	return aByte
 }
 
-func SerializeSysexString(io utils.WriteBuffer, data byte) {
+func SerializeSysexString(ctx context.Context, io utils.WriteBuffer, data byte) {
 	_ = io.WriteByte("", data)
 	_ = io.WriteByte("", 0x00)
 }
 
-func LengthSysexString(data []byte) uint16 {
+func LengthSysexString(ctx context.Context, data []byte) uint16 {
 	return uint16(len(data) * 2)
 }

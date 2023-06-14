@@ -156,7 +156,7 @@ func BACnetLiftCarCallListFloorListParseWithBuffer(ctx context.Context, readBuff
 	// Terminated array
 	var floorNumbers []BACnetApplicationTagUnsignedInteger
 	{
-		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
+		for !bool(IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber)) {
 			_item, _err := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'floorNumbers' field of BACnetLiftCarCallListFloorList")

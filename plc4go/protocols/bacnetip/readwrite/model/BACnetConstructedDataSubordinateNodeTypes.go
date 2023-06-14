@@ -217,7 +217,7 @@ func BACnetConstructedDataSubordinateNodeTypesParseWithBuffer(ctx context.Contex
 	// Terminated array
 	var subordinateNodeTypes []BACnetNodeTypeTagged
 	{
-		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
+		for !bool(IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber)) {
 			_item, _err := BACnetNodeTypeTaggedParseWithBuffer(ctx, readBuffer, uint8(0), TagClass_APPLICATION_TAGS)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'subordinateNodeTypes' field of BACnetConstructedDataSubordinateNodeTypes")

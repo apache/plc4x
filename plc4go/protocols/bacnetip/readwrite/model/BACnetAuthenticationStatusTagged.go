@@ -147,7 +147,7 @@ func BACnetAuthenticationStatusTaggedParseWithBuffer(ctx context.Context, readBu
 	}
 
 	// Manual Field (value)
-	_value, _valueErr := ReadEnumGenericFailing(readBuffer, header.GetActualLength(), BACnetAuthenticationStatus_NOT_READY)
+	_value, _valueErr := ReadEnumGenericFailing(ctx, readBuffer, header.GetActualLength(), BACnetAuthenticationStatus_NOT_READY)
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetAuthenticationStatusTagged")
 	}
@@ -197,7 +197,7 @@ func (m *_BACnetAuthenticationStatusTagged) SerializeWithWriteBuffer(ctx context
 	}
 
 	// Manual Field (value)
-	_valueErr := WriteEnumGeneric(writeBuffer, m.GetValue())
+	_valueErr := WriteEnumGeneric(ctx, writeBuffer, m.GetValue())
 	if _valueErr != nil {
 		return errors.Wrap(_valueErr, "Error serializing 'value' field")
 	}

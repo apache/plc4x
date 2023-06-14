@@ -155,7 +155,7 @@ func BACnetConstructedDataBBMDBroadcastDistributionTableParseWithBuffer(ctx cont
 	// Terminated array
 	var bbmdBroadcastDistributionTable []BACnetBDTEntry
 	{
-		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
+		for !bool(IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber)) {
 			_item, _err := BACnetBDTEntryParseWithBuffer(ctx, readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'bbmdBroadcastDistributionTable' field of BACnetConstructedDataBBMDBroadcastDistributionTable")

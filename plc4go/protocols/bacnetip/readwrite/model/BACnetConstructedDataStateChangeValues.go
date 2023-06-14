@@ -217,7 +217,7 @@ func BACnetConstructedDataStateChangeValuesParseWithBuffer(ctx context.Context, 
 	// Terminated array
 	var stateChangeValues []BACnetTimerStateChangeValue
 	{
-		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
+		for !bool(IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber)) {
 			_item, _err := BACnetTimerStateChangeValueParseWithBuffer(ctx, readBuffer, objectTypeArgument)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'stateChangeValues' field of BACnetConstructedDataStateChangeValues")

@@ -147,7 +147,7 @@ func BACnetProgramStateTaggedParseWithBuffer(ctx context.Context, readBuffer uti
 	}
 
 	// Manual Field (value)
-	_value, _valueErr := ReadEnumGenericFailing(readBuffer, header.GetActualLength(), BACnetProgramState_IDLE)
+	_value, _valueErr := ReadEnumGenericFailing(ctx, readBuffer, header.GetActualLength(), BACnetProgramState_IDLE)
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetProgramStateTagged")
 	}
@@ -197,7 +197,7 @@ func (m *_BACnetProgramStateTagged) SerializeWithWriteBuffer(ctx context.Context
 	}
 
 	// Manual Field (value)
-	_valueErr := WriteEnumGeneric(writeBuffer, m.GetValue())
+	_valueErr := WriteEnumGeneric(ctx, writeBuffer, m.GetValue())
 	if _valueErr != nil {
 		return errors.Wrap(_valueErr, "Error serializing 'value' field")
 	}

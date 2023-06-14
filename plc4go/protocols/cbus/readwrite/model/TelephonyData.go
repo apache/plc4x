@@ -161,7 +161,7 @@ func TelephonyDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 	_ = currentPos
 
 	// Validation
-	if !(KnowsTelephonyCommandTypeContainer(readBuffer)) {
+	if !(KnowsTelephonyCommandTypeContainer(ctx, readBuffer)) {
 		return nil, errors.WithStack(utils.ParseAssertError{"no command type could be found"})
 	}
 

@@ -20,15 +20,18 @@
 package model
 
 import (
+	"context"
 	"fmt"
-	"github.com/apache/plc4x/plc4go/spi/utils"
-	"github.com/pkg/errors"
 	"math"
 	"math/big"
 	"reflect"
+
+	"github.com/apache/plc4x/plc4go/spi/utils"
+
+	"github.com/pkg/errors"
 )
 
-func ReadEnumGenericFailing(readBuffer utils.ReadBuffer, actualLength uint32, template any) (any, error) {
+func ReadEnumGenericFailing(ctx context.Context, readBuffer utils.ReadBuffer, actualLength uint32, template any) (any, error) {
 	bitsToRead := (uint8)(actualLength * 8)
 	rawValue, err := readBuffer.ReadUint32("value", bitsToRead)
 	if err != nil {
@@ -120,7 +123,7 @@ func ReadEnumGenericFailing(readBuffer utils.ReadBuffer, actualLength uint32, te
 	}
 }
 
-func ReadEnumGeneric(readBuffer utils.ReadBuffer, actualLength uint32, template any) (any, error) {
+func ReadEnumGeneric(ctx context.Context, readBuffer utils.ReadBuffer, actualLength uint32, template any) (any, error) {
 	bitsToRead := (uint8)(actualLength * 8)
 	rawValue, err := readBuffer.ReadUint32("value", bitsToRead)
 	if err != nil {
@@ -227,7 +230,7 @@ func ReadEnumGeneric(readBuffer utils.ReadBuffer, actualLength uint32, template 
 	}
 }
 
-func ReadProprietaryEnumGeneric(readBuffer utils.ReadBuffer, actualLength uint32, shouldRead bool) (any, error) {
+func ReadProprietaryEnumGeneric(ctx context.Context, readBuffer utils.ReadBuffer, actualLength uint32, shouldRead bool) (any, error) {
 	if !shouldRead {
 		return uint32(0), nil
 	}
@@ -237,7 +240,7 @@ func ReadProprietaryEnumGeneric(readBuffer utils.ReadBuffer, actualLength uint32
 	return readBuffer.ReadUint32("proprietaryValue", bitsToRead)
 }
 
-func WriteEnumGeneric(writeBuffer utils.WriteBuffer, value any) error {
+func WriteEnumGeneric(ctx context.Context, writeBuffer utils.WriteBuffer, value any) error {
 	if value == nil {
 		return nil
 	}
@@ -548,7 +551,7 @@ func WriteEnumGeneric(writeBuffer utils.WriteBuffer, value any) error {
 	return writeBuffer.WriteUint32("value", bitsToWrite, valueValue, withWriterArgs...)
 }
 
-func WriteProprietaryEnumGeneric(writeBuffer utils.WriteBuffer, value uint32, shouldWrite bool) error {
+func WriteProprietaryEnumGeneric(ctx context.Context, writeBuffer utils.WriteBuffer, value uint32, shouldWrite bool) error {
 	if !shouldWrite {
 		return nil
 	}
@@ -566,7 +569,7 @@ func WriteProprietaryEnumGeneric(writeBuffer utils.WriteBuffer, value uint32, sh
 }
 
 // Deprecated: use generic above
-func ReadObjectType(readBuffer utils.ReadBuffer) (any, error) {
+func ReadObjectType(ctx context.Context, readBuffer utils.ReadBuffer) (any, error) {
 	readValue, err := readBuffer.ReadUint16("objectType", 10)
 	if err != nil {
 		return 0, err
@@ -575,7 +578,7 @@ func ReadObjectType(readBuffer utils.ReadBuffer) (any, error) {
 }
 
 // Deprecated: use generic above
-func ReadProprietaryObjectType(readBuffer utils.ReadBuffer, value BACnetObjectType) (any, error) {
+func ReadProprietaryObjectType(ctx context.Context, readBuffer utils.ReadBuffer, value BACnetObjectType) (any, error) {
 	if value != BACnetObjectType_VENDOR_PROPRIETARY_VALUE {
 		return uint16(0), nil
 	}
@@ -591,7 +594,7 @@ func ReadProprietaryObjectType(readBuffer utils.ReadBuffer, value BACnetObjectTy
 }
 
 // Deprecated: use generic above
-func WriteObjectType(writeBuffer utils.WriteBuffer, value BACnetObjectType) error {
+func WriteObjectType(ctx context.Context, writeBuffer utils.WriteBuffer, value BACnetObjectType) error {
 	if value == BACnetObjectType_VENDOR_PROPRIETARY_VALUE {
 		return nil
 	}
@@ -599,7 +602,7 @@ func WriteObjectType(writeBuffer utils.WriteBuffer, value BACnetObjectType) erro
 }
 
 // Deprecated: use generic above
-func WriteProprietaryObjectType(writeBuffer utils.WriteBuffer, baCnetObjectType BACnetObjectType, value uint16) error {
+func WriteProprietaryObjectType(ctx context.Context, writeBuffer utils.WriteBuffer, baCnetObjectType BACnetObjectType, value uint16) error {
 	if baCnetObjectType != BACnetObjectType_VENDOR_PROPRIETARY_VALUE {
 		return nil
 	}
@@ -607,7 +610,7 @@ func WriteProprietaryObjectType(writeBuffer utils.WriteBuffer, baCnetObjectType 
 }
 
 // Deprecated: use generic above
-func MapBACnetObjectType(rawObjectType BACnetContextTagEnumerated) BACnetObjectType {
+func MapBACnetObjectType(ctx context.Context, rawObjectType BACnetContextTagEnumerated) BACnetObjectType {
 	if baCnetObjectType, ok := BACnetObjectTypeByValue(uint16(rawObjectType.GetActualValue())); !ok {
 		return BACnetObjectType_VENDOR_PROPRIETARY_VALUE
 	} else {
@@ -615,7 +618,7 @@ func MapBACnetObjectType(rawObjectType BACnetContextTagEnumerated) BACnetObjectT
 	}
 }
 
-func IsBACnetConstructedDataClosingTag(readBuffer utils.ReadBuffer, instantTerminate bool, expectedTagNumber byte) bool {
+func IsBACnetConstructedDataClosingTag(ctx context.Context, readBuffer utils.ReadBuffer, instantTerminate bool, expectedTagNumber byte) bool {
 	if instantTerminate {
 		return true
 	}
@@ -639,7 +642,7 @@ func IsBACnetConstructedDataClosingTag(readBuffer utils.ReadBuffer, instantTermi
 	return foundOurClosingTag
 }
 
-func ParseVarUint(data []byte) uint32 {
+func ParseVarUint(ctx context.Context, data []byte) uint32 {
 	if len(data) == 0 {
 		return 0
 	}

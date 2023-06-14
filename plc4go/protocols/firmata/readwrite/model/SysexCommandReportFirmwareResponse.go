@@ -140,7 +140,7 @@ func (m *_SysexCommandReportFirmwareResponse) GetLengthInBits(ctx context.Contex
 	lengthInBits += 8
 
 	// Manual Array Field (fileName)
-	lengthInBits += uint16(LengthSysexString(m.GetFileName()))
+	lengthInBits += uint16(LengthSysexString(ctx, m.GetFileName()))
 
 	return lengthInBits
 }
@@ -184,8 +184,8 @@ func SysexCommandReportFirmwareResponseParseWithBuffer(ctx context.Context, read
 	{
 		_values := &_fileNameList
 		_ = _values
-		for !((bool)(IsSysexEnd(readBuffer))) {
-			_fileNameList = append(_fileNameList, ((byte)(ParseSysexString(readBuffer))))
+		for !((bool)(IsSysexEnd(ctx, readBuffer))) {
+			_fileNameList = append(_fileNameList, ((byte)(ParseSysexString(ctx, readBuffer))))
 
 		}
 	}
@@ -244,7 +244,7 @@ func (m *_SysexCommandReportFirmwareResponse) SerializeWithWriteBuffer(ctx conte
 			return errors.Wrap(pushErr, "Error pushing for fileName")
 		}
 		for _, m := range m.GetFileName() {
-			SerializeSysexString(writeBuffer, m)
+			SerializeSysexString(ctx, writeBuffer, m)
 		}
 		if popErr := writeBuffer.PopContext("fileName", utils.WithRenderAsList(true)); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for fileName")

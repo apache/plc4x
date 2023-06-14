@@ -161,7 +161,7 @@ func ClockAndTimekeepingDataParseWithBuffer(ctx context.Context, readBuffer util
 	_ = currentPos
 
 	// Validation
-	if !(KnowsClockAndTimekeepingCommandTypeContainer(readBuffer)) {
+	if !(KnowsClockAndTimekeepingCommandTypeContainer(ctx, readBuffer)) {
 		return nil, errors.WithStack(utils.ParseAssertError{"no command type could be found"})
 	}
 

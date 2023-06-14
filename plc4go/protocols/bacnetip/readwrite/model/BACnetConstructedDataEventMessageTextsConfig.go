@@ -253,7 +253,7 @@ func BACnetConstructedDataEventMessageTextsConfigParseWithBuffer(ctx context.Con
 	// Terminated array
 	var eventMessageTextsConfig []BACnetOptionalCharacterString
 	{
-		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
+		for !bool(IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber)) {
 			_item, _err := BACnetOptionalCharacterStringParseWithBuffer(ctx, readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'eventMessageTextsConfig' field of BACnetConstructedDataEventMessageTextsConfig")

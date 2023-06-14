@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/snksoft/crc"
 )
@@ -31,7 +32,7 @@ func init() {
 	table = crc.NewTable(&crc.Parameters{Width: 16, Polynomial: 0x8005, Init: 0x0000, ReflectIn: true, ReflectOut: true, FinalXor: 0x0000})
 }
 
-func CrcCheck(destinationAddress uint8, sourceAddress uint8, command DF1Command) (uint16, error) {
+func CrcCheck(ctx context.Context, destinationAddress uint8, sourceAddress uint8, command DF1Command) (uint16, error) {
 	df1Crc := table.InitCrc()
 	df1Crc = table.UpdateCrc(df1Crc, []byte{destinationAddress, sourceAddress})
 	bytes, err := command.Serialize()
@@ -43,14 +44,14 @@ func CrcCheck(destinationAddress uint8, sourceAddress uint8, command DF1Command)
 	return table.CRC16(df1Crc), nil
 }
 
-func DataTerminate(io utils.ReadBuffer) bool {
+func DataTerminate(ctx context.Context, io utils.ReadBuffer) bool {
 	rbbb := io.(utils.ReadBufferByteBased)
 	// The byte sequence 0x10 followed by 0x03 indicates the end of the message,
 	// so if we would read this, we abort the loop and stop reading data.
 	return rbbb.PeekByte(0) == 0x10 && rbbb.PeekByte(1) == 0x03
 }
 
-func ReadData(io utils.ReadBuffer) uint8 {
+func ReadData(ctx context.Context, io utils.ReadBuffer) uint8 {
 	rbbb := io.(utils.ReadBufferByteBased)
 	// If we read a 0x10, this has to be followed by another 0x10, which is how
 	// this value is escaped in DF1, so if we encounter two 0x10, we simply ignore the first.
@@ -61,7 +62,7 @@ func ReadData(io utils.ReadBuffer) uint8 {
 	return data
 }
 
-func WriteData(io utils.WriteBuffer, element uint8) {
+func WriteData(ctx context.Context, io utils.WriteBuffer, element uint8) {
 	if element == 0x10 {
 		// If a value is 0x10, this has to be duplicated in order to be escaped.
 		_ = io.WriteUint8("", 8, element)
@@ -69,7 +70,7 @@ func WriteData(io utils.WriteBuffer, element uint8) {
 	_ = io.WriteUint8("", 8, element)
 }
 
-func DataLength(data []byte) uint16 {
+func DataLength(ctx context.Context, data []byte) uint16 {
 	length := uint16(0)
 	for _, datum := range data {
 		if datum == 0x10 {

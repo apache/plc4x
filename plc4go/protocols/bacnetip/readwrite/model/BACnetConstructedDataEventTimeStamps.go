@@ -253,7 +253,7 @@ func BACnetConstructedDataEventTimeStampsParseWithBuffer(ctx context.Context, re
 	// Terminated array
 	var eventTimeStamps []BACnetTimeStamp
 	{
-		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
+		for !bool(IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber)) {
 			_item, _err := BACnetTimeStampParseWithBuffer(ctx, readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'eventTimeStamps' field of BACnetConstructedDataEventTimeStamps")

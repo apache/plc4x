@@ -160,7 +160,7 @@ func MediaTransportControlDataParseWithBuffer(ctx context.Context, readBuffer ut
 	_ = currentPos
 
 	// Validation
-	if !(KnowsMediaTransportControlCommandTypeContainer(readBuffer)) {
+	if !(KnowsMediaTransportControlCommandTypeContainer(ctx, readBuffer)) {
 		return nil, errors.WithStack(utils.ParseAssertError{"no command type could be found"})
 	}
 

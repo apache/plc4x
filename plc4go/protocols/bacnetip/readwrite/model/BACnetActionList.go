@@ -153,7 +153,7 @@ func BACnetActionListParseWithBuffer(ctx context.Context, readBuffer utils.ReadB
 	// Terminated array
 	var action []BACnetActionCommand
 	{
-		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, 0)) {
+		for !bool(IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, 0)) {
 			_item, _err := BACnetActionCommandParseWithBuffer(ctx, readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'action' field of BACnetActionList")

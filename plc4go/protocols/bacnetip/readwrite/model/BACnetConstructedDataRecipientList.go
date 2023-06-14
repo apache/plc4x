@@ -155,7 +155,7 @@ func BACnetConstructedDataRecipientListParseWithBuffer(ctx context.Context, read
 	// Terminated array
 	var recipientList []BACnetDestination
 	{
-		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
+		for !bool(IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber)) {
 			_item, _err := BACnetDestinationParseWithBuffer(ctx, readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'recipientList' field of BACnetConstructedDataRecipientList")

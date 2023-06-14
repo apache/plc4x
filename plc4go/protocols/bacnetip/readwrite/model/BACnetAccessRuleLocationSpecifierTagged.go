@@ -147,7 +147,7 @@ func BACnetAccessRuleLocationSpecifierTaggedParseWithBuffer(ctx context.Context,
 	}
 
 	// Manual Field (value)
-	_value, _valueErr := ReadEnumGenericFailing(readBuffer, header.GetActualLength(), BACnetAccessRuleLocationSpecifier_SPECIFIED)
+	_value, _valueErr := ReadEnumGenericFailing(ctx, readBuffer, header.GetActualLength(), BACnetAccessRuleLocationSpecifier_SPECIFIED)
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetAccessRuleLocationSpecifierTagged")
 	}
@@ -197,7 +197,7 @@ func (m *_BACnetAccessRuleLocationSpecifierTagged) SerializeWithWriteBuffer(ctx 
 	}
 
 	// Manual Field (value)
-	_valueErr := WriteEnumGeneric(writeBuffer, m.GetValue())
+	_valueErr := WriteEnumGeneric(ctx, writeBuffer, m.GetValue())
 	if _valueErr != nil {
 		return errors.Wrap(_valueErr, "Error serializing 'value' field")
 	}

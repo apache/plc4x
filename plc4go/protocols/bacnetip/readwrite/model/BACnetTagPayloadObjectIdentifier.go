@@ -149,7 +149,7 @@ func BACnetTagPayloadObjectIdentifierParseWithBuffer(ctx context.Context, readBu
 	_ = currentPos
 
 	// Manual Field (objectType)
-	_objectType, _objectTypeErr := ReadObjectType(readBuffer)
+	_objectType, _objectTypeErr := ReadObjectType(ctx, readBuffer)
 	if _objectTypeErr != nil {
 		return nil, errors.Wrap(_objectTypeErr, "Error parsing 'objectType' field of BACnetTagPayloadObjectIdentifier")
 	}
@@ -159,7 +159,7 @@ func BACnetTagPayloadObjectIdentifierParseWithBuffer(ctx context.Context, readBu
 	}
 
 	// Manual Field (proprietaryValue)
-	_proprietaryValue, _proprietaryValueErr := ReadProprietaryObjectType(readBuffer, objectType)
+	_proprietaryValue, _proprietaryValueErr := ReadProprietaryObjectType(ctx, readBuffer, objectType)
 	if _proprietaryValueErr != nil {
 		return nil, errors.Wrap(_proprietaryValueErr, "Error parsing 'proprietaryValue' field of BACnetTagPayloadObjectIdentifier")
 	}
@@ -208,13 +208,13 @@ func (m *_BACnetTagPayloadObjectIdentifier) SerializeWithWriteBuffer(ctx context
 	}
 
 	// Manual Field (objectType)
-	_objectTypeErr := WriteObjectType(writeBuffer, m.GetObjectType())
+	_objectTypeErr := WriteObjectType(ctx, writeBuffer, m.GetObjectType())
 	if _objectTypeErr != nil {
 		return errors.Wrap(_objectTypeErr, "Error serializing 'objectType' field")
 	}
 
 	// Manual Field (proprietaryValue)
-	_proprietaryValueErr := WriteProprietaryObjectType(writeBuffer, m.GetObjectType(), m.GetProprietaryValue())
+	_proprietaryValueErr := WriteProprietaryObjectType(ctx, writeBuffer, m.GetObjectType(), m.GetProprietaryValue())
 	if _proprietaryValueErr != nil {
 		return errors.Wrap(_proprietaryValueErr, "Error serializing 'proprietaryValue' field")
 	}

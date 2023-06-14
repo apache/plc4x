@@ -150,7 +150,7 @@ func MeasurementDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 	_ = currentPos
 
 	// Validation
-	if !(KnowsMeasurementCommandTypeContainer(readBuffer)) {
+	if !(KnowsMeasurementCommandTypeContainer(ctx, readBuffer)) {
 		return nil, errors.WithStack(utils.ParseAssertError{"no command type could be found"})
 	}
 

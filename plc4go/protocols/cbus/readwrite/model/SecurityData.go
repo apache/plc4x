@@ -161,7 +161,7 @@ func SecurityDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 	_ = currentPos
 
 	// Validation
-	if !(KnowsSecurityCommandTypeContainer(readBuffer)) {
+	if !(KnowsSecurityCommandTypeContainer(ctx, readBuffer)) {
 		return nil, errors.WithStack(utils.ParseAssertError{"no command type could be found"})
 	}
 

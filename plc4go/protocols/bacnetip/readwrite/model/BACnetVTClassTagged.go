@@ -176,7 +176,7 @@ func BACnetVTClassTaggedParseWithBuffer(ctx context.Context, readBuffer utils.Re
 	}
 
 	// Manual Field (value)
-	_value, _valueErr := ReadEnumGeneric(readBuffer, header.GetActualLength(), BACnetVTClass_VENDOR_PROPRIETARY_VALUE)
+	_value, _valueErr := ReadEnumGeneric(ctx, readBuffer, header.GetActualLength(), BACnetVTClass_VENDOR_PROPRIETARY_VALUE)
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetVTClassTagged")
 	}
@@ -191,7 +191,7 @@ func BACnetVTClassTaggedParseWithBuffer(ctx context.Context, readBuffer utils.Re
 	_ = isProprietary
 
 	// Manual Field (proprietaryValue)
-	_proprietaryValue, _proprietaryValueErr := ReadProprietaryEnumGeneric(readBuffer, header.GetActualLength(), isProprietary)
+	_proprietaryValue, _proprietaryValueErr := ReadProprietaryEnumGeneric(ctx, readBuffer, header.GetActualLength(), isProprietary)
 	if _proprietaryValueErr != nil {
 		return nil, errors.Wrap(_proprietaryValueErr, "Error parsing 'proprietaryValue' field of BACnetVTClassTagged")
 	}
@@ -242,7 +242,7 @@ func (m *_BACnetVTClassTagged) SerializeWithWriteBuffer(ctx context.Context, wri
 	}
 
 	// Manual Field (value)
-	_valueErr := WriteEnumGeneric(writeBuffer, m.GetValue())
+	_valueErr := WriteEnumGeneric(ctx, writeBuffer, m.GetValue())
 	if _valueErr != nil {
 		return errors.Wrap(_valueErr, "Error serializing 'value' field")
 	}
@@ -252,7 +252,7 @@ func (m *_BACnetVTClassTagged) SerializeWithWriteBuffer(ctx context.Context, wri
 	}
 
 	// Manual Field (proprietaryValue)
-	_proprietaryValueErr := WriteProprietaryEnumGeneric(writeBuffer, m.GetProprietaryValue(), m.GetIsProprietary())
+	_proprietaryValueErr := WriteProprietaryEnumGeneric(ctx, writeBuffer, m.GetProprietaryValue(), m.GetIsProprietary())
 	if _proprietaryValueErr != nil {
 		return errors.Wrap(_proprietaryValueErr, "Error serializing 'proprietaryValue' field")
 	}

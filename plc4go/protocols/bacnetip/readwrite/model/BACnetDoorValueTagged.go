@@ -147,7 +147,7 @@ func BACnetDoorValueTaggedParseWithBuffer(ctx context.Context, readBuffer utils.
 	}
 
 	// Manual Field (value)
-	_value, _valueErr := ReadEnumGenericFailing(readBuffer, header.GetActualLength(), BACnetDoorValue_LOCK)
+	_value, _valueErr := ReadEnumGenericFailing(ctx, readBuffer, header.GetActualLength(), BACnetDoorValue_LOCK)
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetDoorValueTagged")
 	}
@@ -197,7 +197,7 @@ func (m *_BACnetDoorValueTagged) SerializeWithWriteBuffer(ctx context.Context, w
 	}
 
 	// Manual Field (value)
-	_valueErr := WriteEnumGeneric(writeBuffer, m.GetValue())
+	_valueErr := WriteEnumGeneric(ctx, writeBuffer, m.GetValue())
 	if _valueErr != nil {
 		return errors.Wrap(_valueErr, "Error serializing 'value' field")
 	}

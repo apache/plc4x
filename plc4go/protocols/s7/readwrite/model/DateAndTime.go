@@ -180,7 +180,7 @@ func DateAndTimeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 	_ = currentPos
 
 	// Manual Field (year)
-	_year, _yearErr := BcdToInt(readBuffer)
+	_year, _yearErr := BcdToInt(ctx, readBuffer)
 	if _yearErr != nil {
 		return nil, errors.Wrap(_yearErr, "Error parsing 'year' field of DateAndTime")
 	}
@@ -190,7 +190,7 @@ func DateAndTimeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 	}
 
 	// Manual Field (month)
-	_month, _monthErr := BcdToInt(readBuffer)
+	_month, _monthErr := BcdToInt(ctx, readBuffer)
 	if _monthErr != nil {
 		return nil, errors.Wrap(_monthErr, "Error parsing 'month' field of DateAndTime")
 	}
@@ -200,7 +200,7 @@ func DateAndTimeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 	}
 
 	// Manual Field (day)
-	_day, _dayErr := BcdToInt(readBuffer)
+	_day, _dayErr := BcdToInt(ctx, readBuffer)
 	if _dayErr != nil {
 		return nil, errors.Wrap(_dayErr, "Error parsing 'day' field of DateAndTime")
 	}
@@ -210,7 +210,7 @@ func DateAndTimeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 	}
 
 	// Manual Field (hour)
-	_hour, _hourErr := BcdToInt(readBuffer)
+	_hour, _hourErr := BcdToInt(ctx, readBuffer)
 	if _hourErr != nil {
 		return nil, errors.Wrap(_hourErr, "Error parsing 'hour' field of DateAndTime")
 	}
@@ -220,7 +220,7 @@ func DateAndTimeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 	}
 
 	// Manual Field (minutes)
-	_minutes, _minutesErr := BcdToInt(readBuffer)
+	_minutes, _minutesErr := BcdToInt(ctx, readBuffer)
 	if _minutesErr != nil {
 		return nil, errors.Wrap(_minutesErr, "Error parsing 'minutes' field of DateAndTime")
 	}
@@ -230,7 +230,7 @@ func DateAndTimeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 	}
 
 	// Manual Field (seconds)
-	_seconds, _secondsErr := BcdToInt(readBuffer)
+	_seconds, _secondsErr := BcdToInt(ctx, readBuffer)
 	if _secondsErr != nil {
 		return nil, errors.Wrap(_secondsErr, "Error parsing 'seconds' field of DateAndTime")
 	}
@@ -240,7 +240,7 @@ func DateAndTimeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 	}
 
 	// Manual Field (msec)
-	_msec, _msecErr := S7msecToInt(readBuffer)
+	_msec, _msecErr := S7msecToInt(ctx, readBuffer)
 	if _msecErr != nil {
 		return nil, errors.Wrap(_msecErr, "Error parsing 'msec' field of DateAndTime")
 	}
@@ -289,43 +289,43 @@ func (m *_DateAndTime) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 	}
 
 	// Manual Field (year)
-	_yearErr := ByteToBcd(writeBuffer, m.GetYear())
+	_yearErr := ByteToBcd(ctx, writeBuffer, m.GetYear())
 	if _yearErr != nil {
 		return errors.Wrap(_yearErr, "Error serializing 'year' field")
 	}
 
 	// Manual Field (month)
-	_monthErr := ByteToBcd(writeBuffer, m.GetMonth())
+	_monthErr := ByteToBcd(ctx, writeBuffer, m.GetMonth())
 	if _monthErr != nil {
 		return errors.Wrap(_monthErr, "Error serializing 'month' field")
 	}
 
 	// Manual Field (day)
-	_dayErr := ByteToBcd(writeBuffer, m.GetDay())
+	_dayErr := ByteToBcd(ctx, writeBuffer, m.GetDay())
 	if _dayErr != nil {
 		return errors.Wrap(_dayErr, "Error serializing 'day' field")
 	}
 
 	// Manual Field (hour)
-	_hourErr := ByteToBcd(writeBuffer, m.GetHour())
+	_hourErr := ByteToBcd(ctx, writeBuffer, m.GetHour())
 	if _hourErr != nil {
 		return errors.Wrap(_hourErr, "Error serializing 'hour' field")
 	}
 
 	// Manual Field (minutes)
-	_minutesErr := ByteToBcd(writeBuffer, m.GetMinutes())
+	_minutesErr := ByteToBcd(ctx, writeBuffer, m.GetMinutes())
 	if _minutesErr != nil {
 		return errors.Wrap(_minutesErr, "Error serializing 'minutes' field")
 	}
 
 	// Manual Field (seconds)
-	_secondsErr := ByteToBcd(writeBuffer, m.GetSeconds())
+	_secondsErr := ByteToBcd(ctx, writeBuffer, m.GetSeconds())
 	if _secondsErr != nil {
 		return errors.Wrap(_secondsErr, "Error serializing 'seconds' field")
 	}
 
 	// Manual Field (msec)
-	_msecErr := IntToS7msec(writeBuffer, m.GetMsec())
+	_msecErr := IntToS7msec(ctx, writeBuffer, m.GetMsec())
 	if _msecErr != nil {
 		return errors.Wrap(_msecErr, "Error serializing 'msec' field")
 	}

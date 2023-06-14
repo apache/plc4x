@@ -182,7 +182,7 @@ func BACnetLogDataLogDataParseWithBuffer(ctx context.Context, readBuffer utils.R
 	// Terminated array
 	var logData []BACnetLogDataLogDataEntry
 	{
-		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, 1)) {
+		for !bool(IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, 1)) {
 			_item, _err := BACnetLogDataLogDataEntryParseWithBuffer(ctx, readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'logData' field of BACnetLogDataLogData")

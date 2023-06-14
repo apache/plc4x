@@ -155,7 +155,7 @@ func BACnetConstructedDataDateListParseWithBuffer(ctx context.Context, readBuffe
 	// Terminated array
 	var dateList []BACnetCalendarEntry
 	{
-		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
+		for !bool(IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber)) {
 			_item, _err := BACnetCalendarEntryParseWithBuffer(ctx, readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'dateList' field of BACnetConstructedDataDateList")

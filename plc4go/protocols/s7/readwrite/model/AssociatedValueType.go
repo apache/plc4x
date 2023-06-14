@@ -168,7 +168,7 @@ func AssociatedValueTypeParseWithBuffer(ctx context.Context, readBuffer utils.Re
 	}
 
 	// Manual Field (valueLength)
-	_valueLength, _valueLengthErr := RightShift3(readBuffer, transportSize)
+	_valueLength, _valueLengthErr := RightShift3(ctx, readBuffer, transportSize)
 	if _valueLengthErr != nil {
 		return nil, errors.Wrap(_valueLengthErr, "Error parsing 'valueLength' field of AssociatedValueType")
 	}
@@ -182,13 +182,13 @@ func AssociatedValueTypeParseWithBuffer(ctx context.Context, readBuffer utils.Re
 		return nil, errors.Wrap(pullErr, "Error pulling for data")
 	}
 	// Count array
-	data := make([]uint8, EventItemLength(readBuffer, valueLength))
+	data := make([]uint8, EventItemLength(ctx, readBuffer, valueLength))
 	// This happens when the size is set conditional to 0
 	if len(data) == 0 {
 		data = nil
 	}
 	{
-		_numItems := uint16(EventItemLength(readBuffer, valueLength))
+		_numItems := uint16(EventItemLength(ctx, readBuffer, valueLength))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
@@ -257,7 +257,7 @@ func (m *_AssociatedValueType) SerializeWithWriteBuffer(ctx context.Context, wri
 	}
 
 	// Manual Field (valueLength)
-	_valueLengthErr := LeftShift3(writeBuffer, m.GetValueLength())
+	_valueLengthErr := LeftShift3(ctx, writeBuffer, m.GetValueLength())
 	if _valueLengthErr != nil {
 		return errors.Wrap(_valueLengthErr, "Error serializing 'valueLength' field")
 	}

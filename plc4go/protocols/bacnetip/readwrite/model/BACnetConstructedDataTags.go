@@ -217,7 +217,7 @@ func BACnetConstructedDataTagsParseWithBuffer(ctx context.Context, readBuffer ut
 	// Terminated array
 	var tags []BACnetNameValue
 	{
-		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
+		for !bool(IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber)) {
 			_item, _err := BACnetNameValueParseWithBuffer(ctx, readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'tags' field of BACnetConstructedDataTags")

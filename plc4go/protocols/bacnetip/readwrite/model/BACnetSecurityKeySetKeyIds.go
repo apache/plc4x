@@ -156,7 +156,7 @@ func BACnetSecurityKeySetKeyIdsParseWithBuffer(ctx context.Context, readBuffer u
 	// Terminated array
 	var keyIds []BACnetKeyIdentifier
 	{
-		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
+		for !bool(IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber)) {
 			_item, _err := BACnetKeyIdentifierParseWithBuffer(ctx, readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'keyIds' field of BACnetSecurityKeySetKeyIds")

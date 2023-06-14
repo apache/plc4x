@@ -156,7 +156,7 @@ func BACnetLandingDoorStatusLandingDoorsListParseWithBuffer(ctx context.Context,
 	// Terminated array
 	var landingDoors []BACnetLandingDoorStatusLandingDoorsListEntry
 	{
-		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
+		for !bool(IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber)) {
 			_item, _err := BACnetLandingDoorStatusLandingDoorsListEntryParseWithBuffer(ctx, readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'landingDoors' field of BACnetLandingDoorStatusLandingDoorsList")

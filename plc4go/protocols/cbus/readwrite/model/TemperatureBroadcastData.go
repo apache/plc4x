@@ -159,7 +159,7 @@ func TemperatureBroadcastDataParseWithBuffer(ctx context.Context, readBuffer uti
 	_ = currentPos
 
 	// Validation
-	if !(KnowsTemperatureBroadcastCommandTypeContainer(readBuffer)) {
+	if !(KnowsTemperatureBroadcastCommandTypeContainer(ctx, readBuffer)) {
 		return nil, errors.WithStack(utils.ParseAssertError{"no command type could be found"})
 	}
 

@@ -217,7 +217,7 @@ func BACnetConstructedDataAssignedAccessRightsParseWithBuffer(ctx context.Contex
 	// Terminated array
 	var assignedAccessRights []BACnetAssignedAccessRights
 	{
-		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
+		for !bool(IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber)) {
 			_item, _err := BACnetAssignedAccessRightsParseWithBuffer(ctx, readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'assignedAccessRights' field of BACnetConstructedDataAssignedAccessRights")

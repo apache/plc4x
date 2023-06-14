@@ -155,7 +155,7 @@ func BACnetConstructedDataTimeSynchronizationRecipientsParseWithBuffer(ctx conte
 	// Terminated array
 	var timeSynchronizationRecipients []BACnetRecipient
 	{
-		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
+		for !bool(IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber)) {
 			_item, _err := BACnetRecipientParseWithBuffer(ctx, readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'timeSynchronizationRecipients' field of BACnetConstructedDataTimeSynchronizationRecipients")

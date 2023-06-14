@@ -155,7 +155,7 @@ func BACnetConstructedDataActiveVTSessionsParseWithBuffer(ctx context.Context, r
 	// Terminated array
 	var activeVTSession []BACnetVTSession
 	{
-		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
+		for !bool(IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber)) {
 			_item, _err := BACnetVTSessionParseWithBuffer(ctx, readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'activeVTSession' field of BACnetConstructedDataActiveVTSessions")

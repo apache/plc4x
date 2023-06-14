@@ -176,7 +176,7 @@ func BACnetVendorIdTaggedParseWithBuffer(ctx context.Context, readBuffer utils.R
 	}
 
 	// Manual Field (value)
-	_value, _valueErr := ReadEnumGeneric(readBuffer, header.GetActualLength(), BACnetVendorId_UNKNOWN_VENDOR)
+	_value, _valueErr := ReadEnumGeneric(ctx, readBuffer, header.GetActualLength(), BACnetVendorId_UNKNOWN_VENDOR)
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetVendorIdTagged")
 	}
@@ -191,7 +191,7 @@ func BACnetVendorIdTaggedParseWithBuffer(ctx context.Context, readBuffer utils.R
 	_ = isUnknownId
 
 	// Manual Field (unknownId)
-	_unknownId, _unknownIdErr := ReadProprietaryEnumGeneric(readBuffer, header.GetActualLength(), isUnknownId)
+	_unknownId, _unknownIdErr := ReadProprietaryEnumGeneric(ctx, readBuffer, header.GetActualLength(), isUnknownId)
 	if _unknownIdErr != nil {
 		return nil, errors.Wrap(_unknownIdErr, "Error parsing 'unknownId' field of BACnetVendorIdTagged")
 	}
@@ -242,7 +242,7 @@ func (m *_BACnetVendorIdTagged) SerializeWithWriteBuffer(ctx context.Context, wr
 	}
 
 	// Manual Field (value)
-	_valueErr := WriteEnumGeneric(writeBuffer, m.GetValue())
+	_valueErr := WriteEnumGeneric(ctx, writeBuffer, m.GetValue())
 	if _valueErr != nil {
 		return errors.Wrap(_valueErr, "Error serializing 'value' field")
 	}
@@ -252,7 +252,7 @@ func (m *_BACnetVendorIdTagged) SerializeWithWriteBuffer(ctx context.Context, wr
 	}
 
 	// Manual Field (unknownId)
-	_unknownIdErr := WriteProprietaryEnumGeneric(writeBuffer, m.GetUnknownId(), m.GetIsUnknownId())
+	_unknownIdErr := WriteProprietaryEnumGeneric(ctx, writeBuffer, m.GetUnknownId(), m.GetIsUnknownId())
 	if _unknownIdErr != nil {
 		return errors.Wrap(_unknownIdErr, "Error serializing 'unknownId' field")
 	}

@@ -177,7 +177,7 @@ func ModbusAsciiADUParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 		if _checksumRefErr != nil {
 			return nil, errors.Wrap(_checksumRefErr, "Error parsing 'checksum' field of ModbusAsciiADU")
 		}
-		checksum, _checksumErr := AsciiLrcCheck(address, pdu)
+		checksum, _checksumErr := AsciiLrcCheck(ctx, address, pdu)
 		if _checksumErr != nil {
 			return nil, errors.Wrap(_checksumErr, "Checksum verification failed")
 		}
@@ -239,7 +239,7 @@ func (m *_ModbusAsciiADU) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 
 		// Checksum Field (checksum) (Calculated)
 		{
-			_checksum, _checksumErr := AsciiLrcCheck(m.GetAddress(), m.GetPdu())
+			_checksum, _checksumErr := AsciiLrcCheck(ctx, m.GetAddress(), m.GetPdu())
 			if _checksumErr != nil {
 				return errors.Wrap(_checksumErr, "Checksum calculation failed")
 			}

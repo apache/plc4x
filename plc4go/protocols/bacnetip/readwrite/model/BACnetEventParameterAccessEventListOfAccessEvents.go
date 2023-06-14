@@ -156,7 +156,7 @@ func BACnetEventParameterAccessEventListOfAccessEventsParseWithBuffer(ctx contex
 	// Terminated array
 	var listOfAccessEvents []BACnetDeviceObjectPropertyReference
 	{
-		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
+		for !bool(IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber)) {
 			_item, _err := BACnetDeviceObjectPropertyReferenceParseWithBuffer(ctx, readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'listOfAccessEvents' field of BACnetEventParameterAccessEventListOfAccessEvents")

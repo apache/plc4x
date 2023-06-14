@@ -115,7 +115,7 @@ func (m *_BACnetConfirmedServiceRequestCreateObjectObjectSpecifier) GetObjectTyp
 	_ = rawObjectType
 	objectIdentifier := m.ObjectIdentifier
 	_ = objectIdentifier
-	return CastBACnetObjectType(MapBACnetObjectType((m.GetRawObjectType())))
+	return CastBACnetObjectType(MapBACnetObjectType(ctx, (m.GetRawObjectType())))
 }
 
 func (m *_BACnetConfirmedServiceRequestCreateObjectObjectSpecifier) GetIsObjectIdentifier() bool {
@@ -239,7 +239,7 @@ func BACnetConfirmedServiceRequestCreateObjectObjectSpecifierParseWithBuffer(ctx
 	_ = isObjectType
 
 	// Virtual field
-	_objectType := MapBACnetObjectType((rawObjectType))
+	_objectType := MapBACnetObjectType(ctx, (rawObjectType))
 	objectType := BACnetObjectType(_objectType)
 	_ = objectType
 

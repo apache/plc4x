@@ -217,7 +217,7 @@ func BACnetConstructedDataNetworkAccessSecurityPoliciesParseWithBuffer(ctx conte
 	// Terminated array
 	var networkAccessSecurityPolicies []BACnetNetworkSecurityPolicy
 	{
-		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
+		for !bool(IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber)) {
 			_item, _err := BACnetNetworkSecurityPolicyParseWithBuffer(ctx, readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'networkAccessSecurityPolicies' field of BACnetConstructedDataNetworkAccessSecurityPolicies")

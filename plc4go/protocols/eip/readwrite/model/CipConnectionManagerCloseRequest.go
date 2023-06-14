@@ -369,7 +369,7 @@ func CipConnectionManagerCloseRequestParseWithBuffer(ctx context.Context, readBu
 	// Terminated array
 	var connectionPaths []PathSegment
 	{
-		for !bool(NoMorePathSegments(readBuffer)) {
+		for !bool(NoMorePathSegments(ctx, readBuffer)) {
 			_item, _err := PathSegmentParseWithBuffer(ctx, readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'connectionPaths' field of CipConnectionManagerCloseRequest")

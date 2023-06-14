@@ -75,7 +75,7 @@ func (m *_BACnetTagPayloadEnumerated) GetData() []byte {
 func (m *_BACnetTagPayloadEnumerated) GetActualValue() uint32 {
 	ctx := context.Background()
 	_ = ctx
-	return uint32(ParseVarUint(m.GetData()))
+	return uint32(ParseVarUint(ctx, m.GetData()))
 }
 
 ///////////////////////
@@ -140,7 +140,7 @@ func BACnetTagPayloadEnumeratedParseWithBuffer(ctx context.Context, readBuffer u
 	}
 
 	// Virtual field
-	_actualValue := ParseVarUint(data)
+	_actualValue := ParseVarUint(ctx, data)
 	actualValue := uint32(_actualValue)
 	_ = actualValue
 

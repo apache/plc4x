@@ -176,7 +176,7 @@ func ListOfCovNotificationsParseWithBuffer(ctx context.Context, readBuffer utils
 	// Terminated array
 	var listOfValues []ListOfCovNotificationsValue
 	{
-		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, 1)) {
+		for !bool(IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, 1)) {
 			_item, _err := ListOfCovNotificationsValueParseWithBuffer(ctx, readBuffer, monitoredObjectIdentifier.GetObjectType())
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'listOfValues' field of ListOfCovNotifications")

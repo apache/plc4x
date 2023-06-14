@@ -109,6 +109,7 @@ func CompareResults(t *testing.T, actualString []byte, referenceString []byte) e
 func TestContext(t *testing.T) context.Context {
 	ctx, cancel := context.WithCancel(context.Background())
 	t.Cleanup(cancel)
+	ctx = ProduceTestingLogger(t).WithContext(ctx)
 	return ctx
 }
 

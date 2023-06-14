@@ -217,7 +217,7 @@ func BACnetConstructedDataCommandTimeArrayParseWithBuffer(ctx context.Context, r
 	// Terminated array
 	var commandTimeArray []BACnetTimeStamp
 	{
-		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
+		for !bool(IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber)) {
 			_item, _err := BACnetTimeStampParseWithBuffer(ctx, readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'commandTimeArray' field of BACnetConstructedDataCommandTimeArray")

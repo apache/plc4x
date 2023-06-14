@@ -179,7 +179,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 		return values.NewPlcCHAR(value), nil
 	case dataProtocolId == "IEC61131_STRING": // STRING
 		// Manual Field (value)
-		value, _valueErr := ParseS7String(readBuffer, stringLength, "UTF-8")
+		value, _valueErr := ParseS7String(ctx, readBuffer, stringLength, "UTF-8")
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -187,7 +187,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 		return values.NewPlcSTRING(value), nil
 	case dataProtocolId == "IEC61131_WSTRING": // STRING
 		// Manual Field (value)
-		value, _valueErr := ParseS7String(readBuffer, stringLength, "UTF-16")
+		value, _valueErr := ParseS7String(ctx, readBuffer, stringLength, "UTF-16")
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -399,13 +399,13 @@ func DataItemSerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.Wri
 		}
 	case dataProtocolId == "IEC61131_STRING": // STRING
 		// Manual Field (value)
-		_valueErr := SerializeS7String(writeBuffer, value, stringLength, "UTF-8")
+		_valueErr := SerializeS7String(ctx, writeBuffer, value, stringLength, "UTF-8")
 		if _valueErr != nil {
 			return errors.Wrap(_valueErr, "Error serializing 'value' field")
 		}
 	case dataProtocolId == "IEC61131_WSTRING": // STRING
 		// Manual Field (value)
-		_valueErr := SerializeS7String(writeBuffer, value, stringLength, "UTF-16")
+		_valueErr := SerializeS7String(ctx, writeBuffer, value, stringLength, "UTF-16")
 		if _valueErr != nil {
 			return errors.Wrap(_valueErr, "Error serializing 'value' field")
 		}

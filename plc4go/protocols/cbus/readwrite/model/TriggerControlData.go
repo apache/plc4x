@@ -170,7 +170,7 @@ func TriggerControlDataParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 	_ = currentPos
 
 	// Validation
-	if !(KnowsTriggerControlCommandTypeContainer(readBuffer)) {
+	if !(KnowsTriggerControlCommandTypeContainer(ctx, readBuffer)) {
 		return nil, errors.WithStack(utils.ParseAssertError{"no command type could be found"})
 	}
 

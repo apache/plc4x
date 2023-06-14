@@ -161,7 +161,7 @@ func MeteringDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 	_ = currentPos
 
 	// Validation
-	if !(KnowsMeteringCommandTypeContainer(readBuffer)) {
+	if !(KnowsMeteringCommandTypeContainer(ctx, readBuffer)) {
 		return nil, errors.WithStack(utils.ParseAssertError{"no command type could be found"})
 	}
 

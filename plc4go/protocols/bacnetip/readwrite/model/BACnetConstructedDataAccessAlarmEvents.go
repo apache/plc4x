@@ -155,7 +155,7 @@ func BACnetConstructedDataAccessAlarmEventsParseWithBuffer(ctx context.Context, 
 	// Terminated array
 	var accessAlarmEvents []BACnetAccessEventTagged
 	{
-		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
+		for !bool(IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber)) {
 			_item, _err := BACnetAccessEventTaggedParseWithBuffer(ctx, readBuffer, uint8(0), TagClass_APPLICATION_TAGS)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'accessAlarmEvents' field of BACnetConstructedDataAccessAlarmEvents")

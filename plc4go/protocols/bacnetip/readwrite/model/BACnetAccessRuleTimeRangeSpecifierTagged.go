@@ -147,7 +147,7 @@ func BACnetAccessRuleTimeRangeSpecifierTaggedParseWithBuffer(ctx context.Context
 	}
 
 	// Manual Field (value)
-	_value, _valueErr := ReadEnumGenericFailing(readBuffer, header.GetActualLength(), BACnetAccessRuleTimeRangeSpecifier_SPECIFIED)
+	_value, _valueErr := ReadEnumGenericFailing(ctx, readBuffer, header.GetActualLength(), BACnetAccessRuleTimeRangeSpecifier_SPECIFIED)
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetAccessRuleTimeRangeSpecifierTagged")
 	}
@@ -197,7 +197,7 @@ func (m *_BACnetAccessRuleTimeRangeSpecifierTagged) SerializeWithWriteBuffer(ctx
 	}
 
 	// Manual Field (value)
-	_valueErr := WriteEnumGeneric(writeBuffer, m.GetValue())
+	_valueErr := WriteEnumGeneric(ctx, writeBuffer, m.GetValue())
 	if _valueErr != nil {
 		return errors.Wrap(_valueErr, "Error serializing 'value' field")
 	}

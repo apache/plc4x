@@ -156,7 +156,7 @@ func BACnetTimeStampsEnclosedParseWithBuffer(ctx context.Context, readBuffer uti
 	// Terminated array
 	var timestamps []BACnetTimeStamp
 	{
-		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
+		for !bool(IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber)) {
 			_item, _err := BACnetTimeStampParseWithBuffer(ctx, readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'timestamps' field of BACnetTimeStampsEnclosed")

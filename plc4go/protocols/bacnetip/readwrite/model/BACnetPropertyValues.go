@@ -157,7 +157,7 @@ func BACnetPropertyValuesParseWithBuffer(ctx context.Context, readBuffer utils.R
 	// Terminated array
 	var data []BACnetPropertyValue
 	{
-		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
+		for !bool(IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber)) {
 			_item, _err := BACnetPropertyValueParseWithBuffer(ctx, readBuffer, objectTypeArgument)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'data' field of BACnetPropertyValues")

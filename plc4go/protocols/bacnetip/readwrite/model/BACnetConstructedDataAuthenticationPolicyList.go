@@ -217,7 +217,7 @@ func BACnetConstructedDataAuthenticationPolicyListParseWithBuffer(ctx context.Co
 	// Terminated array
 	var authenticationPolicyList []BACnetAuthenticationPolicy
 	{
-		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
+		for !bool(IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber)) {
 			_item, _err := BACnetAuthenticationPolicyParseWithBuffer(ctx, readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'authenticationPolicyList' field of BACnetConstructedDataAuthenticationPolicyList")

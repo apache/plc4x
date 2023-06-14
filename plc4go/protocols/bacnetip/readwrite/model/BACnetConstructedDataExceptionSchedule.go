@@ -217,7 +217,7 @@ func BACnetConstructedDataExceptionScheduleParseWithBuffer(ctx context.Context, 
 	// Terminated array
 	var exceptionSchedule []BACnetSpecialEvent
 	{
-		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
+		for !bool(IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber)) {
 			_item, _err := BACnetSpecialEventParseWithBuffer(ctx, readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'exceptionSchedule' field of BACnetConstructedDataExceptionSchedule")

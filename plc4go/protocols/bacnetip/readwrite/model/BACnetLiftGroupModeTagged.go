@@ -147,7 +147,7 @@ func BACnetLiftGroupModeTaggedParseWithBuffer(ctx context.Context, readBuffer ut
 	}
 
 	// Manual Field (value)
-	_value, _valueErr := ReadEnumGenericFailing(readBuffer, header.GetActualLength(), BACnetLiftGroupMode_UNKNOWN)
+	_value, _valueErr := ReadEnumGenericFailing(ctx, readBuffer, header.GetActualLength(), BACnetLiftGroupMode_UNKNOWN)
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetLiftGroupModeTagged")
 	}
@@ -197,7 +197,7 @@ func (m *_BACnetLiftGroupModeTagged) SerializeWithWriteBuffer(ctx context.Contex
 	}
 
 	// Manual Field (value)
-	_valueErr := WriteEnumGeneric(writeBuffer, m.GetValue())
+	_valueErr := WriteEnumGeneric(ctx, writeBuffer, m.GetValue())
 	if _valueErr != nil {
 		return errors.Wrap(_valueErr, "Error serializing 'value' field")
 	}

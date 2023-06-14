@@ -155,7 +155,7 @@ func BACnetConstructedDataSlaveAddressBindingParseWithBuffer(ctx context.Context
 	// Terminated array
 	var slaveAddressBinding []BACnetAddressBinding
 	{
-		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
+		for !bool(IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber)) {
 			_item, _err := BACnetAddressBindingParseWithBuffer(ctx, readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'slaveAddressBinding' field of BACnetConstructedDataSlaveAddressBinding")

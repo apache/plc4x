@@ -174,7 +174,7 @@ func RequestObsoleteParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 	_ = currentPos
 
 	// Manual Field (calData)
-	_calData, _calDataErr := ReadCALData(readBuffer)
+	_calData, _calDataErr := ReadCALData(ctx, readBuffer)
 	if _calDataErr != nil {
 		return nil, errors.Wrap(_calDataErr, "Error parsing 'calData' field of RequestObsolete")
 	}
@@ -243,7 +243,7 @@ func (m *_RequestObsolete) SerializeWithWriteBuffer(ctx context.Context, writeBu
 		}
 
 		// Manual Field (calData)
-		_calDataErr := WriteCALData(writeBuffer, m.GetCalData())
+		_calDataErr := WriteCALData(ctx, writeBuffer, m.GetCalData())
 		if _calDataErr != nil {
 			return errors.Wrap(_calDataErr, "Error serializing 'calData' field")
 		}

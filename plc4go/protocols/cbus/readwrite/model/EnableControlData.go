@@ -149,7 +149,7 @@ func EnableControlDataParseWithBuffer(ctx context.Context, readBuffer utils.Read
 	_ = currentPos
 
 	// Validation
-	if !(KnowsEnableControlCommandTypeContainer(readBuffer)) {
+	if !(KnowsEnableControlCommandTypeContainer(ctx, readBuffer)) {
 		return nil, errors.WithStack(utils.ParseAssertError{"no command type could be found"})
 	}
 

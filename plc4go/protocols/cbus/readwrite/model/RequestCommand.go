@@ -225,7 +225,7 @@ func RequestCommandParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 	}
 
 	// Manual Field (cbusCommand)
-	_cbusCommand, _cbusCommandErr := ReadCBusCommand(readBuffer, cBusOptions, cBusOptions.GetSrchk())
+	_cbusCommand, _cbusCommandErr := ReadCBusCommand(ctx, readBuffer, cBusOptions, cBusOptions.GetSrchk())
 	if _cbusCommandErr != nil {
 		return nil, errors.Wrap(_cbusCommandErr, "Error parsing 'cbusCommand' field of RequestCommand")
 	}
@@ -240,7 +240,7 @@ func RequestCommandParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 	_ = cbusCommandDecoded
 
 	// Manual Field (chksum)
-	_chksum, _chksumErr := ReadAndValidateChecksum(readBuffer, cbusCommand, cBusOptions.GetSrchk())
+	_chksum, _chksumErr := ReadAndValidateChecksum(ctx, readBuffer, cbusCommand, cBusOptions.GetSrchk())
 	if _chksumErr != nil {
 		return nil, errors.Wrap(_chksumErr, "Error parsing 'chksum' field of RequestCommand")
 	}
@@ -316,7 +316,7 @@ func (m *_RequestCommand) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 		}
 
 		// Manual Field (cbusCommand)
-		_cbusCommandErr := WriteCBusCommand(writeBuffer, m.GetCbusCommand())
+		_cbusCommandErr := WriteCBusCommand(ctx, writeBuffer, m.GetCbusCommand())
 		if _cbusCommandErr != nil {
 			return errors.Wrap(_cbusCommandErr, "Error serializing 'cbusCommand' field")
 		}
@@ -326,7 +326,7 @@ func (m *_RequestCommand) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 		}
 
 		// Manual Field (chksum)
-		_chksumErr := CalculateChecksum(writeBuffer, m.GetCbusCommand(), m.CBusOptions.GetSrchk())
+		_chksumErr := CalculateChecksum(ctx, writeBuffer, m.GetCbusCommand(), m.CBusOptions.GetSrchk())
 		if _chksumErr != nil {
 			return errors.Wrap(_chksumErr, "Error serializing 'chksum' field")
 		}

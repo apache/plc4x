@@ -150,7 +150,7 @@ func AirConditioningDataParseWithBuffer(ctx context.Context, readBuffer utils.Re
 	_ = currentPos
 
 	// Validation
-	if !(KnowsAirConditioningCommandTypeContainer(readBuffer)) {
+	if !(KnowsAirConditioningCommandTypeContainer(ctx, readBuffer)) {
 		return nil, errors.WithStack(utils.ParseAssertError{"no command type could be found"})
 	}
 

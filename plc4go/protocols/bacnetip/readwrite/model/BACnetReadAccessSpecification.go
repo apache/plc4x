@@ -176,7 +176,7 @@ func BACnetReadAccessSpecificationParseWithBuffer(ctx context.Context, readBuffe
 	// Terminated array
 	var listOfPropertyReferences []BACnetPropertyReference
 	{
-		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, 1)) {
+		for !bool(IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, 1)) {
 			_item, _err := BACnetPropertyReferenceParseWithBuffer(ctx, readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'listOfPropertyReferences' field of BACnetReadAccessSpecification")

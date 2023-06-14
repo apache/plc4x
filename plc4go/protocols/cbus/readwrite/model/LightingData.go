@@ -150,7 +150,7 @@ func LightingDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 	_ = currentPos
 
 	// Validation
-	if !(KnowsLightingCommandTypeContainer(readBuffer)) {
+	if !(KnowsLightingCommandTypeContainer(ctx, readBuffer)) {
 		return nil, errors.WithStack(utils.ParseAssertError{"no command type could be found"})
 	}
 

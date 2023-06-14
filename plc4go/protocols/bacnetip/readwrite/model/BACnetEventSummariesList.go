@@ -156,7 +156,7 @@ func BACnetEventSummariesListParseWithBuffer(ctx context.Context, readBuffer uti
 	// Terminated array
 	var listOfEventSummaries []BACnetEventSummary
 	{
-		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
+		for !bool(IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber)) {
 			_item, _err := BACnetEventSummaryParseWithBuffer(ctx, readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'listOfEventSummaries' field of BACnetEventSummariesList")

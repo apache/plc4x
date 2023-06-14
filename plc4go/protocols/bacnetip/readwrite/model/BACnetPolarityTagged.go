@@ -147,7 +147,7 @@ func BACnetPolarityTaggedParseWithBuffer(ctx context.Context, readBuffer utils.R
 	}
 
 	// Manual Field (value)
-	_value, _valueErr := ReadEnumGenericFailing(readBuffer, header.GetActualLength(), BACnetPolarity_NORMAL)
+	_value, _valueErr := ReadEnumGenericFailing(ctx, readBuffer, header.GetActualLength(), BACnetPolarity_NORMAL)
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetPolarityTagged")
 	}
@@ -197,7 +197,7 @@ func (m *_BACnetPolarityTagged) SerializeWithWriteBuffer(ctx context.Context, wr
 	}
 
 	// Manual Field (value)
-	_valueErr := WriteEnumGeneric(writeBuffer, m.GetValue())
+	_valueErr := WriteEnumGeneric(ctx, writeBuffer, m.GetValue())
 	if _valueErr != nil {
 		return errors.Wrap(_valueErr, "Error serializing 'value' field")
 	}

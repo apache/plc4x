@@ -155,7 +155,7 @@ func BACnetConstructedDataTrendLogMultipleLogBufferParseWithBuffer(ctx context.C
 	// Terminated array
 	var floorText []BACnetLogMultipleRecord
 	{
-		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
+		for !bool(IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber)) {
 			_item, _err := BACnetLogMultipleRecordParseWithBuffer(ctx, readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'floorText' field of BACnetConstructedDataTrendLogMultipleLogBuffer")

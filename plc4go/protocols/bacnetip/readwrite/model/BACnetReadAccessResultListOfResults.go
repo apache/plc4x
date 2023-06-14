@@ -157,7 +157,7 @@ func BACnetReadAccessResultListOfResultsParseWithBuffer(ctx context.Context, rea
 	// Terminated array
 	var listOfReadAccessProperty []BACnetReadAccessProperty
 	{
-		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
+		for !bool(IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber)) {
 			_item, _err := BACnetReadAccessPropertyParseWithBuffer(ctx, readBuffer, objectTypeArgument)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'listOfReadAccessProperty' field of BACnetReadAccessResultListOfResults")

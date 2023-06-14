@@ -217,7 +217,7 @@ func BACnetConstructedDataCharacterStringValueFaultValuesParseWithBuffer(ctx con
 	// Terminated array
 	var faultValues []BACnetOptionalCharacterString
 	{
-		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
+		for !bool(IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber)) {
 			_item, _err := BACnetOptionalCharacterStringParseWithBuffer(ctx, readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'faultValues' field of BACnetConstructedDataCharacterStringValueFaultValues")

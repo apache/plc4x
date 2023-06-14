@@ -217,7 +217,7 @@ func BACnetConstructedDataChannelListOfObjectPropertyReferencesParseWithBuffer(c
 	// Terminated array
 	var references []BACnetDeviceObjectPropertyReference
 	{
-		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
+		for !bool(IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber)) {
 			_item, _err := BACnetDeviceObjectPropertyReferenceParseWithBuffer(ctx, readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'references' field of BACnetConstructedDataChannelListOfObjectPropertyReferences")

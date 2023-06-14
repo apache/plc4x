@@ -217,7 +217,7 @@ func BACnetConstructedDataKeySetsParseWithBuffer(ctx context.Context, readBuffer
 	// Terminated array
 	var keySets []BACnetSecurityKeySet
 	{
-		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
+		for !bool(IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber)) {
 			_item, _err := BACnetSecurityKeySetParseWithBuffer(ctx, readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'keySets' field of BACnetConstructedDataKeySets")

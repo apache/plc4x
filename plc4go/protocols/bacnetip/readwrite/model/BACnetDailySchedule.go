@@ -153,7 +153,7 @@ func BACnetDailyScheduleParseWithBuffer(ctx context.Context, readBuffer utils.Re
 	// Terminated array
 	var daySchedule []BACnetTimeValue
 	{
-		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, 0)) {
+		for !bool(IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, 0)) {
 			_item, _err := BACnetTimeValueParseWithBuffer(ctx, readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'daySchedule' field of BACnetDailySchedule")

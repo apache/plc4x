@@ -155,7 +155,7 @@ func BACnetConstructedDataReasonForDisableParseWithBuffer(ctx context.Context, r
 	// Terminated array
 	var reasonForDisable []BACnetAccessCredentialDisableReasonTagged
 	{
-		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
+		for !bool(IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber)) {
 			_item, _err := BACnetAccessCredentialDisableReasonTaggedParseWithBuffer(ctx, readBuffer, uint8(0), TagClass_APPLICATION_TAGS)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'reasonForDisable' field of BACnetConstructedDataReasonForDisable")

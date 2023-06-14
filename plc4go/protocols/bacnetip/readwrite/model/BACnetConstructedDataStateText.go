@@ -217,7 +217,7 @@ func BACnetConstructedDataStateTextParseWithBuffer(ctx context.Context, readBuff
 	// Terminated array
 	var stateText []BACnetApplicationTagCharacterString
 	{
-		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
+		for !bool(IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber)) {
 			_item, _err := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'stateText' field of BACnetConstructedDataStateText")
