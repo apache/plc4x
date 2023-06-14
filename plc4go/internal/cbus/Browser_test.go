@@ -22,6 +22,7 @@ package cbus
 import (
 	"context"
 	"fmt"
+	"github.com/apache/plc4x/plc4go/spi/pool"
 	"net/url"
 	"sync/atomic"
 	"testing"
@@ -369,12 +370,15 @@ func TestBrowser_getInstalledUnitAddressBytes(t *testing.T) {
 				// Set the model logger to the logger above
 				testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
 
-				// Custom option for that
-				loggerOption := options.WithCustomLogger(logger)
+				// Custom options for that
+				_options := []options.WithOption{
+					options.WithCustomLogger(logger),
+					pool.WithExecutorOptionTracerWorkers(true),
+				}
 
-				transport := test.NewTransport(loggerOption)
+				transport := test.NewTransport(_options...)
 				transportUrl := url.URL{Scheme: "test"}
-				transportInstance, err := transport.CreateTransportInstance(transportUrl, nil, loggerOption)
+				transportInstance, err := transport.CreateTransportInstance(transportUrl, nil, _options...)
 				require.NoError(t, err)
 				t.Cleanup(func() {
 					assert.NoError(t, transportInstance.Close())
@@ -431,7 +435,7 @@ func TestBrowser_getInstalledUnitAddressBytes(t *testing.T) {
 				})
 				err = transport.AddPreregisteredInstances(transportUrl, transportInstance)
 				require.NoError(t, err)
-				connectionConnectResult := <-NewDriver(loggerOption).GetConnection(transportUrl, map[string]transports.Transport{"test": transport}, map[string][]string{})
+				connectionConnectResult := <-NewDriver(_options...).GetConnection(transportUrl, map[string]transports.Transport{"test": transport}, map[string][]string{})
 				if err := connectionConnectResult.GetErr(); err != nil {
 					t.Error(err)
 					t.FailNow()
