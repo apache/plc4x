@@ -64,8 +64,23 @@ func (d *worker) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils
 		return err
 	}
 
-	if err := writeBuffer.WriteString("lastReceived", uint32(len(d.lastReceived.String())*8), "UTF-8", d.lastReceived.String()); err != nil {
-		return err
+	if d.lastReceived.Load() != nil {
+		if serializableField, ok := d.lastReceived.Load().(utils.Serializable); ok {
+			if err := writeBuffer.PushContext("lastReceived"); err != nil {
+				return err
+			}
+			if err := serializableField.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
+				return err
+			}
+			if err := writeBuffer.PopContext("lastReceived"); err != nil {
+				return err
+			}
+		} else {
+			stringValue := fmt.Sprintf("%v", d.lastReceived.Load())
+			if err := writeBuffer.WriteString("lastReceived", uint32(len(stringValue)*8), "UTF-8", stringValue); err != nil {
+				return err
+			}
+		}
 	}
 	if err := writeBuffer.PopContext("worker"); err != nil {
 		return err

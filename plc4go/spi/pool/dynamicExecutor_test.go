@@ -21,6 +21,7 @@ package pool
 
 import (
 	"github.com/stretchr/testify/assert"
+	"sync/atomic"
 	"testing"
 	"time"
 )
@@ -185,7 +186,13 @@ func Test_dynamicExecutor_String(t *testing.T) {
 			fields: fields{
 				executor: &executor{
 					worker: []*worker{
-						{},
+						{
+							lastReceived: func() atomic.Value {
+								value := atomic.Value{}
+								value.Store(time.Time{})
+								return value
+							}(),
+						},
 					},
 				},
 				maxNumberOfWorkers: 3,

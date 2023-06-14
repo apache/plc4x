@@ -435,11 +435,15 @@ func Test_executor_String(t *testing.T) {
 				shutdown: true,
 				worker: []*worker{
 					{
-						id:           1,
-						shutdown:     atomic.Bool{},
-						interrupted:  atomic.Bool{},
-						hasEnded:     atomic.Bool{},
-						lastReceived: time.Time{},
+						id:          1,
+						shutdown:    atomic.Bool{},
+						interrupted: atomic.Bool{},
+						hasEnded:    atomic.Bool{},
+						lastReceived: func() atomic.Value {
+							value := atomic.Value{}
+							value.Store(time.Time{})
+							return value
+						}(),
 					},
 				},
 				queueDepth:   2,

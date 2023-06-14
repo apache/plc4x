@@ -30,14 +30,15 @@ import (
 
 //go:generate go run ../../tools/plc4xgenerator/gen.go -type=executor
 type executor struct {
-	running      bool
-	shutdown     bool
-	stateChange  sync.Mutex
+	running  bool
+	shutdown bool
+
 	worker       []*worker
 	queueDepth   int
 	workItems    chan workItem
 	traceWorkers bool
 
+	stateChange     sync.RWMutex
 	workerWaitGroup sync.WaitGroup
 
 	log zerolog.Logger `ignore:"true"`
@@ -126,5 +127,7 @@ func (e *executor) Close() error {
 }
 
 func (e *executor) IsRunning() bool {
+	e.stateChange.RLock()
+	defer e.stateChange.RUnlock()
 	return e.running && !e.shutdown
 }

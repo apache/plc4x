@@ -45,10 +45,12 @@ func NewFixedSizeExecutor(numberOfWorkers, queueDepth int, _options ...options.W
 	workers := make([]*worker, numberOfWorkers)
 	customLogger := options.ExtractCustomLogger(_options...)
 	for i := 0; i < numberOfWorkers; i++ {
-		workers[i] = &worker{
+		w := worker{
 			id:  i,
 			log: customLogger,
 		}
+		w.lastReceived.Store(time.Time{})
+		workers[i] = &w
 	}
 	_executor := &executor{
 		queueDepth: queueDepth,
@@ -85,13 +87,14 @@ func NewDynamicExecutor(maxNumberOfWorkers, queueDepth int, _options ...options.
 		}
 	}
 	// We spawn one initial worker
-	_executor.worker = append(_executor.worker, &worker{
-		id:           0,
-		interrupter:  make(chan struct{}, 1),
-		executor:     _executor,
-		lastReceived: time.Now(),
-		log:          customLogger,
-	})
+	w := worker{
+		id:          0,
+		interrupter: make(chan struct{}, 1),
+		executor:    _executor,
+		log:         customLogger,
+	}
+	w.lastReceived.Store(time.Now())
+	_executor.worker = append(_executor.worker, &w)
 	return _executor
 }
 

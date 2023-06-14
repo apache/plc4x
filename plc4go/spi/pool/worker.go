@@ -40,7 +40,7 @@ type worker struct {
 		getWorkerWaitGroup() *sync.WaitGroup
 	}
 	hasEnded     atomic.Bool
-	lastReceived time.Time `stringer:"true"`
+	lastReceived atomic.Value
 
 	log zerolog.Logger `ignore:"true"`
 }
@@ -50,7 +50,7 @@ func (w *worker) initialize() {
 	w.interrupted.Store(false)
 	w.interrupter = make(chan struct{}, 1)
 	w.hasEnded.Store(false)
-	w.lastReceived = time.Now()
+	w.lastReceived.Store(time.Now())
 }
 
 func (w *worker) work() {
@@ -77,7 +77,7 @@ func (w *worker) work() {
 		workerLog.Debug().Msg("Working")
 		select {
 		case _workItem := <-w.executor.getWorksItems():
-			w.lastReceived = time.Now()
+			w.lastReceived.Store(time.Now())
 			workerLog.Debug().Msgf("Got work item %v", _workItem)
 			if _workItem.completionFuture.cancelRequested.Load() || (w.shutdown.Load() && w.interrupted.Load()) {
 				workerLog.Debug().Msg("We need to stop")

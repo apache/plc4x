@@ -73,7 +73,7 @@ func (e *dynamicExecutor) Start() {
 		if !e.traceWorkers {
 			workerLog = zerolog.Nop()
 		}
-		for e.running && !e.shutdown {
+		for e.IsRunning() {
 			workerLog.Trace().Msg("running")
 			mutex.Lock()
 			numberOfItemsInQueue := len(e.workItems)
@@ -82,12 +82,12 @@ func (e *dynamicExecutor) Start() {
 			if numberOfItemsInQueue > numberOfWorkers && numberOfWorkers < e.maxNumberOfWorkers {
 				workerLog.Trace().Msg("spawning new worker")
 				_worker := &worker{
-					id:           numberOfWorkers - 1,
-					interrupter:  make(chan struct{}, 1),
-					executor:     e,
-					lastReceived: time.Now(),
-					log:          e.log,
+					id:          numberOfWorkers - 1,
+					interrupter: make(chan struct{}, 1),
+					executor:    e,
+					log:         e.log,
 				}
+				_worker.lastReceived.Store(time.Now())
 				e.worker = append(e.worker, _worker)
 				_worker.initialize()
 				workerLog.Info().Int("Worker id", _worker.id).Msg("spawning")
@@ -123,14 +123,14 @@ func (e *dynamicExecutor) Start() {
 		if !e.traceWorkers {
 			workerLog = zerolog.Nop()
 		}
-		for e.running && !e.shutdown {
+		for e.IsRunning() {
 			workerLog.Trace().Msg("running")
 			mutex.Lock()
 			newWorkers := make([]*worker, 0)
 			for _, _worker := range e.worker {
 				deadline := time.Now().Add(-timeToBecomeUnused)
-				workerLog.Debug().Int("Worker id", _worker.id).Msgf("Checking if %v is before %v", _worker.lastReceived, deadline)
-				if _worker.lastReceived.Before(deadline) {
+				workerLog.Debug().Int("Worker id", _worker.id).Msgf("Checking if %v is before %v", _worker.lastReceived.Load(), deadline)
+				if _worker.lastReceived.Load().(time.Time).Before(deadline) {
 					workerLog.Info().Int("Worker id", _worker.id).Msg("killing")
 					_worker.interrupted.Store(true)
 					close(_worker.interrupter)

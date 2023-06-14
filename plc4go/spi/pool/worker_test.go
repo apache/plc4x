@@ -24,7 +24,6 @@ import (
 	"testing"
 	"time"
 
-	"github.com/rs/zerolog"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -37,8 +36,6 @@ func Test_worker_initialize(t *testing.T) {
 			getWorksItems() chan workItem
 			getWorkerWaitGroup() *sync.WaitGroup
 		}
-		lastReceived time.Time
-		log          zerolog.Logger
 	}
 	tests := []struct {
 		name   string
@@ -51,11 +48,10 @@ func Test_worker_initialize(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			w := &worker{
-				id:           tt.fields.id,
-				interrupter:  tt.fields.interrupter,
-				executor:     tt.fields.executor,
-				lastReceived: tt.fields.lastReceived,
-				log:          tt.fields.log,
+				id:          tt.fields.id,
+				interrupter: tt.fields.interrupter,
+				executor:    tt.fields.executor,
+				log:         produceTestLogger(t),
 			}
 			w.initialize()
 		})
@@ -205,6 +201,7 @@ func Test_worker_work(t *testing.T) {
 				id:          tt.fields.id,
 				interrupter: make(chan struct{}, 1),
 				executor:    tt.fields.executor,
+				log:         produceTestLogger(t),
 			}
 			go w.work()
 			if tt.firstValidation != nil {
@@ -222,14 +219,16 @@ func Test_worker_work(t *testing.T) {
 				t.Logf("secondValidation after %v", tt.timeBeforeSecondValidation)
 				tt.secondValidation(t, w)
 			}
+
+			close(w.interrupter)
+			time.Sleep(50 * time.Millisecond) // TODO: replace with worker stop... (which in turn essures the worker is not running anymore)
 		})
 	}
 }
 
 func Test_worker_String(t *testing.T) {
 	type fields struct {
-		id           int
-		lastReceived time.Time
+		id int
 	}
 	tests := []struct {
 		name   string
@@ -249,9 +248,10 @@ func Test_worker_String(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			w := &worker{
-				id:           tt.fields.id,
-				lastReceived: tt.fields.lastReceived,
+				id:  tt.fields.id,
+				log: produceTestLogger(t),
 			}
+			w.lastReceived.Store(time.Time{})
 			assert.Equalf(t, tt.want, w.String(), "String()")
 		})
 	}
