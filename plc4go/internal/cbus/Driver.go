@@ -79,7 +79,7 @@ func (m *Driver) GetConnectionWithContext(ctx context.Context, transportUrl url.
 	}
 
 	codec := NewMessageCodec(transportInstance, options.WithCustomLogger(m.log))
-	m.log.Debug().Msgf("working with codec %#v", codec)
+	m.log.Debug().Msgf("working with codec:\n%s", codec)
 
 	driverContext := NewDriverContext(configuration)
 	driverContext.awaitSetupComplete = m.awaitSetupComplete

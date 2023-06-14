@@ -102,6 +102,7 @@ func (s *Subscriber) Unsubscribe(ctx context.Context, unsubscriptionRequest apiM
 }
 
 func (s *Subscriber) handleMonitoredMMI(calReply readWriteModel.CALReply) bool {
+	s.log.Debug().Msgf("handling:\n%s", calReply)
 	var unitAddressString string
 	switch calReply := calReply.(type) {
 	case readWriteModel.CALReplyLongExactly:
@@ -118,13 +119,19 @@ func (s *Subscriber) handleMonitoredMMI(calReply readWriteModel.CALReply) bool {
 	default:
 		unitAddressString = "u0" // On short form it should be always unit 0 TODO: double check that
 	}
+	s.log.Debug().Msgf("Unit address string: %s", unitAddressString)
 	calData := calReply.GetCalData()
 	handled := false
 	for registration, consumer := range s.consumers {
+		s.log.Debug().Msgf("Checking with registration\n%s\nand consumer set %t", registration, consumer != nil)
 		for _, subscriptionHandle := range registration.GetSubscriptionHandles() {
-			handled = handled || s.offerMMI(unitAddressString, calData, subscriptionHandle.(*SubscriptionHandle), consumer)
+			s.log.Debug().Msgf("offering to\n%s", subscriptionHandle)
+			handleHandled := s.offerMMI(unitAddressString, calData, subscriptionHandle.(*SubscriptionHandle), consumer)
+			s.log.Debug().Msgf("handle handled: %t", handleHandled)
+			handled = handled || handleHandled
 		}
 	}
+	s.log.Debug().Msgf("final handled: %t", handled)
 	return handled
 }
 

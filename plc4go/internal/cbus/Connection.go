@@ -222,8 +222,11 @@ func (c *Connection) setupConnection(ctx context.Context, ch chan plc4go.PlcConn
 		c.log.Trace().Msg("Set interface options 1 failed")
 		return
 	}
+	c.log.Trace().Msg("Connection setup done")
 	c.fireConnected(ch)
+	c.log.Trace().Msg("Connect fired")
 	c.startSubscriptionHandler()
+	c.log.Trace().Msg("subscription handler started")
 }
 
 func (c *Connection) startSubscriptionHandler() {
@@ -240,7 +243,7 @@ func (c *Connection) startSubscriptionHandler() {
 				handled := false
 				for _, subscriber := range c.subscribers {
 					if ok := subscriber.handleMonitoredSAL(monitoredSal); ok {
-						c.log.Debug().Msgf("%v handled\n%s", subscriber, monitoredSal)
+						c.log.Debug().Msgf("\n%v handled\n%s", subscriber, monitoredSal)
 						handled = true
 					}
 				}
@@ -264,7 +267,7 @@ func (c *Connection) startSubscriptionHandler() {
 				handled := false
 				for _, subscriber := range c.subscribers {
 					if ok := subscriber.handleMonitoredMMI(calReply); ok {
-						c.log.Debug().Msgf("%v handled\n%s", subscriber, calReply)
+						c.log.Debug().Msgf("\n%v handled\n%s", subscriber, calReply)
 						handled = true
 					}
 				}
