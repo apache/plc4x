@@ -81,10 +81,6 @@ public class ProfinetTag implements PlcTag {
         return index;
     }
 
-    public PlcValueType getDataType() {
-        return dataType;
-    }
-
     public int getNumElements() {
         return numElements;
     }

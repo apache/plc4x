@@ -24,6 +24,7 @@ import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.model.PlcSubscriptionTag;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
+import org.apache.plc4x.java.api.types.PlcValueType;
 import org.apache.plc4x.java.profinet.config.ProfinetConfiguration;
 import org.apache.plc4x.java.profinet.context.ProfinetDriverContext;
 import org.apache.plc4x.java.profinet.discovery.ProfinetDiscoverer;
@@ -370,18 +371,101 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
             return CompletableFuture.failedFuture(new PlcConnectionException("DAP not set"));
         }
 
-        // Find the matching data in the device descriptor.
+        // Go through all the tags and build a sorted list of all requested tags.
+        Map<Integer, Map<Integer, Map<ProfinetTag.Direction, Map<Integer, ProfinetTag>>>> slots = new TreeMap<>();
         for (String tagName : subscriptionRequest.getTagNames()) {
             PlcSubscriptionTag tag = subscriptionRequest.getTag(tagName);
-            if(!(tag instanceof ProfinetTag)) {
+            if (!(tag instanceof ProfinetTag)) {
                 // TODO: Add an error code for this field.
                 continue;
             }
             ProfinetTag profinetTag = (ProfinetTag) tag;
             int slot = profinetTag.getSlot();
             int subSlot = profinetTag.getSubSlot();
-
+            ProfinetTag.Direction direction = profinetTag.getDirection();
+            int index = profinetTag.getIndex();
+            if(!slots.containsKey(slot)) {
+                slots.put(slot, new TreeMap<>());
+            }
+            if(!slots.get(slot).containsKey(subSlot)) {
+                slots.get(slot).put(subSlot, new TreeMap<>());
+            }
+            if(!slots.get(slot).get(subSlot).containsKey(direction)) {
+                slots.get(slot).get(subSlot).put(direction, new TreeMap<>());
+            }
+            slots.get(slot).get(subSlot).get(direction).put(index, profinetTag);
         }
+
+        // Create one PnIoCm_Block_ArReq
+        // Create one PnIoCm_IoCrBlockReqApi for input (if there's at least one input)
+        // Create one PnIoCm_IoCrBlockReqApi for output (if there's at least one output)
+        // Create one PnIoCm_Block_ExpectedSubmoduleReq for every slot being referenced.
+        // Create one PnIoCm_Block_AlarmCrReq
+
+
+        // Go through the sorted slots and subslots and fill the datastructures.
+        int inputFrameOffset = 0;
+        int outputFrameOffset = 0;
+        /*List<PnIoCm_IoDataObject> inputMessageDataObjects = new ArrayList<>();
+        List<PnIoCm_IoCs> inputMessageCs = new ArrayList<>();
+        //List<PnIoCm_IoDataObject> outputMessageDataObjects = new ArrayList<>();
+        //List<PnIoCm_IoCs> outputMessageCs = new ArrayList<>();
+        List<PnIoCm_Block_ExpectedSubmoduleReq> expectedSubmodules = new ArrayList<>();
+        for (Map.Entry<Integer, Map<Integer, Map<ProfinetTag.Direction, Map<Integer, ProfinetTag>>>> slotEntry : slots.entrySet()) {
+            int slotNumber = slotEntry.getKey();
+            Map<Integer, Map<ProfinetTag.Direction, Map<Integer, ProfinetTag>>> subslot = slotEntry.getValue();
+            for (Map.Entry<Integer, Map<ProfinetTag.Direction, Map<Integer, ProfinetTag>>> subslotEntry : subslot.entrySet()) {
+                int subslotNumber = subslotEntry.getKey();
+                Map<ProfinetTag.Direction, Map<Integer, ProfinetTag>> direction = subslotEntry.getValue();
+
+
+                if(direction.containsKey(ProfinetTag.Direction.INPUT)) {
+                    Map<Integer, ProfinetTag> inputTags = direction.get(ProfinetTag.Direction.INPUT);
+                    for (Map.Entry<Integer, ProfinetTag> inputTag : inputTags.entrySet()) {
+                        PnIoCm_IoDataObject input = new PnIoCm_IoDataObject(slotNumber, subslotNumber, inputFrameOffset);
+                        inputMessageDataObjects.add(input);
+                        // TODO: Get the iops-length from the IoData element
+                        inputFrameOffset += 1;
+                        // TODO: Get the data-length + iops-length
+                        outputFrameOffset += 1;
+                    }
+                }
+                if(direction.containsKey(ProfinetTag.Direction.OUTPUT)) {
+                    Map<Integer, ProfinetTag> outputTags = direction.get(ProfinetTag.Direction.OUTPUT);
+                    for (Map.Entry<Integer, ProfinetTag> outputTag : outputTags.entrySet()) {
+                        PnIoCm_IoDataObject output = new PnIoCm_IoDataObject(slotNumber, subslotNumber, inputFrameOffset);
+                        outputMessageDataObjects.add(output);
+                        // TODO: Get the data-length + iocs-length from the IoData element
+                        inputFrameOffset += 1;
+                        // TODO: Get the iops-length
+                        outputFrameOffset += 1;
+                    }
+                }
+            }
+        }
+
+        for (String tagName : subscriptionRequest.getTagNames()) {
+            ProfinetTag profinetTag = (ProfinetTag) subscriptionRequest.getTag(tagName);
+
+
+
+
+            PlcValueType plcValueType = profinetTag.getPlcValueType();
+            int numElements = profinetTag.getNumElements();
+            int iopsLength = driverContext.getSubmoduleIndex().get(slot).get(subSlot).getIoData().getIopsLength();
+            // The default is 1
+            if(iopsLength == 0) {
+                iopsLength = 1;
+            }
+
+            PnIoCm_IoDataObject input = new PnIoCm_IoDataObject(slot, subSlot, inputFrameOffset);
+            inputDataObjects.add(input);
+
+            // Increment the frame offset.
+            inputFrameOffset += (getDataTypeLengthInBytes(plcValueType) * numElements) + iopsLength;
+        }*/
+
+
         return null;
     }
 
@@ -430,6 +514,49 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
             driverContext.setVendorId(block.getVendorId());
             driverContext.setDeviceId(block.getDeviceId());
         }
+    }
+
+    protected int getDataTypeLengthInBytes(PlcValueType dataType) {
+        switch (dataType) {
+            case NULL:
+                return 0;
+            case BOOL:
+            case BYTE:
+            case USINT:
+            case SINT:
+            case CHAR:
+                return 1;
+            case WORD:
+            case UINT:
+            case INT:
+            case WCHAR:
+                return 2;
+            case DWORD:
+            case UDINT:
+            case DINT:
+            case REAL:
+                return 4;
+            case LWORD:
+            case ULINT:
+            case LINT:
+            case LREAL:
+                return 8;
+            case STRING:
+            case WSTRING:
+            case TIME:
+            case LTIME:
+            case DATE:
+            case LDATE:
+            case TIME_OF_DAY:
+            case LTIME_OF_DAY:
+            case DATE_AND_TIME:
+            case LDATE_AND_TIME:
+            case Struct:
+            case List:
+            case RAW_BYTE_ARRAY:
+                throw new PlcRuntimeException("Length undefined for type " + dataType.name());
+        }
+        throw new PlcRuntimeException("Length undefined");
     }
 
 }
