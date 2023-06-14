@@ -775,7 +775,10 @@
         </os>
       </activation>
       <properties>
-        <!-- Coverage doesn't work in windows because of a long path issue in cover.exe -->
+        <!--
+        Coverage doesn't work in windows because of a long path issue in cover.exe
+        Tracked upstream issue: https://github.com/golang/go/issues/60785
+        -->
         <go.cover.flag>-v</go.cover.flag>
       </properties>
     </profile>
