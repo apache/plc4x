@@ -142,7 +142,7 @@
     <jserialcom.version>2.9.3</jserialcom.version>
     <junit.jupiter.version>5.9.3</junit.jupiter.version>
     <junit.platform.version>1.8.2</junit.platform.version>
-    <logback.version>1.4.7</logback.version>
+    <logback.version>1.4.8</logback.version>
     <maven.clean.plugin.version>3.2.0</maven.clean.plugin.version>
     <!-- version 0.6.7 is newer, however the ExampleServer doesn't seem to run with that -->
     <!-- version 0.6.8 is being released, however the milo-examples artifact is not available yet -->
