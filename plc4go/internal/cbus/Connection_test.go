@@ -36,6 +36,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"net/url"
+	"sync"
 	"sync/atomic"
 	"testing"
 	"time"
@@ -1529,7 +1530,10 @@ func TestConnection_setupConnection(t *testing.T) {
 				)
 				currentState := atomic.Value{}
 				currentState.Store(RESET)
+				stateChangeMutex := sync.Mutex{}
 				ti.(*test.TransportInstance).SetWriteInterceptor(func(transportInstance *test.TransportInstance, data []byte) {
+					stateChangeMutex.Lock()
+					defer stateChangeMutex.Unlock()
 					switch currentState.Load().(MockState) {
 					case RESET:
 						t.Log("Dispatching reset echo")
@@ -1582,7 +1586,10 @@ func TestConnection_setupConnection(t *testing.T) {
 				)
 				currentState := atomic.Value{}
 				currentState.Store(RESET)
+				stateChangeMutex := sync.Mutex{}
 				ti.(*test.TransportInstance).SetWriteInterceptor(func(transportInstance *test.TransportInstance, data []byte) {
+					stateChangeMutex.Lock()
+					defer stateChangeMutex.Unlock()
 					switch currentState.Load().(MockState) {
 					case RESET:
 						t.Log("Dispatching reset echo")
@@ -1646,7 +1653,10 @@ func TestConnection_setupConnection(t *testing.T) {
 				)
 				currentState := atomic.Value{}
 				currentState.Store(RESET)
+				stateChangeMutex := sync.Mutex{}
 				ti.(*test.TransportInstance).SetWriteInterceptor(func(transportInstance *test.TransportInstance, data []byte) {
+					stateChangeMutex.Lock()
+					defer stateChangeMutex.Unlock()
 					switch currentState.Load().(MockState) {
 					case RESET:
 						t.Log("Dispatching reset echo")
@@ -1716,7 +1726,10 @@ func TestConnection_setupConnection(t *testing.T) {
 				)
 				currentState := atomic.Value{}
 				currentState.Store(RESET)
+				stateChangeMutex := sync.Mutex{}
 				ti.(*test.TransportInstance).SetWriteInterceptor(func(transportInstance *test.TransportInstance, data []byte) {
+					stateChangeMutex.Lock()
+					defer stateChangeMutex.Unlock()
 					switch currentState.Load().(MockState) {
 					case RESET:
 						t.Log("Dispatching reset echo")
@@ -1789,7 +1802,10 @@ func TestConnection_setupConnection(t *testing.T) {
 					)
 					currentState := atomic.Value{}
 					currentState.Store(RESET)
+					stateChangeMutex := sync.Mutex{}
 					ti.(*test.TransportInstance).SetWriteInterceptor(func(transportInstance *test.TransportInstance, data []byte) {
+						stateChangeMutex.Lock()
+						defer stateChangeMutex.Unlock()
 						switch currentState.Load().(MockState) {
 						case RESET:
 							t.Log("Dispatching reset echo")

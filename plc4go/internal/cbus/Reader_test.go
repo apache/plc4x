@@ -36,6 +36,7 @@ import (
 	"github.com/stretchr/testify/require"
 	"net/url"
 	"strings"
+	"sync"
 	"sync/atomic"
 	"testing"
 	"time"
@@ -278,7 +279,10 @@ func TestReader_readSync(t *testing.T) {
 				)
 				currentState := atomic.Value{}
 				currentState.Store(INITIAL)
+				stateChangeMutex := sync.Mutex{}
 				transportInstance.(*test.TransportInstance).SetWriteInterceptor(func(transportInstance *test.TransportInstance, data []byte) {
+					stateChangeMutex.Lock()
+					defer stateChangeMutex.Unlock()
 					switch currentState.Load().(MockState) {
 					case INITIAL:
 						t.Log("Dispatching read response")
@@ -527,7 +531,10 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 				)
 				currentState := atomic.Value{}
 				currentState.Store(INITIAL)
+				stateChangeMutex := sync.Mutex{}
 				transportInstance.(*test.TransportInstance).SetWriteInterceptor(func(transportInstance *test.TransportInstance, data []byte) {
+					stateChangeMutex.Lock()
+					defer stateChangeMutex.Unlock()
 					switch currentState.Load().(MockState) {
 					case INITIAL:
 						t.Log("Dispatching read response")
@@ -570,7 +577,10 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 					)
 					currentState := atomic.Value{}
 					currentState.Store(INITIAL)
+					stateChangeMutex := sync.Mutex{}
 					transportInstance.(*test.TransportInstance).SetWriteInterceptor(func(transportInstance *test.TransportInstance, data []byte) {
+						stateChangeMutex.Lock()
+						defer stateChangeMutex.Unlock()
 						switch currentState.Load().(MockState) {
 						case INITIAL:
 							t.Log("Dispatching read response")
@@ -707,7 +717,10 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 				)
 				currentState := atomic.Value{}
 				currentState.Store(INITIAL)
+				stateChangeMutex := sync.Mutex{}
 				transportInstance.(*test.TransportInstance).SetWriteInterceptor(func(transportInstance *test.TransportInstance, data []byte) {
+					stateChangeMutex.Lock()
+					defer stateChangeMutex.Unlock()
 					switch currentState.Load().(MockState) {
 					case INITIAL:
 						t.Log("Dispatching read response")
@@ -797,7 +810,10 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 				)
 				currentState := atomic.Value{}
 				currentState.Store(INITIAL)
+				stateChangeMutex := sync.Mutex{}
 				transportInstance.(*test.TransportInstance).SetWriteInterceptor(func(transportInstance *test.TransportInstance, data []byte) {
+					stateChangeMutex.Lock()
+					defer stateChangeMutex.Unlock()
 					switch currentState.Load().(MockState) {
 					case INITIAL:
 						t.Log("Dispatching read response")
@@ -887,7 +903,10 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 				)
 				currentState := atomic.Value{}
 				currentState.Store(INITIAL)
+				stateChangeMutex := sync.Mutex{}
 				transportInstance.(*test.TransportInstance).SetWriteInterceptor(func(transportInstance *test.TransportInstance, data []byte) {
+					stateChangeMutex.Lock()
+					defer stateChangeMutex.Unlock()
 					switch currentState.Load().(MockState) {
 					case INITIAL:
 						t.Log("Dispatching read response")
@@ -977,7 +996,10 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 				)
 				currentState := atomic.Value{}
 				currentState.Store(INITIAL)
+				stateChangeMutex := sync.Mutex{}
 				transportInstance.(*test.TransportInstance).SetWriteInterceptor(func(transportInstance *test.TransportInstance, data []byte) {
+					stateChangeMutex.Lock()
+					defer stateChangeMutex.Unlock()
 					switch currentState.Load().(MockState) {
 					case INITIAL:
 						t.Log("Dispatching read response")
@@ -1067,7 +1089,10 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 				)
 				currentState := atomic.Value{}
 				currentState.Store(INITIAL)
+				stateChangeMutex := sync.Mutex{}
 				transportInstance.(*test.TransportInstance).SetWriteInterceptor(func(transportInstance *test.TransportInstance, data []byte) {
+					stateChangeMutex.Lock()
+					defer stateChangeMutex.Unlock()
 					switch currentState.Load().(MockState) {
 					case INITIAL:
 						t.Log("Dispatching read response")
@@ -1157,7 +1182,10 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 				)
 				currentState := atomic.Value{}
 				currentState.Store(INITIAL)
+				stateChangeMutex := sync.Mutex{}
 				transportInstance.(*test.TransportInstance).SetWriteInterceptor(func(transportInstance *test.TransportInstance, data []byte) {
+					stateChangeMutex.Lock()
+					defer stateChangeMutex.Unlock()
 					switch currentState.Load().(MockState) {
 					case INITIAL:
 						t.Log("Dispatching read response")

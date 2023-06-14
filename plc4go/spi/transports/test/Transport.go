@@ -171,6 +171,7 @@ func (m *TransportInstance) SetWriteInterceptor(writeInterceptor func(transportI
 
 func (m *TransportInstance) Write(data []byte) error {
 	if m.writeInterceptor != nil {
+		m.log.Trace().Msgf("Passing data to write interceptor\n%s", hex.Dump(data))
 		m.writeInterceptor(m, data)
 	}
 	m.log.Trace().Msgf("Write data\n%s", hex.Dump(data))
