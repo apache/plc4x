@@ -21,6 +21,13 @@ package cbus
 
 import (
 	"context"
+	"github.com/stretchr/testify/require"
+	"net/url"
+	"sync"
+	"sync/atomic"
+	"testing"
+	"time"
+
 	plc4go "github.com/apache/plc4x/plc4go/pkg/api"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/cbus/readwrite/model"
@@ -32,14 +39,8 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/transactions"
 	"github.com/apache/plc4x/plc4go/spi/transports/test"
 	"github.com/apache/plc4x/plc4go/spi/utils"
-	"github.com/rs/zerolog"
+
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
-	"net/url"
-	"sync"
-	"sync/atomic"
-	"testing"
-	"time"
 )
 
 func TestAlphaGenerator_getAndIncrement(t *testing.T) {
@@ -96,7 +97,6 @@ func TestConnection_BrowseRequestBuilder(t *testing.T) {
 		driverContext     DriverContext
 		connectionId      string
 		tracer            tracer.Tracer
-		log               zerolog.Logger
 	}
 	tests := []struct {
 		name       string
@@ -124,7 +124,7 @@ func TestConnection_BrowseRequestBuilder(t *testing.T) {
 				driverContext:     tt.fields.driverContext,
 				connectionId:      tt.fields.connectionId,
 				tracer:            tt.fields.tracer,
-				log:               tt.fields.log,
+				log:               testutils.ProduceTestingLogger(t),
 			}
 			assert.True(t, tt.wantAssert(t, c.BrowseRequestBuilder()), "BrowseRequestBuilder()")
 		})
@@ -141,7 +141,6 @@ func TestConnection_ConnectWithContext(t *testing.T) {
 		driverContext     DriverContext
 		connectionId      string
 		tracer            tracer.Tracer
-		log               zerolog.Logger
 	}
 	type args struct {
 		ctx context.Context
@@ -181,7 +180,6 @@ func TestConnection_ConnectWithContext(t *testing.T) {
 			setup: func(t *testing.T, fields *fields) {
 				// Setup logger
 				logger := testutils.ProduceTestingLogger(t)
-				fields.log = logger
 
 				// Custom option for that
 				loggerOption := options.WithCustomLogger(logger)
@@ -221,7 +219,7 @@ func TestConnection_ConnectWithContext(t *testing.T) {
 				driverContext:     tt.fields.driverContext,
 				connectionId:      tt.fields.connectionId,
 				tracer:            tt.fields.tracer,
-				log:               tt.fields.log,
+				log:               testutils.ProduceTestingLogger(t),
 			}
 			assert.True(t, tt.wantAsserter(t, c.ConnectWithContext(tt.args.ctx)), "ConnectWithContext(%v)", tt.args.ctx)
 			time.Sleep(200 * time.Millisecond) // TODO: find out what is still running here
@@ -239,7 +237,6 @@ func TestConnection_GetConnection(t *testing.T) {
 		driverContext     DriverContext
 		connectionId      string
 		tracer            tracer.Tracer
-		log               zerolog.Logger
 	}
 	tests := []struct {
 		name         string
@@ -249,9 +246,6 @@ func TestConnection_GetConnection(t *testing.T) {
 	}{
 		{
 			name: "not nil",
-			setup: func(t *testing.T, fields *fields) {
-				fields.log = testutils.ProduceTestingLogger(t)
-			},
 			wantAsserter: func(t *testing.T, connection plc4go.PlcConnection) bool {
 				return assert.NotNil(t, connection)
 			},
@@ -271,7 +265,7 @@ func TestConnection_GetConnection(t *testing.T) {
 				driverContext:     tt.fields.driverContext,
 				connectionId:      tt.fields.connectionId,
 				tracer:            tt.fields.tracer,
-				log:               tt.fields.log,
+				log:               testutils.ProduceTestingLogger(t),
 			}
 			assert.Truef(t, tt.wantAsserter(t, c.GetConnection()), "GetConnection()")
 		})
@@ -288,7 +282,6 @@ func TestConnection_GetConnectionId(t *testing.T) {
 		driverContext     DriverContext
 		connectionId      string
 		tracer            tracer.Tracer
-		log               zerolog.Logger
 	}
 	tests := []struct {
 		name   string
@@ -310,7 +303,7 @@ func TestConnection_GetConnectionId(t *testing.T) {
 				driverContext:     tt.fields.driverContext,
 				connectionId:      tt.fields.connectionId,
 				tracer:            tt.fields.tracer,
-				log:               tt.fields.log,
+				log:               testutils.ProduceTestingLogger(t),
 			}
 			assert.Equalf(t, tt.want, c.GetConnectionId(), "GetConnectionId()")
 		})
@@ -327,7 +320,6 @@ func TestConnection_GetMessageCodec(t *testing.T) {
 		driverContext     DriverContext
 		connectionId      string
 		tracer            tracer.Tracer
-		log               zerolog.Logger
 	}
 	tests := []struct {
 		name   string
@@ -353,7 +345,7 @@ func TestConnection_GetMessageCodec(t *testing.T) {
 				driverContext:     tt.fields.driverContext,
 				connectionId:      tt.fields.connectionId,
 				tracer:            tt.fields.tracer,
-				log:               tt.fields.log,
+				log:               testutils.ProduceTestingLogger(t),
 			}
 			assert.Equalf(t, tt.want, c.GetMessageCodec(), "GetMessageCodec()")
 		})
@@ -370,7 +362,6 @@ func TestConnection_GetMetadata(t *testing.T) {
 		driverContext     DriverContext
 		connectionId      string
 		tracer            tracer.Tracer
-		log               zerolog.Logger
 	}
 	tests := []struct {
 		name   string
@@ -399,7 +390,7 @@ func TestConnection_GetMetadata(t *testing.T) {
 				driverContext:     tt.fields.driverContext,
 				connectionId:      tt.fields.connectionId,
 				tracer:            tt.fields.tracer,
-				log:               tt.fields.log,
+				log:               testutils.ProduceTestingLogger(t),
 			}
 			assert.Equalf(t, tt.want, c.GetMetadata(), "GetMetadata()")
 		})
@@ -416,7 +407,6 @@ func TestConnection_GetTracer(t *testing.T) {
 		driverContext     DriverContext
 		connectionId      string
 		tracer            tracer.Tracer
-		log               zerolog.Logger
 	}
 	tests := []struct {
 		name   string
@@ -438,7 +428,7 @@ func TestConnection_GetTracer(t *testing.T) {
 				driverContext:     tt.fields.driverContext,
 				connectionId:      tt.fields.connectionId,
 				tracer:            tt.fields.tracer,
-				log:               tt.fields.log,
+				log:               testutils.ProduceTestingLogger(t),
 			}
 			assert.Equalf(t, tt.want, c.GetTracer(), "GetTracer()")
 		})
@@ -455,7 +445,6 @@ func TestConnection_IsTraceEnabled(t *testing.T) {
 		driverContext     DriverContext
 		connectionId      string
 		tracer            tracer.Tracer
-		log               zerolog.Logger
 	}
 	tests := []struct {
 		name   string
@@ -477,7 +466,7 @@ func TestConnection_IsTraceEnabled(t *testing.T) {
 				driverContext:     tt.fields.driverContext,
 				connectionId:      tt.fields.connectionId,
 				tracer:            tt.fields.tracer,
-				log:               tt.fields.log,
+				log:               testutils.ProduceTestingLogger(t),
 			}
 			assert.Equalf(t, tt.want, c.IsTraceEnabled(), "IsTraceEnabled()")
 		})
@@ -494,7 +483,6 @@ func TestConnection_ReadRequestBuilder(t *testing.T) {
 		driverContext     DriverContext
 		connectionId      string
 		tracer            tracer.Tracer
-		log               zerolog.Logger
 	}
 	tests := []struct {
 		name       string
@@ -522,7 +510,7 @@ func TestConnection_ReadRequestBuilder(t *testing.T) {
 				driverContext:     tt.fields.driverContext,
 				connectionId:      tt.fields.connectionId,
 				tracer:            tt.fields.tracer,
-				log:               tt.fields.log,
+				log:               testutils.ProduceTestingLogger(t),
 			}
 			assert.Truef(t, tt.wantAssert(t, c.ReadRequestBuilder()), "ReadRequestBuilder()")
 		})
@@ -539,7 +527,6 @@ func TestConnection_String(t *testing.T) {
 		driverContext     DriverContext
 		connectionId      string
 		tracer            tracer.Tracer
-		log               zerolog.Logger
 	}
 	tests := []struct {
 		name   string
@@ -590,7 +577,7 @@ func TestConnection_String(t *testing.T) {
 				driverContext:     tt.fields.driverContext,
 				connectionId:      tt.fields.connectionId,
 				tracer:            tt.fields.tracer,
-				log:               tt.fields.log,
+				log:               testutils.ProduceTestingLogger(t),
 			}
 			assert.Equalf(t, tt.want, c.String(), "String()")
 		})
@@ -607,7 +594,6 @@ func TestConnection_SubscriptionRequestBuilder(t *testing.T) {
 		driverContext     DriverContext
 		connectionId      string
 		tracer            tracer.Tracer
-		log               zerolog.Logger
 	}
 	tests := []struct {
 		name       string
@@ -635,7 +621,7 @@ func TestConnection_SubscriptionRequestBuilder(t *testing.T) {
 				driverContext:     tt.fields.driverContext,
 				connectionId:      tt.fields.connectionId,
 				tracer:            tt.fields.tracer,
-				log:               tt.fields.log,
+				log:               testutils.ProduceTestingLogger(t),
 			}
 			assert.Truef(t, tt.wantAssert(t, c.SubscriptionRequestBuilder()), "SubscriptionRequestBuilder()")
 		})
@@ -652,7 +638,6 @@ func TestConnection_UnsubscriptionRequestBuilder(t *testing.T) {
 		driverContext     DriverContext
 		connectionId      string
 		tracer            tracer.Tracer
-		log               zerolog.Logger
 	}
 	tests := []struct {
 		name   string
@@ -674,7 +659,7 @@ func TestConnection_UnsubscriptionRequestBuilder(t *testing.T) {
 				driverContext:     tt.fields.driverContext,
 				connectionId:      tt.fields.connectionId,
 				tracer:            tt.fields.tracer,
-				log:               tt.fields.log,
+				log:               testutils.ProduceTestingLogger(t),
 			}
 			assert.Equalf(t, tt.want, c.UnsubscriptionRequestBuilder(), "UnsubscriptionRequestBuilder()")
 		})
@@ -691,7 +676,6 @@ func TestConnection_WriteRequestBuilder(t *testing.T) {
 		driverContext     DriverContext
 		connectionId      string
 		tracer            tracer.Tracer
-		log               zerolog.Logger
 	}
 	tests := []struct {
 		name       string
@@ -719,7 +703,7 @@ func TestConnection_WriteRequestBuilder(t *testing.T) {
 				driverContext:     tt.fields.driverContext,
 				connectionId:      tt.fields.connectionId,
 				tracer:            tt.fields.tracer,
-				log:               tt.fields.log,
+				log:               testutils.ProduceTestingLogger(t),
 			}
 			assert.Truef(t, tt.wantAssert(t, c.WriteRequestBuilder()), "WriteRequestBuilder()")
 		})
@@ -736,7 +720,6 @@ func TestConnection_addSubscriber(t *testing.T) {
 		driverContext     DriverContext
 		connectionId      string
 		tracer            tracer.Tracer
-		log               zerolog.Logger
 	}
 	type args struct {
 		subscriber *Subscriber
@@ -775,7 +758,7 @@ func TestConnection_addSubscriber(t *testing.T) {
 				driverContext:     tt.fields.driverContext,
 				connectionId:      tt.fields.connectionId,
 				tracer:            tt.fields.tracer,
-				log:               tt.fields.log,
+				log:               testutils.ProduceTestingLogger(t),
 			}
 			c.addSubscriber(tt.args.subscriber)
 			assert.Truef(t, tt.subElevator(t, c.subscribers), "addSubscriber(%v)", tt.args.subscriber)
@@ -793,7 +776,6 @@ func TestConnection_fireConnected(t *testing.T) {
 		driverContext     DriverContext
 		connectionId      string
 		tracer            tracer.Tracer
-		log               zerolog.Logger
 	}
 	type args struct {
 		ch chan<- plc4go.PlcConnectionConnectResult
@@ -839,7 +821,7 @@ func TestConnection_fireConnected(t *testing.T) {
 				driverContext:     tt.fields.driverContext,
 				connectionId:      tt.fields.connectionId,
 				tracer:            tt.fields.tracer,
-				log:               tt.fields.log,
+				log:               testutils.ProduceTestingLogger(t),
 			}
 			c.fireConnected(tt.args.ch)
 			assert.True(t, tt.chanValidator(t, tt.args.ch))
@@ -857,7 +839,6 @@ func TestConnection_fireConnectionError(t *testing.T) {
 		driverContext     DriverContext
 		connectionId      string
 		tracer            tracer.Tracer
-		log               zerolog.Logger
 	}
 	type args struct {
 		err error
@@ -936,7 +917,7 @@ func TestConnection_fireConnectionError(t *testing.T) {
 				driverContext:     tt.fields.driverContext,
 				connectionId:      tt.fields.connectionId,
 				tracer:            tt.fields.tracer,
-				log:               tt.fields.log,
+				log:               testutils.ProduceTestingLogger(t),
 			}
 			c.fireConnectionError(tt.args.err, tt.args.ch)
 			assert.True(t, tt.chanValidator(t, tt.args.ch))
@@ -954,7 +935,6 @@ func TestConnection_sendCalDataWrite(t *testing.T) {
 		driverContext     DriverContext
 		connectionId      string
 		tracer            tracer.Tracer
-		log               zerolog.Logger
 	}
 	type args struct {
 		ctx            context.Context
@@ -990,7 +970,6 @@ func TestConnection_sendCalDataWrite(t *testing.T) {
 			setup: func(t *testing.T, fields *fields) {
 				// Setup logger
 				logger := testutils.ProduceTestingLogger(t)
-				fields.log = logger
 
 				// Custom option for that
 				loggerOption := options.WithCustomLogger(logger)
@@ -1022,7 +1001,7 @@ func TestConnection_sendCalDataWrite(t *testing.T) {
 				driverContext:     tt.fields.driverContext,
 				connectionId:      tt.fields.connectionId,
 				tracer:            tt.fields.tracer,
-				log:               tt.fields.log,
+				log:               testutils.ProduceTestingLogger(t),
 			}
 			assert.Equalf(t, tt.want, c.sendCalDataWrite(tt.args.ctx, tt.args.ch, tt.args.paramNo, tt.args.parameterValue, tt.args.requestContext, tt.args.cbusOptions), "sendCalDataWrite(%v, %v, %v, %v, %v, %v)", tt.args.ctx, tt.args.ch, tt.args.paramNo, tt.args.parameterValue, tt.args.requestContext, tt.args.cbusOptions)
 		})
@@ -1039,7 +1018,6 @@ func TestConnection_sendReset(t *testing.T) {
 		driverContext     DriverContext
 		connectionId      string
 		tracer            tracer.Tracer
-		log               zerolog.Logger
 	}
 	type args struct {
 		ctx                      context.Context
@@ -1103,7 +1081,7 @@ func TestConnection_sendReset(t *testing.T) {
 				driverContext:     tt.fields.driverContext,
 				connectionId:      tt.fields.connectionId,
 				tracer:            tt.fields.tracer,
-				log:               tt.fields.log,
+				log:               testutils.ProduceTestingLogger(t),
 			}
 			assert.Equalf(t, tt.wantOk, c.sendReset(tt.args.ctx, tt.args.ch, tt.args.cbusOptions, tt.args.requestContext, tt.args.sendOutErrorNotification), "sendReset(%v, %v, %v, %v, %v)", tt.args.ctx, tt.args.ch, tt.args.cbusOptions, tt.args.requestContext, tt.args.sendOutErrorNotification)
 		})
@@ -1120,7 +1098,6 @@ func TestConnection_setApplicationFilter(t *testing.T) {
 		driverContext     DriverContext
 		connectionId      string
 		tracer            tracer.Tracer
-		log               zerolog.Logger
 	}
 	type args struct {
 		ctx            context.Context
@@ -1152,7 +1129,6 @@ func TestConnection_setApplicationFilter(t *testing.T) {
 			setup: func(t *testing.T, fields *fields) {
 				// Setup logger
 				logger := testutils.ProduceTestingLogger(t)
-				fields.log = logger
 
 				// Custom option for that
 				loggerOption := options.WithCustomLogger(logger)
@@ -1185,7 +1161,7 @@ func TestConnection_setApplicationFilter(t *testing.T) {
 				driverContext:     tt.fields.driverContext,
 				connectionId:      tt.fields.connectionId,
 				tracer:            tt.fields.tracer,
-				log:               tt.fields.log,
+				log:               testutils.ProduceTestingLogger(t),
 			}
 			assert.Equalf(t, tt.wantOk, c.setApplicationFilter(tt.args.ctx, tt.args.ch, tt.args.requestContext, tt.args.cbusOptions), "setApplicationFilter(%v, %v, %v, %v)", tt.args.ctx, tt.args.ch, tt.args.requestContext, tt.args.cbusOptions)
 		})
@@ -1202,7 +1178,6 @@ func TestConnection_setInterface1PowerUpSettings(t *testing.T) {
 		driverContext     DriverContext
 		connectionId      string
 		tracer            tracer.Tracer
-		log               zerolog.Logger
 	}
 	type args struct {
 		ctx            context.Context
@@ -1234,7 +1209,6 @@ func TestConnection_setInterface1PowerUpSettings(t *testing.T) {
 			setup: func(t *testing.T, fields *fields, args *args) {
 				// Setup logger
 				logger := testutils.ProduceTestingLogger(t)
-				fields.log = logger
 
 				// Custom option for that
 				loggerOption := options.WithCustomLogger(logger)
@@ -1267,7 +1241,7 @@ func TestConnection_setInterface1PowerUpSettings(t *testing.T) {
 				driverContext:     tt.fields.driverContext,
 				connectionId:      tt.fields.connectionId,
 				tracer:            tt.fields.tracer,
-				log:               tt.fields.log,
+				log:               testutils.ProduceTestingLogger(t),
 			}
 			assert.Equalf(t, tt.wantOk, c.setInterface1PowerUpSettings(tt.args.ctx, tt.args.ch, tt.args.requestContext, tt.args.cbusOptions), "setInterface1PowerUpSettings(%v, %v, %v, %v)", tt.args.ctx, tt.args.ch, tt.args.requestContext, tt.args.cbusOptions)
 		})
@@ -1284,7 +1258,6 @@ func TestConnection_setInterfaceOptions1(t *testing.T) {
 		driverContext     DriverContext
 		connectionId      string
 		tracer            tracer.Tracer
-		log               zerolog.Logger
 	}
 	type args struct {
 		ctx            context.Context
@@ -1316,7 +1289,6 @@ func TestConnection_setInterfaceOptions1(t *testing.T) {
 			setup: func(t *testing.T, fields *fields) {
 				// Setup logger
 				logger := testutils.ProduceTestingLogger(t)
-				fields.log = logger
 
 				// Custom option for that
 				loggerOption := options.WithCustomLogger(logger)
@@ -1349,7 +1321,7 @@ func TestConnection_setInterfaceOptions1(t *testing.T) {
 				driverContext:     tt.fields.driverContext,
 				connectionId:      tt.fields.connectionId,
 				tracer:            tt.fields.tracer,
-				log:               tt.fields.log,
+				log:               testutils.ProduceTestingLogger(t),
 			}
 			assert.Equalf(t, tt.want, c.setInterfaceOptions1(tt.args.ctx, tt.args.ch, tt.args.requestContext, tt.args.cbusOptions), "setInterfaceOptions1(%v, %v, %v, %v)", tt.args.ctx, tt.args.ch, tt.args.requestContext, tt.args.cbusOptions)
 		})
@@ -1366,7 +1338,6 @@ func TestConnection_setInterfaceOptions3(t *testing.T) {
 		driverContext     DriverContext
 		connectionId      string
 		tracer            tracer.Tracer
-		log               zerolog.Logger
 	}
 	type args struct {
 		ctx            context.Context
@@ -1398,7 +1369,6 @@ func TestConnection_setInterfaceOptions3(t *testing.T) {
 			setup: func(t *testing.T, fields *fields) {
 				// Setup logger
 				logger := testutils.ProduceTestingLogger(t)
-				fields.log = logger
 
 				// Custom option for that
 				loggerOption := options.WithCustomLogger(logger)
@@ -1431,7 +1401,7 @@ func TestConnection_setInterfaceOptions3(t *testing.T) {
 				driverContext:     tt.fields.driverContext,
 				connectionId:      tt.fields.connectionId,
 				tracer:            tt.fields.tracer,
-				log:               tt.fields.log,
+				log:               testutils.ProduceTestingLogger(t),
 			}
 			assert.Equalf(t, tt.wantOk, c.setInterfaceOptions3(tt.args.ctx, tt.args.ch, tt.args.requestContext, tt.args.cbusOptions), "setInterfaceOptions3(%v, %v, %v, %v)", tt.args.ctx, tt.args.ch, tt.args.requestContext, tt.args.cbusOptions)
 		})
@@ -1448,7 +1418,6 @@ func TestConnection_setupConnection(t *testing.T) {
 		driverContext     DriverContext
 		connectionId      string
 		tracer            tracer.Tracer
-		log               zerolog.Logger
 	}
 	type args struct {
 		ctx context.Context
@@ -1469,7 +1438,6 @@ func TestConnection_setupConnection(t *testing.T) {
 			setup: func(t *testing.T, fields *fields) {
 				// Setup logger
 				logger := testutils.ProduceTestingLogger(t)
-				fields.log = logger
 
 				// Custom option for that
 				loggerOption := options.WithCustomLogger(logger)
@@ -1495,7 +1463,6 @@ func TestConnection_setupConnection(t *testing.T) {
 			setup: func(t *testing.T, fields *fields) {
 				// Setup logger
 				logger := testutils.ProduceTestingLogger(t)
-				fields.log = logger
 
 				// Custom option for that
 				loggerOption := options.WithCustomLogger(logger)
@@ -1546,7 +1513,6 @@ func TestConnection_setupConnection(t *testing.T) {
 			setup: func(t *testing.T, fields *fields) {
 				// Setup logger
 				logger := testutils.ProduceTestingLogger(t)
-				fields.log = logger
 
 				// Custom option for that
 				loggerOption := options.WithCustomLogger(logger)
@@ -1609,7 +1575,6 @@ func TestConnection_setupConnection(t *testing.T) {
 			setup: func(t *testing.T, fields *fields) {
 				// Setup logger
 				logger := testutils.ProduceTestingLogger(t)
-				fields.log = logger
 
 				// Custom option for that
 				loggerOption := options.WithCustomLogger(logger)
@@ -1678,7 +1643,6 @@ func TestConnection_setupConnection(t *testing.T) {
 			setup: func(t *testing.T, fields *fields) {
 				// Setup logger
 				logger := testutils.ProduceTestingLogger(t)
-				fields.log = logger
 
 				// Custom option for that
 				loggerOption := options.WithCustomLogger(logger)
@@ -1756,7 +1720,6 @@ func TestConnection_setupConnection(t *testing.T) {
 			setup: func(t *testing.T, fields *fields) {
 				// Setup logger
 				logger := testutils.ProduceTestingLogger(t)
-				fields.log = logger
 
 				// Custom option for that
 				loggerOption := options.WithCustomLogger(logger)
@@ -1842,7 +1805,7 @@ func TestConnection_setupConnection(t *testing.T) {
 				driverContext:     tt.fields.driverContext,
 				connectionId:      tt.fields.connectionId,
 				tracer:            tt.fields.tracer,
-				log:               tt.fields.log,
+				log:               testutils.ProduceTestingLogger(t),
 			}
 			c.setupConnection(tt.args.ctx, tt.args.ch)
 		})
@@ -1859,7 +1822,6 @@ func TestConnection_startSubscriptionHandler(t *testing.T) {
 		driverContext     DriverContext
 		connectionId      string
 		tracer            tracer.Tracer
-		log               zerolog.Logger
 	}
 	tests := []struct {
 		name   string
@@ -1871,7 +1833,7 @@ func TestConnection_startSubscriptionHandler(t *testing.T) {
 			setup: func(t *testing.T, fields *fields) {
 				// Setup logger
 				logger := testutils.ProduceTestingLogger(t)
-				fields.log = logger
+
 				loggerOption := options.WithCustomLogger(logger)
 
 				fields.DefaultConnection = _default.NewDefaultConnection(nil, loggerOption)
@@ -1882,7 +1844,6 @@ func TestConnection_startSubscriptionHandler(t *testing.T) {
 			setup: func(t *testing.T, fields *fields) {
 				// Setup logger
 				logger := testutils.ProduceTestingLogger(t)
-				fields.log = logger
 				loggerOption := options.WithCustomLogger(logger)
 
 				defaultConnection := _default.NewDefaultConnection(nil, loggerOption)
@@ -1905,7 +1866,6 @@ func TestConnection_startSubscriptionHandler(t *testing.T) {
 			setup: func(t *testing.T, fields *fields) {
 				// Setup logger
 				logger := testutils.ProduceTestingLogger(t)
-				fields.log = logger
 				loggerOption := options.WithCustomLogger(logger)
 
 				defaultConnection := _default.NewDefaultConnection(nil, loggerOption)
@@ -1936,7 +1896,7 @@ func TestConnection_startSubscriptionHandler(t *testing.T) {
 				driverContext:     tt.fields.driverContext,
 				connectionId:      tt.fields.connectionId,
 				tracer:            tt.fields.tracer,
-				log:               tt.fields.log,
+				log:               testutils.ProduceTestingLogger(t),
 			}
 			c.startSubscriptionHandler()
 			time.Sleep(50 * time.Millisecond)

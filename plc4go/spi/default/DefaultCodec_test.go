@@ -22,16 +22,17 @@ package _default
 import (
 	"context"
 	"fmt"
+	"testing"
+	"time"
+
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/transports"
 	"github.com/apache/plc4x/plc4go/spi/transports/test"
 	"github.com/pkg/errors"
-	"github.com/rs/zerolog"
+
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
-	"testing"
-	"time"
 )
 
 func TestDefaultExpectation_GetAcceptsMessage(t *testing.T) {
@@ -1231,7 +1232,6 @@ func Test_defaultCodec_String(t *testing.T) {
 		expectations                  []spi.Expectation
 		running                       bool
 		customMessageHandling         func(codec DefaultCodecRequirements, message spi.Message) bool
-		log                           zerolog.Logger
 	}
 	tests := []struct {
 		name   string
@@ -1260,7 +1260,6 @@ func Test_defaultCodec_String(t *testing.T) {
 					}(),
 				},
 				customMessageHandling: nil,
-				log:                   zerolog.Logger{},
 			},
 			want: `
 ╔═defaultCodec═══════════════════════════════════════════════════════════════════════════════════════════╗
@@ -1280,7 +1279,6 @@ func Test_defaultCodec_String(t *testing.T) {
 				defaultIncomingMessageChannel: tt.fields.defaultIncomingMessageChannel,
 				expectations:                  tt.fields.expectations,
 				customMessageHandling:         tt.fields.customMessageHandling,
-				log:                           tt.fields.log,
 			}
 			assert.Equalf(t, tt.want, m.String(), "String()")
 		})

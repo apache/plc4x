@@ -25,6 +25,7 @@ import (
 	"time"
 
 	"github.com/apache/plc4x/plc4go/spi/pool"
+	"github.com/apache/plc4x/plc4go/spi/testutils"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
@@ -38,7 +39,6 @@ func Test_requestTransaction_EndRequest(t1 *testing.T) {
 		transactionId    int32
 		operation        pool.Runnable
 		completionFuture pool.CompletionFuture
-		transactionLog   zerolog.Logger
 		completed        bool
 	}
 	tests := []struct {
@@ -69,7 +69,7 @@ func Test_requestTransaction_EndRequest(t1 *testing.T) {
 				transactionId:    tt.fields.transactionId,
 				operation:        tt.fields.operation,
 				completionFuture: tt.fields.completionFuture,
-				transactionLog:   tt.fields.transactionLog,
+				transactionLog:   testutils.ProduceTestingLogger(t1),
 				completed:        tt.fields.completed,
 			}
 			if err := t.EndRequest(); (err != nil) != tt.wantErr {
@@ -147,7 +147,6 @@ func Test_requestTransaction_String(t1 *testing.T) {
 		transactionId    int32
 		operation        pool.Runnable
 		completionFuture pool.CompletionFuture
-		transactionLog   zerolog.Logger
 	}
 	tests := []struct {
 		name   string
@@ -171,7 +170,7 @@ func Test_requestTransaction_String(t1 *testing.T) {
 				transactionId:    tt.fields.transactionId,
 				operation:        tt.fields.operation,
 				completionFuture: tt.fields.completionFuture,
-				transactionLog:   tt.fields.transactionLog,
+				transactionLog:   testutils.ProduceTestingLogger(t1),
 			}
 			if got := t.String(); got != tt.want {
 				t1.Errorf("String() = \n%v, want \n%v", got, tt.want)
@@ -260,7 +259,6 @@ func Test_requestTransaction_AwaitCompletion(t1 *testing.T) {
 		transactionId    int32
 		operation        pool.Runnable
 		completionFuture pool.CompletionFuture
-		transactionLog   zerolog.Logger
 	}
 	type args struct {
 		ctx context.Context
@@ -314,7 +312,7 @@ func Test_requestTransaction_AwaitCompletion(t1 *testing.T) {
 				transactionId:    tt.fields.transactionId,
 				operation:        tt.fields.operation,
 				completionFuture: tt.fields.completionFuture,
-				transactionLog:   tt.fields.transactionLog,
+				transactionLog:   testutils.ProduceTestingLogger(t1),
 			}
 			if err := t.AwaitCompletion(tt.args.ctx); (err != nil) != tt.wantErr {
 				t1.Errorf("AwaitCompletion() error = %v, wantErr %v", err, tt.wantErr)

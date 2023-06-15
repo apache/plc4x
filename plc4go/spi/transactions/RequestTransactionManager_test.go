@@ -153,7 +153,6 @@ func Test_requestTransactionManager_StartTransaction(t *testing.T) {
 		executor                            pool.Executor
 		shutdown                            bool
 		traceTransactionManagerTransactions bool
-		log                                 zerolog.Logger
 	}
 	tests := []struct {
 		name       string
@@ -163,9 +162,6 @@ func Test_requestTransactionManager_StartTransaction(t *testing.T) {
 	}{
 		{
 			name: "start one",
-			setup: func(t *testing.T, fields *fields) {
-				fields.log = testutils.ProduceTestingLogger(t)
-			},
 			wantAssert: func(t *testing.T, requestTransaction RequestTransaction) bool {
 				assert.False(t, requestTransaction.IsCompleted())
 				return true
@@ -175,9 +171,6 @@ func Test_requestTransactionManager_StartTransaction(t *testing.T) {
 			name: "start one in shutdown",
 			fields: fields{
 				shutdown: true,
-			},
-			setup: func(t *testing.T, fields *fields) {
-				fields.log = testutils.ProduceTestingLogger(t)
 			},
 			wantAssert: func(t *testing.T, requestTransaction RequestTransaction) bool {
 				assert.True(t, requestTransaction.IsCompleted())
@@ -199,7 +192,7 @@ func Test_requestTransactionManager_StartTransaction(t *testing.T) {
 				executor:                            tt.fields.executor,
 				shutdown:                            tt.fields.shutdown,
 				traceTransactionManagerTransactions: tt.fields.traceTransactionManagerTransactions,
-				log:                                 tt.fields.log,
+				log:                                 testutils.ProduceTestingLogger(t),
 			}
 			if got := r.StartTransaction(); !assert.True(t, tt.wantAssert(t, got)) {
 				t.Errorf("StartTransaction() = %v", got)
@@ -460,7 +453,6 @@ func Test_requestTransactionManager_Close(t *testing.T) {
 		executor                            pool.Executor
 		shutdown                            bool
 		traceTransactionManagerTransactions bool
-		log                                 zerolog.Logger
 	}
 	tests := []struct {
 		name    string
@@ -491,7 +483,7 @@ func Test_requestTransactionManager_Close(t *testing.T) {
 				executor:                            tt.fields.executor,
 				shutdown:                            tt.fields.shutdown,
 				traceTransactionManagerTransactions: tt.fields.traceTransactionManagerTransactions,
-				log:                                 tt.fields.log,
+				log:                                 testutils.ProduceTestingLogger(t),
 			}
 			tt.wantErr(t, r.Close(), fmt.Sprintf("Close()"))
 		})
@@ -587,7 +579,6 @@ func Test_requestTransactionManager_String(t *testing.T) {
 		executor                            pool.Executor
 		shutdown                            bool
 		traceTransactionManagerTransactions bool
-		log                                 zerolog.Logger
 	}
 	tests := []struct {
 		name   string
@@ -649,7 +640,7 @@ func Test_requestTransactionManager_String(t *testing.T) {
 				executor:                            tt.fields.executor,
 				shutdown:                            tt.fields.shutdown,
 				traceTransactionManagerTransactions: tt.fields.traceTransactionManagerTransactions,
-				log:                                 tt.fields.log,
+				log:                                 testutils.ProduceTestingLogger(t),
 			}
 			assert.Equalf(t, tt.want, r.String(), "String()")
 		})

@@ -43,7 +43,6 @@ import (
 	spiValues "github.com/apache/plc4x/plc4go/spi/values"
 
 	"github.com/pkg/errors"
-	"github.com/rs/zerolog"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -57,7 +56,6 @@ func TestBrowser_BrowseQuery(t *testing.T) {
 		DefaultBrowser  _default.DefaultBrowser
 		connection      plc4go.PlcConnection
 		sequenceCounter uint8
-		log             zerolog.Logger
 	}
 	type args struct {
 		ctx         context.Context
@@ -91,7 +89,6 @@ func TestBrowser_BrowseQuery(t *testing.T) {
 			setup: func(t *testing.T, fields *fields) {
 				// Setup logger
 				logger := testutils.ProduceTestingLogger(t)
-				fields.log = logger
 
 				// Custom option for that
 				loggerOption := options.WithCustomLogger(logger)
@@ -204,7 +201,7 @@ func TestBrowser_BrowseQuery(t *testing.T) {
 				DefaultBrowser:  tt.fields.DefaultBrowser,
 				connection:      tt.fields.connection,
 				sequenceCounter: tt.fields.sequenceCounter,
-				log:             tt.fields.log,
+				log:             testutils.ProduceTestingLogger(t),
 			}
 			got, got1 := m.BrowseQuery(tt.args.ctx, tt.args.interceptor, tt.args.queryName, tt.args.query)
 			assert.Equalf(t, tt.want, got, "BrowseQuery(%v, func(), %v,\n%v\n)", tt.args.ctx, tt.args.queryName, tt.args.query)
@@ -218,7 +215,6 @@ func TestBrowser_extractUnits(t *testing.T) {
 		DefaultBrowser  _default.DefaultBrowser
 		connection      plc4go.PlcConnection
 		sequenceCounter uint8
-		log             zerolog.Logger
 	}
 	type args struct {
 		ctx                          context.Context
@@ -276,7 +272,7 @@ func TestBrowser_extractUnits(t *testing.T) {
 				DefaultBrowser:  tt.fields.DefaultBrowser,
 				connection:      tt.fields.connection,
 				sequenceCounter: tt.fields.sequenceCounter,
-				log:             tt.fields.log,
+				log:             testutils.ProduceTestingLogger(t),
 			}
 			got, got1, err := m.extractUnits(tt.args.ctx, tt.args.query, tt.args.getInstalledUnitAddressBytes)
 			if !tt.wantErr(t, err, fmt.Sprintf("extractUnits(%v, \n%v, func())", tt.args.ctx, tt.args.query)) {
@@ -293,7 +289,6 @@ func TestBrowser_extractAttributes(t *testing.T) {
 		DefaultBrowser  _default.DefaultBrowser
 		connection      plc4go.PlcConnection
 		sequenceCounter uint8
-		log             zerolog.Logger
 	}
 	type args struct {
 		query *unitInfoQuery
@@ -331,7 +326,7 @@ func TestBrowser_extractAttributes(t *testing.T) {
 				DefaultBrowser:  tt.fields.DefaultBrowser,
 				connection:      tt.fields.connection,
 				sequenceCounter: tt.fields.sequenceCounter,
-				log:             tt.fields.log,
+				log:             testutils.ProduceTestingLogger(t),
 			}
 			got, got1 := m.extractAttributes(tt.args.query)
 			assert.Equalf(t, tt.want, got, "extractAttributes(\n%v)", tt.args.query)
@@ -345,7 +340,6 @@ func TestBrowser_getInstalledUnitAddressBytes(t *testing.T) {
 		DefaultBrowser  _default.DefaultBrowser
 		connection      plc4go.PlcConnection
 		sequenceCounter uint8
-		log             zerolog.Logger
 	}
 	type args struct {
 		ctx context.Context
@@ -366,7 +360,6 @@ func TestBrowser_getInstalledUnitAddressBytes(t *testing.T) {
 			setup: func(t *testing.T, fields *fields) {
 				// Setup logger
 				logger := testutils.ProduceTestingLogger(t)
-				fields.log = logger
 
 				// Custom options for that
 				_options := []options.WithOption{
@@ -476,7 +469,7 @@ func TestBrowser_getInstalledUnitAddressBytes(t *testing.T) {
 				DefaultBrowser:  tt.fields.DefaultBrowser,
 				connection:      tt.fields.connection,
 				sequenceCounter: tt.fields.sequenceCounter,
-				log:             tt.fields.log,
+				log:             testutils.ProduceTestingLogger(t),
 			}
 			got, err := m.getInstalledUnitAddressBytes(tt.args.ctx)
 			if !tt.wantErr(t, err, fmt.Sprintf("getInstalledUnitAddressBytes(%v)", tt.args.ctx)) {

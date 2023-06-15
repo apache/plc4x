@@ -51,7 +51,7 @@ func Test_worker_initialize(t *testing.T) {
 				id:          tt.fields.id,
 				interrupter: tt.fields.interrupter,
 				executor:    tt.fields.executor,
-				log:         produceTestLogger(t),
+				log:         produceTestingLogger(t),
 			}
 			w.initialize()
 		})
@@ -201,7 +201,7 @@ func Test_worker_work(t *testing.T) {
 				id:          tt.fields.id,
 				interrupter: make(chan struct{}, 1),
 				executor:    tt.fields.executor,
-				log:         produceTestLogger(t),
+				log:         produceTestingLogger(t),
 			}
 			go w.work()
 			if tt.firstValidation != nil {
@@ -249,7 +249,7 @@ func Test_worker_String(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			w := &worker{
 				id:  tt.fields.id,
-				log: produceTestLogger(t),
+				log: produceTestingLogger(t),
 			}
 			w.lastReceived.Store(time.Time{})
 			assert.Equalf(t, tt.want, w.String(), "String()")

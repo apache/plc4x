@@ -20,14 +20,13 @@
 package pool
 
 import (
-	"context"
-	"github.com/apache/plc4x/plc4go/spi/options"
-	"github.com/rs/zerolog"
-	"github.com/stretchr/testify/assert"
 	"math/rand"
-	"os"
 	"testing"
 	"time"
+
+	"github.com/apache/plc4x/plc4go/spi/options"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestNewFixedSizeExecutor(t *testing.T) {
@@ -50,7 +49,7 @@ func TestNewFixedSizeExecutor(t *testing.T) {
 				options:         []options.WithOption{WithExecutorOptionTracerWorkers(true)},
 			},
 			setup: func(t *testing.T, args *args) {
-				args.options = append(args.options, options.WithCustomLogger(produceTestLogger(t)))
+				args.options = append(args.options, options.WithCustomLogger(produceTestingLogger(t)))
 			},
 			executorValidator: func(t *testing.T, e *executor) bool {
 				return !e.running && !e.shutdown && len(e.worker) == 13 && cap(e.workItems) == 14
@@ -90,7 +89,7 @@ func TestNewDynamicExecutor(t *testing.T) {
 				options:         []options.WithOption{WithExecutorOptionTracerWorkers(true)},
 			},
 			setup: func(t *testing.T, args *args) {
-				args.options = append(args.options, options.WithCustomLogger(produceTestLogger(t)))
+				args.options = append(args.options, options.WithCustomLogger(produceTestingLogger(t)))
 			},
 			executorValidator: func(t *testing.T, e *dynamicExecutor) bool {
 				assert.False(t, e.running)
@@ -108,7 +107,7 @@ func TestNewDynamicExecutor(t *testing.T) {
 				options:         []options.WithOption{WithExecutorOptionTracerWorkers(true)},
 			},
 			setup: func(t *testing.T, args *args) {
-				args.options = append(args.options, options.WithCustomLogger(produceTestLogger(t)))
+				args.options = append(args.options, options.WithCustomLogger(produceTestingLogger(t)))
 			},
 			manipulator: func(t *testing.T, e *dynamicExecutor) {
 				{
@@ -197,25 +196,4 @@ func TestWithExecutorOptionTracerWorkers(t *testing.T) {
 			assert.Equal(t, tt.executorValidator, WithExecutorOptionTracerWorkers(tt.args.traceWorkers))
 		})
 	}
-}
-
-// from: https://github.com/golang/go/issues/36532#issuecomment-575535452
-func testContext(t *testing.T) context.Context {
-	ctx, cancel := context.WithCancel(context.Background())
-	t.Cleanup(cancel)
-	return ctx
-}
-
-// note: we can't use testutils here due to import cycle
-func produceTestLogger(t *testing.T) zerolog.Logger {
-	return zerolog.New(zerolog.NewConsoleWriter(zerolog.ConsoleTestWriter(t),
-		func(w *zerolog.ConsoleWriter) {
-			// TODO: this is really an issue with go-junit-report not sanitizing output before dumping into xml...
-			onJenkins := os.Getenv("JENKINS_URL") != ""
-			onGithubAction := os.Getenv("GITHUB_ACTIONS") != ""
-			onCI := os.Getenv("CI") != ""
-			if onJenkins || onGithubAction || onCI {
-				w.NoColor = true
-			}
-		}))
 }

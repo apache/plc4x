@@ -22,8 +22,6 @@ package _default
 import (
 	"context"
 	"fmt"
-	"github.com/apache/plc4x/plc4go/spi/tracer"
-	"github.com/rs/zerolog"
 	"testing"
 	"time"
 
@@ -31,6 +29,8 @@ import (
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/apache/plc4x/plc4go/spi/testutils"
+	"github.com/apache/plc4x/plc4go/spi/tracer"
 	"github.com/apache/plc4x/plc4go/spi/transports"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 
@@ -1295,7 +1295,6 @@ func Test_defaultConnection_String(t *testing.T) {
 		defaultTtl                    time.Duration
 		tagHandler                    spi.PlcTagHandler
 		valueHandler                  spi.PlcValueHandler
-		log                           zerolog.Logger
 	}
 	tests := []struct {
 		name      string
@@ -1307,7 +1306,6 @@ func Test_defaultConnection_String(t *testing.T) {
 			name: "string it",
 			fields: fields{
 				defaultTtl: 20 * time.Hour,
-				log:        zerolog.Logger{},
 			},
 			connected: true,
 			want: `
@@ -1325,7 +1323,7 @@ func Test_defaultConnection_String(t *testing.T) {
 				defaultTtl:                    tt.fields.defaultTtl,
 				tagHandler:                    tt.fields.tagHandler,
 				valueHandler:                  tt.fields.valueHandler,
-				log:                           tt.fields.log,
+				log:                           testutils.ProduceTestingLogger(t),
 			}
 			if tt.connected {
 				d.connected.Store(true)

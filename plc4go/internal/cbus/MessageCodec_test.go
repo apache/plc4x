@@ -21,6 +21,8 @@ package cbus
 
 import (
 	"fmt"
+	"testing"
+
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/cbus/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	_default "github.com/apache/plc4x/plc4go/spi/default"
@@ -28,10 +30,9 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/testutils"
 	"github.com/apache/plc4x/plc4go/spi/transports"
 	"github.com/apache/plc4x/plc4go/spi/transports/test"
-	"github.com/rs/zerolog"
+
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"testing"
 )
 
 func TestMessageCodec_Send(t *testing.T) {
@@ -835,7 +836,6 @@ func TestMessageCodec_String(t *testing.T) {
 		cbusOptions    readWriteModel.CBusOptions
 		monitoredMMIs  chan readWriteModel.CALReply
 		monitoredSALs  chan readWriteModel.MonitoredSAL
-		log            zerolog.Logger
 	}
 	tests := []struct {
 		name        string
@@ -886,7 +886,7 @@ func TestMessageCodec_String(t *testing.T) {
 				cbusOptions:    tt.fields.cbusOptions,
 				monitoredMMIs:  tt.fields.monitoredMMIs,
 				monitoredSALs:  tt.fields.monitoredSALs,
-				log:            tt.fields.log,
+				log:            testutils.ProduceTestingLogger(t),
 			}
 			if tt.manipulator != nil {
 				tt.manipulator(t, m)

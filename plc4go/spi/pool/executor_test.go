@@ -22,12 +22,13 @@ package pool
 import (
 	"context"
 	"fmt"
-	"github.com/rs/zerolog"
-	"github.com/stretchr/testify/assert"
 	"sync"
 	"sync/atomic"
 	"testing"
 	"time"
+
+	"github.com/rs/zerolog"
+	"github.com/stretchr/testify/assert"
 )
 
 func Test_executor_Close(t *testing.T) {
@@ -38,7 +39,6 @@ func Test_executor_Close(t *testing.T) {
 		queueDepth   int
 		workItems    chan workItem
 		traceWorkers bool
-		log          zerolog.Logger
 	}
 	tests := []struct {
 		name    string
@@ -59,7 +59,7 @@ func Test_executor_Close(t *testing.T) {
 				queueDepth:   tt.fields.queueDepth,
 				workItems:    tt.fields.workItems,
 				traceWorkers: tt.fields.traceWorkers,
-				log:          tt.fields.log,
+				log:          produceTestingLogger(t),
 			}
 			tt.wantErr(t, e.Close(), fmt.Sprintf("Close()"))
 		})
@@ -315,7 +315,6 @@ func Test_executor_getWorkerWaitGroup(t *testing.T) {
 		queueDepth   int
 		workItems    chan workItem
 		traceWorkers bool
-		log          zerolog.Logger
 	}
 	tests := []struct {
 		name   string
@@ -336,7 +335,7 @@ func Test_executor_getWorkerWaitGroup(t *testing.T) {
 				queueDepth:   tt.fields.queueDepth,
 				workItems:    tt.fields.workItems,
 				traceWorkers: tt.fields.traceWorkers,
-				log:          tt.fields.log,
+				log:          produceTestingLogger(t),
 			}
 			assert.Equalf(t, tt.want, e.getWorkerWaitGroup(), "getWorkerWaitGroup()")
 		})
@@ -386,7 +385,6 @@ func Test_executor_isTraceWorkers(t *testing.T) {
 		queueDepth   int
 		workItems    chan workItem
 		traceWorkers bool
-		log          zerolog.Logger
 	}
 	tests := []struct {
 		name   string
@@ -406,7 +404,7 @@ func Test_executor_isTraceWorkers(t *testing.T) {
 				queueDepth:   tt.fields.queueDepth,
 				workItems:    tt.fields.workItems,
 				traceWorkers: tt.fields.traceWorkers,
-				log:          tt.fields.log,
+				log:          produceTestingLogger(t),
 			}
 			assert.Equalf(t, tt.want, e.isTraceWorkers(), "isTraceWorkers()")
 		})

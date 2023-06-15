@@ -20,10 +20,13 @@
 package utils
 
 import (
-	"github.com/rs/zerolog"
-	"github.com/stretchr/testify/assert"
 	"io"
 	"testing"
+
+	"github.com/apache/plc4x/plc4go/spi/testutils"
+
+	"github.com/rs/zerolog"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestNewTransportLogger(t *testing.T) {
@@ -53,7 +56,6 @@ func TestNewTransportLogger(t *testing.T) {
 func TestTransportLogger_Close(t1 *testing.T) {
 	type fields struct {
 		source io.ReadWriteCloser
-		log    zerolog.Logger
 	}
 	tests := []struct {
 		name    string
@@ -66,7 +68,7 @@ func TestTransportLogger_Close(t1 *testing.T) {
 		t1.Run(tt.name, func(t1 *testing.T) {
 			t := &TransportLogger{
 				source: tt.fields.source,
-				log:    tt.fields.log,
+				log:    testutils.ProduceTestingLogger(t1),
 			}
 			if err := t.Close(); (err != nil) != tt.wantErr {
 				t1.Errorf("Close() error = %v, wantErr %v", err, tt.wantErr)
@@ -113,7 +115,6 @@ func TestTransportLogger_Read(t1 *testing.T) {
 func TestTransportLogger_Write(t1 *testing.T) {
 	type fields struct {
 		source io.ReadWriteCloser
-		log    zerolog.Logger
 	}
 	type args struct {
 		p []byte
@@ -131,7 +132,7 @@ func TestTransportLogger_Write(t1 *testing.T) {
 		t1.Run(tt.name, func(t1 *testing.T) {
 			t := &TransportLogger{
 				source: tt.fields.source,
-				log:    tt.fields.log,
+				log:    testutils.ProduceTestingLogger(t1),
 			}
 			got, err := t.Write(tt.args.p)
 			if (err != nil) != tt.wantErr {

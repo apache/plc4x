@@ -48,7 +48,7 @@ func Test_dynamicExecutor_Start(t *testing.T) {
 				maxNumberOfWorkers: 100,
 			},
 			setup: func(t *testing.T, fields *fields) {
-				fields.executor.log = produceTestLogger(t)
+				fields.executor.log = produceTestingLogger(t)
 				fields.executor.workItems <- workItem{1, func() {}, &future{}}
 			},
 		},
@@ -63,7 +63,7 @@ func Test_dynamicExecutor_Start(t *testing.T) {
 				maxNumberOfWorkers: 100,
 			},
 			setup: func(t *testing.T, fields *fields) {
-				fields.executor.log = produceTestLogger(t)
+				fields.executor.log = produceTestingLogger(t)
 				fields.executor.workItems <- workItem{1, func() {}, &future{}}
 			},
 			startTwice: true,
@@ -114,7 +114,7 @@ func Test_dynamicExecutor_Stop(t *testing.T) {
 				maxNumberOfWorkers: 100,
 			},
 			setup: func(t *testing.T, fields *fields) {
-				fields.executor.log = produceTestLogger(t)
+				fields.executor.log = produceTestingLogger(t)
 				fields.executor.workItems <- workItem{1, func() {}, &future{}}
 			},
 		},
@@ -129,7 +129,7 @@ func Test_dynamicExecutor_Stop(t *testing.T) {
 				maxNumberOfWorkers: 100,
 			},
 			setup: func(t *testing.T, fields *fields) {
-				fields.executor.log = produceTestLogger(t)
+				fields.executor.log = produceTestingLogger(t)
 				fields.executor.workItems <- workItem{1, func() {}, &future{}}
 			},
 		},
@@ -144,7 +144,7 @@ func Test_dynamicExecutor_Stop(t *testing.T) {
 				maxNumberOfWorkers: 100,
 			},
 			setup: func(t *testing.T, fields *fields) {
-				fields.executor.log = produceTestLogger(t)
+				fields.executor.log = produceTestingLogger(t)
 				fields.executor.workItems <- workItem{1, func() {}, &future{}}
 			},
 			stopTwice: true,
