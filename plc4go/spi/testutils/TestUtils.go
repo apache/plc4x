@@ -21,7 +21,6 @@ package testutils
 
 import (
 	"context"
-	"github.com/rs/zerolog/log"
 	"os"
 	"runtime/debug"
 	"strings"
@@ -33,6 +32,7 @@ import (
 	"github.com/ajankovic/xdiff/parser"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
 	"github.com/stretchr/testify/assert"
 )
 

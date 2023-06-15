@@ -260,18 +260,21 @@ func (m Browser) getInstalledUnitAddressBytes(ctx context.Context) (map[byte]any
 			case blockOffset0ReceivedChan <- true:
 				m.log.Trace().Msg("0 notified")
 			default:
+				m.log.Warn().Msg("0 blocked")
 			}
 		case 88:
 			select {
 			case blockOffset88ReceivedChan <- true:
 				m.log.Trace().Msg("88 notified")
 			default:
+				m.log.Warn().Msg("88 blocked")
 			}
 		case 176:
 			select {
 			case blockOffset176ReceivedChan <- true:
 				m.log.Trace().Msg("176 notified")
 			default:
+				m.log.Warn().Msg("176 blocked")
 			}
 		}
 	})
@@ -355,7 +358,7 @@ func (m Browser) getInstalledUnitAddressBytes(ctx context.Context) (map[byte]any
 		}
 	}()
 
-	syncCtx, syncCtxCancel := context.WithTimeout(ctx, time.Second*2)
+	syncCtx, syncCtxCancel := context.WithTimeout(ctx, time.Second*6)
 	defer syncCtxCancel()
 	for !blockOffset0Received || !blockOffset88Received || !blockOffset176Received {
 		select {
@@ -369,6 +372,8 @@ func (m Browser) getInstalledUnitAddressBytes(ctx context.Context) (map[byte]any
 			m.log.Trace().Msg("Offset 176 received")
 			blockOffset176Received = true
 		case <-syncCtx.Done():
+			err = syncCtx.Err()
+			m.log.Trace().Err(err).Msg("Ending prematurely")
 			return nil, errors.Wrap(err, "error waiting for other offsets")
 		}
 	}

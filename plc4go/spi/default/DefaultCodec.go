@@ -277,12 +277,11 @@ func (m *defaultCodec) HandleMessages(message spi.Message) bool {
 		if accepts := expectation.GetAcceptsMessage()(message); accepts {
 			m.log.Debug().Stringer("expectation", expectation).Msg("accepts message")
 			// TODO: decouple from worker thread
-			err := expectation.GetHandleMessage()(message)
-			if err != nil {
+			if err := expectation.GetHandleMessage()(message); err != nil {
+				m.log.Debug().Stringer("expectation", expectation).Err(err).Msg("errored handling the message")
 				// Pass the error to the error handler.
 				// TODO: decouple from worker thread
-				err := expectation.GetHandleError()(err)
-				if err != nil {
+				if err := expectation.GetHandleError()(err); err != nil {
 					m.log.Error().Err(err).Msg("Got an error handling error on expectation")
 				}
 				continue
@@ -294,6 +293,8 @@ func (m *defaultCodec) HandleMessages(message spi.Message) bool {
 			} else if (index + 1) < len(m.expectations) {
 				m.expectations = append(m.expectations[:index], m.expectations[index+1:]...)
 			}
+		} else {
+			m.log.Trace().Stringer("expectation", expectation).Msg("doesn't accept message")
 		}
 	}
 	return messageHandled

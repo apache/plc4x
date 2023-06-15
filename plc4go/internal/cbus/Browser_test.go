@@ -89,7 +89,6 @@ func TestBrowser_BrowseQuery(t *testing.T) {
 				query:     NewUnitInfoQuery(readWriteModel.NewUnitAddress(2), nil, 1),
 			},
 			setup: func(t *testing.T, fields *fields) {
-				t.Skip("Somehow this test doesn't work anymore figure out why") // TODO: unskip
 				// Setup logger
 				logger := testutils.ProduceTestingLogger(t)
 				fields.log = logger
@@ -175,7 +174,7 @@ func TestBrowser_BrowseQuery(t *testing.T) {
 				}
 				fields.connection = connectionConnectResult.GetConnection()
 				t.Cleanup(func() {
-					timer := time.NewTimer(1 * time.Second)
+					timer := time.NewTimer(10 * time.Second)
 					t.Cleanup(func() {
 						utils.CleanupTimer(timer)
 					})
@@ -240,7 +239,7 @@ func TestBrowser_extractUnits(t *testing.T) {
 		{
 			name: "one unit",
 			args: args{
-				ctx: context.Background(),
+				ctx: testutils.TestContext(t),
 				query: &unitInfoQuery{
 					unitAddress: readWriteModel.NewUnitAddress(2),
 				},
@@ -252,7 +251,7 @@ func TestBrowser_extractUnits(t *testing.T) {
 		{
 			name: "all units error",
 			args: args{
-				ctx:   context.Background(),
+				ctx:   testutils.TestContext(t),
 				query: &unitInfoQuery{},
 				getInstalledUnitAddressBytes: func(ctx context.Context) (map[byte]any, error) {
 					return nil, errors.New("not today")
@@ -263,7 +262,7 @@ func TestBrowser_extractUnits(t *testing.T) {
 		{
 			name: "all units",
 			args: args{
-				ctx:   context.Background(),
+				ctx:   testutils.TestContext(t),
 				query: &unitInfoQuery{},
 				getInstalledUnitAddressBytes: func(ctx context.Context) (map[byte]any, error) {
 					return map[byte]any{0xAF: true, 0xFE: true}, nil
@@ -368,7 +367,6 @@ func TestBrowser_getInstalledUnitAddressBytes(t *testing.T) {
 				ctx: context.Background(),
 			},
 			setup: func(t *testing.T, fields *fields) {
-				t.Skip("Somehow this test doesn't work anymore figure out why") // TODO: unskip
 				// Setup logger
 				logger := testutils.ProduceTestingLogger(t)
 				fields.log = logger
