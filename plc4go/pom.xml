@@ -569,7 +569,8 @@
             <configuration>
               <buildFlags>
                 <flag>-v</flag>
-                <flag>-race</flag>
+                <!-- TODO: race detection temporary disabled till root cause for the issue is found https://github.com/golang/go/issues/40343 -->
+                <!--flag>-race</flag-->
                 <flag>${go.cover.flag}</flag>
               </buildFlags>
               <outLogFile>test-out-verbose.log</outLogFile>
