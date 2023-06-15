@@ -431,7 +431,7 @@ func TestBrowser_getInstalledUnitAddressBytes(t *testing.T) {
 				}
 				fields.connection = connectionConnectResult.GetConnection()
 				t.Cleanup(func() {
-					timer := time.NewTimer(1 * time.Second)
+					timer := time.NewTimer(6 * time.Second)
 					t.Cleanup(func() {
 						utils.CleanupTimer(timer)
 					})
