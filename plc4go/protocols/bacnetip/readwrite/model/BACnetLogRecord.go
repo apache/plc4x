@@ -24,6 +24,7 @@ import (
 	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
 	"io"
 )
 
@@ -126,6 +127,8 @@ func BACnetLogRecordParse(ctx context.Context, theBytes []byte) (BACnetLogRecord
 func BACnetLogRecordParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetLogRecord, error) {
 	positionAware := readBuffer
 	_ = positionAware
+	log := zerolog.Ctx(ctx)
+	_ = log
 	if pullErr := readBuffer.PullContext("BACnetLogRecord"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetLogRecord")
 	}
@@ -168,7 +171,7 @@ func BACnetLogRecordParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 		_val, _err := BACnetStatusFlagsTaggedParseWithBuffer(ctx, readBuffer, uint8(2), TagClass_CONTEXT_SPECIFIC_TAGS)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'statusFlags' field of BACnetLogRecord")
@@ -203,6 +206,8 @@ func (m *_BACnetLogRecord) Serialize() ([]byte, error) {
 func (m *_BACnetLogRecord) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
+	log := zerolog.Ctx(ctx)
+	_ = log
 	if pushErr := writeBuffer.PushContext("BACnetLogRecord"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for BACnetLogRecord")
 	}

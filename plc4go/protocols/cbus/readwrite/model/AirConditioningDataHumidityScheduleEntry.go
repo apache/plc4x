@@ -24,6 +24,7 @@ import (
 	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
 	"io"
 )
 
@@ -210,6 +211,8 @@ func AirConditioningDataHumidityScheduleEntryParse(ctx context.Context, theBytes
 func AirConditioningDataHumidityScheduleEntryParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AirConditioningDataHumidityScheduleEntry, error) {
 	positionAware := readBuffer
 	_ = positionAware
+	log := zerolog.Ctx(ctx)
+	_ = log
 	if pullErr := readBuffer.PullContext("AirConditioningDataHumidityScheduleEntry"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for AirConditioningDataHumidityScheduleEntry")
 	}
@@ -286,7 +289,7 @@ func AirConditioningDataHumidityScheduleEntryParseWithBuffer(ctx context.Context
 		_val, _err := HVACHumidityParseWithBuffer(ctx, readBuffer)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'level' field of AirConditioningDataHumidityScheduleEntry")
@@ -308,7 +311,7 @@ func AirConditioningDataHumidityScheduleEntryParseWithBuffer(ctx context.Context
 		_val, _err := HVACRawLevelsParseWithBuffer(ctx, readBuffer)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'rawLevel' field of AirConditioningDataHumidityScheduleEntry")
@@ -351,6 +354,8 @@ func (m *_AirConditioningDataHumidityScheduleEntry) Serialize() ([]byte, error) 
 func (m *_AirConditioningDataHumidityScheduleEntry) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
+	log := zerolog.Ctx(ctx)
+	_ = log
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("AirConditioningDataHumidityScheduleEntry"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for AirConditioningDataHumidityScheduleEntry")

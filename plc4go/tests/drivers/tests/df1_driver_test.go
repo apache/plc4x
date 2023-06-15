@@ -25,13 +25,11 @@ import (
 
 	"github.com/apache/plc4x/plc4go/internal/ads"
 	df1IO "github.com/apache/plc4x/plc4go/protocols/df1/readwrite"
-	readWriteModel "github.com/apache/plc4x/plc4go/protocols/df1/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
 )
 
 func TestDf1Driver(t *testing.T) {
 	t.Skip("No test yet")
-	testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
 	withCustomLogger := options.WithCustomLogger(testutils.ProduceTestingLogger(t))
 	testutils.RunDriverTestsuite(
 		t,

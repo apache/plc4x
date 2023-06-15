@@ -32,7 +32,6 @@ import (
 )
 
 func TestS7Driver(t *testing.T) {
-	testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
 	parser := func(readBufferByteBased utils.ReadBufferByteBased) (any, error) {
 		return readWriteModel.TPKTPacketParseWithBuffer(context.Background(), readBufferByteBased)
 	}

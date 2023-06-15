@@ -183,9 +183,6 @@ func TestConnection_ConnectWithContext(t *testing.T) {
 				logger := testutils.ProduceTestingLogger(t)
 				fields.log = logger
 
-				// Setup global model log
-				testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
-
 				// Custom option for that
 				loggerOption := options.WithCustomLogger(logger)
 
@@ -227,6 +224,7 @@ func TestConnection_ConnectWithContext(t *testing.T) {
 				log:               tt.fields.log,
 			}
 			assert.True(t, tt.wantAsserter(t, c.ConnectWithContext(tt.args.ctx)), "ConnectWithContext(%v)", tt.args.ctx)
+			time.Sleep(200 * time.Millisecond) // TODO: find out what is still running here
 		})
 	}
 }
@@ -880,9 +878,6 @@ func TestConnection_fireConnectionError(t *testing.T) {
 
 				loggerOption := options.WithCustomLogger(logger)
 
-				// Set the model logger to the logger above
-				testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
-
 				fields.DefaultConnection = _default.NewDefaultConnection(nil, loggerOption)
 				transport := test.NewTransport(loggerOption)
 				ti, err := transport.CreateTransportInstance(url.URL{Scheme: "test"}, nil, loggerOption)
@@ -909,9 +904,6 @@ func TestConnection_fireConnectionError(t *testing.T) {
 				logger := testutils.ProduceTestingLogger(t)
 
 				loggerOption := options.WithCustomLogger(logger)
-
-				// Set the model logger to the logger above
-				testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
 
 				fields.DefaultConnection = _default.NewDefaultConnection(nil, loggerOption)
 				transport := test.NewTransport(loggerOption)
@@ -1000,8 +992,6 @@ func TestConnection_sendCalDataWrite(t *testing.T) {
 				logger := testutils.ProduceTestingLogger(t)
 				fields.log = logger
 
-				testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
-
 				// Custom option for that
 				loggerOption := options.WithCustomLogger(logger)
 
@@ -1086,9 +1076,6 @@ func TestConnection_sendReset(t *testing.T) {
 
 				loggerOption := options.WithCustomLogger(logger)
 
-				// Set the model logger to the logger above
-				testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
-
 				fields.DefaultConnection = _default.NewDefaultConnection(nil, loggerOption)
 				transport := test.NewTransport(loggerOption)
 				ti, err := transport.CreateTransportInstance(url.URL{Scheme: "test"}, nil, loggerOption)
@@ -1166,8 +1153,6 @@ func TestConnection_setApplicationFilter(t *testing.T) {
 				// Setup logger
 				logger := testutils.ProduceTestingLogger(t)
 				fields.log = logger
-
-				testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
 
 				// Custom option for that
 				loggerOption := options.WithCustomLogger(logger)
@@ -1251,8 +1236,6 @@ func TestConnection_setInterface1PowerUpSettings(t *testing.T) {
 				logger := testutils.ProduceTestingLogger(t)
 				fields.log = logger
 
-				testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
-
 				// Custom option for that
 				loggerOption := options.WithCustomLogger(logger)
 
@@ -1334,8 +1317,6 @@ func TestConnection_setInterfaceOptions1(t *testing.T) {
 				// Setup logger
 				logger := testutils.ProduceTestingLogger(t)
 				fields.log = logger
-
-				testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
 
 				// Custom option for that
 				loggerOption := options.WithCustomLogger(logger)
@@ -1419,8 +1400,6 @@ func TestConnection_setInterfaceOptions3(t *testing.T) {
 				logger := testutils.ProduceTestingLogger(t)
 				fields.log = logger
 
-				testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
-
 				// Custom option for that
 				loggerOption := options.WithCustomLogger(logger)
 
@@ -1492,8 +1471,6 @@ func TestConnection_setupConnection(t *testing.T) {
 				logger := testutils.ProduceTestingLogger(t)
 				fields.log = logger
 
-				testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
-
 				// Custom option for that
 				loggerOption := options.WithCustomLogger(logger)
 
@@ -1519,8 +1496,6 @@ func TestConnection_setupConnection(t *testing.T) {
 				// Setup logger
 				logger := testutils.ProduceTestingLogger(t)
 				fields.log = logger
-
-				testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
 
 				// Custom option for that
 				loggerOption := options.WithCustomLogger(logger)
@@ -1572,8 +1547,6 @@ func TestConnection_setupConnection(t *testing.T) {
 				// Setup logger
 				logger := testutils.ProduceTestingLogger(t)
 				fields.log = logger
-
-				testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
 
 				// Custom option for that
 				loggerOption := options.WithCustomLogger(logger)
@@ -1637,8 +1610,6 @@ func TestConnection_setupConnection(t *testing.T) {
 				// Setup logger
 				logger := testutils.ProduceTestingLogger(t)
 				fields.log = logger
-
-				testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
 
 				// Custom option for that
 				loggerOption := options.WithCustomLogger(logger)
@@ -1708,8 +1679,6 @@ func TestConnection_setupConnection(t *testing.T) {
 				// Setup logger
 				logger := testutils.ProduceTestingLogger(t)
 				fields.log = logger
-
-				testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
 
 				// Custom option for that
 				loggerOption := options.WithCustomLogger(logger)
@@ -1788,8 +1757,6 @@ func TestConnection_setupConnection(t *testing.T) {
 				// Setup logger
 				logger := testutils.ProduceTestingLogger(t)
 				fields.log = logger
-
-				testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
 
 				// Custom option for that
 				loggerOption := options.WithCustomLogger(logger)
@@ -1907,9 +1874,6 @@ func TestConnection_startSubscriptionHandler(t *testing.T) {
 				fields.log = logger
 				loggerOption := options.WithCustomLogger(logger)
 
-				// Set the model logger to the logger above
-				testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
-
 				fields.DefaultConnection = _default.NewDefaultConnection(nil, loggerOption)
 			},
 		},
@@ -1920,9 +1884,6 @@ func TestConnection_startSubscriptionHandler(t *testing.T) {
 				logger := testutils.ProduceTestingLogger(t)
 				fields.log = logger
 				loggerOption := options.WithCustomLogger(logger)
-
-				// Set the model logger to the logger above
-				testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
 
 				defaultConnection := _default.NewDefaultConnection(nil, loggerOption)
 				defaultConnection.SetConnected(true)
@@ -1946,9 +1907,6 @@ func TestConnection_startSubscriptionHandler(t *testing.T) {
 				logger := testutils.ProduceTestingLogger(t)
 				fields.log = logger
 				loggerOption := options.WithCustomLogger(logger)
-
-				// Set the model logger to the logger above
-				testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
 
 				defaultConnection := _default.NewDefaultConnection(nil, loggerOption)
 				defaultConnection.SetConnected(true)
@@ -2007,9 +1965,6 @@ func TestNewConnection(t *testing.T) {
 				// Setup logger
 				logger := testutils.ProduceTestingLogger(t)
 				loggerOption := options.WithCustomLogger(logger)
-
-				// Set the model logger to the logger above
-				testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
 
 				transport := test.NewTransport(loggerOption)
 				codec := NewMessageCodec(test.NewTransportInstance(transport, loggerOption), loggerOption)

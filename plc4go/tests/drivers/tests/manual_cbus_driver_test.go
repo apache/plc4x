@@ -29,7 +29,6 @@ import (
 	"github.com/apache/plc4x/plc4go/pkg/api"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/pkg/api/transports"
-	readWriteModel "github.com/apache/plc4x/plc4go/protocols/cbus/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 
@@ -38,8 +37,6 @@ import (
 
 func TestManualCBusDriverMixed(t *testing.T) {
 	t.Skip()
-
-	testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
 
 	withCustomLogger := options.WithCustomLogger(testutils.ProduceTestingLogger(t))
 
@@ -118,8 +115,6 @@ func TestManualCBusDriverMixed(t *testing.T) {
 func TestManualCBusBrowse(t *testing.T) {
 	t.Skip()
 
-	testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
-
 	withCustomLogger := options.WithCustomLogger(testutils.ProduceTestingLogger(t))
 
 	connectionString := "c-bus://192.168.178.101?Monitor=false&MonitoredApplication1=0x00&MonitoredApplication2=0x00"
@@ -149,8 +144,6 @@ func TestManualCBusBrowse(t *testing.T) {
 func TestManualCBusRead(t *testing.T) {
 	t.Skip()
 
-	testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
-
 	withCustomLogger := options.WithCustomLogger(testutils.ProduceTestingLogger(t))
 
 	connectionString := "c-bus://192.168.178.101?Monitor=false&MonitoredApplication1=0x00&MonitoredApplication2=0x00"
@@ -174,8 +167,6 @@ func TestManualCBusRead(t *testing.T) {
 
 func TestManualDiscovery(t *testing.T) {
 	t.Skip()
-
-	testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
 
 	withCustomLogger := options.WithCustomLogger(testutils.ProduceTestingLogger(t))
 

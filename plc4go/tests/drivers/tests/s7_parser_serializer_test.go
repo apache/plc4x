@@ -24,12 +24,10 @@ import (
 	"testing"
 
 	s7IO "github.com/apache/plc4x/plc4go/protocols/s7/readwrite"
-	readWriteModel "github.com/apache/plc4x/plc4go/protocols/s7/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
 )
 
 func TestS7ParserSerializer(t *testing.T) {
-	testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
 	testutils.RunParserSerializerTestsuite(
 		t,
 		"assets/testing/protocols/s7/ParserSerializerTestsuite.xml",

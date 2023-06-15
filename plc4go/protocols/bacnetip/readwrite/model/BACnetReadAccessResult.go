@@ -24,6 +24,7 @@ import (
 	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
 	"io"
 )
 
@@ -116,6 +117,8 @@ func BACnetReadAccessResultParse(ctx context.Context, theBytes []byte) (BACnetRe
 func BACnetReadAccessResultParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetReadAccessResult, error) {
 	positionAware := readBuffer
 	_ = positionAware
+	log := zerolog.Ctx(ctx)
+	_ = log
 	if pullErr := readBuffer.PullContext("BACnetReadAccessResult"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetReadAccessResult")
 	}
@@ -145,7 +148,7 @@ func BACnetReadAccessResultParseWithBuffer(ctx context.Context, readBuffer utils
 		_val, _err := BACnetReadAccessResultListOfResultsParseWithBuffer(ctx, readBuffer, uint8(1), objectIdentifier.GetObjectType())
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'listOfResults' field of BACnetReadAccessResult")
@@ -179,6 +182,8 @@ func (m *_BACnetReadAccessResult) Serialize() ([]byte, error) {
 func (m *_BACnetReadAccessResult) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
+	log := zerolog.Ctx(ctx)
+	_ = log
 	if pushErr := writeBuffer.PushContext("BACnetReadAccessResult"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for BACnetReadAccessResult")
 	}

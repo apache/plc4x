@@ -24,12 +24,10 @@ import (
 	"testing"
 
 	modbusIO "github.com/apache/plc4x/plc4go/protocols/modbus/readwrite"
-	readWriteModel "github.com/apache/plc4x/plc4go/protocols/modbus/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
 )
 
 func TestModbusParserSerializer(t *testing.T) {
-	testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
 	//testutils.RunParserSerializerTestsuite(t, "assets/testing/protocols/modbus/ascii/ParserSerializerTestsuite.xml", modbusIO.ModbusParserHelper{})
 	//testutils.RunParserSerializerTestsuite(t, "assets/testing/protocols/modbus/rtu/ParserSerializerTestsuite.xml", modbusIO.ModbusParserHelper{})
 	testutils.RunParserSerializerTestsuite(

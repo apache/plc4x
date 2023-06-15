@@ -24,6 +24,7 @@ import (
 	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
 	"io"
 )
 
@@ -189,6 +190,8 @@ func MonitoredSALShortFormBasicModeParse(ctx context.Context, theBytes []byte, c
 func MonitoredSALShortFormBasicModeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (MonitoredSALShortFormBasicMode, error) {
 	positionAware := readBuffer
 	_ = positionAware
+	log := zerolog.Ctx(ctx)
+	_ = log
 	if pullErr := readBuffer.PullContext("MonitoredSALShortFormBasicMode"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for MonitoredSALShortFormBasicMode")
 	}
@@ -257,7 +260,7 @@ func MonitoredSALShortFormBasicModeParseWithBuffer(ctx context.Context, readBuff
 		_val, _err := SALDataParseWithBuffer(ctx, readBuffer, application.ApplicationId())
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'salData' field of MonitoredSALShortFormBasicMode")
@@ -300,6 +303,8 @@ func (m *_MonitoredSALShortFormBasicMode) Serialize() ([]byte, error) {
 func (m *_MonitoredSALShortFormBasicMode) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
+	log := zerolog.Ctx(ctx)
+	_ = log
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("MonitoredSALShortFormBasicMode"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for MonitoredSALShortFormBasicMode")

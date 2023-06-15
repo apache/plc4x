@@ -27,6 +27,7 @@ import (
 	"github.com/rs/zerolog"
 	"runtime/debug"
 	"strings"
+	"sync"
 	"time"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
@@ -40,6 +41,8 @@ import (
 type Subscriber struct {
 	consumers     map[*spiModel.DefaultPlcConsumerRegistration]apiModel.PlcSubscriptionEventConsumer `ignore:"true"`
 	addSubscriber func(subscriber *Subscriber)
+
+	consumersMutex sync.RWMutex
 
 	log zerolog.Logger `ignore:"true"`
 }
@@ -122,6 +125,8 @@ func (s *Subscriber) handleMonitoredMMI(calReply readWriteModel.CALReply) bool {
 	s.log.Debug().Msgf("Unit address string: %s", unitAddressString)
 	calData := calReply.GetCalData()
 	handled := false
+	s.consumersMutex.RLock()
+	defer s.consumersMutex.RUnlock()
 	for registration, consumer := range s.consumers {
 		s.log.Debug().Msgf("Checking with registration\n%s\nand consumer set %t", registration, consumer != nil)
 		for _, subscriptionHandle := range registration.GetSubscriptionHandles() {
@@ -259,6 +264,8 @@ func (s *Subscriber) offerMMI(unitAddressString string, calData readWriteModel.C
 
 func (s *Subscriber) handleMonitoredSAL(sal readWriteModel.MonitoredSAL) bool {
 	handled := false
+	s.consumersMutex.RLock()
+	defer s.consumersMutex.RUnlock()
 	for registration, consumer := range s.consumers {
 		for _, subscriptionHandle := range registration.GetSubscriptionHandles() {
 			handled = handled || s.offerSAL(sal, subscriptionHandle.(*SubscriptionHandle), consumer)
@@ -406,11 +413,15 @@ func (s *Subscriber) offerSAL(sal readWriteModel.MonitoredSAL, subscriptionHandl
 }
 
 func (s *Subscriber) Register(consumer apiModel.PlcSubscriptionEventConsumer, handles []apiModel.PlcSubscriptionHandle) apiModel.PlcConsumerRegistration {
+	s.consumersMutex.Lock()
+	defer s.consumersMutex.Unlock()
 	consumerRegistration := spiModel.NewDefaultPlcConsumerRegistration(s, consumer, handles...)
 	s.consumers[consumerRegistration.(*spiModel.DefaultPlcConsumerRegistration)] = consumer
 	return consumerRegistration
 }
 
 func (s *Subscriber) Unregister(registration apiModel.PlcConsumerRegistration) {
+	s.consumersMutex.Lock()
+	defer s.consumersMutex.Unlock()
 	delete(s.consumers, registration.(*spiModel.DefaultPlcConsumerRegistration))
 }

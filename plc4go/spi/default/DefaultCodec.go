@@ -199,6 +199,7 @@ func (m *defaultCodec) Disconnect() error {
 	}
 	m.log.Trace().Msg("Waiting for worker to shutdown")
 	m.activeWorker.Wait()
+	m.log.Trace().Msg("Done disconnecting")
 	return nil
 }
 

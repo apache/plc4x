@@ -41,6 +41,11 @@ func WithCustomLogger(logger zerolog.Logger) WithOption {
 	return options.WithCustomLogger(logger)
 }
 
+// WithPassLoggerToModel enables passing of log to the model
+func WithPassLoggerToModel(passLogger bool) WithOption {
+	return options.WithPassLoggerToModel(passLogger)
+}
+
 // WithOption is a marker interface for options
 type WithOption interface {
 	options.WithOption

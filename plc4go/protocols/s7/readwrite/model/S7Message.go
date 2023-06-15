@@ -24,6 +24,7 @@ import (
 	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
 	"io"
 )
 
@@ -183,6 +184,8 @@ func S7MessageParse(ctx context.Context, theBytes []byte) (S7Message, error) {
 func S7MessageParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (S7Message, error) {
 	positionAware := readBuffer
 	_ = positionAware
+	log := zerolog.Ctx(ctx)
+	_ = log
 	if pullErr := readBuffer.PullContext("S7Message"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for S7Message")
 	}
@@ -212,7 +215,7 @@ func S7MessageParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) 
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of S7Message")
 		}
 		if reserved != uint16(0x0000) {
-			Plc4xModelLog.Info().Fields(map[string]any{
+			log.Info().Fields(map[string]any{
 				"expected value": uint16(0x0000),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
@@ -278,7 +281,7 @@ func S7MessageParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) 
 		_val, _err := S7ParameterParseWithBuffer(ctx, readBuffer, messageType)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'parameter' field of S7Message")
@@ -300,7 +303,7 @@ func S7MessageParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) 
 		_val, _err := S7PayloadParseWithBuffer(ctx, readBuffer, messageType, (parameter))
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'payload' field of S7Message")
@@ -328,6 +331,8 @@ func (pm *_S7Message) SerializeParent(ctx context.Context, writeBuffer utils.Wri
 	_ = m
 	positionAware := writeBuffer
 	_ = positionAware
+	log := zerolog.Ctx(ctx)
+	_ = log
 	if pushErr := writeBuffer.PushContext("S7Message"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for S7Message")
 	}
@@ -350,7 +355,7 @@ func (pm *_S7Message) SerializeParent(ctx context.Context, writeBuffer utils.Wri
 	{
 		var reserved uint16 = uint16(0x0000)
 		if pm.reservedField0 != nil {
-			Plc4xModelLog.Info().Fields(map[string]any{
+			log.Info().Fields(map[string]any{
 				"expected value": uint16(0x0000),
 				"got value":      reserved,
 			}).Msg("Overriding reserved field with unexpected value.")

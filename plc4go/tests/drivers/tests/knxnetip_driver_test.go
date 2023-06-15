@@ -33,7 +33,6 @@ import (
 
 func TestKNXNetIPDriver(t *testing.T) {
 	t.Skip("No test yet")
-	testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
 	parser := func(readBufferByteBased utils.ReadBufferByteBased) (any, error) {
 		return readWriteModel.KnxNetIpMessageParseWithBuffer(context.Background(), readBufferByteBased)
 	}

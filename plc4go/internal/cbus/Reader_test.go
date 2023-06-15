@@ -180,8 +180,6 @@ func TestReader_readSync(t *testing.T) {
 				// Setup logger
 				logger := testutils.ProduceTestingLogger(t)
 
-				testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
-
 				// Custom option for that
 				loggerOption := options.WithCustomLogger(logger)
 
@@ -263,9 +261,6 @@ func TestReader_readSync(t *testing.T) {
 
 				loggerOption := options.WithCustomLogger(logger)
 
-				// Set the model logger to the logger above
-				testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
-
 				fields.tm = transactions.NewRequestTransactionManager(10, loggerOption)
 				transport := test.NewTransport()
 				transportUrl := url.URL{Scheme: "test"}
@@ -345,9 +340,6 @@ func TestReader_readSync(t *testing.T) {
 				logger := testutils.ProduceTestingLogger(t)
 
 				loggerOption := options.WithCustomLogger(logger)
-
-				// Set the model logger to the logger above
-				testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
 
 				transport := test.NewTransport()
 				transportUrl := url.URL{Scheme: "test"}
@@ -436,8 +428,6 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 				},
 			},
 			setup: func(t *testing.T, fields *fields, args *args, ch chan struct{}) {
-				testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
-
 				loggerOption := options.WithCustomLogger(testutils.ProduceTestingLogger(t))
 
 				transport := test.NewTransport(loggerOption)
@@ -503,8 +493,6 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 			setup: func(t *testing.T, fields *fields, args *args, ch chan struct{}) {
 				// Setup logger
 				logger := testutils.ProduceTestingLogger(t)
-
-				testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
 
 				// Custom option for that
 				loggerOption := options.WithCustomLogger(logger)
@@ -592,8 +580,6 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 			setup: func(t *testing.T, fields *fields, args *args, ch chan struct{}) {
 				// Setup logger
 				logger := testutils.ProduceTestingLogger(t)
-
-				testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
 
 				// Custom option for that
 				loggerOption := options.WithCustomLogger(logger)
@@ -694,9 +680,6 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 
 				loggerOption := options.WithCustomLogger(logger)
 
-				// Set the model logger to the logger above
-				testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
-
 				transport := test.NewTransport(loggerOption)
 				transportUrl := url.URL{Scheme: "test"}
 				transportInstance, err := transport.CreateTransportInstance(transportUrl, nil, loggerOption)
@@ -785,9 +768,6 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 				logger := testutils.ProduceTestingLogger(t)
 
 				loggerOption := options.WithCustomLogger(logger)
-
-				// Set the model logger to the logger above
-				testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
 
 				transport := test.NewTransport(loggerOption)
 				transportUrl := url.URL{Scheme: "test"}
@@ -878,9 +858,6 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 
 				loggerOption := options.WithCustomLogger(logger)
 
-				// Set the model logger to the logger above
-				testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
-
 				transport := test.NewTransport(loggerOption)
 				transportUrl := url.URL{Scheme: "test"}
 				transportInstance, err := transport.CreateTransportInstance(transportUrl, nil, loggerOption)
@@ -969,9 +946,6 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 				logger := testutils.ProduceTestingLogger(t)
 
 				loggerOption := options.WithCustomLogger(logger)
-
-				// Set the model logger to the logger above
-				testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
 
 				transport := test.NewTransport(loggerOption)
 				transportUrl := url.URL{Scheme: "test"}
@@ -1062,9 +1036,6 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 
 				loggerOption := options.WithCustomLogger(logger)
 
-				// Set the model logger to the logger above
-				testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
-
 				transport := test.NewTransport(loggerOption)
 				transportUrl := url.URL{Scheme: "test"}
 				transportInstance, err := transport.CreateTransportInstance(transportUrl, nil, loggerOption)
@@ -1153,9 +1124,6 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 				logger := testutils.ProduceTestingLogger(t)
 
 				loggerOption := options.WithCustomLogger(logger)
-
-				// Set the model logger to the logger above
-				testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
 
 				transport := test.NewTransport(loggerOption)
 				transportUrl := url.URL{Scheme: "test"}

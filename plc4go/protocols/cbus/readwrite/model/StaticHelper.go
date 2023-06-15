@@ -22,6 +22,7 @@ package model
 import (
 	"context"
 	"encoding/hex"
+	"github.com/rs/zerolog"
 
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/utils"
@@ -111,6 +112,7 @@ func ReadCALData(ctx context.Context, readBuffer utils.ReadBuffer) (CALData, err
 }
 
 func readBytesFromHex(ctx context.Context, logicalName string, readBuffer utils.ReadBuffer, srchk bool) ([]byte, error) {
+	log := zerolog.Ctx(ctx)
 	payloadLength := findHexEnd(ctx, readBuffer)
 	if payloadLength == 0 {
 		return nil, utils.ParseAssertError{Message: "Length is 0"}
@@ -142,7 +144,7 @@ func readBytesFromHex(ctx context.Context, logicalName string, readBuffer utils.
 		readBuffer.Reset(readBuffer.GetPos() - 2)
 		rawBytes = rawBytes[:len(rawBytes)-1]
 	}
-	Plc4xModelLog.Trace().Msgf("%d bytes decoded", n)
+	log.Trace().Msgf("%d bytes decoded", n)
 	return rawBytes, nil
 }
 
@@ -172,11 +174,12 @@ func writeSerializableToHex(ctx context.Context, logicalName string, writeBuffer
 }
 
 func writeToHex(ctx context.Context, logicalName string, writeBuffer utils.WriteBuffer, bytesToWrite []byte) error {
+	log := zerolog.Ctx(ctx)
 	hexBytes := make([]byte, hex.EncodedLen(len(bytesToWrite)))
 	// usually you use hex.Encode but we want the encoding in uppercase
 	//n := hex.Encode(hexBytes, wbbb.GetBytes())
 	n := encodeHexUpperCase(hexBytes, bytesToWrite)
-	Plc4xModelLog.Trace().Msgf("%d bytes encoded", n)
+	log.Trace().Msgf("%d bytes encoded", n)
 	return writeBuffer.WriteByteArray(logicalName, hexBytes)
 }
 

@@ -25,7 +25,6 @@ import (
 	"github.com/apache/plc4x/plc4go/internal/bacnetip"
 	"github.com/apache/plc4x/plc4go/pkg/api"
 	"github.com/apache/plc4x/plc4go/pkg/api/transports"
-	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
 )
@@ -33,7 +32,6 @@ import (
 func TestManualBacnetDriver(t *testing.T) {
 	t.Skip()
 
-	testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
 	connectionString := "bacnet-ip://192.168.178.101"
 	withCustomLogger := options.WithCustomLogger(testutils.ProduceTestingLogger(t))
 	driverManager := plc4go.NewPlcDriverManager(withCustomLogger)

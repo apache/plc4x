@@ -69,9 +69,6 @@ func TestMessageCodec_Send(t *testing.T) {
 
 				loggerOption := options.WithCustomLogger(logger)
 
-				// Set the model logger to the logger above
-				testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
-
 				transport := test.NewTransport(loggerOption)
 				instance := test.NewTransportInstance(transport, loggerOption)
 				codec := NewMessageCodec(instance, loggerOption)
@@ -133,9 +130,6 @@ func TestMessageCodec_Receive(t *testing.T) {
 
 				loggerOption := options.WithCustomLogger(logger)
 
-				// Set the model logger to the logger above
-				testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
-
 				transport := test.NewTransport(loggerOption)
 				instance := test.NewTransportInstance(transport, loggerOption)
 				codec := NewMessageCodec(instance, loggerOption)
@@ -166,9 +160,6 @@ func TestMessageCodec_Receive(t *testing.T) {
 
 				loggerOption := options.WithCustomLogger(logger)
 
-				// Set the model logger to the logger above
-				testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
-
 				transport := test.NewTransport(loggerOption)
 				instance := test.NewTransportInstance(transport, loggerOption)
 				instance.FillReadBuffer([]byte("!"))
@@ -193,9 +184,6 @@ func TestMessageCodec_Receive(t *testing.T) {
 				logger := testutils.ProduceTestingLogger(t)
 
 				loggerOption := options.WithCustomLogger(logger)
-
-				// Set the model logger to the logger above
-				testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
 
 				transport := test.NewTransport(loggerOption)
 				instance := test.NewTransportInstance(transport, loggerOption)
@@ -222,9 +210,6 @@ func TestMessageCodec_Receive(t *testing.T) {
 
 				loggerOption := options.WithCustomLogger(logger)
 
-				// Set the model logger to the logger above
-				testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
-
 				transport := test.NewTransport(loggerOption)
 				instance := test.NewTransportInstance(transport, loggerOption)
 				instance.FillReadBuffer([]byte("what on earth\n\r"))
@@ -249,9 +234,6 @@ func TestMessageCodec_Receive(t *testing.T) {
 				logger := testutils.ProduceTestingLogger(t)
 
 				loggerOption := options.WithCustomLogger(logger)
-
-				// Set the model logger to the logger above
-				testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
 
 				transport := test.NewTransport(loggerOption)
 				instance := test.NewTransportInstance(transport, loggerOption)
@@ -310,9 +292,6 @@ func TestMessageCodec_Receive(t *testing.T) {
 
 				loggerOption := options.WithCustomLogger(logger)
 
-				// Set the model logger to the logger above
-				testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
-
 				transport := test.NewTransport(loggerOption)
 				instance := test.NewTransportInstance(transport, loggerOption)
 				instance.FillReadBuffer([]byte("@1A2001!!!\r"))
@@ -337,9 +316,6 @@ func TestMessageCodec_Receive(t *testing.T) {
 				logger := testutils.ProduceTestingLogger(t)
 
 				loggerOption := options.WithCustomLogger(logger)
-
-				// Set the model logger to the logger above
-				testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
 
 				transport := test.NewTransport(loggerOption)
 				instance := test.NewTransportInstance(transport, loggerOption)
@@ -551,9 +527,6 @@ func TestMessageCodec_Receive(t *testing.T) {
 
 				loggerOption := options.WithCustomLogger(logger)
 
-				// Set the model logger to the logger above
-				testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
-
 				transport := test.NewTransport(loggerOption)
 				instance := test.NewTransportInstance(transport, loggerOption)
 				instance.FillReadBuffer([]byte("0531AC0079042F0401430316000011\r\n"))
@@ -649,9 +622,6 @@ func TestMessageCodec_Receive_Delayed_Response(t *testing.T) {
 
 		loggerOption := options.WithCustomLogger(logger)
 
-		// Set the model logger to the logger above
-		testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
-
 		transport := test.NewTransport(loggerOption)
 		transportInstance := test.NewTransportInstance(transport, loggerOption)
 		codec := NewMessageCodec(transportInstance, loggerOption)
@@ -690,9 +660,6 @@ func TestMessageCodec_Receive_Delayed_Response(t *testing.T) {
 		logger := testutils.ProduceTestingLogger(t)
 
 		loggerOption := options.WithCustomLogger(logger)
-
-		// Set the model logger to the logger above
-		testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
 
 		transport := test.NewTransport(loggerOption)
 		transportInstance := test.NewTransportInstance(transport, loggerOption)
@@ -735,9 +702,6 @@ func TestMessageCodec_Receive_Delayed_Response(t *testing.T) {
 		logger := testutils.ProduceTestingLogger(t)
 
 		loggerOption := options.WithCustomLogger(logger)
-
-		// Set the model logger to the logger above
-		testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
 
 		transport := test.NewTransport(loggerOption)
 		transportInstance := test.NewTransportInstance(transport, loggerOption)

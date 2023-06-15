@@ -24,6 +24,7 @@ import (
 	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
 	"io"
 )
 
@@ -136,6 +137,8 @@ func BACnetRouterEntryParse(ctx context.Context, theBytes []byte) (BACnetRouterE
 func BACnetRouterEntryParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetRouterEntry, error) {
 	positionAware := readBuffer
 	_ = positionAware
+	log := zerolog.Ctx(ctx)
+	_ = log
 	if pullErr := readBuffer.PullContext("BACnetRouterEntry"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetRouterEntry")
 	}
@@ -191,7 +194,7 @@ func BACnetRouterEntryParseWithBuffer(ctx context.Context, readBuffer utils.Read
 		_val, _err := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(3), BACnetDataType_OCTET_STRING)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'performanceIndex' field of BACnetRouterEntry")
@@ -227,6 +230,8 @@ func (m *_BACnetRouterEntry) Serialize() ([]byte, error) {
 func (m *_BACnetRouterEntry) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
+	log := zerolog.Ctx(ctx)
+	_ = log
 	if pushErr := writeBuffer.PushContext("BACnetRouterEntry"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for BACnetRouterEntry")
 	}

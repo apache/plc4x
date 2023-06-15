@@ -26,14 +26,12 @@ import (
 	"github.com/apache/plc4x/plc4go/internal/ads"
 	"github.com/apache/plc4x/plc4go/pkg/api"
 	"github.com/apache/plc4x/plc4go/pkg/api/transports"
-	readWriteModel "github.com/apache/plc4x/plc4go/protocols/ads/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
 )
 
 func TestManualAds(t *testing.T) {
 	t.Skip()
-	testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
 	/*
 		     * Test program code on the PLC with the test-data.
 		     *

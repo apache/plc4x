@@ -24,6 +24,7 @@ import (
 	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
 	"io"
 )
 
@@ -116,6 +117,8 @@ func BACnetDeviceObjectReferenceParse(ctx context.Context, theBytes []byte) (BAC
 func BACnetDeviceObjectReferenceParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetDeviceObjectReference, error) {
 	positionAware := readBuffer
 	_ = positionAware
+	log := zerolog.Ctx(ctx)
+	_ = log
 	if pullErr := readBuffer.PullContext("BACnetDeviceObjectReference"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetDeviceObjectReference")
 	}
@@ -132,7 +135,7 @@ func BACnetDeviceObjectReferenceParseWithBuffer(ctx context.Context, readBuffer 
 		_val, _err := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(0), BACnetDataType_BACNET_OBJECT_IDENTIFIER)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'deviceIdentifier' field of BACnetDeviceObjectReference")
@@ -179,6 +182,8 @@ func (m *_BACnetDeviceObjectReference) Serialize() ([]byte, error) {
 func (m *_BACnetDeviceObjectReference) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
+	log := zerolog.Ctx(ctx)
+	_ = log
 	if pushErr := writeBuffer.PushContext("BACnetDeviceObjectReference"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for BACnetDeviceObjectReference")
 	}

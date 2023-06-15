@@ -32,7 +32,6 @@ import (
 )
 
 func TestModbusDriver(t *testing.T) {
-	testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
 	parser := func(readBufferByteBased utils.ReadBufferByteBased) (any, error) {
 		return readWriteModel.ModbusTcpADUParseWithBuffer(context.Background(), readBufferByteBased, readWriteModel.DriverType_MODBUS_TCP, false)
 	}

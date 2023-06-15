@@ -20,7 +20,6 @@
 package tests
 
 import (
-	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"testing"
 
@@ -29,7 +28,6 @@ import (
 )
 
 func TestBacnetParserSerializer(t *testing.T) {
-	testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
 	testutils.RunParserSerializerTestsuite(
 		t,
 		"assets/testing/protocols/bacnet/ParserSerializerTestsuite.xml",

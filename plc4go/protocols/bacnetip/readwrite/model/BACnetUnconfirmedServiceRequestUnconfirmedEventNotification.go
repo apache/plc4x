@@ -24,6 +24,7 @@ import (
 	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
 	"io"
 )
 
@@ -272,6 +273,8 @@ func BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationParse(ctx contex
 func BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, serviceRequestLength uint16) (BACnetUnconfirmedServiceRequestUnconfirmedEventNotification, error) {
 	positionAware := readBuffer
 	_ = positionAware
+	log := zerolog.Ctx(ctx)
+	_ = log
 	if pullErr := readBuffer.PullContext("BACnetUnconfirmedServiceRequestUnconfirmedEventNotification"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetUnconfirmedServiceRequestUnconfirmedEventNotification")
 	}
@@ -379,7 +382,7 @@ func BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationParseWithBuffer(
 		_val, _err := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(7), BACnetDataType_CHARACTER_STRING)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'messageText' field of BACnetUnconfirmedServiceRequestUnconfirmedEventNotification")
@@ -414,7 +417,7 @@ func BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationParseWithBuffer(
 		_val, _err := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(9), BACnetDataType_BOOLEAN)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'ackRequired' field of BACnetUnconfirmedServiceRequestUnconfirmedEventNotification")
@@ -436,7 +439,7 @@ func BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationParseWithBuffer(
 		_val, _err := BACnetEventStateTaggedParseWithBuffer(ctx, readBuffer, uint8(10), TagClass_CONTEXT_SPECIFIC_TAGS)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'fromState' field of BACnetUnconfirmedServiceRequestUnconfirmedEventNotification")
@@ -471,7 +474,7 @@ func BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationParseWithBuffer(
 		_val, _err := BACnetNotificationParametersParseWithBuffer(ctx, readBuffer, uint8(12), eventObjectIdentifier.GetObjectType())
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'eventValues' field of BACnetUnconfirmedServiceRequestUnconfirmedEventNotification")
@@ -521,6 +524,8 @@ func (m *_BACnetUnconfirmedServiceRequestUnconfirmedEventNotification) Serialize
 func (m *_BACnetUnconfirmedServiceRequestUnconfirmedEventNotification) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
+	log := zerolog.Ctx(ctx)
+	_ = log
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetUnconfirmedServiceRequestUnconfirmedEventNotification"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for BACnetUnconfirmedServiceRequestUnconfirmedEventNotification")

@@ -93,9 +93,6 @@ func TestBrowser_BrowseQuery(t *testing.T) {
 				logger := testutils.ProduceTestingLogger(t)
 				fields.log = logger
 
-				// Set the model logger to the logger above
-				testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
-
 				// Custom option for that
 				loggerOption := options.WithCustomLogger(logger)
 
@@ -370,9 +367,6 @@ func TestBrowser_getInstalledUnitAddressBytes(t *testing.T) {
 				// Setup logger
 				logger := testutils.ProduceTestingLogger(t)
 				fields.log = logger
-
-				// Set the model logger to the logger above
-				testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
 
 				// Custom options for that
 				_options := []options.WithOption{

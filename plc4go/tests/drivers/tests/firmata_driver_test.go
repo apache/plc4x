@@ -25,13 +25,11 @@ import (
 
 	"github.com/apache/plc4x/plc4go/internal/knxnetip"
 	firmataIO "github.com/apache/plc4x/plc4go/protocols/firmata/readwrite"
-	readWriteModel "github.com/apache/plc4x/plc4go/protocols/firmata/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
 )
 
 func TestFirmataDriver(t *testing.T) {
 	t.Skip("no testsuite yet")
-	testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
 	withCustomLogger := options.WithCustomLogger(testutils.ProduceTestingLogger(t))
 	testutils.RunDriverTestsuite(
 		t,

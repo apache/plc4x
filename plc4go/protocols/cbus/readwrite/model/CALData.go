@@ -24,6 +24,7 @@ import (
 	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
 	"io"
 )
 
@@ -174,6 +175,8 @@ func CALDataParse(ctx context.Context, theBytes []byte, requestContext RequestCo
 func CALDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, requestContext RequestContext) (CALData, error) {
 	positionAware := readBuffer
 	_ = positionAware
+	log := zerolog.Ctx(ctx)
+	_ = log
 	if pullErr := readBuffer.PullContext("CALData"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for CALData")
 	}
@@ -256,7 +259,7 @@ func CALDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, re
 		_val, _err := CALDataParseWithBuffer(ctx, readBuffer, nil)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'additionalData' field of CALData")
@@ -283,6 +286,8 @@ func (pm *_CALData) SerializeParent(ctx context.Context, writeBuffer utils.Write
 	_ = m
 	positionAware := writeBuffer
 	_ = positionAware
+	log := zerolog.Ctx(ctx)
+	_ = log
 	if pushErr := writeBuffer.PushContext("CALData"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for CALData")
 	}

@@ -24,6 +24,7 @@ import (
 	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
 	"io"
 )
 
@@ -153,6 +154,8 @@ func BACnetReadAccessPropertyReadResultParse(ctx context.Context, theBytes []byt
 func BACnetReadAccessPropertyReadResultParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetReadAccessPropertyReadResult, error) {
 	positionAware := readBuffer
 	_ = positionAware
+	log := zerolog.Ctx(ctx)
+	_ = log
 	if pullErr := readBuffer.PullContext("BACnetReadAccessPropertyReadResult"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetReadAccessPropertyReadResult")
 	}
@@ -182,7 +185,7 @@ func BACnetReadAccessPropertyReadResultParseWithBuffer(ctx context.Context, read
 		_val, _err := BACnetConstructedDataParseWithBuffer(ctx, readBuffer, uint8(4), objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'propertyValue' field of BACnetReadAccessPropertyReadResult")
@@ -209,7 +212,7 @@ func BACnetReadAccessPropertyReadResultParseWithBuffer(ctx context.Context, read
 		_val, _err := ErrorEnclosedParseWithBuffer(ctx, readBuffer, uint8(5))
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'propertyAccessError' field of BACnetReadAccessPropertyReadResult")
@@ -257,6 +260,8 @@ func (m *_BACnetReadAccessPropertyReadResult) Serialize() ([]byte, error) {
 func (m *_BACnetReadAccessPropertyReadResult) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
+	log := zerolog.Ctx(ctx)
+	_ = log
 	if pushErr := writeBuffer.PushContext("BACnetReadAccessPropertyReadResult"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for BACnetReadAccessPropertyReadResult")
 	}

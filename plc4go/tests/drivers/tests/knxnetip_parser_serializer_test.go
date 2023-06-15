@@ -24,12 +24,10 @@ import (
 	"testing"
 
 	knxIO "github.com/apache/plc4x/plc4go/protocols/knxnetip/readwrite"
-	readWriteModel "github.com/apache/plc4x/plc4go/protocols/knxnetip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
 )
 
 func TestKNXNetIPParserSerializer(t *testing.T) {
-	testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
 	testutils.RunParserSerializerTestsuite(
 		t,
 		"assets/testing/protocols/knxnetip/ParserSerializerTestsuite.xml",

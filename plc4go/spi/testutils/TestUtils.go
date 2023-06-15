@@ -131,16 +131,6 @@ func ProduceTestingLogger(t *testing.T) zerolog.Logger {
 	)
 }
 
-// SetToTestingLogger sets logger to  ProduceTestingLogger and resets it on cleanup
-func SetToTestingLogger(t *testing.T, logger *zerolog.Logger) {
-	oldLogger := *logger
-	t.Cleanup(func() {
-		*logger = oldLogger
-	})
-	newLogger := ProduceTestingLogger(t)
-	*logger = newLogger
-}
-
 type _explodingGlobalLogger struct {
 	hardExplode bool
 }

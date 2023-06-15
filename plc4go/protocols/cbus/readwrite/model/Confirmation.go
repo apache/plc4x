@@ -24,6 +24,7 @@ import (
 	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
 	"io"
 )
 
@@ -147,6 +148,8 @@ func ConfirmationParse(ctx context.Context, theBytes []byte) (Confirmation, erro
 func ConfirmationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (Confirmation, error) {
 	positionAware := readBuffer
 	_ = positionAware
+	log := zerolog.Ctx(ctx)
+	_ = log
 	if pullErr := readBuffer.PullContext("Confirmation"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for Confirmation")
 	}
@@ -176,7 +179,7 @@ func ConfirmationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 		_val, _err := AlphaParseWithBuffer(ctx, readBuffer)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'secondAlpha' field of Confirmation")
@@ -229,6 +232,8 @@ func (m *_Confirmation) Serialize() ([]byte, error) {
 func (m *_Confirmation) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
+	log := zerolog.Ctx(ctx)
+	_ = log
 	if pushErr := writeBuffer.PushContext("Confirmation"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for Confirmation")
 	}

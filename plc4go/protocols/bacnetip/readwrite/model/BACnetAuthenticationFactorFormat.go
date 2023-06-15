@@ -24,6 +24,7 @@ import (
 	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
 	"io"
 )
 
@@ -128,6 +129,8 @@ func BACnetAuthenticationFactorFormatParse(ctx context.Context, theBytes []byte)
 func BACnetAuthenticationFactorFormatParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetAuthenticationFactorFormat, error) {
 	positionAware := readBuffer
 	_ = positionAware
+	log := zerolog.Ctx(ctx)
+	_ = log
 	if pullErr := readBuffer.PullContext("BACnetAuthenticationFactorFormat"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetAuthenticationFactorFormat")
 	}
@@ -157,7 +160,7 @@ func BACnetAuthenticationFactorFormatParseWithBuffer(ctx context.Context, readBu
 		_val, _err := BACnetVendorIdTaggedParseWithBuffer(ctx, readBuffer, uint8(1), TagClass_CONTEXT_SPECIFIC_TAGS)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'vendorId' field of BACnetAuthenticationFactorFormat")
@@ -179,7 +182,7 @@ func BACnetAuthenticationFactorFormatParseWithBuffer(ctx context.Context, readBu
 		_val, _err := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(2), BACnetDataType_UNSIGNED_INTEGER)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'vendorFormat' field of BACnetAuthenticationFactorFormat")
@@ -214,6 +217,8 @@ func (m *_BACnetAuthenticationFactorFormat) Serialize() ([]byte, error) {
 func (m *_BACnetAuthenticationFactorFormat) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
+	log := zerolog.Ctx(ctx)
+	_ = log
 	if pushErr := writeBuffer.PushContext("BACnetAuthenticationFactorFormat"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for BACnetAuthenticationFactorFormat")
 	}

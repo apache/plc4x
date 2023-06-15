@@ -24,6 +24,7 @@ import (
 	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
 	"io"
 )
 
@@ -167,6 +168,8 @@ func BACnetUnconfirmedServiceRequestUnconfirmedTextMessageParse(ctx context.Cont
 func BACnetUnconfirmedServiceRequestUnconfirmedTextMessageParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, serviceRequestLength uint16) (BACnetUnconfirmedServiceRequestUnconfirmedTextMessage, error) {
 	positionAware := readBuffer
 	_ = positionAware
+	log := zerolog.Ctx(ctx)
+	_ = log
 	if pullErr := readBuffer.PullContext("BACnetUnconfirmedServiceRequestUnconfirmedTextMessage"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetUnconfirmedServiceRequestUnconfirmedTextMessage")
 	}
@@ -196,7 +199,7 @@ func BACnetUnconfirmedServiceRequestUnconfirmedTextMessageParseWithBuffer(ctx co
 		_val, _err := BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassParseWithBuffer(ctx, readBuffer, uint8(1))
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'messageClass' field of BACnetUnconfirmedServiceRequestUnconfirmedTextMessage")
@@ -263,6 +266,8 @@ func (m *_BACnetUnconfirmedServiceRequestUnconfirmedTextMessage) Serialize() ([]
 func (m *_BACnetUnconfirmedServiceRequestUnconfirmedTextMessage) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
+	log := zerolog.Ctx(ctx)
+	_ = log
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetUnconfirmedServiceRequestUnconfirmedTextMessage"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for BACnetUnconfirmedServiceRequestUnconfirmedTextMessage")

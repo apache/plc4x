@@ -30,7 +30,6 @@ import (
 	"time"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
-	readWriteModel "github.com/apache/plc4x/plc4go/protocols/cbus/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/pool"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
@@ -201,9 +200,6 @@ func TestDiscoverer_createDeviceScanDispatcher(t *testing.T) {
 
 				// Setup logger
 				logger := testutils.ProduceTestingLogger(t)
-
-				// Set the model logger to the logger above
-				testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
 
 				loggerOption := options.WithCustomLogger(logger)
 				transport := tcp.NewTransport(loggerOption)

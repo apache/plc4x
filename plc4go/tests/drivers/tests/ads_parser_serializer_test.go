@@ -24,12 +24,10 @@ import (
 	"testing"
 
 	adsIO "github.com/apache/plc4x/plc4go/protocols/ads/readwrite"
-	readWriteModel "github.com/apache/plc4x/plc4go/protocols/ads/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
 )
 
 func TestAdsParserSerializer(t *testing.T) {
-	testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
 	testutils.RunParserSerializerTestsuite(t,
 		"assets/testing/protocols/ads/ParserSerializerTestsuite.xml",
 		adsIO.AdsParserHelper{},

@@ -33,7 +33,6 @@ import (
 
 func TestAdsDriver(t *testing.T) {
 	t.Skip("I have to port the commands for reading the symbol-table first")
-	testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
 	parser := func(readBufferByteBased utils.ReadBufferByteBased) (any, error) {
 		return readWriteModel.AmsTCPPacketParseWithBuffer(context.Background(), readBufferByteBased)
 	}

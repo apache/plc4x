@@ -2779,7 +2779,6 @@ func TestMapEncodedReply(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			testingLogger := testutils.ProduceTestingLogger(t)
-			testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
 			if tt.setup != nil {
 				tt.setup(t, &tt.args)
 			}

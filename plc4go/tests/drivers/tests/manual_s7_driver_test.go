@@ -20,7 +20,6 @@
 package tests
 
 import (
-	readWriteModel "github.com/apache/plc4x/plc4go/protocols/s7/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"testing"
 
@@ -32,7 +31,6 @@ import (
 
 func TestManualS7Driver(t *testing.T) {
 	t.Skip()
-	testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
 	/*
 		Test program code on the PLC with the test-data.
 		Located in "main"
