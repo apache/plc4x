@@ -233,6 +233,7 @@ func (d *plcConnectionPingResult) GetErr() error {
 ///////////////////////////////////////
 
 func (d *defaultConnection) SetConnected(connected bool) {
+	d.log.Trace().Msgf("set connected %t", connected)
 	d.connected.Store(connected)
 }
 

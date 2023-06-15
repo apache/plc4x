@@ -181,7 +181,7 @@ func (d *Discoverer) createDeviceScanDispatcher(udpTransportInstance *udp.Transp
 		// Create a codec for sending and receiving messages.
 		codec := NewMessageCodec(udpTransportInstance, nil, options.WithCustomLogger(d.log))
 		// Explicitly start the worker
-		if err := codec.Connect(); err != nil {
+		if err := codec.ConnectWithContext(context.TODO()); err != nil {
 			d.log.Error().Err(err).Msg("Error connecting")
 			return
 		}

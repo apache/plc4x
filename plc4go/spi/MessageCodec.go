@@ -45,6 +45,7 @@ type HandleError func(err error) error
 
 // MessageCodec handles sending and retrieving of messages
 type MessageCodec interface {
+	// Deprecated: use ConnectWithContext
 	// Connect connects this codec
 	Connect() error
 	// ConnectWithContext connects this codec with the supplied context
