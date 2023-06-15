@@ -69,6 +69,8 @@ type Connection struct {
 	configuration Configuration `stringer:"true"`
 	driverContext DriverContext `stringer:"true"`
 
+	handlerWaitGroup sync.WaitGroup
+
 	connectionId string
 	tracer       tracer.Tracer
 
@@ -129,7 +131,7 @@ func (c *Connection) ConnectWithContext(ctx context.Context) <-chan plc4go.PlcCo
 				c.fireConnectionError(errors.Errorf("panic-ed %v. Stack:\n%s", err, debug.Stack()), ch)
 			}
 		}()
-		if err := c.messageCodec.Connect(); err != nil {
+		if err := c.messageCodec.ConnectWithContext(ctx); err != nil {
 			c.fireConnectionError(errors.Wrap(err, "Error connecting codec"), ch)
 			return
 		}
@@ -148,6 +150,18 @@ func (c *Connection) ConnectWithContext(ctx context.Context) <-chan plc4go.PlcCo
 		c.setupConnection(ctx, ch)
 	}()
 	return ch
+}
+
+func (c *Connection) Close() <-chan plc4go.PlcConnectionCloseResult {
+	results := make(chan plc4go.PlcConnectionCloseResult, 1)
+	go func() {
+		result := <-c.DefaultConnection.Close()
+		c.log.Trace().Msg("Waiting for handlers to stop")
+		c.handlerWaitGroup.Wait()
+		c.log.Trace().Msg("handlers stopped, dispatching result")
+		results <- result
+	}()
+	return results
 }
 
 func (c *Connection) GetMetadata() apiModel.PlcConnectionMetadata {
@@ -231,7 +245,9 @@ func (c *Connection) setupConnection(ctx context.Context, ch chan plc4go.PlcConn
 
 func (c *Connection) startSubscriptionHandler() {
 	c.log.Debug().Msg("Starting SAL handler")
+	c.handlerWaitGroup.Add(1)
 	go func() {
+		defer c.handlerWaitGroup.Done()
 		defer func() {
 			if err := recover(); err != nil {
 				c.log.Error().Msgf("panic-ed %v. Stack:\n%s", err, debug.Stack())
@@ -255,7 +271,9 @@ func (c *Connection) startSubscriptionHandler() {
 		c.log.Info().Msg("Ending SAL handler")
 	}()
 	c.log.Debug().Msg("Starting MMI handler")
+	c.handlerWaitGroup.Add(1)
 	go func() {
+		defer c.handlerWaitGroup.Done()
 		defer func() {
 			if err := recover(); err != nil {
 				c.log.Error().Msgf("panic-ed %v. Stack:\n%s", err, debug.Stack())

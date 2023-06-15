@@ -210,7 +210,7 @@ func (d *Discoverer) createDeviceScanDispatcher(tcpTransportInstance *tcp.Transp
 		// Create a codec for sending and receiving messages.
 		codec := NewMessageCodec(tcpTransportInstance, options.WithCustomLogger(d.log))
 		// Explicitly start the worker
-		if err := codec.Connect(); err != nil {
+		if err := codec.ConnectWithContext(context.TODO()); err != nil {
 			transportInstanceLogger.Debug().Err(err).Msg("Error connecting")
 			return
 		}

@@ -749,9 +749,10 @@ func Test_extractMMIAndSAL(t *testing.T) {
 		message spi.Message
 	}
 	tests := []struct {
-		name string
-		args args
-		want bool
+		name  string
+		args  args
+		setup func(t *testing.T, args *args)
+		want  bool
 	}{
 		{
 			name: "extract it",
@@ -759,7 +760,6 @@ func Test_extractMMIAndSAL(t *testing.T) {
 		{
 			name: "monitored sal",
 			args: args{
-				codec: NewMessageCodec(nil),
 				message: readWriteModel.NewCBusMessageToClient(
 					readWriteModel.NewReplyOrConfirmationReply(
 						readWriteModel.NewReplyEncodedReply(
@@ -783,10 +783,19 @@ func Test_extractMMIAndSAL(t *testing.T) {
 					nil,
 				),
 			},
+			setup: func(t *testing.T, args *args) {
+				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
+				codec := NewMessageCodec(nil, _options...)
+				codec.monitoredSALs = make(chan readWriteModel.MonitoredSAL, 1)
+				args.codec = codec
+			},
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			if tt.setup != nil {
+				tt.setup(t, &tt.args)
+			}
 			assert.Equalf(t, tt.want, extractMMIAndSAL(testutils.ProduceTestingLogger(t))(tt.args.codec, tt.args.message), "extractMMIAndSAL(%v, %v)", tt.args.codec, tt.args.message)
 		})
 	}

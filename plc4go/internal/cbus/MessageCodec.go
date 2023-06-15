@@ -22,6 +22,7 @@ package cbus
 import (
 	"bufio"
 	"context"
+	"sync"
 	"sync/atomic"
 
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/cbus/readwrite/model"
@@ -49,6 +50,8 @@ type MessageCodec struct {
 
 	currentlyReportedServerErrors atomic.Uint64
 
+	stateChange sync.Mutex
+
 	passLogToModel bool           `ignore:"true"`
 	log            zerolog.Logger `ignore:"true"`
 }
@@ -57,8 +60,6 @@ func NewMessageCodec(transportInstance transports.TransportInstance, _options ..
 	codec := &MessageCodec{
 		requestContext: readWriteModel.NewRequestContext(false),
 		cbusOptions:    readWriteModel.NewCBusOptions(false, false, false, false, false, false, false, false, false),
-		monitoredMMIs:  make(chan readWriteModel.CALReply, 100),
-		monitoredSALs:  make(chan readWriteModel.MonitoredSAL, 100),
 		passLogToModel: options.ExtractPassLoggerToModel(_options...),
 		log:            options.ExtractCustomLogger(_options...),
 	}
@@ -68,6 +69,35 @@ func NewMessageCodec(transportInstance transports.TransportInstance, _options ..
 
 func (m *MessageCodec) GetCodec() spi.MessageCodec {
 	return m
+}
+
+func (m *MessageCodec) Connect() error {
+	return m.ConnectWithContext(context.Background())
+}
+
+func (m *MessageCodec) ConnectWithContext(ctx context.Context) error {
+	m.stateChange.Lock()
+	defer m.stateChange.Unlock()
+	if m.IsRunning() {
+		return errors.New("already running")
+	}
+	m.log.Trace().Msg("building channels")
+	m.monitoredMMIs = make(chan readWriteModel.CALReply, 100)
+	m.monitoredSALs = make(chan readWriteModel.MonitoredSAL, 100)
+	return m.DefaultCodec.ConnectWithContext(ctx)
+}
+
+func (m *MessageCodec) Disconnect() error {
+	m.stateChange.Lock()
+	defer m.stateChange.Unlock()
+	if !m.IsRunning() {
+		return errors.New("already disconnected")
+	}
+	err := m.DefaultCodec.Disconnect()
+	m.log.Trace().Msg("closing channels")
+	close(m.monitoredMMIs)
+	close(m.monitoredSALs)
+	return err
 }
 
 func (m *MessageCodec) Send(message spi.Message) error {

@@ -438,7 +438,7 @@ func TestBrowser_getInstalledUnitAddressBytes(t *testing.T) {
 					select {
 					case <-fields.connection.Close():
 					case <-timer.C:
-						t.Error("timeout")
+						t.Error("timeout waiting for connection close")
 					}
 				})
 			},
