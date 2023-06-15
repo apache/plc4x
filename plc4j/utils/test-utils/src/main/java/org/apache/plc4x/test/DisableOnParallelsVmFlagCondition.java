@@ -29,7 +29,8 @@ import java.nio.charset.StandardCharsets;
 
 public class DisableOnParallelsVmFlagCondition implements ExecutionCondition {
 
-    private static final String PARALLELS_STRING = "Parallels Virtual Platform";
+    private static final String PARALLELS_STRING_AMD = "Parallels Virtual Platform";
+    private static final String PARALLELS_STRING_ARM = "Parallels ARM Virtual Machine";
     private static final boolean isParallels;
     static {
         boolean localIsParallels = false;
@@ -43,7 +44,7 @@ public class DisableOnParallelsVmFlagCondition implements ExecutionCondition {
                     new InputStreamReader(process.getInputStream()))) {
                     String line;
                     while ((line = reader.readLine()) != null) {
-                        if(line.contains(PARALLELS_STRING)) {
+                        if(line.contains(PARALLELS_STRING_AMD) || line.contains(PARALLELS_STRING_ARM)) {
                             localIsParallels = true;
                             break;
                         }
@@ -57,7 +58,7 @@ public class DisableOnParallelsVmFlagCondition implements ExecutionCondition {
             File productNameFile = new File("/sys/devices/virtual/dmi/id/product_name");
             try(InputStream is = new FileInputStream(productNameFile)) {
                 String content = IOUtils.toString(is, StandardCharsets.UTF_8);
-                localIsParallels = content.contains(PARALLELS_STRING);
+                localIsParallels = content.contains(PARALLELS_STRING_AMD) || content.contains(PARALLELS_STRING_ARM);
             } catch (IOException e) {
                 // Ignore this...
             }
