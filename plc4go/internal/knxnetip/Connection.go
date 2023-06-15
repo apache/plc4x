@@ -138,7 +138,8 @@ type Connection struct {
 	connectionId string
 	tracer       tracer.Tracer
 
-	log zerolog.Logger
+	passLogToModel bool
+	log            zerolog.Logger
 }
 
 func (m *Connection) String() string {
@@ -189,6 +190,7 @@ func NewConnection(transportInstance transports.TransportInstance, connectionOpt
 		defaultTtl:              time.Second * 10,
 		DeviceConnections:       map[driverModel.KnxAddress]*KnxDeviceConnection{},
 		handleTunnelingRequests: true,
+		passLogToModel:          options.ExtractPassLoggerToModel(_options...),
 		log:                     options.ExtractCustomLogger(_options...),
 	}
 	connection.connectionTtl = connection.defaultTtl * 2

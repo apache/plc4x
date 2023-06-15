@@ -22,6 +22,7 @@ package knxnetip
 import (
 	"context"
 	"fmt"
+	"github.com/apache/plc4x/plc4go/spi/options"
 	"math"
 	"net"
 	"runtime/debug"
@@ -86,7 +87,8 @@ func (m *Connection) handleIncomingTunnelingRequest(ctx context.Context, tunneli
 						return
 					}
 					// If this is an individual address, and it is targeted at us, we need to ack that.
-					targetAddress := ByteArrayToKnxAddress(ctx, dataFrame.GetDestinationAddress())
+					ctxForModel := options.GetLoggerContextForModel(ctx, m.log, options.WithPassLoggerToModel(m.passLogToModel))
+					targetAddress := ByteArrayToKnxAddress(ctxForModel, dataFrame.GetDestinationAddress())
 					if targetAddress == m.ClientKnxAddress {
 						m.log.Info().Msg("Acknowleding an unhandled data message.")
 						_ = m.sendDeviceAck(ctx, dataFrame.GetSourceAddress(), dataFrame.GetApdu().GetCounter(), func(err error) {})
@@ -97,7 +99,8 @@ func (m *Connection) handleIncomingTunnelingRequest(ctx context.Context, tunneli
 					return
 				}
 				// If this is an individual address, and it is targeted at us, we need to ack that.
-				targetAddress := ByteArrayToKnxAddress(ctx, dataFrame.GetDestinationAddress())
+				ctxForModel := options.GetLoggerContextForModel(ctx, m.log, options.WithPassLoggerToModel(m.passLogToModel))
+				targetAddress := ByteArrayToKnxAddress(ctxForModel, dataFrame.GetDestinationAddress())
 				if targetAddress == m.ClientKnxAddress {
 					m.log.Info().Msg("Acknowleding an unhandled contol message.")
 					_ = m.sendDeviceAck(ctx, dataFrame.GetSourceAddress(), dataFrame.GetApdu().GetCounter(), func(err error) {})

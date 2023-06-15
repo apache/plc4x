@@ -39,14 +39,16 @@ type Subscriber struct {
 	connection *Connection
 	consumers  map[*spiModel.DefaultPlcConsumerRegistration]apiModel.PlcSubscriptionEventConsumer
 
-	log zerolog.Logger
+	passLogToModel bool
+	log            zerolog.Logger
 }
 
 func NewSubscriber(connection *Connection, _options ...options.WithOption) *Subscriber {
 	return &Subscriber{
-		connection: connection,
-		consumers:  make(map[*spiModel.DefaultPlcConsumerRegistration]apiModel.PlcSubscriptionEventConsumer),
-		log:        options.ExtractCustomLogger(_options...),
+		connection:     connection,
+		consumers:      make(map[*spiModel.DefaultPlcConsumerRegistration]apiModel.PlcSubscriptionEventConsumer),
+		passLogToModel: options.ExtractPassLoggerToModel(_options...),
+		log:            options.ExtractCustomLogger(_options...),
 	}
 }
 
@@ -103,7 +105,8 @@ func (m *Subscriber) Unsubscribe(ctx context.Context, unsubscriptionRequest apiM
 func (m *Subscriber) handleValueChange(ctx context.Context, destinationAddress []byte, payload []byte, changed bool) {
 	// Decode the group-address according to the settings in the driver
 	// Group addresses can be 1, 2 or 3 levels (3 being the default)
-	groupAddress, err := driverModel.KnxGroupAddressParse(ctx, destinationAddress, m.connection.getGroupAddressNumLevels())
+	ctxForModel := options.GetLoggerContextForModel(ctx, m.log, options.WithPassLoggerToModel(m.passLogToModel))
+	groupAddress, err := driverModel.KnxGroupAddressParse(ctxForModel, destinationAddress, m.connection.getGroupAddressNumLevels())
 	if err != nil {
 		return
 	}

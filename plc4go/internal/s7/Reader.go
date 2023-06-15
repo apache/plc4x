@@ -42,15 +42,17 @@ type Reader struct {
 	messageCodec  spi.MessageCodec
 	tm            transactions.RequestTransactionManager
 
-	log zerolog.Logger
+	passLogToModel bool
+	log            zerolog.Logger
 }
 
 func NewReader(tpduGenerator *TpduGenerator, messageCodec spi.MessageCodec, tm transactions.RequestTransactionManager, _options ...options.WithOption) *Reader {
 	return &Reader{
-		tpduGenerator: tpduGenerator,
-		messageCodec:  messageCodec,
-		tm:            tm,
-		log:           options.ExtractCustomLogger(_options...),
+		tpduGenerator:  tpduGenerator,
+		messageCodec:   messageCodec,
+		tm:             tm,
+		passLogToModel: options.ExtractPassLoggerToModel(_options...),
+		log:            options.ExtractCustomLogger(_options...),
 	}
 }
 
@@ -233,7 +235,8 @@ func (m *Reader) ToPlc4xReadResponse(response readWriteModel.S7Message, readRequ
 		m.log.Trace().Msg("decode data")
 		responseCodes[tagName] = responseCode
 		if responseCode == apiModel.PlcResponseCode_OK {
-			plcValue, err := readWriteModel.DataItemParse(context.Background(), payloadItem.GetData(), tag.GetDataType().DataProtocolId(), int32(tag.GetNumElements()))
+			ctxForModel := options.GetLoggerContextForModel(context.TODO(), m.log, options.WithPassLoggerToModel(m.passLogToModel))
+			plcValue, err := readWriteModel.DataItemParse(ctxForModel, payloadItem.GetData(), tag.GetDataType().DataProtocolId(), int32(tag.GetNumElements()))
 			if err != nil {
 				return nil, errors.Wrap(err, "Error parsing data item")
 			}

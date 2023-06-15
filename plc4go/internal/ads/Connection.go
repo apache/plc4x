@@ -56,7 +56,8 @@ type Connection struct {
 
 	subscriptions map[uint32]apiModel.PlcSubscriptionHandle
 
-	log zerolog.Logger
+	passLogToModel bool
+	log            zerolog.Logger
 }
 
 func NewConnection(messageCodec spi.MessageCodec, configuration model.Configuration, connectionOptions map[string][]string, _options ...options.WithOption) (*Connection, error) {
@@ -65,11 +66,12 @@ func NewConnection(messageCodec spi.MessageCodec, configuration model.Configurat
 		return nil, err
 	}
 	connection := &Connection{
-		messageCodec:  messageCodec,
-		configuration: configuration,
-		driverContext: driverContext,
-		subscriptions: map[uint32]apiModel.PlcSubscriptionHandle{},
-		log:           options.ExtractCustomLogger(_options...),
+		messageCodec:   messageCodec,
+		configuration:  configuration,
+		driverContext:  driverContext,
+		subscriptions:  map[uint32]apiModel.PlcSubscriptionHandle{},
+		passLogToModel: options.ExtractPassLoggerToModel(_options...),
+		log:            options.ExtractCustomLogger(_options...),
 	}
 	if traceEnabledOption, ok := connectionOptions["traceEnabled"]; ok {
 		if len(traceEnabledOption) == 1 {
@@ -261,7 +263,8 @@ func (m *Connection) readDataTypeTableAndSymbolTableSizes(ctx context.Context) (
 	}
 
 	// Parse and process the response
-	tableSizes, err := readWriteModel.AdsTableSizesParse(ctx, response.GetData())
+	ctxForModel := options.GetLoggerContextForModel(ctx, m.log, options.WithPassLoggerToModel(m.passLogToModel))
+	tableSizes, err := readWriteModel.AdsTableSizesParse(ctxForModel, response.GetData())
 	if err != nil {
 		return nil, fmt.Errorf("error parsing table: %v", err)
 	}

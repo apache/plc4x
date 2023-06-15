@@ -42,7 +42,8 @@ type Reader struct {
 	unitIdentifier        uint8
 	messageCodec          spi.MessageCodec
 
-	log zerolog.Logger
+	passLogToModel bool
+	log            zerolog.Logger
 }
 
 func NewReader(unitIdentifier uint8, messageCodec spi.MessageCodec, _options ...options.WithOption) *Reader {
@@ -50,6 +51,7 @@ func NewReader(unitIdentifier uint8, messageCodec spi.MessageCodec, _options ...
 		transactionIdentifier: 0,
 		unitIdentifier:        unitIdentifier,
 		messageCodec:          messageCodec,
+		passLogToModel:        options.ExtractPassLoggerToModel(_options...),
 		log:                   options.ExtractCustomLogger(_options...),
 	}
 }
@@ -200,7 +202,8 @@ func (m *Reader) ToPlc4xReadResponse(responseAdu readWriteModel.ModbusTcpADU, re
 
 	// Decode the data according to the information from the request
 	m.log.Trace().Msg("decode data")
-	value, err := readWriteModel.DataItemParse(context.Background(), data, tag.Datatype, tag.Quantity)
+	ctxForModel := options.GetLoggerContextForModel(context.TODO(), m.log, options.WithPassLoggerToModel(m.passLogToModel))
+	value, err := readWriteModel.DataItemParse(ctxForModel, data, tag.Datatype, tag.Quantity)
 	if err != nil {
 		return nil, errors.Wrap(err, "Error parsing data item")
 	}

@@ -33,14 +33,16 @@ type Device struct {
 	Name  string
 	State map[simulatedTag]*apiValues.PlcValue
 
-	log zerolog.Logger
+	passLogToModel bool
+	log            zerolog.Logger
 }
 
 func NewDevice(name string, _options ...options.WithOption) *Device {
 	return &Device{
-		Name:  name,
-		State: make(map[simulatedTag]*apiValues.PlcValue),
-		log:   options.ExtractCustomLogger(_options...),
+		Name:           name,
+		State:          make(map[simulatedTag]*apiValues.PlcValue),
+		passLogToModel: options.ExtractPassLoggerToModel(_options...),
+		log:            options.ExtractCustomLogger(_options...),
 	}
 }
 
@@ -72,7 +74,8 @@ func (d *Device) getRandomValue(tag simulatedTag) *apiValues.PlcValue {
 	size := tag.GetDataTypeSize().DataTypeSize()
 	data := make([]byte, uint16(size)*tag.Quantity)
 	rand.Read(data)
-	plcValue, err := readWriteModel.DataItemParse(context.Background(), data, tag.DataTypeSize.String(), tag.Quantity)
+	ctxForModel := options.GetLoggerContextForModel(context.TODO(), d.log, options.WithPassLoggerToModel(d.passLogToModel))
+	plcValue, err := readWriteModel.DataItemParse(ctxForModel, data, tag.DataTypeSize.String(), tag.Quantity)
 	if err != nil {
 		d.log.Err(err).Msg("Unable to parse random bytes")
 		return nil

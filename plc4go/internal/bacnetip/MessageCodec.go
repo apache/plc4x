@@ -22,6 +22,8 @@ package bacnetip
 import (
 	"context"
 	"fmt"
+	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/rs/zerolog"
 	"net"
 	"net/url"
 	"time"
@@ -205,6 +207,9 @@ func (m *ApplicationLayerMessageCodec) GetDefaultIncomingMessageChannel() chan s
 
 type MessageCodec struct {
 	_default.DefaultCodec
+
+	passLogToModel bool
+	log            zerolog.Logger
 }
 
 func NewMessageCodec(transportInstance transports.TransportInstance) *MessageCodec {
@@ -256,7 +261,8 @@ func (m *MessageCodec) Receive() (spi.Message, error) {
 			// TODO: Possibly clean up ...
 			return nil, nil
 		}
-		bvlcPacket, err := model.BVLCParse(context.TODO(), data)
+		ctxForModel := options.GetLoggerContextForModel(context.TODO(), m.log, options.WithPassLoggerToModel(m.passLogToModel))
+		bvlcPacket, err := model.BVLCParse(ctxForModel, data)
 		if err != nil {
 			log.Warn().Err(err).Msg("error parsing")
 			// TODO: Possibly clean up ...

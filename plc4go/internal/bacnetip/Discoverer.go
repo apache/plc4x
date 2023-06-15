@@ -22,6 +22,7 @@ package bacnetip
 import (
 	"context"
 	"fmt"
+	"github.com/rs/zerolog"
 	"net"
 	"net/url"
 	"strconv"
@@ -42,6 +43,9 @@ import (
 
 type Discoverer struct {
 	messageCodec spi.MessageCodec
+
+	passLogToModel bool
+	log            zerolog.Logger
 }
 
 func NewDiscoverer() *Discoverer {
@@ -70,7 +74,7 @@ func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.
 	defer func() {
 		cancelFunc()
 	}()
-	incomingBVLCChannel, err := broadcastAndDiscover(ctx, communicationChannels, specificOptions)
+	incomingBVLCChannel, err := d.broadcastAndDiscover(ctx, communicationChannels, specificOptions)
 	if err != nil {
 		return errors.Wrap(err, "error broadcasting and discovering")
 	}
@@ -83,7 +87,7 @@ func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.
 	return nil
 }
 
-func broadcastAndDiscover(ctx context.Context, communicationChannels []communicationChannel, specificOptions *protocolSpecificOptions) (chan receivedBvlcMessage, error) {
+func (d *Discoverer) broadcastAndDiscover(ctx context.Context, communicationChannels []communicationChannel, specificOptions *protocolSpecificOptions) (chan receivedBvlcMessage, error) {
 	incomingBVLCChannel := make(chan receivedBvlcMessage)
 	for _, communicationChannelInstance := range communicationChannels {
 		// Prepare the discovery packet data
@@ -167,7 +171,8 @@ func broadcastAndDiscover(ctx context.Context, communicationChannels []communica
 						return
 					}
 					log.Debug().Stringer("addr", addr).Msg("Received broadcast bvlc")
-					incomingBvlc, err := driverModel.BVLCParse(ctx, buf[:n])
+					ctxForModel := options.GetLoggerContextForModel(ctx, d.log, options.WithPassLoggerToModel(d.passLogToModel))
+					incomingBvlc, err := driverModel.BVLCParse(ctxForModel, buf[:n])
 					if err != nil {
 						log.Warn().Err(err).Msg("Could not parse bvlc")
 						blockingReadChan <- true
@@ -202,7 +207,8 @@ func broadcastAndDiscover(ctx context.Context, communicationChannels []communica
 						return
 					}
 					log.Debug().Stringer("addr", addr).Msg("Received broadcast bvlc")
-					incomingBvlc, err := driverModel.BVLCParse(ctx, buf[:n])
+					ctxForModel := options.GetLoggerContextForModel(ctx, d.log, options.WithPassLoggerToModel(d.passLogToModel))
+					incomingBvlc, err := driverModel.BVLCParse(ctxForModel, buf[:n])
 					if err != nil {
 						log.Warn().Err(err).Msg("Could not parse bvlc")
 						blockingReadChan <- true

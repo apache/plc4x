@@ -21,6 +21,7 @@ package knxnetip
 
 import (
 	"context"
+	"github.com/apache/plc4x/plc4go/spi/options"
 	"reflect"
 	"time"
 
@@ -370,7 +371,8 @@ func (m *Connection) sendDeviceConnectionRequest(ctx context.Context, targetAddr
 				return false
 			}
 			// Check if the address matches
-			if ByteArrayToKnxAddress(ctx, lDataFrameExt.GetDestinationAddress()) != targetAddress {
+			ctxForModel := options.GetLoggerContextForModel(ctx, m.log, options.WithPassLoggerToModel(m.passLogToModel))
+			if ByteArrayToKnxAddress(ctxForModel, lDataFrameExt.GetDestinationAddress()) != targetAddress {
 				return false
 			}
 			apduControlContainer, ok := lDataFrameExt.GetApdu().(driverModel.ApduControlContainerExactly)
@@ -459,7 +461,8 @@ func (m *Connection) sendDeviceDisconnectionRequest(ctx context.Context, targetA
 			if !ok {
 				return false
 			}
-			curTargetAddress := ByteArrayToKnxAddress(ctx, dataFrameExt.GetDestinationAddress())
+			ctxForModel := options.GetLoggerContextForModel(ctx, m.log, options.WithPassLoggerToModel(m.passLogToModel))
+			curTargetAddress := ByteArrayToKnxAddress(ctxForModel, dataFrameExt.GetDestinationAddress())
 			// Check if the address matches
 			if curTargetAddress != targetAddress {
 				return false
@@ -577,7 +580,8 @@ func (m *Connection) sendDeviceAuthentication(ctx context.Context, targetAddress
 			if !ok {
 				return false
 			}
-			curTargetAddress := ByteArrayToKnxAddress(ctx, dataFrameExt.GetDestinationAddress())
+			ctxForModel := options.GetLoggerContextForModel(ctx, m.log, options.WithPassLoggerToModel(m.passLogToModel))
+			curTargetAddress := ByteArrayToKnxAddress(ctxForModel, dataFrameExt.GetDestinationAddress())
 			// Check if the addresses match
 			if curTargetAddress != m.ClientKnxAddress {
 				return false
@@ -1117,7 +1121,8 @@ func (m *Connection) sendDeviceAck(ctx context.Context, targetAddress driverMode
 			if dataFrameExt.GetSourceAddress() != m.ClientKnxAddress {
 				return false
 			}
-			curTargetAddress := ByteArrayToKnxAddress(ctx, dataFrameExt.GetDestinationAddress())
+			ctxForModel := options.GetLoggerContextForModel(ctx, m.log, options.WithPassLoggerToModel(m.passLogToModel))
+			curTargetAddress := ByteArrayToKnxAddress(ctxForModel, dataFrameExt.GetDestinationAddress())
 			if curTargetAddress != targetAddress {
 				return false
 			}

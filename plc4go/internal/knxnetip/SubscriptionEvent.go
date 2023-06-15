@@ -36,7 +36,8 @@ type SubscriptionEvent struct {
 	*spiModel.DefaultPlcSubscriptionEvent
 	addresses map[string][]byte
 
-	log zerolog.Logger
+	passLogToModel bool
+	log            zerolog.Logger
 }
 
 func NewSubscriptionEvent(
@@ -48,7 +49,11 @@ func NewSubscriptionEvent(
 	values map[string]values.PlcValue,
 	_options ...options.WithOption,
 ) SubscriptionEvent {
-	subscriptionEvent := SubscriptionEvent{addresses: addresses}
+	subscriptionEvent := SubscriptionEvent{
+		addresses:      addresses,
+		passLogToModel: options.ExtractPassLoggerToModel(_options...),
+		log:            options.ExtractCustomLogger(_options...),
+	}
 	event := spiModel.NewDefaultPlcSubscriptionEvent(&subscriptionEvent, tags, types, intervals, responseCodes, values, _options...)
 	subscriptionEvent.DefaultPlcSubscriptionEvent = event.(*spiModel.DefaultPlcSubscriptionEvent)
 	return subscriptionEvent
@@ -60,13 +65,14 @@ func (m SubscriptionEvent) GetAddress(name string) string {
 	tag := m.DefaultPlcSubscriptionEvent.GetTag(name)
 	var groupAddress driverModel.KnxGroupAddress
 	var err error
+	ctxForModel := options.GetLoggerContextForModel(context.TODO(), m.log, options.WithPassLoggerToModel(m.passLogToModel))
 	switch tag.(type) {
 	case GroupAddress3LevelPlcTag:
-		groupAddress, err = driverModel.KnxGroupAddressParse(context.TODO(), rawAddress, 3)
+		groupAddress, err = driverModel.KnxGroupAddressParse(ctxForModel, rawAddress, 3)
 	case GroupAddress2LevelPlcTag:
-		groupAddress, err = driverModel.KnxGroupAddressParse(context.TODO(), rawAddress, 2)
+		groupAddress, err = driverModel.KnxGroupAddressParse(ctxForModel, rawAddress, 2)
 	case GroupAddress1LevelPlcTag:
-		groupAddress, err = driverModel.KnxGroupAddressParse(context.TODO(), rawAddress, 1)
+		groupAddress, err = driverModel.KnxGroupAddressParse(ctxForModel, rawAddress, 1)
 	}
 	if err != nil {
 		m.log.Debug().Err(err).Msg("error parsing")

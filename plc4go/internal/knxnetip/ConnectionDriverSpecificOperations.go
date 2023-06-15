@@ -21,6 +21,7 @@ package knxnetip
 
 import (
 	"context"
+	"github.com/apache/plc4x/plc4go/spi/options"
 	"math"
 	"runtime/debug"
 	"strconv"
@@ -179,7 +180,8 @@ func (m *Connection) DeviceConnect(ctx context.Context, targetAddress driverMode
 			if propertyValueResponse.GetCount() > 0 {
 				dataLength := uint8(len(propertyValueResponse.GetData()))
 				data := propertyValueResponse.GetData()
-				plcValue, err := driverModel.KnxPropertyParse(context.Background(), data,
+				ctxForModel := options.GetLoggerContextForModel(ctx, m.log, options.WithPassLoggerToModel(m.passLogToModel))
+				plcValue, err := driverModel.KnxPropertyParse(ctxForModel, data,
 					driverModel.KnxInterfaceObjectProperty_PID_DEVICE_MAX_APDULENGTH.PropertyDataType(), dataLength)
 
 				// Return the result
@@ -370,7 +372,8 @@ func (m *Connection) DeviceReadProperty(ctx context.Context, targetAddress drive
 
 		dataLength := uint8(len(propertyValueResponse.GetData()))
 		data := propertyValueResponse.GetData()
-		plcValue, err := driverModel.KnxPropertyParse(context.Background(), data, property.PropertyDataType(), dataLength)
+		ctxForModel := options.GetLoggerContextForModel(ctx, m.log, options.WithPassLoggerToModel(m.passLogToModel))
+		plcValue, err := driverModel.KnxPropertyParse(ctxForModel, data, property.PropertyDataType(), dataLength)
 		if err != nil {
 			sendResponse(nil, 0, err)
 		} else {

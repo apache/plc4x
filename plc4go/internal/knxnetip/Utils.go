@@ -68,8 +68,8 @@ func GroupAddressToString(groupAddress driverModel.KnxGroupAddress) (string, err
 	}
 }
 
-func ByteArrayToKnxAddress(ctx context.Context, data []byte) driverModel.KnxAddress {
-	knxAddress, err := driverModel.KnxAddressParse(ctx, data)
+func ByteArrayToKnxAddress(ctxForModel context.Context, data []byte) driverModel.KnxAddress {
+	knxAddress, err := driverModel.KnxAddressParse(ctxForModel, data)
 	if err != nil {
 		return nil
 	}
@@ -95,11 +95,11 @@ func Uint16ToKnxAddress(data uint16) driverModel.KnxAddress {
 	return knxAddress
 }
 
-func Uint16ToKnxGroupAddress(ctx context.Context, data uint16, numLevels uint8) driverModel.KnxGroupAddress {
+func Uint16ToKnxGroupAddress(ctxForModel context.Context, data uint16, numLevels uint8) driverModel.KnxGroupAddress {
 	rawData := make([]uint8, 2)
 	rawData[0] = uint8(data >> 8)
 	rawData[1] = uint8(data & 0xFF)
-	knxGroupAddress, err := driverModel.KnxGroupAddressParse(ctx, rawData, numLevels)
+	knxGroupAddress, err := driverModel.KnxGroupAddressParse(ctxForModel, rawData, numLevels)
 	if err != nil {
 		return nil
 	}

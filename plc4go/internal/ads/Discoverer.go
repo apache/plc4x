@@ -48,12 +48,14 @@ type discovery struct {
 }
 
 type Discoverer struct {
-	log zerolog.Logger
+	passLogToModel bool
+	log            zerolog.Logger
 }
 
 func NewDiscoverer(_options ...options.WithOption) *Discoverer {
 	return &Discoverer{
-		log: options.ExtractCustomLogger(_options...),
+		passLogToModel: options.ExtractPassLoggerToModel(_options...),
+		log:            options.ExtractCustomLogger(_options...),
 	}
 }
 
@@ -155,7 +157,8 @@ func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.
 				if length == 0 {
 					continue
 				}
-				discoveryResponse, err := model.AdsDiscoveryParse(ctx, buf[0:length])
+				ctxForModel := options.GetLoggerContextForModel(ctx, d.log, options.WithPassLoggerToModel(d.passLogToModel))
+				discoveryResponse, err := model.AdsDiscoveryParse(ctxForModel, buf[0:length])
 				if err != nil {
 					d.log.Error().Err(err).Str("src-ip", fromAddr.String()).Msg("error decoding response")
 					continue

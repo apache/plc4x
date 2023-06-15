@@ -46,7 +46,8 @@ type Browser struct {
 	messageCodec    spi.MessageCodec
 	sequenceCounter uint8
 
-	log zerolog.Logger
+	passLogToModel bool
+	log            zerolog.Logger
 }
 
 func NewBrowser(connection *Connection, messageCodec spi.MessageCodec, _options ...options.WithOption) *Browser {
@@ -54,6 +55,7 @@ func NewBrowser(connection *Connection, messageCodec spi.MessageCodec, _options 
 		connection:      connection,
 		messageCodec:    messageCodec,
 		sequenceCounter: 0,
+		passLogToModel:  options.ExtractPassLoggerToModel(_options...),
 		log:             options.ExtractCustomLogger(_options...),
 	}
 	browser.DefaultBrowser = _default.NewDefaultBrowser(browser, _options...)
@@ -247,13 +249,14 @@ func (m Browser) executeCommunicationObjectQuery(ctx context.Context, query Comm
 			readResult.GetResponse().GetResponseCode("groupAddressTable").GetName())
 	}
 	var knxGroupAddresses []driverModel.KnxGroupAddress
+	ctxForModel := options.GetLoggerContextForModel(ctx, m.log, options.WithPassLoggerToModel(m.passLogToModel))
 	if readResult.GetResponse().GetValue("groupAddressTable").IsList() {
 		for _, groupAddress := range readResult.GetResponse().GetValue("groupAddressTable").GetList() {
-			groupAddress := Uint16ToKnxGroupAddress(ctx, groupAddress.GetUint16(), 3)
+			groupAddress := Uint16ToKnxGroupAddress(ctxForModel, groupAddress.GetUint16(), 3)
 			knxGroupAddresses = append(knxGroupAddresses, groupAddress)
 		}
 	} else {
-		groupAddress := Uint16ToKnxGroupAddress(ctx, readResult.GetResponse().GetValue("groupAddressTable").GetUint16(), 3)
+		groupAddress := Uint16ToKnxGroupAddress(ctxForModel, readResult.GetResponse().GetValue("groupAddressTable").GetUint16(), 3)
 		knxGroupAddresses = append(knxGroupAddresses, groupAddress)
 	}
 
@@ -378,7 +381,8 @@ func (m Browser) executeCommunicationObjectQuery(ctx context.Context, query Comm
 			}
 			comObjectSettings := readResult.GetResponse().GetValue(strconv.Itoa(int(comObjectNumber))).GetUint16()
 			data := []uint8{uint8((comObjectSettings >> 8) & 0xFF), uint8(comObjectSettings & 0xFF)}
-			descriptor, err := driverModel.GroupObjectDescriptorRealisationTypeBParse(ctx, data)
+			ctxForModel := options.GetLoggerContextForModel(ctx, m.log, options.WithPassLoggerToModel(m.passLogToModel))
+			descriptor, err := driverModel.GroupObjectDescriptorRealisationTypeBParse(ctxForModel, data)
 			if err != nil {
 				m.log.Info().Err(err).Msg("error parsing com object descriptor")
 				continue
@@ -472,7 +476,8 @@ func (m Browser) executeCommunicationObjectQuery(ctx context.Context, query Comm
 
 		for _, tagName := range readResult.GetResponse().GetTagNames() {
 			array := utils.PlcValueUint8ListToByteArray(readResult.GetResponse().GetValue(tagName))
-			descriptor, err := driverModel.GroupObjectDescriptorRealisationType7Parse(ctx, array)
+			ctxForModel := options.GetLoggerContextForModel(ctx, m.log, options.WithPassLoggerToModel(m.passLogToModel))
+			descriptor, err := driverModel.GroupObjectDescriptorRealisationType7Parse(ctxForModel, array)
 			if err != nil {
 				return nil, errors.Wrap(err, "error creating read request")
 			}

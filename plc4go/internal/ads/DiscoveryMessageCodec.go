@@ -34,12 +34,14 @@ import (
 type DiscoveryMessageCodec struct {
 	_default.DefaultCodec
 
-	log zerolog.Logger
+	passLogToModel bool
+	log            zerolog.Logger
 }
 
 func NewDiscoveryMessageCodec(transportInstance transports.TransportInstance, _options ...options.WithOption) *DiscoveryMessageCodec {
 	codec := &DiscoveryMessageCodec{
-		log: options.ExtractCustomLogger(_options...),
+		passLogToModel: options.ExtractPassLoggerToModel(_options...),
+		log:            options.ExtractCustomLogger(_options...),
 	}
 	codec.DefaultCodec = _default.NewDefaultCodec(codec, transportInstance, _options...)
 	return codec
@@ -88,7 +90,8 @@ func (m *DiscoveryMessageCodec) Receive() (spi.Message, error) {
 			// TODO: Possibly clean up ...
 			return nil, nil
 		}
-		tcpPacket, err := model.AdsDiscoveryParse(context.TODO(), data)
+		ctxForModel := options.GetLoggerContextForModel(context.TODO(), m.log, options.WithPassLoggerToModel(m.passLogToModel))
+		tcpPacket, err := model.AdsDiscoveryParse(ctxForModel, data)
 		if err != nil {
 			m.log.Warn().Err(err).Msg("error parsing")
 			// TODO: Possibly clean up ...

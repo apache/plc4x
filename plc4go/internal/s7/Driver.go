@@ -49,7 +49,7 @@ func NewDriver(_options ...options.WithOption) plc4go.PlcDriver {
 
 		log: options.ExtractCustomLogger(_options...),
 	}
-	driver.DefaultDriver = _default.NewDefaultDriver(driver, "s7", "Siemens S7 (Basic)", "tcp", NewTagHandler())
+	driver.DefaultDriver = _default.NewDefaultDriver(driver, "s7", "Siemens S7 (Basic)", "tcp", NewTagHandler(_options...))
 	return driver
 }
 

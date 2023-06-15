@@ -49,7 +49,8 @@ type MessageCodec struct {
 
 	currentlyReportedServerErrors atomic.Uint64
 
-	log zerolog.Logger `ignore:"true"`
+	passLogToModel bool           `ignore:"true"`
+	log            zerolog.Logger `ignore:"true"`
 }
 
 func NewMessageCodec(transportInstance transports.TransportInstance, _options ...options.WithOption) *MessageCodec {
@@ -58,6 +59,7 @@ func NewMessageCodec(transportInstance transports.TransportInstance, _options ..
 		cbusOptions:    readWriteModel.NewCBusOptions(false, false, false, false, false, false, false, false, false),
 		monitoredMMIs:  make(chan readWriteModel.CALReply, 100),
 		monitoredSALs:  make(chan readWriteModel.MonitoredSAL, 100),
+		passLogToModel: options.ExtractPassLoggerToModel(_options...),
 		log:            options.ExtractCustomLogger(_options...),
 	}
 	codec.DefaultCodec = _default.NewDefaultCodec(codec, transportInstance, append(_options, _default.WithCustomMessageHandler(extractMMIAndSAL(codec.log)))...)
@@ -149,7 +151,8 @@ func (m *MessageCodec) Receive() (spi.Message, error) {
 	if bytes, err := ti.PeekReadableBytes(1); err == nil && (bytes[0] == byte(readWriteModel.ConfirmationType_CHECKSUM_FAILURE)) {
 		_, _ = ti.Read(1)
 		// Report one Error at a time
-		return readWriteModel.CBusMessageParse(context.TODO(), bytes, true, m.requestContext, m.cbusOptions)
+		ctxForModel := options.GetLoggerContextForModel(context.TODO(), m.log, options.WithPassLoggerToModel(m.passLogToModel))
+		return readWriteModel.CBusMessageParse(ctxForModel, bytes, true, m.requestContext, m.cbusOptions)
 	}
 
 	peekedBytes, err := ti.PeekReadableBytes(readableBytes)
@@ -266,7 +269,8 @@ lookingForTheEnd:
 		if foundErrors > m.currentlyReportedServerErrors.Load() {
 			m.log.Debug().Msgf("We found %d errors in the current message. We have %d reported already", foundErrors, m.currentlyReportedServerErrors.Load())
 			m.currentlyReportedServerErrors.Add(1)
-			return readWriteModel.CBusMessageParse(context.TODO(), []byte{'!'}, true, m.requestContext, m.cbusOptions)
+			ctxForModel := options.GetLoggerContextForModel(context.TODO(), m.log, options.WithPassLoggerToModel(m.passLogToModel))
+			return readWriteModel.CBusMessageParse(ctxForModel, []byte{'!'}, true, m.requestContext, m.cbusOptions)
 		}
 		if foundErrors > 0 {
 			m.log.Debug().Msgf("We should have reported all errors by now (%d in total which we reported %d), so we resetting the count", foundErrors, m.currentlyReportedServerErrors.Load())
@@ -294,12 +298,13 @@ lookingForTheEnd:
 		}
 	}
 	m.log.Debug().Msgf("Parsing %q", sanitizedInput)
-	cBusMessage, err := readWriteModel.CBusMessageParse(context.TODO(), sanitizedInput, pciResponse, m.requestContext, m.cbusOptions)
+	ctxForModel := options.GetLoggerContextForModel(context.TODO(), m.log, options.WithPassLoggerToModel(m.passLogToModel))
+	cBusMessage, err := readWriteModel.CBusMessageParse(ctxForModel, sanitizedInput, pciResponse, m.requestContext, m.cbusOptions)
 	if err != nil {
 		m.log.Debug().Err(err).Msg("First Parse Failed")
 		{ // Try SAL
 			requestContext := readWriteModel.NewRequestContext(false)
-			cBusMessage, secondErr := readWriteModel.CBusMessageParse(context.TODO(), sanitizedInput, pciResponse, requestContext, m.cbusOptions)
+			cBusMessage, secondErr := readWriteModel.CBusMessageParse(ctxForModel, sanitizedInput, pciResponse, requestContext, m.cbusOptions)
 			if secondErr == nil {
 				m.log.Trace().Msgf("Parsed message as SAL:\n%s", cBusMessage)
 				return cBusMessage, nil
@@ -310,7 +315,7 @@ lookingForTheEnd:
 		{ // Try MMI
 			requestContext := readWriteModel.NewRequestContext(false)
 			cbusOptions := readWriteModel.NewCBusOptions(false, false, false, false, false, false, false, false, false)
-			cBusMessage, secondErr := readWriteModel.CBusMessageParse(context.TODO(), sanitizedInput, true, requestContext, cbusOptions)
+			cBusMessage, secondErr := readWriteModel.CBusMessageParse(ctxForModel, sanitizedInput, true, requestContext, cbusOptions)
 			if secondErr == nil {
 				m.log.Trace().Msgf("Parsed message as MMI:\n%s", cBusMessage)
 				return cBusMessage, nil

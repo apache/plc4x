@@ -21,6 +21,8 @@ package bacnetip
 
 import (
 	"context"
+	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/rs/zerolog"
 	"time"
 
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
@@ -389,6 +391,9 @@ func (s *SSM) fillWindow(sequenceNumber uint8) error {
 
 type ClientSSM struct {
 	*SSM
+
+	passLogToModel bool
+	log            zerolog.Logger
 }
 
 func NewClientSSM(sap SSMSAPRequirements, pduAddress *Address) (*ClientSSM, error) {
@@ -927,7 +932,8 @@ func (c *ClientSSM) segmentedConfirmation(apdu _PDU) error {
 		}
 		// TODO: this is nonsense... We need to parse the service and the apdu not sure where to get it from now...
 		// TODO: it should be the original apdu, we might just need to use that as base and forward it as non segmented
-		parse, err := readWriteModel.APDUParse(context.TODO(), c.segmentAPDU.serviceBytes, uint16(len(c.segmentAPDU.serviceBytes)))
+		ctxForModel := options.GetLoggerContextForModel(context.TODO(), c.log, options.WithPassLoggerToModel(c.passLogToModel))
+		parse, err := readWriteModel.APDUParse(ctxForModel, c.segmentAPDU.serviceBytes, uint16(len(c.segmentAPDU.serviceBytes)))
 		if err != nil {
 			return errors.Wrap(err, "error parsing apdu")
 		}
@@ -965,6 +971,9 @@ func (c *ClientSSM) segmentedConfirmationTimeout() error {
 type ServerSSM struct {
 	*SSM
 	segmentedResponseAccepted bool
+
+	passLogToModel bool
+	log            zerolog.Logger
 }
 
 func NewServerSSM(sap SSMSAPRequirements, pduAddress *Address) (*ServerSSM, error) {
@@ -1391,7 +1400,8 @@ func (s *ServerSSM) segmentedRequest(apdu _PDU) error {
 		// TODO: here we need to rebuild again yada yada
 		// TODO: this is nonsense... We need to parse the service and the apdu not sure where to get it from now..
 		// TODO: it should be the original apdu, we might just need to use that as base and forward it as non segmented
-		parse, err := readWriteModel.APDUParse(context.TODO(), s.segmentAPDU.serviceBytes, uint16(len(s.segmentAPDU.serviceBytes)))
+		ctxForModel := options.GetLoggerContextForModel(context.TODO(), s.log, options.WithPassLoggerToModel(s.passLogToModel))
+		parse, err := readWriteModel.APDUParse(ctxForModel, s.segmentAPDU.serviceBytes, uint16(len(s.segmentAPDU.serviceBytes)))
 		if err != nil {
 			return errors.Wrap(err, "error parsing apdu")
 		}

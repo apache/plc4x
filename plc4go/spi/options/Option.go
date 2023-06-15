@@ -42,11 +42,6 @@ func WithCustomLogger(logger zerolog.Logger) WithOption {
 	return withCustomLogger{logger: logger}
 }
 
-// WithPassLoggerToModel enables passing of log to the model
-func WithPassLoggerToModel(passLogger bool) WithOption {
-	return withPassLoggerToModel{passLogger: passLogger}
-}
-
 // ExtractCustomLogger can be used to extract the custom logger
 func ExtractCustomLogger(options ...WithOption) (customLogger zerolog.Logger) {
 	for _, option := range options {
@@ -57,6 +52,22 @@ func ExtractCustomLogger(options ...WithOption) (customLogger zerolog.Logger) {
 		}
 	}
 	return
+}
+
+// WithPassLoggerToModel enables passing of log to the model
+func WithPassLoggerToModel(passLogger bool) WithOption {
+	return withPassLoggerToModel{passLogger: passLogger}
+}
+
+// ExtractPassLoggerToModel to extract the flag indicating that model should be passed to Model
+func ExtractPassLoggerToModel(options ...WithOption) bool {
+	for _, option := range options {
+		switch option := option.(type) {
+		case withPassLoggerToModel:
+			return option.passLogger
+		}
+	}
+	return false
 }
 
 // GetLoggerContextForModel returns a log context if the WithPassLoggerToModel WithOption is set
