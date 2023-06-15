@@ -1812,10 +1812,15 @@ func TestConnection_startSubscriptionHandler(t *testing.T) {
 
 				fields.subscribers = []*Subscriber{NewSubscriber(nil, options.WithCustomLogger(testutils.ProduceTestingLogger(t)))}
 				codec := NewMessageCodec(nil, _options...)
+				written := make(chan struct{})
 				go func() {
 					codec.monitoredMMIs <- readWriteModel.NewCALReplyShort(0, nil, nil, nil)
 					codec.monitoredSALs <- readWriteModel.NewMonitoredSAL(0, nil)
+					close(written)
 				}()
+				t.Cleanup(func() {
+					<-written
+				})
 				t.Cleanup(func() {
 					assert.NoError(t, codec.Disconnect())
 				})
@@ -1837,7 +1842,6 @@ func TestConnection_startSubscriptionHandler(t *testing.T) {
 				log:               testutils.ProduceTestingLogger(t),
 			}
 			c.startSubscriptionHandler()
-			time.Sleep(50 * time.Millisecond)
 		})
 	}
 }

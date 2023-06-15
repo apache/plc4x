@@ -298,6 +298,7 @@ func (m *defaultCodec) HandleMessages(message spi.Message) bool {
 			m.log.Trace().Stringer("expectation", expectation).Msg("doesn't accept message")
 		}
 	}
+	m.log.Trace().Msgf("handled message = %t", messageHandled)
 	return messageHandled
 }
 
@@ -307,6 +308,8 @@ func (m *defaultCodec) Work(codec DefaultCodecRequirements) {
 	if !config.TraceDefaultMessageCodecWorker {
 		workerLog = zerolog.Nop()
 	}
+	workerLog.Trace().Msg("Starting work")
+	defer workerLog.Trace().Msg("work ended")
 
 	defer func(workerLog zerolog.Logger) {
 		if err := recover(); err != nil {
