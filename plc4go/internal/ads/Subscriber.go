@@ -74,12 +74,14 @@ func (m *Connection) Subscribe(ctx context.Context, subscriptionRequest apiModel
 		subscriptionType := defaultSubscriptionRequest.GetType(tagName)
 		interval := defaultSubscriptionRequest.GetInterval(tagName)
 		preRegisteredConsumers := defaultSubscriptionRequest.GetPreRegisteredConsumers(tagName)
-		subSubscriptionRequests[tagName] = spiModel.NewDefaultPlcSubscriptionRequest(m,
+		subSubscriptionRequests[tagName] = spiModel.NewDefaultPlcSubscriptionRequest(
+			m,
 			[]string{tagName},
 			map[string]apiModel.PlcTag{tagName: directTag},
 			map[string]spiModel.SubscriptionType{tagName: subscriptionType},
 			map[string]time.Duration{tagName: interval},
-			map[string][]apiModel.PlcSubscriptionEventConsumer{tagName: preRegisteredConsumers})
+			map[string][]apiModel.PlcSubscriptionEventConsumer{tagName: preRegisteredConsumers},
+		)
 	}
 
 	// If this is a single item request, we can take a shortcut.

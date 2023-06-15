@@ -74,7 +74,18 @@ func (s *Subscriber) Subscribe(_ context.Context, subscriptionRequest apiModel.P
 		subscriptionValues := make(map[string]apiModel.PlcSubscriptionHandle)
 		for _, tagName := range internalPlcSubscriptionRequest.GetTagNames() {
 			responseCodes[tagName] = apiModel.PlcResponseCode_OK
-			subscriptionValues[tagName] = NewSubscriptionHandle(s, tagName, internalPlcSubscriptionRequest.GetTag(tagName), internalPlcSubscriptionRequest.GetType(tagName), internalPlcSubscriptionRequest.GetInterval(tagName))
+			handle := NewSubscriptionHandle(
+				s,
+				tagName,
+				internalPlcSubscriptionRequest.GetTag(tagName),
+				internalPlcSubscriptionRequest.GetType(tagName),
+				internalPlcSubscriptionRequest.GetInterval(tagName),
+			)
+			preRegisteredConsumers := internalPlcSubscriptionRequest.GetPreRegisteredConsumers(tagName)
+			for _, consumer := range preRegisteredConsumers {
+				_ = handle.Register(consumer)
+			}
+			subscriptionValues[tagName] = handle
 		}
 
 		result <- spiModel.NewDefaultPlcSubscriptionRequestResult(
