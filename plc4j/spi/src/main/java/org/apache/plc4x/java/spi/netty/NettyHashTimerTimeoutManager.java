@@ -24,7 +24,6 @@ import io.netty.util.Timer;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import java.util.function.Consumer;
 import org.apache.plc4x.java.spi.TimedOperation;
 import org.apache.plc4x.java.spi.TimeoutManager;
 
@@ -36,14 +35,18 @@ public class NettyHashTimerTimeoutManager implements TimeoutManager {
         this(100L);
     }
 
-    public NettyHashTimerTimeoutManager(long tick) {
-        HashedWheelTimer wheelTimer = new HashedWheelTimer(tick, TimeUnit.MILLISECONDS);
+    /**
+     * Creates a new NettyHashTimerTimeoutManager that checks for timeouts every `tickInMilliseconds` milliseconds.
+     * @param tickInMilliseconds milliseconds between timeout checks.
+     */
+    public NettyHashTimerTimeoutManager(long tickInMilliseconds) {
+        HashedWheelTimer wheelTimer = new HashedWheelTimer(tickInMilliseconds, TimeUnit.MILLISECONDS);
         timer = wheelTimer;
         wheelTimer.start();
     }
 
     @Override
-    public CompletionCallback register(TimedOperation operation) {
+    public CompletionCallback<?> register(TimedOperation operation) {
         Timeout newTimeout = timer.newTimeout(timeout -> {
             if (timeout.isCancelled()) {
                 return;
@@ -52,7 +55,7 @@ public class NettyHashTimerTimeoutManager implements TimeoutManager {
             operation.getOnTimeoutConsumer().accept(exception);
         }, operation.getTimeout().toMillis(), TimeUnit.MILLISECONDS);
 
-        return new TimeoutCompletionCallback(newTimeout);
+        return new TimeoutCompletionCallback<>(newTimeout);
     }
 
     @Override
@@ -61,10 +64,9 @@ public class NettyHashTimerTimeoutManager implements TimeoutManager {
         timeouts.forEach(Timeout::cancel);
     }
 
-    static class TimeoutCompletionCallback implements CompletionCallback {
+    static class TimeoutCompletionCallback<T> implements CompletionCallback<T> {
 
         private final Timeout timeout;
-        private Consumer<TimeoutException> onTimeout;
 
         TimeoutCompletionCallback(Timeout timeout) {
             this.timeout = timeout;

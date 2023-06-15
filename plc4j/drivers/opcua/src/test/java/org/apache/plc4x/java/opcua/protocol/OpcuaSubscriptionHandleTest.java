@@ -33,8 +33,7 @@ import org.slf4j.LoggerFactory;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-
-import static org.junit.jupiter.api.Assumptions.assumeTrue;
+import java.util.concurrent.TimeUnit;
 
 @DisableOnParallelsVmFlag
 public class OpcuaSubscriptionHandleTest {
@@ -134,7 +133,7 @@ public class OpcuaSubscriptionHandleTest {
         PlcSubscriptionRequest request = builder.build();
 
         // Get result of creating subscription
-        PlcSubscriptionResponse response = request.execute().get();
+        PlcSubscriptionResponse response = request.execute().get(1000, TimeUnit.MILLISECONDS);
         final OpcuaSubscriptionHandle subscriptionHandle = (OpcuaSubscriptionHandle) response.getSubscriptionHandle(tag);
 
         // Create handler for returned value
@@ -161,7 +160,7 @@ public class OpcuaSubscriptionHandleTest {
         PlcSubscriptionRequest request = builder.build();
 
         // Get result of creating subscription
-        PlcSubscriptionResponse response = request.execute().get();
+        PlcSubscriptionResponse response = request.execute().get(1000, TimeUnit.MILLISECONDS);
         final OpcuaSubscriptionHandle subscriptionHandle = (OpcuaSubscriptionHandle) response.getSubscriptionHandle(tag);
 
         // Create handler for returned value
@@ -188,7 +187,7 @@ public class OpcuaSubscriptionHandleTest {
         PlcSubscriptionRequest request = builder.build();
 
         // Get result of creating subscription
-        PlcSubscriptionResponse response = request.execute().get();
+        PlcSubscriptionResponse response = request.execute().get(10000, TimeUnit.MILLISECONDS);
         final OpcuaSubscriptionHandle subscriptionHandle = (OpcuaSubscriptionHandle) response.getSubscriptionHandle(tag);
 
         // Create handler for returned value
@@ -215,7 +214,7 @@ public class OpcuaSubscriptionHandleTest {
         PlcSubscriptionRequest request = builder.build();
 
         // Get result of creating subscription
-        PlcSubscriptionResponse response = request.execute().get();
+        PlcSubscriptionResponse response = request.execute().get(1000, TimeUnit.MILLISECONDS);
         final OpcuaSubscriptionHandle subscriptionHandle = (OpcuaSubscriptionHandle) response.getSubscriptionHandle(tag);
 
         // Create handler for returned value
@@ -242,7 +241,7 @@ public class OpcuaSubscriptionHandleTest {
         PlcSubscriptionRequest request = builder.build();
 
         // Get result of creating subscription
-        PlcSubscriptionResponse response = request.execute().get();
+        PlcSubscriptionResponse response = request.execute().get(1000, TimeUnit.MILLISECONDS);
         final OpcuaSubscriptionHandle subscriptionHandle = (OpcuaSubscriptionHandle) response.getSubscriptionHandle(tag);
 
         // Create handler for returned value
@@ -269,7 +268,7 @@ public class OpcuaSubscriptionHandleTest {
         PlcSubscriptionRequest request = builder.build();
 
         // Get result of creating subscription
-        PlcSubscriptionResponse response = request.execute().get();
+        PlcSubscriptionResponse response = request.execute().get(1000, TimeUnit.MILLISECONDS);
         final OpcuaSubscriptionHandle subscriptionHandle = (OpcuaSubscriptionHandle) response.getSubscriptionHandle(tag);
 
         // Create handler for returned value
@@ -296,7 +295,7 @@ public class OpcuaSubscriptionHandleTest {
         PlcSubscriptionRequest request = builder.build();
 
         // Get result of creating subscription
-        PlcSubscriptionResponse response = request.execute().get();
+        PlcSubscriptionResponse response = request.execute().get(1000, TimeUnit.MILLISECONDS);
         final OpcuaSubscriptionHandle subscriptionHandle = (OpcuaSubscriptionHandle) response.getSubscriptionHandle(tag);
 
         // Create handler for returned value
@@ -323,7 +322,7 @@ public class OpcuaSubscriptionHandleTest {
         PlcSubscriptionRequest request = builder.build();
 
         // Get result of creating subscription
-        PlcSubscriptionResponse response = request.execute().get();
+        PlcSubscriptionResponse response = request.execute().get(1000, TimeUnit.MILLISECONDS);
         final OpcuaSubscriptionHandle subscriptionHandle = (OpcuaSubscriptionHandle) response.getSubscriptionHandle(tag);
 
         // Create handler for returned value
@@ -350,7 +349,7 @@ public class OpcuaSubscriptionHandleTest {
         PlcSubscriptionRequest request = builder.build();
 
         // Get result of creating subscription
-        PlcSubscriptionResponse response = request.execute().get();
+        PlcSubscriptionResponse response = request.execute().get(1000, TimeUnit.MILLISECONDS);
         final OpcuaSubscriptionHandle subscriptionHandle = (OpcuaSubscriptionHandle) response.getSubscriptionHandle(tag);
 
         // Create handler for returned value
@@ -377,7 +376,7 @@ public class OpcuaSubscriptionHandleTest {
         PlcSubscriptionRequest request = builder.build();
 
         // Get result of creating subscription
-        PlcSubscriptionResponse response = request.execute().get();
+        PlcSubscriptionResponse response = request.execute().get(1000, TimeUnit.MILLISECONDS);
         final OpcuaSubscriptionHandle subscriptionHandle = (OpcuaSubscriptionHandle) response.getSubscriptionHandle(tag);
 
         // Create handler for returned value
@@ -404,7 +403,7 @@ public class OpcuaSubscriptionHandleTest {
         PlcSubscriptionRequest request = builder.build();
 
         // Get result of creating subscription
-        PlcSubscriptionResponse response = request.execute().get();
+        PlcSubscriptionResponse response = request.execute().get(1000, TimeUnit.MILLISECONDS);
         final OpcuaSubscriptionHandle subscriptionHandle = (OpcuaSubscriptionHandle) response.getSubscriptionHandle(tag);
 
         // Create handler for returned value
@@ -431,7 +430,7 @@ public class OpcuaSubscriptionHandleTest {
         PlcSubscriptionRequest request = builder.build();
 
         // Get result of creating subscription
-        PlcSubscriptionResponse response = request.execute().get();
+        PlcSubscriptionResponse response = request.execute().get(1000, TimeUnit.MILLISECONDS);
         final OpcuaSubscriptionHandle subscriptionHandle = (OpcuaSubscriptionHandle) response.getSubscriptionHandle(tag);
 
         // Create handler for returned value
@@ -458,7 +457,7 @@ public class OpcuaSubscriptionHandleTest {
         PlcSubscriptionRequest request = builder.build();
 
         // Get result of creating subscription
-        PlcSubscriptionResponse response = request.execute().get();
+        PlcSubscriptionResponse response = request.execute().get(1000, TimeUnit.MILLISECONDS);
         final OpcuaSubscriptionHandle subscriptionHandle = (OpcuaSubscriptionHandle) response.getSubscriptionHandle(tag);
 
         // Create handler for returned value
@@ -485,7 +484,7 @@ public class OpcuaSubscriptionHandleTest {
         PlcSubscriptionRequest request = builder.build();
 
         // Get result of creating subscription
-        PlcSubscriptionResponse response = request.execute().get();
+        PlcSubscriptionResponse response = request.execute().get(1000, TimeUnit.MILLISECONDS);
         final OpcuaSubscriptionHandle subscriptionHandle = (OpcuaSubscriptionHandle) response.getSubscriptionHandle(tag);
 
         // Create handler for returned value
@@ -512,7 +511,7 @@ public class OpcuaSubscriptionHandleTest {
         PlcSubscriptionRequest request = builder.build();
 
         // Get result of creating subscription
-        PlcSubscriptionResponse response = request.execute().get();
+        PlcSubscriptionResponse response = request.execute().get(1000, TimeUnit.MILLISECONDS);
         final OpcuaSubscriptionHandle subscriptionHandle = (OpcuaSubscriptionHandle) response.getSubscriptionHandle(tag);
 
         // Create handler for returned value
@@ -543,7 +542,7 @@ public class OpcuaSubscriptionHandleTest {
         PlcSubscriptionRequest request = builder.build();
 
         // Get result of creating subscription
-        PlcSubscriptionResponse response = request.execute().get();
+        PlcSubscriptionResponse response = request.execute().get(1000, TimeUnit.MILLISECONDS);
         final OpcuaSubscriptionHandle subscriptionHandle = (OpcuaSubscriptionHandle) response.getSubscriptionHandle(tag1);
 
         // Create handler for returned value

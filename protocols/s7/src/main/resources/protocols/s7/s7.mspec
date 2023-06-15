@@ -999,7 +999,7 @@
     ['0x12' UPDATE]
 ]
 
-[enum uint 8 'TimeBase'
+[enum uint 8 TimeBase
     ['0x00' B01SEC]
     ['0x01' B1SEC]
     ['0X02' B10SEC]

@@ -22,7 +22,7 @@ import java.util.function.Consumer;
 
 public interface TimeoutManager {
 
-    CompletionCallback register(TimedOperation operation);
+    CompletionCallback<?> register(TimedOperation operation);
 
     void stop();
 

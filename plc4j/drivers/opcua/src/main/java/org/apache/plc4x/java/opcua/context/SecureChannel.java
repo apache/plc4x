@@ -63,7 +63,7 @@ public class SecureChannel {
     private static final int DEFAULT_MAX_MESSAGE_SIZE = 2097152;
     private static final int DEFAULT_RECEIVE_BUFFER_SIZE = 65535;
     private static final int DEFAULT_SEND_BUFFER_SIZE = 65535;
-    public static final Duration REQUEST_TIMEOUT = Duration.ofMillis(1000000);
+    public static final Duration REQUEST_TIMEOUT = Duration.ofMillis(10000);
     public static final long REQUEST_TIMEOUT_LONG = 10000L;
     private static final String PASSWORD_ENCRYPTION_ALGORITHM = "http://www.w3.org/2001/04/xmlenc#rsa-oaep";
     private static final PascalString SECURITY_POLICY_NONE = new PascalString("http://opcfoundation.org/UA/SecurityPolicy#None");
