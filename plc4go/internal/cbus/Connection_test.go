@@ -1767,16 +1767,16 @@ func TestConnection_startSubscriptionHandler(t *testing.T) {
 		tracer            tracer.Tracer
 	}
 	tests := []struct {
-		name   string
-		fields fields
-		setup  func(t *testing.T, fields *fields)
+		name        string
+		fields      fields
+		setup       func(t *testing.T, fields *fields)
+		manipulator func(t *testing.T, connection *Connection)
 	}{
 		{
 			name: "just start",
-			setup: func(t *testing.T, fields *fields) {
+			manipulator: func(t *testing.T, connection *Connection) {
 				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
-
-				fields.DefaultConnection = _default.NewDefaultConnection(nil, _options...)
+				connection.DefaultConnection = _default.NewDefaultConnection(connection, _options...)
 			},
 		},
 		{
@@ -1784,31 +1784,29 @@ func TestConnection_startSubscriptionHandler(t *testing.T) {
 			setup: func(t *testing.T, fields *fields) {
 				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
 
-				defaultConnection := _default.NewDefaultConnection(nil, _options...)
-				defaultConnection.SetConnected(true)
-				fields.DefaultConnection = defaultConnection
-
 				codec := NewMessageCodec(nil, _options...)
 				codec.monitoredMMIs = make(chan readWriteModel.CALReply, 1)
 				codec.monitoredSALs = make(chan readWriteModel.MonitoredSAL, 1)
 				go func() {
-					codec.monitoredMMIs <- nil
-					codec.monitoredSALs <- nil
+					codec.monitoredMMIs <- readWriteModel.NewCALReplyShort(0, nil, nil, nil)
+					codec.monitoredSALs <- readWriteModel.NewMonitoredSAL(0, nil)
 				}()
 				t.Cleanup(func() {
 					assert.NoError(t, codec.Disconnect())
 				})
 				fields.messageCodec = codec
 			},
+			manipulator: func(t *testing.T, connection *Connection) {
+				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
+				defaultConnection := _default.NewDefaultConnection(connection, _options...)
+				defaultConnection.SetConnected(true)
+				connection.DefaultConnection = defaultConnection
+			},
 		},
 		{
 			name: "just start and feed",
 			setup: func(t *testing.T, fields *fields) {
 				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
-
-				defaultConnection := _default.NewDefaultConnection(nil, _options...)
-				defaultConnection.SetConnected(true)
-				fields.DefaultConnection = defaultConnection
 
 				fields.subscribers = []*Subscriber{NewSubscriber(nil, options.WithCustomLogger(testutils.ProduceTestingLogger(t)))}
 				codec := NewMessageCodec(nil, _options...)
@@ -1826,6 +1824,12 @@ func TestConnection_startSubscriptionHandler(t *testing.T) {
 				})
 				fields.messageCodec = codec
 			},
+			manipulator: func(t *testing.T, connection *Connection) {
+				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
+				defaultConnection := _default.NewDefaultConnection(connection, _options...)
+				defaultConnection.SetConnected(true)
+				connection.DefaultConnection = defaultConnection
+			},
 		},
 	}
 	for _, tt := range tests {
@@ -1840,6 +1844,9 @@ func TestConnection_startSubscriptionHandler(t *testing.T) {
 				connectionId:      tt.fields.connectionId,
 				tracer:            tt.fields.tracer,
 				log:               testutils.ProduceTestingLogger(t),
+			}
+			if tt.manipulator != nil {
+				tt.manipulator(t, c)
 			}
 			c.startSubscriptionHandler()
 		})
