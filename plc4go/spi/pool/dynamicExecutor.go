@@ -126,6 +126,7 @@ func (e *dynamicExecutor) Start() {
 		for e.IsRunning() {
 			workerLog.Trace().Msg("running")
 			mutex.Lock()
+			workersChanged := false
 			newWorkers := make([]*worker, 0)
 			for _, _worker := range e.worker {
 				deadline := time.Now().Add(-timeToBecomeUnused)
@@ -138,9 +139,14 @@ func (e *dynamicExecutor) Start() {
 				} else {
 					workerLog.Debug().Int("Worker id", _worker.id).Msg("still ok")
 					newWorkers = append(newWorkers, _worker)
+					workersChanged = true
 				}
 			}
-			e.worker = newWorkers
+			if workersChanged {
+				e.stateChange.Lock()
+				e.worker = newWorkers
+				e.stateChange.Unlock()
+			}
 			mutex.Unlock()
 			func() {
 				workerLog.Debug().Msgf("Sleeping for %v", downScaleInterval)

@@ -1789,6 +1789,8 @@ func TestConnection_startSubscriptionHandler(t *testing.T) {
 				fields.DefaultConnection = defaultConnection
 
 				codec := NewMessageCodec(nil, _options...)
+				codec.monitoredMMIs = make(chan readWriteModel.CALReply, 1)
+				codec.monitoredSALs = make(chan readWriteModel.MonitoredSAL, 1)
 				go func() {
 					codec.monitoredMMIs <- nil
 					codec.monitoredSALs <- nil

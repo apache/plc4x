@@ -247,54 +247,56 @@ func (c *Connection) startSubscriptionHandler() {
 	c.log.Debug().Msg("Starting SAL handler")
 	c.handlerWaitGroup.Add(1)
 	go func() {
+		salLogger := c.log.With().Str("handlerType", "SAL").Logger()
 		defer c.handlerWaitGroup.Done()
 		defer func() {
 			if err := recover(); err != nil {
-				c.log.Error().Msgf("panic-ed %v. Stack:\n%s", err, debug.Stack())
+				salLogger.Error().Msgf("panic-ed %v. Stack:\n%s", err, debug.Stack())
 			}
 		}()
-		c.log.Debug().Msg("SAL handler stated")
+		salLogger.Debug().Msg("SAL handler started")
 		for c.IsConnected() {
 			for monitoredSal := range c.messageCodec.monitoredSALs {
 				handled := false
 				for _, subscriber := range c.subscribers {
 					if ok := subscriber.handleMonitoredSAL(monitoredSal); ok {
-						c.log.Debug().Msgf("\n%v handled\n%s", subscriber, monitoredSal)
+						salLogger.Debug().Msgf("\n%v handled\n%s", subscriber, monitoredSal)
 						handled = true
 					}
 				}
 				if !handled {
-					c.log.Debug().Msgf("SAL was not handled:\n%s", monitoredSal)
+					salLogger.Debug().Msgf("SAL was not handled:\n%s", monitoredSal)
 				}
 			}
 		}
-		c.log.Info().Msg("Ending SAL handler")
+		salLogger.Info().Msg("Ending SAL handler")
 	}()
 	c.log.Debug().Msg("Starting MMI handler")
 	c.handlerWaitGroup.Add(1)
 	go func() {
+		mmiLogger := c.log.With().Str("handlerType", "MMI").Logger()
 		defer c.handlerWaitGroup.Done()
 		defer func() {
 			if err := recover(); err != nil {
-				c.log.Error().Msgf("panic-ed %v. Stack:\n%s", err, debug.Stack())
+				mmiLogger.Error().Msgf("panic-ed %v. Stack:\n%s", err, debug.Stack())
 			}
 		}()
-		c.log.Debug().Msg("default MMI started")
+		mmiLogger.Debug().Msg("default MMI started")
 		for c.IsConnected() {
 			for calReply := range c.messageCodec.monitoredMMIs {
 				handled := false
 				for _, subscriber := range c.subscribers {
 					if ok := subscriber.handleMonitoredMMI(calReply); ok {
-						c.log.Debug().Msgf("\n%v handled\n%s", subscriber, calReply)
+						mmiLogger.Debug().Msgf("\n%v handled\n%s", subscriber, calReply)
 						handled = true
 					}
 				}
 				if !handled {
-					c.log.Debug().Msgf("MMI was not handled:\n%s", calReply)
+					mmiLogger.Debug().Msgf("MMI was not handled:\n%s", calReply)
 				}
 			}
 		}
-		c.log.Info().Msg("Ending MMI handler")
+		mmiLogger.Info().Msg("Ending MMI handler")
 	}()
 }
 
