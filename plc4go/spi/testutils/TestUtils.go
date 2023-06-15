@@ -21,14 +21,14 @@ package testutils
 
 import (
 	"context"
+	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/apache/plc4x/plc4go/spi/pool"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"os"
 	"runtime/debug"
 	"strings"
 	"testing"
-
-	"github.com/apache/plc4x/plc4go/spi/options"
-	"github.com/apache/plc4x/plc4go/spi/pool"
-	"github.com/apache/plc4x/plc4go/spi/utils"
+	"time"
 
 	"github.com/ajankovic/xdiff"
 	"github.com/ajankovic/xdiff/parser"
@@ -115,9 +115,18 @@ func TestContext(t *testing.T) context.Context {
 	return ctx
 }
 
+var highLogPrecision bool
+
+func init() {
+	highLogPrecision = os.Getenv("PLC4X_TEST_HIGH_TEST_LOG_PRECISION") == "true"
+	if highLogPrecision {
+		zerolog.TimeFieldFormat = time.RFC3339Nano
+	}
+}
+
 // ProduceTestingLogger produces a logger which redirects to testing.T
 func ProduceTestingLogger(t *testing.T) zerolog.Logger {
-	return zerolog.New(
+	logger := zerolog.New(
 		zerolog.NewConsoleWriter(
 			zerolog.ConsoleTestWriter(t),
 			func(w *zerolog.ConsoleWriter) {
@@ -128,9 +137,17 @@ func ProduceTestingLogger(t *testing.T) zerolog.Logger {
 				if onJenkins || onGithubAction || onCI {
 					w.NoColor = true
 				}
+
+			},
+			func(w *zerolog.ConsoleWriter) {
+				w.TimeFormat = time.StampNano
 			},
 		),
 	)
+	if highLogPrecision {
+		logger = logger.With().Timestamp().Logger()
+	}
+	return logger
 }
 
 // EnrichOptionsWithOptionsForTesting appends options useful for testing to config.WithOption s
