@@ -569,7 +569,7 @@
             <configuration>
               <buildFlags>
                 <flag>-v</flag>
-                <!-- TODO: race detection temporary disabled till root cause for the issue is found https://github.com/golang/go/issues/40343 -->
+                <!-- TODO: race detection temporary disabled till root cause for the issue is found: https://github.com/golang/go/issues/40343 -->
                 <!--flag>-race</flag-->
                 <flag>${go.cover.flag}</flag>
               </buildFlags>
