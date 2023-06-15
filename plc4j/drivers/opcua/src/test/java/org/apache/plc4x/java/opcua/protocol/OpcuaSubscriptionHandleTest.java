@@ -187,7 +187,7 @@ public class OpcuaSubscriptionHandleTest {
         PlcSubscriptionRequest request = builder.build();
 
         // Get result of creating subscription
-        PlcSubscriptionResponse response = request.execute().get(10000, TimeUnit.MILLISECONDS);
+        PlcSubscriptionResponse response = request.execute().get(1000, TimeUnit.MILLISECONDS);
         final OpcuaSubscriptionHandle subscriptionHandle = (OpcuaSubscriptionHandle) response.getSubscriptionHandle(tag);
 
         // Create handler for returned value
