@@ -22,6 +22,7 @@ package cbus
 import (
 	"context"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
+	"github.com/apache/plc4x/plc4go/spi/testutils"
 	"github.com/apache/plc4x/plc4go/spi/transactions"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/stretchr/testify/assert"
@@ -97,7 +98,7 @@ func TestWriter_Write(t *testing.T) {
 		{
 			name: "too many tags",
 			args: args{
-				ctx: context.Background(),
+				ctx: testutils.TestContext(t),
 				writeRequest: spiModel.NewDefaultPlcWriteRequest(nil, func() []string {
 					return strings.Split(strings.Repeat("asd,", 30), ",")
 				}(), nil, nil, nil),
@@ -135,7 +136,7 @@ func TestWriter_Write(t *testing.T) {
 					tm: spi.NewRequestTransactionManager(10),
 				},
 				args: args{
-					ctx: context.Background(),
+						ctx: testutils.TestContext(t),
 					writeRequest: spiModel.NewDefaultPlcWriteRequest(
 						map[string]apiModel.PlcTag{
 							"asd": &statusTag{},

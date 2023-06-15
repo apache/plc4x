@@ -122,7 +122,7 @@ func TestDriver_GetConnectionWithContext(t *testing.T) {
 				awaitDisconnectComplete: false,
 			},
 			args: args{
-				ctx: context.Background(),
+				ctx: testutils.TestContext(t),
 				transportUrl: url.URL{
 					Scheme: "test",
 				},
@@ -151,7 +151,7 @@ func TestDriver_GetConnectionWithContext(t *testing.T) {
 				awaitDisconnectComplete: false,
 			},
 			args: args{
-				ctx: context.Background(),
+				ctx: testutils.TestContext(t),
 				transportUrl: url.URL{
 					Scheme: "test",
 				},
@@ -185,7 +185,7 @@ func TestDriver_GetConnectionWithContext(t *testing.T) {
 				awaitDisconnectComplete: false,
 			},
 			args: args{
-				ctx: context.Background(),
+				ctx: testutils.TestContext(t),
 				transportUrl: url.URL{
 					Scheme: "test",
 				},
@@ -218,7 +218,7 @@ func TestDriver_GetConnectionWithContext(t *testing.T) {
 				awaitDisconnectComplete: false,
 			},
 			args: args{
-				ctx: context.Background(),
+				ctx: testutils.TestContext(t),
 				transportUrl: url.URL{
 					Scheme: "test",
 				},

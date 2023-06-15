@@ -21,7 +21,9 @@ package utils
 
 import (
 	"context"
+	"github.com/rs/zerolog"
 	"github.com/stretchr/testify/assert"
+	"os"
 	"testing"
 )
 
@@ -39,7 +41,7 @@ func TestCreateArrayContext(t *testing.T) {
 		{
 			name: "Create one",
 			args: args{
-				ctx: context.Background(),
+				ctx: testContext(t),
 			},
 			wantVerifier: func(t *testing.T, ctx context.Context) bool {
 				_arrayInfo := ctx.Value(keyArrayInfo)
@@ -72,7 +74,7 @@ func TestGetCurItemFromContext(t *testing.T) {
 		{
 			name: "key not set",
 			args: args{
-				ctx: context.Background(),
+				ctx: testContext(t),
 			},
 			wantPanic: true,
 		},
@@ -121,7 +123,7 @@ func TestGetLastItemFromContext(t *testing.T) {
 		{
 			name: "key not set",
 			args: args{
-				ctx: context.Background(),
+				ctx: testContext(t),
 			},
 			wantPanic: true,
 		},
@@ -170,7 +172,7 @@ func TestGetNumItemsFromContext(t *testing.T) {
 		{
 			name: "key not set",
 			args: args{
-				ctx: context.Background(),
+				ctx: testContext(t),
 			},
 			wantPanic: true,
 		},
@@ -204,4 +206,26 @@ func TestGetNumItemsFromContext(t *testing.T) {
 			assert.Equalf(t, tt.want, GetNumItemsFromContext(tt.args.ctx), "GetNumItemsFromContext(%v)", tt.args.ctx)
 		})
 	}
+}
+
+// note: we can't use testutils here due to import cycle
+func produceTestingLogger(t *testing.T) zerolog.Logger {
+	return zerolog.New(zerolog.NewConsoleWriter(zerolog.ConsoleTestWriter(t),
+		func(w *zerolog.ConsoleWriter) {
+			// TODO: this is really an issue with go-junit-report not sanitizing output before dumping into xml...
+			onJenkins := os.Getenv("JENKINS_URL") != ""
+			onGithubAction := os.Getenv("GITHUB_ACTIONS") != ""
+			onCI := os.Getenv("CI") != ""
+			if onJenkins || onGithubAction || onCI {
+				w.NoColor = true
+			}
+		}))
+}
+
+// note: we can't use testutils here due to import cycle
+func testContext(t *testing.T) context.Context {
+	ctx, cancel := context.WithCancel(context.Background())
+	t.Cleanup(cancel)
+	ctx = produceTestingLogger(t).WithContext(ctx)
+	return ctx
 }

@@ -333,7 +333,7 @@ func Test_plcDriverManger_Discover(t *testing.T) {
 				drivers:    tt.fields.drivers,
 				transports: tt.fields.transports,
 			}
-			m.log = produceTestLogger(t)
+			m.log = produceTestingLogger(t)
 			if err := m.Discover(tt.args.callback, tt.args.discoveryOptions...); (err != nil) != tt.wantErr {
 				t.Errorf("Discover() error = %v, wantErr %v", err, tt.wantErr)
 			}
@@ -364,7 +364,7 @@ func Test_plcDriverManger_DiscoverWithContext(t *testing.T) {
 				drivers: map[string]PlcDriver{},
 			},
 			args: args{
-				ctx: context.Background(),
+				ctx: testContext(t),
 				callback: func(event model.PlcDiscoveryItem) {
 					// No-op
 				},
@@ -388,7 +388,7 @@ func Test_plcDriverManger_DiscoverWithContext(t *testing.T) {
 				drivers: map[string]PlcDriver{},
 			},
 			args: args{
-				ctx: context.Background(),
+				ctx: testContext(t),
 				callback: func(event model.PlcDiscoveryItem) {
 					// No-op
 				},
@@ -417,7 +417,7 @@ func Test_plcDriverManger_DiscoverWithContext(t *testing.T) {
 				drivers:    tt.fields.drivers,
 				transports: tt.fields.transports,
 			}
-			m.log = produceTestLogger(t)
+			m.log = produceTestingLogger(t)
 			if err := m.DiscoverWithContext(tt.args.ctx, tt.args.callback, tt.args.discoveryOptions...); (err != nil) != tt.wantErr {
 				t.Errorf("DiscoverWithContext() error = %v, wantErr %v", err, tt.wantErr)
 			}
@@ -526,7 +526,7 @@ func Test_plcDriverManger_GetConnection(t *testing.T) {
 				drivers:    tt.fields.drivers,
 				transports: tt.fields.transports,
 			}
-			m.log = produceTestLogger(t)
+			m.log = produceTestingLogger(t)
 			if got := m.GetConnection(tt.args.connectionString); !tt.wantVerifier(t, got) {
 				t.Errorf("GetConnection() = %v", got)
 			}
@@ -568,7 +568,7 @@ func Test_plcDriverManger_GetDriver(t *testing.T) {
 				drivers:    tt.fields.drivers,
 				transports: tt.fields.transports,
 			}
-			m.log = produceTestLogger(t)
+			m.log = produceTestingLogger(t)
 			got, err := m.GetDriver(tt.args.driverName)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("GetDriver() error = %v, wantErr %v", err, tt.wantErr)
@@ -617,7 +617,7 @@ func Test_plcDriverManger_GetTransport(t *testing.T) {
 				drivers:    tt.fields.drivers,
 				transports: tt.fields.transports,
 			}
-			m.log = produceTestLogger(t)
+			m.log = produceTestingLogger(t)
 			got, err := m.GetTransport(tt.args.transportName, tt.args.in1, tt.args.in2)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("GetTransport() error = %v, wantErr %v", err, tt.wantErr)
@@ -659,7 +659,7 @@ func Test_plcDriverManger_ListDriverNames(t *testing.T) {
 				drivers:    tt.fields.drivers,
 				transports: tt.fields.transports,
 			}
-			m.log = produceTestLogger(t)
+			m.log = produceTestingLogger(t)
 			if got := m.ListDriverNames(); !assert.Equal(t, got, tt.want) {
 				t.Errorf("ListDriverNames() = %v, want %v", got, tt.want)
 			}
@@ -696,7 +696,7 @@ func Test_plcDriverManger_ListTransportNames(t *testing.T) {
 				drivers:    tt.fields.drivers,
 				transports: tt.fields.transports,
 			}
-			m.log = produceTestLogger(t)
+			m.log = produceTestingLogger(t)
 			if got := m.ListTransportNames(); !assert.Equal(t, got, tt.want) {
 				t.Errorf("ListTransportNames() = %v, want %v", got, tt.want)
 			}
@@ -756,7 +756,7 @@ func Test_plcDriverManger_RegisterDriver(t *testing.T) {
 				drivers:    tt.fields.drivers,
 				transports: tt.fields.transports,
 			}
-			m.log = produceTestLogger(t)
+			m.log = produceTestingLogger(t)
 			m.RegisterDriver(tt.args.driver)
 		})
 	}
@@ -812,7 +812,7 @@ func Test_plcDriverManger_RegisterTransport(t *testing.T) {
 				drivers:    tt.fields.drivers,
 				transports: tt.fields.transports,
 			}
-			m.log = produceTestLogger(t)
+			m.log = produceTestingLogger(t)
 			m.RegisterTransport(tt.args.transport)
 		})
 	}
@@ -845,7 +845,7 @@ func Test_withDiscoveryOption_isDiscoveryOption(t *testing.T) {
 }
 
 // note: we can't use testutils here due to import cycle
-func produceTestLogger(t *testing.T) zerolog.Logger {
+func produceTestingLogger(t *testing.T) zerolog.Logger {
 	return zerolog.New(zerolog.NewConsoleWriter(zerolog.ConsoleTestWriter(t),
 		func(w *zerolog.ConsoleWriter) {
 			// TODO: this is really an issue with go-junit-report not sanitizing output before dumping into xml...
@@ -856,4 +856,12 @@ func produceTestLogger(t *testing.T) zerolog.Logger {
 				w.NoColor = true
 			}
 		}))
+}
+
+// note: we can't use testutils here due to import cycle
+func testContext(t *testing.T) context.Context {
+	ctx, cancel := context.WithCancel(context.Background())
+	t.Cleanup(cancel)
+	ctx = produceTestingLogger(t).WithContext(ctx)
+	return ctx
 }

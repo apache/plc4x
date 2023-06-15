@@ -22,6 +22,7 @@ package _default
 import (
 	"context"
 	"fmt"
+	"github.com/apache/plc4x/plc4go/spi/testutils"
 	"testing"
 	"time"
 
@@ -508,7 +509,7 @@ func Test_defaultCodec_Expect(t *testing.T) {
 		{
 			name: "expect it",
 			args: args{
-				ctx: context.Background(),
+				ctx: testutils.TestContext(t),
 			},
 			wantErr: assert.NoError,
 		},
@@ -745,7 +746,7 @@ func Test_defaultCodec_SendRequest(t *testing.T) {
 		{
 			name: "send it",
 			args: args{
-				ctx: context.Background(),
+				ctx: testutils.TestContext(t),
 			},
 			mockSetup: func(t *testing.T, fields *fields, args *args) {
 				requirements := NewMockDefaultCodecRequirements(t)
@@ -771,7 +772,7 @@ func Test_defaultCodec_SendRequest(t *testing.T) {
 		{
 			name: "send it errors",
 			args: args{
-				ctx: context.Background(),
+				ctx: testutils.TestContext(t),
 			},
 			mockSetup: func(t *testing.T, fields *fields, args *args) {
 				requirements := NewMockDefaultCodecRequirements(t)

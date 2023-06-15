@@ -24,6 +24,7 @@ import (
 	"errors"
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
 	"github.com/apache/plc4x/plc4go/spi"
+	"github.com/apache/plc4x/plc4go/spi/testutils"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
@@ -114,7 +115,7 @@ func TestSingleItemRequestInterceptor_InterceptReadRequest(t *testing.T) {
 				},
 			},
 			args: args{
-				ctx: context.Background(),
+				ctx: testutils.TestContext(t),
 			},
 			mockSetup: func(t *testing.T, fields *fields, args *args) {
 				plcReadRequest := NewMockPlcReadRequest(t)
@@ -267,7 +268,7 @@ func TestSingleItemRequestInterceptor_InterceptWriteRequest(t *testing.T) {
 				},
 			},
 			args: args{
-				ctx: context.Background(),
+				ctx: testutils.TestContext(t),
 			},
 			mockSetup: func(t *testing.T, fields *fields, args *args) {
 				plcWriteRequest := NewMockPlcWriteRequest(t)
@@ -414,7 +415,7 @@ func TestSingleItemRequestInterceptor_ProcessReadResponses(t *testing.T) {
 		{
 			name: "two result (bit empty)",
 			args: args{
-				ctx: context.Background(),
+				ctx: testutils.TestContext(t),
 			},
 			fields: fields{
 				readResponseFactory: func(t *testing.T) readResponseFactory {
@@ -444,7 +445,7 @@ func TestSingleItemRequestInterceptor_ProcessReadResponses(t *testing.T) {
 		{
 			name: "two result",
 			args: args{
-				ctx: context.Background(),
+				ctx: testutils.TestContext(t),
 			},
 			fields: fields{
 				readResponseFactory: func(t *testing.T) readResponseFactory {
@@ -598,7 +599,7 @@ func TestSingleItemRequestInterceptor_ProcessWriteResponses(t *testing.T) {
 				},
 			},
 			args: args{
-				ctx: context.Background(),
+				ctx: testutils.TestContext(t),
 			},
 			mockSetup: func(t *testing.T, fields *fields, args *args) {
 				result1 := NewMockPlcWriteRequestResult(t)
@@ -621,7 +622,7 @@ func TestSingleItemRequestInterceptor_ProcessWriteResponses(t *testing.T) {
 		{
 			name: "two result",
 			args: args{
-				ctx: context.Background(),
+				ctx: testutils.TestContext(t),
 			},
 			fields: fields{
 				writeResponseFactory: func(request apiModel.PlcWriteRequest, responseCodes map[string]apiModel.PlcResponseCode) apiModel.PlcWriteResponse {

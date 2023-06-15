@@ -76,7 +76,7 @@ func TestBrowser_BrowseQuery(t *testing.T) {
 		{
 			name: "non responding browse",
 			args: args{
-				ctx: context.Background(),
+				ctx: testutils.TestContext(t),
 				interceptor: func(result apiModel.PlcBrowseItem) bool {
 					// No-OP
 					return true
@@ -349,7 +349,7 @@ func TestBrowser_getInstalledUnitAddressBytes(t *testing.T) {
 		{
 			name: "get units",
 			args: args{
-				ctx: context.Background(),
+				ctx: testutils.TestContext(t),
 			},
 			setup: func(t *testing.T, fields *fields) {
 				_options := testutils.EnrichOptionsWithOptionsForTesting(t)

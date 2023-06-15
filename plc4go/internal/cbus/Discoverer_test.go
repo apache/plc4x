@@ -251,7 +251,7 @@ func TestDiscoverer_createTransportInstanceDispatcher(t *testing.T) {
 		{
 			name: "create a dispatcher",
 			args: args{
-				ctx: context.Background(),
+				ctx: testutils.TestContext(t),
 				wg: func() *sync.WaitGroup {
 					var wg sync.WaitGroup
 					return &wg
