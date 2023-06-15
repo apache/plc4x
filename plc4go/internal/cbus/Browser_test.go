@@ -146,10 +146,14 @@ func TestBrowser_BrowseQuery(t *testing.T) {
 						transportInstance.FillReadBuffer([]byte("g.890050435F434E49454422\r\n"))
 						currentState.Store(DONE)
 					case DONE:
-						t.Log("Dispatching 3 MMI segments")
-						transportInstance.FillReadBuffer([]byte("86020200F900FF0094120006000000000000000008000000000000000000CA\r\n"))
-						transportInstance.FillReadBuffer([]byte("86020200F900FF580000000000000000000000000000000000000000000026\r\n"))
-						transportInstance.FillReadBuffer([]byte("86020200F700FFB00000000000000000000000000000000000000000D0\r\n"))
+						t.Log("Connection dance done")
+						go func() {
+							time.Sleep(200 * time.Millisecond)
+							t.Log("Dispatching 3 MMI segments")
+							transportInstance.FillReadBuffer([]byte("86020200F900FF0094120006000000000000000008000000000000000000CA\r\n"))
+							transportInstance.FillReadBuffer([]byte("86020200F900FF580000000000000000000000000000000000000000000026\r\n"))
+							transportInstance.FillReadBuffer([]byte("86020200F700FFB00000000000000000000000000000000000000000D0\r\n"))
+						}()
 					}
 				})
 				err = transport.AddPreregisteredInstances(transportUrl, transportInstance)
@@ -408,10 +412,14 @@ func TestBrowser_getInstalledUnitAddressBytes(t *testing.T) {
 						transportInstance.FillReadBuffer([]byte("3230009E\r\n"))
 						currentState.Store(DONE)
 					case DONE:
-						t.Log("Dispatching 3 MMI segments")
-						transportInstance.FillReadBuffer([]byte("86020200F900FF0094120006000000000000000008000000000000000000CA\r\n"))
-						transportInstance.FillReadBuffer([]byte("86020200F900FF580000000000000000000000000000000000000000000026\r\n"))
-						transportInstance.FillReadBuffer([]byte("86020200F700FFB00000000000000000000000000000000000000000D0\r\n"))
+						t.Log("Connection dance done")
+						go func() {
+							time.Sleep(200 * time.Millisecond)
+							t.Log("Dispatching 3 MMI segments")
+							transportInstance.FillReadBuffer([]byte("86020200F900FF0094120006000000000000000008000000000000000000CA\r\n"))
+							transportInstance.FillReadBuffer([]byte("86020200F900FF580000000000000000000000000000000000000000000026\r\n"))
+							transportInstance.FillReadBuffer([]byte("86020200F700FFB00000000000000000000000000000000000000000D0\r\n"))
+						}()
 					}
 				})
 				err = transport.AddPreregisteredInstances(transportUrl, transportInstance)

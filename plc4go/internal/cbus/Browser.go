@@ -180,6 +180,10 @@ func (m Browser) extractAttributes(query *unitInfoQuery) ([]readWriteModel.Attri
 }
 
 func (m Browser) getInstalledUnitAddressBytes(ctx context.Context) (map[byte]any, error) {
+	start := time.Now()
+	defer func() {
+		m.log.Debug().Msgf("Ending unit address acquiring after %s", time.Since(start))
+	}()
 	// We need to pre-subscribe to catch the 2 followup responses
 	subscriptionRequest, err := m.connection.SubscriptionRequestBuilder().
 		AddEventTagAddress("installationMMIMonitor", "mmimonitor/*/NETWORK_CONTROL").
@@ -188,15 +192,16 @@ func (m Browser) getInstalledUnitAddressBytes(ctx context.Context) (map[byte]any
 		return nil, errors.Wrap(err, "Error subscribing to the installation MMI")
 	}
 	subCtx, subCtxCancel := context.WithTimeout(ctx, time.Second*2)
+	defer subCtxCancel()
 	subscriptionResult := <-subscriptionRequest.ExecuteWithContext(subCtx)
-	subCtxCancel()
 	if err := subscriptionResult.GetErr(); err != nil {
 		return nil, errors.Wrap(err, "Error subscribing to the mmi")
 	}
-	if responseCode := subscriptionResult.GetResponse().GetResponseCode("installationMMIMonitor"); responseCode != apiModel.PlcResponseCode_OK {
+	response := subscriptionResult.GetResponse()
+	if responseCode := response.GetResponseCode("installationMMIMonitor"); responseCode != apiModel.PlcResponseCode_OK {
 		return nil, errors.Errorf("Got %s", responseCode)
 	}
-	subscriptionHandle, err := subscriptionResult.GetResponse().GetSubscriptionHandle("installationMMIMonitor")
+	subscriptionHandle, err := response.GetSubscriptionHandle("installationMMIMonitor")
 	if err != nil {
 		return nil, errors.Wrap(err, "Error getting the subscription handle")
 	}
@@ -287,6 +292,7 @@ func (m Browser) getInstalledUnitAddressBytes(ctx context.Context) (map[byte]any
 		return nil, errors.Wrap(err, "Error getting the installation MMI")
 	}
 	readCtx, readCtxCancel := context.WithTimeout(ctx, time.Second*2)
+	defer readCtxCancel()
 	go func() {
 		defer func() {
 			if err := recover(); err != nil {
@@ -377,6 +383,5 @@ func (m Browser) getInstalledUnitAddressBytes(ctx context.Context) (map[byte]any
 			return nil, errors.Wrap(err, "error waiting for other offsets")
 		}
 	}
-	readCtxCancel()
 	return result, nil
 }
