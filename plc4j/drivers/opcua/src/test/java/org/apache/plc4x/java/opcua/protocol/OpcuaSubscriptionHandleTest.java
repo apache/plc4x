@@ -35,6 +35,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.concurrent.TimeUnit;
 
+// ! For some odd reason does this test not work on VMs running in Parallels.
+// cdutz: I have done way more than my fair share on tracking down this issue and am simply giving up on it.
+// I tracked it down into the core of Milo several times now, but got lost in there.
+// It's not a big issue as the GitHub runners and the Apache Jenkins still run the test.
 @DisableOnParallelsVmFlag
 public class OpcuaSubscriptionHandleTest {
 
@@ -80,6 +84,7 @@ public class OpcuaSubscriptionHandleTest {
 
     }
 
+    // ! If this test fails, see comment at the top of the class before investigating.
     @BeforeAll
     public static void setup() {
         try {
@@ -121,6 +126,7 @@ public class OpcuaSubscriptionHandleTest {
         }
     }
 
+    // ! If this test fails, see comment at the top of the class before investigating.
     @Test
     public void subscribeBool() throws Exception {
         String tag = "Bool";
@@ -148,6 +154,7 @@ public class OpcuaSubscriptionHandleTest {
         subscriptionHandle.stopSubscriber();
     }
 
+    // ! If this test fails, see comment at the top of the class before investigating.
     @Test
     public void subscribeByte() throws Exception {
         String tag = "Byte";
@@ -175,6 +182,7 @@ public class OpcuaSubscriptionHandleTest {
         subscriptionHandle.stopSubscriber();
     }
 
+    // ! If this test fails, see comment at the top of the class before investigating.
     @Test
     public void subscribeDouble() throws Exception {
         String tag = "Double";
@@ -202,6 +210,7 @@ public class OpcuaSubscriptionHandleTest {
         subscriptionHandle.stopSubscriber();
     }
 
+    // ! If this test fails, see comment at the top of the class before investigating.
     @Test
     public void subscribeFloat() throws Exception {
         String tag = "Float";
@@ -229,6 +238,7 @@ public class OpcuaSubscriptionHandleTest {
         subscriptionHandle.stopSubscriber();
     }
 
+    // ! If this test fails, see comment at the top of the class before investigating.
     @Test
     public void subscribeInt16() throws Exception {
         String tag = "Int16";
@@ -256,6 +266,7 @@ public class OpcuaSubscriptionHandleTest {
         subscriptionHandle.stopSubscriber();
     }
 
+    // ! If this test fails, see comment at the top of the class before investigating.
     @Test
     public void subscribeInt32() throws Exception {
         String tag = "Int32";
@@ -283,6 +294,7 @@ public class OpcuaSubscriptionHandleTest {
         subscriptionHandle.stopSubscriber();
     }
 
+    // ! If this test fails, see comment at the top of the class before investigating.
     @Test
     public void subscribeInt64() throws Exception {
         String tag = "Int64";
@@ -310,6 +322,7 @@ public class OpcuaSubscriptionHandleTest {
         subscriptionHandle.stopSubscriber();
     }
 
+    // ! If this test fails, see comment at the top of the class before investigating.
     @Test
     public void subscribeInteger() throws Exception {
         String tag = "Integer";
@@ -337,6 +350,7 @@ public class OpcuaSubscriptionHandleTest {
         subscriptionHandle.stopSubscriber();
     }
 
+    // ! If this test fails, see comment at the top of the class before investigating.
     @Test
     public void subscribeSByte() throws Exception {
         String tag = "SByte";
@@ -364,6 +378,7 @@ public class OpcuaSubscriptionHandleTest {
         subscriptionHandle.stopSubscriber();
     }
 
+    // ! If this test fails, see comment at the top of the class before investigating.
     @Test
     public void subscribeString() throws Exception {
         String tag = "String";
@@ -391,6 +406,7 @@ public class OpcuaSubscriptionHandleTest {
         subscriptionHandle.stopSubscriber();
     }
 
+    // ! If this test fails, see comment at the top of the class before investigating.
     @Test
     public void subscribeUInt16() throws Exception {
         String tag = "Uint16";
@@ -418,6 +434,7 @@ public class OpcuaSubscriptionHandleTest {
         subscriptionHandle.stopSubscriber();
     }
 
+    // ! If this test fails, see comment at the top of the class before investigating.
     @Test
     public void subscribeUInt32() throws Exception {
         String tag = "UInt32";
@@ -445,6 +462,7 @@ public class OpcuaSubscriptionHandleTest {
         subscriptionHandle.stopSubscriber();
     }
 
+    // ! If this test fails, see comment at the top of the class before investigating.
     @Test
     public void subscribeUInt64() throws Exception {
         String tag = "UInt64";
@@ -472,6 +490,7 @@ public class OpcuaSubscriptionHandleTest {
         subscriptionHandle.stopSubscriber();
     }
 
+    // ! If this test fails, see comment at the top of the class before investigating.
     @Test
     public void subscribeUInteger() throws Exception {
         String tag = "UInteger";
@@ -499,6 +518,7 @@ public class OpcuaSubscriptionHandleTest {
         subscriptionHandle.stopSubscriber();
     }
 
+    // ! If this test fails, see comment at the top of the class before investigating.
     @Test
     public void subscribeDoesNotExists() throws Exception {
         String tag = "DoesNotExists";
@@ -527,6 +547,7 @@ public class OpcuaSubscriptionHandleTest {
         subscriptionHandle.stopSubscriber();
     }
 
+    // ! If this test fails, see comment at the top of the class before investigating.
     @Test
     public void subscribeMultiple() throws Exception {
         String tag1 = "UInteger";
