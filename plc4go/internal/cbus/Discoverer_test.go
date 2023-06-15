@@ -198,14 +198,12 @@ func TestDiscoverer_createDeviceScanDispatcher(t *testing.T) {
 					}
 				})
 
-				// Setup logger
-				logger := testutils.ProduceTestingLogger(t)
+				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
 
-				loggerOption := options.WithCustomLogger(logger)
-				transport := tcp.NewTransport(loggerOption)
+				transport := tcp.NewTransport(_options...)
 				parse, err := url.Parse("tcp://" + listen.Addr().String())
 				require.NoError(t, err)
-				instance, err := transport.CreateTransportInstance(*parse, nil, loggerOption)
+				instance, err := transport.CreateTransportInstance(*parse, nil, _options...)
 				require.NoError(t, err)
 				args.tcpTransportInstance = instance.(*tcp.TransportInstance)
 			},

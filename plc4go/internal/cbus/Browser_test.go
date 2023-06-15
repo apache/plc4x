@@ -22,7 +22,6 @@ package cbus
 import (
 	"context"
 	"fmt"
-	"github.com/apache/plc4x/plc4go/spi/pool"
 	"net/url"
 	"sync"
 	"sync/atomic"
@@ -35,7 +34,6 @@ import (
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/cbus/readwrite/model"
 	_default "github.com/apache/plc4x/plc4go/spi/default"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
-	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
 	"github.com/apache/plc4x/plc4go/spi/transports"
 	"github.com/apache/plc4x/plc4go/spi/transports/test"
@@ -87,15 +85,11 @@ func TestBrowser_BrowseQuery(t *testing.T) {
 				query:     NewUnitInfoQuery(readWriteModel.NewUnitAddress(2), nil, 1),
 			},
 			setup: func(t *testing.T, fields *fields) {
-				// Setup logger
-				logger := testutils.ProduceTestingLogger(t)
+				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
 
-				// Custom option for that
-				loggerOption := options.WithCustomLogger(logger)
-
-				transport := test.NewTransport(loggerOption)
+				transport := test.NewTransport(_options...)
 				transportUrl := url.URL{Scheme: "test"}
-				transportInstance, err := transport.CreateTransportInstance(transportUrl, nil, loggerOption)
+				transportInstance, err := transport.CreateTransportInstance(transportUrl, nil, _options...)
 				require.NoError(t, err)
 				t.Cleanup(func() {
 					assert.NoError(t, transportInstance.Close())
@@ -160,7 +154,7 @@ func TestBrowser_BrowseQuery(t *testing.T) {
 				})
 				err = transport.AddPreregisteredInstances(transportUrl, transportInstance)
 				require.NoError(t, err)
-				driver := NewDriver(loggerOption)
+				driver := NewDriver(_options...)
 				connectionConnectResult := <-driver.GetConnection(transportUrl, map[string]transports.Transport{"test": transport}, map[string][]string{})
 				if err := connectionConnectResult.GetErr(); err != nil {
 					t.Error(err)
@@ -358,14 +352,7 @@ func TestBrowser_getInstalledUnitAddressBytes(t *testing.T) {
 				ctx: context.Background(),
 			},
 			setup: func(t *testing.T, fields *fields) {
-				// Setup logger
-				logger := testutils.ProduceTestingLogger(t)
-
-				// Custom options for that
-				_options := []options.WithOption{
-					options.WithCustomLogger(logger),
-					pool.WithExecutorOptionTracerWorkers(true),
-				}
+				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
 
 				transport := test.NewTransport(_options...)
 				transportUrl := url.URL{Scheme: "test"}

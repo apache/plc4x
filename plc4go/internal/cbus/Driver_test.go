@@ -87,8 +87,8 @@ func TestDriver_DiscoverWithContext(t *testing.T) {
 				tm:                      tt.fields.tm,
 				awaitSetupComplete:      tt.fields.awaitSetupComplete,
 				awaitDisconnectComplete: tt.fields.awaitDisconnectComplete,
+				log:                     testutils.ProduceTestingLogger(t),
 			}
-			m.log = testutils.ProduceTestingLogger(t)
 			tt.wantErr(t, m.DiscoverWithContext(tt.args.ctx, tt.args.callback, tt.args.discoveryOptions...), fmt.Sprintf("DiscoverWithContext(%v, func()*, %v)", tt.args.ctx, tt.args.discoveryOptions))
 		})
 	}

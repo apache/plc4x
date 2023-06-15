@@ -178,18 +178,14 @@ func TestConnection_ConnectWithContext(t *testing.T) {
 			},
 			args: args{ctx: context.Background()},
 			setup: func(t *testing.T, fields *fields) {
-				// Setup logger
-				logger := testutils.ProduceTestingLogger(t)
-
-				// Custom option for that
-				loggerOption := options.WithCustomLogger(logger)
+				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
 
 				// Build the default connection
-				fields.DefaultConnection = _default.NewDefaultConnection(nil, loggerOption)
-				transport := test.NewTransport(loggerOption)
-				ti, err := transport.CreateTransportInstance(url.URL{Scheme: "test"}, nil, loggerOption)
+				fields.DefaultConnection = _default.NewDefaultConnection(nil, _options...)
+				transport := test.NewTransport(_options...)
+				ti, err := transport.CreateTransportInstance(url.URL{Scheme: "test"}, nil, _options...)
 				require.NoError(t, err)
-				codec := NewMessageCodec(ti, loggerOption)
+				codec := NewMessageCodec(ti, _options...)
 				t.Cleanup(func() {
 					assert.Error(t, codec.Disconnect())
 				})
@@ -854,16 +850,13 @@ func TestConnection_fireConnectionError(t *testing.T) {
 		{
 			name: "instant connect",
 			setup: func(t *testing.T, fields *fields, args *args) {
-				// Setup logger
-				logger := testutils.ProduceTestingLogger(t)
+				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
 
-				loggerOption := options.WithCustomLogger(logger)
-
-				fields.DefaultConnection = _default.NewDefaultConnection(nil, loggerOption)
-				transport := test.NewTransport(loggerOption)
-				ti, err := transport.CreateTransportInstance(url.URL{Scheme: "test"}, nil, loggerOption)
+				fields.DefaultConnection = _default.NewDefaultConnection(nil, _options...)
+				transport := test.NewTransport(_options...)
+				ti, err := transport.CreateTransportInstance(url.URL{Scheme: "test"}, nil, _options...)
 				require.NoError(t, err)
-				codec := NewMessageCodec(ti, loggerOption)
+				codec := NewMessageCodec(ti, _options...)
 				t.Cleanup(func() {
 					assert.Error(t, codec.Disconnect())
 				})
@@ -881,16 +874,13 @@ func TestConnection_fireConnectionError(t *testing.T) {
 				},
 			},
 			setup: func(t *testing.T, fields *fields, args *args) {
-				// Setup logger
-				logger := testutils.ProduceTestingLogger(t)
+				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
 
-				loggerOption := options.WithCustomLogger(logger)
-
-				fields.DefaultConnection = _default.NewDefaultConnection(nil, loggerOption)
-				transport := test.NewTransport(loggerOption)
-				ti, err := transport.CreateTransportInstance(url.URL{Scheme: "test"}, nil, loggerOption)
+				fields.DefaultConnection = _default.NewDefaultConnection(nil, _options...)
+				transport := test.NewTransport(_options...)
+				ti, err := transport.CreateTransportInstance(url.URL{Scheme: "test"}, nil, _options...)
 				require.NoError(t, err)
-				codec := NewMessageCodec(ti, loggerOption)
+				codec := NewMessageCodec(ti, _options...)
 				t.Cleanup(func() {
 					assert.Error(t, codec.Disconnect())
 				})
@@ -968,17 +958,13 @@ func TestConnection_sendCalDataWrite(t *testing.T) {
 				}(),
 			},
 			setup: func(t *testing.T, fields *fields) {
-				// Setup logger
-				logger := testutils.ProduceTestingLogger(t)
+				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
 
-				// Custom option for that
-				loggerOption := options.WithCustomLogger(logger)
-
-				fields.DefaultConnection = _default.NewDefaultConnection(nil, loggerOption)
-				transport := test.NewTransport(loggerOption)
-				ti, err := transport.CreateTransportInstance(url.URL{Scheme: "test"}, nil, loggerOption)
+				fields.DefaultConnection = _default.NewDefaultConnection(nil, _options...)
+				transport := test.NewTransport(_options...)
+				ti, err := transport.CreateTransportInstance(url.URL{Scheme: "test"}, nil, _options...)
 				require.NoError(t, err)
-				codec := NewMessageCodec(ti, loggerOption)
+				codec := NewMessageCodec(ti, _options...)
 				t.Cleanup(func() {
 					assert.Error(t, codec.Disconnect())
 				})
@@ -1049,16 +1035,13 @@ func TestConnection_sendReset(t *testing.T) {
 				sendOutErrorNotification: false,
 			},
 			setup: func(t *testing.T, fields *fields, args *args) {
-				// Setup logger
-				logger := testutils.ProduceTestingLogger(t)
+				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
 
-				loggerOption := options.WithCustomLogger(logger)
-
-				fields.DefaultConnection = _default.NewDefaultConnection(nil, loggerOption)
-				transport := test.NewTransport(loggerOption)
-				ti, err := transport.CreateTransportInstance(url.URL{Scheme: "test"}, nil, loggerOption)
+				fields.DefaultConnection = _default.NewDefaultConnection(nil, _options...)
+				transport := test.NewTransport(_options...)
+				ti, err := transport.CreateTransportInstance(url.URL{Scheme: "test"}, nil, _options...)
 				require.NoError(t, err)
-				codec := NewMessageCodec(ti, loggerOption)
+				codec := NewMessageCodec(ti, _options...)
 				t.Cleanup(func() {
 					assert.Error(t, codec.Disconnect())
 				})
@@ -1127,18 +1110,14 @@ func TestConnection_setApplicationFilter(t *testing.T) {
 				}(),
 			},
 			setup: func(t *testing.T, fields *fields) {
-				// Setup logger
-				logger := testutils.ProduceTestingLogger(t)
-
-				// Custom option for that
-				loggerOption := options.WithCustomLogger(logger)
+				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
 
 				// Setup connection
-				fields.DefaultConnection = _default.NewDefaultConnection(nil, loggerOption)
-				transport := test.NewTransport(loggerOption)
-				ti, err := transport.CreateTransportInstance(url.URL{Scheme: "test"}, nil, loggerOption)
+				fields.DefaultConnection = _default.NewDefaultConnection(nil, _options...)
+				transport := test.NewTransport(_options...)
+				ti, err := transport.CreateTransportInstance(url.URL{Scheme: "test"}, nil, _options...)
 				require.NoError(t, err)
-				codec := NewMessageCodec(ti, loggerOption)
+				codec := NewMessageCodec(ti, _options...)
 				t.Cleanup(func() {
 					assert.Error(t, codec.Disconnect())
 				})
@@ -1207,18 +1186,14 @@ func TestConnection_setInterface1PowerUpSettings(t *testing.T) {
 				}(),
 			},
 			setup: func(t *testing.T, fields *fields, args *args) {
-				// Setup logger
-				logger := testutils.ProduceTestingLogger(t)
-
-				// Custom option for that
-				loggerOption := options.WithCustomLogger(logger)
+				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
 
 				// Setup connection
-				fields.DefaultConnection = _default.NewDefaultConnection(nil, loggerOption)
-				transport := test.NewTransport(loggerOption)
-				ti, err := transport.CreateTransportInstance(url.URL{Scheme: "test"}, nil, loggerOption)
+				fields.DefaultConnection = _default.NewDefaultConnection(nil, _options...)
+				transport := test.NewTransport(_options...)
+				ti, err := transport.CreateTransportInstance(url.URL{Scheme: "test"}, nil, _options...)
 				require.NoError(t, err)
-				codec := NewMessageCodec(ti, loggerOption)
+				codec := NewMessageCodec(ti, _options...)
 				t.Cleanup(func() {
 					assert.Error(t, codec.Disconnect())
 				})
@@ -1287,18 +1262,14 @@ func TestConnection_setInterfaceOptions1(t *testing.T) {
 				}(),
 			},
 			setup: func(t *testing.T, fields *fields) {
-				// Setup logger
-				logger := testutils.ProduceTestingLogger(t)
-
-				// Custom option for that
-				loggerOption := options.WithCustomLogger(logger)
+				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
 
 				// Setup connection
-				fields.DefaultConnection = _default.NewDefaultConnection(nil, loggerOption)
-				transport := test.NewTransport(loggerOption)
-				ti, err := transport.CreateTransportInstance(url.URL{Scheme: "test"}, nil, loggerOption)
+				fields.DefaultConnection = _default.NewDefaultConnection(nil, _options...)
+				transport := test.NewTransport(_options...)
+				ti, err := transport.CreateTransportInstance(url.URL{Scheme: "test"}, nil, _options...)
 				require.NoError(t, err)
-				codec := NewMessageCodec(ti, loggerOption)
+				codec := NewMessageCodec(ti, _options...)
 				t.Cleanup(func() {
 					assert.Error(t, codec.Disconnect())
 				})
@@ -1367,18 +1338,14 @@ func TestConnection_setInterfaceOptions3(t *testing.T) {
 				}(),
 			},
 			setup: func(t *testing.T, fields *fields) {
-				// Setup logger
-				logger := testutils.ProduceTestingLogger(t)
-
-				// Custom option for that
-				loggerOption := options.WithCustomLogger(logger)
+				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
 
 				// Setup connection
-				fields.DefaultConnection = _default.NewDefaultConnection(nil, loggerOption)
-				transport := test.NewTransport(loggerOption)
-				ti, err := transport.CreateTransportInstance(url.URL{Scheme: "test"}, nil, loggerOption)
+				fields.DefaultConnection = _default.NewDefaultConnection(nil, _options...)
+				transport := test.NewTransport(_options...)
+				ti, err := transport.CreateTransportInstance(url.URL{Scheme: "test"}, nil, _options...)
 				require.NoError(t, err)
-				codec := NewMessageCodec(ti, loggerOption)
+				codec := NewMessageCodec(ti, _options...)
 				t.Cleanup(func() {
 					assert.Error(t, codec.Disconnect())
 				})
@@ -1436,18 +1403,14 @@ func TestConnection_setupConnection(t *testing.T) {
 				ch:  make(chan plc4go.PlcConnectionConnectResult, 1),
 			},
 			setup: func(t *testing.T, fields *fields) {
-				// Setup logger
-				logger := testutils.ProduceTestingLogger(t)
-
-				// Custom option for that
-				loggerOption := options.WithCustomLogger(logger)
+				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
 
 				// Setup connection
-				fields.DefaultConnection = _default.NewDefaultConnection(nil, loggerOption)
-				transport := test.NewTransport(loggerOption)
-				ti, err := transport.CreateTransportInstance(url.URL{Scheme: "test"}, nil, loggerOption)
+				fields.DefaultConnection = _default.NewDefaultConnection(nil, _options...)
+				transport := test.NewTransport(_options...)
+				ti, err := transport.CreateTransportInstance(url.URL{Scheme: "test"}, nil, _options...)
 				require.NoError(t, err)
-				codec := NewMessageCodec(ti, loggerOption)
+				codec := NewMessageCodec(ti, _options...)
 				t.Cleanup(func() {
 					assert.Error(t, codec.Disconnect())
 				})
@@ -1461,19 +1424,15 @@ func TestConnection_setupConnection(t *testing.T) {
 				ch:  make(chan plc4go.PlcConnectionConnectResult, 1),
 			},
 			setup: func(t *testing.T, fields *fields) {
-				// Setup logger
-				logger := testutils.ProduceTestingLogger(t)
-
-				// Custom option for that
-				loggerOption := options.WithCustomLogger(logger)
+				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
 
 				// Build the default connection
-				fields.DefaultConnection = _default.NewDefaultConnection(nil, loggerOption)
+				fields.DefaultConnection = _default.NewDefaultConnection(nil, _options...)
 
 				// Build the message codec
-				transport := test.NewTransport(loggerOption)
+				transport := test.NewTransport(_options...)
 				transportUrl := url.URL{Scheme: "test"}
-				ti, err := transport.CreateTransportInstance(transportUrl, nil, loggerOption)
+				ti, err := transport.CreateTransportInstance(transportUrl, nil, _options...)
 				require.NoError(t, err)
 				type MockState uint8
 				const (
@@ -1495,7 +1454,7 @@ func TestConnection_setupConnection(t *testing.T) {
 						t.Log("Done")
 					}
 				})
-				codec := NewMessageCodec(ti, loggerOption)
+				codec := NewMessageCodec(ti, _options...)
 				require.NoError(t, codec.Connect())
 				t.Cleanup(func() {
 					assert.Error(t, codec.Disconnect())
@@ -1511,19 +1470,15 @@ func TestConnection_setupConnection(t *testing.T) {
 				ch:  make(chan plc4go.PlcConnectionConnectResult, 1),
 			},
 			setup: func(t *testing.T, fields *fields) {
-				// Setup logger
-				logger := testutils.ProduceTestingLogger(t)
-
-				// Custom option for that
-				loggerOption := options.WithCustomLogger(logger)
+				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
 
 				// Build the default connection
-				fields.DefaultConnection = _default.NewDefaultConnection(nil, loggerOption)
+				fields.DefaultConnection = _default.NewDefaultConnection(nil, _options...)
 
 				// Build the message codec
-				transport := test.NewTransport(loggerOption)
+				transport := test.NewTransport(_options...)
 				transportUrl := url.URL{Scheme: "test"}
-				ti, err := transport.CreateTransportInstance(transportUrl, nil, loggerOption)
+				ti, err := transport.CreateTransportInstance(transportUrl, nil, _options...)
 				require.NoError(t, err)
 				type MockState uint8
 				const (
@@ -1557,7 +1512,7 @@ func TestConnection_setupConnection(t *testing.T) {
 						t.Log("Done")
 					}
 				})
-				codec := NewMessageCodec(ti, loggerOption)
+				codec := NewMessageCodec(ti, _options...)
 				require.NoError(t, codec.Connect())
 				t.Cleanup(func() {
 					assert.Error(t, codec.Disconnect())
@@ -1573,19 +1528,15 @@ func TestConnection_setupConnection(t *testing.T) {
 				ch:  make(chan plc4go.PlcConnectionConnectResult, 1),
 			},
 			setup: func(t *testing.T, fields *fields) {
-				// Setup logger
-				logger := testutils.ProduceTestingLogger(t)
-
-				// Custom option for that
-				loggerOption := options.WithCustomLogger(logger)
+				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
 
 				// Build the default connection
-				fields.DefaultConnection = _default.NewDefaultConnection(nil, loggerOption)
+				fields.DefaultConnection = _default.NewDefaultConnection(nil, _options...)
 
 				// Build the message codec
-				transport := test.NewTransport(loggerOption)
+				transport := test.NewTransport(_options...)
 				transportUrl := url.URL{Scheme: "test"}
-				ti, err := transport.CreateTransportInstance(transportUrl, nil, loggerOption)
+				ti, err := transport.CreateTransportInstance(transportUrl, nil, _options...)
 				require.NoError(t, err)
 				type MockState uint8
 				const (
@@ -1625,7 +1576,7 @@ func TestConnection_setupConnection(t *testing.T) {
 						t.Log("Done")
 					}
 				})
-				codec := NewMessageCodec(ti, loggerOption)
+				codec := NewMessageCodec(ti, _options...)
 				require.NoError(t, codec.Connect())
 				t.Cleanup(func() {
 					assert.Error(t, codec.Disconnect())
@@ -1641,19 +1592,15 @@ func TestConnection_setupConnection(t *testing.T) {
 				ch:  make(chan plc4go.PlcConnectionConnectResult, 1),
 			},
 			setup: func(t *testing.T, fields *fields) {
-				// Setup logger
-				logger := testutils.ProduceTestingLogger(t)
-
-				// Custom option for that
-				loggerOption := options.WithCustomLogger(logger)
+				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
 
 				// Build the default connection
-				fields.DefaultConnection = _default.NewDefaultConnection(nil, loggerOption)
+				fields.DefaultConnection = _default.NewDefaultConnection(nil, _options...)
 
 				// Build the message codec
-				transport := test.NewTransport(loggerOption)
+				transport := test.NewTransport(_options...)
 				transportUrl := url.URL{Scheme: "test"}
-				ti, err := transport.CreateTransportInstance(transportUrl, nil, loggerOption)
+				ti, err := transport.CreateTransportInstance(transportUrl, nil, _options...)
 				require.NoError(t, err)
 				type MockState uint8
 				const (
@@ -1699,7 +1646,7 @@ func TestConnection_setupConnection(t *testing.T) {
 						t.Log("Done")
 					}
 				})
-				codec := NewMessageCodec(ti, loggerOption)
+				codec := NewMessageCodec(ti, _options...)
 				require.NoError(t, codec.Connect())
 				t.Cleanup(func() {
 					assert.Error(t, codec.Disconnect())
@@ -1718,18 +1665,14 @@ func TestConnection_setupConnection(t *testing.T) {
 				ch:  make(chan plc4go.PlcConnectionConnectResult, 1),
 			},
 			setup: func(t *testing.T, fields *fields) {
-				// Setup logger
-				logger := testutils.ProduceTestingLogger(t)
-
-				// Custom option for that
-				loggerOption := options.WithCustomLogger(logger)
+				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
 
 				// Build the default connection
-				fields.DefaultConnection = _default.NewDefaultConnection(nil, loggerOption)
+				fields.DefaultConnection = _default.NewDefaultConnection(nil, _options...)
 
 				// Build the message codec
-				transport := test.NewTransport(loggerOption)
-				ti, err := transport.CreateTransportInstance(url.URL{Scheme: "test"}, nil, loggerOption)
+				transport := test.NewTransport(_options...)
+				ti, err := transport.CreateTransportInstance(url.URL{Scheme: "test"}, nil, _options...)
 
 				type MockState uint8
 				const (
@@ -1782,7 +1725,7 @@ func TestConnection_setupConnection(t *testing.T) {
 					}
 				})
 				require.NoError(t, err)
-				codec := NewMessageCodec(ti, loggerOption)
+				codec := NewMessageCodec(ti, _options...)
 				require.NoError(t, codec.Connect())
 				t.Cleanup(func() {
 					assert.NoError(t, codec.Disconnect())
@@ -1831,26 +1774,21 @@ func TestConnection_startSubscriptionHandler(t *testing.T) {
 		{
 			name: "just start",
 			setup: func(t *testing.T, fields *fields) {
-				// Setup logger
-				logger := testutils.ProduceTestingLogger(t)
+				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
 
-				loggerOption := options.WithCustomLogger(logger)
-
-				fields.DefaultConnection = _default.NewDefaultConnection(nil, loggerOption)
+				fields.DefaultConnection = _default.NewDefaultConnection(nil, _options...)
 			},
 		},
 		{
 			name: "just start and feed (no subs)",
 			setup: func(t *testing.T, fields *fields) {
-				// Setup logger
-				logger := testutils.ProduceTestingLogger(t)
-				loggerOption := options.WithCustomLogger(logger)
+				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
 
-				defaultConnection := _default.NewDefaultConnection(nil, loggerOption)
+				defaultConnection := _default.NewDefaultConnection(nil, _options...)
 				defaultConnection.SetConnected(true)
 				fields.DefaultConnection = defaultConnection
 
-				codec := NewMessageCodec(nil, loggerOption)
+				codec := NewMessageCodec(nil, _options...)
 				go func() {
 					codec.monitoredMMIs <- nil
 					codec.monitoredSALs <- nil
@@ -1864,16 +1802,14 @@ func TestConnection_startSubscriptionHandler(t *testing.T) {
 		{
 			name: "just start and feed",
 			setup: func(t *testing.T, fields *fields) {
-				// Setup logger
-				logger := testutils.ProduceTestingLogger(t)
-				loggerOption := options.WithCustomLogger(logger)
+				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
 
-				defaultConnection := _default.NewDefaultConnection(nil, loggerOption)
+				defaultConnection := _default.NewDefaultConnection(nil, _options...)
 				defaultConnection.SetConnected(true)
 				fields.DefaultConnection = defaultConnection
 
 				fields.subscribers = []*Subscriber{NewSubscriber(nil, options.WithCustomLogger(testutils.ProduceTestingLogger(t)))}
-				codec := NewMessageCodec(nil, loggerOption)
+				codec := NewMessageCodec(nil, _options...)
 				go func() {
 					codec.monitoredMMIs <- readWriteModel.NewCALReplyShort(0, nil, nil, nil)
 					codec.monitoredSALs <- readWriteModel.NewMonitoredSAL(0, nil)
@@ -1922,12 +1858,10 @@ func TestNewConnection(t *testing.T) {
 		{
 			name: "just create the connection",
 			setup: func(t *testing.T, args *args) {
-				// Setup logger
-				logger := testutils.ProduceTestingLogger(t)
-				loggerOption := options.WithCustomLogger(logger)
+				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
 
-				transport := test.NewTransport(loggerOption)
-				codec := NewMessageCodec(test.NewTransportInstance(transport, loggerOption), loggerOption)
+				transport := test.NewTransport(_options...)
+				codec := NewMessageCodec(test.NewTransportInstance(transport, _options...), _options...)
 				t.Cleanup(func() {
 					assert.Error(t, codec.Disconnect())
 				})

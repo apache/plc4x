@@ -177,23 +177,19 @@ func TestReader_readSync(t *testing.T) {
 				result: make(chan apiModel.PlcReadRequestResult, 1),
 			},
 			setup: func(t *testing.T, fields *fields) {
-				// Setup logger
-				logger := testutils.ProduceTestingLogger(t)
+				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
 
-				// Custom option for that
-				loggerOption := options.WithCustomLogger(logger)
-
-				transport := test.NewTransport()
+				transport := test.NewTransport(_options...)
 				transportUrl := url.URL{Scheme: "test"}
-				transportInstance, err := transport.CreateTransportInstance(transportUrl, nil)
+				transportInstance, err := transport.CreateTransportInstance(transportUrl, nil, _options...)
 				require.NoError(t, err)
-				codec := NewMessageCodec(transportInstance, loggerOption)
+				codec := NewMessageCodec(transportInstance, _options...)
 				require.NoError(t, codec.Connect())
 				t.Cleanup(func() {
 					assert.NoError(t, codec.Disconnect())
 				})
 				fields.messageCodec = codec
-				fields.tm = transactions.NewRequestTransactionManager(10, options.WithCustomLogger(testutils.ProduceTestingLogger(t)))
+				fields.tm = transactions.NewRequestTransactionManager(10, _options...)
 			},
 			resultEvaluator: func(t *testing.T, results chan apiModel.PlcReadRequestResult) bool {
 				timer := time.NewTimer(2 * time.Second)
@@ -256,15 +252,12 @@ func TestReader_readSync(t *testing.T) {
 				result: make(chan apiModel.PlcReadRequestResult, 1),
 			},
 			setup: func(t *testing.T, fields *fields) {
-				// Setup logger
-				logger := testutils.ProduceTestingLogger(t)
+				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
 
-				loggerOption := options.WithCustomLogger(logger)
-
-				fields.tm = transactions.NewRequestTransactionManager(10, loggerOption)
+				fields.tm = transactions.NewRequestTransactionManager(10, _options...)
 				transport := test.NewTransport()
 				transportUrl := url.URL{Scheme: "test"}
-				transportInstance, err := transport.CreateTransportInstance(transportUrl, nil, loggerOption)
+				transportInstance, err := transport.CreateTransportInstance(transportUrl, nil, _options...)
 				require.NoError(t, err)
 				type MockState uint8
 				const (
@@ -286,7 +279,7 @@ func TestReader_readSync(t *testing.T) {
 						t.Log("Done")
 					}
 				})
-				codec := NewMessageCodec(transportInstance, loggerOption)
+				codec := NewMessageCodec(transportInstance, _options...)
 				require.NoError(t, codec.Connect())
 				t.Cleanup(func() {
 					assert.NoError(t, codec.Disconnect())
@@ -334,18 +327,15 @@ func TestReader_readSync(t *testing.T) {
 				result: make(chan apiModel.PlcReadRequestResult, 1),
 			},
 			setup: func(t *testing.T, fields *fields) {
-				fields.tm = transactions.NewRequestTransactionManager(10, options.WithCustomLogger(testutils.ProduceTestingLogger(t)))
+				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
 
-				// Setup logger
-				logger := testutils.ProduceTestingLogger(t)
-
-				loggerOption := options.WithCustomLogger(logger)
+				fields.tm = transactions.NewRequestTransactionManager(10, _options...)
 
 				transport := test.NewTransport()
 				transportUrl := url.URL{Scheme: "test"}
-				transportInstance, err := transport.CreateTransportInstance(transportUrl, nil, loggerOption)
+				transportInstance, err := transport.CreateTransportInstance(transportUrl, nil, _options...)
 				require.NoError(t, err)
-				codec := NewMessageCodec(transportInstance, loggerOption)
+				codec := NewMessageCodec(transportInstance, _options...)
 				require.NoError(t, codec.Connect())
 				t.Cleanup(func() {
 					assert.NoError(t, codec.Disconnect())
@@ -428,13 +418,13 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 				},
 			},
 			setup: func(t *testing.T, fields *fields, args *args, ch chan struct{}) {
-				loggerOption := options.WithCustomLogger(testutils.ProduceTestingLogger(t))
+				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
 
-				transport := test.NewTransport(loggerOption)
+				transport := test.NewTransport(_options...)
 				transportUrl := url.URL{Scheme: "test"}
-				transportInstance, err := transport.CreateTransportInstance(transportUrl, nil, loggerOption)
+				transportInstance, err := transport.CreateTransportInstance(transportUrl, nil, _options...)
 				require.NoError(t, err)
-				codec := NewMessageCodec(transportInstance, loggerOption)
+				codec := NewMessageCodec(transportInstance, _options...)
 				require.NoError(t, codec.Connect())
 				t.Cleanup(func() {
 					assert.NoError(t, codec.Disconnect())
@@ -491,12 +481,7 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 				},
 			},
 			setup: func(t *testing.T, fields *fields, args *args, ch chan struct{}) {
-				// Setup logger
-				logger := testutils.ProduceTestingLogger(t)
-
-				// Custom option for that
-				loggerOption := options.WithCustomLogger(logger)
-
+				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
 				transaction := NewMockRequestTransaction(t)
 				expect := transaction.EXPECT()
 				expect.FailRequest(mock.Anything).Return(errors.New("Nope")).Run(func(_ error) {
@@ -504,9 +489,9 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 				})
 				args.transaction = transaction
 
-				transport := test.NewTransport(loggerOption)
+				transport := test.NewTransport(_options...)
 				transportUrl := url.URL{Scheme: "test"}
-				transportInstance, err := transport.CreateTransportInstance(transportUrl, nil, loggerOption)
+				transportInstance, err := transport.CreateTransportInstance(transportUrl, nil, _options...)
 				require.NoError(t, err)
 				type MockState uint8
 				const (
@@ -528,7 +513,7 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 						t.Log("Done")
 					}
 				})
-				codec := NewMessageCodec(transportInstance, loggerOption)
+				codec := NewMessageCodec(transportInstance, _options...)
 				require.NoError(t, codec.Connect())
 				t.Cleanup(func() {
 					assert.NoError(t, codec.Disconnect())
@@ -578,15 +563,11 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 				},
 			},
 			setup: func(t *testing.T, fields *fields, args *args, ch chan struct{}) {
-				// Setup logger
-				logger := testutils.ProduceTestingLogger(t)
+				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
 
-				// Custom option for that
-				loggerOption := options.WithCustomLogger(logger)
-
-				transport := test.NewTransport(loggerOption)
+				transport := test.NewTransport(_options...)
 				transportUrl := url.URL{Scheme: "test"}
-				transportInstance, err := transport.CreateTransportInstance(transportUrl, nil, loggerOption)
+				transportInstance, err := transport.CreateTransportInstance(transportUrl, nil, _options...)
 				require.NoError(t, err)
 				type MockState uint8
 				const (
@@ -608,7 +589,7 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 						t.Log("Done")
 					}
 				})
-				codec := NewMessageCodec(transportInstance, loggerOption)
+				codec := NewMessageCodec(transportInstance, _options...)
 				require.NoError(t, codec.Connect())
 				t.Cleanup(func() {
 					assert.NoError(t, codec.Disconnect())
@@ -674,15 +655,11 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 					close(ch)
 				})
 				args.transaction = transaction
+				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
 
-				// Setup logger
-				logger := testutils.ProduceTestingLogger(t)
-
-				loggerOption := options.WithCustomLogger(logger)
-
-				transport := test.NewTransport(loggerOption)
+				transport := test.NewTransport(_options...)
 				transportUrl := url.URL{Scheme: "test"}
-				transportInstance, err := transport.CreateTransportInstance(transportUrl, nil, loggerOption)
+				transportInstance, err := transport.CreateTransportInstance(transportUrl, nil, _options...)
 				require.NoError(t, err)
 				type MockState uint8
 				const (
@@ -704,7 +681,7 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 						t.Log("Done")
 					}
 				})
-				codec := NewMessageCodec(transportInstance, loggerOption)
+				codec := NewMessageCodec(transportInstance, _options...)
 				require.NoError(t, codec.Connect())
 				t.Cleanup(func() {
 					assert.NoError(t, codec.Disconnect())
@@ -763,15 +740,11 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 					close(ch)
 				})
 				args.transaction = transaction
+				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
 
-				// Setup logger
-				logger := testutils.ProduceTestingLogger(t)
-
-				loggerOption := options.WithCustomLogger(logger)
-
-				transport := test.NewTransport(loggerOption)
+				transport := test.NewTransport(_options...)
 				transportUrl := url.URL{Scheme: "test"}
-				transportInstance, err := transport.CreateTransportInstance(transportUrl, nil, loggerOption)
+				transportInstance, err := transport.CreateTransportInstance(transportUrl, nil, _options...)
 				require.NoError(t, err)
 				type MockState uint8
 				const (
@@ -793,7 +766,7 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 						t.Log("Done")
 					}
 				})
-				codec := NewMessageCodec(transportInstance, loggerOption)
+				codec := NewMessageCodec(transportInstance, _options...)
 				require.NoError(t, codec.Connect())
 				t.Cleanup(func() {
 					assert.NoError(t, codec.Disconnect())
@@ -852,15 +825,11 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 					close(ch)
 				})
 				args.transaction = transaction
+				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
 
-				// Setup logger
-				logger := testutils.ProduceTestingLogger(t)
-
-				loggerOption := options.WithCustomLogger(logger)
-
-				transport := test.NewTransport(loggerOption)
+				transport := test.NewTransport(_options...)
 				transportUrl := url.URL{Scheme: "test"}
-				transportInstance, err := transport.CreateTransportInstance(transportUrl, nil, loggerOption)
+				transportInstance, err := transport.CreateTransportInstance(transportUrl, nil, _options...)
 				require.NoError(t, err)
 				type MockState uint8
 				const (
@@ -882,7 +851,7 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 						t.Log("Done")
 					}
 				})
-				codec := NewMessageCodec(transportInstance, loggerOption)
+				codec := NewMessageCodec(transportInstance, _options...)
 				require.NoError(t, codec.Connect())
 				t.Cleanup(func() {
 					assert.NoError(t, codec.Disconnect())
@@ -941,15 +910,11 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 					close(ch)
 				})
 				args.transaction = transaction
+				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
 
-				// Setup logger
-				logger := testutils.ProduceTestingLogger(t)
-
-				loggerOption := options.WithCustomLogger(logger)
-
-				transport := test.NewTransport(loggerOption)
+				transport := test.NewTransport(_options...)
 				transportUrl := url.URL{Scheme: "test"}
-				transportInstance, err := transport.CreateTransportInstance(transportUrl, nil, loggerOption)
+				transportInstance, err := transport.CreateTransportInstance(transportUrl, nil, _options...)
 				require.NoError(t, err)
 				type MockState uint8
 				const (
@@ -971,7 +936,7 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 						t.Log("Done")
 					}
 				})
-				codec := NewMessageCodec(transportInstance, loggerOption)
+				codec := NewMessageCodec(transportInstance, _options...)
 				require.NoError(t, codec.Connect())
 				t.Cleanup(func() {
 					assert.NoError(t, codec.Disconnect())
@@ -1030,15 +995,11 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 					close(ch)
 				})
 				args.transaction = transaction
+				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
 
-				// Setup logger
-				logger := testutils.ProduceTestingLogger(t)
-
-				loggerOption := options.WithCustomLogger(logger)
-
-				transport := test.NewTransport(loggerOption)
+				transport := test.NewTransport(_options...)
 				transportUrl := url.URL{Scheme: "test"}
-				transportInstance, err := transport.CreateTransportInstance(transportUrl, nil, loggerOption)
+				transportInstance, err := transport.CreateTransportInstance(transportUrl, nil, _options...)
 				require.NoError(t, err)
 				type MockState uint8
 				const (
@@ -1060,7 +1021,7 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 						t.Log("Done")
 					}
 				})
-				codec := NewMessageCodec(transportInstance, loggerOption)
+				codec := NewMessageCodec(transportInstance, _options...)
 				require.NoError(t, codec.Connect())
 				t.Cleanup(func() {
 					assert.NoError(t, codec.Disconnect())
@@ -1119,15 +1080,11 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 					close(ch)
 				})
 				args.transaction = transaction
+				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
 
-				// Setup logger
-				logger := testutils.ProduceTestingLogger(t)
-
-				loggerOption := options.WithCustomLogger(logger)
-
-				transport := test.NewTransport(loggerOption)
+				transport := test.NewTransport(_options...)
 				transportUrl := url.URL{Scheme: "test"}
-				transportInstance, err := transport.CreateTransportInstance(transportUrl, nil, loggerOption)
+				transportInstance, err := transport.CreateTransportInstance(transportUrl, nil, _options...)
 				require.NoError(t, err)
 				type MockState uint8
 				const (
@@ -1149,7 +1106,7 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 						t.Log("Done")
 					}
 				})
-				codec := NewMessageCodec(transportInstance, loggerOption)
+				codec := NewMessageCodec(transportInstance, _options...)
 				require.NoError(t, codec.Connect())
 				t.Cleanup(func() {
 					assert.NoError(t, codec.Disconnect())

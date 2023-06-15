@@ -26,7 +26,6 @@ import (
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/cbus/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	_default "github.com/apache/plc4x/plc4go/spi/default"
-	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
 	"github.com/apache/plc4x/plc4go/spi/transports"
 	"github.com/apache/plc4x/plc4go/spi/transports/test"
@@ -65,14 +64,11 @@ func TestMessageCodec_Send(t *testing.T) {
 				), nil, nil,
 			)},
 			setup: func(t *testing.T, fields *fields, args *args) {
-				// Setup logger
-				logger := testutils.ProduceTestingLogger(t)
+				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
 
-				loggerOption := options.WithCustomLogger(logger)
-
-				transport := test.NewTransport(loggerOption)
-				instance := test.NewTransportInstance(transport, loggerOption)
-				codec := NewMessageCodec(instance, loggerOption)
+				transport := test.NewTransport(_options...)
+				instance := test.NewTransportInstance(transport, _options...)
+				codec := NewMessageCodec(instance, _options...)
 				t.Cleanup(func() {
 					assert.Error(t, codec.Disconnect())
 				})
@@ -126,14 +122,11 @@ func TestMessageCodec_Receive(t *testing.T) {
 				monitoredSALs:  nil,
 			},
 			setup: func(t *testing.T, fields *fields) {
-				// Setup logger
-				logger := testutils.ProduceTestingLogger(t)
+				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
 
-				loggerOption := options.WithCustomLogger(logger)
-
-				transport := test.NewTransport(loggerOption)
-				instance := test.NewTransportInstance(transport, loggerOption)
-				codec := NewMessageCodec(instance, loggerOption)
+				transport := test.NewTransport(_options...)
+				instance := test.NewTransportInstance(transport, _options...)
+				codec := NewMessageCodec(instance, _options...)
 				t.Cleanup(func() {
 					assert.Error(t, codec.Disconnect())
 				})
@@ -156,15 +149,12 @@ func TestMessageCodec_Receive(t *testing.T) {
 				requestContext, cbusOptions,
 			),
 			setup: func(t *testing.T, fields *fields) {
-				// Setup logger
-				logger := testutils.ProduceTestingLogger(t)
+				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
 
-				loggerOption := options.WithCustomLogger(logger)
-
-				transport := test.NewTransport(loggerOption)
-				instance := test.NewTransportInstance(transport, loggerOption)
+				transport := test.NewTransport(_options...)
+				instance := test.NewTransportInstance(transport, _options...)
 				instance.FillReadBuffer([]byte("!"))
-				codec := NewMessageCodec(instance, loggerOption)
+				codec := NewMessageCodec(instance, _options...)
 				t.Cleanup(func() {
 					assert.Error(t, codec.Disconnect())
 				})
@@ -181,15 +171,12 @@ func TestMessageCodec_Receive(t *testing.T) {
 				monitoredSALs:  nil,
 			},
 			setup: func(t *testing.T, fields *fields) {
-				// Setup logger
-				logger := testutils.ProduceTestingLogger(t)
+				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
 
-				loggerOption := options.WithCustomLogger(logger)
-
-				transport := test.NewTransport(loggerOption)
-				instance := test.NewTransportInstance(transport, loggerOption)
+				transport := test.NewTransport(_options...)
+				instance := test.NewTransportInstance(transport, _options...)
 				instance.FillReadBuffer([]byte("@A62120\r@A62120\r"))
-				codec := NewMessageCodec(instance, loggerOption)
+				codec := NewMessageCodec(instance, _options...)
 				t.Cleanup(func() {
 					assert.Error(t, codec.Disconnect())
 				})
@@ -206,15 +193,12 @@ func TestMessageCodec_Receive(t *testing.T) {
 				monitoredSALs:  nil,
 			},
 			setup: func(t *testing.T, fields *fields) {
-				// Setup logger
-				logger := testutils.ProduceTestingLogger(t)
+				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
 
-				loggerOption := options.WithCustomLogger(logger)
-
-				transport := test.NewTransport(loggerOption)
-				instance := test.NewTransportInstance(transport, loggerOption)
+				transport := test.NewTransport(_options...)
+				instance := test.NewTransportInstance(transport, _options...)
 				instance.FillReadBuffer([]byte("what on earth\n\r"))
-				codec := NewMessageCodec(instance, loggerOption)
+				codec := NewMessageCodec(instance, _options...)
 				t.Cleanup(func() {
 					assert.Error(t, codec.Disconnect())
 				})
@@ -231,15 +215,12 @@ func TestMessageCodec_Receive(t *testing.T) {
 				monitoredSALs:  nil,
 			},
 			setup: func(t *testing.T, fields *fields) {
-				// Setup logger
-				logger := testutils.ProduceTestingLogger(t)
+				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
 
-				loggerOption := options.WithCustomLogger(logger)
-
-				transport := test.NewTransport(loggerOption)
-				instance := test.NewTransportInstance(transport, loggerOption)
+				transport := test.NewTransport(_options...)
+				instance := test.NewTransportInstance(transport, _options...)
 				instance.FillReadBuffer([]byte("AFFE!!!\r"))
-				codec := NewMessageCodec(instance, loggerOption)
+				codec := NewMessageCodec(instance, _options...)
 				t.Cleanup(func() {
 					assert.Error(t, codec.Disconnect())
 				})
@@ -288,15 +269,12 @@ func TestMessageCodec_Receive(t *testing.T) {
 				requestContext, cbusOptions,
 			),
 			setup: func(t *testing.T, fields *fields) {
-				// Setup logger
-				logger := testutils.ProduceTestingLogger(t)
+				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
 
-				loggerOption := options.WithCustomLogger(logger)
-
-				transport := test.NewTransport(loggerOption)
-				instance := test.NewTransportInstance(transport, loggerOption)
+				transport := test.NewTransport(_options...)
+				instance := test.NewTransportInstance(transport, _options...)
 				instance.FillReadBuffer([]byte("@1A2001!!!\r"))
-				codec := NewMessageCodec(instance, loggerOption)
+				codec := NewMessageCodec(instance, _options...)
 				t.Cleanup(func() {
 					assert.Error(t, codec.Disconnect())
 				})
@@ -313,15 +291,12 @@ func TestMessageCodec_Receive(t *testing.T) {
 				monitoredSALs:  nil,
 			},
 			setup: func(t *testing.T, fields *fields) {
-				// Setup logger
-				logger := testutils.ProduceTestingLogger(t)
+				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
 
-				loggerOption := options.WithCustomLogger(logger)
-
-				transport := test.NewTransport(loggerOption)
-				instance := test.NewTransportInstance(transport, loggerOption)
+				transport := test.NewTransport(_options...)
+				instance := test.NewTransportInstance(transport, _options...)
 				instance.FillReadBuffer([]byte("86040200F940380001000000000000000008000000000000000000000000FA\r\n"))
-				codec := NewMessageCodec(instance, loggerOption)
+				codec := NewMessageCodec(instance, _options...)
 				t.Cleanup(func() {
 					assert.Error(t, codec.Disconnect())
 				})
@@ -523,15 +498,12 @@ func TestMessageCodec_Receive(t *testing.T) {
 				messageCodec.currentlyReportedServerErrors.Store(9999)
 			},
 			setup: func(t *testing.T, fields *fields) {
-				// Setup logger
-				logger := testutils.ProduceTestingLogger(t)
+				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
 
-				loggerOption := options.WithCustomLogger(logger)
-
-				transport := test.NewTransport(loggerOption)
-				instance := test.NewTransportInstance(transport, loggerOption)
+				transport := test.NewTransport(_options...)
+				instance := test.NewTransportInstance(transport, _options...)
 				instance.FillReadBuffer([]byte("0531AC0079042F0401430316000011\r\n"))
-				codec := NewMessageCodec(instance, loggerOption)
+				codec := NewMessageCodec(instance, _options...)
 				t.Cleanup(func() {
 					assert.Error(t, codec.Disconnect())
 				})
@@ -618,14 +590,11 @@ func TestMessageCodec_Receive(t *testing.T) {
 
 func TestMessageCodec_Receive_Delayed_Response(t *testing.T) {
 	t.Run("instant data", func(t *testing.T) {
-		// Setup logger
-		logger := testutils.ProduceTestingLogger(t)
+		_options := testutils.EnrichOptionsWithOptionsForTesting(t)
 
-		loggerOption := options.WithCustomLogger(logger)
-
-		transport := test.NewTransport(loggerOption)
-		transportInstance := test.NewTransportInstance(transport, loggerOption)
-		codec := NewMessageCodec(transportInstance, loggerOption)
+		transport := test.NewTransport(_options...)
+		transportInstance := test.NewTransportInstance(transport, _options...)
+		codec := NewMessageCodec(transportInstance, _options...)
 		t.Cleanup(func() {
 			assert.Error(t, codec.Disconnect())
 		})
@@ -657,14 +626,11 @@ func TestMessageCodec_Receive_Delayed_Response(t *testing.T) {
 		assert.True(t, msg.(readWriteModel.CBusMessageToClient).GetReply().GetIsAlpha())
 	})
 	t.Run("data after 6 times", func(t *testing.T) {
-		// Setup logger
-		logger := testutils.ProduceTestingLogger(t)
+		_options := testutils.EnrichOptionsWithOptionsForTesting(t)
 
-		loggerOption := options.WithCustomLogger(logger)
-
-		transport := test.NewTransport(loggerOption)
-		transportInstance := test.NewTransportInstance(transport, loggerOption)
-		codec := NewMessageCodec(transportInstance, loggerOption)
+		transport := test.NewTransport(_options...)
+		transportInstance := test.NewTransportInstance(transport, _options...)
+		codec := NewMessageCodec(transportInstance, _options...)
 		t.Cleanup(func() {
 			assert.Error(t, codec.Disconnect())
 		})
@@ -699,14 +665,11 @@ func TestMessageCodec_Receive_Delayed_Response(t *testing.T) {
 		assert.True(t, msg.(readWriteModel.CBusMessageToClient).GetReply().GetIsAlpha())
 	})
 	t.Run("data after 15 times", func(t *testing.T) {
-		// Setup logger
-		logger := testutils.ProduceTestingLogger(t)
+		_options := testutils.EnrichOptionsWithOptionsForTesting(t)
 
-		loggerOption := options.WithCustomLogger(logger)
-
-		transport := test.NewTransport(loggerOption)
-		transportInstance := test.NewTransportInstance(transport, loggerOption)
-		codec := NewMessageCodec(transportInstance, loggerOption)
+		transport := test.NewTransport(_options...)
+		transportInstance := test.NewTransportInstance(transport, _options...)
+		codec := NewMessageCodec(transportInstance, _options...)
 		t.Cleanup(func() {
 			assert.Error(t, codec.Disconnect())
 		})

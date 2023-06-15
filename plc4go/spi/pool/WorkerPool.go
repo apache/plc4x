@@ -58,12 +58,7 @@ func NewFixedSizeExecutor(numberOfWorkers, queueDepth int, _options ...options.W
 		worker:     workers,
 		log:        customLogger,
 	}
-	for _, option := range _options {
-		switch option := option.(type) {
-		case *tracerWorkersOption:
-			_executor.traceWorkers = option.traceWorkers
-		}
-	}
+	_executor.traceWorkers, _ = ExtractTracerWorkers(_options...)
 	for i := 0; i < numberOfWorkers; i++ {
 		workers[i].executor = _executor
 	}
@@ -80,12 +75,7 @@ func NewDynamicExecutor(maxNumberOfWorkers, queueDepth int, _options ...options.
 		},
 		maxNumberOfWorkers: maxNumberOfWorkers,
 	}
-	for _, option := range _options {
-		switch option := option.(type) {
-		case *tracerWorkersOption:
-			_executor.traceWorkers = option.traceWorkers
-		}
-	}
+	_executor.traceWorkers, _ = ExtractTracerWorkers(_options...)
 	// We spawn one initial worker
 	w := worker{
 		id:          0,
@@ -98,8 +88,20 @@ func NewDynamicExecutor(maxNumberOfWorkers, queueDepth int, _options ...options.
 	return _executor
 }
 
+// WithExecutorOptionTracerWorkers sets a flag which extends logging for workers
 func WithExecutorOptionTracerWorkers(traceWorkers bool) options.WithOption {
 	return &tracerWorkersOption{traceWorkers: traceWorkers}
+}
+
+// ExtractTracerWorkers returns the value from WithExecutorOptionTracerWorkers
+func ExtractTracerWorkers(_options ...options.WithOption) (traceWorkers bool, found bool) {
+	for _, option := range _options {
+		switch option := option.(type) {
+		case *tracerWorkersOption:
+			return option.traceWorkers, true
+		}
+	}
+	return false, false
 }
 
 ///////////////////////////////////////

@@ -1471,6 +1471,7 @@ func TestMapEncodedReply(t *testing.T) {
 				transactionManager := transactions.NewRequestTransactionManager(
 					1,
 					options.WithCustomLogger(testutils.ProduceTestingLogger(t)),
+					options.WithPassLoggerToModel(true),
 					transactions.WithCustomExecutor(pool.NewFixedSizeExecutor(10, 50, options.WithCustomLogger(testutils.ProduceTestingLogger(t)))),
 				)
 				t.Cleanup(func() {
@@ -1542,6 +1543,7 @@ func TestMapEncodedReply(t *testing.T) {
 				transactionManager := transactions.NewRequestTransactionManager(
 					1,
 					options.WithCustomLogger(testutils.ProduceTestingLogger(t)),
+					options.WithPassLoggerToModel(true),
 					transactions.WithCustomExecutor(
 						pool.NewFixedSizeExecutor(10, 50, options.WithCustomLogger(testutils.ProduceTestingLogger(t)), pool.WithExecutorOptionTracerWorkers(true)),
 					),
@@ -1617,6 +1619,7 @@ func TestMapEncodedReply(t *testing.T) {
 				transactionManager := transactions.NewRequestTransactionManager(
 					1,
 					options.WithCustomLogger(testutils.ProduceTestingLogger(t)),
+					options.WithPassLoggerToModel(true),
 					transactions.WithCustomExecutor(
 						pool.NewFixedSizeExecutor(10, 50, options.WithCustomLogger(testutils.ProduceTestingLogger(t)), pool.WithExecutorOptionTracerWorkers(true)),
 					),
@@ -1681,6 +1684,7 @@ func TestMapEncodedReply(t *testing.T) {
 				transactionManager := transactions.NewRequestTransactionManager(
 					1,
 					options.WithCustomLogger(testutils.ProduceTestingLogger(t)),
+					options.WithPassLoggerToModel(true),
 					transactions.WithCustomExecutor(
 						pool.NewFixedSizeExecutor(10, 50, options.WithCustomLogger(testutils.ProduceTestingLogger(t)), pool.WithExecutorOptionTracerWorkers(true)),
 					),
@@ -1735,6 +1739,7 @@ func TestMapEncodedReply(t *testing.T) {
 				transactionManager := transactions.NewRequestTransactionManager(
 					1,
 					options.WithCustomLogger(testutils.ProduceTestingLogger(t)),
+					options.WithPassLoggerToModel(true),
 					transactions.WithCustomExecutor(
 						pool.NewFixedSizeExecutor(10, 50, options.WithCustomLogger(testutils.ProduceTestingLogger(t)), pool.WithExecutorOptionTracerWorkers(true)),
 					),
@@ -1792,6 +1797,7 @@ func TestMapEncodedReply(t *testing.T) {
 				transactionManager := transactions.NewRequestTransactionManager(
 					1,
 					options.WithCustomLogger(testutils.ProduceTestingLogger(t)),
+					options.WithPassLoggerToModel(true),
 					transactions.WithCustomExecutor(
 						pool.NewFixedSizeExecutor(10, 50, options.WithCustomLogger(testutils.ProduceTestingLogger(t)), pool.WithExecutorOptionTracerWorkers(true)),
 					),
@@ -1869,6 +1875,7 @@ func TestMapEncodedReply(t *testing.T) {
 				transactionManager := transactions.NewRequestTransactionManager(
 					1,
 					options.WithCustomLogger(testutils.ProduceTestingLogger(t)),
+					options.WithPassLoggerToModel(true),
 					transactions.WithCustomExecutor(
 						pool.NewFixedSizeExecutor(10, 50, options.WithCustomLogger(testutils.ProduceTestingLogger(t)), pool.WithExecutorOptionTracerWorkers(true)),
 					),
@@ -1964,6 +1971,7 @@ func TestMapEncodedReply(t *testing.T) {
 				transactionManager := transactions.NewRequestTransactionManager(
 					1,
 					options.WithCustomLogger(testutils.ProduceTestingLogger(t)),
+					options.WithPassLoggerToModel(true),
 					transactions.WithCustomExecutor(
 						pool.NewFixedSizeExecutor(10, 50, options.WithCustomLogger(testutils.ProduceTestingLogger(t)), pool.WithExecutorOptionTracerWorkers(true)),
 					),
@@ -2022,6 +2030,7 @@ func TestMapEncodedReply(t *testing.T) {
 				transactionManager := transactions.NewRequestTransactionManager(
 					1,
 					options.WithCustomLogger(testutils.ProduceTestingLogger(t)),
+					options.WithPassLoggerToModel(true),
 					transactions.WithCustomExecutor(
 						pool.NewFixedSizeExecutor(10, 50, options.WithCustomLogger(testutils.ProduceTestingLogger(t)), pool.WithExecutorOptionTracerWorkers(true)),
 					),
@@ -2076,6 +2085,7 @@ func TestMapEncodedReply(t *testing.T) {
 				transactionManager := transactions.NewRequestTransactionManager(
 					1,
 					options.WithCustomLogger(testutils.ProduceTestingLogger(t)),
+					options.WithPassLoggerToModel(true),
 					transactions.WithCustomExecutor(
 						pool.NewFixedSizeExecutor(10, 50, options.WithCustomLogger(testutils.ProduceTestingLogger(t)), pool.WithExecutorOptionTracerWorkers(true)),
 					),
@@ -2130,6 +2140,7 @@ func TestMapEncodedReply(t *testing.T) {
 				transactionManager := transactions.NewRequestTransactionManager(
 					1,
 					options.WithCustomLogger(testutils.ProduceTestingLogger(t)),
+					options.WithPassLoggerToModel(true),
 					transactions.WithCustomExecutor(
 						pool.NewFixedSizeExecutor(10, 50, options.WithCustomLogger(testutils.ProduceTestingLogger(t)), pool.WithExecutorOptionTracerWorkers(true)),
 					),
@@ -2184,6 +2195,7 @@ func TestMapEncodedReply(t *testing.T) {
 				transactionManager := transactions.NewRequestTransactionManager(
 					1,
 					options.WithCustomLogger(testutils.ProduceTestingLogger(t)),
+					options.WithPassLoggerToModel(true),
 					transactions.WithCustomExecutor(
 						pool.NewFixedSizeExecutor(10, 50, options.WithCustomLogger(testutils.ProduceTestingLogger(t)), pool.WithExecutorOptionTracerWorkers(true)),
 					),
@@ -2238,6 +2250,7 @@ func TestMapEncodedReply(t *testing.T) {
 				transactionManager := transactions.NewRequestTransactionManager(
 					1,
 					options.WithCustomLogger(testutils.ProduceTestingLogger(t)),
+					options.WithPassLoggerToModel(true),
 					transactions.WithCustomExecutor(
 						pool.NewFixedSizeExecutor(10, 50, options.WithCustomLogger(testutils.ProduceTestingLogger(t)), pool.WithExecutorOptionTracerWorkers(true)),
 					),
@@ -2312,6 +2325,7 @@ func TestMapEncodedReply(t *testing.T) {
 				transactionManager := transactions.NewRequestTransactionManager(
 					1,
 					options.WithCustomLogger(testutils.ProduceTestingLogger(t)),
+					options.WithPassLoggerToModel(true),
 					transactions.WithCustomExecutor(
 						pool.NewFixedSizeExecutor(10, 50, options.WithCustomLogger(testutils.ProduceTestingLogger(t)), pool.WithExecutorOptionTracerWorkers(true)),
 					),
@@ -2366,6 +2380,7 @@ func TestMapEncodedReply(t *testing.T) {
 				transactionManager := transactions.NewRequestTransactionManager(
 					1,
 					options.WithCustomLogger(testutils.ProduceTestingLogger(t)),
+					options.WithPassLoggerToModel(true),
 					transactions.WithCustomExecutor(
 						pool.NewFixedSizeExecutor(10, 50, options.WithCustomLogger(testutils.ProduceTestingLogger(t)), pool.WithExecutorOptionTracerWorkers(true)),
 					),
@@ -2420,6 +2435,7 @@ func TestMapEncodedReply(t *testing.T) {
 				transactionManager := transactions.NewRequestTransactionManager(
 					1,
 					options.WithCustomLogger(testutils.ProduceTestingLogger(t)),
+					options.WithPassLoggerToModel(true),
 					transactions.WithCustomExecutor(
 						pool.NewFixedSizeExecutor(10, 50, options.WithCustomLogger(testutils.ProduceTestingLogger(t)), pool.WithExecutorOptionTracerWorkers(true)),
 					),
@@ -2474,6 +2490,7 @@ func TestMapEncodedReply(t *testing.T) {
 				transactionManager := transactions.NewRequestTransactionManager(
 					1,
 					options.WithCustomLogger(testutils.ProduceTestingLogger(t)),
+					options.WithPassLoggerToModel(true),
 					transactions.WithCustomExecutor(
 						pool.NewFixedSizeExecutor(10, 50, options.WithCustomLogger(testutils.ProduceTestingLogger(t)), pool.WithExecutorOptionTracerWorkers(true)),
 					),
@@ -2528,6 +2545,7 @@ func TestMapEncodedReply(t *testing.T) {
 				transactionManager := transactions.NewRequestTransactionManager(
 					1,
 					options.WithCustomLogger(testutils.ProduceTestingLogger(t)),
+					options.WithPassLoggerToModel(true),
 					transactions.WithCustomExecutor(
 						pool.NewFixedSizeExecutor(10, 50, options.WithCustomLogger(testutils.ProduceTestingLogger(t)), pool.WithExecutorOptionTracerWorkers(true)),
 					),
@@ -2582,6 +2600,7 @@ func TestMapEncodedReply(t *testing.T) {
 				transactionManager := transactions.NewRequestTransactionManager(
 					1,
 					options.WithCustomLogger(testutils.ProduceTestingLogger(t)),
+					options.WithPassLoggerToModel(true),
 					transactions.WithCustomExecutor(
 						pool.NewFixedSizeExecutor(10, 50, options.WithCustomLogger(testutils.ProduceTestingLogger(t)), pool.WithExecutorOptionTracerWorkers(true)),
 					),
@@ -2652,6 +2671,7 @@ func TestMapEncodedReply(t *testing.T) {
 				transactionManager := transactions.NewRequestTransactionManager(
 					1,
 					options.WithCustomLogger(testutils.ProduceTestingLogger(t)),
+					options.WithPassLoggerToModel(true),
 					transactions.WithCustomExecutor(
 						pool.NewFixedSizeExecutor(10, 50, options.WithCustomLogger(testutils.ProduceTestingLogger(t)), pool.WithExecutorOptionTracerWorkers(true)),
 					),
@@ -2706,6 +2726,7 @@ func TestMapEncodedReply(t *testing.T) {
 				transactionManager := transactions.NewRequestTransactionManager(
 					1,
 					options.WithCustomLogger(testutils.ProduceTestingLogger(t)),
+					options.WithPassLoggerToModel(true),
 					transactions.WithCustomExecutor(
 						pool.NewFixedSizeExecutor(10, 50, options.WithCustomLogger(testutils.ProduceTestingLogger(t)), pool.WithExecutorOptionTracerWorkers(true)),
 					),
@@ -2760,6 +2781,7 @@ func TestMapEncodedReply(t *testing.T) {
 				transactionManager := transactions.NewRequestTransactionManager(
 					1,
 					options.WithCustomLogger(testutils.ProduceTestingLogger(t)),
+					options.WithPassLoggerToModel(true),
 					transactions.WithCustomExecutor(
 						pool.NewFixedSizeExecutor(10, 50, options.WithCustomLogger(testutils.ProduceTestingLogger(t)), pool.WithExecutorOptionTracerWorkers(true)),
 					),

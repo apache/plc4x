@@ -26,7 +26,6 @@ import (
 	"github.com/apache/plc4x/plc4go/pkg/api/config"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
-	"github.com/rs/zerolog"
 	"github.com/stretchr/testify/assert"
 	"github.com/viney-shih/go-lock"
 	"testing"
@@ -186,7 +185,6 @@ func Test_connectionContainer_connect(t1 *testing.T) {
 
 func Test_connectionContainer_lease(t1 *testing.T) {
 	type fields struct {
-		log              zerolog.Logger
 		lock             lock.RWMutex
 		connectionString string
 		driverManager    plc4go.PlcDriverManager
@@ -214,8 +212,6 @@ func Test_connectionContainer_lease(t1 *testing.T) {
 			setup: func(t *testing.T, fields *fields) {
 				logger := testutils.ProduceTestingLogger(t)
 
-				fields.log = logger
-
 				driverManager := plc4go.NewPlcDriverManager(config.WithCustomLogger(logger))
 				driverManager.RegisterDriver(simulated.NewDriver(options.WithCustomLogger(logger)))
 				fields.driverManager = driverManager
@@ -229,7 +225,7 @@ func Test_connectionContainer_lease(t1 *testing.T) {
 				tt.setup(t, &tt.fields)
 			}
 			c := &connectionContainer{
-				log:              tt.fields.log,
+				log:              testutils.ProduceTestingLogger(t),
 				lock:             tt.fields.lock,
 				connectionString: tt.fields.connectionString,
 				driverManager:    tt.fields.driverManager,
