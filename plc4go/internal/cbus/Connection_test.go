@@ -976,7 +976,7 @@ func TestConnection_sendReset(t *testing.T) {
 				codec := NewMessageCodec(ti, _options...)
 				require.NoError(t, codec.Connect())
 				t.Cleanup(func() {
-					assert.Error(t, codec.Disconnect())
+					assert.NoError(t, codec.Disconnect())
 				})
 				fields.messageCodec = codec
 			},

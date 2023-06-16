@@ -69,8 +69,9 @@ func TestMessageCodec_Send(t *testing.T) {
 				transport := test.NewTransport(_options...)
 				instance := test.NewTransportInstance(transport, _options...)
 				codec := NewMessageCodec(instance, _options...)
+				require.NoError(t, codec.Connect())
 				t.Cleanup(func() {
-					assert.Error(t, codec.Disconnect())
+					assert.NoError(t, codec.Disconnect())
 				})
 				fields.DefaultCodec = codec
 			},
@@ -126,6 +127,7 @@ func TestMessageCodec_Receive(t *testing.T) {
 
 				transport := test.NewTransport(_options...)
 				instance := test.NewTransportInstance(transport, _options...)
+				require.NoError(t, instance.Connect())
 				codec := NewMessageCodec(instance, _options...)
 				t.Cleanup(func() {
 					assert.Error(t, codec.Disconnect())
@@ -153,6 +155,7 @@ func TestMessageCodec_Receive(t *testing.T) {
 
 				transport := test.NewTransport(_options...)
 				instance := test.NewTransportInstance(transport, _options...)
+				require.NoError(t, instance.Connect())
 				instance.FillReadBuffer([]byte("!"))
 				codec := NewMessageCodec(instance, _options...)
 				t.Cleanup(func() {
@@ -175,6 +178,7 @@ func TestMessageCodec_Receive(t *testing.T) {
 
 				transport := test.NewTransport(_options...)
 				instance := test.NewTransportInstance(transport, _options...)
+				require.NoError(t, instance.Connect())
 				instance.FillReadBuffer([]byte("@A62120\r@A62120\r"))
 				codec := NewMessageCodec(instance, _options...)
 				t.Cleanup(func() {
@@ -197,6 +201,7 @@ func TestMessageCodec_Receive(t *testing.T) {
 
 				transport := test.NewTransport(_options...)
 				instance := test.NewTransportInstance(transport, _options...)
+				require.NoError(t, instance.Connect())
 				instance.FillReadBuffer([]byte("what on earth\n\r"))
 				codec := NewMessageCodec(instance, _options...)
 				t.Cleanup(func() {
@@ -219,6 +224,7 @@ func TestMessageCodec_Receive(t *testing.T) {
 
 				transport := test.NewTransport(_options...)
 				instance := test.NewTransportInstance(transport, _options...)
+				require.NoError(t, instance.Connect())
 				instance.FillReadBuffer([]byte("AFFE!!!\r"))
 				codec := NewMessageCodec(instance, _options...)
 				t.Cleanup(func() {
@@ -273,6 +279,7 @@ func TestMessageCodec_Receive(t *testing.T) {
 
 				transport := test.NewTransport(_options...)
 				instance := test.NewTransportInstance(transport, _options...)
+				require.NoError(t, instance.Connect())
 				instance.FillReadBuffer([]byte("@1A2001!!!\r"))
 				codec := NewMessageCodec(instance, _options...)
 				t.Cleanup(func() {
@@ -295,6 +302,7 @@ func TestMessageCodec_Receive(t *testing.T) {
 
 				transport := test.NewTransport(_options...)
 				instance := test.NewTransportInstance(transport, _options...)
+				require.NoError(t, instance.Connect())
 				instance.FillReadBuffer([]byte("86040200F940380001000000000000000008000000000000000000000000FA\r\n"))
 				codec := NewMessageCodec(instance, _options...)
 				t.Cleanup(func() {
@@ -502,6 +510,7 @@ func TestMessageCodec_Receive(t *testing.T) {
 
 				transport := test.NewTransport(_options...)
 				instance := test.NewTransportInstance(transport, _options...)
+				require.NoError(t, instance.Connect())
 				instance.FillReadBuffer([]byte("0531AC0079042F0401430316000011\r\n"))
 				codec := NewMessageCodec(instance, _options...)
 				t.Cleanup(func() {
@@ -594,6 +603,7 @@ func TestMessageCodec_Receive_Delayed_Response(t *testing.T) {
 
 		transport := test.NewTransport(_options...)
 		transportInstance := test.NewTransportInstance(transport, _options...)
+		require.NoError(t, transportInstance.Connect())
 		codec := NewMessageCodec(transportInstance, _options...)
 		t.Cleanup(func() {
 			assert.Error(t, codec.Disconnect())
@@ -630,6 +640,7 @@ func TestMessageCodec_Receive_Delayed_Response(t *testing.T) {
 
 		transport := test.NewTransport(_options...)
 		transportInstance := test.NewTransportInstance(transport, _options...)
+		require.NoError(t, transportInstance.Connect())
 		codec := NewMessageCodec(transportInstance, _options...)
 		t.Cleanup(func() {
 			assert.Error(t, codec.Disconnect())
@@ -669,6 +680,7 @@ func TestMessageCodec_Receive_Delayed_Response(t *testing.T) {
 
 		transport := test.NewTransport(_options...)
 		transportInstance := test.NewTransportInstance(transport, _options...)
+		require.NoError(t, transportInstance.Connect())
 		codec := NewMessageCodec(transportInstance, _options...)
 		t.Cleanup(func() {
 			assert.Error(t, codec.Disconnect())

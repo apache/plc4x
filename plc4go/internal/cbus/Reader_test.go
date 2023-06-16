@@ -98,7 +98,7 @@ func TestReader_Read(t *testing.T) {
 			},
 			wantAsserter: func(t *testing.T, results <-chan apiModel.PlcReadRequestResult) bool {
 				timer := time.NewTimer(2 * time.Second)
-				defer timer.Stop()
+				defer utils.CleanupTimer(timer)
 				select {
 				case <-timer.C:
 					t.Fail()
@@ -115,6 +115,7 @@ func TestReader_Read(t *testing.T) {
 				alphaGenerator: tt.fields.alphaGenerator,
 				messageCodec:   tt.fields.messageCodec,
 				tm:             tt.fields.tm,
+				log:            testutils.ProduceTestingLogger(t),
 			}
 			assert.Truef(t, tt.wantAsserter(t, m.Read(tt.args.ctx, tt.args.readRequest)), "Read(%v, %v)", tt.args.ctx, tt.args.readRequest)
 		})
@@ -150,7 +151,7 @@ func TestReader_readSync(t *testing.T) {
 			},
 			resultEvaluator: func(t *testing.T, results chan apiModel.PlcReadRequestResult) bool {
 				timer := time.NewTimer(2 * time.Second)
-				defer timer.Stop()
+				defer utils.CleanupTimer(timer)
 				select {
 				case <-timer.C:
 					t.Fail()
@@ -196,7 +197,7 @@ func TestReader_readSync(t *testing.T) {
 			},
 			resultEvaluator: func(t *testing.T, results chan apiModel.PlcReadRequestResult) bool {
 				timer := time.NewTimer(2 * time.Second)
-				defer timer.Stop()
+				defer utils.CleanupTimer(timer)
 				select {
 				case <-timer.C:
 					t.Fail()
@@ -220,7 +221,7 @@ func TestReader_readSync(t *testing.T) {
 			},
 			resultEvaluator: func(t *testing.T, results chan apiModel.PlcReadRequestResult) bool {
 				timer := time.NewTimer(2 * time.Second)
-				defer timer.Stop()
+				defer utils.CleanupTimer(timer)
 				select {
 				case <-timer.C:
 					t.Fail()
@@ -290,7 +291,7 @@ func TestReader_readSync(t *testing.T) {
 			},
 			resultEvaluator: func(t *testing.T, results chan apiModel.PlcReadRequestResult) bool {
 				timer := time.NewTimer(2 * time.Second)
-				defer timer.Stop()
+				defer utils.CleanupTimer(timer)
 				select {
 				case <-timer.C:
 					t.Fail()
@@ -350,7 +351,7 @@ func TestReader_readSync(t *testing.T) {
 			},
 			resultEvaluator: func(t *testing.T, results chan apiModel.PlcReadRequestResult) bool {
 				timer := time.NewTimer(2 * time.Second)
-				defer timer.Stop()
+				defer utils.CleanupTimer(timer)
 				select {
 				case <-timer.C:
 					t.Fail()
@@ -370,6 +371,7 @@ func TestReader_readSync(t *testing.T) {
 				alphaGenerator: tt.fields.alphaGenerator,
 				messageCodec:   tt.fields.messageCodec,
 				tm:             tt.fields.tm,
+				log:            testutils.ProduceTestingLogger(t),
 			}
 			m.readSync(tt.args.ctx, tt.args.readRequest, tt.args.result)
 			assert.True(t, tt.resultEvaluator(t, tt.args.result))
