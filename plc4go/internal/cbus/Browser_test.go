@@ -22,6 +22,7 @@ package cbus
 import (
 	"context"
 	"fmt"
+	"github.com/rs/zerolog"
 	"net/url"
 	"sync"
 	"sync/atomic"
@@ -62,16 +63,16 @@ func TestBrowser_BrowseQuery(t *testing.T) {
 		query       apiModel.PlcQuery
 	}
 	tests := []struct {
-		name   string
-		fields fields
-		args   args
-		setup  func(t *testing.T, fields *fields)
-		want   apiModel.PlcResponseCode
-		want1  []apiModel.PlcBrowseItem
+		name             string
+		fields           fields
+		args             args
+		setup            func(t *testing.T, fields *fields)
+		wantResponseCode apiModel.PlcResponseCode
+		wantQueryResults []apiModel.PlcBrowseItem
 	}{
 		{
-			name: "invalid address",
-			want: apiModel.PlcResponseCode_INVALID_ADDRESS,
+			name:             "invalid address",
+			wantResponseCode: apiModel.PlcResponseCode_INVALID_ADDRESS,
 		},
 		{
 			name: "non responding browse",
@@ -177,8 +178,8 @@ func TestBrowser_BrowseQuery(t *testing.T) {
 					}
 				})
 			},
-			want: apiModel.PlcResponseCode_OK,
-			want1: []apiModel.PlcBrowseItem{
+			wantResponseCode: apiModel.PlcResponseCode_OK,
+			wantQueryResults: []apiModel.PlcBrowseItem{
 				&spiModel.DefaultPlcBrowseItem{
 					Tag:      NewCALIdentifyTag(readWriteModel.NewUnitAddress(2), nil, readWriteModel.Attribute_Manufacturer, 1),
 					Name:     "testQuery",
@@ -202,8 +203,172 @@ func TestBrowser_BrowseQuery(t *testing.T) {
 				log:             testutils.ProduceTestingLogger(t),
 			}
 			got, got1 := m.BrowseQuery(tt.args.ctx, tt.args.interceptor, tt.args.queryName, tt.args.query)
-			assert.Equalf(t, tt.want, got, "BrowseQuery(%v, func(), %v,\n%v\n)", tt.args.ctx, tt.args.queryName, tt.args.query)
-			assert.Equalf(t, tt.want1, got1, "BrowseQuery(%v, func(), %v, \n%v\n)", tt.args.ctx, tt.args.queryName, tt.args.query)
+			assert.Equalf(t, tt.wantResponseCode, got, "BrowseQuery(%v, func(), %v,\n%v\n)", tt.args.ctx, tt.args.queryName, tt.args.query)
+			assert.Equalf(t, tt.wantQueryResults, got1, "BrowseQuery(%v, func(), %v, \n%v\n)", tt.args.ctx, tt.args.queryName, tt.args.query)
+			if m.connection != nil && m.connection.IsConnected() {
+				t.Log("Closing connection")
+				<-m.connection.Close()
+			}
+		})
+	}
+}
+
+func TestBrowser_browseUnitInfo(t *testing.T) {
+	type fields struct {
+		DefaultBrowser  _default.DefaultBrowser
+		connection      plc4go.PlcConnection
+		sequenceCounter uint8
+		log             zerolog.Logger
+	}
+	type args struct {
+		ctx         context.Context
+		interceptor func(result apiModel.PlcBrowseItem) bool
+		queryName   string
+		query       *unitInfoQuery
+	}
+	tests := []struct {
+		name             string
+		fields           fields
+		args             args
+		setup            func(t *testing.T, fields *fields)
+		wantResponseCode apiModel.PlcResponseCode
+		wantQueryResults []apiModel.PlcBrowseItem
+	}{
+		{
+			name: "non responding browse",
+			args: args{
+				ctx: testutils.TestContext(t),
+				interceptor: func(result apiModel.PlcBrowseItem) bool {
+					// No-OP
+					return true
+				},
+				queryName: "testQuery",
+				query:     NewUnitInfoQuery(readWriteModel.NewUnitAddress(2), nil, 1).(*unitInfoQuery),
+			},
+			setup: func(t *testing.T, fields *fields) {
+				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
+
+				transport := test.NewTransport(_options...)
+				transportUrl := url.URL{Scheme: "test"}
+				transportInstance, err := transport.CreateTransportInstance(transportUrl, nil, _options...)
+				require.NoError(t, err)
+				t.Cleanup(func() {
+					assert.NoError(t, transportInstance.Close())
+				})
+				type MockState uint8
+				const (
+					RESET MockState = iota
+					APPLICATION_FILTER_1
+					APPLICATION_FILTER_2
+					INTERFACE_OPTIONS_3
+					INTERFACE_OPTIONS_1_PUN
+					INTERFACE_OPTIONS_1
+					MANUFACTURER
+					DONE
+				)
+				currentState := atomic.Value{}
+				currentState.Store(RESET)
+				stateChangeMutex := sync.Mutex{}
+				transportInstance.(*test.TransportInstance).SetWriteInterceptor(func(transportInstance *test.TransportInstance, data []byte) {
+					stateChangeMutex.Lock()
+					defer stateChangeMutex.Unlock()
+					switch currentState.Load().(MockState) {
+					case RESET:
+						t.Log("Dispatching reset echo")
+						transportInstance.FillReadBuffer([]byte("~~~\r"))
+						currentState.Store(APPLICATION_FILTER_1)
+					case APPLICATION_FILTER_1:
+						t.Log("Dispatching app1 echo and confirm")
+						transportInstance.FillReadBuffer([]byte("@A32100FF\r"))
+						transportInstance.FillReadBuffer([]byte("322100AD\r\n"))
+						currentState.Store(APPLICATION_FILTER_2)
+					case APPLICATION_FILTER_2:
+						t.Log("Dispatching app2 echo and confirm")
+						transportInstance.FillReadBuffer([]byte("@A32200FF\r"))
+						transportInstance.FillReadBuffer([]byte("322200AC\r\n"))
+						currentState.Store(INTERFACE_OPTIONS_3)
+					case INTERFACE_OPTIONS_3:
+						t.Log("Dispatching interface 3 echo and confirm")
+						transportInstance.FillReadBuffer([]byte("@A342000A\r"))
+						transportInstance.FillReadBuffer([]byte("3242008C\r\n"))
+						currentState.Store(INTERFACE_OPTIONS_1_PUN)
+					case INTERFACE_OPTIONS_1_PUN:
+						t.Log("Dispatching interface 1 PUN echo and confirm???")
+						transportInstance.FillReadBuffer([]byte("@A3410079\r"))
+						transportInstance.FillReadBuffer([]byte("3241008D\r\n"))
+						currentState.Store(INTERFACE_OPTIONS_1)
+					case INTERFACE_OPTIONS_1:
+						t.Log("Dispatching interface 1 echo and confirm???")
+						transportInstance.FillReadBuffer([]byte("@A3300079\r"))
+						transportInstance.FillReadBuffer([]byte("3230009E\r\n"))
+						currentState.Store(MANUFACTURER)
+					case MANUFACTURER:
+						t.Log("Dispatching manufacturer")
+						transportInstance.FillReadBuffer([]byte("g.890050435F434E49454422\r\n"))
+						currentState.Store(DONE)
+					case DONE:
+						t.Log("Connection dance done")
+						go func() {
+							time.Sleep(200 * time.Millisecond)
+							t.Log("Dispatching 3 MMI segments")
+							transportInstance.FillReadBuffer([]byte("86020200F900FF0094120006000000000000000008000000000000000000CA\r\n"))
+							transportInstance.FillReadBuffer([]byte("86020200F900FF580000000000000000000000000000000000000000000026\r\n"))
+							transportInstance.FillReadBuffer([]byte("86020200F700FFB00000000000000000000000000000000000000000D0\r\n"))
+						}()
+					}
+				})
+				err = transport.AddPreregisteredInstances(transportUrl, transportInstance)
+				require.NoError(t, err)
+				driver := NewDriver(_options...)
+				connectionConnectResult := <-driver.GetConnection(transportUrl, map[string]transports.Transport{"test": transport}, map[string][]string{})
+				if err := connectionConnectResult.GetErr(); err != nil {
+					t.Error(err)
+					t.FailNow()
+				}
+				fields.connection = connectionConnectResult.GetConnection()
+				t.Cleanup(func() {
+					timer := time.NewTimer(10 * time.Second)
+					t.Cleanup(func() {
+						utils.CleanupTimer(timer)
+					})
+					select {
+					case <-fields.connection.Close():
+					case <-timer.C:
+						t.Error("timeout")
+					}
+				})
+			},
+			wantResponseCode: apiModel.PlcResponseCode_OK,
+			wantQueryResults: []apiModel.PlcBrowseItem{
+				&spiModel.DefaultPlcBrowseItem{
+					Tag:      NewCALIdentifyTag(readWriteModel.NewUnitAddress(2), nil, readWriteModel.Attribute_Manufacturer, 1),
+					Name:     "testQuery",
+					Readable: true,
+					Options: map[string]apiValues.PlcValue{
+						"CurrentValue": spiValues.NewPlcSTRING("PC_CNIED"),
+					},
+				},
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if tt.setup != nil {
+				tt.setup(t, &tt.fields)
+			}
+			m := &Browser{
+				DefaultBrowser:  tt.fields.DefaultBrowser,
+				connection:      tt.fields.connection,
+				sequenceCounter: tt.fields.sequenceCounter,
+				log:             tt.fields.log,
+			}
+			gotResponseCode, gotQueryResults := m.browseUnitInfo(tt.args.ctx, tt.args.interceptor, tt.args.queryName, tt.args.query)
+			assert.Equalf(t, tt.wantResponseCode, gotResponseCode, "browseUnitInfo(%v, %v, %v, %v)", tt.args.ctx, tt.args.interceptor, tt.args.queryName, tt.args.query)
+			assert.Equalf(t, tt.wantQueryResults, gotQueryResults, "browseUnitInfo(%v, %v, %v, %v)", tt.args.ctx, tt.args.interceptor, tt.args.queryName, tt.args.query)
+			if m.connection != nil && m.connection.IsConnected() {
+				t.Log("Closing connection")
+				<-m.connection.Close()
+			}
 		})
 	}
 }

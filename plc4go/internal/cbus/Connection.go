@@ -270,7 +270,7 @@ func (c *Connection) startSubscriptionHandler() {
 				}
 			}
 		}
-		salLogger.Info().Msg("Ending SAL handler")
+		salLogger.Info().Msg("handler ended")
 	}()
 	c.log.Debug().Msg("Starting MMI handler")
 	c.handlerWaitGroup.Add(1)
@@ -298,7 +298,7 @@ func (c *Connection) startSubscriptionHandler() {
 				}
 			}
 		}
-		mmiLogger.Info().Msg("Ending MMI handler")
+		mmiLogger.Info().Msg("handler ended")
 	}()
 }
 

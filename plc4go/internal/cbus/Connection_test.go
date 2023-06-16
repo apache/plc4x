@@ -219,7 +219,6 @@ func TestConnection_ConnectWithContext(t *testing.T) {
 			}
 			assert.True(t, tt.wantAsserter(t, c.ConnectWithContext(tt.args.ctx)), "ConnectWithContext(%v)", tt.args.ctx)
 			// To shut down properly we always do that
-			time.Sleep(20 * time.Millisecond)
 			c.SetConnected(false)
 			c.handlerWaitGroup.Wait()
 		})
@@ -1755,7 +1754,6 @@ func TestConnection_setupConnection(t *testing.T) {
 			}
 			c.setupConnection(tt.args.ctx, tt.args.ch)
 			// To shut down properly we always do that
-			time.Sleep(20 * time.Millisecond)
 			c.SetConnected(false)
 			c.handlerWaitGroup.Wait()
 		})
@@ -1857,7 +1855,6 @@ func TestConnection_startSubscriptionHandler(t *testing.T) {
 			}
 			c.startSubscriptionHandler()
 			// To shut down properly we always do that
-			time.Sleep(20 * time.Millisecond)
 			c.SetConnected(false)
 			c.handlerWaitGroup.Wait()
 		})
