@@ -87,6 +87,7 @@ type defaultCodec struct {
 	stateChange             sync.Mutex
 	activeWorker            sync.WaitGroup
 
+	receiveTimeout                 time.Duration
 	traceDefaultMessageCodecWorker bool
 
 	log zerolog.Logger `ignore:"true"`
@@ -108,6 +109,7 @@ func buildDefaultCodec(defaultCodecRequirements DefaultCodecRequirements, transp
 		defaultIncomingMessageChannel:  make(chan spi.Message, 100),
 		expectations:                   []spi.Expectation{},
 		customMessageHandling:          customMessageHandler,
+		receiveTimeout:                 options.ExtractReceiveTimeout(_options...),
 		traceDefaultMessageCodecWorker: options.ExtractTraceDefaultMessageCodecWorker(_options...) || config.TraceDefaultMessageCodecWorker,
 		log:                            options.ExtractCustomLogger(_options...),
 	}
@@ -164,6 +166,7 @@ func (m *defaultCodec) Disconnect() error {
 	m.running.Store(false)
 	m.log.Trace().Msg("Waiting for worker to shutdown")
 	m.activeWorker.Wait()
+	m.log.Trace().Msg("worker shut down")
 	if m.transportInstance != nil {
 		if err := m.transportInstance.Close(); err != nil {
 			return errors.Wrap(err, "error closing transport instance")
@@ -318,7 +321,25 @@ mainLoop:
 
 		workerLog.Trace().Msg("Receiving message")
 		// Check for incoming messages.
-		message, err := m.Receive()
+		var message spi.Message
+		var err error
+		{
+			syncer := make(chan struct{})
+			go func() {
+				message, err = m.Receive()
+				close(syncer)
+			}()
+			timeoutTimer := time.NewTimer(m.receiveTimeout)
+			select {
+			case <-syncer:
+				utils.CleanupTimer(timeoutTimer)
+			case <-timeoutTimer.C:
+				utils.CleanupTimer(timeoutTimer)
+				workerLog.Error().Msgf("receive timeout after %s", m.receiveTimeout)
+				continue mainLoop
+			}
+
+		}
 		if err != nil {
 			workerLog.Error().Err(err).Msg("got an error reading from transport")
 			time.Sleep(10 * time.Millisecond)

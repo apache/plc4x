@@ -249,7 +249,8 @@ func TestNewDefaultCodec(t *testing.T) {
 		{
 			name: "create it",
 			want: &defaultCodec{
-				expectations: []spi.Expectation{},
+				expectations:   []spi.Expectation{},
+				receiveTimeout: 10 * time.Second,
 			},
 		},
 	}
@@ -298,7 +299,8 @@ func Test_buildDefaultCodec(t *testing.T) {
 		{
 			name: "build it",
 			want: &defaultCodec{
-				expectations: []spi.Expectation{},
+				expectations:   []spi.Expectation{},
+				receiveTimeout: 10 * time.Second,
 			},
 		},
 		{
@@ -309,7 +311,8 @@ func Test_buildDefaultCodec(t *testing.T) {
 				},
 			},
 			want: &defaultCodec{
-				expectations: []spi.Expectation{},
+				expectations:   []spi.Expectation{},
+				receiveTimeout: 10 * time.Second,
 			},
 		},
 	}
@@ -897,6 +900,10 @@ func Test_defaultCodec_Work(t *testing.T) {
 				codec.running.Store(true)
 				codec.activeWorker.Add(1)
 			},
+			mockSetup: func(t *testing.T, fields *fields, args *args) {
+				requirements := NewMockDefaultCodecRequirements(t)
+				fields.DefaultCodecRequirements = requirements
+			},
 		},
 		{
 			name: "work hard (panics everywhere)",
@@ -933,6 +940,11 @@ func Test_defaultCodec_Work(t *testing.T) {
 						Expiration: time.Time{}.Add(3 * time.Hour),
 					},
 				},
+			},
+			mockSetup: func(t *testing.T, fields *fields, args *args) {
+				requirements := NewMockDefaultCodecRequirements(t)
+				requirements.EXPECT().Receive().Return(nil, errors.New("nope"))
+				fields.DefaultCodecRequirements = requirements
 			},
 			manipulator: func(t *testing.T, codec *defaultCodec) {
 				codec.running.Store(true)

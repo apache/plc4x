@@ -29,7 +29,6 @@ import (
 	"testing"
 	"time"
 
-	"github.com/apache/plc4x/plc4go/pkg/api/config"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/pool"
@@ -156,7 +155,6 @@ func TestDiscoverer_Discover(t *testing.T) {
 }
 
 func TestDiscoverer_createDeviceScanDispatcher(t *testing.T) {
-	config.TraceDefaultMessageCodecWorker = true
 	type fields struct {
 		transportInstanceCreationQueue pool.Executor
 		deviceScanningQueue            pool.Executor
@@ -200,6 +198,7 @@ func TestDiscoverer_createDeviceScanDispatcher(t *testing.T) {
 					t.Logf("%d bytes written", write)
 				}()
 				t.Cleanup(func() {
+					t.Log("close listener")
 					if err := listen.Close(); err != nil {
 						t.Error(err)
 					}

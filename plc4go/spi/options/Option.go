@@ -22,6 +22,7 @@ package options
 import (
 	"context"
 	"github.com/rs/zerolog"
+	"time"
 )
 
 // WithOption is a marker interface for options supplied by the builders like WithDefaultTtl
@@ -57,6 +58,22 @@ func ExtractCustomLogger(options ...WithOption) (customLogger zerolog.Logger) {
 // WithPassLoggerToModel enables passing of log to the model
 func WithPassLoggerToModel(passLogger bool) WithOption {
 	return withPassLoggerToModel{passLogger: passLogger}
+}
+
+// WithReceiveTimeout set's a timeout for a receive-operation (similar to SO_RCVTIMEO)
+func WithReceiveTimeout(timeout time.Duration) WithOption {
+	return withReceiveTimeout{timeout: timeout}
+}
+
+// ExtractReceiveTimeout to extract the receive-timeout for reading operations. Defaults to 10 seconds
+func ExtractReceiveTimeout(options ...WithOption) time.Duration {
+	for _, option := range options {
+		switch option := option.(type) {
+		case withReceiveTimeout:
+			return option.timeout
+		}
+	}
+	return 10 * time.Second
 }
 
 // ExtractPassLoggerToModel to extract the flag indicating that model should be passed to Model
@@ -165,6 +182,11 @@ type withCustomLogger struct {
 type withPassLoggerToModel struct {
 	Option
 	passLogger bool
+}
+
+type withReceiveTimeout struct {
+	Option
+	timeout time.Duration
 }
 
 type withTraceTransactionManagerWorkers struct {

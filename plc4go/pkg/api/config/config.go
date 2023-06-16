@@ -22,6 +22,7 @@ package config
 import (
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/rs/zerolog"
+	"time"
 )
 
 // TraceTransactionManagerWorkers when set to true the transaction manager displays worker states in log
@@ -47,6 +48,11 @@ func WithCustomLogger(logger zerolog.Logger) WithOption {
 // WithPassLoggerToModel enables passing of log to the model
 func WithPassLoggerToModel(passLogger bool) WithOption {
 	return options.WithPassLoggerToModel(passLogger)
+}
+
+// WithReceiveTimeout set's a timeout for a receive-operation (similar to SO_RCVTIMEO)
+func WithReceiveTimeout(timeout time.Duration) WithOption {
+	return options.WithReceiveTimeout(timeout)
 }
 
 // WithTraceTransactionManagerWorkers enables trace transaction manager workers
