@@ -94,7 +94,6 @@ func TestConnection_BrowseRequestBuilder(t *testing.T) {
 		subscribers   []*Subscriber
 		tm            transactions.RequestTransactionManager
 		configuration Configuration
-		driverContext DriverContext
 		connectionId  string
 		tracer        tracer.Tracer
 	}
@@ -105,12 +104,6 @@ func TestConnection_BrowseRequestBuilder(t *testing.T) {
 	}{
 		{
 			name: "return not nil",
-			fields: fields{
-				driverContext: DriverContext{
-					awaitSetupComplete:      true,
-					awaitDisconnectComplete: true,
-				},
-			},
 			wantAssert: func(t *testing.T, builder apiModel.PlcBrowseRequestBuilder) bool {
 				return assert.NotNil(t, builder)
 			},
@@ -123,7 +116,7 @@ func TestConnection_BrowseRequestBuilder(t *testing.T) {
 				subscribers:   tt.fields.subscribers,
 				tm:            tt.fields.tm,
 				configuration: tt.fields.configuration,
-				driverContext: tt.fields.driverContext,
+				driverContext: driverContextForTesting(),
 				connectionId:  tt.fields.connectionId,
 				tracer:        tt.fields.tracer,
 				log:           testutils.ProduceTestingLogger(t),
@@ -140,7 +133,6 @@ func TestConnection_ConnectWithContext(t *testing.T) {
 		subscribers   []*Subscriber
 		tm            transactions.RequestTransactionManager
 		configuration Configuration
-		driverContext DriverContext
 		connectionId  string
 		tracer        tracer.Tracer
 	}
@@ -170,10 +162,6 @@ func TestConnection_ConnectWithContext(t *testing.T) {
 					Connect:               false,
 					MonitoredApplication1: 0,
 					MonitoredApplication2: 0,
-				},
-				driverContext: DriverContext{
-					awaitSetupComplete:      true,
-					awaitDisconnectComplete: true,
 				},
 				connectionId: "connectionId13",
 				tracer:       nil,
@@ -211,7 +199,7 @@ func TestConnection_ConnectWithContext(t *testing.T) {
 				subscribers:   tt.fields.subscribers,
 				tm:            tt.fields.tm,
 				configuration: tt.fields.configuration,
-				driverContext: tt.fields.driverContext,
+				driverContext: driverContextForTesting(),
 				connectionId:  tt.fields.connectionId,
 				tracer:        tt.fields.tracer,
 				log:           testutils.ProduceTestingLogger(t),
@@ -231,7 +219,6 @@ func TestConnection_GetConnection(t *testing.T) {
 		subscribers   []*Subscriber
 		tm            transactions.RequestTransactionManager
 		configuration Configuration
-		driverContext DriverContext
 		connectionId  string
 		tracer        tracer.Tracer
 	}
@@ -243,12 +230,6 @@ func TestConnection_GetConnection(t *testing.T) {
 	}{
 		{
 			name: "not nil",
-			fields: fields{
-				driverContext: DriverContext{
-					awaitSetupComplete:      true,
-					awaitDisconnectComplete: true,
-				},
-			},
 			wantAsserter: func(t *testing.T, connection plc4go.PlcConnection) bool {
 				return assert.NotNil(t, connection)
 			},
@@ -264,7 +245,7 @@ func TestConnection_GetConnection(t *testing.T) {
 				subscribers:   tt.fields.subscribers,
 				tm:            tt.fields.tm,
 				configuration: tt.fields.configuration,
-				driverContext: tt.fields.driverContext,
+				driverContext: driverContextForTesting(),
 				connectionId:  tt.fields.connectionId,
 				tracer:        tt.fields.tracer,
 				log:           testutils.ProduceTestingLogger(t),
@@ -281,7 +262,6 @@ func TestConnection_GetConnectionId(t *testing.T) {
 		subscribers   []*Subscriber
 		tm            transactions.RequestTransactionManager
 		configuration Configuration
-		driverContext DriverContext
 		connectionId  string
 		tracer        tracer.Tracer
 	}
@@ -292,11 +272,6 @@ func TestConnection_GetConnectionId(t *testing.T) {
 	}{
 		{
 			name: "simple id",
-			fields: fields{
-				driverContext: DriverContext{
-					awaitSetupComplete:      true,
-					awaitDisconnectComplete: true,
-				}},
 		},
 	}
 	for _, tt := range tests {
@@ -306,7 +281,7 @@ func TestConnection_GetConnectionId(t *testing.T) {
 				subscribers:   tt.fields.subscribers,
 				tm:            tt.fields.tm,
 				configuration: tt.fields.configuration,
-				driverContext: tt.fields.driverContext,
+				driverContext: driverContextForTesting(),
 				connectionId:  tt.fields.connectionId,
 				tracer:        tt.fields.tracer,
 				log:           testutils.ProduceTestingLogger(t),
@@ -323,7 +298,6 @@ func TestConnection_GetMessageCodec(t *testing.T) {
 		subscribers   []*Subscriber
 		tm            transactions.RequestTransactionManager
 		configuration Configuration
-		driverContext DriverContext
 		connectionId  string
 		tracer        tracer.Tracer
 	}
@@ -335,10 +309,6 @@ func TestConnection_GetMessageCodec(t *testing.T) {
 		{
 			name: "just get",
 			fields: fields{
-				driverContext: DriverContext{
-					awaitSetupComplete:      true,
-					awaitDisconnectComplete: true,
-				},
 				messageCodec: &MessageCodec{},
 			},
 			want: &MessageCodec{},
@@ -351,7 +321,7 @@ func TestConnection_GetMessageCodec(t *testing.T) {
 				subscribers:   tt.fields.subscribers,
 				tm:            tt.fields.tm,
 				configuration: tt.fields.configuration,
-				driverContext: tt.fields.driverContext,
+				driverContext: driverContextForTesting(),
 				connectionId:  tt.fields.connectionId,
 				tracer:        tt.fields.tracer,
 				log:           testutils.ProduceTestingLogger(t),
@@ -368,7 +338,6 @@ func TestConnection_GetMetadata(t *testing.T) {
 		subscribers   []*Subscriber
 		tm            transactions.RequestTransactionManager
 		configuration Configuration
-		driverContext DriverContext
 		connectionId  string
 		tracer        tracer.Tracer
 	}
@@ -379,12 +348,6 @@ func TestConnection_GetMetadata(t *testing.T) {
 	}{
 		{
 			name: "give metadata",
-			fields: fields{
-				driverContext: DriverContext{
-					awaitSetupComplete:      true,
-					awaitDisconnectComplete: true,
-				},
-			},
 			want: _default.DefaultConnectionMetadata{
 				ConnectionAttributes: nil,
 				ProvidesReading:      true,
@@ -401,7 +364,7 @@ func TestConnection_GetMetadata(t *testing.T) {
 				subscribers:   tt.fields.subscribers,
 				tm:            tt.fields.tm,
 				configuration: tt.fields.configuration,
-				driverContext: tt.fields.driverContext,
+				driverContext: driverContextForTesting(),
 				connectionId:  tt.fields.connectionId,
 				tracer:        tt.fields.tracer,
 				log:           testutils.ProduceTestingLogger(t),
@@ -418,7 +381,6 @@ func TestConnection_GetTracer(t *testing.T) {
 		subscribers   []*Subscriber
 		tm            transactions.RequestTransactionManager
 		configuration Configuration
-		driverContext DriverContext
 		connectionId  string
 		tracer        tracer.Tracer
 	}
@@ -429,12 +391,6 @@ func TestConnection_GetTracer(t *testing.T) {
 	}{
 		{
 			name: "just nil",
-			fields: fields{
-				driverContext: DriverContext{
-					awaitSetupComplete:      true,
-					awaitDisconnectComplete: true,
-				},
-			},
 		},
 	}
 	for _, tt := range tests {
@@ -444,7 +400,7 @@ func TestConnection_GetTracer(t *testing.T) {
 				subscribers:   tt.fields.subscribers,
 				tm:            tt.fields.tm,
 				configuration: tt.fields.configuration,
-				driverContext: tt.fields.driverContext,
+				driverContext: driverContextForTesting(),
 				connectionId:  tt.fields.connectionId,
 				tracer:        tt.fields.tracer,
 				log:           testutils.ProduceTestingLogger(t),
@@ -461,7 +417,6 @@ func TestConnection_IsTraceEnabled(t *testing.T) {
 		subscribers   []*Subscriber
 		tm            transactions.RequestTransactionManager
 		configuration Configuration
-		driverContext DriverContext
 		connectionId  string
 		tracer        tracer.Tracer
 	}
@@ -472,11 +427,6 @@ func TestConnection_IsTraceEnabled(t *testing.T) {
 	}{
 		{
 			name: "not enabled",
-			fields: fields{
-				driverContext: DriverContext{
-					awaitSetupComplete:      true,
-					awaitDisconnectComplete: true,
-				}},
 		},
 	}
 	for _, tt := range tests {
@@ -486,7 +436,7 @@ func TestConnection_IsTraceEnabled(t *testing.T) {
 				subscribers:   tt.fields.subscribers,
 				tm:            tt.fields.tm,
 				configuration: tt.fields.configuration,
-				driverContext: tt.fields.driverContext,
+				driverContext: driverContextForTesting(),
 				connectionId:  tt.fields.connectionId,
 				tracer:        tt.fields.tracer,
 				log:           testutils.ProduceTestingLogger(t),
@@ -503,7 +453,6 @@ func TestConnection_ReadRequestBuilder(t *testing.T) {
 		subscribers   []*Subscriber
 		tm            transactions.RequestTransactionManager
 		configuration Configuration
-		driverContext DriverContext
 		connectionId  string
 		tracer        tracer.Tracer
 	}
@@ -514,12 +463,6 @@ func TestConnection_ReadRequestBuilder(t *testing.T) {
 	}{
 		{
 			name: "return not nil",
-			fields: fields{
-				driverContext: DriverContext{
-					awaitSetupComplete:      true,
-					awaitDisconnectComplete: true,
-				},
-			},
 			wantAssert: func(t *testing.T, builder apiModel.PlcReadRequestBuilder) bool {
 				return assert.NotNil(t, builder)
 			},
@@ -532,7 +475,7 @@ func TestConnection_ReadRequestBuilder(t *testing.T) {
 				subscribers:   tt.fields.subscribers,
 				tm:            tt.fields.tm,
 				configuration: tt.fields.configuration,
-				driverContext: tt.fields.driverContext,
+				driverContext: driverContextForTesting(),
 				connectionId:  tt.fields.connectionId,
 				tracer:        tt.fields.tracer,
 				log:           testutils.ProduceTestingLogger(t),
@@ -549,7 +492,6 @@ func TestConnection_String(t *testing.T) {
 		subscribers   []*Subscriber
 		tm            transactions.RequestTransactionManager
 		configuration Configuration
-		driverContext DriverContext
 		connectionId  string
 		tracer        tracer.Tracer
 	}
@@ -560,12 +502,6 @@ func TestConnection_String(t *testing.T) {
 	}{
 		{
 			name: "a string",
-			fields: fields{
-				driverContext: DriverContext{
-					awaitSetupComplete:      true,
-					awaitDisconnectComplete: true,
-				},
-			},
 			want: `
 ╔═Connection══════════════════════════════════════════════════════════════════════════════════════════════╗
 ║╔═defaultConnection═══════╗╔═alphaGenerator════════════════════╗╔═messageCodec╗                          ║
@@ -601,7 +537,7 @@ func TestConnection_String(t *testing.T) {
 				subscribers:    tt.fields.subscribers,
 				tm:             tt.fields.tm,
 				configuration:  tt.fields.configuration,
-				driverContext:  tt.fields.driverContext,
+				driverContext:  driverContextForTesting(),
 				connectionId:   tt.fields.connectionId,
 				tracer:         tt.fields.tracer,
 				log:            testutils.ProduceTestingLogger(t),
@@ -618,7 +554,6 @@ func TestConnection_SubscriptionRequestBuilder(t *testing.T) {
 		subscribers   []*Subscriber
 		tm            transactions.RequestTransactionManager
 		configuration Configuration
-		driverContext DriverContext
 		connectionId  string
 		tracer        tracer.Tracer
 	}
@@ -629,12 +564,6 @@ func TestConnection_SubscriptionRequestBuilder(t *testing.T) {
 	}{
 		{
 			name: "return not nil",
-			fields: fields{
-				driverContext: DriverContext{
-					awaitSetupComplete:      true,
-					awaitDisconnectComplete: true,
-				},
-			},
 			wantAssert: func(t *testing.T, builder apiModel.PlcSubscriptionRequestBuilder) bool {
 				return assert.NotNil(t, builder)
 			},
@@ -647,7 +576,7 @@ func TestConnection_SubscriptionRequestBuilder(t *testing.T) {
 				subscribers:   tt.fields.subscribers,
 				tm:            tt.fields.tm,
 				configuration: tt.fields.configuration,
-				driverContext: tt.fields.driverContext,
+				driverContext: driverContextForTesting(),
 				connectionId:  tt.fields.connectionId,
 				tracer:        tt.fields.tracer,
 				log:           testutils.ProduceTestingLogger(t),
@@ -664,7 +593,6 @@ func TestConnection_UnsubscriptionRequestBuilder(t *testing.T) {
 		subscribers   []*Subscriber
 		tm            transactions.RequestTransactionManager
 		configuration Configuration
-		driverContext DriverContext
 		connectionId  string
 		tracer        tracer.Tracer
 	}
@@ -675,12 +603,6 @@ func TestConnection_UnsubscriptionRequestBuilder(t *testing.T) {
 	}{
 		{
 			name: "create one",
-			fields: fields{
-				driverContext: DriverContext{
-					awaitSetupComplete:      true,
-					awaitDisconnectComplete: true,
-				},
-			},
 		},
 	}
 	for _, tt := range tests {
@@ -690,7 +612,7 @@ func TestConnection_UnsubscriptionRequestBuilder(t *testing.T) {
 				subscribers:   tt.fields.subscribers,
 				tm:            tt.fields.tm,
 				configuration: tt.fields.configuration,
-				driverContext: tt.fields.driverContext,
+				driverContext: driverContextForTesting(),
 				connectionId:  tt.fields.connectionId,
 				tracer:        tt.fields.tracer,
 				log:           testutils.ProduceTestingLogger(t),
@@ -707,7 +629,6 @@ func TestConnection_WriteRequestBuilder(t *testing.T) {
 		subscribers   []*Subscriber
 		tm            transactions.RequestTransactionManager
 		configuration Configuration
-		driverContext DriverContext
 		connectionId  string
 		tracer        tracer.Tracer
 	}
@@ -718,12 +639,6 @@ func TestConnection_WriteRequestBuilder(t *testing.T) {
 	}{
 		{
 			name: "return not nil",
-			fields: fields{
-				driverContext: DriverContext{
-					awaitSetupComplete:      true,
-					awaitDisconnectComplete: true,
-				},
-			},
 			wantAssert: func(t *testing.T, builder apiModel.PlcWriteRequestBuilder) bool {
 				return assert.NotNil(t, builder)
 			},
@@ -736,7 +651,7 @@ func TestConnection_WriteRequestBuilder(t *testing.T) {
 				subscribers:   tt.fields.subscribers,
 				tm:            tt.fields.tm,
 				configuration: tt.fields.configuration,
-				driverContext: tt.fields.driverContext,
+				driverContext: driverContextForTesting(),
 				connectionId:  tt.fields.connectionId,
 				tracer:        tt.fields.tracer,
 				log:           testutils.ProduceTestingLogger(t),
@@ -753,7 +668,6 @@ func TestConnection_addSubscriber(t *testing.T) {
 		subscribers   []*Subscriber
 		tm            transactions.RequestTransactionManager
 		configuration Configuration
-		driverContext DriverContext
 		connectionId  string
 		tracer        tracer.Tracer
 	}
@@ -769,12 +683,6 @@ func TestConnection_addSubscriber(t *testing.T) {
 	}{
 		{
 			name: "new subscriber",
-			fields: fields{
-				driverContext: DriverContext{
-					awaitSetupComplete:      true,
-					awaitDisconnectComplete: true,
-				},
-			},
 			args: args{subscriber: NewSubscriber(nil)},
 			subElevator: func(t *testing.T, subscribers []*Subscriber) bool {
 				return len(subscribers) == 1
@@ -782,13 +690,6 @@ func TestConnection_addSubscriber(t *testing.T) {
 		},
 		{
 			name: "existing subscriber should not be added",
-			fields: fields{
-				subscribers: []*Subscriber{theOneSubscriber},
-				driverContext: DriverContext{
-					awaitSetupComplete:      true,
-					awaitDisconnectComplete: true,
-				},
-			},
 			args: args{subscriber: theOneSubscriber},
 			subElevator: func(t *testing.T, subscribers []*Subscriber) bool {
 				return len(subscribers) == 1
@@ -802,7 +703,7 @@ func TestConnection_addSubscriber(t *testing.T) {
 				subscribers:   tt.fields.subscribers,
 				tm:            tt.fields.tm,
 				configuration: tt.fields.configuration,
-				driverContext: tt.fields.driverContext,
+				driverContext: driverContextForTesting(),
 				connectionId:  tt.fields.connectionId,
 				tracer:        tt.fields.tracer,
 				log:           testutils.ProduceTestingLogger(t),
@@ -820,7 +721,6 @@ func TestConnection_fireConnected(t *testing.T) {
 		subscribers   []*Subscriber
 		tm            transactions.RequestTransactionManager
 		configuration Configuration
-		driverContext DriverContext
 		connectionId  string
 		tracer        tracer.Tracer
 	}
@@ -835,24 +735,12 @@ func TestConnection_fireConnected(t *testing.T) {
 	}{
 		{
 			name: "instant connect",
-			fields: fields{
-				driverContext: DriverContext{
-					awaitSetupComplete:      true,
-					awaitDisconnectComplete: true,
-				},
-			},
 			chanValidator: func(_ *testing.T, _ chan<- plc4go.PlcConnectionConnectResult) bool {
 				return true
 			},
 		},
 		{
 			name: "notified connect",
-			fields: fields{
-				driverContext: DriverContext{
-					awaitSetupComplete:      true,
-					awaitDisconnectComplete: true,
-				},
-			},
 			args: args{ch: make(chan<- plc4go.PlcConnectionConnectResult, 1)},
 			chanValidator: func(t *testing.T, results chan<- plc4go.PlcConnectionConnectResult) bool {
 				time.Sleep(time.Millisecond * 50)
@@ -867,7 +755,7 @@ func TestConnection_fireConnected(t *testing.T) {
 				subscribers:   tt.fields.subscribers,
 				tm:            tt.fields.tm,
 				configuration: tt.fields.configuration,
-				driverContext: tt.fields.driverContext,
+				driverContext: driverContextForTesting(),
 				connectionId:  tt.fields.connectionId,
 				tracer:        tt.fields.tracer,
 				log:           testutils.ProduceTestingLogger(t),
@@ -885,7 +773,6 @@ func TestConnection_fireConnectionError(t *testing.T) {
 		subscribers   []*Subscriber
 		tm            transactions.RequestTransactionManager
 		configuration Configuration
-		driverContext DriverContext
 		connectionId  string
 		tracer        tracer.Tracer
 	}
@@ -902,12 +789,6 @@ func TestConnection_fireConnectionError(t *testing.T) {
 	}{
 		{
 			name: "instant connect",
-			fields: fields{
-				driverContext: DriverContext{
-					awaitSetupComplete:      true,
-					awaitDisconnectComplete: true,
-				},
-			},
 			setup: func(t *testing.T, fields *fields, args *args) {
 				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
 				transport := test.NewTransport(_options...)
@@ -925,12 +806,6 @@ func TestConnection_fireConnectionError(t *testing.T) {
 		},
 		{
 			name: "notified connect",
-			fields: fields{
-				driverContext: DriverContext{
-					awaitSetupComplete:      true,
-					awaitDisconnectComplete: true,
-				},
-			},
 			setup: func(t *testing.T, fields *fields, args *args) {
 				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
 				transport := test.NewTransport(_options...)
@@ -959,7 +834,7 @@ func TestConnection_fireConnectionError(t *testing.T) {
 				subscribers:   tt.fields.subscribers,
 				tm:            tt.fields.tm,
 				configuration: tt.fields.configuration,
-				driverContext: tt.fields.driverContext,
+				driverContext: driverContextForTesting(),
 				connectionId:  tt.fields.connectionId,
 				tracer:        tt.fields.tracer,
 				log:           testutils.ProduceTestingLogger(t),
@@ -977,7 +852,6 @@ func TestConnection_sendCalDataWrite(t *testing.T) {
 		subscribers   []*Subscriber
 		tm            transactions.RequestTransactionManager
 		configuration Configuration
-		driverContext DriverContext
 		connectionId  string
 		tracer        tracer.Tracer
 	}
@@ -998,12 +872,6 @@ func TestConnection_sendCalDataWrite(t *testing.T) {
 	}{
 		{
 			name: "send something",
-			fields: fields{
-				driverContext: DriverContext{
-					awaitSetupComplete:      true,
-					awaitDisconnectComplete: true,
-				},
-			},
 			args: args{
 				ctx:            context.Background(),
 				ch:             make(chan plc4go.PlcConnectionConnectResult, 1),
@@ -1042,7 +910,7 @@ func TestConnection_sendCalDataWrite(t *testing.T) {
 				subscribers:   tt.fields.subscribers,
 				tm:            tt.fields.tm,
 				configuration: tt.fields.configuration,
-				driverContext: tt.fields.driverContext,
+				driverContext: driverContextForTesting(),
 				connectionId:  tt.fields.connectionId,
 				tracer:        tt.fields.tracer,
 				log:           testutils.ProduceTestingLogger(t),
@@ -1059,7 +927,6 @@ func TestConnection_sendReset(t *testing.T) {
 		subscribers   []*Subscriber
 		tm            transactions.RequestTransactionManager
 		configuration Configuration
-		driverContext DriverContext
 		connectionId  string
 		tracer        tracer.Tracer
 	}
@@ -1079,12 +946,6 @@ func TestConnection_sendReset(t *testing.T) {
 	}{
 		{
 			name: "send reset",
-			fields: fields{
-				driverContext: DriverContext{
-					awaitSetupComplete:      true,
-					awaitDisconnectComplete: true,
-				},
-			},
 			args: args{
 				ctx: testutils.TestContext(t),
 				ch:  make(chan plc4go.PlcConnectionConnectResult, 1),
@@ -1122,7 +983,7 @@ func TestConnection_sendReset(t *testing.T) {
 				subscribers:   tt.fields.subscribers,
 				tm:            tt.fields.tm,
 				configuration: tt.fields.configuration,
-				driverContext: tt.fields.driverContext,
+				driverContext: driverContextForTesting(),
 				connectionId:  tt.fields.connectionId,
 				tracer:        tt.fields.tracer,
 				log:           testutils.ProduceTestingLogger(t),
@@ -1139,7 +1000,6 @@ func TestConnection_setApplicationFilter(t *testing.T) {
 		subscribers   []*Subscriber
 		tm            transactions.RequestTransactionManager
 		configuration Configuration
-		driverContext DriverContext
 		connectionId  string
 		tracer        tracer.Tracer
 	}
@@ -1158,12 +1018,6 @@ func TestConnection_setApplicationFilter(t *testing.T) {
 	}{
 		{
 			name: "set application filter (failing)",
-			fields: fields{
-				driverContext: DriverContext{
-					awaitSetupComplete:      true,
-					awaitDisconnectComplete: true,
-				},
-			},
 			args: args{
 				ctx: testutils.TestContext(t),
 				ch:  make(chan plc4go.PlcConnectionConnectResult, 1),
@@ -1202,7 +1056,7 @@ func TestConnection_setApplicationFilter(t *testing.T) {
 				subscribers:   tt.fields.subscribers,
 				tm:            tt.fields.tm,
 				configuration: tt.fields.configuration,
-				driverContext: tt.fields.driverContext,
+				driverContext: driverContextForTesting(),
 				connectionId:  tt.fields.connectionId,
 				tracer:        tt.fields.tracer,
 				log:           testutils.ProduceTestingLogger(t),
@@ -1219,7 +1073,6 @@ func TestConnection_setInterface1PowerUpSettings(t *testing.T) {
 		subscribers   []*Subscriber
 		tm            transactions.RequestTransactionManager
 		configuration Configuration
-		driverContext DriverContext
 		connectionId  string
 		tracer        tracer.Tracer
 	}
@@ -1238,12 +1091,6 @@ func TestConnection_setInterface1PowerUpSettings(t *testing.T) {
 	}{
 		{
 			name: "set interface 1 PUN options (failing)",
-			fields: fields{
-				driverContext: DriverContext{
-					awaitSetupComplete:      true,
-					awaitDisconnectComplete: true,
-				},
-			},
 			args: args{
 				ctx: testutils.TestContext(t),
 				ch:  make(chan plc4go.PlcConnectionConnectResult, 1),
@@ -1282,7 +1129,7 @@ func TestConnection_setInterface1PowerUpSettings(t *testing.T) {
 				subscribers:   tt.fields.subscribers,
 				tm:            tt.fields.tm,
 				configuration: tt.fields.configuration,
-				driverContext: tt.fields.driverContext,
+				driverContext: driverContextForTesting(),
 				connectionId:  tt.fields.connectionId,
 				tracer:        tt.fields.tracer,
 				log:           testutils.ProduceTestingLogger(t),
@@ -1299,7 +1146,6 @@ func TestConnection_setInterfaceOptions1(t *testing.T) {
 		subscribers   []*Subscriber
 		tm            transactions.RequestTransactionManager
 		configuration Configuration
-		driverContext DriverContext
 		connectionId  string
 		tracer        tracer.Tracer
 	}
@@ -1318,12 +1164,6 @@ func TestConnection_setInterfaceOptions1(t *testing.T) {
 	}{
 		{
 			name: "set interface 1 options (failing)",
-			fields: fields{
-				driverContext: DriverContext{
-					awaitSetupComplete:      true,
-					awaitDisconnectComplete: true,
-				},
-			},
 			args: args{
 				ctx: testutils.TestContext(t),
 				ch:  make(chan plc4go.PlcConnectionConnectResult, 1),
@@ -1362,7 +1202,7 @@ func TestConnection_setInterfaceOptions1(t *testing.T) {
 				subscribers:   tt.fields.subscribers,
 				tm:            tt.fields.tm,
 				configuration: tt.fields.configuration,
-				driverContext: tt.fields.driverContext,
+				driverContext: driverContextForTesting(),
 				connectionId:  tt.fields.connectionId,
 				tracer:        tt.fields.tracer,
 				log:           testutils.ProduceTestingLogger(t),
@@ -1379,7 +1219,6 @@ func TestConnection_setInterfaceOptions3(t *testing.T) {
 		subscribers   []*Subscriber
 		tm            transactions.RequestTransactionManager
 		configuration Configuration
-		driverContext DriverContext
 		connectionId  string
 		tracer        tracer.Tracer
 	}
@@ -1398,12 +1237,6 @@ func TestConnection_setInterfaceOptions3(t *testing.T) {
 	}{
 		{
 			name: "set interface 3 options (failing)",
-			fields: fields{
-				driverContext: DriverContext{
-					awaitSetupComplete:      true,
-					awaitDisconnectComplete: true,
-				},
-			},
 			args: args{
 				ctx: testutils.TestContext(t),
 				ch:  make(chan plc4go.PlcConnectionConnectResult, 1),
@@ -1442,7 +1275,7 @@ func TestConnection_setInterfaceOptions3(t *testing.T) {
 				subscribers:   tt.fields.subscribers,
 				tm:            tt.fields.tm,
 				configuration: tt.fields.configuration,
-				driverContext: tt.fields.driverContext,
+				driverContext: driverContextForTesting(),
 				connectionId:  tt.fields.connectionId,
 				tracer:        tt.fields.tracer,
 				log:           testutils.ProduceTestingLogger(t),
@@ -1460,7 +1293,6 @@ func TestConnection_setupConnection(t *testing.T) {
 		subscribers        []*Subscriber
 		tm                 transactions.RequestTransactionManager
 		configuration      Configuration
-		driverContext      DriverContext
 		connectionId       string
 		tracer             tracer.Tracer
 	}
@@ -1477,12 +1309,6 @@ func TestConnection_setupConnection(t *testing.T) {
 	}{
 		{
 			name: "setup connection (failing)",
-			fields: fields{
-				driverContext: DriverContext{
-					awaitSetupComplete:      true,
-					awaitDisconnectComplete: true,
-				},
-			},
 			args: args{
 				ctx: testutils.TestContext(t),
 				ch:  make(chan plc4go.PlcConnectionConnectResult, 1),
@@ -1507,12 +1333,6 @@ func TestConnection_setupConnection(t *testing.T) {
 		},
 		{
 			name: "setup connection (failing after reset)",
-			fields: fields{
-				driverContext: DriverContext{
-					awaitSetupComplete:      true,
-					awaitDisconnectComplete: true,
-				},
-			},
 			args: args{
 				ctx: testutils.TestContext(t),
 				ch:  make(chan plc4go.PlcConnectionConnectResult, 1),
@@ -1560,12 +1380,6 @@ func TestConnection_setupConnection(t *testing.T) {
 		},
 		{
 			name: "setup connection (failing after app filters)",
-			fields: fields{
-				driverContext: DriverContext{
-					awaitSetupComplete:      true,
-					awaitDisconnectComplete: true,
-				},
-			},
 			args: args{
 				ctx: testutils.TestContext(t),
 				ch:  make(chan plc4go.PlcConnectionConnectResult, 1),
@@ -1624,12 +1438,6 @@ func TestConnection_setupConnection(t *testing.T) {
 		},
 		{
 			name: "setup connection (failing after interface options 3",
-			fields: fields{
-				driverContext: DriverContext{
-					awaitSetupComplete:      true,
-					awaitDisconnectComplete: true,
-				},
-			},
 			args: args{
 				ctx: testutils.TestContext(t),
 				ch:  make(chan plc4go.PlcConnectionConnectResult, 1),
@@ -1696,12 +1504,6 @@ func TestConnection_setupConnection(t *testing.T) {
 		},
 		{
 			name: "setup connection (failing after interface options 1 pun)",
-			fields: fields{
-				driverContext: DriverContext{
-					awaitSetupComplete:      true,
-					awaitDisconnectComplete: true,
-				},
-			},
 			args: args{
 				ctx: testutils.TestContext(t),
 				ch:  make(chan plc4go.PlcConnectionConnectResult, 1),
@@ -1773,12 +1575,6 @@ func TestConnection_setupConnection(t *testing.T) {
 		},
 		{
 			name: "setup connection",
-			fields: fields{
-				driverContext: DriverContext{
-					awaitSetupComplete:      true,
-					awaitDisconnectComplete: true,
-				},
-			},
 			args: args{
 				ctx: testutils.TestContext(t),
 				ch:  make(chan plc4go.PlcConnectionConnectResult, 1),
@@ -1865,7 +1661,7 @@ func TestConnection_setupConnection(t *testing.T) {
 				subscribers:   tt.fields.subscribers,
 				tm:            tt.fields.tm,
 				configuration: tt.fields.configuration,
-				driverContext: tt.fields.driverContext,
+				driverContext: driverContextForTesting(),
 				connectionId:  tt.fields.connectionId,
 				tracer:        tt.fields.tracer,
 				log:           testutils.ProduceTestingLogger(t),
@@ -1906,7 +1702,6 @@ func TestConnection_startSubscriptionHandler(t *testing.T) {
 		subscribers   []*Subscriber
 		tm            transactions.RequestTransactionManager
 		configuration Configuration
-		driverContext DriverContext
 		connectionId  string
 		tracer        tracer.Tracer
 	}
@@ -1918,12 +1713,6 @@ func TestConnection_startSubscriptionHandler(t *testing.T) {
 	}{
 		{
 			name: "just start",
-			fields: fields{
-				driverContext: DriverContext{
-					awaitSetupComplete:      true,
-					awaitDisconnectComplete: true,
-				},
-			},
 			manipulator: func(t *testing.T, connection *Connection) {
 				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
 				connection.DefaultConnection = _default.NewDefaultConnection(connection, _options...)
@@ -1931,12 +1720,6 @@ func TestConnection_startSubscriptionHandler(t *testing.T) {
 		},
 		{
 			name: "just start and feed (no subs)",
-			fields: fields{
-				driverContext: DriverContext{
-					awaitSetupComplete:      true,
-					awaitDisconnectComplete: true,
-				},
-			},
 			setup: func(t *testing.T, fields *fields) {
 				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
 
@@ -1962,12 +1745,6 @@ func TestConnection_startSubscriptionHandler(t *testing.T) {
 		},
 		{
 			name: "just start and feed",
-			fields: fields{
-				driverContext: DriverContext{
-					awaitSetupComplete:      true,
-					awaitDisconnectComplete: true,
-				},
-			},
 			setup: func(t *testing.T, fields *fields) {
 				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
 
@@ -2003,7 +1780,7 @@ func TestConnection_startSubscriptionHandler(t *testing.T) {
 				subscribers:   tt.fields.subscribers,
 				tm:            tt.fields.tm,
 				configuration: tt.fields.configuration,
-				driverContext: tt.fields.driverContext,
+				driverContext: driverContextForTesting(),
 				connectionId:  tt.fields.connectionId,
 				tracer:        tt.fields.tracer,
 				log:           testutils.ProduceTestingLogger(t),
