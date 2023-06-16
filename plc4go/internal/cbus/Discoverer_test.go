@@ -179,7 +179,11 @@ func TestDiscoverer_createDeviceScanDispatcher(t *testing.T) {
 			setup: func(t *testing.T, fields *fields, args *args) {
 				listen, err := net.Listen("tcp", "127.0.0.1:0")
 				require.NoError(t, err)
+				dispatchWg := sync.WaitGroup{}
+				dispatchWg.Add(1)
+				t.Cleanup(dispatchWg.Wait)
 				go func() {
+					defer dispatchWg.Done()
 					conn, err := listen.Accept()
 					if err != nil {
 						t.Error(err)
@@ -263,7 +267,11 @@ func TestDiscoverer_createTransportInstanceDispatcher(t *testing.T) {
 					if err != nil {
 						t.Fatal(err)
 					}
+					dispatchWg := sync.WaitGroup{}
+					dispatchWg.Add(1)
+					t.Cleanup(dispatchWg.Wait)
 					go func() {
+						defer dispatchWg.Done()
 						conn, err := listen.Accept()
 						if err != nil {
 							t.Log(err)

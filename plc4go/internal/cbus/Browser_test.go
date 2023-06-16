@@ -148,7 +148,11 @@ func TestBrowser_BrowseQuery(t *testing.T) {
 						currentState.Store(DONE)
 					case DONE:
 						t.Log("Connection dance done")
+						dispatchWg := sync.WaitGroup{}
+						dispatchWg.Add(1)
+						t.Cleanup(dispatchWg.Wait)
 						go func() {
+							defer dispatchWg.Done()
 							time.Sleep(200 * time.Millisecond)
 							t.Log("Dispatching 3 MMI segments")
 							transportInstance.FillReadBuffer([]byte("86020200F900FF0094120006000000000000000008000000000000000000CA\r\n"))
@@ -308,7 +312,11 @@ func TestBrowser_browseUnitInfo(t *testing.T) {
 						currentState.Store(DONE)
 					case DONE:
 						t.Log("Connection dance done")
+						dispatchWg := sync.WaitGroup{}
+						dispatchWg.Add(1)
+						t.Cleanup(dispatchWg.Wait)
 						go func() {
+							defer dispatchWg.Done()
 							time.Sleep(200 * time.Millisecond)
 							t.Log("Dispatching 3 MMI segments")
 							transportInstance.FillReadBuffer([]byte("86020200F900FF0094120006000000000000000008000000000000000000CA\r\n"))
@@ -578,7 +586,11 @@ func TestBrowser_getInstalledUnitAddressBytes(t *testing.T) {
 						currentState.Store(DONE)
 					case DONE:
 						t.Log("Connection dance done")
+						dispatchWg := sync.WaitGroup{}
+						dispatchWg.Add(1)
+						t.Cleanup(dispatchWg.Wait)
 						go func() {
+							defer dispatchWg.Done()
 							time.Sleep(200 * time.Millisecond)
 							t.Log("Dispatching 3 MMI segments")
 							transportInstance.FillReadBuffer([]byte("86020200F900FF0094120006000000000000000008000000000000000000CA\r\n"))

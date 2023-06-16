@@ -296,7 +296,10 @@ func (m *Browser) getInstalledUnitAddressBytes(ctx context.Context) (map[byte]an
 	}
 	readCtx, readCtxCancel := context.WithTimeout(ctx, time.Second*2)
 	defer readCtxCancel()
+	readWg := sync.WaitGroup{}
+	readWg.Add(1)
 	go func() {
+		defer readWg.Done()
 		defer func() {
 			if err := recover(); err != nil {
 				m.log.Error().Msgf("panic-ed %v. Stack:\n%s", err, debug.Stack())
@@ -386,5 +389,6 @@ func (m *Browser) getInstalledUnitAddressBytes(ctx context.Context) (map[byte]an
 			return nil, errors.Wrap(err, "error waiting for other offsets")
 		}
 	}
+	readWg.Wait()
 	return result, nil
 }
