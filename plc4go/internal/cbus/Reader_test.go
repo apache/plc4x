@@ -190,9 +190,9 @@ func TestReader_readSync(t *testing.T) {
 				})
 				fields.messageCodec = codec
 				fields.tm = transactions.NewRequestTransactionManager(10, _options...)
-				defer func() {
+				t.Cleanup(func() {
 					assert.NoError(t, fields.tm.Close())
-				}()
+				})
 			},
 			resultEvaluator: func(t *testing.T, results chan apiModel.PlcReadRequestResult) bool {
 				timer := time.NewTimer(2 * time.Second)
@@ -254,9 +254,9 @@ func TestReader_readSync(t *testing.T) {
 				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
 
 				fields.tm = transactions.NewRequestTransactionManager(10, _options...)
-				defer func() {
+				t.Cleanup(func() {
 					assert.NoError(t, fields.tm.Close())
-				}()
+				})
 				transport := test.NewTransport()
 				transportUrl := url.URL{Scheme: "test"}
 				transportInstance, err := transport.CreateTransportInstance(transportUrl, nil, _options...)
@@ -300,7 +300,7 @@ func TestReader_readSync(t *testing.T) {
 					assert.NotNil(t, response)
 					value := response.GetValue("blub")
 					assert.NotNil(t, value)
-					assert.Implements(t, (interface{ GetString() string })(nil), value)
+					require.True(t, value.IsString())
 					assert.Equal(t, "PC_CNIED", value.GetString())
 				}
 				return true
@@ -333,9 +333,9 @@ func TestReader_readSync(t *testing.T) {
 				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
 
 				fields.tm = transactions.NewRequestTransactionManager(10, _options...)
-				defer func() {
+				t.Cleanup(func() {
 					assert.NoError(t, fields.tm.Close())
-				}()
+				})
 
 				transport := test.NewTransport()
 				transportUrl := url.URL{Scheme: "test"}
