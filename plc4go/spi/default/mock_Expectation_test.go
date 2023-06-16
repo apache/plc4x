@@ -129,6 +129,47 @@ func (_c *MockExpectation_GetContext_Call) RunAndReturn(run func() context.Conte
 	return _c
 }
 
+// GetCreationTime provides a mock function with given fields:
+func (_m *MockExpectation) GetCreationTime() time.Time {
+	ret := _m.Called()
+
+	var r0 time.Time
+	if rf, ok := ret.Get(0).(func() time.Time); ok {
+		r0 = rf()
+	} else {
+		r0 = ret.Get(0).(time.Time)
+	}
+
+	return r0
+}
+
+// MockExpectation_GetCreationTime_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetCreationTime'
+type MockExpectation_GetCreationTime_Call struct {
+	*mock.Call
+}
+
+// GetCreationTime is a helper method to define mock.On call
+func (_e *MockExpectation_Expecter) GetCreationTime() *MockExpectation_GetCreationTime_Call {
+	return &MockExpectation_GetCreationTime_Call{Call: _e.mock.On("GetCreationTime")}
+}
+
+func (_c *MockExpectation_GetCreationTime_Call) Run(run func()) *MockExpectation_GetCreationTime_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run()
+	})
+	return _c
+}
+
+func (_c *MockExpectation_GetCreationTime_Call) Return(_a0 time.Time) *MockExpectation_GetCreationTime_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockExpectation_GetCreationTime_Call) RunAndReturn(run func() time.Time) *MockExpectation_GetCreationTime_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // GetExpiration provides a mock function with given fields:
 func (_m *MockExpectation) GetExpiration() time.Time {
 	ret := _m.Called()

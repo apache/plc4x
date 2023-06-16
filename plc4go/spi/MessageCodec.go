@@ -28,6 +28,7 @@ import (
 type Expectation interface {
 	fmt.Stringer
 	GetContext() context.Context
+	GetCreationTime() time.Time
 	GetExpiration() time.Time
 	GetAcceptsMessage() AcceptsMessage
 	GetHandleMessage() HandleMessage

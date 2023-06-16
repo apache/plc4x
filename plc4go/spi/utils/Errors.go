@@ -91,7 +91,7 @@ func NewTimeoutError(timeout time.Duration) TimeoutError {
 }
 
 func (t TimeoutError) Error() string {
-	return fmt.Sprintf("got timeout after %v", t.timeout)
+	return fmt.Sprintf("got timeout after %s", t.timeout)
 }
 
 func (t TimeoutError) Is(target error) bool {

@@ -21,7 +21,6 @@ package _default
 
 import (
 	"context"
-	"fmt"
 	"runtime/debug"
 	"sync"
 	"sync/atomic"
@@ -54,14 +53,6 @@ type DefaultCodec interface {
 // NewDefaultCodec is the factory for a DefaultCodec
 func NewDefaultCodec(requirements DefaultCodecRequirements, transportInstance transports.TransportInstance, options ...options.WithOption) DefaultCodec {
 	return buildDefaultCodec(requirements, transportInstance, options...)
-}
-
-type DefaultExpectation struct {
-	Context        context.Context
-	Expiration     time.Time
-	AcceptsMessage spi.AcceptsMessage
-	HandleMessage  spi.HandleMessage
-	HandleError    spi.HandleError
 }
 
 type CustomMessageHandler func(codec DefaultCodecRequirements, message spi.Message) bool
@@ -126,30 +117,6 @@ func buildDefaultCodec(defaultCodecRequirements DefaultCodecRequirements, transp
 ///////////////////////////////////////
 ///////////////////////////////////////
 
-func (d *DefaultExpectation) GetContext() context.Context {
-	return d.Context
-}
-
-func (d *DefaultExpectation) GetExpiration() time.Time {
-	return d.Expiration
-}
-
-func (d *DefaultExpectation) GetAcceptsMessage() spi.AcceptsMessage {
-	return d.AcceptsMessage
-}
-
-func (d *DefaultExpectation) GetHandleMessage() spi.HandleMessage {
-	return d.HandleMessage
-}
-
-func (d *DefaultExpectation) GetHandleError() spi.HandleError {
-	return d.HandleError
-}
-
-func (d *DefaultExpectation) String() string {
-	return fmt.Sprintf("Expectation(expires at %v)", d.Expiration)
-}
-
 func (m *defaultCodec) GetTransportInstance() transports.TransportInstance {
 	return m.transportInstance
 }
@@ -211,8 +178,9 @@ func (m *defaultCodec) IsRunning() bool {
 func (m *defaultCodec) Expect(ctx context.Context, acceptsMessage spi.AcceptsMessage, handleMessage spi.HandleMessage, handleError spi.HandleError, ttl time.Duration) error {
 	m.expectationsChangeMutex.Lock()
 	defer m.expectationsChangeMutex.Unlock()
-	expectation := &DefaultExpectation{
+	expectation := &defaultExpectation{
 		Context:        ctx,
+		CreationTime:   time.Now(),
 		Expiration:     time.Now().Add(ttl),
 		AcceptsMessage: acceptsMessage,
 		HandleMessage:  handleMessage,
@@ -247,7 +215,7 @@ func (m *defaultCodec) TimeoutExpectations(now time.Time) {
 			i--
 			// Call the error handler.
 			go func(expectation spi.Expectation) {
-				if err := expectation.GetHandleError()(utils.NewTimeoutError(now.Sub(expectation.GetExpiration()))); err != nil {
+				if err := expectation.GetHandleError()(utils.NewTimeoutError(expectation.GetExpiration().Sub(expectation.GetCreationTime()))); err != nil {
 					m.log.Error().Err(err).Msg("Got an error handling error on expectation")
 				}
 			}(expectation)
