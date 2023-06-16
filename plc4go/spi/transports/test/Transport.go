@@ -69,6 +69,11 @@ func (m *Transport) AddPreregisteredInstances(transportUrl url.URL, preregistere
 	return nil
 }
 
+func (m *Transport) Close() error {
+	m.log.Trace().Msg("Closing")
+	return nil
+}
+
 func (m *Transport) String() string {
 	return m.GetTransportCode() + "(" + m.GetTransportName() + ")"
 }

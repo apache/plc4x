@@ -34,6 +34,11 @@ func main() {
 	zerolog.SetGlobalLevel(zerolog.InfoLevel)
 
 	driverManager := plc4go.NewPlcDriverManager()
+	defer func() {
+		if err := driverManager.Close(); err != nil {
+			panic(err)
+		}
+	}()
 	drivers.RegisterAdsDriver(driverManager)
 	connectionChan := driverManager.GetConnection("ads:tcp://192.168.23.20?sourceAmsNetId=192.168.23.200.1.1&sourceAmsPort=65534&targetAmsNetId=192.168.23.20.1.1&targetAmsPort=851")
 	connection := <-connectionChan

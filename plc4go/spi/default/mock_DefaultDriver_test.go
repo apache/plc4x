@@ -135,6 +135,47 @@ func (_c *MockDefaultDriver_CheckTagAddress_Call) RunAndReturn(run func(string) 
 	return _c
 }
 
+// Close provides a mock function with given fields:
+func (_m *MockDefaultDriver) Close() error {
+	ret := _m.Called()
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func() error); ok {
+		r0 = rf()
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// MockDefaultDriver_Close_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Close'
+type MockDefaultDriver_Close_Call struct {
+	*mock.Call
+}
+
+// Close is a helper method to define mock.On call
+func (_e *MockDefaultDriver_Expecter) Close() *MockDefaultDriver_Close_Call {
+	return &MockDefaultDriver_Close_Call{Call: _e.mock.On("Close")}
+}
+
+func (_c *MockDefaultDriver_Close_Call) Run(run func()) *MockDefaultDriver_Close_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run()
+	})
+	return _c
+}
+
+func (_c *MockDefaultDriver_Close_Call) Return(_a0 error) *MockDefaultDriver_Close_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockDefaultDriver_Close_Call) RunAndReturn(run func() error) *MockDefaultDriver_Close_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // Discover provides a mock function with given fields: callback, discoveryOptions
 func (_m *MockDefaultDriver) Discover(callback func(model.PlcDiscoveryItem), discoveryOptions ...options.WithDiscoveryOption) error {
 	_va := make([]interface{}, len(discoveryOptions))

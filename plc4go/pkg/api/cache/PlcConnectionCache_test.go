@@ -61,6 +61,9 @@ func TestPlcConnectionCache_GetConnection(t *testing.T) {
 			setup: func(t *testing.T, fields *fields, args *args) {
 				logger := testutils.ProduceTestingLogger(t)
 				driverManager := plc4go.NewPlcDriverManager(config.WithCustomLogger(logger))
+				t.Cleanup(func() {
+					assert.NoError(t, driverManager.Close())
+				})
 				driverManager.RegisterDriver(simulated.NewDriver(options.WithCustomLogger(logger)))
 				fields.driverManager = driverManager
 			},
@@ -75,6 +78,9 @@ func TestPlcConnectionCache_GetConnection(t *testing.T) {
 			setup: func(t *testing.T, fields *fields, args *args) {
 				logger := testutils.ProduceTestingLogger(t)
 				driverManager := plc4go.NewPlcDriverManager(config.WithCustomLogger(logger))
+				t.Cleanup(func() {
+					assert.NoError(t, driverManager.Close())
+				})
 				driverManager.RegisterDriver(simulated.NewDriver(options.WithCustomLogger(logger)))
 				fields.driverManager = driverManager
 			},
@@ -133,6 +139,9 @@ func TestPlcConnectionCache_Close(t *testing.T) {
 				logger := testutils.ProduceTestingLogger(t)
 
 				driverManager := plc4go.NewPlcDriverManager(config.WithCustomLogger(logger))
+				t.Cleanup(func() {
+					assert.NoError(t, driverManager.Close())
+				})
 				driverManager.RegisterDriver(simulated.NewDriver(options.WithCustomLogger(logger)))
 				fields.driverManager = driverManager
 			},
@@ -145,6 +154,9 @@ func TestPlcConnectionCache_Close(t *testing.T) {
 				logger := testutils.ProduceTestingLogger(t)
 
 				driverManager := plc4go.NewPlcDriverManager(config.WithCustomLogger(logger))
+				t.Cleanup(func() {
+					assert.NoError(t, driverManager.Close())
+				})
 				driverManager.RegisterDriver(simulated.NewDriver(options.WithCustomLogger(logger)))
 				fields.driverManager = driverManager
 			},
@@ -270,6 +282,9 @@ func executeAndTestReadFromPlc(t *testing.T, cache plcConnectionCache, connectio
 func TestPlcConnectionCache_ReusingAnExistingConnection(t *testing.T) {
 	logger := testutils.ProduceTestingLogger(t)
 	driverManager := plc4go.NewPlcDriverManager(config.WithCustomLogger(logger))
+	t.Cleanup(func() {
+		assert.NoError(t, driverManager.Close())
+	})
 	driverManager.RegisterDriver(simulated.NewDriver(options.WithCustomLogger(logger)))
 	cache := plcConnectionCache{
 		driverManager: driverManager,
@@ -332,6 +347,9 @@ func TestPlcConnectionCache_ReusingAnExistingConnection(t *testing.T) {
 func TestPlcConnectionCache_MultipleConcurrentConnectionRequests(t *testing.T) {
 	logger := testutils.ProduceTestingLogger(t)
 	driverManager := plc4go.NewPlcDriverManager(config.WithCustomLogger(logger))
+	t.Cleanup(func() {
+		assert.NoError(t, driverManager.Close())
+	})
 	driverManager.RegisterDriver(simulated.NewDriver(options.WithCustomLogger(logger)))
 	cache := plcConnectionCache{
 		driverManager: driverManager,
@@ -403,6 +421,9 @@ func TestPlcConnectionCache_MultipleConcurrentConnectionRequests(t *testing.T) {
 func TestPlcConnectionCache_ConnectWithError(t *testing.T) {
 	logger := testutils.ProduceTestingLogger(t)
 	driverManager := plc4go.NewPlcDriverManager(config.WithCustomLogger(logger))
+	t.Cleanup(func() {
+		assert.NoError(t, driverManager.Close())
+	})
 	driverManager.RegisterDriver(simulated.NewDriver(options.WithCustomLogger(logger)))
 	cache := plcConnectionCache{
 		driverManager: driverManager,
@@ -440,6 +461,9 @@ func TestPlcConnectionCache_ConnectWithError(t *testing.T) {
 func TestPlcConnectionCache_ReturningConnectionWithPingError(t *testing.T) {
 	logger := testutils.ProduceTestingLogger(t)
 	driverManager := plc4go.NewPlcDriverManager(config.WithCustomLogger(logger))
+	t.Cleanup(func() {
+		assert.NoError(t, driverManager.Close())
+	})
 	driverManager.RegisterDriver(simulated.NewDriver(options.WithCustomLogger(logger)))
 	cache := plcConnectionCache{
 		driverManager: driverManager,
@@ -498,6 +522,9 @@ func TestPlcConnectionCache_ReturningConnectionWithPingError(t *testing.T) {
 func TestPlcConnectionCache_PingTimeout(t *testing.T) {
 	logger := testutils.ProduceTestingLogger(t)
 	driverManager := plc4go.NewPlcDriverManager(config.WithCustomLogger(logger))
+	t.Cleanup(func() {
+		assert.NoError(t, driverManager.Close())
+	})
 	driverManager.RegisterDriver(simulated.NewDriver(options.WithCustomLogger(logger)))
 	cache := plcConnectionCache{
 		driverManager: driverManager,
@@ -540,6 +567,9 @@ func TestPlcConnectionCache_PingTimeout(t *testing.T) {
 func TestPlcConnectionCache_SecondCallGetNewConnectionAfterPingTimeout(t *testing.T) {
 	logger := testutils.ProduceTestingLogger(t)
 	driverManager := plc4go.NewPlcDriverManager(config.WithCustomLogger(logger))
+	t.Cleanup(func() {
+		assert.NoError(t, driverManager.Close())
+	})
 	driverManager.RegisterDriver(simulated.NewDriver(options.WithCustomLogger(logger)))
 	cache := plcConnectionCache{
 		driverManager: driverManager,
@@ -615,6 +645,9 @@ func TestPlcConnectionCache_SecondCallGetNewConnectionAfterPingTimeout(t *testin
 func TestPlcConnectionCache_FistReadGivesUpBeforeItGetsTheConnectionSoSecondOneTakesOver(t *testing.T) {
 	logger := testutils.ProduceTestingLogger(t)
 	driverManager := plc4go.NewPlcDriverManager(config.WithCustomLogger(logger))
+	t.Cleanup(func() {
+		assert.NoError(t, driverManager.Close())
+	})
 	driverManager.RegisterDriver(simulated.NewDriver(options.WithCustomLogger(logger)))
 	cache := plcConnectionCache{
 		driverManager: driverManager,
@@ -657,6 +690,9 @@ func TestPlcConnectionCache_FistReadGivesUpBeforeItGetsTheConnectionSoSecondOneT
 func TestPlcConnectionCache_SecondConnectionGivenUpWaiting(t *testing.T) {
 	logger := testutils.ProduceTestingLogger(t)
 	driverManager := plc4go.NewPlcDriverManager(config.WithCustomLogger(logger))
+	t.Cleanup(func() {
+		assert.NoError(t, driverManager.Close())
+	})
 	driverManager.RegisterDriver(simulated.NewDriver(options.WithCustomLogger(logger)))
 	cache := plcConnectionCache{
 		driverManager: driverManager,
@@ -727,6 +763,9 @@ func TestPlcConnectionCache_SecondConnectionGivenUpWaiting(t *testing.T) {
 func TestPlcConnectionCache_MaximumWaitTimeReached(t *testing.T) {
 	logger := testutils.ProduceTestingLogger(t)
 	driverManager := plc4go.NewPlcDriverManager(config.WithCustomLogger(logger))
+	t.Cleanup(func() {
+		assert.NoError(t, driverManager.Close())
+	})
 	driverManager.RegisterDriver(simulated.NewDriver(options.WithCustomLogger(logger)))
 	// Reduce the max lease time as this way we also reduce the max wait time.
 	cache := plcConnectionCache{

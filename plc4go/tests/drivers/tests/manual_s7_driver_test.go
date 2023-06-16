@@ -21,6 +21,7 @@ package tests
 
 import (
 	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/stretchr/testify/assert"
 	"testing"
 
 	"github.com/apache/plc4x/plc4go/internal/s7"
@@ -69,6 +70,9 @@ func TestManualS7Driver(t *testing.T) {
 	connectionString := "s7://192.168.23.30"
 	withCustomLogger := options.WithCustomLogger(testutils.ProduceTestingLogger(t))
 	driverManager := plc4go.NewPlcDriverManager(withCustomLogger)
+	t.Cleanup(func() {
+		assert.NoError(t, driverManager.Close())
+	})
 	driverManager.RegisterDriver(s7.NewDriver(withCustomLogger))
 	transports.RegisterTcpTransport(driverManager, withCustomLogger)
 	test := testutils.NewManualTestSuite(t, connectionString, driverManager)

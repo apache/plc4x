@@ -21,10 +21,12 @@ package transports
 
 import (
 	"github.com/apache/plc4x/plc4go/spi/options"
+	"io"
 	"net/url"
 )
 
 type Transport interface {
+	io.Closer
 	// GetTransportCode Get the short code used to identify this transport (As used in the connection string)
 	GetTransportCode() string
 	// GetTransportName Get a human-readable name for this transport

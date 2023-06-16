@@ -21,6 +21,7 @@ package plc4go
 
 import (
 	"context"
+	"io"
 	"net/url"
 
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
@@ -29,6 +30,7 @@ import (
 )
 
 type PlcDriver interface {
+	io.Closer
 	// GetProtocolCode Get the short code used to identify this driver (As used in the connection string)
 	GetProtocolCode() string
 	// GetProtocolName Get a human-readable name for this driver

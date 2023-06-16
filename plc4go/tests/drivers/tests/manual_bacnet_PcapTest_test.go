@@ -22,6 +22,7 @@ package tests
 import (
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
+	"github.com/stretchr/testify/assert"
 	"io"
 	"net/http"
 	"os"
@@ -58,6 +59,9 @@ func TestBacnetDriverWithPcap(t *testing.T) {
 	logger := testutils.ProduceTestingLogger(t)
 	withCustomLogger := options.WithCustomLogger(logger)
 	driverManager := plc4go.NewPlcDriverManager(withCustomLogger)
+	t.Cleanup(func() {
+		assert.NoError(t, driverManager.Close())
+	})
 	driverManager.RegisterDriver(bacnetip.NewDriver(withCustomLogger))
 	driverManager.(spi.TransportAware).RegisterTransport(pcap.NewTransport(withCustomLogger))
 	result := <-driverManager.GetConnection("bacnet-ip:pcap://" + file + "?transport-type=udp&speed-factor=0")

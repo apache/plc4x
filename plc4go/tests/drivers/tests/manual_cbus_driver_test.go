@@ -22,6 +22,7 @@ package tests
 import (
 	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/stretchr/testify/assert"
 	"testing"
 	"time"
 
@@ -42,6 +43,9 @@ func TestManualCBusDriverMixed(t *testing.T) {
 
 	connectionString := "c-bus://192.168.178.101"
 	driverManager := plc4go.NewPlcDriverManager(withCustomLogger)
+	t.Cleanup(func() {
+		assert.NoError(t, driverManager.Close())
+	})
 	driverManager.RegisterDriver(cbus.NewDriver(withCustomLogger))
 	transports.RegisterTcpTransport(driverManager, withCustomLogger)
 	test := testutils.NewManualTestSuite(t, connectionString, driverManager)
@@ -119,6 +123,9 @@ func TestManualCBusBrowse(t *testing.T) {
 
 	connectionString := "c-bus://192.168.178.101?Monitor=false&MonitoredApplication1=0x00&MonitoredApplication2=0x00"
 	driverManager := plc4go.NewPlcDriverManager(withCustomLogger)
+	t.Cleanup(func() {
+		assert.NoError(t, driverManager.Close())
+	})
 	driverManager.RegisterDriver(cbus.NewDriver(withCustomLogger))
 	transports.RegisterTcpTransport(driverManager, withCustomLogger)
 	connectionResult := <-driverManager.GetConnection(connectionString)
@@ -148,6 +155,9 @@ func TestManualCBusRead(t *testing.T) {
 
 	connectionString := "c-bus://192.168.178.101?Monitor=false&MonitoredApplication1=0x00&MonitoredApplication2=0x00"
 	driverManager := plc4go.NewPlcDriverManager(withCustomLogger)
+	t.Cleanup(func() {
+		assert.NoError(t, driverManager.Close())
+	})
 	driverManager.RegisterDriver(cbus.NewDriver(withCustomLogger))
 	transports.RegisterTcpTransport(driverManager, withCustomLogger)
 	connectionResult := <-driverManager.GetConnection(connectionString)
@@ -171,6 +181,9 @@ func TestManualDiscovery(t *testing.T) {
 	withCustomLogger := options.WithCustomLogger(testutils.ProduceTestingLogger(t))
 
 	driverManager := plc4go.NewPlcDriverManager(withCustomLogger)
+	t.Cleanup(func() {
+		assert.NoError(t, driverManager.Close())
+	})
 	driver := cbus.NewDriver(withCustomLogger)
 	driverManager.RegisterDriver(driver)
 	transports.RegisterTcpTransport(driverManager, withCustomLogger)

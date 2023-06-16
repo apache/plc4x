@@ -41,6 +41,47 @@ func (_m *MockTransport) EXPECT() *MockTransport_Expecter {
 	return &MockTransport_Expecter{mock: &_m.Mock}
 }
 
+// Close provides a mock function with given fields:
+func (_m *MockTransport) Close() error {
+	ret := _m.Called()
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func() error); ok {
+		r0 = rf()
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// MockTransport_Close_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Close'
+type MockTransport_Close_Call struct {
+	*mock.Call
+}
+
+// Close is a helper method to define mock.On call
+func (_e *MockTransport_Expecter) Close() *MockTransport_Close_Call {
+	return &MockTransport_Close_Call{Call: _e.mock.On("Close")}
+}
+
+func (_c *MockTransport_Close_Call) Run(run func()) *MockTransport_Close_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run()
+	})
+	return _c
+}
+
+func (_c *MockTransport_Close_Call) Return(_a0 error) *MockTransport_Close_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockTransport_Close_Call) RunAndReturn(run func() error) *MockTransport_Close_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // CreateTransportInstance provides a mock function with given fields: transportUrl, _a1, _options
 func (_m *MockTransport) CreateTransportInstance(transportUrl url.URL, _a1 map[string][]string, _options ...options.WithOption) (TransportInstance, error) {
 	_va := make([]interface{}, len(_options))

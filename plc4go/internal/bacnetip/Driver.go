@@ -115,6 +115,10 @@ func (m *Driver) DiscoverWithContext(ctx context.Context, callback func(event ap
 	return NewDiscoverer().Discover(ctx, callback, discoveryOptions...)
 }
 
+func (m *Driver) Close() error {
+	return m.tm.Close()
+}
+
 type ApplicationManager struct {
 	sync.Mutex
 	applications map[string]*ApplicationLayerMessageCodec

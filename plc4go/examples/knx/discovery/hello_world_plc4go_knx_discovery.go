@@ -37,6 +37,11 @@ func main() {
 	logging.InfoLevel()
 
 	driverManager := plc4go.NewPlcDriverManager()
+	defer func() {
+		if err := driverManager.Close(); err != nil {
+			panic(err)
+		}
+	}()
 	drivers.RegisterKnxDriver(driverManager)
 
 	var connectionStrings []string

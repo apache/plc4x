@@ -27,6 +27,7 @@ import (
 	"github.com/apache/plc4x/plc4go/pkg/api/config"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/options/converter"
+	"github.com/stretchr/testify/assert"
 	"os"
 	"runtime/debug"
 	"strconv"
@@ -512,6 +513,9 @@ func RunDriverTestsuite(t *testing.T, driver plc4go.PlcDriver, testPath string, 
 	t.Log("Initialize the driver manager")
 	// Initialize the driver manager
 	driverManager := plc4go.NewPlcDriverManager(_options...)
+	t.Cleanup(func() {
+		assert.NoError(t, driverManager.Close())
+	})
 	transport := test.NewTransport(converter.WithOptionToInternal(_options...)...)
 	driverManager.(spi.TransportAware).RegisterTransport(transport)
 	driverManager.RegisterDriver(driver)

@@ -108,3 +108,7 @@ func (m *Driver) SetAwaitSetupComplete(awaitComplete bool) {
 func (m *Driver) SetAwaitDisconnectComplete(awaitComplete bool) {
 	m.awaitDisconnectComplete = awaitComplete
 }
+
+func (m *Driver) Close() error {
+	return m.tm.Close()
+}

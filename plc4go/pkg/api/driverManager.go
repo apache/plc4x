@@ -21,20 +21,23 @@ package plc4go
 
 import (
 	"context"
-	"github.com/apache/plc4x/plc4go/pkg/api/config"
-	"github.com/apache/plc4x/plc4go/spi/options/converter"
-	"github.com/rs/zerolog"
+	"io"
 	"net/url"
 
+	"github.com/apache/plc4x/plc4go/pkg/api/config"
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/apache/plc4x/plc4go/spi/options/converter"
 	"github.com/apache/plc4x/plc4go/spi/transports"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
 )
 
 // PlcDriverManager is the main entry point for PLC4Go applications
 type PlcDriverManager interface {
+	io.Closer
 	// RegisterDriver Manually register a new driver
 	RegisterDriver(driver PlcDriver)
 	// ListDriverNames List the names of all drivers registered in the system
@@ -308,6 +311,30 @@ func (m *plcDriverManger) DiscoverWithContext(ctx context.Context, callback func
 			if err != nil {
 				return errors.Wrapf(err, "Error running Discover on driver %s", driver.GetProtocolName())
 			}
+		}
+	}
+	return nil
+}
+
+func (m *plcDriverManger) Close() error {
+	m.log.Info().Msg("Shutting down driver manager")
+	var aggregatedErrors []error
+	for s, driver := range m.drivers {
+		m.log.Trace().Str("name", s).Msg("closing driver")
+		if err := driver.Close(); err != nil {
+			aggregatedErrors = append(aggregatedErrors, err)
+		}
+	}
+	for s, transport := range m.transports {
+		m.log.Trace().Str("name", s).Msg("closing transport")
+		if err := transport.Close(); err != nil {
+			aggregatedErrors = append(aggregatedErrors, err)
+		}
+	}
+	if len(aggregatedErrors) > 0 {
+		return utils.MultiError{
+			MainError: errors.New("error closing everything"),
+			Errors:    aggregatedErrors,
 		}
 	}
 	return nil

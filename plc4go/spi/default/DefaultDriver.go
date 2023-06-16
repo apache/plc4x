@@ -116,6 +116,10 @@ func (d *defaultDriver) GetPlcTagHandler() spi.PlcTagHandler {
 	return d.plcTagHandler
 }
 
+func (d *defaultDriver) Close() error {
+	return nil
+}
+
 func (d *defaultDriver) String() string {
 	return fmt.Sprintf("%s (%s) [%s]", d.protocolName, d.protocolCode, d.defaultTransport)
 }

@@ -21,6 +21,7 @@ package tests
 
 import (
 	"fmt"
+	"github.com/stretchr/testify/assert"
 	"testing"
 
 	"github.com/apache/plc4x/plc4go/internal/ads"
@@ -84,6 +85,9 @@ func TestManualAds(t *testing.T) {
 	connectionString := fmt.Sprintf("ads:tcp://%s?sourceAmsNetId=%s&sourceAmsPort=%d&targetAmsNetId=%s&targetAmsPort=%d", spsIp, sourceAmsNetId, sourceAmsPort, targetAmsNetId, targetAmsPort)
 	withCustomLogger := options.WithCustomLogger(testutils.ProduceTestingLogger(t))
 	driverManager := plc4go.NewPlcDriverManager(withCustomLogger)
+	t.Cleanup(func() {
+		assert.NoError(t, driverManager.Close())
+	})
 	driverManager.RegisterDriver(ads.NewDriver(withCustomLogger))
 	transports.RegisterTcpTransport(driverManager, withCustomLogger)
 	test := testutils.NewManualTestSuite(t, connectionString, driverManager)

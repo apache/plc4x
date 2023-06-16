@@ -20,6 +20,7 @@
 package tests
 
 import (
+	"github.com/stretchr/testify/assert"
 	"testing"
 
 	"github.com/apache/plc4x/plc4go/internal/bacnetip"
@@ -35,6 +36,9 @@ func TestManualBacnetDriver(t *testing.T) {
 	connectionString := "bacnet-ip://192.168.178.101"
 	withCustomLogger := options.WithCustomLogger(testutils.ProduceTestingLogger(t))
 	driverManager := plc4go.NewPlcDriverManager(withCustomLogger)
+	t.Cleanup(func() {
+		assert.NoError(t, driverManager.Close())
+	})
 	driverManager.RegisterDriver(bacnetip.NewDriver(withCustomLogger))
 	transports.RegisterUdpTransport(driverManager, withCustomLogger)
 	test := testutils.NewManualTestSuite(t, connectionString, driverManager)

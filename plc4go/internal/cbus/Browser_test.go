@@ -157,6 +157,9 @@ func TestBrowser_BrowseQuery(t *testing.T) {
 				err = transport.AddPreregisteredInstances(transportUrl, transportInstance)
 				require.NoError(t, err)
 				driver := NewDriver(_options...)
+				t.Cleanup(func() {
+					assert.NoError(t, driver.Close())
+				})
 				connectionConnectResult := <-driver.GetConnection(transportUrl, map[string]transports.Transport{"test": transport}, map[string][]string{})
 				if err := connectionConnectResult.GetErr(); err != nil {
 					t.Error(err)
@@ -313,6 +316,9 @@ func TestBrowser_browseUnitInfo(t *testing.T) {
 				err = transport.AddPreregisteredInstances(transportUrl, transportInstance)
 				require.NoError(t, err)
 				driver := NewDriver(_options...)
+				t.Cleanup(func() {
+					assert.NoError(t, driver.Close())
+				})
 				connectionConnectResult := <-driver.GetConnection(transportUrl, map[string]transports.Transport{"test": transport}, map[string][]string{})
 				if err := connectionConnectResult.GetErr(); err != nil {
 					t.Error(err)
@@ -582,7 +588,11 @@ func TestBrowser_getInstalledUnitAddressBytes(t *testing.T) {
 				})
 				err = transport.AddPreregisteredInstances(transportUrl, transportInstance)
 				require.NoError(t, err)
-				connectionConnectResult := <-NewDriver(_options...).GetConnection(transportUrl, map[string]transports.Transport{"test": transport}, map[string][]string{})
+				driver := NewDriver(_options...)
+				t.Cleanup(func() {
+					assert.NoError(t, driver.Close())
+				})
+				connectionConnectResult := <-driver.GetConnection(transportUrl, map[string]transports.Transport{"test": transport}, map[string][]string{})
 				if err := connectionConnectResult.GetErr(); err != nil {
 					t.Error(err)
 					t.FailNow()

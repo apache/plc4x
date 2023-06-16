@@ -256,15 +256,27 @@ func TestDriver_GetConnectionWithContext(t *testing.T) {
 }
 
 func TestDriver_SetAwaitDisconnectComplete(t *testing.T) {
-	NewDriver().(*Driver).SetAwaitDisconnectComplete(true)
+	driver := NewDriver(testutils.EnrichOptionsWithOptionsForTesting(t)...)
+	t.Cleanup(func() {
+		assert.NoError(t, driver.Close())
+	})
+	driver.(*Driver).SetAwaitDisconnectComplete(true)
 }
 
 func TestDriver_SetAwaitSetupComplete(t *testing.T) {
-	NewDriver().(*Driver).SetAwaitSetupComplete(true)
+	driver := NewDriver(testutils.EnrichOptionsWithOptionsForTesting(t)...)
+	t.Cleanup(func() {
+		assert.NoError(t, driver.Close())
+	})
+	driver.(*Driver).SetAwaitSetupComplete(true)
 }
 
 func TestDriver_SupportsDiscovery(t *testing.T) {
-	NewDriver().(*Driver).SupportsDiscovery()
+	driver := NewDriver(testutils.EnrichOptionsWithOptionsForTesting(t)...)
+	t.Cleanup(func() {
+		assert.NoError(t, driver.Close())
+	})
+	driver.(*Driver).SupportsDiscovery()
 }
 
 func TestNewDriver(t *testing.T) {

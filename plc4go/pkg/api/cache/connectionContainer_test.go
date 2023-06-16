@@ -155,6 +155,9 @@ func Test_connectionContainer_connect(t1 *testing.T) {
 				logger := testutils.ProduceTestingLogger(t)
 
 				driverManager := plc4go.NewPlcDriverManager(config.WithCustomLogger(logger))
+				t.Cleanup(func() {
+					assert.NoError(t, driverManager.Close())
+				})
 				driverManager.RegisterDriver(simulated.NewDriver(options.WithCustomLogger(logger)))
 				fields.driverManager = driverManager
 			},
@@ -213,6 +216,9 @@ func Test_connectionContainer_lease(t1 *testing.T) {
 				logger := testutils.ProduceTestingLogger(t)
 
 				driverManager := plc4go.NewPlcDriverManager(config.WithCustomLogger(logger))
+				t.Cleanup(func() {
+					assert.NoError(t, driverManager.Close())
+				})
 				driverManager.RegisterDriver(simulated.NewDriver(options.WithCustomLogger(logger)))
 				fields.driverManager = driverManager
 			},
@@ -279,6 +285,9 @@ func Test_connectionContainer_returnConnection(t1 *testing.T) {
 				logger := testutils.ProduceTestingLogger(t)
 
 				driverManager := plc4go.NewPlcDriverManager(config.WithCustomLogger(logger))
+				t.Cleanup(func() {
+					assert.NoError(t, driverManager.Close())
+				})
 				driverManager.RegisterDriver(simulated.NewDriver(options.WithCustomLogger(logger)))
 				fields.driverManager = driverManager
 			},
@@ -298,6 +307,9 @@ func Test_connectionContainer_returnConnection(t1 *testing.T) {
 				logger := testutils.ProduceTestingLogger(t)
 
 				driverManager := plc4go.NewPlcDriverManager(config.WithCustomLogger(logger))
+				t.Cleanup(func() {
+					assert.NoError(t, driverManager.Close())
+				})
 				driverManager.RegisterDriver(simulated.NewDriver(options.WithCustomLogger(logger)))
 				fields.driverManager = driverManager
 			},
