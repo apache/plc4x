@@ -155,6 +155,7 @@ func TestDiscoverer_Discover(t *testing.T) {
 }
 
 func TestDiscoverer_createDeviceScanDispatcher(t *testing.T) {
+	config.TraceDefaultMessageCodecWorker = true
 	type fields struct {
 		transportInstanceCreationQueue pool.Executor
 		deviceScanningQueue            pool.Executor
