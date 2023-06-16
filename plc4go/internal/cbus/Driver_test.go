@@ -117,7 +117,6 @@ func TestDriver_GetConnectionWithContext(t *testing.T) {
 			name: "get connection transport not found",
 			fields: fields{
 				DefaultDriver:           _default.NewDefaultDriver(nil, "test", "test", "test", NewTagHandler()),
-				tm:                      nil,
 				awaitSetupComplete:      false,
 				awaitDisconnectComplete: false,
 			},
@@ -146,7 +145,6 @@ func TestDriver_GetConnectionWithContext(t *testing.T) {
 			name: "get connection invalid options for transport",
 			fields: fields{
 				DefaultDriver:           _default.NewDefaultDriver(nil, "test", "test", "test", NewTagHandler()),
-				tm:                      nil,
 				awaitSetupComplete:      false,
 				awaitDisconnectComplete: false,
 			},
@@ -180,7 +178,6 @@ func TestDriver_GetConnectionWithContext(t *testing.T) {
 			name: "get connection invalid options for driver",
 			fields: fields{
 				DefaultDriver:           _default.NewDefaultDriver(nil, "test", "test", "test", NewTagHandler()),
-				tm:                      nil,
 				awaitSetupComplete:      false,
 				awaitDisconnectComplete: false,
 			},
@@ -213,7 +210,6 @@ func TestDriver_GetConnectionWithContext(t *testing.T) {
 			name: "get connection",
 			fields: fields{
 				DefaultDriver:           _default.NewDefaultDriver(nil, "test", "test", "test", NewTagHandler()),
-				tm:                      nil,
 				awaitSetupComplete:      false,
 				awaitDisconnectComplete: false,
 			},
@@ -246,7 +242,6 @@ func TestDriver_GetConnectionWithContext(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			m := &Driver{
 				DefaultDriver:           tt.fields.DefaultDriver,
-				tm:                      tt.fields.tm,
 				awaitSetupComplete:      tt.fields.awaitSetupComplete,
 				awaitDisconnectComplete: tt.fields.awaitDisconnectComplete,
 			}

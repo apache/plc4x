@@ -1475,7 +1475,6 @@ func TestMapEncodedReply(t *testing.T) {
 					transactions.WithCustomExecutor(pool.NewFixedSizeExecutor(10, 50, options.WithCustomLogger(testutils.ProduceTestingLogger(t)))),
 				)
 				t.Cleanup(func() {
-					t.Log("Closing transaction manager now")
 					assert.NoError(t, transactionManager.Close())
 				})
 				transaction := transactionManager.StartTransaction()
@@ -1549,7 +1548,6 @@ func TestMapEncodedReply(t *testing.T) {
 					),
 				)
 				t.Cleanup(func() {
-					t.Log("Closing transaction manager now")
 					assert.NoError(t, transactionManager.Close())
 				})
 				transaction := transactionManager.StartTransaction()
@@ -1625,7 +1623,6 @@ func TestMapEncodedReply(t *testing.T) {
 					),
 				)
 				t.Cleanup(func() {
-					t.Log("Closing transaction manager now")
 					assert.NoError(t, transactionManager.Close())
 				})
 				transaction := transactionManager.StartTransaction()
@@ -1690,7 +1687,6 @@ func TestMapEncodedReply(t *testing.T) {
 					),
 				)
 				t.Cleanup(func() {
-					t.Log("Closing transaction manager now")
 					assert.NoError(t, transactionManager.Close())
 				})
 				transaction := transactionManager.StartTransaction()
@@ -1745,7 +1741,6 @@ func TestMapEncodedReply(t *testing.T) {
 					),
 				)
 				t.Cleanup(func() {
-					t.Log("Closing transaction manager now")
 					assert.NoError(t, transactionManager.Close())
 				})
 				transaction := transactionManager.StartTransaction()
@@ -1803,7 +1798,6 @@ func TestMapEncodedReply(t *testing.T) {
 					),
 				)
 				t.Cleanup(func() {
-					t.Log("Closing transaction manager now")
 					assert.NoError(t, transactionManager.Close())
 				})
 				transaction := transactionManager.StartTransaction()
@@ -1881,7 +1875,6 @@ func TestMapEncodedReply(t *testing.T) {
 					),
 				)
 				t.Cleanup(func() {
-					t.Log("Closing transaction manager now")
 					assert.NoError(t, transactionManager.Close())
 				})
 				transaction := transactionManager.StartTransaction()
@@ -1977,7 +1970,6 @@ func TestMapEncodedReply(t *testing.T) {
 					),
 				)
 				t.Cleanup(func() {
-					t.Log("Closing transaction manager now")
 					assert.NoError(t, transactionManager.Close())
 				})
 				transaction := transactionManager.StartTransaction()
@@ -2036,7 +2028,6 @@ func TestMapEncodedReply(t *testing.T) {
 					),
 				)
 				t.Cleanup(func() {
-					t.Log("Closing transaction manager now")
 					assert.NoError(t, transactionManager.Close())
 				})
 				transaction := transactionManager.StartTransaction()
@@ -2091,7 +2082,6 @@ func TestMapEncodedReply(t *testing.T) {
 					),
 				)
 				t.Cleanup(func() {
-					t.Log("Closing transaction manager now")
 					assert.NoError(t, transactionManager.Close())
 				})
 				transaction := transactionManager.StartTransaction()
@@ -2146,7 +2136,6 @@ func TestMapEncodedReply(t *testing.T) {
 					),
 				)
 				t.Cleanup(func() {
-					t.Log("Closing transaction manager now")
 					assert.NoError(t, transactionManager.Close())
 				})
 				transaction := transactionManager.StartTransaction()
@@ -2201,7 +2190,6 @@ func TestMapEncodedReply(t *testing.T) {
 					),
 				)
 				t.Cleanup(func() {
-					t.Log("Closing transaction manager now")
 					assert.NoError(t, transactionManager.Close())
 				})
 				transaction := transactionManager.StartTransaction()
@@ -2256,7 +2244,6 @@ func TestMapEncodedReply(t *testing.T) {
 					),
 				)
 				t.Cleanup(func() {
-					t.Log("Closing transaction manager now")
 					assert.NoError(t, transactionManager.Close())
 				})
 				transaction := transactionManager.StartTransaction()
@@ -2331,7 +2318,6 @@ func TestMapEncodedReply(t *testing.T) {
 					),
 				)
 				t.Cleanup(func() {
-					t.Log("Closing transaction manager now")
 					assert.NoError(t, transactionManager.Close())
 				})
 				transaction := transactionManager.StartTransaction()
@@ -2386,7 +2372,6 @@ func TestMapEncodedReply(t *testing.T) {
 					),
 				)
 				t.Cleanup(func() {
-					t.Log("Closing transaction manager now")
 					assert.NoError(t, transactionManager.Close())
 				})
 				transaction := transactionManager.StartTransaction()
@@ -2441,7 +2426,6 @@ func TestMapEncodedReply(t *testing.T) {
 					),
 				)
 				t.Cleanup(func() {
-					t.Log("Closing transaction manager now")
 					assert.NoError(t, transactionManager.Close())
 				})
 				transaction := transactionManager.StartTransaction()
@@ -2496,7 +2480,6 @@ func TestMapEncodedReply(t *testing.T) {
 					),
 				)
 				t.Cleanup(func() {
-					t.Log("Closing transaction manager now")
 					assert.NoError(t, transactionManager.Close())
 				})
 				transaction := transactionManager.StartTransaction()
@@ -2551,7 +2534,6 @@ func TestMapEncodedReply(t *testing.T) {
 					),
 				)
 				t.Cleanup(func() {
-					t.Log("Closing transaction manager now")
 					assert.NoError(t, transactionManager.Close())
 				})
 				transaction := transactionManager.StartTransaction()
@@ -2606,7 +2588,6 @@ func TestMapEncodedReply(t *testing.T) {
 					),
 				)
 				t.Cleanup(func() {
-					t.Log("Closing transaction manager now")
 					assert.NoError(t, transactionManager.Close())
 				})
 				transaction := transactionManager.StartTransaction()
@@ -2677,7 +2658,6 @@ func TestMapEncodedReply(t *testing.T) {
 					),
 				)
 				t.Cleanup(func() {
-					t.Log("Closing transaction manager now")
 					assert.NoError(t, transactionManager.Close())
 				})
 				transaction := transactionManager.StartTransaction()
@@ -2732,7 +2712,6 @@ func TestMapEncodedReply(t *testing.T) {
 					),
 				)
 				t.Cleanup(func() {
-					t.Log("Closing transaction manager now")
 					assert.NoError(t, transactionManager.Close())
 				})
 				transaction := transactionManager.StartTransaction()
@@ -2787,7 +2766,6 @@ func TestMapEncodedReply(t *testing.T) {
 					),
 				)
 				t.Cleanup(func() {
-					t.Log("Closing transaction manager now")
 					assert.NoError(t, transactionManager.Close())
 				})
 				transaction := transactionManager.StartTransaction()

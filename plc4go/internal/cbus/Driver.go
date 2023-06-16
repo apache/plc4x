@@ -114,5 +114,8 @@ func (m *Driver) DiscoverWithContext(ctx context.Context, callback func(event ap
 }
 
 func (m *Driver) Close() error {
-	return m.tm.Close()
+	if err := m.tm.Close(); err != nil {
+		return errors.Wrap(err, "error closing transaction manager")
+	}
+	return nil
 }

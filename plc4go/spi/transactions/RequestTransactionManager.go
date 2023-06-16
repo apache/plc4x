@@ -229,6 +229,7 @@ func (r *requestTransactionManager) Close() error {
 }
 
 func (r *requestTransactionManager) CloseGraceful(timeout time.Duration) error {
+	r.log.Debug().Msgf("closing with a timeout of %s", timeout)
 	r.shutdown = true
 	if timeout > 0 {
 		timer := time.NewTimer(timeout)
@@ -257,5 +258,8 @@ func (r *requestTransactionManager) CloseGraceful(timeout time.Duration) error {
 	r.runningRequestMutex.Lock()
 	defer r.runningRequestMutex.Unlock()
 	r.runningRequests = nil
-	return r.executor.Close()
+	if err := r.executor.Close(); err != nil {
+		return errors.Wrap(err, "error closing executor")
+	}
+	return nil
 }

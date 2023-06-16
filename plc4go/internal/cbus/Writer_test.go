@@ -173,6 +173,12 @@ func TestWriter_Write(t *testing.T) {
 				tm:             tt.fields.tm,
 			}
 			assert.Truef(t, tt.wantAsserter(t, m.Write(tt.args.ctx, tt.args.writeRequest)), "Write(%v, %v)", tt.args.ctx, tt.args.writeRequest)
+			if m.messageCodec != nil {
+				t.Log(m.messageCodec.Disconnect())
+			}
+			if m.tm != nil {
+				t.Log(m.tm.Close())
+			}
 		})
 	}
 }
