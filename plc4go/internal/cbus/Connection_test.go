@@ -21,6 +21,7 @@ package cbus
 
 import (
 	"context"
+	"encoding/hex"
 	"github.com/stretchr/testify/require"
 	"net/url"
 	"sync"
@@ -1379,27 +1380,35 @@ func TestConnection_setInterfaceOptions3(t *testing.T) {
 
 func TestConnection_setupConnection(t *testing.T) {
 	type fields struct {
-		DefaultConnection _default.DefaultConnection
-		messageCodec      *MessageCodec
-		subscribers       []*Subscriber
-		tm                transactions.RequestTransactionManager
-		configuration     Configuration
-		driverContext     DriverContext
-		connectionId      string
-		tracer            tracer.Tracer
+		_DefaultConnection _default.DefaultConnection
+		messageCodec       *MessageCodec
+		subscribers        []*Subscriber
+		tm                 transactions.RequestTransactionManager
+		configuration      Configuration
+		driverContext      DriverContext
+		connectionId       string
+		tracer             tracer.Tracer
 	}
 	type args struct {
 		ctx context.Context
 		ch  chan plc4go.PlcConnectionConnectResult
 	}
 	tests := []struct {
-		name   string
-		fields fields
-		args   args
-		setup  func(t *testing.T, fields *fields)
+		name        string
+		fields      fields
+		args        args
+		setup       func(t *testing.T, fields *fields)
+		manipulator func(t *testing.T, connection *Connection)
+		validator   func(t *testing.T, result plc4go.PlcConnectionConnectResult)
 	}{
 		{
 			name: "setup connection (failing)",
+			fields: fields{
+				driverContext: DriverContext{
+					awaitSetupComplete:      true,
+					awaitDisconnectComplete: true,
+				},
+			},
 			args: args{
 				ctx: testutils.TestContext(t),
 				ch:  make(chan plc4go.PlcConnectionConnectResult, 1),
@@ -1407,29 +1416,39 @@ func TestConnection_setupConnection(t *testing.T) {
 			setup: func(t *testing.T, fields *fields) {
 				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
 
-				// Setup connection
-				fields.DefaultConnection = _default.NewDefaultConnection(nil, _options...)
 				transport := test.NewTransport(_options...)
 				ti, err := transport.CreateTransportInstance(url.URL{Scheme: "test"}, nil, _options...)
 				require.NoError(t, err)
 				codec := NewMessageCodec(ti, _options...)
+				require.NoError(t, codec.Connect())
 				t.Cleanup(func() {
 					assert.Error(t, codec.Disconnect())
 				})
 				fields.messageCodec = codec
 			},
+			manipulator: func(t *testing.T, connection *Connection) {
+				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
+				connection.DefaultConnection = _default.NewDefaultConnection(connection, _options...)
+			},
+			validator: func(t *testing.T, result plc4go.PlcConnectionConnectResult) {
+				assert.NotNil(t, result)
+				assert.Error(t, result.GetErr())
+			},
 		},
 		{
 			name: "setup connection (failing after reset)",
+			fields: fields{
+				driverContext: DriverContext{
+					awaitSetupComplete:      true,
+					awaitDisconnectComplete: true,
+				},
+			},
 			args: args{
 				ctx: testutils.TestContext(t),
 				ch:  make(chan plc4go.PlcConnectionConnectResult, 1),
 			},
 			setup: func(t *testing.T, fields *fields) {
 				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
-
-				// Build the default connection
-				fields.DefaultConnection = _default.NewDefaultConnection(nil, _options...)
 
 				// Build the message codec
 				transport := test.NewTransport(_options...)
@@ -1464,19 +1483,29 @@ func TestConnection_setupConnection(t *testing.T) {
 
 				fields.messageCodec = codec
 			},
+			manipulator: func(t *testing.T, connection *Connection) {
+				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
+				connection.DefaultConnection = _default.NewDefaultConnection(connection, _options...)
+			},
+			validator: func(t *testing.T, result plc4go.PlcConnectionConnectResult) {
+				assert.NotNil(t, result)
+				assert.Error(t, result.GetErr())
+			},
 		},
 		{
 			name: "setup connection (failing after app filters)",
+			fields: fields{
+				driverContext: DriverContext{
+					awaitSetupComplete:      true,
+					awaitDisconnectComplete: true,
+				},
+			},
 			args: args{
 				ctx: testutils.TestContext(t),
 				ch:  make(chan plc4go.PlcConnectionConnectResult, 1),
 			},
 			setup: func(t *testing.T, fields *fields) {
 				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
-
-				// Build the default connection
-				fields.DefaultConnection = _default.NewDefaultConnection(nil, _options...)
-
 				// Build the message codec
 				transport := test.NewTransport(_options...)
 				transportUrl := url.URL{Scheme: "test"}
@@ -1522,18 +1551,29 @@ func TestConnection_setupConnection(t *testing.T) {
 
 				fields.messageCodec = codec
 			},
+			manipulator: func(t *testing.T, connection *Connection) {
+				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
+				connection.DefaultConnection = _default.NewDefaultConnection(connection, _options...)
+			},
+			validator: func(t *testing.T, result plc4go.PlcConnectionConnectResult) {
+				assert.NotNil(t, result)
+				assert.Error(t, result.GetErr())
+			},
 		},
 		{
 			name: "setup connection (failing after interface options 3",
+			fields: fields{
+				driverContext: DriverContext{
+					awaitSetupComplete:      true,
+					awaitDisconnectComplete: true,
+				},
+			},
 			args: args{
 				ctx: testutils.TestContext(t),
 				ch:  make(chan plc4go.PlcConnectionConnectResult, 1),
 			},
 			setup: func(t *testing.T, fields *fields) {
 				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
-
-				// Build the default connection
-				fields.DefaultConnection = _default.NewDefaultConnection(nil, _options...)
 
 				// Build the message codec
 				transport := test.NewTransport(_options...)
@@ -1552,6 +1592,7 @@ func TestConnection_setupConnection(t *testing.T) {
 				currentState.Store(RESET)
 				stateChangeMutex := sync.Mutex{}
 				ti.(*test.TransportInstance).SetWriteInterceptor(func(transportInstance *test.TransportInstance, data []byte) {
+					t.Logf("Reacting to\n%s", hex.Dump(data))
 					stateChangeMutex.Lock()
 					defer stateChangeMutex.Unlock()
 					switch currentState.Load().(MockState) {
@@ -1586,18 +1627,29 @@ func TestConnection_setupConnection(t *testing.T) {
 
 				fields.messageCodec = codec
 			},
+			manipulator: func(t *testing.T, connection *Connection) {
+				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
+				connection.DefaultConnection = _default.NewDefaultConnection(connection, _options...)
+			},
+			validator: func(t *testing.T, result plc4go.PlcConnectionConnectResult) {
+				assert.NotNil(t, result)
+				assert.Error(t, result.GetErr())
+			},
 		},
 		{
 			name: "setup connection (failing after interface options 1 pun)",
+			fields: fields{
+				driverContext: DriverContext{
+					awaitSetupComplete:      true,
+					awaitDisconnectComplete: true,
+				},
+			},
 			args: args{
 				ctx: testutils.TestContext(t),
 				ch:  make(chan plc4go.PlcConnectionConnectResult, 1),
 			},
 			setup: func(t *testing.T, fields *fields) {
 				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
-
-				// Build the default connection
-				fields.DefaultConnection = _default.NewDefaultConnection(nil, _options...)
 
 				// Build the message codec
 				transport := test.NewTransport(_options...)
@@ -1656,11 +1708,22 @@ func TestConnection_setupConnection(t *testing.T) {
 
 				fields.messageCodec = codec
 			},
+			manipulator: func(t *testing.T, connection *Connection) {
+				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
+				connection.DefaultConnection = _default.NewDefaultConnection(connection, _options...)
+			},
+			validator: func(t *testing.T, result plc4go.PlcConnectionConnectResult) {
+				assert.NotNil(t, result)
+				assert.Error(t, result.GetErr())
+			},
 		},
 		{
 			name: "setup connection",
 			fields: fields{
-				DefaultConnection: _default.NewDefaultConnection(nil),
+				driverContext: DriverContext{
+					awaitSetupComplete:      true,
+					awaitDisconnectComplete: true,
+				},
 			},
 			args: args{
 				ctx: testutils.TestContext(t),
@@ -1668,9 +1731,6 @@ func TestConnection_setupConnection(t *testing.T) {
 			},
 			setup: func(t *testing.T, fields *fields) {
 				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
-
-				// Build the default connection
-				fields.DefaultConnection = _default.NewDefaultConnection(nil, _options...)
 
 				// Build the message codec
 				transport := test.NewTransport(_options...)
@@ -1730,9 +1790,18 @@ func TestConnection_setupConnection(t *testing.T) {
 				codec := NewMessageCodec(ti, _options...)
 				require.NoError(t, codec.Connect())
 				t.Cleanup(func() {
-					assert.NoError(t, codec.Disconnect())
+					assert.Error(t, codec.Disconnect())
 				})
 				fields.messageCodec = codec
+			},
+			manipulator: func(t *testing.T, connection *Connection) {
+				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
+				connection.DefaultConnection = _default.NewDefaultConnection(connection, _options...)
+			},
+			validator: func(t *testing.T, result plc4go.PlcConnectionConnectResult) {
+				assert.NotNil(t, result)
+				assert.NoError(t, result.GetErr())
+				assert.NotNil(t, result.GetConnection())
 			},
 		},
 	}
@@ -1742,20 +1811,43 @@ func TestConnection_setupConnection(t *testing.T) {
 				tt.setup(t, &tt.fields)
 			}
 			c := &Connection{
-				DefaultConnection: tt.fields.DefaultConnection,
-				messageCodec:      tt.fields.messageCodec,
-				subscribers:       tt.fields.subscribers,
-				tm:                tt.fields.tm,
-				configuration:     tt.fields.configuration,
-				driverContext:     tt.fields.driverContext,
-				connectionId:      tt.fields.connectionId,
-				tracer:            tt.fields.tracer,
-				log:               testutils.ProduceTestingLogger(t),
+				messageCodec:  tt.fields.messageCodec,
+				subscribers:   tt.fields.subscribers,
+				tm:            tt.fields.tm,
+				configuration: tt.fields.configuration,
+				driverContext: tt.fields.driverContext,
+				connectionId:  tt.fields.connectionId,
+				tracer:        tt.fields.tracer,
+				log:           testutils.ProduceTestingLogger(t),
+			}
+			if tt.manipulator != nil {
+				tt.manipulator(t, c)
 			}
 			c.setupConnection(tt.args.ctx, tt.args.ch)
+			assert.NotNil(t, tt.args.ch, "We always need a result channel")
+			chanTimeout := time.NewTimer(10 * time.Second)
+			t.Cleanup(func() {
+				utils.CleanupTimer(chanTimeout)
+			})
+			select {
+			case <-chanTimeout.C:
+				t.Fatal("setup connection doesn't fill chan in time")
+			case result := <-tt.args.ch:
+				if tt.validator != nil {
+					tt.validator(t, result)
+				}
+			}
 			// To shut down properly we always do that
-			c.SetConnected(false)
-			c.handlerWaitGroup.Wait()
+			closeTimeout := time.NewTimer(10 * time.Second)
+			t.Cleanup(func() {
+				utils.CleanupTimer(closeTimeout)
+			})
+			select {
+			case <-closeTimeout.C:
+				t.Fatal("close didn't react in time")
+			case <-c.Close():
+				t.Log("connection closed")
+			}
 		})
 	}
 }

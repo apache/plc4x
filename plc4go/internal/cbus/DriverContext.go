@@ -26,5 +26,8 @@ type DriverContext struct {
 }
 
 func NewDriverContext(_ Configuration) DriverContext {
-	return DriverContext{}
+	return DriverContext{
+		awaitSetupComplete:      true,
+		awaitDisconnectComplete: true,
+	}
 }

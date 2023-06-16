@@ -310,64 +310,71 @@ func (c *Connection) sendReset(ctx context.Context, ch chan plc4go.PlcConnection
 
 	receivedResetEchoChan := make(chan bool, 1)
 	receivedResetEchoErrorChan := make(chan error, 1)
-	if err := c.messageCodec.SendRequest(ctx, cBusMessage, func(message spi.Message) bool {
-		switch message := message.(type) {
-		case readWriteModel.CBusMessageToClientExactly:
-			switch reply := message.GetReply().(type) {
-			case readWriteModel.ReplyOrConfirmationReplyExactly:
-				switch reply.GetReply().(type) {
-				case readWriteModel.PowerUpReplyExactly:
-					c.log.Debug().Msg("Received a PUN reply")
-					return true
+	if err := c.messageCodec.SendRequest(
+		ctx,
+		cBusMessage,
+		func(message spi.Message) bool {
+			c.log.Trace().Msg("Checking message")
+			switch message := message.(type) {
+			case readWriteModel.CBusMessageToClientExactly:
+				switch reply := message.GetReply().(type) {
+				case readWriteModel.ReplyOrConfirmationReplyExactly:
+					switch reply.GetReply().(type) {
+					case readWriteModel.PowerUpReplyExactly:
+						c.log.Debug().Msg("Received a PUN reply")
+						return true
+					default:
+						c.log.Trace().Msgf("%T not relevant", reply)
+						return false
+					}
 				default:
 					c.log.Trace().Msgf("%T not relevant", reply)
 					return false
 				}
+			case readWriteModel.CBusMessageToServerExactly:
+				switch request := message.GetRequest().(type) {
+				case readWriteModel.RequestResetExactly:
+					c.log.Debug().Msg("Received a Reset reply")
+					return true
+				default:
+					c.log.Trace().Msgf("%T not relevant", request)
+					return false
+				}
 			default:
-				c.log.Trace().Msgf("%T not relevant", reply)
+				c.log.Trace().Msgf("%T not relevant", message)
 				return false
 			}
-		case readWriteModel.CBusMessageToServerExactly:
-			switch request := message.GetRequest().(type) {
-			case readWriteModel.RequestResetExactly:
-				c.log.Debug().Msg("Received a Reset reply")
-				return true
+		},
+		func(message spi.Message) error {
+			c.log.Trace().Msg("Handling message")
+			switch message.(type) {
+			case readWriteModel.CBusMessageToClientExactly:
+				// This is the powerup notification
+				select {
+				case receivedResetEchoChan <- false:
+					c.log.Trace().Msg("notified reset chan from message to client")
+				default:
+				}
+			case readWriteModel.CBusMessageToServerExactly:
+				// This is the echo
+				select {
+				case receivedResetEchoChan <- true:
+					c.log.Trace().Msg("notified reset chan from message to server")
+				default:
+				}
 			default:
-				c.log.Trace().Msgf("%T not relevant", request)
-				return false
+				return errors.Errorf("Unmapped type %T", message)
 			}
-		default:
-			c.log.Trace().Msgf("%T not relevant", message)
-			return false
-		}
-	}, func(message spi.Message) error {
-		switch message.(type) {
-		case readWriteModel.CBusMessageToClientExactly:
-			// This is the powerup notification
+			return nil
+		},
+		func(err error) error {
 			select {
-			case receivedResetEchoChan <- false:
-				c.log.Trace().Msg("notified reset chan from message to client")
+			case receivedResetEchoErrorChan <- errors.Wrap(err, "got error processing request"):
+				c.log.Trace().Msg("notified error chan")
 			default:
 			}
-		case readWriteModel.CBusMessageToServerExactly:
-			// This is the echo
-			select {
-			case receivedResetEchoChan <- true:
-				c.log.Trace().Msg("notified reset chan from message to server")
-			default:
-			}
-		default:
-			return errors.Errorf("Unmapped type %T", message)
-		}
-		return nil
-	}, func(err error) error {
-		select {
-		case receivedResetEchoErrorChan <- errors.Wrap(err, "got error processing request"):
-			c.log.Trace().Msg("notified error chan")
-		default:
-		}
-		return nil
-	}, c.GetTtl()); err != nil {
+			return nil
+		}, c.GetTtl()); err != nil {
 		if sendOutErrorNotification {
 			c.fireConnectionError(errors.Wrap(err, "Error during sending of Reset Request"), ch)
 		} else {
