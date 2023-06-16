@@ -288,8 +288,11 @@ func (d *defaultConnection) Close() <-chan plc4go.PlcConnectionCloseResult {
 	var err error
 	if transportInstance := d.GetTransportInstance(); transportInstance != nil {
 		d.log.Trace().Msg("closing transport instance")
-		err = transportInstance.Close()
-		d.log.Trace().Err(err).Msg("transport instance closed")
+		if err = transportInstance.Close(); err != nil {
+			d.log.Warn().Err(err).Msg("Error disconnecting transport instance")
+		} else {
+			d.log.Trace().Msg("transport instance closed")
+		}
 	}
 	d.SetConnected(false)
 	ch := make(chan plc4go.PlcConnectionCloseResult, 1)
