@@ -140,7 +140,9 @@ func ProduceTestingLogger(t *testing.T) zerolog.Logger {
 
 			},
 			func(w *zerolog.ConsoleWriter) {
-				w.TimeFormat = time.StampNano
+				if highLogPrecision {
+					w.TimeFormat = time.StampNano
+				}
 			},
 		),
 	)
