@@ -285,16 +285,16 @@ func (c *Connection) startSubscriptionHandler() {
 		mmiLogger.Debug().Msg("default MMI started")
 		for c.IsConnected() {
 			for calReply := range c.messageCodec.monitoredMMIs {
-				mmiLogger.Trace().Msgf("got a MMI:\n%s", calReply)
+				mmiLogger.Trace().Msgf("got a MMI")
 				handled := false
 				for _, subscriber := range c.subscribers {
 					if ok := subscriber.handleMonitoredMMI(calReply); ok {
-						mmiLogger.Debug().Msgf("\n%v handled\n%s", subscriber, calReply)
+						mmiLogger.Debug().Msgf("\n%v handled", subscriber)
 						handled = true
 					}
 				}
 				if !handled {
-					mmiLogger.Debug().Msgf("MMI was not handled:\n%s", calReply)
+					mmiLogger.Debug().Msgf("MMI was not handled")
 				}
 			}
 		}

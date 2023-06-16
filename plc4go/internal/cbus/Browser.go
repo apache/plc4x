@@ -78,6 +78,8 @@ func (m *Browser) browseUnitInfo(ctx context.Context, interceptor func(result ap
 
 	if allUnits {
 		m.log.Info().Msg("Querying all (available) units")
+	} else {
+		m.log.Debug().Msgf("Querying units\n%s", units)
 	}
 unitLoop:
 	for _, unit := range units {
@@ -110,10 +112,10 @@ unitLoop:
 			readRequest, _ := m.connection.ReadRequestBuilder().
 				AddTag(readTagName, NewCALIdentifyTag(unit, nil /*TODO: add bridge support*/, attribute, 1)).
 				Build()
-			timeoutCtx, timeoutCancel := context.WithTimeout(ctx, time.Second*2)
+			timeoutCtx, timeoutCancel := context.WithTimeout(ctx, 5*time.Second)
 			m.log.Trace().Msgf("Executing readRequest\n%s\nwith timeout %s", readRequest, timeoutCtx)
 			requestResult := <-readRequest.ExecuteWithContext(timeoutCtx)
-			m.log.Trace().Msg("got a response")
+			m.log.Trace().Msgf("got a response\n%s", requestResult)
 			timeoutCancel()
 			if err := requestResult.GetErr(); err != nil {
 				if allUnits || allAttributes {
@@ -152,22 +154,22 @@ unitLoop:
 func (m *Browser) extractUnits(ctx context.Context, query *unitInfoQuery, getInstalledUnitAddressBytes func(ctx context.Context) (map[byte]any, error)) ([]readWriteModel.UnitAddress, bool, error) {
 	if unitAddress := query.unitAddress; unitAddress != nil {
 		return []readWriteModel.UnitAddress{unitAddress}, false, nil
-	} else {
-		// TODO: check if we still want the option to brute force all addresses
-		installedUnitAddressBytes, err := getInstalledUnitAddressBytes(ctx)
-		if err != nil {
-			return nil, false, errors.New("Unable to get installed uints")
-		}
-
-		var units []readWriteModel.UnitAddress
-		for i := 0; i <= 0xFF; i++ {
-			unitAddressByte := byte(i)
-			if _, ok := installedUnitAddressBytes[unitAddressByte]; ok {
-				units = append(units, readWriteModel.NewUnitAddress(unitAddressByte))
-			}
-		}
-		return units, true, nil
 	}
+
+	// TODO: check if we still want the option to brute force all addresses
+	installedUnitAddressBytes, err := getInstalledUnitAddressBytes(ctx)
+	if err != nil {
+		return nil, false, errors.New("Unable to get installed uints")
+	}
+
+	var units []readWriteModel.UnitAddress
+	for i := 0; i <= 0xFF; i++ {
+		unitAddressByte := byte(i)
+		if _, ok := installedUnitAddressBytes[unitAddressByte]; ok {
+			units = append(units, readWriteModel.NewUnitAddress(unitAddressByte))
+		}
+	}
+	return units, true, nil
 }
 
 func (m *Browser) extractAttributes(query *unitInfoQuery) ([]readWriteModel.Attribute, bool) {
@@ -292,7 +294,7 @@ func (m *Browser) getInstalledUnitAddressBytes(ctx context.Context) (map[byte]an
 		AddTagAddress("installationMMI", "status/binary/0xFF").
 		Build()
 	if err != nil {
-		return nil, errors.Wrap(err, "Error getting the installation MMI")
+		return nil, errors.Wrap(err, "Error building the installation MMI")
 	}
 	readCtx, readCtxCancel := context.WithTimeout(ctx, time.Second*2)
 	defer readCtxCancel()
@@ -306,6 +308,7 @@ func (m *Browser) getInstalledUnitAddressBytes(ctx context.Context) (map[byte]an
 			}
 		}()
 		defer readCtxCancel()
+		m.log.Debug().Msgf("sending read request\n%s", readRequest)
 		readRequestResult := <-readRequest.ExecuteWithContext(readCtx)
 		if err := readRequestResult.GetErr(); err != nil {
 			m.log.Warn().Err(err).Msg("Error reading the mmi")

@@ -21,8 +21,8 @@ package cbus
 
 import (
 	"context"
+	"encoding/hex"
 	"fmt"
-	"github.com/rs/zerolog"
 	"net/url"
 	"sync"
 	"sync/atomic"
@@ -103,13 +103,13 @@ func TestBrowser_BrowseQuery(t *testing.T) {
 					INTERFACE_OPTIONS_3
 					INTERFACE_OPTIONS_1_PUN
 					INTERFACE_OPTIONS_1
-					MANUFACTURER
 					DONE
 				)
 				currentState := atomic.Value{}
 				currentState.Store(RESET)
 				stateChangeMutex := sync.Mutex{}
 				transportInstance.(*test.TransportInstance).SetWriteInterceptor(func(transportInstance *test.TransportInstance, data []byte) {
+					t.Logf("reacting to\n%s", hex.Dump(data))
 					stateChangeMutex.Lock()
 					defer stateChangeMutex.Unlock()
 					switch currentState.Load().(MockState) {
@@ -141,24 +141,17 @@ func TestBrowser_BrowseQuery(t *testing.T) {
 						t.Log("Dispatching interface 1 echo and confirm???")
 						transportInstance.FillReadBuffer([]byte("@A3300079\r"))
 						transportInstance.FillReadBuffer([]byte("3230009E\r\n"))
-						currentState.Store(MANUFACTURER)
-					case MANUFACTURER:
-						t.Log("Dispatching manufacturer")
-						transportInstance.FillReadBuffer([]byte("g.890050435F434E49454422\r\n"))
 						currentState.Store(DONE)
 					case DONE:
 						t.Log("Connection dance done")
-						dispatchWg := sync.WaitGroup{}
-						dispatchWg.Add(1)
-						t.Cleanup(dispatchWg.Wait)
-						go func() {
-							defer dispatchWg.Done()
-							time.Sleep(200 * time.Millisecond)
-							t.Log("Dispatching 3 MMI segments")
-							transportInstance.FillReadBuffer([]byte("86020200F900FF0094120006000000000000000008000000000000000000CA\r\n"))
-							transportInstance.FillReadBuffer([]byte("86020200F900FF580000000000000000000000000000000000000000000026\r\n"))
-							transportInstance.FillReadBuffer([]byte("86020200F700FFB00000000000000000000000000000000000000000D0\r\n"))
-						}()
+
+						t.Log("Dispatching 3 MMI segments")
+						transportInstance.FillReadBuffer([]byte("86020200F900FF0094120006000000000000000008000000000000000000CA\r\n"))
+						transportInstance.FillReadBuffer([]byte("86020200F900FF580000000000000000000000000000000000000000000026\r\n"))
+						transportInstance.FillReadBuffer([]byte("86020200F700FFB00000000000000000000000000000000000000000D0\r\n"))
+
+						t.Log("Dispatching manufacturer")
+						transportInstance.FillReadBuffer([]byte("g.890050435F434E49454422\r\n"))
 					}
 				})
 				err = transport.AddPreregisteredInstances(transportUrl, transportInstance)
@@ -222,7 +215,6 @@ func TestBrowser_browseUnitInfo(t *testing.T) {
 		DefaultBrowser  _default.DefaultBrowser
 		connection      plc4go.PlcConnection
 		sequenceCounter uint8
-		log             zerolog.Logger
 	}
 	type args struct {
 		ctx         context.Context
@@ -267,13 +259,13 @@ func TestBrowser_browseUnitInfo(t *testing.T) {
 					INTERFACE_OPTIONS_3
 					INTERFACE_OPTIONS_1_PUN
 					INTERFACE_OPTIONS_1
-					MANUFACTURER
 					DONE
 				)
 				currentState := atomic.Value{}
 				currentState.Store(RESET)
 				stateChangeMutex := sync.Mutex{}
 				transportInstance.(*test.TransportInstance).SetWriteInterceptor(func(transportInstance *test.TransportInstance, data []byte) {
+					t.Logf("reacting to\n%s", hex.Dump(data))
 					stateChangeMutex.Lock()
 					defer stateChangeMutex.Unlock()
 					switch currentState.Load().(MockState) {
@@ -305,24 +297,17 @@ func TestBrowser_browseUnitInfo(t *testing.T) {
 						t.Log("Dispatching interface 1 echo and confirm???")
 						transportInstance.FillReadBuffer([]byte("@A3300079\r"))
 						transportInstance.FillReadBuffer([]byte("3230009E\r\n"))
-						currentState.Store(MANUFACTURER)
-					case MANUFACTURER:
-						t.Log("Dispatching manufacturer")
-						transportInstance.FillReadBuffer([]byte("g.890050435F434E49454422\r\n"))
 						currentState.Store(DONE)
 					case DONE:
 						t.Log("Connection dance done")
-						dispatchWg := sync.WaitGroup{}
-						dispatchWg.Add(1)
-						t.Cleanup(dispatchWg.Wait)
-						go func() {
-							defer dispatchWg.Done()
-							time.Sleep(200 * time.Millisecond)
-							t.Log("Dispatching 3 MMI segments")
-							transportInstance.FillReadBuffer([]byte("86020200F900FF0094120006000000000000000008000000000000000000CA\r\n"))
-							transportInstance.FillReadBuffer([]byte("86020200F900FF580000000000000000000000000000000000000000000026\r\n"))
-							transportInstance.FillReadBuffer([]byte("86020200F700FFB00000000000000000000000000000000000000000D0\r\n"))
-						}()
+
+						t.Log("Dispatching 3 MMI segments")
+						transportInstance.FillReadBuffer([]byte("86020200F900FF0094120006000000000000000008000000000000000000CA\r\n"))
+						transportInstance.FillReadBuffer([]byte("86020200F900FF580000000000000000000000000000000000000000000026\r\n"))
+						transportInstance.FillReadBuffer([]byte("86020200F700FFB00000000000000000000000000000000000000000D0\r\n"))
+
+						t.Log("Dispatching manufacturer")
+						transportInstance.FillReadBuffer([]byte("g.890050435F434E49454422\r\n"))
 					}
 				})
 				err = transport.AddPreregisteredInstances(transportUrl, transportInstance)
@@ -363,12 +348,13 @@ func TestBrowser_browseUnitInfo(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			if tt.setup != nil {
 				tt.setup(t, &tt.fields)
+				t.Log("Setup done")
 			}
 			m := &Browser{
 				DefaultBrowser:  tt.fields.DefaultBrowser,
 				connection:      tt.fields.connection,
 				sequenceCounter: tt.fields.sequenceCounter,
-				log:             tt.fields.log,
+				log:             testutils.ProduceTestingLogger(t),
 			}
 			gotResponseCode, gotQueryResults := m.browseUnitInfo(tt.args.ctx, tt.args.interceptor, tt.args.queryName, tt.args.query)
 			assert.Equalf(t, tt.wantResponseCode, gotResponseCode, "browseUnitInfo(%v, %v, %v, %v)", tt.args.ctx, tt.args.interceptor, tt.args.queryName, tt.args.query)
@@ -552,6 +538,7 @@ func TestBrowser_getInstalledUnitAddressBytes(t *testing.T) {
 				currentState.Store(RESET)
 				stateChangeMutex := sync.Mutex{}
 				transportInstance.(*test.TransportInstance).SetWriteInterceptor(func(transportInstance *test.TransportInstance, data []byte) {
+					t.Logf("reacting to\n%s", hex.Dump(data))
 					stateChangeMutex.Lock()
 					defer stateChangeMutex.Unlock()
 					switch currentState.Load().(MockState) {
@@ -586,17 +573,11 @@ func TestBrowser_getInstalledUnitAddressBytes(t *testing.T) {
 						currentState.Store(DONE)
 					case DONE:
 						t.Log("Connection dance done")
-						dispatchWg := sync.WaitGroup{}
-						dispatchWg.Add(1)
-						t.Cleanup(dispatchWg.Wait)
-						go func() {
-							defer dispatchWg.Done()
-							time.Sleep(200 * time.Millisecond)
-							t.Log("Dispatching 3 MMI segments")
-							transportInstance.FillReadBuffer([]byte("86020200F900FF0094120006000000000000000008000000000000000000CA\r\n"))
-							transportInstance.FillReadBuffer([]byte("86020200F900FF580000000000000000000000000000000000000000000026\r\n"))
-							transportInstance.FillReadBuffer([]byte("86020200F700FFB00000000000000000000000000000000000000000D0\r\n"))
-						}()
+
+						t.Log("Dispatching 3 MMI segments")
+						transportInstance.FillReadBuffer([]byte("86020200F900FF0094120006000000000000000008000000000000000000CA\r\n"))
+						transportInstance.FillReadBuffer([]byte("86020200F900FF580000000000000000000000000000000000000000000026\r\n"))
+						transportInstance.FillReadBuffer([]byte("86020200F700FFB00000000000000000000000000000000000000000D0\r\n"))
 					}
 				})
 				err = transport.AddPreregisteredInstances(transportUrl, transportInstance)

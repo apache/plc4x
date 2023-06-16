@@ -22,14 +22,14 @@ package cbus
 import (
 	"bufio"
 	"context"
-	"sync"
-	"sync/atomic"
-
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/cbus/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/default"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/transports"
+	"sync"
+	"sync/atomic"
+	"time"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
@@ -101,7 +101,7 @@ func (m *MessageCodec) Disconnect() error {
 }
 
 func (m *MessageCodec) Send(message spi.Message) error {
-	m.log.Trace().Msg("Sending message")
+	m.log.Trace().Msgf("Sending message\n%s", message)
 	// Cast the message to the correct type of struct
 	cbusMessage, ok := message.(readWriteModel.CBusMessage)
 	if !ok {
@@ -329,25 +329,29 @@ lookingForTheEnd:
 	}
 	m.log.Debug().Msgf("Parsing %q", sanitizedInput)
 	ctxForModel := options.GetLoggerContextForModel(context.TODO(), m.log, options.WithPassLoggerToModel(m.passLogToModel))
+	start := time.Now()
 	cBusMessage, err := readWriteModel.CBusMessageParse(ctxForModel, sanitizedInput, pciResponse, m.requestContext, m.cbusOptions)
+	m.log.Trace().Msgf("Parsing took %s", time.Since(start))
 	if err != nil {
 		m.log.Debug().Err(err).Msg("First Parse Failed")
 		{ // Try SAL
+			m.log.Trace().Msg("try SAL")
 			requestContext := readWriteModel.NewRequestContext(false)
 			cBusMessage, secondErr := readWriteModel.CBusMessageParse(ctxForModel, sanitizedInput, pciResponse, requestContext, m.cbusOptions)
 			if secondErr == nil {
-				m.log.Trace().Msgf("Parsed message as SAL:\n%s", cBusMessage)
+				m.log.Trace().Msgf("Parsed message as SAL")
 				return cBusMessage, nil
 			} else {
 				m.log.Debug().Err(secondErr).Msg("SAL parse failed too")
 			}
 		}
 		{ // Try MMI
+			m.log.Trace().Msg("try MMI")
 			requestContext := readWriteModel.NewRequestContext(false)
 			cbusOptions := readWriteModel.NewCBusOptions(false, false, false, false, false, false, false, false, false)
 			cBusMessage, secondErr := readWriteModel.CBusMessageParse(ctxForModel, sanitizedInput, true, requestContext, cbusOptions)
 			if secondErr == nil {
-				m.log.Trace().Msgf("Parsed message as MMI:\n%s", cBusMessage)
+				m.log.Trace().Msg("Parsed message as MMI")
 				return cBusMessage, nil
 			} else {
 				m.log.Debug().Err(secondErr).Msg("CAL parse failed too")
@@ -358,13 +362,11 @@ lookingForTheEnd:
 		return nil, nil
 	}
 
-	m.log.Trace().Msgf("Parsed message:\n%s", cBusMessage)
 	return cBusMessage, nil
 }
 
 func extractMMIAndSAL(log zerolog.Logger) _default.CustomMessageHandler {
 	return func(codec _default.DefaultCodecRequirements, message spi.Message) bool {
-		log.Trace().Msgf("Custom handling message:\n%s", message)
 		switch message := message.(type) {
 		case readWriteModel.CBusMessageToClientExactly:
 			switch reply := message.GetReply().(type) {
