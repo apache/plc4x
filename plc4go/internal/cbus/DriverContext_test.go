@@ -35,8 +35,11 @@ func TestNewDriverContext(t *testing.T) {
 		wantErr assert.ErrorAssertionFunc
 	}{
 		{
-			name:    "Test constructor",
-			want:    DriverContext{},
+			name: "Test constructor",
+			want: DriverContext{
+				awaitDisconnectComplete: true,
+				awaitSetupComplete:      true,
+			},
 			wantErr: assert.NoError,
 		},
 	}
