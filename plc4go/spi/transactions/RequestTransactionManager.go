@@ -24,10 +24,10 @@ import (
 	"context"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/pool"
-	"github.com/rs/zerolog/log"
 	"io"
 	"runtime"
 	"sync"
+	"sync/atomic"
 	"time"
 
 	"github.com/apache/plc4x/plc4go/pkg/api/config"
@@ -44,7 +44,7 @@ func init() {
 		runtime.NumCPU(),
 		100,
 		options.WithExecutorOptionTracerWorkers(config.TraceTransactionManagerWorkers),
-		config.WithCustomLogger(log.With().Str("executorInstance", "shared logger").Logger()),
+		config.WithCustomLogger(zerolog.Nop()),
 	)
 	sharedExecutorInstance.Start()
 	runtime.SetFinalizer(sharedExecutorInstance, func(sharedExecutorInstance pool.Executor) {
@@ -117,7 +117,7 @@ type requestTransactionManager struct {
 
 	executor pool.Executor
 
-	shutdown bool // Indicates it this rtm is in shutdown
+	shutdown atomic.Bool // Indicates it this rtm is in shutdown
 
 	traceTransactionManagerTransactions bool // flag set to true if it should trace transactions
 
@@ -188,7 +188,7 @@ func (r *requestTransactionManager) StartTransaction() RequestTransaction {
 		transactionId:  currentTransactionId,
 		transactionLog: transactionLogger,
 	}
-	if r.shutdown {
+	if r.shutdown.Load() {
 		transaction.completed = true
 		transaction.completionFuture = &completedFuture{errors.New("request transaction manager in shutdown")}
 	}
@@ -239,7 +239,7 @@ func (r *requestTransactionManager) Close() error {
 
 func (r *requestTransactionManager) CloseGraceful(timeout time.Duration) error {
 	r.log.Debug().Msgf("closing with a timeout of %s", timeout)
-	r.shutdown = true
+	r.shutdown.Store(true)
 	if timeout > 0 {
 		timer := time.NewTimer(timeout)
 		defer utils.CleanupTimer(timer)

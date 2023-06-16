@@ -98,7 +98,7 @@ func (d *requestTransactionManager) SerializeWithWriteBuffer(ctx context.Context
 		}
 	}
 
-	if err := writeBuffer.WriteBit("shutdown", d.shutdown); err != nil {
+	if err := writeBuffer.WriteBit("shutdown", d.shutdown.Load()); err != nil {
 		return err
 	}
 
