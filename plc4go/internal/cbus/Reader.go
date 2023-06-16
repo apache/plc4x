@@ -139,14 +139,16 @@ func (m *Reader) createMessageTransactionAndWait(ctx context.Context, messageToS
 func (m *Reader) sendMessageOverTheWire(ctx context.Context, transaction transactions.RequestTransaction, messageToSend readWriteModel.CBusMessage, addResponseCode func(name string, responseCode apiModel.PlcResponseCode), tagName string, addPlcValue func(name string, plcValue apiValues.PlcValue)) {
 	// Send the over the wire
 	m.log.Trace().Msg("send over the wire")
+	ttl := time.Second * 5
 	if deadline, ok := ctx.Deadline(); ok {
-		m.log.Debug().Msgf("Message expires in %s", deadline.Sub(time.Now()))
+		ttl = -time.Since(deadline)
+		m.log.Debug().Msgf("setting ttl to %s", ttl)
 	}
 	if err := m.messageCodec.SendRequest(
 		ctx,
 		messageToSend,
 		func(cbusMessage spi.Message) bool {
-			m.log.Trace().Msgf("Checking\n%T", cbusMessage)
+			m.log.Trace().Msgf("Checking %T", cbusMessage)
 			messageToClient, ok := cbusMessage.(readWriteModel.CBusMessageToClientExactly)
 			if !ok {
 				m.log.Trace().Msg("Not a message to client")
@@ -166,7 +168,12 @@ func (m *Reader) sendMessageOverTheWire(ctx context.Context, transaction transac
 			}
 			actualAlpha := confirmation.GetConfirmation().GetAlpha().GetCharacter()
 			// TODO: assert that this is a CBusMessageToServer indeed (by changing param for example)
-			expectedAlpha := messageToSend.(readWriteModel.CBusMessageToServer).GetRequest().(interface{ GetAlpha() readWriteModel.Alpha }).GetAlpha().GetCharacter()
+			alphaRetriever, ok := messageToSend.(readWriteModel.CBusMessageToServer).GetRequest().(interface{ GetAlpha() readWriteModel.Alpha })
+			if !ok {
+				m.log.Trace().Msg("no alpha there")
+				return false
+			}
+			expectedAlpha := alphaRetriever.GetAlpha().GetCharacter()
 			m.log.Trace().Msgf("Comparing expected alpha '%c' to actual alpha '%c'", expectedAlpha, actualAlpha)
 			return actualAlpha == expectedAlpha
 		},
@@ -223,7 +230,7 @@ func (m *Reader) sendMessageOverTheWire(ctx context.Context, transaction transac
 			addResponseCode(tagName, apiModel.PlcResponseCode_INTERNAL_ERROR)
 			return transaction.FailRequest(err)
 		},
-		time.Second*5); err != nil {
+		ttl); err != nil {
 		m.log.Debug().Err(err).Msgf("Error sending message for tag %s", tagName)
 		addResponseCode(tagName, apiModel.PlcResponseCode_INTERNAL_ERROR)
 		if err := transaction.FailRequest(errors.Errorf("timeout after %s", time.Second*1)); err != nil {
