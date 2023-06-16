@@ -522,7 +522,7 @@ func TestConnection_String(t *testing.T) {
 ║╔═driverContext═══════════════════════════════════╗                                                      ║
 ║║╔═DriverContext═════════════════════════════════╗║                                                      ║
 ║║║╔═awaitSetupComplete╗╔═awaitDisconnectComplete╗║║                                                      ║
-║║║║     b0 true       ║║        b0 true         ║║║                                                      ║
+║║║║      b0 true      ║║         b0 true        ║║║                                                      ║
 ║║║╚═══════════════════╝╚════════════════════════╝║║                                                      ║
 ║║╚═══════════════════════════════════════════════╝║                                                      ║
 ║╚═════════════════════════════════════════════════╝                                                      ║
@@ -721,6 +721,7 @@ func TestConnection_fireConnected(t *testing.T) {
 		subscribers   []*Subscriber
 		tm            transactions.RequestTransactionManager
 		configuration Configuration
+		driverContext DriverContext
 		connectionId  string
 		tracer        tracer.Tracer
 	}
@@ -741,6 +742,9 @@ func TestConnection_fireConnected(t *testing.T) {
 		},
 		{
 			name: "notified connect",
+			fields: fields{
+				driverContext: driverContextForTesting(),
+			},
 			args: args{ch: make(chan<- plc4go.PlcConnectionConnectResult, 1)},
 			chanValidator: func(t *testing.T, results chan<- plc4go.PlcConnectionConnectResult) bool {
 				time.Sleep(time.Millisecond * 50)
@@ -755,7 +759,7 @@ func TestConnection_fireConnected(t *testing.T) {
 				subscribers:   tt.fields.subscribers,
 				tm:            tt.fields.tm,
 				configuration: tt.fields.configuration,
-				driverContext: driverContextForTesting(),
+				driverContext: tt.fields.driverContext,
 				connectionId:  tt.fields.connectionId,
 				tracer:        tt.fields.tracer,
 				log:           testutils.ProduceTestingLogger(t),
