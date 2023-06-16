@@ -260,7 +260,6 @@ func Test_requestTransactionManager_failRequest(t *testing.T) {
 		currentTransactionId       int32
 		workLog                    list.List
 		executor                   pool.Executor
-		log                        zerolog.Logger
 	}
 	type args struct {
 		transaction *requestTransaction
@@ -279,8 +278,6 @@ func Test_requestTransactionManager_failRequest(t *testing.T) {
 				transaction: &requestTransaction{},
 			},
 			mockSetup: func(t *testing.T, fields *fields, args *args) {
-				fields.log = testutils.ProduceTestingLogger(t)
-
 				completionFuture := NewMockCompletionFuture(t)
 				expect := completionFuture.EXPECT()
 				expect.Cancel(true, nil).Return()
@@ -300,7 +297,7 @@ func Test_requestTransactionManager_failRequest(t *testing.T) {
 				currentTransactionId:       tt.fields.currentTransactionId,
 				workLog:                    tt.fields.workLog,
 				executor:                   tt.fields.executor,
-				log:                        tt.fields.log,
+				log:                        testutils.ProduceTestingLogger(t),
 			}
 			if err := r.failRequest(tt.args.transaction, tt.args.err); (err != nil) != tt.wantErr {
 				t.Errorf("failRequest() error = %v, wantErr %v", err, tt.wantErr)

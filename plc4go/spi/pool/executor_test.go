@@ -74,7 +74,6 @@ func Test_executor_IsRunning(t *testing.T) {
 		queueDepth   int
 		workItems    chan workItem
 		traceWorkers bool
-		log          zerolog.Logger
 	}
 	tests := []struct {
 		name   string
@@ -94,7 +93,7 @@ func Test_executor_IsRunning(t *testing.T) {
 				queueDepth:   tt.fields.queueDepth,
 				workItems:    tt.fields.workItems,
 				traceWorkers: tt.fields.traceWorkers,
-				log:          tt.fields.log,
+				log:          produceTestingLogger(t),
 			}
 			assert.Equalf(t, tt.want, e.IsRunning(), "IsRunning()")
 		})
@@ -419,7 +418,6 @@ func Test_executor_String(t *testing.T) {
 		queueDepth   int
 		workItems    chan workItem
 		traceWorkers bool
-		log          zerolog.Logger
 	}
 	tests := []struct {
 		name   string
@@ -472,7 +470,7 @@ func Test_executor_String(t *testing.T) {
 				queueDepth:   tt.fields.queueDepth,
 				workItems:    tt.fields.workItems,
 				traceWorkers: tt.fields.traceWorkers,
-				log:          tt.fields.log,
+				log:          produceTestingLogger(t),
 			}
 			assert.Equalf(t, tt.want, e.String(), "String()")
 		})

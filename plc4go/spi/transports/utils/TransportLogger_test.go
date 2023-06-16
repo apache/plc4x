@@ -80,7 +80,6 @@ func TestTransportLogger_Close(t1 *testing.T) {
 func TestTransportLogger_Read(t1 *testing.T) {
 	type fields struct {
 		source io.ReadWriteCloser
-		log    zerolog.Logger
 	}
 	type args struct {
 		p []byte
@@ -98,7 +97,7 @@ func TestTransportLogger_Read(t1 *testing.T) {
 		t1.Run(tt.name, func(t1 *testing.T) {
 			t := &TransportLogger{
 				source: tt.fields.source,
-				log:    tt.fields.log,
+				log:    testutils.ProduceTestingLogger(t1),
 			}
 			got, err := t.Read(tt.args.p)
 			if (err != nil) != tt.wantErr {
