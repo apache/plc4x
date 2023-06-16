@@ -1849,6 +1849,10 @@ func TestConnection_startSubscriptionHandler(t *testing.T) {
 				tt.manipulator(t, c)
 			}
 			c.startSubscriptionHandler()
+			// To shut down properly we always do that
+			time.Sleep(20 * time.Millisecond)
+			c.SetConnected(false)
+			c.handlerWaitGroup.Wait()
 		})
 	}
 }

@@ -168,7 +168,7 @@ func (m *defaultCodec) ConnectWithContext(ctx context.Context) error {
 	if m.running.Load() {
 		return errors.New("already running")
 	}
-	m.log.Trace().Msg("Connecting")
+	m.log.Trace().Msg("connecting")
 	if !m.transportInstance.IsConnected() {
 		if err := m.transportInstance.ConnectWithContext(ctx); err != nil {
 			return err
@@ -181,6 +181,7 @@ func (m *defaultCodec) ConnectWithContext(ctx context.Context) error {
 	m.activeWorker.Add(1)
 	go m.Work(m.DefaultCodecRequirements)
 	m.running.Store(true)
+	m.log.Trace().Msg("connected")
 	return nil
 }
 
@@ -199,7 +200,7 @@ func (m *defaultCodec) Disconnect() error {
 	}
 	m.log.Trace().Msg("Waiting for worker to shutdown")
 	m.activeWorker.Wait()
-	m.log.Trace().Msg("Done disconnecting")
+	m.log.Trace().Msg("disconnected")
 	return nil
 }
 
