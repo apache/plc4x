@@ -777,6 +777,7 @@ func TestConnection_fireConnectionError(t *testing.T) {
 		subscribers   []*Subscriber
 		tm            transactions.RequestTransactionManager
 		configuration Configuration
+		driverContext DriverContext
 		connectionId  string
 		tracer        tracer.Tracer
 	}
@@ -810,6 +811,9 @@ func TestConnection_fireConnectionError(t *testing.T) {
 		},
 		{
 			name: "notified connect",
+			fields: fields{
+				driverContext: driverContextForTesting(),
+			},
 			setup: func(t *testing.T, fields *fields, args *args) {
 				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
 				transport := test.NewTransport(_options...)
@@ -838,7 +842,7 @@ func TestConnection_fireConnectionError(t *testing.T) {
 				subscribers:   tt.fields.subscribers,
 				tm:            tt.fields.tm,
 				configuration: tt.fields.configuration,
-				driverContext: driverContextForTesting(),
+				driverContext: tt.fields.driverContext,
 				connectionId:  tt.fields.connectionId,
 				tracer:        tt.fields.tracer,
 				log:           testutils.ProduceTestingLogger(t),
