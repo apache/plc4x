@@ -88,6 +88,9 @@ func (m *TransportInstance) IsConnected() bool {
 }
 
 func (m *TransportInstance) GetNumBytesAvailableInBuffer() (uint32, error) {
+	if !m.IsConnected() {
+		panic(errors.New("working on a unconnected connection"))
+	}
 	m.dataMutex.RLock()
 	defer m.dataMutex.RUnlock()
 	readableBytes := len(m.readBuffer)
@@ -96,6 +99,9 @@ func (m *TransportInstance) GetNumBytesAvailableInBuffer() (uint32, error) {
 }
 
 func (m *TransportInstance) FillBuffer(until func(pos uint, currentByte byte, reader *bufio.Reader) bool) error {
+	if !m.IsConnected() {
+		panic(errors.New("working on a unconnected connection"))
+	}
 	m.log.Trace().Msg("Fill the buffer")
 	nBytes := uint32(1)
 	for {
@@ -117,6 +123,9 @@ func (m *TransportInstance) FillBuffer(until func(pos uint, currentByte byte, re
 }
 
 func (m *TransportInstance) PeekReadableBytes(numBytes uint32) ([]byte, error) {
+	if !m.IsConnected() {
+		panic(errors.New("working on a unconnected connection"))
+	}
 	m.dataMutex.RLock()
 	defer m.dataMutex.RUnlock()
 	availableBytes := uint32(math.Min(float64(numBytes), float64(len(m.readBuffer))))
@@ -133,6 +142,9 @@ func (m *TransportInstance) PeekReadableBytes(numBytes uint32) ([]byte, error) {
 }
 
 func (m *TransportInstance) Read(numBytes uint32) ([]byte, error) {
+	if !m.IsConnected() {
+		panic(errors.New("working on a unconnected connection"))
+	}
 	m.dataMutex.Lock()
 	defer m.dataMutex.Unlock()
 	nBytes := len(m.readBuffer)
@@ -151,6 +163,9 @@ func (m *TransportInstance) SetWriteInterceptor(writeInterceptor func(transportI
 }
 
 func (m *TransportInstance) Write(data []byte) error {
+	if !m.IsConnected() {
+		panic(errors.New("working on a unconnected connection"))
+	}
 	if m.writeInterceptor != nil {
 		m.log.Trace().Msgf("Passing data to write interceptor\n%s", hex.Dump(data))
 		m.writeInterceptor(m, data)
@@ -163,6 +178,9 @@ func (m *TransportInstance) Write(data []byte) error {
 }
 
 func (m *TransportInstance) FillReadBuffer(data []byte) {
+	if !m.IsConnected() {
+		panic(errors.New("working on a unconnected connection"))
+	}
 	m.dataMutex.Lock()
 	defer m.dataMutex.Unlock()
 	m.log.Trace().Msgf("fill read buffer with \n%s (%d bytes). (Adding to %d bytes existing)", hex.Dump(data), len(data), len(m.readBuffer))
@@ -170,6 +188,9 @@ func (m *TransportInstance) FillReadBuffer(data []byte) {
 }
 
 func (m *TransportInstance) GetNumDrainableBytes() uint32 {
+	if !m.IsConnected() {
+		panic(errors.New("working on a unconnected connection"))
+	}
 	m.dataMutex.RLock()
 	defer m.dataMutex.RUnlock()
 	m.log.Trace().Msg("get number of drainable bytes")
@@ -177,6 +198,9 @@ func (m *TransportInstance) GetNumDrainableBytes() uint32 {
 }
 
 func (m *TransportInstance) DrainWriteBuffer(numBytes uint32) []byte {
+	if !m.IsConnected() {
+		panic(errors.New("working on a unconnected connection"))
+	}
 	m.dataMutex.Lock()
 	defer m.dataMutex.Unlock()
 	m.log.Trace().Msgf("Drain write buffer with number of bytes %d", numBytes)

@@ -900,6 +900,7 @@ func TestConnection_sendCalDataWrite(t *testing.T) {
 				ti, err := transport.CreateTransportInstance(url.URL{Scheme: "test"}, nil, _options...)
 				require.NoError(t, err)
 				codec := NewMessageCodec(ti, _options...)
+				require.NoError(t, codec.Connect())
 				t.Cleanup(func() {
 					assert.Error(t, codec.Disconnect())
 				})
@@ -973,6 +974,7 @@ func TestConnection_sendReset(t *testing.T) {
 				ti, err := transport.CreateTransportInstance(url.URL{Scheme: "test"}, nil, _options...)
 				require.NoError(t, err)
 				codec := NewMessageCodec(ti, _options...)
+				require.NoError(t, codec.Connect())
 				t.Cleanup(func() {
 					assert.Error(t, codec.Disconnect())
 				})
@@ -1046,6 +1048,7 @@ func TestConnection_setApplicationFilter(t *testing.T) {
 				ti, err := transport.CreateTransportInstance(url.URL{Scheme: "test"}, nil, _options...)
 				require.NoError(t, err)
 				codec := NewMessageCodec(ti, _options...)
+				require.NoError(t, codec.Connect())
 				t.Cleanup(func() {
 					assert.Error(t, codec.Disconnect())
 				})
@@ -1119,6 +1122,7 @@ func TestConnection_setInterface1PowerUpSettings(t *testing.T) {
 				ti, err := transport.CreateTransportInstance(url.URL{Scheme: "test"}, nil, _options...)
 				require.NoError(t, err)
 				codec := NewMessageCodec(ti, _options...)
+				require.NoError(t, codec.Connect())
 				t.Cleanup(func() {
 					assert.Error(t, codec.Disconnect())
 				})
@@ -1192,6 +1196,7 @@ func TestConnection_setInterfaceOptions1(t *testing.T) {
 				ti, err := transport.CreateTransportInstance(url.URL{Scheme: "test"}, nil, _options...)
 				require.NoError(t, err)
 				codec := NewMessageCodec(ti, _options...)
+				require.NoError(t, codec.Connect())
 				t.Cleanup(func() {
 					assert.Error(t, codec.Disconnect())
 				})
@@ -1265,6 +1270,7 @@ func TestConnection_setInterfaceOptions3(t *testing.T) {
 				ti, err := transport.CreateTransportInstance(url.URL{Scheme: "test"}, nil, _options...)
 				require.NoError(t, err)
 				codec := NewMessageCodec(ti, _options...)
+				require.NoError(t, codec.Connect())
 				t.Cleanup(func() {
 					assert.Error(t, codec.Disconnect())
 				})

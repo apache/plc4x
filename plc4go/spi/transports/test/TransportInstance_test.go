@@ -175,6 +175,9 @@ func TestTransportInstance_DrainWriteBuffer(t *testing.T) {
 	}{
 		{
 			name: "drain it",
+			fields: fields{
+				connected: true,
+			},
 		},
 	}
 	for _, tt := range tests {
@@ -212,6 +215,9 @@ func TestTransportInstance_FillBuffer(t *testing.T) {
 	}{
 		{
 			name: "fill it (errors)",
+			fields: fields{
+				connected: true,
+			},
 			args: args{
 				until: func(pos uint, currentByte byte, reader *bufio.Reader) bool {
 					return pos < 3
@@ -222,6 +228,7 @@ func TestTransportInstance_FillBuffer(t *testing.T) {
 		{
 			name: "fill it",
 			fields: fields{
+				connected:  true,
 				readBuffer: []byte{1, 2, 3, 4},
 			},
 			args: args{
@@ -266,6 +273,7 @@ func TestTransportInstance_FillReadBuffer(t *testing.T) {
 		{
 			name: "fill it",
 			fields: fields{
+				connected:  true,
 				readBuffer: []byte{1, 2, 3, 4},
 			},
 			args: args{
@@ -303,10 +311,14 @@ func TestTransportInstance_GetNumBytesAvailableInBuffer(t *testing.T) {
 	}{
 		{
 			name: "get it",
+			fields: fields{
+				connected: true,
+			},
 		},
 		{
-			name: "get it",
+			name: "get it too",
 			fields: fields{
+				connected:  true,
 				readBuffer: []byte{1, 2, 3, 4},
 			},
 			want: 4,
@@ -348,6 +360,9 @@ func TestTransportInstance_GetNumDrainableBytes(t *testing.T) {
 	}{
 		{
 			name: "get it",
+			fields: fields{
+				connected: true,
+			},
 		},
 	}
 	for _, tt := range tests {
@@ -419,6 +434,9 @@ func TestTransportInstance_PeekReadableBytes(t *testing.T) {
 	}{
 		{
 			name: "peek it",
+			fields: fields{
+				connected: true,
+			},
 		},
 	}
 	for _, tt := range tests {
@@ -461,7 +479,10 @@ func TestTransportInstance_Read(t *testing.T) {
 		wantErr bool
 	}{
 		{
-			name:    "read it",
+			name: "read it",
+			fields: fields{
+				connected: true,
+			},
 			wantErr: true,
 		},
 	}
@@ -573,10 +594,14 @@ func TestTransportInstance_Write(t *testing.T) {
 	}{
 		{
 			name: "write it",
+			fields: fields{
+				connected: true,
+			},
 		},
 		{
 			name: "write it",
 			fields: fields{
+				connected: true,
 				writeInterceptor: func(transportInstance *TransportInstance, data []byte) {
 					assert.NotNil(t, transportInstance)
 					assert.Equal(t, []byte{1, 2, 3, 4}, data)
