@@ -41,6 +41,9 @@ var sharedExecutorInstance pool.Executor // shared instance
 func init() {
 	sharedExecutorInstance = pool.NewFixedSizeExecutor(runtime.NumCPU(), 100, pool.WithExecutorOptionTracerWorkers(config.TraceTransactionManagerWorkers))
 	sharedExecutorInstance.Start()
+	runtime.SetFinalizer(sharedExecutorInstance, func(sharedExecutorInstance pool.Executor) {
+		sharedExecutorInstance.Stop()
+	})
 }
 
 type RequestTransactionRunnable func(RequestTransaction)
@@ -258,8 +261,12 @@ func (r *requestTransactionManager) CloseGraceful(timeout time.Duration) error {
 	r.runningRequestMutex.Lock()
 	defer r.runningRequestMutex.Unlock()
 	r.runningRequests = nil
-	if err := r.executor.Close(); err != nil {
-		return errors.Wrap(err, "error closing executor")
+	if r.executor != sharedExecutorInstance {
+		if err := r.executor.Close(); err != nil {
+			return errors.Wrap(err, "error closing executor")
+		}
+	} else {
+		r.log.Warn().Msg("not closing shared instance")
 	}
 	return nil
 }
