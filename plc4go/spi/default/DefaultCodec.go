@@ -104,7 +104,7 @@ func buildDefaultCodec(defaultCodecRequirements DefaultCodecRequirements, transp
 	return &defaultCodec{
 		DefaultCodecRequirements:      defaultCodecRequirements,
 		transportInstance:             transportInstance,
-		defaultIncomingMessageChannel: make(chan spi.Message),
+		defaultIncomingMessageChannel: make(chan spi.Message, 100),
 		expectations:                  []spi.Expectation{},
 		customMessageHandling:         customMessageHandler,
 		log:                           logger,
@@ -329,10 +329,14 @@ mainLoop:
 			time.Sleep(time.Millisecond * 10)
 			continue mainLoop
 		}
+		workerLog.Trace().Msgf("got message:\n%s", message)
 
 		if m.customMessageHandling != nil {
 			workerLog.Trace().Msg("Executing custom handling")
-			if m.customMessageHandling(codec, message) {
+			start := time.Now()
+			handled := m.customMessageHandling(codec, message)
+			workerLog.Trace().Msgf("custom handling took %s", time.Since(start))
+			if handled {
 				workerLog.Trace().Msg("Custom handling handled the message")
 				continue mainLoop
 			}
@@ -352,12 +356,9 @@ mainLoop:
 }
 
 func (m *defaultCodec) passToDefaultIncomingMessageChannel(workerLog zerolog.Logger, message spi.Message) {
-	timeout := time.NewTimer(time.Millisecond * 40)
-	defer utils.CleanupTimer(timeout)
 	select {
 	case m.defaultIncomingMessageChannel <- message:
-	case <-timeout.C:
-		timeout.Stop()
+	default:
 		workerLog.Warn().Msgf("Message discarded\n%s", message)
 	}
 }
