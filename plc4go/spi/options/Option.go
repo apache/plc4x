@@ -118,6 +118,22 @@ func ExtractTraceDefaultMessageCodecWorker(options ...WithOption) bool {
 	return false
 }
 
+// WithExecutorOptionTracerWorkers sets a flag which extends logging for workers
+func WithExecutorOptionTracerWorkers(traceWorkers bool) WithOption {
+	return &withTracerExecutorWorkersOption{traceWorkers: traceWorkers}
+}
+
+// ExtractTracerWorkers returns the value from WithExecutorOptionTracerWorkers
+func ExtractTracerWorkers(_options ...WithOption) (traceWorkers bool, found bool) {
+	for _, option := range _options {
+		switch option := option.(type) {
+		case *withTracerExecutorWorkersOption:
+			return option.traceWorkers, true
+		}
+	}
+	return false, false
+}
+
 // GetLoggerContextForModel returns a log context if the WithPassLoggerToModel WithOption is set
 func GetLoggerContextForModel(ctx context.Context, log zerolog.Logger, options ...WithOption) context.Context {
 	passToModel := false
@@ -162,6 +178,11 @@ type withTraceTransactionManagerTransactions struct {
 }
 
 type withTraceDefaultMessageCodecWorker struct {
+	Option
+	traceWorkers bool
+}
+
+type withTracerExecutorWorkersOption struct {
 	Option
 	traceWorkers bool
 }

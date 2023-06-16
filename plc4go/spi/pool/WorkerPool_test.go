@@ -46,7 +46,7 @@ func TestNewFixedSizeExecutor(t *testing.T) {
 			args: args{
 				numberOfWorkers: 13,
 				queueDepth:      14,
-				options:         []options.WithOption{WithExecutorOptionTracerWorkers(true)},
+				options:         []options.WithOption{options.WithExecutorOptionTracerWorkers(true)},
 			},
 			setup: func(t *testing.T, args *args) {
 				args.options = append(args.options, options.WithCustomLogger(produceTestingLogger(t)))
@@ -86,7 +86,7 @@ func TestNewDynamicExecutor(t *testing.T) {
 			args: args{
 				numberOfWorkers: 13,
 				queueDepth:      14,
-				options:         []options.WithOption{WithExecutorOptionTracerWorkers(true)},
+				options:         []options.WithOption{options.WithExecutorOptionTracerWorkers(true)},
 			},
 			setup: func(t *testing.T, args *args) {
 				args.options = append(args.options, options.WithCustomLogger(produceTestingLogger(t)))
@@ -104,7 +104,7 @@ func TestNewDynamicExecutor(t *testing.T) {
 			args: args{
 				numberOfWorkers: 2,
 				queueDepth:      2,
-				options:         []options.WithOption{WithExecutorOptionTracerWorkers(true)},
+				options:         []options.WithOption{options.WithExecutorOptionTracerWorkers(true)},
 			},
 			setup: func(t *testing.T, args *args) {
 				args.options = append(args.options, options.WithCustomLogger(produceTestingLogger(t)))
@@ -172,28 +172,6 @@ func TestNewDynamicExecutor(t *testing.T) {
 				tt.manipulator(t, dynamicSizedExecutor.(*dynamicExecutor))
 			}
 			assert.True(t, tt.executorValidator(t, dynamicSizedExecutor.(*dynamicExecutor)), "NewFixedSizeExecutor(%v, %v, %v)", tt.args.numberOfWorkers, tt.args.queueDepth, tt.args.options)
-		})
-	}
-}
-
-func TestWithExecutorOptionTracerWorkers(t *testing.T) {
-	type args struct {
-		traceWorkers bool
-	}
-	tests := []struct {
-		name              string
-		args              args
-		executorValidator options.WithOption
-	}{
-		{
-			name:              "option should set option",
-			args:              args{traceWorkers: true},
-			executorValidator: &tracerWorkersOption{traceWorkers: true},
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			assert.Equal(t, tt.executorValidator, WithExecutorOptionTracerWorkers(tt.args.traceWorkers))
 		})
 	}
 }

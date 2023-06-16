@@ -24,6 +24,7 @@ import (
 	"context"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/pool"
+	"github.com/rs/zerolog/log"
 	"io"
 	"runtime"
 	"sync"
@@ -39,7 +40,12 @@ import (
 var sharedExecutorInstance pool.Executor // shared instance
 
 func init() {
-	sharedExecutorInstance = pool.NewFixedSizeExecutor(runtime.NumCPU(), 100, pool.WithExecutorOptionTracerWorkers(config.TraceTransactionManagerWorkers))
+	sharedExecutorInstance = pool.NewFixedSizeExecutor(
+		runtime.NumCPU(),
+		100,
+		options.WithExecutorOptionTracerWorkers(config.TraceTransactionManagerWorkers),
+		config.WithCustomLogger(log.With().Str("executorInstance", "shared logger").Logger()),
+	)
 	sharedExecutorInstance.Start()
 	runtime.SetFinalizer(sharedExecutorInstance, func(sharedExecutorInstance pool.Executor) {
 		sharedExecutorInstance.Stop()

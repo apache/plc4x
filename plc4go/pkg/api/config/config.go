@@ -21,7 +21,6 @@ package config
 
 import (
 	"github.com/apache/plc4x/plc4go/spi/options"
-	"github.com/apache/plc4x/plc4go/spi/pool"
 	"github.com/rs/zerolog"
 )
 
@@ -67,7 +66,7 @@ func WithTraceDefaultMessageCodecWorker(traceWorkers bool) WithOption {
 
 // WithExecutorOptionTracerWorkers sets a flag which extends logging for workers
 func WithExecutorOptionTracerWorkers(traceWorkers bool) options.WithOption {
-	return pool.WithExecutorOptionTracerWorkers(traceWorkers)
+	return options.WithExecutorOptionTracerWorkers(traceWorkers)
 }
 
 // WithOption is a marker interface for options
