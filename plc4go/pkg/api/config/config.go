@@ -21,16 +21,17 @@ package config
 
 import (
 	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/apache/plc4x/plc4go/spi/pool"
 	"github.com/rs/zerolog"
 )
 
 // TraceTransactionManagerWorkers when set to true the transaction manager displays worker states in log
 var (
-	// Deprecated: this should be done with an option, don't use it
+	// Deprecated: use WithTraceTransactionManagerWorkers
 	TraceTransactionManagerWorkers bool
-	// Deprecated: this should be done with an option, don't use it
+	// Deprecated: use WithTraceTransactionManagerTransactions
 	TraceTransactionManagerTransactions bool
-	// Deprecated: this should be done with an option, don't use it
+	// Deprecated: use WithTraceDefaultMessageCodecWorker
 	TraceDefaultMessageCodecWorker bool
 )
 
@@ -47,6 +48,26 @@ func WithCustomLogger(logger zerolog.Logger) WithOption {
 // WithPassLoggerToModel enables passing of log to the model
 func WithPassLoggerToModel(passLogger bool) WithOption {
 	return options.WithPassLoggerToModel(passLogger)
+}
+
+// WithTraceTransactionManagerWorkers enables trace transaction manager workers
+func WithTraceTransactionManagerWorkers(traceWorkers bool) WithOption {
+	return options.WithTraceTransactionManagerWorkers(traceWorkers)
+}
+
+// WithTraceTransactionManagerTransactions enables trace transaction manager transactions
+func WithTraceTransactionManagerTransactions(traceTransactions bool) WithOption {
+	return options.WithTraceTransactionManagerTransactions(traceTransactions)
+}
+
+// WithTraceDefaultMessageCodecWorker enables trace default message codec worker
+func WithTraceDefaultMessageCodecWorker(traceWorkers bool) WithOption {
+	return options.WithTraceDefaultMessageCodecWorker(traceWorkers)
+}
+
+// WithExecutorOptionTracerWorkers sets a flag which extends logging for workers
+func WithExecutorOptionTracerWorkers(traceWorkers bool) options.WithOption {
+	return pool.WithExecutorOptionTracerWorkers(traceWorkers)
 }
 
 // WithOption is a marker interface for options

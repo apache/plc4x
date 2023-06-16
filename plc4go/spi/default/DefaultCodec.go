@@ -21,12 +21,12 @@ package _default
 
 import (
 	"context"
+	"github.com/apache/plc4x/plc4go/pkg/api/config"
 	"runtime/debug"
 	"sync"
 	"sync/atomic"
 	"time"
 
-	"github.com/apache/plc4x/plc4go/pkg/api/config"
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/transports"
@@ -87,12 +87,13 @@ type defaultCodec struct {
 	stateChange             sync.Mutex
 	activeWorker            sync.WaitGroup
 
+	traceDefaultMessageCodecWorker bool
+
 	log zerolog.Logger `ignore:"true"`
 }
 
 func buildDefaultCodec(defaultCodecRequirements DefaultCodecRequirements, transportInstance transports.TransportInstance, _options ...options.WithOption) DefaultCodec {
 	var customMessageHandler func(codec DefaultCodecRequirements, message spi.Message) bool
-	var logger = options.ExtractCustomLogger(_options...)
 
 	for _, option := range _options {
 		switch option := option.(type) {
@@ -102,12 +103,13 @@ func buildDefaultCodec(defaultCodecRequirements DefaultCodecRequirements, transp
 	}
 
 	return &defaultCodec{
-		DefaultCodecRequirements:      defaultCodecRequirements,
-		transportInstance:             transportInstance,
-		defaultIncomingMessageChannel: make(chan spi.Message, 100),
-		expectations:                  []spi.Expectation{},
-		customMessageHandling:         customMessageHandler,
-		log:                           logger,
+		DefaultCodecRequirements:       defaultCodecRequirements,
+		transportInstance:              transportInstance,
+		defaultIncomingMessageChannel:  make(chan spi.Message, 100),
+		expectations:                   []spi.Expectation{},
+		customMessageHandling:          customMessageHandler,
+		traceDefaultMessageCodecWorker: options.ExtractTraceDefaultMessageCodecWorker(_options...) || config.TraceDefaultMessageCodecWorker,
+		log:                            options.ExtractCustomLogger(_options...),
 	}
 }
 
@@ -274,7 +276,7 @@ func (m *defaultCodec) HandleMessages(message spi.Message) bool {
 func (m *defaultCodec) Work(codec DefaultCodecRequirements) {
 	defer m.activeWorker.Done()
 	workerLog := m.log.With().Logger()
-	if !config.TraceDefaultMessageCodecWorker {
+	if !m.traceDefaultMessageCodecWorker {
 		workerLog = zerolog.Nop()
 	}
 	workerLog.Trace().Msg("Starting work")

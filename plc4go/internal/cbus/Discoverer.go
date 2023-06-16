@@ -220,6 +220,7 @@ func (d *Discoverer) createDeviceScanDispatcher(tcpTransportInstance *tcp.Transp
 			if err := codec.Disconnect(); err != nil {
 				d.log.Warn().Err(err).Msg("Error disconnecting codec")
 			}
+			d.log.Trace().Msg("done")
 		}()
 
 		// Prepare the discovery packet data

@@ -67,7 +67,7 @@ func NewRequestTransactionManager(numberOfConcurrentRequests int, _options ...op
 		workLog:                    *list.New(),
 		executor:                   sharedExecutorInstance,
 
-		traceTransactionManagerTransactions: config.TraceTransactionManagerTransactions,
+		traceTransactionManagerTransactions: options.ExtractTraceTransactionManagerTransactions(_options...) || config.TraceTransactionManagerTransactions,
 
 		log: options.ExtractCustomLogger(_options...),
 	}

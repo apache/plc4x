@@ -21,7 +21,9 @@ package pool
 
 import (
 	"context"
+
 	"github.com/apache/plc4x/plc4go/spi/options"
+
 	"io"
 	"time"
 )

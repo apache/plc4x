@@ -70,6 +70,54 @@ func ExtractPassLoggerToModel(options ...WithOption) bool {
 	return false
 }
 
+// WithTraceTransactionManagerWorkers enables trace transaction manager workers
+func WithTraceTransactionManagerWorkers(traceWorkers bool) WithOption {
+	return withTraceTransactionManagerWorkers{traceWorkers: traceWorkers}
+}
+
+// ExtractTransactionManagerWorkers to extract the flag indicating to trace transaction manager workers
+func ExtractTransactionManagerWorkers(options ...WithOption) bool {
+	for _, option := range options {
+		switch option := option.(type) {
+		case withTraceTransactionManagerWorkers:
+			return option.traceWorkers
+		}
+	}
+	return false
+}
+
+// WithTraceTransactionManagerTransactions enables trace transaction manager transactions
+func WithTraceTransactionManagerTransactions(traceTransactions bool) WithOption {
+	return withTraceTransactionManagerTransactions{traceTransactions: traceTransactions}
+}
+
+// ExtractTraceTransactionManagerTransactions to extract the flag indicating to trace transaction manager transactions
+func ExtractTraceTransactionManagerTransactions(options ...WithOption) bool {
+	for _, option := range options {
+		switch option := option.(type) {
+		case withTraceTransactionManagerTransactions:
+			return option.traceTransactions
+		}
+	}
+	return false
+}
+
+// WithTraceDefaultMessageCodecWorker enables trace default message codec worker
+func WithTraceDefaultMessageCodecWorker(traceWorkers bool) WithOption {
+	return withTraceDefaultMessageCodecWorker{traceWorkers: traceWorkers}
+}
+
+// ExtractTraceDefaultMessageCodecWorker to extract the flag indicating to trace default message codec workers
+func ExtractTraceDefaultMessageCodecWorker(options ...WithOption) bool {
+	for _, option := range options {
+		switch option := option.(type) {
+		case withTraceTransactionManagerTransactions:
+			return option.traceTransactions
+		}
+	}
+	return false
+}
+
 // GetLoggerContextForModel returns a log context if the WithPassLoggerToModel WithOption is set
 func GetLoggerContextForModel(ctx context.Context, log zerolog.Logger, options ...WithOption) context.Context {
 	passToModel := false
@@ -101,6 +149,21 @@ type withCustomLogger struct {
 type withPassLoggerToModel struct {
 	Option
 	passLogger bool
+}
+
+type withTraceTransactionManagerWorkers struct {
+	Option
+	traceWorkers bool
+}
+
+type withTraceTransactionManagerTransactions struct {
+	Option
+	traceTransactions bool
+}
+
+type withTraceDefaultMessageCodecWorker struct {
+	Option
+	traceWorkers bool
 }
 
 //
