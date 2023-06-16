@@ -218,7 +218,10 @@ func TestConnection_ConnectWithContext(t *testing.T) {
 				log:               testutils.ProduceTestingLogger(t),
 			}
 			assert.True(t, tt.wantAsserter(t, c.ConnectWithContext(tt.args.ctx)), "ConnectWithContext(%v)", tt.args.ctx)
-			time.Sleep(200 * time.Millisecond) // TODO: find out what is still running here
+			// To shut down properly we always do that
+			time.Sleep(20 * time.Millisecond)
+			c.SetConnected(false)
+			c.handlerWaitGroup.Wait()
 		})
 	}
 }
@@ -1751,6 +1754,10 @@ func TestConnection_setupConnection(t *testing.T) {
 				log:               testutils.ProduceTestingLogger(t),
 			}
 			c.setupConnection(tt.args.ctx, tt.args.ch)
+			// To shut down properly we always do that
+			time.Sleep(20 * time.Millisecond)
+			c.SetConnected(false)
+			c.handlerWaitGroup.Wait()
 		})
 	}
 }
