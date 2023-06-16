@@ -65,6 +65,6 @@ func main() {
 		print(responseCode)
 	}
 
-	time.Sleep(time.Second * 200)
+	time.Sleep(200 * time.Second)
 
 }

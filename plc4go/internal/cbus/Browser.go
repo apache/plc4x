@@ -196,7 +196,7 @@ func (m *Browser) getInstalledUnitAddressBytes(ctx context.Context) (map[byte]an
 	if err != nil {
 		return nil, errors.Wrap(err, "Error subscribing to the installation MMI")
 	}
-	subCtx, subCtxCancel := context.WithTimeout(ctx, time.Second*2)
+	subCtx, subCtxCancel := context.WithTimeout(ctx, 2*time.Second)
 	defer subCtxCancel()
 	subscriptionResult := <-subscriptionRequest.ExecuteWithContext(subCtx)
 	if err := subscriptionResult.GetErr(); err != nil {
@@ -296,7 +296,7 @@ func (m *Browser) getInstalledUnitAddressBytes(ctx context.Context) (map[byte]an
 	if err != nil {
 		return nil, errors.Wrap(err, "Error building the installation MMI")
 	}
-	readCtx, readCtxCancel := context.WithTimeout(ctx, time.Second*2)
+	readCtx, readCtxCancel := context.WithTimeout(ctx, 2*time.Second)
 	defer readCtxCancel()
 	readWg := sync.WaitGroup{}
 	readWg.Add(1)
@@ -373,7 +373,7 @@ func (m *Browser) getInstalledUnitAddressBytes(ctx context.Context) (map[byte]an
 		}
 	}()
 
-	syncCtx, syncCtxCancel := context.WithTimeout(ctx, time.Second*6)
+	syncCtx, syncCtxCancel := context.WithTimeout(ctx, 6*time.Second)
 	defer syncCtxCancel()
 	for !blockOffset0Received || !blockOffset88Received || !blockOffset176Received {
 		select {

@@ -43,7 +43,7 @@ func NewPlcConnectionCache(driverManager plc4go.PlcDriverManager, withConnection
 	if !config.TraceConnectionCache {
 		log = zerolog.Nop()
 	}
-	maxLeaseTime := time.Second * 5
+	maxLeaseTime := 5 * time.Second
 	cc := &plcConnectionCache{
 		log:           log,
 		driverManager: driverManager,

@@ -158,7 +158,7 @@ func (d *DefaultPlcWriteRequest) ExecuteWithContextAndInterceptor(ctx context.Co
 	for _, subRequest := range writeRequests {
 		subResultChannels = append(subResultChannels, d.writer.Write(ctx, subRequest))
 		// TODO: Replace this with a real queueing of requests. Later on we need throttling. At the moment this avoids race condition as the read above writes to fast on the line which is a problem for the test
-		time.Sleep(time.Millisecond * 4)
+		time.Sleep(4 * time.Millisecond)
 	}
 
 	// Create a new result-channel, which completes as soon as all sub-result-channels have returned

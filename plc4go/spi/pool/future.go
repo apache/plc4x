@@ -54,7 +54,7 @@ var Canceled = errors.New("Canceled")
 
 func (f *future) AwaitCompletion(ctx context.Context) error {
 	for !f.completed.Load() && !f.errored.Load() && !f.cancelRequested.Load() && ctx.Err() == nil {
-		time.Sleep(time.Millisecond * 10)
+		time.Sleep(10 * time.Millisecond)
 	}
 	if err := ctx.Err(); err != nil {
 		return err

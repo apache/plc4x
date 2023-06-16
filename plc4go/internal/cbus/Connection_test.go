@@ -747,7 +747,7 @@ func TestConnection_fireConnected(t *testing.T) {
 			},
 			args: args{ch: make(chan<- plc4go.PlcConnectionConnectResult, 1)},
 			chanValidator: func(t *testing.T, results chan<- plc4go.PlcConnectionConnectResult) bool {
-				time.Sleep(time.Millisecond * 50)
+				time.Sleep(50 * time.Millisecond)
 				return len(results) == 1
 			},
 		},
@@ -827,7 +827,7 @@ func TestConnection_fireConnectionError(t *testing.T) {
 			},
 			args: args{ch: make(chan<- plc4go.PlcConnectionConnectResult, 1)},
 			chanValidator: func(t *testing.T, results chan<- plc4go.PlcConnectionConnectResult) bool {
-				time.Sleep(time.Millisecond * 50)
+				time.Sleep(50 * time.Millisecond)
 				return len(results) == 1
 			},
 		},

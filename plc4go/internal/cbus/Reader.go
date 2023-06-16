@@ -139,7 +139,7 @@ func (m *Reader) createMessageTransactionAndWait(ctx context.Context, messageToS
 func (m *Reader) sendMessageOverTheWire(ctx context.Context, transaction transactions.RequestTransaction, messageToSend readWriteModel.CBusMessage, addResponseCode func(name string, responseCode apiModel.PlcResponseCode), tagName string, addPlcValue func(name string, plcValue apiValues.PlcValue)) {
 	// Send the over the wire
 	m.log.Trace().Msg("send over the wire")
-	ttl := time.Second * 5
+	ttl := 5 * time.Second
 	if deadline, ok := ctx.Deadline(); ok {
 		ttl = -time.Since(deadline)
 		m.log.Debug().Msgf("setting ttl to %s", ttl)
@@ -233,7 +233,7 @@ func (m *Reader) sendMessageOverTheWire(ctx context.Context, transaction transac
 		ttl); err != nil {
 		m.log.Debug().Err(err).Msgf("Error sending message for tag %s", tagName)
 		addResponseCode(tagName, apiModel.PlcResponseCode_INTERNAL_ERROR)
-		if err := transaction.FailRequest(errors.Errorf("timeout after %s", time.Second*1)); err != nil {
+		if err := transaction.FailRequest(errors.Errorf("timeout after %s", 1*time.Second)); err != nil {
 			m.log.Debug().Err(err).Msg("Error failing request")
 		}
 	}

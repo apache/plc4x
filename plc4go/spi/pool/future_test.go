@@ -50,7 +50,7 @@ func Test_future_AwaitCompletion(t *testing.T) {
 			name: "completes regular",
 			args: args{ctx: context.TODO()},
 			completer: func(f *future) {
-				time.Sleep(time.Millisecond * 30)
+				time.Sleep(30 * time.Millisecond)
 				f.complete()
 			},
 			wantErr: assert.NoError,
@@ -63,7 +63,7 @@ func Test_future_AwaitCompletion(t *testing.T) {
 				return deadline
 			}()},
 			completer: func(f *future) {
-				time.Sleep(time.Millisecond * 300)
+				time.Sleep(300 * time.Millisecond)
 			},
 			wantErr: assert.Error,
 		},
@@ -71,7 +71,7 @@ func Test_future_AwaitCompletion(t *testing.T) {
 			name: "completes canceled without error",
 			args: args{ctx: context.TODO()},
 			completer: func(f *future) {
-				time.Sleep(time.Millisecond * 300)
+				time.Sleep(300 * time.Millisecond)
 				f.Cancel(true, nil)
 			},
 			wantErr: func(t assert.TestingT, err error, i ...any) bool {
@@ -83,7 +83,7 @@ func Test_future_AwaitCompletion(t *testing.T) {
 			name: "completes canceled with particular error",
 			args: args{ctx: context.TODO()},
 			completer: func(f *future) {
-				time.Sleep(time.Millisecond * 300)
+				time.Sleep(300 * time.Millisecond)
 				f.Cancel(true, errors.New("Uh oh"))
 			},
 			wantErr: func(t assert.TestingT, err error, i ...any) bool {

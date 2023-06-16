@@ -72,7 +72,7 @@ func NewConnection(unitIdentifier uint8, messageCodec spi.MessageCodec, connecti
 		}
 	}
 	connection.DefaultConnection = _default.NewDefaultConnection(connection,
-		_default.WithDefaultTtl(time.Second*5),
+		_default.WithDefaultTtl(5*time.Second),
 		_default.WithPlcTagHandler(tagHandler),
 		_default.WithPlcValueHandler(NewValueHandler(_options...)),
 	)

@@ -200,10 +200,10 @@ func (d *Discoverer) createDeviceScanDispatcher(udpTransportInstance *udp.Transp
 		}
 		// Keep on reading responses till the timeout is done.
 		// TODO: Make this configurable
-		timeout := time.NewTimer(time.Second * 1)
+		timeout := time.NewTimer(1 * time.Second)
 		timeout.Stop()
 		for start := time.Now(); time.Since(start) < time.Second*5; {
-			timeout.Reset(time.Second * 1)
+			timeout.Reset(1 * time.Second)
 			select {
 			case message := <-codec.GetDefaultIncomingMessageChannel():
 				{

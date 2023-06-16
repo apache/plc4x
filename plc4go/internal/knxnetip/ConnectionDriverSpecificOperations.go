@@ -49,7 +49,7 @@ func (m *Connection) ReadGroupAddress(ctx context.Context, groupAddress []byte, 
 	result := make(chan KnxReadResult, 1)
 
 	sendResponse := func(value values.PlcValue, numItems uint8, err error) {
-		timeout := time.NewTimer(time.Millisecond * 10)
+		timeout := time.NewTimer(10 * time.Millisecond)
 		select {
 		case result <- KnxReadResult{
 			value:    value,
@@ -110,7 +110,7 @@ func (m *Connection) DeviceConnect(ctx context.Context, targetAddress driverMode
 	result := make(chan KnxDeviceConnectResult, 1)
 
 	sendResponse := func(connection *KnxDeviceConnection, err error) {
-		timeout := time.NewTimer(time.Millisecond * 10)
+		timeout := time.NewTimer(10 * time.Millisecond)
 		select {
 		case result <- KnxDeviceConnectResult{
 			connection: connection,
@@ -206,7 +206,7 @@ func (m *Connection) DeviceDisconnect(ctx context.Context, targetAddress driverM
 	result := make(chan KnxDeviceDisconnectResult, 1)
 
 	sendResponse := func(connection *KnxDeviceConnection, err error) {
-		timeout := time.NewTimer(time.Millisecond * 10)
+		timeout := time.NewTimer(10 * time.Millisecond)
 		select {
 		case result <- KnxDeviceDisconnectResult{
 			connection: connection,
@@ -245,7 +245,7 @@ func (m *Connection) DeviceAuthenticate(ctx context.Context, targetAddress drive
 	result := make(chan KnxDeviceAuthenticateResult, 1)
 
 	sendResponse := func(err error) {
-		timeout := time.NewTimer(time.Millisecond * 10)
+		timeout := time.NewTimer(10 * time.Millisecond)
 		select {
 		case result <- KnxDeviceAuthenticateResult{
 			err: err,
@@ -303,7 +303,7 @@ func (m *Connection) DeviceReadProperty(ctx context.Context, targetAddress drive
 	result := make(chan KnxReadResult, 1)
 
 	sendResponse := func(value values.PlcValue, numItems uint8, err error) {
-		timeout := time.NewTimer(time.Millisecond * 10)
+		timeout := time.NewTimer(10 * time.Millisecond)
 		select {
 		case result <- KnxReadResult{
 			value:    value,
@@ -388,7 +388,7 @@ func (m *Connection) DeviceReadPropertyDescriptor(ctx context.Context, targetAdd
 	result := make(chan KnxReadResult, 1)
 
 	sendResponse := func(value values.PlcValue, numItems uint8, err error) {
-		timeout := time.NewTimer(time.Millisecond * 10)
+		timeout := time.NewTimer(10 * time.Millisecond)
 		select {
 		case result <- KnxReadResult{
 			value:    value,
@@ -453,7 +453,7 @@ func (m *Connection) DeviceReadMemory(ctx context.Context, targetAddress driverM
 	result := make(chan KnxReadResult, 1)
 
 	sendResponse := func(value values.PlcValue, numItems uint8, err error) {
-		timeout := time.NewTimer(time.Millisecond * 10)
+		timeout := time.NewTimer(10 * time.Millisecond)
 		select {
 		case result <- KnxReadResult{
 			value:    value,

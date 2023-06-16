@@ -135,7 +135,7 @@ func (m Browser) executeDeviceQuery(ctx context.Context, query DeviceQuery, inte
 					queryResults = append(queryResults, queryResult)
 				}
 
-				disconnectTtlTimer := time.NewTimer(m.connection.defaultTtl * 10)
+				disconnectTtlTimer := time.NewTimer(10 * m.connection.defaultTtl)
 				deviceDisconnections := m.connection.DeviceDisconnect(ctx, knxAddress)
 				select {
 				case _ = <-deviceDisconnections:

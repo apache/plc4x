@@ -98,7 +98,7 @@ func (t *plcConnectionLease) Close() <-chan plc4go.PlcConnectionCloseResult {
 	go func() {
 		// Check if the connection is still alive, if it is, put it back into the cache
 		pingResults := t.Ping()
-		pingTimeout := time.NewTimer(time.Second * 5)
+		pingTimeout := time.NewTimer(5 * time.Second)
 		newState := StateIdle
 		select {
 		case pingResult := <-pingResults:

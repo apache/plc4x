@@ -187,7 +187,7 @@ func NewConnection(transportInstance transports.TransportInstance, connectionOpt
 		valueCache:              map[uint16][]byte{},
 		valueCacheMutex:         sync.RWMutex{},
 		metadata:                &ConnectionMetadata{},
-		defaultTtl:              time.Second * 10,
+		defaultTtl:              10 * time.Second,
 		DeviceConnections:       map[driverModel.KnxAddress]*KnxDeviceConnection{},
 		handleTunnelingRequests: true,
 		passLogToModel:          options.ExtractPassLoggerToModel(_options...),

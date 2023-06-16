@@ -311,7 +311,7 @@ mainLoop:
 		if numberOfExpectations <= 0 && m.customMessageHandling == nil {
 			workerLog.Trace().Msg("no available expectations")
 			// Sleep for 10ms
-			time.Sleep(time.Millisecond * 10)
+			time.Sleep(10 * time.Millisecond)
 			continue mainLoop
 		}
 		m.TimeoutExpectations(now)
@@ -321,14 +321,14 @@ mainLoop:
 		message, err := m.Receive()
 		if err != nil {
 			workerLog.Error().Err(err).Msg("got an error reading from transport")
-			time.Sleep(time.Millisecond * 10)
+			time.Sleep(10 * time.Millisecond)
 			continue mainLoop
 		}
 		if message == nil {
 			workerLog.Trace().Msg("Not enough data yet")
 			// Sleep for 10ms before checking again, in order to not
 			// consume 100% CPU Power.
-			time.Sleep(time.Millisecond * 10)
+			time.Sleep(10 * time.Millisecond)
 			continue mainLoop
 		}
 		workerLog.Trace().Msgf("got message:\n%s", message)

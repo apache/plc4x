@@ -522,7 +522,7 @@ func (c *Connection) sendCalDataWrite(ctx context.Context, ch chan plc4go.PlcCon
 	}
 
 	startTime := time.Now()
-	timeout := time.NewTimer(time.Second * 2)
+	timeout := time.NewTimer(2 * time.Second)
 	defer utils.CleanupTimer(timeout)
 	select {
 	case <-directCommandAckChan:

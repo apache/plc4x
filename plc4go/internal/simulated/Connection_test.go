@@ -109,7 +109,7 @@ func TestConnection_Connect(t *testing.T) {
 				},
 				connected: true,
 			}, nil),
-			delayAtLeast: time.Second * 1,
+			delayAtLeast: 1 * time.Second,
 			wantErr:      false,
 		},
 	}

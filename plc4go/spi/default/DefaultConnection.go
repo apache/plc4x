@@ -162,7 +162,7 @@ type defaultConnection struct {
 }
 
 func buildDefaultConnection(requirements DefaultConnectionRequirements, _options ...options.WithOption) DefaultConnection {
-	defaultTtl := time.Second * 10
+	defaultTtl := 10 * time.Second
 	var tagHandler spi.PlcTagHandler
 	var valueHandler spi.PlcValueHandler
 

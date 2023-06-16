@@ -41,8 +41,8 @@ func TestLeasedPlcConnection_IsTraceEnabled(t *testing.T) {
 	// Reduce the max lease time as this way we also reduce the max wait time.
 	cache := plcConnectionCache{
 		driverManager: driverManager,
-		maxLeaseTime:  time.Second * 1,
-		maxWaitTime:   time.Second * 5,
+		maxLeaseTime:  1 * time.Second,
+		maxWaitTime:   5 * time.Second,
 		cacheLock:     lock.NewCASMutex(),
 		connections:   make(map[string]*connectionContainer),
 		tracer:        nil,
@@ -112,8 +112,8 @@ func TestLeasedPlcConnection_GetTracer(t *testing.T) {
 	// Reduce the max lease time as this way we also reduce the max wait time.
 	cache := plcConnectionCache{
 		driverManager: driverManager,
-		maxLeaseTime:  time.Second * 1,
-		maxWaitTime:   time.Second * 5,
+		maxLeaseTime:  1 * time.Second,
+		maxWaitTime:   5 * time.Second,
 		cacheLock:     lock.NewCASMutex(),
 		connections:   make(map[string]*connectionContainer),
 		tracer:        nil,
@@ -157,8 +157,8 @@ func TestLeasedPlcConnection_GetConnectionId(t *testing.T) {
 	// Reduce the max lease time as this way we also reduce the max wait time.
 	cache := plcConnectionCache{
 		driverManager: driverManager,
-		maxLeaseTime:  time.Second * 1,
-		maxWaitTime:   time.Second * 5,
+		maxLeaseTime:  1 * time.Second,
+		maxWaitTime:   5 * time.Second,
 		cacheLock:     lock.NewCASMutex(),
 		connections:   make(map[string]*connectionContainer),
 		tracer:        nil,
@@ -202,8 +202,8 @@ func TestLeasedPlcConnection_Connect(t *testing.T) {
 	// Reduce the max lease time as this way we also reduce the max wait time.
 	cache := plcConnectionCache{
 		driverManager: driverManager,
-		maxLeaseTime:  time.Second * 1,
-		maxWaitTime:   time.Second * 5,
+		maxLeaseTime:  1 * time.Second,
+		maxWaitTime:   5 * time.Second,
 		cacheLock:     lock.NewCASMutex(),
 		connections:   make(map[string]*connectionContainer),
 		tracer:        nil,
@@ -245,8 +245,8 @@ func TestLeasedPlcConnection_BlockingClose(t *testing.T) {
 	// Reduce the max lease time as this way we also reduce the max wait time.
 	cache := plcConnectionCache{
 		driverManager: driverManager,
-		maxLeaseTime:  time.Second * 1,
-		maxWaitTime:   time.Second * 5,
+		maxLeaseTime:  1 * time.Second,
+		maxWaitTime:   5 * time.Second,
 		cacheLock:     lock.NewCASMutex(),
 		connections:   make(map[string]*connectionContainer),
 		tracer:        nil,
@@ -289,8 +289,8 @@ func TestLeasedPlcConnection_Close(t *testing.T) {
 	// Reduce the max lease time as this way we also reduce the max wait time.
 	cache := plcConnectionCache{
 		driverManager: driverManager,
-		maxLeaseTime:  time.Second * 1,
-		maxWaitTime:   time.Second * 5,
+		maxLeaseTime:  1 * time.Second,
+		maxWaitTime:   5 * time.Second,
 		cacheLock:     lock.NewCASMutex(),
 		connections:   make(map[string]*connectionContainer),
 		tracer:        nil,
@@ -333,8 +333,8 @@ func TestLeasedPlcConnection_IsConnected(t *testing.T) {
 	// Reduce the max lease time as this way we also reduce the max wait time.
 	cache := plcConnectionCache{
 		driverManager: driverManager,
-		maxLeaseTime:  time.Second * 1,
-		maxWaitTime:   time.Second * 5,
+		maxLeaseTime:  1 * time.Second,
+		maxWaitTime:   5 * time.Second,
 		cacheLock:     lock.NewCASMutex(),
 		connections:   make(map[string]*connectionContainer),
 		tracer:        nil,
@@ -369,8 +369,8 @@ func TestLeasedPlcConnection_Ping(t *testing.T) {
 	// Reduce the max lease time as this way we also reduce the max wait time.
 	cache := plcConnectionCache{
 		driverManager: driverManager,
-		maxLeaseTime:  time.Second * 1,
-		maxWaitTime:   time.Second * 5,
+		maxLeaseTime:  1 * time.Second,
+		maxWaitTime:   5 * time.Second,
 		cacheLock:     lock.NewCASMutex(),
 		connections:   make(map[string]*connectionContainer),
 		tracer:        nil,
@@ -414,8 +414,8 @@ func TestLeasedPlcConnection_GetMetadata(t *testing.T) {
 	// Reduce the max lease time as this way we also reduce the max wait time.
 	cache := plcConnectionCache{
 		driverManager: driverManager,
-		maxLeaseTime:  time.Second * 1,
-		maxWaitTime:   time.Second * 5,
+		maxLeaseTime:  1 * time.Second,
+		maxWaitTime:   5 * time.Second,
 		cacheLock:     lock.NewCASMutex(),
 		connections:   make(map[string]*connectionContainer),
 		tracer:        nil,
@@ -463,8 +463,8 @@ func TestLeasedPlcConnection_ReadRequestBuilder(t *testing.T) {
 	// Reduce the max lease time as this way we also reduce the max wait time.
 	cache := plcConnectionCache{
 		driverManager: driverManager,
-		maxLeaseTime:  time.Second * 1,
-		maxWaitTime:   time.Second * 5,
+		maxLeaseTime:  1 * time.Second,
+		maxWaitTime:   5 * time.Second,
 		cacheLock:     lock.NewCASMutex(),
 		connections:   make(map[string]*connectionContainer),
 		tracer:        nil,
@@ -509,8 +509,8 @@ func TestLeasedPlcConnection_WriteRequestBuilder(t *testing.T) {
 	// Reduce the max lease time as this way we also reduce the max wait time.
 	cache := plcConnectionCache{
 		driverManager: driverManager,
-		maxLeaseTime:  time.Second * 1,
-		maxWaitTime:   time.Second * 5,
+		maxLeaseTime:  1 * time.Second,
+		maxWaitTime:   5 * time.Second,
 		cacheLock:     lock.NewCASMutex(),
 		connections:   make(map[string]*connectionContainer),
 		tracer:        nil,
@@ -555,8 +555,8 @@ func TestLeasedPlcConnection_SubscriptionRequestBuilder(t *testing.T) {
 	// Reduce the max lease time as this way we also reduce the max wait time.
 	cache := plcConnectionCache{
 		driverManager: driverManager,
-		maxLeaseTime:  time.Second * 1,
-		maxWaitTime:   time.Second * 5,
+		maxLeaseTime:  1 * time.Second,
+		maxWaitTime:   5 * time.Second,
 		cacheLock:     lock.NewCASMutex(),
 		connections:   make(map[string]*connectionContainer),
 		tracer:        nil,
@@ -601,8 +601,8 @@ func TestLeasedPlcConnection_UnsubscriptionRequestBuilder(t *testing.T) {
 	// Reduce the max lease time as this way we also reduce the max wait time.
 	cache := plcConnectionCache{
 		driverManager: driverManager,
-		maxLeaseTime:  time.Second * 1,
-		maxWaitTime:   time.Second * 5,
+		maxLeaseTime:  1 * time.Second,
+		maxWaitTime:   5 * time.Second,
 		cacheLock:     lock.NewCASMutex(),
 		connections:   make(map[string]*connectionContainer),
 		tracer:        nil,
@@ -655,8 +655,8 @@ func TestLeasedPlcConnection_BrowseRequestBuilder(t *testing.T) {
 	// Reduce the max lease time as this way we also reduce the max wait time.
 	cache := plcConnectionCache{
 		driverManager: driverManager,
-		maxLeaseTime:  time.Second * 1,
-		maxWaitTime:   time.Second * 5,
+		maxLeaseTime:  1 * time.Second,
+		maxWaitTime:   5 * time.Second,
 		cacheLock:     lock.NewCASMutex(),
 		connections:   make(map[string]*connectionContainer),
 		tracer:        nil,
