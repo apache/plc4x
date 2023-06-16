@@ -26,9 +26,12 @@ import (
 
 // TraceTransactionManagerWorkers when set to true the transaction manager displays worker states in log
 var (
-	TraceTransactionManagerWorkers      bool
+	// Deprecated: this should be done with an option, don't use it
+	TraceTransactionManagerWorkers bool
+	// Deprecated: this should be done with an option, don't use it
 	TraceTransactionManagerTransactions bool
-	TraceDefaultMessageCodecWorker      bool
+	// Deprecated: this should be done with an option, don't use it
+	TraceDefaultMessageCodecWorker bool
 )
 
 // TraceConnectionCache when set to true the connection cache outputs logs by default
