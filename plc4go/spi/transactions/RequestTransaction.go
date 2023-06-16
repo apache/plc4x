@@ -105,16 +105,17 @@ func (t *requestTransaction) Submit(operation RequestTransactionRunnable) {
 	if t.operation != nil {
 		t.transactionLog.Warn().Msg("Operation already set")
 	}
-	t.transactionLog.Trace().Msgf("Submission of transaction %d", t.transactionId)
+	t.transactionLog.Trace().Int32("transactionId", t.transactionId).Msg("Submission")
 	t.operation = func() {
-		t.transactionLog.Trace().Msgf("Start execution of transaction %d", t.transactionId)
+		t.transactionLog.Trace().Int32("transactionId", t.transactionId).Msg("Start operation")
 		operation(t)
-		t.transactionLog.Trace().Msgf("Completed execution of transaction %d", t.transactionId)
+		t.transactionLog.Trace().Int32("transactionId", t.transactionId).Msg("Completed operation")
 	}
 	t.parent.submitTransaction(t)
 }
 
 func (t *requestTransaction) AwaitCompletion(ctx context.Context) error {
+	t.transactionLog.Trace().Int32("transactionId", t.transactionId).Msg("Awaiting completion")
 	timeout, cancelFunc := context.WithTimeout(ctx, time.Minute*30) // This is intentionally set very high
 	defer cancelFunc()
 	for t.completionFuture == nil {
@@ -125,6 +126,7 @@ func (t *requestTransaction) AwaitCompletion(ctx context.Context) error {
 		}
 	}
 	if err := t.completionFuture.AwaitCompletion(ctx); err != nil {
+		t.transactionLog.Trace().Int32("transactionId", t.transactionId).Msg("Errored")
 		return err
 	}
 	stillActive := true
@@ -139,6 +141,7 @@ func (t *requestTransaction) AwaitCompletion(ctx context.Context) error {
 		}
 		t.parent.runningRequestMutex.RUnlock()
 	}
+	t.transactionLog.Trace().Int32("transactionId", t.transactionId).Msg("Completed")
 	return nil
 }
 
