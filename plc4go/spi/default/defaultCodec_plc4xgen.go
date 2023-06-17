@@ -102,6 +102,14 @@ func (d *defaultCodec) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 	if err := writeBuffer.WriteBit("running", d.running.Load()); err != nil {
 		return err
 	}
+
+	if err := writeBuffer.WriteString("receiveTimeout", uint32(len(d.receiveTimeout.String())*8), "UTF-8", d.receiveTimeout.String()); err != nil {
+		return err
+	}
+
+	if err := writeBuffer.WriteBit("traceDefaultMessageCodecWorker", d.traceDefaultMessageCodecWorker); err != nil {
+		return err
+	}
 	if err := writeBuffer.PopContext("defaultCodec"); err != nil {
 		return err
 	}
