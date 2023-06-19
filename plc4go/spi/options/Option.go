@@ -49,7 +49,6 @@ func ExtractCustomLogger(options ...WithOption) (customLogger zerolog.Logger) {
 		switch option := option.(type) {
 		case withCustomLogger:
 			customLogger = option.logger
-			return
 		}
 	}
 	return
@@ -66,25 +65,26 @@ func WithReceiveTimeout(timeout time.Duration) WithOption {
 }
 
 // ExtractReceiveTimeout to extract the receive-timeout for reading operations. Defaults to 10 seconds
-func ExtractReceiveTimeout(options ...WithOption) time.Duration {
+func ExtractReceiveTimeout(options ...WithOption) (receiveDuration time.Duration) {
+	receiveDuration = 10 * time.Second
 	for _, option := range options {
 		switch option := option.(type) {
 		case withReceiveTimeout:
-			return option.timeout
+			receiveDuration = option.timeout
 		}
 	}
-	return 10 * time.Second
+	return
 }
 
 // ExtractPassLoggerToModel to extract the flag indicating that model should be passed to Model
-func ExtractPassLoggerToModel(options ...WithOption) bool {
+func ExtractPassLoggerToModel(options ...WithOption) (passLogger bool) {
 	for _, option := range options {
 		switch option := option.(type) {
 		case withPassLoggerToModel:
-			return option.passLogger
+			passLogger = option.passLogger
 		}
 	}
-	return false
+	return
 }
 
 // WithTraceTransactionManagerWorkers enables trace transaction manager workers
@@ -93,14 +93,14 @@ func WithTraceTransactionManagerWorkers(traceWorkers bool) WithOption {
 }
 
 // ExtractTransactionManagerWorkers to extract the flag indicating to trace transaction manager workers
-func ExtractTransactionManagerWorkers(options ...WithOption) bool {
+func ExtractTransactionManagerWorkers(options ...WithOption) (traceWorkers bool) {
 	for _, option := range options {
 		switch option := option.(type) {
 		case withTraceTransactionManagerWorkers:
-			return option.traceWorkers
+			traceWorkers = option.traceWorkers
 		}
 	}
-	return false
+	return
 }
 
 // WithTraceTransactionManagerTransactions enables trace transaction manager transactions
@@ -109,14 +109,14 @@ func WithTraceTransactionManagerTransactions(traceTransactions bool) WithOption 
 }
 
 // ExtractTraceTransactionManagerTransactions to extract the flag indicating to trace transaction manager transactions
-func ExtractTraceTransactionManagerTransactions(options ...WithOption) bool {
+func ExtractTraceTransactionManagerTransactions(options ...WithOption) (traceTransactions bool) {
 	for _, option := range options {
 		switch option := option.(type) {
 		case withTraceTransactionManagerTransactions:
-			return option.traceTransactions
+			traceTransactions = option.traceTransactions
 		}
 	}
-	return false
+	return
 }
 
 // WithTraceDefaultMessageCodecWorker enables trace default message codec worker
@@ -125,14 +125,14 @@ func WithTraceDefaultMessageCodecWorker(traceWorkers bool) WithOption {
 }
 
 // ExtractTraceDefaultMessageCodecWorker to extract the flag indicating to trace default message codec workers
-func ExtractTraceDefaultMessageCodecWorker(options ...WithOption) bool {
+func ExtractTraceDefaultMessageCodecWorker(options ...WithOption) (traceTransactions bool) {
 	for _, option := range options {
 		switch option := option.(type) {
 		case withTraceTransactionManagerTransactions:
-			return option.traceTransactions
+			traceTransactions = option.traceTransactions
 		}
 	}
-	return false
+	return
 }
 
 // WithExecutorOptionTracerWorkers sets a flag which extends logging for workers
@@ -145,10 +145,10 @@ func ExtractTracerWorkers(_options ...WithOption) (traceWorkers bool, found bool
 	for _, option := range _options {
 		switch option := option.(type) {
 		case *withTracerExecutorWorkersOption:
-			return option.traceWorkers, true
+			traceWorkers, found = option.traceWorkers, true
 		}
 	}
-	return false, false
+	return
 }
 
 // GetLoggerContextForModel returns a log context if the WithPassLoggerToModel WithOption is set
