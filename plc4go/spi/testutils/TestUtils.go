@@ -114,12 +114,19 @@ func TestContext(t *testing.T) context.Context {
 	return ctx
 }
 
-var highLogPrecision bool
+var (
+	highLogPrecision     bool
+	traceExecutorWorkers bool
+)
 
 func init() {
 	highLogPrecision = os.Getenv("PLC4X_TEST_HIGH_TEST_LOG_PRECISION") == "true"
 	if highLogPrecision {
 		zerolog.TimeFieldFormat = time.RFC3339Nano
+	}
+	traceExecutorWorkers = true
+	if traceExecutorWorkersEnv := os.Getenv("PLC4X_TEST_TRACE_EXECUTOR_WORKERS"); traceExecutorWorkersEnv != "" {
+		traceExecutorWorkers = traceExecutorWorkersEnv == "true"
 	}
 }
 
@@ -153,15 +160,14 @@ func ProduceTestingLogger(t *testing.T) zerolog.Logger {
 
 // EnrichOptionsWithOptionsForTesting appends options useful for testing to config.WithOption s
 func EnrichOptionsWithOptionsForTesting(t *testing.T, _options ...options.WithOption) []options.WithOption {
-	traceWorkers := true
 	if extractedTraceWorkers, found := options.ExtractTracerWorkers(_options...); found {
-		traceWorkers = extractedTraceWorkers
+		traceExecutorWorkers = extractedTraceWorkers
 	}
 	// TODO: apply to other options like above
 	return append(_options,
 		options.WithCustomLogger(ProduceTestingLogger(t)),
 		options.WithPassLoggerToModel(true),
-		options.WithExecutorOptionTracerWorkers(traceWorkers),
+		options.WithExecutorOptionTracerWorkers(traceExecutorWorkers),
 	)
 }
 
