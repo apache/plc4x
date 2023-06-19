@@ -1632,6 +1632,10 @@ public enum BACnetVendorId {
   UBIQISENSE_APS((int) 1420, (int) 1420, (String) "Ubiqisense ApS"),
   TIGER_SOFT((int) 1421, (int) 1421, (String) "Tiger-Soft"),
   ECODOM_SRL((int) 1422, (int) 1422, (String) "Ecodom Srl"),
+  DOLPHIN_SOLUTIONS_LTD((int) 1425, (int) 1425, (String) "Dolphin Solutions Ltd"),
+  MITSUBISHI_ELECTRIC_CORPORATION(
+      (int) 1426, (int) 1426, (String) "Mitsubishi Electric Corporation"),
+  ECOVENA((int) 1427, (int) 1427, (String) "Ecovena"),
   UNKNOWN_VENDOR((int) 0xFFFF, (int) 0xFFFF, (String) "Unknown");
   private static final Map<Integer, BACnetVendorId> map;
 
