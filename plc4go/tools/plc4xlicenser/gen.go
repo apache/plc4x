@@ -118,7 +118,7 @@ func main() {
 	if err := os.WriteFile(outputName, append(licenceContent, inputFile...), 0644); err != nil {
 		log.Fatalf("writing output: %s", err)
 	}
-	fmt.Printf("Fixed plc4x license of %s\n", licenseFileNameWithPath)
+	fmt.Printf("Fixed plc4x license of %s\n", outputName)
 }
 
 // isDirectory reports whether the named file is a directory.
