@@ -26,6 +26,8 @@ import (
 	"testing"
 	"time"
 
+	"github.com/apache/plc4x/plc4go/spi/transports"
+
 	"github.com/stretchr/testify/assert"
 )
 
@@ -118,7 +120,7 @@ func Test_defaultBufferedTransportInstance_FillBuffer(t *testing.T) {
 		DefaultBufferedTransportInstanceRequirements DefaultBufferedTransportInstanceRequirements
 	}
 	type args struct {
-		until func(pos uint, currentByte byte, reader *bufio.Reader) bool
+		until func(pos uint, currentByte byte, reader transports.ExtendedReader) bool
 	}
 	tests := []struct {
 		name      string
@@ -138,7 +140,7 @@ func Test_defaultBufferedTransportInstance_FillBuffer(t *testing.T) {
 		},
 		{
 			name: "fill it with reader",
-			args: args{func(pos uint, currentByte byte, reader *bufio.Reader) bool {
+			args: args{func(pos uint, currentByte byte, reader transports.ExtendedReader) bool {
 				return pos < 1
 			}},
 			mockSetup: func(t *testing.T, fields *fields, args *args) {
@@ -149,7 +151,7 @@ func Test_defaultBufferedTransportInstance_FillBuffer(t *testing.T) {
 		},
 		{
 			name: "fill it with reader errors",
-			args: args{func(pos uint, currentByte byte, reader *bufio.Reader) bool {
+			args: args{func(pos uint, currentByte byte, reader transports.ExtendedReader) bool {
 				return pos < 2
 			}},
 			mockSetup: func(t *testing.T, fields *fields, args *args) {

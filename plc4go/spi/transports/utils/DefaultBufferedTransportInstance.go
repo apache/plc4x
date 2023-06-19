@@ -20,25 +20,25 @@
 package utils
 
 import (
-	"bufio"
 	"context"
 	"runtime/debug"
 
 	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/apache/plc4x/plc4go/spi/transports"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 )
 
 type DefaultBufferedTransportInstanceRequirements interface {
-	GetReader() *bufio.Reader
+	GetReader() transports.ExtendedReader
 	Connect() error
 }
 
 type DefaultBufferedTransportInstance interface {
 	ConnectWithContext(ctx context.Context) error
 	GetNumBytesAvailableInBuffer() (uint32, error)
-	FillBuffer(until func(pos uint, currentByte byte, reader *bufio.Reader) bool) error
+	FillBuffer(until func(pos uint, currentByte byte, reader transports.ExtendedReader) bool) error
 	PeekReadableBytes(numBytes uint32) ([]byte, error)
 	Read(numBytes uint32) ([]byte, error)
 }
@@ -84,7 +84,7 @@ func (m *defaultBufferedTransportInstance) GetNumBytesAvailableInBuffer() (uint3
 	return uint32(m.GetReader().Buffered()), nil
 }
 
-func (m *defaultBufferedTransportInstance) FillBuffer(until func(pos uint, currentByte byte, reader *bufio.Reader) bool) error {
+func (m *defaultBufferedTransportInstance) FillBuffer(until func(pos uint, currentByte byte, reader transports.ExtendedReader) bool) error {
 	if m.GetReader() == nil {
 		return nil
 	}

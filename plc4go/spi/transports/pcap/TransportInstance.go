@@ -30,6 +30,7 @@ import (
 	"time"
 
 	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/apache/plc4x/plc4go/spi/transports"
 	transportUtils "github.com/apache/plc4x/plc4go/spi/transports/utils"
 
 	"github.com/gopacket/gopacket"
@@ -169,7 +170,7 @@ func (m *TransportInstance) Write(_ []byte) error {
 	return errors.New("Write to pcap not supported")
 }
 
-func (m *TransportInstance) GetReader() *bufio.Reader {
+func (m *TransportInstance) GetReader() transports.ExtendedReader {
 	return m.reader
 }
 

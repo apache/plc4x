@@ -20,11 +20,11 @@
 package tcp
 
 import (
-	"bufio"
 	"context"
 	"net"
 	"testing"
 
+	"github.com/apache/plc4x/plc4go/spi/transports"
 	transportUtils "github.com/apache/plc4x/plc4go/spi/transports/utils"
 
 	"github.com/stretchr/testify/assert"
@@ -69,43 +69,44 @@ func TestTransportInstance_Close(t *testing.T) {
 		ConnectTimeout                   uint32
 		transport                        *Transport
 		tcpConn                          net.Conn
-		reader                           *bufio.Reader
+		reader                           transports.ExtendedReader
 	}
 	tests := []struct {
-		name    string
-		fields  fields
-		wantErr bool
+		name        string
+		fields      fields
+		manipulator func(t *testing.T, ti *TransportInstance)
+		wantErr     bool
 	}{
 		{
 			name: "close it (no conn)",
 		},
 		{
 			name: "close it (broken connection)",
-			fields: fields{
-				tcpConn: &net.TCPConn{},
+			manipulator: func(t *testing.T, ti *TransportInstance) {
+				var tcpConn net.Conn = &net.TCPConn{}
+				ti.tcpConn.Store(&tcpConn)
 			},
 			wantErr: true,
 		},
 		{
 			name: "close it",
-			fields: fields{
-				tcpConn: func() *net.TCPConn {
-					listener, err := nettest.NewLocalListener("tcp")
-					require.NoError(t, err)
-					t.Cleanup(func() {
-						assert.NoError(t, listener.Close())
-					})
-					go func() {
-						_, _ = listener.Accept()
-					}()
-					tcp, err := net.DialTCP("tcp", nil, listener.Addr().(*net.TCPAddr))
-					require.NoError(t, err)
-					t.Cleanup(func() {
-						// As we already closed the connection with the whole method this should error
-						assert.Error(t, tcp.Close())
-					})
-					return tcp
-				}(),
+			manipulator: func(t *testing.T, ti *TransportInstance) {
+				listener, err := nettest.NewLocalListener("tcp")
+				require.NoError(t, err)
+				t.Cleanup(func() {
+					assert.NoError(t, listener.Close())
+				})
+				go func() {
+					_, _ = listener.Accept()
+				}()
+				tcp, err := net.DialTCP("tcp", nil, listener.Addr().(*net.TCPAddr))
+				require.NoError(t, err)
+				t.Cleanup(func() {
+					// As we already closed the connection with the whole method this should error
+					assert.Error(t, tcp.Close())
+				})
+				var tcpConn net.Conn = tcp
+				ti.tcpConn.Store(&tcpConn)
 			},
 		},
 	}
@@ -117,8 +118,9 @@ func TestTransportInstance_Close(t *testing.T) {
 				LocalAddress:                     tt.fields.LocalAddress,
 				ConnectTimeout:                   tt.fields.ConnectTimeout,
 				transport:                        tt.fields.transport,
-				tcpConn:                          tt.fields.tcpConn,
-				reader:                           tt.fields.reader,
+			}
+			if tt.manipulator != nil {
+				tt.manipulator(t, m)
 			}
 			if err := m.Close(); (err != nil) != tt.wantErr {
 				t.Errorf("Close() error = %v, wantErr %v", err, tt.wantErr)
@@ -134,8 +136,6 @@ func TestTransportInstance_Connect(t *testing.T) {
 		LocalAddress                     *net.TCPAddr
 		ConnectTimeout                   uint32
 		transport                        *Transport
-		tcpConn                          net.Conn
-		reader                           *bufio.Reader
 	}
 	tests := []struct {
 		name    string
@@ -155,8 +155,6 @@ func TestTransportInstance_Connect(t *testing.T) {
 				LocalAddress:                     tt.fields.LocalAddress,
 				ConnectTimeout:                   tt.fields.ConnectTimeout,
 				transport:                        tt.fields.transport,
-				tcpConn:                          tt.fields.tcpConn,
-				reader:                           tt.fields.reader,
 			}
 			if err := m.Connect(); (err != nil) != tt.wantErr {
 				t.Errorf("Connect() error = %v, wantErr %v", err, tt.wantErr)
@@ -172,8 +170,6 @@ func TestTransportInstance_ConnectWithContext(t *testing.T) {
 		LocalAddress                     *net.TCPAddr
 		ConnectTimeout                   uint32
 		transport                        *Transport
-		tcpConn                          net.Conn
-		reader                           *bufio.Reader
 	}
 	type args struct {
 		ctx context.Context
@@ -218,8 +214,6 @@ func TestTransportInstance_ConnectWithContext(t *testing.T) {
 				LocalAddress:                     tt.fields.LocalAddress,
 				ConnectTimeout:                   tt.fields.ConnectTimeout,
 				transport:                        tt.fields.transport,
-				tcpConn:                          tt.fields.tcpConn,
-				reader:                           tt.fields.reader,
 			}
 			if err := m.ConnectWithContext(tt.args.ctx); (err != nil) != tt.wantErr {
 				t.Errorf("ConnectWithContext() error = %v, wantErr %v", err, tt.wantErr)
@@ -235,13 +229,11 @@ func TestTransportInstance_GetReader(t *testing.T) {
 		LocalAddress                     *net.TCPAddr
 		ConnectTimeout                   uint32
 		transport                        *Transport
-		tcpConn                          net.Conn
-		reader                           *bufio.Reader
 	}
 	tests := []struct {
 		name   string
 		fields fields
-		want   *bufio.Reader
+		want   transports.ExtendedReader
 	}{
 		{
 			name: "get it",
@@ -255,8 +247,6 @@ func TestTransportInstance_GetReader(t *testing.T) {
 				LocalAddress:                     tt.fields.LocalAddress,
 				ConnectTimeout:                   tt.fields.ConnectTimeout,
 				transport:                        tt.fields.transport,
-				tcpConn:                          tt.fields.tcpConn,
-				reader:                           tt.fields.reader,
 			}
 			if got := m.GetReader(); !assert.Equal(t, tt.want, got) {
 				t.Errorf("GetReader() = %v, want %v", got, tt.want)
@@ -272,8 +262,6 @@ func TestTransportInstance_IsConnected(t *testing.T) {
 		LocalAddress                     *net.TCPAddr
 		ConnectTimeout                   uint32
 		transport                        *Transport
-		tcpConn                          net.Conn
-		reader                           *bufio.Reader
 	}
 	tests := []struct {
 		name   string
@@ -292,8 +280,6 @@ func TestTransportInstance_IsConnected(t *testing.T) {
 				LocalAddress:                     tt.fields.LocalAddress,
 				ConnectTimeout:                   tt.fields.ConnectTimeout,
 				transport:                        tt.fields.transport,
-				tcpConn:                          tt.fields.tcpConn,
-				reader:                           tt.fields.reader,
 			}
 			if got := m.IsConnected(); got != tt.want {
 				t.Errorf("IsConnected() = %v, want %v", got, tt.want)
@@ -309,8 +295,6 @@ func TestTransportInstance_String(t *testing.T) {
 		LocalAddress                     *net.TCPAddr
 		ConnectTimeout                   uint32
 		transport                        *Transport
-		tcpConn                          net.Conn
-		reader                           *bufio.Reader
 	}
 	tests := []struct {
 		name   string
@@ -338,8 +322,6 @@ func TestTransportInstance_String(t *testing.T) {
 				LocalAddress:                     tt.fields.LocalAddress,
 				ConnectTimeout:                   tt.fields.ConnectTimeout,
 				transport:                        tt.fields.transport,
-				tcpConn:                          tt.fields.tcpConn,
-				reader:                           tt.fields.reader,
 			}
 			if got := m.String(); got != tt.want {
 				t.Errorf("String() = %v, want %v", got, tt.want)
@@ -355,17 +337,16 @@ func TestTransportInstance_Write(t *testing.T) {
 		LocalAddress                     *net.TCPAddr
 		ConnectTimeout                   uint32
 		transport                        *Transport
-		tcpConn                          net.Conn
-		reader                           *bufio.Reader
 	}
 	type args struct {
 		data []byte
 	}
 	tests := []struct {
-		name    string
-		fields  fields
-		args    args
-		wantErr bool
+		name        string
+		fields      fields
+		args        args
+		manipulator func(t *testing.T, ti *TransportInstance)
+		wantErr     bool
 	}{
 		{
 			name:    "write it (failing)",
@@ -373,30 +354,30 @@ func TestTransportInstance_Write(t *testing.T) {
 		},
 		{
 			name: "write it (failing with con)",
-			fields: fields{
-				tcpConn: &net.TCPConn{},
+			manipulator: func(t *testing.T, ti *TransportInstance) {
+				var tcpConn net.Conn = &net.TCPConn{}
+				ti.tcpConn.Store(&tcpConn)
 			},
 			wantErr: true,
 		},
 		{
 			name: "write it",
-			fields: fields{
-				tcpConn: func() *net.TCPConn {
-					listener, err := nettest.NewLocalListener("tcp")
-					require.NoError(t, err)
-					t.Cleanup(func() {
-						assert.NoError(t, listener.Close())
-					})
-					go func() {
-						_, _ = listener.Accept()
-					}()
-					tcp, err := net.DialTCP("tcp", nil, listener.Addr().(*net.TCPAddr))
-					require.NoError(t, err)
-					t.Cleanup(func() {
-						assert.NoError(t, tcp.Close())
-					})
-					return tcp
-				}(),
+			manipulator: func(t *testing.T, ti *TransportInstance) {
+				listener, err := nettest.NewLocalListener("tcp")
+				require.NoError(t, err)
+				t.Cleanup(func() {
+					assert.NoError(t, listener.Close())
+				})
+				go func() {
+					_, _ = listener.Accept()
+				}()
+				tcp, err := net.DialTCP("tcp", nil, listener.Addr().(*net.TCPAddr))
+				require.NoError(t, err)
+				t.Cleanup(func() {
+					assert.NoError(t, tcp.Close())
+				})
+				var tcpConn net.Conn = tcp
+				ti.tcpConn.Store(&tcpConn)
 			},
 		},
 	}
@@ -408,8 +389,9 @@ func TestTransportInstance_Write(t *testing.T) {
 				LocalAddress:                     tt.fields.LocalAddress,
 				ConnectTimeout:                   tt.fields.ConnectTimeout,
 				transport:                        tt.fields.transport,
-				tcpConn:                          tt.fields.tcpConn,
-				reader:                           tt.fields.reader,
+			}
+			if tt.manipulator != nil {
+				tt.manipulator(t, m)
 			}
 			if err := m.Write(tt.args.data); (err != nil) != tt.wantErr {
 				t.Errorf("Write() error = %v, wantErr %v", err, tt.wantErr)

@@ -20,9 +20,10 @@
 package test
 
 import (
-	"bufio"
 	"context"
 	"testing"
+
+	"github.com/apache/plc4x/plc4go/spi/transports"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -205,7 +206,7 @@ func TestTransportInstance_FillBuffer(t *testing.T) {
 		writeInterceptor func(transportInstance *TransportInstance, data []byte)
 	}
 	type args struct {
-		until func(pos uint, currentByte byte, reader *bufio.Reader) bool
+		until func(pos uint, currentByte byte, reader transports.ExtendedReader) bool
 	}
 	tests := []struct {
 		name    string
@@ -219,7 +220,7 @@ func TestTransportInstance_FillBuffer(t *testing.T) {
 				connected: true,
 			},
 			args: args{
-				until: func(pos uint, currentByte byte, reader *bufio.Reader) bool {
+				until: func(pos uint, currentByte byte, reader transports.ExtendedReader) bool {
 					return pos < 3
 				},
 			},
@@ -232,7 +233,7 @@ func TestTransportInstance_FillBuffer(t *testing.T) {
 				readBuffer: []byte{1, 2, 3, 4},
 			},
 			args: args{
-				until: func(pos uint, currentByte byte, reader *bufio.Reader) bool {
+				until: func(pos uint, currentByte byte, reader transports.ExtendedReader) bool {
 					return pos < 3
 				},
 			},

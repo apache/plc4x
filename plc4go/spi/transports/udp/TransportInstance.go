@@ -26,6 +26,7 @@ import (
 	"net"
 
 	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/apache/plc4x/plc4go/spi/transports"
 
 	"github.com/libp2p/go-reuseport"
 	"github.com/pkg/errors"
@@ -133,7 +134,7 @@ func (m *TransportInstance) GetNumBytesAvailableInBuffer() (uint32, error) {
 	return uint32(m.reader.Buffered()), nil
 }
 
-func (m *TransportInstance) FillBuffer(until func(pos uint, currentByte byte, reader *bufio.Reader) bool) error {
+func (m *TransportInstance) FillBuffer(until func(pos uint, currentByte byte, reader transports.ExtendedReader) bool) error {
 	nBytes := uint32(1)
 	for {
 		_bytes, err := m.PeekReadableBytes(nBytes)

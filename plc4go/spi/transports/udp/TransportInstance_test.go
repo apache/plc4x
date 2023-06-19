@@ -23,6 +23,7 @@ import (
 	"bufio"
 	"bytes"
 	"context"
+	"github.com/apache/plc4x/plc4go/spi/transports"
 	"net"
 	"testing"
 
@@ -299,7 +300,7 @@ func TestTransportInstance_FillBuffer(t *testing.T) {
 		reader         *bufio.Reader
 	}
 	type args struct {
-		until func(pos uint, currentByte byte, reader *bufio.Reader) bool
+		until func(pos uint, currentByte byte, reader transports.ExtendedReader) bool
 	}
 	tests := []struct {
 		name    string
@@ -317,7 +318,7 @@ func TestTransportInstance_FillBuffer(t *testing.T) {
 				reader: bufio.NewReader(bytes.NewReader([]byte{1, 2, 3, 4})),
 			},
 			args: args{
-				until: func(pos uint, currentByte byte, reader *bufio.Reader) bool {
+				until: func(pos uint, currentByte byte, reader transports.ExtendedReader) bool {
 					return pos < 2
 				},
 			},

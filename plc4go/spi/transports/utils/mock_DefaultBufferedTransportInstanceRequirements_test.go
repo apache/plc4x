@@ -22,8 +22,7 @@
 package utils
 
 import (
-	bufio "bufio"
-
+	transports "github.com/apache/plc4x/plc4go/spi/transports"
 	mock "github.com/stretchr/testify/mock"
 )
 
@@ -82,15 +81,15 @@ func (_c *MockDefaultBufferedTransportInstanceRequirements_Connect_Call) RunAndR
 }
 
 // GetReader provides a mock function with given fields:
-func (_m *MockDefaultBufferedTransportInstanceRequirements) GetReader() *bufio.Reader {
+func (_m *MockDefaultBufferedTransportInstanceRequirements) GetReader() transports.ExtendedReader {
 	ret := _m.Called()
 
-	var r0 *bufio.Reader
-	if rf, ok := ret.Get(0).(func() *bufio.Reader); ok {
+	var r0 transports.ExtendedReader
+	if rf, ok := ret.Get(0).(func() transports.ExtendedReader); ok {
 		r0 = rf()
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*bufio.Reader)
+			r0 = ret.Get(0).(transports.ExtendedReader)
 		}
 	}
 
@@ -114,12 +113,12 @@ func (_c *MockDefaultBufferedTransportInstanceRequirements_GetReader_Call) Run(r
 	return _c
 }
 
-func (_c *MockDefaultBufferedTransportInstanceRequirements_GetReader_Call) Return(_a0 *bufio.Reader) *MockDefaultBufferedTransportInstanceRequirements_GetReader_Call {
+func (_c *MockDefaultBufferedTransportInstanceRequirements_GetReader_Call) Return(_a0 transports.ExtendedReader) *MockDefaultBufferedTransportInstanceRequirements_GetReader_Call {
 	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *MockDefaultBufferedTransportInstanceRequirements_GetReader_Call) RunAndReturn(run func() *bufio.Reader) *MockDefaultBufferedTransportInstanceRequirements_GetReader_Call {
+func (_c *MockDefaultBufferedTransportInstanceRequirements_GetReader_Call) RunAndReturn(run func() transports.ExtendedReader) *MockDefaultBufferedTransportInstanceRequirements_GetReader_Call {
 	_c.Call.Return(run)
 	return _c
 }

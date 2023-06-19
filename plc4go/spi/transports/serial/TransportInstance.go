@@ -22,12 +22,15 @@ package serial
 import (
 	"bufio"
 	"fmt"
+	"io"
+
 	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/apache/plc4x/plc4go/spi/transports"
 	transportUtils "github.com/apache/plc4x/plc4go/spi/transports/utils"
+
 	"github.com/jacobsa/go-serial/serial"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
-	"io"
 )
 
 type TransportInstance struct {
@@ -106,7 +109,7 @@ func (m *TransportInstance) Write(data []byte) error {
 	return nil
 }
 
-func (m *TransportInstance) GetReader() *bufio.Reader {
+func (m *TransportInstance) GetReader() transports.ExtendedReader {
 	return m.reader
 }
 

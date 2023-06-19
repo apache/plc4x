@@ -19,25 +19,13 @@
 
 package transports
 
-import (
-	"context"
-	"fmt"
-)
+import "io"
 
-type TransportInstance interface {
-	fmt.Stringer
-	Connect() error
-	ConnectWithContext(ctx context.Context) error
-	Close() error
-
-	IsConnected() bool
-
-	// FillBuffer fills the buffer `until` false (Useful in conjunction if you want GetNumBytesAvailableInBuffer)
-	FillBuffer(until func(pos uint, currentByte byte, reader ExtendedReader) bool) error
-	// GetNumBytesAvailableInBuffer returns the bytes currently available in buffer (!!!Careful: if you looking for a termination you have to use FillBuffer)
-	GetNumBytesAvailableInBuffer() (uint32, error)
-	PeekReadableBytes(numBytes uint32) ([]byte, error)
-	Read(numBytes uint32) ([]byte, error)
-
-	Write(data []byte) error
+type ExtendedReader interface {
+	io.Reader
+	io.ByteReader
+	// Peek returns the next n bytes without advancing the reader.
+	Peek(int) ([]byte, error)
+	// Buffered returns the number of bytes that can be read from the current buffer.
+	Buffered() int
 }

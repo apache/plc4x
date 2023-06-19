@@ -26,6 +26,7 @@ import (
 	"net"
 
 	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/apache/plc4x/plc4go/spi/transports"
 	transportUtils "github.com/apache/plc4x/plc4go/spi/transports/utils"
 
 	"github.com/pkg/errors"
@@ -34,12 +35,14 @@ import (
 
 type TransportInstance struct {
 	transportUtils.DefaultBufferedTransportInstance
+
 	RemoteAddress  *net.TCPAddr
 	LocalAddress   *net.TCPAddr
 	ConnectTimeout uint32
-	transport      *Transport
-	tcpConn        net.Conn
-	reader         *bufio.Reader
+
+	transport *Transport
+	tcpConn   net.Conn
+	reader    *bufio.Reader
 
 	log zerolog.Logger
 }
@@ -108,7 +111,7 @@ func (m *TransportInstance) Write(data []byte) error {
 	return nil
 }
 
-func (m *TransportInstance) GetReader() *bufio.Reader {
+func (m *TransportInstance) GetReader() transports.ExtendedReader {
 	return m.reader
 }
 

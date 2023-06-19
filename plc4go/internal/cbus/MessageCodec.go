@@ -20,16 +20,16 @@
 package cbus
 
 import (
-	"bufio"
 	"context"
+	"sync"
+	"sync/atomic"
+	"time"
+
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/cbus/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/default"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/transports"
-	"sync"
-	"sync/atomic"
-	"time"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
@@ -129,10 +129,13 @@ func (m *MessageCodec) Send(message spi.Message) error {
 func (m *MessageCodec) Receive() (spi.Message, error) {
 	m.log.Trace().Msg("Receive")
 	ti := m.GetTransportInstance()
+	if !ti.IsConnected() {
+		return nil, errors.New("Transport instance not connected")
+	}
 	confirmation := false
 	// Fill the buffer
 	{
-		if err := ti.FillBuffer(func(pos uint, currentByte byte, reader *bufio.Reader) bool {
+		if err := ti.FillBuffer(func(pos uint, currentByte byte, reader transports.ExtendedReader) bool {
 			m.log.Trace().Uint8("byte", currentByte).Msg("current byte")
 			switch currentByte {
 			case

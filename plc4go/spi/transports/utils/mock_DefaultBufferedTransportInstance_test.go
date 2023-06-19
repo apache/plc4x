@@ -22,9 +22,9 @@
 package utils
 
 import (
-	bufio "bufio"
 	context "context"
 
+	transports "github.com/apache/plc4x/plc4go/spi/transports"
 	mock "github.com/stretchr/testify/mock"
 )
 
@@ -84,11 +84,11 @@ func (_c *MockDefaultBufferedTransportInstance_ConnectWithContext_Call) RunAndRe
 }
 
 // FillBuffer provides a mock function with given fields: until
-func (_m *MockDefaultBufferedTransportInstance) FillBuffer(until func(uint, byte, *bufio.Reader) bool) error {
+func (_m *MockDefaultBufferedTransportInstance) FillBuffer(until func(uint, byte, transports.ExtendedReader) bool) error {
 	ret := _m.Called(until)
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(func(uint, byte, *bufio.Reader) bool) error); ok {
+	if rf, ok := ret.Get(0).(func(func(uint, byte, transports.ExtendedReader) bool) error); ok {
 		r0 = rf(until)
 	} else {
 		r0 = ret.Error(0)
@@ -103,14 +103,14 @@ type MockDefaultBufferedTransportInstance_FillBuffer_Call struct {
 }
 
 // FillBuffer is a helper method to define mock.On call
-//   - until func(uint , byte , *bufio.Reader) bool
+//   - until func(uint , byte , transports.ExtendedReader) bool
 func (_e *MockDefaultBufferedTransportInstance_Expecter) FillBuffer(until interface{}) *MockDefaultBufferedTransportInstance_FillBuffer_Call {
 	return &MockDefaultBufferedTransportInstance_FillBuffer_Call{Call: _e.mock.On("FillBuffer", until)}
 }
 
-func (_c *MockDefaultBufferedTransportInstance_FillBuffer_Call) Run(run func(until func(uint, byte, *bufio.Reader) bool)) *MockDefaultBufferedTransportInstance_FillBuffer_Call {
+func (_c *MockDefaultBufferedTransportInstance_FillBuffer_Call) Run(run func(until func(uint, byte, transports.ExtendedReader) bool)) *MockDefaultBufferedTransportInstance_FillBuffer_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(func(uint, byte, *bufio.Reader) bool))
+		run(args[0].(func(uint, byte, transports.ExtendedReader) bool))
 	})
 	return _c
 }
@@ -120,7 +120,7 @@ func (_c *MockDefaultBufferedTransportInstance_FillBuffer_Call) Return(_a0 error
 	return _c
 }
 
-func (_c *MockDefaultBufferedTransportInstance_FillBuffer_Call) RunAndReturn(run func(func(uint, byte, *bufio.Reader) bool) error) *MockDefaultBufferedTransportInstance_FillBuffer_Call {
+func (_c *MockDefaultBufferedTransportInstance_FillBuffer_Call) RunAndReturn(run func(func(uint, byte, transports.ExtendedReader) bool) error) *MockDefaultBufferedTransportInstance_FillBuffer_Call {
 	_c.Call.Return(run)
 	return _c
 }

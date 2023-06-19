@@ -22,9 +22,9 @@
 package testutils
 
 import (
-	bufio "bufio"
 	context "context"
 
+	transports "github.com/apache/plc4x/plc4go/spi/transports"
 	mock "github.com/stretchr/testify/mock"
 )
 
@@ -210,11 +210,11 @@ func (_c *MockTestTransportInstance_DrainWriteBuffer_Call) RunAndReturn(run func
 }
 
 // FillBuffer provides a mock function with given fields: until
-func (_m *MockTestTransportInstance) FillBuffer(until func(uint, byte, *bufio.Reader) bool) error {
+func (_m *MockTestTransportInstance) FillBuffer(until func(uint, byte, transports.ExtendedReader) bool) error {
 	ret := _m.Called(until)
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(func(uint, byte, *bufio.Reader) bool) error); ok {
+	if rf, ok := ret.Get(0).(func(func(uint, byte, transports.ExtendedReader) bool) error); ok {
 		r0 = rf(until)
 	} else {
 		r0 = ret.Error(0)
@@ -229,14 +229,14 @@ type MockTestTransportInstance_FillBuffer_Call struct {
 }
 
 // FillBuffer is a helper method to define mock.On call
-//   - until func(uint , byte , *bufio.Reader) bool
+//   - until func(uint , byte , transports.ExtendedReader) bool
 func (_e *MockTestTransportInstance_Expecter) FillBuffer(until interface{}) *MockTestTransportInstance_FillBuffer_Call {
 	return &MockTestTransportInstance_FillBuffer_Call{Call: _e.mock.On("FillBuffer", until)}
 }
 
-func (_c *MockTestTransportInstance_FillBuffer_Call) Run(run func(until func(uint, byte, *bufio.Reader) bool)) *MockTestTransportInstance_FillBuffer_Call {
+func (_c *MockTestTransportInstance_FillBuffer_Call) Run(run func(until func(uint, byte, transports.ExtendedReader) bool)) *MockTestTransportInstance_FillBuffer_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(func(uint, byte, *bufio.Reader) bool))
+		run(args[0].(func(uint, byte, transports.ExtendedReader) bool))
 	})
 	return _c
 }
@@ -246,7 +246,7 @@ func (_c *MockTestTransportInstance_FillBuffer_Call) Return(_a0 error) *MockTest
 	return _c
 }
 
-func (_c *MockTestTransportInstance_FillBuffer_Call) RunAndReturn(run func(func(uint, byte, *bufio.Reader) bool) error) *MockTestTransportInstance_FillBuffer_Call {
+func (_c *MockTestTransportInstance_FillBuffer_Call) RunAndReturn(run func(func(uint, byte, transports.ExtendedReader) bool) error) *MockTestTransportInstance_FillBuffer_Call {
 	_c.Call.Return(run)
 	return _c
 }

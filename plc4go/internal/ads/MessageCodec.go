@@ -20,18 +20,18 @@
 package ads
 
 import (
-	"bufio"
 	"context"
 	"encoding/binary"
-	"github.com/apache/plc4x/plc4go/spi/options"
-	"github.com/rs/zerolog"
 
 	"github.com/apache/plc4x/plc4go/protocols/ads/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/default"
+	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/transports"
 	"github.com/apache/plc4x/plc4go/spi/utils"
+
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
 )
 
 type MessageCodec struct {
@@ -87,7 +87,7 @@ func (m *MessageCodec) Receive() (spi.Message, error) {
 	transportInstance := m.GetTransportInstance()
 
 	if err := transportInstance.FillBuffer(
-		func(pos uint, currentByte byte, reader *bufio.Reader) bool {
+		func(pos uint, currentByte byte, reader transports.ExtendedReader) bool {
 			numBytesAvailable, err := transportInstance.GetNumBytesAvailableInBuffer()
 			if err != nil {
 				return false
@@ -110,7 +110,7 @@ func (m *MessageCodec) Receive() (spi.Message, error) {
 		packetSize := (uint32(data[5]) << 24) + (uint32(data[4]) << 16) + (uint32(data[3]) << 8) + (uint32(data[2])) + 6
 		if num < packetSize {
 			if err := transportInstance.FillBuffer(
-				func(pos uint, currentByte byte, reader *bufio.Reader) bool {
+				func(pos uint, currentByte byte, reader transports.ExtendedReader) bool {
 					numBytesAvailable, err := transportInstance.GetNumBytesAvailableInBuffer()
 					if err != nil {
 						return false
