@@ -74,7 +74,7 @@ func (w *worker) stop(interrupt bool) {
 	w.stateChange.Lock()
 	defer w.stateChange.Unlock()
 	if !w.running.Load() {
-		log.Warn().Msg("Worker not running")
+		w.log.Warn().Msg("Worker not running")
 		return
 	}
 	w.shutdown.Store(true)
