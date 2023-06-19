@@ -21,25 +21,29 @@ package cbus
 
 import (
 	"context"
-	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
-	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
-	readWriteModel "github.com/apache/plc4x/plc4go/protocols/cbus/readwrite/model"
-	spiModel "github.com/apache/plc4x/plc4go/spi/model"
-	"github.com/apache/plc4x/plc4go/spi/options"
-	"github.com/apache/plc4x/plc4go/spi/testutils"
-	"github.com/apache/plc4x/plc4go/spi/transactions"
-	"github.com/apache/plc4x/plc4go/spi/transports/test"
-	"github.com/apache/plc4x/plc4go/spi/utils"
-	"github.com/pkg/errors"
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/mock"
-	"github.com/stretchr/testify/require"
+	"encoding/hex"
 	"net/url"
 	"strings"
 	"sync"
 	"sync/atomic"
 	"testing"
 	"time"
+
+	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
+	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
+	readWriteModel "github.com/apache/plc4x/plc4go/protocols/cbus/readwrite/model"
+	spiModel "github.com/apache/plc4x/plc4go/spi/model"
+	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/apache/plc4x/plc4go/spi/pool"
+	"github.com/apache/plc4x/plc4go/spi/testutils"
+	"github.com/apache/plc4x/plc4go/spi/transactions"
+	"github.com/apache/plc4x/plc4go/spi/transports/test"
+	"github.com/apache/plc4x/plc4go/spi/utils"
+
+	"github.com/pkg/errors"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/mock"
+	"github.com/stretchr/testify/require"
 )
 
 func TestNewReader(t *testing.T) {
@@ -180,6 +184,18 @@ func TestReader_readSync(t *testing.T) {
 			setup: func(t *testing.T, fields *fields) {
 				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
 
+				executor := pool.NewFixedSizeExecutor(5, 5)
+				executor.Start()
+				t.Cleanup(executor.Stop)
+				transactionManager := transactions.NewRequestTransactionManager(
+					10,
+					append(_options, transactions.WithCustomExecutor(executor))...,
+				)
+				t.Cleanup(func() {
+					assert.NoError(t, transactionManager.Close())
+				})
+				fields.tm = transactionManager
+
 				transport := test.NewTransport(_options...)
 				transportUrl := url.URL{Scheme: "test"}
 				transportInstance, err := transport.CreateTransportInstance(transportUrl, nil, _options...)
@@ -188,11 +204,6 @@ func TestReader_readSync(t *testing.T) {
 				require.NoError(t, codec.Connect())
 				t.Cleanup(func() {
 					assert.NoError(t, codec.Disconnect())
-				})
-				fields.messageCodec = codec
-				fields.tm = transactions.NewRequestTransactionManager(10, _options...)
-				t.Cleanup(func() {
-					assert.NoError(t, fields.tm.Close())
 				})
 			},
 			resultEvaluator: func(t *testing.T, results chan apiModel.PlcReadRequestResult) bool {
@@ -254,11 +265,19 @@ func TestReader_readSync(t *testing.T) {
 			setup: func(t *testing.T, fields *fields) {
 				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
 
-				fields.tm = transactions.NewRequestTransactionManager(10, _options...)
+				executor := pool.NewFixedSizeExecutor(5, 5, _options...)
+				executor.Start()
+				t.Cleanup(executor.Stop)
+				transactionManager := transactions.NewRequestTransactionManager(
+					10,
+					append(_options, transactions.WithCustomExecutor(executor))...,
+				)
 				t.Cleanup(func() {
-					assert.NoError(t, fields.tm.Close())
+					assert.NoError(t, transactionManager.Close())
 				})
-				transport := test.NewTransport()
+				fields.tm = transactionManager
+
+				transport := test.NewTransport(_options...)
 				transportUrl := url.URL{Scheme: "test"}
 				transportInstance, err := transport.CreateTransportInstance(transportUrl, nil, _options...)
 				require.NoError(t, err)
@@ -271,6 +290,7 @@ func TestReader_readSync(t *testing.T) {
 				currentState.Store(INITIAL)
 				stateChangeMutex := sync.Mutex{}
 				transportInstance.(*test.TransportInstance).SetWriteInterceptor(func(transportInstance *test.TransportInstance, data []byte) {
+					t.Logf("reacting to\n%s", hex.Dump(data))
 					stateChangeMutex.Lock()
 					defer stateChangeMutex.Unlock()
 					switch currentState.Load().(MockState) {
@@ -333,12 +353,19 @@ func TestReader_readSync(t *testing.T) {
 			setup: func(t *testing.T, fields *fields) {
 				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
 
-				fields.tm = transactions.NewRequestTransactionManager(10, _options...)
+				executor := pool.NewFixedSizeExecutor(5, 5)
+				executor.Start()
+				t.Cleanup(executor.Stop)
+				transactionManager := transactions.NewRequestTransactionManager(
+					10,
+					append(_options, transactions.WithCustomExecutor(executor))...,
+				)
 				t.Cleanup(func() {
-					assert.NoError(t, fields.tm.Close())
+					assert.NoError(t, transactionManager.Close())
 				})
+				fields.tm = transactionManager
 
-				transport := test.NewTransport()
+				transport := test.NewTransport(_options...)
 				transportUrl := url.URL{Scheme: "test"}
 				transportInstance, err := transport.CreateTransportInstance(transportUrl, nil, _options...)
 				require.NoError(t, err)
@@ -374,6 +401,7 @@ func TestReader_readSync(t *testing.T) {
 				log:            testutils.ProduceTestingLogger(t),
 			}
 			m.readSync(tt.args.ctx, tt.args.readRequest, tt.args.result)
+			t.Log("done read sync")
 			assert.True(t, tt.resultEvaluator(t, tt.args.result))
 		})
 	}
@@ -502,6 +530,7 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 				currentState.Store(INITIAL)
 				stateChangeMutex := sync.Mutex{}
 				transportInstance.(*test.TransportInstance).SetWriteInterceptor(func(transportInstance *test.TransportInstance, data []byte) {
+					t.Logf("reacting to\n%s", hex.Dump(data))
 					stateChangeMutex.Lock()
 					defer stateChangeMutex.Unlock()
 					switch currentState.Load().(MockState) {
@@ -574,6 +603,7 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 				currentState.Store(INITIAL)
 				stateChangeMutex := sync.Mutex{}
 				transportInstance.(*test.TransportInstance).SetWriteInterceptor(func(transportInstance *test.TransportInstance, data []byte) {
+					t.Logf("reacting to\n%s", hex.Dump(data))
 					stateChangeMutex.Lock()
 					defer stateChangeMutex.Unlock()
 					switch currentState.Load().(MockState) {
@@ -662,6 +692,7 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 				currentState.Store(INITIAL)
 				stateChangeMutex := sync.Mutex{}
 				transportInstance.(*test.TransportInstance).SetWriteInterceptor(func(transportInstance *test.TransportInstance, data []byte) {
+					t.Logf("reacting to\n%s", hex.Dump(data))
 					stateChangeMutex.Lock()
 					defer stateChangeMutex.Unlock()
 					switch currentState.Load().(MockState) {
@@ -743,6 +774,7 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 				currentState.Store(INITIAL)
 				stateChangeMutex := sync.Mutex{}
 				transportInstance.(*test.TransportInstance).SetWriteInterceptor(func(transportInstance *test.TransportInstance, data []byte) {
+					t.Logf("reacting to\n%s", hex.Dump(data))
 					stateChangeMutex.Lock()
 					defer stateChangeMutex.Unlock()
 					switch currentState.Load().(MockState) {
@@ -824,6 +856,7 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 				currentState.Store(INITIAL)
 				stateChangeMutex := sync.Mutex{}
 				transportInstance.(*test.TransportInstance).SetWriteInterceptor(func(transportInstance *test.TransportInstance, data []byte) {
+					t.Logf("reacting to\n%s", hex.Dump(data))
 					stateChangeMutex.Lock()
 					defer stateChangeMutex.Unlock()
 					switch currentState.Load().(MockState) {
@@ -905,6 +938,7 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 				currentState.Store(INITIAL)
 				stateChangeMutex := sync.Mutex{}
 				transportInstance.(*test.TransportInstance).SetWriteInterceptor(func(transportInstance *test.TransportInstance, data []byte) {
+					t.Logf("reacting to\n%s", hex.Dump(data))
 					stateChangeMutex.Lock()
 					defer stateChangeMutex.Unlock()
 					switch currentState.Load().(MockState) {
@@ -986,6 +1020,7 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 				currentState.Store(INITIAL)
 				stateChangeMutex := sync.Mutex{}
 				transportInstance.(*test.TransportInstance).SetWriteInterceptor(func(transportInstance *test.TransportInstance, data []byte) {
+					t.Logf("reacting to\n%s", hex.Dump(data))
 					stateChangeMutex.Lock()
 					defer stateChangeMutex.Unlock()
 					switch currentState.Load().(MockState) {
@@ -1067,6 +1102,7 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 				currentState.Store(INITIAL)
 				stateChangeMutex := sync.Mutex{}
 				transportInstance.(*test.TransportInstance).SetWriteInterceptor(func(transportInstance *test.TransportInstance, data []byte) {
+					t.Logf("reacting to\n%s", hex.Dump(data))
 					stateChangeMutex.Lock()
 					defer stateChangeMutex.Unlock()
 					switch currentState.Load().(MockState) {

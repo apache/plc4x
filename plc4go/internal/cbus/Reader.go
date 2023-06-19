@@ -144,6 +144,7 @@ func (m *Reader) sendMessageOverTheWire(ctx context.Context, transaction transac
 		ttl = -time.Since(deadline)
 		m.log.Debug().Msgf("setting ttl to %s", ttl)
 	}
+	m.log.Trace().Msgf("sending with ctx %s", ctx)
 	if err := m.messageCodec.SendRequest(
 		ctx,
 		messageToSend,

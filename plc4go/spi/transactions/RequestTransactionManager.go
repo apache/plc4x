@@ -274,5 +274,6 @@ func (r *requestTransactionManager) CloseGraceful(timeout time.Duration) error {
 	} else {
 		r.log.Warn().Msg("not closing shared instance")
 	}
+	r.log.Debug().Msg("closed")
 	return nil
 }
