@@ -1457,6 +1457,9 @@ const (
 	BACnetVendorId_UBIQISENSE_APS                                                               BACnetVendorId = 1420
 	BACnetVendorId_TIGER_SOFT                                                                   BACnetVendorId = 1421
 	BACnetVendorId_ECODOM_SRL                                                                   BACnetVendorId = 1422
+	BACnetVendorId_DOLPHIN_SOLUTIONS_LTD                                                        BACnetVendorId = 1425
+	BACnetVendorId_MITSUBISHI_ELECTRIC_CORPORATION                                              BACnetVendorId = 1426
+	BACnetVendorId_ECOVENA                                                                      BACnetVendorId = 1427
 	BACnetVendorId_UNKNOWN_VENDOR                                                               BACnetVendorId = 0xFFFF
 )
 
@@ -2879,6 +2882,9 @@ func init() {
 		BACnetVendorId_UBIQISENSE_APS,
 		BACnetVendorId_TIGER_SOFT,
 		BACnetVendorId_ECODOM_SRL,
+		BACnetVendorId_DOLPHIN_SOLUTIONS_LTD,
+		BACnetVendorId_MITSUBISHI_ELECTRIC_CORPORATION,
+		BACnetVendorId_ECOVENA,
 		BACnetVendorId_UNKNOWN_VENDOR,
 	}
 }
@@ -4768,6 +4774,18 @@ func (e BACnetVendorId) VendorId() uint16 {
 	case 1422:
 		{ /* '1422' */
 			return 1422
+		}
+	case 1425:
+		{ /* '1425' */
+			return 1425
+		}
+	case 1426:
+		{ /* '1426' */
+			return 1426
+		}
+	case 1427:
+		{ /* '1427' */
+			return 1427
 		}
 	case 143:
 		{ /* '143' */
@@ -10447,6 +10465,18 @@ func (e BACnetVendorId) VendorName() string {
 		{ /* '1422' */
 			return "Ecodom Srl"
 		}
+	case 1425:
+		{ /* '1425' */
+			return "Dolphin Solutions Ltd"
+		}
+	case 1426:
+		{ /* '1426' */
+			return "Mitsubishi Electric Corporation"
+		}
+	case 1427:
+		{ /* '1427' */
+			return "Ecovena"
+		}
 	case 143:
 		{ /* '143' */
 			return "Digitale Mess- und Steuersysteme AG"
@@ -15182,6 +15212,12 @@ func BACnetVendorIdByValue(value uint16) (enum BACnetVendorId, ok bool) {
 		return BACnetVendorId_TIGER_SOFT, true
 	case 1422:
 		return BACnetVendorId_ECODOM_SRL, true
+	case 1425:
+		return BACnetVendorId_DOLPHIN_SOLUTIONS_LTD, true
+	case 1426:
+		return BACnetVendorId_MITSUBISHI_ELECTRIC_CORPORATION, true
+	case 1427:
+		return BACnetVendorId_ECOVENA, true
 	case 143:
 		return BACnetVendorId_DIGITALE_MESSUND_STEUERSYSTEMEAG, true
 	case 144:
@@ -18018,6 +18054,12 @@ func BACnetVendorIdByName(value string) (enum BACnetVendorId, ok bool) {
 		return BACnetVendorId_TIGER_SOFT, true
 	case "ECODOM_SRL":
 		return BACnetVendorId_ECODOM_SRL, true
+	case "DOLPHIN_SOLUTIONS_LTD":
+		return BACnetVendorId_DOLPHIN_SOLUTIONS_LTD, true
+	case "MITSUBISHI_ELECTRIC_CORPORATION":
+		return BACnetVendorId_MITSUBISHI_ELECTRIC_CORPORATION, true
+	case "ECOVENA":
+		return BACnetVendorId_ECOVENA, true
 	case "DIGITALE_MESSUND_STEUERSYSTEMEAG":
 		return BACnetVendorId_DIGITALE_MESSUND_STEUERSYSTEMEAG, true
 	case "FUJITSU_GENERAL_LIMITED":
@@ -20915,6 +20957,12 @@ func (e BACnetVendorId) PLC4XEnumName() string {
 		return "TIGER_SOFT"
 	case BACnetVendorId_ECODOM_SRL:
 		return "ECODOM_SRL"
+	case BACnetVendorId_DOLPHIN_SOLUTIONS_LTD:
+		return "DOLPHIN_SOLUTIONS_LTD"
+	case BACnetVendorId_MITSUBISHI_ELECTRIC_CORPORATION:
+		return "MITSUBISHI_ELECTRIC_CORPORATION"
+	case BACnetVendorId_ECOVENA:
+		return "ECOVENA"
 	case BACnetVendorId_DIGITALE_MESSUND_STEUERSYSTEMEAG:
 		return "DIGITALE_MESSUND_STEUERSYSTEMEAG"
 	case BACnetVendorId_FUJITSU_GENERAL_LIMITED:
