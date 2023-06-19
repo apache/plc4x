@@ -39,6 +39,9 @@ type MultiError struct {
 }
 
 func (m MultiError) Error() string {
+	if m.MainError == nil && len(m.Errors) == 0 {
+		return ""
+	}
 	mainErrorText := "Child errors:\n"
 	if m.MainError != nil {
 		mainErrorText = fmt.Sprintf("Main Error: %v\nChild errors:\n", m.MainError)

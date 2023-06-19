@@ -38,7 +38,7 @@ func TestMultiError_Error(t *testing.T) {
 	}{
 		{
 			name: "empty multi error",
-			want: "Child errors:\nNo errors",
+			want: "",
 		},
 		{
 			name: "some error",
