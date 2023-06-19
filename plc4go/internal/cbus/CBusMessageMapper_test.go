@@ -21,17 +21,18 @@ package cbus
 
 import (
 	"fmt"
+	"testing"
+
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/cbus/readwrite/model"
-	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/pool"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
 	"github.com/apache/plc4x/plc4go/spi/transactions"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	spiValues "github.com/apache/plc4x/plc4go/spi/values"
+
 	"github.com/stretchr/testify/assert"
-	"testing"
 )
 
 func TestTagToCBusMessage(t *testing.T) {
@@ -1468,12 +1469,14 @@ func TestMapEncodedReply(t *testing.T) {
 				},
 			},
 			setup: func(t *testing.T, args *args) {
-				executor := pool.NewFixedSizeExecutor(10, 50, options.WithCustomLogger(testutils.ProduceTestingLogger(t)))
+				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
+				executor := pool.NewFixedSizeExecutor(10, 50, _options...)
 				executor.Start()
 				transactionManager := transactions.NewRequestTransactionManager(
 					1,
-					options.WithCustomLogger(testutils.ProduceTestingLogger(t)),
-					transactions.WithCustomExecutor(executor),
+					append(_options,
+						transactions.WithCustomExecutor(executor),
+					)...,
 				)
 				t.Cleanup(func() {
 					assert.NoError(t, transactionManager.Close())
@@ -1540,12 +1543,14 @@ func TestMapEncodedReply(t *testing.T) {
 				},
 			},
 			setup: func(t *testing.T, args *args) {
-				executor := pool.NewFixedSizeExecutor(10, 50, options.WithCustomLogger(testutils.ProduceTestingLogger(t)))
+				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
+				executor := pool.NewFixedSizeExecutor(10, 50, _options...)
 				executor.Start()
 				transactionManager := transactions.NewRequestTransactionManager(
 					1,
-					options.WithCustomLogger(testutils.ProduceTestingLogger(t)),
-					transactions.WithCustomExecutor(executor),
+					append(_options,
+						transactions.WithCustomExecutor(executor),
+					)...,
 				)
 				t.Cleanup(func() {
 					assert.NoError(t, transactionManager.Close())
@@ -1614,12 +1619,14 @@ func TestMapEncodedReply(t *testing.T) {
 				},
 			},
 			setup: func(t *testing.T, args *args) {
-				executor := pool.NewFixedSizeExecutor(10, 50, options.WithCustomLogger(testutils.ProduceTestingLogger(t)))
+				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
+				executor := pool.NewFixedSizeExecutor(10, 50, _options...)
 				executor.Start()
 				transactionManager := transactions.NewRequestTransactionManager(
 					1,
-					options.WithCustomLogger(testutils.ProduceTestingLogger(t)),
-					transactions.WithCustomExecutor(executor),
+					append(_options,
+						transactions.WithCustomExecutor(executor),
+					)...,
 				)
 				t.Cleanup(func() {
 					assert.NoError(t, transactionManager.Close())
@@ -1677,12 +1684,14 @@ func TestMapEncodedReply(t *testing.T) {
 				},
 			},
 			setup: func(t *testing.T, args *args) {
-				executor := pool.NewFixedSizeExecutor(10, 50, options.WithCustomLogger(testutils.ProduceTestingLogger(t)))
+				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
+				executor := pool.NewFixedSizeExecutor(10, 50, _options...)
 				executor.Start()
 				transactionManager := transactions.NewRequestTransactionManager(
 					1,
-					options.WithCustomLogger(testutils.ProduceTestingLogger(t)),
-					transactions.WithCustomExecutor(executor),
+					append(_options,
+						transactions.WithCustomExecutor(executor),
+					)...,
 				)
 				t.Cleanup(func() {
 					assert.NoError(t, transactionManager.Close())
@@ -1730,12 +1739,14 @@ func TestMapEncodedReply(t *testing.T) {
 				},
 			},
 			setup: func(t *testing.T, args *args) {
-				executor := pool.NewFixedSizeExecutor(10, 50, options.WithCustomLogger(testutils.ProduceTestingLogger(t)))
+				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
+				executor := pool.NewFixedSizeExecutor(10, 50, _options...)
 				executor.Start()
 				transactionManager := transactions.NewRequestTransactionManager(
 					1,
-					options.WithCustomLogger(testutils.ProduceTestingLogger(t)),
-					transactions.WithCustomExecutor(executor),
+					append(_options,
+						transactions.WithCustomExecutor(executor),
+					)...,
 				)
 				t.Cleanup(func() {
 					assert.NoError(t, transactionManager.Close())
@@ -1786,12 +1797,14 @@ func TestMapEncodedReply(t *testing.T) {
 				},
 			},
 			setup: func(t *testing.T, args *args) {
-				executor := pool.NewFixedSizeExecutor(10, 50, options.WithCustomLogger(testutils.ProduceTestingLogger(t)))
+				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
+				executor := pool.NewFixedSizeExecutor(10, 50, _options...)
 				executor.Start()
 				transactionManager := transactions.NewRequestTransactionManager(
 					1,
-					options.WithCustomLogger(testutils.ProduceTestingLogger(t)),
-					transactions.WithCustomExecutor(executor),
+					append(_options,
+						transactions.WithCustomExecutor(executor),
+					)...,
 				)
 				t.Cleanup(func() {
 					assert.NoError(t, transactionManager.Close())
@@ -1862,12 +1875,14 @@ func TestMapEncodedReply(t *testing.T) {
 				},
 			},
 			setup: func(t *testing.T, args *args) {
-				executor := pool.NewFixedSizeExecutor(10, 50, options.WithCustomLogger(testutils.ProduceTestingLogger(t)))
+				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
+				executor := pool.NewFixedSizeExecutor(10, 50, _options...)
 				executor.Start()
 				transactionManager := transactions.NewRequestTransactionManager(
 					1,
-					options.WithCustomLogger(testutils.ProduceTestingLogger(t)),
-					transactions.WithCustomExecutor(executor),
+					append(_options,
+						transactions.WithCustomExecutor(executor),
+					)...,
 				)
 				t.Cleanup(func() {
 					assert.NoError(t, transactionManager.Close())
@@ -1956,12 +1971,14 @@ func TestMapEncodedReply(t *testing.T) {
 				},
 			},
 			setup: func(t *testing.T, args *args) {
-				executor := pool.NewFixedSizeExecutor(10, 50, options.WithCustomLogger(testutils.ProduceTestingLogger(t)))
+				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
+				executor := pool.NewFixedSizeExecutor(10, 50, _options...)
 				executor.Start()
 				transactionManager := transactions.NewRequestTransactionManager(
 					1,
-					options.WithCustomLogger(testutils.ProduceTestingLogger(t)),
-					transactions.WithCustomExecutor(executor),
+					append(_options,
+						transactions.WithCustomExecutor(executor),
+					)...,
 				)
 				t.Cleanup(func() {
 					assert.NoError(t, transactionManager.Close())
@@ -2013,12 +2030,14 @@ func TestMapEncodedReply(t *testing.T) {
 				},
 			},
 			setup: func(t *testing.T, args *args) {
-				executor := pool.NewFixedSizeExecutor(10, 50, options.WithCustomLogger(testutils.ProduceTestingLogger(t)))
+				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
+				executor := pool.NewFixedSizeExecutor(10, 50, _options...)
 				executor.Start()
 				transactionManager := transactions.NewRequestTransactionManager(
 					1,
-					options.WithCustomLogger(testutils.ProduceTestingLogger(t)),
-					transactions.WithCustomExecutor(executor),
+					append(_options,
+						transactions.WithCustomExecutor(executor),
+					)...,
 				)
 				t.Cleanup(func() {
 					assert.NoError(t, transactionManager.Close())
@@ -2066,12 +2085,14 @@ func TestMapEncodedReply(t *testing.T) {
 				},
 			},
 			setup: func(t *testing.T, args *args) {
-				executor := pool.NewFixedSizeExecutor(10, 50, options.WithCustomLogger(testutils.ProduceTestingLogger(t)))
+				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
+				executor := pool.NewFixedSizeExecutor(10, 50, _options...)
 				executor.Start()
 				transactionManager := transactions.NewRequestTransactionManager(
 					1,
-					options.WithCustomLogger(testutils.ProduceTestingLogger(t)),
-					transactions.WithCustomExecutor(executor),
+					append(_options,
+						transactions.WithCustomExecutor(executor),
+					)...,
 				)
 				t.Cleanup(func() {
 					assert.NoError(t, transactionManager.Close())
@@ -2119,12 +2140,14 @@ func TestMapEncodedReply(t *testing.T) {
 				},
 			},
 			setup: func(t *testing.T, args *args) {
-				executor := pool.NewFixedSizeExecutor(10, 50, options.WithCustomLogger(testutils.ProduceTestingLogger(t)))
+				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
+				executor := pool.NewFixedSizeExecutor(10, 50, _options...)
 				executor.Start()
 				transactionManager := transactions.NewRequestTransactionManager(
 					1,
-					options.WithCustomLogger(testutils.ProduceTestingLogger(t)),
-					transactions.WithCustomExecutor(executor),
+					append(_options,
+						transactions.WithCustomExecutor(executor),
+					)...,
 				)
 				t.Cleanup(func() {
 					assert.NoError(t, transactionManager.Close())
@@ -2172,12 +2195,14 @@ func TestMapEncodedReply(t *testing.T) {
 				},
 			},
 			setup: func(t *testing.T, args *args) {
-				executor := pool.NewFixedSizeExecutor(10, 50, options.WithCustomLogger(testutils.ProduceTestingLogger(t)))
+				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
+				executor := pool.NewFixedSizeExecutor(10, 50, _options...)
 				executor.Start()
 				transactionManager := transactions.NewRequestTransactionManager(
 					1,
-					options.WithCustomLogger(testutils.ProduceTestingLogger(t)),
-					transactions.WithCustomExecutor(executor),
+					append(_options,
+						transactions.WithCustomExecutor(executor),
+					)...,
 				)
 				t.Cleanup(func() {
 					assert.NoError(t, transactionManager.Close())
@@ -2225,12 +2250,14 @@ func TestMapEncodedReply(t *testing.T) {
 				},
 			},
 			setup: func(t *testing.T, args *args) {
-				executor := pool.NewFixedSizeExecutor(10, 50, options.WithCustomLogger(testutils.ProduceTestingLogger(t)))
+				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
+				executor := pool.NewFixedSizeExecutor(10, 50, _options...)
 				executor.Start()
 				transactionManager := transactions.NewRequestTransactionManager(
 					1,
-					options.WithCustomLogger(testutils.ProduceTestingLogger(t)),
-					transactions.WithCustomExecutor(executor),
+					append(_options,
+						transactions.WithCustomExecutor(executor),
+					)...,
 				)
 				t.Cleanup(func() {
 					assert.NoError(t, transactionManager.Close())
@@ -2298,12 +2325,14 @@ func TestMapEncodedReply(t *testing.T) {
 				},
 			},
 			setup: func(t *testing.T, args *args) {
-				executor := pool.NewFixedSizeExecutor(10, 50, options.WithCustomLogger(testutils.ProduceTestingLogger(t)))
+				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
+				executor := pool.NewFixedSizeExecutor(10, 50, _options...)
 				executor.Start()
 				transactionManager := transactions.NewRequestTransactionManager(
 					1,
-					options.WithCustomLogger(testutils.ProduceTestingLogger(t)),
-					transactions.WithCustomExecutor(executor),
+					append(_options,
+						transactions.WithCustomExecutor(executor),
+					)...,
 				)
 				t.Cleanup(func() {
 					assert.NoError(t, transactionManager.Close())
@@ -2351,12 +2380,14 @@ func TestMapEncodedReply(t *testing.T) {
 				},
 			},
 			setup: func(t *testing.T, args *args) {
-				executor := pool.NewFixedSizeExecutor(10, 50, options.WithCustomLogger(testutils.ProduceTestingLogger(t)))
+				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
+				executor := pool.NewFixedSizeExecutor(10, 50, _options...)
 				executor.Start()
 				transactionManager := transactions.NewRequestTransactionManager(
 					1,
-					options.WithCustomLogger(testutils.ProduceTestingLogger(t)),
-					transactions.WithCustomExecutor(executor),
+					append(_options,
+						transactions.WithCustomExecutor(executor),
+					)...,
 				)
 				t.Cleanup(func() {
 					assert.NoError(t, transactionManager.Close())
@@ -2404,12 +2435,14 @@ func TestMapEncodedReply(t *testing.T) {
 				},
 			},
 			setup: func(t *testing.T, args *args) {
-				executor := pool.NewFixedSizeExecutor(10, 50, options.WithCustomLogger(testutils.ProduceTestingLogger(t)))
+				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
+				executor := pool.NewFixedSizeExecutor(10, 50, _options...)
 				executor.Start()
 				transactionManager := transactions.NewRequestTransactionManager(
 					1,
-					options.WithCustomLogger(testutils.ProduceTestingLogger(t)),
-					transactions.WithCustomExecutor(executor),
+					append(_options,
+						transactions.WithCustomExecutor(executor),
+					)...,
 				)
 				t.Cleanup(func() {
 					assert.NoError(t, transactionManager.Close())
@@ -2457,12 +2490,14 @@ func TestMapEncodedReply(t *testing.T) {
 				},
 			},
 			setup: func(t *testing.T, args *args) {
-				executor := pool.NewFixedSizeExecutor(10, 50, options.WithCustomLogger(testutils.ProduceTestingLogger(t)))
+				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
+				executor := pool.NewFixedSizeExecutor(10, 50, _options...)
 				executor.Start()
 				transactionManager := transactions.NewRequestTransactionManager(
 					1,
-					options.WithCustomLogger(testutils.ProduceTestingLogger(t)),
-					transactions.WithCustomExecutor(executor),
+					append(_options,
+						transactions.WithCustomExecutor(executor),
+					)...,
 				)
 				t.Cleanup(func() {
 					assert.NoError(t, transactionManager.Close())
@@ -2510,12 +2545,14 @@ func TestMapEncodedReply(t *testing.T) {
 				},
 			},
 			setup: func(t *testing.T, args *args) {
-				executor := pool.NewFixedSizeExecutor(10, 50, options.WithCustomLogger(testutils.ProduceTestingLogger(t)))
+				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
+				executor := pool.NewFixedSizeExecutor(10, 50, _options...)
 				executor.Start()
 				transactionManager := transactions.NewRequestTransactionManager(
 					1,
-					options.WithCustomLogger(testutils.ProduceTestingLogger(t)),
-					transactions.WithCustomExecutor(executor),
+					append(_options,
+						transactions.WithCustomExecutor(executor),
+					)...,
 				)
 				t.Cleanup(func() {
 					assert.NoError(t, transactionManager.Close())
@@ -2563,12 +2600,14 @@ func TestMapEncodedReply(t *testing.T) {
 				},
 			},
 			setup: func(t *testing.T, args *args) {
-				executor := pool.NewFixedSizeExecutor(10, 50, options.WithCustomLogger(testutils.ProduceTestingLogger(t)))
+				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
+				executor := pool.NewFixedSizeExecutor(10, 50, _options...)
 				executor.Start()
 				transactionManager := transactions.NewRequestTransactionManager(
 					1,
-					options.WithCustomLogger(testutils.ProduceTestingLogger(t)),
-					transactions.WithCustomExecutor(executor),
+					append(_options,
+						transactions.WithCustomExecutor(executor),
+					)...,
 				)
 				t.Cleanup(func() {
 					assert.NoError(t, transactionManager.Close())
@@ -2632,12 +2671,14 @@ func TestMapEncodedReply(t *testing.T) {
 				},
 			},
 			setup: func(t *testing.T, args *args) {
-				executor := pool.NewFixedSizeExecutor(10, 50, options.WithCustomLogger(testutils.ProduceTestingLogger(t)))
+				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
+				executor := pool.NewFixedSizeExecutor(10, 50, _options...)
 				executor.Start()
 				transactionManager := transactions.NewRequestTransactionManager(
 					1,
-					options.WithCustomLogger(testutils.ProduceTestingLogger(t)),
-					transactions.WithCustomExecutor(executor),
+					append(_options,
+						transactions.WithCustomExecutor(executor),
+					)...,
 				)
 				t.Cleanup(func() {
 					assert.NoError(t, transactionManager.Close())
@@ -2685,12 +2726,14 @@ func TestMapEncodedReply(t *testing.T) {
 				},
 			},
 			setup: func(t *testing.T, args *args) {
-				executor := pool.NewFixedSizeExecutor(10, 50, options.WithCustomLogger(testutils.ProduceTestingLogger(t)))
+				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
+				executor := pool.NewFixedSizeExecutor(10, 50, _options...)
 				executor.Start()
 				transactionManager := transactions.NewRequestTransactionManager(
 					1,
-					options.WithCustomLogger(testutils.ProduceTestingLogger(t)),
-					transactions.WithCustomExecutor(executor),
+					append(_options,
+						transactions.WithCustomExecutor(executor),
+					)...,
 				)
 				t.Cleanup(func() {
 					assert.NoError(t, transactionManager.Close())
@@ -2738,12 +2781,14 @@ func TestMapEncodedReply(t *testing.T) {
 				},
 			},
 			setup: func(t *testing.T, args *args) {
-				executor := pool.NewFixedSizeExecutor(10, 50, options.WithCustomLogger(testutils.ProduceTestingLogger(t)))
+				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
+				executor := pool.NewFixedSizeExecutor(10, 50, _options...)
 				executor.Start()
 				transactionManager := transactions.NewRequestTransactionManager(
 					1,
-					options.WithCustomLogger(testutils.ProduceTestingLogger(t)),
-					transactions.WithCustomExecutor(executor),
+					append(_options,
+						transactions.WithCustomExecutor(executor),
+					)...,
 				)
 				t.Cleanup(func() {
 					assert.NoError(t, transactionManager.Close())

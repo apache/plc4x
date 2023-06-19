@@ -82,24 +82,38 @@ func Test_worker_start(t *testing.T) {
 			fields: fields{
 				executor: func() *executor {
 					e := &executor{
-						workItems:    make(chan workItem),
+						workItems:    make(chan workItem, 1),
 						traceWorkers: true,
 					}
-					go func() {
-						e.workItems <- workItem{
-							workItemId: 0,
-							runnable: func() {
-								// No-op
-							},
-							completionFuture: &future{},
-						}
-					}()
+					e.workItems <- workItem{
+						workItemId: 0,
+						runnable: func() {
+							// No-op
+						},
+						completionFuture: &future{},
+					}
 					return e
 				}(),
 			},
 		},
 		{
 			name: "start started",
+			fields: fields{
+				executor: func() *executor {
+					e := &executor{
+						workItems:    make(chan workItem, 1),
+						traceWorkers: true,
+					}
+					e.workItems <- workItem{
+						workItemId: 0,
+						runnable: func() {
+							// No-op
+						},
+						completionFuture: &future{},
+					}
+					return e
+				}(),
+			},
 			manipulator: func(t *testing.T, worker *worker) {
 				worker.running.Store(true)
 			},
@@ -149,6 +163,22 @@ func Test_worker_stop(t *testing.T) {
 			name: "stop started",
 			fields: fields{
 				interrupter: make(chan struct{}),
+				executor: func() *executor {
+					e := &executor{
+						workItems:    make(chan workItem),
+						traceWorkers: true,
+					}
+					go func() {
+						e.workItems <- workItem{
+							workItemId: 0,
+							runnable: func() {
+								// No-op
+							},
+							completionFuture: &future{},
+						}
+					}()
+					return e
+				}(),
 			},
 			manipulator: func(t *testing.T, worker *worker) {
 				worker.running.Store(true)
@@ -318,6 +348,7 @@ func Test_worker_work(t *testing.T) {
 				log:         produceTestingLogger(t),
 			}
 			w.executor.getWorkerWaitGroup().Add(1)
+			w.running.Store(true)
 			go w.work()
 			if tt.firstValidation != nil {
 				time.Sleep(tt.timeBeforeFirstValidation)

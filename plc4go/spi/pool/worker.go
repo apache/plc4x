@@ -50,23 +50,27 @@ type worker struct {
 }
 
 func (w *worker) initialize() {
+	w.stateChange.Lock()
+	defer w.stateChange.Unlock()
+	w.lastReceived.Store(time.Now())
+	w.running.Store(false)
 	w.shutdown.Store(false)
 	w.interrupted.Store(false)
 	w.interrupter = make(chan struct{}, 1)
-	w.lastReceived.Store(time.Now())
 }
 
 func (w *worker) start() {
 	w.stateChange.Lock()
 	defer w.stateChange.Unlock()
 	if w.running.Load() {
-		log.Warn().Msg("Worker already started")
+		log.Warn().Int("Worker id", w.id).Msg("Worker already started")
 		return
 	}
 	if w.executor.isTraceWorkers() {
 		w.log.Debug().Msgf("Starting worker\n%s", w)
 	}
 	w.executor.getWorkerWaitGroup().Add(1)
+	w.running.Store(true)
 	go w.work()
 }
 
@@ -74,8 +78,12 @@ func (w *worker) stop(interrupt bool) {
 	w.stateChange.Lock()
 	defer w.stateChange.Unlock()
 	if !w.running.Load() {
-		w.log.Warn().Msg("Worker not running")
+		w.log.Warn().Int("Worker id", w.id).Msg("Worker not running")
 		return
+	}
+
+	if w.executor.isTraceWorkers() {
+		w.log.Debug().Msgf("Stopping worker\n%s", w)
 	}
 	w.shutdown.Store(true)
 	if interrupt {
@@ -95,7 +103,6 @@ func (w *worker) work() {
 			}
 		}
 	}()
-	w.running.Store(true)
 	defer w.running.Store(false)
 	workerLog := w.log.With().Int("Worker id", w.id).Logger()
 	if !w.executor.isTraceWorkers() {

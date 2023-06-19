@@ -92,11 +92,13 @@ func (e *executor) Start() {
 	}
 	e.running = true
 	e.shutdown = false
+	e.log.Debug().Msgf("Starting %d workers", len(e.worker))
 	for i := 0; i < len(e.worker); i++ {
 		_worker := e.worker[i]
 		_worker.initialize()
 		_worker.start()
 	}
+	e.log.Trace().Msg("started")
 }
 
 func (e *executor) Stop() {
