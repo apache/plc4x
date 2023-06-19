@@ -278,6 +278,18 @@ func (g *Generator) generate(typeName string) {
 				}
 			}
 			g.Printf(serializableFieldTemplate, "d."+field.name, fieldNameUntitled)
+		case *ast.IndexExpr:
+			x := fieldType.X
+			if fieldType, isxFieldSelector := x.(*ast.SelectorExpr); isxFieldSelector { // TODO: we need to refactor this so we can reuse...
+				xIdent, xIsIdent := fieldType.X.(*ast.Ident)
+				sel := fieldType.Sel
+				if xIsIdent && xIdent.Name == "atomic" && sel.Name == "Pointer" {
+					g.Printf(serializableFieldTemplate, "(*d."+field.name+".Load())", fieldNameUntitled)
+					continue
+				}
+			}
+			fmt.Printf("no support yet for %#q\n", fieldType)
+			continue
 		case *ast.Ident:
 			switch fieldType.Name {
 			case "byte":
