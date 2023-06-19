@@ -35,11 +35,10 @@ import (
 
 func Test_requestTransaction_EndRequest(t1 *testing.T) {
 	type fields struct {
-		parent           *requestTransactionManager
-		transactionId    int32
-		operation        pool.Runnable
-		completionFuture pool.CompletionFuture
-		completed        bool
+		parent        *requestTransactionManager
+		transactionId int32
+		operation     pool.Runnable
+		completed     bool
 	}
 	tests := []struct {
 		name    string
@@ -65,12 +64,11 @@ func Test_requestTransaction_EndRequest(t1 *testing.T) {
 	for _, tt := range tests {
 		t1.Run(tt.name, func(t1 *testing.T) {
 			t := &requestTransaction{
-				parent:           tt.fields.parent,
-				transactionId:    tt.fields.transactionId,
-				operation:        tt.fields.operation,
-				completionFuture: tt.fields.completionFuture,
-				transactionLog:   testutils.ProduceTestingLogger(t1),
-				completed:        tt.fields.completed,
+				parent:         tt.fields.parent,
+				transactionId:  tt.fields.transactionId,
+				operation:      tt.fields.operation,
+				transactionLog: testutils.ProduceTestingLogger(t1),
+				completed:      tt.fields.completed,
 			}
 			if err := t.EndRequest(); (err != nil) != tt.wantErr {
 				t1.Errorf("EndRequest() error = %v, wantErr %v", err, tt.wantErr)
@@ -81,33 +79,34 @@ func Test_requestTransaction_EndRequest(t1 *testing.T) {
 
 func Test_requestTransaction_FailRequest(t1 *testing.T) {
 	type fields struct {
-		parent           *requestTransactionManager
-		transactionId    int32
-		operation        pool.Runnable
-		completionFuture pool.CompletionFuture
-		transactionLog   zerolog.Logger
-		completed        bool
+		parent         *requestTransactionManager
+		transactionId  int32
+		operation      pool.Runnable
+		transactionLog zerolog.Logger
+		completed      bool
 	}
 	type args struct {
 		err error
 	}
 	tests := []struct {
-		name      string
-		fields    fields
-		args      args
-		mockSetup func(t *testing.T, fields *fields, args *args)
-		wantErr   assert.ErrorAssertionFunc
+		name        string
+		fields      fields
+		args        args
+		mockSetup   func(t *testing.T, fields *fields, args *args)
+		manipulator func(t *testing.T, transaction *requestTransaction)
+		wantErr     assert.ErrorAssertionFunc
 	}{
 		{
 			name: "just fail it",
 			fields: fields{
 				parent: &requestTransactionManager{},
 			},
-			mockSetup: func(t *testing.T, fields *fields, args *args) {
-				completionFuture := NewMockCompletionFuture(t)
-				expect := completionFuture.EXPECT()
+			manipulator: func(t *testing.T, transaction *requestTransaction) {
+				completionFutureMock := NewMockCompletionFuture(t)
+				expect := completionFutureMock.EXPECT()
 				expect.Cancel(true, nil).Return()
-				fields.completionFuture = completionFuture
+				var completionFuture pool.CompletionFuture = completionFutureMock
+				transaction.completionFuture.Store(&completionFuture)
 			},
 			wantErr: assert.Error,
 		},
@@ -129,32 +128,37 @@ func Test_requestTransaction_FailRequest(t1 *testing.T) {
 				tt.mockSetup(t, &tt.fields, &tt.args)
 			}
 			r := &requestTransaction{
-				parent:           tt.fields.parent,
-				transactionId:    tt.fields.transactionId,
-				operation:        tt.fields.operation,
-				completionFuture: tt.fields.completionFuture,
-				transactionLog:   tt.fields.transactionLog,
-				completed:        tt.fields.completed,
+				parent:         tt.fields.parent,
+				transactionId:  tt.fields.transactionId,
+				operation:      tt.fields.operation,
+				transactionLog: tt.fields.transactionLog,
+				completed:      tt.fields.completed,
+			}
+			if tt.manipulator != nil {
+				tt.manipulator(t, r)
 			}
 			tt.wantErr(t, r.FailRequest(tt.args.err), "FailRequest() error = %v", tt.args.err)
 		})
 	}
 }
 
-func Test_requestTransaction_String(t1 *testing.T) {
+func Test_requestTransaction_String(t *testing.T) {
 	type fields struct {
-		parent           *requestTransactionManager
-		transactionId    int32
-		operation        pool.Runnable
-		completionFuture pool.CompletionFuture
+		parent        *requestTransactionManager
+		transactionId int32
+		operation     pool.Runnable
 	}
 	tests := []struct {
-		name   string
-		fields fields
-		want   string
+		name        string
+		fields      fields
+		manipulator func(t *testing.T, transaction *requestTransaction)
+		want        string
 	}{
 		{
 			name: "give a string",
+			manipulator: func(t *testing.T, transaction *requestTransaction) {
+				transaction.setCompletionFuture(nil)
+			},
 			want: `
 ╔═requestTransaction═════════╗
 ║╔═transactionId╗╔═completed╗║
@@ -164,15 +168,17 @@ func Test_requestTransaction_String(t1 *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		t1.Run(tt.name, func(t1 *testing.T) {
-			t := &requestTransaction{
-				parent:           tt.fields.parent,
-				transactionId:    tt.fields.transactionId,
-				operation:        tt.fields.operation,
-				completionFuture: tt.fields.completionFuture,
-				transactionLog:   testutils.ProduceTestingLogger(t1),
+		t.Run(tt.name, func(t1 *testing.T) {
+			_t := &requestTransaction{
+				parent:         tt.fields.parent,
+				transactionId:  tt.fields.transactionId,
+				operation:      tt.fields.operation,
+				transactionLog: testutils.ProduceTestingLogger(t1),
 			}
-			if got := t.String(); got != tt.want {
+			if tt.manipulator != nil {
+				tt.manipulator(t, _t)
+			}
+			if got := _t.String(); got != tt.want {
 				t1.Errorf("String() = \n%v, want \n%v", got, tt.want)
 			}
 		})
@@ -181,12 +187,11 @@ func Test_requestTransaction_String(t1 *testing.T) {
 
 func Test_requestTransaction_Submit(t1 *testing.T) {
 	type fields struct {
-		parent           *requestTransactionManager
-		transactionId    int32
-		operation        pool.Runnable
-		completionFuture pool.CompletionFuture
-		transactionLog   zerolog.Logger
-		completed        bool
+		parent         *requestTransactionManager
+		transactionId  int32
+		operation      pool.Runnable
+		transactionLog zerolog.Logger
+		completed      bool
 	}
 	type args struct {
 		operation RequestTransactionRunnable
@@ -240,12 +245,11 @@ func Test_requestTransaction_Submit(t1 *testing.T) {
 	for _, tt := range tests {
 		t1.Run(tt.name, func(t1 *testing.T) {
 			t := &requestTransaction{
-				parent:           tt.fields.parent,
-				transactionId:    tt.fields.transactionId,
-				operation:        tt.fields.operation,
-				completionFuture: tt.fields.completionFuture,
-				transactionLog:   tt.fields.transactionLog,
-				completed:        tt.fields.completed,
+				parent:         tt.fields.parent,
+				transactionId:  tt.fields.transactionId,
+				operation:      tt.fields.operation,
+				transactionLog: tt.fields.transactionLog,
+				completed:      tt.fields.completed,
 			}
 			t.Submit(tt.args.operation)
 			t.operation()
@@ -255,10 +259,9 @@ func Test_requestTransaction_Submit(t1 *testing.T) {
 
 func Test_requestTransaction_AwaitCompletion(t1 *testing.T) {
 	type fields struct {
-		parent           *requestTransactionManager
-		transactionId    int32
-		operation        pool.Runnable
-		completionFuture pool.CompletionFuture
+		parent        *requestTransactionManager
+		transactionId int32
+		operation     pool.Runnable
 	}
 	type args struct {
 		ctx context.Context
@@ -285,13 +288,12 @@ func Test_requestTransaction_AwaitCompletion(t1 *testing.T) {
 					return ctx
 				}(),
 			},
-			mockSetup: func(t *testing.T, fields *fields, args *args) {
-				completionFuture := NewMockCompletionFuture(t)
-				expect := completionFuture.EXPECT()
-				expect.AwaitCompletion(mock.Anything).Return(nil)
-				fields.completionFuture = completionFuture
-			},
 			manipulator: func(t *testing.T, transaction *requestTransaction) {
+				completionFutureMock := NewMockCompletionFuture(t)
+				expect := completionFutureMock.EXPECT()
+				expect.AwaitCompletion(mock.Anything).Return(nil)
+				var completionFuture pool.CompletionFuture = completionFutureMock
+				transaction.completionFuture.Store(&completionFuture)
 				go func() {
 					time.Sleep(100 * time.Millisecond)
 					r := transaction.parent
@@ -308,11 +310,13 @@ func Test_requestTransaction_AwaitCompletion(t1 *testing.T) {
 				tt.mockSetup(t1, &tt.fields, &tt.args)
 			}
 			t := &requestTransaction{
-				parent:           tt.fields.parent,
-				transactionId:    tt.fields.transactionId,
-				operation:        tt.fields.operation,
-				completionFuture: tt.fields.completionFuture,
-				transactionLog:   testutils.ProduceTestingLogger(t1),
+				parent:         tt.fields.parent,
+				transactionId:  tt.fields.transactionId,
+				operation:      tt.fields.operation,
+				transactionLog: testutils.ProduceTestingLogger(t1),
+			}
+			if tt.manipulator != nil {
+				tt.manipulator(t1, t)
 			}
 			if err := t.AwaitCompletion(tt.args.ctx); (err != nil) != tt.wantErr {
 				t1.Errorf("AwaitCompletion() error = %v, wantErr %v", err, tt.wantErr)

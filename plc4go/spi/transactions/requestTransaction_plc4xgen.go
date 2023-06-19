@@ -47,8 +47,9 @@ func (d *requestTransaction) SerializeWithWriteBuffer(ctx context.Context, write
 		return err
 	}
 
-	if d.completionFuture != nil {
-		if serializableField, ok := d.completionFuture.(utils.Serializable); ok {
+	if completionFutureLoaded := d.completionFuture.Load(); completionFutureLoaded != nil && *completionFutureLoaded != nil {
+		completionFuture := *completionFutureLoaded
+		if serializableField, ok := completionFuture.(utils.Serializable); ok {
 			if err := writeBuffer.PushContext("completionFuture"); err != nil {
 				return err
 			}
@@ -59,7 +60,7 @@ func (d *requestTransaction) SerializeWithWriteBuffer(ctx context.Context, write
 				return err
 			}
 		} else {
-			stringValue := fmt.Sprintf("%v", d.completionFuture)
+			stringValue := fmt.Sprintf("%v", completionFuture)
 			if err := writeBuffer.WriteString("completionFuture", uint32(len(stringValue)*8), "UTF-8", stringValue); err != nil {
 				return err
 			}

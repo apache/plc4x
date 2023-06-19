@@ -22,12 +22,15 @@ package transactions
 import (
 	"context"
 	"fmt"
+	"sync"
+	"sync/atomic"
+	"time"
+
 	"github.com/apache/plc4x/plc4go/spi/pool"
+
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
-	"sync"
-	"time"
 )
 
 // RequestTransaction represents a transaction
@@ -58,12 +61,24 @@ type requestTransaction struct {
 
 	/** The initial operation to perform to kick off the request */
 	operation        pool.Runnable `ignore:"true"` // TODO: maybe we can treat this as a function some day if we are able to check the definition in gen
-	completionFuture pool.CompletionFuture
+	completionFuture atomic.Pointer[pool.CompletionFuture]
 
 	stateChangeMutex sync.Mutex
 	completed        bool
 
 	transactionLog zerolog.Logger `ignore:"true"`
+}
+
+func (t *requestTransaction) setCompletionFuture(completionFuture pool.CompletionFuture) {
+	t.completionFuture.Store(&completionFuture)
+}
+
+func (t *requestTransaction) getCompletionFuture() pool.CompletionFuture {
+	completionFutureLoaded := t.completionFuture.Load()
+	if completionFutureLoaded == nil {
+		return nil
+	}
+	return *completionFutureLoaded
 }
 
 //
@@ -118,14 +133,14 @@ func (t *requestTransaction) AwaitCompletion(ctx context.Context) error {
 	t.transactionLog.Trace().Int32("transactionId", t.transactionId).Msg("Awaiting completion")
 	timeout, cancelFunc := context.WithTimeout(ctx, time.Minute*30) // This is intentionally set very high
 	defer cancelFunc()
-	for t.completionFuture == nil {
+	for t.getCompletionFuture() == nil {
 		time.Sleep(time.Millisecond * 10)
 		if err := timeout.Err(); err != nil {
 			log.Error().Msg("Timout after a long time. This means something is very of here")
 			return errors.Wrap(err, "Error waiting for completion future to be set")
 		}
 	}
-	if err := t.completionFuture.AwaitCompletion(ctx); err != nil {
+	if err := t.getCompletionFuture().AwaitCompletion(ctx); err != nil {
 		t.transactionLog.Trace().Int32("transactionId", t.transactionId).Msg("Errored")
 		return err
 	}

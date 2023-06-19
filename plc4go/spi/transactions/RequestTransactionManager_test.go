@@ -280,10 +280,11 @@ func Test_requestTransactionManager_failRequest(t *testing.T) {
 				transaction: &requestTransaction{},
 			},
 			mockSetup: func(t *testing.T, fields *fields, args *args) {
-				completionFuture := NewMockCompletionFuture(t)
-				expect := completionFuture.EXPECT()
+				completionFutureMock := NewMockCompletionFuture(t)
+				expect := completionFutureMock.EXPECT()
 				expect.Cancel(true, nil).Return()
-				args.transaction.completionFuture = completionFuture
+				var completionFuture pool.CompletionFuture = completionFutureMock
+				args.transaction.completionFuture.Store(&completionFuture)
 			},
 			wantErr: true,
 		},
@@ -374,14 +375,17 @@ func Test_requestTransactionManager_processWorklog(t *testing.T) {
 				numberOfConcurrentRequests: 100,
 				workLog: func() list.List {
 					l := list.New()
-					l.PushBack(&requestTransaction{
-						transactionId:    1,
-						completionFuture: NewMockCompletionFuture(t),
-					})
-					l.PushBack(&requestTransaction{
-						transactionId:    2,
-						completionFuture: NewMockCompletionFuture(t),
-					})
+					var completionFuture pool.CompletionFuture = NewMockCompletionFuture(t)
+					r1 := &requestTransaction{
+						transactionId: 1,
+					}
+					r1.completionFuture.Store(&completionFuture)
+					l.PushBack(r1)
+					r2 := &requestTransaction{
+						transactionId: 2,
+					}
+					r2.completionFuture.Store(&completionFuture)
+					l.PushBack(r2)
 					return *l
 				}(),
 				executor: sharedExecutorInstance,
