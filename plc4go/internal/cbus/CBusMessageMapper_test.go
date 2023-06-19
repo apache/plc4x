@@ -1479,7 +1479,7 @@ func TestMapEncodedReply(t *testing.T) {
 					assert.NoError(t, transactionManager.Close())
 				})
 				transaction := transactionManager.StartTransaction()
-				t.Logf("Submitting No-Op to transaction %v", transaction)
+				t.Logf("Submitting No-Op to transaction\n%v", transaction)
 				transaction.Submit(func(transaction transactions.RequestTransaction) {
 					// NO-OP
 				})

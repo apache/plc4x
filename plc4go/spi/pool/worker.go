@@ -20,6 +20,7 @@
 package pool
 
 import (
+	"github.com/rs/zerolog/log"
 	"runtime/debug"
 	"sync"
 	"sync/atomic"
@@ -30,17 +31,20 @@ import (
 
 //go:generate go run ../../tools/plc4xgenerator/gen.go -type=worker
 type worker struct {
-	id          int
-	shutdown    atomic.Bool
-	interrupted atomic.Bool
-	interrupter chan struct{}
-	executor    interface {
+	id       int
+	executor interface {
 		isTraceWorkers() bool
 		getWorksItems() chan workItem
 		getWorkerWaitGroup() *sync.WaitGroup
 	}
-	hasEnded     atomic.Bool
+
 	lastReceived atomic.Value
+
+	stateChange sync.Mutex
+	running     atomic.Bool
+	shutdown    atomic.Bool
+	interrupted atomic.Bool
+	interrupter chan struct{}
 
 	log zerolog.Logger `ignore:"true"`
 }
@@ -49,32 +53,57 @@ func (w *worker) initialize() {
 	w.shutdown.Store(false)
 	w.interrupted.Store(false)
 	w.interrupter = make(chan struct{}, 1)
-	w.hasEnded.Store(false)
 	w.lastReceived.Store(time.Now())
 }
 
-func (w *worker) work() {
+func (w *worker) start() {
+	w.stateChange.Lock()
+	defer w.stateChange.Unlock()
+	if w.running.Load() {
+		log.Warn().Msg("Worker already started")
+		return
+	}
+	if w.executor.isTraceWorkers() {
+		w.log.Debug().Msgf("Starting worker\n%s", w)
+	}
 	w.executor.getWorkerWaitGroup().Add(1)
+	go w.work()
+}
+
+func (w *worker) stop(interrupt bool) {
+	w.stateChange.Lock()
+	defer w.stateChange.Unlock()
+	if !w.running.Load() {
+		log.Warn().Msg("Worker not running")
+		return
+	}
+	w.shutdown.Store(true)
+	if interrupt {
+		w.interrupted.Store(true)
+		close(w.interrupter)
+	}
+}
+
+func (w *worker) work() {
 	defer w.executor.getWorkerWaitGroup().Done()
 	defer func() {
 		if err := recover(); err != nil {
 			w.log.Error().Msgf("panic-ed %v. Stack: %s", err, debug.Stack())
-		}
-		if !w.shutdown.Load() {
-			// if we are not in shutdown we continue
-			w.work()
+			if !w.shutdown.Load() {
+				// if we are not in shutdown we continue
+				w.start()
+			}
 		}
 	}()
+	w.running.Store(true)
+	defer w.running.Store(false)
 	workerLog := w.log.With().Int("Worker id", w.id).Logger()
 	if !w.executor.isTraceWorkers() {
 		workerLog = zerolog.Nop()
 	}
-	workerLog.Debug().Msgf("current ended state: %t", w.hasEnded.Load())
-	w.hasEnded.Store(false)
-	workerLog.Debug().Msgf("setting to not ended")
 
 	for !w.shutdown.Load() {
-		workerLog.Debug().Msg("Working")
+		workerLog.Trace().Msg("Working")
 		select {
 		case _workItem := <-w.executor.getWorksItems():
 			w.lastReceived.Store(time.Now())
@@ -92,6 +121,5 @@ func (w *worker) work() {
 			workerLog.Debug().Msg("We got interrupted")
 		}
 	}
-	w.hasEnded.Store(true)
-	workerLog.Debug().Msg("setting to ended")
+	workerLog.Trace().Msg("done")
 }

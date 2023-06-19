@@ -47,23 +47,6 @@ func (d *worker) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils
 		return err
 	}
 
-	if err := writeBuffer.WriteBit("shutdown", d.shutdown.Load()); err != nil {
-		return err
-	}
-
-	if err := writeBuffer.WriteBit("interrupted", d.interrupted.Load()); err != nil {
-		return err
-	}
-
-	_interrupter_plx4gen_description := fmt.Sprintf("%d element(s)", len(d.interrupter))
-	if err := writeBuffer.WriteString("interrupter", uint32(len(_interrupter_plx4gen_description)*8), "UTF-8", _interrupter_plx4gen_description); err != nil {
-		return err
-	}
-
-	if err := writeBuffer.WriteBit("hasEnded", d.hasEnded.Load()); err != nil {
-		return err
-	}
-
 	if d.lastReceived.Load() != nil {
 		if serializableField, ok := d.lastReceived.Load().(utils.Serializable); ok {
 			if err := writeBuffer.PushContext("lastReceived"); err != nil {
@@ -81,6 +64,23 @@ func (d *worker) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils
 				return err
 			}
 		}
+	}
+
+	if err := writeBuffer.WriteBit("running", d.running.Load()); err != nil {
+		return err
+	}
+
+	if err := writeBuffer.WriteBit("shutdown", d.shutdown.Load()); err != nil {
+		return err
+	}
+
+	if err := writeBuffer.WriteBit("interrupted", d.interrupted.Load()); err != nil {
+		return err
+	}
+
+	_interrupter_plx4gen_description := fmt.Sprintf("%d element(s)", len(d.interrupter))
+	if err := writeBuffer.WriteString("interrupter", uint32(len(_interrupter_plx4gen_description)*8), "UTF-8", _interrupter_plx4gen_description); err != nil {
+		return err
 	}
 	if err := writeBuffer.PopContext("worker"); err != nil {
 		return err

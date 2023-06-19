@@ -91,7 +91,7 @@ func (e *dynamicExecutor) Start() {
 				e.worker = append(e.worker, _worker)
 				_worker.initialize()
 				workerLog.Info().Int("Worker id", _worker.id).Msg("spawning")
-				go _worker.work()
+				_worker.start()
 				e.currentNumberOfWorkers.Add(1)
 			} else {
 				workerLog.Trace().Msg("Nothing to scale")
@@ -133,8 +133,7 @@ func (e *dynamicExecutor) Start() {
 				workerLog.Debug().Int("Worker id", _worker.id).Msgf("Checking if %v is before %v", _worker.lastReceived.Load(), deadline)
 				if _worker.lastReceived.Load().(time.Time).Before(deadline) {
 					workerLog.Info().Int("Worker id", _worker.id).Msg("killing")
-					_worker.interrupted.Store(true)
-					close(_worker.interrupter)
+					_worker.stop(true)
 					e.currentNumberOfWorkers.Add(-1)
 				} else {
 					workerLog.Debug().Int("Worker id", _worker.id).Msg("still ok")

@@ -162,8 +162,7 @@ func TestBrowser_BrowseQuery(t *testing.T) {
 				})
 				connectionConnectResult := <-driver.GetConnection(transportUrl, map[string]transports.Transport{"test": transport}, map[string][]string{})
 				if err := connectionConnectResult.GetErr(); err != nil {
-					t.Error(err)
-					t.FailNow()
+					t.Fatal(err)
 				}
 				fields.connection = connectionConnectResult.GetConnection()
 				t.Cleanup(func() {

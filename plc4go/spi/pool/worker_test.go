@@ -20,7 +20,9 @@
 package pool
 
 import (
+	"github.com/rs/zerolog"
 	"sync"
+	"sync/atomic"
 	"testing"
 	"time"
 
@@ -54,6 +56,118 @@ func Test_worker_initialize(t *testing.T) {
 				log:         produceTestingLogger(t),
 			}
 			w.initialize()
+		})
+	}
+}
+
+func Test_worker_start(t *testing.T) {
+	type fields struct {
+		id       int
+		executor interface {
+			isTraceWorkers() bool
+			getWorksItems() chan workItem
+			getWorkerWaitGroup() *sync.WaitGroup
+		}
+		lastReceived atomic.Value
+		interrupter  chan struct{}
+		log          zerolog.Logger
+	}
+	tests := []struct {
+		name        string
+		fields      fields
+		manipulator func(t *testing.T, worker *worker)
+	}{
+		{
+			name: "start it",
+			fields: fields{
+				executor: func() *executor {
+					e := &executor{
+						workItems:    make(chan workItem),
+						traceWorkers: true,
+					}
+					go func() {
+						e.workItems <- workItem{
+							workItemId: 0,
+							runnable: func() {
+								// No-op
+							},
+							completionFuture: &future{},
+						}
+					}()
+					return e
+				}(),
+			},
+		},
+		{
+			name: "start started",
+			manipulator: func(t *testing.T, worker *worker) {
+				worker.running.Store(true)
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			w := &worker{
+				id:           tt.fields.id,
+				executor:     tt.fields.executor,
+				lastReceived: tt.fields.lastReceived,
+				interrupter:  tt.fields.interrupter,
+				log:          tt.fields.log,
+			}
+			if tt.manipulator != nil {
+				tt.manipulator(t, w)
+			}
+			w.start()
+			t.Cleanup(func() {
+				w.stop(false)
+			})
+		})
+	}
+}
+
+func Test_worker_stop(t *testing.T) {
+	type fields struct {
+		id       int
+		executor interface {
+			isTraceWorkers() bool
+			getWorksItems() chan workItem
+			getWorkerWaitGroup() *sync.WaitGroup
+		}
+		lastReceived atomic.Value
+		interrupter  chan struct{}
+		log          zerolog.Logger
+	}
+	tests := []struct {
+		name        string
+		fields      fields
+		manipulator func(t *testing.T, worker *worker)
+	}{
+		{
+			name: "stop it",
+		},
+		{
+			name: "stop started",
+			fields: fields{
+				interrupter: make(chan struct{}),
+			},
+			manipulator: func(t *testing.T, worker *worker) {
+				worker.running.Store(true)
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			w := &worker{
+				id:           tt.fields.id,
+				executor:     tt.fields.executor,
+				lastReceived: tt.fields.lastReceived,
+				interrupter:  tt.fields.interrupter,
+				log:          tt.fields.log,
+			}
+			if tt.manipulator != nil {
+				tt.manipulator(t, w)
+			}
+			w.stop(true)
 		})
 	}
 }
@@ -96,7 +210,7 @@ func Test_worker_work(t *testing.T) {
 			},
 			timeBeforeFirstValidation: 50 * time.Millisecond,
 			firstValidation: func(t *testing.T, w *worker) {
-				assert.False(t, w.hasEnded.Load(), "should not be ended")
+				assert.True(t, w.running.Load(), "should be running")
 			},
 			manipulator: func(w *worker) {
 				w.shutdown.Store(true)
@@ -104,7 +218,7 @@ func Test_worker_work(t *testing.T) {
 			},
 			timeBeforeSecondValidation: 150 * time.Millisecond,
 			secondValidation: func(t *testing.T, w *worker) {
-				assert.True(t, w.hasEnded.Load(), "should be ended")
+				assert.False(t, w.running.Load(), "should not be running")
 			},
 		},
 		{
@@ -130,14 +244,14 @@ func Test_worker_work(t *testing.T) {
 			},
 			timeBeforeFirstValidation: 50 * time.Millisecond,
 			firstValidation: func(t *testing.T, w *worker) {
-				assert.False(t, w.hasEnded.Load(), "should not be ended")
+				assert.True(t, w.running.Load(), "should be running")
 			},
 			manipulator: func(w *worker) {
 				w.shutdown.Store(true)
 			},
 			timeBeforeSecondValidation: 150 * time.Millisecond,
 			secondValidation: func(t *testing.T, w *worker) {
-				assert.True(t, w.hasEnded.Load(), "should be ended")
+				assert.False(t, w.running.Load(), "should not be running")
 			},
 		},
 		{
@@ -154,7 +268,7 @@ func Test_worker_work(t *testing.T) {
 			},
 			timeBeforeFirstValidation: 50 * time.Millisecond,
 			firstValidation: func(t *testing.T, w *worker) {
-				assert.False(t, w.hasEnded.Load(), "should not be ended")
+				assert.True(t, w.running.Load(), "should be running")
 			},
 			manipulator: func(w *worker) {
 				w.shutdown.Store(true)
@@ -162,7 +276,7 @@ func Test_worker_work(t *testing.T) {
 			},
 			timeBeforeSecondValidation: 150 * time.Millisecond,
 			secondValidation: func(t *testing.T, w *worker) {
-				assert.True(t, w.hasEnded.Load(), "should be ended")
+				assert.False(t, w.running.Load(), "should not be running")
 			},
 		},
 		{
@@ -203,6 +317,7 @@ func Test_worker_work(t *testing.T) {
 				executor:    tt.fields.executor,
 				log:         produceTestingLogger(t),
 			}
+			w.executor.getWorkerWaitGroup().Add(1)
 			go w.work()
 			if tt.firstValidation != nil {
 				time.Sleep(tt.timeBeforeFirstValidation)
@@ -238,11 +353,11 @@ func Test_worker_String(t *testing.T) {
 		{
 			name: "string it",
 			want: `
-╔═worker════════════════════════════════════════════════════════════════════════════════════════════════╗
-║╔═id═════════════════╗╔═shutdown╗╔═interrupted╗╔═interrupter╗╔═hasEnded╗╔═lastReceived════════════════╗║
-║║0x0000000000000000 0║║b0 false ║║  b0 false  ║║0 element(s)║║b0 false ║║0001-01-01 00:00:00 +0000 UTC║║
-║╚════════════════════╝╚═════════╝╚════════════╝╚════════════╝╚═════════╝╚═════════════════════════════╝║
-╚═══════════════════════════════════════════════════════════════════════════════════════════════════════╝`[1:],
+╔═worker═══════════════════════════════════════════════════════════════════════════════════════════════╗
+║╔═id═════════════════╗╔═lastReceived════════════════╗╔═running╗╔═shutdown╗╔═interrupted╗╔═interrupter╗║
+║║0x0000000000000000 0║║0001-01-01 00:00:00 +0000 UTC║║b0 false║║b0 false ║║  b0 false  ║║0 element(s)║║
+║╚════════════════════╝╚═════════════════════════════╝╚════════╝╚═════════╝╚════════════╝╚════════════╝║
+╚══════════════════════════════════════════════════════════════════════════════════════════════════════╝`[1:],
 		},
 	}
 	for _, tt := range tests {
