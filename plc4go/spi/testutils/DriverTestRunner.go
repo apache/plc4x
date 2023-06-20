@@ -157,9 +157,7 @@ func (m DriverTestsuite) ExecuteStep(t *testing.T, connection plc4go.PlcConnecti
 	}
 
 	start := time.Now()
-	t.Logf("\n-------------------------------------------------------\n - Executing step: %s \n-------------------------------------------------------\n", step.name)
-
-	t.Logf("Handling step %s", step.stepType)
+	t.Logf("\n-------------------------------------------------------\n - Executing step (%s): %s\n-------------------------------------------------------\n", step.stepType, step.name)
 	switch step.stepType {
 	case StepTypeApiRequest:
 		switch step.payload.Name {
