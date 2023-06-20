@@ -25,7 +25,6 @@ import (
 	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/pool"
-	"github.com/apache/plc4x/plc4go/spi/testutils"
 	"github.com/rs/zerolog"
 	"github.com/stretchr/testify/assert"
 	"testing"
@@ -162,6 +161,9 @@ func Test_requestTransactionManager_StartTransaction(t *testing.T) {
 	}{
 		{
 			name: "start one",
+			setup: func(t *testing.T, fields *fields) {
+				fields.executor = pool.NewFixedSizeExecutor(10, 10, options.WithCustomLogger(produceTestingLogger(t)))
+			},
 			wantAssert: func(t *testing.T, requestTransaction RequestTransaction) bool {
 				assert.False(t, requestTransaction.IsCompleted())
 				return true
@@ -169,6 +171,9 @@ func Test_requestTransactionManager_StartTransaction(t *testing.T) {
 		},
 		{
 			name: "start one in shutdown",
+			setup: func(t *testing.T, fields *fields) {
+				fields.executor = pool.NewFixedSizeExecutor(10, 10, options.WithCustomLogger(produceTestingLogger(t)))
+			},
 			manipulator: func(t *testing.T, manager *requestTransactionManager) {
 				manager.shutdown.Store(true)
 			},
@@ -191,7 +196,7 @@ func Test_requestTransactionManager_StartTransaction(t *testing.T) {
 				workLog:                             tt.fields.workLog,
 				executor:                            tt.fields.executor,
 				traceTransactionManagerTransactions: tt.fields.traceTransactionManagerTransactions,
-				log:                                 testutils.ProduceTestingLogger(t),
+				log:                                 produceTestingLogger(t),
 			}
 			if tt.manipulator != nil {
 				tt.manipulator(t, r)
@@ -218,6 +223,7 @@ func Test_requestTransactionManager_endRequest(t *testing.T) {
 		name    string
 		fields  fields
 		args    args
+		setup   func(t *testing.T, fields *fields, args *args)
 		wantErr bool
 	}{
 		{
@@ -225,12 +231,18 @@ func Test_requestTransactionManager_endRequest(t *testing.T) {
 			args: args{
 				transaction: &requestTransaction{},
 			},
+			setup: func(t *testing.T, fields *fields, args *args) {
+				fields.executor = pool.NewFixedSizeExecutor(10, 10, options.WithCustomLogger(produceTestingLogger(t)))
+			},
 			wantErr: true,
 		},
 		{
 			name: "end request",
 			args: args{
 				transaction: &requestTransaction{},
+			},
+			setup: func(t *testing.T, fields *fields, args *args) {
+				fields.executor = pool.NewFixedSizeExecutor(10, 10, options.WithCustomLogger(produceTestingLogger(t)))
 			},
 			fields: fields{
 				runningRequests: []*requestTransaction{
@@ -241,6 +253,9 @@ func Test_requestTransactionManager_endRequest(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			if tt.setup != nil {
+				tt.setup(t, &tt.fields, &tt.args)
+			}
 			r := &requestTransactionManager{
 				runningRequests:            tt.fields.runningRequests,
 				numberOfConcurrentRequests: tt.fields.numberOfConcurrentRequests,
@@ -268,18 +283,20 @@ func Test_requestTransactionManager_failRequest(t *testing.T) {
 		err         error
 	}
 	tests := []struct {
-		name      string
-		fields    fields
-		args      args
-		mockSetup func(t *testing.T, fields *fields, args *args)
-		wantErr   bool
+		name    string
+		fields  fields
+		args    args
+		setup   func(t *testing.T, fields *fields, args *args)
+		wantErr bool
 	}{
 		{
 			name: "fail a request",
 			args: args{
 				transaction: &requestTransaction{},
 			},
-			mockSetup: func(t *testing.T, fields *fields, args *args) {
+			setup: func(t *testing.T, fields *fields, args *args) {
+				fields.executor = pool.NewFixedSizeExecutor(10, 10, options.WithCustomLogger(produceTestingLogger(t)))
+
 				completionFutureMock := NewMockCompletionFuture(t)
 				expect := completionFutureMock.EXPECT()
 				expect.Cancel(true, nil).Return()
@@ -291,8 +308,8 @@ func Test_requestTransactionManager_failRequest(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if tt.mockSetup != nil {
-				tt.mockSetup(t, &tt.fields, &tt.args)
+			if tt.setup != nil {
+				tt.setup(t, &tt.fields, &tt.args)
 			}
 			r := &requestTransactionManager{
 				runningRequests:            tt.fields.runningRequests,
@@ -300,7 +317,7 @@ func Test_requestTransactionManager_failRequest(t *testing.T) {
 				currentTransactionId:       tt.fields.currentTransactionId,
 				workLog:                    tt.fields.workLog,
 				executor:                   tt.fields.executor,
-				log:                        testutils.ProduceTestingLogger(t),
+				log:                        produceTestingLogger(t),
 			}
 			if err := r.failRequest(tt.args.transaction, tt.args.err); (err != nil) != tt.wantErr {
 				t.Errorf("failRequest() error = %v, wantErr %v", err, tt.wantErr)
@@ -353,6 +370,7 @@ func Test_requestTransactionManager_processWorklog(t *testing.T) {
 	tests := []struct {
 		name   string
 		fields fields
+		setup  func(t *testing.T, fields *fields)
 	}{
 		{
 			name: "process nothing",
@@ -367,6 +385,9 @@ func Test_requestTransactionManager_processWorklog(t *testing.T) {
 					return *l
 				}(),
 				executor: sharedExecutorInstance,
+			},
+			setup: func(t *testing.T, fields *fields) {
+				fields.executor = pool.NewFixedSizeExecutor(10, 10, options.WithCustomLogger(produceTestingLogger(t)))
 			},
 		},
 		{
@@ -390,10 +411,16 @@ func Test_requestTransactionManager_processWorklog(t *testing.T) {
 				}(),
 				executor: sharedExecutorInstance,
 			},
+			setup: func(t *testing.T, fields *fields) {
+				fields.executor = pool.NewFixedSizeExecutor(10, 10, options.WithCustomLogger(produceTestingLogger(t)))
+			},
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			if tt.setup != nil {
+				tt.setup(t, &tt.fields)
+			}
 			r := &requestTransactionManager{
 				runningRequests:            tt.fields.runningRequests,
 				numberOfConcurrentRequests: tt.fields.numberOfConcurrentRequests,
@@ -421,6 +448,7 @@ func Test_requestTransactionManager_submitTransaction(t *testing.T) {
 		name   string
 		fields fields
 		args   args
+		setup  func(t *testing.T, fields *fields, args *args)
 	}{
 		{
 			name: "submit it",
@@ -431,10 +459,16 @@ func Test_requestTransactionManager_submitTransaction(t *testing.T) {
 					},
 				},
 			},
+			setup: func(t *testing.T, fields *fields, args *args) {
+				fields.executor = pool.NewFixedSizeExecutor(10, 10, options.WithCustomLogger(produceTestingLogger(t)))
+			},
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			if tt.setup != nil {
+				tt.setup(t, &tt.fields, &tt.args)
+			}
 			r := &requestTransactionManager{
 				runningRequests:            tt.fields.runningRequests,
 				numberOfConcurrentRequests: tt.fields.numberOfConcurrentRequests,
@@ -484,7 +518,7 @@ func Test_requestTransactionManager_Close(t *testing.T) {
 				workLog:                             tt.fields.workLog,
 				executor:                            tt.fields.executor,
 				traceTransactionManagerTransactions: tt.fields.traceTransactionManagerTransactions,
-				log:                                 testutils.ProduceTestingLogger(t),
+				log:                                 produceTestingLogger(t),
 			}
 			tt.wantErr(t, r.Close(), fmt.Sprintf("Close()"))
 		})
@@ -636,7 +670,7 @@ func Test_requestTransactionManager_String(t *testing.T) {
 				workLog:                             tt.fields.workLog,
 				executor:                            tt.fields.executor,
 				traceTransactionManagerTransactions: tt.fields.traceTransactionManagerTransactions,
-				log:                                 testutils.ProduceTestingLogger(t),
+				log:                                 produceTestingLogger(t),
 			}
 			assert.Equalf(t, tt.want, r.String(), "String()")
 		})

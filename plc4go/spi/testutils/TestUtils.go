@@ -21,13 +21,17 @@ package testutils
 
 import (
 	"context"
-	"github.com/apache/plc4x/plc4go/spi/options"
-	"github.com/apache/plc4x/plc4go/spi/utils"
 	"os"
+	"runtime"
 	"runtime/debug"
 	"strings"
 	"testing"
 	"time"
+
+	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/apache/plc4x/plc4go/spi/pool"
+	"github.com/apache/plc4x/plc4go/spi/transactions"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 
 	"github.com/ajankovic/xdiff"
 	"github.com/ajankovic/xdiff/parser"
@@ -163,12 +167,23 @@ func EnrichOptionsWithOptionsForTesting(t *testing.T, _options ...options.WithOp
 	if extractedTraceWorkers, found := options.ExtractTracerWorkers(_options...); found {
 		traceExecutorWorkers = extractedTraceWorkers
 	}
-	// TODO: apply to other options like above
-	return append(_options,
+	_options = append(_options,
 		options.WithCustomLogger(ProduceTestingLogger(t)),
 		options.WithPassLoggerToModel(true),
 		options.WithExecutorOptionTracerWorkers(traceExecutorWorkers),
 	)
+	// We always create a custom executor to ensure shared executor for transaction manager is not used for tests
+	testSharedExecutorInstance := pool.NewFixedSizeExecutor(
+		runtime.NumCPU(),
+		100,
+		_options...,
+	)
+	testSharedExecutorInstance.Start()
+	t.Cleanup(testSharedExecutorInstance.Stop)
+	_options = append(_options,
+		transactions.WithCustomExecutor(testSharedExecutorInstance),
+	)
+	return _options
 }
 
 type _explodingGlobalLogger struct {

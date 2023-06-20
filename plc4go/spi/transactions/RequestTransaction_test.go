@@ -25,8 +25,6 @@ import (
 	"time"
 
 	"github.com/apache/plc4x/plc4go/spi/pool"
-	"github.com/apache/plc4x/plc4go/spi/testutils"
-
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 	"github.com/stretchr/testify/assert"
@@ -67,7 +65,7 @@ func Test_requestTransaction_EndRequest(t1 *testing.T) {
 				parent:         tt.fields.parent,
 				transactionId:  tt.fields.transactionId,
 				operation:      tt.fields.operation,
-				transactionLog: testutils.ProduceTestingLogger(t1),
+				transactionLog: produceTestingLogger(t1),
 				completed:      tt.fields.completed,
 			}
 			if err := t.EndRequest(); (err != nil) != tt.wantErr {
@@ -173,7 +171,7 @@ func Test_requestTransaction_String(t *testing.T) {
 				parent:         tt.fields.parent,
 				transactionId:  tt.fields.transactionId,
 				operation:      tt.fields.operation,
-				transactionLog: testutils.ProduceTestingLogger(t1),
+				transactionLog: produceTestingLogger(t1),
 			}
 			if tt.manipulator != nil {
 				tt.manipulator(t, _t)
@@ -313,7 +311,7 @@ func Test_requestTransaction_AwaitCompletion(t1 *testing.T) {
 				parent:         tt.fields.parent,
 				transactionId:  tt.fields.transactionId,
 				operation:      tt.fields.operation,
-				transactionLog: testutils.ProduceTestingLogger(t1),
+				transactionLog: produceTestingLogger(t1),
 			}
 			if tt.manipulator != nil {
 				tt.manipulator(t1, t)
