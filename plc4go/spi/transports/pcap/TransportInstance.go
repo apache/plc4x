@@ -167,6 +167,9 @@ func (m *TransportInstance) IsConnected() bool {
 }
 
 func (m *TransportInstance) Write(_ []byte) error {
+	if !m.connected.Load() {
+		return errors.New("error writing to transport. No writer available")
+	}
 	return errors.New("Write to pcap not supported")
 }
 

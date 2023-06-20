@@ -70,17 +70,18 @@ func TestTransportInstance_Close(t *testing.T) {
 		reader         *bufio.Reader
 	}
 	tests := []struct {
-		name    string
-		fields  fields
-		wantErr bool
+		name        string
+		fields      fields
+		manipulator func(t *testing.T, instance *TransportInstance)
+		wantErr     bool
 	}{
-		{
-			name: "close it",
-		},
 		{
 			name: "close it failing",
 			fields: fields{
 				udpConn: &net.UDPConn{},
+			},
+			manipulator: func(t *testing.T, instance *TransportInstance) {
+				instance.connected.Store(true)
 			},
 			wantErr: true,
 		},
@@ -96,6 +97,9 @@ func TestTransportInstance_Close(t *testing.T) {
 					return listener.(*net.UDPConn)
 				}(),
 			},
+			manipulator: func(t *testing.T, instance *TransportInstance) {
+				instance.connected.Store(true)
+			},
 		},
 	}
 	for _, tt := range tests {
@@ -108,6 +112,9 @@ func TestTransportInstance_Close(t *testing.T) {
 				transport:      tt.fields.transport,
 				udpConn:        tt.fields.udpConn,
 				reader:         tt.fields.reader,
+			}
+			if tt.manipulator != nil {
+				tt.manipulator(t, m)
 			}
 			if err := m.Close(); (err != nil) != tt.wantErr {
 				t.Errorf("Close() error = %v, wantErr %v", err, tt.wantErr)
@@ -303,10 +310,11 @@ func TestTransportInstance_FillBuffer(t *testing.T) {
 		until func(pos uint, currentByte byte, reader transports.ExtendedReader) bool
 	}
 	tests := []struct {
-		name    string
-		fields  fields
-		args    args
-		wantErr bool
+		name        string
+		fields      fields
+		args        args
+		manipulator func(t *testing.T, instance *TransportInstance)
+		wantErr     bool
 	}{
 		{
 			name:    "do it",
@@ -322,6 +330,9 @@ func TestTransportInstance_FillBuffer(t *testing.T) {
 					return pos < 2
 				},
 			},
+			manipulator: func(t *testing.T, instance *TransportInstance) {
+				instance.connected.Store(true)
+			},
 		},
 	}
 	for _, tt := range tests {
@@ -334,6 +345,9 @@ func TestTransportInstance_FillBuffer(t *testing.T) {
 				transport:      tt.fields.transport,
 				udpConn:        tt.fields.udpConn,
 				reader:         tt.fields.reader,
+			}
+			if tt.manipulator != nil {
+				tt.manipulator(t, m)
 			}
 			if err := m.FillBuffer(tt.args.until); (err != nil) != tt.wantErr {
 				t.Errorf("FillBuffer() error = %v, wantErr %v", err, tt.wantErr)
@@ -353,20 +367,27 @@ func TestTransportInstance_GetNumBytesAvailableInBuffer(t *testing.T) {
 		reader         *bufio.Reader
 	}
 	tests := []struct {
-		name    string
-		fields  fields
-		want    uint32
-		wantErr bool
+		name        string
+		fields      fields
+		manipulator func(t *testing.T, instance *TransportInstance)
+		want        uint32
+		wantErr     bool
 	}{
 		{
 			name: "get em",
 			fields: fields{
 				reader: bufio.NewReader(bytes.NewReader([]byte{1, 2, 3, 4})),
 			},
+			manipulator: func(t *testing.T, instance *TransportInstance) {
+				instance.connected.Store(true)
+			},
 			want: 4,
 		},
 		{
 			name: "get em (no reader)",
+			manipulator: func(t *testing.T, instance *TransportInstance) {
+				instance.connected.Store(true)
+			},
 		},
 	}
 	for _, tt := range tests {
@@ -379,6 +400,9 @@ func TestTransportInstance_GetNumBytesAvailableInBuffer(t *testing.T) {
 				transport:      tt.fields.transport,
 				udpConn:        tt.fields.udpConn,
 				reader:         tt.fields.reader,
+			}
+			if tt.manipulator != nil {
+				tt.manipulator(t, m)
 			}
 			got, err := m.GetNumBytesAvailableInBuffer()
 			if (err != nil) != tt.wantErr {
@@ -443,16 +467,20 @@ func TestTransportInstance_PeekReadableBytes(t *testing.T) {
 		numBytes uint32
 	}
 	tests := []struct {
-		name    string
-		fields  fields
-		args    args
-		want    []byte
-		wantErr bool
+		name        string
+		fields      fields
+		args        args
+		manipulator func(t *testing.T, instance *TransportInstance)
+		want        []byte
+		wantErr     bool
 	}{
 		{
 			name: "peek it",
 			fields: fields{
 				reader: bufio.NewReader(bytes.NewReader([]byte{1, 2, 3, 4})),
+			},
+			manipulator: func(t *testing.T, instance *TransportInstance) {
+				instance.connected.Store(true)
 			},
 			want: []byte{},
 		},
@@ -464,10 +492,13 @@ func TestTransportInstance_PeekReadableBytes(t *testing.T) {
 			args: args{
 				numBytes: 3,
 			},
+			manipulator: func(t *testing.T, instance *TransportInstance) {
+				instance.connected.Store(true)
+			},
 			want: []byte{1, 2, 3},
 		},
 		{
-			name:    "peek it (no reader)",
+			name:    "peek it (not connected)",
 			wantErr: true,
 		},
 	}
@@ -481,6 +512,9 @@ func TestTransportInstance_PeekReadableBytes(t *testing.T) {
 				transport:      tt.fields.transport,
 				udpConn:        tt.fields.udpConn,
 				reader:         tt.fields.reader,
+			}
+			if tt.manipulator != nil {
+				tt.manipulator(t, m)
 			}
 			got, err := m.PeekReadableBytes(tt.args.numBytes)
 			if (err != nil) != tt.wantErr {
@@ -508,16 +542,20 @@ func TestTransportInstance_Read(t *testing.T) {
 		numBytes uint32
 	}
 	tests := []struct {
-		name    string
-		fields  fields
-		args    args
-		want    []byte
-		wantErr bool
+		name        string
+		fields      fields
+		args        args
+		manipulator func(t *testing.T, instance *TransportInstance)
+		want        []byte
+		wantErr     bool
 	}{
 		{
 			name: "read it",
 			fields: fields{
 				reader: bufio.NewReader(bytes.NewReader([]byte{1, 2, 3, 4})),
+			},
+			manipulator: func(t *testing.T, instance *TransportInstance) {
+				instance.connected.Store(true)
 			},
 			want: []byte{},
 		},
@@ -529,6 +567,9 @@ func TestTransportInstance_Read(t *testing.T) {
 			args: args{
 				numBytes: 3,
 			},
+			manipulator: func(t *testing.T, instance *TransportInstance) {
+				instance.connected.Store(true)
+			},
 			want: []byte{1, 2, 3},
 		},
 		{
@@ -539,10 +580,13 @@ func TestTransportInstance_Read(t *testing.T) {
 			args: args{
 				numBytes: 5,
 			},
+			manipulator: func(t *testing.T, instance *TransportInstance) {
+				instance.connected.Store(true)
+			},
 			wantErr: true,
 		},
 		{
-			name:    "read it (no reader available)",
+			name:    "read it (not connected)",
 			wantErr: true,
 		},
 	}
@@ -556,6 +600,9 @@ func TestTransportInstance_Read(t *testing.T) {
 				transport:      tt.fields.transport,
 				udpConn:        tt.fields.udpConn,
 				reader:         tt.fields.reader,
+			}
+			if tt.manipulator != nil {
+				tt.manipulator(t, m)
 			}
 			got, err := m.Read(tt.args.numBytes)
 			if (err != nil) != tt.wantErr {
@@ -629,10 +676,12 @@ func TestTransportInstance_Write(t *testing.T) {
 		data []byte
 	}
 	tests := []struct {
-		name    string
-		fields  fields
-		args    args
-		wantErr bool
+		name        string
+		fields      fields
+		args        args
+		setup       func(t *testing.T, fields *fields, args *args)
+		manipulator func(t *testing.T, instance *TransportInstance)
+		wantErr     bool
 	}{
 		{
 			name:    "write it (no con)",
@@ -640,42 +689,45 @@ func TestTransportInstance_Write(t *testing.T) {
 		},
 		{
 			name: "write it",
-			fields: fields{
-				udpConn: func() *net.UDPConn {
-					listener, err := nettest.NewLocalPacketListener("udp")
-					require.NoError(t, err)
-					t.Cleanup(func() {
-						assert.NoError(t, listener.Close())
-					})
-					udp, err := net.DialUDP("udp", nil, listener.LocalAddr().(*net.UDPAddr))
-					require.NoError(t, err)
-					return udp
-				}(),
+			setup: func(t *testing.T, fields *fields, args *args) {
+				listener, err := nettest.NewLocalPacketListener("udp")
+				require.NoError(t, err)
+				t.Cleanup(func() {
+					assert.NoError(t, listener.Close())
+				})
+				udp, err := net.DialUDP("udp", nil, listener.LocalAddr().(*net.UDPAddr))
+				require.NoError(t, err)
+				fields.udpConn = udp
+			},
+			manipulator: func(t *testing.T, instance *TransportInstance) {
+				instance.connected.Store(true)
 			},
 		},
 		{
 			name: "write it with remote",
-			fields: func() fields {
+			setup: func(t *testing.T, fields *fields, args *args) {
 				listener, err := nettest.NewLocalPacketListener("udp")
 				require.NoError(t, err)
 				t.Cleanup(func() {
 					assert.NoError(t, listener.Close())
 				})
 				remoteAddress := listener.LocalAddr().(*net.UDPAddr)
-				return fields{
-					RemoteAddress: remoteAddress,
-					udpConn: func() *net.UDPConn {
-						udp, err := net.ListenUDP("udp", nil)
-						require.NoError(t, err)
-						return udp
-					}(),
-				}
-			}(),
+				fields.RemoteAddress = remoteAddress
+				udp, err := net.ListenUDP("udp", nil)
+				require.NoError(t, err)
+				fields.udpConn = udp
+			},
+			manipulator: func(t *testing.T, instance *TransportInstance) {
+				instance.connected.Store(true)
+			},
 			args: args{data: []byte{1, 2, 3, 4}},
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			if tt.setup != nil {
+				tt.setup(t, &tt.fields, &tt.args)
+			}
 			m := &TransportInstance{
 				LocalAddress:   tt.fields.LocalAddress,
 				RemoteAddress:  tt.fields.RemoteAddress,
@@ -684,6 +736,9 @@ func TestTransportInstance_Write(t *testing.T) {
 				transport:      tt.fields.transport,
 				udpConn:        tt.fields.udpConn,
 				reader:         tt.fields.reader,
+			}
+			if tt.manipulator != nil {
+				tt.manipulator(t, m)
 			}
 			if err := m.Write(tt.args.data); (err != nil) != tt.wantErr {
 				t.Errorf("Write() error = %v, wantErr %v", err, tt.wantErr)

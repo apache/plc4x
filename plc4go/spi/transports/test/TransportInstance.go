@@ -26,6 +26,7 @@ import (
 	"encoding/hex"
 	"math"
 	"sync"
+	"sync/atomic"
 
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/transports"
@@ -37,11 +38,11 @@ import (
 type TransportInstance struct {
 	readBuffer       []byte
 	writeBuffer      []byte
-	connected        bool
 	transport        *Transport
 	writeInterceptor func(transportInstance *TransportInstance, data []byte)
 
 	dataMutex        sync.RWMutex
+	connected        atomic.Bool
 	stateChangeMutex sync.RWMutex
 
 	log zerolog.Logger
@@ -51,7 +52,6 @@ func NewTransportInstance(transport *Transport, _options ...options.WithOption) 
 	return &TransportInstance{
 		readBuffer:  []byte{},
 		writeBuffer: []byte{},
-		connected:   false,
 		transport:   transport,
 
 		log: options.ExtractCustomLogger(_options...),
@@ -61,12 +61,12 @@ func NewTransportInstance(transport *Transport, _options ...options.WithOption) 
 func (m *TransportInstance) Connect() error {
 	m.stateChangeMutex.Lock()
 	defer m.stateChangeMutex.Unlock()
-	if m.connected {
+	if m.connected.Load() {
 		m.log.Warn().Msg("already connected")
 		return nil
 	}
 	m.log.Trace().Msg("Connect")
-	m.connected = true
+	m.connected.Store(true)
 	return nil
 }
 
@@ -77,15 +77,16 @@ func (m *TransportInstance) ConnectWithContext(_ context.Context) error {
 func (m *TransportInstance) Close() error {
 	m.stateChangeMutex.Lock()
 	defer m.stateChangeMutex.Unlock()
+	if !m.connected.Load() {
+		return nil
+	}
 	m.log.Trace().Msg("Close")
-	m.connected = false
+	m.connected.Store(true)
 	return nil
 }
 
 func (m *TransportInstance) IsConnected() bool {
-	m.stateChangeMutex.RLock()
-	defer m.stateChangeMutex.RUnlock()
-	return m.connected
+	return m.connected.Load()
 }
 
 func (m *TransportInstance) GetNumBytesAvailableInBuffer() (uint32, error) {
@@ -101,7 +102,7 @@ func (m *TransportInstance) GetNumBytesAvailableInBuffer() (uint32, error) {
 
 func (m *TransportInstance) FillBuffer(until func(pos uint, currentByte byte, reader transports.ExtendedReader) bool) error {
 	if !m.IsConnected() {
-		panic(errors.New("working on a unconnected connection"))
+		return errors.New("working on a unconnected connection")
 	}
 	m.log.Trace().Msg("Fill the buffer")
 	nBytes := uint32(1)
@@ -125,7 +126,7 @@ func (m *TransportInstance) FillBuffer(until func(pos uint, currentByte byte, re
 
 func (m *TransportInstance) PeekReadableBytes(numBytes uint32) ([]byte, error) {
 	if !m.IsConnected() {
-		panic(errors.New("working on a unconnected connection"))
+		return nil, errors.New("working on a unconnected connection")
 	}
 	m.dataMutex.RLock()
 	defer m.dataMutex.RUnlock()
@@ -144,7 +145,7 @@ func (m *TransportInstance) PeekReadableBytes(numBytes uint32) ([]byte, error) {
 
 func (m *TransportInstance) Read(numBytes uint32) ([]byte, error) {
 	if !m.IsConnected() {
-		panic(errors.New("working on a unconnected connection"))
+		return nil, errors.New("working on a unconnected connection")
 	}
 	m.dataMutex.Lock()
 	defer m.dataMutex.Unlock()
@@ -165,7 +166,7 @@ func (m *TransportInstance) SetWriteInterceptor(writeInterceptor func(transportI
 
 func (m *TransportInstance) Write(data []byte) error {
 	if !m.IsConnected() {
-		panic(errors.New("working on a unconnected connection"))
+		return errors.New("working on a unconnected connection")
 	}
 	if m.writeInterceptor != nil {
 		m.log.Trace().Msgf("Passing data to write interceptor\n%s", hex.Dump(data))
@@ -180,7 +181,8 @@ func (m *TransportInstance) Write(data []byte) error {
 
 func (m *TransportInstance) FillReadBuffer(data []byte) {
 	if !m.IsConnected() {
-		panic(errors.New("working on a unconnected connection"))
+		m.log.Error().Msg("working on a unconnected connection")
+		return
 	}
 	m.dataMutex.Lock()
 	defer m.dataMutex.Unlock()
@@ -190,7 +192,8 @@ func (m *TransportInstance) FillReadBuffer(data []byte) {
 
 func (m *TransportInstance) GetNumDrainableBytes() uint32 {
 	if !m.IsConnected() {
-		panic(errors.New("working on a unconnected connection"))
+		m.log.Error().Msg("working on a unconnected connection")
+		return 0
 	}
 	m.dataMutex.RLock()
 	defer m.dataMutex.RUnlock()
@@ -200,7 +203,8 @@ func (m *TransportInstance) GetNumDrainableBytes() uint32 {
 
 func (m *TransportInstance) DrainWriteBuffer(numBytes uint32) []byte {
 	if !m.IsConnected() {
-		panic(errors.New("working on a unconnected connection"))
+		m.log.Error().Msg("working on a unconnected connection")
+		return nil
 	}
 	m.dataMutex.Lock()
 	defer m.dataMutex.Unlock()
@@ -211,5 +215,5 @@ func (m *TransportInstance) DrainWriteBuffer(numBytes uint32) []byte {
 }
 
 func (m *TransportInstance) String() string {
-	return "test" //TODO: maybe use plc4xgen
+	return "test"
 }

@@ -112,7 +112,7 @@ func (m *TransportInstance) IsConnected() bool {
 
 func (m *TransportInstance) Write(data []byte) error {
 	if !m.connected.Load() {
-		return errors.New("error writing to transport. No writer available")
+		return errors.New("error writing to transport. Not connected")
 	}
 	num, err := m.tcpConn.Write(data)
 	if err != nil {

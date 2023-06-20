@@ -24,6 +24,8 @@ import (
 	"context"
 	"fmt"
 	"net"
+	"sync"
+	"sync/atomic"
 
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/transports"
@@ -38,9 +40,13 @@ type TransportInstance struct {
 	RemoteAddress  *net.UDPAddr
 	ConnectTimeout uint32
 	SoReUse        bool
-	transport      *Transport
-	udpConn        *net.UDPConn
-	reader         *bufio.Reader
+
+	transport *Transport
+	udpConn   *net.UDPConn
+	reader    *bufio.Reader
+
+	connected        atomic.Bool
+	stateChangeMutex sync.RWMutex
 
 	log zerolog.Logger
 }
@@ -62,6 +68,11 @@ func (m *TransportInstance) Connect() error {
 }
 
 func (m *TransportInstance) ConnectWithContext(ctx context.Context) error {
+	if m.connected.Load() {
+		return errors.New("already connected")
+	}
+	m.stateChangeMutex.Lock()
+	defer m.stateChangeMutex.Unlock()
 	// If we haven't provided a local address, have the system figure it out by dialing
 	// the remote address and then using that connections local address as local address.
 	if m.LocalAddress == nil && m.RemoteAddress != nil {
@@ -107,26 +118,33 @@ func (m *TransportInstance) ConnectWithContext(ctx context.Context) error {
 	}()*/
 	m.reader = bufio.NewReader(m.udpConn)
 
+	m.connected.Store(true)
+
 	return nil
 }
 
 func (m *TransportInstance) Close() error {
-	if m.udpConn == nil {
+	m.stateChangeMutex.Lock()
+	defer m.stateChangeMutex.Unlock()
+	if !m.connected.Load() {
 		return nil
 	}
 	err := m.udpConn.Close()
 	if err != nil {
 		return errors.Wrap(err, "error closing connection")
 	}
-	m.udpConn = nil
+	m.connected.Store(false)
 	return nil
 }
 
 func (m *TransportInstance) IsConnected() bool {
-	return m.udpConn != nil
+	return m.connected.Load()
 }
 
 func (m *TransportInstance) GetNumBytesAvailableInBuffer() (uint32, error) {
+	if !m.IsConnected() {
+		return 0, errors.New("working on a unconnected connection")
+	}
 	if m.reader == nil {
 		return 0, nil
 	}
@@ -135,6 +153,9 @@ func (m *TransportInstance) GetNumBytesAvailableInBuffer() (uint32, error) {
 }
 
 func (m *TransportInstance) FillBuffer(until func(pos uint, currentByte byte, reader transports.ExtendedReader) bool) error {
+	if !m.IsConnected() {
+		return errors.New("working on a unconnected connection")
+	}
 	nBytes := uint32(1)
 	for {
 		_bytes, err := m.PeekReadableBytes(nBytes)
@@ -149,15 +170,15 @@ func (m *TransportInstance) FillBuffer(until func(pos uint, currentByte byte, re
 }
 
 func (m *TransportInstance) PeekReadableBytes(numBytes uint32) ([]byte, error) {
-	if m.reader == nil {
-		return nil, errors.New("error peeking from transport. No reader available")
+	if !m.IsConnected() {
+		return nil, errors.New("working on a unconnected connection")
 	}
 	return m.reader.Peek(int(numBytes))
 }
 
 func (m *TransportInstance) Read(numBytes uint32) ([]byte, error) {
-	if m.reader == nil {
-		return nil, errors.New("error reading from transport. No reader available")
+	if !m.IsConnected() {
+		return nil, errors.New("working on a unconnected connection")
 	}
 	data := make([]byte, numBytes)
 	for i := uint32(0); i < numBytes; i++ {
@@ -171,8 +192,8 @@ func (m *TransportInstance) Read(numBytes uint32) ([]byte, error) {
 }
 
 func (m *TransportInstance) Write(data []byte) error {
-	if m.udpConn == nil {
-		return errors.New("error writing to transport. No writer available")
+	if !m.IsConnected() {
+		return errors.New("working on a unconnected connection")
 	}
 	var num int
 	var err error

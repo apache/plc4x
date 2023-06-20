@@ -135,6 +135,7 @@ func Test_defaultBufferedTransportInstance_FillBuffer(t *testing.T) {
 				requirements := NewMockDefaultBufferedTransportInstanceRequirements(t)
 				expect := requirements.EXPECT()
 				expect.GetReader().Return(nil)
+				expect.IsConnected().Return(true)
 				fields.DefaultBufferedTransportInstanceRequirements = requirements
 			},
 		},
@@ -145,7 +146,9 @@ func Test_defaultBufferedTransportInstance_FillBuffer(t *testing.T) {
 			}},
 			mockSetup: func(t *testing.T, fields *fields, args *args) {
 				requirements := NewMockDefaultBufferedTransportInstanceRequirements(t)
-				requirements.EXPECT().GetReader().Return(bufio.NewReader(bytes.NewReader([]byte{0x0, 0x0})))
+				expect := requirements.EXPECT()
+				expect.GetReader().Return(bufio.NewReader(bytes.NewReader([]byte{0x0, 0x0})))
+				expect.IsConnected().Return(true)
 				fields.DefaultBufferedTransportInstanceRequirements = requirements
 			},
 		},
@@ -156,7 +159,9 @@ func Test_defaultBufferedTransportInstance_FillBuffer(t *testing.T) {
 			}},
 			mockSetup: func(t *testing.T, fields *fields, args *args) {
 				requirements := NewMockDefaultBufferedTransportInstanceRequirements(t)
-				requirements.EXPECT().GetReader().Return(bufio.NewReader(bytes.NewReader([]byte{0x0, 0x0})))
+				expect := requirements.EXPECT()
+				expect.GetReader().Return(bufio.NewReader(bytes.NewReader([]byte{0x0, 0x0})))
+				expect.IsConnected().Return(true)
 				fields.DefaultBufferedTransportInstanceRequirements = requirements
 			},
 			wantErr: true,
@@ -192,7 +197,9 @@ func Test_defaultBufferedTransportInstance_GetNumBytesAvailableInBuffer(t *testi
 			name: "get it without reader",
 			mockSetup: func(t *testing.T, fields *fields) {
 				requirements := NewMockDefaultBufferedTransportInstanceRequirements(t)
-				requirements.EXPECT().GetReader().Return(nil)
+				expect := requirements.EXPECT()
+				expect.GetReader().Return(nil)
+				expect.IsConnected().Return(true)
 				fields.DefaultBufferedTransportInstanceRequirements = requirements
 			},
 		},
@@ -200,7 +207,9 @@ func Test_defaultBufferedTransportInstance_GetNumBytesAvailableInBuffer(t *testi
 			name: "get it with reader",
 			mockSetup: func(t *testing.T, fields *fields) {
 				requirements := NewMockDefaultBufferedTransportInstanceRequirements(t)
-				requirements.EXPECT().GetReader().Return(bufio.NewReader(bytes.NewReader([]byte{0x0, 0x0})))
+				expect := requirements.EXPECT()
+				expect.GetReader().Return(bufio.NewReader(bytes.NewReader([]byte{0x0, 0x0})))
+				expect.IsConnected().Return(true)
 				fields.DefaultBufferedTransportInstanceRequirements = requirements
 			},
 			want: 2,
@@ -245,7 +254,9 @@ func Test_defaultBufferedTransportInstance_PeekReadableBytes(t *testing.T) {
 			name: "peek it without reader",
 			mockSetup: func(t *testing.T, fields *fields, args *args) {
 				requirements := NewMockDefaultBufferedTransportInstanceRequirements(t)
-				requirements.EXPECT().GetReader().Return(nil)
+				expect := requirements.EXPECT()
+				expect.IsConnected().Return(true)
+				expect.GetReader().Return(nil)
 				fields.DefaultBufferedTransportInstanceRequirements = requirements
 			},
 			wantErr: true,
@@ -255,7 +266,9 @@ func Test_defaultBufferedTransportInstance_PeekReadableBytes(t *testing.T) {
 			args: args{numBytes: 2},
 			mockSetup: func(t *testing.T, fields *fields, args *args) {
 				requirements := NewMockDefaultBufferedTransportInstanceRequirements(t)
-				requirements.EXPECT().GetReader().Return(bufio.NewReader(bytes.NewReader([]byte{0x0, 0x0})))
+				expect := requirements.EXPECT()
+				expect.GetReader().Return(bufio.NewReader(bytes.NewReader([]byte{0x0, 0x0})))
+				expect.IsConnected().Return(true)
 				fields.DefaultBufferedTransportInstanceRequirements = requirements
 			},
 			want: []byte{0x0, 0x0},
@@ -300,7 +313,9 @@ func Test_defaultBufferedTransportInstance_Read(t *testing.T) {
 			name: "read it without reader",
 			mockSetup: func(t *testing.T, fields *fields, args *args) {
 				requirements := NewMockDefaultBufferedTransportInstanceRequirements(t)
-				requirements.EXPECT().GetReader().Return(nil)
+				expect := requirements.EXPECT()
+				expect.GetReader().Return(nil)
+				expect.IsConnected().Return(true)
 				fields.DefaultBufferedTransportInstanceRequirements = requirements
 			},
 			wantErr: true,
@@ -310,7 +325,9 @@ func Test_defaultBufferedTransportInstance_Read(t *testing.T) {
 			args: args{numBytes: 2},
 			mockSetup: func(t *testing.T, fields *fields, args *args) {
 				requirements := NewMockDefaultBufferedTransportInstanceRequirements(t)
-				requirements.EXPECT().GetReader().Return(bufio.NewReader(bytes.NewReader([]byte{0x0, 0x0})))
+				expect := requirements.EXPECT()
+				expect.GetReader().Return(bufio.NewReader(bytes.NewReader([]byte{0x0, 0x0})))
+				expect.IsConnected().Return(true)
 				fields.DefaultBufferedTransportInstanceRequirements = requirements
 			},
 			want: []byte{0x0, 0x0},
@@ -320,7 +337,9 @@ func Test_defaultBufferedTransportInstance_Read(t *testing.T) {
 			args: args{numBytes: 2},
 			mockSetup: func(t *testing.T, fields *fields, args *args) {
 				requirements := NewMockDefaultBufferedTransportInstanceRequirements(t)
-				requirements.EXPECT().GetReader().Return(bufio.NewReader(bytes.NewReader([]byte{0x0})))
+				expect := requirements.EXPECT()
+				expect.GetReader().Return(bufio.NewReader(bytes.NewReader([]byte{0x0})))
+				expect.IsConnected().Return(true)
 				fields.DefaultBufferedTransportInstanceRequirements = requirements
 			},
 			wantErr: true,

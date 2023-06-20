@@ -58,7 +58,6 @@ func TestTransportInstance_Close(t *testing.T) {
 	type fields struct {
 		readBuffer       []byte
 		writeBuffer      []byte
-		connected        bool
 		transport        *Transport
 		writeInterceptor func(transportInstance *TransportInstance, data []byte)
 	}
@@ -76,7 +75,6 @@ func TestTransportInstance_Close(t *testing.T) {
 			m := &TransportInstance{
 				readBuffer:       tt.fields.readBuffer,
 				writeBuffer:      tt.fields.writeBuffer,
-				connected:        tt.fields.connected,
 				transport:        tt.fields.transport,
 				writeInterceptor: tt.fields.writeInterceptor,
 			}
@@ -91,7 +89,6 @@ func TestTransportInstance_Connect(t *testing.T) {
 	type fields struct {
 		readBuffer       []byte
 		writeBuffer      []byte
-		connected        bool
 		transport        *Transport
 		writeInterceptor func(transportInstance *TransportInstance, data []byte)
 	}
@@ -109,7 +106,6 @@ func TestTransportInstance_Connect(t *testing.T) {
 			m := &TransportInstance{
 				readBuffer:       tt.fields.readBuffer,
 				writeBuffer:      tt.fields.writeBuffer,
-				connected:        tt.fields.connected,
 				transport:        tt.fields.transport,
 				writeInterceptor: tt.fields.writeInterceptor,
 			}
@@ -124,7 +120,6 @@ func TestTransportInstance_ConnectWithContext(t *testing.T) {
 	type fields struct {
 		readBuffer       []byte
 		writeBuffer      []byte
-		connected        bool
 		transport        *Transport
 		writeInterceptor func(transportInstance *TransportInstance, data []byte)
 	}
@@ -146,7 +141,6 @@ func TestTransportInstance_ConnectWithContext(t *testing.T) {
 			m := &TransportInstance{
 				readBuffer:       tt.fields.readBuffer,
 				writeBuffer:      tt.fields.writeBuffer,
-				connected:        tt.fields.connected,
 				transport:        tt.fields.transport,
 				writeInterceptor: tt.fields.writeInterceptor,
 			}
@@ -161,7 +155,6 @@ func TestTransportInstance_DrainWriteBuffer(t *testing.T) {
 	type fields struct {
 		readBuffer       []byte
 		writeBuffer      []byte
-		connected        bool
 		transport        *Transport
 		writeInterceptor func(transportInstance *TransportInstance, data []byte)
 	}
@@ -169,15 +162,16 @@ func TestTransportInstance_DrainWriteBuffer(t *testing.T) {
 		numBytes uint32
 	}
 	tests := []struct {
-		name   string
-		fields fields
-		args   args
-		want   []byte
+		name        string
+		fields      fields
+		args        args
+		manipulator func(t *testing.T, instance *TransportInstance)
+		want        []byte
 	}{
 		{
 			name: "drain it",
-			fields: fields{
-				connected: true,
+			manipulator: func(t *testing.T, instance *TransportInstance) {
+				instance.connected.Store(true)
 			},
 		},
 	}
@@ -186,9 +180,11 @@ func TestTransportInstance_DrainWriteBuffer(t *testing.T) {
 			m := &TransportInstance{
 				readBuffer:       tt.fields.readBuffer,
 				writeBuffer:      tt.fields.writeBuffer,
-				connected:        tt.fields.connected,
 				transport:        tt.fields.transport,
 				writeInterceptor: tt.fields.writeInterceptor,
+			}
+			if tt.manipulator != nil {
+				tt.manipulator(t, m)
 			}
 			if got := m.DrainWriteBuffer(tt.args.numBytes); !assert.Equal(t, tt.want, got) {
 				t.Errorf("DrainWriteBuffer() = %v, want %v", got, tt.want)
@@ -201,7 +197,6 @@ func TestTransportInstance_FillBuffer(t *testing.T) {
 	type fields struct {
 		readBuffer       []byte
 		writeBuffer      []byte
-		connected        bool
 		transport        *Transport
 		writeInterceptor func(transportInstance *TransportInstance, data []byte)
 	}
@@ -209,33 +204,36 @@ func TestTransportInstance_FillBuffer(t *testing.T) {
 		until func(pos uint, currentByte byte, reader transports.ExtendedReader) bool
 	}
 	tests := []struct {
-		name    string
-		fields  fields
-		args    args
-		wantErr bool
+		name        string
+		fields      fields
+		args        args
+		manipulator func(t *testing.T, instance *TransportInstance)
+		wantErr     bool
 	}{
 		{
 			name: "fill it (errors)",
-			fields: fields{
-				connected: true,
-			},
 			args: args{
 				until: func(pos uint, currentByte byte, reader transports.ExtendedReader) bool {
 					return pos < 3
 				},
+			},
+			manipulator: func(t *testing.T, instance *TransportInstance) {
+				instance.connected.Store(true)
 			},
 			wantErr: true,
 		},
 		{
 			name: "fill it",
 			fields: fields{
-				connected:  true,
 				readBuffer: []byte{1, 2, 3, 4},
 			},
 			args: args{
 				until: func(pos uint, currentByte byte, reader transports.ExtendedReader) bool {
 					return pos < 3
 				},
+			},
+			manipulator: func(t *testing.T, instance *TransportInstance) {
+				instance.connected.Store(true)
 			},
 		},
 	}
@@ -244,9 +242,11 @@ func TestTransportInstance_FillBuffer(t *testing.T) {
 			m := &TransportInstance{
 				readBuffer:       tt.fields.readBuffer,
 				writeBuffer:      tt.fields.writeBuffer,
-				connected:        tt.fields.connected,
 				transport:        tt.fields.transport,
 				writeInterceptor: tt.fields.writeInterceptor,
+			}
+			if tt.manipulator != nil {
+				tt.manipulator(t, m)
 			}
 			if err := m.FillBuffer(tt.args.until); (err != nil) != tt.wantErr {
 				t.Errorf("FillBuffer() error = %v, wantErr %v", err, tt.wantErr)
@@ -259,7 +259,6 @@ func TestTransportInstance_FillReadBuffer(t *testing.T) {
 	type fields struct {
 		readBuffer       []byte
 		writeBuffer      []byte
-		connected        bool
 		transport        *Transport
 		writeInterceptor func(transportInstance *TransportInstance, data []byte)
 	}
@@ -267,18 +266,21 @@ func TestTransportInstance_FillReadBuffer(t *testing.T) {
 		data []byte
 	}
 	tests := []struct {
-		name   string
-		fields fields
-		args   args
+		name        string
+		fields      fields
+		args        args
+		manipulator func(t *testing.T, instance *TransportInstance)
 	}{
 		{
 			name: "fill it",
 			fields: fields{
-				connected:  true,
 				readBuffer: []byte{1, 2, 3, 4},
 			},
 			args: args{
 				data: []byte{1, 2, 3, 4},
+			},
+			manipulator: func(t *testing.T, instance *TransportInstance) {
+				instance.connected.Store(true)
 			},
 		},
 	}
@@ -287,9 +289,11 @@ func TestTransportInstance_FillReadBuffer(t *testing.T) {
 			m := &TransportInstance{
 				readBuffer:       tt.fields.readBuffer,
 				writeBuffer:      tt.fields.writeBuffer,
-				connected:        tt.fields.connected,
 				transport:        tt.fields.transport,
 				writeInterceptor: tt.fields.writeInterceptor,
+			}
+			if tt.manipulator != nil {
+				tt.manipulator(t, m)
 			}
 			m.FillReadBuffer(tt.args.data)
 		})
@@ -300,27 +304,29 @@ func TestTransportInstance_GetNumBytesAvailableInBuffer(t *testing.T) {
 	type fields struct {
 		readBuffer       []byte
 		writeBuffer      []byte
-		connected        bool
 		transport        *Transport
 		writeInterceptor func(transportInstance *TransportInstance, data []byte)
 	}
 	tests := []struct {
-		name    string
-		fields  fields
-		want    uint32
-		wantErr bool
+		name        string
+		fields      fields
+		manipulator func(t *testing.T, instance *TransportInstance)
+		want        uint32
+		wantErr     bool
 	}{
 		{
 			name: "get it",
-			fields: fields{
-				connected: true,
+			manipulator: func(t *testing.T, instance *TransportInstance) {
+				instance.connected.Store(true)
 			},
 		},
 		{
 			name: "get it too",
 			fields: fields{
-				connected:  true,
 				readBuffer: []byte{1, 2, 3, 4},
+			},
+			manipulator: func(t *testing.T, instance *TransportInstance) {
+				instance.connected.Store(true)
 			},
 			want: 4,
 		},
@@ -330,9 +336,11 @@ func TestTransportInstance_GetNumBytesAvailableInBuffer(t *testing.T) {
 			m := &TransportInstance{
 				readBuffer:       tt.fields.readBuffer,
 				writeBuffer:      tt.fields.writeBuffer,
-				connected:        tt.fields.connected,
 				transport:        tt.fields.transport,
 				writeInterceptor: tt.fields.writeInterceptor,
+			}
+			if tt.manipulator != nil {
+				tt.manipulator(t, m)
 			}
 			got, err := m.GetNumBytesAvailableInBuffer()
 			if (err != nil) != tt.wantErr {
@@ -350,19 +358,19 @@ func TestTransportInstance_GetNumDrainableBytes(t *testing.T) {
 	type fields struct {
 		readBuffer       []byte
 		writeBuffer      []byte
-		connected        bool
 		transport        *Transport
 		writeInterceptor func(transportInstance *TransportInstance, data []byte)
 	}
 	tests := []struct {
-		name   string
-		fields fields
-		want   uint32
+		name        string
+		fields      fields
+		manipulator func(t *testing.T, instance *TransportInstance)
+		want        uint32
 	}{
 		{
 			name: "get it",
-			fields: fields{
-				connected: true,
+			manipulator: func(t *testing.T, instance *TransportInstance) {
+				instance.connected.Store(true)
 			},
 		},
 	}
@@ -371,9 +379,11 @@ func TestTransportInstance_GetNumDrainableBytes(t *testing.T) {
 			m := &TransportInstance{
 				readBuffer:       tt.fields.readBuffer,
 				writeBuffer:      tt.fields.writeBuffer,
-				connected:        tt.fields.connected,
 				transport:        tt.fields.transport,
 				writeInterceptor: tt.fields.writeInterceptor,
+			}
+			if tt.manipulator != nil {
+				tt.manipulator(t, m)
 			}
 			if got := m.GetNumDrainableBytes(); got != tt.want {
 				t.Errorf("GetNumDrainableBytes() = %v, want %v", got, tt.want)
@@ -386,7 +396,6 @@ func TestTransportInstance_IsConnected(t *testing.T) {
 	type fields struct {
 		readBuffer       []byte
 		writeBuffer      []byte
-		connected        bool
 		transport        *Transport
 		writeInterceptor func(transportInstance *TransportInstance, data []byte)
 	}
@@ -404,7 +413,6 @@ func TestTransportInstance_IsConnected(t *testing.T) {
 			m := &TransportInstance{
 				readBuffer:       tt.fields.readBuffer,
 				writeBuffer:      tt.fields.writeBuffer,
-				connected:        tt.fields.connected,
 				transport:        tt.fields.transport,
 				writeInterceptor: tt.fields.writeInterceptor,
 			}
@@ -419,7 +427,6 @@ func TestTransportInstance_PeekReadableBytes(t *testing.T) {
 	type fields struct {
 		readBuffer       []byte
 		writeBuffer      []byte
-		connected        bool
 		transport        *Transport
 		writeInterceptor func(transportInstance *TransportInstance, data []byte)
 	}
@@ -427,16 +434,17 @@ func TestTransportInstance_PeekReadableBytes(t *testing.T) {
 		numBytes uint32
 	}
 	tests := []struct {
-		name    string
-		fields  fields
-		args    args
-		want    []byte
-		wantErr bool
+		name        string
+		fields      fields
+		args        args
+		manipulator func(t *testing.T, instance *TransportInstance)
+		want        []byte
+		wantErr     bool
 	}{
 		{
 			name: "peek it",
-			fields: fields{
-				connected: true,
+			manipulator: func(t *testing.T, instance *TransportInstance) {
+				instance.connected.Store(true)
 			},
 		},
 	}
@@ -445,9 +453,11 @@ func TestTransportInstance_PeekReadableBytes(t *testing.T) {
 			m := &TransportInstance{
 				readBuffer:       tt.fields.readBuffer,
 				writeBuffer:      tt.fields.writeBuffer,
-				connected:        tt.fields.connected,
 				transport:        tt.fields.transport,
 				writeInterceptor: tt.fields.writeInterceptor,
+			}
+			if tt.manipulator != nil {
+				tt.manipulator(t, m)
 			}
 			got, err := m.PeekReadableBytes(tt.args.numBytes)
 			if (err != nil) != tt.wantErr {
@@ -465,7 +475,6 @@ func TestTransportInstance_Read(t *testing.T) {
 	type fields struct {
 		readBuffer       []byte
 		writeBuffer      []byte
-		connected        bool
 		transport        *Transport
 		writeInterceptor func(transportInstance *TransportInstance, data []byte)
 	}
@@ -473,16 +482,17 @@ func TestTransportInstance_Read(t *testing.T) {
 		numBytes uint32
 	}
 	tests := []struct {
-		name    string
-		fields  fields
-		args    args
-		want    []byte
-		wantErr bool
+		name        string
+		fields      fields
+		args        args
+		manipulator func(t *testing.T, instance *TransportInstance)
+		want        []byte
+		wantErr     bool
 	}{
 		{
 			name: "read it",
-			fields: fields{
-				connected: true,
+			manipulator: func(t *testing.T, instance *TransportInstance) {
+				instance.connected.Store(true)
 			},
 			wantErr: true,
 		},
@@ -492,9 +502,11 @@ func TestTransportInstance_Read(t *testing.T) {
 			m := &TransportInstance{
 				readBuffer:       tt.fields.readBuffer,
 				writeBuffer:      tt.fields.writeBuffer,
-				connected:        tt.fields.connected,
 				transport:        tt.fields.transport,
 				writeInterceptor: tt.fields.writeInterceptor,
+			}
+			if tt.manipulator != nil {
+				tt.manipulator(t, m)
 			}
 			got, err := m.Read(tt.args.numBytes)
 			if (err != nil) != tt.wantErr {
@@ -512,7 +524,6 @@ func TestTransportInstance_SetWriteInterceptor(t *testing.T) {
 	type fields struct {
 		readBuffer       []byte
 		writeBuffer      []byte
-		connected        bool
 		transport        *Transport
 		writeInterceptor func(transportInstance *TransportInstance, data []byte)
 	}
@@ -533,7 +544,6 @@ func TestTransportInstance_SetWriteInterceptor(t *testing.T) {
 			m := &TransportInstance{
 				readBuffer:       tt.fields.readBuffer,
 				writeBuffer:      tt.fields.writeBuffer,
-				connected:        tt.fields.connected,
 				transport:        tt.fields.transport,
 				writeInterceptor: tt.fields.writeInterceptor,
 			}
@@ -546,7 +556,6 @@ func TestTransportInstance_String(t *testing.T) {
 	type fields struct {
 		readBuffer       []byte
 		writeBuffer      []byte
-		connected        bool
 		transport        *Transport
 		writeInterceptor func(transportInstance *TransportInstance, data []byte)
 	}
@@ -565,7 +574,6 @@ func TestTransportInstance_String(t *testing.T) {
 			m := &TransportInstance{
 				readBuffer:       tt.fields.readBuffer,
 				writeBuffer:      tt.fields.writeBuffer,
-				connected:        tt.fields.connected,
 				transport:        tt.fields.transport,
 				writeInterceptor: tt.fields.writeInterceptor,
 			}
@@ -580,7 +588,6 @@ func TestTransportInstance_Write(t *testing.T) {
 	type fields struct {
 		readBuffer       []byte
 		writeBuffer      []byte
-		connected        bool
 		transport        *Transport
 		writeInterceptor func(transportInstance *TransportInstance, data []byte)
 	}
@@ -588,21 +595,21 @@ func TestTransportInstance_Write(t *testing.T) {
 		data []byte
 	}
 	tests := []struct {
-		name    string
-		fields  fields
-		args    args
-		wantErr bool
+		name        string
+		fields      fields
+		args        args
+		manipulator func(t *testing.T, instance *TransportInstance)
+		wantErr     bool
 	}{
 		{
 			name: "write it",
-			fields: fields{
-				connected: true,
+			manipulator: func(t *testing.T, instance *TransportInstance) {
+				instance.connected.Store(true)
 			},
 		},
 		{
 			name: "write it",
 			fields: fields{
-				connected: true,
 				writeInterceptor: func(transportInstance *TransportInstance, data []byte) {
 					assert.NotNil(t, transportInstance)
 					assert.Equal(t, []byte{1, 2, 3, 4}, data)
@@ -611,6 +618,9 @@ func TestTransportInstance_Write(t *testing.T) {
 			args: args{
 				data: []byte{1, 2, 3, 4},
 			},
+			manipulator: func(t *testing.T, instance *TransportInstance) {
+				instance.connected.Store(true)
+			},
 		},
 	}
 	for _, tt := range tests {
@@ -618,9 +628,11 @@ func TestTransportInstance_Write(t *testing.T) {
 			m := &TransportInstance{
 				readBuffer:       tt.fields.readBuffer,
 				writeBuffer:      tt.fields.writeBuffer,
-				connected:        tt.fields.connected,
 				transport:        tt.fields.transport,
 				writeInterceptor: tt.fields.writeInterceptor,
+			}
+			if tt.manipulator != nil {
+				tt.manipulator(t, m)
 			}
 			if err := m.Write(tt.args.data); (err != nil) != tt.wantErr {
 				t.Errorf("Write() error = %v, wantErr %v", err, tt.wantErr)
