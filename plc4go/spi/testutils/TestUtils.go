@@ -130,7 +130,7 @@ var (
 )
 
 func init() {
-	highLogPrecision = os.Getenv("PLC4X_TEST_HIGH_TEST_LOG_PRECISION") == "true"
+	getOrLeaveBool("PLC4X_TEST_HIGH_TEST_LOG_PRECISION", &highLogPrecision)
 	if highLogPrecision {
 		zerolog.TimeFieldFormat = time.RFC3339Nano
 	}
