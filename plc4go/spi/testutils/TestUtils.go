@@ -121,6 +121,7 @@ func TestContext(t *testing.T) context.Context {
 var (
 	highLogPrecision     bool
 	traceExecutorWorkers bool
+	passLoggerToModel    bool
 )
 
 func init() {
@@ -131,6 +132,10 @@ func init() {
 	traceExecutorWorkers = true
 	if traceExecutorWorkersEnv := os.Getenv("PLC4X_TEST_TRACE_EXECUTOR_WORKERS"); traceExecutorWorkersEnv != "" {
 		traceExecutorWorkers = traceExecutorWorkersEnv == "true"
+	}
+	passLoggerToModel = true
+	if passLoggerToModelEnv := os.Getenv("PLC4X_TEST_PASS_LOGGER_TO_MODEL"); passLoggerToModelEnv != "" {
+		passLoggerToModel = passLoggerToModelEnv == "true"
 	}
 }
 
@@ -169,7 +174,7 @@ func EnrichOptionsWithOptionsForTesting(t *testing.T, _options ...options.WithOp
 	}
 	_options = append(_options,
 		options.WithCustomLogger(ProduceTestingLogger(t)),
-		options.WithPassLoggerToModel(true),
+		options.WithPassLoggerToModel(passLoggerToModel),
 		options.WithExecutorOptionTracerWorkers(traceExecutorWorkers),
 	)
 	// We always create a custom executor to ensure shared executor for transaction manager is not used for tests
