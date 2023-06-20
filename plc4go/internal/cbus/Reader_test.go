@@ -34,7 +34,6 @@ import (
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/cbus/readwrite/model"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/spi/options"
-	"github.com/apache/plc4x/plc4go/spi/pool"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
 	"github.com/apache/plc4x/plc4go/spi/transactions"
 	"github.com/apache/plc4x/plc4go/spi/transports/test"
@@ -184,12 +183,9 @@ func TestReader_readSync(t *testing.T) {
 			setup: func(t *testing.T, fields *fields) {
 				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
 
-				executor := pool.NewFixedSizeExecutor(5, 5)
-				executor.Start()
-				t.Cleanup(executor.Stop)
 				transactionManager := transactions.NewRequestTransactionManager(
 					10,
-					append(_options, transactions.WithCustomExecutor(executor))...,
+					_options...,
 				)
 				t.Cleanup(func() {
 					assert.NoError(t, transactionManager.Close())
@@ -265,12 +261,9 @@ func TestReader_readSync(t *testing.T) {
 			setup: func(t *testing.T, fields *fields) {
 				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
 
-				executor := pool.NewFixedSizeExecutor(5, 5, _options...)
-				executor.Start()
-				t.Cleanup(executor.Stop)
 				transactionManager := transactions.NewRequestTransactionManager(
 					10,
-					append(_options, transactions.WithCustomExecutor(executor))...,
+					_options...,
 				)
 				t.Cleanup(func() {
 					assert.NoError(t, transactionManager.Close())
@@ -353,12 +346,9 @@ func TestReader_readSync(t *testing.T) {
 			setup: func(t *testing.T, fields *fields) {
 				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
 
-				executor := pool.NewFixedSizeExecutor(5, 5)
-				executor.Start()
-				t.Cleanup(executor.Stop)
 				transactionManager := transactions.NewRequestTransactionManager(
 					10,
-					append(_options, transactions.WithCustomExecutor(executor))...,
+					_options...,
 				)
 				t.Cleanup(func() {
 					assert.NoError(t, transactionManager.Close())
