@@ -35,7 +35,9 @@ import (
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/cbus/readwrite/model"
 	_default "github.com/apache/plc4x/plc4go/spi/default"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
+	"github.com/apache/plc4x/plc4go/spi/pool"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
+	"github.com/apache/plc4x/plc4go/spi/transactions"
 	"github.com/apache/plc4x/plc4go/spi/transports"
 	"github.com/apache/plc4x/plc4go/spi/transports/test"
 	"github.com/apache/plc4x/plc4go/spi/utils"
@@ -87,6 +89,13 @@ func TestBrowser_BrowseQuery(t *testing.T) {
 			},
 			setup: func(t *testing.T, fields *fields) {
 				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
+
+				executor := pool.NewFixedSizeExecutor(10, 10, _options...)
+				executor.Start()
+				t.Cleanup(executor.Stop)
+				_options = append(_options,
+					transactions.WithCustomExecutor(executor),
+				)
 
 				transport := test.NewTransport(_options...)
 				transportUrl := url.URL{Scheme: "test"}
@@ -245,6 +254,11 @@ func TestBrowser_browseUnitInfo(t *testing.T) {
 			},
 			setup: func(t *testing.T, fields *fields) {
 				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
+
+				executor := pool.NewFixedSizeExecutor(10, 10, _options...)
+				executor.Start()
+				t.Cleanup(executor.Stop)
+				_options = append(_options, transactions.WithCustomExecutor(executor))
 
 				transport := test.NewTransport(_options...)
 				transportUrl := url.URL{Scheme: "test"}
