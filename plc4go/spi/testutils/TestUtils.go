@@ -144,13 +144,13 @@ func init() {
 }
 
 func getOrLeaveBool(key string, setting *bool) {
-	if env := os.Getenv(key); env != "" {
+	if env, ok := os.LookupEnv(key); ok {
 		*setting = strings.EqualFold(env, "true")
 	}
 }
 
 func getOrLeaveDuration(key string, setting *time.Duration) {
-	if env := os.Getenv(key); env != "" {
+	if env, ok := os.LookupEnv(key); ok {
 		parsedDuration, err := strconv.ParseInt(env, 10, 64)
 		if err != nil {
 			panic(err)
