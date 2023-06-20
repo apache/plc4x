@@ -168,6 +168,7 @@ func (m *defaultCodec) Disconnect() error {
 	m.activeWorker.Wait()
 	m.log.Trace().Msg("worker shut down")
 	if m.transportInstance != nil {
+		m.log.Trace().Msg("closing transport instance")
 		if err := m.transportInstance.Close(); err != nil {
 			return errors.Wrap(err, "error closing transport instance")
 		}
