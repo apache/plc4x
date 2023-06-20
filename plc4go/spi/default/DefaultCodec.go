@@ -327,8 +327,12 @@ mainLoop:
 		{
 			syncer := make(chan struct{})
 			go func() {
+				defer close(syncer)
+				if !m.running.Load() {
+					err = errors.New("not running")
+					return
+				}
 				message, err = m.Receive()
-				close(syncer)
 			}()
 			timeoutTimer := time.NewTimer(m.receiveTimeout)
 			select {
@@ -339,7 +343,6 @@ mainLoop:
 				workerLog.Error().Msgf("receive timeout after %s", m.receiveTimeout)
 				continue mainLoop
 			}
-
 		}
 		if err != nil {
 			workerLog.Error().Err(err).Msg("got an error reading from transport")

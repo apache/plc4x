@@ -22,13 +22,14 @@ package transports
 import (
 	"context"
 	"fmt"
+	"io"
 )
 
 type TransportInstance interface {
 	fmt.Stringer
+	io.Closer
 	Connect() error
 	ConnectWithContext(ctx context.Context) error
-	Close() error
 
 	IsConnected() bool
 
