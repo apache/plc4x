@@ -21,21 +21,24 @@ package main
 
 import (
 	"fmt"
+	"github.com/apache/plc4x/plc4go/spi/options"
 	"os"
 	"time"
 
 	"github.com/apache/plc4x/plc4go/pkg/api"
 	"github.com/apache/plc4x/plc4go/pkg/api/drivers"
-	"github.com/apache/plc4x/plc4go/pkg/api/logging"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 
 	"github.com/rs/zerolog/log"
 )
 
 func main() {
-	logging.InfoLevel()
+	logger := log.With().Str("myCustomLogger", "example").Logger()
 
-	driverManager := plc4go.NewPlcDriverManager()
+	driverManager := plc4go.NewPlcDriverManager(
+		options.WithCustomLogger(logger),
+		options.WithTraceTransactionManagerTransactions(true),
+	)
 	defer func() {
 		if err := driverManager.Close(); err != nil {
 			panic(err)
