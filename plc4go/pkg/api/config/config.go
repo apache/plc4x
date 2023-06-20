@@ -71,7 +71,7 @@ func WithTraceDefaultMessageCodecWorker(traceWorkers bool) WithOption {
 }
 
 // WithExecutorOptionTracerWorkers sets a flag which extends logging for workers
-func WithExecutorOptionTracerWorkers(traceWorkers bool) options.WithOption {
+func WithExecutorOptionTracerWorkers(traceWorkers bool) WithOption {
 	return options.WithExecutorOptionTracerWorkers(traceWorkers)
 }
 
