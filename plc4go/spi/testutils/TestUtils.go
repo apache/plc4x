@@ -24,6 +24,7 @@ import (
 	"os"
 	"runtime"
 	"runtime/debug"
+	"strconv"
 	"strings"
 	"testing"
 	"time"
@@ -119,9 +120,13 @@ func TestContext(t *testing.T) context.Context {
 }
 
 var (
-	highLogPrecision     bool
-	traceExecutorWorkers bool
-	passLoggerToModel    bool
+	highLogPrecision                    bool
+	passLoggerToModel                   bool
+	receiveTimeout                      time.Duration
+	traceTransactionManagerWorkers      bool
+	traceTransactionManagerTransactions bool
+	traceDefaultMessageCodecWorker      bool
+	traceExecutorWorkers                bool
 )
 
 func init() {
@@ -129,13 +134,28 @@ func init() {
 	if highLogPrecision {
 		zerolog.TimeFieldFormat = time.RFC3339Nano
 	}
-	traceExecutorWorkers = true
-	if traceExecutorWorkersEnv := os.Getenv("PLC4X_TEST_TRACE_EXECUTOR_WORKERS"); traceExecutorWorkersEnv != "" {
-		traceExecutorWorkers = traceExecutorWorkersEnv == "true"
+	getOrLeaveBool("PLC4X_TEST_PASS_LOGGER_TO_MODEL", &passLoggerToModel)
+	receiveTimeout = 3 * time.Second
+	getOrLeaveDuration("PLC4X_TEST_RECEIVE_TIMEOUT_MS", &receiveTimeout)
+	getOrLeaveBool("PLC4X_TEST_TRACE_TRANSACTION_MANAGER_WORKERS", &traceTransactionManagerWorkers)
+	getOrLeaveBool("PLC4X_TEST_TRACE_TRANSACTION_MANAGER_TRANSACTIONS", &traceTransactionManagerTransactions)
+	getOrLeaveBool("PLC4X_TEST_TRACE_MESSAGE_CODEC_WORKER", &traceDefaultMessageCodecWorker)
+	getOrLeaveBool("PLC4X_TEST_TRACE_EXECUTOR_WORKERS", &traceExecutorWorkers)
+}
+
+func getOrLeaveBool(key string, setting *bool) {
+	if env := os.Getenv(key); env != "" {
+		*setting = strings.EqualFold(env, "true")
 	}
-	passLoggerToModel = true
-	if passLoggerToModelEnv := os.Getenv("PLC4X_TEST_PASS_LOGGER_TO_MODEL"); passLoggerToModelEnv != "" {
-		passLoggerToModel = passLoggerToModelEnv == "true"
+}
+
+func getOrLeaveDuration(key string, setting *time.Duration) {
+	if env := os.Getenv(key); env != "" {
+		parsedDuration, err := strconv.ParseInt(env, 10, 64)
+		if err != nil {
+			panic(err)
+		}
+		*setting = time.Duration(parsedDuration) * time.Millisecond
 	}
 }
 
@@ -175,6 +195,10 @@ func EnrichOptionsWithOptionsForTesting(t *testing.T, _options ...options.WithOp
 	_options = append(_options,
 		options.WithCustomLogger(ProduceTestingLogger(t)),
 		options.WithPassLoggerToModel(passLoggerToModel),
+		options.WithReceiveTimeout(receiveTimeout),
+		options.WithTraceTransactionManagerWorkers(traceTransactionManagerWorkers),
+		options.WithTraceTransactionManagerTransactions(traceTransactionManagerTransactions),
+		options.WithTraceDefaultMessageCodecWorker(traceDefaultMessageCodecWorker),
 		options.WithExecutorOptionTracerWorkers(traceExecutorWorkers),
 	)
 	// We always create a custom executor to ensure shared executor for transaction manager is not used for tests
