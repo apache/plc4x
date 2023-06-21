@@ -90,7 +90,7 @@ func Test_requestTransaction_FailRequest(t1 *testing.T) {
 		name        string
 		fields      fields
 		args        args
-		mockSetup   func(t *testing.T, fields *fields, args *args)
+		setup       func(t *testing.T, fields *fields, args *args)
 		manipulator func(t *testing.T, transaction *requestTransaction)
 		wantErr     assert.ErrorAssertionFunc
 	}{
@@ -122,8 +122,8 @@ func Test_requestTransaction_FailRequest(t1 *testing.T) {
 	}
 	for _, tt := range tests {
 		t1.Run(tt.name, func(t *testing.T) {
-			if tt.mockSetup != nil {
-				tt.mockSetup(t, &tt.fields, &tt.args)
+			if tt.setup != nil {
+				tt.setup(t, &tt.fields, &tt.args)
 			}
 			r := &requestTransaction{
 				parent:         tt.fields.parent,
@@ -268,7 +268,7 @@ func Test_requestTransaction_AwaitCompletion(t1 *testing.T) {
 		name        string
 		fields      fields
 		args        args
-		mockSetup   func(t *testing.T, fields *fields, args *args)
+		setup       func(t *testing.T, fields *fields, args *args)
 		manipulator func(t *testing.T, transaction *requestTransaction)
 		wantErr     bool
 	}{
@@ -304,8 +304,8 @@ func Test_requestTransaction_AwaitCompletion(t1 *testing.T) {
 	}
 	for _, tt := range tests {
 		t1.Run(tt.name, func(t1 *testing.T) {
-			if tt.mockSetup != nil {
-				tt.mockSetup(t1, &tt.fields, &tt.args)
+			if tt.setup != nil {
+				tt.setup(t1, &tt.fields, &tt.args)
 			}
 			t := &requestTransaction{
 				parent:         tt.fields.parent,

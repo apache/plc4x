@@ -354,11 +354,11 @@ func Test_plcDriverManger_DiscoverWithContext(t *testing.T) {
 		discoveryOptions []WithDiscoveryOption
 	}
 	tests := []struct {
-		name      string
-		fields    fields
-		args      args
-		mockSetup func(t *testing.T, fields *fields, args *args)
-		wantErr   bool
+		name    string
+		fields  fields
+		args    args
+		setup   func(t *testing.T, fields *fields, args *args)
+		wantErr bool
 	}{
 		{
 			name: "discover it",
@@ -375,7 +375,7 @@ func Test_plcDriverManger_DiscoverWithContext(t *testing.T) {
 					WithDiscoveryOptionProtocol("test"),
 				},
 			},
-			mockSetup: func(t *testing.T, fields *fields, args *args) {
+			setup: func(t *testing.T, fields *fields, args *args) {
 				driver := NewMockPlcDriver(t)
 				expect := driver.EXPECT()
 				expect.GetProtocolName().Return("test")
@@ -399,7 +399,7 @@ func Test_plcDriverManger_DiscoverWithContext(t *testing.T) {
 					WithDiscoveryOptionProtocol("test"),
 				},
 			},
-			mockSetup: func(t *testing.T, fields *fields, args *args) {
+			setup: func(t *testing.T, fields *fields, args *args) {
 				driver := NewMockPlcDriver(t)
 				expect := driver.EXPECT()
 				expect.GetProtocolName().Return("test")
@@ -412,8 +412,8 @@ func Test_plcDriverManger_DiscoverWithContext(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if tt.mockSetup != nil {
-				tt.mockSetup(t, &tt.fields, &tt.args)
+			if tt.setup != nil {
+				tt.setup(t, &tt.fields, &tt.args)
 			}
 			m := &plcDriverManger{
 				drivers:    tt.fields.drivers,
@@ -439,7 +439,7 @@ func Test_plcDriverManger_GetConnection(t *testing.T) {
 		name         string
 		fields       fields
 		args         args
-		mockSetup    func(t *testing.T, fields *fields, args *args)
+		setup        func(t *testing.T, fields *fields, args *args)
 		wantVerifier func(t *testing.T, results <-chan PlcConnectionConnectResult) bool
 	}{
 		{
@@ -489,7 +489,7 @@ func Test_plcDriverManger_GetConnection(t *testing.T) {
 			args: args{
 				connectionString: "test://something",
 			},
-			mockSetup: func(t *testing.T, fields *fields, args *args) {
+			setup: func(t *testing.T, fields *fields, args *args) {
 				driver := NewMockPlcDriver(t)
 				expect := driver.EXPECT()
 				expect.GetProtocolName().Return("test")
@@ -521,8 +521,8 @@ func Test_plcDriverManger_GetConnection(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if tt.mockSetup != nil {
-				tt.mockSetup(t, &tt.fields, &tt.args)
+			if tt.setup != nil {
+				tt.setup(t, &tt.fields, &tt.args)
 			}
 			m := &plcDriverManger{
 				drivers:    tt.fields.drivers,
@@ -715,10 +715,10 @@ func Test_plcDriverManger_RegisterDriver(t *testing.T) {
 		driver PlcDriver
 	}
 	tests := []struct {
-		name      string
-		fields    fields
-		args      args
-		mockSetup func(t *testing.T, fields *fields, args *args)
+		name   string
+		fields fields
+		args   args
+		setup  func(t *testing.T, fields *fields, args *args)
 	}{
 		{
 			name: "register it (already registered)",
@@ -727,7 +727,7 @@ func Test_plcDriverManger_RegisterDriver(t *testing.T) {
 					"test": nil,
 				},
 			},
-			mockSetup: func(t *testing.T, fields *fields, args *args) {
+			setup: func(t *testing.T, fields *fields, args *args) {
 				driver := NewMockPlcDriver(t)
 				expect := driver.EXPECT()
 				expect.GetProtocolName().Return("test")
@@ -740,7 +740,7 @@ func Test_plcDriverManger_RegisterDriver(t *testing.T) {
 			fields: fields{
 				drivers: map[string]PlcDriver{},
 			},
-			mockSetup: func(t *testing.T, fields *fields, args *args) {
+			setup: func(t *testing.T, fields *fields, args *args) {
 				driver := NewMockPlcDriver(t)
 				expect := driver.EXPECT()
 				expect.GetProtocolName().Return("test")
@@ -751,8 +751,8 @@ func Test_plcDriverManger_RegisterDriver(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if tt.mockSetup != nil {
-				tt.mockSetup(t, &tt.fields, &tt.args)
+			if tt.setup != nil {
+				tt.setup(t, &tt.fields, &tt.args)
 			}
 			m := &plcDriverManger{
 				drivers:    tt.fields.drivers,
@@ -773,10 +773,10 @@ func Test_plcDriverManger_RegisterTransport(t *testing.T) {
 		transport transports.Transport
 	}
 	tests := []struct {
-		name      string
-		fields    fields
-		args      args
-		mockSetup func(t *testing.T, fields *fields, args *args)
+		name   string
+		fields fields
+		args   args
+		setup  func(t *testing.T, fields *fields, args *args)
 	}{
 		{
 			name: "register it (already registered)",
@@ -785,7 +785,7 @@ func Test_plcDriverManger_RegisterTransport(t *testing.T) {
 					"test": nil,
 				},
 			},
-			mockSetup: func(t *testing.T, fields *fields, args *args) {
+			setup: func(t *testing.T, fields *fields, args *args) {
 				transport := NewMockTransport(t)
 				transport.EXPECT().GetTransportName().Return("test")
 				transport.EXPECT().GetTransportCode().Return("test")
@@ -797,7 +797,7 @@ func Test_plcDriverManger_RegisterTransport(t *testing.T) {
 			fields: fields{
 				transports: map[string]transports.Transport{},
 			},
-			mockSetup: func(t *testing.T, fields *fields, args *args) {
+			setup: func(t *testing.T, fields *fields, args *args) {
 				transport := NewMockTransport(t)
 				transport.EXPECT().GetTransportName().Return("test")
 				transport.EXPECT().GetTransportCode().Return("test")
@@ -807,8 +807,8 @@ func Test_plcDriverManger_RegisterTransport(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if tt.mockSetup != nil {
-				tt.mockSetup(t, &tt.fields, &tt.args)
+			if tt.setup != nil {
+				tt.setup(t, &tt.fields, &tt.args)
 			}
 			m := &plcDriverManger{
 				drivers:    tt.fields.drivers,

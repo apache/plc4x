@@ -44,11 +44,11 @@ func TestDefaultPlcBrowseRequestBuilder_AddQuery(t *testing.T) {
 		query string
 	}
 	tests := []struct {
-		name      string
-		fields    fields
-		args      args
-		mockSetup func(t *testing.T, fields *fields, args *args, want *apiModel.PlcBrowseRequestBuilder)
-		want      apiModel.PlcBrowseRequestBuilder
+		name   string
+		fields fields
+		args   args
+		setup  func(t *testing.T, fields *fields, args *args, want *apiModel.PlcBrowseRequestBuilder)
+		want   apiModel.PlcBrowseRequestBuilder
 	}{
 		{
 			name: "add one",
@@ -59,7 +59,7 @@ func TestDefaultPlcBrowseRequestBuilder_AddQuery(t *testing.T) {
 				name:  "a name",
 				query: "a query",
 			},
-			mockSetup: func(t *testing.T, fields *fields, args *args, want *apiModel.PlcBrowseRequestBuilder) {
+			setup: func(t *testing.T, fields *fields, args *args, want *apiModel.PlcBrowseRequestBuilder) {
 				fields.tagHandler = NewMockPlcTagHandler(t)
 				*want = &DefaultPlcBrowseRequestBuilder{
 					tagHandler: NewMockPlcTagHandler(t),
@@ -73,8 +73,8 @@ func TestDefaultPlcBrowseRequestBuilder_AddQuery(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if tt.mockSetup != nil {
-				tt.mockSetup(t, &tt.fields, &tt.args, &tt.want)
+			if tt.setup != nil {
+				tt.setup(t, &tt.fields, &tt.args, &tt.want)
 			}
 			d := &DefaultPlcBrowseRequestBuilder{
 				tagHandler:   tt.fields.tagHandler,
@@ -95,11 +95,11 @@ func TestDefaultPlcBrowseRequestBuilder_Build(t *testing.T) {
 		queryStrings map[string]string
 	}
 	tests := []struct {
-		name      string
-		fields    fields
-		mockSetup func(t *testing.T, fields *fields)
-		want      apiModel.PlcBrowseRequest
-		wantErr   assert.ErrorAssertionFunc
+		name    string
+		fields  fields
+		setup   func(t *testing.T, fields *fields)
+		want    apiModel.PlcBrowseRequest
+		wantErr assert.ErrorAssertionFunc
 	}{
 		{
 			name:    "build it",
@@ -112,7 +112,7 @@ func TestDefaultPlcBrowseRequestBuilder_Build(t *testing.T) {
 				queryNames:   nil,
 				queryStrings: map[string]string{"a": "a"},
 			},
-			mockSetup: func(t *testing.T, fields *fields) {
+			setup: func(t *testing.T, fields *fields) {
 				handler := NewMockPlcTagHandler(t)
 				handler.EXPECT().ParseQuery(mock.Anything).Return(nil, nil)
 				fields.tagHandler = handler
@@ -126,7 +126,7 @@ func TestDefaultPlcBrowseRequestBuilder_Build(t *testing.T) {
 				queryNames:   nil,
 				queryStrings: map[string]string{"a": "a"},
 			},
-			mockSetup: func(t *testing.T, fields *fields) {
+			setup: func(t *testing.T, fields *fields) {
 				handler := NewMockPlcTagHandler(t)
 				handler.EXPECT().ParseQuery(mock.Anything).Return(nil, errors.New("nope"))
 				fields.tagHandler = handler
@@ -136,8 +136,8 @@ func TestDefaultPlcBrowseRequestBuilder_Build(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if tt.mockSetup != nil {
-				tt.mockSetup(t, &tt.fields)
+			if tt.setup != nil {
+				tt.setup(t, &tt.fields)
 			}
 			d := &DefaultPlcBrowseRequestBuilder{
 				tagHandler:   tt.fields.tagHandler,
@@ -161,14 +161,14 @@ func TestDefaultPlcBrowseRequest_Execute(t *testing.T) {
 		queries    map[string]apiModel.PlcQuery
 	}
 	tests := []struct {
-		name      string
-		fields    fields
-		mockSetup func(t *testing.T, fields *fields)
-		want      <-chan apiModel.PlcBrowseRequestResult
+		name   string
+		fields fields
+		setup  func(t *testing.T, fields *fields)
+		want   <-chan apiModel.PlcBrowseRequestResult
 	}{
 		{
 			name: "execute it",
-			mockSetup: func(t *testing.T, fields *fields) {
+			setup: func(t *testing.T, fields *fields) {
 				browser := NewMockPlcBrowser(t)
 				browser.EXPECT().Browse(mock.Anything, mock.Anything).Return(nil)
 				fields.browser = browser
@@ -177,8 +177,8 @@ func TestDefaultPlcBrowseRequest_Execute(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if tt.mockSetup != nil {
-				tt.mockSetup(t, &tt.fields)
+			if tt.setup != nil {
+				tt.setup(t, &tt.fields)
 			}
 			d := &DefaultPlcBrowseRequest{
 				browser:    tt.fields.browser,
@@ -200,15 +200,15 @@ func TestDefaultPlcBrowseRequest_ExecuteWithContext(t *testing.T) {
 		ctx context.Context
 	}
 	tests := []struct {
-		name      string
-		fields    fields
-		args      args
-		mockSetup func(t *testing.T, fields *fields)
-		want      <-chan apiModel.PlcBrowseRequestResult
+		name   string
+		fields fields
+		args   args
+		setup  func(t *testing.T, fields *fields)
+		want   <-chan apiModel.PlcBrowseRequestResult
 	}{
 		{
 			name: "execute it",
-			mockSetup: func(t *testing.T, fields *fields) {
+			setup: func(t *testing.T, fields *fields) {
 				browser := NewMockPlcBrowser(t)
 				browser.EXPECT().Browse(mock.Anything, mock.Anything).Return(nil)
 				fields.browser = browser
@@ -217,8 +217,8 @@ func TestDefaultPlcBrowseRequest_ExecuteWithContext(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if tt.mockSetup != nil {
-				tt.mockSetup(t, &tt.fields)
+			if tt.setup != nil {
+				tt.setup(t, &tt.fields)
 			}
 			d := &DefaultPlcBrowseRequest{
 				browser:    tt.fields.browser,
@@ -240,15 +240,15 @@ func TestDefaultPlcBrowseRequest_ExecuteWithInterceptor(t *testing.T) {
 		interceptor func(result apiModel.PlcBrowseItem) bool
 	}
 	tests := []struct {
-		name      string
-		fields    fields
-		args      args
-		mockSetup func(t *testing.T, fields *fields)
-		want      <-chan apiModel.PlcBrowseRequestResult
+		name   string
+		fields fields
+		args   args
+		setup  func(t *testing.T, fields *fields)
+		want   <-chan apiModel.PlcBrowseRequestResult
 	}{
 		{
 			name: "execute it",
-			mockSetup: func(t *testing.T, fields *fields) {
+			setup: func(t *testing.T, fields *fields) {
 				browser := NewMockPlcBrowser(t)
 				browser.EXPECT().BrowseWithInterceptor(mock.Anything, mock.Anything, mock.Anything).Return(nil)
 				fields.browser = browser
@@ -257,8 +257,8 @@ func TestDefaultPlcBrowseRequest_ExecuteWithInterceptor(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if tt.mockSetup != nil {
-				tt.mockSetup(t, &tt.fields)
+			if tt.setup != nil {
+				tt.setup(t, &tt.fields)
 			}
 			d := &DefaultPlcBrowseRequest{
 				browser:    tt.fields.browser,
@@ -281,15 +281,15 @@ func TestDefaultPlcBrowseRequest_ExecuteWithInterceptorWithContext(t *testing.T)
 		interceptor func(result apiModel.PlcBrowseItem) bool
 	}
 	tests := []struct {
-		name      string
-		fields    fields
-		args      args
-		mockSetup func(t *testing.T, fields *fields)
-		want      <-chan apiModel.PlcBrowseRequestResult
+		name   string
+		fields fields
+		args   args
+		setup  func(t *testing.T, fields *fields)
+		want   <-chan apiModel.PlcBrowseRequestResult
 	}{
 		{
 			name: "execute it",
-			mockSetup: func(t *testing.T, fields *fields) {
+			setup: func(t *testing.T, fields *fields) {
 				browser := NewMockPlcBrowser(t)
 				browser.EXPECT().BrowseWithInterceptor(mock.Anything, mock.Anything, mock.Anything).Return(nil)
 				fields.browser = browser
@@ -298,8 +298,8 @@ func TestDefaultPlcBrowseRequest_ExecuteWithInterceptorWithContext(t *testing.T)
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if tt.mockSetup != nil {
-				tt.mockSetup(t, &tt.fields)
+			if tt.setup != nil {
+				tt.setup(t, &tt.fields)
 			}
 			d := &DefaultPlcBrowseRequest{
 				browser:    tt.fields.browser,

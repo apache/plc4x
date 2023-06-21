@@ -454,11 +454,11 @@ func TestDefaultPlcSubscriptionRequestBuilder_Build(t *testing.T) {
 		preRegisteredConsumers map[string][]apiModel.PlcSubscriptionEventConsumer
 	}
 	tests := []struct {
-		name      string
-		fields    fields
-		mockSetup func(t *testing.T, fields *fields)
-		want      apiModel.PlcSubscriptionRequest
-		wantErr   assert.ErrorAssertionFunc
+		name    string
+		fields  fields
+		setup   func(t *testing.T, fields *fields)
+		want    apiModel.PlcSubscriptionRequest
+		wantErr assert.ErrorAssertionFunc
 	}{
 		{
 			name: "build it",
@@ -474,7 +474,7 @@ func TestDefaultPlcSubscriptionRequestBuilder_Build(t *testing.T) {
 				tagAddresses: map[string]string{"a": ""},
 				tags:         map[string]apiModel.PlcTag{},
 			},
-			mockSetup: func(t *testing.T, fields *fields) {
+			setup: func(t *testing.T, fields *fields) {
 				handler := NewMockPlcTagHandler(t)
 				handler.EXPECT().ParseTag(mock.Anything).Return(nil, nil)
 				fields.tagHandler = handler
@@ -491,7 +491,7 @@ func TestDefaultPlcSubscriptionRequestBuilder_Build(t *testing.T) {
 				tagAddresses: map[string]string{"a": ""},
 				tags:         map[string]apiModel.PlcTag{},
 			},
-			mockSetup: func(t *testing.T, fields *fields) {
+			setup: func(t *testing.T, fields *fields) {
 				handler := NewMockPlcTagHandler(t)
 				handler.EXPECT().ParseTag(mock.Anything).Return(nil, errors.New("nope"))
 				fields.tagHandler = handler
@@ -501,8 +501,8 @@ func TestDefaultPlcSubscriptionRequestBuilder_Build(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if tt.mockSetup != nil {
-				tt.mockSetup(t, &tt.fields)
+			if tt.setup != nil {
+				tt.setup(t, &tt.fields)
 			}
 			d := &DefaultPlcSubscriptionRequestBuilder{
 				subscriber:             tt.fields.subscriber,
@@ -533,14 +533,14 @@ func TestDefaultPlcSubscriptionRequest_Execute(t *testing.T) {
 		subscriber             spi.PlcSubscriber
 	}
 	tests := []struct {
-		name      string
-		fields    fields
-		mockSetup func(t *testing.T, fields *fields)
-		want      <-chan apiModel.PlcSubscriptionRequestResult
+		name   string
+		fields fields
+		setup  func(t *testing.T, fields *fields)
+		want   <-chan apiModel.PlcSubscriptionRequestResult
 	}{
 		{
 			name: "execute it",
-			mockSetup: func(t *testing.T, fields *fields) {
+			setup: func(t *testing.T, fields *fields) {
 				subscriber := NewMockPlcSubscriber(t)
 				subscriber.EXPECT().Subscribe(mock.Anything, mock.Anything).Return(nil)
 				fields.subscriber = subscriber
@@ -549,8 +549,8 @@ func TestDefaultPlcSubscriptionRequest_Execute(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if tt.mockSetup != nil {
-				tt.mockSetup(t, &tt.fields)
+			if tt.setup != nil {
+				tt.setup(t, &tt.fields)
 			}
 			d := &DefaultPlcSubscriptionRequest{
 				DefaultPlcTagRequest:   tt.fields.DefaultPlcTagRequest,
@@ -576,15 +576,15 @@ func TestDefaultPlcSubscriptionRequest_ExecuteWithContext(t *testing.T) {
 		ctx context.Context
 	}
 	tests := []struct {
-		name      string
-		fields    fields
-		args      args
-		mockSetup func(t *testing.T, fields *fields)
-		want      <-chan apiModel.PlcSubscriptionRequestResult
+		name   string
+		fields fields
+		args   args
+		setup  func(t *testing.T, fields *fields)
+		want   <-chan apiModel.PlcSubscriptionRequestResult
 	}{
 		{
 			name: "execute it",
-			mockSetup: func(t *testing.T, fields *fields) {
+			setup: func(t *testing.T, fields *fields) {
 				subscriber := NewMockPlcSubscriber(t)
 				subscriber.EXPECT().Subscribe(mock.Anything, mock.Anything).Return(nil)
 				fields.subscriber = subscriber
@@ -593,8 +593,8 @@ func TestDefaultPlcSubscriptionRequest_ExecuteWithContext(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if tt.mockSetup != nil {
-				tt.mockSetup(t, &tt.fields)
+			if tt.setup != nil {
+				tt.setup(t, &tt.fields)
 			}
 			d := &DefaultPlcSubscriptionRequest{
 				DefaultPlcTagRequest:   tt.fields.DefaultPlcTagRequest,

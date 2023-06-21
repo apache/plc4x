@@ -73,13 +73,16 @@ func TestWriter_Write(t *testing.T) {
 		name         string
 		fields       fields
 		args         args
+		setup        func(t *testing.T, fields *fields, args *args)
 		wantAsserter func(t *testing.T, results <-chan apiModel.PlcWriteRequestResult) bool
 	}{
 		{
 			name: "write something",
 			args: args{
-				ctx:          context.Background(),
 				writeRequest: spiModel.NewDefaultPlcWriteRequest(nil, nil, nil, nil, nil),
+			},
+			setup: func(t *testing.T, fields *fields, args *args) {
+				args.ctx = testutils.TestContext(t)
 			},
 			wantAsserter: func(t *testing.T, results <-chan apiModel.PlcWriteRequestResult) bool {
 				timeout := time.NewTimer(2 * time.Second)
@@ -98,10 +101,12 @@ func TestWriter_Write(t *testing.T) {
 		{
 			name: "too many tags",
 			args: args{
-				ctx: testutils.TestContext(t),
 				writeRequest: spiModel.NewDefaultPlcWriteRequest(nil, func() []string {
 					return strings.Split(strings.Repeat("asd,", 30), ",")
 				}(), nil, nil, nil),
+			},
+			setup: func(t *testing.T, fields *fields, args *args) {
+				args.ctx = testutils.TestContext(t)
 			},
 			wantAsserter: func(t *testing.T, results <-chan apiModel.PlcWriteRequestResult) bool {
 				timeout := time.NewTimer(2 * time.Second)
@@ -136,7 +141,6 @@ func TestWriter_Write(t *testing.T) {
 					tm: spi.NewRequestTransactionManager(10),
 				},
 				args: args{
-						ctx: testutils.TestContext(t),
 					writeRequest: spiModel.NewDefaultPlcWriteRequest(
 						map[string]apiModel.PlcTag{
 							"asd": &statusTag{},
@@ -148,6 +152,9 @@ func TestWriter_Write(t *testing.T) {
 						nil,
 						nil,
 					),
+				},
+				setup: func(t *testing.T, fields *fields, args *args){
+					args.ctx = testutils.TestContext(t)
 				},
 				wantAsserter: func(t *testing.T, results <-chan apiModel.PlcWriteRequestResult) bool {
 					timeout := time.NewTimer(2 * time.Second)
@@ -167,6 +174,9 @@ func TestWriter_Write(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			if tt.setup != nil {
+				tt.setup(t, &tt.fields, &tt.args)
+			}
 			m := Writer{
 				alphaGenerator: tt.fields.alphaGenerator,
 				messageCodec:   tt.fields.messageCodec,

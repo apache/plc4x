@@ -35,18 +35,18 @@ func TestDefaultValueHandler_NewPlcValue(t *testing.T) {
 		value any
 	}
 	tests := []struct {
-		name      string
-		args      args
-		mockSetup func(t *testing.T, args *args)
-		want      apiValues.PlcValue
-		wantErr   assert.ErrorAssertionFunc
+		name    string
+		args    args
+		setup   func(t *testing.T, args *args)
+		want    apiValues.PlcValue
+		wantErr assert.ErrorAssertionFunc
 	}{
 		{
 			name: "simple bool",
 			args: args{
 				value: true,
 			},
-			mockSetup: func(t *testing.T, args *args) {
+			setup: func(t *testing.T, args *args) {
 				tag := NewMockPlcTag(t)
 				expect := tag.EXPECT()
 				expect.GetArrayInfo().Return(nil)
@@ -59,8 +59,8 @@ func TestDefaultValueHandler_NewPlcValue(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if tt.mockSetup != nil {
-				tt.mockSetup(t, &tt.args)
+			if tt.setup != nil {
+				tt.setup(t, &tt.args)
 			}
 			m := DefaultValueHandler{}
 			got, err := m.NewPlcValue(tt.args.tag, tt.args.value)
@@ -689,18 +689,18 @@ func TestDefaultValueHandler_ParseListType(t *testing.T) {
 		value     any
 	}
 	tests := []struct {
-		name      string
-		args      args
-		mockSetup func(t *testing.T, args *args)
-		want      apiValues.PlcValue
-		wantErr   assert.ErrorAssertionFunc
+		name    string
+		args    args
+		setup   func(t *testing.T, args *args)
+		want    apiValues.PlcValue
+		wantErr assert.ErrorAssertionFunc
 	}{
 		{
 			name: "No array info",
 			args: args{
 				value: true,
 			},
-			mockSetup: func(t *testing.T, args *args) {
+			setup: func(t *testing.T, args *args) {
 				tag := NewMockPlcTag(t)
 				tag.EXPECT().GetValueType().Return(apiValues.BOOL)
 				args.tag = tag
@@ -713,7 +713,7 @@ func TestDefaultValueHandler_ParseListType(t *testing.T) {
 			args: args{
 				value: 1,
 			},
-			mockSetup: func(t *testing.T, args *args) {
+			setup: func(t *testing.T, args *args) {
 				args.arrayInfo = []apiModel.ArrayInfo{
 					NewMockArrayInfo(t),
 				}
@@ -725,7 +725,7 @@ func TestDefaultValueHandler_ParseListType(t *testing.T) {
 			args: args{
 				value: []bool{true, true},
 			},
-			mockSetup: func(t *testing.T, args *args) {
+			setup: func(t *testing.T, args *args) {
 				info := NewMockArrayInfo(t)
 				info.EXPECT().GetSize().Return(3)
 				args.arrayInfo = []apiModel.ArrayInfo{
@@ -739,7 +739,7 @@ func TestDefaultValueHandler_ParseListType(t *testing.T) {
 			args: args{
 				value: []bool{true, true},
 			},
-			mockSetup: func(t *testing.T, args *args) {
+			setup: func(t *testing.T, args *args) {
 				{
 					tag := NewMockPlcTag(t)
 					tag.EXPECT().GetValueType().Return(apiValues.BOOL)
@@ -759,8 +759,8 @@ func TestDefaultValueHandler_ParseListType(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if tt.mockSetup != nil {
-				tt.mockSetup(t, &tt.args)
+			if tt.setup != nil {
+				tt.setup(t, &tt.args)
 			}
 			m := DefaultValueHandler{}
 			got, err := m.ParseListType(tt.args.tag, tt.args.arrayInfo, tt.args.value)
@@ -778,18 +778,18 @@ func TestDefaultValueHandler_ParseSimpleType(t *testing.T) {
 		value any
 	}
 	tests := []struct {
-		name      string
-		args      args
-		mockSetup func(t *testing.T, args *args)
-		want      apiValues.PlcValue
-		wantErr   assert.ErrorAssertionFunc
+		name    string
+		args    args
+		setup   func(t *testing.T, args *args)
+		want    apiValues.PlcValue
+		wantErr assert.ErrorAssertionFunc
 	}{
 		{
 			name: "fallback",
 			args: args{
 				value: 1,
 			},
-			mockSetup: func(t *testing.T, args *args) {
+			setup: func(t *testing.T, args *args) {
 				tag := NewMockPlcTag(t)
 				tag.EXPECT().GetValueType().Return(apiValues.BOOL)
 				args.tag = tag
@@ -800,8 +800,8 @@ func TestDefaultValueHandler_ParseSimpleType(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if tt.mockSetup != nil {
-				tt.mockSetup(t, &tt.args)
+			if tt.setup != nil {
+				tt.setup(t, &tt.args)
 			}
 			m := DefaultValueHandler{}
 			got, err := m.ParseSimpleType(tt.args.tag, tt.args.value)
@@ -847,18 +847,18 @@ func TestDefaultValueHandler_parseType(t *testing.T) {
 		value     any
 	}
 	tests := []struct {
-		name      string
-		args      args
-		mockSetup func(t *testing.T, args *args)
-		want      apiValues.PlcValue
-		wantErr   assert.ErrorAssertionFunc
+		name    string
+		args    args
+		setup   func(t *testing.T, args *args)
+		want    apiValues.PlcValue
+		wantErr assert.ErrorAssertionFunc
 	}{
 		{
 			name: "parse list",
 			args: args{
 				value: []bool{true, true},
 			},
-			mockSetup: func(t *testing.T, args *args) {
+			setup: func(t *testing.T, args *args) {
 				{
 					tag := NewMockPlcTag(t)
 					tag.EXPECT().GetValueType().Return(apiValues.BOOL)
@@ -880,7 +880,7 @@ func TestDefaultValueHandler_parseType(t *testing.T) {
 			args: args{
 				value: true,
 			},
-			mockSetup: func(t *testing.T, args *args) {
+			setup: func(t *testing.T, args *args) {
 				tag := NewMockPlcTag(t)
 				tag.EXPECT().GetValueType().Return(apiValues.Struct)
 				args.tag = tag
@@ -892,7 +892,7 @@ func TestDefaultValueHandler_parseType(t *testing.T) {
 			args: args{
 				value: true,
 			},
-			mockSetup: func(t *testing.T, args *args) {
+			setup: func(t *testing.T, args *args) {
 				tag := NewMockPlcTag(t)
 				tag.EXPECT().GetValueType().Return(apiValues.BOOL)
 				args.tag = tag
@@ -903,8 +903,8 @@ func TestDefaultValueHandler_parseType(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if tt.mockSetup != nil {
-				tt.mockSetup(t, &tt.args)
+			if tt.setup != nil {
+				tt.setup(t, &tt.args)
 			}
 			m := DefaultValueHandler{}
 			got, err := m.parseType(tt.args.tag, tt.args.arrayInfo, tt.args.value)

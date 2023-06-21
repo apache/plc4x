@@ -268,7 +268,6 @@ func TestDiscoverer_createTransportInstanceDispatcher(t *testing.T) {
 		{
 			name: "create a dispatcher",
 			args: args{
-				ctx: testutils.TestContext(t),
 				wg: func() *sync.WaitGroup {
 					var wg sync.WaitGroup
 					return &wg
@@ -315,6 +314,7 @@ func TestDiscoverer_createTransportInstanceDispatcher(t *testing.T) {
 			},
 			setup: func(t *testing.T, fields *fields, args *args) {
 				args.tcpTransport = tcp.NewTransport(options.WithCustomLogger(testutils.ProduceTestingLogger(t)))
+				args.ctx = testutils.TestContext(t)
 			},
 		},
 	}

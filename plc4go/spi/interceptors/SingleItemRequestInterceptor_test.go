@@ -74,7 +74,7 @@ func TestSingleItemRequestInterceptor_InterceptReadRequest(t *testing.T) {
 		name       string
 		fields     fields
 		args       args
-		mockSetup  func(t *testing.T, fields *fields, args *args)
+		setup      func(t *testing.T, fields *fields, args *args)
 		wantAssert func(t *testing.T, args args, got []apiModel.PlcReadRequest) bool
 	}{
 		{
@@ -82,7 +82,7 @@ func TestSingleItemRequestInterceptor_InterceptReadRequest(t *testing.T) {
 		},
 		{
 			name: "read request with no tags",
-			mockSetup: func(t *testing.T, fields *fields, args *args) {
+			setup: func(t *testing.T, fields *fields, args *args) {
 				plcReadRequest := NewMockPlcReadRequest(t)
 				plcReadRequest.EXPECT().GetTagNames().Return(nil)
 				args.readRequest = plcReadRequest
@@ -90,7 +90,7 @@ func TestSingleItemRequestInterceptor_InterceptReadRequest(t *testing.T) {
 		},
 		{
 			name: "read request with 1 tag",
-			mockSetup: func(t *testing.T, fields *fields, args *args) {
+			setup: func(t *testing.T, fields *fields, args *args) {
 				plcReadRequest := NewMockPlcReadRequest(t)
 				plcReadRequest.EXPECT().GetTagNames().Return([]string{"a tag"})
 				args.readRequest = plcReadRequest
@@ -114,10 +114,7 @@ func TestSingleItemRequestInterceptor_InterceptReadRequest(t *testing.T) {
 					}
 				},
 			},
-			args: args{
-				ctx: testutils.TestContext(t),
-			},
-			mockSetup: func(t *testing.T, fields *fields, args *args) {
+			setup: func(t *testing.T, fields *fields, args *args) {
 				plcReadRequest := NewMockPlcReadRequest(t)
 				expect := plcReadRequest.EXPECT()
 				expect.GetTagNames().Return([]string{"1 tag", "2 tag"})
@@ -125,6 +122,8 @@ func TestSingleItemRequestInterceptor_InterceptReadRequest(t *testing.T) {
 				expect.GetReader().Return(nil)
 				expect.GetReadRequestInterceptor().Return(nil)
 				args.readRequest = plcReadRequest
+
+				args.ctx = testutils.TestContext(t)
 			},
 			wantAssert: func(t *testing.T, args args, got []apiModel.PlcReadRequest) bool {
 				assert.Len(t, got, 2)
@@ -162,7 +161,7 @@ func TestSingleItemRequestInterceptor_InterceptReadRequest(t *testing.T) {
 			wantAssert: func(t *testing.T, args args, got []apiModel.PlcReadRequest) bool {
 				return true
 			},
-			mockSetup: func(t *testing.T, fields *fields, args *args) {
+			setup: func(t *testing.T, fields *fields, args *args) {
 				plcReadRequest := NewMockPlcReadRequest(t)
 				plcReadRequest.EXPECT().GetTagNames().Return([]string{"1 tag", "2 tag"})
 				args.readRequest = plcReadRequest
@@ -171,8 +170,8 @@ func TestSingleItemRequestInterceptor_InterceptReadRequest(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if tt.mockSetup != nil {
-				tt.mockSetup(t, &tt.fields, &tt.args)
+			if tt.setup != nil {
+				tt.setup(t, &tt.fields, &tt.args)
 			}
 			if tt.fields.readRequestFactory == nil {
 				tt.fields.readRequestFactory = func(t *testing.T) readRequestFactory {
@@ -227,7 +226,7 @@ func TestSingleItemRequestInterceptor_InterceptWriteRequest(t *testing.T) {
 		name       string
 		fields     fields
 		args       args
-		mockSetup  func(t *testing.T, fields *fields, args *args)
+		setup      func(t *testing.T, fields *fields, args *args)
 		wantAssert func(t *testing.T, args args, got []apiModel.PlcWriteRequest) bool
 	}{
 		{
@@ -235,7 +234,7 @@ func TestSingleItemRequestInterceptor_InterceptWriteRequest(t *testing.T) {
 		},
 		{
 			name: "write request with no tags",
-			mockSetup: func(t *testing.T, fields *fields, args *args) {
+			setup: func(t *testing.T, fields *fields, args *args) {
 				plcWriteRequest := NewMockPlcWriteRequest(t)
 				plcWriteRequest.EXPECT().GetTagNames().Return(nil)
 				args.writeRequest = plcWriteRequest
@@ -243,7 +242,7 @@ func TestSingleItemRequestInterceptor_InterceptWriteRequest(t *testing.T) {
 		},
 		{
 			name: "write request with 1 tag",
-			mockSetup: func(t *testing.T, fields *fields, args *args) {
+			setup: func(t *testing.T, fields *fields, args *args) {
 				plcWriteRequest := NewMockPlcWriteRequest(t)
 				plcWriteRequest.EXPECT().GetTagNames().Return([]string{"a tag"})
 				args.writeRequest = plcWriteRequest
@@ -267,10 +266,7 @@ func TestSingleItemRequestInterceptor_InterceptWriteRequest(t *testing.T) {
 					}
 				},
 			},
-			args: args{
-				ctx: testutils.TestContext(t),
-			},
-			mockSetup: func(t *testing.T, fields *fields, args *args) {
+			setup: func(t *testing.T, fields *fields, args *args) {
 				plcWriteRequest := NewMockPlcWriteRequest(t)
 				expect := plcWriteRequest.EXPECT()
 				expect.GetTagNames().Return([]string{"1 tag", "2 tag"})
@@ -279,6 +275,8 @@ func TestSingleItemRequestInterceptor_InterceptWriteRequest(t *testing.T) {
 				expect.GetWriter().Return(nil)
 				expect.GetWriteRequestInterceptor().Return(nil)
 				args.writeRequest = plcWriteRequest
+
+				args.ctx = testutils.TestContext(t)
 			},
 			wantAssert: func(t *testing.T, args args, got []apiModel.PlcWriteRequest) bool {
 				assert.Len(t, got, 2)
@@ -311,7 +309,7 @@ func TestSingleItemRequestInterceptor_InterceptWriteRequest(t *testing.T) {
 					return ctx
 				}(),
 			},
-			mockSetup: func(t *testing.T, fields *fields, args *args) {
+			setup: func(t *testing.T, fields *fields, args *args) {
 				plcWriteRequest := NewMockPlcWriteRequest(t)
 				plcWriteRequest.EXPECT().GetTagNames().Return([]string{"1 tag", "2 tag"})
 				args.writeRequest = plcWriteRequest
@@ -320,8 +318,8 @@ func TestSingleItemRequestInterceptor_InterceptWriteRequest(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if tt.mockSetup != nil {
-				tt.mockSetup(t, &tt.fields, &tt.args)
+			if tt.setup != nil {
+				tt.setup(t, &tt.fields, &tt.args)
 			}
 			if tt.fields.readRequestFactory == nil {
 				tt.fields.readRequestFactory = func(t *testing.T) readRequestFactory {
@@ -377,7 +375,7 @@ func TestSingleItemRequestInterceptor_ProcessReadResponses(t *testing.T) {
 		name       string
 		fields     fields
 		args       args
-		mockSetup  func(t *testing.T, fields *fields, args *args)
+		setup      func(t *testing.T, fields *fields, args *args)
 		wantAssert func(t *testing.T, args args, got apiModel.PlcReadRequestResult) bool
 	}{
 		{
@@ -402,7 +400,7 @@ func TestSingleItemRequestInterceptor_ProcessReadResponses(t *testing.T) {
 					}
 				},
 			},
-			mockSetup: func(t *testing.T, fields *fields, args *args) {
+			setup: func(t *testing.T, fields *fields, args *args) {
 				result := NewMockPlcReadRequestResult(t)
 				args.readResults = []apiModel.PlcReadRequestResult{
 					result,
@@ -414,9 +412,6 @@ func TestSingleItemRequestInterceptor_ProcessReadResponses(t *testing.T) {
 		},
 		{
 			name: "two result (bit empty)",
-			args: args{
-				ctx: testutils.TestContext(t),
-			},
 			fields: fields{
 				readResponseFactory: func(t *testing.T) readResponseFactory {
 					return func(request apiModel.PlcReadRequest, responseCodes map[string]apiModel.PlcResponseCode, values map[string]values.PlcValue) apiModel.PlcReadResponse {
@@ -424,7 +419,7 @@ func TestSingleItemRequestInterceptor_ProcessReadResponses(t *testing.T) {
 					}
 				},
 			},
-			mockSetup: func(t *testing.T, fields *fields, args *args) {
+			setup: func(t *testing.T, fields *fields, args *args) {
 				result1 := NewMockPlcReadRequestResult(t)
 				result1Expect := result1.EXPECT()
 				result1Expect.GetResponse().Return(nil)
@@ -437,6 +432,8 @@ func TestSingleItemRequestInterceptor_ProcessReadResponses(t *testing.T) {
 					result1,
 					result2,
 				}
+
+				args.ctx = testutils.TestContext(t)
 			},
 			wantAssert: func(t *testing.T, args args, got apiModel.PlcReadRequestResult) bool {
 				return assert.Equal(t, &interceptedPlcReadRequestResult{}, got)
@@ -444,9 +441,6 @@ func TestSingleItemRequestInterceptor_ProcessReadResponses(t *testing.T) {
 		},
 		{
 			name: "two result",
-			args: args{
-				ctx: testutils.TestContext(t),
-			},
 			fields: fields{
 				readResponseFactory: func(t *testing.T) readResponseFactory {
 					return func(request apiModel.PlcReadRequest, responseCodes map[string]apiModel.PlcResponseCode, values map[string]values.PlcValue) apiModel.PlcReadResponse {
@@ -454,7 +448,7 @@ func TestSingleItemRequestInterceptor_ProcessReadResponses(t *testing.T) {
 					}
 				},
 			},
-			mockSetup: func(t *testing.T, fields *fields, args *args) {
+			setup: func(t *testing.T, fields *fields, args *args) {
 				result1 := NewMockPlcReadRequestResult(t)
 				result1Expect := result1.EXPECT()
 				result1Expect.GetErr().Return(errors.New("asd"))
@@ -466,6 +460,8 @@ func TestSingleItemRequestInterceptor_ProcessReadResponses(t *testing.T) {
 					result1,
 					result2,
 				}
+
+				args.ctx = testutils.TestContext(t)
 			},
 			wantAssert: func(t *testing.T, args args, got apiModel.PlcReadRequestResult) bool {
 				return assert.Equal(t, &interceptedPlcReadRequestResult{
@@ -489,7 +485,7 @@ func TestSingleItemRequestInterceptor_ProcessReadResponses(t *testing.T) {
 					}
 				},
 			},
-			mockSetup: func(t *testing.T, fields *fields, args *args) {
+			setup: func(t *testing.T, fields *fields, args *args) {
 				args.readResults = []apiModel.PlcReadRequestResult{
 					NewMockPlcReadRequestResult(t),
 					NewMockPlcReadRequestResult(t),
@@ -504,8 +500,8 @@ func TestSingleItemRequestInterceptor_ProcessReadResponses(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if tt.mockSetup != nil {
-				tt.mockSetup(t, &tt.fields, &tt.args)
+			if tt.setup != nil {
+				tt.setup(t, &tt.fields, &tt.args)
 			}
 			if tt.fields.readRequestFactory == nil {
 				tt.fields.readRequestFactory = func(t *testing.T) readRequestFactory {
@@ -561,7 +557,7 @@ func TestSingleItemRequestInterceptor_ProcessWriteResponses(t *testing.T) {
 		name       string
 		fields     fields
 		args       args
-		mockSetup  func(t *testing.T, fields *fields, args *args)
+		setup      func(t *testing.T, fields *fields, args *args)
 		wantAssert func(t *testing.T, args args, got apiModel.PlcWriteRequestResult) bool
 	}{
 		{
@@ -582,7 +578,7 @@ func TestSingleItemRequestInterceptor_ProcessWriteResponses(t *testing.T) {
 					return nil
 				},
 			},
-			mockSetup: func(t *testing.T, fields *fields, args *args) {
+			setup: func(t *testing.T, fields *fields, args *args) {
 				args.writeResults = []apiModel.PlcWriteRequestResult{
 					NewMockPlcWriteRequestResult(t),
 				}
@@ -598,10 +594,7 @@ func TestSingleItemRequestInterceptor_ProcessWriteResponses(t *testing.T) {
 					return nil
 				},
 			},
-			args: args{
-				ctx: testutils.TestContext(t),
-			},
-			mockSetup: func(t *testing.T, fields *fields, args *args) {
+			setup: func(t *testing.T, fields *fields, args *args) {
 				result1 := NewMockPlcWriteRequestResult(t)
 				result1Expect := result1.EXPECT()
 				result1Expect.GetResponse().Return(nil)
@@ -614,6 +607,8 @@ func TestSingleItemRequestInterceptor_ProcessWriteResponses(t *testing.T) {
 					result1,
 					result2,
 				}
+
+				args.ctx = testutils.TestContext(t)
 			},
 			wantAssert: func(t *testing.T, args args, got apiModel.PlcWriteRequestResult) bool {
 				return assert.Equal(t, &interceptedPlcWriteRequestResult{}, got)
@@ -621,15 +616,12 @@ func TestSingleItemRequestInterceptor_ProcessWriteResponses(t *testing.T) {
 		},
 		{
 			name: "two result",
-			args: args{
-				ctx: testutils.TestContext(t),
-			},
 			fields: fields{
 				writeResponseFactory: func(request apiModel.PlcWriteRequest, responseCodes map[string]apiModel.PlcResponseCode) apiModel.PlcWriteResponse {
 					return nil
 				},
 			},
-			mockSetup: func(t *testing.T, fields *fields, args *args) {
+			setup: func(t *testing.T, fields *fields, args *args) {
 				result1 := NewMockPlcWriteRequestResult(t)
 				result1Expect := result1.EXPECT()
 				result1Expect.GetErr().Return(errors.New("asd"))
@@ -641,6 +633,8 @@ func TestSingleItemRequestInterceptor_ProcessWriteResponses(t *testing.T) {
 					result1,
 					result2,
 				}
+
+				args.ctx = testutils.TestContext(t)
 			},
 			wantAssert: func(t *testing.T, args args, got apiModel.PlcWriteRequestResult) bool {
 				return assert.Equal(t, &interceptedPlcWriteRequestResult{
@@ -662,7 +656,7 @@ func TestSingleItemRequestInterceptor_ProcessWriteResponses(t *testing.T) {
 					return nil
 				},
 			},
-			mockSetup: func(t *testing.T, fields *fields, args *args) {
+			setup: func(t *testing.T, fields *fields, args *args) {
 				args.writeResults = []apiModel.PlcWriteRequestResult{
 					NewMockPlcWriteRequestResult(t),
 					NewMockPlcWriteRequestResult(t),
@@ -677,8 +671,8 @@ func TestSingleItemRequestInterceptor_ProcessWriteResponses(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if tt.mockSetup != nil {
-				tt.mockSetup(t, &tt.fields, &tt.args)
+			if tt.setup != nil {
+				tt.setup(t, &tt.fields, &tt.args)
 			}
 			m := SingleItemRequestInterceptor{
 				readRequestFactory:   tt.fields.readRequestFactory,

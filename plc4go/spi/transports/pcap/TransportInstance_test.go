@@ -116,7 +116,7 @@ func TestTransportInstance_Connect(t *testing.T) {
 	tests := []struct {
 		name        string
 		fields      fields
-		mockSetup   func(t *testing.T, fields *fields)
+		setup       func(t *testing.T, fields *fields)
 		manipulator func(t *testing.T, transportInstance *TransportInstance)
 		wantErr     bool
 	}{
@@ -133,15 +133,15 @@ func TestTransportInstance_Connect(t *testing.T) {
 		},
 		{
 			name: "connect with file",
-			mockSetup: func(t *testing.T, fields *fields) {
+			setup: func(t *testing.T, fields *fields) {
 				fields.transportFile = createPcap(t)
 			},
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if tt.mockSetup != nil {
-				tt.mockSetup(t, &tt.fields)
+			if tt.setup != nil {
+				tt.setup(t, &tt.fields)
 			}
 			m := &TransportInstance{
 				DefaultBufferedTransportInstance: tt.fields.DefaultBufferedTransportInstance,

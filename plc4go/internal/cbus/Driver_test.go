@@ -124,12 +124,14 @@ func TestDriver_GetConnectionWithContext(t *testing.T) {
 				awaitDisconnectComplete: false,
 			},
 			args: args{
-				ctx: testutils.TestContext(t),
 				transportUrl: url.URL{
 					Scheme: "test",
 				},
 				transports: map[string]transports.Transport{},
 				options:    map[string][]string{},
+			},
+			setup: func(t *testing.T, fields *fields, args *args) {
+				args.ctx = testutils.TestContext(t)
 			},
 			wantVerifier: func(t *testing.T, results <-chan plc4go.PlcConnectionConnectResult) bool {
 				timeout := time.NewTimer(20 * time.Millisecond)
@@ -152,7 +154,6 @@ func TestDriver_GetConnectionWithContext(t *testing.T) {
 				awaitDisconnectComplete: false,
 			},
 			args: args{
-				ctx: testutils.TestContext(t),
 				transportUrl: url.URL{
 					Scheme: "test",
 				},
@@ -163,6 +164,7 @@ func TestDriver_GetConnectionWithContext(t *testing.T) {
 			},
 			setup: func(t *testing.T, fields *fields, args *args) {
 				args.transports["test"] = test.NewTransport(testutils.EnrichOptionsWithOptionsForTesting(t)...)
+				args.ctx = testutils.TestContext(t)
 			},
 			wantVerifier: func(t *testing.T, results <-chan plc4go.PlcConnectionConnectResult) bool {
 				timeout := time.NewTimer(20 * time.Millisecond)
@@ -186,7 +188,6 @@ func TestDriver_GetConnectionWithContext(t *testing.T) {
 				awaitDisconnectComplete: false,
 			},
 			args: args{
-				ctx: testutils.TestContext(t),
 				transportUrl: url.URL{
 					Scheme: "test",
 				},
@@ -197,6 +198,7 @@ func TestDriver_GetConnectionWithContext(t *testing.T) {
 			},
 			setup: func(t *testing.T, fields *fields, args *args) {
 				args.transports["test"] = test.NewTransport(testutils.EnrichOptionsWithOptionsForTesting(t)...)
+				args.ctx = testutils.TestContext(t)
 			},
 			wantVerifier: func(t *testing.T, results <-chan plc4go.PlcConnectionConnectResult) bool {
 				timeout := time.NewTimer(20 * time.Millisecond)
@@ -219,7 +221,6 @@ func TestDriver_GetConnectionWithContext(t *testing.T) {
 				awaitDisconnectComplete: false,
 			},
 			args: args{
-				ctx: testutils.TestContext(t),
 				transportUrl: url.URL{
 					Scheme: "test",
 				},
@@ -228,6 +229,7 @@ func TestDriver_GetConnectionWithContext(t *testing.T) {
 			},
 			setup: func(t *testing.T, fields *fields, args *args) {
 				args.transports["test"] = test.NewTransport(testutils.EnrichOptionsWithOptionsForTesting(t)...)
+				args.ctx = testutils.TestContext(t)
 			},
 			wantVerifier: func(t *testing.T, results <-chan plc4go.PlcConnectionConnectResult) bool {
 				timeout := time.NewTimer(20 * time.Millisecond)

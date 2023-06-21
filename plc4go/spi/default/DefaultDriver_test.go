@@ -71,15 +71,15 @@ func Test_defaultDriver_CheckQuery(t *testing.T) {
 		query string
 	}
 	tests := []struct {
-		name      string
-		fields    fields
-		args      args
-		mockSetup func(t *testing.T, fields *fields, args *args)
-		wantErr   assert.ErrorAssertionFunc
+		name    string
+		fields  fields
+		args    args
+		setup   func(t *testing.T, fields *fields, args *args)
+		wantErr assert.ErrorAssertionFunc
 	}{
 		{
 			name: "check it",
-			mockSetup: func(t *testing.T, fields *fields, args *args) {
+			setup: func(t *testing.T, fields *fields, args *args) {
 				handler := NewMockPlcTagHandler(t)
 				handler.EXPECT().ParseQuery(mock.Anything).Return(nil, nil)
 				fields.plcTagHandler = handler
@@ -89,8 +89,8 @@ func Test_defaultDriver_CheckQuery(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if tt.mockSetup != nil {
-				tt.mockSetup(t, &tt.fields, &tt.args)
+			if tt.setup != nil {
+				tt.setup(t, &tt.fields, &tt.args)
 			}
 			d := &defaultDriver{
 				DefaultDriverRequirements: tt.fields.DefaultDriverRequirements,
@@ -116,15 +116,15 @@ func Test_defaultDriver_CheckTagAddress(t *testing.T) {
 		query string
 	}
 	tests := []struct {
-		name      string
-		fields    fields
-		args      args
-		mockSetup func(t *testing.T, fields *fields, args *args)
-		wantErr   assert.ErrorAssertionFunc
+		name    string
+		fields  fields
+		args    args
+		setup   func(t *testing.T, fields *fields, args *args)
+		wantErr assert.ErrorAssertionFunc
 	}{
 		{
 			name: "check it",
-			mockSetup: func(t *testing.T, fields *fields, args *args) {
+			setup: func(t *testing.T, fields *fields, args *args) {
 				handler := NewMockPlcTagHandler(t)
 				handler.EXPECT().ParseTag(mock.Anything).Return(nil, nil)
 				fields.plcTagHandler = handler
@@ -134,8 +134,8 @@ func Test_defaultDriver_CheckTagAddress(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if tt.mockSetup != nil {
-				tt.mockSetup(t, &tt.fields, &tt.args)
+			if tt.setup != nil {
+				tt.setup(t, &tt.fields, &tt.args)
 			}
 			d := &defaultDriver{
 				DefaultDriverRequirements: tt.fields.DefaultDriverRequirements,
@@ -162,15 +162,15 @@ func Test_defaultDriver_Discover(t *testing.T) {
 		discoveryOptions []options.WithDiscoveryOption
 	}
 	tests := []struct {
-		name      string
-		fields    fields
-		args      args
-		mockSetup func(t *testing.T, fields *fields, args *args)
-		wantErr   assert.ErrorAssertionFunc
+		name    string
+		fields  fields
+		args    args
+		setup   func(t *testing.T, fields *fields, args *args)
+		wantErr assert.ErrorAssertionFunc
 	}{
 		{
 			name: "discover it",
-			mockSetup: func(t *testing.T, fields *fields, args *args) {
+			setup: func(t *testing.T, fields *fields, args *args) {
 				requirements := NewMockDefaultDriverRequirements(t)
 				requirements.EXPECT().DiscoverWithContext(mock.Anything, mock.Anything).Return(nil)
 				fields.DefaultDriverRequirements = requirements
@@ -180,8 +180,8 @@ func Test_defaultDriver_Discover(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if tt.mockSetup != nil {
-				tt.mockSetup(t, &tt.fields, &tt.args)
+			if tt.setup != nil {
+				tt.setup(t, &tt.fields, &tt.args)
 			}
 			d := &defaultDriver{
 				DefaultDriverRequirements: tt.fields.DefaultDriverRequirements,
@@ -247,15 +247,15 @@ func Test_defaultDriver_GetConnection(t *testing.T) {
 		options      map[string][]string
 	}
 	tests := []struct {
-		name      string
-		fields    fields
-		args      args
-		mockSetup func(t *testing.T, fields *fields, args *args, want *<-chan plc4go.PlcConnectionConnectResult)
-		want      <-chan plc4go.PlcConnectionConnectResult
+		name   string
+		fields fields
+		args   args
+		setup  func(t *testing.T, fields *fields, args *args, want *<-chan plc4go.PlcConnectionConnectResult)
+		want   <-chan plc4go.PlcConnectionConnectResult
 	}{
 		{
 			name: "get a connection",
-			mockSetup: func(t *testing.T, fields *fields, args *args, want *<-chan plc4go.PlcConnectionConnectResult) {
+			setup: func(t *testing.T, fields *fields, args *args, want *<-chan plc4go.PlcConnectionConnectResult) {
 				requirements := NewMockDefaultDriverRequirements(t)
 				results := make(chan plc4go.PlcConnectionConnectResult, 1)
 				*want = results
@@ -267,8 +267,8 @@ func Test_defaultDriver_GetConnection(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if tt.mockSetup != nil {
-				tt.mockSetup(t, &tt.fields, &tt.args, &tt.want)
+			if tt.setup != nil {
+				tt.setup(t, &tt.fields, &tt.args, &tt.want)
 			}
 			d := &defaultDriver{
 				DefaultDriverRequirements: tt.fields.DefaultDriverRequirements,

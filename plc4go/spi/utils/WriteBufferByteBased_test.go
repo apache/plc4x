@@ -855,11 +855,11 @@ func Test_byteWriteBuffer_WriteSerializable(t *testing.T) {
 		serializable Serializable
 	}
 	tests := []struct {
-		name      string
-		fields    fields
-		args      args
-		mockSetup func(t *testing.T, fields *fields, args *args)
-		wantErr   assert.ErrorAssertionFunc
+		name    string
+		fields  fields
+		args    args
+		setup   func(t *testing.T, fields *fields, args *args)
+		wantErr assert.ErrorAssertionFunc
 	}{
 		{
 			name: "write it",
@@ -873,7 +873,7 @@ func Test_byteWriteBuffer_WriteSerializable(t *testing.T) {
 			fields: fields{
 				writer: bitio.NewWriter(new(bytes.Buffer)),
 			},
-			mockSetup: func(t *testing.T, fields *fields, args *args) {
+			setup: func(t *testing.T, fields *fields, args *args) {
 				serializable := NewMockSerializable(t)
 				serializable.EXPECT().SerializeWithWriteBuffer(mock.Anything, mock.Anything).Return(nil)
 				args.serializable = serializable
@@ -883,8 +883,8 @@ func Test_byteWriteBuffer_WriteSerializable(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if tt.mockSetup != nil {
-				tt.mockSetup(t, &tt.fields, &tt.args)
+			if tt.setup != nil {
+				tt.setup(t, &tt.fields, &tt.args)
 			}
 			wb := &byteWriteBuffer{
 				data:      tt.fields.data,

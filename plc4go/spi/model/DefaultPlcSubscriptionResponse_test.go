@@ -239,10 +239,10 @@ func TestNewDefaultPlcSubscriptionResponse(t *testing.T) {
 		values        map[string]apiModel.PlcSubscriptionHandle
 	}
 	tests := []struct {
-		name      string
-		args      args
-		mockSetup func(t *testing.T, args *args, want *apiModel.PlcSubscriptionResponse)
-		want      apiModel.PlcSubscriptionResponse
+		name  string
+		args  args
+		setup func(t *testing.T, args *args, want *apiModel.PlcSubscriptionResponse)
+		want  apiModel.PlcSubscriptionResponse
 	}{
 		{
 			name: "create it",
@@ -276,7 +276,7 @@ func TestNewDefaultPlcSubscriptionResponse(t *testing.T) {
 				},
 				values: map[string]apiModel.PlcSubscriptionHandle{},
 			},
-			mockSetup: func(t *testing.T, args *args, want *apiModel.PlcSubscriptionResponse) {
+			setup: func(t *testing.T, args *args, want *apiModel.PlcSubscriptionResponse) {
 				handle := NewDefaultPlcSubscriptionHandle(func() spi.PlcSubscriber {
 					subscriber := NewMockPlcSubscriber(t)
 					subscriber.EXPECT().Register(mock.Anything, mock.Anything).Return(nil)
@@ -300,8 +300,8 @@ func TestNewDefaultPlcSubscriptionResponse(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if tt.mockSetup != nil {
-				tt.mockSetup(t, &tt.args, &tt.want)
+			if tt.setup != nil {
+				tt.setup(t, &tt.args, &tt.want)
 			}
 			assert.Equalf(t, tt.want, NewDefaultPlcSubscriptionResponse(tt.args.request, tt.args.responseCodes, tt.args.values), "NewDefaultPlcSubscriptionResponse(%v, %v, %v)", tt.args.request, tt.args.responseCodes, tt.args.values)
 		})

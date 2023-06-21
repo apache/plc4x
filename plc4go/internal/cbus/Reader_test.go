@@ -89,15 +89,18 @@ func TestReader_Read(t *testing.T) {
 		name         string
 		fields       fields
 		args         args
+		setup        func(t *testing.T, fields *fields, args *args)
 		wantAsserter func(t *testing.T, results <-chan apiModel.PlcReadRequestResult) bool
 	}{
 		{
 			name: "read and bail",
 			args: args{
-				ctx: testutils.TestContext(t),
 				readRequest: spiModel.NewDefaultPlcReadRequest(nil, func() []string {
 					return strings.Split(strings.Repeat("asd,", 40), ",")
 				}(), nil, nil),
+			},
+			setup: func(t *testing.T, fields *fields, args *args) {
+				args.ctx = testutils.TestContext(t)
 			},
 			wantAsserter: func(t *testing.T, results <-chan apiModel.PlcReadRequestResult) bool {
 				timer := time.NewTimer(2 * time.Second)
@@ -114,6 +117,9 @@ func TestReader_Read(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			if tt.setup != nil {
+				tt.setup(t, &tt.fields, &tt.args)
+			}
 			m := &Reader{
 				alphaGenerator: tt.fields.alphaGenerator,
 				messageCodec:   tt.fields.messageCodec,
@@ -140,17 +146,19 @@ func TestReader_readSync(t *testing.T) {
 		name            string
 		fields          fields
 		args            args
-		setup           func(t *testing.T, fields *fields)
+		setup           func(t *testing.T, fields *fields, args *args)
 		resultEvaluator func(t *testing.T, results chan apiModel.PlcReadRequestResult) bool
 	}{
 		{
 			name: "too many tags",
 			args: args{
-				ctx: testutils.TestContext(t),
 				readRequest: spiModel.NewDefaultPlcReadRequest(nil, func() []string {
 					return strings.Split(strings.Repeat("asd,", 40), ",")
 				}(), nil, nil),
 				result: make(chan apiModel.PlcReadRequestResult, 1),
+			},
+			setup: func(t *testing.T, fields *fields, args *args) {
+				args.ctx = testutils.TestContext(t)
 			},
 			resultEvaluator: func(t *testing.T, results chan apiModel.PlcReadRequestResult) bool {
 				timer := time.NewTimer(2 * time.Second)
@@ -167,7 +175,6 @@ func TestReader_readSync(t *testing.T) {
 		{
 			name: "unmapped tag",
 			args: args{
-				ctx: testutils.TestContext(t),
 				readRequest: spiModel.NewDefaultPlcReadRequest(
 					map[string]apiModel.PlcTag{
 						"asd": nil,
@@ -180,7 +187,7 @@ func TestReader_readSync(t *testing.T) {
 				),
 				result: make(chan apiModel.PlcReadRequestResult, 1),
 			},
-			setup: func(t *testing.T, fields *fields) {
+			setup: func(t *testing.T, fields *fields, args *args) {
 				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
 
 				transactionManager := transactions.NewRequestTransactionManager(
@@ -201,6 +208,7 @@ func TestReader_readSync(t *testing.T) {
 				t.Cleanup(func() {
 					assert.NoError(t, codec.Disconnect())
 				})
+				args.ctx = testutils.TestContext(t)
 			},
 			resultEvaluator: func(t *testing.T, results chan apiModel.PlcReadRequestResult) bool {
 				timer := time.NewTimer(2 * time.Second)
@@ -217,7 +225,6 @@ func TestReader_readSync(t *testing.T) {
 		{
 			name: "read something without any tag",
 			args: args{
-				ctx: testutils.TestContext(t),
 				readRequest: spiModel.NewDefaultPlcReadRequest(
 					map[string]apiModel.PlcTag{},
 					[]string{},
@@ -225,6 +232,9 @@ func TestReader_readSync(t *testing.T) {
 					nil,
 				),
 				result: make(chan apiModel.PlcReadRequestResult, 1),
+			},
+			setup: func(t *testing.T, fields *fields, args *args) {
+				args.ctx = testutils.TestContext(t)
 			},
 			resultEvaluator: func(t *testing.T, results chan apiModel.PlcReadRequestResult) bool {
 				timer := time.NewTimer(2 * time.Second)
@@ -245,7 +255,6 @@ func TestReader_readSync(t *testing.T) {
 				alphaGenerator: &AlphaGenerator{currentAlpha: 'g'},
 			},
 			args: args{
-				ctx: testutils.TestContext(t),
 				readRequest: spiModel.NewDefaultPlcReadRequest(
 					map[string]apiModel.PlcTag{
 						"blub": NewCALIdentifyTag(readWriteModel.NewUnitAddress(2), nil, readWriteModel.Attribute_Type, 1),
@@ -258,7 +267,7 @@ func TestReader_readSync(t *testing.T) {
 				),
 				result: make(chan apiModel.PlcReadRequestResult, 1),
 			},
-			setup: func(t *testing.T, fields *fields) {
+			setup: func(t *testing.T, fields *fields, args *args) {
 				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
 
 				transactionManager := transactions.NewRequestTransactionManager(
@@ -301,6 +310,8 @@ func TestReader_readSync(t *testing.T) {
 					assert.NoError(t, codec.Disconnect())
 				})
 				fields.messageCodec = codec
+
+				args.ctx = testutils.TestContext(t)
 			},
 			resultEvaluator: func(t *testing.T, results chan apiModel.PlcReadRequestResult) bool {
 				timer := time.NewTimer(2 * time.Second)
@@ -326,11 +337,6 @@ func TestReader_readSync(t *testing.T) {
 				alphaGenerator: &AlphaGenerator{currentAlpha: 'g'},
 			},
 			args: args{
-				ctx: func() context.Context {
-					timeout, cancel := context.WithCancel(context.Background())
-					cancel()
-					return timeout
-				}(),
 				readRequest: spiModel.NewDefaultPlcReadRequest(
 					map[string]apiModel.PlcTag{
 						"blub": NewCALIdentifyTag(readWriteModel.NewUnitAddress(2), nil, readWriteModel.Attribute_Type, 1),
@@ -343,7 +349,7 @@ func TestReader_readSync(t *testing.T) {
 				),
 				result: make(chan apiModel.PlcReadRequestResult, 1),
 			},
-			setup: func(t *testing.T, fields *fields) {
+			setup: func(t *testing.T, fields *fields, args *args) {
 				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
 
 				transactionManager := transactions.NewRequestTransactionManager(
@@ -365,6 +371,8 @@ func TestReader_readSync(t *testing.T) {
 					assert.NoError(t, codec.Disconnect())
 				})
 				fields.messageCodec = codec
+
+				args.ctx = testutils.TestContext(t)
 			},
 			resultEvaluator: func(t *testing.T, results chan apiModel.PlcReadRequestResult) bool {
 				timer := time.NewTimer(2 * time.Second)
@@ -382,7 +390,7 @@ func TestReader_readSync(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if tt.setup != nil {
-				tt.setup(t, &tt.fields)
+				tt.setup(t, &tt.fields, &tt.args)
 			}
 			m := &Reader{
 				alphaGenerator: tt.fields.alphaGenerator,
@@ -423,7 +431,6 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 				alphaGenerator: &AlphaGenerator{currentAlpha: 'g'},
 			},
 			args: args{
-				ctx:           testutils.TestContext(t),
 				messageToSend: nil,
 				addResponseCode: func(t *testing.T) func(name string, responseCode apiModel.PlcResponseCode) {
 					return func(name string, responseCode apiModel.PlcResponseCode) {
@@ -459,6 +466,8 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 					close(ch)
 				})
 				args.transaction = transaction
+
+				args.ctx = testutils.TestContext(t)
 			},
 		},
 		{
@@ -467,7 +476,6 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 				alphaGenerator: &AlphaGenerator{currentAlpha: 'g'},
 			},
 			args: args{
-				ctx: testutils.TestContext(t),
 				messageToSend: readWriteModel.NewCBusMessageToServer(
 					readWriteModel.NewRequestReset(
 						readWriteModel.RequestType_RESET,
@@ -538,6 +546,8 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 					assert.NoError(t, codec.Disconnect())
 				})
 				fields.messageCodec = codec
+
+				args.ctx = testutils.TestContext(t)
 			},
 		},
 		{
@@ -546,7 +556,6 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 				alphaGenerator: &AlphaGenerator{currentAlpha: 'g'},
 			},
 			args: args{
-				ctx: testutils.TestContext(t),
 				messageToSend: readWriteModel.NewCBusMessageToServer(
 					readWriteModel.NewRequestReset(
 						readWriteModel.RequestType_RESET,
@@ -618,6 +627,8 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 					close(ch)
 				})
 				args.transaction = transaction
+
+				args.ctx = testutils.TestContext(t)
 			},
 		},
 		{
@@ -626,7 +637,6 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 				alphaGenerator: &AlphaGenerator{currentAlpha: 'g'},
 			},
 			args: args{
-				ctx: testutils.TestContext(t),
 				messageToSend: readWriteModel.NewCBusMessageToServer(
 					readWriteModel.NewRequestDirectCommandAccess(
 						readWriteModel.NewCALDataIdentify(
@@ -700,6 +710,8 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 					assert.NoError(t, codec.Disconnect())
 				})
 				fields.messageCodec = codec
+
+				args.ctx = testutils.TestContext(t)
 			},
 		},
 		{
@@ -708,7 +720,6 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 				alphaGenerator: &AlphaGenerator{currentAlpha: 'g'},
 			},
 			args: args{
-				ctx: testutils.TestContext(t),
 				messageToSend: readWriteModel.NewCBusMessageToServer(
 					readWriteModel.NewRequestDirectCommandAccess(
 						readWriteModel.NewCALDataIdentify(
@@ -782,6 +793,8 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 					assert.NoError(t, codec.Disconnect())
 				})
 				fields.messageCodec = codec
+
+				args.ctx = testutils.TestContext(t)
 			},
 		},
 		{
@@ -790,7 +803,6 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 				alphaGenerator: &AlphaGenerator{currentAlpha: 'g'},
 			},
 			args: args{
-				ctx: testutils.TestContext(t),
 				messageToSend: readWriteModel.NewCBusMessageToServer(
 					readWriteModel.NewRequestDirectCommandAccess(
 						readWriteModel.NewCALDataIdentify(
@@ -864,6 +876,8 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 					assert.NoError(t, codec.Disconnect())
 				})
 				fields.messageCodec = codec
+
+				args.ctx = testutils.TestContext(t)
 			},
 		},
 		{
@@ -872,7 +886,6 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 				alphaGenerator: &AlphaGenerator{currentAlpha: 'g'},
 			},
 			args: args{
-				ctx: testutils.TestContext(t),
 				messageToSend: readWriteModel.NewCBusMessageToServer(
 					readWriteModel.NewRequestDirectCommandAccess(
 						readWriteModel.NewCALDataIdentify(
@@ -946,6 +959,8 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 					assert.NoError(t, codec.Disconnect())
 				})
 				fields.messageCodec = codec
+
+				args.ctx = testutils.TestContext(t)
 			},
 		},
 		{
@@ -954,7 +969,6 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 				alphaGenerator: &AlphaGenerator{currentAlpha: 'g'},
 			},
 			args: args{
-				ctx: testutils.TestContext(t),
 				messageToSend: readWriteModel.NewCBusMessageToServer(
 					readWriteModel.NewRequestDirectCommandAccess(
 						readWriteModel.NewCALDataIdentify(
@@ -1028,6 +1042,8 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 					assert.NoError(t, codec.Disconnect())
 				})
 				fields.messageCodec = codec
+
+				args.ctx = testutils.TestContext(t)
 			},
 		},
 		{
@@ -1036,7 +1052,6 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 				alphaGenerator: &AlphaGenerator{currentAlpha: 'g'},
 			},
 			args: args{
-				ctx: testutils.TestContext(t),
 				messageToSend: readWriteModel.NewCBusMessageToServer(
 					readWriteModel.NewRequestDirectCommandAccess(
 						readWriteModel.NewCALDataIdentify(
@@ -1110,6 +1125,8 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 					assert.NoError(t, codec.Disconnect())
 				})
 				fields.messageCodec = codec
+
+				args.ctx = testutils.TestContext(t)
 			},
 		},
 	}

@@ -66,7 +66,7 @@ func TestBrowser_BrowseQuery(t *testing.T) {
 		name             string
 		fields           fields
 		args             args
-		setup            func(t *testing.T, fields *fields)
+		setup            func(t *testing.T, fields *fields, args *args)
 		wantResponseCode apiModel.PlcResponseCode
 		wantQueryResults []apiModel.PlcBrowseItem
 	}{
@@ -77,7 +77,6 @@ func TestBrowser_BrowseQuery(t *testing.T) {
 		{
 			name: "non responding browse",
 			args: args{
-				ctx: testutils.TestContext(t),
 				interceptor: func(result apiModel.PlcBrowseItem) bool {
 					// No-OP
 					return true
@@ -85,7 +84,7 @@ func TestBrowser_BrowseQuery(t *testing.T) {
 				queryName: "testQuery",
 				query:     NewUnitInfoQuery(readWriteModel.NewUnitAddress(2), nil, 1),
 			},
-			setup: func(t *testing.T, fields *fields) {
+			setup: func(t *testing.T, fields *fields, args *args) {
 				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
 
 				transport := test.NewTransport(_options...)
@@ -176,6 +175,8 @@ func TestBrowser_BrowseQuery(t *testing.T) {
 						t.Error("timeout")
 					}
 				})
+
+				args.ctx = testutils.TestContext(t)
 			},
 			wantResponseCode: apiModel.PlcResponseCode_OK,
 			wantQueryResults: []apiModel.PlcBrowseItem{
@@ -193,7 +194,7 @@ func TestBrowser_BrowseQuery(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if tt.setup != nil {
-				tt.setup(t, &tt.fields)
+				tt.setup(t, &tt.fields, &tt.args)
 			}
 			m := Browser{
 				DefaultBrowser:  tt.fields.DefaultBrowser,
@@ -228,14 +229,13 @@ func TestBrowser_browseUnitInfo(t *testing.T) {
 		name             string
 		fields           fields
 		args             args
-		setup            func(t *testing.T, fields *fields)
+		setup            func(t *testing.T, fields *fields, args *args)
 		wantResponseCode apiModel.PlcResponseCode
 		wantQueryResults []apiModel.PlcBrowseItem
 	}{
 		{
 			name: "non responding browse",
 			args: args{
-				ctx: testutils.TestContext(t),
 				interceptor: func(result apiModel.PlcBrowseItem) bool {
 					// No-OP
 					return true
@@ -243,7 +243,7 @@ func TestBrowser_browseUnitInfo(t *testing.T) {
 				queryName: "testQuery",
 				query:     NewUnitInfoQuery(readWriteModel.NewUnitAddress(2), nil, 1).(*unitInfoQuery),
 			},
-			setup: func(t *testing.T, fields *fields) {
+			setup: func(t *testing.T, fields *fields, args *args) {
 				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
 
 				transport := test.NewTransport(_options...)
@@ -335,6 +335,8 @@ func TestBrowser_browseUnitInfo(t *testing.T) {
 						t.Error("timeout")
 					}
 				})
+
+				args.ctx = testutils.TestContext(t)
 			},
 			wantResponseCode: apiModel.PlcResponseCode_OK,
 			wantQueryResults: []apiModel.PlcBrowseItem{
@@ -352,7 +354,7 @@ func TestBrowser_browseUnitInfo(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if tt.setup != nil {
-				tt.setup(t, &tt.fields)
+				tt.setup(t, &tt.fields, &tt.args)
 				t.Log("Setup done")
 			}
 			m := &Browser{
@@ -387,6 +389,7 @@ func TestBrowser_extractUnits(t *testing.T) {
 		name    string
 		fields  fields
 		args    args
+		setup   func(t *testing.T, fields *fields, args *args)
 		want    []readWriteModel.UnitAddress
 		want1   bool
 		wantErr assert.ErrorAssertionFunc
@@ -394,10 +397,12 @@ func TestBrowser_extractUnits(t *testing.T) {
 		{
 			name: "one unit",
 			args: args{
-				ctx: testutils.TestContext(t),
 				query: &unitInfoQuery{
 					unitAddress: readWriteModel.NewUnitAddress(2),
 				},
+			},
+			setup: func(t *testing.T, fields *fields, args *args) {
+				args.ctx = testutils.TestContext(t)
 			},
 			want:    []readWriteModel.UnitAddress{readWriteModel.NewUnitAddress(2)},
 			want1:   false,
@@ -406,7 +411,6 @@ func TestBrowser_extractUnits(t *testing.T) {
 		{
 			name: "all units error",
 			args: args{
-				ctx:   testutils.TestContext(t),
 				query: &unitInfoQuery{},
 				getInstalledUnitAddressBytes: func(ctx context.Context) (map[byte]any, error) {
 					return nil, errors.New("not today")
@@ -417,7 +421,6 @@ func TestBrowser_extractUnits(t *testing.T) {
 		{
 			name: "all units",
 			args: args{
-				ctx:   testutils.TestContext(t),
 				query: &unitInfoQuery{},
 				getInstalledUnitAddressBytes: func(ctx context.Context) (map[byte]any, error) {
 					return map[byte]any{0xAF: true, 0xFE: true}, nil
@@ -430,6 +433,9 @@ func TestBrowser_extractUnits(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			if tt.setup != nil {
+				tt.setup(t, &tt.fields, &tt.args)
+			}
 			m := Browser{
 				DefaultBrowser:  tt.fields.DefaultBrowser,
 				connection:      tt.fields.connection,
@@ -510,16 +516,13 @@ func TestBrowser_getInstalledUnitAddressBytes(t *testing.T) {
 		name    string
 		fields  fields
 		args    args
-		setup   func(t *testing.T, fields *fields)
+		setup   func(t *testing.T, fields *fields, args *args)
 		want    map[byte]any
 		wantErr assert.ErrorAssertionFunc
 	}{
 		{
 			name: "get units",
-			args: args{
-				ctx: testutils.TestContext(t),
-			},
-			setup: func(t *testing.T, fields *fields) {
+			setup: func(t *testing.T, fields *fields, args *args) {
 				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
 
 				transport := test.NewTransport(_options...)
@@ -608,6 +611,8 @@ func TestBrowser_getInstalledUnitAddressBytes(t *testing.T) {
 						t.Error("timeout waiting for connection close")
 					}
 				})
+
+				args.ctx = testutils.TestContext(t)
 			},
 			want: map[byte]any{
 				1:  true,
@@ -625,7 +630,7 @@ func TestBrowser_getInstalledUnitAddressBytes(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if tt.setup != nil {
-				tt.setup(t, &tt.fields)
+				tt.setup(t, &tt.fields, &tt.args)
 			}
 			m := Browser{
 				DefaultBrowser:  tt.fields.DefaultBrowser,

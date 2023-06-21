@@ -956,8 +956,7 @@ func TestConnection_sendReset(t *testing.T) {
 		{
 			name: "send reset",
 			args: args{
-				ctx: testutils.TestContext(t),
-				ch:  make(chan plc4go.PlcConnectionConnectResult, 1),
+				ch: make(chan plc4go.PlcConnectionConnectResult, 1),
 				cbusOptions: func() *readWriteModel.CBusOptions {
 					var cBusOptions readWriteModel.CBusOptions = readWriteModel.NewCBusOptions(false, false, false, false, false, false, false, false, false)
 					return &cBusOptions
@@ -979,6 +978,8 @@ func TestConnection_sendReset(t *testing.T) {
 					assert.NoError(t, codec.Disconnect())
 				})
 				fields.messageCodec = codec
+
+				args.ctx = testutils.TestContext(t)
 			},
 			wantOk: false,
 		},
@@ -1023,14 +1024,13 @@ func TestConnection_setApplicationFilter(t *testing.T) {
 		name   string
 		fields fields
 		args   args
-		setup  func(t *testing.T, fields *fields)
+		setup  func(t *testing.T, fields *fields, args *args)
 		wantOk bool
 	}{
 		{
 			name: "set application filter (failing)",
 			args: args{
-				ctx: testutils.TestContext(t),
-				ch:  make(chan plc4go.PlcConnectionConnectResult, 1),
+				ch: make(chan plc4go.PlcConnectionConnectResult, 1),
 				cbusOptions: func() *readWriteModel.CBusOptions {
 					var cBusOptions readWriteModel.CBusOptions = readWriteModel.NewCBusOptions(false, false, false, false, false, false, false, false, false)
 					return &cBusOptions
@@ -1040,7 +1040,7 @@ func TestConnection_setApplicationFilter(t *testing.T) {
 					return &requestContext
 				}(),
 			},
-			setup: func(t *testing.T, fields *fields) {
+			setup: func(t *testing.T, fields *fields, args *args) {
 				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
 
 				// Setup connection
@@ -1053,6 +1053,8 @@ func TestConnection_setApplicationFilter(t *testing.T) {
 					assert.Error(t, codec.Disconnect())
 				})
 				fields.messageCodec = codec
+
+				args.ctx = testutils.TestContext(t)
 			},
 			wantOk: false,
 		},
@@ -1060,7 +1062,7 @@ func TestConnection_setApplicationFilter(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if tt.setup != nil {
-				tt.setup(t, &tt.fields)
+				tt.setup(t, &tt.fields, &tt.args)
 			}
 			c := &Connection{
 				messageCodec:  tt.fields.messageCodec,
@@ -1103,8 +1105,7 @@ func TestConnection_setInterface1PowerUpSettings(t *testing.T) {
 		{
 			name: "set interface 1 PUN options (failing)",
 			args: args{
-				ctx: testutils.TestContext(t),
-				ch:  make(chan plc4go.PlcConnectionConnectResult, 1),
+				ch: make(chan plc4go.PlcConnectionConnectResult, 1),
 				cbusOptions: func() *readWriteModel.CBusOptions {
 					var cBusOptions readWriteModel.CBusOptions = readWriteModel.NewCBusOptions(false, false, false, false, false, false, false, false, false)
 					return &cBusOptions
@@ -1127,6 +1128,8 @@ func TestConnection_setInterface1PowerUpSettings(t *testing.T) {
 					assert.Error(t, codec.Disconnect())
 				})
 				fields.messageCodec = codec
+
+				args.ctx = testutils.TestContext(t)
 			},
 			wantOk: false,
 		},
@@ -1171,14 +1174,13 @@ func TestConnection_setInterfaceOptions1(t *testing.T) {
 		name   string
 		fields fields
 		args   args
-		setup  func(t *testing.T, fields *fields)
+		setup  func(t *testing.T, fields *fields, args *args)
 		want   bool
 	}{
 		{
 			name: "set interface 1 options (failing)",
 			args: args{
-				ctx: testutils.TestContext(t),
-				ch:  make(chan plc4go.PlcConnectionConnectResult, 1),
+				ch: make(chan plc4go.PlcConnectionConnectResult, 1),
 				cbusOptions: func() *readWriteModel.CBusOptions {
 					var cBusOptions readWriteModel.CBusOptions = readWriteModel.NewCBusOptions(false, false, false, false, false, false, false, false, false)
 					return &cBusOptions
@@ -1188,7 +1190,7 @@ func TestConnection_setInterfaceOptions1(t *testing.T) {
 					return &requestContext
 				}(),
 			},
-			setup: func(t *testing.T, fields *fields) {
+			setup: func(t *testing.T, fields *fields, args *args) {
 				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
 
 				// Setup connection
@@ -1201,6 +1203,8 @@ func TestConnection_setInterfaceOptions1(t *testing.T) {
 					assert.Error(t, codec.Disconnect())
 				})
 				fields.messageCodec = codec
+
+				args.ctx = testutils.TestContext(t)
 			},
 			want: false,
 		},
@@ -1208,7 +1212,7 @@ func TestConnection_setInterfaceOptions1(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if tt.setup != nil {
-				tt.setup(t, &tt.fields)
+				tt.setup(t, &tt.fields, &tt.args)
 			}
 			c := &Connection{
 				messageCodec:  tt.fields.messageCodec,
@@ -1245,14 +1249,13 @@ func TestConnection_setInterfaceOptions3(t *testing.T) {
 		name   string
 		fields fields
 		args   args
-		setup  func(t *testing.T, fields *fields)
+		setup  func(t *testing.T, fields *fields, args *args)
 		wantOk bool
 	}{
 		{
 			name: "set interface 3 options (failing)",
 			args: args{
-				ctx: testutils.TestContext(t),
-				ch:  make(chan plc4go.PlcConnectionConnectResult, 1),
+				ch: make(chan plc4go.PlcConnectionConnectResult, 1),
 				cbusOptions: func() *readWriteModel.CBusOptions {
 					var cBusOptions readWriteModel.CBusOptions = readWriteModel.NewCBusOptions(false, false, false, false, false, false, false, false, false)
 					return &cBusOptions
@@ -1262,7 +1265,7 @@ func TestConnection_setInterfaceOptions3(t *testing.T) {
 					return &requestContext
 				}(),
 			},
-			setup: func(t *testing.T, fields *fields) {
+			setup: func(t *testing.T, fields *fields, args *args) {
 				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
 
 				// Setup connection
@@ -1282,7 +1285,7 @@ func TestConnection_setInterfaceOptions3(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if tt.setup != nil {
-				tt.setup(t, &tt.fields)
+				tt.setup(t, &tt.fields, &tt.args)
 			}
 			c := &Connection{
 				messageCodec:  tt.fields.messageCodec,
@@ -1318,16 +1321,15 @@ func TestConnection_setupConnection(t *testing.T) {
 		name      string
 		fields    fields
 		args      args
-		setup     func(t *testing.T, fields *fields)
+		setup     func(t *testing.T, fields *fields, args *args)
 		validator func(t *testing.T, result plc4go.PlcConnectionConnectResult)
 	}{
 		{
 			name: "setup connection (failing)",
 			args: args{
-				ctx: testutils.TestContext(t),
-				ch:  make(chan plc4go.PlcConnectionConnectResult, 1),
+				ch: make(chan plc4go.PlcConnectionConnectResult, 1),
 			},
-			setup: func(t *testing.T, fields *fields) {
+			setup: func(t *testing.T, fields *fields, args *args) {
 				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
 
 				transport := test.NewTransport(_options...)
@@ -1339,6 +1341,8 @@ func TestConnection_setupConnection(t *testing.T) {
 					assert.Error(t, codec.Disconnect())
 				})
 				fields.messageCodec = codec
+
+				args.ctx = testutils.TestContext(t)
 			},
 			validator: func(t *testing.T, result plc4go.PlcConnectionConnectResult) {
 				assert.NotNil(t, result)
@@ -1348,10 +1352,9 @@ func TestConnection_setupConnection(t *testing.T) {
 		{
 			name: "setup connection (failing after reset)",
 			args: args{
-				ctx: testutils.TestContext(t),
-				ch:  make(chan plc4go.PlcConnectionConnectResult, 1),
+				ch: make(chan plc4go.PlcConnectionConnectResult, 1),
 			},
-			setup: func(t *testing.T, fields *fields) {
+			setup: func(t *testing.T, fields *fields, args *args) {
 				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
 
 				// Build the message codec
@@ -1386,6 +1389,8 @@ func TestConnection_setupConnection(t *testing.T) {
 				})
 
 				fields.messageCodec = codec
+
+				args.ctx = testutils.TestContext(t)
 			},
 			validator: func(t *testing.T, result plc4go.PlcConnectionConnectResult) {
 				assert.NotNil(t, result)
@@ -1395,10 +1400,9 @@ func TestConnection_setupConnection(t *testing.T) {
 		{
 			name: "setup connection (failing after app filters)",
 			args: args{
-				ctx: testutils.TestContext(t),
-				ch:  make(chan plc4go.PlcConnectionConnectResult, 1),
+				ch: make(chan plc4go.PlcConnectionConnectResult, 1),
 			},
-			setup: func(t *testing.T, fields *fields) {
+			setup: func(t *testing.T, fields *fields, args *args) {
 				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
 				// Build the message codec
 				transport := test.NewTransport(_options...)
@@ -1444,6 +1448,8 @@ func TestConnection_setupConnection(t *testing.T) {
 				})
 
 				fields.messageCodec = codec
+
+				args.ctx = testutils.TestContext(t)
 			},
 			validator: func(t *testing.T, result plc4go.PlcConnectionConnectResult) {
 				assert.NotNil(t, result)
@@ -1453,10 +1459,9 @@ func TestConnection_setupConnection(t *testing.T) {
 		{
 			name: "setup connection (failing after interface options 3",
 			args: args{
-				ctx: testutils.TestContext(t),
-				ch:  make(chan plc4go.PlcConnectionConnectResult, 1),
+				ch: make(chan plc4go.PlcConnectionConnectResult, 1),
 			},
-			setup: func(t *testing.T, fields *fields) {
+			setup: func(t *testing.T, fields *fields, args *args) {
 				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
 
 				// Build the message codec
@@ -1510,6 +1515,8 @@ func TestConnection_setupConnection(t *testing.T) {
 				})
 
 				fields.messageCodec = codec
+
+				args.ctx = testutils.TestContext(t)
 			},
 			validator: func(t *testing.T, result plc4go.PlcConnectionConnectResult) {
 				assert.NotNil(t, result)
@@ -1519,10 +1526,9 @@ func TestConnection_setupConnection(t *testing.T) {
 		{
 			name: "setup connection (failing after interface options 1 pun)",
 			args: args{
-				ctx: testutils.TestContext(t),
-				ch:  make(chan plc4go.PlcConnectionConnectResult, 1),
+				ch: make(chan plc4go.PlcConnectionConnectResult, 1),
 			},
-			setup: func(t *testing.T, fields *fields) {
+			setup: func(t *testing.T, fields *fields, args *args) {
 				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
 
 				// Build the message codec
@@ -1581,6 +1587,8 @@ func TestConnection_setupConnection(t *testing.T) {
 				})
 
 				fields.messageCodec = codec
+
+				args.ctx = testutils.TestContext(t)
 			},
 			validator: func(t *testing.T, result plc4go.PlcConnectionConnectResult) {
 				assert.NotNil(t, result)
@@ -1590,10 +1598,9 @@ func TestConnection_setupConnection(t *testing.T) {
 		{
 			name: "setup connection",
 			args: args{
-				ctx: testutils.TestContext(t),
-				ch:  make(chan plc4go.PlcConnectionConnectResult, 1),
+				ch: make(chan plc4go.PlcConnectionConnectResult, 1),
 			},
-			setup: func(t *testing.T, fields *fields) {
+			setup: func(t *testing.T, fields *fields, args *args) {
 				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
 
 				// Build the message codec
@@ -1657,6 +1664,8 @@ func TestConnection_setupConnection(t *testing.T) {
 					assert.Error(t, codec.Disconnect())
 				})
 				fields.messageCodec = codec
+
+				args.ctx = testutils.TestContext(t)
 			},
 			validator: func(t *testing.T, result plc4go.PlcConnectionConnectResult) {
 				assert.NotNil(t, result)
@@ -1668,7 +1677,7 @@ func TestConnection_setupConnection(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if tt.setup != nil {
-				tt.setup(t, &tt.fields)
+				tt.setup(t, &tt.fields, &tt.args)
 			}
 			c := &Connection{
 				messageCodec:  tt.fields.messageCodec,

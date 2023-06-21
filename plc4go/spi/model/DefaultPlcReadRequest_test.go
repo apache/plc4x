@@ -139,11 +139,11 @@ func TestDefaultPlcReadRequestBuilder_Build(t *testing.T) {
 		readRequestInterceptor interceptors.ReadRequestInterceptor
 	}
 	tests := []struct {
-		name      string
-		fields    fields
-		mockSetup func(t *testing.T, fields *fields)
-		want      apiModel.PlcReadRequest
-		wantErr   assert.ErrorAssertionFunc
+		name    string
+		fields  fields
+		setup   func(t *testing.T, fields *fields)
+		want    apiModel.PlcReadRequest
+		wantErr assert.ErrorAssertionFunc
 	}{
 		{
 			name:    "build it",
@@ -157,7 +157,7 @@ func TestDefaultPlcReadRequestBuilder_Build(t *testing.T) {
 				tagAddresses: map[string]string{"a": ""},
 				tags:         map[string]apiModel.PlcTag{},
 			},
-			mockSetup: func(t *testing.T, fields *fields) {
+			setup: func(t *testing.T, fields *fields) {
 				handler := NewMockPlcTagHandler(t)
 				handler.EXPECT().ParseTag(mock.Anything).Return(nil, nil)
 				fields.tagHandler = handler
@@ -172,7 +172,7 @@ func TestDefaultPlcReadRequestBuilder_Build(t *testing.T) {
 				tagAddresses: map[string]string{"a": ""},
 				tags:         map[string]apiModel.PlcTag{},
 			},
-			mockSetup: func(t *testing.T, fields *fields) {
+			setup: func(t *testing.T, fields *fields) {
 				handler := NewMockPlcTagHandler(t)
 				handler.EXPECT().ParseTag(mock.Anything).Return(nil, errors.New("nope"))
 				fields.tagHandler = handler
@@ -182,8 +182,8 @@ func TestDefaultPlcReadRequestBuilder_Build(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if tt.mockSetup != nil {
-				tt.mockSetup(t, &tt.fields)
+			if tt.setup != nil {
+				tt.setup(t, &tt.fields)
 			}
 			d := &DefaultPlcReadRequestBuilder{
 				reader:                 tt.fields.reader,
@@ -209,14 +209,14 @@ func TestDefaultPlcReadRequest_Execute(t *testing.T) {
 		readRequestInterceptor interceptors.ReadRequestInterceptor
 	}
 	tests := []struct {
-		name      string
-		fields    fields
-		mockSetup func(t *testing.T, fields *fields)
-		want      <-chan apiModel.PlcReadRequestResult
+		name   string
+		fields fields
+		setup  func(t *testing.T, fields *fields)
+		want   <-chan apiModel.PlcReadRequestResult
 	}{
 		{
 			name: "execute it",
-			mockSetup: func(t *testing.T, fields *fields) {
+			setup: func(t *testing.T, fields *fields) {
 				reader := NewMockPlcReader(t)
 				reader.EXPECT().Read(mock.Anything, mock.Anything).Return(nil)
 				fields.reader = reader
@@ -226,8 +226,8 @@ func TestDefaultPlcReadRequest_Execute(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if tt.mockSetup != nil {
-				tt.mockSetup(t, &tt.fields)
+			if tt.setup != nil {
+				tt.setup(t, &tt.fields)
 			}
 			d := &DefaultPlcReadRequest{
 				DefaultPlcTagRequest:   tt.fields.DefaultPlcTagRequest,
@@ -252,12 +252,12 @@ func TestDefaultPlcReadRequest_ExecuteWithContext(t *testing.T) {
 		name         string
 		fields       fields
 		args         args
-		mockSetup    func(t *testing.T, fields *fields)
+		setup        func(t *testing.T, fields *fields)
 		wantAsserter func(t *testing.T, results <-chan apiModel.PlcReadRequestResult) bool
 	}{
 		{
 			name: "execute it",
-			mockSetup: func(t *testing.T, fields *fields) {
+			setup: func(t *testing.T, fields *fields) {
 				reader := NewMockPlcReader(t)
 				reader.EXPECT().Read(mock.Anything, mock.Anything).Return(nil)
 				fields.reader = reader
@@ -265,7 +265,7 @@ func TestDefaultPlcReadRequest_ExecuteWithContext(t *testing.T) {
 		},
 		{
 			name: "execute it with interceptor with one request",
-			mockSetup: func(t *testing.T, fields *fields) {
+			setup: func(t *testing.T, fields *fields) {
 				{
 					reader := NewMockPlcReader(t)
 					results := make(chan apiModel.PlcReadRequestResult, 1)
@@ -303,7 +303,7 @@ func TestDefaultPlcReadRequest_ExecuteWithContext(t *testing.T) {
 		},
 		{
 			name: "execute it with interceptor with three request (panics)",
-			mockSetup: func(t *testing.T, fields *fields) {
+			setup: func(t *testing.T, fields *fields) {
 				{
 					reader := NewMockPlcReader(t)
 					results := make(chan apiModel.PlcReadRequestResult, 1)
@@ -346,7 +346,7 @@ func TestDefaultPlcReadRequest_ExecuteWithContext(t *testing.T) {
 					return timeout
 				}(),
 			},
-			mockSetup: func(t *testing.T, fields *fields) {
+			setup: func(t *testing.T, fields *fields) {
 				{
 					reader := NewMockPlcReader(t)
 					results := make(chan apiModel.PlcReadRequestResult, 1)
@@ -389,7 +389,7 @@ func TestDefaultPlcReadRequest_ExecuteWithContext(t *testing.T) {
 					return timeout
 				}(),
 			},
-			mockSetup: func(t *testing.T, fields *fields) {
+			setup: func(t *testing.T, fields *fields) {
 				{
 					reader := NewMockPlcReader(t)
 					results := make(chan apiModel.PlcReadRequestResult, 1)
@@ -438,8 +438,8 @@ func TestDefaultPlcReadRequest_ExecuteWithContext(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if tt.mockSetup != nil {
-				tt.mockSetup(t, &tt.fields)
+			if tt.setup != nil {
+				tt.setup(t, &tt.fields)
 			}
 			d := &DefaultPlcReadRequest{
 				DefaultPlcTagRequest:   tt.fields.DefaultPlcTagRequest,
