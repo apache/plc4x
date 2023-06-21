@@ -7371,19 +7371,19 @@ public class KnxDatapoint {
         }
       }
 
-      // Simple Field (validityHeightPosition)
-      Boolean validityHeightPosition = /*TODO: migrate me*/ /*TODO: migrate me*/
-          readBuffer.readBit("");
-
       // Simple Field (validitySlatsPosition)
       Boolean validitySlatsPosition = /*TODO: migrate me*/ /*TODO: migrate me*/
+          readBuffer.readBit("");
+
+      // Simple Field (validityHeightPosition)
+      Boolean validityHeightPosition = /*TODO: migrate me*/ /*TODO: migrate me*/
           readBuffer.readBit("");
 
       Map<String, PlcValue> _map = new HashMap<>();
       _map.put("heightPosition", new PlcINT(heightPosition));
       _map.put("slatsPosition", new PlcINT(slatsPosition));
-      _map.put("validityHeightPosition", new PlcBOOL(validityHeightPosition));
       _map.put("validitySlatsPosition", new PlcBOOL(validitySlatsPosition));
+      _map.put("validityHeightPosition", new PlcBOOL(validityHeightPosition));
 
       return new PlcStruct(_map);
     } else if (EvaluationHelper.equals(datapointType, KnxDatapointType.DPT_StatusSAB)) { // Struct
@@ -12825,16 +12825,16 @@ public class KnxDatapoint {
       /*TODO: migrate me*/
       /*TODO: migrate me*/ writeBuffer.writeUnsignedShort(
           "", 6, ((Number) (short) 0x00).shortValue());
-      // Simple Field (validityHeightPosition)
-      boolean validityHeightPosition =
-          (boolean) _value.getStruct().get("validityHeightPosition").getBoolean();
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeBit("", (boolean) (validityHeightPosition));
       // Simple Field (validitySlatsPosition)
       boolean validitySlatsPosition =
           (boolean) _value.getStruct().get("validitySlatsPosition").getBoolean();
       /*TODO: migrate me*/
       /*TODO: migrate me*/ writeBuffer.writeBit("", (boolean) (validitySlatsPosition));
+      // Simple Field (validityHeightPosition)
+      boolean validityHeightPosition =
+          (boolean) _value.getStruct().get("validityHeightPosition").getBoolean();
+      /*TODO: migrate me*/
+      /*TODO: migrate me*/ writeBuffer.writeBit("", (boolean) (validityHeightPosition));
     } else if (EvaluationHelper.equals(datapointType, KnxDatapointType.DPT_StatusSAB)) { // Struct
       // Reserved Field
       /*TODO: migrate me*/
@@ -15894,9 +15894,9 @@ public class KnxDatapoint {
       sizeInBits += 8;
       // Reserved Field
       sizeInBits += 6;
-      // Simple Field (validityHeightPosition)
-      sizeInBits += 1;
       // Simple Field (validitySlatsPosition)
+      sizeInBits += 1;
+      // Simple Field (validityHeightPosition)
       sizeInBits += 1;
     } else if (EvaluationHelper.equals(datapointType, KnxDatapointType.DPT_StatusSAB)) { // Struct
       // Reserved Field

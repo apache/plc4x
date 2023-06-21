@@ -6732,19 +6732,19 @@ func KnxDatapointParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 			return nil, errors.Wrap(_err, "Error parsing reserved field")
 		}
 
-		// Simple Field (validityHeightPosition)
-		validityHeightPosition, _validityHeightPositionErr := readBuffer.ReadBit("validityHeightPosition")
-		if _validityHeightPositionErr != nil {
-			return nil, errors.Wrap(_validityHeightPositionErr, "Error parsing 'validityHeightPosition' field")
-		}
-		_map["Struct"] = values.NewPlcBOOL(validityHeightPosition)
-
 		// Simple Field (validitySlatsPosition)
 		validitySlatsPosition, _validitySlatsPositionErr := readBuffer.ReadBit("validitySlatsPosition")
 		if _validitySlatsPositionErr != nil {
 			return nil, errors.Wrap(_validitySlatsPositionErr, "Error parsing 'validitySlatsPosition' field")
 		}
 		_map["Struct"] = values.NewPlcBOOL(validitySlatsPosition)
+
+		// Simple Field (validityHeightPosition)
+		validityHeightPosition, _validityHeightPositionErr := readBuffer.ReadBit("validityHeightPosition")
+		if _validityHeightPositionErr != nil {
+			return nil, errors.Wrap(_validityHeightPositionErr, "Error parsing 'validityHeightPosition' field")
+		}
+		_map["Struct"] = values.NewPlcBOOL(validityHeightPosition)
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcStruct(_map), nil
 	case datapointType == KnxDatapointType_DPT_StatusSAB: // Struct
@@ -12516,14 +12516,14 @@ func KnxDatapointSerializeWithWriteBuffer(ctx context.Context, writeBuffer utils
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
-		// Simple Field (validityHeightPosition)
-		if _err := writeBuffer.WriteBit("validityHeightPosition", value.GetBool()); _err != nil {
-			return errors.Wrap(_err, "Error serializing 'validityHeightPosition' field")
-		}
-
 		// Simple Field (validitySlatsPosition)
 		if _err := writeBuffer.WriteBit("validitySlatsPosition", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'validitySlatsPosition' field")
+		}
+
+		// Simple Field (validityHeightPosition)
+		if _err := writeBuffer.WriteBit("validityHeightPosition", value.GetBool()); _err != nil {
+			return errors.Wrap(_err, "Error serializing 'validityHeightPosition' field")
 		}
 	case datapointType == KnxDatapointType_DPT_StatusSAB: // Struct
 		// Reserved Field (Just skip the bytes)

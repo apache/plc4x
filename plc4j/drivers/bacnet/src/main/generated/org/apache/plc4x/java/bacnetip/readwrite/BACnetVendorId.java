@@ -1632,6 +1632,8 @@ public enum BACnetVendorId {
   UBIQISENSE_APS((int) 1420, (int) 1420, (String) "Ubiqisense ApS"),
   TIGER_SOFT((int) 1421, (int) 1421, (String) "Tiger-Soft"),
   ECODOM_SRL((int) 1422, (int) 1422, (String) "Ecodom Srl"),
+  BILGIPRO_IOT_SYSTEMS((int) 1423, (int) 1423, (String) "Bilgipro IoT Systems"),
+  PLANSPURNETDESIGN_GMBH((int) 1424, (int) 1424, (String) "planspur netdesign GmbH"),
   DOLPHIN_SOLUTIONS_LTD((int) 1425, (int) 1425, (String) "Dolphin Solutions Ltd"),
   MITSUBISHI_ELECTRIC_CORPORATION(
       (int) 1426, (int) 1426, (String) "Mitsubishi Electric Corporation"),
