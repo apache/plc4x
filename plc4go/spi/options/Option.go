@@ -59,6 +59,17 @@ func WithPassLoggerToModel(passLogger bool) WithOption {
 	return withPassLoggerToModel{passLogger: passLogger}
 }
 
+// ExtractPassLoggerToModel to extract the flag indicating that model should be passed to Model
+func ExtractPassLoggerToModel(options ...WithOption) (passLogger bool) {
+	for _, option := range options {
+		switch option := option.(type) {
+		case withPassLoggerToModel:
+			passLogger = option.passLogger
+		}
+	}
+	return
+}
+
 // WithReceiveTimeout set's a timeout for a receive-operation (similar to SO_RCVTIMEO)
 func WithReceiveTimeout(timeout time.Duration) WithOption {
 	return withReceiveTimeout{timeout: timeout}
@@ -71,17 +82,6 @@ func ExtractReceiveTimeout(options ...WithOption) (receiveDuration time.Duration
 		switch option := option.(type) {
 		case withReceiveTimeout:
 			receiveDuration = option.timeout
-		}
-	}
-	return
-}
-
-// ExtractPassLoggerToModel to extract the flag indicating that model should be passed to Model
-func ExtractPassLoggerToModel(options ...WithOption) (passLogger bool) {
-	for _, option := range options {
-		switch option := option.(type) {
-		case withPassLoggerToModel:
-			passLogger = option.passLogger
 		}
 	}
 	return
