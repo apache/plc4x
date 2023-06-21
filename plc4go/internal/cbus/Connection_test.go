@@ -1278,6 +1278,8 @@ func TestConnection_setInterfaceOptions3(t *testing.T) {
 					assert.Error(t, codec.Disconnect())
 				})
 				fields.messageCodec = codec
+
+				args.ctx = testutils.TestContext(t)
 			},
 			wantOk: false,
 		},
