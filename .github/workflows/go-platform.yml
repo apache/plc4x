@@ -71,7 +71,7 @@ env:
   PLC4X_TEST_RECEIVE_TIMEOUT_MS: ${{ github.event.inputs.receiveTimeout }}
   PLC4X_TEST_TRACE_TRANSACTION_MANAGER_WORKERS: ${{ github.event.inputs.traceTransactionManagerWorkers }}
   PLC4X_TEST_TRACE_TRANSACTION_MANAGER_TRANSACTIONS: ${{ github.event.inputs.traceTransactionManagerTransactions }}
-  PLC4X_TEST_TRACE_MESSAGE_CODEC_WORKER: ${{ github.event.inputs.traceDefaultMessageCodecWorker }}
+  PLC4X_TEST_TRACE_DEFAULT_MESSAGE_CODEC_WORKER: ${{ github.event.inputs.traceDefaultMessageCodecWorker }}
   PLC4X_TEST_TRACE_EXECUTOR_WORKERS: ${{ github.event.inputs.traceExecutorWorkers }}
 
 jobs:
