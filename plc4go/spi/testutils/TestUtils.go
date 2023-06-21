@@ -150,7 +150,7 @@ func getOrLeaveBool(key string, setting *bool) {
 }
 
 func getOrLeaveDuration(key string, setting *time.Duration) {
-	if env, ok := os.LookupEnv(key); ok {
+	if env, ok := os.LookupEnv(key); ok && env != "" {
 		parsedDuration, err := strconv.ParseInt(env, 10, 64)
 		if err != nil {
 			panic(err)
