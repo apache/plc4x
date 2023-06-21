@@ -372,7 +372,9 @@ func TestReader_readSync(t *testing.T) {
 				})
 				fields.messageCodec = codec
 
-				args.ctx = testutils.TestContext(t)
+				timeout, cancel := context.WithCancel(testutils.TestContext(t))
+				cancel()
+				args.ctx = timeout
 			},
 			resultEvaluator: func(t *testing.T, results chan apiModel.PlcReadRequestResult) bool {
 				timer := time.NewTimer(2 * time.Second)
