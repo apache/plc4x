@@ -42,15 +42,17 @@ type MessageCodec struct {
 }
 
 func NewMessageCodec(transportInstance transports.TransportInstance, messageInterceptor func(message spi.Message), _options ...options.WithOption) *MessageCodec {
+	passLoggerToModel, _ := options.ExtractPassLoggerToModel(_options...)
+	customLogger, _ := options.ExtractCustomLogger(_options...)
 	codec := &MessageCodec{
 		messageInterceptor: messageInterceptor,
-		passLogToModel:     options.ExtractPassLoggerToModel(_options...),
-		log:                options.ExtractCustomLogger(_options...),
+		passLogToModel:     passLoggerToModel,
+		log:                customLogger,
 	}
 	codec.DefaultCodec = _default.NewDefaultCodec(
 		codec,
 		transportInstance,
-		append(_options, _default.WithCustomMessageHandler(CustomMessageHandling(options.ExtractCustomLogger(_options...))))...,
+		append(_options, _default.WithCustomMessageHandler(CustomMessageHandling(customLogger)))...,
 	)
 	return codec
 }

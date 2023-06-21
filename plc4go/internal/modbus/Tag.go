@@ -62,14 +62,14 @@ func NewModbusPlcTagFromStrings(tagType TagType, addressString string, quantityS
 	if err != nil {
 		return nil, errors.Errorf("Couldn't parse address string '%s' into an int", addressString)
 	}
-	localLogger := options.ExtractCustomLogger(_options...)
+	customLogger, _ := options.ExtractCustomLogger(_options...)
 	if quantityString == "" {
-		localLogger.Debug().Msg("No quantity supplied, assuming 1")
+		customLogger.Debug().Msg("No quantity supplied, assuming 1")
 		quantityString = "1"
 	}
 	quantity, err := strconv.ParseUint(quantityString, 10, 16)
 	if err != nil {
-		localLogger.Warn().Err(err).Msgf("Error during parsing for %s. Falling back to 1", quantityString)
+		customLogger.Warn().Err(err).Msgf("Error during parsing for %s. Falling back to 1", quantityString)
 		quantity = 1
 	}
 	return NewTag(tagType, uint16(address), uint16(quantity), datatype), nil

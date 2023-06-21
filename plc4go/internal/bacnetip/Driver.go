@@ -52,6 +52,7 @@ type Driver struct {
 }
 
 func NewDriver(_options ...options.WithOption) plc4go.PlcDriver {
+	customLogger, _ := options.ExtractCustomLogger(_options...)
 	driver := &Driver{
 		applicationManager: ApplicationManager{
 			applications: map[string]*ApplicationLayerMessageCodec{},
@@ -60,7 +61,7 @@ func NewDriver(_options ...options.WithOption) plc4go.PlcDriver {
 		awaitSetupComplete:      true,
 		awaitDisconnectComplete: true,
 
-		log: options.ExtractCustomLogger(_options...),
+		log: customLogger,
 	}
 	driver.DefaultDriver = _default.NewDefaultDriver(driver, "bacnet-ip", "BACnet/IP", "udp", NewTagHandler())
 	return driver

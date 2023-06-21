@@ -39,8 +39,9 @@ type Driver struct {
 }
 
 func NewDriver(_options ...options.WithOption) *Driver {
+	customLogger, _ := options.ExtractCustomLogger(_options...)
 	driver := &Driver{
-		log: options.ExtractCustomLogger(_options...),
+		log: customLogger,
 	}
 	driver.DefaultDriver = _default.NewDefaultDriver(driver, "knxnet-ip", "KNXNet/IP", "udp", NewTagHandler())
 	return driver

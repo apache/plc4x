@@ -52,6 +52,7 @@ type TransportInstance struct {
 }
 
 func NewTransportInstance(localAddress *net.UDPAddr, remoteAddress *net.UDPAddr, connectTimeout uint32, soReUse bool, transport *Transport, _options ...options.WithOption) *TransportInstance {
+	logger, _ := options.ExtractCustomLogger(_options...)
 	return &TransportInstance{
 		LocalAddress:   localAddress,
 		RemoteAddress:  remoteAddress,
@@ -59,7 +60,7 @@ func NewTransportInstance(localAddress *net.UDPAddr, remoteAddress *net.UDPAddr,
 		SoReUse:        soReUse,
 		transport:      transport,
 
-		log: options.ExtractCustomLogger(_options...),
+		log: logger,
 	}
 }
 

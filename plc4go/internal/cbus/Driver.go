@@ -45,11 +45,12 @@ type Driver struct {
 }
 
 func NewDriver(_options ...options.WithOption) plc4go.PlcDriver {
+	customLogger, _ := options.ExtractCustomLogger(_options...)
 	driver := &Driver{
 		tm:                      transactions.NewRequestTransactionManager(1, _options...),
 		awaitSetupComplete:      true,
 		awaitDisconnectComplete: true,
-		log:                     options.ExtractCustomLogger(_options...),
+		log:                     customLogger,
 	}
 	driver.DefaultDriver = _default.NewDefaultDriver(driver, "c-bus", "Clipsal Bus", "tcp", NewTagHandler())
 	return driver
@@ -77,7 +78,7 @@ func (m *Driver) GetConnectionWithContext(ctx context.Context, transportUrl url.
 		m.log.Error().Err(err).Msgf("Invalid options")
 		return m.reportError(errors.Wrap(err, "Invalid options"))
 	}
-
+	// TODO: we might need to remember the original options
 	codec := NewMessageCodec(transportInstance, options.WithCustomLogger(m.log))
 	m.log.Debug().Msgf("working with codec:\n%s", codec)
 

@@ -58,6 +58,7 @@ type TransportInstance struct {
 }
 
 func NewPcapTransportInstance(transportFile string, transportType TransportType, portRange string, speedFactor float32, transport *Transport, _options ...options.WithOption) *TransportInstance {
+	customLogger, _ := options.ExtractCustomLogger(_options...)
 	transportInstance := &TransportInstance{
 		transportFile: transportFile,
 		transportType: transportType,
@@ -65,7 +66,7 @@ func NewPcapTransportInstance(transportFile string, transportType TransportType,
 		speedFactor:   speedFactor,
 		transport:     transport,
 
-		log: options.ExtractCustomLogger(_options...),
+		log: customLogger,
 	}
 	transportInstance.DefaultBufferedTransportInstance = transportUtils.NewDefaultBufferedTransportInstance(transportInstance, _options...)
 	return transportInstance

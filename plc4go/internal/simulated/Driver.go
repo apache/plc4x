@@ -38,10 +38,11 @@ type Driver struct {
 }
 
 func NewDriver(_options ...options.WithOption) plc4go.PlcDriver {
+	customLogger, _ := options.ExtractCustomLogger(_options...)
 	driver := &Driver{
 		valueHandler: NewValueHandler(),
 
-		log: options.ExtractCustomLogger(_options...),
+		log: customLogger,
 	}
 	driver.DefaultDriver = _default.NewDefaultDriver(driver, "simulated", "Simulated PLC4X Datasource", "none", NewTagHandler())
 	return driver

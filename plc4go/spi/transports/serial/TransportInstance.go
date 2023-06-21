@@ -53,13 +53,14 @@ type TransportInstance struct {
 }
 
 func NewTransportInstance(serialPortName string, baudRate uint, connectTimeout uint32, transport *Transport, _options ...options.WithOption) *TransportInstance {
+	customLogger, _ := options.ExtractCustomLogger(_options...)
 	transportInstance := &TransportInstance{
 		SerialPortName: serialPortName,
 		BaudRate:       baudRate,
 		ConnectTimeout: connectTimeout,
 		transport:      transport,
 
-		log: options.ExtractCustomLogger(_options...),
+		log: customLogger,
 	}
 	transportInstance.DefaultBufferedTransportInstance = transportUtils.NewDefaultBufferedTransportInstance(transportInstance, _options...)
 	return transportInstance

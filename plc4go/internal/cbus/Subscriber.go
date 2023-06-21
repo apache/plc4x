@@ -48,11 +48,12 @@ type Subscriber struct {
 }
 
 func NewSubscriber(addSubscriber func(subscriber *Subscriber), _options ...options.WithOption) *Subscriber {
+	customLogger, _ := options.ExtractCustomLogger(_options...)
 	return &Subscriber{
 		addSubscriber: addSubscriber,
 		consumers:     make(map[*spiModel.DefaultPlcConsumerRegistration]apiModel.PlcSubscriptionEventConsumer),
 
-		log: options.ExtractCustomLogger(_options...),
+		log: customLogger,
 	}
 }
 

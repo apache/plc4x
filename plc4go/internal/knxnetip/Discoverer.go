@@ -50,11 +50,12 @@ type Discoverer struct {
 }
 
 func NewDiscoverer(_options ...options.WithOption) *Discoverer {
+	customLogger, _ := options.ExtractCustomLogger(_options...)
 	return &Discoverer{
 		// TODO: maybe a dynamic executor would be better to not waste cycles when not in use
 		transportInstanceCreationQueue: pool.NewFixedSizeExecutor(50, 100, _options...),
 		deviceScanningQueue:            pool.NewFixedSizeExecutor(50, 100, _options...),
-		log:                            options.ExtractCustomLogger(_options...),
+		log:                            customLogger,
 	}
 }
 

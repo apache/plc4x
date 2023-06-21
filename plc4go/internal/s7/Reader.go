@@ -47,12 +47,14 @@ type Reader struct {
 }
 
 func NewReader(tpduGenerator *TpduGenerator, messageCodec spi.MessageCodec, tm transactions.RequestTransactionManager, _options ...options.WithOption) *Reader {
+	passLoggerToModel, _ := options.ExtractPassLoggerToModel(_options...)
+	customLogger, _ := options.ExtractCustomLogger(_options...)
 	return &Reader{
 		tpduGenerator:  tpduGenerator,
 		messageCodec:   messageCodec,
 		tm:             tm,
-		passLogToModel: options.ExtractPassLoggerToModel(_options...),
-		log:            options.ExtractCustomLogger(_options...),
+		passLogToModel: passLoggerToModel,
+		log:            customLogger,
 	}
 }
 

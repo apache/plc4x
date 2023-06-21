@@ -54,12 +54,13 @@ type TransportInstance struct {
 }
 
 func NewTcpTransportInstance(remoteAddress *net.TCPAddr, connectTimeout uint32, transport *Transport, _options ...options.WithOption) *TransportInstance {
+	customLogger, _ := options.ExtractCustomLogger(_options...)
 	transportInstance := &TransportInstance{
 		RemoteAddress:  remoteAddress,
 		ConnectTimeout: connectTimeout,
 		transport:      transport,
 
-		log: options.ExtractCustomLogger(_options...),
+		log: customLogger,
 	}
 	transportInstance.DefaultBufferedTransportInstance = transportUtils.NewDefaultBufferedTransportInstance(transportInstance, _options...)
 	return transportInstance

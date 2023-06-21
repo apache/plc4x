@@ -46,11 +46,11 @@ func NewDefaultPlcSubscriptionResponse(
 		request: request,
 		values:  valueMap,
 	}
-	localLog := options.ExtractCustomLogger(_options...)
+	customLogger, _ := options.ExtractCustomLogger(_options...)
 	for subscriptionTagName, consumers := range request.(*DefaultPlcSubscriptionRequest).preRegisteredConsumers {
 		subscriptionHandle, err := plcSubscriptionResponse.GetSubscriptionHandle(subscriptionTagName)
 		if subscriptionHandle == nil || err != nil {
-			localLog.Error().Msgf("PlcSubscriptionHandle for %s not found", subscriptionTagName)
+			customLogger.Error().Msgf("PlcSubscriptionHandle for %s not found", subscriptionTagName)
 			continue
 		}
 		for _, consumer := range consumers {

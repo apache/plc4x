@@ -49,10 +49,12 @@ func NewSubscriptionEvent(
 	values map[string]values.PlcValue,
 	_options ...options.WithOption,
 ) SubscriptionEvent {
+	passLoggerToModel, _ := options.ExtractPassLoggerToModel(_options...)
+	customLogger, _ := options.ExtractCustomLogger(_options...)
 	subscriptionEvent := SubscriptionEvent{
 		addresses:      addresses,
-		passLogToModel: options.ExtractPassLoggerToModel(_options...),
-		log:            options.ExtractCustomLogger(_options...),
+		passLogToModel: passLoggerToModel,
+		log:            customLogger,
 	}
 	event := spiModel.NewDefaultPlcSubscriptionEvent(&subscriptionEvent, tags, types, intervals, responseCodes, values, _options...)
 	subscriptionEvent.DefaultPlcSubscriptionEvent = event.(*spiModel.DefaultPlcSubscriptionEvent)

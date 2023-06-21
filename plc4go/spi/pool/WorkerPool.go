@@ -45,7 +45,7 @@ type Executor interface {
 
 func NewFixedSizeExecutor(numberOfWorkers, queueDepth int, _options ...options.WithOption) Executor {
 	workers := make([]*worker, numberOfWorkers)
-	customLogger := options.ExtractCustomLogger(_options...)
+	customLogger, _ := options.ExtractCustomLogger(_options...)
 	for i := 0; i < numberOfWorkers; i++ {
 		w := worker{
 			id:  i,
@@ -68,7 +68,7 @@ func NewFixedSizeExecutor(numberOfWorkers, queueDepth int, _options ...options.W
 }
 
 func NewDynamicExecutor(maxNumberOfWorkers, queueDepth int, _options ...options.WithOption) Executor {
-	customLogger := options.ExtractCustomLogger(_options...)
+	customLogger, _ := options.ExtractCustomLogger(_options...)
 	_executor := &dynamicExecutor{
 		executor: &executor{
 			workItems: make(chan workItem, queueDepth),

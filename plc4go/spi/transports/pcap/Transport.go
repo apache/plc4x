@@ -41,8 +41,9 @@ type Transport struct {
 }
 
 func NewTransport(_options ...options.WithOption) *Transport {
+	customLogger, _ := options.ExtractCustomLogger(_options...)
 	return &Transport{
-		log: options.ExtractCustomLogger(_options...),
+		log: customLogger,
 	}
 }
 

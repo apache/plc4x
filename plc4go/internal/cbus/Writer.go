@@ -44,12 +44,13 @@ type Writer struct {
 }
 
 func NewWriter(tpduGenerator *AlphaGenerator, messageCodec *MessageCodec, tm transactions.RequestTransactionManager, _options ...options.WithOption) *Writer {
+	customLogger, _ := options.ExtractCustomLogger(_options...)
 	return &Writer{
 		alphaGenerator: tpduGenerator,
 		messageCodec:   messageCodec,
 		tm:             tm,
 
-		log: options.ExtractCustomLogger(_options...),
+		log: customLogger,
 	}
 }
 

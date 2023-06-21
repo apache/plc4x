@@ -49,12 +49,13 @@ type TransportInstance struct {
 }
 
 func NewTransportInstance(transport *Transport, _options ...options.WithOption) *TransportInstance {
+	customLogger, _ := options.ExtractCustomLogger(_options...)
 	return &TransportInstance{
 		readBuffer:  []byte{},
 		writeBuffer: []byte{},
 		transport:   transport,
 
-		log: options.ExtractCustomLogger(_options...),
+		log: customLogger,
 	}
 }
 

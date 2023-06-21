@@ -65,13 +65,15 @@ func NewConnection(messageCodec spi.MessageCodec, configuration model.Configurat
 	if err != nil {
 		return nil, err
 	}
+	passLoggerToModel, _ := options.ExtractPassLoggerToModel(_options...)
+	customLogger, _ := options.ExtractCustomLogger(_options...)
 	connection := &Connection{
 		messageCodec:   messageCodec,
 		configuration:  configuration,
 		driverContext:  driverContext,
 		subscriptions:  map[uint32]apiModel.PlcSubscriptionHandle{},
-		passLogToModel: options.ExtractPassLoggerToModel(_options...),
-		log:            options.ExtractCustomLogger(_options...),
+		passLogToModel: passLoggerToModel,
+		log:            customLogger,
 	}
 	if traceEnabledOption, ok := connectionOptions["traceEnabled"]; ok {
 		if len(traceEnabledOption) == 1 {

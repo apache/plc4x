@@ -78,6 +78,7 @@ type Connection struct {
 }
 
 func NewConnection(messageCodec *MessageCodec, configuration Configuration, driverContext DriverContext, tagHandler spi.PlcTagHandler, tm transactions.RequestTransactionManager, connectionOptions map[string][]string, _options ...options.WithOption) *Connection {
+	customLogger, _ := options.ExtractCustomLogger(_options...)
 	connection := &Connection{
 		alphaGenerator: AlphaGenerator{currentAlpha: 'g'},
 		messageCodec:   messageCodec,
@@ -85,7 +86,7 @@ func NewConnection(messageCodec *MessageCodec, configuration Configuration, driv
 		driverContext:  driverContext,
 		tm:             tm,
 
-		log: options.ExtractCustomLogger(_options...),
+		log: customLogger,
 	}
 	if traceEnabledOption, ok := connectionOptions["traceEnabled"]; ok {
 		if len(traceEnabledOption) == 1 {

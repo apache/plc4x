@@ -66,6 +66,7 @@ type TagHandler struct {
 func NewTagHandler(_options ...options.WithOption) TagHandler {
 	generalAddressPattern := `(?P<address>\d+)(:(?P<datatype>[a-zA-Z_]+))?(\[(?P<quantity>\d+)])?$`
 	generalFixedDigitAddressPattern := `(?P<address>\d{4,5})?(:(?P<datatype>[a-zA-Z_]+))?(\[(?P<quantity>\d+)])?$`
+	customLogger, _ := options.ExtractCustomLogger(_options...)
 	return TagHandler{
 		plc4xCoilPattern:               regexp.MustCompile("^coil:" + generalAddressPattern),
 		numericCoilPattern:             regexp.MustCompile("^0[xX]?" + generalFixedDigitAddressPattern),
@@ -77,7 +78,7 @@ func NewTagHandler(_options ...options.WithOption) TagHandler {
 		numericHoldingRegisterPattern:  regexp.MustCompile("^4[xX]?" + generalFixedDigitAddressPattern),
 		plc4xExtendedRegisterPattern:   regexp.MustCompile("^extended-register:" + generalAddressPattern),
 		numericExtendedRegisterPattern: regexp.MustCompile("^6[xX]?" + generalFixedDigitAddressPattern),
-		log:                            options.ExtractCustomLogger(_options...),
+		log:                            customLogger,
 	}
 }
 

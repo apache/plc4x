@@ -53,9 +53,11 @@ type Discoverer struct {
 }
 
 func NewDiscoverer(_options ...options.WithOption) *Discoverer {
+	passLoggerToModel, _ := options.ExtractPassLoggerToModel(_options...)
+	customLogger, _ := options.ExtractCustomLogger(_options...)
 	return &Discoverer{
-		passLogToModel: options.ExtractPassLoggerToModel(_options...),
-		log:            options.ExtractCustomLogger(_options...),
+		passLogToModel: passLoggerToModel,
+		log:            customLogger,
 	}
 }
 

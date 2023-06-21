@@ -44,11 +44,11 @@ func WithCustomLogger(logger zerolog.Logger) WithOption {
 }
 
 // ExtractCustomLogger can be used to extract the custom logger
-func ExtractCustomLogger(options ...WithOption) (customLogger zerolog.Logger) {
+func ExtractCustomLogger(options ...WithOption) (customLogger zerolog.Logger, found bool) {
 	for _, option := range options {
 		switch option := option.(type) {
 		case withCustomLogger:
-			customLogger = option.logger
+			customLogger, found = option.logger, true
 		}
 	}
 	return
@@ -60,11 +60,11 @@ func WithPassLoggerToModel(passLogger bool) WithOption {
 }
 
 // ExtractPassLoggerToModel to extract the flag indicating that model should be passed to Model
-func ExtractPassLoggerToModel(options ...WithOption) (passLogger bool) {
+func ExtractPassLoggerToModel(options ...WithOption) (passLogger bool, found bool) {
 	for _, option := range options {
 		switch option := option.(type) {
 		case withPassLoggerToModel:
-			passLogger = option.passLogger
+			passLogger, found = option.passLogger, true
 		}
 	}
 	return
@@ -76,12 +76,11 @@ func WithReceiveTimeout(timeout time.Duration) WithOption {
 }
 
 // ExtractReceiveTimeout to extract the receive-timeout for reading operations. Defaults to 10 seconds
-func ExtractReceiveTimeout(options ...WithOption) (receiveDuration time.Duration) {
-	receiveDuration = 10 * time.Second
+func ExtractReceiveTimeout(options ...WithOption) (receiveDuration time.Duration, found bool) {
 	for _, option := range options {
 		switch option := option.(type) {
 		case withReceiveTimeout:
-			receiveDuration = option.timeout
+			receiveDuration, found = option.timeout, true
 		}
 	}
 	return
@@ -93,11 +92,11 @@ func WithTraceTransactionManagerWorkers(traceWorkers bool) WithOption {
 }
 
 // ExtractTransactionManagerWorkers to extract the flag indicating to trace transaction manager workers
-func ExtractTransactionManagerWorkers(options ...WithOption) (traceWorkers bool) {
+func ExtractTransactionManagerWorkers(options ...WithOption) (traceWorkers bool, found bool) {
 	for _, option := range options {
 		switch option := option.(type) {
 		case withTraceTransactionManagerWorkers:
-			traceWorkers = option.traceWorkers
+			traceWorkers, found = option.traceWorkers, true
 		}
 	}
 	return
@@ -109,11 +108,11 @@ func WithTraceTransactionManagerTransactions(traceTransactions bool) WithOption 
 }
 
 // ExtractTraceTransactionManagerTransactions to extract the flag indicating to trace transaction manager transactions
-func ExtractTraceTransactionManagerTransactions(options ...WithOption) (traceTransactions bool) {
+func ExtractTraceTransactionManagerTransactions(options ...WithOption) (traceTransactions bool, found bool) {
 	for _, option := range options {
 		switch option := option.(type) {
 		case withTraceTransactionManagerTransactions:
-			traceTransactions = option.traceTransactions
+			traceTransactions, found = option.traceTransactions, true
 		}
 	}
 	return
@@ -125,11 +124,11 @@ func WithTraceDefaultMessageCodecWorker(traceWorkers bool) WithOption {
 }
 
 // ExtractTraceDefaultMessageCodecWorker to extract the flag indicating to trace default message codec workers
-func ExtractTraceDefaultMessageCodecWorker(options ...WithOption) (traceTransactions bool) {
+func ExtractTraceDefaultMessageCodecWorker(options ...WithOption) (traceWorkers bool, found bool) {
 	for _, option := range options {
 		switch option := option.(type) {
-		case withTraceTransactionManagerTransactions:
-			traceTransactions = option.traceTransactions
+		case withTraceDefaultMessageCodecWorker:
+			traceWorkers, found = option.traceWorkers, true
 		}
 	}
 	return
@@ -154,12 +153,10 @@ func ExtractTracerWorkers(_options ...WithOption) (traceWorkers bool, found bool
 // GetLoggerContextForModel returns a log context if the WithPassLoggerToModel WithOption is set
 func GetLoggerContextForModel(ctx context.Context, log zerolog.Logger, options ...WithOption) context.Context {
 	passToModel := false
-optionsSearch:
 	for _, option := range options {
 		switch option := option.(type) {
 		case withPassLoggerToModel:
 			passToModel = option.passLogger
-			break optionsSearch
 		}
 	}
 	if passToModel {

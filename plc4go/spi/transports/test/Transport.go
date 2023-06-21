@@ -35,9 +35,10 @@ type Transport struct {
 }
 
 func NewTransport(_options ...options.WithOption) *Transport {
+	customLogger, _ := options.ExtractCustomLogger(_options...)
 	return &Transport{
 		preregisteredInstances: map[url.URL]transports.TransportInstance{},
-		log:                    options.ExtractCustomLogger(_options...),
+		log:                    customLogger,
 	}
 }
 

@@ -103,15 +103,21 @@ func buildDefaultCodec(defaultCodecRequirements DefaultCodecRequirements, transp
 		}
 	}
 
+	receiveTimeout, timeoutDefined := options.ExtractReceiveTimeout(_options...)
+	if !timeoutDefined {
+		receiveTimeout = 10 * time.Second
+	}
+	traceDefaultMessageCodecWorker, _ := options.ExtractTraceDefaultMessageCodecWorker(_options...)
+	customLogger, _ := options.ExtractCustomLogger(_options...)
 	return &defaultCodec{
 		DefaultCodecRequirements:       defaultCodecRequirements,
 		transportInstance:              transportInstance,
 		defaultIncomingMessageChannel:  make(chan spi.Message, 100),
 		expectations:                   []spi.Expectation{},
 		customMessageHandling:          customMessageHandler,
-		receiveTimeout:                 options.ExtractReceiveTimeout(_options...),
-		traceDefaultMessageCodecWorker: options.ExtractTraceDefaultMessageCodecWorker(_options...) || config.TraceDefaultMessageCodecWorker,
-		log:                            options.ExtractCustomLogger(_options...),
+		receiveTimeout:                 receiveTimeout,
+		traceDefaultMessageCodecWorker: traceDefaultMessageCodecWorker || config.TraceDefaultMessageCodecWorker,
+		log:                            customLogger,
 	}
 }
 

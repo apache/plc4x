@@ -177,13 +177,14 @@ func buildDefaultConnection(requirements DefaultConnectionRequirements, _options
 		}
 	}
 
+	customLogger, _ := options.ExtractCustomLogger(_options...)
 	return &defaultConnection{
 		DefaultConnectionRequirements: requirements,
 		defaultTtl:                    defaultTtl,
 		tagHandler:                    tagHandler,
 		valueHandler:                  valueHandler,
 
-		log: options.ExtractCustomLogger(_options...),
+		log: customLogger,
 	}
 }
 

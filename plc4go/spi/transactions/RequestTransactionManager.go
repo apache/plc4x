@@ -67,15 +67,17 @@ type RequestTransactionManager interface {
 
 // NewRequestTransactionManager creates a new RequestTransactionManager
 func NewRequestTransactionManager(numberOfConcurrentRequests int, _options ...options.WithOption) RequestTransactionManager {
+	extractTraceTransactionManagerTransactions, _ := options.ExtractTraceTransactionManagerTransactions(_options...)
+	customLogger, _ := options.ExtractCustomLogger(_options...)
 	_requestTransactionManager := &requestTransactionManager{
 		numberOfConcurrentRequests: numberOfConcurrentRequests,
 		currentTransactionId:       0,
 		workLog:                    *list.New(),
 		executor:                   sharedExecutorInstance,
 
-		traceTransactionManagerTransactions: options.ExtractTraceTransactionManagerTransactions(_options...) || config.TraceTransactionManagerTransactions,
+		traceTransactionManagerTransactions: extractTraceTransactionManagerTransactions || config.TraceTransactionManagerTransactions,
 
-		log: options.ExtractCustomLogger(_options...),
+		log: customLogger,
 	}
 	for _, option := range _options {
 		switch option := option.(type) {

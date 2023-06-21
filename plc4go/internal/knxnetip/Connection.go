@@ -172,6 +172,8 @@ type InternalResult struct {
 }
 
 func NewConnection(transportInstance transports.TransportInstance, connectionOptions map[string][]string, tagHandler spi.PlcTagHandler, _options ...options.WithOption) *Connection {
+	passLoggerToModel, _ := options.ExtractPassLoggerToModel(_options...)
+	customLogger, _ := options.ExtractCustomLogger(_options...)
 	connection := &Connection{
 		options:      connectionOptions,
 		tagHandler:   tagHandler,
@@ -190,8 +192,8 @@ func NewConnection(transportInstance transports.TransportInstance, connectionOpt
 		defaultTtl:              10 * time.Second,
 		DeviceConnections:       map[driverModel.KnxAddress]*KnxDeviceConnection{},
 		handleTunnelingRequests: true,
-		passLogToModel:          options.ExtractPassLoggerToModel(_options...),
-		log:                     options.ExtractCustomLogger(_options...),
+		passLogToModel:          passLoggerToModel,
+		log:                     customLogger,
 	}
 	connection.connectionTtl = connection.defaultTtl * 2
 

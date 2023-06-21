@@ -47,11 +47,12 @@ type Browser struct {
 }
 
 func NewBrowser(connection plc4go.PlcConnection, _options ...options.WithOption) *Browser {
+	customLogger, _ := options.ExtractCustomLogger(_options...)
 	browser := &Browser{
 		connection:      connection,
 		sequenceCounter: 0,
 
-		log: options.ExtractCustomLogger(_options...),
+		log: customLogger,
 	}
 	browser.DefaultBrowser = _default.NewDefaultBrowser(browser, _options...)
 	return browser

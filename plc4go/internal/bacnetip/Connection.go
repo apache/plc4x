@@ -54,11 +54,12 @@ type Connection struct {
 }
 
 func NewConnection(messageCodec spi.MessageCodec, tagHandler spi.PlcTagHandler, tm transactions.RequestTransactionManager, connectionOptions map[string][]string, _options ...options.WithOption) *Connection {
+	customLogger, _ := options.ExtractCustomLogger(_options...)
 	connection := &Connection{
 		invokeIdGenerator: InvokeIdGenerator{currentInvokeId: 0},
 		messageCodec:      messageCodec,
 		tm:                tm,
-		log:               options.ExtractCustomLogger(_options...),
+		log:               customLogger,
 	}
 	if traceEnabledOption, ok := connectionOptions["traceEnabled"]; ok {
 		if len(traceEnabledOption) == 1 {

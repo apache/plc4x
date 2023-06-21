@@ -55,7 +55,7 @@ type PlcDriverManager interface {
 }
 
 func NewPlcDriverManager(_options ...config.WithOption) PlcDriverManager {
-	localLog := options.ExtractCustomLogger(converter.WithOptionToInternal(_options...)...)
+	localLog, _ := options.ExtractCustomLogger(converter.WithOptionToInternal(_options...)...)
 	localLog.Trace().Msg("Creating plc driver manager")
 	return &plcDriverManger{
 		drivers:    map[string]PlcDriver{},

@@ -56,9 +56,10 @@ type Tracer interface {
 }
 
 func NewTracer(connectionId string, _options ...options.WithOption) Tracer {
+	customLogger, _ := options.ExtractCustomLogger(_options...)
 	t := tracer{
 		traceEntries: []TraceEntry{},
-		log:          options.ExtractCustomLogger(_options...),
+		log:          customLogger,
 	}
 	t.connectionId.Store(connectionId)
 	return &t

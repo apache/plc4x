@@ -42,12 +42,13 @@ type Writer struct {
 }
 
 func NewWriter(device *Device, writerOptions map[string][]string, tracer tracer.Tracer, _options ...options.WithOption) *Writer {
+	customLogger, _ := options.ExtractCustomLogger(_options...)
 	return &Writer{
 		device:  device,
 		options: writerOptions,
 		tracer:  tracer,
 
-		log: options.ExtractCustomLogger(_options...),
+		log: customLogger,
 	}
 }
 

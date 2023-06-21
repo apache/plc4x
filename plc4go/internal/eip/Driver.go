@@ -42,12 +42,13 @@ type Driver struct {
 }
 
 func NewDriver(_options ...options.WithOption) plc4go.PlcDriver {
+	customLogger, _ := options.ExtractCustomLogger(_options...)
 	driver := &Driver{
 		tm:                      transactions.NewRequestTransactionManager(1),
 		awaitSetupComplete:      true,
 		awaitDisconnectComplete: true,
 
-		log: options.ExtractCustomLogger(_options...),
+		log: customLogger,
 	}
 	driver.DefaultDriver = _default.NewDefaultDriver(driver, "eip", "EthernetIP", "tcp", NewTagHandler())
 	return driver

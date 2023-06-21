@@ -44,11 +44,12 @@ type Writer struct {
 }
 
 func NewWriter(unitIdentifier uint8, messageCodec spi.MessageCodec, _options ...options.WithOption) Writer {
+	customLogger, _ := options.ExtractCustomLogger(_options...)
 	return Writer{
 		transactionIdentifier: 0,
 		unitIdentifier:        unitIdentifier,
 		messageCodec:          messageCodec,
-		log:                   options.ExtractCustomLogger(_options...),
+		log:                   customLogger,
 	}
 }
 

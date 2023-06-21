@@ -62,10 +62,11 @@ func NewDefaultPlcSubscriptionEvent(
 		valueMap[name] = NewDefaultPlcSubscriptionEventItem(code, tag, subscriptionType, interval, value)
 	}
 
+	customLogger, _ := options.ExtractCustomLogger(_options...)
 	return &DefaultPlcSubscriptionEvent{
 		DefaultPlcSubscriptionEventRequirements: defaultPlcSubscriptionEventRequirements,
 		values:                                  valueMap,
-		log:                                     options.ExtractCustomLogger(_options...),
+		log:                                     customLogger,
 	}
 }
 

@@ -41,8 +41,9 @@ type AsciiDriver struct {
 }
 
 func NewModbusAsciiDriver(_options ...options.WithOption) *AsciiDriver {
+	customLogger, _ := options.ExtractCustomLogger(_options...)
 	driver := &AsciiDriver{
-		log: options.ExtractCustomLogger(_options...),
+		log: customLogger,
 	}
 	driver.DefaultDriver = _default.NewDefaultDriver(driver, "modbus-ascii", "Modbus ASCII", "serial", NewTagHandler())
 	return driver

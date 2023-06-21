@@ -20,7 +20,6 @@
 package simulated
 
 import (
-	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/stretchr/testify/assert"
 	"testing"
 
@@ -280,7 +279,6 @@ func TestNewDevice(t *testing.T) {
 			want: &Device{
 				Name:  "",
 				State: make(map[simulatedTag]*apiValues.PlcValue),
-				log:   options.ExtractCustomLogger(),
 			},
 		},
 	}

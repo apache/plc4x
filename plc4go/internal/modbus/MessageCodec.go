@@ -41,10 +41,12 @@ type MessageCodec struct {
 }
 
 func NewMessageCodec(transportInstance transports.TransportInstance, _options ...options.WithOption) *MessageCodec {
+	passLoggerToModel, _ := options.ExtractPassLoggerToModel(_options...)
+	customLogger, _ := options.ExtractCustomLogger(_options...)
 	codec := &MessageCodec{
 		expectationCounter: 1,
-		passLogToModel:     options.ExtractPassLoggerToModel(_options...),
-		log:                options.ExtractCustomLogger(_options...),
+		passLogToModel:     passLoggerToModel,
+		log:                customLogger,
 	}
 	codec.DefaultCodec = _default.NewDefaultCodec(codec, transportInstance)
 	return codec

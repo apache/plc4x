@@ -51,16 +51,16 @@ type Connection struct {
 }
 
 func NewConnection(device *Device, tagHandler spi.PlcTagHandler, valueHandler spi.PlcValueHandler, connectionOptions map[string][]string, _options ...options.WithOption) *Connection {
-	localLogger := options.ExtractCustomLogger(_options...)
+	customLogger, _ := options.ExtractCustomLogger(_options...)
 	connection := &Connection{
 		device:       device,
 		tagHandler:   tagHandler,
 		valueHandler: valueHandler,
 		options:      connectionOptions,
 		connected:    false,
-		connectionId: utils.GenerateId(localLogger, 4),
+		connectionId: utils.GenerateId(customLogger, 4),
 
-		log: localLogger,
+		log: customLogger,
 	}
 	if traceEnabledOption, ok := connectionOptions["traceEnabled"]; ok {
 		if len(traceEnabledOption) == 1 {
