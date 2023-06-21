@@ -19,9 +19,11 @@
 
 package org.apache.plc4x.java.opcua.context;
 
+import java.util.Optional;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.opcua.config.OpcuaConfiguration;
 import org.apache.plc4x.java.opcua.readwrite.PascalByteString;
+import org.apache.plc4x.java.opcua.security.SecurityPolicy;
 import org.apache.plc4x.java.spi.configuration.HasConfiguration;
 import org.apache.plc4x.java.spi.context.DriverContext;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
@@ -134,14 +136,6 @@ public class OpcuaDriverContext implements DriverContext, HasConfiguration<Opcua
         this.thumbprint = thumbprint;
     }
 
-    public byte[] getSenderCertificate() {
-        return senderCertificate;
-    }
-
-    public void setSenderCertificate(byte[] senderCertificate) {
-        this.senderCertificate = senderCertificate;
-    }
-
     public CertificateKeyPair getCertificateKeyPair() {
         return certificateKeyPair;
     }
@@ -158,7 +152,7 @@ public class OpcuaDriverContext implements DriverContext, HasConfiguration<Opcua
         endpoint = "opc." + code + "://" + host + portAddition + transportEndpoint;
 
 
-        if (configuration.getSecurityPolicy() != null && !(configuration.getSecurityPolicy().equals("None"))) {
+        if (configuration.getSecurityPolicy() != null && !(configuration.getSecurityPolicy() == SecurityPolicy.NONE)) {
             try {
                 openKeyStore(configuration);
             } catch (Exception e) {
@@ -178,4 +172,10 @@ public class OpcuaDriverContext implements DriverContext, HasConfiguration<Opcua
         }
         return matcher;
     }
+
+    public Optional<String> getApplicationUri() {
+        return Optional.ofNullable(certificateKeyPair)
+            .flatMap(CertificateKeyPair::getApplicationUri);
+    }
+
 }

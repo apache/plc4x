@@ -18,11 +18,13 @@
  */
 package org.apache.plc4x.java.opcua;
 
+import io.vavr.Tuple2;
 import io.vavr.collection.List;
 import java.util.ArrayList;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 import org.apache.plc4x.java.DefaultPlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.PlcConnectionManager;
@@ -37,10 +39,13 @@ import org.apache.plc4x.java.api.messages.PlcSubscriptionResponse;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteResponse;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
+import org.apache.plc4x.java.opcua.security.SecurityPolicy;
 import org.apache.plc4x.java.opcua.tag.OpcuaTag;
 import org.assertj.core.api.Condition;
 import org.eclipse.milo.examples.server.ExampleServer;
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,6 +58,7 @@ import java.util.stream.Stream;
 
 import static java.util.concurrent.Executors.newSingleThreadExecutor;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 public class OpcuaPlcDriverTest {
 
@@ -314,9 +320,12 @@ public class OpcuaPlcDriverTest {
     @Nested
     class readWrite {
 
-        @Test
-        public void readVariables() throws Exception {
-            PlcConnection opcuaConnection = new DefaultPlcDriverManager().getConnection(tcpConnectionAddress);
+
+        @ParameterizedTest
+        @EnumSource(SecurityPolicy.class)
+        public void readVariables(SecurityPolicy policy) throws Exception {
+            String connectionString = getConnectionString(policy);
+            PlcConnection opcuaConnection = new DefaultPlcDriverManager().getConnection(connectionString);
             Condition<PlcConnection> is_connected = new Condition<>(PlcConnection::isConnected, "is connected");
             assertThat(opcuaConnection).is(is_connected);
 
@@ -390,10 +399,11 @@ public class OpcuaPlcDriverTest {
             assertThat(opcuaConnection.isConnected()).isFalse();
         }
 
-        @Test
-        public void writeVariables() throws Exception {
+        @ParameterizedTest
+        @EnumSource(SecurityPolicy.class)
+        public void writeVariables(SecurityPolicy policy) throws Exception {
 
-            PlcConnection opcuaConnection = new DefaultPlcDriverManager().getConnection(tcpConnectionAddress);
+            PlcConnection opcuaConnection = new DefaultPlcDriverManager().getConnection(getConnectionString(policy));
             Condition<PlcConnection> is_connected = new Condition<>(PlcConnection::isConnected, "is connected");
             assertThat(opcuaConnection).is(is_connected);
 
@@ -549,4 +559,31 @@ public class OpcuaPlcDriverTest {
         assert !opcuaConnection.isConnected();
     }
 
+    private String getConnectionString(SecurityPolicy policy) {
+        switch (policy) {
+            case NONE:
+                return tcpConnectionAddress;
+            case Basic128Rsa15:
+                fail("Unsupported");
+                return null;
+            case Basic256Sha256:
+                Path securityTempDir = Paths.get(System.getProperty("java.io.tmpdir"), "server");
+                String keyStoreFile = securityTempDir.resolve("security").resolve("example-server.pfx").toAbsolutePath().toString();
+
+                String certDirectory = securityTempDir.toAbsolutePath().toString();
+                String connectionParams = Stream.of(
+                        new Tuple2<>("keyStoreFile", keyStoreFile),
+                        new Tuple2<>("certDirectory", certDirectory),
+                        new Tuple2<>("keyStorePassword", "password"),
+                        new Tuple2<>("securityPolicy", policy)
+                    )
+                    .map(tuple -> tuple._1() + "=" + tuple._2())
+                    .collect(Collectors.joining(paramDivider));
+
+
+                return tcpConnectionAddress + paramSectionDivider + connectionParams;
+            default:
+                throw new IllegalStateException();
+        }
+    }
 }

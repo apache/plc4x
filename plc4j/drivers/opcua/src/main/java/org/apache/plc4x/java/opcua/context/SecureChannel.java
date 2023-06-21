@@ -18,6 +18,8 @@
  */
 package org.apache.plc4x.java.opcua.context;
 
+import io.vavr.control.Try;
+
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -27,6 +29,7 @@ import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.opcua.config.OpcuaConfiguration;
 import org.apache.plc4x.java.opcua.readwrite.*;
+import org.apache.plc4x.java.opcua.security.SecurityPolicy;
 import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.generation.*;
 import org.slf4j.Logger;
@@ -111,13 +114,13 @@ public class SecureChannel {
     private final PascalString endpoint;
     private final String username;
     private final String password;
-    private final String securityPolicy;
+    private final SecurityPolicy securityPolicy;
     private final PascalByteString publicCertificate;
     private final PascalByteString thumbprint;
     private final boolean isEncrypted;
     private byte[] senderCertificate = null;
     private byte[] senderNonce = null;
-    private final EncryptionHandler encryptionHandler;
+    private EncryptionHandler encryptionHandler;
     private final OpcuaConfiguration configuration;
     private final OpcuaDriverContext driverContext;
     private final AtomicInteger channelId = new AtomicInteger(1);
@@ -148,12 +151,12 @@ public class SecureChannel {
             this.username = configuration.getUsername();
             this.password = configuration.getPassword();
         }
-        this.securityPolicy = "http://opcfoundation.org/UA/SecurityPolicy#" + configuration.getSecurityPolicy();
+        this.securityPolicy = determineSecurityPolicy(configuration, driverContext);
         CertificateKeyPair ckp = driverContext.getCertificateKeyPair();
 
-        if (configuration.getSecurityPolicy() != null && configuration.getSecurityPolicy().equals("Basic256Sha256")) {
+        if (this.securityPolicy == SecurityPolicy.Basic256Sha256) {
             //Sender Certificate gets populated during the 'discover' phase when encryption is enabled.
-            this.senderCertificate = driverContext.getSenderCertificate();
+            this.senderCertificate = configuration.getSenderCertificate();
             this.encryptionHandler = new EncryptionHandler(ckp, this.senderCertificate, configuration.getSecurityPolicy());
             try {
                 this.publicCertificate = new PascalByteString(ckp.getCertificate().getEncoded().length, ckp.getCertificate().getEncoded());
@@ -161,13 +164,14 @@ public class SecureChannel {
             } catch (CertificateEncodingException e) {
                 throw new PlcRuntimeException("Failed to encode the certificate");
             }
-            this.thumbprint = driverContext.getThumbprint();
+            this.thumbprint = configuration.getThumbprint();
         } else {
             this.encryptionHandler = new EncryptionHandler(ckp, this.senderCertificate, configuration.getSecurityPolicy());
             this.publicCertificate = NULL_BYTE_STRING;
             this.thumbprint = NULL_BYTE_STRING;
             this.isEncrypted = false;
         }
+        encryptionHandler.setClientNonce(clientNonce);
 
         // Generate a list of endpoints we can use.
         try {
@@ -179,6 +183,15 @@ public class SecureChannel {
             LOGGER.warn("Unable to resolve host name. Using original host from connection string which may cause issues connecting to server");
             this.endpoints.add(driverContext.getHost());
         }
+    }
+
+    private SecurityPolicy determineSecurityPolicy(OpcuaConfiguration configuration, OpcuaDriverContext driverContext) {
+        if (configuration.isDiscovery() && configuration.getSenderCertificate() == null) {
+            // discovery is enabled and sender certificate is not known yet
+            return SecurityPolicy.NONE;
+        }
+
+        return configuration.getSecurityPolicy();
     }
 
     public synchronized void submit(ConversationContext<OpcuaAPU> context, Consumer<TimeoutException> onTimeout, BiConsumer<OpcuaAPU, Throwable> error, Consumer<byte[]> consumer, WriteBufferByteBased buffer) {
@@ -197,6 +210,7 @@ public class SecureChannel {
         final OpcuaAPU apu;
         try {
             if (this.isEncrypted) {
+                encryptionHandler.setServerNonce(senderNonce);
                 apu = OpcuaAPU.staticParse(encryptionHandler.encodeMessage(messageRequest, buffer.getBytes()), false);
             } else {
                 apu = new OpcuaAPU(messageRequest);
@@ -328,7 +342,7 @@ public class SecureChannel {
             OpcuaOpenRequest openRequest = new OpcuaOpenRequest(
                 FINAL_CHUNK,
                 0,
-                new PascalString(this.securityPolicy),
+                new PascalString(this.securityPolicy.getSecurityPolicyUri()),
                 this.publicCertificate,
                 this.thumbprint,
                 transactionId,
@@ -361,12 +375,14 @@ public class SecureChannel {
                             ServiceFault fault = (ServiceFault) message.getBody();
                             LOGGER.error("Failed to connect to opc ua server for the following reason:- {}, {}", ((ResponseHeader) fault.getResponseHeader()).getServiceResult().getStatusCode(), OpcuaStatusCode.enumForValue(((ResponseHeader) fault.getResponseHeader()).getServiceResult().getStatusCode()));
                         } else {
-                            LOGGER.debug("Got Secure Response Connection Response");
+                            LOGGER.debug("Got answer for open secure channel request");
                             OpenSecureChannelResponse openSecureChannelResponse = (OpenSecureChannelResponse) message.getBody();
                             ChannelSecurityToken securityToken = (ChannelSecurityToken) openSecureChannelResponse.getSecurityToken();
                             tokenId.set((int) securityToken.getTokenId());
                             channelId.set((int) securityToken.getChannelId());
                             lifetime = securityToken.getRevisedLifetime();
+                            this.senderNonce = openSecureChannelResponse.getServerNonce().getStringValue();
+                            this.encryptionHandler.setServerNonce(openSecureChannelResponse.getServerNonce().getStringValue());
                             commonPool().submit(() -> {
                                 try {
                                     onConnectCreateSessionRequest(context);
@@ -408,7 +424,7 @@ public class SecureChannel {
         List<PascalString> discoveryUrls = new ArrayList<>(0);
 
         ApplicationDescription clientDescription = new ApplicationDescription(
-            APPLICATION_URI,
+            driverContext.getApplicationUri().map(PascalString::new).orElse(APPLICATION_URI),
             PRODUCT_URI,
             applicationName,
             ApplicationType.applicationTypeClient,
@@ -418,6 +434,7 @@ public class SecureChannel {
             discoveryUrls
         );
 
+
         CreateSessionRequest createSessionRequest = new CreateSessionRequest(
             requestHeader,
             clientDescription,
@@ -425,7 +442,7 @@ public class SecureChannel {
             this.endpoint,
             new PascalString(sessionName),
             new PascalByteString(clientNonce.length, clientNonce),
-            NULL_BYTE_STRING,
+            securityPolicy == SecurityPolicy.NONE ? NULL_BYTE_STRING : publicCertificate,
             sessionTimeout,
             0L
         );
@@ -529,7 +546,8 @@ public class SecureChannel {
             NULL_EXTENSION_OBJECT
         );
 
-        SignatureData clientSignature = new SignatureData(NULL_STRING, NULL_BYTE_STRING);
+        SignatureData emptySignature = new SignatureData(NULL_STRING, NULL_BYTE_STRING);
+        SignatureData clientSignature = securityPolicy == SecurityPolicy.NONE ? emptySignature : encryptionHandler.createClientSignature(this.senderNonce);
 
         ActivateSessionRequest activateSessionRequest = new ActivateSessionRequest(
             requestHeader,
@@ -834,7 +852,7 @@ public class SecureChannel {
                             ServiceFault fault = (ServiceFault) message.getBody();
                             LOGGER.error("Failed to connect to opc ua server for the following reason:- {}, {}", ((ResponseHeader) fault.getResponseHeader()).getServiceResult().getStatusCode(), OpcuaStatusCode.enumForValue(((ResponseHeader) fault.getResponseHeader()).getServiceResult().getStatusCode()));
                         } else {
-                            LOGGER.debug("Got Secure Response Connection Response");
+                            LOGGER.debug("Got answer for open request");
                             commonPool().submit(() -> {
                                 try {
                                     onDiscoverGetEndpointsRequest(context, opcuaOpenResponse,
@@ -927,29 +945,32 @@ public class SecureChannel {
                             ServiceFault fault = (ServiceFault) message.getBody();
                             LOGGER.error("Failed to connect to opc ua server for the following reason:- {}, {}", ((ResponseHeader) fault.getResponseHeader()).getServiceResult().getStatusCode(), OpcuaStatusCode.enumForValue(((ResponseHeader) fault.getResponseHeader()).getServiceResult().getStatusCode()));
                             return;
-                        }
-                        LOGGER.debug("Got Create Session Response Connection Response");
-                        GetEndpointsResponse response = (GetEndpointsResponse) message.getBody();
+                        } else {
+                            LOGGER.debug("Got Create Session Response Connection Response");
+                            GetEndpointsResponse response = (GetEndpointsResponse) message.getBody();
 
-                        List<ExtensionObjectDefinition> endpoints = response.getEndpoints();
-                        for (ExtensionObjectDefinition endpoint : endpoints) {
-                            EndpointDescription endpointDescription = (EndpointDescription) endpoint;
-                            if (endpointDescription.getEndpointUrl().getStringValue().equals(this.endpoint.getStringValue()) && endpointDescription.getSecurityPolicyUri().getStringValue().equals(this.securityPolicy)) {
-                                LOGGER.info("Found OPC UA endpoint {}", this.endpoint.getStringValue());
-                                driverContext.setSenderCertificate(endpointDescription.getServerCertificate().getStringValue());
+                            List<ExtensionObjectDefinition> endpoints = response.getEndpoints();
+                            for (ExtensionObjectDefinition endpoint : endpoints) {
+                                EndpointDescription endpointDescription = (EndpointDescription) endpoint;
+                                if (endpointDescription.getEndpointUrl().getStringValue().equals(this.endpoint.getStringValue())
+                                    && endpointDescription.getSecurityPolicyUri().getStringValue().equals(this.securityPolicy.getSecurityPolicyUri())) {
+                                   LOGGER.info("Found OPC UA endpoint {}", this.endpoint.getStringValue());
+                                   configuration.setSenderCertificate(endpointDescription.getServerCertificate().getStringValue());
+                               }
+                           }
+
+                            try {
+                                MessageDigest messageDigest = MessageDigest.getInstance("SHA-1");
+                                byte[] digest = messageDigest.digest(configuration.getSenderCertificate());
+                                configuration.setThumbprint(new PascalByteString(digest.length, digest));
+                            } catch (Exception e) {
+                                LOGGER.error("Failed to find hashing algorithm");
                             }
+                            commonPool().submit(() -> onDiscoverCloseSecureChannel(context, response));
                         }
-
-                        try {
-                            MessageDigest messageDigest = MessageDigest.getInstance("SHA-1");
-                            byte[] digest = messageDigest.digest(driverContext.getSenderCertificate());
-                            driverContext.setThumbprint(new PascalByteString(digest.length, digest));
-                        } catch (NoSuchAlgorithmException e) {
-                            LOGGER.error("Failed to find hashing algorithm");
-                        }
-                        commonPool().submit(() -> onDiscoverCloseSecureChannel(context, response));
                     } catch (ParseException e) {
                         LOGGER.error("Error parsing", e);
+                        throw new RuntimeException(e);
                     }
                 });
 
@@ -1077,7 +1098,7 @@ public class SecureChannel {
                         OpcuaOpenRequest openRequest = new OpcuaOpenRequest(
                             FINAL_CHUNK,
                             0,
-                            new PascalString(this.securityPolicy),
+                            new PascalString(this.securityPolicy.getSecurityPolicyUri()),
                             this.publicCertificate,
                             this.thumbprint,
                             transactionId,
@@ -1115,7 +1136,7 @@ public class SecureChannel {
                                         ServiceFault fault = (ServiceFault) message.getBody();
                                         LOGGER.error("Failed to connect to opc ua server for the following reason:- {}, {}", ((ResponseHeader) fault.getResponseHeader()).getServiceResult().getStatusCode(), OpcuaStatusCode.enumForValue(((ResponseHeader) fault.getResponseHeader()).getServiceResult().getStatusCode()));
                                     } else {
-                                        LOGGER.debug("Got Secure Response Connection Response");
+                                        LOGGER.debug("Got keep alive response");
                                         OpenSecureChannelResponse openSecureChannelResponse = (OpenSecureChannelResponse) message.getBody();
                                         ChannelSecurityToken token = (ChannelSecurityToken) openSecureChannelResponse.getSecurityToken();
                                         tokenId.set((int) token.getTokenId());
@@ -1265,11 +1286,11 @@ public class SecureChannel {
     /**
      * Creates an IdentityToken to authenticate with a server.
      *
-     * @param tokenType the token type
-     * @param policyId  the security policy
+     * @param tokenType      the token type
+     * @param securityPolicy the security policy
      * @return returns an ExtensionObject with an IdentityToken.
      */
-    private ExtensionObject getIdentityToken(UserTokenType tokenType, String policyId) {
+    private ExtensionObject getIdentityToken(UserTokenType tokenType, String securityPolicy) {
         ExpandedNodeId extExpandedNodeId;
         switch (tokenType) {
             case userTokenTypeAnonymous:
@@ -1279,7 +1300,7 @@ public class SecureChannel {
                 extExpandedNodeId = new ExpandedNodeId(
                     false,           //Namespace Uri Specified
                     false,            //Server Index Specified
-                    new NodeIdFourByte((short) 0, 321 /* TODO: disabled till we have greater segmentation: AnonymousIdentityToken_Encoding_DefaultBinary.getValue()*/),
+                    new NodeIdFourByte((short) 0, OpcuaNodeIdServicesObject.AnonymousIdentityToken_Encoding_DefaultBinary.getValue()),
                     null,
                     null
                 );
@@ -1287,8 +1308,7 @@ public class SecureChannel {
                 return new ExtensionObject(
                     extExpandedNodeId,
                     new ExtensionObjectEncodingMask(false, false, true),
-                    new UserIdentityToken(new PascalString(policyId), anonymousIdentityToken)
-                );
+                    new UserIdentityToken(new PascalString(securityPolicy), anonymousIdentityToken));
             case userTokenTypeUserName:
                 //Encrypt the password using the server nonce and server public key
                 byte[] passwordBytes = this.password == null ? new byte[0] : this.password.getBytes();
@@ -1310,14 +1330,14 @@ public class SecureChannel {
 
                 extExpandedNodeId = new ExpandedNodeId(false,           //Namespace Uri Specified
                     false,            //Server Index Specified
-                    new NodeIdFourByte((short) 0, 324 /*TODO: disabled till we have greater segmentation: UserNameIdentityToken_Encoding_DefaultBinary.getValue()*/),
+                    new NodeIdFourByte((short) 0, OpcuaNodeIdServicesObject.UserNameIdentityToken_Encoding_DefaultBinary.getValue()),
                     null,
                     null);
 
                 return new ExtensionObject(
                     extExpandedNodeId,
                     new ExtensionObjectEncodingMask(false, false, true),
-                    new UserIdentityToken(new PascalString(policyId), userNameIdentityToken));
+                    new UserIdentityToken(new PascalString(securityPolicy), userNameIdentityToken));
         }
         return null;
     }

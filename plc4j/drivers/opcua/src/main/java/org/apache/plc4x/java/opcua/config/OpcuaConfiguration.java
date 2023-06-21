@@ -18,6 +18,8 @@
  */
 package org.apache.plc4x.java.opcua.config;
 
+import org.apache.plc4x.java.opcua.readwrite.PascalByteString;
+import org.apache.plc4x.java.opcua.security.SecurityPolicy;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.BooleanDefaultValue;
@@ -45,8 +47,7 @@ public class OpcuaConfiguration implements Configuration {
     private String password;
 
     @ConfigurationParameter("securityPolicy")
-    @StringDefaultValue("None")
-    private String securityPolicy;
+    private SecurityPolicy securityPolicy = SecurityPolicy.NONE;
 
     @ConfigurationParameter("keyStoreFile")
     private String keyStoreFile;
@@ -56,6 +57,8 @@ public class OpcuaConfiguration implements Configuration {
 
     @ConfigurationParameter("keyStorePassword")
     private String keyStorePassword;
+    private byte[] senderCertificate;
+    private PascalByteString thumbprint;
 
     public String getProtocolCode() {
         return protocolCode;
@@ -85,7 +88,7 @@ public class OpcuaConfiguration implements Configuration {
         return certDirectory;
     }
 
-    public String getSecurityPolicy() {
+    public SecurityPolicy getSecurityPolicy() {
         return securityPolicy;
     }
 
@@ -109,5 +112,22 @@ public class OpcuaConfiguration implements Configuration {
             ", keyStorePassword='" + (keyStorePassword != null ? "******" : null) + '\'' +
             '}';
     }
+
+    public byte[] getSenderCertificate() {
+        return senderCertificate;
+    }
+
+    public void setSenderCertificate(byte[] senderCertificate) {
+        this.senderCertificate = senderCertificate;
+    }
+
+    public PascalByteString getThumbprint() {
+        return this.thumbprint;
+    }
+
+    public void setThumbprint(PascalByteString thumbprint) {
+        this.thumbprint = thumbprint;
+    }
+
 }
 

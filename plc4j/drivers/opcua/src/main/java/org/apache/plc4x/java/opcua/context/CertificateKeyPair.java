@@ -18,9 +18,15 @@
  */
 package org.apache.plc4x.java.opcua.context;
 
+import io.vavr.control.Try;
+import org.bouncycastle.asn1.x509.GeneralName;
+
 import java.security.KeyPair;
 import java.security.MessageDigest;
 import java.security.cert.X509Certificate;
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
 
 public class CertificateKeyPair {
 
@@ -45,5 +51,15 @@ public class CertificateKeyPair {
 
     public byte[] getThumbPrint() {
         return thumbprint;
+    }
+
+    public Optional<String> getApplicationUri() {
+        Try<Collection<List<?>>> lists = Try.of(certificate::getSubjectAlternativeNames);
+        return lists.toJavaStream()
+            .flatMap(Collection::stream)
+            .filter(l -> l.size() == 2)
+            .filter(name -> name.get(0).equals(GeneralName.uniformResourceIdentifier))
+            .map(t -> (String) t.get(1))
+            .findAny();
     }
 }
