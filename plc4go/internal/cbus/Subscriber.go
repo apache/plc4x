@@ -44,7 +44,8 @@ type Subscriber struct {
 
 	consumersMutex sync.RWMutex
 
-	log zerolog.Logger `ignore:"true"`
+	log      zerolog.Logger       `ignore:"true"`
+	_options []options.WithOption `ignore:"true"` // Used to pass them downstream
 }
 
 func NewSubscriber(addSubscriber func(subscriber *Subscriber), _options ...options.WithOption) *Subscriber {
@@ -53,7 +54,8 @@ func NewSubscriber(addSubscriber func(subscriber *Subscriber), _options ...optio
 		addSubscriber: addSubscriber,
 		consumers:     make(map[*spiModel.DefaultPlcConsumerRegistration]apiModel.PlcSubscriptionEventConsumer),
 
-		log: customLogger,
+		log:      customLogger,
+		_options: _options,
 	}
 }
 
@@ -95,7 +97,7 @@ func (s *Subscriber) Subscribe(_ context.Context, subscriptionRequest apiModel.P
 				subscriptionRequest,
 				responseCodes,
 				subscriptionValues,
-				options.WithCustomLogger(s.log),
+				append(s._options, options.WithCustomLogger(s.log))...,
 			),
 			nil,
 		)

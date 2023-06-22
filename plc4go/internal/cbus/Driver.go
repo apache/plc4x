@@ -41,7 +41,8 @@ type Driver struct {
 	awaitSetupComplete      bool
 	awaitDisconnectComplete bool
 
-	log zerolog.Logger
+	log      zerolog.Logger
+	_options []options.WithOption // Used to pass them downstream
 }
 
 func NewDriver(_options ...options.WithOption) plc4go.PlcDriver {
@@ -51,6 +52,7 @@ func NewDriver(_options ...options.WithOption) plc4go.PlcDriver {
 		awaitSetupComplete:      true,
 		awaitDisconnectComplete: true,
 		log:                     customLogger,
+		_options:                _options,
 	}
 	driver.DefaultDriver = _default.NewDefaultDriver(driver, "c-bus", "Clipsal Bus", "tcp", NewTagHandler())
 	return driver
@@ -67,7 +69,11 @@ func (m *Driver) GetConnectionWithContext(ctx context.Context, transportUrl url.
 	// Provide a default-port to the transport, which is used, if the user doesn't provide on in the connection string.
 	driverOptions["defaultTcpPort"] = []string{strconv.FormatUint(uint64(readWriteModel.CBusConstants_CBUSTCPDEFAULTPORT), 10)}
 	// Have the transport create a new transport-instance.
-	transportInstance, err := transport.CreateTransportInstance(transportUrl, driverOptions, options.WithCustomLogger(m.log))
+	transportInstance, err := transport.CreateTransportInstance(
+		transportUrl,
+		driverOptions,
+		append(m._options, options.WithCustomLogger(m.log))...,
+	)
 	if err != nil {
 		m.log.Error().Err(err).Stringer("transportUrl", &transportUrl).Msgf("We couldn't create a transport instance for port %#v", driverOptions["defaultTcpPort"])
 		return m.reportError(errors.Wrapf(err, "couldn't initialize transport configuration for given transport url %s", transportUrl.String()))
@@ -78,8 +84,10 @@ func (m *Driver) GetConnectionWithContext(ctx context.Context, transportUrl url.
 		m.log.Error().Err(err).Msgf("Invalid options")
 		return m.reportError(errors.Wrap(err, "Invalid options"))
 	}
-	// TODO: we might need to remember the original options
-	codec := NewMessageCodec(transportInstance, options.WithCustomLogger(m.log))
+	codec := NewMessageCodec(
+		transportInstance,
+		append(m._options, options.WithCustomLogger(m.log))...,
+	)
 	m.log.Debug().Msgf("working with codec:\n%s", codec)
 
 	driverContext := NewDriverContext(configuration)
@@ -87,7 +95,13 @@ func (m *Driver) GetConnectionWithContext(ctx context.Context, transportUrl url.
 	driverContext.awaitDisconnectComplete = m.awaitDisconnectComplete
 
 	// Create the new connection
-	connection := NewConnection(codec, configuration, driverContext, m.GetPlcTagHandler(), m.tm, driverOptions, options.WithCustomLogger(m.log))
+	connection := NewConnection(
+		codec, configuration,
+		driverContext,
+		m.GetPlcTagHandler(),
+		m.tm, driverOptions,
+		append(m._options, options.WithCustomLogger(m.log))...,
+	)
 	m.log.Debug().Msg("created connection, connecting now")
 	return connection.ConnectWithContext(ctx)
 }
@@ -111,7 +125,9 @@ func (m *Driver) SupportsDiscovery() bool {
 }
 
 func (m *Driver) DiscoverWithContext(ctx context.Context, callback func(event apiModel.PlcDiscoveryItem), discoveryOptions ...options.WithDiscoveryOption) error {
-	return NewDiscoverer(options.WithCustomLogger(m.log)).Discover(ctx, callback, discoveryOptions...)
+	return NewDiscoverer(
+		append(m._options, options.WithCustomLogger(m.log))...,
+	).Discover(ctx, callback, discoveryOptions...)
 }
 
 func (m *Driver) Close() error {

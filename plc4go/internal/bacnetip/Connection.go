@@ -50,7 +50,8 @@ type Connection struct {
 	connectionId string
 	tracer       tracer.Tracer
 
-	log zerolog.Logger
+	log      zerolog.Logger
+	_options []options.WithOption // Used to pass them downstream
 }
 
 func NewConnection(messageCodec spi.MessageCodec, tagHandler spi.PlcTagHandler, tm transactions.RequestTransactionManager, connectionOptions map[string][]string, _options ...options.WithOption) *Connection {
@@ -60,6 +61,7 @@ func NewConnection(messageCodec spi.MessageCodec, tagHandler spi.PlcTagHandler, 
 		messageCodec:      messageCodec,
 		tm:                tm,
 		log:               customLogger,
+		_options:          _options,
 	}
 	if traceEnabledOption, ok := connectionOptions["traceEnabled"]; ok {
 		if len(traceEnabledOption) == 1 {
@@ -134,11 +136,26 @@ func (c *Connection) GetMessageCodec() spi.MessageCodec {
 }
 
 func (c *Connection) ReadRequestBuilder() apiModel.PlcReadRequestBuilder {
-	return spiModel.NewDefaultPlcReadRequestBuilder(c.GetPlcTagHandler(), NewReader(&c.invokeIdGenerator, c.messageCodec, c.tm, options.WithCustomLogger(c.log)))
+	return spiModel.NewDefaultPlcReadRequestBuilder(
+		c.GetPlcTagHandler(),
+		NewReader(
+			&c.invokeIdGenerator,
+			c.messageCodec,
+			c.tm,
+			append(c._options, options.WithCustomLogger(c.log))...,
+		),
+	)
 }
 
 func (c *Connection) SubscriptionRequestBuilder() apiModel.PlcSubscriptionRequestBuilder {
-	return spiModel.NewDefaultPlcSubscriptionRequestBuilder(c.GetPlcTagHandler(), c.GetPlcValueHandler(), NewSubscriber(c, options.WithCustomLogger(c.log)))
+	return spiModel.NewDefaultPlcSubscriptionRequestBuilder(
+		c.GetPlcTagHandler(),
+		c.GetPlcValueHandler(),
+		NewSubscriber(
+			c,
+			append(c._options, options.WithCustomLogger(c.log))...,
+		),
+	)
 }
 
 func (c *Connection) addSubscriber(subscriber *Subscriber) {

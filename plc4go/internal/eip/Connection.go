@@ -62,7 +62,8 @@ type Connection struct {
 	routingAddress            []readWriteModel.PathSegment
 	tracer                    tracer.Tracer
 
-	log zerolog.Logger
+	log      zerolog.Logger
+	_options []options.WithOption // Used to pass them downstream
 }
 
 func NewConnection(
@@ -81,6 +82,7 @@ func NewConnection(
 		driverContext: driverContext,
 		tm:            tm,
 		log:           customLogger,
+		_options:      _options,
 	}
 	if traceEnabledOption, ok := connectionOptions["traceEnabled"]; ok {
 		if len(traceEnabledOption) == 1 {
@@ -100,29 +102,29 @@ func NewConnection(
 	return connection
 }
 
-func (m *Connection) GetConnectionId() string {
+func (c *Connection) GetConnectionId() string {
 	// TODO: Fix this
-	return "" //m.connectionId
+	return "" //c.connectionId
 }
 
-func (m *Connection) IsTraceEnabled() bool {
-	return m.tracer != nil
+func (c *Connection) IsTraceEnabled() bool {
+	return c.tracer != nil
 }
 
-func (m *Connection) GetTracer() tracer.Tracer {
-	return m.tracer
+func (c *Connection) GetTracer() tracer.Tracer {
+	return c.tracer
 }
 
-func (m *Connection) GetConnection() plc4go.PlcConnection {
-	return m
+func (c *Connection) GetConnection() plc4go.PlcConnection {
+	return c
 }
 
-func (m *Connection) GetMessageCodec() spi.MessageCodec {
-	return m.messageCodec
+func (c *Connection) GetMessageCodec() spi.MessageCodec {
+	return c.messageCodec
 }
 
-func (m *Connection) ConnectWithContext(ctx context.Context) <-chan plc4go.PlcConnectionConnectResult {
-	m.log.Trace().Msg("Connecting")
+func (c *Connection) ConnectWithContext(ctx context.Context) <-chan plc4go.PlcConnectionConnectResult {
+	c.log.Trace().Msg("Connecting")
 	ch := make(chan plc4go.PlcConnectionConnectResult, 1)
 	go func() {
 		defer func() {
@@ -130,28 +132,28 @@ func (m *Connection) ConnectWithContext(ctx context.Context) <-chan plc4go.PlcCo
 				ch <- _default.NewDefaultPlcConnectionConnectResult(nil, errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack()))
 			}
 		}()
-		err := m.messageCodec.ConnectWithContext(ctx)
+		err := c.messageCodec.ConnectWithContext(ctx)
 		if err != nil {
-			ch <- _default.NewDefaultPlcConnectionConnectResult(m, err)
+			ch <- _default.NewDefaultPlcConnectionConnectResult(c, err)
 		}
 
 		// For testing purposes we can skip the waiting for a complete connection
-		if !m.driverContext.awaitSetupComplete {
-			go m.setupConnection(ctx, ch)
-			m.log.Warn().Msg("Connection used in an unsafe way. !!!DON'T USE IN PRODUCTION!!!")
+		if !c.driverContext.awaitSetupComplete {
+			go c.setupConnection(ctx, ch)
+			c.log.Warn().Msg("Connection used in an unsafe way. !!!DON'T USE IN PRODUCTION!!!")
 			// Here we write directly and don't wait till the connection is "really" connected
-			// Note: we can't use fireConnected here as it's guarded against m.driverContext.awaitSetupComplete
-			ch <- _default.NewDefaultPlcConnectionConnectResult(m, err)
-			m.SetConnected(true)
+			// Note: we can't use fireConnected here as it's guarded against c.driverContext.awaitSetupComplete
+			ch <- _default.NewDefaultPlcConnectionConnectResult(c, err)
+			c.SetConnected(true)
 			return
 		}
 
-		m.setupConnection(ctx, ch)
+		c.setupConnection(ctx, ch)
 	}()
 	return ch
 }
 
-func (m *Connection) Close() <-chan plc4go.PlcConnectionCloseResult {
+func (c *Connection) Close() <-chan plc4go.PlcConnectionCloseResult {
 	// TODO: use proper context
 	ctx := context.TODO()
 	result := make(chan plc4go.PlcConnectionCloseResult, 1)
@@ -161,10 +163,10 @@ func (m *Connection) Close() <-chan plc4go.PlcConnectionCloseResult {
 				result <- _default.NewDefaultPlcConnectionCloseResult(nil, errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack()))
 			}
 		}()
-		m.log.Debug().Msg("Sending UnregisterSession EIP Packet")
-		_ = m.messageCodec.SendRequest(
+		c.log.Debug().Msg("Sending UnregisterSession EIP Packet")
+		_ = c.messageCodec.SendRequest(
 			ctx,
-			readWriteModel.NewEipDisconnectRequest(m.sessionHandle, 0, []byte(DefaultSenderContext), 0), func(message spi.Message) bool {
+			readWriteModel.NewEipDisconnectRequest(c.sessionHandle, 0, []byte(DefaultSenderContext), 0), func(message spi.Message) bool {
 				return true
 			},
 			func(message spi.Message) error {
@@ -173,42 +175,42 @@ func (m *Connection) Close() <-chan plc4go.PlcConnectionCloseResult {
 			func(err error) error {
 				return nil
 			},
-			m.GetTtl(),
+			c.GetTtl(),
 		) //Unregister gets no response
-		m.log.Debug().Msgf("Unregistred Session %d", m.sessionHandle)
+		c.log.Debug().Msgf("Unregistred Session %d", c.sessionHandle)
 	}()
 	return result
 }
 
-func (m *Connection) setupConnection(ctx context.Context, ch chan plc4go.PlcConnectionConnectResult) {
-	if err := m.listServiceRequest(ctx, ch); err != nil {
-		m.fireConnectionError(errors.Wrap(err, "error listing service request"), ch)
+func (c *Connection) setupConnection(ctx context.Context, ch chan plc4go.PlcConnectionConnectResult) {
+	if err := c.listServiceRequest(ctx, ch); err != nil {
+		c.fireConnectionError(errors.Wrap(err, "error listing service request"), ch)
 		return
 	}
 
-	if err := m.connectRegisterSession(ctx, ch); err != nil {
-		m.fireConnectionError(errors.Wrap(err, "error connect register session"), ch)
+	if err := c.connectRegisterSession(ctx, ch); err != nil {
+		c.fireConnectionError(errors.Wrap(err, "error connect register session"), ch)
 		return
 	}
 
-	if err := m.listAllAttributes(ctx, ch); err != nil {
-		m.fireConnectionError(errors.Wrap(err, "error list all attributes"), ch)
+	if err := c.listAllAttributes(ctx, ch); err != nil {
+		c.fireConnectionError(errors.Wrap(err, "error list all attributes"), ch)
 		return
 	}
 
-	if m.useConnectionManager {
+	if c.useConnectionManager {
 		// TODO: Continue here ....
 	} else {
 		// Send an event that connection setup is complete.
-		m.fireConnected(ch)
+		c.fireConnected(ch)
 	}
 }
 
-func (m *Connection) listServiceRequest(ctx context.Context, ch chan plc4go.PlcConnectionConnectResult) error {
-	m.log.Debug().Msg("Sending ListServices Request")
+func (c *Connection) listServiceRequest(ctx context.Context, ch chan plc4go.PlcConnectionConnectResult) error {
+	c.log.Debug().Msg("Sending ListServices Request")
 	listServicesResultChan := make(chan readWriteModel.ListServicesResponse, 1)
 	listServicesResultErrorChan := make(chan error, 1)
-	if err := m.messageCodec.SendRequest(
+	if err := c.messageCodec.SendRequest(
 		ctx,
 		readWriteModel.NewListServicesRequest(
 			EmptySessionHandle,
@@ -228,23 +230,23 @@ func (m *Connection) listServiceRequest(ctx context.Context, ch chan plc4go.PlcC
 			listServicesResponse := message.(readWriteModel.ListServicesResponse)
 			serviceResponse := listServicesResponse.GetTypeIds()[0].(readWriteModel.ServicesResponse)
 			if serviceResponse.GetSupportsCIPEncapsulation() {
-				m.log.Debug().Msg("Device is capable of CIP over EIP encapsulation")
+				c.log.Debug().Msg("Device is capable of CIP over EIP encapsulation")
 			}
-			m.cipEncapsulationAvailable = serviceResponse.GetSupportsCIPEncapsulation()
+			c.cipEncapsulationAvailable = serviceResponse.GetSupportsCIPEncapsulation()
 			listServicesResultChan <- listServicesResponse
 			return nil
 		},
 		func(err error) error {
 			// If this is a timeout, do a check if the connection requires a reconnection
 			if _, isTimeout := err.(utils.TimeoutError); isTimeout {
-				m.log.Warn().Msg("Timeout during Connection establishing, closing channel...")
-				m.Close()
+				c.log.Warn().Msg("Timeout during Connection establishing, closing channel...")
+				c.Close()
 			}
 			listServicesResultErrorChan <- errors.Wrap(err, "got error processing request")
 			return nil
 		},
-		m.GetTtl()); err != nil {
-		m.fireConnectionError(errors.Wrap(err, "Error during sending of EIP ListServices Request"), ch)
+		c.GetTtl()); err != nil {
+		c.fireConnectionError(errors.Wrap(err, "Error during sending of EIP ListServices Request"), ch)
 	}
 
 	timeout := time.NewTimer(1 * time.Second)
@@ -259,11 +261,11 @@ func (m *Connection) listServiceRequest(ctx context.Context, ch chan plc4go.PlcC
 	}
 }
 
-func (m *Connection) connectRegisterSession(ctx context.Context, ch chan plc4go.PlcConnectionConnectResult) error {
-	m.log.Debug().Msg("Sending EipConnectionRequest")
+func (c *Connection) connectRegisterSession(ctx context.Context, ch chan plc4go.PlcConnectionConnectResult) error {
+	c.log.Debug().Msg("Sending EipConnectionRequest")
 	connectionResponseChan := make(chan readWriteModel.EipConnectionResponse, 1)
 	connectionResponseErrorChan := make(chan error, 1)
-	if err := m.messageCodec.SendRequest(
+	if err := c.messageCodec.SendRequest(
 		ctx,
 		readWriteModel.NewEipConnectionRequest(
 			EmptySessionHandle,
@@ -280,12 +282,12 @@ func (m *Connection) connectRegisterSession(ctx context.Context, ch chan plc4go.
 			connectionResponse := eipPacket.(readWriteModel.EipConnectionResponse)
 			if connectionResponse != nil {
 				if connectionResponse.GetStatus() == 0 {
-					m.sessionHandle = connectionResponse.GetSessionHandle()
-					m.senderContext = connectionResponse.GetSenderContext()
-					m.log.Debug().Msgf("Got assigned with Session %d", m.sessionHandle)
+					c.sessionHandle = connectionResponse.GetSessionHandle()
+					c.senderContext = connectionResponse.GetSenderContext()
+					c.log.Debug().Msgf("Got assigned with Session %d", c.sessionHandle)
 					connectionResponseChan <- connectionResponse
 				} else {
-					m.log.Error().Msgf("Got unsuccessful status for connection request: %d", connectionResponse.GetStatus())
+					c.log.Error().Msgf("Got unsuccessful status for connection request: %d", connectionResponse.GetStatus())
 					connectionResponseErrorChan <- errors.New("got unsuccessful connection response")
 				}
 			} else {
@@ -294,17 +296,17 @@ func (m *Connection) connectRegisterSession(ctx context.Context, ch chan plc4go.
 				instanceSegment := readWriteModel.NewLogicalSegment(readWriteModel.NewClassID(0, 1))
 				exchange := readWriteModel.NewUnConnectedDataItem(
 					readWriteModel.NewCipConnectionManagerRequest(classSegment, instanceSegment, 0, 10,
-						14, 536870914, 33944, m.connectionSerialNumber,
+						14, 536870914, 33944, c.connectionSerialNumber,
 						4919, 42, 3, 2101812,
 						readWriteModel.NewNetworkConnectionParameters(4002, false, 2, 0, true),
 						2113537,
 						readWriteModel.NewNetworkConnectionParameters(4002, false, 2, 0, true),
 						readWriteModel.NewTransportType(true, 2, 3),
-						m.connectionPathSize, m.routingAddress, 1))
+						c.connectionPathSize, c.routingAddress, 1))
 				typeIds := []readWriteModel.TypeId{readWriteModel.NewNullAddressItem(), exchange}
-				eipWrapper := readWriteModel.NewCipRRData(m.sessionHandle, 0, typeIds,
-					m.sessionHandle, uint32(readWriteModel.CIPStatus_Success), m.senderContext, 0)
-				if err := m.messageCodec.SendRequest(
+				eipWrapper := readWriteModel.NewCipRRData(c.sessionHandle, 0, typeIds,
+					c.sessionHandle, uint32(readWriteModel.CIPStatus_Success), c.senderContext, 0)
+				if err := c.messageCodec.SendRequest(
 					ctx,
 					eipWrapper,
 					func(message spi.Message) bool {
@@ -320,8 +322,8 @@ func (m *Connection) connectRegisterSession(ctx context.Context, ch chan plc4go.
 						if cipRRData.GetStatus() == 0 {
 							unconnectedDataItem := cipRRData.GetTypeIds()[1].(readWriteModel.UnConnectedDataItem)
 							connectionManagerResponse := unconnectedDataItem.GetService().(readWriteModel.CipConnectionManagerResponse)
-							m.connectionId = connectionManagerResponse.GetOtConnectionId()
-							m.log.Debug().Msgf("Got assigned with connection if %d", m.connectionId)
+							c.connectionId = connectionManagerResponse.GetOtConnectionId()
+							c.log.Debug().Msgf("Got assigned with connection if %d", c.connectionId)
 							connectionResponseChan <- connectionResponse
 						} else {
 							connectionResponseErrorChan <- fmt.Errorf("got status code while opening Connection manager: %d", cipRRData.GetStatus())
@@ -331,15 +333,15 @@ func (m *Connection) connectRegisterSession(ctx context.Context, ch chan plc4go.
 					func(err error) error {
 						// If this is a timeout, do a check if the connection requires a reconnection
 						if _, isTimeout := err.(utils.TimeoutError); isTimeout {
-							m.log.Warn().Msg("Timeout during Connection establishing, closing channel...")
-							m.Close()
+							c.log.Warn().Msg("Timeout during Connection establishing, closing channel...")
+							c.Close()
 						}
 						connectionResponseErrorChan <- errors.Wrap(err, "got error processing request")
 						return nil
 					},
-					m.GetTtl(),
+					c.GetTtl(),
 				); err != nil {
-					m.fireConnectionError(errors.Wrap(err, "Error during sending of EIP ListServices Request"), ch)
+					c.fireConnectionError(errors.Wrap(err, "Error during sending of EIP ListServices Request"), ch)
 				}
 			}
 			return nil
@@ -347,15 +349,15 @@ func (m *Connection) connectRegisterSession(ctx context.Context, ch chan plc4go.
 		func(err error) error {
 			// If this is a timeout, do a check if the connection requires a reconnection
 			if _, isTimeout := err.(utils.TimeoutError); isTimeout {
-				m.log.Warn().Msg("Timeout during Connection establishing, closing channel...")
-				m.Close()
+				c.log.Warn().Msg("Timeout during Connection establishing, closing channel...")
+				c.Close()
 			}
 			connectionResponseErrorChan <- errors.Wrap(err, "got error processing request")
 			return nil
 		},
-		m.GetTtl(),
+		c.GetTtl(),
 	); err != nil {
-		m.fireConnectionError(errors.Wrap(err, "Error during sending of EIP ListServices Request"), ch)
+		c.fireConnectionError(errors.Wrap(err, "Error during sending of EIP ListServices Request"), ch)
 	}
 	timeout := time.NewTimer(1 * time.Second)
 	defer utils.CleanupTimer(timeout)
@@ -369,13 +371,13 @@ func (m *Connection) connectRegisterSession(ctx context.Context, ch chan plc4go.
 	}
 }
 
-func (m *Connection) listAllAttributes(ctx context.Context, ch chan plc4go.PlcConnectionConnectResult) error {
-	m.log.Debug().Msg("Sending ListAllAttributes Request")
+func (c *Connection) listAllAttributes(ctx context.Context, ch chan plc4go.PlcConnectionConnectResult) error {
+	c.log.Debug().Msg("Sending ListAllAttributes Request")
 	listAllAttributesResponseChan := make(chan readWriteModel.GetAttributeAllResponse, 1)
 	listAllAttributesErrorChan := make(chan error, 1)
 	classSegment := readWriteModel.NewLogicalSegment(readWriteModel.NewClassID(uint8(0), uint8(2)))
 	instanceSegment := readWriteModel.NewLogicalSegment(readWriteModel.NewInstanceID(uint8(0), uint8(1)))
-	if err := m.messageCodec.SendRequest(
+	if err := c.messageCodec.SendRequest(
 		ctx,
 		readWriteModel.NewCipRRData(
 			EmptyInterfaceHandle,
@@ -386,9 +388,9 @@ func (m *Connection) listAllAttributes(ctx context.Context, ch chan plc4go.PlcCo
 					readWriteModel.NewGetAttributeAllRequest(
 						classSegment, instanceSegment, uint16(0))),
 			},
-			m.sessionHandle,
+			c.sessionHandle,
 			uint32(readWriteModel.CIPStatus_Success),
-			m.senderContext,
+			c.senderContext,
 			0,
 		),
 		func(message spi.Message) bool {
@@ -407,14 +409,14 @@ func (m *Connection) listAllAttributes(ctx context.Context, ch chan plc4go.PlcCo
 						if curCipClassId, ok := readWriteModel.CIPClassIDByValue(classId); ok {
 							switch curCipClassId {
 							case readWriteModel.CIPClassID_MessageRouter:
-								m.useMessageRouter = true
+								c.useMessageRouter = true
 							case readWriteModel.CIPClassID_ConnectionManager:
-								m.useConnectionManager = true
+								c.useConnectionManager = true
 							}
 						}
 					}
 				}
-				m.log.Debug().Msgf("Connection using message router %t, using connection manager %t", m.useMessageRouter, m.useConnectionManager)
+				c.log.Debug().Msgf("Connection using message router %t, using connection manager %t", c.useMessageRouter, c.useConnectionManager)
 				listAllAttributesResponseChan <- response
 			}
 			return nil
@@ -422,15 +424,15 @@ func (m *Connection) listAllAttributes(ctx context.Context, ch chan plc4go.PlcCo
 		func(err error) error {
 			// If this is a timeout, do a check if the connection requires a reconnection
 			if _, isTimeout := err.(utils.TimeoutError); isTimeout {
-				m.log.Warn().Msg("Timeout during Connection establishing, closing channel...")
-				m.Close()
+				c.log.Warn().Msg("Timeout during Connection establishing, closing channel...")
+				c.Close()
 			}
-			m.fireConnectionError(errors.Wrap(err, "got error processing request"), ch)
+			c.fireConnectionError(errors.Wrap(err, "got error processing request"), ch)
 			return nil
 		},
-		m.GetTtl(),
+		c.GetTtl(),
 	); err != nil {
-		m.fireConnectionError(errors.Wrap(err, "Error during sending of EIP ListServices Request"), ch)
+		c.fireConnectionError(errors.Wrap(err, "Error during sending of EIP ListServices Request"), ch)
 	}
 
 	timeout := time.NewTimer(1 * time.Second)
@@ -445,39 +447,58 @@ func (m *Connection) listAllAttributes(ctx context.Context, ch chan plc4go.PlcCo
 	}
 }
 
-func (m *Connection) fireConnectionError(err error, ch chan<- plc4go.PlcConnectionConnectResult) {
-	if m.driverContext.awaitSetupComplete {
+func (c *Connection) fireConnectionError(err error, ch chan<- plc4go.PlcConnectionConnectResult) {
+	if c.driverContext.awaitSetupComplete {
 		ch <- _default.NewDefaultPlcConnectionConnectResult(nil, errors.Wrap(err, "Error during connection"))
 	} else {
-		m.log.Error().Err(err).Msg("awaitSetupComplete set to false and we got a error during connect")
+		c.log.Error().Err(err).Msg("awaitSetupComplete set to false and we got a error during connect")
 	}
 }
 
-func (m *Connection) fireConnected(ch chan<- plc4go.PlcConnectionConnectResult) {
-	if m.driverContext.awaitSetupComplete {
-		ch <- _default.NewDefaultPlcConnectionConnectResult(m, nil)
+func (c *Connection) fireConnected(ch chan<- plc4go.PlcConnectionConnectResult) {
+	if c.driverContext.awaitSetupComplete {
+		ch <- _default.NewDefaultPlcConnectionConnectResult(c, nil)
 	} else {
-		m.log.Info().Msg("Successfully connected")
+		c.log.Info().Msg("Successfully connected")
 	}
-	m.SetConnected(true)
+	c.SetConnected(true)
 }
 
-func (m *Connection) GetMetadata() apiModel.PlcConnectionMetadata {
+func (c *Connection) GetMetadata() apiModel.PlcConnectionMetadata {
 	return _default.DefaultConnectionMetadata{
 		ProvidesReading: true,
 		ProvidesWriting: true,
 	}
 }
 
-func (m *Connection) ReadRequestBuilder() apiModel.PlcReadRequestBuilder {
-	return spiModel.NewDefaultPlcReadRequestBuilder(m.GetPlcTagHandler(), NewReader(m.messageCodec, m.tm, m.configuration, &m.sessionHandle, options.WithCustomLogger(m.log)))
+func (c *Connection) ReadRequestBuilder() apiModel.PlcReadRequestBuilder {
+	return spiModel.NewDefaultPlcReadRequestBuilder(
+		c.GetPlcTagHandler(),
+		NewReader(
+			c.messageCodec,
+			c.tm,
+			c.configuration,
+			&c.sessionHandle,
+			append(c._options, options.WithCustomLogger(c.log))...,
+		),
+	)
 }
 
-func (m *Connection) WriteRequestBuilder() apiModel.PlcWriteRequestBuilder {
+func (c *Connection) WriteRequestBuilder() apiModel.PlcWriteRequestBuilder {
 	return spiModel.NewDefaultPlcWriteRequestBuilder(
-		m.GetPlcTagHandler(), m.GetPlcValueHandler(), NewWriter(m.messageCodec, m.tm, m.configuration, &m.sessionHandle, &m.senderContext, options.WithCustomLogger(m.log)))
+		c.GetPlcTagHandler(),
+		c.GetPlcValueHandler(),
+		NewWriter(
+			c.messageCodec,
+			c.tm,
+			c.configuration,
+			&c.sessionHandle,
+			&c.senderContext,
+			append(c._options, options.WithCustomLogger(c.log))...,
+		),
+	)
 }
 
-func (m *Connection) String() string {
+func (c *Connection) String() string {
 	return fmt.Sprintf("eip.Connection")
 }

@@ -150,14 +150,19 @@ func (m *Connection) subscribe(ctx context.Context, subscriptionRequest apiModel
 			)
 		}
 		// Create a new subscription handle.
-		subscriptionHandle := dirverModel.NewAdsSubscriptionHandle(m, tagName, directTag, options.WithCustomLogger(m.log))
+		subscriptionHandle := dirverModel.NewAdsSubscriptionHandle(
+			m,
+			tagName,
+			directTag,
+			append(m._options, options.WithCustomLogger(m.log))...,
+		)
 		responseChan <- spiModel.NewDefaultPlcSubscriptionRequestResult(
 			subscriptionRequest,
 			spiModel.NewDefaultPlcSubscriptionResponse(
 				subscriptionRequest,
 				map[string]apiModel.PlcResponseCode{tagName: apiModel.PlcResponseCode_OK},
 				map[string]apiModel.PlcSubscriptionHandle{tagName: subscriptionHandle},
-				options.WithCustomLogger(m.log),
+				append(m._options, options.WithCustomLogger(m.log))...,
 			),
 			nil,
 		)
@@ -210,7 +215,7 @@ func (m *Connection) processSubscriptionResponses(_ context.Context, subscriptio
 			subscriptionRequest,
 			responseCodes,
 			subscriptionHandles,
-			options.WithCustomLogger(m.log),
+			append(m._options, options.WithCustomLogger(m.log))...,
 		),
 		err,
 	)

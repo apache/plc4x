@@ -140,6 +140,7 @@ type Connection struct {
 
 	passLogToModel bool
 	log            zerolog.Logger
+	_options       []options.WithOption // Used to pass them downstream
 }
 
 func (m *Connection) String() string {
@@ -194,6 +195,7 @@ func NewConnection(transportInstance transports.TransportInstance, connectionOpt
 		handleTunnelingRequests: true,
 		passLogToModel:          passLoggerToModel,
 		log:                     customLogger,
+		_options:                _options,
 	}
 	connection.connectionTtl = connection.defaultTtl * 2
 
@@ -505,7 +507,13 @@ func (m *Connection) WriteRequestBuilder() apiModel.PlcWriteRequestBuilder {
 
 func (m *Connection) SubscriptionRequestBuilder() apiModel.PlcSubscriptionRequestBuilder {
 	return spiModel.NewDefaultPlcSubscriptionRequestBuilder(
-		m.tagHandler, m.valueHandler, NewSubscriber(m, options.WithCustomLogger(m.log)))
+		m.tagHandler,
+		m.valueHandler,
+		NewSubscriber(
+			m,
+			append(m._options, options.WithCustomLogger(m.log))...,
+		),
+	)
 }
 
 func (m *Connection) BrowseRequestBuilder() apiModel.PlcBrowseRequestBuilder {

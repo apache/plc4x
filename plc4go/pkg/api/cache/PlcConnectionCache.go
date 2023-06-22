@@ -45,13 +45,14 @@ func NewPlcConnectionCache(driverManager plc4go.PlcDriverManager, withConnection
 	}
 	maxLeaseTime := 5 * time.Second
 	cc := &plcConnectionCache{
-		log:           log,
 		driverManager: driverManager,
 		maxLeaseTime:  maxLeaseTime,
 		maxWaitTime:   maxLeaseTime * 5,
 		cacheLock:     lock.NewCASMutex(),
 		connections:   make(map[string]*connectionContainer),
 		tracer:        nil,
+		log:           log,
+		// _options:   _options, // TODO: we might want to migrate the connection cache options to proper options
 	}
 	for _, option := range withConnectionCacheOptions {
 		option(cc)
@@ -108,7 +109,8 @@ type plcConnectionCache struct {
 	connections map[string]*connectionContainer
 	tracer      tracer.Tracer
 
-	log zerolog.Logger
+	log      zerolog.Logger
+	_options []options.WithOption // Used to pass them downstream
 }
 
 func (t *plcConnectionCache) onConnectionEvent(event connectionEvent) {
@@ -128,7 +130,10 @@ func (t *plcConnectionCache) onConnectionEvent(event connectionEvent) {
 ///////////////////////////////////////
 
 func (t *plcConnectionCache) EnableTracer() {
-	t.tracer = tracer.NewTracer("cache", options.WithCustomLogger(t.log))
+	t.tracer = tracer.NewTracer(
+		"cache",
+		append(t._options, options.WithCustomLogger(t.log))...,
+	)
 }
 
 func (t *plcConnectionCache) GetTracer() tracer.Tracer {

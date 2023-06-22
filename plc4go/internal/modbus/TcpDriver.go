@@ -37,24 +37,26 @@ import (
 type TcpDriver struct {
 	_default.DefaultDriver
 
-	log zerolog.Logger // TODO: use it
+	log      zerolog.Logger
+	_options []options.WithOption // Used to pass them downstream
 }
 
 func NewModbusTcpDriver(_options ...options.WithOption) *TcpDriver {
 	customLogger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)
 	driver := &TcpDriver{
-		log: customLogger,
+		log:      customLogger,
+		_options: _options,
 	}
 	driver.DefaultDriver = _default.NewDefaultDriver(driver, "modbus-tcp", "Modbus TCP", "tcp", NewTagHandler())
 	return driver
 }
 
-func (m TcpDriver) GetConnectionWithContext(ctx context.Context, transportUrl url.URL, transports map[string]transports.Transport, driverOptions map[string][]string) <-chan plc4go.PlcConnectionConnectResult {
-	m.log.Debug().Stringer("transportUrl", &transportUrl).Msgf("Get connection for transport url with %d transport(s) and %d option(s)", len(transports), len(driverOptions))
+func (d TcpDriver) GetConnectionWithContext(ctx context.Context, transportUrl url.URL, transports map[string]transports.Transport, driverOptions map[string][]string) <-chan plc4go.PlcConnectionConnectResult {
+	d.log.Debug().Stringer("transportUrl", &transportUrl).Msgf("Get connection for transport url with %d transport(s) and %d option(s)", len(transports), len(driverOptions))
 	// Get an the transport specified in the url
 	transport, ok := transports[transportUrl.Scheme]
 	if !ok {
-		m.log.Error().Stringer("transportUrl", &transportUrl).Msgf("We couldn't find a transport for scheme %s", transportUrl.Scheme)
+		d.log.Error().Stringer("transportUrl", &transportUrl).Msgf("We couldn't find a transport for scheme %s", transportUrl.Scheme)
 		ch := make(chan plc4go.PlcConnectionConnectResult, 1)
 		ch <- _default.NewDefaultPlcConnectionConnectResult(nil, errors.Errorf("couldn't find transport for given transport url %#v", transportUrl))
 		return ch
@@ -62,9 +64,13 @@ func (m TcpDriver) GetConnectionWithContext(ctx context.Context, transportUrl ur
 	// Provide a default-port to the transport, which is used, if the user doesn't provide on in the connection string.
 	driverOptions["defaultTcpPort"] = []string{"502"}
 	// Have the transport create a new transport-instance.
-	transportInstance, err := transport.CreateTransportInstance(transportUrl, driverOptions, options.WithCustomLogger(m.log))
+	transportInstance, err := transport.CreateTransportInstance(
+		transportUrl,
+		driverOptions,
+		append(d._options, options.WithCustomLogger(d.log))...,
+	)
 	if err != nil {
-		m.log.Error().Stringer("transportUrl", &transportUrl).Msgf("We couldn't create a transport instance for port %#v", driverOptions["defaultTcpPort"])
+		d.log.Error().Stringer("transportUrl", &transportUrl).Msgf("We couldn't create a transport instance for port %#v", driverOptions["defaultTcpPort"])
 		ch := make(chan plc4go.PlcConnectionConnectResult, 1)
 		ch <- _default.NewDefaultPlcConnectionConnectResult(nil, errors.New("couldn't initialize transport configuration for given transport url "+transportUrl.String()))
 		return ch
@@ -76,7 +82,7 @@ func (m TcpDriver) GetConnectionWithContext(ctx context.Context, transportUrl ur
 	go func() {
 		defer func() {
 			if err := recover(); err != nil {
-				m.log.Error().Msgf("panic-ed %v. Stack: %s", err, debug.Stack())
+				d.log.Error().Msgf("panic-ed %v. Stack: %s", err, debug.Stack())
 			}
 		}()
 		for {
@@ -84,14 +90,17 @@ func (m TcpDriver) GetConnectionWithContext(ctx context.Context, transportUrl ur
 			adu := msg.(model.ModbusTcpADU)
 			serialized, err := json.Marshal(adu)
 			if err != nil {
-				m.log.Error().Err(err).Msg("got error serializing adu")
+				d.log.Error().Err(err).Msg("got error serializing adu")
 			} else {
-				m.log.Debug().Msgf("got message in the default handler %s\n", serialized)
+				d.log.Debug().Msgf("got message in the default handler %s\n", serialized)
 			}
 		}
 	}()
-	codec := NewMessageCodec(transportInstance, options.WithCustomLogger(m.log))
-	m.log.Debug().Msgf("working with codec %#v", codec)
+	codec := NewMessageCodec(
+		transportInstance,
+		append(d._options, options.WithCustomLogger(d.log))...,
+	)
+	d.log.Debug().Msgf("working with codec %#v", codec)
 
 	// If a unit-identifier was provided in the connection string use this, otherwise use the default of 1
 	unitIdentifier := uint8(1)
@@ -102,10 +111,16 @@ func (m TcpDriver) GetConnectionWithContext(ctx context.Context, transportUrl ur
 			unitIdentifier = uint8(intValue)
 		}
 	}
-	m.log.Debug().Uint8("unitIdentifier", unitIdentifier).Msgf("using unit identifier %d", unitIdentifier)
+	d.log.Debug().Uint8("unitIdentifier", unitIdentifier).Msgf("using unit identifier %d", unitIdentifier)
 
 	// Create the new connection
-	connection := NewConnection(unitIdentifier, codec, driverOptions, m.GetPlcTagHandler(), options.WithCustomLogger(m.log))
-	m.log.Debug().Stringer("connection", connection).Msg("created connection, connecting now")
+	connection := NewConnection(
+		unitIdentifier,
+		codec,
+		driverOptions,
+		d.GetPlcTagHandler(),
+		append(d._options, options.WithCustomLogger(d.log))...,
+	)
+	d.log.Debug().Stringer("connection", connection).Msg("created connection, connecting now")
 	return connection.ConnectWithContext(ctx)
 }

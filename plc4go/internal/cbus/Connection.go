@@ -74,7 +74,8 @@ type Connection struct {
 	connectionId string
 	tracer       tracer.Tracer
 
-	log zerolog.Logger `ignore:"true"`
+	log      zerolog.Logger       `ignore:"true"`
+	_options []options.WithOption `ignore:"true"` // Used to pass them downstream
 }
 
 func NewConnection(messageCodec *MessageCodec, configuration Configuration, driverContext DriverContext, tagHandler spi.PlcTagHandler, tm transactions.RequestTransactionManager, connectionOptions map[string][]string, _options ...options.WithOption) *Connection {
@@ -86,7 +87,8 @@ func NewConnection(messageCodec *MessageCodec, configuration Configuration, driv
 		driverContext:  driverContext,
 		tm:             tm,
 
-		log: customLogger,
+		log:      customLogger,
+		_options: _options,
 	}
 	if traceEnabledOption, ok := connectionOptions["traceEnabled"]; ok {
 		if len(traceEnabledOption) == 1 {
@@ -175,7 +177,15 @@ func (c *Connection) GetMetadata() apiModel.PlcConnectionMetadata {
 }
 
 func (c *Connection) ReadRequestBuilder() apiModel.PlcReadRequestBuilder {
-	return spiModel.NewDefaultPlcReadRequestBuilder(c.GetPlcTagHandler(), NewReader(&c.alphaGenerator, c.messageCodec, c.tm, options.WithCustomLogger(c.log)))
+	return spiModel.NewDefaultPlcReadRequestBuilder(
+		c.GetPlcTagHandler(),
+		NewReader(
+			&c.alphaGenerator,
+			c.messageCodec,
+			c.tm,
+			append(c._options, options.WithCustomLogger(c.log))...,
+		),
+	)
 }
 
 func (c *Connection) WriteRequestBuilder() apiModel.PlcWriteRequestBuilder {
@@ -186,7 +196,10 @@ func (c *Connection) SubscriptionRequestBuilder() apiModel.PlcSubscriptionReques
 	return spiModel.NewDefaultPlcSubscriptionRequestBuilder(
 		c.GetPlcTagHandler(),
 		c.GetPlcValueHandler(),
-		NewSubscriber(c.addSubscriber, options.WithCustomLogger(c.log)),
+		NewSubscriber(
+			c.addSubscriber,
+			append(c._options, options.WithCustomLogger(c.log))...,
+		),
 	)
 }
 
@@ -196,7 +209,13 @@ func (c *Connection) UnsubscriptionRequestBuilder() apiModel.PlcUnsubscriptionRe
 }
 
 func (c *Connection) BrowseRequestBuilder() apiModel.PlcBrowseRequestBuilder {
-	return spiModel.NewDefaultPlcBrowseRequestBuilder(c.GetPlcTagHandler(), NewBrowser(c, options.WithCustomLogger(c.log)))
+	return spiModel.NewDefaultPlcBrowseRequestBuilder(
+		c.GetPlcTagHandler(),
+		NewBrowser(
+			c,
+			append(c._options, options.WithCustomLogger(c.log))...,
+		),
+	)
 }
 
 func (c *Connection) addSubscriber(subscriber *Subscriber) {

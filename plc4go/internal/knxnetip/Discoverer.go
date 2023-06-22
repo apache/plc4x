@@ -46,7 +46,8 @@ type Discoverer struct {
 	deviceScanningWorkItemId            atomic.Int32
 	deviceScanningQueue                 pool.Executor
 
-	log zerolog.Logger
+	log      zerolog.Logger
+	_options []options.WithOption // Used to pass them downstream
 }
 
 func NewDiscoverer(_options ...options.WithOption) *Discoverer {
@@ -56,6 +57,7 @@ func NewDiscoverer(_options ...options.WithOption) *Discoverer {
 		transportInstanceCreationQueue: pool.NewFixedSizeExecutor(50, 100, _options...),
 		deviceScanningQueue:            pool.NewFixedSizeExecutor(50, 100, _options...),
 		log:                            customLogger,
+		_options:                       _options,
 	}
 }
 
@@ -180,7 +182,11 @@ func (d *Discoverer) createDeviceScanDispatcher(udpTransportInstance *udp.Transp
 	return func() {
 		d.log.Debug().Msgf("Scanning %v", udpTransportInstance)
 		// Create a codec for sending and receiving messages.
-		codec := NewMessageCodec(udpTransportInstance, nil, options.WithCustomLogger(d.log))
+		codec := NewMessageCodec(
+			udpTransportInstance,
+			nil,
+			append(d._options, options.WithCustomLogger(d.log))...,
+		)
 		// Explicitly start the worker
 		if err := codec.ConnectWithContext(context.TODO()); err != nil {
 			d.log.Error().Err(err).Msg("Error connecting")

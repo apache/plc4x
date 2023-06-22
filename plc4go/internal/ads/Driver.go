@@ -38,13 +38,15 @@ import (
 type Driver struct {
 	_default.DefaultDriver
 
-	log zerolog.Logger
+	log      zerolog.Logger
+	_options []options.WithOption // Used to pass them downstream
 }
 
 func NewDriver(_options ...options.WithOption) plc4go.PlcDriver {
 	customLogger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)
 	driver := &Driver{
-		log: customLogger,
+		log:      customLogger,
+		_options: _options,
 	}
 	driver.DefaultDriver = _default.NewDefaultDriver(driver, "ads", "Beckhoff TwinCat ADS", "tcp", NewTagHandler())
 	return driver
@@ -63,7 +65,11 @@ func (m *Driver) GetConnectionWithContext(ctx context.Context, transportUrl url.
 	// Provide a default-port to the transport, which is used, if the user doesn't provide on in the connection string.
 	driverOptions["defaultTcpPort"] = []string{strconv.Itoa(int(adsModel.AdsConstants_ADSTCPDEFAULTPORT))}
 	// Have the transport create a new transport-instance.
-	transportInstance, err := transport.CreateTransportInstance(transportUrl, driverOptions, options.WithCustomLogger(m.log))
+	transportInstance, err := transport.CreateTransportInstance(
+		transportUrl,
+		driverOptions,
+		append(m._options, options.WithCustomLogger(m.log))...,
+	)
 	if err != nil {
 		m.log.Error().Stringer("transportUrl", &transportUrl).Msgf("We couldn't create a transport instance for port %#v", driverOptions["defaultTcpPort"])
 		ch := make(chan plc4go.PlcConnectionConnectResult, 1)
@@ -72,7 +78,10 @@ func (m *Driver) GetConnectionWithContext(ctx context.Context, transportUrl url.
 	}
 
 	// Create a new codec for taking care of encoding/decoding of messages
-	codec := NewMessageCodec(transportInstance, options.WithCustomLogger(m.log))
+	codec := NewMessageCodec(
+		transportInstance,
+		append(m._options, options.WithCustomLogger(m.log))...,
+	)
 	m.log.Debug().Msgf("working with codec %#v", codec)
 
 	configuration, err := model.ParseFromOptions(m.log, driverOptions)
@@ -99,5 +108,7 @@ func (m *Driver) SupportsDiscovery() bool {
 }
 
 func (m *Driver) DiscoverWithContext(ctx context.Context, callback func(event apiModel.PlcDiscoveryItem), discoveryOptions ...options.WithDiscoveryOption) error {
-	return NewDiscoverer(options.WithCustomLogger(m.log)).Discover(ctx, callback, discoveryOptions...)
+	return NewDiscoverer(
+		append(m._options, options.WithCustomLogger(m.log))...,
+	).Discover(ctx, callback, discoveryOptions...)
 }

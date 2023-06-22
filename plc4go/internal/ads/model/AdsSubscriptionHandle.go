@@ -36,7 +36,8 @@ type AdsSubscriptionHandle struct {
 	directTag  DirectPlcTag
 	consumers  []apiModel.PlcSubscriptionEventConsumer
 
-	log zerolog.Logger
+	log      zerolog.Logger
+	_options []options.WithOption // Used to pass them downstream
 }
 
 func NewAdsSubscriptionHandle(subscriber spi.PlcSubscriber, tagName string, directTag DirectPlcTag, _options ...options.WithOption) *AdsSubscriptionHandle {
@@ -47,6 +48,7 @@ func NewAdsSubscriptionHandle(subscriber spi.PlcSubscriber, tagName string, dire
 		directTag:  directTag,
 		consumers:  []apiModel.PlcSubscriptionEventConsumer{},
 		log:        customLogger,
+		_options:   _options,
 	}
 }
 
@@ -70,7 +72,7 @@ func (t *AdsSubscriptionHandle) PublishPlcValue(value apiValues.PlcValue) {
 		map[string]time.Duration{t.tagName: time.Second},
 		map[string]apiModel.PlcResponseCode{t.tagName: apiModel.PlcResponseCode_OK},
 		map[string]apiValues.PlcValue{t.tagName: value},
-		options.WithCustomLogger(t.log),
+		append(t._options, options.WithCustomLogger(t.log))...,
 	)
 	for _, consumer := range t.consumers {
 		consumer(&event)

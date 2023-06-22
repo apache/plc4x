@@ -34,7 +34,8 @@ type Driver struct {
 	_default.DefaultDriver
 	valueHandler ValueHandler
 
-	log zerolog.Logger
+	log      zerolog.Logger
+	_options []options.WithOption // Used to pass them downstream
 }
 
 func NewDriver(_options ...options.WithOption) plc4go.PlcDriver {
@@ -42,14 +43,24 @@ func NewDriver(_options ...options.WithOption) plc4go.PlcDriver {
 	driver := &Driver{
 		valueHandler: NewValueHandler(),
 
-		log: customLogger,
+		log:      customLogger,
+		_options: _options,
 	}
 	driver.DefaultDriver = _default.NewDefaultDriver(driver, "simulated", "Simulated PLC4X Datasource", "none", NewTagHandler())
 	return driver
 }
 
 func (d *Driver) GetConnectionWithContext(ctx context.Context, _ url.URL, _ map[string]transports.Transport, driverOptions map[string][]string) <-chan plc4go.PlcConnectionConnectResult {
-	connection := NewConnection(NewDevice("test", options.WithCustomLogger(d.log)), d.GetPlcTagHandler(), d.valueHandler, driverOptions, options.WithCustomLogger(d.log))
+	connection := NewConnection(
+		NewDevice(
+			"test",
+			append(d._options, options.WithCustomLogger(d.log))...,
+		),
+		d.GetPlcTagHandler(),
+		d.valueHandler,
+		driverOptions,
+		append(d._options, options.WithCustomLogger(d.log))...,
+	)
 	d.log.Debug().Msgf("Connecting and returning connection %v", connection)
 	return connection.ConnectWithContext(ctx)
 }

@@ -49,7 +49,8 @@ type Connection struct {
 	connectionId string
 	tracer       tracer.Tracer
 
-	log zerolog.Logger
+	log      zerolog.Logger
+	_options []options.WithOption // Used to pass them downstream
 }
 
 func NewConnection(unitIdentifier uint8, messageCodec spi.MessageCodec, connectionOptions map[string][]string, tagHandler spi.PlcTagHandler, _options ...options.WithOption) *Connection {
@@ -65,7 +66,8 @@ func NewConnection(unitIdentifier uint8, messageCodec spi.MessageCodec, connecti
 			spiModel.NewDefaultPlcWriteResponse,
 			_options...,
 		),
-		log: customLogger,
+		log:      customLogger,
+		_options: _options,
 	}
 	if traceEnabledOption, ok := connectionOptions["traceEnabled"]; ok {
 		if len(traceEnabledOption) == 1 {
@@ -80,30 +82,30 @@ func NewConnection(unitIdentifier uint8, messageCodec spi.MessageCodec, connecti
 	return connection
 }
 
-func (m *Connection) GetConnectionId() string {
-	return m.connectionId
+func (c *Connection) GetConnectionId() string {
+	return c.connectionId
 }
 
-func (m *Connection) IsTraceEnabled() bool {
-	return m.tracer != nil
+func (c *Connection) IsTraceEnabled() bool {
+	return c.tracer != nil
 }
 
-func (m *Connection) GetTracer() tracer.Tracer {
-	return m.tracer
+func (c *Connection) GetTracer() tracer.Tracer {
+	return c.tracer
 }
 
-func (m *Connection) GetConnection() plc4go.PlcConnection {
-	return m
+func (c *Connection) GetConnection() plc4go.PlcConnection {
+	return c
 }
 
-func (m *Connection) GetMessageCodec() spi.MessageCodec {
-	return m.messageCodec
+func (c *Connection) GetMessageCodec() spi.MessageCodec {
+	return c.messageCodec
 }
 
-func (m *Connection) Ping() <-chan plc4go.PlcConnectionPingResult {
+func (c *Connection) Ping() <-chan plc4go.PlcConnectionPingResult {
 	// TODO: use proper context
 	ctx := context.TODO()
-	m.log.Trace().Msg("Pinging")
+	c.log.Trace().Msg("Pinging")
 	result := make(chan plc4go.PlcConnectionPingResult, 1)
 	go func() {
 		defer func() {
@@ -112,29 +114,29 @@ func (m *Connection) Ping() <-chan plc4go.PlcConnectionPingResult {
 			}
 		}()
 		diagnosticRequestPdu := readWriteModel.NewModbusPDUDiagnosticRequest(0, 0x42)
-		pingRequest := readWriteModel.NewModbusTcpADU(1, m.unitIdentifier, diagnosticRequestPdu, false)
-		if err := m.messageCodec.SendRequest(ctx, pingRequest,
+		pingRequest := readWriteModel.NewModbusTcpADU(1, c.unitIdentifier, diagnosticRequestPdu, false)
+		if err := c.messageCodec.SendRequest(ctx, pingRequest,
 			func(message spi.Message) bool {
 				responseAdu, ok := message.(readWriteModel.ModbusTcpADUExactly)
 				if !ok {
 					return false
 				}
-				return responseAdu.GetTransactionIdentifier() == 1 && responseAdu.GetUnitIdentifier() == m.unitIdentifier
+				return responseAdu.GetTransactionIdentifier() == 1 && responseAdu.GetUnitIdentifier() == c.unitIdentifier
 			},
 			func(message spi.Message) error {
-				m.log.Trace().Msgf("Received Message")
+				c.log.Trace().Msgf("Received Message")
 				if message != nil {
 					// If we got a valid response (even if it will probably contain an error, we know the remote is available)
-					m.log.Trace().Msg("got valid response")
+					c.log.Trace().Msg("got valid response")
 					result <- _default.NewDefaultPlcConnectionPingResult(nil)
 				} else {
-					m.log.Trace().Msg("got no response")
+					c.log.Trace().Msg("got no response")
 					result <- _default.NewDefaultPlcConnectionPingResult(errors.New("no response"))
 				}
 				return nil
 			},
 			func(err error) error {
-				m.log.Trace().Msgf("Received Error")
+				c.log.Trace().Msgf("Received Error")
 				result <- _default.NewDefaultPlcConnectionPingResult(errors.Wrap(err, "got error processing request"))
 				return nil
 			},
@@ -146,30 +148,38 @@ func (m *Connection) Ping() <-chan plc4go.PlcConnectionPingResult {
 	return result
 }
 
-func (m *Connection) GetMetadata() apiModel.PlcConnectionMetadata {
+func (c *Connection) GetMetadata() apiModel.PlcConnectionMetadata {
 	return _default.DefaultConnectionMetadata{
 		ProvidesReading: true,
 		ProvidesWriting: true,
 	}
 }
 
-func (m *Connection) ReadRequestBuilder() apiModel.PlcReadRequestBuilder {
+func (c *Connection) ReadRequestBuilder() apiModel.PlcReadRequestBuilder {
 	return spiModel.NewDefaultPlcReadRequestBuilderWithInterceptor(
-		m.GetPlcTagHandler(),
-		NewReader(m.unitIdentifier, m.messageCodec, options.WithCustomLogger(m.log)),
-		m.requestInterceptor,
+		c.GetPlcTagHandler(),
+		NewReader(
+			c.unitIdentifier,
+			c.messageCodec,
+			append(c._options, options.WithCustomLogger(c.log))...,
+		),
+		c.requestInterceptor,
 	)
 }
 
-func (m *Connection) WriteRequestBuilder() apiModel.PlcWriteRequestBuilder {
+func (c *Connection) WriteRequestBuilder() apiModel.PlcWriteRequestBuilder {
 	return spiModel.NewDefaultPlcWriteRequestBuilderWithInterceptor(
-		m.GetPlcTagHandler(),
-		m.GetPlcValueHandler(),
-		NewWriter(m.unitIdentifier, m.messageCodec, options.WithCustomLogger(m.log)),
-		m.requestInterceptor,
+		c.GetPlcTagHandler(),
+		c.GetPlcValueHandler(),
+		NewWriter(
+			c.unitIdentifier,
+			c.messageCodec,
+			append(c._options, options.WithCustomLogger(c.log))...,
+		),
+		c.requestInterceptor,
 	)
 }
 
-func (m *Connection) String() string {
-	return fmt.Sprintf("modbus.Connection{unitIdentifier: %d}", m.unitIdentifier)
+func (c *Connection) String() string {
+	return fmt.Sprintf("modbus.Connection{unitIdentifier: %d}", c.unitIdentifier)
 }
