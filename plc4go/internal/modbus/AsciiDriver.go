@@ -41,7 +41,7 @@ type AsciiDriver struct {
 }
 
 func NewModbusAsciiDriver(_options ...options.WithOption) *AsciiDriver {
-	customLogger, _ := options.ExtractCustomLogger(_options...)
+	customLogger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)
 	driver := &AsciiDriver{
 		log: customLogger,
 	}

@@ -39,7 +39,7 @@ type MessageCodec struct {
 }
 
 func NewMessageCodec(transportInstance transports.TransportInstance, _options ...options.WithOption) *MessageCodec {
-	customLogger, _ := options.ExtractCustomLogger(_options...)
+	customLogger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)
 	codec := &MessageCodec{
 		log: customLogger,
 	}

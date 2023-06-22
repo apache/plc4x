@@ -21,6 +21,7 @@ package serial
 
 import (
 	"github.com/apache/plc4x/plc4go/spi/transports"
+	"github.com/rs/zerolog/log"
 	"github.com/stretchr/testify/assert"
 	"net"
 	"net/url"
@@ -34,7 +35,9 @@ func TestNewTransport(t *testing.T) {
 	}{
 		{
 			name: "create it",
-			want: &Transport{},
+			want: &Transport{
+				log: log.Logger,
+			},
 		},
 	}
 	for _, tt := range tests {

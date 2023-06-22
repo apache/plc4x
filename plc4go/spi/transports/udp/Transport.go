@@ -36,7 +36,7 @@ type Transport struct {
 }
 
 func NewTransport(_options ...options.WithOption) *Transport {
-	customLogger, _ := options.ExtractCustomLogger(_options...)
+	customLogger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)
 	return &Transport{
 		log: customLogger,
 	}

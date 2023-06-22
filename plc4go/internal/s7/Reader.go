@@ -48,7 +48,7 @@ type Reader struct {
 
 func NewReader(tpduGenerator *TpduGenerator, messageCodec spi.MessageCodec, tm transactions.RequestTransactionManager, _options ...options.WithOption) *Reader {
 	passLoggerToModel, _ := options.ExtractPassLoggerToModel(_options...)
-	customLogger, _ := options.ExtractCustomLogger(_options...)
+	customLogger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)
 	return &Reader{
 		tpduGenerator:  tpduGenerator,
 		messageCodec:   messageCodec,

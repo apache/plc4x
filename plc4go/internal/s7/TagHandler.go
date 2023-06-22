@@ -63,7 +63,7 @@ type TagHandler struct {
 
 func NewTagHandler(_options ...options.WithOption) TagHandler {
 	passLoggerToModel, _ := options.ExtractPassLoggerToModel(_options...)
-	customLogger, _ := options.ExtractCustomLogger(_options...)
+	customLogger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)
 	return TagHandler{
 		addressPattern: regexp.MustCompile(`^%(?P<memoryArea>.)(?P<transferSizeCode>[XBWD]?)(?P<byteOffset>\d{1,7})(.(?P<bitOffset>[0-7]))?:(?P<dataType>[a-zA-Z_]+)(\[(?P<numElements>\d+)])?`),
 		//blockNumber usually has its max hat around 64000 --> 5digits

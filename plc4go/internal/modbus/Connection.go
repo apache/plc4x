@@ -53,7 +53,7 @@ type Connection struct {
 }
 
 func NewConnection(unitIdentifier uint8, messageCodec spi.MessageCodec, connectionOptions map[string][]string, tagHandler spi.PlcTagHandler, _options ...options.WithOption) *Connection {
-	customLogger, _ := options.ExtractCustomLogger(_options...)
+	customLogger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)
 	connection := &Connection{
 		unitIdentifier: unitIdentifier,
 		messageCodec:   messageCodec,

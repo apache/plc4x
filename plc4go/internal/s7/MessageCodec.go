@@ -41,7 +41,7 @@ type MessageCodec struct {
 
 func NewMessageCodec(transportInstance transports.TransportInstance, _options ...options.WithOption) *MessageCodec {
 	passLoggerToModel, _ := options.ExtractPassLoggerToModel(_options...)
-	extractCustomLogger, _ := options.ExtractCustomLogger(_options...)
+	extractCustomLogger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)
 	codec := &MessageCodec{
 		passLogToModel: passLoggerToModel,
 		log:            extractCustomLogger,

@@ -48,7 +48,7 @@ type Reader struct {
 
 func NewReader(unitIdentifier uint8, messageCodec spi.MessageCodec, _options ...options.WithOption) *Reader {
 	passLoggerToModel, _ := options.ExtractPassLoggerToModel(_options...)
-	customLogger, _ := options.ExtractCustomLogger(_options...)
+	customLogger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)
 	return &Reader{
 		transactionIdentifier: 0,
 		unitIdentifier:        unitIdentifier,

@@ -39,7 +39,7 @@ type Driver struct {
 }
 
 func NewDriver(_options ...options.WithOption) *Driver {
-	customLogger, _ := options.ExtractCustomLogger(_options...)
+	customLogger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)
 	driver := &Driver{
 		log: customLogger,
 	}

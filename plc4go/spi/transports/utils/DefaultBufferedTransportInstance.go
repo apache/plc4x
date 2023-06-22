@@ -45,7 +45,7 @@ type DefaultBufferedTransportInstance interface {
 }
 
 func NewDefaultBufferedTransportInstance(defaultBufferedTransportInstanceRequirements DefaultBufferedTransportInstanceRequirements, _options ...options.WithOption) DefaultBufferedTransportInstance {
-	customLogger, _ := options.ExtractCustomLogger(_options...)
+	customLogger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)
 	return &defaultBufferedTransportInstance{
 		DefaultBufferedTransportInstanceRequirements: defaultBufferedTransportInstanceRequirements,
 		log: customLogger,

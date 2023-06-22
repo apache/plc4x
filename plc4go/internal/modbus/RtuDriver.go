@@ -41,7 +41,7 @@ type RtuDriver struct {
 }
 
 func NewModbusRtuDriver(_options ...options.WithOption) *RtuDriver {
-	customLogger, _ := options.ExtractCustomLogger(_options...)
+	customLogger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)
 	driver := &RtuDriver{
 		log: customLogger,
 	}

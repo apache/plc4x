@@ -1827,6 +1827,7 @@ func TestNewConnection(t *testing.T) {
 		tagHandler    spi.PlcTagHandler
 		tm            transactions.RequestTransactionManager
 		options       map[string][]string
+		_options      []options.WithOption
 	}
 	tests := []struct {
 		name       string
@@ -1845,6 +1846,8 @@ func TestNewConnection(t *testing.T) {
 					assert.Error(t, codec.Disconnect())
 				})
 				args.messageCodec = codec
+
+				args._options = _options
 			},
 			wantAssert: func(t *testing.T, connection *Connection) bool {
 				return assert.NotNil(t, connection)
@@ -1856,7 +1859,7 @@ func TestNewConnection(t *testing.T) {
 			if tt.setup != nil {
 				tt.setup(t, &tt.args)
 			}
-			connection := NewConnection(tt.args.messageCodec, tt.args.configuration, tt.args.driverContext, tt.args.tagHandler, tt.args.tm, tt.args.options)
+			connection := NewConnection(tt.args.messageCodec, tt.args.configuration, tt.args.driverContext, tt.args.tagHandler, tt.args.tm, tt.args.options, tt.args._options...)
 			t.Cleanup(func() {
 				timer := time.NewTimer(1 * time.Second)
 				t.Cleanup(func() {

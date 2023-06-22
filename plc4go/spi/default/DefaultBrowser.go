@@ -39,7 +39,7 @@ type DefaultBrowser interface {
 }
 
 func NewDefaultBrowser(defaultBrowserRequirements DefaultBrowserRequirements, _options ...options.WithOption) DefaultBrowser {
-	customLogger, _ := options.ExtractCustomLogger(_options...)
+	customLogger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)
 	return &defaultBrowser{
 		DefaultBrowserRequirements: defaultBrowserRequirements,
 

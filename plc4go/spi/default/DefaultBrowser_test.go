@@ -23,6 +23,7 @@ import (
 	"context"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/spi/utils"
+	"github.com/rs/zerolog/log"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"testing"
@@ -42,7 +43,9 @@ func TestNewDefaultBrowser(t *testing.T) {
 	}{
 		{
 			name: "just create it",
-			want: &defaultBrowser{},
+			want: &defaultBrowser{
+				log: log.Logger,
+			},
 		},
 	}
 	for _, tt := range tests {

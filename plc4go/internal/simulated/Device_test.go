@@ -20,6 +20,7 @@
 package simulated
 
 import (
+	"github.com/rs/zerolog/log"
 	"github.com/stretchr/testify/assert"
 	"testing"
 
@@ -279,6 +280,7 @@ func TestNewDevice(t *testing.T) {
 			want: &Device{
 				Name:  "",
 				State: make(map[simulatedTag]*apiValues.PlcValue),
+				log:   log.Logger,
 			},
 		},
 	}

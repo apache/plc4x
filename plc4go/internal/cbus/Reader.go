@@ -46,7 +46,7 @@ type Reader struct {
 }
 
 func NewReader(tpduGenerator *AlphaGenerator, messageCodec *MessageCodec, tm transactions.RequestTransactionManager, _options ...options.WithOption) *Reader {
-	customLogger, _ := options.ExtractCustomLogger(_options...)
+	customLogger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)
 	return &Reader{
 		alphaGenerator: tpduGenerator,
 		messageCodec:   messageCodec,

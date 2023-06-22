@@ -20,6 +20,7 @@
 package tracer
 
 import (
+	"github.com/rs/zerolog/log"
 	"github.com/stretchr/testify/assert"
 	"sync/atomic"
 	"testing"
@@ -44,6 +45,7 @@ func TestNewTracer(t *testing.T) {
 					value.Store("")
 					return value
 				}(),
+				log: log.Logger,
 			},
 		},
 	}

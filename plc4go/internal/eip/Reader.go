@@ -52,7 +52,7 @@ type Reader struct {
 }
 
 func NewReader(messageCodec spi.MessageCodec, tm transactions.RequestTransactionManager, configuration Configuration, sessionHandle *uint32, _options ...options.WithOption) *Reader {
-	customLogger, _ := options.ExtractCustomLogger(_options...)
+	customLogger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)
 	return &Reader{
 		messageCodec:  messageCodec,
 		tm:            tm,

@@ -25,6 +25,7 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/testutils"
 	"github.com/apache/plc4x/plc4go/spi/transactions"
 	"github.com/apache/plc4x/plc4go/spi/utils"
+	"github.com/rs/zerolog/log"
 	"github.com/stretchr/testify/assert"
 	"strings"
 	"testing"
@@ -48,6 +49,7 @@ func TestNewWriter(t *testing.T) {
 			name: "create a new one",
 			want: func() *Writer {
 				var writer Writer
+				writer.log = log.Logger
 				return &writer
 			}(),
 		},

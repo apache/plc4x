@@ -177,7 +177,7 @@ func buildDefaultConnection(requirements DefaultConnectionRequirements, _options
 		}
 	}
 
-	customLogger, _ := options.ExtractCustomLogger(_options...)
+	customLogger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)
 	return &defaultConnection{
 		DefaultConnectionRequirements: requirements,
 		defaultTtl:                    defaultTtl,

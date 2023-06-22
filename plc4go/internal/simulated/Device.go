@@ -39,7 +39,7 @@ type Device struct {
 
 func NewDevice(name string, _options ...options.WithOption) *Device {
 	passLoggerToModel, _ := options.ExtractPassLoggerToModel(_options...)
-	customLogger, _ := options.ExtractCustomLogger(_options...)
+	customLogger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)
 	return &Device{
 		Name:           name,
 		State:          make(map[simulatedTag]*apiValues.PlcValue),

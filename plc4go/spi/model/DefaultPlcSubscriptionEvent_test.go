@@ -20,6 +20,7 @@
 package model
 
 import (
+	"github.com/rs/zerolog/log"
 	"github.com/stretchr/testify/mock"
 	"testing"
 	"time"
@@ -403,7 +404,10 @@ func TestNewDefaultPlcSubscriptionEvent(t *testing.T) {
 	}{
 		{
 			name: "create it",
-			want: &DefaultPlcSubscriptionEvent{values: map[string]*DefaultPlcSubscriptionEventItem{}},
+			want: &DefaultPlcSubscriptionEvent{
+				values: map[string]*DefaultPlcSubscriptionEventItem{},
+				log:    log.Logger,
+			},
 		},
 	}
 	for _, tt := range tests {

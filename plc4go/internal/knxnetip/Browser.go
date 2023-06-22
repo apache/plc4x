@@ -52,7 +52,7 @@ type Browser struct {
 
 func NewBrowser(connection *Connection, messageCodec spi.MessageCodec, _options ...options.WithOption) *Browser {
 	passLoggerToModel, _ := options.ExtractPassLoggerToModel(_options...)
-	extractCustomLogger, _ := options.ExtractCustomLogger(_options...)
+	extractCustomLogger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)
 	browser := Browser{
 		connection:      connection,
 		messageCodec:    messageCodec,

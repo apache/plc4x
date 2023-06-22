@@ -37,7 +37,7 @@ type Subscriber struct {
 }
 
 func NewSubscriber(connection *Connection, _options ...options.WithOption) *Subscriber {
-	logger, _ := options.ExtractCustomLogger(_options...)
+	logger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)
 	return &Subscriber{
 		connection: connection,
 		consumers:  make(map[*spiModel.DefaultPlcConsumerRegistration]apiModel.PlcSubscriptionEventConsumer),

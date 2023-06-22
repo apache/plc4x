@@ -21,6 +21,7 @@ package cbus
 
 import (
 	"context"
+	"github.com/rs/zerolog/log"
 	"testing"
 	"time"
 
@@ -44,6 +45,7 @@ func TestNewSubscriber(t *testing.T) {
 			name: "simple",
 			want: &Subscriber{
 				consumers: map[*spiModel.DefaultPlcConsumerRegistration]apiModel.PlcSubscriptionEventConsumer{},
+				log:       log.Logger,
 			},
 		},
 	}

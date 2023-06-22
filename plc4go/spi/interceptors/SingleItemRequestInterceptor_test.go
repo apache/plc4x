@@ -26,6 +26,7 @@ import (
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
 	"github.com/apache/plc4x/plc4go/spi/utils"
+	"github.com/rs/zerolog/log"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"testing"
@@ -47,7 +48,9 @@ func TestNewSingleItemRequestInterceptor(t *testing.T) {
 	}{
 		{
 			name: "create one",
-			want: SingleItemRequestInterceptor{},
+			want: SingleItemRequestInterceptor{
+				log: log.Logger,
+			},
 		},
 	}
 	for _, tt := range tests {

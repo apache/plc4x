@@ -38,7 +38,7 @@ type DefaultValueHandler struct {
 }
 
 func NewDefaultValueHandler(_options ...options.WithOption) DefaultValueHandler {
-	customLogger, _ := options.ExtractCustomLogger(_options...)
+	customLogger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)
 	return DefaultValueHandler{
 		log: customLogger,
 	}

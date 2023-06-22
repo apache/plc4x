@@ -62,7 +62,7 @@ func NewModbusPlcTagFromStrings(tagType TagType, addressString string, quantityS
 	if err != nil {
 		return nil, errors.Errorf("Couldn't parse address string '%s' into an int", addressString)
 	}
-	customLogger, _ := options.ExtractCustomLogger(_options...)
+	customLogger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)
 	if quantityString == "" {
 		customLogger.Debug().Msg("No quantity supplied, assuming 1")
 		quantityString = "1"

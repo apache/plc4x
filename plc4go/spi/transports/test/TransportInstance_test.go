@@ -21,6 +21,7 @@ package test
 
 import (
 	"context"
+	"github.com/rs/zerolog/log"
 	"testing"
 
 	"github.com/apache/plc4x/plc4go/spi/transports"
@@ -42,6 +43,7 @@ func TestNewTransportInstance(t *testing.T) {
 			want: &TransportInstance{
 				readBuffer:  []byte{},
 				writeBuffer: []byte{},
+				log:         log.Logger,
 			},
 		},
 	}

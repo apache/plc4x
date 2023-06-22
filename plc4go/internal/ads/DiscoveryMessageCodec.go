@@ -40,7 +40,7 @@ type DiscoveryMessageCodec struct {
 
 func NewDiscoveryMessageCodec(transportInstance transports.TransportInstance, _options ...options.WithOption) *DiscoveryMessageCodec {
 	passLoggerToModel, _ := options.ExtractPassLoggerToModel(_options...)
-	customLogger, _ := options.ExtractCustomLogger(_options...)
+	customLogger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)
 	codec := &DiscoveryMessageCodec{
 		passLogToModel: passLoggerToModel,
 		log:            customLogger,

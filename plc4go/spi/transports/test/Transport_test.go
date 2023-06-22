@@ -20,6 +20,7 @@
 package test
 
 import (
+	"github.com/rs/zerolog/log"
 	"net/url"
 	"testing"
 
@@ -37,6 +38,7 @@ func TestNewTransport(t *testing.T) {
 			name: "create it",
 			want: &Transport{
 				preregisteredInstances: map[url.URL]transports.TransportInstance{},
+				log:                    log.Logger,
 			},
 		},
 	}
@@ -118,6 +120,7 @@ func TestTransport_CreateTransportInstance(t *testing.T) {
 				readBuffer:  []byte{},
 				writeBuffer: []byte{},
 				transport:   NewTransport(),
+				log:         log.Logger,
 			},
 		},
 		{
@@ -146,6 +149,7 @@ func TestTransport_CreateTransportInstance(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			m := &Transport{
 				preregisteredInstances: tt.fields.preregisteredInstances,
+				log:                    log.Logger,
 			}
 			got, err := m.CreateTransportInstance(tt.args.transportUrl, tt.args.options)
 			if (err != nil) != tt.wantErr {

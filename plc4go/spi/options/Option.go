@@ -21,8 +21,10 @@ package options
 
 import (
 	"context"
-	"github.com/rs/zerolog"
 	"time"
+
+	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
 )
 
 // WithOption is a marker interface for options supplied by the builders like WithDefaultTtl
@@ -50,6 +52,16 @@ func ExtractCustomLogger(options ...WithOption) (customLogger zerolog.Logger, fo
 		case withCustomLogger:
 			customLogger, found = option.logger, true
 		}
+	}
+	return
+}
+
+// ExtractCustomLoggerOrDefaultToGlobal can be used to extract the custom logger or use the global log.Logger if not found
+func ExtractCustomLoggerOrDefaultToGlobal(options ...WithOption) (customLogger zerolog.Logger) {
+	found := false
+	customLogger, found = ExtractCustomLogger(options...)
+	if !found {
+		customLogger = log.Logger
 	}
 	return
 }

@@ -41,7 +41,7 @@ type TcpDriver struct {
 }
 
 func NewModbusTcpDriver(_options ...options.WithOption) *TcpDriver {
-	customLogger, _ := options.ExtractCustomLogger(_options...)
+	customLogger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)
 	driver := &TcpDriver{
 		log: customLogger,
 	}

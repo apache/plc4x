@@ -45,7 +45,7 @@ type Reader struct {
 }
 
 func NewReader(connection *Connection, _options ...options.WithOption) *Reader {
-	customLogger, _ := options.ExtractCustomLogger(_options...)
+	customLogger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)
 	return &Reader{
 		connection: connection,
 		log:        customLogger,

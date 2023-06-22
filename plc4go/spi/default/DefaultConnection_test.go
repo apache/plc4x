@@ -22,6 +22,7 @@ package _default
 import (
 	"context"
 	"fmt"
+	"github.com/rs/zerolog/log"
 	"testing"
 	"time"
 
@@ -207,6 +208,7 @@ func TestNewDefaultConnection(t *testing.T) {
 			name: "just create it",
 			want: &defaultConnection{
 				defaultTtl: 10 * time.Second,
+				log:        log.Logger,
 			},
 		},
 	}
@@ -382,6 +384,7 @@ func Test_buildDefaultConnection(t *testing.T) {
 			name: "build it",
 			want: &defaultConnection{
 				defaultTtl: 10 * time.Second,
+				log:        log.Logger,
 			},
 		},
 		{
@@ -391,7 +394,9 @@ func Test_buildDefaultConnection(t *testing.T) {
 					withDefaultTtl{},
 				},
 			},
-			want: &defaultConnection{},
+			want: &defaultConnection{
+				log: log.Logger,
+			},
 		},
 		{
 			name: "build it with plc tag handler",
@@ -402,6 +407,7 @@ func Test_buildDefaultConnection(t *testing.T) {
 			},
 			want: &defaultConnection{
 				defaultTtl: 10 * time.Second,
+				log:        log.Logger,
 			},
 		},
 		{
@@ -413,6 +419,7 @@ func Test_buildDefaultConnection(t *testing.T) {
 			},
 			want: &defaultConnection{
 				defaultTtl: 10 * time.Second,
+				log:        log.Logger,
 			},
 		},
 	}

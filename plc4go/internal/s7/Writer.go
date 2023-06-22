@@ -45,7 +45,7 @@ type Writer struct {
 }
 
 func NewWriter(tpduGenerator *TpduGenerator, messageCodec spi.MessageCodec, tm transactions.RequestTransactionManager, _options ...options.WithOption) Writer {
-	customLogger, _ := options.ExtractCustomLogger(_options...)
+	customLogger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)
 	return Writer{
 		tpduGenerator: tpduGenerator,
 		messageCodec:  messageCodec,

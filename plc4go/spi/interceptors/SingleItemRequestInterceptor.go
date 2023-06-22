@@ -80,7 +80,7 @@ type SingleItemRequestInterceptor struct {
 }
 
 func NewSingleItemRequestInterceptor(readRequestFactory readRequestFactory, writeRequestFactory writeRequestFactory, readResponseFactory readResponseFactory, writeResponseFactory writeResponseFactory, _options ...options.WithOption) SingleItemRequestInterceptor {
-	customLogger, _ := options.ExtractCustomLogger(_options...)
+	customLogger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)
 	return SingleItemRequestInterceptor{
 		readRequestFactory:   readRequestFactory,
 		writeRequestFactory:  writeRequestFactory,

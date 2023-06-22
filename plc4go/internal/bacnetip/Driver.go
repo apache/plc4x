@@ -52,7 +52,7 @@ type Driver struct {
 }
 
 func NewDriver(_options ...options.WithOption) plc4go.PlcDriver {
-	customLogger, _ := options.ExtractCustomLogger(_options...)
+	customLogger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)
 	driver := &Driver{
 		applicationManager: ApplicationManager{
 			applications: map[string]*ApplicationLayerMessageCodec{},

@@ -23,6 +23,7 @@ import (
 	"bufio"
 	"bytes"
 	"context"
+	"github.com/rs/zerolog/log"
 	"testing"
 	"time"
 
@@ -42,7 +43,9 @@ func TestNewDefaultBufferedTransportInstance(t *testing.T) {
 	}{
 		{
 			name: "create it",
-			want: &defaultBufferedTransportInstance{},
+			want: &defaultBufferedTransportInstance{
+				log: log.Logger,
+			},
 		},
 	}
 	for _, tt := range tests {

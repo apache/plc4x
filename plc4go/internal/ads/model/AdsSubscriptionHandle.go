@@ -40,7 +40,7 @@ type AdsSubscriptionHandle struct {
 }
 
 func NewAdsSubscriptionHandle(subscriber spi.PlcSubscriber, tagName string, directTag DirectPlcTag, _options ...options.WithOption) *AdsSubscriptionHandle {
-	customLogger, _ := options.ExtractCustomLogger(_options...)
+	customLogger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)
 	return &AdsSubscriptionHandle{
 		subscriber: subscriber,
 		tagName:    tagName,

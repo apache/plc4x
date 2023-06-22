@@ -22,6 +22,7 @@ package udp
 import (
 	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/transports"
+	"github.com/rs/zerolog/log"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"net"
@@ -36,7 +37,9 @@ func TestNewTransport(t *testing.T) {
 	}{
 		{
 			name: "create it",
-			want: &Transport{},
+			want: &Transport{
+				log: log.Logger,
+			},
 		},
 	}
 	for _, tt := range tests {
@@ -68,13 +71,16 @@ func TestTransport_CreateTransportInstance(t *testing.T) {
 					ConnectTimeout: 1000,
 					RemoteAddress:  remoteAddress,
 					transport:      NewTransport(),
+					log:            log.Logger,
 				}
 			}(),
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			m := Transport{}
+			m := Transport{
+				log: log.Logger,
+			}
 			got, err := m.CreateTransportInstance(tt.args.transportUrl, tt.args.options)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("CreateTransportInstance() error = %v, wantErr %v", err, tt.wantErr)
@@ -105,6 +111,7 @@ func TestTransport_CreateTransportInstanceForLocalAddress(t *testing.T) {
 				transport:      NewTransport(),
 				RemoteAddress:  &net.UDPAddr{},
 				ConnectTimeout: 1000,
+				log:            log.Logger,
 			},
 		},
 		{
@@ -119,6 +126,7 @@ func TestTransport_CreateTransportInstanceForLocalAddress(t *testing.T) {
 					transport:      NewTransport(),
 					RemoteAddress:  udpAddr,
 					ConnectTimeout: 1000,
+					log:            log.Logger,
 				}
 				return ti
 			}(),
@@ -135,6 +143,7 @@ func TestTransport_CreateTransportInstanceForLocalAddress(t *testing.T) {
 					transport:      NewTransport(),
 					RemoteAddress:  udpAddr,
 					ConnectTimeout: 1000,
+					log:            log.Logger,
 				}
 				return ti
 			}(),
@@ -168,6 +177,7 @@ func TestTransport_CreateTransportInstanceForLocalAddress(t *testing.T) {
 					transport:      NewTransport(),
 					RemoteAddress:  udpAddr,
 					ConnectTimeout: 1000,
+					log:            log.Logger,
 				}
 				return ti
 			}(),
@@ -200,6 +210,7 @@ func TestTransport_CreateTransportInstanceForLocalAddress(t *testing.T) {
 					RemoteAddress:  udpAddr,
 					ConnectTimeout: 123,
 					SoReUse:        true,
+					log:            log.Logger,
 				}
 				return ti
 			}(),
@@ -240,7 +251,9 @@ func TestTransport_CreateTransportInstanceForLocalAddress(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			m := Transport{}
+			m := Transport{
+				log: log.Logger,
+			}
 			got, err := m.CreateTransportInstanceForLocalAddress(tt.args.transportUrl, tt.args.options, tt.args.localAddress)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("CreateTransportInstanceForLocalAddress() error = %v, wantErr %v", err, tt.wantErr)

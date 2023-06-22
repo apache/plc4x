@@ -66,7 +66,7 @@ func NewConnection(messageCodec spi.MessageCodec, configuration model.Configurat
 		return nil, err
 	}
 	passLoggerToModel, _ := options.ExtractPassLoggerToModel(_options...)
-	customLogger, _ := options.ExtractCustomLogger(_options...)
+	customLogger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)
 	connection := &Connection{
 		messageCodec:   messageCodec,
 		configuration:  configuration,

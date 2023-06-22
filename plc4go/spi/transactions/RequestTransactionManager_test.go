@@ -26,6 +26,7 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/pool"
 	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
 	"github.com/stretchr/testify/assert"
 	"testing"
 	"time"
@@ -47,6 +48,7 @@ func TestNewRequestTransactionManager(t *testing.T) {
 			want: &requestTransactionManager{
 				workLog:  *list.New(),
 				executor: sharedExecutorInstance,
+				log:      log.Logger,
 			},
 		},
 		{
@@ -61,6 +63,7 @@ func TestNewRequestTransactionManager(t *testing.T) {
 				numberOfConcurrentRequests: 2,
 				workLog:                    *list.New(),
 				executor:                   sharedExecutorInstance,
+				log:                        log.Logger,
 			},
 		},
 	}

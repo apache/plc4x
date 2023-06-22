@@ -45,7 +45,7 @@ type Subscriber struct {
 
 func NewSubscriber(connection *Connection, _options ...options.WithOption) *Subscriber {
 	passLoggerToModel, _ := options.ExtractPassLoggerToModel(_options...)
-	customLogger, _ := options.ExtractCustomLogger(_options...)
+	customLogger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)
 	return &Subscriber{
 		connection:     connection,
 		consumers:      make(map[*spiModel.DefaultPlcConsumerRegistration]apiModel.PlcSubscriptionEventConsumer),

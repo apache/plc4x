@@ -74,7 +74,7 @@ func NewConnection(
 	connectionOptions map[string][]string,
 	_options ...options.WithOption,
 ) *Connection {
-	customLogger, _ := options.ExtractCustomLogger(_options...)
+	customLogger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)
 	connection := &Connection{
 		messageCodec:  messageCodec,
 		configuration: configuration,

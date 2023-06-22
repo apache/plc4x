@@ -108,7 +108,7 @@ func buildDefaultCodec(defaultCodecRequirements DefaultCodecRequirements, transp
 		receiveTimeout = 10 * time.Second
 	}
 	traceDefaultMessageCodecWorker, _ := options.ExtractTraceDefaultMessageCodecWorker(_options...)
-	customLogger, _ := options.ExtractCustomLogger(_options...)
+	customLogger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)
 	return &defaultCodec{
 		DefaultCodecRequirements:       defaultCodecRequirements,
 		transportInstance:              transportInstance,

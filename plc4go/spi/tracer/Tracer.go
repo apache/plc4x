@@ -56,7 +56,7 @@ type Tracer interface {
 }
 
 func NewTracer(connectionId string, _options ...options.WithOption) Tracer {
-	customLogger, _ := options.ExtractCustomLogger(_options...)
+	customLogger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)
 	t := tracer{
 		traceEntries: []TraceEntry{},
 		log:          customLogger,

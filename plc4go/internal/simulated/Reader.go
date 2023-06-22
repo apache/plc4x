@@ -43,7 +43,7 @@ type Reader struct {
 }
 
 func NewReader(device *Device, readerOptions map[string][]string, tracer tracer.Tracer, _options ...options.WithOption) *Reader {
-	customLogger, _ := options.ExtractCustomLogger(_options...)
+	customLogger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)
 	return &Reader{
 		device:  device,
 		options: readerOptions,

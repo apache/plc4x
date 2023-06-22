@@ -37,6 +37,9 @@ func TestNewValueHandler(t *testing.T) {
 	}{
 		{
 			name: "create a new one",
+			want: ValueHandler{
+				DefaultValueHandler: spiValues.NewDefaultValueHandler(),
+			},
 		},
 	}
 	for _, tt := range tests {

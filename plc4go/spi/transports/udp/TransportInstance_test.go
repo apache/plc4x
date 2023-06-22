@@ -24,6 +24,7 @@ import (
 	"bytes"
 	"context"
 	"github.com/apache/plc4x/plc4go/spi/transports"
+	"github.com/rs/zerolog/log"
 	"net"
 	"testing"
 
@@ -47,7 +48,9 @@ func TestNewTransportInstance(t *testing.T) {
 	}{
 		{
 			name: "create it",
-			want: &TransportInstance{},
+			want: &TransportInstance{
+				log: log.Logger,
+			},
 		},
 	}
 	for _, tt := range tests {

@@ -21,6 +21,7 @@ package pcap
 
 import (
 	"bufio"
+	"github.com/rs/zerolog/log"
 	"testing"
 
 	transportUtils "github.com/apache/plc4x/plc4go/spi/transports/utils"
@@ -45,7 +46,9 @@ func TestNewPcapTransportInstance(t *testing.T) {
 		{
 			name: "create it",
 			want: func() *TransportInstance {
-				ti := &TransportInstance{}
+				ti := &TransportInstance{
+					log: log.Logger,
+				}
 				ti.DefaultBufferedTransportInstance = transportUtils.NewDefaultBufferedTransportInstance(ti)
 				return ti
 			}(),

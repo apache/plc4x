@@ -23,6 +23,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
+	"github.com/rs/zerolog/log"
 	"testing"
 	"time"
 
@@ -251,6 +252,7 @@ func TestNewDefaultCodec(t *testing.T) {
 			want: &defaultCodec{
 				expectations:   []spi.Expectation{},
 				receiveTimeout: 10 * time.Second,
+				log:            log.Logger,
 			},
 		},
 	}
@@ -301,6 +303,7 @@ func Test_buildDefaultCodec(t *testing.T) {
 			want: &defaultCodec{
 				expectations:   []spi.Expectation{},
 				receiveTimeout: 10 * time.Second,
+				log:            log.Logger,
 			},
 		},
 		{
@@ -313,6 +316,7 @@ func Test_buildDefaultCodec(t *testing.T) {
 			want: &defaultCodec{
 				expectations:   []spi.Expectation{},
 				receiveTimeout: 10 * time.Second,
+				log:            log.Logger,
 			},
 		},
 	}

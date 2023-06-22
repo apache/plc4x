@@ -25,6 +25,7 @@ import (
 	"github.com/gopacket/gopacket"
 	"github.com/gopacket/gopacket/layers"
 	"github.com/gopacket/gopacket/pcapgo"
+	"github.com/rs/zerolog/log"
 	"github.com/stretchr/testify/assert"
 	"net/url"
 	"os"
@@ -39,7 +40,9 @@ func TestNewTransport(t *testing.T) {
 	}{
 		{
 			name: "create it",
-			want: &Transport{},
+			want: &Transport{
+				log: log.Logger,
+			},
 		},
 	}
 	for _, tt := range tests {
@@ -77,6 +80,7 @@ func TestTransport_CreateTransportInstance(t *testing.T) {
 					speedFactor:   1.5,
 					transport:     NewTransport(),
 					portRange:     "1-3",
+					log:           log.Logger,
 				}
 				ti.DefaultBufferedTransportInstance = transportUtils.NewDefaultBufferedTransportInstance(ti)
 				return ti
@@ -85,7 +89,9 @@ func TestTransport_CreateTransportInstance(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			m := Transport{}
+			m := Transport{
+				log: log.Logger,
+			}
 			got, err := m.CreateTransportInstance(tt.args.transportUrl, tt.args.options)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("CreateTransportInstance() error = %v, wantErr %v", err, tt.wantErr)

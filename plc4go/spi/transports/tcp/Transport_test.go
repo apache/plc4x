@@ -23,6 +23,7 @@ import (
 	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/transports"
 	transportUtils "github.com/apache/plc4x/plc4go/spi/transports/utils"
+	"github.com/rs/zerolog/log"
 	"github.com/stretchr/testify/assert"
 	"net"
 	"net/url"
@@ -36,7 +37,9 @@ func TestNewTransport(t *testing.T) {
 	}{
 		{
 			name: "create it",
-			want: &Transport{},
+			want: &Transport{
+				log: log.Logger,
+			},
 		},
 	}
 	for _, tt := range tests {
@@ -68,6 +71,7 @@ func TestTransport_CreateTransportInstance(t *testing.T) {
 					transport:      NewTransport(),
 					RemoteAddress:  tcpAddr,
 					ConnectTimeout: 1000,
+					log:            log.Logger,
 				}
 				ti.DefaultBufferedTransportInstance = transportUtils.NewDefaultBufferedTransportInstance(ti)
 				return ti
@@ -85,6 +89,7 @@ func TestTransport_CreateTransportInstance(t *testing.T) {
 					transport:      NewTransport(),
 					RemoteAddress:  tcpAddr,
 					ConnectTimeout: 1000,
+					log:            log.Logger,
 				}
 				ti.DefaultBufferedTransportInstance = transportUtils.NewDefaultBufferedTransportInstance(ti)
 				return ti
@@ -102,6 +107,7 @@ func TestTransport_CreateTransportInstance(t *testing.T) {
 					transport:      NewTransport(),
 					RemoteAddress:  tcpAddr,
 					ConnectTimeout: 1000,
+					log:            log.Logger,
 				}
 				ti.DefaultBufferedTransportInstance = transportUtils.NewDefaultBufferedTransportInstance(ti)
 				return ti
@@ -136,6 +142,7 @@ func TestTransport_CreateTransportInstance(t *testing.T) {
 					transport:      NewTransport(),
 					RemoteAddress:  tcpAddr,
 					ConnectTimeout: 1000,
+					log:            log.Logger,
 				}
 				ti.DefaultBufferedTransportInstance = transportUtils.NewDefaultBufferedTransportInstance(ti)
 				return ti
@@ -167,6 +174,7 @@ func TestTransport_CreateTransportInstance(t *testing.T) {
 					transport:      NewTransport(),
 					RemoteAddress:  tcpAddr,
 					ConnectTimeout: 123,
+					log:            log.Logger,
 				}
 				ti.DefaultBufferedTransportInstance = transportUtils.NewDefaultBufferedTransportInstance(ti)
 				return ti
@@ -196,7 +204,9 @@ func TestTransport_CreateTransportInstance(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			m := Transport{}
+			m := Transport{
+				log: log.Logger,
+			}
 			got, err := m.CreateTransportInstance(tt.args.transportUrl, tt.args.options)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("CreateTransportInstance() error = %v, wantErr %v", err, tt.wantErr)

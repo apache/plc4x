@@ -22,6 +22,7 @@ package tcp
 import (
 	"bufio"
 	"context"
+	"github.com/rs/zerolog/log"
 	"net"
 	"testing"
 
@@ -46,7 +47,9 @@ func TestNewTcpTransportInstance(t *testing.T) {
 		{
 			name: "create it",
 			want: func() *TransportInstance {
-				ti := &TransportInstance{}
+				ti := &TransportInstance{
+					log: log.Logger,
+				}
 				ti.DefaultBufferedTransportInstance = transportUtils.NewDefaultBufferedTransportInstance(ti)
 				return ti
 			}(),

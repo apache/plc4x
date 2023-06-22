@@ -50,7 +50,7 @@ func NewSubscriptionEvent(
 	_options ...options.WithOption,
 ) SubscriptionEvent {
 	passLoggerToModel, _ := options.ExtractPassLoggerToModel(_options...)
-	customLogger, _ := options.ExtractCustomLogger(_options...)
+	customLogger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)
 	subscriptionEvent := SubscriptionEvent{
 		addresses:      addresses,
 		passLogToModel: passLoggerToModel,
