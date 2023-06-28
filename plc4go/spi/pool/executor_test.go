@@ -31,12 +31,44 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func Test_newExecutor(t *testing.T) {
+	type args struct {
+		queueDepth int
+		workers    []*worker
+		log        zerolog.Logger
+	}
+	tests := []struct {
+		name        string
+		args        args
+		want        *executor
+		manipulator func(t *testing.T, want *executor, got *executor)
+	}{
+		{
+			name: "just create it",
+			want: &executor{},
+			manipulator: func(t *testing.T, want *executor, got *executor) {
+				assert.NotNil(t, got.workItems)
+				want.workItems = got.workItems
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := newExecutor(tt.args.queueDepth, tt.args.workers, tt.args.log)
+			want := tt.want
+			if tt.manipulator != nil {
+				tt.manipulator(t, want, got)
+			}
+			assert.Equalf(t, want, got, "newExecutor(%v, %v, %v)", tt.args.queueDepth, tt.args.workers, tt.args.log)
+		})
+	}
+}
+
 func Test_executor_Close(t *testing.T) {
 	type fields struct {
 		running      bool
 		shutdown     bool
 		worker       []*worker
-		queueDepth   int
 		workItems    chan workItem
 		traceWorkers bool
 	}
@@ -56,7 +88,6 @@ func Test_executor_Close(t *testing.T) {
 				running:      tt.fields.running,
 				shutdown:     tt.fields.shutdown,
 				worker:       tt.fields.worker,
-				queueDepth:   tt.fields.queueDepth,
 				workItems:    tt.fields.workItems,
 				traceWorkers: tt.fields.traceWorkers,
 				log:          produceTestingLogger(t),
@@ -71,7 +102,6 @@ func Test_executor_IsRunning(t *testing.T) {
 		running      bool
 		shutdown     bool
 		worker       []*worker
-		queueDepth   int
 		workItems    chan workItem
 		traceWorkers bool
 	}
@@ -90,7 +120,6 @@ func Test_executor_IsRunning(t *testing.T) {
 				running:      tt.fields.running,
 				shutdown:     tt.fields.shutdown,
 				worker:       tt.fields.worker,
-				queueDepth:   tt.fields.queueDepth,
 				workItems:    tt.fields.workItems,
 				traceWorkers: tt.fields.traceWorkers,
 				log:          produceTestingLogger(t),
@@ -311,7 +340,6 @@ func Test_executor_getWorkerWaitGroup(t *testing.T) {
 		running      bool
 		shutdown     bool
 		worker       []*worker
-		queueDepth   int
 		workItems    chan workItem
 		traceWorkers bool
 	}
@@ -331,7 +359,6 @@ func Test_executor_getWorkerWaitGroup(t *testing.T) {
 				running:      tt.fields.running,
 				shutdown:     tt.fields.shutdown,
 				worker:       tt.fields.worker,
-				queueDepth:   tt.fields.queueDepth,
 				workItems:    tt.fields.workItems,
 				traceWorkers: tt.fields.traceWorkers,
 				log:          produceTestingLogger(t),
@@ -346,7 +373,6 @@ func Test_executor_getWorksItems(t *testing.T) {
 		running      bool
 		shutdown     bool
 		worker       []*worker
-		queueDepth   int
 		workItems    chan workItem
 		traceWorkers bool
 		log          zerolog.Logger
@@ -366,7 +392,6 @@ func Test_executor_getWorksItems(t *testing.T) {
 				running:      tt.fields.running,
 				shutdown:     tt.fields.shutdown,
 				worker:       tt.fields.worker,
-				queueDepth:   tt.fields.queueDepth,
 				workItems:    tt.fields.workItems,
 				traceWorkers: tt.fields.traceWorkers,
 				log:          tt.fields.log,
@@ -381,7 +406,6 @@ func Test_executor_isTraceWorkers(t *testing.T) {
 		running      bool
 		shutdown     bool
 		worker       []*worker
-		queueDepth   int
 		workItems    chan workItem
 		traceWorkers bool
 	}
@@ -400,7 +424,6 @@ func Test_executor_isTraceWorkers(t *testing.T) {
 				running:      tt.fields.running,
 				shutdown:     tt.fields.shutdown,
 				worker:       tt.fields.worker,
-				queueDepth:   tt.fields.queueDepth,
 				workItems:    tt.fields.workItems,
 				traceWorkers: tt.fields.traceWorkers,
 				log:          produceTestingLogger(t),
@@ -415,7 +438,6 @@ func Test_executor_String(t *testing.T) {
 		running      bool
 		shutdown     bool
 		worker       []*worker
-		queueDepth   int
 		workItems    chan workItem
 		traceWorkers bool
 	}
@@ -441,23 +463,22 @@ func Test_executor_String(t *testing.T) {
 						}(),
 					},
 				},
-				queueDepth:   2,
 				traceWorkers: true,
 			},
 			want: `
-╔═executor═══════════════════════════════════════════════════════════════════════════════════════════════╗
-║╔═running╗╔═shutdown╗                                                                                   ║
-║║b1 true ║║ b1 true ║                                                                                   ║
-║╚════════╝╚═════════╝                                                                                   ║
-║╔═worker/value/worker══════════════════════════════════════════════════════════════════════════════════╗║
-║║╔═id═════════════════╗╔═lastReceived════════════════╗╔═running╗╔═shutdown╗╔═interrupted╗╔═interrupter╗║║
-║║║0x0000000000000001 1║║0001-01-01 00:00:00 +0000 UTC║║b0 false║║b0 false ║║  b0 false  ║║0 element(s)║║║
-║║╚════════════════════╝╚═════════════════════════════╝╚════════╝╚═════════╝╚════════════╝╚════════════╝║║
-║╚══════════════════════════════════════════════════════════════════════════════════════════════════════╝║
-║╔═queueDepth═════════╗╔═workItems══╗╔═traceWorkers╗                                                     ║
-║║0x0000000000000002 2║║0 element(s)║║   b1 true   ║                                                     ║
-║╚════════════════════╝╚════════════╝╚═════════════╝                                                     ║
-╚════════════════════════════════════════════════════════════════════════════════════════════════════════╝`[1:],
+╔═executor═════════════════════════════════════════════════════════════════════════════════════════════════════════════╗
+║╔═running╗╔═shutdown╗                                                                                                 ║
+║║b1 true ║║ b1 true ║                                                                                                 ║
+║╚════════╝╚═════════╝                                                                                                 ║
+║╔═worker/value/worker══════════════════════════════════════════════════════════════════════════════════╗╔═workItems══╗║
+║║╔═id═════════════════╗╔═lastReceived════════════════╗╔═running╗╔═shutdown╗╔═interrupted╗╔═interrupter╗║║0 element(s)║║
+║║║0x0000000000000001 1║║0001-01-01 00:00:00 +0000 UTC║║b0 false║║b0 false ║║  b0 false  ║║0 element(s)║║╚════════════╝║
+║║╚════════════════════╝╚═════════════════════════════╝╚════════╝╚═════════╝╚════════════╝╚════════════╝║              ║
+║╚══════════════════════════════════════════════════════════════════════════════════════════════════════╝              ║
+║╔═traceWorkers╗                                                                                                       ║
+║║   b1 true   ║                                                                                                       ║
+║╚═════════════╝                                                                                                       ║
+╚══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝`[1:],
 		},
 	}
 	for _, tt := range tests {
@@ -466,7 +487,6 @@ func Test_executor_String(t *testing.T) {
 				running:      tt.fields.running,
 				shutdown:     tt.fields.shutdown,
 				worker:       tt.fields.worker,
-				queueDepth:   tt.fields.queueDepth,
 				workItems:    tt.fields.workItems,
 				traceWorkers: tt.fields.traceWorkers,
 				log:          produceTestingLogger(t),

@@ -34,7 +34,6 @@ type executor struct {
 	shutdown bool
 
 	worker       []*worker
-	queueDepth   int
 	workItems    chan workItem
 	traceWorkers bool
 
@@ -42,6 +41,14 @@ type executor struct {
 	workerWaitGroup sync.WaitGroup
 
 	log zerolog.Logger `ignore:"true"`
+}
+
+func newExecutor(queueDepth int, workers []*worker, log zerolog.Logger) *executor {
+	return &executor{
+		workItems: make(chan workItem, queueDepth),
+		worker:    workers,
+		log:       log,
+	}
 }
 
 func (e *executor) isTraceWorkers() bool {

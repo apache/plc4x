@@ -79,10 +79,6 @@ func (d *executor) SerializeWithWriteBuffer(ctx context.Context, writeBuffer uti
 		return err
 	}
 
-	if err := writeBuffer.WriteInt64("queueDepth", 64, int64(d.queueDepth)); err != nil {
-		return err
-	}
-
 	_workItems_plx4gen_description := fmt.Sprintf("%d element(s)", len(d.workItems))
 	if err := writeBuffer.WriteString("workItems", uint32(len(_workItems_plx4gen_description)*8), "UTF-8", _workItems_plx4gen_description); err != nil {
 		return err

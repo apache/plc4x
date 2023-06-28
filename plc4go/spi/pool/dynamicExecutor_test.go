@@ -20,11 +20,48 @@
 package pool
 
 import (
-	"github.com/stretchr/testify/assert"
 	"sync/atomic"
 	"testing"
 	"time"
+
+	"github.com/rs/zerolog"
+	"github.com/stretchr/testify/assert"
 )
+
+func Test_newDynamicExecutor(t *testing.T) {
+	type args struct {
+		queueDepth         int
+		maxNumberOfWorkers int
+		log                zerolog.Logger
+	}
+	tests := []struct {
+		name        string
+		args        args
+		want        *dynamicExecutor
+		manipulator func(t *testing.T, want *dynamicExecutor, got *dynamicExecutor)
+	}{
+		{
+			name: "just create it",
+			want: &dynamicExecutor{
+				executor: newExecutor(0, make([]*worker, 0), zerolog.Logger{}),
+			},
+			manipulator: func(t *testing.T, want *dynamicExecutor, got *dynamicExecutor) {
+				assert.NotNil(t, got.workItems)
+				want.workItems = got.workItems
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := newDynamicExecutor(tt.args.queueDepth, tt.args.maxNumberOfWorkers, tt.args.log)
+			want := tt.want
+			if tt.manipulator != nil {
+				tt.manipulator(t, want, got)
+			}
+			assert.Equalf(t, want, got, "newDynamicExecutor(%v, %v, %v)", tt.args.queueDepth, tt.args.maxNumberOfWorkers, tt.args.log)
+		})
+	}
+}
 
 func Test_dynamicExecutor_Start(t *testing.T) {
 	type fields struct {
@@ -208,9 +245,9 @@ func Test_dynamicExecutor_String(t *testing.T) {
 ║║║║0x0000000000000000 0║║0001-01-01 00:00:00 +0000 UTC║║b0 false║║b0 false ║║  b0 false  ║║0 element(s)║║║║
 ║║║╚════════════════════╝╚═════════════════════════════╝╚════════╝╚═════════╝╚════════════╝╚════════════╝║║║
 ║║╚══════════════════════════════════════════════════════════════════════════════════════════════════════╝║║
-║║╔═queueDepth═════════╗╔═workItems══╗╔═traceWorkers╗                                                     ║║
-║║║0x0000000000000000 0║║0 element(s)║║  b0 false   ║                                                     ║║
-║║╚════════════════════╝╚════════════╝╚═════════════╝                                                     ║║
+║║╔═workItems══╗╔═traceWorkers╗                                                                           ║║
+║║║0 element(s)║║  b0 false   ║                                                                           ║║
+║║╚════════════╝╚═════════════╝                                                                           ║║
 ║╚════════════════════════════════════════════════════════════════════════════════════════════════════════╝║
 ║╔═maxNumberOfWorkers═╗╔═currentNumberOfWorkers╗╔═interrupter╗                                             ║
 ║║0x0000000000000003 3║║     0x00000000 0      ║║0 element(s)║                                             ║

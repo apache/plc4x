@@ -44,6 +44,13 @@ type dynamicExecutor struct {
 	dynamicWorkers sync.WaitGroup
 }
 
+func newDynamicExecutor(queueDepth, maxNumberOfWorkers int, log zerolog.Logger) *dynamicExecutor {
+	return &dynamicExecutor{
+		executor:           newExecutor(queueDepth, make([]*worker, 0), log),
+		maxNumberOfWorkers: maxNumberOfWorkers,
+	}
+}
+
 func (e *dynamicExecutor) Start() {
 	e.dynamicStateChange.Lock()
 	defer e.dynamicStateChange.Unlock()
