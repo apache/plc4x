@@ -5945,11 +5945,11 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                     }
                 }
 
-                // Simple Field (validityHeightPosition)
-                var validityHeightPosition = readBuffer.ReadBit("");
-
                 // Simple Field (validitySlatsPosition)
                 var validitySlatsPosition = readBuffer.ReadBit("");
+
+                // Simple Field (validityHeightPosition)
+                var validityHeightPosition = readBuffer.ReadBit("");
 
                 var _map = new Dictionary<string, IPlcValue>();
 
@@ -10468,12 +10468,12 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 writeBuffer.WriteByte("", 8, (byte) (slatsPosition));
                 // Reserved Field
                 writeBuffer.WriteByte("", 6, (byte) 0x00);
-                // Simple Field (validityHeightPosition)
-                var validityHeightPosition = (bool) _value.GetStruct()["validityHeightPosition"].GetBool();
-                writeBuffer.WriteBit("", (validityHeightPosition));
                 // Simple Field (validitySlatsPosition)
                 var validitySlatsPosition = (bool) _value.GetStruct()["validitySlatsPosition"].GetBool();
                 writeBuffer.WriteBit("", (validitySlatsPosition));
+                // Simple Field (validityHeightPosition)
+                var validityHeightPosition = (bool) _value.GetStruct()["validityHeightPosition"].GetBool();
+                writeBuffer.WriteBit("", (validityHeightPosition));
             return writeBuffer;
         } else if( datapointType == KnxDatapointType.DPT_StatusSAB ) { // Struct
                 var writeBuffer = new WriteBuffer();
