@@ -125,6 +125,11 @@ Also, at least `Maven 3.6` is required for CMake.
 
 Ideally use the Maven-Wrapper to ensure the Maven version fits the build.
 
+NOTE: On some systems (mainly Mac) gpg signing can result in errors like:
+    ```[INFO] --- maven-gpg-plugin:3.0.1:sign (sign-release-artifacts) @ plc4x-parent ---
+    gpg: signing failed: Inappropriate ioctl for device```
+    In this case adding the following helps: `export GPG_TTY=$(tty)`
+
 === Preparing the codebase for a release
 
 Usually you will have to update the RELEASE_NOTES document to the new version.
