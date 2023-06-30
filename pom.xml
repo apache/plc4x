@@ -160,6 +160,7 @@
     <asciidoctorj.diagram.version>2.2.9</asciidoctorj.diagram.version>
 
     <skip-code-generation-tests>true</skip-code-generation-tests>
+    <skip-pgp-signing>false</skip-pgp-signing>
     <enable-all-tests>false</enable-all-tests>
     <excluded-test-groups>require-all-tests</excluded-test-groups>
     <reflow.skin.version>2.3.3</reflow.skin.version>
@@ -1887,9 +1888,25 @@
               </execution>
             </executions>
           </plugin>
+          <!-- We want to sign the artifact, the POM, and all attached artifacts (except for SHA-512 checksum) -->
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-gpg-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>sign-release-artifacts</id>
+                <goals>
+                  <goal>sign</goal>
+                </goals>
+                <configuration>
+                  <skip>${skip-pgp-signing}</skip>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
           <!--
-            Generate an SBOM for the project
-          -->
+                    Generate an SBOM for the project
+                  -->
           <plugin>
             <groupId>org.cyclonedx</groupId>
             <artifactId>cyclonedx-maven-plugin</artifactId>
