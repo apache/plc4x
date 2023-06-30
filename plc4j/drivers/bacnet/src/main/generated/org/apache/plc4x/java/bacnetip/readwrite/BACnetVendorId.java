@@ -1635,9 +1635,11 @@ public enum BACnetVendorId {
   BILGIPRO_IOT_SYSTEMS((int) 1423, (int) 1423, (String) "Bilgipro IoT Systems"),
   PLANSPURNETDESIGN_GMBH((int) 1424, (int) 1424, (String) "planspur netdesign GmbH"),
   DOLPHIN_SOLUTIONS_LTD((int) 1425, (int) 1425, (String) "Dolphin Solutions Ltd"),
-  MITSUBISHI_ELECTRIC_CORPORATION(
-      (int) 1426, (int) 1426, (String) "Mitsubishi Electric Corporation"),
+  MITSUBISHI_ELECTRIC_CORPORATION_KOBE_WORKS(
+      (int) 1426, (int) 1426, (String) "Mitsubishi Electric Corporation, Kobe Works"),
   ECOVENA((int) 1427, (int) 1427, (String) "Ecovena"),
+  GREE_ELECTRIC_APPLIANCES_INCOF_ZHUHAI(
+      (int) 1428, (int) 1428, (String) "Gree Electric Appliances Inc of Zhuhai"),
   UNKNOWN_VENDOR((int) 0xFFFF, (int) 0xFFFF, (String) "Unknown");
   private static final Map<Integer, BACnetVendorId> map;
 
