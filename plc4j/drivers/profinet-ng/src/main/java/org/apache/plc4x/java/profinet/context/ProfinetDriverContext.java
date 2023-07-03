@@ -25,6 +25,8 @@ import org.apache.plc4x.java.profinet.gsdml.ProfinetDeviceAccessPointItem;
 import org.apache.plc4x.java.profinet.gsdml.ProfinetModuleItem;
 import org.apache.plc4x.java.profinet.gsdml.ProfinetVirtualSubmoduleItem;
 import org.apache.plc4x.java.profinet.readwrite.DceRpc_ActivityUuid;
+import org.apache.plc4x.java.profinet.readwrite.DceRpc_ObjectUuid;
+import org.apache.plc4x.java.profinet.readwrite.MacAddress;
 import org.apache.plc4x.java.profinet.readwrite.Uuid;
 import org.apache.plc4x.java.spi.context.DriverContext;
 import org.apache.plc4x.java.spi.generation.*;
@@ -37,12 +39,35 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class ProfinetDriverContext implements DriverContext {
 
     public static final int DEFAULT_UDP_PORT = 34964;
+    public static final int DEFAULT_ARGS_MAXIMUM = 16696;
+    public static final int DEFAULT_MAX_ARRAY_COUNT = 16696;
+    public static final int DEFAULT_ACTIVITY_TIMEOUT = 600;
+    public static final int UDP_RT_PORT = 0x8892;
+    public static final short BLOCK_VERSION_HIGH = 1;
+    public static final short BLOCK_VERSION_LOW = 0;
+    public static final MacAddress DEFAULT_EMPTY_MAC_ADDRESS;
+    static {
+        try {
+            DEFAULT_EMPTY_MAC_ADDRESS = new MacAddress(Hex.decodeHex("000000000000"));
+        } catch (DecoderException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static final int DEFAULT_IO_DATA_SIZE = 40;
 
     private String deviceType;
     private String deviceName;
     private List<String> roles;
     private int vendorId;
     private int deviceId;
+
+    private boolean nonLegacyStartupMode;
+    private int sessionKey;
+    private int sendClockFactor;
+    private int reductionRatio;
+    private int watchdogFactor;
+    private int dataHoldFactor;
 
     private String dapId;
     private ProfinetDeviceAccessPointItem dap;
@@ -69,7 +94,7 @@ public class ProfinetDriverContext implements DriverContext {
      * Generates a new UUID for this connection.
      * @return UUID
      */
-    protected static DceRpc_ActivityUuid generateActivityUuid() {
+    public static DceRpc_ActivityUuid generateActivityUuid() {
         UUID number = UUID.randomUUID();
         try {
             WriteBufferByteBased wb = new WriteBufferByteBased(128);
@@ -132,6 +157,56 @@ public class ProfinetDriverContext implements DriverContext {
         this.deviceId = deviceId;
     }
 
+    public boolean isNonLegacyStartupMode() {
+        return nonLegacyStartupMode;
+    }
+
+    // TODO: Setup the nonLegacyStartupMode variable.
+    public void setNonLegacyStartupMode(boolean nonLegacyStartupMode) {
+        this.nonLegacyStartupMode = nonLegacyStartupMode;
+    }
+
+    public int getSessionKey() {
+        return sessionKey;
+    }
+
+    // TODO: Setup the sessionKey variable.
+    public void setSessionKey(int sessionKey) {
+        this.sessionKey = sessionKey;
+    }
+
+    public int getSendClockFactor() {
+        return sendClockFactor;
+    }
+
+    public void setSendClockFactor(int sendClockFactor) {
+        this.sendClockFactor = sendClockFactor;
+    }
+
+    public int getReductionRatio() {
+        return reductionRatio;
+    }
+
+    public void setReductionRatio(int reductionRatio) {
+        this.reductionRatio = reductionRatio;
+    }
+
+    public int getWatchdogFactor() {
+        return watchdogFactor;
+    }
+
+    public void setWatchdogFactor(int watchdogFactor) {
+        this.watchdogFactor = watchdogFactor;
+    }
+
+    public int getDataHoldFactor() {
+        return dataHoldFactor;
+    }
+
+    public void setDataHoldFactor(int dataHoldFactor) {
+        this.dataHoldFactor = dataHoldFactor;
+    }
+
     public String getDapId() {
         return dapId;
     }
@@ -186,6 +261,20 @@ public class ProfinetDriverContext implements DriverContext {
             identificationGenerator.set(1);
         }
         return id;
+    }
+
+    public DceRpc_ObjectUuid getCmInitiatorObjectUuid() {
+        return new DceRpc_ObjectUuid((byte) 0x00, 0x0001,
+            Integer.decode("0x" + getDeviceId()),
+            Integer.decode("0x" + getVendorId()));
+    }
+
+    public Uuid generateUuid() {
+        try {
+            return new Uuid(Hex.decodeHex(UUID.randomUUID().toString().replace("-", "")));
+        } catch (DecoderException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }

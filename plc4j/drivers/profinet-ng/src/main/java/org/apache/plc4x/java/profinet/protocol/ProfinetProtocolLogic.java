@@ -43,6 +43,7 @@ import org.apache.plc4x.java.utils.rawsockets.netty.RawSocketChannel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.net.InetSocketAddress;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
@@ -402,14 +403,14 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
         // Create one PnIoCm_Block_ExpectedSubmoduleReq for every slot being referenced.
         // Create one PnIoCm_Block_AlarmCrReq
 
-
         // Go through the sorted slots and subslots and fill the datastructures.
         int inputFrameOffset = 0;
         int outputFrameOffset = 0;
-        /*List<PnIoCm_IoDataObject> inputMessageDataObjects = new ArrayList<>();
+        List<PnIoCm_IoDataObject> inputMessageDataObjects = new ArrayList<>();
         List<PnIoCm_IoCs> inputMessageCs = new ArrayList<>();
-        //List<PnIoCm_IoDataObject> outputMessageDataObjects = new ArrayList<>();
-        //List<PnIoCm_IoCs> outputMessageCs = new ArrayList<>();
+        List<PnIoCm_IoDataObject> outputMessageDataObjects = new ArrayList<>();
+        List<PnIoCm_IoCs> outputMessageCs = new ArrayList<>();
+        // TODO: Create and fill the expectedSubmodules list.
         List<PnIoCm_Block_ExpectedSubmoduleReq> expectedSubmodules = new ArrayList<>();
         for (Map.Entry<Integer, Map<Integer, Map<ProfinetTag.Direction, Map<Integer, ProfinetTag>>>> slotEntry : slots.entrySet()) {
             int slotNumber = slotEntry.getKey();
@@ -418,53 +419,178 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
                 int subslotNumber = subslotEntry.getKey();
                 Map<ProfinetTag.Direction, Map<Integer, ProfinetTag>> direction = subslotEntry.getValue();
 
+                int iocsLength = driverContext.getSubmoduleIndex().get(slotNumber).get(subslotNumber).getIoData().getIocsLength();
+                // The default is 1
+                if(iocsLength == 0) {
+                    iocsLength = 1;
+                }
+                int iopsLength = driverContext.getSubmoduleIndex().get(slotNumber).get(subslotNumber).getIoData().getIopsLength();
+                // The default is 1
+                if(iopsLength == 0) {
+                    iopsLength = 1;
+                }
 
                 if(direction.containsKey(ProfinetTag.Direction.INPUT)) {
                     Map<Integer, ProfinetTag> inputTags = direction.get(ProfinetTag.Direction.INPUT);
                     for (Map.Entry<Integer, ProfinetTag> inputTag : inputTags.entrySet()) {
+                        ProfinetTag tag = inputTag.getValue();
+                        int dataLength = (getDataTypeLengthInBytes(tag.getPlcValueType()) * tag.getNumElements());
+
                         PnIoCm_IoDataObject input = new PnIoCm_IoDataObject(slotNumber, subslotNumber, inputFrameOffset);
                         inputMessageDataObjects.add(input);
-                        // TODO: Get the iops-length from the IoData element
-                        inputFrameOffset += 1;
-                        // TODO: Get the data-length + iops-length
-                        outputFrameOffset += 1;
+                        PnIoCm_IoCs output = new PnIoCm_IoCs(slotNumber, subslotNumber, outputFrameOffset);
+                        outputMessageCs.add(output);
+
+                        // Get the iops-length from the IoData element and the binary length of the input
+                        inputFrameOffset += dataLength + iocsLength;
+                        // Get the data-length + iops-length
+                        outputFrameOffset += iocsLength;
                     }
                 }
+
                 if(direction.containsKey(ProfinetTag.Direction.OUTPUT)) {
                     Map<Integer, ProfinetTag> outputTags = direction.get(ProfinetTag.Direction.OUTPUT);
                     for (Map.Entry<Integer, ProfinetTag> outputTag : outputTags.entrySet()) {
+                        ProfinetTag tag = outputTag.getValue();
+                        int dataLength = (getDataTypeLengthInBytes(tag.getPlcValueType()) * tag.getNumElements());
+
                         PnIoCm_IoDataObject output = new PnIoCm_IoDataObject(slotNumber, subslotNumber, inputFrameOffset);
                         outputMessageDataObjects.add(output);
-                        // TODO: Get the data-length + iocs-length from the IoData element
-                        inputFrameOffset += 1;
-                        // TODO: Get the iops-length
-                        outputFrameOffset += 1;
+                        PnIoCm_IoCs input = new PnIoCm_IoCs(slotNumber, subslotNumber, outputFrameOffset);
+                        inputMessageCs.add(input);
+
+                        // Get the data-length + iocs-length from the IoData element
+                        inputFrameOffset += iopsLength;
+                        // Get the iops-length and the binary length of the output
+                        outputFrameOffset += dataLength + iopsLength;
                     }
                 }
             }
         }
 
-        for (String tagName : subscriptionRequest.getTagNames()) {
-            ProfinetTag profinetTag = (ProfinetTag) subscriptionRequest.getTag(tagName);
-
-
-
-
-            PlcValueType plcValueType = profinetTag.getPlcValueType();
-            int numElements = profinetTag.getNumElements();
-            int iopsLength = driverContext.getSubmoduleIndex().get(slot).get(subSlot).getIoData().getIopsLength();
-            // The default is 1
-            if(iopsLength == 0) {
-                iopsLength = 1;
-            }
-
-            PnIoCm_IoDataObject input = new PnIoCm_IoDataObject(slot, subSlot, inputFrameOffset);
-            inputDataObjects.add(input);
-
-            // Increment the frame offset.
-            inputFrameOffset += (getDataTypeLengthInBytes(plcValueType) * numElements) + iopsLength;
-        }*/
-
+        RawSocketChannel rawSocketChannel = (RawSocketChannel) context.getChannel();
+        MacAddress remoteMacAddress = new MacAddress(rawSocketChannel.getRemoteMacAddress().getAddress());
+        InetSocketAddress remoteAddress = (InetSocketAddress) rawSocketChannel.getRemoteAddress();
+        MacAddress localMacAddress = new MacAddress(rawSocketChannel.getLocalMacAddress().getAddress());
+        InetSocketAddress localAddress = (InetSocketAddress) rawSocketChannel.getLocalAddress();
+        List<PnIoCm_Block> blocks = new ArrayList<>();
+        blocks.add(new PnIoCm_Block_ArReq(
+            ProfinetDriverContext.BLOCK_VERSION_HIGH, ProfinetDriverContext.BLOCK_VERSION_LOW,
+            PnIoCm_ArType.IO_CONTROLLER,
+            driverContext.generateUuid(),
+            driverContext.getSessionKey(),
+            localMacAddress,
+            driverContext.getCmInitiatorObjectUuid(),
+            false,
+            driverContext.isNonLegacyStartupMode(),
+            false,
+            false,
+            PnIoCm_CompanionArType.SINGLE_AR,
+            false,
+            true,
+            false,
+            PnIoCm_State.ACTIVE,
+            ProfinetDriverContext.DEFAULT_ACTIVITY_TIMEOUT,
+            ProfinetDriverContext.UDP_RT_PORT,
+            "plc4x"));
+        if(!inputMessageDataObjects.isEmpty() || !inputMessageCs.isEmpty()) {
+            blocks.add(new PnIoCm_Block_IoCrReq(
+                ProfinetDriverContext.BLOCK_VERSION_HIGH, ProfinetDriverContext.BLOCK_VERSION_LOW,
+                PnIoCm_IoCrType.INPUT_CR,
+                0x0001,
+                ProfinetDriverContext.UDP_RT_PORT,
+                false,
+                false,
+                false,
+                false,
+                PnIoCm_RtClass.RT_CLASS_2,
+                ProfinetDriverContext.DEFAULT_IO_DATA_SIZE,
+                driverContext.getAndIncrementIdentification(),
+                driverContext.getSendClockFactor(),
+                driverContext.getReductionRatio(),
+                1,
+                0,
+                0xffffffffL,
+                driverContext.getWatchdogFactor(),
+                driverContext.getDataHoldFactor(),
+                0xC000,
+                ProfinetDriverContext.DEFAULT_EMPTY_MAC_ADDRESS,
+                Collections.singletonList(
+                    new PnIoCm_IoCrBlockReqApi(inputMessageDataObjects, inputMessageCs)
+                )
+            ));
+        }
+        if(!outputMessageDataObjects.isEmpty() || !outputMessageCs.isEmpty()) {
+            blocks.add(new PnIoCm_Block_IoCrReq(
+                ProfinetDriverContext.BLOCK_VERSION_HIGH, ProfinetDriverContext.BLOCK_VERSION_LOW,
+                PnIoCm_IoCrType.OUTPUT_CR,
+                0x0002,
+                ProfinetDriverContext.UDP_RT_PORT,
+                false,
+                false,
+                false,
+                false,
+                PnIoCm_RtClass.RT_CLASS_2,
+                ProfinetDriverContext.DEFAULT_IO_DATA_SIZE,
+                driverContext.getAndIncrementIdentification(),
+                driverContext.getSendClockFactor(),
+                driverContext.getReductionRatio(),
+                1,
+                0,
+                0xffffffffL,
+                driverContext.getWatchdogFactor(),
+                driverContext.getDataHoldFactor(),
+                0xC000,
+                ProfinetDriverContext.DEFAULT_EMPTY_MAC_ADDRESS,
+                Collections.singletonList(
+                    new PnIoCm_IoCrBlockReqApi(outputMessageDataObjects, outputMessageCs)
+                )
+            ));
+        }
+        blocks.addAll(expectedSubmodules);
+        blocks.add(new PnIoCm_Block_AlarmCrReq(
+            ProfinetDriverContext.BLOCK_VERSION_HIGH, ProfinetDriverContext.BLOCK_VERSION_LOW,
+            PnIoCm_AlarmCrType.ALARM_CR,
+            ProfinetDriverContext.UDP_RT_PORT,
+            false,
+            false,
+            1,
+            3,
+            0x0000,
+            200,
+            0xC000,
+            0xA000));
+        PnIoCm_Packet_Req request = new PnIoCm_Packet_Req(
+            16696L, 16696L, 0L, blocks);
+        DceRpc_Packet packet = new DceRpc_Packet(
+            DceRpc_PacketType.WORKING,
+            false, false, false,
+            IntegerEncoding.BIG_ENDIAN, CharacterEncoding.ASCII, FloatingPointEncoding.IEEE,
+            new DceRpc_ObjectUuid((byte) 0x00, 0x0001, Integer.decode("0x" + driverContext.getDeviceId()), Integer.decode("0x" + driverContext.getVendorId())),
+            new DceRpc_InterfaceUuid_DeviceInterface(),
+            driverContext.getActivityUuid(),
+            0L, 0L,
+            DceRpc_Operation.CONNECT,
+            (short) 0,
+            request
+        );
+        Random rand = new Random();
+        // Serialize it to a byte-payload
+        Ethernet_FramePayload_IPv4 udpFrame = new Ethernet_FramePayload_IPv4(
+            rand.nextInt(65536),
+            true,
+            false,
+            (short) 64,
+            new IpAddress(localAddress.getAddress().getAddress()),
+            new IpAddress(remoteAddress.getAddress().getAddress()),
+            driverContext.getLocalPort(),
+            driverContext.getRemotePortImplicitCommunication(),
+            packet
+        );
+        Ethernet_Frame ethernetFrame = new Ethernet_Frame(
+            remoteMacAddress,
+            localMacAddress,
+            udpFrame);
 
         return null;
     }
