@@ -18,15 +18,20 @@
  */
 package org.apache.plc4x.examples.plc4j.s7event;
 
+import java.util.Map;
+
 import org.apache.plc4x.java.DefaultPlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionResponse;
+import org.apache.plc4x.java.s7.events.S7AlarmEvent;
 import org.apache.plc4x.java.s7.events.S7ModeEvent;
+import org.apache.plc4x.java.s7.events.S7SysEvent;
+import org.apache.plc4x.java.s7.events.S7UserEvent;
+import org.apache.plc4x.java.s7.readwrite.protocol.S7ProtocolLogic;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.Map;
+import org.slf4j.simple.SimpleLogger;
 
 /**
  * Example for capturing events generated from a Siemens S7-300, S7-400 or VIPA PLC.
@@ -37,15 +42,17 @@ import java.util.Map;
  */
 public class EventSubscription {
 
-    private static final Logger logger = LoggerFactory.getLogger(EventSubscription.class);
-
+    private static final Logger logger = LoggerFactory.getLogger(EventSubscription.class);    
+    
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) throws Exception {
+        System.setProperty(SimpleLogger.DEFAULT_LOG_LEVEL_KEY, "trace");                   
+        
         try (PlcConnection connection = new DefaultPlcDriverManager().getConnection("s7://10.10.1.33?remote-rack=0&remote-slot=3&controller-type=S7_400")) {
             final PlcSubscriptionRequest.Builder subscription = connection.subscriptionRequestBuilder();
-
+            
             subscription.addEventTagAddress("myMODE", "MODE");
 //            subscription.addEventTagAddress("mySYS", "SYS");
 //            subscription.addEventTagAddress("myUSR", "USR");
@@ -60,7 +67,9 @@ public class EventSubscription {
                 .register(msg -> {
                     System.out.println("******** S7ModeEvent ********");
                     Map<String, Object> map = ((S7ModeEvent) msg).getMap();
-                    map.forEach((x, y) -> System.out.println(x + " : " + y));
+                    map.forEach((x, y) -> {
+                        System.out.println(x + " : " + y);
+                    });
                     System.out.println("****************************");
                 });
 //
@@ -100,10 +109,10 @@ public class EventSubscription {
 //                    });
 //                    System.out.println("****************************");
 //                });
-
+                
             System.out.println("Waiting for events");
 
-            Thread.sleep(5000);
+            Thread.sleep(30000);
 
             System.out.println("Bye...");
 

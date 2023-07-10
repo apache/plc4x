@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   https://www.apache.org/licenses/LICENSE-2.0
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -16,14 +16,15 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.plc4x.java.s7.readwrite.types;
+package org.apache.plc4x.java.s7.readwrite.protocol;
 
-public enum S7SubscriptionType {
-    EVENT_SUBSCRIPTION,
-    EVENT_UNSUBSCRIPTION,
-    ALARM_ACK,
-    ALARM_QUERY,
-    CYCLIC_SUBSCRIPTION,
-    CYCLIC_DB_SUBSCRIPTION,    
-    CYCLIC_UNSUBSCRIPTION;    
+import io.netty.channel.Channel;
+
+public interface S7HMux {
+    
+public void setEmbededhannel(Channel embeded_channel);     
+public void setPrimaryChannel(Channel primary_channel);  
+public void setSecondaryChannel(Channel secondary_channel); 
+public Channel getTCPChannel();
+    
 }

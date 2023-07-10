@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   https://www.apache.org/licenses/LICENSE-2.0
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -36,12 +36,12 @@ public class S7DriverContext implements DriverContext, HasConfiguration<S7Config
     private int maxAmqCaller;
     private int maxAmqCallee;
     private S7ControllerType controllerType;
-
-
-    private int calledTsapId2;
+ 
+    
+    private int calledTsapId2; 
     private int readTimeout;
     private boolean ping;
-    private int pingTime;
+    private int pingTime;   
     private int retryTime;
 
     @Override
@@ -50,16 +50,16 @@ public class S7DriverContext implements DriverContext, HasConfiguration<S7Config
             configuration.localRack, configuration.localSlot);
         this.calledTsapId = S7TsapIdEncoder.encodeS7TsapId(DeviceGroup.PG_OR_PC,
             configuration.remoteRack, configuration.remoteSlot);
-
+        
         this.calledTsapId2 = S7TsapIdEncoder.encodeS7TsapId(DeviceGroup.PG_OR_PC,
-            configuration.remoteRack2, configuration.remoteSlot2);
-
+            configuration.remoteRack2, configuration.remoteSlot2);        
+     
 
         if (configuration.localTsap > 0) {
-            this.callingTsapId = configuration.localTsap;
+        	this.callingTsapId = configuration.localTsap;
         }
         if (configuration.remoteTsap > 0) {
-            this.calledTsapId = configuration.remoteTsap;
+        	this.calledTsapId = configuration.remoteTsap;
         }
         this.controllerType = configuration.controllerType == null ? S7ControllerType.ANY : S7ControllerType.valueOf(configuration.controllerType);
 
@@ -81,10 +81,10 @@ public class S7DriverContext implements DriverContext, HasConfiguration<S7Config
 
         this.maxAmqCaller = configuration.maxAmqCaller;
         this.maxAmqCallee = configuration.maxAmqCallee;
-
+        
         this.readTimeout = configuration.readTimeout;
         this.ping = configuration.ping;
-        this.pingTime = configuration.pingTime;
+        this.pingTime = (configuration.pingTime == 0)?10:configuration.pingTime;
         this.retryTime = configuration.retryTime;
     }
 
@@ -111,14 +111,14 @@ public class S7DriverContext implements DriverContext, HasConfiguration<S7Config
     public void setCalledTsapId(int calledTsapId) {
         this.calledTsapId = calledTsapId;
     }
-
+    
     public int getCalledTsapId2() {
         return calledTsapId2;
     }
 
     public void setCalledTsapId2(int calledTsapId2) {
         this.calledTsapId2 = calledTsapId2;
-    }
+    }    
 
     public COTPTpduSize getCotpTpduSize() {
         return cotpTpduSize;
@@ -159,30 +159,30 @@ public class S7DriverContext implements DriverContext, HasConfiguration<S7Config
     public void setControllerType(S7ControllerType controllerType) {
         this.controllerType = controllerType;
     }
-
+    
     public int getReadTimeout() {
         return readTimeout;
     }
 
     public void setReadTimeout(int readTimeout) {
         this.readTimeout = readTimeout;
-    }
-
+    } 
+    
     public boolean getPing() {
         return ping;
     }
 
     public void setPing(boolean ping) {
         this.ping = ping;
-    }
-
+    }      
+    
     public int getPingTime() {
         return pingTime;
     }
 
     public void setPingTime(int pingTime) {
         this.pingTime = pingTime;
-    }
+    }  
 
     public int getRetryTime() {
         return retryTime;
@@ -190,7 +190,7 @@ public class S7DriverContext implements DriverContext, HasConfiguration<S7Config
 
     public void setRetryTime(int retryTime) {
         this.retryTime = retryTime;
-    }
+    }   
 
     /**
      * Iterate over all values until one is found that the given tpdu size will fit.
