@@ -160,9 +160,7 @@ func TestBrowser_BrowseQuery(t *testing.T) {
 					assert.NoError(t, driver.Close())
 				})
 				connectionConnectResult := <-driver.GetConnection(transportUrl, map[string]transports.Transport{"test": transport}, map[string][]string{})
-				if err := connectionConnectResult.GetErr(); err != nil {
-					t.Fatal(err)
-				}
+				require.NoError(t, connectionConnectResult.GetErr())
 				fields.connection = connectionConnectResult.GetConnection()
 				t.Cleanup(func() {
 					timer := time.NewTimer(10 * time.Second)
@@ -319,10 +317,7 @@ func TestBrowser_browseUnitInfo(t *testing.T) {
 					assert.NoError(t, driver.Close())
 				})
 				connectionConnectResult := <-driver.GetConnection(transportUrl, map[string]transports.Transport{"test": transport}, map[string][]string{})
-				if err := connectionConnectResult.GetErr(); err != nil {
-					t.Error(err)
-					t.FailNow()
-				}
+				require.NoError(t, connectionConnectResult.GetErr())
 				fields.connection = connectionConnectResult.GetConnection()
 				t.Cleanup(func() {
 					timer := time.NewTimer(10 * time.Second)
@@ -595,10 +590,7 @@ func TestBrowser_getInstalledUnitAddressBytes(t *testing.T) {
 					assert.NoError(t, driver.Close())
 				})
 				connectionConnectResult := <-driver.GetConnection(transportUrl, map[string]transports.Transport{"test": transport}, map[string][]string{})
-				if err := connectionConnectResult.GetErr(); err != nil {
-					t.Error(err)
-					t.FailNow()
-				}
+				require.NoError(t, connectionConnectResult.GetErr())
 				fields.connection = connectionConnectResult.GetConnection()
 				t.Cleanup(func() {
 					timer := time.NewTimer(6 * time.Second)
