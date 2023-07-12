@@ -251,7 +251,8 @@ func (m *defaultCodec) HandleMessages(message spi.Message) bool {
 	defer m.expectationsChangeMutex.Unlock()
 	messageHandled := false
 	m.log.Trace().Msgf("Current number of expectations: %d", len(m.expectations))
-	for index, expectation := range m.expectations {
+	for i := 0; i < len(m.expectations); i++ {
+		expectation := m.expectations[i]
 		m.log.Trace().Msgf("Checking expectation %s", expectation)
 		// Check if the current message matches the expectations
 		// If it does, let it handle the message.
@@ -267,12 +268,14 @@ func (m *defaultCodec) HandleMessages(message spi.Message) bool {
 				}
 				continue
 			}
+			m.log.Trace().Msg("message handled")
 			messageHandled = true
 			// If this is the last element of the list remove it differently than if it's before that
-			if (index + 1) == len(m.expectations) {
-				m.expectations = m.expectations[:index]
-			} else if (index + 1) < len(m.expectations) {
-				m.expectations = append(m.expectations[:index], m.expectations[index+1:]...)
+			if (i + 1) == len(m.expectations) {
+				m.expectations = m.expectations[:i]
+			} else if (i + 1) < len(m.expectations) {
+				m.expectations = append(m.expectations[:i], m.expectations[i+1:]...)
+				i--
 			}
 		} else {
 			m.log.Trace().Stringer("expectation", expectation).Msg("doesn't accept message")
