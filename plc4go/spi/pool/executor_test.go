@@ -33,9 +33,9 @@ import (
 
 func Test_newExecutor(t *testing.T) {
 	type args struct {
-		queueDepth int
-		workers    []*worker
-		log        zerolog.Logger
+		queueDepth             int
+		numberOfInitialWorkers int
+		log                    zerolog.Logger
 	}
 	tests := []struct {
 		name        string
@@ -45,7 +45,9 @@ func Test_newExecutor(t *testing.T) {
 	}{
 		{
 			name: "just create it",
-			want: &executor{},
+			want: &executor{
+				worker: []*worker{},
+			},
 			manipulator: func(t *testing.T, want *executor, got *executor) {
 				assert.NotNil(t, got.workItems)
 				want.workItems = got.workItems
@@ -54,12 +56,12 @@ func Test_newExecutor(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got := newExecutor(tt.args.queueDepth, tt.args.workers, tt.args.log)
+			got := newExecutor(tt.args.queueDepth, tt.args.numberOfInitialWorkers, tt.args.log)
 			want := tt.want
 			if tt.manipulator != nil {
 				tt.manipulator(t, want, got)
 			}
-			assert.Equalf(t, want, got, "newExecutor(%v, %v, %v)", tt.args.queueDepth, tt.args.workers, tt.args.log)
+			assert.Equalf(t, want, got, "newExecutor(%v, %v, %v)", tt.args.queueDepth, tt.args.numberOfInitialWorkers, tt.args.log)
 		})
 	}
 }

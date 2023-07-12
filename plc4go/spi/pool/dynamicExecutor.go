@@ -46,7 +46,7 @@ type dynamicExecutor struct {
 
 func newDynamicExecutor(queueDepth, maxNumberOfWorkers int, log zerolog.Logger) *dynamicExecutor {
 	return &dynamicExecutor{
-		executor:           newExecutor(queueDepth, make([]*worker, 0), log),
+		executor:           newExecutor(queueDepth, 0, log),
 		maxNumberOfWorkers: maxNumberOfWorkers,
 	}
 }
@@ -88,15 +88,10 @@ func (e *dynamicExecutor) Start() {
 			workerLog.Debug().Msgf("Checking if numberOfItemsInQueue(%d) > numberOfWorkers(%d) && numberOfWorkers(%d) < maxNumberOfWorkers(%d)", numberOfItemsInQueue, numberOfWorkers, numberOfWorkers, e.maxNumberOfWorkers)
 			if numberOfItemsInQueue > numberOfWorkers && numberOfWorkers < e.maxNumberOfWorkers {
 				workerLog.Trace().Msg("spawning new worker")
-				_worker := &worker{
-					id:          numberOfWorkers - 1,
-					interrupter: make(chan struct{}, 1),
-					executor:    e,
-					log:         e.log,
-				}
-				_worker.lastReceived.Store(time.Now())
+				workerId := numberOfWorkers - 1
+				_worker := newWorker(e.log, workerId, e)
+				_worker.lastReceived.Store(time.Now()) // We store the current timestamp so the worker isn't cut of instantly by the worker killer
 				e.worker = append(e.worker, _worker)
-				_worker.initialize()
 				workerLog.Info().Int("Worker id", _worker.id).Msg("spawning")
 				_worker.start()
 				e.currentNumberOfWorkers.Add(1)

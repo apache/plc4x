@@ -43,12 +43,18 @@ type executor struct {
 	log zerolog.Logger `ignore:"true"`
 }
 
-func newExecutor(queueDepth int, workers []*worker, log zerolog.Logger) *executor {
-	return &executor{
+func newExecutor(queueDepth int, numberOfInitialWorkers int, customLogger zerolog.Logger) *executor {
+	e := &executor{
 		workItems: make(chan workItem, queueDepth),
-		worker:    workers,
-		log:       log,
+		log:       customLogger,
 	}
+	workers := make([]*worker, numberOfInitialWorkers)
+	for i := 0; i < numberOfInitialWorkers; i++ {
+		w := newWorker(customLogger, i, e)
+		workers[i] = w
+	}
+	e.worker = workers
+	return e
 }
 
 func (e *executor) isTraceWorkers() bool {

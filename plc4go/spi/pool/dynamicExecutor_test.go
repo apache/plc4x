@@ -43,7 +43,7 @@ func Test_newDynamicExecutor(t *testing.T) {
 		{
 			name: "just create it",
 			want: &dynamicExecutor{
-				executor: newExecutor(0, make([]*worker, 0), zerolog.Logger{}),
+				executor: newExecutor(0, 0, zerolog.Logger{}),
 			},
 			manipulator: func(t *testing.T, want *dynamicExecutor, got *dynamicExecutor) {
 				assert.NotNil(t, got.workItems)

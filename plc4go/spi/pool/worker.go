@@ -49,10 +49,24 @@ type worker struct {
 	log zerolog.Logger `ignore:"true"`
 }
 
+func newWorker(localLog zerolog.Logger, workerId int, executor interface {
+	isTraceWorkers() bool
+	getWorksItems() chan workItem
+	getWorkerWaitGroup() *sync.WaitGroup
+}) *worker {
+	w := &worker{
+		id:       workerId,
+		executor: executor,
+		log:      localLog.With().Int("workerId", workerId).Logger(),
+	}
+	w.initialize()
+	return w
+}
+
 func (w *worker) initialize() {
 	w.stateChange.Lock()
 	defer w.stateChange.Unlock()
-	w.lastReceived.Store(time.Now())
+	w.lastReceived.Store(time.Time{})
 	w.running.Store(false)
 	w.shutdown.Store(false)
 	w.interrupted.Store(false)
@@ -114,15 +128,15 @@ func (w *worker) work() {
 		select {
 		case _workItem := <-w.executor.getWorksItems():
 			w.lastReceived.Store(time.Now())
-			workerLog.Debug().Msgf("Got work item %v", _workItem)
+			workerLog.Debug().Msgf("Got work item\n%s", &_workItem)
 			if _workItem.completionFuture.cancelRequested.Load() || (w.shutdown.Load() && w.interrupted.Load()) {
 				workerLog.Debug().Msg("We need to stop")
 				// TODO: do we need to complete with a error?
 			} else {
-				workerLog.Debug().Msgf("Running work item %v", _workItem)
+				workerLog.Debug().Msgf("Running work item\n%s", &_workItem)
 				_workItem.runnable()
 				_workItem.completionFuture.complete()
-				workerLog.Debug().Msgf("work item %v completed", _workItem)
+				workerLog.Debug().Msgf("work item completed\n%s", &_workItem)
 			}
 		case <-w.interrupter:
 			workerLog.Debug().Msg("We got interrupted")

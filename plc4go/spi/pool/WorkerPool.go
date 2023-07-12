@@ -21,11 +21,10 @@ package pool
 
 import (
 	"context"
-
-	"github.com/apache/plc4x/plc4go/spi/options"
-
 	"io"
 	"time"
+
+	"github.com/apache/plc4x/plc4go/spi/options"
 )
 
 type Runnable func()
@@ -44,21 +43,9 @@ type Executor interface {
 }
 
 func NewFixedSizeExecutor(numberOfWorkers, queueDepth int, _options ...options.WithOption) Executor {
-	workers := make([]*worker, numberOfWorkers)
 	customLogger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)
-	for i := 0; i < numberOfWorkers; i++ {
-		w := worker{
-			id:  i,
-			log: customLogger,
-		}
-		w.lastReceived.Store(time.Time{})
-		workers[i] = &w
-	}
-	_executor := newExecutor(queueDepth, workers, customLogger)
+	_executor := newExecutor(queueDepth, numberOfWorkers, customLogger)
 	_executor.traceWorkers, _ = options.ExtractTracerWorkers(_options...)
-	for i := 0; i < numberOfWorkers; i++ {
-		workers[i].executor = _executor
-	}
 	return _executor
 }
 
@@ -67,13 +54,8 @@ func NewDynamicExecutor(maxNumberOfWorkers, queueDepth int, _options ...options.
 	_executor := newDynamicExecutor(queueDepth, maxNumberOfWorkers, customLogger)
 	_executor.traceWorkers, _ = options.ExtractTracerWorkers(_options...)
 	// We spawn one initial worker
-	w := worker{
-		id:          0,
-		interrupter: make(chan struct{}, 1),
-		executor:    _executor,
-		log:         customLogger,
-	}
-	w.lastReceived.Store(time.Now())
-	_executor.worker = append(_executor.worker, &w)
+	w := newWorker(customLogger, 0, _executor)
+	w.lastReceived.Store(time.Now()) // We store the current timestamp so the worker isn't cut of instantly by the worker killer
+	_executor.worker = append(_executor.worker, w)
 	return _executor
 }
