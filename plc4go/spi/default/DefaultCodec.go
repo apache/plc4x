@@ -265,13 +265,8 @@ func (m *defaultCodec) HandleMessages(message spi.Message) bool {
 			}
 			m.log.Trace().Msg("message handled")
 			messageHandled = true
-			// If this is the last element of the list remove it differently than if it's before that
-			if (i + 1) == len(m.expectations) {
-				m.expectations = m.expectations[:i]
-			} else if (i + 1) < len(m.expectations) {
-				m.expectations = append(m.expectations[:i], m.expectations[i+1:]...)
-				i--
-			}
+			m.expectations = append(m.expectations[:i], m.expectations[i+1:]...)
+			i--
 		} else {
 			expectationLog.Trace().Msg("doesn't accept message")
 		}

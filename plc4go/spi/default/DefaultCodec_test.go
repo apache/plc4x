@@ -963,6 +963,7 @@ func Test_defaultCodec_TimeoutExpectations(t *testing.T) {
 		name   string
 		fields fields
 		args   args
+		setup  func(t *testing.T, fields *fields, args *args)
 	}{
 		{
 			name: "timeout it (no expectations)",
@@ -1005,9 +1006,75 @@ func Test_defaultCodec_TimeoutExpectations(t *testing.T) {
 			},
 			args: args{now: time.Time{}.Add(2 * time.Hour)},
 		},
+		{
+			name: "timeout some (ensure everyone is called)",
+			args: args{now: time.Time{}.Add(2 * time.Hour)},
+			setup: func(t *testing.T, fields *fields, args *args) {
+				handle1 := atomic.Bool{}
+				handle2 := atomic.Bool{}
+				handle3 := atomic.Bool{}
+				handle4 := atomic.Bool{}
+				handle5 := atomic.Bool{}
+				t.Cleanup(func() {
+					time.Sleep(100 * time.Millisecond) // TODO: doing a sleep as handle error is called in a gofunc
+					assert.True(t, handle1.Load(), "handle1 not called")
+					assert.True(t, handle2.Load(), "handle2 not called")
+					assert.False(t, handle3.Load(), "handle3 called")
+					assert.True(t, handle4.Load(), "handle4 not called")
+					assert.False(t, handle5.Load(), "handle5 called")
+				})
+				fields.expectations = []spi.Expectation{
+					&defaultExpectation{ // Expired
+						Context: context.Background(),
+						HandleError: func(err error) error {
+							handle1.Store(true)
+							return nil
+						},
+					},
+					&defaultExpectation{ // Expired errors
+						Context: context.Background(),
+						HandleError: func(err error) error {
+							handle2.Store(true)
+							return errors.New("yep")
+						},
+					},
+					&defaultExpectation{ // Fine
+						Context: context.Background(),
+						HandleError: func(err error) error {
+							handle3.Store(true)
+							return errors.New("yep")
+						},
+						Expiration: time.Time{}.Add(3 * time.Hour),
+					},
+					&defaultExpectation{ // Context error
+						Context: func() context.Context {
+							ctx, cancelFunc := context.WithCancel(context.Background())
+							cancelFunc() // Cancel it instantly
+							return ctx
+						}(),
+						HandleError: func(err error) error {
+							handle4.Store(true)
+							return errors.New("yep")
+						},
+						Expiration: time.Time{}.Add(3 * time.Hour),
+					},
+					&defaultExpectation{ // Fine
+						Context: context.Background(),
+						HandleError: func(err error) error {
+							handle5.Store(true)
+							return errors.New("yep")
+						},
+						Expiration: time.Time{}.Add(3 * time.Hour),
+					},
+				}
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			if tt.setup != nil {
+				tt.setup(t, &tt.fields, &tt.args)
+			}
 			m := &defaultCodec{
 				DefaultCodecRequirements:      tt.fields.DefaultCodecRequirements,
 				transportInstance:             tt.fields.transportInstance,
