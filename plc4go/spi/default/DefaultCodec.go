@@ -268,6 +268,7 @@ func (m *defaultCodec) HandleMessages(message spi.Message) bool {
 				}
 				continue
 			}
+			m.log.Trace().Msg("message handled")
 			messageHandled = true
 			// If this is the last element of the list remove it differently than if it's before that
 			if (i + 1) == len(m.expectations) {
