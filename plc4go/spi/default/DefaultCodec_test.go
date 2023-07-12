@@ -22,18 +22,19 @@ package _default
 import (
 	"context"
 	"fmt"
-	"github.com/apache/plc4x/plc4go/spi/testutils"
-	"github.com/rs/zerolog/log"
 	"sync/atomic"
 	"testing"
 	"time"
 
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/apache/plc4x/plc4go/spi/testutils"
 	"github.com/apache/plc4x/plc4go/spi/transports"
 	"github.com/apache/plc4x/plc4go/spi/transports/test"
-	"github.com/pkg/errors"
 
+	"github.com/google/uuid"
+	"github.com/pkg/errors"
+	"github.com/rs/zerolog/log"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 )
@@ -220,7 +221,7 @@ func TestDefaultExpectation_String(t *testing.T) {
 	}{
 		{
 			name: "string it",
-			want: "Expectation(expires at 0001-01-01 00:00:00 +0000 UTC)",
+			want: "Expectation 00000000-0000-0000-0000-000000000000 (expires at 0001-01-01 00:00:00 +0000 UTC)",
 		},
 	}
 	for _, tt := range tests {
@@ -637,11 +638,13 @@ func Test_defaultCodec_HandleMessages(t *testing.T) {
 			fields: fields{
 				expectations: []spi.Expectation{
 					&defaultExpectation{ // doesn't accept
+						uuid: uuid.New(),
 						AcceptsMessage: func(_ spi.Message) bool {
 							return false
 						},
 					},
 					&defaultExpectation{ // accepts but fails
+						uuid: uuid.New(),
 						AcceptsMessage: func(_ spi.Message) bool {
 							return true
 						},
@@ -653,6 +656,7 @@ func Test_defaultCodec_HandleMessages(t *testing.T) {
 						},
 					},
 					&defaultExpectation{ // accepts but fails and fails to handle the error
+						uuid: uuid.New(),
 						AcceptsMessage: func(_ spi.Message) bool {
 							return true
 						},
@@ -664,6 +668,7 @@ func Test_defaultCodec_HandleMessages(t *testing.T) {
 						},
 					},
 					&defaultExpectation{ // accepts
+						uuid: uuid.New(),
 						AcceptsMessage: func(_ spi.Message) bool {
 							return true
 						},
@@ -672,6 +677,7 @@ func Test_defaultCodec_HandleMessages(t *testing.T) {
 						},
 					},
 					&defaultExpectation{ // accepts
+						uuid: uuid.New(),
 						AcceptsMessage: func(_ spi.Message) bool {
 							return true
 						},
@@ -680,6 +686,7 @@ func Test_defaultCodec_HandleMessages(t *testing.T) {
 						},
 					},
 					&defaultExpectation{ // accepts
+						uuid: uuid.New(),
 						AcceptsMessage: func(_ spi.Message) bool {
 							return true
 						},
@@ -688,6 +695,7 @@ func Test_defaultCodec_HandleMessages(t *testing.T) {
 						},
 					},
 					&defaultExpectation{ // not accept
+						uuid: uuid.New(),
 						AcceptsMessage: func(_ spi.Message) bool {
 							return false
 						},
@@ -696,6 +704,7 @@ func Test_defaultCodec_HandleMessages(t *testing.T) {
 						},
 					},
 					&defaultExpectation{ // accepts
+						uuid: uuid.New(),
 						AcceptsMessage: func(_ spi.Message) bool {
 							return true
 						},
@@ -726,11 +735,13 @@ func Test_defaultCodec_HandleMessages(t *testing.T) {
 				})
 				fields.expectations = []spi.Expectation{
 					&defaultExpectation{ // doesn't accept
+						uuid: uuid.New(),
 						AcceptsMessage: func(_ spi.Message) bool {
 							return false
 						},
 					},
 					&defaultExpectation{ // accepts but fails // accept1
+						uuid: uuid.New(),
 						AcceptsMessage: func(_ spi.Message) bool {
 							return true
 						},
@@ -743,6 +754,7 @@ func Test_defaultCodec_HandleMessages(t *testing.T) {
 						},
 					},
 					&defaultExpectation{ // accepts but fails and fails to handle the error // accept2
+						uuid: uuid.New(),
 						AcceptsMessage: func(_ spi.Message) bool {
 							return true
 						},
@@ -755,6 +767,7 @@ func Test_defaultCodec_HandleMessages(t *testing.T) {
 						},
 					},
 					&defaultExpectation{ // accepts // accept3
+						uuid: uuid.New(),
 						AcceptsMessage: func(_ spi.Message) bool {
 							return true
 						},
@@ -764,6 +777,7 @@ func Test_defaultCodec_HandleMessages(t *testing.T) {
 						},
 					},
 					&defaultExpectation{ // accepts // accept4
+						uuid: uuid.New(),
 						AcceptsMessage: func(_ spi.Message) bool {
 							return true
 						},
@@ -773,6 +787,7 @@ func Test_defaultCodec_HandleMessages(t *testing.T) {
 						},
 					},
 					&defaultExpectation{ // not accept // accept5
+						uuid: uuid.New(),
 						AcceptsMessage: func(_ spi.Message) bool {
 							return true
 						},
@@ -782,6 +797,7 @@ func Test_defaultCodec_HandleMessages(t *testing.T) {
 						},
 					},
 					&defaultExpectation{ // not accept
+						uuid: uuid.New(),
 						AcceptsMessage: func(_ spi.Message) bool {
 							return false
 						},
@@ -790,6 +806,7 @@ func Test_defaultCodec_HandleMessages(t *testing.T) {
 						},
 					},
 					&defaultExpectation{ // accepts // accept6
+						uuid: uuid.New(),
 						AcceptsMessage: func(_ spi.Message) bool {
 							return true
 						},

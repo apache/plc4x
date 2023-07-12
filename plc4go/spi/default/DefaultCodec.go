@@ -189,14 +189,7 @@ func (m *defaultCodec) IsRunning() bool {
 func (m *defaultCodec) Expect(ctx context.Context, acceptsMessage spi.AcceptsMessage, handleMessage spi.HandleMessage, handleError spi.HandleError, ttl time.Duration) error {
 	m.expectationsChangeMutex.Lock()
 	defer m.expectationsChangeMutex.Unlock()
-	expectation := &defaultExpectation{
-		Context:        ctx,
-		CreationTime:   time.Now(),
-		Expiration:     time.Now().Add(ttl),
-		AcceptsMessage: acceptsMessage,
-		HandleMessage:  handleMessage,
-		HandleError:    handleError,
-	}
+	expectation := newDefaultExpectation(ctx, ttl, acceptsMessage, handleMessage, handleError)
 	m.expectations = append(m.expectations, expectation)
 	return nil
 }
@@ -253,18 +246,19 @@ func (m *defaultCodec) HandleMessages(message spi.Message) bool {
 	m.log.Trace().Msgf("Current number of expectations: %d", len(m.expectations))
 	for i := 0; i < len(m.expectations); i++ {
 		expectation := m.expectations[i]
-		m.log.Trace().Msgf("Checking expectation %s", expectation)
+		expectationLog := m.log.With().Stringer("expectation", expectation).Logger()
+		expectationLog.Trace().Msgf("Checking expectation")
 		// Check if the current message matches the expectations
 		// If it does, let it handle the message.
 		if accepts := expectation.GetAcceptsMessage()(message); accepts {
-			m.log.Debug().Stringer("expectation", expectation).Msg("accepts message")
+			expectationLog.Debug().Msg("accepts message")
 			// TODO: decouple from worker thread
 			if err := expectation.GetHandleMessage()(message); err != nil {
-				m.log.Debug().Stringer("expectation", expectation).Err(err).Msg("errored handling the message")
+				expectationLog.Debug().Err(err).Msg("errored handling the message")
 				// Pass the error to the error handler.
 				// TODO: decouple from worker thread
 				if err := expectation.GetHandleError()(err); err != nil {
-					m.log.Error().Err(err).Msg("Got an error handling error on expectation")
+					expectationLog.Error().Err(err).Msg("Got an error handling error on expectation")
 				}
 				continue
 			}
@@ -278,7 +272,7 @@ func (m *defaultCodec) HandleMessages(message spi.Message) bool {
 				i--
 			}
 		} else {
-			m.log.Trace().Stringer("expectation", expectation).Msg("doesn't accept message")
+			expectationLog.Trace().Msg("doesn't accept message")
 		}
 	}
 	m.log.Trace().Msgf("handled message = %t", messageHandled)

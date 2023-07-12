@@ -25,15 +25,30 @@ import (
 	"time"
 
 	"github.com/apache/plc4x/plc4go/spi"
+
+	"github.com/google/uuid"
 )
 
 type defaultExpectation struct {
+	uuid           uuid.UUID
 	Context        context.Context
 	CreationTime   time.Time
 	Expiration     time.Time
 	AcceptsMessage spi.AcceptsMessage
 	HandleMessage  spi.HandleMessage
 	HandleError    spi.HandleError
+}
+
+func newDefaultExpectation(ctx context.Context, ttl time.Duration, acceptsMessage spi.AcceptsMessage, handleMessage spi.HandleMessage, handleError spi.HandleError) *defaultExpectation {
+	return &defaultExpectation{
+		uuid:           uuid.New(),
+		Context:        ctx,
+		CreationTime:   time.Now(),
+		Expiration:     time.Now().Add(ttl),
+		AcceptsMessage: acceptsMessage,
+		HandleMessage:  handleMessage,
+		HandleError:    handleError,
+	}
 }
 
 func (d *defaultExpectation) GetContext() context.Context {
@@ -61,5 +76,5 @@ func (d *defaultExpectation) GetHandleError() spi.HandleError {
 }
 
 func (d *defaultExpectation) String() string {
-	return fmt.Sprintf("Expectation(expires at %v)", d.Expiration)
+	return fmt.Sprintf("Expectation %s (expires at %v)", d.uuid, d.Expiration)
 }
