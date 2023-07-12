@@ -191,6 +191,7 @@ func (m *defaultCodec) Expect(ctx context.Context, acceptsMessage spi.AcceptsMes
 	defer m.expectationsChangeMutex.Unlock()
 	expectation := newDefaultExpectation(ctx, ttl, acceptsMessage, handleMessage, handleError)
 	m.expectations = append(m.expectations, expectation)
+	m.log.Debug().Stringer("expectation", expectation).Msg("Added expectation")
 	return nil
 }
 
