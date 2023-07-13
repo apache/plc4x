@@ -31,6 +31,31 @@ import (
 	"github.com/stretchr/testify/mock"
 )
 
+func Test_newRequestTransaction(t *testing.T) {
+	type args struct {
+		localLog      zerolog.Logger
+		parent        *requestTransactionManager
+		transactionId int32
+	}
+	tests := []struct {
+		name string
+		args args
+		want *requestTransaction
+	}{
+		{
+			name: "create it",
+			want: &requestTransaction{
+				log: zerolog.Logger{}.With().Int32("transactionId", 0).Logger(),
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			assert.Equalf(t, tt.want, newRequestTransaction(tt.args.localLog, tt.args.parent, tt.args.transactionId), "newRequestTransaction(%v, %v, %v)", tt.args.localLog, tt.args.parent, tt.args.transactionId)
+		})
+	}
+}
+
 func Test_requestTransaction_EndRequest(t1 *testing.T) {
 	type fields struct {
 		parent        *requestTransactionManager
@@ -62,11 +87,11 @@ func Test_requestTransaction_EndRequest(t1 *testing.T) {
 	for _, tt := range tests {
 		t1.Run(tt.name, func(t1 *testing.T) {
 			t := &requestTransaction{
-				parent:         tt.fields.parent,
-				transactionId:  tt.fields.transactionId,
-				operation:      tt.fields.operation,
-				transactionLog: produceTestingLogger(t1),
-				completed:      tt.fields.completed,
+				parent:        tt.fields.parent,
+				transactionId: tt.fields.transactionId,
+				operation:     tt.fields.operation,
+				log:           produceTestingLogger(t1),
+				completed:     tt.fields.completed,
 			}
 			if err := t.EndRequest(); (err != nil) != tt.wantErr {
 				t1.Errorf("EndRequest() error = %v, wantErr %v", err, tt.wantErr)
@@ -126,11 +151,11 @@ func Test_requestTransaction_FailRequest(t1 *testing.T) {
 				tt.setup(t, &tt.fields, &tt.args)
 			}
 			r := &requestTransaction{
-				parent:         tt.fields.parent,
-				transactionId:  tt.fields.transactionId,
-				operation:      tt.fields.operation,
-				transactionLog: tt.fields.transactionLog,
-				completed:      tt.fields.completed,
+				parent:        tt.fields.parent,
+				transactionId: tt.fields.transactionId,
+				operation:     tt.fields.operation,
+				log:           tt.fields.transactionLog,
+				completed:     tt.fields.completed,
 			}
 			if tt.manipulator != nil {
 				tt.manipulator(t, r)
@@ -168,10 +193,10 @@ func Test_requestTransaction_String(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t1 *testing.T) {
 			_t := &requestTransaction{
-				parent:         tt.fields.parent,
-				transactionId:  tt.fields.transactionId,
-				operation:      tt.fields.operation,
-				transactionLog: produceTestingLogger(t1),
+				parent:        tt.fields.parent,
+				transactionId: tt.fields.transactionId,
+				operation:     tt.fields.operation,
+				log:           produceTestingLogger(t1),
 			}
 			if tt.manipulator != nil {
 				tt.manipulator(t, _t)
@@ -243,11 +268,11 @@ func Test_requestTransaction_Submit(t1 *testing.T) {
 	for _, tt := range tests {
 		t1.Run(tt.name, func(t1 *testing.T) {
 			t := &requestTransaction{
-				parent:         tt.fields.parent,
-				transactionId:  tt.fields.transactionId,
-				operation:      tt.fields.operation,
-				transactionLog: tt.fields.transactionLog,
-				completed:      tt.fields.completed,
+				parent:        tt.fields.parent,
+				transactionId: tt.fields.transactionId,
+				operation:     tt.fields.operation,
+				log:           tt.fields.transactionLog,
+				completed:     tt.fields.completed,
 			}
 			t.Submit(tt.args.operation)
 			t.operation()
@@ -308,10 +333,10 @@ func Test_requestTransaction_AwaitCompletion(t1 *testing.T) {
 				tt.setup(t1, &tt.fields, &tt.args)
 			}
 			t := &requestTransaction{
-				parent:         tt.fields.parent,
-				transactionId:  tt.fields.transactionId,
-				operation:      tt.fields.operation,
-				transactionLog: produceTestingLogger(t1),
+				parent:        tt.fields.parent,
+				transactionId: tt.fields.transactionId,
+				operation:     tt.fields.operation,
+				log:           produceTestingLogger(t1),
 			}
 			if tt.manipulator != nil {
 				tt.manipulator(t1, t)

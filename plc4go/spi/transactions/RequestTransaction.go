@@ -66,7 +66,15 @@ type requestTransaction struct {
 	stateChangeMutex sync.Mutex
 	completed        bool
 
-	transactionLog zerolog.Logger `ignore:"true"`
+	log zerolog.Logger `ignore:"true"`
+}
+
+func newRequestTransaction(localLog zerolog.Logger, parent *requestTransactionManager, transactionId int32) *requestTransaction {
+	return &requestTransaction{
+		parent:        parent,
+		transactionId: transactionId,
+		log:           localLog.With().Int32("transactionId", transactionId).Logger(),
+	}
 }
 
 func (t *requestTransaction) setCompletionFuture(completionFuture pool.CompletionFuture) {
@@ -93,7 +101,7 @@ func (t *requestTransaction) FailRequest(err error) error {
 	if t.completed {
 		return errors.Wrap(err, "calling fail on a already completed transaction")
 	}
-	t.transactionLog.Trace().Msg("Fail the request")
+	t.log.Trace().Msg("Fail the request")
 	t.completed = true
 	return t.parent.failRequest(t, err)
 }
@@ -104,7 +112,7 @@ func (t *requestTransaction) EndRequest() error {
 	if t.completed {
 		return errors.New("calling end on a already completed transaction")
 	}
-	t.transactionLog.Trace().Msg("Ending the request")
+	t.log.Trace().Msg("Ending the request")
 	t.completed = true
 	// Remove it from Running Requests
 	return t.parent.endRequest(t)
@@ -114,23 +122,23 @@ func (t *requestTransaction) Submit(operation RequestTransactionRunnable) {
 	t.stateChangeMutex.Lock()
 	defer t.stateChangeMutex.Unlock()
 	if t.completed {
-		t.transactionLog.Warn().Msg("calling submit on a already completed transaction")
+		t.log.Warn().Msg("calling submit on a already completed transaction")
 		return
 	}
 	if t.operation != nil {
-		t.transactionLog.Warn().Msg("Operation already set")
+		t.log.Warn().Msg("Operation already set")
 	}
-	t.transactionLog.Trace().Int32("transactionId", t.transactionId).Msg("Submission")
+	t.log.Trace().Int32("transactionId", t.transactionId).Msg("Submission")
 	t.operation = func() {
-		t.transactionLog.Trace().Int32("transactionId", t.transactionId).Msg("Start operation")
+		t.log.Trace().Int32("transactionId", t.transactionId).Msg("Start operation")
 		operation(t)
-		t.transactionLog.Trace().Int32("transactionId", t.transactionId).Msg("Completed operation")
+		t.log.Trace().Int32("transactionId", t.transactionId).Msg("Completed operation")
 	}
 	t.parent.submitTransaction(t)
 }
 
 func (t *requestTransaction) AwaitCompletion(ctx context.Context) error {
-	t.transactionLog.Trace().Int32("transactionId", t.transactionId).Msg("Awaiting completion")
+	t.log.Trace().Int32("transactionId", t.transactionId).Msg("Awaiting completion")
 	timeout, cancelFunc := context.WithTimeout(ctx, time.Minute*30) // This is intentionally set very high
 	defer cancelFunc()
 	for t.getCompletionFuture() == nil {
@@ -141,7 +149,7 @@ func (t *requestTransaction) AwaitCompletion(ctx context.Context) error {
 		}
 	}
 	if err := t.getCompletionFuture().AwaitCompletion(ctx); err != nil {
-		t.transactionLog.Trace().Int32("transactionId", t.transactionId).Msg("Errored")
+		t.log.Trace().Int32("transactionId", t.transactionId).Msg("Errored")
 		return err
 	}
 	stillActive := true
@@ -156,7 +164,7 @@ func (t *requestTransaction) AwaitCompletion(ctx context.Context) error {
 		}
 		t.parent.runningRequestMutex.RUnlock()
 	}
-	t.transactionLog.Trace().Int32("transactionId", t.transactionId).Msg("Completed")
+	t.log.Trace().Int32("transactionId", t.transactionId).Msg("Completed")
 	return nil
 }
 

@@ -181,15 +181,11 @@ func (r *requestTransactionManager) StartTransaction() RequestTransaction {
 	defer r.transactionMutex.Unlock()
 	currentTransactionId := r.currentTransactionId
 	r.currentTransactionId += 1
-	transactionLogger := r.log.With().Int32("currentTransactionId", currentTransactionId).Logger()
+	transactionLogger := r.log
 	if !r.traceTransactionManagerTransactions {
 		transactionLogger = zerolog.Nop()
 	}
-	transaction := &requestTransaction{
-		parent:         r,
-		transactionId:  currentTransactionId,
-		transactionLog: transactionLogger,
-	}
+	transaction := newRequestTransaction(transactionLogger, r, currentTransactionId)
 	if r.shutdown.Load() {
 		transaction.completed = true
 		transaction.setCompletionFuture(&completedFuture{errors.New("request transaction manager in shutdown")})
@@ -212,12 +208,12 @@ func (r *requestTransactionManager) failRequest(transaction *requestTransaction,
 
 func (r *requestTransactionManager) endRequest(transaction *requestTransaction) error {
 	r.runningRequestMutex.Lock()
-	transaction.transactionLog.Debug().Msg("Trying to find a existing transaction")
+	transaction.log.Debug().Msg("Trying to find a existing transaction")
 	found := false
 	index := -1
 	for i, runningRequest := range r.runningRequests {
 		if runningRequest.transactionId == transaction.transactionId {
-			transaction.transactionLog.Debug().Msg("Found a existing transaction")
+			transaction.log.Debug().Msg("Found a existing transaction")
 			found = true
 			index = i
 			break
@@ -226,11 +222,11 @@ func (r *requestTransactionManager) endRequest(transaction *requestTransaction) 
 	if !found {
 		return errors.New("Unknown Transaction or Transaction already finished!")
 	}
-	transaction.transactionLog.Debug().Msg("Removing the existing transaction transaction")
+	transaction.log.Debug().Msg("Removing the existing transaction transaction")
 	r.runningRequests = append(r.runningRequests[:index], r.runningRequests[index+1:]...)
 	r.runningRequestMutex.Unlock()
 	// Process the workLog, a slot should be free now
-	transaction.transactionLog.Debug().Msg("Processing the workLog")
+	transaction.log.Debug().Msg("Processing the workLog")
 	r.processWorklog()
 	return nil
 }

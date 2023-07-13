@@ -118,7 +118,7 @@ func (w *worker) work() {
 		}
 	}()
 	defer w.running.Store(false)
-	workerLog := w.log.With().Int("Worker id", w.id).Logger()
+	workerLog := w.log
 	if !w.executor.isTraceWorkers() {
 		workerLog = zerolog.Nop()
 	}
