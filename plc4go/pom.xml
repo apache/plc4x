@@ -45,7 +45,7 @@
     <sonar.coverage.exclusions>**/*_test.go,spi/testutils/*,**/*_plc4xgen.go,examples/**/*,tests/**/*,tools/**/*
     </sonar.coverage.exclusions>
 
-    <sonar.go.exclusions>**/vendor/**,**/*_mock.go</sonar.go.exclusions>
+    <sonar.go.exclusions>**/vendor/**,**/*_mock.go,**/mock_*.go</sonar.go.exclusions>
     <!-- TODO: add json output to sonar.go.tests.reportPaths=${project.basedir}/target/go-test-report.out-->
     <sonar.go.coverage.reportPaths>${project.basedir}/target/coverage.out</sonar.go.coverage.reportPaths>
 
