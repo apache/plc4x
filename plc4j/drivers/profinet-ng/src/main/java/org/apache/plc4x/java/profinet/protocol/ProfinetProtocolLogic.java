@@ -44,6 +44,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.InetSocketAddress;
+import java.security.SecureRandom;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
@@ -574,7 +575,7 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
             (short) 0,
             request
         );
-        Random rand = new Random();
+        SecureRandom rand = new SecureRandom();
         // Serialize it to a byte-payload
         Ethernet_FramePayload_IPv4 udpFrame = new Ethernet_FramePayload_IPv4(
             rand.nextInt(65536),
