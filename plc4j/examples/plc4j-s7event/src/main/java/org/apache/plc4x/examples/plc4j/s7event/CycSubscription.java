@@ -142,7 +142,6 @@ public class CycSubscription implements ConnectionStateListener { //01
     public void CloseConnection() {          
         try {        
             connection.close();
-            connection = null;
         } catch (PlcConnectionException ex) {
             ex.printStackTrace();
         }

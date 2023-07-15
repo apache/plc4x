@@ -276,7 +276,8 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
         EventLogic.stop();
         //5. Executes the closing of the main channel.
         context.getChannel().close();
-        //6. Here is the stop of any task or state machine that is added.        
+        //6. Here is the stop of any task or state machine that is added.  
+        System.out.println("Salio de aqui....");
     }
 
    
@@ -515,8 +516,8 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
         
         //The main task that runs the subscriptions.
         CompletableFuture<Void> maintask; 
-        maintask = CompletableFuture.
-                allOf(futures.values().toArray(new CompletableFuture[0]));        
+//        maintask = CompletableFuture.
+//                allOf(futures.values().toArray(new CompletableFuture[0]));        
         
         Thread t1 = new Thread(()->{
 
