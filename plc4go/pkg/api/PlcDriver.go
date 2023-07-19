@@ -21,6 +21,7 @@ package plc4go
 
 import (
 	"context"
+	"fmt"
 	"io"
 	"net/url"
 
@@ -30,6 +31,7 @@ import (
 )
 
 type PlcDriver interface {
+	fmt.Stringer
 	io.Closer
 	// GetProtocolCode Get the short code used to identify this driver (As used in the connection string)
 	GetProtocolCode() string

@@ -272,3 +272,7 @@ func (c *Connection) UnsubscriptionRequestBuilder() apiModel.PlcUnsubscriptionRe
 func (c *Connection) BrowseRequestBuilder() apiModel.PlcBrowseRequestBuilder {
 	panic("not provided by simulated connection")
 }
+
+func (c *Connection) String() string {
+	return "simulatedConnection"
+}

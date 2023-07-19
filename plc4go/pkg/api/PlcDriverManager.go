@@ -106,24 +106,12 @@ type WithDiscoveryOption interface {
 // Internal section
 //
 
+//go:generate go run ../../tools/plc4xgenerator/gen.go -type=plcDriverManger
 type plcDriverManger struct {
 	drivers    map[string]PlcDriver
 	transports map[string]transports.Transport
 
-	log zerolog.Logger
-}
-
-type plcConnectionConnectResult struct {
-	connection PlcConnection
-	err        error
-}
-
-func (d *plcConnectionConnectResult) GetConnection() PlcConnection {
-	return d.connection
-}
-
-func (d *plcConnectionConnectResult) GetErr() error {
-	return d.err
+	log zerolog.Logger `ignore:"true"`
 }
 
 type withDiscoveryOption struct {
@@ -141,12 +129,6 @@ func convertToInternalOptions(withDiscoveryOptions ...WithDiscoveryOption) []opt
 	}
 	return result
 }
-
-//
-// Internal section
-//
-///////////////////////////////////////
-///////////////////////////////////////
 
 func (m *plcDriverManger) RegisterDriver(driver PlcDriver) {
 	m.log.Debug().Str("protocolName", driver.GetProtocolName()).Msg("Registering driver")
@@ -339,3 +321,9 @@ func (m *plcDriverManger) Close() error {
 	}
 	return nil
 }
+
+//
+// Internal section
+//
+///////////////////////////////////////
+///////////////////////////////////////

@@ -231,7 +231,7 @@ func TestNewDefaultPlcConnectionCloseResult(t *testing.T) {
 	}{
 		{
 			name: "create it",
-			want: &plcConnectionCloseResult{},
+			want: &defaultPlcConnectionCloseResult{},
 		},
 	}
 	for _, tt := range tests {
@@ -254,7 +254,7 @@ func TestNewDefaultPlcConnectionCloseResultWithTraces(t *testing.T) {
 	}{
 		{
 			name: "create it",
-			want: &plcConnectionCloseResult{},
+			want: &defaultPlcConnectionCloseResult{},
 		},
 	}
 	for _, tt := range tests {
@@ -276,7 +276,7 @@ func TestNewDefaultPlcConnectionConnectResult(t *testing.T) {
 	}{
 		{
 			name: "create it",
-			want: &plcConnectionConnectResult{},
+			want: &defaultPlcConnectionConnectResult{},
 		},
 	}
 	for _, tt := range tests {
@@ -297,7 +297,7 @@ func TestNewDefaultPlcConnectionPingResult(t *testing.T) {
 	}{
 		{
 			name: "create it",
-			want: &plcConnectionPingResult{},
+			want: &defaultPlcConnectionPingResult{},
 		},
 	}
 	for _, tt := range tests {
@@ -1142,7 +1142,7 @@ func Test_plcConnectionCloseResult_GetConnection(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			d := &plcConnectionCloseResult{
+			d := &defaultPlcConnectionCloseResult{
 				connection: tt.fields.connection,
 				err:        tt.fields.err,
 				traces:     tt.fields.traces,
@@ -1177,7 +1177,7 @@ func Test_plcConnectionCloseResult_GetErr(t *testing.T) {
 			if tt.setup != nil {
 				tt.setup(t, &tt.fields)
 			}
-			d := &plcConnectionCloseResult{
+			d := &defaultPlcConnectionCloseResult{
 				connection: tt.fields.connection,
 				err:        tt.fields.err,
 				traces:     tt.fields.traces,
@@ -1204,7 +1204,7 @@ func Test_plcConnectionCloseResult_GetTraces(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			d := &plcConnectionCloseResult{
+			d := &defaultPlcConnectionCloseResult{
 				connection: tt.fields.connection,
 				err:        tt.fields.err,
 				traces:     tt.fields.traces,
@@ -1230,7 +1230,7 @@ func Test_plcConnectionConnectResult_GetConnection(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			d := &plcConnectionConnectResult{
+			d := &defaultPlcConnectionConnectResult{
 				connection: tt.fields.connection,
 				err:        tt.fields.err,
 			}
@@ -1263,7 +1263,7 @@ func Test_plcConnectionConnectResult_GetErr(t *testing.T) {
 			if tt.setup != nil {
 				tt.setup(t, &tt.fields)
 			}
-			d := &plcConnectionConnectResult{
+			d := &defaultPlcConnectionConnectResult{
 				connection: tt.fields.connection,
 				err:        tt.fields.err,
 			}
@@ -1288,7 +1288,7 @@ func Test_plcConnectionPingResult_GetErr(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			d := &plcConnectionPingResult{
+			d := &defaultPlcConnectionPingResult{
 				err: tt.fields.err,
 			}
 			tt.wantErr(t, d.GetErr(), fmt.Sprintf("GetErr()"))

@@ -21,25 +21,13 @@ package plc4go
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
 )
 
-type PlcConnectionConnectResult interface {
-	GetConnection() PlcConnection
-	GetErr() error
-}
-
-type PlcConnectionCloseResult interface {
-	GetConnection() PlcConnection
-	GetErr() error
-}
-
-type PlcConnectionPingResult interface {
-	GetErr() error
-}
-
 type PlcConnection interface {
+	fmt.Stringer
 	// Connect Initiate the connection to the PLC
 	Connect() <-chan PlcConnectionConnectResult
 	// ConnectWithContext connects connection codec with the supplied context

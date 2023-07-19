@@ -21,9 +21,6 @@ package _default
 
 import (
 	"context"
-	"github.com/apache/plc4x/plc4go/spi/tracer"
-	"github.com/apache/plc4x/plc4go/spi/utils"
-	"github.com/rs/zerolog"
 	"runtime/debug"
 	"sync/atomic"
 	"time"
@@ -33,7 +30,10 @@ import (
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/transports"
+	"github.com/apache/plc4x/plc4go/spi/utils"
+
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
 )
 
 // DefaultConnectionRequirements defines the required at a implementing connection when using DefaultConnection
@@ -73,57 +73,6 @@ func WithPlcTagHandler(tagHandler spi.PlcTagHandler) options.WithOption {
 
 func WithPlcValueHandler(plcValueHandler spi.PlcValueHandler) options.WithOption {
 	return withPlcValueHandler{plcValueHandler: plcValueHandler}
-}
-
-// DefaultConnectionMetadata implements the model.PlcConnectionMetadata interface
-type DefaultConnectionMetadata struct {
-	ConnectionAttributes map[string]string
-	ProvidesReading      bool
-	ProvidesWriting      bool
-	ProvidesSubscribing  bool
-	ProvidesBrowsing     bool
-}
-
-type DefaultPlcConnectionConnectResult interface {
-	plc4go.PlcConnectionConnectResult
-}
-
-func NewDefaultPlcConnectionConnectResult(connection plc4go.PlcConnection, err error) DefaultPlcConnectionConnectResult {
-	return &plcConnectionConnectResult{
-		connection: connection,
-		err:        err,
-	}
-}
-
-type DefaultPlcConnectionCloseResult interface {
-	plc4go.PlcConnectionCloseResult
-	GetTraces() []tracer.TraceEntry
-}
-
-func NewDefaultPlcConnectionCloseResult(connection plc4go.PlcConnection, err error) plc4go.PlcConnectionCloseResult {
-	return &plcConnectionCloseResult{
-		connection: connection,
-		err:        err,
-		traces:     nil,
-	}
-}
-
-func NewDefaultPlcConnectionCloseResultWithTraces(connection plc4go.PlcConnection, err error, traces []tracer.TraceEntry) plc4go.PlcConnectionCloseResult {
-	return &plcConnectionCloseResult{
-		connection: connection,
-		err:        err,
-		traces:     traces,
-	}
-}
-
-type DefaultPlcConnectionPingResult interface {
-	plc4go.PlcConnectionPingResult
-}
-
-func NewDefaultPlcConnectionPingResult(err error) plc4go.PlcConnectionPingResult {
-	return &plcConnectionPingResult{
-		err: err,
-	}
 }
 
 ///////////////////////////////////////
@@ -187,51 +136,6 @@ func buildDefaultConnection(requirements DefaultConnectionRequirements, _options
 		log: customLogger,
 	}
 }
-
-type plcConnectionConnectResult struct {
-	connection plc4go.PlcConnection
-	err        error
-}
-
-func (d *plcConnectionConnectResult) GetConnection() plc4go.PlcConnection {
-	return d.connection
-}
-
-func (d *plcConnectionConnectResult) GetErr() error {
-	return d.err
-}
-
-type plcConnectionCloseResult struct {
-	connection plc4go.PlcConnection
-	err        error
-	traces     []tracer.TraceEntry
-}
-
-func (d *plcConnectionCloseResult) GetConnection() plc4go.PlcConnection {
-	return d.connection
-}
-
-func (d *plcConnectionCloseResult) GetErr() error {
-	return d.err
-}
-
-func (d *plcConnectionCloseResult) GetTraces() []tracer.TraceEntry {
-	return d.traces
-}
-
-type plcConnectionPingResult struct {
-	err error
-}
-
-func (d *plcConnectionPingResult) GetErr() error {
-	return d.err
-}
-
-//
-// Internal section
-//
-///////////////////////////////////////
-///////////////////////////////////////
 
 func (d *defaultConnection) SetConnected(connected bool) {
 	d.log.Trace().Msgf("set connected %t", connected)
@@ -372,22 +276,8 @@ func (d *defaultConnection) GetPlcValueHandler() spi.PlcValueHandler {
 	return d.valueHandler
 }
 
-func (m DefaultConnectionMetadata) GetConnectionAttributes() map[string]string {
-	return m.ConnectionAttributes
-}
-
-func (m DefaultConnectionMetadata) CanRead() bool {
-	return m.ProvidesReading
-}
-
-func (m DefaultConnectionMetadata) CanWrite() bool {
-	return m.ProvidesWriting
-}
-
-func (m DefaultConnectionMetadata) CanSubscribe() bool {
-	return m.ProvidesSubscribing
-}
-
-func (m DefaultConnectionMetadata) CanBrowse() bool {
-	return m.ProvidesBrowsing
-}
+//
+// Internal section
+//
+///////////////////////////////////////
+///////////////////////////////////////
