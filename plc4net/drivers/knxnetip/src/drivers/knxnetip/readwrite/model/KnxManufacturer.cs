@@ -660,8 +660,10 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
         M_GUANGDONG_YOZEWIT_INTELLIGENT_TECHNOLOGY_CO__LTD_ = 633,
         M_SEXANKA = 634,
         M_SECURI_FLEX_LTD = 635,
-        M_ABB___RESERVED = 636,
-        M_BUSCH_JAEGER_ELEKTRO___RESERVED = 637,
+        M_BOKE = 636,
+        M_SBR_SMART_CONTROL = 637,
+        M_ABB___RESERVED = 638,
+        M_BUSCH_JAEGER_ELEKTRO___RESERVED = 639,
     }
 
     public static class KnxManufacturerInfo
@@ -2462,10 +2464,16 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxManufacturer.M_SECURI_FLEX_LTD: { /* '635' */
                     return 692;
                 }
-                case KnxManufacturer.M_ABB___RESERVED: { /* '636' */
+                case KnxManufacturer.M_BOKE: { /* '636' */
+                    return 693;
+                }
+                case KnxManufacturer.M_SBR_SMART_CONTROL: { /* '637' */
+                    return 695;
+                }
+                case KnxManufacturer.M_ABB___RESERVED: { /* '638' */
                     return 43954;
                 }
-                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '637' */
+                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '639' */
                     return 43959;
                 }
                 case KnxManufacturer.M_BISCHOFF_ELEKTRONIK: { /* '64' */
@@ -4386,10 +4394,16 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxManufacturer.M_SECURI_FLEX_LTD: { /* '635' */
                     return "Securi-Flex Ltd";
                 }
-                case KnxManufacturer.M_ABB___RESERVED: { /* '636' */
+                case KnxManufacturer.M_BOKE: { /* '636' */
+                    return "BOKE";
+                }
+                case KnxManufacturer.M_SBR_SMART_CONTROL: { /* '637' */
+                    return "SBR Smart Control";
+                }
+                case KnxManufacturer.M_ABB___RESERVED: { /* '638' */
                     return "ABB - reserved";
                 }
-                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '637' */
+                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '639' */
                     return "Busch-Jaeger Elektro - reserved";
                 }
                 case KnxManufacturer.M_BISCHOFF_ELEKTRONIK: { /* '64' */

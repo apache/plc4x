@@ -730,9 +730,11 @@ public enum KnxManufacturer {
       (int) 633, (int) 690, (String) "Guangdong Yozewit Intelligent Technology Co.,Ltd."),
   M_SEXANKA((int) 634, (int) 691, (String) "SEXANKA"),
   M_SECURI_FLEX_LTD((int) 635, (int) 692, (String) "Securi-Flex Ltd"),
-  M_ABB___RESERVED((int) 636, (int) 43954, (String) "ABB - reserved"),
+  M_BOKE((int) 636, (int) 693, (String) "BOKE"),
+  M_SBR_SMART_CONTROL((int) 637, (int) 695, (String) "SBR Smart Control"),
+  M_ABB___RESERVED((int) 638, (int) 43954, (String) "ABB - reserved"),
   M_BUSCH_JAEGER_ELEKTRO___RESERVED(
-      (int) 637, (int) 43959, (String) "Busch-Jaeger Elektro - reserved");
+      (int) 639, (int) 43959, (String) "Busch-Jaeger Elektro - reserved");
   private static final Map<Integer, KnxManufacturer> map;
 
   static {
