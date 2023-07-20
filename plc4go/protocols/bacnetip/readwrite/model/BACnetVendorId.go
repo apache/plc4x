@@ -1463,6 +1463,9 @@ const (
 	BACnetVendorId_MITSUBISHI_ELECTRIC_CORPORATION_KOBE_WORKS                                   BACnetVendorId = 1426
 	BACnetVendorId_ECOVENA                                                                      BACnetVendorId = 1427
 	BACnetVendorId_GREE_ELECTRIC_APPLIANCES_INCOF_ZHUHAI                                        BACnetVendorId = 1428
+	BACnetVendorId_CONSPEC_CONTROLS                                                             BACnetVendorId = 1429
+	BACnetVendorId_HANGZHOU_HIKVISION_DIGITAL_TECHNOLOGY_CO_LTD                                 BACnetVendorId = 1430
+	BACnetVendorId_CRYSTAL_PEAK_SECURITY                                                        BACnetVendorId = 1431
 	BACnetVendorId_UNKNOWN_VENDOR                                                               BACnetVendorId = 0xFFFF
 )
 
@@ -2891,6 +2894,9 @@ func init() {
 		BACnetVendorId_MITSUBISHI_ELECTRIC_CORPORATION_KOBE_WORKS,
 		BACnetVendorId_ECOVENA,
 		BACnetVendorId_GREE_ELECTRIC_APPLIANCES_INCOF_ZHUHAI,
+		BACnetVendorId_CONSPEC_CONTROLS,
+		BACnetVendorId_HANGZHOU_HIKVISION_DIGITAL_TECHNOLOGY_CO_LTD,
+		BACnetVendorId_CRYSTAL_PEAK_SECURITY,
 		BACnetVendorId_UNKNOWN_VENDOR,
 	}
 }
@@ -4805,9 +4811,21 @@ func (e BACnetVendorId) VendorId() uint16 {
 		{ /* '1428' */
 			return 1428
 		}
+	case 1429:
+		{ /* '1429' */
+			return 1429
+		}
 	case 143:
 		{ /* '143' */
 			return 143
+		}
+	case 1430:
+		{ /* '1430' */
+			return 1430
+		}
+	case 1431:
+		{ /* '1431' */
+			return 1431
 		}
 	case 144:
 		{ /* '144' */
@@ -10507,9 +10525,21 @@ func (e BACnetVendorId) VendorName() string {
 		{ /* '1428' */
 			return "Gree Electric Appliances Inc of Zhuhai"
 		}
+	case 1429:
+		{ /* '1429' */
+			return "Conspec Controls"
+		}
 	case 143:
 		{ /* '143' */
 			return "Digitale Mess- und Steuersysteme AG"
+		}
+	case 1430:
+		{ /* '1430' */
+			return "Hangzhou Hikvision Digital Technology Co., Ltd."
+		}
+	case 1431:
+		{ /* '1431' */
+			return "Crystal Peak Security"
 		}
 	case 144:
 		{ /* '144' */
@@ -15254,8 +15284,14 @@ func BACnetVendorIdByValue(value uint16) (enum BACnetVendorId, ok bool) {
 		return BACnetVendorId_ECOVENA, true
 	case 1428:
 		return BACnetVendorId_GREE_ELECTRIC_APPLIANCES_INCOF_ZHUHAI, true
+	case 1429:
+		return BACnetVendorId_CONSPEC_CONTROLS, true
 	case 143:
 		return BACnetVendorId_DIGITALE_MESSUND_STEUERSYSTEMEAG, true
+	case 1430:
+		return BACnetVendorId_HANGZHOU_HIKVISION_DIGITAL_TECHNOLOGY_CO_LTD, true
+	case 1431:
+		return BACnetVendorId_CRYSTAL_PEAK_SECURITY, true
 	case 144:
 		return BACnetVendorId_FUJITSU_GENERAL_LIMITED, true
 	case 145:
@@ -18102,8 +18138,14 @@ func BACnetVendorIdByName(value string) (enum BACnetVendorId, ok bool) {
 		return BACnetVendorId_ECOVENA, true
 	case "GREE_ELECTRIC_APPLIANCES_INCOF_ZHUHAI":
 		return BACnetVendorId_GREE_ELECTRIC_APPLIANCES_INCOF_ZHUHAI, true
+	case "CONSPEC_CONTROLS":
+		return BACnetVendorId_CONSPEC_CONTROLS, true
 	case "DIGITALE_MESSUND_STEUERSYSTEMEAG":
 		return BACnetVendorId_DIGITALE_MESSUND_STEUERSYSTEMEAG, true
+	case "HANGZHOU_HIKVISION_DIGITAL_TECHNOLOGY_CO_LTD":
+		return BACnetVendorId_HANGZHOU_HIKVISION_DIGITAL_TECHNOLOGY_CO_LTD, true
+	case "CRYSTAL_PEAK_SECURITY":
+		return BACnetVendorId_CRYSTAL_PEAK_SECURITY, true
 	case "FUJITSU_GENERAL_LIMITED":
 		return BACnetVendorId_FUJITSU_GENERAL_LIMITED, true
 	case "PROJECT_ENGINEERING_SRL":
@@ -21011,8 +21053,14 @@ func (e BACnetVendorId) PLC4XEnumName() string {
 		return "ECOVENA"
 	case BACnetVendorId_GREE_ELECTRIC_APPLIANCES_INCOF_ZHUHAI:
 		return "GREE_ELECTRIC_APPLIANCES_INCOF_ZHUHAI"
+	case BACnetVendorId_CONSPEC_CONTROLS:
+		return "CONSPEC_CONTROLS"
 	case BACnetVendorId_DIGITALE_MESSUND_STEUERSYSTEMEAG:
 		return "DIGITALE_MESSUND_STEUERSYSTEMEAG"
+	case BACnetVendorId_HANGZHOU_HIKVISION_DIGITAL_TECHNOLOGY_CO_LTD:
+		return "HANGZHOU_HIKVISION_DIGITAL_TECHNOLOGY_CO_LTD"
+	case BACnetVendorId_CRYSTAL_PEAK_SECURITY:
+		return "CRYSTAL_PEAK_SECURITY"
 	case BACnetVendorId_FUJITSU_GENERAL_LIMITED:
 		return "FUJITSU_GENERAL_LIMITED"
 	case BACnetVendorId_PROJECT_ENGINEERING_SRL:
