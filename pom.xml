@@ -735,6 +735,7 @@
             <!-- Maven related files -->
             <exclude>**/target/**</exclude>
             <exclude>target/**</exclude>
+            <exclude>out/**</exclude>
 
             <!-- Python related files -->
             <exclude>**/.pytest_cache/**</exclude>
@@ -763,9 +764,10 @@
             <!-- ASCIIdoctor generated files -->
             <exclude>**/.asciidoctor/**</exclude>
 
-            <!-- Jenkins build related files -->
+            <!-- Jenkins build and docker-compose related files -->
             <exclude>.repository/**</exclude>
             <exclude>local-snapshots-dir/**</exclude>
+            <exclude>.local-snapshots-dir/**</exclude>
 
             <!-- Data files created by examples running an embedded elasticsearch -->
             <exclude>elasticsearch-data/**</exclude>

@@ -23,13 +23,9 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    command: ["/ws/mvnw", "-Dskip-pgp-signing=true", "-P", "with-c,with-dotnet,with-go,with-python,with-sandbox,enable-all-checks,apache-release", "-Dmaven.repo.local=/local/.repository", "-DaltDeploymentRepository=snapshot-repo::default::file:/local/.local-snapshots-dir", "deploy"]
+    command: ["/ws/mvnw", "-e", "-Dskip-pgp-signing=true", "-P", "with-c,with-dotnet,with-go,with-python,with-sandbox,enable-all-checks,apache-release", "-Dmaven.repo.local=/ws/out/.repository", "-DaltDeploymentRepository=snapshot-repo::default::file:/ws/out/.local-snapshots-dir", "clean", "deploy"]
     volumes:
       # Bind the local directory as "/ws"
       - type: bind
         source: .
         target: /ws
-      # Bind the parent directory as something we can deploy the local-repo and build output to
-      - type: bind
-        source: "${DOCKER_OUTPUT_DIR:-..}"
-        target: /local

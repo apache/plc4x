@@ -133,11 +133,23 @@ The when doing a full build, we automatically run a prerequisite check and fail 
 
 ### Building with Docker
 
-If you don't want to bother setting up the environment on your normal system and you have Docker installed, you can also build everything in a Docker container:
+If you don't want to bother setting up the environment on your normal system, and you have Docker installed, you can also build everything in a Docker container:
 
 ```
-   docker build -t plc4x .
+   docker compose up
 ```
+
+This will build a local Docker container able to build all parts of PLC4X and will run a maven build of the local directory inside this container.
+
+The default build will run a local release-build, so it can also be used to ensure reproducible builds when releasing.
+
+Per default will it store files locally:
+- Downloaded maven artifacts will go to `out/.repository`
+- Deployed artifacts will go to `out/.local-snapshots-dir`
+
+The reason for this is, that otherwise the artifacts would be packaged in with the source-release artifact, resulting in a 12GB or more zip archive.
+However, saving it in the main `target` directory would make the build delete the local repo every time a `mvn clean` is run. 
+The `out` directory however is excluded per default from the assembly descriptor, and therefore it is not included in the source zim.
 
 ### Getting Started
 
