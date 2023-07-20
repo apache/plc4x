@@ -48,20 +48,5 @@ RUN pip3 install wheel
 # Required for running on Windows systems
 RUN apt install -y dos2unix
 
-# Copy the project into the docker container
-COPY . /ws/
-
 # Change the working directory (where commands are executed) into the new "ws" directory
 WORKDIR /ws
-
-# Make the maven wrapper script executalbe (needed when running on Windows)
-RUN chmod +x ./mvnw
-# Change the line ending to unix-style (needed when running on Windows)
-RUN dos2unix ./mvnw
-RUN dos2unix .mvn/wrapper/maven-wrapper.properties
-
-# Build everything with all tests
-# (Skip signing, as this requires access to the local GPG keys)
-RUN ./mvnw -Dskip-pgp-signing=true -P with-c,with-dotnet,with-go,with-python,with-sandbox,enable-all-checks,apache-release install
-
-ENTRYPOINT ["/bin/bash"]
