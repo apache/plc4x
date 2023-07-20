@@ -17,6 +17,9 @@
  * under the License.
  */
 
+// https://blog.viettelcybersecurity.com/security-wall-of-s7commplus-part-1/
+// https://blog.viettelcybersecurity.com/security-wall-of-s7commplus-3/
+
 ////////////////////////////////////////////////////////////////
 // IsoOnTcp/TPKT
 ////////////////////////////////////////////////////////////////
