@@ -111,7 +111,7 @@ public class CsLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                 if (unsignedIntegerTypeReference.getSizeInBits() <= 64) {
                     return "ulong";
                 }
-                throw new RuntimeException("Unsupported simple type");
+                throw new FreemarkerException("Unsupported simple type");
             case INT:
                 IntegerTypeReference integerTypeReference = (IntegerTypeReference) simpleTypeReference;
                 if (integerTypeReference.getSizeInBits() <= 8) {
@@ -126,7 +126,7 @@ public class CsLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                 if (integerTypeReference.getSizeInBits() <= 64) {
                     return "long";
                 }
-                throw new RuntimeException("Unsupported simple type");
+                throw new FreemarkerException("Unsupported simple type");
             case FLOAT:
             case UFLOAT:
                 FloatTypeReference floatTypeReference = (FloatTypeReference) simpleTypeReference;
@@ -137,7 +137,7 @@ public class CsLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                 if (sizeInBits <= 64) {
                     return "double";
                 }
-                throw new RuntimeException("Unsupported simple type");
+                throw new FreemarkerException("Unsupported simple type");
             case STRING:
             case VSTRING:
                 return "string";
@@ -149,7 +149,7 @@ public class CsLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                 return "datetime2";
 
         }
-        throw new RuntimeException("Unsupported simple type");
+        throw new FreemarkerException("Unsupported simple type");
     }
 
     public String getPlcValueTypeForTypeReference(TypeReference typeReference) {
@@ -176,7 +176,7 @@ public class CsLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                 if (sizeInBits <= 64) {
                     return "PlcULINT";
                 }
-                throw new RuntimeException("Unsupported UINT with bit length " + sizeInBits);
+                throw new FreemarkerException("Unsupported UINT with bit length " + sizeInBits);
             case INT:
                 if (sizeInBits <= 8) {
                     return "PlcSINT";
@@ -190,7 +190,7 @@ public class CsLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                 if (sizeInBits <= 64) {
                     return "PlcLINT";
                 }
-                throw new RuntimeException("Unsupported INT with bit length " + sizeInBits);
+                throw new FreemarkerException("Unsupported INT with bit length " + sizeInBits);
             case FLOAT:
             case UFLOAT:
                 if (sizeInBits <= 32) {
@@ -199,7 +199,7 @@ public class CsLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                 if (sizeInBits <= 64) {
                     return "PlcLREAL";
                 }
-                throw new RuntimeException("Unsupported REAL with bit length " + sizeInBits);
+                throw new FreemarkerException("Unsupported REAL with bit length " + sizeInBits);
             case STRING:
             case VSTRING:
                 return "PlcSTRING";
@@ -208,7 +208,7 @@ public class CsLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
             case DATETIME:
                 return "PlcTIME";
         }
-        throw new RuntimeException("Unsupported simple type");
+        throw new FreemarkerException("Unsupported simple type");
     }
 
     @Override
@@ -306,7 +306,7 @@ public class CsLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                 } else if (unsignedIntegerTypeReference.getSizeInBits() <= 64) {
                     unsignedIntegerType = "Ulong";
                 } else {
-                    throw new RuntimeException("Unsupported type");
+                    throw new FreemarkerException("Unsupported type");
                 }
                 return "readBuffer.Read" + unsignedIntegerType + "(\"" + logicalName + "\", " + simpleTypeReference.getSizeInBits() + ")";
             case INT:
@@ -320,7 +320,7 @@ public class CsLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                 } else if (simpleTypeReference.getSizeInBits() <= 64) {
                     integerType = "Long";
                 } else {
-                    throw new RuntimeException("Unsupported type");
+                    throw new FreemarkerException("Unsupported type");
                 }
                 return "readBuffer.Read" + integerType + "(\"" + logicalName + "\", " + simpleTypeReference.getSizeInBits() + ")";
             case FLOAT:
@@ -331,7 +331,7 @@ public class CsLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                 String stringType = "String";
                 final Term encodingTerm = field.getEncoding().orElse(new DefaultStringLiteral("UTF-8"));
                 if (!(encodingTerm instanceof StringLiteral)) {
-                    throw new RuntimeException("Encoding must be a quoted string value");
+                    throw new FreemarkerException("Encoding must be a quoted string value");
                 }
                 String encoding = ((StringLiteral) encodingTerm).getValue();
                 String length = Integer.toString(simpleTypeReference.getSizeInBits());
@@ -520,7 +520,7 @@ public class CsLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                 if (unsignedIntegerTypeReference.getSizeInBits() <= 64) {
                     return "writeBuffer.WriteUlong(\"" + logicalName + "\", " + unsignedIntegerTypeReference.getSizeInBits() + ", (ulong) " + fieldName + writerArgsString + ")";
                 }
-                throw new RuntimeException("Unsupported uint type");
+                throw new FreemarkerException("Unsupported uint type");
             case INT:
                 IntegerTypeReference integerTypeReference = (IntegerTypeReference) simpleTypeReference;
                 if (integerTypeReference.getSizeInBits() <= 8) {
@@ -535,7 +535,7 @@ public class CsLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                 if (integerTypeReference.getSizeInBits() <= 64) {
                     return "writeBuffer.WriteLong(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ", (long) " + fieldName + writerArgsString + ")";
                 }
-                throw new RuntimeException("Unsupported int type");
+                throw new FreemarkerException("Unsupported int type");
             case FLOAT:
             case UFLOAT:
                 FloatTypeReference floatTypeReference = (FloatTypeReference) simpleTypeReference;
@@ -544,13 +544,13 @@ public class CsLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                 } else if (floatTypeReference.getSizeInBits() <= 64) {
                     return "writeBuffer.WriteDouble(\"" + logicalName + "\", " + floatTypeReference.getSizeInBits() + "," + fieldName + writerArgsString + ")";
                 } else {
-                    throw new RuntimeException("Unsupported float type");
+                    throw new FreemarkerException("Unsupported float type");
                 }
             case STRING:
             case VSTRING:
                 final Term encodingTerm = field.getEncoding().orElse(new DefaultStringLiteral("UTF-8"));
                 if (!(encodingTerm instanceof StringLiteral)) {
-                    throw new RuntimeException("Encoding must be a quoted string value");
+                    throw new FreemarkerException("Encoding must be a quoted string value");
                 }
                 String encoding = ((StringLiteral) encodingTerm).getValue();
                 String length = Integer.toString(simpleTypeReference.getSizeInBits());
@@ -611,7 +611,7 @@ public class CsLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
         } else if (term instanceof TernaryTerm) {
             return toTernaryTermExpression(field, resultType, (TernaryTerm) term, variableExpressionGenerator, tracer);
         } else {
-            throw new RuntimeException("Unsupported Term type " + term.getClass().getName());
+            throw new FreemarkerException("Unsupported Term type " + term.getClass().getName());
         }
     }
 
@@ -627,7 +627,7 @@ public class CsLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
             tracer = tracer.dive("numeric literal instanceOf");
             final String numberString = ((NumericLiteral) literal).getNumber().toString();
             if (resultType.isIntegerTypeReference()) {
-                final IntegerTypeReference integerTypeReference = resultType.asIntegerTypeReference().orElseThrow(RuntimeException::new);
+                final IntegerTypeReference integerTypeReference = resultType.asIntegerTypeReference().orElseThrow(FreemarkerException::new);
                 if (integerTypeReference.getBaseType() == SimpleTypeReference.SimpleBaseType.UINT && integerTypeReference.getSizeInBits() >= 32) {
                     tracer = tracer.dive("uint >= 32bit");
                     return tracer + numberString + "L";
@@ -636,7 +636,7 @@ public class CsLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                     return tracer + numberString + "L";
                 }
             } else if (resultType.isFloatTypeReference()) {
-                final FloatTypeReference floatTypeReference = resultType.asFloatTypeReference().orElseThrow(RuntimeException::new);
+                final FloatTypeReference floatTypeReference = resultType.asFloatTypeReference().orElseThrow(FreemarkerException::new);
                 if (floatTypeReference.getSizeInBits() <= 32) {
                     tracer = tracer.dive("float < 32bit");
                     return tracer + numberString + "F";
@@ -647,7 +647,7 @@ public class CsLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
             tracer = tracer.dive("hexadecimal literal instanceOf");
             final String hexString = ((HexadecimalLiteral) literal).getHexString();
             if (resultType.isIntegerTypeReference()) {
-                final IntegerTypeReference integerTypeReference = resultType.asIntegerTypeReference().orElseThrow(RuntimeException::new);
+                final IntegerTypeReference integerTypeReference = resultType.asIntegerTypeReference().orElseThrow(FreemarkerException::new);
                 if (integerTypeReference.getBaseType() == SimpleTypeReference.SimpleBaseType.UINT && integerTypeReference.getSizeInBits() >= 32) {
                     tracer = tracer.dive("uint >= 32bit");
                     return tracer + hexString + "L";
@@ -670,14 +670,14 @@ public class CsLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
             if (getTypeDefinitions().get(variableLiteral.getName()) instanceof EnumTypeDefinition) {
                 tracer = tracer.dive("enum definition instanceOf");
                 VariableLiteral enumDefinitionChild = variableLiteral.getChild()
-                    .orElseThrow(() -> new RuntimeException("enum definitions should have childs"));
+                    .orElseThrow(() -> new FreemarkerException("enum definitions should have childs"));
                 return tracer + variableLiteral.getName() + "." + enumDefinitionChild.getName() +
                     enumDefinitionChild.getChild().map(child -> "." + toVariableExpressionRest(field, resultType, child)).orElse("");
             } else {
                 return tracer + variableExpressionGenerator.apply(variableLiteral);
             }
         } else {
-            throw new RuntimeException("Unsupported Literal type " + literal.getClass().getName());
+            throw new FreemarkerException("Unsupported Literal type " + literal.getClass().getName());
         }
     }
 
@@ -701,7 +701,7 @@ public class CsLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                 tracer = tracer.dive("case ()");
                 return tracer + "(" + toExpression(field, resultType, a, variableExpressionGenerator) + ")";
             default:
-                throw new RuntimeException("Unsupported unary operation type " + unaryTerm.getOperation());
+                throw new FreemarkerException("Unsupported unary operation type " + unaryTerm.getOperation());
         }
     }
 
@@ -843,17 +843,17 @@ public class CsLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
 
     private String toCastVariableParseExpression(Field field, TypeReference resultType, VariableLiteral variableLiteral, List<Argument> parserArguments, Tracer tracer) {
         tracer = tracer.dive("CAST");
-        List<Term> arguments = variableLiteral.getArgs().orElseThrow(() -> new RuntimeException("A Cast expression needs arguments"));
+        List<Term> arguments = variableLiteral.getArgs().orElseThrow(() -> new FreemarkerException("A Cast expression needs arguments"));
         if (arguments.size() != 2) {
-            throw new RuntimeException("A CAST expression expects exactly two arguments.");
+            throw new FreemarkerException("A CAST expression expects exactly two arguments.");
         }
         VariableLiteral firstArgument = arguments.get(0).asLiteral()
-            .orElseThrow(() -> new RuntimeException("First argument should be a literal"))
+            .orElseThrow(() -> new FreemarkerException("First argument should be a literal"))
             .asVariableLiteral()
-            .orElseThrow(() -> new RuntimeException("First argument should be a Variable literal"));
-        StringLiteral typeArgument = arguments.get(1).asLiteral().orElseThrow(() -> new RuntimeException("Second argument should be a String literal"))
+            .orElseThrow(() -> new FreemarkerException("First argument should be a Variable literal"));
+        StringLiteral typeArgument = arguments.get(1).asLiteral().orElseThrow(() -> new FreemarkerException("Second argument should be a String literal"))
             .asStringLiteral()
-            .orElseThrow(() -> new RuntimeException("Second argument should be a String literal"));
+            .orElseThrow(() -> new FreemarkerException("Second argument should be a String literal"));
         String sb = "CAST" + "(" +
             toVariableParseExpression(field, ANY_TYPE_REFERENCE, firstArgument, parserArguments) +
             ", " +
@@ -868,18 +868,18 @@ public class CsLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
 
     private String toStaticCallParseExpression(Field field, TypeReference resultType, VariableLiteral variableLiteral, List<Argument> parserArguments, Tracer tracer) {
         tracer = tracer.dive("STATIC_CALL");
-        List<Term> arguments = variableLiteral.getArgs().orElseThrow(() -> new RuntimeException("A STATIC_CALL expression needs arguments"));
+        List<Term> arguments = variableLiteral.getArgs().orElseThrow(() -> new FreemarkerException("A STATIC_CALL expression needs arguments"));
         if (arguments.size() < 1) {
-            throw new RuntimeException("A STATIC_CALL expression expects at least one argument.");
+            throw new FreemarkerException("A STATIC_CALL expression expects at least one argument.");
         }
         // TODO: make it as static import with a emitImport so if a static call is present a "utils" package must be present in the import
         StringBuilder sb = new StringBuilder();
         sb.append(packageName()).append(".utils.StaticHelper.");
         // Get the class and method name
         String methodName = arguments.get(0).asLiteral()
-            .orElseThrow(() -> new RuntimeException("First argument should be a literal"))
+            .orElseThrow(() -> new FreemarkerException("First argument should be a literal"))
             .asStringLiteral()
-            .orElseThrow(() -> new RuntimeException("Expecting the first argument of a 'STATIC_CALL' to be a StringLiteral")).
+            .orElseThrow(() -> new FreemarkerException("Expecting the first argument of a 'STATIC_CALL' to be a StringLiteral")).
             getValue();
         sb.append(methodName).append("(");
         for (int i = 1; i < arguments.size(); i++) {
@@ -1059,17 +1059,17 @@ public class CsLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
     private String toStaticCallSerializationExpression(Field field, TypeReference resultType, VariableLiteral variableLiteral, List<Argument> serialzerArguments, Tracer tracer) {
         tracer = tracer.dive("STATIC_CALL");
         StringBuilder sb = new StringBuilder();
-        List<Term> arguments = variableLiteral.getArgs().orElseThrow(() -> new RuntimeException("A STATIC_CALL expression needs arguments"));
+        List<Term> arguments = variableLiteral.getArgs().orElseThrow(() -> new FreemarkerException("A STATIC_CALL expression needs arguments"));
         if (arguments.size() < 1) {
-            throw new RuntimeException("A STATIC_CALL expression expects at least one argument.");
+            throw new FreemarkerException("A STATIC_CALL expression expects at least one argument.");
         }
         // TODO: make it as static import with a emitImport so if a static call is present a "utils" package must be present in the import
         sb.append(packageName()).append(".utils.StaticHelper.");
         // Get the class and method name
         String methodName = arguments.get(0).asLiteral()
-            .orElseThrow(() -> new RuntimeException("First argument should be a literal"))
+            .orElseThrow(() -> new FreemarkerException("First argument should be a literal"))
             .asStringLiteral()
-            .orElseThrow(() -> new RuntimeException("Expecting the first argument of a 'STATIC_CALL' to be a StringLiteral")).
+            .orElseThrow(() -> new FreemarkerException("Expecting the first argument of a 'STATIC_CALL' to be a StringLiteral")).
             getValue();
         //methodName = methodName.substring(1, methodName.length() - 1);
         sb.append(methodName).append("(");

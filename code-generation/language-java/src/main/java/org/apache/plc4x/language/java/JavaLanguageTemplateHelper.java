@@ -164,7 +164,7 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
                 return LocalDateTime.class.getSimpleName();
 
         }
-        throw new RuntimeException("Unsupported simple type");
+        throw new FreemarkerException("Unsupported simple type");
     }
 
     public String getPlcValueTypeForTypeReference(TypeReference typeReference) {
@@ -191,7 +191,7 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
                 if (sizeInBits <= 64) {
                     return "PlcULINT";
                 }
-                throw new RuntimeException("Unsupported UINT with bit length " + sizeInBits);
+                throw new FreemarkerException("Unsupported UINT with bit length " + sizeInBits);
             case INT:
                 if (sizeInBits <= 8) {
                     return "PlcSINT";
@@ -205,7 +205,7 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
                 if (sizeInBits <= 64) {
                     return "PlcLINT";
                 }
-                throw new RuntimeException("Unsupported INT with bit length " + sizeInBits);
+                throw new FreemarkerException("Unsupported INT with bit length " + sizeInBits);
             case FLOAT:
             case UFLOAT:
                 if (sizeInBits <= 32) {
@@ -214,7 +214,7 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
                 if (sizeInBits <= 64) {
                     return "PlcLREAL";
                 }
-                throw new RuntimeException("Unsupported REAL with bit length " + sizeInBits);
+                throw new FreemarkerException("Unsupported REAL with bit length " + sizeInBits);
             case STRING:
             case VSTRING:
                 return "PlcSTRING";
@@ -223,7 +223,7 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
             case DATETIME:
                 return "PlcTIME";
         }
-        throw new RuntimeException("Unsupported simple type");
+        throw new FreemarkerException("Unsupported simple type");
     }
 
     @Override

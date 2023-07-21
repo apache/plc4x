@@ -182,7 +182,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                 emitRequiredImport("time");
                 return "time.Time";
             default:
-                throw new RuntimeException("Unsupported simple type");
+                throw new FreemarkerException("Unsupported simple type");
         }
     }
 
@@ -372,7 +372,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
             case STRING: {
                 final Term encodingTerm = field.getEncoding().orElse(new DefaultStringLiteral("UTF-8"));
                 if (!(encodingTerm instanceof StringLiteral)) {
-                    throw new RuntimeException("Encoding must be a quoted string value");
+                    throw new FreemarkerException("Encoding must be a quoted string value");
                 }
                 String encoding = ((StringLiteral) encodingTerm).getValue();
                 String length = Integer.toString(simpleTypeReference.getSizeInBits());
@@ -382,7 +382,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                 VstringTypeReference vstringTypeReference = (VstringTypeReference) simpleTypeReference;
                 final Term encodingTerm = field.getEncoding().orElse(new DefaultStringLiteral("UTF-8"));
                 if (!(encodingTerm instanceof StringLiteral)) {
-                    throw new RuntimeException("Encoding must be a quoted string value");
+                    throw new FreemarkerException("Encoding must be a quoted string value");
                 }
                 String encoding = ((StringLiteral) encodingTerm).getValue();
                 String lengthExpression = toExpression(field, null, vstringTypeReference.getLengthExpression(), null, null, false, false);
@@ -418,7 +418,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
         if (valueTerm instanceof StringLiteral) {
             return getWriteBufferWriteMethodCall(logicalName, simpleTypeReference, "\"" + ((StringLiteral) valueTerm).getValue() + "\"", field, writerArgs);
         }
-        throw new RuntimeException("Outputting " + valueTerm.toString() + " not implemented yet. Please continue defining other types in the GoLanguageHelper.getWriteBufferWriteMethodCall.");
+        throw new FreemarkerException("Outputting " + valueTerm.toString() + " not implemented yet. Please continue defining other types in the GoLanguageHelper.getWriteBufferWriteMethodCall.");
     }
 
     public String getWriteBufferWriteMethodCall(String logicalName, SimpleTypeReference simpleTypeReference, String fieldName, TypedField field, String... writerArgs) {
@@ -475,9 +475,9 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                 StringTypeReference stringTypeReference = (StringTypeReference) simpleTypeReference;
                 final Term encodingTerm = field.getEncoding().orElse(new DefaultStringLiteral("UTF-8"));
                 String encoding = encodingTerm.asLiteral()
-                    .orElseThrow(() -> new RuntimeException("Encoding must be a literal"))
+                    .orElseThrow(() -> new FreemarkerException("Encoding must be a literal"))
                     .asStringLiteral()
-                    .orElseThrow(() -> new RuntimeException("Encoding must be a quoted string value")).getValue();
+                    .orElseThrow(() -> new FreemarkerException("Encoding must be a quoted string value")).getValue();
                 String length = Integer.toString(simpleTypeReference.getSizeInBits());
                 return "writeBuffer.WriteString(\"" + logicalName + "\", uint32(" + length + "), \"" +
                     encoding + "\", " + fieldName + writerArgsString + ")";
@@ -486,9 +486,9 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                 VstringTypeReference vstringTypeReference = (VstringTypeReference) simpleTypeReference;
                 final Term encodingTerm = field.getEncoding().orElse(new DefaultStringLiteral("UTF-8"));
                 String encoding = encodingTerm.asLiteral()
-                    .orElseThrow(() -> new RuntimeException("Encoding must be a literal"))
+                    .orElseThrow(() -> new FreemarkerException("Encoding must be a literal"))
                     .asStringLiteral()
-                    .orElseThrow(() -> new RuntimeException("Encoding must be a quoted string value")).getValue();
+                    .orElseThrow(() -> new FreemarkerException("Encoding must be a quoted string value")).getValue();
                 String lengthExpression = toExpression(field, null, vstringTypeReference.getLengthExpression(), null, Collections.singletonList(new DefaultArgument("stringLength", new DefaultIntegerTypeReference(SimpleTypeReference.SimpleBaseType.INT, 32))), true, false);
                 String length = Integer.toString(simpleTypeReference.getSizeInBits());
                 return "writeBuffer.WriteString(\"" + logicalName + "\", uint32(" + lengthExpression + "), \"" +
@@ -606,7 +606,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
         } else if (term instanceof TernaryTerm) {
             return toTernaryTermExpression(field, fieldType, (TernaryTerm) term, parserArguments, serializerArguments, serialize, tracer);
         } else {
-            throw new RuntimeException("Unsupported Term type " + term.getClass().getName());
+            throw new FreemarkerException("Unsupported Term type " + term.getClass().getName());
         }
     }
 
@@ -631,7 +631,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
             }
             return tracer + inlineIf;
         } else {
-            throw new RuntimeException("Unsupported ternary operation type " + ternaryTerm.getOperation());
+            throw new FreemarkerException("Unsupported ternary operation type " + ternaryTerm.getOperation());
         }
     }
 
@@ -702,7 +702,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                 tracer = tracer.dive("case ()");
                 return tracer + "(" + toExpression(field, fieldType, a, parserArguments, serializerArguments, serialize, false) + ")";
             default:
-                throw new RuntimeException("Unsupported unary operation type " + unaryTerm.getOperation());
+                throw new FreemarkerException("Unsupported unary operation type " + unaryTerm.getOperation());
         }
     }
 
@@ -740,7 +740,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
             }
             return tracer + toVariableExpression(field, fieldType, (VariableLiteral) term, parserArguments, serializerArguments, serialize, suppressPointerAccess);
         } else {
-            throw new RuntimeException("Unsupported Literal type " + term.getClass().getName());
+            throw new FreemarkerException("Unsupported Literal type " + term.getClass().getName());
         }
     }
 
@@ -854,7 +854,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                     tracer = tracer.dive("complex");
                     ComplexTypeDefinition complexTypeDefinition = (ComplexTypeDefinition) typeDefinition;
                     String childProperty = variableLiteral.getChild()
-                        .orElseThrow(() -> new RuntimeException("complex needs a child"))
+                        .orElseThrow(() -> new FreemarkerException("complex needs a child"))
                         .getName();
                     final Optional<Field> matchingDiscriminatorField = complexTypeDefinition.getFields().stream()
                         .filter(curField -> (curField instanceof DiscriminatorField) && ((DiscriminatorField) curField).getName().equals(childProperty))
@@ -871,7 +871,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                         variableAccess = "Get" + capitalize(variableLiteralName) + "()";
                     }
                     return tracer + (serialize ? "m.Get" + capitalize(variableLiteralName) + "()" : variableAccess) +
-                        "." + capitalize(variableLiteral.getChild().orElseThrow(() -> new RuntimeException("enum needs a child")).getName()) + "()";
+                        "." + capitalize(variableLiteral.getChild().orElseThrow(() -> new FreemarkerException("enum needs a child")).getName()) + "()";
                 }
             }
             // TODO: is this really meant to fall through?
@@ -955,7 +955,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
 
     private String toCeilVariableExpression(Field field, VariableLiteral variableLiteral, List<Argument> parserArguments, List<Argument> serializerArguments, boolean serialize, boolean suppressPointerAccess, Tracer tracer) {
         tracer = tracer.dive("ceil");
-        Term va = variableLiteral.getArgs().orElseThrow(() -> new RuntimeException("CEIL needs at least one arg"))
+        Term va = variableLiteral.getArgs().orElseThrow(() -> new FreemarkerException("CEIL needs at least one arg"))
             .stream().findFirst().orElseThrow(IllegalStateException::new);
         // The Ceil function expects 64 bit floating point values.
         TypeReference tr = new DefaultFloatTypeReference(SimpleTypeReference.SimpleBaseType.FLOAT, 64);
@@ -966,12 +966,12 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
     private String toArraySizeInBytesVariableExpression(Field field, TypeReference typeReference, VariableLiteral variableLiteral, List<Argument> parserArguments, List<Argument> serializerArguments, boolean suppressPointerAccess, Tracer tracer) {
         tracer = tracer.dive("array size in bytes");
         VariableLiteral va = variableLiteral.getArgs()
-            .orElseThrow(() -> new RuntimeException("ARRAY_SIZE_IN_BYTES needs at least one arg"))
+            .orElseThrow(() -> new FreemarkerException("ARRAY_SIZE_IN_BYTES needs at least one arg"))
             .stream().findFirst().orElseThrow(IllegalStateException::new)
             .asLiteral()
-            .orElseThrow(() -> new RuntimeException("ARRAY_SIZE_IN_BYTES needs a literal"))
+            .orElseThrow(() -> new FreemarkerException("ARRAY_SIZE_IN_BYTES needs a literal"))
             .asVariableLiteral()
-            .orElseThrow(() -> new RuntimeException("ARRAY_SIZE_IN_BYTES needs a variable literal"));
+            .orElseThrow(() -> new FreemarkerException("ARRAY_SIZE_IN_BYTES needs a variable literal"));
         // "io" and "m" are always available in every parser.
         boolean isSerializerArg = "readBuffer".equals(va.getName()) || "writeBuffer".equals(va.getName()) || "m".equals(va.getName()) || "element".equals(va.getName());
         if (!isSerializerArg && serializerArguments != null) {
@@ -994,12 +994,12 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
     private String toCountVariableExpression(Field field, TypeReference typeReference, VariableLiteral variableLiteral, List<Argument> parserArguments, List<Argument> serializerArguments, boolean serialize, boolean suppressPointerAccess, Tracer tracer) {
         tracer = tracer.dive("count");
         VariableLiteral countLiteral = variableLiteral.getArgs()
-            .orElseThrow(() -> new RuntimeException("Count needs at least one arg"))
+            .orElseThrow(() -> new FreemarkerException("Count needs at least one arg"))
             .get(0)
             .asLiteral()
-            .orElseThrow(() -> new RuntimeException("Count needs a literal"))
+            .orElseThrow(() -> new FreemarkerException("Count needs a literal"))
             .asVariableLiteral()
-            .orElseThrow(() -> new RuntimeException("Count needs a variable literal"));
+            .orElseThrow(() -> new FreemarkerException("Count needs a variable literal"));
         return tracer + (typeReference instanceof SimpleTypeReference ? getCastExpressionForTypeReference(typeReference) : "") + "(len(" +
             toVariableExpression(field, typeReference, countLiteral, parserArguments, serializerArguments, serialize, suppressPointerAccess) +
             "))";
@@ -1008,12 +1008,12 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
     private String toStrLenVariableExpression(Field field, TypeReference typeReference, VariableLiteral variableLiteral, List<Argument> parserArguments, List<Argument> serializerArguments, boolean serialize, boolean suppressPointerAccess, Tracer tracer) {
         tracer = tracer.dive("str-len");
         VariableLiteral countLiteral = variableLiteral.getArgs()
-            .orElseThrow(() -> new RuntimeException("Str-len needs at least one arg"))
+            .orElseThrow(() -> new FreemarkerException("Str-len needs at least one arg"))
             .get(0)
             .asLiteral()
-            .orElseThrow(() -> new RuntimeException("Str-len needs a literal"))
+            .orElseThrow(() -> new FreemarkerException("Str-len needs a literal"))
             .asVariableLiteral()
-            .orElseThrow(() -> new RuntimeException("Str-len needs a variable literal"));
+            .orElseThrow(() -> new FreemarkerException("Str-len needs a variable literal"));
         return tracer + (typeReference instanceof SimpleTypeReference ? getCastExpressionForTypeReference(typeReference) : "") + "(len(" +
             toVariableExpression(field, typeReference, countLiteral, parserArguments, serializerArguments, serialize, suppressPointerAccess) +
             "))";
@@ -1022,15 +1022,15 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
     private String toStaticCallVariableExpression(Field field, TypeReference typeReference, VariableLiteral variableLiteral, List<Argument> parserArguments, List<Argument> serializerArguments, boolean serialize, boolean suppressPointerAccess, Tracer tracer) {
         tracer = tracer.dive("STATIC_CALL");
         StringBuilder sb = new StringBuilder();
-        List<Term> arguments = variableLiteral.getArgs().orElseThrow(() -> new RuntimeException("A STATIC_CALL expression needs arguments"));
+        List<Term> arguments = variableLiteral.getArgs().orElseThrow(() -> new FreemarkerException("A STATIC_CALL expression needs arguments"));
         if (arguments.size() < 1) {
-            throw new RuntimeException("A STATIC_CALL expression expects at least one argument.");
+            throw new FreemarkerException("A STATIC_CALL expression expects at least one argument.");
         }
         // Get the class and method name
         String staticCall = arguments.get(0).asLiteral()
-            .orElseThrow(() -> new RuntimeException("First argument should be a literal"))
+            .orElseThrow(() -> new FreemarkerException("First argument should be a literal"))
             .asStringLiteral()
-            .orElseThrow(() -> new RuntimeException("Expecting the first argument of a 'STATIC_CALL' to be a StringLiteral")).
+            .orElseThrow(() -> new FreemarkerException("Expecting the first argument of a 'STATIC_CALL' to be a StringLiteral")).
             getValue();
         sb.append(capitalize(staticCall)).append("(").append("ctx, ");
         for (int i = 1; i < arguments.size(); i++) {
@@ -1078,7 +1078,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                         case "encoding":
                             final Term encodingTerm = field.getEncoding().orElse(new DefaultStringLiteral("UTF-8"));
                             if (!(encodingTerm instanceof StringLiteral)) {
-                                throw new RuntimeException("Encoding must be a quoted string value");
+                                throw new FreemarkerException("Encoding must be a quoted string value");
                             }
                             String encoding = ((StringLiteral) encodingTerm).getValue();
                             sb.append("\"").append(encoding).append("\"");
@@ -1100,7 +1100,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                 tracer = tracer.dive("BinaryTerm");
                 sb.append(toBinaryTermExpression(field, typeReference, (BinaryTerm) arg, parserArguments, serializerArguments, serialize, tracer));
             } else {
-                throw new RuntimeException(arg.getClass().getName());
+                throw new FreemarkerException(arg.getClass().getName());
             }
         }
         sb.append(")");
@@ -1109,18 +1109,18 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
 
     private String toCastVariableExpression(Field field, TypeReference typeReference, VariableLiteral variableLiteral, List<Argument> parserArguments, List<Argument> serializerArguments, boolean serialize, boolean suppressPointerAccess, Tracer tracer) {
         tracer = tracer.dive("CAST");
-        List<Term> arguments = variableLiteral.getArgs().orElseThrow(() -> new RuntimeException("A Cast expression needs arguments"));
+        List<Term> arguments = variableLiteral.getArgs().orElseThrow(() -> new FreemarkerException("A Cast expression needs arguments"));
         if (arguments.size() != 2) {
-            throw new RuntimeException("A CAST expression expects exactly two arguments.");
+            throw new FreemarkerException("A CAST expression expects exactly two arguments.");
         }
         VariableLiteral firstArgument = arguments.get(0).asLiteral()
-            .orElseThrow(() -> new RuntimeException("First argument should be a literal"))
+            .orElseThrow(() -> new FreemarkerException("First argument should be a literal"))
             .asVariableLiteral()
-            .orElseThrow(() -> new RuntimeException("First argument should be a Variable literal"));
+            .orElseThrow(() -> new FreemarkerException("First argument should be a Variable literal"));
         StringLiteral typeLiteral = arguments.get(1).asLiteral()
-            .orElseThrow(() -> new RuntimeException("Second argument should be a String literal"))
+            .orElseThrow(() -> new FreemarkerException("Second argument should be a String literal"))
             .asStringLiteral()
-            .orElseThrow(() -> new RuntimeException("Second argument should be a String literal"));
+            .orElseThrow(() -> new FreemarkerException("Second argument should be a String literal"));
         final TypeDefinition typeDefinition = getTypeDefinitions().get(typeLiteral.getValue());
         StringBuilder sb = new StringBuilder();
         if (typeDefinition.isComplexTypeDefinition()) {
@@ -1146,7 +1146,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
 
     private String toEnumVariableExpression(Field field, TypeReference typeReference, VariableLiteral variableLiteral, List<Argument> parserArguments, List<Argument> serializerArguments, boolean suppressPointerAccess, Tracer tracer) {
         tracer = tracer.dive("enum");
-        VariableLiteral child = variableLiteral.getChild().orElseThrow(() -> new RuntimeException("Enum should have a child"));
+        VariableLiteral child = variableLiteral.getChild().orElseThrow(() -> new FreemarkerException("Enum should have a child"));
         return tracer + variableLiteral.getName() + "_" + child.getName() +
             child.getChild().map(childChild -> "." + toVariableExpression(field, typeReference, childChild, parserArguments, serializerArguments, false, suppressPointerAccess, true)).orElse("");
     }
