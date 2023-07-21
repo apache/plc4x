@@ -47,9 +47,9 @@ public class IdentifyReplyCommandGAVPhysicalAddresses extends IdentifyReplyComma
   protected final byte[] values;
 
   // Arguments.
-  protected final Short numBytes;
+  protected final Byte numBytes;
 
-  public IdentifyReplyCommandGAVPhysicalAddresses(byte[] values, Short numBytes) {
+  public IdentifyReplyCommandGAVPhysicalAddresses(byte[] values, Byte numBytes) {
     super(numBytes);
     this.values = values;
     this.numBytes = numBytes;
@@ -92,7 +92,7 @@ public class IdentifyReplyCommandGAVPhysicalAddresses extends IdentifyReplyComma
   }
 
   public static IdentifyReplyCommandBuilder staticParseIdentifyReplyCommandBuilder(
-      ReadBuffer readBuffer, Attribute attribute, Short numBytes) throws ParseException {
+      ReadBuffer readBuffer, Attribute attribute, Byte numBytes) throws ParseException {
     readBuffer.pullContext("IdentifyReplyCommandGAVPhysicalAddresses");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
@@ -107,14 +107,14 @@ public class IdentifyReplyCommandGAVPhysicalAddresses extends IdentifyReplyComma
   public static class IdentifyReplyCommandGAVPhysicalAddressesBuilderImpl
       implements IdentifyReplyCommand.IdentifyReplyCommandBuilder {
     private final byte[] values;
-    private final Short numBytes;
+    private final Byte numBytes;
 
-    public IdentifyReplyCommandGAVPhysicalAddressesBuilderImpl(byte[] values, Short numBytes) {
+    public IdentifyReplyCommandGAVPhysicalAddressesBuilderImpl(byte[] values, Byte numBytes) {
       this.values = values;
       this.numBytes = numBytes;
     }
 
-    public IdentifyReplyCommandGAVPhysicalAddresses build(Short numBytes) {
+    public IdentifyReplyCommandGAVPhysicalAddresses build(Byte numBytes) {
 
       IdentifyReplyCommandGAVPhysicalAddresses identifyReplyCommandGAVPhysicalAddresses =
           new IdentifyReplyCommandGAVPhysicalAddresses(values, numBytes);

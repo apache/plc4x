@@ -55,7 +55,7 @@ public class DeviceStatus implements Message {
     writeBuffer.pushContext("DeviceStatus");
 
     // Reserved Field (reserved)
-    writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 7));
+    writeReservedField("reserved", (byte) 0x00, writeUnsignedByte(writeBuffer, 7));
 
     // Simple Field (programMode)
     writeSimpleField("programMode", programMode, writeBoolean(writeBuffer));
@@ -94,8 +94,8 @@ public class DeviceStatus implements Message {
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    Short reservedField0 =
-        readReservedField("reserved", readUnsignedShort(readBuffer, 7), (short) 0x00);
+    Byte reservedField0 =
+        readReservedField("reserved", readUnsignedByte(readBuffer, 7), (byte) 0x00);
 
     boolean programMode = readSimpleField("programMode", readBoolean(readBuffer));
 

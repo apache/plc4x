@@ -43,10 +43,10 @@ public abstract class OpenProtocolMessageAlarm extends OpenProtocolMessage imple
   }
 
   // Abstract accessors for discriminator values.
-  public abstract Long getRevision();
+  public abstract Integer getRevision();
 
   public OpenProtocolMessageAlarm(
-      Long midRevision,
+      Integer midRevision,
       Short noAckFlag,
       Integer targetStationId,
       Integer targetSpindleId,
@@ -96,18 +96,18 @@ public abstract class OpenProtocolMessageAlarm extends OpenProtocolMessage imple
   }
 
   public static OpenProtocolMessageBuilder staticParseOpenProtocolMessageBuilder(
-      ReadBuffer readBuffer, Long revision) throws ParseException {
+      ReadBuffer readBuffer, Integer revision) throws ParseException {
     readBuffer.pullContext("OpenProtocolMessageAlarm");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     OpenProtocolMessageAlarmBuilder builder = null;
-    if (EvaluationHelper.equals(revision, (long) 1)) {
+    if (EvaluationHelper.equals(revision, (int) 1)) {
       builder =
           OpenProtocolMessageAlarmRev1.staticParseOpenProtocolMessageAlarmBuilder(
               readBuffer, revision);
-    } else if (EvaluationHelper.equals(revision, (long) 2)) {
+    } else if (EvaluationHelper.equals(revision, (int) 2)) {
       builder =
           OpenProtocolMessageAlarmRev2.staticParseOpenProtocolMessageAlarmBuilder(
               readBuffer, revision);
@@ -128,7 +128,7 @@ public abstract class OpenProtocolMessageAlarm extends OpenProtocolMessage imple
 
   public interface OpenProtocolMessageAlarmBuilder {
     OpenProtocolMessageAlarm build(
-        Long midRevision,
+        Integer midRevision,
         Short noAckFlag,
         Integer targetStationId,
         Integer targetSpindleId,
@@ -146,7 +146,7 @@ public abstract class OpenProtocolMessageAlarm extends OpenProtocolMessage imple
     }
 
     public OpenProtocolMessageAlarm build(
-        Long midRevision,
+        Integer midRevision,
         Short noAckFlag,
         Integer targetStationId,
         Integer targetSpindleId,

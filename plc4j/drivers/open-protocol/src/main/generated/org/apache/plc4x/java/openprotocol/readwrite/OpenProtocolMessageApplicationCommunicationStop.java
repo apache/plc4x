@@ -44,7 +44,7 @@ public class OpenProtocolMessageApplicationCommunicationStop extends OpenProtoco
   }
 
   public OpenProtocolMessageApplicationCommunicationStop(
-      Long midRevision,
+      Integer midRevision,
       Short noAckFlag,
       Integer targetStationId,
       Integer targetSpindleId,
@@ -86,7 +86,7 @@ public class OpenProtocolMessageApplicationCommunicationStop extends OpenProtoco
   }
 
   public static OpenProtocolMessageBuilder staticParseOpenProtocolMessageBuilder(
-      ReadBuffer readBuffer, Long revision) throws ParseException {
+      ReadBuffer readBuffer, Integer revision) throws ParseException {
     readBuffer.pullContext("OpenProtocolMessageApplicationCommunicationStop");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
@@ -102,7 +102,7 @@ public class OpenProtocolMessageApplicationCommunicationStop extends OpenProtoco
     public OpenProtocolMessageApplicationCommunicationStopBuilderImpl() {}
 
     public OpenProtocolMessageApplicationCommunicationStop build(
-        Long midRevision,
+        Integer midRevision,
         Short noAckFlag,
         Integer targetStationId,
         Integer targetSpindleId,

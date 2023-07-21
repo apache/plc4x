@@ -39,17 +39,17 @@ public class OpenProtocolMessageApplicationGenericDataRequestRev1
     extends OpenProtocolMessageApplicationGenericDataRequest implements Message {
 
   // Accessors for discriminator values.
-  public Long getRevision() {
-    return (long) 1;
+  public Integer getRevision() {
+    return (int) 1;
   }
 
   // Properties.
   protected final Mid requestMid;
-  protected final long wantedRevision;
+  protected final int wantedRevision;
   protected final byte[] extraData;
 
   public OpenProtocolMessageApplicationGenericDataRequestRev1(
-      Long midRevision,
+      Integer midRevision,
       Short noAckFlag,
       Integer targetStationId,
       Integer targetSpindleId,
@@ -57,7 +57,7 @@ public class OpenProtocolMessageApplicationGenericDataRequestRev1
       Short numberOfMessageParts,
       Short messagePartNumber,
       Mid requestMid,
-      long wantedRevision,
+      int wantedRevision,
       byte[] extraData) {
     super(
         midRevision,
@@ -76,7 +76,7 @@ public class OpenProtocolMessageApplicationGenericDataRequestRev1
     return requestMid;
   }
 
-  public long getWantedRevision() {
+  public int getWantedRevision() {
     return wantedRevision;
   }
 
@@ -103,7 +103,7 @@ public class OpenProtocolMessageApplicationGenericDataRequestRev1
     writeSimpleField(
         "wantedRevision",
         wantedRevision,
-        writeUnsignedLong(writeBuffer, 24),
+        writeUnsignedInt(writeBuffer, 24),
         WithOption.WithEncoding("ASCII"));
 
     // Implicit Field (extraDataLength) (Used for parsing, but its value is not stored as it's
@@ -151,7 +151,7 @@ public class OpenProtocolMessageApplicationGenericDataRequestRev1
 
   public static OpenProtocolMessageApplicationGenericDataRequestBuilder
       staticParseOpenProtocolMessageApplicationGenericDataRequestBuilder(
-          ReadBuffer readBuffer, Long revision) throws ParseException {
+          ReadBuffer readBuffer, Integer revision) throws ParseException {
     readBuffer.pullContext("OpenProtocolMessageApplicationGenericDataRequestRev1");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
@@ -163,9 +163,9 @@ public class OpenProtocolMessageApplicationGenericDataRequestRev1
             new DataReaderEnumDefault<>(Mid::enumForValue, readUnsignedLong(readBuffer, 32)),
             WithOption.WithEncoding("ASCII"));
 
-    long wantedRevision =
+    int wantedRevision =
         readSimpleField(
-            "wantedRevision", readUnsignedLong(readBuffer, 24), WithOption.WithEncoding("ASCII"));
+            "wantedRevision", readUnsignedInt(readBuffer, 24), WithOption.WithEncoding("ASCII"));
 
     int extraDataLength =
         readImplicitField(
@@ -183,18 +183,18 @@ public class OpenProtocolMessageApplicationGenericDataRequestRev1
       implements OpenProtocolMessageApplicationGenericDataRequest
           .OpenProtocolMessageApplicationGenericDataRequestBuilder {
     private final Mid requestMid;
-    private final long wantedRevision;
+    private final int wantedRevision;
     private final byte[] extraData;
 
     public OpenProtocolMessageApplicationGenericDataRequestRev1BuilderImpl(
-        Mid requestMid, long wantedRevision, byte[] extraData) {
+        Mid requestMid, int wantedRevision, byte[] extraData) {
       this.requestMid = requestMid;
       this.wantedRevision = wantedRevision;
       this.extraData = extraData;
     }
 
     public OpenProtocolMessageApplicationGenericDataRequestRev1 build(
-        Long midRevision,
+        Integer midRevision,
         Short noAckFlag,
         Integer targetStationId,
         Integer targetSpindleId,

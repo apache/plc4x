@@ -142,7 +142,7 @@ public class PublishResponse extends ExtensionObjectDefinition implements Messag
         "availableSequenceNumbers", availableSequenceNumbers, writeUnsignedLong(writeBuffer, 32));
 
     // Reserved Field (reserved)
-    writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 7));
+    writeReservedField("reserved", (byte) 0x00, writeUnsignedByte(writeBuffer, 7));
 
     // Simple Field (moreNotifications)
     writeSimpleField("moreNotifications", moreNotifications, writeBoolean(writeBuffer));
@@ -251,8 +251,8 @@ public class PublishResponse extends ExtensionObjectDefinition implements Messag
             readUnsignedLong(readBuffer, 32),
             noOfAvailableSequenceNumbers);
 
-    Short reservedField0 =
-        readReservedField("reserved", readUnsignedShort(readBuffer, 7), (short) 0x00);
+    Byte reservedField0 =
+        readReservedField("reserved", readUnsignedByte(readBuffer, 7), (byte) 0x00);
 
     boolean moreNotifications = readSimpleField("moreNotifications", readBoolean(readBuffer));
 

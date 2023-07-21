@@ -39,8 +39,8 @@ public class OpenProtocolMessageApplicationCommandErrorRev1
     extends OpenProtocolMessageApplicationCommandError implements Message {
 
   // Accessors for discriminator values.
-  public Long getRevision() {
-    return (long) 1;
+  public Integer getRevision() {
+    return (int) 1;
   }
 
   // Properties.
@@ -48,7 +48,7 @@ public class OpenProtocolMessageApplicationCommandErrorRev1
   protected final ApplicationCommunicationError error;
 
   public OpenProtocolMessageApplicationCommandErrorRev1(
-      Long midRevision,
+      Integer midRevision,
       Short noAckFlag,
       Integer targetStationId,
       Integer targetSpindleId,
@@ -128,7 +128,7 @@ public class OpenProtocolMessageApplicationCommandErrorRev1
 
   public static OpenProtocolMessageApplicationCommandErrorBuilder
       staticParseOpenProtocolMessageApplicationCommandErrorBuilder(
-          ReadBuffer readBuffer, Long revision) throws ParseException {
+          ReadBuffer readBuffer, Integer revision) throws ParseException {
     readBuffer.pullContext("OpenProtocolMessageApplicationCommandErrorRev1");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
@@ -166,7 +166,7 @@ public class OpenProtocolMessageApplicationCommandErrorRev1
     }
 
     public OpenProtocolMessageApplicationCommandErrorRev1 build(
-        Long midRevision,
+        Integer midRevision,
         Short noAckFlag,
         Integer targetStationId,
         Integer targetSpindleId,

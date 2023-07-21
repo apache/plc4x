@@ -39,12 +39,12 @@ public class OpenProtocolMessageLockAtBatchDoneUploadAcknowledgeRev1
     extends OpenProtocolMessageLockAtBatchDoneUploadAcknowledge implements Message {
 
   // Accessors for discriminator values.
-  public Long getRevision() {
-    return (long) 1;
+  public Integer getRevision() {
+    return (int) 1;
   }
 
   public OpenProtocolMessageLockAtBatchDoneUploadAcknowledgeRev1(
-      Long midRevision,
+      Integer midRevision,
       Short noAckFlag,
       Integer targetStationId,
       Integer targetSpindleId,
@@ -87,7 +87,7 @@ public class OpenProtocolMessageLockAtBatchDoneUploadAcknowledgeRev1
 
   public static OpenProtocolMessageLockAtBatchDoneUploadAcknowledgeBuilder
       staticParseOpenProtocolMessageLockAtBatchDoneUploadAcknowledgeBuilder(
-          ReadBuffer readBuffer, Long revision) throws ParseException {
+          ReadBuffer readBuffer, Integer revision) throws ParseException {
     readBuffer.pullContext("OpenProtocolMessageLockAtBatchDoneUploadAcknowledgeRev1");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
@@ -104,7 +104,7 @@ public class OpenProtocolMessageLockAtBatchDoneUploadAcknowledgeRev1
     public OpenProtocolMessageLockAtBatchDoneUploadAcknowledgeRev1BuilderImpl() {}
 
     public OpenProtocolMessageLockAtBatchDoneUploadAcknowledgeRev1 build(
-        Long midRevision,
+        Integer midRevision,
         Short noAckFlag,
         Integer targetStationId,
         Integer targetSpindleId,

@@ -27,37 +27,37 @@ import java.util.Map;
 
 public enum EnableControlCommandTypeContainer {
   EnableControlCommandSetNetworkVariable0_2Bytes(
-      (short) 0x02, (short) 2, EnableControlCommandType.SET_NETWORK_VARIABLE),
+      (short) 0x02, (byte) 2, EnableControlCommandType.SET_NETWORK_VARIABLE),
   EnableControlCommandSetNetworkVariable1_2Bytes(
-      (short) 0x0A, (short) 2, EnableControlCommandType.SET_NETWORK_VARIABLE),
+      (short) 0x0A, (byte) 2, EnableControlCommandType.SET_NETWORK_VARIABLE),
   EnableControlCommandSetNetworkVariable2_2Bytes(
-      (short) 0x12, (short) 2, EnableControlCommandType.SET_NETWORK_VARIABLE),
+      (short) 0x12, (byte) 2, EnableControlCommandType.SET_NETWORK_VARIABLE),
   EnableControlCommandSetNetworkVariable3_2Bytes(
-      (short) 0x1A, (short) 2, EnableControlCommandType.SET_NETWORK_VARIABLE),
+      (short) 0x1A, (byte) 2, EnableControlCommandType.SET_NETWORK_VARIABLE),
   EnableControlCommandSetNetworkVariable4_2Bytes(
-      (short) 0x22, (short) 2, EnableControlCommandType.SET_NETWORK_VARIABLE),
+      (short) 0x22, (byte) 2, EnableControlCommandType.SET_NETWORK_VARIABLE),
   EnableControlCommandSetNetworkVariable5_2Bytes(
-      (short) 0x2A, (short) 2, EnableControlCommandType.SET_NETWORK_VARIABLE),
+      (short) 0x2A, (byte) 2, EnableControlCommandType.SET_NETWORK_VARIABLE),
   EnableControlCommandSetNetworkVariable6_2Bytes(
-      (short) 0x32, (short) 2, EnableControlCommandType.SET_NETWORK_VARIABLE),
+      (short) 0x32, (byte) 2, EnableControlCommandType.SET_NETWORK_VARIABLE),
   EnableControlCommandSetNetworkVariable7_2Bytes(
-      (short) 0x3A, (short) 2, EnableControlCommandType.SET_NETWORK_VARIABLE),
+      (short) 0x3A, (byte) 2, EnableControlCommandType.SET_NETWORK_VARIABLE),
   EnableControlCommandSetNetworkVariable8_2Bytes(
-      (short) 0x42, (short) 2, EnableControlCommandType.SET_NETWORK_VARIABLE),
+      (short) 0x42, (byte) 2, EnableControlCommandType.SET_NETWORK_VARIABLE),
   EnableControlCommandSetNetworkVariable9_2Bytes(
-      (short) 0x4A, (short) 2, EnableControlCommandType.SET_NETWORK_VARIABLE),
+      (short) 0x4A, (byte) 2, EnableControlCommandType.SET_NETWORK_VARIABLE),
   EnableControlCommandSetNetworkVariable10_2Bytes(
-      (short) 0x52, (short) 2, EnableControlCommandType.SET_NETWORK_VARIABLE),
+      (short) 0x52, (byte) 2, EnableControlCommandType.SET_NETWORK_VARIABLE),
   EnableControlCommandSetNetworkVariable11_2Bytes(
-      (short) 0x5A, (short) 2, EnableControlCommandType.SET_NETWORK_VARIABLE),
+      (short) 0x5A, (byte) 2, EnableControlCommandType.SET_NETWORK_VARIABLE),
   EnableControlCommandSetNetworkVariable12_2Bytes(
-      (short) 0x62, (short) 2, EnableControlCommandType.SET_NETWORK_VARIABLE),
+      (short) 0x62, (byte) 2, EnableControlCommandType.SET_NETWORK_VARIABLE),
   EnableControlCommandSetNetworkVariable13_2Bytes(
-      (short) 0x6A, (short) 2, EnableControlCommandType.SET_NETWORK_VARIABLE),
+      (short) 0x6A, (byte) 2, EnableControlCommandType.SET_NETWORK_VARIABLE),
   EnableControlCommandSetNetworkVariable14_2Bytes(
-      (short) 0x72, (short) 2, EnableControlCommandType.SET_NETWORK_VARIABLE),
+      (short) 0x72, (byte) 2, EnableControlCommandType.SET_NETWORK_VARIABLE),
   EnableControlCommandSetNetworkVariable15_2Bytes(
-      (short) 0x7A, (short) 2, EnableControlCommandType.SET_NETWORK_VARIABLE);
+      (short) 0x7A, (byte) 2, EnableControlCommandType.SET_NETWORK_VARIABLE);
   private static final Map<Short, EnableControlCommandTypeContainer> map;
 
   static {
@@ -68,11 +68,11 @@ public enum EnableControlCommandTypeContainer {
   }
 
   private final short value;
-  private final short numBytes;
+  private final byte numBytes;
   private final EnableControlCommandType commandType;
 
   EnableControlCommandTypeContainer(
-      short value, short numBytes, EnableControlCommandType commandType) {
+      short value, byte numBytes, EnableControlCommandType commandType) {
     this.value = value;
     this.numBytes = numBytes;
     this.commandType = commandType;
@@ -82,11 +82,11 @@ public enum EnableControlCommandTypeContainer {
     return value;
   }
 
-  public short getNumBytes() {
+  public byte getNumBytes() {
     return numBytes;
   }
 
-  public static EnableControlCommandTypeContainer firstEnumForFieldNumBytes(short fieldValue) {
+  public static EnableControlCommandTypeContainer firstEnumForFieldNumBytes(byte fieldValue) {
     for (EnableControlCommandTypeContainer _val : EnableControlCommandTypeContainer.values()) {
       if (_val.getNumBytes() == fieldValue) {
         return _val;
@@ -95,7 +95,7 @@ public enum EnableControlCommandTypeContainer {
     return null;
   }
 
-  public static List<EnableControlCommandTypeContainer> enumsForFieldNumBytes(short fieldValue) {
+  public static List<EnableControlCommandTypeContainer> enumsForFieldNumBytes(byte fieldValue) {
     List<EnableControlCommandTypeContainer> _values = new ArrayList<>();
     for (EnableControlCommandTypeContainer _val : EnableControlCommandTypeContainer.values()) {
       if (_val.getNumBytes() == fieldValue) {

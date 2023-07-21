@@ -61,7 +61,7 @@ public class SDOInitiateDownloadResponse extends SDOResponse implements Message 
     writeBuffer.pushContext("SDOInitiateDownloadResponse");
 
     // Reserved Field (reserved)
-    writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 5));
+    writeReservedField("reserved", (byte) 0x00, writeUnsignedByte(writeBuffer, 5));
 
     // Simple Field (address)
     writeSimpleField("address", address, new DataWriterComplexDefault<>(writeBuffer));
@@ -101,8 +101,8 @@ public class SDOInitiateDownloadResponse extends SDOResponse implements Message 
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    Short reservedField0 =
-        readReservedField("reserved", readUnsignedShort(readBuffer, 5), (short) 0x00);
+    Byte reservedField0 =
+        readReservedField("reserved", readUnsignedByte(readBuffer, 5), (byte) 0x00);
 
     IndexAddress address =
         readSimpleField(

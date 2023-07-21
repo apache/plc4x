@@ -42,8 +42,8 @@ public class ModbusPDUReadHoldingRegistersRequest extends ModbusPDU implements M
     return (boolean) false;
   }
 
-  public Short getFunctionFlag() {
-    return (short) 0x03;
+  public Byte getFunctionFlag() {
+    return (byte) 0x03;
   }
 
   public Boolean getResponse() {

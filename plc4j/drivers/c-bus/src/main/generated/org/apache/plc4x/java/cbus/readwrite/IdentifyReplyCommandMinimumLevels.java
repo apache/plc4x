@@ -46,9 +46,9 @@ public class IdentifyReplyCommandMinimumLevels extends IdentifyReplyCommand impl
   protected final byte[] minimumLevels;
 
   // Arguments.
-  protected final Short numBytes;
+  protected final Byte numBytes;
 
-  public IdentifyReplyCommandMinimumLevels(byte[] minimumLevels, Short numBytes) {
+  public IdentifyReplyCommandMinimumLevels(byte[] minimumLevels, Byte numBytes) {
     super(numBytes);
     this.minimumLevels = minimumLevels;
     this.numBytes = numBytes;
@@ -91,7 +91,7 @@ public class IdentifyReplyCommandMinimumLevels extends IdentifyReplyCommand impl
   }
 
   public static IdentifyReplyCommandBuilder staticParseIdentifyReplyCommandBuilder(
-      ReadBuffer readBuffer, Attribute attribute, Short numBytes) throws ParseException {
+      ReadBuffer readBuffer, Attribute attribute, Byte numBytes) throws ParseException {
     readBuffer.pullContext("IdentifyReplyCommandMinimumLevels");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
@@ -106,14 +106,14 @@ public class IdentifyReplyCommandMinimumLevels extends IdentifyReplyCommand impl
   public static class IdentifyReplyCommandMinimumLevelsBuilderImpl
       implements IdentifyReplyCommand.IdentifyReplyCommandBuilder {
     private final byte[] minimumLevels;
-    private final Short numBytes;
+    private final Byte numBytes;
 
-    public IdentifyReplyCommandMinimumLevelsBuilderImpl(byte[] minimumLevels, Short numBytes) {
+    public IdentifyReplyCommandMinimumLevelsBuilderImpl(byte[] minimumLevels, Byte numBytes) {
       this.minimumLevels = minimumLevels;
       this.numBytes = numBytes;
     }
 
-    public IdentifyReplyCommandMinimumLevels build(Short numBytes) {
+    public IdentifyReplyCommandMinimumLevels build(Byte numBytes) {
 
       IdentifyReplyCommandMinimumLevels identifyReplyCommandMinimumLevels =
           new IdentifyReplyCommandMinimumLevels(minimumLevels, numBytes);

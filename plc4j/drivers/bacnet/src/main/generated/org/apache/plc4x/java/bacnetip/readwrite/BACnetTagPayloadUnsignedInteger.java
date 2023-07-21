@@ -41,11 +41,11 @@ public class BACnetTagPayloadUnsignedInteger implements Message {
   // Properties.
   protected final Short valueUint8;
   protected final Integer valueUint16;
-  protected final Long valueUint24;
+  protected final Integer valueUint24;
   protected final Long valueUint32;
-  protected final BigInteger valueUint40;
-  protected final BigInteger valueUint48;
-  protected final BigInteger valueUint56;
+  protected final Long valueUint40;
+  protected final Long valueUint48;
+  protected final Long valueUint56;
   protected final BigInteger valueUint64;
 
   // Arguments.
@@ -54,11 +54,11 @@ public class BACnetTagPayloadUnsignedInteger implements Message {
   public BACnetTagPayloadUnsignedInteger(
       Short valueUint8,
       Integer valueUint16,
-      Long valueUint24,
+      Integer valueUint24,
       Long valueUint32,
-      BigInteger valueUint40,
-      BigInteger valueUint48,
-      BigInteger valueUint56,
+      Long valueUint40,
+      Long valueUint48,
+      Long valueUint56,
       BigInteger valueUint64,
       Long actualLength) {
     super();
@@ -81,7 +81,7 @@ public class BACnetTagPayloadUnsignedInteger implements Message {
     return valueUint16;
   }
 
-  public Long getValueUint24() {
+  public Integer getValueUint24() {
     return valueUint24;
   }
 
@@ -89,15 +89,15 @@ public class BACnetTagPayloadUnsignedInteger implements Message {
     return valueUint32;
   }
 
-  public BigInteger getValueUint40() {
+  public Long getValueUint40() {
     return valueUint40;
   }
 
-  public BigInteger getValueUint48() {
+  public Long getValueUint48() {
     return valueUint48;
   }
 
-  public BigInteger getValueUint56() {
+  public Long getValueUint56() {
     return valueUint56;
   }
 
@@ -184,7 +184,7 @@ public class BACnetTagPayloadUnsignedInteger implements Message {
 
     // Optional Field (valueUint24) (Can be skipped, if the value is null)
     writeOptionalField(
-        "valueUint24", valueUint24, writeUnsignedLong(writeBuffer, 24), getIsUint24());
+        "valueUint24", valueUint24, writeUnsignedInt(writeBuffer, 24), getIsUint24());
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     boolean isUint32 = getIsUint32();
@@ -200,7 +200,7 @@ public class BACnetTagPayloadUnsignedInteger implements Message {
 
     // Optional Field (valueUint40) (Can be skipped, if the value is null)
     writeOptionalField(
-        "valueUint40", valueUint40, writeUnsignedBigInteger(writeBuffer, 40), getIsUint40());
+        "valueUint40", valueUint40, writeUnsignedLong(writeBuffer, 40), getIsUint40());
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     boolean isUint48 = getIsUint48();
@@ -208,7 +208,7 @@ public class BACnetTagPayloadUnsignedInteger implements Message {
 
     // Optional Field (valueUint48) (Can be skipped, if the value is null)
     writeOptionalField(
-        "valueUint48", valueUint48, writeUnsignedBigInteger(writeBuffer, 48), getIsUint48());
+        "valueUint48", valueUint48, writeUnsignedLong(writeBuffer, 48), getIsUint48());
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     boolean isUint56 = getIsUint56();
@@ -216,7 +216,7 @@ public class BACnetTagPayloadUnsignedInteger implements Message {
 
     // Optional Field (valueUint56) (Can be skipped, if the value is null)
     writeOptionalField(
-        "valueUint56", valueUint56, writeUnsignedBigInteger(writeBuffer, 56), getIsUint56());
+        "valueUint56", valueUint56, writeUnsignedLong(writeBuffer, 56), getIsUint56());
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     boolean isUint64 = getIsUint64();
@@ -339,22 +339,20 @@ public class BACnetTagPayloadUnsignedInteger implements Message {
         readOptionalField("valueUint16", readUnsignedInt(readBuffer, 16), isUint16);
     boolean isUint24 = readVirtualField("isUint24", boolean.class, (actualLength) == (3));
 
-    Long valueUint24 = readOptionalField("valueUint24", readUnsignedLong(readBuffer, 24), isUint24);
+    Integer valueUint24 =
+        readOptionalField("valueUint24", readUnsignedInt(readBuffer, 24), isUint24);
     boolean isUint32 = readVirtualField("isUint32", boolean.class, (actualLength) == (4));
 
     Long valueUint32 = readOptionalField("valueUint32", readUnsignedLong(readBuffer, 32), isUint32);
     boolean isUint40 = readVirtualField("isUint40", boolean.class, (actualLength) == (5));
 
-    BigInteger valueUint40 =
-        readOptionalField("valueUint40", readUnsignedBigInteger(readBuffer, 40), isUint40);
+    Long valueUint40 = readOptionalField("valueUint40", readUnsignedLong(readBuffer, 40), isUint40);
     boolean isUint48 = readVirtualField("isUint48", boolean.class, (actualLength) == (6));
 
-    BigInteger valueUint48 =
-        readOptionalField("valueUint48", readUnsignedBigInteger(readBuffer, 48), isUint48);
+    Long valueUint48 = readOptionalField("valueUint48", readUnsignedLong(readBuffer, 48), isUint48);
     boolean isUint56 = readVirtualField("isUint56", boolean.class, (actualLength) == (7));
 
-    BigInteger valueUint56 =
-        readOptionalField("valueUint56", readUnsignedBigInteger(readBuffer, 56), isUint56);
+    Long valueUint56 = readOptionalField("valueUint56", readUnsignedLong(readBuffer, 56), isUint56);
     boolean isUint64 = readVirtualField("isUint64", boolean.class, (actualLength) == (8));
 
     BigInteger valueUint64 =

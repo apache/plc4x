@@ -38,8 +38,8 @@ import org.apache.plc4x.java.spi.generation.*;
 public class ApduDataExtWriteRouterMemoryRequest extends ApduDataExt implements Message {
 
   // Accessors for discriminator values.
-  public Short getExtApciType() {
-    return (short) 0x0A;
+  public Byte getExtApciType() {
+    return (byte) 0x0A;
   }
 
   public ApduDataExtWriteRouterMemoryRequest() {

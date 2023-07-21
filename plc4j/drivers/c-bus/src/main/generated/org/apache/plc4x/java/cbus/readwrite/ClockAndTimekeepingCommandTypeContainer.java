@@ -27,23 +27,23 @@ import java.util.Map;
 
 public enum ClockAndTimekeepingCommandTypeContainer {
   MediaTransportControlCommandUpdateNetworkVariable_0Bytes(
-      (short) 0x08, (short) 0, ClockAndTimekeepingCommandType.UPDATE_NETWORK_VARIABLE),
+      (short) 0x08, (byte) 0, ClockAndTimekeepingCommandType.UPDATE_NETWORK_VARIABLE),
   MediaTransportControlCommandUpdateNetworkVariable_1Bytes(
-      (short) 0x09, (short) 1, ClockAndTimekeepingCommandType.UPDATE_NETWORK_VARIABLE),
+      (short) 0x09, (byte) 1, ClockAndTimekeepingCommandType.UPDATE_NETWORK_VARIABLE),
   MediaTransportControlCommandUpdateNetworkVariable_2Bytes(
-      (short) 0x0A, (short) 2, ClockAndTimekeepingCommandType.UPDATE_NETWORK_VARIABLE),
+      (short) 0x0A, (byte) 2, ClockAndTimekeepingCommandType.UPDATE_NETWORK_VARIABLE),
   MediaTransportControlCommandUpdateNetworkVariable_3Bytes(
-      (short) 0x0B, (short) 3, ClockAndTimekeepingCommandType.UPDATE_NETWORK_VARIABLE),
+      (short) 0x0B, (byte) 3, ClockAndTimekeepingCommandType.UPDATE_NETWORK_VARIABLE),
   MediaTransportControlCommandUpdateNetworkVariable_4Bytes(
-      (short) 0x0C, (short) 4, ClockAndTimekeepingCommandType.UPDATE_NETWORK_VARIABLE),
+      (short) 0x0C, (byte) 4, ClockAndTimekeepingCommandType.UPDATE_NETWORK_VARIABLE),
   MediaTransportControlCommandUpdateNetworkVariable_5Bytes(
-      (short) 0x0D, (short) 5, ClockAndTimekeepingCommandType.UPDATE_NETWORK_VARIABLE),
+      (short) 0x0D, (byte) 5, ClockAndTimekeepingCommandType.UPDATE_NETWORK_VARIABLE),
   MediaTransportControlCommandUpdateNetworkVariable_6Bytes(
-      (short) 0x0E, (short) 6, ClockAndTimekeepingCommandType.UPDATE_NETWORK_VARIABLE),
+      (short) 0x0E, (byte) 6, ClockAndTimekeepingCommandType.UPDATE_NETWORK_VARIABLE),
   MediaTransportControlCommandUpdateNetworkVariable_7Bytes(
-      (short) 0x0F, (short) 7, ClockAndTimekeepingCommandType.UPDATE_NETWORK_VARIABLE),
+      (short) 0x0F, (byte) 7, ClockAndTimekeepingCommandType.UPDATE_NETWORK_VARIABLE),
   MediaTransportControlCommandRequestRefresh(
-      (short) 0x11, (short) 1, ClockAndTimekeepingCommandType.REQUEST_REFRESH);
+      (short) 0x11, (byte) 1, ClockAndTimekeepingCommandType.REQUEST_REFRESH);
   private static final Map<Short, ClockAndTimekeepingCommandTypeContainer> map;
 
   static {
@@ -55,11 +55,11 @@ public enum ClockAndTimekeepingCommandTypeContainer {
   }
 
   private final short value;
-  private final short numBytes;
+  private final byte numBytes;
   private final ClockAndTimekeepingCommandType commandType;
 
   ClockAndTimekeepingCommandTypeContainer(
-      short value, short numBytes, ClockAndTimekeepingCommandType commandType) {
+      short value, byte numBytes, ClockAndTimekeepingCommandType commandType) {
     this.value = value;
     this.numBytes = numBytes;
     this.commandType = commandType;
@@ -69,12 +69,11 @@ public enum ClockAndTimekeepingCommandTypeContainer {
     return value;
   }
 
-  public short getNumBytes() {
+  public byte getNumBytes() {
     return numBytes;
   }
 
-  public static ClockAndTimekeepingCommandTypeContainer firstEnumForFieldNumBytes(
-      short fieldValue) {
+  public static ClockAndTimekeepingCommandTypeContainer firstEnumForFieldNumBytes(byte fieldValue) {
     for (ClockAndTimekeepingCommandTypeContainer _val :
         ClockAndTimekeepingCommandTypeContainer.values()) {
       if (_val.getNumBytes() == fieldValue) {
@@ -85,7 +84,7 @@ public enum ClockAndTimekeepingCommandTypeContainer {
   }
 
   public static List<ClockAndTimekeepingCommandTypeContainer> enumsForFieldNumBytes(
-      short fieldValue) {
+      byte fieldValue) {
     List<ClockAndTimekeepingCommandTypeContainer> _values = new ArrayList<>();
     for (ClockAndTimekeepingCommandTypeContainer _val :
         ClockAndTimekeepingCommandTypeContainer.values()) {

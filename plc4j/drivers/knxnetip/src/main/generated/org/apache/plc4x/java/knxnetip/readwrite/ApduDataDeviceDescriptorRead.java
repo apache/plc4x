@@ -43,14 +43,14 @@ public class ApduDataDeviceDescriptorRead extends ApduData implements Message {
   }
 
   // Properties.
-  protected final short descriptorType;
+  protected final byte descriptorType;
 
-  public ApduDataDeviceDescriptorRead(short descriptorType) {
+  public ApduDataDeviceDescriptorRead(byte descriptorType) {
     super();
     this.descriptorType = descriptorType;
   }
 
-  public short getDescriptorType() {
+  public byte getDescriptorType() {
     return descriptorType;
   }
 
@@ -61,7 +61,7 @@ public class ApduDataDeviceDescriptorRead extends ApduData implements Message {
     writeBuffer.pushContext("ApduDataDeviceDescriptorRead");
 
     // Simple Field (descriptorType)
-    writeSimpleField("descriptorType", descriptorType, writeUnsignedShort(writeBuffer, 6));
+    writeSimpleField("descriptorType", descriptorType, writeUnsignedByte(writeBuffer, 6));
 
     writeBuffer.popContext("ApduDataDeviceDescriptorRead");
   }
@@ -89,7 +89,7 @@ public class ApduDataDeviceDescriptorRead extends ApduData implements Message {
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    short descriptorType = readSimpleField("descriptorType", readUnsignedShort(readBuffer, 6));
+    byte descriptorType = readSimpleField("descriptorType", readUnsignedByte(readBuffer, 6));
 
     readBuffer.closeContext("ApduDataDeviceDescriptorRead");
     // Create the instance
@@ -97,9 +97,9 @@ public class ApduDataDeviceDescriptorRead extends ApduData implements Message {
   }
 
   public static class ApduDataDeviceDescriptorReadBuilderImpl implements ApduData.ApduDataBuilder {
-    private final short descriptorType;
+    private final byte descriptorType;
 
-    public ApduDataDeviceDescriptorReadBuilderImpl(short descriptorType) {
+    public ApduDataDeviceDescriptorReadBuilderImpl(byte descriptorType) {
       this.descriptorType = descriptorType;
     }
 

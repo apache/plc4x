@@ -43,20 +43,20 @@ public class KnxGroupAddress2Level extends KnxGroupAddress implements Message {
   }
 
   // Properties.
-  protected final short mainGroup;
-  protected final int subGroup;
+  protected final byte mainGroup;
+  protected final short subGroup;
 
-  public KnxGroupAddress2Level(short mainGroup, int subGroup) {
+  public KnxGroupAddress2Level(byte mainGroup, short subGroup) {
     super();
     this.mainGroup = mainGroup;
     this.subGroup = subGroup;
   }
 
-  public short getMainGroup() {
+  public byte getMainGroup() {
     return mainGroup;
   }
 
-  public int getSubGroup() {
+  public short getSubGroup() {
     return subGroup;
   }
 
@@ -68,10 +68,10 @@ public class KnxGroupAddress2Level extends KnxGroupAddress implements Message {
     writeBuffer.pushContext("KnxGroupAddress2Level");
 
     // Simple Field (mainGroup)
-    writeSimpleField("mainGroup", mainGroup, writeUnsignedShort(writeBuffer, 5));
+    writeSimpleField("mainGroup", mainGroup, writeUnsignedByte(writeBuffer, 5));
 
     // Simple Field (subGroup)
-    writeSimpleField("subGroup", subGroup, writeUnsignedInt(writeBuffer, 11));
+    writeSimpleField("subGroup", subGroup, writeUnsignedShort(writeBuffer, 11));
 
     writeBuffer.popContext("KnxGroupAddress2Level");
   }
@@ -102,9 +102,9 @@ public class KnxGroupAddress2Level extends KnxGroupAddress implements Message {
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    short mainGroup = readSimpleField("mainGroup", readUnsignedShort(readBuffer, 5));
+    byte mainGroup = readSimpleField("mainGroup", readUnsignedByte(readBuffer, 5));
 
-    int subGroup = readSimpleField("subGroup", readUnsignedInt(readBuffer, 11));
+    short subGroup = readSimpleField("subGroup", readUnsignedShort(readBuffer, 11));
 
     readBuffer.closeContext("KnxGroupAddress2Level");
     // Create the instance
@@ -113,10 +113,10 @@ public class KnxGroupAddress2Level extends KnxGroupAddress implements Message {
 
   public static class KnxGroupAddress2LevelBuilderImpl
       implements KnxGroupAddress.KnxGroupAddressBuilder {
-    private final short mainGroup;
-    private final int subGroup;
+    private final byte mainGroup;
+    private final short subGroup;
 
-    public KnxGroupAddress2LevelBuilderImpl(short mainGroup, int subGroup) {
+    public KnxGroupAddress2LevelBuilderImpl(byte mainGroup, short subGroup) {
       this.mainGroup = mainGroup;
       this.subGroup = subGroup;
     }

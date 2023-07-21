@@ -130,7 +130,7 @@ public class CALDataIdentifyReply extends CALData implements Message {
                     IdentifyReplyCommand.staticParse(
                         readBuffer,
                         (Attribute) (attribute),
-                        (short) ((commandTypeContainer.getNumBytes()) - (1))),
+                        (byte) ((commandTypeContainer.getNumBytes()) - (1))),
                 readBuffer));
 
     readBuffer.closeContext("CALDataIdentifyReply");

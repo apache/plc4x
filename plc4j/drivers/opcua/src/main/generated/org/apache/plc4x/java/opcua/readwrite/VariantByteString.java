@@ -38,8 +38,8 @@ import org.apache.plc4x.java.spi.generation.*;
 public class VariantByteString extends Variant implements Message {
 
   // Accessors for discriminator values.
-  public Short getVariantType() {
-    return (short) 15;
+  public Byte getVariantType() {
+    return (byte) 15;
   }
 
   // Properties.

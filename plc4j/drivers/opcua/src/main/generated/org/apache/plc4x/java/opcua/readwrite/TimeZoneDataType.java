@@ -71,7 +71,7 @@ public class TimeZoneDataType extends ExtensionObjectDefinition implements Messa
     writeSimpleField("offset", offset, writeSignedShort(writeBuffer, 16));
 
     // Reserved Field (reserved)
-    writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 7));
+    writeReservedField("reserved", (byte) 0x00, writeUnsignedByte(writeBuffer, 7));
 
     // Simple Field (daylightSavingInOffset)
     writeSimpleField("daylightSavingInOffset", daylightSavingInOffset, writeBoolean(writeBuffer));
@@ -110,8 +110,8 @@ public class TimeZoneDataType extends ExtensionObjectDefinition implements Messa
 
     short offset = readSimpleField("offset", readSignedShort(readBuffer, 16));
 
-    Short reservedField0 =
-        readReservedField("reserved", readUnsignedShort(readBuffer, 7), (short) 0x00);
+    Byte reservedField0 =
+        readReservedField("reserved", readUnsignedByte(readBuffer, 7), (byte) 0x00);
 
     boolean daylightSavingInOffset =
         readSimpleField("daylightSavingInOffset", readBoolean(readBuffer));

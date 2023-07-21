@@ -41,9 +41,9 @@ public abstract class IdentifyReplyCommand implements Message {
   public abstract Attribute getAttribute();
 
   // Arguments.
-  protected final Short numBytes;
+  protected final Byte numBytes;
 
-  public IdentifyReplyCommand(Short numBytes) {
+  public IdentifyReplyCommand(Byte numBytes) {
     super();
     this.numBytes = numBytes;
   }
@@ -95,21 +95,21 @@ public abstract class IdentifyReplyCommand implements Message {
           "Argument 0 expected to be of type Attribute or a string which is parseable but was "
               + args[0].getClass().getName());
     }
-    Short numBytes;
-    if (args[1] instanceof Short) {
-      numBytes = (Short) args[1];
+    Byte numBytes;
+    if (args[1] instanceof Byte) {
+      numBytes = (Byte) args[1];
     } else if (args[1] instanceof String) {
-      numBytes = Short.valueOf((String) args[1]);
+      numBytes = Byte.valueOf((String) args[1]);
     } else {
       throw new PlcRuntimeException(
-          "Argument 1 expected to be of type Short or a string which is parseable but was "
+          "Argument 1 expected to be of type Byte or a string which is parseable but was "
               + args[1].getClass().getName());
     }
     return staticParse(readBuffer, attribute, numBytes);
   }
 
   public static IdentifyReplyCommand staticParse(
-      ReadBuffer readBuffer, Attribute attribute, Short numBytes) throws ParseException {
+      ReadBuffer readBuffer, Attribute attribute, Byte numBytes) throws ParseException {
     readBuffer.pullContext("IdentifyReplyCommand");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
@@ -206,7 +206,7 @@ public abstract class IdentifyReplyCommand implements Message {
   }
 
   public interface IdentifyReplyCommandBuilder {
-    IdentifyReplyCommand build(Short numBytes);
+    IdentifyReplyCommand build(Byte numBytes);
   }
 
   @Override

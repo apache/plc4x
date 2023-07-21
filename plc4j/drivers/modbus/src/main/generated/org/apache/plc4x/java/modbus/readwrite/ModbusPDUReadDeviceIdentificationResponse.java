@@ -42,8 +42,8 @@ public class ModbusPDUReadDeviceIdentificationResponse extends ModbusPDU impleme
     return (boolean) false;
   }
 
-  public Short getFunctionFlag() {
-    return (short) 0x2B;
+  public Byte getFunctionFlag() {
+    return (byte) 0x2B;
   }
 
   public Boolean getResponse() {
@@ -135,7 +135,7 @@ public class ModbusPDUReadDeviceIdentificationResponse extends ModbusPDU impleme
         new DataWriterEnumDefault<>(
             ModbusDeviceInformationConformityLevel::getValue,
             ModbusDeviceInformationConformityLevel::name,
-            writeUnsignedShort(writeBuffer, 7)));
+            writeUnsignedByte(writeBuffer, 7)));
 
     // Simple Field (moreFollows)
     writeSimpleEnumField(
@@ -232,7 +232,7 @@ public class ModbusPDUReadDeviceIdentificationResponse extends ModbusPDU impleme
             "ModbusDeviceInformationConformityLevel",
             new DataReaderEnumDefault<>(
                 ModbusDeviceInformationConformityLevel::enumForValue,
-                readUnsignedShort(readBuffer, 7)));
+                readUnsignedByte(readBuffer, 7)));
 
     ModbusDeviceInformationMoreFollows moreFollows =
         readEnumField(

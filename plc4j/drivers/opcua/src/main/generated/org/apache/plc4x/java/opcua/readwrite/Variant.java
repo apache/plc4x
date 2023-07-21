@@ -38,7 +38,7 @@ import org.apache.plc4x.java.spi.generation.*;
 public abstract class Variant implements Message {
 
   // Abstract accessors for discriminator values.
-  public abstract Short getVariantType();
+  public abstract Byte getVariantType();
 
   // Properties.
   protected final boolean arrayLengthSpecified;
@@ -90,7 +90,7 @@ public abstract class Variant implements Message {
         "arrayDimensionsSpecified", arrayDimensionsSpecified, writeBoolean(writeBuffer));
 
     // Discriminator Field (VariantType) (Used as input to a switch field)
-    writeDiscriminatorField("VariantType", getVariantType(), writeUnsignedShort(writeBuffer, 6));
+    writeDiscriminatorField("VariantType", getVariantType(), writeUnsignedByte(writeBuffer, 6));
 
     // Switch field (Serialize the sub-type)
     serializeVariantChild(writeBuffer);
@@ -154,59 +154,59 @@ public abstract class Variant implements Message {
     boolean arrayDimensionsSpecified =
         readSimpleField("arrayDimensionsSpecified", readBoolean(readBuffer));
 
-    short VariantType = readDiscriminatorField("VariantType", readUnsignedShort(readBuffer, 6));
+    byte VariantType = readDiscriminatorField("VariantType", readUnsignedByte(readBuffer, 6));
 
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     VariantBuilder builder = null;
-    if (EvaluationHelper.equals(VariantType, (short) 1)) {
+    if (EvaluationHelper.equals(VariantType, (byte) 1)) {
       builder = VariantBoolean.staticParseVariantBuilder(readBuffer, arrayLengthSpecified);
-    } else if (EvaluationHelper.equals(VariantType, (short) 2)) {
+    } else if (EvaluationHelper.equals(VariantType, (byte) 2)) {
       builder = VariantSByte.staticParseVariantBuilder(readBuffer, arrayLengthSpecified);
-    } else if (EvaluationHelper.equals(VariantType, (short) 3)) {
+    } else if (EvaluationHelper.equals(VariantType, (byte) 3)) {
       builder = VariantByte.staticParseVariantBuilder(readBuffer, arrayLengthSpecified);
-    } else if (EvaluationHelper.equals(VariantType, (short) 4)) {
+    } else if (EvaluationHelper.equals(VariantType, (byte) 4)) {
       builder = VariantInt16.staticParseVariantBuilder(readBuffer, arrayLengthSpecified);
-    } else if (EvaluationHelper.equals(VariantType, (short) 5)) {
+    } else if (EvaluationHelper.equals(VariantType, (byte) 5)) {
       builder = VariantUInt16.staticParseVariantBuilder(readBuffer, arrayLengthSpecified);
-    } else if (EvaluationHelper.equals(VariantType, (short) 6)) {
+    } else if (EvaluationHelper.equals(VariantType, (byte) 6)) {
       builder = VariantInt32.staticParseVariantBuilder(readBuffer, arrayLengthSpecified);
-    } else if (EvaluationHelper.equals(VariantType, (short) 7)) {
+    } else if (EvaluationHelper.equals(VariantType, (byte) 7)) {
       builder = VariantUInt32.staticParseVariantBuilder(readBuffer, arrayLengthSpecified);
-    } else if (EvaluationHelper.equals(VariantType, (short) 8)) {
+    } else if (EvaluationHelper.equals(VariantType, (byte) 8)) {
       builder = VariantInt64.staticParseVariantBuilder(readBuffer, arrayLengthSpecified);
-    } else if (EvaluationHelper.equals(VariantType, (short) 9)) {
+    } else if (EvaluationHelper.equals(VariantType, (byte) 9)) {
       builder = VariantUInt64.staticParseVariantBuilder(readBuffer, arrayLengthSpecified);
-    } else if (EvaluationHelper.equals(VariantType, (short) 10)) {
+    } else if (EvaluationHelper.equals(VariantType, (byte) 10)) {
       builder = VariantFloat.staticParseVariantBuilder(readBuffer, arrayLengthSpecified);
-    } else if (EvaluationHelper.equals(VariantType, (short) 11)) {
+    } else if (EvaluationHelper.equals(VariantType, (byte) 11)) {
       builder = VariantDouble.staticParseVariantBuilder(readBuffer, arrayLengthSpecified);
-    } else if (EvaluationHelper.equals(VariantType, (short) 12)) {
+    } else if (EvaluationHelper.equals(VariantType, (byte) 12)) {
       builder = VariantString.staticParseVariantBuilder(readBuffer, arrayLengthSpecified);
-    } else if (EvaluationHelper.equals(VariantType, (short) 13)) {
+    } else if (EvaluationHelper.equals(VariantType, (byte) 13)) {
       builder = VariantDateTime.staticParseVariantBuilder(readBuffer, arrayLengthSpecified);
-    } else if (EvaluationHelper.equals(VariantType, (short) 14)) {
+    } else if (EvaluationHelper.equals(VariantType, (byte) 14)) {
       builder = VariantGuid.staticParseVariantBuilder(readBuffer, arrayLengthSpecified);
-    } else if (EvaluationHelper.equals(VariantType, (short) 15)) {
+    } else if (EvaluationHelper.equals(VariantType, (byte) 15)) {
       builder = VariantByteString.staticParseVariantBuilder(readBuffer, arrayLengthSpecified);
-    } else if (EvaluationHelper.equals(VariantType, (short) 16)) {
+    } else if (EvaluationHelper.equals(VariantType, (byte) 16)) {
       builder = VariantXmlElement.staticParseVariantBuilder(readBuffer, arrayLengthSpecified);
-    } else if (EvaluationHelper.equals(VariantType, (short) 17)) {
+    } else if (EvaluationHelper.equals(VariantType, (byte) 17)) {
       builder = VariantNodeId.staticParseVariantBuilder(readBuffer, arrayLengthSpecified);
-    } else if (EvaluationHelper.equals(VariantType, (short) 18)) {
+    } else if (EvaluationHelper.equals(VariantType, (byte) 18)) {
       builder = VariantExpandedNodeId.staticParseVariantBuilder(readBuffer, arrayLengthSpecified);
-    } else if (EvaluationHelper.equals(VariantType, (short) 19)) {
+    } else if (EvaluationHelper.equals(VariantType, (byte) 19)) {
       builder = VariantStatusCode.staticParseVariantBuilder(readBuffer, arrayLengthSpecified);
-    } else if (EvaluationHelper.equals(VariantType, (short) 20)) {
+    } else if (EvaluationHelper.equals(VariantType, (byte) 20)) {
       builder = VariantQualifiedName.staticParseVariantBuilder(readBuffer, arrayLengthSpecified);
-    } else if (EvaluationHelper.equals(VariantType, (short) 21)) {
+    } else if (EvaluationHelper.equals(VariantType, (byte) 21)) {
       builder = VariantLocalizedText.staticParseVariantBuilder(readBuffer, arrayLengthSpecified);
-    } else if (EvaluationHelper.equals(VariantType, (short) 22)) {
+    } else if (EvaluationHelper.equals(VariantType, (byte) 22)) {
       builder = VariantExtensionObject.staticParseVariantBuilder(readBuffer, arrayLengthSpecified);
-    } else if (EvaluationHelper.equals(VariantType, (short) 23)) {
+    } else if (EvaluationHelper.equals(VariantType, (byte) 23)) {
       builder = VariantDataValue.staticParseVariantBuilder(readBuffer, arrayLengthSpecified);
-    } else if (EvaluationHelper.equals(VariantType, (short) 24)) {
+    } else if (EvaluationHelper.equals(VariantType, (byte) 24)) {
       builder = VariantVariant.staticParseVariantBuilder(readBuffer, arrayLengthSpecified);
-    } else if (EvaluationHelper.equals(VariantType, (short) 25)) {
+    } else if (EvaluationHelper.equals(VariantType, (byte) 25)) {
       builder = VariantDiagnosticInfo.staticParseVariantBuilder(readBuffer, arrayLengthSpecified);
     }
     if (builder == null) {

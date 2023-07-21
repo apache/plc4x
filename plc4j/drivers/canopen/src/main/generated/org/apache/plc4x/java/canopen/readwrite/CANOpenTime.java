@@ -55,16 +55,21 @@ public class CANOpenTime implements Message {
     return days;
   }
 
+  public int getCleanMillis() {
+    return (int) ((getMillis()) & (0x0FFFFFFF));
+  }
+
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     writeBuffer.pushContext("CANOpenTime");
 
     // Simple Field (millis)
-    writeSimpleField("millis", millis, writeUnsignedLong(writeBuffer, 28));
+    writeSimpleField("millis", millis, writeUnsignedLong(writeBuffer, 32));
 
-    // Reserved Field (reserved)
-    writeReservedField("reserved", (byte) 0x00, writeSignedByte(writeBuffer, 4));
+    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    int cleanMillis = getCleanMillis();
+    writeBuffer.writeVirtual("cleanMillis", cleanMillis);
 
     // Simple Field (days)
     writeSimpleField("days", days, writeUnsignedInt(writeBuffer, 16));
@@ -84,10 +89,9 @@ public class CANOpenTime implements Message {
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (millis)
-    lengthInBits += 28;
+    lengthInBits += 32;
 
-    // Reserved Field (reserved)
-    lengthInBits += 4;
+    // A virtual field doesn't have any in- or output.
 
     // Simple field (days)
     lengthInBits += 16;
@@ -106,9 +110,8 @@ public class CANOpenTime implements Message {
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    long millis = readSimpleField("millis", readUnsignedLong(readBuffer, 28));
-
-    Byte reservedField0 = readReservedField("reserved", readSignedByte(readBuffer, 4), (byte) 0x00);
+    long millis = readSimpleField("millis", readUnsignedLong(readBuffer, 32));
+    int cleanMillis = readVirtualField("cleanMillis", int.class, (millis) & (0x0FFFFFFF));
 
     int days = readSimpleField("days", readUnsignedInt(readBuffer, 16));
 

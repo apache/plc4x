@@ -39,22 +39,22 @@ public class OpenProtocolMessageProgramPsetSelectionInDynamicJobRev1
     extends OpenProtocolMessageProgramPsetSelectionInDynamicJob implements Message {
 
   // Accessors for discriminator values.
-  public Long getRevision() {
-    return (long) 1;
+  public Integer getRevision() {
+    return (int) 1;
   }
 
   // Properties.
-  protected final long parameterSetId;
+  protected final int parameterSetId;
 
   public OpenProtocolMessageProgramPsetSelectionInDynamicJobRev1(
-      Long midRevision,
+      Integer midRevision,
       Short noAckFlag,
       Integer targetStationId,
       Integer targetSpindleId,
       Integer sequenceNumber,
       Short numberOfMessageParts,
       Short messagePartNumber,
-      long parameterSetId) {
+      int parameterSetId) {
     super(
         midRevision,
         noAckFlag,
@@ -66,7 +66,7 @@ public class OpenProtocolMessageProgramPsetSelectionInDynamicJobRev1
     this.parameterSetId = parameterSetId;
   }
 
-  public long getParameterSetId() {
+  public int getParameterSetId() {
     return parameterSetId;
   }
 
@@ -81,7 +81,7 @@ public class OpenProtocolMessageProgramPsetSelectionInDynamicJobRev1
     writeSimpleField(
         "parameterSetId",
         parameterSetId,
-        writeUnsignedLong(writeBuffer, 24),
+        writeUnsignedInt(writeBuffer, 24),
         WithOption.WithEncoding("ASCII"));
 
     writeBuffer.popContext("OpenProtocolMessageProgramPsetSelectionInDynamicJobRev1");
@@ -106,14 +106,14 @@ public class OpenProtocolMessageProgramPsetSelectionInDynamicJobRev1
 
   public static OpenProtocolMessageProgramPsetSelectionInDynamicJobBuilder
       staticParseOpenProtocolMessageProgramPsetSelectionInDynamicJobBuilder(
-          ReadBuffer readBuffer, Long revision) throws ParseException {
+          ReadBuffer readBuffer, Integer revision) throws ParseException {
     readBuffer.pullContext("OpenProtocolMessageProgramPsetSelectionInDynamicJobRev1");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    long parameterSetId =
+    int parameterSetId =
         readSimpleField(
-            "parameterSetId", readUnsignedLong(readBuffer, 24), WithOption.WithEncoding("ASCII"));
+            "parameterSetId", readUnsignedInt(readBuffer, 24), WithOption.WithEncoding("ASCII"));
 
     readBuffer.closeContext("OpenProtocolMessageProgramPsetSelectionInDynamicJobRev1");
     // Create the instance
@@ -123,14 +123,14 @@ public class OpenProtocolMessageProgramPsetSelectionInDynamicJobRev1
   public static class OpenProtocolMessageProgramPsetSelectionInDynamicJobRev1BuilderImpl
       implements OpenProtocolMessageProgramPsetSelectionInDynamicJob
           .OpenProtocolMessageProgramPsetSelectionInDynamicJobBuilder {
-    private final long parameterSetId;
+    private final int parameterSetId;
 
-    public OpenProtocolMessageProgramPsetSelectionInDynamicJobRev1BuilderImpl(long parameterSetId) {
+    public OpenProtocolMessageProgramPsetSelectionInDynamicJobRev1BuilderImpl(int parameterSetId) {
       this.parameterSetId = parameterSetId;
     }
 
     public OpenProtocolMessageProgramPsetSelectionInDynamicJobRev1 build(
-        Long midRevision,
+        Integer midRevision,
         Short noAckFlag,
         Integer targetStationId,
         Integer targetSpindleId,

@@ -39,12 +39,12 @@ public class OpenProtocolMessageAlarmUnsubscribeRev1 extends OpenProtocolMessage
     implements Message {
 
   // Accessors for discriminator values.
-  public Long getRevision() {
-    return (long) 1;
+  public Integer getRevision() {
+    return (int) 1;
   }
 
   public OpenProtocolMessageAlarmUnsubscribeRev1(
-      Long midRevision,
+      Integer midRevision,
       Short noAckFlag,
       Integer targetStationId,
       Integer targetSpindleId,
@@ -86,7 +86,7 @@ public class OpenProtocolMessageAlarmUnsubscribeRev1 extends OpenProtocolMessage
   }
 
   public static OpenProtocolMessageAlarmUnsubscribeBuilder
-      staticParseOpenProtocolMessageAlarmUnsubscribeBuilder(ReadBuffer readBuffer, Long revision)
+      staticParseOpenProtocolMessageAlarmUnsubscribeBuilder(ReadBuffer readBuffer, Integer revision)
           throws ParseException {
     readBuffer.pullContext("OpenProtocolMessageAlarmUnsubscribeRev1");
     PositionAware positionAware = readBuffer;
@@ -103,7 +103,7 @@ public class OpenProtocolMessageAlarmUnsubscribeRev1 extends OpenProtocolMessage
     public OpenProtocolMessageAlarmUnsubscribeRev1BuilderImpl() {}
 
     public OpenProtocolMessageAlarmUnsubscribeRev1 build(
-        Long midRevision,
+        Integer midRevision,
         Short noAckFlag,
         Integer targetStationId,
         Integer targetSpindleId,

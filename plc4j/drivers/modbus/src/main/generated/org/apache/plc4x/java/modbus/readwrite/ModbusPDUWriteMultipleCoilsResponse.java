@@ -42,8 +42,8 @@ public class ModbusPDUWriteMultipleCoilsResponse extends ModbusPDU implements Me
     return (boolean) false;
   }
 
-  public Short getFunctionFlag() {
-    return (short) 0x0F;
+  public Byte getFunctionFlag() {
+    return (byte) 0x0F;
   }
 
   public Boolean getResponse() {

@@ -38,8 +38,8 @@ import org.apache.plc4x.java.spi.generation.*;
 public class ApduDataExtPropertyDescriptionResponse extends ApduDataExt implements Message {
 
   // Accessors for discriminator values.
-  public Short getExtApciType() {
-    return (short) 0x19;
+  public Byte getExtApciType() {
+    return (byte) 0x19;
   }
 
   // Properties.
@@ -48,7 +48,7 @@ public class ApduDataExtPropertyDescriptionResponse extends ApduDataExt implemen
   protected final short index;
   protected final boolean writeEnabled;
   protected final KnxPropertyDataType propertyDataType;
-  protected final int maxNrOfElements;
+  protected final short maxNrOfElements;
   protected final AccessLevel readLevel;
   protected final AccessLevel writeLevel;
 
@@ -58,7 +58,7 @@ public class ApduDataExtPropertyDescriptionResponse extends ApduDataExt implemen
       short index,
       boolean writeEnabled,
       KnxPropertyDataType propertyDataType,
-      int maxNrOfElements,
+      short maxNrOfElements,
       AccessLevel readLevel,
       AccessLevel writeLevel) {
     super();
@@ -92,7 +92,7 @@ public class ApduDataExtPropertyDescriptionResponse extends ApduDataExt implemen
     return propertyDataType;
   }
 
-  public int getMaxNrOfElements() {
+  public short getMaxNrOfElements() {
     return maxNrOfElements;
   }
 
@@ -139,7 +139,7 @@ public class ApduDataExtPropertyDescriptionResponse extends ApduDataExt implemen
     writeReservedField("reserved", (byte) 0x0, writeUnsignedByte(writeBuffer, 4));
 
     // Simple Field (maxNrOfElements)
-    writeSimpleField("maxNrOfElements", maxNrOfElements, writeUnsignedInt(writeBuffer, 12));
+    writeSimpleField("maxNrOfElements", maxNrOfElements, writeUnsignedShort(writeBuffer, 12));
 
     // Simple Field (readLevel)
     writeSimpleEnumField(
@@ -231,7 +231,7 @@ public class ApduDataExtPropertyDescriptionResponse extends ApduDataExt implemen
     Byte reservedField1 =
         readReservedField("reserved", readUnsignedByte(readBuffer, 4), (byte) 0x0);
 
-    int maxNrOfElements = readSimpleField("maxNrOfElements", readUnsignedInt(readBuffer, 12));
+    short maxNrOfElements = readSimpleField("maxNrOfElements", readUnsignedShort(readBuffer, 12));
 
     AccessLevel readLevel =
         readEnumField(
@@ -267,7 +267,7 @@ public class ApduDataExtPropertyDescriptionResponse extends ApduDataExt implemen
     private final short index;
     private final boolean writeEnabled;
     private final KnxPropertyDataType propertyDataType;
-    private final int maxNrOfElements;
+    private final short maxNrOfElements;
     private final AccessLevel readLevel;
     private final AccessLevel writeLevel;
 
@@ -277,7 +277,7 @@ public class ApduDataExtPropertyDescriptionResponse extends ApduDataExt implemen
         short index,
         boolean writeEnabled,
         KnxPropertyDataType propertyDataType,
-        int maxNrOfElements,
+        short maxNrOfElements,
         AccessLevel readLevel,
         AccessLevel writeLevel) {
       this.objectIndex = objectIndex;

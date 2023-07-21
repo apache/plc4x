@@ -42,8 +42,8 @@ public class ModbusPDUWriteSingleRegisterRequest extends ModbusPDU implements Me
     return (boolean) false;
   }
 
-  public Short getFunctionFlag() {
-    return (short) 0x06;
+  public Byte getFunctionFlag() {
+    return (byte) 0x06;
   }
 
   public Boolean getResponse() {

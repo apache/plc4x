@@ -42,8 +42,8 @@ public class ModbusPDUWriteSingleRegisterResponse extends ModbusPDU implements M
     return (boolean) false;
   }
 
-  public Short getFunctionFlag() {
-    return (short) 0x06;
+  public Byte getFunctionFlag() {
+    return (byte) 0x06;
   }
 
   public Boolean getResponse() {

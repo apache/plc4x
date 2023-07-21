@@ -105,7 +105,7 @@ public class AddReferencesItem extends ExtensionObjectDefinition implements Mess
         "referenceTypeId", referenceTypeId, new DataWriterComplexDefault<>(writeBuffer));
 
     // Reserved Field (reserved)
-    writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 7));
+    writeReservedField("reserved", (byte) 0x00, writeUnsignedByte(writeBuffer, 7));
 
     // Simple Field (isForward)
     writeSimpleField("isForward", isForward, writeBoolean(writeBuffer));
@@ -179,8 +179,8 @@ public class AddReferencesItem extends ExtensionObjectDefinition implements Mess
             "referenceTypeId",
             new DataReaderComplexDefault<>(() -> NodeId.staticParse(readBuffer), readBuffer));
 
-    Short reservedField0 =
-        readReservedField("reserved", readUnsignedShort(readBuffer, 7), (short) 0x00);
+    Byte reservedField0 =
+        readReservedField("reserved", readUnsignedByte(readBuffer, 7), (byte) 0x00);
 
     boolean isForward = readSimpleField("isForward", readBoolean(readBuffer));
 

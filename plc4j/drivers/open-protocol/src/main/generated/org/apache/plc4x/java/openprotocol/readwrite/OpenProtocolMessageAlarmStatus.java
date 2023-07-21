@@ -44,10 +44,10 @@ public abstract class OpenProtocolMessageAlarmStatus extends OpenProtocolMessage
   }
 
   // Abstract accessors for discriminator values.
-  public abstract Long getRevision();
+  public abstract Integer getRevision();
 
   public OpenProtocolMessageAlarmStatus(
-      Long midRevision,
+      Integer midRevision,
       Short noAckFlag,
       Integer targetStationId,
       Integer targetSpindleId,
@@ -97,18 +97,18 @@ public abstract class OpenProtocolMessageAlarmStatus extends OpenProtocolMessage
   }
 
   public static OpenProtocolMessageBuilder staticParseOpenProtocolMessageBuilder(
-      ReadBuffer readBuffer, Long revision) throws ParseException {
+      ReadBuffer readBuffer, Integer revision) throws ParseException {
     readBuffer.pullContext("OpenProtocolMessageAlarmStatus");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     OpenProtocolMessageAlarmStatusBuilder builder = null;
-    if (EvaluationHelper.equals(revision, (long) 1)) {
+    if (EvaluationHelper.equals(revision, (int) 1)) {
       builder =
           OpenProtocolMessageAlarmStatusRev1.staticParseOpenProtocolMessageAlarmStatusBuilder(
               readBuffer, revision);
-    } else if (EvaluationHelper.equals(revision, (long) 2)) {
+    } else if (EvaluationHelper.equals(revision, (int) 2)) {
       builder =
           OpenProtocolMessageAlarmStatusRev2.staticParseOpenProtocolMessageAlarmStatusBuilder(
               readBuffer, revision);
@@ -129,7 +129,7 @@ public abstract class OpenProtocolMessageAlarmStatus extends OpenProtocolMessage
 
   public interface OpenProtocolMessageAlarmStatusBuilder {
     OpenProtocolMessageAlarmStatus build(
-        Long midRevision,
+        Integer midRevision,
         Short noAckFlag,
         Integer targetStationId,
         Integer targetSpindleId,
@@ -148,7 +148,7 @@ public abstract class OpenProtocolMessageAlarmStatus extends OpenProtocolMessage
     }
 
     public OpenProtocolMessageAlarmStatus build(
-        Long midRevision,
+        Integer midRevision,
         Short noAckFlag,
         Integer targetStationId,
         Integer targetSpindleId,

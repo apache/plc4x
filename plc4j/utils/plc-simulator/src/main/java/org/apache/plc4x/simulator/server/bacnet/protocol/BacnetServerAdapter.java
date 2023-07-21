@@ -169,7 +169,7 @@ public class BacnetServerAdapter extends ChannelInboundHandlerAdapter {
                         null,
                         null,
                         new BACnetServiceAckReadProperty(
-                            StaticHelper.createBACnetContextTagObjectIdentifier((byte) 0, 2, 1L),
+                            StaticHelper.createBACnetContextTagObjectIdentifier((byte) 0, (short) 2, 1),
                             StaticHelper.createBACnetPropertyIdentifierTagged((byte) 1, 85),
                             null,
                             new BACnetConstructedDataAnalogValuePresentValue(

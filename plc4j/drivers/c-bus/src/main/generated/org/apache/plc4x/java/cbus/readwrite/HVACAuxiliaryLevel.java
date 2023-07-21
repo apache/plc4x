@@ -39,12 +39,12 @@ public class HVACAuxiliaryLevel implements Message {
 
   // Properties.
   protected final boolean fanMode;
-  protected final short mode;
+  protected final byte mode;
 
   // Reserved Fields
   private Boolean reservedField0;
 
-  public HVACAuxiliaryLevel(boolean fanMode, short mode) {
+  public HVACAuxiliaryLevel(boolean fanMode, byte mode) {
     super();
     this.fanMode = fanMode;
     this.mode = mode;
@@ -54,7 +54,7 @@ public class HVACAuxiliaryLevel implements Message {
     return fanMode;
   }
 
-  public short getMode() {
+  public byte getMode() {
     return mode;
   }
 
@@ -70,8 +70,8 @@ public class HVACAuxiliaryLevel implements Message {
     return (boolean) ((getMode()) == (0x00));
   }
 
-  public short getSpeedSettings() {
-    return (short) (getMode());
+  public byte getSpeedSettings() {
+    return (byte) (getMode());
   }
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
@@ -97,14 +97,14 @@ public class HVACAuxiliaryLevel implements Message {
     writeBuffer.writeVirtual("isFanModeContinuous", isFanModeContinuous);
 
     // Simple Field (mode)
-    writeSimpleField("mode", mode, writeUnsignedShort(writeBuffer, 6));
+    writeSimpleField("mode", mode, writeUnsignedByte(writeBuffer, 6));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     boolean isFanSpeedAtDefaultSpeed = getIsFanSpeedAtDefaultSpeed();
     writeBuffer.writeVirtual("isFanSpeedAtDefaultSpeed", isFanSpeedAtDefaultSpeed);
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
-    short speedSettings = getSpeedSettings();
+    byte speedSettings = getSpeedSettings();
     writeBuffer.writeVirtual("speedSettings", speedSettings);
 
     writeBuffer.popContext("HVACAuxiliaryLevel");
@@ -159,10 +159,10 @@ public class HVACAuxiliaryLevel implements Message {
     boolean isFanModeAutomatic = readVirtualField("isFanModeAutomatic", boolean.class, !(fanMode));
     boolean isFanModeContinuous = readVirtualField("isFanModeContinuous", boolean.class, fanMode);
 
-    short mode = readSimpleField("mode", readUnsignedShort(readBuffer, 6));
+    byte mode = readSimpleField("mode", readUnsignedByte(readBuffer, 6));
     boolean isFanSpeedAtDefaultSpeed =
         readVirtualField("isFanSpeedAtDefaultSpeed", boolean.class, (mode) == (0x00));
-    short speedSettings = readVirtualField("speedSettings", short.class, mode);
+    byte speedSettings = readVirtualField("speedSettings", byte.class, mode);
 
     readBuffer.closeContext("HVACAuxiliaryLevel");
     // Create the instance

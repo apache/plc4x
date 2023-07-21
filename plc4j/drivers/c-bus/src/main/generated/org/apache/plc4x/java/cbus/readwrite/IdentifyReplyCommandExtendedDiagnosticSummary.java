@@ -65,7 +65,7 @@ public class IdentifyReplyCommandExtendedDiagnosticSummary extends IdentifyReply
   protected final boolean microPowerReset;
 
   // Arguments.
-  protected final Short numBytes;
+  protected final Byte numBytes;
   // Reserved Fields
   private Byte reservedField0;
   private Byte reservedField1;
@@ -91,7 +91,7 @@ public class IdentifyReplyCommandExtendedDiagnosticSummary extends IdentifyReply
       boolean commsTxError,
       boolean internalStackOverflow,
       boolean microPowerReset,
-      Short numBytes) {
+      Byte numBytes) {
     super(numBytes);
     this.lowApplication = lowApplication;
     this.highApplication = highApplication;
@@ -381,7 +381,7 @@ public class IdentifyReplyCommandExtendedDiagnosticSummary extends IdentifyReply
   }
 
   public static IdentifyReplyCommandBuilder staticParseIdentifyReplyCommandBuilder(
-      ReadBuffer readBuffer, Attribute attribute, Short numBytes) throws ParseException {
+      ReadBuffer readBuffer, Attribute attribute, Byte numBytes) throws ParseException {
     readBuffer.pullContext("IdentifyReplyCommandExtendedDiagnosticSummary");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
@@ -493,7 +493,7 @@ public class IdentifyReplyCommandExtendedDiagnosticSummary extends IdentifyReply
     private final boolean commsTxError;
     private final boolean internalStackOverflow;
     private final boolean microPowerReset;
-    private final Short numBytes;
+    private final Byte numBytes;
     private final Byte reservedField0;
     private final Byte reservedField1;
     private final Byte reservedField2;
@@ -518,7 +518,7 @@ public class IdentifyReplyCommandExtendedDiagnosticSummary extends IdentifyReply
         boolean commsTxError,
         boolean internalStackOverflow,
         boolean microPowerReset,
-        Short numBytes,
+        Byte numBytes,
         Byte reservedField0,
         Byte reservedField1,
         Byte reservedField2) {
@@ -547,7 +547,7 @@ public class IdentifyReplyCommandExtendedDiagnosticSummary extends IdentifyReply
       this.reservedField2 = reservedField2;
     }
 
-    public IdentifyReplyCommandExtendedDiagnosticSummary build(Short numBytes) {
+    public IdentifyReplyCommandExtendedDiagnosticSummary build(Byte numBytes) {
 
       IdentifyReplyCommandExtendedDiagnosticSummary identifyReplyCommandExtendedDiagnosticSummary =
           new IdentifyReplyCommandExtendedDiagnosticSummary(

@@ -43,7 +43,7 @@ public class DeviceDescriptorType2 implements Message {
   protected final short version;
   protected final boolean readSupported;
   protected final boolean writeSupported;
-  protected final short logicalTagBase;
+  protected final byte logicalTagBase;
   protected final ChannelInformation channelInfo1;
   protected final ChannelInformation channelInfo2;
   protected final ChannelInformation channelInfo3;
@@ -55,7 +55,7 @@ public class DeviceDescriptorType2 implements Message {
       short version,
       boolean readSupported,
       boolean writeSupported,
-      short logicalTagBase,
+      byte logicalTagBase,
       ChannelInformation channelInfo1,
       ChannelInformation channelInfo2,
       ChannelInformation channelInfo3,
@@ -93,7 +93,7 @@ public class DeviceDescriptorType2 implements Message {
     return writeSupported;
   }
 
-  public short getLogicalTagBase() {
+  public byte getLogicalTagBase() {
     return logicalTagBase;
   }
 
@@ -134,7 +134,7 @@ public class DeviceDescriptorType2 implements Message {
     writeSimpleField("writeSupported", writeSupported, writeBoolean(writeBuffer));
 
     // Simple Field (logicalTagBase)
-    writeSimpleField("logicalTagBase", logicalTagBase, writeUnsignedShort(writeBuffer, 6));
+    writeSimpleField("logicalTagBase", logicalTagBase, writeUnsignedByte(writeBuffer, 6));
 
     // Simple Field (channelInfo1)
     writeSimpleField("channelInfo1", channelInfo1, new DataWriterComplexDefault<>(writeBuffer));
@@ -216,7 +216,7 @@ public class DeviceDescriptorType2 implements Message {
 
     boolean writeSupported = readSimpleField("writeSupported", readBoolean(readBuffer));
 
-    short logicalTagBase = readSimpleField("logicalTagBase", readUnsignedShort(readBuffer, 6));
+    byte logicalTagBase = readSimpleField("logicalTagBase", readUnsignedByte(readBuffer, 6));
 
     ChannelInformation channelInfo1 =
         readSimpleField(

@@ -44,10 +44,10 @@ public abstract class OpenProtocolMessageResultTracesCurve extends OpenProtocolM
   }
 
   // Abstract accessors for discriminator values.
-  public abstract Long getRevision();
+  public abstract Integer getRevision();
 
   public OpenProtocolMessageResultTracesCurve(
-      Long midRevision,
+      Integer midRevision,
       Short noAckFlag,
       Integer targetStationId,
       Integer targetSpindleId,
@@ -97,14 +97,14 @@ public abstract class OpenProtocolMessageResultTracesCurve extends OpenProtocolM
   }
 
   public static OpenProtocolMessageBuilder staticParseOpenProtocolMessageBuilder(
-      ReadBuffer readBuffer, Long revision) throws ParseException {
+      ReadBuffer readBuffer, Integer revision) throws ParseException {
     readBuffer.pullContext("OpenProtocolMessageResultTracesCurve");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     OpenProtocolMessageResultTracesCurveBuilder builder = null;
-    if (EvaluationHelper.equals(revision, (long) 1)) {
+    if (EvaluationHelper.equals(revision, (int) 1)) {
       builder =
           OpenProtocolMessageResultTracesCurveRev1
               .staticParseOpenProtocolMessageResultTracesCurveBuilder(readBuffer, revision);
@@ -125,7 +125,7 @@ public abstract class OpenProtocolMessageResultTracesCurve extends OpenProtocolM
 
   public interface OpenProtocolMessageResultTracesCurveBuilder {
     OpenProtocolMessageResultTracesCurve build(
-        Long midRevision,
+        Integer midRevision,
         Short noAckFlag,
         Integer targetStationId,
         Integer targetSpindleId,
@@ -144,7 +144,7 @@ public abstract class OpenProtocolMessageResultTracesCurve extends OpenProtocolM
     }
 
     public OpenProtocolMessageResultTracesCurve build(
-        Long midRevision,
+        Integer midRevision,
         Short noAckFlag,
         Integer targetStationId,
         Integer targetSpindleId,

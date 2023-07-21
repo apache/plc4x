@@ -44,10 +44,10 @@ public abstract class OpenProtocolMessageApplicationCommunicationStartAcknowledg
   }
 
   // Abstract accessors for discriminator values.
-  public abstract Long getRevision();
+  public abstract Integer getRevision();
 
   public OpenProtocolMessageApplicationCommunicationStartAcknowledge(
-      Long midRevision,
+      Integer midRevision,
       Short noAckFlag,
       Integer targetStationId,
       Integer targetSpindleId,
@@ -97,39 +97,39 @@ public abstract class OpenProtocolMessageApplicationCommunicationStartAcknowledg
   }
 
   public static OpenProtocolMessageBuilder staticParseOpenProtocolMessageBuilder(
-      ReadBuffer readBuffer, Long revision) throws ParseException {
+      ReadBuffer readBuffer, Integer revision) throws ParseException {
     readBuffer.pullContext("OpenProtocolMessageApplicationCommunicationStartAcknowledge");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     OpenProtocolMessageApplicationCommunicationStartAcknowledgeBuilder builder = null;
-    if (EvaluationHelper.equals(revision, (long) 1)) {
+    if (EvaluationHelper.equals(revision, (int) 1)) {
       builder =
           OpenProtocolMessageApplicationCommunicationStartAcknowledgeRev1
               .staticParseOpenProtocolMessageApplicationCommunicationStartAcknowledgeBuilder(
                   readBuffer, revision);
-    } else if (EvaluationHelper.equals(revision, (long) 2)) {
+    } else if (EvaluationHelper.equals(revision, (int) 2)) {
       builder =
           OpenProtocolMessageApplicationCommunicationStartAcknowledgeRev2
               .staticParseOpenProtocolMessageApplicationCommunicationStartAcknowledgeBuilder(
                   readBuffer, revision);
-    } else if (EvaluationHelper.equals(revision, (long) 3)) {
+    } else if (EvaluationHelper.equals(revision, (int) 3)) {
       builder =
           OpenProtocolMessageApplicationCommunicationStartAcknowledgeRev3
               .staticParseOpenProtocolMessageApplicationCommunicationStartAcknowledgeBuilder(
                   readBuffer, revision);
-    } else if (EvaluationHelper.equals(revision, (long) 4)) {
+    } else if (EvaluationHelper.equals(revision, (int) 4)) {
       builder =
           OpenProtocolMessageApplicationCommunicationStartAcknowledgeRev4
               .staticParseOpenProtocolMessageApplicationCommunicationStartAcknowledgeBuilder(
                   readBuffer, revision);
-    } else if (EvaluationHelper.equals(revision, (long) 5)) {
+    } else if (EvaluationHelper.equals(revision, (int) 5)) {
       builder =
           OpenProtocolMessageApplicationCommunicationStartAcknowledgeRev5
               .staticParseOpenProtocolMessageApplicationCommunicationStartAcknowledgeBuilder(
                   readBuffer, revision);
-    } else if (EvaluationHelper.equals(revision, (long) 6)) {
+    } else if (EvaluationHelper.equals(revision, (int) 6)) {
       builder =
           OpenProtocolMessageApplicationCommunicationStartAcknowledgeRev6
               .staticParseOpenProtocolMessageApplicationCommunicationStartAcknowledgeBuilder(
@@ -151,7 +151,7 @@ public abstract class OpenProtocolMessageApplicationCommunicationStartAcknowledg
 
   public interface OpenProtocolMessageApplicationCommunicationStartAcknowledgeBuilder {
     OpenProtocolMessageApplicationCommunicationStartAcknowledge build(
-        Long midRevision,
+        Integer midRevision,
         Short noAckFlag,
         Integer targetStationId,
         Integer targetSpindleId,
@@ -170,7 +170,7 @@ public abstract class OpenProtocolMessageApplicationCommunicationStartAcknowledg
     }
 
     public OpenProtocolMessageApplicationCommunicationStartAcknowledge build(
-        Long midRevision,
+        Integer midRevision,
         Short noAckFlag,
         Integer targetStationId,
         Integer targetSpindleId,

@@ -42,7 +42,7 @@ public class ModbusPDUError extends ModbusPDU implements Message {
     return (boolean) true;
   }
 
-  public Short getFunctionFlag() {
+  public Byte getFunctionFlag() {
     return 0;
   }
 

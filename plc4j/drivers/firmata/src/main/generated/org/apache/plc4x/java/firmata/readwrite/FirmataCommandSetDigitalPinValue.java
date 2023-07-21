@@ -71,7 +71,7 @@ public class FirmataCommandSetDigitalPinValue extends FirmataCommand implements 
     writeSimpleField("pin", pin, writeUnsignedShort(writeBuffer, 8));
 
     // Reserved Field (reserved)
-    writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 7));
+    writeReservedField("reserved", (byte) 0x00, writeUnsignedByte(writeBuffer, 7));
 
     // Simple Field (on)
     writeSimpleField("on", on, writeBoolean(writeBuffer));
@@ -110,8 +110,8 @@ public class FirmataCommandSetDigitalPinValue extends FirmataCommand implements 
 
     short pin = readSimpleField("pin", readUnsignedShort(readBuffer, 8));
 
-    Short reservedField0 =
-        readReservedField("reserved", readUnsignedShort(readBuffer, 7), (short) 0x00);
+    Byte reservedField0 =
+        readReservedField("reserved", readUnsignedByte(readBuffer, 7), (byte) 0x00);
 
     boolean on = readSimpleField("on", readBoolean(readBuffer));
 

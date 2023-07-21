@@ -99,7 +99,7 @@ public class ServicesResponse extends TypeId implements Message {
         "supportsCIPEncapsulation", supportsCIPEncapsulation, writeBoolean(writeBuffer));
 
     // Reserved Field (reserved)
-    writeReservedField("reserved", (int) 0x00, writeUnsignedInt(writeBuffer, 12));
+    writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 12));
 
     // Simple Field (supportsUDP)
     writeSimpleField("supportsUDP", supportsUDP, writeBoolean(writeBuffer));
@@ -164,8 +164,8 @@ public class ServicesResponse extends TypeId implements Message {
     boolean supportsCIPEncapsulation =
         readSimpleField("supportsCIPEncapsulation", readBoolean(readBuffer));
 
-    Integer reservedField1 =
-        readReservedField("reserved", readUnsignedInt(readBuffer, 12), (int) 0x00);
+    Short reservedField1 =
+        readReservedField("reserved", readUnsignedShort(readBuffer, 12), (short) 0x00);
 
     boolean supportsUDP = readSimpleField("supportsUDP", readBoolean(readBuffer));
 

@@ -40,7 +40,7 @@ public class MonitoredSALLongFormSmartMode extends MonitoredSAL implements Messa
   // Accessors for discriminator values.
 
   // Properties.
-  protected final long terminatingByte;
+  protected final int terminatingByte;
   protected final UnitAddress unitAddress;
   protected final BridgeAddress bridgeAddress;
   protected final ApplicationIdContainer application;
@@ -55,7 +55,7 @@ public class MonitoredSALLongFormSmartMode extends MonitoredSAL implements Messa
 
   public MonitoredSALLongFormSmartMode(
       byte salType,
-      long terminatingByte,
+      int terminatingByte,
       UnitAddress unitAddress,
       BridgeAddress bridgeAddress,
       ApplicationIdContainer application,
@@ -74,7 +74,7 @@ public class MonitoredSALLongFormSmartMode extends MonitoredSAL implements Messa
     this.cBusOptions = cBusOptions;
   }
 
-  public long getTerminatingByte() {
+  public int getTerminatingByte() {
     return terminatingByte;
   }
 
@@ -217,7 +217,7 @@ public class MonitoredSALLongFormSmartMode extends MonitoredSAL implements Messa
 
     Byte reservedField0 = readReservedField("reserved", readByte(readBuffer, 8), (byte) 0x05);
 
-    long terminatingByte = readPeekField("terminatingByte", readUnsignedLong(readBuffer, 24));
+    int terminatingByte = readPeekField("terminatingByte", readUnsignedInt(readBuffer, 24));
     boolean isUnitAddress =
         readVirtualField("isUnitAddress", boolean.class, (((terminatingByte) & (0xff))) == (0x00));
 
@@ -277,7 +277,7 @@ public class MonitoredSALLongFormSmartMode extends MonitoredSAL implements Messa
 
   public static class MonitoredSALLongFormSmartModeBuilderImpl
       implements MonitoredSAL.MonitoredSALBuilder {
-    private final long terminatingByte;
+    private final int terminatingByte;
     private final UnitAddress unitAddress;
     private final BridgeAddress bridgeAddress;
     private final ApplicationIdContainer application;
@@ -288,7 +288,7 @@ public class MonitoredSALLongFormSmartMode extends MonitoredSAL implements Messa
     private final Byte reservedField0;
 
     public MonitoredSALLongFormSmartModeBuilderImpl(
-        long terminatingByte,
+        int terminatingByte,
         UnitAddress unitAddress,
         BridgeAddress bridgeAddress,
         ApplicationIdContainer application,

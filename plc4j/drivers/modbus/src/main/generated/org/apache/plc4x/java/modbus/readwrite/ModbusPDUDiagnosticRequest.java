@@ -42,8 +42,8 @@ public class ModbusPDUDiagnosticRequest extends ModbusPDU implements Message {
     return (boolean) false;
   }
 
-  public Short getFunctionFlag() {
-    return (short) 0x08;
+  public Byte getFunctionFlag() {
+    return (byte) 0x08;
   }
 
   public Boolean getResponse() {

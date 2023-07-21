@@ -39,22 +39,22 @@ public class OpenProtocolMessageParameterSetIdUploadReplyRev1
     extends OpenProtocolMessageParameterSetIdUploadReply implements Message {
 
   // Accessors for discriminator values.
-  public Long getRevision() {
-    return (long) 1;
+  public Integer getRevision() {
+    return (int) 1;
   }
 
   // Properties.
-  protected final List<Long> parameters;
+  protected final List<Integer> parameters;
 
   public OpenProtocolMessageParameterSetIdUploadReplyRev1(
-      Long midRevision,
+      Integer midRevision,
       Short noAckFlag,
       Integer targetStationId,
       Integer targetSpindleId,
       Integer sequenceNumber,
       Short numberOfMessageParts,
       Short messagePartNumber,
-      List<Long> parameters) {
+      List<Integer> parameters) {
     super(
         midRevision,
         noAckFlag,
@@ -66,7 +66,7 @@ public class OpenProtocolMessageParameterSetIdUploadReplyRev1
     this.parameters = parameters;
   }
 
-  public List<Long> getParameters() {
+  public List<Integer> getParameters() {
     return parameters;
   }
 
@@ -79,18 +79,18 @@ public class OpenProtocolMessageParameterSetIdUploadReplyRev1
 
     // Implicit Field (numParameters) (Used for parsing, but its value is not stored as it's
     // implicitly given by the objects content)
-    long numParameters = (long) (COUNT(getParameters()));
+    int numParameters = (int) (COUNT(getParameters()));
     writeImplicitField(
         "numParameters",
         numParameters,
-        writeUnsignedLong(writeBuffer, 24),
+        writeUnsignedInt(writeBuffer, 24),
         WithOption.WithEncoding("ASCII"));
 
     // Array Field (parameters)
     writeSimpleTypeArrayField(
         "parameters",
         parameters,
-        writeUnsignedLong(writeBuffer, 24),
+        writeUnsignedInt(writeBuffer, 24),
         WithOption.WithEncoding("ASCII"));
 
     writeBuffer.popContext("OpenProtocolMessageParameterSetIdUploadReplyRev1");
@@ -120,19 +120,19 @@ public class OpenProtocolMessageParameterSetIdUploadReplyRev1
 
   public static OpenProtocolMessageParameterSetIdUploadReplyBuilder
       staticParseOpenProtocolMessageParameterSetIdUploadReplyBuilder(
-          ReadBuffer readBuffer, Long revision) throws ParseException {
+          ReadBuffer readBuffer, Integer revision) throws ParseException {
     readBuffer.pullContext("OpenProtocolMessageParameterSetIdUploadReplyRev1");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    long numParameters =
+    int numParameters =
         readImplicitField(
-            "numParameters", readUnsignedLong(readBuffer, 24), WithOption.WithEncoding("ASCII"));
+            "numParameters", readUnsignedInt(readBuffer, 24), WithOption.WithEncoding("ASCII"));
 
-    List<Long> parameters =
+    List<Integer> parameters =
         readCountArrayField(
             "parameters",
-            readUnsignedLong(readBuffer, 24),
+            readUnsignedInt(readBuffer, 24),
             numParameters,
             WithOption.WithEncoding("ASCII"));
 
@@ -144,14 +144,14 @@ public class OpenProtocolMessageParameterSetIdUploadReplyRev1
   public static class OpenProtocolMessageParameterSetIdUploadReplyRev1BuilderImpl
       implements OpenProtocolMessageParameterSetIdUploadReply
           .OpenProtocolMessageParameterSetIdUploadReplyBuilder {
-    private final List<Long> parameters;
+    private final List<Integer> parameters;
 
-    public OpenProtocolMessageParameterSetIdUploadReplyRev1BuilderImpl(List<Long> parameters) {
+    public OpenProtocolMessageParameterSetIdUploadReplyRev1BuilderImpl(List<Integer> parameters) {
       this.parameters = parameters;
     }
 
     public OpenProtocolMessageParameterSetIdUploadReplyRev1 build(
-        Long midRevision,
+        Integer midRevision,
         Short noAckFlag,
         Integer targetStationId,
         Integer targetSpindleId,

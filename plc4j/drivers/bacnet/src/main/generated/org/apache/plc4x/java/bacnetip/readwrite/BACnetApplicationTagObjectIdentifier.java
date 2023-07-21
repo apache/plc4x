@@ -56,8 +56,8 @@ public class BACnetApplicationTagObjectIdentifier extends BACnetApplicationTag i
     return (BACnetObjectType) (getPayload().getObjectType());
   }
 
-  public long getInstanceNumber() {
-    return (long) (getPayload().getInstanceNumber());
+  public int getInstanceNumber() {
+    return (int) (getPayload().getInstanceNumber());
   }
 
   @Override
@@ -75,7 +75,7 @@ public class BACnetApplicationTagObjectIdentifier extends BACnetApplicationTag i
     writeBuffer.writeVirtual("objectType", objectType);
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
-    long instanceNumber = getInstanceNumber();
+    int instanceNumber = getInstanceNumber();
     writeBuffer.writeVirtual("instanceNumber", instanceNumber);
 
     writeBuffer.popContext("BACnetApplicationTagObjectIdentifier");
@@ -115,8 +115,7 @@ public class BACnetApplicationTagObjectIdentifier extends BACnetApplicationTag i
                 () -> BACnetTagPayloadObjectIdentifier.staticParse(readBuffer), readBuffer));
     BACnetObjectType objectType =
         readVirtualField("objectType", BACnetObjectType.class, payload.getObjectType());
-    long instanceNumber =
-        readVirtualField("instanceNumber", long.class, payload.getInstanceNumber());
+    int instanceNumber = readVirtualField("instanceNumber", int.class, payload.getInstanceNumber());
 
     readBuffer.closeContext("BACnetApplicationTagObjectIdentifier");
     // Create the instance

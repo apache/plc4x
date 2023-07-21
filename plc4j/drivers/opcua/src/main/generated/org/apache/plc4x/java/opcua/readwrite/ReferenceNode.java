@@ -78,7 +78,7 @@ public class ReferenceNode extends ExtensionObjectDefinition implements Message 
         "referenceTypeId", referenceTypeId, new DataWriterComplexDefault<>(writeBuffer));
 
     // Reserved Field (reserved)
-    writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 7));
+    writeReservedField("reserved", (byte) 0x00, writeUnsignedByte(writeBuffer, 7));
 
     // Simple Field (isInverse)
     writeSimpleField("isInverse", isInverse, writeBoolean(writeBuffer));
@@ -126,8 +126,8 @@ public class ReferenceNode extends ExtensionObjectDefinition implements Message 
             "referenceTypeId",
             new DataReaderComplexDefault<>(() -> NodeId.staticParse(readBuffer), readBuffer));
 
-    Short reservedField0 =
-        readReservedField("reserved", readUnsignedShort(readBuffer, 7), (short) 0x00);
+    Byte reservedField0 =
+        readReservedField("reserved", readUnsignedByte(readBuffer, 7), (byte) 0x00);
 
     boolean isInverse = readSimpleField("isInverse", readBoolean(readBuffer));
 

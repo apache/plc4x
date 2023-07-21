@@ -44,7 +44,7 @@ public class CycServiceItemAnyType extends CycServiceItemType implements Message
   protected final int length;
   protected final int dbNumber;
   protected final MemoryArea memoryArea;
-  protected final long address;
+  protected final int address;
 
   public CycServiceItemAnyType(
       short byteLength,
@@ -53,7 +53,7 @@ public class CycServiceItemAnyType extends CycServiceItemType implements Message
       int length,
       int dbNumber,
       MemoryArea memoryArea,
-      long address) {
+      int address) {
     super(byteLength, syntaxId);
     this.transportSize = transportSize;
     this.length = length;
@@ -78,7 +78,7 @@ public class CycServiceItemAnyType extends CycServiceItemType implements Message
     return memoryArea;
   }
 
-  public long getAddress() {
+  public int getAddress() {
     return address;
   }
 
@@ -112,7 +112,7 @@ public class CycServiceItemAnyType extends CycServiceItemType implements Message
             MemoryArea::getValue, MemoryArea::name, writeUnsignedShort(writeBuffer, 8)));
 
     // Simple Field (address)
-    writeSimpleField("address", address, writeUnsignedLong(writeBuffer, 24));
+    writeSimpleField("address", address, writeUnsignedInt(writeBuffer, 24));
 
     writeBuffer.popContext("CycServiceItemAnyType");
   }
@@ -170,7 +170,7 @@ public class CycServiceItemAnyType extends CycServiceItemType implements Message
             new DataReaderEnumDefault<>(
                 MemoryArea::enumForValue, readUnsignedShort(readBuffer, 8)));
 
-    long address = readSimpleField("address", readUnsignedLong(readBuffer, 24));
+    int address = readSimpleField("address", readUnsignedInt(readBuffer, 24));
 
     readBuffer.closeContext("CycServiceItemAnyType");
     // Create the instance
@@ -184,14 +184,10 @@ public class CycServiceItemAnyType extends CycServiceItemType implements Message
     private final int length;
     private final int dbNumber;
     private final MemoryArea memoryArea;
-    private final long address;
+    private final int address;
 
     public CycServiceItemAnyTypeBuilderImpl(
-        TransportSize transportSize,
-        int length,
-        int dbNumber,
-        MemoryArea memoryArea,
-        long address) {
+        TransportSize transportSize, int length, int dbNumber, MemoryArea memoryArea, int address) {
       this.transportSize = transportSize;
       this.length = length;
       this.dbNumber = dbNumber;

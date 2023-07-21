@@ -38,8 +38,8 @@ import org.apache.plc4x.java.spi.generation.*;
 public class ApduDataExtReadRoutingTableResponse extends ApduDataExt implements Message {
 
   // Accessors for discriminator values.
-  public Short getExtApciType() {
-    return (short) 0x02;
+  public Byte getExtApciType() {
+    return (byte) 0x02;
   }
 
   public ApduDataExtReadRoutingTableResponse() {

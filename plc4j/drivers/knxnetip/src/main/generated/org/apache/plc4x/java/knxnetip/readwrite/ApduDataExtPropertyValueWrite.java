@@ -38,19 +38,19 @@ import org.apache.plc4x.java.spi.generation.*;
 public class ApduDataExtPropertyValueWrite extends ApduDataExt implements Message {
 
   // Accessors for discriminator values.
-  public Short getExtApciType() {
-    return (short) 0x17;
+  public Byte getExtApciType() {
+    return (byte) 0x17;
   }
 
   // Properties.
   protected final short objectIndex;
   protected final short propertyId;
   protected final byte count;
-  protected final int index;
+  protected final short index;
   protected final byte[] data;
 
   public ApduDataExtPropertyValueWrite(
-      short objectIndex, short propertyId, byte count, int index, byte[] data) {
+      short objectIndex, short propertyId, byte count, short index, byte[] data) {
     super();
     this.objectIndex = objectIndex;
     this.propertyId = propertyId;
@@ -71,7 +71,7 @@ public class ApduDataExtPropertyValueWrite extends ApduDataExt implements Messag
     return count;
   }
 
-  public int getIndex() {
+  public short getIndex() {
     return index;
   }
 
@@ -95,7 +95,7 @@ public class ApduDataExtPropertyValueWrite extends ApduDataExt implements Messag
     writeSimpleField("count", count, writeUnsignedByte(writeBuffer, 4));
 
     // Simple Field (index)
-    writeSimpleField("index", index, writeUnsignedInt(writeBuffer, 12));
+    writeSimpleField("index", index, writeUnsignedShort(writeBuffer, 12));
 
     // Array Field (data)
     writeByteArrayField("data", data, writeByteArray(writeBuffer, 8));
@@ -146,7 +146,7 @@ public class ApduDataExtPropertyValueWrite extends ApduDataExt implements Messag
 
     byte count = readSimpleField("count", readUnsignedByte(readBuffer, 4));
 
-    int index = readSimpleField("index", readUnsignedInt(readBuffer, 12));
+    short index = readSimpleField("index", readUnsignedShort(readBuffer, 12));
 
     byte[] data = readBuffer.readByteArray("data", Math.toIntExact((length) - (5)));
 
@@ -161,11 +161,11 @@ public class ApduDataExtPropertyValueWrite extends ApduDataExt implements Messag
     private final short objectIndex;
     private final short propertyId;
     private final byte count;
-    private final int index;
+    private final short index;
     private final byte[] data;
 
     public ApduDataExtPropertyValueWriteBuilderImpl(
-        short objectIndex, short propertyId, byte count, int index, byte[] data) {
+        short objectIndex, short propertyId, byte count, short index, byte[] data) {
       this.objectIndex = objectIndex;
       this.propertyId = propertyId;
       this.count = count;

@@ -39,24 +39,24 @@ public class OpenProtocolMessageParameterSetIdUploadReplyRev3
     extends OpenProtocolMessageParameterSetIdUploadReply implements Message {
 
   // Accessors for discriminator values.
-  public Long getRevision() {
-    return (long) 3;
+  public Integer getRevision() {
+    return (int) 3;
   }
 
   // Properties.
-  protected final List<Long> parameters;
+  protected final List<Integer> parameters;
   protected final List<Integer> numberOfCycles;
   protected final List<Long> typeOfProgram;
 
   public OpenProtocolMessageParameterSetIdUploadReplyRev3(
-      Long midRevision,
+      Integer midRevision,
       Short noAckFlag,
       Integer targetStationId,
       Integer targetSpindleId,
       Integer sequenceNumber,
       Short numberOfMessageParts,
       Short messagePartNumber,
-      List<Long> parameters,
+      List<Integer> parameters,
       List<Integer> numberOfCycles,
       List<Long> typeOfProgram) {
     super(
@@ -72,7 +72,7 @@ public class OpenProtocolMessageParameterSetIdUploadReplyRev3
     this.typeOfProgram = typeOfProgram;
   }
 
-  public List<Long> getParameters() {
+  public List<Integer> getParameters() {
     return parameters;
   }
 
@@ -93,18 +93,18 @@ public class OpenProtocolMessageParameterSetIdUploadReplyRev3
 
     // Implicit Field (numParameters) (Used for parsing, but its value is not stored as it's
     // implicitly given by the objects content)
-    long numParameters = (long) (COUNT(getParameters()));
+    int numParameters = (int) (COUNT(getParameters()));
     writeImplicitField(
         "numParameters",
         numParameters,
-        writeUnsignedLong(writeBuffer, 24),
+        writeUnsignedInt(writeBuffer, 24),
         WithOption.WithEncoding("ASCII"));
 
     // Array Field (parameters)
     writeSimpleTypeArrayField(
         "parameters",
         parameters,
-        writeUnsignedLong(writeBuffer, 24),
+        writeUnsignedInt(writeBuffer, 24),
         WithOption.WithEncoding("ASCII"));
 
     // Array Field (numberOfCycles)
@@ -158,19 +158,19 @@ public class OpenProtocolMessageParameterSetIdUploadReplyRev3
 
   public static OpenProtocolMessageParameterSetIdUploadReplyBuilder
       staticParseOpenProtocolMessageParameterSetIdUploadReplyBuilder(
-          ReadBuffer readBuffer, Long revision) throws ParseException {
+          ReadBuffer readBuffer, Integer revision) throws ParseException {
     readBuffer.pullContext("OpenProtocolMessageParameterSetIdUploadReplyRev3");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    long numParameters =
+    int numParameters =
         readImplicitField(
-            "numParameters", readUnsignedLong(readBuffer, 24), WithOption.WithEncoding("ASCII"));
+            "numParameters", readUnsignedInt(readBuffer, 24), WithOption.WithEncoding("ASCII"));
 
-    List<Long> parameters =
+    List<Integer> parameters =
         readCountArrayField(
             "parameters",
-            readUnsignedLong(readBuffer, 24),
+            readUnsignedInt(readBuffer, 24),
             numParameters,
             WithOption.WithEncoding("ASCII"));
 
@@ -197,19 +197,19 @@ public class OpenProtocolMessageParameterSetIdUploadReplyRev3
   public static class OpenProtocolMessageParameterSetIdUploadReplyRev3BuilderImpl
       implements OpenProtocolMessageParameterSetIdUploadReply
           .OpenProtocolMessageParameterSetIdUploadReplyBuilder {
-    private final List<Long> parameters;
+    private final List<Integer> parameters;
     private final List<Integer> numberOfCycles;
     private final List<Long> typeOfProgram;
 
     public OpenProtocolMessageParameterSetIdUploadReplyRev3BuilderImpl(
-        List<Long> parameters, List<Integer> numberOfCycles, List<Long> typeOfProgram) {
+        List<Integer> parameters, List<Integer> numberOfCycles, List<Long> typeOfProgram) {
       this.parameters = parameters;
       this.numberOfCycles = numberOfCycles;
       this.typeOfProgram = typeOfProgram;
     }
 
     public OpenProtocolMessageParameterSetIdUploadReplyRev3 build(
-        Long midRevision,
+        Integer midRevision,
         Short noAckFlag,
         Integer targetStationId,
         Integer targetSpindleId,

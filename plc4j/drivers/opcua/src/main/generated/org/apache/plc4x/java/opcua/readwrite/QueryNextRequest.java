@@ -80,7 +80,7 @@ public class QueryNextRequest extends ExtensionObjectDefinition implements Messa
     writeSimpleField("requestHeader", requestHeader, new DataWriterComplexDefault<>(writeBuffer));
 
     // Reserved Field (reserved)
-    writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 7));
+    writeReservedField("reserved", (byte) 0x00, writeUnsignedByte(writeBuffer, 7));
 
     // Simple Field (releaseContinuationPoint)
     writeSimpleField(
@@ -132,8 +132,8 @@ public class QueryNextRequest extends ExtensionObjectDefinition implements Messa
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("391")),
                 readBuffer));
 
-    Short reservedField0 =
-        readReservedField("reserved", readUnsignedShort(readBuffer, 7), (short) 0x00);
+    Byte reservedField0 =
+        readReservedField("reserved", readUnsignedByte(readBuffer, 7), (byte) 0x00);
 
     boolean releaseContinuationPoint =
         readSimpleField("releaseContinuationPoint", readBoolean(readBuffer));

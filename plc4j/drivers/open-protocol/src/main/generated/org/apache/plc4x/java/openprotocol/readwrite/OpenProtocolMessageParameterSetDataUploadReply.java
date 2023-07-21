@@ -44,10 +44,10 @@ public abstract class OpenProtocolMessageParameterSetDataUploadReply extends Ope
   }
 
   // Abstract accessors for discriminator values.
-  public abstract Long getRevision();
+  public abstract Integer getRevision();
 
   public OpenProtocolMessageParameterSetDataUploadReply(
-      Long midRevision,
+      Integer midRevision,
       Short noAckFlag,
       Integer targetStationId,
       Integer targetSpindleId,
@@ -97,19 +97,19 @@ public abstract class OpenProtocolMessageParameterSetDataUploadReply extends Ope
   }
 
   public static OpenProtocolMessageBuilder staticParseOpenProtocolMessageBuilder(
-      ReadBuffer readBuffer, Long revision) throws ParseException {
+      ReadBuffer readBuffer, Integer revision) throws ParseException {
     readBuffer.pullContext("OpenProtocolMessageParameterSetDataUploadReply");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     OpenProtocolMessageParameterSetDataUploadReplyBuilder builder = null;
-    if (EvaluationHelper.equals(revision, (long) 1)) {
+    if (EvaluationHelper.equals(revision, (int) 1)) {
       builder =
           OpenProtocolMessageParameterSetDataUploadReplyRev1
               .staticParseOpenProtocolMessageParameterSetDataUploadReplyBuilder(
                   readBuffer, revision);
-    } else if (EvaluationHelper.equals(revision, (long) 2)) {
+    } else if (EvaluationHelper.equals(revision, (int) 2)) {
       builder =
           OpenProtocolMessageParameterSetDataUploadReplyRev2
               .staticParseOpenProtocolMessageParameterSetDataUploadReplyBuilder(
@@ -131,7 +131,7 @@ public abstract class OpenProtocolMessageParameterSetDataUploadReply extends Ope
 
   public interface OpenProtocolMessageParameterSetDataUploadReplyBuilder {
     OpenProtocolMessageParameterSetDataUploadReply build(
-        Long midRevision,
+        Integer midRevision,
         Short noAckFlag,
         Integer targetStationId,
         Integer targetSpindleId,
@@ -150,7 +150,7 @@ public abstract class OpenProtocolMessageParameterSetDataUploadReply extends Ope
     }
 
     public OpenProtocolMessageParameterSetDataUploadReply build(
-        Long midRevision,
+        Integer midRevision,
         Short noAckFlag,
         Integer targetStationId,
         Integer targetSpindleId,

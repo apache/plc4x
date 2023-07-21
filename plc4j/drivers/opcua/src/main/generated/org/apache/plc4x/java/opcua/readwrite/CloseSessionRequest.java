@@ -71,7 +71,7 @@ public class CloseSessionRequest extends ExtensionObjectDefinition implements Me
     writeSimpleField("requestHeader", requestHeader, new DataWriterComplexDefault<>(writeBuffer));
 
     // Reserved Field (reserved)
-    writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 7));
+    writeReservedField("reserved", (byte) 0x00, writeUnsignedByte(writeBuffer, 7));
 
     // Simple Field (deleteSubscriptions)
     writeSimpleField("deleteSubscriptions", deleteSubscriptions, writeBoolean(writeBuffer));
@@ -115,8 +115,8 @@ public class CloseSessionRequest extends ExtensionObjectDefinition implements Me
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("391")),
                 readBuffer));
 
-    Short reservedField0 =
-        readReservedField("reserved", readUnsignedShort(readBuffer, 7), (short) 0x00);
+    Byte reservedField0 =
+        readReservedField("reserved", readUnsignedByte(readBuffer, 7), (byte) 0x00);
 
     boolean deleteSubscriptions = readSimpleField("deleteSubscriptions", readBoolean(readBuffer));
 

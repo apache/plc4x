@@ -55,7 +55,7 @@ public class IdentifyReplyCommandDSIStatus extends IdentifyReplyCommand implemen
   protected final byte dimmingUCRevisionNumber;
 
   // Arguments.
-  protected final Short numBytes;
+  protected final Byte numBytes;
 
   public IdentifyReplyCommandDSIStatus(
       ChannelStatus channelStatus1,
@@ -68,7 +68,7 @@ public class IdentifyReplyCommandDSIStatus extends IdentifyReplyCommand implemen
       ChannelStatus channelStatus8,
       UnitStatus unitStatus,
       byte dimmingUCRevisionNumber,
-      Short numBytes) {
+      Byte numBytes) {
     super(numBytes);
     this.channelStatus1 = channelStatus1;
     this.channelStatus2 = channelStatus2;
@@ -253,7 +253,7 @@ public class IdentifyReplyCommandDSIStatus extends IdentifyReplyCommand implemen
   }
 
   public static IdentifyReplyCommandBuilder staticParseIdentifyReplyCommandBuilder(
-      ReadBuffer readBuffer, Attribute attribute, Short numBytes) throws ParseException {
+      ReadBuffer readBuffer, Attribute attribute, Byte numBytes) throws ParseException {
     readBuffer.pullContext("IdentifyReplyCommandDSIStatus");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
@@ -352,7 +352,7 @@ public class IdentifyReplyCommandDSIStatus extends IdentifyReplyCommand implemen
     private final ChannelStatus channelStatus8;
     private final UnitStatus unitStatus;
     private final byte dimmingUCRevisionNumber;
-    private final Short numBytes;
+    private final Byte numBytes;
 
     public IdentifyReplyCommandDSIStatusBuilderImpl(
         ChannelStatus channelStatus1,
@@ -365,7 +365,7 @@ public class IdentifyReplyCommandDSIStatus extends IdentifyReplyCommand implemen
         ChannelStatus channelStatus8,
         UnitStatus unitStatus,
         byte dimmingUCRevisionNumber,
-        Short numBytes) {
+        Byte numBytes) {
       this.channelStatus1 = channelStatus1;
       this.channelStatus2 = channelStatus2;
       this.channelStatus3 = channelStatus3;
@@ -379,7 +379,7 @@ public class IdentifyReplyCommandDSIStatus extends IdentifyReplyCommand implemen
       this.numBytes = numBytes;
     }
 
-    public IdentifyReplyCommandDSIStatus build(Short numBytes) {
+    public IdentifyReplyCommandDSIStatus build(Byte numBytes) {
 
       IdentifyReplyCommandDSIStatus identifyReplyCommandDSIStatus =
           new IdentifyReplyCommandDSIStatus(

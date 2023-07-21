@@ -49,14 +49,14 @@ public class IdentifyReplyCommandOutputUnitSummary extends IdentifyReplyCommand 
   protected final short timeFromLastRecoverOfMainsInSeconds;
 
   // Arguments.
-  protected final Short numBytes;
+  protected final Byte numBytes;
 
   public IdentifyReplyCommandOutputUnitSummary(
       IdentifyReplyCommandUnitSummary unitFlags,
       Byte gavStoreEnabledByte1,
       Byte gavStoreEnabledByte2,
       short timeFromLastRecoverOfMainsInSeconds,
-      Short numBytes) {
+      Byte numBytes) {
     super(numBytes);
     this.unitFlags = unitFlags;
     this.gavStoreEnabledByte1 = gavStoreEnabledByte1;
@@ -139,7 +139,7 @@ public class IdentifyReplyCommandOutputUnitSummary extends IdentifyReplyCommand 
   }
 
   public static IdentifyReplyCommandBuilder staticParseIdentifyReplyCommandBuilder(
-      ReadBuffer readBuffer, Attribute attribute, Short numBytes) throws ParseException {
+      ReadBuffer readBuffer, Attribute attribute, Byte numBytes) throws ParseException {
     readBuffer.pullContext("IdentifyReplyCommandOutputUnitSummary");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
@@ -175,14 +175,14 @@ public class IdentifyReplyCommandOutputUnitSummary extends IdentifyReplyCommand 
     private final Byte gavStoreEnabledByte1;
     private final Byte gavStoreEnabledByte2;
     private final short timeFromLastRecoverOfMainsInSeconds;
-    private final Short numBytes;
+    private final Byte numBytes;
 
     public IdentifyReplyCommandOutputUnitSummaryBuilderImpl(
         IdentifyReplyCommandUnitSummary unitFlags,
         Byte gavStoreEnabledByte1,
         Byte gavStoreEnabledByte2,
         short timeFromLastRecoverOfMainsInSeconds,
-        Short numBytes) {
+        Byte numBytes) {
       this.unitFlags = unitFlags;
       this.gavStoreEnabledByte1 = gavStoreEnabledByte1;
       this.gavStoreEnabledByte2 = gavStoreEnabledByte2;
@@ -190,7 +190,7 @@ public class IdentifyReplyCommandOutputUnitSummary extends IdentifyReplyCommand 
       this.numBytes = numBytes;
     }
 
-    public IdentifyReplyCommandOutputUnitSummary build(Short numBytes) {
+    public IdentifyReplyCommandOutputUnitSummary build(Byte numBytes) {
 
       IdentifyReplyCommandOutputUnitSummary identifyReplyCommandOutputUnitSummary =
           new IdentifyReplyCommandOutputUnitSummary(

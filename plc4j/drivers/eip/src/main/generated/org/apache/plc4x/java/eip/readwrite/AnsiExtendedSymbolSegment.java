@@ -38,8 +38,8 @@ import org.apache.plc4x.java.spi.generation.*;
 public class AnsiExtendedSymbolSegment extends DataSegmentType implements Message {
 
   // Accessors for discriminator values.
-  public Short getDataSegmentType() {
-    return (short) 0x11;
+  public Byte getDataSegmentType() {
+    return (byte) 0x11;
   }
 
   // Properties.

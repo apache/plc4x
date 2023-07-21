@@ -44,10 +44,10 @@ public abstract class OpenProtocolMessageLinkLevelPositiveAcknowledge extends Op
   }
 
   // Abstract accessors for discriminator values.
-  public abstract Long getRevision();
+  public abstract Integer getRevision();
 
   public OpenProtocolMessageLinkLevelPositiveAcknowledge(
-      Long midRevision,
+      Integer midRevision,
       Short noAckFlag,
       Integer targetStationId,
       Integer targetSpindleId,
@@ -97,14 +97,14 @@ public abstract class OpenProtocolMessageLinkLevelPositiveAcknowledge extends Op
   }
 
   public static OpenProtocolMessageBuilder staticParseOpenProtocolMessageBuilder(
-      ReadBuffer readBuffer, Long revision) throws ParseException {
+      ReadBuffer readBuffer, Integer revision) throws ParseException {
     readBuffer.pullContext("OpenProtocolMessageLinkLevelPositiveAcknowledge");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     OpenProtocolMessageLinkLevelPositiveAcknowledgeBuilder builder = null;
-    if (EvaluationHelper.equals(revision, (long) 1)) {
+    if (EvaluationHelper.equals(revision, (int) 1)) {
       builder =
           OpenProtocolMessageLinkLevelPositiveAcknowledgeRev1
               .staticParseOpenProtocolMessageLinkLevelPositiveAcknowledgeBuilder(
@@ -126,7 +126,7 @@ public abstract class OpenProtocolMessageLinkLevelPositiveAcknowledge extends Op
 
   public interface OpenProtocolMessageLinkLevelPositiveAcknowledgeBuilder {
     OpenProtocolMessageLinkLevelPositiveAcknowledge build(
-        Long midRevision,
+        Integer midRevision,
         Short noAckFlag,
         Integer targetStationId,
         Integer targetSpindleId,
@@ -145,7 +145,7 @@ public abstract class OpenProtocolMessageLinkLevelPositiveAcknowledge extends Op
     }
 
     public OpenProtocolMessageLinkLevelPositiveAcknowledge build(
-        Long midRevision,
+        Integer midRevision,
         Short noAckFlag,
         Integer targetStationId,
         Integer targetSpindleId,

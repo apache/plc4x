@@ -38,8 +38,8 @@ import org.apache.plc4x.java.spi.generation.*;
 public class OpenProtocolMessageAlarmRev1 extends OpenProtocolMessageAlarm implements Message {
 
   // Accessors for discriminator values.
-  public Long getRevision() {
-    return (long) 1;
+  public Integer getRevision() {
+    return (int) 1;
   }
 
   // Constant values.
@@ -55,7 +55,7 @@ public class OpenProtocolMessageAlarmRev1 extends OpenProtocolMessageAlarm imple
   protected final String alarmTime;
 
   public OpenProtocolMessageAlarmRev1(
-      Long midRevision,
+      Integer midRevision,
       Short noAckFlag,
       Integer targetStationId,
       Integer targetSpindleId,
@@ -215,7 +215,7 @@ public class OpenProtocolMessageAlarmRev1 extends OpenProtocolMessageAlarm imple
   }
 
   public static OpenProtocolMessageAlarmBuilder staticParseOpenProtocolMessageAlarmBuilder(
-      ReadBuffer readBuffer, Long revision) throws ParseException {
+      ReadBuffer readBuffer, Integer revision) throws ParseException {
     readBuffer.pullContext("OpenProtocolMessageAlarmRev1");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
@@ -290,7 +290,7 @@ public class OpenProtocolMessageAlarmRev1 extends OpenProtocolMessageAlarm imple
     }
 
     public OpenProtocolMessageAlarmRev1 build(
-        Long midRevision,
+        Integer midRevision,
         Short noAckFlag,
         Integer targetStationId,
         Integer targetSpindleId,

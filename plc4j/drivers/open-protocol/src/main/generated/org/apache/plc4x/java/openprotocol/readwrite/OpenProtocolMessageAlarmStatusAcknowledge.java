@@ -44,10 +44,10 @@ public abstract class OpenProtocolMessageAlarmStatusAcknowledge extends OpenProt
   }
 
   // Abstract accessors for discriminator values.
-  public abstract Long getRevision();
+  public abstract Integer getRevision();
 
   public OpenProtocolMessageAlarmStatusAcknowledge(
-      Long midRevision,
+      Integer midRevision,
       Short noAckFlag,
       Integer targetStationId,
       Integer targetSpindleId,
@@ -97,14 +97,14 @@ public abstract class OpenProtocolMessageAlarmStatusAcknowledge extends OpenProt
   }
 
   public static OpenProtocolMessageBuilder staticParseOpenProtocolMessageBuilder(
-      ReadBuffer readBuffer, Long revision) throws ParseException {
+      ReadBuffer readBuffer, Integer revision) throws ParseException {
     readBuffer.pullContext("OpenProtocolMessageAlarmStatusAcknowledge");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     OpenProtocolMessageAlarmStatusAcknowledgeBuilder builder = null;
-    if (EvaluationHelper.equals(revision, (long) 1)) {
+    if (EvaluationHelper.equals(revision, (int) 1)) {
       builder =
           OpenProtocolMessageAlarmStatusAcknowledgeRev1
               .staticParseOpenProtocolMessageAlarmStatusAcknowledgeBuilder(readBuffer, revision);
@@ -125,7 +125,7 @@ public abstract class OpenProtocolMessageAlarmStatusAcknowledge extends OpenProt
 
   public interface OpenProtocolMessageAlarmStatusAcknowledgeBuilder {
     OpenProtocolMessageAlarmStatusAcknowledge build(
-        Long midRevision,
+        Integer midRevision,
         Short noAckFlag,
         Integer targetStationId,
         Integer targetSpindleId,
@@ -144,7 +144,7 @@ public abstract class OpenProtocolMessageAlarmStatusAcknowledge extends OpenProt
     }
 
     public OpenProtocolMessageAlarmStatusAcknowledge build(
-        Long midRevision,
+        Integer midRevision,
         Short noAckFlag,
         Integer targetStationId,
         Integer targetSpindleId,

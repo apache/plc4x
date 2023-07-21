@@ -71,7 +71,7 @@ public class DeleteNodesItem extends ExtensionObjectDefinition implements Messag
     writeSimpleField("nodeId", nodeId, new DataWriterComplexDefault<>(writeBuffer));
 
     // Reserved Field (reserved)
-    writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 7));
+    writeReservedField("reserved", (byte) 0x00, writeUnsignedByte(writeBuffer, 7));
 
     // Simple Field (deleteTargetReferences)
     writeSimpleField("deleteTargetReferences", deleteTargetReferences, writeBoolean(writeBuffer));
@@ -113,8 +113,8 @@ public class DeleteNodesItem extends ExtensionObjectDefinition implements Messag
             "nodeId",
             new DataReaderComplexDefault<>(() -> NodeId.staticParse(readBuffer), readBuffer));
 
-    Short reservedField0 =
-        readReservedField("reserved", readUnsignedShort(readBuffer, 7), (short) 0x00);
+    Byte reservedField0 =
+        readReservedField("reserved", readUnsignedByte(readBuffer, 7), (byte) 0x00);
 
     boolean deleteTargetReferences =
         readSimpleField("deleteTargetReferences", readBoolean(readBuffer));

@@ -38,8 +38,8 @@ import org.apache.plc4x.java.spi.generation.*;
 public class ApduDataExtPropertyDescriptionRead extends ApduDataExt implements Message {
 
   // Accessors for discriminator values.
-  public Short getExtApciType() {
-    return (short) 0x18;
+  public Byte getExtApciType() {
+    return (byte) 0x18;
   }
 
   // Properties.

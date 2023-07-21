@@ -49,7 +49,7 @@ public class LPollData extends LDataFrame implements Message {
   // Properties.
   protected final KnxAddress sourceAddress;
   protected final byte[] targetAddress;
-  protected final short numberExpectedPollData;
+  protected final byte numberExpectedPollData;
 
   public LPollData(
       boolean frameType,
@@ -59,7 +59,7 @@ public class LPollData extends LDataFrame implements Message {
       boolean errorFlag,
       KnxAddress sourceAddress,
       byte[] targetAddress,
-      short numberExpectedPollData) {
+      byte numberExpectedPollData) {
     super(frameType, notRepeated, priority, acknowledgeRequested, errorFlag);
     this.sourceAddress = sourceAddress;
     this.targetAddress = targetAddress;
@@ -74,7 +74,7 @@ public class LPollData extends LDataFrame implements Message {
     return targetAddress;
   }
 
-  public short getNumberExpectedPollData() {
+  public byte getNumberExpectedPollData() {
     return numberExpectedPollData;
   }
 
@@ -95,7 +95,7 @@ public class LPollData extends LDataFrame implements Message {
 
     // Simple Field (numberExpectedPollData)
     writeSimpleField(
-        "numberExpectedPollData", numberExpectedPollData, writeUnsignedShort(writeBuffer, 6));
+        "numberExpectedPollData", numberExpectedPollData, writeUnsignedByte(writeBuffer, 6));
 
     writeBuffer.popContext("LPollData");
   }
@@ -144,8 +144,8 @@ public class LPollData extends LDataFrame implements Message {
     Byte reservedField0 =
         readReservedField("reserved", readUnsignedByte(readBuffer, 4), (byte) 0x00);
 
-    short numberExpectedPollData =
-        readSimpleField("numberExpectedPollData", readUnsignedShort(readBuffer, 6));
+    byte numberExpectedPollData =
+        readSimpleField("numberExpectedPollData", readUnsignedByte(readBuffer, 6));
 
     readBuffer.closeContext("LPollData");
     // Create the instance
@@ -155,10 +155,10 @@ public class LPollData extends LDataFrame implements Message {
   public static class LPollDataBuilderImpl implements LDataFrame.LDataFrameBuilder {
     private final KnxAddress sourceAddress;
     private final byte[] targetAddress;
-    private final short numberExpectedPollData;
+    private final byte numberExpectedPollData;
 
     public LPollDataBuilderImpl(
-        KnxAddress sourceAddress, byte[] targetAddress, short numberExpectedPollData) {
+        KnxAddress sourceAddress, byte[] targetAddress, byte numberExpectedPollData) {
       this.sourceAddress = sourceAddress;
       this.targetAddress = targetAddress;
       this.numberExpectedPollData = numberExpectedPollData;

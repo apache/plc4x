@@ -64,7 +64,7 @@ public class DataItem {
     } else if (EvaluationHelper.equals(dataType, CANOpenDataType.UNSIGNED24)) { // UDINT
 
       // Simple Field (value)
-      Long value = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readUnsignedLong("", 24);
+      Integer value = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readUnsignedInt("", 24);
 
       return new PlcUDINT(value);
     } else if (EvaluationHelper.equals(dataType, CANOpenDataType.UNSIGNED32)) { // UDINT
@@ -76,22 +76,19 @@ public class DataItem {
     } else if (EvaluationHelper.equals(dataType, CANOpenDataType.UNSIGNED40)) { // ULINT
 
       // Simple Field (value)
-      BigInteger value = /*TODO: migrate me*/ /*TODO: migrate me*/
-          readBuffer.readUnsignedBigInteger("", 40);
+      Long value = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readUnsignedLong("", 40);
 
       return new PlcULINT(value);
     } else if (EvaluationHelper.equals(dataType, CANOpenDataType.UNSIGNED48)) { // ULINT
 
       // Simple Field (value)
-      BigInteger value = /*TODO: migrate me*/ /*TODO: migrate me*/
-          readBuffer.readUnsignedBigInteger("", 48);
+      Long value = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readUnsignedLong("", 48);
 
       return new PlcULINT(value);
     } else if (EvaluationHelper.equals(dataType, CANOpenDataType.UNSIGNED56)) { // ULINT
 
       // Simple Field (value)
-      BigInteger value = /*TODO: migrate me*/ /*TODO: migrate me*/
-          readBuffer.readUnsignedBigInteger("", 56);
+      Long value = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readUnsignedLong("", 56);
 
       return new PlcULINT(value);
     } else if (EvaluationHelper.equals(dataType, CANOpenDataType.UNSIGNED64)) { // ULINT
@@ -227,9 +224,9 @@ public class DataItem {
       /*TODO: migrate me*/ writeBuffer.writeUnsignedInt("", 16, ((Number) (value)).intValue());
     } else if (EvaluationHelper.equals(dataType, CANOpenDataType.UNSIGNED24)) { // UDINT
       // Simple Field (value)
-      long value = (long) _value.getLong();
+      int value = (int) _value.getInt();
       /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedLong("", 24, ((Number) (value)).longValue());
+      /*TODO: migrate me*/ writeBuffer.writeUnsignedInt("", 24, ((Number) (value)).intValue());
     } else if (EvaluationHelper.equals(dataType, CANOpenDataType.UNSIGNED32)) { // UDINT
       // Simple Field (value)
       long value = (long) _value.getLong();
@@ -237,19 +234,19 @@ public class DataItem {
       /*TODO: migrate me*/ writeBuffer.writeUnsignedLong("", 32, ((Number) (value)).longValue());
     } else if (EvaluationHelper.equals(dataType, CANOpenDataType.UNSIGNED40)) { // ULINT
       // Simple Field (value)
-      BigInteger value = (BigInteger) _value.getBigInteger();
+      long value = (long) _value.getLong();
       /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedBigInteger("", 40, (BigInteger) (value));
+      /*TODO: migrate me*/ writeBuffer.writeUnsignedLong("", 40, ((Number) (value)).longValue());
     } else if (EvaluationHelper.equals(dataType, CANOpenDataType.UNSIGNED48)) { // ULINT
       // Simple Field (value)
-      BigInteger value = (BigInteger) _value.getBigInteger();
+      long value = (long) _value.getLong();
       /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedBigInteger("", 48, (BigInteger) (value));
+      /*TODO: migrate me*/ writeBuffer.writeUnsignedLong("", 48, ((Number) (value)).longValue());
     } else if (EvaluationHelper.equals(dataType, CANOpenDataType.UNSIGNED56)) { // ULINT
       // Simple Field (value)
-      BigInteger value = (BigInteger) _value.getBigInteger();
+      long value = (long) _value.getLong();
       /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedBigInteger("", 56, (BigInteger) (value));
+      /*TODO: migrate me*/ writeBuffer.writeUnsignedLong("", 56, ((Number) (value)).longValue());
     } else if (EvaluationHelper.equals(dataType, CANOpenDataType.UNSIGNED64)) { // ULINT
       // Simple Field (value)
       BigInteger value = (BigInteger) _value.getBigInteger();

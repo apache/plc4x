@@ -42,8 +42,8 @@ public class ModbusPDUWriteMultipleHoldingRegistersRequest extends ModbusPDU imp
     return (boolean) false;
   }
 
-  public Short getFunctionFlag() {
-    return (short) 0x10;
+  public Byte getFunctionFlag() {
+    return (byte) 0x10;
   }
 
   public Boolean getResponse() {

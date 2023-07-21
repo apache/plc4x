@@ -24,7 +24,6 @@ import static org.apache.plc4x.java.spi.codegen.io.DataReaderFactory.*;
 import static org.apache.plc4x.java.spi.codegen.io.DataWriterFactory.*;
 import static org.apache.plc4x.java.spi.generation.StaticHelper.*;
 
-import java.math.BigInteger;
 import java.time.*;
 import java.util.*;
 import org.apache.plc4x.java.api.exceptions.*;
@@ -40,8 +39,8 @@ public class OpenProtocolMessageExecuteDynamicJobRequestRev999
     extends OpenProtocolMessageExecuteDynamicJobRequest implements Message {
 
   // Accessors for discriminator values.
-  public Long getRevision() {
-    return (long) 999;
+  public Integer getRevision() {
+    return (int) 999;
   }
 
   // Constant values.
@@ -76,7 +75,7 @@ public class OpenProtocolMessageExecuteDynamicJobRequestRev999
   protected final OkNok batchStatusAtIncrementBypass;
   protected final NoYes decrementBatchAtOkLoosening;
   protected final long maxTimeForFirstTightening;
-  protected final BigInteger maxTimeToCompleteJob;
+  protected final long maxTimeToCompleteJob;
   protected final long displayResultAtAutoSelect;
   protected final NoYes useLineControl;
   protected final IdentifierResult identifierResultPart;
@@ -85,7 +84,7 @@ public class OpenProtocolMessageExecuteDynamicJobRequestRev999
   protected final short jobRepair;
 
   public OpenProtocolMessageExecuteDynamicJobRequestRev999(
-      Long midRevision,
+      Integer midRevision,
       Short noAckFlag,
       Integer targetStationId,
       Integer targetSpindleId,
@@ -102,7 +101,7 @@ public class OpenProtocolMessageExecuteDynamicJobRequestRev999
       OkNok batchStatusAtIncrementBypass,
       NoYes decrementBatchAtOkLoosening,
       long maxTimeForFirstTightening,
-      BigInteger maxTimeToCompleteJob,
+      long maxTimeToCompleteJob,
       long displayResultAtAutoSelect,
       NoYes useLineControl,
       IdentifierResult identifierResultPart,
@@ -176,7 +175,7 @@ public class OpenProtocolMessageExecuteDynamicJobRequestRev999
     return maxTimeForFirstTightening;
   }
 
-  public BigInteger getMaxTimeToCompleteJob() {
+  public long getMaxTimeToCompleteJob() {
     return maxTimeToCompleteJob;
   }
 
@@ -460,7 +459,7 @@ public class OpenProtocolMessageExecuteDynamicJobRequestRev999
     writeSimpleField(
         "maxTimeToCompleteJob",
         maxTimeToCompleteJob,
-        writeUnsignedBigInteger(writeBuffer, 40),
+        writeUnsignedLong(writeBuffer, 40),
         WithOption.WithEncoding("ASCII"));
 
     // Const Field (blockIdDisplayResultAtAutoSelect)
@@ -682,7 +681,7 @@ public class OpenProtocolMessageExecuteDynamicJobRequestRev999
 
   public static OpenProtocolMessageExecuteDynamicJobRequestBuilder
       staticParseOpenProtocolMessageExecuteDynamicJobRequestBuilder(
-          ReadBuffer readBuffer, Long revision) throws ParseException {
+          ReadBuffer readBuffer, Integer revision) throws ParseException {
     readBuffer.pullContext("OpenProtocolMessageExecuteDynamicJobRequestRev999");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
@@ -843,10 +842,10 @@ public class OpenProtocolMessageExecuteDynamicJobRequestRev999
             OpenProtocolMessageExecuteDynamicJobRequestRev999.BLOCKIDMAXTIMETOCOMPLETEJOB,
             WithOption.WithEncoding("ASCII"));
 
-    BigInteger maxTimeToCompleteJob =
+    long maxTimeToCompleteJob =
         readSimpleField(
             "maxTimeToCompleteJob",
-            readUnsignedBigInteger(readBuffer, 40),
+            readUnsignedLong(readBuffer, 40),
             WithOption.WithEncoding("ASCII"));
 
     int blockIdDisplayResultAtAutoSelect =
@@ -965,7 +964,7 @@ public class OpenProtocolMessageExecuteDynamicJobRequestRev999
     private final OkNok batchStatusAtIncrementBypass;
     private final NoYes decrementBatchAtOkLoosening;
     private final long maxTimeForFirstTightening;
-    private final BigInteger maxTimeToCompleteJob;
+    private final long maxTimeToCompleteJob;
     private final long displayResultAtAutoSelect;
     private final NoYes useLineControl;
     private final IdentifierResult identifierResultPart;
@@ -984,7 +983,7 @@ public class OpenProtocolMessageExecuteDynamicJobRequestRev999
         OkNok batchStatusAtIncrementBypass,
         NoYes decrementBatchAtOkLoosening,
         long maxTimeForFirstTightening,
-        BigInteger maxTimeToCompleteJob,
+        long maxTimeToCompleteJob,
         long displayResultAtAutoSelect,
         NoYes useLineControl,
         IdentifierResult identifierResultPart,
@@ -1011,7 +1010,7 @@ public class OpenProtocolMessageExecuteDynamicJobRequestRev999
     }
 
     public OpenProtocolMessageExecuteDynamicJobRequestRev999 build(
-        Long midRevision,
+        Integer midRevision,
         Short noAckFlag,
         Integer targetStationId,
         Integer targetSpindleId,

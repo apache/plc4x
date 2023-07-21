@@ -38,7 +38,7 @@ import org.apache.plc4x.java.spi.generation.*;
 public abstract class DataSegmentType implements Message {
 
   // Abstract accessors for discriminator values.
-  public abstract Short getDataSegmentType();
+  public abstract Byte getDataSegmentType();
 
   public DataSegmentType() {
     super();
@@ -54,7 +54,7 @@ public abstract class DataSegmentType implements Message {
 
     // Discriminator Field (dataSegmentType) (Used as input to a switch field)
     writeDiscriminatorField(
-        "dataSegmentType", getDataSegmentType(), writeUnsignedShort(writeBuffer, 5));
+        "dataSegmentType", getDataSegmentType(), writeUnsignedByte(writeBuffer, 5));
 
     // Switch field (Serialize the sub-type)
     serializeDataSegmentTypeChild(writeBuffer);
@@ -92,12 +92,12 @@ public abstract class DataSegmentType implements Message {
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    short dataSegmentType =
-        readDiscriminatorField("dataSegmentType", readUnsignedShort(readBuffer, 5));
+    byte dataSegmentType =
+        readDiscriminatorField("dataSegmentType", readUnsignedByte(readBuffer, 5));
 
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     DataSegmentTypeBuilder builder = null;
-    if (EvaluationHelper.equals(dataSegmentType, (short) 0x11)) {
+    if (EvaluationHelper.equals(dataSegmentType, (byte) 0x11)) {
       builder = AnsiExtendedSymbolSegment.staticParseDataSegmentTypeBuilder(readBuffer);
     }
     if (builder == null) {

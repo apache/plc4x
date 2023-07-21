@@ -27,42 +27,42 @@ import java.util.Map;
 
 public enum AirConditioningCommandTypeContainer {
   AirConditioningCommandSetZoneGroupOff(
-      (short) 0x01, (short) 1, AirConditioningCommandType.SET_ZONE_GROUP_OFF),
+      (short) 0x01, (byte) 1, AirConditioningCommandType.SET_ZONE_GROUP_OFF),
   AirConditioningCommandZoneHvacPlantStatus(
-      (short) 0x05, (short) 5, AirConditioningCommandType.ZONE_HVAC_PLANT_STATUS),
+      (short) 0x05, (byte) 5, AirConditioningCommandType.ZONE_HVAC_PLANT_STATUS),
   AirConditioningCommandZoneHumidityPlantStatus(
-      (short) 0x0D, (short) 5, AirConditioningCommandType.ZONE_HUMIDITY_PLANT_STATUS),
+      (short) 0x0D, (byte) 5, AirConditioningCommandType.ZONE_HUMIDITY_PLANT_STATUS),
   AirConditioningCommandZoneTemperature(
-      (short) 0x15, (short) 5, AirConditioningCommandType.ZONE_TEMPERATURE),
+      (short) 0x15, (byte) 5, AirConditioningCommandType.ZONE_TEMPERATURE),
   AirConditioningCommandZoneHumidity(
-      (short) 0x1D, (short) 5, AirConditioningCommandType.ZONE_HUMIDITY),
-  AirConditioningCommandRefresh((short) 0x21, (short) 1, AirConditioningCommandType.REFRESH),
+      (short) 0x1D, (byte) 5, AirConditioningCommandType.ZONE_HUMIDITY),
+  AirConditioningCommandRefresh((short) 0x21, (byte) 1, AirConditioningCommandType.REFRESH),
   AirConditioningCommandSetZoneHvacMode(
-      (short) 0x2F, (short) 7, AirConditioningCommandType.SET_ZONE_HVAC_MODE),
+      (short) 0x2F, (byte) 7, AirConditioningCommandType.SET_ZONE_HVAC_MODE),
   AirConditioningCommandSetPlantHvacLevel(
-      (short) 0x36, (short) 6, AirConditioningCommandType.SET_PLANT_HVAC_LEVEL),
+      (short) 0x36, (byte) 6, AirConditioningCommandType.SET_PLANT_HVAC_LEVEL),
   AirConditioningCommandSetZoneHumidityMode(
-      (short) 0x47, (short) 7, AirConditioningCommandType.SET_ZONE_HUMIDITY_MODE),
+      (short) 0x47, (byte) 7, AirConditioningCommandType.SET_ZONE_HUMIDITY_MODE),
   AirConditioningCommandSetPlantHumidityLevel(
-      (short) 0x4E, (short) 6, AirConditioningCommandType.SET_PLANT_HUMIDITY_LEVEL),
+      (short) 0x4E, (byte) 6, AirConditioningCommandType.SET_PLANT_HUMIDITY_LEVEL),
   AirConditioningCommandSetHvacUpperGuardLimit(
-      (short) 0x55, (short) 5, AirConditioningCommandType.SET_HVAC_UPPER_GUARD_LIMIT),
+      (short) 0x55, (byte) 5, AirConditioningCommandType.SET_HVAC_UPPER_GUARD_LIMIT),
   AirConditioningCommandSetHvacLowerGuardLimit(
-      (short) 0x5D, (short) 5, AirConditioningCommandType.SET_HVAC_LOWER_GUARD_LIMIT),
+      (short) 0x5D, (byte) 5, AirConditioningCommandType.SET_HVAC_LOWER_GUARD_LIMIT),
   AirConditioningCommandSetHvacSetbackLimit(
-      (short) 0x65, (short) 5, AirConditioningCommandType.SET_HVAC_SETBACK_LIMIT),
+      (short) 0x65, (byte) 5, AirConditioningCommandType.SET_HVAC_SETBACK_LIMIT),
   AirConditioningCommandSetHumidityUpperGuardLimit(
-      (short) 0x6D, (short) 5, AirConditioningCommandType.SET_HUMIDITY_UPPER_GUARD_LIMIT),
+      (short) 0x6D, (byte) 5, AirConditioningCommandType.SET_HUMIDITY_UPPER_GUARD_LIMIT),
   AirConditioningCommandSetHumidityLowerGuardLimit(
-      (short) 0x75, (short) 5, AirConditioningCommandType.SET_HUMIDITY_LOWER_GUARD_LIMIT),
+      (short) 0x75, (byte) 5, AirConditioningCommandType.SET_HUMIDITY_LOWER_GUARD_LIMIT),
   AirConditioningCommandSetZoneGroupOn(
-      (short) 0x79, (short) 1, AirConditioningCommandType.SET_ZONE_GROUP_ON),
+      (short) 0x79, (byte) 1, AirConditioningCommandType.SET_ZONE_GROUP_ON),
   AirConditioningCommandSetHumiditySetbackLimit(
-      (short) 0x7D, (short) 5, AirConditioningCommandType.SET_HUMIDITY_SETBACK_LIMIT),
+      (short) 0x7D, (byte) 5, AirConditioningCommandType.SET_HUMIDITY_SETBACK_LIMIT),
   AirConditioningCommandHvacScheduleEntry(
-      (short) 0x89, (short) 9, AirConditioningCommandType.HVAC_SCHEDULE_ENTRY),
+      (short) 0x89, (byte) 9, AirConditioningCommandType.HVAC_SCHEDULE_ENTRY),
   AirConditioningCommandHumidityScheduleEntry(
-      (short) 0xA9, (short) 9, AirConditioningCommandType.HUMIDITY_SCHEDULE_ENTRY);
+      (short) 0xA9, (byte) 9, AirConditioningCommandType.HUMIDITY_SCHEDULE_ENTRY);
   private static final Map<Short, AirConditioningCommandTypeContainer> map;
 
   static {
@@ -73,11 +73,11 @@ public enum AirConditioningCommandTypeContainer {
   }
 
   private final short value;
-  private final short numBytes;
+  private final byte numBytes;
   private final AirConditioningCommandType commandType;
 
   AirConditioningCommandTypeContainer(
-      short value, short numBytes, AirConditioningCommandType commandType) {
+      short value, byte numBytes, AirConditioningCommandType commandType) {
     this.value = value;
     this.numBytes = numBytes;
     this.commandType = commandType;
@@ -87,11 +87,11 @@ public enum AirConditioningCommandTypeContainer {
     return value;
   }
 
-  public short getNumBytes() {
+  public byte getNumBytes() {
     return numBytes;
   }
 
-  public static AirConditioningCommandTypeContainer firstEnumForFieldNumBytes(short fieldValue) {
+  public static AirConditioningCommandTypeContainer firstEnumForFieldNumBytes(byte fieldValue) {
     for (AirConditioningCommandTypeContainer _val : AirConditioningCommandTypeContainer.values()) {
       if (_val.getNumBytes() == fieldValue) {
         return _val;
@@ -100,7 +100,7 @@ public enum AirConditioningCommandTypeContainer {
     return null;
   }
 
-  public static List<AirConditioningCommandTypeContainer> enumsForFieldNumBytes(short fieldValue) {
+  public static List<AirConditioningCommandTypeContainer> enumsForFieldNumBytes(byte fieldValue) {
     List<AirConditioningCommandTypeContainer> _values = new ArrayList<>();
     for (AirConditioningCommandTypeContainer _val : AirConditioningCommandTypeContainer.values()) {
       if (_val.getNumBytes() == fieldValue) {

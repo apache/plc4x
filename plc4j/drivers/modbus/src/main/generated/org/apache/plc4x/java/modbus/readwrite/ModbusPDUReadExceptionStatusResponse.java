@@ -42,8 +42,8 @@ public class ModbusPDUReadExceptionStatusResponse extends ModbusPDU implements M
     return (boolean) false;
   }
 
-  public Short getFunctionFlag() {
-    return (short) 0x07;
+  public Byte getFunctionFlag() {
+    return (byte) 0x07;
   }
 
   public Boolean getResponse() {

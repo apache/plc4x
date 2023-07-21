@@ -39,12 +39,12 @@ public class OpenProtocolMessageParameterSetSelectedUnsubscribeRev1
     extends OpenProtocolMessageParameterSetSelectedUnsubscribe implements Message {
 
   // Accessors for discriminator values.
-  public Long getRevision() {
-    return (long) 1;
+  public Integer getRevision() {
+    return (int) 1;
   }
 
   public OpenProtocolMessageParameterSetSelectedUnsubscribeRev1(
-      Long midRevision,
+      Integer midRevision,
       Short noAckFlag,
       Integer targetStationId,
       Integer targetSpindleId,
@@ -87,7 +87,7 @@ public class OpenProtocolMessageParameterSetSelectedUnsubscribeRev1
 
   public static OpenProtocolMessageParameterSetSelectedUnsubscribeBuilder
       staticParseOpenProtocolMessageParameterSetSelectedUnsubscribeBuilder(
-          ReadBuffer readBuffer, Long revision) throws ParseException {
+          ReadBuffer readBuffer, Integer revision) throws ParseException {
     readBuffer.pullContext("OpenProtocolMessageParameterSetSelectedUnsubscribeRev1");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
@@ -104,7 +104,7 @@ public class OpenProtocolMessageParameterSetSelectedUnsubscribeRev1
     public OpenProtocolMessageParameterSetSelectedUnsubscribeRev1BuilderImpl() {}
 
     public OpenProtocolMessageParameterSetSelectedUnsubscribeRev1 build(
-        Long midRevision,
+        Integer midRevision,
         Short noAckFlag,
         Integer targetStationId,
         Integer targetSpindleId,

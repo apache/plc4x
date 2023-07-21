@@ -68,8 +68,8 @@ public class ApduDataMemoryResponse extends ApduData implements Message {
 
     // Implicit Field (numBytes) (Used for parsing, but its value is not stored as it's implicitly
     // given by the objects content)
-    short numBytes = (short) (COUNT(getData()));
-    writeImplicitField("numBytes", numBytes, writeUnsignedShort(writeBuffer, 6));
+    byte numBytes = (byte) (COUNT(getData()));
+    writeImplicitField("numBytes", numBytes, writeUnsignedByte(writeBuffer, 6));
 
     // Simple Field (address)
     writeSimpleField("address", address, writeUnsignedInt(writeBuffer, 16));
@@ -111,7 +111,7 @@ public class ApduDataMemoryResponse extends ApduData implements Message {
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    short numBytes = readImplicitField("numBytes", readUnsignedShort(readBuffer, 6));
+    byte numBytes = readImplicitField("numBytes", readUnsignedByte(readBuffer, 6));
 
     int address = readSimpleField("address", readUnsignedInt(readBuffer, 16));
 

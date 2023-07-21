@@ -42,8 +42,8 @@ public class ModbusPDUReadInputRegistersRequest extends ModbusPDU implements Mes
     return (boolean) false;
   }
 
-  public Short getFunctionFlag() {
-    return (short) 0x04;
+  public Byte getFunctionFlag() {
+    return (byte) 0x04;
   }
 
   public Boolean getResponse() {

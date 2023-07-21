@@ -42,8 +42,8 @@ public class ModbusPDUReadDiscreteInputsRequest extends ModbusPDU implements Mes
     return (boolean) false;
   }
 
-  public Short getFunctionFlag() {
-    return (short) 0x02;
+  public Byte getFunctionFlag() {
+    return (byte) 0x02;
   }
 
   public Boolean getResponse() {

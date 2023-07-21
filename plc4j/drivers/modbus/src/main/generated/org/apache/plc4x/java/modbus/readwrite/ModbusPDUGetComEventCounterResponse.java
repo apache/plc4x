@@ -42,8 +42,8 @@ public class ModbusPDUGetComEventCounterResponse extends ModbusPDU implements Me
     return (boolean) false;
   }
 
-  public Short getFunctionFlag() {
-    return (short) 0x0B;
+  public Byte getFunctionFlag() {
+    return (byte) 0x0B;
   }
 
   public Boolean getResponse() {

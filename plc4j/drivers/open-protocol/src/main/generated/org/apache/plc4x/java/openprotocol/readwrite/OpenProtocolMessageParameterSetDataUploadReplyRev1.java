@@ -24,7 +24,6 @@ import static org.apache.plc4x.java.spi.codegen.io.DataReaderFactory.*;
 import static org.apache.plc4x.java.spi.codegen.io.DataWriterFactory.*;
 import static org.apache.plc4x.java.spi.generation.StaticHelper.*;
 
-import java.math.BigInteger;
 import java.time.*;
 import java.util.*;
 import org.apache.plc4x.java.api.exceptions.*;
@@ -40,8 +39,8 @@ public class OpenProtocolMessageParameterSetDataUploadReplyRev1
     extends OpenProtocolMessageParameterSetDataUploadReply implements Message {
 
   // Accessors for discriminator values.
-  public Long getRevision() {
-    return (long) 1;
+  public Integer getRevision() {
+    return (int) 1;
   }
 
   // Constant values.
@@ -57,35 +56,35 @@ public class OpenProtocolMessageParameterSetDataUploadReplyRev1
   public static final Integer BLOCKIDFINALANGLETARGET = 10;
 
   // Properties.
-  protected final long parameterSetId;
+  protected final int parameterSetId;
   protected final String parameterSetName;
   protected final RotationDirection rotationDirection;
   protected final int batchSize;
-  protected final BigInteger torqueMin;
-  protected final BigInteger torqueMax;
-  protected final BigInteger torqueFinalTarget;
-  protected final BigInteger angleMin;
-  protected final BigInteger angleMax;
-  protected final BigInteger finalAngleTarget;
+  protected final long torqueMin;
+  protected final long torqueMax;
+  protected final long torqueFinalTarget;
+  protected final long angleMin;
+  protected final long angleMax;
+  protected final long finalAngleTarget;
 
   public OpenProtocolMessageParameterSetDataUploadReplyRev1(
-      Long midRevision,
+      Integer midRevision,
       Short noAckFlag,
       Integer targetStationId,
       Integer targetSpindleId,
       Integer sequenceNumber,
       Short numberOfMessageParts,
       Short messagePartNumber,
-      long parameterSetId,
+      int parameterSetId,
       String parameterSetName,
       RotationDirection rotationDirection,
       int batchSize,
-      BigInteger torqueMin,
-      BigInteger torqueMax,
-      BigInteger torqueFinalTarget,
-      BigInteger angleMin,
-      BigInteger angleMax,
-      BigInteger finalAngleTarget) {
+      long torqueMin,
+      long torqueMax,
+      long torqueFinalTarget,
+      long angleMin,
+      long angleMax,
+      long finalAngleTarget) {
     super(
         midRevision,
         noAckFlag,
@@ -106,7 +105,7 @@ public class OpenProtocolMessageParameterSetDataUploadReplyRev1
     this.finalAngleTarget = finalAngleTarget;
   }
 
-  public long getParameterSetId() {
+  public int getParameterSetId() {
     return parameterSetId;
   }
 
@@ -122,27 +121,27 @@ public class OpenProtocolMessageParameterSetDataUploadReplyRev1
     return batchSize;
   }
 
-  public BigInteger getTorqueMin() {
+  public long getTorqueMin() {
     return torqueMin;
   }
 
-  public BigInteger getTorqueMax() {
+  public long getTorqueMax() {
     return torqueMax;
   }
 
-  public BigInteger getTorqueFinalTarget() {
+  public long getTorqueFinalTarget() {
     return torqueFinalTarget;
   }
 
-  public BigInteger getAngleMin() {
+  public long getAngleMin() {
     return angleMin;
   }
 
-  public BigInteger getAngleMax() {
+  public long getAngleMax() {
     return angleMax;
   }
 
-  public BigInteger getFinalAngleTarget() {
+  public long getFinalAngleTarget() {
     return finalAngleTarget;
   }
 
@@ -204,7 +203,7 @@ public class OpenProtocolMessageParameterSetDataUploadReplyRev1
     writeSimpleField(
         "parameterSetId",
         parameterSetId,
-        writeUnsignedLong(writeBuffer, 24),
+        writeUnsignedInt(writeBuffer, 24),
         WithOption.WithEncoding("ASCII"));
 
     // Const Field (blockIdParameterSetName)
@@ -264,7 +263,7 @@ public class OpenProtocolMessageParameterSetDataUploadReplyRev1
     writeSimpleField(
         "torqueMin",
         torqueMin,
-        writeUnsignedBigInteger(writeBuffer, 48),
+        writeUnsignedLong(writeBuffer, 48),
         WithOption.WithEncoding("ASCII"));
 
     // Const Field (blockIdTorqueMax)
@@ -278,7 +277,7 @@ public class OpenProtocolMessageParameterSetDataUploadReplyRev1
     writeSimpleField(
         "torqueMax",
         torqueMax,
-        writeUnsignedBigInteger(writeBuffer, 48),
+        writeUnsignedLong(writeBuffer, 48),
         WithOption.WithEncoding("ASCII"));
 
     // Const Field (blockIdTorqueFinalTarget)
@@ -292,7 +291,7 @@ public class OpenProtocolMessageParameterSetDataUploadReplyRev1
     writeSimpleField(
         "torqueFinalTarget",
         torqueFinalTarget,
-        writeUnsignedBigInteger(writeBuffer, 48),
+        writeUnsignedLong(writeBuffer, 48),
         WithOption.WithEncoding("ASCII"));
 
     // Const Field (blockIdAngleMin)
@@ -304,10 +303,7 @@ public class OpenProtocolMessageParameterSetDataUploadReplyRev1
 
     // Simple Field (angleMin)
     writeSimpleField(
-        "angleMin",
-        angleMin,
-        writeUnsignedBigInteger(writeBuffer, 40),
-        WithOption.WithEncoding("ASCII"));
+        "angleMin", angleMin, writeUnsignedLong(writeBuffer, 40), WithOption.WithEncoding("ASCII"));
 
     // Const Field (blockIdAngleMax)
     writeConstField(
@@ -318,10 +314,7 @@ public class OpenProtocolMessageParameterSetDataUploadReplyRev1
 
     // Simple Field (angleMax)
     writeSimpleField(
-        "angleMax",
-        angleMax,
-        writeUnsignedBigInteger(writeBuffer, 40),
-        WithOption.WithEncoding("ASCII"));
+        "angleMax", angleMax, writeUnsignedLong(writeBuffer, 40), WithOption.WithEncoding("ASCII"));
 
     // Const Field (blockIdFinalAngleTarget)
     writeConstField(
@@ -334,7 +327,7 @@ public class OpenProtocolMessageParameterSetDataUploadReplyRev1
     writeSimpleField(
         "finalAngleTarget",
         finalAngleTarget,
-        writeUnsignedBigInteger(writeBuffer, 40),
+        writeUnsignedLong(writeBuffer, 40),
         WithOption.WithEncoding("ASCII"));
 
     writeBuffer.popContext("OpenProtocolMessageParameterSetDataUploadReplyRev1");
@@ -416,7 +409,7 @@ public class OpenProtocolMessageParameterSetDataUploadReplyRev1
 
   public static OpenProtocolMessageParameterSetDataUploadReplyBuilder
       staticParseOpenProtocolMessageParameterSetDataUploadReplyBuilder(
-          ReadBuffer readBuffer, Long revision) throws ParseException {
+          ReadBuffer readBuffer, Integer revision) throws ParseException {
     readBuffer.pullContext("OpenProtocolMessageParameterSetDataUploadReplyRev1");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
@@ -428,9 +421,9 @@ public class OpenProtocolMessageParameterSetDataUploadReplyRev1
             OpenProtocolMessageParameterSetDataUploadReplyRev1.BLOCKIDPARAMETERSETID,
             WithOption.WithEncoding("ASCII"));
 
-    long parameterSetId =
+    int parameterSetId =
         readSimpleField(
-            "parameterSetId", readUnsignedLong(readBuffer, 24), WithOption.WithEncoding("ASCII"));
+            "parameterSetId", readUnsignedInt(readBuffer, 24), WithOption.WithEncoding("ASCII"));
 
     int blockIdParameterSetName =
         readConstField(
@@ -476,9 +469,9 @@ public class OpenProtocolMessageParameterSetDataUploadReplyRev1
             OpenProtocolMessageParameterSetDataUploadReplyRev1.BLOCKIDTORQUEMIN,
             WithOption.WithEncoding("ASCII"));
 
-    BigInteger torqueMin =
+    long torqueMin =
         readSimpleField(
-            "torqueMin", readUnsignedBigInteger(readBuffer, 48), WithOption.WithEncoding("ASCII"));
+            "torqueMin", readUnsignedLong(readBuffer, 48), WithOption.WithEncoding("ASCII"));
 
     int blockIdTorqueMax =
         readConstField(
@@ -487,9 +480,9 @@ public class OpenProtocolMessageParameterSetDataUploadReplyRev1
             OpenProtocolMessageParameterSetDataUploadReplyRev1.BLOCKIDTORQUEMAX,
             WithOption.WithEncoding("ASCII"));
 
-    BigInteger torqueMax =
+    long torqueMax =
         readSimpleField(
-            "torqueMax", readUnsignedBigInteger(readBuffer, 48), WithOption.WithEncoding("ASCII"));
+            "torqueMax", readUnsignedLong(readBuffer, 48), WithOption.WithEncoding("ASCII"));
 
     int blockIdTorqueFinalTarget =
         readConstField(
@@ -498,10 +491,10 @@ public class OpenProtocolMessageParameterSetDataUploadReplyRev1
             OpenProtocolMessageParameterSetDataUploadReplyRev1.BLOCKIDTORQUEFINALTARGET,
             WithOption.WithEncoding("ASCII"));
 
-    BigInteger torqueFinalTarget =
+    long torqueFinalTarget =
         readSimpleField(
             "torqueFinalTarget",
-            readUnsignedBigInteger(readBuffer, 48),
+            readUnsignedLong(readBuffer, 48),
             WithOption.WithEncoding("ASCII"));
 
     int blockIdAngleMin =
@@ -511,9 +504,9 @@ public class OpenProtocolMessageParameterSetDataUploadReplyRev1
             OpenProtocolMessageParameterSetDataUploadReplyRev1.BLOCKIDANGLEMIN,
             WithOption.WithEncoding("ASCII"));
 
-    BigInteger angleMin =
+    long angleMin =
         readSimpleField(
-            "angleMin", readUnsignedBigInteger(readBuffer, 40), WithOption.WithEncoding("ASCII"));
+            "angleMin", readUnsignedLong(readBuffer, 40), WithOption.WithEncoding("ASCII"));
 
     int blockIdAngleMax =
         readConstField(
@@ -522,9 +515,9 @@ public class OpenProtocolMessageParameterSetDataUploadReplyRev1
             OpenProtocolMessageParameterSetDataUploadReplyRev1.BLOCKIDANGLEMAX,
             WithOption.WithEncoding("ASCII"));
 
-    BigInteger angleMax =
+    long angleMax =
         readSimpleField(
-            "angleMax", readUnsignedBigInteger(readBuffer, 40), WithOption.WithEncoding("ASCII"));
+            "angleMax", readUnsignedLong(readBuffer, 40), WithOption.WithEncoding("ASCII"));
 
     int blockIdFinalAngleTarget =
         readConstField(
@@ -533,11 +526,9 @@ public class OpenProtocolMessageParameterSetDataUploadReplyRev1
             OpenProtocolMessageParameterSetDataUploadReplyRev1.BLOCKIDFINALANGLETARGET,
             WithOption.WithEncoding("ASCII"));
 
-    BigInteger finalAngleTarget =
+    long finalAngleTarget =
         readSimpleField(
-            "finalAngleTarget",
-            readUnsignedBigInteger(readBuffer, 40),
-            WithOption.WithEncoding("ASCII"));
+            "finalAngleTarget", readUnsignedLong(readBuffer, 40), WithOption.WithEncoding("ASCII"));
 
     readBuffer.closeContext("OpenProtocolMessageParameterSetDataUploadReplyRev1");
     // Create the instance
@@ -557,28 +548,28 @@ public class OpenProtocolMessageParameterSetDataUploadReplyRev1
   public static class OpenProtocolMessageParameterSetDataUploadReplyRev1BuilderImpl
       implements OpenProtocolMessageParameterSetDataUploadReply
           .OpenProtocolMessageParameterSetDataUploadReplyBuilder {
-    private final long parameterSetId;
+    private final int parameterSetId;
     private final String parameterSetName;
     private final RotationDirection rotationDirection;
     private final int batchSize;
-    private final BigInteger torqueMin;
-    private final BigInteger torqueMax;
-    private final BigInteger torqueFinalTarget;
-    private final BigInteger angleMin;
-    private final BigInteger angleMax;
-    private final BigInteger finalAngleTarget;
+    private final long torqueMin;
+    private final long torqueMax;
+    private final long torqueFinalTarget;
+    private final long angleMin;
+    private final long angleMax;
+    private final long finalAngleTarget;
 
     public OpenProtocolMessageParameterSetDataUploadReplyRev1BuilderImpl(
-        long parameterSetId,
+        int parameterSetId,
         String parameterSetName,
         RotationDirection rotationDirection,
         int batchSize,
-        BigInteger torqueMin,
-        BigInteger torqueMax,
-        BigInteger torqueFinalTarget,
-        BigInteger angleMin,
-        BigInteger angleMax,
-        BigInteger finalAngleTarget) {
+        long torqueMin,
+        long torqueMax,
+        long torqueFinalTarget,
+        long angleMin,
+        long angleMax,
+        long finalAngleTarget) {
       this.parameterSetId = parameterSetId;
       this.parameterSetName = parameterSetName;
       this.rotationDirection = rotationDirection;
@@ -592,7 +583,7 @@ public class OpenProtocolMessageParameterSetDataUploadReplyRev1
     }
 
     public OpenProtocolMessageParameterSetDataUploadReplyRev1 build(
-        Long midRevision,
+        Integer midRevision,
         Short noAckFlag,
         Integer targetStationId,
         Integer targetSpindleId,

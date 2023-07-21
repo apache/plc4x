@@ -38,8 +38,8 @@ import org.apache.plc4x.java.spi.generation.*;
 public class VariantInt64 extends Variant implements Message {
 
   // Accessors for discriminator values.
-  public Short getVariantType() {
-    return (short) 8;
+  public Byte getVariantType() {
+    return (byte) 8;
   }
 
   // Properties.

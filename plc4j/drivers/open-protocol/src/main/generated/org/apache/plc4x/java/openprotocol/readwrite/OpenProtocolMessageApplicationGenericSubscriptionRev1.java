@@ -39,17 +39,17 @@ public class OpenProtocolMessageApplicationGenericSubscriptionRev1
     extends OpenProtocolMessageApplicationGenericSubscription implements Message {
 
   // Accessors for discriminator values.
-  public Long getRevision() {
-    return (long) 1;
+  public Integer getRevision() {
+    return (int) 1;
   }
 
   // Properties.
   protected final Mid subscriptionMid;
-  protected final long wantedRevision;
+  protected final int wantedRevision;
   protected final byte[] extraData;
 
   public OpenProtocolMessageApplicationGenericSubscriptionRev1(
-      Long midRevision,
+      Integer midRevision,
       Short noAckFlag,
       Integer targetStationId,
       Integer targetSpindleId,
@@ -57,7 +57,7 @@ public class OpenProtocolMessageApplicationGenericSubscriptionRev1
       Short numberOfMessageParts,
       Short messagePartNumber,
       Mid subscriptionMid,
-      long wantedRevision,
+      int wantedRevision,
       byte[] extraData) {
     super(
         midRevision,
@@ -76,7 +76,7 @@ public class OpenProtocolMessageApplicationGenericSubscriptionRev1
     return subscriptionMid;
   }
 
-  public long getWantedRevision() {
+  public int getWantedRevision() {
     return wantedRevision;
   }
 
@@ -103,7 +103,7 @@ public class OpenProtocolMessageApplicationGenericSubscriptionRev1
     writeSimpleField(
         "wantedRevision",
         wantedRevision,
-        writeUnsignedLong(writeBuffer, 24),
+        writeUnsignedInt(writeBuffer, 24),
         WithOption.WithEncoding("ASCII"));
 
     // Implicit Field (extraDataLength) (Used for parsing, but its value is not stored as it's
@@ -151,7 +151,7 @@ public class OpenProtocolMessageApplicationGenericSubscriptionRev1
 
   public static OpenProtocolMessageApplicationGenericSubscriptionBuilder
       staticParseOpenProtocolMessageApplicationGenericSubscriptionBuilder(
-          ReadBuffer readBuffer, Long revision) throws ParseException {
+          ReadBuffer readBuffer, Integer revision) throws ParseException {
     readBuffer.pullContext("OpenProtocolMessageApplicationGenericSubscriptionRev1");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
@@ -163,9 +163,9 @@ public class OpenProtocolMessageApplicationGenericSubscriptionRev1
             new DataReaderEnumDefault<>(Mid::enumForValue, readUnsignedLong(readBuffer, 32)),
             WithOption.WithEncoding("ASCII"));
 
-    long wantedRevision =
+    int wantedRevision =
         readSimpleField(
-            "wantedRevision", readUnsignedLong(readBuffer, 24), WithOption.WithEncoding("ASCII"));
+            "wantedRevision", readUnsignedInt(readBuffer, 24), WithOption.WithEncoding("ASCII"));
 
     int extraDataLength =
         readImplicitField(
@@ -183,18 +183,18 @@ public class OpenProtocolMessageApplicationGenericSubscriptionRev1
       implements OpenProtocolMessageApplicationGenericSubscription
           .OpenProtocolMessageApplicationGenericSubscriptionBuilder {
     private final Mid subscriptionMid;
-    private final long wantedRevision;
+    private final int wantedRevision;
     private final byte[] extraData;
 
     public OpenProtocolMessageApplicationGenericSubscriptionRev1BuilderImpl(
-        Mid subscriptionMid, long wantedRevision, byte[] extraData) {
+        Mid subscriptionMid, int wantedRevision, byte[] extraData) {
       this.subscriptionMid = subscriptionMid;
       this.wantedRevision = wantedRevision;
       this.extraData = extraData;
     }
 
     public OpenProtocolMessageApplicationGenericSubscriptionRev1 build(
-        Long midRevision,
+        Integer midRevision,
         Short noAckFlag,
         Integer targetStationId,
         Integer targetSpindleId,

@@ -77,8 +77,8 @@ public class FirmataMessageSubscribeAnalogPinValue extends FirmataMessage implem
     // Reserved Field (reserved)
     writeReservedField(
         "reserved",
-        (short) 0x00,
-        writeUnsignedShort(writeBuffer, 7),
+        (byte) 0x00,
+        writeUnsignedByte(writeBuffer, 7),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (enable)
@@ -124,11 +124,11 @@ public class FirmataMessageSubscribeAnalogPinValue extends FirmataMessage implem
         readSimpleField(
             "pin", readUnsignedByte(readBuffer, 4), WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
-    Short reservedField0 =
+    Byte reservedField0 =
         readReservedField(
             "reserved",
-            readUnsignedShort(readBuffer, 7),
-            (short) 0x00,
+            readUnsignedByte(readBuffer, 7),
+            (byte) 0x00,
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     boolean enable =

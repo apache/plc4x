@@ -40,7 +40,7 @@ public class CALReplyLong extends CALReply implements Message {
   // Accessors for discriminator values.
 
   // Properties.
-  protected final long terminatingByte;
+  protected final int terminatingByte;
   protected final UnitAddress unitAddress;
   protected final BridgeAddress bridgeAddress;
   protected final SerialInterfaceAddress serialInterfaceAddress;
@@ -56,7 +56,7 @@ public class CALReplyLong extends CALReply implements Message {
   public CALReplyLong(
       byte calType,
       CALData calData,
-      long terminatingByte,
+      int terminatingByte,
       UnitAddress unitAddress,
       BridgeAddress bridgeAddress,
       SerialInterfaceAddress serialInterfaceAddress,
@@ -75,7 +75,7 @@ public class CALReplyLong extends CALReply implements Message {
     this.requestContext = requestContext;
   }
 
-  public long getTerminatingByte() {
+  public int getTerminatingByte() {
     return terminatingByte;
   }
 
@@ -203,7 +203,7 @@ public class CALReplyLong extends CALReply implements Message {
 
     Byte reservedField0 = readReservedField("reserved", readByte(readBuffer, 8), (byte) 0x86);
 
-    long terminatingByte = readPeekField("terminatingByte", readUnsignedLong(readBuffer, 24));
+    int terminatingByte = readPeekField("terminatingByte", readUnsignedInt(readBuffer, 24));
     boolean isUnitAddress =
         readVirtualField("isUnitAddress", boolean.class, (((terminatingByte) & (0xff))) == (0x00));
 
@@ -252,7 +252,7 @@ public class CALReplyLong extends CALReply implements Message {
   }
 
   public static class CALReplyLongBuilderImpl implements CALReply.CALReplyBuilder {
-    private final long terminatingByte;
+    private final int terminatingByte;
     private final UnitAddress unitAddress;
     private final BridgeAddress bridgeAddress;
     private final SerialInterfaceAddress serialInterfaceAddress;
@@ -263,7 +263,7 @@ public class CALReplyLong extends CALReply implements Message {
     private final Byte reservedField0;
 
     public CALReplyLongBuilderImpl(
-        long terminatingByte,
+        int terminatingByte,
         UnitAddress unitAddress,
         BridgeAddress bridgeAddress,
         SerialInterfaceAddress serialInterfaceAddress,

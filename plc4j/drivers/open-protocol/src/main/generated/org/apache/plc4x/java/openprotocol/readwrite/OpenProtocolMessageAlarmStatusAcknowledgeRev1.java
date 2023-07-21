@@ -39,12 +39,12 @@ public class OpenProtocolMessageAlarmStatusAcknowledgeRev1
     extends OpenProtocolMessageAlarmStatusAcknowledge implements Message {
 
   // Accessors for discriminator values.
-  public Long getRevision() {
-    return (long) 1;
+  public Integer getRevision() {
+    return (int) 1;
   }
 
   public OpenProtocolMessageAlarmStatusAcknowledgeRev1(
-      Long midRevision,
+      Integer midRevision,
       Short noAckFlag,
       Integer targetStationId,
       Integer targetSpindleId,
@@ -87,7 +87,7 @@ public class OpenProtocolMessageAlarmStatusAcknowledgeRev1
 
   public static OpenProtocolMessageAlarmStatusAcknowledgeBuilder
       staticParseOpenProtocolMessageAlarmStatusAcknowledgeBuilder(
-          ReadBuffer readBuffer, Long revision) throws ParseException {
+          ReadBuffer readBuffer, Integer revision) throws ParseException {
     readBuffer.pullContext("OpenProtocolMessageAlarmStatusAcknowledgeRev1");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
@@ -104,7 +104,7 @@ public class OpenProtocolMessageAlarmStatusAcknowledgeRev1
     public OpenProtocolMessageAlarmStatusAcknowledgeRev1BuilderImpl() {}
 
     public OpenProtocolMessageAlarmStatusAcknowledgeRev1 build(
-        Long midRevision,
+        Integer midRevision,
         Short noAckFlag,
         Integer targetStationId,
         Integer targetSpindleId,

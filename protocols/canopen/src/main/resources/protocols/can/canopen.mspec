@@ -235,9 +235,9 @@
 
 [type CANOpenTime
     // CiA 301 - section 7.1.6.5 and 7.1.6.6
-    [simple uint 28 millis]
-    [reserved int 4 '0x00']
-    [simple uint 16 days]
+    [simple  uint 32 millis]
+    [virtual uint 28 cleanMillis 'millis & 0x0FFFFFFF']
+    [simple  uint 16 days]
 ]
 
 [enum CANOpenDataType (uint 8 numBits, vstring plcValueName)

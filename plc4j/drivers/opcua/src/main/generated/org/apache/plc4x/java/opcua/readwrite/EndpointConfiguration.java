@@ -122,7 +122,7 @@ public class EndpointConfiguration extends ExtensionObjectDefinition implements 
     writeSimpleField("operationTimeout", operationTimeout, writeSignedInt(writeBuffer, 32));
 
     // Reserved Field (reserved)
-    writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 7));
+    writeReservedField("reserved", (byte) 0x00, writeUnsignedByte(writeBuffer, 7));
 
     // Simple Field (useBinaryEncoding)
     writeSimpleField("useBinaryEncoding", useBinaryEncoding, writeBoolean(writeBuffer));
@@ -204,8 +204,8 @@ public class EndpointConfiguration extends ExtensionObjectDefinition implements 
 
     int operationTimeout = readSimpleField("operationTimeout", readSignedInt(readBuffer, 32));
 
-    Short reservedField0 =
-        readReservedField("reserved", readUnsignedShort(readBuffer, 7), (short) 0x00);
+    Byte reservedField0 =
+        readReservedField("reserved", readUnsignedByte(readBuffer, 7), (byte) 0x00);
 
     boolean useBinaryEncoding = readSimpleField("useBinaryEncoding", readBoolean(readBuffer));
 

@@ -46,10 +46,10 @@ public class IdentifyReplyCommandLogicalAssignment extends IdentifyReplyCommand 
   protected final List<LogicAssignment> logicAssigment;
 
   // Arguments.
-  protected final Short numBytes;
+  protected final Byte numBytes;
 
   public IdentifyReplyCommandLogicalAssignment(
-      List<LogicAssignment> logicAssigment, Short numBytes) {
+      List<LogicAssignment> logicAssigment, Byte numBytes) {
     super(numBytes);
     this.logicAssigment = logicAssigment;
     this.numBytes = numBytes;
@@ -96,7 +96,7 @@ public class IdentifyReplyCommandLogicalAssignment extends IdentifyReplyCommand 
   }
 
   public static IdentifyReplyCommandBuilder staticParseIdentifyReplyCommandBuilder(
-      ReadBuffer readBuffer, Attribute attribute, Short numBytes) throws ParseException {
+      ReadBuffer readBuffer, Attribute attribute, Byte numBytes) throws ParseException {
     readBuffer.pullContext("IdentifyReplyCommandLogicalAssignment");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
@@ -116,15 +116,15 @@ public class IdentifyReplyCommandLogicalAssignment extends IdentifyReplyCommand 
   public static class IdentifyReplyCommandLogicalAssignmentBuilderImpl
       implements IdentifyReplyCommand.IdentifyReplyCommandBuilder {
     private final List<LogicAssignment> logicAssigment;
-    private final Short numBytes;
+    private final Byte numBytes;
 
     public IdentifyReplyCommandLogicalAssignmentBuilderImpl(
-        List<LogicAssignment> logicAssigment, Short numBytes) {
+        List<LogicAssignment> logicAssigment, Byte numBytes) {
       this.logicAssigment = logicAssigment;
       this.numBytes = numBytes;
     }
 
-    public IdentifyReplyCommandLogicalAssignment build(Short numBytes) {
+    public IdentifyReplyCommandLogicalAssignment build(Byte numBytes) {
 
       IdentifyReplyCommandLogicalAssignment identifyReplyCommandLogicalAssignment =
           new IdentifyReplyCommandLogicalAssignment(logicAssigment, numBytes);

@@ -44,10 +44,10 @@ public abstract class OpenProtocolMessageExecuteDynamicJobRequest extends OpenPr
   }
 
   // Abstract accessors for discriminator values.
-  public abstract Long getRevision();
+  public abstract Integer getRevision();
 
   public OpenProtocolMessageExecuteDynamicJobRequest(
-      Long midRevision,
+      Integer midRevision,
       Short noAckFlag,
       Integer targetStationId,
       Integer targetSpindleId,
@@ -97,18 +97,18 @@ public abstract class OpenProtocolMessageExecuteDynamicJobRequest extends OpenPr
   }
 
   public static OpenProtocolMessageBuilder staticParseOpenProtocolMessageBuilder(
-      ReadBuffer readBuffer, Long revision) throws ParseException {
+      ReadBuffer readBuffer, Integer revision) throws ParseException {
     readBuffer.pullContext("OpenProtocolMessageExecuteDynamicJobRequest");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     OpenProtocolMessageExecuteDynamicJobRequestBuilder builder = null;
-    if (EvaluationHelper.equals(revision, (long) 1)) {
+    if (EvaluationHelper.equals(revision, (int) 1)) {
       builder =
           OpenProtocolMessageExecuteDynamicJobRequestRev1
               .staticParseOpenProtocolMessageExecuteDynamicJobRequestBuilder(readBuffer, revision);
-    } else if (EvaluationHelper.equals(revision, (long) 999)) {
+    } else if (EvaluationHelper.equals(revision, (int) 999)) {
       builder =
           OpenProtocolMessageExecuteDynamicJobRequestRev999
               .staticParseOpenProtocolMessageExecuteDynamicJobRequestBuilder(readBuffer, revision);
@@ -129,7 +129,7 @@ public abstract class OpenProtocolMessageExecuteDynamicJobRequest extends OpenPr
 
   public interface OpenProtocolMessageExecuteDynamicJobRequestBuilder {
     OpenProtocolMessageExecuteDynamicJobRequest build(
-        Long midRevision,
+        Integer midRevision,
         Short noAckFlag,
         Integer targetStationId,
         Integer targetSpindleId,
@@ -148,7 +148,7 @@ public abstract class OpenProtocolMessageExecuteDynamicJobRequest extends OpenPr
     }
 
     public OpenProtocolMessageExecuteDynamicJobRequest build(
-        Long midRevision,
+        Integer midRevision,
         Short noAckFlag,
         Integer targetStationId,
         Integer targetSpindleId,

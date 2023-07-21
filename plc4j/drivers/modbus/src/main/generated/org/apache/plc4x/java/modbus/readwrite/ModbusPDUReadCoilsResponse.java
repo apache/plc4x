@@ -42,8 +42,8 @@ public class ModbusPDUReadCoilsResponse extends ModbusPDU implements Message {
     return (boolean) false;
   }
 
-  public Short getFunctionFlag() {
-    return (short) 0x01;
+  public Byte getFunctionFlag() {
+    return (byte) 0x01;
   }
 
   public Boolean getResponse() {

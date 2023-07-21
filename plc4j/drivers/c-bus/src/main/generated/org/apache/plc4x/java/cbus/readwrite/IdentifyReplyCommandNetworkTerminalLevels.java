@@ -47,9 +47,9 @@ public class IdentifyReplyCommandNetworkTerminalLevels extends IdentifyReplyComm
   protected final byte[] networkTerminalLevels;
 
   // Arguments.
-  protected final Short numBytes;
+  protected final Byte numBytes;
 
-  public IdentifyReplyCommandNetworkTerminalLevels(byte[] networkTerminalLevels, Short numBytes) {
+  public IdentifyReplyCommandNetworkTerminalLevels(byte[] networkTerminalLevels, Byte numBytes) {
     super(numBytes);
     this.networkTerminalLevels = networkTerminalLevels;
     this.numBytes = numBytes;
@@ -93,7 +93,7 @@ public class IdentifyReplyCommandNetworkTerminalLevels extends IdentifyReplyComm
   }
 
   public static IdentifyReplyCommandBuilder staticParseIdentifyReplyCommandBuilder(
-      ReadBuffer readBuffer, Attribute attribute, Short numBytes) throws ParseException {
+      ReadBuffer readBuffer, Attribute attribute, Byte numBytes) throws ParseException {
     readBuffer.pullContext("IdentifyReplyCommandNetworkTerminalLevels");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
@@ -110,15 +110,15 @@ public class IdentifyReplyCommandNetworkTerminalLevels extends IdentifyReplyComm
   public static class IdentifyReplyCommandNetworkTerminalLevelsBuilderImpl
       implements IdentifyReplyCommand.IdentifyReplyCommandBuilder {
     private final byte[] networkTerminalLevels;
-    private final Short numBytes;
+    private final Byte numBytes;
 
     public IdentifyReplyCommandNetworkTerminalLevelsBuilderImpl(
-        byte[] networkTerminalLevels, Short numBytes) {
+        byte[] networkTerminalLevels, Byte numBytes) {
       this.networkTerminalLevels = networkTerminalLevels;
       this.numBytes = numBytes;
     }
 
-    public IdentifyReplyCommandNetworkTerminalLevels build(Short numBytes) {
+    public IdentifyReplyCommandNetworkTerminalLevels build(Byte numBytes) {
 
       IdentifyReplyCommandNetworkTerminalLevels identifyReplyCommandNetworkTerminalLevels =
           new IdentifyReplyCommandNetworkTerminalLevels(networkTerminalLevels, numBytes);

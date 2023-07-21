@@ -39,22 +39,22 @@ public class OpenProtocolMessageParameterSetDataUploadRequestRev2
     extends OpenProtocolMessageParameterSetDataUploadRequest implements Message {
 
   // Accessors for discriminator values.
-  public Long getRevision() {
-    return (long) 2;
+  public Integer getRevision() {
+    return (int) 2;
   }
 
   // Properties.
-  protected final long parameterSetId;
+  protected final int parameterSetId;
 
   public OpenProtocolMessageParameterSetDataUploadRequestRev2(
-      Long midRevision,
+      Integer midRevision,
       Short noAckFlag,
       Integer targetStationId,
       Integer targetSpindleId,
       Integer sequenceNumber,
       Short numberOfMessageParts,
       Short messagePartNumber,
-      long parameterSetId) {
+      int parameterSetId) {
     super(
         midRevision,
         noAckFlag,
@@ -66,7 +66,7 @@ public class OpenProtocolMessageParameterSetDataUploadRequestRev2
     this.parameterSetId = parameterSetId;
   }
 
-  public long getParameterSetId() {
+  public int getParameterSetId() {
     return parameterSetId;
   }
 
@@ -81,7 +81,7 @@ public class OpenProtocolMessageParameterSetDataUploadRequestRev2
     writeSimpleField(
         "parameterSetId",
         parameterSetId,
-        writeUnsignedLong(writeBuffer, 24),
+        writeUnsignedInt(writeBuffer, 24),
         WithOption.WithEncoding("ASCII"));
 
     writeBuffer.popContext("OpenProtocolMessageParameterSetDataUploadRequestRev2");
@@ -106,14 +106,14 @@ public class OpenProtocolMessageParameterSetDataUploadRequestRev2
 
   public static OpenProtocolMessageParameterSetDataUploadRequestBuilder
       staticParseOpenProtocolMessageParameterSetDataUploadRequestBuilder(
-          ReadBuffer readBuffer, Long revision) throws ParseException {
+          ReadBuffer readBuffer, Integer revision) throws ParseException {
     readBuffer.pullContext("OpenProtocolMessageParameterSetDataUploadRequestRev2");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    long parameterSetId =
+    int parameterSetId =
         readSimpleField(
-            "parameterSetId", readUnsignedLong(readBuffer, 24), WithOption.WithEncoding("ASCII"));
+            "parameterSetId", readUnsignedInt(readBuffer, 24), WithOption.WithEncoding("ASCII"));
 
     readBuffer.closeContext("OpenProtocolMessageParameterSetDataUploadRequestRev2");
     // Create the instance
@@ -123,14 +123,14 @@ public class OpenProtocolMessageParameterSetDataUploadRequestRev2
   public static class OpenProtocolMessageParameterSetDataUploadRequestRev2BuilderImpl
       implements OpenProtocolMessageParameterSetDataUploadRequest
           .OpenProtocolMessageParameterSetDataUploadRequestBuilder {
-    private final long parameterSetId;
+    private final int parameterSetId;
 
-    public OpenProtocolMessageParameterSetDataUploadRequestRev2BuilderImpl(long parameterSetId) {
+    public OpenProtocolMessageParameterSetDataUploadRequestRev2BuilderImpl(int parameterSetId) {
       this.parameterSetId = parameterSetId;
     }
 
     public OpenProtocolMessageParameterSetDataUploadRequestRev2 build(
-        Long midRevision,
+        Integer midRevision,
         Short noAckFlag,
         Integer targetStationId,
         Integer targetSpindleId,

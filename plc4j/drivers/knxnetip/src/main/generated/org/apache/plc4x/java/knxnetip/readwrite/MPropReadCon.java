@@ -47,7 +47,7 @@ public class MPropReadCon extends CEMI implements Message {
   protected final short objectInstance;
   protected final short propertyId;
   protected final byte numberOfElements;
-  protected final int startIndex;
+  protected final short startIndex;
   protected final int data;
 
   public MPropReadCon(
@@ -55,7 +55,7 @@ public class MPropReadCon extends CEMI implements Message {
       short objectInstance,
       short propertyId,
       byte numberOfElements,
-      int startIndex,
+      short startIndex,
       int data) {
     super();
     this.interfaceObjectType = interfaceObjectType;
@@ -82,7 +82,7 @@ public class MPropReadCon extends CEMI implements Message {
     return numberOfElements;
   }
 
-  public int getStartIndex() {
+  public short getStartIndex() {
     return startIndex;
   }
 
@@ -109,7 +109,7 @@ public class MPropReadCon extends CEMI implements Message {
     writeSimpleField("numberOfElements", numberOfElements, writeUnsignedByte(writeBuffer, 4));
 
     // Simple Field (startIndex)
-    writeSimpleField("startIndex", startIndex, writeUnsignedInt(writeBuffer, 12));
+    writeSimpleField("startIndex", startIndex, writeUnsignedShort(writeBuffer, 12));
 
     // Simple Field (data)
     writeSimpleField("data", data, writeUnsignedInt(writeBuffer, 16));
@@ -164,7 +164,7 @@ public class MPropReadCon extends CEMI implements Message {
 
     byte numberOfElements = readSimpleField("numberOfElements", readUnsignedByte(readBuffer, 4));
 
-    int startIndex = readSimpleField("startIndex", readUnsignedInt(readBuffer, 12));
+    short startIndex = readSimpleField("startIndex", readUnsignedShort(readBuffer, 12));
 
     int data = readSimpleField("data", readUnsignedInt(readBuffer, 16));
 
@@ -179,7 +179,7 @@ public class MPropReadCon extends CEMI implements Message {
     private final short objectInstance;
     private final short propertyId;
     private final byte numberOfElements;
-    private final int startIndex;
+    private final short startIndex;
     private final int data;
 
     public MPropReadConBuilderImpl(
@@ -187,7 +187,7 @@ public class MPropReadCon extends CEMI implements Message {
         short objectInstance,
         short propertyId,
         byte numberOfElements,
-        int startIndex,
+        short startIndex,
         int data) {
       this.interfaceObjectType = interfaceObjectType;
       this.objectInstance = objectInstance;

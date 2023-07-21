@@ -47,9 +47,9 @@ public class KnxDatapoint {
 
       // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
       {
-        short reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
-            readBuffer.readUnsignedShort("", 7);
-        if (reserved != (short) 0x00) {
+        byte reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
+            readBuffer.readUnsignedByte("", 7);
+        if (reserved != (byte) 0x00) {
           LOGGER.info(
               "Expected constant value " + 0x00 + " but got " + reserved + " for reserved field.");
         }
@@ -502,9 +502,9 @@ public class KnxDatapoint {
 
       // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
       {
-        short reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
-            readBuffer.readUnsignedShort("", 7);
-        if (reserved != (short) 0x00) {
+        byte reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
+            readBuffer.readUnsignedByte("", 7);
+        if (reserved != (byte) 0x00) {
           LOGGER.info(
               "Expected constant value " + 0x00 + " but got " + reserved + " for reserved field.");
         }
@@ -518,9 +518,9 @@ public class KnxDatapoint {
 
       // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
       {
-        short reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
-            readBuffer.readUnsignedShort("", 7);
-        if (reserved != (short) 0x00) {
+        byte reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
+            readBuffer.readUnsignedByte("", 7);
+        if (reserved != (byte) 0x00) {
           LOGGER.info(
               "Expected constant value " + 0x00 + " but got " + reserved + " for reserved field.");
         }
@@ -534,9 +534,9 @@ public class KnxDatapoint {
 
       // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
       {
-        short reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
-            readBuffer.readUnsignedShort("", 7);
-        if (reserved != (short) 0x00) {
+        byte reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
+            readBuffer.readUnsignedByte("", 7);
+        if (reserved != (byte) 0x00) {
           LOGGER.info(
               "Expected constant value " + 0x00 + " but got " + reserved + " for reserved field.");
         }
@@ -550,9 +550,9 @@ public class KnxDatapoint {
 
       // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
       {
-        short reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
-            readBuffer.readUnsignedShort("", 7);
-        if (reserved != (short) 0x00) {
+        byte reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
+            readBuffer.readUnsignedByte("", 7);
+        if (reserved != (byte) 0x00) {
           LOGGER.info(
               "Expected constant value " + 0x00 + " but got " + reserved + " for reserved field.");
         }
@@ -566,9 +566,9 @@ public class KnxDatapoint {
 
       // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
       {
-        short reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
-            readBuffer.readUnsignedShort("", 7);
-        if (reserved != (short) 0x00) {
+        byte reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
+            readBuffer.readUnsignedByte("", 7);
+        if (reserved != (byte) 0x00) {
           LOGGER.info(
               "Expected constant value " + 0x00 + " but got " + reserved + " for reserved field.");
         }
@@ -582,9 +582,9 @@ public class KnxDatapoint {
 
       // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
       {
-        short reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
-            readBuffer.readUnsignedShort("", 7);
-        if (reserved != (short) 0x00) {
+        byte reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
+            readBuffer.readUnsignedByte("", 7);
+        if (reserved != (byte) 0x00) {
           LOGGER.info(
               "Expected constant value " + 0x00 + " but got " + reserved + " for reserved field.");
         }
@@ -598,9 +598,9 @@ public class KnxDatapoint {
 
       // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
       {
-        short reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
-            readBuffer.readUnsignedShort("", 7);
-        if (reserved != (short) 0x00) {
+        byte reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
+            readBuffer.readUnsignedByte("", 7);
+        if (reserved != (byte) 0x00) {
           LOGGER.info(
               "Expected constant value " + 0x00 + " but got " + reserved + " for reserved field.");
         }
@@ -614,9 +614,9 @@ public class KnxDatapoint {
 
       // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
       {
-        short reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
-            readBuffer.readUnsignedShort("", 7);
-        if (reserved != (short) 0x00) {
+        byte reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
+            readBuffer.readUnsignedByte("", 7);
+        if (reserved != (byte) 0x00) {
           LOGGER.info(
               "Expected constant value " + 0x00 + " but got " + reserved + " for reserved field.");
         }
@@ -630,9 +630,9 @@ public class KnxDatapoint {
 
       // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
       {
-        short reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
-            readBuffer.readUnsignedShort("", 7);
-        if (reserved != (short) 0x00) {
+        byte reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
+            readBuffer.readUnsignedByte("", 7);
+        if (reserved != (byte) 0x00) {
           LOGGER.info(
               "Expected constant value " + 0x00 + " but got " + reserved + " for reserved field.");
         }
@@ -646,9 +646,9 @@ public class KnxDatapoint {
 
       // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
       {
-        short reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
-            readBuffer.readUnsignedShort("", 7);
-        if (reserved != (short) 0x00) {
+        byte reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
+            readBuffer.readUnsignedByte("", 7);
+        if (reserved != (byte) 0x00) {
           LOGGER.info(
               "Expected constant value " + 0x00 + " but got " + reserved + " for reserved field.");
         }
@@ -662,9 +662,9 @@ public class KnxDatapoint {
 
       // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
       {
-        short reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
-            readBuffer.readUnsignedShort("", 7);
-        if (reserved != (short) 0x00) {
+        byte reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
+            readBuffer.readUnsignedByte("", 7);
+        if (reserved != (byte) 0x00) {
           LOGGER.info(
               "Expected constant value " + 0x00 + " but got " + reserved + " for reserved field.");
         }
@@ -678,9 +678,9 @@ public class KnxDatapoint {
 
       // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
       {
-        short reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
-            readBuffer.readUnsignedShort("", 7);
-        if (reserved != (short) 0x00) {
+        byte reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
+            readBuffer.readUnsignedByte("", 7);
+        if (reserved != (byte) 0x00) {
           LOGGER.info(
               "Expected constant value " + 0x00 + " but got " + reserved + " for reserved field.");
         }
@@ -694,9 +694,9 @@ public class KnxDatapoint {
 
       // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
       {
-        short reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
-            readBuffer.readUnsignedShort("", 7);
-        if (reserved != (short) 0x00) {
+        byte reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
+            readBuffer.readUnsignedByte("", 7);
+        if (reserved != (byte) 0x00) {
           LOGGER.info(
               "Expected constant value " + 0x00 + " but got " + reserved + " for reserved field.");
         }
@@ -710,9 +710,9 @@ public class KnxDatapoint {
 
       // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
       {
-        short reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
-            readBuffer.readUnsignedShort("", 7);
-        if (reserved != (short) 0x00) {
+        byte reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
+            readBuffer.readUnsignedByte("", 7);
+        if (reserved != (byte) 0x00) {
           LOGGER.info(
               "Expected constant value " + 0x00 + " but got " + reserved + " for reserved field.");
         }
@@ -726,9 +726,9 @@ public class KnxDatapoint {
 
       // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
       {
-        short reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
-            readBuffer.readUnsignedShort("", 7);
-        if (reserved != (short) 0x00) {
+        byte reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
+            readBuffer.readUnsignedByte("", 7);
+        if (reserved != (byte) 0x00) {
           LOGGER.info(
               "Expected constant value " + 0x00 + " but got " + reserved + " for reserved field.");
         }
@@ -742,9 +742,9 @@ public class KnxDatapoint {
 
       // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
       {
-        short reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
-            readBuffer.readUnsignedShort("", 7);
-        if (reserved != (short) 0x00) {
+        byte reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
+            readBuffer.readUnsignedByte("", 7);
+        if (reserved != (byte) 0x00) {
           LOGGER.info(
               "Expected constant value " + 0x00 + " but got " + reserved + " for reserved field.");
         }
@@ -758,9 +758,9 @@ public class KnxDatapoint {
 
       // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
       {
-        short reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
-            readBuffer.readUnsignedShort("", 7);
-        if (reserved != (short) 0x00) {
+        byte reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
+            readBuffer.readUnsignedByte("", 7);
+        if (reserved != (byte) 0x00) {
           LOGGER.info(
               "Expected constant value " + 0x00 + " but got " + reserved + " for reserved field.");
         }
@@ -774,9 +774,9 @@ public class KnxDatapoint {
 
       // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
       {
-        short reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
-            readBuffer.readUnsignedShort("", 7);
-        if (reserved != (short) 0x00) {
+        byte reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
+            readBuffer.readUnsignedByte("", 7);
+        if (reserved != (byte) 0x00) {
           LOGGER.info(
               "Expected constant value " + 0x00 + " but got " + reserved + " for reserved field.");
         }
@@ -790,9 +790,9 @@ public class KnxDatapoint {
 
       // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
       {
-        short reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
-            readBuffer.readUnsignedShort("", 7);
-        if (reserved != (short) 0x00) {
+        byte reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
+            readBuffer.readUnsignedByte("", 7);
+        if (reserved != (byte) 0x00) {
           LOGGER.info(
               "Expected constant value " + 0x00 + " but got " + reserved + " for reserved field.");
         }
@@ -807,9 +807,9 @@ public class KnxDatapoint {
 
       // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
       {
-        short reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
-            readBuffer.readUnsignedShort("", 7);
-        if (reserved != (short) 0x00) {
+        byte reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
+            readBuffer.readUnsignedByte("", 7);
+        if (reserved != (byte) 0x00) {
           LOGGER.info(
               "Expected constant value " + 0x00 + " but got " + reserved + " for reserved field.");
         }
@@ -823,9 +823,9 @@ public class KnxDatapoint {
 
       // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
       {
-        short reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
-            readBuffer.readUnsignedShort("", 7);
-        if (reserved != (short) 0x00) {
+        byte reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
+            readBuffer.readUnsignedByte("", 7);
+        if (reserved != (byte) 0x00) {
           LOGGER.info(
               "Expected constant value " + 0x00 + " but got " + reserved + " for reserved field.");
         }
@@ -840,9 +840,9 @@ public class KnxDatapoint {
 
       // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
       {
-        short reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
-            readBuffer.readUnsignedShort("", 7);
-        if (reserved != (short) 0x00) {
+        byte reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
+            readBuffer.readUnsignedByte("", 7);
+        if (reserved != (byte) 0x00) {
           LOGGER.info(
               "Expected constant value " + 0x00 + " but got " + reserved + " for reserved field.");
         }
@@ -856,9 +856,9 @@ public class KnxDatapoint {
 
       // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
       {
-        short reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
-            readBuffer.readUnsignedShort("", 7);
-        if (reserved != (short) 0x00) {
+        byte reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
+            readBuffer.readUnsignedByte("", 7);
+        if (reserved != (byte) 0x00) {
           LOGGER.info(
               "Expected constant value " + 0x00 + " but got " + reserved + " for reserved field.");
         }
@@ -872,9 +872,9 @@ public class KnxDatapoint {
 
       // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
       {
-        short reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
-            readBuffer.readUnsignedShort("", 7);
-        if (reserved != (short) 0x00) {
+        byte reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
+            readBuffer.readUnsignedByte("", 7);
+        if (reserved != (byte) 0x00) {
           LOGGER.info(
               "Expected constant value " + 0x00 + " but got " + reserved + " for reserved field.");
         }
@@ -889,9 +889,9 @@ public class KnxDatapoint {
 
       // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
       {
-        short reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
-            readBuffer.readUnsignedShort("", 6);
-        if (reserved != (short) 0x00) {
+        byte reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
+            readBuffer.readUnsignedByte("", 6);
+        if (reserved != (byte) 0x00) {
           LOGGER.info(
               "Expected constant value " + 0x00 + " but got " + reserved + " for reserved field.");
         }
@@ -913,9 +913,9 @@ public class KnxDatapoint {
 
       // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
       {
-        short reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
-            readBuffer.readUnsignedShort("", 6);
-        if (reserved != (short) 0x00) {
+        byte reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
+            readBuffer.readUnsignedByte("", 6);
+        if (reserved != (byte) 0x00) {
           LOGGER.info(
               "Expected constant value " + 0x00 + " but got " + reserved + " for reserved field.");
         }
@@ -937,9 +937,9 @@ public class KnxDatapoint {
 
       // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
       {
-        short reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
-            readBuffer.readUnsignedShort("", 6);
-        if (reserved != (short) 0x00) {
+        byte reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
+            readBuffer.readUnsignedByte("", 6);
+        if (reserved != (byte) 0x00) {
           LOGGER.info(
               "Expected constant value " + 0x00 + " but got " + reserved + " for reserved field.");
         }
@@ -961,9 +961,9 @@ public class KnxDatapoint {
 
       // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
       {
-        short reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
-            readBuffer.readUnsignedShort("", 6);
-        if (reserved != (short) 0x00) {
+        byte reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
+            readBuffer.readUnsignedByte("", 6);
+        if (reserved != (byte) 0x00) {
           LOGGER.info(
               "Expected constant value " + 0x00 + " but got " + reserved + " for reserved field.");
         }
@@ -985,9 +985,9 @@ public class KnxDatapoint {
 
       // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
       {
-        short reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
-            readBuffer.readUnsignedShort("", 6);
-        if (reserved != (short) 0x00) {
+        byte reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
+            readBuffer.readUnsignedByte("", 6);
+        if (reserved != (byte) 0x00) {
           LOGGER.info(
               "Expected constant value " + 0x00 + " but got " + reserved + " for reserved field.");
         }
@@ -1009,9 +1009,9 @@ public class KnxDatapoint {
 
       // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
       {
-        short reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
-            readBuffer.readUnsignedShort("", 6);
-        if (reserved != (short) 0x00) {
+        byte reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
+            readBuffer.readUnsignedByte("", 6);
+        if (reserved != (byte) 0x00) {
           LOGGER.info(
               "Expected constant value " + 0x00 + " but got " + reserved + " for reserved field.");
         }
@@ -1033,9 +1033,9 @@ public class KnxDatapoint {
 
       // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
       {
-        short reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
-            readBuffer.readUnsignedShort("", 6);
-        if (reserved != (short) 0x00) {
+        byte reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
+            readBuffer.readUnsignedByte("", 6);
+        if (reserved != (byte) 0x00) {
           LOGGER.info(
               "Expected constant value " + 0x00 + " but got " + reserved + " for reserved field.");
         }
@@ -1057,9 +1057,9 @@ public class KnxDatapoint {
 
       // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
       {
-        short reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
-            readBuffer.readUnsignedShort("", 6);
-        if (reserved != (short) 0x00) {
+        byte reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
+            readBuffer.readUnsignedByte("", 6);
+        if (reserved != (byte) 0x00) {
           LOGGER.info(
               "Expected constant value " + 0x00 + " but got " + reserved + " for reserved field.");
         }
@@ -1081,9 +1081,9 @@ public class KnxDatapoint {
 
       // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
       {
-        short reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
-            readBuffer.readUnsignedShort("", 6);
-        if (reserved != (short) 0x00) {
+        byte reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
+            readBuffer.readUnsignedByte("", 6);
+        if (reserved != (byte) 0x00) {
           LOGGER.info(
               "Expected constant value " + 0x00 + " but got " + reserved + " for reserved field.");
         }
@@ -1105,9 +1105,9 @@ public class KnxDatapoint {
 
       // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
       {
-        short reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
-            readBuffer.readUnsignedShort("", 6);
-        if (reserved != (short) 0x00) {
+        byte reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
+            readBuffer.readUnsignedByte("", 6);
+        if (reserved != (byte) 0x00) {
           LOGGER.info(
               "Expected constant value " + 0x00 + " but got " + reserved + " for reserved field.");
         }
@@ -1129,9 +1129,9 @@ public class KnxDatapoint {
 
       // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
       {
-        short reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
-            readBuffer.readUnsignedShort("", 6);
-        if (reserved != (short) 0x00) {
+        byte reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
+            readBuffer.readUnsignedByte("", 6);
+        if (reserved != (byte) 0x00) {
           LOGGER.info(
               "Expected constant value " + 0x00 + " but got " + reserved + " for reserved field.");
         }
@@ -1153,9 +1153,9 @@ public class KnxDatapoint {
 
       // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
       {
-        short reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
-            readBuffer.readUnsignedShort("", 6);
-        if (reserved != (short) 0x00) {
+        byte reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
+            readBuffer.readUnsignedByte("", 6);
+        if (reserved != (byte) 0x00) {
           LOGGER.info(
               "Expected constant value " + 0x00 + " but got " + reserved + " for reserved field.");
         }
@@ -2189,7 +2189,7 @@ public class KnxDatapoint {
       Byte day = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readUnsignedByte("", 3);
 
       // Simple Field (hour)
-      Short hour = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readUnsignedShort("", 5);
+      Byte hour = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readUnsignedByte("", 5);
 
       // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
       {
@@ -2202,7 +2202,7 @@ public class KnxDatapoint {
       }
 
       // Simple Field (minutes)
-      Short minutes = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readUnsignedShort("", 6);
+      Byte minutes = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readUnsignedByte("", 6);
 
       // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
       {
@@ -2215,13 +2215,13 @@ public class KnxDatapoint {
       }
 
       // Simple Field (seconds)
-      Short seconds = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readUnsignedShort("", 6);
+      Byte seconds = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readUnsignedByte("", 6);
 
       Map<String, PlcValue> _map = new HashMap<>();
       _map.put("day", new PlcSINT(day));
-      _map.put("hour", new PlcINT(hour));
-      _map.put("minutes", new PlcINT(minutes));
-      _map.put("seconds", new PlcINT(seconds));
+      _map.put("hour", new PlcSINT(hour));
+      _map.put("minutes", new PlcSINT(minutes));
+      _map.put("seconds", new PlcSINT(seconds));
 
       return new PlcStruct(_map);
     } else if (EvaluationHelper.equals(datapointType, KnxDatapointType.DPT_Date)) { // Struct
@@ -2247,8 +2247,8 @@ public class KnxDatapoint {
       }
 
       // Simple Field (dayOfMonth)
-      Short dayOfMonth = /*TODO: migrate me*/ /*TODO: migrate me*/
-          readBuffer.readUnsignedShort("", 5);
+      Byte dayOfMonth = /*TODO: migrate me*/ /*TODO: migrate me*/
+          readBuffer.readUnsignedByte("", 5);
 
       // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
       {
@@ -2274,12 +2274,12 @@ public class KnxDatapoint {
       }
 
       // Simple Field (year)
-      Short year = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readUnsignedShort("", 7);
+      Byte year = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readUnsignedByte("", 7);
 
       Map<String, PlcValue> _map = new HashMap<>();
-      _map.put("dayOfMonth", new PlcINT(dayOfMonth));
+      _map.put("dayOfMonth", new PlcSINT(dayOfMonth));
       _map.put("month", new PlcSINT(month));
-      _map.put("year", new PlcINT(year));
+      _map.put("year", new PlcSINT(year));
 
       return new PlcStruct(_map);
     } else if (EvaluationHelper.equals(
@@ -4090,7 +4090,7 @@ public class KnxDatapoint {
       }
 
       // Simple Field (value)
-      Short value = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readUnsignedShort("", 6);
+      Byte value = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readUnsignedByte("", 6);
 
       return new PlcUSINT(value);
     } else if (EvaluationHelper.equals(
@@ -4122,14 +4122,14 @@ public class KnxDatapoint {
       }
 
       // Simple Field (sceneNumber)
-      Short sceneNumber = /*TODO: migrate me*/ /*TODO: migrate me*/
-          readBuffer.readUnsignedShort("", 6);
+      Byte sceneNumber = /*TODO: migrate me*/ /*TODO: migrate me*/
+          readBuffer.readUnsignedByte("", 6);
 
       Map<String, PlcValue> _map = new HashMap<>();
       _map.put(
           "learnTheSceneCorrespondingToTheFieldSceneNumber",
           new PlcBOOL(learnTheSceneCorrespondingToTheFieldSceneNumber));
-      _map.put("sceneNumber", new PlcINT(sceneNumber));
+      _map.put("sceneNumber", new PlcSINT(sceneNumber));
 
       return new PlcStruct(_map);
     } else if (EvaluationHelper.equals(datapointType, KnxDatapointType.DPT_DateTime)) { // Struct
@@ -4171,15 +4171,14 @@ public class KnxDatapoint {
       }
 
       // Simple Field (dayofmonth)
-      Short dayofmonth = /*TODO: migrate me*/ /*TODO: migrate me*/
-          readBuffer.readUnsignedShort("", 5);
+      Byte dayofmonth = /*TODO: migrate me*/ /*TODO: migrate me*/
+          readBuffer.readUnsignedByte("", 5);
 
       // Simple Field (dayofweek)
       Byte dayofweek = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readUnsignedByte("", 3);
 
       // Simple Field (hourofday)
-      Short hourofday = /*TODO: migrate me*/ /*TODO: migrate me*/
-          readBuffer.readUnsignedShort("", 5);
+      Byte hourofday = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readUnsignedByte("", 5);
 
       // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
       {
@@ -4192,7 +4191,7 @@ public class KnxDatapoint {
       }
 
       // Simple Field (minutes)
-      Short minutes = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readUnsignedShort("", 6);
+      Byte minutes = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readUnsignedByte("", 6);
 
       // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
       {
@@ -4205,7 +4204,7 @@ public class KnxDatapoint {
       }
 
       // Simple Field (seconds)
-      Short seconds = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readUnsignedShort("", 6);
+      Byte seconds = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readUnsignedByte("", 6);
 
       // Simple Field (fault)
       Boolean fault = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readBit("");
@@ -4236,9 +4235,9 @@ public class KnxDatapoint {
 
       // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
       {
-        short reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
-            readBuffer.readUnsignedShort("", 7);
-        if (reserved != (short) 0x00) {
+        byte reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
+            readBuffer.readUnsignedByte("", 7);
+        if (reserved != (byte) 0x00) {
           LOGGER.info(
               "Expected constant value " + 0x00 + " but got " + reserved + " for reserved field.");
         }
@@ -4247,11 +4246,11 @@ public class KnxDatapoint {
       Map<String, PlcValue> _map = new HashMap<>();
       _map.put("year", new PlcINT(year));
       _map.put("month", new PlcSINT(month));
-      _map.put("dayofmonth", new PlcINT(dayofmonth));
+      _map.put("dayofmonth", new PlcSINT(dayofmonth));
       _map.put("dayofweek", new PlcSINT(dayofweek));
-      _map.put("hourofday", new PlcINT(hourofday));
-      _map.put("minutes", new PlcINT(minutes));
-      _map.put("seconds", new PlcINT(seconds));
+      _map.put("hourofday", new PlcSINT(hourofday));
+      _map.put("minutes", new PlcSINT(minutes));
+      _map.put("seconds", new PlcSINT(seconds));
       _map.put("fault", new PlcBOOL(fault));
       _map.put("workingDay", new PlcBOOL(workingDay));
       _map.put("noWd", new PlcBOOL(noWd));
@@ -5263,9 +5262,9 @@ public class KnxDatapoint {
 
       // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
       {
-        short reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
-            readBuffer.readUnsignedShort("", 5);
-        if (reserved != (short) 0x00) {
+        byte reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
+            readBuffer.readUnsignedByte("", 5);
+        if (reserved != (byte) 0x00) {
           LOGGER.info(
               "Expected constant value " + 0x00 + " but got " + reserved + " for reserved field.");
         }
@@ -5342,9 +5341,9 @@ public class KnxDatapoint {
 
       // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
       {
-        short reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
-            readBuffer.readUnsignedShort("", 7);
-        if (reserved != (short) 0x00) {
+        byte reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
+            readBuffer.readUnsignedByte("", 7);
+        if (reserved != (byte) 0x00) {
           LOGGER.info(
               "Expected constant value " + 0x00 + " but got " + reserved + " for reserved field.");
         }
@@ -5415,9 +5414,9 @@ public class KnxDatapoint {
 
       // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
       {
-        short reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
-            readBuffer.readUnsignedShort("", 5);
-        if (reserved != (short) 0x00) {
+        byte reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
+            readBuffer.readUnsignedByte("", 5);
+        if (reserved != (byte) 0x00) {
           LOGGER.info(
               "Expected constant value " + 0x00 + " but got " + reserved + " for reserved field.");
         }
@@ -5453,9 +5452,9 @@ public class KnxDatapoint {
 
       // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
       {
-        short reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
-            readBuffer.readUnsignedShort("", 5);
-        if (reserved != (short) 0x00) {
+        byte reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
+            readBuffer.readUnsignedByte("", 5);
+        if (reserved != (byte) 0x00) {
           LOGGER.info(
               "Expected constant value " + 0x00 + " but got " + reserved + " for reserved field.");
         }
@@ -5480,9 +5479,9 @@ public class KnxDatapoint {
 
       // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
       {
-        short reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
-            readBuffer.readUnsignedShort("", 7);
-        if (reserved != (short) 0x00) {
+        byte reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
+            readBuffer.readUnsignedByte("", 7);
+        if (reserved != (byte) 0x00) {
           LOGGER.info(
               "Expected constant value " + 0x00 + " but got " + reserved + " for reserved field.");
         }
@@ -5654,9 +5653,9 @@ public class KnxDatapoint {
 
       // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
       {
-        short reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
-            readBuffer.readUnsignedShort("", 5);
-        if (reserved != (short) 0x00) {
+        byte reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
+            readBuffer.readUnsignedByte("", 5);
+        if (reserved != (byte) 0x00) {
           LOGGER.info(
               "Expected constant value " + 0x00 + " but got " + reserved + " for reserved field.");
         }
@@ -5692,9 +5691,9 @@ public class KnxDatapoint {
 
       // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
       {
-        short reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
-            readBuffer.readUnsignedShort("", 5);
-        if (reserved != (short) 0x00) {
+        byte reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
+            readBuffer.readUnsignedByte("", 5);
+        if (reserved != (byte) 0x00) {
           LOGGER.info(
               "Expected constant value " + 0x00 + " but got " + reserved + " for reserved field.");
         }
@@ -5932,9 +5931,9 @@ public class KnxDatapoint {
 
       // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
       {
-        short reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
-            readBuffer.readUnsignedShort("", 7);
-        if (reserved != (short) 0x00) {
+        byte reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
+            readBuffer.readUnsignedByte("", 7);
+        if (reserved != (byte) 0x00) {
           LOGGER.info(
               "Expected constant value " + 0x00 + " but got " + reserved + " for reserved field.");
         }
@@ -5996,9 +5995,9 @@ public class KnxDatapoint {
 
       // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
       {
-        short reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
-            readBuffer.readUnsignedShort("", 7);
-        if (reserved != (short) 0x00) {
+        byte reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
+            readBuffer.readUnsignedByte("", 7);
+        if (reserved != (byte) 0x00) {
           LOGGER.info(
               "Expected constant value " + 0x00 + " but got " + reserved + " for reserved field.");
         }
@@ -6060,8 +6059,9 @@ public class KnxDatapoint {
 
       // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
       {
-        int reserved = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readUnsignedInt("", 10);
-        if (reserved != (int) 0x00) {
+        short reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
+            readBuffer.readUnsignedShort("", 10);
+        if (reserved != (short) 0x00) {
           LOGGER.info(
               "Expected constant value " + 0x00 + " but got " + reserved + " for reserved field.");
         }
@@ -6206,9 +6206,9 @@ public class KnxDatapoint {
 
       // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
       {
-        short reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
-            readBuffer.readUnsignedShort("", 6);
-        if (reserved != (short) 0x00) {
+        byte reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
+            readBuffer.readUnsignedByte("", 6);
+        if (reserved != (byte) 0x00) {
           LOGGER.info(
               "Expected constant value " + 0x00 + " but got " + reserved + " for reserved field.");
         }
@@ -6223,9 +6223,9 @@ public class KnxDatapoint {
 
       // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
       {
-        short reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
-            readBuffer.readUnsignedShort("", 6);
-        if (reserved != (short) 0x00) {
+        byte reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
+            readBuffer.readUnsignedByte("", 6);
+        if (reserved != (byte) 0x00) {
           LOGGER.info(
               "Expected constant value " + 0x00 + " but got " + reserved + " for reserved field.");
         }
@@ -6240,9 +6240,9 @@ public class KnxDatapoint {
 
       // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
       {
-        short reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
-            readBuffer.readUnsignedShort("", 6);
-        if (reserved != (short) 0x00) {
+        byte reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
+            readBuffer.readUnsignedByte("", 6);
+        if (reserved != (byte) 0x00) {
           LOGGER.info(
               "Expected constant value " + 0x00 + " but got " + reserved + " for reserved field.");
         }
@@ -6257,9 +6257,9 @@ public class KnxDatapoint {
 
       // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
       {
-        short reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
-            readBuffer.readUnsignedShort("", 6);
-        if (reserved != (short) 0x00) {
+        byte reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
+            readBuffer.readUnsignedByte("", 6);
+        if (reserved != (byte) 0x00) {
           LOGGER.info(
               "Expected constant value " + 0x00 + " but got " + reserved + " for reserved field.");
         }
@@ -6319,12 +6319,12 @@ public class KnxDatapoint {
       Boolean sceneIsInactive = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readBit("");
 
       // Simple Field (scenenumber)
-      Short scenenumber = /*TODO: migrate me*/ /*TODO: migrate me*/
-          readBuffer.readUnsignedShort("", 6);
+      Byte scenenumber = /*TODO: migrate me*/ /*TODO: migrate me*/
+          readBuffer.readUnsignedByte("", 6);
 
       Map<String, PlcValue> _map = new HashMap<>();
       _map.put("sceneIsInactive", new PlcBOOL(sceneIsInactive));
-      _map.put("scenenumber", new PlcINT(scenenumber));
+      _map.put("scenenumber", new PlcSINT(scenenumber));
 
       return new PlcStruct(_map);
     } else if (EvaluationHelper.equals(
@@ -6842,21 +6842,21 @@ public class KnxDatapoint {
       }
 
       // Simple Field (magicNumber)
-      Short magicNumber = /*TODO: migrate me*/ /*TODO: migrate me*/
-          readBuffer.readUnsignedShort("", 5);
+      Byte magicNumber = /*TODO: migrate me*/ /*TODO: migrate me*/
+          readBuffer.readUnsignedByte("", 5);
 
       // Simple Field (versionNumber)
-      Short versionNumber = /*TODO: migrate me*/ /*TODO: migrate me*/
-          readBuffer.readUnsignedShort("", 5);
+      Byte versionNumber = /*TODO: migrate me*/ /*TODO: migrate me*/
+          readBuffer.readUnsignedByte("", 5);
 
       // Simple Field (revisionNumber)
-      Short revisionNumber = /*TODO: migrate me*/ /*TODO: migrate me*/
-          readBuffer.readUnsignedShort("", 6);
+      Byte revisionNumber = /*TODO: migrate me*/ /*TODO: migrate me*/
+          readBuffer.readUnsignedByte("", 6);
 
       Map<String, PlcValue> _map = new HashMap<>();
-      _map.put("magicNumber", new PlcINT(magicNumber));
-      _map.put("versionNumber", new PlcINT(versionNumber));
-      _map.put("revisionNumber", new PlcINT(revisionNumber));
+      _map.put("magicNumber", new PlcSINT(magicNumber));
+      _map.put("versionNumber", new PlcSINT(versionNumber));
+      _map.put("revisionNumber", new PlcSINT(revisionNumber));
 
       return new PlcStruct(_map);
     } else if (EvaluationHelper.equals(datapointType, KnxDatapointType.DPT_AlarmInfo)) { // Struct
@@ -6911,9 +6911,9 @@ public class KnxDatapoint {
 
       // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
       {
-        short reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
-            readBuffer.readUnsignedShort("", 5);
-        if (reserved != (short) 0x00) {
+        byte reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
+            readBuffer.readUnsignedByte("", 5);
+        if (reserved != (byte) 0x00) {
           LOGGER.info(
               "Expected constant value " + 0x00 + " but got " + reserved + " for reserved field.");
         }
@@ -7207,9 +7207,9 @@ public class KnxDatapoint {
 
       // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
       {
-        short reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
-            readBuffer.readUnsignedShort("", 6);
-        if (reserved != (short) 0x00) {
+        byte reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
+            readBuffer.readUnsignedByte("", 6);
+        if (reserved != (byte) 0x00) {
           LOGGER.info(
               "Expected constant value " + 0x00 + " but got " + reserved + " for reserved field.");
         }
@@ -7274,9 +7274,9 @@ public class KnxDatapoint {
 
       // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
       {
-        short reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
-            readBuffer.readUnsignedShort("", 5);
-        if (reserved != (short) 0x00) {
+        byte reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
+            readBuffer.readUnsignedByte("", 5);
+        if (reserved != (byte) 0x00) {
           LOGGER.info(
               "Expected constant value " + 0x00 + " but got " + reserved + " for reserved field.");
         }
@@ -7298,8 +7298,8 @@ public class KnxDatapoint {
       Boolean addressIndicator = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readBit("");
 
       // Simple Field (daliDeviceAddressOrDaliGroupAddress)
-      Short daliDeviceAddressOrDaliGroupAddress = /*TODO: migrate me*/ /*TODO: migrate me*/
-          readBuffer.readUnsignedShort("", 6);
+      Byte daliDeviceAddressOrDaliGroupAddress = /*TODO: migrate me*/ /*TODO: migrate me*/
+          readBuffer.readUnsignedByte("", 6);
 
       Map<String, PlcValue> _map = new HashMap<>();
       _map.put("convertorError", new PlcBOOL(convertorError));
@@ -7308,7 +7308,7 @@ public class KnxDatapoint {
       _map.put("readOrResponse", new PlcBOOL(readOrResponse));
       _map.put("addressIndicator", new PlcBOOL(addressIndicator));
       _map.put(
-          "daliDeviceAddressOrDaliGroupAddress", new PlcINT(daliDeviceAddressOrDaliGroupAddress));
+          "daliDeviceAddressOrDaliGroupAddress", new PlcSINT(daliDeviceAddressOrDaliGroupAddress));
 
       return new PlcStruct(_map);
     } else if (EvaluationHelper.equals(
@@ -7331,13 +7331,13 @@ public class KnxDatapoint {
       Boolean lampFailure = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readBit("");
 
       // Simple Field (deviceAddress)
-      Short deviceAddress = /*TODO: migrate me*/ /*TODO: migrate me*/
-          readBuffer.readUnsignedShort("", 6);
+      Byte deviceAddress = /*TODO: migrate me*/ /*TODO: migrate me*/
+          readBuffer.readUnsignedByte("", 6);
 
       Map<String, PlcValue> _map = new HashMap<>();
       _map.put("ballastFailure", new PlcBOOL(ballastFailure));
       _map.put("lampFailure", new PlcBOOL(lampFailure));
-      _map.put("deviceAddress", new PlcINT(deviceAddress));
+      _map.put("deviceAddress", new PlcSINT(deviceAddress));
 
       return new PlcStruct(_map);
     } else if (EvaluationHelper.equals(
@@ -7363,9 +7363,9 @@ public class KnxDatapoint {
 
       // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
       {
-        short reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
-            readBuffer.readUnsignedShort("", 6);
-        if (reserved != (short) 0x00) {
+        byte reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
+            readBuffer.readUnsignedByte("", 6);
+        if (reserved != (byte) 0x00) {
           LOGGER.info(
               "Expected constant value " + 0x00 + " but got " + reserved + " for reserved field.");
         }
@@ -7527,9 +7527,9 @@ public class KnxDatapoint {
 
       // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
       {
-        short reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
-            readBuffer.readUnsignedShort("", 6);
-        if (reserved != (short) 0x00) {
+        byte reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
+            readBuffer.readUnsignedByte("", 6);
+        if (reserved != (byte) 0x00) {
           LOGGER.info(
               "Expected constant value " + 0x00 + " but got " + reserved + " for reserved field.");
         }
@@ -7696,9 +7696,9 @@ public class KnxDatapoint {
 
       // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
       {
-        short reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
-            readBuffer.readUnsignedShort("", 5);
-        if (reserved != (short) 0x00) {
+        byte reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
+            readBuffer.readUnsignedByte("", 5);
+        if (reserved != (byte) 0x00) {
           LOGGER.info(
               "Expected constant value " + 0x00 + " but got " + reserved + " for reserved field.");
         }
@@ -7751,9 +7751,9 @@ public class KnxDatapoint {
 
       // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
       {
-        short reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
-            readBuffer.readUnsignedShort("", 5);
-        if (reserved != (short) 0x00) {
+        byte reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
+            readBuffer.readUnsignedByte("", 5);
+        if (reserved != (byte) 0x00) {
           LOGGER.info(
               "Expected constant value " + 0x00 + " but got " + reserved + " for reserved field.");
         }
@@ -7831,9 +7831,9 @@ public class KnxDatapoint {
 
       // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
       {
-        short reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
-            readBuffer.readUnsignedShort("", 6);
-        if (reserved != (short) 0x00) {
+        byte reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
+            readBuffer.readUnsignedByte("", 6);
+        if (reserved != (byte) 0x00) {
           LOGGER.info(
               "Expected constant value " + 0x00 + " but got " + reserved + " for reserved field.");
         }
@@ -8238,8 +8238,7 @@ public class KnxDatapoint {
     if (EvaluationHelper.equals(datapointType, KnxDatapointType.BOOL)) { // BOOL
       // Reserved Field
       /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort(
-          "", 7, ((Number) (short) 0x00).shortValue());
+      /*TODO: migrate me*/ writeBuffer.writeUnsignedByte("", 7, ((Number) (byte) 0x00).byteValue());
       // Simple Field (value)
       boolean value = (boolean) _value.getBoolean();
       /*TODO: migrate me*/
@@ -8522,8 +8521,7 @@ public class KnxDatapoint {
     } else if (EvaluationHelper.equals(datapointType, KnxDatapointType.DPT_Switch)) { // BOOL
       // Reserved Field
       /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort(
-          "", 7, ((Number) (short) 0x00).shortValue());
+      /*TODO: migrate me*/ writeBuffer.writeUnsignedByte("", 7, ((Number) (byte) 0x00).byteValue());
       // Simple Field (value)
       boolean value = (boolean) _value.getBoolean();
       /*TODO: migrate me*/
@@ -8531,8 +8529,7 @@ public class KnxDatapoint {
     } else if (EvaluationHelper.equals(datapointType, KnxDatapointType.DPT_Bool)) { // BOOL
       // Reserved Field
       /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort(
-          "", 7, ((Number) (short) 0x00).shortValue());
+      /*TODO: migrate me*/ writeBuffer.writeUnsignedByte("", 7, ((Number) (byte) 0x00).byteValue());
       // Simple Field (value)
       boolean value = (boolean) _value.getBoolean();
       /*TODO: migrate me*/
@@ -8540,8 +8537,7 @@ public class KnxDatapoint {
     } else if (EvaluationHelper.equals(datapointType, KnxDatapointType.DPT_Enable)) { // BOOL
       // Reserved Field
       /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort(
-          "", 7, ((Number) (short) 0x00).shortValue());
+      /*TODO: migrate me*/ writeBuffer.writeUnsignedByte("", 7, ((Number) (byte) 0x00).byteValue());
       // Simple Field (value)
       boolean value = (boolean) _value.getBoolean();
       /*TODO: migrate me*/
@@ -8549,8 +8545,7 @@ public class KnxDatapoint {
     } else if (EvaluationHelper.equals(datapointType, KnxDatapointType.DPT_Ramp)) { // BOOL
       // Reserved Field
       /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort(
-          "", 7, ((Number) (short) 0x00).shortValue());
+      /*TODO: migrate me*/ writeBuffer.writeUnsignedByte("", 7, ((Number) (byte) 0x00).byteValue());
       // Simple Field (value)
       boolean value = (boolean) _value.getBoolean();
       /*TODO: migrate me*/
@@ -8558,8 +8553,7 @@ public class KnxDatapoint {
     } else if (EvaluationHelper.equals(datapointType, KnxDatapointType.DPT_Alarm)) { // BOOL
       // Reserved Field
       /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort(
-          "", 7, ((Number) (short) 0x00).shortValue());
+      /*TODO: migrate me*/ writeBuffer.writeUnsignedByte("", 7, ((Number) (byte) 0x00).byteValue());
       // Simple Field (value)
       boolean value = (boolean) _value.getBoolean();
       /*TODO: migrate me*/
@@ -8567,8 +8561,7 @@ public class KnxDatapoint {
     } else if (EvaluationHelper.equals(datapointType, KnxDatapointType.DPT_BinaryValue)) { // BOOL
       // Reserved Field
       /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort(
-          "", 7, ((Number) (short) 0x00).shortValue());
+      /*TODO: migrate me*/ writeBuffer.writeUnsignedByte("", 7, ((Number) (byte) 0x00).byteValue());
       // Simple Field (value)
       boolean value = (boolean) _value.getBoolean();
       /*TODO: migrate me*/
@@ -8576,8 +8569,7 @@ public class KnxDatapoint {
     } else if (EvaluationHelper.equals(datapointType, KnxDatapointType.DPT_Step)) { // BOOL
       // Reserved Field
       /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort(
-          "", 7, ((Number) (short) 0x00).shortValue());
+      /*TODO: migrate me*/ writeBuffer.writeUnsignedByte("", 7, ((Number) (byte) 0x00).byteValue());
       // Simple Field (value)
       boolean value = (boolean) _value.getBoolean();
       /*TODO: migrate me*/
@@ -8585,8 +8577,7 @@ public class KnxDatapoint {
     } else if (EvaluationHelper.equals(datapointType, KnxDatapointType.DPT_UpDown)) { // BOOL
       // Reserved Field
       /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort(
-          "", 7, ((Number) (short) 0x00).shortValue());
+      /*TODO: migrate me*/ writeBuffer.writeUnsignedByte("", 7, ((Number) (byte) 0x00).byteValue());
       // Simple Field (value)
       boolean value = (boolean) _value.getBoolean();
       /*TODO: migrate me*/
@@ -8594,8 +8585,7 @@ public class KnxDatapoint {
     } else if (EvaluationHelper.equals(datapointType, KnxDatapointType.DPT_OpenClose)) { // BOOL
       // Reserved Field
       /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort(
-          "", 7, ((Number) (short) 0x00).shortValue());
+      /*TODO: migrate me*/ writeBuffer.writeUnsignedByte("", 7, ((Number) (byte) 0x00).byteValue());
       // Simple Field (value)
       boolean value = (boolean) _value.getBoolean();
       /*TODO: migrate me*/
@@ -8603,8 +8593,7 @@ public class KnxDatapoint {
     } else if (EvaluationHelper.equals(datapointType, KnxDatapointType.DPT_Start)) { // BOOL
       // Reserved Field
       /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort(
-          "", 7, ((Number) (short) 0x00).shortValue());
+      /*TODO: migrate me*/ writeBuffer.writeUnsignedByte("", 7, ((Number) (byte) 0x00).byteValue());
       // Simple Field (value)
       boolean value = (boolean) _value.getBoolean();
       /*TODO: migrate me*/
@@ -8612,8 +8601,7 @@ public class KnxDatapoint {
     } else if (EvaluationHelper.equals(datapointType, KnxDatapointType.DPT_State)) { // BOOL
       // Reserved Field
       /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort(
-          "", 7, ((Number) (short) 0x00).shortValue());
+      /*TODO: migrate me*/ writeBuffer.writeUnsignedByte("", 7, ((Number) (byte) 0x00).byteValue());
       // Simple Field (value)
       boolean value = (boolean) _value.getBoolean();
       /*TODO: migrate me*/
@@ -8621,8 +8609,7 @@ public class KnxDatapoint {
     } else if (EvaluationHelper.equals(datapointType, KnxDatapointType.DPT_Invert)) { // BOOL
       // Reserved Field
       /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort(
-          "", 7, ((Number) (short) 0x00).shortValue());
+      /*TODO: migrate me*/ writeBuffer.writeUnsignedByte("", 7, ((Number) (byte) 0x00).byteValue());
       // Simple Field (value)
       boolean value = (boolean) _value.getBoolean();
       /*TODO: migrate me*/
@@ -8630,8 +8617,7 @@ public class KnxDatapoint {
     } else if (EvaluationHelper.equals(datapointType, KnxDatapointType.DPT_DimSendStyle)) { // BOOL
       // Reserved Field
       /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort(
-          "", 7, ((Number) (short) 0x00).shortValue());
+      /*TODO: migrate me*/ writeBuffer.writeUnsignedByte("", 7, ((Number) (byte) 0x00).byteValue());
       // Simple Field (value)
       boolean value = (boolean) _value.getBoolean();
       /*TODO: migrate me*/
@@ -8639,8 +8625,7 @@ public class KnxDatapoint {
     } else if (EvaluationHelper.equals(datapointType, KnxDatapointType.DPT_InputSource)) { // BOOL
       // Reserved Field
       /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort(
-          "", 7, ((Number) (short) 0x00).shortValue());
+      /*TODO: migrate me*/ writeBuffer.writeUnsignedByte("", 7, ((Number) (byte) 0x00).byteValue());
       // Simple Field (value)
       boolean value = (boolean) _value.getBoolean();
       /*TODO: migrate me*/
@@ -8648,8 +8633,7 @@ public class KnxDatapoint {
     } else if (EvaluationHelper.equals(datapointType, KnxDatapointType.DPT_Reset)) { // BOOL
       // Reserved Field
       /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort(
-          "", 7, ((Number) (short) 0x00).shortValue());
+      /*TODO: migrate me*/ writeBuffer.writeUnsignedByte("", 7, ((Number) (byte) 0x00).byteValue());
       // Simple Field (value)
       boolean value = (boolean) _value.getBoolean();
       /*TODO: migrate me*/
@@ -8657,8 +8641,7 @@ public class KnxDatapoint {
     } else if (EvaluationHelper.equals(datapointType, KnxDatapointType.DPT_Ack)) { // BOOL
       // Reserved Field
       /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort(
-          "", 7, ((Number) (short) 0x00).shortValue());
+      /*TODO: migrate me*/ writeBuffer.writeUnsignedByte("", 7, ((Number) (byte) 0x00).byteValue());
       // Simple Field (value)
       boolean value = (boolean) _value.getBoolean();
       /*TODO: migrate me*/
@@ -8666,8 +8649,7 @@ public class KnxDatapoint {
     } else if (EvaluationHelper.equals(datapointType, KnxDatapointType.DPT_Trigger)) { // BOOL
       // Reserved Field
       /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort(
-          "", 7, ((Number) (short) 0x00).shortValue());
+      /*TODO: migrate me*/ writeBuffer.writeUnsignedByte("", 7, ((Number) (byte) 0x00).byteValue());
       // Simple Field (value)
       boolean value = (boolean) _value.getBoolean();
       /*TODO: migrate me*/
@@ -8675,8 +8657,7 @@ public class KnxDatapoint {
     } else if (EvaluationHelper.equals(datapointType, KnxDatapointType.DPT_Occupancy)) { // BOOL
       // Reserved Field
       /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort(
-          "", 7, ((Number) (short) 0x00).shortValue());
+      /*TODO: migrate me*/ writeBuffer.writeUnsignedByte("", 7, ((Number) (byte) 0x00).byteValue());
       // Simple Field (value)
       boolean value = (boolean) _value.getBoolean();
       /*TODO: migrate me*/
@@ -8684,8 +8665,7 @@ public class KnxDatapoint {
     } else if (EvaluationHelper.equals(datapointType, KnxDatapointType.DPT_Window_Door)) { // BOOL
       // Reserved Field
       /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort(
-          "", 7, ((Number) (short) 0x00).shortValue());
+      /*TODO: migrate me*/ writeBuffer.writeUnsignedByte("", 7, ((Number) (byte) 0x00).byteValue());
       // Simple Field (value)
       boolean value = (boolean) _value.getBoolean();
       /*TODO: migrate me*/
@@ -8694,8 +8674,7 @@ public class KnxDatapoint {
         datapointType, KnxDatapointType.DPT_LogicalFunction)) { // BOOL
       // Reserved Field
       /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort(
-          "", 7, ((Number) (short) 0x00).shortValue());
+      /*TODO: migrate me*/ writeBuffer.writeUnsignedByte("", 7, ((Number) (byte) 0x00).byteValue());
       // Simple Field (value)
       boolean value = (boolean) _value.getBoolean();
       /*TODO: migrate me*/
@@ -8703,8 +8682,7 @@ public class KnxDatapoint {
     } else if (EvaluationHelper.equals(datapointType, KnxDatapointType.DPT_Scene_AB)) { // BOOL
       // Reserved Field
       /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort(
-          "", 7, ((Number) (short) 0x00).shortValue());
+      /*TODO: migrate me*/ writeBuffer.writeUnsignedByte("", 7, ((Number) (byte) 0x00).byteValue());
       // Simple Field (value)
       boolean value = (boolean) _value.getBoolean();
       /*TODO: migrate me*/
@@ -8713,8 +8691,7 @@ public class KnxDatapoint {
         datapointType, KnxDatapointType.DPT_ShutterBlinds_Mode)) { // BOOL
       // Reserved Field
       /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort(
-          "", 7, ((Number) (short) 0x00).shortValue());
+      /*TODO: migrate me*/ writeBuffer.writeUnsignedByte("", 7, ((Number) (byte) 0x00).byteValue());
       // Simple Field (value)
       boolean value = (boolean) _value.getBoolean();
       /*TODO: migrate me*/
@@ -8722,8 +8699,7 @@ public class KnxDatapoint {
     } else if (EvaluationHelper.equals(datapointType, KnxDatapointType.DPT_DayNight)) { // BOOL
       // Reserved Field
       /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort(
-          "", 7, ((Number) (short) 0x00).shortValue());
+      /*TODO: migrate me*/ writeBuffer.writeUnsignedByte("", 7, ((Number) (byte) 0x00).byteValue());
       // Simple Field (value)
       boolean value = (boolean) _value.getBoolean();
       /*TODO: migrate me*/
@@ -8731,8 +8707,7 @@ public class KnxDatapoint {
     } else if (EvaluationHelper.equals(datapointType, KnxDatapointType.DPT_Heat_Cool)) { // BOOL
       // Reserved Field
       /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort(
-          "", 7, ((Number) (short) 0x00).shortValue());
+      /*TODO: migrate me*/ writeBuffer.writeUnsignedByte("", 7, ((Number) (byte) 0x00).byteValue());
       // Simple Field (value)
       boolean value = (boolean) _value.getBoolean();
       /*TODO: migrate me*/
@@ -8741,8 +8716,7 @@ public class KnxDatapoint {
         datapointType, KnxDatapointType.DPT_Switch_Control)) { // Struct
       // Reserved Field
       /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort(
-          "", 6, ((Number) (short) 0x00).shortValue());
+      /*TODO: migrate me*/ writeBuffer.writeUnsignedByte("", 6, ((Number) (byte) 0x00).byteValue());
       // Simple Field (control)
       boolean control = (boolean) _value.getStruct().get("control").getBoolean();
       /*TODO: migrate me*/
@@ -8755,8 +8729,7 @@ public class KnxDatapoint {
         datapointType, KnxDatapointType.DPT_Bool_Control)) { // Struct
       // Reserved Field
       /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort(
-          "", 6, ((Number) (short) 0x00).shortValue());
+      /*TODO: migrate me*/ writeBuffer.writeUnsignedByte("", 6, ((Number) (byte) 0x00).byteValue());
       // Simple Field (control)
       boolean control = (boolean) _value.getStruct().get("control").getBoolean();
       /*TODO: migrate me*/
@@ -8769,8 +8742,7 @@ public class KnxDatapoint {
         datapointType, KnxDatapointType.DPT_Enable_Control)) { // Struct
       // Reserved Field
       /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort(
-          "", 6, ((Number) (short) 0x00).shortValue());
+      /*TODO: migrate me*/ writeBuffer.writeUnsignedByte("", 6, ((Number) (byte) 0x00).byteValue());
       // Simple Field (control)
       boolean control = (boolean) _value.getStruct().get("control").getBoolean();
       /*TODO: migrate me*/
@@ -8783,8 +8755,7 @@ public class KnxDatapoint {
         datapointType, KnxDatapointType.DPT_Ramp_Control)) { // Struct
       // Reserved Field
       /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort(
-          "", 6, ((Number) (short) 0x00).shortValue());
+      /*TODO: migrate me*/ writeBuffer.writeUnsignedByte("", 6, ((Number) (byte) 0x00).byteValue());
       // Simple Field (control)
       boolean control = (boolean) _value.getStruct().get("control").getBoolean();
       /*TODO: migrate me*/
@@ -8797,8 +8768,7 @@ public class KnxDatapoint {
         datapointType, KnxDatapointType.DPT_Alarm_Control)) { // Struct
       // Reserved Field
       /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort(
-          "", 6, ((Number) (short) 0x00).shortValue());
+      /*TODO: migrate me*/ writeBuffer.writeUnsignedByte("", 6, ((Number) (byte) 0x00).byteValue());
       // Simple Field (control)
       boolean control = (boolean) _value.getStruct().get("control").getBoolean();
       /*TODO: migrate me*/
@@ -8811,8 +8781,7 @@ public class KnxDatapoint {
         datapointType, KnxDatapointType.DPT_BinaryValue_Control)) { // Struct
       // Reserved Field
       /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort(
-          "", 6, ((Number) (short) 0x00).shortValue());
+      /*TODO: migrate me*/ writeBuffer.writeUnsignedByte("", 6, ((Number) (byte) 0x00).byteValue());
       // Simple Field (control)
       boolean control = (boolean) _value.getStruct().get("control").getBoolean();
       /*TODO: migrate me*/
@@ -8825,8 +8794,7 @@ public class KnxDatapoint {
         datapointType, KnxDatapointType.DPT_Step_Control)) { // Struct
       // Reserved Field
       /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort(
-          "", 6, ((Number) (short) 0x00).shortValue());
+      /*TODO: migrate me*/ writeBuffer.writeUnsignedByte("", 6, ((Number) (byte) 0x00).byteValue());
       // Simple Field (control)
       boolean control = (boolean) _value.getStruct().get("control").getBoolean();
       /*TODO: migrate me*/
@@ -8839,8 +8807,7 @@ public class KnxDatapoint {
         datapointType, KnxDatapointType.DPT_Direction1_Control)) { // Struct
       // Reserved Field
       /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort(
-          "", 6, ((Number) (short) 0x00).shortValue());
+      /*TODO: migrate me*/ writeBuffer.writeUnsignedByte("", 6, ((Number) (byte) 0x00).byteValue());
       // Simple Field (control)
       boolean control = (boolean) _value.getStruct().get("control").getBoolean();
       /*TODO: migrate me*/
@@ -8853,8 +8820,7 @@ public class KnxDatapoint {
         datapointType, KnxDatapointType.DPT_Direction2_Control)) { // Struct
       // Reserved Field
       /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort(
-          "", 6, ((Number) (short) 0x00).shortValue());
+      /*TODO: migrate me*/ writeBuffer.writeUnsignedByte("", 6, ((Number) (byte) 0x00).byteValue());
       // Simple Field (control)
       boolean control = (boolean) _value.getStruct().get("control").getBoolean();
       /*TODO: migrate me*/
@@ -8867,8 +8833,7 @@ public class KnxDatapoint {
         datapointType, KnxDatapointType.DPT_Start_Control)) { // Struct
       // Reserved Field
       /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort(
-          "", 6, ((Number) (short) 0x00).shortValue());
+      /*TODO: migrate me*/ writeBuffer.writeUnsignedByte("", 6, ((Number) (byte) 0x00).byteValue());
       // Simple Field (control)
       boolean control = (boolean) _value.getStruct().get("control").getBoolean();
       /*TODO: migrate me*/
@@ -8881,8 +8846,7 @@ public class KnxDatapoint {
         datapointType, KnxDatapointType.DPT_State_Control)) { // Struct
       // Reserved Field
       /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort(
-          "", 6, ((Number) (short) 0x00).shortValue());
+      /*TODO: migrate me*/ writeBuffer.writeUnsignedByte("", 6, ((Number) (byte) 0x00).byteValue());
       // Simple Field (control)
       boolean control = (boolean) _value.getStruct().get("control").getBoolean();
       /*TODO: migrate me*/
@@ -8895,8 +8859,7 @@ public class KnxDatapoint {
         datapointType, KnxDatapointType.DPT_Invert_Control)) { // Struct
       // Reserved Field
       /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort(
-          "", 6, ((Number) (short) 0x00).shortValue());
+      /*TODO: migrate me*/ writeBuffer.writeUnsignedByte("", 6, ((Number) (byte) 0x00).byteValue());
       // Simple Field (control)
       boolean control = (boolean) _value.getStruct().get("control").getBoolean();
       /*TODO: migrate me*/
@@ -9492,23 +9455,23 @@ public class KnxDatapoint {
       /*TODO: migrate me*/
       /*TODO: migrate me*/ writeBuffer.writeUnsignedByte("", 3, ((Number) (day)).byteValue());
       // Simple Field (hour)
-      short hour = (short) _value.getStruct().get("hour").getShort();
+      byte hour = (byte) _value.getStruct().get("hour").getByte();
       /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort("", 5, ((Number) (hour)).shortValue());
+      /*TODO: migrate me*/ writeBuffer.writeUnsignedByte("", 5, ((Number) (hour)).byteValue());
       // Reserved Field
       /*TODO: migrate me*/
       /*TODO: migrate me*/ writeBuffer.writeUnsignedByte("", 2, ((Number) (byte) 0x00).byteValue());
       // Simple Field (minutes)
-      short minutes = (short) _value.getStruct().get("minutes").getShort();
+      byte minutes = (byte) _value.getStruct().get("minutes").getByte();
       /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort("", 6, ((Number) (minutes)).shortValue());
+      /*TODO: migrate me*/ writeBuffer.writeUnsignedByte("", 6, ((Number) (minutes)).byteValue());
       // Reserved Field
       /*TODO: migrate me*/
       /*TODO: migrate me*/ writeBuffer.writeUnsignedByte("", 2, ((Number) (byte) 0x00).byteValue());
       // Simple Field (seconds)
-      short seconds = (short) _value.getStruct().get("seconds").getShort();
+      byte seconds = (byte) _value.getStruct().get("seconds").getByte();
       /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort("", 6, ((Number) (seconds)).shortValue());
+      /*TODO: migrate me*/ writeBuffer.writeUnsignedByte("", 6, ((Number) (seconds)).byteValue());
     } else if (EvaluationHelper.equals(datapointType, KnxDatapointType.DPT_Date)) { // Struct
       // Reserved Field
       /*TODO: migrate me*/
@@ -9518,10 +9481,10 @@ public class KnxDatapoint {
       /*TODO: migrate me*/
       /*TODO: migrate me*/ writeBuffer.writeUnsignedByte("", 3, ((Number) (byte) 0x00).byteValue());
       // Simple Field (dayOfMonth)
-      short dayOfMonth = (short) _value.getStruct().get("dayOfMonth").getShort();
+      byte dayOfMonth = (byte) _value.getStruct().get("dayOfMonth").getByte();
       /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort(
-          "", 5, ((Number) (dayOfMonth)).shortValue());
+      /*TODO: migrate me*/ writeBuffer.writeUnsignedByte(
+          "", 5, ((Number) (dayOfMonth)).byteValue());
       // Reserved Field
       /*TODO: migrate me*/
       /*TODO: migrate me*/ writeBuffer.writeUnsignedByte("", 4, ((Number) (byte) 0x00).byteValue());
@@ -9533,9 +9496,9 @@ public class KnxDatapoint {
       /*TODO: migrate me*/
       /*TODO: migrate me*/ writeBuffer.writeUnsignedByte("", 1, ((Number) (byte) 0x00).byteValue());
       // Simple Field (year)
-      short year = (short) _value.getStruct().get("year").getShort();
+      byte year = (byte) _value.getStruct().get("year").getByte();
       /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort("", 7, ((Number) (year)).shortValue());
+      /*TODO: migrate me*/ writeBuffer.writeUnsignedByte("", 7, ((Number) (year)).byteValue());
     } else if (EvaluationHelper.equals(
         datapointType, KnxDatapointType.DPT_Value_4_Ucount)) { // UDINT
       // Reserved Field
@@ -10606,9 +10569,9 @@ public class KnxDatapoint {
       /*TODO: migrate me*/
       /*TODO: migrate me*/ writeBuffer.writeUnsignedByte("", 2, ((Number) (byte) 0x00).byteValue());
       // Simple Field (value)
-      short value = (short) _value.getShort();
+      byte value = (byte) _value.getByte();
       /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort("", 6, ((Number) (value)).shortValue());
+      /*TODO: migrate me*/ writeBuffer.writeUnsignedByte("", 6, ((Number) (value)).byteValue());
     } else if (EvaluationHelper.equals(
         datapointType, KnxDatapointType.DPT_SceneControl)) { // Struct
       // Reserved Field
@@ -10629,10 +10592,10 @@ public class KnxDatapoint {
       /*TODO: migrate me*/
       /*TODO: migrate me*/ writeBuffer.writeUnsignedByte("", 1, ((Number) (byte) 0x00).byteValue());
       // Simple Field (sceneNumber)
-      short sceneNumber = (short) _value.getStruct().get("sceneNumber").getShort();
+      byte sceneNumber = (byte) _value.getStruct().get("sceneNumber").getByte();
       /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort(
-          "", 6, ((Number) (sceneNumber)).shortValue());
+      /*TODO: migrate me*/ writeBuffer.writeUnsignedByte(
+          "", 6, ((Number) (sceneNumber)).byteValue());
     } else if (EvaluationHelper.equals(datapointType, KnxDatapointType.DPT_DateTime)) { // Struct
       // Reserved Field
       /*TODO: migrate me*/
@@ -10653,33 +10616,32 @@ public class KnxDatapoint {
       /*TODO: migrate me*/
       /*TODO: migrate me*/ writeBuffer.writeUnsignedByte("", 3, ((Number) (byte) 0x00).byteValue());
       // Simple Field (dayofmonth)
-      short dayofmonth = (short) _value.getStruct().get("dayofmonth").getShort();
+      byte dayofmonth = (byte) _value.getStruct().get("dayofmonth").getByte();
       /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort(
-          "", 5, ((Number) (dayofmonth)).shortValue());
+      /*TODO: migrate me*/ writeBuffer.writeUnsignedByte(
+          "", 5, ((Number) (dayofmonth)).byteValue());
       // Simple Field (dayofweek)
       byte dayofweek = (byte) _value.getStruct().get("dayofweek").getByte();
       /*TODO: migrate me*/
       /*TODO: migrate me*/ writeBuffer.writeUnsignedByte("", 3, ((Number) (dayofweek)).byteValue());
       // Simple Field (hourofday)
-      short hourofday = (short) _value.getStruct().get("hourofday").getShort();
+      byte hourofday = (byte) _value.getStruct().get("hourofday").getByte();
       /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort(
-          "", 5, ((Number) (hourofday)).shortValue());
+      /*TODO: migrate me*/ writeBuffer.writeUnsignedByte("", 5, ((Number) (hourofday)).byteValue());
       // Reserved Field
       /*TODO: migrate me*/
       /*TODO: migrate me*/ writeBuffer.writeUnsignedByte("", 2, ((Number) (byte) 0x00).byteValue());
       // Simple Field (minutes)
-      short minutes = (short) _value.getStruct().get("minutes").getShort();
+      byte minutes = (byte) _value.getStruct().get("minutes").getByte();
       /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort("", 6, ((Number) (minutes)).shortValue());
+      /*TODO: migrate me*/ writeBuffer.writeUnsignedByte("", 6, ((Number) (minutes)).byteValue());
       // Reserved Field
       /*TODO: migrate me*/
       /*TODO: migrate me*/ writeBuffer.writeUnsignedByte("", 2, ((Number) (byte) 0x00).byteValue());
       // Simple Field (seconds)
-      short seconds = (short) _value.getStruct().get("seconds").getShort();
+      byte seconds = (byte) _value.getStruct().get("seconds").getByte();
       /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort("", 6, ((Number) (seconds)).shortValue());
+      /*TODO: migrate me*/ writeBuffer.writeUnsignedByte("", 6, ((Number) (seconds)).byteValue());
       // Simple Field (fault)
       boolean fault = (boolean) _value.getStruct().get("fault").getBoolean();
       /*TODO: migrate me*/
@@ -10719,8 +10681,7 @@ public class KnxDatapoint {
       /*TODO: migrate me*/ writeBuffer.writeBit("", (boolean) (qualityOfClock));
       // Reserved Field
       /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort(
-          "", 7, ((Number) (short) 0x00).shortValue());
+      /*TODO: migrate me*/ writeBuffer.writeUnsignedByte("", 7, ((Number) (byte) 0x00).byteValue());
     } else if (EvaluationHelper.equals(datapointType, KnxDatapointType.DPT_SCLOMode)) { // USINT
       // Reserved Field
       /*TODO: migrate me*/
@@ -11308,8 +11269,7 @@ public class KnxDatapoint {
           "", 8, ((Number) (short) 0x00).shortValue());
       // Reserved Field
       /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort(
-          "", 5, ((Number) (short) 0x00).shortValue());
+      /*TODO: migrate me*/ writeBuffer.writeUnsignedByte("", 5, ((Number) (byte) 0x00).byteValue());
       // Simple Field (verifyModeIsOn)
       boolean verifyModeIsOn = (boolean) _value.getStruct().get("verifyModeIsOn").getBoolean();
       /*TODO: migrate me*/
@@ -11369,8 +11329,7 @@ public class KnxDatapoint {
     } else if (EvaluationHelper.equals(datapointType, KnxDatapointType.DPT_ForceSignCool)) { // BOOL
       // Reserved Field
       /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort(
-          "", 7, ((Number) (short) 0x00).shortValue());
+      /*TODO: migrate me*/ writeBuffer.writeUnsignedByte("", 7, ((Number) (byte) 0x00).byteValue());
       // Simple Field (value)
       boolean value = (boolean) _value.getBoolean();
       /*TODO: migrate me*/
@@ -11420,8 +11379,7 @@ public class KnxDatapoint {
           "", 8, ((Number) (short) 0x00).shortValue());
       // Reserved Field
       /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort(
-          "", 5, ((Number) (short) 0x00).shortValue());
+      /*TODO: migrate me*/ writeBuffer.writeUnsignedByte("", 5, ((Number) (byte) 0x00).byteValue());
       // Simple Field (solarloadsufficient)
       boolean solarloadsufficient =
           (boolean) _value.getStruct().get("solarloadsufficient").getBoolean();
@@ -11442,8 +11400,7 @@ public class KnxDatapoint {
           "", 8, ((Number) (short) 0x00).shortValue());
       // Reserved Field
       /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort(
-          "", 5, ((Number) (short) 0x00).shortValue());
+      /*TODO: migrate me*/ writeBuffer.writeUnsignedByte("", 5, ((Number) (byte) 0x00).byteValue());
       // Simple Field (solidstate)
       boolean solidstate = (boolean) _value.getStruct().get("solidstate").getBoolean();
       /*TODO: migrate me*/
@@ -11459,8 +11416,7 @@ public class KnxDatapoint {
     } else if (EvaluationHelper.equals(datapointType, KnxDatapointType.DPT_StatusRCC)) { // BOOL
       // Reserved Field
       /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort(
-          "", 7, ((Number) (short) 0x00).shortValue());
+      /*TODO: migrate me*/ writeBuffer.writeUnsignedByte("", 7, ((Number) (byte) 0x00).byteValue());
       // Simple Field (value)
       boolean value = (boolean) _value.getBoolean();
       /*TODO: migrate me*/
@@ -11569,8 +11525,7 @@ public class KnxDatapoint {
           "", 8, ((Number) (short) 0x00).shortValue());
       // Reserved Field
       /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort(
-          "", 5, ((Number) (short) 0x00).shortValue());
+      /*TODO: migrate me*/ writeBuffer.writeUnsignedByte("", 5, ((Number) (byte) 0x00).byteValue());
       // Simple Field (bibatSlave)
       boolean bibatSlave = (boolean) _value.getStruct().get("bibatSlave").getBoolean();
       /*TODO: migrate me*/
@@ -11591,8 +11546,7 @@ public class KnxDatapoint {
           "", 8, ((Number) (short) 0x00).shortValue());
       // Reserved Field
       /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort(
-          "", 5, ((Number) (short) 0x00).shortValue());
+      /*TODO: migrate me*/ writeBuffer.writeUnsignedByte("", 5, ((Number) (byte) 0x00).byteValue());
       // Simple Field (doa)
       boolean doa = (boolean) _value.getStruct().get("doa").getBoolean();
       /*TODO: migrate me*/
@@ -11773,8 +11727,7 @@ public class KnxDatapoint {
           "", 8, ((Number) (short) 0x00).shortValue());
       // Reserved Field
       /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort(
-          "", 7, ((Number) (short) 0x00).shortValue());
+      /*TODO: migrate me*/ writeBuffer.writeUnsignedByte("", 7, ((Number) (byte) 0x00).byteValue());
       // Simple Field (calibrationMode)
       boolean calibrationMode = (boolean) _value.getStruct().get("calibrationMode").getBoolean();
       /*TODO: migrate me*/
@@ -11821,8 +11774,7 @@ public class KnxDatapoint {
           "", 8, ((Number) (short) 0x00).shortValue());
       // Reserved Field
       /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort(
-          "", 7, ((Number) (short) 0x00).shortValue());
+      /*TODO: migrate me*/ writeBuffer.writeUnsignedByte("", 7, ((Number) (byte) 0x00).byteValue());
       // Simple Field (coolingModeEnabled)
       boolean coolingModeEnabled =
           (boolean) _value.getStruct().get("coolingModeEnabled").getBoolean();
@@ -11872,7 +11824,8 @@ public class KnxDatapoint {
           "", 8, ((Number) (short) 0x00).shortValue());
       // Reserved Field
       /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedInt("", 10, ((Number) (int) 0x00).intValue());
+      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort(
+          "", 10, ((Number) (short) 0x00).shortValue());
       // Simple Field (knxIp)
       boolean knxIp = (boolean) _value.getStruct().get("knxIp").getBoolean();
       /*TODO: migrate me*/
@@ -11984,8 +11937,7 @@ public class KnxDatapoint {
     } else if (EvaluationHelper.equals(datapointType, KnxDatapointType.DPT_OnOffAction)) { // USINT
       // Reserved Field
       /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort(
-          "", 6, ((Number) (short) 0x00).shortValue());
+      /*TODO: migrate me*/ writeBuffer.writeUnsignedByte("", 6, ((Number) (byte) 0x00).byteValue());
       // Simple Field (value)
       byte value = (byte) _value.getByte();
       /*TODO: migrate me*/
@@ -11994,8 +11946,7 @@ public class KnxDatapoint {
         datapointType, KnxDatapointType.DPT_Alarm_Reaction)) { // USINT
       // Reserved Field
       /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort(
-          "", 6, ((Number) (short) 0x00).shortValue());
+      /*TODO: migrate me*/ writeBuffer.writeUnsignedByte("", 6, ((Number) (byte) 0x00).byteValue());
       // Simple Field (value)
       byte value = (byte) _value.getByte();
       /*TODO: migrate me*/
@@ -12004,8 +11955,7 @@ public class KnxDatapoint {
         datapointType, KnxDatapointType.DPT_UpDown_Action)) { // USINT
       // Reserved Field
       /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort(
-          "", 6, ((Number) (short) 0x00).shortValue());
+      /*TODO: migrate me*/ writeBuffer.writeUnsignedByte("", 6, ((Number) (byte) 0x00).byteValue());
       // Simple Field (value)
       byte value = (byte) _value.getByte();
       /*TODO: migrate me*/
@@ -12014,8 +11964,7 @@ public class KnxDatapoint {
         datapointType, KnxDatapointType.DPT_HVAC_PB_Action)) { // USINT
       // Reserved Field
       /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort(
-          "", 6, ((Number) (short) 0x00).shortValue());
+      /*TODO: migrate me*/ writeBuffer.writeUnsignedByte("", 6, ((Number) (byte) 0x00).byteValue());
       // Simple Field (value)
       byte value = (byte) _value.getByte();
       /*TODO: migrate me*/
@@ -12047,10 +11996,10 @@ public class KnxDatapoint {
       /*TODO: migrate me*/
       /*TODO: migrate me*/ writeBuffer.writeBit("", (boolean) (sceneIsInactive));
       // Simple Field (scenenumber)
-      short scenenumber = (short) _value.getStruct().get("scenenumber").getShort();
+      byte scenenumber = (byte) _value.getStruct().get("scenenumber").getByte();
       /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort(
-          "", 6, ((Number) (scenenumber)).shortValue());
+      /*TODO: migrate me*/ writeBuffer.writeUnsignedByte(
+          "", 6, ((Number) (scenenumber)).byteValue());
     } else if (EvaluationHelper.equals(
         datapointType, KnxDatapointType.DPT_CombinedInfoOnOff)) { // Struct
       // Reserved Field
@@ -12475,20 +12424,20 @@ public class KnxDatapoint {
       /*TODO: migrate me*/ writeBuffer.writeUnsignedShort(
           "", 8, ((Number) (short) 0x00).shortValue());
       // Simple Field (magicNumber)
-      short magicNumber = (short) _value.getStruct().get("magicNumber").getShort();
+      byte magicNumber = (byte) _value.getStruct().get("magicNumber").getByte();
       /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort(
-          "", 5, ((Number) (magicNumber)).shortValue());
+      /*TODO: migrate me*/ writeBuffer.writeUnsignedByte(
+          "", 5, ((Number) (magicNumber)).byteValue());
       // Simple Field (versionNumber)
-      short versionNumber = (short) _value.getStruct().get("versionNumber").getShort();
+      byte versionNumber = (byte) _value.getStruct().get("versionNumber").getByte();
       /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort(
-          "", 5, ((Number) (versionNumber)).shortValue());
+      /*TODO: migrate me*/ writeBuffer.writeUnsignedByte(
+          "", 5, ((Number) (versionNumber)).byteValue());
       // Simple Field (revisionNumber)
-      short revisionNumber = (short) _value.getStruct().get("revisionNumber").getShort();
+      byte revisionNumber = (byte) _value.getStruct().get("revisionNumber").getByte();
       /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort(
-          "", 6, ((Number) (revisionNumber)).shortValue());
+      /*TODO: migrate me*/ writeBuffer.writeUnsignedByte(
+          "", 6, ((Number) (revisionNumber)).byteValue());
     } else if (EvaluationHelper.equals(datapointType, KnxDatapointType.DPT_AlarmInfo)) { // Struct
       // Reserved Field
       /*TODO: migrate me*/
@@ -12535,8 +12484,7 @@ public class KnxDatapoint {
       /*TODO: migrate me*/ writeBuffer.writeBit("", (boolean) (ackSup));
       // Reserved Field
       /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort(
-          "", 5, ((Number) (short) 0x00).shortValue());
+      /*TODO: migrate me*/ writeBuffer.writeUnsignedByte("", 5, ((Number) (byte) 0x00).byteValue());
       // Simple Field (locked)
       boolean locked = (boolean) _value.getStruct().get("locked").getBoolean();
       /*TODO: migrate me*/
@@ -12719,8 +12667,7 @@ public class KnxDatapoint {
       /*TODO: migrate me*/ writeBuffer.writeUnsignedShort("", 8, ((Number) (tariff)).shortValue());
       // Reserved Field
       /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort(
-          "", 6, ((Number) (short) 0x00).shortValue());
+      /*TODO: migrate me*/ writeBuffer.writeUnsignedByte("", 6, ((Number) (byte) 0x00).byteValue());
       // Simple Field (electricalengergyvalidity)
       boolean electricalengergyvalidity =
           (boolean) _value.getStruct().get("electricalengergyvalidity").getBoolean();
@@ -12758,8 +12705,7 @@ public class KnxDatapoint {
           "", 8, ((Number) (short) 0x00).shortValue());
       // Reserved Field
       /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort(
-          "", 5, ((Number) (short) 0x00).shortValue());
+      /*TODO: migrate me*/ writeBuffer.writeUnsignedByte("", 5, ((Number) (byte) 0x00).byteValue());
       // Simple Field (convertorError)
       boolean convertorError = (boolean) _value.getStruct().get("convertorError").getBoolean();
       /*TODO: migrate me*/
@@ -12781,11 +12727,11 @@ public class KnxDatapoint {
       /*TODO: migrate me*/
       /*TODO: migrate me*/ writeBuffer.writeBit("", (boolean) (addressIndicator));
       // Simple Field (daliDeviceAddressOrDaliGroupAddress)
-      short daliDeviceAddressOrDaliGroupAddress =
-          (short) _value.getStruct().get("daliDeviceAddressOrDaliGroupAddress").getShort();
+      byte daliDeviceAddressOrDaliGroupAddress =
+          (byte) _value.getStruct().get("daliDeviceAddressOrDaliGroupAddress").getByte();
       /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort(
-          "", 6, ((Number) (daliDeviceAddressOrDaliGroupAddress)).shortValue());
+      /*TODO: migrate me*/ writeBuffer.writeUnsignedByte(
+          "", 6, ((Number) (daliDeviceAddressOrDaliGroupAddress)).byteValue());
     } else if (EvaluationHelper.equals(
         datapointType, KnxDatapointType.DPT_DALI_Diagnostics)) { // Struct
       // Reserved Field
@@ -12801,10 +12747,10 @@ public class KnxDatapoint {
       /*TODO: migrate me*/
       /*TODO: migrate me*/ writeBuffer.writeBit("", (boolean) (lampFailure));
       // Simple Field (deviceAddress)
-      short deviceAddress = (short) _value.getStruct().get("deviceAddress").getShort();
+      byte deviceAddress = (byte) _value.getStruct().get("deviceAddress").getByte();
       /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort(
-          "", 6, ((Number) (deviceAddress)).shortValue());
+      /*TODO: migrate me*/ writeBuffer.writeUnsignedByte(
+          "", 6, ((Number) (deviceAddress)).byteValue());
     } else if (EvaluationHelper.equals(
         datapointType, KnxDatapointType.DPT_CombinedPosition)) { // Struct
       // Reserved Field
@@ -12823,8 +12769,7 @@ public class KnxDatapoint {
           "", 8, ((Number) (slatsPosition)).shortValue());
       // Reserved Field
       /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort(
-          "", 6, ((Number) (short) 0x00).shortValue());
+      /*TODO: migrate me*/ writeBuffer.writeUnsignedByte("", 6, ((Number) (byte) 0x00).byteValue());
       // Simple Field (validitySlatsPosition)
       boolean validitySlatsPosition =
           (boolean) _value.getStruct().get("validitySlatsPosition").getBoolean();
@@ -12959,8 +12904,7 @@ public class KnxDatapoint {
           "", 8, ((Number) (brightness)).shortValue());
       // Reserved Field
       /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort(
-          "", 6, ((Number) (short) 0x00).shortValue());
+      /*TODO: migrate me*/ writeBuffer.writeUnsignedByte("", 6, ((Number) (byte) 0x00).byteValue());
       // Simple Field (validityXy)
       boolean validityXy = (boolean) _value.getStruct().get("validityXy").getBoolean();
       /*TODO: migrate me*/
@@ -13072,8 +13016,7 @@ public class KnxDatapoint {
           "", 8, ((Number) (short) 0x00).shortValue());
       // Reserved Field
       /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort(
-          "", 5, ((Number) (short) 0x00).shortValue());
+      /*TODO: migrate me*/ writeBuffer.writeUnsignedByte("", 5, ((Number) (byte) 0x00).byteValue());
       // Simple Field (batteryFailure)
       boolean batteryFailure = (boolean) _value.getStruct().get("batteryFailure").getBoolean();
       /*TODO: migrate me*/
@@ -13114,8 +13057,7 @@ public class KnxDatapoint {
       /*TODO: migrate me*/ writeBuffer.writeUnsignedShort("", 8, ((Number) (percent)).shortValue());
       // Reserved Field
       /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort(
-          "", 5, ((Number) (short) 0x00).shortValue());
+      /*TODO: migrate me*/ writeBuffer.writeUnsignedByte("", 5, ((Number) (byte) 0x00).byteValue());
       // Simple Field (validityOfTheTimePeriod)
       boolean validityOfTheTimePeriod =
           (boolean) _value.getStruct().get("validityOfTheTimePeriod").getBoolean();
@@ -13165,8 +13107,7 @@ public class KnxDatapoint {
           "", 3, ((Number) (stepCodeBrightness)).byteValue());
       // Reserved Field
       /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort(
-          "", 6, ((Number) (short) 0x00).shortValue());
+      /*TODO: migrate me*/ writeBuffer.writeUnsignedByte("", 6, ((Number) (byte) 0x00).byteValue());
       // Simple Field (cctAndStepCodeColourValidity)
       boolean cctAndStepCodeColourValidity =
           (boolean) _value.getStruct().get("cctAndStepCodeColourValidity").getBoolean();

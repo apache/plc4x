@@ -42,8 +42,8 @@ public class ModbusPDUReadFileRecordRequest extends ModbusPDU implements Message
     return (boolean) false;
   }
 
-  public Short getFunctionFlag() {
-    return (short) 0x14;
+  public Byte getFunctionFlag() {
+    return (byte) 0x14;
   }
 
   public Boolean getResponse() {

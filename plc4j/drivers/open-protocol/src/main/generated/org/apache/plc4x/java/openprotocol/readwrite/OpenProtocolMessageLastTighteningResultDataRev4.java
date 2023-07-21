@@ -24,7 +24,6 @@ import static org.apache.plc4x.java.spi.codegen.io.DataReaderFactory.*;
 import static org.apache.plc4x.java.spi.codegen.io.DataWriterFactory.*;
 import static org.apache.plc4x.java.spi.generation.StaticHelper.*;
 
-import java.math.BigInteger;
 import java.time.*;
 import java.util.*;
 import org.apache.plc4x.java.api.exceptions.*;
@@ -40,8 +39,8 @@ public class OpenProtocolMessageLastTighteningResultDataRev4
     extends OpenProtocolMessageLastTighteningResultData implements Message {
 
   // Accessors for discriminator values.
-  public Long getRevision() {
-    return (long) 4;
+  public Integer getRevision() {
+    return (int) 4;
   }
 
   // Constant values.
@@ -104,7 +103,7 @@ public class OpenProtocolMessageLastTighteningResultDataRev4
   protected final String torqueControllerName;
   protected final String vinNumber;
   protected final long jobId;
-  protected final long parameterSetNumber;
+  protected final int parameterSetNumber;
   protected final Strategy strategy;
   protected final long batchSize;
   protected final long batchCounter;
@@ -117,29 +116,29 @@ public class OpenProtocolMessageLastTighteningResultDataRev4
   protected final Status selfTapStatus;
   protected final Status prevailTorqueMonitoringStatus;
   protected final Status prevailTorqueCompensateStatus;
-  protected final BigInteger torqueMinLimit;
-  protected final BigInteger torqueMaxLimit;
-  protected final BigInteger torqueFinalTarget;
-  protected final BigInteger torque;
-  protected final BigInteger angleMin;
-  protected final BigInteger angleMax;
-  protected final BigInteger finalAngleTarget;
-  protected final BigInteger angle;
-  protected final BigInteger rundownAngleMin;
-  protected final BigInteger rundownAngleMax;
-  protected final BigInteger rundownAngle;
-  protected final long currentMonitoringMin;
-  protected final long currentMonitoringMax;
-  protected final long currentMonitoringValue;
-  protected final BigInteger selfTapMin;
-  protected final BigInteger selfTapMax;
-  protected final BigInteger selfTapTorque;
-  protected final BigInteger prevailTorqueMonitoringMin;
-  protected final BigInteger prevailTorqueMonitoringMax;
-  protected final BigInteger prevailTorque;
+  protected final long torqueMinLimit;
+  protected final long torqueMaxLimit;
+  protected final long torqueFinalTarget;
+  protected final long torque;
+  protected final long angleMin;
+  protected final long angleMax;
+  protected final long finalAngleTarget;
+  protected final long angle;
+  protected final long rundownAngleMin;
+  protected final long rundownAngleMax;
+  protected final long rundownAngle;
+  protected final int currentMonitoringMin;
+  protected final int currentMonitoringMax;
+  protected final int currentMonitoringValue;
+  protected final long selfTapMin;
+  protected final long selfTapMax;
+  protected final long selfTapTorque;
+  protected final long prevailTorqueMonitoringMin;
+  protected final long prevailTorqueMonitoringMax;
+  protected final long prevailTorque;
   protected final String tighteningId;
-  protected final BigInteger jobSequenceNumber;
-  protected final BigInteger syncTighteningId;
+  protected final long jobSequenceNumber;
+  protected final long syncTighteningId;
   protected final String toolSerialNumber;
   protected final String timeStamp;
   protected final String dateTimeOfLastChangeIndParameterSetSettings;
@@ -151,7 +150,7 @@ public class OpenProtocolMessageLastTighteningResultDataRev4
   protected final String identifierResultPart4;
 
   public OpenProtocolMessageLastTighteningResultDataRev4(
-      Long midRevision,
+      Integer midRevision,
       Short noAckFlag,
       Integer targetStationId,
       Integer targetSpindleId,
@@ -163,7 +162,7 @@ public class OpenProtocolMessageLastTighteningResultDataRev4
       String torqueControllerName,
       String vinNumber,
       long jobId,
-      long parameterSetNumber,
+      int parameterSetNumber,
       Strategy strategy,
       long batchSize,
       long batchCounter,
@@ -176,29 +175,29 @@ public class OpenProtocolMessageLastTighteningResultDataRev4
       Status selfTapStatus,
       Status prevailTorqueMonitoringStatus,
       Status prevailTorqueCompensateStatus,
-      BigInteger torqueMinLimit,
-      BigInteger torqueMaxLimit,
-      BigInteger torqueFinalTarget,
-      BigInteger torque,
-      BigInteger angleMin,
-      BigInteger angleMax,
-      BigInteger finalAngleTarget,
-      BigInteger angle,
-      BigInteger rundownAngleMin,
-      BigInteger rundownAngleMax,
-      BigInteger rundownAngle,
-      long currentMonitoringMin,
-      long currentMonitoringMax,
-      long currentMonitoringValue,
-      BigInteger selfTapMin,
-      BigInteger selfTapMax,
-      BigInteger selfTapTorque,
-      BigInteger prevailTorqueMonitoringMin,
-      BigInteger prevailTorqueMonitoringMax,
-      BigInteger prevailTorque,
+      long torqueMinLimit,
+      long torqueMaxLimit,
+      long torqueFinalTarget,
+      long torque,
+      long angleMin,
+      long angleMax,
+      long finalAngleTarget,
+      long angle,
+      long rundownAngleMin,
+      long rundownAngleMax,
+      long rundownAngle,
+      int currentMonitoringMin,
+      int currentMonitoringMax,
+      int currentMonitoringValue,
+      long selfTapMin,
+      long selfTapMax,
+      long selfTapTorque,
+      long prevailTorqueMonitoringMin,
+      long prevailTorqueMonitoringMax,
+      long prevailTorque,
       String tighteningId,
-      BigInteger jobSequenceNumber,
-      BigInteger syncTighteningId,
+      long jobSequenceNumber,
+      long syncTighteningId,
       String toolSerialNumber,
       String timeStamp,
       String dateTimeOfLastChangeIndParameterSetSettings,
@@ -288,7 +287,7 @@ public class OpenProtocolMessageLastTighteningResultDataRev4
     return jobId;
   }
 
-  public long getParameterSetNumber() {
+  public int getParameterSetNumber() {
     return parameterSetNumber;
   }
 
@@ -340,83 +339,83 @@ public class OpenProtocolMessageLastTighteningResultDataRev4
     return prevailTorqueCompensateStatus;
   }
 
-  public BigInteger getTorqueMinLimit() {
+  public long getTorqueMinLimit() {
     return torqueMinLimit;
   }
 
-  public BigInteger getTorqueMaxLimit() {
+  public long getTorqueMaxLimit() {
     return torqueMaxLimit;
   }
 
-  public BigInteger getTorqueFinalTarget() {
+  public long getTorqueFinalTarget() {
     return torqueFinalTarget;
   }
 
-  public BigInteger getTorque() {
+  public long getTorque() {
     return torque;
   }
 
-  public BigInteger getAngleMin() {
+  public long getAngleMin() {
     return angleMin;
   }
 
-  public BigInteger getAngleMax() {
+  public long getAngleMax() {
     return angleMax;
   }
 
-  public BigInteger getFinalAngleTarget() {
+  public long getFinalAngleTarget() {
     return finalAngleTarget;
   }
 
-  public BigInteger getAngle() {
+  public long getAngle() {
     return angle;
   }
 
-  public BigInteger getRundownAngleMin() {
+  public long getRundownAngleMin() {
     return rundownAngleMin;
   }
 
-  public BigInteger getRundownAngleMax() {
+  public long getRundownAngleMax() {
     return rundownAngleMax;
   }
 
-  public BigInteger getRundownAngle() {
+  public long getRundownAngle() {
     return rundownAngle;
   }
 
-  public long getCurrentMonitoringMin() {
+  public int getCurrentMonitoringMin() {
     return currentMonitoringMin;
   }
 
-  public long getCurrentMonitoringMax() {
+  public int getCurrentMonitoringMax() {
     return currentMonitoringMax;
   }
 
-  public long getCurrentMonitoringValue() {
+  public int getCurrentMonitoringValue() {
     return currentMonitoringValue;
   }
 
-  public BigInteger getSelfTapMin() {
+  public long getSelfTapMin() {
     return selfTapMin;
   }
 
-  public BigInteger getSelfTapMax() {
+  public long getSelfTapMax() {
     return selfTapMax;
   }
 
-  public BigInteger getSelfTapTorque() {
+  public long getSelfTapTorque() {
     return selfTapTorque;
   }
 
-  public BigInteger getPrevailTorqueMonitoringMin() {
+  public long getPrevailTorqueMonitoringMin() {
     return prevailTorqueMonitoringMin;
   }
 
-  public BigInteger getPrevailTorqueMonitoringMax() {
+  public long getPrevailTorqueMonitoringMax() {
     return prevailTorqueMonitoringMax;
   }
 
-  public BigInteger getPrevailTorque() {
+  public long getPrevailTorque() {
     return prevailTorque;
   }
 
@@ -424,11 +423,11 @@ public class OpenProtocolMessageLastTighteningResultDataRev4
     return tighteningId;
   }
 
-  public BigInteger getJobSequenceNumber() {
+  public long getJobSequenceNumber() {
     return jobSequenceNumber;
   }
 
-  public BigInteger getSyncTighteningId() {
+  public long getSyncTighteningId() {
     return syncTighteningId;
   }
 
@@ -755,7 +754,7 @@ public class OpenProtocolMessageLastTighteningResultDataRev4
     writeSimpleField(
         "parameterSetNumber",
         parameterSetNumber,
-        writeUnsignedLong(writeBuffer, 24),
+        writeUnsignedInt(writeBuffer, 24),
         WithOption.WithEncoding("ASCII"));
 
     // Const Field (blockIdStrategy)
@@ -971,7 +970,7 @@ public class OpenProtocolMessageLastTighteningResultDataRev4
     writeSimpleField(
         "torqueMinLimit",
         torqueMinLimit,
-        writeUnsignedBigInteger(writeBuffer, 48),
+        writeUnsignedLong(writeBuffer, 48),
         WithOption.WithEncoding("ASCII"));
 
     // Const Field (blockIdTorqueMaxLimit)
@@ -985,7 +984,7 @@ public class OpenProtocolMessageLastTighteningResultDataRev4
     writeSimpleField(
         "torqueMaxLimit",
         torqueMaxLimit,
-        writeUnsignedBigInteger(writeBuffer, 48),
+        writeUnsignedLong(writeBuffer, 48),
         WithOption.WithEncoding("ASCII"));
 
     // Const Field (blockIdTorqueFinalTarget)
@@ -999,7 +998,7 @@ public class OpenProtocolMessageLastTighteningResultDataRev4
     writeSimpleField(
         "torqueFinalTarget",
         torqueFinalTarget,
-        writeUnsignedBigInteger(writeBuffer, 48),
+        writeUnsignedLong(writeBuffer, 48),
         WithOption.WithEncoding("ASCII"));
 
     // Const Field (blockIdTorque)
@@ -1011,10 +1010,7 @@ public class OpenProtocolMessageLastTighteningResultDataRev4
 
     // Simple Field (torque)
     writeSimpleField(
-        "torque",
-        torque,
-        writeUnsignedBigInteger(writeBuffer, 48),
-        WithOption.WithEncoding("ASCII"));
+        "torque", torque, writeUnsignedLong(writeBuffer, 48), WithOption.WithEncoding("ASCII"));
 
     // Const Field (blockIdAngleMin)
     writeConstField(
@@ -1025,10 +1021,7 @@ public class OpenProtocolMessageLastTighteningResultDataRev4
 
     // Simple Field (angleMin)
     writeSimpleField(
-        "angleMin",
-        angleMin,
-        writeUnsignedBigInteger(writeBuffer, 40),
-        WithOption.WithEncoding("ASCII"));
+        "angleMin", angleMin, writeUnsignedLong(writeBuffer, 40), WithOption.WithEncoding("ASCII"));
 
     // Const Field (blockIdAngleMax)
     writeConstField(
@@ -1039,10 +1032,7 @@ public class OpenProtocolMessageLastTighteningResultDataRev4
 
     // Simple Field (angleMax)
     writeSimpleField(
-        "angleMax",
-        angleMax,
-        writeUnsignedBigInteger(writeBuffer, 40),
-        WithOption.WithEncoding("ASCII"));
+        "angleMax", angleMax, writeUnsignedLong(writeBuffer, 40), WithOption.WithEncoding("ASCII"));
 
     // Const Field (blockIdFinalAngleTarget)
     writeConstField(
@@ -1055,7 +1045,7 @@ public class OpenProtocolMessageLastTighteningResultDataRev4
     writeSimpleField(
         "finalAngleTarget",
         finalAngleTarget,
-        writeUnsignedBigInteger(writeBuffer, 40),
+        writeUnsignedLong(writeBuffer, 40),
         WithOption.WithEncoding("ASCII"));
 
     // Const Field (blockIdAngle)
@@ -1067,7 +1057,7 @@ public class OpenProtocolMessageLastTighteningResultDataRev4
 
     // Simple Field (angle)
     writeSimpleField(
-        "angle", angle, writeUnsignedBigInteger(writeBuffer, 40), WithOption.WithEncoding("ASCII"));
+        "angle", angle, writeUnsignedLong(writeBuffer, 40), WithOption.WithEncoding("ASCII"));
 
     // Const Field (blockIdRundownAngleMin)
     writeConstField(
@@ -1080,7 +1070,7 @@ public class OpenProtocolMessageLastTighteningResultDataRev4
     writeSimpleField(
         "rundownAngleMin",
         rundownAngleMin,
-        writeUnsignedBigInteger(writeBuffer, 40),
+        writeUnsignedLong(writeBuffer, 40),
         WithOption.WithEncoding("ASCII"));
 
     // Const Field (blockIdRundownAngleMax)
@@ -1094,7 +1084,7 @@ public class OpenProtocolMessageLastTighteningResultDataRev4
     writeSimpleField(
         "rundownAngleMax",
         rundownAngleMax,
-        writeUnsignedBigInteger(writeBuffer, 40),
+        writeUnsignedLong(writeBuffer, 40),
         WithOption.WithEncoding("ASCII"));
 
     // Const Field (blockIdRundownAngle)
@@ -1108,7 +1098,7 @@ public class OpenProtocolMessageLastTighteningResultDataRev4
     writeSimpleField(
         "rundownAngle",
         rundownAngle,
-        writeUnsignedBigInteger(writeBuffer, 40),
+        writeUnsignedLong(writeBuffer, 40),
         WithOption.WithEncoding("ASCII"));
 
     // Const Field (blockIdCurrentMonitoringMin)
@@ -1122,7 +1112,7 @@ public class OpenProtocolMessageLastTighteningResultDataRev4
     writeSimpleField(
         "currentMonitoringMin",
         currentMonitoringMin,
-        writeUnsignedLong(writeBuffer, 24),
+        writeUnsignedInt(writeBuffer, 24),
         WithOption.WithEncoding("ASCII"));
 
     // Const Field (blockIdCurrentMonitoringMax)
@@ -1136,7 +1126,7 @@ public class OpenProtocolMessageLastTighteningResultDataRev4
     writeSimpleField(
         "currentMonitoringMax",
         currentMonitoringMax,
-        writeUnsignedLong(writeBuffer, 24),
+        writeUnsignedInt(writeBuffer, 24),
         WithOption.WithEncoding("ASCII"));
 
     // Const Field (blockIdCurrentMonitoringValue)
@@ -1150,7 +1140,7 @@ public class OpenProtocolMessageLastTighteningResultDataRev4
     writeSimpleField(
         "currentMonitoringValue",
         currentMonitoringValue,
-        writeUnsignedLong(writeBuffer, 24),
+        writeUnsignedInt(writeBuffer, 24),
         WithOption.WithEncoding("ASCII"));
 
     // Const Field (blockIdSelfTapMin)
@@ -1164,7 +1154,7 @@ public class OpenProtocolMessageLastTighteningResultDataRev4
     writeSimpleField(
         "selfTapMin",
         selfTapMin,
-        writeUnsignedBigInteger(writeBuffer, 48),
+        writeUnsignedLong(writeBuffer, 48),
         WithOption.WithEncoding("ASCII"));
 
     // Const Field (blockIdSelfTapMax)
@@ -1178,7 +1168,7 @@ public class OpenProtocolMessageLastTighteningResultDataRev4
     writeSimpleField(
         "selfTapMax",
         selfTapMax,
-        writeUnsignedBigInteger(writeBuffer, 48),
+        writeUnsignedLong(writeBuffer, 48),
         WithOption.WithEncoding("ASCII"));
 
     // Const Field (blockIdSelfTapTorque)
@@ -1192,7 +1182,7 @@ public class OpenProtocolMessageLastTighteningResultDataRev4
     writeSimpleField(
         "selfTapTorque",
         selfTapTorque,
-        writeUnsignedBigInteger(writeBuffer, 48),
+        writeUnsignedLong(writeBuffer, 48),
         WithOption.WithEncoding("ASCII"));
 
     // Const Field (blockIdPrevailTorqueMonitoringMin)
@@ -1206,7 +1196,7 @@ public class OpenProtocolMessageLastTighteningResultDataRev4
     writeSimpleField(
         "prevailTorqueMonitoringMin",
         prevailTorqueMonitoringMin,
-        writeUnsignedBigInteger(writeBuffer, 48),
+        writeUnsignedLong(writeBuffer, 48),
         WithOption.WithEncoding("ASCII"));
 
     // Const Field (blockIdPrevailTorqueMonitoringMax)
@@ -1220,7 +1210,7 @@ public class OpenProtocolMessageLastTighteningResultDataRev4
     writeSimpleField(
         "prevailTorqueMonitoringMax",
         prevailTorqueMonitoringMax,
-        writeUnsignedBigInteger(writeBuffer, 48),
+        writeUnsignedLong(writeBuffer, 48),
         WithOption.WithEncoding("ASCII"));
 
     // Const Field (blockIdPrevailTorque)
@@ -1234,7 +1224,7 @@ public class OpenProtocolMessageLastTighteningResultDataRev4
     writeSimpleField(
         "prevailTorque",
         prevailTorque,
-        writeUnsignedBigInteger(writeBuffer, 48),
+        writeUnsignedLong(writeBuffer, 48),
         WithOption.WithEncoding("ASCII"));
 
     // Const Field (blockIdTighteningId)
@@ -1262,7 +1252,7 @@ public class OpenProtocolMessageLastTighteningResultDataRev4
     writeSimpleField(
         "jobSequenceNumber",
         jobSequenceNumber,
-        writeUnsignedBigInteger(writeBuffer, 40),
+        writeUnsignedLong(writeBuffer, 40),
         WithOption.WithEncoding("ASCII"));
 
     // Const Field (blockIdSyncTighteningId)
@@ -1276,7 +1266,7 @@ public class OpenProtocolMessageLastTighteningResultDataRev4
     writeSimpleField(
         "syncTighteningId",
         syncTighteningId,
-        writeUnsignedBigInteger(writeBuffer, 40),
+        writeUnsignedLong(writeBuffer, 40),
         WithOption.WithEncoding("ASCII"));
 
     // Const Field (blockIdToolSerialNumber)
@@ -1730,7 +1720,7 @@ public class OpenProtocolMessageLastTighteningResultDataRev4
 
   public static OpenProtocolMessageLastTighteningResultDataBuilder
       staticParseOpenProtocolMessageLastTighteningResultDataBuilder(
-          ReadBuffer readBuffer, Long revision) throws ParseException {
+          ReadBuffer readBuffer, Integer revision) throws ParseException {
     readBuffer.pullContext("OpenProtocolMessageLastTighteningResultDataRev4");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
@@ -1796,10 +1786,10 @@ public class OpenProtocolMessageLastTighteningResultDataRev4
             OpenProtocolMessageLastTighteningResultDataRev4.BLOCKIDPARAMETERSETNUMBER,
             WithOption.WithEncoding("ASCII"));
 
-    long parameterSetNumber =
+    int parameterSetNumber =
         readSimpleField(
             "parameterSetNumber",
-            readUnsignedLong(readBuffer, 24),
+            readUnsignedInt(readBuffer, 24),
             WithOption.WithEncoding("ASCII"));
 
     int blockIdStrategy =
@@ -1986,11 +1976,9 @@ public class OpenProtocolMessageLastTighteningResultDataRev4
             OpenProtocolMessageLastTighteningResultDataRev4.BLOCKIDTORQUEMINLIMIT,
             WithOption.WithEncoding("ASCII"));
 
-    BigInteger torqueMinLimit =
+    long torqueMinLimit =
         readSimpleField(
-            "torqueMinLimit",
-            readUnsignedBigInteger(readBuffer, 48),
-            WithOption.WithEncoding("ASCII"));
+            "torqueMinLimit", readUnsignedLong(readBuffer, 48), WithOption.WithEncoding("ASCII"));
 
     int blockIdTorqueMaxLimit =
         readConstField(
@@ -1999,11 +1987,9 @@ public class OpenProtocolMessageLastTighteningResultDataRev4
             OpenProtocolMessageLastTighteningResultDataRev4.BLOCKIDTORQUEMAXLIMIT,
             WithOption.WithEncoding("ASCII"));
 
-    BigInteger torqueMaxLimit =
+    long torqueMaxLimit =
         readSimpleField(
-            "torqueMaxLimit",
-            readUnsignedBigInteger(readBuffer, 48),
-            WithOption.WithEncoding("ASCII"));
+            "torqueMaxLimit", readUnsignedLong(readBuffer, 48), WithOption.WithEncoding("ASCII"));
 
     int blockIdTorqueFinalTarget =
         readConstField(
@@ -2012,10 +1998,10 @@ public class OpenProtocolMessageLastTighteningResultDataRev4
             OpenProtocolMessageLastTighteningResultDataRev4.BLOCKIDTORQUEFINALTARGET,
             WithOption.WithEncoding("ASCII"));
 
-    BigInteger torqueFinalTarget =
+    long torqueFinalTarget =
         readSimpleField(
             "torqueFinalTarget",
-            readUnsignedBigInteger(readBuffer, 48),
+            readUnsignedLong(readBuffer, 48),
             WithOption.WithEncoding("ASCII"));
 
     int blockIdTorque =
@@ -2025,9 +2011,9 @@ public class OpenProtocolMessageLastTighteningResultDataRev4
             OpenProtocolMessageLastTighteningResultDataRev4.BLOCKIDTORQUE,
             WithOption.WithEncoding("ASCII"));
 
-    BigInteger torque =
+    long torque =
         readSimpleField(
-            "torque", readUnsignedBigInteger(readBuffer, 48), WithOption.WithEncoding("ASCII"));
+            "torque", readUnsignedLong(readBuffer, 48), WithOption.WithEncoding("ASCII"));
 
     int blockIdAngleMin =
         readConstField(
@@ -2036,9 +2022,9 @@ public class OpenProtocolMessageLastTighteningResultDataRev4
             OpenProtocolMessageLastTighteningResultDataRev4.BLOCKIDANGLEMIN,
             WithOption.WithEncoding("ASCII"));
 
-    BigInteger angleMin =
+    long angleMin =
         readSimpleField(
-            "angleMin", readUnsignedBigInteger(readBuffer, 40), WithOption.WithEncoding("ASCII"));
+            "angleMin", readUnsignedLong(readBuffer, 40), WithOption.WithEncoding("ASCII"));
 
     int blockIdAngleMax =
         readConstField(
@@ -2047,9 +2033,9 @@ public class OpenProtocolMessageLastTighteningResultDataRev4
             OpenProtocolMessageLastTighteningResultDataRev4.BLOCKIDANGLEMAX,
             WithOption.WithEncoding("ASCII"));
 
-    BigInteger angleMax =
+    long angleMax =
         readSimpleField(
-            "angleMax", readUnsignedBigInteger(readBuffer, 40), WithOption.WithEncoding("ASCII"));
+            "angleMax", readUnsignedLong(readBuffer, 40), WithOption.WithEncoding("ASCII"));
 
     int blockIdFinalAngleTarget =
         readConstField(
@@ -2058,11 +2044,9 @@ public class OpenProtocolMessageLastTighteningResultDataRev4
             OpenProtocolMessageLastTighteningResultDataRev4.BLOCKIDFINALANGLETARGET,
             WithOption.WithEncoding("ASCII"));
 
-    BigInteger finalAngleTarget =
+    long finalAngleTarget =
         readSimpleField(
-            "finalAngleTarget",
-            readUnsignedBigInteger(readBuffer, 40),
-            WithOption.WithEncoding("ASCII"));
+            "finalAngleTarget", readUnsignedLong(readBuffer, 40), WithOption.WithEncoding("ASCII"));
 
     int blockIdAngle =
         readConstField(
@@ -2071,9 +2055,9 @@ public class OpenProtocolMessageLastTighteningResultDataRev4
             OpenProtocolMessageLastTighteningResultDataRev4.BLOCKIDANGLE,
             WithOption.WithEncoding("ASCII"));
 
-    BigInteger angle =
+    long angle =
         readSimpleField(
-            "angle", readUnsignedBigInteger(readBuffer, 40), WithOption.WithEncoding("ASCII"));
+            "angle", readUnsignedLong(readBuffer, 40), WithOption.WithEncoding("ASCII"));
 
     int blockIdRundownAngleMin =
         readConstField(
@@ -2082,11 +2066,9 @@ public class OpenProtocolMessageLastTighteningResultDataRev4
             OpenProtocolMessageLastTighteningResultDataRev4.BLOCKIDRUNDOWNANGLEMIN,
             WithOption.WithEncoding("ASCII"));
 
-    BigInteger rundownAngleMin =
+    long rundownAngleMin =
         readSimpleField(
-            "rundownAngleMin",
-            readUnsignedBigInteger(readBuffer, 40),
-            WithOption.WithEncoding("ASCII"));
+            "rundownAngleMin", readUnsignedLong(readBuffer, 40), WithOption.WithEncoding("ASCII"));
 
     int blockIdRundownAngleMax =
         readConstField(
@@ -2095,11 +2077,9 @@ public class OpenProtocolMessageLastTighteningResultDataRev4
             OpenProtocolMessageLastTighteningResultDataRev4.BLOCKIDRUNDOWNANGLEMAX,
             WithOption.WithEncoding("ASCII"));
 
-    BigInteger rundownAngleMax =
+    long rundownAngleMax =
         readSimpleField(
-            "rundownAngleMax",
-            readUnsignedBigInteger(readBuffer, 40),
-            WithOption.WithEncoding("ASCII"));
+            "rundownAngleMax", readUnsignedLong(readBuffer, 40), WithOption.WithEncoding("ASCII"));
 
     int blockIdRundownAngle =
         readConstField(
@@ -2108,11 +2088,9 @@ public class OpenProtocolMessageLastTighteningResultDataRev4
             OpenProtocolMessageLastTighteningResultDataRev4.BLOCKIDRUNDOWNANGLE,
             WithOption.WithEncoding("ASCII"));
 
-    BigInteger rundownAngle =
+    long rundownAngle =
         readSimpleField(
-            "rundownAngle",
-            readUnsignedBigInteger(readBuffer, 40),
-            WithOption.WithEncoding("ASCII"));
+            "rundownAngle", readUnsignedLong(readBuffer, 40), WithOption.WithEncoding("ASCII"));
 
     int blockIdCurrentMonitoringMin =
         readConstField(
@@ -2121,10 +2099,10 @@ public class OpenProtocolMessageLastTighteningResultDataRev4
             OpenProtocolMessageLastTighteningResultDataRev4.BLOCKIDCURRENTMONITORINGMIN,
             WithOption.WithEncoding("ASCII"));
 
-    long currentMonitoringMin =
+    int currentMonitoringMin =
         readSimpleField(
             "currentMonitoringMin",
-            readUnsignedLong(readBuffer, 24),
+            readUnsignedInt(readBuffer, 24),
             WithOption.WithEncoding("ASCII"));
 
     int blockIdCurrentMonitoringMax =
@@ -2134,10 +2112,10 @@ public class OpenProtocolMessageLastTighteningResultDataRev4
             OpenProtocolMessageLastTighteningResultDataRev4.BLOCKIDCURRENTMONITORINGMAX,
             WithOption.WithEncoding("ASCII"));
 
-    long currentMonitoringMax =
+    int currentMonitoringMax =
         readSimpleField(
             "currentMonitoringMax",
-            readUnsignedLong(readBuffer, 24),
+            readUnsignedInt(readBuffer, 24),
             WithOption.WithEncoding("ASCII"));
 
     int blockIdCurrentMonitoringValue =
@@ -2147,10 +2125,10 @@ public class OpenProtocolMessageLastTighteningResultDataRev4
             OpenProtocolMessageLastTighteningResultDataRev4.BLOCKIDCURRENTMONITORINGVALUE,
             WithOption.WithEncoding("ASCII"));
 
-    long currentMonitoringValue =
+    int currentMonitoringValue =
         readSimpleField(
             "currentMonitoringValue",
-            readUnsignedLong(readBuffer, 24),
+            readUnsignedInt(readBuffer, 24),
             WithOption.WithEncoding("ASCII"));
 
     int blockIdSelfTapMin =
@@ -2160,9 +2138,9 @@ public class OpenProtocolMessageLastTighteningResultDataRev4
             OpenProtocolMessageLastTighteningResultDataRev4.BLOCKIDSELFTAPMIN,
             WithOption.WithEncoding("ASCII"));
 
-    BigInteger selfTapMin =
+    long selfTapMin =
         readSimpleField(
-            "selfTapMin", readUnsignedBigInteger(readBuffer, 48), WithOption.WithEncoding("ASCII"));
+            "selfTapMin", readUnsignedLong(readBuffer, 48), WithOption.WithEncoding("ASCII"));
 
     int blockIdSelfTapMax =
         readConstField(
@@ -2171,9 +2149,9 @@ public class OpenProtocolMessageLastTighteningResultDataRev4
             OpenProtocolMessageLastTighteningResultDataRev4.BLOCKIDSELFTAPMAX,
             WithOption.WithEncoding("ASCII"));
 
-    BigInteger selfTapMax =
+    long selfTapMax =
         readSimpleField(
-            "selfTapMax", readUnsignedBigInteger(readBuffer, 48), WithOption.WithEncoding("ASCII"));
+            "selfTapMax", readUnsignedLong(readBuffer, 48), WithOption.WithEncoding("ASCII"));
 
     int blockIdSelfTapTorque =
         readConstField(
@@ -2182,11 +2160,9 @@ public class OpenProtocolMessageLastTighteningResultDataRev4
             OpenProtocolMessageLastTighteningResultDataRev4.BLOCKIDSELFTAPTORQUE,
             WithOption.WithEncoding("ASCII"));
 
-    BigInteger selfTapTorque =
+    long selfTapTorque =
         readSimpleField(
-            "selfTapTorque",
-            readUnsignedBigInteger(readBuffer, 48),
-            WithOption.WithEncoding("ASCII"));
+            "selfTapTorque", readUnsignedLong(readBuffer, 48), WithOption.WithEncoding("ASCII"));
 
     int blockIdPrevailTorqueMonitoringMin =
         readConstField(
@@ -2195,10 +2171,10 @@ public class OpenProtocolMessageLastTighteningResultDataRev4
             OpenProtocolMessageLastTighteningResultDataRev4.BLOCKIDPREVAILTORQUEMONITORINGMIN,
             WithOption.WithEncoding("ASCII"));
 
-    BigInteger prevailTorqueMonitoringMin =
+    long prevailTorqueMonitoringMin =
         readSimpleField(
             "prevailTorqueMonitoringMin",
-            readUnsignedBigInteger(readBuffer, 48),
+            readUnsignedLong(readBuffer, 48),
             WithOption.WithEncoding("ASCII"));
 
     int blockIdPrevailTorqueMonitoringMax =
@@ -2208,10 +2184,10 @@ public class OpenProtocolMessageLastTighteningResultDataRev4
             OpenProtocolMessageLastTighteningResultDataRev4.BLOCKIDPREVAILTORQUEMONITORINGMAX,
             WithOption.WithEncoding("ASCII"));
 
-    BigInteger prevailTorqueMonitoringMax =
+    long prevailTorqueMonitoringMax =
         readSimpleField(
             "prevailTorqueMonitoringMax",
-            readUnsignedBigInteger(readBuffer, 48),
+            readUnsignedLong(readBuffer, 48),
             WithOption.WithEncoding("ASCII"));
 
     int blockIdPrevailTorque =
@@ -2221,11 +2197,9 @@ public class OpenProtocolMessageLastTighteningResultDataRev4
             OpenProtocolMessageLastTighteningResultDataRev4.BLOCKIDPREVAILTORQUE,
             WithOption.WithEncoding("ASCII"));
 
-    BigInteger prevailTorque =
+    long prevailTorque =
         readSimpleField(
-            "prevailTorque",
-            readUnsignedBigInteger(readBuffer, 48),
-            WithOption.WithEncoding("ASCII"));
+            "prevailTorque", readUnsignedLong(readBuffer, 48), WithOption.WithEncoding("ASCII"));
 
     int blockIdTighteningId =
         readConstField(
@@ -2245,10 +2219,10 @@ public class OpenProtocolMessageLastTighteningResultDataRev4
             OpenProtocolMessageLastTighteningResultDataRev4.BLOCKIDJOBSEQUENCENUMBER,
             WithOption.WithEncoding("ASCII"));
 
-    BigInteger jobSequenceNumber =
+    long jobSequenceNumber =
         readSimpleField(
             "jobSequenceNumber",
-            readUnsignedBigInteger(readBuffer, 40),
+            readUnsignedLong(readBuffer, 40),
             WithOption.WithEncoding("ASCII"));
 
     int blockIdSyncTighteningId =
@@ -2258,11 +2232,9 @@ public class OpenProtocolMessageLastTighteningResultDataRev4
             OpenProtocolMessageLastTighteningResultDataRev4.BLOCKIDSYNCTIGHTENINGID,
             WithOption.WithEncoding("ASCII"));
 
-    BigInteger syncTighteningId =
+    long syncTighteningId =
         readSimpleField(
-            "syncTighteningId",
-            readUnsignedBigInteger(readBuffer, 40),
-            WithOption.WithEncoding("ASCII"));
+            "syncTighteningId", readUnsignedLong(readBuffer, 40), WithOption.WithEncoding("ASCII"));
 
     int blockIdToolSerialNumber =
         readConstField(
@@ -2434,7 +2406,7 @@ public class OpenProtocolMessageLastTighteningResultDataRev4
     private final String torqueControllerName;
     private final String vinNumber;
     private final long jobId;
-    private final long parameterSetNumber;
+    private final int parameterSetNumber;
     private final Strategy strategy;
     private final long batchSize;
     private final long batchCounter;
@@ -2447,29 +2419,29 @@ public class OpenProtocolMessageLastTighteningResultDataRev4
     private final Status selfTapStatus;
     private final Status prevailTorqueMonitoringStatus;
     private final Status prevailTorqueCompensateStatus;
-    private final BigInteger torqueMinLimit;
-    private final BigInteger torqueMaxLimit;
-    private final BigInteger torqueFinalTarget;
-    private final BigInteger torque;
-    private final BigInteger angleMin;
-    private final BigInteger angleMax;
-    private final BigInteger finalAngleTarget;
-    private final BigInteger angle;
-    private final BigInteger rundownAngleMin;
-    private final BigInteger rundownAngleMax;
-    private final BigInteger rundownAngle;
-    private final long currentMonitoringMin;
-    private final long currentMonitoringMax;
-    private final long currentMonitoringValue;
-    private final BigInteger selfTapMin;
-    private final BigInteger selfTapMax;
-    private final BigInteger selfTapTorque;
-    private final BigInteger prevailTorqueMonitoringMin;
-    private final BigInteger prevailTorqueMonitoringMax;
-    private final BigInteger prevailTorque;
+    private final long torqueMinLimit;
+    private final long torqueMaxLimit;
+    private final long torqueFinalTarget;
+    private final long torque;
+    private final long angleMin;
+    private final long angleMax;
+    private final long finalAngleTarget;
+    private final long angle;
+    private final long rundownAngleMin;
+    private final long rundownAngleMax;
+    private final long rundownAngle;
+    private final int currentMonitoringMin;
+    private final int currentMonitoringMax;
+    private final int currentMonitoringValue;
+    private final long selfTapMin;
+    private final long selfTapMax;
+    private final long selfTapTorque;
+    private final long prevailTorqueMonitoringMin;
+    private final long prevailTorqueMonitoringMax;
+    private final long prevailTorque;
     private final String tighteningId;
-    private final BigInteger jobSequenceNumber;
-    private final BigInteger syncTighteningId;
+    private final long jobSequenceNumber;
+    private final long syncTighteningId;
     private final String toolSerialNumber;
     private final String timeStamp;
     private final String dateTimeOfLastChangeIndParameterSetSettings;
@@ -2486,7 +2458,7 @@ public class OpenProtocolMessageLastTighteningResultDataRev4
         String torqueControllerName,
         String vinNumber,
         long jobId,
-        long parameterSetNumber,
+        int parameterSetNumber,
         Strategy strategy,
         long batchSize,
         long batchCounter,
@@ -2499,29 +2471,29 @@ public class OpenProtocolMessageLastTighteningResultDataRev4
         Status selfTapStatus,
         Status prevailTorqueMonitoringStatus,
         Status prevailTorqueCompensateStatus,
-        BigInteger torqueMinLimit,
-        BigInteger torqueMaxLimit,
-        BigInteger torqueFinalTarget,
-        BigInteger torque,
-        BigInteger angleMin,
-        BigInteger angleMax,
-        BigInteger finalAngleTarget,
-        BigInteger angle,
-        BigInteger rundownAngleMin,
-        BigInteger rundownAngleMax,
-        BigInteger rundownAngle,
-        long currentMonitoringMin,
-        long currentMonitoringMax,
-        long currentMonitoringValue,
-        BigInteger selfTapMin,
-        BigInteger selfTapMax,
-        BigInteger selfTapTorque,
-        BigInteger prevailTorqueMonitoringMin,
-        BigInteger prevailTorqueMonitoringMax,
-        BigInteger prevailTorque,
+        long torqueMinLimit,
+        long torqueMaxLimit,
+        long torqueFinalTarget,
+        long torque,
+        long angleMin,
+        long angleMax,
+        long finalAngleTarget,
+        long angle,
+        long rundownAngleMin,
+        long rundownAngleMax,
+        long rundownAngle,
+        int currentMonitoringMin,
+        int currentMonitoringMax,
+        int currentMonitoringValue,
+        long selfTapMin,
+        long selfTapMax,
+        long selfTapTorque,
+        long prevailTorqueMonitoringMin,
+        long prevailTorqueMonitoringMax,
+        long prevailTorque,
         String tighteningId,
-        BigInteger jobSequenceNumber,
-        BigInteger syncTighteningId,
+        long jobSequenceNumber,
+        long syncTighteningId,
         String toolSerialNumber,
         String timeStamp,
         String dateTimeOfLastChangeIndParameterSetSettings,
@@ -2585,7 +2557,7 @@ public class OpenProtocolMessageLastTighteningResultDataRev4
     }
 
     public OpenProtocolMessageLastTighteningResultDataRev4 build(
-        Long midRevision,
+        Integer midRevision,
         Short noAckFlag,
         Integer targetStationId,
         Integer targetSpindleId,

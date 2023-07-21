@@ -40,8 +40,7 @@
         <CANOpenTimeSynchronization>
           <timeOfDay>
             <CANOpenTime>
-              <millis dataType="uint" bitLength="28">3631939850</millis>
-              <reserved dataType="int" bitLength="4">0</reserved>
+              <millis dataType="uint" bitLength="32">2159876000</millis>
               <days dataType="uint" bitLength="16">13392</days>
             </CANOpenTime>
           </timeOfDay>
@@ -55,7 +54,7 @@
     <!--
     Initial test payload was 7019BE835034, however it does not align with CANOpen spec or mapping on our side is wrong
     -->
-    <raw>7019BE805034</raw>
+    <raw>7019BE835034</raw>
     <root-type>CANOpenPayload</root-type>
     <parser-arguments>
       <arg1>TIME</arg1>
@@ -65,8 +64,7 @@
         <CANOpenTimeSynchronization>
           <timeOfDay>
             <CANOpenTime>
-              <millis dataType="uint" bitLength="28">3902472455</millis>
-              <reserved dataType="int" bitLength="4">0</reserved>
+              <millis dataType="uint" bitLength="32">2210273648</millis>
               <days dataType="uint" bitLength="16">13392</days>
             </CANOpenTime>
           </timeOfDay>

@@ -24,7 +24,6 @@ import static org.apache.plc4x.java.spi.codegen.io.DataReaderFactory.*;
 import static org.apache.plc4x.java.spi.codegen.io.DataWriterFactory.*;
 import static org.apache.plc4x.java.spi.generation.StaticHelper.*;
 
-import java.math.BigInteger;
 import java.time.*;
 import java.util.*;
 import org.apache.plc4x.java.api.exceptions.*;
@@ -40,8 +39,8 @@ public class OpenProtocolMessageLastTighteningResultDataRev1
     extends OpenProtocolMessageLastTighteningResultData implements Message {
 
   // Accessors for discriminator values.
-  public Long getRevision() {
-    return (long) 1;
+  public Integer getRevision() {
+    return (int) 1;
   }
 
   // Constant values.
@@ -75,27 +74,27 @@ public class OpenProtocolMessageLastTighteningResultDataRev1
   protected final String torqueControllerName;
   protected final String vinNumber;
   protected final int jobId;
-  protected final long parameterSetId;
+  protected final int parameterSetId;
   protected final long batchSize;
   protected final long batchCounter;
   protected final NokOk tighteningStatus;
   protected final Status torqueStatus;
   protected final Status angleStatus;
-  protected final BigInteger torqueMinLimit;
-  protected final BigInteger torqueMaxLimit;
-  protected final BigInteger torqueFinalTarget;
-  protected final BigInteger torque;
-  protected final BigInteger angleMin;
-  protected final BigInteger angleMax;
-  protected final BigInteger finalAngleTarget;
-  protected final BigInteger angle;
+  protected final long torqueMinLimit;
+  protected final long torqueMaxLimit;
+  protected final long torqueFinalTarget;
+  protected final long torque;
+  protected final long angleMin;
+  protected final long angleMax;
+  protected final long finalAngleTarget;
+  protected final long angle;
   protected final String timeStamp;
   protected final String dateTimeOfLastChangeIndParameterSetSettings;
   protected final BatchStatus batchStatus;
   protected final String tighteningId;
 
   public OpenProtocolMessageLastTighteningResultDataRev1(
-      Long midRevision,
+      Integer midRevision,
       Short noAckFlag,
       Integer targetStationId,
       Integer targetSpindleId,
@@ -107,20 +106,20 @@ public class OpenProtocolMessageLastTighteningResultDataRev1
       String torqueControllerName,
       String vinNumber,
       int jobId,
-      long parameterSetId,
+      int parameterSetId,
       long batchSize,
       long batchCounter,
       NokOk tighteningStatus,
       Status torqueStatus,
       Status angleStatus,
-      BigInteger torqueMinLimit,
-      BigInteger torqueMaxLimit,
-      BigInteger torqueFinalTarget,
-      BigInteger torque,
-      BigInteger angleMin,
-      BigInteger angleMax,
-      BigInteger finalAngleTarget,
-      BigInteger angle,
+      long torqueMinLimit,
+      long torqueMaxLimit,
+      long torqueFinalTarget,
+      long torque,
+      long angleMin,
+      long angleMax,
+      long finalAngleTarget,
+      long angle,
       String timeStamp,
       String dateTimeOfLastChangeIndParameterSetSettings,
       BatchStatus batchStatus,
@@ -178,7 +177,7 @@ public class OpenProtocolMessageLastTighteningResultDataRev1
     return jobId;
   }
 
-  public long getParameterSetId() {
+  public int getParameterSetId() {
     return parameterSetId;
   }
 
@@ -202,35 +201,35 @@ public class OpenProtocolMessageLastTighteningResultDataRev1
     return angleStatus;
   }
 
-  public BigInteger getTorqueMinLimit() {
+  public long getTorqueMinLimit() {
     return torqueMinLimit;
   }
 
-  public BigInteger getTorqueMaxLimit() {
+  public long getTorqueMaxLimit() {
     return torqueMaxLimit;
   }
 
-  public BigInteger getTorqueFinalTarget() {
+  public long getTorqueFinalTarget() {
     return torqueFinalTarget;
   }
 
-  public BigInteger getTorque() {
+  public long getTorque() {
     return torque;
   }
 
-  public BigInteger getAngleMin() {
+  public long getAngleMin() {
     return angleMin;
   }
 
-  public BigInteger getAngleMax() {
+  public long getAngleMax() {
     return angleMax;
   }
 
-  public BigInteger getFinalAngleTarget() {
+  public long getFinalAngleTarget() {
     return finalAngleTarget;
   }
 
-  public BigInteger getAngle() {
+  public long getAngle() {
     return angle;
   }
 
@@ -421,7 +420,7 @@ public class OpenProtocolMessageLastTighteningResultDataRev1
     writeSimpleField(
         "parameterSetId",
         parameterSetId,
-        writeUnsignedLong(writeBuffer, 24),
+        writeUnsignedInt(writeBuffer, 24),
         WithOption.WithEncoding("ASCII"));
 
     // Const Field (blockIdBatchSize)
@@ -511,7 +510,7 @@ public class OpenProtocolMessageLastTighteningResultDataRev1
     writeSimpleField(
         "torqueMinLimit",
         torqueMinLimit,
-        writeUnsignedBigInteger(writeBuffer, 48),
+        writeUnsignedLong(writeBuffer, 48),
         WithOption.WithEncoding("ASCII"));
 
     // Const Field (blockIdTorqueMaxLimit)
@@ -525,7 +524,7 @@ public class OpenProtocolMessageLastTighteningResultDataRev1
     writeSimpleField(
         "torqueMaxLimit",
         torqueMaxLimit,
-        writeUnsignedBigInteger(writeBuffer, 48),
+        writeUnsignedLong(writeBuffer, 48),
         WithOption.WithEncoding("ASCII"));
 
     // Const Field (blockIdTorqueFinalTarget)
@@ -539,7 +538,7 @@ public class OpenProtocolMessageLastTighteningResultDataRev1
     writeSimpleField(
         "torqueFinalTarget",
         torqueFinalTarget,
-        writeUnsignedBigInteger(writeBuffer, 48),
+        writeUnsignedLong(writeBuffer, 48),
         WithOption.WithEncoding("ASCII"));
 
     // Const Field (blockIdTorque)
@@ -551,10 +550,7 @@ public class OpenProtocolMessageLastTighteningResultDataRev1
 
     // Simple Field (torque)
     writeSimpleField(
-        "torque",
-        torque,
-        writeUnsignedBigInteger(writeBuffer, 48),
-        WithOption.WithEncoding("ASCII"));
+        "torque", torque, writeUnsignedLong(writeBuffer, 48), WithOption.WithEncoding("ASCII"));
 
     // Const Field (blockIdAngleMin)
     writeConstField(
@@ -565,10 +561,7 @@ public class OpenProtocolMessageLastTighteningResultDataRev1
 
     // Simple Field (angleMin)
     writeSimpleField(
-        "angleMin",
-        angleMin,
-        writeUnsignedBigInteger(writeBuffer, 40),
-        WithOption.WithEncoding("ASCII"));
+        "angleMin", angleMin, writeUnsignedLong(writeBuffer, 40), WithOption.WithEncoding("ASCII"));
 
     // Const Field (blockIdAngleMax)
     writeConstField(
@@ -579,10 +572,7 @@ public class OpenProtocolMessageLastTighteningResultDataRev1
 
     // Simple Field (angleMax)
     writeSimpleField(
-        "angleMax",
-        angleMax,
-        writeUnsignedBigInteger(writeBuffer, 40),
-        WithOption.WithEncoding("ASCII"));
+        "angleMax", angleMax, writeUnsignedLong(writeBuffer, 40), WithOption.WithEncoding("ASCII"));
 
     // Const Field (blockIdFinalAngleTarget)
     writeConstField(
@@ -595,7 +585,7 @@ public class OpenProtocolMessageLastTighteningResultDataRev1
     writeSimpleField(
         "finalAngleTarget",
         finalAngleTarget,
-        writeUnsignedBigInteger(writeBuffer, 40),
+        writeUnsignedLong(writeBuffer, 40),
         WithOption.WithEncoding("ASCII"));
 
     // Const Field (blockIdAngle)
@@ -607,7 +597,7 @@ public class OpenProtocolMessageLastTighteningResultDataRev1
 
     // Simple Field (angle)
     writeSimpleField(
-        "angle", angle, writeUnsignedBigInteger(writeBuffer, 40), WithOption.WithEncoding("ASCII"));
+        "angle", angle, writeUnsignedLong(writeBuffer, 40), WithOption.WithEncoding("ASCII"));
 
     // Const Field (blockIdTimeStamp)
     writeConstField(
@@ -821,7 +811,7 @@ public class OpenProtocolMessageLastTighteningResultDataRev1
 
   public static OpenProtocolMessageLastTighteningResultDataBuilder
       staticParseOpenProtocolMessageLastTighteningResultDataBuilder(
-          ReadBuffer readBuffer, Long revision) throws ParseException {
+          ReadBuffer readBuffer, Integer revision) throws ParseException {
     readBuffer.pullContext("OpenProtocolMessageLastTighteningResultDataRev1");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
@@ -886,9 +876,9 @@ public class OpenProtocolMessageLastTighteningResultDataRev1
             OpenProtocolMessageLastTighteningResultDataRev1.BLOCKIDPARAMETERSETID,
             WithOption.WithEncoding("ASCII"));
 
-    long parameterSetId =
+    int parameterSetId =
         readSimpleField(
-            "parameterSetId", readUnsignedLong(readBuffer, 24), WithOption.WithEncoding("ASCII"));
+            "parameterSetId", readUnsignedInt(readBuffer, 24), WithOption.WithEncoding("ASCII"));
 
     int blockIdBatchSize =
         readConstField(
@@ -961,11 +951,9 @@ public class OpenProtocolMessageLastTighteningResultDataRev1
             OpenProtocolMessageLastTighteningResultDataRev1.BLOCKIDTORQUEMINLIMIT,
             WithOption.WithEncoding("ASCII"));
 
-    BigInteger torqueMinLimit =
+    long torqueMinLimit =
         readSimpleField(
-            "torqueMinLimit",
-            readUnsignedBigInteger(readBuffer, 48),
-            WithOption.WithEncoding("ASCII"));
+            "torqueMinLimit", readUnsignedLong(readBuffer, 48), WithOption.WithEncoding("ASCII"));
 
     int blockIdTorqueMaxLimit =
         readConstField(
@@ -974,11 +962,9 @@ public class OpenProtocolMessageLastTighteningResultDataRev1
             OpenProtocolMessageLastTighteningResultDataRev1.BLOCKIDTORQUEMAXLIMIT,
             WithOption.WithEncoding("ASCII"));
 
-    BigInteger torqueMaxLimit =
+    long torqueMaxLimit =
         readSimpleField(
-            "torqueMaxLimit",
-            readUnsignedBigInteger(readBuffer, 48),
-            WithOption.WithEncoding("ASCII"));
+            "torqueMaxLimit", readUnsignedLong(readBuffer, 48), WithOption.WithEncoding("ASCII"));
 
     int blockIdTorqueFinalTarget =
         readConstField(
@@ -987,10 +973,10 @@ public class OpenProtocolMessageLastTighteningResultDataRev1
             OpenProtocolMessageLastTighteningResultDataRev1.BLOCKIDTORQUEFINALTARGET,
             WithOption.WithEncoding("ASCII"));
 
-    BigInteger torqueFinalTarget =
+    long torqueFinalTarget =
         readSimpleField(
             "torqueFinalTarget",
-            readUnsignedBigInteger(readBuffer, 48),
+            readUnsignedLong(readBuffer, 48),
             WithOption.WithEncoding("ASCII"));
 
     int blockIdTorque =
@@ -1000,9 +986,9 @@ public class OpenProtocolMessageLastTighteningResultDataRev1
             OpenProtocolMessageLastTighteningResultDataRev1.BLOCKIDTORQUE,
             WithOption.WithEncoding("ASCII"));
 
-    BigInteger torque =
+    long torque =
         readSimpleField(
-            "torque", readUnsignedBigInteger(readBuffer, 48), WithOption.WithEncoding("ASCII"));
+            "torque", readUnsignedLong(readBuffer, 48), WithOption.WithEncoding("ASCII"));
 
     int blockIdAngleMin =
         readConstField(
@@ -1011,9 +997,9 @@ public class OpenProtocolMessageLastTighteningResultDataRev1
             OpenProtocolMessageLastTighteningResultDataRev1.BLOCKIDANGLEMIN,
             WithOption.WithEncoding("ASCII"));
 
-    BigInteger angleMin =
+    long angleMin =
         readSimpleField(
-            "angleMin", readUnsignedBigInteger(readBuffer, 40), WithOption.WithEncoding("ASCII"));
+            "angleMin", readUnsignedLong(readBuffer, 40), WithOption.WithEncoding("ASCII"));
 
     int blockIdAngleMax =
         readConstField(
@@ -1022,9 +1008,9 @@ public class OpenProtocolMessageLastTighteningResultDataRev1
             OpenProtocolMessageLastTighteningResultDataRev1.BLOCKIDANGLEMAX,
             WithOption.WithEncoding("ASCII"));
 
-    BigInteger angleMax =
+    long angleMax =
         readSimpleField(
-            "angleMax", readUnsignedBigInteger(readBuffer, 40), WithOption.WithEncoding("ASCII"));
+            "angleMax", readUnsignedLong(readBuffer, 40), WithOption.WithEncoding("ASCII"));
 
     int blockIdFinalAngleTarget =
         readConstField(
@@ -1033,11 +1019,9 @@ public class OpenProtocolMessageLastTighteningResultDataRev1
             OpenProtocolMessageLastTighteningResultDataRev1.BLOCKIDFINALANGLETARGET,
             WithOption.WithEncoding("ASCII"));
 
-    BigInteger finalAngleTarget =
+    long finalAngleTarget =
         readSimpleField(
-            "finalAngleTarget",
-            readUnsignedBigInteger(readBuffer, 40),
-            WithOption.WithEncoding("ASCII"));
+            "finalAngleTarget", readUnsignedLong(readBuffer, 40), WithOption.WithEncoding("ASCII"));
 
     int blockIdAngle =
         readConstField(
@@ -1046,9 +1030,9 @@ public class OpenProtocolMessageLastTighteningResultDataRev1
             OpenProtocolMessageLastTighteningResultDataRev1.BLOCKIDANGLE,
             WithOption.WithEncoding("ASCII"));
 
-    BigInteger angle =
+    long angle =
         readSimpleField(
-            "angle", readUnsignedBigInteger(readBuffer, 40), WithOption.WithEncoding("ASCII"));
+            "angle", readUnsignedLong(readBuffer, 40), WithOption.WithEncoding("ASCII"));
 
     int blockIdTimeStamp =
         readConstField(
@@ -1136,20 +1120,20 @@ public class OpenProtocolMessageLastTighteningResultDataRev1
     private final String torqueControllerName;
     private final String vinNumber;
     private final int jobId;
-    private final long parameterSetId;
+    private final int parameterSetId;
     private final long batchSize;
     private final long batchCounter;
     private final NokOk tighteningStatus;
     private final Status torqueStatus;
     private final Status angleStatus;
-    private final BigInteger torqueMinLimit;
-    private final BigInteger torqueMaxLimit;
-    private final BigInteger torqueFinalTarget;
-    private final BigInteger torque;
-    private final BigInteger angleMin;
-    private final BigInteger angleMax;
-    private final BigInteger finalAngleTarget;
-    private final BigInteger angle;
+    private final long torqueMinLimit;
+    private final long torqueMaxLimit;
+    private final long torqueFinalTarget;
+    private final long torque;
+    private final long angleMin;
+    private final long angleMax;
+    private final long finalAngleTarget;
+    private final long angle;
     private final String timeStamp;
     private final String dateTimeOfLastChangeIndParameterSetSettings;
     private final BatchStatus batchStatus;
@@ -1161,20 +1145,20 @@ public class OpenProtocolMessageLastTighteningResultDataRev1
         String torqueControllerName,
         String vinNumber,
         int jobId,
-        long parameterSetId,
+        int parameterSetId,
         long batchSize,
         long batchCounter,
         NokOk tighteningStatus,
         Status torqueStatus,
         Status angleStatus,
-        BigInteger torqueMinLimit,
-        BigInteger torqueMaxLimit,
-        BigInteger torqueFinalTarget,
-        BigInteger torque,
-        BigInteger angleMin,
-        BigInteger angleMax,
-        BigInteger finalAngleTarget,
-        BigInteger angle,
+        long torqueMinLimit,
+        long torqueMaxLimit,
+        long torqueFinalTarget,
+        long torque,
+        long angleMin,
+        long angleMax,
+        long finalAngleTarget,
+        long angle,
         String timeStamp,
         String dateTimeOfLastChangeIndParameterSetSettings,
         BatchStatus batchStatus,
@@ -1206,7 +1190,7 @@ public class OpenProtocolMessageLastTighteningResultDataRev1
     }
 
     public OpenProtocolMessageLastTighteningResultDataRev1 build(
-        Long midRevision,
+        Integer midRevision,
         Short noAckFlag,
         Integer targetStationId,
         Integer targetSpindleId,

@@ -42,8 +42,8 @@ public class ModbusPDUReadFifoQueueRequest extends ModbusPDU implements Message 
     return (boolean) false;
   }
 
-  public Short getFunctionFlag() {
-    return (short) 0x18;
+  public Byte getFunctionFlag() {
+    return (byte) 0x18;
   }
 
   public Boolean getResponse() {

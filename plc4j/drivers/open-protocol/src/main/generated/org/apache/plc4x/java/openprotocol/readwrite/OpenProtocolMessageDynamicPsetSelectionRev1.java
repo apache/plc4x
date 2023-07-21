@@ -39,23 +39,23 @@ public class OpenProtocolMessageDynamicPsetSelectionRev1
     extends OpenProtocolMessageDynamicPsetSelection implements Message {
 
   // Accessors for discriminator values.
-  public Long getRevision() {
-    return (long) 1;
+  public Integer getRevision() {
+    return (int) 1;
   }
 
   // Properties.
-  protected final long parameterSetId;
+  protected final int parameterSetId;
   protected final List<VariableDataField> dataFields;
 
   public OpenProtocolMessageDynamicPsetSelectionRev1(
-      Long midRevision,
+      Integer midRevision,
       Short noAckFlag,
       Integer targetStationId,
       Integer targetSpindleId,
       Integer sequenceNumber,
       Short numberOfMessageParts,
       Short messagePartNumber,
-      long parameterSetId,
+      int parameterSetId,
       List<VariableDataField> dataFields) {
     super(
         midRevision,
@@ -69,7 +69,7 @@ public class OpenProtocolMessageDynamicPsetSelectionRev1
     this.dataFields = dataFields;
   }
 
-  public long getParameterSetId() {
+  public int getParameterSetId() {
     return parameterSetId;
   }
 
@@ -88,16 +88,16 @@ public class OpenProtocolMessageDynamicPsetSelectionRev1
     writeSimpleField(
         "parameterSetId",
         parameterSetId,
-        writeUnsignedLong(writeBuffer, 24),
+        writeUnsignedInt(writeBuffer, 24),
         WithOption.WithEncoding("ASCII"));
 
     // Implicit Field (numberOfParameterDataFields) (Used for parsing, but its value is not stored
     // as it's implicitly given by the objects content)
-    long numberOfParameterDataFields = (long) (COUNT(getDataFields()));
+    int numberOfParameterDataFields = (int) (COUNT(getDataFields()));
     writeImplicitField(
         "numberOfParameterDataFields",
         numberOfParameterDataFields,
-        writeUnsignedLong(writeBuffer, 24),
+        writeUnsignedInt(writeBuffer, 24),
         WithOption.WithEncoding("ASCII"));
 
     // Array Field (dataFields)
@@ -138,19 +138,19 @@ public class OpenProtocolMessageDynamicPsetSelectionRev1
 
   public static OpenProtocolMessageDynamicPsetSelectionBuilder
       staticParseOpenProtocolMessageDynamicPsetSelectionBuilder(
-          ReadBuffer readBuffer, Long revision) throws ParseException {
+          ReadBuffer readBuffer, Integer revision) throws ParseException {
     readBuffer.pullContext("OpenProtocolMessageDynamicPsetSelectionRev1");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    long parameterSetId =
+    int parameterSetId =
         readSimpleField(
-            "parameterSetId", readUnsignedLong(readBuffer, 24), WithOption.WithEncoding("ASCII"));
+            "parameterSetId", readUnsignedInt(readBuffer, 24), WithOption.WithEncoding("ASCII"));
 
-    long numberOfParameterDataFields =
+    int numberOfParameterDataFields =
         readImplicitField(
             "numberOfParameterDataFields",
-            readUnsignedLong(readBuffer, 24),
+            readUnsignedInt(readBuffer, 24),
             WithOption.WithEncoding("ASCII"));
 
     List<VariableDataField> dataFields =
@@ -169,17 +169,17 @@ public class OpenProtocolMessageDynamicPsetSelectionRev1
   public static class OpenProtocolMessageDynamicPsetSelectionRev1BuilderImpl
       implements OpenProtocolMessageDynamicPsetSelection
           .OpenProtocolMessageDynamicPsetSelectionBuilder {
-    private final long parameterSetId;
+    private final int parameterSetId;
     private final List<VariableDataField> dataFields;
 
     public OpenProtocolMessageDynamicPsetSelectionRev1BuilderImpl(
-        long parameterSetId, List<VariableDataField> dataFields) {
+        int parameterSetId, List<VariableDataField> dataFields) {
       this.parameterSetId = parameterSetId;
       this.dataFields = dataFields;
     }
 
     public OpenProtocolMessageDynamicPsetSelectionRev1 build(
-        Long midRevision,
+        Integer midRevision,
         Short noAckFlag,
         Integer targetStationId,
         Integer targetSpindleId,

@@ -39,8 +39,8 @@ public class OpenProtocolMessageApplicationCommunicationStartAcknowledgeRev5
     extends OpenProtocolMessageApplicationCommunicationStartAcknowledge implements Message {
 
   // Accessors for discriminator values.
-  public Long getRevision() {
-    return (long) 5;
+  public Integer getRevision() {
+    return (int) 5;
   }
 
   // Constant values.
@@ -60,7 +60,7 @@ public class OpenProtocolMessageApplicationCommunicationStartAcknowledgeRev5
   protected final long cellId;
   protected final int channelId;
   protected final String controllerName;
-  protected final long supplierCode;
+  protected final int supplierCode;
   protected final String openProtocolVersion;
   protected final String controllerSoftwareVersion;
   protected final String toolSoftwareVersion;
@@ -70,7 +70,7 @@ public class OpenProtocolMessageApplicationCommunicationStartAcknowledgeRev5
   protected final String systemSubtype;
 
   public OpenProtocolMessageApplicationCommunicationStartAcknowledgeRev5(
-      Long midRevision,
+      Integer midRevision,
       Short noAckFlag,
       Integer targetStationId,
       Integer targetSpindleId,
@@ -80,7 +80,7 @@ public class OpenProtocolMessageApplicationCommunicationStartAcknowledgeRev5
       long cellId,
       int channelId,
       String controllerName,
-      long supplierCode,
+      int supplierCode,
       String openProtocolVersion,
       String controllerSoftwareVersion,
       String toolSoftwareVersion,
@@ -121,7 +121,7 @@ public class OpenProtocolMessageApplicationCommunicationStartAcknowledgeRev5
     return controllerName;
   }
 
-  public long getSupplierCode() {
+  public int getSupplierCode() {
     return supplierCode;
   }
 
@@ -254,7 +254,7 @@ public class OpenProtocolMessageApplicationCommunicationStartAcknowledgeRev5
     writeSimpleField(
         "supplierCode",
         supplierCode,
-        writeUnsignedLong(writeBuffer, 24),
+        writeUnsignedInt(writeBuffer, 24),
         WithOption.WithEncoding("ASCII"));
 
     // Const Field (blockIdOpenProtocolVersion)
@@ -434,7 +434,7 @@ public class OpenProtocolMessageApplicationCommunicationStartAcknowledgeRev5
 
   public static OpenProtocolMessageApplicationCommunicationStartAcknowledgeBuilder
       staticParseOpenProtocolMessageApplicationCommunicationStartAcknowledgeBuilder(
-          ReadBuffer readBuffer, Long revision) throws ParseException {
+          ReadBuffer readBuffer, Integer revision) throws ParseException {
     readBuffer.pullContext("OpenProtocolMessageApplicationCommunicationStartAcknowledgeRev5");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
@@ -479,9 +479,9 @@ public class OpenProtocolMessageApplicationCommunicationStartAcknowledgeRev5
             OpenProtocolMessageApplicationCommunicationStartAcknowledgeRev5.BLOCKIDSUPPLIERCODE,
             WithOption.WithEncoding("ASCII"));
 
-    long supplierCode =
+    int supplierCode =
         readSimpleField(
-            "supplierCode", readUnsignedLong(readBuffer, 24), WithOption.WithEncoding("ASCII"));
+            "supplierCode", readUnsignedInt(readBuffer, 24), WithOption.WithEncoding("ASCII"));
 
     int blockIdOpenProtocolVersion =
         readConstField(
@@ -586,7 +586,7 @@ public class OpenProtocolMessageApplicationCommunicationStartAcknowledgeRev5
     private final long cellId;
     private final int channelId;
     private final String controllerName;
-    private final long supplierCode;
+    private final int supplierCode;
     private final String openProtocolVersion;
     private final String controllerSoftwareVersion;
     private final String toolSoftwareVersion;
@@ -599,7 +599,7 @@ public class OpenProtocolMessageApplicationCommunicationStartAcknowledgeRev5
         long cellId,
         int channelId,
         String controllerName,
-        long supplierCode,
+        int supplierCode,
         String openProtocolVersion,
         String controllerSoftwareVersion,
         String toolSoftwareVersion,
@@ -621,7 +621,7 @@ public class OpenProtocolMessageApplicationCommunicationStartAcknowledgeRev5
     }
 
     public OpenProtocolMessageApplicationCommunicationStartAcknowledgeRev5 build(
-        Long midRevision,
+        Integer midRevision,
         Short noAckFlag,
         Integer targetStationId,
         Integer targetSpindleId,

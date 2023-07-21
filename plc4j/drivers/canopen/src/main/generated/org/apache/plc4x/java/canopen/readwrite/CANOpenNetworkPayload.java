@@ -44,9 +44,9 @@ public class CANOpenNetworkPayload extends CANOpenPayload implements Message {
 
   // Properties.
   protected final NMTStateRequest request;
-  protected final short node;
+  protected final byte node;
 
-  public CANOpenNetworkPayload(NMTStateRequest request, short node) {
+  public CANOpenNetworkPayload(NMTStateRequest request, byte node) {
     super();
     this.request = request;
     this.node = node;
@@ -56,7 +56,7 @@ public class CANOpenNetworkPayload extends CANOpenPayload implements Message {
     return request;
   }
 
-  public short getNode() {
+  public byte getNode() {
     return node;
   }
 
@@ -79,7 +79,7 @@ public class CANOpenNetworkPayload extends CANOpenPayload implements Message {
     writeReservedField("reserved", (byte) 0x00, writeUnsignedByte(writeBuffer, 1));
 
     // Simple Field (node)
-    writeSimpleField("node", node, writeUnsignedShort(writeBuffer, 7));
+    writeSimpleField("node", node, writeUnsignedByte(writeBuffer, 7));
 
     writeBuffer.popContext("CANOpenNetworkPayload");
   }
@@ -123,7 +123,7 @@ public class CANOpenNetworkPayload extends CANOpenPayload implements Message {
     Byte reservedField0 =
         readReservedField("reserved", readUnsignedByte(readBuffer, 1), (byte) 0x00);
 
-    short node = readSimpleField("node", readUnsignedShort(readBuffer, 7));
+    byte node = readSimpleField("node", readUnsignedByte(readBuffer, 7));
 
     readBuffer.closeContext("CANOpenNetworkPayload");
     // Create the instance
@@ -133,9 +133,9 @@ public class CANOpenNetworkPayload extends CANOpenPayload implements Message {
   public static class CANOpenNetworkPayloadBuilderImpl
       implements CANOpenPayload.CANOpenPayloadBuilder {
     private final NMTStateRequest request;
-    private final short node;
+    private final byte node;
 
-    public CANOpenNetworkPayloadBuilderImpl(NMTStateRequest request, short node) {
+    public CANOpenNetworkPayloadBuilderImpl(NMTStateRequest request, byte node) {
       this.request = request;
       this.node = node;
     }

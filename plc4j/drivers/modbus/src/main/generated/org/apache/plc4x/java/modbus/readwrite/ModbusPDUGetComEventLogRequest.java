@@ -42,8 +42,8 @@ public class ModbusPDUGetComEventLogRequest extends ModbusPDU implements Message
     return (boolean) false;
   }
 
-  public Short getFunctionFlag() {
-    return (short) 0x0C;
+  public Byte getFunctionFlag() {
+    return (byte) 0x0C;
   }
 
   public Boolean getResponse() {

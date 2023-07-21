@@ -27,37 +27,37 @@ import java.util.Map;
 
 public enum TemperatureBroadcastCommandTypeContainer {
   TemperatureBroadcastCommandSetBroadcastEvent0_2Bytes(
-      (short) 0x02, (short) 2, TemperatureBroadcastCommandType.BROADCAST_EVENT),
+      (short) 0x02, (byte) 2, TemperatureBroadcastCommandType.BROADCAST_EVENT),
   TemperatureBroadcastCommandSetBroadcastEvent1_2Bytes(
-      (short) 0x0A, (short) 2, TemperatureBroadcastCommandType.BROADCAST_EVENT),
+      (short) 0x0A, (byte) 2, TemperatureBroadcastCommandType.BROADCAST_EVENT),
   TemperatureBroadcastCommandSetBroadcastEvent2_2Bytes(
-      (short) 0x12, (short) 2, TemperatureBroadcastCommandType.BROADCAST_EVENT),
+      (short) 0x12, (byte) 2, TemperatureBroadcastCommandType.BROADCAST_EVENT),
   TemperatureBroadcastCommandSetBroadcastEvent3_2Bytes(
-      (short) 0x1A, (short) 2, TemperatureBroadcastCommandType.BROADCAST_EVENT),
+      (short) 0x1A, (byte) 2, TemperatureBroadcastCommandType.BROADCAST_EVENT),
   TemperatureBroadcastCommandSetBroadcastEvent4_2Bytes(
-      (short) 0x22, (short) 2, TemperatureBroadcastCommandType.BROADCAST_EVENT),
+      (short) 0x22, (byte) 2, TemperatureBroadcastCommandType.BROADCAST_EVENT),
   TemperatureBroadcastCommandSetBroadcastEvent5_2Bytes(
-      (short) 0x2A, (short) 2, TemperatureBroadcastCommandType.BROADCAST_EVENT),
+      (short) 0x2A, (byte) 2, TemperatureBroadcastCommandType.BROADCAST_EVENT),
   TemperatureBroadcastCommandSetBroadcastEvent6_2Bytes(
-      (short) 0x32, (short) 2, TemperatureBroadcastCommandType.BROADCAST_EVENT),
+      (short) 0x32, (byte) 2, TemperatureBroadcastCommandType.BROADCAST_EVENT),
   TemperatureBroadcastCommandSetBroadcastEvent7_2Bytes(
-      (short) 0x3A, (short) 2, TemperatureBroadcastCommandType.BROADCAST_EVENT),
+      (short) 0x3A, (byte) 2, TemperatureBroadcastCommandType.BROADCAST_EVENT),
   TemperatureBroadcastCommandSetBroadcastEvent8_2Bytes(
-      (short) 0x42, (short) 2, TemperatureBroadcastCommandType.BROADCAST_EVENT),
+      (short) 0x42, (byte) 2, TemperatureBroadcastCommandType.BROADCAST_EVENT),
   TemperatureBroadcastCommandSetBroadcastEvent9_2Bytes(
-      (short) 0x4A, (short) 2, TemperatureBroadcastCommandType.BROADCAST_EVENT),
+      (short) 0x4A, (byte) 2, TemperatureBroadcastCommandType.BROADCAST_EVENT),
   TemperatureBroadcastCommandSetBroadcastEvent10_2Bytes(
-      (short) 0x52, (short) 2, TemperatureBroadcastCommandType.BROADCAST_EVENT),
+      (short) 0x52, (byte) 2, TemperatureBroadcastCommandType.BROADCAST_EVENT),
   TemperatureBroadcastCommandSetBroadcastEvent11_2Bytes(
-      (short) 0x5A, (short) 2, TemperatureBroadcastCommandType.BROADCAST_EVENT),
+      (short) 0x5A, (byte) 2, TemperatureBroadcastCommandType.BROADCAST_EVENT),
   TemperatureBroadcastCommandSetBroadcastEvent12_2Bytes(
-      (short) 0x62, (short) 2, TemperatureBroadcastCommandType.BROADCAST_EVENT),
+      (short) 0x62, (byte) 2, TemperatureBroadcastCommandType.BROADCAST_EVENT),
   TemperatureBroadcastCommandSetBroadcastEvent13_2Bytes(
-      (short) 0x6A, (short) 2, TemperatureBroadcastCommandType.BROADCAST_EVENT),
+      (short) 0x6A, (byte) 2, TemperatureBroadcastCommandType.BROADCAST_EVENT),
   TemperatureBroadcastCommandSetBroadcastEvent14_2Bytes(
-      (short) 0x72, (short) 2, TemperatureBroadcastCommandType.BROADCAST_EVENT),
+      (short) 0x72, (byte) 2, TemperatureBroadcastCommandType.BROADCAST_EVENT),
   TemperatureBroadcastCommandSetBroadcastEvent15_2Bytes(
-      (short) 0x7A, (short) 2, TemperatureBroadcastCommandType.BROADCAST_EVENT);
+      (short) 0x7A, (byte) 2, TemperatureBroadcastCommandType.BROADCAST_EVENT);
   private static final Map<Short, TemperatureBroadcastCommandTypeContainer> map;
 
   static {
@@ -69,11 +69,11 @@ public enum TemperatureBroadcastCommandTypeContainer {
   }
 
   private final short value;
-  private final short numBytes;
+  private final byte numBytes;
   private final TemperatureBroadcastCommandType commandType;
 
   TemperatureBroadcastCommandTypeContainer(
-      short value, short numBytes, TemperatureBroadcastCommandType commandType) {
+      short value, byte numBytes, TemperatureBroadcastCommandType commandType) {
     this.value = value;
     this.numBytes = numBytes;
     this.commandType = commandType;
@@ -83,12 +83,12 @@ public enum TemperatureBroadcastCommandTypeContainer {
     return value;
   }
 
-  public short getNumBytes() {
+  public byte getNumBytes() {
     return numBytes;
   }
 
   public static TemperatureBroadcastCommandTypeContainer firstEnumForFieldNumBytes(
-      short fieldValue) {
+      byte fieldValue) {
     for (TemperatureBroadcastCommandTypeContainer _val :
         TemperatureBroadcastCommandTypeContainer.values()) {
       if (_val.getNumBytes() == fieldValue) {
@@ -99,7 +99,7 @@ public enum TemperatureBroadcastCommandTypeContainer {
   }
 
   public static List<TemperatureBroadcastCommandTypeContainer> enumsForFieldNumBytes(
-      short fieldValue) {
+      byte fieldValue) {
     List<TemperatureBroadcastCommandTypeContainer> _values = new ArrayList<>();
     for (TemperatureBroadcastCommandTypeContainer _val :
         TemperatureBroadcastCommandTypeContainer.values()) {

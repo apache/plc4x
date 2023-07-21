@@ -157,50 +157,49 @@ public class CsLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
             return "PlcStruct";
         }
         SimpleTypeReference simpleTypeReference = (SimpleTypeReference) typeReference;
+        int sizeInBits = simpleTypeReference.getSizeInBits();
         switch (simpleTypeReference.getBaseType()) {
             case BIT:
                 return "PlcBOOL";
             case BYTE:
                 return "PlcBYTE";
             case UINT:
-                IntegerTypeReference unsignedIntegerTypeReference = (IntegerTypeReference) simpleTypeReference;
-                if (unsignedIntegerTypeReference.getSizeInBits() <= 8) {
+                if (sizeInBits <= 8) {
                     return "PlcUSINT";
                 }
-                if (unsignedIntegerTypeReference.getSizeInBits() <= 16) {
+                if (sizeInBits <= 16) {
                     return "PlcUINT";
                 }
-                if (unsignedIntegerTypeReference.getSizeInBits() <= 32) {
+                if (sizeInBits <= 32) {
                     return "PlcUDINT";
                 }
-                if (unsignedIntegerTypeReference.getSizeInBits() <= 64) {
+                if (sizeInBits <= 64) {
                     return "PlcULINT";
                 }
+                throw new RuntimeException("Unsupported UINT with bit length " + sizeInBits);
             case INT:
-                IntegerTypeReference integerTypeReference = (IntegerTypeReference) simpleTypeReference;
-                if (integerTypeReference.getSizeInBits() <= 8) {
+                if (sizeInBits <= 8) {
                     return "PlcSINT";
                 }
-                if (integerTypeReference.getSizeInBits() <= 16) {
+                if (sizeInBits <= 16) {
                     return "PlcINT";
                 }
-                if (integerTypeReference.getSizeInBits() <= 32) {
+                if (sizeInBits <= 32) {
                     return "PlcDINT";
                 }
-                if (integerTypeReference.getSizeInBits() <= 64) {
+                if (sizeInBits <= 64) {
                     return "PlcLINT";
                 }
-
+                throw new RuntimeException("Unsupported INT with bit length " + sizeInBits);
             case FLOAT:
             case UFLOAT:
-                FloatTypeReference floatTypeReference = (FloatTypeReference) simpleTypeReference;
-                int sizeInBits = floatTypeReference.getSizeInBits();
                 if (sizeInBits <= 32) {
                     return "PlcREAL";
                 }
                 if (sizeInBits <= 64) {
                     return "PlcLREAL";
                 }
+                throw new RuntimeException("Unsupported REAL with bit length " + sizeInBits);
             case STRING:
             case VSTRING:
                 return "PlcSTRING";

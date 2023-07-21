@@ -39,12 +39,12 @@ public class OpenProtocolMessageKeepAliveOpenProtocolCommunicationRev1
     extends OpenProtocolMessageKeepAliveOpenProtocolCommunication implements Message {
 
   // Accessors for discriminator values.
-  public Long getRevision() {
-    return (long) 1;
+  public Integer getRevision() {
+    return (int) 1;
   }
 
   public OpenProtocolMessageKeepAliveOpenProtocolCommunicationRev1(
-      Long midRevision,
+      Integer midRevision,
       Short noAckFlag,
       Integer targetStationId,
       Integer targetSpindleId,
@@ -87,7 +87,7 @@ public class OpenProtocolMessageKeepAliveOpenProtocolCommunicationRev1
 
   public static OpenProtocolMessageKeepAliveOpenProtocolCommunicationBuilder
       staticParseOpenProtocolMessageKeepAliveOpenProtocolCommunicationBuilder(
-          ReadBuffer readBuffer, Long revision) throws ParseException {
+          ReadBuffer readBuffer, Integer revision) throws ParseException {
     readBuffer.pullContext("OpenProtocolMessageKeepAliveOpenProtocolCommunicationRev1");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
@@ -104,7 +104,7 @@ public class OpenProtocolMessageKeepAliveOpenProtocolCommunicationRev1
     public OpenProtocolMessageKeepAliveOpenProtocolCommunicationRev1BuilderImpl() {}
 
     public OpenProtocolMessageKeepAliveOpenProtocolCommunicationRev1 build(
-        Long midRevision,
+        Integer midRevision,
         Short noAckFlag,
         Integer targetStationId,
         Integer targetSpindleId,

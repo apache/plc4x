@@ -39,8 +39,8 @@ public class OpenProtocolMessageResultTracesCurvePlotDataRev1
     extends OpenProtocolMessageResultTracesCurvePlotData implements Message {
 
   // Accessors for discriminator values.
-  public Long getRevision() {
-    return (long) 1;
+  public Integer getRevision() {
+    return (int) 1;
   }
 
   // Properties.
@@ -49,7 +49,7 @@ public class OpenProtocolMessageResultTracesCurvePlotDataRev1
   protected final List<VariableDataField> dataFields;
 
   public OpenProtocolMessageResultTracesCurvePlotDataRev1(
-      Long midRevision,
+      Integer midRevision,
       Short noAckFlag,
       Integer targetStationId,
       Integer targetSpindleId,
@@ -104,11 +104,11 @@ public class OpenProtocolMessageResultTracesCurvePlotDataRev1
 
     // Implicit Field (numberOfParameterDataFields) (Used for parsing, but its value is not stored
     // as it's implicitly given by the objects content)
-    long numberOfParameterDataFields = (long) (COUNT(getDataFields()));
+    int numberOfParameterDataFields = (int) (COUNT(getDataFields()));
     writeImplicitField(
         "numberOfParameterDataFields",
         numberOfParameterDataFields,
-        writeUnsignedLong(writeBuffer, 24),
+        writeUnsignedInt(writeBuffer, 24),
         WithOption.WithEncoding("ASCII"));
 
     // Array Field (dataFields)
@@ -152,7 +152,7 @@ public class OpenProtocolMessageResultTracesCurvePlotDataRev1
 
   public static OpenProtocolMessageResultTracesCurvePlotDataBuilder
       staticParseOpenProtocolMessageResultTracesCurvePlotDataBuilder(
-          ReadBuffer readBuffer, Long revision) throws ParseException {
+          ReadBuffer readBuffer, Integer revision) throws ParseException {
     readBuffer.pullContext("OpenProtocolMessageResultTracesCurvePlotDataRev1");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
@@ -164,10 +164,10 @@ public class OpenProtocolMessageResultTracesCurvePlotDataRev1
     String timeStamp =
         readSimpleField("timeStamp", readString(readBuffer, 152), WithOption.WithEncoding("ASCII"));
 
-    long numberOfParameterDataFields =
+    int numberOfParameterDataFields =
         readImplicitField(
             "numberOfParameterDataFields",
-            readUnsignedLong(readBuffer, 24),
+            readUnsignedInt(readBuffer, 24),
             WithOption.WithEncoding("ASCII"));
 
     List<VariableDataField> dataFields =
@@ -199,7 +199,7 @@ public class OpenProtocolMessageResultTracesCurvePlotDataRev1
     }
 
     public OpenProtocolMessageResultTracesCurvePlotDataRev1 build(
-        Long midRevision,
+        Integer midRevision,
         Short noAckFlag,
         Integer targetStationId,
         Integer targetSpindleId,

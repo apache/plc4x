@@ -42,8 +42,8 @@ public class ModbusPDUReadDeviceIdentificationRequest extends ModbusPDU implemen
     return (boolean) false;
   }
 
-  public Short getFunctionFlag() {
-    return (short) 0x2B;
+  public Byte getFunctionFlag() {
+    return (byte) 0x2B;
   }
 
   public Boolean getResponse() {

@@ -44,10 +44,10 @@ public abstract class OpenProtocolMessageResultTracesCurvePlotData extends OpenP
   }
 
   // Abstract accessors for discriminator values.
-  public abstract Long getRevision();
+  public abstract Integer getRevision();
 
   public OpenProtocolMessageResultTracesCurvePlotData(
-      Long midRevision,
+      Integer midRevision,
       Short noAckFlag,
       Integer targetStationId,
       Integer targetSpindleId,
@@ -97,14 +97,14 @@ public abstract class OpenProtocolMessageResultTracesCurvePlotData extends OpenP
   }
 
   public static OpenProtocolMessageBuilder staticParseOpenProtocolMessageBuilder(
-      ReadBuffer readBuffer, Long revision) throws ParseException {
+      ReadBuffer readBuffer, Integer revision) throws ParseException {
     readBuffer.pullContext("OpenProtocolMessageResultTracesCurvePlotData");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     OpenProtocolMessageResultTracesCurvePlotDataBuilder builder = null;
-    if (EvaluationHelper.equals(revision, (long) 1)) {
+    if (EvaluationHelper.equals(revision, (int) 1)) {
       builder =
           OpenProtocolMessageResultTracesCurvePlotDataRev1
               .staticParseOpenProtocolMessageResultTracesCurvePlotDataBuilder(readBuffer, revision);
@@ -125,7 +125,7 @@ public abstract class OpenProtocolMessageResultTracesCurvePlotData extends OpenP
 
   public interface OpenProtocolMessageResultTracesCurvePlotDataBuilder {
     OpenProtocolMessageResultTracesCurvePlotData build(
-        Long midRevision,
+        Integer midRevision,
         Short noAckFlag,
         Integer targetStationId,
         Integer targetSpindleId,
@@ -144,7 +144,7 @@ public abstract class OpenProtocolMessageResultTracesCurvePlotData extends OpenP
     }
 
     public OpenProtocolMessageResultTracesCurvePlotData build(
-        Long midRevision,
+        Integer midRevision,
         Short noAckFlag,
         Integer targetStationId,
         Integer targetSpindleId,

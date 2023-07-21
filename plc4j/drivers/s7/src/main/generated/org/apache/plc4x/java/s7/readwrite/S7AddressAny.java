@@ -119,7 +119,7 @@ public class S7AddressAny extends S7Address implements Message {
             MemoryArea::getValue, MemoryArea::name, writeUnsignedShort(writeBuffer, 8)));
 
     // Reserved Field (reserved)
-    writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 5));
+    writeReservedField("reserved", (byte) 0x00, writeUnsignedByte(writeBuffer, 5));
 
     // Simple Field (byteAddress)
     writeSimpleField("byteAddress", byteAddress, writeUnsignedInt(writeBuffer, 16));
@@ -188,8 +188,8 @@ public class S7AddressAny extends S7Address implements Message {
             new DataReaderEnumDefault<>(
                 MemoryArea::enumForValue, readUnsignedShort(readBuffer, 8)));
 
-    Short reservedField0 =
-        readReservedField("reserved", readUnsignedShort(readBuffer, 5), (short) 0x00);
+    Byte reservedField0 =
+        readReservedField("reserved", readUnsignedByte(readBuffer, 5), (byte) 0x00);
 
     int byteAddress = readSimpleField("byteAddress", readUnsignedInt(readBuffer, 16));
 

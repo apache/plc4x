@@ -38,8 +38,8 @@ import org.apache.plc4x.java.spi.generation.*;
 public class VariantExpandedNodeId extends Variant implements Message {
 
   // Accessors for discriminator values.
-  public Short getVariantType() {
-    return (short) 18;
+  public Byte getVariantType() {
+    return (byte) 18;
   }
 
   // Properties.

@@ -60,7 +60,7 @@ public abstract class NodeIdTypeDefinition implements Message {
         "NodeIdType",
         getNodeType(),
         new DataWriterEnumDefault<>(
-            NodeIdType::getValue, NodeIdType::name, writeUnsignedShort(writeBuffer, 6)));
+            NodeIdType::getValue, NodeIdType::name, writeUnsignedByte(writeBuffer, 6)));
 
     // Switch field (Serialize the sub-type)
     serializeNodeIdTypeDefinitionChild(writeBuffer);
@@ -101,8 +101,7 @@ public abstract class NodeIdTypeDefinition implements Message {
     NodeIdType nodeType =
         readDiscriminatorField(
             "nodeType",
-            new DataReaderEnumDefault<>(
-                NodeIdType::enumForValue, readUnsignedShort(readBuffer, 6)));
+            new DataReaderEnumDefault<>(NodeIdType::enumForValue, readUnsignedByte(readBuffer, 6)));
 
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     NodeIdTypeDefinitionBuilder builder = null;

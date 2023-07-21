@@ -38,8 +38,8 @@ import org.apache.plc4x.java.spi.generation.*;
 public class CipReadResponse extends CipService implements Message {
 
   // Accessors for discriminator values.
-  public Short getService() {
-    return (short) 0x4C;
+  public Byte getService() {
+    return (byte) 0x4C;
   }
 
   public Boolean getResponse() {

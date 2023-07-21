@@ -39,15 +39,15 @@ public class OpenProtocolMessageIdentifierDownloadRequestRev1
     extends OpenProtocolMessageIdentifierDownloadRequest implements Message {
 
   // Accessors for discriminator values.
-  public Long getRevision() {
-    return (long) 1;
+  public Integer getRevision() {
+    return (int) 1;
   }
 
   // Properties.
   protected final String identifierData;
 
   public OpenProtocolMessageIdentifierDownloadRequestRev1(
-      Long midRevision,
+      Integer midRevision,
       Short noAckFlag,
       Integer targetStationId,
       Integer targetSpindleId,
@@ -106,7 +106,7 @@ public class OpenProtocolMessageIdentifierDownloadRequestRev1
 
   public static OpenProtocolMessageIdentifierDownloadRequestBuilder
       staticParseOpenProtocolMessageIdentifierDownloadRequestBuilder(
-          ReadBuffer readBuffer, Long revision) throws ParseException {
+          ReadBuffer readBuffer, Integer revision) throws ParseException {
     readBuffer.pullContext("OpenProtocolMessageIdentifierDownloadRequestRev1");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
@@ -130,7 +130,7 @@ public class OpenProtocolMessageIdentifierDownloadRequestRev1
     }
 
     public OpenProtocolMessageIdentifierDownloadRequestRev1 build(
-        Long midRevision,
+        Integer midRevision,
         Short noAckFlag,
         Integer targetStationId,
         Integer targetSpindleId,

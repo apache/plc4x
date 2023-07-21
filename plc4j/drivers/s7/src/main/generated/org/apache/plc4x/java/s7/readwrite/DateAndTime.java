@@ -44,7 +44,7 @@ public class DateAndTime implements Message {
   protected final short hour;
   protected final short minutes;
   protected final short seconds;
-  protected final int msec;
+  protected final short msec;
   protected final byte dow;
 
   public DateAndTime(
@@ -54,7 +54,7 @@ public class DateAndTime implements Message {
       short hour,
       short minutes,
       short seconds,
-      int msec,
+      short msec,
       byte dow) {
     super();
     this.year = year;
@@ -91,7 +91,7 @@ public class DateAndTime implements Message {
     return seconds;
   }
 
-  public int getMsec() {
+  public short getMsec() {
     return msec;
   }
 
@@ -249,12 +249,12 @@ public class DateAndTime implements Message {
                 (short)
                     (org.apache.plc4x.java.s7.readwrite.utils.StaticHelper.BcdToInt(readBuffer)));
 
-    int msec =
+    short msec =
         readManualField(
             "msec",
             readBuffer,
             () ->
-                (int)
+                (short)
                     (org.apache.plc4x.java.s7.readwrite.utils.StaticHelper.S7msecToInt(
                         readBuffer)));
 

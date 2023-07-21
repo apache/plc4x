@@ -38,8 +38,8 @@ import org.apache.plc4x.java.spi.generation.*;
 public class CipConnectionManagerRequest extends CipService implements Message {
 
   // Accessors for discriminator values.
-  public Short getService() {
-    return (short) 0x5B;
+  public Byte getService() {
+    return (byte) 0x5B;
   }
 
   public Boolean getResponse() {
@@ -233,7 +233,7 @@ public class CipConnectionManagerRequest extends CipService implements Message {
     writeSimpleField("timeoutMultiplier", timeoutMultiplier, writeUnsignedShort(writeBuffer, 8));
 
     // Reserved Field (reserved)
-    writeReservedField("reserved", (long) 0x000000, writeUnsignedLong(writeBuffer, 24));
+    writeReservedField("reserved", (int) 0x000000, writeUnsignedInt(writeBuffer, 24));
 
     // Simple Field (otRpi)
     writeSimpleField("otRpi", otRpi, writeUnsignedLong(writeBuffer, 32));
@@ -382,8 +382,8 @@ public class CipConnectionManagerRequest extends CipService implements Message {
     short timeoutMultiplier =
         readSimpleField("timeoutMultiplier", readUnsignedShort(readBuffer, 8));
 
-    Long reservedField0 =
-        readReservedField("reserved", readUnsignedLong(readBuffer, 24), (long) 0x000000);
+    Integer reservedField0 =
+        readReservedField("reserved", readUnsignedInt(readBuffer, 24), (int) 0x000000);
 
     long otRpi = readSimpleField("otRpi", readUnsignedLong(readBuffer, 32));
 

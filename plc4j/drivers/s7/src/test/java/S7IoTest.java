@@ -338,7 +338,7 @@ public class S7IoTest {
                     (short) 0
                 ),
                 false,
-                (short) 13
+                (byte) 13
             )
         );
         // To string

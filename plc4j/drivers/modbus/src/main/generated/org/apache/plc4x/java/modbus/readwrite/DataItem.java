@@ -49,8 +49,9 @@ public class DataItem {
 
       // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
       {
-        int reserved = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readUnsignedInt("", 15);
-        if (reserved != (int) 0x0000) {
+        short reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
+            readBuffer.readUnsignedShort("", 15);
+        if (reserved != (short) 0x0000) {
           LOGGER.info(
               "Expected constant value "
                   + 0x0000
@@ -304,7 +305,7 @@ public class DataItem {
         value = new LinkedList<>();
         for (int curItem = 0; curItem < itemCount; curItem++) {
           value.add(
-              new PlcUINT(
+              new PlcUSINT(
                   (Short) /*TODO: migrate me*/ /*TODO: migrate me*/
                       readBuffer.readUnsignedShort("", 8)));
         }
@@ -334,7 +335,7 @@ public class DataItem {
         value = new LinkedList<>();
         for (int curItem = 0; curItem < itemCount; curItem++) {
           value.add(
-              new PlcUDINT(
+              new PlcUINT(
                   (Integer) /*TODO: migrate me*/ /*TODO: migrate me*/
                       readBuffer.readUnsignedInt("", 16)));
         }
@@ -364,7 +365,7 @@ public class DataItem {
         value = new LinkedList<>();
         for (int curItem = 0; curItem < itemCount; curItem++) {
           value.add(
-              new PlcULINT(
+              new PlcUDINT(
                   (Long) /*TODO: migrate me*/ /*TODO: migrate me*/
                       readBuffer.readUnsignedLong("", 32)));
         }
@@ -395,7 +396,7 @@ public class DataItem {
         value = new LinkedList<>();
         for (int curItem = 0; curItem < itemCount; curItem++) {
           value.add(
-              new PlcLINT(
+              new PlcULINT(
                   (BigInteger) /*TODO: migrate me*/ /*TODO: migrate me*/
                       readBuffer.readUnsignedBigInteger("", 64)));
         }
@@ -544,7 +545,8 @@ public class DataItem {
         && EvaluationHelper.equals(numberOfValues, 1)) { // BOOL
       // Reserved Field
       /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedInt("", 15, ((Number) (int) 0x0000).intValue());
+      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort(
+          "", 15, ((Number) (short) 0x0000).shortValue());
       // Simple Field (value)
       boolean value = (boolean) _value.getBoolean();
       /*TODO: migrate me*/

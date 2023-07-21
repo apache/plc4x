@@ -297,7 +297,7 @@ public class SubscriptionDiagnosticsDataType extends ExtensionObjectDefinition i
         writeUnsignedLong(writeBuffer, 32));
 
     // Reserved Field (reserved)
-    writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 7));
+    writeReservedField("reserved", (byte) 0x00, writeUnsignedByte(writeBuffer, 7));
 
     // Simple Field (publishingEnabled)
     writeSimpleField("publishingEnabled", publishingEnabled, writeBoolean(writeBuffer));
@@ -539,8 +539,8 @@ public class SubscriptionDiagnosticsDataType extends ExtensionObjectDefinition i
     long maxNotificationsPerPublish =
         readSimpleField("maxNotificationsPerPublish", readUnsignedLong(readBuffer, 32));
 
-    Short reservedField0 =
-        readReservedField("reserved", readUnsignedShort(readBuffer, 7), (short) 0x00);
+    Byte reservedField0 =
+        readReservedField("reserved", readUnsignedByte(readBuffer, 7), (byte) 0x00);
 
     boolean publishingEnabled = readSimpleField("publishingEnabled", readBoolean(readBuffer));
 

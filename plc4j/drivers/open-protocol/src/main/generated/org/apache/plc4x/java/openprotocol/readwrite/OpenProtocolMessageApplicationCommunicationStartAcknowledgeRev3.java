@@ -39,8 +39,8 @@ public class OpenProtocolMessageApplicationCommunicationStartAcknowledgeRev3
     extends OpenProtocolMessageApplicationCommunicationStartAcknowledge implements Message {
 
   // Accessors for discriminator values.
-  public Long getRevision() {
-    return (long) 3;
+  public Integer getRevision() {
+    return (int) 3;
   }
 
   // Constant values.
@@ -56,13 +56,13 @@ public class OpenProtocolMessageApplicationCommunicationStartAcknowledgeRev3
   protected final long cellId;
   protected final int channelId;
   protected final String controllerName;
-  protected final long supplierCode;
+  protected final int supplierCode;
   protected final String openProtocolVersion;
   protected final String controllerSoftwareVersion;
   protected final String toolSoftwareVersion;
 
   public OpenProtocolMessageApplicationCommunicationStartAcknowledgeRev3(
-      Long midRevision,
+      Integer midRevision,
       Short noAckFlag,
       Integer targetStationId,
       Integer targetSpindleId,
@@ -72,7 +72,7 @@ public class OpenProtocolMessageApplicationCommunicationStartAcknowledgeRev3
       long cellId,
       int channelId,
       String controllerName,
-      long supplierCode,
+      int supplierCode,
       String openProtocolVersion,
       String controllerSoftwareVersion,
       String toolSoftwareVersion) {
@@ -105,7 +105,7 @@ public class OpenProtocolMessageApplicationCommunicationStartAcknowledgeRev3
     return controllerName;
   }
 
-  public long getSupplierCode() {
+  public int getSupplierCode() {
     return supplierCode;
   }
 
@@ -206,7 +206,7 @@ public class OpenProtocolMessageApplicationCommunicationStartAcknowledgeRev3
     writeSimpleField(
         "supplierCode",
         supplierCode,
-        writeUnsignedLong(writeBuffer, 24),
+        writeUnsignedInt(writeBuffer, 24),
         WithOption.WithEncoding("ASCII"));
 
     // Const Field (blockIdOpenProtocolVersion)
@@ -312,7 +312,7 @@ public class OpenProtocolMessageApplicationCommunicationStartAcknowledgeRev3
 
   public static OpenProtocolMessageApplicationCommunicationStartAcknowledgeBuilder
       staticParseOpenProtocolMessageApplicationCommunicationStartAcknowledgeBuilder(
-          ReadBuffer readBuffer, Long revision) throws ParseException {
+          ReadBuffer readBuffer, Integer revision) throws ParseException {
     readBuffer.pullContext("OpenProtocolMessageApplicationCommunicationStartAcknowledgeRev3");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
@@ -357,9 +357,9 @@ public class OpenProtocolMessageApplicationCommunicationStartAcknowledgeRev3
             OpenProtocolMessageApplicationCommunicationStartAcknowledgeRev3.BLOCKIDSUPPLIERCODE,
             WithOption.WithEncoding("ASCII"));
 
-    long supplierCode =
+    int supplierCode =
         readSimpleField(
-            "supplierCode", readUnsignedLong(readBuffer, 24), WithOption.WithEncoding("ASCII"));
+            "supplierCode", readUnsignedInt(readBuffer, 24), WithOption.WithEncoding("ASCII"));
 
     int blockIdOpenProtocolVersion =
         readConstField(
@@ -417,7 +417,7 @@ public class OpenProtocolMessageApplicationCommunicationStartAcknowledgeRev3
     private final long cellId;
     private final int channelId;
     private final String controllerName;
-    private final long supplierCode;
+    private final int supplierCode;
     private final String openProtocolVersion;
     private final String controllerSoftwareVersion;
     private final String toolSoftwareVersion;
@@ -426,7 +426,7 @@ public class OpenProtocolMessageApplicationCommunicationStartAcknowledgeRev3
         long cellId,
         int channelId,
         String controllerName,
-        long supplierCode,
+        int supplierCode,
         String openProtocolVersion,
         String controllerSoftwareVersion,
         String toolSoftwareVersion) {
@@ -440,7 +440,7 @@ public class OpenProtocolMessageApplicationCommunicationStartAcknowledgeRev3
     }
 
     public OpenProtocolMessageApplicationCommunicationStartAcknowledgeRev3 build(
-        Long midRevision,
+        Integer midRevision,
         Short noAckFlag,
         Integer targetStationId,
         Integer targetSpindleId,

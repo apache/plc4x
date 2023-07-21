@@ -27,75 +27,75 @@ import java.util.Map;
 
 public enum TriggerControlCommandTypeContainer {
   TriggerControlCommandTriggerMin_1Bytes(
-      (short) 0x01, (short) 1, TriggerControlCommandType.TRIGGER_MIN),
+      (short) 0x01, (byte) 1, TriggerControlCommandType.TRIGGER_MIN),
   TriggerControlCommandIndicatorKill_1Bytes(
-      (short) 0x09, (short) 1, TriggerControlCommandType.INDICATOR_KILL),
+      (short) 0x09, (byte) 1, TriggerControlCommandType.INDICATOR_KILL),
   TriggerControlCommandTriggerMax_1Bytes(
-      (short) 0x79, (short) 1, TriggerControlCommandType.TRIGGER_MAX),
+      (short) 0x79, (byte) 1, TriggerControlCommandType.TRIGGER_MAX),
   TriggerControlCommandTriggerEvent0_2Bytes(
-      (short) 0x02, (short) 2, TriggerControlCommandType.TRIGGER_EVENT),
+      (short) 0x02, (byte) 2, TriggerControlCommandType.TRIGGER_EVENT),
   TriggerControlCommandTriggerEvent1_2Bytes(
-      (short) 0x0A, (short) 2, TriggerControlCommandType.TRIGGER_EVENT),
+      (short) 0x0A, (byte) 2, TriggerControlCommandType.TRIGGER_EVENT),
   TriggerControlCommandTriggerEvent2_2Bytes(
-      (short) 0x12, (short) 2, TriggerControlCommandType.TRIGGER_EVENT),
+      (short) 0x12, (byte) 2, TriggerControlCommandType.TRIGGER_EVENT),
   TriggerControlCommandTriggerEvent3_2Bytes(
-      (short) 0x1A, (short) 2, TriggerControlCommandType.TRIGGER_EVENT),
+      (short) 0x1A, (byte) 2, TriggerControlCommandType.TRIGGER_EVENT),
   TriggerControlCommandTriggerEvent4_2Bytes(
-      (short) 0x22, (short) 2, TriggerControlCommandType.TRIGGER_EVENT),
+      (short) 0x22, (byte) 2, TriggerControlCommandType.TRIGGER_EVENT),
   TriggerControlCommandTriggerEvent5_2Bytes(
-      (short) 0x2A, (short) 2, TriggerControlCommandType.TRIGGER_EVENT),
+      (short) 0x2A, (byte) 2, TriggerControlCommandType.TRIGGER_EVENT),
   TriggerControlCommandTriggerEvent6_2Bytes(
-      (short) 0x32, (short) 2, TriggerControlCommandType.TRIGGER_EVENT),
+      (short) 0x32, (byte) 2, TriggerControlCommandType.TRIGGER_EVENT),
   TriggerControlCommandTriggerEvent7_2Bytes(
-      (short) 0x3A, (short) 2, TriggerControlCommandType.TRIGGER_EVENT),
+      (short) 0x3A, (byte) 2, TriggerControlCommandType.TRIGGER_EVENT),
   TriggerControlCommandTriggerEvent8_2Bytes(
-      (short) 0x42, (short) 2, TriggerControlCommandType.TRIGGER_EVENT),
+      (short) 0x42, (byte) 2, TriggerControlCommandType.TRIGGER_EVENT),
   TriggerControlCommandTriggerEvent9_2Bytes(
-      (short) 0x4A, (short) 2, TriggerControlCommandType.TRIGGER_EVENT),
+      (short) 0x4A, (byte) 2, TriggerControlCommandType.TRIGGER_EVENT),
   TriggerControlCommandTriggerEvent10_2Bytes(
-      (short) 0x52, (short) 2, TriggerControlCommandType.TRIGGER_EVENT),
+      (short) 0x52, (byte) 2, TriggerControlCommandType.TRIGGER_EVENT),
   TriggerControlCommandTriggerEvent11_2Bytes(
-      (short) 0x5A, (short) 2, TriggerControlCommandType.TRIGGER_EVENT),
+      (short) 0x5A, (byte) 2, TriggerControlCommandType.TRIGGER_EVENT),
   TriggerControlCommandTriggerEvent12_2Bytes(
-      (short) 0x62, (short) 2, TriggerControlCommandType.TRIGGER_EVENT),
+      (short) 0x62, (byte) 2, TriggerControlCommandType.TRIGGER_EVENT),
   TriggerControlCommandTriggerEvent13_2Bytes(
-      (short) 0x6A, (short) 2, TriggerControlCommandType.TRIGGER_EVENT),
+      (short) 0x6A, (byte) 2, TriggerControlCommandType.TRIGGER_EVENT),
   TriggerControlCommandTriggerEvent14_2Bytes(
-      (short) 0x72, (short) 2, TriggerControlCommandType.TRIGGER_EVENT),
+      (short) 0x72, (byte) 2, TriggerControlCommandType.TRIGGER_EVENT),
   TriggerControlCommandTriggerEvent15_2Bytes(
-      (short) 0x7A, (short) 2, TriggerControlCommandType.TRIGGER_EVENT),
-  TriggerControlCommandLabel_0Bytes((short) 0xA0, (short) 0, TriggerControlCommandType.LABEL),
-  TriggerControlCommandLabel_1Bytes((short) 0xA1, (short) 1, TriggerControlCommandType.LABEL),
-  TriggerControlCommandLabel_2Bytes((short) 0xA2, (short) 2, TriggerControlCommandType.LABEL),
-  TriggerControlCommandLabel_3Bytes((short) 0xA3, (short) 3, TriggerControlCommandType.LABEL),
-  TriggerControlCommandLabel_4Bytes((short) 0xA4, (short) 4, TriggerControlCommandType.LABEL),
-  TriggerControlCommandLabel_5Bytes((short) 0xA5, (short) 5, TriggerControlCommandType.LABEL),
-  TriggerControlCommandLabel_6Bytes((short) 0xA6, (short) 6, TriggerControlCommandType.LABEL),
-  TriggerControlCommandLabel_7Bytes((short) 0xA7, (short) 7, TriggerControlCommandType.LABEL),
-  TriggerControlCommandLabel_8Bytes((short) 0xA8, (short) 8, TriggerControlCommandType.LABEL),
-  TriggerControlCommandLabel_9Bytes((short) 0xA9, (short) 9, TriggerControlCommandType.LABEL),
-  TriggerControlCommandLabel_10Bytes((short) 0xAA, (short) 10, TriggerControlCommandType.LABEL),
-  TriggerControlCommandLabel_11Bytes((short) 0xAB, (short) 11, TriggerControlCommandType.LABEL),
-  TriggerControlCommandLabel_12Bytes((short) 0xAC, (short) 12, TriggerControlCommandType.LABEL),
-  TriggerControlCommandLabel_13Bytes((short) 0xAD, (short) 13, TriggerControlCommandType.LABEL),
-  TriggerControlCommandLabel_14Bytes((short) 0xAE, (short) 14, TriggerControlCommandType.LABEL),
-  TriggerControlCommandLabel_15Bytes((short) 0xAF, (short) 15, TriggerControlCommandType.LABEL),
-  TriggerControlCommandLabel_16Bytes((short) 0xB0, (short) 16, TriggerControlCommandType.LABEL),
-  TriggerControlCommandLabel_17Bytes((short) 0xB1, (short) 17, TriggerControlCommandType.LABEL),
-  TriggerControlCommandLabel_18Bytes((short) 0xB2, (short) 18, TriggerControlCommandType.LABEL),
-  TriggerControlCommandLabel_19Bytes((short) 0xB3, (short) 19, TriggerControlCommandType.LABEL),
-  TriggerControlCommandLabel_20Bytes((short) 0xB4, (short) 20, TriggerControlCommandType.LABEL),
-  TriggerControlCommandLabel_21Bytes((short) 0xB5, (short) 21, TriggerControlCommandType.LABEL),
-  TriggerControlCommandLabel_22Bytes((short) 0xB6, (short) 22, TriggerControlCommandType.LABEL),
-  TriggerControlCommandLabel_23Bytes((short) 0xB7, (short) 23, TriggerControlCommandType.LABEL),
-  TriggerControlCommandLabel_24Bytes((short) 0xB8, (short) 24, TriggerControlCommandType.LABEL),
-  TriggerControlCommandLabel_25Bytes((short) 0xB9, (short) 25, TriggerControlCommandType.LABEL),
-  TriggerControlCommandLabel_26Bytes((short) 0xBA, (short) 26, TriggerControlCommandType.LABEL),
-  TriggerControlCommandLabel_27Bytes((short) 0xBB, (short) 27, TriggerControlCommandType.LABEL),
-  TriggerControlCommandLabel_28Bytes((short) 0xBC, (short) 28, TriggerControlCommandType.LABEL),
-  TriggerControlCommandLabel_29Bytes((short) 0xBD, (short) 29, TriggerControlCommandType.LABEL),
-  TriggerControlCommandLabel_30Bytes((short) 0xBE, (short) 30, TriggerControlCommandType.LABEL),
-  TriggerControlCommandLabel_31Bytes((short) 0xBF, (short) 31, TriggerControlCommandType.LABEL);
+      (short) 0x7A, (byte) 2, TriggerControlCommandType.TRIGGER_EVENT),
+  TriggerControlCommandLabel_0Bytes((short) 0xA0, (byte) 0, TriggerControlCommandType.LABEL),
+  TriggerControlCommandLabel_1Bytes((short) 0xA1, (byte) 1, TriggerControlCommandType.LABEL),
+  TriggerControlCommandLabel_2Bytes((short) 0xA2, (byte) 2, TriggerControlCommandType.LABEL),
+  TriggerControlCommandLabel_3Bytes((short) 0xA3, (byte) 3, TriggerControlCommandType.LABEL),
+  TriggerControlCommandLabel_4Bytes((short) 0xA4, (byte) 4, TriggerControlCommandType.LABEL),
+  TriggerControlCommandLabel_5Bytes((short) 0xA5, (byte) 5, TriggerControlCommandType.LABEL),
+  TriggerControlCommandLabel_6Bytes((short) 0xA6, (byte) 6, TriggerControlCommandType.LABEL),
+  TriggerControlCommandLabel_7Bytes((short) 0xA7, (byte) 7, TriggerControlCommandType.LABEL),
+  TriggerControlCommandLabel_8Bytes((short) 0xA8, (byte) 8, TriggerControlCommandType.LABEL),
+  TriggerControlCommandLabel_9Bytes((short) 0xA9, (byte) 9, TriggerControlCommandType.LABEL),
+  TriggerControlCommandLabel_10Bytes((short) 0xAA, (byte) 10, TriggerControlCommandType.LABEL),
+  TriggerControlCommandLabel_11Bytes((short) 0xAB, (byte) 11, TriggerControlCommandType.LABEL),
+  TriggerControlCommandLabel_12Bytes((short) 0xAC, (byte) 12, TriggerControlCommandType.LABEL),
+  TriggerControlCommandLabel_13Bytes((short) 0xAD, (byte) 13, TriggerControlCommandType.LABEL),
+  TriggerControlCommandLabel_14Bytes((short) 0xAE, (byte) 14, TriggerControlCommandType.LABEL),
+  TriggerControlCommandLabel_15Bytes((short) 0xAF, (byte) 15, TriggerControlCommandType.LABEL),
+  TriggerControlCommandLabel_16Bytes((short) 0xB0, (byte) 16, TriggerControlCommandType.LABEL),
+  TriggerControlCommandLabel_17Bytes((short) 0xB1, (byte) 17, TriggerControlCommandType.LABEL),
+  TriggerControlCommandLabel_18Bytes((short) 0xB2, (byte) 18, TriggerControlCommandType.LABEL),
+  TriggerControlCommandLabel_19Bytes((short) 0xB3, (byte) 19, TriggerControlCommandType.LABEL),
+  TriggerControlCommandLabel_20Bytes((short) 0xB4, (byte) 20, TriggerControlCommandType.LABEL),
+  TriggerControlCommandLabel_21Bytes((short) 0xB5, (byte) 21, TriggerControlCommandType.LABEL),
+  TriggerControlCommandLabel_22Bytes((short) 0xB6, (byte) 22, TriggerControlCommandType.LABEL),
+  TriggerControlCommandLabel_23Bytes((short) 0xB7, (byte) 23, TriggerControlCommandType.LABEL),
+  TriggerControlCommandLabel_24Bytes((short) 0xB8, (byte) 24, TriggerControlCommandType.LABEL),
+  TriggerControlCommandLabel_25Bytes((short) 0xB9, (byte) 25, TriggerControlCommandType.LABEL),
+  TriggerControlCommandLabel_26Bytes((short) 0xBA, (byte) 26, TriggerControlCommandType.LABEL),
+  TriggerControlCommandLabel_27Bytes((short) 0xBB, (byte) 27, TriggerControlCommandType.LABEL),
+  TriggerControlCommandLabel_28Bytes((short) 0xBC, (byte) 28, TriggerControlCommandType.LABEL),
+  TriggerControlCommandLabel_29Bytes((short) 0xBD, (byte) 29, TriggerControlCommandType.LABEL),
+  TriggerControlCommandLabel_30Bytes((short) 0xBE, (byte) 30, TriggerControlCommandType.LABEL),
+  TriggerControlCommandLabel_31Bytes((short) 0xBF, (byte) 31, TriggerControlCommandType.LABEL);
   private static final Map<Short, TriggerControlCommandTypeContainer> map;
 
   static {
@@ -106,11 +106,11 @@ public enum TriggerControlCommandTypeContainer {
   }
 
   private final short value;
-  private final short numBytes;
+  private final byte numBytes;
   private final TriggerControlCommandType commandType;
 
   TriggerControlCommandTypeContainer(
-      short value, short numBytes, TriggerControlCommandType commandType) {
+      short value, byte numBytes, TriggerControlCommandType commandType) {
     this.value = value;
     this.numBytes = numBytes;
     this.commandType = commandType;
@@ -120,11 +120,11 @@ public enum TriggerControlCommandTypeContainer {
     return value;
   }
 
-  public short getNumBytes() {
+  public byte getNumBytes() {
     return numBytes;
   }
 
-  public static TriggerControlCommandTypeContainer firstEnumForFieldNumBytes(short fieldValue) {
+  public static TriggerControlCommandTypeContainer firstEnumForFieldNumBytes(byte fieldValue) {
     for (TriggerControlCommandTypeContainer _val : TriggerControlCommandTypeContainer.values()) {
       if (_val.getNumBytes() == fieldValue) {
         return _val;
@@ -133,7 +133,7 @@ public enum TriggerControlCommandTypeContainer {
     return null;
   }
 
-  public static List<TriggerControlCommandTypeContainer> enumsForFieldNumBytes(short fieldValue) {
+  public static List<TriggerControlCommandTypeContainer> enumsForFieldNumBytes(byte fieldValue) {
     List<TriggerControlCommandTypeContainer> _values = new ArrayList<>();
     for (TriggerControlCommandTypeContainer _val : TriggerControlCommandTypeContainer.values()) {
       if (_val.getNumBytes() == fieldValue) {

@@ -46,9 +46,9 @@ public class IdentifyReplyCommandType extends IdentifyReplyCommand implements Me
   protected final String unitType;
 
   // Arguments.
-  protected final Short numBytes;
+  protected final Byte numBytes;
 
-  public IdentifyReplyCommandType(String unitType, Short numBytes) {
+  public IdentifyReplyCommandType(String unitType, Byte numBytes) {
     super(numBytes);
     this.unitType = unitType;
     this.numBytes = numBytes;
@@ -89,7 +89,7 @@ public class IdentifyReplyCommandType extends IdentifyReplyCommand implements Me
   }
 
   public static IdentifyReplyCommandBuilder staticParseIdentifyReplyCommandBuilder(
-      ReadBuffer readBuffer, Attribute attribute, Short numBytes) throws ParseException {
+      ReadBuffer readBuffer, Attribute attribute, Byte numBytes) throws ParseException {
     readBuffer.pullContext("IdentifyReplyCommandType");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
@@ -104,14 +104,14 @@ public class IdentifyReplyCommandType extends IdentifyReplyCommand implements Me
   public static class IdentifyReplyCommandTypeBuilderImpl
       implements IdentifyReplyCommand.IdentifyReplyCommandBuilder {
     private final String unitType;
-    private final Short numBytes;
+    private final Byte numBytes;
 
-    public IdentifyReplyCommandTypeBuilderImpl(String unitType, Short numBytes) {
+    public IdentifyReplyCommandTypeBuilderImpl(String unitType, Byte numBytes) {
       this.unitType = unitType;
       this.numBytes = numBytes;
     }
 
-    public IdentifyReplyCommandType build(Short numBytes) {
+    public IdentifyReplyCommandType build(Byte numBytes) {
 
       IdentifyReplyCommandType identifyReplyCommandType =
           new IdentifyReplyCommandType(unitType, numBytes);

@@ -46,9 +46,9 @@ public class KnxProperty {
 
       // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
       {
-        short reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
-            readBuffer.readUnsignedShort("", 7);
-        if (reserved != (short) 0x00) {
+        byte reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
+            readBuffer.readUnsignedByte("", 7);
+        if (reserved != (byte) 0x00) {
           LOGGER.info(
               "Expected constant value " + 0x00 + " but got " + reserved + " for reserved field.");
         }
@@ -110,8 +110,8 @@ public class KnxProperty {
       }
 
       // Simple Field (dayOfMonth)
-      Short dayOfMonth = /*TODO: migrate me*/ /*TODO: migrate me*/
-          readBuffer.readUnsignedShort("", 5);
+      Byte dayOfMonth = /*TODO: migrate me*/ /*TODO: migrate me*/
+          readBuffer.readUnsignedByte("", 5);
 
       // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
       {
@@ -137,12 +137,12 @@ public class KnxProperty {
       }
 
       // Simple Field (year)
-      Short year = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readUnsignedShort("", 7);
+      Byte year = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readUnsignedByte("", 7);
 
       Map<String, PlcValue> _map = new HashMap<>();
-      _map.put("dayOfMonth", new PlcINT(dayOfMonth));
+      _map.put("dayOfMonth", new PlcSINT(dayOfMonth));
       _map.put("month", new PlcSINT(month));
-      _map.put("year", new PlcINT(year));
+      _map.put("year", new PlcSINT(year));
 
       return new PlcStruct(_map);
     } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_TIME)) { // Struct
@@ -151,7 +151,7 @@ public class KnxProperty {
       Byte day = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readUnsignedByte("", 3);
 
       // Simple Field (hour)
-      Short hour = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readUnsignedShort("", 5);
+      Byte hour = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readUnsignedByte("", 5);
 
       // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
       {
@@ -164,7 +164,7 @@ public class KnxProperty {
       }
 
       // Simple Field (minutes)
-      Short minutes = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readUnsignedShort("", 6);
+      Byte minutes = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readUnsignedByte("", 6);
 
       // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
       {
@@ -177,13 +177,13 @@ public class KnxProperty {
       }
 
       // Simple Field (seconds)
-      Short seconds = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readUnsignedShort("", 6);
+      Byte seconds = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readUnsignedByte("", 6);
 
       Map<String, PlcValue> _map = new HashMap<>();
       _map.put("day", new PlcSINT(day));
-      _map.put("hour", new PlcINT(hour));
-      _map.put("minutes", new PlcINT(minutes));
-      _map.put("seconds", new PlcINT(seconds));
+      _map.put("hour", new PlcSINT(hour));
+      _map.put("minutes", new PlcSINT(minutes));
+      _map.put("seconds", new PlcSINT(seconds));
 
       return new PlcStruct(_map);
     } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_LONG)) { // DINT
@@ -324,15 +324,14 @@ public class KnxProperty {
       }
 
       // Simple Field (dayofmonth)
-      Short dayofmonth = /*TODO: migrate me*/ /*TODO: migrate me*/
-          readBuffer.readUnsignedShort("", 5);
+      Byte dayofmonth = /*TODO: migrate me*/ /*TODO: migrate me*/
+          readBuffer.readUnsignedByte("", 5);
 
       // Simple Field (dayofweek)
       Byte dayofweek = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readUnsignedByte("", 3);
 
       // Simple Field (hourofday)
-      Short hourofday = /*TODO: migrate me*/ /*TODO: migrate me*/
-          readBuffer.readUnsignedShort("", 5);
+      Byte hourofday = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readUnsignedByte("", 5);
 
       // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
       {
@@ -345,7 +344,7 @@ public class KnxProperty {
       }
 
       // Simple Field (minutes)
-      Short minutes = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readUnsignedShort("", 6);
+      Byte minutes = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readUnsignedByte("", 6);
 
       // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
       {
@@ -358,7 +357,7 @@ public class KnxProperty {
       }
 
       // Simple Field (seconds)
-      Short seconds = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readUnsignedShort("", 6);
+      Byte seconds = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readUnsignedByte("", 6);
 
       // Simple Field (fault)
       Boolean fault = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readBit("");
@@ -389,9 +388,9 @@ public class KnxProperty {
 
       // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
       {
-        short reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
-            readBuffer.readUnsignedShort("", 7);
-        if (reserved != (short) 0x00) {
+        byte reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
+            readBuffer.readUnsignedByte("", 7);
+        if (reserved != (byte) 0x00) {
           LOGGER.info(
               "Expected constant value " + 0x00 + " but got " + reserved + " for reserved field.");
         }
@@ -400,11 +399,11 @@ public class KnxProperty {
       Map<String, PlcValue> _map = new HashMap<>();
       _map.put("year", new PlcINT(year));
       _map.put("month", new PlcSINT(month));
-      _map.put("dayofmonth", new PlcINT(dayofmonth));
+      _map.put("dayofmonth", new PlcSINT(dayofmonth));
       _map.put("dayofweek", new PlcSINT(dayofweek));
-      _map.put("hourofday", new PlcINT(hourofday));
-      _map.put("minutes", new PlcINT(minutes));
-      _map.put("seconds", new PlcINT(seconds));
+      _map.put("hourofday", new PlcSINT(hourofday));
+      _map.put("minutes", new PlcSINT(minutes));
+      _map.put("seconds", new PlcSINT(seconds));
       _map.put("fault", new PlcBOOL(fault));
       _map.put("workingDay", new PlcBOOL(workingDay));
       _map.put("noWd", new PlcBOOL(noWd));
@@ -832,21 +831,21 @@ public class KnxProperty {
     } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_VERSION)) { // Struct
 
       // Simple Field (magicNumber)
-      Short magicNumber = /*TODO: migrate me*/ /*TODO: migrate me*/
-          readBuffer.readUnsignedShort("", 5);
+      Byte magicNumber = /*TODO: migrate me*/ /*TODO: migrate me*/
+          readBuffer.readUnsignedByte("", 5);
 
       // Simple Field (versionNumber)
-      Short versionNumber = /*TODO: migrate me*/ /*TODO: migrate me*/
-          readBuffer.readUnsignedShort("", 5);
+      Byte versionNumber = /*TODO: migrate me*/ /*TODO: migrate me*/
+          readBuffer.readUnsignedByte("", 5);
 
       // Simple Field (revisionNumber)
-      Short revisionNumber = /*TODO: migrate me*/ /*TODO: migrate me*/
-          readBuffer.readUnsignedShort("", 6);
+      Byte revisionNumber = /*TODO: migrate me*/ /*TODO: migrate me*/
+          readBuffer.readUnsignedByte("", 6);
 
       Map<String, PlcValue> _map = new HashMap<>();
-      _map.put("magicNumber", new PlcINT(magicNumber));
-      _map.put("versionNumber", new PlcINT(versionNumber));
-      _map.put("revisionNumber", new PlcINT(revisionNumber));
+      _map.put("magicNumber", new PlcSINT(magicNumber));
+      _map.put("versionNumber", new PlcSINT(versionNumber));
+      _map.put("revisionNumber", new PlcSINT(revisionNumber));
 
       return new PlcStruct(_map);
     } else if (EvaluationHelper.equals(
@@ -892,9 +891,9 @@ public class KnxProperty {
 
       // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
       {
-        short reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
-            readBuffer.readUnsignedShort("", 5);
-        if (reserved != (short) 0x00) {
+        byte reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
+            readBuffer.readUnsignedByte("", 5);
+        if (reserved != (byte) 0x00) {
           LOGGER.info(
               "Expected constant value " + 0x00 + " but got " + reserved + " for reserved field.");
         }
@@ -928,9 +927,9 @@ public class KnxProperty {
 
       // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
       {
-        short reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
-            readBuffer.readUnsignedShort("", 7);
-        if (reserved != (short) 0x00) {
+        byte reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
+            readBuffer.readUnsignedByte("", 7);
+        if (reserved != (byte) 0x00) {
           LOGGER.info(
               "Expected constant value " + 0x00 + " but got " + reserved + " for reserved field.");
         }
@@ -1037,8 +1036,7 @@ public class KnxProperty {
     if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_CONTROL)) { // BOOL
       // Reserved Field
       /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort(
-          "", 7, ((Number) (short) 0x00).shortValue());
+      /*TODO: migrate me*/ writeBuffer.writeUnsignedByte("", 7, ((Number) (byte) 0x00).byteValue());
       // Simple Field (value)
       boolean value = (boolean) _value.getBoolean();
       /*TODO: migrate me*/
@@ -1081,10 +1079,10 @@ public class KnxProperty {
       /*TODO: migrate me*/
       /*TODO: migrate me*/ writeBuffer.writeUnsignedByte("", 3, ((Number) (byte) 0x00).byteValue());
       // Simple Field (dayOfMonth)
-      short dayOfMonth = (short) _value.getStruct().get("dayOfMonth").getShort();
+      byte dayOfMonth = (byte) _value.getStruct().get("dayOfMonth").getByte();
       /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort(
-          "", 5, ((Number) (dayOfMonth)).shortValue());
+      /*TODO: migrate me*/ writeBuffer.writeUnsignedByte(
+          "", 5, ((Number) (dayOfMonth)).byteValue());
       // Reserved Field
       /*TODO: migrate me*/
       /*TODO: migrate me*/ writeBuffer.writeUnsignedByte("", 4, ((Number) (byte) 0x00).byteValue());
@@ -1096,32 +1094,32 @@ public class KnxProperty {
       /*TODO: migrate me*/
       /*TODO: migrate me*/ writeBuffer.writeUnsignedByte("", 1, ((Number) (byte) 0x00).byteValue());
       // Simple Field (year)
-      short year = (short) _value.getStruct().get("year").getShort();
+      byte year = (byte) _value.getStruct().get("year").getByte();
       /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort("", 7, ((Number) (year)).shortValue());
+      /*TODO: migrate me*/ writeBuffer.writeUnsignedByte("", 7, ((Number) (year)).byteValue());
     } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_TIME)) { // Struct
       // Simple Field (day)
       byte day = (byte) _value.getStruct().get("day").getByte();
       /*TODO: migrate me*/
       /*TODO: migrate me*/ writeBuffer.writeUnsignedByte("", 3, ((Number) (day)).byteValue());
       // Simple Field (hour)
-      short hour = (short) _value.getStruct().get("hour").getShort();
+      byte hour = (byte) _value.getStruct().get("hour").getByte();
       /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort("", 5, ((Number) (hour)).shortValue());
+      /*TODO: migrate me*/ writeBuffer.writeUnsignedByte("", 5, ((Number) (hour)).byteValue());
       // Reserved Field
       /*TODO: migrate me*/
       /*TODO: migrate me*/ writeBuffer.writeUnsignedByte("", 2, ((Number) (byte) 0x00).byteValue());
       // Simple Field (minutes)
-      short minutes = (short) _value.getStruct().get("minutes").getShort();
+      byte minutes = (byte) _value.getStruct().get("minutes").getByte();
       /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort("", 6, ((Number) (minutes)).shortValue());
+      /*TODO: migrate me*/ writeBuffer.writeUnsignedByte("", 6, ((Number) (minutes)).byteValue());
       // Reserved Field
       /*TODO: migrate me*/
       /*TODO: migrate me*/ writeBuffer.writeUnsignedByte("", 2, ((Number) (byte) 0x00).byteValue());
       // Simple Field (seconds)
-      short seconds = (short) _value.getStruct().get("seconds").getShort();
+      byte seconds = (byte) _value.getStruct().get("seconds").getByte();
       /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort("", 6, ((Number) (seconds)).shortValue());
+      /*TODO: migrate me*/ writeBuffer.writeUnsignedByte("", 6, ((Number) (seconds)).byteValue());
     } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_LONG)) { // DINT
       // Simple Field (value)
       int value = (int) _value.getInt();
@@ -1197,33 +1195,32 @@ public class KnxProperty {
       /*TODO: migrate me*/
       /*TODO: migrate me*/ writeBuffer.writeUnsignedByte("", 3, ((Number) (byte) 0x00).byteValue());
       // Simple Field (dayofmonth)
-      short dayofmonth = (short) _value.getStruct().get("dayofmonth").getShort();
+      byte dayofmonth = (byte) _value.getStruct().get("dayofmonth").getByte();
       /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort(
-          "", 5, ((Number) (dayofmonth)).shortValue());
+      /*TODO: migrate me*/ writeBuffer.writeUnsignedByte(
+          "", 5, ((Number) (dayofmonth)).byteValue());
       // Simple Field (dayofweek)
       byte dayofweek = (byte) _value.getStruct().get("dayofweek").getByte();
       /*TODO: migrate me*/
       /*TODO: migrate me*/ writeBuffer.writeUnsignedByte("", 3, ((Number) (dayofweek)).byteValue());
       // Simple Field (hourofday)
-      short hourofday = (short) _value.getStruct().get("hourofday").getShort();
+      byte hourofday = (byte) _value.getStruct().get("hourofday").getByte();
       /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort(
-          "", 5, ((Number) (hourofday)).shortValue());
+      /*TODO: migrate me*/ writeBuffer.writeUnsignedByte("", 5, ((Number) (hourofday)).byteValue());
       // Reserved Field
       /*TODO: migrate me*/
       /*TODO: migrate me*/ writeBuffer.writeUnsignedByte("", 2, ((Number) (byte) 0x00).byteValue());
       // Simple Field (minutes)
-      short minutes = (short) _value.getStruct().get("minutes").getShort();
+      byte minutes = (byte) _value.getStruct().get("minutes").getByte();
       /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort("", 6, ((Number) (minutes)).shortValue());
+      /*TODO: migrate me*/ writeBuffer.writeUnsignedByte("", 6, ((Number) (minutes)).byteValue());
       // Reserved Field
       /*TODO: migrate me*/
       /*TODO: migrate me*/ writeBuffer.writeUnsignedByte("", 2, ((Number) (byte) 0x00).byteValue());
       // Simple Field (seconds)
-      short seconds = (short) _value.getStruct().get("seconds").getShort();
+      byte seconds = (byte) _value.getStruct().get("seconds").getByte();
       /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort("", 6, ((Number) (seconds)).shortValue());
+      /*TODO: migrate me*/ writeBuffer.writeUnsignedByte("", 6, ((Number) (seconds)).byteValue());
       // Simple Field (fault)
       boolean fault = (boolean) _value.getStruct().get("fault").getBoolean();
       /*TODO: migrate me*/
@@ -1263,8 +1260,7 @@ public class KnxProperty {
       /*TODO: migrate me*/ writeBuffer.writeBit("", (boolean) (qualityOfClock));
       // Reserved Field
       /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort(
-          "", 7, ((Number) (short) 0x00).shortValue());
+      /*TODO: migrate me*/ writeBuffer.writeUnsignedByte("", 7, ((Number) (byte) 0x00).byteValue());
     } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_01)) { // List
       PlcList values = (PlcList) _value;
 
@@ -1427,20 +1423,20 @@ public class KnxProperty {
 
     } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_VERSION)) { // Struct
       // Simple Field (magicNumber)
-      short magicNumber = (short) _value.getStruct().get("magicNumber").getShort();
+      byte magicNumber = (byte) _value.getStruct().get("magicNumber").getByte();
       /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort(
-          "", 5, ((Number) (magicNumber)).shortValue());
+      /*TODO: migrate me*/ writeBuffer.writeUnsignedByte(
+          "", 5, ((Number) (magicNumber)).byteValue());
       // Simple Field (versionNumber)
-      short versionNumber = (short) _value.getStruct().get("versionNumber").getShort();
+      byte versionNumber = (byte) _value.getStruct().get("versionNumber").getByte();
       /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort(
-          "", 5, ((Number) (versionNumber)).shortValue());
+      /*TODO: migrate me*/ writeBuffer.writeUnsignedByte(
+          "", 5, ((Number) (versionNumber)).byteValue());
       // Simple Field (revisionNumber)
-      short revisionNumber = (short) _value.getStruct().get("revisionNumber").getShort();
+      byte revisionNumber = (byte) _value.getStruct().get("revisionNumber").getByte();
       /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort(
-          "", 6, ((Number) (revisionNumber)).shortValue());
+      /*TODO: migrate me*/ writeBuffer.writeUnsignedByte(
+          "", 6, ((Number) (revisionNumber)).byteValue());
     } else if (EvaluationHelper.equals(
         propertyType, KnxPropertyDataType.PDT_ALARM_INFO)) { // Struct
       // Simple Field (logNumber)
@@ -1484,8 +1480,7 @@ public class KnxProperty {
       /*TODO: migrate me*/ writeBuffer.writeBit("", (boolean) (ackSup));
       // Reserved Field
       /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort(
-          "", 5, ((Number) (short) 0x00).shortValue());
+      /*TODO: migrate me*/ writeBuffer.writeUnsignedByte("", 5, ((Number) (byte) 0x00).byteValue());
       // Simple Field (locked)
       boolean locked = (boolean) _value.getStruct().get("locked").getBoolean();
       /*TODO: migrate me*/
@@ -1502,8 +1497,7 @@ public class KnxProperty {
         propertyType, KnxPropertyDataType.PDT_BINARY_INFORMATION)) { // BOOL
       // Reserved Field
       /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort(
-          "", 7, ((Number) (short) 0x00).shortValue());
+      /*TODO: migrate me*/ writeBuffer.writeUnsignedByte("", 7, ((Number) (byte) 0x00).byteValue());
       // Simple Field (value)
       boolean value = (boolean) _value.getBoolean();
       /*TODO: migrate me*/

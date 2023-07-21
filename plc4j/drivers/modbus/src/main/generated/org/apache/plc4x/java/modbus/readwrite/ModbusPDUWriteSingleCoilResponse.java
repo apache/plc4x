@@ -42,8 +42,8 @@ public class ModbusPDUWriteSingleCoilResponse extends ModbusPDU implements Messa
     return (boolean) false;
   }
 
-  public Short getFunctionFlag() {
-    return (short) 0x05;
+  public Byte getFunctionFlag() {
+    return (byte) 0x05;
   }
 
   public Boolean getResponse() {

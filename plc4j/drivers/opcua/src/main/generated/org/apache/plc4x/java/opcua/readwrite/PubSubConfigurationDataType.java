@@ -104,7 +104,7 @@ public class PubSubConfigurationDataType extends ExtensionObjectDefinition imple
     writeComplexTypeArrayField("connections", connections, writeBuffer);
 
     // Reserved Field (reserved)
-    writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 7));
+    writeReservedField("reserved", (byte) 0x00, writeUnsignedByte(writeBuffer, 7));
 
     // Simple Field (enabled)
     writeSimpleField("enabled", enabled, writeBoolean(writeBuffer));
@@ -183,8 +183,8 @@ public class PubSubConfigurationDataType extends ExtensionObjectDefinition imple
                 readBuffer),
             noOfConnections);
 
-    Short reservedField0 =
-        readReservedField("reserved", readUnsignedShort(readBuffer, 7), (short) 0x00);
+    Byte reservedField0 =
+        readReservedField("reserved", readUnsignedByte(readBuffer, 7), (byte) 0x00);
 
     boolean enabled = readSimpleField("enabled", readBoolean(readBuffer));
 

@@ -42,8 +42,8 @@ public class ModbusPDUMaskWriteHoldingRegisterResponse extends ModbusPDU impleme
     return (boolean) false;
   }
 
-  public Short getFunctionFlag() {
-    return (short) 0x16;
+  public Byte getFunctionFlag() {
+    return (byte) 0x16;
   }
 
   public Boolean getResponse() {

@@ -74,7 +74,7 @@ public class LocalizedText implements Message {
     writeBuffer.pushContext("LocalizedText");
 
     // Reserved Field (reserved)
-    writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 6));
+    writeReservedField("reserved", (byte) 0x00, writeUnsignedByte(writeBuffer, 6));
 
     // Simple Field (textSpecified)
     writeSimpleField("textSpecified", textSpecified, writeBoolean(writeBuffer));
@@ -135,8 +135,8 @@ public class LocalizedText implements Message {
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    Short reservedField0 =
-        readReservedField("reserved", readUnsignedShort(readBuffer, 6), (short) 0x00);
+    Byte reservedField0 =
+        readReservedField("reserved", readUnsignedByte(readBuffer, 6), (byte) 0x00);
 
     boolean textSpecified = readSimpleField("textSpecified", readBoolean(readBuffer));
 

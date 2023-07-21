@@ -38,8 +38,8 @@ import org.apache.plc4x.java.spi.generation.*;
 public class SetAttributeAllRequest extends CipService implements Message {
 
   // Accessors for discriminator values.
-  public Short getService() {
-    return (short) 0x02;
+  public Byte getService() {
+    return (byte) 0x02;
   }
 
   public Boolean getResponse() {

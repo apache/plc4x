@@ -47,14 +47,14 @@ public class MPropReadReq extends CEMI implements Message {
   protected final short objectInstance;
   protected final short propertyId;
   protected final byte numberOfElements;
-  protected final int startIndex;
+  protected final short startIndex;
 
   public MPropReadReq(
       int interfaceObjectType,
       short objectInstance,
       short propertyId,
       byte numberOfElements,
-      int startIndex) {
+      short startIndex) {
     super();
     this.interfaceObjectType = interfaceObjectType;
     this.objectInstance = objectInstance;
@@ -79,7 +79,7 @@ public class MPropReadReq extends CEMI implements Message {
     return numberOfElements;
   }
 
-  public int getStartIndex() {
+  public short getStartIndex() {
     return startIndex;
   }
 
@@ -102,7 +102,7 @@ public class MPropReadReq extends CEMI implements Message {
     writeSimpleField("numberOfElements", numberOfElements, writeUnsignedByte(writeBuffer, 4));
 
     // Simple Field (startIndex)
-    writeSimpleField("startIndex", startIndex, writeUnsignedInt(writeBuffer, 12));
+    writeSimpleField("startIndex", startIndex, writeUnsignedShort(writeBuffer, 12));
 
     writeBuffer.popContext("MPropReadReq");
   }
@@ -151,7 +151,7 @@ public class MPropReadReq extends CEMI implements Message {
 
     byte numberOfElements = readSimpleField("numberOfElements", readUnsignedByte(readBuffer, 4));
 
-    int startIndex = readSimpleField("startIndex", readUnsignedInt(readBuffer, 12));
+    short startIndex = readSimpleField("startIndex", readUnsignedShort(readBuffer, 12));
 
     readBuffer.closeContext("MPropReadReq");
     // Create the instance
@@ -164,14 +164,14 @@ public class MPropReadReq extends CEMI implements Message {
     private final short objectInstance;
     private final short propertyId;
     private final byte numberOfElements;
-    private final int startIndex;
+    private final short startIndex;
 
     public MPropReadReqBuilderImpl(
         int interfaceObjectType,
         short objectInstance,
         short propertyId,
         byte numberOfElements,
-        int startIndex) {
+        short startIndex) {
       this.interfaceObjectType = interfaceObjectType;
       this.objectInstance = objectInstance;
       this.propertyId = propertyId;

@@ -95,7 +95,7 @@ public class DataItem {
         value = new LinkedList<>();
         for (int curItem = 0; curItem < itemCount; curItem++) {
           value.add(
-              new PlcUINT(
+              new PlcUSINT(
                   (Short) /*TODO: migrate me*/ /*TODO: migrate me*/
                       readBuffer.readUnsignedShort("", 8)));
         }
@@ -125,7 +125,7 @@ public class DataItem {
         value = new LinkedList<>();
         for (int curItem = 0; curItem < itemCount; curItem++) {
           value.add(
-              new PlcUDINT(
+              new PlcUINT(
                   (Integer) /*TODO: migrate me*/ /*TODO: migrate me*/
                       readBuffer.readUnsignedInt("", 16)));
         }
@@ -155,7 +155,7 @@ public class DataItem {
         value = new LinkedList<>();
         for (int curItem = 0; curItem < itemCount; curItem++) {
           value.add(
-              new PlcULINT(
+              new PlcUDINT(
                   (Long) /*TODO: migrate me*/ /*TODO: migrate me*/
                       readBuffer.readUnsignedLong("", 32)));
         }
@@ -186,7 +186,7 @@ public class DataItem {
         value = new LinkedList<>();
         for (int curItem = 0; curItem < itemCount; curItem++) {
           value.add(
-              new PlcLINT(
+              new PlcULINT(
                   (BigInteger) /*TODO: migrate me*/ /*TODO: migrate me*/
                       readBuffer.readUnsignedBigInteger("", 64)));
         }
@@ -333,7 +333,7 @@ public class DataItem {
         value = new LinkedList<>();
         for (int curItem = 0; curItem < itemCount; curItem++) {
           value.add(
-              new PlcUINT(
+              new PlcUSINT(
                   (Short) /*TODO: migrate me*/ /*TODO: migrate me*/
                       readBuffer.readUnsignedShort("", 8)));
         }
@@ -363,7 +363,7 @@ public class DataItem {
         value = new LinkedList<>();
         for (int curItem = 0; curItem < itemCount; curItem++) {
           value.add(
-              new PlcUDINT(
+              new PlcUINT(
                   (Integer) /*TODO: migrate me*/ /*TODO: migrate me*/
                       readBuffer.readUnsignedInt("", 16)));
         }
@@ -393,7 +393,7 @@ public class DataItem {
         value = new LinkedList<>();
         for (int curItem = 0; curItem < itemCount; curItem++) {
           value.add(
-              new PlcULINT(
+              new PlcUDINT(
                   (Long) /*TODO: migrate me*/ /*TODO: migrate me*/
                       readBuffer.readUnsignedLong("", 32)));
         }
@@ -424,7 +424,7 @@ public class DataItem {
         value = new LinkedList<>();
         for (int curItem = 0; curItem < itemCount; curItem++) {
           value.add(
-              new PlcLINT(
+              new PlcULINT(
                   (BigInteger) /*TODO: migrate me*/ /*TODO: migrate me*/
                       readBuffer.readUnsignedBigInteger("", 64)));
         }

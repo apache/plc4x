@@ -39,12 +39,12 @@ public class OpenProtocolMessageResultTracesCurveRev1 extends OpenProtocolMessag
     implements Message {
 
   // Accessors for discriminator values.
-  public Long getRevision() {
-    return (long) 1;
+  public Integer getRevision() {
+    return (int) 1;
   }
 
   public OpenProtocolMessageResultTracesCurveRev1(
-      Long midRevision,
+      Integer midRevision,
       Short noAckFlag,
       Integer targetStationId,
       Integer targetSpindleId,
@@ -86,8 +86,8 @@ public class OpenProtocolMessageResultTracesCurveRev1 extends OpenProtocolMessag
   }
 
   public static OpenProtocolMessageResultTracesCurveBuilder
-      staticParseOpenProtocolMessageResultTracesCurveBuilder(ReadBuffer readBuffer, Long revision)
-          throws ParseException {
+      staticParseOpenProtocolMessageResultTracesCurveBuilder(
+          ReadBuffer readBuffer, Integer revision) throws ParseException {
     readBuffer.pullContext("OpenProtocolMessageResultTracesCurveRev1");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
@@ -103,7 +103,7 @@ public class OpenProtocolMessageResultTracesCurveRev1 extends OpenProtocolMessag
     public OpenProtocolMessageResultTracesCurveRev1BuilderImpl() {}
 
     public OpenProtocolMessageResultTracesCurveRev1 build(
-        Long midRevision,
+        Integer midRevision,
         Short noAckFlag,
         Integer targetStationId,
         Integer targetSpindleId,

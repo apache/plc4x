@@ -160,7 +160,7 @@ public class RegisteredServer extends ExtensionObjectDefinition implements Messa
         "semaphoreFilePath", semaphoreFilePath, new DataWriterComplexDefault<>(writeBuffer));
 
     // Reserved Field (reserved)
-    writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 7));
+    writeReservedField("reserved", (byte) 0x00, writeUnsignedByte(writeBuffer, 7));
 
     // Simple Field (isOnline)
     writeSimpleField("isOnline", isOnline, writeBoolean(writeBuffer));
@@ -276,8 +276,8 @@ public class RegisteredServer extends ExtensionObjectDefinition implements Messa
             "semaphoreFilePath",
             new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
 
-    Short reservedField0 =
-        readReservedField("reserved", readUnsignedShort(readBuffer, 7), (short) 0x00);
+    Byte reservedField0 =
+        readReservedField("reserved", readUnsignedByte(readBuffer, 7), (byte) 0x00);
 
     boolean isOnline = readSimpleField("isOnline", readBoolean(readBuffer));
 

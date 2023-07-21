@@ -39,15 +39,15 @@ public class OpenProtocolMessageApplicationCommandAcceptedRev1
     extends OpenProtocolMessageApplicationCommandAccepted implements Message {
 
   // Accessors for discriminator values.
-  public Long getRevision() {
-    return (long) 1;
+  public Integer getRevision() {
+    return (int) 1;
   }
 
   // Properties.
   protected final Mid midNumberAccepted;
 
   public OpenProtocolMessageApplicationCommandAcceptedRev1(
-      Long midRevision,
+      Integer midRevision,
       Short noAckFlag,
       Integer targetStationId,
       Integer targetSpindleId,
@@ -107,7 +107,7 @@ public class OpenProtocolMessageApplicationCommandAcceptedRev1
 
   public static OpenProtocolMessageApplicationCommandAcceptedBuilder
       staticParseOpenProtocolMessageApplicationCommandAcceptedBuilder(
-          ReadBuffer readBuffer, Long revision) throws ParseException {
+          ReadBuffer readBuffer, Integer revision) throws ParseException {
     readBuffer.pullContext("OpenProtocolMessageApplicationCommandAcceptedRev1");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
@@ -134,7 +134,7 @@ public class OpenProtocolMessageApplicationCommandAcceptedRev1
     }
 
     public OpenProtocolMessageApplicationCommandAcceptedRev1 build(
-        Long midRevision,
+        Integer midRevision,
         Short noAckFlag,
         Integer targetStationId,
         Integer targetSpindleId,

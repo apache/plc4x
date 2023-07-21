@@ -498,7 +498,7 @@ public class CBusServerAdapter extends ChannelInboundHandlerAdapter {
     }
 
     private void handleCalDataIdentify(ChannelHandlerContext ctx, CALDataIdentify calDataIdentify, Alpha alpha) {
-        short numBytes;
+        byte numBytes;
         IdentifyReplyCommand identifyReplyCommand;
         switch (calDataIdentify.getAttribute()) {
             case Manufacturer:

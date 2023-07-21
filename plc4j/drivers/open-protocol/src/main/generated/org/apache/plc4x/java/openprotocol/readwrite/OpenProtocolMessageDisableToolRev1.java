@@ -39,12 +39,12 @@ public class OpenProtocolMessageDisableToolRev1 extends OpenProtocolMessageDisab
     implements Message {
 
   // Accessors for discriminator values.
-  public Long getRevision() {
-    return (long) 1;
+  public Integer getRevision() {
+    return (int) 1;
   }
 
   public OpenProtocolMessageDisableToolRev1(
-      Long midRevision,
+      Integer midRevision,
       Short noAckFlag,
       Integer targetStationId,
       Integer targetSpindleId,
@@ -86,7 +86,7 @@ public class OpenProtocolMessageDisableToolRev1 extends OpenProtocolMessageDisab
   }
 
   public static OpenProtocolMessageDisableToolBuilder
-      staticParseOpenProtocolMessageDisableToolBuilder(ReadBuffer readBuffer, Long revision)
+      staticParseOpenProtocolMessageDisableToolBuilder(ReadBuffer readBuffer, Integer revision)
           throws ParseException {
     readBuffer.pullContext("OpenProtocolMessageDisableToolRev1");
     PositionAware positionAware = readBuffer;
@@ -103,7 +103,7 @@ public class OpenProtocolMessageDisableToolRev1 extends OpenProtocolMessageDisab
     public OpenProtocolMessageDisableToolRev1BuilderImpl() {}
 
     public OpenProtocolMessageDisableToolRev1 build(
-        Long midRevision,
+        Integer midRevision,
         Short noAckFlag,
         Integer targetStationId,
         Integer targetSpindleId,

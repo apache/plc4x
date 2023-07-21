@@ -39,22 +39,22 @@ public class OpenProtocolMessageSelectParameterSetRev1 extends OpenProtocolMessa
     implements Message {
 
   // Accessors for discriminator values.
-  public Long getRevision() {
-    return (long) 1;
+  public Integer getRevision() {
+    return (int) 1;
   }
 
   // Properties.
-  protected final long parameterSetId;
+  protected final int parameterSetId;
 
   public OpenProtocolMessageSelectParameterSetRev1(
-      Long midRevision,
+      Integer midRevision,
       Short noAckFlag,
       Integer targetStationId,
       Integer targetSpindleId,
       Integer sequenceNumber,
       Short numberOfMessageParts,
       Short messagePartNumber,
-      long parameterSetId) {
+      int parameterSetId) {
     super(
         midRevision,
         noAckFlag,
@@ -66,7 +66,7 @@ public class OpenProtocolMessageSelectParameterSetRev1 extends OpenProtocolMessa
     this.parameterSetId = parameterSetId;
   }
 
-  public long getParameterSetId() {
+  public int getParameterSetId() {
     return parameterSetId;
   }
 
@@ -81,7 +81,7 @@ public class OpenProtocolMessageSelectParameterSetRev1 extends OpenProtocolMessa
     writeSimpleField(
         "parameterSetId",
         parameterSetId,
-        writeUnsignedLong(writeBuffer, 24),
+        writeUnsignedInt(writeBuffer, 24),
         WithOption.WithEncoding("ASCII"));
 
     writeBuffer.popContext("OpenProtocolMessageSelectParameterSetRev1");
@@ -105,15 +105,15 @@ public class OpenProtocolMessageSelectParameterSetRev1 extends OpenProtocolMessa
   }
 
   public static OpenProtocolMessageSelectParameterSetBuilder
-      staticParseOpenProtocolMessageSelectParameterSetBuilder(ReadBuffer readBuffer, Long revision)
-          throws ParseException {
+      staticParseOpenProtocolMessageSelectParameterSetBuilder(
+          ReadBuffer readBuffer, Integer revision) throws ParseException {
     readBuffer.pullContext("OpenProtocolMessageSelectParameterSetRev1");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    long parameterSetId =
+    int parameterSetId =
         readSimpleField(
-            "parameterSetId", readUnsignedLong(readBuffer, 24), WithOption.WithEncoding("ASCII"));
+            "parameterSetId", readUnsignedInt(readBuffer, 24), WithOption.WithEncoding("ASCII"));
 
     readBuffer.closeContext("OpenProtocolMessageSelectParameterSetRev1");
     // Create the instance
@@ -123,14 +123,14 @@ public class OpenProtocolMessageSelectParameterSetRev1 extends OpenProtocolMessa
   public static class OpenProtocolMessageSelectParameterSetRev1BuilderImpl
       implements OpenProtocolMessageSelectParameterSet
           .OpenProtocolMessageSelectParameterSetBuilder {
-    private final long parameterSetId;
+    private final int parameterSetId;
 
-    public OpenProtocolMessageSelectParameterSetRev1BuilderImpl(long parameterSetId) {
+    public OpenProtocolMessageSelectParameterSetRev1BuilderImpl(int parameterSetId) {
       this.parameterSetId = parameterSetId;
     }
 
     public OpenProtocolMessageSelectParameterSetRev1 build(
-        Long midRevision,
+        Integer midRevision,
         Short noAckFlag,
         Integer targetStationId,
         Integer targetSpindleId,

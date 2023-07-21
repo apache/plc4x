@@ -44,10 +44,10 @@ public abstract class OpenProtocolMessageLastTighteningResultData extends OpenPr
   }
 
   // Abstract accessors for discriminator values.
-  public abstract Long getRevision();
+  public abstract Integer getRevision();
 
   public OpenProtocolMessageLastTighteningResultData(
-      Long midRevision,
+      Integer midRevision,
       Short noAckFlag,
       Integer targetStationId,
       Integer targetSpindleId,
@@ -97,46 +97,46 @@ public abstract class OpenProtocolMessageLastTighteningResultData extends OpenPr
   }
 
   public static OpenProtocolMessageBuilder staticParseOpenProtocolMessageBuilder(
-      ReadBuffer readBuffer, Long revision) throws ParseException {
+      ReadBuffer readBuffer, Integer revision) throws ParseException {
     readBuffer.pullContext("OpenProtocolMessageLastTighteningResultData");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     OpenProtocolMessageLastTighteningResultDataBuilder builder = null;
-    if (EvaluationHelper.equals(revision, (long) 1)) {
+    if (EvaluationHelper.equals(revision, (int) 1)) {
       builder =
           OpenProtocolMessageLastTighteningResultDataRev1
               .staticParseOpenProtocolMessageLastTighteningResultDataBuilder(readBuffer, revision);
-    } else if (EvaluationHelper.equals(revision, (long) 2)) {
+    } else if (EvaluationHelper.equals(revision, (int) 2)) {
       builder =
           OpenProtocolMessageLastTighteningResultDataRev2
               .staticParseOpenProtocolMessageLastTighteningResultDataBuilder(readBuffer, revision);
-    } else if (EvaluationHelper.equals(revision, (long) 3)) {
+    } else if (EvaluationHelper.equals(revision, (int) 3)) {
       builder =
           OpenProtocolMessageLastTighteningResultDataRev3
               .staticParseOpenProtocolMessageLastTighteningResultDataBuilder(readBuffer, revision);
-    } else if (EvaluationHelper.equals(revision, (long) 4)) {
+    } else if (EvaluationHelper.equals(revision, (int) 4)) {
       builder =
           OpenProtocolMessageLastTighteningResultDataRev4
               .staticParseOpenProtocolMessageLastTighteningResultDataBuilder(readBuffer, revision);
-    } else if (EvaluationHelper.equals(revision, (long) 5)) {
+    } else if (EvaluationHelper.equals(revision, (int) 5)) {
       builder =
           OpenProtocolMessageLastTighteningResultDataRev5
               .staticParseOpenProtocolMessageLastTighteningResultDataBuilder(readBuffer, revision);
-    } else if (EvaluationHelper.equals(revision, (long) 6)) {
+    } else if (EvaluationHelper.equals(revision, (int) 6)) {
       builder =
           OpenProtocolMessageLastTighteningResultDataRev6
               .staticParseOpenProtocolMessageLastTighteningResultDataBuilder(readBuffer, revision);
-    } else if (EvaluationHelper.equals(revision, (long) 7)) {
+    } else if (EvaluationHelper.equals(revision, (int) 7)) {
       builder =
           OpenProtocolMessageLastTighteningResultDataRev7
               .staticParseOpenProtocolMessageLastTighteningResultDataBuilder(readBuffer, revision);
-    } else if (EvaluationHelper.equals(revision, (long) 998)) {
+    } else if (EvaluationHelper.equals(revision, (int) 998)) {
       builder =
           OpenProtocolMessageLastTighteningResultDataRev998
               .staticParseOpenProtocolMessageLastTighteningResultDataBuilder(readBuffer, revision);
-    } else if (EvaluationHelper.equals(revision, (long) 999)) {
+    } else if (EvaluationHelper.equals(revision, (int) 999)) {
       builder =
           OpenProtocolMessageLastTighteningResultDataRev999Light
               .staticParseOpenProtocolMessageLastTighteningResultDataBuilder(readBuffer, revision);
@@ -157,7 +157,7 @@ public abstract class OpenProtocolMessageLastTighteningResultData extends OpenPr
 
   public interface OpenProtocolMessageLastTighteningResultDataBuilder {
     OpenProtocolMessageLastTighteningResultData build(
-        Long midRevision,
+        Integer midRevision,
         Short noAckFlag,
         Integer targetStationId,
         Integer targetSpindleId,
@@ -176,7 +176,7 @@ public abstract class OpenProtocolMessageLastTighteningResultData extends OpenPr
     }
 
     public OpenProtocolMessageLastTighteningResultData build(
-        Long midRevision,
+        Integer midRevision,
         Short noAckFlag,
         Integer targetStationId,
         Integer targetSpindleId,

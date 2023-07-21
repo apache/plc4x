@@ -43,8 +43,8 @@ public class ModbusPDUReadWriteMultipleHoldingRegistersResponse extends ModbusPD
     return (boolean) false;
   }
 
-  public Short getFunctionFlag() {
-    return (short) 0x17;
+  public Byte getFunctionFlag() {
+    return (byte) 0x17;
   }
 
   public Boolean getResponse() {

@@ -39,8 +39,8 @@ import org.apache.plc4x.java.spi.generation.*;
 public class VariantUInt64 extends Variant implements Message {
 
   // Accessors for discriminator values.
-  public Short getVariantType() {
-    return (short) 9;
+  public Byte getVariantType() {
+    return (byte) 9;
   }
 
   // Properties.

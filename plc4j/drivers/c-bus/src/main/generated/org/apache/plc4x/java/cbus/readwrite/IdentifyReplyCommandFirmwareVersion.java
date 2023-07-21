@@ -46,9 +46,9 @@ public class IdentifyReplyCommandFirmwareVersion extends IdentifyReplyCommand im
   protected final String firmwareVersion;
 
   // Arguments.
-  protected final Short numBytes;
+  protected final Byte numBytes;
 
-  public IdentifyReplyCommandFirmwareVersion(String firmwareVersion, Short numBytes) {
+  public IdentifyReplyCommandFirmwareVersion(String firmwareVersion, Byte numBytes) {
     super(numBytes);
     this.firmwareVersion = firmwareVersion;
     this.numBytes = numBytes;
@@ -89,7 +89,7 @@ public class IdentifyReplyCommandFirmwareVersion extends IdentifyReplyCommand im
   }
 
   public static IdentifyReplyCommandBuilder staticParseIdentifyReplyCommandBuilder(
-      ReadBuffer readBuffer, Attribute attribute, Short numBytes) throws ParseException {
+      ReadBuffer readBuffer, Attribute attribute, Byte numBytes) throws ParseException {
     readBuffer.pullContext("IdentifyReplyCommandFirmwareVersion");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
@@ -104,14 +104,14 @@ public class IdentifyReplyCommandFirmwareVersion extends IdentifyReplyCommand im
   public static class IdentifyReplyCommandFirmwareVersionBuilderImpl
       implements IdentifyReplyCommand.IdentifyReplyCommandBuilder {
     private final String firmwareVersion;
-    private final Short numBytes;
+    private final Byte numBytes;
 
-    public IdentifyReplyCommandFirmwareVersionBuilderImpl(String firmwareVersion, Short numBytes) {
+    public IdentifyReplyCommandFirmwareVersionBuilderImpl(String firmwareVersion, Byte numBytes) {
       this.firmwareVersion = firmwareVersion;
       this.numBytes = numBytes;
     }
 
-    public IdentifyReplyCommandFirmwareVersion build(Short numBytes) {
+    public IdentifyReplyCommandFirmwareVersion build(Byte numBytes) {
 
       IdentifyReplyCommandFirmwareVersion identifyReplyCommandFirmwareVersion =
           new IdentifyReplyCommandFirmwareVersion(firmwareVersion, numBytes);

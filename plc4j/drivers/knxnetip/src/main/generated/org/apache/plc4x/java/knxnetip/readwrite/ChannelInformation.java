@@ -39,9 +39,9 @@ public class ChannelInformation implements Message {
 
   // Properties.
   protected final byte numChannels;
-  protected final int channelCode;
+  protected final short channelCode;
 
-  public ChannelInformation(byte numChannels, int channelCode) {
+  public ChannelInformation(byte numChannels, short channelCode) {
     super();
     this.numChannels = numChannels;
     this.channelCode = channelCode;
@@ -51,7 +51,7 @@ public class ChannelInformation implements Message {
     return numChannels;
   }
 
-  public int getChannelCode() {
+  public short getChannelCode() {
     return channelCode;
   }
 
@@ -64,7 +64,7 @@ public class ChannelInformation implements Message {
     writeSimpleField("numChannels", numChannels, writeUnsignedByte(writeBuffer, 3));
 
     // Simple Field (channelCode)
-    writeSimpleField("channelCode", channelCode, writeUnsignedInt(writeBuffer, 13));
+    writeSimpleField("channelCode", channelCode, writeUnsignedShort(writeBuffer, 13));
 
     writeBuffer.popContext("ChannelInformation");
   }
@@ -102,7 +102,7 @@ public class ChannelInformation implements Message {
 
     byte numChannels = readSimpleField("numChannels", readUnsignedByte(readBuffer, 3));
 
-    int channelCode = readSimpleField("channelCode", readUnsignedInt(readBuffer, 13));
+    short channelCode = readSimpleField("channelCode", readUnsignedShort(readBuffer, 13));
 
     readBuffer.closeContext("ChannelInformation");
     // Create the instance

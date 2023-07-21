@@ -91,7 +91,7 @@ public class AggregateConfiguration extends ExtensionObjectDefinition implements
     writeBuffer.pushContext("AggregateConfiguration");
 
     // Reserved Field (reserved)
-    writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 6));
+    writeReservedField("reserved", (byte) 0x00, writeUnsignedByte(writeBuffer, 6));
 
     // Simple Field (treatUncertainAsBad)
     writeSimpleField("treatUncertainAsBad", treatUncertainAsBad, writeBoolean(writeBuffer));
@@ -107,7 +107,7 @@ public class AggregateConfiguration extends ExtensionObjectDefinition implements
     writeSimpleField("percentDataGood", percentDataGood, writeUnsignedShort(writeBuffer, 8));
 
     // Reserved Field (reserved)
-    writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 7));
+    writeReservedField("reserved", (byte) 0x00, writeUnsignedByte(writeBuffer, 7));
 
     // Simple Field (useSlopedExtrapolation)
     writeSimpleField("useSlopedExtrapolation", useSlopedExtrapolation, writeBoolean(writeBuffer));
@@ -156,8 +156,8 @@ public class AggregateConfiguration extends ExtensionObjectDefinition implements
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    Short reservedField0 =
-        readReservedField("reserved", readUnsignedShort(readBuffer, 6), (short) 0x00);
+    Byte reservedField0 =
+        readReservedField("reserved", readUnsignedByte(readBuffer, 6), (byte) 0x00);
 
     boolean treatUncertainAsBad = readSimpleField("treatUncertainAsBad", readBoolean(readBuffer));
 
@@ -168,8 +168,8 @@ public class AggregateConfiguration extends ExtensionObjectDefinition implements
 
     short percentDataGood = readSimpleField("percentDataGood", readUnsignedShort(readBuffer, 8));
 
-    Short reservedField1 =
-        readReservedField("reserved", readUnsignedShort(readBuffer, 7), (short) 0x00);
+    Byte reservedField1 =
+        readReservedField("reserved", readUnsignedByte(readBuffer, 7), (byte) 0x00);
 
     boolean useSlopedExtrapolation =
         readSimpleField("useSlopedExtrapolation", readBoolean(readBuffer));

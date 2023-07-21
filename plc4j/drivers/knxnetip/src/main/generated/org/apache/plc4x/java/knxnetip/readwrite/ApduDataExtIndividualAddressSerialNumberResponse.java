@@ -39,8 +39,8 @@ public class ApduDataExtIndividualAddressSerialNumberResponse extends ApduDataEx
     implements Message {
 
   // Accessors for discriminator values.
-  public Short getExtApciType() {
-    return (short) 0x1D;
+  public Byte getExtApciType() {
+    return (byte) 0x1D;
   }
 
   public ApduDataExtIndividualAddressSerialNumberResponse() {

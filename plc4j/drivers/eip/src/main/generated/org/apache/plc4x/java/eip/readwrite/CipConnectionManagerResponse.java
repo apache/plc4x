@@ -38,8 +38,8 @@ import org.apache.plc4x.java.spi.generation.*;
 public class CipConnectionManagerResponse extends CipService implements Message {
 
   // Accessors for discriminator values.
-  public Short getService() {
-    return (short) 0x5B;
+  public Byte getService() {
+    return (byte) 0x5B;
   }
 
   public Boolean getResponse() {
@@ -112,7 +112,7 @@ public class CipConnectionManagerResponse extends CipService implements Message 
     writeBuffer.pushContext("CipConnectionManagerResponse");
 
     // Reserved Field (reserved)
-    writeReservedField("reserved", (long) 0x000000, writeUnsignedLong(writeBuffer, 24));
+    writeReservedField("reserved", (int) 0x000000, writeUnsignedInt(writeBuffer, 24));
 
     // Simple Field (otConnectionId)
     writeSimpleField("otConnectionId", otConnectionId, writeUnsignedLong(writeBuffer, 32));
@@ -198,8 +198,8 @@ public class CipConnectionManagerResponse extends CipService implements Message 
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    Long reservedField0 =
-        readReservedField("reserved", readUnsignedLong(readBuffer, 24), (long) 0x000000);
+    Integer reservedField0 =
+        readReservedField("reserved", readUnsignedInt(readBuffer, 24), (int) 0x000000);
 
     long otConnectionId = readSimpleField("otConnectionId", readUnsignedLong(readBuffer, 32));
 

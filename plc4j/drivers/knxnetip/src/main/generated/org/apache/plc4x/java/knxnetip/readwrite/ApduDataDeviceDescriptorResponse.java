@@ -43,16 +43,16 @@ public class ApduDataDeviceDescriptorResponse extends ApduData implements Messag
   }
 
   // Properties.
-  protected final short descriptorType;
+  protected final byte descriptorType;
   protected final byte[] data;
 
-  public ApduDataDeviceDescriptorResponse(short descriptorType, byte[] data) {
+  public ApduDataDeviceDescriptorResponse(byte descriptorType, byte[] data) {
     super();
     this.descriptorType = descriptorType;
     this.data = data;
   }
 
-  public short getDescriptorType() {
+  public byte getDescriptorType() {
     return descriptorType;
   }
 
@@ -67,7 +67,7 @@ public class ApduDataDeviceDescriptorResponse extends ApduData implements Messag
     writeBuffer.pushContext("ApduDataDeviceDescriptorResponse");
 
     // Simple Field (descriptorType)
-    writeSimpleField("descriptorType", descriptorType, writeUnsignedShort(writeBuffer, 6));
+    writeSimpleField("descriptorType", descriptorType, writeUnsignedByte(writeBuffer, 6));
 
     // Array Field (data)
     writeByteArrayField("data", data, writeByteArray(writeBuffer, 8));
@@ -103,7 +103,7 @@ public class ApduDataDeviceDescriptorResponse extends ApduData implements Messag
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    short descriptorType = readSimpleField("descriptorType", readUnsignedShort(readBuffer, 6));
+    byte descriptorType = readSimpleField("descriptorType", readUnsignedByte(readBuffer, 6));
 
     byte[] data =
         readBuffer.readByteArray(
@@ -116,10 +116,10 @@ public class ApduDataDeviceDescriptorResponse extends ApduData implements Messag
 
   public static class ApduDataDeviceDescriptorResponseBuilderImpl
       implements ApduData.ApduDataBuilder {
-    private final short descriptorType;
+    private final byte descriptorType;
     private final byte[] data;
 
-    public ApduDataDeviceDescriptorResponseBuilderImpl(short descriptorType, byte[] data) {
+    public ApduDataDeviceDescriptorResponseBuilderImpl(byte descriptorType, byte[] data) {
       this.descriptorType = descriptorType;
       this.data = data;
     }

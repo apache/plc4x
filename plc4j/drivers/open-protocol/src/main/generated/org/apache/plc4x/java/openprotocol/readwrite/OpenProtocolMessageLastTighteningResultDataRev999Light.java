@@ -24,7 +24,6 @@ import static org.apache.plc4x.java.spi.codegen.io.DataReaderFactory.*;
 import static org.apache.plc4x.java.spi.codegen.io.DataWriterFactory.*;
 import static org.apache.plc4x.java.spi.generation.StaticHelper.*;
 
-import java.math.BigInteger;
 import java.time.*;
 import java.util.*;
 import org.apache.plc4x.java.api.exceptions.*;
@@ -40,28 +39,28 @@ public class OpenProtocolMessageLastTighteningResultDataRev999Light
     extends OpenProtocolMessageLastTighteningResultData implements Message {
 
   // Accessors for discriminator values.
-  public Long getRevision() {
-    return (long) 999;
+  public Integer getRevision() {
+    return (int) 999;
   }
 
   // Properties.
   protected final String vinNumber;
   protected final int jobId;
-  protected final long parameterSetId;
+  protected final int parameterSetId;
   protected final long batchSize;
   protected final long batchCounter;
   protected final BatchStatus batchStatus;
   protected final NokOk tighteningStatus;
   protected final Status torqueStatus;
   protected final Status angleStatus;
-  protected final BigInteger torque;
-  protected final BigInteger angle;
+  protected final long torque;
+  protected final long angle;
   protected final String timeStamp;
   protected final String dateTimeOfLastChangeIndParameterSetSettings;
   protected final String tighteningId;
 
   public OpenProtocolMessageLastTighteningResultDataRev999Light(
-      Long midRevision,
+      Integer midRevision,
       Short noAckFlag,
       Integer targetStationId,
       Integer targetSpindleId,
@@ -70,15 +69,15 @@ public class OpenProtocolMessageLastTighteningResultDataRev999Light
       Short messagePartNumber,
       String vinNumber,
       int jobId,
-      long parameterSetId,
+      int parameterSetId,
       long batchSize,
       long batchCounter,
       BatchStatus batchStatus,
       NokOk tighteningStatus,
       Status torqueStatus,
       Status angleStatus,
-      BigInteger torque,
-      BigInteger angle,
+      long torque,
+      long angle,
       String timeStamp,
       String dateTimeOfLastChangeIndParameterSetSettings,
       String tighteningId) {
@@ -114,7 +113,7 @@ public class OpenProtocolMessageLastTighteningResultDataRev999Light
     return jobId;
   }
 
-  public long getParameterSetId() {
+  public int getParameterSetId() {
     return parameterSetId;
   }
 
@@ -142,11 +141,11 @@ public class OpenProtocolMessageLastTighteningResultDataRev999Light
     return angleStatus;
   }
 
-  public BigInteger getTorque() {
+  public long getTorque() {
     return torque;
   }
 
-  public BigInteger getAngle() {
+  public long getAngle() {
     return angle;
   }
 
@@ -181,7 +180,7 @@ public class OpenProtocolMessageLastTighteningResultDataRev999Light
     writeSimpleField(
         "parameterSetId",
         parameterSetId,
-        writeUnsignedLong(writeBuffer, 24),
+        writeUnsignedInt(writeBuffer, 24),
         WithOption.WithEncoding("ASCII"));
 
     // Simple Field (batchSize)
@@ -236,14 +235,11 @@ public class OpenProtocolMessageLastTighteningResultDataRev999Light
 
     // Simple Field (torque)
     writeSimpleField(
-        "torque",
-        torque,
-        writeUnsignedBigInteger(writeBuffer, 48),
-        WithOption.WithEncoding("ASCII"));
+        "torque", torque, writeUnsignedLong(writeBuffer, 48), WithOption.WithEncoding("ASCII"));
 
     // Simple Field (angle)
     writeSimpleField(
-        "angle", angle, writeUnsignedBigInteger(writeBuffer, 40), WithOption.WithEncoding("ASCII"));
+        "angle", angle, writeUnsignedLong(writeBuffer, 40), WithOption.WithEncoding("ASCII"));
 
     // Simple Field (timeStamp)
     writeSimpleField(
@@ -324,7 +320,7 @@ public class OpenProtocolMessageLastTighteningResultDataRev999Light
 
   public static OpenProtocolMessageLastTighteningResultDataBuilder
       staticParseOpenProtocolMessageLastTighteningResultDataBuilder(
-          ReadBuffer readBuffer, Long revision) throws ParseException {
+          ReadBuffer readBuffer, Integer revision) throws ParseException {
     readBuffer.pullContext("OpenProtocolMessageLastTighteningResultDataRev999Light");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
@@ -335,9 +331,9 @@ public class OpenProtocolMessageLastTighteningResultDataRev999Light
     int jobId =
         readSimpleField("jobId", readUnsignedInt(readBuffer, 16), WithOption.WithEncoding("ASCII"));
 
-    long parameterSetId =
+    int parameterSetId =
         readSimpleField(
-            "parameterSetId", readUnsignedLong(readBuffer, 24), WithOption.WithEncoding("ASCII"));
+            "parameterSetId", readUnsignedInt(readBuffer, 24), WithOption.WithEncoding("ASCII"));
 
     long batchSize =
         readSimpleField(
@@ -376,13 +372,13 @@ public class OpenProtocolMessageLastTighteningResultDataRev999Light
             new DataReaderEnumDefault<>(Status::enumForValue, readUnsignedShort(readBuffer, 8)),
             WithOption.WithEncoding("ASCII"));
 
-    BigInteger torque =
+    long torque =
         readSimpleField(
-            "torque", readUnsignedBigInteger(readBuffer, 48), WithOption.WithEncoding("ASCII"));
+            "torque", readUnsignedLong(readBuffer, 48), WithOption.WithEncoding("ASCII"));
 
-    BigInteger angle =
+    long angle =
         readSimpleField(
-            "angle", readUnsignedBigInteger(readBuffer, 40), WithOption.WithEncoding("ASCII"));
+            "angle", readUnsignedLong(readBuffer, 40), WithOption.WithEncoding("ASCII"));
 
     String timeStamp =
         readSimpleField("timeStamp", readString(readBuffer, 152), WithOption.WithEncoding("ASCII"));
@@ -421,15 +417,15 @@ public class OpenProtocolMessageLastTighteningResultDataRev999Light
           .OpenProtocolMessageLastTighteningResultDataBuilder {
     private final String vinNumber;
     private final int jobId;
-    private final long parameterSetId;
+    private final int parameterSetId;
     private final long batchSize;
     private final long batchCounter;
     private final BatchStatus batchStatus;
     private final NokOk tighteningStatus;
     private final Status torqueStatus;
     private final Status angleStatus;
-    private final BigInteger torque;
-    private final BigInteger angle;
+    private final long torque;
+    private final long angle;
     private final String timeStamp;
     private final String dateTimeOfLastChangeIndParameterSetSettings;
     private final String tighteningId;
@@ -437,15 +433,15 @@ public class OpenProtocolMessageLastTighteningResultDataRev999Light
     public OpenProtocolMessageLastTighteningResultDataRev999LightBuilderImpl(
         String vinNumber,
         int jobId,
-        long parameterSetId,
+        int parameterSetId,
         long batchSize,
         long batchCounter,
         BatchStatus batchStatus,
         NokOk tighteningStatus,
         Status torqueStatus,
         Status angleStatus,
-        BigInteger torque,
-        BigInteger angle,
+        long torque,
+        long angle,
         String timeStamp,
         String dateTimeOfLastChangeIndParameterSetSettings,
         String tighteningId) {
@@ -467,7 +463,7 @@ public class OpenProtocolMessageLastTighteningResultDataRev999Light
     }
 
     public OpenProtocolMessageLastTighteningResultDataRev999Light build(
-        Long midRevision,
+        Integer midRevision,
         Short noAckFlag,
         Integer targetStationId,
         Integer targetSpindleId,

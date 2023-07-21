@@ -88,7 +88,7 @@ public class RelativePathElement extends ExtensionObjectDefinition implements Me
         "referenceTypeId", referenceTypeId, new DataWriterComplexDefault<>(writeBuffer));
 
     // Reserved Field (reserved)
-    writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 6));
+    writeReservedField("reserved", (byte) 0x00, writeUnsignedByte(writeBuffer, 6));
 
     // Simple Field (includeSubtypes)
     writeSimpleField("includeSubtypes", includeSubtypes, writeBoolean(writeBuffer));
@@ -142,8 +142,8 @@ public class RelativePathElement extends ExtensionObjectDefinition implements Me
             "referenceTypeId",
             new DataReaderComplexDefault<>(() -> NodeId.staticParse(readBuffer), readBuffer));
 
-    Short reservedField0 =
-        readReservedField("reserved", readUnsignedShort(readBuffer, 6), (short) 0x00);
+    Byte reservedField0 =
+        readReservedField("reserved", readUnsignedByte(readBuffer, 6), (byte) 0x00);
 
     boolean includeSubtypes = readSimpleField("includeSubtypes", readBoolean(readBuffer));
 

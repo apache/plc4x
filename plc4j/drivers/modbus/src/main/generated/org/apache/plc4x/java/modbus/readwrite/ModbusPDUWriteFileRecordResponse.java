@@ -42,8 +42,8 @@ public class ModbusPDUWriteFileRecordResponse extends ModbusPDU implements Messa
     return (boolean) false;
   }
 
-  public Short getFunctionFlag() {
-    return (short) 0x15;
+  public Byte getFunctionFlag() {
+    return (byte) 0x15;
   }
 
   public Boolean getResponse() {

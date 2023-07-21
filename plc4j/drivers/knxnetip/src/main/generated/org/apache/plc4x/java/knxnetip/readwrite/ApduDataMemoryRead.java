@@ -43,16 +43,16 @@ public class ApduDataMemoryRead extends ApduData implements Message {
   }
 
   // Properties.
-  protected final short numBytes;
+  protected final byte numBytes;
   protected final int address;
 
-  public ApduDataMemoryRead(short numBytes, int address) {
+  public ApduDataMemoryRead(byte numBytes, int address) {
     super();
     this.numBytes = numBytes;
     this.address = address;
   }
 
-  public short getNumBytes() {
+  public byte getNumBytes() {
     return numBytes;
   }
 
@@ -67,7 +67,7 @@ public class ApduDataMemoryRead extends ApduData implements Message {
     writeBuffer.pushContext("ApduDataMemoryRead");
 
     // Simple Field (numBytes)
-    writeSimpleField("numBytes", numBytes, writeUnsignedShort(writeBuffer, 6));
+    writeSimpleField("numBytes", numBytes, writeUnsignedByte(writeBuffer, 6));
 
     // Simple Field (address)
     writeSimpleField("address", address, writeUnsignedInt(writeBuffer, 16));
@@ -101,7 +101,7 @@ public class ApduDataMemoryRead extends ApduData implements Message {
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    short numBytes = readSimpleField("numBytes", readUnsignedShort(readBuffer, 6));
+    byte numBytes = readSimpleField("numBytes", readUnsignedByte(readBuffer, 6));
 
     int address = readSimpleField("address", readUnsignedInt(readBuffer, 16));
 
@@ -111,10 +111,10 @@ public class ApduDataMemoryRead extends ApduData implements Message {
   }
 
   public static class ApduDataMemoryReadBuilderImpl implements ApduData.ApduDataBuilder {
-    private final short numBytes;
+    private final byte numBytes;
     private final int address;
 
-    public ApduDataMemoryReadBuilderImpl(short numBytes, int address) {
+    public ApduDataMemoryReadBuilderImpl(byte numBytes, int address) {
       this.numBytes = numBytes;
       this.address = address;
     }

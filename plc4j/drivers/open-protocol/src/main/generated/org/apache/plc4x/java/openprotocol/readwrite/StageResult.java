@@ -24,7 +24,6 @@ import static org.apache.plc4x.java.spi.codegen.io.DataReaderFactory.*;
 import static org.apache.plc4x.java.spi.codegen.io.DataWriterFactory.*;
 import static org.apache.plc4x.java.spi.generation.StaticHelper.*;
 
-import java.math.BigInteger;
 import java.time.*;
 import java.util.*;
 import org.apache.plc4x.java.api.exceptions.*;
@@ -39,20 +38,20 @@ import org.apache.plc4x.java.spi.generation.*;
 public class StageResult implements Message {
 
   // Properties.
-  protected final BigInteger stageTorqueValue;
-  protected final BigInteger stageTurningAngleValue;
+  protected final long stageTorqueValue;
+  protected final long stageTurningAngleValue;
 
-  public StageResult(BigInteger stageTorqueValue, BigInteger stageTurningAngleValue) {
+  public StageResult(long stageTorqueValue, long stageTurningAngleValue) {
     super();
     this.stageTorqueValue = stageTorqueValue;
     this.stageTurningAngleValue = stageTurningAngleValue;
   }
 
-  public BigInteger getStageTorqueValue() {
+  public long getStageTorqueValue() {
     return stageTorqueValue;
   }
 
-  public BigInteger getStageTurningAngleValue() {
+  public long getStageTurningAngleValue() {
     return stageTurningAngleValue;
   }
 
@@ -65,14 +64,14 @@ public class StageResult implements Message {
     writeSimpleField(
         "stageTorqueValue",
         stageTorqueValue,
-        writeUnsignedBigInteger(writeBuffer, 48),
+        writeUnsignedLong(writeBuffer, 48),
         WithOption.WithEncoding("ASCII"));
 
     // Simple Field (stageTurningAngleValue)
     writeSimpleField(
         "stageTurningAngleValue",
         stageTurningAngleValue,
-        writeUnsignedBigInteger(writeBuffer, 40),
+        writeUnsignedLong(writeBuffer, 40),
         WithOption.WithEncoding("ASCII"));
 
     writeBuffer.popContext("StageResult");
@@ -109,16 +108,14 @@ public class StageResult implements Message {
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    BigInteger stageTorqueValue =
+    long stageTorqueValue =
         readSimpleField(
-            "stageTorqueValue",
-            readUnsignedBigInteger(readBuffer, 48),
-            WithOption.WithEncoding("ASCII"));
+            "stageTorqueValue", readUnsignedLong(readBuffer, 48), WithOption.WithEncoding("ASCII"));
 
-    BigInteger stageTurningAngleValue =
+    long stageTurningAngleValue =
         readSimpleField(
             "stageTurningAngleValue",
-            readUnsignedBigInteger(readBuffer, 40),
+            readUnsignedLong(readBuffer, 40),
             WithOption.WithEncoding("ASCII"));
 
     readBuffer.closeContext("StageResult");

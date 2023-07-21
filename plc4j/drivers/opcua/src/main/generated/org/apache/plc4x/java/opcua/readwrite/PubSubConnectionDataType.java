@@ -143,7 +143,7 @@ public class PubSubConnectionDataType extends ExtensionObjectDefinition implemen
     writeSimpleField("name", name, new DataWriterComplexDefault<>(writeBuffer));
 
     // Reserved Field (reserved)
-    writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 7));
+    writeReservedField("reserved", (byte) 0x00, writeUnsignedByte(writeBuffer, 7));
 
     // Simple Field (enabled)
     writeSimpleField("enabled", enabled, writeBoolean(writeBuffer));
@@ -266,8 +266,8 @@ public class PubSubConnectionDataType extends ExtensionObjectDefinition implemen
             "name",
             new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
 
-    Short reservedField0 =
-        readReservedField("reserved", readUnsignedShort(readBuffer, 7), (short) 0x00);
+    Byte reservedField0 =
+        readReservedField("reserved", readUnsignedByte(readBuffer, 7), (byte) 0x00);
 
     boolean enabled = readSimpleField("enabled", readBoolean(readBuffer));
 

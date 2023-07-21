@@ -123,7 +123,7 @@ public class S7Step7ServerAdapter extends ChannelInboundHandlerAdapter {
                     }
 
                     COTPPacketData packetData = (COTPPacketData) cotpPacket;
-                    final short cotpTpduRef = packetData.getTpduRef();
+                    final byte cotpTpduRef = packetData.getTpduRef();
                     final S7Message payload = packetData.getPayload();
                     if (!(payload instanceof S7MessageRequest)) {
                         LOGGER.error("Expecting S7 Message Request");
@@ -160,7 +160,7 @@ public class S7Step7ServerAdapter extends ChannelInboundHandlerAdapter {
                     }
 
                     COTPPacketData packetData = (COTPPacketData) cotpPacket;
-                    final short cotpTpduRef = packetData.getTpduRef();
+                    final byte cotpTpduRef = packetData.getTpduRef();
                     final S7Message payload = packetData.getPayload();
                     if (payload instanceof S7MessageUserData) {
                         S7MessageUserData s7MessageUserData = (S7MessageUserData) payload;

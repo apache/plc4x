@@ -46,9 +46,9 @@ public class IdentifyReplyCommandManufacturer extends IdentifyReplyCommand imple
   protected final String manufacturerName;
 
   // Arguments.
-  protected final Short numBytes;
+  protected final Byte numBytes;
 
-  public IdentifyReplyCommandManufacturer(String manufacturerName, Short numBytes) {
+  public IdentifyReplyCommandManufacturer(String manufacturerName, Byte numBytes) {
     super(numBytes);
     this.manufacturerName = manufacturerName;
     this.numBytes = numBytes;
@@ -89,7 +89,7 @@ public class IdentifyReplyCommandManufacturer extends IdentifyReplyCommand imple
   }
 
   public static IdentifyReplyCommandBuilder staticParseIdentifyReplyCommandBuilder(
-      ReadBuffer readBuffer, Attribute attribute, Short numBytes) throws ParseException {
+      ReadBuffer readBuffer, Attribute attribute, Byte numBytes) throws ParseException {
     readBuffer.pullContext("IdentifyReplyCommandManufacturer");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
@@ -104,14 +104,14 @@ public class IdentifyReplyCommandManufacturer extends IdentifyReplyCommand imple
   public static class IdentifyReplyCommandManufacturerBuilderImpl
       implements IdentifyReplyCommand.IdentifyReplyCommandBuilder {
     private final String manufacturerName;
-    private final Short numBytes;
+    private final Byte numBytes;
 
-    public IdentifyReplyCommandManufacturerBuilderImpl(String manufacturerName, Short numBytes) {
+    public IdentifyReplyCommandManufacturerBuilderImpl(String manufacturerName, Byte numBytes) {
       this.manufacturerName = manufacturerName;
       this.numBytes = numBytes;
     }
 
-    public IdentifyReplyCommandManufacturer build(Short numBytes) {
+    public IdentifyReplyCommandManufacturer build(Byte numBytes) {
 
       IdentifyReplyCommandManufacturer identifyReplyCommandManufacturer =
           new IdentifyReplyCommandManufacturer(manufacturerName, numBytes);
