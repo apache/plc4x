@@ -65,7 +65,7 @@ public class TlvSystemCapabilities extends LldpUnit implements Message {
   private Short reservedField1;
 
   public TlvSystemCapabilities(
-      int tlvIdLength,
+      short tlvIdLength,
       boolean stationOnlyCapable,
       boolean docsisCableDeviceCapable,
       boolean telephoneCapable,
@@ -434,7 +434,7 @@ public class TlvSystemCapabilities extends LldpUnit implements Message {
       this.reservedField1 = reservedField1;
     }
 
-    public TlvSystemCapabilities build(int tlvIdLength) {
+    public TlvSystemCapabilities build(short tlvIdLength) {
       TlvSystemCapabilities tlvSystemCapabilities =
           new TlvSystemCapabilities(
               tlvIdLength,

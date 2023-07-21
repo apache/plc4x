@@ -50,7 +50,7 @@ public class TlvProfibusSubTypePortStatus extends TlvOrgSpecificProfibusUnit imp
 
   // Reserved Fields
   private Byte reservedField0;
-  private Integer reservedField1;
+  private Short reservedField1;
 
   public TlvProfibusSubTypePortStatus(
       int rtClass2PortStatus, boolean preample, boolean fragmentation, byte rtClass3PortStatus) {
@@ -102,8 +102,8 @@ public class TlvProfibusSubTypePortStatus extends TlvOrgSpecificProfibusUnit imp
     // Reserved Field (reserved)
     writeReservedField(
         "reserved",
-        reservedField1 != null ? reservedField1 : (int) 0x00,
-        writeUnsignedInt(writeBuffer, 9));
+        reservedField1 != null ? reservedField1 : (short) 0x00,
+        writeUnsignedShort(writeBuffer, 9));
 
     // Simple Field (rtClass3PortStatus)
     writeSimpleField("rtClass3PortStatus", rtClass3PortStatus, writeUnsignedByte(writeBuffer, 3));
@@ -158,8 +158,8 @@ public class TlvProfibusSubTypePortStatus extends TlvOrgSpecificProfibusUnit imp
 
     boolean fragmentation = readSimpleField("fragmentation", readBoolean(readBuffer));
 
-    Integer reservedField1 =
-        readReservedField("reserved", readUnsignedInt(readBuffer, 9), (int) 0x00);
+    Short reservedField1 =
+        readReservedField("reserved", readUnsignedShort(readBuffer, 9), (short) 0x00);
 
     byte rtClass3PortStatus =
         readSimpleField("rtClass3PortStatus", readUnsignedByte(readBuffer, 3));
@@ -182,7 +182,7 @@ public class TlvProfibusSubTypePortStatus extends TlvOrgSpecificProfibusUnit imp
     private final boolean fragmentation;
     private final byte rtClass3PortStatus;
     private final Byte reservedField0;
-    private final Integer reservedField1;
+    private final Short reservedField1;
 
     public TlvProfibusSubTypePortStatusBuilderImpl(
         int rtClass2PortStatus,
@@ -190,7 +190,7 @@ public class TlvProfibusSubTypePortStatus extends TlvOrgSpecificProfibusUnit imp
         boolean fragmentation,
         byte rtClass3PortStatus,
         Byte reservedField0,
-        Integer reservedField1) {
+        Short reservedField1) {
       this.rtClass2PortStatus = rtClass2PortStatus;
       this.preample = preample;
       this.fragmentation = fragmentation;

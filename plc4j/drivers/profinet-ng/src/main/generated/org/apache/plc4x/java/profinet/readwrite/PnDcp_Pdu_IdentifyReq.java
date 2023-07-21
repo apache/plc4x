@@ -50,7 +50,7 @@ public class PnDcp_Pdu_IdentifyReq extends PnDcp_Pdu implements Message {
   protected final List<PnDcp_Block> blocks;
 
   // Reserved Fields
-  private Short reservedField0;
+  private Byte reservedField0;
   private Byte reservedField1;
 
   public PnDcp_Pdu_IdentifyReq(
@@ -101,8 +101,8 @@ public class PnDcp_Pdu_IdentifyReq extends PnDcp_Pdu implements Message {
     // Reserved Field (reserved)
     writeReservedField(
         "reserved",
-        reservedField0 != null ? reservedField0 : (short) 0x00,
-        writeUnsignedShort(writeBuffer, 5),
+        reservedField0 != null ? reservedField0 : (byte) 0x00,
+        writeUnsignedByte(writeBuffer, 5),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Const Field (notSupported)
@@ -214,11 +214,11 @@ public class PnDcp_Pdu_IdentifyReq extends PnDcp_Pdu implements Message {
             PnDcp_Pdu_IdentifyReq.SERVICEID,
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
-    Short reservedField0 =
+    Byte reservedField0 =
         readReservedField(
             "reserved",
-            readUnsignedShort(readBuffer, 5),
-            (short) 0x00,
+            readUnsignedByte(readBuffer, 5),
+            (byte) 0x00,
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     boolean notSupported =
@@ -277,14 +277,14 @@ public class PnDcp_Pdu_IdentifyReq extends PnDcp_Pdu implements Message {
     private final long xid;
     private final int responseDelay;
     private final List<PnDcp_Block> blocks;
-    private final Short reservedField0;
+    private final Byte reservedField0;
     private final Byte reservedField1;
 
     public PnDcp_Pdu_IdentifyReqBuilderImpl(
         long xid,
         int responseDelay,
         List<PnDcp_Block> blocks,
-        Short reservedField0,
+        Byte reservedField0,
         Byte reservedField1) {
       this.xid = xid;
       this.responseDelay = responseDelay;

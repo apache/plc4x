@@ -41,14 +41,14 @@ public abstract class LldpUnit implements Message {
   public abstract TlvType getTlvId();
 
   // Properties.
-  protected final int tlvIdLength;
+  protected final short tlvIdLength;
 
-  public LldpUnit(int tlvIdLength) {
+  public LldpUnit(short tlvIdLength) {
     super();
     this.tlvIdLength = tlvIdLength;
   }
 
-  public int getTlvIdLength() {
+  public short getTlvIdLength() {
     return tlvIdLength;
   }
 
@@ -66,10 +66,10 @@ public abstract class LldpUnit implements Message {
         "TlvType",
         getTlvId(),
         new DataWriterEnumDefault<>(
-            TlvType::getValue, TlvType::name, writeUnsignedShort(writeBuffer, 7)));
+            TlvType::getValue, TlvType::name, writeUnsignedByte(writeBuffer, 7)));
 
     // Simple Field (tlvIdLength)
-    writeSimpleField("tlvIdLength", tlvIdLength, writeUnsignedInt(writeBuffer, 9));
+    writeSimpleField("tlvIdLength", tlvIdLength, writeUnsignedShort(writeBuffer, 9));
 
     // Switch field (Serialize the sub-type)
     serializeLldpUnitChild(writeBuffer);
@@ -112,9 +112,9 @@ public abstract class LldpUnit implements Message {
     TlvType tlvId =
         readDiscriminatorField(
             "tlvId",
-            new DataReaderEnumDefault<>(TlvType::enumForValue, readUnsignedShort(readBuffer, 7)));
+            new DataReaderEnumDefault<>(TlvType::enumForValue, readUnsignedByte(readBuffer, 7)));
 
-    int tlvIdLength = readSimpleField("tlvIdLength", readUnsignedInt(readBuffer, 9));
+    short tlvIdLength = readSimpleField("tlvIdLength", readUnsignedShort(readBuffer, 9));
 
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     LldpUnitBuilder builder = null;
@@ -151,7 +151,7 @@ public abstract class LldpUnit implements Message {
   }
 
   public interface LldpUnitBuilder {
-    LldpUnit build(int tlvIdLength);
+    LldpUnit build(short tlvIdLength);
   }
 
   @Override

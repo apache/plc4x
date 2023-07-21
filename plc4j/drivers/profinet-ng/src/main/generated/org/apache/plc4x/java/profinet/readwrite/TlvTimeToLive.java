@@ -45,7 +45,7 @@ public class TlvTimeToLive extends LldpUnit implements Message {
   // Properties.
   protected final int tlvTimeToLiveUnit;
 
-  public TlvTimeToLive(int tlvIdLength, int tlvTimeToLiveUnit) {
+  public TlvTimeToLive(short tlvIdLength, int tlvTimeToLiveUnit) {
     super(tlvIdLength);
     this.tlvTimeToLiveUnit = tlvTimeToLiveUnit;
   }
@@ -103,7 +103,7 @@ public class TlvTimeToLive extends LldpUnit implements Message {
       this.tlvTimeToLiveUnit = tlvTimeToLiveUnit;
     }
 
-    public TlvTimeToLive build(int tlvIdLength) {
+    public TlvTimeToLive build(short tlvIdLength) {
       TlvTimeToLive tlvTimeToLive = new TlvTimeToLive(tlvIdLength, tlvTimeToLiveUnit);
       return tlvTimeToLive;
     }

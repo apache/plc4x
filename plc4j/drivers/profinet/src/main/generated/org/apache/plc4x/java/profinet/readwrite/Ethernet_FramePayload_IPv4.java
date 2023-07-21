@@ -45,9 +45,9 @@ public class Ethernet_FramePayload_IPv4 extends Ethernet_FramePayload implements
   // Constant values.
   public static final Byte VERSION = 0x4;
   public static final Byte HEADERLENGTH = 0x5;
-  public static final Short DIFFERENTIATEDSERVICESCODEPOINT = 0x00;
+  public static final Byte DIFFERENTIATEDSERVICESCODEPOINT = 0x00;
   public static final Byte EXPLICITCONGESTIONNOTIFICATION = 0x0;
-  public static final Integer FRAGMENTOFFSET = 0x00;
+  public static final Short FRAGMENTOFFSET = 0x00;
   public static final Short PROTOCOL = 0x11;
 
   // Properties.
@@ -130,7 +130,7 @@ public class Ethernet_FramePayload_IPv4 extends Ethernet_FramePayload implements
     return HEADERLENGTH;
   }
 
-  public short getDifferentiatedServicesCodepoint() {
+  public byte getDifferentiatedServicesCodepoint() {
     return DIFFERENTIATEDSERVICESCODEPOINT;
   }
 
@@ -138,7 +138,7 @@ public class Ethernet_FramePayload_IPv4 extends Ethernet_FramePayload implements
     return EXPLICITCONGESTIONNOTIFICATION;
   }
 
-  public int getFragmentOffset() {
+  public short getFragmentOffset() {
     return FRAGMENTOFFSET;
   }
 
@@ -163,7 +163,7 @@ public class Ethernet_FramePayload_IPv4 extends Ethernet_FramePayload implements
     writeConstField(
         "differentiatedServicesCodepoint",
         DIFFERENTIATEDSERVICESCODEPOINT,
-        writeUnsignedShort(writeBuffer, 6));
+        writeUnsignedByte(writeBuffer, 6));
 
     // Const Field (explicitCongestionNotification)
     writeConstField(
@@ -192,7 +192,7 @@ public class Ethernet_FramePayload_IPv4 extends Ethernet_FramePayload implements
     writeSimpleField("moreFragments", moreFragments, writeBoolean(writeBuffer));
 
     // Const Field (fragmentOffset)
-    writeConstField("fragmentOffset", FRAGMENTOFFSET, writeUnsignedInt(writeBuffer, 13));
+    writeConstField("fragmentOffset", FRAGMENTOFFSET, writeUnsignedShort(writeBuffer, 13));
 
     // Simple Field (timeToLive)
     writeSimpleField("timeToLive", timeToLive, writeUnsignedShort(writeBuffer, 8));
@@ -339,10 +339,10 @@ public class Ethernet_FramePayload_IPv4 extends Ethernet_FramePayload implements
             readUnsignedByte(readBuffer, 4),
             Ethernet_FramePayload_IPv4.HEADERLENGTH);
 
-    short differentiatedServicesCodepoint =
+    byte differentiatedServicesCodepoint =
         readConstField(
             "differentiatedServicesCodepoint",
-            readUnsignedShort(readBuffer, 6),
+            readUnsignedByte(readBuffer, 6),
             Ethernet_FramePayload_IPv4.DIFFERENTIATEDSERVICESCODEPOINT);
 
     byte explicitCongestionNotification =
@@ -362,10 +362,10 @@ public class Ethernet_FramePayload_IPv4 extends Ethernet_FramePayload implements
 
     boolean moreFragments = readSimpleField("moreFragments", readBoolean(readBuffer));
 
-    int fragmentOffset =
+    short fragmentOffset =
         readConstField(
             "fragmentOffset",
-            readUnsignedInt(readBuffer, 13),
+            readUnsignedShort(readBuffer, 13),
             Ethernet_FramePayload_IPv4.FRAGMENTOFFSET);
 
     short timeToLive = readSimpleField("timeToLive", readUnsignedShort(readBuffer, 8));

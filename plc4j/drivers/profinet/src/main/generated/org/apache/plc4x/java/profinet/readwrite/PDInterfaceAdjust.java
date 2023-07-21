@@ -45,7 +45,7 @@ public class PDInterfaceAdjust extends PnIoCm_Block implements Message {
   // Constant values.
   public static final Integer PADFIELD = 0x0000;
   public static final Integer MULTIPLEINTERFACEMODERESERVED2 = 0x0000;
-  public static final Integer MULTIPLEINTERFACEMODERESERVED1 = 0x0000;
+  public static final Short MULTIPLEINTERFACEMODERESERVED1 = 0x0000;
 
   // Properties.
   protected final short blockVersionHigh;
@@ -82,7 +82,7 @@ public class PDInterfaceAdjust extends PnIoCm_Block implements Message {
     return MULTIPLEINTERFACEMODERESERVED2;
   }
 
-  public int getMultipleInterfaceModeReserved1() {
+  public short getMultipleInterfaceModeReserved1() {
     return MULTIPLEINTERFACEMODERESERVED1;
   }
 
@@ -133,7 +133,7 @@ public class PDInterfaceAdjust extends PnIoCm_Block implements Message {
     writeConstField(
         "multipleInterfaceModeReserved1",
         MULTIPLEINTERFACEMODERESERVED1,
-        writeUnsignedInt(writeBuffer, 15),
+        writeUnsignedShort(writeBuffer, 15),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (multipleInterfaceModeNameOfDevice)
@@ -223,10 +223,10 @@ public class PDInterfaceAdjust extends PnIoCm_Block implements Message {
             PDInterfaceAdjust.MULTIPLEINTERFACEMODERESERVED2,
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
-    int multipleInterfaceModeReserved1 =
+    short multipleInterfaceModeReserved1 =
         readConstField(
             "multipleInterfaceModeReserved1",
-            readUnsignedInt(readBuffer, 15),
+            readUnsignedShort(readBuffer, 15),
             PDInterfaceAdjust.MULTIPLEINTERFACEMODERESERVED1,
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 

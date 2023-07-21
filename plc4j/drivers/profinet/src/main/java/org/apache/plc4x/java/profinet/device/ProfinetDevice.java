@@ -25,13 +25,11 @@ import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
 import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
-import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.types.PlcSubscriptionType;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.profinet.context.ProfinetDeviceContext;
 import org.apache.plc4x.java.profinet.gsdml.*;
 import org.apache.plc4x.java.profinet.readwrite.*;
-import org.apache.plc4x.java.profinet.tag.ProfinetTag;
 import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.generation.*;
 import org.apache.plc4x.java.spi.messages.DefaultPlcSubscriptionEvent;
@@ -39,7 +37,6 @@ import org.apache.plc4x.java.spi.messages.DefaultPlcSubscriptionResponse;
 import org.apache.plc4x.java.spi.messages.PlcSubscriber;
 import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
 import org.apache.plc4x.java.spi.model.DefaultPlcConsumerRegistration;
-import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionTag;
 import org.apache.plc4x.java.spi.values.PlcSTRING;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -481,7 +478,7 @@ public class ProfinetDevice implements PlcSubscriber {
                     ProfinetDeviceContext.ARUUID,
                     deviceContext.getSessionKey(),
                     deviceContext.getLocalMacAddress(),
-                    new DceRpc_ObjectUuid((byte) 0x00, 0x0001, Integer.decode("0x" + deviceId), Integer.decode("0x" + vendorId)),
+                    new DceRpc_ObjectUuid((byte) 0x00, (short) 0x0001, Integer.decode("0x" + deviceId), Integer.decode("0x" + vendorId)),
                     false,
                     deviceContext.isNonLegacyStartupMode(),
                     false,
@@ -592,7 +589,7 @@ public class ProfinetDevice implements PlcSubscriber {
                 IntegerEncoding.BIG_ENDIAN,
                 CharacterEncoding.ASCII,
                 FloatingPointEncoding.IEEE,
-                new DceRpc_ObjectUuid((byte) 0x00, 0x0001, Integer.decode("0x" + deviceId), Integer.decode("0x" + vendorId)),
+                new DceRpc_ObjectUuid((byte) 0x00, (short) 0x0001, Integer.decode("0x" + deviceId), Integer.decode("0x" + vendorId)),
                 new DceRpc_InterfaceUuid_DeviceInterface(),
                 deviceContext.getUuid(),
                 0,
@@ -735,7 +732,7 @@ public class ProfinetDevice implements PlcSubscriber {
             return new DceRpc_Packet(
                 DceRpc_PacketType.REQUEST, true, false, false,
                 IntegerEncoding.BIG_ENDIAN, CharacterEncoding.ASCII, FloatingPointEncoding.IEEE,
-                new DceRpc_ObjectUuid((byte) 0x00, 0x0001, Integer.decode("0x" + deviceId), Integer.decode("0x" + vendorId)),
+                new DceRpc_ObjectUuid((byte) 0x00, (short) 0x0001, Integer.decode("0x" + deviceId), Integer.decode("0x" + vendorId)),
                 new DceRpc_InterfaceUuid_DeviceInterface(),
                 deviceContext.getUuid(),
                 0,
@@ -796,7 +793,7 @@ public class ProfinetDevice implements PlcSubscriber {
             return new DceRpc_Packet(
                 DceRpc_PacketType.REQUEST, true, false, false,
                 IntegerEncoding.BIG_ENDIAN, CharacterEncoding.ASCII, FloatingPointEncoding.IEEE,
-                new DceRpc_ObjectUuid((byte) 0x00, 0x0001, Integer.decode("0x" + deviceId), Integer.decode("0x" + vendorId)),
+                new DceRpc_ObjectUuid((byte) 0x00, (short) 0x0001, Integer.decode("0x" + deviceId), Integer.decode("0x" + vendorId)),
                 new DceRpc_InterfaceUuid_DeviceInterface(),
                 deviceContext.getUuid(),
                 0,
@@ -872,7 +869,7 @@ public class ProfinetDevice implements PlcSubscriber {
                 IntegerEncoding.BIG_ENDIAN,
                 CharacterEncoding.ASCII,
                 FloatingPointEncoding.IEEE,
-                new DceRpc_ObjectUuid((byte) 0x00, 0x0001, Integer.decode("0x" + deviceId), Integer.decode("0x" + vendorId)),
+                new DceRpc_ObjectUuid((byte) 0x00, (short) 0x0001, Integer.decode("0x" + deviceId), Integer.decode("0x" + vendorId)),
                 new DceRpc_InterfaceUuid_ControllerInterface(),
                 activityUuid,
                 0,
@@ -932,7 +929,7 @@ public class ProfinetDevice implements PlcSubscriber {
                 IntegerEncoding.BIG_ENDIAN,
                 CharacterEncoding.ASCII,
                 FloatingPointEncoding.IEEE,
-                new DceRpc_ObjectUuid((byte) 0x00, 0x0001, Integer.decode("0x" + deviceId), Integer.decode("0x" + vendorId)),
+                new DceRpc_ObjectUuid((byte) 0x00, (short) 0x0001, Integer.decode("0x" + deviceId), Integer.decode("0x" + vendorId)),
                 new DceRpc_InterfaceUuid_ControllerInterface(),
                 activityUuid,
                 0,
@@ -995,7 +992,7 @@ public class ProfinetDevice implements PlcSubscriber {
                     new Ethernet_FramePayload_VirtualLan(
                         VirtualLanPriority.INTERNETWORK_CONTROL,
                         false,
-                        0,
+                        (short) 0,
                         new Ethernet_FramePayload_PnDcp(
                             new PnDcp_Pdu_RealTimeCyclic(
                                 deviceContext.getOutputReq().getFrameId(),
@@ -1021,7 +1018,7 @@ public class ProfinetDevice implements PlcSubscriber {
                     new Ethernet_FramePayload_VirtualLan(
                         VirtualLanPriority.INTERNETWORK_CONTROL,
                         false,
-                        0,
+                        (short) 0,
                         new Ethernet_FramePayload_PnDcp(
                             new PnDcp_Pdu_RealTimeCyclic(
                                 deviceContext.getOutputReq().getFrameId(),
@@ -1074,7 +1071,7 @@ public class ProfinetDevice implements PlcSubscriber {
                     new Ethernet_FramePayload_VirtualLan(
                         VirtualLanPriority.INTERNETWORK_CONTROL,
                         false,
-                        0,
+                        (short) 0,
                         new Ethernet_FramePayload_PnDcp(
                             new PcDcp_GetSet_Pdu(
                                 PnDcp_FrameId.DCP_GetSet_PDU.getValue(),

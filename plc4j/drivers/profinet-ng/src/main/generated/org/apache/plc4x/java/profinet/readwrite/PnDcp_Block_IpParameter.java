@@ -56,7 +56,7 @@ public class PnDcp_Block_IpParameter extends PnDcp_Block implements Message {
 
   // Reserved Fields
   private Short reservedField0;
-  private Short reservedField1;
+  private Byte reservedField1;
 
   public PnDcp_Block_IpParameter(
       boolean ipConflictDetected,
@@ -121,8 +121,8 @@ public class PnDcp_Block_IpParameter extends PnDcp_Block implements Message {
     // Reserved Field (reserved)
     writeReservedField(
         "reserved",
-        reservedField1 != null ? reservedField1 : (short) 0x00,
-        writeUnsignedShort(writeBuffer, 5),
+        reservedField1 != null ? reservedField1 : (byte) 0x00,
+        writeUnsignedByte(writeBuffer, 5),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (setViaDhcp)
@@ -226,11 +226,11 @@ public class PnDcp_Block_IpParameter extends PnDcp_Block implements Message {
             readBoolean(readBuffer),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
-    Short reservedField1 =
+    Byte reservedField1 =
         readReservedField(
             "reserved",
-            readUnsignedShort(readBuffer, 5),
-            (short) 0x00,
+            readUnsignedByte(readBuffer, 5),
+            (byte) 0x00,
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     boolean setViaDhcp =
@@ -274,7 +274,7 @@ public class PnDcp_Block_IpParameter extends PnDcp_Block implements Message {
     private final byte[] subnetMask;
     private final byte[] standardGateway;
     private final Short reservedField0;
-    private final Short reservedField1;
+    private final Byte reservedField1;
 
     public PnDcp_Block_IpParameterBuilderImpl(
         boolean ipConflictDetected,
@@ -284,7 +284,7 @@ public class PnDcp_Block_IpParameter extends PnDcp_Block implements Message {
         byte[] subnetMask,
         byte[] standardGateway,
         Short reservedField0,
-        Short reservedField1) {
+        Byte reservedField1) {
       this.ipConflictDetected = ipConflictDetected;
       this.setViaDhcp = setViaDhcp;
       this.setManually = setManually;

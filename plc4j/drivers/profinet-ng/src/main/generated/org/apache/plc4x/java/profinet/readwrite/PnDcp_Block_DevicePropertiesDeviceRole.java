@@ -53,7 +53,7 @@ public class PnDcp_Block_DevicePropertiesDeviceRole extends PnDcp_Block implemen
   protected final boolean pnioDevice;
 
   // Reserved Fields
-  private Long reservedField0;
+  private Integer reservedField0;
   private Short reservedField1;
 
   public PnDcp_Block_DevicePropertiesDeviceRole(
@@ -90,8 +90,8 @@ public class PnDcp_Block_DevicePropertiesDeviceRole extends PnDcp_Block implemen
     // Reserved Field (reserved)
     writeReservedField(
         "reserved",
-        reservedField0 != null ? reservedField0 : (long) 0x000000,
-        writeUnsignedLong(writeBuffer, 20),
+        reservedField0 != null ? reservedField0 : (int) 0x000000,
+        writeUnsignedInt(writeBuffer, 20),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (pnioSupervisor)
@@ -170,11 +170,11 @@ public class PnDcp_Block_DevicePropertiesDeviceRole extends PnDcp_Block implemen
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    Long reservedField0 =
+    Integer reservedField0 =
         readReservedField(
             "reserved",
-            readUnsignedLong(readBuffer, 20),
-            (long) 0x000000,
+            readUnsignedInt(readBuffer, 20),
+            (int) 0x000000,
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     boolean pnioSupervisor =
@@ -223,7 +223,7 @@ public class PnDcp_Block_DevicePropertiesDeviceRole extends PnDcp_Block implemen
     private final boolean pnioMultidevive;
     private final boolean pnioController;
     private final boolean pnioDevice;
-    private final Long reservedField0;
+    private final Integer reservedField0;
     private final Short reservedField1;
 
     public PnDcp_Block_DevicePropertiesDeviceRoleBuilderImpl(
@@ -231,7 +231,7 @@ public class PnDcp_Block_DevicePropertiesDeviceRole extends PnDcp_Block implemen
         boolean pnioMultidevive,
         boolean pnioController,
         boolean pnioDevice,
-        Long reservedField0,
+        Integer reservedField0,
         Short reservedField1) {
       this.pnioSupervisor = pnioSupervisor;
       this.pnioMultidevive = pnioMultidevive;

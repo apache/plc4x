@@ -45,11 +45,11 @@ public class Ethernet_FramePayload_VirtualLan extends Ethernet_FramePayload impl
   // Properties.
   protected final VirtualLanPriority priority;
   protected final boolean ineligible;
-  protected final int id;
+  protected final short id;
   protected final Ethernet_FramePayload payload;
 
   public Ethernet_FramePayload_VirtualLan(
-      VirtualLanPriority priority, boolean ineligible, int id, Ethernet_FramePayload payload) {
+      VirtualLanPriority priority, boolean ineligible, short id, Ethernet_FramePayload payload) {
     super();
     this.priority = priority;
     this.ineligible = ineligible;
@@ -65,7 +65,7 @@ public class Ethernet_FramePayload_VirtualLan extends Ethernet_FramePayload impl
     return ineligible;
   }
 
-  public int getId() {
+  public short getId() {
     return id;
   }
 
@@ -94,7 +94,7 @@ public class Ethernet_FramePayload_VirtualLan extends Ethernet_FramePayload impl
     writeSimpleField("ineligible", ineligible, writeBoolean(writeBuffer));
 
     // Simple Field (id)
-    writeSimpleField("id", id, writeUnsignedInt(writeBuffer, 12));
+    writeSimpleField("id", id, writeUnsignedShort(writeBuffer, 12));
 
     // Simple Field (payload)
     writeSimpleField("payload", payload, new DataWriterComplexDefault<>(writeBuffer));
@@ -143,7 +143,7 @@ public class Ethernet_FramePayload_VirtualLan extends Ethernet_FramePayload impl
 
     boolean ineligible = readSimpleField("ineligible", readBoolean(readBuffer));
 
-    int id = readSimpleField("id", readUnsignedInt(readBuffer, 12));
+    short id = readSimpleField("id", readUnsignedShort(readBuffer, 12));
 
     Ethernet_FramePayload payload =
         readSimpleField(
@@ -160,11 +160,11 @@ public class Ethernet_FramePayload_VirtualLan extends Ethernet_FramePayload impl
       implements Ethernet_FramePayload.Ethernet_FramePayloadBuilder {
     private final VirtualLanPriority priority;
     private final boolean ineligible;
-    private final int id;
+    private final short id;
     private final Ethernet_FramePayload payload;
 
     public Ethernet_FramePayload_VirtualLanBuilderImpl(
-        VirtualLanPriority priority, boolean ineligible, int id, Ethernet_FramePayload payload) {
+        VirtualLanPriority priority, boolean ineligible, short id, Ethernet_FramePayload payload) {
       this.priority = priority;
       this.ineligible = ineligible;
       this.id = id;

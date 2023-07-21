@@ -46,7 +46,7 @@ public class TlvOrganizationSpecific extends LldpUnit implements Message {
   protected final TlvOrganizationSpecificUnit organizationSpecificUnit;
 
   public TlvOrganizationSpecific(
-      int tlvIdLength, TlvOrganizationSpecificUnit organizationSpecificUnit) {
+      short tlvIdLength, TlvOrganizationSpecificUnit organizationSpecificUnit) {
     super(tlvIdLength);
     this.organizationSpecificUnit = organizationSpecificUnit;
   }
@@ -112,7 +112,7 @@ public class TlvOrganizationSpecific extends LldpUnit implements Message {
       this.organizationSpecificUnit = organizationSpecificUnit;
     }
 
-    public TlvOrganizationSpecific build(int tlvIdLength) {
+    public TlvOrganizationSpecific build(short tlvIdLength) {
       TlvOrganizationSpecific tlvOrganizationSpecific =
           new TlvOrganizationSpecific(tlvIdLength, organizationSpecificUnit);
       return tlvOrganizationSpecific;

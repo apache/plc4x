@@ -264,7 +264,7 @@ public class ProfinetDriverContext implements DriverContext {
     }
 
     public DceRpc_ObjectUuid getCmInitiatorObjectUuid() {
-        return new DceRpc_ObjectUuid((byte) 0x00, 0x0001,
+        return new DceRpc_ObjectUuid((byte) 0x00, (short) 0x0001,
             Integer.decode("0x" + getDeviceId()),
             Integer.decode("0x" + getVendorId()));
     }

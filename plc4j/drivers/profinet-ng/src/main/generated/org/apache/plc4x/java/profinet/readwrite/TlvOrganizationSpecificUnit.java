@@ -38,7 +38,7 @@ import org.apache.plc4x.java.spi.generation.*;
 public abstract class TlvOrganizationSpecificUnit implements Message {
 
   // Abstract accessors for discriminator values.
-  public abstract Long getUniqueCode();
+  public abstract Integer getUniqueCode();
 
   public TlvOrganizationSpecificUnit() {
     super();
@@ -53,7 +53,7 @@ public abstract class TlvOrganizationSpecificUnit implements Message {
     writeBuffer.pushContext("TlvOrganizationSpecificUnit");
 
     // Discriminator Field (uniqueCode) (Used as input to a switch field)
-    writeDiscriminatorField("uniqueCode", getUniqueCode(), writeUnsignedLong(writeBuffer, 24));
+    writeDiscriminatorField("uniqueCode", getUniqueCode(), writeUnsignedInt(writeBuffer, 24));
 
     // Switch field (Serialize the sub-type)
     serializeTlvOrganizationSpecificUnitChild(writeBuffer);
@@ -92,13 +92,13 @@ public abstract class TlvOrganizationSpecificUnit implements Message {
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    long uniqueCode = readDiscriminatorField("uniqueCode", readUnsignedLong(readBuffer, 24));
+    int uniqueCode = readDiscriminatorField("uniqueCode", readUnsignedInt(readBuffer, 24));
 
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     TlvOrganizationSpecificUnitBuilder builder = null;
-    if (EvaluationHelper.equals(uniqueCode, (long) 0x000ECF)) {
+    if (EvaluationHelper.equals(uniqueCode, (int) 0x000ECF)) {
       builder = TlvOrgSpecificProfibus.staticParseTlvOrganizationSpecificUnitBuilder(readBuffer);
-    } else if (EvaluationHelper.equals(uniqueCode, (long) 0x00120F)) {
+    } else if (EvaluationHelper.equals(uniqueCode, (int) 0x00120F)) {
       builder = TlvOrgSpecificIeee8023.staticParseTlvOrganizationSpecificUnitBuilder(readBuffer);
     }
     if (builder == null) {

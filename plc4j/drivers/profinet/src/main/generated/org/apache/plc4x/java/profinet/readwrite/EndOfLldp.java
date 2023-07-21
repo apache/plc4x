@@ -42,7 +42,7 @@ public class EndOfLldp extends LldpUnit implements Message {
     return TlvType.END_OF_LLDP;
   }
 
-  public EndOfLldp(int tlvIdLength) {
+  public EndOfLldp(short tlvIdLength) {
     super(tlvIdLength);
   }
 
@@ -84,7 +84,7 @@ public class EndOfLldp extends LldpUnit implements Message {
 
     public EndOfLldpBuilderImpl() {}
 
-    public EndOfLldp build(int tlvIdLength) {
+    public EndOfLldp build(short tlvIdLength) {
       EndOfLldp endOfLldp = new EndOfLldp(tlvIdLength);
       return endOfLldp;
     }

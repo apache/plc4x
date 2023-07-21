@@ -40,10 +40,10 @@ public class PcDcp_Pdu_DelayReq extends PnDcp_Pdu implements Message {
   // Accessors for discriminator values.
 
   // Constant values.
-  public static final Short PARAMETERTYPE = 6;
-  public static final Integer PARAMETERLENGTH = 6;
-  public static final Short ENDTYPE = 0;
-  public static final Integer ENDLENGTH = 0;
+  public static final Byte PARAMETERTYPE = 6;
+  public static final Short PARAMETERLENGTH = 6;
+  public static final Byte ENDTYPE = 0;
+  public static final Short ENDLENGTH = 0;
 
   // Properties.
   protected final int sequenceId;
@@ -76,19 +76,19 @@ public class PcDcp_Pdu_DelayReq extends PnDcp_Pdu implements Message {
     return portMacAddress;
   }
 
-  public short getParameterType() {
+  public byte getParameterType() {
     return PARAMETERTYPE;
   }
 
-  public int getParameterLength() {
+  public short getParameterLength() {
     return PARAMETERLENGTH;
   }
 
-  public short getEndType() {
+  public byte getEndType() {
     return ENDTYPE;
   }
 
-  public int getEndLength() {
+  public short getEndLength() {
     return ENDLENGTH;
   }
 
@@ -144,14 +144,14 @@ public class PcDcp_Pdu_DelayReq extends PnDcp_Pdu implements Message {
     writeConstField(
         "parameterType",
         PARAMETERTYPE,
-        writeUnsignedShort(writeBuffer, 7),
+        writeUnsignedByte(writeBuffer, 7),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Const Field (parameterLength)
     writeConstField(
         "parameterLength",
         PARAMETERLENGTH,
-        writeUnsignedInt(writeBuffer, 9),
+        writeUnsignedShort(writeBuffer, 9),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (portMacAddress)
@@ -165,14 +165,14 @@ public class PcDcp_Pdu_DelayReq extends PnDcp_Pdu implements Message {
     writeConstField(
         "endType",
         ENDTYPE,
-        writeUnsignedShort(writeBuffer, 7),
+        writeUnsignedByte(writeBuffer, 7),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Const Field (endLength)
     writeConstField(
         "endLength",
         ENDLENGTH,
-        writeUnsignedInt(writeBuffer, 9),
+        writeUnsignedShort(writeBuffer, 9),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     writeBuffer.popContext("PcDcp_Pdu_DelayReq");
@@ -271,17 +271,17 @@ public class PcDcp_Pdu_DelayReq extends PnDcp_Pdu implements Message {
             readUnsignedLong(readBuffer, 32),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
-    short parameterType =
+    byte parameterType =
         readConstField(
             "parameterType",
-            readUnsignedShort(readBuffer, 7),
+            readUnsignedByte(readBuffer, 7),
             PcDcp_Pdu_DelayReq.PARAMETERTYPE,
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
-    int parameterLength =
+    short parameterLength =
         readConstField(
             "parameterLength",
-            readUnsignedInt(readBuffer, 9),
+            readUnsignedShort(readBuffer, 9),
             PcDcp_Pdu_DelayReq.PARAMETERLENGTH,
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
@@ -291,17 +291,17 @@ public class PcDcp_Pdu_DelayReq extends PnDcp_Pdu implements Message {
             new DataReaderComplexDefault<>(() -> MacAddress.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
-    short endType =
+    byte endType =
         readConstField(
             "endType",
-            readUnsignedShort(readBuffer, 7),
+            readUnsignedByte(readBuffer, 7),
             PcDcp_Pdu_DelayReq.ENDTYPE,
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
-    int endLength =
+    short endLength =
         readConstField(
             "endLength",
-            readUnsignedInt(readBuffer, 9),
+            readUnsignedShort(readBuffer, 9),
             PcDcp_Pdu_DelayReq.ENDLENGTH,
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 

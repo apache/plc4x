@@ -46,7 +46,7 @@ public class TlvChassisId extends LldpUnit implements Message {
   protected final short chassisIdSubType;
   protected final String chassisId;
 
-  public TlvChassisId(int tlvIdLength, short chassisIdSubType, String chassisId) {
+  public TlvChassisId(short tlvIdLength, short chassisIdSubType, String chassisId) {
     super(tlvIdLength);
     this.chassisIdSubType = chassisIdSubType;
     this.chassisId = chassisId;
@@ -96,8 +96,8 @@ public class TlvChassisId extends LldpUnit implements Message {
     return lengthInBits;
   }
 
-  public static LldpUnitBuilder staticParseLldpUnitBuilder(
-      ReadBuffer readBuffer, Integer tlvIdLength) throws ParseException {
+  public static LldpUnitBuilder staticParseLldpUnitBuilder(ReadBuffer readBuffer, Short tlvIdLength)
+      throws ParseException {
     readBuffer.pullContext("TlvChassisId");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
@@ -121,7 +121,7 @@ public class TlvChassisId extends LldpUnit implements Message {
       this.chassisId = chassisId;
     }
 
-    public TlvChassisId build(int tlvIdLength) {
+    public TlvChassisId build(short tlvIdLength) {
       TlvChassisId tlvChassisId = new TlvChassisId(tlvIdLength, chassisIdSubType, chassisId);
       return tlvChassisId;
     }

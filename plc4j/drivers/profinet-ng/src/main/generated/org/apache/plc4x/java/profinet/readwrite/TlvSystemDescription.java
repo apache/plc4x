@@ -45,7 +45,7 @@ public class TlvSystemDescription extends LldpUnit implements Message {
   // Properties.
   protected final String chassisId;
 
-  public TlvSystemDescription(int tlvIdLength, String chassisId) {
+  public TlvSystemDescription(short tlvIdLength, String chassisId) {
     super(tlvIdLength);
     this.chassisId = chassisId;
   }
@@ -83,8 +83,8 @@ public class TlvSystemDescription extends LldpUnit implements Message {
     return lengthInBits;
   }
 
-  public static LldpUnitBuilder staticParseLldpUnitBuilder(
-      ReadBuffer readBuffer, Integer tlvIdLength) throws ParseException {
+  public static LldpUnitBuilder staticParseLldpUnitBuilder(ReadBuffer readBuffer, Short tlvIdLength)
+      throws ParseException {
     readBuffer.pullContext("TlvSystemDescription");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
@@ -103,7 +103,7 @@ public class TlvSystemDescription extends LldpUnit implements Message {
       this.chassisId = chassisId;
     }
 
-    public TlvSystemDescription build(int tlvIdLength) {
+    public TlvSystemDescription build(short tlvIdLength) {
       TlvSystemDescription tlvSystemDescription = new TlvSystemDescription(tlvIdLength, chassisId);
       return tlvSystemDescription;
     }

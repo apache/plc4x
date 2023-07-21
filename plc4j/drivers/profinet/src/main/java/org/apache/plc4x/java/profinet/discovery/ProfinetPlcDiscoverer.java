@@ -35,7 +35,6 @@ import org.apache.plc4x.java.spi.messages.PlcDiscoverer;
 import org.apache.plc4x.java.transport.rawsocket.RawSocketTransport;
 import org.pcap4j.core.*;
 import org.pcap4j.packet.*;
-import org.pcap4j.packet.namednumber.EtherType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,8 +42,6 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.function.Function;
 
 public class ProfinetPlcDiscoverer implements PlcDiscoverer {
@@ -298,7 +295,7 @@ public class ProfinetPlcDiscoverer implements PlcDiscoverer {
                     Ethernet_Frame identificationRequest = new Ethernet_Frame(
                         PROFINET_BROADCAST_MAC_ADDRESS,
                         macAddress,
-                        new Ethernet_FramePayload_VirtualLan(VirtualLanPriority.BEST_EFFORT, false, 0,
+                        new Ethernet_FramePayload_VirtualLan(VirtualLanPriority.BEST_EFFORT, false, (short) 0,
                             new Ethernet_FramePayload_PnDcp(
                                 new PnDcp_Pdu_IdentifyReq(PnDcp_FrameId.DCP_Identify_ReqPDU.getValue(),
                                     1,
@@ -368,30 +365,30 @@ public class ProfinetPlcDiscoverer implements PlcDiscoverer {
                                 new Lldp_Pdu(
                                     Arrays.asList(
                                         new TlvChassisId(
-                                            PLC4X_LLDP_IDENTIFIER.length() + 1,
+                                            (short) (PLC4X_LLDP_IDENTIFIER.length() + 1),
                                             (short) 7,
                                             PLC4X_LLDP_IDENTIFIER
                                         ),
                                         new TlvPortId(
-                                            PLC4X_LLDP_PORT.length() + 1,
+                                            (short) (PLC4X_LLDP_PORT.length() + 1),
                                             (short) 7,
                                             PLC4X_LLDP_PORT
                                         ),
-                                        new TlvTimeToLive(2, 20),
+                                        new TlvTimeToLive((short) 2, 20),
                                         new TlvOrganizationSpecific(
-                                            portStatus.getLengthInBytes(),
+                                            (short) portStatus.getLengthInBytes(),
                                             portStatus
                                         ),
                                         new TlvOrganizationSpecific(
-                                            chassisMac.getLengthInBytes(),
+                                            (short) chassisMac.getLengthInBytes(),
                                             chassisMac
                                         ),
                                         new TlvOrganizationSpecific(
-                                            ieee.getLengthInBytes(),
+                                            (short) ieee.getLengthInBytes(),
                                             ieee
                                         ),
                                         new TlvManagementAddress(
-                                            12,
+                                            (short) 12,
                                             ManagementAddressSubType.IPV4,
                                             // 192.168.90.110
                                             new IpAddress(Hex.decodeHex("c0a85a6e")),
@@ -399,7 +396,7 @@ public class ProfinetPlcDiscoverer implements PlcDiscoverer {
                                             0x01L,
                                             (short) 0x00
                                         ),
-                                        new EndOfLldp(0)
+                                        new EndOfLldp((short) 0)
                                     )
                                 )));
                     } catch (DecoderException e) {

@@ -50,7 +50,7 @@ public class TlvManagementAddress extends LldpUnit implements Message {
   protected final short oidStringLength;
 
   public TlvManagementAddress(
-      int tlvIdLength,
+      short tlvIdLength,
       ManagementAddressSubType addressSubType,
       IpAddress ipAddress,
       short interfaceSubType,
@@ -206,7 +206,7 @@ public class TlvManagementAddress extends LldpUnit implements Message {
       this.oidStringLength = oidStringLength;
     }
 
-    public TlvManagementAddress build(int tlvIdLength) {
+    public TlvManagementAddress build(short tlvIdLength) {
       TlvManagementAddress tlvManagementAddress =
           new TlvManagementAddress(
               tlvIdLength,

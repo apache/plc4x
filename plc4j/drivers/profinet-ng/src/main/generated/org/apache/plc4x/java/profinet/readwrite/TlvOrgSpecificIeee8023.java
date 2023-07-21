@@ -38,8 +38,8 @@ import org.apache.plc4x.java.spi.generation.*;
 public class TlvOrgSpecificIeee8023 extends TlvOrganizationSpecificUnit implements Message {
 
   // Accessors for discriminator values.
-  public Long getUniqueCode() {
-    return (long) 0x00120F;
+  public Integer getUniqueCode() {
+    return (int) 0x00120F;
   }
 
   // Properties.

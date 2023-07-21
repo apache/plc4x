@@ -567,7 +567,7 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
             DceRpc_PacketType.WORKING,
             false, false, false,
             IntegerEncoding.BIG_ENDIAN, CharacterEncoding.ASCII, FloatingPointEncoding.IEEE,
-            new DceRpc_ObjectUuid((byte) 0x00, 0x0001, Integer.decode("0x" + driverContext.getDeviceId()), Integer.decode("0x" + driverContext.getVendorId())),
+            new DceRpc_ObjectUuid((byte) 0x00, (short) 0x0001, Integer.decode("0x" + driverContext.getDeviceId()), Integer.decode("0x" + driverContext.getVendorId())),
             new DceRpc_InterfaceUuid_DeviceInterface(),
             driverContext.getActivityUuid(),
             0L, 0L,

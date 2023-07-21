@@ -42,7 +42,7 @@ public class PnDcp_ServiceType implements Message {
   protected final boolean response;
 
   // Reserved Fields
-  private Short reservedField0;
+  private Byte reservedField0;
   private Byte reservedField1;
 
   public PnDcp_ServiceType(boolean notSupported, boolean response) {
@@ -67,8 +67,8 @@ public class PnDcp_ServiceType implements Message {
     // Reserved Field (reserved)
     writeReservedField(
         "reserved",
-        reservedField0 != null ? reservedField0 : (short) 0x00,
-        writeUnsignedShort(writeBuffer, 5),
+        reservedField0 != null ? reservedField0 : (byte) 0x00,
+        writeUnsignedByte(writeBuffer, 5),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (notSupported)
@@ -132,11 +132,11 @@ public class PnDcp_ServiceType implements Message {
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    Short reservedField0 =
+    Byte reservedField0 =
         readReservedField(
             "reserved",
-            readUnsignedShort(readBuffer, 5),
-            (short) 0x00,
+            readUnsignedByte(readBuffer, 5),
+            (byte) 0x00,
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     boolean notSupported =

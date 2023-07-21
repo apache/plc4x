@@ -67,8 +67,8 @@ public class PnIoCm_Block_IoCrReq extends PnIoCm_Block implements Message {
   protected final List<PnIoCm_IoCrBlockReqApi> apis;
 
   // Reserved Fields
-  private Long reservedField0;
-  private Short reservedField1;
+  private Integer reservedField0;
+  private Byte reservedField1;
 
   public PnIoCm_Block_IoCrReq(
       short blockVersionHigh,
@@ -282,8 +282,8 @@ public class PnIoCm_Block_IoCrReq extends PnIoCm_Block implements Message {
     // Reserved Field (reserved)
     writeReservedField(
         "reserved",
-        reservedField0 != null ? reservedField0 : (long) 0x0000,
-        writeUnsignedLong(writeBuffer, 17),
+        reservedField0 != null ? reservedField0 : (int) 0x0000,
+        writeUnsignedInt(writeBuffer, 17),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (mediaRedundancy)
@@ -296,8 +296,8 @@ public class PnIoCm_Block_IoCrReq extends PnIoCm_Block implements Message {
     // Reserved Field (reserved)
     writeReservedField(
         "reserved",
-        reservedField1 != null ? reservedField1 : (short) 0x00,
-        writeUnsignedShort(writeBuffer, 7),
+        reservedField1 != null ? reservedField1 : (byte) 0x00,
+        writeUnsignedByte(writeBuffer, 7),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (rtClass)
@@ -560,11 +560,11 @@ public class PnIoCm_Block_IoCrReq extends PnIoCm_Block implements Message {
             readBoolean(readBuffer),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
-    Long reservedField0 =
+    Integer reservedField0 =
         readReservedField(
             "reserved",
-            readUnsignedLong(readBuffer, 17),
-            (long) 0x0000,
+            readUnsignedInt(readBuffer, 17),
+            (int) 0x0000,
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     boolean mediaRedundancy =
@@ -573,11 +573,11 @@ public class PnIoCm_Block_IoCrReq extends PnIoCm_Block implements Message {
             readBoolean(readBuffer),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
-    Short reservedField1 =
+    Byte reservedField1 =
         readReservedField(
             "reserved",
-            readUnsignedShort(readBuffer, 7),
-            (short) 0x00,
+            readUnsignedByte(readBuffer, 7),
+            (byte) 0x00,
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     PnIoCm_RtClass rtClass =
@@ -720,8 +720,8 @@ public class PnIoCm_Block_IoCrReq extends PnIoCm_Block implements Message {
     private final int ioCrTagHeader;
     private final MacAddress ioCrMulticastMacAdr;
     private final List<PnIoCm_IoCrBlockReqApi> apis;
-    private final Long reservedField0;
-    private final Short reservedField1;
+    private final Integer reservedField0;
+    private final Byte reservedField1;
 
     public PnIoCm_Block_IoCrReqBuilderImpl(
         short blockVersionHigh,
@@ -746,8 +746,8 @@ public class PnIoCm_Block_IoCrReq extends PnIoCm_Block implements Message {
         int ioCrTagHeader,
         MacAddress ioCrMulticastMacAdr,
         List<PnIoCm_IoCrBlockReqApi> apis,
-        Long reservedField0,
-        Short reservedField1) {
+        Integer reservedField0,
+        Byte reservedField1) {
       this.blockVersionHigh = blockVersionHigh;
       this.blockVersionLow = blockVersionLow;
       this.ioCrType = ioCrType;

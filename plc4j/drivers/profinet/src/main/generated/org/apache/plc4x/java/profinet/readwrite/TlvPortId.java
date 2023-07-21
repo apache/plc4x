@@ -46,7 +46,7 @@ public class TlvPortId extends LldpUnit implements Message {
   protected final short portIdSubType;
   protected final String portId;
 
-  public TlvPortId(int tlvIdLength, short portIdSubType, String portId) {
+  public TlvPortId(short tlvIdLength, short portIdSubType, String portId) {
     super(tlvIdLength);
     this.portIdSubType = portIdSubType;
     this.portId = portId;
@@ -95,8 +95,8 @@ public class TlvPortId extends LldpUnit implements Message {
     return lengthInBits;
   }
 
-  public static LldpUnitBuilder staticParseLldpUnitBuilder(
-      ReadBuffer readBuffer, Integer tlvIdLength) throws ParseException {
+  public static LldpUnitBuilder staticParseLldpUnitBuilder(ReadBuffer readBuffer, Short tlvIdLength)
+      throws ParseException {
     readBuffer.pullContext("TlvPortId");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
@@ -120,7 +120,7 @@ public class TlvPortId extends LldpUnit implements Message {
       this.portId = portId;
     }
 
-    public TlvPortId build(int tlvIdLength) {
+    public TlvPortId build(short tlvIdLength) {
       TlvPortId tlvPortId = new TlvPortId(tlvIdLength, portIdSubType, portId);
       return tlvPortId;
     }

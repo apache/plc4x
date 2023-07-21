@@ -49,7 +49,7 @@ public abstract class PnIoCm_Submodule implements Message {
   protected final boolean sharedInput;
 
   // Reserved Fields
-  private Integer reservedField0;
+  private Short reservedField0;
 
   public PnIoCm_Submodule(
       int slotNumber,
@@ -116,8 +116,8 @@ public abstract class PnIoCm_Submodule implements Message {
     // Reserved Field (reserved)
     writeReservedField(
         "reserved",
-        reservedField0 != null ? reservedField0 : (int) 0x000,
-        writeUnsignedInt(writeBuffer, 10),
+        reservedField0 != null ? reservedField0 : (short) 0x000,
+        writeUnsignedShort(writeBuffer, 10),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (discardIoxs)
@@ -228,11 +228,11 @@ public abstract class PnIoCm_Submodule implements Message {
             readUnsignedLong(readBuffer, 32),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
-    Integer reservedField0 =
+    Short reservedField0 =
         readReservedField(
             "reserved",
-            readUnsignedInt(readBuffer, 10),
-            (int) 0x000,
+            readUnsignedShort(readBuffer, 10),
+            (short) 0x000,
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     boolean discardIoxs =

@@ -49,7 +49,7 @@ public class PnDcp_Pdu_IdentifyRes extends PnDcp_Pdu implements Message {
   protected final List<PnDcp_Block> blocks;
 
   // Reserved Fields
-  private Short reservedField0;
+  private Byte reservedField0;
   private Byte reservedField1;
   private Integer reservedField2;
 
@@ -97,8 +97,8 @@ public class PnDcp_Pdu_IdentifyRes extends PnDcp_Pdu implements Message {
     // Reserved Field (reserved)
     writeReservedField(
         "reserved",
-        reservedField0 != null ? reservedField0 : (short) 0x00,
-        writeUnsignedShort(writeBuffer, 5),
+        reservedField0 != null ? reservedField0 : (byte) 0x00,
+        writeUnsignedByte(writeBuffer, 5),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (notSupported)
@@ -210,11 +210,11 @@ public class PnDcp_Pdu_IdentifyRes extends PnDcp_Pdu implements Message {
             PnDcp_Pdu_IdentifyRes.SERVICEID,
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
-    Short reservedField0 =
+    Byte reservedField0 =
         readReservedField(
             "reserved",
-            readUnsignedShort(readBuffer, 5),
-            (short) 0x00,
+            readUnsignedByte(readBuffer, 5),
+            (byte) 0x00,
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     boolean notSupported =
@@ -273,7 +273,7 @@ public class PnDcp_Pdu_IdentifyRes extends PnDcp_Pdu implements Message {
     private final boolean notSupported;
     private final long xid;
     private final List<PnDcp_Block> blocks;
-    private final Short reservedField0;
+    private final Byte reservedField0;
     private final Byte reservedField1;
     private final Integer reservedField2;
 
@@ -281,7 +281,7 @@ public class PnDcp_Pdu_IdentifyRes extends PnDcp_Pdu implements Message {
         boolean notSupported,
         long xid,
         List<PnDcp_Block> blocks,
-        Short reservedField0,
+        Byte reservedField0,
         Byte reservedField1,
         Integer reservedField2) {
       this.notSupported = notSupported;

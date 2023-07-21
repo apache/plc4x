@@ -64,7 +64,7 @@ public class PnIoCm_Block_ArReq extends PnIoCm_Block implements Message {
   protected final String cmInitiatorStationName;
 
   // Reserved Fields
-  private Long reservedField0;
+  private Integer reservedField0;
   private Byte reservedField1;
 
   public PnIoCm_Block_ArReq(
@@ -275,8 +275,8 @@ public class PnIoCm_Block_ArReq extends PnIoCm_Block implements Message {
     // Reserved Field (reserved)
     writeReservedField(
         "reserved",
-        reservedField0 != null ? reservedField0 : (long) 0x00000,
-        writeUnsignedLong(writeBuffer, 17),
+        reservedField0 != null ? reservedField0 : (int) 0x00000,
+        writeUnsignedInt(writeBuffer, 17),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (acknowledgeCompanionAr)
@@ -525,11 +525,11 @@ public class PnIoCm_Block_ArReq extends PnIoCm_Block implements Message {
             readBoolean(readBuffer),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
-    Long reservedField0 =
+    Integer reservedField0 =
         readReservedField(
             "reserved",
-            readUnsignedLong(readBuffer, 17),
-            (long) 0x00000,
+            readUnsignedInt(readBuffer, 17),
+            (int) 0x00000,
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     boolean acknowledgeCompanionAr =
@@ -647,7 +647,7 @@ public class PnIoCm_Block_ArReq extends PnIoCm_Block implements Message {
     private final int cmInitiatorActivityTimeoutFactor;
     private final int cmInitiatorUdpRtPort;
     private final String cmInitiatorStationName;
-    private final Long reservedField0;
+    private final Integer reservedField0;
     private final Byte reservedField1;
 
     public PnIoCm_Block_ArReqBuilderImpl(
@@ -670,7 +670,7 @@ public class PnIoCm_Block_ArReq extends PnIoCm_Block implements Message {
         int cmInitiatorActivityTimeoutFactor,
         int cmInitiatorUdpRtPort,
         String cmInitiatorStationName,
-        Long reservedField0,
+        Integer reservedField0,
         Byte reservedField1) {
       this.blockVersionHigh = blockVersionHigh;
       this.blockVersionLow = blockVersionLow;

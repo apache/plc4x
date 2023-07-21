@@ -70,7 +70,7 @@ public class DceRpc_Packet implements Message {
   // Reserved Fields
   private Boolean reservedField0;
   private Boolean reservedField1;
-  private Short reservedField2;
+  private Byte reservedField2;
   private Boolean reservedField3;
   private Short reservedField4;
 
@@ -291,8 +291,8 @@ public class DceRpc_Packet implements Message {
     // Reserved Field (reserved)
     writeReservedField(
         "reserved",
-        reservedField2 != null ? reservedField2 : (short) 0x00,
-        writeUnsignedShort(writeBuffer, 6),
+        reservedField2 != null ? reservedField2 : (byte) 0x00,
+        writeUnsignedByte(writeBuffer, 6),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Const Field (cancelWasPending)
@@ -685,11 +685,11 @@ public class DceRpc_Packet implements Message {
             (boolean) false,
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
-    Short reservedField2 =
+    Byte reservedField2 =
         readReservedField(
             "reserved",
-            readUnsignedShort(readBuffer, 6),
-            (short) 0x00,
+            readUnsignedByte(readBuffer, 6),
+            (byte) 0x00,
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     boolean cancelWasPending =

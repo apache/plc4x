@@ -43,7 +43,7 @@ public class ProfinetCheckSumTests {
             IntegerEncoding.BIG_ENDIAN,
             CharacterEncoding.ASCII,
             FloatingPointEncoding.IEEE,
-            new DceRpc_ObjectUuid((byte) 0x00, 0x0001, 0x0002, 0x0493),
+            new DceRpc_ObjectUuid((byte) 0x00, (short) 0x0001, 0x0002, 0x0493),
             new DceRpc_InterfaceUuid_DeviceInterface(),
             new DceRpc_ActivityUuid(0x0aa499a5L, 0x1df0, 0x11b2, new byte[]{(byte) 0x80, (byte) 0x00, (byte) 0xa9, (byte) 0xa2, (byte) 0x59, (byte) 0x4b, (byte) 0x74, (byte) 0x00}),
             0,

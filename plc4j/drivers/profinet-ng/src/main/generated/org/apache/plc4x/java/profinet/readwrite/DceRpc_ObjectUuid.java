@@ -45,11 +45,11 @@ public class DceRpc_ObjectUuid implements Message {
 
   // Properties.
   protected final byte interfaceNumber;
-  protected final int nodeNumber;
+  protected final short nodeNumber;
   protected final int deviceId;
   protected final int vendorId;
 
-  public DceRpc_ObjectUuid(byte interfaceNumber, int nodeNumber, int deviceId, int vendorId) {
+  public DceRpc_ObjectUuid(byte interfaceNumber, short nodeNumber, int deviceId, int vendorId) {
     super();
     this.interfaceNumber = interfaceNumber;
     this.nodeNumber = nodeNumber;
@@ -61,7 +61,7 @@ public class DceRpc_ObjectUuid implements Message {
     return interfaceNumber;
   }
 
-  public int getNodeNumber() {
+  public short getNodeNumber() {
     return nodeNumber;
   }
 
@@ -121,7 +121,7 @@ public class DceRpc_ObjectUuid implements Message {
     writeSimpleField(
         "nodeNumber",
         nodeNumber,
-        writeUnsignedInt(writeBuffer, 12),
+        writeUnsignedShort(writeBuffer, 12),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (deviceId)
@@ -209,10 +209,10 @@ public class DceRpc_ObjectUuid implements Message {
             readUnsignedByte(readBuffer, 4),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
-    int nodeNumber =
+    short nodeNumber =
         readSimpleField(
             "nodeNumber",
-            readUnsignedInt(readBuffer, 12),
+            readUnsignedShort(readBuffer, 12),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     int deviceId =

@@ -57,7 +57,7 @@ public class PnIoCm_Block_AlarmCrReq extends PnIoCm_Block implements Message {
   protected final int alarmCtrTagHeaderLow;
 
   // Reserved Fields
-  private Long reservedField0;
+  private Integer reservedField0;
 
   public PnIoCm_Block_AlarmCrReq(
       short blockVersionHigh,
@@ -185,8 +185,8 @@ public class PnIoCm_Block_AlarmCrReq extends PnIoCm_Block implements Message {
     // Reserved Field (reserved)
     writeReservedField(
         "reserved",
-        reservedField0 != null ? reservedField0 : (long) 0x00000000,
-        writeUnsignedLong(writeBuffer, 30),
+        reservedField0 != null ? reservedField0 : (int) 0x00000000,
+        writeUnsignedInt(writeBuffer, 30),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (transport)
@@ -340,11 +340,11 @@ public class PnIoCm_Block_AlarmCrReq extends PnIoCm_Block implements Message {
         readSimpleField(
             "lt", readUnsignedInt(readBuffer, 16), WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
-    Long reservedField0 =
+    Integer reservedField0 =
         readReservedField(
             "reserved",
-            readUnsignedLong(readBuffer, 30),
-            (long) 0x00000000,
+            readUnsignedInt(readBuffer, 30),
+            (int) 0x00000000,
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     boolean transport =
@@ -423,7 +423,7 @@ public class PnIoCm_Block_AlarmCrReq extends PnIoCm_Block implements Message {
     private final int maxAlarmDataLength;
     private final int alarmCtrTagHeaderHigh;
     private final int alarmCtrTagHeaderLow;
-    private final Long reservedField0;
+    private final Integer reservedField0;
 
     public PnIoCm_Block_AlarmCrReqBuilderImpl(
         short blockVersionHigh,
@@ -438,7 +438,7 @@ public class PnIoCm_Block_AlarmCrReq extends PnIoCm_Block implements Message {
         int maxAlarmDataLength,
         int alarmCtrTagHeaderHigh,
         int alarmCtrTagHeaderLow,
-        Long reservedField0) {
+        Integer reservedField0) {
       this.blockVersionHigh = blockVersionHigh;
       this.blockVersionLow = blockVersionLow;
       this.alarmType = alarmType;

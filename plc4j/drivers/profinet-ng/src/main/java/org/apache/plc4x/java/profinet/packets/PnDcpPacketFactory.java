@@ -38,7 +38,7 @@ public class PnDcpPacketFactory {
         return new Ethernet_Frame(
             remoteMacAddress,
             localMacAddress,
-            new Ethernet_FramePayload_VirtualLan(VirtualLanPriority.BEST_EFFORT, false, 0,
+            new Ethernet_FramePayload_VirtualLan(VirtualLanPriority.BEST_EFFORT, false, (short) 0,
                 new Ethernet_FramePayload_PnDcp(
                     new PnDcp_Pdu_IdentifyReq(PnDcp_FrameId.DCP_Identify_ReqPDU.getValue(),
                         1,
@@ -76,7 +76,7 @@ public class PnDcpPacketFactory {
         DceRpc_Packet packet = new DceRpc_Packet(
             DceRpc_PacketType.REQUEST, true, false, false,
             IntegerEncoding.LITTLE_ENDIAN, CharacterEncoding.ASCII, FloatingPointEncoding.IEEE,
-            new DceRpc_ObjectUuid((byte) 0x00, 0x0001, driverContext.getDeviceId(), driverContext.getVendorId()),
+            new DceRpc_ObjectUuid((byte) 0x00, (short) 0x0001, driverContext.getDeviceId(), driverContext.getVendorId()),
             new DceRpc_InterfaceUuid_DeviceInterface(),
             driverContext.getActivityUuid(),
             0,
@@ -157,7 +157,7 @@ public class PnDcpPacketFactory {
         DceRpc_Packet packet = new DceRpc_Packet(
             DceRpc_PacketType.REQUEST, true, false, false,
             IntegerEncoding.LITTLE_ENDIAN, CharacterEncoding.ASCII, FloatingPointEncoding.IEEE,
-            new DceRpc_ObjectUuid((byte) 0x00, 0x0001, driverContext.getDeviceId(), driverContext.getVendorId()),
+            new DceRpc_ObjectUuid((byte) 0x00, (short) 0x0001, driverContext.getDeviceId(), driverContext.getVendorId()),
             new DceRpc_InterfaceUuid_DeviceInterface(),
             driverContext.getActivityUuid(),
             0,
