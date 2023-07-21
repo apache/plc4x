@@ -545,6 +545,47 @@ func (_c *mockTracedPlcConnection_ReadRequestBuilder_Call) RunAndReturn(run func
 	return _c
 }
 
+// String provides a mock function with given fields:
+func (_m *mockTracedPlcConnection) String() string {
+	ret := _m.Called()
+
+	var r0 string
+	if rf, ok := ret.Get(0).(func() string); ok {
+		r0 = rf()
+	} else {
+		r0 = ret.Get(0).(string)
+	}
+
+	return r0
+}
+
+// mockTracedPlcConnection_String_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'String'
+type mockTracedPlcConnection_String_Call struct {
+	*mock.Call
+}
+
+// String is a helper method to define mock.On call
+func (_e *mockTracedPlcConnection_Expecter) String() *mockTracedPlcConnection_String_Call {
+	return &mockTracedPlcConnection_String_Call{Call: _e.mock.On("String")}
+}
+
+func (_c *mockTracedPlcConnection_String_Call) Run(run func()) *mockTracedPlcConnection_String_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run()
+	})
+	return _c
+}
+
+func (_c *mockTracedPlcConnection_String_Call) Return(_a0 string) *mockTracedPlcConnection_String_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *mockTracedPlcConnection_String_Call) RunAndReturn(run func() string) *mockTracedPlcConnection_String_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // SubscriptionRequestBuilder provides a mock function with given fields:
 func (_m *mockTracedPlcConnection) SubscriptionRequestBuilder() model.PlcSubscriptionRequestBuilder {
 	ret := _m.Called()
