@@ -206,7 +206,7 @@ public class Plc4xSinkTask extends SinkTask {
                         log.debug("Ignoring write request received on wrong topic");
                     } else if (!tags.containsKey(tagName)) {
                         log.warn("Unable to find address for tag " + tagName);
-                    } else if ((System.currentTimeMillis() > expires) & !(expires == 0)) {
+                    } else if ((System.currentTimeMillis() > expires) && !(expires == 0)) {
                         log.warn("Write request has expired {} - {}, discarding {}", expires, System.currentTimeMillis(), tagName);
                     } else {
                         String address = tags.get(tagName);

@@ -120,20 +120,17 @@ public class KnxNetIpTag implements PlcTag {
             return false;
         }
         // NOTE: This case fallthrough is intentional :-)
-        switch (getLevels()) {
-            case 3:
-                if(!WILDCARD.equals(getMiddleGroup()) && !getMiddleGroup().equals(otherAddress.getMiddleGroup())) {
-                    return false;
-                }
-            case 2:
-                if(!WILDCARD.equals(getSubGroup()) && !getSubGroup().equals(otherAddress.getSubGroup())) {
-                    return false;
-                }
-            case 1:
-                return WILDCARD.equals(getMainGroup()) || getMainGroup().equals(otherAddress.getMainGroup());
-            default:
+        if(getLevels() == 3) {
+            if (!WILDCARD.equals(getMiddleGroup()) && !getMiddleGroup().equals(otherAddress.getMiddleGroup())) {
                 return false;
+            }
         }
+        if(getLevels() >= 2) {
+            if (!WILDCARD.equals(getSubGroup()) && !getSubGroup().equals(otherAddress.getSubGroup())) {
+                return false;
+            }
+        }
+        return WILDCARD.equals(getMainGroup()) || getMainGroup().equals(otherAddress.getMainGroup());
     }
 
 }

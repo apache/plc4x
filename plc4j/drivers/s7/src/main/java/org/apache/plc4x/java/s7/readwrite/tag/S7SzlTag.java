@@ -33,8 +33,8 @@ public class S7SzlTag implements PlcTag {
     private static final Pattern SSL_ADDRESS_PATTERN =
         Pattern.compile("^SZL_ID=(?<szlId>16#[0-9a-fA-F]{4});INDEX=(?<index>16#[0-9a-fA-F]{4})");  
     
-    private static final String SZL_ID = "szlId";    
-    private static final String INDEX = "index";    
+    private static final String GROUP_NAME_SZL_ID = "szlId";
+    private static final String GROUP_NAME_INDEX = "index";
     
     private final int szlId;
     private final int index;
@@ -74,8 +74,8 @@ public class S7SzlTag implements PlcTag {
     public static S7SzlTag of(String tagString) {
         Matcher matcher = SSL_ADDRESS_PATTERN.matcher(tagString);
         if (matcher.matches()){
-            String strSxlId = matcher.group(SZL_ID);
-            String strIndex = matcher.group(INDEX);
+            String strSxlId = matcher.group(GROUP_NAME_SZL_ID);
+            String strIndex = matcher.group(GROUP_NAME_INDEX);
             strSxlId = strSxlId.replaceAll("16#", "");
             strIndex = strIndex.replaceAll("16#", "");
             return new S7SzlTag(Integer.parseInt(strSxlId, 16),Integer.parseInt(strIndex, 16));

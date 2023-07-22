@@ -32,13 +32,11 @@ import java.util.concurrent.CompletableFuture;
 
 public class SDODownloadConversation extends CANOpenConversationBase {
 
-    private final CANConversation delegate;
     private final IndexAddress indexAddress;
     private final byte[] data;
 
     public SDODownloadConversation(CANConversation delegate, int nodeId, int answerNodeId, IndexAddress indexAddress, PlcValue value, CANOpenDataType type) {
         super(delegate, nodeId, answerNodeId);
-        this.delegate = delegate;
         this.indexAddress = indexAddress;
 
         try {

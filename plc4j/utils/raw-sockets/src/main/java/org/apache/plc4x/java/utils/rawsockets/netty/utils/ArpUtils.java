@@ -103,15 +103,18 @@ public class ArpUtils {
             }
             final MacAddress localMacAddress = first.get();
 
-            // This handle will be used for receiving response packets.
-            PcapHandle receivingHandle = nif.openLive(
-                65535, PcapNetworkInterface.PromiscuousMode.PROMISCUOUS, 100);
-            // This handle will be used for sending the request packet.
-            PcapHandle sendingHandle = nif.openLive(
-                65535, PcapNetworkInterface.PromiscuousMode.PROMISCUOUS, 100);
-            // The executor, that handles processing the incoming packets.
-            ExecutorService arpExecutor = Executors.newSingleThreadExecutor();
+            PcapHandle receivingHandle = null;
+            PcapHandle sendingHandle = null;
+            ExecutorService arpExecutor = null;
             try {
+                // This handle will be used for receiving response packets.
+                receivingHandle = nif.openLive(
+                    65535, PcapNetworkInterface.PromiscuousMode.PROMISCUOUS, 100);
+                // This handle will be used for sending the request packet.
+                sendingHandle = nif.openLive(
+                    65535, PcapNetworkInterface.PromiscuousMode.PROMISCUOUS, 100);
+                // The executor, that handles processing the incoming packets.
+                arpExecutor = Executors.newSingleThreadExecutor();
                 StringBuilder sb = new StringBuilder("arp");
                 sb.append(" and ether dst ").append(Pcaps.toBpfString(localMacAddress)).append(" and (");
                 boolean firstAddress = true;
@@ -140,10 +143,11 @@ public class ArpUtils {
                 // The resolution task actually runs in one of the
                 // arpExecutor pools threads and just makes sure the
                 // incoming packet is passed to the listener.
+                final PcapHandle finalReceivingHandle = receivingHandle;
                 Runnable resolutionTask = () -> {
                     try {
-                        while (receivingHandle.isOpen()) {
-                            final Packet nextPacket = receivingHandle.getNextPacket();
+                        while (finalReceivingHandle.isOpen()) {
+                            final Packet nextPacket = finalReceivingHandle.getNextPacket();
                             if (nextPacket != null) {
                                 listener.gotPacket(nextPacket);
                             }
@@ -193,13 +197,13 @@ public class ArpUtils {
                 logger.error("error", e);
             } finally {
                 // Gracefully shut down.
-                if (receivingHandle.isOpen()) {
+                if ((receivingHandle != null) && receivingHandle.isOpen()) {
                     receivingHandle.close();
                 }
-                if (sendingHandle.isOpen()) {
+                if ((sendingHandle != null) && sendingHandle.isOpen()) {
                     sendingHandle.close();
                 }
-                if (!arpExecutor.isShutdown()) {
+                if ((arpExecutor != null) && !arpExecutor.isShutdown()) {
                     arpExecutor.shutdown();
                 }
             }
@@ -214,103 +218,106 @@ public class ArpUtils {
     /**
      * Used to get the mac address for a given IP address.
      *
-     * @param nif network device
-     * @param remoteAddress remote ip address that we want to get the mac address for
-     * @param localAddress local ip address of the device asking the question
+     * @param nif             network device
+     * @param remoteAddress   remote ip address that we want to get the mac address for
+     * @param localAddress    local ip address of the device asking the question
      * @param localMacAddress local mac address of the device asking the question
      * @return optional that possibly contains the mac address we were looking for.
      */
     public static Optional<MacAddress> resolveMacAddress(PcapNetworkInterface nif, InetSocketAddress remoteAddress, InetSocketAddress localAddress, MacAddress localMacAddress) {
+        PcapHandle receivingHandle = null;
+        PcapHandle sendingHandle = null;
+        ExecutorService arpExecutor = null;
         try {
             // This handle will be used for receiving response packets.
-            PcapHandle receivingHandle = nif.openLive(
+            receivingHandle = nif.openLive(
                 65535, PcapNetworkInterface.PromiscuousMode.PROMISCUOUS, 100);
             // This handle will be used for sending the request packet.
-            PcapHandle sendingHandle = nif.openLive(
+            sendingHandle = nif.openLive(
                 65535, PcapNetworkInterface.PromiscuousMode.PROMISCUOUS, 100);
             // The executor, that handles processing the incoming packets.
-            ExecutorService arpExecutor = Executors.newSingleThreadExecutor();
+            arpExecutor = Executors.newSingleThreadExecutor();
             CompletableFuture<MacAddress> remoteMacAddressFuture = new CompletableFuture<>();
-            try {
-                // Try to limit the number of processed incoming packets to the minimum.
-                // So far we know the source host ip as well as the target ip and mac address.
-                receivingHandle.setFilter(
-                    String.format("arp and src host %s and dst host %s and ether dst %s",
-                        Pcaps.toBpfString(remoteAddress.getAddress()), Pcaps.toBpfString(localAddress.getAddress()),
-                        Pcaps.toBpfString(localMacAddress)),
-                    BpfProgram.BpfCompileMode.OPTIMIZE);
 
-                // Register the listener, which will be processing all packets that pass
-                // the filter (Should actually only be one)
-                PacketListener listener =
-                    packet -> {
-                        if (packet.contains(ArpPacket.class)) {
-                            ArpPacket arp = packet.get(ArpPacket.class);
-                            if (arp.getHeader().getOperation().equals(ArpOperation.REPLY)) {
-                                remoteMacAddressFuture.complete(arp.getHeader().getSrcHardwareAddr());
-                            }
+            // Try to limit the number of processed incoming packets to the minimum.
+            // So far we know the source host ip as well as the target ip and mac address.
+            receivingHandle.setFilter(
+                String.format("arp and src host %s and dst host %s and ether dst %s",
+                    Pcaps.toBpfString(remoteAddress.getAddress()), Pcaps.toBpfString(localAddress.getAddress()),
+                    Pcaps.toBpfString(localMacAddress)),
+                BpfProgram.BpfCompileMode.OPTIMIZE);
+
+            // Register the listener, which will be processing all packets that pass
+            // the filter (Should actually only be one)
+            PacketListener listener =
+                packet -> {
+                    if (packet.contains(ArpPacket.class)) {
+                        ArpPacket arp = packet.get(ArpPacket.class);
+                        if (arp.getHeader().getOperation().equals(ArpOperation.REPLY)) {
+                            remoteMacAddressFuture.complete(arp.getHeader().getSrcHardwareAddr());
                         }
-                    };
-
-                // The resolution task actually runs in one of the
-                // arpExecutor pools threads and just makes sure the
-                // incoming packet is passed to the listener.
-                Runnable resolutionTask = () -> {
-                    try {
-                        receivingHandle.loop(1, listener);
-                    } catch (InterruptedException e) {
-                        Thread.currentThread().interrupt();
-                    } catch (PcapNativeException | NotOpenException e) {
-                        remoteMacAddressFuture.completeExceptionally(e);
                     }
                 };
-                arpExecutor.execute(resolutionTask);
 
-                // Actually assemble the ARP packet.
-                ArpPacket.Builder arpBuilder = new ArpPacket.Builder();
-                arpBuilder.hardwareType(ArpHardwareType.ETHERNET)
-                    .protocolType(EtherType.IPV4)
-                    .hardwareAddrLength((byte) MacAddress.SIZE_IN_BYTES)
-                    .protocolAddrLength((byte) ByteArrays.INET4_ADDRESS_SIZE_IN_BYTES)
-                    .operation(ArpOperation.REQUEST)
-                    .srcHardwareAddr(localMacAddress)
-                    .srcProtocolAddr(localAddress.getAddress())
-                    .dstHardwareAddr(MacAddress.ETHER_BROADCAST_ADDRESS)
-                    .dstProtocolAddr(remoteAddress.getAddress());
-                EthernetPacket.Builder etherBuilder = new EthernetPacket.Builder();
-                etherBuilder
-                    .dstAddr(MacAddress.ETHER_BROADCAST_ADDRESS)
-                    .srcAddr(localMacAddress)
-                    .type(EtherType.ARP)
-                    .payloadBuilder(arpBuilder)
-                    .paddingAtBuild(true);
-                Packet arpRequestPacket = etherBuilder.build();
-
-                // Send the arp lookup packet.
-                sendingHandle.sendPacket(arpRequestPacket);
-
-                // Wait for the future to complete (It's completed in the packet listener).
+            // The resolution task actually runs in one of the
+            // arpExecutor pools threads and just makes sure the
+            // incoming packet is passed to the listener.
+            final PcapHandle finalReceivingHandle = receivingHandle;
+            Runnable resolutionTask = () -> {
                 try {
-                    return Optional.of(remoteMacAddressFuture.get(1000, TimeUnit.MILLISECONDS));
+                    finalReceivingHandle.loop(1, listener);
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
-                } catch (ExecutionException | TimeoutException e) {
-                    return Optional.empty();
+                } catch (PcapNativeException | NotOpenException e) {
+                    remoteMacAddressFuture.completeExceptionally(e);
                 }
-            } finally {
-                // Gracefully shut down.
-                if (receivingHandle.isOpen()) {
-                    receivingHandle.close();
-                }
-                if (sendingHandle.isOpen()) {
-                    sendingHandle.close();
-                }
-                if (!arpExecutor.isShutdown()) {
-                    arpExecutor.shutdown();
-                }
+            };
+            arpExecutor.execute(resolutionTask);
+
+            // Actually assemble the ARP packet.
+            ArpPacket.Builder arpBuilder = new ArpPacket.Builder();
+            arpBuilder.hardwareType(ArpHardwareType.ETHERNET)
+                .protocolType(EtherType.IPV4)
+                .hardwareAddrLength((byte) MacAddress.SIZE_IN_BYTES)
+                .protocolAddrLength((byte) ByteArrays.INET4_ADDRESS_SIZE_IN_BYTES)
+                .operation(ArpOperation.REQUEST)
+                .srcHardwareAddr(localMacAddress)
+                .srcProtocolAddr(localAddress.getAddress())
+                .dstHardwareAddr(MacAddress.ETHER_BROADCAST_ADDRESS)
+                .dstProtocolAddr(remoteAddress.getAddress());
+            EthernetPacket.Builder etherBuilder = new EthernetPacket.Builder();
+            etherBuilder
+                .dstAddr(MacAddress.ETHER_BROADCAST_ADDRESS)
+                .srcAddr(localMacAddress)
+                .type(EtherType.ARP)
+                .payloadBuilder(arpBuilder)
+                .paddingAtBuild(true);
+            Packet arpRequestPacket = etherBuilder.build();
+
+            // Send the arp lookup packet.
+            sendingHandle.sendPacket(arpRequestPacket);
+
+            // Wait for the future to complete (It's completed in the packet listener).
+            try {
+                return Optional.of(remoteMacAddressFuture.get(1000, TimeUnit.MILLISECONDS));
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            } catch (ExecutionException | TimeoutException e) {
+                return Optional.empty();
             }
         } catch (NotOpenException | PcapNativeException e) {
             return Optional.empty();
+        } finally {
+            // Gracefully shut down.
+            if ((receivingHandle != null) && receivingHandle.isOpen()) {
+                receivingHandle.close();
+            }
+            if ((sendingHandle != null) && sendingHandle.isOpen()) {
+                sendingHandle.close();
+            }
+            if ((arpExecutor != null) && !arpExecutor.isShutdown()) {
+                arpExecutor.shutdown();
+            }
         }
         return Optional.empty();
     }

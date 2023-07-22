@@ -39,10 +39,9 @@ public class EipTag implements PlcTag, Serializable {
     private static final Pattern ADDRESS_PATTERN =
         Pattern.compile("^(?<tag>[%a-zA-Z_.0-9]+\\[?[0-9]*]?):?(?<dataType>[A-Z]*):?(?<elementNb>[0-9]*)");
 
-    private static final String TAG = "tag";
-    private static final String ELEMENTS = "elementNb";
-    private static final String TYPE = "dataType";
-
+    private static final String GROUP_NAME_TAG = "tag";
+    private static final String GROUP_NAME_GROUP_NAME_ELEMENTS = "elementNb";
+    private static final String GROUP_NAME_TYPE = "dataType";
 
     private final String tag;
     private CIPDataTypeCode type;
@@ -111,14 +110,14 @@ public class EipTag implements PlcTag, Serializable {
     public static EipTag of(String tagString) {
         Matcher matcher = ADDRESS_PATTERN.matcher(tagString);
         if (matcher.matches()) {
-            String tag = matcher.group(TAG);
+            String tag = matcher.group(GROUP_NAME_TAG);
             int nb = 1;
             CIPDataTypeCode type;
-            if (!matcher.group(ELEMENTS).isEmpty()) {
-                nb = Integer.parseInt(matcher.group(ELEMENTS));
+            if (!matcher.group(GROUP_NAME_GROUP_NAME_ELEMENTS).isEmpty()) {
+                nb = Integer.parseInt(matcher.group(GROUP_NAME_GROUP_NAME_ELEMENTS));
             }
-            if (!matcher.group(TYPE).isEmpty()) {
-                type = CIPDataTypeCode.valueOf(matcher.group(TYPE));
+            if (!matcher.group(GROUP_NAME_TYPE).isEmpty()) {
+                type = CIPDataTypeCode.valueOf(matcher.group(GROUP_NAME_TYPE));
             } else {
                 type = CIPDataTypeCode.DINT;
             }

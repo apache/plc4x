@@ -42,7 +42,6 @@ import java.util.function.Consumer;
 public class S7ProtocolEventLogic implements PlcSubscriber {
 
     private final org.slf4j.Logger logger = LoggerFactory.getLogger(S7ProtocolEventLogic.class);
-
     private final BlockingQueue<?> eventQueue;
     private final BlockingQueue<PlcSubscriptionEvent> dispachQueue = new ArrayBlockingQueue<>(1024);
 
@@ -133,7 +132,7 @@ public class S7ProtocolEventLogic implements PlcSubscriber {
                         dispatchQueue.add(modeEvent);
                     } else if (obj instanceof S7PayloadDiagnosticMessage) {
                         S7PayloadDiagnosticMessage msg = (S7PayloadDiagnosticMessage) obj;
-                        if ((msg.getEventId() >= 0x0A000) & (msg.getEventId() <= 0x0BFFF)) {
+                        if ((msg.getEventId() >= 0x0A000) && (msg.getEventId() <= 0x0BFFF)) {
                             S7UserEvent userEvent = new S7UserEvent(msg);
                             dispatchQueue.add(userEvent);
                         } else {

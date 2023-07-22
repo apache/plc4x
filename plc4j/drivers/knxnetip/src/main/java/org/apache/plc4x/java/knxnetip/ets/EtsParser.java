@@ -74,14 +74,15 @@ public class EtsParser {
                 File knxMasterFile = new File(tempDir.toFile(), "knx_master.xml");
                 // If the file contains: <KNX xmlns="http://knx.org/xml/project/21"> it's an ETS6 file
                 // In all other cases, we'll treat it as ETS5
-                Scanner scanner = new Scanner(knxMasterFile);
                 String etsSchemaVersion = null;
-                while (scanner.hasNextLine()) {
-                    final String curLine = scanner.nextLine();
-                    if(curLine.contains("http://knx.org/xml/project/")) {
-                        etsSchemaVersion = curLine.substring(curLine.indexOf("http://knx.org/xml/project/") + "http://knx.org/xml/project/".length());
-                        etsSchemaVersion = etsSchemaVersion.substring(0, etsSchemaVersion.indexOf("\""));
-                        break;
+                try(Scanner scanner = new Scanner(knxMasterFile)) {
+                    while (scanner.hasNextLine()) {
+                        final String curLine = scanner.nextLine();
+                        if(curLine.contains("http://knx.org/xml/project/")) {
+                            etsSchemaVersion = curLine.substring(curLine.indexOf("http://knx.org/xml/project/") + "http://knx.org/xml/project/".length());
+                            etsSchemaVersion = etsSchemaVersion.substring(0, etsSchemaVersion.indexOf("\""));
+                            break;
+                        }
                     }
                 }
                 EtsFileHandler fileHandler = ("21".equals(etsSchemaVersion)) ? new Ets6FileHandler() : new Ets5FileHandler();

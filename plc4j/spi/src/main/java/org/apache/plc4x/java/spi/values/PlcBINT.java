@@ -57,22 +57,22 @@ public class PlcBINT extends PlcIECValue<BigInteger> {
     }
 
     public PlcBINT(Byte value) {
-        this.value = BigInteger.valueOf(value);;
+        this.value = BigInteger.valueOf(value);
         this.isNullable = false;
     }
 
     public PlcBINT(Short value) {
-        this.value = BigInteger.valueOf(value);;
+        this.value = BigInteger.valueOf(value);
         this.isNullable = false;
     }
 
     public PlcBINT(Integer value) {
-        this.value = BigInteger.valueOf(value);;
+        this.value = BigInteger.valueOf(value);
         this.isNullable = false;
     }
 
     public PlcBINT(Long value) {
-        this.value = BigInteger.valueOf(value);;
+        this.value = BigInteger.valueOf(value);
         this.isNullable = false;
     }
 
@@ -97,7 +97,7 @@ public class PlcBINT extends PlcIECValue<BigInteger> {
     }
 
     public PlcBINT(String value) {
-        this.value = new BigInteger(value.trim());;
+        this.value = new BigInteger(value.trim());
         this.isNullable = false;
     }
 

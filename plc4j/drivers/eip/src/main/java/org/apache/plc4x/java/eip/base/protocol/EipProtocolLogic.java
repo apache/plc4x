@@ -819,7 +819,7 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
                             // TODO: return as type STRUCT with structuredType to let user
                             // apps/progs handle it.
                         }
-                        // TODO: This will fall-though to "default"
+                        return null;
                     }
                     default:
                         return null;
@@ -852,7 +852,7 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
                     else {
                         // This is a different type of STRUCTURED data
                     }
-                    // TODO: This will fall-though to "default"
+                    return null;
                 }							  
                 default:
                     return null;

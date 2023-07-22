@@ -18,6 +18,7 @@
  */
 package org.apache.plc4x.test.driver.internal.handlers;
 
+import org.apache.commons.lang3.NotImplementedException;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
@@ -86,6 +87,7 @@ public class ApiRequestHandler {
             }
             case "TestSubscriptionRequest":{
                 // TODO: chris add your stuff here...
+                throw new NotImplementedException();
             }
             default:
                 throw new PlcRuntimeException("Unknown class name" + typeName);

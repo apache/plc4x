@@ -39,28 +39,28 @@ import org.apache.plc4x.java.api.messages.PlcReadResponse;
 
 public class RecordPlc4xWriter implements Plc4xWriter {
 
-	private final RecordSetWriterFactory recordSetWriterFactory;
-	private final AtomicReference<WriteResult> writeResultRef;
-	private final Map<String, String> originalAttributes;
+    private final RecordSetWriterFactory recordSetWriterFactory;
+    private final AtomicReference<WriteResult> writeResultRef;
+    private final Map<String, String> originalAttributes;
     private String mimeType;
-	
-	private RecordSet fullRecordSet;
-	private RecordSchema writeSchema;
-	
-	
-	public RecordPlc4xWriter(RecordSetWriterFactory recordSetWriterFactory, Map<String, String> originalAttributes) {
-		this.recordSetWriterFactory = recordSetWriterFactory;
+
+    private RecordSet fullRecordSet;
+    private RecordSchema writeSchema;
+
+
+    public RecordPlc4xWriter(RecordSetWriterFactory recordSetWriterFactory, Map<String, String> originalAttributes) {
+        this.recordSetWriterFactory = recordSetWriterFactory;
         this.writeResultRef = new AtomicReference<>();
         this.originalAttributes = originalAttributes;
-	}
+    }
 
-	@Override
-	public long writePlcReadResponse(PlcReadResponse response, OutputStream outputStream, ComponentLog logger, Plc4xReadResponseRowCallback callback, RecordSchema recordSchema) throws Exception {
-		if (fullRecordSet == null) {
+    @Override
+    public long writePlcReadResponse(PlcReadResponse response, OutputStream outputStream, ComponentLog logger, Plc4xReadResponseRowCallback callback, RecordSchema recordSchema) throws Exception {
+        if (fullRecordSet == null) {
             fullRecordSet = new Plc4xReadResponseRecordSetWithCallback(response, callback, recordSchema);
             writeSchema = recordSetWriterFactory.getSchema(originalAttributes, fullRecordSet.getSchema());
         }
-		Map<String, String> empty = new HashMap<>();
+        Map<String, String> empty = new HashMap<>();
         try (final RecordSetWriter resultSetWriter = recordSetWriterFactory.createWriter(logger, writeSchema, outputStream, empty)) {
             writeResultRef.set(resultSetWriter.write(fullRecordSet));
             if (mimeType == null) {
@@ -70,64 +70,69 @@ public class RecordPlc4xWriter implements Plc4xWriter {
         } catch (final Exception e) {
             throw new IOException(e);
         }
-	}
-	
-	@Override
-	public long writePlcReadResponse(PlcReadResponse response, OutputStream outputStream, ComponentLog logger, Plc4xReadResponseRowCallback callback, RecordSchema recordSchema, FlowFile originalFlowFile) throws Exception {
-        if (fullRecordSet == null) {	
+    }
+
+    @Override
+    public long writePlcReadResponse(PlcReadResponse response, OutputStream outputStream, ComponentLog logger, Plc4xReadResponseRowCallback callback, RecordSchema recordSchema, FlowFile originalFlowFile) throws Exception {
+        if (fullRecordSet == null) {
             fullRecordSet = new Plc4xReadResponseRecordSetWithCallback(response, callback, recordSchema);
             writeSchema = recordSetWriterFactory.getSchema(originalAttributes, fullRecordSet.getSchema());
         }
 
-        final RecordSetWriter resultSetWriter;
-        if (originalFlowFile != null){
-            try {
-                resultSetWriter = recordSetWriterFactory.createWriter(logger, writeSchema, outputStream, originalFlowFile);
-            } catch (final Exception e) {
-                throw new IOException(e);
+        RecordSetWriter resultSetWriter = null;
+        try {
+            if (originalFlowFile != null) {
+                try {
+                    resultSetWriter = recordSetWriterFactory.createWriter(logger, writeSchema, outputStream, originalFlowFile);
+                } catch (final Exception e) {
+                    throw new IOException(e);
+                }
+            } else {
+                resultSetWriter = recordSetWriterFactory.createWriter(logger, writeSchema, outputStream, Collections.emptyMap());
             }
-        } else {
-            resultSetWriter = recordSetWriterFactory.createWriter(logger, writeSchema, outputStream, Collections.emptyMap());
-        }
-        
-        
-        writeResultRef.set(resultSetWriter.write(fullRecordSet));
-        if (mimeType == null) {
-            mimeType = resultSetWriter.getMimeType();
-        }
-        return writeResultRef.get().getRecordCount();
-	}
 
-	
-	@Override
-	public void writeEmptyPlcReadResponse(OutputStream outputStream, ComponentLog logger) throws IOException {
-		Map<String, String> empty = new HashMap<>();
-		try (final RecordSetWriter resultSetWriter = recordSetWriterFactory.createWriter(logger, writeSchema, outputStream, empty)) {
+            writeResultRef.set(resultSetWriter.write(fullRecordSet));
+            if (mimeType == null) {
+                mimeType = resultSetWriter.getMimeType();
+            }
+            return writeResultRef.get().getRecordCount();
+        } finally {
+            if (resultSetWriter != null) {
+                resultSetWriter.close();
+            }
+        }
+    }
+
+
+    @Override
+    public void writeEmptyPlcReadResponse(OutputStream outputStream, ComponentLog logger) throws IOException {
+        Map<String, String> empty = new HashMap<>();
+        try (final RecordSetWriter resultSetWriter = recordSetWriterFactory.createWriter(logger, writeSchema, outputStream, empty)) {
             mimeType = resultSetWriter.getMimeType();
             resultSetWriter.beginRecordSet();
             resultSetWriter.finishRecordSet();
         } catch (final Exception e) {
             throw new IOException(e);
         }
-	}
-	
-	@Override
-	public void writeEmptyPlcReadResponse(OutputStream outputStream, ComponentLog logger, FlowFile originalFlowFile) throws IOException {
-		try (final RecordSetWriter resultSetWriter = recordSetWriterFactory.createWriter(logger, writeSchema, outputStream, originalFlowFile)) {
+    }
+
+    @Override
+    public void writeEmptyPlcReadResponse(OutputStream outputStream, ComponentLog logger, FlowFile originalFlowFile) throws IOException {
+        try (final RecordSetWriter resultSetWriter = recordSetWriterFactory.createWriter(logger, writeSchema, outputStream, originalFlowFile)) {
             mimeType = resultSetWriter.getMimeType();
             resultSetWriter.beginRecordSet();
             resultSetWriter.finishRecordSet();
         } catch (final Exception e) {
             throw new IOException(e);
         }
-	}
+    }
 
-	@Override
-	public String getMimeType() {
-		return mimeType;
-	}
-	
-	@Override
+    @Override
+    public String getMimeType() {
+        return mimeType;
+    }
+
+    @Override
     public Map<String, String> getAttributesToAdd() {
         Map<String, String> attributesToAdd = new HashMap<>();
         attributesToAdd.put(CoreAttributes.MIME_TYPE.key(), mimeType);
@@ -142,40 +147,42 @@ public class RecordPlc4xWriter implements Plc4xWriter {
         return attributesToAdd;
     }
 
-	@Override
+    @Override
     public void updateCounters(ProcessSession session) {
         final WriteResult result = writeResultRef.get();
         if (result != null) {
             session.adjustCounter("Records Written", result.getRecordCount(), false);
         }
     }
-	
-	private static class Plc4xReadResponseRecordSetWithCallback extends Plc4xReadResponseRecordSet {
+
+    private static class Plc4xReadResponseRecordSetWithCallback extends Plc4xReadResponseRecordSet {
         private final Plc4xReadResponseRowCallback callback;
+
         public Plc4xReadResponseRecordSetWithCallback(final PlcReadResponse readResponse, Plc4xReadResponseRowCallback callback, RecordSchema recordSchema) throws IOException {
             super(readResponse, recordSchema);
             this.callback = callback;
         }
+
         @Override
         public Record next() throws IOException {
-                if (hasMoreRows()) {
-                	PlcReadResponse response = getReadResponse();
-                    final Record record = createRecord(response);
-                    setMoreRows(false);
-                    if (callback != null) {
-                        callback.processRow(response);
-                    }
-                    return record;
-                } else {
-                    return null;
+            if (hasMoreRows()) {
+                PlcReadResponse response = getReadResponse();
+                final Record record = createRecord(response);
+                setMoreRows(false);
+                if (callback != null) {
+                    callback.processRow(response);
                 }
+                return record;
+            } else {
+                return null;
+            }
         }
-	}
+    }
 
-    public RecordSchema getRecordSchema(){
+    public RecordSchema getRecordSchema() {
         try {
             return this.fullRecordSet.getSchema();
-        } catch (IOException e){
+        } catch (IOException e) {
             return null;
         }
     }

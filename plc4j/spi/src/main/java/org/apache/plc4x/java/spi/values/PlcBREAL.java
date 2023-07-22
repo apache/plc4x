@@ -57,22 +57,22 @@ public class PlcBREAL extends PlcIECValue<BigDecimal> {
     }
 
     public PlcBREAL(Byte value) {
-        this.value = BigDecimal.valueOf(value);;
+        this.value = BigDecimal.valueOf(value);
         this.isNullable = false;
     }
 
     public PlcBREAL(Short value) {
-        this.value = BigDecimal.valueOf(value);;
+        this.value = BigDecimal.valueOf(value);
         this.isNullable = false;
     }
 
     public PlcBREAL(Integer value) {
-        this.value = BigDecimal.valueOf(value);;
+        this.value = BigDecimal.valueOf(value);
         this.isNullable = false;
     }
 
     public PlcBREAL(Long value) {
-        this.value = BigDecimal.valueOf(value);;
+        this.value = BigDecimal.valueOf(value);
         this.isNullable = false;
     }
 
@@ -97,7 +97,7 @@ public class PlcBREAL extends PlcIECValue<BigDecimal> {
     }
 
     public PlcBREAL(String value) {
-        this.value = new BigDecimal(value.trim());;
+        this.value = new BigDecimal(value.trim());
         this.isNullable = false;
     }
 

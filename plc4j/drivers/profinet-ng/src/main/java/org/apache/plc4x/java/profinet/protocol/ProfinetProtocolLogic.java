@@ -50,7 +50,7 @@ import java.util.concurrent.CompletableFuture;
 
 public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> implements HasConfiguration<ProfinetConfiguration> {
 
-    private ProfinetDriverContext driverContext;
+    private ProfinetDriverContext profinetDriverContext;
     private ProfinetConfiguration configuration;
 
     private final Logger logger = LoggerFactory.getLogger(ProfinetProtocolLogic.class);
@@ -62,7 +62,7 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
             throw new PlcRuntimeException(
                 "Expecting a driverContext of type ProfinetDriverContext, but got " + driverContext.getClass().getName());
         }
-        this.driverContext = (ProfinetDriverContext) driverContext;
+        this.profinetDriverContext = (ProfinetDriverContext) driverContext;
     }
 
     @Override
@@ -95,7 +95,7 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
 
             // Check if we actually got the vendor-id and product-id ...
             // without these, we don't know what to do with the device.
-            if ((driverContext.getVendorId() == 0) || (driverContext.getDeviceId() == 0)) {
+            if ((profinetDriverContext.getVendorId() == 0) || (profinetDriverContext.getDeviceId() == 0)) {
                 logger.error("Unable to determine vendor-id or product-id, closing channel...");
                 context.getChannel().close();
                 return;
@@ -103,10 +103,10 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
 
             // Look up the GSD file for this device ...
             ProfinetISO15745Profile deviceProfile =
-                configuration.getGsdProfile(driverContext.getVendorId(), driverContext.getDeviceId());
+                configuration.getGsdProfile(profinetDriverContext.getVendorId(), profinetDriverContext.getDeviceId());
             if (deviceProfile == null) {
                 logger.error("Unable to find GSD profile for device with vendor-id {} and device-id {}",
-                    driverContext.getVendorId(), driverContext.getDeviceId());
+                    profinetDriverContext.getVendorId(), profinetDriverContext.getDeviceId());
                 context.getChannel().close();
                 return;
             }
@@ -115,11 +115,11 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
             if (configuration.dapId != null) {
                 for (ProfinetDeviceAccessPointItem profinetDeviceAccessPointItem : deviceProfile.getProfileBody().getApplicationProcess().getDeviceAccessPointList()) {
                     if(profinetDeviceAccessPointItem.getId().equalsIgnoreCase(configuration.dapId)) {
-                        driverContext.setDapId(profinetDeviceAccessPointItem.getId());
+                        profinetDriverContext.setDapId(profinetDeviceAccessPointItem.getId());
                         break;
                     }
                 }
-                if(driverContext.getDapId() == null) {
+                if(profinetDriverContext.getDapId() == null) {
                     logger.error("Couldn't find requested device access points (DAP): {}", configuration.dapId);
                     context.getChannel().close();
                 }
@@ -151,7 +151,7 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
                 // Try to read the RealIdentificationData ...
                 RawSocketChannel pnChannel = ((RawSocketChannel) context.getChannel());
                 CompletableFuture<PnIoCm_Block_RealIdentificationData> future1 =
-                    PnDcpPacketFactory.sendRealIdentificationDataRequest(context, pnChannel, driverContext);
+                    PnDcpPacketFactory.sendRealIdentificationDataRequest(context, pnChannel, profinetDriverContext);
                 future1.whenComplete((realIdentificationData, throwable1) -> {
                     if(throwable1 != null) {
                         logger.error("Unable to detect device access point, closing channel...", throwable1);
@@ -190,12 +190,12 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
                         }
                         long moduleIdentNumber = Long.parseLong(moduleIdentNumberStr, 16);
                         if(moduleIdentNumber == dapModuleIdentificationNumber) {
-                            driverContext.setDap(curDap);
+                            profinetDriverContext.setDap(curDap);
                             break;
                         }
                     }
                     // Abort, if we weren't able to detect a DAP.
-                    if(driverContext.getDap() == null) {
+                    if(profinetDriverContext.getDap() == null) {
                         logger.error("Unable to auto-detect the device access point, closing channel...");
                         context.getChannel().close();
                         return;
@@ -259,8 +259,8 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
                             }
                         }
                     }
-                    driverContext.setModuleIndex(moduleIndex);
-                    driverContext.setSubmoduleIndex(submoduleIndex);
+                    profinetDriverContext.setModuleIndex(moduleIndex);
+                    profinetDriverContext.setSubmoduleIndex(submoduleIndex);
 
                     context.fireConnected();
                 });
@@ -320,7 +320,7 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
         Map<String, List<PlcBrowseItem>> values = new HashMap<>();
         for (String queryName : browseRequest.getQueryNames()) {
             List<PlcBrowseItem> items = new ArrayList<>();
-            for(Map.Entry<Integer, Map<Integer, ProfinetVirtualSubmoduleItem>> slotEntry : driverContext.getSubmoduleIndex().entrySet()) {
+            for(Map.Entry<Integer, Map<Integer, ProfinetVirtualSubmoduleItem>> slotEntry : profinetDriverContext.getSubmoduleIndex().entrySet()) {
                 int slot = slotEntry.getKey();
                 for(Map.Entry<Integer, ProfinetVirtualSubmoduleItem> subslotEntry: slotEntry.getValue().entrySet()) {
                     int subslot = subslotEntry.getKey();
@@ -369,7 +369,7 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
     @Override
     public CompletableFuture<PlcSubscriptionResponse> subscribe(PlcSubscriptionRequest subscriptionRequest) {
         // When subscribing, we actually set up the PN IO Application Relation and make the remote device start sending data.
-        if (driverContext.getDap() == null) {
+        if (profinetDriverContext.getDap() == null) {
             return CompletableFuture.failedFuture(new PlcConnectionException("DAP not set"));
         }
 
@@ -420,12 +420,12 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
                 int subslotNumber = subslotEntry.getKey();
                 Map<ProfinetTag.Direction, Map<Integer, ProfinetTag>> direction = subslotEntry.getValue();
 
-                int iocsLength = driverContext.getSubmoduleIndex().get(slotNumber).get(subslotNumber).getIoData().getIocsLength();
+                int iocsLength = profinetDriverContext.getSubmoduleIndex().get(slotNumber).get(subslotNumber).getIoData().getIocsLength();
                 // The default is 1
                 if(iocsLength == 0) {
                     iocsLength = 1;
                 }
-                int iopsLength = driverContext.getSubmoduleIndex().get(slotNumber).get(subslotNumber).getIoData().getIopsLength();
+                int iopsLength = profinetDriverContext.getSubmoduleIndex().get(slotNumber).get(subslotNumber).getIoData().getIopsLength();
                 // The default is 1
                 if(iopsLength == 0) {
                     iopsLength = 1;
@@ -478,12 +478,12 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
         blocks.add(new PnIoCm_Block_ArReq(
             ProfinetDriverContext.BLOCK_VERSION_HIGH, ProfinetDriverContext.BLOCK_VERSION_LOW,
             PnIoCm_ArType.IO_CONTROLLER,
-            driverContext.generateUuid(),
-            driverContext.getSessionKey(),
+            profinetDriverContext.generateUuid(),
+            profinetDriverContext.getSessionKey(),
             localMacAddress,
-            driverContext.getCmInitiatorObjectUuid(),
+            profinetDriverContext.getCmInitiatorObjectUuid(),
             false,
-            driverContext.isNonLegacyStartupMode(),
+            profinetDriverContext.isNonLegacyStartupMode(),
             false,
             false,
             PnIoCm_CompanionArType.SINGLE_AR,
@@ -506,14 +506,14 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
                 false,
                 PnIoCm_RtClass.RT_CLASS_2,
                 ProfinetDriverContext.DEFAULT_IO_DATA_SIZE,
-                driverContext.getAndIncrementIdentification(),
-                driverContext.getSendClockFactor(),
-                driverContext.getReductionRatio(),
+                profinetDriverContext.getAndIncrementIdentification(),
+                profinetDriverContext.getSendClockFactor(),
+                profinetDriverContext.getReductionRatio(),
                 1,
                 0,
                 0xffffffffL,
-                driverContext.getWatchdogFactor(),
-                driverContext.getDataHoldFactor(),
+                profinetDriverContext.getWatchdogFactor(),
+                profinetDriverContext.getDataHoldFactor(),
                 0xC000,
                 ProfinetDriverContext.DEFAULT_EMPTY_MAC_ADDRESS,
                 Collections.singletonList(
@@ -533,14 +533,14 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
                 false,
                 PnIoCm_RtClass.RT_CLASS_2,
                 ProfinetDriverContext.DEFAULT_IO_DATA_SIZE,
-                driverContext.getAndIncrementIdentification(),
-                driverContext.getSendClockFactor(),
-                driverContext.getReductionRatio(),
+                profinetDriverContext.getAndIncrementIdentification(),
+                profinetDriverContext.getSendClockFactor(),
+                profinetDriverContext.getReductionRatio(),
                 1,
                 0,
                 0xffffffffL,
-                driverContext.getWatchdogFactor(),
-                driverContext.getDataHoldFactor(),
+                profinetDriverContext.getWatchdogFactor(),
+                profinetDriverContext.getDataHoldFactor(),
                 0xC000,
                 ProfinetDriverContext.DEFAULT_EMPTY_MAC_ADDRESS,
                 Collections.singletonList(
@@ -567,9 +567,9 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
             DceRpc_PacketType.WORKING,
             false, false, false,
             IntegerEncoding.BIG_ENDIAN, CharacterEncoding.ASCII, FloatingPointEncoding.IEEE,
-            new DceRpc_ObjectUuid((byte) 0x00, (short) 0x0001, Integer.decode("0x" + driverContext.getDeviceId()), Integer.decode("0x" + driverContext.getVendorId())),
+            new DceRpc_ObjectUuid((byte) 0x00, (short) 0x0001, Integer.decode("0x" + profinetDriverContext.getDeviceId()), Integer.decode("0x" + profinetDriverContext.getVendorId())),
             new DceRpc_InterfaceUuid_DeviceInterface(),
-            driverContext.getActivityUuid(),
+            profinetDriverContext.getActivityUuid(),
             0L, 0L,
             DceRpc_Operation.CONNECT,
             (short) 0,
@@ -584,8 +584,8 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
             (short) 64,
             new IpAddress(localAddress.getAddress().getAddress()),
             new IpAddress(remoteAddress.getAddress().getAddress()),
-            driverContext.getLocalPort(),
-            driverContext.getRemotePortImplicitCommunication(),
+            profinetDriverContext.getLocalPort(),
+            profinetDriverContext.getRemotePortImplicitCommunication(),
             packet
         );
         Ethernet_Frame ethernetFrame = new Ethernet_Frame(
@@ -607,13 +607,13 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
         if (blockMap.containsKey(ProfinetDiscoverer.DEVICE_TYPE_NAME)) {
             PnDcp_Block_DevicePropertiesDeviceVendor block =
                 (PnDcp_Block_DevicePropertiesDeviceVendor) blockMap.get(ProfinetDiscoverer.DEVICE_TYPE_NAME);
-            driverContext.setDeviceType(new String(block.getDeviceVendorValue()));
+            profinetDriverContext.setDeviceType(new String(block.getDeviceVendorValue()));
         }
 
         if (blockMap.containsKey(ProfinetDiscoverer.DEVICE_NAME_OF_STATION)) {
             PnDcp_Block_DevicePropertiesNameOfStation block =
                 (PnDcp_Block_DevicePropertiesNameOfStation) blockMap.get(ProfinetDiscoverer.DEVICE_NAME_OF_STATION);
-            driverContext.setDeviceName(new String(block.getNameOfStation()));
+            profinetDriverContext.setDeviceName(new String(block.getNameOfStation()));
         }
 
         if (blockMap.containsKey(ProfinetDiscoverer.DEVICE_ROLE)) {
@@ -632,14 +632,14 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
             if (block.getPnioDevice()) {
                 roles.add("DEVICE");
             }
-            driverContext.setRoles(roles);
+            profinetDriverContext.setRoles(roles);
         }
 
         if (blockMap.containsKey(ProfinetDiscoverer.DEVICE_ID)) {
             PnDcp_Block_DevicePropertiesDeviceId block =
                 (PnDcp_Block_DevicePropertiesDeviceId) blockMap.get(ProfinetDiscoverer.DEVICE_ID);
-            driverContext.setVendorId(block.getVendorId());
-            driverContext.setDeviceId(block.getDeviceId());
+            profinetDriverContext.setVendorId(block.getVendorId());
+            profinetDriverContext.setDeviceId(block.getDeviceId());
         }
     }
 

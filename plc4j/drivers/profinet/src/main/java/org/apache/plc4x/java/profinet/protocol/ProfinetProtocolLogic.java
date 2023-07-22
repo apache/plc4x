@@ -53,7 +53,7 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
 
     private final Logger LOGGER = LoggerFactory.getLogger(ProfinetProtocolLogic.class);
 
-    private ProfinetDriverContext driverContext;
+    private ProfinetDriverContext profinetDriverContext;
     private Map<String, ProfinetDevice> devices = new HashMap<>();
 
     public ProfinetProtocolLogic() {
@@ -63,12 +63,12 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
 
     public void setDriverContext(ProfinetDriverContext driverContext) {
         super.setDriverContext(driverContext);
-        this.driverContext = driverContext;
+        this.profinetDriverContext = driverContext;
     }
 
     @Override
     public void setConfiguration(ProfinetConfiguration configuration) {
-        driverContext.setConfiguration(configuration);
+        profinetDriverContext.setConfiguration(configuration);
 
         Map<String, ConfigurationProfinetDevice> configuredDevices = configuration.getDevices().getConfiguredDevices();
 
@@ -85,7 +85,7 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
             devices.get(entry.getValue().getDevicename()).setIpAddress(entry.getValue().getIpaddress());
         }
 
-        driverContext.setHandler(new ProfinetDeviceMessageHandler(devices));
+        profinetDriverContext.setHandler(new ProfinetDeviceMessageHandler(devices));
         for (Map.Entry<String, ProfinetDevice> device : devices.entrySet()) {
             device.getValue().getDeviceContext().setConfiguration(configuration);
         }
@@ -97,15 +97,15 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
 
         // Open the receiving UDP port and keep it open.
         try {
-            driverContext.setSocket(new DatagramSocket(ProfinetDriverContext.DEFAULT_UDP_PORT));
+            profinetDriverContext.setSocket(new DatagramSocket(ProfinetDriverContext.DEFAULT_UDP_PORT));
         } catch (SocketException e) {
             throw new RuntimeException(e);
         }
 
-        driverContext.getHandler().setConfiguredDevices(devices);
+        profinetDriverContext.getHandler().setConfiguredDevices(devices);
 
         for (Map.Entry<String, ProfinetDevice> device : devices.entrySet()) {
-            device.getValue().setContext(context, this.driverContext.getChannel());
+            device.getValue().setContext(context, this.profinetDriverContext.getChannel());
         }
     }
 
@@ -118,10 +118,10 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
      * @throws PlcConnectionException
      */
     private void onDeviceDiscovery() throws InterruptedException, PlcConnectionException {
-        ProfinetPlcDiscoverer discoverer = new ProfinetPlcDiscoverer(driverContext.getChannel());
-        driverContext.getChannel().setDiscoverer(discoverer);
+        ProfinetPlcDiscoverer discoverer = new ProfinetPlcDiscoverer(profinetDriverContext.getChannel());
+        profinetDriverContext.getChannel().setDiscoverer(discoverer);
         DefaultPlcDiscoveryRequest request = new DefaultPlcDiscoveryRequest(discoverer, new LinkedHashMap<>());
-        discoverer.ongoingDiscoverWithHandler(request, driverContext.getHandler(), 5000L, 30000L);
+        discoverer.ongoingDiscoverWithHandler(request, profinetDriverContext.getHandler(), 5000L, 30000L);
         waitForDeviceDiscovery();
     }
 
@@ -186,13 +186,13 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
             String localAddress = channel.getLocalAddress().toString().substring(1).split(":")[0];
             localIpAddress = InetAddress.getByName(localAddress);
             PcapNetworkInterface devByAddress = Pcaps.getDevByAddress(localIpAddress);
-            driverContext.setChannel(new ProfinetChannel(Collections.singletonList(devByAddress), devices));
-            driverContext.getChannel().setConfiguredDevices(devices);
+            profinetDriverContext.setChannel(new ProfinetChannel(Collections.singletonList(devByAddress), devices));
+            profinetDriverContext.getChannel().setConfiguredDevices(devices);
             // Set both the network-interface and the channel for this device
             // TODO: Find out what they are needed for ...
             for (Map.Entry<String, ProfinetDevice> entry : devices.entrySet()) {
                 entry.getValue().getDeviceContext().setNetworkInterface(new ProfinetNetworkInterface(devByAddress));
-                entry.getValue().getDeviceContext().setChannel(driverContext.getChannel());
+                entry.getValue().getDeviceContext().setChannel(profinetDriverContext.getChannel());
             }
         } catch (PcapNativeException | UnknownHostException e) {
             throw new RuntimeException(e);
