@@ -1640,6 +1640,10 @@ public enum BACnetVendorId {
   ECOVENA((int) 1427, (int) 1427, (String) "Ecovena"),
   GREE_ELECTRIC_APPLIANCES_INCOF_ZHUHAI(
       (int) 1428, (int) 1428, (String) "Gree Electric Appliances Inc of Zhuhai"),
+  CONSPEC_CONTROLS((int) 1429, (int) 1429, (String) "Conspec Controls"),
+  HANGZHOU_HIKVISION_DIGITAL_TECHNOLOGY_CO_LTD(
+      (int) 1430, (int) 1430, (String) "Hangzhou Hikvision Digital Technology Co., Ltd."),
+  CRYSTAL_PEAK_SECURITY((int) 1431, (int) 1431, (String) "Crystal Peak Security"),
   UNKNOWN_VENDOR((int) 0xFFFF, (int) 0xFFFF, (String) "Unknown");
   private static final Map<Integer, BACnetVendorId> map;
 

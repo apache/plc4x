@@ -8,7 +8,7 @@
   "License"); you may not use this file except in compliance
   with the License.  You may obtain a copy of the License at
 
-      https://www.apache.org/licenses/LICENSE-2.0
+      http://www.apache.org/licenses/LICENSE-2.0
 
   Unless required by applicable law or agreed to in writing,
   software distributed under the License is distributed on an
@@ -18,27 +18,16 @@
   under the License.
   -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-
-  <modelVersion>4.0.0</modelVersion>
-
-  <parent>
-    <groupId>org.apache.plc4x</groupId>
-    <artifactId>plc4j</artifactId>
-    <version>0.11.0-SNAPSHOT</version>
-  </parent>
-
-  <artifactId>plc4j-integrations</artifactId>
-  <packaging>pom</packaging>
-
-  <name>PLC4J: Integrations</name>
-  <description>Parent of all product specific integration modules.</description>
-
-  <modules>
-    <module>apache-calcite</module>
-    <module>apache-kafka</module>
-    <module>apache-nifi</module>
-    <module>opcua-server</module>
-    <module>apache-hop</module>
-  </modules>
-
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.apache.plc4x</groupId>
+        <artifactId>plc4j-apache-hop</artifactId>
+        <version>0.11.0-SNAPSHOT</version>
+    </parent>
+    <artifactId>hop-plc4x-utils</artifactId>
+    <packaging>pom</packaging>
+    <name>PLC4J: Integrations: Apache Hop: Utils</name>
+    <modules>
+        <module>hop-plc4x-grafana</module>
+    </modules>
 </project>

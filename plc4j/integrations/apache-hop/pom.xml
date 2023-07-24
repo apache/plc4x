@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.apache.plc4x</groupId>
+        <artifactId>plc4j-integrations</artifactId>
+        <version>0.11.0-SNAPSHOT</version>
+    </parent>
+    
+    <artifactId>plc4j-apache-hop</artifactId>
+    <packaging>pom</packaging>
+    <name>PLC4J: Integrations: Apache Hop</name>
+    
+     
+    
+    <properties>
+        <!-- Set this to the Hop version you want to debug against-->
+        <hop.version>2.4.0</hop.version>
+        <!-- Path You will be using to debug the application -->
+        <hop.debug.path>/home/hans/Documents/test</hop.debug.path>
+        <!-- Third-party dependencies-->
+        <org.eclipse.platform.version>3.114.0</org.eclipse.platform.version>
+        <maven-assembly-plugin.version>3.1.0</maven-assembly-plugin.version>
+        <!-- Jandex For annotation Detection -->
+        <jandex.version>2.2.2.Final</jandex.version>
+        <!-- PLC4X Version-->
+        <apache.plc4x.version>0.11.0-SNAPSHOT</apache.plc4x.version>
+        <xml-apis.version>1.4.01</xml-apis.version>
+    </properties>    
+    
+    
+    <modules>
+        <module>plc4x-hop-actions</module>
+        <module>plc4x-hop-metadata</module>
+        <module>plc4x-hop-transformer</module>
+        <module>plc4x-hop-assemblies</module>
+        <module>plc4x-hop-utils</module>
+    </modules>
+    
+    <!-- needed for correct SWT libs dependending on system -->
+    <profiles>
+        <profile>
+            <id>swt-unix</id>
+            <activation>
+                <os>
+                    <family>unix</family>
+                </os>
+            </activation>
+            <properties>
+                <swt.artifactId>org.eclipse.swt.gtk.linux.x86_64</swt.artifactId>
+                <env>linux</env>
+            </properties>
+            <dependencyManagement>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.eclipse.platform</groupId>
+                        <artifactId>${swt.artifactId}</artifactId>
+                        <version>${org.eclipse.platform.version}</version>
+                        <exclusions>
+                            <exclusion>
+                                <groupId>*</groupId>
+                                <artifactId>*</artifactId>
+                            </exclusion>
+                        </exclusions>
+                    </dependency>
+                </dependencies>
+            </dependencyManagement>
+        </profile>
+        <profile>
+            <id>swt-mac</id>
+            <activation>
+                <os>
+                    <family>mac</family>
+                </os>
+            </activation>
+            <properties>
+                <swt.artifactId>org.eclipse.swt.cocoa.macosx.x86_64</swt.artifactId>
+                <env>mac</env>
+            </properties>
+            <dependencyManagement>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.eclipse.platform</groupId>
+                        <artifactId>${swt.artifactId}</artifactId>
+                        <version>${org.eclipse.platform.version}</version>
+                        <exclusions>
+                            <exclusion>
+                                <groupId>*</groupId>
+                                <artifactId>*</artifactId>
+                            </exclusion>
+                        </exclusions>
+                    </dependency>
+                </dependencies>
+            </dependencyManagement>
+        </profile>
+        <profile>
+            <id>swt-windows</id>
+            <activation>
+                <os>
+                    <family>windows</family>
+                </os>
+            </activation>
+            <properties>
+                <swt.artifactId>org.eclipse.swt.win32.win32.x86_64</swt.artifactId>
+                <env>windows</env>
+            </properties>
+            <dependencyManagement>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.eclipse.platform</groupId>
+                        <artifactId>${swt.artifactId}</artifactId>
+                        <version>${org.eclipse.platform.version}</version>
+                        <exclusions>
+                            <exclusion>
+                                <groupId>*</groupId>
+                                <artifactId>*</artifactId>
+                            </exclusion>
+                        </exclusions>
+                    </dependency>
+                </dependencies>
+            </dependencyManagement>
+        </profile>
+    </profiles>
+
+
+    <repositories>
+        <repository>
+            <id>central</id>
+            <url>https://repo1.maven.org/maven2/</url>
+            <name>Maven Central</name>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+        </repository>
+        <repository>
+            <id>Apache</id>
+            <url>https://repository.apache.org/snapshots/</url>
+            <name>Apache Repository</name>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+        </repository>
+    </repositories>
+    <pluginRepositories>
+        <pluginRepository>
+            <id>apache.snapshots</id>
+            <url>https://repository.apache.org/snapshots/</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+        </pluginRepository>
+    </pluginRepositories>
+        
+    <build>
+
+        <plugins>
+            <plugin>
+                <groupId>org.apache.rat</groupId>
+                <artifactId>apache-rat-plugin</artifactId>
+                <version>0.13</version>
+                <configuration>
+                    <excludeSubProjects>false</excludeSubProjects>
+                    <consoleOutput>true</consoleOutput>
+                    <excludes>
+
+                        <!-- General Exclusions -->
+                        <exclude>DISCLAIMER</exclude>
+                        <exclude>LICENSE</exclude>
+                        <exclude>NOTICE</exclude>
+                        <exclude>**/licenses/*</exclude>
+                        <exclude>**/target/**</exclude>
+                        <exclude>**/*.svg</exclude>
+                        <exclude>**/*.json</exclude>
+                        <exclude>**/PUT_JDBC_HERE</exclude>
+                        <exclude>**/hop.pwd</exclude>
+                        <exclude>**/*.iml</exclude>
+
+                        <!-- Unit Test Exclusions -->
+                        <exclude>**/test/**/*.txt</exclude>
+                        <exclude>**/test/**/*.xml</exclude>
+                        <exclude>**/test/**/*.xsd</exclude>
+                        <exclude>**/test/**/*.csv</exclude>
+                        <exclude>**/test/**/*.csv.bz2</exclude>
+                        <exclude>**/test/**/*.csv.gz</exclude>
+                        <exclude>**/test/**/*.ods</exclude>
+                        <exclude>**/test/**/*.xls</exclude>
+                        <exclude>**/test/**/*.xlsx</exclude>
+                        <exclude>**/test/**/*.edi</exclude>
+                        <exclude>**/test/**/*.avro</exclude>
+                        <exclude>**/test/**/*.snippet</exclude>
+
+                        <!-- Integration Test Exclusion -->
+                        <exclude>**/datasets/*.csv</exclude>
+                        <exclude>**/it/**/*.csv</exclude>
+
+                        <!-- External Integration Test Exclusion -->
+                        <exclude>**/integration-tests/**/*.txt</exclude>
+                        <exclude>**/integration-tests/**/*.json</exclude>
+                        <exclude>**/integration-tests/**/*.json.old</exclude>
+
+                        <!-- Samples Exclusions -->
+                        <!-- plugins/engines/beam -->
+                        <exclude>**/src/main/samples/**/*.txt</exclude>
+                        <exclude>**/src/main/samples/**/*.csv</exclude>
+
+                        <!-- Documentation Exclusions-->
+                        <exclude>docs/content/**</exclude>
+                        <exclude>docs/resources/**</exclude>
+                        <exclude>docs/node_modules/**</exclude>
+                        <exclude>docs/.pnp/**</exclude>
+                        <exclude>docs/.pnp.js</exclude>
+                        <exclude>docs/yarn.lock</exclude>
+
+                    </excludes>
+                </configuration>
+            </plugin>                
+        </plugins>
+
+    </build>    
+            
+     
+        
+        
+</project>
