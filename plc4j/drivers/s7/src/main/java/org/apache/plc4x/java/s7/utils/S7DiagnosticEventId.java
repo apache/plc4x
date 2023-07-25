@@ -667,7 +667,8 @@ public enum S7DiagnosticEventId {
     }    
 
     public static S7DiagnosticEventId  valueOf(short code) {
-        int intcode = Short.toUnsignedInt(code);
+        
+        Integer intcode = Short.toUnsignedInt(code);
         int a = code & 0xA000;
         int b = code & 0xB000;
         if ((a != 0) || (b != 0)) intcode = 0x0000;

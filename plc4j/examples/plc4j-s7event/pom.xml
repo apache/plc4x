@@ -52,6 +52,7 @@
             <usedDependency>org.apache.plc4x:plc4j-driver-opcua</usedDependency>
             <usedDependency>org.apache.plc4x:plc4j-driver-profinet</usedDependency>
             <usedDependency>org.apache.plc4x:plc4j-driver-simulated</usedDependency>
+            <usedDependency>org.slf4j:slf4j-simple</usedDependency>            
           </usedDependencies>
         </configuration>
       </plugin>
@@ -94,6 +95,12 @@
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-lang3</artifactId>
       <version>${commons-lang3.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-simple</artifactId>
+      <version>${slf4j.version}</version>
+      <scope>compile</scope>
     </dependency>
   </dependencies>
 </project>

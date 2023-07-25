@@ -38,6 +38,7 @@
     <module>apache-kafka</module>
     <module>apache-nifi</module>
     <module>opcua-server</module>
+    <module>apache-hop</module>
   </modules>
 
 </project>

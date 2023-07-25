@@ -141,8 +141,8 @@ public class S7AlarmEvent implements S7Event {
         SIG_7_DATA_LENGTH,
         SIG_8_DATA_LENGTH,            
         
-    }
-
+    };
+  
     private final Instant timeStamp;
     private final Map<String, Object> map;   
 
@@ -291,9 +291,10 @@ public class S7AlarmEvent implements S7Event {
             
         }
 
-    }
-
-
+    };
+    
+    
+    
     @Override
     public Map<String, Object> getMap() {
         return map;
