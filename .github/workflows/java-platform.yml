@@ -31,6 +31,7 @@ on:
       - code-generation/**
       - protocols/**
       - plc4j**
+      - pom.xml
   workflow_dispatch:
     inputs:
       forceUpdates:
