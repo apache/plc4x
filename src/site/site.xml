@@ -90,6 +90,7 @@
         <item name="Apache Calcite" href="users/integrations/apache-calcite.html"/>
         <item name="Apache Camel" href="users/integrations/apache-camel.html"/>
         <item name="Apache Edgent" href="users/integrations/apache-edgent.html"/>
+        <item name="Apache Hop" href="users/integrations/apache-hop.html"/>
         <item name="Apache IoTDB" href="users/integrations/apache-iotdb.html"/>
         <item name="Apache Kafka" href="users/integrations/apache-kafka.html"/>
         <item name="Apache NiFi" href="users/integrations/apache-nifi.html"/>

@@ -1,0 +1,114 @@
+//
+//  Licensed to the Apache Software Foundation (ASF) under one or more
+//  contributor license agreements.  See the NOTICE file distributed with
+//  this work for additional information regarding copyright ownership.
+//  The ASF licenses this file to You under the Apache License, Version 2.0
+//  (the "License"); you may not use this file except in compliance with
+//  the License.  You may obtain a copy of the License at
+//
+//      https://www.apache.org/licenses/LICENSE-2.0
+//
+//  Unless required by applicable law or agreed to in writing, software
+//  distributed under the License is distributed on an "AS IS" BASIS,
+//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//  See the License for the specific language governing permissions and
+//  limitations under the License.
+//
+:imagesdir: ../../images/
+:icons: font
+
+//image::integrations/hop/apache_hop_logo.jpg[]
+
+== Apache Hop
+
+image::integrations/apache_hop_logo.jpg[]
+
+== Executive Summary
+The integration of the PLC4X communication libraries with Apache Hop, allows having a graphic tool for the acquisition and processing of data from the PLCs or other field devices. With Apache Hop's graphical interface you can orchestrate the transfer of data to files or databases for online or offline storage and processing.
+
+Although there are tools specially designed for this purpose within the foundation, such as Apache NiFi and Apache StreamPipes, Apache Hop has a large number of data transformation blocks that allow them to be differentiated from both projects. It is up to each user to establish which tool meets their particular application.
+
+For the integration of the tools, some creative liberties were taken regarding the internal architecture of Apache Hop, such as having a GlobalContext that can be shared between the "WorkFlow" and the "Pipelines".
+
+The examples that will be presented for the documentation will be oriented to the use of a S7-400/S7-400H controller, typical of the Siemens PCS7 environment, which is our main objective. As the tool is debugged, examples with Modbus and Ethernet/IP will be incorporated.
+
+== Regarding the Support
+
+
+It is typical within the decision-making cycle in an automation  project to know who and how much the support of the tools that will be  used in the control architecture will cost.
+
+PLC4X support is on our development list (dev@plc4x.apache.org) where we will gladly answer your questions about the S7 driver.
+
+If your company requires commercial support, companies that directly  or indirectly support the drivers and tools developed in PLC4X are  published on our page.
+
+== Record of revisions made to the Hop integration
+
+
+[cols="1, 2,2a,5a"]
+|===
+|Rev |Release |Date |Description of the change
+
+|0 |0.10.0 |2023/07/25 |Beta release.
+|===
+
+== Development notes
+
+From Hop's preamble we can take:
+
+"Hop aims to be the future of data integration. Visual development enables developers to be more productive than they can be through code. Our Design once, run anywhere workflows and pipelines can be designed in the Hop Gui and run on the Hop native engine (local or remote), or on Spark, Flink, Google Dataflow or AWS EMR through Beam. Lifecycle Management enables developers and administrators to switch between projects, environments and purposes without leaving your train of thought."
+
+Based on these premises, our PLC (AS) will become a data source that can be managed in a workflow or processed in a pipeline.
+
+This will allow us very easily:
+
+. Diagnosis: Captures the states of the controllers in a simple way and allows them to be managed in real time or stored permanently.
+. Alarms: The alarms generated directly in the controller (ALARM_8, ALARM_8P).
+. Data acquisition: Allows the synchronous or asynchronous capture of data for processing, decision making or historical storage.
+
+In reality, the possibilities are many and will depend directly on the customer's requirement and the availability of these features in the PLCs (AS).
+
+Now, from this point of view our main data source will be our PLC (AS), so it should be shared by all the "workflows" and "pipelines" that are implemented in Apache Hop.
+
+Unlike a standard database, which is designed with a large number of simultaneous client connections, in PLCs (AS) in general, resources are quite limited, even having dedicated communications cards (CP).
+
+This establishes the design premises:
+
+1. Limit the number of connections to be created.
+2. Share the connections between the different data flows "worflows" and "pipelines".
+3. Limit application execution to one server.
+
+To solve these design points, a GlobalContext based on the Apache NetBeans "Lookup"[1] library and "AbstractReferenceCounted" [2] was implemented.
+
+The first one creates a GlobalContext to store the object reference and the second one creates a wrapper object around the PlcConnection and share it among the different users, keeping an internal account of the users. When this count reaches zero (0), it automatically closes the connection freeing the resource and closes the connection to the controller.
+
+image::integrations/hop/plc4x_hop_001.png[]
+
+
+image::integrations/hop/plc4x_hop_002.png[]
+
+image::integrations/hop/plc4x_action.svg[]
+
+image::integrations/hop/plc4x_event.svg[]
+
+image::integrations/hop/plc4x_read.svg[]
+
+image::integrations/hop/plc4x_subs.svg[]
+
+image::integrations/hop/plc4x_write.svg[]
+
+image::integrations/hop/plc4x_toddy.svg[]
+
+image::integrations/hop/plc4x_toddy_play.svg[]
+
+image::integrations/hop/plc4x_toddy_stop.svg[]
+
+
+
+
+== Links
+
+1. https://netbeans.apache.org/wiki/DevFaqLookup.html
+2. https://netty.io/4.1/api/io/netty/util/AbstractReferenceCounted.html
+
+
+
