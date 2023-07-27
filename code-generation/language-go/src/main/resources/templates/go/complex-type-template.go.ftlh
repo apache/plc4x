@@ -307,7 +307,11 @@ func (m *_${type.name}) Get${field.name?cap_first}() <#if helper.needsPointerAcc
 	${field.name} := m.${field.name?cap_first}
 	_ = ${field.name}
   	  </#list>
+	  <#if typeRef.isStringTypeReference() || typeRef.isVstringTypeReference()>
+    return fmt.Sprintf("%v", ${helper.toSerializationExpression(field, field.type, field.valueExpression, parserArguments)})<@emitImport import="fmt" />
+	  <#else>
 	return <#if typeRef.isNonSimpleTypeReference()>Cast</#if>${helper.getLanguageTypeNameForTypeReference(typeRef)}(${helper.toSerializationExpression(field, field.type, field.valueExpression, parserArguments)})
+	  </#if>
 }
 
 	</#list>
@@ -1436,7 +1440,9 @@ func ${type.name}ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 
 	// Virtual field
 	_${virtualField.name} := ${helper.toParseExpression(virtualField, virtualField.type, virtualField.valueExpression, parserArguments, true)}
-			<#if virtualField.type.isSimpleTypeReference() || virtualField.type.isEnumTypeReference()>
+			<#if virtualField.type.isStringTypeReference() || typeRef.isVstringTypeReference()>
+	${virtualField.name} := fmt.Sprintf("%v", _${virtualField.name})<@emitImport import="fmt" />
+			<#elseif virtualField.type.isSimpleTypeReference() || virtualField.type.isEnumTypeReference()>
 	${virtualField.name} := ${helper.getLanguageTypeNameForTypeReference(virtualField.type)}(_${virtualField.name})
 			<#else>
 	${virtualField.name} := _${virtualField.name}

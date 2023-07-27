@@ -97,7 +97,7 @@ func (m *_BACnetContextTagCharacterString) GetPayload() BACnetTagPayloadCharacte
 func (m *_BACnetContextTagCharacterString) GetValue() string {
 	ctx := context.Background()
 	_ = ctx
-	return string(m.GetPayload().GetValue())
+	return fmt.Sprintf("%v", m.GetPayload().GetValue())
 }
 
 ///////////////////////
@@ -175,7 +175,7 @@ func BACnetContextTagCharacterStringParseWithBuffer(ctx context.Context, readBuf
 
 	// Virtual field
 	_value := payload.GetValue()
-	value := string(_value)
+	value := fmt.Sprintf("%v", _value)
 	_ = value
 
 	if closeErr := readBuffer.CloseContext("BACnetContextTagCharacterString"); closeErr != nil {
