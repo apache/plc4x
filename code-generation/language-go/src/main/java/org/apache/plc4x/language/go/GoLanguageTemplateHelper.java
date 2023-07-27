@@ -392,7 +392,12 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                         .orElseThrow(() -> new FreemarkerException("Encoding must be a quoted string value")).getValue();
                 }
                 String lengthExpression = toExpression(field, null, vstringTypeReference.getLengthExpression(), null, null, false, false);
-                return "readBuffer.ReadString(\"" + logicalName + "\", uint32(" + lengthExpression + "), \"" + encoding + "\")";
+                if (vstringTypeReference.getLengthExpression().isTernaryTerm()) {
+                    lengthExpression = "(" + lengthExpression + ").(uint32)";
+                } else {
+                    lengthExpression = "uint32(" + lengthExpression + ")";
+                }
+                return "readBuffer.ReadString(\"" + logicalName + "\", " + lengthExpression + ", \"" + encoding + "\")";
             }
             case TIME:
             case DATE:
@@ -502,8 +507,13 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                         .orElseThrow(() -> new FreemarkerException("Encoding must be a quoted string value")).getValue();
                 }
                 String lengthExpression = toExpression(field, null, vstringTypeReference.getLengthExpression(), null, Collections.singletonList(new DefaultArgument("stringLength", new DefaultIntegerTypeReference(SimpleTypeReference.SimpleBaseType.INT, 32))), true, false);
+                if (vstringTypeReference.getLengthExpression().isTernaryTerm()) {
+                    lengthExpression = "(" + lengthExpression + ").(uint32)";
+                } else {
+                    lengthExpression = "uint32(" + lengthExpression + ")";
+                }
                 String length = Integer.toString(simpleTypeReference.getSizeInBits());
-                return "writeBuffer.WriteString(\"" + logicalName + "\", uint32(" + lengthExpression + "), \"" +
+                return "writeBuffer.WriteString(\"" + logicalName + "\", " + lengthExpression + ", \"" +
                     encoding + "\", " + fieldName + writerArgsString + ")";
             }
             case DATE:
