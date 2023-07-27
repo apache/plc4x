@@ -61,6 +61,19 @@ func (m *MessageCodec) GetCodec() spi.MessageCodec {
 	return m
 }
 
+func (m *MessageCodec) Connect() error {
+	return m.ConnectWithContext(context.Background())
+}
+
+func (m *MessageCodec) ConnectWithContext(ctx context.Context) error {
+	if err := m.DefaultCodec.ConnectWithContext(ctx); err != nil {
+		return errors.Wrap(err, "error connecting default codec")
+	}
+	m.log.Debug().Msg("Opcua Driver running in ACTIVE mode.")
+	m.channel.onConnect(ctx, m)
+	return nil
+}
+
 func (m *MessageCodec) Send(message spi.Message) error {
 	m.log.Trace().Msgf("Sending message\n%s", message)
 	// Cast the message to the correct type of struct

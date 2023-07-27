@@ -19,7 +19,10 @@
 
 package opcua
 
-import readWriteModel "github.com/apache/plc4x/plc4go/protocols/opcua/readwrite/model"
+import (
+	"crypto/x509"
+	readWriteModel "github.com/apache/plc4x/plc4go/protocols/opcua/readwrite/model"
+)
 
 type EncryptionHandler struct {
 	// TODO: implement me
@@ -29,6 +32,22 @@ func NewEncryptionHandler(any, []byte, string) *EncryptionHandler {
 	return &EncryptionHandler{}
 }
 
-func (h *EncryptionHandler) encodeMessage(messageRequest readWriteModel.OpcuaMessageRequest, bytes []byte) []byte {
+func (h *EncryptionHandler) encodeMessage(messageRequest readWriteModel.MessagePDU, bytes []byte) []byte {
+	return nil
+}
+
+func (h *EncryptionHandler) decodeMessage(apu readWriteModel.OpcuaAPU) readWriteModel.OpcuaAPUExactly {
+	return nil
+}
+
+func (h *EncryptionHandler) getCertificateX509(senderCertificate []byte) x509.Certificate {
+	return x509.Certificate{}
+}
+
+func (h *EncryptionHandler) setServerCertificate(certificateX509 x509.Certificate) {
+	return
+}
+
+func (h *EncryptionHandler) encryptPassword(password []byte) []byte {
 	return nil
 }
