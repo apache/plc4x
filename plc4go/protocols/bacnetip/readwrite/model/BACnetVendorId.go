@@ -1466,6 +1466,11 @@ const (
 	BACnetVendorId_CONSPEC_CONTROLS                                                             BACnetVendorId = 1429
 	BACnetVendorId_HANGZHOU_HIKVISION_DIGITAL_TECHNOLOGY_CO_LTD                                 BACnetVendorId = 1430
 	BACnetVendorId_CRYSTAL_PEAK_SECURITY                                                        BACnetVendorId = 1431
+	BACnetVendorId_PERM_ALERT                                                                   BACnetVendorId = 1432
+	BACnetVendorId_ZHEJIANG_MISILIN_TECHNOLOGY_CO_LTD                                           BACnetVendorId = 1433
+	BACnetVendorId_DEKKER_VACUUM_TECHNOLOGIES                                                   BACnetVendorId = 1434
+	BACnetVendorId_EDWARDS_LIMITED                                                              BACnetVendorId = 1435
+	BACnetVendorId_LEYBOLD_GMBH                                                                 BACnetVendorId = 1436
 	BACnetVendorId_UNKNOWN_VENDOR                                                               BACnetVendorId = 0xFFFF
 )
 
@@ -2897,6 +2902,11 @@ func init() {
 		BACnetVendorId_CONSPEC_CONTROLS,
 		BACnetVendorId_HANGZHOU_HIKVISION_DIGITAL_TECHNOLOGY_CO_LTD,
 		BACnetVendorId_CRYSTAL_PEAK_SECURITY,
+		BACnetVendorId_PERM_ALERT,
+		BACnetVendorId_ZHEJIANG_MISILIN_TECHNOLOGY_CO_LTD,
+		BACnetVendorId_DEKKER_VACUUM_TECHNOLOGIES,
+		BACnetVendorId_EDWARDS_LIMITED,
+		BACnetVendorId_LEYBOLD_GMBH,
 		BACnetVendorId_UNKNOWN_VENDOR,
 	}
 }
@@ -4826,6 +4836,26 @@ func (e BACnetVendorId) VendorId() uint16 {
 	case 1431:
 		{ /* '1431' */
 			return 1431
+		}
+	case 1432:
+		{ /* '1432' */
+			return 1432
+		}
+	case 1433:
+		{ /* '1433' */
+			return 1433
+		}
+	case 1434:
+		{ /* '1434' */
+			return 1434
+		}
+	case 1435:
+		{ /* '1435' */
+			return 1435
+		}
+	case 1436:
+		{ /* '1436' */
+			return 1436
 		}
 	case 144:
 		{ /* '144' */
@@ -10541,6 +10571,26 @@ func (e BACnetVendorId) VendorName() string {
 		{ /* '1431' */
 			return "Crystal Peak Security"
 		}
+	case 1432:
+		{ /* '1432' */
+			return "PermAlert"
+		}
+	case 1433:
+		{ /* '1433' */
+			return "Zhejiang Misilin Technology Co., Ltd."
+		}
+	case 1434:
+		{ /* '1434' */
+			return "Dekker Vacuum Technologies"
+		}
+	case 1435:
+		{ /* '1435' */
+			return "Edwards Limited"
+		}
+	case 1436:
+		{ /* '1436' */
+			return "Leybold GmbH"
+		}
 	case 144:
 		{ /* '144' */
 			return "Fujitsu General Limited"
@@ -15292,6 +15342,16 @@ func BACnetVendorIdByValue(value uint16) (enum BACnetVendorId, ok bool) {
 		return BACnetVendorId_HANGZHOU_HIKVISION_DIGITAL_TECHNOLOGY_CO_LTD, true
 	case 1431:
 		return BACnetVendorId_CRYSTAL_PEAK_SECURITY, true
+	case 1432:
+		return BACnetVendorId_PERM_ALERT, true
+	case 1433:
+		return BACnetVendorId_ZHEJIANG_MISILIN_TECHNOLOGY_CO_LTD, true
+	case 1434:
+		return BACnetVendorId_DEKKER_VACUUM_TECHNOLOGIES, true
+	case 1435:
+		return BACnetVendorId_EDWARDS_LIMITED, true
+	case 1436:
+		return BACnetVendorId_LEYBOLD_GMBH, true
 	case 144:
 		return BACnetVendorId_FUJITSU_GENERAL_LIMITED, true
 	case 145:
@@ -18146,6 +18206,16 @@ func BACnetVendorIdByName(value string) (enum BACnetVendorId, ok bool) {
 		return BACnetVendorId_HANGZHOU_HIKVISION_DIGITAL_TECHNOLOGY_CO_LTD, true
 	case "CRYSTAL_PEAK_SECURITY":
 		return BACnetVendorId_CRYSTAL_PEAK_SECURITY, true
+	case "PERM_ALERT":
+		return BACnetVendorId_PERM_ALERT, true
+	case "ZHEJIANG_MISILIN_TECHNOLOGY_CO_LTD":
+		return BACnetVendorId_ZHEJIANG_MISILIN_TECHNOLOGY_CO_LTD, true
+	case "DEKKER_VACUUM_TECHNOLOGIES":
+		return BACnetVendorId_DEKKER_VACUUM_TECHNOLOGIES, true
+	case "EDWARDS_LIMITED":
+		return BACnetVendorId_EDWARDS_LIMITED, true
+	case "LEYBOLD_GMBH":
+		return BACnetVendorId_LEYBOLD_GMBH, true
 	case "FUJITSU_GENERAL_LIMITED":
 		return BACnetVendorId_FUJITSU_GENERAL_LIMITED, true
 	case "PROJECT_ENGINEERING_SRL":
@@ -21061,6 +21131,16 @@ func (e BACnetVendorId) PLC4XEnumName() string {
 		return "HANGZHOU_HIKVISION_DIGITAL_TECHNOLOGY_CO_LTD"
 	case BACnetVendorId_CRYSTAL_PEAK_SECURITY:
 		return "CRYSTAL_PEAK_SECURITY"
+	case BACnetVendorId_PERM_ALERT:
+		return "PERM_ALERT"
+	case BACnetVendorId_ZHEJIANG_MISILIN_TECHNOLOGY_CO_LTD:
+		return "ZHEJIANG_MISILIN_TECHNOLOGY_CO_LTD"
+	case BACnetVendorId_DEKKER_VACUUM_TECHNOLOGIES:
+		return "DEKKER_VACUUM_TECHNOLOGIES"
+	case BACnetVendorId_EDWARDS_LIMITED:
+		return "EDWARDS_LIMITED"
+	case BACnetVendorId_LEYBOLD_GMBH:
+		return "LEYBOLD_GMBH"
 	case BACnetVendorId_FUJITSU_GENERAL_LIMITED:
 		return "FUJITSU_GENERAL_LIMITED"
 	case BACnetVendorId_PROJECT_ENGINEERING_SRL:
