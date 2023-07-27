@@ -1358,8 +1358,7 @@ func ${type.name}ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 									<#assign parsedDiscriminatorExpression=tracer.removeTraces(parsedDiscriminatorExpression)>
 									<#if helper.getDiscriminatorTypes()[parsedDiscriminatorExpression]??><#assign discriminatorType=helper.getDiscriminatorTypes()[parsedDiscriminatorExpression]></#if>
 									${helper.toParseExpression(null, null, discriminatorExpression, parserArguments)} ==
-									<#if helper.discriminatorValueNeedsStringEqualityCheck(discriminatorExpression)>"${helper.toParseExpression(null, discriminatorType,discriminatorValueTerm, parserArguments)}"
-									<#elseif discriminatorType?has_content && discriminatorType.isNonSimpleTypeReference()>
+									<#if discriminatorType?has_content && discriminatorType.isNonSimpleTypeReference()>
 										<#if discriminatorType.isEnumTypeReference()>
 											<#assign enumType=helper.getLanguageTypeNameForTypeReference(discriminatorType)>
 											<#assign enumTypeWithoutTraces=tracer.removeTraces(enumType)>

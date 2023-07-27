@@ -77,7 +77,7 @@ type I${type.name} interface {
 
 const(
 <#list type.enumValues as enumValue>
-	${type.name}_${enumValue.name} ${type.name} = <#if type.type.orElseThrow().isStringTypeReference()>"${enumValue.value}"<#else>${enumValue.value}</#if>
+	${type.name}_${enumValue.name} ${type.name} = ${enumValue.value}
 </#list>
 )
 
@@ -105,7 +105,7 @@ func (e ${type.name}) ${constantName?cap_first}() ${helper.getLanguageTypeNameFo
 	switch e  {
 		<#list helper.getUniqueEnumValues(type.enumValues) as enumValue>
 			<#assign constantValue=enumValue.getConstant(constantName).orElseThrow()>
-		case ${helper.escapeValue(type.type.orElseThrow(), enumValue.value)}: { /* '${enumValue.value}' */
+		case ${enumValue.value}: { /* '${enumValue.value}' */
 		    <#if constantType.isNonSimpleTypeReference()>
 		        <#if constantType.isEnumTypeReference()>
 			return <#if helper.escapeEnumValue(constantType, constantValue) = "0">${helper.escapeEnumValue(constantType, constantValue)}<#else>${helper.getLanguageTypeNameForTypeReference(constantType)}_${helper.escapeEnumValue(constantType, constantValue)}</#if>
@@ -129,14 +129,14 @@ func ${type.name}FirstEnumForField${constantName?cap_first}(value ${helper.getLa
 			return sizeValue, nil
 		}
 	}
-	return 0, errors.Errorf("enum for %v describing ${constantName?cap_first} not found", value)
+	return <#if type.type.orElseThrow().isStringTypeReference()>""<#else>0</#if>, errors.Errorf("enum for %v describing ${constantName?cap_first} not found", value)
 }
 	</#list>
 </#if>
 func ${type.name}ByValue(value <#if type.type.isPresent()>${helper.getLanguageTypeNameForTypeReference(type.type.orElseThrow())}<#else>string</#if>) (enum ${type.name}, ok bool) {
 	switch value {
 <#list helper.getUniqueEnumValues(type.enumValues) as enumValue>
-		case <#if type.type.orElseThrow().isStringTypeReference()>"${enumValue.value}"<#else>${enumValue.value}</#if>:
+		case ${enumValue.value}:
 			return ${type.name}_${enumValue.name}, true
 </#list>
 	}
