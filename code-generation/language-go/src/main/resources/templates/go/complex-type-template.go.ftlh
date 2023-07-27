@@ -169,6 +169,11 @@ type _${type.name}ChildRequirements interface {
 	Get${discriminatorName?cap_first}() <#if typeRef.isNonSimpleTypeReference() && !typeRef.isEnumTypeReference()>I</#if>${helper.getLanguageTypeNameForTypeReference(typeRef)}
         </#if>
     </#list>
+    <#list type.abstractFields as field>
+        <#assign namedField=field.asNamedField().orElseThrow()>
+		// Get${namedField.name?cap_first} returns ${namedField.name?cap_first} (abstract field)
+		Get${namedField.name?cap_first}() ${helper.getLanguageTypeNameForField(field)}
+    </#list>
 }
 </#if>
 
@@ -304,6 +309,24 @@ func (m *_${type.name}) Get${field.name?cap_first}() <#if helper.needsPointerAcc
   	  </#list>
 	return <#if typeRef.isNonSimpleTypeReference()>Cast</#if>${helper.getLanguageTypeNameForTypeReference(typeRef)}(${helper.toSerializationExpression(field, field.type, field.valueExpression, parserArguments)})
 }
+
+	</#list>
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+</#if>
+<#if type.abstractFields?has_content>
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for abstract fields.
+///////////////////////
+
+	<#list type.abstractFields as field>
+        <#assign typeRef=field.asTypedField().orElseThrow().type>
+		func (m *_${type.name}) Get${field.name?cap_first}() ${helper.getLanguageTypeNameForTypeReference(typeRef)} {
+			return m._${type.name}ChildRequirements.Get${field.name?cap_first}()
+		}
 
 	</#list>
 ///////////////////////
