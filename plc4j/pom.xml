@@ -172,12 +172,14 @@
             </configuration>
           </execution>
           <execution>
-            <id>default-test-compile</id>
+            <id>default-testCompile</id>
             <phase>test-compile</phase>
             <goals>
               <goal>testCompile</goal>
             </goals>
             <configuration>
+              <!-- Would have loved to suppress the warnings of generated code only -->
+              <showWarnings>false</showWarnings>
               <release>11</release>
             </configuration>
           </execution>
