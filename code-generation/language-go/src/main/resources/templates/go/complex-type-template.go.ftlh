@@ -109,6 +109,11 @@ type ${type.name} interface {
 	// Get${field.name?cap_first} returns ${field.name?cap_first} (virtual field)
 	Get${field.name?cap_first}() <#if helper.needsPointerAccess(field)>*</#if>${helper.getLanguageTypeNameForTypeReference(typeRef)}
 </#list>
+<#list type.abstractFields as field>
+	<#assign namedField=field.asNamedField().orElseThrow()>
+	// Get${namedField.name?cap_first} returns ${namedField.name?cap_first} (abstract field)
+	Get${namedField.name?cap_first}() ${helper.getLanguageTypeNameForField(field)}
+</#list>
 }
 
 // ${type.name}Exactly can be used when we want exactly this type and not a type which fulfills ${type.name}.
