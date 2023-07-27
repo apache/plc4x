@@ -92,7 +92,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
         TypedField typedField = field.asTypedField().orElseThrow();
         String encoding = null;
         Optional<Term> encodingAttribute = field.getAttribute("encoding");
-        if(encodingAttribute.isPresent()) {
+        if (encodingAttribute.isPresent()) {
             encoding = encodingAttribute.get().toString();
         }
         return getLanguageTypeNameForTypeReference(typedField.getType(), encoding);
@@ -370,21 +370,27 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                 }
                 return "readBuffer.ReadBigFloat(\"" + logicalName + "\", " + floatTypeReference.getSizeInBits() + ")";
             case STRING: {
-                final Term encodingTerm = field.getEncoding().orElse(new DefaultStringLiteral("UTF-8"));
-                if (!(encodingTerm instanceof StringLiteral)) {
-                    throw new FreemarkerException("Encoding must be a quoted string value");
+                String encoding = "UTF-8";
+                if (field != null) {
+                    final Term encodingTerm = field.getEncoding().orElse(new DefaultStringLiteral(encoding));
+                    encoding = encodingTerm.asLiteral()
+                        .orElseThrow(() -> new FreemarkerException("Encoding must be a literal"))
+                        .asStringLiteral()
+                        .orElseThrow(() -> new FreemarkerException("Encoding must be a quoted string value")).getValue();
                 }
-                String encoding = ((StringLiteral) encodingTerm).getValue();
                 String length = Integer.toString(simpleTypeReference.getSizeInBits());
                 return "readBuffer.ReadString(\"" + logicalName + "\", uint32(" + length + "), \"" + encoding + "\")";
             }
             case VSTRING: {
+                String encoding = "UTF-8";
                 VstringTypeReference vstringTypeReference = (VstringTypeReference) simpleTypeReference;
-                final Term encodingTerm = field.getEncoding().orElse(new DefaultStringLiteral("UTF-8"));
-                if (!(encodingTerm instanceof StringLiteral)) {
-                    throw new FreemarkerException("Encoding must be a quoted string value");
+                if (field != null) {
+                    final Term encodingTerm = field.getEncoding().orElse(new DefaultStringLiteral(encoding));
+                    encoding = encodingTerm.asLiteral()
+                        .orElseThrow(() -> new FreemarkerException("Encoding must be a literal"))
+                        .asStringLiteral()
+                        .orElseThrow(() -> new FreemarkerException("Encoding must be a quoted string value")).getValue();
                 }
-                String encoding = ((StringLiteral) encodingTerm).getValue();
                 String lengthExpression = toExpression(field, null, vstringTypeReference.getLengthExpression(), null, null, false, false);
                 return "readBuffer.ReadString(\"" + logicalName + "\", uint32(" + lengthExpression + "), \"" + encoding + "\")";
             }
@@ -473,22 +479,28 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                 return "writeBuffer.WriteBigFloat(\"" + logicalName + "\", " + floatTypeReference.getSizeInBits() + ", " + fieldName + writerArgsString + ")";
             case STRING: {
                 StringTypeReference stringTypeReference = (StringTypeReference) simpleTypeReference;
-                final Term encodingTerm = field.getEncoding().orElse(new DefaultStringLiteral("UTF-8"));
-                String encoding = encodingTerm.asLiteral()
-                    .orElseThrow(() -> new FreemarkerException("Encoding must be a literal"))
-                    .asStringLiteral()
-                    .orElseThrow(() -> new FreemarkerException("Encoding must be a quoted string value")).getValue();
+                String encoding = "UTF-8";
+                if (field != null) {
+                    final Term encodingTerm = field.getEncoding().orElse(new DefaultStringLiteral("UTF-8"));
+                    encoding = encodingTerm.asLiteral()
+                        .orElseThrow(() -> new FreemarkerException("Encoding must be a literal"))
+                        .asStringLiteral()
+                        .orElseThrow(() -> new FreemarkerException("Encoding must be a quoted string value")).getValue();
+                }
                 String length = Integer.toString(simpleTypeReference.getSizeInBits());
                 return "writeBuffer.WriteString(\"" + logicalName + "\", uint32(" + length + "), \"" +
                     encoding + "\", " + fieldName + writerArgsString + ")";
             }
             case VSTRING: {
                 VstringTypeReference vstringTypeReference = (VstringTypeReference) simpleTypeReference;
-                final Term encodingTerm = field.getEncoding().orElse(new DefaultStringLiteral("UTF-8"));
-                String encoding = encodingTerm.asLiteral()
-                    .orElseThrow(() -> new FreemarkerException("Encoding must be a literal"))
-                    .asStringLiteral()
-                    .orElseThrow(() -> new FreemarkerException("Encoding must be a quoted string value")).getValue();
+                String encoding = "UTF-8";
+                if (field != null) {
+                    final Term encodingTerm = field.getEncoding().orElse(new DefaultStringLiteral("UTF-8"));
+                    encoding = encodingTerm.asLiteral()
+                        .orElseThrow(() -> new FreemarkerException("Encoding must be a literal"))
+                        .asStringLiteral()
+                        .orElseThrow(() -> new FreemarkerException("Encoding must be a quoted string value")).getValue();
+                }
                 String lengthExpression = toExpression(field, null, vstringTypeReference.getLengthExpression(), null, Collections.singletonList(new DefaultArgument("stringLength", new DefaultIntegerTypeReference(SimpleTypeReference.SimpleBaseType.INT, 32))), true, false);
                 String length = Integer.toString(simpleTypeReference.getSizeInBits());
                 return "writeBuffer.WriteString(\"" + logicalName + "\", uint32(" + lengthExpression + "), \"" +
@@ -584,7 +596,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
         if (typeReference instanceof SimpleTypeReference) {
             return tracer.dive("simpleTypeRef") + getLanguageTypeNameForTypeReference(typeReference);
         } else if (typeReference instanceof ByteOrderTypeReference) {
-            return tracer.dive( "byteOrderTypeRef") + "binary.ByteOrder";
+            return tracer.dive("byteOrderTypeRef") + "binary.ByteOrder";
         } else if (typeReference != null) {
             return tracer.dive("anyTypeRef") + "Cast" + getLanguageTypeNameForTypeReference(typeReference);
         } else {
@@ -1601,7 +1613,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
         Optional<Term> byteOrder = thisType.getAttribute("byteOrder");
         if (byteOrder.isPresent()) {
             emitRequiredImport("encoding/binary");
-            if(read) {
+            if (read) {
                 return (separatorPrefix ? ", " : "") + "utils.WithByteOrderForReadBufferByteBased(" +
                     toParseExpression(null, new DefaultByteOrderTypeReference(), byteOrder.orElseThrow(), parserArguments) +
                     ")";
