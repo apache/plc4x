@@ -33,7 +33,7 @@
 	<description>Integration module for integrating PLC4X into Apache Nifi.</description>
 
 	<properties>
-		<nifi.version>1.22.0</nifi.version>
+		<nifi.version>1.23.0</nifi.version>
 		<avro.version>1.11.1</avro.version>
 	</properties>
 
@@ -79,6 +79,13 @@
 
 	<dependencyManagement>
 		<dependencies>
+			<dependency>
+                <groupId>org.junit</groupId>
+                <artifactId>junit-bom</artifactId>
+                <version>${junit.jupiter.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
 			<dependency>
 				<groupId>org.apache.avro</groupId>
 				<artifactId>avro</artifactId>
