@@ -34,7 +34,6 @@ import (
 	"sync/atomic"
 	"time"
 
-	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/opcua/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/utils"
@@ -175,7 +174,7 @@ func NewSecureChannel(log zerolog.Logger, ctx DriverContext, configuration Confi
 	return s
 }
 
-func (s *SecureChannel) submit(ctx context.Context, codec *MessageCodec, errorDispatcher func(err error), result chan apiModel.PlcReadRequestResult, consumer func(opcuaResponse []byte), buffer utils.WriteBufferByteBased) {
+func (s *SecureChannel) submit(ctx context.Context, codec *MessageCodec, errorDispatcher func(err error), consumer func(opcuaResponse []byte), buffer utils.WriteBufferByteBased) {
 	transactionId := s.channelTransactionManager.getTransactionIdentifier()
 
 	//TODO: We need to split large messages up into chunks if it is larger than the sendBufferSize
@@ -562,8 +561,7 @@ func (s *SecureChannel) onConnectCreateSessionRequest(ctx context.Context, codec
 		s.log.Error().Err(err).Msg("Error while waiting for subscription response")
 	}
 
-	result := make(chan apiModel.PlcReadRequestResult, 1)
-	s.submit(ctx, codec, errorDispatcher, result, consumer, buffer)
+	s.submit(ctx, codec, errorDispatcher, consumer, buffer)
 }
 
 func (s *SecureChannel) onConnectActivateSessionRequest(ctx context.Context, codec *MessageCodec, opcuaMessageResponse readWriteModel.CreateSessionResponse, sessionResponse readWriteModel.CreateSessionResponse) {
@@ -683,8 +681,7 @@ func (s *SecureChannel) onConnectActivateSessionRequest(ctx context.Context, cod
 		s.log.Error().Err(err).Msg("Error while waiting for subscription response")
 	}
 
-	result := make(chan apiModel.PlcReadRequestResult, 1)
-	s.submit(ctx, codec, errorDispatcher, result, consumer, buffer)
+	s.submit(ctx, codec, errorDispatcher, consumer, buffer)
 }
 
 func (s *SecureChannel) onDisconnect(ctx context.Context, codec *MessageCodec) {
@@ -760,8 +757,7 @@ func (s *SecureChannel) onDisconnect(ctx context.Context, codec *MessageCodec) {
 		s.log.Error().Err(err).Msg("Error while waiting for close session response")
 	}
 
-	result := make(chan apiModel.PlcReadRequestResult, 1)
-	s.submit(ctx, codec, errorDispatcher, result, consumer, buffer)
+	s.submit(ctx, codec, errorDispatcher, consumer, buffer)
 }
 
 func (s *SecureChannel) onDisconnectCloseSecureChannel(ctx context.Context, codec *MessageCodec, message readWriteModel.CloseSessionResponseExactly, response readWriteModel.CloseSessionResponse) {

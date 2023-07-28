@@ -68,7 +68,7 @@ func (m *Reader) readSync(ctx context.Context, readRequest apiModel.PlcReadReque
 	requestHeader := readWriteModel.NewRequestHeader(
 		m.messageCodec.channel.getAuthenticationToken(),
 		m.messageCodec.channel.getCurrentDateTime(),
-		0,
+		m.messageCodec.channel.getRequestHandle(),
 		0,
 		NULL_STRING,
 		REQUEST_TIMEOUT_LONG,
@@ -150,7 +150,7 @@ func (m *Reader) readSync(ctx context.Context, readRequest apiModel.PlcReadReque
 		result <- spiModel.NewDefaultPlcReadRequestResult(readRequest, nil, err)
 	}
 
-	m.messageCodec.channel.submit(ctx, m.messageCodec, errorDispatcher, result, consumer, buffer)
+	m.messageCodec.channel.submit(ctx, m.messageCodec, errorDispatcher, consumer, buffer)
 }
 
 func (m *Reader) readResponse(readRequestIn apiModel.PlcReadRequest, results []readWriteModel.DataValue) (readRequest apiModel.PlcReadRequest, responseCodes map[string]apiModel.PlcResponseCode, values map[string]apiValues.PlcValue) {
