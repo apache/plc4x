@@ -43,7 +43,7 @@ If your company requires commercial support, companies that directly  or indirec
 
 == Record of revisions made to the Hop integration
 
-
+.Change Log
 [cols="1, 2,2a,5a"]
 |===
 |Rev |Release |Date |Description of the change
@@ -81,26 +81,90 @@ To solve these design points, a GlobalContext based on the Apache NetBeans "Look
 
 The first one creates a GlobalContext to store the object reference and the second one creates a wrapper object around the PlcConnection and share it among the different users, keeping an internal account of the users. When this count reaches zero (0), it automatically closes the connection freeing the resource and closes the connection to the controller.
 
+== The Apache Hop documentation
+
+One of the most important aspects of Apache Hop is that it has excellent documentation, a very active developer community that responds quickly and correctly on its development list.
+
+In the attached figure we can see the references to the project page and manuals, specifically:
+
+1. Project address http://hop.apache.org
+2. A quick start guide on Apache Hop features
+3. A link to the manual where we will find the documentation of the different blocks that are found by default in Hop.
+
 image::integrations/hop/plc4x_hop_001.png[]
+
+In addition to the documentation included in Apache Hop, there are external resources [3] that will be part of the examples available on the web. In the referenced link, there is an example of the use of MQTT as a transport protocol facilitating the integration of Apache Hop with other tools, for example Apache IoTDB.
+
+== Installing Apache PLC4X on Apache Hop
+
+== Integration to Apache Hop
+
+=== Plc4x MetaData
+
+.Titulo de la tabla
+[cols="1a, 2, 6"]
+|===
+|Icon |Function |Description
+
+|image::integrations/hop/plc4x_toddy.svg[width=50] |The Plc4x DataSource |Beta release.
+|===
 
 
 image::integrations/hop/plc4x_hop_002.png[]
 
-image::integrations/hop/plc4x_action.svg[]
+=== Actions
 
-image::integrations/hop/plc4x_event.svg[]
 
-image::integrations/hop/plc4x_read.svg[]
+[cols="1a, 2, 6"]
+|===
+|Icon |Function |Description
 
-image::integrations/hop/plc4x_subs.svg[]
+|image::integrations/hop/plc4x_toddy_play.svg[width=50] |Play Driver |Beta release.
+|image::integrations/hop/plc4x_toddy_stop.svg[width=50] |Stop Driver |Beta release.
+|===
 
-image::integrations/hop/plc4x_write.svg[]
 
-image::integrations/hop/plc4x_toddy.svg[]
 
-image::integrations/hop/plc4x_toddy_play.svg[]
+=== Transforms
 
-image::integrations/hop/plc4x_toddy_stop.svg[]
+[cols="1a, 2, 6"]
+|===
+|Icon |Function | Description
+
+|image::integrations/hop/plc4x_read.svg[width=50]  |Read tags |Beta release.
+|image::integrations/hop/plc4x_write.svg[width=50] |Write tags |Beta release.
+|image::integrations/hop/plc4x_subs.svg[width=50] |Tags subscriptions |Beta release.
+|image::integrations/hop/plc4x_event.svg[width=50] |Event subscription |Beta release.
+
+|===
+
+
+
+
+[cols="1a, 2, 6"]
+|===
+|Icon |Function |Description
+
+|image::integrations/hop/plc4x_action.svg[width=50] |0.10.0 |2023/07/25 |Beta release.
+|===
+
+
+image::integrations/hop/plc4x_action.svg[width=50]
+
+image::integrations/hop/plc4x_event.svg[width=50]
+
+image::integrations/hop/plc4x_read.svg[width=50]
+
+
+image::integrations/hop/plc4x_subs.svg[width=50]
+
+image::integrations/hop/plc4x_write.svg[width=50]
+
+image::integrations/hop/plc4x_toddy.svg[width=50]
+
+image::integrations/hop/plc4x_toddy_play.svg[width=50]
+
+image::integrations/hop/plc4x_toddy_stop.svg[width=50]
 
 
 
