@@ -22,12 +22,14 @@ package opcua
 import (
 	"context"
 	"encoding/binary"
+	"sync"
+	"time"
+
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/opcua/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/default"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/transports"
-	"sync"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
@@ -38,6 +40,9 @@ type MessageCodec struct {
 	_default.DefaultCodec
 
 	channel *SecureChannel
+
+	connectEvent   chan struct{}
+	connectTimeout time.Duration // TODO: do we need to have that in general, where to get that from
 
 	stateChange sync.Mutex
 
@@ -50,6 +55,8 @@ func NewMessageCodec(transportInstance transports.TransportInstance, channel *Se
 	customLogger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)
 	codec := &MessageCodec{
 		channel:        channel,
+		connectEvent:   make(chan struct{}),
+		connectTimeout: 5 * time.Second,
 		passLogToModel: passLoggerToModel,
 		log:            customLogger,
 	}
@@ -71,7 +78,29 @@ func (m *MessageCodec) ConnectWithContext(ctx context.Context) error {
 	}
 	m.log.Debug().Msg("Opcua Driver running in ACTIVE mode.")
 	m.channel.onConnect(ctx, m)
+
+	connectTimeout := time.NewTimer(m.connectTimeout)
+	select {
+	case <-m.connectEvent:
+		m.log.Info().Msg("connected")
+	case <-connectTimeout.C:
+		return errors.Errorf("timeout after %s", m.connectTimeout)
+	}
 	return nil
+}
+
+func (m *MessageCodec) fireConnected() {
+	close(m.connectEvent)
+}
+
+func (m *MessageCodec) Disconnect() error {
+	// TODO: implement me, e.g. wait group above or something
+	// TODO: on Disconecct
+	return m.DefaultCodec.Disconnect()
+}
+
+func (m *MessageCodec) fireDisconnected() {
+	// TODO: implement me, e.g. wait group above or something
 }
 
 func (m *MessageCodec) Send(message spi.Message) error {
