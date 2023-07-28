@@ -20,11 +20,14 @@
 package opcua
 
 import (
-	readWriteModel "github.com/apache/plc4x/plc4go/protocols/opcua/readwrite/model"
-	"github.com/pkg/errors"
+	"os"
+	"path"
 	"reflect"
 	"strconv"
 
+	readWriteModel "github.com/apache/plc4x/plc4go/protocols/opcua/readwrite/model"
+
+	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 )
 
@@ -46,7 +49,9 @@ type Configuration struct {
 	keyStoreFile      string
 	certDirectory     string
 	keyStorePassword  string
-	ckp               CertificateKeyPair
+	ckp               *CertificateKeyPair
+
+	log zerolog.Logger `ignore:"true"`
 }
 
 func ParseFromOptions(log zerolog.Logger, options map[string][]string) (Configuration, error) {
@@ -74,13 +79,40 @@ func ParseFromOptions(log zerolog.Logger, options map[string][]string) (Configur
 			}
 		}
 	}
+	configuration.log = log
 	return configuration, nil
 }
 
-func (c *Configuration) openKeyStore() {
+func (c *Configuration) openKeyStore() error {
 	c.isEncrypted = true
-	// TODO: load keystore yada yada
-	// TODO: NewCertificateKeyPair()
+	securityTempDir := path.Join(c.certDirectory, "security")
+	if _, err := os.Stat(securityTempDir); errors.Is(err, os.ErrNotExist) {
+		if err := os.Mkdir(securityTempDir, 700); err != nil {
+			return errors.New("Unable to create directory please confirm folder permissions on " + securityTempDir)
+		}
+	}
+
+	serverKeyStore := path.Join(securityTempDir, c.keyStoreFile)
+	if _, err := os.Stat(securityTempDir); errors.Is(err, os.ErrNotExist) {
+		var err error
+		c.ckp, err = generateCertificate()
+		if err != nil {
+			return errors.Wrap(err, "error generating certificate")
+		}
+		c.log.Info().Str("serverKeyStore", serverKeyStore).Msg("Creating keystore")
+		// TODO: not sure how to do that in golang. Seems pkc12 can only decode for now
+		_ = os.WriteFile(serverKeyStore, []byte{0xA}, 0700)
+	} else {
+		c.log.Info().Str("serverKeyStore", serverKeyStore).Msg("Loading keystore")
+		serverKeyStoreContent, err := os.ReadFile(serverKeyStore)
+		if err != nil {
+			return errors.Wrap(err, "error reading "+serverKeyStore)
+		}
+		// TODO: here we can parse with "golang.org/x/crypto/pkcs12" Decode
+		_ = serverKeyStoreContent
+	}
+
+	return nil
 }
 
 func createDefaultConfiguration() Configuration {

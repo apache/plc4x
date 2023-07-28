@@ -20,17 +20,18 @@
 package opcua
 
 import (
+	"crypto/rsa"
 	"crypto/sha1"
 	"crypto/x509"
 )
 
 type CertificateKeyPair struct {
-	keyPair     x509.KeyUsage
-	certificate x509.Certificate
+	keyPair     *rsa.PrivateKey
+	certificate *x509.Certificate
 	thumbprint  []byte
 }
 
-func NewCertificateKeyPair(keyPair x509.KeyUsage, certificate x509.Certificate) *CertificateKeyPair {
+func NewCertificateKeyPair(keyPair *rsa.PrivateKey, certificate *x509.Certificate) *CertificateKeyPair {
 	thumbprint := sha1.Sum(certificate.Raw)
 	return &CertificateKeyPair{
 		keyPair:     keyPair,
@@ -39,11 +40,11 @@ func NewCertificateKeyPair(keyPair x509.KeyUsage, certificate x509.Certificate) 
 	}
 }
 
-func (p *CertificateKeyPair) getKeyPair() x509.KeyUsage {
+func (p *CertificateKeyPair) getKeyPair() *rsa.PrivateKey {
 	return p.keyPair
 }
 
-func (p *CertificateKeyPair) getCertificate() x509.Certificate {
+func (p *CertificateKeyPair) getCertificate() *x509.Certificate {
 	return p.certificate
 }
 

@@ -146,14 +146,14 @@ func NewSecureChannel(log zerolog.Logger, ctx DriverContext, configuration Confi
 	if configuration.securityPolicy == "Basic256Sha256" {
 		//Sender Certificate gets populated during the 'discover' phase when encryption is enabled.
 		s.senderCertificate = configuration.senderCertificate
-		s.encryptionHandler = NewEncryptionHandler(ckp, s.senderCertificate, configuration.securityPolicy)
+		s.encryptionHandler = NewEncryptionHandler(s.log, ckp, s.senderCertificate, configuration.securityPolicy)
 		certificate := ckp.getCertificate()
 		s.publicCertificate = readWriteModel.NewPascalByteString(int32(len(certificate.Raw)), certificate.Raw)
 		s.isEncrypted = true
 
 		s.thumbprint = configuration.thumbprint
 	} else {
-		s.encryptionHandler = NewEncryptionHandler(ckp, s.senderCertificate, configuration.securityPolicy)
+		s.encryptionHandler = NewEncryptionHandler(s.log, ckp, s.senderCertificate, configuration.securityPolicy)
 		s.publicCertificate = NULL_BYTE_STRING
 		s.thumbprint = NULL_BYTE_STRING
 		s.isEncrypted = false
@@ -190,8 +190,12 @@ func (s *SecureChannel) submit(ctx context.Context, codec *MessageCodec, errorDi
 
 	var apu readWriteModel.OpcuaAPU
 	if s.isEncrypted {
-		var err error
-		apu, err = readWriteModel.OpcuaAPUParse(ctx, s.encryptionHandler.encodeMessage(messageRequest, buffer.GetBytes()), false)
+		message, err := s.encryptionHandler.encodeMessage(ctx, messageRequest, buffer.GetBytes())
+		if err != nil {
+			errorDispatcher(err)
+			return
+		}
+		apu, err = readWriteModel.OpcuaAPUParse(ctx, message, false)
 		if err != nil {
 			errorDispatcher(err)
 			return
@@ -209,7 +213,12 @@ func (s *SecureChannel) submit(ctx context.Context, codec *MessageCodec, errorDi
 					s.log.Debug().Type("type", message).Msg("Not relevant")
 					return false
 				}
-				opcuaAPU = s.encryptionHandler.decodeMessage(opcuaAPU)
+				if decodedOpcuaAPU, err := s.encryptionHandler.decodeMessage(ctx, opcuaAPU); err != nil {
+					s.log.Debug().Err(err).Msg("error decoding")
+					return false
+				} else {
+					opcuaAPU = decodedOpcuaAPU.(readWriteModel.OpcuaAPUExactly)
+				}
 				messagePDU := opcuaAPU.GetMessage()
 				opcuaResponse, ok := messagePDU.(readWriteModel.OpcuaMessageResponseExactly)
 				if !ok {
@@ -230,7 +239,7 @@ func (s *SecureChannel) submit(ctx context.Context, codec *MessageCodec, errorDi
 			},
 			func(message spi.Message) error {
 				opcuaAPU := message.(readWriteModel.OpcuaAPU)
-				opcuaAPU = s.encryptionHandler.decodeMessage(opcuaAPU)
+				opcuaAPU, _ = s.encryptionHandler.decodeMessage(ctx, opcuaAPU)
 				messagePDU := opcuaAPU.GetMessage()
 				opcuaResponse := messagePDU.(readWriteModel.OpcuaMessageResponse)
 				if opcuaResponse.GetChunk() == (FINAL_CHUNK) {
@@ -377,7 +386,12 @@ func (s *SecureChannel) onConnectOpenSecureChannel(ctx context.Context, codec *M
 	var apu readWriteModel.OpcuaAPU
 
 	if s.isEncrypted {
-		apu, err = readWriteModel.OpcuaAPUParse(ctx, s.encryptionHandler.encodeMessage(openRequest, buffer.GetBytes()), false)
+		message, err := s.encryptionHandler.encodeMessage(ctx, openRequest, buffer.GetBytes())
+		if err != nil {
+			s.log.Debug().Err(err).Msg("error encoding")
+			return
+		}
+		apu, err = readWriteModel.OpcuaAPUParse(ctx, message, false)
 		if err != nil {
 			s.log.Debug().Err(err).Msg("error parsing")
 			return
@@ -554,7 +568,12 @@ func (s *SecureChannel) onConnectCreateSessionRequest(ctx context.Context, codec
 
 func (s *SecureChannel) onConnectActivateSessionRequest(ctx context.Context, codec *MessageCodec, opcuaMessageResponse readWriteModel.CreateSessionResponse, sessionResponse readWriteModel.CreateSessionResponse) {
 	s.senderCertificate = sessionResponse.GetServerCertificate().GetStringValue()
-	s.encryptionHandler.setServerCertificate(s.encryptionHandler.getCertificateX509(s.senderCertificate))
+	certificate, err := s.encryptionHandler.getCertificateX509(s.senderCertificate)
+	if err != nil {
+		s.log.Error().Err(err).Msg("error getting certificate")
+		return
+	}
+	s.encryptionHandler.setServerCertificate(certificate)
 	s.senderNonce = sessionResponse.GetServerNonce().GetStringValue()
 	endpoints := make([]string, 3)
 	if address, err := url.Parse(s.configuration.host); err != nil {
@@ -1297,7 +1316,12 @@ func (s *SecureChannel) keepAlive() {
 			var apu readWriteModel.OpcuaAPU
 
 			if s.isEncrypted {
-				apu, err = readWriteModel.OpcuaAPUParse(ctx, s.encryptionHandler.encodeMessage(openRequest, buffer.GetBytes()), false)
+				message, err := s.encryptionHandler.encodeMessage(ctx, openRequest, buffer.GetBytes())
+				if err != nil {
+					s.log.Error().Err(err).Msg("error encoding")
+					return
+				}
+				apu, err = readWriteModel.OpcuaAPUParse(ctx, message, false)
 				if err != nil {
 					s.log.Error().Err(err).Msg("error parsing")
 					return
@@ -1507,7 +1531,11 @@ func (s *SecureChannel) getIdentityToken(tokenType readWriteModel.UserTokenType,
 		encodeablePassword := make([]byte, 4+len(passwordBytes)+len(s.senderNonce))
 		n, err := encodeableBuffer.Read(encodeablePassword)
 		s.log.Debug().Err(err).Int("n", n).Msg("read")
-		encryptedPassword := s.encryptionHandler.encryptPassword(encodeablePassword)
+		encryptedPassword, err := s.encryptionHandler.encryptPassword(encodeablePassword)
+		if err != nil {
+			s.log.Error().Err(err).Msg("error encrypting password")
+			return nil
+		}
 		userNameIdentityToken := readWriteModel.NewUserNameIdentityToken(
 			readWriteModel.NewPascalString(s.username),
 			readWriteModel.NewPascalByteString(int32(len(encryptedPassword)), encryptedPassword),
