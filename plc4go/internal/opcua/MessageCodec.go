@@ -41,8 +41,10 @@ type MessageCodec struct {
 
 	channel *SecureChannel
 
-	connectEvent   chan struct{}
-	connectTimeout time.Duration // TODO: do we need to have that in general, where to get that from
+	connectEvent      chan struct{}
+	connectTimeout    time.Duration // TODO: do we need to have that in general, where to get that from
+	disconnectEvent   chan struct{}
+	disconnectTimeout time.Duration // TODO: do we need to have that in general, where to get that from
 
 	stateChange sync.Mutex
 
@@ -54,11 +56,13 @@ func NewMessageCodec(transportInstance transports.TransportInstance, channel *Se
 	passLoggerToModel, _ := options.ExtractPassLoggerToModel(_options...)
 	customLogger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)
 	codec := &MessageCodec{
-		channel:        channel,
-		connectEvent:   make(chan struct{}),
-		connectTimeout: 5 * time.Second,
-		passLogToModel: passLoggerToModel,
-		log:            customLogger,
+		channel:           channel,
+		connectEvent:      make(chan struct{}),
+		connectTimeout:    5 * time.Second,
+		disconnectEvent:   make(chan struct{}),
+		disconnectTimeout: 5 * time.Second,
+		passLogToModel:    passLoggerToModel,
+		log:               customLogger,
 	}
 	codec.DefaultCodec = _default.NewDefaultCodec(codec, transportInstance, _options...)
 	return codec
@@ -94,13 +98,19 @@ func (m *MessageCodec) fireConnected() {
 }
 
 func (m *MessageCodec) Disconnect() error {
-	// TODO: implement me, e.g. wait group above or something
-	// TODO: on Disconecct
+	m.channel.onDisconnect(context.Background(), m)
+	disconnectTimeout := time.NewTimer(m.disconnectTimeout)
+	select {
+	case <-m.disconnectEvent:
+		m.log.Info().Msg("disconnected")
+	case <-disconnectTimeout.C:
+		return errors.Errorf("timeout after %s", m.disconnectTimeout)
+	}
 	return m.DefaultCodec.Disconnect()
 }
 
 func (m *MessageCodec) fireDisconnected() {
-	// TODO: implement me, e.g. wait group above or something
+	close(m.disconnectEvent)
 }
 
 func (m *MessageCodec) Send(message spi.Message) error {

@@ -22,6 +22,7 @@ package opcua
 import (
 	"bytes"
 	"context"
+	"crypto/sha1"
 	"encoding/binary"
 	"math"
 	"math/rand"
@@ -172,14 +173,6 @@ func NewSecureChannel(log zerolog.Logger, ctx DriverContext, configuration Confi
 
 	s.channelId.Store(1)
 	return s
-}
-
-func (s *SecureChannel) getAuthenticationToken() readWriteModel.NodeId {
-	return readWriteModel.NewNodeId(s.authenticationToken)
-}
-
-func (s *SecureChannel) getCurrentDateTime() int64 {
-	return (time.Now().UnixMilli() * 10000) + EPOCH_OFFSET
 }
 
 func (s *SecureChannel) submit(ctx context.Context, codec *MessageCodec, errorDispatcher func(err error), result chan apiModel.PlcReadRequestResult, consumer func(opcuaResponse []byte), buffer utils.WriteBufferByteBased) {
@@ -675,8 +668,547 @@ func (s *SecureChannel) onConnectActivateSessionRequest(ctx context.Context, cod
 	s.submit(ctx, codec, errorDispatcher, result, consumer, buffer)
 }
 
-func (s *SecureChannel) getRequestHandle() uint32 {
-	return s.requestHandleGenerator.Add(1)
+func (s *SecureChannel) onDisconnect(ctx context.Context, codec *MessageCodec) {
+	s.log.Info().Msg("disconnecting")
+	requestHandle := s.getRequestHandle()
+
+	s.keepAliveIndicator.Store(false)
+
+	expandedNodeId := readWriteModel.NewExpandedNodeId(false, //Namespace Uri Specified
+		false, //Server Index Specified
+		readWriteModel.NewNodeIdFourByte(0, 473),
+		nil,
+		nil) //Identifier for OpenSecureChannel
+
+	requestHeader := readWriteModel.NewRequestHeader(
+		readWriteModel.NewNodeId(s.authenticationToken),
+		s.getCurrentDateTime(),
+		requestHandle, //RequestHandle
+		0,
+		NULL_STRING,
+		5000,
+		NULL_EXTENSION_OBJECT)
+
+	closeSessionRequest := readWriteModel.NewCloseSessionRequest(
+		requestHeader,
+		true)
+
+	extObject := readWriteModel.NewExtensionObject(
+		expandedNodeId,
+		nil,
+		closeSessionRequest,
+		false,
+	)
+
+	buffer := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.LittleEndian))
+	if err := extObject.SerializeWithWriteBuffer(ctx, buffer); err != nil {
+		s.log.Debug().Err(err).Msg("error serializing")
+		return
+	}
+
+	consumer := func(opcuaResponse []byte) {
+		message, err := readWriteModel.ExtensionObjectParseWithBuffer(ctx, utils.NewReadBufferByteBased(opcuaResponse, utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian)), false)
+		if err != nil {
+			s.log.Error().Err(err).Msg("error parsing")
+			return
+		}
+		if fault, ok := message.GetBody().(readWriteModel.ServiceFaultExactly); ok {
+			statusCode := fault.GetResponseHeader().(readWriteModel.ResponseHeader).GetServiceResult().GetStatusCode()
+			statusCodeByValue, _ := readWriteModel.OpcuaStatusCodeByValue(statusCode)
+			s.log.Error().Msgf("Failed to connect to opc ua server for the following reason:- %v, %v",
+				statusCode,
+				statusCodeByValue)
+		} else {
+			s.log.Debug().Msg("Got Close Session Response Connection Response")
+
+			extensionObject, err := readWriteModel.ExtensionObjectParseWithBuffer(ctx, utils.NewReadBufferByteBased(opcuaResponse, utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian)), false)
+			if err != nil {
+				s.log.Error().Err(err).Msg("error parsing")
+				return
+			}
+			unknownExtensionObject := extensionObject.GetBody()
+			if responseMessage, ok := unknownExtensionObject.(readWriteModel.CloseSessionResponseExactly); ok {
+				s.onDisconnectCloseSecureChannel(ctx, codec, responseMessage, message.GetBody().(readWriteModel.CloseSessionResponse))
+			} else {
+				serviceFault := unknownExtensionObject.(readWriteModel.ServiceFault)
+				header := serviceFault.GetResponseHeader().(readWriteModel.ResponseHeader)
+				s.log.Error().Msgf("Subscription ServiceFault returned from server with error code, '%s'", header.GetServiceResult())
+			}
+		}
+	}
+
+	errorDispatcher := func(err error) {
+		s.log.Error().Err(err).Msg("Error while waiting for close session response")
+	}
+
+	result := make(chan apiModel.PlcReadRequestResult, 1)
+	s.submit(ctx, codec, errorDispatcher, result, consumer, buffer)
+}
+
+func (s *SecureChannel) onDisconnectCloseSecureChannel(ctx context.Context, codec *MessageCodec, message readWriteModel.CloseSessionResponseExactly, response readWriteModel.CloseSessionResponse) {
+	transactionId := s.channelTransactionManager.getTransactionIdentifier()
+
+	requestHeader := readWriteModel.NewRequestHeader(readWriteModel.NewNodeId(s.authenticationToken),
+		s.getCurrentDateTime(),
+		0, //RequestHandle
+		0,
+		NULL_STRING,
+		REQUEST_TIMEOUT_LONG,
+		NULL_EXTENSION_OBJECT)
+
+	closeSecureChannelRequest := readWriteModel.NewCloseSecureChannelRequest(requestHeader)
+
+	identifier, err := strconv.ParseUint(closeSecureChannelRequest.GetIdentifier(), 10, 16)
+	if err != nil {
+		s.log.Debug().Err(err).Msg("error parsing identifier")
+		return
+	}
+	expandedNodeId := readWriteModel.NewExpandedNodeId(
+		false, //Namespace Uri Specified
+		false, //Server Index Specified
+		readWriteModel.NewNodeIdFourByte(0, uint16(identifier)),
+		nil,
+		nil,
+	)
+
+	closeRequest := readWriteModel.NewOpcuaCloseRequest(FINAL_CHUNK,
+		s.channelId.Load(),
+		s.tokenId.Load(),
+		transactionId,
+		transactionId,
+		readWriteModel.NewExtensionObject(
+			expandedNodeId,
+			nil,
+			closeSecureChannelRequest,
+			false,
+		),
+	)
+
+	apu := readWriteModel.NewOpcuaAPU(closeRequest, false)
+
+	requestConsumer := func(transactionId int32) {
+		if err := codec.SendRequest(
+			ctx,
+			apu,
+			func(message spi.Message) bool {
+				opcuaAPU, ok := message.(readWriteModel.OpcuaAPUExactly)
+				if !ok {
+					s.log.Debug().Type("type", message).Msg("Not relevant")
+					return false
+				}
+				messagePDU := opcuaAPU.GetMessage()
+				openResponse, ok := messagePDU.(readWriteModel.OpcuaMessageResponseExactly)
+				if !ok {
+					s.log.Debug().Type("type", messagePDU).Msg("Not relevant")
+					return false
+				}
+				return openResponse.GetRequestId() == transactionId
+			},
+			func(message spi.Message) error {
+				opcuaAPU := message.(readWriteModel.OpcuaAPU)
+				messagePDU := opcuaAPU.GetMessage()
+				opcuaMessageResponse := messagePDU.(readWriteModel.OpcuaMessageResponse)
+				s.log.Trace().Msgf("Got close secure channel response:\n%s", opcuaMessageResponse)
+				return nil
+			},
+			func(err error) error {
+				s.log.Debug().Err(err).Msg("error submitting")
+				return nil
+			},
+			REQUEST_TIMEOUT,
+		); err != nil {
+			s.log.Debug().Err(err).Msg("a error")
+		}
+	}
+	s.log.Debug().Msgf("Submitting CloseSecureChannel with id of %d", transactionId)
+	if err := s.channelTransactionManager.submit(requestConsumer, transactionId); err != nil {
+		s.log.Debug().Err(err).Msg("error submitting")
+	}
+}
+
+func (s *SecureChannel) onDiscover(ctx context.Context, codec *MessageCodec) {
+	// Only the TCP transport supports login.
+	s.log.Debug().Msg("Opcua Driver running in ACTIVE mode, discovering endpoints")
+
+	hello := readWriteModel.NewOpcuaHelloRequest(FINAL_CHUNK,
+		VERSION,
+		DEFAULT_RECEIVE_BUFFER_SIZE,
+		DEFAULT_SEND_BUFFER_SIZE,
+		DEFAULT_MAX_MESSAGE_SIZE,
+		DEFAULT_MAX_CHUNK_COUNT,
+		s.endpoint,
+	)
+
+	apu := readWriteModel.NewOpcuaAPU(hello, false)
+
+	requestConsumer := func(transactionId int32) {
+		if err := codec.SendRequest(
+			ctx,
+			apu,
+			func(message spi.Message) bool {
+				opcuaAPU, ok := message.(readWriteModel.OpcuaAPUExactly)
+				if !ok {
+					s.log.Debug().Type("type", message).Msg("Not relevant")
+					return false
+				}
+				messagePDU := opcuaAPU.GetMessage()
+				_, ok = messagePDU.(readWriteModel.OpcuaAcknowledgeResponseExactly)
+				if !ok {
+					s.log.Debug().Type("type", messagePDU).Msg("Not relevant")
+					return false
+				}
+				return true
+			},
+			func(message spi.Message) error {
+				opcuaAPU := message.(readWriteModel.OpcuaAPU)
+				messagePDU := opcuaAPU.GetMessage()
+				opcuaAcknowledgeResponse := messagePDU.(readWriteModel.OpcuaAcknowledgeResponse)
+				s.log.Trace().Msgf("Got Hello Response Connection Response:\n%s", opcuaAcknowledgeResponse)
+				s.onDiscoverOpenSecureChannel(ctx, codec, opcuaAcknowledgeResponse)
+				return nil
+			},
+			func(err error) error {
+				s.log.Debug().Err(err).Msg("error submitting")
+				return nil
+			},
+			REQUEST_TIMEOUT,
+		); err != nil {
+			s.log.Debug().Err(err).Msg("a error")
+		}
+	}
+	if err := s.channelTransactionManager.submit(requestConsumer, s.channelTransactionManager.getTransactionIdentifier()); err != nil {
+		s.log.Debug().Err(err).Msg("error submitting")
+	}
+}
+
+func (s *SecureChannel) onDiscoverOpenSecureChannel(ctx context.Context, codec *MessageCodec, opcuaAcknowledgeResponse readWriteModel.OpcuaAcknowledgeResponse) {
+	transactionId := s.channelTransactionManager.getTransactionIdentifier()
+
+	requestHeader := readWriteModel.NewRequestHeader(readWriteModel.NewNodeId(s.authenticationToken),
+		s.getCurrentDateTime(),
+		0, //RequestHandle
+		0,
+		NULL_STRING,
+		REQUEST_TIMEOUT_LONG,
+		NULL_EXTENSION_OBJECT)
+
+	openSecureChannelRequest := readWriteModel.NewOpenSecureChannelRequest(
+		requestHeader,
+		VERSION,
+		readWriteModel.SecurityTokenRequestType_securityTokenRequestTypeIssue,
+		readWriteModel.MessageSecurityMode_messageSecurityModeNone,
+		NULL_BYTE_STRING,
+		s.lifetime,
+	)
+
+	identifier, err := strconv.ParseUint(openSecureChannelRequest.GetIdentifier(), 10, 16)
+	if err != nil {
+		s.log.Debug().Err(err).Msg("error parsing identifier")
+		return
+	}
+	expandedNodeId := readWriteModel.NewExpandedNodeId(
+		false, //Namespace Uri Specified
+		false, //Server Index Specified
+		readWriteModel.NewNodeIdFourByte(0, uint16(identifier)),
+		nil,
+		nil,
+	)
+
+	extObject := readWriteModel.NewExtensionObject(
+		expandedNodeId,
+		nil,
+		openSecureChannelRequest,
+		false,
+	)
+
+	buffer := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.LittleEndian))
+	if err := extObject.SerializeWithWriteBuffer(ctx, buffer); err != nil {
+		s.log.Debug().Err(err).Msg("error serializing")
+		return
+	}
+
+	openRequest := readWriteModel.NewOpcuaOpenRequest(
+		FINAL_CHUNK,
+		0,
+		SECURITY_POLICY_NONE,
+		NULL_BYTE_STRING,
+		NULL_BYTE_STRING,
+		transactionId,
+		transactionId,
+		buffer.GetBytes(),
+	)
+
+	apu := readWriteModel.NewOpcuaAPU(openRequest, false)
+
+	requestConsumer := func(transactionId int32) {
+		if err := codec.SendRequest(
+			ctx,
+			apu,
+			func(message spi.Message) bool {
+				opcuaAPU, ok := message.(readWriteModel.OpcuaAPUExactly)
+				if !ok {
+					s.log.Debug().Type("type", message).Msg("Not relevant")
+					return false
+				}
+				messagePDU := opcuaAPU.GetMessage()
+				openResponse, ok := messagePDU.(readWriteModel.OpcuaOpenResponseExactly)
+				if !ok {
+					s.log.Debug().Type("type", messagePDU).Msg("Not relevant")
+					return false
+				}
+				return openResponse.GetRequestId() == transactionId
+			},
+			func(message spi.Message) error {
+				opcuaAPU := message.(readWriteModel.OpcuaAPU)
+				messagePDU := opcuaAPU.GetMessage()
+				opcuaOpenResponse := messagePDU.(readWriteModel.OpcuaOpenResponse)
+				readBuffer := utils.NewReadBufferByteBased(opcuaOpenResponse.GetMessage(), utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian))
+				extensionObject, err := readWriteModel.ExtensionObjectParseWithBuffer(ctx, readBuffer, false)
+				if err != nil {
+					return errors.Wrap(err, "error parsing")
+				}
+
+				if fault, ok := extensionObject.GetBody().(readWriteModel.ServiceFaultExactly); ok {
+					statusCode := fault.GetResponseHeader().(readWriteModel.ResponseHeader).GetServiceResult().GetStatusCode()
+					statusCodeByValue, _ := readWriteModel.OpcuaStatusCodeByValue(statusCode)
+					s.log.Error().Msgf("Failed to connect to opc ua server for the following reason:- %v, %v",
+						statusCode,
+						statusCodeByValue)
+				} else {
+					s.log.Debug().Msg("Got Secure Response Connection Response")
+					openSecureChannelResponse := extensionObject.GetBody().(readWriteModel.OpenSecureChannelResponse)
+					s.onDiscoverGetEndpointsRequest(ctx, codec, opcuaOpenResponse, openSecureChannelResponse)
+				}
+				return nil
+			},
+			func(err error) error {
+				s.log.Debug().Err(err).Msg("error submitting")
+				return nil
+			},
+			REQUEST_TIMEOUT,
+		); err != nil {
+			s.log.Debug().Err(err).Msg("a error")
+		}
+	}
+	if err := s.channelTransactionManager.submit(requestConsumer, transactionId); err != nil {
+		s.log.Debug().Err(err).Msg("error submitting")
+	}
+}
+
+func (s *SecureChannel) onDiscoverGetEndpointsRequest(ctx context.Context, codec *MessageCodec, opcuaOpenResponse readWriteModel.OpcuaOpenResponse, openSecureChannelResponse readWriteModel.OpenSecureChannelResponse) {
+	s.tokenId.Store(int32(openSecureChannelResponse.GetSecurityToken().(readWriteModel.ChannelSecurityToken).GetTokenId()))
+	s.channelId.Store(int32(openSecureChannelResponse.GetSecurityToken().(readWriteModel.ChannelSecurityToken).GetChannelId()))
+
+	transactionId := s.channelTransactionManager.getTransactionIdentifier()
+
+	nextSequenceNumber := opcuaOpenResponse.GetSequenceNumber() + 1
+	nextRequestId := opcuaOpenResponse.GetRequestId() + 1
+
+	if !(transactionId == nextSequenceNumber) {
+		s.log.Error().Msgf("Sequence number isn't as expected, we might have missed a packet. - %d != %d", transactionId, nextSequenceNumber)
+		return
+	}
+
+	requestHeader := readWriteModel.NewRequestHeader(readWriteModel.NewNodeId(s.authenticationToken),
+		s.getCurrentDateTime(),
+		0, //RequestHandle
+		0,
+		NULL_STRING,
+		REQUEST_TIMEOUT_LONG,
+		NULL_EXTENSION_OBJECT)
+
+	endpointsRequest := readWriteModel.NewGetEndpointsRequest(
+		requestHeader,
+		s.endpoint,
+		0,
+		nil,
+		0,
+		nil)
+
+	identifier, err := strconv.ParseUint(endpointsRequest.GetIdentifier(), 10, 16)
+	if err != nil {
+		s.log.Debug().Err(err).Msg("error parsing identifier")
+		return
+	}
+	expandedNodeId := readWriteModel.NewExpandedNodeId(
+		false, //Namespace Uri Specified
+		false, //Server Index Specified
+		readWriteModel.NewNodeIdFourByte(0, uint16(identifier)),
+		nil,
+		nil,
+	)
+
+	extObject := readWriteModel.NewExtensionObject(
+		expandedNodeId,
+		nil,
+		endpointsRequest,
+		false,
+	)
+
+	buffer := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.LittleEndian))
+	if err := extObject.SerializeWithWriteBuffer(ctx, buffer); err != nil {
+		s.log.Debug().Err(err).Msg("error serializing")
+		return
+	}
+
+	messageRequest := readWriteModel.NewOpcuaMessageRequest(
+		FINAL_CHUNK,
+		s.channelId.Load(),
+		s.tokenId.Load(),
+		nextSequenceNumber,
+		nextRequestId,
+		buffer.GetBytes(),
+	)
+
+	apu := readWriteModel.NewOpcuaAPU(messageRequest, false)
+
+	requestConsumer := func(transactionId int32) {
+		if err := codec.SendRequest(
+			ctx,
+			apu,
+			func(message spi.Message) bool {
+				opcuaAPU, ok := message.(readWriteModel.OpcuaAPUExactly)
+				if !ok {
+					s.log.Debug().Type("type", message).Msg("Not relevant")
+					return false
+				}
+				messagePDU := opcuaAPU.GetMessage()
+				messageResponse, ok := messagePDU.(readWriteModel.OpcuaMessageResponseExactly)
+				if !ok {
+					s.log.Debug().Type("type", messagePDU).Msg("Not relevant")
+					return false
+				}
+				return messageResponse.GetRequestId() == transactionId
+			},
+			func(message spi.Message) error {
+				opcuaAPU := message.(readWriteModel.OpcuaAPU)
+				messagePDU := opcuaAPU.GetMessage()
+				messageResponse := messagePDU.(readWriteModel.OpcuaMessageResponse)
+				readBuffer := utils.NewReadBufferByteBased(messageResponse.GetMessage(), utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian))
+				extensionObject, err := readWriteModel.ExtensionObjectParseWithBuffer(ctx, readBuffer, false)
+				if err != nil {
+					return errors.Wrap(err, "error parsing")
+				}
+
+				if fault, ok := extensionObject.GetBody().(readWriteModel.ServiceFaultExactly); ok {
+					statusCode := fault.GetResponseHeader().(readWriteModel.ResponseHeader).GetServiceResult().GetStatusCode()
+					statusCodeByValue, _ := readWriteModel.OpcuaStatusCodeByValue(statusCode)
+					s.log.Error().Msgf("Failed to connect to opc ua server for the following reason:- %v, %v",
+						statusCode,
+						statusCodeByValue)
+				} else {
+					s.log.Debug().Msg("Got Secure Response Connection Response")
+					response := extensionObject.GetBody().(readWriteModel.GetEndpointsResponse)
+
+					endpoints := response.GetEndpoints()
+					for _, endpoint := range endpoints {
+						endpointDescription := endpoint.(readWriteModel.EndpointDescription)
+						if endpointDescription.GetEndpointUrl().GetStringValue() == (s.endpoint.GetStringValue()) && endpointDescription.GetSecurityPolicyUri().GetStringValue() == (s.securityPolicy) {
+							s.log.Info().Msgf("Found OPC UA endpoint %s", s.endpoint.GetStringValue())
+							s.configuration.senderCertificate = endpointDescription.GetServerCertificate().GetStringValue()
+						}
+					}
+
+					digest := sha1.Sum(s.configuration.senderCertificate)
+					s.thumbprint = readWriteModel.NewPascalByteString(int32(len(digest)), digest[:])
+
+					s.onDiscoverCloseSecureChannel(ctx, codec, response)
+				}
+				return nil
+			},
+			func(err error) error {
+				s.log.Debug().Err(err).Msg("error submitting")
+				return nil
+			},
+			REQUEST_TIMEOUT,
+		); err != nil {
+			s.log.Debug().Err(err).Msg("a error")
+		}
+	}
+	if err := s.channelTransactionManager.submit(requestConsumer, transactionId); err != nil {
+		s.log.Debug().Err(err).Msg("error submitting")
+	}
+}
+
+func (s *SecureChannel) onDiscoverCloseSecureChannel(ctx context.Context, codec *MessageCodec, response readWriteModel.GetEndpointsResponse) {
+	transactionId := s.channelTransactionManager.getTransactionIdentifier()
+
+	requestHeader := readWriteModel.NewRequestHeader(readWriteModel.NewNodeId(s.authenticationToken),
+		s.getCurrentDateTime(),
+		0, //RequestHandle
+		0,
+		NULL_STRING,
+		REQUEST_TIMEOUT_LONG,
+		NULL_EXTENSION_OBJECT)
+
+	closeSecureChannelRequest := readWriteModel.NewCloseSecureChannelRequest(requestHeader)
+
+	identifier, err := strconv.ParseUint(closeSecureChannelRequest.GetIdentifier(), 10, 16)
+	if err != nil {
+		s.log.Debug().Err(err).Msg("error parsing identifier")
+		return
+	}
+	expandedNodeId := readWriteModel.NewExpandedNodeId(
+		false, //Namespace Uri Specified
+		false, //Server Index Specified
+		readWriteModel.NewNodeIdFourByte(0, uint16(identifier)),
+		nil,
+		nil,
+	)
+
+	closeRequest := readWriteModel.NewOpcuaCloseRequest(FINAL_CHUNK,
+		s.channelId.Load(),
+		s.tokenId.Load(),
+		transactionId,
+		transactionId,
+		readWriteModel.NewExtensionObject(
+			expandedNodeId,
+			nil,
+			closeSecureChannelRequest,
+			false,
+		),
+	)
+
+	apu := readWriteModel.NewOpcuaAPU(closeRequest, false)
+
+	requestConsumer := func(transactionId int32) {
+		if err := codec.SendRequest(
+			ctx,
+			apu,
+			func(message spi.Message) bool {
+				opcuaAPU, ok := message.(readWriteModel.OpcuaAPUExactly)
+				if !ok {
+					s.log.Debug().Type("type", message).Msg("Not relevant")
+					return false
+				}
+				messagePDU := opcuaAPU.GetMessage()
+				openResponse, ok := messagePDU.(readWriteModel.OpcuaMessageResponseExactly)
+				if !ok {
+					s.log.Debug().Type("type", messagePDU).Msg("Not relevant")
+					return false
+				}
+				return openResponse.GetRequestId() == transactionId
+			},
+			func(message spi.Message) error {
+				opcuaAPU := message.(readWriteModel.OpcuaAPU)
+				messagePDU := opcuaAPU.GetMessage()
+				opcuaMessageResponse := messagePDU.(readWriteModel.OpcuaMessageResponse)
+				s.log.Trace().Msgf("Got close secure channel response:\n%s", opcuaMessageResponse)
+				return nil
+			},
+			func(err error) error {
+				s.log.Debug().Err(err).Msg("error submitting")
+				return nil
+			},
+			REQUEST_TIMEOUT,
+		); err != nil {
+			s.log.Debug().Err(err).Msg("a error")
+		}
+	}
+	s.log.Debug().Msgf("Submitting CloseSecureChannel with id of %d", transactionId)
+	if err := s.channelTransactionManager.submit(requestConsumer, transactionId); err != nil {
+		s.log.Debug().Err(err).Msg("error submitting")
+	}
 }
 
 func (s *SecureChannel) keepAlive() {
@@ -691,8 +1223,9 @@ func (s *SecureChannel) keepAlive() {
 		defer s.keepAliveWg.Done()
 		s.keepAliveIndicator.Store(true)
 		defer s.keepAliveIndicator.Store(false)
+		defer s.log.Info().Msg("ending keepalive")
 		ctx := context.Background()
-		for s.codec == nil || s.codec.IsRunning() {
+		for (s.codec == nil || s.codec.IsRunning()) && s.keepAliveIndicator.Load() {
 			sleepTime := time.Duration(math.Ceil(float64(s.lifetime)*0.75)) * time.Millisecond
 			s.log.Trace().Dur("sleepTime", sleepTime).Msg("Sleeping")
 			time.Sleep(sleepTime)
@@ -835,6 +1368,30 @@ func (s *SecureChannel) keepAlive() {
 	return
 }
 
+// getRequestHandle returns the next request handle
+func (s *SecureChannel) getRequestHandle() uint32 {
+	return s.requestHandleGenerator.Add(1)
+}
+
+// getAuthenticationToken returns the authentication token for the current connection
+func (s *SecureChannel) getAuthenticationToken() readWriteModel.NodeId {
+	return readWriteModel.NewNodeId(s.authenticationToken)
+}
+
+// getChannelId gets the Channel identifier for the current channel
+func (s *SecureChannel) getChannelId() int32 {
+	return s.channelId.Load()
+}
+
+// getTokenId gets the Token Identifier
+func (s *SecureChannel) getTokenId() int32 {
+	return s.tokenId.Load()
+}
+
+// selectEndpoint Selects the endpoint to use based on the connection string provided.
+//   - If Discovery is disabled it will use the host address return from the server
+//   - @param sessionResponse - The CreateSessionResponse message returned by the server
+//   - @throws PlcRuntimeException - If no endpoint with a compatible policy is found raise and error.
 func (s *SecureChannel) selectEndpoint(sessionResponse readWriteModel.CreateSessionResponse) {
 	// Get a list of the endpoints which match ours.
 	var filteredEndpoints []readWriteModel.EndpointDescription
@@ -865,8 +1422,13 @@ func (s *SecureChannel) selectEndpoint(sessionResponse readWriteModel.CreateSess
 	}
 }
 
+// isEndpoint checks each component of the return endpoint description against the connection string.
+//   - If all are correct then return true.
+//   - @param endpoint - EndpointDescription returned from server
+//   - @return true if this endpoint matches our configuration
+//   - @return error - If the returned endpoint string doesn't match the format expected
 func (s *SecureChannel) isEndpoint(endpoint readWriteModel.EndpointDescription) bool {
-	// Split up the connection string into it's individual segments.
+	// Split up the connection string into its individual segments.
 	matches := utils.GetSubgroupMatches(URI_PATTERN, endpoint.GetEndpointUrl().GetStringValue())
 	if len(matches) == 0 {
 		s.log.Error().Msgf("Endpoint returned from the server doesn't match the format '{protocol-code}:({transport-code})?//{transport-host}(:{transport-port})(/{transport-endpoint})'")
@@ -893,6 +1455,9 @@ func (s *SecureChannel) isEndpoint(endpoint readWriteModel.EndpointDescription) 
 	return true
 }
 
+// hasIdentity confirms that a policy that matches the connection string is available from
+//   - the returned endpoints. It sets the policyId and tokenType for the policy to use.
+//   - @param policies - A list of policies returned with the endpoint description.
 func (s *SecureChannel) hasIdentity(policies []readWriteModel.UserTokenPolicy) {
 	for _, identityToken := range policies {
 		if (identityToken.GetTokenType() == readWriteModel.UserTokenType_userTokenTypeAnonymous) && (s.username == "") {
@@ -905,6 +1470,10 @@ func (s *SecureChannel) hasIdentity(policies []readWriteModel.UserTokenPolicy) {
 	}
 }
 
+// getIdentityToken creates an IdentityToken to authenticate with a server.
+//   - @param tokenType      the token type
+//   - @param securityPolicy the security policy
+//   - @return returns an ExtensionObject with an IdentityToken.
 func (s *SecureChannel) getIdentityToken(tokenType readWriteModel.UserTokenType, value string) readWriteModel.ExtensionObject {
 	switch tokenType {
 	case readWriteModel.UserTokenType_userTokenTypeAnonymous:
@@ -958,4 +1527,8 @@ func (s *SecureChannel) getIdentityToken(tokenType readWriteModel.UserTokenType,
 		)
 	}
 	return nil
+}
+
+func (s *SecureChannel) getCurrentDateTime() int64 {
+	return (time.Now().UnixMilli() * 10000) + EPOCH_OFFSET
 }
