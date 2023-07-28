@@ -42,9 +42,9 @@ type MessageCodec struct {
 	channel *SecureChannel
 
 	connectEvent      chan struct{}
-	connectTimeout    time.Duration // TODO: do we need to have that in general, where to get that from
+	connectTimeout    time.Duration `stringer:"true"` // TODO: do we need to have that in general, where to get that from
 	disconnectEvent   chan struct{}
-	disconnectTimeout time.Duration // TODO: do we need to have that in general, where to get that from
+	disconnectTimeout time.Duration `stringer:"true"` // TODO: do we need to have that in general, where to get that from
 
 	stateChange sync.Mutex
 
