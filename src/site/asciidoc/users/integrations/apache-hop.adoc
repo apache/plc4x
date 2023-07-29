@@ -15,7 +15,9 @@
 //  limitations under the License.
 //
 :imagesdir: ../../images/
+:iconsdir: ../../images/users/protocols
 :icons: font
+
 
 //image::integrations/hop/apache_hop_logo.jpg[]
 
@@ -99,73 +101,82 @@ In addition to the documentation included in Apache Hop, there are external reso
 
 == Integration to Apache Hop
 
+
+
 === Plc4x MetaData
+
+Metadata is a representation of the entry points or data sources, as well as their destination. Represents Apache Hop's iteration with its environment.
 
 .Titulo de la tabla
 [cols="1a, 2, 6"]
 |===
 |Icon |Function |Description
 
-|image::integrations/hop/plc4x_toddy.svg[width=50] |The Plc4x DataSource |Beta release.
+|image::integrations/hop/plc4x_toddy.svg[width=50] |Plc4x Connection |The Mestada provided by Plc4x is the representation of a connection to a PLC (AS) or other device.
 |===
 
+When we go to the Metdata menu in the Hop editor, we can add our metadata associated to Plc4x as shown in the attached image following a few simple steps:
+
+1. Add a unique identifier to the connection.
+2. Add the connection URL according to the driver to be used.
+3. Perform a connection test to the device.
+
+It is important to test the connection to the device, especially if you are deploying the metadata to a Hop server.
 
 image::integrations/hop/plc4x_hop_002.png[]
 
-=== Actions
+=== Plc4x Actions
 
+The Actions in a workflow allow validating the environment and resources prior to the execution of a pipeline, which allows minimizing errors during execution in highly dynamic environments. In general, Actions are executed sequentially. The result of its execution is a true or false.
+
+The Actions do not modify the data associated with a Metadata, this should only be done in the transforms within a pipeline.
+
+The following table shows the iconography and function of the Actions implemented by the Apache Plc4x plugins.
 
 [cols="1a, 2, 6"]
 |===
 |Icon |Function |Description
 
-|image::integrations/hop/plc4x_toddy_play.svg[width=50] |Play Driver |Beta release.
-|image::integrations/hop/plc4x_toddy_stop.svg[width=50] |Stop Driver |Beta release.
+|image::integrations/hop/plc4x_toddy_play.svg[width=50] |Opens connection to the PLC (AS) |Execute the connection to the PLC. Creates an instance of the connection that can be shared in the execution environment by multiple pipelines.
+|image::integrations/hop/plc4x_toddy_stop.svg[width=50] |Close connection to the PLC (AS) |Closes the connection to the PLC, releasing all the associated resources. At this point there should be no other references to the associated connection (for example, pipelines not associated with the workflow)..
 |===
 
+If your application requires the pattern "create connection -> execute pipeline -> close connection", we consistently ensure that the connection to the PLC (AS) is closed.
+
+Apache Hop has actions to perform the verification of network devices and resources, it is recommended to verify the existence of the network device, for example by performing a "ping" to later use the rest of the Plc4x actions.
 
 
-=== Transforms
+=== Plc4x Transforms
+
+In the transform, it is where the reading, writing or changes of the data to be processed are performed.
+
+Apache Plc4x provides four read, write, subscribe, and event-subscribe transforms, where the last two are implemented only for the Siemens S7-300/S7-400 series.
+
+The following table summarizes the iconography used for the presentation of the plugins, if as a summary of its functionality. Subsequently, the configuration dialogs associated with each transform will be presented.
 
 [cols="1a, 2, 6"]
 |===
 |Icon |Function | Description
 
-|image::integrations/hop/plc4x_read.svg[width=50]  |Read tags |Beta release.
-|image::integrations/hop/plc4x_write.svg[width=50] |Write tags |Beta release.
-|image::integrations/hop/plc4x_subs.svg[width=50] |Tags subscriptions |Beta release.
-|image::integrations/hop/plc4x_event.svg[width=50] |Event subscription |Beta release.
+|image::integrations/hop/plc4x_read.svg[width=50]  |Read tags |This transform is responsible for executing the reading of a list of PlcTags.
+|image::integrations/hop/plc4x_write.svg[width=50] |Write tags |This transform is in charge of executing the writing of a list of PlcTags.
+|image::integrations/hop/plc4x_subs.svg[width=50] |Tags subscriptions |This transform is responsible for executing the subscription to a list of PlcTags synchronously. The minimum scan time is 100 ms. Only applies to S7-300/S7-400.
+|image::integrations/hop/plc4x_event.svg[width=50] |Event subscription |This transform is responsible for executing the subscription to system events, user events and process alarms. Only applies to S7-300/S7-400.
 
 |===
 
 
+[TIP,icon=s7_tip.png]
+Each driver developed has its particularities in terms of addressing the PlcTags. Please consult the respective section of the driver documentation for the correct description and basic type associated with each PlcTags.
+
+==== Plc4xRead Transform
 
 
-[cols="1a, 2, 6"]
-|===
-|Icon |Function |Description
+==== Plc4x Write Transform
 
-|image::integrations/hop/plc4x_action.svg[width=50] |0.10.0 |2023/07/25 |Beta release.
-|===
+==== Plc4x Subscription Transform
 
-
-image::integrations/hop/plc4x_action.svg[width=50]
-
-image::integrations/hop/plc4x_event.svg[width=50]
-
-image::integrations/hop/plc4x_read.svg[width=50]
-
-
-image::integrations/hop/plc4x_subs.svg[width=50]
-
-image::integrations/hop/plc4x_write.svg[width=50]
-
-image::integrations/hop/plc4x_toddy.svg[width=50]
-
-image::integrations/hop/plc4x_toddy_play.svg[width=50]
-
-image::integrations/hop/plc4x_toddy_stop.svg[width=50]
-
+==== Plc4x Event Subscription Transform
 
 
 
