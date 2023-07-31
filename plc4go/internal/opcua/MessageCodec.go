@@ -163,7 +163,7 @@ func (m *MessageCodec) Receive() (spi.Message, error) {
 	if err != nil {
 		return nil, errors.Wrapf(err, "could not read %d bytes", readBytes)
 	}
-	ctxForModel := options.GetLoggerContextForModel(context.TODO(), m.log, options.WithPassLoggerToModel(m.passLogToModel))
+	ctxForModel := options.GetLoggerContextForModel(context.Background(), m.log, options.WithPassLoggerToModel(m.passLogToModel))
 	messagePdu, err := readWriteModel.MessagePDUParse(ctxForModel, readBytes, true)
 	if err != nil {
 		return nil, errors.New("Could not parse pdu")

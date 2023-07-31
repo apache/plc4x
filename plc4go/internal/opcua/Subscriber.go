@@ -202,14 +202,12 @@ func (s *Subscriber) onDisconnect(codec *MessageCodec) {
 }
 
 func (s *Subscriber) Unsubscribe(ctx context.Context, unsubscriptionRequest apiModel.PlcUnsubscriptionRequest) <-chan apiModel.PlcUnsubscriptionRequestResult {
-	// TODO: handle context
 	result := make(chan apiModel.PlcUnsubscriptionRequestResult, 1)
 	result <- spiModel.NewDefaultPlcUnsubscriptionRequestResult(unsubscriptionRequest, nil, errors.New("Not Implemented"))
 
-	// TODO: As soon as we establish a connection, we start getting data...
-	// subscriptions are more a internal handling of which values to pass where.
-	_ = ctx
-	_ = unsubscriptionRequest
+	for _, handle := range unsubscriptionRequest.(*spiModel.DefaultPlcUnsubscriptionRequest).GetSubscriptionHandles() {
+		handle.(*SubscriptionHandle).stopSubscriber()
+	}
 
 	return result
 }

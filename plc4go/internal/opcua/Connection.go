@@ -191,7 +191,6 @@ func (c *Connection) addSubscriber(subscriber *Subscriber) {
 }
 
 func (c *Connection) setupConnection(ctx context.Context, ch chan plc4go.PlcConnectionConnectResult) {
-	// TODO: what to do?
 	c.log.Trace().Msg("Connection setup done")
 	c.fireConnected(ch)
 	c.log.Trace().Msg("Connect fired")

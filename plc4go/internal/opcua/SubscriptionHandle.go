@@ -363,8 +363,81 @@ func (h *SubscriptionHandle) startSubscriber() {
 	}()
 }
 
+// stopSubscriber stops the subscriber either on disconnect or on error
 func (h *SubscriptionHandle) stopSubscriber() {
+	h.destroy.Store(true)
 
+	requestHandle := h.channel.getRequestHandle()
+
+	requestHeader := readWriteModel.NewRequestHeader(
+		h.channel.getAuthenticationToken(),
+		h.channel.getCurrentDateTime(),
+		requestHandle,
+		0,
+		NULL_STRING,
+		uint32(h.revisedCycleTime*10),
+		NULL_EXTENSION_OBJECT,
+	)
+
+	subscriptions := []uint32{h.subscriptionId}
+	deleteSubscriptionrequest := readWriteModel.NewDeleteSubscriptionsRequest(requestHeader,
+		1,
+		subscriptions,
+	)
+
+	identifier, err := strconv.ParseUint(deleteSubscriptionrequest.GetIdentifier(), 10, 16)
+	if err != nil {
+		h.log.Error().Err(err).Msg("error parsing identifier")
+		return
+	}
+	extExpandedNodeId := readWriteModel.NewExpandedNodeId(false, //Namespace Uri Specified
+		false, //Server Index Specified
+		readWriteModel.NewNodeIdFourByte(0, uint16(identifier)),
+		nil,
+		nil,
+	)
+
+	extObject := readWriteModel.NewExtensionObject(
+		extExpandedNodeId,
+		nil,
+		deleteSubscriptionrequest,
+		false,
+	)
+
+	ctx := context.Background()
+
+	buffer := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.LittleEndian))
+	if err = extObject.SerializeWithWriteBuffer(ctx, buffer); err != nil {
+		h.log.Error().Err(err).Msg("Unable to serialise the ReadRequest")
+		return
+	}
+
+	consumer := func(opcuaResponse []byte) {
+		var responseMessage readWriteModel.DeleteSubscriptionsResponse
+		unknownExtensionObject, err := readWriteModel.ExtensionObjectParseWithBuffer(ctx, utils.NewReadBufferByteBased(opcuaResponse, utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian)), false)
+		if err != nil {
+			h.log.Error().Err(err).Msg("Unable to parse the returned Subscription response")
+			h.plcSubscriber.onDisconnect(h.messageCodec)
+			return
+		}
+		switch unknownExtensionObject := unknownExtensionObject.(type) {
+		case readWriteModel.DeleteSubscriptionsResponse:
+			responseMessage = unknownExtensionObject
+		case readWriteModel.ServiceFault:
+			serviceFault := unknownExtensionObject
+			header := serviceFault.GetResponseHeader().(readWriteModel.ResponseHeader)
+			h.log.Debug().Msgf("Subscription ServiceFault returned from server with error code,  '%s', ignoring as it is probably just a result of a Delete Subscription Request", header.GetServiceResult())
+			return
+		}
+		h.log.Debug().Msgf("Received response\n%s", responseMessage)
+	}
+
+	errorDispatcher := func(err error) {
+		h.log.Error().Err(err).Msg("error received")
+		h.plcSubscriber.onDisconnect(h.messageCodec)
+	}
+
+	h.messageCodec.channel.submit(ctx, h.messageCodec, errorDispatcher, consumer, buffer)
 }
 
 /**
