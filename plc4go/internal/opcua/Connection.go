@@ -169,6 +169,7 @@ func (c *Connection) SubscriptionRequestBuilder() apiModel.PlcSubscriptionReques
 		c.GetPlcValueHandler(),
 		NewSubscriber(
 			c.addSubscriber,
+			c.messageCodec,
 			append(c._options, options.WithCustomLogger(c.log))...,
 		),
 	)
