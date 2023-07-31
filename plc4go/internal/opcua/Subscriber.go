@@ -42,7 +42,7 @@ type Subscriber struct {
 	consumers     map[*spiModel.DefaultPlcConsumerRegistration]apiModel.PlcSubscriptionEventConsumer `ignore:"true"`
 	addSubscriber func(subscriber *Subscriber)
 	messageCodec  *MessageCodec
-	subscriptions map[uint32]*SubscriptionHandle
+	subscriptions map[uint32]*SubscriptionHandle `ignore:"true"` // TODO: we don't have support for non string key maps yet
 
 	consumersMutex sync.RWMutex
 

@@ -51,6 +51,7 @@ func TestDefaultValueHandler_NewPlcValue(t *testing.T) {
 				expect := tag.EXPECT()
 				expect.GetArrayInfo().Return(nil)
 				expect.GetValueType().Return(apiValues.BOOL)
+				expect.String().Return("mock")
 				args.tag = tag
 			},
 			want:    NewPlcBOOL(true),
@@ -703,6 +704,7 @@ func TestDefaultValueHandler_ParseListType(t *testing.T) {
 			setup: func(t *testing.T, args *args) {
 				tag := NewMockPlcTag(t)
 				tag.EXPECT().GetValueType().Return(apiValues.BOOL)
+				tag.EXPECT().String().Return("mock")
 				args.tag = tag
 			},
 			want:    NewPlcBOOL(true),
@@ -743,6 +745,7 @@ func TestDefaultValueHandler_ParseListType(t *testing.T) {
 				{
 					tag := NewMockPlcTag(t)
 					tag.EXPECT().GetValueType().Return(apiValues.BOOL)
+					tag.EXPECT().String().Return("mock")
 					args.tag = tag
 				}
 				{
@@ -792,6 +795,7 @@ func TestDefaultValueHandler_ParseSimpleType(t *testing.T) {
 			setup: func(t *testing.T, args *args) {
 				tag := NewMockPlcTag(t)
 				tag.EXPECT().GetValueType().Return(apiValues.BOOL)
+				tag.EXPECT().String().Return("mock")
 				args.tag = tag
 			},
 			want:    NewPlcBOOL(true),
@@ -862,6 +866,7 @@ func TestDefaultValueHandler_parseType(t *testing.T) {
 				{
 					tag := NewMockPlcTag(t)
 					tag.EXPECT().GetValueType().Return(apiValues.BOOL)
+					tag.EXPECT().String().Return("mock")
 					args.tag = tag
 				}
 				{
@@ -883,6 +888,7 @@ func TestDefaultValueHandler_parseType(t *testing.T) {
 			setup: func(t *testing.T, args *args) {
 				tag := NewMockPlcTag(t)
 				tag.EXPECT().GetValueType().Return(apiValues.Struct)
+				tag.EXPECT().String().Return("mock")
 				args.tag = tag
 			},
 			wantErr: assert.Error,
@@ -895,6 +901,7 @@ func TestDefaultValueHandler_parseType(t *testing.T) {
 			setup: func(t *testing.T, args *args) {
 				tag := NewMockPlcTag(t)
 				tag.EXPECT().GetValueType().Return(apiValues.BOOL)
+				tag.EXPECT().String().Return("mock")
 				args.tag = tag
 			},
 			want:    NewPlcBOOL(true),

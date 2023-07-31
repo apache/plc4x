@@ -41,11 +41,11 @@ func (_m *MockPlcSubscriptionRequestBuilder) EXPECT() *MockPlcSubscriptionReques
 }
 
 // AddChangeOfStateTag provides a mock function with given fields: tagName, tag
-func (_m *MockPlcSubscriptionRequestBuilder) AddChangeOfStateTag(tagName string, tag PlcTag) PlcSubscriptionRequestBuilder {
+func (_m *MockPlcSubscriptionRequestBuilder) AddChangeOfStateTag(tagName string, tag PlcSubscriptionTag) PlcSubscriptionRequestBuilder {
 	ret := _m.Called(tagName, tag)
 
 	var r0 PlcSubscriptionRequestBuilder
-	if rf, ok := ret.Get(0).(func(string, PlcTag) PlcSubscriptionRequestBuilder); ok {
+	if rf, ok := ret.Get(0).(func(string, PlcSubscriptionTag) PlcSubscriptionRequestBuilder); ok {
 		r0 = rf(tagName, tag)
 	} else {
 		if ret.Get(0) != nil {
@@ -63,14 +63,14 @@ type MockPlcSubscriptionRequestBuilder_AddChangeOfStateTag_Call struct {
 
 // AddChangeOfStateTag is a helper method to define mock.On call
 //   - tagName string
-//   - tag PlcTag
+//   - tag PlcSubscriptionTag
 func (_e *MockPlcSubscriptionRequestBuilder_Expecter) AddChangeOfStateTag(tagName interface{}, tag interface{}) *MockPlcSubscriptionRequestBuilder_AddChangeOfStateTag_Call {
 	return &MockPlcSubscriptionRequestBuilder_AddChangeOfStateTag_Call{Call: _e.mock.On("AddChangeOfStateTag", tagName, tag)}
 }
 
-func (_c *MockPlcSubscriptionRequestBuilder_AddChangeOfStateTag_Call) Run(run func(tagName string, tag PlcTag)) *MockPlcSubscriptionRequestBuilder_AddChangeOfStateTag_Call {
+func (_c *MockPlcSubscriptionRequestBuilder_AddChangeOfStateTag_Call) Run(run func(tagName string, tag PlcSubscriptionTag)) *MockPlcSubscriptionRequestBuilder_AddChangeOfStateTag_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(string), args[1].(PlcTag))
+		run(args[0].(string), args[1].(PlcSubscriptionTag))
 	})
 	return _c
 }
@@ -80,7 +80,7 @@ func (_c *MockPlcSubscriptionRequestBuilder_AddChangeOfStateTag_Call) Return(_a0
 	return _c
 }
 
-func (_c *MockPlcSubscriptionRequestBuilder_AddChangeOfStateTag_Call) RunAndReturn(run func(string, PlcTag) PlcSubscriptionRequestBuilder) *MockPlcSubscriptionRequestBuilder_AddChangeOfStateTag_Call {
+func (_c *MockPlcSubscriptionRequestBuilder_AddChangeOfStateTag_Call) RunAndReturn(run func(string, PlcSubscriptionTag) PlcSubscriptionRequestBuilder) *MockPlcSubscriptionRequestBuilder_AddChangeOfStateTag_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -131,11 +131,11 @@ func (_c *MockPlcSubscriptionRequestBuilder_AddChangeOfStateTagAddress_Call) Run
 }
 
 // AddCyclicTag provides a mock function with given fields: tagName, tag, interval
-func (_m *MockPlcSubscriptionRequestBuilder) AddCyclicTag(tagName string, tag PlcTag, interval time.Duration) PlcSubscriptionRequestBuilder {
+func (_m *MockPlcSubscriptionRequestBuilder) AddCyclicTag(tagName string, tag PlcSubscriptionTag, interval time.Duration) PlcSubscriptionRequestBuilder {
 	ret := _m.Called(tagName, tag, interval)
 
 	var r0 PlcSubscriptionRequestBuilder
-	if rf, ok := ret.Get(0).(func(string, PlcTag, time.Duration) PlcSubscriptionRequestBuilder); ok {
+	if rf, ok := ret.Get(0).(func(string, PlcSubscriptionTag, time.Duration) PlcSubscriptionRequestBuilder); ok {
 		r0 = rf(tagName, tag, interval)
 	} else {
 		if ret.Get(0) != nil {
@@ -153,15 +153,15 @@ type MockPlcSubscriptionRequestBuilder_AddCyclicTag_Call struct {
 
 // AddCyclicTag is a helper method to define mock.On call
 //   - tagName string
-//   - tag PlcTag
+//   - tag PlcSubscriptionTag
 //   - interval time.Duration
 func (_e *MockPlcSubscriptionRequestBuilder_Expecter) AddCyclicTag(tagName interface{}, tag interface{}, interval interface{}) *MockPlcSubscriptionRequestBuilder_AddCyclicTag_Call {
 	return &MockPlcSubscriptionRequestBuilder_AddCyclicTag_Call{Call: _e.mock.On("AddCyclicTag", tagName, tag, interval)}
 }
 
-func (_c *MockPlcSubscriptionRequestBuilder_AddCyclicTag_Call) Run(run func(tagName string, tag PlcTag, interval time.Duration)) *MockPlcSubscriptionRequestBuilder_AddCyclicTag_Call {
+func (_c *MockPlcSubscriptionRequestBuilder_AddCyclicTag_Call) Run(run func(tagName string, tag PlcSubscriptionTag, interval time.Duration)) *MockPlcSubscriptionRequestBuilder_AddCyclicTag_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(string), args[1].(PlcTag), args[2].(time.Duration))
+		run(args[0].(string), args[1].(PlcSubscriptionTag), args[2].(time.Duration))
 	})
 	return _c
 }
@@ -171,7 +171,7 @@ func (_c *MockPlcSubscriptionRequestBuilder_AddCyclicTag_Call) Return(_a0 PlcSub
 	return _c
 }
 
-func (_c *MockPlcSubscriptionRequestBuilder_AddCyclicTag_Call) RunAndReturn(run func(string, PlcTag, time.Duration) PlcSubscriptionRequestBuilder) *MockPlcSubscriptionRequestBuilder_AddCyclicTag_Call {
+func (_c *MockPlcSubscriptionRequestBuilder_AddCyclicTag_Call) RunAndReturn(run func(string, PlcSubscriptionTag, time.Duration) PlcSubscriptionRequestBuilder) *MockPlcSubscriptionRequestBuilder_AddCyclicTag_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -223,11 +223,11 @@ func (_c *MockPlcSubscriptionRequestBuilder_AddCyclicTagAddress_Call) RunAndRetu
 }
 
 // AddEventTag provides a mock function with given fields: tagName, tag
-func (_m *MockPlcSubscriptionRequestBuilder) AddEventTag(tagName string, tag PlcTag) PlcSubscriptionRequestBuilder {
+func (_m *MockPlcSubscriptionRequestBuilder) AddEventTag(tagName string, tag PlcSubscriptionTag) PlcSubscriptionRequestBuilder {
 	ret := _m.Called(tagName, tag)
 
 	var r0 PlcSubscriptionRequestBuilder
-	if rf, ok := ret.Get(0).(func(string, PlcTag) PlcSubscriptionRequestBuilder); ok {
+	if rf, ok := ret.Get(0).(func(string, PlcSubscriptionTag) PlcSubscriptionRequestBuilder); ok {
 		r0 = rf(tagName, tag)
 	} else {
 		if ret.Get(0) != nil {
@@ -245,14 +245,14 @@ type MockPlcSubscriptionRequestBuilder_AddEventTag_Call struct {
 
 // AddEventTag is a helper method to define mock.On call
 //   - tagName string
-//   - tag PlcTag
+//   - tag PlcSubscriptionTag
 func (_e *MockPlcSubscriptionRequestBuilder_Expecter) AddEventTag(tagName interface{}, tag interface{}) *MockPlcSubscriptionRequestBuilder_AddEventTag_Call {
 	return &MockPlcSubscriptionRequestBuilder_AddEventTag_Call{Call: _e.mock.On("AddEventTag", tagName, tag)}
 }
 
-func (_c *MockPlcSubscriptionRequestBuilder_AddEventTag_Call) Run(run func(tagName string, tag PlcTag)) *MockPlcSubscriptionRequestBuilder_AddEventTag_Call {
+func (_c *MockPlcSubscriptionRequestBuilder_AddEventTag_Call) Run(run func(tagName string, tag PlcSubscriptionTag)) *MockPlcSubscriptionRequestBuilder_AddEventTag_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(string), args[1].(PlcTag))
+		run(args[0].(string), args[1].(PlcSubscriptionTag))
 	})
 	return _c
 }
@@ -262,7 +262,7 @@ func (_c *MockPlcSubscriptionRequestBuilder_AddEventTag_Call) Return(_a0 PlcSubs
 	return _c
 }
 
-func (_c *MockPlcSubscriptionRequestBuilder_AddEventTag_Call) RunAndReturn(run func(string, PlcTag) PlcSubscriptionRequestBuilder) *MockPlcSubscriptionRequestBuilder_AddEventTag_Call {
+func (_c *MockPlcSubscriptionRequestBuilder_AddEventTag_Call) RunAndReturn(run func(string, PlcSubscriptionTag) PlcSubscriptionRequestBuilder) *MockPlcSubscriptionRequestBuilder_AddEventTag_Call {
 	_c.Call.Return(run)
 	return _c
 }

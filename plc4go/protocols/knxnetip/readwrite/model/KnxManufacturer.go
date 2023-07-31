@@ -680,7 +680,7 @@ const (
 	KnxManufacturer_M_SEXANKA                                            KnxManufacturer = 634
 	KnxManufacturer_M_SECURI_FLEX_LTD                                    KnxManufacturer = 635
 	KnxManufacturer_M_BOKE                                               KnxManufacturer = 636
-	KnxManufacturer_M_SBR_SMART_CONTROL                                  KnxManufacturer = 637
+	KnxManufacturer_M_SBR_SYSTEM_TECHNICAL                               KnxManufacturer = 637
 	KnxManufacturer_M_ABB___RESERVED                                     KnxManufacturer = 638
 	KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED                    KnxManufacturer = 639
 )
@@ -1327,7 +1327,7 @@ func init() {
 		KnxManufacturer_M_SEXANKA,
 		KnxManufacturer_M_SECURI_FLEX_LTD,
 		KnxManufacturer_M_BOKE,
-		KnxManufacturer_M_SBR_SMART_CONTROL,
+		KnxManufacturer_M_SBR_SYSTEM_TECHNICAL,
 		KnxManufacturer_M_ABB___RESERVED,
 		KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED,
 	}
@@ -6307,7 +6307,7 @@ func (e KnxManufacturer) Name() string {
 		}
 	case 637:
 		{ /* '637' */
-			return "SBR Smart Control"
+			return "SBR System Technical"
 		}
 	case 638:
 		{ /* '638' */
@@ -7687,7 +7687,7 @@ func KnxManufacturerByValue(value uint16) (enum KnxManufacturer, ok bool) {
 	case 636:
 		return KnxManufacturer_M_BOKE, true
 	case 637:
-		return KnxManufacturer_M_SBR_SMART_CONTROL, true
+		return KnxManufacturer_M_SBR_SYSTEM_TECHNICAL, true
 	case 638:
 		return KnxManufacturer_M_ABB___RESERVED, true
 	case 639:
@@ -8972,8 +8972,8 @@ func KnxManufacturerByName(value string) (enum KnxManufacturer, ok bool) {
 		return KnxManufacturer_M_SECURI_FLEX_LTD, true
 	case "M_BOKE":
 		return KnxManufacturer_M_BOKE, true
-	case "M_SBR_SMART_CONTROL":
-		return KnxManufacturer_M_SBR_SMART_CONTROL, true
+	case "M_SBR_SYSTEM_TECHNICAL":
+		return KnxManufacturer_M_SBR_SYSTEM_TECHNICAL, true
 	case "M_ABB___RESERVED":
 		return KnxManufacturer_M_ABB___RESERVED, true
 	case "M_BUSCH_JAEGER_ELEKTRO___RESERVED":
@@ -10319,8 +10319,8 @@ func (e KnxManufacturer) PLC4XEnumName() string {
 		return "M_SECURI_FLEX_LTD"
 	case KnxManufacturer_M_BOKE:
 		return "M_BOKE"
-	case KnxManufacturer_M_SBR_SMART_CONTROL:
-		return "M_SBR_SMART_CONTROL"
+	case KnxManufacturer_M_SBR_SYSTEM_TECHNICAL:
+		return "M_SBR_SYSTEM_TECHNICAL"
 	case KnxManufacturer_M_ABB___RESERVED:
 		return "M_ABB___RESERVED"
 	case KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED:

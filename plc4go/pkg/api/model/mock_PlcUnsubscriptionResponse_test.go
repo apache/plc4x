@@ -36,6 +36,49 @@ func (_m *MockPlcUnsubscriptionResponse) EXPECT() *MockPlcUnsubscriptionResponse
 	return &MockPlcUnsubscriptionResponse_Expecter{mock: &_m.Mock}
 }
 
+// GetRequest provides a mock function with given fields:
+func (_m *MockPlcUnsubscriptionResponse) GetRequest() PlcUnsubscriptionRequest {
+	ret := _m.Called()
+
+	var r0 PlcUnsubscriptionRequest
+	if rf, ok := ret.Get(0).(func() PlcUnsubscriptionRequest); ok {
+		r0 = rf()
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(PlcUnsubscriptionRequest)
+		}
+	}
+
+	return r0
+}
+
+// MockPlcUnsubscriptionResponse_GetRequest_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetRequest'
+type MockPlcUnsubscriptionResponse_GetRequest_Call struct {
+	*mock.Call
+}
+
+// GetRequest is a helper method to define mock.On call
+func (_e *MockPlcUnsubscriptionResponse_Expecter) GetRequest() *MockPlcUnsubscriptionResponse_GetRequest_Call {
+	return &MockPlcUnsubscriptionResponse_GetRequest_Call{Call: _e.mock.On("GetRequest")}
+}
+
+func (_c *MockPlcUnsubscriptionResponse_GetRequest_Call) Run(run func()) *MockPlcUnsubscriptionResponse_GetRequest_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run()
+	})
+	return _c
+}
+
+func (_c *MockPlcUnsubscriptionResponse_GetRequest_Call) Return(_a0 PlcUnsubscriptionRequest) *MockPlcUnsubscriptionResponse_GetRequest_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockPlcUnsubscriptionResponse_GetRequest_Call) RunAndReturn(run func() PlcUnsubscriptionRequest) *MockPlcUnsubscriptionResponse_GetRequest_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // NewMockPlcUnsubscriptionResponse creates a new instance of MockPlcUnsubscriptionResponse. It also registers a testing interface on the mock and a cleanup function to assert the mocks expectations.
 // The first argument is typically a *testing.T value.
 func NewMockPlcUnsubscriptionResponse(t interface {

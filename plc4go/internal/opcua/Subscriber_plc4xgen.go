@@ -46,6 +46,13 @@ func (d *Subscriber) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 	if err := writeBuffer.WriteBit("addSubscriber", d.addSubscriber != nil); err != nil {
 		return err
 	}
+	{
+		_value := fmt.Sprintf("%v", d.messageCodec)
+
+		if err := writeBuffer.WriteString("messageCodec", uint32(len(_value)*8), "UTF-8", _value); err != nil {
+			return err
+		}
+	}
 	if err := writeBuffer.PopContext("Subscriber"); err != nil {
 		return err
 	}

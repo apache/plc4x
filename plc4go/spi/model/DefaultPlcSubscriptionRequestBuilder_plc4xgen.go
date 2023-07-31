@@ -95,10 +95,23 @@ func (d *DefaultPlcSubscriptionRequestBuilder) SerializeWithWriteBuffer(ctx cont
 		return err
 	}
 	for name, elem := range d.types {
-		_value := fmt.Sprintf("%v", elem)
 
-		if err := writeBuffer.WriteString(name, uint32(len(_value)*8), "UTF-8", _value); err != nil {
-			return err
+		var elem any = elem
+		if serializable, ok := elem.(utils.Serializable); ok {
+			if err := writeBuffer.PushContext(name); err != nil {
+				return err
+			}
+			if err := serializable.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
+				return err
+			}
+			if err := writeBuffer.PopContext(name); err != nil {
+				return err
+			}
+		} else {
+			elemAsString := fmt.Sprintf("%v", elem)
+			if err := writeBuffer.WriteString(name, uint32(len(elemAsString)*8), "UTF-8", elemAsString); err != nil {
+				return err
+			}
 		}
 	}
 	if err := writeBuffer.PopContext("types", utils.WithRenderAsList(true)); err != nil {

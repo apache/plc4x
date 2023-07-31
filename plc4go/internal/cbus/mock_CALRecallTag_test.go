@@ -377,6 +377,47 @@ func (_c *MockCALRecallTag_GetValueType_Call) RunAndReturn(run func() values.Plc
 	return _c
 }
 
+// String provides a mock function with given fields:
+func (_m *MockCALRecallTag) String() string {
+	ret := _m.Called()
+
+	var r0 string
+	if rf, ok := ret.Get(0).(func() string); ok {
+		r0 = rf()
+	} else {
+		r0 = ret.Get(0).(string)
+	}
+
+	return r0
+}
+
+// MockCALRecallTag_String_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'String'
+type MockCALRecallTag_String_Call struct {
+	*mock.Call
+}
+
+// String is a helper method to define mock.On call
+func (_e *MockCALRecallTag_Expecter) String() *MockCALRecallTag_String_Call {
+	return &MockCALRecallTag_String_Call{Call: _e.mock.On("String")}
+}
+
+func (_c *MockCALRecallTag_String_Call) Run(run func()) *MockCALRecallTag_String_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run()
+	})
+	return _c
+}
+
+func (_c *MockCALRecallTag_String_Call) Return(_a0 string) *MockCALRecallTag_String_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockCALRecallTag_String_Call) RunAndReturn(run func() string) *MockCALRecallTag_String_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // NewMockCALRecallTag creates a new instance of MockCALRecallTag. It also registers a testing interface on the mock and a cleanup function to assert the mocks expectations.
 // The first argument is typically a *testing.T value.
 func NewMockCALRecallTag(t interface {

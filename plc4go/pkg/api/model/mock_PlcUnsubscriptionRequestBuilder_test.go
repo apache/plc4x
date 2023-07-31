@@ -36,6 +36,105 @@ func (_m *MockPlcUnsubscriptionRequestBuilder) EXPECT() *MockPlcUnsubscriptionRe
 	return &MockPlcUnsubscriptionRequestBuilder_Expecter{mock: &_m.Mock}
 }
 
+// AddHandles provides a mock function with given fields: PlcSubscriptionHandle
+func (_m *MockPlcUnsubscriptionRequestBuilder) AddHandles(PlcSubscriptionHandle ...PlcSubscriptionHandle) {
+	_va := make([]interface{}, len(PlcSubscriptionHandle))
+	for _i := range PlcSubscriptionHandle {
+		_va[_i] = PlcSubscriptionHandle[_i]
+	}
+	var _ca []interface{}
+	_ca = append(_ca, _va...)
+	_m.Called(_ca...)
+}
+
+// MockPlcUnsubscriptionRequestBuilder_AddHandles_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'AddHandles'
+type MockPlcUnsubscriptionRequestBuilder_AddHandles_Call struct {
+	*mock.Call
+}
+
+// AddHandles is a helper method to define mock.On call
+//   - PlcSubscriptionHandle ...PlcSubscriptionHandle
+func (_e *MockPlcUnsubscriptionRequestBuilder_Expecter) AddHandles(PlcSubscriptionHandle ...interface{}) *MockPlcUnsubscriptionRequestBuilder_AddHandles_Call {
+	return &MockPlcUnsubscriptionRequestBuilder_AddHandles_Call{Call: _e.mock.On("AddHandles",
+		append([]interface{}{}, PlcSubscriptionHandle...)...)}
+}
+
+func (_c *MockPlcUnsubscriptionRequestBuilder_AddHandles_Call) Run(run func(PlcSubscriptionHandle ...PlcSubscriptionHandle)) *MockPlcUnsubscriptionRequestBuilder_AddHandles_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		variadicArgs := make([]PlcSubscriptionHandle, len(args)-0)
+		for i, a := range args[0:] {
+			if a != nil {
+				variadicArgs[i] = a.(PlcSubscriptionHandle)
+			}
+		}
+		run(variadicArgs...)
+	})
+	return _c
+}
+
+func (_c *MockPlcUnsubscriptionRequestBuilder_AddHandles_Call) Return() *MockPlcUnsubscriptionRequestBuilder_AddHandles_Call {
+	_c.Call.Return()
+	return _c
+}
+
+func (_c *MockPlcUnsubscriptionRequestBuilder_AddHandles_Call) RunAndReturn(run func(...PlcSubscriptionHandle)) *MockPlcUnsubscriptionRequestBuilder_AddHandles_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// Build provides a mock function with given fields:
+func (_m *MockPlcUnsubscriptionRequestBuilder) Build() (PlcUnsubscriptionRequest, error) {
+	ret := _m.Called()
+
+	var r0 PlcUnsubscriptionRequest
+	var r1 error
+	if rf, ok := ret.Get(0).(func() (PlcUnsubscriptionRequest, error)); ok {
+		return rf()
+	}
+	if rf, ok := ret.Get(0).(func() PlcUnsubscriptionRequest); ok {
+		r0 = rf()
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(PlcUnsubscriptionRequest)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func() error); ok {
+		r1 = rf()
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockPlcUnsubscriptionRequestBuilder_Build_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Build'
+type MockPlcUnsubscriptionRequestBuilder_Build_Call struct {
+	*mock.Call
+}
+
+// Build is a helper method to define mock.On call
+func (_e *MockPlcUnsubscriptionRequestBuilder_Expecter) Build() *MockPlcUnsubscriptionRequestBuilder_Build_Call {
+	return &MockPlcUnsubscriptionRequestBuilder_Build_Call{Call: _e.mock.On("Build")}
+}
+
+func (_c *MockPlcUnsubscriptionRequestBuilder_Build_Call) Run(run func()) *MockPlcUnsubscriptionRequestBuilder_Build_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run()
+	})
+	return _c
+}
+
+func (_c *MockPlcUnsubscriptionRequestBuilder_Build_Call) Return(_a0 PlcUnsubscriptionRequest, _a1 error) *MockPlcUnsubscriptionRequestBuilder_Build_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockPlcUnsubscriptionRequestBuilder_Build_Call) RunAndReturn(run func() (PlcUnsubscriptionRequest, error)) *MockPlcUnsubscriptionRequestBuilder_Build_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // NewMockPlcUnsubscriptionRequestBuilder creates a new instance of MockPlcUnsubscriptionRequestBuilder. It also registers a testing interface on the mock and a cleanup function to assert the mocks expectations.
 // The first argument is typically a *testing.T value.
 func NewMockPlcUnsubscriptionRequestBuilder(t interface {

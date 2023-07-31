@@ -110,7 +110,7 @@ func TestRenderTestCustom(t *testing.T) {
 	}{
 		{
 			sut: NewDefaultPlcBrowseItem(
-				NewMockPlcTag(t),
+				mockTag(t),
 				"some name",
 				"some datatype",
 				true,
@@ -388,4 +388,10 @@ func TestRenderTestCustom(t *testing.T) {
 			}
 		})
 	}
+}
+
+func mockTag(t *testing.T) *MockPlcTag {
+	tag := NewMockPlcTag(t)
+	tag.EXPECT().String().Return("mocktag").Maybe()
+	return tag
 }

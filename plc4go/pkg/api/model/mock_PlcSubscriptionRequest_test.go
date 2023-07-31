@@ -128,15 +128,15 @@ func (_c *MockPlcSubscriptionRequest_ExecuteWithContext_Call) RunAndReturn(run f
 }
 
 // GetTag provides a mock function with given fields: tagName
-func (_m *MockPlcSubscriptionRequest) GetTag(tagName string) PlcTag {
+func (_m *MockPlcSubscriptionRequest) GetTag(tagName string) PlcSubscriptionTag {
 	ret := _m.Called(tagName)
 
-	var r0 PlcTag
-	if rf, ok := ret.Get(0).(func(string) PlcTag); ok {
+	var r0 PlcSubscriptionTag
+	if rf, ok := ret.Get(0).(func(string) PlcSubscriptionTag); ok {
 		r0 = rf(tagName)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(PlcTag)
+			r0 = ret.Get(0).(PlcSubscriptionTag)
 		}
 	}
 
@@ -161,12 +161,12 @@ func (_c *MockPlcSubscriptionRequest_GetTag_Call) Run(run func(tagName string)) 
 	return _c
 }
 
-func (_c *MockPlcSubscriptionRequest_GetTag_Call) Return(_a0 PlcTag) *MockPlcSubscriptionRequest_GetTag_Call {
+func (_c *MockPlcSubscriptionRequest_GetTag_Call) Return(_a0 PlcSubscriptionTag) *MockPlcSubscriptionRequest_GetTag_Call {
 	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *MockPlcSubscriptionRequest_GetTag_Call) RunAndReturn(run func(string) PlcTag) *MockPlcSubscriptionRequest_GetTag_Call {
+func (_c *MockPlcSubscriptionRequest_GetTag_Call) RunAndReturn(run func(string) PlcSubscriptionTag) *MockPlcSubscriptionRequest_GetTag_Call {
 	_c.Call.Return(run)
 	return _c
 }

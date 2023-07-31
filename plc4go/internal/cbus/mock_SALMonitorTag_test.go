@@ -27,6 +27,8 @@ import (
 
 	model "github.com/apache/plc4x/plc4go/protocols/cbus/readwrite/model"
 
+	time "time"
+
 	values "github.com/apache/plc4x/plc4go/pkg/api/values"
 )
 
@@ -170,6 +172,88 @@ func (_c *MockSALMonitorTag_GetArrayInfo_Call) RunAndReturn(run func() []apimode
 	return _c
 }
 
+// GetDuration provides a mock function with given fields:
+func (_m *MockSALMonitorTag) GetDuration() time.Duration {
+	ret := _m.Called()
+
+	var r0 time.Duration
+	if rf, ok := ret.Get(0).(func() time.Duration); ok {
+		r0 = rf()
+	} else {
+		r0 = ret.Get(0).(time.Duration)
+	}
+
+	return r0
+}
+
+// MockSALMonitorTag_GetDuration_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetDuration'
+type MockSALMonitorTag_GetDuration_Call struct {
+	*mock.Call
+}
+
+// GetDuration is a helper method to define mock.On call
+func (_e *MockSALMonitorTag_Expecter) GetDuration() *MockSALMonitorTag_GetDuration_Call {
+	return &MockSALMonitorTag_GetDuration_Call{Call: _e.mock.On("GetDuration")}
+}
+
+func (_c *MockSALMonitorTag_GetDuration_Call) Run(run func()) *MockSALMonitorTag_GetDuration_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run()
+	})
+	return _c
+}
+
+func (_c *MockSALMonitorTag_GetDuration_Call) Return(_a0 time.Duration) *MockSALMonitorTag_GetDuration_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockSALMonitorTag_GetDuration_Call) RunAndReturn(run func() time.Duration) *MockSALMonitorTag_GetDuration_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// GetPlcSubscriptionType provides a mock function with given fields:
+func (_m *MockSALMonitorTag) GetPlcSubscriptionType() apimodel.PlcSubscriptionType {
+	ret := _m.Called()
+
+	var r0 apimodel.PlcSubscriptionType
+	if rf, ok := ret.Get(0).(func() apimodel.PlcSubscriptionType); ok {
+		r0 = rf()
+	} else {
+		r0 = ret.Get(0).(apimodel.PlcSubscriptionType)
+	}
+
+	return r0
+}
+
+// MockSALMonitorTag_GetPlcSubscriptionType_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetPlcSubscriptionType'
+type MockSALMonitorTag_GetPlcSubscriptionType_Call struct {
+	*mock.Call
+}
+
+// GetPlcSubscriptionType is a helper method to define mock.On call
+func (_e *MockSALMonitorTag_Expecter) GetPlcSubscriptionType() *MockSALMonitorTag_GetPlcSubscriptionType_Call {
+	return &MockSALMonitorTag_GetPlcSubscriptionType_Call{Call: _e.mock.On("GetPlcSubscriptionType")}
+}
+
+func (_c *MockSALMonitorTag_GetPlcSubscriptionType_Call) Run(run func()) *MockSALMonitorTag_GetPlcSubscriptionType_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run()
+	})
+	return _c
+}
+
+func (_c *MockSALMonitorTag_GetPlcSubscriptionType_Call) Return(_a0 apimodel.PlcSubscriptionType) *MockSALMonitorTag_GetPlcSubscriptionType_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockSALMonitorTag_GetPlcSubscriptionType_Call) RunAndReturn(run func() apimodel.PlcSubscriptionType) *MockSALMonitorTag_GetPlcSubscriptionType_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // GetTagType provides a mock function with given fields:
 func (_m *MockSALMonitorTag) GetTagType() TagType {
 	ret := _m.Called()
@@ -291,6 +375,47 @@ func (_c *MockSALMonitorTag_GetValueType_Call) Return(_a0 values.PlcValueType) *
 }
 
 func (_c *MockSALMonitorTag_GetValueType_Call) RunAndReturn(run func() values.PlcValueType) *MockSALMonitorTag_GetValueType_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// String provides a mock function with given fields:
+func (_m *MockSALMonitorTag) String() string {
+	ret := _m.Called()
+
+	var r0 string
+	if rf, ok := ret.Get(0).(func() string); ok {
+		r0 = rf()
+	} else {
+		r0 = ret.Get(0).(string)
+	}
+
+	return r0
+}
+
+// MockSALMonitorTag_String_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'String'
+type MockSALMonitorTag_String_Call struct {
+	*mock.Call
+}
+
+// String is a helper method to define mock.On call
+func (_e *MockSALMonitorTag_Expecter) String() *MockSALMonitorTag_String_Call {
+	return &MockSALMonitorTag_String_Call{Call: _e.mock.On("String")}
+}
+
+func (_c *MockSALMonitorTag_String_Call) Run(run func()) *MockSALMonitorTag_String_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run()
+	})
+	return _c
+}
+
+func (_c *MockSALMonitorTag_String_Call) Return(_a0 string) *MockSALMonitorTag_String_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockSALMonitorTag_String_Call) RunAndReturn(run func() string) *MockSALMonitorTag_String_Call {
 	_c.Call.Return(run)
 	return _c
 }
