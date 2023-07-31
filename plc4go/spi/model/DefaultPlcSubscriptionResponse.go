@@ -25,6 +25,8 @@ import (
 	"github.com/pkg/errors"
 )
 
+var _ apiModel.PlcSubscriptionResponse = &DefaultPlcSubscriptionResponse{}
+
 //go:generate go run ../../tools/plc4xgenerator/gen.go -type=DefaultPlcSubscriptionResponse
 type DefaultPlcSubscriptionResponse struct {
 	request apiModel.PlcSubscriptionRequest

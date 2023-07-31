@@ -21,7 +21,6 @@ package knxnetip
 
 import (
 	"fmt"
-
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
 	driverModel "github.com/apache/plc4x/plc4go/protocols/knxnetip/readwrite/model"
@@ -62,6 +61,10 @@ func (k DeviceQuery) GetArrayInfo() []apiModel.ArrayInfo {
 
 func (k DeviceQuery) toKnxAddress() driverModel.KnxAddress {
 	return nil
+}
+
+func (k DeviceQuery) String() string {
+	return "" // TODO: implement this
 }
 
 type CommunicationObjectQuery struct {

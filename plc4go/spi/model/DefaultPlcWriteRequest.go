@@ -32,6 +32,8 @@ import (
 	"github.com/pkg/errors"
 )
 
+var _ apiModel.PlcWriteRequestBuilder = &DefaultPlcWriteRequestBuilder{}
+
 //go:generate go run ../../tools/plc4xgenerator/gen.go -type=DefaultPlcWriteRequestBuilder
 type DefaultPlcWriteRequestBuilder struct {
 	writer                  spi.PlcWriter       `ignore:"true"`
@@ -119,6 +121,8 @@ func (m *DefaultPlcWriteRequestBuilder) Build() (apiModel.PlcWriteRequest, error
 	}
 	return NewDefaultPlcWriteRequest(m.tags, m.tagNames, plcValues, m.writer, m.writeRequestInterceptor), nil
 }
+
+var _ apiModel.PlcWriteRequest = &DefaultPlcWriteRequest{}
 
 //go:generate go run ../../tools/plc4xgenerator/gen.go -type=DefaultPlcWriteRequest
 type DefaultPlcWriteRequest struct {

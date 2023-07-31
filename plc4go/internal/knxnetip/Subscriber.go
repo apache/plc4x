@@ -123,11 +123,11 @@ func (s *Subscriber) handleValueChange(ctx context.Context, destinationAddress [
 			if !ok || !groupAddressTag.matches(groupAddress) {
 				continue
 			}
-			if subscriptionHandle.tagType != spiModel.SubscriptionChangeOfState || !changed {
+			if subscriptionHandle.tagType != apiModel.SubscriptionChangeOfState || !changed {
 				continue
 			}
 			tags := map[string]apiModel.PlcTag{}
-			types := map[string]spiModel.SubscriptionType{}
+			types := map[string]apiModel.PlcSubscriptionType{}
 			intervals := map[string]time.Duration{}
 			responseCodes := map[string]apiModel.PlcResponseCode{}
 			addresses := map[string][]byte{}

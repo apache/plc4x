@@ -25,6 +25,8 @@ import (
 	"math/rand"
 )
 
+var _ apiModel.PlcConsumerRegistration = &DefaultPlcConsumerRegistration{}
+
 //go:generate go run ../../tools/plc4xgenerator/gen.go -type=DefaultPlcConsumerRegistration
 type DefaultPlcConsumerRegistration struct {
 	consumerId    int

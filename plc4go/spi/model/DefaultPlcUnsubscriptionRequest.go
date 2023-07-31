@@ -25,6 +25,8 @@ import (
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 )
 
+var _ apiModel.PlcUnsubscriptionRequest = &DefaultPlcUnsubscriptionRequest{}
+
 //go:generate go run ../../tools/plc4xgenerator/gen.go -type=DefaultPlcUnsubscriptionRequest
 type DefaultPlcUnsubscriptionRequest struct {
 	// TODO: implement

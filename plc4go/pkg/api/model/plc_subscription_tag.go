@@ -19,14 +19,10 @@
 
 package model
 
-import (
-	"fmt"
-	"github.com/apache/plc4x/plc4go/pkg/api/values"
-)
+import "time"
 
-type PlcTag interface {
-	fmt.Stringer
-	GetAddressString() string
-	GetValueType() values.PlcValueType
-	GetArrayInfo() []ArrayInfo
+type PlcSubscriptionTag interface {
+	PlcTag
+	GetPlcSubscriptionType() PlcSubscriptionType
+	GetDuration() time.Duration
 }

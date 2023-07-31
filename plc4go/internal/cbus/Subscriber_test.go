@@ -261,7 +261,7 @@ func TestSubscriber_offerMMI(t *testing.T) {
 					nil,
 					"nada",
 					nil,
-					spiModel.SubscriptionEvent,
+					apiModel.SubscriptionEvent,
 					0,
 				),
 				consumerProvider: func(t *testing.T) apiModel.PlcSubscriptionEventConsumer {
@@ -283,7 +283,7 @@ func TestSubscriber_offerMMI(t *testing.T) {
 						nil,
 						1,
 					),
-					spiModel.SubscriptionEvent,
+					apiModel.SubscriptionEvent,
 					0,
 				),
 				consumerProvider: func(t *testing.T) apiModel.PlcSubscriptionEventConsumer {
@@ -301,7 +301,7 @@ func TestSubscriber_offerMMI(t *testing.T) {
 					nil,
 					"nada",
 					nil,
-					spiModel.SubscriptionEvent,
+					apiModel.SubscriptionEvent,
 					0,
 				),
 				consumerProvider: func(t *testing.T) apiModel.PlcSubscriptionEventConsumer {
@@ -325,7 +325,7 @@ func TestSubscriber_offerMMI(t *testing.T) {
 						nil,
 						1,
 					),
-					spiModel.SubscriptionEvent,
+					apiModel.SubscriptionEvent,
 					0,
 				),
 				consumerProvider: func(t *testing.T) apiModel.PlcSubscriptionEventConsumer {
@@ -358,7 +358,7 @@ func TestSubscriber_offerMMI(t *testing.T) {
 						nil,
 						1,
 					),
-					spiModel.SubscriptionEvent,
+					apiModel.SubscriptionEvent,
 					0,
 				),
 				consumerProvider: func(t *testing.T) apiModel.PlcSubscriptionEventConsumer {
@@ -394,7 +394,7 @@ func TestSubscriber_offerMMI(t *testing.T) {
 						}(),
 						1,
 					),
-					spiModel.SubscriptionEvent,
+					apiModel.SubscriptionEvent,
 					0,
 				),
 				consumerProvider: func(t *testing.T) apiModel.PlcSubscriptionEventConsumer {
@@ -429,7 +429,7 @@ func TestSubscriber_offerMMI(t *testing.T) {
 						nil,
 						1,
 					),
-					spiModel.SubscriptionEvent,
+					apiModel.SubscriptionEvent,
 					0,
 				),
 				consumerProvider: func(t *testing.T) apiModel.PlcSubscriptionEventConsumer {
@@ -466,7 +466,7 @@ func TestSubscriber_offerMMI(t *testing.T) {
 						nil,
 						1,
 					),
-					spiModel.SubscriptionEvent,
+					apiModel.SubscriptionEvent,
 					0,
 				),
 				consumerProvider: func(t *testing.T) apiModel.PlcSubscriptionEventConsumer {
@@ -553,7 +553,7 @@ func TestSubscriber_offerSAL(t *testing.T) {
 		{
 			name: "offer wong tag",
 			args: args{
-				subscriptionHandle: NewSubscriptionHandle(nil, "", nil, spiModel.SubscriptionEvent, 0),
+				subscriptionHandle: NewSubscriptionHandle(nil, "", nil, apiModel.SubscriptionEvent, 0),
 				consumerProvider: func(t *testing.T) apiModel.PlcSubscriptionEventConsumer {
 					return func(event apiModel.PlcSubscriptionEvent) {
 						t.Fail()
@@ -577,7 +577,7 @@ func TestSubscriber_offerSAL(t *testing.T) {
 					0,
 					nil,
 				),
-				subscriptionHandle: NewSubscriptionHandle(nil, "", NewSALMonitorTag(nil, nil, 1), spiModel.SubscriptionEvent, 0),
+				subscriptionHandle: NewSubscriptionHandle(nil, "", NewSALMonitorTag(nil, nil, 1), apiModel.SubscriptionEvent, 0),
 				consumerProvider: func(t *testing.T) apiModel.PlcSubscriptionEventConsumer {
 					return func(event apiModel.PlcSubscriptionEvent) {
 						assert.NotNil(t, event)
@@ -602,7 +602,7 @@ func TestSubscriber_offerSAL(t *testing.T) {
 					0,
 					nil,
 				),
-				subscriptionHandle: NewSubscriptionHandle(nil, "", NewSALMonitorTag(nil, nil, 1), spiModel.SubscriptionEvent, 0),
+				subscriptionHandle: NewSubscriptionHandle(nil, "", NewSALMonitorTag(nil, nil, 1), apiModel.SubscriptionEvent, 0),
 				consumerProvider: func(t *testing.T) apiModel.PlcSubscriptionEventConsumer {
 					return func(event apiModel.PlcSubscriptionEvent) {
 						assert.NotNil(t, event)
@@ -627,7 +627,7 @@ func TestSubscriber_offerSAL(t *testing.T) {
 					0,
 					nil,
 				),
-				subscriptionHandle: NewSubscriptionHandle(nil, "", NewSALMonitorTag(nil, nil, 1), spiModel.SubscriptionEvent, 0),
+				subscriptionHandle: NewSubscriptionHandle(nil, "", NewSALMonitorTag(nil, nil, 1), apiModel.SubscriptionEvent, 0),
 				consumerProvider: func(t *testing.T) apiModel.PlcSubscriptionEventConsumer {
 					return func(event apiModel.PlcSubscriptionEvent) {
 						assert.NotNil(t, event)
@@ -652,7 +652,7 @@ func TestSubscriber_offerSAL(t *testing.T) {
 					0,
 					nil,
 				),
-				subscriptionHandle: NewSubscriptionHandle(nil, "", NewSALMonitorTag(nil, nil, 1), spiModel.SubscriptionEvent, 0),
+				subscriptionHandle: NewSubscriptionHandle(nil, "", NewSALMonitorTag(nil, nil, 1), apiModel.SubscriptionEvent, 0),
 				consumerProvider: func(t *testing.T) apiModel.PlcSubscriptionEventConsumer {
 					return func(event apiModel.PlcSubscriptionEvent) {
 						assert.NotNil(t, event)
@@ -680,7 +680,7 @@ func TestSubscriber_offerSAL(t *testing.T) {
 					0,
 					nil,
 				),
-				subscriptionHandle: NewSubscriptionHandle(nil, "", NewSALMonitorTag(nil, nil, 1), spiModel.SubscriptionEvent, 0),
+				subscriptionHandle: NewSubscriptionHandle(nil, "", NewSALMonitorTag(nil, nil, 1), apiModel.SubscriptionEvent, 0),
 				consumerProvider: func(t *testing.T) apiModel.PlcSubscriptionEventConsumer {
 					return func(event apiModel.PlcSubscriptionEvent) {
 						assert.NotNil(t, event)
@@ -705,7 +705,7 @@ func TestSubscriber_offerSAL(t *testing.T) {
 					0,
 					nil,
 				),
-				subscriptionHandle: NewSubscriptionHandle(nil, "", NewSALMonitorTag(nil, nil, 1), spiModel.SubscriptionEvent, 0),
+				subscriptionHandle: NewSubscriptionHandle(nil, "", NewSALMonitorTag(nil, nil, 1), apiModel.SubscriptionEvent, 0),
 				consumerProvider: func(t *testing.T) apiModel.PlcSubscriptionEventConsumer {
 					return func(event apiModel.PlcSubscriptionEvent) {
 						assert.NotNil(t, event)
@@ -746,7 +746,7 @@ func TestSubscriber_offerSAL(t *testing.T) {
 					0,
 					nil,
 				),
-				subscriptionHandle: NewSubscriptionHandle(nil, "", NewSALMonitorTag(nil, nil, 1), spiModel.SubscriptionEvent, 0),
+				subscriptionHandle: NewSubscriptionHandle(nil, "", NewSALMonitorTag(nil, nil, 1), apiModel.SubscriptionEvent, 0),
 				consumerProvider: func(t *testing.T) apiModel.PlcSubscriptionEventConsumer {
 					return func(event apiModel.PlcSubscriptionEvent) {
 						assert.NotNil(t, event)
@@ -768,7 +768,7 @@ func TestSubscriber_offerSAL(t *testing.T) {
 					0,
 					nil,
 				),
-				subscriptionHandle: NewSubscriptionHandle(nil, "", NewSALMonitorTag(nil, nil, 1), spiModel.SubscriptionEvent, 0),
+				subscriptionHandle: NewSubscriptionHandle(nil, "", NewSALMonitorTag(nil, nil, 1), apiModel.SubscriptionEvent, 0),
 				consumerProvider: func(t *testing.T) apiModel.PlcSubscriptionEventConsumer {
 					return func(event apiModel.PlcSubscriptionEvent) {
 						assert.NotNil(t, event)
@@ -793,7 +793,7 @@ func TestSubscriber_offerSAL(t *testing.T) {
 					0,
 					nil,
 				),
-				subscriptionHandle: NewSubscriptionHandle(nil, "", NewSALMonitorTag(nil, nil, 1), spiModel.SubscriptionEvent, 0),
+				subscriptionHandle: NewSubscriptionHandle(nil, "", NewSALMonitorTag(nil, nil, 1), apiModel.SubscriptionEvent, 0),
 				consumerProvider: func(t *testing.T) apiModel.PlcSubscriptionEventConsumer {
 					return func(event apiModel.PlcSubscriptionEvent) {
 						assert.NotNil(t, event)
@@ -818,7 +818,7 @@ func TestSubscriber_offerSAL(t *testing.T) {
 					0,
 					nil,
 				),
-				subscriptionHandle: NewSubscriptionHandle(nil, "", NewSALMonitorTag(nil, nil, 1), spiModel.SubscriptionEvent, 0),
+				subscriptionHandle: NewSubscriptionHandle(nil, "", NewSALMonitorTag(nil, nil, 1), apiModel.SubscriptionEvent, 0),
 				consumerProvider: func(t *testing.T) apiModel.PlcSubscriptionEventConsumer {
 					return func(event apiModel.PlcSubscriptionEvent) {
 						assert.NotNil(t, event)
@@ -843,7 +843,7 @@ func TestSubscriber_offerSAL(t *testing.T) {
 					0,
 					nil,
 				),
-				subscriptionHandle: NewSubscriptionHandle(nil, "", NewSALMonitorTag(nil, nil, 1), spiModel.SubscriptionEvent, 0),
+				subscriptionHandle: NewSubscriptionHandle(nil, "", NewSALMonitorTag(nil, nil, 1), apiModel.SubscriptionEvent, 0),
 				consumerProvider: func(t *testing.T) apiModel.PlcSubscriptionEventConsumer {
 					return func(event apiModel.PlcSubscriptionEvent) {
 						assert.NotNil(t, event)
@@ -868,7 +868,7 @@ func TestSubscriber_offerSAL(t *testing.T) {
 					0,
 					nil,
 				),
-				subscriptionHandle: NewSubscriptionHandle(nil, "", NewSALMonitorTag(nil, nil, 1), spiModel.SubscriptionEvent, 0),
+				subscriptionHandle: NewSubscriptionHandle(nil, "", NewSALMonitorTag(nil, nil, 1), apiModel.SubscriptionEvent, 0),
 				consumerProvider: func(t *testing.T) apiModel.PlcSubscriptionEventConsumer {
 					return func(event apiModel.PlcSubscriptionEvent) {
 						assert.NotNil(t, event)
@@ -901,7 +901,7 @@ func TestSubscriber_offerSAL(t *testing.T) {
 					0,
 					nil,
 				),
-				subscriptionHandle: NewSubscriptionHandle(nil, "", NewSALMonitorTag(nil, nil, 1), spiModel.SubscriptionEvent, 0),
+				subscriptionHandle: NewSubscriptionHandle(nil, "", NewSALMonitorTag(nil, nil, 1), apiModel.SubscriptionEvent, 0),
 				consumerProvider: func(t *testing.T) apiModel.PlcSubscriptionEventConsumer {
 					return func(event apiModel.PlcSubscriptionEvent) {
 						assert.NotNil(t, event)
@@ -930,7 +930,7 @@ func TestSubscriber_offerSAL(t *testing.T) {
 					0,
 					nil,
 				),
-				subscriptionHandle: NewSubscriptionHandle(nil, "", NewSALMonitorTag(nil, nil, 1), spiModel.SubscriptionEvent, 0),
+				subscriptionHandle: NewSubscriptionHandle(nil, "", NewSALMonitorTag(nil, nil, 1), apiModel.SubscriptionEvent, 0),
 				consumerProvider: func(t *testing.T) apiModel.PlcSubscriptionEventConsumer {
 					return func(event apiModel.PlcSubscriptionEvent) {
 						assert.NotNil(t, event)
@@ -959,7 +959,7 @@ func TestSubscriber_offerSAL(t *testing.T) {
 					0,
 					nil,
 				),
-				subscriptionHandle: NewSubscriptionHandle(nil, "", NewSALMonitorTag(nil, nil, 1), spiModel.SubscriptionEvent, 0),
+				subscriptionHandle: NewSubscriptionHandle(nil, "", NewSALMonitorTag(nil, nil, 1), apiModel.SubscriptionEvent, 0),
 				consumerProvider: func(t *testing.T) apiModel.PlcSubscriptionEventConsumer {
 					return func(event apiModel.PlcSubscriptionEvent) {
 						assert.NotNil(t, event)
@@ -987,7 +987,7 @@ func TestSubscriber_offerSAL(t *testing.T) {
 					0,
 					nil,
 				),
-				subscriptionHandle: NewSubscriptionHandle(nil, "", NewSALMonitorTag(nil, nil, 1), spiModel.SubscriptionEvent, 0),
+				subscriptionHandle: NewSubscriptionHandle(nil, "", NewSALMonitorTag(nil, nil, 1), apiModel.SubscriptionEvent, 0),
 				consumerProvider: func(t *testing.T) apiModel.PlcSubscriptionEventConsumer {
 					return func(event apiModel.PlcSubscriptionEvent) {
 						assert.NotNil(t, event)
@@ -1011,7 +1011,7 @@ func TestSubscriber_offerSAL(t *testing.T) {
 					0,
 					nil,
 				),
-				subscriptionHandle: NewSubscriptionHandle(nil, "", NewSALMonitorTag(nil, nil, 1), spiModel.SubscriptionEvent, 0),
+				subscriptionHandle: NewSubscriptionHandle(nil, "", NewSALMonitorTag(nil, nil, 1), apiModel.SubscriptionEvent, 0),
 				consumerProvider: func(t *testing.T) apiModel.PlcSubscriptionEventConsumer {
 					return func(event apiModel.PlcSubscriptionEvent) {
 						assert.NotNil(t, event)
@@ -1035,7 +1035,7 @@ func TestSubscriber_offerSAL(t *testing.T) {
 					0,
 					nil,
 				),
-				subscriptionHandle: NewSubscriptionHandle(nil, "", NewSALMonitorTag(nil, nil, 1), spiModel.SubscriptionEvent, 0),
+				subscriptionHandle: NewSubscriptionHandle(nil, "", NewSALMonitorTag(nil, nil, 1), apiModel.SubscriptionEvent, 0),
 				consumerProvider: func(t *testing.T) apiModel.PlcSubscriptionEventConsumer {
 					return func(event apiModel.PlcSubscriptionEvent) {
 						assert.NotNil(t, event)
@@ -1063,7 +1063,7 @@ func TestSubscriber_offerSAL(t *testing.T) {
 					0,
 					nil,
 				),
-				subscriptionHandle: NewSubscriptionHandle(nil, "", NewSALMonitorTag(nil, nil, 1), spiModel.SubscriptionEvent, 0),
+				subscriptionHandle: NewSubscriptionHandle(nil, "", NewSALMonitorTag(nil, nil, 1), apiModel.SubscriptionEvent, 0),
 				consumerProvider: func(t *testing.T) apiModel.PlcSubscriptionEventConsumer {
 					return func(event apiModel.PlcSubscriptionEvent) {
 						assert.NotNil(t, event)
@@ -1092,7 +1092,7 @@ func TestSubscriber_offerSAL(t *testing.T) {
 					0,
 					nil,
 				),
-				subscriptionHandle: NewSubscriptionHandle(nil, "", NewSALMonitorTag(nil, nil, 1), spiModel.SubscriptionEvent, 0),
+				subscriptionHandle: NewSubscriptionHandle(nil, "", NewSALMonitorTag(nil, nil, 1), apiModel.SubscriptionEvent, 0),
 				consumerProvider: func(t *testing.T) apiModel.PlcSubscriptionEventConsumer {
 					return func(event apiModel.PlcSubscriptionEvent) {
 						assert.NotNil(t, event)
@@ -1121,7 +1121,7 @@ func TestSubscriber_offerSAL(t *testing.T) {
 					0,
 					nil,
 				),
-				subscriptionHandle: NewSubscriptionHandle(nil, "", NewSALMonitorTag(nil, nil, 1), spiModel.SubscriptionEvent, 0),
+				subscriptionHandle: NewSubscriptionHandle(nil, "", NewSALMonitorTag(nil, nil, 1), apiModel.SubscriptionEvent, 0),
 				consumerProvider: func(t *testing.T) apiModel.PlcSubscriptionEventConsumer {
 					return func(event apiModel.PlcSubscriptionEvent) {
 						assert.NotNil(t, event)
@@ -1145,7 +1145,7 @@ func TestSubscriber_offerSAL(t *testing.T) {
 					0,
 					nil,
 				),
-				subscriptionHandle: NewSubscriptionHandle(nil, "", NewSALMonitorTag(nil, nil, 1), spiModel.SubscriptionEvent, 0),
+				subscriptionHandle: NewSubscriptionHandle(nil, "", NewSALMonitorTag(nil, nil, 1), apiModel.SubscriptionEvent, 0),
 				consumerProvider: func(t *testing.T) apiModel.PlcSubscriptionEventConsumer {
 					return func(event apiModel.PlcSubscriptionEvent) {
 						assert.NotNil(t, event)
@@ -1174,7 +1174,7 @@ func TestSubscriber_offerSAL(t *testing.T) {
 					0,
 					nil,
 				),
-				subscriptionHandle: NewSubscriptionHandle(nil, "", NewSALMonitorTag(nil, nil, 1), spiModel.SubscriptionEvent, 0),
+				subscriptionHandle: NewSubscriptionHandle(nil, "", NewSALMonitorTag(nil, nil, 1), apiModel.SubscriptionEvent, 0),
 				consumerProvider: func(t *testing.T) apiModel.PlcSubscriptionEventConsumer {
 					return func(event apiModel.PlcSubscriptionEvent) {
 						assert.NotNil(t, event)
@@ -1202,7 +1202,7 @@ func TestSubscriber_offerSAL(t *testing.T) {
 					0,
 					nil,
 				),
-				subscriptionHandle: NewSubscriptionHandle(nil, "", NewSALMonitorTag(nil, nil, 1), spiModel.SubscriptionEvent, 0),
+				subscriptionHandle: NewSubscriptionHandle(nil, "", NewSALMonitorTag(nil, nil, 1), apiModel.SubscriptionEvent, 0),
 				consumerProvider: func(t *testing.T) apiModel.PlcSubscriptionEventConsumer {
 					return func(event apiModel.PlcSubscriptionEvent) {
 						assert.NotNil(t, event)
@@ -1235,7 +1235,7 @@ func TestSubscriber_offerSAL(t *testing.T) {
 						nil,
 						1,
 					),
-					spiModel.SubscriptionEvent,
+					apiModel.SubscriptionEvent,
 					0,
 				),
 				consumerProvider: func(t *testing.T) apiModel.PlcSubscriptionEventConsumer {
@@ -1273,7 +1273,7 @@ func TestSubscriber_offerSAL(t *testing.T) {
 						}(),
 						1,
 					),
-					spiModel.SubscriptionEvent,
+					apiModel.SubscriptionEvent,
 					0,
 				),
 				consumerProvider: func(t *testing.T) apiModel.PlcSubscriptionEventConsumer {
@@ -1301,7 +1301,7 @@ func TestSubscriber_offerSAL(t *testing.T) {
 					0,
 					nil,
 				),
-				subscriptionHandle: NewSubscriptionHandle(nil, "", NewSALMonitorTag(nil, nil, 1), spiModel.SubscriptionEvent, 0),
+				subscriptionHandle: NewSubscriptionHandle(nil, "", NewSALMonitorTag(nil, nil, 1), apiModel.SubscriptionEvent, 0),
 				consumerProvider: func(t *testing.T) apiModel.PlcSubscriptionEventConsumer {
 					return func(event apiModel.PlcSubscriptionEvent) {
 						assert.NotNil(t, event)
@@ -1335,7 +1335,7 @@ func TestSubscriber_offerSAL(t *testing.T) {
 					0,
 					nil,
 				),
-				subscriptionHandle: NewSubscriptionHandle(nil, "", NewSALMonitorTag(nil, nil, 1), spiModel.SubscriptionEvent, 0),
+				subscriptionHandle: NewSubscriptionHandle(nil, "", NewSALMonitorTag(nil, nil, 1), apiModel.SubscriptionEvent, 0),
 				consumerProvider: func(t *testing.T) apiModel.PlcSubscriptionEventConsumer {
 					return func(event apiModel.PlcSubscriptionEvent) {
 						assert.NotNil(t, event)

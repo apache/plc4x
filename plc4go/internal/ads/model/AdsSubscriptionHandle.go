@@ -68,7 +68,7 @@ func (t *AdsSubscriptionHandle) GetDirectTag() DirectPlcTag {
 func (t *AdsSubscriptionHandle) PublishPlcValue(value apiValues.PlcValue) {
 	event := NewSubscriptionEvent(
 		map[string]apiModel.PlcTag{t.tagName: t.directTag},
-		map[string]spiModel.SubscriptionType{t.tagName: spiModel.SubscriptionChangeOfState},
+		map[string]apiModel.PlcSubscriptionType{t.tagName: apiModel.SubscriptionChangeOfState},
 		map[string]time.Duration{t.tagName: time.Second},
 		map[string]apiModel.PlcResponseCode{t.tagName: apiModel.PlcResponseCode_OK},
 		map[string]apiValues.PlcValue{t.tagName: value},

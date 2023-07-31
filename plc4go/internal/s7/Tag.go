@@ -175,6 +175,14 @@ func (m plcTag) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.
 	return nil
 }
 
+func (m plcTag) String() string {
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+		return err.Error()
+	}
+	return writeBuffer.GetBox().String()
+}
+
 func (m PlcStringTag) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
@@ -214,4 +222,12 @@ func (m PlcStringTag) SerializeWithWriteBuffer(ctx context.Context, writeBuffer 
 		return err
 	}
 	return nil
+}
+
+func (m PlcStringTag) String() string {
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+		return err.Error()
+	}
+	return writeBuffer.GetBox().String()
 }

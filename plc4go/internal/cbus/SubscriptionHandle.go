@@ -20,6 +20,7 @@
 package cbus
 
 import (
+	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"time"
 
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
@@ -29,11 +30,11 @@ type SubscriptionHandle struct {
 	*spiModel.DefaultPlcSubscriptionHandle
 	tagName          string
 	tag              any
-	subscriptionType spiModel.SubscriptionType
+	subscriptionType apiModel.PlcSubscriptionType
 	interval         time.Duration
 }
 
-func NewSubscriptionHandle(subscriber *Subscriber, tagName string, tag any, subscriptionType spiModel.SubscriptionType, interval time.Duration) *SubscriptionHandle {
+func NewSubscriptionHandle(subscriber *Subscriber, tagName string, tag any, subscriptionType apiModel.PlcSubscriptionType, interval time.Duration) *SubscriptionHandle {
 	s := &SubscriptionHandle{
 		tagName:          tagName,
 		tag:              tag,

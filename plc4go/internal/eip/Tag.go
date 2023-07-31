@@ -112,3 +112,11 @@ func (m plcTag) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.
 	}
 	return nil
 }
+
+func (m plcTag) String() string {
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+		return err.Error()
+	}
+	return writeBuffer.GetBox().String()
+}

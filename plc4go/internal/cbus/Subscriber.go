@@ -162,7 +162,7 @@ func (s *Subscriber) offerMMI(unitAddressString string, calData readWriteModel.C
 	}
 
 	tags := map[string]apiModel.PlcTag{}
-	types := map[string]spiModel.SubscriptionType{}
+	types := map[string]apiModel.PlcSubscriptionType{}
 	intervals := map[string]time.Duration{}
 	responseCodes := map[string]apiModel.PlcResponseCode{}
 	address := map[string]string{}
@@ -295,7 +295,7 @@ func (s *Subscriber) offerSAL(sal readWriteModel.MonitoredSAL, subscriptionHandl
 		return false
 	}
 	tags := map[string]apiModel.PlcTag{}
-	types := map[string]spiModel.SubscriptionType{}
+	types := map[string]apiModel.PlcSubscriptionType{}
 	intervals := map[string]time.Duration{}
 	responseCodes := map[string]apiModel.PlcResponseCode{}
 	address := map[string]string{}

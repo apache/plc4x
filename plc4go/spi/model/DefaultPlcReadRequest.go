@@ -30,6 +30,8 @@ import (
 	"github.com/pkg/errors"
 )
 
+var _ apiModel.PlcReadRequestBuilder = &DefaultPlcReadRequestBuilder{}
+
 //go:generate go run ../../tools/plc4xgenerator/gen.go -type=DefaultPlcReadRequestBuilder
 type DefaultPlcReadRequestBuilder struct {
 	reader                 spi.PlcReader     `ignore:"true"`
@@ -82,6 +84,8 @@ func (d *DefaultPlcReadRequestBuilder) Build() (apiModel.PlcReadRequest, error) 
 
 	return NewDefaultPlcReadRequest(d.tags, d.tagNames, d.reader, d.readRequestInterceptor), nil
 }
+
+var _ apiModel.PlcReadRequest = &DefaultPlcReadRequest{}
 
 //go:generate go run ../../tools/plc4xgenerator/gen.go -type=DefaultPlcReadRequest
 type DefaultPlcReadRequest struct {

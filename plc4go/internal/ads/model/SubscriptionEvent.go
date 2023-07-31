@@ -34,7 +34,7 @@ type SubscriptionEvent struct {
 
 func NewSubscriptionEvent(
 	tags map[string]apiModel.PlcTag,
-	types map[string]spiModel.SubscriptionType,
+	types map[string]apiModel.PlcSubscriptionType,
 	intervals map[string]time.Duration,
 	responseCodes map[string]apiModel.PlcResponseCode,
 	values map[string]values.PlcValue,

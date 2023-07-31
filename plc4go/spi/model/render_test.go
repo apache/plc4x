@@ -228,7 +228,7 @@ func TestRenderTestCustom(t *testing.T) {
 				map[string]apiModel.PlcTag{
 					"tagid": nil,
 				},
-				map[string]SubscriptionType{
+				map[string]apiModel.PlcSubscriptionType{
 					"tagid": 0,
 				},
 				map[string]time.Duration{
@@ -269,7 +269,7 @@ func TestRenderTestCustom(t *testing.T) {
 				map[string]apiModel.PlcTag{
 					"tagid": nil,
 				},
-				map[string]SubscriptionType{
+				map[string]apiModel.PlcSubscriptionType{
 					"tagid": 0,
 				},
 				map[string]time.Duration{

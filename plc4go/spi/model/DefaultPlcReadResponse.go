@@ -25,6 +25,8 @@ import (
 	spiValues "github.com/apache/plc4x/plc4go/spi/values"
 )
 
+var _ apiModel.PlcReadResponse = &DefaultPlcReadResponse{}
+
 //go:generate go run ../../tools/plc4xgenerator/gen.go -type=DefaultPlcReadResponse
 type DefaultPlcReadResponse struct {
 	request apiModel.PlcReadRequest

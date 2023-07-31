@@ -27,6 +27,8 @@ import (
 	"github.com/pkg/errors"
 )
 
+var _ apiModel.PlcBrowseRequestBuilder = &DefaultPlcBrowseRequestBuilder{}
+
 //go:generate go run ../../tools/plc4xgenerator/gen.go -type=DefaultPlcBrowseRequestBuilder
 type DefaultPlcBrowseRequestBuilder struct {
 	tagHandler spi.PlcTagHandler `ignore:"true"`
@@ -61,6 +63,8 @@ func (d *DefaultPlcBrowseRequestBuilder) Build() (apiModel.PlcBrowseRequest, err
 	}
 	return NewDefaultPlcBrowseRequest(queries, d.queryNames, d.browser), nil
 }
+
+var _ apiModel.PlcBrowseRequest = &DefaultPlcBrowseRequest{}
 
 //go:generate go run ../../tools/plc4xgenerator/gen.go -type=DefaultPlcBrowseRequest
 type DefaultPlcBrowseRequest struct {

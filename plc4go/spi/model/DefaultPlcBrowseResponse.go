@@ -23,6 +23,8 @@ import (
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 )
 
+var _ apiModel.PlcDiscoveryItem = &DefaultPlcDiscoveryItem{}
+
 //go:generate go run ../../tools/plc4xgenerator/gen.go -type=DefaultPlcBrowseResponse
 type DefaultPlcBrowseResponse struct {
 	request      apiModel.PlcBrowseRequest
@@ -34,7 +36,7 @@ func NewDefaultPlcBrowseResponse(request apiModel.PlcBrowseRequest, results map[
 	res := map[string]*DefaultPlcBrowseResponseItem{}
 	for name, code := range responseCodes {
 		value := results[name]
-		res[name] = NewBrowseResponseItem(code, value)
+		res[name] = NewDefaultPlcBrowseResponseItem(code, value)
 	}
 	return &DefaultPlcBrowseResponse{
 		request: request,

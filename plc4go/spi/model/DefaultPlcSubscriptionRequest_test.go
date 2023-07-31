@@ -41,7 +41,7 @@ func TestDefaultPlcSubscriptionRequestBuilder_AddChangeOfStateTag(t *testing.T) 
 		tagNames               []string
 		tagAddresses           map[string]string
 		tags                   map[string]apiModel.PlcTag
-		types                  map[string]SubscriptionType
+		types                  map[string]apiModel.PlcSubscriptionType
 		intervals              map[string]time.Duration
 		preRegisteredConsumers map[string][]apiModel.PlcSubscriptionEventConsumer
 	}
@@ -60,7 +60,7 @@ func TestDefaultPlcSubscriptionRequestBuilder_AddChangeOfStateTag(t *testing.T) 
 			fields: fields{
 				tagAddresses:           map[string]string{},
 				tags:                   map[string]apiModel.PlcTag{},
-				types:                  map[string]SubscriptionType{},
+				types:                  map[string]apiModel.PlcSubscriptionType{},
 				intervals:              map[string]time.Duration{},
 				preRegisteredConsumers: map[string][]apiModel.PlcSubscriptionEventConsumer{},
 			},
@@ -68,7 +68,7 @@ func TestDefaultPlcSubscriptionRequestBuilder_AddChangeOfStateTag(t *testing.T) 
 				tagNames:               []string{""},
 				tagAddresses:           map[string]string{},
 				tags:                   map[string]apiModel.PlcTag{"": nil},
-				types:                  map[string]SubscriptionType{"": 2},
+				types:                  map[string]apiModel.PlcSubscriptionType{"": 2},
 				intervals:              map[string]time.Duration{},
 				preRegisteredConsumers: map[string][]apiModel.PlcSubscriptionEventConsumer{},
 			},
@@ -100,7 +100,7 @@ func TestDefaultPlcSubscriptionRequestBuilder_AddChangeOfStateTagAddress(t *test
 		tagNames               []string
 		tagAddresses           map[string]string
 		tags                   map[string]apiModel.PlcTag
-		types                  map[string]SubscriptionType
+		types                  map[string]apiModel.PlcSubscriptionType
 		intervals              map[string]time.Duration
 		preRegisteredConsumers map[string][]apiModel.PlcSubscriptionEventConsumer
 	}
@@ -119,7 +119,7 @@ func TestDefaultPlcSubscriptionRequestBuilder_AddChangeOfStateTagAddress(t *test
 			fields: fields{
 				tagAddresses:           map[string]string{},
 				tags:                   map[string]apiModel.PlcTag{},
-				types:                  map[string]SubscriptionType{},
+				types:                  map[string]apiModel.PlcSubscriptionType{},
 				intervals:              map[string]time.Duration{},
 				preRegisteredConsumers: map[string][]apiModel.PlcSubscriptionEventConsumer{},
 			},
@@ -127,7 +127,7 @@ func TestDefaultPlcSubscriptionRequestBuilder_AddChangeOfStateTagAddress(t *test
 				tagNames:               []string{""},
 				tagAddresses:           map[string]string{"": ""},
 				tags:                   map[string]apiModel.PlcTag{},
-				types:                  map[string]SubscriptionType{"": 2},
+				types:                  map[string]apiModel.PlcSubscriptionType{"": 2},
 				intervals:              map[string]time.Duration{},
 				preRegisteredConsumers: map[string][]apiModel.PlcSubscriptionEventConsumer{},
 			},
@@ -159,7 +159,7 @@ func TestDefaultPlcSubscriptionRequestBuilder_AddCyclicTag(t *testing.T) {
 		tagNames               []string
 		tagAddresses           map[string]string
 		tags                   map[string]apiModel.PlcTag
-		types                  map[string]SubscriptionType
+		types                  map[string]apiModel.PlcSubscriptionType
 		intervals              map[string]time.Duration
 		preRegisteredConsumers map[string][]apiModel.PlcSubscriptionEventConsumer
 	}
@@ -179,7 +179,7 @@ func TestDefaultPlcSubscriptionRequestBuilder_AddCyclicTag(t *testing.T) {
 			fields: fields{
 				tagAddresses:           map[string]string{},
 				tags:                   map[string]apiModel.PlcTag{},
-				types:                  map[string]SubscriptionType{},
+				types:                  map[string]apiModel.PlcSubscriptionType{},
 				intervals:              map[string]time.Duration{},
 				preRegisteredConsumers: map[string][]apiModel.PlcSubscriptionEventConsumer{},
 			},
@@ -187,7 +187,7 @@ func TestDefaultPlcSubscriptionRequestBuilder_AddCyclicTag(t *testing.T) {
 				tagNames:               []string{""},
 				tagAddresses:           map[string]string{},
 				tags:                   map[string]apiModel.PlcTag{"": nil},
-				types:                  map[string]SubscriptionType{"": 1},
+				types:                  map[string]apiModel.PlcSubscriptionType{"": 1},
 				intervals:              map[string]time.Duration{"": 0},
 				preRegisteredConsumers: map[string][]apiModel.PlcSubscriptionEventConsumer{},
 			},
@@ -219,7 +219,7 @@ func TestDefaultPlcSubscriptionRequestBuilder_AddCyclicTagAddress(t *testing.T) 
 		tagNames               []string
 		tagAddresses           map[string]string
 		tags                   map[string]apiModel.PlcTag
-		types                  map[string]SubscriptionType
+		types                  map[string]apiModel.PlcSubscriptionType
 		intervals              map[string]time.Duration
 		preRegisteredConsumers map[string][]apiModel.PlcSubscriptionEventConsumer
 	}
@@ -239,7 +239,7 @@ func TestDefaultPlcSubscriptionRequestBuilder_AddCyclicTagAddress(t *testing.T) 
 			fields: fields{
 				tagAddresses:           map[string]string{},
 				tags:                   map[string]apiModel.PlcTag{},
-				types:                  map[string]SubscriptionType{},
+				types:                  map[string]apiModel.PlcSubscriptionType{},
 				intervals:              map[string]time.Duration{},
 				preRegisteredConsumers: map[string][]apiModel.PlcSubscriptionEventConsumer{},
 			},
@@ -247,7 +247,7 @@ func TestDefaultPlcSubscriptionRequestBuilder_AddCyclicTagAddress(t *testing.T) 
 				tagNames:               []string{""},
 				tagAddresses:           map[string]string{"": ""},
 				tags:                   map[string]apiModel.PlcTag{},
-				types:                  map[string]SubscriptionType{"": 1},
+				types:                  map[string]apiModel.PlcSubscriptionType{"": 1},
 				intervals:              map[string]time.Duration{"": 0},
 				preRegisteredConsumers: map[string][]apiModel.PlcSubscriptionEventConsumer{},
 			},
@@ -279,7 +279,7 @@ func TestDefaultPlcSubscriptionRequestBuilder_AddEventTag(t *testing.T) {
 		tagNames               []string
 		tagAddresses           map[string]string
 		tags                   map[string]apiModel.PlcTag
-		types                  map[string]SubscriptionType
+		types                  map[string]apiModel.PlcSubscriptionType
 		intervals              map[string]time.Duration
 		preRegisteredConsumers map[string][]apiModel.PlcSubscriptionEventConsumer
 	}
@@ -298,7 +298,7 @@ func TestDefaultPlcSubscriptionRequestBuilder_AddEventTag(t *testing.T) {
 			fields: fields{
 				tagAddresses:           map[string]string{},
 				tags:                   map[string]apiModel.PlcTag{},
-				types:                  map[string]SubscriptionType{},
+				types:                  map[string]apiModel.PlcSubscriptionType{},
 				intervals:              map[string]time.Duration{},
 				preRegisteredConsumers: map[string][]apiModel.PlcSubscriptionEventConsumer{},
 			},
@@ -306,7 +306,7 @@ func TestDefaultPlcSubscriptionRequestBuilder_AddEventTag(t *testing.T) {
 				tagNames:               []string{""},
 				tagAddresses:           map[string]string{},
 				tags:                   map[string]apiModel.PlcTag{"": nil},
-				types:                  map[string]SubscriptionType{"": 3},
+				types:                  map[string]apiModel.PlcSubscriptionType{"": 3},
 				intervals:              map[string]time.Duration{},
 				preRegisteredConsumers: map[string][]apiModel.PlcSubscriptionEventConsumer{},
 			},
@@ -338,7 +338,7 @@ func TestDefaultPlcSubscriptionRequestBuilder_AddEventTagAddress(t *testing.T) {
 		tagNames               []string
 		tagAddresses           map[string]string
 		tags                   map[string]apiModel.PlcTag
-		types                  map[string]SubscriptionType
+		types                  map[string]apiModel.PlcSubscriptionType
 		intervals              map[string]time.Duration
 		preRegisteredConsumers map[string][]apiModel.PlcSubscriptionEventConsumer
 	}
@@ -357,7 +357,7 @@ func TestDefaultPlcSubscriptionRequestBuilder_AddEventTagAddress(t *testing.T) {
 			fields: fields{
 				tagAddresses:           map[string]string{},
 				tags:                   map[string]apiModel.PlcTag{},
-				types:                  map[string]SubscriptionType{},
+				types:                  map[string]apiModel.PlcSubscriptionType{},
 				intervals:              map[string]time.Duration{},
 				preRegisteredConsumers: map[string][]apiModel.PlcSubscriptionEventConsumer{},
 			},
@@ -365,7 +365,7 @@ func TestDefaultPlcSubscriptionRequestBuilder_AddEventTagAddress(t *testing.T) {
 				tagNames:               []string{""},
 				tagAddresses:           map[string]string{"": ""},
 				tags:                   map[string]apiModel.PlcTag{},
-				types:                  map[string]SubscriptionType{"": 3},
+				types:                  map[string]apiModel.PlcSubscriptionType{"": 3},
 				intervals:              map[string]time.Duration{},
 				preRegisteredConsumers: map[string][]apiModel.PlcSubscriptionEventConsumer{},
 			},
@@ -397,7 +397,7 @@ func TestDefaultPlcSubscriptionRequestBuilder_AddPreRegisteredConsumer(t *testin
 		tagNames               []string
 		tagAddresses           map[string]string
 		tags                   map[string]apiModel.PlcTag
-		types                  map[string]SubscriptionType
+		types                  map[string]apiModel.PlcSubscriptionType
 		intervals              map[string]time.Duration
 		preRegisteredConsumers map[string][]apiModel.PlcSubscriptionEventConsumer
 	}
@@ -449,7 +449,7 @@ func TestDefaultPlcSubscriptionRequestBuilder_Build(t *testing.T) {
 		tagNames               []string
 		tagAddresses           map[string]string
 		tags                   map[string]apiModel.PlcTag
-		types                  map[string]SubscriptionType
+		types                  map[string]apiModel.PlcSubscriptionType
 		intervals              map[string]time.Duration
 		preRegisteredConsumers map[string][]apiModel.PlcSubscriptionEventConsumer
 	}
@@ -527,7 +527,7 @@ func TestDefaultPlcSubscriptionRequestBuilder_Build(t *testing.T) {
 func TestDefaultPlcSubscriptionRequest_Execute(t *testing.T) {
 	type fields struct {
 		DefaultPlcTagRequest   *DefaultPlcTagRequest
-		types                  map[string]SubscriptionType
+		types                  map[string]apiModel.PlcSubscriptionType
 		intervals              map[string]time.Duration
 		preRegisteredConsumers map[string][]apiModel.PlcSubscriptionEventConsumer
 		subscriber             spi.PlcSubscriber
@@ -567,7 +567,7 @@ func TestDefaultPlcSubscriptionRequest_Execute(t *testing.T) {
 func TestDefaultPlcSubscriptionRequest_ExecuteWithContext(t *testing.T) {
 	type fields struct {
 		DefaultPlcTagRequest   *DefaultPlcTagRequest
-		types                  map[string]SubscriptionType
+		types                  map[string]apiModel.PlcSubscriptionType
 		intervals              map[string]time.Duration
 		preRegisteredConsumers map[string][]apiModel.PlcSubscriptionEventConsumer
 		subscriber             spi.PlcSubscriber
@@ -611,7 +611,7 @@ func TestDefaultPlcSubscriptionRequest_ExecuteWithContext(t *testing.T) {
 func TestDefaultPlcSubscriptionRequest_GetInterval(t *testing.T) {
 	type fields struct {
 		DefaultPlcTagRequest   *DefaultPlcTagRequest
-		types                  map[string]SubscriptionType
+		types                  map[string]apiModel.PlcSubscriptionType
 		intervals              map[string]time.Duration
 		preRegisteredConsumers map[string][]apiModel.PlcSubscriptionEventConsumer
 		subscriber             spi.PlcSubscriber
@@ -646,7 +646,7 @@ func TestDefaultPlcSubscriptionRequest_GetInterval(t *testing.T) {
 func TestDefaultPlcSubscriptionRequest_GetPreRegisteredConsumers(t *testing.T) {
 	type fields struct {
 		DefaultPlcTagRequest   *DefaultPlcTagRequest
-		types                  map[string]SubscriptionType
+		types                  map[string]apiModel.PlcSubscriptionType
 		intervals              map[string]time.Duration
 		preRegisteredConsumers map[string][]apiModel.PlcSubscriptionEventConsumer
 		subscriber             spi.PlcSubscriber
@@ -681,7 +681,7 @@ func TestDefaultPlcSubscriptionRequest_GetPreRegisteredConsumers(t *testing.T) {
 func TestDefaultPlcSubscriptionRequest_GetType(t *testing.T) {
 	type fields struct {
 		DefaultPlcTagRequest   *DefaultPlcTagRequest
-		types                  map[string]SubscriptionType
+		types                  map[string]apiModel.PlcSubscriptionType
 		intervals              map[string]time.Duration
 		preRegisteredConsumers map[string][]apiModel.PlcSubscriptionEventConsumer
 		subscriber             spi.PlcSubscriber
@@ -693,7 +693,7 @@ func TestDefaultPlcSubscriptionRequest_GetType(t *testing.T) {
 		name   string
 		fields fields
 		args   args
-		want   SubscriptionType
+		want   apiModel.PlcSubscriptionType
 	}{
 		{
 			name: "get it",
@@ -718,7 +718,7 @@ func TestNewDefaultPlcSubscriptionRequest(t *testing.T) {
 		subscriber             spi.PlcSubscriber
 		tagNames               []string
 		tags                   map[string]apiModel.PlcTag
-		types                  map[string]SubscriptionType
+		types                  map[string]apiModel.PlcSubscriptionType
 		intervals              map[string]time.Duration
 		preRegisteredConsumers map[string][]apiModel.PlcSubscriptionEventConsumer
 	}
@@ -758,7 +758,7 @@ func TestNewDefaultPlcSubscriptionRequestBuilder(t *testing.T) {
 				tagNames:               []string{},
 				tagAddresses:           map[string]string{},
 				tags:                   map[string]apiModel.PlcTag{},
-				types:                  map[string]SubscriptionType{},
+				types:                  map[string]apiModel.PlcSubscriptionType{},
 				intervals:              map[string]time.Duration{},
 				preRegisteredConsumers: map[string][]apiModel.PlcSubscriptionEventConsumer{},
 			},
@@ -767,40 +767,6 @@ func TestNewDefaultPlcSubscriptionRequestBuilder(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			assert.Equalf(t, tt.want, NewDefaultPlcSubscriptionRequestBuilder(tt.args.tagHandler, tt.args.valueHandler, tt.args.subscriber), "NewDefaultPlcSubscriptionRequestBuilder(%v, %v, %v)", tt.args.tagHandler, tt.args.valueHandler, tt.args.subscriber)
-		})
-	}
-}
-
-func TestSubscriptionType_String(t *testing.T) {
-	tests := []struct {
-		name string
-		s    SubscriptionType
-		want string
-	}{
-		{
-			name: "SubscriptionCyclic",
-			s:    SubscriptionCyclic,
-			want: "SubscriptionCyclic",
-		},
-		{
-			name: "SubscriptionChangeOfState",
-			s:    SubscriptionChangeOfState,
-			want: "SubscriptionChangeOfState",
-		},
-		{
-			name: "SubscriptionEvent",
-			s:    SubscriptionEvent,
-			want: "SubscriptionEvent",
-		},
-		{
-			name: "Unknown",
-			s:    255,
-			want: "Unknown",
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			assert.Equalf(t, tt.want, tt.s.String(), "String()")
 		})
 	}
 }
