@@ -21,6 +21,9 @@ package opcua
 
 import (
 	"context"
+	"runtime/debug"
+	"sync"
+
 	"github.com/apache/plc4x/plc4go/pkg/api"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/spi"
@@ -28,10 +31,9 @@ import (
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/tracer"
+
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
-	"runtime/debug"
-	"sync"
 )
 
 //go:generate go run ../../tools/plc4xgenerator/gen.go -type=Connection

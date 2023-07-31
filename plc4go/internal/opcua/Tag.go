@@ -21,6 +21,7 @@ package opcua
 
 import (
 	"fmt"
+
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/opcua/readwrite/model"

@@ -20,10 +20,11 @@
 package opcua
 
 import (
-	"github.com/pkg/errors"
-	"github.com/rs/zerolog"
 	"sync"
 	"sync/atomic"
+
+	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
 )
 
 type SecureChannelTransactionManager struct {

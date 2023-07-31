@@ -22,6 +22,9 @@ package opcua
 import (
 	"context"
 	"encoding/binary"
+	"runtime/debug"
+	"strconv"
+
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/opcua/readwrite/model"
@@ -29,10 +32,9 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	spiValues "github.com/apache/plc4x/plc4go/spi/values"
+
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
-	"runtime/debug"
-	"strconv"
 )
 
 type Writer struct {

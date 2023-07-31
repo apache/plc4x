@@ -20,11 +20,13 @@
 package opcua
 
 import (
-	readWriteModel "github.com/apache/plc4x/plc4go/protocols/opcua/readwrite/model"
-	"github.com/google/uuid"
-	"github.com/pkg/errors"
 	"strconv"
 	"time"
+
+	readWriteModel "github.com/apache/plc4x/plc4go/protocols/opcua/readwrite/model"
+
+	"github.com/google/uuid"
+	"github.com/pkg/errors"
 )
 
 func generateNodeId(tag Tag) (readWriteModel.NodeId, error) {
