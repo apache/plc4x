@@ -266,7 +266,7 @@ func TestRenderTestCustom(t *testing.T) {
 			sut: NewDefaultPlcSubscriptionRequest(
 				nil,
 				[]string{"tagid"},
-				map[string]apiModel.PlcTag{
+				map[string]apiModel.PlcSubscriptionTag{
 					"tagid": nil,
 				},
 				map[string]apiModel.PlcSubscriptionType{

@@ -57,11 +57,11 @@ type PlcSubscriptionEventConsumer func(event PlcSubscriptionEvent)
 
 type PlcSubscriptionRequestBuilder interface {
 	AddCyclicTagAddress(tagName string, tagAddress string, interval time.Duration) PlcSubscriptionRequestBuilder
-	AddCyclicTag(tagName string, tag PlcTag, interval time.Duration) PlcSubscriptionRequestBuilder
+	AddCyclicTag(tagName string, tag PlcSubscriptionTag, interval time.Duration) PlcSubscriptionRequestBuilder
 	AddChangeOfStateTagAddress(tagName string, tagAddress string) PlcSubscriptionRequestBuilder
-	AddChangeOfStateTag(tagName string, tag PlcTag) PlcSubscriptionRequestBuilder
+	AddChangeOfStateTag(tagName string, tag PlcSubscriptionTag) PlcSubscriptionRequestBuilder
 	AddEventTagAddress(tagName string, tagAddress string) PlcSubscriptionRequestBuilder
-	AddEventTag(tagName string, tag PlcTag) PlcSubscriptionRequestBuilder
+	AddEventTag(tagName string, tag PlcSubscriptionTag) PlcSubscriptionRequestBuilder
 	AddPreRegisteredConsumer(tagName string, consumer PlcSubscriptionEventConsumer) PlcSubscriptionRequestBuilder
 	Build() (PlcSubscriptionRequest, error)
 }

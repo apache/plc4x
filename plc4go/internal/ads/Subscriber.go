@@ -77,7 +77,7 @@ func (m *Connection) Subscribe(ctx context.Context, subscriptionRequest apiModel
 		subSubscriptionRequests[tagName] = spiModel.NewDefaultPlcSubscriptionRequest(
 			m,
 			[]string{tagName},
-			map[string]apiModel.PlcTag{tagName: directTag},
+			map[string]apiModel.PlcSubscriptionTag{tagName: directTag},
 			map[string]apiModel.PlcSubscriptionType{tagName: subscriptionType},
 			map[string]time.Duration{tagName: interval},
 			map[string][]apiModel.PlcSubscriptionEventConsumer{tagName: preRegisteredConsumers},

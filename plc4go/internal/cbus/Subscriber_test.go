@@ -76,7 +76,7 @@ func TestSubscriber_Subscribe(t *testing.T) {
 			name: "just subscribe",
 			args: args{
 				in0:                 context.Background(),
-				subscriptionRequest: spiModel.NewDefaultPlcSubscriptionRequest(nil, []string{"blub"}, map[string]apiModel.PlcTag{"blub": NewMMIMonitorTag(readWriteModel.NewUnitAddress(1), nil, 1)}, nil, nil, nil),
+				subscriptionRequest: spiModel.NewDefaultPlcSubscriptionRequest(nil, []string{"blub"}, map[string]apiModel.PlcSubscriptionTag{"blub": NewMMIMonitorTag(readWriteModel.NewUnitAddress(1), nil, 1)}, nil, nil, nil),
 			},
 			setup: func(t *testing.T, fields *fields, args *args) {
 				fields.addSubscriber = func(subscriber *Subscriber) {

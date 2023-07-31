@@ -35,7 +35,7 @@ type DefaultPlcSubscriptionRequestBuilder struct {
 	valueHandler           spi.PlcValueHandler `ignore:"true"`
 	tagNames               []string
 	tagAddresses           map[string]string
-	tags                   map[string]apiModel.PlcTag
+	tags                   map[string]apiModel.PlcSubscriptionTag
 	types                  map[string]apiModel.PlcSubscriptionType
 	intervals              map[string]time.Duration
 	preRegisteredConsumers map[string][]apiModel.PlcSubscriptionEventConsumer `ignore:"true"`
@@ -48,7 +48,7 @@ func NewDefaultPlcSubscriptionRequestBuilder(tagHandler spi.PlcTagHandler, value
 		valueHandler:           valueHandler,
 		tagNames:               make([]string, 0),
 		tagAddresses:           map[string]string{},
-		tags:                   map[string]apiModel.PlcTag{},
+		tags:                   map[string]apiModel.PlcSubscriptionTag{},
 		types:                  map[string]apiModel.PlcSubscriptionType{},
 		intervals:              map[string]time.Duration{},
 		preRegisteredConsumers: make(map[string][]apiModel.PlcSubscriptionEventConsumer),
@@ -63,7 +63,7 @@ func (d *DefaultPlcSubscriptionRequestBuilder) AddCyclicTagAddress(name string, 
 	return d
 }
 
-func (d *DefaultPlcSubscriptionRequestBuilder) AddCyclicTag(name string, tag apiModel.PlcTag, interval time.Duration) apiModel.PlcSubscriptionRequestBuilder {
+func (d *DefaultPlcSubscriptionRequestBuilder) AddCyclicTag(name string, tag apiModel.PlcSubscriptionTag, interval time.Duration) apiModel.PlcSubscriptionRequestBuilder {
 	d.tagNames = append(d.tagNames, name)
 	d.tags[name] = tag
 	d.types[name] = apiModel.SubscriptionCyclic
@@ -78,7 +78,7 @@ func (d *DefaultPlcSubscriptionRequestBuilder) AddChangeOfStateTagAddress(name s
 	return d
 }
 
-func (d *DefaultPlcSubscriptionRequestBuilder) AddChangeOfStateTag(name string, tag apiModel.PlcTag) apiModel.PlcSubscriptionRequestBuilder {
+func (d *DefaultPlcSubscriptionRequestBuilder) AddChangeOfStateTag(name string, tag apiModel.PlcSubscriptionTag) apiModel.PlcSubscriptionRequestBuilder {
 	d.tagNames = append(d.tagNames, name)
 	d.tags[name] = tag
 	d.types[name] = apiModel.SubscriptionChangeOfState
@@ -92,7 +92,7 @@ func (d *DefaultPlcSubscriptionRequestBuilder) AddEventTagAddress(name string, t
 	return d
 }
 
-func (d *DefaultPlcSubscriptionRequestBuilder) AddEventTag(name string, tag apiModel.PlcTag) apiModel.PlcSubscriptionRequestBuilder {
+func (d *DefaultPlcSubscriptionRequestBuilder) AddEventTag(name string, tag apiModel.PlcSubscriptionTag) apiModel.PlcSubscriptionRequestBuilder {
 	d.tagNames = append(d.tagNames, name)
 	d.tags[name] = tag
 	d.types[name] = apiModel.SubscriptionEvent
@@ -114,7 +114,13 @@ func (d *DefaultPlcSubscriptionRequestBuilder) Build() (apiModel.PlcSubscription
 			if err != nil {
 				return nil, errors.Wrapf(err, "Error parsing tag query: %s", tagAddress)
 			}
-			d.tags[name] = tag
+			if tag == nil {
+				continue
+			}
+			d.tags[name], ok = tag.(apiModel.PlcSubscriptionTag)
+			if !ok {
+				return nil, errors.Errorf("%T isn't a PlcSubscriptionTag", tag)
+			}
 		}
 	}
 	return NewDefaultPlcSubscriptionRequest(d.subscriber, d.tagNames, d.tags, d.types, d.intervals, d.preRegisteredConsumers), nil
@@ -129,8 +135,12 @@ type DefaultPlcSubscriptionRequest struct {
 	subscriber             spi.PlcSubscriber
 }
 
-func NewDefaultPlcSubscriptionRequest(subscriber spi.PlcSubscriber, tagNames []string, tags map[string]apiModel.PlcTag, types map[string]apiModel.PlcSubscriptionType, intervals map[string]time.Duration, preRegisteredConsumers map[string][]apiModel.PlcSubscriptionEventConsumer) apiModel.PlcSubscriptionRequest {
-	return &DefaultPlcSubscriptionRequest{NewDefaultPlcTagRequest(tags, tagNames), types, intervals, preRegisteredConsumers, subscriber}
+func NewDefaultPlcSubscriptionRequest(subscriber spi.PlcSubscriber, tagNames []string, tags map[string]apiModel.PlcSubscriptionTag, types map[string]apiModel.PlcSubscriptionType, intervals map[string]time.Duration, preRegisteredConsumers map[string][]apiModel.PlcSubscriptionEventConsumer) apiModel.PlcSubscriptionRequest {
+	_tags := map[string]apiModel.PlcTag{}
+	for s, tag := range tags {
+		_tags[s] = tag
+	}
+	return &DefaultPlcSubscriptionRequest{NewDefaultPlcTagRequest(_tags, tagNames), types, intervals, preRegisteredConsumers, subscriber}
 }
 
 func (d *DefaultPlcSubscriptionRequest) Execute() <-chan apiModel.PlcSubscriptionRequestResult {
