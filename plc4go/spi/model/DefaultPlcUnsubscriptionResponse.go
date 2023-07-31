@@ -25,10 +25,14 @@ var _ apiModel.PlcUnsubscriptionResponse = &DefaultPlcUnsubscriptionResponse{}
 
 //go:generate go run ../../tools/plc4xgenerator/gen.go -type=DefaultPlcUnsubscriptionResponse
 type DefaultPlcUnsubscriptionResponse struct {
-	// TODO: implement
-	implementMe string
+	request apiModel.PlcUnsubscriptionRequest `ignore:"true"`
+	none    string
 }
 
-func NewDefaultPlcUnsubscriptionResponse() *DefaultPlcUnsubscriptionResponse {
-	return &DefaultPlcUnsubscriptionResponse{}
+func (d *DefaultPlcUnsubscriptionResponse) GetRequest() apiModel.PlcUnsubscriptionRequest {
+	return d.request
+}
+
+func NewDefaultPlcUnsubscriptionResponse(request apiModel.PlcUnsubscriptionRequest) *DefaultPlcUnsubscriptionResponse {
+	return &DefaultPlcUnsubscriptionResponse{request: request}
 }

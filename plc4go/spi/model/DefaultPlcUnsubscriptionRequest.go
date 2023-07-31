@@ -21,30 +21,50 @@ package model
 
 import (
 	"context"
+	"github.com/apache/plc4x/plc4go/spi"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 )
+
+var _ apiModel.PlcUnsubscriptionRequestBuilder = &DefaultPlcUnsubscriptionRequestBuilder{}
+
+//go:generate go run ../../tools/plc4xgenerator/gen.go -type=DefaultPlcUnsubscriptionRequestBuilder
+type DefaultPlcUnsubscriptionRequestBuilder struct {
+	subscriptionHandles []apiModel.PlcSubscriptionHandle
+}
+
+func (d *DefaultPlcUnsubscriptionRequestBuilder) AddHandles(subscriptionHandles ...apiModel.PlcSubscriptionHandle) {
+	subscriptionHandles = append(subscriptionHandles, subscriptionHandles...)
+}
+
+func (d *DefaultPlcUnsubscriptionRequestBuilder) Build() (apiModel.PlcUnsubscriptionRequest, error) {
+	return NewDefaultPlcUnsubscriptionRequest(d.subscriptionHandles), nil
+}
 
 var _ apiModel.PlcUnsubscriptionRequest = &DefaultPlcUnsubscriptionRequest{}
 
 //go:generate go run ../../tools/plc4xgenerator/gen.go -type=DefaultPlcUnsubscriptionRequest
 type DefaultPlcUnsubscriptionRequest struct {
-	// TODO: implement
-	implementMe string
+	subscriber          spi.PlcSubscriber
+	subscriptionHandles []apiModel.PlcSubscriptionHandle
 }
 
-func NewDefaultPlcUnsubscriptionRequest() *DefaultPlcUnsubscriptionRequest {
-	return &DefaultPlcUnsubscriptionRequest{}
+func NewDefaultPlcUnsubscriptionRequest(subscriptionHandles []apiModel.PlcSubscriptionHandle) *DefaultPlcUnsubscriptionRequest {
+	return &DefaultPlcUnsubscriptionRequest{
+		subscriptionHandles: subscriptionHandles,
+	}
 }
 
 func (d *DefaultPlcUnsubscriptionRequest) Execute() <-chan apiModel.PlcUnsubscriptionRequestResult {
-	//TODO implement me
-	panic("implement me")
+	return d.ExecuteWithContext(context.Background())
 }
 
 func (d *DefaultPlcUnsubscriptionRequest) ExecuteWithContext(ctx context.Context) <-chan apiModel.PlcUnsubscriptionRequestResult {
-	//TODO implement me
-	panic("implement me")
+	return d.subscriber.Unsubscribe(ctx, d)
+}
+
+func (d *DefaultPlcUnsubscriptionRequest) GetSubscriptionHandles() []apiModel.PlcSubscriptionHandle {
+	return d.subscriptionHandles
 }
 
 func (d *DefaultPlcUnsubscriptionRequest) IsAPlcMessage() bool {

@@ -21,14 +21,15 @@ package model
 
 import "context"
 
-type PlcUnsubscriptionRequestBuilder interface {
-	// TODO: Implement
-}
-
 type PlcUnsubscriptionRequestResult interface {
 	GetRequest() PlcUnsubscriptionRequest
 	GetResponse() PlcUnsubscriptionResponse
 	GetErr() error
+}
+
+type PlcUnsubscriptionRequestBuilder interface {
+	AddHandles(PlcSubscriptionHandle ...PlcSubscriptionHandle)
+	Build() (PlcUnsubscriptionRequest, error)
 }
 
 type PlcUnsubscriptionRequest interface {
@@ -38,4 +39,5 @@ type PlcUnsubscriptionRequest interface {
 }
 
 type PlcUnsubscriptionResponse interface {
+	GetRequest() PlcUnsubscriptionRequest
 }

@@ -313,8 +313,8 @@ func TestRenderTestCustom(t *testing.T) {
 		},
 		{
 			sut: NewDefaultPlcUnsubscriptionRequestResult(
-				NewDefaultPlcUnsubscriptionRequest(),
-				NewDefaultPlcUnsubscriptionResponse(),
+				NewDefaultPlcUnsubscriptionRequest(nil),
+				NewDefaultPlcUnsubscriptionResponse(nil),
 				nil,
 			).(interface { // TODO: workaround
 				fmt.Stringer
