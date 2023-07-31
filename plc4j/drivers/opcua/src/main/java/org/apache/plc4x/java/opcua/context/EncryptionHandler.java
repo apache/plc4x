@@ -33,7 +33,10 @@ import javax.crypto.Cipher;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.ByteArrayInputStream;
-import java.security.*;
+import java.security.PrivateKey;
+import java.security.PublicKey;
+import java.security.Security;
+import java.security.Signature;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 
@@ -41,6 +44,8 @@ import java.security.cert.X509Certificate;
 public class EncryptionHandler {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OpcuaProtocolLogic.class);
+
+    private static int PREENCRYPTED_BLOCK_LENGTH = 190;
 
     static {
         // Required for SecurityPolicy.Aes256_Sha256_RsaPss
@@ -70,7 +75,6 @@ public class EncryptionHandler {
     }
 
     public ReadBuffer encodeMessage(MessagePDU pdu, byte[] message) {
-        int PREENCRYPTED_BLOCK_LENGTH = 190;
         int unencryptedLength = pdu.getLengthInBytes();
         int openRequestLength = message.length;
         int positionFirstBlock = unencryptedLength - openRequestLength - 8;
@@ -101,7 +105,7 @@ public class EncryptionHandler {
             }
             buf.setPos(positionFirstBlock);
             encryptBlock(buf, getBytes(buf.getBytes(), positionFirstBlock, positionFirstBlock + preEncryptedLength));
-            return new ReadBufferByteBased(buf.getData(), ByteOrder.LITTLE_ENDIAN);
+            return new ReadBufferByteBased(buf.getBytes(), ByteOrder.LITTLE_ENDIAN);
         } catch (SerializationException e) {
             throw new PlcRuntimeException("Unable to parse apu prior to encrypting");
         }
@@ -170,8 +174,7 @@ public class EncryptionHandler {
             signature.update(data);
             return signature.verify(data, 0, data.length - 256);
         } catch (Exception e) {
-            e.printStackTrace();
-            LOGGER.error("Unable to sign Data");
+            LOGGER.error("Unable to sign Data", e);
             return false;
         }
     }
@@ -199,8 +202,7 @@ public class EncryptionHandler {
                 }
             }
         } catch (Exception e) {
-            LOGGER.error("Unable to encrypt Data");
-            e.printStackTrace();
+            LOGGER.error("Unable to encrypt Data", e);
         }
     }
 
@@ -238,8 +240,7 @@ public class EncryptionHandler {
             LOGGER.info("----------------Signature Length{}", ss.length);
             return ss;
         } catch (Exception e) {
-            e.printStackTrace();
-            LOGGER.error("Unable to sign Data");
+            LOGGER.error("Unable to sign Data", e);
             return null;
         }
     }

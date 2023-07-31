@@ -25,8 +25,8 @@ import org.apache.plc4x.java.api.model.ArrayInfo;
 import org.apache.plc4x.java.api.model.PlcSubscriptionTag;
 import org.apache.plc4x.java.api.types.PlcSubscriptionType;
 import org.apache.plc4x.java.api.types.PlcValueType;
-import org.apache.plc4x.java.opcua.readwrite.OpcuaIdentifierType;
 import org.apache.plc4x.java.opcua.readwrite.OpcuaDataType;
+import org.apache.plc4x.java.opcua.readwrite.OpcuaIdentifierType;
 
 import java.time.Duration;
 import java.util.List;

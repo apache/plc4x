@@ -53,5 +53,4 @@ public class OpcuaOptimizer extends BaseOptimizer{
         return processedRequests;
     }
 
-
 }

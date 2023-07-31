@@ -88,13 +88,13 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
         for (String tagName : this.tagNames) {
             final DefaultPlcSubscriptionTag tagDefaultPlcSubscription = (DefaultPlcSubscriptionTag) subscriptionRequest.getTag(tagName);
 
-            NodeId idNode = generateNodeId((OpcuaTag) tagDefaultPlcSubscription.getTag());
+            NodeId idNode = OpcuaProtocolLogic.generateNodeId((OpcuaTag) tagDefaultPlcSubscription.getTag());
 
             ReadValueId readValueId = new ReadValueId(
-                    idNode,
-                    0xD,
-                    OpcuaProtocolLogic.NULL_STRING,
-                    new QualifiedName(0, OpcuaProtocolLogic.NULL_STRING));
+                idNode,
+                0xD,
+                OpcuaProtocolLogic.NULL_STRING,
+                new QualifiedName(0, OpcuaProtocolLogic.NULL_STRING));
 
             MonitoringMode monitoringMode;
             switch (tagDefaultPlcSubscription.getPlcSubscriptionType()) {
@@ -114,15 +114,15 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
             long clientHandle = clientHandles.getAndIncrement();
 
             MonitoringParameters parameters = new MonitoringParameters(
-                    clientHandle,
-                    (double) cycleTime,     // sampling interval
-                    OpcuaProtocolLogic.NULL_EXTENSION_OBJECT,       // filter, null means use default
-                    1L,   // queue size
-                    true        // discard oldest
+                clientHandle,
+                (double) cycleTime,     // sampling interval
+                OpcuaProtocolLogic.NULL_EXTENSION_OBJECT,       // filter, null means use default
+                1L,   // queue size
+                true        // discard oldest
             );
 
             MonitoredItemCreateRequest request = new MonitoredItemCreateRequest(
-                    readValueId, monitoringMode, parameters);
+                readValueId, monitoringMode, parameters);
 
             requestList.add(request);
         }
@@ -442,30 +442,5 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
         consumers.add(consumer);
         return new DefaultPlcConsumerRegistration(plcSubscriber, consumer, this);
     }
-
-    /**
-     * Given an PLC4X OpcuaTag generate the OPC UA Node Id
-     *
-     * @param tag - The PLC4X OpcuaTag, this is the tag generated from the OpcuaTag class from the parsed tag string.
-     * @return NodeId - Returns an OPC UA Node Id which can be sent over the wire.
-     */
-    private NodeId generateNodeId(OpcuaTag tag) {
-        NodeId nodeId = null;
-        if (tag.getIdentifierType() == OpcuaIdentifierType.BINARY_IDENTIFIER) {
-            nodeId = new NodeId(new NodeIdTwoByte(Short.parseShort(tag.getIdentifier())));
-        } else if (tag.getIdentifierType() == OpcuaIdentifierType.NUMBER_IDENTIFIER) {
-            nodeId = new NodeId(new NodeIdNumeric((short) tag.getNamespace(), Long.parseLong(tag.getIdentifier())));
-        } else if (tag.getIdentifierType() == OpcuaIdentifierType.GUID_IDENTIFIER) {
-            UUID guid = UUID.fromString(tag.getIdentifier());
-            byte[] guidBytes = new byte[16];
-            System.arraycopy(guid.getMostSignificantBits(), 0, guidBytes, 0, 8);
-            System.arraycopy(guid.getLeastSignificantBits(), 0, guidBytes, 8, 8);
-            nodeId = new NodeId(new NodeIdGuid((short) tag.getNamespace(), guidBytes));
-        } else if (tag.getIdentifierType() == OpcuaIdentifierType.STRING_IDENTIFIER) {
-            nodeId = new NodeId(new NodeIdString((short) tag.getNamespace(), new PascalString(tag.getIdentifier())));
-        }
-        return nodeId;
-    }
-
 
 }

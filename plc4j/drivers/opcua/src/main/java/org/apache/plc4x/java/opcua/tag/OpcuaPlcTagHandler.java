@@ -22,8 +22,6 @@ import org.apache.plc4x.java.api.exceptions.PlcInvalidTagException;
 import org.apache.plc4x.java.api.model.PlcQuery;
 import org.apache.plc4x.java.spi.connection.PlcTagHandler;
 
-/**
- */
 public class OpcuaPlcTagHandler implements PlcTagHandler {
 
     @Override

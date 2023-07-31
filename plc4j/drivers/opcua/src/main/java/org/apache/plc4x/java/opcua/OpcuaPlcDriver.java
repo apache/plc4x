@@ -18,41 +18,39 @@
  */
 package org.apache.plc4x.java.opcua;
 
+import io.netty.buffer.ByteBuf;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
-import org.apache.plc4x.java.opcua.tag.OpcuaTag;
-import org.apache.plc4x.java.opcua.tag.OpcuaPlcTagHandler;
+import org.apache.plc4x.java.opcua.config.OpcuaConfiguration;
 import org.apache.plc4x.java.opcua.optimizer.OpcuaOptimizer;
-import org.apache.plc4x.java.opcua.protocol.*;
-import org.apache.plc4x.java.opcua.config.*;
-import org.apache.plc4x.java.opcua.readwrite.*;
+import org.apache.plc4x.java.opcua.protocol.OpcuaProtocolLogic;
+import org.apache.plc4x.java.opcua.readwrite.OpcuaAPU;
+import org.apache.plc4x.java.opcua.tag.OpcuaPlcTagHandler;
+import org.apache.plc4x.java.opcua.tag.OpcuaTag;
+import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.configuration.ConfigurationFactory;
 import org.apache.plc4x.java.spi.connection.*;
 import org.apache.plc4x.java.spi.transport.Transport;
 import org.apache.plc4x.java.spi.values.PlcValueHandler;
-import org.apache.plc4x.java.spi.configuration.Configuration;
-import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
-import io.netty.buffer.ByteBuf;
 
 import java.util.ServiceLoader;
+import java.util.function.ToIntFunction;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import java.util.function.ToIntFunction;
 
 import static org.apache.plc4x.java.spi.configuration.ConfigurationFactory.configure;
 
 public class OpcuaPlcDriver extends GeneratedDriverBase<OpcuaAPU> {
 
     public static final Pattern INET_ADDRESS_PATTERN = Pattern.compile("(:(?<transportCode>[a-z0-9]*))?://" +
-                                                                        "(?<transportHost>[\\w.-]+)(:" +
-                                                                        "(?<transportPort>\\d*))?");
+        "(?<transportHost>[\\w.-]+)(:" +
+        "(?<transportPort>\\d*))?");
 
     public static final Pattern URI_PATTERN = Pattern.compile("^(?<protocolCode>opcua)" +
-                                                                    INET_ADDRESS_PATTERN +
-                                                                    "(?<transportEndpoint>[\\w/=]*)[\\?]?" +
-                                                                    "(?<paramString>([^\\=]+\\=[^\\=&]+[&]?)*)"
-                                                                );
+        INET_ADDRESS_PATTERN +
+        "(?<transportEndpoint>[\\w/=]*)[\\?]?" +
+        "(?<paramString>([^\\=]+\\=[^\\=&]+[&]?)*)"
+    );
 
     private boolean isEncrypted;
 
@@ -77,11 +75,6 @@ public class OpcuaPlcDriver extends GeneratedDriverBase<OpcuaAPU> {
     }
 
     @Override
-    protected boolean awaitSetupComplete() {
-        return true;
-    }
-
-    @Override
     protected boolean awaitDiscoverComplete() {
         return isEncrypted;
     }
@@ -99,11 +92,6 @@ public class OpcuaPlcDriver extends GeneratedDriverBase<OpcuaAPU> {
     @Override
     protected boolean canSubscribe() {
         return true;
-    }
-
-    @Override
-    protected boolean canBrowse() {
-        return false;
     }
 
     @Override
@@ -152,7 +140,7 @@ public class OpcuaPlcDriver extends GeneratedDriverBase<OpcuaAPU> {
         final String paramString = matcher.group("paramString");
 
         // Check if the protocol code matches this driver.
-        if(!protocolCode.equals(getProtocolCode())) {
+        if (!protocolCode.equals(getProtocolCode())) {
             // Actually this shouldn't happen as the DriverManager should have not used this driver in the first place.
             throw new PlcConnectionException(
                 "This driver is not suited to handle this connection string");
@@ -161,7 +149,7 @@ public class OpcuaPlcDriver extends GeneratedDriverBase<OpcuaAPU> {
         // Create the configuration object.
         OpcuaConfiguration configuration = (OpcuaConfiguration) new ConfigurationFactory().createConfiguration(
             getConfigurationType(), paramString);
-        if(configuration == null) {
+        if (configuration == null) {
             throw new PlcConnectionException("Unsupported configuration");
         }
         configuration.setTransportCode(transportCode);
@@ -175,12 +163,12 @@ public class OpcuaPlcDriver extends GeneratedDriverBase<OpcuaAPU> {
         ServiceLoader<Transport> transportLoader = ServiceLoader.load(
             Transport.class, Thread.currentThread().getContextClassLoader());
         for (Transport curTransport : transportLoader) {
-            if(curTransport.getTransportCode().equals(transportCode)) {
+            if (curTransport.getTransportCode().equals(transportCode)) {
                 transport = curTransport;
                 break;
             }
         }
-        if(transport == null) {
+        if (transport == null) {
             throw new PlcConnectionException("Unsupported transport " + transportCode);
         }
 
@@ -189,7 +177,7 @@ public class OpcuaPlcDriver extends GeneratedDriverBase<OpcuaAPU> {
 
         // Create an instance of the communication channel which the driver should use.
         ChannelFactory channelFactory = transport.createChannelFactory(transportHost + ":" + transportPort);
-        if(channelFactory == null) {
+        if (channelFactory == null) {
             throw new PlcConnectionException("Unable to get channel factory from url " + transportHost + ":" + transportPort);
         }
         configure(configuration, channelFactory);
@@ -199,13 +187,13 @@ public class OpcuaPlcDriver extends GeneratedDriverBase<OpcuaAPU> {
 
         // Make the "await setup complete" overridable via system property.
         boolean awaitSetupComplete = awaitSetupComplete();
-        if(System.getProperty(PROPERTY_PLC4X_FORCE_AWAIT_SETUP_COMPLETE) != null) {
+        if (System.getProperty(PROPERTY_PLC4X_FORCE_AWAIT_SETUP_COMPLETE) != null) {
             awaitSetupComplete = Boolean.parseBoolean(System.getProperty(PROPERTY_PLC4X_FORCE_AWAIT_SETUP_COMPLETE));
         }
 
         // Make the "await disconnect complete" overridable via system property.
         boolean awaitDisconnectComplete = awaitDisconnectComplete();
-        if(System.getProperty(PROPERTY_PLC4X_FORCE_AWAIT_DISCONNECT_COMPLETE) != null) {
+        if (System.getProperty(PROPERTY_PLC4X_FORCE_AWAIT_DISCONNECT_COMPLETE) != null) {
             awaitDisconnectComplete = Boolean.parseBoolean(System.getProperty(PROPERTY_PLC4X_FORCE_AWAIT_DISCONNECT_COMPLETE));
         }
 
@@ -221,7 +209,7 @@ public class OpcuaPlcDriver extends GeneratedDriverBase<OpcuaAPU> {
 
         // Make the "await disconnect complete" overridable via system property.
         boolean awaitDiscoverComplete = awaitDiscoverComplete();
-        if(System.getProperty(PROPERTY_PLC4X_FORCE_AWAIT_DISCOVER_COMPLETE) != null) {
+        if (System.getProperty(PROPERTY_PLC4X_FORCE_AWAIT_DISCOVER_COMPLETE) != null) {
             awaitDiscoverComplete = Boolean.parseBoolean(System.getProperty(PROPERTY_PLC4X_FORCE_AWAIT_DISCOVER_COMPLETE));
         }
 
@@ -239,7 +227,9 @@ public class OpcuaPlcDriver extends GeneratedDriverBase<OpcuaAPU> {
             null);
     }
 
-    /** Estimate the Length of a Packet */
+    /**
+     * Estimate the Length of a Packet
+     */
     public static class ByteLengthEstimator implements ToIntFunction<ByteBuf> {
         @Override
         public int applyAsInt(ByteBuf byteBuf) {
@@ -251,7 +241,7 @@ public class OpcuaPlcDriver extends GeneratedDriverBase<OpcuaAPU> {
     }
 
     @Override
-    public OpcuaTag prepareTag(String tagAddress){
+    public OpcuaTag prepareTag(String tagAddress) {
         return OpcuaTag.of(tagAddress);
     }
 

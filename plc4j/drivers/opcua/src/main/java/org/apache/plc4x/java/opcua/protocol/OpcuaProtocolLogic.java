@@ -27,8 +27,8 @@ import org.apache.plc4x.java.api.types.PlcValueType;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.opcua.config.OpcuaConfiguration;
 import org.apache.plc4x.java.opcua.context.SecureChannel;
-import org.apache.plc4x.java.opcua.tag.OpcuaTag;
 import org.apache.plc4x.java.opcua.readwrite.*;
+import org.apache.plc4x.java.opcua.tag.OpcuaTag;
 import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
 import org.apache.plc4x.java.spi.configuration.HasConfiguration;
@@ -38,8 +38,8 @@ import org.apache.plc4x.java.spi.messages.*;
 import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
 import org.apache.plc4x.java.spi.model.DefaultPlcConsumerRegistration;
 import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionTag;
-import org.apache.plc4x.java.spi.values.PlcValueHandler;
 import org.apache.plc4x.java.spi.values.PlcList;
+import org.apache.plc4x.java.spi.values.PlcValueHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -195,7 +195,7 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
                         future.complete(new DefaultPlcReadResponse(request, status));
                         return;
                     }
-                } catch (ParseException|PlcRuntimeException e) {
+                } catch (ParseException | PlcRuntimeException e) {
                     future.completeExceptionally(new PlcRuntimeException(e));
                 }
             };
@@ -220,7 +220,7 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
         return future;
     }
 
-    private NodeId generateNodeId(OpcuaTag tag) {
+    static NodeId generateNodeId(OpcuaTag tag) {
         NodeId nodeId = null;
         if (tag.getIdentifierType() == OpcuaIdentifierType.BINARY_IDENTIFIER) {
             nodeId = new NodeId(new NodeIdTwoByte(Short.parseShort(tag.getIdentifier())));
@@ -855,7 +855,7 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
                 try {
                     responseMessage = (CreateSubscriptionResponse) ExtensionObject.staticParse(new ReadBufferByteBased(opcuaResponse, ByteOrder.LITTLE_ENDIAN), false).getBody();
                 } catch (ParseException e) {
-                    e.printStackTrace();
+                    LOGGER.error("error parsing", e);
                 }
 
                 // Pass the response back to the application.
