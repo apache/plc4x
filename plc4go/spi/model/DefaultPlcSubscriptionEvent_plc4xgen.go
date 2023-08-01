@@ -45,7 +45,8 @@ func (d *DefaultPlcSubscriptionEvent) SerializeWithWriteBuffer(ctx context.Conte
 	if err := writeBuffer.PushContext("values", utils.WithRenderAsList(true)); err != nil {
 		return err
 	}
-	for name, elem := range d.values {
+	for _name, elem := range d.values {
+		name := _name
 
 		var elem any = elem
 		if serializable, ok := elem.(utils.Serializable); ok {

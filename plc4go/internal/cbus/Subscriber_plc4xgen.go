@@ -42,6 +42,33 @@ func (d *Subscriber) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 	if err := writeBuffer.PushContext("Subscriber"); err != nil {
 		return err
 	}
+	if err := writeBuffer.PushContext("consumers", utils.WithRenderAsList(true)); err != nil {
+		return err
+	}
+	for _name, elem := range d.consumers {
+		name := fmt.Sprintf("%v", _name)
+
+		var elem any = elem
+		if serializable, ok := elem.(utils.Serializable); ok {
+			if err := writeBuffer.PushContext(name); err != nil {
+				return err
+			}
+			if err := serializable.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
+				return err
+			}
+			if err := writeBuffer.PopContext(name); err != nil {
+				return err
+			}
+		} else {
+			elemAsString := fmt.Sprintf("%v", elem)
+			if err := writeBuffer.WriteString(name, uint32(len(elemAsString)*8), "UTF-8", elemAsString); err != nil {
+				return err
+			}
+		}
+	}
+	if err := writeBuffer.PopContext("consumers", utils.WithRenderAsList(true)); err != nil {
+		return err
+	}
 
 	if err := writeBuffer.WriteBit("addSubscriber", d.addSubscriber != nil); err != nil {
 		return err

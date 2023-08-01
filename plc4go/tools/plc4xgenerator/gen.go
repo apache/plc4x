@@ -347,12 +347,19 @@ func (g *Generator) generate(typeName string) {
 				g.Printf("if err := writeBuffer.PopContext(%s, utils.WithRenderAsList(true)); err != nil {\n\t\treturn err\n\t}\n", fieldNameUntitled)
 			}
 		case *ast.MapType:
-			if ident, ok := fieldType.Key.(*ast.Ident); !ok || ident.Name != "string" {
-				fmt.Printf("Only string types are supported for maps right now")
-			}
 			g.Printf("if err := writeBuffer.PushContext(%s, utils.WithRenderAsList(true)); err != nil {\n\t\treturn err\n\t}\n", fieldNameUntitled)
 			// TODO: we use serializable or strings as we don't want to over-complex this
-			g.Printf("for name, elem := range d.%s {\n", fieldName)
+			g.Printf("for _name, elem := range d.%s {\n", fieldName)
+			if ident, ok := fieldType.Key.(*ast.Ident); !ok || ident.Name != "string" {
+				switch ident.Name {
+				case "uint", "uint8", "uint16", "uint32", "uint64", "int", "int8", "int16", "int32", "int64": // TODO: add other types
+					g.Printf("\t\tname := fmt.Sprintf(\"%s\", _name)\n", "%v")
+				default:
+					g.Printf("\t\tname := fmt.Sprintf(\"%s\", &_name)\n", "%v")
+				}
+			} else {
+				g.Printf("\t\tname := _name\n")
+			}
 			switch eltType := fieldType.Value.(type) {
 			case *ast.StarExpr, *ast.SelectorExpr:
 				g.Printf("\n\t\tvar elem any = elem\n")

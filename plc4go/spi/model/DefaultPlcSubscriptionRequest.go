@@ -38,7 +38,7 @@ type DefaultPlcSubscriptionRequestBuilder struct {
 	tags                   map[string]apiModel.PlcSubscriptionTag
 	types                  map[string]apiModel.PlcSubscriptionType
 	intervals              map[string]time.Duration
-	preRegisteredConsumers map[string][]apiModel.PlcSubscriptionEventConsumer `ignore:"true"`
+	preRegisteredConsumers map[string][]apiModel.PlcSubscriptionEventConsumer
 }
 
 func NewDefaultPlcSubscriptionRequestBuilder(tagHandler spi.PlcTagHandler, valueHandler spi.PlcValueHandler, subscriber spi.PlcSubscriber) apiModel.PlcSubscriptionRequestBuilder {

@@ -45,7 +45,8 @@ func (d *plcDriverManger) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 	if err := writeBuffer.PushContext("drivers", utils.WithRenderAsList(true)); err != nil {
 		return err
 	}
-	for name, elem := range d.drivers {
+	for _name, elem := range d.drivers {
+		name := _name
 		_value := fmt.Sprintf("%v", elem)
 
 		if err := writeBuffer.WriteString(name, uint32(len(_value)*8), "UTF-8", _value); err != nil {
@@ -58,7 +59,8 @@ func (d *plcDriverManger) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 	if err := writeBuffer.PushContext("transports", utils.WithRenderAsList(true)); err != nil {
 		return err
 	}
-	for name, elem := range d.transports {
+	for _name, elem := range d.transports {
+		name := _name
 
 		var elem any = elem
 		if serializable, ok := elem.(utils.Serializable); ok {

@@ -48,7 +48,8 @@ func (d *DefaultPlcSubscriptionRequest) SerializeWithWriteBuffer(ctx context.Con
 	if err := writeBuffer.PushContext("types", utils.WithRenderAsList(true)); err != nil {
 		return err
 	}
-	for name, elem := range d.types {
+	for _name, elem := range d.types {
+		name := _name
 
 		var elem any = elem
 		if serializable, ok := elem.(utils.Serializable); ok {
@@ -74,7 +75,8 @@ func (d *DefaultPlcSubscriptionRequest) SerializeWithWriteBuffer(ctx context.Con
 	if err := writeBuffer.PushContext("intervals", utils.WithRenderAsList(true)); err != nil {
 		return err
 	}
-	for name, elem := range d.intervals {
+	for _name, elem := range d.intervals {
+		name := _name
 
 		var elem any = elem
 		if serializable, ok := elem.(utils.Serializable); ok {
