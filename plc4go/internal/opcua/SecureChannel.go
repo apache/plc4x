@@ -143,6 +143,9 @@ func NewSecureChannel(log zerolog.Logger, ctx DriverContext, configuration Confi
 		lifetime:                  DEFAULT_CONNECTION_LIFETIME,
 		log:                       log,
 	}
+	s.requestHandleGenerator.Store(1)
+	s.channelId.Store(1)
+	s.tokenId.Store(1)
 	ckp := configuration.ckp
 	if configuration.securityPolicy == "Basic256Sha256" {
 		//Sender Certificate gets populated during the 'discover' phase when encryption is enabled.

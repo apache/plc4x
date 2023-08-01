@@ -66,6 +66,7 @@ func NewSubscriptionHandle(log zerolog.Logger, subscriber *Subscriber, messageCo
 		cycleTime:           cycleTime,
 		log:                 log,
 	}
+	s.clientHandles.Store(1)
 	s.DefaultPlcSubscriptionHandle = spiModel.NewDefaultPlcSubscriptionHandleWithHandleToRegister(subscriber, s)
 	_, err := s.onSubscribeCreateMonitoredItemsRequest()
 	if err != nil {
