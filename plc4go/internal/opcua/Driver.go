@@ -124,10 +124,13 @@ func (m *Driver) GetConnectionWithContext(ctx context.Context, transportUrl url.
 	configuration.transportEndpoint = transportEndpoint
 	configuration.endpoint = "opc." + transportCode + "://" + transportHost + ":" + transportPort + "" + transportEndpoint
 
-	if configuration.securityPolicy != "" && configuration.securityPolicy != "None" {
+	if securityPolicy := configuration.securityPolicy; securityPolicy != "" && securityPolicy != "None" {
+		m.log.Trace().Str("securityPolicy", securityPolicy).Msg("working with security policy")
 		if err := configuration.openKeyStore(); err != nil {
 			return m.reportError(errors.Wrap(err, "error opening key store"))
 		}
+	} else {
+		m.log.Trace().Msg("no security policy")
 	}
 
 	driverContext := NewDriverContext(configuration)

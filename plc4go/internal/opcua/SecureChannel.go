@@ -53,7 +53,7 @@ const (
 	DEFAULT_MAX_MESSAGE_SIZE      = 2097152
 	DEFAULT_RECEIVE_BUFFER_SIZE   = 65535
 	DEFAULT_SEND_BUFFER_SIZE      = 65535
-	REQUEST_TIMEOUT               = 10000 * time.Millisecond
+	REQUEST_TIMEOUT               = 10 * time.Second
 	REQUEST_TIMEOUT_LONG          = 10000
 	PASSWORD_ENCRYPTION_ALGORITHM = "http://www.w3.org/2001/04/xmlenc#rsa-oaep"
 	EPOCH_OFFSET                  = 116444736000000000 //Offset between OPC UA epoch time and linux epoch time.
@@ -314,6 +314,7 @@ func (s *SecureChannel) onConnect(ctx context.Context, codec *MessageCodec) {
 			},
 			func(err error) error {
 				s.log.Debug().Err(err).Msg("error submitting")
+				s.codec.fireDisconnected() // TODO: is that right here?
 				return nil
 			},
 			REQUEST_TIMEOUT); err != nil {
@@ -328,7 +329,11 @@ func (s *SecureChannel) onConnect(ctx context.Context, codec *MessageCodec) {
 func (s *SecureChannel) onConnectOpenSecureChannel(ctx context.Context, codec *MessageCodec, response readWriteModel.OpcuaAcknowledgeResponse) {
 	transactionId := s.channelTransactionManager.getTransactionIdentifier()
 
-	requestHeader := readWriteModel.NewRequestHeader(readWriteModel.NewNodeId(s.authenticationToken),
+	if s.authenticationToken == nil {
+		panic("authenticationToken should be set at this point")
+	}
+	requestHeader := readWriteModel.NewRequestHeader(
+		s.getAuthenticationToken(),
 		s.getCurrentDateTime(),
 		0, //RequestHandle
 		0,
@@ -471,8 +476,11 @@ func (s *SecureChannel) onConnectOpenSecureChannel(ctx context.Context, codec *M
 }
 
 func (s *SecureChannel) onConnectCreateSessionRequest(ctx context.Context, codec *MessageCodec) {
+	if s.authenticationToken == nil {
+		panic("authenticationToken should be set at this point")
+	}
 	requestHeader := readWriteModel.NewRequestHeader(
-		readWriteModel.NewNodeId(s.authenticationToken),
+		s.getAuthenticationToken(),
 		s.getCurrentDateTime(),
 		0,
 		0,
@@ -607,8 +615,11 @@ func (s *SecureChannel) onConnectActivateSessionRequest(ctx context.Context, cod
 
 	requestHandle := s.getRequestHandle()
 
+	if s.authenticationToken == nil {
+		panic("authenticationToken should be set at this point")
+	}
 	requestHeader := readWriteModel.NewRequestHeader(
-		readWriteModel.NewNodeId(s.authenticationToken),
+		s.getAuthenticationToken(),
 		s.getCurrentDateTime(),
 		requestHandle,
 		0,
@@ -716,8 +727,13 @@ func (s *SecureChannel) onDisconnect(ctx context.Context, codec *MessageCodec) {
 		nil,
 		nil) //Identifier for OpenSecureChannel
 
+	if s.authenticationToken == nil {
+		// TODO: this or nil?? What do we do when we don't have one?
+		s.log.Error().Msg("no authentication token, so we can't disconnect")
+		return
+	}
 	requestHeader := readWriteModel.NewRequestHeader(
-		readWriteModel.NewNodeId(s.authenticationToken),
+		s.getAuthenticationToken(),
 		s.getCurrentDateTime(),
 		requestHandle, //RequestHandle
 		0,
@@ -786,7 +802,11 @@ func (s *SecureChannel) onDisconnect(ctx context.Context, codec *MessageCodec) {
 func (s *SecureChannel) onDisconnectCloseSecureChannel(ctx context.Context, codec *MessageCodec, message readWriteModel.CloseSessionResponseExactly, response readWriteModel.CloseSessionResponse) {
 	transactionId := s.channelTransactionManager.getTransactionIdentifier()
 
-	requestHeader := readWriteModel.NewRequestHeader(readWriteModel.NewNodeId(s.authenticationToken),
+	if s.authenticationToken == nil {
+		panic("authenticationToken should be set at this point")
+	}
+	requestHeader := readWriteModel.NewRequestHeader(
+		s.getAuthenticationToken(),
 		s.getCurrentDateTime(),
 		0, //RequestHandle
 		0,
@@ -922,7 +942,11 @@ func (s *SecureChannel) onDiscover(ctx context.Context, codec *MessageCodec) {
 func (s *SecureChannel) onDiscoverOpenSecureChannel(ctx context.Context, codec *MessageCodec, opcuaAcknowledgeResponse readWriteModel.OpcuaAcknowledgeResponse) {
 	transactionId := s.channelTransactionManager.getTransactionIdentifier()
 
-	requestHeader := readWriteModel.NewRequestHeader(readWriteModel.NewNodeId(s.authenticationToken),
+	if s.authenticationToken == nil {
+		panic("authenticationToken should be set at this point")
+	}
+	requestHeader := readWriteModel.NewRequestHeader(
+		s.getAuthenticationToken(),
 		s.getCurrentDateTime(),
 		0, //RequestHandle
 		0,
@@ -1051,7 +1075,11 @@ func (s *SecureChannel) onDiscoverGetEndpointsRequest(ctx context.Context, codec
 		return
 	}
 
-	requestHeader := readWriteModel.NewRequestHeader(readWriteModel.NewNodeId(s.authenticationToken),
+	if s.authenticationToken == nil {
+		panic("authenticationToken should be set at this point")
+	}
+	requestHeader := readWriteModel.NewRequestHeader(
+		s.getAuthenticationToken(),
 		s.getCurrentDateTime(),
 		0, //RequestHandle
 		0,
@@ -1176,7 +1204,11 @@ func (s *SecureChannel) onDiscoverGetEndpointsRequest(ctx context.Context, codec
 func (s *SecureChannel) onDiscoverCloseSecureChannel(ctx context.Context, codec *MessageCodec, response readWriteModel.GetEndpointsResponse) {
 	transactionId := s.channelTransactionManager.getTransactionIdentifier()
 
-	requestHeader := readWriteModel.NewRequestHeader(readWriteModel.NewNodeId(s.authenticationToken),
+	if s.authenticationToken == nil {
+		panic("authenticationToken should be set at this point")
+	}
+	requestHeader := readWriteModel.NewRequestHeader(
+		s.getAuthenticationToken(),
 		s.getCurrentDateTime(),
 		0, //RequestHandle
 		0,
@@ -1275,13 +1307,18 @@ func (s *SecureChannel) keepAlive() {
 
 			transactionId := s.channelTransactionManager.getTransactionIdentifier()
 
-			requestHeader := readWriteModel.NewRequestHeader(readWriteModel.NewNodeId(s.authenticationToken),
+			if s.authenticationToken == nil {
+				panic("authenticationToken should be set at this point")
+			}
+			requestHeader := readWriteModel.NewRequestHeader(
+				s.getAuthenticationToken(),
 				s.getCurrentDateTime(),
 				0, //RequestHandle
 				0,
 				NULL_STRING,
 				REQUEST_TIMEOUT_LONG,
-				NULL_EXTENSION_OBJECT)
+				NULL_EXTENSION_OBJECT,
+			)
 
 			var openSecureChannelRequest readWriteModel.OpenSecureChannelRequest
 			if s.isEncrypted {
@@ -1424,6 +1461,9 @@ func (s *SecureChannel) getRequestHandle() uint32 {
 
 // getAuthenticationToken returns the authentication token for the current connection
 func (s *SecureChannel) getAuthenticationToken() readWriteModel.NodeId {
+	if s.authenticationToken == nil {
+		panic("authenticationToken should be set at this point")
+	}
 	return readWriteModel.NewNodeId(s.authenticationToken)
 }
 
