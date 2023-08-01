@@ -350,15 +350,18 @@ func (g *Generator) generate(typeName string) {
 			g.Printf("if err := writeBuffer.PushContext(%s, utils.WithRenderAsList(true)); err != nil {\n\t\treturn err\n\t}\n", fieldNameUntitled)
 			// TODO: we use serializable or strings as we don't want to over-complex this
 			g.Printf("for _name, elem := range d.%s {\n", fieldName)
-			if ident, ok := fieldType.Key.(*ast.Ident); !ok || ident.Name != "string" {
-				switch ident.Name {
+			switch keyType := fieldType.Key.(type) {
+			case *ast.Ident:
+				switch keyType.Name {
 				case "uint", "uint8", "uint16", "uint32", "uint64", "int", "int8", "int16", "int32", "int64": // TODO: add other types
 					g.Printf("\t\tname := fmt.Sprintf(\"%s\", _name)\n", "%v")
+				case "string":
+					g.Printf("\t\tname := _name\n")
 				default:
 					g.Printf("\t\tname := fmt.Sprintf(\"%s\", &_name)\n", "%v")
 				}
-			} else {
-				g.Printf("\t\tname := _name\n")
+			default:
+				g.Printf("\t\tname := fmt.Sprintf(\"%s\", &_name)\n", "%v")
 			}
 			switch eltType := fieldType.Value.(type) {
 			case *ast.StarExpr, *ast.SelectorExpr:

@@ -46,7 +46,7 @@ func (d *Subscriber) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 		return err
 	}
 	for _name, elem := range d.consumers {
-		name := fmt.Sprintf("%v", _name)
+		name := fmt.Sprintf("%v", &_name)
 
 		var elem any = elem
 		if serializable, ok := elem.(utils.Serializable); ok {
