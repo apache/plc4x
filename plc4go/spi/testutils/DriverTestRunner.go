@@ -46,6 +46,8 @@ import (
 	"github.com/subchen/go-xmldom"
 )
 
+var DriverTestsuiteConnectTimeout = 30 * time.Second
+
 type DriverTestsuite struct {
 	name             string
 	protocolName     string
@@ -101,8 +103,16 @@ func (m DriverTestsuite) Run(t *testing.T, driverManager plc4go.PlcDriverManager
 		optionsString = "?" + strings.Join(driverParameters, "&")
 	}
 	// Get a connection
+	t.Log("getting a connection")
 	connectionChan := driverManager.GetConnection(m.driverName + ":test://hurz" + optionsString)
-	connectionResult := <-connectionChan
+	timer := time.NewTimer(DriverTestsuiteConnectTimeout)
+	t.Cleanup(func() { utils.CleanupTimer(timer) })
+	var connectionResult plc4go.PlcConnectionConnectResult
+	select {
+	case connectionResult = <-connectionChan:
+	case <-timer.C:
+		t.Fatalf("timeout")
+	}
 
 	if connectionResult.GetErr() != nil {
 		return errors.Wrap(connectionResult.GetErr(), "error getting a connection")
