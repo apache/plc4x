@@ -235,7 +235,10 @@ func (s *SecureChannel) submit(ctx context.Context, codec *MessageCodec, errorDi
 				} else {
 					messageBuffer = opcuaResponse.GetMessage()
 					if !(s.senderSequenceNumber.Add(1) == (opcuaResponse.GetSequenceNumber())) {
-						s.log.Error().Msgf("Sequence number isn't as expected, we might have missed a packet. - %d != %d", s.senderSequenceNumber.Add(1), opcuaResponse.GetSequenceNumber())
+						s.log.Error().
+							Int32("senderSequenceNumber", s.senderSequenceNumber.Load()).
+							Int32("responseSequenceNumber", opcuaResponse.GetSequenceNumber()).
+							Msg("Sequence number isn't as expected, we might have missed a packet. - senderSequenceNumber != responseSequenceNumber")
 						codec.fireDisconnected()
 					}
 				}
@@ -263,7 +266,7 @@ func (s *SecureChannel) submit(ctx context.Context, codec *MessageCodec, errorDi
 		}
 	}
 
-	s.log.Debug().Msgf("Submitting Transaction to TransactionManager %v", transactionId)
+	s.log.Debug().Int32("transactionId", transactionId).Msg("Submitting Transaction to TransactionManager")
 	if err := s.channelTransactionManager.submit(requestConsumer, transactionId); err != nil {
 		s.log.Debug().Err(err).Msg("error submitting")
 	}
@@ -439,9 +442,10 @@ func (s *SecureChannel) onConnectOpenSecureChannel(ctx context.Context, codec *M
 				if fault, ok := extensionObject.GetBody().(readWriteModel.ServiceFaultExactly); ok {
 					statusCode := fault.GetResponseHeader().(readWriteModel.ResponseHeader).GetServiceResult().GetStatusCode()
 					statusCodeByValue, _ := readWriteModel.OpcuaStatusCodeByValue(statusCode)
-					s.log.Error().Msgf("Failed to connect to opc ua server for the following reason:- %v, %v",
-						statusCode,
-						statusCodeByValue)
+					s.log.Error().
+						Uint32("statusCode", statusCode).
+						Stringer("statusCodeByValue", statusCodeByValue).
+						Msg("Failed to connect to opc ua server for the following reason")
 				} else {
 					s.log.Debug().Msg("Got Secure Response Connection Response")
 					openSecureChannelResponse := extensionObject.GetBody().(readWriteModel.OpenSecureChannelResponse)
@@ -460,7 +464,7 @@ func (s *SecureChannel) onConnectOpenSecureChannel(ctx context.Context, codec *M
 			s.log.Debug().Err(err).Msg("a error")
 		}
 	}
-	s.log.Debug().Msgf("Submitting OpenSecureChannel with id of %d", transactionId)
+	s.log.Debug().Int32("transactionId", transactionId).Msg("Submitting OpenSecureChannel with id")
 	if err := s.channelTransactionManager.submit(requestConsumer, transactionId); err != nil {
 		s.log.Debug().Err(err).Msg("error submitting")
 	}
@@ -540,9 +544,10 @@ func (s *SecureChannel) onConnectCreateSessionRequest(ctx context.Context, codec
 		if fault, ok := message.GetBody().(readWriteModel.ServiceFaultExactly); ok {
 			statusCode := fault.GetResponseHeader().(readWriteModel.ResponseHeader).GetServiceResult().GetStatusCode()
 			statusCodeByValue, _ := readWriteModel.OpcuaStatusCodeByValue(statusCode)
-			s.log.Error().Msgf("Failed to connect to opc ua server for the following reason:- %v, %v",
-				statusCode,
-				statusCodeByValue)
+			s.log.Error().
+				Uint32("statusCode", statusCode).
+				Stringer("statusCodeByValue", statusCodeByValue).
+				Msg("Failed to connect to opc ua server for the following reason")
 		} else {
 			s.log.Debug().Msg("Got Create Session Response Connection Response")
 
@@ -559,7 +564,9 @@ func (s *SecureChannel) onConnectCreateSessionRequest(ctx context.Context, codec
 			} else {
 				serviceFault := unknownExtensionObject.(readWriteModel.ServiceFault)
 				header := serviceFault.GetResponseHeader().(readWriteModel.ResponseHeader)
-				s.log.Error().Msgf("Subscription ServiceFault returned from server with error code, '%s'", header.GetServiceResult())
+				s.log.Error().
+					Stringer("serviceResult", header.GetServiceResult()).
+					Msg("Subscription ServiceFault returned from server with error code, '%s'")
 			}
 		}
 	}
@@ -655,9 +662,10 @@ func (s *SecureChannel) onConnectActivateSessionRequest(ctx context.Context, cod
 		if fault, ok := message.GetBody().(readWriteModel.ServiceFaultExactly); ok {
 			statusCode := fault.GetResponseHeader().(readWriteModel.ResponseHeader).GetServiceResult().GetStatusCode()
 			statusCodeByValue, _ := readWriteModel.OpcuaStatusCodeByValue(statusCode)
-			s.log.Error().Msgf("Failed to connect to opc ua server for the following reason:- %v, %v",
-				statusCode,
-				statusCodeByValue)
+			s.log.Error().
+				Uint32("statusCode", statusCode).
+				Stringer("statusCodeByValue", statusCodeByValue).
+				Msg("Failed to connect to opc ua server for the following reason")
 		} else {
 			s.log.Debug().Msg("Got Activate Session Response Connection Response")
 
@@ -670,7 +678,10 @@ func (s *SecureChannel) onConnectActivateSessionRequest(ctx context.Context, cod
 			if responseMessage, ok := unknownExtensionObject.(readWriteModel.ActivateSessionResponseExactly); ok {
 				returnedRequestHandle := responseMessage.GetResponseHeader().(readWriteModel.ResponseHeader).GetRequestHandle()
 				if !(requestHandle == returnedRequestHandle) {
-					s.log.Error().Msgf("Request handle isn't as expected, we might have missed a packet. %d != %d", requestHandle, returnedRequestHandle)
+					s.log.Error().
+						Uint32("requestHandle", requestHandle).
+						Uint32("returnedRequestHandle", returnedRequestHandle).
+						Msg("Request handle isn't as expected, we might have missed a packet. requestHandle != returnedRequestHandle")
 				}
 
 				// Send an event that connection setup is complete.
@@ -679,7 +690,9 @@ func (s *SecureChannel) onConnectActivateSessionRequest(ctx context.Context, cod
 			} else {
 				serviceFault := unknownExtensionObject.(readWriteModel.ServiceFault)
 				header := serviceFault.GetResponseHeader().(readWriteModel.ResponseHeader)
-				s.log.Error().Msgf("Subscription ServiceFault returned from server with error code, '%s'", header.GetServiceResult())
+				s.log.Error().
+					Stringer("serviceResult", header.GetServiceResult()).
+					Msg("Subscription ServiceFault returned from server with error code")
 			}
 		}
 	}
@@ -738,9 +751,10 @@ func (s *SecureChannel) onDisconnect(ctx context.Context, codec *MessageCodec) {
 		if fault, ok := message.GetBody().(readWriteModel.ServiceFaultExactly); ok {
 			statusCode := fault.GetResponseHeader().(readWriteModel.ResponseHeader).GetServiceResult().GetStatusCode()
 			statusCodeByValue, _ := readWriteModel.OpcuaStatusCodeByValue(statusCode)
-			s.log.Error().Msgf("Failed to connect to opc ua server for the following reason:- %v, %v",
-				statusCode,
-				statusCodeByValue)
+			s.log.Error().
+				Uint32("statusCode", statusCode).
+				Stringer("statusCodeByValue", statusCodeByValue).
+				Msg("Failed to connect to opc ua server for the following reason")
 		} else {
 			s.log.Debug().Msg("Got Close Session Response Connection Response")
 
@@ -755,7 +769,9 @@ func (s *SecureChannel) onDisconnect(ctx context.Context, codec *MessageCodec) {
 			} else {
 				serviceFault := unknownExtensionObject.(readWriteModel.ServiceFault)
 				header := serviceFault.GetResponseHeader().(readWriteModel.ResponseHeader)
-				s.log.Error().Msgf("Subscription ServiceFault returned from server with error code, '%s'", header.GetServiceResult())
+				s.log.Error().
+					Stringer("serviceResult", header.GetServiceResult()).
+					Msg("Subscription ServiceFault returned from server with error code")
 			}
 		}
 	}
@@ -842,7 +858,7 @@ func (s *SecureChannel) onDisconnectCloseSecureChannel(ctx context.Context, code
 			s.log.Debug().Err(err).Msg("a error")
 		}
 	}
-	s.log.Debug().Msgf("Submitting CloseSecureChannel with id of %d", transactionId)
+	s.log.Debug().Int32("transactionId", transactionId).Msg("Submitting CloseSecureChannel with id")
 	if err := s.channelTransactionManager.submit(requestConsumer, transactionId); err != nil {
 		s.log.Debug().Err(err).Msg("error submitting")
 	}
@@ -993,9 +1009,10 @@ func (s *SecureChannel) onDiscoverOpenSecureChannel(ctx context.Context, codec *
 				if fault, ok := extensionObject.GetBody().(readWriteModel.ServiceFaultExactly); ok {
 					statusCode := fault.GetResponseHeader().(readWriteModel.ResponseHeader).GetServiceResult().GetStatusCode()
 					statusCodeByValue, _ := readWriteModel.OpcuaStatusCodeByValue(statusCode)
-					s.log.Error().Msgf("Failed to connect to opc ua server for the following reason:- %v, %v",
-						statusCode,
-						statusCodeByValue)
+					s.log.Error().
+						Uint32("statusCode", statusCode).
+						Stringer("statusCodeByValue", statusCodeByValue).
+						Msg("Failed to connect to opc ua server for the following reason")
 				} else {
 					s.log.Debug().Msg("Got Secure Response Connection Response")
 					openSecureChannelResponse := extensionObject.GetBody().(readWriteModel.OpenSecureChannelResponse)
@@ -1027,7 +1044,10 @@ func (s *SecureChannel) onDiscoverGetEndpointsRequest(ctx context.Context, codec
 	nextRequestId := opcuaOpenResponse.GetRequestId() + 1
 
 	if !(transactionId == nextSequenceNumber) {
-		s.log.Error().Msgf("Sequence number isn't as expected, we might have missed a packet. - %d != %d", transactionId, nextSequenceNumber)
+		s.log.Error().
+			Int32("transactionId", transactionId).
+			Int32("nextSequenceNumber", nextSequenceNumber).
+			Msg("Sequence number isn't as expected, we might have missed a packet. - transactionId != nextSequenceNumber")
 		return
 	}
 
@@ -1115,9 +1135,10 @@ func (s *SecureChannel) onDiscoverGetEndpointsRequest(ctx context.Context, codec
 				if fault, ok := extensionObject.GetBody().(readWriteModel.ServiceFaultExactly); ok {
 					statusCode := fault.GetResponseHeader().(readWriteModel.ResponseHeader).GetServiceResult().GetStatusCode()
 					statusCodeByValue, _ := readWriteModel.OpcuaStatusCodeByValue(statusCode)
-					s.log.Error().Msgf("Failed to connect to opc ua server for the following reason:- %v, %v",
-						statusCode,
-						statusCodeByValue)
+					s.log.Error().
+						Uint32("statusCode", statusCode).
+						Stringer("statusCodeByValue", statusCodeByValue).
+						Msg("Failed to connect to opc ua server for the following reason")
 				} else {
 					s.log.Debug().Msg("Got Secure Response Connection Response")
 					response := extensionObject.GetBody().(readWriteModel.GetEndpointsResponse)
@@ -1126,7 +1147,7 @@ func (s *SecureChannel) onDiscoverGetEndpointsRequest(ctx context.Context, codec
 					for _, endpoint := range endpoints {
 						endpointDescription := endpoint.(readWriteModel.EndpointDescription)
 						if endpointDescription.GetEndpointUrl().GetStringValue() == (s.endpoint.GetStringValue()) && endpointDescription.GetSecurityPolicyUri().GetStringValue() == (s.securityPolicy) {
-							s.log.Info().Msgf("Found OPC UA endpoint %s", s.endpoint.GetStringValue())
+							s.log.Info().Str("stringValue", s.endpoint.GetStringValue()).Msg("Found OPC UA endpoint")
 							s.configuration.senderCertificate = endpointDescription.GetServerCertificate().GetStringValue()
 						}
 					}
@@ -1227,7 +1248,7 @@ func (s *SecureChannel) onDiscoverCloseSecureChannel(ctx context.Context, codec 
 			s.log.Debug().Err(err).Msg("a error")
 		}
 	}
-	s.log.Debug().Msgf("Submitting CloseSecureChannel with id of %d", transactionId)
+	s.log.Debug().Int32("transactionId", transactionId).Msg("Submitting CloseSecureChannel with id")
 	if err := s.channelTransactionManager.submit(requestConsumer, transactionId); err != nil {
 		s.log.Debug().Err(err).Msg("error submitting")
 	}
@@ -1364,9 +1385,10 @@ func (s *SecureChannel) keepAlive() {
 						if fault, ok := extensionObject.GetBody().(readWriteModel.ServiceFaultExactly); ok {
 							statusCode := fault.GetResponseHeader().(readWriteModel.ResponseHeader).GetServiceResult().GetStatusCode()
 							statusCodeByValue, _ := readWriteModel.OpcuaStatusCodeByValue(statusCode)
-							s.log.Error().Msgf("Failed to connect to opc ua server for the following reason:- %v, %v",
-								statusCode,
-								statusCodeByValue)
+							s.log.Error().
+								Uint32("statusCode", statusCode).
+								Stringer("statusCodeByValue", statusCodeByValue).
+								Msg("Failed to connect to opc ua server for the following reason")
 						} else {
 							s.log.Debug().Msg("Got Secure Response Connection Response")
 							openSecureChannelResponse := extensionObject.GetBody().(readWriteModel.OpenSecureChannelResponse)
@@ -1386,7 +1408,7 @@ func (s *SecureChannel) keepAlive() {
 					s.log.Debug().Err(err).Msg("a error")
 				}
 			}
-			s.log.Debug().Msgf("Submitting OpenSecureChannel with id of %d", transactionId)
+			s.log.Debug().Int32("transactionId", transactionId).Msg("Submitting OpenSecureChannel with id")
 			if err := s.channelTransactionManager.submit(requestConsumer, transactionId); err != nil {
 				s.log.Debug().Err(err).Msg("error submitting")
 			}
@@ -1439,12 +1461,12 @@ func (s *SecureChannel) selectEndpoint(sessionResponse readWriteModel.CreateSess
 	}
 
 	if s.policyId == nil {
-		s.log.Error().Msgf("Unable to find endpoint - %s", s.endpoints[0])
+		s.log.Error().Str("endpoint", s.endpoints[0]).Msg("Unable to find endpoint")
 		return
 	}
 
 	if s.tokenType == 0xffffffff { // TODO: what did we use as undefined
-		s.log.Error().Msgf("Unable to find Security Policy for endpoint - %s", s.endpoints[0])
+		s.log.Error().Str("endpoint", s.endpoints[0]).Msg("Unable to find Security Policy for endpoint")
 		return
 	}
 }
@@ -1458,10 +1480,14 @@ func (s *SecureChannel) isEndpoint(endpoint readWriteModel.EndpointDescription) 
 	// Split up the connection string into its individual segments.
 	matches := utils.GetSubgroupMatches(URI_PATTERN, endpoint.GetEndpointUrl().GetStringValue())
 	if len(matches) == 0 {
-		s.log.Error().Msgf("Endpoint returned from the server doesn't match the format '{protocol-code}:({transport-code})?//{transport-host}(:{transport-port})(/{transport-endpoint})'")
+		s.log.Error().Msg("Endpoint returned from the server doesn't match the format '{protocol-code}:({transport-code})?//{transport-host}(:{transport-port})(/{transport-endpoint})'")
 		return false
 	}
-	s.log.Trace().Msgf("Using Endpoint %s %s %s", matches["transportHost"], matches["transportPort"], matches["transportEndpoint"])
+	s.log.Trace().
+		Str("transportHost", matches["transportHost"]).
+		Str("transportPort", matches["transportPort"]).
+		Str("transportEndpoint", matches["transportEndpoint"]).
+		Msg("Using Endpoint")
 
 	if s.configuration.discovery && !slices.Contains(s.endpoints, matches["transportHost"]) {
 		return false

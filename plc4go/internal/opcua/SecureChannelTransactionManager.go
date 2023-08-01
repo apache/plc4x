@@ -49,16 +49,16 @@ func NewSecureChannelTransactionManager(log zerolog.Logger) *SecureChannelTransa
 func (m *SecureChannelTransactionManager) submit(onSend func(transactionId int32), transactionId int32) error {
 	m.lock.Lock()
 	defer m.lock.Unlock()
-	m.log.Info().Msgf("Active transaction Number %d", m.activeTransactionId.Load())
+	m.log.Info().Int32("activeTransactionId", m.activeTransactionId.Load()).Msg("Active transaction Number")
 	if m.activeTransactionId.Load() == transactionId {
 		onSend(transactionId)
 		newTransactionId := m.getActiveTransactionIdentifier()
 		if len(m.queue) > 0 {
 			t, ok := m.queue[newTransactionId]
 			if !ok {
-				m.log.Info().Msgf("Length of Queue is %d", len(m.queue))
-				m.log.Info().Msgf("Transaction ID is %d", newTransactionId)
-				m.log.Info().Msgf("Map is %v", m.queue)
+				m.log.Info().Int("queueLength", len(m.queue)).Msg("Length of Queue")
+				m.log.Info().Int32("newTransactionId", newTransactionId).Msg("Transaction ID")
+				m.log.Info().Interface("map", m.queue).Msg("Map is")
 				return errors.Errorf("Transaction Id not found in queued messages %v", m.queue)
 			}
 			delete(m.queue, newTransactionId)
@@ -67,7 +67,7 @@ func (m *SecureChannelTransactionManager) submit(onSend func(transactionId int32
 			}
 		}
 	} else {
-		m.log.Info().Msgf("Storing out of order transaction %d", transactionId)
+		m.log.Info().Int32("transactionId", transactionId).Msg("Storing out of order transaction")
 		m.queue[transactionId] = SecureChannelTransactionManagerTransaction{consumer: onSend, transactionId: transactionId}
 	}
 	return nil

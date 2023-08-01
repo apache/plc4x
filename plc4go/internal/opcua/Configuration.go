@@ -127,7 +127,7 @@ func getFromOptions(localLog zerolog.Logger, options map[string][]string, key st
 			return ""
 		}
 		if len(optionValues) > 1 {
-			localLog.Warn().Msgf("Options %s must be unique", key)
+			localLog.Warn().Str("key", key).Msg("Options must be unique")
 		}
 		return optionValues[0]
 	}

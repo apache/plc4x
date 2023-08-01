@@ -62,12 +62,16 @@ func NewDriver(_options ...options.WithOption) plc4go.PlcDriver {
 }
 
 func (m *Driver) GetConnectionWithContext(ctx context.Context, transportUrl url.URL, transports map[string]transports.Transport, driverOptions map[string][]string) <-chan plc4go.PlcConnectionConnectResult {
-	m.log.Debug().Stringer("transportUrl", &transportUrl).Msgf("Get connection for transport url with %d transport(s) and %d option(s)", len(transports), len(driverOptions))
+	m.log.Debug().
+		Stringer("transportUrl", &transportUrl).
+		Int("numberTransports", len(transports)).
+		Int("numberDriverOptions", len(driverOptions)).
+		Msg("Get connection for transport url")
 
 	// Get the transport specified in the url
 	transport, ok := transports[transportUrl.Scheme]
 	if !ok {
-		m.log.Error().Stringer("transportUrl", &transportUrl).Msgf("We couldn't find a transport for scheme %s", transportUrl.Scheme)
+		m.log.Error().Stringer("transportUrl", &transportUrl).Str("scheme", transportUrl.Scheme).Msg("We couldn't find a transport for scheme")
 		return m.reportError(errors.Errorf("couldn't find transport for given transport url %v", transportUrl))
 	}
 
@@ -80,7 +84,7 @@ func (m *Driver) GetConnectionWithContext(ctx context.Context, transportUrl url.
 		append(m._options, options.WithCustomLogger(m.log))...,
 	)
 	if err != nil {
-		m.log.Error().Err(err).Stringer("transportUrl", &transportUrl).Msgf("We couldn't create a transport instance for port %#v", driverOptions["defaultTcpPort"])
+		m.log.Error().Err(err).Stringer("transportUrl", &transportUrl).Strs("defaultTcpPort", driverOptions["defaultTcpPort"]).Msg("We couldn't create a transport instance for port")
 		return m.reportError(errors.Wrapf(err, "couldn't initialize transport configuration for given transport url %s", transportUrl.String()))
 	}
 

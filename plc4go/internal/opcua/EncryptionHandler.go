@@ -123,7 +123,7 @@ func (h *EncryptionHandler) encodeMessage(ctx context.Context, pdu readWriteMode
 }
 
 func (h *EncryptionHandler) decodeMessage(ctx context.Context, pdu readWriteModel.OpcuaAPU) (readWriteModel.OpcuaAPU, error) {
-	h.log.Info().Msgf("Decoding Message with Security policy %s", h.securityPolicy)
+	h.log.Info().Str("securityPolicy", h.securityPolicy).Msg("Decoding Message with Security policy")
 	switch h.securityPolicy {
 	case "None":
 		return pdu, nil

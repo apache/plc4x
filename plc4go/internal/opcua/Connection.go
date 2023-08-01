@@ -183,7 +183,7 @@ func (c *Connection) UnsubscriptionRequestBuilder() apiModel.PlcUnsubscriptionRe
 func (c *Connection) addSubscriber(subscriber *Subscriber) {
 	for _, sub := range c.subscribers {
 		if sub == subscriber {
-			c.log.Debug().Msgf("Subscriber %v already added", subscriber)
+			c.log.Debug().Msgf("Subscriber already added\n%s", subscriber)
 			return
 		}
 	}
@@ -214,16 +214,16 @@ func (c *Connection) startSubscriptionHandler() {
 			// TODO: dispatch subs
 			/*
 				for monitoredSal := range c.messageCodec.monitoredSALs {
-					salLogger.Trace().Msgf("got a SAL\n%v", monitoredSal)
+					salLogger.Trace().Msg("got a SAL\n%v", monitoredSal)
 					handled := false
 					for _, subscriber := range c.subscribers {
 						if ok := subscriber.handleMonitoredSAL(monitoredSal); ok {
-							salLogger.Debug().Msgf("\n%v handled\n%s", subscriber, monitoredSal)
+							salLogger.Debug().Msg("\n%v handled\n%s", subscriber, monitoredSal)
 							handled = true
 						}
 					}
 					if !handled {
-						salLogger.Debug().Msgf("SAL was not handled:\n%s", monitoredSal)
+						salLogger.Debug().Msg("SAL was not handled:\n%s", monitoredSal)
 					}
 				}*/
 		}

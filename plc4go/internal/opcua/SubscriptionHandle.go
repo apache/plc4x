@@ -193,9 +193,9 @@ func (h *SubscriptionHandle) onSubscribeCreateMonitoredItemsRequest() (readWrite
 		for index, arrayLength := 0, len(array); index < arrayLength; index++ {
 			result := array[index]
 			if code, ok := readWriteModel.OpcuaStatusCodeByValue(result.GetStatusCode().GetStatusCode()); !ok || code != readWriteModel.OpcuaStatusCode_Good {
-				h.log.Error().Msgf("Invalid Tag %s, subscription created without this tag", h.tagNames[index])
+				h.log.Error().Str("tag", h.tagNames[index]).Msg("Invalid Tag, subscription created without this tag")
 			} else {
-				h.log.Debug().Msgf("Tag %s was added to the subscription", h.tagNames[index])
+				h.log.Debug().Str("tag", h.tagNames[index]).Msg("Tag was added to the subscription")
 			}
 		}
 		responseChan <- responseMessage
@@ -313,7 +313,9 @@ func (h *SubscriptionHandle) startSubscriber() {
 					case readWriteModel.ServiceFault:
 						serviceFault = unknownExtensionObject
 						header := serviceFault.GetResponseHeader().(readWriteModel.ResponseHeader)
-						h.log.Debug().Msgf("Subscription ServiceFault returned from server with error code,  '%s', ignoring as it is probably just a result of a Delete Subscription Request", header.GetServiceResult())
+						h.log.Debug().
+							Stringer("serviceResult", header.GetServiceResult()).
+							Msg("Subscription ServiceFault returned from server with error code, ignoring as it is probably just a result of a Delete Subscription Request")
 						//h.plcSubscriber.onDisconnect(context);
 						return
 					}
@@ -427,7 +429,9 @@ func (h *SubscriptionHandle) stopSubscriber() {
 		case readWriteModel.ServiceFault:
 			serviceFault := unknownExtensionObject
 			header := serviceFault.GetResponseHeader().(readWriteModel.ResponseHeader)
-			h.log.Debug().Msgf("Subscription ServiceFault returned from server with error code,  '%s', ignoring as it is probably just a result of a Delete Subscription Request", header.GetServiceResult())
+			h.log.Debug().
+				Stringer("serviceResult", header.GetServiceResult()).
+				Msg("Subscription ServiceFault returned from server with error code, ignoring as it is probably just a result of a Delete Subscription Request")
 			return
 		}
 		h.log.Debug().Msgf("Received response\n%s", responseMessage)

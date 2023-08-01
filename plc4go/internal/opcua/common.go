@@ -79,7 +79,7 @@ func readResponse(localLog zerolog.Logger, readRequestIn apiModel.PlcReadRequest
 		var value apiValues.PlcValue
 		if results[count].GetValueSpecified() {
 			variant := results[count].GetValue()
-			localLog.Trace().Msgf("Response of type %T", variant)
+			localLog.Trace().Type("type", variant).Msg("Response of type")
 			switch variant := variant.(type) {
 			case readWriteModel.VariantBooleanExactly:
 				array := variant.GetValue()
@@ -240,7 +240,7 @@ func readResponse(localLog zerolog.Logger, readRequestIn apiModel.PlcReadRequest
 				value = spiValues.NewPlcList(statusCodeValues)
 			default:
 				responseCode = apiModel.PlcResponseCode_UNSUPPORTED
-				localLog.Error().Msgf("Data type - %T is not supported ", variant)
+				localLog.Error().Type("variant", variant).Msg("Data type is not supported ")
 			}
 		} else {
 			if results[count].GetStatusCode().GetStatusCode() == uint32(readWriteModel.OpcuaStatusCode_BadNodeIdUnknown) {
@@ -248,7 +248,7 @@ func readResponse(localLog zerolog.Logger, readRequestIn apiModel.PlcReadRequest
 			} else {
 				responseCode = apiModel.PlcResponseCode_UNSUPPORTED
 			}
-			localLog.Error().Msgf("Error while reading value from OPC UA server error code:- %s", results[count].GetStatusCode())
+			localLog.Error().Stringer("statusCode", results[count].GetStatusCode()).Msg("Error while reading value from OPC UA server error code")
 		}
 		count++
 		responseCodes[tagName] = responseCode
