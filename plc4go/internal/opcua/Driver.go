@@ -153,6 +153,14 @@ func (m *Driver) GetConnectionWithContext(ctx context.Context, transportUrl url.
 	return connection.ConnectWithContext(ctx)
 }
 
+func (m *Driver) SetAwaitSetupComplete(awaitComplete bool) {
+	m.awaitSetupComplete = awaitComplete
+}
+
+func (m *Driver) SetAwaitDisconnectComplete(awaitComplete bool) {
+	m.awaitDisconnectComplete = awaitComplete
+}
+
 func (m *Driver) reportError(err error) <-chan plc4go.PlcConnectionConnectResult {
 	ch := make(chan plc4go.PlcConnectionConnectResult, 1)
 	ch <- _default.NewDefaultPlcConnectionConnectResult(nil, err)

@@ -147,10 +147,13 @@ func (m *MessageCodec) Receive() (spi.Message, error) {
 
 	if err := ti.FillBuffer(
 		func(pos uint, currentByte byte, reader transports.ExtendedReader) bool {
+			m.log.Trace().Uint("pos", pos).Uint8("currentByte", currentByte).Msg("filling")
 			numBytesAvailable, err := ti.GetNumBytesAvailableInBuffer()
 			if err != nil {
+				m.log.Debug().Err(err).Msg("error getting available bytes")
 				return false
 			}
+			m.log.Trace().Uint32("numBytesAvailable", numBytesAvailable).Msg("check available bytes < 8")
 			return numBytesAvailable < 8
 		}); err != nil {
 		m.log.Warn().Err(err).Msg("error filling buffer")
