@@ -209,3 +209,7 @@ func (h *EncryptionHandler) encryptBlock(buf utils.WriteBufferByteBased, data []
 func (h *EncryptionHandler) sign(data []byte) ([]byte, error) {
 	return h.clientPrivateKey.Sign(rand.Reader, data, crypto.SHA256)
 }
+
+func (h *EncryptionHandler) String() string {
+	return "EncryptionHandler{" + h.securityPolicy + "}"
+}

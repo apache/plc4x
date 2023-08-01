@@ -111,7 +111,7 @@ type SecureChannel struct {
 	certificateThumbprint     readWriteModel.PascalByteString
 	checkedEndpoints          bool
 	encryptionHandler         *EncryptionHandler
-	configuration             Configuration
+	configuration             Configuration `stringer:"true"`
 	channelId                 atomic.Int32
 	tokenId                   atomic.Int32
 	authenticationToken       readWriteModel.NodeIdTypeDefinition

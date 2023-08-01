@@ -204,12 +204,9 @@ func (d *SecureChannel) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 			return err
 		}
 	}
-	{
-		_value := fmt.Sprintf("%v", d.configuration)
 
-		if err := writeBuffer.WriteString("configuration", uint32(len(_value)*8), "UTF-8", _value); err != nil {
-			return err
-		}
+	if err := writeBuffer.WriteString("configuration", uint32(len(d.configuration.String())*8), "UTF-8", d.configuration.String()); err != nil {
+		return err
 	}
 
 	if err := writeBuffer.WriteInt32("channelId", 32, d.channelId.Load()); err != nil {

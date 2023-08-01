@@ -39,7 +39,7 @@ import (
 
 //go:generate go run ../../tools/plc4xgenerator/gen.go -type=Subscriber
 type Subscriber struct {
-	consumers     map[*spiModel.DefaultPlcConsumerRegistration]apiModel.PlcSubscriptionEventConsumer `ignore:"true"`
+	consumers     map[*spiModel.DefaultPlcConsumerRegistration]apiModel.PlcSubscriptionEventConsumer
 	addSubscriber func(subscriber *Subscriber)
 	messageCodec  *MessageCodec
 	subscriptions map[uint32]*SubscriptionHandle `ignore:"true"` // TODO: we don't have support for non string key maps yet
