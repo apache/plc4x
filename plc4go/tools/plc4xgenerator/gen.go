@@ -231,8 +231,14 @@ func (g *Generator) generate(typeName string) {
 		}
 		fieldName := field.name
 		fieldNameUntitled := "\"" + unTitle(fieldName) + "\""
+		if field.hasLocker != "" {
+			g.Printf("d." + field.hasLocker + ".Lock()\n")
+		}
 		if field.isStringer {
 			g.Printf(stringFieldSerialize, "d."+field.name+".String()", fieldNameUntitled)
+			if field.hasLocker != "" {
+				g.Printf("d." + field.hasLocker + ".Unlock()\n")
+			}
 			continue
 		}
 		needsDereference := false
@@ -252,27 +258,45 @@ func (g *Generator) generate(typeName string) {
 					if xIdent.Name == "atomic" {
 						if sel.Name == "Uint32" {
 							g.Printf(uint32FieldSerialize, "d."+field.name+".Load()", fieldNameUntitled)
+							if field.hasLocker != "" {
+								g.Printf("d." + field.hasLocker + ".Unlock()\n")
+							}
 							continue
 						}
 						if sel.Name == "Uint64" {
 							g.Printf(uint64FieldSerialize, "d."+field.name+".Load()", fieldNameUntitled)
+							if field.hasLocker != "" {
+								g.Printf("d." + field.hasLocker + ".Unlock()\n")
+							}
 							continue
 						}
 						if sel.Name == "Int32" {
 							g.Printf(int32FieldSerialize, "d."+field.name+".Load()", fieldNameUntitled)
+							if field.hasLocker != "" {
+								g.Printf("d." + field.hasLocker + ".Unlock()\n")
+							}
 							continue
 						}
 						if sel.Name == "Bool" {
 							g.Printf(boolFieldSerialize, "d."+field.name+".Load()", fieldNameUntitled)
+							if field.hasLocker != "" {
+								g.Printf("d." + field.hasLocker + ".Unlock()\n")
+							}
 							continue
 						}
 						if sel.Name == "Value" {
 							g.Printf(serializableFieldTemplate, "d."+field.name+".Load()", fieldNameUntitled)
+							if field.hasLocker != "" {
+								g.Printf("d." + field.hasLocker + ".Unlock()\n")
+							}
 							continue
 						}
 					}
 					if xIdent.Name == "sync" {
 						fmt.Printf("\t skipping field %s because it is %v.%v\n", fieldName, x, sel)
+						if field.hasLocker != "" {
+							g.Printf("d." + field.hasLocker + ".Unlock()\n")
+						}
 						continue
 					}
 				}
@@ -285,6 +309,9 @@ func (g *Generator) generate(typeName string) {
 				sel := fieldType.Sel
 				if xIsIdent && xIdent.Name == "atomic" && sel.Name == "Pointer" {
 					g.Printf(atomicPointerFieldTemplate, "d."+field.name, field.name, fieldNameUntitled)
+					if field.hasLocker != "" {
+						g.Printf("d." + field.hasLocker + ".Unlock()\n")
+					}
 					continue
 				}
 			}
@@ -409,6 +436,9 @@ func (g *Generator) generate(typeName string) {
 		default:
 			fmt.Printf("no support implemented %#v\n", fieldType)
 		}
+		if field.hasLocker != "" {
+			g.Printf("d." + field.hasLocker + ".Unlock()\n")
+		}
 	}
 	g.Printf("\tif err := writeBuffer.PopContext(%s); err != nil {\n", logicalTypeName)
 	g.Printf("\t\treturn err\n")
@@ -438,6 +468,7 @@ type Field struct {
 	fieldType  ast.Expr
 	isDelegate bool
 	isStringer bool
+	hasLocker  string
 }
 
 func (f *Field) String() string {
@@ -476,6 +507,11 @@ func (f *File) genDecl(node ast.Node) bool {
 			if field.Tag != nil && field.Tag.Value == "`stringer:\"true\"`" { // TODO: Check if we do that a bit smarter
 				isStringer = true
 			}
+			hasLocker := ""
+			if field.Tag != nil && strings.HasPrefix(field.Tag.Value, "`hasLocker:\"") { // TODO: Check if we do that a bit smarter
+				hasLocker = strings.TrimPrefix(field.Tag.Value, "`hasLocker:\"")
+				hasLocker = strings.TrimSuffix(hasLocker, "\"`")
+			}
 			if len(field.Names) == 0 {
 				fmt.Printf("\t adding delegate\n")
 				switch ft := field.Type.(type) {
@@ -484,6 +520,7 @@ func (f *File) genDecl(node ast.Node) bool {
 						fieldType:  ft,
 						isDelegate: true,
 						isStringer: isStringer,
+						hasLocker:  hasLocker,
 					})
 					continue
 				case *ast.StarExpr:
@@ -493,6 +530,7 @@ func (f *File) genDecl(node ast.Node) bool {
 							fieldType:  set,
 							isDelegate: true,
 							isStringer: isStringer,
+							hasLocker:  hasLocker,
 						})
 						continue
 					default:
@@ -503,6 +541,7 @@ func (f *File) genDecl(node ast.Node) bool {
 						fieldType:  ft.Sel,
 						isDelegate: true,
 						isStringer: isStringer,
+						hasLocker:  hasLocker,
 					})
 					continue
 				default:
@@ -514,6 +553,7 @@ func (f *File) genDecl(node ast.Node) bool {
 				name:       field.Names[0].Name,
 				fieldType:  field.Type,
 				isStringer: isStringer,
+				hasLocker:  hasLocker,
 			})
 		}
 	}
