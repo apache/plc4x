@@ -39,7 +39,7 @@ import (
 
 //go:generate go run ../../tools/plc4xgenerator/gen.go -type=Subscriber
 type Subscriber struct {
-	consumers     map[*spiModel.DefaultPlcConsumerRegistration]apiModel.PlcSubscriptionEventConsumer
+	consumers     map[*spiModel.DefaultPlcConsumerRegistration]apiModel.PlcSubscriptionEventConsumer `hasLocker:"consumersMutex"`
 	addSubscriber func(subscriber *Subscriber)
 
 	consumersMutex sync.RWMutex

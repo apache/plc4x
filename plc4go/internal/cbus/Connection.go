@@ -42,7 +42,7 @@ import (
 
 //go:generate go run ../../tools/plc4xgenerator/gen.go -type=AlphaGenerator
 type AlphaGenerator struct {
-	currentAlpha byte
+	currentAlpha byte `hasLocker:"lock"`
 	lock         sync.Mutex
 }
 

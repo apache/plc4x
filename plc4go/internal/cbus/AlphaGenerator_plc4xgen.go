@@ -42,8 +42,15 @@ func (d *AlphaGenerator) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 	if err := writeBuffer.PushContext("AlphaGenerator"); err != nil {
 		return err
 	}
+	if err := func() error {
+		d.lock.Lock()
+		defer d.lock.Unlock()
 
-	if err := writeBuffer.WriteByte("currentAlpha", d.currentAlpha); err != nil {
+		if err := writeBuffer.WriteByte("currentAlpha", d.currentAlpha); err != nil {
+			return err
+		}
+		return nil
+	}(); err != nil {
 		return err
 	}
 	if err := writeBuffer.PopContext("AlphaGenerator"); err != nil {

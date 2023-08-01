@@ -232,12 +232,17 @@ func (g *Generator) generate(typeName string) {
 		fieldName := field.name
 		fieldNameUntitled := "\"" + unTitle(fieldName) + "\""
 		if field.hasLocker != "" {
-			g.Printf("d." + field.hasLocker + ".Lock()\n")
+			g.Printf("if err := func()error {\n")
+			g.Printf("\td." + field.hasLocker + ".Lock()\n")
+			g.Printf("\tdefer d." + field.hasLocker + ".Unlock()\n")
 		}
 		if field.isStringer {
 			g.Printf(stringFieldSerialize, "d."+field.name+".String()", fieldNameUntitled)
 			if field.hasLocker != "" {
-				g.Printf("d." + field.hasLocker + ".Unlock()\n")
+				g.Printf("\treturn nil\n")
+				g.Printf("}(); err != nil {\n")
+				g.Printf("\treturn err\n")
+				g.Printf("}\n")
 			}
 			continue
 		}
@@ -259,35 +264,50 @@ func (g *Generator) generate(typeName string) {
 						if sel.Name == "Uint32" {
 							g.Printf(uint32FieldSerialize, "d."+field.name+".Load()", fieldNameUntitled)
 							if field.hasLocker != "" {
-								g.Printf("d." + field.hasLocker + ".Unlock()\n")
+								g.Printf("\treturn nil\n")
+								g.Printf("}(); err != nil {\n")
+								g.Printf("\treturn err\n")
+								g.Printf("}\n")
 							}
 							continue
 						}
 						if sel.Name == "Uint64" {
 							g.Printf(uint64FieldSerialize, "d."+field.name+".Load()", fieldNameUntitled)
 							if field.hasLocker != "" {
-								g.Printf("d." + field.hasLocker + ".Unlock()\n")
+								g.Printf("\treturn nil\n")
+								g.Printf("}(); err != nil {\n")
+								g.Printf("\treturn err\n")
+								g.Printf("}\n")
 							}
 							continue
 						}
 						if sel.Name == "Int32" {
 							g.Printf(int32FieldSerialize, "d."+field.name+".Load()", fieldNameUntitled)
 							if field.hasLocker != "" {
-								g.Printf("d." + field.hasLocker + ".Unlock()\n")
+								g.Printf("\treturn nil\n")
+								g.Printf("}(); err != nil {\n")
+								g.Printf("\treturn err\n")
+								g.Printf("}\n")
 							}
 							continue
 						}
 						if sel.Name == "Bool" {
 							g.Printf(boolFieldSerialize, "d."+field.name+".Load()", fieldNameUntitled)
 							if field.hasLocker != "" {
-								g.Printf("d." + field.hasLocker + ".Unlock()\n")
+								g.Printf("\treturn nil\n")
+								g.Printf("}(); err != nil {\n")
+								g.Printf("\treturn err\n")
+								g.Printf("}\n")
 							}
 							continue
 						}
 						if sel.Name == "Value" {
 							g.Printf(serializableFieldTemplate, "d."+field.name+".Load()", fieldNameUntitled)
 							if field.hasLocker != "" {
-								g.Printf("d." + field.hasLocker + ".Unlock()\n")
+								g.Printf("\treturn nil\n")
+								g.Printf("}(); err != nil {\n")
+								g.Printf("\treturn err\n")
+								g.Printf("}\n")
 							}
 							continue
 						}
@@ -295,7 +315,10 @@ func (g *Generator) generate(typeName string) {
 					if xIdent.Name == "sync" {
 						fmt.Printf("\t skipping field %s because it is %v.%v\n", fieldName, x, sel)
 						if field.hasLocker != "" {
-							g.Printf("d." + field.hasLocker + ".Unlock()\n")
+							g.Printf("\treturn nil\n")
+							g.Printf("}(); err != nil {\n")
+							g.Printf("\treturn err\n")
+							g.Printf("}\n")
 						}
 						continue
 					}
@@ -310,7 +333,10 @@ func (g *Generator) generate(typeName string) {
 				if xIsIdent && xIdent.Name == "atomic" && sel.Name == "Pointer" {
 					g.Printf(atomicPointerFieldTemplate, "d."+field.name, field.name, fieldNameUntitled)
 					if field.hasLocker != "" {
-						g.Printf("d." + field.hasLocker + ".Unlock()\n")
+						g.Printf("\treturn nil\n")
+						g.Printf("}(); err != nil {\n")
+						g.Printf("\treturn err\n")
+						g.Printf("}\n")
 					}
 					continue
 				}
@@ -437,7 +463,10 @@ func (g *Generator) generate(typeName string) {
 			fmt.Printf("no support implemented %#v\n", fieldType)
 		}
 		if field.hasLocker != "" {
-			g.Printf("d." + field.hasLocker + ".Unlock()\n")
+			g.Printf("\treturn nil\n")
+			g.Printf("}(); err != nil {\n")
+			g.Printf("\treturn err\n")
+			g.Printf("}\n")
 		}
 	}
 	g.Printf("\tif err := writeBuffer.PopContext(%s); err != nil {\n", logicalTypeName)

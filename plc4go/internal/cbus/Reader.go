@@ -168,7 +168,7 @@ func (m *Reader) sendMessageOverTheWire(ctx context.Context, transaction transac
 				m.log.Trace().Msg("it is not a confirmation")
 				return false
 			}
-			actualAlpha := confirmation.GetConfirmation().GetAlpha().GetCharacter()
+			receivedAlpha := confirmation.GetConfirmation().GetAlpha().GetCharacter()
 			// TODO: assert that this is a CBusMessageToServer indeed (by changing param for example)
 			alphaRetriever, ok := messageToSend.(readWriteModel.CBusMessageToServer).GetRequest().(interface{ GetAlpha() readWriteModel.Alpha })
 			if !ok {
@@ -176,8 +176,8 @@ func (m *Reader) sendMessageOverTheWire(ctx context.Context, transaction transac
 				return false
 			}
 			expectedAlpha := alphaRetriever.GetAlpha().GetCharacter()
-			m.log.Trace().Msgf("Comparing expected alpha '%c' to actual alpha '%c'", expectedAlpha, actualAlpha)
-			return actualAlpha == expectedAlpha
+			m.log.Trace().Msgf("Comparing expected alpha '%c' to received alpha '%c'", expectedAlpha, receivedAlpha)
+			return receivedAlpha == expectedAlpha
 		},
 		func(receivedMessage spi.Message) error {
 			// Convert the response into an
