@@ -52,12 +52,7 @@ func NewDriver(_options ...options.WithOption) plc4go.PlcDriver {
 		awaitSetupComplete:      true,
 		awaitDisconnectComplete: true,
 
-		uriPattern: regexp.MustCompile(`^(?P<protocolCode>opcua)" +
-			"(:(?P<transportCode>[a-z0-9]*))?://" +
-			"(?P<transportHost>[\\w.-]+)(:" +
-			"(?P<transportPort>\\d*))?" +
-			"(?P<transportEndpoint>[\\w/=]*)[\\?]?" +
-			"(?P<paramString>([^\\=]+\\=[^\\=&]+[&]?)*)`),
+		uriPattern: regexp.MustCompile(`^((?P<protocolCode>opcua):)?(?P<transportCode>[a-z0-9]*)?:(//)?(?P<transportHost>[\w.-]+)(:(?P<transportPort>\d*))?(?P<transportEndpoint>[\w/=]*)[\\?]?(?P<paramString>([^\\=]+=[^\\=&]+&?)*)`),
 
 		log:      customLogger,
 		_options: _options,
@@ -93,6 +88,9 @@ func (m *Driver) GetConnectionWithContext(ctx context.Context, transportUrl url.
 	var protocolCode, transportCode, transportHost, transportPort, transportEndpoint, paramString string
 	if match := utils.GetSubgroupMatches(m.uriPattern, transportUrl.String()); match != nil {
 		protocolCode = match["protocolCode"]
+		if protocolCode == "" {
+			protocolCode = m.GetProtocolCode()
+		}
 		transportCode = match["transportCode"]
 		if transportCode == "" {
 			transportCode = m.GetDefaultTransport()
