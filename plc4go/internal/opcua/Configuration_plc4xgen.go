@@ -89,17 +89,7 @@ func (d *Configuration) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 			}
 		}
 	}
-	if err := writeBuffer.PushContext("senderCertificate", utils.WithRenderAsList(true)); err != nil {
-		return err
-	}
-	for _, elem := range d.senderCertificate {
-		_value := fmt.Sprintf("%v", elem)
-
-		if err := writeBuffer.WriteString("senderCertificate", uint32(len(_value)*8), "UTF-8", _value); err != nil {
-			return err
-		}
-	}
-	if err := writeBuffer.PopContext("senderCertificate", utils.WithRenderAsList(true)); err != nil {
+	if err := writeBuffer.WriteByteArray("senderCertificate", d.senderCertificate); err != nil {
 		return err
 	}
 

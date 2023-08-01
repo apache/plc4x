@@ -46,17 +46,7 @@ func (d *SecureChannel) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 	if err := writeBuffer.WriteString("sessionName", uint32(len(d.sessionName)*8), "UTF-8", d.sessionName); err != nil {
 		return err
 	}
-	if err := writeBuffer.PushContext("clientNonce", utils.WithRenderAsList(true)); err != nil {
-		return err
-	}
-	for _, elem := range d.clientNonce {
-		_value := fmt.Sprintf("%v", elem)
-
-		if err := writeBuffer.WriteString("clientNonce", uint32(len(_value)*8), "UTF-8", _value); err != nil {
-			return err
-		}
-	}
-	if err := writeBuffer.PopContext("clientNonce", utils.WithRenderAsList(true)); err != nil {
+	if err := writeBuffer.WriteByteArray("clientNonce", d.clientNonce); err != nil {
 		return err
 	}
 
@@ -178,30 +168,10 @@ func (d *SecureChannel) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 	if err := writeBuffer.WriteBit("isEncrypted", d.isEncrypted); err != nil {
 		return err
 	}
-	if err := writeBuffer.PushContext("senderCertificate", utils.WithRenderAsList(true)); err != nil {
+	if err := writeBuffer.WriteByteArray("senderCertificate", d.senderCertificate); err != nil {
 		return err
 	}
-	for _, elem := range d.senderCertificate {
-		_value := fmt.Sprintf("%v", elem)
-
-		if err := writeBuffer.WriteString("senderCertificate", uint32(len(_value)*8), "UTF-8", _value); err != nil {
-			return err
-		}
-	}
-	if err := writeBuffer.PopContext("senderCertificate", utils.WithRenderAsList(true)); err != nil {
-		return err
-	}
-	if err := writeBuffer.PushContext("senderNonce", utils.WithRenderAsList(true)); err != nil {
-		return err
-	}
-	for _, elem := range d.senderNonce {
-		_value := fmt.Sprintf("%v", elem)
-
-		if err := writeBuffer.WriteString("senderNonce", uint32(len(_value)*8), "UTF-8", _value); err != nil {
-			return err
-		}
-	}
-	if err := writeBuffer.PopContext("senderNonce", utils.WithRenderAsList(true)); err != nil {
+	if err := writeBuffer.WriteByteArray("senderNonce", d.senderNonce); err != nil {
 		return err
 	}
 

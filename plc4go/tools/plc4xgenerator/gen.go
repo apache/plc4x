@@ -314,32 +314,38 @@ func (g *Generator) generate(typeName string) {
 				g.Printf("}\n")
 			}
 		case *ast.ArrayType:
-			g.Printf("if err := writeBuffer.PushContext(%s, utils.WithRenderAsList(true)); err != nil {\n\t\treturn err\n\t}\n", fieldNameUntitled)
-			g.Printf("for _, elem := range d.%s {", field.name)
-			switch eltType := fieldType.Elt.(type) {
-			case *ast.SelectorExpr, *ast.StarExpr:
-				g.Printf("\n\t\tvar elem any = elem\n")
-				g.Printf(serializableFieldTemplate, "elem", "\"value\"")
-			case *ast.Ident:
-				switch eltType.Name {
-				case "int":
-					g.Printf(int64FieldSerialize, "int64(d."+field.name+")", fieldNameUntitled)
-				case "uint32":
-					g.Printf(uint32FieldSerialize, "d."+field.name, fieldNameUntitled)
-				case "bool":
-					g.Printf(boolFieldSerialize, "elem", "\"\"")
-				case "string":
-					g.Printf(stringFieldSerialize, "elem", "\"\"")
-				case "error":
-					g.Printf(errorFieldSerialize, "elem", "\"\"")
-				default:
-					fmt.Printf("\t no support implemented for Ident within ArrayType for %v\n", fieldType)
-					g.Printf("_value := fmt.Sprintf(\"%%v\", elem)\n")
-					g.Printf(stringFieldSerialize, "_value", fieldNameUntitled)
+			if eltType, ok := fieldType.Elt.(*ast.Ident); ok && eltType.Name == "byte" {
+				g.Printf("if err := writeBuffer.WriteByteArray(%s, d.%s); err != nil {\n", fieldNameUntitled, field.name)
+				g.Printf("\treturn err\n")
+				g.Printf("}\n")
+			} else {
+				g.Printf("if err := writeBuffer.PushContext(%s, utils.WithRenderAsList(true)); err != nil {\n\t\treturn err\n\t}\n", fieldNameUntitled)
+				g.Printf("for _, elem := range d.%s {", field.name)
+				switch eltType := fieldType.Elt.(type) {
+				case *ast.SelectorExpr, *ast.StarExpr:
+					g.Printf("\n\t\tvar elem any = elem\n")
+					g.Printf(serializableFieldTemplate, "elem", "\"value\"")
+				case *ast.Ident:
+					switch eltType.Name {
+					case "int":
+						g.Printf(int64FieldSerialize, "int64(d."+field.name+")", fieldNameUntitled)
+					case "uint32":
+						g.Printf(uint32FieldSerialize, "d."+field.name, fieldNameUntitled)
+					case "bool":
+						g.Printf(boolFieldSerialize, "elem", "\"\"")
+					case "string":
+						g.Printf(stringFieldSerialize, "elem", "\"\"")
+					case "error":
+						g.Printf(errorFieldSerialize, "elem", "\"\"")
+					default:
+						fmt.Printf("\t no support implemented for Ident within ArrayType for %v\n", fieldType)
+						g.Printf("_value := fmt.Sprintf(\"%%v\", elem)\n")
+						g.Printf(stringFieldSerialize, "_value", fieldNameUntitled)
+					}
 				}
+				g.Printf("}\n")
+				g.Printf("if err := writeBuffer.PopContext(%s, utils.WithRenderAsList(true)); err != nil {\n\t\treturn err\n\t}\n", fieldNameUntitled)
 			}
-			g.Printf("}\n")
-			g.Printf("if err := writeBuffer.PopContext(%s, utils.WithRenderAsList(true)); err != nil {\n\t\treturn err\n\t}\n", fieldNameUntitled)
 		case *ast.MapType:
 			if ident, ok := fieldType.Key.(*ast.Ident); !ok || ident.Name != "string" {
 				fmt.Printf("Only string types are supported for maps right now")
