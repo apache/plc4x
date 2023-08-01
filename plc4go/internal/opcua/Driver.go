@@ -57,7 +57,7 @@ func NewDriver(_options ...options.WithOption) plc4go.PlcDriver {
 		log:      customLogger,
 		_options: _options,
 	}
-	driver.DefaultDriver = _default.NewDefaultDriver(driver, "opcua", "Clipsal Bus", "tcp", NewTagHandler())
+	driver.DefaultDriver = _default.NewDefaultDriver(driver, "opcua", "Opcua", "tcp", NewTagHandler())
 	return driver
 }
 
