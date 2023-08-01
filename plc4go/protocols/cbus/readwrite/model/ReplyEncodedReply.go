@@ -248,6 +248,8 @@ func (m *_ReplyEncodedReply) SerializeWithWriteBuffer(ctx context.Context, write
 			return errors.Wrap(_encodedReplyErr, "Error serializing 'encodedReply' field")
 		}
 		// Virtual field
+		encodedReplyDecoded := m.GetEncodedReplyDecoded()
+		_ = encodedReplyDecoded
 		if _encodedReplyDecodedErr := writeBuffer.WriteVirtual(ctx, "encodedReplyDecoded", m.GetEncodedReplyDecoded()); _encodedReplyDecodedErr != nil {
 			return errors.Wrap(_encodedReplyDecodedErr, "Error serializing 'encodedReplyDecoded' field")
 		}
@@ -258,6 +260,8 @@ func (m *_ReplyEncodedReply) SerializeWithWriteBuffer(ctx context.Context, write
 			return errors.Wrap(_chksumErr, "Error serializing 'chksum' field")
 		}
 		// Virtual field
+		chksumDecoded := m.GetChksumDecoded()
+		_ = chksumDecoded
 		if _chksumDecodedErr := writeBuffer.WriteVirtual(ctx, "chksumDecoded", m.GetChksumDecoded()); _chksumDecodedErr != nil {
 			return errors.Wrap(_chksumDecodedErr, "Error serializing 'chksumDecoded' field")
 		}

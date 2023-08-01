@@ -230,6 +230,8 @@ func (m *_BACnetConstructedDataLastPriority) SerializeWithWriteBuffer(ctx contex
 			return errors.Wrap(_lastPriorityErr, "Error serializing 'lastPriority' field")
 		}
 		// Virtual field
+		actualValue := m.GetActualValue()
+		_ = actualValue
 		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}

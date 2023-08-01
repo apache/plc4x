@@ -273,6 +273,8 @@ func (pm *_BVLC) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuf
 		return errors.Wrap(_bvlcLengthErr, "Error serializing 'bvlcLength' field")
 	}
 	// Virtual field
+	bvlcPayloadLength := m.GetBvlcPayloadLength()
+	_ = bvlcPayloadLength
 	if _bvlcPayloadLengthErr := writeBuffer.WriteVirtual(ctx, "bvlcPayloadLength", m.GetBvlcPayloadLength()); _bvlcPayloadLengthErr != nil {
 		return errors.Wrap(_bvlcPayloadLengthErr, "Error serializing 'bvlcPayloadLength' field")
 	}

@@ -203,6 +203,8 @@ func (m *_AdsDataTypeArrayInfo) SerializeWithWriteBuffer(ctx context.Context, wr
 		return errors.Wrap(_numElementsErr, "Error serializing 'numElements' field")
 	}
 	// Virtual field
+	upperBound := m.GetUpperBound()
+	_ = upperBound
 	if _upperBoundErr := writeBuffer.WriteVirtual(ctx, "upperBound", m.GetUpperBound()); _upperBoundErr != nil {
 		return errors.Wrap(_upperBoundErr, "Error serializing 'upperBound' field")
 	}

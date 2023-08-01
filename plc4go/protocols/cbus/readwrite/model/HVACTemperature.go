@@ -177,6 +177,8 @@ func (m *_HVACTemperature) SerializeWithWriteBuffer(ctx context.Context, writeBu
 		return errors.Wrap(_temperatureValueErr, "Error serializing 'temperatureValue' field")
 	}
 	// Virtual field
+	temperatureInCelcius := m.GetTemperatureInCelcius()
+	_ = temperatureInCelcius
 	if _temperatureInCelciusErr := writeBuffer.WriteVirtual(ctx, "temperatureInCelcius", m.GetTemperatureInCelcius()); _temperatureInCelciusErr != nil {
 		return errors.Wrap(_temperatureInCelciusErr, "Error serializing 'temperatureInCelcius' field")
 	}

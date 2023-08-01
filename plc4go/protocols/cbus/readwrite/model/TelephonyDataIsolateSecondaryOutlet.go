@@ -222,10 +222,14 @@ func (m *_TelephonyDataIsolateSecondaryOutlet) SerializeWithWriteBuffer(ctx cont
 			return errors.Wrap(_isolateStatusErr, "Error serializing 'isolateStatus' field")
 		}
 		// Virtual field
+		isBehaveNormal := m.GetIsBehaveNormal()
+		_ = isBehaveNormal
 		if _isBehaveNormalErr := writeBuffer.WriteVirtual(ctx, "isBehaveNormal", m.GetIsBehaveNormal()); _isBehaveNormalErr != nil {
 			return errors.Wrap(_isBehaveNormalErr, "Error serializing 'isBehaveNormal' field")
 		}
 		// Virtual field
+		isToBeIsolated := m.GetIsToBeIsolated()
+		_ = isToBeIsolated
 		if _isToBeIsolatedErr := writeBuffer.WriteVirtual(ctx, "isToBeIsolated", m.GetIsToBeIsolated()); _isToBeIsolatedErr != nil {
 			return errors.Wrap(_isToBeIsolatedErr, "Error serializing 'isToBeIsolated' field")
 		}

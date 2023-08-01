@@ -230,6 +230,8 @@ func (m *_BACnetConstructedDataReliability) SerializeWithWriteBuffer(ctx context
 			return errors.Wrap(_reliabilityErr, "Error serializing 'reliability' field")
 		}
 		// Virtual field
+		actualValue := m.GetActualValue()
+		_ = actualValue
 		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}

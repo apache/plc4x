@@ -269,10 +269,14 @@ func (m *_LevelInformationNormal) SerializeWithWriteBuffer(ctx context.Context, 
 			return errors.Wrap(_pair2Err, "Error serializing 'pair2' field")
 		}
 		// Virtual field
+		actualLevel := m.GetActualLevel()
+		_ = actualLevel
 		if _actualLevelErr := writeBuffer.WriteVirtual(ctx, "actualLevel", m.GetActualLevel()); _actualLevelErr != nil {
 			return errors.Wrap(_actualLevelErr, "Error serializing 'actualLevel' field")
 		}
 		// Virtual field
+		actualLevelInPercent := m.GetActualLevelInPercent()
+		_ = actualLevelInPercent
 		if _actualLevelInPercentErr := writeBuffer.WriteVirtual(ctx, "actualLevelInPercent", m.GetActualLevelInPercent()); _actualLevelInPercentErr != nil {
 			return errors.Wrap(_actualLevelInPercentErr, "Error serializing 'actualLevelInPercent' field")
 		}

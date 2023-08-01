@@ -222,10 +222,14 @@ func (m *_MediaTransportControlDataPauseResume) SerializeWithWriteBuffer(ctx con
 			return errors.Wrap(_operationErr, "Error serializing 'operation' field")
 		}
 		// Virtual field
+		isPause := m.GetIsPause()
+		_ = isPause
 		if _isPauseErr := writeBuffer.WriteVirtual(ctx, "isPause", m.GetIsPause()); _isPauseErr != nil {
 			return errors.Wrap(_isPauseErr, "Error serializing 'isPause' field")
 		}
 		// Virtual field
+		isResume := m.GetIsResume()
+		_ = isResume
 		if _isResumeErr := writeBuffer.WriteVirtual(ctx, "isResume", m.GetIsResume()); _isResumeErr != nil {
 			return errors.Wrap(_isResumeErr, "Error serializing 'isResume' field")
 		}

@@ -375,42 +375,62 @@ func (m *_BACnetObjectTypesSupportedTagged) SerializeWithWriteBuffer(ctx context
 		return errors.Wrap(_payloadErr, "Error serializing 'payload' field")
 	}
 	// Virtual field
+	timeValue := m.GetTimeValue()
+	_ = timeValue
 	if _timeValueErr := writeBuffer.WriteVirtual(ctx, "timeValue", m.GetTimeValue()); _timeValueErr != nil {
 		return errors.Wrap(_timeValueErr, "Error serializing 'timeValue' field")
 	}
 	// Virtual field
+	notificationForwarder := m.GetNotificationForwarder()
+	_ = notificationForwarder
 	if _notificationForwarderErr := writeBuffer.WriteVirtual(ctx, "notificationForwarder", m.GetNotificationForwarder()); _notificationForwarderErr != nil {
 		return errors.Wrap(_notificationForwarderErr, "Error serializing 'notificationForwarder' field")
 	}
 	// Virtual field
+	alertEnrollment := m.GetAlertEnrollment()
+	_ = alertEnrollment
 	if _alertEnrollmentErr := writeBuffer.WriteVirtual(ctx, "alertEnrollment", m.GetAlertEnrollment()); _alertEnrollmentErr != nil {
 		return errors.Wrap(_alertEnrollmentErr, "Error serializing 'alertEnrollment' field")
 	}
 	// Virtual field
+	channel := m.GetChannel()
+	_ = channel
 	if _channelErr := writeBuffer.WriteVirtual(ctx, "channel", m.GetChannel()); _channelErr != nil {
 		return errors.Wrap(_channelErr, "Error serializing 'channel' field")
 	}
 	// Virtual field
+	lightingOutput := m.GetLightingOutput()
+	_ = lightingOutput
 	if _lightingOutputErr := writeBuffer.WriteVirtual(ctx, "lightingOutput", m.GetLightingOutput()); _lightingOutputErr != nil {
 		return errors.Wrap(_lightingOutputErr, "Error serializing 'lightingOutput' field")
 	}
 	// Virtual field
+	binaryLightingOutput := m.GetBinaryLightingOutput()
+	_ = binaryLightingOutput
 	if _binaryLightingOutputErr := writeBuffer.WriteVirtual(ctx, "binaryLightingOutput", m.GetBinaryLightingOutput()); _binaryLightingOutputErr != nil {
 		return errors.Wrap(_binaryLightingOutputErr, "Error serializing 'binaryLightingOutput' field")
 	}
 	// Virtual field
+	networkPort := m.GetNetworkPort()
+	_ = networkPort
 	if _networkPortErr := writeBuffer.WriteVirtual(ctx, "networkPort", m.GetNetworkPort()); _networkPortErr != nil {
 		return errors.Wrap(_networkPortErr, "Error serializing 'networkPort' field")
 	}
 	// Virtual field
+	elevatorGroup := m.GetElevatorGroup()
+	_ = elevatorGroup
 	if _elevatorGroupErr := writeBuffer.WriteVirtual(ctx, "elevatorGroup", m.GetElevatorGroup()); _elevatorGroupErr != nil {
 		return errors.Wrap(_elevatorGroupErr, "Error serializing 'elevatorGroup' field")
 	}
 	// Virtual field
+	escalator := m.GetEscalator()
+	_ = escalator
 	if _escalatorErr := writeBuffer.WriteVirtual(ctx, "escalator", m.GetEscalator()); _escalatorErr != nil {
 		return errors.Wrap(_escalatorErr, "Error serializing 'escalator' field")
 	}
 	// Virtual field
+	lift := m.GetLift()
+	_ = lift
 	if _liftErr := writeBuffer.WriteVirtual(ctx, "lift", m.GetLift()); _liftErr != nil {
 		return errors.Wrap(_liftErr, "Error serializing 'lift' field")
 	}

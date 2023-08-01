@@ -275,6 +275,8 @@ func (pm *_BACnetConfirmedServiceRequest) SerializeParent(ctx context.Context, w
 		return errors.Wrap(_serviceChoiceErr, "Error serializing 'serviceChoice' field")
 	}
 	// Virtual field
+	serviceRequestPayloadLength := m.GetServiceRequestPayloadLength()
+	_ = serviceRequestPayloadLength
 	if _serviceRequestPayloadLengthErr := writeBuffer.WriteVirtual(ctx, "serviceRequestPayloadLength", m.GetServiceRequestPayloadLength()); _serviceRequestPayloadLengthErr != nil {
 		return errors.Wrap(_serviceRequestPayloadLengthErr, "Error serializing 'serviceRequestPayloadLength' field")
 	}

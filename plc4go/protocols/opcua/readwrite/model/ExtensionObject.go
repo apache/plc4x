@@ -270,6 +270,8 @@ func (m *_ExtensionObject) SerializeWithWriteBuffer(ctx context.Context, writeBu
 		}
 	}
 	// Virtual field
+	identifier := m.GetIdentifier()
+	_ = identifier
 	if _identifierErr := writeBuffer.WriteVirtual(ctx, "identifier", m.GetIdentifier()); _identifierErr != nil {
 		return errors.Wrap(_identifierErr, "Error serializing 'identifier' field")
 	}

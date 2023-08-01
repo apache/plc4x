@@ -357,46 +357,68 @@ func (m *_SecurityDataEmulatedKeypad) SerializeWithWriteBuffer(ctx context.Conte
 			return errors.Wrap(_keyErr, "Error serializing 'key' field")
 		}
 		// Virtual field
+		isAscii := m.GetIsAscii()
+		_ = isAscii
 		if _isAsciiErr := writeBuffer.WriteVirtual(ctx, "isAscii", m.GetIsAscii()); _isAsciiErr != nil {
 			return errors.Wrap(_isAsciiErr, "Error serializing 'isAscii' field")
 		}
 		// Virtual field
+		isCustom := m.GetIsCustom()
+		_ = isCustom
 		if _isCustomErr := writeBuffer.WriteVirtual(ctx, "isCustom", m.GetIsCustom()); _isCustomErr != nil {
 			return errors.Wrap(_isCustomErr, "Error serializing 'isCustom' field")
 		}
 		// Virtual field
+		isEnter := m.GetIsEnter()
+		_ = isEnter
 		if _isEnterErr := writeBuffer.WriteVirtual(ctx, "isEnter", m.GetIsEnter()); _isEnterErr != nil {
 			return errors.Wrap(_isEnterErr, "Error serializing 'isEnter' field")
 		}
 		// Virtual field
+		isShift := m.GetIsShift()
+		_ = isShift
 		if _isShiftErr := writeBuffer.WriteVirtual(ctx, "isShift", m.GetIsShift()); _isShiftErr != nil {
 			return errors.Wrap(_isShiftErr, "Error serializing 'isShift' field")
 		}
 		// Virtual field
+		isPanic := m.GetIsPanic()
+		_ = isPanic
 		if _isPanicErr := writeBuffer.WriteVirtual(ctx, "isPanic", m.GetIsPanic()); _isPanicErr != nil {
 			return errors.Wrap(_isPanicErr, "Error serializing 'isPanic' field")
 		}
 		// Virtual field
+		isFire := m.GetIsFire()
+		_ = isFire
 		if _isFireErr := writeBuffer.WriteVirtual(ctx, "isFire", m.GetIsFire()); _isFireErr != nil {
 			return errors.Wrap(_isFireErr, "Error serializing 'isFire' field")
 		}
 		// Virtual field
+		isARM := m.GetIsARM()
+		_ = isARM
 		if _isARMErr := writeBuffer.WriteVirtual(ctx, "isARM", m.GetIsARM()); _isARMErr != nil {
 			return errors.Wrap(_isARMErr, "Error serializing 'isARM' field")
 		}
 		// Virtual field
+		isAway := m.GetIsAway()
+		_ = isAway
 		if _isAwayErr := writeBuffer.WriteVirtual(ctx, "isAway", m.GetIsAway()); _isAwayErr != nil {
 			return errors.Wrap(_isAwayErr, "Error serializing 'isAway' field")
 		}
 		// Virtual field
+		isNight := m.GetIsNight()
+		_ = isNight
 		if _isNightErr := writeBuffer.WriteVirtual(ctx, "isNight", m.GetIsNight()); _isNightErr != nil {
 			return errors.Wrap(_isNightErr, "Error serializing 'isNight' field")
 		}
 		// Virtual field
+		isDay := m.GetIsDay()
+		_ = isDay
 		if _isDayErr := writeBuffer.WriteVirtual(ctx, "isDay", m.GetIsDay()); _isDayErr != nil {
 			return errors.Wrap(_isDayErr, "Error serializing 'isDay' field")
 		}
 		// Virtual field
+		isVacation := m.GetIsVacation()
+		_ = isVacation
 		if _isVacationErr := writeBuffer.WriteVirtual(ctx, "isVacation", m.GetIsVacation()); _isVacationErr != nil {
 			return errors.Wrap(_isVacationErr, "Error serializing 'isVacation' field")
 		}

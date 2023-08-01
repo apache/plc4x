@@ -177,6 +177,8 @@ func (m *_HVACHumidity) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 		return errors.Wrap(_humidityValueErr, "Error serializing 'humidityValue' field")
 	}
 	// Virtual field
+	humidityInPercent := m.GetHumidityInPercent()
+	_ = humidityInPercent
 	if _humidityInPercentErr := writeBuffer.WriteVirtual(ctx, "humidityInPercent", m.GetHumidityInPercent()); _humidityInPercentErr != nil {
 		return errors.Wrap(_humidityInPercentErr, "Error serializing 'humidityInPercent' field")
 	}

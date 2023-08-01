@@ -230,6 +230,8 @@ func (m *_BACnetConstructedDataLastKeyServer) SerializeWithWriteBuffer(ctx conte
 			return errors.Wrap(_lastKeyServerErr, "Error serializing 'lastKeyServer' field")
 		}
 		// Virtual field
+		actualValue := m.GetActualValue()
+		_ = actualValue
 		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}

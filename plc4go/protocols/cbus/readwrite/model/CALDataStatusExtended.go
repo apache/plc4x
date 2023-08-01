@@ -394,10 +394,14 @@ func (m *_CALDataStatusExtended) SerializeWithWriteBuffer(ctx context.Context, w
 			return errors.Wrap(_blockStartErr, "Error serializing 'blockStart' field")
 		}
 		// Virtual field
+		numberOfStatusBytes := m.GetNumberOfStatusBytes()
+		_ = numberOfStatusBytes
 		if _numberOfStatusBytesErr := writeBuffer.WriteVirtual(ctx, "numberOfStatusBytes", m.GetNumberOfStatusBytes()); _numberOfStatusBytesErr != nil {
 			return errors.Wrap(_numberOfStatusBytesErr, "Error serializing 'numberOfStatusBytes' field")
 		}
 		// Virtual field
+		numberOfLevelInformation := m.GetNumberOfLevelInformation()
+		_ = numberOfLevelInformation
 		if _numberOfLevelInformationErr := writeBuffer.WriteVirtual(ctx, "numberOfLevelInformation", m.GetNumberOfLevelInformation()); _numberOfLevelInformationErr != nil {
 			return errors.Wrap(_numberOfLevelInformationErr, "Error serializing 'numberOfLevelInformation' field")
 		}

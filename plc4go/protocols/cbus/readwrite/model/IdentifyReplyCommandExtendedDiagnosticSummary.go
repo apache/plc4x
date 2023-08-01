@@ -677,6 +677,8 @@ func (m *_IdentifyReplyCommandExtendedDiagnosticSummary) SerializeWithWriteBuffe
 			return errors.Wrap(_networkVoltageErr, "Error serializing 'networkVoltage' field")
 		}
 		// Virtual field
+		networkVoltageInVolts := m.GetNetworkVoltageInVolts()
+		_ = networkVoltageInVolts
 		if _networkVoltageInVoltsErr := writeBuffer.WriteVirtual(ctx, "networkVoltageInVolts", m.GetNetworkVoltageInVolts()); _networkVoltageInVoltsErr != nil {
 			return errors.Wrap(_networkVoltageInVoltsErr, "Error serializing 'networkVoltageInVolts' field")
 		}

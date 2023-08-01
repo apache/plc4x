@@ -241,10 +241,14 @@ func (m *_TelephonyDataRecallLastNumber) SerializeWithWriteBuffer(ctx context.Co
 			return errors.Wrap(_recallLastNumberTypeErr, "Error serializing 'recallLastNumberType' field")
 		}
 		// Virtual field
+		isNumberOfLastOutgoingCall := m.GetIsNumberOfLastOutgoingCall()
+		_ = isNumberOfLastOutgoingCall
 		if _isNumberOfLastOutgoingCallErr := writeBuffer.WriteVirtual(ctx, "isNumberOfLastOutgoingCall", m.GetIsNumberOfLastOutgoingCall()); _isNumberOfLastOutgoingCallErr != nil {
 			return errors.Wrap(_isNumberOfLastOutgoingCallErr, "Error serializing 'isNumberOfLastOutgoingCall' field")
 		}
 		// Virtual field
+		isNumberOfLastIncomingCall := m.GetIsNumberOfLastIncomingCall()
+		_ = isNumberOfLastIncomingCall
 		if _isNumberOfLastIncomingCallErr := writeBuffer.WriteVirtual(ctx, "isNumberOfLastIncomingCall", m.GetIsNumberOfLastIncomingCall()); _isNumberOfLastIncomingCallErr != nil {
 			return errors.Wrap(_isNumberOfLastIncomingCallErr, "Error serializing 'isNumberOfLastIncomingCall' field")
 		}

@@ -230,6 +230,8 @@ func (m *_BACnetConstructedDataPolarity) SerializeWithWriteBuffer(ctx context.Co
 			return errors.Wrap(_polarityErr, "Error serializing 'polarity' field")
 		}
 		// Virtual field
+		actualValue := m.GetActualValue()
+		_ = actualValue
 		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}

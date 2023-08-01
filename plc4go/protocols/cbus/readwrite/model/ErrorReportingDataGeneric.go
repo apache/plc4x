@@ -412,14 +412,20 @@ func (m *_ErrorReportingDataGeneric) SerializeWithWriteBuffer(ctx context.Contex
 			return errors.Wrap(_mostSevereErr, "Error serializing 'mostSevere' field")
 		}
 		// Virtual field
+		isMostSevereError := m.GetIsMostSevereError()
+		_ = isMostSevereError
 		if _isMostSevereErrorErr := writeBuffer.WriteVirtual(ctx, "isMostSevereError", m.GetIsMostSevereError()); _isMostSevereErrorErr != nil {
 			return errors.Wrap(_isMostSevereErrorErr, "Error serializing 'isMostSevereError' field")
 		}
 		// Virtual field
+		isMostRecentError := m.GetIsMostRecentError()
+		_ = isMostRecentError
 		if _isMostRecentErrorErr := writeBuffer.WriteVirtual(ctx, "isMostRecentError", m.GetIsMostRecentError()); _isMostRecentErrorErr != nil {
 			return errors.Wrap(_isMostRecentErrorErr, "Error serializing 'isMostRecentError' field")
 		}
 		// Virtual field
+		isMostRecentAndMostSevere := m.GetIsMostRecentAndMostSevere()
+		_ = isMostRecentAndMostSevere
 		if _isMostRecentAndMostSevereErr := writeBuffer.WriteVirtual(ctx, "isMostRecentAndMostSevere", m.GetIsMostRecentAndMostSevere()); _isMostRecentAndMostSevereErr != nil {
 			return errors.Wrap(_isMostRecentAndMostSevereErr, "Error serializing 'isMostRecentAndMostSevere' field")
 		}

@@ -595,6 +595,8 @@ func (m *_NPDU) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.
 		return errors.Wrap(popErr, "Error popping for destinationAddress")
 	}
 	// Virtual field
+	destinationLengthAddon := m.GetDestinationLengthAddon()
+	_ = destinationLengthAddon
 	if _destinationLengthAddonErr := writeBuffer.WriteVirtual(ctx, "destinationLengthAddon", m.GetDestinationLengthAddon()); _destinationLengthAddonErr != nil {
 		return errors.Wrap(_destinationLengthAddonErr, "Error serializing 'destinationLengthAddon' field")
 	}
@@ -634,6 +636,8 @@ func (m *_NPDU) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.
 		return errors.Wrap(popErr, "Error popping for sourceAddress")
 	}
 	// Virtual field
+	sourceLengthAddon := m.GetSourceLengthAddon()
+	_ = sourceLengthAddon
 	if _sourceLengthAddonErr := writeBuffer.WriteVirtual(ctx, "sourceLengthAddon", m.GetSourceLengthAddon()); _sourceLengthAddonErr != nil {
 		return errors.Wrap(_sourceLengthAddonErr, "Error serializing 'sourceLengthAddon' field")
 	}
@@ -648,6 +652,8 @@ func (m *_NPDU) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.
 		}
 	}
 	// Virtual field
+	payloadSubtraction := m.GetPayloadSubtraction()
+	_ = payloadSubtraction
 	if _payloadSubtractionErr := writeBuffer.WriteVirtual(ctx, "payloadSubtraction", m.GetPayloadSubtraction()); _payloadSubtractionErr != nil {
 		return errors.Wrap(_payloadSubtractionErr, "Error serializing 'payloadSubtraction' field")
 	}

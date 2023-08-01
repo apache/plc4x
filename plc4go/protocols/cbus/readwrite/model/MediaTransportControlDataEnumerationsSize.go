@@ -290,18 +290,26 @@ func (m *_MediaTransportControlDataEnumerationsSize) SerializeWithWriteBuffer(ct
 			return errors.Wrap(_sizeTypeErr, "Error serializing 'sizeType' field")
 		}
 		// Virtual field
+		isListCategories := m.GetIsListCategories()
+		_ = isListCategories
 		if _isListCategoriesErr := writeBuffer.WriteVirtual(ctx, "isListCategories", m.GetIsListCategories()); _isListCategoriesErr != nil {
 			return errors.Wrap(_isListCategoriesErr, "Error serializing 'isListCategories' field")
 		}
 		// Virtual field
+		isListSelections := m.GetIsListSelections()
+		_ = isListSelections
 		if _isListSelectionsErr := writeBuffer.WriteVirtual(ctx, "isListSelections", m.GetIsListSelections()); _isListSelectionsErr != nil {
 			return errors.Wrap(_isListSelectionsErr, "Error serializing 'isListSelections' field")
 		}
 		// Virtual field
+		isListTracks := m.GetIsListTracks()
+		_ = isListTracks
 		if _isListTracksErr := writeBuffer.WriteVirtual(ctx, "isListTracks", m.GetIsListTracks()); _isListTracksErr != nil {
 			return errors.Wrap(_isListTracksErr, "Error serializing 'isListTracks' field")
 		}
 		// Virtual field
+		isReserved := m.GetIsReserved()
+		_ = isReserved
 		if _isReservedErr := writeBuffer.WriteVirtual(ctx, "isReserved", m.GetIsReserved()); _isReservedErr != nil {
 			return errors.Wrap(_isReservedErr, "Error serializing 'isReserved' field")
 		}

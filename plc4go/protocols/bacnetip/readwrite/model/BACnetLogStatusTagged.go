@@ -270,14 +270,20 @@ func (m *_BACnetLogStatusTagged) SerializeWithWriteBuffer(ctx context.Context, w
 		return errors.Wrap(_payloadErr, "Error serializing 'payload' field")
 	}
 	// Virtual field
+	logDisabled := m.GetLogDisabled()
+	_ = logDisabled
 	if _logDisabledErr := writeBuffer.WriteVirtual(ctx, "logDisabled", m.GetLogDisabled()); _logDisabledErr != nil {
 		return errors.Wrap(_logDisabledErr, "Error serializing 'logDisabled' field")
 	}
 	// Virtual field
+	bufferPurged := m.GetBufferPurged()
+	_ = bufferPurged
 	if _bufferPurgedErr := writeBuffer.WriteVirtual(ctx, "bufferPurged", m.GetBufferPurged()); _bufferPurgedErr != nil {
 		return errors.Wrap(_bufferPurgedErr, "Error serializing 'bufferPurged' field")
 	}
 	// Virtual field
+	logInterrupted := m.GetLogInterrupted()
+	_ = logInterrupted
 	if _logInterruptedErr := writeBuffer.WriteVirtual(ctx, "logInterrupted", m.GetLogInterrupted()); _logInterruptedErr != nil {
 		return errors.Wrap(_logInterruptedErr, "Error serializing 'logInterrupted' field")
 	}

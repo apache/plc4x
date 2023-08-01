@@ -253,6 +253,8 @@ func (m *_PortSegmentExtended) SerializeWithWriteBuffer(ctx context.Context, wri
 			return errors.Wrap(_linkAddressSizeErr, "Error serializing 'linkAddressSize' field")
 		}
 		// Virtual field
+		paddingByte := m.GetPaddingByte()
+		_ = paddingByte
 		if _paddingByteErr := writeBuffer.WriteVirtual(ctx, "paddingByte", m.GetPaddingByte()); _paddingByteErr != nil {
 			return errors.Wrap(_paddingByteErr, "Error serializing 'paddingByte' field")
 		}

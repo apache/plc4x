@@ -237,22 +237,32 @@ func (m *_SecurityArmCode) SerializeWithWriteBuffer(ctx context.Context, writeBu
 		return errors.Wrap(_codeErr, "Error serializing 'code' field")
 	}
 	// Virtual field
+	isDisarmed := m.GetIsDisarmed()
+	_ = isDisarmed
 	if _isDisarmedErr := writeBuffer.WriteVirtual(ctx, "isDisarmed", m.GetIsDisarmed()); _isDisarmedErr != nil {
 		return errors.Wrap(_isDisarmedErr, "Error serializing 'isDisarmed' field")
 	}
 	// Virtual field
+	isFullyArmed := m.GetIsFullyArmed()
+	_ = isFullyArmed
 	if _isFullyArmedErr := writeBuffer.WriteVirtual(ctx, "isFullyArmed", m.GetIsFullyArmed()); _isFullyArmedErr != nil {
 		return errors.Wrap(_isFullyArmedErr, "Error serializing 'isFullyArmed' field")
 	}
 	// Virtual field
+	isPartiallyArmed := m.GetIsPartiallyArmed()
+	_ = isPartiallyArmed
 	if _isPartiallyArmedErr := writeBuffer.WriteVirtual(ctx, "isPartiallyArmed", m.GetIsPartiallyArmed()); _isPartiallyArmedErr != nil {
 		return errors.Wrap(_isPartiallyArmedErr, "Error serializing 'isPartiallyArmed' field")
 	}
 	// Virtual field
+	isArmSubtype := m.GetIsArmSubtype()
+	_ = isArmSubtype
 	if _isArmSubtypeErr := writeBuffer.WriteVirtual(ctx, "isArmSubtype", m.GetIsArmSubtype()); _isArmSubtypeErr != nil {
 		return errors.Wrap(_isArmSubtypeErr, "Error serializing 'isArmSubtype' field")
 	}
 	// Virtual field
+	isReserved := m.GetIsReserved()
+	_ = isReserved
 	if _isReservedErr := writeBuffer.WriteVirtual(ctx, "isReserved", m.GetIsReserved()); _isReservedErr != nil {
 		return errors.Wrap(_isReservedErr, "Error serializing 'isReserved' field")
 	}

@@ -222,10 +222,14 @@ func (m *_MediaTransportControlDataNextPreviousTrack) SerializeWithWriteBuffer(c
 			return errors.Wrap(_operationErr, "Error serializing 'operation' field")
 		}
 		// Virtual field
+		isSetThePreviousTrack := m.GetIsSetThePreviousTrack()
+		_ = isSetThePreviousTrack
 		if _isSetThePreviousTrackErr := writeBuffer.WriteVirtual(ctx, "isSetThePreviousTrack", m.GetIsSetThePreviousTrack()); _isSetThePreviousTrackErr != nil {
 			return errors.Wrap(_isSetThePreviousTrackErr, "Error serializing 'isSetThePreviousTrack' field")
 		}
 		// Virtual field
+		isSetTheNextTrack := m.GetIsSetTheNextTrack()
+		_ = isSetTheNextTrack
 		if _isSetTheNextTrackErr := writeBuffer.WriteVirtual(ctx, "isSetTheNextTrack", m.GetIsSetTheNextTrack()); _isSetTheNextTrackErr != nil {
 			return errors.Wrap(_isSetTheNextTrackErr, "Error serializing 'isSetTheNextTrack' field")
 		}

@@ -287,6 +287,8 @@ func (m *_RequestDirectCommandAccess) SerializeWithWriteBuffer(ctx context.Conte
 			return errors.Wrap(_calDataErr, "Error serializing 'calData' field")
 		}
 		// Virtual field
+		calDataDecoded := m.GetCalDataDecoded()
+		_ = calDataDecoded
 		if _calDataDecodedErr := writeBuffer.WriteVirtual(ctx, "calDataDecoded", m.GetCalDataDecoded()); _calDataDecodedErr != nil {
 			return errors.Wrap(_calDataDecodedErr, "Error serializing 'calDataDecoded' field")
 		}

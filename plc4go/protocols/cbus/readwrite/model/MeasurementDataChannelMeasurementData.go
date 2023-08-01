@@ -362,10 +362,14 @@ func (m *_MeasurementDataChannelMeasurementData) SerializeWithWriteBuffer(ctx co
 			return errors.Wrap(_lsbErr, "Error serializing 'lsb' field")
 		}
 		// Virtual field
+		rawValue := m.GetRawValue()
+		_ = rawValue
 		if _rawValueErr := writeBuffer.WriteVirtual(ctx, "rawValue", m.GetRawValue()); _rawValueErr != nil {
 			return errors.Wrap(_rawValueErr, "Error serializing 'rawValue' field")
 		}
 		// Virtual field
+		value := m.GetValue()
+		_ = value
 		if _valueErr := writeBuffer.WriteVirtual(ctx, "value", m.GetValue()); _valueErr != nil {
 			return errors.Wrap(_valueErr, "Error serializing 'value' field")
 		}

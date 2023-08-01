@@ -234,6 +234,8 @@ func (m *_NodeIdGuid) SerializeWithWriteBuffer(ctx context.Context, writeBuffer 
 			return errors.Wrap(err, "Error serializing 'id' field")
 		}
 		// Virtual field
+		identifier := m.GetIdentifier()
+		_ = identifier
 		if _identifierErr := writeBuffer.WriteVirtual(ctx, "identifier", m.GetIdentifier()); _identifierErr != nil {
 			return errors.Wrap(_identifierErr, "Error serializing 'identifier' field")
 		}

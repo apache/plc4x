@@ -230,6 +230,8 @@ func (m *_BACnetConstructedDataBACnetIPv6UDPPort) SerializeWithWriteBuffer(ctx c
 			return errors.Wrap(_ipv6UdpPortErr, "Error serializing 'ipv6UdpPort' field")
 		}
 		// Virtual field
+		actualValue := m.GetActualValue()
+		_ = actualValue
 		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}

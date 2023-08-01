@@ -267,22 +267,32 @@ func (m *_SecurityDataPasswordEntryStatus) SerializeWithWriteBuffer(ctx context.
 			return errors.Wrap(_codeErr, "Error serializing 'code' field")
 		}
 		// Virtual field
+		isPasswordEntrySucceeded := m.GetIsPasswordEntrySucceeded()
+		_ = isPasswordEntrySucceeded
 		if _isPasswordEntrySucceededErr := writeBuffer.WriteVirtual(ctx, "isPasswordEntrySucceeded", m.GetIsPasswordEntrySucceeded()); _isPasswordEntrySucceededErr != nil {
 			return errors.Wrap(_isPasswordEntrySucceededErr, "Error serializing 'isPasswordEntrySucceeded' field")
 		}
 		// Virtual field
+		isPasswordEntryFailed := m.GetIsPasswordEntryFailed()
+		_ = isPasswordEntryFailed
 		if _isPasswordEntryFailedErr := writeBuffer.WriteVirtual(ctx, "isPasswordEntryFailed", m.GetIsPasswordEntryFailed()); _isPasswordEntryFailedErr != nil {
 			return errors.Wrap(_isPasswordEntryFailedErr, "Error serializing 'isPasswordEntryFailed' field")
 		}
 		// Virtual field
+		isPasswordEntryDisabled := m.GetIsPasswordEntryDisabled()
+		_ = isPasswordEntryDisabled
 		if _isPasswordEntryDisabledErr := writeBuffer.WriteVirtual(ctx, "isPasswordEntryDisabled", m.GetIsPasswordEntryDisabled()); _isPasswordEntryDisabledErr != nil {
 			return errors.Wrap(_isPasswordEntryDisabledErr, "Error serializing 'isPasswordEntryDisabled' field")
 		}
 		// Virtual field
+		isPasswordEntryEnabledAgain := m.GetIsPasswordEntryEnabledAgain()
+		_ = isPasswordEntryEnabledAgain
 		if _isPasswordEntryEnabledAgainErr := writeBuffer.WriteVirtual(ctx, "isPasswordEntryEnabledAgain", m.GetIsPasswordEntryEnabledAgain()); _isPasswordEntryEnabledAgainErr != nil {
 			return errors.Wrap(_isPasswordEntryEnabledAgainErr, "Error serializing 'isPasswordEntryEnabledAgain' field")
 		}
 		// Virtual field
+		isReserved := m.GetIsReserved()
+		_ = isReserved
 		if _isReservedErr := writeBuffer.WriteVirtual(ctx, "isReserved", m.GetIsReserved()); _isReservedErr != nil {
 			return errors.Wrap(_isReservedErr, "Error serializing 'isReserved' field")
 		}

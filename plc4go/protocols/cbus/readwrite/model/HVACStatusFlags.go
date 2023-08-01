@@ -360,10 +360,14 @@ func (m *_HVACStatusFlags) SerializeWithWriteBuffer(ctx context.Context, writeBu
 		return errors.Wrap(_damperStateErr, "Error serializing 'damperState' field")
 	}
 	// Virtual field
+	isDamperStateClosed := m.GetIsDamperStateClosed()
+	_ = isDamperStateClosed
 	if _isDamperStateClosedErr := writeBuffer.WriteVirtual(ctx, "isDamperStateClosed", m.GetIsDamperStateClosed()); _isDamperStateClosedErr != nil {
 		return errors.Wrap(_isDamperStateClosedErr, "Error serializing 'isDamperStateClosed' field")
 	}
 	// Virtual field
+	isDamperStateOpen := m.GetIsDamperStateOpen()
+	_ = isDamperStateOpen
 	if _isDamperStateOpenErr := writeBuffer.WriteVirtual(ctx, "isDamperStateOpen", m.GetIsDamperStateOpen()); _isDamperStateOpenErr != nil {
 		return errors.Wrap(_isDamperStateOpenErr, "Error serializing 'isDamperStateOpen' field")
 	}

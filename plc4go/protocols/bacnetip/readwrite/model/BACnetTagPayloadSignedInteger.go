@@ -633,6 +633,8 @@ func (m *_BACnetTagPayloadSignedInteger) SerializeWithWriteBuffer(ctx context.Co
 		return errors.Wrap(pushErr, "Error pushing for BACnetTagPayloadSignedInteger")
 	}
 	// Virtual field
+	isInt8 := m.GetIsInt8()
+	_ = isInt8
 	if _isInt8Err := writeBuffer.WriteVirtual(ctx, "isInt8", m.GetIsInt8()); _isInt8Err != nil {
 		return errors.Wrap(_isInt8Err, "Error serializing 'isInt8' field")
 	}
@@ -647,6 +649,8 @@ func (m *_BACnetTagPayloadSignedInteger) SerializeWithWriteBuffer(ctx context.Co
 		}
 	}
 	// Virtual field
+	isInt16 := m.GetIsInt16()
+	_ = isInt16
 	if _isInt16Err := writeBuffer.WriteVirtual(ctx, "isInt16", m.GetIsInt16()); _isInt16Err != nil {
 		return errors.Wrap(_isInt16Err, "Error serializing 'isInt16' field")
 	}
@@ -661,6 +665,8 @@ func (m *_BACnetTagPayloadSignedInteger) SerializeWithWriteBuffer(ctx context.Co
 		}
 	}
 	// Virtual field
+	isInt24 := m.GetIsInt24()
+	_ = isInt24
 	if _isInt24Err := writeBuffer.WriteVirtual(ctx, "isInt24", m.GetIsInt24()); _isInt24Err != nil {
 		return errors.Wrap(_isInt24Err, "Error serializing 'isInt24' field")
 	}
@@ -675,6 +681,8 @@ func (m *_BACnetTagPayloadSignedInteger) SerializeWithWriteBuffer(ctx context.Co
 		}
 	}
 	// Virtual field
+	isInt32 := m.GetIsInt32()
+	_ = isInt32
 	if _isInt32Err := writeBuffer.WriteVirtual(ctx, "isInt32", m.GetIsInt32()); _isInt32Err != nil {
 		return errors.Wrap(_isInt32Err, "Error serializing 'isInt32' field")
 	}
@@ -689,6 +697,8 @@ func (m *_BACnetTagPayloadSignedInteger) SerializeWithWriteBuffer(ctx context.Co
 		}
 	}
 	// Virtual field
+	isInt40 := m.GetIsInt40()
+	_ = isInt40
 	if _isInt40Err := writeBuffer.WriteVirtual(ctx, "isInt40", m.GetIsInt40()); _isInt40Err != nil {
 		return errors.Wrap(_isInt40Err, "Error serializing 'isInt40' field")
 	}
@@ -703,6 +713,8 @@ func (m *_BACnetTagPayloadSignedInteger) SerializeWithWriteBuffer(ctx context.Co
 		}
 	}
 	// Virtual field
+	isInt48 := m.GetIsInt48()
+	_ = isInt48
 	if _isInt48Err := writeBuffer.WriteVirtual(ctx, "isInt48", m.GetIsInt48()); _isInt48Err != nil {
 		return errors.Wrap(_isInt48Err, "Error serializing 'isInt48' field")
 	}
@@ -717,6 +729,8 @@ func (m *_BACnetTagPayloadSignedInteger) SerializeWithWriteBuffer(ctx context.Co
 		}
 	}
 	// Virtual field
+	isInt56 := m.GetIsInt56()
+	_ = isInt56
 	if _isInt56Err := writeBuffer.WriteVirtual(ctx, "isInt56", m.GetIsInt56()); _isInt56Err != nil {
 		return errors.Wrap(_isInt56Err, "Error serializing 'isInt56' field")
 	}
@@ -731,6 +745,8 @@ func (m *_BACnetTagPayloadSignedInteger) SerializeWithWriteBuffer(ctx context.Co
 		}
 	}
 	// Virtual field
+	isInt64 := m.GetIsInt64()
+	_ = isInt64
 	if _isInt64Err := writeBuffer.WriteVirtual(ctx, "isInt64", m.GetIsInt64()); _isInt64Err != nil {
 		return errors.Wrap(_isInt64Err, "Error serializing 'isInt64' field")
 	}
@@ -745,6 +761,8 @@ func (m *_BACnetTagPayloadSignedInteger) SerializeWithWriteBuffer(ctx context.Co
 		}
 	}
 	// Virtual field
+	actualValue := m.GetActualValue()
+	_ = actualValue
 	if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 		return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 	}

@@ -210,6 +210,8 @@ func (pm *_EncodedReply) SerializeParent(ctx context.Context, writeBuffer utils.
 		return errors.Wrap(pushErr, "Error pushing for EncodedReply")
 	}
 	// Virtual field
+	isMonitoredSAL := m.GetIsMonitoredSAL()
+	_ = isMonitoredSAL
 	if _isMonitoredSALErr := writeBuffer.WriteVirtual(ctx, "isMonitoredSAL", m.GetIsMonitoredSAL()); _isMonitoredSALErr != nil {
 		return errors.Wrap(_isMonitoredSALErr, "Error serializing 'isMonitoredSAL' field")
 	}

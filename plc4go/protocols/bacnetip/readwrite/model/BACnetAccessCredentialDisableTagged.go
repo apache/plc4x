@@ -252,6 +252,8 @@ func (m *_BACnetAccessCredentialDisableTagged) SerializeWithWriteBuffer(ctx cont
 		return errors.Wrap(_valueErr, "Error serializing 'value' field")
 	}
 	// Virtual field
+	isProprietary := m.GetIsProprietary()
+	_ = isProprietary
 	if _isProprietaryErr := writeBuffer.WriteVirtual(ctx, "isProprietary", m.GetIsProprietary()); _isProprietaryErr != nil {
 		return errors.Wrap(_isProprietaryErr, "Error serializing 'isProprietary' field")
 	}

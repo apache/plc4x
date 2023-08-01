@@ -207,14 +207,20 @@ func (m *_PanicStatus) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 		return errors.Wrap(_statusErr, "Error serializing 'status' field")
 	}
 	// Virtual field
+	isNoPanic := m.GetIsNoPanic()
+	_ = isNoPanic
 	if _isNoPanicErr := writeBuffer.WriteVirtual(ctx, "isNoPanic", m.GetIsNoPanic()); _isNoPanicErr != nil {
 		return errors.Wrap(_isNoPanicErr, "Error serializing 'isNoPanic' field")
 	}
 	// Virtual field
+	isReserved := m.GetIsReserved()
+	_ = isReserved
 	if _isReservedErr := writeBuffer.WriteVirtual(ctx, "isReserved", m.GetIsReserved()); _isReservedErr != nil {
 		return errors.Wrap(_isReservedErr, "Error serializing 'isReserved' field")
 	}
 	// Virtual field
+	isPanicCurrentlyActive := m.GetIsPanicCurrentlyActive()
+	_ = isPanicCurrentlyActive
 	if _isPanicCurrentlyActiveErr := writeBuffer.WriteVirtual(ctx, "isPanicCurrentlyActive", m.GetIsPanicCurrentlyActive()); _isPanicCurrentlyActiveErr != nil {
 		return errors.Wrap(_isPanicCurrentlyActiveErr, "Error serializing 'isPanicCurrentlyActive' field")
 	}

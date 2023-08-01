@@ -350,10 +350,14 @@ func (m *_BACnetConfirmedServiceRequestCreateObjectObjectSpecifier) SerializeWit
 		}
 	}
 	// Virtual field
+	isObjectType := m.GetIsObjectType()
+	_ = isObjectType
 	if _isObjectTypeErr := writeBuffer.WriteVirtual(ctx, "isObjectType", m.GetIsObjectType()); _isObjectTypeErr != nil {
 		return errors.Wrap(_isObjectTypeErr, "Error serializing 'isObjectType' field")
 	}
 	// Virtual field
+	objectType := m.GetObjectType()
+	_ = objectType
 	if _objectTypeErr := writeBuffer.WriteVirtual(ctx, "objectType", m.GetObjectType()); _objectTypeErr != nil {
 		return errors.Wrap(_objectTypeErr, "Error serializing 'objectType' field")
 	}
@@ -374,6 +378,8 @@ func (m *_BACnetConfirmedServiceRequestCreateObjectObjectSpecifier) SerializeWit
 		}
 	}
 	// Virtual field
+	isObjectIdentifier := m.GetIsObjectIdentifier()
+	_ = isObjectIdentifier
 	if _isObjectIdentifierErr := writeBuffer.WriteVirtual(ctx, "isObjectIdentifier", m.GetIsObjectIdentifier()); _isObjectIdentifierErr != nil {
 		return errors.Wrap(_isObjectIdentifierErr, "Error serializing 'isObjectIdentifier' field")
 	}

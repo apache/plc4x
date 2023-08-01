@@ -230,6 +230,8 @@ func (m *_BACnetConstructedDataMode) SerializeWithWriteBuffer(ctx context.Contex
 			return errors.Wrap(_modeErr, "Error serializing 'mode' field")
 		}
 		// Virtual field
+		actualValue := m.GetActualValue()
+		_ = actualValue
 		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}

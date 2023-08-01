@@ -330,18 +330,26 @@ func (m *_ClockAndTimekeepingDataUpdateTime) SerializeWithWriteBuffer(ctx contex
 			return errors.Wrap(_daylightSavingErr, "Error serializing 'daylightSaving' field")
 		}
 		// Virtual field
+		isNoDaylightSavings := m.GetIsNoDaylightSavings()
+		_ = isNoDaylightSavings
 		if _isNoDaylightSavingsErr := writeBuffer.WriteVirtual(ctx, "isNoDaylightSavings", m.GetIsNoDaylightSavings()); _isNoDaylightSavingsErr != nil {
 			return errors.Wrap(_isNoDaylightSavingsErr, "Error serializing 'isNoDaylightSavings' field")
 		}
 		// Virtual field
+		isAdvancedBy1Hour := m.GetIsAdvancedBy1Hour()
+		_ = isAdvancedBy1Hour
 		if _isAdvancedBy1HourErr := writeBuffer.WriteVirtual(ctx, "isAdvancedBy1Hour", m.GetIsAdvancedBy1Hour()); _isAdvancedBy1HourErr != nil {
 			return errors.Wrap(_isAdvancedBy1HourErr, "Error serializing 'isAdvancedBy1Hour' field")
 		}
 		// Virtual field
+		isReserved := m.GetIsReserved()
+		_ = isReserved
 		if _isReservedErr := writeBuffer.WriteVirtual(ctx, "isReserved", m.GetIsReserved()); _isReservedErr != nil {
 			return errors.Wrap(_isReservedErr, "Error serializing 'isReserved' field")
 		}
 		// Virtual field
+		isUnknown := m.GetIsUnknown()
+		_ = isUnknown
 		if _isUnknownErr := writeBuffer.WriteVirtual(ctx, "isUnknown", m.GetIsUnknown()); _isUnknownErr != nil {
 			return errors.Wrap(_isUnknownErr, "Error serializing 'isUnknown' field")
 		}

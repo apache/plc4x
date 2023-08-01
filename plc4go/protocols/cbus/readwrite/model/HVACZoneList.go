@@ -352,6 +352,8 @@ func (m *_HVACZoneList) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 		return errors.Wrap(_zone0Err, "Error serializing 'zone0' field")
 	}
 	// Virtual field
+	unswitchedZone := m.GetUnswitchedZone()
+	_ = unswitchedZone
 	if _unswitchedZoneErr := writeBuffer.WriteVirtual(ctx, "unswitchedZone", m.GetUnswitchedZone()); _unswitchedZoneErr != nil {
 		return errors.Wrap(_unswitchedZoneErr, "Error serializing 'unswitchedZone' field")
 	}

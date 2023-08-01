@@ -230,6 +230,8 @@ func (m *_BACnetConstructedDataBACnetIPv6Mode) SerializeWithWriteBuffer(ctx cont
 			return errors.Wrap(_bacnetIpv6ModeErr, "Error serializing 'bacnetIpv6Mode' field")
 		}
 		// Virtual field
+		actualValue := m.GetActualValue()
+		_ = actualValue
 		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}

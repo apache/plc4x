@@ -213,6 +213,8 @@ func (pm *_ReplyOrConfirmation) SerializeParent(ctx context.Context, writeBuffer
 		return errors.Wrap(pushErr, "Error pushing for ReplyOrConfirmation")
 	}
 	// Virtual field
+	isAlpha := m.GetIsAlpha()
+	_ = isAlpha
 	if _isAlphaErr := writeBuffer.WriteVirtual(ctx, "isAlpha", m.GetIsAlpha()); _isAlphaErr != nil {
 		return errors.Wrap(_isAlphaErr, "Error serializing 'isAlpha' field")
 	}

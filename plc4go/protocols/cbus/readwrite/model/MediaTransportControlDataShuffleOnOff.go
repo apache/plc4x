@@ -222,10 +222,14 @@ func (m *_MediaTransportControlDataShuffleOnOff) SerializeWithWriteBuffer(ctx co
 			return errors.Wrap(_stateErr, "Error serializing 'state' field")
 		}
 		// Virtual field
+		isOff := m.GetIsOff()
+		_ = isOff
 		if _isOffErr := writeBuffer.WriteVirtual(ctx, "isOff", m.GetIsOff()); _isOffErr != nil {
 			return errors.Wrap(_isOffErr, "Error serializing 'isOff' field")
 		}
 		// Virtual field
+		isOn := m.GetIsOn()
+		_ = isOn
 		if _isOnErr := writeBuffer.WriteVirtual(ctx, "isOn", m.GetIsOn()); _isOnErr != nil {
 			return errors.Wrap(_isOnErr, "Error serializing 'isOn' field")
 		}

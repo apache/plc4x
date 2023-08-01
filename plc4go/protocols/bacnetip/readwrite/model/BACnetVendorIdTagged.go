@@ -252,6 +252,8 @@ func (m *_BACnetVendorIdTagged) SerializeWithWriteBuffer(ctx context.Context, wr
 		return errors.Wrap(_valueErr, "Error serializing 'value' field")
 	}
 	// Virtual field
+	isUnknownId := m.GetIsUnknownId()
+	_ = isUnknownId
 	if _isUnknownIdErr := writeBuffer.WriteVirtual(ctx, "isUnknownId", m.GetIsUnknownId()); _isUnknownIdErr != nil {
 		return errors.Wrap(_isUnknownIdErr, "Error serializing 'isUnknownId' field")
 	}

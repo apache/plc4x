@@ -594,6 +594,8 @@ func (m *_APDUConfirmedRequest) SerializeWithWriteBuffer(ctx context.Context, wr
 			}
 		}
 		// Virtual field
+		apduHeaderReduction := m.GetApduHeaderReduction()
+		_ = apduHeaderReduction
 		if _apduHeaderReductionErr := writeBuffer.WriteVirtual(ctx, "apduHeaderReduction", m.GetApduHeaderReduction()); _apduHeaderReductionErr != nil {
 			return errors.Wrap(_apduHeaderReductionErr, "Error serializing 'apduHeaderReduction' field")
 		}
@@ -630,6 +632,8 @@ func (m *_APDUConfirmedRequest) SerializeWithWriteBuffer(ctx context.Context, wr
 			}
 		}
 		// Virtual field
+		segmentReduction := m.GetSegmentReduction()
+		_ = segmentReduction
 		if _segmentReductionErr := writeBuffer.WriteVirtual(ctx, "segmentReduction", m.GetSegmentReduction()); _segmentReductionErr != nil {
 			return errors.Wrap(_segmentReductionErr, "Error serializing 'segmentReduction' field")
 		}

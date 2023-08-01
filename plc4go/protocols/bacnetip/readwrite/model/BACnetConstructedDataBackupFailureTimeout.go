@@ -230,6 +230,8 @@ func (m *_BACnetConstructedDataBackupFailureTimeout) SerializeWithWriteBuffer(ct
 			return errors.Wrap(_backupFailureTimeoutErr, "Error serializing 'backupFailureTimeout' field")
 		}
 		// Virtual field
+		actualValue := m.GetActualValue()
+		_ = actualValue
 		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}

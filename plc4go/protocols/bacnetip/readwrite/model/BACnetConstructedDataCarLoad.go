@@ -230,6 +230,8 @@ func (m *_BACnetConstructedDataCarLoad) SerializeWithWriteBuffer(ctx context.Con
 			return errors.Wrap(_carLoadErr, "Error serializing 'carLoad' field")
 		}
 		// Virtual field
+		actualValue := m.GetActualValue()
+		_ = actualValue
 		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}

@@ -230,6 +230,8 @@ func (m *_BACnetConstructedDataAPDUSegmentTimeout) SerializeWithWriteBuffer(ctx 
 			return errors.Wrap(_apduSegmentTimeoutErr, "Error serializing 'apduSegmentTimeout' field")
 		}
 		// Virtual field
+		actualValue := m.GetActualValue()
+		_ = actualValue
 		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}

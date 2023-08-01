@@ -217,6 +217,8 @@ func (m *_BACnetApplicationTagCharacterString) SerializeWithWriteBuffer(ctx cont
 			return errors.Wrap(_payloadErr, "Error serializing 'payload' field")
 		}
 		// Virtual field
+		value := m.GetValue()
+		_ = value
 		if _valueErr := writeBuffer.WriteVirtual(ctx, "value", m.GetValue()); _valueErr != nil {
 			return errors.Wrap(_valueErr, "Error serializing 'value' field")
 		}

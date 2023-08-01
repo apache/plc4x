@@ -323,6 +323,8 @@ func (m *_BACnetConstructedDataEventTimeStamps) SerializeWithWriteBuffer(ctx con
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataEventTimeStamps")
 		}
 		// Virtual field
+		zero := m.GetZero()
+		_ = zero
 		if _zeroErr := writeBuffer.WriteVirtual(ctx, "zero", m.GetZero()); _zeroErr != nil {
 			return errors.Wrap(_zeroErr, "Error serializing 'zero' field")
 		}
@@ -360,14 +362,20 @@ func (m *_BACnetConstructedDataEventTimeStamps) SerializeWithWriteBuffer(ctx con
 			return errors.Wrap(popErr, "Error popping for eventTimeStamps")
 		}
 		// Virtual field
+		toOffnormal := m.GetToOffnormal()
+		_ = toOffnormal
 		if _toOffnormalErr := writeBuffer.WriteVirtual(ctx, "toOffnormal", m.GetToOffnormal()); _toOffnormalErr != nil {
 			return errors.Wrap(_toOffnormalErr, "Error serializing 'toOffnormal' field")
 		}
 		// Virtual field
+		toFault := m.GetToFault()
+		_ = toFault
 		if _toFaultErr := writeBuffer.WriteVirtual(ctx, "toFault", m.GetToFault()); _toFaultErr != nil {
 			return errors.Wrap(_toFaultErr, "Error serializing 'toFault' field")
 		}
 		// Virtual field
+		toNormal := m.GetToNormal()
+		_ = toNormal
 		if _toNormalErr := writeBuffer.WriteVirtual(ctx, "toNormal", m.GetToNormal()); _toNormalErr != nil {
 			return errors.Wrap(_toNormalErr, "Error serializing 'toNormal' field")
 		}

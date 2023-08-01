@@ -267,10 +267,14 @@ func (pm *_BACnetApplicationTag) SerializeParent(ctx context.Context, writeBuffe
 		return errors.Wrap(_headerErr, "Error serializing 'header' field")
 	}
 	// Virtual field
+	actualTagNumber := m.GetActualTagNumber()
+	_ = actualTagNumber
 	if _actualTagNumberErr := writeBuffer.WriteVirtual(ctx, "actualTagNumber", m.GetActualTagNumber()); _actualTagNumberErr != nil {
 		return errors.Wrap(_actualTagNumberErr, "Error serializing 'actualTagNumber' field")
 	}
 	// Virtual field
+	actualLength := m.GetActualLength()
+	_ = actualLength
 	if _actualLengthErr := writeBuffer.WriteVirtual(ctx, "actualLength", m.GetActualLength()); _actualLengthErr != nil {
 		return errors.Wrap(_actualLengthErr, "Error serializing 'actualLength' field")
 	}

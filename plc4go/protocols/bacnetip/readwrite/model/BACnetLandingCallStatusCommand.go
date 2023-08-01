@@ -205,6 +205,8 @@ func (pm *_BACnetLandingCallStatusCommand) SerializeParent(ctx context.Context, 
 		return errors.Wrap(pushErr, "Error pushing for BACnetLandingCallStatusCommand")
 	}
 	// Virtual field
+	peekedTagNumber := m.GetPeekedTagNumber()
+	_ = peekedTagNumber
 	if _peekedTagNumberErr := writeBuffer.WriteVirtual(ctx, "peekedTagNumber", m.GetPeekedTagNumber()); _peekedTagNumberErr != nil {
 		return errors.Wrap(_peekedTagNumberErr, "Error serializing 'peekedTagNumber' field")
 	}

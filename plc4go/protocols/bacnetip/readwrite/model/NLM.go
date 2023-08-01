@@ -243,6 +243,8 @@ func (pm *_NLM) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuff
 		return errors.Wrap(_messageTypeErr, "Error serializing 'messageType' field")
 	}
 	// Virtual field
+	isVendorProprietaryMessage := m.GetIsVendorProprietaryMessage()
+	_ = isVendorProprietaryMessage
 	if _isVendorProprietaryMessageErr := writeBuffer.WriteVirtual(ctx, "isVendorProprietaryMessage", m.GetIsVendorProprietaryMessage()); _isVendorProprietaryMessageErr != nil {
 		return errors.Wrap(_isVendorProprietaryMessageErr, "Error serializing 'isVendorProprietaryMessage' field")
 	}

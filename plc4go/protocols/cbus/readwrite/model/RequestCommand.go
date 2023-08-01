@@ -326,6 +326,8 @@ func (m *_RequestCommand) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 			return errors.Wrap(_cbusCommandErr, "Error serializing 'cbusCommand' field")
 		}
 		// Virtual field
+		cbusCommandDecoded := m.GetCbusCommandDecoded()
+		_ = cbusCommandDecoded
 		if _cbusCommandDecodedErr := writeBuffer.WriteVirtual(ctx, "cbusCommandDecoded", m.GetCbusCommandDecoded()); _cbusCommandDecodedErr != nil {
 			return errors.Wrap(_cbusCommandDecodedErr, "Error serializing 'cbusCommandDecoded' field")
 		}
@@ -336,6 +338,8 @@ func (m *_RequestCommand) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 			return errors.Wrap(_chksumErr, "Error serializing 'chksum' field")
 		}
 		// Virtual field
+		chksumDecoded := m.GetChksumDecoded()
+		_ = chksumDecoded
 		if _chksumDecodedErr := writeBuffer.WriteVirtual(ctx, "chksumDecoded", m.GetChksumDecoded()); _chksumDecodedErr != nil {
 			return errors.Wrap(_chksumDecodedErr, "Error serializing 'chksumDecoded' field")
 		}

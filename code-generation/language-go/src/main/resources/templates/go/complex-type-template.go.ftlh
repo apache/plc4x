@@ -1891,6 +1891,8 @@ func (m *_${type.name}) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
                 	<#assign typedField = field.asTypedField().orElseThrow()>
                 	<#assign namedField = field.asNamedField().orElseThrow()>
 	// Virtual field
+	${namedField.name} := m.Get${namedField.name?cap_first}()
+	_ =	${namedField.name}
 	if _${namedField.name}Err := writeBuffer.WriteVirtual(ctx, "${namedField.name}", m.Get${namedField.name?cap_first}()); _${namedField.name}Err != nil {
 		return errors.Wrap(_${namedField.name}Err, "Error serializing '${namedField.name}' field")<@emitImport import="github.com/pkg/errors" />
 	}

@@ -210,6 +210,8 @@ func (pm *_BACnetSpecialEventPeriod) SerializeParent(ctx context.Context, writeB
 		return errors.Wrap(pushErr, "Error pushing for BACnetSpecialEventPeriod")
 	}
 	// Virtual field
+	peekedTagNumber := m.GetPeekedTagNumber()
+	_ = peekedTagNumber
 	if _peekedTagNumberErr := writeBuffer.WriteVirtual(ctx, "peekedTagNumber", m.GetPeekedTagNumber()); _peekedTagNumberErr != nil {
 		return errors.Wrap(_peekedTagNumberErr, "Error serializing 'peekedTagNumber' field")
 	}

@@ -278,6 +278,8 @@ func (m *_Confirmation) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 		return errors.Wrap(_confirmationTypeErr, "Error serializing 'confirmationType' field")
 	}
 	// Virtual field
+	isSuccess := m.GetIsSuccess()
+	_ = isSuccess
 	if _isSuccessErr := writeBuffer.WriteVirtual(ctx, "isSuccess", m.GetIsSuccess()); _isSuccessErr != nil {
 		return errors.Wrap(_isSuccessErr, "Error serializing 'isSuccess' field")
 	}

@@ -448,18 +448,26 @@ func (m *_BACnetTagHeader) SerializeWithWriteBuffer(ctx context.Context, writeBu
 		}
 	}
 	// Virtual field
+	actualTagNumber := m.GetActualTagNumber()
+	_ = actualTagNumber
 	if _actualTagNumberErr := writeBuffer.WriteVirtual(ctx, "actualTagNumber", m.GetActualTagNumber()); _actualTagNumberErr != nil {
 		return errors.Wrap(_actualTagNumberErr, "Error serializing 'actualTagNumber' field")
 	}
 	// Virtual field
+	isBoolean := m.GetIsBoolean()
+	_ = isBoolean
 	if _isBooleanErr := writeBuffer.WriteVirtual(ctx, "isBoolean", m.GetIsBoolean()); _isBooleanErr != nil {
 		return errors.Wrap(_isBooleanErr, "Error serializing 'isBoolean' field")
 	}
 	// Virtual field
+	isConstructed := m.GetIsConstructed()
+	_ = isConstructed
 	if _isConstructedErr := writeBuffer.WriteVirtual(ctx, "isConstructed", m.GetIsConstructed()); _isConstructedErr != nil {
 		return errors.Wrap(_isConstructedErr, "Error serializing 'isConstructed' field")
 	}
 	// Virtual field
+	isPrimitiveAndNotBoolean := m.GetIsPrimitiveAndNotBoolean()
+	_ = isPrimitiveAndNotBoolean
 	if _isPrimitiveAndNotBooleanErr := writeBuffer.WriteVirtual(ctx, "isPrimitiveAndNotBoolean", m.GetIsPrimitiveAndNotBoolean()); _isPrimitiveAndNotBooleanErr != nil {
 		return errors.Wrap(_isPrimitiveAndNotBooleanErr, "Error serializing 'isPrimitiveAndNotBoolean' field")
 	}
@@ -494,6 +502,8 @@ func (m *_BACnetTagHeader) SerializeWithWriteBuffer(ctx context.Context, writeBu
 		}
 	}
 	// Virtual field
+	actualLength := m.GetActualLength()
+	_ = actualLength
 	if _actualLengthErr := writeBuffer.WriteVirtual(ctx, "actualLength", m.GetActualLength()); _actualLengthErr != nil {
 		return errors.Wrap(_actualLengthErr, "Error serializing 'actualLength' field")
 	}

@@ -177,6 +177,8 @@ func (m *_HVACRawLevels) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 		return errors.Wrap(_rawValueErr, "Error serializing 'rawValue' field")
 	}
 	// Virtual field
+	valueInPercent := m.GetValueInPercent()
+	_ = valueInPercent
 	if _valueInPercentErr := writeBuffer.WriteVirtual(ctx, "valueInPercent", m.GetValueInPercent()); _valueInPercentErr != nil {
 		return errors.Wrap(_valueInPercentErr, "Error serializing 'valueInPercent' field")
 	}

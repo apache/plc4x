@@ -465,14 +465,20 @@ func (m *_BACnetWeekNDayTagged) SerializeWithWriteBuffer(ctx context.Context, wr
 		return errors.Wrap(_monthErr, "Error serializing 'month' field")
 	}
 	// Virtual field
+	oddMonths := m.GetOddMonths()
+	_ = oddMonths
 	if _oddMonthsErr := writeBuffer.WriteVirtual(ctx, "oddMonths", m.GetOddMonths()); _oddMonthsErr != nil {
 		return errors.Wrap(_oddMonthsErr, "Error serializing 'oddMonths' field")
 	}
 	// Virtual field
+	evenMonths := m.GetEvenMonths()
+	_ = evenMonths
 	if _evenMonthsErr := writeBuffer.WriteVirtual(ctx, "evenMonths", m.GetEvenMonths()); _evenMonthsErr != nil {
 		return errors.Wrap(_evenMonthsErr, "Error serializing 'evenMonths' field")
 	}
 	// Virtual field
+	anyMonth := m.GetAnyMonth()
+	_ = anyMonth
 	if _anyMonthErr := writeBuffer.WriteVirtual(ctx, "anyMonth", m.GetAnyMonth()); _anyMonthErr != nil {
 		return errors.Wrap(_anyMonthErr, "Error serializing 'anyMonth' field")
 	}
@@ -484,42 +490,62 @@ func (m *_BACnetWeekNDayTagged) SerializeWithWriteBuffer(ctx context.Context, wr
 		return errors.Wrap(_weekOfMonthErr, "Error serializing 'weekOfMonth' field")
 	}
 	// Virtual field
+	days1to7 := m.GetDays1to7()
+	_ = days1to7
 	if _days1to7Err := writeBuffer.WriteVirtual(ctx, "days1to7", m.GetDays1to7()); _days1to7Err != nil {
 		return errors.Wrap(_days1to7Err, "Error serializing 'days1to7' field")
 	}
 	// Virtual field
+	days8to14 := m.GetDays8to14()
+	_ = days8to14
 	if _days8to14Err := writeBuffer.WriteVirtual(ctx, "days8to14", m.GetDays8to14()); _days8to14Err != nil {
 		return errors.Wrap(_days8to14Err, "Error serializing 'days8to14' field")
 	}
 	// Virtual field
+	days15to21 := m.GetDays15to21()
+	_ = days15to21
 	if _days15to21Err := writeBuffer.WriteVirtual(ctx, "days15to21", m.GetDays15to21()); _days15to21Err != nil {
 		return errors.Wrap(_days15to21Err, "Error serializing 'days15to21' field")
 	}
 	// Virtual field
+	days22to28 := m.GetDays22to28()
+	_ = days22to28
 	if _days22to28Err := writeBuffer.WriteVirtual(ctx, "days22to28", m.GetDays22to28()); _days22to28Err != nil {
 		return errors.Wrap(_days22to28Err, "Error serializing 'days22to28' field")
 	}
 	// Virtual field
+	days29to31 := m.GetDays29to31()
+	_ = days29to31
 	if _days29to31Err := writeBuffer.WriteVirtual(ctx, "days29to31", m.GetDays29to31()); _days29to31Err != nil {
 		return errors.Wrap(_days29to31Err, "Error serializing 'days29to31' field")
 	}
 	// Virtual field
+	last7DaysOfThisMonth := m.GetLast7DaysOfThisMonth()
+	_ = last7DaysOfThisMonth
 	if _last7DaysOfThisMonthErr := writeBuffer.WriteVirtual(ctx, "last7DaysOfThisMonth", m.GetLast7DaysOfThisMonth()); _last7DaysOfThisMonthErr != nil {
 		return errors.Wrap(_last7DaysOfThisMonthErr, "Error serializing 'last7DaysOfThisMonth' field")
 	}
 	// Virtual field
+	any7DaysPriorToLast7DaysOfThisMonth := m.GetAny7DaysPriorToLast7DaysOfThisMonth()
+	_ = any7DaysPriorToLast7DaysOfThisMonth
 	if _any7DaysPriorToLast7DaysOfThisMonthErr := writeBuffer.WriteVirtual(ctx, "any7DaysPriorToLast7DaysOfThisMonth", m.GetAny7DaysPriorToLast7DaysOfThisMonth()); _any7DaysPriorToLast7DaysOfThisMonthErr != nil {
 		return errors.Wrap(_any7DaysPriorToLast7DaysOfThisMonthErr, "Error serializing 'any7DaysPriorToLast7DaysOfThisMonth' field")
 	}
 	// Virtual field
+	any7DaysPriorToLast14DaysOfThisMonth := m.GetAny7DaysPriorToLast14DaysOfThisMonth()
+	_ = any7DaysPriorToLast14DaysOfThisMonth
 	if _any7DaysPriorToLast14DaysOfThisMonthErr := writeBuffer.WriteVirtual(ctx, "any7DaysPriorToLast14DaysOfThisMonth", m.GetAny7DaysPriorToLast14DaysOfThisMonth()); _any7DaysPriorToLast14DaysOfThisMonthErr != nil {
 		return errors.Wrap(_any7DaysPriorToLast14DaysOfThisMonthErr, "Error serializing 'any7DaysPriorToLast14DaysOfThisMonth' field")
 	}
 	// Virtual field
+	any7DaysPriorToLast21DaysOfThisMonth := m.GetAny7DaysPriorToLast21DaysOfThisMonth()
+	_ = any7DaysPriorToLast21DaysOfThisMonth
 	if _any7DaysPriorToLast21DaysOfThisMonthErr := writeBuffer.WriteVirtual(ctx, "any7DaysPriorToLast21DaysOfThisMonth", m.GetAny7DaysPriorToLast21DaysOfThisMonth()); _any7DaysPriorToLast21DaysOfThisMonthErr != nil {
 		return errors.Wrap(_any7DaysPriorToLast21DaysOfThisMonthErr, "Error serializing 'any7DaysPriorToLast21DaysOfThisMonth' field")
 	}
 	// Virtual field
+	anyWeekOfthisMonth := m.GetAnyWeekOfthisMonth()
+	_ = anyWeekOfthisMonth
 	if _anyWeekOfthisMonthErr := writeBuffer.WriteVirtual(ctx, "anyWeekOfthisMonth", m.GetAnyWeekOfthisMonth()); _anyWeekOfthisMonthErr != nil {
 		return errors.Wrap(_anyWeekOfthisMonthErr, "Error serializing 'anyWeekOfthisMonth' field")
 	}
@@ -531,6 +557,8 @@ func (m *_BACnetWeekNDayTagged) SerializeWithWriteBuffer(ctx context.Context, wr
 		return errors.Wrap(_dayOfWeekErr, "Error serializing 'dayOfWeek' field")
 	}
 	// Virtual field
+	anyDayOfWeek := m.GetAnyDayOfWeek()
+	_ = anyDayOfWeek
 	if _anyDayOfWeekErr := writeBuffer.WriteVirtual(ctx, "anyDayOfWeek", m.GetAnyDayOfWeek()); _anyDayOfWeekErr != nil {
 		return errors.Wrap(_anyDayOfWeekErr, "Error serializing 'anyDayOfWeek' field")
 	}
