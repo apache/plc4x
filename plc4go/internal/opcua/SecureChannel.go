@@ -88,12 +88,13 @@ var (
 	DEFAULT_CONNECTION_LIFETIME = uint32(36000000)
 )
 
+//go:generate go run ../../tools/plc4xgenerator/gen.go -type=SecureChannel
 type SecureChannel struct {
 	sessionName               string
 	clientNonce               []byte
 	requestHandleGenerator    atomic.Uint32
 	policyId                  readWriteModel.PascalString
-	tokenType                 readWriteModel.UserTokenType
+	tokenType                 readWriteModel.UserTokenType `stringer:"true"`
 	discovery                 bool
 	certFile                  string
 	keyStoreFile              string
@@ -124,7 +125,8 @@ type SecureChannel struct {
 	maxMessageSize            int
 	endpoints                 []string
 	senderSequenceNumber      atomic.Int32
-	log                       zerolog.Logger
+
+	log zerolog.Logger `ignore:"true"`
 }
 
 func NewSecureChannel(log zerolog.Logger, ctx DriverContext, configuration Configuration) *SecureChannel {

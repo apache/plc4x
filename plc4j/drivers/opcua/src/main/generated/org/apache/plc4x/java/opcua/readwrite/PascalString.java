@@ -51,11 +51,10 @@ public class PascalString implements Message {
 
   public int getStringLength() {
     return (int)
-        ((((org.apache.plc4x.java.opcua.readwrite.utils.StaticHelper.utf8Length(getStringValue()))
-                == (-(1)))
-            ? 0
-            : org.apache.plc4x.java.opcua.readwrite.utils.StaticHelper.utf8Length(
-                getStringValue())));
+        ((org.apache.plc4x.java.opcua.readwrite.utils.StaticHelper.pascalLengthToUtf8Length(
+                org.apache.plc4x.java.opcua.readwrite.utils.StaticHelper.utf8LengthToPascalLength(
+                    getStringValue())))
+            / (8));
   }
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
@@ -67,23 +66,16 @@ public class PascalString implements Message {
     // given by the objects content)
     int sLength =
         (int)
-            ((((org.apache.plc4x.java.opcua.readwrite.utils.StaticHelper.utf8Length(
-                        getStringValue()))
-                    == (0))
-                ? -(1)
-                : org.apache.plc4x.java.opcua.readwrite.utils.StaticHelper.utf8Length(
-                    getStringValue())));
+            (org.apache.plc4x.java.opcua.readwrite.utils.StaticHelper.utf8LengthToPascalLength(
+                getStringValue()));
     writeImplicitField("sLength", sLength, writeSignedInt(writeBuffer, 32));
-
-    // Simple Field (stringValue)
-    writeSimpleField(
-        "stringValue",
-        stringValue,
-        writeString(writeBuffer, (((sLength) == (-(1))) ? 0 : (sLength) * (8))));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     int stringLength = getStringLength();
     writeBuffer.writeVirtual("stringLength", stringLength);
+
+    // Simple Field (stringValue)
+    writeSimpleField("stringValue", stringValue, writeString(writeBuffer, (stringLength) * (8)));
 
     writeBuffer.popContext("PascalString");
   }
@@ -102,24 +94,10 @@ public class PascalString implements Message {
     // Implicit Field (sLength)
     lengthInBits += 32;
 
-    // Simple field (stringValue)
-    lengthInBits +=
-        ((((((org.apache.plc4x.java.opcua.readwrite.utils.StaticHelper.utf8Length(getStringValue()))
-                        == (0))
-                    ? -(1)
-                    : org.apache.plc4x.java.opcua.readwrite.utils.StaticHelper.utf8Length(
-                        getStringValue())))
-                == (-(1)))
-            ? 0
-            : ((((org.apache.plc4x.java.opcua.readwrite.utils.StaticHelper.utf8Length(
-                            getStringValue()))
-                        == (0))
-                    ? -(1)
-                    : org.apache.plc4x.java.opcua.readwrite.utils.StaticHelper.utf8Length(
-                        getStringValue())))
-                * (8));
-
     // A virtual field doesn't have any in- or output.
+
+    // Simple field (stringValue)
+    lengthInBits += (getStringLength()) * (8);
 
     return lengthInBits;
   }
@@ -136,19 +114,16 @@ public class PascalString implements Message {
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int sLength = readImplicitField("sLength", readSignedInt(readBuffer, 32));
-
-    String stringValue =
-        readSimpleField(
-            "stringValue", readString(readBuffer, (((sLength) == (-(1))) ? 0 : (sLength) * (8))));
     int stringLength =
         readVirtualField(
             "stringLength",
             int.class,
-            (((org.apache.plc4x.java.opcua.readwrite.utils.StaticHelper.utf8Length(stringValue))
-                    == (-(1)))
-                ? 0
-                : org.apache.plc4x.java.opcua.readwrite.utils.StaticHelper.utf8Length(
-                    stringValue)));
+            (org.apache.plc4x.java.opcua.readwrite.utils.StaticHelper.pascalLengthToUtf8Length(
+                    sLength))
+                / (8));
+
+    String stringValue =
+        readSimpleField("stringValue", readString(readBuffer, (stringLength) * (8)));
 
     readBuffer.closeContext("PascalString");
     // Create the instance

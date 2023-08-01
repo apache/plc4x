@@ -73,7 +73,7 @@ func (m *_PascalString) GetStringValue() string {
 func (m *_PascalString) GetStringLength() int32 {
 	ctx := context.Background()
 	_ = ctx
-	return int32(utils.InlineIf(bool((Utf8Length(ctx, m.GetStringValue())) == (-(1))), func() any { return int32(int32(0)) }, func() any { return int32(Utf8Length(ctx, m.GetStringValue())) }).(int32))
+	return int32(int32(PascalLengthToUtf8Length(ctx, Utf8LengthToPascalLength(ctx, m.GetStringValue()))) / int32(int32(8)))
 }
 
 ///////////////////////
@@ -107,12 +107,10 @@ func (m *_PascalString) GetLengthInBits(ctx context.Context) uint16 {
 	// Implicit Field (sLength)
 	lengthInBits += 32
 
-	// Simple field (stringValue)
-	lengthInBits += uint16(utils.InlineIf(bool((utils.InlineIf(bool((Utf8Length(ctx, m.GetStringValue())) == (0)), func() any { return int32(-(int32(1))) }, func() any { return int32(Utf8Length(ctx, m.GetStringValue())) }).(int32)) == (-(1))), func() any { return int32(int32(0)) }, func() any {
-		return int32(int32(utils.InlineIf(bool((Utf8Length(ctx, m.GetStringValue())) == (0)), func() any { return int32(-(int32(1))) }, func() any { return int32(Utf8Length(ctx, m.GetStringValue())) }).(int32)) * int32(int32(8)))
-	}).(int32))
-
 	// A virtual field doesn't have any in- or output.
+
+	// Simple field (stringValue)
+	lengthInBits += uint16(int32(m.GetStringLength()) * int32(int32(8)))
 
 	return lengthInBits
 }
@@ -143,17 +141,17 @@ func PascalStringParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 		return nil, errors.Wrap(_sLengthErr, "Error parsing 'sLength' field of PascalString")
 	}
 
+	// Virtual field
+	_stringLength := int32(PascalLengthToUtf8Length(ctx, sLength)) / int32(int32(8))
+	stringLength := int32(_stringLength)
+	_ = stringLength
+
 	// Simple Field (stringValue)
-	_stringValue, _stringValueErr := readBuffer.ReadString("stringValue", (utils.InlineIf(bool((sLength) == (-(1))), func() any { return (0) }, func() any { return ((sLength) * (8)) })).(uint32), "UTF-8")
+	_stringValue, _stringValueErr := readBuffer.ReadString("stringValue", uint32((stringLength)*(8)), "UTF-8")
 	if _stringValueErr != nil {
 		return nil, errors.Wrap(_stringValueErr, "Error parsing 'stringValue' field of PascalString")
 	}
 	stringValue := _stringValue
-
-	// Virtual field
-	_stringLength := utils.InlineIf(bool((Utf8Length(ctx, stringValue)) == (-(1))), func() any { return int32(int32(0)) }, func() any { return int32(Utf8Length(ctx, stringValue)) }).(int32)
-	stringLength := int32(_stringLength)
-	_ = stringLength
 
 	if closeErr := readBuffer.CloseContext("PascalString"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for PascalString")
@@ -183,23 +181,23 @@ func (m *_PascalString) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 	}
 
 	// Implicit Field (sLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	sLength := int32(utils.InlineIf(bool((Utf8Length(ctx, m.GetStringValue())) == (0)), func() any { return int32(-(int32(1))) }, func() any { return int32(Utf8Length(ctx, m.GetStringValue())) }).(int32))
+	sLength := int32(Utf8LengthToPascalLength(ctx, m.GetStringValue()))
 	_sLengthErr := writeBuffer.WriteInt32("sLength", 32, (sLength))
 	if _sLengthErr != nil {
 		return errors.Wrap(_sLengthErr, "Error serializing 'sLength' field")
 	}
+	// Virtual field
+	stringLength := m.GetStringLength()
+	_ = stringLength
+	if _stringLengthErr := writeBuffer.WriteVirtual(ctx, "stringLength", m.GetStringLength()); _stringLengthErr != nil {
+		return errors.Wrap(_stringLengthErr, "Error serializing 'stringLength' field")
+	}
 
 	// Simple Field (stringValue)
 	stringValue := string(m.GetStringValue())
-	_stringValueErr := writeBuffer.WriteString("stringValue", (utils.InlineIf(bool((utils.InlineIf(bool((Utf8Length(ctx, m.GetStringValue())) == (0)), func() any { return int32(-(int32(1))) }, func() any { return int32(Utf8Length(ctx, m.GetStringValue())) }).(int32)) == (-(1))), func() any { return (0) }, func() any {
-		return ((utils.InlineIf(bool((Utf8Length(ctx, m.GetStringValue())) == (0)), func() any { return int32(-(int32(1))) }, func() any { return int32(Utf8Length(ctx, m.GetStringValue())) }).(int32)) * (8))
-	})).(uint32), "UTF-8", (stringValue))
+	_stringValueErr := writeBuffer.WriteString("stringValue", uint32((stringLength)*(8)), "UTF-8", (stringValue))
 	if _stringValueErr != nil {
 		return errors.Wrap(_stringValueErr, "Error serializing 'stringValue' field")
-	}
-	// Virtual field
-	if _stringLengthErr := writeBuffer.WriteVirtual(ctx, "stringLength", m.GetStringLength()); _stringLengthErr != nil {
-		return errors.Wrap(_stringLengthErr, "Error serializing 'stringLength' field")
 	}
 
 	if popErr := writeBuffer.PopContext("PascalString"); popErr != nil {

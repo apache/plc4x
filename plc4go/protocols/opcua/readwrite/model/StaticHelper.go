@@ -19,11 +19,18 @@
 
 package model
 
-import "context"
+import (
+	"context"
+	"github.com/apache/plc4x/plc4go/spi/utils"
+)
 
-func Utf8Length(_ context.Context, stringValue string) int {
+func Utf8LengthToPascalLength(_ context.Context, stringValue string) int32 {
 	if stringValue == "" {
 		return -1
 	}
-	return len([]rune(stringValue))
+	return int32(len(stringValue))
+}
+
+func PascalLengthToUtf8Length(_ context.Context, slength int32) int32 {
+	return utils.Max(slength*8, 0)
 }

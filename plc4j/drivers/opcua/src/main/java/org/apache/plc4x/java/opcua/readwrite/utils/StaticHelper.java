@@ -23,7 +23,18 @@ import java.nio.charset.StandardCharsets;
 public class StaticHelper {
 
     // Calculating length in UTF-8
-    public static int utf8Length(String stringValue) {
-        return stringValue == null ? -1 : stringValue.getBytes(StandardCharsets.UTF_8).length;
+    public static int utf8LengthToPascalLength(String stringValue) {
+        if (stringValue == null) {
+            return -1;
+        }
+        int nBytes = stringValue.getBytes(StandardCharsets.UTF_8).length;
+        if (nBytes == 0) {
+            return -1;
+        }
+        return nBytes;
+    }
+
+    public static int pascalLengthToUtf8Length(int slength) {
+        return Math.max(slength * 8, 0);
     }
 }
