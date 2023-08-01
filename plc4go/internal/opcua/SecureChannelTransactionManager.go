@@ -74,7 +74,7 @@ func (m *SecureChannelTransactionManager) submit(onSend func(transactionId int32
 }
 
 func (m *SecureChannelTransactionManager) getTransactionIdentifier() int32 {
-	return m.transactionIdentifierGenerator.Add(1)
+	return m.transactionIdentifierGenerator.Add(1) - 1
 }
 
 func (m *SecureChannelTransactionManager) getActiveTransactionIdentifier() int32 {

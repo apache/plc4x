@@ -77,6 +77,7 @@ func (m *MessageCodec) Connect() error {
 }
 
 func (m *MessageCodec) ConnectWithContext(ctx context.Context) error {
+	m.log.Trace().Msg("connecting")
 	if err := m.DefaultCodec.ConnectWithContext(ctx); err != nil {
 		return errors.Wrap(err, "error connecting default codec")
 	}
@@ -94,10 +95,12 @@ func (m *MessageCodec) ConnectWithContext(ctx context.Context) error {
 }
 
 func (m *MessageCodec) fireConnected() {
+	m.log.Trace().Msg("fire connected event")
 	close(m.connectEvent)
 }
 
 func (m *MessageCodec) Disconnect() error {
+	m.log.Trace().Msg("disconnecting")
 	m.channel.onDisconnect(context.Background(), m)
 	disconnectTimeout := time.NewTimer(m.disconnectTimeout)
 	select {

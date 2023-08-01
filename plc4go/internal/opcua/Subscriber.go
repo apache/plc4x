@@ -195,6 +195,7 @@ func (s *Subscriber) onSubscribeCreateSubscription(ctx context.Context, cycleTim
 }
 
 func (s *Subscriber) onDisconnect(codec *MessageCodec) {
+	s.log.Trace().Msg("disconnecting")
 	for _, handle := range s.subscriptions {
 		handle.stopSubscriber()
 	}

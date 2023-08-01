@@ -232,6 +232,7 @@ func (c *Connection) startSubscriptionHandler() {
 }
 
 func (c *Connection) fireConnectionError(err error, ch chan<- plc4go.PlcConnectionConnectResult) {
+	c.log.Trace().Err(err).Msg("fire connection error")
 	if c.driverContext.awaitSetupComplete {
 		ch <- _default.NewDefaultPlcConnectionConnectResult(nil, errors.Wrap(err, "Error during connection"))
 	} else {
@@ -243,6 +244,7 @@ func (c *Connection) fireConnectionError(err error, ch chan<- plc4go.PlcConnecti
 }
 
 func (c *Connection) fireConnected(ch chan<- plc4go.PlcConnectionConnectResult) {
+	c.log.Trace().Msg("fire connected")
 	if c.driverContext.awaitSetupComplete {
 		ch <- _default.NewDefaultPlcConnectionConnectResult(c, nil)
 	} else {

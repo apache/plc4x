@@ -267,6 +267,7 @@ func (s *SecureChannel) submit(ctx context.Context, codec *MessageCodec, errorDi
 }
 
 func (s *SecureChannel) onConnect(ctx context.Context, codec *MessageCodec) {
+	s.log.Trace().Msg("on connect")
 	// Only the TCP transport supports login.
 	s.log.Debug().Msg("Opcua Driver running in ACTIVE mode.")
 	s.codec = codec
@@ -280,6 +281,7 @@ func (s *SecureChannel) onConnect(ctx context.Context, codec *MessageCodec) {
 		s.endpoint)
 
 	requestConsumer := func(transactionId int32) {
+		s.log.Trace().Int32("transactionId", transactionId).Msg("request consumer called")
 		if err := codec.SendRequest(
 			ctx,
 			hello,
@@ -1392,7 +1394,7 @@ func (s *SecureChannel) keepAlive() {
 
 // getRequestHandle returns the next request handle
 func (s *SecureChannel) getRequestHandle() uint32 {
-	return s.requestHandleGenerator.Add(1)
+	return s.requestHandleGenerator.Add(1) - 1
 }
 
 // getAuthenticationToken returns the authentication token for the current connection

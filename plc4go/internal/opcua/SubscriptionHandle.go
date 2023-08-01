@@ -104,7 +104,7 @@ func (h *SubscriptionHandle) onSubscribeCreateMonitoredItemsRequest() (readWrite
 			monitoringMode = readWriteModel.MonitoringMode_monitoringModeReporting
 		}
 
-		clientHandle := h.clientHandles.Add(1)
+		clientHandle := h.clientHandles.Add(1) - 1
 
 		parameters := readWriteModel.NewMonitoringParameters(
 			clientHandle,
