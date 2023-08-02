@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
@@ -82,6 +83,7 @@ type PlcSubscriptionRequest interface {
 }
 
 type PlcSubscriptionResponse interface {
+	fmt.Stringer
 	GetRequest() PlcSubscriptionRequest
 	GetTagNames() []string
 	GetResponseCode(name string) PlcResponseCode
@@ -90,6 +92,7 @@ type PlcSubscriptionResponse interface {
 }
 
 type PlcSubscriptionHandle interface {
+	fmt.Stringer
 	Register(consumer PlcSubscriptionEventConsumer) PlcConsumerRegistration
 }
 

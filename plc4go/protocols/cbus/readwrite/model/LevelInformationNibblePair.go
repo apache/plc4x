@@ -280,7 +280,7 @@ func LevelInformationNibblePairParseWithBuffer(ctx context.Context, readBuffer u
 		return 0, errors.Wrap(err, "error reading LevelInformationNibblePair")
 	}
 	if enum, ok := LevelInformationNibblePairByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for LevelInformationNibblePair")
 		return LevelInformationNibblePair(val), nil
 	} else {
 		return enum, nil

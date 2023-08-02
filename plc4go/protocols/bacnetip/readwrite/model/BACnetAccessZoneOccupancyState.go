@@ -150,7 +150,7 @@ func BACnetAccessZoneOccupancyStateParseWithBuffer(ctx context.Context, readBuff
 		return 0, errors.Wrap(err, "error reading BACnetAccessZoneOccupancyState")
 	}
 	if enum, ok := BACnetAccessZoneOccupancyStateByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for BACnetAccessZoneOccupancyState")
 		return BACnetAccessZoneOccupancyState(val), nil
 	} else {
 		return enum, nil

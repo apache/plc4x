@@ -130,7 +130,7 @@ func MeasurementCommandTypeParseWithBuffer(ctx context.Context, readBuffer utils
 		return 0, errors.Wrap(err, "error reading MeasurementCommandType")
 	}
 	if enum, ok := MeasurementCommandTypeByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for MeasurementCommandType")
 		return MeasurementCommandType(val), nil
 	} else {
 		return enum, nil

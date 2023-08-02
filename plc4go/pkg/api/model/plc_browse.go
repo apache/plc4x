@@ -21,11 +21,13 @@ package model
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
 )
 
 type PlcBrowseRequestBuilder interface {
+	fmt.Stringer
 	AddQuery(name string, query string) PlcBrowseRequestBuilder
 	Build() (PlcBrowseRequest, error)
 }
@@ -54,12 +56,14 @@ type PlcBrowseResponse interface {
 }
 
 type PlcBrowseRequestResult interface {
+	fmt.Stringer
 	GetRequest() PlcBrowseRequest
 	GetResponse() PlcBrowseResponse
 	GetErr() error
 }
 
 type PlcBrowseItem interface {
+	fmt.Stringer
 	GetTag() PlcTag
 
 	GetName() string

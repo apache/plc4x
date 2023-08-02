@@ -132,9 +132,9 @@ func (m *Reader) readSync(ctx context.Context, readRequest apiModel.PlcReadReque
 		} else {
 			if serviceFault, ok := reply.(readWriteModel.ServiceFaultExactly); ok {
 				header := serviceFault.GetResponseHeader()
-				m.log.Error().Msgf("Read request ended up with ServiceFault: %s", header)
+				m.log.Error().Stringer("header", header).Msg("Read request ended up with ServiceFault")
 			} else {
-				m.log.Error().Msgf("Remote party returned an error '%s'", reply)
+				m.log.Error().Stringer("reply", reply).Msg("Remote party returned an error")
 			}
 
 			responseCodes := map[string]apiModel.PlcResponseCode{}

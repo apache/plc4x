@@ -61,7 +61,7 @@ func (d *Driver) GetConnectionWithContext(ctx context.Context, _ url.URL, _ map[
 		driverOptions,
 		append(d._options, options.WithCustomLogger(d.log))...,
 	)
-	d.log.Debug().Msgf("Connecting and returning connection %v", connection)
+	d.log.Debug().Stringer("connection", connection).Msg("Connecting and returning connection")
 	return connection.ConnectWithContext(ctx)
 }
 

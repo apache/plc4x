@@ -120,7 +120,7 @@ func DeadbandTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 		return 0, errors.Wrap(err, "error reading DeadbandType")
 	}
 	if enum, ok := DeadbandTypeByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for DeadbandType")
 		return DeadbandType(val), nil
 	} else {
 		return enum, nil

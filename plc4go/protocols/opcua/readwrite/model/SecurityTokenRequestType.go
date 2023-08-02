@@ -114,7 +114,7 @@ func SecurityTokenRequestTypeParseWithBuffer(ctx context.Context, readBuffer uti
 		return 0, errors.Wrap(err, "error reading SecurityTokenRequestType")
 	}
 	if enum, ok := SecurityTokenRequestTypeByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for SecurityTokenRequestType")
 		return SecurityTokenRequestType(val), nil
 	} else {
 		return enum, nil

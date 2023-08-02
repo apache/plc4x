@@ -144,7 +144,7 @@ func BACnetAuthenticationStatusParseWithBuffer(ctx context.Context, readBuffer u
 		return 0, errors.Wrap(err, "error reading BACnetAuthenticationStatus")
 	}
 	if enum, ok := BACnetAuthenticationStatusByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for BACnetAuthenticationStatus")
 		return BACnetAuthenticationStatus(val), nil
 	} else {
 		return enum, nil

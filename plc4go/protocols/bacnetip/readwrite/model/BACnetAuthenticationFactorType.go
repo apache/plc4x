@@ -252,7 +252,7 @@ func BACnetAuthenticationFactorTypeParseWithBuffer(ctx context.Context, readBuff
 		return 0, errors.Wrap(err, "error reading BACnetAuthenticationFactorType")
 	}
 	if enum, ok := BACnetAuthenticationFactorTypeByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for BACnetAuthenticationFactorType")
 		return BACnetAuthenticationFactorType(val), nil
 	} else {
 		return enum, nil

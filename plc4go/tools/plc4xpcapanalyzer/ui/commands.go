@@ -623,7 +623,10 @@ func (c Command) acceptsCurrentText(currentCommandText string) bool {
 	hasThePrefix := strings.HasPrefix(currentCommandText, c.Name)
 	hasNoMatchingAlternative := !strings.HasPrefix(currentCommandText, c.Name+"-")
 	accepts := hasThePrefix && hasNoMatchingAlternative
-	plc4xpcapanalyzerLog.Debug().Msgf("%s accepts %t", c, accepts)
+	plc4xpcapanalyzerLog.Debug().
+		Stringer("c", c).
+		Bool("accepts", accepts).
+		Msg("c accepts accepts")
 	return accepts
 }
 
@@ -670,12 +673,17 @@ func (c Command) Execute(ctx context.Context, commandText string) (err error) {
 	defer func() {
 		if recoveredErr := recover(); recoveredErr != nil {
 			if log.Debug().Enabled() {
-				log.Debug().Msgf("Panic '%v' stack:\n%s", recoveredErr, debug.Stack())
+				log.Error().
+					Str("stack", string(debug.Stack())).
+					Interface("err", err).
+					Msg("panic-ed")
 			}
 			err = errors.Errorf("panic occurred: %v.", recoveredErr)
 		}
 	}()
-	plc4xpcapanalyzerLog.Debug().Msgf("%s executes %s", c, commandText)
+	plc4xpcapanalyzerLog.Debug().
+		Stringer("c", c).Str("commandText", commandText).
+		Msg("c executes commandText")
 	if !c.acceptsCurrentText(commandText) {
 		return errors.Errorf("%s doesn't understand %s", c.Name, commandText)
 	}
@@ -683,7 +691,10 @@ func (c Command) Execute(ctx context.Context, commandText string) (err error) {
 		prepareForSubCommandForSubCommand := c.prepareForSubCommand(commandText)
 		for _, command := range c.subCommands {
 			if command.acceptsCurrentText(prepareForSubCommandForSubCommand) {
-				plc4xpcapanalyzerLog.Debug().Msgf("%s delegates to sub %s", c, command)
+				plc4xpcapanalyzerLog.Debug().
+					Stringer("c", c).
+					Str("commandText", commandText).
+					Msg("c delegates to sub command")
 				return command.Execute(ctx, prepareForSubCommandForSubCommand)
 			}
 		}
@@ -692,7 +703,10 @@ func (c Command) Execute(ctx context.Context, commandText string) (err error) {
 		if c.action == nil {
 			return NotDirectlyExecutable
 		}
-		plc4xpcapanalyzerLog.Debug().Msgf("%s executes %s directly", c, commandText)
+		plc4xpcapanalyzerLog.Debug().
+			Stringer("c", c).
+			Str("commandText", commandText).
+			Msg("c executes commandText directly")
 		preparedForParameters := c.prepareForParameters(commandText)
 		return c.action(ctx, c, preparedForParameters)
 	}

@@ -18880,7 +18880,7 @@ func ComObjectTableAddressesParseWithBuffer(ctx context.Context, readBuffer util
 		return 0, errors.Wrap(err, "error reading ComObjectTableAddresses")
 	}
 	if enum, ok := ComObjectTableAddressesByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for ComObjectTableAddresses")
 		return ComObjectTableAddresses(val), nil
 	} else {
 		return enum, nil

@@ -288,7 +288,7 @@ const (
 	KnxManufacturer_M_ZIPATO                                             KnxManufacturer = 242
 	KnxManufacturer_M_CM_SECURITY_GMBH_AND_CO_KG                         KnxManufacturer = 243
 	KnxManufacturer_M_QING_CABLES                                        KnxManufacturer = 244
-	KnxManufacturer_M_LABIO                                              KnxManufacturer = 245
+	KnxManufacturer_M_WOLF                                               KnxManufacturer = 245
 	KnxManufacturer_M_COSTER_TECNOLOGIE_ELETTRONICHE_S_P_A_              KnxManufacturer = 246
 	KnxManufacturer_M_E_G_E                                              KnxManufacturer = 247
 	KnxManufacturer_M_NETXAUTOMATION                                     KnxManufacturer = 248
@@ -681,8 +681,10 @@ const (
 	KnxManufacturer_M_SECURI_FLEX_LTD                                    KnxManufacturer = 635
 	KnxManufacturer_M_BOKE                                               KnxManufacturer = 636
 	KnxManufacturer_M_SBR_SYSTEM_TECHNICAL                               KnxManufacturer = 637
-	KnxManufacturer_M_ABB___RESERVED                                     KnxManufacturer = 638
-	KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED                    KnxManufacturer = 639
+	KnxManufacturer_M_SHENZHEN_EASTKAME_TECHNOLOGY_CO___LTD_             KnxManufacturer = 638
+	KnxManufacturer_M_BOLATU                                             KnxManufacturer = 639
+	KnxManufacturer_M_ABB___RESERVED                                     KnxManufacturer = 640
+	KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED                    KnxManufacturer = 641
 )
 
 var KnxManufacturerValues []KnxManufacturer
@@ -935,7 +937,7 @@ func init() {
 		KnxManufacturer_M_ZIPATO,
 		KnxManufacturer_M_CM_SECURITY_GMBH_AND_CO_KG,
 		KnxManufacturer_M_QING_CABLES,
-		KnxManufacturer_M_LABIO,
+		KnxManufacturer_M_WOLF,
 		KnxManufacturer_M_COSTER_TECNOLOGIE_ELETTRONICHE_S_P_A_,
 		KnxManufacturer_M_E_G_E,
 		KnxManufacturer_M_NETXAUTOMATION,
@@ -1328,6 +1330,8 @@ func init() {
 		KnxManufacturer_M_SECURI_FLEX_LTD,
 		KnxManufacturer_M_BOKE,
 		KnxManufacturer_M_SBR_SYSTEM_TECHNICAL,
+		KnxManufacturer_M_SHENZHEN_EASTKAME_TECHNOLOGY_CO___LTD_,
+		KnxManufacturer_M_BOLATU,
 		KnxManufacturer_M_ABB___RESERVED,
 		KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED,
 	}
@@ -3733,15 +3737,23 @@ func (e KnxManufacturer) Number() uint16 {
 		}
 	case 638:
 		{ /* '638' */
-			return 43954
+			return 696
 		}
 	case 639:
 		{ /* '639' */
-			return 43959
+			return 697
 		}
 	case 64:
 		{ /* '64' */
 			return 102
+		}
+	case 640:
+		{ /* '640' */
+			return 43954
+		}
+	case 641:
+		{ /* '641' */
+			return 43959
 		}
 	case 65:
 		{ /* '65' */
@@ -4567,7 +4579,7 @@ func (e KnxManufacturer) Name() string {
 		}
 	case 245:
 		{ /* '245' */
-			return "LABIO"
+			return "WOLF"
 		}
 	case 246:
 		{ /* '246' */
@@ -6311,15 +6323,23 @@ func (e KnxManufacturer) Name() string {
 		}
 	case 638:
 		{ /* '638' */
-			return "ABB - reserved"
+			return "Shenzhen EastKame Technology Co., Ltd."
 		}
 	case 639:
 		{ /* '639' */
-			return "Busch-Jaeger Elektro - reserved"
+			return "BOLATU"
 		}
 	case 64:
 		{ /* '64' */
 			return "Bischoff Elektronik"
+		}
+	case 640:
+		{ /* '640' */
+			return "ABB - reserved"
+		}
+	case 641:
+		{ /* '641' */
+			return "Busch-Jaeger Elektro - reserved"
 		}
 	case 65:
 		{ /* '65' */
@@ -6817,7 +6837,7 @@ func KnxManufacturerByValue(value uint16) (enum KnxManufacturer, ok bool) {
 	case 244:
 		return KnxManufacturer_M_QING_CABLES, true
 	case 245:
-		return KnxManufacturer_M_LABIO, true
+		return KnxManufacturer_M_WOLF, true
 	case 246:
 		return KnxManufacturer_M_COSTER_TECNOLOGIE_ELETTRONICHE_S_P_A_, true
 	case 247:
@@ -7689,11 +7709,15 @@ func KnxManufacturerByValue(value uint16) (enum KnxManufacturer, ok bool) {
 	case 637:
 		return KnxManufacturer_M_SBR_SYSTEM_TECHNICAL, true
 	case 638:
-		return KnxManufacturer_M_ABB___RESERVED, true
+		return KnxManufacturer_M_SHENZHEN_EASTKAME_TECHNOLOGY_CO___LTD_, true
 	case 639:
-		return KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED, true
+		return KnxManufacturer_M_BOLATU, true
 	case 64:
 		return KnxManufacturer_M_BISCHOFF_ELEKTRONIK, true
+	case 640:
+		return KnxManufacturer_M_ABB___RESERVED, true
+	case 641:
+		return KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED, true
 	case 65:
 		return KnxManufacturer_M_JEPAZ, true
 	case 66:
@@ -8102,8 +8126,8 @@ func KnxManufacturerByName(value string) (enum KnxManufacturer, ok bool) {
 		return KnxManufacturer_M_CM_SECURITY_GMBH_AND_CO_KG, true
 	case "M_QING_CABLES":
 		return KnxManufacturer_M_QING_CABLES, true
-	case "M_LABIO":
-		return KnxManufacturer_M_LABIO, true
+	case "M_WOLF":
+		return KnxManufacturer_M_WOLF, true
 	case "M_COSTER_TECNOLOGIE_ELETTRONICHE_S_P_A_":
 		return KnxManufacturer_M_COSTER_TECNOLOGIE_ELETTRONICHE_S_P_A_, true
 	case "M_E_G_E":
@@ -8974,12 +8998,16 @@ func KnxManufacturerByName(value string) (enum KnxManufacturer, ok bool) {
 		return KnxManufacturer_M_BOKE, true
 	case "M_SBR_SYSTEM_TECHNICAL":
 		return KnxManufacturer_M_SBR_SYSTEM_TECHNICAL, true
+	case "M_SHENZHEN_EASTKAME_TECHNOLOGY_CO___LTD_":
+		return KnxManufacturer_M_SHENZHEN_EASTKAME_TECHNOLOGY_CO___LTD_, true
+	case "M_BOLATU":
+		return KnxManufacturer_M_BOLATU, true
+	case "M_BISCHOFF_ELEKTRONIK":
+		return KnxManufacturer_M_BISCHOFF_ELEKTRONIK, true
 	case "M_ABB___RESERVED":
 		return KnxManufacturer_M_ABB___RESERVED, true
 	case "M_BUSCH_JAEGER_ELEKTRO___RESERVED":
 		return KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED, true
-	case "M_BISCHOFF_ELEKTRONIK":
-		return KnxManufacturer_M_BISCHOFF_ELEKTRONIK, true
 	case "M_JEPAZ":
 		return KnxManufacturer_M_JEPAZ, true
 	case "M_RTS_AUTOMATION":
@@ -9099,7 +9127,7 @@ func KnxManufacturerParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 		return 0, errors.Wrap(err, "error reading KnxManufacturer")
 	}
 	if enum, ok := KnxManufacturerByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for KnxManufacturer")
 		return KnxManufacturer(val), nil
 	} else {
 		return enum, nil
@@ -9449,8 +9477,8 @@ func (e KnxManufacturer) PLC4XEnumName() string {
 		return "M_CM_SECURITY_GMBH_AND_CO_KG"
 	case KnxManufacturer_M_QING_CABLES:
 		return "M_QING_CABLES"
-	case KnxManufacturer_M_LABIO:
-		return "M_LABIO"
+	case KnxManufacturer_M_WOLF:
+		return "M_WOLF"
 	case KnxManufacturer_M_COSTER_TECNOLOGIE_ELETTRONICHE_S_P_A_:
 		return "M_COSTER_TECNOLOGIE_ELETTRONICHE_S_P_A_"
 	case KnxManufacturer_M_E_G_E:
@@ -10321,12 +10349,16 @@ func (e KnxManufacturer) PLC4XEnumName() string {
 		return "M_BOKE"
 	case KnxManufacturer_M_SBR_SYSTEM_TECHNICAL:
 		return "M_SBR_SYSTEM_TECHNICAL"
+	case KnxManufacturer_M_SHENZHEN_EASTKAME_TECHNOLOGY_CO___LTD_:
+		return "M_SHENZHEN_EASTKAME_TECHNOLOGY_CO___LTD_"
+	case KnxManufacturer_M_BOLATU:
+		return "M_BOLATU"
+	case KnxManufacturer_M_BISCHOFF_ELEKTRONIK:
+		return "M_BISCHOFF_ELEKTRONIK"
 	case KnxManufacturer_M_ABB___RESERVED:
 		return "M_ABB___RESERVED"
 	case KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED:
 		return "M_BUSCH_JAEGER_ELEKTRO___RESERVED"
-	case KnxManufacturer_M_BISCHOFF_ELEKTRONIK:
-		return "M_BISCHOFF_ELEKTRONIK"
 	case KnxManufacturer_M_JEPAZ:
 		return "M_JEPAZ"
 	case KnxManufacturer_M_RTS_AUTOMATION:

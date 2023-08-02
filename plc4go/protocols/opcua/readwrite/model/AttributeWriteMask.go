@@ -264,7 +264,7 @@ func AttributeWriteMaskParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 		return 0, errors.Wrap(err, "error reading AttributeWriteMask")
 	}
 	if enum, ok := AttributeWriteMaskByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for AttributeWriteMask")
 		return AttributeWriteMask(val), nil
 	} else {
 		return enum, nil

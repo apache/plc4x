@@ -144,7 +144,7 @@ func JsonNetworkMessageContentMaskParseWithBuffer(ctx context.Context, readBuffe
 		return 0, errors.Wrap(err, "error reading JsonNetworkMessageContentMask")
 	}
 	if enum, ok := JsonNetworkMessageContentMaskByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for JsonNetworkMessageContentMask")
 		return JsonNetworkMessageContentMask(val), nil
 	} else {
 		return enum, nil

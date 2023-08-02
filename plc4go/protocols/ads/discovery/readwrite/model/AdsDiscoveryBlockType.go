@@ -156,7 +156,7 @@ func AdsDiscoveryBlockTypeParseWithBuffer(ctx context.Context, readBuffer utils.
 		return 0, errors.Wrap(err, "error reading AdsDiscoveryBlockType")
 	}
 	if enum, ok := AdsDiscoveryBlockTypeByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for AdsDiscoveryBlockType")
 		return AdsDiscoveryBlockType(val), nil
 	} else {
 		return enum, nil

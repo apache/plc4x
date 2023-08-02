@@ -126,7 +126,7 @@ func OpcuaIdentifierTypeParseWithBuffer(ctx context.Context, readBuffer utils.Re
 		return "", errors.Wrap(err, "error reading OpcuaIdentifierType")
 	}
 	if enum, ok := OpcuaIdentifierTypeByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for OpcuaIdentifierType")
 		return OpcuaIdentifierType(val), nil
 	} else {
 		return enum, nil

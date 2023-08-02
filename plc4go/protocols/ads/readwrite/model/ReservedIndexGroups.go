@@ -324,7 +324,7 @@ func ReservedIndexGroupsParseWithBuffer(ctx context.Context, readBuffer utils.Re
 		return 0, errors.Wrap(err, "error reading ReservedIndexGroups")
 	}
 	if enum, ok := ReservedIndexGroupsByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for ReservedIndexGroups")
 		return ReservedIndexGroups(val), nil
 	} else {
 		return enum, nil

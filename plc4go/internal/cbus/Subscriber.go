@@ -119,7 +119,7 @@ func (s *Subscriber) Unsubscribe(ctx context.Context, unsubscriptionRequest apiM
 }
 
 func (s *Subscriber) handleMonitoredMMI(calReply readWriteModel.CALReply) bool {
-	s.log.Debug().Msgf("handling:\n%s", calReply)
+	s.log.Debug().Stringer("calReply", calReply).Msg("handling")
 	var unitAddressString string
 	switch calReply := calReply.(type) {
 	case readWriteModel.CALReplyLongExactly:
@@ -136,28 +136,33 @@ func (s *Subscriber) handleMonitoredMMI(calReply readWriteModel.CALReply) bool {
 	default:
 		unitAddressString = "u0" // On short form it should be always unit 0 TODO: double check that
 	}
-	s.log.Debug().Msgf("Unit address string: %s", unitAddressString)
+	s.log.Debug().Str("unitAddressString", unitAddressString).Msg("Unit address string")
 	calData := calReply.GetCalData()
 	handled := false
 	s.consumersMutex.RLock()
 	defer s.consumersMutex.RUnlock()
 	for registration, consumer := range s.consumers {
-		s.log.Debug().Msgf("Checking with registration\n%s\nand consumer set %t", registration, consumer != nil)
+		s.log.Debug().
+			Stringer("registration", registration).
+			Interface("consumer", consumer).
+			Msg("Checking with registration and consumer")
 		for _, subscriptionHandle := range registration.GetSubscriptionHandles() {
-			s.log.Debug().Msgf("offering to\n%s", subscriptionHandle)
+			s.log.Debug().Stringer("subscriptionHandle", subscriptionHandle).Msg("offering to")
 			handleHandled := s.offerMMI(unitAddressString, calData, subscriptionHandle.(*SubscriptionHandle), consumer)
-			s.log.Debug().Msgf("handle handled: %t", handleHandled)
+			s.log.Debug().Bool("handleHandled", handleHandled).Msg("handle handled")
 			handled = handled || handleHandled
 		}
 	}
-	s.log.Debug().Msgf("final handled: %t", handled)
+	s.log.Debug().Bool("handled", handled).Msg("final handled")
 	return handled
 }
 
 func (s *Subscriber) offerMMI(unitAddressString string, calData readWriteModel.CALData, subscriptionHandle *SubscriptionHandle, consumer apiModel.PlcSubscriptionEventConsumer) bool {
 	tag, ok := subscriptionHandle.tag.(*mmiMonitorTag)
 	if !ok {
-		s.log.Debug().Msgf("Unusable tag for mmi subscription %s", subscriptionHandle.tag)
+		s.log.Debug().
+			Interface("tag", subscriptionHandle.tag).
+			Msg("Unusable tag for mmi subscription")
 		return false
 	}
 
@@ -173,7 +178,10 @@ func (s *Subscriber) offerMMI(unitAddressString string, calData readWriteModel.C
 	if unitAddress := tag.GetUnitAddress(); unitAddress != nil {
 		unitSuffix := fmt.Sprintf("u%d", unitAddress.GetAddress())
 		if !strings.HasSuffix(unitAddressString, unitSuffix) {
-			s.log.Debug().Msgf("Current address string %s has not the suffix %s", unitAddressString, unitSuffix)
+			s.log.Debug().
+				Str("unitAddressString", unitAddressString).
+				Str("unitSuffix", unitSuffix).
+				Msg("Current address string unitAddressString has not the suffix unitSuffix")
 			return false
 		}
 	}
@@ -255,12 +263,15 @@ func (s *Subscriber) offerMMI(unitAddressString string, calData readWriteModel.C
 			plcValues[tagName] = spiValues.NewPlcList(plcListValues)
 		}
 	default:
-		s.log.Error().Msgf("Unmapped type %T", calData)
+		s.log.Error().Type("calData", calData).Msg("Unmapped type")
 		return false
 	}
 	if application := tag.GetApplication(); application != nil {
 		if actualApplicationIdString := application.ApplicationId().String(); applicationString != actualApplicationIdString {
-			s.log.Debug().Msgf("Current application id %s  doesn't match actual id %s", unitAddressString, actualApplicationIdString)
+			s.log.Debug().
+				Str("unitAddressString", unitAddressString).
+				Str("actualApplicationIdString", actualApplicationIdString).
+				Msg("Current application id unitAddressString doesn't match actual id actualApplicationIdString")
 			return false
 		}
 	}
@@ -291,7 +302,7 @@ func (s *Subscriber) handleMonitoredSAL(sal readWriteModel.MonitoredSAL) bool {
 func (s *Subscriber) offerSAL(sal readWriteModel.MonitoredSAL, subscriptionHandle *SubscriptionHandle, consumer apiModel.PlcSubscriptionEventConsumer) bool {
 	tag, ok := subscriptionHandle.tag.(*salMonitorTag)
 	if !ok {
-		s.log.Debug().Msgf("Unusable tag for mmi subscription %s", subscriptionHandle.tag)
+		s.log.Debug().Interface("tag", subscriptionHandle.tag).Msg("Unusable tag for mmi subscription")
 		return false
 	}
 	tags := map[string]apiModel.PlcTag{}
@@ -335,7 +346,10 @@ func (s *Subscriber) offerSAL(sal readWriteModel.MonitoredSAL, subscriptionHandl
 	if unitAddress := tag.GetUnitAddress(); unitAddress != nil {
 		unitSuffix := fmt.Sprintf("u%d", unitAddress.GetAddress())
 		if !strings.HasSuffix(unitAddressString, unitSuffix) {
-			s.log.Debug().Msgf("Current address string %s has not the suffix %s", unitAddressString, unitSuffix)
+			s.log.Debug().
+				Str("unitAddressString", unitAddressString).
+				Str("unitSuffix", unitSuffix).
+				Msg("Current address string unitAddressString has not the suffix unitSuffix")
 			return false
 		}
 	}
@@ -343,7 +357,10 @@ func (s *Subscriber) offerSAL(sal readWriteModel.MonitoredSAL, subscriptionHandl
 
 	if application := tag.GetApplication(); application != nil {
 		if actualApplicationIdString := application.ApplicationId().String(); applicationString != actualApplicationIdString {
-			s.log.Debug().Msgf("Current application id %s  doesn't match actual id %s", unitAddressString, actualApplicationIdString)
+			s.log.Debug().
+				Str("unitAddressString", unitAddressString).
+				Str("actualApplicationIdString", actualApplicationIdString).
+				Msg("Current application id unitAddressString  doesn't match actual id actualApplicationIdString")
 			return false
 		}
 	}
@@ -399,7 +416,7 @@ func (s *Subscriber) offerSAL(sal readWriteModel.MonitoredSAL, subscriptionHandl
 	case readWriteModel.SALDataVentilationExactly:
 		commandTypeGetter = salData.GetVentilationData().GetCommandType()
 	default:
-		s.log.Error().Msgf("Unmapped type %T", salData)
+		s.log.Error().Type("salData", salData).Msg("Unmapped type")
 	}
 	commandType := "Unknown"
 	if commandTypeGetter != nil {

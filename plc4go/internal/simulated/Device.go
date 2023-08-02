@@ -67,7 +67,10 @@ func (d *Device) Set(tag simulatedTag, value *apiValues.PlcValue) {
 		// TODO: Doesn'd really make any sense to write a random
 		break
 	case TagStdOut:
-		d.log.Debug().Msgf("TEST PLC STDOUT [%s]: %s", tag.Name, (*value).GetString())
+		d.log.Debug().
+			Str("name", tag.Name).
+			Stringer("value", *value).
+			Msg("TEST PLC STDOUT [%s]: %s")
 		break
 	}
 }

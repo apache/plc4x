@@ -252,7 +252,7 @@ func BACnetReliabilityParseWithBuffer(ctx context.Context, readBuffer utils.Read
 		return 0, errors.Wrap(err, "error reading BACnetReliability")
 	}
 	if enum, ok := BACnetReliabilityByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for BACnetReliability")
 		return BACnetReliability(val), nil
 	} else {
 		return enum, nil

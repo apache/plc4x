@@ -172,7 +172,9 @@ func TestSubscriber_handleMonitoredMMI(t *testing.T) {
 				consumers: map[*spiModel.DefaultPlcConsumerRegistration]apiModel.PlcSubscriptionEventConsumer{
 					func() *spiModel.DefaultPlcConsumerRegistration {
 						registration := spiModel.NewDefaultPlcConsumerRegistration(nil, nil, []apiModel.PlcSubscriptionHandle{
-							&SubscriptionHandle{},
+							&SubscriptionHandle{
+								DefaultPlcSubscriptionHandle: spiModel.NewDefaultPlcSubscriptionHandle(nil).(*spiModel.DefaultPlcSubscriptionHandle),
+							},
 						}...)
 						return registration.(*spiModel.DefaultPlcConsumerRegistration)
 					}(): nil,

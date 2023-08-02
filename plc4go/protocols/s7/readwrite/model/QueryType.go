@@ -126,7 +126,7 @@ func QueryTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) 
 		return 0, errors.Wrap(err, "error reading QueryType")
 	}
 	if enum, ok := QueryTypeByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for QueryType")
 		return QueryType(val), nil
 	} else {
 		return enum, nil

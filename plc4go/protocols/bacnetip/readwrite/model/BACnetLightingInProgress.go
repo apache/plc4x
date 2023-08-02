@@ -132,7 +132,7 @@ func BACnetLightingInProgressParseWithBuffer(ctx context.Context, readBuffer uti
 		return 0, errors.Wrap(err, "error reading BACnetLightingInProgress")
 	}
 	if enum, ok := BACnetLightingInProgressByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for BACnetLightingInProgress")
 		return BACnetLightingInProgress(val), nil
 	} else {
 		return enum, nil

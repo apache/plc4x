@@ -160,7 +160,7 @@ func ErrorReportingCommandTypeParseWithBuffer(ctx context.Context, readBuffer ut
 		return 0, errors.Wrap(err, "error reading ErrorReportingCommandType")
 	}
 	if enum, ok := ErrorReportingCommandTypeByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for ErrorReportingCommandType")
 		return ErrorReportingCommandType(val), nil
 	} else {
 		return enum, nil

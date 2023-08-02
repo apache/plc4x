@@ -150,7 +150,7 @@ func SecurityCommandTypeParseWithBuffer(ctx context.Context, readBuffer utils.Re
 		return 0, errors.Wrap(err, "error reading SecurityCommandType")
 	}
 	if enum, ok := SecurityCommandTypeByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for SecurityCommandType")
 		return SecurityCommandType(val), nil
 	} else {
 		return enum, nil

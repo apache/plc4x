@@ -46,8 +46,9 @@ import (
 	"github.com/pkg/errors"
 )
 
+//go:generate go run ../../tools/plc4xgenerator/gen.go -type=ConnectionMetadata
 type ConnectionMetadata struct {
-	KnxMedium         driverModel.KnxMedium
+	KnxMedium         driverModel.KnxMedium `stringer:"true"`
 	GatewayName       string
 	GatewayKnxAddress string
 	ClientKnxAddress  string
@@ -60,7 +61,7 @@ type ConnectionMetadata struct {
 	SupportedServices      []string
 }
 
-func (m ConnectionMetadata) GetConnectionAttributes() map[string]string {
+func (m *ConnectionMetadata) GetConnectionAttributes() map[string]string {
 	return map[string]string{
 		"KnxMedium":         m.KnxMedium.String(),
 		"GatewayName":       m.GatewayName,
@@ -76,19 +77,19 @@ func (m ConnectionMetadata) GetConnectionAttributes() map[string]string {
 	}
 }
 
-func (m ConnectionMetadata) CanRead() bool {
+func (m *ConnectionMetadata) CanRead() bool {
 	return true
 }
 
-func (m ConnectionMetadata) CanWrite() bool {
+func (m *ConnectionMetadata) CanWrite() bool {
 	return true
 }
 
-func (m ConnectionMetadata) CanSubscribe() bool {
+func (m *ConnectionMetadata) CanSubscribe() bool {
 	return true
 }
 
-func (m ConnectionMetadata) CanBrowse() bool {
+func (m *ConnectionMetadata) CanBrowse() bool {
 	return true
 }
 
@@ -312,7 +313,10 @@ func (m *Connection) ConnectWithContext(ctx context.Context) <-chan plc4go.PlcCo
 				go func() {
 					defer func() {
 						if err := recover(); err != nil {
-							m.log.Error().Msgf("panic-ed %v. Stack: %s", err, debug.Stack())
+							m.log.Error().
+								Str("stack", string(debug.Stack())).
+								Interface("err", err).
+								Msg("panic-ed")
 						}
 					}()
 					defaultIncomingMessageChannel := m.messageCodec.GetDefaultIncomingMessageChannel()
@@ -322,15 +326,15 @@ func (m *Connection) ConnectWithContext(ctx context.Context) <-chan plc4go.PlcCo
 						if !ok {
 							tunnelingResponse, ok := incomingMessage.(driverModel.TunnelingResponseExactly)
 							if ok {
-								m.log.Warn().Msgf("Got an unhandled TunnelingResponse message %v\n", tunnelingResponse)
+								m.log.Warn().Stringer("tunnelingResponse", tunnelingResponse).Msg("Got an unhandled TunnelingResponse message")
 							} else {
-								m.log.Warn().Msgf("Not a TunnelingRequest or TunnelingResponse message %v\n", incomingMessage)
+								m.log.Warn().Stringer("incomingMessage", incomingMessage).Msg("Not a TunnelingRequest or TunnelingResponse message")
 							}
 							continue
 						}
 
 						if tunnelingRequest.GetTunnelingRequestDataBlock().GetCommunicationChannelId() != m.CommunicationChannelId {
-							m.log.Warn().Msgf("Not for this connection %v\n", tunnelingRequest)
+							m.log.Warn().Stringer("tunnelingRequest", tunnelingRequest).Msg("Not for this connection")
 							continue
 						}
 
@@ -385,7 +389,7 @@ func (m *Connection) doSomethingAndClose(something func()) {
 	something()
 	err := m.messageCodec.Disconnect()
 	if err != nil {
-		m.log.Warn().Msgf("error closing connection: %s", err)
+		m.log.Warn().Err(err).Msg("error closing connection")
 	}
 }
 
@@ -432,7 +436,7 @@ func (m *Connection) Close() <-chan plc4go.PlcConnectionCloseResult {
 			case <-ttlTimer.C:
 				ttlTimer.Stop()
 				// If we got a timeout here, well just continue the device will just auto disconnect.
-				m.log.Debug().Msgf("Timeout disconnecting from device %s.", KnxAddressToString(targetAddress))
+				m.log.Debug().Str("targetAddress", KnxAddressToString(targetAddress)).Msg("Timeout disconnecting from device")
 			}
 		}
 

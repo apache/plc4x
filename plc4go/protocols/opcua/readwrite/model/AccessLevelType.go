@@ -150,7 +150,7 @@ func AccessLevelTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 		return 0, errors.Wrap(err, "error reading AccessLevelType")
 	}
 	if enum, ok := AccessLevelTypeByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for AccessLevelType")
 		return AccessLevelType(val), nil
 	} else {
 		return enum, nil

@@ -114,7 +114,7 @@ func PubSubDiagnosticsCounterClassificationParseWithBuffer(ctx context.Context, 
 		return 0, errors.Wrap(err, "error reading PubSubDiagnosticsCounterClassification")
 	}
 	if enum, ok := PubSubDiagnosticsCounterClassificationByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for PubSubDiagnosticsCounterClassification")
 		return PubSubDiagnosticsCounterClassification(val), nil
 	} else {
 		return enum, nil

@@ -138,7 +138,7 @@ func DataTransportErrorCodeParseWithBuffer(ctx context.Context, readBuffer utils
 		return 0, errors.Wrap(err, "error reading DataTransportErrorCode")
 	}
 	if enum, ok := DataTransportErrorCodeByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for DataTransportErrorCode")
 		return DataTransportErrorCode(val), nil
 	} else {
 		return enum, nil

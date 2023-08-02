@@ -144,7 +144,7 @@ func NLMRejectRouterToNetworkRejectReasonParseWithBuffer(ctx context.Context, re
 		return 0, errors.Wrap(err, "error reading NLMRejectRouterToNetworkRejectReason")
 	}
 	if enum, ok := NLMRejectRouterToNetworkRejectReasonByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for NLMRejectRouterToNetworkRejectReason")
 		return NLMRejectRouterToNetworkRejectReason(val), nil
 	} else {
 		return enum, nil

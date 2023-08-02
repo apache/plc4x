@@ -33,9 +33,12 @@ import (
 	"github.com/pkg/errors"
 )
 
+//go:generate go run ../../tools/plc4xgenerator/gen.go -type=MessageCodec
 type MessageCodec struct {
 	_default.DefaultCodec
-	log zerolog.Logger
+	none bool // TODO: just a empty field to satisfy generator (needs fixing because in this case here we have the delegate)
+
+	log zerolog.Logger `ignore:"true"`
 }
 
 func NewMessageCodec(transportInstance transports.TransportInstance, _options ...options.WithOption) *MessageCodec {
@@ -74,7 +77,7 @@ func (m *MessageCodec) Receive() (spi.Message, error) {
 	// We need at least 6 bytes in order to know how big the packet is in total
 	transportInstance := m.GetTransportInstance()
 	if num, err := transportInstance.GetNumBytesAvailableInBuffer(); (err == nil) && (num >= 4) {
-		m.log.Debug().Msgf("we got %d readable bytes", num)
+		m.log.Debug().Uint32("num", num).Msg("we got num readable bytes")
 		data, err := transportInstance.PeekReadableBytes(4)
 		if err != nil {
 			m.log.Warn().Err(err).Msg("error peeking")
@@ -84,7 +87,7 @@ func (m *MessageCodec) Receive() (spi.Message, error) {
 		//Second byte for the size and then add the header size 24
 		packetSize := uint32(((uint16(data[3]) << 8) + uint16(data[2])) + 24)
 		if num < packetSize {
-			m.log.Debug().Msgf("Not enough bytes. Got: %d Need: %d\n", num, packetSize)
+			m.log.Debug().Uint32("num", num).Uint32("packetSize", packetSize).Msg("Not enough bytes. Got: num Need: packetSize")
 			return nil, nil
 		}
 		data, err = transportInstance.Read(packetSize)

@@ -19,7 +19,10 @@
 
 package model
 
+import "fmt"
+
 type ArrayInfo interface {
+	fmt.Stringer
 	GetSize() uint32
 	GetLowerBound() uint32
 	GetUpperBound() uint32

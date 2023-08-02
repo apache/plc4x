@@ -190,7 +190,7 @@ func COTPTpduSizeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 		return 0, errors.Wrap(err, "error reading COTPTpduSize")
 	}
 	if enum, ok := COTPTpduSizeByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for COTPTpduSize")
 		return COTPTpduSize(val), nil
 	} else {
 		return enum, nil

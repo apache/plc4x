@@ -348,7 +348,7 @@ func TestConnection_GetMetadata(t *testing.T) {
 	}{
 		{
 			name: "give metadata",
-			want: _default.DefaultConnectionMetadata{
+			want: &_default.DefaultConnectionMetadata{
 				ConnectionAttributes: nil,
 				ProvidesReading:      true,
 				ProvidesWriting:      true,

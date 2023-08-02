@@ -144,7 +144,7 @@ func IdentityCriteriaTypeParseWithBuffer(ctx context.Context, readBuffer utils.R
 		return 0, errors.Wrap(err, "error reading IdentityCriteriaType")
 	}
 	if enum, ok := IdentityCriteriaTypeByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for IdentityCriteriaType")
 		return IdentityCriteriaType(val), nil
 	} else {
 		return enum, nil

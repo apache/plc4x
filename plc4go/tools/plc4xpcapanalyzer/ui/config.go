@@ -179,7 +179,7 @@ func enableAutoRegister(driver string) error {
 		}
 	}
 	config.AutoRegisterDrivers = append(config.AutoRegisterDrivers, driver)
-	log.Info().Msgf("Auto register enabled for %s", driver)
+	log.Info().Str("driver", driver).Msg("Auto register enabled")
 	return nil
 }
 
@@ -198,6 +198,6 @@ func disableAutoRegister(driver string) error {
 		return errors.Errorf("%s not registered for auto register", driver)
 	}
 	config.AutoRegisterDrivers = append(config.AutoRegisterDrivers[:index], config.AutoRegisterDrivers[index+1:]...)
-	log.Info().Msgf("Auto register disabled for %s", driver)
+	log.Info().Str("driver", driver).Msg("Auto register disabled")
 	return nil
 }

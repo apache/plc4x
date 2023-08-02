@@ -67,21 +67,28 @@ func NewDriver(_options ...options.WithOption) plc4go.PlcDriver {
 	return driver
 }
 
-func (m *Driver) GetConnectionWithContext(ctx context.Context, transportUrl url.URL, transports map[string]transports.Transport, options map[string][]string) <-chan plc4go.PlcConnectionConnectResult {
-	log.Debug().Stringer("transportUrl", &transportUrl).Msgf("Get connection for transport url with %d transport(s) and %d option(s)", len(transports), len(options))
+func (m *Driver) GetConnectionWithContext(ctx context.Context, transportUrl url.URL, transports map[string]transports.Transport, driverOptions map[string][]string) <-chan plc4go.PlcConnectionConnectResult {
+	m.log.Debug().
+		Stringer("transportUrl", &transportUrl).
+		Int("nTransports", len(transports)).
+		Int("nDriverOptions", len(driverOptions)).
+		Msg("Get connection for transport url with nTransports transport(s) and nDriverOptions option(s)")
 	// Get the transport specified in the url
 	transport, ok := transports[transportUrl.Scheme]
 	if !ok {
-		log.Error().Stringer("transportUrl", &transportUrl).Msgf("We couldn't find a transport for scheme %s", transportUrl.Scheme)
+		m.log.Error().
+			Stringer("transportUrl", &transportUrl).
+			Str("scheme", transportUrl.Scheme).
+			Msg("We couldn't find a transport for scheme")
 		ch := make(chan plc4go.PlcConnectionConnectResult, 1)
 		ch <- _default.NewDefaultPlcConnectionConnectResult(nil, errors.Errorf("couldn't find transport for given transport url %#v", transportUrl))
 		return ch
 	}
 	// Provide a default-port to the transport, which is used, if the user doesn't provide on in the connection string.
-	options["defaultUdpPort"] = []string{strconv.Itoa(int(model.BacnetConstants_BACNETUDPDEFAULTPORT))}
+	driverOptions["defaultUdpPort"] = []string{strconv.Itoa(int(model.BacnetConstants_BACNETUDPDEFAULTPORT))}
 	// Set so_reuse by default
-	if _, ok := options["so-reuse"]; !ok {
-		options["so-reuse"] = []string{"true"}
+	if _, ok := driverOptions["so-reuse"]; !ok {
+		driverOptions["so-reuse"] = []string{"true"}
 	}
 	var udpTransport *udp.Transport
 	switch transport := transport.(type) {
@@ -94,16 +101,16 @@ func (m *Driver) GetConnectionWithContext(ctx context.Context, transportUrl url.
 		return ch
 	}
 
-	codec, err := m.applicationManager.getApplicationLayerMessageCodec(udpTransport, transportUrl, options)
+	codec, err := m.applicationManager.getApplicationLayerMessageCodec(udpTransport, transportUrl, driverOptions)
 	if err != nil {
 		ch := make(chan plc4go.PlcConnectionConnectResult, 1)
 		ch <- _default.NewDefaultPlcConnectionConnectResult(nil, errors.Wrap(err, "error getting application layer message codec"))
 		return ch
 	}
-	log.Debug().Msgf("working with codec %#v", codec)
+	log.Debug().Stringer("codec", codec).Msg("working with codec")
 
 	// Create the new connection
-	connection := NewConnection(codec, m.GetPlcTagHandler(), m.tm, options)
+	connection := NewConnection(codec, m.GetPlcTagHandler(), m.tm, driverOptions)
 	log.Debug().Msg("created connection, connecting now")
 	return connection.ConnectWithContext(ctx)
 }

@@ -126,7 +126,7 @@ func StatusCodingParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 		return 0, errors.Wrap(err, "error reading StatusCoding")
 	}
 	if enum, ok := StatusCodingByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for StatusCoding")
 		return StatusCoding(val), nil
 	} else {
 		return enum, nil

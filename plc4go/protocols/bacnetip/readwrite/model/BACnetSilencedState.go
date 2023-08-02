@@ -132,7 +132,7 @@ func BACnetSilencedStateParseWithBuffer(ctx context.Context, readBuffer utils.Re
 		return 0, errors.Wrap(err, "error reading BACnetSilencedState")
 	}
 	if enum, ok := BACnetSilencedStateByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for BACnetSilencedState")
 		return BACnetSilencedState(val), nil
 	} else {
 		return enum, nil

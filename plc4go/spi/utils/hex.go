@@ -118,12 +118,19 @@ func DiffHex(expectedBytes, actualBytes []byte) AsciiBox {
 
 func calculateBytesPerRowAndIndexWidth(numberOfBytes, desiredStringWidth int) (int, int) {
 	if DebugHex {
-		log.Debug().Msgf("Calculating max row and index for %d number of bytes and a desired string width of %d", numberOfBytes, desiredStringWidth)
+		log.Debug().
+			Int("numberOfBytes", numberOfBytes).
+			Int("desiredStringWidth", desiredStringWidth).
+			Msg("Calculating max row and index for numberOfBytes number of bytes and a desired string width of desiredStringWidth")
 	}
 	indexDigits := int(math.Log10(float64(numberOfBytes))) + 1
 	requiredIndexWidth := indexDigits + pipeWidth
 	if DebugHex {
-		log.Debug().Msgf("index width %d for indexDigits %d for bytes %d", requiredIndexWidth, indexDigits, numberOfBytes)
+		log.Debug().
+			Int("requiredIndexWidth", requiredIndexWidth).
+			Int("indexDigits", indexDigits).
+			Int("numberOfBytes", numberOfBytes).
+			Msg("index width requiredIndexWidth for indexDigits for numberOfBytes")
 	}
 	// strings get quoted by 2 chars
 	const quoteRune = 1
@@ -131,17 +138,24 @@ func calculateBytesPerRowAndIndexWidth(numberOfBytes, desiredStringWidth int) (i
 	// 0 00  '.'
 	availableSpace := requiredIndexWidth + byteWidth + quoteRune + potentialStringRenderRune + quoteRune
 	if DebugHex {
-		log.Debug().Msgf("calculated %d minimal width for number of bytes %d", availableSpace, numberOfBytes)
+		log.Debug().
+			Int("availableSpace", availableSpace).
+			Int("numberOfBytes", numberOfBytes).
+			Msg("calculated availableSpace minimal width for number of bytes numberOfBytes")
 	}
 	if desiredStringWidth >= availableSpace {
 		availableSpace = desiredStringWidth
 	} else {
 		if DebugHex {
-			log.Debug().Msgf("Overflow by %d runes", desiredStringWidth-availableSpace)
+			log.Debug().
+				Int("n", desiredStringWidth-availableSpace).
+				Msg("Overflow by n runes")
 		}
 	}
 	if DebugHex {
-		log.Debug().Msgf("Actual space %d", availableSpace)
+		log.Debug().
+			Int("availableSpace", availableSpace).
+			Msg("Actual space")
 	}
 
 	z := float64(availableSpace)
@@ -153,7 +167,10 @@ func calculateBytesPerRowAndIndexWidth(numberOfBytes, desiredStringWidth int) (i
 	// x = (z - (y + b + x * 1 + b)) / a == x = (-2 * b - y + z)/(a + 1) and a + 1!=0 and a!=0
 	x := ((-2 * b) - y + z) / (a + 1)
 	if DebugHex {
-		log.Debug().Msgf("Calculated number of bytes per row %f in int %d", x, int(x))
+		log.Debug().
+			Float64("x", x).
+			Int("xInt", int(x)).
+			Msg("Calculated number of bytes per row x in int xInt")
 	}
 	return int(x), indexDigits
 }

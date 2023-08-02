@@ -126,7 +126,7 @@ func ErrorReportingSystemCategoryVariantParseWithBuffer(ctx context.Context, rea
 		return 0, errors.Wrap(err, "error reading ErrorReportingSystemCategoryVariant")
 	}
 	if enum, ok := ErrorReportingSystemCategoryVariantByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for ErrorReportingSystemCategoryVariant")
 		return ErrorReportingSystemCategoryVariant(val), nil
 	} else {
 		return enum, nil

@@ -168,7 +168,7 @@ func BACnetLifeSafetyOperationParseWithBuffer(ctx context.Context, readBuffer ut
 		return 0, errors.Wrap(err, "error reading BACnetLifeSafetyOperation")
 	}
 	if enum, ok := BACnetLifeSafetyOperationByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for BACnetLifeSafetyOperation")
 		return BACnetLifeSafetyOperation(val), nil
 	} else {
 		return enum, nil

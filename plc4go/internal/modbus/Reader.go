@@ -70,7 +70,7 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 		}()
 		if len(readRequest.GetTagNames()) != 1 {
 			result <- spiModel.NewDefaultPlcReadRequestResult(readRequest, nil, errors.New("modbus only supports single-item requests"))
-			m.log.Debug().Msgf("modbus only supports single-item requests. Got %d tags", len(readRequest.GetTagNames()))
+			m.log.Debug().Int("nTags", len(readRequest.GetTagNames())).Msg("modbus only supports single-item requests. Got nTags tags")
 			return
 		}
 		// If we are requesting only one tag, use a
@@ -83,11 +83,11 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 				nil,
 				errors.Wrap(err, "invalid tag item type"),
 			)
-			m.log.Debug().Msgf("Invalid tag item type %T", tag)
+			m.log.Debug().Type("tagType", tag).Msg("Invalid tag item type")
 			return
 		}
 		numWords := uint16(math.Ceil(float64(modbusTagVar.Quantity*uint16(modbusTagVar.Datatype.DataTypeSize())) / float64(2)))
-		m.log.Debug().Msgf("Working with %d words", numWords)
+		m.log.Debug().Uint16("numWords", numWords).Msg("Working with numWords words")
 		var pdu readWriteModel.ModbusPDU = nil
 		switch modbusTagVar.TagType {
 		case Coil:
@@ -111,7 +111,7 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 				nil,
 				errors.Errorf("unsupported tag type %x", modbusTagVar.TagType),
 			)
-			m.log.Debug().Msgf("Unsupported tag type %x", modbusTagVar.TagType)
+			m.log.Debug().Stringer("tagType", modbusTagVar.TagType).Msg("Unsupported tag type")
 			return
 		}
 
@@ -121,7 +121,7 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 			transactionIdentifier = 1
 			atomic.StoreInt32(&m.transactionIdentifier, 1)
 		}
-		m.log.Debug().Msgf("Calculated transaction identifier %x", transactionIdentifier)
+		m.log.Debug().Int32("transactionIdentifier", transactionIdentifier).Msg("Calculated transaction identifier")
 
 		// Assemble the finished ADU
 		m.log.Trace().Msg("Assemble ADU")

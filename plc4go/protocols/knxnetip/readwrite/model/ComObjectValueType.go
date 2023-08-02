@@ -270,7 +270,7 @@ func ComObjectValueTypeParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 		return 0, errors.Wrap(err, "error reading ComObjectValueType")
 	}
 	if enum, ok := ComObjectValueTypeByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for ComObjectValueType")
 		return ComObjectValueType(val), nil
 	} else {
 		return enum, nil

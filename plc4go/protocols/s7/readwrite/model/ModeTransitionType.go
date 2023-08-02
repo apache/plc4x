@@ -156,7 +156,7 @@ func ModeTransitionTypeParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 		return 0, errors.Wrap(err, "error reading ModeTransitionType")
 	}
 	if enum, ok := ModeTransitionTypeByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for ModeTransitionType")
 		return ModeTransitionType(val), nil
 	} else {
 		return enum, nil

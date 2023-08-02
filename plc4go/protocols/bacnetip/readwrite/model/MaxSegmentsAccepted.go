@@ -200,7 +200,7 @@ func MaxSegmentsAcceptedParseWithBuffer(ctx context.Context, readBuffer utils.Re
 		return 0, errors.Wrap(err, "error reading MaxSegmentsAccepted")
 	}
 	if enum, ok := MaxSegmentsAcceptedByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for MaxSegmentsAccepted")
 		return MaxSegmentsAccepted(val), nil
 	} else {
 		return enum, nil

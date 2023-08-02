@@ -174,7 +174,7 @@ func StatusParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (St
 		return 0, errors.Wrap(err, "error reading Status")
 	}
 	if enum, ok := StatusByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for Status")
 		return Status(val), nil
 	} else {
 		return enum, nil

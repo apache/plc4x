@@ -258,7 +258,7 @@ func SecurityResponseCodeParseWithBuffer(ctx context.Context, readBuffer utils.R
 		return 0, errors.Wrap(err, "error reading SecurityResponseCode")
 	}
 	if enum, ok := SecurityResponseCodeByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for SecurityResponseCode")
 		return SecurityResponseCode(val), nil
 	} else {
 		return enum, nil

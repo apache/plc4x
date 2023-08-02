@@ -114,7 +114,7 @@ func BACnetLimitEnableParseWithBuffer(ctx context.Context, readBuffer utils.Read
 		return 0, errors.Wrap(err, "error reading BACnetLimitEnable")
 	}
 	if enum, ok := BACnetLimitEnableByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for BACnetLimitEnable")
 		return BACnetLimitEnable(val), nil
 	} else {
 		return enum, nil

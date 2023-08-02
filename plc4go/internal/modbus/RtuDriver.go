@@ -21,7 +21,6 @@ package modbus
 
 import (
 	"context"
-	"encoding/json"
 	"github.com/apache/plc4x/plc4go/pkg/api"
 	"github.com/apache/plc4x/plc4go/protocols/modbus/readwrite/model"
 	_default "github.com/apache/plc4x/plc4go/spi/default"
@@ -52,11 +51,18 @@ func NewModbusRtuDriver(_options ...options.WithOption) *RtuDriver {
 }
 
 func (d RtuDriver) GetConnectionWithContext(ctx context.Context, transportUrl url.URL, transports map[string]transports.Transport, driverOptions map[string][]string) <-chan plc4go.PlcConnectionConnectResult {
-	d.log.Debug().Stringer("transportUrl", &transportUrl).Msgf("Get connection for transport url with %d transport(s) and %d option(s)", len(transports), len(driverOptions))
+	d.log.Debug().
+		Stringer("transportUrl", &transportUrl).
+		Int("nTransports", len(transports)).
+		Int("nDriverOptions", len(driverOptions)).
+		Msg("Get connection for transport url with nTransports transport(s) and nDriverOptions option(s)")
 	// Get an the transport specified in the url
 	transport, ok := transports[transportUrl.Scheme]
 	if !ok {
-		d.log.Error().Stringer("transportUrl", &transportUrl).Msgf("We couldn't find a transport for scheme %s", transportUrl.Scheme)
+		d.log.Error().
+			Stringer("transportUrl", &transportUrl).
+			Str("scheme", transportUrl.Scheme).
+			Msg("We couldn't find a transport for scheme")
 		ch := make(chan plc4go.PlcConnectionConnectResult, 1)
 		ch <- _default.NewDefaultPlcConnectionConnectResult(nil, errors.Errorf("couldn't find transport for given transport url %#v", transportUrl))
 		return ch
@@ -70,7 +76,10 @@ func (d RtuDriver) GetConnectionWithContext(ctx context.Context, transportUrl ur
 		append(d._options, options.WithCustomLogger(d.log))...,
 	)
 	if err != nil {
-		d.log.Error().Stringer("transportUrl", &transportUrl).Msgf("We couldn't create a transport instance for port %#v", driverOptions["defaultTcpPort"])
+		d.log.Error().
+			Stringer("transportUrl", &transportUrl).
+			Strs("defaultTcpPort", driverOptions["defaultTcpPort"]).
+			Msg("We couldn't create a transport instance for port")
 		ch := make(chan plc4go.PlcConnectionConnectResult, 1)
 		ch <- _default.NewDefaultPlcConnectionConnectResult(nil, errors.New("couldn't initialize transport configuration for given transport url "+transportUrl.String()))
 		return ch
@@ -82,25 +91,23 @@ func (d RtuDriver) GetConnectionWithContext(ctx context.Context, transportUrl ur
 	go func() {
 		defer func() {
 			if err := recover(); err != nil {
-				d.log.Error().Msgf("panic-ed %v. Stack: %s", err, debug.Stack())
+				d.log.Error().
+					Str("stack", string(debug.Stack())).
+					Interface("err", err).
+					Msg("panic-ed")
 			}
 		}()
 		for {
 			msg := <-defaultChanel
 			adu := msg.(model.ModbusTcpADU)
-			serialized, err := json.Marshal(adu)
-			if err != nil {
-				d.log.Error().Err(err).Msg("got error serializing adu")
-			} else {
-				d.log.Debug().Msgf("got message in the default handler %s\n", serialized)
-			}
+			d.log.Debug().Stringer("adu", adu).Msg("got message in the default handler")
 		}
 	}()
 	codec := NewMessageCodec(
 		transportInstance,
 		append(d._options, options.WithCustomLogger(d.log))...,
 	)
-	d.log.Debug().Msgf("working with codec %#v", codec)
+	d.log.Debug().Stringer("codec", codec).Msg("working with codec")
 
 	// If a unit-identifier was provided in the connection string use this, otherwise use the default of 1
 	unitIdentifier := uint8(1)
@@ -111,7 +118,7 @@ func (d RtuDriver) GetConnectionWithContext(ctx context.Context, transportUrl ur
 			unitIdentifier = uint8(intValue)
 		}
 	}
-	d.log.Debug().Uint8("unitIdentifier", unitIdentifier).Msgf("using unit identifier %d", unitIdentifier)
+	d.log.Debug().Uint8("unitIdentifier", unitIdentifier).Msg("using unit identifier")
 
 	// Create the new connection
 	connection := NewConnection(

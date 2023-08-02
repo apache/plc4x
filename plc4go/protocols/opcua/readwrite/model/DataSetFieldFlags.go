@@ -114,7 +114,7 @@ func DataSetFieldFlagsParseWithBuffer(ctx context.Context, readBuffer utils.Read
 		return 0, errors.Wrap(err, "error reading DataSetFieldFlags")
 	}
 	if enum, ok := DataSetFieldFlagsByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for DataSetFieldFlags")
 		return DataSetFieldFlags(val), nil
 	} else {
 		return enum, nil

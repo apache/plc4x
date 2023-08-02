@@ -81,7 +81,7 @@ func (w *worker) start() {
 		return
 	}
 	if w.executor.isTraceWorkers() {
-		w.log.Debug().Msgf("Starting worker\n%s", w)
+		w.log.Debug().Stringer("worker", w).Msg("Starting worker")
 	}
 	w.executor.getWorkerWaitGroup().Add(1)
 	w.running.Store(true)
@@ -97,7 +97,7 @@ func (w *worker) stop(interrupt bool) {
 	}
 
 	if w.executor.isTraceWorkers() {
-		w.log.Debug().Msgf("Stopping worker\n%s", w)
+		w.log.Debug().Stringer("worker", w).Msg("Stopping worker")
 	}
 	w.shutdown.Store(true)
 	if interrupt {
@@ -110,7 +110,10 @@ func (w *worker) work() {
 	defer w.executor.getWorkerWaitGroup().Done()
 	defer func() {
 		if err := recover(); err != nil {
-			w.log.Error().Msgf("panic-ed %v. Stack: %s", err, debug.Stack())
+			w.log.Error().
+				Str("stack", string(debug.Stack())).
+				Interface("err", err).
+				Msg("panic-ed")
 			if !w.shutdown.Load() {
 				// if we are not in shutdown we continue
 				w.start()
@@ -128,15 +131,16 @@ func (w *worker) work() {
 		select {
 		case _workItem := <-w.executor.getWorksItems():
 			w.lastReceived.Store(time.Now())
-			workerLog.Debug().Msgf("Got work item\n%s", &_workItem)
+			workItemLog := workerLog.With().Stringer("workItem", &_workItem).Logger()
+			workItemLog.Debug().Msg("Got work item")
 			if _workItem.completionFuture.cancelRequested.Load() || (w.shutdown.Load() && w.interrupted.Load()) {
 				workerLog.Debug().Msg("We need to stop")
 				// TODO: do we need to complete with a error?
 			} else {
-				workerLog.Debug().Msgf("Running work item\n%s", &_workItem)
+				workItemLog.Debug().Msg("Running work item")
 				_workItem.runnable()
 				_workItem.completionFuture.complete()
-				workerLog.Debug().Msgf("work item completed\n%s", &_workItem)
+				workItemLog.Debug().Msg("work item completed")
 			}
 		case <-w.interrupter:
 			workerLog.Debug().Msg("We got interrupted")

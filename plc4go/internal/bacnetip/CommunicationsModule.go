@@ -95,7 +95,7 @@ func NewClient(cid *int, rootStruct _Client) (*Client, error) {
 }
 
 func (c *Client) Request(pdu _PDU) error {
-	log.Debug().Msgf("request\n%s", pdu)
+	log.Debug().Stringer("pdu", pdu).Msg("Request")
 
 	if c.clientPeer == nil {
 		return errors.New("unbound client")
@@ -167,7 +167,7 @@ func (s *Server) Indication(_PDU) error {
 }
 
 func (s *Server) Response(pdu _PDU) error {
-	log.Debug().Msgf("response\n%s", pdu)
+	log.Debug().Stringer("pdu", pdu).Msg("Response")
 
 	if s.serverPeer == nil {
 		return errors.New("unbound server")
@@ -231,7 +231,7 @@ func NewServiceAccessPoint(sapID *int, rootStruct _ServiceAccessPoint) (*Service
 }
 
 func (s *ServiceAccessPoint) SapRequest(pdu _PDU) error {
-	log.Debug().Msgf("SapRequest(%d)\n%s", s.serviceID, pdu)
+	log.Debug().Stringer("pdu", pdu).Interface("serviceID", s.serviceID).Msg("SapRequest")
 
 	if s.serviceElement == nil {
 		return errors.New("unbound service access point")
@@ -244,7 +244,7 @@ func (s *ServiceAccessPoint) SapIndication(_PDU) error {
 }
 
 func (s *ServiceAccessPoint) SapResponse(pdu _PDU) error {
-	log.Debug().Msgf("SapResponse(%d)\n%s", s.serviceID, pdu)
+	log.Debug().Stringer("pdu", pdu).Interface("serviceID", s.serviceID).Msg("SapResponse")
 
 	if s.serviceElement == nil {
 		return errors.New("unbound service access point")
@@ -301,7 +301,7 @@ func NewApplicationServiceElement(aseID *int, rootStruct _ApplicationServiceElem
 }
 
 func (a *ApplicationServiceElement) Request(pdu _PDU) error {
-	log.Debug().Msgf("Request\n%s", pdu)
+	log.Debug().Stringer("pdu", pdu).Msg("Request")
 
 	if a.elementService == nil {
 		return errors.New("unbound application service element")
@@ -315,7 +315,7 @@ func (a *ApplicationServiceElement) Indication(_PDU) error {
 }
 
 func (a *ApplicationServiceElement) Response(pdu _PDU) error {
-	log.Debug().Msgf("Response\n%s", pdu)
+	log.Debug().Stringer("pdu", pdu).Msg("Response")
 
 	if a.elementService == nil {
 		return errors.New("unbound application service element")
@@ -408,9 +408,9 @@ func bind(args ...any) error {
 	// go through the argument pairs
 	for i := 0; i < len(args)-1; i++ {
 		client := args[i]
-		log.Debug().Msgf("client %v", client)
+		log.Debug().Interface("client", client).Msg("client")
 		server := args[i+1]
-		log.Debug().Msgf("server %v", server)
+		log.Debug().Interface("server", server).Msg("server")
 
 		// make sure we're binding clients and servers
 		clientCast, okClient := client.(_Client)

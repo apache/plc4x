@@ -834,7 +834,7 @@ func ReturnCodeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer)
 		return 0, errors.Wrap(err, "error reading ReturnCode")
 	}
 	if enum, ok := ReturnCodeByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for ReturnCode")
 		return ReturnCode(val), nil
 	} else {
 		return enum, nil

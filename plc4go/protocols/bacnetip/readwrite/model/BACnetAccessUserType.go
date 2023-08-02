@@ -126,7 +126,7 @@ func BACnetAccessUserTypeParseWithBuffer(ctx context.Context, readBuffer utils.R
 		return 0, errors.Wrap(err, "error reading BACnetAccessUserType")
 	}
 	if enum, ok := BACnetAccessUserTypeByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for BACnetAccessUserType")
 		return BACnetAccessUserType(val), nil
 	} else {
 		return enum, nil

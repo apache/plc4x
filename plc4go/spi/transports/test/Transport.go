@@ -55,7 +55,7 @@ func (m *Transport) CreateTransportInstance(transportUrl url.URL, options map[st
 		return nil, errors.New("test transport failed on purpose")
 	}
 	if preregisteredInstance, ok := m.preregisteredInstances[transportUrl]; ok {
-		m.log.Trace().Msgf("Returning pre registered instance for %s", &transportUrl)
+		m.log.Trace().Stringer("transportUrl", &transportUrl).Msg("Returning pre registered instance")
 		return preregisteredInstance, nil
 	}
 	m.log.Trace().Msg("create transport instance")

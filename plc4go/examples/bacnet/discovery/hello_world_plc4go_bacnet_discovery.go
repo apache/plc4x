@@ -81,7 +81,7 @@ func main() {
 		// Wait for the driver to connect (or not)
 		connectionResult := <-crc
 		if connectionResult.GetErr() != nil {
-			log.Error().Msgf("error connecting to PLC: %s", connectionResult.GetErr().Error())
+			log.Error().Err(connectionResult.GetErr()).Msg("error connecting to PLC")
 			return
 		}
 		log.Info().Str("connection string", connStr).Msg("Connected")

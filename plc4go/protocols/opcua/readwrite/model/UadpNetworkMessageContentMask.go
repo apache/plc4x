@@ -174,7 +174,7 @@ func UadpNetworkMessageContentMaskParseWithBuffer(ctx context.Context, readBuffe
 		return 0, errors.Wrap(err, "error reading UadpNetworkMessageContentMask")
 	}
 	if enum, ok := UadpNetworkMessageContentMaskByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for UadpNetworkMessageContentMask")
 		return UadpNetworkMessageContentMask(val), nil
 	} else {
 		return enum, nil

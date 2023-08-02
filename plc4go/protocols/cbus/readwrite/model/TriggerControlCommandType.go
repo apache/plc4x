@@ -170,7 +170,7 @@ func TriggerControlCommandTypeParseWithBuffer(ctx context.Context, readBuffer ut
 		return 0, errors.Wrap(err, "error reading TriggerControlCommandType")
 	}
 	if enum, ok := TriggerControlCommandTypeByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for TriggerControlCommandType")
 		return TriggerControlCommandType(val), nil
 	} else {
 		return enum, nil

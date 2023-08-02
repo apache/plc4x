@@ -86,7 +86,7 @@ func (m *TransportInstance) Connect() error {
 	} else {
 		fileLogger := zerolog.New(logFile).With().Logger()
 		m.serialPort = utils.NewTransportLogger(m.serialPort, utils.WithLogger(fileLogger))
-		m.log.Trace().Msgf("Logging Transport to file %s", logFile.Name())
+		m.log.Trace().Msg("Logging Transport to file %s", logFile.Name())
 	}*/
 	m.reader = bufio.NewReader(m.serialPort)
 

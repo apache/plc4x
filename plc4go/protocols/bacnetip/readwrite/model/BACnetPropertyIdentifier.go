@@ -2850,7 +2850,7 @@ func BACnetPropertyIdentifierParseWithBuffer(ctx context.Context, readBuffer uti
 		return 0, errors.Wrap(err, "error reading BACnetPropertyIdentifier")
 	}
 	if enum, ok := BACnetPropertyIdentifierByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for BACnetPropertyIdentifier")
 		return BACnetPropertyIdentifier(val), nil
 	} else {
 		return enum, nil

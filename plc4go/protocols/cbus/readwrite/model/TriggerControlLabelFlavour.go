@@ -126,7 +126,7 @@ func TriggerControlLabelFlavourParseWithBuffer(ctx context.Context, readBuffer u
 		return 0, errors.Wrap(err, "error reading TriggerControlLabelFlavour")
 	}
 	if enum, ok := TriggerControlLabelFlavourByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for TriggerControlLabelFlavour")
 		return TriggerControlLabelFlavour(val), nil
 	} else {
 		return enum, nil

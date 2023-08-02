@@ -120,7 +120,7 @@ func BACnetTimerStateParseWithBuffer(ctx context.Context, readBuffer utils.ReadB
 		return 0, errors.Wrap(err, "error reading BACnetTimerState")
 	}
 	if enum, ok := BACnetTimerStateByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for BACnetTimerState")
 		return BACnetTimerState(val), nil
 	} else {
 		return enum, nil

@@ -114,7 +114,7 @@ func ModbusDeviceInformationMoreFollowsParseWithBuffer(ctx context.Context, read
 		return 0, errors.Wrap(err, "error reading ModbusDeviceInformationMoreFollows")
 	}
 	if enum, ok := ModbusDeviceInformationMoreFollowsByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for ModbusDeviceInformationMoreFollows")
 		return ModbusDeviceInformationMoreFollows(val), nil
 	} else {
 		return enum, nil

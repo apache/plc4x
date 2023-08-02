@@ -198,7 +198,7 @@ func ErrorReportingSystemCategoryTypeForClimateControllersParseWithBuffer(ctx co
 		return 0, errors.Wrap(err, "error reading ErrorReportingSystemCategoryTypeForClimateControllers")
 	}
 	if enum, ok := ErrorReportingSystemCategoryTypeForClimateControllersByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for ErrorReportingSystemCategoryTypeForClimateControllers")
 		return ErrorReportingSystemCategoryTypeForClimateControllers(val), nil
 	} else {
 		return enum, nil

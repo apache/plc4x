@@ -120,7 +120,7 @@ func DataChangeTriggerParseWithBuffer(ctx context.Context, readBuffer utils.Read
 		return 0, errors.Wrap(err, "error reading DataChangeTrigger")
 	}
 	if enum, ok := DataChangeTriggerByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for DataChangeTrigger")
 		return DataChangeTrigger(val), nil
 	} else {
 		return enum, nil

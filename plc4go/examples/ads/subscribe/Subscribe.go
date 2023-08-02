@@ -47,7 +47,7 @@ func main() {
 		AddChangeOfStateTagAddress("value-int", "MAIN.rivianTest01.HorizontalPosition").
 		AddPreRegisteredConsumer("value-int", func(event apiModel.PlcSubscriptionEvent) {
 			value := event.GetValue("value-int")
-			log.Info().Msgf("Got value: %d", value.GetUint16())
+			log.Info().Uint16("value", value.GetUint16()).Msg("Got value")
 		}).
 		Build()
 	if err != nil {

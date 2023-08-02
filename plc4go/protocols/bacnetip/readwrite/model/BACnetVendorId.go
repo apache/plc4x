@@ -20145,7 +20145,7 @@ func BACnetVendorIdParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 		return 0, errors.Wrap(err, "error reading BACnetVendorId")
 	}
 	if enum, ok := BACnetVendorIdByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for BACnetVendorId")
 		return BACnetVendorId(val), nil
 	} else {
 		return enum, nil

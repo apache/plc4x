@@ -281,7 +281,7 @@ public enum KnxManufacturer {
   M_ZIPATO((int) 242, (int) 293, (String) "Zipato"),
   M_CM_SECURITY_GMBH_AND_CO_KG((int) 243, (int) 294, (String) "cm-security GmbH & Co KG"),
   M_QING_CABLES((int) 244, (int) 295, (String) "Qing Cables"),
-  M_LABIO((int) 245, (int) 296, (String) "LABIO"),
+  M_WOLF((int) 245, (int) 296, (String) "WOLF"),
   M_COSTER_TECNOLOGIE_ELETTRONICHE_S_P_A_(
       (int) 246, (int) 297, (String) "Coster Tecnologie Elettroniche S.p.A."),
   M_E_G_E((int) 247, (int) 298, (String) "E.G.E"),
@@ -732,9 +732,12 @@ public enum KnxManufacturer {
   M_SECURI_FLEX_LTD((int) 635, (int) 692, (String) "Securi-Flex Ltd"),
   M_BOKE((int) 636, (int) 693, (String) "BOKE"),
   M_SBR_SYSTEM_TECHNICAL((int) 637, (int) 695, (String) "SBR System Technical"),
-  M_ABB___RESERVED((int) 638, (int) 43954, (String) "ABB - reserved"),
+  M_SHENZHEN_EASTKAME_TECHNOLOGY_CO___LTD_(
+      (int) 638, (int) 696, (String) "Shenzhen EastKame Technology Co., Ltd."),
+  M_BOLATU((int) 639, (int) 697, (String) "BOLATU"),
+  M_ABB___RESERVED((int) 640, (int) 43954, (String) "ABB - reserved"),
   M_BUSCH_JAEGER_ELEKTRO___RESERVED(
-      (int) 639, (int) 43959, (String) "Busch-Jaeger Elektro - reserved");
+      (int) 641, (int) 43959, (String) "Busch-Jaeger Elektro - reserved");
   private static final Map<Integer, KnxManufacturer> map;
 
   static {

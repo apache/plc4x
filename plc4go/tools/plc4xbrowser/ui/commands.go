@@ -73,7 +73,7 @@ var rootCommand = Command{
 			Name:        "connect",
 			Description: "Connects to a device",
 			action: func(_ Command, connectionString string) error {
-				log.Info().Msgf("connect connectionString [%s]", connectionString)
+				log.Info().Str("connectionString", connectionString).Msg("connect connectionString")
 				connectionUrl, err := url.Parse(connectionString)
 				if err != nil {
 					return errors.Wrapf(err, "can't parse connection url %s", connectionString)
@@ -87,7 +87,7 @@ var rootCommand = Command{
 				if err := connectionResult.GetErr(); err != nil {
 					return errors.Wrapf(err, "%s can't connect to", connectionUrl.Host)
 				}
-				log.Info().Msgf("%s connected", connectionId)
+				log.Info().Str("connectionId", connectionId).Msg("connected")
 				connections[connectionId] = connectionResult.GetConnection()
 				connectionsChanged()
 				return nil
@@ -114,7 +114,7 @@ var rootCommand = Command{
 					return errors.Errorf("%s not connected", connectionString)
 				} else {
 					closeResult := <-connection.Close()
-					log.Info().Msgf("%s disconnected", connectionString)
+					log.Info().Str("connectionString", connectionString).Msg("connectionString disconnected")
 					delete(connections, connectionString)
 					connectionsChanged()
 					if err := closeResult.GetErr(); err != nil {
@@ -170,7 +170,7 @@ var rootCommand = Command{
 					if err := readRequestResult.GetErr(); err != nil {
 						return errors.Wrapf(err, "%s can't read", connectionsString)
 					}
-					plc4xBrowserLog.Debug().Msgf("read took %f seconds", time.Now().Sub(start).Seconds())
+					plc4xBrowserLog.Debug().TimeDiff("runtime", time.Now(), start).Msg("read took runtime")
 					if err := readRequestResult.GetErr(); err != nil {
 						return errors.Wrapf(err, "%s error reading", connectionsString)
 					}
@@ -234,7 +234,7 @@ var rootCommand = Command{
 					if err := writeRequestResult.GetErr(); err != nil {
 						return errors.Wrapf(err, "%s can't write", connectionsString)
 					}
-					plc4xBrowserLog.Debug().Msgf("write took %f seconds", time.Now().Sub(start).Seconds())
+					plc4xBrowserLog.Debug().TimeDiff("runtime", time.Now(), start).Msg("write took runtime")
 					if err := writeRequestResult.GetErr(); err != nil {
 						return errors.Wrapf(err, "%s error writing", connectionsString)
 					}
@@ -303,7 +303,7 @@ var rootCommand = Command{
 					if err := browseRequestResult.GetErr(); err != nil {
 						return errors.Wrapf(err, "%s can't browse", connectionsString)
 					}
-					plc4xBrowserLog.Debug().Msgf("write took %f seconds", time.Now().Sub(start).Seconds())
+					plc4xBrowserLog.Debug().TimeDiff("runtime", time.Now(), start).Msg("write took runtime")
 					if err := browseRequestResult.GetErr(); err != nil {
 						return errors.Wrapf(err, "%s error browse", connectionsString)
 					}
@@ -386,7 +386,7 @@ var rootCommand = Command{
 					if err := subscriptionRequestResult.GetErr(); err != nil {
 						return errors.Wrapf(err, "%s can't subscribe", connectionsString)
 					}
-					log.Info().Msgf("subscription result\n%s", subscriptionRequestResult.GetResponse())
+					log.Info().Stringer("response", subscriptionRequestResult.GetResponse()).Msg("subscription result")
 				}
 				return nil
 			},
@@ -704,7 +704,10 @@ func (c Command) acceptsCurrentText(currentCommandText string) bool {
 	hasThePrefix := strings.HasPrefix(currentCommandText, c.Name)
 	hasNoMatchingAlternative := !strings.HasPrefix(currentCommandText, c.Name+"-")
 	accepts := hasThePrefix && hasNoMatchingAlternative
-	plc4xBrowserLog.Debug().Msgf("%s accepts %t", c, accepts)
+	plc4xBrowserLog.Debug().
+		Stringer("c", c).
+		Bool("accepts", accepts).
+		Msg("c accepts")
 	return accepts
 }
 
@@ -748,12 +751,18 @@ func (c Command) Execute(commandText string) (err error) {
 	defer func() {
 		if recoveredErr := recover(); recoveredErr != nil {
 			if log.Debug().Enabled() {
-				log.Debug().Msgf("Panic '%v' stack:\n%s", recoveredErr, debug.Stack())
+				log.Error().
+					Str("stack", string(debug.Stack())).
+					Interface("err", err).
+					Msg("panic-ed")
 			}
 			err = errors.Errorf("panic occurred: %v.", recoveredErr)
 		}
 	}()
-	plc4xBrowserLog.Debug().Msgf("%s executes %s", c, commandText)
+	plc4xBrowserLog.Debug().
+		Stringer("c", c).
+		Str("commandText", commandText).
+		Msg("%s executes %s")
 	if !c.acceptsCurrentText(commandText) {
 		return errors.Errorf("%s doesn't understand %s", c.Name, commandText)
 	}
@@ -761,7 +770,10 @@ func (c Command) Execute(commandText string) (err error) {
 		prepareForSubCommandForSubCommand := c.prepareForSubCommand(commandText)
 		for _, command := range c.subCommands {
 			if command.acceptsCurrentText(prepareForSubCommandForSubCommand) {
-				plc4xBrowserLog.Debug().Msgf("%s delegates to sub %s", c, command)
+				plc4xBrowserLog.Debug().
+					Stringer("c", c).
+					Stringer("command", command).
+					Msg("c delegates to sub command")
 				return command.Execute(prepareForSubCommandForSubCommand)
 			}
 		}
@@ -770,7 +782,10 @@ func (c Command) Execute(commandText string) (err error) {
 		if c.action == nil {
 			return NotDirectlyExecutable
 		}
-		plc4xBrowserLog.Debug().Msgf("%s executes %s directly", c, commandText)
+		plc4xBrowserLog.Debug().
+			Stringer("c", c).
+			Str("commandText", commandText).
+			Msg("c executes commandText directly")
 		preparedForParameters := c.prepareForParameters(commandText)
 		return c.action(c, preparedForParameters)
 	}

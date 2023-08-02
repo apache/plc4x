@@ -20,6 +20,7 @@
 package bacnetip
 
 import (
+	"fmt"
 	"github.com/rs/zerolog/log"
 	"sync"
 	"time"
@@ -84,6 +85,10 @@ func (t *_Task) setIsScheduled(isScheduled bool) {
 	t.isScheduled = isScheduled
 }
 
+func (t *_Task) String() string {
+	return fmt.Sprintf("Task(taskTime: %v, isScheduled: %v)", t.taskTime, t.isScheduled)
+}
+
 type OneShotTaskRequirements interface {
 	processTask() error
 }
@@ -143,7 +148,7 @@ func FunctionTask(fn func() error) *OneShotFunctionTask {
 	task := &OneShotFunctionTask{fn: fn}
 	task.OneShotDeleteTask = NewOneShotDeleteTask(task, nil)
 
-	log.Debug().Msgf("task: %v", task)
+	log.Debug().Stringer("task", task).Msg("task")
 	return task
 }
 
@@ -186,7 +191,11 @@ func NewRecurringTask(recurringTaskRequirements RecurringTaskRequirements, inter
 		_offset := time.Duration(0)
 		offset = &_offset
 	}
-	log.Debug().Msgf("Now, interval, offset: %v, %v, %v", now, interval, offset)
+	log.Debug().
+		Interface("now", now).
+		Interface("interval", interval).
+		Interface("offset", offset).
+		Msg("Now, interval, offset:")
 
 	// compute the time
 	_taskTime := now.Add(-*offset).Add(*interval) // TODO: check why upstream is doing the modulo operation (missing code here)
@@ -235,7 +244,7 @@ func (m *TaskManager) getTime() time.Time {
 func (m *TaskManager) installTask(task _TaskRequirements) {
 	m.Lock()
 	defer m.Unlock()
-	log.Debug().Msgf("installTask %v@%v", task, task.getTaskTime())
+	log.Debug().Interface("task", task).Msg("installTask")
 
 	// if the taskTime is None is hasn't been computed correctly
 	if task.getTaskTime() == nil {
@@ -255,14 +264,14 @@ func (m *TaskManager) installTask(task _TaskRequirements) {
 }
 
 func (m *TaskManager) suspendTask(task _TaskRequirements) {
-	log.Debug().Msgf("suspendTask %v", task)
+	log.Debug().Interface("task", task).Msg("suspendTask ")
 	m.Lock()
 	defer m.Unlock()
 
 	iToDelete := -1
 	for i, _task := range m.tasks {
 		if _task == task {
-			log.Debug().Msgf("task found")
+			log.Debug().Msg("task found")
 			iToDelete = i
 			task.setIsScheduled(false)
 			break
@@ -271,12 +280,12 @@ func (m *TaskManager) suspendTask(task _TaskRequirements) {
 	if iToDelete > 0 {
 		m.tasks = append(m.tasks[:iToDelete], m.tasks[iToDelete+1:]...)
 	} else {
-		log.Debug().Msgf("task not found")
+		log.Debug().Msg("task not found")
 	}
 }
 
 func (m *TaskManager) resumeTask(task _TaskRequirements) {
-	log.Debug().Msgf("resumeTask %v", task)
+	log.Debug().Interface("task", task).Msg("resumeTask")
 	m.Lock()
 	defer m.Unlock()
 
@@ -285,7 +294,7 @@ func (m *TaskManager) resumeTask(task _TaskRequirements) {
 }
 
 func (m *TaskManager) getNextTask() (_TaskRequirements, time.Duration) {
-	//log.Trace().Msgf("getNextTask")
+	//log.Trace().Msg("getNextTask")
 	m.Lock()
 	defer m.Unlock()
 
@@ -319,7 +328,7 @@ func (m *TaskManager) getNextTask() (_TaskRequirements, time.Duration) {
 }
 
 func (m *TaskManager) processTask(task _TaskRequirements) {
-	log.Debug().Msgf("processTask %v", task)
+	log.Debug().Interface("task", task).Msg("processTask")
 
 	// process the task
 	if err := task.processTask(); err != nil {

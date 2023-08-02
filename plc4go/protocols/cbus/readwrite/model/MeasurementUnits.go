@@ -354,7 +354,7 @@ func MeasurementUnitsParseWithBuffer(ctx context.Context, readBuffer utils.ReadB
 		return 0, errors.Wrap(err, "error reading MeasurementUnits")
 	}
 	if enum, ok := MeasurementUnitsByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for MeasurementUnits")
 		return MeasurementUnits(val), nil
 	} else {
 		return enum, nil

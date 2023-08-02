@@ -126,7 +126,7 @@ func IdTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (Id
 		return 0, errors.Wrap(err, "error reading IdType")
 	}
 	if enum, ok := IdTypeByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for IdType")
 		return IdType(val), nil
 	} else {
 		return enum, nil

@@ -363,7 +363,7 @@ func EnableControlCommandTypeContainerParseWithBuffer(ctx context.Context, readB
 		return 0, errors.Wrap(err, "error reading EnableControlCommandTypeContainer")
 	}
 	if enum, ok := EnableControlCommandTypeContainerByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for EnableControlCommandTypeContainer")
 		return EnableControlCommandTypeContainer(val), nil
 	} else {
 		return enum, nil

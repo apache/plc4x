@@ -156,7 +156,7 @@ func BACnetNetworkPortCommandParseWithBuffer(ctx context.Context, readBuffer uti
 		return 0, errors.Wrap(err, "error reading BACnetNetworkPortCommand")
 	}
 	if enum, ok := BACnetNetworkPortCommandByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for BACnetNetworkPortCommand")
 		return BACnetNetworkPortCommand(val), nil
 	} else {
 		return enum, nil

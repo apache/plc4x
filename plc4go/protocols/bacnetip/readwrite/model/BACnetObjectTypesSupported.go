@@ -462,7 +462,7 @@ func BACnetObjectTypesSupportedParseWithBuffer(ctx context.Context, readBuffer u
 		return 0, errors.Wrap(err, "error reading BACnetObjectTypesSupported")
 	}
 	if enum, ok := BACnetObjectTypesSupportedByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for BACnetObjectTypesSupported")
 		return BACnetObjectTypesSupported(val), nil
 	} else {
 		return enum, nil

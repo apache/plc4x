@@ -120,7 +120,7 @@ func BACnetAccessPassbackModeParseWithBuffer(ctx context.Context, readBuffer uti
 		return 0, errors.Wrap(err, "error reading BACnetAccessPassbackMode")
 	}
 	if enum, ok := BACnetAccessPassbackModeByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for BACnetAccessPassbackMode")
 		return BACnetAccessPassbackMode(val), nil
 	} else {
 		return enum, nil

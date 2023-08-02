@@ -372,7 +372,7 @@ func TestConnection_GetMetadata(t *testing.T) {
 		{
 			name:   "simple",
 			fields: fields{},
-			want: _default.DefaultConnectionMetadata{
+			want: &_default.DefaultConnectionMetadata{
 				ConnectionAttributes: map[string]string{
 					"connectionDelay": "Delay applied when connecting",
 					"closingDelay":    "Delay applied when closing the connection",

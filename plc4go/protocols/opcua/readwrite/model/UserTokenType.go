@@ -126,7 +126,7 @@ func UserTokenTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 		return 0, errors.Wrap(err, "error reading UserTokenType")
 	}
 	if enum, ok := UserTokenTypeByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for UserTokenType")
 		return UserTokenType(val), nil
 	} else {
 		return enum, nil

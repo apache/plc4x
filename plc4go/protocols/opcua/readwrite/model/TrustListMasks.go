@@ -138,7 +138,7 @@ func TrustListMasksParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 		return 0, errors.Wrap(err, "error reading TrustListMasks")
 	}
 	if enum, ok := TrustListMasksByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for TrustListMasks")
 		return TrustListMasks(val), nil
 	} else {
 		return enum, nil

@@ -244,12 +244,12 @@ func handleIncomingBVLCs(ctx context.Context, callback func(event apiModel.PlcDi
 			_ = npdu
 			if apdu := npdu.GetApdu(); apdu == nil {
 				nlm := npdu.GetNlm()
-				log.Debug().Msgf("Got nlm\n%v", nlm)
+				log.Debug().Stringer("nlm", nlm).Msg("Got nlm")
 				continue
 			}
 			apdu := npdu.GetApdu()
 			if _, ok := apdu.(driverModel.APDUConfirmedRequestExactly); ok {
-				log.Debug().Msgf("Got apdu \n%v", apdu)
+				log.Debug().Stringer("apdu", apdu).Msg("Got apdu")
 				continue
 			}
 			apduUnconfirmedRequest := apdu.(driverModel.APDUUnconfirmedRequestExactly)

@@ -433,7 +433,7 @@ func SupportedPhysicalMediaParseWithBuffer(ctx context.Context, readBuffer utils
 		return 0, errors.Wrap(err, "error reading SupportedPhysicalMedia")
 	}
 	if enum, ok := SupportedPhysicalMediaByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for SupportedPhysicalMedia")
 		return SupportedPhysicalMedia(val), nil
 	} else {
 		return enum, nil

@@ -177,7 +177,9 @@ func (c *Connection) Close() <-chan plc4go.PlcConnectionCloseResult {
 			},
 			c.GetTtl(),
 		) //Unregister gets no response
-		c.log.Debug().Msgf("Unregistred Session %d", c.sessionHandle)
+		c.log.Debug().
+			Uint32("sessionHandle", c.sessionHandle).
+			Msg("Unregistred Session %d")
 	}()
 	return result
 }
@@ -284,10 +286,14 @@ func (c *Connection) connectRegisterSession(ctx context.Context, ch chan plc4go.
 				if connectionResponse.GetStatus() == 0 {
 					c.sessionHandle = connectionResponse.GetSessionHandle()
 					c.senderContext = connectionResponse.GetSenderContext()
-					c.log.Debug().Msgf("Got assigned with Session %d", c.sessionHandle)
+					c.log.Debug().
+						Uint32("sessionHandle", c.sessionHandle).
+						Msg("Got assigned with Session")
 					connectionResponseChan <- connectionResponse
 				} else {
-					c.log.Error().Msgf("Got unsuccessful status for connection request: %d", connectionResponse.GetStatus())
+					c.log.Error().
+						Uint32("status", connectionResponse.GetStatus()).
+						Msg("Got unsuccessful status for connection request")
 					connectionResponseErrorChan <- errors.New("got unsuccessful connection response")
 				}
 			} else {
@@ -323,7 +329,9 @@ func (c *Connection) connectRegisterSession(ctx context.Context, ch chan plc4go.
 							unconnectedDataItem := cipRRData.GetTypeIds()[1].(readWriteModel.UnConnectedDataItem)
 							connectionManagerResponse := unconnectedDataItem.GetService().(readWriteModel.CipConnectionManagerResponse)
 							c.connectionId = connectionManagerResponse.GetOtConnectionId()
-							c.log.Debug().Msgf("Got assigned with connection if %d", c.connectionId)
+							c.log.Debug().
+								Uint32("connectionId", c.connectionId).
+								Msg("Got assigned with connection if")
 							connectionResponseChan <- connectionResponse
 						} else {
 							connectionResponseErrorChan <- fmt.Errorf("got status code while opening Connection manager: %d", cipRRData.GetStatus())
@@ -416,14 +424,17 @@ func (c *Connection) listAllAttributes(ctx context.Context, ch chan plc4go.PlcCo
 						}
 					}
 				}
-				c.log.Debug().Msgf("Connection using message router %t, using connection manager %t", c.useMessageRouter, c.useConnectionManager)
+				c.log.Debug().
+					Bool("useMessageRouter", c.useMessageRouter).
+					Bool("useConnectionManager", c.useConnectionManager).
+					Msg("Connection using message router, using connection manager")
 				listAllAttributesResponseChan <- response
 			}
 			return nil
 		},
 		func(err error) error {
 			// If this is a timeout, do a check if the connection requires a reconnection
-			if _, isTimeout := err.(utils.TimeoutError); isTimeout {
+			if errors.Is(err, utils.TimeoutError{}) {
 				c.log.Warn().Msg("Timeout during Connection establishing, closing channel...")
 				c.Close()
 			}
@@ -465,7 +476,7 @@ func (c *Connection) fireConnected(ch chan<- plc4go.PlcConnectionConnectResult) 
 }
 
 func (c *Connection) GetMetadata() apiModel.PlcConnectionMetadata {
-	return _default.DefaultConnectionMetadata{
+	return &_default.DefaultConnectionMetadata{
 		ProvidesReading: true,
 		ProvidesWriting: true,
 	}

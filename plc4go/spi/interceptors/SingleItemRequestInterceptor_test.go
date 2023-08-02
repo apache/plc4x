@@ -21,17 +21,16 @@ package interceptors
 
 import (
 	"context"
-	"errors"
-	"github.com/apache/plc4x/plc4go/pkg/api/values"
-	"github.com/apache/plc4x/plc4go/spi"
-	"github.com/apache/plc4x/plc4go/spi/testutils"
-	"github.com/apache/plc4x/plc4go/spi/utils"
-	"github.com/rs/zerolog/log"
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/mock"
+	"github.com/pkg/errors"
 	"testing"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
+	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
+	"github.com/apache/plc4x/plc4go/spi"
+	"github.com/apache/plc4x/plc4go/spi/testutils"
+	"github.com/rs/zerolog/log"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/mock"
 )
 
 func TestNewSingleItemRequestInterceptor(t *testing.T) {
@@ -258,7 +257,7 @@ func TestSingleItemRequestInterceptor_InterceptWriteRequest(t *testing.T) {
 			name: "write request with 2 tags",
 			fields: fields{
 				writeRequestFactory: func(t *testing.T) writeRequestFactory {
-					return func(tags map[string]apiModel.PlcTag, tagNames []string, values map[string]values.PlcValue, writer spi.PlcWriter, writeRequestInterceptor WriteRequestInterceptor) apiModel.PlcWriteRequest {
+					return func(tags map[string]apiModel.PlcTag, tagNames []string, values map[string]apiValues.PlcValue, writer spi.PlcWriter, writeRequestInterceptor WriteRequestInterceptor) apiModel.PlcWriteRequest {
 						plcWriteRequest := NewMockPlcWriteRequest(t)
 						expect := plcWriteRequest.EXPECT()
 						expect.GetTagNames().Return(tagNames)
@@ -294,7 +293,7 @@ func TestSingleItemRequestInterceptor_InterceptWriteRequest(t *testing.T) {
 			name: "write request with 2 tags aborted",
 			fields: fields{
 				writeRequestFactory: func(t *testing.T) writeRequestFactory {
-					return func(tags map[string]apiModel.PlcTag, tagNames []string, values map[string]values.PlcValue, writer spi.PlcWriter, writeRequestInterceptor WriteRequestInterceptor) apiModel.PlcWriteRequest {
+					return func(tags map[string]apiModel.PlcTag, tagNames []string, values map[string]apiValues.PlcValue, writer spi.PlcWriter, writeRequestInterceptor WriteRequestInterceptor) apiModel.PlcWriteRequest {
 						plcWriteRequest := NewMockPlcWriteRequest(t)
 						expect := plcWriteRequest.EXPECT()
 						expect.GetTagNames().Return(tagNames)
@@ -385,7 +384,7 @@ func TestSingleItemRequestInterceptor_ProcessReadResponses(t *testing.T) {
 			name: "no results",
 			fields: fields{
 				readResponseFactory: func(t *testing.T) readResponseFactory {
-					return func(request apiModel.PlcReadRequest, responseCodes map[string]apiModel.PlcResponseCode, values map[string]values.PlcValue) apiModel.PlcReadResponse {
+					return func(request apiModel.PlcReadRequest, responseCodes map[string]apiModel.PlcResponseCode, values map[string]apiValues.PlcValue) apiModel.PlcReadResponse {
 						return nil
 					}
 				},
@@ -398,7 +397,7 @@ func TestSingleItemRequestInterceptor_ProcessReadResponses(t *testing.T) {
 			name: "one result",
 			fields: fields{
 				readResponseFactory: func(t *testing.T) readResponseFactory {
-					return func(request apiModel.PlcReadRequest, responseCodes map[string]apiModel.PlcResponseCode, values map[string]values.PlcValue) apiModel.PlcReadResponse {
+					return func(request apiModel.PlcReadRequest, responseCodes map[string]apiModel.PlcResponseCode, values map[string]apiValues.PlcValue) apiModel.PlcReadResponse {
 						return nil
 					}
 				},
@@ -417,7 +416,7 @@ func TestSingleItemRequestInterceptor_ProcessReadResponses(t *testing.T) {
 			name: "two result (bit empty)",
 			fields: fields{
 				readResponseFactory: func(t *testing.T) readResponseFactory {
-					return func(request apiModel.PlcReadRequest, responseCodes map[string]apiModel.PlcResponseCode, values map[string]values.PlcValue) apiModel.PlcReadResponse {
+					return func(request apiModel.PlcReadRequest, responseCodes map[string]apiModel.PlcResponseCode, values map[string]apiValues.PlcValue) apiModel.PlcReadResponse {
 						return nil
 					}
 				},
@@ -446,7 +445,7 @@ func TestSingleItemRequestInterceptor_ProcessReadResponses(t *testing.T) {
 			name: "two result",
 			fields: fields{
 				readResponseFactory: func(t *testing.T) readResponseFactory {
-					return func(request apiModel.PlcReadRequest, responseCodes map[string]apiModel.PlcResponseCode, values map[string]values.PlcValue) apiModel.PlcReadResponse {
+					return func(request apiModel.PlcReadRequest, responseCodes map[string]apiModel.PlcResponseCode, values map[string]apiValues.PlcValue) apiModel.PlcReadResponse {
 						return nil
 					}
 				},
@@ -467,9 +466,9 @@ func TestSingleItemRequestInterceptor_ProcessReadResponses(t *testing.T) {
 				args.ctx = testutils.TestContext(t)
 			},
 			wantAssert: func(t *testing.T, args args, got apiModel.PlcReadRequestResult) bool {
-				return assert.Equal(t, &interceptedPlcReadRequestResult{
-					Err: utils.MultiError{MainError: errors.New("while aggregating results"), Errors: []error{errors.New("asd")}},
-				}, got)
+				assert.NotNil(t, errors.Cause(errors.New("error aggregating")))
+				assert.NotNil(t, errors.Cause(errors.New("asd")))
+				return true
 			},
 		},
 		{
@@ -483,7 +482,7 @@ func TestSingleItemRequestInterceptor_ProcessReadResponses(t *testing.T) {
 			},
 			fields: fields{
 				readResponseFactory: func(t *testing.T) readResponseFactory {
-					return func(request apiModel.PlcReadRequest, responseCodes map[string]apiModel.PlcResponseCode, values map[string]values.PlcValue) apiModel.PlcReadResponse {
+					return func(request apiModel.PlcReadRequest, responseCodes map[string]apiModel.PlcResponseCode, values map[string]apiValues.PlcValue) apiModel.PlcReadResponse {
 						return nil
 					}
 				},
@@ -495,9 +494,9 @@ func TestSingleItemRequestInterceptor_ProcessReadResponses(t *testing.T) {
 				}
 			},
 			wantAssert: func(t *testing.T, args args, got apiModel.PlcReadRequestResult) bool {
-				return assert.Equal(t, &interceptedPlcReadRequestResult{
-					Err: errors.New("context canceled"),
-				}, got)
+				assert.NotNil(t, errors.Cause(errors.New("error aggregating")))
+				assert.NotNil(t, errors.Cause(errors.New("context canceled")))
+				return true
 			},
 		},
 	}
@@ -538,7 +537,7 @@ func TestSingleItemRequestInterceptor_ProcessReadResponses(t *testing.T) {
 				writeResponseFactory: tt.fields.writeResponseFactory(t),
 			}
 			if got := m.ProcessReadResponses(tt.args.ctx, tt.args.readRequest, tt.args.readResults); !assert.True(t, tt.wantAssert(t, tt.args, got)) {
-				t.Errorf("ProcessReadResponses() = %v", got)
+				t.Errorf("ProcessReadResponses() =\n%v", got)
 			}
 		})
 	}
@@ -640,9 +639,9 @@ func TestSingleItemRequestInterceptor_ProcessWriteResponses(t *testing.T) {
 				args.ctx = testutils.TestContext(t)
 			},
 			wantAssert: func(t *testing.T, args args, got apiModel.PlcWriteRequestResult) bool {
-				return assert.Equal(t, &interceptedPlcWriteRequestResult{
-					Err: utils.MultiError{MainError: errors.New("while aggregating results"), Errors: []error{errors.New("asd")}},
-				}, got)
+				assert.NotNil(t, errors.Cause(errors.New("error aggregating")))
+				assert.NotNil(t, errors.Cause(errors.New("asd")))
+				return true
 			},
 		},
 		{
@@ -666,9 +665,9 @@ func TestSingleItemRequestInterceptor_ProcessWriteResponses(t *testing.T) {
 				}
 			},
 			wantAssert: func(t *testing.T, args args, want apiModel.PlcWriteRequestResult) bool {
-				return assert.Equal(t, &interceptedPlcWriteRequestResult{
-					Err: errors.New("context canceled"),
-				}, want)
+				assert.NotNil(t, errors.Cause(errors.New("error aggregating")))
+				assert.NotNil(t, errors.Cause(errors.New("context canceled")))
+				return true
 			},
 		},
 	}

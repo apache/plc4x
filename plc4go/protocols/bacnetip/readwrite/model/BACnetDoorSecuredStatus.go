@@ -120,7 +120,7 @@ func BACnetDoorSecuredStatusParseWithBuffer(ctx context.Context, readBuffer util
 		return 0, errors.Wrap(err, "error reading BACnetDoorSecuredStatus")
 	}
 	if enum, ok := BACnetDoorSecuredStatusByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for BACnetDoorSecuredStatus")
 		return BACnetDoorSecuredStatus(val), nil
 	} else {
 		return enum, nil

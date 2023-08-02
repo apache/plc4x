@@ -143,7 +143,7 @@ func NewAddress(args ...any) (*Address, error) {
 
 // decodeAddress Initialize the address from a string.  Lots of different forms are supported
 func (a *Address) decodeAddress(addr any) error {
-	log.Debug().Msgf("decodeAddress %v (%T)", addr, addr)
+	log.Debug().Type("addrType", addr).Interface("addr", addr).Msg("decodeAddress")
 
 	// start out assuming this is a local station and didn't get routed
 	a.AddrType = LOCAL_STATION_ADDRESS
@@ -239,7 +239,7 @@ func (a *Address) decodeAddress(addr any) error {
 				addrstr = net.ParseIP(uaddr)
 			}
 			a.AddrTuple = &AddressTuple[string, uint16]{uaddr, *a.AddrPort}
-			log.Debug().Msgf("addrstr: %s", addrstr)
+			log.Debug().Hex("addrstr", addrstr).Msg("addrstr:")
 
 			ip := ipv4ToUint32(addrstr)
 			a.AddrIP = &ip
@@ -260,7 +260,7 @@ func (a *Address) decodeAddress(addr any) error {
 
 			addrstr := uint32ToIpv4(uint32(uaddr))
 			a.AddrTuple = &AddressTuple[string, uint16]{addrstr.String(), *a.AddrPort}
-			log.Debug().Msgf("addrstr: %s", addrstr)
+			log.Debug().Hex("addrstr", addrstr).Msg("addrstr:")
 
 			ip := ipv4ToUint32(addrstr)
 			a.AddrIP = &ip
@@ -465,6 +465,7 @@ func NewPCI(msg spi.Message, pduSource *Address, pduDestination *Address, expect
 }
 
 type _PDU interface {
+	fmt.Stringer
 	GetMessage() spi.Message
 	GetPDUSource() *Address
 	GetPDUDestination() *Address

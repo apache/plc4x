@@ -26,7 +26,6 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/tracer"
 	"github.com/apache/plc4x/plc4go/spi/transactions"
 	"github.com/rs/zerolog"
-	"reflect"
 	"runtime/debug"
 	"strings"
 	"sync"
@@ -348,7 +347,7 @@ func (c *Connection) extractControllerTypeAndFireConnected(payloadUserData readW
 				case "4":
 					controllerType = ControllerType_S7_400
 				default:
-					c.log.Info().Msgf("Looking up unknown article number %s", articleNumber)
+					c.log.Info().Str("articleNumber", articleNumber).Msg("Looking up unknown article number")
 					controllerType = ControllerType_ANY
 				}
 				c.driverContext.ControllerType = controllerType
@@ -408,12 +407,12 @@ func (c *Connection) createS7ConnectionRequest(cotpPacketConnectionResponse read
 		case readWriteModel.COTPParameterCallingTsap:
 			if parameter.GetTsapId() != c.driverContext.CallingTsapId {
 				c.driverContext.CallingTsapId = parameter.GetTsapId()
-				c.log.Warn().Msgf("Switching calling TSAP id to '%x'", c.driverContext.CallingTsapId)
+				c.log.Warn().Uint16("callingTsapId", c.driverContext.CallingTsapId).Msg("Switching calling TSAP id to")
 			}
 		case readWriteModel.COTPParameterTpduSize:
 			c.driverContext.CotpTpduSize = parameter.GetTpduSize()
 		default:
-			c.log.Warn().Msgf("Got unknown parameter type '%v'", reflect.TypeOf(parameter))
+			c.log.Warn().Type("v", parameter).Msg("Got unknown parameter type")
 		}
 	}
 
@@ -441,7 +440,7 @@ func (c *Connection) createCOTPConnectionRequest() readWriteModel.COTPPacket {
 }
 
 func (c *Connection) GetMetadata() apiModel.PlcConnectionMetadata {
-	return _default.DefaultConnectionMetadata{
+	return &_default.DefaultConnectionMetadata{
 		ProvidesReading: true,
 		ProvidesWriting: true,
 	}

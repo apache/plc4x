@@ -140,7 +140,7 @@ func ClockAndTimekeepingCommandTypeParseWithBuffer(ctx context.Context, readBuff
 		return 0, errors.Wrap(err, "error reading ClockAndTimekeepingCommandType")
 	}
 	if enum, ok := ClockAndTimekeepingCommandTypeByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for ClockAndTimekeepingCommandType")
 		return ClockAndTimekeepingCommandType(val), nil
 	} else {
 		return enum, nil

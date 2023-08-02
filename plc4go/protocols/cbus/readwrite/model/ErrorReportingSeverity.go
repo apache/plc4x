@@ -150,7 +150,7 @@ func ErrorReportingSeverityParseWithBuffer(ctx context.Context, readBuffer utils
 		return 0, errors.Wrap(err, "error reading ErrorReportingSeverity")
 	}
 	if enum, ok := ErrorReportingSeverityByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for ErrorReportingSeverity")
 		return ErrorReportingSeverity(val), nil
 	} else {
 		return enum, nil

@@ -141,7 +141,7 @@ func (c *Connection) Close() <-chan plc4go.PlcConnectionCloseResult {
 }
 
 func (c *Connection) GetMetadata() apiModel.PlcConnectionMetadata {
-	return _default.DefaultConnectionMetadata{
+	return &_default.DefaultConnectionMetadata{
 		ProvidesReading:     true,
 		ProvidesWriting:     true,
 		ProvidesSubscribing: true,
@@ -183,52 +183,17 @@ func (c *Connection) UnsubscriptionRequestBuilder() apiModel.PlcUnsubscriptionRe
 func (c *Connection) addSubscriber(subscriber *Subscriber) {
 	for _, sub := range c.subscribers {
 		if sub == subscriber {
-			c.log.Debug().Msgf("Subscriber already added\n%s", subscriber)
+			c.log.Debug().Stringer("subscriber", subscriber).Msg("Subscriber already added")
 			return
 		}
 	}
 	c.subscribers = append(c.subscribers, subscriber)
 }
 
-func (c *Connection) setupConnection(ctx context.Context, ch chan plc4go.PlcConnectionConnectResult) {
+func (c *Connection) setupConnection(_ context.Context, ch chan plc4go.PlcConnectionConnectResult) {
 	c.log.Trace().Msg("Connection setup done")
 	c.fireConnected(ch)
 	c.log.Trace().Msg("Connect fired")
-	c.startSubscriptionHandler()
-	c.log.Trace().Msg("subscription handler started")
-}
-
-func (c *Connection) startSubscriptionHandler() {
-	c.log.Debug().Msg("Starting TODO handler")
-	c.handlerWaitGroup.Add(1)
-	go func() {
-		salLogger := c.log.With().Str("handlerType", "TODO").Logger()
-		defer c.handlerWaitGroup.Done()
-		defer func() {
-			if err := recover(); err != nil {
-				salLogger.Error().Msgf("panic-ed %v. Stack:\n%s", err, debug.Stack())
-			}
-		}()
-		salLogger.Debug().Msg("TODO handler started")
-		for c.IsConnected() {
-			// TODO: dispatch subs
-			/*
-				for monitoredSal := range c.messageCodec.monitoredSALs {
-					salLogger.Trace().Msg("got a SAL\n%v", monitoredSal)
-					handled := false
-					for _, subscriber := range c.subscribers {
-						if ok := subscriber.handleMonitoredSAL(monitoredSal); ok {
-							salLogger.Debug().Msg("\n%v handled\n%s", subscriber, monitoredSal)
-							handled = true
-						}
-					}
-					if !handled {
-						salLogger.Debug().Msg("SAL was not handled:\n%s", monitoredSal)
-					}
-				}*/
-		}
-		salLogger.Info().Msg("handler ended")
-	}()
 }
 
 func (c *Connection) fireConnectionError(err error, ch chan<- plc4go.PlcConnectionConnectResult) {

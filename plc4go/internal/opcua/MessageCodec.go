@@ -117,7 +117,7 @@ func (m *MessageCodec) fireDisconnected() {
 }
 
 func (m *MessageCodec) Send(message spi.Message) error {
-	m.log.Trace().Msgf("Sending message\n%s", message)
+	m.log.Trace().Stringer("message", message).Msg("Sending message")
 	// Cast the message to the correct type of struct
 	messagePdu, ok := message.(readWriteModel.MessagePDU)
 	if !ok {

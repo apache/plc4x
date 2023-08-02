@@ -108,7 +108,7 @@ func DialInFailureReasonParseWithBuffer(ctx context.Context, readBuffer utils.Re
 		return 0, errors.Wrap(err, "error reading DialInFailureReason")
 	}
 	if enum, ok := DialInFailureReasonByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for DialInFailureReason")
 		return DialInFailureReason(val), nil
 	} else {
 		return enum, nil

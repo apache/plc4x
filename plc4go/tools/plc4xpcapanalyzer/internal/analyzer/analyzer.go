@@ -53,7 +53,7 @@ func AnalyzeWithOutput(pcapFile, protocolType string, stdout, stderr io.Writer) 
 func AnalyzeWithOutputAndCallback(ctx context.Context, pcapFile, protocolType string, stdout, stderr io.Writer, messageCallback func(parsed spi.Message)) error {
 	var filterExpression = config.AnalyzeConfigInstance.Filter
 	if filterExpression != "" {
-		log.Info().Msgf("Using global filter %s", filterExpression)
+		log.Info().Str("filterExpression", filterExpression).Msg("Using global filter")
 	}
 	var mapPackets = func(in chan gopacket.Packet, packetInformationCreator func(packet gopacket.Packet) common.PacketInformation) chan gopacket.Packet {
 		return in
@@ -99,12 +99,16 @@ func AnalyzeWithOutputAndCallback(ctx context.Context, pcapFile, protocolType st
 		return errors.Errorf("Unsupported protocol type %s", protocolType)
 	}
 
-	log.Info().Msgf("Analyzing pcap file '%s' with protocolType '%s' and filter '%s' now", pcapFile, protocolType, filterExpression)
+	log.Info().
+		Str("pcapFile", pcapFile).
+		Str("protocolType", protocolType).
+		Str("filterExpression", filterExpression).
+		Msg("Analyzing pcap file pcapFile with protocolType and filter filterExpression now")
 	handle, numberOfPackage, timestampToIndexMap, err := pcaphandler.GetIndexedPcapHandle(pcapFile, filterExpression)
 	if err != nil {
 		return errors.Wrap(err, "Error getting handle")
 	}
-	log.Info().Msgf("Starting to analyze %d packages", numberOfPackage)
+	log.Info().Int("numberOfPackage", numberOfPackage).Msg("Starting to analyze numberOfPackage packages")
 	defer handle.Close()
 	log.Debug().Interface("handle", handle).Int("numberOfPackage", numberOfPackage).Msg("got handle")
 	source := pcaphandler.GetPacketSource(handle)
@@ -128,17 +132,22 @@ func AnalyzeWithOutputAndCallback(ctx context.Context, pcapFile, protocolType st
 	for packet := range mapPackets(source.Packets(), func(packet gopacket.Packet) common.PacketInformation {
 		return createPacketInformation(pcapFile, packet, timestampToIndexMap)
 	}) {
-		if ctx.Err() == context.Canceled {
-			log.Info().Msgf("Aborted after %d packages", currentPackageNum)
+		if err := ctx.Err(); err != nil {
+			log.Info().Err(err).Uint("currentPackageNum", currentPackageNum).Msg("Aborted after currentPackageNum packages")
 			break
 		}
 		currentPackageNum++
 		if currentPackageNum < config.AnalyzeConfigInstance.StartPackageNumber {
-			log.Debug().Msgf("Skipping package number %d (till no. %d)", currentPackageNum, config.AnalyzeConfigInstance.StartPackageNumber)
+			log.Debug().
+				Uint("currentPackageNum", currentPackageNum).
+				Uint("startPackageNum", config.AnalyzeConfigInstance.StartPackageNumber).
+				Msg("Skipping package number currentPackageNum (till no. startPackageNum)")
 			continue
 		}
 		if currentPackageNum > config.AnalyzeConfigInstance.PackageNumberLimit {
-			log.Warn().Msgf("Aborting reading packages because we hit the limit of %d", config.AnalyzeConfigInstance.PackageNumberLimit)
+			log.Warn().
+				Uint("PackageNumberLimit", config.AnalyzeConfigInstance.PackageNumberLimit).
+				Msg("Aborting reading packages because we hit the limit of packageNumberLimit")
 			break
 		}
 		if packet == nil {
@@ -151,35 +160,52 @@ func AnalyzeWithOutputAndCallback(ctx context.Context, pcapFile, protocolType st
 		packetInformation := createPacketInformation(pcapFile, packet, timestampToIndexMap)
 		realPacketNumber := packetInformation.PacketNumber
 		if filteredPackage, ok := packet.(common.FilteredPackage); ok {
-			log.Info().Err(filteredPackage.FilterReason()).Msgf("No.[%d] was filtered", realPacketNumber)
+			log.Info().Err(filteredPackage.FilterReason()).
+				Int("realPacketNumber", realPacketNumber).Msg("No.[realPacketNumber] was filtered")
 			continue
 		}
 
 		applicationLayer := packet.ApplicationLayer()
 		if applicationLayer == nil {
-			log.Info().Stringer("packetInformation", packetInformation).Msgf("No.[%d] No application layer", realPacketNumber)
+			log.Info().Stringer("packetInformation", packetInformation).
+				Int("realPacketNumber", realPacketNumber).
+				Msg("No.[realPacketNumber] No application layer")
 			continue
 		}
 		payload := applicationLayer.Payload()
 		if parsed, err := packageParse(packetInformation, payload); err != nil {
 			switch err {
 			case common.ErrUnterminatedPackage:
-				log.Info().Stringer("packetInformation", packetInformation).Msgf("No.[%d] is unterminated", realPacketNumber)
+				log.Info().Stringer("packetInformation", packetInformation).
+					Int("realPacketNumber", realPacketNumber).
+					Msg("No.[realPacketNumber] is unterminated")
 			case common.ErrEmptyPackage:
-				log.Info().Stringer("packetInformation", packetInformation).Msgf("No.[%d] is empty", realPacketNumber)
+				log.Info().Stringer("packetInformation", packetInformation).
+					Int("realPacketNumber", realPacketNumber).
+					Msg("No.[realPacketNumber] is empty")
 			case common.ErrEcho:
-				log.Info().Stringer("packetInformation", packetInformation).Msgf("No.[%d] is echo", realPacketNumber)
+				log.Info().Stringer("packetInformation", packetInformation).
+					Int("realPacketNumber", realPacketNumber).
+					Msg("No.[realPacketNumber] is echo")
 			default:
 				parseFails++
 				// TODO: write report to xml or something
-				log.Error().Stringer("packetInformation", packetInformation).Err(err).Msgf("No.[%d] Error parsing package.\nInput:\n%s", realPacketNumber, byteOutput(payload))
+				log.Error().
+					Err(err).
+					Stringer("packetInformation", packetInformation).
+					Int("realPacketNumber", realPacketNumber).
+					Str("byteOutput", byteOutput(payload)).
+					Msg("No.[realPacketNumber] Error parsing package.")
 			}
 			continue
 		} else {
 			if messageCallback != nil {
 				messageCallback(parsed)
 			}
-			log.Info().Stringer("packetInformation", packetInformation).Msgf("No.[%d] Parsed", realPacketNumber)
+			log.Info().
+				Stringer("packetInformation", packetInformation).
+				Int("realPacketNumber", realPacketNumber).
+				Msg("No.[realPacketNumber] Parsed")
 			if config.AnalyzeConfigInstance.Verbosity > 1 {
 				prettyPrint(parsed)
 			}
@@ -191,7 +217,11 @@ func AnalyzeWithOutputAndCallback(ctx context.Context, pcapFile, protocolType st
 			if err != nil {
 				serializeFails++
 				// TODO: write report to xml or something
-				log.Warn().Stringer("packetInformation", packetInformation).Err(err).Msgf("No.[%d] Error serializing", realPacketNumber)
+				log.Warn().
+					Err(err).
+					Stringer("packetInformation", packetInformation).
+					Int("realPacketNumber", realPacketNumber).
+					Msg("No.[realPacketNumber] Error serializing")
 				continue
 			}
 			if config.AnalyzeConfigInstance.NoBytesCompare {
@@ -201,7 +231,12 @@ func AnalyzeWithOutputAndCallback(ctx context.Context, pcapFile, protocolType st
 			if compareResult := bytes.Compare(payload, serializedBytes); compareResult != 0 {
 				compareFails++
 				// TODO: write report to xml or something
-				log.Warn().Stringer("packetInformation", packetInformation).Msgf("No.[%d] Bytes don't match.\nOriginal:\n%sSerialized:\n%s", realPacketNumber, byteOutput(payload), byteOutput(serializedBytes))
+				log.Warn().
+					Stringer("packetInformation", packetInformation).
+					Int("realPacketNumber", realPacketNumber).
+					Str("byteOutputPayload", byteOutput(payload)).
+					Str("byteSerializedBytes", byteOutput(serializedBytes)).
+					Msg("No.[realPacketNumber] Bytes don't match.")
 				if config.AnalyzeConfigInstance.Verbosity > 0 {
 					_, _ = fmt.Fprintf(stdout, "Original bytes\n%s\n%s\n", hex.Dump(payload), hex.Dump(serializedBytes))
 				}
@@ -209,7 +244,13 @@ func AnalyzeWithOutputAndCallback(ctx context.Context, pcapFile, protocolType st
 		}
 	}
 
-	log.Info().Msgf("Done evaluating %d of %d packages (%d failed to parse, %d failed to serialize and %d failed in byte comparison)", currentPackageNum, numberOfPackage, parseFails, serializeFails, compareFails)
+	log.Info().
+		Uint("currentPackageNum", currentPackageNum).
+		Int("numberOfPackage", numberOfPackage).
+		Int("parseFails", parseFails).
+		Int("serializeFails", serializeFails).
+		Int("compareFails", compareFails).
+		Msg("Done evaluating currentPackageNum of numberOfPackage packages (parseFails failed to parse, serializeFails failed to serialize and compareFails failed in byte comparison)")
 	return nil
 }
 

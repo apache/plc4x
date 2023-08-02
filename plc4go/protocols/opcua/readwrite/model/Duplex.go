@@ -120,7 +120,7 @@ func DuplexParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (Du
 		return 0, errors.Wrap(err, "error reading Duplex")
 	}
 	if enum, ok := DuplexByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for Duplex")
 		return Duplex(val), nil
 	} else {
 		return enum, nil

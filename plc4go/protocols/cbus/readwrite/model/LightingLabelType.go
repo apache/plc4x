@@ -126,7 +126,7 @@ func LightingLabelTypeParseWithBuffer(ctx context.Context, readBuffer utils.Read
 		return 0, errors.Wrap(err, "error reading LightingLabelType")
 	}
 	if enum, ok := LightingLabelTypeByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for LightingLabelType")
 		return LightingLabelType(val), nil
 	} else {
 		return enum, nil

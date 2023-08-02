@@ -124,7 +124,7 @@ func (c *Connection) Ping() <-chan plc4go.PlcConnectionPingResult {
 				return responseAdu.GetTransactionIdentifier() == 1 && responseAdu.GetUnitIdentifier() == c.unitIdentifier
 			},
 			func(message spi.Message) error {
-				c.log.Trace().Msgf("Received Message")
+				c.log.Trace().Msg("Received Message")
 				if message != nil {
 					// If we got a valid response (even if it will probably contain an error, we know the remote is available)
 					c.log.Trace().Msg("got valid response")
@@ -136,7 +136,7 @@ func (c *Connection) Ping() <-chan plc4go.PlcConnectionPingResult {
 				return nil
 			},
 			func(err error) error {
-				c.log.Trace().Msgf("Received Error")
+				c.log.Trace().Msg("Received Error")
 				result <- _default.NewDefaultPlcConnectionPingResult(errors.Wrap(err, "got error processing request"))
 				return nil
 			},
@@ -149,7 +149,7 @@ func (c *Connection) Ping() <-chan plc4go.PlcConnectionPingResult {
 }
 
 func (c *Connection) GetMetadata() apiModel.PlcConnectionMetadata {
-	return _default.DefaultConnectionMetadata{
+	return &_default.DefaultConnectionMetadata{
 		ProvidesReading: true,
 		ProvidesWriting: true,
 	}

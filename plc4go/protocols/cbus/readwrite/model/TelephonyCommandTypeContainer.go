@@ -601,7 +601,7 @@ func TelephonyCommandTypeContainerParseWithBuffer(ctx context.Context, readBuffe
 		return 0, errors.Wrap(err, "error reading TelephonyCommandTypeContainer")
 	}
 	if enum, ok := TelephonyCommandTypeContainerByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for TelephonyCommandTypeContainer")
 		return TelephonyCommandTypeContainer(val), nil
 	} else {
 		return enum, nil

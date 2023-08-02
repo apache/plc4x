@@ -97,7 +97,10 @@ func (m *TransportInstance) Connect() error {
 	go func(m *TransportInstance, buffer *bytes.Buffer) {
 		defer func() {
 			if err := recover(); err != nil {
-				m.log.Error().Msgf("panic-ed %v. Stack: %s", err, debug.Stack())
+				m.log.Error().
+					Str("stack", string(debug.Stack())).
+					Interface("err", err).
+					Msg("panic-ed")
 			}
 		}()
 		packageCount := 0
@@ -105,7 +108,7 @@ func (m *TransportInstance) Connect() error {
 		for m.connected.Load() {
 			packetData, captureInfo, err := m.handle.ReadPacketData()
 			packageCount++
-			m.log.Info().Msgf("Read new package (nr. %d) %#v", packageCount, captureInfo)
+			m.log.Info().Int("packageCount", packageCount).Interface("captureInfo", captureInfo).Msg("Read new package (nr. packageCount)")
 			if err != nil {
 				if err == io.EOF {
 					m.log.Info().Msg("Done reading pcap")
@@ -118,20 +121,26 @@ func (m *TransportInstance) Connect() error {
 			if lastPacketTime != nil && m.speedFactor != 0 {
 				timeToSleep := captureInfo.Timestamp.Sub(*lastPacketTime)
 				timeToSleep = time.Duration(int64(float64(timeToSleep) / float64(m.speedFactor)))
-				m.log.Debug().Msgf("Sleeping for %v (Speed factor %fx)", timeToSleep, m.speedFactor)
+				m.log.Debug().Dur("timeToSleep", timeToSleep).Float32("speedFactor", m.speedFactor).Msg("Sleeping")
 				time.Sleep(timeToSleep)
 			}
 
 			// Decode a packet
 			packet := gopacket.NewPacket(packetData, layers.LayerTypeEthernet, gopacket.Default)
-			m.log.Debug().Msgf("Packet dump (nr. %d):\n%s", packageCount, packet.Dump())
+			m.log.Debug().
+				Int("packageCount", packageCount).
+				Str("dump", packet.Dump()).
+				Msg("Packet dump (nr. packageCount):\ndump")
 			var payload []byte
 			switch m.transportType {
 			case TCP:
 				if tcpLayer := packet.Layer(layers.LayerTypeTCP); tcpLayer != nil {
 					tcp, _ := tcpLayer.(*layers.TCP)
 					payload = tcp.Payload
-					m.log.Debug().Msgf("TCP: From src port %d to dst port %d", tcp.SrcPort, tcp.DstPort)
+					m.log.Debug().
+						Uint16("srcPort", uint16(tcp.SrcPort)).
+						Uint16("dstPort", uint16(tcp.DstPort)).
+						Msg("TCP: From src port to dst port")
 				} else {
 					continue
 				}
@@ -139,7 +148,10 @@ func (m *TransportInstance) Connect() error {
 				if tcpLayer := packet.Layer(layers.LayerTypeUDP); tcpLayer != nil {
 					udp, _ := tcpLayer.(*layers.UDP)
 					payload = udp.Payload
-					m.log.Debug().Msgf("UDP: From src port %d to dst port %d", udp.SrcPort, udp.DstPort)
+					m.log.Debug().
+						Uint16("srcPort", uint16(udp.SrcPort)).
+						Uint16("dstPort", uint16(udp.DstPort)).
+						Msg("UDP: From src port to dst port")
 				} else {
 					continue
 				}

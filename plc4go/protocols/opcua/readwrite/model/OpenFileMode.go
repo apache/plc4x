@@ -126,7 +126,7 @@ func OpenFileModeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 		return 0, errors.Wrap(err, "error reading OpenFileMode")
 	}
 	if enum, ok := OpenFileModeByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for OpenFileMode")
 		return OpenFileMode(val), nil
 	} else {
 		return enum, nil

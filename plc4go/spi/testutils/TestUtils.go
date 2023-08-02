@@ -68,7 +68,7 @@ func CompareResults(t *testing.T, actualString []byte, referenceString []byte) e
 	cleanDiff := make([]xdiff.Delta, 0)
 	for _, delta := range diff {
 		if delta.Operation == xdiff.Delete && delta.Subject.Value == nil || delta.Operation == xdiff.Insert && delta.Subject.Value == nil {
-			localLog.Info().Msgf("We ignore empty elements which should be deleted %v", delta)
+			localLog.Info().Interface("delta", delta).Msg("We ignore empty elements which should be deleted")
 			continue
 		}
 		// Workaround for different precisions on float
@@ -78,7 +78,7 @@ func CompareResults(t *testing.T, actualString []byte, referenceString []byte) e
 			string(delta.Object.Parent.FirstChild.Name) == "dataType" &&
 			string(delta.Object.Parent.FirstChild.Value) == "float" {
 			if strings.Contains(string(delta.Subject.Value), string(delta.Object.Value)) || strings.Contains(string(delta.Object.Value), string(delta.Subject.Value)) {
-				localLog.Info().Msgf("We ignore precision diffs %v", delta)
+				localLog.Info().Interface("delta", delta).Msg("We ignore precision diffs")
 				continue
 			}
 		}
@@ -88,7 +88,7 @@ func CompareResults(t *testing.T, actualString []byte, referenceString []byte) e
 			string(delta.Object.Parent.FirstChild.Name) == "dataType" &&
 			string(delta.Object.Parent.FirstChild.Value) == "string" {
 			if diff, err := xdiff.Compare(delta.Subject, delta.Object); diff == nil && err == nil {
-				localLog.Info().Msgf("We ignore newline diffs %v", delta)
+				localLog.Info().Interface("delta", delta).Msg("We ignore newline diffs")
 				continue
 			}
 		}

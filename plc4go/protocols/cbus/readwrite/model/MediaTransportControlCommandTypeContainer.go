@@ -1735,7 +1735,7 @@ func MediaTransportControlCommandTypeContainerParseWithBuffer(ctx context.Contex
 		return 0, errors.Wrap(err, "error reading MediaTransportControlCommandTypeContainer")
 	}
 	if enum, ok := MediaTransportControlCommandTypeContainerByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for MediaTransportControlCommandTypeContainer")
 		return MediaTransportControlCommandTypeContainer(val), nil
 	} else {
 		return enum, nil

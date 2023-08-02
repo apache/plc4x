@@ -150,7 +150,7 @@ func BACnetFaultTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 		return 0, errors.Wrap(err, "error reading BACnetFaultType")
 	}
 	if enum, ok := BACnetFaultTypeByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for BACnetFaultType")
 		return BACnetFaultType(val), nil
 	} else {
 		return enum, nil

@@ -234,7 +234,7 @@ func BACnetNodeTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 		return 0, errors.Wrap(err, "error reading BACnetNodeType")
 	}
 	if enum, ok := BACnetNodeTypeByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for BACnetNodeType")
 		return BACnetNodeType(val), nil
 	} else {
 		return enum, nil

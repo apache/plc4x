@@ -348,7 +348,7 @@ func BACnetServicesSupportedParseWithBuffer(ctx context.Context, readBuffer util
 		return 0, errors.Wrap(err, "error reading BACnetServicesSupported")
 	}
 	if enum, ok := BACnetServicesSupportedByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for BACnetServicesSupported")
 		return BACnetServicesSupported(val), nil
 	} else {
 		return enum, nil

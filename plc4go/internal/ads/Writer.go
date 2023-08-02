@@ -61,7 +61,7 @@ func (m *Connection) Write(ctx context.Context, writeRequest apiModel.PlcWriteRe
 func (m *Connection) singleWrite(ctx context.Context, writeRequest apiModel.PlcWriteRequest, result chan apiModel.PlcWriteRequestResult) {
 	if len(writeRequest.GetTagNames()) != 1 {
 		result <- spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.New("this part of the ads driver only supports single-item requests"))
-		m.log.Debug().Msgf("this part of the ads driver only supports single-item requests. Got %d tags", len(writeRequest.GetTagNames()))
+		m.log.Debug().Int("nTags", len(writeRequest.GetTagNames())).Msg("this part of the ads driver only supports single-item requests. Got nTags tags")
 		return
 	}
 
@@ -76,21 +76,21 @@ func (m *Connection) singleWrite(ctx context.Context, writeRequest apiModel.PlcW
 				nil,
 				errors.Wrap(err, "invalid tag item type"),
 			)
-			m.log.Debug().Msgf("Invalid tag item type %T", tag)
+			m.log.Debug().Type("tag", tag).Msg("Invalid tag item type")
 			return
 		}
 		// Replace the symbolic tag with a direct one
 		tag, err = m.resolveSymbolicTag(ctx, adsField)
 		if err != nil {
 			result <- spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.Wrap(err, "invalid tag item type"))
-			m.log.Debug().Msgf("Invalid tag item type %T", tag)
+			m.log.Debug().Type("tag", tag).Msg("Invalid tag item type")
 			return
 		}
 	}
 	directAdsTag, ok := tag.(*model.DirectPlcTag)
 	if !ok {
 		result <- spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.New("invalid tag item type"))
-		m.log.Debug().Msgf("Invalid tag item type %T", tag)
+		m.log.Debug().Type("tag", tag).Msg("Invalid tag item type")
 		return
 	}
 
@@ -145,21 +145,21 @@ func (m *Connection) multiWrite(ctx context.Context, writeRequest apiModel.PlcWr
 			adsField, err := model.CastToSymbolicPlcTagFromPlcTag(tag)
 			if err != nil {
 				result <- spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.Wrap(err, "invalid tag item type"))
-				m.log.Debug().Msgf("Invalid tag item type %T", tag)
+				m.log.Debug().Type("tag", tag).Msg("Invalid tag item type")
 				return
 			}
 			// Replace the symbolic tag with a direct one
 			tag, err = m.resolveSymbolicTag(ctx, adsField)
 			if err != nil {
 				result <- spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.Wrap(err, "invalid tag item type"))
-				m.log.Debug().Msgf("Invalid tag item type %T", tag)
+				m.log.Debug().Type("tag", tag).Msg("Invalid tag item type")
 				return
 			}
 		}
 		directAdsTag, ok := tag.(*model.DirectPlcTag)
 		if !ok {
 			result <- spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.New("invalid tag item type"))
-			m.log.Debug().Msgf("Invalid tag item type %T", tag)
+			m.log.Debug().Type("tag", tag).Msg("Invalid tag item type")
 			return
 		}
 

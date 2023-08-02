@@ -126,7 +126,7 @@ func BACnetShedStateParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 		return 0, errors.Wrap(err, "error reading BACnetShedState")
 	}
 	if enum, ok := BACnetShedStateByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for BACnetShedState")
 		return BACnetShedState(val), nil
 	} else {
 		return enum, nil

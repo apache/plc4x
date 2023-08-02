@@ -866,7 +866,7 @@ func (s *SecureChannel) onDisconnectCloseSecureChannel(ctx context.Context, code
 				opcuaAPU := message.(readWriteModel.OpcuaAPU)
 				messagePDU := opcuaAPU.GetMessage()
 				opcuaMessageResponse := messagePDU.(readWriteModel.OpcuaMessageResponse)
-				s.log.Trace().Msgf("Got close secure channel response:\n%s", opcuaMessageResponse)
+				s.log.Trace().Stringer("opcuaMessageResponse", opcuaMessageResponse).Msg("Got close secure channel response")
 				return nil
 			},
 			func(err error) error {
@@ -921,7 +921,7 @@ func (s *SecureChannel) onDiscover(ctx context.Context, codec *MessageCodec) {
 				opcuaAPU := message.(readWriteModel.OpcuaAPU)
 				messagePDU := opcuaAPU.GetMessage()
 				opcuaAcknowledgeResponse := messagePDU.(readWriteModel.OpcuaAcknowledgeResponse)
-				s.log.Trace().Msgf("Got Hello Response Connection Response:\n%s", opcuaAcknowledgeResponse)
+				s.log.Trace().Stringer("opcuaAcknowledgeResponse", opcuaAcknowledgeResponse).Msg("Got Hello Response Connection Response")
 				s.onDiscoverOpenSecureChannel(ctx, codec, opcuaAcknowledgeResponse)
 				return nil
 			},
@@ -1268,7 +1268,7 @@ func (s *SecureChannel) onDiscoverCloseSecureChannel(ctx context.Context, codec 
 				opcuaAPU := message.(readWriteModel.OpcuaAPU)
 				messagePDU := opcuaAPU.GetMessage()
 				opcuaMessageResponse := messagePDU.(readWriteModel.OpcuaMessageResponse)
-				s.log.Trace().Msgf("Got close secure channel response:\n%s", opcuaMessageResponse)
+				s.log.Trace().Stringer("opcuaMessageResponse", opcuaMessageResponse).Msg("Got close secure channel response")
 				return nil
 			},
 			func(err error) error {

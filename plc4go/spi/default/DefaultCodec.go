@@ -244,11 +244,11 @@ func (m *defaultCodec) HandleMessages(message spi.Message) bool {
 	m.expectationsChangeMutex.Lock() // TODO: Note: would be nice if this is a read mutex which can be upgraded
 	defer m.expectationsChangeMutex.Unlock()
 	messageHandled := false
-	m.log.Trace().Msgf("Current number of expectations: %d", len(m.expectations))
+	m.log.Trace().Int("nExpectations", len(m.expectations)).Msg("Current number of expectations")
 	for i := 0; i < len(m.expectations); i++ {
 		expectation := m.expectations[i]
 		expectationLog := m.log.With().Stringer("expectation", expectation).Logger()
-		expectationLog.Trace().Msgf("Checking expectation")
+		expectationLog.Trace().Msg("Checking expectation")
 		// Check if the current message matches the expectations
 		// If it does, let it handle the message.
 		if accepts := expectation.GetAcceptsMessage()(message); accepts {
@@ -271,7 +271,7 @@ func (m *defaultCodec) HandleMessages(message spi.Message) bool {
 			expectationLog.Trace().Msg("doesn't accept message")
 		}
 	}
-	m.log.Trace().Msgf("handled message = %t", messageHandled)
+	m.log.Trace().Bool("messageHandled", messageHandled).Msg("handled message")
 	return messageHandled
 }
 
@@ -293,7 +293,10 @@ func (m *defaultCodec) Work() {
 	defer func() {
 		if err := recover(); err != nil {
 			// TODO: If this is an error, cast it to an error and log it with "Err(err)"
-			m.log.Error().Msgf("panic-ed %v. Stack: %s", err, debug.Stack())
+			m.log.Error().
+				Str("stack", string(debug.Stack())).
+				Interface("err", err).
+				Msg("panic-ed")
 		}
 		if m.running.Load() {
 			workerLog.Warn().Msg("Keep running")
@@ -343,7 +346,7 @@ mainLoop:
 				utils.CleanupTimer(timeoutTimer)
 			case <-timeoutTimer.C:
 				utils.CleanupTimer(timeoutTimer)
-				workerLog.Error().Msgf("receive timeout after %s", m.receiveTimeout)
+				workerLog.Error().Dur("receiveTimeout", m.receiveTimeout).Msg("receive timeout")
 				continue mainLoop
 			}
 		}
@@ -359,13 +362,13 @@ mainLoop:
 			time.Sleep(10 * time.Millisecond)
 			continue mainLoop
 		}
-		workerLog.Trace().Msgf("got message:\n%s", message)
+		workerLog.Trace().Stringer("message", message).Msg("got message")
 
 		if m.customMessageHandling != nil {
 			workerLog.Trace().Msg("Executing custom handling")
 			start := time.Now()
 			handled := m.customMessageHandling(m.DefaultCodecRequirements, message)
-			workerLog.Trace().Msgf("custom handling took %s", time.Since(start))
+			workerLog.Trace().TimeDiff("elapsedTime", time.Now(), start).Msg("custom handling took elapsedTime")
 			if handled {
 				workerLog.Trace().Msg("Custom handling handled the message")
 				continue mainLoop
@@ -389,6 +392,6 @@ func (m *defaultCodec) passToDefaultIncomingMessageChannel(workerLog zerolog.Log
 	select {
 	case m.defaultIncomingMessageChannel <- message:
 	default:
-		workerLog.Warn().Msgf("Message discarded\n%s", message)
+		workerLog.Warn().Stringer("message", message).Msg("Message discarded")
 	}
 }

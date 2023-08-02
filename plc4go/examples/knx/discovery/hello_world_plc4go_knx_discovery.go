@@ -20,6 +20,7 @@
 package main
 
 import (
+	"fmt"
 	"os"
 	"time"
 
@@ -68,7 +69,7 @@ func main() {
 		// Wait for the driver to connect (or not)
 		connectionResult := <-crc
 		if connectionResult.GetErr() != nil {
-			log.Error().Msgf("error connecting to PLC: %s", connectionResult.GetErr().Error())
+			log.Error().Err(connectionResult.GetErr()).Msg("error connecting to PLC")
 			return
 		}
 		log.Info().Str("connection string", connStr).Msg("Connected")
@@ -88,7 +89,7 @@ func main() {
 		brr := browseRequest.ExecuteWithInterceptor(func(result apiModel.PlcBrowseItem) bool {
 			knxTag := result.GetTag()
 			knxAddress := knxTag.GetAddressString()
-			log.Info().Msgf("Inspecting detected Device at KNX Address: %s", knxAddress)
+			log.Info().Str("knxAddress", knxAddress).Msg("Inspecting detected Device at KNX Address")
 
 			// Try to get all the com-objects and the group addresses they are attached to.
 			browseRequest, err := connection.BrowseRequestBuilder().
@@ -121,7 +122,11 @@ func main() {
 				} else {
 					permissions += " "
 				}
-				log.Info().Msgf(" - %15s (%s) %s", result.GetTag().GetAddressString(), permissions, result.GetName())
+				log.Info().
+					Str("addressString", fmt.Sprintf("%15s", result.GetTag().GetAddressString())).
+					Str("permissions", permissions).
+					Str("name", result.GetName()).
+					Msg(" - addressString (permissions) name")
 			}
 
 			readRequest, err := connection.ReadRequestBuilder().
@@ -129,7 +134,7 @@ func main() {
 				AddTagAddress("interfaceProgramVersion", knxAddress+"#4/13").
 				Build()
 			if err != nil {
-				log.Error().Msgf("Error creating read request for scanning %s", knxAddress)
+				log.Error().Str("knxAddress", knxAddress).Msg("Error creating read request for scanning")
 				return false
 			}
 
@@ -137,7 +142,7 @@ func main() {
 			readRequestResult := <-rrr
 
 			if readRequestResult.GetErr() != nil {
-				log.Error().Msgf("Error executing read request for reading device identification information %s", knxAddress)
+				log.Error().Str("knxAddress", knxAddress).Msg("Error executing read request for reading device identification information")
 				return false
 			}
 			readResponse := readRequestResult.GetResponse()
@@ -155,28 +160,34 @@ func main() {
 			if rb.GetTotalBytes() == 5 {
 				manufacturerId, err = rb.ReadUint16("manufacturerId", 16)
 				if err != nil {
-					log.Error().Err(err).Msgf("Error reading manufacturer id from")
+					log.Error().Err(err).Msg("Error reading manufacturer id from")
 					return false
 				}
 				applicationId, err = rb.ReadUint16("applicationId", 16)
 				if err != nil {
-					log.Error().Err(err).Msgf("Error reading application id from")
+					log.Error().Err(err).Msg("Error reading application id from")
 					return false
 				}
 				applicationVersionMajor, err = rb.ReadUint8("applicationVersionMajor", 4)
 				if err != nil {
-					log.Error().Err(err).Msgf("Error reading application version major from %s", knxAddress)
+					log.Error().Err(err).Str("knxAddress", knxAddress).Msg("Error reading application version major from knxAddress")
 					return false
 				}
 				applicationVersionMinor, err = rb.ReadUint8("applicationVersionMinor", 4)
 				if err != nil {
-					log.Error().Err(err).Msgf("Error reading application version minor from %s", knxAddress)
+					log.Error().Err(err).Str("knxAddress", knxAddress).Msg("Error reading application version minor from knxAddress")
 					return false
 				}
 			}
 
-			log.Info().Msgf("     manufacturer id: %d", manufacturerId)
-			log.Info().Msgf("     program id: %d version %d.%d", applicationId, applicationVersionMajor, applicationVersionMinor)
+			log.Info().
+				Uint16("manufacturerId", manufacturerId).
+				Msg("     manufacturer id: manufacturerId")
+			log.Info().
+				Uint16("applicationId", applicationId).
+				Uint8("applicationVersionMajor", applicationVersionMajor).
+				Uint8("applicationVersionMinor", applicationVersionMinor).
+				Msg("     program id: applicationId version applicationVersionMajor.applicationVersionMinor")
 
 			return true
 		})
@@ -186,7 +197,7 @@ func main() {
 		}
 		select {
 		case browseRequestResult := <-brr:
-			log.Info().Msgf("Browse Request Result:\n%v", browseRequestResult)
+			log.Info().Stringer("browseRequestResult", browseRequestResult).Msg("Browse Request Result")
 		}
 		return
 	}

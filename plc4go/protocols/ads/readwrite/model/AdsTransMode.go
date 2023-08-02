@@ -144,7 +144,7 @@ func AdsTransModeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 		return 0, errors.Wrap(err, "error reading AdsTransMode")
 	}
 	if enum, ok := AdsTransModeByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for AdsTransMode")
 		return AdsTransMode(val), nil
 	} else {
 		return enum, nil

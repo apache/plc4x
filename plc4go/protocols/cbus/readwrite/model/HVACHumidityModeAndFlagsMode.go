@@ -126,7 +126,7 @@ func HVACHumidityModeAndFlagsModeParseWithBuffer(ctx context.Context, readBuffer
 		return 0, errors.Wrap(err, "error reading HVACHumidityModeAndFlagsMode")
 	}
 	if enum, ok := HVACHumidityModeAndFlagsModeByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for HVACHumidityModeAndFlagsMode")
 		return HVACHumidityModeAndFlagsMode(val), nil
 	} else {
 		return enum, nil

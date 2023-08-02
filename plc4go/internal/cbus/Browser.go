@@ -63,7 +63,7 @@ func (m *Browser) BrowseQuery(ctx context.Context, interceptor func(result apiMo
 	case *unitInfoQuery:
 		return m.browseUnitInfo(ctx, interceptor, queryName, query)
 	default:
-		m.log.Warn().Msgf("unsupported query type supplied %T", query)
+		m.log.Warn().Type("query", query).Msg("unsupported query type supplied %T")
 		return apiModel.PlcResponseCode_INVALID_ADDRESS, nil
 	}
 }
@@ -80,54 +80,73 @@ func (m *Browser) browseUnitInfo(ctx context.Context, interceptor func(result ap
 	if allUnits {
 		m.log.Info().Msg("Querying all (available) units")
 	} else {
-		m.log.Debug().Msgf("Querying units\n%s", units)
+		m.log.Debug().Interface("units", units).Msg("Querying units")
 	}
 unitLoop:
 	for _, unit := range units {
-		m.log.Trace().Msgf("checking unit:\n%s", unit)
+		unitLog := m.log.With().Stringer("unit", unit).Logger()
+		unitLog.Trace().Msg("checking unit")
 		if err := ctx.Err(); err != nil {
-			m.log.Info().Err(err).Msgf("Aborting scan at unit %s", unit)
+			unitLog.Info().Err(err).Msg("Aborting scan at unit")
 			return apiModel.PlcResponseCode_INVALID_ADDRESS, nil
 		}
 		unitAddress := unit.GetAddress()
 		if !allUnits && allAttributes {
-			m.log.Info().Msgf("Querying all attributes of unit %d", unitAddress)
+			m.log.Info().
+				Uint8("unitAddress", unitAddress).
+				Msg("Querying all attributes of unit")
 		}
 		event := m.log.Info()
 		if allUnits {
 			event = m.log.Debug()
 		}
-		event.Msgf("Query unit  %d", unitAddress)
+		event.Uint8("unitAddress", unitAddress).Msg("Query unit")
 		for _, attribute := range attributes {
 			if err := ctx.Err(); err != nil {
-				m.log.Info().Err(err).Msgf("Aborting scan at unit %s", unit)
+				unitLog.Info().Err(err).Msg("Aborting scan at unit")
 				return apiModel.PlcResponseCode_INVALID_ADDRESS, nil
 			}
 			if !allUnits && !allAttributes {
-				m.log.Info().Msgf("Querying attribute %s of unit %d", attribute, unitAddress)
+				m.log.Info().
+					Uint8("unitAddress", unitAddress).
+					Stringer("attribute", attribute).
+					Msg("Querying attribute of unit")
 			} else {
-				event.Msgf("unit %d: Query %s", unitAddress, attribute)
+				event.Uint8("unitAddress", unitAddress).
+					Stringer("attribute", attribute).
+					Msg("unit unitAddress: Query attribute")
 			}
 			m.log.Trace().Msg("Building request")
 			readTagName := fmt.Sprintf("%s/%d/%s", queryName, unitAddress, attribute)
 			readRequest, _ := m.connection.ReadRequestBuilder().
 				AddTag(readTagName, NewCALIdentifyTag(unit, nil /*TODO: add bridge support*/, attribute, 1)).
 				Build()
-			timeoutCtx, timeoutCancel := context.WithTimeout(ctx, 5*time.Second)
-			m.log.Trace().Msgf("Executing readRequest\n%s\nwith timeout %s", readRequest, timeoutCtx)
+			timeout := 5 * time.Second
+			timeoutCtx, timeoutCancel := context.WithTimeout(ctx, timeout)
+			m.log.Trace().
+				Stringer("readRequest", readRequest).
+				Dur("timeout", timeout).
+				Msg("Executing readRequest with timeout")
 			requestResult := <-readRequest.ExecuteWithContext(timeoutCtx)
-			m.log.Trace().Msgf("got a response\n%s", requestResult)
+			m.log.Trace().Stringer("requestResult", requestResult).Msg("got a response")
 			timeoutCancel()
 			if err := requestResult.GetErr(); err != nil {
 				if allUnits || allAttributes {
 					event = m.log.Trace()
 				}
-				event.Err(err).Msgf("unit %d: Can't read attribute %s", unitAddress, attribute)
+				event.Err(err).
+					Uint8("unitAddress", unitAddress).
+					Stringer("attribute", attribute).
+					Msg("unit unitAddress: Can't read attribute attribute")
 				continue unitLoop
 			}
 			response := requestResult.GetResponse()
 			if code := response.GetResponseCode(readTagName); code != apiModel.PlcResponseCode_OK {
-				event.Msgf("unit %d: error reading tag %s. Code %s", unitAddress, attribute, code)
+				event.
+					Uint8("unitAddress", unitAddress).
+					Stringer("attribute", attribute).
+					Stringer("code", code).
+					Msg("unit unitAddress: error reading tag attribute. Code %s")
 				continue unitLoop
 			}
 			queryResult := spiModel.NewDefaultPlcBrowseItem(
@@ -188,7 +207,7 @@ func (m *Browser) extractAttributes(query *unitInfoQuery) ([]readWriteModel.Attr
 func (m *Browser) getInstalledUnitAddressBytes(ctx context.Context) (map[byte]any, error) {
 	start := time.Now()
 	defer func() {
-		m.log.Debug().Msgf("Ending unit address acquiring after %s", time.Since(start))
+		m.log.Debug().TimeDiff("duration", time.Now(), start).Msg("Ending unit address acquiring after duration")
 	}()
 	// We need to pre-subscribe to catch the 2 followup responses
 	subscriptionRequest, err := m.connection.SubscriptionRequestBuilder().
@@ -220,47 +239,62 @@ func (m *Browser) getInstalledUnitAddressBytes(ctx context.Context) (map[byte]an
 	blockOffset176ReceivedChan := make(chan any, 100) // We only expect one, but we make it a bit bigger to no clog up
 	result := make(map[byte]any)
 	plcConsumerRegistration := subscriptionHandle.Register(func(event apiModel.PlcSubscriptionEvent) {
-		m.log.Trace().Msgf("handling event:\n%s", event)
+		m.log.Trace().Stringer("event", event).Msg("handling event")
 		if responseCode := event.GetResponseCode("installationMMIMonitor"); responseCode != apiModel.PlcResponseCode_OK {
-			m.log.Warn().Msgf("Ignoring %v", event)
+			m.log.Warn().Stringer("event", event).Msg("Ignoring")
 			return
 		}
 		rootValue := event.GetValue("installationMMIMonitor")
 		if !rootValue.IsStruct() {
-			m.log.Warn().Msgf("Ignoring %v should be a struct", rootValue)
+			m.log.Warn().Stringer("rootValue", rootValue).Msg("Ignoring rootValue should be a struct")
 			return
 		}
 		rootStruct := rootValue.GetStruct()
 		if applicationValue := rootStruct["application"]; applicationValue == nil || !applicationValue.IsString() || applicationValue.GetString() != "NETWORK_CONTROL" {
-			m.log.Warn().Msgf("Ignoring %v should contain a application tag of type string with value NETWORK_CONTROL", rootStruct)
+			m.log.Warn().
+				Interface("rootStruct", rootStruct).
+				Msg("Ignoring rootStruct should contain a application tag of type string with value NETWORK_CONTROL")
 			return
 		}
 		var blockStart int
 		if blockStartValue := rootStruct["blockStart"]; blockStartValue == nil || !blockStartValue.IsByte() {
-			m.log.Warn().Msgf("Ignoring %v should contain a blockStart tag of type byte", rootStruct)
+			m.log.Warn().
+				Interface("rootStruct", rootStruct).
+				Msg("Ignoring rootStruct should contain a blockStart tag of type byte")
 			return
 		} else {
 			blockStart = int(blockStartValue.GetByte())
 		}
 
 		if plcListValue := rootStruct["values"]; plcListValue == nil || !plcListValue.IsList() {
-			m.log.Warn().Msgf("Ignoring %v should contain a values tag of type list", rootStruct)
+			m.log.Warn().
+				Interface("rootStruct", rootStruct).
+				Msg("Ignoring rootStruct should contain a values tag of type list")
 			return
 		} else {
 			for unitByteAddress, plcValue := range plcListValue.GetList() {
 				unitByteAddress = blockStart + unitByteAddress
 				if !plcValue.IsString() {
-					m.log.Warn().Msgf("Ignoring %v at %d should be a string", plcValue, unitByteAddress)
+					m.log.Warn().
+						Stringer("plcValue", plcValue).
+						Int("unitByteAddress", unitByteAddress).
+						Msg("Ignoring plcValue at unitByteAddress should be a string")
 					return
 				}
 				switch plcValue.GetString() {
 				case readWriteModel.GAVState_ON.PLC4XEnumName(), readWriteModel.GAVState_OFF.PLC4XEnumName():
-					m.log.Debug().Msgf("unit %d does exists", unitByteAddress)
+					m.log.Debug().
+						Int("unitByteAddress", unitByteAddress).
+						Msg("unit does exists")
 					result[byte(unitByteAddress)] = true
 				case readWriteModel.GAVState_DOES_NOT_EXIST.PLC4XEnumName():
-					m.log.Debug().Msgf("unit %d does not exists", unitByteAddress)
+					m.log.Debug().
+						Int("unitByteAddress", unitByteAddress).
+						Msg("unit does not exists")
 				case readWriteModel.GAVState_ERROR.PLC4XEnumName():
-					m.log.Warn().Msgf("unit %d is in error state", unitByteAddress)
+					m.log.Warn().
+						Int("unitByteAddress", unitByteAddress).
+						Msg("unit is in error state")
 				}
 			}
 		}
@@ -305,11 +339,14 @@ func (m *Browser) getInstalledUnitAddressBytes(ctx context.Context) (map[byte]an
 		defer readWg.Done()
 		defer func() {
 			if err := recover(); err != nil {
-				m.log.Error().Msgf("panic-ed %v. Stack:\n%s", err, debug.Stack())
+				m.log.Error().
+					Str("stack", string(debug.Stack())).
+					Interface("err", err).
+					Msg("panic-ed")
 			}
 		}()
 		defer readCtxCancel()
-		m.log.Debug().Msgf("sending read request\n%s", readRequest)
+		m.log.Debug().Stringer("readRequest", readRequest).Msg("sending read request")
 		readRequestResult := <-readRequest.ExecuteWithContext(readCtx)
 		if err := readRequestResult.GetErr(); err != nil {
 			m.log.Warn().Err(err).Msg("Error reading the mmi")
@@ -319,41 +356,56 @@ func (m *Browser) getInstalledUnitAddressBytes(ctx context.Context) (map[byte]an
 		if responseCode := response.GetResponseCode("installationMMI"); responseCode == apiModel.PlcResponseCode_OK {
 			rootValue := response.GetValue("installationMMI")
 			if !rootValue.IsStruct() {
-				m.log.Warn().Err(err).Msgf("%v should be a struct", rootValue)
+				m.log.Warn().Err(err).Stringer("rootValue", rootValue).Msg("%v should be a struct")
 				return
 			}
 			rootStruct := rootValue.GetStruct()
 			if applicationValue := rootStruct["application"]; applicationValue == nil || !applicationValue.IsString() || applicationValue.GetString() != "NETWORK_CONTROL" {
-				m.log.Warn().Err(err).Msgf("%v should contain a application tag of type string with value NETWORK_CONTROL", rootStruct)
+				m.log.Warn().Err(err).
+					Interface("rootStruct", rootStruct).
+					Msg("%v should contain a application tag of type string with value NETWORK_CONTROL")
 				return
 			}
 			var blockStart int
 			if blockStartValue := rootStruct["blockStart"]; blockStartValue == nil || !blockStartValue.IsByte() || blockStartValue.GetByte() != 0 {
-				m.log.Warn().Err(err).Msgf("%v should contain a blockStart tag of type byte with value 0", rootStruct)
+				m.log.Warn().Err(err).
+					Interface("rootStruct", rootStruct).
+					Msg("rootStruct should contain a blockStart tag of type byte with value 0")
 				return
 			} else {
 				blockStart = int(blockStartValue.GetByte())
 			}
-			m.log.Debug().Msgf("Read MMI with block start %d", blockStart)
+			m.log.Debug().Int("blockStart", blockStart).Msg("Read MMI with block start")
 
 			if plcListValue := rootStruct["values"]; plcListValue == nil || !plcListValue.IsList() {
-				m.log.Warn().Err(err).Msgf("%v should contain a values tag of type list", rootStruct)
+				m.log.Warn().Err(err).
+					Interface("rootStruct", rootStruct).
+					Msg("rootStruct should contain a values tag of type list")
 				return
 			} else {
 				for unitByteAddress, plcValue := range plcListValue.GetList() {
 					unitByteAddress = blockStart + unitByteAddress
 					if !plcValue.IsString() {
-						m.log.Warn().Err(err).Msgf("%v at %d should be a string", plcValue, unitByteAddress)
+						m.log.Warn().Err(err).
+							Stringer("plcValue", plcValue).
+							Int("unitByteAddress", unitByteAddress).
+							Msg("plcValue at unitByteAddress should be a string")
 						return
 					}
 					switch plcValue.GetString() {
 					case readWriteModel.GAVState_ON.PLC4XEnumName(), readWriteModel.GAVState_OFF.PLC4XEnumName():
-						m.log.Debug().Msgf("unit %d does exists", unitByteAddress)
+						m.log.Debug().
+							Int("unitByteAddress", unitByteAddress).
+							Msg("unit does exists")
 						result[byte(unitByteAddress)] = true
 					case readWriteModel.GAVState_DOES_NOT_EXIST.PLC4XEnumName():
-						m.log.Debug().Msgf("unit %d does not exists", unitByteAddress)
+						m.log.Debug().
+							Int("unitByteAddress", unitByteAddress).
+							Msg("unit does not exists")
 					case readWriteModel.GAVState_ERROR.PLC4XEnumName():
-						m.log.Warn().Msgf("unit %d is in error state", unitByteAddress)
+						m.log.Warn().
+							Int("unitByteAddress", unitByteAddress).
+							Msg("unit is in error state")
 					}
 				}
 			}
@@ -370,7 +422,9 @@ func (m *Browser) getInstalledUnitAddressBytes(ctx context.Context) (map[byte]an
 			}
 
 		} else {
-			m.log.Warn().Msgf("We got %s as response code for installation mmi so we rely on getting it via subscription", responseCode)
+			m.log.Warn().
+				Stringer("responseCode", responseCode).
+				Msg("We got responseCode as response code for installation mmi so we rely on getting it via subscription")
 		}
 	}()
 

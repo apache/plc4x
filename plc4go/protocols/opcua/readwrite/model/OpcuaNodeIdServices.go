@@ -6558,7 +6558,7 @@ func OpcuaNodeIdServicesParseWithBuffer(ctx context.Context, readBuffer utils.Re
 		return 0, errors.Wrap(err, "error reading OpcuaNodeIdServices")
 	}
 	if enum, ok := OpcuaNodeIdServicesByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for OpcuaNodeIdServices")
 		return OpcuaNodeIdServices(val), nil
 	} else {
 		return enum, nil

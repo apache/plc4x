@@ -432,7 +432,7 @@ func DefaultAmsPortsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 		return 0, errors.Wrap(err, "error reading DefaultAmsPorts")
 	}
 	if enum, ok := DefaultAmsPortsByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for DefaultAmsPorts")
 		return DefaultAmsPorts(val), nil
 	} else {
 		return enum, nil

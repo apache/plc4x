@@ -198,7 +198,7 @@ func ErrorReportingSystemCategoryTypeForBuildingManagementSystemsParseWithBuffer
 		return 0, errors.Wrap(err, "error reading ErrorReportingSystemCategoryTypeForBuildingManagementSystems")
 	}
 	if enum, ok := ErrorReportingSystemCategoryTypeForBuildingManagementSystemsByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for ErrorReportingSystemCategoryTypeForBuildingManagementSystems")
 		return ErrorReportingSystemCategoryTypeForBuildingManagementSystems(val), nil
 	} else {
 		return enum, nil

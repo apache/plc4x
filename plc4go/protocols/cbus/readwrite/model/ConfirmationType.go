@@ -138,7 +138,7 @@ func ConfirmationTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadB
 		return 0, errors.Wrap(err, "error reading ConfirmationType")
 	}
 	if enum, ok := ConfirmationTypeByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for ConfirmationType")
 		return ConfirmationType(val), nil
 	} else {
 		return enum, nil

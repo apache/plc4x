@@ -28,14 +28,15 @@ import (
 	"hash/fnv"
 )
 
+//go:generate go run ../../tools/plc4xgenerator/gen.go -type=DeviceInfo
 type DeviceInfo struct {
 	DeviceIdentifier readWriteModel.BACnetTagPayloadObjectIdentifier
 	Address          Address
 
-	MaximumApduLengthAccepted *readWriteModel.MaxApduLengthAccepted
-	SegmentationSupported     *readWriteModel.BACnetSegmentation
-	MaxSegmentsAccepted       *readWriteModel.MaxSegmentsAccepted
-	VendorId                  *readWriteModel.BACnetVendorId
+	MaximumApduLengthAccepted *readWriteModel.MaxApduLengthAccepted `stringer:"true"`
+	SegmentationSupported     *readWriteModel.BACnetSegmentation    `stringer:"true"`
+	MaxSegmentsAccepted       *readWriteModel.MaxSegmentsAccepted   `stringer:"true"`
+	VendorId                  *readWriteModel.BACnetVendorId        `stringer:"true"`
 	MaximumNpduLength         *uint
 
 	_refCount int
@@ -99,7 +100,7 @@ func (d *DeviceInfoCache) HasDeviceInfo(key DeviceInfoCacheKey) bool {
 
 // IAmDeviceInfo Create a device information record based on the contents of an IAmRequest and put it in the cache.
 func (d *DeviceInfoCache) IAmDeviceInfo(iAm readWriteModel.BACnetUnconfirmedServiceRequestIAm, pduSource Address) {
-	log.Debug().Msgf("IAmDeviceInfo\n%s", iAm)
+	log.Debug().Stringer("iAm", iAm).Msg("IAmDeviceInfo")
 
 	deviceIdentifier := iAm.GetDeviceIdentifier()
 	// Get the device instance
@@ -132,11 +133,11 @@ func (d *DeviceInfoCache) IAmDeviceInfo(iAm readWriteModel.BACnetUnconfirmedServ
 
 // GetDeviceInfo gets a DeviceInfo from cache
 func (d *DeviceInfoCache) GetDeviceInfo(key DeviceInfoCacheKey) (DeviceInfo, bool) {
-	log.Debug().Msgf("GetDeviceInfo %s", key)
+	log.Debug().Stringer("key", key).Msg("GetDeviceInfo %s")
 
 	// get the info if it's there
 	deviceInfo, ok := d.cache[key.HashKey()]
-	log.Debug().Msgf("deviceInfo: %#v", deviceInfo)
+	log.Debug().Stringer("deviceInfo", &deviceInfo).Msg("deviceInfo")
 
 	return deviceInfo, ok
 }
@@ -146,7 +147,7 @@ func (d *DeviceInfoCache) GetDeviceInfo(key DeviceInfoCacheKey) (DeviceInfo, boo
 //	to be updated to reflect the changes.  If this is a cached version of a persistent record then this is the
 //	opportunity to update the database.
 func (d *DeviceInfoCache) UpdateDeviceInfo(deviceInfo DeviceInfo) {
-	log.Debug().Msgf("UpdateDeviceInfo %#v", deviceInfo)
+	log.Debug().Stringer("deviceInfo", &deviceInfo).Msg("UpdateDeviceInfo")
 
 	// get the current key
 	cacheKey := deviceInfo._cacheKey
@@ -175,7 +176,7 @@ func (d *DeviceInfoCache) UpdateDeviceInfo(deviceInfo DeviceInfo) {
 //
 //	machine.
 func (d *DeviceInfoCache) Acquire(key DeviceInfoCacheKey) (DeviceInfo, bool) {
-	log.Debug().Msgf("Acquire %#v", key)
+	log.Debug().Stringer("key", key).Msg("Acquire")
 
 	deviceInfo, ok := d.cache[key.HashKey()]
 	if ok {
@@ -215,7 +216,11 @@ type Application struct {
 }
 
 func NewApplication(localDevice *LocalDeviceObject, deviceInfoCache *DeviceInfoCache, aseID *int) (*Application, error) {
-	log.Debug().Msgf("NewApplication localDevice=%v deviceInfoCache=%s aseID=%d", localDevice, deviceInfoCache, aseID)
+	log.Debug().
+		Interface("localDevice", localDevice).
+		Interface("deviceInfoCache", deviceInfoCache).
+		Interface("aseID", aseID).
+		Msg("NewApplication")
 	a := &Application{}
 	var err error
 	a.ApplicationServiceElement, err = NewApplicationServiceElement(aseID, a)
@@ -254,7 +259,7 @@ func NewApplication(localDevice *LocalDeviceObject, deviceInfoCache *DeviceInfoC
 	// if starting up is enabled, find all the startup functions
 	if !a._startupDisabled {
 		for _, fn := range a.CapabilityFunctions("startup") {
-			log.Debug().Msgf("startup fn %t", fn != nil)
+			log.Debug().Interface("fn", fn).Msg("startup fn")
 			Deferred(fn)
 		}
 	}
@@ -263,7 +268,7 @@ func NewApplication(localDevice *LocalDeviceObject, deviceInfoCache *DeviceInfoC
 
 // AddObject adds an object to the local collection
 func (a *Application) AddObject(obj *LocalDeviceObject) error {
-	log.Debug().Msgf("AddObject %v", obj)
+	log.Debug().Stringer("obj", obj).Msg("AddObject")
 
 	// extract the object name and identifier
 	objectName := obj.ObjectName
@@ -300,7 +305,7 @@ func (a *Application) AddObject(obj *LocalDeviceObject) error {
 
 // DeleteObject deletes an object from the local collection
 func (a *Application) DeleteObject(obj *LocalDeviceObject) error {
-	log.Debug().Msgf("DeleteObject %v", obj)
+	log.Debug().Stringer("obj", obj).Msg("DeleteObject")
 
 	// extract the object name and identifier
 	objectName := obj.ObjectName
@@ -362,7 +367,7 @@ func (a *Application) GetServicesSupported() []string {
 }
 
 func (a *Application) Request(apdu _PDU) error {
-	log.Debug().Msgf("Request\n%s", apdu)
+	log.Debug().Stringer("apdu", apdu).Msg("Request")
 
 	// double-check the input is the right kind of APDU
 	switch apdu.GetMessage().(type) {
@@ -374,12 +379,15 @@ func (a *Application) Request(apdu _PDU) error {
 }
 
 func (a *Application) Indication(apdu _PDU) error {
-	log.Debug().Msgf("Indication\n%s", apdu)
+	log.Debug().Stringer("apdu", apdu).Msg("Indication")
 
 	// get a helper function
 	helperName := fmt.Sprintf("Do_%T", apdu)
 	helperFn := a.helpers[helperName]
-	log.Debug().Msgf("helperFn: %s == %t", helperName, helperFn != nil)
+	log.Debug().
+		Str("helperName", helperName).
+		Interface("helperFn", helperFn).
+		Msg("working with helper")
 
 	// send back a reject for unrecognized services
 	if helperFn == nil {
@@ -390,7 +398,7 @@ func (a *Application) Indication(apdu _PDU) error {
 	}
 
 	if err := helperFn(apdu); err != nil {
-		log.Debug().Err(err).Msgf("err result")
+		log.Debug().Err(err).Msg("err result")
 		// TODO: do proper mapping
 		if err := a.Response(NewPDU(readWriteModel.NewAPDUError(0, readWriteModel.BACnetConfirmedServiceChoice_CREATE_OBJECT, nil, 0))); err != nil {
 			return err
@@ -425,11 +433,11 @@ func NewApplicationIOController(localDevice *LocalDeviceObject, deviceInfoCache 
 }
 
 func (a *ApplicationIOController) ProcessIO(iocb _IOCB) error {
-	log.Debug().Msgf("ProcessIO %s", iocb)
+	log.Debug().Stringer("iocb", iocb).Msg("ProcessIO")
 
 	// get the destination address from the pdu
 	destinationAddress := iocb.getDestination()
-	log.Debug().Msgf("destinationAddress %s", destinationAddress)
+	log.Debug().Stringer("destinationAddress", destinationAddress).Msg("working with destinationAddress")
 
 	// look up the queue
 	queue, ok := a.queueByAddress[destinationAddress.String()]
@@ -438,26 +446,29 @@ func (a *ApplicationIOController) ProcessIO(iocb _IOCB) error {
 		queue = *newQueue
 		a.queueByAddress[destinationAddress.String()] = queue
 	}
-	log.Debug().Msgf("queue %v", queue)
+	log.Debug().Stringer("queue", &queue).Msg("working with queue")
 
 	// ask the queue to process the request
 	return queue.RequestIO(iocb)
 }
 
 func (a *ApplicationIOController) _AppComplete(address *Address, apdu _PDU) error {
-	log.Debug().Msgf("_AppComplete %s\n%s", address, apdu)
+	log.Debug().
+		Stringer("address", address).
+		Stringer("apdu", apdu).
+		Msg("_AppComplete")
 
 	// look up the queue
 	queue, ok := a.queueByAddress[address.String()]
 	if !ok {
-		log.Debug().Msgf("no queue for %s", address)
+		log.Debug().Stringer("address", address).Msg("no queue for")
 		return nil
 	}
-	log.Debug().Msgf("queue %v", queue)
+	log.Debug().Stringer("queue", &queue).Msg("working with queue")
 
 	// make sure it has an active iocb
 	if queue.activeIOCB == nil {
-		log.Debug().Msgf("no active request for %s", address)
+		log.Debug().Stringer("address", address).Msg("no active request for")
 		return nil
 	}
 
@@ -484,7 +495,7 @@ func (a *ApplicationIOController) _AppComplete(address *Address, apdu _PDU) erro
 }
 
 func (a *ApplicationIOController) _AppRequest(apdu _PDU) {
-	log.Debug().Msgf("_AppRequest\n%s", apdu)
+	log.Debug().Stringer("apdu", apdu).Msg("_AppRequest")
 
 	// send it downstream, bypass the guard
 	if err := a.Application.Request(apdu); err != nil {
@@ -502,7 +513,7 @@ func (a *ApplicationIOController) _AppRequest(apdu _PDU) {
 }
 
 func (a *ApplicationIOController) Request(apdu _PDU) error {
-	log.Debug().Msgf("Request\n%s", apdu)
+	log.Debug().Stringer("apdu", apdu).Msg("Request")
 
 	// if this is not unconfirmed request, tell the application to use the IOCB interface
 	if _, ok := apdu.(readWriteModel.APDUUnconfirmedRequestExactly); !ok {
@@ -514,7 +525,7 @@ func (a *ApplicationIOController) Request(apdu _PDU) error {
 }
 
 func (a *ApplicationIOController) Confirmation(apdu _PDU) error {
-	log.Debug().Msgf("Confirmation\n%s", apdu)
+	log.Debug().Stringer("apdu", apdu).Msg("Confirmation")
 
 	// this is an ack, error, reject or abort
 	return a._AppComplete(apdu.GetPDUSource(), apdu)

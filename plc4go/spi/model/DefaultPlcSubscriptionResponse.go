@@ -52,7 +52,9 @@ func NewDefaultPlcSubscriptionResponse(
 	for subscriptionTagName, consumers := range request.(*DefaultPlcSubscriptionRequest).preRegisteredConsumers {
 		subscriptionHandle, err := plcSubscriptionResponse.GetSubscriptionHandle(subscriptionTagName)
 		if subscriptionHandle == nil || err != nil {
-			customLogger.Error().Msgf("PlcSubscriptionHandle for %s not found", subscriptionTagName)
+			customLogger.Error().
+				Str("subscriptionTagName", subscriptionTagName).
+				Msg("PlcSubscriptionHandle for subscriptionTagName not found")
 			continue
 		}
 		for _, consumer := range consumers {

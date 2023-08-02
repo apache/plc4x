@@ -126,7 +126,7 @@ func TsnListenerStatusParseWithBuffer(ctx context.Context, readBuffer utils.Read
 		return 0, errors.Wrap(err, "error reading TsnListenerStatus")
 	}
 	if enum, ok := TsnListenerStatusByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for TsnListenerStatus")
 		return TsnListenerStatus(val), nil
 	} else {
 		return enum, nil

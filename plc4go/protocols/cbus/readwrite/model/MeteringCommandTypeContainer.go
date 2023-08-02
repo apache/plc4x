@@ -251,7 +251,7 @@ func MeteringCommandTypeContainerParseWithBuffer(ctx context.Context, readBuffer
 		return 0, errors.Wrap(err, "error reading MeteringCommandTypeContainer")
 	}
 	if enum, ok := MeteringCommandTypeContainerByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for MeteringCommandTypeContainer")
 		return MeteringCommandTypeContainer(val), nil
 	} else {
 		return enum, nil

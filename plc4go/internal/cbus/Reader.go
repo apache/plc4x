@@ -128,7 +128,7 @@ func (m *Reader) createMessageTransactionAndWait(ctx context.Context, messageToS
 	// Start a new request-transaction (Is ended in the response-handler)
 	transaction := m.tm.StartTransaction()
 	transaction.Submit(func(transaction transactions.RequestTransaction) {
-		m.log.Trace().Msgf("Transaction getting handled:\n%s", transaction)
+		m.log.Trace().Stringer("transaction", transaction).Msg("Transaction getting handled")
 		m.sendMessageOverTheWire(ctx, transaction, messageToSend, addResponseCode, tagName, addPlcValue)
 	})
 	if err := transaction.AwaitCompletion(ctx); err != nil {
@@ -143,14 +143,14 @@ func (m *Reader) sendMessageOverTheWire(ctx context.Context, transaction transac
 	ttl := 5 * time.Second
 	if deadline, ok := ctx.Deadline(); ok {
 		ttl = -time.Since(deadline)
-		m.log.Debug().Msgf("setting ttl to %s", ttl)
+		m.log.Debug().Dur("ttl", ttl).Msg("setting ttl")
 	}
-	m.log.Trace().Msgf("sending with ctx %s", ctx)
+	m.log.Trace().Interface("ctx", ctx).Msg("sending with ctx")
 	if err := m.messageCodec.SendRequest(
 		ctx,
 		messageToSend,
 		func(cbusMessage spi.Message) bool {
-			m.log.Trace().Msgf("Checking %T", cbusMessage)
+			m.log.Trace().Type("cbusMessageType", cbusMessage).Msg("Checking")
 			messageToClient, ok := cbusMessage.(readWriteModel.CBusMessageToClientExactly)
 			if !ok {
 				m.log.Trace().Msg("Not a message to client")
@@ -168,20 +168,23 @@ func (m *Reader) sendMessageOverTheWire(ctx context.Context, transaction transac
 				m.log.Trace().Msg("it is not a confirmation")
 				return false
 			}
-			receivedAlpha := confirmation.GetConfirmation().GetAlpha().GetCharacter()
+			receivedAlpha := confirmation.GetConfirmation().GetAlpha()
 			// TODO: assert that this is a CBusMessageToServer indeed (by changing param for example)
 			alphaRetriever, ok := messageToSend.(readWriteModel.CBusMessageToServer).GetRequest().(interface{ GetAlpha() readWriteModel.Alpha })
 			if !ok {
 				m.log.Trace().Msg("no alpha there")
 				return false
 			}
-			expectedAlpha := alphaRetriever.GetAlpha().GetCharacter()
-			m.log.Trace().Msgf("Comparing expected alpha '%c' to received alpha '%c'", expectedAlpha, receivedAlpha)
-			return receivedAlpha == expectedAlpha
+			expectedAlpha := alphaRetriever.GetAlpha()
+			m.log.Trace().
+				Stringer("expectedAlpha", expectedAlpha).
+				Stringer("receivedAlpha", receivedAlpha).
+				Msgf("Comparing expected alpha to received alpha")
+			return receivedAlpha.GetCharacter() == expectedAlpha.GetCharacter()
 		},
 		func(receivedMessage spi.Message) error {
 			// Convert the response into an
-			m.log.Trace().Msgf("convert message: %T", receivedMessage)
+			m.log.Trace().Type("receivedMessage", receivedMessage).Msg("convert message")
 			messageToClient := receivedMessage.(readWriteModel.CBusMessageToClient)
 			if _, ok := messageToClient.GetReply().(readWriteModel.ServerErrorReplyExactly); ok {
 				m.log.Trace().Msg("We got a server failure")
@@ -203,7 +206,10 @@ func (m *Reader) sendMessageOverTheWire(ctx context.Context, transaction transac
 				default:
 					return transaction.FailRequest(errors.Errorf("Every code should be mapped here: %v", replyOrConfirmationConfirmation.GetConfirmation().GetConfirmationType()))
 				}
-				m.log.Trace().Msgf("Was no success %s:%v", tagName, responseCode)
+				m.log.Trace().
+					Str("tagName", tagName).
+					Stringer("responseCode", responseCode).
+					Msg("Was no success")
 				addResponseCode(tagName, responseCode)
 				return transaction.EndRequest()
 			}
@@ -212,7 +218,9 @@ func (m *Reader) sendMessageOverTheWire(ctx context.Context, transaction transac
 			// TODO: it could be double confirmed but this is not implemented yet
 			embeddedReply, ok := replyOrConfirmationConfirmation.GetEmbeddedReply().(readWriteModel.ReplyOrConfirmationReplyExactly)
 			if !ok {
-				m.log.Trace().Msgf("Is a confirm only, no data. Alpha: %c", alpha.GetCharacter())
+				m.log.Trace().
+					Stringer("alpha", alpha).
+					Msg("Is a confirm only, no data")
 				addResponseCode(tagName, apiModel.PlcResponseCode_NOT_FOUND)
 				return transaction.EndRequest()
 			}
@@ -233,7 +241,9 @@ func (m *Reader) sendMessageOverTheWire(ctx context.Context, transaction transac
 			return transaction.FailRequest(err)
 		},
 		ttl); err != nil {
-		m.log.Debug().Err(err).Msgf("Error sending message for tag %s", tagName)
+		m.log.Debug().Err(err).
+			Str("tagName", tagName).
+			Msg("Error sending message for tag %s")
 		addResponseCode(tagName, apiModel.PlcResponseCode_INTERNAL_ERROR)
 		if err := transaction.FailRequest(errors.Errorf("timeout after %s", 1*time.Second)); err != nil {
 			m.log.Debug().Err(err).Msg("Error failing request")

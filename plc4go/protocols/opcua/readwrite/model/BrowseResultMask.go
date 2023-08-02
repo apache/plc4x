@@ -162,7 +162,7 @@ func BrowseResultMaskParseWithBuffer(ctx context.Context, readBuffer utils.ReadB
 		return 0, errors.Wrap(err, "error reading BrowseResultMask")
 	}
 	if enum, ok := BrowseResultMaskByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for BrowseResultMask")
 		return BrowseResultMask(val), nil
 	} else {
 		return enum, nil

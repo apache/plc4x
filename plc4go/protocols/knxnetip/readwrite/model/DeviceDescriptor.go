@@ -545,7 +545,7 @@ func DeviceDescriptorParseWithBuffer(ctx context.Context, readBuffer utils.ReadB
 		return 0, errors.Wrap(err, "error reading DeviceDescriptor")
 	}
 	if enum, ok := DeviceDescriptorByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for DeviceDescriptor")
 		return DeviceDescriptor(val), nil
 	} else {
 		return enum, nil

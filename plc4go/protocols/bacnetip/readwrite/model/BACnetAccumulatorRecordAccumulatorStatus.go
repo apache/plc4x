@@ -132,7 +132,7 @@ func BACnetAccumulatorRecordAccumulatorStatusParseWithBuffer(ctx context.Context
 		return 0, errors.Wrap(err, "error reading BACnetAccumulatorRecordAccumulatorStatus")
 	}
 	if enum, ok := BACnetAccumulatorRecordAccumulatorStatusByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for BACnetAccumulatorRecordAccumulatorStatus")
 		return BACnetAccumulatorRecordAccumulatorStatus(val), nil
 	} else {
 		return enum, nil

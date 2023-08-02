@@ -120,7 +120,7 @@ func AlarmTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) 
 		return 0, errors.Wrap(err, "error reading AlarmType")
 	}
 	if enum, ok := AlarmTypeByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for AlarmType")
 		return AlarmType(val), nil
 	} else {
 		return enum, nil

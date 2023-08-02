@@ -126,7 +126,7 @@ func BACnetDoorValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 		return 0, errors.Wrap(err, "error reading BACnetDoorValue")
 	}
 	if enum, ok := BACnetDoorValueByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for BACnetDoorValue")
 		return BACnetDoorValue(val), nil
 	} else {
 		return enum, nil

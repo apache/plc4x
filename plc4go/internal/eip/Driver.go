@@ -57,11 +57,18 @@ func NewDriver(_options ...options.WithOption) plc4go.PlcDriver {
 }
 
 func (d *Driver) GetConnectionWithContext(ctx context.Context, transportUrl url.URL, transports map[string]transports.Transport, driverOptions map[string][]string) <-chan plc4go.PlcConnectionConnectResult {
-	d.log.Debug().Stringer("transportUrl", &transportUrl).Msgf("Get connection for transport url with %d transport(s) and %d option(s)", len(transports), len(driverOptions))
+	d.log.Debug().
+		Stringer("transportUrl", &transportUrl).
+		Int("nTransports", len(transports)).
+		Int("nDriverOptions", len(driverOptions)).
+		Msg("Get connection for transport url with nTransports transport(s) and nDriverOptions option(s)")
 	// Get an the transport specified in the url
 	transport, ok := transports[transportUrl.Scheme]
 	if !ok {
-		d.log.Error().Stringer("transportUrl", &transportUrl).Msgf("We couldn't find a transport for scheme %s", transportUrl.Scheme)
+		d.log.Error().
+			Stringer("transportUrl", &transportUrl).
+			Str("scheme", transportUrl.Scheme).
+			Msg("We couldn't find a transport for scheme")
 		ch := make(chan plc4go.PlcConnectionConnectResult, 1)
 		ch <- _default.NewDefaultPlcConnectionConnectResult(nil, errors.Errorf("couldn't find transport for given transport url %#v", transportUrl))
 		return ch
@@ -75,7 +82,10 @@ func (d *Driver) GetConnectionWithContext(ctx context.Context, transportUrl url.
 		append(d._options, options.WithCustomLogger(d.log))...,
 	)
 	if err != nil {
-		d.log.Error().Stringer("transportUrl", &transportUrl).Msgf("We couldn't create a transport instance for port %#v", driverOptions["defaultTcpPort"])
+		d.log.Error().
+			Stringer("transportUrl", &transportUrl).
+			Strs("defaultTcpPort", driverOptions["defaultTcpPort"]).
+			Msg("We couldn't create a transport instance for port")
 		ch := make(chan plc4go.PlcConnectionConnectResult, 1)
 		ch <- _default.NewDefaultPlcConnectionConnectResult(nil, errors.New("couldn't initialize transport configuration for given transport url "+transportUrl.String()))
 		return ch
@@ -85,11 +95,11 @@ func (d *Driver) GetConnectionWithContext(ctx context.Context, transportUrl url.
 		transportInstance,
 		append(d._options, options.WithCustomLogger(d.log))...,
 	)
-	d.log.Debug().Msgf("working with codec %#v", codec)
+	d.log.Debug().Stringer("codec", codec).Msg("working with codec")
 
 	configuration, err := ParseFromOptions(d.log, driverOptions)
 	if err != nil {
-		d.log.Error().Err(err).Msgf("Invalid driverOptions")
+		d.log.Error().Err(err).Msg("Invalid driverOptions")
 		ch := make(chan plc4go.PlcConnectionConnectResult, 1)
 		ch <- _default.NewDefaultPlcConnectionConnectResult(nil, errors.Wrap(err, "Invalid driverOptions"))
 		return ch
@@ -97,7 +107,7 @@ func (d *Driver) GetConnectionWithContext(ctx context.Context, transportUrl url.
 
 	driverContext, err := NewDriverContext(configuration)
 	if err != nil {
-		d.log.Error().Err(err).Msgf("Invalid driverOptions")
+		d.log.Error().Err(err).Msg("Invalid driverOptions")
 		ch := make(chan plc4go.PlcConnectionConnectResult, 1)
 		ch <- _default.NewDefaultPlcConnectionConnectResult(nil, errors.Wrap(err, "Invalid driverOptions"))
 		return ch

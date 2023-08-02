@@ -69,7 +69,7 @@ func NewModbusPlcTagFromStrings(tagType TagType, addressString string, quantityS
 	}
 	quantity, err := strconv.ParseUint(quantityString, 10, 16)
 	if err != nil {
-		customLogger.Warn().Err(err).Msgf("Error during parsing for %s. Falling back to 1", quantityString)
+		customLogger.Warn().Err(err).Str("quantityString", quantityString).Msg("Error during parsing for %s. Falling back to 1")
 		quantity = 1
 	}
 	return NewTag(tagType, uint16(address), uint16(quantity), datatype), nil

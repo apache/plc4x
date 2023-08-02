@@ -56,7 +56,10 @@ func (m *Connection) handleIncomingTunnelingRequest(ctx context.Context, tunneli
 	go func() {
 		defer func() {
 			if err := recover(); err != nil {
-				m.log.Error().Msgf("panic-ed %v. Stack: %s", err, debug.Stack())
+				m.log.Error().
+					Str("stack", string(debug.Stack())).
+					Interface("err", err).
+					Msg("panic-ed")
 			}
 		}()
 		lDataInd, ok := tunnelingRequest.GetCemi().(driverModel.LDataIndExactly)
@@ -173,7 +176,7 @@ func (m *Connection) getGroupAddressNumLevels() uint8 {
 func (m *Connection) addSubscriber(subscriber *Subscriber) {
 	for _, sub := range m.subscribers {
 		if sub == subscriber {
-			m.log.Debug().Msgf("Subscriber %v already added", subscriber)
+			m.log.Debug().Stringer("subscriber", subscriber).Msg("Subscriber %v already added")
 			return
 		}
 	}

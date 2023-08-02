@@ -20,12 +20,14 @@
 package cmd
 
 import (
+	"bytes"
 	"fmt"
 	"github.com/apache/plc4x/plc4go/tools/plc4xpcapanalyzer/config"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"github.com/rs/zerolog/pkgerrors"
 	"os"
+	"strings"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -89,7 +91,30 @@ func initConfig() {
 		log.Logger = log.
 			//// Enable below if you want to see the filenames
 			//With().Caller().Logger().
-			Output(zerolog.ConsoleWriter{Out: os.Stderr}).
+			Output(zerolog.NewConsoleWriter(
+				func(w *zerolog.ConsoleWriter) {
+					w.Out = os.Stderr
+				},
+				func(w *zerolog.ConsoleWriter) {
+					w.FormatFieldValue = func(i interface{}) string {
+						if aString, ok := i.(string); ok && strings.Contains(aString, "\\n") {
+							return fmt.Sprintf("\x1b[%dm%v\x1b[0m", 31, "see below")
+						}
+						return fmt.Sprintf("%s", i)
+					}
+					w.FormatExtra = func(m map[string]interface{}, buffer *bytes.Buffer) error {
+						for key, i := range m {
+							if aString, ok := i.(string); ok && strings.Contains(aString, "\n") {
+								buffer.WriteString("\n")
+								buffer.WriteString(fmt.Sprintf("\x1b[%dm%v\x1b[0m", 32, "field "+key))
+								buffer.WriteString(":\n" + aString)
+							}
+						}
+						return nil
+					}
+				},
+			),
+			).
 			Level(parseLogLevel())
 	}
 }
@@ -97,7 +122,7 @@ func initConfig() {
 func parseLogLevel() zerolog.Level {
 	level, err := zerolog.ParseLevel(config.RootConfigInstance.LogLevel)
 	if err != nil {
-		log.Fatal().Err(err).Msgf("Unknown log level %s", config.RootConfigInstance.LogLevel)
+		log.Fatal().Err(err).Str("level", config.RootConfigInstance.LogLevel).Msg("Unknown log level")
 	}
 	return level
 }

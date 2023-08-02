@@ -187,11 +187,13 @@ func (m Writer) ToPlc4xWriteResponse(response readWriteModel.S7Message, writeReq
 			m.log.Trace().Msg("Returning the response")
 			return spiModel.NewDefaultPlcWriteResponse(writeRequest, responseCodes), nil
 		} else {
-			m.log.Warn().Msgf("Got an unknown error response from the PLC. Error Class: %d, Error Code %d. "+
-				"We probably need to implement explicit handling for this, so please file a bug-report "+
-				"on https://issues.apache.org/jira/projects/PLC4X and ideally attach a WireShark dump "+
-				"containing a capture of the communication.",
-				errorClass, errorCode)
+			m.log.Warn().
+				Uint8("errorClass", errorClass).
+				Uint8("errorCode", errorCode).
+				Msg("Got an unknown error response from the PLC. Error Class: %d, Error Code %d. " +
+					"We probably need to implement explicit handling for this, so please file a bug-report " +
+					"on https://github.com/apache/plc4x/issues and ideally attach a WireShark dump " +
+					"containing a capture of the communication.")
 			for _, tagName := range writeRequest.GetTagNames() {
 				responseCodes[tagName] = apiModel.PlcResponseCode_INTERNAL_ERROR
 			}

@@ -114,7 +114,7 @@ func BACnetAccessRuleTimeRangeSpecifierParseWithBuffer(ctx context.Context, read
 		return 0, errors.Wrap(err, "error reading BACnetAccessRuleTimeRangeSpecifier")
 	}
 	if enum, ok := BACnetAccessRuleTimeRangeSpecifierByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for BACnetAccessRuleTimeRangeSpecifier")
 		return BACnetAccessRuleTimeRangeSpecifier(val), nil
 	} else {
 		return enum, nil

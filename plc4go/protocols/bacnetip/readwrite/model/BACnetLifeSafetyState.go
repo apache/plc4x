@@ -252,7 +252,7 @@ func BACnetLifeSafetyStateParseWithBuffer(ctx context.Context, readBuffer utils.
 		return 0, errors.Wrap(err, "error reading BACnetLifeSafetyState")
 	}
 	if enum, ok := BACnetLifeSafetyStateByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for BACnetLifeSafetyState")
 		return BACnetLifeSafetyState(val), nil
 	} else {
 		return enum, nil

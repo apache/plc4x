@@ -38,13 +38,15 @@ import (
 )
 
 // ApplicationLayerMessageCodec is a wrapper for MessageCodec which takes care of segmentation, retries etc.
+//
+//go:generate go run ../../tools/plc4xgenerator/gen.go -type=ApplicationLayerMessageCodec
 type ApplicationLayerMessageCodec struct {
 	bipSimpleApplication *BIPSimpleApplication
 	messageCode          *MessageCodec
 	deviceInfoCache      DeviceInfoCache
 
-	localAddress  *net.UDPAddr
-	remoteAddress *net.UDPAddr
+	localAddress  *net.UDPAddr `stringer:"true"`
+	remoteAddress *net.UDPAddr `stringer:"true"`
 }
 
 func NewApplicationLayerMessageCodec(udpTransport *udp.Transport, transportUrl url.URL, options map[string][]string, localAddress *net.UDPAddr, remoteAddress *net.UDPAddr) (*ApplicationLayerMessageCodec, error) {
@@ -205,11 +207,12 @@ func (m *ApplicationLayerMessageCodec) GetDefaultIncomingMessageChannel() chan s
 	return make(chan spi.Message)
 }
 
+//go:generate go run ../../tools/plc4xgenerator/gen.go -type=MessageCodec
 type MessageCodec struct {
 	_default.DefaultCodec
 
 	passLogToModel bool
-	log            zerolog.Logger
+	log            zerolog.Logger `ignore:"true"`
 }
 
 func NewMessageCodec(transportInstance transports.TransportInstance) *MessageCodec {
@@ -243,7 +246,7 @@ func (m *MessageCodec) Send(message spi.Message) error {
 func (m *MessageCodec) Receive() (spi.Message, error) {
 	// We need at least 6 bytes in order to know how big the packet is in total
 	if num, err := m.GetTransportInstance().GetNumBytesAvailableInBuffer(); (err == nil) && (num >= 4) {
-		log.Debug().Msgf("we got %d readable bytes", num)
+		log.Debug().Uint32("num", num).Msg("we got num readable bytes")
 		data, err := m.GetTransportInstance().PeekReadableBytes(4)
 		if err != nil {
 			log.Warn().Err(err).Msg("error peeking")
@@ -252,7 +255,10 @@ func (m *MessageCodec) Receive() (spi.Message, error) {
 		}
 		packetSize := uint32((uint16(data[2]) << 8) + uint16(data[3]))
 		if num < packetSize {
-			log.Debug().Msgf("Not enough bytes. Got: %d Need: %d\n", num, packetSize)
+			log.Debug().
+				Uint32("num", num).
+				Uint32("packetSize", packetSize).
+				Msg("Not enough bytes. Got: num Need: packetSize")
 			return nil, nil
 		}
 		data, err = m.GetTransportInstance().Read(packetSize)

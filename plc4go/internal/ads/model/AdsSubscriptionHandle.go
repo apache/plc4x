@@ -30,13 +30,14 @@ import (
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 )
 
+//go:generate go run ../../../tools/plc4xgenerator/gen.go -type=AdsSubscriptionHandle
 type AdsSubscriptionHandle struct {
 	subscriber spi.PlcSubscriber
 	tagName    string
 	directTag  DirectPlcTag
 	consumers  []apiModel.PlcSubscriptionEventConsumer
 
-	log      zerolog.Logger
+	log      zerolog.Logger       `ignore:"true"`
 	_options []options.WithOption // Used to pass them downstream
 }
 

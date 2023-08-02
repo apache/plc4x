@@ -198,7 +198,7 @@ func FirmwareTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 		return 0, errors.Wrap(err, "error reading FirmwareType")
 	}
 	if enum, ok := FirmwareTypeByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for FirmwareType")
 		return FirmwareType(val), nil
 	} else {
 		return enum, nil

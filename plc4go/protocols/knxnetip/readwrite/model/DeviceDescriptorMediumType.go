@@ -138,7 +138,7 @@ func DeviceDescriptorMediumTypeParseWithBuffer(ctx context.Context, readBuffer u
 		return 0, errors.Wrap(err, "error reading DeviceDescriptorMediumType")
 	}
 	if enum, ok := DeviceDescriptorMediumTypeByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for DeviceDescriptorMediumType")
 		return DeviceDescriptorMediumType(val), nil
 	} else {
 		return enum, nil

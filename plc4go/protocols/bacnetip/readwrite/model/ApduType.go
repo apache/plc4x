@@ -198,7 +198,7 @@ func ApduTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (
 		return 0, errors.Wrap(err, "error reading ApduType")
 	}
 	if enum, ok := ApduTypeByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for ApduType")
 		return ApduType(val), nil
 	} else {
 		return enum, nil

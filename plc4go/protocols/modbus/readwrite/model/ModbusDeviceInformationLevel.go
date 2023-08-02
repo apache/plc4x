@@ -126,7 +126,7 @@ func ModbusDeviceInformationLevelParseWithBuffer(ctx context.Context, readBuffer
 		return 0, errors.Wrap(err, "error reading ModbusDeviceInformationLevel")
 	}
 	if enum, ok := ModbusDeviceInformationLevelByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for ModbusDeviceInformationLevel")
 		return ModbusDeviceInformationLevel(val), nil
 	} else {
 		return enum, nil

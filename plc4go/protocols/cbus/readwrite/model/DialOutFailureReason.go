@@ -138,7 +138,7 @@ func DialOutFailureReasonParseWithBuffer(ctx context.Context, readBuffer utils.R
 		return 0, errors.Wrap(err, "error reading DialOutFailureReason")
 	}
 	if enum, ok := DialOutFailureReasonByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for DialOutFailureReason")
 		return DialOutFailureReason(val), nil
 	} else {
 		return enum, nil

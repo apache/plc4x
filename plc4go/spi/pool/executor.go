@@ -105,7 +105,7 @@ func (e *executor) Start() {
 	}
 	e.running = true
 	e.shutdown = false
-	e.log.Debug().Msgf("Starting %d workers", len(e.worker))
+	e.log.Debug().Int("nWorkers", len(e.worker)).Msg("Starting nWorkers workers")
 	for i := 0; i < len(e.worker); i++ {
 		_worker := e.worker[i]
 		_worker.initialize()
@@ -128,7 +128,7 @@ func (e *executor) Stop() {
 	}
 	e.running = false
 	e.shutdown = false
-	e.log.Debug().Msgf("waiting for %d workers to stop", len(e.worker))
+	e.log.Debug().Int("nWorkers", len(e.worker)).Msg("waiting for nWorkers workers to stop")
 	e.workerWaitGroup.Wait()
 	e.log.Trace().Msg("stopped")
 }

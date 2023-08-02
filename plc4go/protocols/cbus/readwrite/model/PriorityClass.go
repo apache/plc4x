@@ -126,7 +126,7 @@ func PriorityClassParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 		return 0, errors.Wrap(err, "error reading PriorityClass")
 	}
 	if enum, ok := PriorityClassByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for PriorityClass")
 		return PriorityClass(val), nil
 	} else {
 		return enum, nil

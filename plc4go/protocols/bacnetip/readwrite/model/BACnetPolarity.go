@@ -114,7 +114,7 @@ func BACnetPolarityParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 		return 0, errors.Wrap(err, "error reading BACnetPolarity")
 	}
 	if enum, ok := BACnetPolarityByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for BACnetPolarity")
 		return BACnetPolarity(val), nil
 	} else {
 		return enum, nil
