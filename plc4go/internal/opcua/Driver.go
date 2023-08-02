@@ -145,7 +145,6 @@ func (d *Driver) GetConnectionWithContext(ctx context.Context, transportUrl url.
 
 	codec := NewMessageCodec(
 		transportInstance,
-		NewSecureChannel(d.log, driverContext, configuration),
 		append(d._options, options.WithCustomLogger(d.log))...,
 	)
 	d.log.Debug().Stringer("codec", codec).Msg("working with codec")

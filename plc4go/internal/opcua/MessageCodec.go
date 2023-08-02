@@ -22,14 +22,12 @@ package opcua
 import (
 	"context"
 	"encoding/binary"
-	"sync"
-	"time"
-
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/opcua/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/default"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/transports"
+	"sync"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
@@ -39,30 +37,18 @@ import (
 type MessageCodec struct {
 	_default.DefaultCodec
 
-	channel *SecureChannel
-
-	connectEvent      chan struct{}
-	connectTimeout    time.Duration `stringer:"true"` // TODO: do we need to have that in general, where to get that from
-	disconnectEvent   chan struct{}
-	disconnectTimeout time.Duration `stringer:"true"` // TODO: do we need to have that in general, where to get that from
-
 	stateChange sync.Mutex
 
 	passLogToModel bool           `ignore:"true"`
 	log            zerolog.Logger `ignore:"true"`
 }
 
-func NewMessageCodec(transportInstance transports.TransportInstance, channel *SecureChannel, _options ...options.WithOption) *MessageCodec {
+func NewMessageCodec(transportInstance transports.TransportInstance, _options ...options.WithOption) *MessageCodec {
 	passLoggerToModel, _ := options.ExtractPassLoggerToModel(_options...)
 	customLogger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)
 	codec := &MessageCodec{
-		channel:           channel,
-		connectEvent:      make(chan struct{}),
-		connectTimeout:    5 * time.Second,
-		disconnectEvent:   make(chan struct{}),
-		disconnectTimeout: 5 * time.Second,
-		passLogToModel:    passLoggerToModel,
-		log:               customLogger,
+		passLogToModel: passLoggerToModel,
+		log:            customLogger,
 	}
 	codec.DefaultCodec = _default.NewDefaultCodec(codec, transportInstance, _options...)
 	return codec
@@ -74,46 +60,6 @@ func (m *MessageCodec) GetCodec() spi.MessageCodec {
 
 func (m *MessageCodec) Connect() error {
 	return m.ConnectWithContext(context.Background())
-}
-
-func (m *MessageCodec) ConnectWithContext(ctx context.Context) error {
-	m.log.Trace().Msg("connecting")
-	if err := m.DefaultCodec.ConnectWithContext(ctx); err != nil {
-		return errors.Wrap(err, "error connecting default codec")
-	}
-	m.log.Debug().Msg("Opcua Driver running in ACTIVE mode.")
-	m.channel.onConnect(ctx, m)
-
-	connectTimeout := time.NewTimer(m.connectTimeout)
-	select {
-	case <-m.connectEvent:
-		m.log.Info().Msg("connected")
-	case <-connectTimeout.C:
-		return errors.Errorf("timeout after %s", m.connectTimeout)
-	}
-	return nil
-}
-
-func (m *MessageCodec) fireConnected() {
-	m.log.Trace().Msg("fire connected event")
-	close(m.connectEvent)
-}
-
-func (m *MessageCodec) Disconnect() error {
-	m.log.Trace().Msg("disconnecting")
-	m.channel.onDisconnect(context.Background(), m)
-	disconnectTimeout := time.NewTimer(m.disconnectTimeout)
-	select {
-	case <-m.disconnectEvent:
-		m.log.Info().Msg("disconnected")
-	case <-disconnectTimeout.C:
-		return errors.Errorf("timeout after %s", m.disconnectTimeout)
-	}
-	return m.DefaultCodec.Disconnect()
-}
-
-func (m *MessageCodec) fireDisconnected() {
-	close(m.disconnectEvent)
 }
 
 func (m *MessageCodec) Send(message spi.Message) error {

@@ -45,31 +45,6 @@ func (d *MessageCodec) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 	if err := d.DefaultCodec.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
 		return err
 	}
-	{
-		_value := fmt.Sprintf("%v", d.channel)
-
-		if err := writeBuffer.WriteString("channel", uint32(len(_value)*8), "UTF-8", _value); err != nil {
-			return err
-		}
-	}
-
-	_connectEvent_plx4gen_description := fmt.Sprintf("%d element(s)", len(d.connectEvent))
-	if err := writeBuffer.WriteString("connectEvent", uint32(len(_connectEvent_plx4gen_description)*8), "UTF-8", _connectEvent_plx4gen_description); err != nil {
-		return err
-	}
-
-	if err := writeBuffer.WriteString("connectTimeout", uint32(len(d.connectTimeout.String())*8), "UTF-8", d.connectTimeout.String()); err != nil {
-		return err
-	}
-
-	_disconnectEvent_plx4gen_description := fmt.Sprintf("%d element(s)", len(d.disconnectEvent))
-	if err := writeBuffer.WriteString("disconnectEvent", uint32(len(_disconnectEvent_plx4gen_description)*8), "UTF-8", _disconnectEvent_plx4gen_description); err != nil {
-		return err
-	}
-
-	if err := writeBuffer.WriteString("disconnectTimeout", uint32(len(d.disconnectTimeout.String())*8), "UTF-8", d.disconnectTimeout.String()); err != nil {
-		return err
-	}
 	if err := writeBuffer.PopContext("MessageCodec"); err != nil {
 		return err
 	}

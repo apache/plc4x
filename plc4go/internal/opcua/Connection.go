@@ -22,7 +22,7 @@ package opcua
 import (
 	"context"
 	"runtime/debug"
-	"sync"
+	"time"
 
 	"github.com/apache/plc4x/plc4go/pkg/api"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
@@ -45,7 +45,12 @@ type Connection struct {
 	configuration Configuration `stringer:"true"`
 	driverContext DriverContext `stringer:"true"`
 
-	handlerWaitGroup sync.WaitGroup
+	channel *SecureChannel
+
+	connectEvent      chan struct{}
+	connectTimeout    time.Duration `stringer:"true"` // TODO: do we need to have that in general, where to get that from
+	disconnectEvent   chan struct{}
+	disconnectTimeout time.Duration `stringer:"true"` // TODO: do we need to have that in general, where to get that from
 
 	connectionId string
 	tracer       tracer.Tracer
@@ -57,12 +62,16 @@ type Connection struct {
 func NewConnection(messageCodec *MessageCodec, configuration Configuration, driverContext DriverContext, tagHandler spi.PlcTagHandler, connectionOptions map[string][]string, _options ...options.WithOption) *Connection {
 	customLogger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)
 	connection := &Connection{
-		messageCodec:  messageCodec,
-		configuration: configuration,
-		driverContext: driverContext,
-
-		log:      customLogger,
-		_options: _options,
+		messageCodec:      messageCodec,
+		configuration:     configuration,
+		driverContext:     driverContext,
+		channel:           NewSecureChannel(customLogger, driverContext, configuration),
+		connectEvent:      make(chan struct{}),
+		connectTimeout:    5 * time.Second,
+		disconnectEvent:   make(chan struct{}),
+		disconnectTimeout: 5 * time.Second,
+		log:               customLogger,
+		_options:          _options,
 	}
 	if traceEnabledOption, ok := connectionOptions["traceEnabled"]; ok {
 		if len(traceEnabledOption) == 1 {
@@ -132,10 +141,15 @@ func (c *Connection) Close() <-chan plc4go.PlcConnectionCloseResult {
 	results := make(chan plc4go.PlcConnectionCloseResult, 1)
 	go func() {
 		result := <-c.DefaultConnection.Close()
-		c.log.Trace().Msg("Waiting for handlers to stop")
-		c.handlerWaitGroup.Wait()
-		c.log.Trace().Msg("handlers stopped, dispatching result")
-		results <- result
+		c.channel.onDisconnect(context.Background(), c)
+		disconnectTimeout := time.NewTimer(c.disconnectTimeout)
+		select {
+		case <-c.disconnectEvent:
+			c.log.Info().Msg("disconnected")
+			results <- result
+		case <-disconnectTimeout.C:
+			results <- _default.NewDefaultPlcConnectionCloseResult(c, errors.Errorf("timeout after %s", c.disconnectTimeout))
+		}
 	}()
 	return results
 }
@@ -153,14 +167,14 @@ func (c *Connection) ReadRequestBuilder() apiModel.PlcReadRequestBuilder {
 	return spiModel.NewDefaultPlcReadRequestBuilder(
 		c.GetPlcTagHandler(),
 		NewReader(
-			c.messageCodec,
+			c,
 			append(c._options, options.WithCustomLogger(c.log))...,
 		),
 	)
 }
 
 func (c *Connection) WriteRequestBuilder() apiModel.PlcWriteRequestBuilder {
-	return spiModel.NewDefaultPlcWriteRequestBuilder(c.GetPlcTagHandler(), c.GetPlcValueHandler(), NewWriter(c.messageCodec))
+	return spiModel.NewDefaultPlcWriteRequestBuilder(c.GetPlcTagHandler(), c.GetPlcValueHandler(), NewWriter(c))
 }
 
 func (c *Connection) SubscriptionRequestBuilder() apiModel.PlcSubscriptionRequestBuilder {
@@ -169,7 +183,7 @@ func (c *Connection) SubscriptionRequestBuilder() apiModel.PlcSubscriptionReques
 		c.GetPlcValueHandler(),
 		NewSubscriber(
 			c.addSubscriber,
-			c.messageCodec,
+			c,
 			append(c._options, options.WithCustomLogger(c.log))...,
 		),
 	)
@@ -190,10 +204,25 @@ func (c *Connection) addSubscriber(subscriber *Subscriber) {
 	c.subscribers = append(c.subscribers, subscriber)
 }
 
-func (c *Connection) setupConnection(_ context.Context, ch chan plc4go.PlcConnectionConnectResult) {
-	c.log.Trace().Msg("Connection setup done")
-	c.fireConnected(ch)
-	c.log.Trace().Msg("Connect fired")
+func (c *Connection) setupConnection(ctx context.Context, ch chan plc4go.PlcConnectionConnectResult) {
+	c.log.Trace().Msg("setup connection")
+
+	c.log.Debug().Msg("Opcua Driver running in ACTIVE mode.")
+	c.channel.onConnect(ctx, c, ch)
+
+	connectTimeout := time.NewTimer(c.connectTimeout)
+	select {
+	case <-c.connectEvent:
+		c.log.Info().Msg("connected")
+		c.fireConnected(ch)
+		c.log.Trace().Msg("Connect fired")
+	case <-connectTimeout.C:
+		c.fireConnectionError(errors.Errorf("timeout after %s", c.connectTimeout), ch)
+		c.log.Trace().Msg("connection error fired")
+		return
+	}
+
+	c.log.Trace().Msg("connection setup done")
 }
 
 func (c *Connection) fireConnectionError(err error, ch chan<- plc4go.PlcConnectionConnectResult) {
@@ -206,6 +235,8 @@ func (c *Connection) fireConnectionError(err error, ch chan<- plc4go.PlcConnecti
 	if err := c.messageCodec.Disconnect(); err != nil {
 		c.log.Debug().Err(err).Msg("Error disconnecting message codec on connection error")
 	}
+	c.SetConnected(false)
+	close(c.disconnectEvent)
 }
 
 func (c *Connection) fireConnected(ch chan<- plc4go.PlcConnectionConnectResult) {
@@ -216,4 +247,5 @@ func (c *Connection) fireConnected(ch chan<- plc4go.PlcConnectionConnectResult) 
 		c.log.Info().Msg("Successfully connected")
 	}
 	c.SetConnected(true)
+	close(c.connectEvent)
 }

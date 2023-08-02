@@ -38,15 +38,15 @@ import (
 )
 
 type Writer struct {
-	messageCodec *MessageCodec
+	connection *Connection
 
 	log zerolog.Logger
 }
 
-func NewWriter(messageCodec *MessageCodec, _options ...options.WithOption) *Writer {
+func NewWriter(connection *Connection, _options ...options.WithOption) *Writer {
 	customLogger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)
 	return &Writer{
-		messageCodec: messageCodec,
+		connection: connection,
 
 		log: customLogger,
 	}
@@ -67,9 +67,9 @@ func (m *Writer) WriteSync(ctx context.Context, writeRequest apiModel.PlcWriteRe
 	}()
 
 	requestHeader := readWriteModel.NewRequestHeader(
-		m.messageCodec.channel.getAuthenticationToken(),
-		m.messageCodec.channel.getCurrentDateTime(),
-		m.messageCodec.channel.getRequestHandle(),
+		m.connection.channel.getAuthenticationToken(),
+		m.connection.channel.getCurrentDateTime(),
+		m.connection.channel.getRequestHandle(),
 		0,
 		NULL_STRING,
 		REQUEST_TIMEOUT_LONG,
@@ -168,7 +168,7 @@ func (m *Writer) WriteSync(ctx context.Context, writeRequest apiModel.PlcWriteRe
 		result <- spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, err)
 	}
 
-	m.messageCodec.channel.submit(ctx, m.messageCodec, errorDispatcher, consumer, buffer)
+	m.connection.channel.submit(ctx, m.connection.messageCodec, errorDispatcher, consumer, buffer)
 }
 
 func (m *Writer) writeResponse(requestIn apiModel.PlcWriteRequest, results []readWriteModel.StatusCode) (request apiModel.PlcWriteRequest, responseCodes map[string]apiModel.PlcResponseCode) {

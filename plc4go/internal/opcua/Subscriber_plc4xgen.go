@@ -74,9 +74,9 @@ func (d *Subscriber) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 		return err
 	}
 	{
-		_value := fmt.Sprintf("%v", d.messageCodec)
+		_value := fmt.Sprintf("%v", d.connection)
 
-		if err := writeBuffer.WriteString("messageCodec", uint32(len(_value)*8), "UTF-8", _value); err != nil {
+		if err := writeBuffer.WriteString("connection", uint32(len(_value)*8), "UTF-8", _value); err != nil {
 			return err
 		}
 	}

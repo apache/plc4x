@@ -38,8 +38,7 @@ import (
 type SubscriptionHandle struct {
 	*spiModel.DefaultPlcSubscriptionHandle
 	plcSubscriber       *Subscriber
-	messageCodec        *MessageCodec
-	channel             *SecureChannel
+	connection          *Connection
 	subscriptionRequest apiModel.PlcSubscriptionRequest
 	tagNames            []string
 	consumers           []apiModel.PlcSubscriptionEventConsumer
@@ -52,14 +51,13 @@ type SubscriptionHandle struct {
 	subscriberWg sync.WaitGroup
 	complete     bool
 
-	log zerolog.Logger
+	log zerolog.Logger `ignore:"true""`
 }
 
-func NewSubscriptionHandle(log zerolog.Logger, subscriber *Subscriber, messageCodec *MessageCodec, subscriptionRequest apiModel.PlcSubscriptionRequest, subscriptionId uint32, cycleTime time.Duration) *SubscriptionHandle {
+func NewSubscriptionHandle(log zerolog.Logger, subscriber *Subscriber, connection *Connection, subscriptionRequest apiModel.PlcSubscriptionRequest, subscriptionId uint32, cycleTime time.Duration) *SubscriptionHandle {
 	s := &SubscriptionHandle{
 		plcSubscriber:       subscriber,
-		messageCodec:        messageCodec,
-		channel:             messageCodec.channel,
+		connection:          connection,
 		subscriptionRequest: subscriptionRequest,
 		tagNames:            subscriptionRequest.GetTagNames(),
 		subscriptionId:      subscriptionId,
@@ -70,7 +68,7 @@ func NewSubscriptionHandle(log zerolog.Logger, subscriber *Subscriber, messageCo
 	s.DefaultPlcSubscriptionHandle = spiModel.NewDefaultPlcSubscriptionHandleWithHandleToRegister(subscriber, s)
 	_, err := s.onSubscribeCreateMonitoredItemsRequest()
 	if err != nil {
-		subscriber.onDisconnect(messageCodec)
+		subscriber.onDisconnect()
 	}
 	s.startSubscriber()
 	return s
@@ -121,9 +119,9 @@ func (h *SubscriptionHandle) onSubscribeCreateMonitoredItemsRequest() (readWrite
 		requestList = append(requestList, request)
 	}
 
-	requestHeader := readWriteModel.NewRequestHeader(h.channel.getAuthenticationToken(),
-		h.channel.getCurrentDateTime(),
-		h.channel.getRequestHandle(),
+	requestHeader := readWriteModel.NewRequestHeader(h.connection.channel.getAuthenticationToken(),
+		h.connection.channel.getCurrentDateTime(),
+		h.connection.channel.getRequestHandle(),
 		0,
 		NULL_STRING,
 		REQUEST_TIMEOUT_LONG,
@@ -178,11 +176,11 @@ func (h *SubscriptionHandle) onSubscribeCreateMonitoredItemsRequest() (readWrite
 			serviceFault := unknownExtensionObject
 			header := serviceFault.GetResponseHeader().(readWriteModel.ResponseHeader)
 			errorChan <- errors.Errorf("Subscription ServiceFault returned from server with error code,  '%s'", header.GetServiceResult())
-			h.plcSubscriber.onDisconnect(h.messageCodec)
+			h.plcSubscriber.onDisconnect()
 			return
 		default:
 			errorChan <- errors.Errorf("Unexpected type %T received", unknownExtensionObject)
-			h.plcSubscriber.onDisconnect(h.messageCodec)
+			h.plcSubscriber.onDisconnect()
 			return
 		}
 
@@ -205,7 +203,7 @@ func (h *SubscriptionHandle) onSubscribeCreateMonitoredItemsRequest() (readWrite
 		errorChan <- errors.Wrap(err, "error received")
 	}
 
-	h.channel.submit(ctx, h.messageCodec, errorDispatcher, consumer, buffer)
+	h.connection.channel.submit(ctx, h.connection.messageCodec, errorDispatcher, consumer, buffer)
 
 	select {
 	case response := <-responseChan:
@@ -233,12 +231,12 @@ func (h *SubscriptionHandle) startSubscriber() {
 		var outstandingRequests []uint32
 		for !h.destroy.Load() {
 
-			requestHandle := h.channel.getRequestHandle()
+			requestHandle := h.connection.channel.getRequestHandle()
 
 			//If we are waiting on a response and haven't received one, just wait until we do. A keep alive will be sent out eventually
 			if len(outstandingRequests) <= 1 {
-				requestHeader := readWriteModel.NewRequestHeader(h.channel.getAuthenticationToken(),
-					h.channel.getCurrentDateTime(),
+				requestHeader := readWriteModel.NewRequestHeader(h.connection.channel.getAuthenticationToken(),
+					h.connection.channel.getCurrentDateTime(),
 					requestHandle,
 					0,
 					NULL_STRING,
@@ -304,7 +302,7 @@ func (h *SubscriptionHandle) startSubscriber() {
 					unknownExtensionObject, err := readWriteModel.ExtensionObjectParseWithBuffer(ctx, utils.NewReadBufferByteBased(opcuaResponse, utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian)), false)
 					if err != nil {
 						h.log.Error().Err(err).Msg("Unable to parse the returned Subscription response")
-						h.plcSubscriber.onDisconnect(h.messageCodec)
+						h.plcSubscriber.onDisconnect()
 						return
 					}
 					switch unknownExtensionObject := unknownExtensionObject.(type) {
@@ -352,10 +350,10 @@ func (h *SubscriptionHandle) startSubscriber() {
 
 				errorDispatcher := func(err error) {
 					h.log.Error().Err(err).Msg("error received")
-					h.plcSubscriber.onDisconnect(h.messageCodec)
+					h.plcSubscriber.onDisconnect()
 				}
 
-				h.messageCodec.channel.submit(ctx, h.messageCodec, errorDispatcher, consumer, buffer)
+				h.connection.channel.submit(ctx, h.connection.messageCodec, errorDispatcher, consumer, buffer)
 			}
 			//Put the subscriber loop to sleep for the rest of the cycle.
 			time.Sleep(h.revisedCycleTime)
@@ -370,11 +368,11 @@ func (h *SubscriptionHandle) startSubscriber() {
 func (h *SubscriptionHandle) stopSubscriber() {
 	h.destroy.Store(true)
 
-	requestHandle := h.channel.getRequestHandle()
+	requestHandle := h.connection.channel.getRequestHandle()
 
 	requestHeader := readWriteModel.NewRequestHeader(
-		h.channel.getAuthenticationToken(),
-		h.channel.getCurrentDateTime(),
+		h.connection.channel.getAuthenticationToken(),
+		h.connection.channel.getCurrentDateTime(),
 		requestHandle,
 		0,
 		NULL_STRING,
@@ -420,7 +418,7 @@ func (h *SubscriptionHandle) stopSubscriber() {
 		unknownExtensionObject, err := readWriteModel.ExtensionObjectParseWithBuffer(ctx, utils.NewReadBufferByteBased(opcuaResponse, utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian)), false)
 		if err != nil {
 			h.log.Error().Err(err).Msg("Unable to parse the returned Subscription response")
-			h.plcSubscriber.onDisconnect(h.messageCodec)
+			h.plcSubscriber.onDisconnect()
 			return
 		}
 		switch unknownExtensionObject := unknownExtensionObject.(type) {
@@ -439,10 +437,10 @@ func (h *SubscriptionHandle) stopSubscriber() {
 
 	errorDispatcher := func(err error) {
 		h.log.Error().Err(err).Msg("error received")
-		h.plcSubscriber.onDisconnect(h.messageCodec)
+		h.plcSubscriber.onDisconnect()
 	}
 
-	h.messageCodec.channel.submit(ctx, h.messageCodec, errorDispatcher, consumer, buffer)
+	h.connection.channel.submit(ctx, h.connection.messageCodec, errorDispatcher, consumer, buffer)
 }
 
 /**

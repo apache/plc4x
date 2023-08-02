@@ -41,7 +41,7 @@ import (
 type Subscriber struct {
 	consumers     map[*spiModel.DefaultPlcConsumerRegistration]apiModel.PlcSubscriptionEventConsumer
 	addSubscriber func(subscriber *Subscriber)
-	messageCodec  *MessageCodec
+	connection    *Connection
 	subscriptions map[uint32]*SubscriptionHandle `ignore:"true"` // TODO: we don't have support for non string key maps yet
 
 	consumersMutex sync.RWMutex
@@ -50,12 +50,12 @@ type Subscriber struct {
 	_options []options.WithOption `ignore:"true"` // Used to pass them downstream
 }
 
-func NewSubscriber(addSubscriber func(subscriber *Subscriber), messageCodec *MessageCodec, _options ...options.WithOption) *Subscriber {
+func NewSubscriber(addSubscriber func(subscriber *Subscriber), connection *Connection, _options ...options.WithOption) *Subscriber {
 	customLogger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)
 	return &Subscriber{
 		consumers:     make(map[*spiModel.DefaultPlcConsumerRegistration]apiModel.PlcSubscriptionEventConsumer),
 		addSubscriber: addSubscriber,
-		messageCodec:  messageCodec,
+		connection:    connection,
 		subscriptions: map[uint32]*SubscriptionHandle{},
 
 		log:      customLogger,
@@ -90,7 +90,7 @@ func (s *Subscriber) subscribeSync(result chan apiModel.PlcSubscriptionRequestRe
 		return
 	}
 	subscriptionId := subscription.GetSubscriptionId()
-	handle := NewSubscriptionHandle(s.log, s, s.messageCodec, subscriptionRequest, subscriptionId, cycleTime)
+	handle := NewSubscriptionHandle(s.log, s, s.connection, subscriptionRequest, subscriptionId, cycleTime)
 	s.subscriptions[subscriptionId] = handle
 
 	// Add this subscriber to the connection.
@@ -123,7 +123,7 @@ func (s *Subscriber) subscribeSync(result chan apiModel.PlcSubscriptionRequestRe
 func (s *Subscriber) onSubscribeCreateSubscription(ctx context.Context, cycleTime time.Duration) (readWriteModel.CreateSubscriptionResponse, error) {
 	s.log.Trace().Msg("Entering creating subscription request")
 
-	channel := s.messageCodec.channel
+	channel := s.connection.channel
 
 	requestHeader := readWriteModel.NewRequestHeader(channel.getAuthenticationToken(),
 		channel.getCurrentDateTime(),
@@ -182,7 +182,7 @@ func (s *Subscriber) onSubscribeCreateSubscription(ctx context.Context, cycleTim
 	errorDispatcher := func(err error) {
 		errorChan <- errors.Wrap(err, "error received")
 	}
-	channel.submit(ctx, s.messageCodec, errorDispatcher, consumer, buffer)
+	channel.submit(ctx, s.connection.messageCodec, errorDispatcher, consumer, buffer)
 
 	select {
 	case response := <-responseChan:
@@ -194,12 +194,12 @@ func (s *Subscriber) onSubscribeCreateSubscription(ctx context.Context, cycleTim
 	}
 }
 
-func (s *Subscriber) onDisconnect(codec *MessageCodec) {
+func (s *Subscriber) onDisconnect() {
 	s.log.Trace().Msg("disconnecting")
 	for _, handle := range s.subscriptions {
 		handle.stopSubscriber()
 	}
-	codec.channel.onDisconnect(context.Background(), codec)
+	s.connection.channel.onDisconnect(context.Background(), s.connection)
 }
 
 func (s *Subscriber) Unsubscribe(ctx context.Context, unsubscriptionRequest apiModel.PlcUnsubscriptionRequest) <-chan apiModel.PlcUnsubscriptionRequestResult {
