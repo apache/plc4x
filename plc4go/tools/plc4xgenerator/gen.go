@@ -236,7 +236,15 @@ func (g *Generator) generate(typeName string) {
 			g.Printf("\td." + field.hasLocker + ".Lock()\n")
 			g.Printf("\tdefer d." + field.hasLocker + ".Unlock()\n")
 		}
+		needsDereference := false
+		if starFieldType, ok := fieldType.(*ast.StarExpr); ok {
+			fieldType = starFieldType.X
+			needsDereference = true
+		}
 		if field.isStringer {
+			if needsDereference {
+				g.Printf("if d.%s != nil {", field.name)
+			}
 			g.Printf(stringFieldSerialize, "d."+field.name+".String()", fieldNameUntitled)
 			if field.hasLocker != "" {
 				g.Printf("\treturn nil\n")
@@ -244,13 +252,10 @@ func (g *Generator) generate(typeName string) {
 				g.Printf("\treturn err\n")
 				g.Printf("}\n")
 			}
+			if needsDereference {
+				g.Printf("}\n")
+			}
 			continue
-		}
-		needsDereference := false
-		if starFieldType, ok := fieldType.(*ast.StarExpr); ok {
-			fieldType = starFieldType.X
-			needsDereference = true
-			_ = needsDereference // TODO: implement
 		}
 		switch fieldType := fieldType.(type) {
 		case *ast.SelectorExpr:
