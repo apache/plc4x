@@ -159,6 +159,47 @@ func (_c *MockArrayInfo_GetUpperBound_Call) RunAndReturn(run func() uint32) *Moc
 	return _c
 }
 
+// String provides a mock function with given fields:
+func (_m *MockArrayInfo) String() string {
+	ret := _m.Called()
+
+	var r0 string
+	if rf, ok := ret.Get(0).(func() string); ok {
+		r0 = rf()
+	} else {
+		r0 = ret.Get(0).(string)
+	}
+
+	return r0
+}
+
+// MockArrayInfo_String_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'String'
+type MockArrayInfo_String_Call struct {
+	*mock.Call
+}
+
+// String is a helper method to define mock.On call
+func (_e *MockArrayInfo_Expecter) String() *MockArrayInfo_String_Call {
+	return &MockArrayInfo_String_Call{Call: _e.mock.On("String")}
+}
+
+func (_c *MockArrayInfo_String_Call) Run(run func()) *MockArrayInfo_String_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run()
+	})
+	return _c
+}
+
+func (_c *MockArrayInfo_String_Call) Return(_a0 string) *MockArrayInfo_String_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockArrayInfo_String_Call) RunAndReturn(run func() string) *MockArrayInfo_String_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // NewMockArrayInfo creates a new instance of MockArrayInfo. It also registers a testing interface on the mock and a cleanup function to assert the mocks expectations.
 // The first argument is typically a *testing.T value.
 func NewMockArrayInfo(t interface {

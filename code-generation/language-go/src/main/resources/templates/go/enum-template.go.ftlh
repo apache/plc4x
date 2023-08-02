@@ -227,7 +227,7 @@ func (e ${type.name}) PLC4XEnumName() string {
 		return "${enumValue.name}"
 	</#list>
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", ${baseType}(e))
 }
 
 func (e ${type.name}) String() string {

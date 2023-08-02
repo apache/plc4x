@@ -717,7 +717,11 @@ func TestDefaultValueHandler_ParseListType(t *testing.T) {
 			},
 			setup: func(t *testing.T, args *args) {
 				args.arrayInfo = []apiModel.ArrayInfo{
-					NewMockArrayInfo(t),
+					func() apiModel.ArrayInfo {
+						info := NewMockArrayInfo(t)
+						info.EXPECT().String().Return("a mock")
+						return info
+					}(),
 				}
 			},
 			wantErr: assert.Error,
@@ -730,6 +734,7 @@ func TestDefaultValueHandler_ParseListType(t *testing.T) {
 			setup: func(t *testing.T, args *args) {
 				info := NewMockArrayInfo(t)
 				info.EXPECT().GetSize().Return(3)
+				info.EXPECT().String().Return("a mock")
 				args.arrayInfo = []apiModel.ArrayInfo{
 					info,
 				}
@@ -751,6 +756,7 @@ func TestDefaultValueHandler_ParseListType(t *testing.T) {
 				{
 					info := NewMockArrayInfo(t)
 					info.EXPECT().GetSize().Return(2)
+					info.EXPECT().String().Return("a mock")
 					args.arrayInfo = []apiModel.ArrayInfo{
 						info,
 					}
@@ -872,6 +878,7 @@ func TestDefaultValueHandler_parseType(t *testing.T) {
 				{
 					info := NewMockArrayInfo(t)
 					info.EXPECT().GetSize().Return(2)
+					info.EXPECT().String().Return("a mock")
 					args.arrayInfo = []apiModel.ArrayInfo{
 						info,
 					}

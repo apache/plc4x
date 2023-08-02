@@ -80,6 +80,47 @@ func (_c *MockPlcSubscriptionHandle_Register_Call) RunAndReturn(run func(PlcSubs
 	return _c
 }
 
+// String provides a mock function with given fields:
+func (_m *MockPlcSubscriptionHandle) String() string {
+	ret := _m.Called()
+
+	var r0 string
+	if rf, ok := ret.Get(0).(func() string); ok {
+		r0 = rf()
+	} else {
+		r0 = ret.Get(0).(string)
+	}
+
+	return r0
+}
+
+// MockPlcSubscriptionHandle_String_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'String'
+type MockPlcSubscriptionHandle_String_Call struct {
+	*mock.Call
+}
+
+// String is a helper method to define mock.On call
+func (_e *MockPlcSubscriptionHandle_Expecter) String() *MockPlcSubscriptionHandle_String_Call {
+	return &MockPlcSubscriptionHandle_String_Call{Call: _e.mock.On("String")}
+}
+
+func (_c *MockPlcSubscriptionHandle_String_Call) Run(run func()) *MockPlcSubscriptionHandle_String_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run()
+	})
+	return _c
+}
+
+func (_c *MockPlcSubscriptionHandle_String_Call) Return(_a0 string) *MockPlcSubscriptionHandle_String_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockPlcSubscriptionHandle_String_Call) RunAndReturn(run func() string) *MockPlcSubscriptionHandle_String_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // NewMockPlcSubscriptionHandle creates a new instance of MockPlcSubscriptionHandle. It also registers a testing interface on the mock and a cleanup function to assert the mocks expectations.
 // The first argument is typically a *testing.T value.
 func NewMockPlcSubscriptionHandle(t interface {
