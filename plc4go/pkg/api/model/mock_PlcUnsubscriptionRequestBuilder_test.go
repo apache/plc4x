@@ -36,15 +36,26 @@ func (_m *MockPlcUnsubscriptionRequestBuilder) EXPECT() *MockPlcUnsubscriptionRe
 	return &MockPlcUnsubscriptionRequestBuilder_Expecter{mock: &_m.Mock}
 }
 
-// AddHandles provides a mock function with given fields: PlcSubscriptionHandle
-func (_m *MockPlcUnsubscriptionRequestBuilder) AddHandles(PlcSubscriptionHandle ...PlcSubscriptionHandle) {
-	_va := make([]interface{}, len(PlcSubscriptionHandle))
-	for _i := range PlcSubscriptionHandle {
-		_va[_i] = PlcSubscriptionHandle[_i]
+// AddHandles provides a mock function with given fields: handles
+func (_m *MockPlcUnsubscriptionRequestBuilder) AddHandles(handles ...PlcSubscriptionHandle) PlcUnsubscriptionRequestBuilder {
+	_va := make([]interface{}, len(handles))
+	for _i := range handles {
+		_va[_i] = handles[_i]
 	}
 	var _ca []interface{}
 	_ca = append(_ca, _va...)
-	_m.Called(_ca...)
+	ret := _m.Called(_ca...)
+
+	var r0 PlcUnsubscriptionRequestBuilder
+	if rf, ok := ret.Get(0).(func(...PlcSubscriptionHandle) PlcUnsubscriptionRequestBuilder); ok {
+		r0 = rf(handles...)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(PlcUnsubscriptionRequestBuilder)
+		}
+	}
+
+	return r0
 }
 
 // MockPlcUnsubscriptionRequestBuilder_AddHandles_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'AddHandles'
@@ -53,13 +64,13 @@ type MockPlcUnsubscriptionRequestBuilder_AddHandles_Call struct {
 }
 
 // AddHandles is a helper method to define mock.On call
-//   - PlcSubscriptionHandle ...PlcSubscriptionHandle
-func (_e *MockPlcUnsubscriptionRequestBuilder_Expecter) AddHandles(PlcSubscriptionHandle ...interface{}) *MockPlcUnsubscriptionRequestBuilder_AddHandles_Call {
+//   - handles ...PlcSubscriptionHandle
+func (_e *MockPlcUnsubscriptionRequestBuilder_Expecter) AddHandles(handles ...interface{}) *MockPlcUnsubscriptionRequestBuilder_AddHandles_Call {
 	return &MockPlcUnsubscriptionRequestBuilder_AddHandles_Call{Call: _e.mock.On("AddHandles",
-		append([]interface{}{}, PlcSubscriptionHandle...)...)}
+		append([]interface{}{}, handles...)...)}
 }
 
-func (_c *MockPlcUnsubscriptionRequestBuilder_AddHandles_Call) Run(run func(PlcSubscriptionHandle ...PlcSubscriptionHandle)) *MockPlcUnsubscriptionRequestBuilder_AddHandles_Call {
+func (_c *MockPlcUnsubscriptionRequestBuilder_AddHandles_Call) Run(run func(handles ...PlcSubscriptionHandle)) *MockPlcUnsubscriptionRequestBuilder_AddHandles_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		variadicArgs := make([]PlcSubscriptionHandle, len(args)-0)
 		for i, a := range args[0:] {
@@ -72,12 +83,12 @@ func (_c *MockPlcUnsubscriptionRequestBuilder_AddHandles_Call) Run(run func(PlcS
 	return _c
 }
 
-func (_c *MockPlcUnsubscriptionRequestBuilder_AddHandles_Call) Return() *MockPlcUnsubscriptionRequestBuilder_AddHandles_Call {
-	_c.Call.Return()
+func (_c *MockPlcUnsubscriptionRequestBuilder_AddHandles_Call) Return(_a0 PlcUnsubscriptionRequestBuilder) *MockPlcUnsubscriptionRequestBuilder_AddHandles_Call {
+	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *MockPlcUnsubscriptionRequestBuilder_AddHandles_Call) RunAndReturn(run func(...PlcSubscriptionHandle)) *MockPlcUnsubscriptionRequestBuilder_AddHandles_Call {
+func (_c *MockPlcUnsubscriptionRequestBuilder_AddHandles_Call) RunAndReturn(run func(...PlcSubscriptionHandle) PlcUnsubscriptionRequestBuilder) *MockPlcUnsubscriptionRequestBuilder_AddHandles_Call {
 	_c.Call.Return(run)
 	return _c
 }

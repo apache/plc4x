@@ -42,7 +42,6 @@ func (d *DefaultPlcUnsubscriptionRequest) SerializeWithWriteBuffer(ctx context.C
 	if err := writeBuffer.PushContext("PlcUnsubscriptionRequest"); err != nil {
 		return err
 	}
-
 	if err := writeBuffer.PushContext("subscriptionHandles", utils.WithRenderAsList(true)); err != nil {
 		return err
 	}
