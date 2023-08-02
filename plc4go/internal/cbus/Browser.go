@@ -230,6 +230,11 @@ func (m *Browser) getInstalledUnitAddressBytes(ctx context.Context) (map[byte]an
 	if err != nil {
 		return nil, errors.Wrap(err, "Error getting the subscription handle")
 	}
+	build, err := m.connection.UnsubscriptionRequestBuilder().AddHandles(subscriptionHandle).Build()
+	if err != nil {
+		return nil, errors.Wrap(err, "Error building unsubscription request")
+	}
+	defer build.ExecuteWithContext(ctx)
 
 	blockOffset0Received := false
 	blockOffset0ReceivedChan := make(chan any, 100) // We only expect one, but we make it a bit bigger to no clog up

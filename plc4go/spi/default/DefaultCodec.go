@@ -216,6 +216,7 @@ func (m *defaultCodec) TimeoutExpectations(now time.Time) {
 		// Check if this expectation has expired.
 		if now.After(expectation.GetExpiration()) {
 			// Remove this expectation from the list.
+			m.log.Info().Stringer("expectation", expectation).Msg("timeout expectation")
 			m.expectations = append(m.expectations[:i], m.expectations[i+1:]...)
 			i--
 			// Call the error handler.
@@ -227,6 +228,7 @@ func (m *defaultCodec) TimeoutExpectations(now time.Time) {
 			continue
 		}
 		if err := expectation.GetContext().Err(); err != nil {
+			m.log.Info().Err(err).Stringer("expectation", expectation).Msg("expectation canceled")
 			// Remove this expectation from the list.
 			m.expectations = append(m.expectations[:i], m.expectations[i+1:]...)
 			i--
@@ -292,7 +294,6 @@ func (m *defaultCodec) Work() {
 
 	defer func() {
 		if err := recover(); err != nil {
-			// TODO: If this is an error, cast it to an error and log it with "Err(err)"
 			m.log.Error().
 				Str("stack", string(debug.Stack())).
 				Interface("err", err).

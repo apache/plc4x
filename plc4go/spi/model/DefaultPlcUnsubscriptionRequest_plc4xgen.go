@@ -43,24 +43,6 @@ func (d *DefaultPlcUnsubscriptionRequest) SerializeWithWriteBuffer(ctx context.C
 		return err
 	}
 
-	if d.subscriber != nil {
-		if serializableField, ok := d.subscriber.(utils.Serializable); ok {
-			if err := writeBuffer.PushContext("subscriber"); err != nil {
-				return err
-			}
-			if err := serializableField.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
-				return err
-			}
-			if err := writeBuffer.PopContext("subscriber"); err != nil {
-				return err
-			}
-		} else {
-			stringValue := fmt.Sprintf("%v", d.subscriber)
-			if err := writeBuffer.WriteString("subscriber", uint32(len(stringValue)*8), "UTF-8", stringValue); err != nil {
-				return err
-			}
-		}
-	}
 	if err := writeBuffer.PushContext("subscriptionHandles", utils.WithRenderAsList(true)); err != nil {
 		return err
 	}

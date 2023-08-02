@@ -33,7 +33,7 @@ type PlcUnsubscriptionRequestResult interface {
 
 type PlcUnsubscriptionRequestBuilder interface {
 	fmt.Stringer
-	AddHandles(PlcSubscriptionHandle ...PlcSubscriptionHandle)
+	AddHandles(PlcSubscriptionHandle ...PlcSubscriptionHandle) PlcUnsubscriptionRequestBuilder
 	Build() (PlcUnsubscriptionRequest, error)
 }
 

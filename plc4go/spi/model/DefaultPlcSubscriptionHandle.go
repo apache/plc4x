@@ -22,17 +22,21 @@ package model
 import (
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/spi"
+	"github.com/google/uuid"
 )
 
 //go:generate go run ../../tools/plc4xgenerator/gen.go -type=DefaultPlcSubscriptionHandle
 type DefaultPlcSubscriptionHandle struct {
-	handleToRegister apiModel.PlcSubscriptionHandle `ignore:"true"`
-	plcSubscriber    spi.PlcSubscriber
+	uuid             uuid.UUID                      `stringer:"true"`
+	handleToRegister apiModel.PlcSubscriptionHandle `ignore:"true"` // avoid recursion
+	plcSubscriber    spi.PlcSubscriber              `ignore:"true"` // avoid recursion
 }
 
 // NewDefaultPlcSubscriptionHandle can be used when the DefaultPlcSubscriptionHandle is sufficient
 func NewDefaultPlcSubscriptionHandle(plcSubscriber spi.PlcSubscriber) apiModel.PlcSubscriptionHandle {
+	uuid, _ := uuid.NewUUID()
 	handle := &DefaultPlcSubscriptionHandle{
+		uuid:          uuid,
 		plcSubscriber: plcSubscriber,
 	}
 	handle.handleToRegister = handle

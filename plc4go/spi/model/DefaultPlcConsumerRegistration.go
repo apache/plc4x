@@ -31,7 +31,7 @@ var _ apiModel.PlcConsumerRegistration = &DefaultPlcConsumerRegistration{}
 type DefaultPlcConsumerRegistration struct {
 	consumerId    int
 	consumer      apiModel.PlcSubscriptionEventConsumer `ignore:"true"` // Function not renderable
-	plcSubscriber spi.PlcSubscriber
+	plcSubscriber spi.PlcSubscriber                     `ignore:"true"` // Avoid recursio
 	handles       []apiModel.PlcSubscriptionHandle
 }
 

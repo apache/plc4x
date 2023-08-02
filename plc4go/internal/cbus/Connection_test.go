@@ -22,6 +22,7 @@ package cbus
 import (
 	"context"
 	"encoding/hex"
+	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/stretchr/testify/require"
 	"net/url"
 	"sync"
@@ -603,6 +604,7 @@ func TestConnection_UnsubscriptionRequestBuilder(t *testing.T) {
 	}{
 		{
 			name: "create one",
+			want: spiModel.NewDefaultPlcUnsubscriptionRequestBuilder(),
 		},
 	}
 	for _, tt := range tests {

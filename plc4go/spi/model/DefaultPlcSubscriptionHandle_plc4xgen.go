@@ -43,23 +43,8 @@ func (d *DefaultPlcSubscriptionHandle) SerializeWithWriteBuffer(ctx context.Cont
 		return err
 	}
 
-	if d.plcSubscriber != nil {
-		if serializableField, ok := d.plcSubscriber.(utils.Serializable); ok {
-			if err := writeBuffer.PushContext("plcSubscriber"); err != nil {
-				return err
-			}
-			if err := serializableField.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
-				return err
-			}
-			if err := writeBuffer.PopContext("plcSubscriber"); err != nil {
-				return err
-			}
-		} else {
-			stringValue := fmt.Sprintf("%v", d.plcSubscriber)
-			if err := writeBuffer.WriteString("plcSubscriber", uint32(len(stringValue)*8), "UTF-8", stringValue); err != nil {
-				return err
-			}
-		}
+	if err := writeBuffer.WriteString("uuid", uint32(len(d.uuid.String())*8), "UTF-8", d.uuid.String()); err != nil {
+		return err
 	}
 	if err := writeBuffer.PopContext("PlcSubscriptionHandle"); err != nil {
 		return err

@@ -22,9 +22,6 @@ package cbus
 import (
 	"context"
 	"fmt"
-	"github.com/apache/plc4x/plc4go/spi/options"
-	"github.com/pkg/errors"
-	"github.com/rs/zerolog"
 	"runtime/debug"
 	"strings"
 	"sync"
@@ -34,7 +31,11 @@ import (
 	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/cbus/readwrite/model"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
+	"github.com/apache/plc4x/plc4go/spi/options"
 	spiValues "github.com/apache/plc4x/plc4go/spi/values"
+
+	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
 )
 
 //go:generate go run ../../tools/plc4xgenerator/gen.go -type=Subscriber
@@ -452,7 +453,9 @@ func (s *Subscriber) Register(consumer apiModel.PlcSubscriptionEventConsumer, ha
 }
 
 func (s *Subscriber) Unregister(registration apiModel.PlcConsumerRegistration) {
+	s.log.Trace().Msg("unregister")
 	s.consumersMutex.Lock()
 	defer s.consumersMutex.Unlock()
 	delete(s.consumers, registration.(*spiModel.DefaultPlcConsumerRegistration))
+	s.log.Trace().Msg("registration removed")
 }

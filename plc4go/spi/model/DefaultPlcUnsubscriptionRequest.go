@@ -21,7 +21,8 @@ package model
 
 import (
 	"context"
-	"github.com/apache/plc4x/plc4go/spi"
+	"github.com/apache/plc4x/plc4go/spi/utils"
+	"github.com/pkg/errors"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 )
@@ -33,8 +34,13 @@ type DefaultPlcUnsubscriptionRequestBuilder struct {
 	subscriptionHandles []apiModel.PlcSubscriptionHandle
 }
 
-func (d *DefaultPlcUnsubscriptionRequestBuilder) AddHandles(subscriptionHandles ...apiModel.PlcSubscriptionHandle) {
+func NewDefaultPlcUnsubscriptionRequestBuilder() *DefaultPlcUnsubscriptionRequestBuilder {
+	return &DefaultPlcUnsubscriptionRequestBuilder{}
+}
+
+func (d *DefaultPlcUnsubscriptionRequestBuilder) AddHandles(subscriptionHandles ...apiModel.PlcSubscriptionHandle) apiModel.PlcUnsubscriptionRequestBuilder {
 	subscriptionHandles = append(subscriptionHandles, subscriptionHandles...)
+	return d
 }
 
 func (d *DefaultPlcUnsubscriptionRequestBuilder) Build() (apiModel.PlcUnsubscriptionRequest, error) {
@@ -45,7 +51,6 @@ var _ apiModel.PlcUnsubscriptionRequest = &DefaultPlcUnsubscriptionRequest{}
 
 //go:generate go run ../../tools/plc4xgenerator/gen.go -type=DefaultPlcUnsubscriptionRequest
 type DefaultPlcUnsubscriptionRequest struct {
-	subscriber          spi.PlcSubscriber
 	subscriptionHandles []apiModel.PlcSubscriptionHandle
 }
 
@@ -60,7 +65,27 @@ func (d *DefaultPlcUnsubscriptionRequest) Execute() <-chan apiModel.PlcUnsubscri
 }
 
 func (d *DefaultPlcUnsubscriptionRequest) ExecuteWithContext(ctx context.Context) <-chan apiModel.PlcUnsubscriptionRequestResult {
-	return d.subscriber.Unsubscribe(ctx, d)
+	results := make(chan apiModel.PlcUnsubscriptionRequestResult, 1)
+	go func() {
+		var collectedErrors []error
+		for _, handle := range d.subscriptionHandles {
+			select {
+			case unsubscribe := <-handle.(*DefaultPlcSubscriptionHandle).plcSubscriber.Unsubscribe(ctx, d):
+				if err := unsubscribe.GetErr(); err != nil {
+					collectedErrors = append(collectedErrors, err)
+					continue
+				}
+			case <-ctx.Done():
+				collectedErrors = append(collectedErrors, ctx.Err())
+			}
+		}
+		var err error
+		if len(collectedErrors) > 0 {
+			err = utils.MultiError{MainError: errors.New("error unsubscribing from all"), Errors: collectedErrors}
+		}
+		results <- NewDefaultPlcUnsubscriptionRequestResult(d, NewDefaultPlcUnsubscriptionResponse(d), err)
+	}()
+	return results
 }
 
 func (d *DefaultPlcUnsubscriptionRequest) GetSubscriptionHandles() []apiModel.PlcSubscriptionHandle {

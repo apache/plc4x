@@ -204,8 +204,7 @@ func (c *Connection) SubscriptionRequestBuilder() apiModel.PlcSubscriptionReques
 }
 
 func (c *Connection) UnsubscriptionRequestBuilder() apiModel.PlcUnsubscriptionRequestBuilder {
-	// TODO: where do we get the unsubscriber from
-	return nil
+	return spiModel.NewDefaultPlcUnsubscriptionRequestBuilder()
 }
 
 func (c *Connection) BrowseRequestBuilder() apiModel.PlcBrowseRequestBuilder {
