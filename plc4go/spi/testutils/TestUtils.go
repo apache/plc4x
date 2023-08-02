@@ -20,7 +20,9 @@
 package testutils
 
 import (
+	"bytes"
 	"context"
+	"fmt"
 	"os"
 	"runtime"
 	"runtime/debug"
@@ -161,25 +163,55 @@ func getOrLeaveDuration(key string, setting *time.Duration) {
 
 // ProduceTestingLogger produces a logger which redirects to testing.T
 func ProduceTestingLogger(t *testing.T) zerolog.Logger {
+	noColor := false
+	{
+		// TODO: this is really an issue with go-junit-report not sanitizing output before dumping into xml...
+		onJenkins := os.Getenv("JENKINS_URL") != ""
+		onGithubAction := os.Getenv("GITHUB_ACTIONS") != ""
+		onCI := os.Getenv("CI") != ""
+		if onJenkins || onGithubAction || onCI {
+			noColor = true
+		}
+	}
+	consoleWriter := zerolog.NewConsoleWriter(
+		zerolog.ConsoleTestWriter(t),
+		func(w *zerolog.ConsoleWriter) {
+			w.NoColor = noColor
+		},
+		func(w *zerolog.ConsoleWriter) {
+			if highLogPrecision {
+				w.TimeFormat = time.StampNano
+			}
+		},
+		func(w *zerolog.ConsoleWriter) {
+			w.FormatFieldValue = func(i interface{}) string {
+				if aString, ok := i.(string); ok && strings.Contains(aString, "\\n") {
+					if noColor {
+						return "see below"
+					} else {
+						return fmt.Sprintf("\x1b[%dm%v\x1b[0m", 31, "see below")
+					}
+				}
+				return fmt.Sprintf("%s", i)
+			}
+			w.FormatExtra = func(m map[string]interface{}, buffer *bytes.Buffer) error {
+				for key, i := range m {
+					if aString, ok := i.(string); ok && strings.Contains(aString, "\n") {
+						buffer.WriteString("\n")
+						if noColor {
+							buffer.WriteString("field " + key)
+						} else {
+							buffer.WriteString(fmt.Sprintf("\x1b[%dm%v\x1b[0m", 32, "field "+key))
+						}
+						buffer.WriteString(":\n" + aString)
+					}
+				}
+				return nil
+			}
+		},
+	)
 	logger := zerolog.New(
-		zerolog.NewConsoleWriter(
-			zerolog.ConsoleTestWriter(t),
-			func(w *zerolog.ConsoleWriter) {
-				// TODO: this is really an issue with go-junit-report not sanitizing output before dumping into xml...
-				onJenkins := os.Getenv("JENKINS_URL") != ""
-				onGithubAction := os.Getenv("GITHUB_ACTIONS") != ""
-				onCI := os.Getenv("CI") != ""
-				if onJenkins || onGithubAction || onCI {
-					w.NoColor = true
-				}
-
-			},
-			func(w *zerolog.ConsoleWriter) {
-				if highLogPrecision {
-					w.TimeFormat = time.StampNano
-				}
-			},
-		),
+		consoleWriter,
 	)
 	if highLogPrecision {
 		logger = logger.With().Timestamp().Logger()
