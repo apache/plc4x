@@ -327,7 +327,7 @@ func (e MediaTransportControlCommandType) PLC4XEnumName() string {
 	case MediaTransportControlCommandType_CATEGORY_NAME:
 		return "CATEGORY_NAME"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e MediaTransportControlCommandType) String() string {

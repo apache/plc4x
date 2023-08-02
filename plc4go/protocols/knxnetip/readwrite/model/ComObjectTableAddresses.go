@@ -22657,7 +22657,7 @@ func (e ComObjectTableAddresses) PLC4XEnumName() string {
 	case ComObjectTableAddresses_DEV0019E11210:
 		return "DEV0019E11210"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint16(e))
 }
 
 func (e ComObjectTableAddresses) String() string {

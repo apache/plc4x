@@ -207,7 +207,7 @@ func (e BACnetEscalatorFault) PLC4XEnumName() string {
 	case BACnetEscalatorFault_COMB_PLATE_FAULT:
 		return "COMB_PLATE_FAULT"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint16(e))
 }
 
 func (e BACnetEscalatorFault) String() string {

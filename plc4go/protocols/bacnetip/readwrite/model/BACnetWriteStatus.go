@@ -159,7 +159,7 @@ func (e BACnetWriteStatus) PLC4XEnumName() string {
 	case BACnetWriteStatus_FAILED:
 		return "FAILED"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e BACnetWriteStatus) String() string {

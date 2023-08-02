@@ -151,7 +151,7 @@ func (e EiPCommand) PLC4XEnumName() string {
 	case EiPCommand_SendRRData:
 		return "SendRRData"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint16(e))
 }
 
 func (e EiPCommand) String() string {

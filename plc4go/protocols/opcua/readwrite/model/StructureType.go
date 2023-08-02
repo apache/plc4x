@@ -167,7 +167,7 @@ func (e StructureType) PLC4XEnumName() string {
 	case StructureType_structureTypeUnionWithSubtypedValues:
 		return "structureTypeUnionWithSubtypedValues"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint32(e))
 }
 
 func (e StructureType) String() string {

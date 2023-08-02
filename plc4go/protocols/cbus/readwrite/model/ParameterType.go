@@ -215,7 +215,7 @@ func (e ParameterType) PLC4XEnumName() string {
 	case ParameterType_SERIAL_NUMBER:
 		return "SERIAL_NUMBER"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e ParameterType) String() string {

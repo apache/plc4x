@@ -628,7 +628,7 @@ func (e DeviceDescriptor) PLC4XEnumName() string {
 	case DeviceDescriptor_KNX_IP_SYSTEM7:
 		return "KNX_IP_SYSTEM7"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint16(e))
 }
 
 func (e DeviceDescriptor) String() string {

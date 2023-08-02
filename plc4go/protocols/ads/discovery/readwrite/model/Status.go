@@ -151,7 +151,7 @@ func (e Status) PLC4XEnumName() string {
 	case Status_FAILURE_MISSING_DATA:
 		return "FAILURE_MISSING_DATA"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint32(e))
 }
 
 func (e Status) String() string {

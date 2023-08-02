@@ -175,7 +175,7 @@ func (e AlarmStateType) PLC4XEnumName() string {
 	case AlarmStateType_ALARM_S_INITIATE:
 		return "ALARM_S_INITIATE"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e AlarmStateType) String() string {

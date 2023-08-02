@@ -244,7 +244,7 @@ func (e AccessLevel) PLC4XEnumName() string {
 	case AccessLevel_Level15:
 		return "Level15"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e AccessLevel) String() string {

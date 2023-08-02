@@ -335,7 +335,7 @@ func (e SecurityResponseCode) PLC4XEnumName() string {
 	case SecurityResponseCode_UNKNOWN_SOURCE_MESSAGE:
 		return "UNKNOWN_SOURCE_MESSAGE"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e SecurityResponseCode) String() string {

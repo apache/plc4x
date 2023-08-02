@@ -229,7 +229,7 @@ func (e COTPTpduSize) PLC4XEnumName() string {
 	case COTPTpduSize_SIZE_8192:
 		return "SIZE_8192"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e COTPTpduSize) String() string {

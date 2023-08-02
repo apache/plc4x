@@ -229,7 +229,7 @@ func (e RequestType) PLC4XEnumName() string {
 	case RequestType_RESET:
 		return "RESET"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e RequestType) String() string {

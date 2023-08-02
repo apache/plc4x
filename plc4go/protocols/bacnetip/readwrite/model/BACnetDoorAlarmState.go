@@ -207,7 +207,7 @@ func (e BACnetDoorAlarmState) PLC4XEnumName() string {
 	case BACnetDoorAlarmState_EGRESS_OPEN:
 		return "EGRESS_OPEN"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e BACnetDoorAlarmState) String() string {

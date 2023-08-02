@@ -167,7 +167,7 @@ func (e EventType) PLC4XEnumName() string {
 	case EventType_ALM:
 		return "ALM"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e EventType) String() string {

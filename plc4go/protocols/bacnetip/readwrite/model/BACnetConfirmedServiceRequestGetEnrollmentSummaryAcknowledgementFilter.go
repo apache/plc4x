@@ -151,7 +151,7 @@ func (e BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter) 
 	case BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter_NOT_ACKED:
 		return "NOT_ACKED"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter) String() string {

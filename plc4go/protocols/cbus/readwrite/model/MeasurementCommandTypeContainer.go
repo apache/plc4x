@@ -180,7 +180,7 @@ func (e MeasurementCommandTypeContainer) PLC4XEnumName() string {
 	case MeasurementCommandTypeContainer_MeasurementCommandChannelMeasurementData:
 		return "MeasurementCommandChannelMeasurementData"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e MeasurementCommandTypeContainer) String() string {

@@ -183,7 +183,7 @@ func (e BACnetBinaryLightingPV) PLC4XEnumName() string {
 	case BACnetBinaryLightingPV_STOP:
 		return "STOP"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e BACnetBinaryLightingPV) String() string {

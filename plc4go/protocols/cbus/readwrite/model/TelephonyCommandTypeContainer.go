@@ -692,7 +692,7 @@ func (e TelephonyCommandTypeContainer) PLC4XEnumName() string {
 	case TelephonyCommandTypeContainer_TelephonyCommandLineOffHook_31Bytes:
 		return "TelephonyCommandLineOffHook_31Bytes"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e TelephonyCommandTypeContainer) String() string {

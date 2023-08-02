@@ -151,7 +151,7 @@ func (e Duplex) PLC4XEnumName() string {
 	case Duplex_duplexUnknown:
 		return "duplexUnknown"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint32(e))
 }
 
 func (e Duplex) String() string {

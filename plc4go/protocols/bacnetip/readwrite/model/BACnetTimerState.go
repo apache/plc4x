@@ -151,7 +151,7 @@ func (e BACnetTimerState) PLC4XEnumName() string {
 	case BACnetTimerState_EXPIRED:
 		return "EXPIRED"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e BACnetTimerState) String() string {

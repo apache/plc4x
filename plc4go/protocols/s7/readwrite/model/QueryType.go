@@ -159,7 +159,7 @@ func (e QueryType) PLC4XEnumName() string {
 	case QueryType_ALARM_8P:
 		return "ALARM_8P"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e QueryType) String() string {

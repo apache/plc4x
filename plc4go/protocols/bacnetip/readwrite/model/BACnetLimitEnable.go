@@ -143,7 +143,7 @@ func (e BACnetLimitEnable) PLC4XEnumName() string {
 	case BACnetLimitEnable_HIGH_LIMIT_ENABLE:
 		return "HIGH_LIMIT_ENABLE"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e BACnetLimitEnable) String() string {

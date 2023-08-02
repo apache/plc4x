@@ -391,7 +391,7 @@ func (e CIPStatus) PLC4XEnumName() string {
 	case CIPStatus_InvalidCommandWithWrongEndianess:
 		return "InvalidCommandWithWrongEndianess"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint32(e))
 }
 
 func (e CIPStatus) String() string {

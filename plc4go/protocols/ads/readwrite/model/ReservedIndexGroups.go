@@ -423,7 +423,7 @@ func (e ReservedIndexGroups) PLC4XEnumName() string {
 	case ReservedIndexGroups_ADS_OVER_ETHERCAT:
 		return "ADS_OVER_ETHERCAT"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint32(e))
 }
 
 func (e ReservedIndexGroups) String() string {

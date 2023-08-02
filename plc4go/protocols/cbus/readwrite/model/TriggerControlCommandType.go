@@ -205,7 +205,7 @@ func (e TriggerControlCommandType) PLC4XEnumName() string {
 	case TriggerControlCommandType_LABEL:
 		return "LABEL"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e TriggerControlCommandType) String() string {

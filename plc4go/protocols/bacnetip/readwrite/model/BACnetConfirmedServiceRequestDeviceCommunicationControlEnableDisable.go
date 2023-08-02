@@ -151,7 +151,7 @@ func (e BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable) PL
 	case BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable_DISABLE_INITIATION:
 		return "DISABLE_INITIATION"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable) String() string {

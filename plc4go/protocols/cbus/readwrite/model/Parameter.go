@@ -8432,7 +8432,7 @@ func (e Parameter) PLC4XEnumName() string {
 	case Parameter_UNKOWN_255:
 		return "UNKOWN_255"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e Parameter) String() string {

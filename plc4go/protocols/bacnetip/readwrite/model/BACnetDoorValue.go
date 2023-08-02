@@ -159,7 +159,7 @@ func (e BACnetDoorValue) PLC4XEnumName() string {
 	case BACnetDoorValue_EXTENDED_PULSE_UNLOCK:
 		return "EXTENDED_PULSE_UNLOCK"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e BACnetDoorValue) String() string {

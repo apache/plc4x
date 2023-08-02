@@ -151,7 +151,7 @@ func (e BACnetEventTransitionBits) PLC4XEnumName() string {
 	case BACnetEventTransitionBits_TO_NORMAL:
 		return "TO_NORMAL"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e BACnetEventTransitionBits) String() string {

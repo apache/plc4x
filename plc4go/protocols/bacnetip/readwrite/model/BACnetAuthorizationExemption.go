@@ -191,7 +191,7 @@ func (e BACnetAuthorizationExemption) PLC4XEnumName() string {
 	case BACnetAuthorizationExemption_AUTHORIZATION_DELAY:
 		return "AUTHORIZATION_DELAY"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e BACnetAuthorizationExemption) String() string {

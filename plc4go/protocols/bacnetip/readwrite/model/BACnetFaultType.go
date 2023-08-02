@@ -191,7 +191,7 @@ func (e BACnetFaultType) PLC4XEnumName() string {
 	case BACnetFaultType_FAULT_LISTED:
 		return "FAULT_LISTED"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e BACnetFaultType) String() string {

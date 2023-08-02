@@ -183,7 +183,7 @@ func (e BACnetAuthenticationStatus) PLC4XEnumName() string {
 	case BACnetAuthenticationStatus_IN_PROGRESS:
 		return "IN_PROGRESS"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e BACnetAuthenticationStatus) String() string {

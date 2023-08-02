@@ -292,7 +292,7 @@ func (e MeteringCommandTypeContainer) PLC4XEnumName() string {
 	case MeteringCommandTypeContainer_MeteringCommandEvent_7Bytes:
 		return "MeteringCommandEvent_7Bytes"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e MeteringCommandTypeContainer) String() string {

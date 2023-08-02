@@ -151,7 +151,7 @@ func (e ModbusDeviceInformationConformityLevel) PLC4XEnumName() string {
 	case ModbusDeviceInformationConformityLevel_EXTENDED_STREAM_ONLY:
 		return "EXTENDED_STREAM_ONLY"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e ModbusDeviceInformationConformityLevel) String() string {

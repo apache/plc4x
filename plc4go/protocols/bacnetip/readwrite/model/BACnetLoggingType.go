@@ -159,7 +159,7 @@ func (e BACnetLoggingType) PLC4XEnumName() string {
 	case BACnetLoggingType_TRIGGERED:
 		return "TRIGGERED"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e BACnetLoggingType) String() string {

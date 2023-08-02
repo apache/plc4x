@@ -607,7 +607,7 @@ func (e BACnetObjectTypesSupported) PLC4XEnumName() string {
 	case BACnetObjectTypesSupported_EVENT_ENROLLMENT:
 		return "EVENT_ENROLLMENT"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e BACnetObjectTypesSupported) String() string {

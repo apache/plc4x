@@ -223,7 +223,7 @@ func (e BACnetNetworkType) PLC4XEnumName() string {
 	case BACnetNetworkType_SERIAL:
 		return "SERIAL"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e BACnetNetworkType) String() string {

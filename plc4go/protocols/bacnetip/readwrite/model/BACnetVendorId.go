@@ -23028,7 +23028,7 @@ func (e BACnetVendorId) PLC4XEnumName() string {
 	case BACnetVendorId_ZUMTOBEL_LIGHTING_GMBH:
 		return "ZUMTOBEL_LIGHTING_GMBH"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint16(e))
 }
 
 func (e BACnetVendorId) String() string {

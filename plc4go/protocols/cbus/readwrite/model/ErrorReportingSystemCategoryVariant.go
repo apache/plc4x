@@ -159,7 +159,7 @@ func (e ErrorReportingSystemCategoryVariant) PLC4XEnumName() string {
 	case ErrorReportingSystemCategoryVariant_RESERVED_3:
 		return "RESERVED_3"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e ErrorReportingSystemCategoryVariant) String() string {

@@ -407,7 +407,7 @@ func (e NodeAttributesMask) PLC4XEnumName() string {
 	case NodeAttributesMask_nodeAttributesMaskRolePermissions:
 		return "nodeAttributesMaskRolePermissions"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint32(e))
 }
 
 func (e NodeAttributesMask) String() string {

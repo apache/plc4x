@@ -183,7 +183,7 @@ func (e AdsTransMode) PLC4XEnumName() string {
 	case AdsTransMode_ON_CHANGE_IN_CONTEXT:
 		return "ON_CHANGE_IN_CONTEXT"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint32(e))
 }
 
 func (e AdsTransMode) String() string {

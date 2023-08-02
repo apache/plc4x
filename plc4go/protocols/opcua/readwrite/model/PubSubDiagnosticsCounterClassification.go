@@ -143,7 +143,7 @@ func (e PubSubDiagnosticsCounterClassification) PLC4XEnumName() string {
 	case PubSubDiagnosticsCounterClassification_pubSubDiagnosticsCounterClassificationError:
 		return "pubSubDiagnosticsCounterClassificationError"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint32(e))
 }
 
 func (e PubSubDiagnosticsCounterClassification) String() string {

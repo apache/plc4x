@@ -175,7 +175,7 @@ func (e BACnetCharacterEncoding) PLC4XEnumName() string {
 	case BACnetCharacterEncoding_ISO_8859_1:
 		return "ISO_8859_1"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", byte(e))
 }
 
 func (e BACnetCharacterEncoding) String() string {

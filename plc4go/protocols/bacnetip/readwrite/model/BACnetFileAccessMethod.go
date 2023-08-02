@@ -143,7 +143,7 @@ func (e BACnetFileAccessMethod) PLC4XEnumName() string {
 	case BACnetFileAccessMethod_STREAM_ACCESS:
 		return "STREAM_ACCESS"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e BACnetFileAccessMethod) String() string {

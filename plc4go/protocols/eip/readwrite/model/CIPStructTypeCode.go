@@ -135,7 +135,7 @@ func (e CIPStructTypeCode) PLC4XEnumName() string {
 	case CIPStructTypeCode_STRING:
 		return "STRING"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint16(e))
 }
 
 func (e CIPStructTypeCode) String() string {

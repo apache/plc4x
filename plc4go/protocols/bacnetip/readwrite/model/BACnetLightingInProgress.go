@@ -167,7 +167,7 @@ func (e BACnetLightingInProgress) PLC4XEnumName() string {
 	case BACnetLightingInProgress_OTHER:
 		return "OTHER"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e BACnetLightingInProgress) String() string {

@@ -183,7 +183,7 @@ func (e BACnetLiftGroupMode) PLC4XEnumName() string {
 	case BACnetLiftGroupMode_UP_PEAK:
 		return "UP_PEAK"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e BACnetLiftGroupMode) String() string {

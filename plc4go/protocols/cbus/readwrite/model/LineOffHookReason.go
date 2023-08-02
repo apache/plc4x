@@ -191,7 +191,7 @@ func (e LineOffHookReason) PLC4XEnumName() string {
 	case LineOffHookReason_CBTI_IS_CLEARING:
 		return "CBTI_IS_CLEARING"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e LineOffHookReason) String() string {

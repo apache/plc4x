@@ -2084,7 +2084,7 @@ func (e SecurityCommandTypeContainer) PLC4XEnumName() string {
 	case SecurityCommandTypeContainer_SecurityCommandLongOn_31Bytes:
 		return "SecurityCommandLongOn_31Bytes"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e SecurityCommandTypeContainer) String() string {

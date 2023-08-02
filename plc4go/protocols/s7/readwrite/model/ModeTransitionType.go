@@ -199,7 +199,7 @@ func (e ModeTransitionType) PLC4XEnumName() string {
 	case ModeTransitionType_UPDATE:
 		return "UPDATE"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e ModeTransitionType) String() string {

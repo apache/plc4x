@@ -295,7 +295,7 @@ func (e BACnetEventType) PLC4XEnumName() string {
 	case BACnetEventType_EXTENDED:
 		return "EXTENDED"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint16(e))
 }
 
 func (e BACnetEventType) String() string {

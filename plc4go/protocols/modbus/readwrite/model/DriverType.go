@@ -151,7 +151,7 @@ func (e DriverType) PLC4XEnumName() string {
 	case DriverType_MODBUS_ASCII:
 		return "MODBUS_ASCII"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint32(e))
 }
 
 func (e DriverType) String() string {

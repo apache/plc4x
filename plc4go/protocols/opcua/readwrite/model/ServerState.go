@@ -191,7 +191,7 @@ func (e ServerState) PLC4XEnumName() string {
 	case ServerState_serverStateUnknown:
 		return "serverStateUnknown"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint32(e))
 }
 
 func (e ServerState) String() string {

@@ -231,7 +231,7 @@ func (e AdsPortNumbers) PLC4XEnumName() string {
 	case AdsPortNumbers_CAM_SWITCH:
 		return "CAM_SWITCH"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint16(e))
 }
 
 func (e AdsPortNumbers) String() string {

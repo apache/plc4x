@@ -159,7 +159,7 @@ func (e BrowseDirection) PLC4XEnumName() string {
 	case BrowseDirection_browseDirectionInvalid:
 		return "browseDirectionInvalid"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint32(e))
 }
 
 func (e BrowseDirection) String() string {

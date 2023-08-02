@@ -215,7 +215,7 @@ func (e BACnetLiftCarDriveStatus) PLC4XEnumName() string {
 	case BACnetLiftCarDriveStatus_MULTI_FLOOR_JUMP:
 		return "MULTI_FLOOR_JUMP"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint16(e))
 }
 
 func (e BACnetLiftCarDriveStatus) String() string {

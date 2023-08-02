@@ -151,7 +151,7 @@ func (e InterfaceAdminStatus) PLC4XEnumName() string {
 	case InterfaceAdminStatus_interfaceAdminStatusTesting:
 		return "interfaceAdminStatusTesting"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint32(e))
 }
 
 func (e InterfaceAdminStatus) String() string {

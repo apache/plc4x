@@ -159,7 +159,7 @@ func (e NPDUNetworkPriority) PLC4XEnumName() string {
 	case NPDUNetworkPriority_LIFE_SAVETY_MESSAGE:
 		return "LIFE_SAVETY_MESSAGE"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e NPDUNetworkPriority) String() string {

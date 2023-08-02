@@ -143,7 +143,7 @@ func (e BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority) PLC4XE
 	case BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority_URGENT:
 		return "URGENT"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority) String() string {

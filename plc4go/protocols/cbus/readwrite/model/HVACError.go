@@ -1247,7 +1247,7 @@ func (e HVACError) PLC4XEnumName() string {
 	case HVACError_CUSTOM_ERROR_127:
 		return "CUSTOM_ERROR_127"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e HVACError) String() string {

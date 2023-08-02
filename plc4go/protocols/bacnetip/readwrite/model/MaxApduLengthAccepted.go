@@ -337,7 +337,7 @@ func (e MaxApduLengthAccepted) PLC4XEnumName() string {
 	case MaxApduLengthAccepted_RESERVED_BY_ASHRAE_10:
 		return "RESERVED_BY_ASHRAE_10"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e MaxApduLengthAccepted) String() string {

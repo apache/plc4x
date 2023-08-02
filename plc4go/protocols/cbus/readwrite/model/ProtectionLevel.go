@@ -193,7 +193,7 @@ func (e ProtectionLevel) PLC4XEnumName() string {
 	case ProtectionLevel_READ_ONLY:
 		return "READ_ONLY"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e ProtectionLevel) String() string {

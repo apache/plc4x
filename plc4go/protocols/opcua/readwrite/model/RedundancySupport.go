@@ -175,7 +175,7 @@ func (e RedundancySupport) PLC4XEnumName() string {
 	case RedundancySupport_redundancySupportHotAndMirrored:
 		return "redundancySupportHotAndMirrored"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint32(e))
 }
 
 func (e RedundancySupport) String() string {

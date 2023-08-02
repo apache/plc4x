@@ -159,7 +159,7 @@ func (e SzlModuleTypeClass) PLC4XEnumName() string {
 	case SzlModuleTypeClass_CP:
 		return "CP"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e SzlModuleTypeClass) String() string {

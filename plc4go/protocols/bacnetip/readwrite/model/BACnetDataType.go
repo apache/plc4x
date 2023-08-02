@@ -239,7 +239,7 @@ func (e BACnetDataType) PLC4XEnumName() string {
 	case BACnetDataType_ENUMERATED:
 		return "ENUMERATED"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e BACnetDataType) String() string {

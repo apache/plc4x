@@ -183,7 +183,7 @@ func (e DataSetFieldContentMask) PLC4XEnumName() string {
 	case DataSetFieldContentMask_dataSetFieldContentMaskSourcePicoSeconds:
 		return "dataSetFieldContentMaskSourcePicoSeconds"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint32(e))
 }
 
 func (e DataSetFieldContentMask) String() string {

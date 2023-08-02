@@ -151,7 +151,7 @@ func (e BACnetNotifyType) PLC4XEnumName() string {
 	case BACnetNotifyType_ACK_NOTIFICATION:
 		return "ACK_NOTIFICATION"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e BACnetNotifyType) String() string {

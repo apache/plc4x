@@ -183,7 +183,7 @@ func (e InterfaceOperStatus) PLC4XEnumName() string {
 	case InterfaceOperStatus_interfaceOperStatusLowerLayerDown:
 		return "interfaceOperStatusLowerLayerDown"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint32(e))
 }
 
 func (e InterfaceOperStatus) String() string {

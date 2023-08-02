@@ -183,7 +183,7 @@ func (e UadpDataSetMessageContentMask) PLC4XEnumName() string {
 	case UadpDataSetMessageContentMask_uadpDataSetMessageContentMaskMajorVersion:
 		return "uadpDataSetMessageContentMaskMajorVersion"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint32(e))
 }
 
 func (e UadpDataSetMessageContentMask) String() string {

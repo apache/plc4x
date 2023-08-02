@@ -191,7 +191,7 @@ func (e ErrorReportingSeverity) PLC4XEnumName() string {
 	case ErrorReportingSeverity_RESERVED_3:
 		return "RESERVED_3"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e ErrorReportingSeverity) String() string {

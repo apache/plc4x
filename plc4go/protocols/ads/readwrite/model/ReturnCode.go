@@ -1103,7 +1103,7 @@ func (e ReturnCode) PLC4XEnumName() string {
 	case ReturnCode_ADSERR_CLIENT_SYNCRESINVALID:
 		return "ADSERR_CLIENT_SYNCRESINVALID"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint32(e))
 }
 
 func (e ReturnCode) String() string {

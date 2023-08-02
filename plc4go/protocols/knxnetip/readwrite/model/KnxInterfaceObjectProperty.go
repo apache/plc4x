@@ -5386,7 +5386,7 @@ func (e KnxInterfaceObjectProperty) PLC4XEnumName() string {
 	case KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_KNXNETIP_ROUTING_CAPABILITIES:
 		return "PID_KNXIP_PARAMETER_KNXNETIP_ROUTING_CAPABILITIES"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint32(e))
 }
 
 func (e KnxInterfaceObjectProperty) String() string {

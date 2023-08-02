@@ -241,7 +241,7 @@ func (e MaxSegmentsAccepted) PLC4XEnumName() string {
 	case MaxSegmentsAccepted_MORE_THAN_64_SEGMENTS:
 		return "MORE_THAN_64_SEGMENTS"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e MaxSegmentsAccepted) String() string {

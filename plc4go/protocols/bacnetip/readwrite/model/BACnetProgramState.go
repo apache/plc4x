@@ -175,7 +175,7 @@ func (e BACnetProgramState) PLC4XEnumName() string {
 	case BACnetProgramState_UNLOADING:
 		return "UNLOADING"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e BACnetProgramState) String() string {

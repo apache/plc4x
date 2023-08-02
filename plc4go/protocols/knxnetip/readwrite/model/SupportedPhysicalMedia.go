@@ -500,7 +500,7 @@ func (e SupportedPhysicalMedia) PLC4XEnumName() string {
 	case SupportedPhysicalMedia_RADIO_CONVERTER:
 		return "RADIO_CONVERTER"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e SupportedPhysicalMedia) String() string {

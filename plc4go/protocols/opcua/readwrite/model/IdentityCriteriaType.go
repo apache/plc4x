@@ -183,7 +183,7 @@ func (e IdentityCriteriaType) PLC4XEnumName() string {
 	case IdentityCriteriaType_identityCriteriaTypeApplication:
 		return "identityCriteriaTypeApplication"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint32(e))
 }
 
 func (e IdentityCriteriaType) String() string {

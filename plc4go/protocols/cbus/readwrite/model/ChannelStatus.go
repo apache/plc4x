@@ -151,7 +151,7 @@ func (e ChannelStatus) PLC4XEnumName() string {
 	case ChannelStatus_CURRENT_LIMIT_OR_SHORT:
 		return "CURRENT_LIMIT_OR_SHORT"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e ChannelStatus) String() string {

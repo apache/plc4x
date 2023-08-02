@@ -215,7 +215,7 @@ func (e BACnetDoorStatus) PLC4XEnumName() string {
 	case BACnetDoorStatus_LIMITED_OPENED:
 		return "LIMITED_OPENED"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint16(e))
 }
 
 func (e BACnetDoorStatus) String() string {

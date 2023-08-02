@@ -193,7 +193,7 @@ func (e ErrorReportingCommandType) PLC4XEnumName() string {
 	case ErrorReportingCommandType_CLEAR_MOST_SEVERE:
 		return "CLEAR_MOST_SEVERE"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e ErrorReportingCommandType) String() string {

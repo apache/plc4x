@@ -159,7 +159,7 @@ func (e HVACHumidityType) PLC4XEnumName() string {
 	case HVACHumidityType_EVAPORATOR_REFRIGERATIVE:
 		return "EVAPORATOR_REFRIGERATIVE"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e HVACHumidityType) String() string {

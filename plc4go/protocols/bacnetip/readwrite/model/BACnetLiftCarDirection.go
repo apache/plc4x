@@ -183,7 +183,7 @@ func (e BACnetLiftCarDirection) PLC4XEnumName() string {
 	case BACnetLiftCarDirection_UP_AND_DOWN:
 		return "UP_AND_DOWN"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint16(e))
 }
 
 func (e BACnetLiftCarDirection) String() string {

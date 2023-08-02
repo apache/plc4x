@@ -159,7 +159,7 @@ func (e StatusCoding) PLC4XEnumName() string {
 	case StatusCoding_LEVEL_BY_ELSEWHERE:
 		return "LEVEL_BY_ELSEWHERE"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", byte(e))
 }
 
 func (e StatusCoding) String() string {

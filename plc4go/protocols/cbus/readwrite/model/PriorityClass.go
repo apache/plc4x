@@ -159,7 +159,7 @@ func (e PriorityClass) PLC4XEnumName() string {
 	case PriorityClass_Class1:
 		return "Class1"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e PriorityClass) String() string {

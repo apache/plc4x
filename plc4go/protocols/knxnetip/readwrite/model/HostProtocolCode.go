@@ -143,7 +143,7 @@ func (e HostProtocolCode) PLC4XEnumName() string {
 	case HostProtocolCode_IPV4_TCP:
 		return "IPV4_TCP"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e HostProtocolCode) String() string {

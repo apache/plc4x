@@ -199,7 +199,7 @@ func (e CALCommandType) PLC4XEnumName() string {
 	case CALCommandType_STATUS_EXTENDED:
 		return "STATUS_EXTENDED"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e CALCommandType) String() string {

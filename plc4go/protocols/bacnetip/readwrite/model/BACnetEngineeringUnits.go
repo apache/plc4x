@@ -2143,7 +2143,7 @@ func (e BACnetEngineeringUnits) PLC4XEnumName() string {
 	case BACnetEngineeringUnits_PERCENT_PER_SECOND:
 		return "PERCENT_PER_SECOND"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint32(e))
 }
 
 func (e BACnetEngineeringUnits) String() string {

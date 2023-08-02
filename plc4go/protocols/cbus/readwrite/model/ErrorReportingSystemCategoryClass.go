@@ -255,7 +255,7 @@ func (e ErrorReportingSystemCategoryClass) PLC4XEnumName() string {
 	case ErrorReportingSystemCategoryClass_CLIMATE_CONTROLLERS:
 		return "CLIMATE_CONTROLLERS"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e ErrorReportingSystemCategoryClass) String() string {

@@ -433,7 +433,7 @@ func (e OpcuaDataType) PLC4XEnumName() string {
 	case OpcuaDataType_WCHAR:
 		return "WCHAR"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", string(e))
 }
 
 func (e OpcuaDataType) String() string {

@@ -183,7 +183,7 @@ func (e BACnetBackupState) PLC4XEnumName() string {
 	case BACnetBackupState_RESTORE_FAILURE:
 		return "RESTORE_FAILURE"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e BACnetBackupState) String() string {

@@ -159,7 +159,7 @@ func (e HVACSensorStatus) PLC4XEnumName() string {
 	case HVACSensorStatus_SENSOR_TOTAL_FAILURE:
 		return "SENSOR_TOTAL_FAILURE"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e HVACSensorStatus) String() string {

@@ -255,7 +255,7 @@ func (e BACnetLifeSafetyMode) PLC4XEnumName() string {
 	case BACnetLifeSafetyMode_FAST:
 		return "FAST"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint16(e))
 }
 
 func (e BACnetLifeSafetyMode) String() string {

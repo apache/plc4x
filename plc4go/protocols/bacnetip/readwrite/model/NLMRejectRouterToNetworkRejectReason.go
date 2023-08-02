@@ -183,7 +183,7 @@ func (e NLMRejectRouterToNetworkRejectReason) PLC4XEnumName() string {
 	case NLMRejectRouterToNetworkRejectReason_ADDRESSING_ERROR:
 		return "ADDRESSING_ERROR"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e NLMRejectRouterToNetworkRejectReason) String() string {

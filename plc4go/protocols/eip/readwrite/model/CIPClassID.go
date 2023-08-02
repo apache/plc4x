@@ -681,7 +681,7 @@ func (e CIPClassID) PLC4XEnumName() string {
 	case CIPClassID_CompoNetRepeater:
 		return "CompoNetRepeater"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint16(e))
 }
 
 func (e CIPClassID) String() string {

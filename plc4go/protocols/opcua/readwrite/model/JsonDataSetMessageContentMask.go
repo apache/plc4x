@@ -183,7 +183,7 @@ func (e JsonDataSetMessageContentMask) PLC4XEnumName() string {
 	case JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskTimestamp:
 		return "jsonDataSetMessageContentMaskTimestamp"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint32(e))
 }
 
 func (e JsonDataSetMessageContentMask) String() string {

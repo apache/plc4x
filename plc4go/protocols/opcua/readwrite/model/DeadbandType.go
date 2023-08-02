@@ -151,7 +151,7 @@ func (e DeadbandType) PLC4XEnumName() string {
 	case DeadbandType_deadbandTypePercent:
 		return "deadbandTypePercent"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint32(e))
 }
 
 func (e DeadbandType) String() string {

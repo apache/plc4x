@@ -159,7 +159,7 @@ func (e GAVState) PLC4XEnumName() string {
 	case GAVState_ERROR:
 		return "ERROR"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e GAVState) String() string {

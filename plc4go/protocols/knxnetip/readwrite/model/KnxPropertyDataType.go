@@ -1183,7 +1183,7 @@ func (e KnxPropertyDataType) PLC4XEnumName() string {
 	case KnxPropertyDataType_PDT_LONG:
 		return "PDT_LONG"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e KnxPropertyDataType) String() string {

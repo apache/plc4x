@@ -159,7 +159,7 @@ func (e BACnetSegmentation) PLC4XEnumName() string {
 	case BACnetSegmentation_NO_SEGMENTATION:
 		return "NO_SEGMENTATION"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e BACnetSegmentation) String() string {

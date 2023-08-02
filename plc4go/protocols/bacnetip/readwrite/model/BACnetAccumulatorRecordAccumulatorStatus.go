@@ -167,7 +167,7 @@ func (e BACnetAccumulatorRecordAccumulatorStatus) PLC4XEnumName() string {
 	case BACnetAccumulatorRecordAccumulatorStatus_FAILED:
 		return "FAILED"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e BACnetAccumulatorRecordAccumulatorStatus) String() string {

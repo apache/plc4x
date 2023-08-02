@@ -175,7 +175,7 @@ func (e DialOutFailureReason) PLC4XEnumName() string {
 	case DialOutFailureReason_INTERNAL_FAILURE:
 		return "INTERNAL_FAILURE"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e DialOutFailureReason) String() string {

@@ -159,7 +159,7 @@ func (e ApplicationType) PLC4XEnumName() string {
 	case ApplicationType_applicationTypeDiscoveryServer:
 		return "applicationTypeDiscoveryServer"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint32(e))
 }
 
 func (e ApplicationType) String() string {

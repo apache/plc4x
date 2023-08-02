@@ -3791,7 +3791,7 @@ func (e BACnetPropertyIdentifier) PLC4XEnumName() string {
 	case BACnetPropertyIdentifier_VENDOR_PROPRIETARY_VALUE:
 		return "VENDOR_PROPRIETARY_VALUE"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint32(e))
 }
 
 func (e BACnetPropertyIdentifier) String() string {

@@ -207,7 +207,7 @@ func (e CommandId) PLC4XEnumName() string {
 	case CommandId_ADS_READ_WRITE:
 		return "ADS_READ_WRITE"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint16(e))
 }
 
 func (e CommandId) String() string {

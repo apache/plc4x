@@ -215,7 +215,7 @@ func (e BACnetRejectReason) PLC4XEnumName() string {
 	case BACnetRejectReason_VENDOR_PROPRIETARY_VALUE:
 		return "VENDOR_PROPRIETARY_VALUE"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e BACnetRejectReason) String() string {

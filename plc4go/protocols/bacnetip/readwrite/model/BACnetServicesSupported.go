@@ -455,7 +455,7 @@ func (e BACnetServicesSupported) PLC4XEnumName() string {
 	case BACnetServicesSupported_REMOVE_LIST_ELEMENT:
 		return "REMOVE_LIST_ELEMENT"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e BACnetServicesSupported) String() string {

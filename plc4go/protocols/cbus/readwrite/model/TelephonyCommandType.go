@@ -157,7 +157,7 @@ func (e TelephonyCommandType) PLC4XEnumName() string {
 	case TelephonyCommandType_EVENT:
 		return "EVENT"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e TelephonyCommandType) String() string {

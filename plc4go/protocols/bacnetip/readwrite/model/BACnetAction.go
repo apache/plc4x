@@ -143,7 +143,7 @@ func (e BACnetAction) PLC4XEnumName() string {
 	case BACnetAction_REVERSE:
 		return "REVERSE"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e BACnetAction) String() string {

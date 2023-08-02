@@ -191,7 +191,7 @@ func (e Operation) PLC4XEnumName() string {
 	case Operation_UNKNOWN_RESPONSE:
 		return "UNKNOWN_RESPONSE"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint32(e))
 }
 
 func (e Operation) String() string {

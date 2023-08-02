@@ -183,7 +183,7 @@ func (e BACnetAuthorizationMode) PLC4XEnumName() string {
 	case BACnetAuthorizationMode_NONE:
 		return "NONE"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint16(e))
 }
 
 func (e BACnetAuthorizationMode) String() string {

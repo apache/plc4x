@@ -191,7 +191,7 @@ func (e AccessLevelType) PLC4XEnumName() string {
 	case AccessLevelType_accessLevelTypeHistoryWrite:
 		return "accessLevelTypeHistoryWrite"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e AccessLevelType) String() string {

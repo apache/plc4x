@@ -143,7 +143,7 @@ func (e SecurityTokenRequestType) PLC4XEnumName() string {
 	case SecurityTokenRequestType_securityTokenRequestTypeRenew:
 		return "securityTokenRequestTypeRenew"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint32(e))
 }
 
 func (e SecurityTokenRequestType) String() string {

@@ -159,7 +159,7 @@ func (e BACnetShedState) PLC4XEnumName() string {
 	case BACnetShedState_SHED_NON_COMPLIANT:
 		return "SHED_NON_COMPLIANT"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e BACnetShedState) String() string {

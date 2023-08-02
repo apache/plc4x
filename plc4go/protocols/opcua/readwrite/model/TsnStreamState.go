@@ -167,7 +167,7 @@ func (e TsnStreamState) PLC4XEnumName() string {
 	case TsnStreamState_tsnStreamStateError:
 		return "tsnStreamStateError"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint32(e))
 }
 
 func (e TsnStreamState) String() string {

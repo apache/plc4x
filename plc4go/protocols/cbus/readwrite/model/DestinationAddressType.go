@@ -151,7 +151,7 @@ func (e DestinationAddressType) PLC4XEnumName() string {
 	case DestinationAddressType_PointToPoint:
 		return "PointToPoint"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e DestinationAddressType) String() string {

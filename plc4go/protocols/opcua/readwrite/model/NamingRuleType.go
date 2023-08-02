@@ -151,7 +151,7 @@ func (e NamingRuleType) PLC4XEnumName() string {
 	case NamingRuleType_namingRuleTypeConstraint:
 		return "namingRuleTypeConstraint"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint32(e))
 }
 
 func (e NamingRuleType) String() string {

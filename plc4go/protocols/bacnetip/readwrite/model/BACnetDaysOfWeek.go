@@ -183,7 +183,7 @@ func (e BACnetDaysOfWeek) PLC4XEnumName() string {
 	case BACnetDaysOfWeek_SUNDAY:
 		return "SUNDAY"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e BACnetDaysOfWeek) String() string {

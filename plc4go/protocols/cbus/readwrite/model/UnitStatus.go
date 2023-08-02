@@ -151,7 +151,7 @@ func (e UnitStatus) PLC4XEnumName() string {
 	case UnitStatus_NO_RESPONSE:
 		return "NO_RESPONSE"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e UnitStatus) String() string {

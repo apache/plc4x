@@ -175,7 +175,7 @@ func (e BACnetProgramError) PLC4XEnumName() string {
 	case BACnetProgramError_OTHER:
 		return "OTHER"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint16(e))
 }
 
 func (e BACnetProgramError) String() string {

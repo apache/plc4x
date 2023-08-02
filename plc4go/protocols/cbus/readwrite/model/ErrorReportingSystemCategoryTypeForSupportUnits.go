@@ -255,7 +255,7 @@ func (e ErrorReportingSystemCategoryTypeForSupportUnits) PLC4XEnumName() string 
 	case ErrorReportingSystemCategoryTypeForSupportUnits_RESERVED_15:
 		return "RESERVED_15"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e ErrorReportingSystemCategoryTypeForSupportUnits) String() string {

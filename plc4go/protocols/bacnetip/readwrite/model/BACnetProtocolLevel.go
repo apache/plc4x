@@ -159,7 +159,7 @@ func (e BACnetProtocolLevel) PLC4XEnumName() string {
 	case BACnetProtocolLevel_NON_BACNET_APPLICATION:
 		return "NON_BACNET_APPLICATION"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e BACnetProtocolLevel) String() string {

@@ -159,7 +159,7 @@ func (e BACnetStatusFlags) PLC4XEnumName() string {
 	case BACnetStatusFlags_OUT_OF_SERVICE:
 		return "OUT_OF_SERVICE"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e BACnetStatusFlags) String() string {

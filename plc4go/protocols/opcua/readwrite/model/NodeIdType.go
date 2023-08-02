@@ -175,7 +175,7 @@ func (e NodeIdType) PLC4XEnumName() string {
 	case NodeIdType_nodeIdTypeByteString:
 		return "nodeIdTypeByteString"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e NodeIdType) String() string {

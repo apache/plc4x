@@ -361,7 +361,7 @@ func (e Attribute) PLC4XEnumName() string {
 	case Attribute_DSIStatus:
 		return "DSIStatus"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e Attribute) String() string {

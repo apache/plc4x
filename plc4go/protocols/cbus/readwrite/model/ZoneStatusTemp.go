@@ -159,7 +159,7 @@ func (e ZoneStatusTemp) PLC4XEnumName() string {
 	case ZoneStatusTemp_ZONE_SHORT:
 		return "ZONE_SHORT"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e ZoneStatusTemp) String() string {

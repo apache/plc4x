@@ -679,7 +679,7 @@ func (e Language) PLC4XEnumName() string {
 	case Language_CHINESE_CP936:
 		return "CHINESE_CP936"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e Language) String() string {

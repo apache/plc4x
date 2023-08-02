@@ -567,7 +567,7 @@ func (e DefaultAmsPorts) PLC4XEnumName() string {
 	case DefaultAmsPorts_CAM_CONTROLLER:
 		return "CAM_CONTROLLER"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint16(e))
 }
 
 func (e DefaultAmsPorts) String() string {

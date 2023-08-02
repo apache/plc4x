@@ -175,7 +175,7 @@ func (e TrustListMasks) PLC4XEnumName() string {
 	case TrustListMasks_trustListMasksIssuerCrls:
 		return "trustListMasksIssuerCrls"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint32(e))
 }
 
 func (e TrustListMasks) String() string {

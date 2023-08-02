@@ -159,7 +159,7 @@ func (e BACnetAccessUserType) PLC4XEnumName() string {
 	case BACnetAccessUserType_PERSON:
 		return "PERSON"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint16(e))
 }
 
 func (e BACnetAccessUserType) String() string {

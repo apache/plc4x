@@ -7203,7 +7203,7 @@ func (e KnxDatapointType) PLC4XEnumName() string {
 	case KnxDatapointType_DPT_Value_Temp:
 		return "DPT_Value_Temp"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint32(e))
 }
 
 func (e KnxDatapointType) String() string {

@@ -325,7 +325,7 @@ func (e ComObjectValueType) PLC4XEnumName() string {
 	case ComObjectValueType_BYTE14:
 		return "BYTE14"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e ComObjectValueType) String() string {

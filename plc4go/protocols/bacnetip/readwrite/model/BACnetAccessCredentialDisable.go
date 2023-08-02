@@ -167,7 +167,7 @@ func (e BACnetAccessCredentialDisable) PLC4XEnumName() string {
 	case BACnetAccessCredentialDisable_DISABLE_LOCKOUT:
 		return "DISABLE_LOCKOUT"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint16(e))
 }
 
 func (e BACnetAccessCredentialDisable) String() string {

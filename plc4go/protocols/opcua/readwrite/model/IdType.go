@@ -159,7 +159,7 @@ func (e IdType) PLC4XEnumName() string {
 	case IdType_idTypeOpaque:
 		return "idTypeOpaque"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint32(e))
 }
 
 func (e IdType) String() string {

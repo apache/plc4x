@@ -143,7 +143,7 @@ func (e BACnetAccessRuleTimeRangeSpecifier) PLC4XEnumName() string {
 	case BACnetAccessRuleTimeRangeSpecifier_ALWAYS:
 		return "ALWAYS"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e BACnetAccessRuleTimeRangeSpecifier) String() string {

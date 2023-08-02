@@ -151,7 +151,7 @@ func (e KnxLayer) PLC4XEnumName() string {
 	case KnxLayer_TUNNEL_BUSMONITOR:
 		return "TUNNEL_BUSMONITOR"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e KnxLayer) String() string {

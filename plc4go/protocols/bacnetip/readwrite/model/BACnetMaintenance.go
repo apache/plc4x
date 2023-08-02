@@ -167,7 +167,7 @@ func (e BACnetMaintenance) PLC4XEnumName() string {
 	case BACnetMaintenance_NEED_SERVICE_INOPERATIVE:
 		return "NEED_SERVICE_INOPERATIVE"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e BACnetMaintenance) String() string {

@@ -143,7 +143,7 @@ func (e ModbusDeviceInformationMoreFollows) PLC4XEnumName() string {
 	case ModbusDeviceInformationMoreFollows_MORE_OBJECTS_AVAILABLE:
 		return "MORE_OBJECTS_AVAILABLE"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e ModbusDeviceInformationMoreFollows) String() string {

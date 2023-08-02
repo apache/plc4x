@@ -383,7 +383,7 @@ func (e BACnetConfirmedServiceChoice) PLC4XEnumName() string {
 	case BACnetConfirmedServiceChoice_CONFIRMED_COV_NOTIFICATION_MULTIPLE:
 		return "CONFIRMED_COV_NOTIFICATION_MULTIPLE"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e BACnetConfirmedServiceChoice) String() string {

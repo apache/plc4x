@@ -199,7 +199,7 @@ func (e NodeClass) PLC4XEnumName() string {
 	case NodeClass_nodeClassObjectType:
 		return "nodeClassObjectType"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint32(e))
 }
 
 func (e NodeClass) String() string {

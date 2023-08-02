@@ -169,7 +169,7 @@ func (e ClockAndTimekeepingCommandType) PLC4XEnumName() string {
 	case ClockAndTimekeepingCommandType_REQUEST_REFRESH:
 		return "REQUEST_REFRESH"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e ClockAndTimekeepingCommandType) String() string {

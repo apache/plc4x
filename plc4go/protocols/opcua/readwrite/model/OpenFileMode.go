@@ -159,7 +159,7 @@ func (e OpenFileMode) PLC4XEnumName() string {
 	case OpenFileMode_openFileModeAppend:
 		return "openFileModeAppend"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint32(e))
 }
 
 func (e OpenFileMode) String() string {

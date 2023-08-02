@@ -229,7 +229,7 @@ func (e DataTransportSize) PLC4XEnumName() string {
 	case DataTransportSize_OCTET_STRING:
 		return "OCTET_STRING"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e DataTransportSize) String() string {

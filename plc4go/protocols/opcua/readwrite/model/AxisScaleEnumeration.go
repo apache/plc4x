@@ -151,7 +151,7 @@ func (e AxisScaleEnumeration) PLC4XEnumName() string {
 	case AxisScaleEnumeration_axisScaleEnumerationLn:
 		return "axisScaleEnumerationLn"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint32(e))
 }
 
 func (e AxisScaleEnumeration) String() string {

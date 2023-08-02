@@ -223,7 +223,7 @@ func (e Status) PLC4XEnumName() string {
 	case Status_TUNNELLING_LAYER_NOT_SUPPORTED:
 		return "TUNNELLING_LAYER_NOT_SUPPORTED"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e Status) String() string {

@@ -175,7 +175,7 @@ func (e BaudRateSelector) PLC4XEnumName() string {
 	case BaudRateSelector_SELECTED_9600_BAUD:
 		return "SELECTED_9600_BAUD"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e BaudRateSelector) String() string {

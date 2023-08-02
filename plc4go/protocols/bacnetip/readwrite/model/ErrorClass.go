@@ -199,7 +199,7 @@ func (e ErrorClass) PLC4XEnumName() string {
 	case ErrorClass_COMMUNICATION:
 		return "COMMUNICATION"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint16(e))
 }
 
 func (e ErrorClass) String() string {

@@ -199,7 +199,7 @@ func (e AdsDiscoveryBlockType) PLC4XEnumName() string {
 	case AdsDiscoveryBlockType_FINGERPRINT:
 		return "FINGERPRINT"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint16(e))
 }
 
 func (e AdsDiscoveryBlockType) String() string {

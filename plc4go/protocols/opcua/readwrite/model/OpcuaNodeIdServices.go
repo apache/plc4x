@@ -8735,7 +8735,7 @@ func (e OpcuaNodeIdServices) PLC4XEnumName() string {
 	case OpcuaNodeIdServices_NonExclusiveLimitAlarmType:
 		return "NonExclusiveLimitAlarmType"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", int32(e))
 }
 
 func (e OpcuaNodeIdServices) String() string {

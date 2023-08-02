@@ -167,7 +167,7 @@ func (e AccessRestrictionType) PLC4XEnumName() string {
 	case AccessRestrictionType_accessRestrictionTypeApplyRestrictionsToBrowse:
 		return "accessRestrictionTypeApplyRestrictionsToBrowse"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint16(e))
 }
 
 func (e AccessRestrictionType) String() string {

@@ -151,7 +151,7 @@ func (e BACnetLogStatus) PLC4XEnumName() string {
 	case BACnetLogStatus_LOG_INTERRUPTED:
 		return "LOG_INTERRUPTED"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e BACnetLogStatus) String() string {

@@ -151,7 +151,7 @@ func (e OverrideValueHandling) PLC4XEnumName() string {
 	case OverrideValueHandling_overrideValueHandlingOverrideValue:
 		return "overrideValueHandlingOverrideValue"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint32(e))
 }
 
 func (e OverrideValueHandling) String() string {

@@ -175,7 +175,7 @@ func (e BACnetProgramRequest) PLC4XEnumName() string {
 	case BACnetProgramRequest_UNLOAD:
 		return "UNLOAD"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e BACnetProgramRequest) String() string {

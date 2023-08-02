@@ -159,7 +159,7 @@ func (e LightingCompatible) PLC4XEnumName() string {
 	case LightingCompatible_NA:
 		return "NA"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e LightingCompatible) String() string {

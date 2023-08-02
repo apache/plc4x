@@ -151,7 +151,7 @@ func (e MonitoringMode) PLC4XEnumName() string {
 	case MonitoringMode_monitoringModeReporting:
 		return "monitoringModeReporting"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint32(e))
 }
 
 func (e MonitoringMode) String() string {

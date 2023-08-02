@@ -10436,7 +10436,7 @@ func (e KnxManufacturer) PLC4XEnumName() string {
 	case KnxManufacturer_M_ELDAT:
 		return "M_ELDAT"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint16(e))
 }
 
 func (e KnxManufacturer) String() string {

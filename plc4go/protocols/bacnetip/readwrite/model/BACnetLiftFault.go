@@ -271,7 +271,7 @@ func (e BACnetLiftFault) PLC4XEnumName() string {
 	case BACnetLiftFault_CALL_BUTTON_STUCK:
 		return "CALL_BUTTON_STUCK"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint16(e))
 }
 
 func (e BACnetLiftFault) String() string {

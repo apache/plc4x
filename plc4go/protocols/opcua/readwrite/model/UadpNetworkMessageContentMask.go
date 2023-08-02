@@ -223,7 +223,7 @@ func (e UadpNetworkMessageContentMask) PLC4XEnumName() string {
 	case UadpNetworkMessageContentMask_uadpNetworkMessageContentMaskGroupVersion:
 		return "uadpNetworkMessageContentMaskGroupVersion"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint32(e))
 }
 
 func (e UadpNetworkMessageContentMask) String() string {

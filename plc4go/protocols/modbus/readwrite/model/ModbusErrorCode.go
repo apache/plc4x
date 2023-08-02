@@ -207,7 +207,7 @@ func (e ModbusErrorCode) PLC4XEnumName() string {
 	case ModbusErrorCode_MEMORY_PARITY_ERROR:
 		return "MEMORY_PARITY_ERROR"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e ModbusErrorCode) String() string {

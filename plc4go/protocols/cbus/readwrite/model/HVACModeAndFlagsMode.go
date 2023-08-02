@@ -167,7 +167,7 @@ func (e HVACModeAndFlagsMode) PLC4XEnumName() string {
 	case HVACModeAndFlagsMode_VENT_FAN_ONLY:
 		return "VENT_FAN_ONLY"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e HVACModeAndFlagsMode) String() string {

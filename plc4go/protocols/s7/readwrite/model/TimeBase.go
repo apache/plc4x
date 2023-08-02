@@ -151,7 +151,7 @@ func (e TimeBase) PLC4XEnumName() string {
 	case TimeBase_B1SEC:
 		return "B1SEC"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e TimeBase) String() string {

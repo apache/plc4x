@@ -2036,7 +2036,7 @@ func (e CALCommandTypeContainer) PLC4XEnumName() string {
 	case CALCommandTypeContainer_CALCommandStatusExtended_31Bytes:
 		return "CALCommandStatusExtended_31Bytes"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e CALCommandTypeContainer) String() string {

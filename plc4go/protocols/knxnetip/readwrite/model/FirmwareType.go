@@ -255,7 +255,7 @@ func (e FirmwareType) PLC4XEnumName() string {
 	case FirmwareType_SYSTEM_7_KNX_NET_IP:
 		return "SYSTEM_7_KNX_NET_IP"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint16(e))
 }
 
 func (e FirmwareType) String() string {

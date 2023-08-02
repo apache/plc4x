@@ -1583,7 +1583,7 @@ func (e AccessControlCommandTypeContainer) PLC4XEnumName() string {
 	case AccessControlCommandTypeContainer_AccessControlCommandInvalidAccessRequest_31Bytes:
 		return "AccessControlCommandInvalidAccessRequest_31Bytes"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e AccessControlCommandTypeContainer) String() string {

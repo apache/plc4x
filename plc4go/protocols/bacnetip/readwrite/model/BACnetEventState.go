@@ -183,7 +183,7 @@ func (e BACnetEventState) PLC4XEnumName() string {
 	case BACnetEventState_LIFE_SAVETY_ALARM:
 		return "LIFE_SAVETY_ALARM"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint16(e))
 }
 
 func (e BACnetEventState) String() string {

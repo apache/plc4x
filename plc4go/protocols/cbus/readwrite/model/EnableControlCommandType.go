@@ -157,7 +157,7 @@ func (e EnableControlCommandType) PLC4XEnumName() string {
 	case EnableControlCommandType_SET_NETWORK_VARIABLE:
 		return "SET_NETWORK_VARIABLE"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e EnableControlCommandType) String() string {

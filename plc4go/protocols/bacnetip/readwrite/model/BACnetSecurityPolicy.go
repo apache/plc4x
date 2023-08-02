@@ -159,7 +159,7 @@ func (e BACnetSecurityPolicy) PLC4XEnumName() string {
 	case BACnetSecurityPolicy_ENCRYPTED_TRUSTED:
 		return "ENCRYPTED_TRUSTED"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e BACnetSecurityPolicy) String() string {

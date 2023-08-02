@@ -167,7 +167,7 @@ func (e COTPProtocolClass) PLC4XEnumName() string {
 	case COTPProtocolClass_CLASS_4:
 		return "CLASS_4"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e COTPProtocolClass) String() string {

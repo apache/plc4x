@@ -159,7 +159,7 @@ func (e CpuSubscribeEvents) PLC4XEnumName() string {
 	case CpuSubscribeEvents_CP:
 		return "CP"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e CpuSubscribeEvents) String() string {

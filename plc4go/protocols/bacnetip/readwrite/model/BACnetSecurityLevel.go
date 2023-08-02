@@ -175,7 +175,7 @@ func (e BACnetSecurityLevel) PLC4XEnumName() string {
 	case BACnetSecurityLevel_ENCRYPTED_END_TO_END:
 		return "ENCRYPTED_END_TO_END"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e BACnetSecurityLevel) String() string {

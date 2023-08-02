@@ -375,7 +375,7 @@ func (e BACnetRelationship) PLC4XEnumName() string {
 	case BACnetRelationship_ADJUSTED_BY:
 		return "ADJUSTED_BY"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint16(e))
 }
 
 func (e BACnetRelationship) String() string {

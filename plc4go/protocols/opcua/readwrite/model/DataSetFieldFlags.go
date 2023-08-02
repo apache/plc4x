@@ -143,7 +143,7 @@ func (e DataSetFieldFlags) PLC4XEnumName() string {
 	case DataSetFieldFlags_dataSetFieldFlagsPromotedField:
 		return "dataSetFieldFlagsPromotedField"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint16(e))
 }
 
 func (e DataSetFieldFlags) String() string {

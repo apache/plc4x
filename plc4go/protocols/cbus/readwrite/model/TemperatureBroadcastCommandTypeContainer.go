@@ -420,7 +420,7 @@ func (e TemperatureBroadcastCommandTypeContainer) PLC4XEnumName() string {
 	case TemperatureBroadcastCommandTypeContainer_TemperatureBroadcastCommandSetBroadcastEvent15_2Bytes:
 		return "TemperatureBroadcastCommandSetBroadcastEvent15_2Bytes"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e TemperatureBroadcastCommandTypeContainer) String() string {

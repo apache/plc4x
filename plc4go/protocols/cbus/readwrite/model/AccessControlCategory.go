@@ -143,7 +143,7 @@ func (e AccessControlCategory) PLC4XEnumName() string {
 	case AccessControlCategory_SYSTEM_REQUEST:
 		return "SYSTEM_REQUEST"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e AccessControlCategory) String() string {

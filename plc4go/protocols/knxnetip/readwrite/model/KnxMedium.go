@@ -175,7 +175,7 @@ func (e KnxMedium) PLC4XEnumName() string {
 	case KnxMedium_MEDIUM_KNX_IP:
 		return "MEDIUM_KNX_IP"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e KnxMedium) String() string {

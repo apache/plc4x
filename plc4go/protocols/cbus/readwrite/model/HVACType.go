@@ -223,7 +223,7 @@ func (e HVACType) PLC4XEnumName() string {
 	case HVACType_ANY:
 		return "ANY"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e HVACType) String() string {

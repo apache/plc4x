@@ -980,7 +980,7 @@ func (e TriggerControlCommandTypeContainer) PLC4XEnumName() string {
 	case TriggerControlCommandTypeContainer_TriggerControlCommandLabel_31Bytes:
 		return "TriggerControlCommandLabel_31Bytes"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e TriggerControlCommandTypeContainer) String() string {

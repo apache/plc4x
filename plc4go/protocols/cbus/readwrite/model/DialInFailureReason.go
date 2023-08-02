@@ -135,7 +135,7 @@ func (e DialInFailureReason) PLC4XEnumName() string {
 	case DialInFailureReason_PHONE_STOPPED_RINGING:
 		return "PHONE_STOPPED_RINGING"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e DialInFailureReason) String() string {

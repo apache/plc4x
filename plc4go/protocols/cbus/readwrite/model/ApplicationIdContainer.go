@@ -4260,7 +4260,7 @@ func (e ApplicationIdContainer) PLC4XEnumName() string {
 	case ApplicationIdContainer_NETWORK_CONTROL:
 		return "NETWORK_CONTROL"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e ApplicationIdContainer) String() string {

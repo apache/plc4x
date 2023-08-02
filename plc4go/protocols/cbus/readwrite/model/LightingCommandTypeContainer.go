@@ -980,7 +980,7 @@ func (e LightingCommandTypeContainer) PLC4XEnumName() string {
 	case LightingCommandTypeContainer_LightingCommandLabel_32Bytes:
 		return "LightingCommandLabel_32Bytes"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e LightingCommandTypeContainer) String() string {

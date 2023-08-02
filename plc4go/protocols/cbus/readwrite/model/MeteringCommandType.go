@@ -157,7 +157,7 @@ func (e MeteringCommandType) PLC4XEnumName() string {
 	case MeteringCommandType_EVENT:
 		return "EVENT"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e MeteringCommandType) String() string {

@@ -167,7 +167,7 @@ func (e TimestampsToReturn) PLC4XEnumName() string {
 	case TimestampsToReturn_timestampsToReturnInvalid:
 		return "timestampsToReturnInvalid"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint32(e))
 }
 
 func (e TimestampsToReturn) String() string {

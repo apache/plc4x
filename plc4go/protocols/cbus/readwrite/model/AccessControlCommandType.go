@@ -241,7 +241,7 @@ func (e AccessControlCommandType) PLC4XEnumName() string {
 	case AccessControlCommandType_INVALID_ACCESS:
 		return "INVALID_ACCESS"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e AccessControlCommandType) String() string {

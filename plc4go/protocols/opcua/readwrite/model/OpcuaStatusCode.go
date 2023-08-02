@@ -2215,7 +2215,7 @@ func (e OpcuaStatusCode) PLC4XEnumName() string {
 	case OpcuaStatusCode_BadTicketInvalid:
 		return "BadTicketInvalid"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint32(e))
 }
 
 func (e OpcuaStatusCode) String() string {

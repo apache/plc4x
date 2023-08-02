@@ -207,7 +207,7 @@ func (e BrowseResultMask) PLC4XEnumName() string {
 	case BrowseResultMask_browseResultMaskBrowseName:
 		return "browseResultMaskBrowseName"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint32(e))
 }
 
 func (e BrowseResultMask) String() string {

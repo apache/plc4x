@@ -469,7 +469,7 @@ func (e ModbusDataType) PLC4XEnumName() string {
 	case ModbusDataType_LINT:
 		return "LINT"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e ModbusDataType) String() string {

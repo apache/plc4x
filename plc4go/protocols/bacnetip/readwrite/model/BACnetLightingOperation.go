@@ -223,7 +223,7 @@ func (e BACnetLightingOperation) PLC4XEnumName() string {
 	case BACnetLightingOperation_WARN_RELINQUISH:
 		return "WARN_RELINQUISH"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint16(e))
 }
 
 func (e BACnetLightingOperation) String() string {

@@ -159,7 +159,7 @@ func (e CEMIPriority) PLC4XEnumName() string {
 	case CEMIPriority_LOW:
 		return "LOW"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e CEMIPriority) String() string {

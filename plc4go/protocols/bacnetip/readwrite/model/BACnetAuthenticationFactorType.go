@@ -327,7 +327,7 @@ func (e BACnetAuthenticationFactorType) PLC4XEnumName() string {
 	case BACnetAuthenticationFactorType_WIEGAND37:
 		return "WIEGAND37"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e BACnetAuthenticationFactorType) String() string {

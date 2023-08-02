@@ -143,7 +143,7 @@ func (e TagClass) PLC4XEnumName() string {
 	case TagClass_CONTEXT_SPECIFIC_TAGS:
 		return "CONTEXT_SPECIFIC_TAGS"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e TagClass) String() string {

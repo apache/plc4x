@@ -159,7 +159,7 @@ func (e TriggerControlLabelFlavour) PLC4XEnumName() string {
 	case TriggerControlLabelFlavour_FLAVOUR_3:
 		return "FLAVOUR_3"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e TriggerControlLabelFlavour) String() string {

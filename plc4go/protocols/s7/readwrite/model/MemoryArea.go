@@ -253,7 +253,7 @@ func (e MemoryArea) PLC4XEnumName() string {
 	case MemoryArea_LOCAL_DATA:
 		return "LOCAL_DATA"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e MemoryArea) String() string {

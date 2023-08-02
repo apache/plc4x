@@ -191,7 +191,7 @@ func (e BACnetAccessZoneOccupancyState) PLC4XEnumName() string {
 	case BACnetAccessZoneOccupancyState_NOT_SUPPORTED:
 		return "NOT_SUPPORTED"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint16(e))
 }
 
 func (e BACnetAccessZoneOccupancyState) String() string {

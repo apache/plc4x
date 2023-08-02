@@ -159,7 +159,7 @@ func (e BACnetNetworkNumberQuality) PLC4XEnumName() string {
 	case BACnetNetworkNumberQuality_CONFIGURED:
 		return "CONFIGURED"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e BACnetNetworkNumberQuality) String() string {

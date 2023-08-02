@@ -183,7 +183,7 @@ func (e BACnetDeviceStatus) PLC4XEnumName() string {
 	case BACnetDeviceStatus_BACKUP_IN_PROGRESS:
 		return "BACKUP_IN_PROGRESS"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint16(e))
 }
 
 func (e BACnetDeviceStatus) String() string {

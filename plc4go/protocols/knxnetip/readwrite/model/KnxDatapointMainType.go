@@ -1403,7 +1403,7 @@ func (e KnxDatapointMainType) PLC4XEnumName() string {
 	case KnxDatapointMainType_DPT_CHARACTER:
 		return "DPT_CHARACTER"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint16(e))
 }
 
 func (e KnxDatapointMainType) String() string {

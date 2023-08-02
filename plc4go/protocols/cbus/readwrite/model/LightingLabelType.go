@@ -159,7 +159,7 @@ func (e LightingLabelType) PLC4XEnumName() string {
 	case LightingLabelType_SET_PREFERRED_LANGUAGE:
 		return "SET_PREFERRED_LANGUAGE"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e LightingLabelType) String() string {

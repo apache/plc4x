@@ -151,7 +151,7 @@ func (e AccessControlDirection) PLC4XEnumName() string {
 	case AccessControlDirection_OUT:
 		return "OUT"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e AccessControlDirection) String() string {

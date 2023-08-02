@@ -159,7 +159,7 @@ func (e BACnetLightingTransition) PLC4XEnumName() string {
 	case BACnetLightingTransition_RAMP:
 		return "RAMP"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e BACnetLightingTransition) String() string {

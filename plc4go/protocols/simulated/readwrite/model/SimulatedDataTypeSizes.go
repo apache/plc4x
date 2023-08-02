@@ -469,7 +469,7 @@ func (e SimulatedDataTypeSizes) PLC4XEnumName() string {
 	case SimulatedDataTypeSizes_LINT:
 		return "LINT"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e SimulatedDataTypeSizes) String() string {

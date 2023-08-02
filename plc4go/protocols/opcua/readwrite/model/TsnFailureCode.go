@@ -335,7 +335,7 @@ func (e TsnFailureCode) PLC4XEnumName() string {
 	case TsnFailureCode_tsnFailureCodeUseDifferentDestinationAddress:
 		return "tsnFailureCodeUseDifferentDestinationAddress"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint32(e))
 }
 
 func (e TsnFailureCode) String() string {

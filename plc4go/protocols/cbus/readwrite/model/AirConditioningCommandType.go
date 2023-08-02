@@ -373,7 +373,7 @@ func (e AirConditioningCommandType) PLC4XEnumName() string {
 	case AirConditioningCommandType_HUMIDITY_SCHEDULE_ENTRY:
 		return "HUMIDITY_SCHEDULE_ENTRY"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e AirConditioningCommandType) String() string {

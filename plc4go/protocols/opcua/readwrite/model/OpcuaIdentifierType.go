@@ -159,7 +159,7 @@ func (e OpcuaIdentifierType) PLC4XEnumName() string {
 	case OpcuaIdentifierType_STRING_IDENTIFIER:
 		return "STRING_IDENTIFIER"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", string(e))
 }
 
 func (e OpcuaIdentifierType) String() string {

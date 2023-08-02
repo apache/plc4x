@@ -231,7 +231,7 @@ func (e SyntaxIdType) PLC4XEnumName() string {
 	case SyntaxIdType_SYM1200:
 		return "SYM1200"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e SyntaxIdType) String() string {

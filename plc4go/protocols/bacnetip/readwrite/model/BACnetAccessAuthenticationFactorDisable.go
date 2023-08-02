@@ -183,7 +183,7 @@ func (e BACnetAccessAuthenticationFactorDisable) PLC4XEnumName() string {
 	case BACnetAccessAuthenticationFactorDisable_DISABLED_DESTROYED:
 		return "DISABLED_DESTROYED"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint16(e))
 }
 
 func (e BACnetAccessAuthenticationFactorDisable) String() string {

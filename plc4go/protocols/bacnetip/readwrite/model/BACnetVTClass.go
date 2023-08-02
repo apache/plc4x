@@ -191,7 +191,7 @@ func (e BACnetVTClass) PLC4XEnumName() string {
 	case BACnetVTClass_IBM_3130:
 		return "IBM_3130"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint16(e))
 }
 
 func (e BACnetVTClass) String() string {

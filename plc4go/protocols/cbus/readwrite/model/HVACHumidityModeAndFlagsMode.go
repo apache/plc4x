@@ -159,7 +159,7 @@ func (e HVACHumidityModeAndFlagsMode) PLC4XEnumName() string {
 	case HVACHumidityModeAndFlagsMode_HUMIDITY_CONTROL:
 		return "HUMIDITY_CONTROL"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e HVACHumidityModeAndFlagsMode) String() string {

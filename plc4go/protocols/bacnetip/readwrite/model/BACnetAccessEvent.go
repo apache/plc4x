@@ -567,7 +567,7 @@ func (e BACnetAccessEvent) PLC4XEnumName() string {
 	case BACnetAccessEvent_LOCKED_BY_HIGHER_PRIORITY:
 		return "LOCKED_BY_HIGHER_PRIORITY"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint16(e))
 }
 
 func (e BACnetAccessEvent) String() string {

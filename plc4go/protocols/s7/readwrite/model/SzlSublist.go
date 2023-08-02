@@ -335,7 +335,7 @@ func (e SzlSublist) PLC4XEnumName() string {
 	case SzlSublist_DIAGNOSTIC_DATA_DP_SLAVE:
 		return "DIAGNOSTIC_DATA_DP_SLAVE"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e SzlSublist) String() string {

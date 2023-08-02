@@ -159,7 +159,7 @@ func (e MessageSecurityMode) PLC4XEnumName() string {
 	case MessageSecurityMode_messageSecurityModeSignAndEncrypt:
 		return "messageSecurityModeSignAndEncrypt"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint32(e))
 }
 
 func (e MessageSecurityMode) String() string {

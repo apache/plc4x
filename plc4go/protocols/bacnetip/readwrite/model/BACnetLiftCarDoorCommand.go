@@ -151,7 +151,7 @@ func (e BACnetLiftCarDoorCommand) PLC4XEnumName() string {
 	case BACnetLiftCarDoorCommand_CLOSE:
 		return "CLOSE"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e BACnetLiftCarDoorCommand) String() string {

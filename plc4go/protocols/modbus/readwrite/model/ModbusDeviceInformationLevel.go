@@ -159,7 +159,7 @@ func (e ModbusDeviceInformationLevel) PLC4XEnumName() string {
 	case ModbusDeviceInformationLevel_INDIVIDUAL:
 		return "INDIVIDUAL"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e ModbusDeviceInformationLevel) String() string {

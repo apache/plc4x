@@ -375,7 +375,7 @@ func (e PlcValueType) PLC4XEnumName() string {
 	case PlcValueType_RAW_BYTE_ARRAY:
 		return "RAW_BYTE_ARRAY"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e PlcValueType) String() string {

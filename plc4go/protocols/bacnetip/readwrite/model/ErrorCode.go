@@ -1167,7 +1167,7 @@ func (e ErrorCode) PLC4XEnumName() string {
 	case ErrorCode_INCORRECT_KEY:
 		return "INCORRECT_KEY"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint16(e))
 }
 
 func (e ErrorCode) String() string {

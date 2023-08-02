@@ -223,7 +223,7 @@ func (e PinMode) PLC4XEnumName() string {
 	case PinMode_PinModePullup:
 		return "PinModePullup"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e PinMode) String() string {

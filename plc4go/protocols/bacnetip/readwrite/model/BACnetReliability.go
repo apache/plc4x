@@ -327,7 +327,7 @@ func (e BACnetReliability) PLC4XEnumName() string {
 	case BACnetReliability_MULTI_STATE_FAULT:
 		return "MULTI_STATE_FAULT"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint16(e))
 }
 
 func (e BACnetReliability) String() string {

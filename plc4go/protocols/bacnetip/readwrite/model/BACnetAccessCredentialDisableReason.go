@@ -215,7 +215,7 @@ func (e BACnetAccessCredentialDisableReason) PLC4XEnumName() string {
 	case BACnetAccessCredentialDisableReason_DISABLED_MANUAL:
 		return "DISABLED_MANUAL"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint16(e))
 }
 
 func (e BACnetAccessCredentialDisableReason) String() string {

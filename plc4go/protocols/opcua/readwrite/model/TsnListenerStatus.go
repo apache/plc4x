@@ -159,7 +159,7 @@ func (e TsnListenerStatus) PLC4XEnumName() string {
 	case TsnListenerStatus_tsnListenerStatusFailed:
 		return "tsnListenerStatusFailed"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint32(e))
 }
 
 func (e TsnListenerStatus) String() string {

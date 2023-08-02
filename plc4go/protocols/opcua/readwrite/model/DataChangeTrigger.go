@@ -151,7 +151,7 @@ func (e DataChangeTrigger) PLC4XEnumName() string {
 	case DataChangeTrigger_dataChangeTriggerStatusValueTimestamp:
 		return "dataChangeTriggerStatusValueTimestamp"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint32(e))
 }
 
 func (e DataChangeTrigger) String() string {

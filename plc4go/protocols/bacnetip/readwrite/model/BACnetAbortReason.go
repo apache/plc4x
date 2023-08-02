@@ -231,7 +231,7 @@ func (e BACnetAbortReason) PLC4XEnumName() string {
 	case BACnetAbortReason_OUT_OF_RESOURCES:
 		return "OUT_OF_RESOURCES"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e BACnetAbortReason) String() string {

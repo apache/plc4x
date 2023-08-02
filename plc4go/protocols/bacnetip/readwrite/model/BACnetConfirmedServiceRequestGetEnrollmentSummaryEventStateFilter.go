@@ -167,7 +167,7 @@ func (e BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter) PLC4X
 	case BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter_ACTIVE:
 		return "ACTIVE"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter) String() string {

@@ -151,7 +151,7 @@ func (e BACnetIPMode) PLC4XEnumName() string {
 	case BACnetIPMode_BBMD:
 		return "BBMD"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e BACnetIPMode) String() string {

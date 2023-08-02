@@ -143,7 +143,7 @@ func (e BACnetAccessRuleLocationSpecifier) PLC4XEnumName() string {
 	case BACnetAccessRuleLocationSpecifier_ALL:
 		return "ALL"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e BACnetAccessRuleLocationSpecifier) String() string {

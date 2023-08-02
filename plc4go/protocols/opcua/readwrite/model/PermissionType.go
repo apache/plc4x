@@ -271,7 +271,7 @@ func (e PermissionType) PLC4XEnumName() string {
 	case PermissionType_permissionTypeAddReference:
 		return "permissionTypeAddReference"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint32(e))
 }
 
 func (e PermissionType) String() string {

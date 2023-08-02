@@ -255,7 +255,7 @@ func (e ApduType) PLC4XEnumName() string {
 	case ApduType_APDU_UNKNOWN_F:
 		return "APDU_UNKNOWN_F"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e ApduType) String() string {

@@ -159,7 +159,7 @@ func (e EventNotifierType) PLC4XEnumName() string {
 	case EventNotifierType_eventNotifierTypeHistoryWrite:
 		return "eventNotifierTypeHistoryWrite"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e EventNotifierType) String() string {

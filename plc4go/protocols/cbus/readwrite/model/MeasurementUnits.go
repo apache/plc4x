@@ -463,7 +463,7 @@ func (e MeasurementUnits) PLC4XEnumName() string {
 	case MeasurementUnits_CUSTOM:
 		return "CUSTOM"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e MeasurementUnits) String() string {

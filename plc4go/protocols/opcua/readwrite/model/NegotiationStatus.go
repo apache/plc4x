@@ -167,7 +167,7 @@ func (e NegotiationStatus) PLC4XEnumName() string {
 	case NegotiationStatus_negotiationStatusNoNegotiation:
 		return "negotiationStatusNoNegotiation"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint32(e))
 }
 
 func (e NegotiationStatus) String() string {

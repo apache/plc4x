@@ -255,7 +255,7 @@ func (e ErrorReportingSystemCategoryTypeForBuildingManagementSystems) PLC4XEnumN
 	case ErrorReportingSystemCategoryTypeForBuildingManagementSystems_RESERVED_15:
 		return "RESERVED_15"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e ErrorReportingSystemCategoryTypeForBuildingManagementSystems) String() string {

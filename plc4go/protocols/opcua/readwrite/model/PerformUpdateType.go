@@ -159,7 +159,7 @@ func (e PerformUpdateType) PLC4XEnumName() string {
 	case PerformUpdateType_performUpdateTypeRemove:
 		return "performUpdateTypeRemove"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint32(e))
 }
 
 func (e PerformUpdateType) String() string {

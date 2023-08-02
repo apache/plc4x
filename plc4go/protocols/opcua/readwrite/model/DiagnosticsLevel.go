@@ -167,7 +167,7 @@ func (e DiagnosticsLevel) PLC4XEnumName() string {
 	case DiagnosticsLevel_diagnosticsLevelDebug:
 		return "diagnosticsLevelDebug"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint32(e))
 }
 
 func (e DiagnosticsLevel) String() string {

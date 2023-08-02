@@ -199,7 +199,7 @@ func (e BACnetNetworkPortCommand) PLC4XEnumName() string {
 	case BACnetNetworkPortCommand_RESTART_PORT:
 		return "RESTART_PORT"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e BACnetNetworkPortCommand) String() string {

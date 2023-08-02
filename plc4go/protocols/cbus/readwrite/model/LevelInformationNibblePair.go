@@ -337,7 +337,7 @@ func (e LevelInformationNibblePair) PLC4XEnumName() string {
 	case LevelInformationNibblePair_Value_0:
 		return "Value_0"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e LevelInformationNibblePair) String() string {

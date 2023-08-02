@@ -497,7 +497,7 @@ func (e CIPDataTypeCode) PLC4XEnumName() string {
 	case CIPDataTypeCode_STRUCTURED:
 		return "STRUCTURED"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint16(e))
 }
 
 func (e CIPDataTypeCode) String() string {

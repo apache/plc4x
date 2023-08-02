@@ -175,7 +175,7 @@ func (e ConfirmationType) PLC4XEnumName() string {
 	case ConfirmationType_CONFIRMATION_SUCCESSFUL:
 		return "CONFIRMATION_SUCCESSFUL"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", byte(e))
 }
 
 func (e ConfirmationType) String() string {

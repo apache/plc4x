@@ -215,7 +215,7 @@ func (e BACnetLifeSafetyOperation) PLC4XEnumName() string {
 	case BACnetLifeSafetyOperation_UNSILENCE_VISUAL:
 		return "UNSILENCE_VISUAL"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint16(e))
 }
 
 func (e BACnetLifeSafetyOperation) String() string {

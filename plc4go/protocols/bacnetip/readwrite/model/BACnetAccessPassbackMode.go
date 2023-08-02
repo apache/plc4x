@@ -151,7 +151,7 @@ func (e BACnetAccessPassbackMode) PLC4XEnumName() string {
 	case BACnetAccessPassbackMode_SOFT_PASSBACK:
 		return "SOFT_PASSBACK"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e BACnetAccessPassbackMode) String() string {

@@ -420,7 +420,7 @@ func (e EnableControlCommandTypeContainer) PLC4XEnumName() string {
 	case EnableControlCommandTypeContainer_EnableControlCommandSetNetworkVariable15_2Bytes:
 		return "EnableControlCommandSetNetworkVariable15_2Bytes"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e EnableControlCommandTypeContainer) String() string {

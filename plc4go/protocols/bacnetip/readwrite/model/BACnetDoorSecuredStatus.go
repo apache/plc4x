@@ -151,7 +151,7 @@ func (e BACnetDoorSecuredStatus) PLC4XEnumName() string {
 	case BACnetDoorSecuredStatus_UNKNOWN:
 		return "UNKNOWN"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e BACnetDoorSecuredStatus) String() string {

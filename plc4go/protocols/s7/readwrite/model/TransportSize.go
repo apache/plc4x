@@ -1687,7 +1687,7 @@ func (e TransportSize) PLC4XEnumName() string {
 	case TransportSize_DT:
 		return "DT"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e TransportSize) String() string {

@@ -151,7 +151,7 @@ func (e TsnTalkerStatus) PLC4XEnumName() string {
 	case TsnTalkerStatus_tsnTalkerStatusFailed:
 		return "tsnTalkerStatusFailed"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint32(e))
 }
 
 func (e TsnTalkerStatus) String() string {

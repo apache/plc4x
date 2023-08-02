@@ -175,7 +175,7 @@ func (e DataTransportErrorCode) PLC4XEnumName() string {
 	case DataTransportErrorCode_OK:
 		return "OK"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e DataTransportErrorCode) String() string {

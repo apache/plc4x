@@ -183,7 +183,7 @@ func (e BVLCResultCode) PLC4XEnumName() string {
 	case BVLCResultCode_DISTRIBUTE_BROADCAST_TO_NETWORK_NAK:
 		return "DISTRIBUTE_BROADCAST_TO_NETWORK_NAK"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint16(e))
 }
 
 func (e BVLCResultCode) String() string {

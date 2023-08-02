@@ -205,7 +205,7 @@ func (e LightingCommandType) PLC4XEnumName() string {
 	case LightingCommandType_LABEL:
 		return "LABEL"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e LightingCommandType) String() string {

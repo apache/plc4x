@@ -207,7 +207,7 @@ func (e BACnetRestartReason) PLC4XEnumName() string {
 	case BACnetRestartReason_ACTIVATE_CHANGES:
 		return "ACTIVATE_CHANGES"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e BACnetRestartReason) String() string {

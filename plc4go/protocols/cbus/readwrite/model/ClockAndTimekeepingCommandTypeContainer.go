@@ -308,7 +308,7 @@ func (e ClockAndTimekeepingCommandTypeContainer) PLC4XEnumName() string {
 	case ClockAndTimekeepingCommandTypeContainer_MediaTransportControlCommandRequestRefresh:
 		return "MediaTransportControlCommandRequestRefresh"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e ClockAndTimekeepingCommandTypeContainer) String() string {

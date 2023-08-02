@@ -343,7 +343,7 @@ func (e AttributeWriteMask) PLC4XEnumName() string {
 	case AttributeWriteMask_attributeWriteMaskRolePermissions:
 		return "attributeWriteMaskRolePermissions"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint32(e))
 }
 
 func (e AttributeWriteMask) String() string {

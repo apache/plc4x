@@ -303,7 +303,7 @@ func (e BACnetNodeType) PLC4XEnumName() string {
 	case BACnetNodeType_ZONE:
 		return "ZONE"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e BACnetNodeType) String() string {

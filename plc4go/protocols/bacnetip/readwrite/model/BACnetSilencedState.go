@@ -167,7 +167,7 @@ func (e BACnetSilencedState) PLC4XEnumName() string {
 	case BACnetSilencedState_ALL_SILENCED:
 		return "ALL_SILENCED"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint16(e))
 }
 
 func (e BACnetSilencedState) String() string {

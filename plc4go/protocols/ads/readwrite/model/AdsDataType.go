@@ -804,7 +804,7 @@ func (e AdsDataType) PLC4XEnumName() string {
 	case AdsDataType_DT:
 		return "DT"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", int8(e))
 }
 
 func (e AdsDataType) String() string {

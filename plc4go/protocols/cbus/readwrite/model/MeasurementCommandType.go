@@ -157,7 +157,7 @@ func (e MeasurementCommandType) PLC4XEnumName() string {
 	case MeasurementCommandType_MEASUREMENT_EVENT:
 		return "MEASUREMENT_EVENT"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e MeasurementCommandType) String() string {

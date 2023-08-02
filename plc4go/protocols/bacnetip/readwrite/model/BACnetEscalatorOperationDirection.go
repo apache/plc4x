@@ -183,7 +183,7 @@ func (e BACnetEscalatorOperationDirection) PLC4XEnumName() string {
 	case BACnetEscalatorOperationDirection_DOWN_REDUCED_SPEED:
 		return "DOWN_REDUCED_SPEED"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint16(e))
 }
 
 func (e BACnetEscalatorOperationDirection) String() string {

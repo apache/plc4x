@@ -181,7 +181,7 @@ func (e SecurityCommandType) PLC4XEnumName() string {
 	case SecurityCommandType_EVENT:
 		return "EVENT"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e SecurityCommandType) String() string {

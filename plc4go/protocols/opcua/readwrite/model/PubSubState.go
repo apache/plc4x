@@ -167,7 +167,7 @@ func (e PubSubState) PLC4XEnumName() string {
 	case PubSubState_pubSubStatePreOperational:
 		return "pubSubStatePreOperational"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint32(e))
 }
 
 func (e PubSubState) String() string {

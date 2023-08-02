@@ -247,7 +247,7 @@ func (e BACnetLiftCarMode) PLC4XEnumName() string {
 	case BACnetLiftCarMode_CABINET_RECALL:
 		return "CABINET_RECALL"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint16(e))
 }
 
 func (e BACnetLiftCarMode) String() string {

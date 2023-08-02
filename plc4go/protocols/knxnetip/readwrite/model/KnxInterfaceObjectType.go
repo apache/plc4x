@@ -564,7 +564,7 @@ func (e KnxInterfaceObjectType) PLC4XEnumName() string {
 	case KnxInterfaceObjectType_OT_LTE_ADDRESS_ROUTING_TABLE:
 		return "OT_LTE_ADDRESS_ROUTING_TABLE"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint16(e))
 }
 
 func (e KnxInterfaceObjectType) String() string {

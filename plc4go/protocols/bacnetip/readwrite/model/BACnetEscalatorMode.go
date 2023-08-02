@@ -183,7 +183,7 @@ func (e BACnetEscalatorMode) PLC4XEnumName() string {
 	case BACnetEscalatorMode_OUT_OF_SERVICE:
 		return "OUT_OF_SERVICE"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint16(e))
 }
 
 func (e BACnetEscalatorMode) String() string {

@@ -143,7 +143,7 @@ func (e BACnetBinaryPV) PLC4XEnumName() string {
 	case BACnetBinaryPV_ACTIVE:
 		return "ACTIVE"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e BACnetBinaryPV) String() string {

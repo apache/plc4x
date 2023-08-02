@@ -159,7 +159,7 @@ func (e LightingLabelFlavour) PLC4XEnumName() string {
 	case LightingLabelFlavour_FLAVOUR_3:
 		return "FLAVOUR_3"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e LightingLabelFlavour) String() string {

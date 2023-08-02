@@ -159,7 +159,7 @@ func (e UserTokenType) PLC4XEnumName() string {
 	case UserTokenType_userTokenTypeIssuedToken:
 		return "userTokenTypeIssuedToken"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint32(e))
 }
 
 func (e UserTokenType) String() string {

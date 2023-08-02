@@ -151,7 +151,7 @@ func (e DeviceGroup) PLC4XEnumName() string {
 	case DeviceGroup_OTHERS:
 		return "OTHERS"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e DeviceGroup) String() string {
