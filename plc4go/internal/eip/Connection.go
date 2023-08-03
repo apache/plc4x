@@ -160,7 +160,7 @@ func (c *Connection) Close() <-chan plc4go.PlcConnectionCloseResult {
 	go func() {
 		defer func() {
 			if err := recover(); err != nil {
-				result <- _default.NewDefaultPlcConnectionCloseResult(nil, errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack()))
+				result <- _default.NewDefaultPlcConnectionCloseResult(c, errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack()))
 			}
 		}()
 		c.log.Debug().Msg("Sending UnregisterSession EIP Packet")
@@ -177,9 +177,14 @@ func (c *Connection) Close() <-chan plc4go.PlcConnectionCloseResult {
 			},
 			c.GetTtl(),
 		) //Unregister gets no response
+		time.Sleep(100 * time.Millisecond) // Just to make sure it ge's out
+		if err := c.messageCodec.Disconnect(); err != nil {
+			c.log.Warn().Err(err).Msg("error disconnecting message codec")
+		}
 		c.log.Debug().
 			Uint32("sessionHandle", c.sessionHandle).
 			Msg("Unregistred Session %d")
+		result <- _default.NewDefaultPlcConnectionCloseResult(c, nil)
 	}()
 	return result
 }

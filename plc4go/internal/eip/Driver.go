@@ -45,7 +45,7 @@ type Driver struct {
 func NewDriver(_options ...options.WithOption) plc4go.PlcDriver {
 	customLogger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)
 	driver := &Driver{
-		tm:                      transactions.NewRequestTransactionManager(1),
+		tm:                      transactions.NewRequestTransactionManager(1, _options...),
 		awaitSetupComplete:      true,
 		awaitDisconnectComplete: true,
 
