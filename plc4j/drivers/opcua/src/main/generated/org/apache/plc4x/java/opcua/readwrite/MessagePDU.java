@@ -135,7 +135,7 @@ public abstract class MessagePDU implements Message {
       builder = OpcuaMessageResponse.staticParseMessagePDUBuilder(readBuffer, response);
     } else if (EvaluationHelper.equals(messageType, (String) "ERR")
         && EvaluationHelper.equals(response, (boolean) true)) {
-      builder = OpcuaMessageERR.staticParseMessagePDUBuilder(readBuffer, response);
+      builder = OpcuaMessageError.staticParseMessagePDUBuilder(readBuffer, response);
     }
     if (builder == null) {
       throw new ParseException(
