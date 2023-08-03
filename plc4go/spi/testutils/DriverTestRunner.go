@@ -323,6 +323,7 @@ func (m DriverTestsuite) ExecuteStep(t *testing.T, connection plc4go.PlcConnecti
 		if m.byteOrder == binary.BigEndian {
 			expectedWriteBuffer = utils.NewWriteBufferByteBased()
 		} else {
+			t.Log("using little endian")
 			expectedWriteBuffer = utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.LittleEndian))
 		}
 		err = expectedSerializable.SerializeWithWriteBuffer(context.Background(), expectedWriteBuffer)
@@ -354,6 +355,7 @@ func (m DriverTestsuite) ExecuteStep(t *testing.T, connection plc4go.PlcConnecti
 			bufferFactory = utils.NewReadBufferByteBased
 		} else {
 			bufferFactory = func(bytes []byte, options ...utils.ReadBufferByteBasedOptions) utils.ReadBufferByteBased {
+				t.Log("using little endian")
 				return utils.NewReadBufferByteBased(bytes, utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian))
 			}
 		}
@@ -411,6 +413,7 @@ func (m DriverTestsuite) ExecuteStep(t *testing.T, connection plc4go.PlcConnecti
 		if m.byteOrder == binary.BigEndian {
 			wb = utils.NewWriteBufferByteBased()
 		} else {
+			t.Log("using little endian")
 			wb = utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.LittleEndian))
 		}
 		err = expectedSerializable.SerializeWithWriteBuffer(context.Background(), wb)
@@ -610,6 +613,7 @@ func ParseDriverTestsuite(t *testing.T, node xmldom.Node, parser XmlParser, root
 	if node.GetAttributeValue("byteOrder") != "LITTLE_ENDIAN" {
 		byteOrder = binary.BigEndian
 	} else {
+		t.Log("using little endian")
 		byteOrder = binary.LittleEndian
 	}
 	var testsuiteName string
