@@ -1471,6 +1471,9 @@ const (
 	BACnetVendorId_DEKKER_VACUUM_TECHNOLOGIES                                                   BACnetVendorId = 1434
 	BACnetVendorId_EDWARDS_LIMITED                                                              BACnetVendorId = 1435
 	BACnetVendorId_LEYBOLD_GMBH                                                                 BACnetVendorId = 1436
+	BACnetVendorId_INTERNATIONAL_GAS_DETECTORS                                                  BACnetVendorId = 1437
+	BACnetVendorId_ATLAS_COPCO_AIRPOWERNV                                                       BACnetVendorId = 1438
+	BACnetVendorId_AIR_SENTRY_LIMITED                                                           BACnetVendorId = 1439
 	BACnetVendorId_UNKNOWN_VENDOR                                                               BACnetVendorId = 0xFFFF
 )
 
@@ -2907,6 +2910,9 @@ func init() {
 		BACnetVendorId_DEKKER_VACUUM_TECHNOLOGIES,
 		BACnetVendorId_EDWARDS_LIMITED,
 		BACnetVendorId_LEYBOLD_GMBH,
+		BACnetVendorId_INTERNATIONAL_GAS_DETECTORS,
+		BACnetVendorId_ATLAS_COPCO_AIRPOWERNV,
+		BACnetVendorId_AIR_SENTRY_LIMITED,
 		BACnetVendorId_UNKNOWN_VENDOR,
 	}
 }
@@ -4856,6 +4862,18 @@ func (e BACnetVendorId) VendorId() uint16 {
 	case 1436:
 		{ /* '1436' */
 			return 1436
+		}
+	case 1437:
+		{ /* '1437' */
+			return 1437
+		}
+	case 1438:
+		{ /* '1438' */
+			return 1438
+		}
+	case 1439:
+		{ /* '1439' */
+			return 1439
 		}
 	case 144:
 		{ /* '144' */
@@ -10591,6 +10609,18 @@ func (e BACnetVendorId) VendorName() string {
 		{ /* '1436' */
 			return "Leybold GmbH"
 		}
+	case 1437:
+		{ /* '1437' */
+			return "International Gas Detectors"
+		}
+	case 1438:
+		{ /* '1438' */
+			return "Atlas Copco Airpower NV"
+		}
+	case 1439:
+		{ /* '1439' */
+			return "Air Sentry Limited"
+		}
 	case 144:
 		{ /* '144' */
 			return "Fujitsu General Limited"
@@ -15352,6 +15382,12 @@ func BACnetVendorIdByValue(value uint16) (enum BACnetVendorId, ok bool) {
 		return BACnetVendorId_EDWARDS_LIMITED, true
 	case 1436:
 		return BACnetVendorId_LEYBOLD_GMBH, true
+	case 1437:
+		return BACnetVendorId_INTERNATIONAL_GAS_DETECTORS, true
+	case 1438:
+		return BACnetVendorId_ATLAS_COPCO_AIRPOWERNV, true
+	case 1439:
+		return BACnetVendorId_AIR_SENTRY_LIMITED, true
 	case 144:
 		return BACnetVendorId_FUJITSU_GENERAL_LIMITED, true
 	case 145:
@@ -18216,6 +18252,12 @@ func BACnetVendorIdByName(value string) (enum BACnetVendorId, ok bool) {
 		return BACnetVendorId_EDWARDS_LIMITED, true
 	case "LEYBOLD_GMBH":
 		return BACnetVendorId_LEYBOLD_GMBH, true
+	case "INTERNATIONAL_GAS_DETECTORS":
+		return BACnetVendorId_INTERNATIONAL_GAS_DETECTORS, true
+	case "ATLAS_COPCO_AIRPOWERNV":
+		return BACnetVendorId_ATLAS_COPCO_AIRPOWERNV, true
+	case "AIR_SENTRY_LIMITED":
+		return BACnetVendorId_AIR_SENTRY_LIMITED, true
 	case "FUJITSU_GENERAL_LIMITED":
 		return BACnetVendorId_FUJITSU_GENERAL_LIMITED, true
 	case "PROJECT_ENGINEERING_SRL":
@@ -21141,6 +21183,12 @@ func (e BACnetVendorId) PLC4XEnumName() string {
 		return "EDWARDS_LIMITED"
 	case BACnetVendorId_LEYBOLD_GMBH:
 		return "LEYBOLD_GMBH"
+	case BACnetVendorId_INTERNATIONAL_GAS_DETECTORS:
+		return "INTERNATIONAL_GAS_DETECTORS"
+	case BACnetVendorId_ATLAS_COPCO_AIRPOWERNV:
+		return "ATLAS_COPCO_AIRPOWERNV"
+	case BACnetVendorId_AIR_SENTRY_LIMITED:
+		return "AIR_SENTRY_LIMITED"
 	case BACnetVendorId_FUJITSU_GENERAL_LIMITED:
 		return "FUJITSU_GENERAL_LIMITED"
 	case BACnetVendorId_PROJECT_ENGINEERING_SRL:

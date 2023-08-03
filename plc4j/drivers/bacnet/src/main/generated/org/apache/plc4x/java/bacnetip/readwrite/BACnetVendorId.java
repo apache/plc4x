@@ -1650,6 +1650,9 @@ public enum BACnetVendorId {
   DEKKER_VACUUM_TECHNOLOGIES((int) 1434, (int) 1434, (String) "Dekker Vacuum Technologies"),
   EDWARDS_LIMITED((int) 1435, (int) 1435, (String) "Edwards Limited"),
   LEYBOLD_GMBH((int) 1436, (int) 1436, (String) "Leybold GmbH"),
+  INTERNATIONAL_GAS_DETECTORS((int) 1437, (int) 1437, (String) "International Gas Detectors"),
+  ATLAS_COPCO_AIRPOWERNV((int) 1438, (int) 1438, (String) "Atlas Copco Airpower NV"),
+  AIR_SENTRY_LIMITED((int) 1439, (int) 1439, (String) "Air Sentry Limited"),
   UNKNOWN_VENDOR((int) 0xFFFF, (int) 0xFFFF, (String) "Unknown");
   private static final Map<Integer, BACnetVendorId> map;
 
