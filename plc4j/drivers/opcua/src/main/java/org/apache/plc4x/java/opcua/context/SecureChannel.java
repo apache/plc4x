@@ -792,14 +792,16 @@ public class SecureChannel {
             WriteBufferByteBased buffer = new WriteBufferByteBased(extObject.getLengthInBytes(), org.apache.plc4x.java.spi.generation.ByteOrder.LITTLE_ENDIAN);
             extObject.serialize(buffer);
 
-            OpcuaOpenRequest openRequest = new OpcuaOpenRequest(FINAL_CHUNK,
+            OpcuaOpenRequest openRequest = new OpcuaOpenRequest(
+                FINAL_CHUNK,
                 0,
                 SECURITY_POLICY_NONE,
                 NULL_BYTE_STRING,
                 NULL_BYTE_STRING,
                 transactionId,
                 transactionId,
-                buffer.getBytes());
+                buffer.getBytes()
+            );
 
             Consumer<Integer> requestConsumer = t -> context.sendRequest(new OpcuaAPU(openRequest))
                 .expectResponse(OpcuaAPU.class, REQUEST_TIMEOUT)
@@ -1039,14 +1041,16 @@ public class SecureChannel {
                         WriteBufferByteBased buffer = new WriteBufferByteBased(extObject.getLengthInBytes(), org.apache.plc4x.java.spi.generation.ByteOrder.LITTLE_ENDIAN);
                         extObject.serialize(buffer);
 
-                        OpcuaOpenRequest openRequest = new OpcuaOpenRequest(FINAL_CHUNK,
+                        OpcuaOpenRequest openRequest = new OpcuaOpenRequest(
+                            FINAL_CHUNK,
                             0,
                             new PascalString(this.securityPolicy),
                             this.publicCertificate,
                             this.thumbprint,
                             transactionId,
                             transactionId,
-                            buffer.getBytes());
+                            buffer.getBytes()
+                        );
 
                         final OpcuaAPU apu;
 
