@@ -34,6 +34,7 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/pool"
 	"github.com/apache/plc4x/plc4go/spi/transactions"
+	"github.com/apache/plc4x/plc4go/spi/transports/test"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 
 	"github.com/ajankovic/xdiff"
@@ -129,6 +130,7 @@ var (
 	traceTransactionManagerTransactions bool
 	traceDefaultMessageCodecWorker      bool
 	traceExecutorWorkers                bool
+	traceTestTransportInstance          bool
 )
 
 func init() {
@@ -143,6 +145,7 @@ func init() {
 	getOrLeaveBool("PLC4X_TEST_TRACE_TRANSACTION_MANAGER_TRANSACTIONS", &traceTransactionManagerTransactions)
 	getOrLeaveBool("PLC4X_TEST_TRACE_DEFAULT_MESSAGE_CODEC_WORKER", &traceDefaultMessageCodecWorker)
 	getOrLeaveBool("PLC4X_TEST_TRACE_EXECUTOR_WORKERS", &traceExecutorWorkers)
+	getOrLeaveBool("PLC4X_TEST_TEST_TRANSPORT_INSTANCE", &traceTestTransportInstance)
 }
 
 func getOrLeaveBool(key string, setting *bool) {
@@ -237,6 +240,7 @@ func EnrichOptionsWithOptionsForTesting(t *testing.T, _options ...options.WithOp
 		options.WithTraceTransactionManagerTransactions(traceTransactionManagerTransactions),
 		options.WithTraceDefaultMessageCodecWorker(traceDefaultMessageCodecWorker),
 		options.WithExecutorOptionTracerWorkers(traceExecutorWorkers),
+		test.WithTraceTransportInstance(traceTestTransportInstance),
 	)
 	// We always create a custom executor to ensure shared executor for transaction manager is not used for tests
 	testSharedExecutorInstance := pool.NewFixedSizeExecutor(

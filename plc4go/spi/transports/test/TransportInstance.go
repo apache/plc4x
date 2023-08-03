@@ -50,6 +50,12 @@ type TransportInstance struct {
 
 func NewTransportInstance(transport *Transport, _options ...options.WithOption) *TransportInstance {
 	customLogger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)
+	shouldTrace, found := ExtractTraceTransportInstance(_options...)
+	if found && !shouldTrace {
+		if customLogger.GetLevel() < zerolog.InfoLevel {
+			customLogger = customLogger.Level(zerolog.InfoLevel)
+		}
+	}
 	return &TransportInstance{
 		readBuffer:  []byte{},
 		writeBuffer: []byte{},
@@ -57,6 +63,27 @@ func NewTransportInstance(transport *Transport, _options ...options.WithOption) 
 
 		log: customLogger,
 	}
+}
+
+// WithTraceTransportInstance enables tracing of the test transport instance
+func WithTraceTransportInstance(trace bool) options.WithOption {
+	return withTraceTransportInstance{trace: trace}
+}
+
+// ExtractTraceTransportInstance to extract the flag indicating that transport instance should be traced
+func ExtractTraceTransportInstance(options ...options.WithOption) (trace bool, found bool) {
+	for _, option := range options {
+		switch option := option.(type) {
+		case withTraceTransportInstance:
+			trace, found = option.trace, true
+		}
+	}
+	return
+}
+
+type withTraceTransportInstance struct {
+	options.Option
+	trace bool
 }
 
 func (m *TransportInstance) Connect() error {

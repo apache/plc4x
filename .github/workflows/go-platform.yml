@@ -64,6 +64,10 @@ on:
         description: "sets tracing for executor workers"
         required: false
         default: 'false'
+      traceTestTransportInstance:
+        description: "sets tracing for test transport instance"
+        required: false
+        default: 'false'
 
 env:
   PLC4X_TEST_HIGH_TEST_LOG_PRECISION: ${{ github.event.inputs.highLogPrecision }}
@@ -73,6 +77,7 @@ env:
   PLC4X_TEST_TRACE_TRANSACTION_MANAGER_TRANSACTIONS: ${{ github.event.inputs.traceTransactionManagerTransactions }}
   PLC4X_TEST_TRACE_DEFAULT_MESSAGE_CODEC_WORKER: ${{ github.event.inputs.traceDefaultMessageCodecWorker }}
   PLC4X_TEST_TRACE_EXECUTOR_WORKERS: ${{ github.event.inputs.traceExecutorWorkers }}
+  PLC4X_TEST_TEST_TRANSPORT_INSTANCE: ${{ github.event.inputs.traceTestTransportInstance }}
 
 jobs:
   test:
