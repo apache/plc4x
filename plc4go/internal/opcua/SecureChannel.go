@@ -279,13 +279,15 @@ func (s *SecureChannel) onConnect(ctx context.Context, connection *Connection, c
 	s.log.Debug().Msg("Opcua Driver running in ACTIVE mode.")
 	s.codec = connection.messageCodec // TODO: why would we need to set that?
 
-	hello := readWriteModel.NewOpcuaHelloRequest(FINAL_CHUNK,
+	hello := readWriteModel.NewOpcuaHelloRequest(
+		FINAL_CHUNK,
 		VERSION,
 		DEFAULT_RECEIVE_BUFFER_SIZE,
 		DEFAULT_SEND_BUFFER_SIZE,
 		DEFAULT_MAX_MESSAGE_SIZE,
 		DEFAULT_MAX_CHUNK_COUNT,
-		s.endpoint)
+		s.endpoint,
+	)
 
 	requestConsumer := func(transactionId int32) {
 		s.log.Trace().Int32("transactionId", transactionId).Msg("request consumer called")

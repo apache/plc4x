@@ -128,7 +128,12 @@ func (d *Driver) GetConnectionWithContext(ctx context.Context, transportUrl url.
 	configuration.host = transportHost
 	configuration.port = transportPort
 	configuration.transportEndpoint = transportEndpoint
-	configuration.endpoint = "opc." + transportCode + "://" + transportHost + ":" + transportPort + "" + transportEndpoint
+	portAddition := ""
+	if transportPort != "" {
+		portAddition += ":" + transportPort
+	}
+	configuration.endpoint = "opc." + transportCode + "://" + transportHost + portAddition + "" + transportEndpoint
+	d.log.Debug().Stringer("configuration", &configuration).Msg("working with configurartion")
 
 	if securityPolicy := configuration.securityPolicy; securityPolicy != "" && securityPolicy != "None" {
 		d.log.Trace().Str("securityPolicy", securityPolicy).Msg("working with security policy")
@@ -151,7 +156,8 @@ func (d *Driver) GetConnectionWithContext(ctx context.Context, transportUrl url.
 
 	// Create the new connection
 	connection := NewConnection(
-		codec, configuration,
+		codec,
+		configuration,
 		driverContext,
 		d.GetPlcTagHandler(),
 		driverOptions,

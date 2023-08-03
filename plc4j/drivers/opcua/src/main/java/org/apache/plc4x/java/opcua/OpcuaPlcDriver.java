@@ -48,8 +48,8 @@ public class OpcuaPlcDriver extends GeneratedDriverBase<OpcuaAPU> {
 
     public static final Pattern URI_PATTERN = Pattern.compile("^(?<protocolCode>opcua)" +
         INET_ADDRESS_PATTERN +
-        "(?<transportEndpoint>[\\w/=]*)[\\?]?" +
-        "(?<paramString>([^\\=]+\\=[^\\=&]+[&]?)*)"
+        "(?<transportEndpoint>[\\w/=]*)[?]?" +
+        "(?<paramString>([^=]+=[^=&]+&?)*)"
     );
 
     private boolean isEncrypted;
@@ -156,7 +156,8 @@ public class OpcuaPlcDriver extends GeneratedDriverBase<OpcuaAPU> {
         configuration.setHost(transportHost);
         configuration.setPort(transportPort);
         configuration.setTransportEndpoint(transportEndpoint);
-        configuration.setEndpoint("opc." + transportCode + "://" + transportHost + ":" + transportPort + "" + transportEndpoint);
+        String portAddition = transportPort != null ? ":" + transportPort : "";
+        configuration.setEndpoint("opc." + transportCode + "://" + transportHost + portAddition + transportEndpoint);
 
         // Try to find a transport in order to create a communication channel.
         Transport transport = null;
