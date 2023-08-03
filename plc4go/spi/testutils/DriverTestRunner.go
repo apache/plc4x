@@ -311,10 +311,10 @@ func (m DriverTestsuite) ExecuteStep(t *testing.T, connection plc4go.PlcConnecti
 		if err != nil {
 			return errors.Wrap(err, "Error parsing message")
 		}
-		t.Logf("Parsed message (%T)\n%[1]s", expectedMessage)
+		t.Logf("Parsed message (%T) from xml\n%[1]s", expectedMessage)
 
 		// Serialize the model into bytes
-		t.Log("Write to bytes")
+		t.Log("Serialize the model into bytes and compare output")
 		expectedSerializable, ok := expectedMessage.(utils.Serializable)
 		if !ok {
 			return errors.Errorf("error converting type %t into Serializable type", expectedMessage)
@@ -339,7 +339,7 @@ func (m DriverTestsuite) ExecuteStep(t *testing.T, connection plc4go.PlcConnecti
 			if time.Since(startTransportPolling) > 2*time.Second {
 				drainableBytes := testTransportInstance.GetNumDrainableBytes()
 				actualRawOutput := testTransportInstance.DrainWriteBuffer(drainableBytes)
-				return errors.Errorf("error getting bytes from transport. Not enough data available: actual(%d)<expected(%d), \nactual:   %#X\nexpected: %#X\nHexdumps:\n%s",
+				return errors.Errorf("Not enough data available: actual(%d)<expected(%d), \nactual:   %#X\nexpected: %#X\nHexdumps:\n%s",
 					drainableBytes, expectedRawOutputLength, actualRawOutput, expectedRawOutput, utils.DiffHex(expectedRawOutput, actualRawOutput))
 			}
 			time.Sleep(2 * time.Millisecond)
