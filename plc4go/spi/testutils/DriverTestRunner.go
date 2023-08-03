@@ -152,7 +152,7 @@ func (m DriverTestsuite) Run(t *testing.T, driverManager plc4go.PlcDriverManager
 		t.Log("no testcase steps")
 	}
 
-	if len(testcase.steps) > 0 {
+	if len(m.teardownSteps) > 0 {
 		// Run the teardown steps
 		m.LogDelimiterSection(t, "-", "Performing teardown for: %s", testcase.name)
 		for _, testStep := range m.teardownSteps {
@@ -561,9 +561,6 @@ func RunDriverTestsuite(t *testing.T, driver plc4go.PlcDriver, testPath string, 
 			}
 		})
 	}
-	t.Logf("Done running %d testcases", len(testsuite.testcases))
-	// Execute the tests in the testsuite
-	t.Log(testsuite.name)
 }
 
 type ConnectionConnectAwaiter interface {

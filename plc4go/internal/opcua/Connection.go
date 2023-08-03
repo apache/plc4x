@@ -236,7 +236,10 @@ func (c *Connection) fireConnectionError(err error, ch chan<- plc4go.PlcConnecti
 		c.log.Debug().Err(err).Msg("Error disconnecting message codec on connection error")
 	}
 	c.SetConnected(false)
-	close(c.disconnectEvent)
+	select {
+	case c.disconnectEvent <- struct{}{}:
+	default:
+	}
 }
 
 func (c *Connection) fireConnected(ch chan<- plc4go.PlcConnectionConnectResult) {
@@ -247,5 +250,8 @@ func (c *Connection) fireConnected(ch chan<- plc4go.PlcConnectionConnectResult) 
 		c.log.Info().Msg("Successfully connected")
 	}
 	c.SetConnected(true)
-	close(c.connectEvent)
+	select {
+	case c.connectEvent <- struct{}{}:
+	default:
+	}
 }

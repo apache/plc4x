@@ -273,7 +273,7 @@ func (m *defaultCodec) HandleMessages(message spi.Message) bool {
 			expectationLog.Trace().Msg("doesn't accept message")
 		}
 	}
-	m.log.Trace().Bool("messageHandled", messageHandled).Msg("handled message")
+	m.log.Trace().Bool("messageHandled", messageHandled).Msg("finished message handling")
 	return messageHandled
 }
 

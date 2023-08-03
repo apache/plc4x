@@ -27,6 +27,7 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/default"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/transports"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"sync"
 
 	"github.com/pkg/errors"
@@ -71,14 +72,14 @@ func (m *MessageCodec) Send(message spi.Message) error {
 	}
 
 	// Serialize the request
-	theBytes, err := messagePdu.Serialize()
-	if err != nil {
+	wbbb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.LittleEndian))
+	if err := messagePdu.SerializeWithWriteBuffer(context.Background(), wbbb); err != nil {
 		return errors.Wrap(err, "error serializing request")
 	}
+	theBytes := wbbb.GetBytes()
 
 	// Send it to the PLC
-	err = m.GetTransportInstance().Write(theBytes)
-	if err != nil {
+	if err := m.GetTransportInstance().Write(theBytes); err != nil {
 		return errors.Wrap(err, "error sending request")
 	}
 	return nil
@@ -102,7 +103,7 @@ func (m *MessageCodec) Receive() (spi.Message, error) {
 			m.log.Trace().Uint32("numBytesAvailable", numBytesAvailable).Msg("check available bytes < 8")
 			return numBytesAvailable < 8
 		}); err != nil {
-		m.log.Warn().Err(err).Msg("error filling buffer")
+		m.log.Debug().Err(err).Msg("error filling buffer")
 	}
 
 	data, err := ti.PeekReadableBytes(8)
@@ -110,13 +111,14 @@ func (m *MessageCodec) Receive() (spi.Message, error) {
 		m.log.Debug().Err(err).Msg("error peeking")
 		return nil, nil
 	}
-	numberOfBytesToRead := binary.LittleEndian.Uint32(data[:4])
+	numberOfBytesToRead := binary.LittleEndian.Uint32(data[4:8])
 	readBytes, err := ti.Read(numberOfBytesToRead)
 	if err != nil {
 		return nil, errors.Wrapf(err, "could not read %d bytes", readBytes)
 	}
 	ctxForModel := options.GetLoggerContextForModel(context.Background(), m.log, options.WithPassLoggerToModel(m.passLogToModel))
-	messagePdu, err := readWriteModel.MessagePDUParse(ctxForModel, readBytes, true)
+	rbbb := utils.NewReadBufferByteBased(readBytes, utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian))
+	messagePdu, err := readWriteModel.MessagePDUParseWithBuffer(ctxForModel, rbbb, true)
 	if err != nil {
 		return nil, errors.New("Could not parse pdu")
 	}

@@ -31,7 +31,7 @@ import (
 )
 
 func TestOPCUADriver(t *testing.T) {
-	t.Skip("Not yet finished")
+	//t.Skip("Not yet finished")
 	parser := func(readBufferByteBased utils.ReadBufferByteBased) (any, error) {
 		return readWriteModel.MessagePDUParseWithBuffer(context.Background(), readBufferByteBased, false)
 	}
