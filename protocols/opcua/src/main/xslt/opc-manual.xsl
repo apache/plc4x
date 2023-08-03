@@ -125,6 +125,12 @@
            [simple          int 32             requestId]
            [array           byte               message count 'messageSize - 24']
        ]
+       ['"ERR"','true'     OpcuaMessageError
+           [simple          string 8           chunk ]
+           [implicit        int 32             messageSize 'lengthInBytes']
+           [simple          OpcuaStatusCode    error ]
+           [simple          PascalString       reason]
+       ]
     ]
 ]
 

@@ -150,6 +150,8 @@ func MessagePDUParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer,
 		_childTemp, typeSwitchError = OpcuaMessageRequestParseWithBuffer(ctx, readBuffer, response)
 	case messageType == "MSG" && response == bool(true): // OpcuaMessageResponse
 		_childTemp, typeSwitchError = OpcuaMessageResponseParseWithBuffer(ctx, readBuffer, response)
+	case messageType == "ERR" && response == bool(true): // OpcuaMessageError
+		_childTemp, typeSwitchError = OpcuaMessageErrorParseWithBuffer(ctx, readBuffer, response)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [messageType=%v, response=%v]", messageType, response)
 	}
