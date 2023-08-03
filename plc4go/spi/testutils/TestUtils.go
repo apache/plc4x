@@ -161,8 +161,7 @@ func getOrLeaveDuration(key string, setting *time.Duration) {
 	}
 }
 
-// ProduceTestingLogger produces a logger which redirects to testing.T
-func ProduceTestingLogger(t *testing.T) zerolog.Logger {
+func shouldNoColor() bool {
 	noColor := false
 	{
 		// TODO: this is really an issue with go-junit-report not sanitizing output before dumping into xml...
@@ -173,6 +172,12 @@ func ProduceTestingLogger(t *testing.T) zerolog.Logger {
 			noColor = true
 		}
 	}
+	return noColor
+}
+
+// ProduceTestingLogger produces a logger which redirects to testing.T
+func ProduceTestingLogger(t *testing.T) zerolog.Logger {
+	noColor := shouldNoColor()
 	consoleWriter := zerolog.NewConsoleWriter(
 		zerolog.ConsoleTestWriter(t),
 		func(w *zerolog.ConsoleWriter) {

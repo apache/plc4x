@@ -118,44 +118,56 @@ func (m DriverTestsuite) Run(t *testing.T, driverManager plc4go.PlcDriverManager
 		return errors.Wrap(connectionResult.GetErr(), "error getting a connection")
 	}
 	connection := connectionResult.GetConnection()
+	utils.NewAsciiBoxWriter()
+	m.LogDelimiterSection(t, "=", "Executing testcase: %s", testcase.name)
 
-	t.Logf("\n-------------------------------------------------------\nExecuting testcase: %s \n-------------------------------------------------------\n", testcase.name)
-
-	// Run the setup steps
-	t.Logf("\n-------------------------------------------------------\nPerforming setup for: %s \n-------------------------------------------------------\n", testcase.name)
-	for _, testStep := range m.setupSteps {
-		err := m.ExecuteStep(t, connection, &testcase, testStep)
-		if err != nil {
-			return errors.Wrap(err, "error in setup step "+testStep.name)
+	if len(m.setupSteps) > 0 {
+		// Run the setup steps
+		m.LogDelimiterSection(t, "-", "Performing setup for: %s", testcase.name)
+		for _, testStep := range m.setupSteps {
+			err := m.ExecuteStep(t, connection, &testcase, testStep)
+			if err != nil {
+				return errors.Wrap(err, "error in setup step "+testStep.name)
+			}
+			// We sleep a bit to not run too fast into the post setup steps and give connections a bit time to settle built up
+			time.Sleep(100 * time.Millisecond) // TODO: this is really bad as on CI sometimes those sleeps are not enough...
 		}
-		// We sleep a bit to not run too fast into the post setup steps and give connections a bit time to settle built up
-		time.Sleep(100 * time.Millisecond) // TODO: this is really bad as on CI sometimes those sleeps are not enough...
+		m.LogDelimiterSection(t, "-", "setup done for: %s", testcase.name)
+	} else {
+		t.Log("no setup steps")
 	}
-	t.Log("setup done")
 
-	// Run the actual scenario steps
-	t.Logf("\n-------------------------------------------------------\nRunning testcases for: %s \n-------------------------------------------------------\n", testcase.name)
-	for _, testStep := range testcase.steps {
-		err := m.ExecuteStep(t, connection, &testcase, testStep)
-		if err != nil {
-			return errors.Wrap(err, "error in step "+testStep.name)
+	if len(testcase.steps) > 0 {
+		// Run the actual scenario steps
+		m.LogDelimiterSection(t, "-", "Running testcases for: %s", testcase.name)
+		for _, testStep := range testcase.steps {
+			err := m.ExecuteStep(t, connection, &testcase, testStep)
+			if err != nil {
+				return errors.Wrap(err, "error in step "+testStep.name)
+			}
+			time.Sleep(100 * time.Millisecond) // TODO: this is really bad as on CI sometimes those sleeps are not enough...
 		}
-		time.Sleep(100 * time.Millisecond) // TODO: this is really bad as on CI sometimes those sleeps are not enough...
+		m.LogDelimiterSection(t, "-", "testcases done for: %s", testcase.name)
+	} else {
+		t.Log("no testcase steps")
 	}
-	t.Log("test steps done")
 
-	// Run the teardown steps
-	t.Logf("\n-------------------------------------------------------\nPerforming teardown for: %s \n-------------------------------------------------------\n", testcase.name)
-	for _, testStep := range m.teardownSteps {
-		err := m.ExecuteStep(t, connection, &testcase, testStep)
-		if err != nil {
-			return errors.Wrap(err, "error in teardown step "+testStep.name)
+	if len(testcase.steps) > 0 {
+		// Run the teardown steps
+		m.LogDelimiterSection(t, "-", "Performing teardown for: %s", testcase.name)
+		for _, testStep := range m.teardownSteps {
+			err := m.ExecuteStep(t, connection, &testcase, testStep)
+			if err != nil {
+				return errors.Wrap(err, "error in teardown step "+testStep.name)
+			}
+			time.Sleep(100 * time.Millisecond) // TODO: this is really bad as on CI sometimes those sleeps are not enough...
 		}
-		time.Sleep(100 * time.Millisecond) // TODO: this is really bad as on CI sometimes those sleeps are not enough...
+		m.LogDelimiterSection(t, "-", "teardown done for: %s", testcase.name)
+	} else {
+		t.Log("no teardown steps")
 	}
-	t.Log("tear down done")
 
-	t.Logf("\n-------------------------------------------------------\nDone\n-------------------------------------------------------\n")
+	m.LogDelimiterSection(t, "=", "done testcase: %s", testcase.name)
 	return nil
 }
 
@@ -170,7 +182,7 @@ func (m DriverTestsuite) ExecuteStep(t *testing.T, connection plc4go.PlcConnecti
 	}
 
 	start := time.Now()
-	t.Logf("\n-------------------------------------------------------\n - Executing step (%s): %s\n-------------------------------------------------------\n", step.stepType, step.name)
+	m.LogDelimiterSection(t, "┄", " - Executing step (%s): %s", step.stepType, step.name)
 	switch step.stepType {
 	case StepTypeApiRequest:
 		switch step.payload.Name {
@@ -439,7 +451,7 @@ func (m DriverTestsuite) ExecuteStep(t *testing.T, connection plc4go.PlcConnecti
 			return errors.Wrap(err, "error closing transport")
 		}
 	}
-	t.Logf("\n-------------------------------------------------------\n - Finished step: %s after %sms \n-------------------------------------------------------", step.name, time.Since(start))
+	m.LogDelimiterSection(t, "┄", " - Finished step: %s after %s ", step.name, time.Since(start))
 	return nil
 }
 
@@ -530,7 +542,8 @@ func RunDriverTestsuite(t *testing.T, driver plc4go.PlcDriver, testPath string, 
 		t.Run(testcase.name, func(t *testing.T) {
 			defer func() {
 				if err := recover(); err != nil {
-					t.Fatalf("\n-------------------------------------------------------\nPanic Failure\n%+v\n%s\n-------------------------------------------------------\n\n", err, debug.Stack())
+					testsuite.LogDelimiterSection(t, "=", "Panic Failure\n%+v\n%s", err, debug.Stack())
+					t.FailNow()
 				}
 			}()
 			if skippedTestCasesMap[testcase.name] {
@@ -540,13 +553,14 @@ func RunDriverTestsuite(t *testing.T, driver plc4go.PlcDriver, testPath string, 
 			}
 			t.Logf("Running testcase %s", testcase.name)
 			if err := testsuite.Run(t, driverManager, testcase); err != nil {
-				t.Fatalf("\n-------------------------------------------------------\nFailure\n%+v\n-------------------------------------------------------\n\n", err)
+				testsuite.LogDelimiterSection(t, "=", "Failure:\n%+v", err)
+				t.FailNow()
 			}
 		})
 	}
-	t.Log("Done running testcases")
+	t.Logf("Done running %d testcases", len(testsuite.testcases))
 	// Execute the tests in the testsuite
-	t.Logf(testsuite.name)
+	t.Log(testsuite.name)
 }
 
 type ConnectionConnectAwaiter interface {
@@ -736,4 +750,17 @@ func ParseDriverTestsuiteSteps(t *testing.T, node xmldom.Node) ([]DriverTestStep
 		})
 	}
 	return testSteps, nil
+}
+
+func (DriverTestsuite) LogDelimiterSection(t *testing.T, delimiter, format string, a ...any) {
+	t.Helper()
+	delimiter = strings.Repeat(delimiter, 55)
+	if !shouldNoColor() {
+		delimiter = fmt.Sprintf("\x1b[%dm%v\x1b[0m", 32, delimiter)
+	}
+	message := "\n"
+	message += delimiter + "\n"
+	message += fmt.Sprintf(format, a...) + "\n"
+	message += delimiter
+	t.Log(message)
 }
