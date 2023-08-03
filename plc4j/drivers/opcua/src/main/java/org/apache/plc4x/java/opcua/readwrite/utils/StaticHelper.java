@@ -35,6 +35,6 @@ public class StaticHelper {
     }
 
     public static int pascalLengthToUtf8Length(int slength) {
-        return Math.max(slength * 8, 0);
+        return Math.max(slength, 0);
     }
 }

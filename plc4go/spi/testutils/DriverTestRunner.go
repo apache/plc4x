@@ -553,7 +553,7 @@ func RunDriverTestsuite(t *testing.T, driver plc4go.PlcDriver, testPath string, 
 			}
 			t.Logf("Running testcase %s", testcase.name)
 			if err := testsuite.Run(t, driverManager, testcase); err != nil {
-				testsuite.LogDelimiterSection(t, "=", "Failure:\n%+v", err)
+				testsuite.LogDelimiterSection(t, "=", "Failure:\n%s", err)
 				t.FailNow()
 			}
 		})

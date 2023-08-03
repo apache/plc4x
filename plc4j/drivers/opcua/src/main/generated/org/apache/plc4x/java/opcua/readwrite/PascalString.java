@@ -51,10 +51,9 @@ public class PascalString implements Message {
 
   public int getStringLength() {
     return (int)
-        ((org.apache.plc4x.java.opcua.readwrite.utils.StaticHelper.pascalLengthToUtf8Length(
-                org.apache.plc4x.java.opcua.readwrite.utils.StaticHelper.utf8LengthToPascalLength(
-                    getStringValue())))
-            / (8));
+        (org.apache.plc4x.java.opcua.readwrite.utils.StaticHelper.pascalLengthToUtf8Length(
+            org.apache.plc4x.java.opcua.readwrite.utils.StaticHelper.utf8LengthToPascalLength(
+                getStringValue())));
   }
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
@@ -118,9 +117,8 @@ public class PascalString implements Message {
         readVirtualField(
             "stringLength",
             int.class,
-            (org.apache.plc4x.java.opcua.readwrite.utils.StaticHelper.pascalLengthToUtf8Length(
-                    sLength))
-                / (8));
+            org.apache.plc4x.java.opcua.readwrite.utils.StaticHelper.pascalLengthToUtf8Length(
+                sLength));
 
     String stringValue =
         readSimpleField("stringValue", readString(readBuffer, (stringLength) * (8)));

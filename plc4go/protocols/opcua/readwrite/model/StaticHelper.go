@@ -32,5 +32,5 @@ func Utf8LengthToPascalLength(_ context.Context, stringValue string) int32 {
 }
 
 func PascalLengthToUtf8Length(_ context.Context, slength int32) int32 {
-	return utils.Max(slength*8, 0)
+	return utils.Max(slength, 0)
 }

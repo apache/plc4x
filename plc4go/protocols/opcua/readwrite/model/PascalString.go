@@ -73,7 +73,7 @@ func (m *_PascalString) GetStringValue() string {
 func (m *_PascalString) GetStringLength() int32 {
 	ctx := context.Background()
 	_ = ctx
-	return int32(int32(PascalLengthToUtf8Length(ctx, Utf8LengthToPascalLength(ctx, m.GetStringValue()))) / int32(int32(8)))
+	return int32(PascalLengthToUtf8Length(ctx, Utf8LengthToPascalLength(ctx, m.GetStringValue())))
 }
 
 ///////////////////////
@@ -142,7 +142,7 @@ func PascalStringParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 	}
 
 	// Virtual field
-	_stringLength := int32(PascalLengthToUtf8Length(ctx, sLength)) / int32(int32(8))
+	_stringLength := PascalLengthToUtf8Length(ctx, sLength)
 	stringLength := int32(_stringLength)
 	_ = stringLength
 

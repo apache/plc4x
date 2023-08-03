@@ -381,8 +381,8 @@
 
 [type PascalString
     [implicit int 32    sLength      'STATIC_CALL("utf8LengthToPascalLength", stringValue)' ]
-    [virtual  int 32    stringLength 'STATIC_CALL("pascalLengthToUtf8Length", sLength)/8'   ]
-    [simple   vstring 'stringLength*8' stringValue                                          ]
+    [virtual  int 32    stringLength 'STATIC_CALL("pascalLengthToUtf8Length", sLength)'     ]
+    [simple   vstring   'stringLength*8' stringValue                                        ]
 ]
 
 [type PascalByteString
