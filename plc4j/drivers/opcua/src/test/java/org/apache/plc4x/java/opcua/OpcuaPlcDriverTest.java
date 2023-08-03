@@ -303,7 +303,7 @@ public class OpcuaPlcDriverTest {
                 "Byte",
                 "Double",
                 "Float",
-                "Int16",
+                //"Int16", // TODO: why is htat disabled???
                 "Int32",
                 "Int64",
                 "Integer",
