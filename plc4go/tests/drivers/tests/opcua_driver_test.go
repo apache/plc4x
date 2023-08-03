@@ -26,7 +26,6 @@ import (
 	"github.com/apache/plc4x/plc4go/internal/opcua"
 	opcuaIO "github.com/apache/plc4x/plc4go/protocols/opcua/readwrite"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/opcua/readwrite/model"
-	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
@@ -36,13 +35,14 @@ func TestOPCUADriver(t *testing.T) {
 	parser := func(readBufferByteBased utils.ReadBufferByteBased) (any, error) {
 		return readWriteModel.MessagePDUParseWithBuffer(context.Background(), readBufferByteBased, true)
 	}
-	withCustomLogger := options.WithCustomLogger(testutils.ProduceTestingLogger(t))
+	optionsForTesting := testutils.EnrichOptionsWithOptionsForTesting(t)
 	testutils.RunDriverTestsuite(
 		t,
-		opcua.NewDriver(withCustomLogger),
+		opcua.NewDriver(optionsForTesting...),
 		"assets/testing/protocols/opcua/DriverTestsuite.xml",
 		opcuaIO.OpcuaXmlParserHelper{},
-		testutils.WithRootTypeParser(parser),
-		withCustomLogger,
+		append(optionsForTesting,
+			testutils.WithRootTypeParser(parser),
+		)...,
 	)
 }

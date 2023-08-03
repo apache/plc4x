@@ -21,14 +21,15 @@ package tests
 
 import (
 	"fmt"
-	"github.com/stretchr/testify/assert"
 	"testing"
 
 	"github.com/apache/plc4x/plc4go/internal/ads"
 	"github.com/apache/plc4x/plc4go/pkg/api"
 	"github.com/apache/plc4x/plc4go/pkg/api/transports"
-	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/apache/plc4x/plc4go/spi/options/converter"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestManualAds(t *testing.T) {
@@ -83,13 +84,13 @@ func TestManualAds(t *testing.T) {
 	targetAmsNetId := spsIp + ".1.1"
 	targetAmsPort := 851
 	connectionString := fmt.Sprintf("ads:tcp://%s?sourceAmsNetId=%s&sourceAmsPort=%d&targetAmsNetId=%s&targetAmsPort=%d", spsIp, sourceAmsNetId, sourceAmsPort, targetAmsNetId, targetAmsPort)
-	withCustomLogger := options.WithCustomLogger(testutils.ProduceTestingLogger(t))
-	driverManager := plc4go.NewPlcDriverManager(withCustomLogger)
+	optionsForTesting := testutils.EnrichOptionsWithOptionsForTesting(t)
+	driverManager := plc4go.NewPlcDriverManager(converter.WithOptionToExternal(optionsForTesting...)...)
 	t.Cleanup(func() {
 		assert.NoError(t, driverManager.Close())
 	})
-	driverManager.RegisterDriver(ads.NewDriver(withCustomLogger))
-	transports.RegisterTcpTransport(driverManager, withCustomLogger)
+	driverManager.RegisterDriver(ads.NewDriver(optionsForTesting...))
+	transports.RegisterTcpTransport(driverManager, converter.WithOptionToExternal(optionsForTesting...)...)
 	test := testutils.NewManualTestSuite(t, connectionString, driverManager)
 	test.AddTestCase("main.hurz_BOOL:BOOL", true)
 	test.AddTestCase("main.hurz_BYTE:BYTE", []bool{false, false, true, false, true, false, true, false})

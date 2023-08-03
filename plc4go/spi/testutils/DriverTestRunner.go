@@ -495,7 +495,7 @@ const (
 	StepTypeTerminate          StepType = 0x08
 )
 
-func RunDriverTestsuite(t *testing.T, driver plc4go.PlcDriver, testPath string, parser XmlParser, _options ...config.WithOption) {
+func RunDriverTestsuite(t *testing.T, driver plc4go.PlcDriver, testPath string, parser XmlParser, _options ...options.WithOption) {
 	t.Log("Extract testsuite options")
 	var rootTypeParser func(utils.ReadBufferByteBased) (any, error)
 	skippedTestCasesMap := map[string]bool{}
@@ -529,11 +529,11 @@ func RunDriverTestsuite(t *testing.T, driver plc4go.PlcDriver, testPath string, 
 
 	t.Log("Initialize the driver manager")
 	// Initialize the driver manager
-	driverManager := plc4go.NewPlcDriverManager(_options...)
+	driverManager := plc4go.NewPlcDriverManager(converter.WithOptionToExternal(_options...)...)
 	t.Cleanup(func() {
 		assert.NoError(t, driverManager.Close())
 	})
-	transport := test.NewTransport(converter.WithOptionToInternal(_options...)...)
+	transport := test.NewTransport(_options...)
 	driverManager.(spi.TransportAware).RegisterTransport(transport)
 	driverManager.RegisterDriver(driver)
 

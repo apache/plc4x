@@ -20,27 +20,28 @@
 package tests
 
 import (
-	"github.com/stretchr/testify/assert"
 	"testing"
 
 	"github.com/apache/plc4x/plc4go/internal/bacnetip"
 	"github.com/apache/plc4x/plc4go/pkg/api"
 	"github.com/apache/plc4x/plc4go/pkg/api/transports"
-	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/apache/plc4x/plc4go/spi/options/converter"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestManualBacnetDriver(t *testing.T) {
 	t.Skip()
 
 	connectionString := "bacnet-ip://192.168.178.101"
-	withCustomLogger := options.WithCustomLogger(testutils.ProduceTestingLogger(t))
-	driverManager := plc4go.NewPlcDriverManager(withCustomLogger)
+	optionsForTesting := testutils.EnrichOptionsWithOptionsForTesting(t)
+	driverManager := plc4go.NewPlcDriverManager(converter.WithOptionToExternal(optionsForTesting...)...)
 	t.Cleanup(func() {
 		assert.NoError(t, driverManager.Close())
 	})
-	driverManager.RegisterDriver(bacnetip.NewDriver(withCustomLogger))
-	transports.RegisterUdpTransport(driverManager, withCustomLogger)
+	driverManager.RegisterDriver(bacnetip.NewDriver(optionsForTesting...))
+	transports.RegisterUdpTransport(driverManager, converter.WithOptionToExternal(optionsForTesting...)...)
 	test := testutils.NewManualTestSuite(t, connectionString, driverManager)
 
 	test.AddTestCase("ANALOG_OUTPUT,133/PRESENT_VALUE", true)
