@@ -31,17 +31,19 @@ import org.assertj.core.api.Condition;
 import org.eclipse.milo.examples.server.ExampleServer;
 import org.junit.jupiter.api.*;
 
+import java.math.BigInteger;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.concurrent.ExecutionException;
+import java.util.stream.Stream;
+
 import static org.apache.plc4x.java.opcua.OpcuaPlcDriver.INET_ADDRESS_PATTERN;
 import static org.apache.plc4x.java.opcua.OpcuaPlcDriver.URI_PATTERN;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
-
-import java.math.BigInteger;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.concurrent.ExecutionException;
 
 public class OpcuaPlcDriverTest {
 
@@ -443,6 +445,47 @@ public class OpcuaPlcDriverTest {
         } catch (Exception e) {
             fail("Exception during readVariables Test EXCEPTION: " + e.getMessage());
         }
+    }
+
+    private final String[] validTCPOPC = {
+        "localhost",
+        "127.0.0.1",
+        "254.254.254.254"
+    };
+    private final int[] validPorts = {
+        1337,
+        42,
+        1,
+        24152
+    };
+    private final String[] nDiscoveryParams = {
+        "discovery=false"
+    };
+
+
+    @TestFactory
+    Stream<DynamicNode> testConnectionStringPattern() throws Exception {
+        return Arrays.stream(validTCPOPC)
+            .map(address -> DynamicContainer.dynamicContainer("Address: " + address, () -> Arrays.stream(validPorts)
+                    .mapToObj(port -> DynamicTest.dynamicTest("Port: " + port, () -> {
+                            assertThat("opcua:tcp://" + address + ":555?discovery=true").matches(URI_PATTERN);
+                            assertThat("opcua:tcp://" + address + ":555?discovery=True").matches(URI_PATTERN);
+                            assertThat("opcua:tcp://" + address + ":555?discovery=TRUE").matches(URI_PATTERN);
+                            assertThat("opcua:tcp://" + address + ":555?Discovery=True").matches(URI_PATTERN);
+                            //No Port Specified
+                            assertThat("opcua:tcp://" + address + "?discovery=True").matches(URI_PATTERN);
+                            //No Transport Specified
+                            assertThat("opcua://" + address + ":647?discovery=True").matches(URI_PATTERN);
+                            //No Params Specified
+                            assertThat("opcua:tcp://" + address + ":111").matches(URI_PATTERN);
+                            //No Transport and Params Specified
+                            assertThat("opcua://" + address + ":754").matches(URI_PATTERN);
+                        })
+                    )
+                    .map(DynamicNode.class::cast)
+                    .iterator()
+                )
+            );
     }
 
 }
