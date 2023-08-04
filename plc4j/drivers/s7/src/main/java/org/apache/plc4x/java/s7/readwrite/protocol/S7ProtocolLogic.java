@@ -389,7 +389,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
                              new S7MessageUserData(tpduId, request.getParameter(), request.getPayload()) :
                              new S7MessageRequest(tpduId, request.getParameter(), request.getPayload());
 
-        TPKTPacket tpktPacket = new TPKTPacket(new COTPPacketData(null, message, true, (short) tpduId));       
+        TPKTPacket tpktPacket = new TPKTPacket(new COTPPacketData(null, message, true, (byte) tpduId));       
 
         // Start a new request-transaction (Is ended in the response-handler)
 
@@ -459,7 +459,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
                     new S7PayloadWriteVarRequest(payloadItems)
                 ),
                 true,
-                (short) tpduId
+                (byte) tpduId
             )
         );
         
@@ -566,7 +566,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
                 new S7MessageUserData(tpduId,
                     new S7ParameterUserData(parameterItems),
                     new S7PayloadUserData(payloadItems)),
-                true, (short) tpduId));
+                true, (byte) tpduId));
 
             // Start a new request-transaction (Is ended in the response-handler)
             RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
@@ -1114,7 +1114,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
                         userfield.getNumberOfElements(),                    
                         userfield.getBlockNumber(),
                         userfield.getMemoryArea(),
-                        (long) (((userfield.getByteOffset() << 3) | (userfield.getBitOffset() & 0x0007)))                    
+                        (int) (((userfield.getByteOffset() << 3) | (userfield.getBitOffset() & 0x0007)))                    
                 ));
             }           
         });
@@ -1390,7 +1390,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
                     SzlSublist.MODULE_IDENTIFICATION), 
                     0x0000)
         )));
-        COTPPacketData cotpPacketData = new COTPPacketData(null, identifyRemoteMessage, true, (short) 2);
+        COTPPacketData cotpPacketData = new COTPPacketData(null, identifyRemoteMessage, true, (byte) 2);
         return new TPKTPacket(cotpPacketData);
     }
 
@@ -1419,7 +1419,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
                 s7DriverContext.getMaxAmqCaller(), s7DriverContext.getMaxAmqCallee(), s7DriverContext.getPduSize());
         S7Message s7Message = new S7MessageRequest(0, s7ParameterSetupCommunication,
             null);
-        COTPPacketData cotpPacketData = new COTPPacketData(null, s7Message, true, (short) 1);
+        COTPPacketData cotpPacketData = new COTPPacketData(null, s7Message, true, (byte) 1);
         return new TPKTPacket(cotpPacketData);
     }
 
@@ -1847,7 +1847,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
     private boolean isFeatureSupported(){
         boolean b = ((s7DriverContext.getControllerType() == S7ControllerType.S7_300) ||
                     (s7DriverContext.getControllerType() == S7ControllerType.S7_400))
-                    ?true:false;
+                    ? true:false;
         return b;
     }          
 
@@ -1894,7 +1894,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
                         DataTransportSize.NULL, 
                         0x00)
         )));
-        COTPPacketData cotpPacketData = new COTPPacketData(null, identifyRemoteMessage, true, (short) 2);
+        COTPPacketData cotpPacketData = new COTPPacketData(null, identifyRemoteMessage, true, (byte) 2);
         return new TPKTPacket(cotpPacketData);
     }     
     
@@ -1938,7 +1938,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
                         DataTransportSize.NULL, 
                         0x00)
             )));
-        COTPPacketData cotpPacketData = new COTPPacketData(null, identifyRemoteMessage, true, (short) 2);
+        COTPPacketData cotpPacketData = new COTPPacketData(null, identifyRemoteMessage, true, (byte) 2);
         return new TPKTPacket(cotpPacketData);
     }       
     
