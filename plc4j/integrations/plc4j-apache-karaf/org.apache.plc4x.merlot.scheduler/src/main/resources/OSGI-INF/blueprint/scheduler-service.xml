@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one or more
+  contributor license agreements.  See the NOTICE file distributed with
+  this work for additional information regarding copyright ownership.
+  The ASF licenses this file to You under the Apache License, Version 2.0
+  (the "License"); you may not use this file except in compliance with
+  the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0" 
+           xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.1.0"
+           default-activation="eager">
+
+     <cm:property-placeholder persistent-id="org.apache.plc4x.merlot.scheduler.config" update-strategy="reload">
+        <cm:default-properties>
+            <cm:property name="org.quartz.scheduler.instanceName" value="Merlot"/>
+            <cm:property name="org.quartz.scheduler.instanceId" value="AUTO"/>
+            <cm:property name="org.quartz.threadPool.class" value="org.quartz.simpl.SimpleThreadPool"/>
+            <cm:property name="org.quartz.threadPool.threadCount" value="30"/> 
+            <cm:property name="org.quartz.threadPool.threadPriority" value="5"/>                        
+            <cm:property name="org.quartz.jobStore.class" value="org.quartz.simpl.RAMJobStore"/>            
+        </cm:default-properties>
+    </cm:property-placeholder>
+    
+   
+    <bean id="QuartzSchedulerBean" 
+          class="org.apache.plc4x.merlot.scheduler.core.QuartzScheduler">
+        <argument>
+            <props>
+                <prop key="org.quartz.scheduler.instanceName" value="${org.quartz.scheduler.instanceName}" />
+                <prop key="org.quartz.scheduler.instanceId" value="${org.quartz.scheduler.instanceId}" />
+                <prop key="org.quartz.threadPool.class" value="${org.quartz.threadPool.class}" />
+                <prop key="org.quartz.threadPool.threadCount" value="${org.quartz.threadPool.threadCount}" />    
+                <prop key="org.quartz.threadPool.threadPriority" value="${org.quartz.threadPool.threadPriority}" />
+                <prop key="org.quartz.jobStore.class" value="${org.quartz.jobStore.class}" />                                            
+            </props>
+        </argument>
+    </bean>
+    
+     <bean id="WhiteBoardSchedulerBean" 
+           class="org.apache.plc4x.merlot.scheduler.core.WhiteboardHandler">
+         <argument ref="blueprintBundleContext" index="0" />
+         <argument ref="QuartzSchedulerBean" index="1" />    
+     </bean>
+
+    <service id="QuartzSchedulerService" 
+             ref="QuartzSchedulerBean"
+             interface="org.apache.plc4x.merlot.scheduler.api.Scheduler">
+    </service>
+   
+    <service id="WhiteBoardSchedulerService" 
+             ref="WhiteBoardSchedulerBean" 
+             interface="org.apache.plc4x.merlot.scheduler.core.WhiteboardHandler">
+    </service>    
+ 
+    <!--   
+    <reference-list id="JobReferenceList" interface="org.apache.karaf.scheduler.Job"
+           availability="optional">
+        <reference-listener ref="SchedulerWhiteBoardBean" 
+            bind-method="bind" unbind-method="unbind" />       
+    </reference-list>
+-->
+</blueprint>
