@@ -1332,7 +1332,7 @@
         <plugin>
           <groupId>com.googlecode.cmake-maven-project</groupId>
           <artifactId>cmake-maven-plugin</artifactId>
-          <version>3.23.2-b1</version>
+          <version>3.26.3-b1</version>
         </plugin>
 
         <plugin>
@@ -1568,18 +1568,17 @@
 
     <!-- Profile for linux amd64 (Self-Enabling) -->
     <profile>
-      <id>os-unix-amd64</id>
+      <id>.os-linux-amd64</id>
       <activation>
         <os>
           <family>unix</family>
+          <name>Linux</name>
           <arch>amd64</arch>
         </os>
       </activation>
       <properties>
         <os.suffix>linux</os.suffix>
         <os.classifier>linux-x86_64</os.classifier>
-        <cmake.url>https://github.com/Kitware/CMake/releases/download/v${cmake-version}/cmake-${cmake-version}-linux-x86_64.tar.gz</cmake.url>
-        <cmake.root>${project.build.directory}/cmake-${cmake-version}-linux-x86_64/bin/</cmake.root>
         <cmake.generator>Unix Makefiles</cmake.generator>
         <python.venv.bin>venv/bin/</python.venv.bin>
         <python.exe.bin>python3</python.exe.bin>
@@ -1588,18 +1587,17 @@
     </profile>
     <!-- Profile for linux x86_64 (Self-Enabling) -->
     <profile>
-      <id>os-unix-x86_64</id>
+      <id>.os-linux-x86_64</id>
       <activation>
         <os>
           <family>unix</family>
+          <name>Linux</name>
           <arch>x86_64</arch>
         </os>
       </activation>
       <properties>
         <os.suffix>linux</os.suffix>
         <os.classifier>linux-x86_64</os.classifier>
-        <cmake.url>https://github.com/Kitware/CMake/releases/download/v${cmake-version}/cmake-${cmake-version}-linux-x86_64.tar.gz</cmake.url>
-        <cmake.root>${project.build.directory}/cmake-${cmake-version}-linux-x86_64/bin/</cmake.root>
         <cmake.generator>Unix Makefiles</cmake.generator>
         <python.venv.bin>venv/bin/</python.venv.bin>
         <python.exe.bin>python3</python.exe.bin>
@@ -1608,18 +1606,17 @@
     </profile>
     <!-- Profile for linux aarch64 (Self-Enabling) -->
     <profile>
-      <id>os-unix-aarch64</id>
+      <id>.os-linux-aarch64</id>
       <activation>
         <os>
           <family>unix</family>
+          <name>Linux</name>
           <arch>aarch64</arch>
         </os>
       </activation>
       <properties>
         <os.suffix>linux</os.suffix>
         <os.classifier>linux-${os.arch}</os.classifier>
-        <cmake.url>https://github.com/Kitware/CMake/releases/download/v${cmake-version}/cmake-${cmake-version}-linux-${os.arch}.tar.gz</cmake.url>
-        <cmake.root>${project.build.directory}/cmake-${cmake-version}-linux-${os.arch}/bin/</cmake.root>
         <cmake.generator>Unix Makefiles</cmake.generator>
         <python.venv.bin>venv/bin/</python.venv.bin>
         <python.exe.bin>python3</python.exe.bin>
@@ -1638,8 +1635,6 @@
       <properties>
         <os.suffix>mac</os.suffix>
         <os.classifier>mac-x86_64</os.classifier>
-        <cmake.url>https://github.com/Kitware/CMake/releases/download/v${cmake-version}/cmake-${cmake-version}-macos-universal.tar.gz</cmake.url>
-        <cmake.root>${project.build.directory}/cmake-${cmake-version}-macos-universal/CMake.app/Contents/bin</cmake.root>
         <cmake.generator>Unix Makefiles</cmake.generator>
         <python.venv.bin>venv/bin/</python.venv.bin>
         <python.exe.bin>python3</python.exe.bin>
@@ -1658,8 +1653,6 @@
       <properties>
         <os.suffix>mac</os.suffix>
         <os.classifier>mac-x86_64</os.classifier>
-        <cmake.url>https://github.com/Kitware/CMake/releases/download/v${cmake-version}/cmake-${cmake-version}-macos-universal.tar.gz</cmake.url>
-        <cmake.root>${project.build.directory}/cmake-${cmake-version}-macos-universal/CMake.app/Contents/bin</cmake.root>
         <cmake.generator>Unix Makefiles</cmake.generator>
         <python.venv.bin>venv/bin/</python.venv.bin>
         <python.exe.bin>python3</python.exe.bin>
@@ -1678,8 +1671,6 @@
       <properties>
         <os.suffix>mac</os.suffix>
         <os.classifier>mac-aarch64</os.classifier>
-        <cmake.url>https://github.com/Kitware/CMake/releases/download/v${cmake-version}/cmake-${cmake-version}-macos-universal.tar.gz</cmake.url>
-        <cmake.root>${project.build.directory}/cmake-${cmake-version}-macos-universal/CMake.app/Contents/bin</cmake.root>
         <cmake.generator>Unix Makefiles</cmake.generator>
         <python.venv.bin>venv/bin/</python.venv.bin>
         <python.exe.bin>python3</python.exe.bin>
@@ -1697,8 +1688,6 @@
       <properties>
         <os.suffix>win</os.suffix>
         <os.classifier>windows-x86_64</os.classifier>
-        <cmake.url>https://github.com/Kitware/CMake/releases/download/v${cmake-version}/cmake-${cmake-version}-windows-x86_64.zip</cmake.url>
-        <cmake.root>${project.build.directory}/cmake-${cmake-version}-windows-x86_64/bin</cmake.root>
         <cmake.generator>MinGW Makefiles</cmake.generator>
         <python.venv.bin>venv/Scripts/</python.venv.bin>
         <python.exe.bin>python</python.exe.bin>
@@ -1861,8 +1850,8 @@
             </executions>
           </plugin>
           <!--
-                    Generate an SBOM for the project
-                  -->
+            Generate an SBOM for the project
+          -->
           <plugin>
             <groupId>org.cyclonedx</groupId>
             <artifactId>cyclonedx-maven-plugin</artifactId>

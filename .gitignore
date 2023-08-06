@@ -199,3 +199,5 @@ DartConfiguration.tcl
 /.idea/libraries/
 /.idea/inspectionProfiles/
 /out/
+/.idea/codeStyles/codeStyleConfig.xml
+/.idea/codeStyles/Project.xml
