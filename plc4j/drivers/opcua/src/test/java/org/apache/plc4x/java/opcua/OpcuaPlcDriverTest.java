@@ -329,7 +329,7 @@ public class OpcuaPlcDriverTest {
             ).forEach(s -> {
                 assertThat(response.getResponseCode(s)).withFailMessage(s + "is not ok").isEqualTo(PlcResponseCode.OK);
             });
-            assertThat(response.getResponseCode("DoesNotExists")).isEqualTo(PlcResponseCode.OK);
+            assertThat(response.getResponseCode("DoesNotExists")).isEqualTo(PlcResponseCode.NOT_FOUND);
 
             opcuaConnection.close();
             assert !opcuaConnection.isConnected();
@@ -482,12 +482,12 @@ public class OpcuaPlcDriverTest {
     }
 
     static void checkForLinux() {
-        assumeTrue(() -> {
+        /*assumeTrue(() -> {
             String OS = System.getProperty("os.name").toLowerCase();
             return !OS.contains("nix")
                 && !OS.contains("nux")
                 && !OS.contains("aix")
                 && !OS.contains("mac");
-        }, "somehow opcua doesn't run properly on linux");
+        }, "somehow opcua doesn't run properly on linux");*/
     }
 }
