@@ -382,7 +382,7 @@
             </goals>
             <configuration>
               <packages>
-                <package>golang.org/x/tools/cmd/stringer@latest</package>
+                <package>golang.org/x/tools/cmd/stringer@v0.11.1</package>
               </packages>
             </configuration>
           </execution>
@@ -419,7 +419,7 @@
             </goals>
             <configuration>
               <packages>
-                <package>github.com/vektra/mockery/v2@latest</package>
+                <package>github.com/vektra/mockery/v2@v2.23.4</package>
               </packages>
             </configuration>
           </execution>
