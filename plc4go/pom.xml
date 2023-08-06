@@ -407,7 +407,7 @@
             </goals>
             <configuration>
               <packages>
-                <package>gotest.tools/gotestsum@latest</package>
+                <package>gotest.tools/gotestsum@v1.10.1</package>
               </packages>
             </configuration>
           </execution>
