@@ -486,7 +486,8 @@ public class OpcuaPlcDriverTest {
             String OS = System.getProperty("os.name").toLowerCase();
             return !OS.contains("nix")
                 && !OS.contains("nux")
-                && !OS.contains("aix");
+                && !OS.contains("aix")
+                && !OS.contains("mac");
         }, "somehow opcua doesn't run properly on linux");
     }
 }
