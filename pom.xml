@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache</groupId>
     <artifactId>apache</artifactId>
-    <version>29</version>
+    <version>30</version>
   </parent>
 
   <groupId>org.apache.plc4x</groupId>
@@ -1628,7 +1628,7 @@
     </profile>
     <!-- Profile for mac amd64 (Self-Enabling) -->
     <profile>
-      <id>os-mac-amd64</id>
+      <id>.os-mac-amd64</id>
       <activation>
         <os>
           <family>mac</family>
@@ -1648,7 +1648,7 @@
     </profile>
     <!-- Profile for mac x86_64 (Self-Enabling) -->
     <profile>
-      <id>os-mac-x86_64</id>
+      <id>.os-mac-x86_64</id>
       <activation>
         <os>
           <family>mac</family>
@@ -1668,7 +1668,7 @@
     </profile>
     <!-- Profile for mac (Self-Enabling) -->
     <profile>
-      <id>os-mac-aarch64</id>
+      <id>.os-mac-aarch64</id>
       <activation>
         <os>
           <family>mac</family>
@@ -1688,7 +1688,7 @@
     </profile>
     <!-- profile for windows (Self-Enabling) -->
     <profile>
-      <id>os-windows</id>
+      <id>.os-windows</id>
       <activation>
         <os>
           <family>windows</family>
@@ -1758,59 +1758,13 @@
     </profile>
 
     <!--
-      Self enabling fake-plugin configuration to help Eclipse use Maven right
-    -->
-    <profile>
-      <id>only-eclipse</id>
-      <activation>
-        <property>
-          <name>m2e.version</name>
-        </property>
-      </activation>
-      <build>
-        <pluginManagement>
-          <plugins>
-            <!--
-              This is a fake plugin which is used to tell m2e (Eclipse) how
-              to process this maven project.
-            -->
-            <plugin>
-              <groupId>org.eclipse.m2e</groupId>
-              <artifactId>lifecycle-mapping</artifactId>
-              <version>1.0.0</version>
-              <configuration>
-                <lifecycleMappingMetadata>
-                  <pluginExecutions>
-                    <pluginExecution>
-                      <pluginExecutionFilter>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-remote-resources-plugin</artifactId>
-                        <versionRange>[1.0.0,)</versionRange>
-                        <goals>
-                          <goal>process</goal>
-                        </goals>
-                      </pluginExecutionFilter>
-                      <action>
-                        <ignore />
-                      </action>
-                    </pluginExecution>
-                  </pluginExecutions>
-                </lifecycleMappingMetadata>
-              </configuration>
-            </plugin>
-          </plugins>
-        </pluginManagement>
-      </build>
-    </profile>
-
-    <!--
       This is an experiment to get things working for VSCode (IntelliJ and Maven pick them up automatically)
       Only if a "target/generated-source/plc4x" directory exists, will it be added. With this trick we don't need
       to add this block to every module with generated code. If this causes problems with IntelliJ, Eclipse or Maven
       we should probably come up with some other solution. It might also help people using Eclipse.
      -->
     <profile>
-      <id>add-generated-sources</id>
+      <id>.add-generated-sources</id>
       <activation>
         <file>
           <!--
