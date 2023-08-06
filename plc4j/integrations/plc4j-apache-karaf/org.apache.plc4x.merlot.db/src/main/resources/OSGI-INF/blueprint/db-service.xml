@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one or more
+  contributor license agreements.  See the NOTICE file distributed with
+  this work for additional information regarding copyright ownership.
+  The ASF licenses this file to You under the Apache License, Version 2.0
+  (the "License"); you may not use this file except in compliance with
+  the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0" default-activation="eager">
+    
+    <bean id="beanDBBooleanFactory" class="org.apache.plc4x.merlot.db.core.DBBooleanFactory" scope="singleton"/>
+    <bean id="beanDBByteFactory" class="org.apache.plc4x.merlot.db.core.DBByteFactory" scope="singleton"/>
+    <bean id="beanDBDoubleFactory" class="org.apache.plc4x.merlot.db.core.DBDoubleFactory" scope="singleton"/>
+    <bean id="beanDBFloatFactory" class="org.apache.plc4x.merlot.db.core.DBFloatFactory" scope="singleton"/>
+    <bean id="beanDBIntFactory" class="org.apache.plc4x.merlot.db.core.DBIntFactory" scope="singleton"/>
+    <bean id="beanDBLongFactory" class="org.apache.plc4x.merlot.db.core.DBLongFactory" scope="singleton"/>
+    <bean id="beanDBShortFactory" class="org.apache.plc4x.merlot.db.core.DBShortFactory" scope="singleton"/>
+    <bean id="beanDBStringFactory" class="org.apache.plc4x.merlot.db.core.DBStringFactory" scope="singleton"/>
+    <bean id="beanDBUByteFactory" class="org.apache.plc4x.merlot.db.core.DBUByteFactory" scope="singleton"/>
+    <bean id="beanDBUIntFactory" class="org.apache.plc4x.merlot.db.core.DBUIntFactory" scope="singleton"/>
+    <bean id="beanDBULongFactory" class="org.apache.plc4x.merlot.db.core.DBULongFactory" scope="singleton"/>
+    <bean id="beanDBUShortFactory" class="org.apache.plc4x.merlot.db.core.DBUShortFactory" scope="singleton"/>
+           
+    <bean id="DBFactoryBean" class="org.apache.plc4x.merlot.db.core.DbFactory"/>
+    
+    <bean id="DBChannelProviderFactoryBean" class="org.apache.plc4x.merlot.db.core.DbChannelProviderFactory"/>
+    
+    <bean id="DBBean" 
+          factory-ref="DBFactoryBean" 
+          factory-method="getMaster" 
+          scope="singleton"/>
+      
+    <bean id="DBChannelProvider" 
+          factory-ref="DBChannelProviderFactoryBean" 
+          factory-method="getChannelProviderLocal" 
+          scope="singleton"/>
+    
+    <bean id="DBControl" 
+          class="org.apache.plc4x.merlot.db.impl.DBControlImpl" 
+          scope="singleton">
+        <property name="bundleContext" ref="blueprintBundleContext"/>
+    </bean>
+
+    <bean id="DBRecordsManagedService" 
+        class="org.apache.plc4x.merlot.db.core.DBRecordsManagedService" 
+        scope="singleton">
+        <argument ref="blueprintBundleContext" />
+        <argument ref="DBBean" />
+        <argument ref="DBControl" />
+    </bean>
+    
+    <bean id="DBRPCReferenceListener" 
+          class="org.apache.plc4x.merlot.db.impl.DBRPCReferenceListenerImpl" 
+          scope="singleton">
+        <argument ref="blueprintBundleContext"/>        
+        <argument ref="DBBean"/>        
+    </bean>
+
+    <reference-list id="refRPCService" 
+                    interface="org.epics.pvaccess.server.rpc.RPCService"
+                    availability="optional">
+       <reference-listener ref="DBRPCReferenceListener"
+               bind-method="bind" unbind-method="unbind">     
+       </reference-listener>
+    </reference-list>    
+    
+    <service ref="DBRecordsManagedService" auto-export="interfaces">
+    	<service-properties>
+            <entry key="service.pid" value="org.apache.plc4x.merlot.db.records"/>
+            <entry key="scheduler.name" value="DBRecordsManagedService"/>  
+            <entry key="scheduler.period" value="5000"/>
+            <!-- <entry key="scheduler.times" value="5"/> -->
+            <entry key="scheduler.immediate" value="true"/>
+            <entry key="scheduler.concurrent" value="false"/>                               
+     	</service-properties>        
+    </service>   
+
+    <service id="DBBooleanFactory"  
+             ref="beanDBBooleanFactory" 
+             interface="org.apache.plc4x.merlot.db.api.DBRecordFactory">
+        <service-properties>
+            <entry key="db.record.type" value="BOOL"/>
+        </service-properties>
+    </service>   
+    
+    <service id="DBByteFactory"     
+             ref="beanDBByteFactory" 
+             interface="org.apache.plc4x.merlot.db.api.DBRecordFactory">
+        <service-properties>
+            <entry key="db.record.type" value="BYTE"/>            
+        </service-properties>
+    </service>
+    
+    <service id="DBDoubleFactory"   
+             ref="beanDBDoubleFactory" 
+             interface="org.apache.plc4x.merlot.db.api.DBRecordFactory">
+        <service-properties>
+            <entry key="db.record.type" value="DOUBLE"/>
+        </service-properties>
+    </service>
+    
+    <service id="DBFloatFactory"   
+             ref="beanDBFloatFactory" 
+             interface="org.apache.plc4x.merlot.db.api.DBRecordFactory">
+        <service-properties>
+            <entry key="db.record.type" value="FLOAT"/>
+        </service-properties>
+    </service>
+        
+    <service id="DBIntFactory"      
+             ref="beanDBIntFactory" 
+             interface="org.apache.plc4x.merlot.db.api.DBRecordFactory">
+        <service-properties>
+            <entry key="db.record.type" value="INT"/>            
+        </service-properties>
+    </service>
+    
+    <service id="DBLongFactory"     
+             ref="beanDBLongFactory" 
+             interface="org.apache.plc4x.merlot.db.api.DBRecordFactory">
+        <service-properties>
+            <entry key="db.record.type" value="LONG"/>            
+        </service-properties>
+    </service>
+    
+    <service id="DBShortFactory"    
+             ref="beanDBShortFactory" 
+             interface="org.apache.plc4x.merlot.db.api.DBRecordFactory">
+        <service-properties>
+            <entry key="db.record.type" value="SHORT"/>            
+        </service-properties>
+    </service>
+    
+    <service id="DBStringFactory"   
+             ref="beanDBStringFactory" 
+             interface="org.apache.plc4x.merlot.db.api.DBRecordFactory">
+        <service-properties>
+            <entry key="db.record.type" value="STRING"/>            
+        </service-properties>
+    </service>
+    
+    <service id="DBUByteFactory"    
+             ref="beanDBUByteFactory" 
+             interface="org.apache.plc4x.merlot.db.api.DBRecordFactory">
+        <service-properties>
+            <entry key="db.record.type" value="UBYTE"/>            
+        </service-properties>
+    </service>
+    
+    <service id="DBUIntFactory"     
+             ref="beanDBUIntFactory" 
+             interface="org.apache.plc4x.merlot.db.api.DBRecordFactory">
+        <service-properties>
+            <entry key="db.record.type" value="UINT"/>            
+        </service-properties>
+    </service>
+    
+    <service id="DBULongFactory"    
+             ref="beanDBULongFactory" 
+             interface="org.apache.plc4x.merlot.db.api.DBRecordFactory">
+        <service-properties>
+            <entry key="db.record.type" value="ULONG"/>            
+        </service-properties>
+    </service>
+    
+    <service id="DBUShortFactory"   
+             ref="beanDBUShortFactory" 
+             interface="org.apache.plc4x.merlot.db.api.DBRecordFactory">
+        <service-properties>
+            <entry key="db.record.type" value="USHORT"/>            
+        </service-properties>
+    </service>    
+         
+    <service id="MasterDB" 
+             ref="DBBean" 
+             interface="org.epics.pvdatabase.PVDatabase"/>
+    
+    <service id="MasterDBChannelProvider" 
+             ref="DBChannelProvider" 
+             interface="org.epics.pvaccess.client.ChannelProvider"/>
+    
+    <service id="MasterDBControl" ref="DBControl" auto-export="interfaces">
+        <service-properties>
+            <entry key="scheduler.name" value="MasterDBControl"/>  
+            <entry key="scheduler.period" value="1000"/>
+            <!-- <entry key="scheduler.times" value="5"/> -->
+            <entry key="scheduler.immediate" value="true"/>
+            <entry key="scheduler.concurrent" value="false"/>                      
+        </service-properties>
+    </service>
+    
+</blueprint>

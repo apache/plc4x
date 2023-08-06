@@ -17,121 +17,281 @@
   specific language governing permissions and limitations
   under the License.
   --><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-                
+                              
+  
+  
+  
+  
+  
+  
+  
   
   
   
   
   
   <modelVersion>4.0.0</modelVersion>
-                
+                              
     
+  
+  
+  
+  
+  
+  
+  
   
   
   
   
   
   <parent>
-                                
+                                                            
+    
+    
+    
+    
+    
+    
+    
     
     
     
     
     
     <groupId>org.apache.plc4x</groupId>
-                                
+                                                            
+    
+    
+    
+    
+    
+    
+    
     
     
     
     
     
     <artifactId>plc4j-integrations</artifactId>
-                                
+                                                            
+    
+    
+    
+    
+    
+    
+    
     
     
     
     
     
     <version>0.11.0-SNAPSHOT</version>
-                            
+                                                        
+  
+  
+  
+  
+  
+  
+  
   
   
   
   
   
   </parent>
-                
+                              
     
+  
+  
+  
+  
+  
+  
+  
   
   
   
   
   
   <artifactId>plc4j-apache-karaf</artifactId>
-                
+                              
+  
+  
+  
+  
+  
+  
+  
   
   
   
   
   
   <packaging>pom</packaging>
-                
+                              
+  
+  
+  
+  
+  
+  
+  
   
   
   
   
   
   <name>PLC4J: Integrations: Apache Karaf</name>
-                
+                              
+  
+  
+  
+  
+  
+  
+  
   
   
   
   
   
   <description>Integration module for integrating PLC4X into Apache Karaf.</description>
-                        
+                                      
 
   
   
   
   
   
+  
+  
+  
+  
+  
+  
+  
   <modules>
-                          
+                                                      
+    
+    
+    
+    
+    
+    
+    
     
     
     
     
     
     <module>org.apache.plc4x.merlot.modbus.dev</module>
-                          
+                                                      
+    
+    
+    
+    
+    
+    
+    
     
     
     
     
     
     <module>org.apache.plc4x.merlot.modbus.svr</module>
-                      
+                                                  
+    
+    
+    
+    
+    
+    
+    
     
     
     
     
     <module>org.apache.plc4x.merlot.scheduler</module>
-                  
+                                              
+    
+    
+    
+    
+    
+    
+    
     
     
     
     <module>org.apache.plc4x.merlot.branding</module>
-              
+                                          
+    
+    
+    
+    
+    
+    
+    
     
     
     <module>org.apache.plc4x.merlot.uns</module>
-          
+                                      
+    
+    
+    
+    
+    
+    
+    
     
     <module>org.apache.plc4x.merlot.features</module>
+                                  
+    
+    
+    
+    
+    
+    
+    
+    <module>org.apache.plc4x.merlot</module>
+                          
+    
+    
+    
+    
+    
+    <module>org.apache.plc4x.merlot.das</module>
+                      
+    
+    
+    
+    
+    <module>org.apache.plc4x.merlot.modbus.sim</module>
+                  
+    
+    
+    
+    <module>org.apache.plc4x.merlot.db</module>
+              
+    
+    
+    <module>org.apache.plc4x.merlot.das.api</module>
+          
+    
+    <module>org.apache.plc4x.merlot.das.base</module>
       
   </modules>
-          
+                        
+
+
+
+
+
+
+
 
 
 

@@ -164,6 +164,17 @@
     <enable-all-tests>false</enable-all-tests>
     <excluded-test-groups>require-all-tests</excluded-test-groups>
     <reflow.skin.version>2.3.3</reflow.skin.version>
+    
+    <!-- Integration version -->
+    <karaf.version>4.4.3</karaf.version>
+    <osgi.core.version>6.0.0</osgi.core.version>
+    <osgi.cmpn.version>6.0.0</osgi.cmpn.version>
+    <javaluator.version>3.0.3</javaluator.version>
+    <disruptor.version>3.4.4</disruptor.version>
+    <epics.pvdata.version>6.1.8</epics.pvdata.version>
+    <epics.ntypes.version>0.3.8</epics.ntypes.version>
+    <epics.pvdatabase.version>4.3.1</epics.pvdatabase.version>
+    
   </properties>
 
   <modules>
@@ -1083,7 +1094,7 @@
         <plugin>
           <groupId>org.apache.karaf.tooling</groupId>
           <artifactId>karaf-maven-plugin</artifactId>
-          <version>4.4.3</version>
+          <version>${karaf.version}</version>
         </plugin>
 
         <plugin>
