@@ -1219,11 +1219,11 @@ public class SecureChannel {
     /**
      * Creates an IdentityToken to authenticate with a server.
      *
-     * @param tokenType      the token type
-     * @param securityPolicy the security policy
+     * @param tokenType the token type
+     * @param policyId  the security policy
      * @return returns an ExtensionObject with an IdentityToken.
      */
-    private ExtensionObject getIdentityToken(UserTokenType tokenType, String securityPolicy) {
+    private ExtensionObject getIdentityToken(UserTokenType tokenType, String policyId) {
         ExpandedNodeId extExpandedNodeId;
         switch (tokenType) {
             case userTokenTypeAnonymous:
@@ -1241,7 +1241,7 @@ public class SecureChannel {
                 return new ExtensionObject(
                     extExpandedNodeId,
                     new ExtensionObjectEncodingMask(false, false, true),
-                    new UserIdentityToken(new PascalString(securityPolicy), anonymousIdentityToken)
+                    new UserIdentityToken(new PascalString(policyId), anonymousIdentityToken)
                 );
             case userTokenTypeUserName:
                 //Encrypt the password using the server nonce and server public key
@@ -1271,7 +1271,7 @@ public class SecureChannel {
                 return new ExtensionObject(
                     extExpandedNodeId,
                     new ExtensionObjectEncodingMask(false, false, true),
-                    new UserIdentityToken(new PascalString(securityPolicy), userNameIdentityToken));
+                    new UserIdentityToken(new PascalString(policyId), userNameIdentityToken));
         }
         return null;
     }
