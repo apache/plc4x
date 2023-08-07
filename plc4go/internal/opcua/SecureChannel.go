@@ -165,15 +165,22 @@ func NewSecureChannel(log zerolog.Logger, ctx DriverContext, configuration Confi
 	}
 
 	// Generate a list of endpoints we can use.
-	if address, err := url.Parse("none:" + configuration.host); err != nil {
-		if names, err := net.LookupAddr(address.Host); err != nil {
-			s.endpoints = append(s.endpoints, names[rand.Intn(len(names))])
+	{
+		var err error
+		address, err := url.Parse("none://" + configuration.host)
+		if err == nil {
+			if names, lookupErr := net.LookupHost(address.Host); lookupErr == nil {
+				s.endpoints = append(s.endpoints, names[rand.Intn(len(names))])
+				s.endpoints = append(s.endpoints, address.Host)
+				//s.endpoints = append(s.endpoints, address.Host)//TODO: not sure if golang can do
+			} else {
+				err = lookupErr
+			}
 		}
-		s.endpoints = append(s.endpoints, address.Host)
-		//s.endpoints = append(s.endpoints, address.Host)//TODO: not sure if golang can do
-	} else {
-		s.log.Warn().Msg("Unable to resolve host name. Using original host from connection string which may cause issues connecting to server")
-		s.endpoints = append(s.endpoints, address.Host)
+		if err != nil {
+			s.log.Warn().Err(err).Msg("Unable to resolve host name. Using original host from connection string which may cause issues connecting to server")
+			s.endpoints = append(s.endpoints, address.Host)
+		}
 	}
 
 	s.channelId.Store(1)
