@@ -20,12 +20,8 @@ package org.apache.plc4x.java.opcua;
 
 import org.apache.plc4x.java.DefaultPlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
-import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
-import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.*;
-import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
-import org.apache.plc4x.java.opcua.tag.OpcuaPlcTagHandler;
 import org.apache.plc4x.java.opcua.protocol.OpcuaSubscriptionHandle;
 import org.eclipse.milo.examples.server.ExampleServer;
 
@@ -41,7 +37,6 @@ import java.nio.file.Paths;
  * The current version is tested against a public server, which is to be replaced later by a separate instance of the Milo framework.
  * Afterwards the code represented here will be used as an example for the introduction page.
  * <p>
- *
  */
 public class ManualPLC4XOpcua {
     private static final String BOOL_IDENTIFIER = "ns=2;s=HelloWorld/ScalarTypes/Boolean";
@@ -80,67 +75,54 @@ public class ManualPLC4XOpcua {
     //Don't exists
     private static final String DOES_NOT_EXIST_IDENTIFIER = "ns=2;i=12512623";
 
-    public static void main(String... args) {
+    public static void main(String... args) throws Exception {
+        // When switching JDK versions from a newer to an older version,
+        // this can cause the server to not start correctly.
+        // Deleting the directory makes sure the key-store is initialized correctly.
+        Path securityBaseDir = Paths.get(System.getProperty("java.io.tmpdir"), "server", "security");
         try {
-            // When switching JDK versions from a newer to an older version,
-            // this can cause the server to not start correctly.
-            // Deleting the directory makes sure the key-store is initialized correctly.
-            Path securityBaseDir = Paths.get(System.getProperty("java.io.tmpdir"), "server", "security");
-            try {
-                Files.delete(securityBaseDir);
-            } catch (Exception e) {
-                // Ignore this ...
-            }
-
-            ExampleServer testServer = new ExampleServer();
-            testServer.startup().get();
+            Files.delete(securityBaseDir);
         } catch (Exception e) {
-            throw new PlcRuntimeException(e);
+            // Ignore this ...
         }
-        PlcConnection opcuaConnection = null;
-        OpcuaPlcTagHandler tagH = new OpcuaPlcTagHandler();
-        PlcTag tag = tagH.parseTag(BOOL_IDENTIFIER);
-        try {
-            opcuaConnection = new DefaultPlcDriverManager().getConnection("opcua:tcp://127.0.0.1:12686/milo?discovery=false");
 
-        } catch (PlcConnectionException e) {
-            throw new PlcRuntimeException(e);
-        }
-        try {
-            PlcReadRequest.Builder builder = opcuaConnection.readRequestBuilder();
-            builder.addTagAddress("Bool", BOOL_IDENTIFIER);
-            builder.addTagAddress("ByteString", BYTE_STRING_IDENTIFIER);
-            builder.addTagAddress("Byte", BYTE_IDENTIFIER);
-            builder.addTagAddress("Double", DOUBLE_IDENTIFIER);
-            builder.addTagAddress("Float", FLOAT_IDENTIFIER);
-            builder.addTagAddress("Int16", INT16_IDENTIFIER);
-            builder.addTagAddress("Int32", INT32_IDENTIFIER);
-            builder.addTagAddress("Int64", INT64_IDENTIFIER);
-            builder.addTagAddress("Integer", INTEGER_IDENTIFIER);
-            builder.addTagAddress("SByte", SBYTE_IDENTIFIER);
-            builder.addTagAddress("String", STRING_IDENTIFIER);
-            builder.addTagAddress("UInt16", UINT16_IDENTIFIER);
-            builder.addTagAddress("UInt32", UINT32_IDENTIFIER);
-            builder.addTagAddress("UInt64", UINT64_IDENTIFIER);
-            builder.addTagAddress("UInteger", UINTEGER_IDENTIFIER);
+        ExampleServer testServer = new ExampleServer();
+        testServer.startup().get();
+        try (PlcConnection opcuaConnection = new DefaultPlcDriverManager().getConnection("opcua:tcp://127.0.0.1:12686/milo?discovery=false")) {
+            PlcReadRequest.Builder builder = opcuaConnection.readRequestBuilder().
+                addTagAddress("Bool", BOOL_IDENTIFIER).
+                addTagAddress("ByteString", BYTE_STRING_IDENTIFIER).
+                addTagAddress("Byte", BYTE_IDENTIFIER).
+                addTagAddress("Double", DOUBLE_IDENTIFIER).
+                addTagAddress("Float", FLOAT_IDENTIFIER).
+                addTagAddress("Int16", INT16_IDENTIFIER).
+                addTagAddress("Int32", INT32_IDENTIFIER).
+                addTagAddress("Int64", INT64_IDENTIFIER).
+                addTagAddress("Integer", INTEGER_IDENTIFIER).
+                addTagAddress("SByte", SBYTE_IDENTIFIER).
+                addTagAddress("String", STRING_IDENTIFIER).
+                addTagAddress("UInt16", UINT16_IDENTIFIER).
+                addTagAddress("UInt32", UINT32_IDENTIFIER).
+                addTagAddress("UInt64", UINT64_IDENTIFIER).
+                addTagAddress("UInteger", UINTEGER_IDENTIFIER).
 
-            builder.addTagAddress("BoolArray", BOOL_ARRAY_IDENTIFIER);
-            builder.addTagAddress("ByteStringArray", BYTE_STRING_ARRAY_IDENTIFIER);
-            builder.addTagAddress("ByteArray", BYTE_ARRAY_IDENTIFIER);
-            builder.addTagAddress("DoubleArray", DOUBLE_ARRAY_IDENTIFIER);
-            builder.addTagAddress("FloatArray", FLOAT_ARRAY_IDENTIFIER);
-            builder.addTagAddress("Int16Array", INT16_ARRAY_IDENTIFIER);
-            builder.addTagAddress("Int32Array", INT32_ARRAY_IDENTIFIER);
-            builder.addTagAddress("Int64Array", INT64_ARRAY_IDENTIFIER);
-            builder.addTagAddress("IntegerArray", INTEGER_ARRAY_IDENTIFIER);
-            builder.addTagAddress("SByteArray", SBYTE_ARRAY_IDENTIFIER);
-            builder.addTagAddress("StringArray", STRING_ARRAY_IDENTIFIER);
-            builder.addTagAddress("UInt16Array", UINT16_ARRAY_IDENTIFIER);
-            builder.addTagAddress("UInt32Array", UINT32_ARRAY_IDENTIFIER);
-            builder.addTagAddress("UInt64Array", UINT64_ARRAY_IDENTIFIER);
-            builder.addTagAddress("UIntegerArray", UINTEGER_ARRAY_IDENTIFIER);
+                addTagAddress("BoolArray", BOOL_ARRAY_IDENTIFIER).
+                addTagAddress("ByteStringArray", BYTE_STRING_ARRAY_IDENTIFIER).
+                addTagAddress("ByteArray", BYTE_ARRAY_IDENTIFIER).
+                addTagAddress("DoubleArray", DOUBLE_ARRAY_IDENTIFIER).
+                addTagAddress("FloatArray", FLOAT_ARRAY_IDENTIFIER).
+                addTagAddress("Int16Array", INT16_ARRAY_IDENTIFIER).
+                addTagAddress("Int32Array", INT32_ARRAY_IDENTIFIER).
+                addTagAddress("Int64Array", INT64_ARRAY_IDENTIFIER).
+                addTagAddress("IntegerArray", INTEGER_ARRAY_IDENTIFIER).
+                addTagAddress("SByteArray", SBYTE_ARRAY_IDENTIFIER).
+                addTagAddress("StringArray", STRING_ARRAY_IDENTIFIER).
+                addTagAddress("UInt16Array", UINT16_ARRAY_IDENTIFIER).
+                addTagAddress("UInt32Array", UINT32_ARRAY_IDENTIFIER).
+                addTagAddress("UInt64Array", UINT64_ARRAY_IDENTIFIER).
+                addTagAddress("UIntegerArray", UINTEGER_ARRAY_IDENTIFIER).
 
-            builder.addTagAddress("DoesNotExists", DOES_NOT_EXIST_IDENTIFIER);
+                addTagAddress("DoesNotExists", DOES_NOT_EXIST_IDENTIFIER);
 
             PlcReadRequest request = builder.build();
 
@@ -149,60 +131,62 @@ public class ManualPLC4XOpcua {
 
             //Collection coll = response.getAllStrings("String");
 
-            PlcWriteRequest.Builder wBuilder = opcuaConnection.writeRequestBuilder();
-            wBuilder.addTagAddress("w-Bool", BOOL_IDENTIFIER, true);
-            //wBuilder.addTagAddress("w-ByteString", BYTE_STRING_IDENTIFIER, "TEST".getBytes());
-            wBuilder.addTagAddress("w-Byte", BYTE_IDENTIFIER, (byte) 1);
-            wBuilder.addTagAddress("w-Double", DOUBLE_IDENTIFIER, (double) 0.25);
-            wBuilder.addTagAddress("w-Float", FLOAT_IDENTIFIER, (float) 0.25);
-            wBuilder.addTagAddress("w-INT16", INT16_IDENTIFIER,  12);
-            wBuilder.addTagAddress("w-Int32", INT32_IDENTIFIER, (int) 314);
-            wBuilder.addTagAddress("w-Int64", INT64_IDENTIFIER, (long) 123125);
-            wBuilder.addTagAddress("w-Integer", INTEGER_IDENTIFIER, (int) 314);
-            wBuilder.addTagAddress("w-SByte", SBYTE_IDENTIFIER, (byte) 1);
-            wBuilder.addTagAddress("w-String", STRING_IDENTIFIER, "TEST");
-            wBuilder.addTagAddress("w-UInt16", UINT16_IDENTIFIER, new BigInteger("12"));
-            wBuilder.addTagAddress("w-UInt32", UINT32_IDENTIFIER, new BigInteger("123"));
-            wBuilder.addTagAddress("w-UInt64", UINT64_IDENTIFIER, new BigInteger("1245152"));
-            wBuilder.addTagAddress("w-UInteger", UINTEGER_IDENTIFIER, new BigInteger("1245152"));
+            PlcWriteRequest.Builder wBuilder = opcuaConnection.writeRequestBuilder().
+                addTagAddress("w-Bool", BOOL_IDENTIFIER, true).
+
+                //addTagAddress("w-ByteString", BYTE_STRING_IDENTIFIER, "TEST".getBytes()).
+                    addTagAddress("w-Byte", BYTE_IDENTIFIER, (byte) 1).
+
+                addTagAddress("w-Double", DOUBLE_IDENTIFIER, (double) 0.25).
+                addTagAddress("w-Float", FLOAT_IDENTIFIER, (float) 0.25).
+                addTagAddress("w-INT16", INT16_IDENTIFIER, 12).
+                addTagAddress("w-Int32", INT32_IDENTIFIER, (int) 314).
+                addTagAddress("w-Int64", INT64_IDENTIFIER, (long) 123125).
+                addTagAddress("w-Integer", INTEGER_IDENTIFIER, (int) 314).
+                addTagAddress("w-SByte", SBYTE_IDENTIFIER, (byte) 1).
+                addTagAddress("w-String", STRING_IDENTIFIER, "TEST").
+                addTagAddress("w-UInt16", UINT16_IDENTIFIER, new BigInteger("12")).
+                addTagAddress("w-UInt32", UINT32_IDENTIFIER, new BigInteger("123")).
+                addTagAddress("w-UInt64", UINT64_IDENTIFIER, new BigInteger("1245152")).
+                addTagAddress("w-UInteger", UINTEGER_IDENTIFIER, new BigInteger("1245152"));
             PlcWriteRequest writeRequest = wBuilder.build();
             PlcWriteResponse wResponse = writeRequest.execute().get();
 
             // Create Subscription
-            PlcSubscriptionRequest.Builder sBuilder = opcuaConnection.subscriptionRequestBuilder();
-            sBuilder.addChangeOfStateTagAddress("Bool", BOOL_IDENTIFIER);
-            sBuilder.addChangeOfStateTagAddress("ByteString", BYTE_STRING_IDENTIFIER);
-            sBuilder.addChangeOfStateTagAddress("Byte", BYTE_IDENTIFIER);
-            sBuilder.addChangeOfStateTagAddress("Double", DOUBLE_IDENTIFIER);
-            sBuilder.addChangeOfStateTagAddress("Float", FLOAT_IDENTIFIER);
-            sBuilder.addChangeOfStateTagAddress("Int16", INT16_IDENTIFIER);
-            sBuilder.addChangeOfStateTagAddress("Int32", INT32_IDENTIFIER);
-            sBuilder.addChangeOfStateTagAddress("Int64", INT64_IDENTIFIER);
-            sBuilder.addChangeOfStateTagAddress("Integer", INTEGER_IDENTIFIER);
-            sBuilder.addChangeOfStateTagAddress("SByte", SBYTE_IDENTIFIER);
-            sBuilder.addChangeOfStateTagAddress("String", STRING_IDENTIFIER);
-            sBuilder.addChangeOfStateTagAddress("UInt16", UINT16_IDENTIFIER);
-            sBuilder.addChangeOfStateTagAddress("UInt32", UINT32_IDENTIFIER);
-            sBuilder.addChangeOfStateTagAddress("UInt64", UINT64_IDENTIFIER);
-            sBuilder.addChangeOfStateTagAddress("UInteger", UINTEGER_IDENTIFIER);
+            PlcSubscriptionRequest.Builder sBuilder = opcuaConnection.subscriptionRequestBuilder().
+                addChangeOfStateTagAddress("Bool", BOOL_IDENTIFIER).
+                addChangeOfStateTagAddress("ByteString", BYTE_STRING_IDENTIFIER).
+                addChangeOfStateTagAddress("Byte", BYTE_IDENTIFIER).
+                addChangeOfStateTagAddress("Double", DOUBLE_IDENTIFIER).
+                addChangeOfStateTagAddress("Float", FLOAT_IDENTIFIER).
+                addChangeOfStateTagAddress("Int16", INT16_IDENTIFIER).
+                addChangeOfStateTagAddress("Int32", INT32_IDENTIFIER).
+                addChangeOfStateTagAddress("Int64", INT64_IDENTIFIER).
+                addChangeOfStateTagAddress("Integer", INTEGER_IDENTIFIER).
+                addChangeOfStateTagAddress("SByte", SBYTE_IDENTIFIER).
+                addChangeOfStateTagAddress("String", STRING_IDENTIFIER).
+                addChangeOfStateTagAddress("UInt16", UINT16_IDENTIFIER).
+                addChangeOfStateTagAddress("UInt32", UINT32_IDENTIFIER).
+                addChangeOfStateTagAddress("UInt64", UINT64_IDENTIFIER).
+                addChangeOfStateTagAddress("UInteger", UINTEGER_IDENTIFIER).
 
-            sBuilder.addChangeOfStateTagAddress("BoolArray", BOOL_ARRAY_IDENTIFIER);
-            sBuilder.addChangeOfStateTagAddress("ByteStringArray", BYTE_STRING_ARRAY_IDENTIFIER);
-            sBuilder.addChangeOfStateTagAddress("ByteArray", BYTE_ARRAY_IDENTIFIER);
-            sBuilder.addChangeOfStateTagAddress("DoubleArray", DOUBLE_ARRAY_IDENTIFIER);
-            sBuilder.addChangeOfStateTagAddress("FloatArray", FLOAT_ARRAY_IDENTIFIER);
-            sBuilder.addChangeOfStateTagAddress("Int16Array", INT16_ARRAY_IDENTIFIER);
-            sBuilder.addChangeOfStateTagAddress("Int32Array", INT32_ARRAY_IDENTIFIER);
-            sBuilder.addChangeOfStateTagAddress("Int64Array", INT64_ARRAY_IDENTIFIER);
-            sBuilder.addChangeOfStateTagAddress("IntegerArray", INTEGER_ARRAY_IDENTIFIER);
-            sBuilder.addChangeOfStateTagAddress("SByteArray", SBYTE_ARRAY_IDENTIFIER);
-            sBuilder.addChangeOfStateTagAddress("StringArray", STRING_ARRAY_IDENTIFIER);
-            sBuilder.addChangeOfStateTagAddress("UInt16Array", UINT16_ARRAY_IDENTIFIER);
-            sBuilder.addChangeOfStateTagAddress("UInt32Array", UINT32_ARRAY_IDENTIFIER);
-            sBuilder.addChangeOfStateTagAddress("UInt64Array", UINT64_ARRAY_IDENTIFIER);
-            sBuilder.addChangeOfStateTagAddress("UIntegerArray", UINTEGER_ARRAY_IDENTIFIER);
+                addChangeOfStateTagAddress("BoolArray", BOOL_ARRAY_IDENTIFIER).
+                addChangeOfStateTagAddress("ByteStringArray", BYTE_STRING_ARRAY_IDENTIFIER).
+                addChangeOfStateTagAddress("ByteArray", BYTE_ARRAY_IDENTIFIER).
+                addChangeOfStateTagAddress("DoubleArray", DOUBLE_ARRAY_IDENTIFIER).
+                addChangeOfStateTagAddress("FloatArray", FLOAT_ARRAY_IDENTIFIER).
+                addChangeOfStateTagAddress("Int16Array", INT16_ARRAY_IDENTIFIER).
+                addChangeOfStateTagAddress("Int32Array", INT32_ARRAY_IDENTIFIER).
+                addChangeOfStateTagAddress("Int64Array", INT64_ARRAY_IDENTIFIER).
+                addChangeOfStateTagAddress("IntegerArray", INTEGER_ARRAY_IDENTIFIER).
+                addChangeOfStateTagAddress("SByteArray", SBYTE_ARRAY_IDENTIFIER).
+                addChangeOfStateTagAddress("StringArray", STRING_ARRAY_IDENTIFIER).
+                addChangeOfStateTagAddress("UInt16Array", UINT16_ARRAY_IDENTIFIER).
+                addChangeOfStateTagAddress("UInt32Array", UINT32_ARRAY_IDENTIFIER).
+                addChangeOfStateTagAddress("UInt64Array", UINT64_ARRAY_IDENTIFIER).
+                addChangeOfStateTagAddress("UIntegerArray", UINTEGER_ARRAY_IDENTIFIER).
 
-            sBuilder.addChangeOfStateTagAddress("DoesNotExists", DOES_NOT_EXIST_IDENTIFIER);
+                addChangeOfStateTagAddress("DoesNotExists", DOES_NOT_EXIST_IDENTIFIER);
             PlcSubscriptionRequest subscriptionRequest = sBuilder.build();
 
             // Get result of creating subscription
@@ -220,11 +204,6 @@ public class ManualPLC4XOpcua {
             subscriptionHandle.stopSubscriber();
 
             Thread.sleep(20000);
-            opcuaConnection.close();
-
-        } catch (Exception e) {
-            throw new PlcRuntimeException(e);
         }
-
     }
 }
