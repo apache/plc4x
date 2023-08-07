@@ -26,6 +26,7 @@ import (
 	"gopkg.in/yaml.v3"
 	"os"
 	"path"
+	"sync"
 	"time"
 )
 
@@ -83,7 +84,11 @@ func LoadConfig() {
 	}
 }
 
+var saveMutex sync.Mutex
+
 func saveConfig() {
+	saveMutex.Lock()
+	defer saveMutex.Unlock()
 	config.LastUpdated = time.Now()
 	f, err := os.OpenFile(configFile, os.O_RDWR|os.O_CREATE, 0755)
 	if err != nil {

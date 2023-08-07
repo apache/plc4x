@@ -24,6 +24,7 @@ import (
 	"github.com/apache/plc4x/plc4go/internal/ads"
 	"github.com/apache/plc4x/plc4go/internal/bacnetip"
 	"github.com/apache/plc4x/plc4go/internal/cbus"
+	"github.com/apache/plc4x/plc4go/internal/opcua"
 	"github.com/apache/plc4x/plc4go/internal/s7"
 	plc4go "github.com/apache/plc4x/plc4go/pkg/api"
 	"github.com/apache/plc4x/plc4go/pkg/api/transports"
@@ -112,6 +113,13 @@ func registerDriver(driverId string) error {
 		}
 	case "s7":
 		driver = s7.NewDriver()
+		driverManager.RegisterDriver(driver)
+		if !tcpRegistered {
+			transports.RegisterTcpTransport(driverManager)
+			tcpRegistered = true
+		}
+	case "opcua":
+		driver = opcua.NewDriver()
 		driverManager.RegisterDriver(driver)
 		if !tcpRegistered {
 			transports.RegisterTcpTransport(driverManager)

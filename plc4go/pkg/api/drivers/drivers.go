@@ -26,6 +26,7 @@ import (
 	"github.com/apache/plc4x/plc4go/internal/eip"
 	"github.com/apache/plc4x/plc4go/internal/knxnetip"
 	modbus2 "github.com/apache/plc4x/plc4go/internal/modbus"
+	"github.com/apache/plc4x/plc4go/internal/opcua"
 	"github.com/apache/plc4x/plc4go/internal/s7"
 	"github.com/apache/plc4x/plc4go/pkg/api"
 	"github.com/apache/plc4x/plc4go/pkg/api/config"
@@ -72,6 +73,11 @@ func RegisterModbusRtuDriver(driverManager plc4go.PlcDriverManager, _options ...
 func RegisterModbusAsciiDriver(driverManager plc4go.PlcDriverManager, _options ...config.WithOption) {
 	driverManager.RegisterDriver(modbus2.NewModbusAsciiDriver(converter.WithOptionToInternal(_options...)...))
 	transports.RegisterSerialTransport(driverManager)
+	transports.RegisterTcpTransport(driverManager)
+}
+
+func RegisterOpcuaDriver(driverManager plc4go.PlcDriverManager, _options ...config.WithOption) {
+	driverManager.RegisterDriver(opcua.NewDriver(converter.WithOptionToInternal(_options...)...))
 	transports.RegisterTcpTransport(driverManager)
 }
 
