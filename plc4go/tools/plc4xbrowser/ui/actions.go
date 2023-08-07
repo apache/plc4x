@@ -42,13 +42,14 @@ func InitSubsystem() {
 			logLevel = parsedLevel
 		}
 	}
-	driverManager = plc4go.NewPlcDriverManager()
 
 	log.Logger = log.
 		//// Enable below if you want to see the filenames
 		//With().Caller().Logger().
 		Output(zerolog.ConsoleWriter{Out: tview.ANSIWriter(consoleOutput)}).
 		Level(logLevel)
+
+	driverManager = plc4go.NewPlcDriverManager()
 
 	// We offset the commands executed with the last commands
 	commandsExecuted = len(config.History.Last10Commands)
