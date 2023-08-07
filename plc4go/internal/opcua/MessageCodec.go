@@ -127,6 +127,6 @@ func (m *MessageCodec) Receive() (spi.Message, error) {
 	if err != nil {
 		return nil, errors.New("Could not parse pdu")
 	}
-
+	m.log.Debug().Stringer("opcuaAPU", opcuaAPU).Msg("got message")
 	return opcuaAPU, nil
 }
