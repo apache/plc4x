@@ -626,10 +626,8 @@ func (s *SecureChannel) onConnectActivateSessionRequest(ctx context.Context, con
 		connection.fireConnectionError(err, ch)
 		return
 	}
-	println("wadafack\n" + s.tokenType.String() + "\n" + s.policyId.String())
 
 	userIdentityToken := s.getIdentityToken(s.tokenType, s.policyId.GetStringValue())
-	println("ananas\n" + userIdentityToken.String())
 
 	requestHandle := s.getRequestHandle()
 
