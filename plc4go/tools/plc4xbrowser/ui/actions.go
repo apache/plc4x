@@ -20,6 +20,7 @@
 package ui
 
 import (
+	"bytes"
 	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/ads"
 	"github.com/apache/plc4x/plc4go/internal/bacnetip"
@@ -32,6 +33,8 @@ import (
 	"github.com/rivo/tview"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
+	"os"
+	"strings"
 )
 
 func InitSubsystem() {
@@ -47,7 +50,30 @@ func InitSubsystem() {
 	log.Logger = log.
 		//// Enable below if you want to see the filenames
 		//With().Caller().Logger().
-		Output(zerolog.ConsoleWriter{Out: tview.ANSIWriter(consoleOutput)}).
+		Output(zerolog.NewConsoleWriter(
+			func(w *zerolog.ConsoleWriter) {
+				w.Out = os.Stderr
+			},
+			func(w *zerolog.ConsoleWriter) {
+				w.FormatFieldValue = func(i interface{}) string {
+					if aString, ok := i.(string); ok && strings.Contains(aString, "\\n") {
+						return fmt.Sprintf("\x1b[%dm%v\x1b[0m", 31, "see below")
+					}
+					return fmt.Sprintf("%s", i)
+				}
+				w.FormatExtra = func(m map[string]interface{}, buffer *bytes.Buffer) error {
+					for key, i := range m {
+						if aString, ok := i.(string); ok && strings.Contains(aString, "\n") {
+							buffer.WriteString("\n")
+							buffer.WriteString(fmt.Sprintf("\x1b[%dm%v\x1b[0m", 32, "field "+key))
+							buffer.WriteString(":\n" + aString)
+						}
+					}
+					return nil
+				}
+			},
+		),
+		).
 		Level(logLevel)
 
 	driverManager = plc4go.NewPlcDriverManager()
