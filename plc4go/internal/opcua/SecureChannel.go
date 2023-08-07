@@ -228,6 +228,7 @@ func (s *SecureChannel) submit(ctx context.Context, codec *MessageCodec, errorDi
 					opcuaAPU = decodedOpcuaAPU.(readWriteModel.OpcuaAPUExactly)
 				}
 				messagePDU := opcuaAPU.GetMessage()
+				s.log.Trace().Stringer("messagePDU", messagePDU).Msg("looking at messagePDU")
 				opcuaResponse, ok := messagePDU.(readWriteModel.OpcuaMessageResponseExactly)
 				if !ok {
 					s.log.Debug().Type("type", message).Msg("Not relevant")
@@ -252,12 +253,15 @@ func (s *SecureChannel) submit(ctx context.Context, codec *MessageCodec, errorDi
 				opcuaAPU := message.(readWriteModel.OpcuaAPU)
 				opcuaAPU, _ = s.encryptionHandler.decodeMessage(ctx, opcuaAPU)
 				messagePDU := opcuaAPU.GetMessage()
+				s.log.Trace().Stringer("messagePDU", messagePDU).Msg("looking at messagePDU")
 				opcuaResponse := messagePDU.(readWriteModel.OpcuaMessageResponse)
 				if opcuaResponse.GetChunk() == (FINAL_CHUNK) {
 					s.tokenId.Store(opcuaResponse.GetSecureTokenId())
 					s.channelId.Store(opcuaResponse.GetSecureChannelId())
 
 					consumer(messageBuffer)
+				} else {
+					s.log.Warn().Str("chunk", opcuaResponse.GetChunk()).Msg("Message discarded")
 				}
 				return nil
 			},
@@ -554,13 +558,14 @@ func (s *SecureChannel) onConnectCreateSessionRequest(ctx context.Context, conne
 	}
 
 	consumer := func(opcuaResponse []byte) {
-		message, err := readWriteModel.ExtensionObjectParseWithBuffer(ctx, utils.NewReadBufferByteBased(opcuaResponse, utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian)), false)
+		extensionObject, err := readWriteModel.ExtensionObjectParseWithBuffer(ctx, utils.NewReadBufferByteBased(opcuaResponse, utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian)), false)
 		if err != nil {
 			s.log.Error().Err(err).Msg("error parsing")
 			connection.fireConnectionError(err, ch)
 			return
 		}
-		if fault, ok := message.GetBody().(readWriteModel.ServiceFaultExactly); ok {
+		s.log.Trace().Stringer("extensionObject", extensionObject).Msg("looking at message")
+		if fault, ok := extensionObject.GetBody().(readWriteModel.ServiceFaultExactly); ok {
 			statusCode := fault.GetResponseHeader().(readWriteModel.ResponseHeader).GetServiceResult().GetStatusCode()
 			statusCodeByValue, _ := readWriteModel.OpcuaStatusCodeByValue(statusCode)
 			s.log.Error().
@@ -572,16 +577,11 @@ func (s *SecureChannel) onConnectCreateSessionRequest(ctx context.Context, conne
 		}
 		s.log.Debug().Msg("Got Create Session Response Connection Response")
 
-		extensionObject, err := readWriteModel.ExtensionObjectParseWithBuffer(ctx, utils.NewReadBufferByteBased(opcuaResponse, utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian)), false)
-		if err != nil {
-			s.log.Error().Err(err).Msg("error parsing")
-			return
-		}
 		unknownExtensionObject := extensionObject.GetBody()
 		if responseMessage, ok := unknownExtensionObject.(readWriteModel.CreateSessionResponseExactly); ok {
 			s.authenticationToken = responseMessage.GetAuthenticationToken().GetNodeId()
 
-			go s.onConnectActivateSessionRequest(ctx, connection, ch, responseMessage, message.GetBody().(readWriteModel.CreateSessionResponse))
+			go s.onConnectActivateSessionRequest(ctx, connection, ch, responseMessage, responseMessage)
 		} else {
 			serviceFault := unknownExtensionObject.(readWriteModel.ServiceFault)
 			header := serviceFault.GetResponseHeader().(readWriteModel.ResponseHeader)
@@ -607,6 +607,7 @@ func (s *SecureChannel) onConnectActivateSessionRequest(ctx context.Context, con
 		connection.fireConnectionError(err, ch)
 		return
 	}
+	s.log.Debug().Interface("senderCertificate", certificate).Msg("working with senderCertificate")
 	s.encryptionHandler.setServerCertificate(certificate)
 	s.senderNonce = sessionResponse.GetServerNonce().GetStringValue()
 	endpoints := make([]string, 3)
@@ -625,8 +626,10 @@ func (s *SecureChannel) onConnectActivateSessionRequest(ctx context.Context, con
 		connection.fireConnectionError(err, ch)
 		return
 	}
+	println("wadafack\n" + s.tokenType.String() + "\n" + s.policyId.String())
 
 	userIdentityToken := s.getIdentityToken(s.tokenType, s.policyId.GetStringValue())
+	println("ananas\n" + userIdentityToken.String())
 
 	requestHandle := s.getRequestHandle()
 
@@ -649,7 +652,8 @@ func (s *SecureChannel) onConnectActivateSessionRequest(ctx context.Context, con
 		0,
 		nil,
 		userIdentityToken,
-		clientSignature)
+		clientSignature,
+	)
 
 	identifier, err := strconv.ParseUint(activateSessionRequest.GetIdentifier(), 10, 16)
 	if err != nil {
@@ -684,6 +688,7 @@ func (s *SecureChannel) onConnectActivateSessionRequest(ctx context.Context, con
 			s.log.Error().Err(err).Msg("error parsing")
 			return
 		}
+		s.log.Trace().Stringer("message", message).Msg("looking at message")
 		if fault, ok := message.GetBody().(readWriteModel.ServiceFaultExactly); ok {
 			statusCode := fault.GetResponseHeader().(readWriteModel.ResponseHeader).GetServiceResult().GetStatusCode()
 			statusCodeByValue, _ := readWriteModel.OpcuaStatusCodeByValue(statusCode)
@@ -780,6 +785,7 @@ func (s *SecureChannel) onDisconnect(ctx context.Context, connection *Connection
 			s.log.Error().Err(err).Msg("error parsing")
 			return
 		}
+		s.log.Trace().Stringer("message", message).Msg("looking at message")
 		if fault, ok := message.GetBody().(readWriteModel.ServiceFaultExactly); ok {
 			statusCode := fault.GetResponseHeader().(readWriteModel.ResponseHeader).GetServiceResult().GetStatusCode()
 			statusCodeByValue, _ := readWriteModel.OpcuaStatusCodeByValue(statusCode)
@@ -1566,9 +1572,9 @@ func (s *SecureChannel) hasIdentity(policies []readWriteModel.UserTokenPolicy) {
 
 // getIdentityToken creates an IdentityToken to authenticate with a server.
 //   - @param tokenType      the token type
-//   - @param securityPolicy the security policy
+//   - @param policyId 	 	 the policy id
 //   - @return returns an ExtensionObject with an IdentityToken.
-func (s *SecureChannel) getIdentityToken(tokenType readWriteModel.UserTokenType, value string) readWriteModel.ExtensionObject {
+func (s *SecureChannel) getIdentityToken(tokenType readWriteModel.UserTokenType, policyId string) readWriteModel.ExtensionObject {
 	switch tokenType {
 	case readWriteModel.UserTokenType_userTokenTypeAnonymous:
 		//If we aren't using authentication tell the server we would like to log in anonymously
@@ -1584,7 +1590,7 @@ func (s *SecureChannel) getIdentityToken(tokenType readWriteModel.UserTokenType,
 		return readWriteModel.NewExtensionObject(
 			extExpandedNodeId,
 			readWriteModel.NewExtensionObjectEncodingMask(false, false, true),
-			readWriteModel.NewUserIdentityToken(readWriteModel.NewPascalString(s.securityPolicy), anonymousIdentityToken),
+			readWriteModel.NewUserIdentityToken(readWriteModel.NewPascalString(policyId), anonymousIdentityToken),
 			false,
 		)
 	case readWriteModel.UserTokenType_userTokenTypeUserName:
@@ -1620,7 +1626,7 @@ func (s *SecureChannel) getIdentityToken(tokenType readWriteModel.UserTokenType,
 		return readWriteModel.NewExtensionObject(
 			extExpandedNodeId,
 			readWriteModel.NewExtensionObjectEncodingMask(false, false, true),
-			readWriteModel.NewUserIdentityToken(readWriteModel.NewPascalString(s.securityPolicy), userNameIdentityToken),
+			readWriteModel.NewUserIdentityToken(readWriteModel.NewPascalString(policyId), userNameIdentityToken),
 			false,
 		)
 	}
