@@ -41,8 +41,6 @@ import java.util.stream.Stream;
 import static org.apache.plc4x.java.opcua.OpcuaPlcDriver.INET_ADDRESS_PATTERN;
 import static org.apache.plc4x.java.opcua.OpcuaPlcDriver.URI_PATTERN;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
-import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 public class OpcuaPlcDriverTest {
 
@@ -176,11 +174,6 @@ public class OpcuaPlcDriverTest {
     @Nested
     class readWrite {
 
-        @BeforeEach
-        public void testForLinux() {
-            checkForLinux(); // TODO: seems those do not run on linux
-        }
-
         @Test
         public void readVariables() throws Exception {
             PlcConnection opcuaConnection = new DefaultPlcDriverManager().getConnection(tcpConnectionAddress);
@@ -221,33 +214,35 @@ public class OpcuaPlcDriverTest {
 
             PlcReadRequest request = builder.build();
             PlcReadResponse response = request.execute().get();
-            assertThat(response.getResponseCode("Bool")).isEqualTo(PlcResponseCode.OK);
-            assertThat(response.getResponseCode("Byte")).isEqualTo(PlcResponseCode.OK);
-            assertThat(response.getResponseCode("Double")).isEqualTo(PlcResponseCode.OK);
-            assertThat(response.getResponseCode("Float")).isEqualTo(PlcResponseCode.OK);
-            assertThat(response.getResponseCode("Int16")).isEqualTo(PlcResponseCode.OK);
-            assertThat(response.getResponseCode("Int32")).isEqualTo(PlcResponseCode.OK);
-            assertThat(response.getResponseCode("Int64")).isEqualTo(PlcResponseCode.OK);
-            assertThat(response.getResponseCode("Integer")).isEqualTo(PlcResponseCode.OK);
-            assertThat(response.getResponseCode("SByte")).isEqualTo(PlcResponseCode.OK);
-            assertThat(response.getResponseCode("String")).isEqualTo(PlcResponseCode.OK);
-            assertThat(response.getResponseCode("UInt16")).isEqualTo(PlcResponseCode.OK);
-            assertThat(response.getResponseCode("UInt32")).isEqualTo(PlcResponseCode.OK);
-            assertThat(response.getResponseCode("UInt64")).isEqualTo(PlcResponseCode.OK);
-            assertThat(response.getResponseCode("UInteger")).isEqualTo(PlcResponseCode.OK);
+            List.of(
+                "Bool",
+                "Byte",
+                "Double",
+                "Float",
+                "Int16",
+                "Int32",
+                "Int64",
+                "Integer",
+                "SByte",
+                "String",
+                "UInt16",
+                "UInt32",
+                "UInt64",
+                "UInteger",
+                "BoolArray",
+                "ByteArray",
+                "DoubleArray",
+                "FloatArray",
+                "Int16Array",
+                "Int32Array",
+                "Int64Array",
+                "SByteArray",
+                "StringArray",
+                "UInt16Array",
+                "UInt32Array",
+                "UInt64Array"
+            ).forEach(tag -> assertThat(response.getResponseCode(tag)).isEqualTo(PlcResponseCode.OK));
 
-            assertThat(response.getResponseCode("BoolArray")).isEqualTo(PlcResponseCode.OK);
-            assertThat(response.getResponseCode("ByteArray")).isEqualTo(PlcResponseCode.OK);
-            assertThat(response.getResponseCode("DoubleArray")).isEqualTo(PlcResponseCode.OK);
-            assertThat(response.getResponseCode("FloatArray")).isEqualTo(PlcResponseCode.OK);
-            assertThat(response.getResponseCode("Int16Array")).isEqualTo(PlcResponseCode.OK);
-            assertThat(response.getResponseCode("Int32Array")).isEqualTo(PlcResponseCode.OK);
-            assertThat(response.getResponseCode("Int64Array")).isEqualTo(PlcResponseCode.OK);
-            assertThat(response.getResponseCode("SByteArray")).isEqualTo(PlcResponseCode.OK);
-            assertThat(response.getResponseCode("StringArray")).isEqualTo(PlcResponseCode.OK);
-            assertThat(response.getResponseCode("UInt16Array")).isEqualTo(PlcResponseCode.OK);
-            assertThat(response.getResponseCode("UInt32Array")).isEqualTo(PlcResponseCode.OK);
-            assertThat(response.getResponseCode("UInt64Array")).isEqualTo(PlcResponseCode.OK);
 
             assertThat(response.getResponseCode("DoesNotExists")).isEqualTo(PlcResponseCode.NOT_FOUND);
 
@@ -367,8 +362,8 @@ public class OpcuaPlcDriverTest {
         Test added to test the syncronized Trnasactionhandler.
         The test originally failed one out of every 5 or so.
      */
-
-    public void multipleThreads() {
+    //@Test
+    public void multipleThreads() throws Exception {
         class ReadWorker extends Thread {
             private final PlcConnection connection;
 
@@ -420,24 +415,20 @@ public class OpcuaPlcDriverTest {
         }
 
 
-        try {
-            PlcConnection opcuaConnection = new DefaultPlcDriverManager().getConnection(tcpConnectionAddress);
-            Condition<PlcConnection> is_connected = new Condition<>(PlcConnection::isConnected, "is connected");
-            assertThat(opcuaConnection).is(is_connected);
+        PlcConnection opcuaConnection = new DefaultPlcDriverManager().getConnection(tcpConnectionAddress);
+        Condition<PlcConnection> is_connected = new Condition<>(PlcConnection::isConnected, "is connected");
+        assertThat(opcuaConnection).is(is_connected);
 
-            ReadWorker read_worker = new ReadWorker(opcuaConnection);
-            WriteWorker write_worker = new WriteWorker(opcuaConnection);
-            read_worker.start();
-            write_worker.start();
+        ReadWorker read_worker = new ReadWorker(opcuaConnection);
+        WriteWorker write_worker = new WriteWorker(opcuaConnection);
+        read_worker.start();
+        write_worker.start();
 
-            read_worker.join();
-            write_worker.join();
+        read_worker.join();
+        write_worker.join();
 
-            opcuaConnection.close();
-            assert !opcuaConnection.isConnected();
-        } catch (Exception e) {
-            fail("Exception during readVariables Test EXCEPTION: " + e.getMessage());
-        }
+        opcuaConnection.close();
+        assert !opcuaConnection.isConnected();
     }
 
     private final String[] validTCPOPC = {
@@ -481,13 +472,4 @@ public class OpcuaPlcDriverTest {
             );
     }
 
-    static void checkForLinux() {
-        /*assumeTrue(() -> {
-            String OS = System.getProperty("os.name").toLowerCase();
-            return !OS.contains("nix")
-                && !OS.contains("nux")
-                && !OS.contains("aix")
-                && !OS.contains("mac");
-        }, "somehow opcua doesn't run properly on linux");*/
-    }
 }
