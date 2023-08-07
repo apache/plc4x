@@ -77,15 +77,6 @@ public class OpcuaSubscriptionHandleTest {
 
     private static PlcConnection opcuaConnection;
 
-    @BeforeEach
-    public void before() {
-    }
-
-    @AfterEach
-    public void after() {
-
-    }
-
     // ! If this test fails, see comment at the top of the class before investigating.
     @BeforeAll
     public static void setup() throws Exception {

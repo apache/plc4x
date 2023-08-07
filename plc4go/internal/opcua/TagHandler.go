@@ -37,7 +37,7 @@ type TagHandler struct {
 
 func NewTagHandler() TagHandler {
 	return TagHandler{
-		tagAddress: regexp.MustCompile(`^ns=(?P<namespace>\d+);(?P<identifierType>[isgb])=(?P<identifier>[^;]+)?(;(?P<datatype>[a-zA-Z_]+))?`),
+		tagAddress: regexp.MustCompile(`^ns=(?P<namespace>\d+);(?P<identifierType>[isgb])=(?P<identifier>[^;]+)?(;(?P<datatype>[a-zA-Z_]+))?$`),
 	}
 }
 
