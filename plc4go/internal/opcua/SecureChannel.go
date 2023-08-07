@@ -138,6 +138,7 @@ func NewSecureChannel(log zerolog.Logger, ctx DriverContext, configuration Confi
 		password:                  configuration.password,
 		securityPolicy:            "http://opcfoundation.org/UA/SecurityPolicy#" + configuration.securityPolicy,
 		sessionName:               "UaSession:" + APPLICATION_TEXT.GetStringValue() + ":" + uniuri.NewLen(20),
+		authenticationToken:       readWriteModel.NewNodeIdTwoByte(0),
 		clientNonce:               []byte(uniuri.NewLen(40)),
 		keyStoreFile:              configuration.keyStoreFile,
 		channelTransactionManager: NewSecureChannelTransactionManager(log),
@@ -339,9 +340,6 @@ func (s *SecureChannel) onConnect(ctx context.Context, connection *Connection, c
 func (s *SecureChannel) onConnectOpenSecureChannel(ctx context.Context, connection *Connection, ch chan plc4go.PlcConnectionConnectResult, response readWriteModel.OpcuaAcknowledgeResponse) {
 	transactionId := s.channelTransactionManager.getTransactionIdentifier()
 
-	if s.authenticationToken == nil {
-		panic("authenticationToken should be set at this point")
-	}
 	requestHeader := readWriteModel.NewRequestHeader(
 		s.getAuthenticationToken(),
 		s.getCurrentDateTime(),
@@ -493,9 +491,6 @@ func (s *SecureChannel) onConnectOpenSecureChannel(ctx context.Context, connecti
 }
 
 func (s *SecureChannel) onConnectCreateSessionRequest(ctx context.Context, connection *Connection, ch chan plc4go.PlcConnectionConnectResult) {
-	if s.authenticationToken == nil {
-		panic("authenticationToken should be set at this point")
-	}
 	requestHeader := readWriteModel.NewRequestHeader(
 		s.getAuthenticationToken(),
 		s.getCurrentDateTime(),
@@ -638,9 +633,6 @@ func (s *SecureChannel) onConnectActivateSessionRequest(ctx context.Context, con
 
 	requestHandle := s.getRequestHandle()
 
-	if s.authenticationToken == nil {
-		panic("authenticationToken should be set at this point")
-	}
 	requestHeader := readWriteModel.NewRequestHeader(
 		s.getAuthenticationToken(),
 		s.getCurrentDateTime(),
@@ -828,9 +820,6 @@ func (s *SecureChannel) onDisconnect(ctx context.Context, connection *Connection
 func (s *SecureChannel) onDisconnectCloseSecureChannel(ctx context.Context, connection *Connection, message readWriteModel.CloseSessionResponseExactly, response readWriteModel.CloseSessionResponse) {
 	transactionId := s.channelTransactionManager.getTransactionIdentifier()
 
-	if s.authenticationToken == nil {
-		panic("authenticationToken should be set at this point")
-	}
 	requestHeader := readWriteModel.NewRequestHeader(
 		s.getAuthenticationToken(),
 		s.getCurrentDateTime(),
@@ -968,9 +957,6 @@ func (s *SecureChannel) onDiscover(ctx context.Context, codec *MessageCodec) {
 func (s *SecureChannel) onDiscoverOpenSecureChannel(ctx context.Context, codec *MessageCodec, opcuaAcknowledgeResponse readWriteModel.OpcuaAcknowledgeResponse) {
 	transactionId := s.channelTransactionManager.getTransactionIdentifier()
 
-	if s.authenticationToken == nil {
-		panic("authenticationToken should be set at this point")
-	}
 	requestHeader := readWriteModel.NewRequestHeader(
 		s.getAuthenticationToken(),
 		s.getCurrentDateTime(),
@@ -1101,9 +1087,6 @@ func (s *SecureChannel) onDiscoverGetEndpointsRequest(ctx context.Context, codec
 		return
 	}
 
-	if s.authenticationToken == nil {
-		panic("authenticationToken should be set at this point")
-	}
 	requestHeader := readWriteModel.NewRequestHeader(
 		s.getAuthenticationToken(),
 		s.getCurrentDateTime(),
@@ -1230,9 +1213,6 @@ func (s *SecureChannel) onDiscoverGetEndpointsRequest(ctx context.Context, codec
 func (s *SecureChannel) onDiscoverCloseSecureChannel(ctx context.Context, codec *MessageCodec, response readWriteModel.GetEndpointsResponse) {
 	transactionId := s.channelTransactionManager.getTransactionIdentifier()
 
-	if s.authenticationToken == nil {
-		panic("authenticationToken should be set at this point")
-	}
 	requestHeader := readWriteModel.NewRequestHeader(
 		s.getAuthenticationToken(),
 		s.getCurrentDateTime(),
@@ -1333,9 +1313,6 @@ func (s *SecureChannel) keepAlive() {
 
 			transactionId := s.channelTransactionManager.getTransactionIdentifier()
 
-			if s.authenticationToken == nil {
-				panic("authenticationToken should be set at this point")
-			}
 			requestHeader := readWriteModel.NewRequestHeader(
 				s.getAuthenticationToken(),
 				s.getCurrentDateTime(),

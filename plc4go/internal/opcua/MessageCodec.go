@@ -66,14 +66,18 @@ func (m *MessageCodec) Connect() error {
 func (m *MessageCodec) Send(message spi.Message) error {
 	m.log.Trace().Stringer("message", message).Msg("Sending message")
 	// Cast the message to the correct type of struct
-	messagePdu, ok := message.(readWriteModel.MessagePDU)
+	opcuaApu, ok := message.(readWriteModel.OpcuaAPU)
 	if !ok {
-		return errors.Errorf("Invalid message type %T", message)
+		if message, ok := message.(readWriteModel.MessagePDU); ok {
+			opcuaApu = readWriteModel.NewOpcuaAPU(message, false)
+		} else {
+			return errors.Errorf("Invalid message type %T", message)
+		}
 	}
 
 	// Serialize the request
 	wbbb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.LittleEndian))
-	if err := messagePdu.SerializeWithWriteBuffer(context.Background(), wbbb); err != nil {
+	if err := opcuaApu.SerializeWithWriteBuffer(context.Background(), wbbb); err != nil {
 		return errors.Wrap(err, "error serializing request")
 	}
 	theBytes := wbbb.GetBytes()
@@ -82,6 +86,7 @@ func (m *MessageCodec) Send(message spi.Message) error {
 	if err := m.GetTransportInstance().Write(theBytes); err != nil {
 		return errors.Wrap(err, "error sending request")
 	}
+	m.log.Trace().Msg("bytes written to transport instance")
 	return nil
 }
 
@@ -118,10 +123,10 @@ func (m *MessageCodec) Receive() (spi.Message, error) {
 	}
 	ctxForModel := options.GetLoggerContextForModel(context.Background(), m.log, options.WithPassLoggerToModel(m.passLogToModel))
 	rbbb := utils.NewReadBufferByteBased(readBytes, utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian))
-	messagePdu, err := readWriteModel.MessagePDUParseWithBuffer(ctxForModel, rbbb, true)
+	opcuaAPU, err := readWriteModel.OpcuaAPUParseWithBuffer(ctxForModel, rbbb, true)
 	if err != nil {
 		return nil, errors.New("Could not parse pdu")
 	}
 
-	return messagePdu, nil
+	return opcuaAPU, nil
 }
