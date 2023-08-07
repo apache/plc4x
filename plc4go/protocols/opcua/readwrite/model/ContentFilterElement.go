@@ -193,13 +193,13 @@ func ContentFilterElementParseWithBuffer(ctx context.Context, readBuffer utils.R
 		return nil, errors.Wrap(pullErr, "Error pulling for filterOperands")
 	}
 	// Count array
-	filterOperands := make([]ExtensionObject, noOfFilterOperands)
+	filterOperands := make([]ExtensionObject, utils.Max(noOfFilterOperands, 0))
 	// This happens when the size is set conditional to 0
 	if len(filterOperands) == 0 {
 		filterOperands = nil
 	}
 	{
-		_numItems := uint16(noOfFilterOperands)
+		_numItems := uint16(utils.Max(noOfFilterOperands, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx

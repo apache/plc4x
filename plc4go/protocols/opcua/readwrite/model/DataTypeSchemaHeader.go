@@ -256,13 +256,13 @@ func DataTypeSchemaHeaderParseWithBuffer(ctx context.Context, readBuffer utils.R
 		return nil, errors.Wrap(pullErr, "Error pulling for namespaces")
 	}
 	// Count array
-	namespaces := make([]PascalString, noOfNamespaces)
+	namespaces := make([]PascalString, utils.Max(noOfNamespaces, 0))
 	// This happens when the size is set conditional to 0
 	if len(namespaces) == 0 {
 		namespaces = nil
 	}
 	{
-		_numItems := uint16(noOfNamespaces)
+		_numItems := uint16(utils.Max(noOfNamespaces, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
@@ -290,13 +290,13 @@ func DataTypeSchemaHeaderParseWithBuffer(ctx context.Context, readBuffer utils.R
 		return nil, errors.Wrap(pullErr, "Error pulling for structureDataTypes")
 	}
 	// Count array
-	structureDataTypes := make([]DataTypeDescription, noOfStructureDataTypes)
+	structureDataTypes := make([]DataTypeDescription, utils.Max(noOfStructureDataTypes, 0))
 	// This happens when the size is set conditional to 0
 	if len(structureDataTypes) == 0 {
 		structureDataTypes = nil
 	}
 	{
-		_numItems := uint16(noOfStructureDataTypes)
+		_numItems := uint16(utils.Max(noOfStructureDataTypes, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
@@ -324,13 +324,13 @@ func DataTypeSchemaHeaderParseWithBuffer(ctx context.Context, readBuffer utils.R
 		return nil, errors.Wrap(pullErr, "Error pulling for enumDataTypes")
 	}
 	// Count array
-	enumDataTypes := make([]DataTypeDescription, noOfEnumDataTypes)
+	enumDataTypes := make([]DataTypeDescription, utils.Max(noOfEnumDataTypes, 0))
 	// This happens when the size is set conditional to 0
 	if len(enumDataTypes) == 0 {
 		enumDataTypes = nil
 	}
 	{
-		_numItems := uint16(noOfEnumDataTypes)
+		_numItems := uint16(utils.Max(noOfEnumDataTypes, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
@@ -358,13 +358,13 @@ func DataTypeSchemaHeaderParseWithBuffer(ctx context.Context, readBuffer utils.R
 		return nil, errors.Wrap(pullErr, "Error pulling for simpleDataTypes")
 	}
 	// Count array
-	simpleDataTypes := make([]DataTypeDescription, noOfSimpleDataTypes)
+	simpleDataTypes := make([]DataTypeDescription, utils.Max(noOfSimpleDataTypes, 0))
 	// This happens when the size is set conditional to 0
 	if len(simpleDataTypes) == 0 {
 		simpleDataTypes = nil
 	}
 	{
-		_numItems := uint16(noOfSimpleDataTypes)
+		_numItems := uint16(utils.Max(noOfSimpleDataTypes, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx

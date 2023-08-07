@@ -169,13 +169,13 @@ func EndpointUrlListDataTypeParseWithBuffer(ctx context.Context, readBuffer util
 		return nil, errors.Wrap(pullErr, "Error pulling for endpointUrlList")
 	}
 	// Count array
-	endpointUrlList := make([]PascalString, noOfEndpointUrlList)
+	endpointUrlList := make([]PascalString, utils.Max(noOfEndpointUrlList, 0))
 	// This happens when the size is set conditional to 0
 	if len(endpointUrlList) == 0 {
 		endpointUrlList = nil
 	}
 	{
-		_numItems := uint16(noOfEndpointUrlList)
+		_numItems := uint16(utils.Max(noOfEndpointUrlList, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx

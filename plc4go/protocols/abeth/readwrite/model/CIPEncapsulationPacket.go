@@ -210,13 +210,13 @@ func CIPEncapsulationPacketParseWithBuffer(ctx context.Context, readBuffer utils
 		return nil, errors.Wrap(pullErr, "Error pulling for senderContext")
 	}
 	// Count array
-	senderContext := make([]uint8, uint16(8))
+	senderContext := make([]uint8, utils.Max(uint16(8), 0))
 	// This happens when the size is set conditional to 0
 	if len(senderContext) == 0 {
 		senderContext = nil
 	}
 	{
-		_numItems := uint16(uint16(8))
+		_numItems := uint16(utils.Max(uint16(8), 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx

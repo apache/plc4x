@@ -204,13 +204,13 @@ func QueryNextResponseParseWithBuffer(ctx context.Context, readBuffer utils.Read
 		return nil, errors.Wrap(pullErr, "Error pulling for queryDataSets")
 	}
 	// Count array
-	queryDataSets := make([]ExtensionObjectDefinition, noOfQueryDataSets)
+	queryDataSets := make([]ExtensionObjectDefinition, utils.Max(noOfQueryDataSets, 0))
 	// This happens when the size is set conditional to 0
 	if len(queryDataSets) == 0 {
 		queryDataSets = nil
 	}
 	{
-		_numItems := uint16(noOfQueryDataSets)
+		_numItems := uint16(utils.Max(noOfQueryDataSets, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx

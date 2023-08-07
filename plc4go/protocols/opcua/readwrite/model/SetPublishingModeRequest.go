@@ -228,13 +228,13 @@ func SetPublishingModeRequestParseWithBuffer(ctx context.Context, readBuffer uti
 		return nil, errors.Wrap(pullErr, "Error pulling for subscriptionIds")
 	}
 	// Count array
-	subscriptionIds := make([]uint32, noOfSubscriptionIds)
+	subscriptionIds := make([]uint32, utils.Max(noOfSubscriptionIds, 0))
 	// This happens when the size is set conditional to 0
 	if len(subscriptionIds) == 0 {
 		subscriptionIds = nil
 	}
 	{
-		_numItems := uint16(noOfSubscriptionIds)
+		_numItems := uint16(utils.Max(noOfSubscriptionIds, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx

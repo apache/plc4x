@@ -193,13 +193,13 @@ func WriteRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 		return nil, errors.Wrap(pullErr, "Error pulling for nodesToWrite")
 	}
 	// Count array
-	nodesToWrite := make([]ExtensionObjectDefinition, noOfNodesToWrite)
+	nodesToWrite := make([]ExtensionObjectDefinition, utils.Max(noOfNodesToWrite, 0))
 	// This happens when the size is set conditional to 0
 	if len(nodesToWrite) == 0 {
 		nodesToWrite = nil
 	}
 	{
-		_numItems := uint16(noOfNodesToWrite)
+		_numItems := uint16(utils.Max(noOfNodesToWrite, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx

@@ -257,13 +257,13 @@ func NodeReferenceParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 		return nil, errors.Wrap(pullErr, "Error pulling for referencedNodeIds")
 	}
 	// Count array
-	referencedNodeIds := make([]NodeId, noOfReferencedNodeIds)
+	referencedNodeIds := make([]NodeId, utils.Max(noOfReferencedNodeIds, 0))
 	// This happens when the size is set conditional to 0
 	if len(referencedNodeIds) == 0 {
 		referencedNodeIds = nil
 	}
 	{
-		_numItems := uint16(noOfReferencedNodeIds)
+		_numItems := uint16(utils.Max(noOfReferencedNodeIds, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx

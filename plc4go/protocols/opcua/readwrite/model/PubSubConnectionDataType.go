@@ -374,13 +374,13 @@ func PubSubConnectionDataTypeParseWithBuffer(ctx context.Context, readBuffer uti
 		return nil, errors.Wrap(pullErr, "Error pulling for connectionProperties")
 	}
 	// Count array
-	connectionProperties := make([]ExtensionObjectDefinition, noOfConnectionProperties)
+	connectionProperties := make([]ExtensionObjectDefinition, utils.Max(noOfConnectionProperties, 0))
 	// This happens when the size is set conditional to 0
 	if len(connectionProperties) == 0 {
 		connectionProperties = nil
 	}
 	{
-		_numItems := uint16(noOfConnectionProperties)
+		_numItems := uint16(utils.Max(noOfConnectionProperties, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
@@ -421,13 +421,13 @@ func PubSubConnectionDataTypeParseWithBuffer(ctx context.Context, readBuffer uti
 		return nil, errors.Wrap(pullErr, "Error pulling for writerGroups")
 	}
 	// Count array
-	writerGroups := make([]PubSubGroupDataType, noOfWriterGroups)
+	writerGroups := make([]PubSubGroupDataType, utils.Max(noOfWriterGroups, 0))
 	// This happens when the size is set conditional to 0
 	if len(writerGroups) == 0 {
 		writerGroups = nil
 	}
 	{
-		_numItems := uint16(noOfWriterGroups)
+		_numItems := uint16(utils.Max(noOfWriterGroups, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
@@ -455,13 +455,13 @@ func PubSubConnectionDataTypeParseWithBuffer(ctx context.Context, readBuffer uti
 		return nil, errors.Wrap(pullErr, "Error pulling for readerGroups")
 	}
 	// Count array
-	readerGroups := make([]PubSubGroupDataType, noOfReaderGroups)
+	readerGroups := make([]PubSubGroupDataType, utils.Max(noOfReaderGroups, 0))
 	// This happens when the size is set conditional to 0
 	if len(readerGroups) == 0 {
 		readerGroups = nil
 	}
 	{
-		_numItems := uint16(noOfReaderGroups)
+		_numItems := uint16(utils.Max(noOfReaderGroups, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx

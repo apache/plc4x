@@ -260,13 +260,13 @@ func AxisInformationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 		return nil, errors.Wrap(pullErr, "Error pulling for axisSteps")
 	}
 	// Count array
-	axisSteps := make([]float64, noOfAxisSteps)
+	axisSteps := make([]float64, utils.Max(noOfAxisSteps, 0))
 	// This happens when the size is set conditional to 0
 	if len(axisSteps) == 0 {
 		axisSteps = nil
 	}
 	{
-		_numItems := uint16(noOfAxisSteps)
+		_numItems := uint16(utils.Max(noOfAxisSteps, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx

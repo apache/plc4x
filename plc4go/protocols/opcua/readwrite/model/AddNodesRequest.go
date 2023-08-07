@@ -193,13 +193,13 @@ func AddNodesRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 		return nil, errors.Wrap(pullErr, "Error pulling for nodesToAdd")
 	}
 	// Count array
-	nodesToAdd := make([]ExtensionObjectDefinition, noOfNodesToAdd)
+	nodesToAdd := make([]ExtensionObjectDefinition, utils.Max(noOfNodesToAdd, 0))
 	// This happens when the size is set conditional to 0
 	if len(nodesToAdd) == 0 {
 		nodesToAdd = nil
 	}
 	{
-		_numItems := uint16(noOfNodesToAdd)
+		_numItems := uint16(utils.Max(noOfNodesToAdd, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx

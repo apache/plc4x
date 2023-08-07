@@ -169,13 +169,13 @@ func HistoryEventParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 		return nil, errors.Wrap(pullErr, "Error pulling for events")
 	}
 	// Count array
-	events := make([]ExtensionObjectDefinition, noOfEvents)
+	events := make([]ExtensionObjectDefinition, utils.Max(noOfEvents, 0))
 	// This happens when the size is set conditional to 0
 	if len(events) == 0 {
 		events = nil
 	}
 	{
-		_numItems := uint16(noOfEvents)
+		_numItems := uint16(utils.Max(noOfEvents, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx

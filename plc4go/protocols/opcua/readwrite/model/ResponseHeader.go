@@ -264,13 +264,13 @@ func ResponseHeaderParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 		return nil, errors.Wrap(pullErr, "Error pulling for stringTable")
 	}
 	// Count array
-	stringTable := make([]PascalString, noOfStringTable)
+	stringTable := make([]PascalString, utils.Max(noOfStringTable, 0))
 	// This happens when the size is set conditional to 0
 	if len(stringTable) == 0 {
 		stringTable = nil
 	}
 	{
-		_numItems := uint16(noOfStringTable)
+		_numItems := uint16(utils.Max(noOfStringTable, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx

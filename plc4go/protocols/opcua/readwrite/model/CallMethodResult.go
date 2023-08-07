@@ -251,13 +251,13 @@ func CallMethodResultParseWithBuffer(ctx context.Context, readBuffer utils.ReadB
 		return nil, errors.Wrap(pullErr, "Error pulling for inputArgumentResults")
 	}
 	// Count array
-	inputArgumentResults := make([]StatusCode, noOfInputArgumentResults)
+	inputArgumentResults := make([]StatusCode, utils.Max(noOfInputArgumentResults, 0))
 	// This happens when the size is set conditional to 0
 	if len(inputArgumentResults) == 0 {
 		inputArgumentResults = nil
 	}
 	{
-		_numItems := uint16(noOfInputArgumentResults)
+		_numItems := uint16(utils.Max(noOfInputArgumentResults, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
@@ -285,13 +285,13 @@ func CallMethodResultParseWithBuffer(ctx context.Context, readBuffer utils.ReadB
 		return nil, errors.Wrap(pullErr, "Error pulling for inputArgumentDiagnosticInfos")
 	}
 	// Count array
-	inputArgumentDiagnosticInfos := make([]DiagnosticInfo, noOfInputArgumentDiagnosticInfos)
+	inputArgumentDiagnosticInfos := make([]DiagnosticInfo, utils.Max(noOfInputArgumentDiagnosticInfos, 0))
 	// This happens when the size is set conditional to 0
 	if len(inputArgumentDiagnosticInfos) == 0 {
 		inputArgumentDiagnosticInfos = nil
 	}
 	{
-		_numItems := uint16(noOfInputArgumentDiagnosticInfos)
+		_numItems := uint16(utils.Max(noOfInputArgumentDiagnosticInfos, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
@@ -319,13 +319,13 @@ func CallMethodResultParseWithBuffer(ctx context.Context, readBuffer utils.ReadB
 		return nil, errors.Wrap(pullErr, "Error pulling for outputArguments")
 	}
 	// Count array
-	outputArguments := make([]Variant, noOfOutputArguments)
+	outputArguments := make([]Variant, utils.Max(noOfOutputArguments, 0))
 	// This happens when the size is set conditional to 0
 	if len(outputArguments) == 0 {
 		outputArguments = nil
 	}
 	{
-		_numItems := uint16(noOfOutputArguments)
+		_numItems := uint16(utils.Max(noOfOutputArguments, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx

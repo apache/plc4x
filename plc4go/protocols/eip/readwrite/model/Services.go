@@ -149,13 +149,13 @@ func ServicesParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, s
 		return nil, errors.Wrap(pullErr, "Error pulling for offsets")
 	}
 	// Count array
-	offsets := make([]uint16, serviceNb)
+	offsets := make([]uint16, utils.Max(serviceNb, 0))
 	// This happens when the size is set conditional to 0
 	if len(offsets) == 0 {
 		offsets = nil
 	}
 	{
-		_numItems := uint16(serviceNb)
+		_numItems := uint16(utils.Max(serviceNb, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
@@ -176,13 +176,13 @@ func ServicesParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, s
 		return nil, errors.Wrap(pullErr, "Error pulling for services")
 	}
 	// Count array
-	services := make([]CipService, serviceNb)
+	services := make([]CipService, utils.Max(serviceNb, 0))
 	// This happens when the size is set conditional to 0
 	if len(services) == 0 {
 		services = nil
 	}
 	{
-		_numItems := uint16(serviceNb)
+		_numItems := uint16(utils.Max(serviceNb, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx

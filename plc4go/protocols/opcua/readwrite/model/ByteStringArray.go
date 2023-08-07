@@ -136,13 +136,13 @@ func ByteStringArrayParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 		return nil, errors.Wrap(pullErr, "Error pulling for value")
 	}
 	// Count array
-	value := make([]uint8, arrayLength)
+	value := make([]uint8, utils.Max(arrayLength, 0))
 	// This happens when the size is set conditional to 0
 	if len(value) == 0 {
 		value = nil
 	}
 	{
-		_numItems := uint16(arrayLength)
+		_numItems := uint16(utils.Max(arrayLength, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx

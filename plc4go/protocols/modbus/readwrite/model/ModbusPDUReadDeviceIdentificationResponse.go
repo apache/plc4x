@@ -305,13 +305,13 @@ func ModbusPDUReadDeviceIdentificationResponseParseWithBuffer(ctx context.Contex
 		return nil, errors.Wrap(pullErr, "Error pulling for objects")
 	}
 	// Count array
-	objects := make([]ModbusDeviceInformationObject, numberOfObjects)
+	objects := make([]ModbusDeviceInformationObject, utils.Max(numberOfObjects, 0))
 	// This happens when the size is set conditional to 0
 	if len(objects) == 0 {
 		objects = nil
 	}
 	{
-		_numItems := uint16(numberOfObjects)
+		_numItems := uint16(utils.Max(numberOfObjects, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx

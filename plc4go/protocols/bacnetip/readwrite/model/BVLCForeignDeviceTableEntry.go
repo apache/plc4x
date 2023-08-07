@@ -149,13 +149,13 @@ func BVLCForeignDeviceTableEntryParseWithBuffer(ctx context.Context, readBuffer 
 		return nil, errors.Wrap(pullErr, "Error pulling for ip")
 	}
 	// Count array
-	ip := make([]uint8, uint16(4))
+	ip := make([]uint8, utils.Max(uint16(4), 0))
 	// This happens when the size is set conditional to 0
 	if len(ip) == 0 {
 		ip = nil
 	}
 	{
-		_numItems := uint16(uint16(4))
+		_numItems := uint16(utils.Max(uint16(4), 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx

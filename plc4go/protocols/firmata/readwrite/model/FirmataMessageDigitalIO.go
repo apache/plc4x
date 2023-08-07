@@ -165,13 +165,13 @@ func FirmataMessageDigitalIOParseWithBuffer(ctx context.Context, readBuffer util
 		return nil, errors.Wrap(pullErr, "Error pulling for data")
 	}
 	// Count array
-	data := make([]int8, uint16(2))
+	data := make([]int8, utils.Max(uint16(2), 0))
 	// This happens when the size is set conditional to 0
 	if len(data) == 0 {
 		data = nil
 	}
 	{
-		_numItems := uint16(uint16(2))
+		_numItems := uint16(utils.Max(uint16(2), 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx

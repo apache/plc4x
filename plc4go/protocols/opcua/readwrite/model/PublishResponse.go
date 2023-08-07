@@ -291,13 +291,13 @@ func PublishResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 		return nil, errors.Wrap(pullErr, "Error pulling for availableSequenceNumbers")
 	}
 	// Count array
-	availableSequenceNumbers := make([]uint32, noOfAvailableSequenceNumbers)
+	availableSequenceNumbers := make([]uint32, utils.Max(noOfAvailableSequenceNumbers, 0))
 	// This happens when the size is set conditional to 0
 	if len(availableSequenceNumbers) == 0 {
 		availableSequenceNumbers = nil
 	}
 	{
-		_numItems := uint16(noOfAvailableSequenceNumbers)
+		_numItems := uint16(utils.Max(noOfAvailableSequenceNumbers, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
@@ -362,13 +362,13 @@ func PublishResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 		return nil, errors.Wrap(pullErr, "Error pulling for results")
 	}
 	// Count array
-	results := make([]StatusCode, noOfResults)
+	results := make([]StatusCode, utils.Max(noOfResults, 0))
 	// This happens when the size is set conditional to 0
 	if len(results) == 0 {
 		results = nil
 	}
 	{
-		_numItems := uint16(noOfResults)
+		_numItems := uint16(utils.Max(noOfResults, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
@@ -396,13 +396,13 @@ func PublishResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 		return nil, errors.Wrap(pullErr, "Error pulling for diagnosticInfos")
 	}
 	// Count array
-	diagnosticInfos := make([]DiagnosticInfo, noOfDiagnosticInfos)
+	diagnosticInfos := make([]DiagnosticInfo, utils.Max(noOfDiagnosticInfos, 0))
 	// This happens when the size is set conditional to 0
 	if len(diagnosticInfos) == 0 {
 		diagnosticInfos = nil
 	}
 	{
-		_numItems := uint16(noOfDiagnosticInfos)
+		_numItems := uint16(utils.Max(noOfDiagnosticInfos, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx

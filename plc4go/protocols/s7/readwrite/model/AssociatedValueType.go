@@ -185,13 +185,13 @@ func AssociatedValueTypeParseWithBuffer(ctx context.Context, readBuffer utils.Re
 		return nil, errors.Wrap(pullErr, "Error pulling for data")
 	}
 	// Count array
-	data := make([]uint8, EventItemLength(ctx, readBuffer, valueLength))
+	data := make([]uint8, utils.Max(EventItemLength(ctx, readBuffer, valueLength), 0))
 	// This happens when the size is set conditional to 0
 	if len(data) == 0 {
 		data = nil
 	}
 	{
-		_numItems := uint16(EventItemLength(ctx, readBuffer, valueLength))
+		_numItems := uint16(utils.Max(EventItemLength(ctx, readBuffer, valueLength), 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx

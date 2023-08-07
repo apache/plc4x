@@ -281,13 +281,13 @@ func HistoryReadRequestParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 		return nil, errors.Wrap(pullErr, "Error pulling for nodesToRead")
 	}
 	// Count array
-	nodesToRead := make([]ExtensionObjectDefinition, noOfNodesToRead)
+	nodesToRead := make([]ExtensionObjectDefinition, utils.Max(noOfNodesToRead, 0))
 	// This happens when the size is set conditional to 0
 	if len(nodesToRead) == 0 {
 		nodesToRead = nil
 	}
 	{
-		_numItems := uint16(noOfNodesToRead)
+		_numItems := uint16(utils.Max(noOfNodesToRead, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx

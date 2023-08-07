@@ -214,13 +214,13 @@ func PubSubConfigurationDataTypeParseWithBuffer(ctx context.Context, readBuffer 
 		return nil, errors.Wrap(pullErr, "Error pulling for publishedDataSets")
 	}
 	// Count array
-	publishedDataSets := make([]ExtensionObjectDefinition, noOfPublishedDataSets)
+	publishedDataSets := make([]ExtensionObjectDefinition, utils.Max(noOfPublishedDataSets, 0))
 	// This happens when the size is set conditional to 0
 	if len(publishedDataSets) == 0 {
 		publishedDataSets = nil
 	}
 	{
-		_numItems := uint16(noOfPublishedDataSets)
+		_numItems := uint16(utils.Max(noOfPublishedDataSets, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
@@ -248,13 +248,13 @@ func PubSubConfigurationDataTypeParseWithBuffer(ctx context.Context, readBuffer 
 		return nil, errors.Wrap(pullErr, "Error pulling for connections")
 	}
 	// Count array
-	connections := make([]ExtensionObjectDefinition, noOfConnections)
+	connections := make([]ExtensionObjectDefinition, utils.Max(noOfConnections, 0))
 	// This happens when the size is set conditional to 0
 	if len(connections) == 0 {
 		connections = nil
 	}
 	{
-		_numItems := uint16(noOfConnections)
+		_numItems := uint16(utils.Max(noOfConnections, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
