@@ -23,6 +23,7 @@ import (
 	"bytes"
 	"context"
 	"fmt"
+	"github.com/rs/zerolog/pkgerrors"
 	"os"
 	"runtime"
 	"runtime/debug"
@@ -224,6 +225,8 @@ func ProduceTestingLogger(t *testing.T) zerolog.Logger {
 	if highLogPrecision {
 		logger = logger.With().Timestamp().Logger()
 	}
+	zerolog.ErrorStackMarshaler = pkgerrors.MarshalStack
+	logger = logger.With().Stack().Logger()
 	return logger
 }
 
