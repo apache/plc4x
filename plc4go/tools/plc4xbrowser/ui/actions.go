@@ -33,7 +33,6 @@ import (
 	"github.com/rivo/tview"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
-	"os"
 	"strings"
 )
 
@@ -52,7 +51,7 @@ func InitSubsystem() {
 		//With().Caller().Logger().
 		Output(zerolog.NewConsoleWriter(
 			func(w *zerolog.ConsoleWriter) {
-				w.Out = os.Stderr
+				w.Out = tview.ANSIWriter(consoleOutput)
 			},
 			func(w *zerolog.ConsoleWriter) {
 				w.FormatFieldValue = func(i interface{}) string {
