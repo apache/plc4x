@@ -37,6 +37,7 @@ import java.util.regex.Pattern;
 
 public abstract class GeneratedDriverBase<BASE_PACKET extends Message> implements PlcDriver {
 
+    public static final String PROPERTY_PLC4X_FORCE_FIRE_DISCOVER_EVENT = "PLC4X_FORCE_FIRE_DISCOVER_EVENT";
     public static final String PROPERTY_PLC4X_FORCE_AWAIT_SETUP_COMPLETE = "PLC4X_FORCE_AWAIT_SETUP_COMPLETE";
     public static final String PROPERTY_PLC4X_FORCE_AWAIT_DISCONNECT_COMPLETE = "PLC4X_FORCE_AWAIT_DISCONNECT_COMPLETE";
     public static final String PROPERTY_PLC4X_FORCE_AWAIT_DISCOVER_COMPLETE = "PLC4X_FORCE_AWAIT_DISCOVER_COMPLETE";
@@ -60,6 +61,10 @@ public abstract class GeneratedDriverBase<BASE_PACKET extends Message> implement
 
     protected boolean canBrowse() {
         return false;
+    }
+
+    protected boolean fireDiscoverEvent() {
+        return true;
     }
 
     protected boolean awaitSetupComplete() {
@@ -154,6 +159,12 @@ public abstract class GeneratedDriverBase<BASE_PACKET extends Message> implement
         // Give drivers the option to customize the channel.
         initializePipeline(channelFactory);
 
+        // Make the "fire discover event" overridable via system property.
+        boolean fireDiscoverEvent = fireDiscoverEvent();
+        if(System.getProperty(PROPERTY_PLC4X_FORCE_FIRE_DISCOVER_EVENT) != null) {
+            fireDiscoverEvent = Boolean.parseBoolean(System.getProperty(PROPERTY_PLC4X_FORCE_FIRE_DISCOVER_EVENT));
+        }
+
         // Make the "await setup complete" overridable via system property.
         boolean awaitSetupComplete = awaitSetupComplete();
         if(System.getProperty(PROPERTY_PLC4X_FORCE_AWAIT_SETUP_COMPLETE) != null) {
@@ -178,6 +189,7 @@ public abstract class GeneratedDriverBase<BASE_PACKET extends Message> implement
             getValueHandler(),
             configuration,
             channelFactory,
+            fireDiscoverEvent,
             awaitSetupComplete,
             awaitDisconnectComplete,
             awaitDiscoverComplete,
