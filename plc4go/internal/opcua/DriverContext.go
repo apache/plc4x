@@ -21,13 +21,17 @@ package opcua
 
 //go:generate go run ../../tools/plc4xgenerator/gen.go -type=DriverContext
 type DriverContext struct {
-	awaitSetupComplete      bool
-	awaitDisconnectComplete bool
+	fireDiscoverEvent            bool
+	awaitSetupComplete           bool
+	awaitDisconnectComplete      bool
+	awaitSessionDiscoverComplete bool
 }
 
-func NewDriverContext(_ Configuration) DriverContext {
+func NewDriverContext(configuration Configuration) DriverContext {
 	return DriverContext{
-		awaitSetupComplete:      true,
-		awaitDisconnectComplete: true,
+		fireDiscoverEvent:            configuration.isEncrypted,
+		awaitSetupComplete:           true,
+		awaitDisconnectComplete:      true,
+		awaitSessionDiscoverComplete: true,
 	}
 }

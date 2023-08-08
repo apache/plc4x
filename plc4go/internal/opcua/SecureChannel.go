@@ -902,6 +902,7 @@ func (s *SecureChannel) onDisconnectCloseSecureChannel(ctx context.Context, conn
 }
 
 func (s *SecureChannel) onDiscover(ctx context.Context, codec *MessageCodec) {
+	s.log.Trace().Msg("onDiscover")
 	// Only the TCP transport supports login.
 	s.log.Debug().Msg("Opcua Driver running in ACTIVE mode, discovering endpoints")
 
@@ -957,6 +958,7 @@ func (s *SecureChannel) onDiscover(ctx context.Context, codec *MessageCodec) {
 }
 
 func (s *SecureChannel) onDiscoverOpenSecureChannel(ctx context.Context, codec *MessageCodec, opcuaAcknowledgeResponse readWriteModel.OpcuaAcknowledgeResponse) {
+	s.log.Trace().Msg("onDiscoverOpenSecureChannel")
 	transactionId := s.channelTransactionManager.getTransactionIdentifier()
 
 	requestHeader := readWriteModel.NewRequestHeader(
@@ -1073,6 +1075,7 @@ func (s *SecureChannel) onDiscoverOpenSecureChannel(ctx context.Context, codec *
 }
 
 func (s *SecureChannel) onDiscoverGetEndpointsRequest(ctx context.Context, codec *MessageCodec, opcuaOpenResponse readWriteModel.OpcuaOpenResponse, openSecureChannelResponse readWriteModel.OpenSecureChannelResponse) {
+	s.log.Trace().Msg("onDiscoverGetEndpointsRequest")
 	s.tokenId.Store(int32(openSecureChannelResponse.GetSecurityToken().(readWriteModel.ChannelSecurityToken).GetTokenId()))
 	s.channelId.Store(int32(openSecureChannelResponse.GetSecurityToken().(readWriteModel.ChannelSecurityToken).GetChannelId()))
 
@@ -1213,6 +1216,7 @@ func (s *SecureChannel) onDiscoverGetEndpointsRequest(ctx context.Context, codec
 }
 
 func (s *SecureChannel) onDiscoverCloseSecureChannel(ctx context.Context, codec *MessageCodec, response readWriteModel.GetEndpointsResponse) {
+	s.log.Trace().Msg("onDiscoverCloseSecureChannel")
 	transactionId := s.channelTransactionManager.getTransactionIdentifier()
 
 	requestHeader := readWriteModel.NewRequestHeader(

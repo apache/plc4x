@@ -116,9 +116,17 @@ func (c *Connection) ConnectWithContext(ctx context.Context) <-chan plc4go.PlcCo
 				c.fireConnectionError(errors.Errorf("panic-ed %v. Stack:\n%s", err, debug.Stack()), ch)
 			}
 		}()
+		c.log.Trace().Msg("connecting codec")
 		if err := c.messageCodec.ConnectWithContext(ctx); err != nil {
 			c.fireConnectionError(errors.Wrap(err, "Error connecting codec"), ch)
 			return
+		}
+
+		if c.driverContext.fireDiscoverEvent {
+			c.log.Trace().Msg("calling onDiscover")
+			c.channel.onDiscover(ctx, c.messageCodec)
+		} else {
+			c.log.Trace().Msg("we don't wait for session discover")
 		}
 
 		// For testing purposes we can skip the waiting for a complete connection
