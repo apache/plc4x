@@ -1084,6 +1084,8 @@ func Test_defaultCodec_TimeoutExpectations(t *testing.T) {
 				log:                           testutils.ProduceTestingLogger(t),
 			}
 			m.TimeoutExpectations(tt.args.now)
+			// TODO: handle error is called async so we sleep here a bit. Not sure if we want to sync something here at all
+			time.Sleep(100 * time.Millisecond)
 		})
 	}
 }
