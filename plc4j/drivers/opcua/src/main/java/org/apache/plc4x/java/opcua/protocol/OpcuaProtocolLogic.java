@@ -26,6 +26,7 @@ import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.types.PlcValueType;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.opcua.config.OpcuaConfiguration;
+import org.apache.plc4x.java.opcua.context.OpcuaDriverContext;
 import org.apache.plc4x.java.opcua.context.SecureChannel;
 import org.apache.plc4x.java.opcua.readwrite.*;
 import org.apache.plc4x.java.opcua.tag.OpcuaTag;
@@ -76,7 +77,6 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
     private OpcuaConfiguration configuration;
     private final Map<Long, OpcuaSubscriptionHandle> subscriptions = new HashMap<>();
     private SecureChannel channel;
-    private final AtomicBoolean securedConnection = new AtomicBoolean(false);
 
     @Override
     public void setConfiguration(OpcuaConfiguration configuration) {
@@ -99,7 +99,7 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
     @Override
     public void setDriverContext(DriverContext driverContext) {
         super.setDriverContext(driverContext);
-        this.channel = new SecureChannel(driverContext, this.configuration);
+        this.channel = new SecureChannel((OpcuaDriverContext) driverContext, this.configuration);
     }
 
     @Override
@@ -107,7 +107,7 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
         LOGGER.debug("Opcua Driver running in ACTIVE mode.");
 
         if (this.channel == null) {
-            this.channel = new SecureChannel(driverContext, this.configuration);
+            this.channel = new SecureChannel((OpcuaDriverContext) driverContext, this.configuration);
         }
         this.channel.onConnect(context);
     }
@@ -117,7 +117,7 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
         // Only the TCP transport supports login.
         LOGGER.debug("Opcua Driver running in ACTIVE mode, discovering endpoints");
         if (this.channel == null) {
-            this.channel = new SecureChannel(driverContext, this.configuration);
+            this.channel = new SecureChannel((OpcuaDriverContext) driverContext, this.configuration);
         }
         channel.onDiscover(context);
     }
