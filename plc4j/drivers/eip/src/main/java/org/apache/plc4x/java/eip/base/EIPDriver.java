@@ -133,7 +133,7 @@ public class EIPDriver extends GeneratedDriverBase<EipPacket> {
 
         // Create the configuration object.
         this.configuration = (EIPConfiguration) new ConfigurationFactory().createConfiguration(
-            getConfigurationType(), paramString);
+            getConfigurationType(), protocolCode, transportCode, transportConfig, paramString);
         if (configuration == null) {
             throw new PlcConnectionException("Unsupported configuration");
         }

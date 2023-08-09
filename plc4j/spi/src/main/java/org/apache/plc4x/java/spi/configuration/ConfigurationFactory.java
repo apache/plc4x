@@ -22,12 +22,13 @@ import org.apache.commons.lang3.ClassUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
-import org.apache.plc4x.java.spi.configuration.annotations.*;
+import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
+import org.apache.plc4x.java.spi.configuration.annotations.ParameterConverter;
+import org.apache.plc4x.java.spi.configuration.annotations.Required;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.ParameterizedType;
@@ -52,8 +53,8 @@ public class ConfigurationFactory {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ConfigurationFactory.class);
 
-    // TODO Respect Path Params
-    public <T extends Configuration> T createConfiguration(Class<T> pClazz, String configurationString) {
+    public <T extends Configuration> T createConfiguration(Class<T> pClazz, String protocolCode, String transportCode,
+                                                           String transportConfig, String paramString) {
         // Get a map of all configuration parameter fields.
         // - Get a list of all fields in the given class.
         Map<String, Field> fields = Arrays.stream(FieldUtils.getAllFields(pClazz))
@@ -76,14 +77,28 @@ public class ConfigurationFactory {
         try {
             instance = pClazz.getDeclaredConstructor().newInstance();
         } catch (InvocationTargetException | InstantiationException |
-            IllegalAccessException | NoSuchMethodException e) {
+                 IllegalAccessException | NoSuchMethodException e) {
             throw new IllegalArgumentException("Unable to Instantiate Configuration Class", e);
         }
 
         // Process the parameters passed in with the connection string.
         try {
             // Get a map of all parameters in the connection string.
-            Map<String, List<String>> paramStringValues = splitQuery(configurationString);
+            Map<String, List<String>> paramStringValues = splitQuery(paramString);
+            paramStringValues = new HashMap<>(paramStringValues);
+            List<String> previousValue;
+            previousValue = paramStringValues.put("protocolCode", List.of(protocolCode));
+            if (previousValue != null) {
+                LOGGER.warn("protocolCode with value {} overridden by", protocolCode);
+            }
+            previousValue = paramStringValues.put("transportCode", List.of(transportCode));
+            if (previousValue != null) {
+                LOGGER.warn("transportCode with value {} overridden by", transportCode);
+            }
+            previousValue = paramStringValues.put("transportConfig", List.of(transportConfig));
+            if (previousValue != null) {
+                LOGGER.warn("transportConfig with value {} overridden by", transportConfig);
+            }
 
             // Iterate over all fields and set the values to either the values specified
             // in the param string or to defaults configured by annotations.
@@ -135,7 +150,7 @@ public class ConfigurationFactory {
                     if (configClass.isAssignableFrom(configuration.getClass())) {
                         try {
                             ((HasConfiguration) obj).setConfiguration(configuration);
-                        } catch(Throwable t) {
+                        } catch (Throwable t) {
                             LOGGER.error("Error setting the configuration", t);
                             throw new PlcRuntimeException("Error setting the configuration", t);
                         }
@@ -182,7 +197,8 @@ public class ConfigurationFactory {
                 if (converter.getType().isAssignableFrom(field.getType())) {
                     return converter.convert(valueString);
                 }
-            } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
+                     NoSuchMethodException e) {
                 throw new IllegalArgumentException("Could not initialize parameter converter", e);
             }
             throw new IllegalArgumentException("Unsupported field type " + field.getType() + " for converter " + converterClass);
