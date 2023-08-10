@@ -58,7 +58,7 @@
     <go.stringer.version>v0.11.1</go.stringer.version>
     <go.junit-report.version>v2.0.1</go.junit-report.version>
     <go.gotestsum.version>v1.10.1</go.gotestsum.version>
-    <go.mockery.version>v2.23.4</go.mockery.version>
+    <go.mockery.version>v2.32.4</go.mockery.version>
   </properties>
 
   <build>
