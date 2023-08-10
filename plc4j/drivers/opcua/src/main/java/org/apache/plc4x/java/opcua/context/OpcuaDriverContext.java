@@ -151,7 +151,7 @@ public class OpcuaDriverContext implements DriverContext, HasConfiguration<Opcua
         transportEndpoint = matcher.group("transportEndpoint");
 
         String portAddition = port != null ? ":" + port : "";
-        endpoint = "opc." + code + "://" + code + portAddition + transportEndpoint;
+        endpoint = "opc." + code + "://" + host + portAddition + transportEndpoint;
 
 
         if (configuration.getSecurityPolicy() != null && !(configuration.getSecurityPolicy().equals("None"))) {

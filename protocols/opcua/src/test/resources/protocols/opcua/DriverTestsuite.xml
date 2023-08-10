@@ -48,7 +48,7 @@
             <endpoint>
               <PascalString>
                 <sLength dataType="int" bitLength="32">15</sLength>
-                <stringValue dataType="string" bitLength="120" encoding="UTF-8">opc.test://test</stringValue>
+                <stringValue dataType="string" bitLength="120" encoding="UTF-8">opc.test://hurz</stringValue>
               </PascalString>
             </endpoint>
           </OpcuaHelloRequest>

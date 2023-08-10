@@ -172,8 +172,7 @@ public class OpcuaPlcDriverTest {
         }
     }
 
-    // TODO: ignored due to strange behaviour when run together
-    //@Nested
+    @Nested
     class readWrite {
 
         @Test
