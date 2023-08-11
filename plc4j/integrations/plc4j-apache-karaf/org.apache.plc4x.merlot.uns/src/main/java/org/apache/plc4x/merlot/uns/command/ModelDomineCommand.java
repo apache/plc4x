@@ -28,6 +28,7 @@ import org.apache.karaf.shell.api.action.lifecycle.Reference;
 import org.apache.karaf.shell.api.action.lifecycle.Service;
 import org.osgi.framework.BundleContext;
 
+
 @Command(scope = "model", name = "domine", description = "Command for test tree.")
 @Service
 public class ModelDomineCommand implements Action {

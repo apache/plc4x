@@ -31,7 +31,7 @@
     <version>0.11.0-SNAPSHOT</version>
     <packaging>bundle</packaging>
 
-    <name>Merlot :: mb :: Modbus device implementation</name>
+    <name>PLC4J: Merlot :: mb :: Modbus device implementation</name>
     <description>org.apache.plc4x.merlot.modbus.dev OSGi blueprint bundle project.</description>
 
     <build>
@@ -78,19 +78,14 @@
             <version>4.4.3</version>
         </dependency>
         <dependency>
-            <groupId>org.apache.karaf</groupId>
-            <artifactId>org.apache.karaf.util</artifactId>
-            <version>4.4.3</version>
-        </dependency>
-        <dependency>
             <groupId>org.epics</groupId>
             <artifactId>epics-pvdata</artifactId>
             <version>6.1.8</version>
         </dependency>
         <dependency>
             <groupId>org.osgi</groupId>
-            <artifactId>org.osgi.compendium</artifactId>
-            <version>5.0.0</version>
+            <artifactId>osgi.cmpn</artifactId>
+            <version>${osgi.cmpn.version}</version>
         </dependency>
     </dependencies>
 </project>

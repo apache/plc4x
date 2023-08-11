@@ -16,6 +16,7 @@
  */
 package org.apache.plc4x.merlot.uns.api;
 
+
 public class MyServiceImpl implements MyService {
     
     public String echo(String message) {

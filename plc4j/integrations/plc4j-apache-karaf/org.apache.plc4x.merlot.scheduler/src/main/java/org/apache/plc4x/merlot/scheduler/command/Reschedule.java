@@ -18,7 +18,6 @@
  */
 package org.apache.plc4x.merlot.scheduler.command;
 
-
 import org.apache.plc4x.merlot.scheduler.api.ScheduleOptions;
 import org.apache.plc4x.merlot.scheduler.api.Scheduler;
 import org.apache.plc4x.merlot.scheduler.command.completer.JobNameCompleter;
@@ -27,6 +26,7 @@ import javax.xml.bind.DatatypeConverter;
 import org.apache.karaf.shell.api.action.*;
 import org.apache.karaf.shell.api.action.lifecycle.Reference;
 import org.apache.karaf.shell.api.action.lifecycle.Service;
+
 
 @Command(scope = "rt", name = "reschedule", description = "Update scheduling of an existing job")
 @Service

@@ -167,13 +167,23 @@
     
     <!-- Integration version -->
     <karaf.version>4.4.3</karaf.version>
-    <osgi.core.version>6.0.0</osgi.core.version>
-    <osgi.cmpn.version>6.0.0</osgi.cmpn.version>
+    <osgi.core.version>8.0.0</osgi.core.version>
+    <osgi.cmpn.version>7.0.0</osgi.cmpn.version>
+    <osgi.device.version>1.1.0</osgi.device.version>
     <javaluator.version>3.0.3</javaluator.version>
     <disruptor.version>3.4.4</disruptor.version>
+    
+    <!-- EPICS -->
+    <epics.core.version>7.0.9</epics.core.version>
+    <epics.util.version>1.0.6</epics.util.version>
+    <epics.vtype.version>1.0.6</epics.vtype.version>  
+    <epics.vtype.all.version>1.0.6</epics.vtype.all.version>      
+    <epics.gpclient.version>1.0.7</epics.gpclient.version>   
+    <epics.ntypes.version>0.3.8</epics.ntypes.version>  
+    <epics.pvaccess.version>5.1.8</epics.pvaccess.version>  
+    <epics.pvaclient.version>4.3.2</epics.pvaclient.version>       
     <epics.pvdata.version>6.1.8</epics.pvdata.version>
-    <epics.ntypes.version>0.3.8</epics.ntypes.version>
-    <epics.pvdatabase.version>4.3.1</epics.pvdatabase.version>
+    <epics.pvdatabase.version>4.3.1</epics.pvdatabase.version>    
     
   </properties>
 

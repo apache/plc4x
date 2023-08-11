@@ -24,6 +24,7 @@ import org.quartz.SchedulerException;
 import org.quartz.core.QuartzSchedulerResources;
 import org.quartz.impl.StdSchedulerFactory;
 
+
 public class KarafStdSchedulerFactory extends StdSchedulerFactory {
 
     public KarafStdSchedulerFactory() {

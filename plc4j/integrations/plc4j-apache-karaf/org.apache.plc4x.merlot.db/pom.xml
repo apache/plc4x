@@ -31,7 +31,7 @@
     <version>0.11.0-SNAPSHOT</version>
     <packaging>bundle</packaging>
 
-    <name>Merlot :: db :: Simple database</name>
+    <name>PLC4J: Merlot :: db :: Simple database</name>
     <description>org.apache.plc4x.merlot.db OSGi blueprint bundle project.</description>
 
     <build>
@@ -64,11 +64,6 @@
     <dependencies>
         <dependency>
             <groupId>org.osgi</groupId>
-            <artifactId>org.osgi.core</artifactId>
-            <version>${osgi.core.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.osgi</groupId>
             <artifactId>osgi.cmpn</artifactId>
             <version>${osgi.cmpn.version}</version>
         </dependency>
@@ -86,6 +81,20 @@
             <groupId>org.epics</groupId>
             <artifactId>epics-pvdatabase</artifactId>
             <version>${epics.pvdatabase.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.epics</groupId>
+                    <artifactId>epics-pvdata</artifactId>
+                </exclusion> 
+                <exclusion>
+                    <groupId>org.epics</groupId>
+                    <artifactId>epics-pvaccess</artifactId>
+                </exclusion>                               
+                <exclusion>
+                    <groupId>org.epics</groupId>
+                    <artifactId>epics-pvaclient</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.apache.karaf.shell</groupId>
@@ -103,11 +112,6 @@
             <version>0.11.0-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <groupId>org.apache.plc4x.merlot.das</groupId>
-            <artifactId>org.apache.plc4x.merlot.das</artifactId>
-            <version>0.11.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
             <groupId>org.apache.plc4x.merlot.das.api</groupId>
             <artifactId>org.apache.plc4x.merlot.das.api</artifactId>
             <version>0.11.0-SNAPSHOT</version>
@@ -116,6 +120,16 @@
             <groupId>org.apache.plc4x.merlot.das.base</groupId>
             <artifactId>org.apache.plc4x.merlot.das.base</artifactId>
             <version>0.11.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.epics</groupId>
+            <artifactId>epics-pvaccess</artifactId>
+            <version>${epics.pvaccess.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.core</artifactId>
+            <version>6.0.0</version>
         </dependency>
     </dependencies>
 </project>

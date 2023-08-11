@@ -31,7 +31,7 @@
     <version>0.11.0-SNAPSHOT</version>
     <packaging>feature</packaging>
 
-    <name>Merlot :: features :: Features required</name>
+    <name>PLC4J: Merlot :: features :: Features required</name>
     <description>org.apache.plc4x.merlot.features details</description>
 
     <build>

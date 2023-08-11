@@ -18,7 +18,6 @@
  */
 package org.apache.plc4x.merlot.scheduler.impl;
 
-
 import org.apache.plc4x.merlot.scheduler.api.Scheduler;
 import org.apache.plc4x.merlot.scheduler.api.SchedulerWhiteBoard;
 import java.util.Date;
@@ -28,10 +27,7 @@ import org.osgi.framework.ServiceReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- *
- * @author cgarcia
- */
+
 public class SchedulerWhiteBoardImpl implements SchedulerWhiteBoard {
     
     private BundleContext bc = null;

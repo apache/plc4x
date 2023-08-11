@@ -32,7 +32,7 @@
     <version>0.11.0-SNAPSHOT</version>
     <packaging>bundle</packaging>
 
-    <name>Merlot :: das :: Device access service</name>
+    <name>PLC4J: Merlot :: das :: Device access service</name>
     <description>org.apache.plc4x.merlot.das OSGi blueprint bundle project.</description>
 
     <build>
@@ -65,19 +65,19 @@
     </build>
     <dependencies>
         <dependency>
+            <groupId>org.apache.karaf.shell</groupId>
+            <artifactId>org.apache.karaf.shell.core</artifactId>
+            <version>${karaf.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.osgi</groupId>
-            <artifactId>org.osgi.core</artifactId>
+            <artifactId>osgi.core</artifactId>
             <version>${osgi.core.version}</version>
         </dependency>
         <dependency>
             <groupId>org.osgi</groupId>
-            <artifactId>osgi.cmpn</artifactId>
-            <version>${osgi.cmpn.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.karaf.shell</groupId>
-            <artifactId>org.apache.karaf.shell.core</artifactId>
-            <version>${karaf.version}</version>
+            <artifactId>org.osgi.service.device</artifactId>
+            <version>${osgi.device.version}</version>
         </dependency>
     </dependencies>
 </project>

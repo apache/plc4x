@@ -27,6 +27,7 @@ import org.apache.karaf.shell.api.action.lifecycle.Reference;
 import org.apache.karaf.shell.api.action.lifecycle.Service;
 import org.apache.karaf.shell.support.table.ShellTable;
 
+
 @Command(scope = "rt", name = "list", description = "List scheduled jobs")
 @Service
 public class List implements Action {

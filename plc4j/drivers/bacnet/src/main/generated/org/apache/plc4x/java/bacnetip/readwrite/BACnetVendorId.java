@@ -1644,6 +1644,15 @@ public enum BACnetVendorId {
   HANGZHOU_HIKVISION_DIGITAL_TECHNOLOGY_CO_LTD(
       (int) 1430, (int) 1430, (String) "Hangzhou Hikvision Digital Technology Co., Ltd."),
   CRYSTAL_PEAK_SECURITY((int) 1431, (int) 1431, (String) "Crystal Peak Security"),
+  PERM_ALERT((int) 1432, (int) 1432, (String) "PermAlert"),
+  ZHEJIANG_MISILIN_TECHNOLOGY_CO_LTD(
+      (int) 1433, (int) 1433, (String) "Zhejiang Misilin Technology Co., Ltd."),
+  DEKKER_VACUUM_TECHNOLOGIES((int) 1434, (int) 1434, (String) "Dekker Vacuum Technologies"),
+  EDWARDS_LIMITED((int) 1435, (int) 1435, (String) "Edwards Limited"),
+  LEYBOLD_GMBH((int) 1436, (int) 1436, (String) "Leybold GmbH"),
+  INTERNATIONAL_GAS_DETECTORS((int) 1437, (int) 1437, (String) "International Gas Detectors"),
+  ATLAS_COPCO_AIRPOWERNV((int) 1438, (int) 1438, (String) "Atlas Copco Airpower NV"),
+  AIR_SENTRY_LIMITED((int) 1439, (int) 1439, (String) "Air Sentry Limited"),
   UNKNOWN_VENDOR((int) 0xFFFF, (int) 0xFFFF, (String) "Unknown");
   private static final Map<Integer, BACnetVendorId> map;
 

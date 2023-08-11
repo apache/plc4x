@@ -18,7 +18,6 @@
  */
 package org.apache.plc4x.merlot.scheduler.command;
 
-
 import org.apache.plc4x.merlot.scheduler.api.Scheduler;
 import org.apache.plc4x.merlot.scheduler.command.completer.JobNameCompleter;
 import org.apache.karaf.shell.api.action.Action;
@@ -27,6 +26,7 @@ import org.apache.karaf.shell.api.action.Command;
 import org.apache.karaf.shell.api.action.Completion;
 import org.apache.karaf.shell.api.action.lifecycle.Reference;
 import org.apache.karaf.shell.api.action.lifecycle.Service;
+
 
 @Command(scope = "rt", name = "unschedule", description = "Unschedule a job")
 @Service

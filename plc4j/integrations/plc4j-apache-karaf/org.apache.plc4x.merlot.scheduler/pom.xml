@@ -31,7 +31,7 @@
     <version>0.11.0-SNAPSHOT</version>
     <packaging>bundle</packaging>
 
-    <name>Merlot :: scheluder :: Scheduler whiteboard (mseg)</name>
+    <name>PLC4J: Merlot :: scheluder :: Scheduler whiteboard (mseg)</name>
     <description>org.apache.plc4x.merlot.scheduler OSGi blueprint bundle project.</description>
 
     <build>

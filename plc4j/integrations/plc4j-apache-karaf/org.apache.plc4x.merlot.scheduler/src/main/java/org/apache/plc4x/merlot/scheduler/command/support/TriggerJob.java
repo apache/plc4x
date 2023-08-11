@@ -18,11 +18,11 @@
  */
 package org.apache.plc4x.merlot.scheduler.command.support;
 
-
 import org.apache.plc4x.merlot.scheduler.api.Scheduler;
 import org.apache.plc4x.merlot.scheduler.api.SchedulerError;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 
 public class TriggerJob implements Runnable {
 

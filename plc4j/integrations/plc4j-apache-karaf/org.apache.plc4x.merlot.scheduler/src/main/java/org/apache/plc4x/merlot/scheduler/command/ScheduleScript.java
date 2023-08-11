@@ -33,6 +33,7 @@ import org.apache.karaf.shell.api.console.Function;
 import org.apache.karaf.shell.api.console.Session;
 import org.apache.karaf.shell.api.console.SessionFactory;
 
+
 @Command(scope = "rt", name = "schedule-script", description = "Schedule a script execution")
 @Service
 public class ScheduleScript implements Action {

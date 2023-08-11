@@ -31,7 +31,7 @@
     <version>0.11.0-SNAPSHOT</version>
     <packaging>bundle</packaging>
 
-    <name>Merlot :: mb :: Modbus server implementation</name>
+    <name>PLC4J: Merlot :: mb :: Modbus server implementation</name>
     <description>org.apache.plc4x.merlot.modbus.svr OSGi blueprint bundle project.</description>
 
     <build>
@@ -81,6 +81,32 @@
             <groupId>org.apache.plc4x.merlot.modbus.dev</groupId>
             <artifactId>org.apache.plc4x.merlot.modbus.dev</artifactId>
             <version>0.11.0-SNAPSHOT</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.osgi</groupId>
+                    <artifactId>org.osgi.compendium</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-transport</artifactId>
+            <version>${netty.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-codec</artifactId>
+            <version>${netty.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.karaf.shell</groupId>
+            <artifactId>org.apache.karaf.shell.core</artifactId>
+            <version>${karaf.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>osgi.cmpn</artifactId>
+            <version>${osgi.cmpn.version}</version>
         </dependency>
     </dependencies>
 </project>

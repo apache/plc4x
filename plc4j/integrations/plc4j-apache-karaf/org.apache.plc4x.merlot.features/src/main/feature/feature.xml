@@ -21,6 +21,9 @@
     <feature name='${project.artifactId}' description='${project.name}' version='${project.version}'>
         <details>${project.description}</details>
         <!-- <config>foo=bar</config> -->
+        <!-- Karaf branding bundle -->
+        <bundle start-level="10">wrap:mvn:org.apache.plc4x.merlot.branding/org.apache.plc4x.merlot.branding/${project.version}/$Bundle-SymbolicName=plc4x-branding&amp;Bundle-Version=${project.version}&amp;Export-Package=*;version=&quot;${project.version}&quot;,!*</bundle>
+        
     </feature>
 
 </features>

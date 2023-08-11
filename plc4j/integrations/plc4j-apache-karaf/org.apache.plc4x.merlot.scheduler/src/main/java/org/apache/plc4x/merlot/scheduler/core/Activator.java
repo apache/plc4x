@@ -18,7 +18,6 @@
  */
 package org.apache.plc4x.merlot.scheduler.core;
 
-
 import org.apache.plc4x.merlot.scheduler.api.Scheduler;
 import java.util.Enumeration;
 import java.util.Properties;

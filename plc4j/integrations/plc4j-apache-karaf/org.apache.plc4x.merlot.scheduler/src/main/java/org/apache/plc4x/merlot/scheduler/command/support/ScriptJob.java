@@ -28,6 +28,7 @@ import org.apache.karaf.shell.api.console.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+
 public class ScriptJob implements Job {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ScriptJob.class);

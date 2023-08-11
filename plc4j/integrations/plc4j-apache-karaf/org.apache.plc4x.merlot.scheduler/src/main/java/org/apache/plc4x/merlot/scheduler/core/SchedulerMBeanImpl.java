@@ -18,8 +18,6 @@
  */
 package org.apache.plc4x.merlot.scheduler.core;
 
-
-
 import org.apache.plc4x.merlot.scheduler.api.ScheduleOptions;
 import org.apache.plc4x.merlot.scheduler.api.Scheduler;
 import org.apache.plc4x.merlot.scheduler.api.SchedulerMBean;
@@ -29,6 +27,7 @@ import javax.management.MBeanException;
 import javax.management.NotCompliantMBeanException;
 import javax.management.StandardMBean;
 import javax.management.openmbean.*;
+
 
 public class SchedulerMBeanImpl extends StandardMBean implements SchedulerMBean {
 

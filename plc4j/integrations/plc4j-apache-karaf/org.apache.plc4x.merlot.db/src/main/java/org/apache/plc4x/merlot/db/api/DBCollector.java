@@ -23,10 +23,7 @@ import org.apache.plc4x.merlot.scheduler.api.Job;
 import java.util.Collection;
 import org.epics.pvdatabase.PVRecord;
 
-/**
- *
- * @author cgarcia
- */
+
 public interface DBCollector extends Job, DriverCallback {
     void attach(Collection<PVRecord> pvRecords);    
     void detach(Collection<PVRecord> pvRecords);        

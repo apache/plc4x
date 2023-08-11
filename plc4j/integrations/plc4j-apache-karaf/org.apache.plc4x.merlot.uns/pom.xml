@@ -31,7 +31,7 @@
     <version>0.11.0-SNAPSHOT</version>
     <packaging>bundle</packaging>
 
-    <name>Merlot :: model :: UNS</name>
+    <name>PLC4J: Merlot :: model :: UNS</name>
     <description>org.apache.plc4x.merlot.uns OSGi blueprint bundle project.</description>
 
     <build>
@@ -47,6 +47,7 @@
                         <Bundle-Version>${project.version}</Bundle-Version>
                         <Export-Package>org.apache.plc4x.merlot.uns*;version=${project.version}</Export-Package>
                         <Import-Package>*</Import-Package>
+                        <Karaf-Commands>org.apache.plc4x.merlot.uns.command*</Karaf-Commands>                         
                     </instructions>
                 </configuration>
             </plugin>
@@ -59,48 +60,119 @@
                     <maxmem>256M</maxmem>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>attach-artifact</goal>
+                        </goals>
+                        <configuration>
+                            <artifacts>
+                                <artifact>
+                                    <file>src/main/cfg/org.apache.plc4x.merlot.uns.cfg</file>                                   
+                                    <type>cfg</type>
+                                </artifact>                                                             
+                            </artifacts>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>   
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <configuration>
+                    <!-- ignore annotations for "unused but declared" warnings -->
+                    <ignoredUnusedDeclaredDependencies>
+                        <ignoredUnusedDeclaredDependency>org.apache.karaf.shell:org.apache.karaf.shell.commands</ignoredUnusedDeclaredDependency>
+                        <ignoredUnusedDeclaredDependency>org.apache.karaf:org.apache.karaf.util</ignoredUnusedDeclaredDependency>                        
+                    </ignoredUnusedDeclaredDependencies>                    
+                </configuration>
+          </plugin>                        
         </plugins>
     </build>
     <dependencies>
         <dependency>
             <groupId>org.osgi</groupId>
-            <artifactId>org.osgi.core</artifactId>
-            <version>6.0.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.osgi</groupId>
             <artifactId>osgi.cmpn</artifactId>
-            <version>6.0.0</version>
+            <version>${osgi.cmpn.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.karaf.config</groupId>
             <artifactId>org.apache.karaf.config.core</artifactId>
-            <version>4.4.3</version>
+            <version>${karaf.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.sling</groupId>
+                    <artifactId>org.apache.sling.commons.johnzon</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.epics</groupId>
             <artifactId>epics-pvdata</artifactId>
-            <version>6.1.8</version>
+            <version>${epics.pvdata.version}</version>
         </dependency>
         <dependency>
             <groupId>org.epics</groupId>
             <artifactId>epics-pvdatabase</artifactId>
-            <version>4.3.1</version>
+            <version>${epics.pvdatabase.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.epics</groupId>
+                    <artifactId>epics-pvdata</artifactId>
+                </exclusion>                 
+                <exclusion>
+                    <groupId>org.epics</groupId>
+                    <artifactId>epics-pvaccess</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.epics</groupId>
+                    <artifactId>epics-pvaclient</artifactId>
+                </exclusion>                
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.apache.karaf</groupId>
             <artifactId>org.apache.karaf.util</artifactId>
-            <version>4.4.3</version>
+            <version>${karaf.version}</version>        
         </dependency>
         <dependency>
             <groupId>org.apache.karaf.shell</groupId>
             <artifactId>org.apache.karaf.shell.commands</artifactId>
-            <version>4.4.3</version>
+            <version>${karaf.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.sling</groupId>
+                    <artifactId>org.apache.sling.commons.johnzon</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.felix</groupId>
+                    <artifactId>org.apache.felix.gogo.runtime</artifactId>
+                </exclusion>
+            </exclusions>            
         </dependency>
         <dependency>
             <groupId>org.apache.karaf.shell</groupId>
             <artifactId>org.apache.karaf.shell.core</artifactId>
-            <version>4.4.3</version>
+            <version>${karaf.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.epics</groupId>
+            <artifactId>epics-pvaccess</artifactId>
+            <version>${epics.pvaccess.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.epics</groupId>
+            <artifactId>epics-ntypes</artifactId>
+            <version>${epics.ntypes.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.core</artifactId>
+            <version>6.0.0</version>
         </dependency>
     </dependencies>
 </project>

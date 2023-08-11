@@ -29,6 +29,7 @@ import org.quartz.Trigger;
 import org.quartz.TriggerKey;
 import org.quartz.impl.StdScheduler;
 
+
 public class KarafStdScheduler extends StdScheduler {
 
     private final QuartzSchedulerStorage storage;

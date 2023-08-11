@@ -18,12 +18,12 @@
  */
 package org.apache.plc4x.merlot.scheduler.command.support;
 
-
 import org.apache.plc4x.merlot.scheduler.api.Job;
 import org.apache.plc4x.merlot.scheduler.api.JobContext;
 import org.apache.karaf.shell.api.console.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 
 public class CommandJob implements Job {
 

@@ -18,7 +18,6 @@
  */
 package org.apache.plc4x.merlot.scheduler.command;
 
-
 import org.apache.plc4x.merlot.scheduler.api.ScheduleOptions;
 import org.apache.plc4x.merlot.scheduler.api.Scheduler;
 import org.apache.plc4x.merlot.scheduler.command.support.CommandJob;
@@ -31,6 +30,7 @@ import org.apache.karaf.shell.api.action.Option;
 import org.apache.karaf.shell.api.action.lifecycle.Reference;
 import org.apache.karaf.shell.api.action.lifecycle.Service;
 import org.apache.karaf.shell.api.console.Session;
+
 
 @Command(scope = "rt", name = "schedule-command", description = "Schedule a command execution")
 @Service

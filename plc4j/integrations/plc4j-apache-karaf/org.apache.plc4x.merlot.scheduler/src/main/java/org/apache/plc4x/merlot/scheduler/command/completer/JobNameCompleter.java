@@ -18,7 +18,6 @@
  */
 package org.apache.plc4x.merlot.scheduler.command.completer;
 
-
 import org.apache.plc4x.merlot.scheduler.api.ScheduleOptions;
 import org.apache.plc4x.merlot.scheduler.api.Scheduler;
 import java.util.List;
@@ -29,6 +28,7 @@ import org.apache.karaf.shell.api.console.CommandLine;
 import org.apache.karaf.shell.api.console.Completer;
 import org.apache.karaf.shell.api.console.Session;
 import org.apache.karaf.shell.support.completers.StringsCompleter;
+
 
 @Service
 public class JobNameCompleter implements Completer {
