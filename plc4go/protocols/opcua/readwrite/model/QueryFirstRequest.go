@@ -250,13 +250,13 @@ func QueryFirstRequestParseWithBuffer(ctx context.Context, readBuffer utils.Read
 		return nil, errors.Wrap(pullErr, "Error pulling for nodeTypes")
 	}
 	// Count array
-	nodeTypes := make([]ExtensionObjectDefinition, noOfNodeTypes)
+	nodeTypes := make([]ExtensionObjectDefinition, utils.Max(noOfNodeTypes, 0))
 	// This happens when the size is set conditional to 0
 	if len(nodeTypes) == 0 {
 		nodeTypes = nil
 	}
 	{
-		_numItems := uint16(noOfNodeTypes)
+		_numItems := uint16(utils.Max(noOfNodeTypes, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx

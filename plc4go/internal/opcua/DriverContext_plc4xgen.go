@@ -43,11 +43,19 @@ func (d *DriverContext) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 		return err
 	}
 
+	if err := writeBuffer.WriteBit("fireDiscoverEvent", d.fireDiscoverEvent); err != nil {
+		return err
+	}
+
 	if err := writeBuffer.WriteBit("awaitSetupComplete", d.awaitSetupComplete); err != nil {
 		return err
 	}
 
 	if err := writeBuffer.WriteBit("awaitDisconnectComplete", d.awaitDisconnectComplete); err != nil {
+		return err
+	}
+
+	if err := writeBuffer.WriteBit("awaitSessionDiscoverComplete", d.awaitSessionDiscoverComplete); err != nil {
 		return err
 	}
 	if err := writeBuffer.PopContext("DriverContext"); err != nil {

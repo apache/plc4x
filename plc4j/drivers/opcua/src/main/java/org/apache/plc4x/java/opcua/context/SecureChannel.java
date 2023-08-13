@@ -25,7 +25,6 @@ import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.opcua.config.OpcuaConfiguration;
 import org.apache.plc4x.java.opcua.readwrite.*;
 import org.apache.plc4x.java.spi.ConversationContext;
-import org.apache.plc4x.java.spi.context.DriverContext;
 import org.apache.plc4x.java.spi.generation.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -69,7 +68,7 @@ public class SecureChannel {
     private static final PascalString SECURITY_POLICY_NONE = new PascalString("http://opcfoundation.org/UA/SecurityPolicy#None");
     protected static final PascalString NULL_STRING = new PascalString("");
     private static final PascalByteString NULL_BYTE_STRING = new PascalByteString(-1, null);
-    private static final ExpandedNodeId NULL_EXPANDED_NODEID = new ExpandedNodeId(false,
+    private static final ExpandedNodeId NULL_EXPANDED_NODE_ID = new ExpandedNodeId(false,
         false,
         new NodeIdTwoByte((short) 0),
         null,
@@ -77,7 +76,7 @@ public class SecureChannel {
     );
 
     protected static final ExtensionObject NULL_EXTENSION_OBJECT = new ExtensionObject(
-        NULL_EXPANDED_NODEID,
+        NULL_EXPANDED_NODE_ID,
         new ExtensionObjectEncodingMask(false, false, false),
         new NullExtension());               // Body
 
@@ -87,7 +86,7 @@ public class SecureChannel {
 
     public static final Pattern URI_PATTERN = Pattern.compile("^(?<protocolCode>opc)" +
         INET_ADDRESS_PATTERN +
-        "(?<transportEndpoint>[\\w/=]*)[\\?]?"
+        "(?<transportEndpoint>[\\w/=]*)[?]?"
     );
 
     private static final long EPOCH_OFFSET = 116444736000000000L;         //Offset between OPC UA epoch time and linux epoch time.
@@ -100,10 +99,6 @@ public class SecureChannel {
     private final AtomicInteger requestHandleGenerator = new AtomicInteger(1);
     private PascalString policyId;
     private UserTokenType tokenType;
-    private boolean discovery;
-    private String certFile;
-    private final String keyStoreFile;
-    private CertificateKeyPair ckp;
     private final PascalString endpoint;
     private final String username;
     private final String password;
@@ -113,35 +108,32 @@ public class SecureChannel {
     private final boolean isEncrypted;
     private byte[] senderCertificate = null;
     private byte[] senderNonce = null;
-    private final PascalByteString certificateThumbprint = null;
-    private final boolean checkedEndpoints = false;
-    private EncryptionHandler encryptionHandler = null;
+    private final EncryptionHandler encryptionHandler;
     private final OpcuaConfiguration configuration;
+    private final OpcuaDriverContext driverContext;
     private final AtomicInteger channelId = new AtomicInteger(1);
     private final AtomicInteger tokenId = new AtomicInteger(1);
     private NodeIdTypeDefinition authenticationToken = new NodeIdTwoByte((short) 0);
-    ConversationContext<OpcuaAPU> context;
+    private ConversationContext<OpcuaAPU> context;
     private final SecureChannelTransactionManager channelTransactionManager = new SecureChannelTransactionManager();
     private long lifetime = DEFAULT_CONNECTION_LIFETIME;
     private CompletableFuture<Void> keepAlive;
-    private int sendBufferSize;
-    private int maxMessageSize;
     private final List<String> endpoints = new ArrayList<>();
-
     private final AtomicLong senderSequenceNumber = new AtomicLong();
 
-    public SecureChannel(DriverContext driverContext, OpcuaConfiguration configuration) {
+    public SecureChannel(OpcuaDriverContext driverContext, OpcuaConfiguration configuration) {
         this.configuration = configuration;
 
-        this.endpoint = new PascalString(configuration.getEndpoint());
+        this.driverContext = driverContext;
+        this.endpoint = new PascalString(driverContext.getEndpoint());
         this.username = configuration.getUsername();
         this.password = configuration.getPassword();
         this.securityPolicy = "http://opcfoundation.org/UA/SecurityPolicy#" + configuration.getSecurityPolicy();
-        CertificateKeyPair ckp = configuration.getCertificateKeyPair();
+        CertificateKeyPair ckp = driverContext.getCertificateKeyPair();
 
         if (configuration.getSecurityPolicy() != null && configuration.getSecurityPolicy().equals("Basic256Sha256")) {
             //Sender Certificate gets populated during the 'discover' phase when encryption is enabled.
-            this.senderCertificate = configuration.getSenderCertificate();
+            this.senderCertificate = driverContext.getSenderCertificate();
             this.encryptionHandler = new EncryptionHandler(ckp, this.senderCertificate, configuration.getSecurityPolicy());
             try {
                 this.publicCertificate = new PascalByteString(ckp.getCertificate().getEncoded().length, ckp.getCertificate().getEncoded());
@@ -149,24 +141,23 @@ public class SecureChannel {
             } catch (CertificateEncodingException e) {
                 throw new PlcRuntimeException("Failed to encode the certificate");
             }
-            this.thumbprint = configuration.getThumbprint();
+            this.thumbprint = driverContext.getThumbprint();
         } else {
             this.encryptionHandler = new EncryptionHandler(ckp, this.senderCertificate, configuration.getSecurityPolicy());
             this.publicCertificate = NULL_BYTE_STRING;
             this.thumbprint = NULL_BYTE_STRING;
             this.isEncrypted = false;
         }
-        this.keyStoreFile = configuration.getKeyStoreFile();
 
         // Generate a list of endpoints we can use.
         try {
-            InetAddress address = InetAddress.getByName(this.configuration.getHost());
+            InetAddress address = InetAddress.getByName(driverContext.getHost());
             this.endpoints.add(address.getHostAddress());
             this.endpoints.add(address.getHostName());
             this.endpoints.add(address.getCanonicalHostName());
         } catch (UnknownHostException e) {
             LOGGER.warn("Unable to resolve host name. Using original host from connection string which may cause issues connecting to server");
-            this.endpoints.add(this.configuration.getHost());
+            this.endpoints.add(driverContext.getHost());
         }
     }
 
@@ -487,10 +478,10 @@ public class SecureChannel {
         this.senderNonce = sessionResponse.getServerNonce().getStringValue();
         String[] endpoints = new String[3];
         try {
-            InetAddress address = InetAddress.getByName(this.configuration.getHost());
-            endpoints[0] = "opc.tcp://" + address.getHostAddress() + ":" + configuration.getPort() + configuration.getTransportEndpoint();
-            endpoints[1] = "opc.tcp://" + address.getHostName() + ":" + configuration.getPort() + configuration.getTransportEndpoint();
-            endpoints[2] = "opc.tcp://" + address.getCanonicalHostName() + ":" + configuration.getPort() + configuration.getTransportEndpoint();
+            InetAddress address = InetAddress.getByName(driverContext.getHost());
+            endpoints[0] = "opc.tcp://" + address.getHostAddress() + ":" + driverContext.getPort() + driverContext.getTransportEndpoint();
+            endpoints[1] = "opc.tcp://" + address.getHostName() + ":" + driverContext.getPort() + driverContext.getTransportEndpoint();
+            endpoints[2] = "opc.tcp://" + address.getCanonicalHostName() + ":" + driverContext.getPort() + driverContext.getTransportEndpoint();
         } catch (UnknownHostException e) {
             LOGGER.debug("error getting host", e);
         }
@@ -728,6 +719,10 @@ public class SecureChannel {
     }
 
     public void onDiscover(ConversationContext<OpcuaAPU> context) {
+        if (!driverContext.getEncrypted()) {
+            LOGGER.debug("not encrypted, ignoring onDiscover");
+            return;
+        }
         // Only the TCP transport supports login.
         LOGGER.debug("Opcua Driver running in ACTIVE mode, discovering endpoints");
 
@@ -914,14 +909,14 @@ public class SecureChannel {
                             EndpointDescription endpointDescription = (EndpointDescription) endpoint;
                             if (endpointDescription.getEndpointUrl().getStringValue().equals(this.endpoint.getStringValue()) && endpointDescription.getSecurityPolicyUri().getStringValue().equals(this.securityPolicy)) {
                                 LOGGER.info("Found OPC UA endpoint {}", this.endpoint.getStringValue());
-                                this.configuration.setSenderCertificate(endpointDescription.getServerCertificate().getStringValue());
+                                driverContext.setSenderCertificate(endpointDescription.getServerCertificate().getStringValue());
                             }
                         }
 
                         try {
                             MessageDigest messageDigest = MessageDigest.getInstance("SHA-1");
-                            byte[] digest = messageDigest.digest(this.configuration.getSenderCertificate());
-                            this.configuration.setThumbprint(new PascalByteString(digest.length, digest));
+                            byte[] digest = messageDigest.digest(driverContext.getSenderCertificate());
+                            driverContext.setThumbprint(new PascalByteString(digest.length, digest));
                         } catch (NoSuchAlgorithmException e) {
                             LOGGER.error("Failed to find hashing algorithm");
                         }
@@ -1183,16 +1178,16 @@ public class SecureChannel {
             return false;
         }
 
-        if (!configuration.getPort().equals(matcher.group("transportPort"))) {
+        if (!driverContext.getPort().equals(matcher.group("transportPort"))) {
             return false;
         }
 
-        if (!configuration.getTransportEndpoint().equals(matcher.group("transportEndpoint"))) {
+        if (!driverContext.getTransportEndpoint().equals(matcher.group("transportEndpoint"))) {
             return false;
         }
 
         if (!configuration.isDiscovery()) {
-            configuration.setHost(matcher.group("transportHost"));
+            driverContext.setHost(matcher.group("transportHost"));
         }
 
         return true;
@@ -1219,11 +1214,11 @@ public class SecureChannel {
     /**
      * Creates an IdentityToken to authenticate with a server.
      *
-     * @param tokenType      the token type
-     * @param securityPolicy the security policy
+     * @param tokenType the token type
+     * @param policyId  the security policy
      * @return returns an ExtensionObject with an IdentityToken.
      */
-    private ExtensionObject getIdentityToken(UserTokenType tokenType, String securityPolicy) {
+    private ExtensionObject getIdentityToken(UserTokenType tokenType, String policyId) {
         ExpandedNodeId extExpandedNodeId;
         switch (tokenType) {
             case userTokenTypeAnonymous:
@@ -1241,7 +1236,7 @@ public class SecureChannel {
                 return new ExtensionObject(
                     extExpandedNodeId,
                     new ExtensionObjectEncodingMask(false, false, true),
-                    new UserIdentityToken(new PascalString(securityPolicy), anonymousIdentityToken)
+                    new UserIdentityToken(new PascalString(policyId), anonymousIdentityToken)
                 );
             case userTokenTypeUserName:
                 //Encrypt the password using the server nonce and server public key
@@ -1271,7 +1266,7 @@ public class SecureChannel {
                 return new ExtensionObject(
                     extExpandedNodeId,
                     new ExtensionObjectEncodingMask(false, false, true),
-                    new UserIdentityToken(new PascalString(securityPolicy), userNameIdentityToken));
+                    new UserIdentityToken(new PascalString(policyId), userNameIdentityToken));
         }
         return null;
     }

@@ -223,13 +223,13 @@ func S7PayloadUserDataItemCyclicServicesSubscribeRequestParseWithBuffer(ctx cont
 		return nil, errors.Wrap(pullErr, "Error pulling for item")
 	}
 	// Count array
-	item := make([]CycServiceItemType, itemsCount)
+	item := make([]CycServiceItemType, utils.Max(itemsCount, 0))
 	// This happens when the size is set conditional to 0
 	if len(item) == 0 {
 		item = nil
 	}
 	{
-		_numItems := uint16(itemsCount)
+		_numItems := uint16(utils.Max(itemsCount, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx

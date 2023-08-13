@@ -96,11 +96,11 @@ unitLoop:
 				Uint8("unitAddress", unitAddress).
 				Msg("Querying all attributes of unit")
 		}
-		event := m.log.Info()
+		level := zerolog.InfoLevel
 		if allUnits {
-			event = m.log.Debug()
+			level = zerolog.DebugLevel
 		}
-		event.Uint8("unitAddress", unitAddress).Msg("Query unit")
+		m.log.WithLevel(level).Uint8("unitAddress", unitAddress).Msg("Query unit")
 		for _, attribute := range attributes {
 			if err := ctx.Err(); err != nil {
 				unitLog.Info().Err(err).Msg("Aborting scan at unit")
@@ -112,7 +112,7 @@ unitLoop:
 					Stringer("attribute", attribute).
 					Msg("Querying attribute of unit")
 			} else {
-				event.Uint8("unitAddress", unitAddress).
+				m.log.WithLevel(level).Uint8("unitAddress", unitAddress).
 					Stringer("attribute", attribute).
 					Msg("unit unitAddress: Query attribute")
 			}
@@ -132,9 +132,9 @@ unitLoop:
 			timeoutCancel()
 			if err := requestResult.GetErr(); err != nil {
 				if allUnits || allAttributes {
-					event = m.log.Trace()
+					level = zerolog.TraceLevel
 				}
-				event.Err(err).
+				m.log.WithLevel(level).Err(err).
 					Uint8("unitAddress", unitAddress).
 					Stringer("attribute", attribute).
 					Msg("unit unitAddress: Can't read attribute attribute")
@@ -142,7 +142,7 @@ unitLoop:
 			}
 			response := requestResult.GetResponse()
 			if code := response.GetResponseCode(readTagName); code != apiModel.PlcResponseCode_OK {
-				event.
+				m.log.WithLevel(level).
 					Uint8("unitAddress", unitAddress).
 					Stringer("attribute", attribute).
 					Stringer("code", code).

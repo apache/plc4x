@@ -54,6 +54,11 @@
     <!--maven.deploy.skip>true</maven.deploy.skip-->
 
     <go.cover.flag>-coverprofile=target/coverage.out</go.cover.flag>
+
+    <go.stringer.version>v0.11.1</go.stringer.version>
+    <go.junit-report.version>v2.0.1</go.junit-report.version>
+    <go.gotestsum.version>v1.10.1</go.gotestsum.version>
+    <go.mockery.version>v2.32.4</go.mockery.version>
   </properties>
 
   <build>
@@ -382,7 +387,7 @@
             </goals>
             <configuration>
               <packages>
-                <package>golang.org/x/tools/cmd/stringer@v0.11.1</package>
+                <package>golang.org/x/tools/cmd/stringer@${go.stringer.version}</package>
               </packages>
             </configuration>
           </execution>
@@ -395,7 +400,7 @@
             <configuration>
               <packages>
                 <!-- use fork till https://github.com/jstemmer/go-junit-report/pull/162 is merged-->
-                <package>github.com/sruehl/go-junit-report/v2@latest</package>
+                <package>github.com/sruehl/go-junit-report/v2@${go.junit-report.version}</package>
               </packages>
             </configuration>
           </execution>
@@ -407,7 +412,7 @@
             </goals>
             <configuration>
               <packages>
-                <package>gotest.tools/gotestsum@v1.10.1</package>
+                <package>gotest.tools/gotestsum@${go.gotestsum.version}</package>
               </packages>
             </configuration>
           </execution>
@@ -419,7 +424,7 @@
             </goals>
             <configuration>
               <packages>
-                <package>github.com/vektra/mockery/v2@v2.23.4</package>
+                <package>github.com/vektra/mockery/v2@${go.mockery.version}</package>
               </packages>
             </configuration>
           </execution>
@@ -709,5 +714,23 @@
       <scope>provided</scope>
     </dependency>
   </dependencies>
+
+  <profiles>
+    <profile>
+      <id>os-windows</id>
+      <activation>
+        <os>
+          <family>windows</family>
+        </os>
+      </activation>
+      <properties>
+        <!--
+        Coverage doesn't work in windows because of a long path issue in cover.exe
+        Tracked upstream issue: https://github.com/golang/go/issues/60785
+        -->
+        <go.cover.flag>-v</go.cover.flag>
+      </properties>
+    </profile>
+  </profiles>
 
 </project>

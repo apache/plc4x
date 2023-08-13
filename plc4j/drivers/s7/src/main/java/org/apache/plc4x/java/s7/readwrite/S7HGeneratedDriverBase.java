@@ -80,7 +80,7 @@ public class S7HGeneratedDriverBase extends GeneratedDriverBase<TPKTPacket> {
 
         // Create the configuration object.
         Configuration configuration = new ConfigurationFactory().createConfiguration(
-            getConfigurationType(), paramString);
+            getConfigurationType(), protocolCode, transportCode, transportConfig, paramString);
         if (configuration == null) {
             throw new PlcConnectionException("Unsupported configuration");
         }
@@ -124,6 +124,12 @@ public class S7HGeneratedDriverBase extends GeneratedDriverBase<TPKTPacket> {
             }
         }
 
+        // Make the "fire discover event" overridable via system property.
+        boolean fireDiscoverEvent = fireDiscoverEvent();
+        if(System.getProperty(PROPERTY_PLC4X_FORCE_FIRE_DISCOVER_EVENT) != null) {
+            fireDiscoverEvent = Boolean.parseBoolean(System.getProperty(PROPERTY_PLC4X_FORCE_FIRE_DISCOVER_EVENT));
+        }
+
         // Make the "await setup complete" overridable via system property.
         boolean awaitSetupComplete = awaitSetupComplete();
         if (System.getProperty(PROPERTY_PLC4X_FORCE_AWAIT_SETUP_COMPLETE) != null) {
@@ -149,6 +155,7 @@ public class S7HGeneratedDriverBase extends GeneratedDriverBase<TPKTPacket> {
             configuration,
             channelFactory,
             secondaryChannelFactory,
+            fireDiscoverEvent,
             awaitSetupComplete,
             awaitDisconnectComplete,
             awaitDiscoverComplete,

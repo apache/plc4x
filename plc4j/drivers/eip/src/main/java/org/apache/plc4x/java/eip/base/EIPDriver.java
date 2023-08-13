@@ -133,7 +133,7 @@ public class EIPDriver extends GeneratedDriverBase<EipPacket> {
 
         // Create the configuration object.
         this.configuration = (EIPConfiguration) new ConfigurationFactory().createConfiguration(
-            getConfigurationType(), paramString);
+            getConfigurationType(), protocolCode, transportCode, transportConfig, paramString);
         if (configuration == null) {
             throw new PlcConnectionException("Unsupported configuration");
         }
@@ -165,6 +165,12 @@ public class EIPDriver extends GeneratedDriverBase<EipPacket> {
         // Give drivers the option to customize the channel.
         initializePipeline(channelFactory);
 
+        // Make the "fire discover event" overridable via system property.
+        boolean fireDiscoverEvent = fireDiscoverEvent();
+        if(System.getProperty(PROPERTY_PLC4X_FORCE_FIRE_DISCOVER_EVENT) != null) {
+            fireDiscoverEvent = Boolean.parseBoolean(System.getProperty(PROPERTY_PLC4X_FORCE_FIRE_DISCOVER_EVENT));
+        }
+
         // Make the "await setup complete" overridable via system property.
         boolean awaitSetupComplete = awaitSetupComplete();
         if(System.getProperty(PROPERTY_PLC4X_FORCE_AWAIT_SETUP_COMPLETE) != null) {
@@ -189,6 +195,7 @@ public class EIPDriver extends GeneratedDriverBase<EipPacket> {
             getValueHandler(),
             configuration,
             channelFactory,
+            fireDiscoverEvent,
             awaitSetupComplete,
             awaitDisconnectComplete,
             awaitDiscoverComplete,

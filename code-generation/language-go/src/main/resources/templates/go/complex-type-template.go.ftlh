@@ -837,13 +837,13 @@ func ${type.name}ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 			<#-- If this is a count array, we can directly initialize an array with the given size -->
 					<#if field.isCountArrayField()>
 	// Count array
-	${arrayField.name} := make(${helper.getLanguageTypeNameForField(field)}, ${helper.toIntegerParseExpression(arrayField, 16, arrayField.loopExpression, parserArguments)})
+	${arrayField.name} := make(${helper.getLanguageTypeNameForField(field)}, utils.Max(${helper.toIntegerParseExpression(arrayField, 16, arrayField.loopExpression, parserArguments)}, 0))
 	// This happens when the size is set conditional to 0
 	if len(${arrayField.name}) == 0 {
 		${arrayField.name} = nil
 	}
 	{
-		_numItems := uint16(${helper.toIntegerParseExpression(arrayField, 16, arrayField.loopExpression, parserArguments)})
+		_numItems := uint16(utils.Max(${helper.toIntegerParseExpression(arrayField, 16, arrayField.loopExpression, parserArguments)}, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
             <#-- TODO: find a way to do this nicer -->

@@ -208,13 +208,13 @@ func DataChangeNotificationParseWithBuffer(ctx context.Context, readBuffer utils
 		return nil, errors.Wrap(pullErr, "Error pulling for monitoredItems")
 	}
 	// Count array
-	monitoredItems := make([]ExtensionObjectDefinition, noOfMonitoredItems)
+	monitoredItems := make([]ExtensionObjectDefinition, utils.Max(noOfMonitoredItems, 0))
 	// This happens when the size is set conditional to 0
 	if len(monitoredItems) == 0 {
 		monitoredItems = nil
 	}
 	{
-		_numItems := uint16(noOfMonitoredItems)
+		_numItems := uint16(utils.Max(noOfMonitoredItems, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
@@ -242,13 +242,13 @@ func DataChangeNotificationParseWithBuffer(ctx context.Context, readBuffer utils
 		return nil, errors.Wrap(pullErr, "Error pulling for diagnosticInfos")
 	}
 	// Count array
-	diagnosticInfos := make([]DiagnosticInfo, noOfDiagnosticInfos)
+	diagnosticInfos := make([]DiagnosticInfo, utils.Max(noOfDiagnosticInfos, 0))
 	// This happens when the size is set conditional to 0
 	if len(diagnosticInfos) == 0 {
 		diagnosticInfos = nil
 	}
 	{
-		_numItems := uint16(noOfDiagnosticInfos)
+		_numItems := uint16(utils.Max(noOfDiagnosticInfos, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx

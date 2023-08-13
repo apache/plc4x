@@ -23,11 +23,13 @@ import (
 	"bytes"
 	"context"
 	"fmt"
+	"github.com/rs/zerolog/pkgerrors"
 	"os"
 	"runtime"
 	"runtime/debug"
 	"strconv"
 	"strings"
+	"sync"
 	"testing"
 	"time"
 
@@ -224,8 +226,14 @@ func ProduceTestingLogger(t *testing.T) zerolog.Logger {
 	if highLogPrecision {
 		logger = logger.With().Timestamp().Logger()
 	}
+	stackSetter.Do(func() {
+		zerolog.ErrorStackMarshaler = pkgerrors.MarshalStack
+	})
+	logger = logger.With().Stack().Logger()
 	return logger
 }
+
+var stackSetter sync.Once
 
 // EnrichOptionsWithOptionsForTesting appends options useful for testing to config.WithOption s
 func EnrichOptionsWithOptionsForTesting(t *testing.T, _options ...options.WithOption) []options.WithOption {

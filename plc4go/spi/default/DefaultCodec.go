@@ -307,13 +307,23 @@ func (m *defaultCodec) Work() {
 		}
 	}()
 
+	lastLoopTime := time.Now()
 	// Start an endless loop
 mainLoop:
 	for m.running.Load() {
+		if processingTime := time.Since(lastLoopTime); processingTime < 10*time.Millisecond {
+			// Ensure that we leave at least 10ms between loops to not burn cycles
+			sleepTime := 10*time.Millisecond - processingTime
+			workerLog.Trace().Stringer("sleepTime", sleepTime).Msg("sleeping") // we use stringer instead of Dur to have it a bit more readable
+			time.Sleep(sleepTime)
+		} else {
+			workerLog.Debug().Stringer("processingTime", processingTime).Msg("no need to sleep") // we use stringer instead of Dur to have it a bit more readable
+		}
 		workerLog.Trace().Msg("Working")
 		// Check for any expired expectations.
 		// (Doing this outside the loop lets us expire expectations even if no input is coming in)
 		now := time.Now()
+		lastLoopTime = now
 
 		// Guard against empty expectations
 		m.expectationsChangeMutex.RLock()
@@ -321,8 +331,6 @@ mainLoop:
 		m.expectationsChangeMutex.RUnlock()
 		if numberOfExpectations <= 0 && m.customMessageHandling == nil {
 			workerLog.Trace().Msg("no available expectations")
-			// Sleep for 10ms
-			time.Sleep(10 * time.Millisecond)
 			continue mainLoop
 		}
 		m.TimeoutExpectations(now)
@@ -353,14 +361,10 @@ mainLoop:
 		}
 		if err != nil {
 			workerLog.Error().Err(err).Msg("got an error reading from transport")
-			time.Sleep(10 * time.Millisecond)
 			continue mainLoop
 		}
 		if message == nil {
 			workerLog.Trace().Msg("Not enough data yet")
-			// Sleep for 10ms before checking again, in order to not
-			// consume 100% CPU Power.
-			time.Sleep(10 * time.Millisecond)
 			continue mainLoop
 		}
 		workerLog.Trace().Stringer("message", message).Msg("got message")

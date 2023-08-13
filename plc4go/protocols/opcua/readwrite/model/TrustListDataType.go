@@ -274,13 +274,13 @@ func TrustListDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.Read
 		return nil, errors.Wrap(pullErr, "Error pulling for trustedCertificates")
 	}
 	// Count array
-	trustedCertificates := make([]PascalByteString, noOfTrustedCertificates)
+	trustedCertificates := make([]PascalByteString, utils.Max(noOfTrustedCertificates, 0))
 	// This happens when the size is set conditional to 0
 	if len(trustedCertificates) == 0 {
 		trustedCertificates = nil
 	}
 	{
-		_numItems := uint16(noOfTrustedCertificates)
+		_numItems := uint16(utils.Max(noOfTrustedCertificates, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
@@ -308,13 +308,13 @@ func TrustListDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.Read
 		return nil, errors.Wrap(pullErr, "Error pulling for trustedCrls")
 	}
 	// Count array
-	trustedCrls := make([]PascalByteString, noOfTrustedCrls)
+	trustedCrls := make([]PascalByteString, utils.Max(noOfTrustedCrls, 0))
 	// This happens when the size is set conditional to 0
 	if len(trustedCrls) == 0 {
 		trustedCrls = nil
 	}
 	{
-		_numItems := uint16(noOfTrustedCrls)
+		_numItems := uint16(utils.Max(noOfTrustedCrls, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
@@ -342,13 +342,13 @@ func TrustListDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.Read
 		return nil, errors.Wrap(pullErr, "Error pulling for issuerCertificates")
 	}
 	// Count array
-	issuerCertificates := make([]PascalByteString, noOfIssuerCertificates)
+	issuerCertificates := make([]PascalByteString, utils.Max(noOfIssuerCertificates, 0))
 	// This happens when the size is set conditional to 0
 	if len(issuerCertificates) == 0 {
 		issuerCertificates = nil
 	}
 	{
-		_numItems := uint16(noOfIssuerCertificates)
+		_numItems := uint16(utils.Max(noOfIssuerCertificates, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
@@ -376,13 +376,13 @@ func TrustListDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.Read
 		return nil, errors.Wrap(pullErr, "Error pulling for issuerCrls")
 	}
 	// Count array
-	issuerCrls := make([]PascalByteString, noOfIssuerCrls)
+	issuerCrls := make([]PascalByteString, utils.Max(noOfIssuerCrls, 0))
 	// This happens when the size is set conditional to 0
 	if len(issuerCrls) == 0 {
 		issuerCrls = nil
 	}
 	{
-		_numItems := uint16(noOfIssuerCrls)
+		_numItems := uint16(utils.Max(noOfIssuerCrls, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx

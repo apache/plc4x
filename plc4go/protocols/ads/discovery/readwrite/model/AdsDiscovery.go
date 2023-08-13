@@ -249,13 +249,13 @@ func AdsDiscoveryParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 		return nil, errors.Wrap(pullErr, "Error pulling for blocks")
 	}
 	// Count array
-	blocks := make([]AdsDiscoveryBlock, numBlocks)
+	blocks := make([]AdsDiscoveryBlock, utils.Max(numBlocks, 0))
 	// This happens when the size is set conditional to 0
 	if len(blocks) == 0 {
 		blocks = nil
 	}
 	{
-		_numItems := uint16(numBlocks)
+		_numItems := uint16(utils.Max(numBlocks, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx

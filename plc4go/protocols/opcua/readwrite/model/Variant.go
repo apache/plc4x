@@ -275,13 +275,13 @@ func VariantParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (V
 		return nil, errors.Wrap(pullErr, "Error pulling for arrayDimensions")
 	}
 	// Count array
-	arrayDimensions := make([]bool, utils.InlineIf(bool((noOfArrayDimensions) == (nil)), func() any { return uint16(uint16(0)) }, func() any { return uint16((*noOfArrayDimensions)) }).(uint16))
+	arrayDimensions := make([]bool, utils.Max(utils.InlineIf(bool((noOfArrayDimensions) == (nil)), func() any { return uint16(uint16(0)) }, func() any { return uint16((*noOfArrayDimensions)) }).(uint16), 0))
 	// This happens when the size is set conditional to 0
 	if len(arrayDimensions) == 0 {
 		arrayDimensions = nil
 	}
 	{
-		_numItems := uint16(utils.InlineIf(bool((noOfArrayDimensions) == (nil)), func() any { return uint16(uint16(0)) }, func() any { return uint16((*noOfArrayDimensions)) }).(uint16))
+		_numItems := uint16(utils.Max(utils.InlineIf(bool((noOfArrayDimensions) == (nil)), func() any { return uint16(uint16(0)) }, func() any { return uint16((*noOfArrayDimensions)) }).(uint16), 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx

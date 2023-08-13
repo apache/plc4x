@@ -54,7 +54,7 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
 
     protected final Configuration configuration;
     protected final ChannelFactory channelFactory;
-
+    protected final boolean fireDiscoverEvent;
     protected final boolean awaitSessionSetupComplete;
     protected final boolean awaitSessionDisconnectComplete;
     protected final boolean awaitSessionDiscoverComplete;
@@ -73,6 +73,7 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
                                      PlcValueHandler valueHandler,
                                      Configuration configuration,
                                      ChannelFactory channelFactory,
+                                     boolean fireDiscoverEvent,
                                      boolean awaitSessionSetupComplete,
                                      boolean awaitSessionDisconnectComplete,
                                      boolean awaitSessionDiscoverComplete,
@@ -82,6 +83,7 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
         super(canRead, canWrite, canSubscribe, canBrowse, tagHandler, valueHandler, optimizer, authentication);
         this.configuration = configuration;
         this.channelFactory = channelFactory;
+        this.fireDiscoverEvent = fireDiscoverEvent;
         this.awaitSessionSetupComplete = awaitSessionSetupComplete;
         //Used to signal that a disconnect has completed while closing a connection.
         this.awaitSessionDisconnectComplete = awaitSessionDisconnectComplete;
@@ -109,7 +111,7 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
             ConfigurationFactory.configure(configuration, channelFactory);
 
             // Have the channel factory create a new channel instance.
-            if (awaitSessionDiscoverComplete) {
+            if (fireDiscoverEvent) {
                 channel = channelFactory.createChannel(getChannelHandler(sessionSetupCompleteFuture, sessionDisconnectCompleteFuture, sessionDiscoveredCompleteFuture));
                 channel.closeFuture().addListener(future -> {
                     if (!sessionDiscoveredCompleteFuture.isDone()) {
@@ -123,7 +125,8 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
                     }
                 });
                 channel.pipeline().fireUserEventTriggered(new DiscoverEvent());
-
+            }
+            if (awaitSessionDiscoverComplete) {
                 // Wait till the connection is established.
                 sessionDiscoveredCompleteFuture.get();
             }

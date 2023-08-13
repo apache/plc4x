@@ -469,13 +469,13 @@ func AdsDataTypeTableChildEntryParseWithBuffer(ctx context.Context, readBuffer u
 		return nil, errors.Wrap(pullErr, "Error pulling for arrayInfo")
 	}
 	// Count array
-	arrayInfo := make([]AdsDataTypeArrayInfo, arrayDimensions)
+	arrayInfo := make([]AdsDataTypeArrayInfo, utils.Max(arrayDimensions, 0))
 	// This happens when the size is set conditional to 0
 	if len(arrayInfo) == 0 {
 		arrayInfo = nil
 	}
 	{
-		_numItems := uint16(arrayDimensions)
+		_numItems := uint16(utils.Max(arrayDimensions, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
@@ -496,13 +496,13 @@ func AdsDataTypeTableChildEntryParseWithBuffer(ctx context.Context, readBuffer u
 		return nil, errors.Wrap(pullErr, "Error pulling for children")
 	}
 	// Count array
-	children := make([]AdsDataTypeTableEntry, numChildren)
+	children := make([]AdsDataTypeTableEntry, utils.Max(numChildren, 0))
 	// This happens when the size is set conditional to 0
 	if len(children) == 0 {
 		children = nil
 	}
 	{
-		_numItems := uint16(numChildren)
+		_numItems := uint16(utils.Max(numChildren, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx

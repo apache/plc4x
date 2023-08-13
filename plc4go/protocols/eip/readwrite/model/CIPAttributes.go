@@ -168,13 +168,13 @@ func CIPAttributesParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 		return nil, errors.Wrap(pullErr, "Error pulling for classId")
 	}
 	// Count array
-	classId := make([]uint16, numberOfClasses)
+	classId := make([]uint16, utils.Max(numberOfClasses, 0))
 	// This happens when the size is set conditional to 0
 	if len(classId) == 0 {
 		classId = nil
 	}
 	{
-		_numItems := uint16(numberOfClasses)
+		_numItems := uint16(utils.Max(numberOfClasses, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx

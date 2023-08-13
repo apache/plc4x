@@ -32,15 +32,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class ProfinetBrowseTests {
 
     @Test
-    public void readProfinetBrowseTagsCheckStatus()  {
+    public void readProfinetBrowseTagsCheckStatus() {
         ProfinetConfiguration configuration = new ConfigurationFactory().createConfiguration(
-            ProfinetConfiguration.class, "gsddirectory=src/test/resources/&devices=[[device_name, PLC4X_1, (PLC4X_DUMMY_MODULE, , PLC4X_DUMMY_MODULE, )]]");
+            ProfinetConfiguration.class, "", "", "",
+            "gsddirectory=src/test/resources/&devices=[[device_name, PLC4X_1, (PLC4X_DUMMY_MODULE, , PLC4X_DUMMY_MODULE, )]]" );
 
         Map<String, ConfigurationProfinetDevice> configuredDevices = configuration.getDevices().getConfiguredDevices();
         Map<String, ProfinetDevice> devices = new HashMap<>();
@@ -66,9 +65,10 @@ public class ProfinetBrowseTests {
     }
 
     @Test
-    public void readProfinetBrowseTagsCheckFloat()  {
+    public void readProfinetBrowseTagsCheckFloat() {
         ProfinetConfiguration configuration = new ConfigurationFactory().createConfiguration(
-            ProfinetConfiguration.class, "gsddirectory=src/test/resources/&devices=[[device_name, PLC4X_1, (PLC4X_DUMMY_MODULE, , PLC4X_DUMMY_MODULE, )]]");
+            ProfinetConfiguration.class, "", "", "",
+            "gsddirectory=src/test/resources/&devices=[[device_name, PLC4X_1, (PLC4X_DUMMY_MODULE, , PLC4X_DUMMY_MODULE, )]]");
 
         Map<String, ConfigurationProfinetDevice> configuredDevices = configuration.getDevices().getConfiguredDevices();
         Map<String, ProfinetDevice> devices = new HashMap<>();
@@ -96,9 +96,10 @@ public class ProfinetBrowseTests {
     }
 
     @Test
-    public void readProfinetBrowseTagsCheckBoolean()  {
+    public void readProfinetBrowseTagsCheckBoolean() {
         ProfinetConfiguration configuration = new ConfigurationFactory().createConfiguration(
-            ProfinetConfiguration.class, "gsddirectory=src/test/resources/&devices=[[device_name, PLC4X_1, (PLC4X_DUMMY_MODULE, , PLC4X_DUMMY_MODULE, )]]");
+            ProfinetConfiguration.class, "", "", "",
+            "gsddirectory=src/test/resources/&devices=[[device_name, PLC4X_1, (PLC4X_DUMMY_MODULE, , PLC4X_DUMMY_MODULE, )]]");
 
         Map<String, ConfigurationProfinetDevice> configuredDevices = configuration.getDevices().getConfiguredDevices();
         Map<String, ProfinetDevice> devices = new HashMap<>();

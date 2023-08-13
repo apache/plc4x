@@ -160,7 +160,7 @@
                                                <img src="images/integrations/apache_streampipes_logo.png" alt="Card image cap">
                                            </div>
                                            <div class="card-body">
-                                               <h5 class="card-title"><b>Apache StreamPipes (incubating)</b></h5>
+                                               <h5 class="card-title"><b>Apache StreamPipes</b></h5>
                                            </div>
                                        </div>
                                    </div>

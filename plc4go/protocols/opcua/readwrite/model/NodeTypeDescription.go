@@ -233,13 +233,13 @@ func NodeTypeDescriptionParseWithBuffer(ctx context.Context, readBuffer utils.Re
 		return nil, errors.Wrap(pullErr, "Error pulling for dataToReturn")
 	}
 	// Count array
-	dataToReturn := make([]ExtensionObjectDefinition, noOfDataToReturn)
+	dataToReturn := make([]ExtensionObjectDefinition, utils.Max(noOfDataToReturn, 0))
 	// This happens when the size is set conditional to 0
 	if len(dataToReturn) == 0 {
 		dataToReturn = nil
 	}
 	{
-		_numItems := uint16(noOfDataToReturn)
+		_numItems := uint16(utils.Max(noOfDataToReturn, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx

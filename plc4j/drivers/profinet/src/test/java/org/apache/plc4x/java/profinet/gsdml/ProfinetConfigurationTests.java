@@ -48,7 +48,8 @@ public class ProfinetConfigurationTests {
     public void readGsdDirectory()  {
         String directory = "src/test/resources";
         ProfinetConfiguration configuration = new ConfigurationFactory().createConfiguration(
-            ProfinetConfiguration.class, "devices=[[device_name_1, PLC4X, (PLC4X_1)]]&gsddirectory=" + directory);
+            ProfinetConfiguration.class, "", "", "", 
+            "devices=[[device_name_1, PLC4X, (PLC4X_1)]]&gsddirectory=" + directory);
 
         assertEquals(1, configuration.getGsdFiles().getGsdFiles().size());
     }
@@ -58,7 +59,8 @@ public class ProfinetConfigurationTests {
         String directory = "src/test/resources";
 
         new ConfigurationFactory().createConfiguration(
-            ProfinetConfiguration.class, "devices=[[device_name_1, PLC4X, (PLC4X_1)]]&gsddirectory=" + directory);
+            ProfinetConfiguration.class, "", "", "", 
+            "devices=[[device_name_1, PLC4X, (PLC4X_1)]]&gsddirectory=" + directory);
 
         Map<String, ProfinetISO15745Profile> gsdFiles = ProfinetConfiguration.getGsdFiles().getGsdFiles();
         assertEquals(gsdFiles.size(), 1);
@@ -67,7 +69,7 @@ public class ProfinetConfigurationTests {
     @Test
     public void parseJoinedDeviceConfiguration() {
         ProfinetConfiguration configuration = new ConfigurationFactory().createConfiguration(
-            ProfinetConfiguration.class, "gsddirectory=src/test/resources&devices=[[device_name_1,device_access_1,(submodule_1,submodule_2)]]");
+            ProfinetConfiguration.class, "", "", "", "gsddirectory=src/test/resources&devices=[[device_name_1,device_access_1,(submodule_1,submodule_2)]]");
         assertEquals(1, configuration.getDevices().getConfiguredDevices().size());
     }
 
@@ -79,7 +81,7 @@ public class ProfinetConfigurationTests {
         String[] deviceNames = new String[] {"DEVICE_NAME_1"};
 
         ProfinetConfiguration configuration = new ConfigurationFactory().createConfiguration(
-            ProfinetConfiguration.class, "devices=[[device_name_1, device_access_1, (submodule_1, submodule_2)]]&gsddirectory=src/test/resources");
+            ProfinetConfiguration.class, "", "", "", "devices=[[device_name_1, device_access_1, (submodule_1, submodule_2)]]&gsddirectory=src/test/resources");
 
         Map<String, ConfigurationProfinetDevice> devices = configuration.getDevices().getConfiguredDevices();
 
@@ -93,7 +95,7 @@ public class ProfinetConfigurationTests {
         String[] deviceNames = new String[] {"DEVICE_NAME_1","DEVICE_NAME_2","DEVICE_NAME_3"};
 
         ProfinetConfiguration configuration = new ConfigurationFactory().createConfiguration(
-            ProfinetConfiguration.class, "devices=[[device_name_1, PLC4X_1, (PLC4X_01,PLC4X_02,PLC4X_01,PLC4X_02)],[device_name_2, PLC4X_1, (PLC4X_01,PLC4X_02,PLC4X_01,PLC4X_02)],[device_name_3, PLC4X_1, (PLC4X_01,PLC4X_02,PLC4X_01,PLC4X_02)]]&gsddirectory=src/test/resources");
+            ProfinetConfiguration.class, "", "", "", "devices=[[device_name_1, PLC4X_1, (PLC4X_01,PLC4X_02,PLC4X_01,PLC4X_02)],[device_name_2, PLC4X_1, (PLC4X_01,PLC4X_02,PLC4X_01,PLC4X_02)],[device_name_3, PLC4X_1, (PLC4X_01,PLC4X_02,PLC4X_01,PLC4X_02)]]&gsddirectory=src/test/resources");
 
         Map<String, ConfigurationProfinetDevice> devices = configuration.getDevices().getConfiguredDevices();
 
@@ -106,7 +108,7 @@ public class ProfinetConfigurationTests {
     public void readProfinetLowerCase() {
         String[] deviceName = new String[] {"device_Name_1"};
         ProfinetConfiguration configuration = new ConfigurationFactory().createConfiguration(
-            ProfinetConfiguration.class, "devices=[[device_name_1, device_access_1, (submodule_1, submodule_2)]]&gsddirectory=src/test/resources");
+            ProfinetConfiguration.class, "", "", "", "devices=[[device_name_1, device_access_1, (submodule_1, submodule_2)]]&gsddirectory=src/test/resources");
 
         Map<String, ConfigurationProfinetDevice> devices = configuration.getDevices().getConfiguredDevices();
 
@@ -118,7 +120,7 @@ public class ProfinetConfigurationTests {
     @Test
     public void setIncorrectSubModule() {
         ProfinetConfiguration configuration = new ConfigurationFactory().createConfiguration(
-            ProfinetConfiguration.class, "devices=[[device_name_1, PLC4X_1, (PLC4X_01, PLC4X_02, PLC4X_01, PLC4X_02)]]&gsddirectory=src/test/resources");
+            ProfinetConfiguration.class, "", "", "", "devices=[[device_name_1, PLC4X_1, (PLC4X_01, PLC4X_02, PLC4X_01, PLC4X_02)]]&gsddirectory=src/test/resources");
 
         Map<String, ConfigurationProfinetDevice> configuredDevices = configuration.getDevices().getConfiguredDevices();
         Map<String, ProfinetDevice> devices = new HashMap<>();
@@ -143,7 +145,7 @@ public class ProfinetConfigurationTests {
     @Test
     public void setCorrectSubModule() {
         ProfinetConfiguration configuration = new ConfigurationFactory().createConfiguration(
-            ProfinetConfiguration.class, "devices=[[device_name_1, PLC4X_1, (PLC4X_DUMMY_MODULE, PLC4X_DUMMY_MODULE, PLC4X_DUMMY_MODULE, PLC4X_DUMMY_MODULE)]]&gsddirectory=src/test/resources");
+            ProfinetConfiguration.class, "", "", "", "devices=[[device_name_1, PLC4X_1, (PLC4X_DUMMY_MODULE, PLC4X_DUMMY_MODULE, PLC4X_DUMMY_MODULE, PLC4X_DUMMY_MODULE)]]&gsddirectory=src/test/resources");
 
         Map<String, ConfigurationProfinetDevice> configuredDevices = configuration.getDevices().getConfiguredDevices();
         Map<String, ProfinetDevice> devices = new HashMap<>();
@@ -167,7 +169,7 @@ public class ProfinetConfigurationTests {
     @Test
     public void setCorrectSubModuleCaseInsensitive() {
         ProfinetConfiguration configuration = new ConfigurationFactory().createConfiguration(
-            ProfinetConfiguration.class, "devices=[[device_name_1, PLC4X_1, (PLC4X_DUMMY_MODULE, PLC4X_dummy_MODULE, PLC4X_DUMMY_MODULE, PLC4X_DUMMY_MODULE)]]&gsddirectory=src/test/resources");
+            ProfinetConfiguration.class, "", "", "", "devices=[[device_name_1, PLC4X_1, (PLC4X_DUMMY_MODULE, PLC4X_dummy_MODULE, PLC4X_DUMMY_MODULE, PLC4X_DUMMY_MODULE)]]&gsddirectory=src/test/resources");
 
         Map<String, ConfigurationProfinetDevice> configuredDevices = configuration.getDevices().getConfiguredDevices();
         Map<String, ProfinetDevice> devices = new HashMap<>();
@@ -193,7 +195,7 @@ public class ProfinetConfigurationTests {
         String[] deviceNames = new String[] {"DEVICE_NAME_1"};
 
         ProfinetConfiguration configuration = new ConfigurationFactory().createConfiguration(
-            ProfinetConfiguration.class, "devices=[[device_name_1, PLC4X 1, (PLC4X_DUMMY_MODULE, PLC4X_DUMMY_MODULE)]]&gsddirectory=src/test/resources");
+            ProfinetConfiguration.class, "", "", "", "devices=[[device_name_1, PLC4X 1, (PLC4X_DUMMY_MODULE, PLC4X_DUMMY_MODULE)]]&gsddirectory=src/test/resources");
 
         Map<String, ConfigurationProfinetDevice> configuredDevices = configuration.getDevices().getConfiguredDevices();
         Map<String, ProfinetDevice> devices = new HashMap<>();
@@ -221,7 +223,7 @@ public class ProfinetConfigurationTests {
         String[] deviceNames = new String[] {"DEVICE NAME 1"};
 
         ProfinetConfiguration configuration = new ConfigurationFactory().createConfiguration(
-            ProfinetConfiguration.class, "devices=[[device name 1, PLC4X 1, (PLC4X_DUMMY_MODULE, PLC4X_DUMMY_MODULE)]]&gsddirectory=src/test/resources");
+            ProfinetConfiguration.class, "", "", "", "devices=[[device name 1, PLC4X 1, (PLC4X_DUMMY_MODULE, PLC4X_DUMMY_MODULE)]]&gsddirectory=src/test/resources");
 
         Map<String, ConfigurationProfinetDevice> configuredDevices = configuration.getDevices().getConfiguredDevices();
         Map<String, ProfinetDevice> devices = new HashMap<>();
@@ -248,7 +250,7 @@ public class ProfinetConfigurationTests {
         String[] deviceNames = new String[] {"DEVICE NAME 1"};
 
         ProfinetConfiguration configuration = new ConfigurationFactory().createConfiguration(
-            ProfinetConfiguration.class, "devices=[[device name 1, PLC4X 1, (PLC4X DUMMY MODULE, PLC4X DUMMY MODULE)]]&gsddirectory=src/test/resources");
+            ProfinetConfiguration.class, "", "", "", "devices=[[device name 1, PLC4X 1, (PLC4X DUMMY MODULE, PLC4X DUMMY MODULE)]]&gsddirectory=src/test/resources");
 
         Map<String, ConfigurationProfinetDevice> configuredDevices = configuration.getDevices().getConfiguredDevices();
         Map<String, ProfinetDevice> devices = new HashMap<>();
@@ -277,7 +279,7 @@ public class ProfinetConfigurationTests {
         String[] deviceNames = new String[] {"DEVICE NAME 1"};
 
         ProfinetConfiguration configuration = new ConfigurationFactory().createConfiguration(
-            ProfinetConfiguration.class, "devices=[[device name 1, PLC4X 1, (PLC4X DUMMY MODULE, PLC4X DUMMY MODULE,,1)]]&gsddirectory=src/test/resources");
+            ProfinetConfiguration.class, "", "", "", "devices=[[device name 1, PLC4X 1, (PLC4X DUMMY MODULE, PLC4X DUMMY MODULE,,1)]]&gsddirectory=src/test/resources");
 
         Map<String, ConfigurationProfinetDevice> configuredDevices = configuration.getDevices().getConfiguredDevices();
         Map<String, ProfinetDevice> devices = new HashMap<>();
@@ -309,7 +311,7 @@ public class ProfinetConfigurationTests {
         String[] deviceNames = new String[] {"DEVICE NAME 1"};
 
         ProfinetConfiguration configuration = new ConfigurationFactory().createConfiguration(
-            ProfinetConfiguration.class, "devices=[[device name 1, PLC4X 1, (PLC4X DUMMY MODULE, PLC4X DUMMY MODULE,,1), 10.1.1.1]]&gsddirectory=src/test/resources");
+            ProfinetConfiguration.class, "", "", "", "devices=[[device name 1, PLC4X 1, (PLC4X DUMMY MODULE, PLC4X DUMMY MODULE,,1), 10.1.1.1]]&gsddirectory=src/test/resources");
 
         Map<String, ConfigurationProfinetDevice> configuredDevices = configuration.getDevices().getConfiguredDevices();
         Map<String, ProfinetDevice> devices = new HashMap<>();
@@ -334,7 +336,7 @@ public class ProfinetConfigurationTests {
         String[] deviceNames = new String[] {"DEVICE NAME 1"};
 
         ProfinetConfiguration configuration = new ConfigurationFactory().createConfiguration(
-            ProfinetConfiguration.class, "devices=[[device name 1, PLC4X 1, (PLC4X DUMMY MODULE, PLC4X DUMMY MODULE,,1), 10.1.1.1]]&gsddirectory=src/test/resources");
+            ProfinetConfiguration.class, "", "", "", "devices=[[device name 1, PLC4X 1, (PLC4X DUMMY MODULE, PLC4X DUMMY MODULE,,1), 10.1.1.1]]&gsddirectory=src/test/resources");
 
         NetworkInterface networkInterface = new DummyNetworkInterface("10.1.1.2", "255.255.255.0", "0.0.0.0");
         Map<String, ConfigurationProfinetDevice> configuredDevices = configuration.getDevices().getConfiguredDevices();

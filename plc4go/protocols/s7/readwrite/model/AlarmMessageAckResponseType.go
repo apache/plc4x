@@ -153,13 +153,13 @@ func AlarmMessageAckResponseTypeParseWithBuffer(ctx context.Context, readBuffer 
 		return nil, errors.Wrap(pullErr, "Error pulling for messageObjects")
 	}
 	// Count array
-	messageObjects := make([]uint8, numberOfObjects)
+	messageObjects := make([]uint8, utils.Max(numberOfObjects, 0))
 	// This happens when the size is set conditional to 0
 	if len(messageObjects) == 0 {
 		messageObjects = nil
 	}
 	{
-		_numItems := uint16(numberOfObjects)
+		_numItems := uint16(utils.Max(numberOfObjects, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx

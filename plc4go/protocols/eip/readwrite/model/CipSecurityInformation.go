@@ -156,13 +156,13 @@ func CipSecurityInformationParseWithBuffer(ctx context.Context, readBuffer utils
 		return nil, errors.Wrap(pullErr, "Error pulling for todoImplement")
 	}
 	// Count array
-	todoImplement := make([]uint8, itemLength)
+	todoImplement := make([]uint8, utils.Max(itemLength, 0))
 	// This happens when the size is set conditional to 0
 	if len(todoImplement) == 0 {
 		todoImplement = nil
 	}
 	{
-		_numItems := uint16(itemLength)
+		_numItems := uint16(utils.Max(itemLength, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx

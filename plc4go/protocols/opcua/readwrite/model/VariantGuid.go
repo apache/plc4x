@@ -179,13 +179,13 @@ func VariantGuidParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 		return nil, errors.Wrap(pullErr, "Error pulling for value")
 	}
 	// Count array
-	value := make([]GuidValue, utils.InlineIf(bool((arrayLength) == (nil)), func() any { return uint16(uint16(1)) }, func() any { return uint16((*arrayLength)) }).(uint16))
+	value := make([]GuidValue, utils.Max(utils.InlineIf(bool((arrayLength) == (nil)), func() any { return uint16(uint16(1)) }, func() any { return uint16((*arrayLength)) }).(uint16), 0))
 	// This happens when the size is set conditional to 0
 	if len(value) == 0 {
 		value = nil
 	}
 	{
-		_numItems := uint16(utils.InlineIf(bool((arrayLength) == (nil)), func() any { return uint16(uint16(1)) }, func() any { return uint16((*arrayLength)) }).(uint16))
+		_numItems := uint16(utils.Max(utils.InlineIf(bool((arrayLength) == (nil)), func() any { return uint16(uint16(1)) }, func() any { return uint16((*arrayLength)) }).(uint16), 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx

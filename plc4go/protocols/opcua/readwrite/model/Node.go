@@ -394,13 +394,13 @@ func NodeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, ident
 		return nil, errors.Wrap(pullErr, "Error pulling for rolePermissions")
 	}
 	// Count array
-	rolePermissions := make([]ExtensionObjectDefinition, noOfRolePermissions)
+	rolePermissions := make([]ExtensionObjectDefinition, utils.Max(noOfRolePermissions, 0))
 	// This happens when the size is set conditional to 0
 	if len(rolePermissions) == 0 {
 		rolePermissions = nil
 	}
 	{
-		_numItems := uint16(noOfRolePermissions)
+		_numItems := uint16(utils.Max(noOfRolePermissions, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
@@ -428,13 +428,13 @@ func NodeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, ident
 		return nil, errors.Wrap(pullErr, "Error pulling for userRolePermissions")
 	}
 	// Count array
-	userRolePermissions := make([]ExtensionObjectDefinition, noOfUserRolePermissions)
+	userRolePermissions := make([]ExtensionObjectDefinition, utils.Max(noOfUserRolePermissions, 0))
 	// This happens when the size is set conditional to 0
 	if len(userRolePermissions) == 0 {
 		userRolePermissions = nil
 	}
 	{
-		_numItems := uint16(noOfUserRolePermissions)
+		_numItems := uint16(utils.Max(noOfUserRolePermissions, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
@@ -469,13 +469,13 @@ func NodeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, ident
 		return nil, errors.Wrap(pullErr, "Error pulling for references")
 	}
 	// Count array
-	references := make([]ExtensionObjectDefinition, noOfReferences)
+	references := make([]ExtensionObjectDefinition, utils.Max(noOfReferences, 0))
 	// This happens when the size is set conditional to 0
 	if len(references) == 0 {
 		references = nil
 	}
 	{
-		_numItems := uint16(noOfReferences)
+		_numItems := uint16(utils.Max(noOfReferences, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx

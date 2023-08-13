@@ -155,13 +155,13 @@ func S7PayloadReadVarResponseParseWithBuffer(ctx context.Context, readBuffer uti
 		return nil, errors.Wrap(pullErr, "Error pulling for items")
 	}
 	// Count array
-	items := make([]S7VarPayloadDataItem, CastS7ParameterReadVarResponse(parameter).GetNumItems())
+	items := make([]S7VarPayloadDataItem, utils.Max(CastS7ParameterReadVarResponse(parameter).GetNumItems(), 0))
 	// This happens when the size is set conditional to 0
 	if len(items) == 0 {
 		items = nil
 	}
 	{
-		_numItems := uint16(CastS7ParameterReadVarResponse(parameter).GetNumItems())
+		_numItems := uint16(utils.Max(CastS7ParameterReadVarResponse(parameter).GetNumItems(), 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx

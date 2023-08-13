@@ -174,13 +174,13 @@ func EipListIdentityResponseParseWithBuffer(ctx context.Context, readBuffer util
 		return nil, errors.Wrap(pullErr, "Error pulling for items")
 	}
 	// Count array
-	items := make([]CommandSpecificDataItem, itemCount)
+	items := make([]CommandSpecificDataItem, utils.Max(itemCount, 0))
 	// This happens when the size is set conditional to 0
 	if len(items) == 0 {
 		items = nil
 	}
 	{
-		_numItems := uint16(itemCount)
+		_numItems := uint16(utils.Max(itemCount, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx

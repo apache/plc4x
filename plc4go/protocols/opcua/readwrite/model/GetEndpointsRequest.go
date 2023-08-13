@@ -246,13 +246,13 @@ func GetEndpointsRequestParseWithBuffer(ctx context.Context, readBuffer utils.Re
 		return nil, errors.Wrap(pullErr, "Error pulling for localeIds")
 	}
 	// Count array
-	localeIds := make([]PascalString, noOfLocaleIds)
+	localeIds := make([]PascalString, utils.Max(noOfLocaleIds, 0))
 	// This happens when the size is set conditional to 0
 	if len(localeIds) == 0 {
 		localeIds = nil
 	}
 	{
-		_numItems := uint16(noOfLocaleIds)
+		_numItems := uint16(utils.Max(noOfLocaleIds, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
@@ -280,13 +280,13 @@ func GetEndpointsRequestParseWithBuffer(ctx context.Context, readBuffer utils.Re
 		return nil, errors.Wrap(pullErr, "Error pulling for profileUris")
 	}
 	// Count array
-	profileUris := make([]PascalString, noOfProfileUris)
+	profileUris := make([]PascalString, utils.Max(noOfProfileUris, 0))
 	// This happens when the size is set conditional to 0
 	if len(profileUris) == 0 {
 		profileUris = nil
 	}
 	{
-		_numItems := uint16(noOfProfileUris)
+		_numItems := uint16(utils.Max(noOfProfileUris, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
