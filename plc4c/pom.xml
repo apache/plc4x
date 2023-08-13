@@ -69,11 +69,11 @@
               </execution>
             </executions>
           </plugin>
-          <plugin>
+          <!--plugin>
             <groupId>org.codehaus.gmaven</groupId>
             <artifactId>groovy-maven-plugin</artifactId>
             <executions>
-              <!-- rename the cmake binary and generate a script that adds the sonar build-wrapper -->
+              <!- - rename the cmake binary and generate a script that adds the sonar build-wrapper - ->
               <execution>
                 <id>modify-cmake</id>
                 <phase>process-sources</phase>
@@ -92,7 +92,7 @@
                 <version>${groovy.version}</version>
               </dependency>
             </dependencies>
-          </plugin>
+          </plugin-->
         </plugins>
       </build>
     </profile>
