@@ -21,18 +21,22 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-    <artifactId>plc4j-apache-karaf</artifactId>
-    <groupId>org.apache.plc4x</groupId>
-    <version>0.11.0-SNAPSHOT</version>
-  </parent>
-
+        <artifactId>plc4j-apache-karaf</artifactId>
+        <groupId>org.apache.plc4x</groupId>
+        <version>0.11.0-SNAPSHOT</version>
+    </parent>
+    
     <groupId>org.apache.plc4x.merlot.uns</groupId>
     <artifactId>org.apache.plc4x.merlot.uns</artifactId>
     <version>0.11.0-SNAPSHOT</version>
     <packaging>bundle</packaging>
 
-    <name>PLC4J: Merlot :: model :: UNS</name>
+    <name>PLC4J: Merlot :: uns :: Unified namespace</name>
     <description>org.apache.plc4x.merlot.uns OSGi blueprint bundle project.</description>
+    
+    <properties>
+         
+    </properties>
 
     <build>
         <plugins>
@@ -94,11 +98,20 @@
         </plugins>
     </build>
     <dependencies>
+        
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
+            <scope>provided</scope>            
+        </dependency>        
+        
         <dependency>
             <groupId>org.osgi</groupId>
             <artifactId>osgi.cmpn</artifactId>
             <version>${osgi.cmpn.version}</version>
         </dependency>
+
         <dependency>
             <groupId>org.apache.karaf.config</groupId>
             <artifactId>org.apache.karaf.config.core</artifactId>
@@ -137,7 +150,7 @@
         <dependency>
             <groupId>org.apache.karaf</groupId>
             <artifactId>org.apache.karaf.util</artifactId>
-            <version>${karaf.version}</version>        
+            <version>${karaf.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.karaf.shell</groupId>

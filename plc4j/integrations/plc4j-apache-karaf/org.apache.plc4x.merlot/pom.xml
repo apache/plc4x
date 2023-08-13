@@ -20,13 +20,12 @@
 
     <modelVersion>4.0.0</modelVersion>
 
-    <!--
+
     <parent>
         <artifactId>plc4j-apache-karaf</artifactId>
         <groupId>org.apache.plc4x</groupId>
         <version>0.11.0-SNAPSHOT</version>
     </parent>
-    -->
 
     <groupId>org.apache.plc4x</groupId>
     <artifactId>org.apache.plc4x.merlot</artifactId>
@@ -122,6 +121,7 @@
             <classifier>features</classifier>
             <scope>runtime</scope>            
         </dependency>
+              
     </dependencies>
 
     <build>
@@ -172,31 +172,47 @@
                     <libraries>
                         <library>mvn:org.apache.plc4x.merlot.branding/org.apache.plc4x.merlot.branding/${project.version};type:=boot</library>                        
                     </libraries>    
-                                           
+                    
                     <installedFeatures>
                         <feature>wrapper</feature>
+                        <feature>aries-blueprint</feature>
+                        <feature>shell-compat</feature>
+                        <feature>plc4x_derby</feature>                          
+                        <feature>plc4x_h2</feature>
+                        <feature>plc4x_uns</feature>                            
                     </installedFeatures>
                     
-                    <blacklistedFeatures>
-                        <feature>enterprise</feature>
-                        <feature>framework-security</feature>
-                        <feature>jetty</feature>
-                        <feature>httplite</feature>
-                        <feature>felix-httplite</feature>
-                        <feature>felix-http</feature>
-                        <feature>scheduler</feature>
-                    </blacklistedFeatures>                     
+                    <startupFeatures>
+                        <feature>eventadmin</feature>
+                    </startupFeatures>
                     
-                    <!-- <startupFeatures/> -->
                     <bootFeatures>
-                        <!-- standard distribution -->
-                        <!-- <feature>standard</feature> -->
-                        <!-- minimal distribution -->
-                        <feature>minimal</feature>
-                        
-                        <feature>org.apache.plc4x.merlot.features</feature>                            
+                        <feature>org.apache.plc4x.merlot.features</feature>                        
+                        <feature>wrap</feature>
+                        <feature>classpath</feature>
+                        <feature>shell</feature>
+                        <feature>feature</feature>
+                        <feature>jaas</feature>
+                        <feature>ssh</feature>
+                        <feature>management</feature>
+                        <feature>bundle</feature>
+                        <feature>config</feature>
+                        <feature>deployer</feature>
+                        <feature>diagnostic</feature>
+                        <feature>feature</feature>
+                        <feature>instance</feature>
+                        <feature>kar</feature>
+                        <feature>log</feature>
+                        <feature>package</feature>
+                        <feature>service</feature>
+                        <feature>system</feature>
+                        <feature>aries-blueprint</feature>                        
                     </bootFeatures>
+
                     <javase>1.8</javase>
+                    <generateConsistencyReport>${project.build.directory}</generateConsistencyReport>
+                    <consistencyReportProjectName>Apache Karaf (full)</consistencyReportProjectName>                    
+                    
                 </configuration>
             </plugin>
         </plugins>

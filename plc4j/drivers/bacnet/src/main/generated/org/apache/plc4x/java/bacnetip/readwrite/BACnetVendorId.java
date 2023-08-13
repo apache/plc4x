@@ -1653,6 +1653,7 @@ public enum BACnetVendorId {
   INTERNATIONAL_GAS_DETECTORS((int) 1437, (int) 1437, (String) "International Gas Detectors"),
   ATLAS_COPCO_AIRPOWERNV((int) 1438, (int) 1438, (String) "Atlas Copco Airpower NV"),
   AIR_SENTRY_LIMITED((int) 1439, (int) 1439, (String) "Air Sentry Limited"),
+  AELSYS((int) 1440, (int) 1440, (String) "Aelsys"),
   UNKNOWN_VENDOR((int) 0xFFFF, (int) 0xFFFF, (String) "Unknown");
   private static final Map<Integer, BACnetVendorId> map;
 

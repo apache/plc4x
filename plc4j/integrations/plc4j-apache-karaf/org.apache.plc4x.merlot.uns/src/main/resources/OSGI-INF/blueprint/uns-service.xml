@@ -123,7 +123,7 @@
              interface="org.apache.plc4x.merlot.uns.api.ModelMBean">
     	<service-properties>
             <entry key="jmx.objectname" 
-                   value="com.ceos.merlot:type=model,name=com.ceos.model.service,id=model"/>  
+                   value="org.apache.plc4x.merlot:type=model,name=org.apache.plc4x.model.service,id=model"/>  
         </service-properties>
     </service>
     

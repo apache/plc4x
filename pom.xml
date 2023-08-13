@@ -173,18 +173,23 @@
     <javaluator.version>3.0.3</javaluator.version>
     <disruptor.version>3.4.4</disruptor.version>
     
-    <!-- EPICS -->
+    <!-- EPICS -->    
     <epics.core.version>7.0.9</epics.core.version>
     <epics.util.version>1.0.6</epics.util.version>
     <epics.vtype.version>1.0.6</epics.vtype.version>  
     <epics.vtype.all.version>1.0.6</epics.vtype.all.version>      
-    <epics.gpclient.version>1.0.7</epics.gpclient.version>   
     <epics.ntypes.version>0.3.8</epics.ntypes.version>  
+    <epics.jca.version>2.4.8</epics.jca.version>
     <epics.pvaccess.version>5.1.8</epics.pvaccess.version>  
     <epics.pvaclient.version>4.3.2</epics.pvaclient.version>       
     <epics.pvdata.version>6.1.8</epics.pvdata.version>
     <epics.pvdatabase.version>4.3.1</epics.pvdatabase.version>    
-    
+    <epics.gpclient.version>1.0.7</epics.gpclient.version>   
+    <epics.gpclient.core.version>1.0.7</epics.gpclient.core.version>
+    <epics.gpclient.sim.version>1.0.7</epics.gpclient.sim.version>                 
+    <epics.gpclient.loc.version>1.0.7</epics.gpclient.loc.version>  
+    <epics.gpclient.pva.version>1.0.7</epics.gpclient.pva.version>
+    <epics.gpclient.ca.version>1.0.7</epics.gpclient.ca.version>    
   </properties>
 
   <modules>

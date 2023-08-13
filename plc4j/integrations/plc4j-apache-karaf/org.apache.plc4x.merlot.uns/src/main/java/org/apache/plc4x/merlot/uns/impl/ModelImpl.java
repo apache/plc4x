@@ -28,12 +28,8 @@ import java.util.UUID;
 import java.util.logging.Level;
 import org.apache.karaf.config.core.ConfigRepository;
 import org.osgi.framework.BundleContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 
 public class ModelImpl implements Model {
-    private static final Logger LOGGER = LoggerFactory.getLogger(ModelImpl.class); 
     
     private static final String CONFIG_PID = "org.apache.plc4x.merlot.uns";    
     private final BundleContext bundleContext;
@@ -65,7 +61,7 @@ public class ModelImpl implements Model {
             root.nodes = new HashMap();
             reload(root);
         } catch (IOException ex) {
-            LOGGER.info(ex.getMessage());
+//            LOGGER.info(ex.getMessage());
         }
     }
 
@@ -83,7 +79,7 @@ public class ModelImpl implements Model {
 
     @Override
     public void putEnterprise(UUID uuid, String desc) {
-        if (root != null) LOGGER.info("All the 'root' model will be created.");
+//        if (root != null) LOGGER.info("All the 'root' model will be created.");
         root = new Node();
         root.id ="root";
         root.description = desc;
@@ -305,7 +301,7 @@ public class ModelImpl implements Model {
             root.uuid = null;
             reload(root);
         } catch (Exception ex){
-            LOGGER.info(ex.getMessage());
+            //LOGGER.info(ex.getMessage());
         }        
     }
     
@@ -331,7 +327,7 @@ public class ModelImpl implements Model {
             }
             configRepository.update(plant, props);          
         } catch (Exception ex){
-            LOGGER.info(ex.getMessage());            
+//            LOGGER.info(ex.getMessage());            
         }
     }
     
@@ -381,7 +377,7 @@ public class ModelImpl implements Model {
 
             };
         } catch (Exception ex){
-            LOGGER.info(ex.getMessage());
+//            LOGGER.info(ex.getMessage());
         }           
     }
     
@@ -411,7 +407,7 @@ public class ModelImpl implements Model {
             }
             
         } catch (Exception ex){
-            LOGGER.info(ex.getMessage());            
+//            LOGGER.info(ex.getMessage());            
         }
     }
     

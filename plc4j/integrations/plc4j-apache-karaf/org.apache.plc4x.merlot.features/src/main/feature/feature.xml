@@ -22,8 +22,150 @@
         <details>${project.description}</details>
         <!-- <config>foo=bar</config> -->
         <!-- Karaf branding bundle -->
-        <bundle start-level="10">wrap:mvn:org.apache.plc4x.merlot.branding/org.apache.plc4x.merlot.branding/${project.version}/$Bundle-SymbolicName=plc4x-branding&amp;Bundle-Version=${project.version}&amp;Export-Package=*;version=&quot;${project.version}&quot;,!*</bundle>
-        
+        <bundle start-level="10">wrap:mvn:org.apache.plc4x.merlot.branding/org.apache.plc4x.merlot.branding/${project.version}/$Bundle-SymbolicName=plc4x-branding&amp;Bundle-Version=${project.version}&amp;Export-Package=*;version=&quot;${project.version}&quot;,!*</bundle>        
+
     </feature>
 
+    <!--
+    -->
+    <feature name='plc4x_derby' description='${project.name}' version='${project.version}'>
+        <feature>transaction</feature>
+        <feature>jndi</feature> 
+        <feature>jdbc</feature>        
+        <feature>pax-jdbc-config</feature>            
+        <feature>pax-jdbc-derby</feature>
+        <!-- <feature>pax-jdbc-derbyclient</feature> -->
+        <feature>pax-jdbc-pool-dbcp2</feature>
+              
+        <config name="org.ops4j.datasource-derby-uns-example">
+################################################################################
+#
+#    Licensed to the Apache Software Foundation (ASF) under one or more
+#    contributor license agreements.  See the NOTICE file distributed with
+#    this work for additional information regarding copyright ownership.
+#    The ASF licenses this file to You under the Apache License, Version 2.0
+#    (the "License"); you may not use this file except in compliance with
+#    the License.  You may obtain a copy of the License at
+#
+#       http://www.apache.org/licenses/LICENSE-2.0
+#
+#    Unless required by applicable law or agreed to in writing, software
+#    distributed under the License is distributed on an "AS IS" BASIS,
+#    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#    See the License for the specific language governing permissions and
+#    limitations under the License.
+#
+################################################################################
+osgi.jdbc.driver.name=derby
+pool=dbcp2
+xa=true
+url=jdbc:derby:data/example/derby;create=true
+dataSourceName=uns                             
+        </config>  
+      <!--  
+        <config name="org.apache.karaf.examples.jdbc">
+            ###############################################
+            # Karaf Examples Registry Storage JDBC Configuration
+            ###############################################
+            
+            # Name of the JDBC datasource
+            datasource.name=uns
+            
+            # Dialect (type of the database)
+            # The dialect is used to create the tables
+            # Supported dialects are: generic, derby, mysql
+            dialect=derby
+        </config>
+          -->                                  
+    </feature> 
+
+    <feature name='plc4x_h2' description='${project.name}' version='${project.version}'>
+        <feature>transaction</feature>      
+        <feature>jndi</feature>
+        <feature>jdbc</feature>        
+        <feature>pax-jdbc-h2</feature>
+        <feature>pax-jdbc-pool-dbcp2</feature>
+        <feature>pax-jdbc-config</feature>
+             
+        <config name="org.ops4j.datasource-h2-uns-example">
+################################################################################
+#
+#    Licensed to the Apache Software Foundation (ASF) under one or more
+#    contributor license agreements.  See the NOTICE file distributed with
+#    this work for additional information regarding copyright ownership.
+#    The ASF licenses this file to You under the Apache License, Version 2.0
+#    (the "License"); you may not use this file except in compliance with
+#    the License.  You may obtain a copy of the License at
+#
+#       http://www.apache.org/licenses/LICENSE-2.0
+#
+#    Unless required by applicable law or agreed to in writing, software
+#    distributed under the License is distributed on an "AS IS" BASIS,
+#    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#    See the License for the specific language governing permissions and
+#    limitations under the License.
+#
+################################################################################
+osgi.jdbc.driver.name=H2 JDBC Driver
+pool=dbcp2
+xa=true
+url=jdbc:h2:file:./model
+dataSourceName=uns                             
+        </config>
+    </feature>    
+
+    <feature name='plc4x_epics_core' description='${project.name}' version='${project.version}'>
+        <!-- <bundle>wrap:mvn:org.glassfish.corba/glassfish-corba-omgapi/4.2.2/$Export-Package=*;version=&quot;4.2.2&quot;,!*</bundle> -->
+        <bundle>wrap:mvn:org.epics/epics-util/${epics.util.version}/$Export-Package=*;version=&quot;${epics.util.version}&quot;,!*</bundle>        
+        <bundle>wrap:mvn:org.epics/epics-pvdata/${epics.pvdata.version}/$Export-Package=*;veplc4j-spirsion=&quot;${epics.pvdata.version}&quot;,!*</bundle>   
+        <bundle>wrap:mvn:org.epics/epics-ntypes/${epics.ntypes.version}/$Export-Package=*;version=&quot;${epics.ntypes.version}&quot;,!*</bundle>         
+        <bundle>wrap:mvn:org.epics/jca/${epics.jca.version}/$Export-Package=*;version=&quot;${epics.jca.version}&quot;,!*</bundle>         
+        <bundle>wrap:mvn:org.epics/epics-pvaccess/${epics.pvaccess.version}/$overwrite=merge&amp;Export-Package=org.epics.pvaccess.server.impl.remote.*,*;version=&quot;${epics.pvaccess.version}&quot;,!*</bundle>          
+        <bundle>wrap:mvn:org.epics/epics-pvaclient/${epics.pvaclient.version}/$Export-Package=*;version=&quot;${epics.pvaclient.version}&quot;,!*</bundle>                    
+        <bundle>wrap:mvn:org.epics/epics-pvdatabase/${epics.pvdatabase.version}/$Export-Package=*;version=&quot;${epics.pvdatabase.version}&quot;,!*</bundle>                                                                                
+    </feature>    
+
+    <feature name='plc4x_epics_gpclient' description='${project.name}' version='${project.version}'>
+        <feature>plc4x_epics_core</feature>
+        <bundle>wrap:mvn:org.epics/gpclient-core/${epics.gpclient.core.version}/$Export-Package=*;version=&quot;${epics.gpclient.core.version}&quot;,!*</bundle>         
+        <bundle>wrap:mvn:org.epics/gpclient-sim/${epics.gpclient.sim.version}/$Export-Package=*;version=&quot;${epics.gpclient.sim.version}&quot;,!*</bundle>
+        <bundle>wrap:mvn:org.epics/gpclient-loc/${epics.gpclient.loc.version}/$Export-Package=*;version=&quot;${epics.gpclient.loc.version}&quot;,!*</bundle>
+        <bundle>wrap:mvn:org.epics/gpclient-pva/${epics.gpclient.pva.version}/$Export-Package=*;version=&quot;${epics.gpclient.pva.version}&quot;,!*</bundle>
+        <bundle>wrap:mvn:org.epics/gpclient-ca/${epics.gpclient.ca.version}$Export-Package=*;version=&quot;${epics.gpclient.ca.version}&quot;,!*</bundle>
+        <bundle>wrap:mvn:org.epics/vtype/${epics.vtype.version}/$Export-Package=*;version=&quot;${epics.vtype.version}&quot;,!*</bundle>         
+    </feature> 
+
+    <feature name='plc4x_uns' description='${project.name}' version='${project.version}'>
+        <feature>plc4x_epics_core</feature>
+        <feature>plc4x_h2</feature>
+
+        <!--
+        <bundle>wrap:mvn:org.slf4j/slf4j-api/1.7.32/$Export-Package=*;version=&quot;1.7.32&quot;,!*</bundle>    
+        <bundle>wrap:mvn:org.slf4j/slf4j-nop/${slf4j.version}/$Export-Package=*;version=&quot;${slf4j.version}&quot;,!*</bundle>           
+        <bundle>wrap:mvn:org.slf4j/log4j-over-slf4j/${slf4j.version}/$Export-Package=*;version=&quot;${slf4j.version}&quot;,!*</bundle>
+        -->                
+        <bundle start-level="80">wrap:mvn:org.apache.plc4x.merlot.uns/org.apache.plc4x.merlot.uns/${project.version}/$Export-Package=*;version=&quot;${project.version}&quot;,!*</bundle>
+        <configfile finalname="/etc/org.apache.plc4x.merlot.uns.cfg">mvn:org.apache.plc4x.merlot.uns/org.apache.plc4x.merlot.uns/${project.version}/cfg</configfile>        
+    </feature>         
+    
+    <feature name='plc4x_scheduler' description='${project.name}' version='${project.version}'>
+        <!--
+        <bundle>wrap:mvn:org.slf4j/slf4j-api/1.7.32/$Export-Package=*;version=&quot;1.7.32&quot;,!*</bundle>    
+        <bundle>wrap:mvn:org.slf4j/slf4j-nop/${slf4j.version}/$Export-Package=*;version=&quot;${slf4j.version}&quot;,!*</bundle>           
+        <bundle>wrap:mvn:org.slf4j/log4j-over-slf4j/${slf4j.version}/$Export-Package=*;version=&quot;${slf4j.version}&quot;,!*</bundle>
+        -->
+        <bundle start-level="30">wrap:mvn:org.apache.karaf/org.apache.karaf.util/${karaf.version}/$Export-Package=*;version=&quot;${karaf.version}&quot;,!*</bundle>        
+        <bundle>wrap:mvn:com.zaxxer/HikariCP/${hikaricp.version}/$Export-Package=*;version=&quot;${hikaricp.version}&quot;,!*</bundle>         
+        <bundle>wrap:mvn:com.mchange/c3p0/${c3p0.version}/$Export-Package=*;version=&quot;${c3p0.version}&quot;,!*</bundle>          
+        <bundle>wrap:mvn:org.quartz-scheduler/quartz/${quartz.version}/$Export-Package=*;version=&quot;${quartz.version}&quot;,!*</bundle>   
+        <bundle>wrap:mvn:jakarta.xml.bind/jakarta.xml.bind-api/${jakarta.xml.bind.version}/$Export-Package=*;version=&quot;${jakarta.xml.bind.version}&quot;,!*</bundle> 
+    
+              <!--             
+                                   
+        <bundle start-level="80">wrap:mvn:org.apache.plc4x.merlot.scheduler/org.apache.plc4x.merlot.scheduler/${project.version}/$Export-Package=*;version=&quot;${project.version}&quot;,!*</bundle>
+                                   -->                   
+        <bundle start-level="50">mvn:org.apache.plc4x.merlot.scheduler/org.apache.plc4x.merlot.scheduler/${project.version}</bundle>
+    </feature>  
+       
+          
 </features>
