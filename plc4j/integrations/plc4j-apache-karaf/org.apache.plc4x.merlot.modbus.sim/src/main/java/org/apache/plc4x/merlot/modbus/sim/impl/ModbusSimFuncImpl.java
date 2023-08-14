@@ -20,21 +20,20 @@ package org.apache.plc4x.merlot.modbus.sim.impl;
 
 import org.apache.plc4x.merlot.modbus.dev.api.ModbusDevice;
 import org.apache.plc4x.merlot.scheduler.api.JobContext;
-import com.fathzer.soft.javaluator.DoubleEvaluator;
-import com.fathzer.soft.javaluator.StaticVariableSet;
+import parser.MathExpression;
 
 
 public class ModbusSimFuncImpl extends ModbusSimImpl {
 
     public ModbusSimFuncImpl(ModbusDevice mbdev) {
         super(mbdev);
-        eval = new DoubleEvaluator();
-        variables = new StaticVariableSet<Double>();
+        
     }
 
     @Override
     public void setFunction(String strFunction) {
         this.strFunction = strFunction;
+        eval = new MathExpression(strFunction);
     }
         
     @Override
@@ -46,20 +45,20 @@ public class ModbusSimFuncImpl extends ModbusSimImpl {
         y = getValue(mbdev,tagY,0);
         z = getValue(mbdev,tagZ,0);
         if (tagF != null) {
-            variables.set("f", f);
+            eval.setValue("f",Double.toString(f));
         }
         if (tagX != null) {
-            variables.set("x", x);
+            eval.setValue("x", Double.toString(x));
         }
         if (tagY != null) {
-            variables.set("y", y);
+            eval.setValue("y", Double.toString(y));
         }
         if (tagZ != null) {
-            variables.set("z", z);
+            eval.setValue("z", Double.toString(z));
         }        
         
         if (strFunction != null) {
-            result = eval.evaluate(strFunction, variables);
+            result = Double.parseDouble(eval.solve());
         }
         
         if (tagF != null) {

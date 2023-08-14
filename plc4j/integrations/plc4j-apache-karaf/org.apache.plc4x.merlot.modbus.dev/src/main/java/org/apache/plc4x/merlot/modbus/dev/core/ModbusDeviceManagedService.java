@@ -49,6 +49,8 @@ public class ModbusDeviceManagedService implements ManagedService {
 
     @Override
     public void updated(Dictionary props) throws ConfigurationException {
+        if (null == props)  return;
+        
         Enumeration<String> keys = props.keys();
         ModbusDevice mbDevice = null;
         while (keys.hasMoreElements()) {
@@ -60,7 +62,7 @@ public class ModbusDeviceManagedService implements ManagedService {
                 deviceFilter = deviceFilter.replace("$", fields[0]);
 
                 ServiceReference[] references = bundleContext.getServiceReferences((String) null, deviceFilter);
-                //if (references != null)System.out.println("Referencias: " + references.length);
+                if (references != null) System.out.println("Referencias: " + references.length);
 
                 if ((references == null) 
                         && (fields.length == 6) 

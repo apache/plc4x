@@ -134,7 +134,7 @@ public class ModbusSimManagedService implements ManagedService {
                             
                             Dictionary mbean_props = new Properties();                                              
                             ModbusSimMBean msimmb = new ModbusSimMBeanImpl(mbsim);
-                            String strProp  = "com.ceos.merlot:type=sim,name=com.ceos.modbus.sim,id="+key;
+                            String strProp  = "org.apache.plc4x.merlot:type=sim,name=org.apache.plc4x.modbus.sim,id="+key;
                             mbean_props.put("jmx.objectname", strProp);                        
                             bundleContext.registerService(new String[]{ModbusSimMBean.class.getName()}, msimmb, mbean_props);                              
                                                                                     

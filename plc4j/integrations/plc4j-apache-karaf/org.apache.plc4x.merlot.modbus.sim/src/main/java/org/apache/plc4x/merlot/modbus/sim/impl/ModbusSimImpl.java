@@ -21,11 +21,10 @@ package org.apache.plc4x.merlot.modbus.sim.impl;
 import org.apache.plc4x.merlot.modbus.dev.api.ModbusDevice;
 import org.apache.plc4x.merlot.modbus.sim.api.ModbusSim;
 import org.apache.plc4x.merlot.scheduler.api.JobContext;
-import com.fathzer.soft.javaluator.DoubleEvaluator;
-import com.fathzer.soft.javaluator.StaticVariableSet;
 import io.netty.buffer.ByteBuf;
 import java.util.Random;
 import org.epics.pvdata.pv.ScalarType;
+import parser.MathExpression;
 
 
 public class ModbusSimImpl implements ModbusSim {
@@ -33,15 +32,13 @@ public class ModbusSimImpl implements ModbusSim {
     protected ModbusDevice mbdev;
     protected String strFunction = "";
     protected String[] strVariables = null;
-    protected DoubleEvaluator eval;
+    protected MathExpression eval;
     protected TagPoint tagF = null;
     protected TagPoint tagX = null;
     protected TagPoint tagY = null;
     protected TagPoint tagZ = null;
     protected Random random = null;
-    
-    protected StaticVariableSet<Double> variables = new StaticVariableSet<Double>();
-    
+      
     protected boolean init = false;
     protected boolean started = false;
     
@@ -352,6 +349,7 @@ public class ModbusSimImpl implements ModbusSim {
                 if (tag.mbType.equalsIgnoreCase("input-register")){
                     tag.bb = mbdev.getInputRegisters().retainedSlice(start, end);
                 } else {
+                    System.out.println(start + " : " + end);
                     tag.bb = mbdev.getHoldingRegisters().retainedSlice(start, end);                    
                 }
             }
@@ -396,10 +394,7 @@ public class ModbusSimImpl implements ModbusSim {
         
         return tag;
     }
-    
-    
-    
-    
+   
     class TagPoint {
         public ByteBuf bb;
         public String mbType;

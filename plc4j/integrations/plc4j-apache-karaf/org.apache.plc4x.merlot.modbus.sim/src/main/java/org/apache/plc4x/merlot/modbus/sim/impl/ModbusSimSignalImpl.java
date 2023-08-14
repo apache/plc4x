@@ -38,6 +38,8 @@ public class ModbusSimSignalImpl extends ModbusSimImpl {
     public void setFunction(String strFunction) {
         this.strFunction = strFunction;
         signalType = ModbusSimSignalType.valueOfEvent(strFunction);
+        System.out.println(">>>>" + strFunction + "<<<<<");
+        System.out.println(">>>>" + signalType.getSignal() );
     }
     
     @Override

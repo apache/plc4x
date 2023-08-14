@@ -64,6 +64,7 @@ public class ModbusServerManagedService implements ManagedService {
 
     @Override
     public void updated(Dictionary props) throws ConfigurationException {
+        if (null == props)  return;        
         Enumeration<String> keys = props.keys();
         int port = 502;
         while (keys.hasMoreElements()) {
@@ -96,7 +97,7 @@ public class ModbusServerManagedService implements ManagedService {
                         bundleContext.registerService(ModbusServer.class.getName()
                                 ,mbServer
                                 ,properties);
-                        LOGGER.info("Registered ModbusDevice [{}] [{}]"
+                        LOGGER.info("Registered modbus server [{}] [{}]"
                                 ,key
                                 ,short_description);   
 
@@ -104,7 +105,7 @@ public class ModbusServerManagedService implements ManagedService {
                         ModbusServerMBean msmbean;
                         try {
                             msmbean = new ModbusServerMBeanImpl(mbServer);
-                            String strProp  = "com.ceos.merlot:type=server,name=com.ceos.modbus.svr,id="+key;
+                            String strProp  = "org.apache.plc4x.merlot:type=server,name=org.apache.plc4x.modbus.svr,id="+key;
                             mbean_props.put("jmx.objectname", strProp);                        
                             bundleContext.registerService(new String[]{ModbusServerMBean.class.getName()}, msmbean, mbean_props);                              
                         } catch (NotCompliantMBeanException ex) {

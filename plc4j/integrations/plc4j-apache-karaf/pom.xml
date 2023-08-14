@@ -43,7 +43,8 @@
         <slf4j.version>1.7.32</slf4j.version>
         <quartz.version>2.3.2</quartz.version>
         <c3p0.version>0.9.5.5</c3p0.version> 
-        <hikaricp.version>2.7.9</hikaricp.version>   
+        <hikaricp.version>2.7.9</hikaricp.version>
+        <parser-ng.version>0.1.8</parser-ng.version>   
             
         <!-- Integration version -->
         <karaf.version>4.4.3</karaf.version>

@@ -37,7 +37,7 @@ public enum ModbusSimSignalType {
     } 
     
     public static ModbusSimSignalType  valueOfEvent(String event) {
-        for (ModbusSimSignalType  value : ModbusSimSignalType .values()) {
+        for (ModbusSimSignalType  value : ModbusSimSignalType.values()) {
             if(value.getSignal().equals(event)) {
                 return value;
             }

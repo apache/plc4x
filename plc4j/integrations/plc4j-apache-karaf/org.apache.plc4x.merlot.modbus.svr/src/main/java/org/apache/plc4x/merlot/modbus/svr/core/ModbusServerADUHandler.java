@@ -43,7 +43,7 @@ public class ModbusServerADUHandler extends SimpleChannelInboundHandler<ModbusAD
     public ModbusServerADUHandler(BundleContext bc){
     	super();
     	this.bc = bc;
-    	ServiceReference<?> sr = bc.getServiceReference("com.ceos.merlot.modbus.dev.api.ModbusDeviceArray");
+    	ServiceReference<?> sr = bc.getServiceReference("org.apache.plc4x.merlot.modbus.dev.api.ModbusDeviceArray");
     	if (sr!=null) {
     		myMda = (ModbusDeviceArray) bc.getService(sr);
     	}
