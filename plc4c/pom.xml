@@ -46,6 +46,10 @@
     <!-- When running on jenkins, download the sonar build-wrapper, so we can do a code analysis -->
     <profile>
       <id>jenkins-build</id>
+      <!-- This is needed by the groovy hack script -->
+      <properties>
+        <cmake.root>${project.build.directory}/dependency/cmake/bin</cmake.root>
+      </properties>
       <build>
         <plugins>
           <plugin>
@@ -69,14 +73,14 @@
               </execution>
             </executions>
           </plugin>
-          <!--plugin>
+          <plugin>
             <groupId>org.codehaus.gmaven</groupId>
             <artifactId>groovy-maven-plugin</artifactId>
             <executions>
-              <!- - rename the cmake binary and generate a script that adds the sonar build-wrapper - ->
+              <!-- rename the cmake binary and generate a script that adds the sonar build-wrapper -->
               <execution>
                 <id>modify-cmake</id>
-                <phase>process-sources</phase>
+                <phase>process-test-sources</phase>
                 <goals>
                   <goal>execute</goal>
                 </goals>
@@ -92,7 +96,7 @@
                 <version>${groovy.version}</version>
               </dependency>
             </dependencies>
-          </plugin-->
+          </plugin>
         </plugins>
       </build>
     </profile>
@@ -295,7 +299,7 @@
           <!-- Generate the configuration for the test compilation -->
           <execution>
             <id>cmake-generate-test-compile</id>
-            <phase>test-compile</phase>
+            <phase>generate-test-sources</phase>
             <goals>
               <goal>generate</goal>
             </goals>
