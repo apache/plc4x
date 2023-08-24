@@ -43,6 +43,7 @@
     <module>eip</module>
     <module>firmata</module>
     <module>genericcan</module>
+    <module>iec-60870</module>
     <module>knxnetip</module>
     <module>modbus</module>
     <module>mqtt</module>
