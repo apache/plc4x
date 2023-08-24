@@ -24,9 +24,9 @@
 ]
 
 [discriminatedType APDU    byteOrder='LITTLE_ENDIAN'
-    [const    uint 8                      startByte     0x86                            ]
-    [implicit uint 8                      apciLength    'lengthInBytes - 2'             ]
-    [discriminator uint 16 command]
+    [const         uint 8  startByte    0x86               ]
+    [implicit      uint 8  apciLength   'lengthInBytes - 2']
+    [discriminator uint 16 command                         ]
     [typeSwitch command
         // U-Format Frames
         ['0x43' *UFormatTestFrameActivation
@@ -54,8 +54,9 @@
         ]
 
         // I-Format Frames (Catch-all for all other values)
-        [        *IFormat
-            [virtual uint 15 sendSequenceNo    'command >> 1']
+        [        APDUIFormat
+            // TODO: Fix this ...
+            // [virtual uint 15 sendSequenceNo 'command >> 1']
             // TODO: Shift this right by one bit to make it a uint 15
             [simple  uint 16 receiveSequenceNo               ]
             // Payload
@@ -171,7 +172,7 @@
         ['EVENT_OF_PROTECTION_EQUIPMENT_WITH_TIME_TAG_CP56TIME2A'   *_EVENT_OF_PROTECTION_EQUIPMENT_WITH_TIME_TAG_CP56TIME2A
 // CP16Time2a + CP56Time2a
         ]
-        ['PACKED_START_EVENTS_OF-PROTECTION_EQUIPMENT_WITH_TIME_TAG_CP56TIME2A' *_PROTECTION_EQUIPMENT_WITH_TIME_TAG_CP56TIME2A
+        ['PACKED_START_EVENTS_OF_PROTECTION_EQUIPMENT_WITH_TIME_TAG_CP56TIME2A' *_PROTECTION_EQUIPMENT_WITH_TIME_TAG_CP56TIME2A
 // SEP + QDP + CP16Time2a + CP56Time2a
         ]
         ['PACKED_OUTPUT_CIRCUIT_INFORMATION_OF_PROTECTION_EQUIPMENT_WITH_TIME_TAG_CP56TIME2A' *_PACKED_OUTPUT_CIRCUIT_INFORMATION_OF_PROTECTION_EQUIPMENT_WITH_TIME_TAG_CP56TIME2A
@@ -577,7 +578,7 @@
     ['0x24' MEASURED_VALUE_SHORT_FLOATING_POINT_NUMBER_WITH_TIME_TAG_CP56TIME2A               ]
     ['0x25' INTEGRATED_TOTALS_WITH_TIME_TAG_CP56TIME2A                                        ]
     ['0x26' EVENT_OF_PROTECTION_EQUIPMENT_WITH_TIME_TAG_CP56TIME2A                            ]
-    ['0x27' PACKED_START_EVENTS_OF-PROTECTION_EQUIPMENT_WITH_TIME_TAG_CP56TIME2A              ]
+    ['0x27' PACKED_START_EVENTS_OF_PROTECTION_EQUIPMENT_WITH_TIME_TAG_CP56TIME2A              ]
     ['0x28' PACKED_OUTPUT_CIRCUIT_INFORMATION_OF_PROTECTION_EQUIPMENT_WITH_TIME_TAG_CP56TIME2A]
     ['0x2D' SINGLE_COMMAND                                                                    ]
     ['0x2E' DOUBLE_COMMAND                                                                    ]
@@ -651,7 +652,7 @@
     ['0x27' INTERROGATED_BY_INTERROGATION_COUNTER_GROUP_2_REQCO2     ]
     ['0x28' INTERROGATED_BY_INTERROGATION_COUNTER_GROUP_3_REQCO3     ]
     ['0x29' INTERROGATED_BY_INTERROGATION_COUNTER_GROUP_4_REQCO4     ]
-    ['0x2C' TYPE-IDENTIFICATION_UNKNOWN_UKNOWN_TYPE                  ]
+    ['0x2C' TYPE_IDENTIFICATION_UNKNOWN_UKNOWN_TYPE                  ]
     ['0x2D' CAUSE_UNKNOWN_UKNOWN_CAUSE                               ]
     ['0x2E' ASDU_ADDRESS_UNKNOWN_UNKNOWN_ASDU_ADDRESS                ]
     ['0x2F' INFORMATION_OBJECT_ADDRESS_UNKNOWN_UNKNOWN_OBJECT_ADDRESS]

@@ -25,7 +25,7 @@
   <protocolName>iec-60870-5-104</protocolName>
   <outputFlavor>read-write</outputFlavor>
 
-  <testcase>
+  <!--testcase>
     <name>COTP Connection Request</name>
     <raw>0300001611e00000000f00c2020100c1020311c0010a</raw>
     <root-type>TPKTPacket</root-type>
@@ -74,6 +74,6 @@
         </payload>
       </TPKTPacket>
     </xml>
-  </testcase>
+  </testcase-->
 
 </test:testsuite>

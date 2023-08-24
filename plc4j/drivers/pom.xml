@@ -42,6 +42,7 @@
     <module>canopen</module>
     <module>eip</module>
     <module>firmata</module>
+    <module>iec-60870</module>
     <module>knxnetip</module>
     <module>mock</module>
     <module>open-protocol</module>
