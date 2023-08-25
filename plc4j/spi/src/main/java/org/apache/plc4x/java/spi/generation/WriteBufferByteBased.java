@@ -180,7 +180,7 @@ public class WriteBufferByteBased implements WriteBuffer, BufferCommons {
                     break;
                 case "default":
                     if (byteOrder == ByteOrder.LITTLE_ENDIAN) {
-                        value = Integer.reverseBytes(value) >> 16;
+                        value = Integer.reverseBytes(value) >> (32 - bitLength);
                     }
                     bo.writeInt(true, bitLength, value);
                     break;

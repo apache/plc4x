@@ -205,7 +205,7 @@ public class ReadBufferByteBased implements ReadBuffer, BufferCommons {
                 case "default":
                     if (byteOrder == ByteOrder.LITTLE_ENDIAN) {
                         final int longValue = bi.readInt(true, bitLength);
-                        return Integer.reverseBytes(longValue) >>> 16;
+                        return Integer.reverseBytes(longValue) >>> (32 - bitLength);
                     }
                     return bi.readInt(true, bitLength);
                 default:
