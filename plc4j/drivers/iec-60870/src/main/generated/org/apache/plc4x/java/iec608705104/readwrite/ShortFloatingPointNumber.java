@@ -38,14 +38,14 @@ import org.apache.plc4x.java.spi.generation.*;
 public class ShortFloatingPointNumber implements Message {
 
   // Properties.
-  protected final float value;
+  protected final int value;
 
-  public ShortFloatingPointNumber(float value) {
+  public ShortFloatingPointNumber(int value) {
     super();
     this.value = value;
   }
 
-  public float getValue() {
+  public int getValue() {
     return value;
   }
 
@@ -58,7 +58,7 @@ public class ShortFloatingPointNumber implements Message {
     writeSimpleField(
         "value",
         value,
-        writeFloat(writeBuffer, 16),
+        writeUnsignedInt(writeBuffer, 16),
         WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     writeBuffer.popContext("ShortFloatingPointNumber");
@@ -92,9 +92,11 @@ public class ShortFloatingPointNumber implements Message {
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    float value =
+    int value =
         readSimpleField(
-            "value", readFloat(readBuffer, 16), WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+            "value",
+            readUnsignedInt(readBuffer, 16),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     readBuffer.closeContext("ShortFloatingPointNumber");
     // Create the instance

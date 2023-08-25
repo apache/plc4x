@@ -129,6 +129,8 @@
     <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
+      <!-- Explicitly managing this back to "compile" -->
+      <scope>compile</scope>
     </dependency>
 
     <dependency>
@@ -139,6 +141,11 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-eip</artifactId>
+      <version>0.11.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-driver-iec-60870</artifactId>
       <version>0.11.0-SNAPSHOT</version>
     </dependency>
 

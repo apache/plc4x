@@ -23,6 +23,11 @@
     [const          uint 16     defaultPort 2404]
 ]
 
+// Little helper used in the testsuite, as the devices quite often send more than one message at once.
+[type APDUs
+    [array APDU apdus terminated 'STATIC_CALL("finished", readBuffer)']
+]
+
 [discriminatedType APDU                                                                        byteOrder='LITTLE_ENDIAN'
     [const         uint 8  startByte    0x68               ]
     [implicit      uint 8  apciLength   'lengthInBytes - 2']
@@ -57,7 +62,7 @@
         [*      *IFormat
             // TODO: Fix this ...
             // [virtual uint 15 sendSequenceNo 'command >> 1']
-            // TODO: Shift this right by one bit to make it a uint 15
+            // TODO: Shift this right by one bit to make it an uint 15
             [simple  uint 16 receiveSequenceNo               ]
             // Payload
             [simple ASDU asdu]
@@ -396,7 +401,7 @@
 
 // NVA
 [type NormalizedValue                                                                          byteOrder='LITTLE_ENDIAN'
-    [simple uint 16 value]     // TODO: F16
+    [simple uint 16 value]     // TODO: F16 (16 bit floating-point number)
 ]
 
 // SVA
@@ -406,7 +411,7 @@
 
 // R32
 [type ShortFloatingPointNumber                                                                 byteOrder='LITTLE_ENDIAN'
-   [simple  float 16 value               ] // TODO: Double-Check
+    [simple uint 16 value]     // TODO: F16 (16 bit floating-point number)
 ]
 
 // BCR
@@ -465,17 +470,21 @@
 
 // SCO
 [type SingleCommand                                                                            byteOrder='LITTLE_ENDIAN'
-    // TODO: Implement
+    [simple   QualifierOfCommand qoc      ]
+    [reserved uint 1             '0'      ]
+    [simple   bit                commandOn]
 ]
 
 // DCO
 [type DoubleCommand                                                                            byteOrder='LITTLE_ENDIAN'
-    // TODO: Implement
+    [simple   QualifierOfCommand qoc]
+    [simple   uint 2             dcs] // TODO: Possible Enum
 ]
 
 // RCO
 [type RegulatingStepCommand                                                                    byteOrder='LITTLE_ENDIAN'
-    // TODO: Implement
+    [simple   QualifierOfCommand qoc]
+    [simple   uint 2             rcs] // TODO: Possible Enum
 ]
 
 //////////////////////////////////////////////////////////
@@ -527,8 +536,7 @@
     [simple   uint 8 qualifier         ] // TODO: Possible ENUM
 ]
 
-// QOC
-// TODO: Only 6 bit long !!!!!!
+// QOC: Only 6 bit long (as part of a command)
 [type QualifierOfCommand                                                                       byteOrder='LITTLE_ENDIAN'
     [simple   bit    select]
     [simple   uint 5 qualifier         ] // TODO: Possible ENUM

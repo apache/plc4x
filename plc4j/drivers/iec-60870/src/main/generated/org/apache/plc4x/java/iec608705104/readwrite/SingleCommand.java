@@ -37,14 +37,49 @@ import org.apache.plc4x.java.spi.generation.*;
 
 public class SingleCommand implements Message {
 
-  public SingleCommand() {
+  // Properties.
+  protected final QualifierOfCommand qoc;
+  protected final boolean commandOn;
+
+  public SingleCommand(QualifierOfCommand qoc, boolean commandOn) {
     super();
+    this.qoc = qoc;
+    this.commandOn = commandOn;
+  }
+
+  public QualifierOfCommand getQoc() {
+    return qoc;
+  }
+
+  public boolean getCommandOn() {
+    return commandOn;
   }
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     writeBuffer.pushContext("SingleCommand");
+
+    // Simple Field (qoc)
+    writeSimpleField(
+        "qoc",
+        qoc,
+        new DataWriterComplexDefault<>(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
+    // Reserved Field (reserved)
+    writeReservedField(
+        "reserved",
+        (byte) 0,
+        writeUnsignedByte(writeBuffer, 1),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
+    // Simple Field (commandOn)
+    writeSimpleField(
+        "commandOn",
+        commandOn,
+        writeBoolean(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     writeBuffer.popContext("SingleCommand");
   }
@@ -60,6 +95,15 @@ public class SingleCommand implements Message {
     SingleCommand _value = this;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
+    // Simple field (qoc)
+    lengthInBits += qoc.getLengthInBits();
+
+    // Reserved Field (reserved)
+    lengthInBits += 1;
+
+    // Simple field (commandOn)
+    lengthInBits += 1;
+
     return lengthInBits;
   }
 
@@ -74,10 +118,30 @@ public class SingleCommand implements Message {
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
+    QualifierOfCommand qoc =
+        readSimpleField(
+            "qoc",
+            new DataReaderComplexDefault<>(
+                () -> QualifierOfCommand.staticParse(readBuffer), readBuffer),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
+    Byte reservedField0 =
+        readReservedField(
+            "reserved",
+            readUnsignedByte(readBuffer, 1),
+            (byte) 0,
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
+    boolean commandOn =
+        readSimpleField(
+            "commandOn",
+            readBoolean(readBuffer),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
     readBuffer.closeContext("SingleCommand");
     // Create the instance
     SingleCommand _singleCommand;
-    _singleCommand = new SingleCommand();
+    _singleCommand = new SingleCommand(qoc, commandOn);
     return _singleCommand;
   }
 
@@ -90,12 +154,12 @@ public class SingleCommand implements Message {
       return false;
     }
     SingleCommand that = (SingleCommand) o;
-    return true;
+    return (getQoc() == that.getQoc()) && (getCommandOn() == that.getCommandOn()) && true;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash();
+    return Objects.hash(getQoc(), getCommandOn());
   }
 
   @Override

@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   https://www.apache.org/licenses/LICENSE-2.0
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -16,14 +16,15 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.plc4x.java.iec608705104;
 
-import org.apache.plc4x.test.parserserializer.ParserSerializerTestsuiteRunner;
+package org.apache.plc4x.java.iec608705104.readwrite.utils;
 
-public class IEC608705104ParserSerializerTest extends ParserSerializerTestsuiteRunner {
+import org.apache.plc4x.java.spi.generation.ReadBuffer;
 
-    public IEC608705104ParserSerializerTest() {
-        super("/protocols/iec608705104/IEC-60870-5-104.xml", true);
+public class StaticHelper {
+
+    public static boolean finished(ReadBuffer readBuffer) {
+        return !readBuffer.hasMore(8);
     }
 
 }

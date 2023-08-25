@@ -37,14 +37,42 @@ import org.apache.plc4x.java.spi.generation.*;
 
 public class DoubleCommand implements Message {
 
-  public DoubleCommand() {
+  // Properties.
+  protected final QualifierOfCommand qoc;
+  protected final byte dcs;
+
+  public DoubleCommand(QualifierOfCommand qoc, byte dcs) {
     super();
+    this.qoc = qoc;
+    this.dcs = dcs;
+  }
+
+  public QualifierOfCommand getQoc() {
+    return qoc;
+  }
+
+  public byte getDcs() {
+    return dcs;
   }
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     writeBuffer.pushContext("DoubleCommand");
+
+    // Simple Field (qoc)
+    writeSimpleField(
+        "qoc",
+        qoc,
+        new DataWriterComplexDefault<>(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
+    // Simple Field (dcs)
+    writeSimpleField(
+        "dcs",
+        dcs,
+        writeUnsignedByte(writeBuffer, 2),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     writeBuffer.popContext("DoubleCommand");
   }
@@ -60,6 +88,12 @@ public class DoubleCommand implements Message {
     DoubleCommand _value = this;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
+    // Simple field (qoc)
+    lengthInBits += qoc.getLengthInBits();
+
+    // Simple field (dcs)
+    lengthInBits += 2;
+
     return lengthInBits;
   }
 
@@ -74,10 +108,23 @@ public class DoubleCommand implements Message {
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
+    QualifierOfCommand qoc =
+        readSimpleField(
+            "qoc",
+            new DataReaderComplexDefault<>(
+                () -> QualifierOfCommand.staticParse(readBuffer), readBuffer),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
+    byte dcs =
+        readSimpleField(
+            "dcs",
+            readUnsignedByte(readBuffer, 2),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
     readBuffer.closeContext("DoubleCommand");
     // Create the instance
     DoubleCommand _doubleCommand;
-    _doubleCommand = new DoubleCommand();
+    _doubleCommand = new DoubleCommand(qoc, dcs);
     return _doubleCommand;
   }
 
@@ -90,12 +137,12 @@ public class DoubleCommand implements Message {
       return false;
     }
     DoubleCommand that = (DoubleCommand) o;
-    return true;
+    return (getQoc() == that.getQoc()) && (getDcs() == that.getDcs()) && true;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash();
+    return Objects.hash(getQoc(), getDcs());
   }
 
   @Override
