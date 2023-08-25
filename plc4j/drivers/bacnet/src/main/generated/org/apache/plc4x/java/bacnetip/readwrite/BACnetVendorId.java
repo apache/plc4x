@@ -357,7 +357,7 @@ public enum BACnetVendorId {
   HITRANSE_TECHNOLOGY_COLTD((int) 281, (int) 281, (String) "Hitranse Technology Co., LTD"),
   VIGILENT_CORPORATION((int) 282, (int) 282, (String) "Vigilent Corporation"),
   KELE_INC((int) 283, (int) 283, (String) "Kele, Inc."),
-  OPERA_ELECTRONICS_INC((int) 284, (int) 284, (String) "Opera Electronics, Inc."),
+  BELIMO_AUTOMATIONAG((int) 284, (int) 284, (String) "BELIMO Automation AG"),
   GENTEC((int) 285, (int) 285, (String) "Gentec"),
   EMBEDDED_SCIENCE_LABSLLC((int) 286, (int) 286, (String) "Embedded Science Labs, LLC"),
   PARKER_HANNIFIN_CORPORATION((int) 287, (int) 287, (String) "Parker Hannifin Corporation"),
@@ -511,7 +511,7 @@ public enum BACnetVendorId {
   INNCOM_INTERNATIONAL_INC((int) 420, (int) 420, (String) "INNCOM International, Inc."),
   METZCONNECT_GMBH((int) 421, (int) 421, (String) "METZ CONNECT GmbH"),
   GREENTROL_AUTOMATION_INC((int) 422, (int) 422, (String) "Greentrol Automation, Inc"),
-  BELIMO_AUTOMATIONAG((int) 423, (int) 423, (String) "BELIMO Automation AG"),
+  BELIMO_AUTOMATIONAG1((int) 423, (int) 423, (String) "BELIMO Automation AG"),
   SAMSUNG_HEAVY_INDUSTRIES_CO_LTD(
       (int) 424, (int) 424, (String) "Samsung Heavy Industries Co, Ltd"),
   TRIACTA_POWER_TECHNOLOGIES_INC((int) 425, (int) 425, (String) "Triacta Power Technologies, Inc."),
@@ -1653,6 +1653,7 @@ public enum BACnetVendorId {
   INTERNATIONAL_GAS_DETECTORS((int) 1437, (int) 1437, (String) "International Gas Detectors"),
   ATLAS_COPCO_AIRPOWERNV((int) 1438, (int) 1438, (String) "Atlas Copco Airpower NV"),
   AIR_SENTRY_LIMITED((int) 1439, (int) 1439, (String) "Air Sentry Limited"),
+  AELSYS((int) 1440, (int) 1440, (String) "Aelsys"),
   UNKNOWN_VENDOR((int) 0xFFFF, (int) 0xFFFF, (String) "Unknown");
   private static final Map<Integer, BACnetVendorId> map;
 

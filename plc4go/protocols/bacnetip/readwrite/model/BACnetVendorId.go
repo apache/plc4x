@@ -327,7 +327,7 @@ const (
 	BACnetVendorId_HITRANSE_TECHNOLOGY_COLTD                                                    BACnetVendorId = 281
 	BACnetVendorId_VIGILENT_CORPORATION                                                         BACnetVendorId = 282
 	BACnetVendorId_KELE_INC                                                                     BACnetVendorId = 283
-	BACnetVendorId_OPERA_ELECTRONICS_INC                                                        BACnetVendorId = 284
+	BACnetVendorId_BELIMO_AUTOMATIONAG                                                          BACnetVendorId = 284
 	BACnetVendorId_GENTEC                                                                       BACnetVendorId = 285
 	BACnetVendorId_EMBEDDED_SCIENCE_LABSLLC                                                     BACnetVendorId = 286
 	BACnetVendorId_PARKER_HANNIFIN_CORPORATION                                                  BACnetVendorId = 287
@@ -466,7 +466,7 @@ const (
 	BACnetVendorId_INNCOM_INTERNATIONAL_INC                                                     BACnetVendorId = 420
 	BACnetVendorId_METZCONNECT_GMBH                                                             BACnetVendorId = 421
 	BACnetVendorId_GREENTROL_AUTOMATION_INC                                                     BACnetVendorId = 422
-	BACnetVendorId_BELIMO_AUTOMATIONAG                                                          BACnetVendorId = 423
+	BACnetVendorId_BELIMO_AUTOMATIONAG1                                                         BACnetVendorId = 423
 	BACnetVendorId_SAMSUNG_HEAVY_INDUSTRIES_CO_LTD                                              BACnetVendorId = 424
 	BACnetVendorId_TRIACTA_POWER_TECHNOLOGIES_INC                                               BACnetVendorId = 425
 	BACnetVendorId_GLOBESTAR_SYSTEMS                                                            BACnetVendorId = 426
@@ -1474,6 +1474,7 @@ const (
 	BACnetVendorId_INTERNATIONAL_GAS_DETECTORS                                                  BACnetVendorId = 1437
 	BACnetVendorId_ATLAS_COPCO_AIRPOWERNV                                                       BACnetVendorId = 1438
 	BACnetVendorId_AIR_SENTRY_LIMITED                                                           BACnetVendorId = 1439
+	BACnetVendorId_AELSYS                                                                       BACnetVendorId = 1440
 	BACnetVendorId_UNKNOWN_VENDOR                                                               BACnetVendorId = 0xFFFF
 )
 
@@ -1766,7 +1767,7 @@ func init() {
 		BACnetVendorId_HITRANSE_TECHNOLOGY_COLTD,
 		BACnetVendorId_VIGILENT_CORPORATION,
 		BACnetVendorId_KELE_INC,
-		BACnetVendorId_OPERA_ELECTRONICS_INC,
+		BACnetVendorId_BELIMO_AUTOMATIONAG,
 		BACnetVendorId_GENTEC,
 		BACnetVendorId_EMBEDDED_SCIENCE_LABSLLC,
 		BACnetVendorId_PARKER_HANNIFIN_CORPORATION,
@@ -1905,7 +1906,7 @@ func init() {
 		BACnetVendorId_INNCOM_INTERNATIONAL_INC,
 		BACnetVendorId_METZCONNECT_GMBH,
 		BACnetVendorId_GREENTROL_AUTOMATION_INC,
-		BACnetVendorId_BELIMO_AUTOMATIONAG,
+		BACnetVendorId_BELIMO_AUTOMATIONAG1,
 		BACnetVendorId_SAMSUNG_HEAVY_INDUSTRIES_CO_LTD,
 		BACnetVendorId_TRIACTA_POWER_TECHNOLOGIES_INC,
 		BACnetVendorId_GLOBESTAR_SYSTEMS,
@@ -2913,6 +2914,7 @@ func init() {
 		BACnetVendorId_INTERNATIONAL_GAS_DETECTORS,
 		BACnetVendorId_ATLAS_COPCO_AIRPOWERNV,
 		BACnetVendorId_AIR_SENTRY_LIMITED,
+		BACnetVendorId_AELSYS,
 		BACnetVendorId_UNKNOWN_VENDOR,
 	}
 }
@@ -4878,6 +4880,10 @@ func (e BACnetVendorId) VendorId() uint16 {
 	case 144:
 		{ /* '144' */
 			return 144
+		}
+	case 1440:
+		{ /* '1440' */
+			return 1440
 		}
 	case 145:
 		{ /* '145' */
@@ -10625,6 +10631,10 @@ func (e BACnetVendorId) VendorName() string {
 		{ /* '144' */
 			return "Fujitsu General Limited"
 		}
+	case 1440:
+		{ /* '1440' */
+			return "Aelsys"
+		}
 	case 145:
 		{ /* '145' */
 			return "Project Engineering S.r.l."
@@ -11243,7 +11253,7 @@ func (e BACnetVendorId) VendorName() string {
 		}
 	case 284:
 		{ /* '284' */
-			return "Opera Electronics, Inc."
+			return "BELIMO Automation AG"
 		}
 	case 285:
 		{ /* '285' */
@@ -15390,6 +15400,8 @@ func BACnetVendorIdByValue(value uint16) (enum BACnetVendorId, ok bool) {
 		return BACnetVendorId_AIR_SENTRY_LIMITED, true
 	case 144:
 		return BACnetVendorId_FUJITSU_GENERAL_LIMITED, true
+	case 1440:
+		return BACnetVendorId_AELSYS, true
 	case 145:
 		return BACnetVendorId_PROJECT_ENGINEERING_SRL, true
 	case 146:
@@ -15699,7 +15711,7 @@ func BACnetVendorIdByValue(value uint16) (enum BACnetVendorId, ok bool) {
 	case 283:
 		return BACnetVendorId_KELE_INC, true
 	case 284:
-		return BACnetVendorId_OPERA_ELECTRONICS_INC, true
+		return BACnetVendorId_BELIMO_AUTOMATIONAG, true
 	case 285:
 		return BACnetVendorId_GENTEC, true
 	case 286:
@@ -16009,7 +16021,7 @@ func BACnetVendorIdByValue(value uint16) (enum BACnetVendorId, ok bool) {
 	case 422:
 		return BACnetVendorId_GREENTROL_AUTOMATION_INC, true
 	case 423:
-		return BACnetVendorId_BELIMO_AUTOMATIONAG, true
+		return BACnetVendorId_BELIMO_AUTOMATIONAG1, true
 	case 424:
 		return BACnetVendorId_SAMSUNG_HEAVY_INDUSTRIES_CO_LTD, true
 	case 425:
@@ -18260,6 +18272,8 @@ func BACnetVendorIdByName(value string) (enum BACnetVendorId, ok bool) {
 		return BACnetVendorId_AIR_SENTRY_LIMITED, true
 	case "FUJITSU_GENERAL_LIMITED":
 		return BACnetVendorId_FUJITSU_GENERAL_LIMITED, true
+	case "AELSYS":
+		return BACnetVendorId_AELSYS, true
 	case "PROJECT_ENGINEERING_SRL":
 		return BACnetVendorId_PROJECT_ENGINEERING_SRL, true
 	case "SANYO_ELECTRIC_CO_LTD":
@@ -18568,8 +18582,8 @@ func BACnetVendorIdByName(value string) (enum BACnetVendorId, ok bool) {
 		return BACnetVendorId_VIGILENT_CORPORATION, true
 	case "KELE_INC":
 		return BACnetVendorId_KELE_INC, true
-	case "OPERA_ELECTRONICS_INC":
-		return BACnetVendorId_OPERA_ELECTRONICS_INC, true
+	case "BELIMO_AUTOMATIONAG":
+		return BACnetVendorId_BELIMO_AUTOMATIONAG, true
 	case "GENTEC":
 		return BACnetVendorId_GENTEC, true
 	case "EMBEDDED_SCIENCE_LABSLLC":
@@ -18878,8 +18892,8 @@ func BACnetVendorIdByName(value string) (enum BACnetVendorId, ok bool) {
 		return BACnetVendorId_METZCONNECT_GMBH, true
 	case "GREENTROL_AUTOMATION_INC":
 		return BACnetVendorId_GREENTROL_AUTOMATION_INC, true
-	case "BELIMO_AUTOMATIONAG":
-		return BACnetVendorId_BELIMO_AUTOMATIONAG, true
+	case "BELIMO_AUTOMATIONAG1":
+		return BACnetVendorId_BELIMO_AUTOMATIONAG1, true
 	case "SAMSUNG_HEAVY_INDUSTRIES_CO_LTD":
 		return BACnetVendorId_SAMSUNG_HEAVY_INDUSTRIES_CO_LTD, true
 	case "TRIACTA_POWER_TECHNOLOGIES_INC":
@@ -21191,6 +21205,8 @@ func (e BACnetVendorId) PLC4XEnumName() string {
 		return "AIR_SENTRY_LIMITED"
 	case BACnetVendorId_FUJITSU_GENERAL_LIMITED:
 		return "FUJITSU_GENERAL_LIMITED"
+	case BACnetVendorId_AELSYS:
+		return "AELSYS"
 	case BACnetVendorId_PROJECT_ENGINEERING_SRL:
 		return "PROJECT_ENGINEERING_SRL"
 	case BACnetVendorId_SANYO_ELECTRIC_CO_LTD:
@@ -21499,8 +21515,8 @@ func (e BACnetVendorId) PLC4XEnumName() string {
 		return "VIGILENT_CORPORATION"
 	case BACnetVendorId_KELE_INC:
 		return "KELE_INC"
-	case BACnetVendorId_OPERA_ELECTRONICS_INC:
-		return "OPERA_ELECTRONICS_INC"
+	case BACnetVendorId_BELIMO_AUTOMATIONAG:
+		return "BELIMO_AUTOMATIONAG"
 	case BACnetVendorId_GENTEC:
 		return "GENTEC"
 	case BACnetVendorId_EMBEDDED_SCIENCE_LABSLLC:
@@ -21809,8 +21825,8 @@ func (e BACnetVendorId) PLC4XEnumName() string {
 		return "METZCONNECT_GMBH"
 	case BACnetVendorId_GREENTROL_AUTOMATION_INC:
 		return "GREENTROL_AUTOMATION_INC"
-	case BACnetVendorId_BELIMO_AUTOMATIONAG:
-		return "BELIMO_AUTOMATIONAG"
+	case BACnetVendorId_BELIMO_AUTOMATIONAG1:
+		return "BELIMO_AUTOMATIONAG1"
 	case BACnetVendorId_SAMSUNG_HEAVY_INDUSTRIES_CO_LTD:
 		return "SAMSUNG_HEAVY_INDUSTRIES_CO_LTD"
 	case BACnetVendorId_TRIACTA_POWER_TECHNOLOGIES_INC:

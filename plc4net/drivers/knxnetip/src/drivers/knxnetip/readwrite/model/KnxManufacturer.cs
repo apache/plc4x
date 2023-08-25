@@ -664,8 +664,11 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
         M_SBR_SYSTEM_TECHNICAL = 637,
         M_SHENZHEN_EASTKAME_TECHNOLOGY_CO___LTD_ = 638,
         M_BOLATU = 639,
-        M_ABB___RESERVED = 640,
-        M_BUSCH_JAEGER_ELEKTRO___RESERVED = 641,
+        M_RECBER_KABLO_A_S_ = 640,
+        M_ILITE_KNX = 641,
+        M_LAZZEN = 642,
+        M_ABB___RESERVED = 643,
+        M_BUSCH_JAEGER_ELEKTRO___RESERVED = 644,
     }
 
     public static class KnxManufacturerInfo
@@ -2481,10 +2484,19 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxManufacturer.M_BISCHOFF_ELEKTRONIK: { /* '64' */
                     return 102;
                 }
-                case KnxManufacturer.M_ABB___RESERVED: { /* '640' */
+                case KnxManufacturer.M_RECBER_KABLO_A_S_: { /* '640' */
+                    return 698;
+                }
+                case KnxManufacturer.M_ILITE_KNX: { /* '641' */
+                    return 699;
+                }
+                case KnxManufacturer.M_LAZZEN: { /* '642' */
+                    return 700;
+                }
+                case KnxManufacturer.M_ABB___RESERVED: { /* '643' */
                     return 43954;
                 }
-                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '641' */
+                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '644' */
                     return 43959;
                 }
                 case KnxManufacturer.M_JEPAZ: { /* '65' */
@@ -4417,10 +4429,19 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxManufacturer.M_BISCHOFF_ELEKTRONIK: { /* '64' */
                     return "Bischoff Elektronik";
                 }
-                case KnxManufacturer.M_ABB___RESERVED: { /* '640' */
+                case KnxManufacturer.M_RECBER_KABLO_A_S_: { /* '640' */
+                    return "RECBER KABLO A.S.";
+                }
+                case KnxManufacturer.M_ILITE_KNX: { /* '641' */
+                    return "ILite-Knx";
+                }
+                case KnxManufacturer.M_LAZZEN: { /* '642' */
+                    return "LAZZEN";
+                }
+                case KnxManufacturer.M_ABB___RESERVED: { /* '643' */
                     return "ABB - reserved";
                 }
-                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '641' */
+                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '644' */
                     return "Busch-Jaeger Elektro - reserved";
                 }
                 case KnxManufacturer.M_JEPAZ: { /* '65' */
