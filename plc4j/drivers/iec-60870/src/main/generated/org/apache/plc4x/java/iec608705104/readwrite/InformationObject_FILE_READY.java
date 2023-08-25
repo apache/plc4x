@@ -42,8 +42,29 @@ public class InformationObject_FILE_READY extends InformationObject implements M
     return TypeIdentification.FILE_READY;
   }
 
-  public InformationObject_FILE_READY(int address) {
+  // Properties.
+  protected final NameOfFile nof;
+  protected final LengthOfFile lof;
+  protected final FileReadyQualifier frq;
+
+  public InformationObject_FILE_READY(
+      int address, NameOfFile nof, LengthOfFile lof, FileReadyQualifier frq) {
     super(address);
+    this.nof = nof;
+    this.lof = lof;
+    this.frq = frq;
+  }
+
+  public NameOfFile getNof() {
+    return nof;
+  }
+
+  public LengthOfFile getLof() {
+    return lof;
+  }
+
+  public FileReadyQualifier getFrq() {
+    return frq;
   }
 
   @Override
@@ -52,6 +73,27 @@ public class InformationObject_FILE_READY extends InformationObject implements M
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     writeBuffer.pushContext("InformationObject_FILE_READY");
+
+    // Simple Field (nof)
+    writeSimpleField(
+        "nof",
+        nof,
+        new DataWriterComplexDefault<>(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
+    // Simple Field (lof)
+    writeSimpleField(
+        "lof",
+        lof,
+        new DataWriterComplexDefault<>(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
+    // Simple Field (frq)
+    writeSimpleField(
+        "frq",
+        frq,
+        new DataWriterComplexDefault<>(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     writeBuffer.popContext("InformationObject_FILE_READY");
   }
@@ -67,6 +109,15 @@ public class InformationObject_FILE_READY extends InformationObject implements M
     InformationObject_FILE_READY _value = this;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
+    // Simple field (nof)
+    lengthInBits += nof.getLengthInBits();
+
+    // Simple field (lof)
+    lengthInBits += lof.getLengthInBits();
+
+    // Simple field (frq)
+    lengthInBits += frq.getLengthInBits();
+
     return lengthInBits;
   }
 
@@ -76,19 +127,46 @@ public class InformationObject_FILE_READY extends InformationObject implements M
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
+    NameOfFile nof =
+        readSimpleField(
+            "nof",
+            new DataReaderComplexDefault<>(() -> NameOfFile.staticParse(readBuffer), readBuffer),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
+    LengthOfFile lof =
+        readSimpleField(
+            "lof",
+            new DataReaderComplexDefault<>(() -> LengthOfFile.staticParse(readBuffer), readBuffer),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
+    FileReadyQualifier frq =
+        readSimpleField(
+            "frq",
+            new DataReaderComplexDefault<>(
+                () -> FileReadyQualifier.staticParse(readBuffer), readBuffer),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
     readBuffer.closeContext("InformationObject_FILE_READY");
     // Create the instance
-    return new InformationObject_FILE_READYBuilderImpl();
+    return new InformationObject_FILE_READYBuilderImpl(nof, lof, frq);
   }
 
   public static class InformationObject_FILE_READYBuilderImpl
       implements InformationObject.InformationObjectBuilder {
+    private final NameOfFile nof;
+    private final LengthOfFile lof;
+    private final FileReadyQualifier frq;
 
-    public InformationObject_FILE_READYBuilderImpl() {}
+    public InformationObject_FILE_READYBuilderImpl(
+        NameOfFile nof, LengthOfFile lof, FileReadyQualifier frq) {
+      this.nof = nof;
+      this.lof = lof;
+      this.frq = frq;
+    }
 
     public InformationObject_FILE_READY build(int address) {
       InformationObject_FILE_READY informationObject_FILE_READY =
-          new InformationObject_FILE_READY(address);
+          new InformationObject_FILE_READY(address, nof, lof, frq);
       return informationObject_FILE_READY;
     }
   }
@@ -102,12 +180,16 @@ public class InformationObject_FILE_READY extends InformationObject implements M
       return false;
     }
     InformationObject_FILE_READY that = (InformationObject_FILE_READY) o;
-    return super.equals(that) && true;
+    return (getNof() == that.getNof())
+        && (getLof() == that.getLof())
+        && (getFrq() == that.getFrq())
+        && super.equals(that)
+        && true;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode());
+    return Objects.hash(super.hashCode(), getNof(), getLof(), getFrq());
   }
 
   @Override

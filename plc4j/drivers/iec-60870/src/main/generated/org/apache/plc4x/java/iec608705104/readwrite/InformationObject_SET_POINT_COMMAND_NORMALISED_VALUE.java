@@ -43,8 +43,23 @@ public class InformationObject_SET_POINT_COMMAND_NORMALISED_VALUE extends Inform
     return TypeIdentification.SET_POINT_COMMAND_NORMALISED_VALUE;
   }
 
-  public InformationObject_SET_POINT_COMMAND_NORMALISED_VALUE(int address) {
+  // Properties.
+  protected final NormalizedValue nva;
+  protected final QualifierOfSetPointCommand qos;
+
+  public InformationObject_SET_POINT_COMMAND_NORMALISED_VALUE(
+      int address, NormalizedValue nva, QualifierOfSetPointCommand qos) {
     super(address);
+    this.nva = nva;
+    this.qos = qos;
+  }
+
+  public NormalizedValue getNva() {
+    return nva;
+  }
+
+  public QualifierOfSetPointCommand getQos() {
+    return qos;
   }
 
   @Override
@@ -53,6 +68,20 @@ public class InformationObject_SET_POINT_COMMAND_NORMALISED_VALUE extends Inform
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     writeBuffer.pushContext("InformationObject_SET_POINT_COMMAND_NORMALISED_VALUE");
+
+    // Simple Field (nva)
+    writeSimpleField(
+        "nva",
+        nva,
+        new DataWriterComplexDefault<>(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
+    // Simple Field (qos)
+    writeSimpleField(
+        "qos",
+        qos,
+        new DataWriterComplexDefault<>(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     writeBuffer.popContext("InformationObject_SET_POINT_COMMAND_NORMALISED_VALUE");
   }
@@ -68,6 +97,12 @@ public class InformationObject_SET_POINT_COMMAND_NORMALISED_VALUE extends Inform
     InformationObject_SET_POINT_COMMAND_NORMALISED_VALUE _value = this;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
+    // Simple field (nva)
+    lengthInBits += nva.getLengthInBits();
+
+    // Simple field (qos)
+    lengthInBits += qos.getLengthInBits();
+
     return lengthInBits;
   }
 
@@ -77,20 +112,40 @@ public class InformationObject_SET_POINT_COMMAND_NORMALISED_VALUE extends Inform
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
+    NormalizedValue nva =
+        readSimpleField(
+            "nva",
+            new DataReaderComplexDefault<>(
+                () -> NormalizedValue.staticParse(readBuffer), readBuffer),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
+    QualifierOfSetPointCommand qos =
+        readSimpleField(
+            "qos",
+            new DataReaderComplexDefault<>(
+                () -> QualifierOfSetPointCommand.staticParse(readBuffer), readBuffer),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
     readBuffer.closeContext("InformationObject_SET_POINT_COMMAND_NORMALISED_VALUE");
     // Create the instance
-    return new InformationObject_SET_POINT_COMMAND_NORMALISED_VALUEBuilderImpl();
+    return new InformationObject_SET_POINT_COMMAND_NORMALISED_VALUEBuilderImpl(nva, qos);
   }
 
   public static class InformationObject_SET_POINT_COMMAND_NORMALISED_VALUEBuilderImpl
       implements InformationObject.InformationObjectBuilder {
+    private final NormalizedValue nva;
+    private final QualifierOfSetPointCommand qos;
 
-    public InformationObject_SET_POINT_COMMAND_NORMALISED_VALUEBuilderImpl() {}
+    public InformationObject_SET_POINT_COMMAND_NORMALISED_VALUEBuilderImpl(
+        NormalizedValue nva, QualifierOfSetPointCommand qos) {
+      this.nva = nva;
+      this.qos = qos;
+    }
 
     public InformationObject_SET_POINT_COMMAND_NORMALISED_VALUE build(int address) {
       InformationObject_SET_POINT_COMMAND_NORMALISED_VALUE
           informationObject_SET_POINT_COMMAND_NORMALISED_VALUE =
-              new InformationObject_SET_POINT_COMMAND_NORMALISED_VALUE(address);
+              new InformationObject_SET_POINT_COMMAND_NORMALISED_VALUE(address, nva, qos);
       return informationObject_SET_POINT_COMMAND_NORMALISED_VALUE;
     }
   }
@@ -105,12 +160,12 @@ public class InformationObject_SET_POINT_COMMAND_NORMALISED_VALUE extends Inform
     }
     InformationObject_SET_POINT_COMMAND_NORMALISED_VALUE that =
         (InformationObject_SET_POINT_COMMAND_NORMALISED_VALUE) o;
-    return super.equals(that) && true;
+    return (getNva() == that.getNva()) && (getQos() == that.getQos()) && super.equals(that) && true;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode());
+    return Objects.hash(super.hashCode(), getNva(), getQos());
   }
 
   @Override

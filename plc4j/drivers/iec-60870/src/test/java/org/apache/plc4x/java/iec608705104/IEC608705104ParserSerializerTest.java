@@ -23,7 +23,7 @@ import org.apache.plc4x.test.parserserializer.ParserSerializerTestsuiteRunner;
 public class IEC608705104ParserSerializerTest extends ParserSerializerTestsuiteRunner {
 
     public IEC608705104ParserSerializerTest() {
-        super("/protocols/iec608705104/ParserSerializerTestsuite.xml");
+        super("/protocols/iec608705104/ParserSerializerTestsuite.xml", true);
     }
 
 }

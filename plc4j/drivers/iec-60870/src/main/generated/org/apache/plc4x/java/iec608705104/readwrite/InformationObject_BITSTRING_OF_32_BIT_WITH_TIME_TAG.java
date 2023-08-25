@@ -43,8 +43,32 @@ public class InformationObject_BITSTRING_OF_32_BIT_WITH_TIME_TAG extends Informa
     return TypeIdentification.BITSTRING_OF_32_BIT_WITH_TIME_TAG;
   }
 
-  public InformationObject_BITSTRING_OF_32_BIT_WITH_TIME_TAG(int address) {
+  // Properties.
+  protected final BinaryStateInformation bsi;
+  protected final QualityDescriptor qds;
+  protected final ThreeOctetBinaryTime cp24Time2a;
+
+  public InformationObject_BITSTRING_OF_32_BIT_WITH_TIME_TAG(
+      int address,
+      BinaryStateInformation bsi,
+      QualityDescriptor qds,
+      ThreeOctetBinaryTime cp24Time2a) {
     super(address);
+    this.bsi = bsi;
+    this.qds = qds;
+    this.cp24Time2a = cp24Time2a;
+  }
+
+  public BinaryStateInformation getBsi() {
+    return bsi;
+  }
+
+  public QualityDescriptor getQds() {
+    return qds;
+  }
+
+  public ThreeOctetBinaryTime getCp24Time2a() {
+    return cp24Time2a;
   }
 
   @Override
@@ -53,6 +77,27 @@ public class InformationObject_BITSTRING_OF_32_BIT_WITH_TIME_TAG extends Informa
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     writeBuffer.pushContext("InformationObject_BITSTRING_OF_32_BIT_WITH_TIME_TAG");
+
+    // Simple Field (bsi)
+    writeSimpleField(
+        "bsi",
+        bsi,
+        new DataWriterComplexDefault<>(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
+    // Simple Field (qds)
+    writeSimpleField(
+        "qds",
+        qds,
+        new DataWriterComplexDefault<>(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
+    // Simple Field (cp24Time2a)
+    writeSimpleField(
+        "cp24Time2a",
+        cp24Time2a,
+        new DataWriterComplexDefault<>(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     writeBuffer.popContext("InformationObject_BITSTRING_OF_32_BIT_WITH_TIME_TAG");
   }
@@ -68,6 +113,15 @@ public class InformationObject_BITSTRING_OF_32_BIT_WITH_TIME_TAG extends Informa
     InformationObject_BITSTRING_OF_32_BIT_WITH_TIME_TAG _value = this;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
+    // Simple field (bsi)
+    lengthInBits += bsi.getLengthInBits();
+
+    // Simple field (qds)
+    lengthInBits += qds.getLengthInBits();
+
+    // Simple field (cp24Time2a)
+    lengthInBits += cp24Time2a.getLengthInBits();
+
     return lengthInBits;
   }
 
@@ -77,20 +131,50 @@ public class InformationObject_BITSTRING_OF_32_BIT_WITH_TIME_TAG extends Informa
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
+    BinaryStateInformation bsi =
+        readSimpleField(
+            "bsi",
+            new DataReaderComplexDefault<>(
+                () -> BinaryStateInformation.staticParse(readBuffer), readBuffer),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
+    QualityDescriptor qds =
+        readSimpleField(
+            "qds",
+            new DataReaderComplexDefault<>(
+                () -> QualityDescriptor.staticParse(readBuffer), readBuffer),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
+    ThreeOctetBinaryTime cp24Time2a =
+        readSimpleField(
+            "cp24Time2a",
+            new DataReaderComplexDefault<>(
+                () -> ThreeOctetBinaryTime.staticParse(readBuffer), readBuffer),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
     readBuffer.closeContext("InformationObject_BITSTRING_OF_32_BIT_WITH_TIME_TAG");
     // Create the instance
-    return new InformationObject_BITSTRING_OF_32_BIT_WITH_TIME_TAGBuilderImpl();
+    return new InformationObject_BITSTRING_OF_32_BIT_WITH_TIME_TAGBuilderImpl(bsi, qds, cp24Time2a);
   }
 
   public static class InformationObject_BITSTRING_OF_32_BIT_WITH_TIME_TAGBuilderImpl
       implements InformationObject.InformationObjectBuilder {
+    private final BinaryStateInformation bsi;
+    private final QualityDescriptor qds;
+    private final ThreeOctetBinaryTime cp24Time2a;
 
-    public InformationObject_BITSTRING_OF_32_BIT_WITH_TIME_TAGBuilderImpl() {}
+    public InformationObject_BITSTRING_OF_32_BIT_WITH_TIME_TAGBuilderImpl(
+        BinaryStateInformation bsi, QualityDescriptor qds, ThreeOctetBinaryTime cp24Time2a) {
+      this.bsi = bsi;
+      this.qds = qds;
+      this.cp24Time2a = cp24Time2a;
+    }
 
     public InformationObject_BITSTRING_OF_32_BIT_WITH_TIME_TAG build(int address) {
       InformationObject_BITSTRING_OF_32_BIT_WITH_TIME_TAG
           informationObject_BITSTRING_OF_32_BIT_WITH_TIME_TAG =
-              new InformationObject_BITSTRING_OF_32_BIT_WITH_TIME_TAG(address);
+              new InformationObject_BITSTRING_OF_32_BIT_WITH_TIME_TAG(
+                  address, bsi, qds, cp24Time2a);
       return informationObject_BITSTRING_OF_32_BIT_WITH_TIME_TAG;
     }
   }
@@ -105,12 +189,16 @@ public class InformationObject_BITSTRING_OF_32_BIT_WITH_TIME_TAG extends Informa
     }
     InformationObject_BITSTRING_OF_32_BIT_WITH_TIME_TAG that =
         (InformationObject_BITSTRING_OF_32_BIT_WITH_TIME_TAG) o;
-    return super.equals(that) && true;
+    return (getBsi() == that.getBsi())
+        && (getQds() == that.getQds())
+        && (getCp24Time2a() == that.getCp24Time2a())
+        && super.equals(that)
+        && true;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode());
+    return Objects.hash(super.hashCode(), getBsi(), getQds(), getCp24Time2a());
   }
 
   @Override

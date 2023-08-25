@@ -43,8 +43,23 @@ public class InformationObject_SET_POINT_COMMAND_SHORT_FLOATING_POINT_NUMBER
     return TypeIdentification.SET_POINT_COMMAND_SHORT_FLOATING_POINT_NUMBER;
   }
 
-  public InformationObject_SET_POINT_COMMAND_SHORT_FLOATING_POINT_NUMBER(int address) {
+  // Properties.
+  protected final float value;
+  protected final QualifierOfSetPointCommand qos;
+
+  public InformationObject_SET_POINT_COMMAND_SHORT_FLOATING_POINT_NUMBER(
+      int address, float value, QualifierOfSetPointCommand qos) {
     super(address);
+    this.value = value;
+    this.qos = qos;
+  }
+
+  public float getValue() {
+    return value;
+  }
+
+  public QualifierOfSetPointCommand getQos() {
+    return qos;
   }
 
   @Override
@@ -53,6 +68,20 @@ public class InformationObject_SET_POINT_COMMAND_SHORT_FLOATING_POINT_NUMBER
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     writeBuffer.pushContext("InformationObject_SET_POINT_COMMAND_SHORT_FLOATING_POINT_NUMBER");
+
+    // Simple Field (value)
+    writeSimpleField(
+        "value",
+        value,
+        writeFloat(writeBuffer, 32),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
+    // Simple Field (qos)
+    writeSimpleField(
+        "qos",
+        qos,
+        new DataWriterComplexDefault<>(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     writeBuffer.popContext("InformationObject_SET_POINT_COMMAND_SHORT_FLOATING_POINT_NUMBER");
   }
@@ -68,6 +97,12 @@ public class InformationObject_SET_POINT_COMMAND_SHORT_FLOATING_POINT_NUMBER
     InformationObject_SET_POINT_COMMAND_SHORT_FLOATING_POINT_NUMBER _value = this;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
+    // Simple field (value)
+    lengthInBits += 32;
+
+    // Simple field (qos)
+    lengthInBits += qos.getLengthInBits();
+
     return lengthInBits;
   }
 
@@ -77,20 +112,39 @@ public class InformationObject_SET_POINT_COMMAND_SHORT_FLOATING_POINT_NUMBER
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
+    float value =
+        readSimpleField(
+            "value", readFloat(readBuffer, 32), WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
+    QualifierOfSetPointCommand qos =
+        readSimpleField(
+            "qos",
+            new DataReaderComplexDefault<>(
+                () -> QualifierOfSetPointCommand.staticParse(readBuffer), readBuffer),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
     readBuffer.closeContext("InformationObject_SET_POINT_COMMAND_SHORT_FLOATING_POINT_NUMBER");
     // Create the instance
-    return new InformationObject_SET_POINT_COMMAND_SHORT_FLOATING_POINT_NUMBERBuilderImpl();
+    return new InformationObject_SET_POINT_COMMAND_SHORT_FLOATING_POINT_NUMBERBuilderImpl(
+        value, qos);
   }
 
   public static class InformationObject_SET_POINT_COMMAND_SHORT_FLOATING_POINT_NUMBERBuilderImpl
       implements InformationObject.InformationObjectBuilder {
+    private final float value;
+    private final QualifierOfSetPointCommand qos;
 
-    public InformationObject_SET_POINT_COMMAND_SHORT_FLOATING_POINT_NUMBERBuilderImpl() {}
+    public InformationObject_SET_POINT_COMMAND_SHORT_FLOATING_POINT_NUMBERBuilderImpl(
+        float value, QualifierOfSetPointCommand qos) {
+      this.value = value;
+      this.qos = qos;
+    }
 
     public InformationObject_SET_POINT_COMMAND_SHORT_FLOATING_POINT_NUMBER build(int address) {
       InformationObject_SET_POINT_COMMAND_SHORT_FLOATING_POINT_NUMBER
           informationObject_SET_POINT_COMMAND_SHORT_FLOATING_POINT_NUMBER =
-              new InformationObject_SET_POINT_COMMAND_SHORT_FLOATING_POINT_NUMBER(address);
+              new InformationObject_SET_POINT_COMMAND_SHORT_FLOATING_POINT_NUMBER(
+                  address, value, qos);
       return informationObject_SET_POINT_COMMAND_SHORT_FLOATING_POINT_NUMBER;
     }
   }
@@ -105,12 +159,15 @@ public class InformationObject_SET_POINT_COMMAND_SHORT_FLOATING_POINT_NUMBER
     }
     InformationObject_SET_POINT_COMMAND_SHORT_FLOATING_POINT_NUMBER that =
         (InformationObject_SET_POINT_COMMAND_SHORT_FLOATING_POINT_NUMBER) o;
-    return super.equals(that) && true;
+    return (getValue() == that.getValue())
+        && (getQos() == that.getQos())
+        && super.equals(that)
+        && true;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode());
+    return Objects.hash(super.hashCode(), getValue(), getQos());
   }
 
   @Override

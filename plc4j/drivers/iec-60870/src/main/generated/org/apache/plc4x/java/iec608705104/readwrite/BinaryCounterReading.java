@@ -84,19 +84,39 @@ public class BinaryCounterReading implements Message {
     writeBuffer.pushContext("BinaryCounterReading");
 
     // Simple Field (counterValue)
-    writeSimpleField("counterValue", counterValue, writeUnsignedLong(writeBuffer, 32));
+    writeSimpleField(
+        "counterValue",
+        counterValue,
+        writeUnsignedLong(writeBuffer, 32),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     // Simple Field (counterValid)
-    writeSimpleField("counterValid", counterValid, writeBoolean(writeBuffer));
+    writeSimpleField(
+        "counterValid",
+        counterValid,
+        writeBoolean(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     // Simple Field (counterAdjusted)
-    writeSimpleField("counterAdjusted", counterAdjusted, writeBoolean(writeBuffer));
+    writeSimpleField(
+        "counterAdjusted",
+        counterAdjusted,
+        writeBoolean(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     // Simple Field (carry)
-    writeSimpleField("carry", carry, writeBoolean(writeBuffer));
+    writeSimpleField(
+        "carry",
+        carry,
+        writeBoolean(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     // Simple Field (sequenceNumber)
-    writeSimpleField("sequenceNumber", sequenceNumber, writeUnsignedByte(writeBuffer, 5));
+    writeSimpleField(
+        "sequenceNumber",
+        sequenceNumber,
+        writeUnsignedByte(writeBuffer, 5),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     writeBuffer.popContext("BinaryCounterReading");
   }
@@ -141,15 +161,33 @@ public class BinaryCounterReading implements Message {
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    long counterValue = readSimpleField("counterValue", readUnsignedLong(readBuffer, 32));
+    long counterValue =
+        readSimpleField(
+            "counterValue",
+            readUnsignedLong(readBuffer, 32),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
-    boolean counterValid = readSimpleField("counterValid", readBoolean(readBuffer));
+    boolean counterValid =
+        readSimpleField(
+            "counterValid",
+            readBoolean(readBuffer),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
-    boolean counterAdjusted = readSimpleField("counterAdjusted", readBoolean(readBuffer));
+    boolean counterAdjusted =
+        readSimpleField(
+            "counterAdjusted",
+            readBoolean(readBuffer),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
-    boolean carry = readSimpleField("carry", readBoolean(readBuffer));
+    boolean carry =
+        readSimpleField(
+            "carry", readBoolean(readBuffer), WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
-    byte sequenceNumber = readSimpleField("sequenceNumber", readUnsignedByte(readBuffer, 5));
+    byte sequenceNumber =
+        readSimpleField(
+            "sequenceNumber",
+            readUnsignedByte(readBuffer, 5),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     readBuffer.closeContext("BinaryCounterReading");
     // Create the instance

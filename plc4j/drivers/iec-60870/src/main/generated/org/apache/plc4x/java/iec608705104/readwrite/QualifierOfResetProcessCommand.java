@@ -55,7 +55,11 @@ public class QualifierOfResetProcessCommand implements Message {
     writeBuffer.pushContext("QualifierOfResetProcessCommand");
 
     // Simple Field (qualifier)
-    writeSimpleField("qualifier", qualifier, writeUnsignedShort(writeBuffer, 8));
+    writeSimpleField(
+        "qualifier",
+        qualifier,
+        writeUnsignedShort(writeBuffer, 8),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     writeBuffer.popContext("QualifierOfResetProcessCommand");
   }
@@ -89,7 +93,11 @@ public class QualifierOfResetProcessCommand implements Message {
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    short qualifier = readSimpleField("qualifier", readUnsignedShort(readBuffer, 8));
+    short qualifier =
+        readSimpleField(
+            "qualifier",
+            readUnsignedShort(readBuffer, 8),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     readBuffer.closeContext("QualifierOfResetProcessCommand");
     // Create the instance

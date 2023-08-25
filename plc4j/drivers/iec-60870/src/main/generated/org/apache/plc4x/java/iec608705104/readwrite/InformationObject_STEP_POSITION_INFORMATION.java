@@ -43,8 +43,23 @@ public class InformationObject_STEP_POSITION_INFORMATION extends InformationObje
     return TypeIdentification.STEP_POSITION_INFORMATION;
   }
 
-  public InformationObject_STEP_POSITION_INFORMATION(int address) {
+  // Properties.
+  protected final ValueWithTransientStateIndication vti;
+  protected final QualityDescriptor qds;
+
+  public InformationObject_STEP_POSITION_INFORMATION(
+      int address, ValueWithTransientStateIndication vti, QualityDescriptor qds) {
     super(address);
+    this.vti = vti;
+    this.qds = qds;
+  }
+
+  public ValueWithTransientStateIndication getVti() {
+    return vti;
+  }
+
+  public QualityDescriptor getQds() {
+    return qds;
   }
 
   @Override
@@ -53,6 +68,20 @@ public class InformationObject_STEP_POSITION_INFORMATION extends InformationObje
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     writeBuffer.pushContext("InformationObject_STEP_POSITION_INFORMATION");
+
+    // Simple Field (vti)
+    writeSimpleField(
+        "vti",
+        vti,
+        new DataWriterComplexDefault<>(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
+    // Simple Field (qds)
+    writeSimpleField(
+        "qds",
+        qds,
+        new DataWriterComplexDefault<>(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     writeBuffer.popContext("InformationObject_STEP_POSITION_INFORMATION");
   }
@@ -68,6 +97,12 @@ public class InformationObject_STEP_POSITION_INFORMATION extends InformationObje
     InformationObject_STEP_POSITION_INFORMATION _value = this;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
+    // Simple field (vti)
+    lengthInBits += vti.getLengthInBits();
+
+    // Simple field (qds)
+    lengthInBits += qds.getLengthInBits();
+
     return lengthInBits;
   }
 
@@ -77,19 +112,39 @@ public class InformationObject_STEP_POSITION_INFORMATION extends InformationObje
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
+    ValueWithTransientStateIndication vti =
+        readSimpleField(
+            "vti",
+            new DataReaderComplexDefault<>(
+                () -> ValueWithTransientStateIndication.staticParse(readBuffer), readBuffer),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
+    QualityDescriptor qds =
+        readSimpleField(
+            "qds",
+            new DataReaderComplexDefault<>(
+                () -> QualityDescriptor.staticParse(readBuffer), readBuffer),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
     readBuffer.closeContext("InformationObject_STEP_POSITION_INFORMATION");
     // Create the instance
-    return new InformationObject_STEP_POSITION_INFORMATIONBuilderImpl();
+    return new InformationObject_STEP_POSITION_INFORMATIONBuilderImpl(vti, qds);
   }
 
   public static class InformationObject_STEP_POSITION_INFORMATIONBuilderImpl
       implements InformationObject.InformationObjectBuilder {
+    private final ValueWithTransientStateIndication vti;
+    private final QualityDescriptor qds;
 
-    public InformationObject_STEP_POSITION_INFORMATIONBuilderImpl() {}
+    public InformationObject_STEP_POSITION_INFORMATIONBuilderImpl(
+        ValueWithTransientStateIndication vti, QualityDescriptor qds) {
+      this.vti = vti;
+      this.qds = qds;
+    }
 
     public InformationObject_STEP_POSITION_INFORMATION build(int address) {
       InformationObject_STEP_POSITION_INFORMATION informationObject_STEP_POSITION_INFORMATION =
-          new InformationObject_STEP_POSITION_INFORMATION(address);
+          new InformationObject_STEP_POSITION_INFORMATION(address, vti, qds);
       return informationObject_STEP_POSITION_INFORMATION;
     }
   }
@@ -104,12 +159,12 @@ public class InformationObject_STEP_POSITION_INFORMATION extends InformationObje
     }
     InformationObject_STEP_POSITION_INFORMATION that =
         (InformationObject_STEP_POSITION_INFORMATION) o;
-    return super.equals(that) && true;
+    return (getVti() == that.getVti()) && (getQds() == that.getQds()) && super.equals(that) && true;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode());
+    return Objects.hash(super.hashCode(), getVti(), getQds());
   }
 
   @Override

@@ -43,8 +43,16 @@ public class InformationObject_BITSTRING_32_BIT_COMMAND extends InformationObjec
     return TypeIdentification.BITSTRING_32_BIT_COMMAND;
   }
 
-  public InformationObject_BITSTRING_32_BIT_COMMAND(int address) {
+  // Properties.
+  protected final BinaryStateInformation bsi;
+
+  public InformationObject_BITSTRING_32_BIT_COMMAND(int address, BinaryStateInformation bsi) {
     super(address);
+    this.bsi = bsi;
+  }
+
+  public BinaryStateInformation getBsi() {
+    return bsi;
   }
 
   @Override
@@ -53,6 +61,13 @@ public class InformationObject_BITSTRING_32_BIT_COMMAND extends InformationObjec
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     writeBuffer.pushContext("InformationObject_BITSTRING_32_BIT_COMMAND");
+
+    // Simple Field (bsi)
+    writeSimpleField(
+        "bsi",
+        bsi,
+        new DataWriterComplexDefault<>(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     writeBuffer.popContext("InformationObject_BITSTRING_32_BIT_COMMAND");
   }
@@ -68,6 +83,9 @@ public class InformationObject_BITSTRING_32_BIT_COMMAND extends InformationObjec
     InformationObject_BITSTRING_32_BIT_COMMAND _value = this;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
+    // Simple field (bsi)
+    lengthInBits += bsi.getLengthInBits();
+
     return lengthInBits;
   }
 
@@ -77,19 +95,29 @@ public class InformationObject_BITSTRING_32_BIT_COMMAND extends InformationObjec
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
+    BinaryStateInformation bsi =
+        readSimpleField(
+            "bsi",
+            new DataReaderComplexDefault<>(
+                () -> BinaryStateInformation.staticParse(readBuffer), readBuffer),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
     readBuffer.closeContext("InformationObject_BITSTRING_32_BIT_COMMAND");
     // Create the instance
-    return new InformationObject_BITSTRING_32_BIT_COMMANDBuilderImpl();
+    return new InformationObject_BITSTRING_32_BIT_COMMANDBuilderImpl(bsi);
   }
 
   public static class InformationObject_BITSTRING_32_BIT_COMMANDBuilderImpl
       implements InformationObject.InformationObjectBuilder {
+    private final BinaryStateInformation bsi;
 
-    public InformationObject_BITSTRING_32_BIT_COMMANDBuilderImpl() {}
+    public InformationObject_BITSTRING_32_BIT_COMMANDBuilderImpl(BinaryStateInformation bsi) {
+      this.bsi = bsi;
+    }
 
     public InformationObject_BITSTRING_32_BIT_COMMAND build(int address) {
       InformationObject_BITSTRING_32_BIT_COMMAND informationObject_BITSTRING_32_BIT_COMMAND =
-          new InformationObject_BITSTRING_32_BIT_COMMAND(address);
+          new InformationObject_BITSTRING_32_BIT_COMMAND(address, bsi);
       return informationObject_BITSTRING_32_BIT_COMMAND;
     }
   }
@@ -104,12 +132,12 @@ public class InformationObject_BITSTRING_32_BIT_COMMAND extends InformationObjec
     }
     InformationObject_BITSTRING_32_BIT_COMMAND that =
         (InformationObject_BITSTRING_32_BIT_COMMAND) o;
-    return super.equals(that) && true;
+    return (getBsi() == that.getBsi()) && super.equals(that) && true;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode());
+    return Objects.hash(super.hashCode(), getBsi());
   }
 
   @Override

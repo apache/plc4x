@@ -68,13 +68,25 @@ public class QualifierOfParameterOfMeasuredValues implements Message {
     writeBuffer.pushContext("QualifierOfParameterOfMeasuredValues");
 
     // Simple Field (parameterInOperation)
-    writeSimpleField("parameterInOperation", parameterInOperation, writeBoolean(writeBuffer));
+    writeSimpleField(
+        "parameterInOperation",
+        parameterInOperation,
+        writeBoolean(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     // Simple Field (localParameterChange)
-    writeSimpleField("localParameterChange", localParameterChange, writeBoolean(writeBuffer));
+    writeSimpleField(
+        "localParameterChange",
+        localParameterChange,
+        writeBoolean(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     // Simple Field (kindOfParameter)
-    writeSimpleField("kindOfParameter", kindOfParameter, writeUnsignedByte(writeBuffer, 6));
+    writeSimpleField(
+        "kindOfParameter",
+        kindOfParameter,
+        writeUnsignedByte(writeBuffer, 6),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     writeBuffer.popContext("QualifierOfParameterOfMeasuredValues");
   }
@@ -114,11 +126,23 @@ public class QualifierOfParameterOfMeasuredValues implements Message {
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    boolean parameterInOperation = readSimpleField("parameterInOperation", readBoolean(readBuffer));
+    boolean parameterInOperation =
+        readSimpleField(
+            "parameterInOperation",
+            readBoolean(readBuffer),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
-    boolean localParameterChange = readSimpleField("localParameterChange", readBoolean(readBuffer));
+    boolean localParameterChange =
+        readSimpleField(
+            "localParameterChange",
+            readBoolean(readBuffer),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
-    byte kindOfParameter = readSimpleField("kindOfParameter", readUnsignedByte(readBuffer, 6));
+    byte kindOfParameter =
+        readSimpleField(
+            "kindOfParameter",
+            readUnsignedByte(readBuffer, 6),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     readBuffer.closeContext("QualifierOfParameterOfMeasuredValues");
     // Create the instance

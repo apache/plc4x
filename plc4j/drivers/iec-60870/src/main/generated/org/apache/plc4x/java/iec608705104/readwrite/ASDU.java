@@ -112,21 +112,35 @@ public class ASDU implements Message {
         new DataWriterEnumDefault<>(
             TypeIdentification::getValue,
             TypeIdentification::name,
-            writeUnsignedShort(writeBuffer, 8)));
+            writeUnsignedShort(writeBuffer, 8)),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     // Simple Field (structureQualifier)
-    writeSimpleField("structureQualifier", structureQualifier, writeBoolean(writeBuffer));
+    writeSimpleField(
+        "structureQualifier",
+        structureQualifier,
+        writeBoolean(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     // Implicit Field (numberOfObjects) (Used for parsing, but its value is not stored as it's
     // implicitly given by the objects content)
     byte numberOfObjects = (byte) (COUNT(getInformationObjects()));
-    writeImplicitField("numberOfObjects", numberOfObjects, writeUnsignedByte(writeBuffer, 7));
+    writeImplicitField(
+        "numberOfObjects",
+        numberOfObjects,
+        writeUnsignedByte(writeBuffer, 7),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     // Simple Field (test)
-    writeSimpleField("test", test, writeBoolean(writeBuffer));
+    writeSimpleField(
+        "test", test, writeBoolean(writeBuffer), WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     // Simple Field (negative)
-    writeSimpleField("negative", negative, writeBoolean(writeBuffer));
+    writeSimpleField(
+        "negative",
+        negative,
+        writeBoolean(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     // Simple Field (causeOfTransmission)
     writeSimpleEnumField(
@@ -136,16 +150,29 @@ public class ASDU implements Message {
         new DataWriterEnumDefault<>(
             CauseOfTransmission::getValue,
             CauseOfTransmission::name,
-            writeUnsignedByte(writeBuffer, 6)));
+            writeUnsignedByte(writeBuffer, 6)),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     // Simple Field (originatorAddress)
-    writeSimpleField("originatorAddress", originatorAddress, writeUnsignedShort(writeBuffer, 8));
+    writeSimpleField(
+        "originatorAddress",
+        originatorAddress,
+        writeUnsignedShort(writeBuffer, 8),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     // Simple Field (asduAddressField)
-    writeSimpleField("asduAddressField", asduAddressField, writeUnsignedInt(writeBuffer, 16));
+    writeSimpleField(
+        "asduAddressField",
+        asduAddressField,
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     // Array Field (informationObjects)
-    writeComplexTypeArrayField("informationObjects", informationObjects, writeBuffer);
+    writeComplexTypeArrayField(
+        "informationObjects",
+        informationObjects,
+        writeBuffer,
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     writeBuffer.popContext("ASDU");
   }
@@ -212,34 +239,59 @@ public class ASDU implements Message {
             "typeIdentification",
             "TypeIdentification",
             new DataReaderEnumDefault<>(
-                TypeIdentification::enumForValue, readUnsignedShort(readBuffer, 8)));
+                TypeIdentification::enumForValue, readUnsignedShort(readBuffer, 8)),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
-    boolean structureQualifier = readSimpleField("structureQualifier", readBoolean(readBuffer));
+    boolean structureQualifier =
+        readSimpleField(
+            "structureQualifier",
+            readBoolean(readBuffer),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
-    byte numberOfObjects = readImplicitField("numberOfObjects", readUnsignedByte(readBuffer, 7));
+    byte numberOfObjects =
+        readImplicitField(
+            "numberOfObjects",
+            readUnsignedByte(readBuffer, 7),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
-    boolean test = readSimpleField("test", readBoolean(readBuffer));
+    boolean test =
+        readSimpleField(
+            "test", readBoolean(readBuffer), WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
-    boolean negative = readSimpleField("negative", readBoolean(readBuffer));
+    boolean negative =
+        readSimpleField(
+            "negative", readBoolean(readBuffer), WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     CauseOfTransmission causeOfTransmission =
         readEnumField(
             "causeOfTransmission",
             "CauseOfTransmission",
             new DataReaderEnumDefault<>(
-                CauseOfTransmission::enumForValue, readUnsignedByte(readBuffer, 6)));
+                CauseOfTransmission::enumForValue, readUnsignedByte(readBuffer, 6)),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     short originatorAddress =
-        readSimpleField("originatorAddress", readUnsignedShort(readBuffer, 8));
+        readSimpleField(
+            "originatorAddress",
+            readUnsignedShort(readBuffer, 8),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
-    int asduAddressField = readSimpleField("asduAddressField", readUnsignedInt(readBuffer, 16));
+    int asduAddressField =
+        readSimpleField(
+            "asduAddressField",
+            readUnsignedInt(readBuffer, 16),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     List<InformationObject> informationObjects =
         readCountArrayField(
             "informationObjects",
             new DataReaderComplexDefault<>(
-                () -> InformationObject.staticParse(readBuffer), readBuffer),
-            numberOfObjects);
+                () ->
+                    InformationObject.staticParse(
+                        readBuffer, (TypeIdentification) (typeIdentification)),
+                readBuffer),
+            numberOfObjects,
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     readBuffer.closeContext("ASDU");
     // Create the instance

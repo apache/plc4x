@@ -55,7 +55,11 @@ public class ShortFloatingPointNumber implements Message {
     writeBuffer.pushContext("ShortFloatingPointNumber");
 
     // Simple Field (value)
-    writeSimpleField("value", value, writeFloat(writeBuffer, 16));
+    writeSimpleField(
+        "value",
+        value,
+        writeFloat(writeBuffer, 16),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     writeBuffer.popContext("ShortFloatingPointNumber");
   }
@@ -88,7 +92,9 @@ public class ShortFloatingPointNumber implements Message {
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    float value = readSimpleField("value", readFloat(readBuffer, 16));
+    float value =
+        readSimpleField(
+            "value", readFloat(readBuffer, 16), WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     readBuffer.closeContext("ShortFloatingPointNumber");
     // Create the instance

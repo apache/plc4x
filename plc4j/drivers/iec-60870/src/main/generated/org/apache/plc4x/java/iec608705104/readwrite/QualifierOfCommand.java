@@ -61,10 +61,18 @@ public class QualifierOfCommand implements Message {
     writeBuffer.pushContext("QualifierOfCommand");
 
     // Simple Field (select)
-    writeSimpleField("select", select, writeBoolean(writeBuffer));
+    writeSimpleField(
+        "select",
+        select,
+        writeBoolean(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     // Simple Field (qualifier)
-    writeSimpleField("qualifier", qualifier, writeUnsignedByte(writeBuffer, 5));
+    writeSimpleField(
+        "qualifier",
+        qualifier,
+        writeUnsignedByte(writeBuffer, 5),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     writeBuffer.popContext("QualifierOfCommand");
   }
@@ -100,9 +108,15 @@ public class QualifierOfCommand implements Message {
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    boolean select = readSimpleField("select", readBoolean(readBuffer));
+    boolean select =
+        readSimpleField(
+            "select", readBoolean(readBuffer), WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
-    byte qualifier = readSimpleField("qualifier", readUnsignedByte(readBuffer, 5));
+    byte qualifier =
+        readSimpleField(
+            "qualifier",
+            readUnsignedByte(readBuffer, 5),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     readBuffer.closeContext("QualifierOfCommand");
     // Create the instance

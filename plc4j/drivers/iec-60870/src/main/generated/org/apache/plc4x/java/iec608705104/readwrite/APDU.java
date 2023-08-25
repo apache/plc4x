@@ -38,13 +38,20 @@ import org.apache.plc4x.java.spi.generation.*;
 public abstract class APDU implements Message {
 
   // Abstract accessors for discriminator values.
-  public abstract Integer getCommand();
 
   // Constant values.
-  public static final Short STARTBYTE = 0x86;
+  public static final Short STARTBYTE = 0x68;
 
-  public APDU() {
+  // Properties.
+  protected final int command;
+
+  public APDU(int command) {
     super();
+    this.command = command;
+  }
+
+  public int getCommand() {
+    return command;
   }
 
   public short getStartByte() {
@@ -74,10 +81,10 @@ public abstract class APDU implements Message {
         writeUnsignedShort(writeBuffer, 8),
         WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
-    // Discriminator Field (command) (Used as input to a switch field)
-    writeDiscriminatorField(
+    // Simple Field (command)
+    writeSimpleField(
         "command",
-        getCommand(),
+        command,
         writeUnsignedInt(writeBuffer, 16),
         WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
@@ -104,7 +111,7 @@ public abstract class APDU implements Message {
     // Implicit Field (apciLength)
     lengthInBits += 8;
 
-    // Discriminator Field (command)
+    // Simple field (command)
     lengthInBits += 16;
 
     // Length of sub-type elements will be added by sub-type...
@@ -136,7 +143,7 @@ public abstract class APDU implements Message {
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     int command =
-        readDiscriminatorField(
+        readSimpleField(
             "command",
             readUnsignedInt(readBuffer, 16),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
@@ -157,7 +164,7 @@ public abstract class APDU implements Message {
       builder = APDUUFormatStartDataTransferConfirmation.staticParseAPDUBuilder(readBuffer);
     } else if (EvaluationHelper.equals(command, (int) 0x01)) {
       builder = APDUSFormat.staticParseAPDUBuilder(readBuffer);
-    } else {
+    } else if (true) {
       builder = APDUIFormat.staticParseAPDUBuilder(readBuffer);
     }
     if (builder == null) {
@@ -167,12 +174,12 @@ public abstract class APDU implements Message {
 
     readBuffer.closeContext("APDU");
     // Create the instance
-    APDU _aPDU = builder.build();
+    APDU _aPDU = builder.build(command);
     return _aPDU;
   }
 
   public interface APDUBuilder {
-    APDU build();
+    APDU build(int command);
   }
 
   @Override
@@ -184,12 +191,12 @@ public abstract class APDU implements Message {
       return false;
     }
     APDU that = (APDU) o;
-    return true;
+    return (getCommand() == that.getCommand()) && true;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash();
+    return Objects.hash(getCommand());
   }
 
   @Override

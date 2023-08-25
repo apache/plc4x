@@ -45,10 +45,40 @@ class InformationObject_PACKED_OUTPUT_CIRCUIT_INFORMATION_OF_PROTECTION_EQUIPMEN
         .PACKED_OUTPUT_CIRCUIT_INFORMATION_OF_PROTECTION_EQUIPMENT_WITH_TIME_TAG_CP56TIME2A;
   }
 
+  // Properties.
+  protected final OutputCircuitInformation oci;
+  protected final QualityDescriptorForPointsOfProtectionEquipment qdp;
+  protected final TwoOctetBinaryTime cp16Time2a;
+  protected final SevenOctetBinaryTime cp56Time2a;
+
   public
   InformationObject_PACKED_OUTPUT_CIRCUIT_INFORMATION_OF_PROTECTION_EQUIPMENT_WITH_TIME_TAG_CP56TIME2A(
-      int address) {
+      int address,
+      OutputCircuitInformation oci,
+      QualityDescriptorForPointsOfProtectionEquipment qdp,
+      TwoOctetBinaryTime cp16Time2a,
+      SevenOctetBinaryTime cp56Time2a) {
     super(address);
+    this.oci = oci;
+    this.qdp = qdp;
+    this.cp16Time2a = cp16Time2a;
+    this.cp56Time2a = cp56Time2a;
+  }
+
+  public OutputCircuitInformation getOci() {
+    return oci;
+  }
+
+  public QualityDescriptorForPointsOfProtectionEquipment getQdp() {
+    return qdp;
+  }
+
+  public TwoOctetBinaryTime getCp16Time2a() {
+    return cp16Time2a;
+  }
+
+  public SevenOctetBinaryTime getCp56Time2a() {
+    return cp56Time2a;
   }
 
   @Override
@@ -58,6 +88,34 @@ class InformationObject_PACKED_OUTPUT_CIRCUIT_INFORMATION_OF_PROTECTION_EQUIPMEN
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     writeBuffer.pushContext(
         "InformationObject_PACKED_OUTPUT_CIRCUIT_INFORMATION_OF_PROTECTION_EQUIPMENT_WITH_TIME_TAG_CP56TIME2A");
+
+    // Simple Field (oci)
+    writeSimpleField(
+        "oci",
+        oci,
+        new DataWriterComplexDefault<>(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
+    // Simple Field (qdp)
+    writeSimpleField(
+        "qdp",
+        qdp,
+        new DataWriterComplexDefault<>(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
+    // Simple Field (cp16Time2a)
+    writeSimpleField(
+        "cp16Time2a",
+        cp16Time2a,
+        new DataWriterComplexDefault<>(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
+    // Simple Field (cp56Time2a)
+    writeSimpleField(
+        "cp56Time2a",
+        cp56Time2a,
+        new DataWriterComplexDefault<>(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     writeBuffer.popContext(
         "InformationObject_PACKED_OUTPUT_CIRCUIT_INFORMATION_OF_PROTECTION_EQUIPMENT_WITH_TIME_TAG_CP56TIME2A");
@@ -75,6 +133,18 @@ class InformationObject_PACKED_OUTPUT_CIRCUIT_INFORMATION_OF_PROTECTION_EQUIPMEN
         _value = this;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
+    // Simple field (oci)
+    lengthInBits += oci.getLengthInBits();
+
+    // Simple field (qdp)
+    lengthInBits += qdp.getLengthInBits();
+
+    // Simple field (cp16Time2a)
+    lengthInBits += cp16Time2a.getLengthInBits();
+
+    // Simple field (cp56Time2a)
+    lengthInBits += cp56Time2a.getLengthInBits();
+
     return lengthInBits;
   }
 
@@ -85,18 +155,61 @@ class InformationObject_PACKED_OUTPUT_CIRCUIT_INFORMATION_OF_PROTECTION_EQUIPMEN
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
+    OutputCircuitInformation oci =
+        readSimpleField(
+            "oci",
+            new DataReaderComplexDefault<>(
+                () -> OutputCircuitInformation.staticParse(readBuffer), readBuffer),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
+    QualityDescriptorForPointsOfProtectionEquipment qdp =
+        readSimpleField(
+            "qdp",
+            new DataReaderComplexDefault<>(
+                () -> QualityDescriptorForPointsOfProtectionEquipment.staticParse(readBuffer),
+                readBuffer),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
+    TwoOctetBinaryTime cp16Time2a =
+        readSimpleField(
+            "cp16Time2a",
+            new DataReaderComplexDefault<>(
+                () -> TwoOctetBinaryTime.staticParse(readBuffer), readBuffer),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
+    SevenOctetBinaryTime cp56Time2a =
+        readSimpleField(
+            "cp56Time2a",
+            new DataReaderComplexDefault<>(
+                () -> SevenOctetBinaryTime.staticParse(readBuffer), readBuffer),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
     readBuffer.closeContext(
         "InformationObject_PACKED_OUTPUT_CIRCUIT_INFORMATION_OF_PROTECTION_EQUIPMENT_WITH_TIME_TAG_CP56TIME2A");
     // Create the instance
-    return new InformationObject_PACKED_OUTPUT_CIRCUIT_INFORMATION_OF_PROTECTION_EQUIPMENT_WITH_TIME_TAG_CP56TIME2ABuilderImpl();
+    return new InformationObject_PACKED_OUTPUT_CIRCUIT_INFORMATION_OF_PROTECTION_EQUIPMENT_WITH_TIME_TAG_CP56TIME2ABuilderImpl(
+        oci, qdp, cp16Time2a, cp56Time2a);
   }
 
   public static
   class InformationObject_PACKED_OUTPUT_CIRCUIT_INFORMATION_OF_PROTECTION_EQUIPMENT_WITH_TIME_TAG_CP56TIME2ABuilderImpl
       implements InformationObject.InformationObjectBuilder {
+    private final OutputCircuitInformation oci;
+    private final QualityDescriptorForPointsOfProtectionEquipment qdp;
+    private final TwoOctetBinaryTime cp16Time2a;
+    private final SevenOctetBinaryTime cp56Time2a;
 
     public
-    InformationObject_PACKED_OUTPUT_CIRCUIT_INFORMATION_OF_PROTECTION_EQUIPMENT_WITH_TIME_TAG_CP56TIME2ABuilderImpl() {}
+    InformationObject_PACKED_OUTPUT_CIRCUIT_INFORMATION_OF_PROTECTION_EQUIPMENT_WITH_TIME_TAG_CP56TIME2ABuilderImpl(
+        OutputCircuitInformation oci,
+        QualityDescriptorForPointsOfProtectionEquipment qdp,
+        TwoOctetBinaryTime cp16Time2a,
+        SevenOctetBinaryTime cp56Time2a) {
+      this.oci = oci;
+      this.qdp = qdp;
+      this.cp16Time2a = cp16Time2a;
+      this.cp56Time2a = cp56Time2a;
+    }
 
     public
     InformationObject_PACKED_OUTPUT_CIRCUIT_INFORMATION_OF_PROTECTION_EQUIPMENT_WITH_TIME_TAG_CP56TIME2A
@@ -104,7 +217,7 @@ class InformationObject_PACKED_OUTPUT_CIRCUIT_INFORMATION_OF_PROTECTION_EQUIPMEN
       InformationObject_PACKED_OUTPUT_CIRCUIT_INFORMATION_OF_PROTECTION_EQUIPMENT_WITH_TIME_TAG_CP56TIME2A
           informationObject_PACKED_OUTPUT_CIRCUIT_INFORMATION_OF_PROTECTION_EQUIPMENT_WITH_TIME_TAG_CP56TIME2A =
               new InformationObject_PACKED_OUTPUT_CIRCUIT_INFORMATION_OF_PROTECTION_EQUIPMENT_WITH_TIME_TAG_CP56TIME2A(
-                  address);
+                  address, oci, qdp, cp16Time2a, cp56Time2a);
       return informationObject_PACKED_OUTPUT_CIRCUIT_INFORMATION_OF_PROTECTION_EQUIPMENT_WITH_TIME_TAG_CP56TIME2A;
     }
   }
@@ -123,12 +236,17 @@ class InformationObject_PACKED_OUTPUT_CIRCUIT_INFORMATION_OF_PROTECTION_EQUIPMEN
         that =
             (InformationObject_PACKED_OUTPUT_CIRCUIT_INFORMATION_OF_PROTECTION_EQUIPMENT_WITH_TIME_TAG_CP56TIME2A)
                 o;
-    return super.equals(that) && true;
+    return (getOci() == that.getOci())
+        && (getQdp() == that.getQdp())
+        && (getCp16Time2a() == that.getCp16Time2a())
+        && (getCp56Time2a() == that.getCp56Time2a())
+        && super.equals(that)
+        && true;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode());
+    return Objects.hash(super.hashCode(), getOci(), getQdp(), getCp16Time2a(), getCp56Time2a());
   }
 
   @Override

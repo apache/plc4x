@@ -43,8 +43,16 @@ public class InformationObject_SINGLE_POINT_INFORMATION extends InformationObjec
     return TypeIdentification.SINGLE_POINT_INFORMATION;
   }
 
-  public InformationObject_SINGLE_POINT_INFORMATION(int address) {
+  // Properties.
+  protected final SinglePointInformation siq;
+
+  public InformationObject_SINGLE_POINT_INFORMATION(int address, SinglePointInformation siq) {
     super(address);
+    this.siq = siq;
+  }
+
+  public SinglePointInformation getSiq() {
+    return siq;
   }
 
   @Override
@@ -53,6 +61,13 @@ public class InformationObject_SINGLE_POINT_INFORMATION extends InformationObjec
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     writeBuffer.pushContext("InformationObject_SINGLE_POINT_INFORMATION");
+
+    // Simple Field (siq)
+    writeSimpleField(
+        "siq",
+        siq,
+        new DataWriterComplexDefault<>(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     writeBuffer.popContext("InformationObject_SINGLE_POINT_INFORMATION");
   }
@@ -68,6 +83,9 @@ public class InformationObject_SINGLE_POINT_INFORMATION extends InformationObjec
     InformationObject_SINGLE_POINT_INFORMATION _value = this;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
+    // Simple field (siq)
+    lengthInBits += siq.getLengthInBits();
+
     return lengthInBits;
   }
 
@@ -77,19 +95,29 @@ public class InformationObject_SINGLE_POINT_INFORMATION extends InformationObjec
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
+    SinglePointInformation siq =
+        readSimpleField(
+            "siq",
+            new DataReaderComplexDefault<>(
+                () -> SinglePointInformation.staticParse(readBuffer), readBuffer),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
     readBuffer.closeContext("InformationObject_SINGLE_POINT_INFORMATION");
     // Create the instance
-    return new InformationObject_SINGLE_POINT_INFORMATIONBuilderImpl();
+    return new InformationObject_SINGLE_POINT_INFORMATIONBuilderImpl(siq);
   }
 
   public static class InformationObject_SINGLE_POINT_INFORMATIONBuilderImpl
       implements InformationObject.InformationObjectBuilder {
+    private final SinglePointInformation siq;
 
-    public InformationObject_SINGLE_POINT_INFORMATIONBuilderImpl() {}
+    public InformationObject_SINGLE_POINT_INFORMATIONBuilderImpl(SinglePointInformation siq) {
+      this.siq = siq;
+    }
 
     public InformationObject_SINGLE_POINT_INFORMATION build(int address) {
       InformationObject_SINGLE_POINT_INFORMATION informationObject_SINGLE_POINT_INFORMATION =
-          new InformationObject_SINGLE_POINT_INFORMATION(address);
+          new InformationObject_SINGLE_POINT_INFORMATION(address, siq);
       return informationObject_SINGLE_POINT_INFORMATION;
     }
   }
@@ -104,12 +132,12 @@ public class InformationObject_SINGLE_POINT_INFORMATION extends InformationObjec
     }
     InformationObject_SINGLE_POINT_INFORMATION that =
         (InformationObject_SINGLE_POINT_INFORMATION) o;
-    return super.equals(that) && true;
+    return (getSiq() == that.getSiq()) && super.equals(that) && true;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode());
+    return Objects.hash(super.hashCode(), getSiq());
   }
 
   @Override

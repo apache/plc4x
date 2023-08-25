@@ -43,8 +43,23 @@ public class InformationObject_MEASURED_VALUE_NORMALISED_VALUE extends Informati
     return TypeIdentification.MEASURED_VALUE_NORMALISED_VALUE;
   }
 
-  public InformationObject_MEASURED_VALUE_NORMALISED_VALUE(int address) {
+  // Properties.
+  protected final NormalizedValue nva;
+  protected final QualityDescriptor qds;
+
+  public InformationObject_MEASURED_VALUE_NORMALISED_VALUE(
+      int address, NormalizedValue nva, QualityDescriptor qds) {
     super(address);
+    this.nva = nva;
+    this.qds = qds;
+  }
+
+  public NormalizedValue getNva() {
+    return nva;
+  }
+
+  public QualityDescriptor getQds() {
+    return qds;
   }
 
   @Override
@@ -53,6 +68,20 @@ public class InformationObject_MEASURED_VALUE_NORMALISED_VALUE extends Informati
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     writeBuffer.pushContext("InformationObject_MEASURED_VALUE_NORMALISED_VALUE");
+
+    // Simple Field (nva)
+    writeSimpleField(
+        "nva",
+        nva,
+        new DataWriterComplexDefault<>(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
+    // Simple Field (qds)
+    writeSimpleField(
+        "qds",
+        qds,
+        new DataWriterComplexDefault<>(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     writeBuffer.popContext("InformationObject_MEASURED_VALUE_NORMALISED_VALUE");
   }
@@ -68,6 +97,12 @@ public class InformationObject_MEASURED_VALUE_NORMALISED_VALUE extends Informati
     InformationObject_MEASURED_VALUE_NORMALISED_VALUE _value = this;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
+    // Simple field (nva)
+    lengthInBits += nva.getLengthInBits();
+
+    // Simple field (qds)
+    lengthInBits += qds.getLengthInBits();
+
     return lengthInBits;
   }
 
@@ -77,20 +112,40 @@ public class InformationObject_MEASURED_VALUE_NORMALISED_VALUE extends Informati
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
+    NormalizedValue nva =
+        readSimpleField(
+            "nva",
+            new DataReaderComplexDefault<>(
+                () -> NormalizedValue.staticParse(readBuffer), readBuffer),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
+    QualityDescriptor qds =
+        readSimpleField(
+            "qds",
+            new DataReaderComplexDefault<>(
+                () -> QualityDescriptor.staticParse(readBuffer), readBuffer),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
     readBuffer.closeContext("InformationObject_MEASURED_VALUE_NORMALISED_VALUE");
     // Create the instance
-    return new InformationObject_MEASURED_VALUE_NORMALISED_VALUEBuilderImpl();
+    return new InformationObject_MEASURED_VALUE_NORMALISED_VALUEBuilderImpl(nva, qds);
   }
 
   public static class InformationObject_MEASURED_VALUE_NORMALISED_VALUEBuilderImpl
       implements InformationObject.InformationObjectBuilder {
+    private final NormalizedValue nva;
+    private final QualityDescriptor qds;
 
-    public InformationObject_MEASURED_VALUE_NORMALISED_VALUEBuilderImpl() {}
+    public InformationObject_MEASURED_VALUE_NORMALISED_VALUEBuilderImpl(
+        NormalizedValue nva, QualityDescriptor qds) {
+      this.nva = nva;
+      this.qds = qds;
+    }
 
     public InformationObject_MEASURED_VALUE_NORMALISED_VALUE build(int address) {
       InformationObject_MEASURED_VALUE_NORMALISED_VALUE
           informationObject_MEASURED_VALUE_NORMALISED_VALUE =
-              new InformationObject_MEASURED_VALUE_NORMALISED_VALUE(address);
+              new InformationObject_MEASURED_VALUE_NORMALISED_VALUE(address, nva, qds);
       return informationObject_MEASURED_VALUE_NORMALISED_VALUE;
     }
   }
@@ -105,12 +160,12 @@ public class InformationObject_MEASURED_VALUE_NORMALISED_VALUE extends Informati
     }
     InformationObject_MEASURED_VALUE_NORMALISED_VALUE that =
         (InformationObject_MEASURED_VALUE_NORMALISED_VALUE) o;
-    return super.equals(that) && true;
+    return (getNva() == that.getNva()) && (getQds() == that.getQds()) && super.equals(that) && true;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode());
+    return Objects.hash(super.hashCode(), getNva(), getQds());
   }
 
   @Override

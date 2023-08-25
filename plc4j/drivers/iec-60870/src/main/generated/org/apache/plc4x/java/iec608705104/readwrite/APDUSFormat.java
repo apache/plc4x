@@ -38,15 +38,12 @@ import org.apache.plc4x.java.spi.generation.*;
 public class APDUSFormat extends APDU implements Message {
 
   // Accessors for discriminator values.
-  public Integer getCommand() {
-    return (int) 0x01;
-  }
 
   // Properties.
   protected final int receiveSequenceNo;
 
-  public APDUSFormat(int receiveSequenceNo) {
-    super();
+  public APDUSFormat(int command, int receiveSequenceNo) {
+    super(command);
     this.receiveSequenceNo = receiveSequenceNo;
   }
 
@@ -110,8 +107,8 @@ public class APDUSFormat extends APDU implements Message {
       this.receiveSequenceNo = receiveSequenceNo;
     }
 
-    public APDUSFormat build() {
-      APDUSFormat aPDUSFormat = new APDUSFormat(receiveSequenceNo);
+    public APDUSFormat build(int command) {
+      APDUSFormat aPDUSFormat = new APDUSFormat(command, receiveSequenceNo);
       return aPDUSFormat;
     }
   }

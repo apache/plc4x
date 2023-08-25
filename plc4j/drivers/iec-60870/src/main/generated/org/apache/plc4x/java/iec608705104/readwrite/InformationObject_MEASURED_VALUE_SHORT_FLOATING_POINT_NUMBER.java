@@ -43,8 +43,23 @@ public class InformationObject_MEASURED_VALUE_SHORT_FLOATING_POINT_NUMBER extend
     return TypeIdentification.MEASURED_VALUE_SHORT_FLOATING_POINT_NUMBER;
   }
 
-  public InformationObject_MEASURED_VALUE_SHORT_FLOATING_POINT_NUMBER(int address) {
+  // Properties.
+  protected final float value;
+  protected final QualityDescriptor qds;
+
+  public InformationObject_MEASURED_VALUE_SHORT_FLOATING_POINT_NUMBER(
+      int address, float value, QualityDescriptor qds) {
     super(address);
+    this.value = value;
+    this.qds = qds;
+  }
+
+  public float getValue() {
+    return value;
+  }
+
+  public QualityDescriptor getQds() {
+    return qds;
   }
 
   @Override
@@ -53,6 +68,20 @@ public class InformationObject_MEASURED_VALUE_SHORT_FLOATING_POINT_NUMBER extend
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     writeBuffer.pushContext("InformationObject_MEASURED_VALUE_SHORT_FLOATING_POINT_NUMBER");
+
+    // Simple Field (value)
+    writeSimpleField(
+        "value",
+        value,
+        writeFloat(writeBuffer, 32),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
+    // Simple Field (qds)
+    writeSimpleField(
+        "qds",
+        qds,
+        new DataWriterComplexDefault<>(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     writeBuffer.popContext("InformationObject_MEASURED_VALUE_SHORT_FLOATING_POINT_NUMBER");
   }
@@ -68,6 +97,12 @@ public class InformationObject_MEASURED_VALUE_SHORT_FLOATING_POINT_NUMBER extend
     InformationObject_MEASURED_VALUE_SHORT_FLOATING_POINT_NUMBER _value = this;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
+    // Simple field (value)
+    lengthInBits += 32;
+
+    // Simple field (qds)
+    lengthInBits += qds.getLengthInBits();
+
     return lengthInBits;
   }
 
@@ -77,20 +112,37 @@ public class InformationObject_MEASURED_VALUE_SHORT_FLOATING_POINT_NUMBER extend
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
+    float value =
+        readSimpleField(
+            "value", readFloat(readBuffer, 32), WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
+    QualityDescriptor qds =
+        readSimpleField(
+            "qds",
+            new DataReaderComplexDefault<>(
+                () -> QualityDescriptor.staticParse(readBuffer), readBuffer),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
     readBuffer.closeContext("InformationObject_MEASURED_VALUE_SHORT_FLOATING_POINT_NUMBER");
     // Create the instance
-    return new InformationObject_MEASURED_VALUE_SHORT_FLOATING_POINT_NUMBERBuilderImpl();
+    return new InformationObject_MEASURED_VALUE_SHORT_FLOATING_POINT_NUMBERBuilderImpl(value, qds);
   }
 
   public static class InformationObject_MEASURED_VALUE_SHORT_FLOATING_POINT_NUMBERBuilderImpl
       implements InformationObject.InformationObjectBuilder {
+    private final float value;
+    private final QualityDescriptor qds;
 
-    public InformationObject_MEASURED_VALUE_SHORT_FLOATING_POINT_NUMBERBuilderImpl() {}
+    public InformationObject_MEASURED_VALUE_SHORT_FLOATING_POINT_NUMBERBuilderImpl(
+        float value, QualityDescriptor qds) {
+      this.value = value;
+      this.qds = qds;
+    }
 
     public InformationObject_MEASURED_VALUE_SHORT_FLOATING_POINT_NUMBER build(int address) {
       InformationObject_MEASURED_VALUE_SHORT_FLOATING_POINT_NUMBER
           informationObject_MEASURED_VALUE_SHORT_FLOATING_POINT_NUMBER =
-              new InformationObject_MEASURED_VALUE_SHORT_FLOATING_POINT_NUMBER(address);
+              new InformationObject_MEASURED_VALUE_SHORT_FLOATING_POINT_NUMBER(address, value, qds);
       return informationObject_MEASURED_VALUE_SHORT_FLOATING_POINT_NUMBER;
     }
   }
@@ -105,12 +157,15 @@ public class InformationObject_MEASURED_VALUE_SHORT_FLOATING_POINT_NUMBER extend
     }
     InformationObject_MEASURED_VALUE_SHORT_FLOATING_POINT_NUMBER that =
         (InformationObject_MEASURED_VALUE_SHORT_FLOATING_POINT_NUMBER) o;
-    return super.equals(that) && true;
+    return (getValue() == that.getValue())
+        && (getQds() == that.getQds())
+        && super.equals(that)
+        && true;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode());
+    return Objects.hash(super.hashCode(), getValue(), getQds());
   }
 
   @Override

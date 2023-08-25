@@ -43,8 +43,16 @@ public class InformationObject_REGULATING_STEP_COMMAND extends InformationObject
     return TypeIdentification.REGULATING_STEP_COMMAND;
   }
 
-  public InformationObject_REGULATING_STEP_COMMAND(int address) {
+  // Properties.
+  protected final RegulatingStepCommand rco;
+
+  public InformationObject_REGULATING_STEP_COMMAND(int address, RegulatingStepCommand rco) {
     super(address);
+    this.rco = rco;
+  }
+
+  public RegulatingStepCommand getRco() {
+    return rco;
   }
 
   @Override
@@ -53,6 +61,13 @@ public class InformationObject_REGULATING_STEP_COMMAND extends InformationObject
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     writeBuffer.pushContext("InformationObject_REGULATING_STEP_COMMAND");
+
+    // Simple Field (rco)
+    writeSimpleField(
+        "rco",
+        rco,
+        new DataWriterComplexDefault<>(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     writeBuffer.popContext("InformationObject_REGULATING_STEP_COMMAND");
   }
@@ -68,6 +83,9 @@ public class InformationObject_REGULATING_STEP_COMMAND extends InformationObject
     InformationObject_REGULATING_STEP_COMMAND _value = this;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
+    // Simple field (rco)
+    lengthInBits += rco.getLengthInBits();
+
     return lengthInBits;
   }
 
@@ -77,19 +95,29 @@ public class InformationObject_REGULATING_STEP_COMMAND extends InformationObject
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
+    RegulatingStepCommand rco =
+        readSimpleField(
+            "rco",
+            new DataReaderComplexDefault<>(
+                () -> RegulatingStepCommand.staticParse(readBuffer), readBuffer),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
     readBuffer.closeContext("InformationObject_REGULATING_STEP_COMMAND");
     // Create the instance
-    return new InformationObject_REGULATING_STEP_COMMANDBuilderImpl();
+    return new InformationObject_REGULATING_STEP_COMMANDBuilderImpl(rco);
   }
 
   public static class InformationObject_REGULATING_STEP_COMMANDBuilderImpl
       implements InformationObject.InformationObjectBuilder {
+    private final RegulatingStepCommand rco;
 
-    public InformationObject_REGULATING_STEP_COMMANDBuilderImpl() {}
+    public InformationObject_REGULATING_STEP_COMMANDBuilderImpl(RegulatingStepCommand rco) {
+      this.rco = rco;
+    }
 
     public InformationObject_REGULATING_STEP_COMMAND build(int address) {
       InformationObject_REGULATING_STEP_COMMAND informationObject_REGULATING_STEP_COMMAND =
-          new InformationObject_REGULATING_STEP_COMMAND(address);
+          new InformationObject_REGULATING_STEP_COMMAND(address, rco);
       return informationObject_REGULATING_STEP_COMMAND;
     }
   }
@@ -103,12 +131,12 @@ public class InformationObject_REGULATING_STEP_COMMAND extends InformationObject
       return false;
     }
     InformationObject_REGULATING_STEP_COMMAND that = (InformationObject_REGULATING_STEP_COMMAND) o;
-    return super.equals(that) && true;
+    return (getRco() == that.getRco()) && super.equals(that) && true;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode());
+    return Objects.hash(super.hashCode(), getRco());
   }
 
   @Override

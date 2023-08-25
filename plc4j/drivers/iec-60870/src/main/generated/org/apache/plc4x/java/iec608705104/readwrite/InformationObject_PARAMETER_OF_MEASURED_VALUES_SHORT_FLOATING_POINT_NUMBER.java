@@ -43,8 +43,23 @@ public class InformationObject_PARAMETER_OF_MEASURED_VALUES_SHORT_FLOATING_POINT
     return TypeIdentification.PARAMETER_OF_MEASURED_VALUES_SHORT_FLOATING_POINT_NUMBER;
   }
 
-  public InformationObject_PARAMETER_OF_MEASURED_VALUES_SHORT_FLOATING_POINT_NUMBER(int address) {
+  // Properties.
+  protected final float value;
+  protected final QualifierOfParameterOfMeasuredValues qpm;
+
+  public InformationObject_PARAMETER_OF_MEASURED_VALUES_SHORT_FLOATING_POINT_NUMBER(
+      int address, float value, QualifierOfParameterOfMeasuredValues qpm) {
     super(address);
+    this.value = value;
+    this.qpm = qpm;
+  }
+
+  public float getValue() {
+    return value;
+  }
+
+  public QualifierOfParameterOfMeasuredValues getQpm() {
+    return qpm;
   }
 
   @Override
@@ -54,6 +69,20 @@ public class InformationObject_PARAMETER_OF_MEASURED_VALUES_SHORT_FLOATING_POINT
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     writeBuffer.pushContext(
         "InformationObject_PARAMETER_OF_MEASURED_VALUES_SHORT_FLOATING_POINT_NUMBER");
+
+    // Simple Field (value)
+    writeSimpleField(
+        "value",
+        value,
+        writeFloat(writeBuffer, 32),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
+    // Simple Field (qpm)
+    writeSimpleField(
+        "qpm",
+        qpm,
+        new DataWriterComplexDefault<>(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     writeBuffer.popContext(
         "InformationObject_PARAMETER_OF_MEASURED_VALUES_SHORT_FLOATING_POINT_NUMBER");
@@ -70,6 +99,12 @@ public class InformationObject_PARAMETER_OF_MEASURED_VALUES_SHORT_FLOATING_POINT
     InformationObject_PARAMETER_OF_MEASURED_VALUES_SHORT_FLOATING_POINT_NUMBER _value = this;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
+    // Simple field (value)
+    lengthInBits += 32;
+
+    // Simple field (qpm)
+    lengthInBits += qpm.getLengthInBits();
+
     return lengthInBits;
   }
 
@@ -80,25 +115,42 @@ public class InformationObject_PARAMETER_OF_MEASURED_VALUES_SHORT_FLOATING_POINT
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
+    float value =
+        readSimpleField(
+            "value", readFloat(readBuffer, 32), WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
+    QualifierOfParameterOfMeasuredValues qpm =
+        readSimpleField(
+            "qpm",
+            new DataReaderComplexDefault<>(
+                () -> QualifierOfParameterOfMeasuredValues.staticParse(readBuffer), readBuffer),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
     readBuffer.closeContext(
         "InformationObject_PARAMETER_OF_MEASURED_VALUES_SHORT_FLOATING_POINT_NUMBER");
     // Create the instance
-    return new InformationObject_PARAMETER_OF_MEASURED_VALUES_SHORT_FLOATING_POINT_NUMBERBuilderImpl();
+    return new InformationObject_PARAMETER_OF_MEASURED_VALUES_SHORT_FLOATING_POINT_NUMBERBuilderImpl(
+        value, qpm);
   }
 
   public static
   class InformationObject_PARAMETER_OF_MEASURED_VALUES_SHORT_FLOATING_POINT_NUMBERBuilderImpl
       implements InformationObject.InformationObjectBuilder {
+    private final float value;
+    private final QualifierOfParameterOfMeasuredValues qpm;
 
-    public
-    InformationObject_PARAMETER_OF_MEASURED_VALUES_SHORT_FLOATING_POINT_NUMBERBuilderImpl() {}
+    public InformationObject_PARAMETER_OF_MEASURED_VALUES_SHORT_FLOATING_POINT_NUMBERBuilderImpl(
+        float value, QualifierOfParameterOfMeasuredValues qpm) {
+      this.value = value;
+      this.qpm = qpm;
+    }
 
     public InformationObject_PARAMETER_OF_MEASURED_VALUES_SHORT_FLOATING_POINT_NUMBER build(
         int address) {
       InformationObject_PARAMETER_OF_MEASURED_VALUES_SHORT_FLOATING_POINT_NUMBER
           informationObject_PARAMETER_OF_MEASURED_VALUES_SHORT_FLOATING_POINT_NUMBER =
               new InformationObject_PARAMETER_OF_MEASURED_VALUES_SHORT_FLOATING_POINT_NUMBER(
-                  address);
+                  address, value, qpm);
       return informationObject_PARAMETER_OF_MEASURED_VALUES_SHORT_FLOATING_POINT_NUMBER;
     }
   }
@@ -114,12 +166,15 @@ public class InformationObject_PARAMETER_OF_MEASURED_VALUES_SHORT_FLOATING_POINT
     }
     InformationObject_PARAMETER_OF_MEASURED_VALUES_SHORT_FLOATING_POINT_NUMBER that =
         (InformationObject_PARAMETER_OF_MEASURED_VALUES_SHORT_FLOATING_POINT_NUMBER) o;
-    return super.equals(that) && true;
+    return (getValue() == that.getValue())
+        && (getQpm() == that.getQpm())
+        && super.equals(that)
+        && true;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode());
+    return Objects.hash(super.hashCode(), getValue(), getQpm());
   }
 
   @Override

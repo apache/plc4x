@@ -43,8 +43,23 @@ public class InformationObject_SINGLE_POINT_INFORMATION_WITH_TIME_TAG extends In
     return TypeIdentification.SINGLE_POINT_INFORMATION_WITH_TIME_TAG;
   }
 
-  public InformationObject_SINGLE_POINT_INFORMATION_WITH_TIME_TAG(int address) {
+  // Properties.
+  protected final SinglePointInformation siq;
+  protected final ThreeOctetBinaryTime cp24Time2a;
+
+  public InformationObject_SINGLE_POINT_INFORMATION_WITH_TIME_TAG(
+      int address, SinglePointInformation siq, ThreeOctetBinaryTime cp24Time2a) {
     super(address);
+    this.siq = siq;
+    this.cp24Time2a = cp24Time2a;
+  }
+
+  public SinglePointInformation getSiq() {
+    return siq;
+  }
+
+  public ThreeOctetBinaryTime getCp24Time2a() {
+    return cp24Time2a;
   }
 
   @Override
@@ -53,6 +68,20 @@ public class InformationObject_SINGLE_POINT_INFORMATION_WITH_TIME_TAG extends In
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     writeBuffer.pushContext("InformationObject_SINGLE_POINT_INFORMATION_WITH_TIME_TAG");
+
+    // Simple Field (siq)
+    writeSimpleField(
+        "siq",
+        siq,
+        new DataWriterComplexDefault<>(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
+    // Simple Field (cp24Time2a)
+    writeSimpleField(
+        "cp24Time2a",
+        cp24Time2a,
+        new DataWriterComplexDefault<>(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     writeBuffer.popContext("InformationObject_SINGLE_POINT_INFORMATION_WITH_TIME_TAG");
   }
@@ -68,6 +97,12 @@ public class InformationObject_SINGLE_POINT_INFORMATION_WITH_TIME_TAG extends In
     InformationObject_SINGLE_POINT_INFORMATION_WITH_TIME_TAG _value = this;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
+    // Simple field (siq)
+    lengthInBits += siq.getLengthInBits();
+
+    // Simple field (cp24Time2a)
+    lengthInBits += cp24Time2a.getLengthInBits();
+
     return lengthInBits;
   }
 
@@ -77,20 +112,41 @@ public class InformationObject_SINGLE_POINT_INFORMATION_WITH_TIME_TAG extends In
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
+    SinglePointInformation siq =
+        readSimpleField(
+            "siq",
+            new DataReaderComplexDefault<>(
+                () -> SinglePointInformation.staticParse(readBuffer), readBuffer),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
+    ThreeOctetBinaryTime cp24Time2a =
+        readSimpleField(
+            "cp24Time2a",
+            new DataReaderComplexDefault<>(
+                () -> ThreeOctetBinaryTime.staticParse(readBuffer), readBuffer),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
     readBuffer.closeContext("InformationObject_SINGLE_POINT_INFORMATION_WITH_TIME_TAG");
     // Create the instance
-    return new InformationObject_SINGLE_POINT_INFORMATION_WITH_TIME_TAGBuilderImpl();
+    return new InformationObject_SINGLE_POINT_INFORMATION_WITH_TIME_TAGBuilderImpl(siq, cp24Time2a);
   }
 
   public static class InformationObject_SINGLE_POINT_INFORMATION_WITH_TIME_TAGBuilderImpl
       implements InformationObject.InformationObjectBuilder {
+    private final SinglePointInformation siq;
+    private final ThreeOctetBinaryTime cp24Time2a;
 
-    public InformationObject_SINGLE_POINT_INFORMATION_WITH_TIME_TAGBuilderImpl() {}
+    public InformationObject_SINGLE_POINT_INFORMATION_WITH_TIME_TAGBuilderImpl(
+        SinglePointInformation siq, ThreeOctetBinaryTime cp24Time2a) {
+      this.siq = siq;
+      this.cp24Time2a = cp24Time2a;
+    }
 
     public InformationObject_SINGLE_POINT_INFORMATION_WITH_TIME_TAG build(int address) {
       InformationObject_SINGLE_POINT_INFORMATION_WITH_TIME_TAG
           informationObject_SINGLE_POINT_INFORMATION_WITH_TIME_TAG =
-              new InformationObject_SINGLE_POINT_INFORMATION_WITH_TIME_TAG(address);
+              new InformationObject_SINGLE_POINT_INFORMATION_WITH_TIME_TAG(
+                  address, siq, cp24Time2a);
       return informationObject_SINGLE_POINT_INFORMATION_WITH_TIME_TAG;
     }
   }
@@ -105,12 +161,15 @@ public class InformationObject_SINGLE_POINT_INFORMATION_WITH_TIME_TAG extends In
     }
     InformationObject_SINGLE_POINT_INFORMATION_WITH_TIME_TAG that =
         (InformationObject_SINGLE_POINT_INFORMATION_WITH_TIME_TAG) o;
-    return super.equals(that) && true;
+    return (getSiq() == that.getSiq())
+        && (getCp24Time2a() == that.getCp24Time2a())
+        && super.equals(that)
+        && true;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode());
+    return Objects.hash(super.hashCode(), getSiq(), getCp24Time2a());
   }
 
   @Override

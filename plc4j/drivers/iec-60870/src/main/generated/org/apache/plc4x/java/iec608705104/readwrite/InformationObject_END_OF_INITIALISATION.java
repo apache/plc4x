@@ -42,8 +42,16 @@ public class InformationObject_END_OF_INITIALISATION extends InformationObject i
     return TypeIdentification.END_OF_INITIALISATION;
   }
 
-  public InformationObject_END_OF_INITIALISATION(int address) {
+  // Properties.
+  protected final CauseOfInitialization coi;
+
+  public InformationObject_END_OF_INITIALISATION(int address, CauseOfInitialization coi) {
     super(address);
+    this.coi = coi;
+  }
+
+  public CauseOfInitialization getCoi() {
+    return coi;
   }
 
   @Override
@@ -52,6 +60,13 @@ public class InformationObject_END_OF_INITIALISATION extends InformationObject i
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     writeBuffer.pushContext("InformationObject_END_OF_INITIALISATION");
+
+    // Simple Field (coi)
+    writeSimpleField(
+        "coi",
+        coi,
+        new DataWriterComplexDefault<>(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     writeBuffer.popContext("InformationObject_END_OF_INITIALISATION");
   }
@@ -67,6 +82,9 @@ public class InformationObject_END_OF_INITIALISATION extends InformationObject i
     InformationObject_END_OF_INITIALISATION _value = this;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
+    // Simple field (coi)
+    lengthInBits += coi.getLengthInBits();
+
     return lengthInBits;
   }
 
@@ -76,19 +94,29 @@ public class InformationObject_END_OF_INITIALISATION extends InformationObject i
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
+    CauseOfInitialization coi =
+        readSimpleField(
+            "coi",
+            new DataReaderComplexDefault<>(
+                () -> CauseOfInitialization.staticParse(readBuffer), readBuffer),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
     readBuffer.closeContext("InformationObject_END_OF_INITIALISATION");
     // Create the instance
-    return new InformationObject_END_OF_INITIALISATIONBuilderImpl();
+    return new InformationObject_END_OF_INITIALISATIONBuilderImpl(coi);
   }
 
   public static class InformationObject_END_OF_INITIALISATIONBuilderImpl
       implements InformationObject.InformationObjectBuilder {
+    private final CauseOfInitialization coi;
 
-    public InformationObject_END_OF_INITIALISATIONBuilderImpl() {}
+    public InformationObject_END_OF_INITIALISATIONBuilderImpl(CauseOfInitialization coi) {
+      this.coi = coi;
+    }
 
     public InformationObject_END_OF_INITIALISATION build(int address) {
       InformationObject_END_OF_INITIALISATION informationObject_END_OF_INITIALISATION =
-          new InformationObject_END_OF_INITIALISATION(address);
+          new InformationObject_END_OF_INITIALISATION(address, coi);
       return informationObject_END_OF_INITIALISATION;
     }
   }
@@ -102,12 +130,12 @@ public class InformationObject_END_OF_INITIALISATION extends InformationObject i
       return false;
     }
     InformationObject_END_OF_INITIALISATION that = (InformationObject_END_OF_INITIALISATION) o;
-    return super.equals(that) && true;
+    return (getCoi() == that.getCoi()) && super.equals(that) && true;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode());
+    return Objects.hash(super.hashCode(), getCoi());
   }
 
   @Override

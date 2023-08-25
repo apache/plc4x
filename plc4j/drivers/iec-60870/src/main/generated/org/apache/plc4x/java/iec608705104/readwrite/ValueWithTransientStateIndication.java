@@ -61,10 +61,18 @@ public class ValueWithTransientStateIndication implements Message {
     writeBuffer.pushContext("ValueWithTransientStateIndication");
 
     // Simple Field (transientState)
-    writeSimpleField("transientState", transientState, writeBoolean(writeBuffer));
+    writeSimpleField(
+        "transientState",
+        transientState,
+        writeBoolean(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     // Simple Field (value)
-    writeSimpleField("value", value, writeUnsignedByte(writeBuffer, 7));
+    writeSimpleField(
+        "value",
+        value,
+        writeUnsignedByte(writeBuffer, 7),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     writeBuffer.popContext("ValueWithTransientStateIndication");
   }
@@ -101,9 +109,17 @@ public class ValueWithTransientStateIndication implements Message {
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    boolean transientState = readSimpleField("transientState", readBoolean(readBuffer));
+    boolean transientState =
+        readSimpleField(
+            "transientState",
+            readBoolean(readBuffer),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
-    byte value = readSimpleField("value", readUnsignedByte(readBuffer, 7));
+    byte value =
+        readSimpleField(
+            "value",
+            readUnsignedByte(readBuffer, 7),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     readBuffer.closeContext("ValueWithTransientStateIndication");
     // Create the instance

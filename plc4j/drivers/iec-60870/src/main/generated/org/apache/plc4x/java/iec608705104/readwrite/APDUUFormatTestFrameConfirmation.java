@@ -38,12 +38,9 @@ import org.apache.plc4x.java.spi.generation.*;
 public class APDUUFormatTestFrameConfirmation extends APDU implements Message {
 
   // Accessors for discriminator values.
-  public Integer getCommand() {
-    return (int) 0x83;
-  }
 
-  public APDUUFormatTestFrameConfirmation() {
-    super();
+  public APDUUFormatTestFrameConfirmation(int command) {
+    super(command);
   }
 
   @Override
@@ -102,9 +99,9 @@ public class APDUUFormatTestFrameConfirmation extends APDU implements Message {
 
     public APDUUFormatTestFrameConfirmationBuilderImpl() {}
 
-    public APDUUFormatTestFrameConfirmation build() {
+    public APDUUFormatTestFrameConfirmation build(int command) {
       APDUUFormatTestFrameConfirmation aPDUUFormatTestFrameConfirmation =
-          new APDUUFormatTestFrameConfirmation();
+          new APDUUFormatTestFrameConfirmation(command);
       return aPDUUFormatTestFrameConfirmation;
     }
   }

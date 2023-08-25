@@ -43,8 +43,23 @@ public class InformationObject_PARAMETER_OF_MEASURED_VALUES_NORMALIZED_VALUE
     return TypeIdentification.PARAMETER_OF_MEASURED_VALUES_NORMALIZED_VALUE;
   }
 
-  public InformationObject_PARAMETER_OF_MEASURED_VALUES_NORMALIZED_VALUE(int address) {
+  // Properties.
+  protected final NormalizedValue nva;
+  protected final QualifierOfParameterOfMeasuredValues qpm;
+
+  public InformationObject_PARAMETER_OF_MEASURED_VALUES_NORMALIZED_VALUE(
+      int address, NormalizedValue nva, QualifierOfParameterOfMeasuredValues qpm) {
     super(address);
+    this.nva = nva;
+    this.qpm = qpm;
+  }
+
+  public NormalizedValue getNva() {
+    return nva;
+  }
+
+  public QualifierOfParameterOfMeasuredValues getQpm() {
+    return qpm;
   }
 
   @Override
@@ -53,6 +68,20 @@ public class InformationObject_PARAMETER_OF_MEASURED_VALUES_NORMALIZED_VALUE
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     writeBuffer.pushContext("InformationObject_PARAMETER_OF_MEASURED_VALUES_NORMALIZED_VALUE");
+
+    // Simple Field (nva)
+    writeSimpleField(
+        "nva",
+        nva,
+        new DataWriterComplexDefault<>(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
+    // Simple Field (qpm)
+    writeSimpleField(
+        "qpm",
+        qpm,
+        new DataWriterComplexDefault<>(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     writeBuffer.popContext("InformationObject_PARAMETER_OF_MEASURED_VALUES_NORMALIZED_VALUE");
   }
@@ -68,6 +97,12 @@ public class InformationObject_PARAMETER_OF_MEASURED_VALUES_NORMALIZED_VALUE
     InformationObject_PARAMETER_OF_MEASURED_VALUES_NORMALIZED_VALUE _value = this;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
+    // Simple field (nva)
+    lengthInBits += nva.getLengthInBits();
+
+    // Simple field (qpm)
+    lengthInBits += qpm.getLengthInBits();
+
     return lengthInBits;
   }
 
@@ -77,20 +112,41 @@ public class InformationObject_PARAMETER_OF_MEASURED_VALUES_NORMALIZED_VALUE
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
+    NormalizedValue nva =
+        readSimpleField(
+            "nva",
+            new DataReaderComplexDefault<>(
+                () -> NormalizedValue.staticParse(readBuffer), readBuffer),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
+    QualifierOfParameterOfMeasuredValues qpm =
+        readSimpleField(
+            "qpm",
+            new DataReaderComplexDefault<>(
+                () -> QualifierOfParameterOfMeasuredValues.staticParse(readBuffer), readBuffer),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
     readBuffer.closeContext("InformationObject_PARAMETER_OF_MEASURED_VALUES_NORMALIZED_VALUE");
     // Create the instance
-    return new InformationObject_PARAMETER_OF_MEASURED_VALUES_NORMALIZED_VALUEBuilderImpl();
+    return new InformationObject_PARAMETER_OF_MEASURED_VALUES_NORMALIZED_VALUEBuilderImpl(nva, qpm);
   }
 
   public static class InformationObject_PARAMETER_OF_MEASURED_VALUES_NORMALIZED_VALUEBuilderImpl
       implements InformationObject.InformationObjectBuilder {
+    private final NormalizedValue nva;
+    private final QualifierOfParameterOfMeasuredValues qpm;
 
-    public InformationObject_PARAMETER_OF_MEASURED_VALUES_NORMALIZED_VALUEBuilderImpl() {}
+    public InformationObject_PARAMETER_OF_MEASURED_VALUES_NORMALIZED_VALUEBuilderImpl(
+        NormalizedValue nva, QualifierOfParameterOfMeasuredValues qpm) {
+      this.nva = nva;
+      this.qpm = qpm;
+    }
 
     public InformationObject_PARAMETER_OF_MEASURED_VALUES_NORMALIZED_VALUE build(int address) {
       InformationObject_PARAMETER_OF_MEASURED_VALUES_NORMALIZED_VALUE
           informationObject_PARAMETER_OF_MEASURED_VALUES_NORMALIZED_VALUE =
-              new InformationObject_PARAMETER_OF_MEASURED_VALUES_NORMALIZED_VALUE(address);
+              new InformationObject_PARAMETER_OF_MEASURED_VALUES_NORMALIZED_VALUE(
+                  address, nva, qpm);
       return informationObject_PARAMETER_OF_MEASURED_VALUES_NORMALIZED_VALUE;
     }
   }
@@ -105,12 +161,12 @@ public class InformationObject_PARAMETER_OF_MEASURED_VALUES_NORMALIZED_VALUE
     }
     InformationObject_PARAMETER_OF_MEASURED_VALUES_NORMALIZED_VALUE that =
         (InformationObject_PARAMETER_OF_MEASURED_VALUES_NORMALIZED_VALUE) o;
-    return super.equals(that) && true;
+    return (getNva() == that.getNva()) && (getQpm() == that.getQpm()) && super.equals(that) && true;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode());
+    return Objects.hash(super.hashCode(), getNva(), getQpm());
   }
 
   @Override

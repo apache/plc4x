@@ -43,8 +43,29 @@ public class InformationObject_MEASURED_VALUE_SCALED_VALUE_WITH_TIME_TAG_CP56TIM
     return TypeIdentification.MEASURED_VALUE_SCALED_VALUE_WITH_TIME_TAG_CP56TIME2A;
   }
 
-  public InformationObject_MEASURED_VALUE_SCALED_VALUE_WITH_TIME_TAG_CP56TIME2A(int address) {
+  // Properties.
+  protected final ScaledValue sva;
+  protected final QualityDescriptor qds;
+  protected final SevenOctetBinaryTime cp56Time2a;
+
+  public InformationObject_MEASURED_VALUE_SCALED_VALUE_WITH_TIME_TAG_CP56TIME2A(
+      int address, ScaledValue sva, QualityDescriptor qds, SevenOctetBinaryTime cp56Time2a) {
     super(address);
+    this.sva = sva;
+    this.qds = qds;
+    this.cp56Time2a = cp56Time2a;
+  }
+
+  public ScaledValue getSva() {
+    return sva;
+  }
+
+  public QualityDescriptor getQds() {
+    return qds;
+  }
+
+  public SevenOctetBinaryTime getCp56Time2a() {
+    return cp56Time2a;
   }
 
   @Override
@@ -54,6 +75,27 @@ public class InformationObject_MEASURED_VALUE_SCALED_VALUE_WITH_TIME_TAG_CP56TIM
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     writeBuffer.pushContext(
         "InformationObject_MEASURED_VALUE_SCALED_VALUE_WITH_TIME_TAG_CP56TIME2A");
+
+    // Simple Field (sva)
+    writeSimpleField(
+        "sva",
+        sva,
+        new DataWriterComplexDefault<>(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
+    // Simple Field (qds)
+    writeSimpleField(
+        "qds",
+        qds,
+        new DataWriterComplexDefault<>(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
+    // Simple Field (cp56Time2a)
+    writeSimpleField(
+        "cp56Time2a",
+        cp56Time2a,
+        new DataWriterComplexDefault<>(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     writeBuffer.popContext(
         "InformationObject_MEASURED_VALUE_SCALED_VALUE_WITH_TIME_TAG_CP56TIME2A");
@@ -70,6 +112,15 @@ public class InformationObject_MEASURED_VALUE_SCALED_VALUE_WITH_TIME_TAG_CP56TIM
     InformationObject_MEASURED_VALUE_SCALED_VALUE_WITH_TIME_TAG_CP56TIME2A _value = this;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
+    // Simple field (sva)
+    lengthInBits += sva.getLengthInBits();
+
+    // Simple field (qds)
+    lengthInBits += qds.getLengthInBits();
+
+    // Simple field (cp56Time2a)
+    lengthInBits += cp56Time2a.getLengthInBits();
+
     return lengthInBits;
   }
 
@@ -80,23 +131,53 @@ public class InformationObject_MEASURED_VALUE_SCALED_VALUE_WITH_TIME_TAG_CP56TIM
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
+    ScaledValue sva =
+        readSimpleField(
+            "sva",
+            new DataReaderComplexDefault<>(() -> ScaledValue.staticParse(readBuffer), readBuffer),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
+    QualityDescriptor qds =
+        readSimpleField(
+            "qds",
+            new DataReaderComplexDefault<>(
+                () -> QualityDescriptor.staticParse(readBuffer), readBuffer),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
+    SevenOctetBinaryTime cp56Time2a =
+        readSimpleField(
+            "cp56Time2a",
+            new DataReaderComplexDefault<>(
+                () -> SevenOctetBinaryTime.staticParse(readBuffer), readBuffer),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
     readBuffer.closeContext(
         "InformationObject_MEASURED_VALUE_SCALED_VALUE_WITH_TIME_TAG_CP56TIME2A");
     // Create the instance
-    return new InformationObject_MEASURED_VALUE_SCALED_VALUE_WITH_TIME_TAG_CP56TIME2ABuilderImpl();
+    return new InformationObject_MEASURED_VALUE_SCALED_VALUE_WITH_TIME_TAG_CP56TIME2ABuilderImpl(
+        sva, qds, cp56Time2a);
   }
 
   public static
   class InformationObject_MEASURED_VALUE_SCALED_VALUE_WITH_TIME_TAG_CP56TIME2ABuilderImpl
       implements InformationObject.InformationObjectBuilder {
+    private final ScaledValue sva;
+    private final QualityDescriptor qds;
+    private final SevenOctetBinaryTime cp56Time2a;
 
-    public InformationObject_MEASURED_VALUE_SCALED_VALUE_WITH_TIME_TAG_CP56TIME2ABuilderImpl() {}
+    public InformationObject_MEASURED_VALUE_SCALED_VALUE_WITH_TIME_TAG_CP56TIME2ABuilderImpl(
+        ScaledValue sva, QualityDescriptor qds, SevenOctetBinaryTime cp56Time2a) {
+      this.sva = sva;
+      this.qds = qds;
+      this.cp56Time2a = cp56Time2a;
+    }
 
     public InformationObject_MEASURED_VALUE_SCALED_VALUE_WITH_TIME_TAG_CP56TIME2A build(
         int address) {
       InformationObject_MEASURED_VALUE_SCALED_VALUE_WITH_TIME_TAG_CP56TIME2A
           informationObject_MEASURED_VALUE_SCALED_VALUE_WITH_TIME_TAG_CP56TIME2A =
-              new InformationObject_MEASURED_VALUE_SCALED_VALUE_WITH_TIME_TAG_CP56TIME2A(address);
+              new InformationObject_MEASURED_VALUE_SCALED_VALUE_WITH_TIME_TAG_CP56TIME2A(
+                  address, sva, qds, cp56Time2a);
       return informationObject_MEASURED_VALUE_SCALED_VALUE_WITH_TIME_TAG_CP56TIME2A;
     }
   }
@@ -111,12 +192,16 @@ public class InformationObject_MEASURED_VALUE_SCALED_VALUE_WITH_TIME_TAG_CP56TIM
     }
     InformationObject_MEASURED_VALUE_SCALED_VALUE_WITH_TIME_TAG_CP56TIME2A that =
         (InformationObject_MEASURED_VALUE_SCALED_VALUE_WITH_TIME_TAG_CP56TIME2A) o;
-    return super.equals(that) && true;
+    return (getSva() == that.getSva())
+        && (getQds() == that.getQds())
+        && (getCp56Time2a() == that.getCp56Time2a())
+        && super.equals(that)
+        && true;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode());
+    return Objects.hash(super.hashCode(), getSva(), getQds(), getCp56Time2a());
   }
 
   @Override

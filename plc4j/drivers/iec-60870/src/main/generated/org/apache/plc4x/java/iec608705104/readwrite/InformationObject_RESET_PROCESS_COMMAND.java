@@ -42,8 +42,16 @@ public class InformationObject_RESET_PROCESS_COMMAND extends InformationObject i
     return TypeIdentification.RESET_PROCESS_COMMAND;
   }
 
-  public InformationObject_RESET_PROCESS_COMMAND(int address) {
+  // Properties.
+  protected final QualifierOfResetProcessCommand qrp;
+
+  public InformationObject_RESET_PROCESS_COMMAND(int address, QualifierOfResetProcessCommand qrp) {
     super(address);
+    this.qrp = qrp;
+  }
+
+  public QualifierOfResetProcessCommand getQrp() {
+    return qrp;
   }
 
   @Override
@@ -52,6 +60,13 @@ public class InformationObject_RESET_PROCESS_COMMAND extends InformationObject i
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     writeBuffer.pushContext("InformationObject_RESET_PROCESS_COMMAND");
+
+    // Simple Field (qrp)
+    writeSimpleField(
+        "qrp",
+        qrp,
+        new DataWriterComplexDefault<>(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     writeBuffer.popContext("InformationObject_RESET_PROCESS_COMMAND");
   }
@@ -67,6 +82,9 @@ public class InformationObject_RESET_PROCESS_COMMAND extends InformationObject i
     InformationObject_RESET_PROCESS_COMMAND _value = this;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
+    // Simple field (qrp)
+    lengthInBits += qrp.getLengthInBits();
+
     return lengthInBits;
   }
 
@@ -76,19 +94,29 @@ public class InformationObject_RESET_PROCESS_COMMAND extends InformationObject i
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
+    QualifierOfResetProcessCommand qrp =
+        readSimpleField(
+            "qrp",
+            new DataReaderComplexDefault<>(
+                () -> QualifierOfResetProcessCommand.staticParse(readBuffer), readBuffer),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
     readBuffer.closeContext("InformationObject_RESET_PROCESS_COMMAND");
     // Create the instance
-    return new InformationObject_RESET_PROCESS_COMMANDBuilderImpl();
+    return new InformationObject_RESET_PROCESS_COMMANDBuilderImpl(qrp);
   }
 
   public static class InformationObject_RESET_PROCESS_COMMANDBuilderImpl
       implements InformationObject.InformationObjectBuilder {
+    private final QualifierOfResetProcessCommand qrp;
 
-    public InformationObject_RESET_PROCESS_COMMANDBuilderImpl() {}
+    public InformationObject_RESET_PROCESS_COMMANDBuilderImpl(QualifierOfResetProcessCommand qrp) {
+      this.qrp = qrp;
+    }
 
     public InformationObject_RESET_PROCESS_COMMAND build(int address) {
       InformationObject_RESET_PROCESS_COMMAND informationObject_RESET_PROCESS_COMMAND =
-          new InformationObject_RESET_PROCESS_COMMAND(address);
+          new InformationObject_RESET_PROCESS_COMMAND(address, qrp);
       return informationObject_RESET_PROCESS_COMMAND;
     }
   }
@@ -102,12 +130,12 @@ public class InformationObject_RESET_PROCESS_COMMAND extends InformationObject i
       return false;
     }
     InformationObject_RESET_PROCESS_COMMAND that = (InformationObject_RESET_PROCESS_COMMAND) o;
-    return super.equals(that) && true;
+    return (getQrp() == that.getQrp()) && super.equals(that) && true;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode());
+    return Objects.hash(super.hashCode(), getQrp());
   }
 
   @Override

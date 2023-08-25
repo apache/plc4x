@@ -43,8 +43,16 @@ public class InformationObject_DELAY_ACQUISITION_COMMAND extends InformationObje
     return TypeIdentification.DELAY_ACQUISITION_COMMAND;
   }
 
-  public InformationObject_DELAY_ACQUISITION_COMMAND(int address) {
+  // Properties.
+  protected final TwoOctetBinaryTime cp16Time2a;
+
+  public InformationObject_DELAY_ACQUISITION_COMMAND(int address, TwoOctetBinaryTime cp16Time2a) {
     super(address);
+    this.cp16Time2a = cp16Time2a;
+  }
+
+  public TwoOctetBinaryTime getCp16Time2a() {
+    return cp16Time2a;
   }
 
   @Override
@@ -53,6 +61,13 @@ public class InformationObject_DELAY_ACQUISITION_COMMAND extends InformationObje
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     writeBuffer.pushContext("InformationObject_DELAY_ACQUISITION_COMMAND");
+
+    // Simple Field (cp16Time2a)
+    writeSimpleField(
+        "cp16Time2a",
+        cp16Time2a,
+        new DataWriterComplexDefault<>(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     writeBuffer.popContext("InformationObject_DELAY_ACQUISITION_COMMAND");
   }
@@ -68,6 +83,9 @@ public class InformationObject_DELAY_ACQUISITION_COMMAND extends InformationObje
     InformationObject_DELAY_ACQUISITION_COMMAND _value = this;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
+    // Simple field (cp16Time2a)
+    lengthInBits += cp16Time2a.getLengthInBits();
+
     return lengthInBits;
   }
 
@@ -77,19 +95,29 @@ public class InformationObject_DELAY_ACQUISITION_COMMAND extends InformationObje
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
+    TwoOctetBinaryTime cp16Time2a =
+        readSimpleField(
+            "cp16Time2a",
+            new DataReaderComplexDefault<>(
+                () -> TwoOctetBinaryTime.staticParse(readBuffer), readBuffer),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
     readBuffer.closeContext("InformationObject_DELAY_ACQUISITION_COMMAND");
     // Create the instance
-    return new InformationObject_DELAY_ACQUISITION_COMMANDBuilderImpl();
+    return new InformationObject_DELAY_ACQUISITION_COMMANDBuilderImpl(cp16Time2a);
   }
 
   public static class InformationObject_DELAY_ACQUISITION_COMMANDBuilderImpl
       implements InformationObject.InformationObjectBuilder {
+    private final TwoOctetBinaryTime cp16Time2a;
 
-    public InformationObject_DELAY_ACQUISITION_COMMANDBuilderImpl() {}
+    public InformationObject_DELAY_ACQUISITION_COMMANDBuilderImpl(TwoOctetBinaryTime cp16Time2a) {
+      this.cp16Time2a = cp16Time2a;
+    }
 
     public InformationObject_DELAY_ACQUISITION_COMMAND build(int address) {
       InformationObject_DELAY_ACQUISITION_COMMAND informationObject_DELAY_ACQUISITION_COMMAND =
-          new InformationObject_DELAY_ACQUISITION_COMMAND(address);
+          new InformationObject_DELAY_ACQUISITION_COMMAND(address, cp16Time2a);
       return informationObject_DELAY_ACQUISITION_COMMAND;
     }
   }
@@ -104,12 +132,12 @@ public class InformationObject_DELAY_ACQUISITION_COMMAND extends InformationObje
     }
     InformationObject_DELAY_ACQUISITION_COMMAND that =
         (InformationObject_DELAY_ACQUISITION_COMMAND) o;
-    return super.equals(that) && true;
+    return (getCp16Time2a() == that.getCp16Time2a()) && super.equals(that) && true;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode());
+    return Objects.hash(super.hashCode(), getCp16Time2a());
   }
 
   @Override

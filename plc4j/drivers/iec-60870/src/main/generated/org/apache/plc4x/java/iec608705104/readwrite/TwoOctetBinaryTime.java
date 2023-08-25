@@ -37,14 +37,29 @@ import org.apache.plc4x.java.spi.generation.*;
 
 public class TwoOctetBinaryTime implements Message {
 
-  public TwoOctetBinaryTime() {
+  // Properties.
+  protected final byte[] value;
+
+  public TwoOctetBinaryTime(byte[] value) {
     super();
+    this.value = value;
+  }
+
+  public byte[] getValue() {
+    return value;
   }
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     writeBuffer.pushContext("TwoOctetBinaryTime");
+
+    // Array Field (value)
+    writeByteArrayField(
+        "value",
+        value,
+        writeByteArray(writeBuffer, 8),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     writeBuffer.popContext("TwoOctetBinaryTime");
   }
@@ -60,6 +75,11 @@ public class TwoOctetBinaryTime implements Message {
     TwoOctetBinaryTime _value = this;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
+    // Array field
+    if (value != null) {
+      lengthInBits += 8 * value.length;
+    }
+
     return lengthInBits;
   }
 
@@ -74,10 +94,14 @@ public class TwoOctetBinaryTime implements Message {
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
+    byte[] value =
+        readBuffer.readByteArray(
+            "value", Math.toIntExact(2), WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
     readBuffer.closeContext("TwoOctetBinaryTime");
     // Create the instance
     TwoOctetBinaryTime _twoOctetBinaryTime;
-    _twoOctetBinaryTime = new TwoOctetBinaryTime();
+    _twoOctetBinaryTime = new TwoOctetBinaryTime(value);
     return _twoOctetBinaryTime;
   }
 
@@ -90,12 +114,12 @@ public class TwoOctetBinaryTime implements Message {
       return false;
     }
     TwoOctetBinaryTime that = (TwoOctetBinaryTime) o;
-    return true;
+    return (getValue() == that.getValue()) && true;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash();
+    return Objects.hash(getValue());
   }
 
   @Override

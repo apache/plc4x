@@ -43,8 +43,32 @@ public class InformationObject_BITSTRING_OF_32_BIT_WITH_TIME_TAG_CP56TIME2A
     return TypeIdentification.BITSTRING_OF_32_BIT_WITH_TIME_TAG_CP56TIME2A;
   }
 
-  public InformationObject_BITSTRING_OF_32_BIT_WITH_TIME_TAG_CP56TIME2A(int address) {
+  // Properties.
+  protected final BinaryStateInformation bsi;
+  protected final QualityDescriptor qds;
+  protected final SevenOctetBinaryTime cp56Time2a;
+
+  public InformationObject_BITSTRING_OF_32_BIT_WITH_TIME_TAG_CP56TIME2A(
+      int address,
+      BinaryStateInformation bsi,
+      QualityDescriptor qds,
+      SevenOctetBinaryTime cp56Time2a) {
     super(address);
+    this.bsi = bsi;
+    this.qds = qds;
+    this.cp56Time2a = cp56Time2a;
+  }
+
+  public BinaryStateInformation getBsi() {
+    return bsi;
+  }
+
+  public QualityDescriptor getQds() {
+    return qds;
+  }
+
+  public SevenOctetBinaryTime getCp56Time2a() {
+    return cp56Time2a;
   }
 
   @Override
@@ -53,6 +77,27 @@ public class InformationObject_BITSTRING_OF_32_BIT_WITH_TIME_TAG_CP56TIME2A
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     writeBuffer.pushContext("InformationObject_BITSTRING_OF_32_BIT_WITH_TIME_TAG_CP56TIME2A");
+
+    // Simple Field (bsi)
+    writeSimpleField(
+        "bsi",
+        bsi,
+        new DataWriterComplexDefault<>(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
+    // Simple Field (qds)
+    writeSimpleField(
+        "qds",
+        qds,
+        new DataWriterComplexDefault<>(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
+    // Simple Field (cp56Time2a)
+    writeSimpleField(
+        "cp56Time2a",
+        cp56Time2a,
+        new DataWriterComplexDefault<>(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     writeBuffer.popContext("InformationObject_BITSTRING_OF_32_BIT_WITH_TIME_TAG_CP56TIME2A");
   }
@@ -68,6 +113,15 @@ public class InformationObject_BITSTRING_OF_32_BIT_WITH_TIME_TAG_CP56TIME2A
     InformationObject_BITSTRING_OF_32_BIT_WITH_TIME_TAG_CP56TIME2A _value = this;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
+    // Simple field (bsi)
+    lengthInBits += bsi.getLengthInBits();
+
+    // Simple field (qds)
+    lengthInBits += qds.getLengthInBits();
+
+    // Simple field (cp56Time2a)
+    lengthInBits += cp56Time2a.getLengthInBits();
+
     return lengthInBits;
   }
 
@@ -77,20 +131,51 @@ public class InformationObject_BITSTRING_OF_32_BIT_WITH_TIME_TAG_CP56TIME2A
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
+    BinaryStateInformation bsi =
+        readSimpleField(
+            "bsi",
+            new DataReaderComplexDefault<>(
+                () -> BinaryStateInformation.staticParse(readBuffer), readBuffer),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
+    QualityDescriptor qds =
+        readSimpleField(
+            "qds",
+            new DataReaderComplexDefault<>(
+                () -> QualityDescriptor.staticParse(readBuffer), readBuffer),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
+    SevenOctetBinaryTime cp56Time2a =
+        readSimpleField(
+            "cp56Time2a",
+            new DataReaderComplexDefault<>(
+                () -> SevenOctetBinaryTime.staticParse(readBuffer), readBuffer),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
     readBuffer.closeContext("InformationObject_BITSTRING_OF_32_BIT_WITH_TIME_TAG_CP56TIME2A");
     // Create the instance
-    return new InformationObject_BITSTRING_OF_32_BIT_WITH_TIME_TAG_CP56TIME2ABuilderImpl();
+    return new InformationObject_BITSTRING_OF_32_BIT_WITH_TIME_TAG_CP56TIME2ABuilderImpl(
+        bsi, qds, cp56Time2a);
   }
 
   public static class InformationObject_BITSTRING_OF_32_BIT_WITH_TIME_TAG_CP56TIME2ABuilderImpl
       implements InformationObject.InformationObjectBuilder {
+    private final BinaryStateInformation bsi;
+    private final QualityDescriptor qds;
+    private final SevenOctetBinaryTime cp56Time2a;
 
-    public InformationObject_BITSTRING_OF_32_BIT_WITH_TIME_TAG_CP56TIME2ABuilderImpl() {}
+    public InformationObject_BITSTRING_OF_32_BIT_WITH_TIME_TAG_CP56TIME2ABuilderImpl(
+        BinaryStateInformation bsi, QualityDescriptor qds, SevenOctetBinaryTime cp56Time2a) {
+      this.bsi = bsi;
+      this.qds = qds;
+      this.cp56Time2a = cp56Time2a;
+    }
 
     public InformationObject_BITSTRING_OF_32_BIT_WITH_TIME_TAG_CP56TIME2A build(int address) {
       InformationObject_BITSTRING_OF_32_BIT_WITH_TIME_TAG_CP56TIME2A
           informationObject_BITSTRING_OF_32_BIT_WITH_TIME_TAG_CP56TIME2A =
-              new InformationObject_BITSTRING_OF_32_BIT_WITH_TIME_TAG_CP56TIME2A(address);
+              new InformationObject_BITSTRING_OF_32_BIT_WITH_TIME_TAG_CP56TIME2A(
+                  address, bsi, qds, cp56Time2a);
       return informationObject_BITSTRING_OF_32_BIT_WITH_TIME_TAG_CP56TIME2A;
     }
   }
@@ -105,12 +190,16 @@ public class InformationObject_BITSTRING_OF_32_BIT_WITH_TIME_TAG_CP56TIME2A
     }
     InformationObject_BITSTRING_OF_32_BIT_WITH_TIME_TAG_CP56TIME2A that =
         (InformationObject_BITSTRING_OF_32_BIT_WITH_TIME_TAG_CP56TIME2A) o;
-    return super.equals(that) && true;
+    return (getBsi() == that.getBsi())
+        && (getQds() == that.getQds())
+        && (getCp56Time2a() == that.getCp56Time2a())
+        && super.equals(that)
+        && true;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode());
+    return Objects.hash(super.hashCode(), getBsi(), getQds(), getCp56Time2a());
   }
 
   @Override

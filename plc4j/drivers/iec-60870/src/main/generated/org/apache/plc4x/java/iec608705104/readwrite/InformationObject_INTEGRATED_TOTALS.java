@@ -42,8 +42,16 @@ public class InformationObject_INTEGRATED_TOTALS extends InformationObject imple
     return TypeIdentification.INTEGRATED_TOTALS;
   }
 
-  public InformationObject_INTEGRATED_TOTALS(int address) {
+  // Properties.
+  protected final BinaryCounterReading bcr;
+
+  public InformationObject_INTEGRATED_TOTALS(int address, BinaryCounterReading bcr) {
     super(address);
+    this.bcr = bcr;
+  }
+
+  public BinaryCounterReading getBcr() {
+    return bcr;
   }
 
   @Override
@@ -52,6 +60,13 @@ public class InformationObject_INTEGRATED_TOTALS extends InformationObject imple
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     writeBuffer.pushContext("InformationObject_INTEGRATED_TOTALS");
+
+    // Simple Field (bcr)
+    writeSimpleField(
+        "bcr",
+        bcr,
+        new DataWriterComplexDefault<>(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     writeBuffer.popContext("InformationObject_INTEGRATED_TOTALS");
   }
@@ -67,6 +82,9 @@ public class InformationObject_INTEGRATED_TOTALS extends InformationObject imple
     InformationObject_INTEGRATED_TOTALS _value = this;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
+    // Simple field (bcr)
+    lengthInBits += bcr.getLengthInBits();
+
     return lengthInBits;
   }
 
@@ -76,19 +94,29 @@ public class InformationObject_INTEGRATED_TOTALS extends InformationObject imple
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
+    BinaryCounterReading bcr =
+        readSimpleField(
+            "bcr",
+            new DataReaderComplexDefault<>(
+                () -> BinaryCounterReading.staticParse(readBuffer), readBuffer),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
     readBuffer.closeContext("InformationObject_INTEGRATED_TOTALS");
     // Create the instance
-    return new InformationObject_INTEGRATED_TOTALSBuilderImpl();
+    return new InformationObject_INTEGRATED_TOTALSBuilderImpl(bcr);
   }
 
   public static class InformationObject_INTEGRATED_TOTALSBuilderImpl
       implements InformationObject.InformationObjectBuilder {
+    private final BinaryCounterReading bcr;
 
-    public InformationObject_INTEGRATED_TOTALSBuilderImpl() {}
+    public InformationObject_INTEGRATED_TOTALSBuilderImpl(BinaryCounterReading bcr) {
+      this.bcr = bcr;
+    }
 
     public InformationObject_INTEGRATED_TOTALS build(int address) {
       InformationObject_INTEGRATED_TOTALS informationObject_INTEGRATED_TOTALS =
-          new InformationObject_INTEGRATED_TOTALS(address);
+          new InformationObject_INTEGRATED_TOTALS(address, bcr);
       return informationObject_INTEGRATED_TOTALS;
     }
   }
@@ -102,12 +130,12 @@ public class InformationObject_INTEGRATED_TOTALS extends InformationObject imple
       return false;
     }
     InformationObject_INTEGRATED_TOTALS that = (InformationObject_INTEGRATED_TOTALS) o;
-    return super.equals(that) && true;
+    return (getBcr() == that.getBcr()) && super.equals(that) && true;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode());
+    return Objects.hash(super.hashCode(), getBcr());
   }
 
   @Override

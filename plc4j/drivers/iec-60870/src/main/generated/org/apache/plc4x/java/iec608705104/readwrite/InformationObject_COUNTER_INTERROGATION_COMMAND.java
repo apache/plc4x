@@ -43,8 +43,17 @@ public class InformationObject_COUNTER_INTERROGATION_COMMAND extends Information
     return TypeIdentification.COUNTER_INTERROGATION_COMMAND;
   }
 
-  public InformationObject_COUNTER_INTERROGATION_COMMAND(int address) {
+  // Properties.
+  protected final QualifierOfCounterInterrogationCommand qcc;
+
+  public InformationObject_COUNTER_INTERROGATION_COMMAND(
+      int address, QualifierOfCounterInterrogationCommand qcc) {
     super(address);
+    this.qcc = qcc;
+  }
+
+  public QualifierOfCounterInterrogationCommand getQcc() {
+    return qcc;
   }
 
   @Override
@@ -53,6 +62,13 @@ public class InformationObject_COUNTER_INTERROGATION_COMMAND extends Information
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     writeBuffer.pushContext("InformationObject_COUNTER_INTERROGATION_COMMAND");
+
+    // Simple Field (qcc)
+    writeSimpleField(
+        "qcc",
+        qcc,
+        new DataWriterComplexDefault<>(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     writeBuffer.popContext("InformationObject_COUNTER_INTERROGATION_COMMAND");
   }
@@ -68,6 +84,9 @@ public class InformationObject_COUNTER_INTERROGATION_COMMAND extends Information
     InformationObject_COUNTER_INTERROGATION_COMMAND _value = this;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
+    // Simple field (qcc)
+    lengthInBits += qcc.getLengthInBits();
+
     return lengthInBits;
   }
 
@@ -77,20 +96,31 @@ public class InformationObject_COUNTER_INTERROGATION_COMMAND extends Information
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
+    QualifierOfCounterInterrogationCommand qcc =
+        readSimpleField(
+            "qcc",
+            new DataReaderComplexDefault<>(
+                () -> QualifierOfCounterInterrogationCommand.staticParse(readBuffer), readBuffer),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
     readBuffer.closeContext("InformationObject_COUNTER_INTERROGATION_COMMAND");
     // Create the instance
-    return new InformationObject_COUNTER_INTERROGATION_COMMANDBuilderImpl();
+    return new InformationObject_COUNTER_INTERROGATION_COMMANDBuilderImpl(qcc);
   }
 
   public static class InformationObject_COUNTER_INTERROGATION_COMMANDBuilderImpl
       implements InformationObject.InformationObjectBuilder {
+    private final QualifierOfCounterInterrogationCommand qcc;
 
-    public InformationObject_COUNTER_INTERROGATION_COMMANDBuilderImpl() {}
+    public InformationObject_COUNTER_INTERROGATION_COMMANDBuilderImpl(
+        QualifierOfCounterInterrogationCommand qcc) {
+      this.qcc = qcc;
+    }
 
     public InformationObject_COUNTER_INTERROGATION_COMMAND build(int address) {
       InformationObject_COUNTER_INTERROGATION_COMMAND
           informationObject_COUNTER_INTERROGATION_COMMAND =
-              new InformationObject_COUNTER_INTERROGATION_COMMAND(address);
+              new InformationObject_COUNTER_INTERROGATION_COMMAND(address, qcc);
       return informationObject_COUNTER_INTERROGATION_COMMAND;
     }
   }
@@ -105,12 +135,12 @@ public class InformationObject_COUNTER_INTERROGATION_COMMAND extends Information
     }
     InformationObject_COUNTER_INTERROGATION_COMMAND that =
         (InformationObject_COUNTER_INTERROGATION_COMMAND) o;
-    return super.equals(that) && true;
+    return (getQcc() == that.getQcc()) && super.equals(that) && true;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode());
+    return Objects.hash(super.hashCode(), getQcc());
   }
 
   @Override

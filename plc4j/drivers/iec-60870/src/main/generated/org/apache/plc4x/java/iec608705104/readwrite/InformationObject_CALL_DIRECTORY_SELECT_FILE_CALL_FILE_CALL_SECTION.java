@@ -43,8 +43,29 @@ public class InformationObject_CALL_DIRECTORY_SELECT_FILE_CALL_FILE_CALL_SECTION
     return TypeIdentification.CALL_DIRECTORY_SELECT_FILE_CALL_FILE_CALL_SECTION;
   }
 
-  public InformationObject_CALL_DIRECTORY_SELECT_FILE_CALL_FILE_CALL_SECTION(int address) {
+  // Properties.
+  protected final NameOfFile nof;
+  protected final NameOfSection nos;
+  protected final SelectAndCallQualifier scq;
+
+  public InformationObject_CALL_DIRECTORY_SELECT_FILE_CALL_FILE_CALL_SECTION(
+      int address, NameOfFile nof, NameOfSection nos, SelectAndCallQualifier scq) {
     super(address);
+    this.nof = nof;
+    this.nos = nos;
+    this.scq = scq;
+  }
+
+  public NameOfFile getNof() {
+    return nof;
+  }
+
+  public NameOfSection getNos() {
+    return nos;
+  }
+
+  public SelectAndCallQualifier getScq() {
+    return scq;
   }
 
   @Override
@@ -53,6 +74,27 @@ public class InformationObject_CALL_DIRECTORY_SELECT_FILE_CALL_FILE_CALL_SECTION
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     writeBuffer.pushContext("InformationObject_CALL_DIRECTORY_SELECT_FILE_CALL_FILE_CALL_SECTION");
+
+    // Simple Field (nof)
+    writeSimpleField(
+        "nof",
+        nof,
+        new DataWriterComplexDefault<>(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
+    // Simple Field (nos)
+    writeSimpleField(
+        "nos",
+        nos,
+        new DataWriterComplexDefault<>(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
+    // Simple Field (scq)
+    writeSimpleField(
+        "scq",
+        scq,
+        new DataWriterComplexDefault<>(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     writeBuffer.popContext("InformationObject_CALL_DIRECTORY_SELECT_FILE_CALL_FILE_CALL_SECTION");
   }
@@ -68,6 +110,15 @@ public class InformationObject_CALL_DIRECTORY_SELECT_FILE_CALL_FILE_CALL_SECTION
     InformationObject_CALL_DIRECTORY_SELECT_FILE_CALL_FILE_CALL_SECTION _value = this;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
+    // Simple field (nof)
+    lengthInBits += nof.getLengthInBits();
+
+    // Simple field (nos)
+    lengthInBits += nos.getLengthInBits();
+
+    // Simple field (scq)
+    lengthInBits += scq.getLengthInBits();
+
     return lengthInBits;
   }
 
@@ -77,20 +128,49 @@ public class InformationObject_CALL_DIRECTORY_SELECT_FILE_CALL_FILE_CALL_SECTION
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
+    NameOfFile nof =
+        readSimpleField(
+            "nof",
+            new DataReaderComplexDefault<>(() -> NameOfFile.staticParse(readBuffer), readBuffer),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
+    NameOfSection nos =
+        readSimpleField(
+            "nos",
+            new DataReaderComplexDefault<>(() -> NameOfSection.staticParse(readBuffer), readBuffer),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
+    SelectAndCallQualifier scq =
+        readSimpleField(
+            "scq",
+            new DataReaderComplexDefault<>(
+                () -> SelectAndCallQualifier.staticParse(readBuffer), readBuffer),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
     readBuffer.closeContext("InformationObject_CALL_DIRECTORY_SELECT_FILE_CALL_FILE_CALL_SECTION");
     // Create the instance
-    return new InformationObject_CALL_DIRECTORY_SELECT_FILE_CALL_FILE_CALL_SECTIONBuilderImpl();
+    return new InformationObject_CALL_DIRECTORY_SELECT_FILE_CALL_FILE_CALL_SECTIONBuilderImpl(
+        nof, nos, scq);
   }
 
   public static class InformationObject_CALL_DIRECTORY_SELECT_FILE_CALL_FILE_CALL_SECTIONBuilderImpl
       implements InformationObject.InformationObjectBuilder {
+    private final NameOfFile nof;
+    private final NameOfSection nos;
+    private final SelectAndCallQualifier scq;
 
-    public InformationObject_CALL_DIRECTORY_SELECT_FILE_CALL_FILE_CALL_SECTIONBuilderImpl() {}
+    public InformationObject_CALL_DIRECTORY_SELECT_FILE_CALL_FILE_CALL_SECTIONBuilderImpl(
+        NameOfFile nof, NameOfSection nos, SelectAndCallQualifier scq) {
+      this.nof = nof;
+      this.nos = nos;
+      this.scq = scq;
+    }
 
     public InformationObject_CALL_DIRECTORY_SELECT_FILE_CALL_FILE_CALL_SECTION build(int address) {
       InformationObject_CALL_DIRECTORY_SELECT_FILE_CALL_FILE_CALL_SECTION
           informationObject_CALL_DIRECTORY_SELECT_FILE_CALL_FILE_CALL_SECTION =
-              new InformationObject_CALL_DIRECTORY_SELECT_FILE_CALL_FILE_CALL_SECTION(address);
+              new InformationObject_CALL_DIRECTORY_SELECT_FILE_CALL_FILE_CALL_SECTION(
+                  address, nof, nos, scq);
       return informationObject_CALL_DIRECTORY_SELECT_FILE_CALL_FILE_CALL_SECTION;
     }
   }
@@ -105,12 +185,16 @@ public class InformationObject_CALL_DIRECTORY_SELECT_FILE_CALL_FILE_CALL_SECTION
     }
     InformationObject_CALL_DIRECTORY_SELECT_FILE_CALL_FILE_CALL_SECTION that =
         (InformationObject_CALL_DIRECTORY_SELECT_FILE_CALL_FILE_CALL_SECTION) o;
-    return super.equals(that) && true;
+    return (getNof() == that.getNof())
+        && (getNos() == that.getNos())
+        && (getScq() == that.getScq())
+        && super.equals(that)
+        && true;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode());
+    return Objects.hash(super.hashCode(), getNof(), getNos(), getScq());
   }
 
   @Override

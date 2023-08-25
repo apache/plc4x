@@ -55,7 +55,11 @@ public class StatusChangeDetection implements Message {
     writeBuffer.pushContext("StatusChangeDetection");
 
     // Simple Field (bits)
-    writeSimpleField("bits", bits, writeUnsignedLong(writeBuffer, 32));
+    writeSimpleField(
+        "bits",
+        bits,
+        writeUnsignedLong(writeBuffer, 32),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     writeBuffer.popContext("StatusChangeDetection");
   }
@@ -88,7 +92,11 @@ public class StatusChangeDetection implements Message {
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    long bits = readSimpleField("bits", readUnsignedLong(readBuffer, 32));
+    long bits =
+        readSimpleField(
+            "bits",
+            readUnsignedLong(readBuffer, 32),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     readBuffer.closeContext("StatusChangeDetection");
     // Create the instance

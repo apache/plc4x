@@ -42,8 +42,16 @@ public class InformationObject_TEST_COMMAND extends InformationObject implements
     return TypeIdentification.TEST_COMMAND;
   }
 
-  public InformationObject_TEST_COMMAND(int address) {
+  // Properties.
+  protected final FixedTestBitPatternTwoOctet fbp;
+
+  public InformationObject_TEST_COMMAND(int address, FixedTestBitPatternTwoOctet fbp) {
     super(address);
+    this.fbp = fbp;
+  }
+
+  public FixedTestBitPatternTwoOctet getFbp() {
+    return fbp;
   }
 
   @Override
@@ -52,6 +60,13 @@ public class InformationObject_TEST_COMMAND extends InformationObject implements
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     writeBuffer.pushContext("InformationObject_TEST_COMMAND");
+
+    // Simple Field (fbp)
+    writeSimpleField(
+        "fbp",
+        fbp,
+        new DataWriterComplexDefault<>(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     writeBuffer.popContext("InformationObject_TEST_COMMAND");
   }
@@ -67,6 +82,9 @@ public class InformationObject_TEST_COMMAND extends InformationObject implements
     InformationObject_TEST_COMMAND _value = this;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
+    // Simple field (fbp)
+    lengthInBits += fbp.getLengthInBits();
+
     return lengthInBits;
   }
 
@@ -76,19 +94,29 @@ public class InformationObject_TEST_COMMAND extends InformationObject implements
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
+    FixedTestBitPatternTwoOctet fbp =
+        readSimpleField(
+            "fbp",
+            new DataReaderComplexDefault<>(
+                () -> FixedTestBitPatternTwoOctet.staticParse(readBuffer), readBuffer),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
     readBuffer.closeContext("InformationObject_TEST_COMMAND");
     // Create the instance
-    return new InformationObject_TEST_COMMANDBuilderImpl();
+    return new InformationObject_TEST_COMMANDBuilderImpl(fbp);
   }
 
   public static class InformationObject_TEST_COMMANDBuilderImpl
       implements InformationObject.InformationObjectBuilder {
+    private final FixedTestBitPatternTwoOctet fbp;
 
-    public InformationObject_TEST_COMMANDBuilderImpl() {}
+    public InformationObject_TEST_COMMANDBuilderImpl(FixedTestBitPatternTwoOctet fbp) {
+      this.fbp = fbp;
+    }
 
     public InformationObject_TEST_COMMAND build(int address) {
       InformationObject_TEST_COMMAND informationObject_TEST_COMMAND =
-          new InformationObject_TEST_COMMAND(address);
+          new InformationObject_TEST_COMMAND(address, fbp);
       return informationObject_TEST_COMMAND;
     }
   }
@@ -102,12 +130,12 @@ public class InformationObject_TEST_COMMAND extends InformationObject implements
       return false;
     }
     InformationObject_TEST_COMMAND that = (InformationObject_TEST_COMMAND) o;
-    return super.equals(that) && true;
+    return (getFbp() == that.getFbp()) && super.equals(that) && true;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode());
+    return Objects.hash(super.hashCode(), getFbp());
   }
 
   @Override

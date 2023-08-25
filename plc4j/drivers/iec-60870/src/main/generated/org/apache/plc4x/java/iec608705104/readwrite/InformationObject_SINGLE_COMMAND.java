@@ -42,8 +42,16 @@ public class InformationObject_SINGLE_COMMAND extends InformationObject implemen
     return TypeIdentification.SINGLE_COMMAND;
   }
 
-  public InformationObject_SINGLE_COMMAND(int address) {
+  // Properties.
+  protected final SingleCommand sco;
+
+  public InformationObject_SINGLE_COMMAND(int address, SingleCommand sco) {
     super(address);
+    this.sco = sco;
+  }
+
+  public SingleCommand getSco() {
+    return sco;
   }
 
   @Override
@@ -52,6 +60,13 @@ public class InformationObject_SINGLE_COMMAND extends InformationObject implemen
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     writeBuffer.pushContext("InformationObject_SINGLE_COMMAND");
+
+    // Simple Field (sco)
+    writeSimpleField(
+        "sco",
+        sco,
+        new DataWriterComplexDefault<>(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     writeBuffer.popContext("InformationObject_SINGLE_COMMAND");
   }
@@ -67,6 +82,9 @@ public class InformationObject_SINGLE_COMMAND extends InformationObject implemen
     InformationObject_SINGLE_COMMAND _value = this;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
+    // Simple field (sco)
+    lengthInBits += sco.getLengthInBits();
+
     return lengthInBits;
   }
 
@@ -76,19 +94,28 @@ public class InformationObject_SINGLE_COMMAND extends InformationObject implemen
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
+    SingleCommand sco =
+        readSimpleField(
+            "sco",
+            new DataReaderComplexDefault<>(() -> SingleCommand.staticParse(readBuffer), readBuffer),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
     readBuffer.closeContext("InformationObject_SINGLE_COMMAND");
     // Create the instance
-    return new InformationObject_SINGLE_COMMANDBuilderImpl();
+    return new InformationObject_SINGLE_COMMANDBuilderImpl(sco);
   }
 
   public static class InformationObject_SINGLE_COMMANDBuilderImpl
       implements InformationObject.InformationObjectBuilder {
+    private final SingleCommand sco;
 
-    public InformationObject_SINGLE_COMMANDBuilderImpl() {}
+    public InformationObject_SINGLE_COMMANDBuilderImpl(SingleCommand sco) {
+      this.sco = sco;
+    }
 
     public InformationObject_SINGLE_COMMAND build(int address) {
       InformationObject_SINGLE_COMMAND informationObject_SINGLE_COMMAND =
-          new InformationObject_SINGLE_COMMAND(address);
+          new InformationObject_SINGLE_COMMAND(address, sco);
       return informationObject_SINGLE_COMMAND;
     }
   }
@@ -102,12 +129,12 @@ public class InformationObject_SINGLE_COMMAND extends InformationObject implemen
       return false;
     }
     InformationObject_SINGLE_COMMAND that = (InformationObject_SINGLE_COMMAND) o;
-    return super.equals(that) && true;
+    return (getSco() == that.getSco()) && super.equals(that) && true;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode());
+    return Objects.hash(super.hashCode(), getSco());
   }
 
   @Override

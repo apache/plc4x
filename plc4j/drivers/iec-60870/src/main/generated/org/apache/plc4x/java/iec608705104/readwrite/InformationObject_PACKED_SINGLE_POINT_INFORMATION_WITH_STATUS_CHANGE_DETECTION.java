@@ -43,9 +43,23 @@ public class InformationObject_PACKED_SINGLE_POINT_INFORMATION_WITH_STATUS_CHANG
     return TypeIdentification.PACKED_SINGLE_POINT_INFORMATION_WITH_STATUS_CHANGE_DETECTION;
   }
 
+  // Properties.
+  protected final StatusChangeDetection scd;
+  protected final QualityDescriptor qds;
+
   public InformationObject_PACKED_SINGLE_POINT_INFORMATION_WITH_STATUS_CHANGE_DETECTION(
-      int address) {
+      int address, StatusChangeDetection scd, QualityDescriptor qds) {
     super(address);
+    this.scd = scd;
+    this.qds = qds;
+  }
+
+  public StatusChangeDetection getScd() {
+    return scd;
+  }
+
+  public QualityDescriptor getQds() {
+    return qds;
   }
 
   @Override
@@ -55,6 +69,20 @@ public class InformationObject_PACKED_SINGLE_POINT_INFORMATION_WITH_STATUS_CHANG
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     writeBuffer.pushContext(
         "InformationObject_PACKED_SINGLE_POINT_INFORMATION_WITH_STATUS_CHANGE_DETECTION");
+
+    // Simple Field (scd)
+    writeSimpleField(
+        "scd",
+        scd,
+        new DataWriterComplexDefault<>(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
+    // Simple Field (qds)
+    writeSimpleField(
+        "qds",
+        qds,
+        new DataWriterComplexDefault<>(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     writeBuffer.popContext(
         "InformationObject_PACKED_SINGLE_POINT_INFORMATION_WITH_STATUS_CHANGE_DETECTION");
@@ -71,6 +99,12 @@ public class InformationObject_PACKED_SINGLE_POINT_INFORMATION_WITH_STATUS_CHANG
     InformationObject_PACKED_SINGLE_POINT_INFORMATION_WITH_STATUS_CHANGE_DETECTION _value = this;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
+    // Simple field (scd)
+    lengthInBits += scd.getLengthInBits();
+
+    // Simple field (qds)
+    lengthInBits += qds.getLengthInBits();
+
     return lengthInBits;
   }
 
@@ -81,25 +115,46 @@ public class InformationObject_PACKED_SINGLE_POINT_INFORMATION_WITH_STATUS_CHANG
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
+    StatusChangeDetection scd =
+        readSimpleField(
+            "scd",
+            new DataReaderComplexDefault<>(
+                () -> StatusChangeDetection.staticParse(readBuffer), readBuffer),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
+    QualityDescriptor qds =
+        readSimpleField(
+            "qds",
+            new DataReaderComplexDefault<>(
+                () -> QualityDescriptor.staticParse(readBuffer), readBuffer),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
     readBuffer.closeContext(
         "InformationObject_PACKED_SINGLE_POINT_INFORMATION_WITH_STATUS_CHANGE_DETECTION");
     // Create the instance
-    return new InformationObject_PACKED_SINGLE_POINT_INFORMATION_WITH_STATUS_CHANGE_DETECTIONBuilderImpl();
+    return new InformationObject_PACKED_SINGLE_POINT_INFORMATION_WITH_STATUS_CHANGE_DETECTIONBuilderImpl(
+        scd, qds);
   }
 
   public static
   class InformationObject_PACKED_SINGLE_POINT_INFORMATION_WITH_STATUS_CHANGE_DETECTIONBuilderImpl
       implements InformationObject.InformationObjectBuilder {
+    private final StatusChangeDetection scd;
+    private final QualityDescriptor qds;
 
     public
-    InformationObject_PACKED_SINGLE_POINT_INFORMATION_WITH_STATUS_CHANGE_DETECTIONBuilderImpl() {}
+    InformationObject_PACKED_SINGLE_POINT_INFORMATION_WITH_STATUS_CHANGE_DETECTIONBuilderImpl(
+        StatusChangeDetection scd, QualityDescriptor qds) {
+      this.scd = scd;
+      this.qds = qds;
+    }
 
     public InformationObject_PACKED_SINGLE_POINT_INFORMATION_WITH_STATUS_CHANGE_DETECTION build(
         int address) {
       InformationObject_PACKED_SINGLE_POINT_INFORMATION_WITH_STATUS_CHANGE_DETECTION
           informationObject_PACKED_SINGLE_POINT_INFORMATION_WITH_STATUS_CHANGE_DETECTION =
               new InformationObject_PACKED_SINGLE_POINT_INFORMATION_WITH_STATUS_CHANGE_DETECTION(
-                  address);
+                  address, scd, qds);
       return informationObject_PACKED_SINGLE_POINT_INFORMATION_WITH_STATUS_CHANGE_DETECTION;
     }
   }
@@ -116,12 +171,12 @@ public class InformationObject_PACKED_SINGLE_POINT_INFORMATION_WITH_STATUS_CHANG
     }
     InformationObject_PACKED_SINGLE_POINT_INFORMATION_WITH_STATUS_CHANGE_DETECTION that =
         (InformationObject_PACKED_SINGLE_POINT_INFORMATION_WITH_STATUS_CHANGE_DETECTION) o;
-    return super.equals(that) && true;
+    return (getScd() == that.getScd()) && (getQds() == that.getQds()) && super.equals(that) && true;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode());
+    return Objects.hash(super.hashCode(), getScd(), getQds());
   }
 
   @Override

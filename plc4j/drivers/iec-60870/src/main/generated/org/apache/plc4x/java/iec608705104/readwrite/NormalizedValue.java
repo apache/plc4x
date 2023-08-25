@@ -37,14 +37,29 @@ import org.apache.plc4x.java.spi.generation.*;
 
 public class NormalizedValue implements Message {
 
-  public NormalizedValue() {
+  // Properties.
+  protected final int value;
+
+  public NormalizedValue(int value) {
     super();
+    this.value = value;
+  }
+
+  public int getValue() {
+    return value;
   }
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     writeBuffer.pushContext("NormalizedValue");
+
+    // Simple Field (value)
+    writeSimpleField(
+        "value",
+        value,
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     writeBuffer.popContext("NormalizedValue");
   }
@@ -60,6 +75,9 @@ public class NormalizedValue implements Message {
     NormalizedValue _value = this;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
+    // Simple field (value)
+    lengthInBits += 16;
+
     return lengthInBits;
   }
 
@@ -74,10 +92,16 @@ public class NormalizedValue implements Message {
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
+    int value =
+        readSimpleField(
+            "value",
+            readUnsignedInt(readBuffer, 16),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
     readBuffer.closeContext("NormalizedValue");
     // Create the instance
     NormalizedValue _normalizedValue;
-    _normalizedValue = new NormalizedValue();
+    _normalizedValue = new NormalizedValue(value);
     return _normalizedValue;
   }
 
@@ -90,12 +114,12 @@ public class NormalizedValue implements Message {
       return false;
     }
     NormalizedValue that = (NormalizedValue) o;
-    return true;
+    return (getValue() == that.getValue()) && true;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash();
+    return Objects.hash(getValue());
   }
 
   @Override

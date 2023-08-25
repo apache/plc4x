@@ -91,28 +91,53 @@ public class StartEventsOfProtectionEquipment implements Message {
     writeBuffer.pushContext("StartEventsOfProtectionEquipment");
 
     // Reserved Field (reserved)
-    writeReservedField("reserved", (byte) 0, writeUnsignedByte(writeBuffer, 2));
+    writeReservedField(
+        "reserved",
+        (byte) 0,
+        writeUnsignedByte(writeBuffer, 2),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     // Simple Field (startOfOperationInReverseDirection)
     writeSimpleField(
         "startOfOperationInReverseDirection",
         startOfOperationInReverseDirection,
-        writeBoolean(writeBuffer));
+        writeBoolean(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     // Simple Field (startOfOperationIE)
-    writeSimpleField("startOfOperationIE", startOfOperationIE, writeBoolean(writeBuffer));
+    writeSimpleField(
+        "startOfOperationIE",
+        startOfOperationIE,
+        writeBoolean(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     // Simple Field (stateOfOperationPhaseL3)
-    writeSimpleField("stateOfOperationPhaseL3", stateOfOperationPhaseL3, writeBoolean(writeBuffer));
+    writeSimpleField(
+        "stateOfOperationPhaseL3",
+        stateOfOperationPhaseL3,
+        writeBoolean(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     // Simple Field (stateOfOperationPhaseL2)
-    writeSimpleField("stateOfOperationPhaseL2", stateOfOperationPhaseL2, writeBoolean(writeBuffer));
+    writeSimpleField(
+        "stateOfOperationPhaseL2",
+        stateOfOperationPhaseL2,
+        writeBoolean(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     // Simple Field (stateOfOperationPhaseL1)
-    writeSimpleField("stateOfOperationPhaseL1", stateOfOperationPhaseL1, writeBoolean(writeBuffer));
+    writeSimpleField(
+        "stateOfOperationPhaseL1",
+        stateOfOperationPhaseL1,
+        writeBoolean(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     // Simple Field (generalStartOfOperation)
-    writeSimpleField("generalStartOfOperation", generalStartOfOperation, writeBoolean(writeBuffer));
+    writeSimpleField(
+        "generalStartOfOperation",
+        generalStartOfOperation,
+        writeBoolean(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     writeBuffer.popContext("StartEventsOfProtectionEquipment");
   }
@@ -164,24 +189,48 @@ public class StartEventsOfProtectionEquipment implements Message {
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    Byte reservedField0 = readReservedField("reserved", readUnsignedByte(readBuffer, 2), (byte) 0);
+    Byte reservedField0 =
+        readReservedField(
+            "reserved",
+            readUnsignedByte(readBuffer, 2),
+            (byte) 0,
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     boolean startOfOperationInReverseDirection =
-        readSimpleField("startOfOperationInReverseDirection", readBoolean(readBuffer));
+        readSimpleField(
+            "startOfOperationInReverseDirection",
+            readBoolean(readBuffer),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
-    boolean startOfOperationIE = readSimpleField("startOfOperationIE", readBoolean(readBuffer));
+    boolean startOfOperationIE =
+        readSimpleField(
+            "startOfOperationIE",
+            readBoolean(readBuffer),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     boolean stateOfOperationPhaseL3 =
-        readSimpleField("stateOfOperationPhaseL3", readBoolean(readBuffer));
+        readSimpleField(
+            "stateOfOperationPhaseL3",
+            readBoolean(readBuffer),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     boolean stateOfOperationPhaseL2 =
-        readSimpleField("stateOfOperationPhaseL2", readBoolean(readBuffer));
+        readSimpleField(
+            "stateOfOperationPhaseL2",
+            readBoolean(readBuffer),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     boolean stateOfOperationPhaseL1 =
-        readSimpleField("stateOfOperationPhaseL1", readBoolean(readBuffer));
+        readSimpleField(
+            "stateOfOperationPhaseL1",
+            readBoolean(readBuffer),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     boolean generalStartOfOperation =
-        readSimpleField("generalStartOfOperation", readBoolean(readBuffer));
+        readSimpleField(
+            "generalStartOfOperation",
+            readBoolean(readBuffer),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     readBuffer.closeContext("StartEventsOfProtectionEquipment");
     // Create the instance

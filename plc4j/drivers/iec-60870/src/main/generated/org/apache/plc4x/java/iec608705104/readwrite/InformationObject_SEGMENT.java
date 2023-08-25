@@ -42,8 +42,29 @@ public class InformationObject_SEGMENT extends InformationObject implements Mess
     return TypeIdentification.SEGMENT;
   }
 
-  public InformationObject_SEGMENT(int address) {
+  // Properties.
+  protected final NameOfFile nof;
+  protected final NameOfSection nos;
+  protected final LengthOfSegment los;
+
+  public InformationObject_SEGMENT(
+      int address, NameOfFile nof, NameOfSection nos, LengthOfSegment los) {
     super(address);
+    this.nof = nof;
+    this.nos = nos;
+    this.los = los;
+  }
+
+  public NameOfFile getNof() {
+    return nof;
+  }
+
+  public NameOfSection getNos() {
+    return nos;
+  }
+
+  public LengthOfSegment getLos() {
+    return los;
   }
 
   @Override
@@ -52,6 +73,27 @@ public class InformationObject_SEGMENT extends InformationObject implements Mess
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     writeBuffer.pushContext("InformationObject_SEGMENT");
+
+    // Simple Field (nof)
+    writeSimpleField(
+        "nof",
+        nof,
+        new DataWriterComplexDefault<>(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
+    // Simple Field (nos)
+    writeSimpleField(
+        "nos",
+        nos,
+        new DataWriterComplexDefault<>(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
+    // Simple Field (los)
+    writeSimpleField(
+        "los",
+        los,
+        new DataWriterComplexDefault<>(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     writeBuffer.popContext("InformationObject_SEGMENT");
   }
@@ -67,6 +109,15 @@ public class InformationObject_SEGMENT extends InformationObject implements Mess
     InformationObject_SEGMENT _value = this;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
+    // Simple field (nof)
+    lengthInBits += nof.getLengthInBits();
+
+    // Simple field (nos)
+    lengthInBits += nos.getLengthInBits();
+
+    // Simple field (los)
+    lengthInBits += los.getLengthInBits();
+
     return lengthInBits;
   }
 
@@ -76,18 +127,46 @@ public class InformationObject_SEGMENT extends InformationObject implements Mess
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
+    NameOfFile nof =
+        readSimpleField(
+            "nof",
+            new DataReaderComplexDefault<>(() -> NameOfFile.staticParse(readBuffer), readBuffer),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
+    NameOfSection nos =
+        readSimpleField(
+            "nos",
+            new DataReaderComplexDefault<>(() -> NameOfSection.staticParse(readBuffer), readBuffer),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
+    LengthOfSegment los =
+        readSimpleField(
+            "los",
+            new DataReaderComplexDefault<>(
+                () -> LengthOfSegment.staticParse(readBuffer), readBuffer),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
     readBuffer.closeContext("InformationObject_SEGMENT");
     // Create the instance
-    return new InformationObject_SEGMENTBuilderImpl();
+    return new InformationObject_SEGMENTBuilderImpl(nof, nos, los);
   }
 
   public static class InformationObject_SEGMENTBuilderImpl
       implements InformationObject.InformationObjectBuilder {
+    private final NameOfFile nof;
+    private final NameOfSection nos;
+    private final LengthOfSegment los;
 
-    public InformationObject_SEGMENTBuilderImpl() {}
+    public InformationObject_SEGMENTBuilderImpl(
+        NameOfFile nof, NameOfSection nos, LengthOfSegment los) {
+      this.nof = nof;
+      this.nos = nos;
+      this.los = los;
+    }
 
     public InformationObject_SEGMENT build(int address) {
-      InformationObject_SEGMENT informationObject_SEGMENT = new InformationObject_SEGMENT(address);
+      InformationObject_SEGMENT informationObject_SEGMENT =
+          new InformationObject_SEGMENT(address, nof, nos, los);
       return informationObject_SEGMENT;
     }
   }
@@ -101,12 +180,16 @@ public class InformationObject_SEGMENT extends InformationObject implements Mess
       return false;
     }
     InformationObject_SEGMENT that = (InformationObject_SEGMENT) o;
-    return super.equals(that) && true;
+    return (getNof() == that.getNof())
+        && (getNos() == that.getNos())
+        && (getLos() == that.getLos())
+        && super.equals(that)
+        && true;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode());
+    return Objects.hash(super.hashCode(), getNof(), getNos(), getLos());
   }
 
   @Override

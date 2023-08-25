@@ -55,7 +55,11 @@ public class QualifierOfParameterActivation implements Message {
     writeBuffer.pushContext("QualifierOfParameterActivation");
 
     // Simple Field (qualifier)
-    writeSimpleField("qualifier", qualifier, writeUnsignedShort(writeBuffer, 8));
+    writeSimpleField(
+        "qualifier",
+        qualifier,
+        writeUnsignedShort(writeBuffer, 8),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     writeBuffer.popContext("QualifierOfParameterActivation");
   }
@@ -89,7 +93,11 @@ public class QualifierOfParameterActivation implements Message {
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    short qualifier = readSimpleField("qualifier", readUnsignedShort(readBuffer, 8));
+    short qualifier =
+        readSimpleField(
+            "qualifier",
+            readUnsignedShort(readBuffer, 8),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     readBuffer.closeContext("QualifierOfParameterActivation");
     // Create the instance

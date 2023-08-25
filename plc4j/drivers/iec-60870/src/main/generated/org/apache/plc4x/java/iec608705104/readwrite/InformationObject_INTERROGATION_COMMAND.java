@@ -42,8 +42,16 @@ public class InformationObject_INTERROGATION_COMMAND extends InformationObject i
     return TypeIdentification.INTERROGATION_COMMAND;
   }
 
-  public InformationObject_INTERROGATION_COMMAND(int address) {
+  // Properties.
+  protected final QualifierOfInterrogation qoi;
+
+  public InformationObject_INTERROGATION_COMMAND(int address, QualifierOfInterrogation qoi) {
     super(address);
+    this.qoi = qoi;
+  }
+
+  public QualifierOfInterrogation getQoi() {
+    return qoi;
   }
 
   @Override
@@ -52,6 +60,13 @@ public class InformationObject_INTERROGATION_COMMAND extends InformationObject i
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     writeBuffer.pushContext("InformationObject_INTERROGATION_COMMAND");
+
+    // Simple Field (qoi)
+    writeSimpleField(
+        "qoi",
+        qoi,
+        new DataWriterComplexDefault<>(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     writeBuffer.popContext("InformationObject_INTERROGATION_COMMAND");
   }
@@ -67,6 +82,9 @@ public class InformationObject_INTERROGATION_COMMAND extends InformationObject i
     InformationObject_INTERROGATION_COMMAND _value = this;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
+    // Simple field (qoi)
+    lengthInBits += qoi.getLengthInBits();
+
     return lengthInBits;
   }
 
@@ -76,19 +94,29 @@ public class InformationObject_INTERROGATION_COMMAND extends InformationObject i
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
+    QualifierOfInterrogation qoi =
+        readSimpleField(
+            "qoi",
+            new DataReaderComplexDefault<>(
+                () -> QualifierOfInterrogation.staticParse(readBuffer), readBuffer),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
     readBuffer.closeContext("InformationObject_INTERROGATION_COMMAND");
     // Create the instance
-    return new InformationObject_INTERROGATION_COMMANDBuilderImpl();
+    return new InformationObject_INTERROGATION_COMMANDBuilderImpl(qoi);
   }
 
   public static class InformationObject_INTERROGATION_COMMANDBuilderImpl
       implements InformationObject.InformationObjectBuilder {
+    private final QualifierOfInterrogation qoi;
 
-    public InformationObject_INTERROGATION_COMMANDBuilderImpl() {}
+    public InformationObject_INTERROGATION_COMMANDBuilderImpl(QualifierOfInterrogation qoi) {
+      this.qoi = qoi;
+    }
 
     public InformationObject_INTERROGATION_COMMAND build(int address) {
       InformationObject_INTERROGATION_COMMAND informationObject_INTERROGATION_COMMAND =
-          new InformationObject_INTERROGATION_COMMAND(address);
+          new InformationObject_INTERROGATION_COMMAND(address, qoi);
       return informationObject_INTERROGATION_COMMAND;
     }
   }
@@ -102,12 +130,12 @@ public class InformationObject_INTERROGATION_COMMAND extends InformationObject i
       return false;
     }
     InformationObject_INTERROGATION_COMMAND that = (InformationObject_INTERROGATION_COMMAND) o;
-    return super.equals(that) && true;
+    return (getQoi() == that.getQoi()) && super.equals(that) && true;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode());
+    return Objects.hash(super.hashCode(), getQoi());
   }
 
   @Override

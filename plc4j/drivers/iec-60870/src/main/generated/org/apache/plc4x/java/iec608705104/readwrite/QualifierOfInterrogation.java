@@ -55,7 +55,11 @@ public class QualifierOfInterrogation implements Message {
     writeBuffer.pushContext("QualifierOfInterrogation");
 
     // Simple Field (qualifierOfCommand)
-    writeSimpleField("qualifierOfCommand", qualifierOfCommand, writeUnsignedShort(writeBuffer, 8));
+    writeSimpleField(
+        "qualifierOfCommand",
+        qualifierOfCommand,
+        writeUnsignedShort(writeBuffer, 8),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     writeBuffer.popContext("QualifierOfInterrogation");
   }
@@ -89,7 +93,10 @@ public class QualifierOfInterrogation implements Message {
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short qualifierOfCommand =
-        readSimpleField("qualifierOfCommand", readUnsignedShort(readBuffer, 8));
+        readSimpleField(
+            "qualifierOfCommand",
+            readUnsignedShort(readBuffer, 8),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     readBuffer.closeContext("QualifierOfInterrogation");
     // Create the instance

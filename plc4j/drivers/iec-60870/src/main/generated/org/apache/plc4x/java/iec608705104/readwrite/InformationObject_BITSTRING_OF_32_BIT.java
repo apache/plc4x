@@ -42,8 +42,23 @@ public class InformationObject_BITSTRING_OF_32_BIT extends InformationObject imp
     return TypeIdentification.BITSTRING_OF_32_BIT;
   }
 
-  public InformationObject_BITSTRING_OF_32_BIT(int address) {
+  // Properties.
+  protected final BinaryStateInformation bsi;
+  protected final QualityDescriptor qds;
+
+  public InformationObject_BITSTRING_OF_32_BIT(
+      int address, BinaryStateInformation bsi, QualityDescriptor qds) {
     super(address);
+    this.bsi = bsi;
+    this.qds = qds;
+  }
+
+  public BinaryStateInformation getBsi() {
+    return bsi;
+  }
+
+  public QualityDescriptor getQds() {
+    return qds;
   }
 
   @Override
@@ -52,6 +67,20 @@ public class InformationObject_BITSTRING_OF_32_BIT extends InformationObject imp
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     writeBuffer.pushContext("InformationObject_BITSTRING_OF_32_BIT");
+
+    // Simple Field (bsi)
+    writeSimpleField(
+        "bsi",
+        bsi,
+        new DataWriterComplexDefault<>(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
+    // Simple Field (qds)
+    writeSimpleField(
+        "qds",
+        qds,
+        new DataWriterComplexDefault<>(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     writeBuffer.popContext("InformationObject_BITSTRING_OF_32_BIT");
   }
@@ -67,6 +96,12 @@ public class InformationObject_BITSTRING_OF_32_BIT extends InformationObject imp
     InformationObject_BITSTRING_OF_32_BIT _value = this;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
+    // Simple field (bsi)
+    lengthInBits += bsi.getLengthInBits();
+
+    // Simple field (qds)
+    lengthInBits += qds.getLengthInBits();
+
     return lengthInBits;
   }
 
@@ -76,19 +111,39 @@ public class InformationObject_BITSTRING_OF_32_BIT extends InformationObject imp
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
+    BinaryStateInformation bsi =
+        readSimpleField(
+            "bsi",
+            new DataReaderComplexDefault<>(
+                () -> BinaryStateInformation.staticParse(readBuffer), readBuffer),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
+    QualityDescriptor qds =
+        readSimpleField(
+            "qds",
+            new DataReaderComplexDefault<>(
+                () -> QualityDescriptor.staticParse(readBuffer), readBuffer),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
     readBuffer.closeContext("InformationObject_BITSTRING_OF_32_BIT");
     // Create the instance
-    return new InformationObject_BITSTRING_OF_32_BITBuilderImpl();
+    return new InformationObject_BITSTRING_OF_32_BITBuilderImpl(bsi, qds);
   }
 
   public static class InformationObject_BITSTRING_OF_32_BITBuilderImpl
       implements InformationObject.InformationObjectBuilder {
+    private final BinaryStateInformation bsi;
+    private final QualityDescriptor qds;
 
-    public InformationObject_BITSTRING_OF_32_BITBuilderImpl() {}
+    public InformationObject_BITSTRING_OF_32_BITBuilderImpl(
+        BinaryStateInformation bsi, QualityDescriptor qds) {
+      this.bsi = bsi;
+      this.qds = qds;
+    }
 
     public InformationObject_BITSTRING_OF_32_BIT build(int address) {
       InformationObject_BITSTRING_OF_32_BIT informationObject_BITSTRING_OF_32_BIT =
-          new InformationObject_BITSTRING_OF_32_BIT(address);
+          new InformationObject_BITSTRING_OF_32_BIT(address, bsi, qds);
       return informationObject_BITSTRING_OF_32_BIT;
     }
   }
@@ -102,12 +157,12 @@ public class InformationObject_BITSTRING_OF_32_BIT extends InformationObject imp
       return false;
     }
     InformationObject_BITSTRING_OF_32_BIT that = (InformationObject_BITSTRING_OF_32_BIT) o;
-    return super.equals(that) && true;
+    return (getBsi() == that.getBsi()) && (getQds() == that.getQds()) && super.equals(that) && true;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode());
+    return Objects.hash(super.hashCode(), getBsi(), getQds());
   }
 
   @Override

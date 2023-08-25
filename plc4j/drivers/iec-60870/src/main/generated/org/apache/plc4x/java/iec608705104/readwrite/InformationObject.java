@@ -61,7 +61,11 @@ public abstract class InformationObject implements Message {
     writeBuffer.pushContext("InformationObject");
 
     // Simple Field (address)
-    writeSimpleField("address", address, writeUnsignedInt(writeBuffer, 24));
+    writeSimpleField(
+        "address",
+        address,
+        writeUnsignedInt(writeBuffer, 24),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     // Switch field (Serialize the sub-type)
     serializeInformationObjectChild(writeBuffer);
@@ -115,7 +119,11 @@ public abstract class InformationObject implements Message {
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    int address = readSimpleField("address", readUnsignedInt(readBuffer, 24));
+    int address =
+        readSimpleField(
+            "address",
+            readUnsignedInt(readBuffer, 24),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     InformationObjectBuilder builder = null;

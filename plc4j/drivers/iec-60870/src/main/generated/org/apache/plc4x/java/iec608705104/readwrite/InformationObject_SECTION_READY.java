@@ -42,8 +42,35 @@ public class InformationObject_SECTION_READY extends InformationObject implement
     return TypeIdentification.SECTION_READY;
   }
 
-  public InformationObject_SECTION_READY(int address) {
+  // Properties.
+  protected final NameOfFile nof;
+  protected final NameOfSection nos;
+  protected final LengthOfFile lof;
+  protected final SectionReadyQualifier srq;
+
+  public InformationObject_SECTION_READY(
+      int address, NameOfFile nof, NameOfSection nos, LengthOfFile lof, SectionReadyQualifier srq) {
     super(address);
+    this.nof = nof;
+    this.nos = nos;
+    this.lof = lof;
+    this.srq = srq;
+  }
+
+  public NameOfFile getNof() {
+    return nof;
+  }
+
+  public NameOfSection getNos() {
+    return nos;
+  }
+
+  public LengthOfFile getLof() {
+    return lof;
+  }
+
+  public SectionReadyQualifier getSrq() {
+    return srq;
   }
 
   @Override
@@ -52,6 +79,34 @@ public class InformationObject_SECTION_READY extends InformationObject implement
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     writeBuffer.pushContext("InformationObject_SECTION_READY");
+
+    // Simple Field (nof)
+    writeSimpleField(
+        "nof",
+        nof,
+        new DataWriterComplexDefault<>(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
+    // Simple Field (nos)
+    writeSimpleField(
+        "nos",
+        nos,
+        new DataWriterComplexDefault<>(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
+    // Simple Field (lof)
+    writeSimpleField(
+        "lof",
+        lof,
+        new DataWriterComplexDefault<>(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
+    // Simple Field (srq)
+    writeSimpleField(
+        "srq",
+        srq,
+        new DataWriterComplexDefault<>(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     writeBuffer.popContext("InformationObject_SECTION_READY");
   }
@@ -67,6 +122,18 @@ public class InformationObject_SECTION_READY extends InformationObject implement
     InformationObject_SECTION_READY _value = this;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
+    // Simple field (nof)
+    lengthInBits += nof.getLengthInBits();
+
+    // Simple field (nos)
+    lengthInBits += nos.getLengthInBits();
+
+    // Simple field (lof)
+    lengthInBits += lof.getLengthInBits();
+
+    // Simple field (srq)
+    lengthInBits += srq.getLengthInBits();
+
     return lengthInBits;
   }
 
@@ -76,19 +143,54 @@ public class InformationObject_SECTION_READY extends InformationObject implement
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
+    NameOfFile nof =
+        readSimpleField(
+            "nof",
+            new DataReaderComplexDefault<>(() -> NameOfFile.staticParse(readBuffer), readBuffer),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
+    NameOfSection nos =
+        readSimpleField(
+            "nos",
+            new DataReaderComplexDefault<>(() -> NameOfSection.staticParse(readBuffer), readBuffer),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
+    LengthOfFile lof =
+        readSimpleField(
+            "lof",
+            new DataReaderComplexDefault<>(() -> LengthOfFile.staticParse(readBuffer), readBuffer),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
+    SectionReadyQualifier srq =
+        readSimpleField(
+            "srq",
+            new DataReaderComplexDefault<>(
+                () -> SectionReadyQualifier.staticParse(readBuffer), readBuffer),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
     readBuffer.closeContext("InformationObject_SECTION_READY");
     // Create the instance
-    return new InformationObject_SECTION_READYBuilderImpl();
+    return new InformationObject_SECTION_READYBuilderImpl(nof, nos, lof, srq);
   }
 
   public static class InformationObject_SECTION_READYBuilderImpl
       implements InformationObject.InformationObjectBuilder {
+    private final NameOfFile nof;
+    private final NameOfSection nos;
+    private final LengthOfFile lof;
+    private final SectionReadyQualifier srq;
 
-    public InformationObject_SECTION_READYBuilderImpl() {}
+    public InformationObject_SECTION_READYBuilderImpl(
+        NameOfFile nof, NameOfSection nos, LengthOfFile lof, SectionReadyQualifier srq) {
+      this.nof = nof;
+      this.nos = nos;
+      this.lof = lof;
+      this.srq = srq;
+    }
 
     public InformationObject_SECTION_READY build(int address) {
       InformationObject_SECTION_READY informationObject_SECTION_READY =
-          new InformationObject_SECTION_READY(address);
+          new InformationObject_SECTION_READY(address, nof, nos, lof, srq);
       return informationObject_SECTION_READY;
     }
   }
@@ -102,12 +204,17 @@ public class InformationObject_SECTION_READY extends InformationObject implement
       return false;
     }
     InformationObject_SECTION_READY that = (InformationObject_SECTION_READY) o;
-    return super.equals(that) && true;
+    return (getNof() == that.getNof())
+        && (getNos() == that.getNos())
+        && (getLof() == that.getLof())
+        && (getSrq() == that.getSrq())
+        && super.equals(that)
+        && true;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode());
+    return Objects.hash(super.hashCode(), getNof(), getNos(), getLof(), getSrq());
   }
 
   @Override

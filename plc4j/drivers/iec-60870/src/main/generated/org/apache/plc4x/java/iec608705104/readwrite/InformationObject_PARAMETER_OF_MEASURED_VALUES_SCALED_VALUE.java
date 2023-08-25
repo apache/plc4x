@@ -43,8 +43,23 @@ public class InformationObject_PARAMETER_OF_MEASURED_VALUES_SCALED_VALUE extends
     return TypeIdentification.PARAMETER_OF_MEASURED_VALUES_SCALED_VALUE;
   }
 
-  public InformationObject_PARAMETER_OF_MEASURED_VALUES_SCALED_VALUE(int address) {
+  // Properties.
+  protected final ScaledValue sva;
+  protected final QualifierOfParameterOfMeasuredValues qpm;
+
+  public InformationObject_PARAMETER_OF_MEASURED_VALUES_SCALED_VALUE(
+      int address, ScaledValue sva, QualifierOfParameterOfMeasuredValues qpm) {
     super(address);
+    this.sva = sva;
+    this.qpm = qpm;
+  }
+
+  public ScaledValue getSva() {
+    return sva;
+  }
+
+  public QualifierOfParameterOfMeasuredValues getQpm() {
+    return qpm;
   }
 
   @Override
@@ -53,6 +68,20 @@ public class InformationObject_PARAMETER_OF_MEASURED_VALUES_SCALED_VALUE extends
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     writeBuffer.pushContext("InformationObject_PARAMETER_OF_MEASURED_VALUES_SCALED_VALUE");
+
+    // Simple Field (sva)
+    writeSimpleField(
+        "sva",
+        sva,
+        new DataWriterComplexDefault<>(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
+    // Simple Field (qpm)
+    writeSimpleField(
+        "qpm",
+        qpm,
+        new DataWriterComplexDefault<>(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     writeBuffer.popContext("InformationObject_PARAMETER_OF_MEASURED_VALUES_SCALED_VALUE");
   }
@@ -68,6 +97,12 @@ public class InformationObject_PARAMETER_OF_MEASURED_VALUES_SCALED_VALUE extends
     InformationObject_PARAMETER_OF_MEASURED_VALUES_SCALED_VALUE _value = this;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
+    // Simple field (sva)
+    lengthInBits += sva.getLengthInBits();
+
+    // Simple field (qpm)
+    lengthInBits += qpm.getLengthInBits();
+
     return lengthInBits;
   }
 
@@ -77,20 +112,39 @@ public class InformationObject_PARAMETER_OF_MEASURED_VALUES_SCALED_VALUE extends
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
+    ScaledValue sva =
+        readSimpleField(
+            "sva",
+            new DataReaderComplexDefault<>(() -> ScaledValue.staticParse(readBuffer), readBuffer),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
+    QualifierOfParameterOfMeasuredValues qpm =
+        readSimpleField(
+            "qpm",
+            new DataReaderComplexDefault<>(
+                () -> QualifierOfParameterOfMeasuredValues.staticParse(readBuffer), readBuffer),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
     readBuffer.closeContext("InformationObject_PARAMETER_OF_MEASURED_VALUES_SCALED_VALUE");
     // Create the instance
-    return new InformationObject_PARAMETER_OF_MEASURED_VALUES_SCALED_VALUEBuilderImpl();
+    return new InformationObject_PARAMETER_OF_MEASURED_VALUES_SCALED_VALUEBuilderImpl(sva, qpm);
   }
 
   public static class InformationObject_PARAMETER_OF_MEASURED_VALUES_SCALED_VALUEBuilderImpl
       implements InformationObject.InformationObjectBuilder {
+    private final ScaledValue sva;
+    private final QualifierOfParameterOfMeasuredValues qpm;
 
-    public InformationObject_PARAMETER_OF_MEASURED_VALUES_SCALED_VALUEBuilderImpl() {}
+    public InformationObject_PARAMETER_OF_MEASURED_VALUES_SCALED_VALUEBuilderImpl(
+        ScaledValue sva, QualifierOfParameterOfMeasuredValues qpm) {
+      this.sva = sva;
+      this.qpm = qpm;
+    }
 
     public InformationObject_PARAMETER_OF_MEASURED_VALUES_SCALED_VALUE build(int address) {
       InformationObject_PARAMETER_OF_MEASURED_VALUES_SCALED_VALUE
           informationObject_PARAMETER_OF_MEASURED_VALUES_SCALED_VALUE =
-              new InformationObject_PARAMETER_OF_MEASURED_VALUES_SCALED_VALUE(address);
+              new InformationObject_PARAMETER_OF_MEASURED_VALUES_SCALED_VALUE(address, sva, qpm);
       return informationObject_PARAMETER_OF_MEASURED_VALUES_SCALED_VALUE;
     }
   }
@@ -105,12 +159,12 @@ public class InformationObject_PARAMETER_OF_MEASURED_VALUES_SCALED_VALUE extends
     }
     InformationObject_PARAMETER_OF_MEASURED_VALUES_SCALED_VALUE that =
         (InformationObject_PARAMETER_OF_MEASURED_VALUES_SCALED_VALUE) o;
-    return super.equals(that) && true;
+    return (getSva() == that.getSva()) && (getQpm() == that.getQpm()) && super.equals(that) && true;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode());
+    return Objects.hash(super.hashCode(), getSva(), getQpm());
   }
 
   @Override

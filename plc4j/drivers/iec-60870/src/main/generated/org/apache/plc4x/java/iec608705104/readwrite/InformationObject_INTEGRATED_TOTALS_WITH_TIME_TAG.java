@@ -43,8 +43,23 @@ public class InformationObject_INTEGRATED_TOTALS_WITH_TIME_TAG extends Informati
     return TypeIdentification.INTEGRATED_TOTALS_WITH_TIME_TAG;
   }
 
-  public InformationObject_INTEGRATED_TOTALS_WITH_TIME_TAG(int address) {
+  // Properties.
+  protected final BinaryCounterReading bcr;
+  protected final ThreeOctetBinaryTime cp24Time2a;
+
+  public InformationObject_INTEGRATED_TOTALS_WITH_TIME_TAG(
+      int address, BinaryCounterReading bcr, ThreeOctetBinaryTime cp24Time2a) {
     super(address);
+    this.bcr = bcr;
+    this.cp24Time2a = cp24Time2a;
+  }
+
+  public BinaryCounterReading getBcr() {
+    return bcr;
+  }
+
+  public ThreeOctetBinaryTime getCp24Time2a() {
+    return cp24Time2a;
   }
 
   @Override
@@ -53,6 +68,20 @@ public class InformationObject_INTEGRATED_TOTALS_WITH_TIME_TAG extends Informati
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     writeBuffer.pushContext("InformationObject_INTEGRATED_TOTALS_WITH_TIME_TAG");
+
+    // Simple Field (bcr)
+    writeSimpleField(
+        "bcr",
+        bcr,
+        new DataWriterComplexDefault<>(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
+    // Simple Field (cp24Time2a)
+    writeSimpleField(
+        "cp24Time2a",
+        cp24Time2a,
+        new DataWriterComplexDefault<>(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     writeBuffer.popContext("InformationObject_INTEGRATED_TOTALS_WITH_TIME_TAG");
   }
@@ -68,6 +97,12 @@ public class InformationObject_INTEGRATED_TOTALS_WITH_TIME_TAG extends Informati
     InformationObject_INTEGRATED_TOTALS_WITH_TIME_TAG _value = this;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
+    // Simple field (bcr)
+    lengthInBits += bcr.getLengthInBits();
+
+    // Simple field (cp24Time2a)
+    lengthInBits += cp24Time2a.getLengthInBits();
+
     return lengthInBits;
   }
 
@@ -77,20 +112,40 @@ public class InformationObject_INTEGRATED_TOTALS_WITH_TIME_TAG extends Informati
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
+    BinaryCounterReading bcr =
+        readSimpleField(
+            "bcr",
+            new DataReaderComplexDefault<>(
+                () -> BinaryCounterReading.staticParse(readBuffer), readBuffer),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
+    ThreeOctetBinaryTime cp24Time2a =
+        readSimpleField(
+            "cp24Time2a",
+            new DataReaderComplexDefault<>(
+                () -> ThreeOctetBinaryTime.staticParse(readBuffer), readBuffer),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
     readBuffer.closeContext("InformationObject_INTEGRATED_TOTALS_WITH_TIME_TAG");
     // Create the instance
-    return new InformationObject_INTEGRATED_TOTALS_WITH_TIME_TAGBuilderImpl();
+    return new InformationObject_INTEGRATED_TOTALS_WITH_TIME_TAGBuilderImpl(bcr, cp24Time2a);
   }
 
   public static class InformationObject_INTEGRATED_TOTALS_WITH_TIME_TAGBuilderImpl
       implements InformationObject.InformationObjectBuilder {
+    private final BinaryCounterReading bcr;
+    private final ThreeOctetBinaryTime cp24Time2a;
 
-    public InformationObject_INTEGRATED_TOTALS_WITH_TIME_TAGBuilderImpl() {}
+    public InformationObject_INTEGRATED_TOTALS_WITH_TIME_TAGBuilderImpl(
+        BinaryCounterReading bcr, ThreeOctetBinaryTime cp24Time2a) {
+      this.bcr = bcr;
+      this.cp24Time2a = cp24Time2a;
+    }
 
     public InformationObject_INTEGRATED_TOTALS_WITH_TIME_TAG build(int address) {
       InformationObject_INTEGRATED_TOTALS_WITH_TIME_TAG
           informationObject_INTEGRATED_TOTALS_WITH_TIME_TAG =
-              new InformationObject_INTEGRATED_TOTALS_WITH_TIME_TAG(address);
+              new InformationObject_INTEGRATED_TOTALS_WITH_TIME_TAG(address, bcr, cp24Time2a);
       return informationObject_INTEGRATED_TOTALS_WITH_TIME_TAG;
     }
   }
@@ -105,12 +160,15 @@ public class InformationObject_INTEGRATED_TOTALS_WITH_TIME_TAG extends Informati
     }
     InformationObject_INTEGRATED_TOTALS_WITH_TIME_TAG that =
         (InformationObject_INTEGRATED_TOTALS_WITH_TIME_TAG) o;
-    return super.equals(that) && true;
+    return (getBcr() == that.getBcr())
+        && (getCp24Time2a() == that.getCp24Time2a())
+        && super.equals(that)
+        && true;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode());
+    return Objects.hash(super.hashCode(), getBcr(), getCp24Time2a());
   }
 
   @Override

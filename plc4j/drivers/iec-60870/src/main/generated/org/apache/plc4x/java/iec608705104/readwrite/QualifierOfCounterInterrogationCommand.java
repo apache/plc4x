@@ -61,10 +61,18 @@ public class QualifierOfCounterInterrogationCommand implements Message {
     writeBuffer.pushContext("QualifierOfCounterInterrogationCommand");
 
     // Simple Field (freeze)
-    writeSimpleField("freeze", freeze, writeUnsignedByte(writeBuffer, 2));
+    writeSimpleField(
+        "freeze",
+        freeze,
+        writeUnsignedByte(writeBuffer, 2),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     // Simple Field (request)
-    writeSimpleField("request", request, writeUnsignedByte(writeBuffer, 6));
+    writeSimpleField(
+        "request",
+        request,
+        writeUnsignedByte(writeBuffer, 6),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     writeBuffer.popContext("QualifierOfCounterInterrogationCommand");
   }
@@ -101,9 +109,17 @@ public class QualifierOfCounterInterrogationCommand implements Message {
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    byte freeze = readSimpleField("freeze", readUnsignedByte(readBuffer, 2));
+    byte freeze =
+        readSimpleField(
+            "freeze",
+            readUnsignedByte(readBuffer, 2),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
-    byte request = readSimpleField("request", readUnsignedByte(readBuffer, 6));
+    byte request =
+        readSimpleField(
+            "request",
+            readUnsignedByte(readBuffer, 6),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     readBuffer.closeContext("QualifierOfCounterInterrogationCommand");
     // Create the instance

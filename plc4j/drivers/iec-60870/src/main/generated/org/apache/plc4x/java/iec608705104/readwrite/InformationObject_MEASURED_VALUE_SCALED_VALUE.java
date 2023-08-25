@@ -43,8 +43,23 @@ public class InformationObject_MEASURED_VALUE_SCALED_VALUE extends InformationOb
     return TypeIdentification.MEASURED_VALUE_SCALED_VALUE;
   }
 
-  public InformationObject_MEASURED_VALUE_SCALED_VALUE(int address) {
+  // Properties.
+  protected final ScaledValue sva;
+  protected final QualityDescriptor qds;
+
+  public InformationObject_MEASURED_VALUE_SCALED_VALUE(
+      int address, ScaledValue sva, QualityDescriptor qds) {
     super(address);
+    this.sva = sva;
+    this.qds = qds;
+  }
+
+  public ScaledValue getSva() {
+    return sva;
+  }
+
+  public QualityDescriptor getQds() {
+    return qds;
   }
 
   @Override
@@ -53,6 +68,20 @@ public class InformationObject_MEASURED_VALUE_SCALED_VALUE extends InformationOb
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     writeBuffer.pushContext("InformationObject_MEASURED_VALUE_SCALED_VALUE");
+
+    // Simple Field (sva)
+    writeSimpleField(
+        "sva",
+        sva,
+        new DataWriterComplexDefault<>(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
+    // Simple Field (qds)
+    writeSimpleField(
+        "qds",
+        qds,
+        new DataWriterComplexDefault<>(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     writeBuffer.popContext("InformationObject_MEASURED_VALUE_SCALED_VALUE");
   }
@@ -68,6 +97,12 @@ public class InformationObject_MEASURED_VALUE_SCALED_VALUE extends InformationOb
     InformationObject_MEASURED_VALUE_SCALED_VALUE _value = this;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
+    // Simple field (sva)
+    lengthInBits += sva.getLengthInBits();
+
+    // Simple field (qds)
+    lengthInBits += qds.getLengthInBits();
+
     return lengthInBits;
   }
 
@@ -77,19 +112,38 @@ public class InformationObject_MEASURED_VALUE_SCALED_VALUE extends InformationOb
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
+    ScaledValue sva =
+        readSimpleField(
+            "sva",
+            new DataReaderComplexDefault<>(() -> ScaledValue.staticParse(readBuffer), readBuffer),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
+    QualityDescriptor qds =
+        readSimpleField(
+            "qds",
+            new DataReaderComplexDefault<>(
+                () -> QualityDescriptor.staticParse(readBuffer), readBuffer),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
     readBuffer.closeContext("InformationObject_MEASURED_VALUE_SCALED_VALUE");
     // Create the instance
-    return new InformationObject_MEASURED_VALUE_SCALED_VALUEBuilderImpl();
+    return new InformationObject_MEASURED_VALUE_SCALED_VALUEBuilderImpl(sva, qds);
   }
 
   public static class InformationObject_MEASURED_VALUE_SCALED_VALUEBuilderImpl
       implements InformationObject.InformationObjectBuilder {
+    private final ScaledValue sva;
+    private final QualityDescriptor qds;
 
-    public InformationObject_MEASURED_VALUE_SCALED_VALUEBuilderImpl() {}
+    public InformationObject_MEASURED_VALUE_SCALED_VALUEBuilderImpl(
+        ScaledValue sva, QualityDescriptor qds) {
+      this.sva = sva;
+      this.qds = qds;
+    }
 
     public InformationObject_MEASURED_VALUE_SCALED_VALUE build(int address) {
       InformationObject_MEASURED_VALUE_SCALED_VALUE informationObject_MEASURED_VALUE_SCALED_VALUE =
-          new InformationObject_MEASURED_VALUE_SCALED_VALUE(address);
+          new InformationObject_MEASURED_VALUE_SCALED_VALUE(address, sva, qds);
       return informationObject_MEASURED_VALUE_SCALED_VALUE;
     }
   }
@@ -104,12 +158,12 @@ public class InformationObject_MEASURED_VALUE_SCALED_VALUE extends InformationOb
     }
     InformationObject_MEASURED_VALUE_SCALED_VALUE that =
         (InformationObject_MEASURED_VALUE_SCALED_VALUE) o;
-    return super.equals(that) && true;
+    return (getSva() == that.getSva()) && (getQds() == that.getQds()) && super.equals(that) && true;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode());
+    return Objects.hash(super.hashCode(), getSva(), getQds());
   }
 
   @Override

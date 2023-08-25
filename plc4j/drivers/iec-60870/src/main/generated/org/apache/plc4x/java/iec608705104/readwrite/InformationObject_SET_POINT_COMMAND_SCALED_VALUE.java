@@ -43,8 +43,23 @@ public class InformationObject_SET_POINT_COMMAND_SCALED_VALUE extends Informatio
     return TypeIdentification.SET_POINT_COMMAND_SCALED_VALUE;
   }
 
-  public InformationObject_SET_POINT_COMMAND_SCALED_VALUE(int address) {
+  // Properties.
+  protected final ScaledValue sva;
+  protected final QualifierOfSetPointCommand qos;
+
+  public InformationObject_SET_POINT_COMMAND_SCALED_VALUE(
+      int address, ScaledValue sva, QualifierOfSetPointCommand qos) {
     super(address);
+    this.sva = sva;
+    this.qos = qos;
+  }
+
+  public ScaledValue getSva() {
+    return sva;
+  }
+
+  public QualifierOfSetPointCommand getQos() {
+    return qos;
   }
 
   @Override
@@ -53,6 +68,20 @@ public class InformationObject_SET_POINT_COMMAND_SCALED_VALUE extends Informatio
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     writeBuffer.pushContext("InformationObject_SET_POINT_COMMAND_SCALED_VALUE");
+
+    // Simple Field (sva)
+    writeSimpleField(
+        "sva",
+        sva,
+        new DataWriterComplexDefault<>(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
+    // Simple Field (qos)
+    writeSimpleField(
+        "qos",
+        qos,
+        new DataWriterComplexDefault<>(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     writeBuffer.popContext("InformationObject_SET_POINT_COMMAND_SCALED_VALUE");
   }
@@ -68,6 +97,12 @@ public class InformationObject_SET_POINT_COMMAND_SCALED_VALUE extends Informatio
     InformationObject_SET_POINT_COMMAND_SCALED_VALUE _value = this;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
+    // Simple field (sva)
+    lengthInBits += sva.getLengthInBits();
+
+    // Simple field (qos)
+    lengthInBits += qos.getLengthInBits();
+
     return lengthInBits;
   }
 
@@ -77,20 +112,39 @@ public class InformationObject_SET_POINT_COMMAND_SCALED_VALUE extends Informatio
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
+    ScaledValue sva =
+        readSimpleField(
+            "sva",
+            new DataReaderComplexDefault<>(() -> ScaledValue.staticParse(readBuffer), readBuffer),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
+    QualifierOfSetPointCommand qos =
+        readSimpleField(
+            "qos",
+            new DataReaderComplexDefault<>(
+                () -> QualifierOfSetPointCommand.staticParse(readBuffer), readBuffer),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
     readBuffer.closeContext("InformationObject_SET_POINT_COMMAND_SCALED_VALUE");
     // Create the instance
-    return new InformationObject_SET_POINT_COMMAND_SCALED_VALUEBuilderImpl();
+    return new InformationObject_SET_POINT_COMMAND_SCALED_VALUEBuilderImpl(sva, qos);
   }
 
   public static class InformationObject_SET_POINT_COMMAND_SCALED_VALUEBuilderImpl
       implements InformationObject.InformationObjectBuilder {
+    private final ScaledValue sva;
+    private final QualifierOfSetPointCommand qos;
 
-    public InformationObject_SET_POINT_COMMAND_SCALED_VALUEBuilderImpl() {}
+    public InformationObject_SET_POINT_COMMAND_SCALED_VALUEBuilderImpl(
+        ScaledValue sva, QualifierOfSetPointCommand qos) {
+      this.sva = sva;
+      this.qos = qos;
+    }
 
     public InformationObject_SET_POINT_COMMAND_SCALED_VALUE build(int address) {
       InformationObject_SET_POINT_COMMAND_SCALED_VALUE
           informationObject_SET_POINT_COMMAND_SCALED_VALUE =
-              new InformationObject_SET_POINT_COMMAND_SCALED_VALUE(address);
+              new InformationObject_SET_POINT_COMMAND_SCALED_VALUE(address, sva, qos);
       return informationObject_SET_POINT_COMMAND_SCALED_VALUE;
     }
   }
@@ -105,12 +159,12 @@ public class InformationObject_SET_POINT_COMMAND_SCALED_VALUE extends Informatio
     }
     InformationObject_SET_POINT_COMMAND_SCALED_VALUE that =
         (InformationObject_SET_POINT_COMMAND_SCALED_VALUE) o;
-    return super.equals(that) && true;
+    return (getSva() == that.getSva()) && (getQos() == that.getQos()) && super.equals(that) && true;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode());
+    return Objects.hash(super.hashCode(), getSva(), getQos());
   }
 
   @Override

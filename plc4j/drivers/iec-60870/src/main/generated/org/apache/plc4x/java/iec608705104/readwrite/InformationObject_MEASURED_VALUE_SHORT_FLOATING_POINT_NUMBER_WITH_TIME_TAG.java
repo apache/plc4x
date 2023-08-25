@@ -43,8 +43,29 @@ public class InformationObject_MEASURED_VALUE_SHORT_FLOATING_POINT_NUMBER_WITH_T
     return TypeIdentification.MEASURED_VALUE_SHORT_FLOATING_POINT_NUMBER_WITH_TIME_TAG;
   }
 
-  public InformationObject_MEASURED_VALUE_SHORT_FLOATING_POINT_NUMBER_WITH_TIME_TAG(int address) {
+  // Properties.
+  protected final float value;
+  protected final QualityDescriptor qds;
+  protected final ThreeOctetBinaryTime cp24Time2a;
+
+  public InformationObject_MEASURED_VALUE_SHORT_FLOATING_POINT_NUMBER_WITH_TIME_TAG(
+      int address, float value, QualityDescriptor qds, ThreeOctetBinaryTime cp24Time2a) {
     super(address);
+    this.value = value;
+    this.qds = qds;
+    this.cp24Time2a = cp24Time2a;
+  }
+
+  public float getValue() {
+    return value;
+  }
+
+  public QualityDescriptor getQds() {
+    return qds;
+  }
+
+  public ThreeOctetBinaryTime getCp24Time2a() {
+    return cp24Time2a;
   }
 
   @Override
@@ -54,6 +75,27 @@ public class InformationObject_MEASURED_VALUE_SHORT_FLOATING_POINT_NUMBER_WITH_T
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     writeBuffer.pushContext(
         "InformationObject_MEASURED_VALUE_SHORT_FLOATING_POINT_NUMBER_WITH_TIME_TAG");
+
+    // Simple Field (value)
+    writeSimpleField(
+        "value",
+        value,
+        writeFloat(writeBuffer, 32),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
+    // Simple Field (qds)
+    writeSimpleField(
+        "qds",
+        qds,
+        new DataWriterComplexDefault<>(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
+    // Simple Field (cp24Time2a)
+    writeSimpleField(
+        "cp24Time2a",
+        cp24Time2a,
+        new DataWriterComplexDefault<>(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     writeBuffer.popContext(
         "InformationObject_MEASURED_VALUE_SHORT_FLOATING_POINT_NUMBER_WITH_TIME_TAG");
@@ -70,6 +112,15 @@ public class InformationObject_MEASURED_VALUE_SHORT_FLOATING_POINT_NUMBER_WITH_T
     InformationObject_MEASURED_VALUE_SHORT_FLOATING_POINT_NUMBER_WITH_TIME_TAG _value = this;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
+    // Simple field (value)
+    lengthInBits += 32;
+
+    // Simple field (qds)
+    lengthInBits += qds.getLengthInBits();
+
+    // Simple field (cp24Time2a)
+    lengthInBits += cp24Time2a.getLengthInBits();
+
     return lengthInBits;
   }
 
@@ -80,25 +131,51 @@ public class InformationObject_MEASURED_VALUE_SHORT_FLOATING_POINT_NUMBER_WITH_T
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
+    float value =
+        readSimpleField(
+            "value", readFloat(readBuffer, 32), WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
+    QualityDescriptor qds =
+        readSimpleField(
+            "qds",
+            new DataReaderComplexDefault<>(
+                () -> QualityDescriptor.staticParse(readBuffer), readBuffer),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
+    ThreeOctetBinaryTime cp24Time2a =
+        readSimpleField(
+            "cp24Time2a",
+            new DataReaderComplexDefault<>(
+                () -> ThreeOctetBinaryTime.staticParse(readBuffer), readBuffer),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
     readBuffer.closeContext(
         "InformationObject_MEASURED_VALUE_SHORT_FLOATING_POINT_NUMBER_WITH_TIME_TAG");
     // Create the instance
-    return new InformationObject_MEASURED_VALUE_SHORT_FLOATING_POINT_NUMBER_WITH_TIME_TAGBuilderImpl();
+    return new InformationObject_MEASURED_VALUE_SHORT_FLOATING_POINT_NUMBER_WITH_TIME_TAGBuilderImpl(
+        value, qds, cp24Time2a);
   }
 
   public static
   class InformationObject_MEASURED_VALUE_SHORT_FLOATING_POINT_NUMBER_WITH_TIME_TAGBuilderImpl
       implements InformationObject.InformationObjectBuilder {
+    private final float value;
+    private final QualityDescriptor qds;
+    private final ThreeOctetBinaryTime cp24Time2a;
 
-    public
-    InformationObject_MEASURED_VALUE_SHORT_FLOATING_POINT_NUMBER_WITH_TIME_TAGBuilderImpl() {}
+    public InformationObject_MEASURED_VALUE_SHORT_FLOATING_POINT_NUMBER_WITH_TIME_TAGBuilderImpl(
+        float value, QualityDescriptor qds, ThreeOctetBinaryTime cp24Time2a) {
+      this.value = value;
+      this.qds = qds;
+      this.cp24Time2a = cp24Time2a;
+    }
 
     public InformationObject_MEASURED_VALUE_SHORT_FLOATING_POINT_NUMBER_WITH_TIME_TAG build(
         int address) {
       InformationObject_MEASURED_VALUE_SHORT_FLOATING_POINT_NUMBER_WITH_TIME_TAG
           informationObject_MEASURED_VALUE_SHORT_FLOATING_POINT_NUMBER_WITH_TIME_TAG =
               new InformationObject_MEASURED_VALUE_SHORT_FLOATING_POINT_NUMBER_WITH_TIME_TAG(
-                  address);
+                  address, value, qds, cp24Time2a);
       return informationObject_MEASURED_VALUE_SHORT_FLOATING_POINT_NUMBER_WITH_TIME_TAG;
     }
   }
@@ -114,12 +191,16 @@ public class InformationObject_MEASURED_VALUE_SHORT_FLOATING_POINT_NUMBER_WITH_T
     }
     InformationObject_MEASURED_VALUE_SHORT_FLOATING_POINT_NUMBER_WITH_TIME_TAG that =
         (InformationObject_MEASURED_VALUE_SHORT_FLOATING_POINT_NUMBER_WITH_TIME_TAG) o;
-    return super.equals(that) && true;
+    return (getValue() == that.getValue())
+        && (getQds() == that.getQds())
+        && (getCp24Time2a() == that.getCp24Time2a())
+        && super.equals(that)
+        && true;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode());
+    return Objects.hash(super.hashCode(), getValue(), getQds(), getCp24Time2a());
   }
 
   @Override

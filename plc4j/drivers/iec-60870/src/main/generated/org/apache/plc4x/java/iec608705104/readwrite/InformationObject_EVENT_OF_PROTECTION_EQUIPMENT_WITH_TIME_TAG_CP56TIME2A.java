@@ -43,8 +43,23 @@ public class InformationObject_EVENT_OF_PROTECTION_EQUIPMENT_WITH_TIME_TAG_CP56T
     return TypeIdentification.EVENT_OF_PROTECTION_EQUIPMENT_WITH_TIME_TAG_CP56TIME2A;
   }
 
-  public InformationObject_EVENT_OF_PROTECTION_EQUIPMENT_WITH_TIME_TAG_CP56TIME2A(int address) {
+  // Properties.
+  protected final TwoOctetBinaryTime cp16Time2a;
+  protected final SevenOctetBinaryTime cp56Time2a;
+
+  public InformationObject_EVENT_OF_PROTECTION_EQUIPMENT_WITH_TIME_TAG_CP56TIME2A(
+      int address, TwoOctetBinaryTime cp16Time2a, SevenOctetBinaryTime cp56Time2a) {
     super(address);
+    this.cp16Time2a = cp16Time2a;
+    this.cp56Time2a = cp56Time2a;
+  }
+
+  public TwoOctetBinaryTime getCp16Time2a() {
+    return cp16Time2a;
+  }
+
+  public SevenOctetBinaryTime getCp56Time2a() {
+    return cp56Time2a;
   }
 
   @Override
@@ -54,6 +69,20 @@ public class InformationObject_EVENT_OF_PROTECTION_EQUIPMENT_WITH_TIME_TAG_CP56T
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     writeBuffer.pushContext(
         "InformationObject_EVENT_OF_PROTECTION_EQUIPMENT_WITH_TIME_TAG_CP56TIME2A");
+
+    // Simple Field (cp16Time2a)
+    writeSimpleField(
+        "cp16Time2a",
+        cp16Time2a,
+        new DataWriterComplexDefault<>(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
+    // Simple Field (cp56Time2a)
+    writeSimpleField(
+        "cp56Time2a",
+        cp56Time2a,
+        new DataWriterComplexDefault<>(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     writeBuffer.popContext(
         "InformationObject_EVENT_OF_PROTECTION_EQUIPMENT_WITH_TIME_TAG_CP56TIME2A");
@@ -70,6 +99,12 @@ public class InformationObject_EVENT_OF_PROTECTION_EQUIPMENT_WITH_TIME_TAG_CP56T
     InformationObject_EVENT_OF_PROTECTION_EQUIPMENT_WITH_TIME_TAG_CP56TIME2A _value = this;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
+    // Simple field (cp16Time2a)
+    lengthInBits += cp16Time2a.getLengthInBits();
+
+    // Simple field (cp56Time2a)
+    lengthInBits += cp56Time2a.getLengthInBits();
+
     return lengthInBits;
   }
 
@@ -80,23 +115,45 @@ public class InformationObject_EVENT_OF_PROTECTION_EQUIPMENT_WITH_TIME_TAG_CP56T
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
+    TwoOctetBinaryTime cp16Time2a =
+        readSimpleField(
+            "cp16Time2a",
+            new DataReaderComplexDefault<>(
+                () -> TwoOctetBinaryTime.staticParse(readBuffer), readBuffer),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
+    SevenOctetBinaryTime cp56Time2a =
+        readSimpleField(
+            "cp56Time2a",
+            new DataReaderComplexDefault<>(
+                () -> SevenOctetBinaryTime.staticParse(readBuffer), readBuffer),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
     readBuffer.closeContext(
         "InformationObject_EVENT_OF_PROTECTION_EQUIPMENT_WITH_TIME_TAG_CP56TIME2A");
     // Create the instance
-    return new InformationObject_EVENT_OF_PROTECTION_EQUIPMENT_WITH_TIME_TAG_CP56TIME2ABuilderImpl();
+    return new InformationObject_EVENT_OF_PROTECTION_EQUIPMENT_WITH_TIME_TAG_CP56TIME2ABuilderImpl(
+        cp16Time2a, cp56Time2a);
   }
 
   public static
   class InformationObject_EVENT_OF_PROTECTION_EQUIPMENT_WITH_TIME_TAG_CP56TIME2ABuilderImpl
       implements InformationObject.InformationObjectBuilder {
+    private final TwoOctetBinaryTime cp16Time2a;
+    private final SevenOctetBinaryTime cp56Time2a;
 
-    public InformationObject_EVENT_OF_PROTECTION_EQUIPMENT_WITH_TIME_TAG_CP56TIME2ABuilderImpl() {}
+    public InformationObject_EVENT_OF_PROTECTION_EQUIPMENT_WITH_TIME_TAG_CP56TIME2ABuilderImpl(
+        TwoOctetBinaryTime cp16Time2a, SevenOctetBinaryTime cp56Time2a) {
+      this.cp16Time2a = cp16Time2a;
+      this.cp56Time2a = cp56Time2a;
+    }
 
     public InformationObject_EVENT_OF_PROTECTION_EQUIPMENT_WITH_TIME_TAG_CP56TIME2A build(
         int address) {
       InformationObject_EVENT_OF_PROTECTION_EQUIPMENT_WITH_TIME_TAG_CP56TIME2A
           informationObject_EVENT_OF_PROTECTION_EQUIPMENT_WITH_TIME_TAG_CP56TIME2A =
-              new InformationObject_EVENT_OF_PROTECTION_EQUIPMENT_WITH_TIME_TAG_CP56TIME2A(address);
+              new InformationObject_EVENT_OF_PROTECTION_EQUIPMENT_WITH_TIME_TAG_CP56TIME2A(
+                  address, cp16Time2a, cp56Time2a);
       return informationObject_EVENT_OF_PROTECTION_EQUIPMENT_WITH_TIME_TAG_CP56TIME2A;
     }
   }
@@ -111,12 +168,15 @@ public class InformationObject_EVENT_OF_PROTECTION_EQUIPMENT_WITH_TIME_TAG_CP56T
     }
     InformationObject_EVENT_OF_PROTECTION_EQUIPMENT_WITH_TIME_TAG_CP56TIME2A that =
         (InformationObject_EVENT_OF_PROTECTION_EQUIPMENT_WITH_TIME_TAG_CP56TIME2A) o;
-    return super.equals(that) && true;
+    return (getCp16Time2a() == that.getCp16Time2a())
+        && (getCp56Time2a() == that.getCp56Time2a())
+        && super.equals(that)
+        && true;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode());
+    return Objects.hash(super.hashCode(), getCp16Time2a(), getCp56Time2a());
   }
 
   @Override

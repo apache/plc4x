@@ -55,7 +55,11 @@ public class FixedTestBitPatternTwoOctet implements Message {
     writeBuffer.pushContext("FixedTestBitPatternTwoOctet");
 
     // Simple Field (pattern)
-    writeSimpleField("pattern", pattern, writeUnsignedInt(writeBuffer, 16));
+    writeSimpleField(
+        "pattern",
+        pattern,
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     writeBuffer.popContext("FixedTestBitPatternTwoOctet");
   }
@@ -89,7 +93,11 @@ public class FixedTestBitPatternTwoOctet implements Message {
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    int pattern = readSimpleField("pattern", readUnsignedInt(readBuffer, 16));
+    int pattern =
+        readSimpleField(
+            "pattern",
+            readUnsignedInt(readBuffer, 16),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     readBuffer.closeContext("FixedTestBitPatternTwoOctet");
     // Create the instance

@@ -43,8 +43,17 @@ public class InformationObject_CLOCK_SYNCHRONISATION_COMMAND extends Information
     return TypeIdentification.CLOCK_SYNCHRONISATION_COMMAND;
   }
 
-  public InformationObject_CLOCK_SYNCHRONISATION_COMMAND(int address) {
+  // Properties.
+  protected final SevenOctetBinaryTime cp56Time2a;
+
+  public InformationObject_CLOCK_SYNCHRONISATION_COMMAND(
+      int address, SevenOctetBinaryTime cp56Time2a) {
     super(address);
+    this.cp56Time2a = cp56Time2a;
+  }
+
+  public SevenOctetBinaryTime getCp56Time2a() {
+    return cp56Time2a;
   }
 
   @Override
@@ -53,6 +62,13 @@ public class InformationObject_CLOCK_SYNCHRONISATION_COMMAND extends Information
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     writeBuffer.pushContext("InformationObject_CLOCK_SYNCHRONISATION_COMMAND");
+
+    // Simple Field (cp56Time2a)
+    writeSimpleField(
+        "cp56Time2a",
+        cp56Time2a,
+        new DataWriterComplexDefault<>(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     writeBuffer.popContext("InformationObject_CLOCK_SYNCHRONISATION_COMMAND");
   }
@@ -68,6 +84,9 @@ public class InformationObject_CLOCK_SYNCHRONISATION_COMMAND extends Information
     InformationObject_CLOCK_SYNCHRONISATION_COMMAND _value = this;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
+    // Simple field (cp56Time2a)
+    lengthInBits += cp56Time2a.getLengthInBits();
+
     return lengthInBits;
   }
 
@@ -77,20 +96,31 @@ public class InformationObject_CLOCK_SYNCHRONISATION_COMMAND extends Information
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
+    SevenOctetBinaryTime cp56Time2a =
+        readSimpleField(
+            "cp56Time2a",
+            new DataReaderComplexDefault<>(
+                () -> SevenOctetBinaryTime.staticParse(readBuffer), readBuffer),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
     readBuffer.closeContext("InformationObject_CLOCK_SYNCHRONISATION_COMMAND");
     // Create the instance
-    return new InformationObject_CLOCK_SYNCHRONISATION_COMMANDBuilderImpl();
+    return new InformationObject_CLOCK_SYNCHRONISATION_COMMANDBuilderImpl(cp56Time2a);
   }
 
   public static class InformationObject_CLOCK_SYNCHRONISATION_COMMANDBuilderImpl
       implements InformationObject.InformationObjectBuilder {
+    private final SevenOctetBinaryTime cp56Time2a;
 
-    public InformationObject_CLOCK_SYNCHRONISATION_COMMANDBuilderImpl() {}
+    public InformationObject_CLOCK_SYNCHRONISATION_COMMANDBuilderImpl(
+        SevenOctetBinaryTime cp56Time2a) {
+      this.cp56Time2a = cp56Time2a;
+    }
 
     public InformationObject_CLOCK_SYNCHRONISATION_COMMAND build(int address) {
       InformationObject_CLOCK_SYNCHRONISATION_COMMAND
           informationObject_CLOCK_SYNCHRONISATION_COMMAND =
-              new InformationObject_CLOCK_SYNCHRONISATION_COMMAND(address);
+              new InformationObject_CLOCK_SYNCHRONISATION_COMMAND(address, cp56Time2a);
       return informationObject_CLOCK_SYNCHRONISATION_COMMAND;
     }
   }
@@ -105,12 +135,12 @@ public class InformationObject_CLOCK_SYNCHRONISATION_COMMAND extends Information
     }
     InformationObject_CLOCK_SYNCHRONISATION_COMMAND that =
         (InformationObject_CLOCK_SYNCHRONISATION_COMMAND) o;
-    return super.equals(that) && true;
+    return (getCp56Time2a() == that.getCp56Time2a()) && super.equals(that) && true;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode());
+    return Objects.hash(super.hashCode(), getCp56Time2a());
   }
 
   @Override

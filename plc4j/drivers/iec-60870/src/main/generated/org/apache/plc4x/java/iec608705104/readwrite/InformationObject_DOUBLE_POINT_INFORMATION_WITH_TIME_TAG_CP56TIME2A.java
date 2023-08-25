@@ -43,8 +43,23 @@ public class InformationObject_DOUBLE_POINT_INFORMATION_WITH_TIME_TAG_CP56TIME2A
     return TypeIdentification.DOUBLE_POINT_INFORMATION_WITH_TIME_TAG_CP56TIME2A;
   }
 
-  public InformationObject_DOUBLE_POINT_INFORMATION_WITH_TIME_TAG_CP56TIME2A(int address) {
+  // Properties.
+  protected final DoublePointInformation diq;
+  protected final SevenOctetBinaryTime cp56Time2a;
+
+  public InformationObject_DOUBLE_POINT_INFORMATION_WITH_TIME_TAG_CP56TIME2A(
+      int address, DoublePointInformation diq, SevenOctetBinaryTime cp56Time2a) {
     super(address);
+    this.diq = diq;
+    this.cp56Time2a = cp56Time2a;
+  }
+
+  public DoublePointInformation getDiq() {
+    return diq;
+  }
+
+  public SevenOctetBinaryTime getCp56Time2a() {
+    return cp56Time2a;
   }
 
   @Override
@@ -53,6 +68,20 @@ public class InformationObject_DOUBLE_POINT_INFORMATION_WITH_TIME_TAG_CP56TIME2A
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     writeBuffer.pushContext("InformationObject_DOUBLE_POINT_INFORMATION_WITH_TIME_TAG_CP56TIME2A");
+
+    // Simple Field (diq)
+    writeSimpleField(
+        "diq",
+        diq,
+        new DataWriterComplexDefault<>(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
+    // Simple Field (cp56Time2a)
+    writeSimpleField(
+        "cp56Time2a",
+        cp56Time2a,
+        new DataWriterComplexDefault<>(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     writeBuffer.popContext("InformationObject_DOUBLE_POINT_INFORMATION_WITH_TIME_TAG_CP56TIME2A");
   }
@@ -68,6 +97,12 @@ public class InformationObject_DOUBLE_POINT_INFORMATION_WITH_TIME_TAG_CP56TIME2A
     InformationObject_DOUBLE_POINT_INFORMATION_WITH_TIME_TAG_CP56TIME2A _value = this;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
+    // Simple field (diq)
+    lengthInBits += diq.getLengthInBits();
+
+    // Simple field (cp56Time2a)
+    lengthInBits += cp56Time2a.getLengthInBits();
+
     return lengthInBits;
   }
 
@@ -77,20 +112,42 @@ public class InformationObject_DOUBLE_POINT_INFORMATION_WITH_TIME_TAG_CP56TIME2A
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
+    DoublePointInformation diq =
+        readSimpleField(
+            "diq",
+            new DataReaderComplexDefault<>(
+                () -> DoublePointInformation.staticParse(readBuffer), readBuffer),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
+    SevenOctetBinaryTime cp56Time2a =
+        readSimpleField(
+            "cp56Time2a",
+            new DataReaderComplexDefault<>(
+                () -> SevenOctetBinaryTime.staticParse(readBuffer), readBuffer),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
     readBuffer.closeContext("InformationObject_DOUBLE_POINT_INFORMATION_WITH_TIME_TAG_CP56TIME2A");
     // Create the instance
-    return new InformationObject_DOUBLE_POINT_INFORMATION_WITH_TIME_TAG_CP56TIME2ABuilderImpl();
+    return new InformationObject_DOUBLE_POINT_INFORMATION_WITH_TIME_TAG_CP56TIME2ABuilderImpl(
+        diq, cp56Time2a);
   }
 
   public static class InformationObject_DOUBLE_POINT_INFORMATION_WITH_TIME_TAG_CP56TIME2ABuilderImpl
       implements InformationObject.InformationObjectBuilder {
+    private final DoublePointInformation diq;
+    private final SevenOctetBinaryTime cp56Time2a;
 
-    public InformationObject_DOUBLE_POINT_INFORMATION_WITH_TIME_TAG_CP56TIME2ABuilderImpl() {}
+    public InformationObject_DOUBLE_POINT_INFORMATION_WITH_TIME_TAG_CP56TIME2ABuilderImpl(
+        DoublePointInformation diq, SevenOctetBinaryTime cp56Time2a) {
+      this.diq = diq;
+      this.cp56Time2a = cp56Time2a;
+    }
 
     public InformationObject_DOUBLE_POINT_INFORMATION_WITH_TIME_TAG_CP56TIME2A build(int address) {
       InformationObject_DOUBLE_POINT_INFORMATION_WITH_TIME_TAG_CP56TIME2A
           informationObject_DOUBLE_POINT_INFORMATION_WITH_TIME_TAG_CP56TIME2A =
-              new InformationObject_DOUBLE_POINT_INFORMATION_WITH_TIME_TAG_CP56TIME2A(address);
+              new InformationObject_DOUBLE_POINT_INFORMATION_WITH_TIME_TAG_CP56TIME2A(
+                  address, diq, cp56Time2a);
       return informationObject_DOUBLE_POINT_INFORMATION_WITH_TIME_TAG_CP56TIME2A;
     }
   }
@@ -105,12 +162,15 @@ public class InformationObject_DOUBLE_POINT_INFORMATION_WITH_TIME_TAG_CP56TIME2A
     }
     InformationObject_DOUBLE_POINT_INFORMATION_WITH_TIME_TAG_CP56TIME2A that =
         (InformationObject_DOUBLE_POINT_INFORMATION_WITH_TIME_TAG_CP56TIME2A) o;
-    return super.equals(that) && true;
+    return (getDiq() == that.getDiq())
+        && (getCp56Time2a() == that.getCp56Time2a())
+        && super.equals(that)
+        && true;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode());
+    return Objects.hash(super.hashCode(), getDiq(), getCp56Time2a());
   }
 
   @Override

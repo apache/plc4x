@@ -23,10 +23,10 @@
     [const          uint 16     defaultPort 2404]
 ]
 
-[discriminatedType APDU    byteOrder='LITTLE_ENDIAN'
-    [const         uint 8  startByte    0x86               ]
+[discriminatedType APDU                                                                        byteOrder='LITTLE_ENDIAN'
+    [const         uint 8  startByte    0x68               ]
     [implicit      uint 8  apciLength   'lengthInBytes - 2']
-    [discriminator uint 16 command                         ]
+    [simple        uint 16 command                         ]
     [typeSwitch command
         // U-Format Frames
         ['0x43' *UFormatTestFrameActivation
@@ -54,7 +54,7 @@
         ]
 
         // I-Format Frames (Catch-all for all other values)
-        [        APDUIFormat
+        [*      *IFormat
             // TODO: Fix this ...
             // [virtual uint 15 sendSequenceNo 'command >> 1']
             // TODO: Shift this right by one bit to make it a uint 15
@@ -65,139 +65,188 @@
     ]
 ]
 
-[type ASDU
-    [simple   TypeIdentification  typeIdentification                             ]
-    [simple   bit                 structureQualifier                             ]
-    [implicit uint 7              numberOfObjects     'COUNT(informationObjects)']
-    [simple   bit                 test                                           ]
-    [simple   bit                 negative                                       ]
-    [simple   CauseOfTransmission causeOfTransmission                            ]
-    [simple   uint 8              originatorAddress                              ]
-    [simple   uint 16             asduAddressField                               ]
-    [array    InformationObject   informationObjects  count 'numberOfObjects'    ]
+[type ASDU                                                                                     byteOrder='LITTLE_ENDIAN'
+    [simple   TypeIdentification                      typeIdentification                             ]
+    [simple   bit                                     structureQualifier                             ]
+    [implicit uint 7                                  numberOfObjects     'COUNT(informationObjects)']
+    [simple   bit                                     test                                           ]
+    [simple   bit                                     negative                                       ]
+    [simple   CauseOfTransmission                     causeOfTransmission                            ]
+    [simple   uint 8                                  originatorAddress                              ]
+    [simple   uint 16                                 asduAddressField                               ]
+    [array    InformationObject('typeIdentification') informationObjects  count 'numberOfObjects'    ]
 ]
 
 // http://ijlalhaider.pbworks.com/w/file/fetch/64131148/Practical%20Modern%20SCADA%20Protocols.pdf
 
-[discriminatedType InformationObject(TypeIdentification typeIdentification)
+[discriminatedType InformationObject(TypeIdentification typeIdentification)                    byteOrder='LITTLE_ENDIAN'
     [simple uint 24 address]
     [typeSwitch typeIdentification
         ['SINGLE_POINT_INFORMATION'                                 *_SINGLE_POINT_INFORMATION
-// SIQ
+            [simple SinglePointInformation siq]
         ]
         ['SINGLE_POINT_INFORMATION_WITH_TIME_TAG'                   *_SINGLE_POINT_INFORMATION_WITH_TIME_TAG
-// SIQ + CP24Time2a
+            [simple SinglePointInformation siq]
+            [simple ThreeOctetBinaryTime cp24Time2a]
         ]
         ['DOUBLE_POINT_INFORMATION'                                 *_DOUBLE_POINT_INFORMATION
-// DIQ
+            [simple DoublePointInformation diq]
         ]
         ['DOUBLE_POINT_INFORMATION_WITH_TIME_TAG'                   *_DOUBLE_POINT_INFORMATION_WITH_TIME_TAG
-// DIQ + CP24Time2a
+            [simple DoublePointInformation diq]
+            [simple ThreeOctetBinaryTime cp24Time2a]
         ]
         ['STEP_POSITION_INFORMATION'                                *_STEP_POSITION_INFORMATION
-// VTI + QDS
+            [simple ValueWithTransientStateIndication vti]
+            [simple QualityDescriptor qds]
         ]
         ['STEP_POSITION_INFORMATION_WITH_TIME_TAG'                  *_STEP_POSITION_INFORMATION_WITH_TIME_TAG
-// VTI + QDS + CP24Time2a
+            [simple ValueWithTransientStateIndication vti]
+            [simple QualityDescriptor qds]
+            [simple ThreeOctetBinaryTime cp24Time2a]
         ]
         ['BITSTRING_OF_32_BIT'                                      *_BITSTRING_OF_32_BIT
-// BSI + QDS
+            [simple BinaryStateInformation bsi]
+            [simple QualityDescriptor qds]
         ]
         ['BITSTRING_OF_32_BIT_WITH_TIME_TAG'                        *_BITSTRING_OF_32_BIT_WITH_TIME_TAG
-// BSI + QDS + P24Time2a
+            [simple BinaryStateInformation bsi]
+            [simple QualityDescriptor qds]
+            [simple ThreeOctetBinaryTime cp24Time2a]
         ]
         ['MEASURED_VALUE_NORMALISED_VALUE'                          *_MEASURED_VALUE_NORMALISED_VALUE
-// NVA + QDS
+            [simple NormalizedValue nva]
+            [simple QualityDescriptor qds]
         ]
         ['MEASURED_VALUE_NORMALIZED_VALUE_WITH_TIME_TAG'            *_MEASURED_VALUE_NORMALIZED_VALUE_WITH_TIME_TAG
-// NVA + QDS + CP24Time2a
+            [simple NormalizedValue nva]
+            [simple QualityDescriptor qds]
+            [simple ThreeOctetBinaryTime cp24Time2a]
         ]
         ['MEASURED_VALUE_SCALED_VALUE'                              *_MEASURED_VALUE_SCALED_VALUE
-// SVA + QDS
+            [simple ScaledValue sva]
+            [simple QualityDescriptor qds]
         ]
         ['MEASURED_VALUE_SCALED_VALUE_WIT_TIME_TAG'                 *_MEASURED_VALUE_SCALED_VALUE_WIT_TIME_TAG
-// SVA + QDS + CP24Time2a
+            [simple ScaledValue sva]
+            [simple QualityDescriptor qds]
+            [simple ThreeOctetBinaryTime cp24Time2a]
         ]
         ['MEASURED_VALUE_SHORT_FLOATING_POINT_NUMBER'               *_MEASURED_VALUE_SHORT_FLOATING_POINT_NUMBER
-// IEEE STD 754 + QDS
+            [simple float 32 value]
+            [simple QualityDescriptor qds]
         ]
         ['MEASURED_VALUE_SHORT_FLOATING_POINT_NUMBER_WITH_TIME_TAG' *_MEASURED_VALUE_SHORT_FLOATING_POINT_NUMBER_WITH_TIME_TAG
-// IEEE STD 754 + QDS + CP24Time2a
+            [simple float 32 value]
+            [simple QualityDescriptor qds]
+            [simple ThreeOctetBinaryTime cp24Time2a]
         ]
         ['INTEGRATED_TOTALS'                                        *_INTEGRATED_TOTALS
-// BCR
+            [simple BinaryCounterReading bcr]
         ]
         ['INTEGRATED_TOTALS_WITH_TIME_TAG'                          *_INTEGRATED_TOTALS_WITH_TIME_TAG
-// BCR + CP24Time2a
+            [simple BinaryCounterReading bcr]
+            [simple ThreeOctetBinaryTime cp24Time2a]
         ]
         ['EVENT_OF_PROTECTION_EQUIPMENT_WITH_TIME_TAG'              *_EVENT_OF_PROTECTION_EQUIPMENT_WITH_TIME_TAG
-// CP16Time2a + CP24Time2a
+            [simple TwoOctetBinaryTime cp16Time2a]
+            [simple ThreeOctetBinaryTime cp24Time2a]
         ]
         ['PACKED_START_EVENTS_OF_PROTECTION_EQUIPMENT_WITH_TIME_TAG' *_PACKED_START_EVENTS_OF_PROTECTION_EQUIPMENT_WITH_TIME_TAG
-// SEP + QDP +CP16Time2a + CP24Time2a
+            [simple SingleEventOfProtectionEquipment sep]
+            [simple QualityDescriptorForPointsOfProtectionEquipment qdp]
+            [simple TwoOctetBinaryTime cp16Time2a]
+            [simple ThreeOctetBinaryTime cp24Time2a]
         ]
         ['PACKED_OUTPUT_CIRCUIT_INFORMATION_OF_PROTECTION_EQUIPMENT_WITH_TIME_TAG' *_PACKED_OUTPUT_CIRCUIT_INFORMATION_OF_PROTECTION_EQUIPMENT_WITH_TIME_TAG
-// OCI + QDP + CP16Time2a + CP24Time2a
+            [simple OutputCircuitInformation oci]
+            [simple QualityDescriptorForPointsOfProtectionEquipment qdp]
+            [simple TwoOctetBinaryTime cp16Time2a]
+            [simple ThreeOctetBinaryTime cp24Time2a]
         ]
         ['PACKED_SINGLE_POINT_INFORMATION_WITH_STATUS_CHANGE_DETECTION' *_PACKED_SINGLE_POINT_INFORMATION_WITH_STATUS_CHANGE_DETECTION
-// SCD + QDS
+            [simple StatusChangeDetection scd]
+            [simple QualityDescriptor qds]
         ]
         ['MEASURED_VALUE_NORMALIZED_VALUE_WITHOUT_QUALITY_DESCRIPTOR' *_MEASURED_VALUE_NORMALIZED_VALUE_WITHOUT_QUALITY_DESCRIPTOR
-// NVA
+            [simple NormalizedValue nva]
         ]
         ['SINGLE_POINT_INFORMATION_WITH_TIME_TAG_CP56TIME2A'        *_SINGLE_POINT_INFORMATION_WITH_TIME_TAG_CP56TIME2A
-// SIQ + CP56Time2a
+            [simple SinglePointInformation siq]
+            [simple SevenOctetBinaryTime cp56Time2a]
         ]
         ['DOUBLE_POINT_INFORMATION_WITH_TIME_TAG_CP56TIME2A'        *_DOUBLE_POINT_INFORMATION_WITH_TIME_TAG_CP56TIME2A
-// DIQ + CP56Time2a
+            [simple DoublePointInformation diq]
+            [simple SevenOctetBinaryTime cp56Time2a]
         ]
         ['STEP_POSITION_INFORMATION_WITH_TIME_TAG_CP56TIME2A'       *_STEP_POSITION_INFORMATION_WITH_TIME_TAG_CP56TIME2A
-// VTI + QDS + CP56Time2a
+            [simple ValueWithTransientStateIndication vti]
+            [simple QualityDescriptor qds]
+            [simple SevenOctetBinaryTime cp56Time2a]
         ]
         ['BITSTRING_OF_32_BIT_WITH_TIME_TAG_CP56TIME2A'             *_BITSTRING_OF_32_BIT_WITH_TIME_TAG_CP56TIME2A
-// BSI + QDS + CP56Time2a
+            [simple BinaryStateInformation bsi]
+            [simple QualityDescriptor qds]
+            [simple SevenOctetBinaryTime cp56Time2a]
         ]
         ['MEASURED_VALUE_NORMALISED_VALUE_WITH_TIME_TAG_CP56TIME2A' *_MEASURED_VALUE_NORMALISED_VALUE_WITH_TIME_TAG_CP56TIME2A
-// NVA + QDS + CP56Time2a
+            [simple NormalizedValue nva]
+            [simple QualityDescriptor qds]
+            [simple SevenOctetBinaryTime cp56Time2a]
         ]
         ['MEASURED_VALUE_SCALED_VALUE_WITH_TIME_TAG_CP56TIME2A'     *_MEASURED_VALUE_SCALED_VALUE_WITH_TIME_TAG_CP56TIME2A
-// SVA + QDS + CP56Time2a
+            [simple ScaledValue sva]
+            [simple QualityDescriptor qds]
+            [simple SevenOctetBinaryTime cp56Time2a]
         ]
         ['MEASURED_VALUE_SHORT_FLOATING_POINT_NUMBER_WITH_TIME_TAG_CP56TIME2A' *_MEASURED_VALUE_SHORT_FLOATING_POINT_NUMBER_WITH_TIME_TAG_CP56TIME2A
-// IEEE STD 754 + QDS + CP56Time2a
+            [simple float 32 value]
+            [simple QualityDescriptor qds]
+            [simple SevenOctetBinaryTime cp56Time2a]
         ]
         ['INTEGRATED_TOTALS_WITH_TIME_TAG_CP56TIME2A'               *_INTEGRATED_TOTALS_WITH_TIME_TAG_CP56TIME2A
-// BCR + CP56Time2a
+            [simple BinaryCounterReading bcr]
+            [simple SevenOctetBinaryTime cp56Time2a]
         ]
         ['EVENT_OF_PROTECTION_EQUIPMENT_WITH_TIME_TAG_CP56TIME2A'   *_EVENT_OF_PROTECTION_EQUIPMENT_WITH_TIME_TAG_CP56TIME2A
-// CP16Time2a + CP56Time2a
+            [simple TwoOctetBinaryTime cp16Time2a]
+            [simple SevenOctetBinaryTime cp56Time2a]
         ]
         ['PACKED_START_EVENTS_OF_PROTECTION_EQUIPMENT_WITH_TIME_TAG_CP56TIME2A' *_PROTECTION_EQUIPMENT_WITH_TIME_TAG_CP56TIME2A
-// SEP + QDP + CP16Time2a + CP56Time2a
+            [simple SingleEventOfProtectionEquipment sep]
+            [simple QualityDescriptorForPointsOfProtectionEquipment qdp]
+            [simple TwoOctetBinaryTime cp16Time2a]
+            [simple SevenOctetBinaryTime cp56Time2a]
         ]
         ['PACKED_OUTPUT_CIRCUIT_INFORMATION_OF_PROTECTION_EQUIPMENT_WITH_TIME_TAG_CP56TIME2A' *_PACKED_OUTPUT_CIRCUIT_INFORMATION_OF_PROTECTION_EQUIPMENT_WITH_TIME_TAG_CP56TIME2A
-// OCI + QDP + CP16Time2a + CP56Time2a
+            [simple OutputCircuitInformation oci]
+            [simple QualityDescriptorForPointsOfProtectionEquipment qdp]
+            [simple TwoOctetBinaryTime cp16Time2a]
+            [simple SevenOctetBinaryTime cp56Time2a]
         ]
         ['SINGLE_COMMAND'                                           *_SINGLE_COMMAND
-// SCO
+            [simple SingleCommand sco]
         ]
         ['DOUBLE_COMMAND'                                           *_DOUBLE_COMMAND
-// DCO
+            [simple DoubleCommand dco]
         ]
         ['REGULATING_STEP_COMMAND'                                  *_REGULATING_STEP_COMMAND
-// RCO
+            [simple RegulatingStepCommand rco]
         ]
         ['SET_POINT_COMMAND_NORMALISED_VALUE'                       *_SET_POINT_COMMAND_NORMALISED_VALUE
-// NVA + QOS
+            [simple NormalizedValue nva]
+            [simple QualifierOfSetPointCommand qos]
         ]
         ['SET_POINT_COMMAND_SCALED_VALUE'                           *_SET_POINT_COMMAND_SCALED_VALUE
-// SVA + QOS
+            [simple ScaledValue sva]
+            [simple QualifierOfSetPointCommand qos]
         ]
         ['SET_POINT_COMMAND_SHORT_FLOATING_POINT_NUMBER'            *_SET_POINT_COMMAND_SHORT_FLOATING_POINT_NUMBER
-// 1 IEEE STD 754 + QOS
+            [simple float 32 value]
+            [simple QualifierOfSetPointCommand qos]
         ]
         ['BITSTRING_32_BIT_COMMAND'                                 *_BITSTRING_32_BIT_COMMAND
-// BSI
+            [simple BinaryStateInformation bsi]
         ]
         ['SINGLE_COMMAND_WITH_TIME_TAG_CP56TIME2A'                  *_SINGLE_COMMAND_WITH_TIME_TAG_CP56TIME2A
         ]
@@ -214,62 +263,83 @@
         ['BITSTRING_OF_32_BIT_COMMAND_WITH_TIME_TAG_CP56TIME2A'     *_BITSTRING_OF_32_BIT_COMMAND_WITH_TIME_TAG_CP56TIME2A
         ]
         ['END_OF_INITIALISATION'                                    *_END_OF_INITIALISATION
-// COI
+            [simple CauseOfInitialization coi]
         ]
         ['INTERROGATION_COMMAND'                                    *_INTERROGATION_COMMAND
-// QOI
+            [simple QualifierOfInterrogation qoi]
         ]
         ['COUNTER_INTERROGATION_COMMAND'                            *_COUNTER_INTERROGATION_COMMAND
-// QCC
+            [simple QualifierOfCounterInterrogationCommand qcc]
         ]
         ['READ_COMMAND'                                             *_READ_COMMAND
         ]
         ['CLOCK_SYNCHRONISATION_COMMAND'                            *_CLOCK_SYNCHRONISATION_COMMAND
-// CP56Time2a
+            [simple SevenOctetBinaryTime cp56Time2a]
         ]
         ['TEST_COMMAND'                                             *_TEST_COMMAND
-// FBP
+            [simple FixedTestBitPatternTwoOctet fbp]
         ]
         ['RESET_PROCESS_COMMAND'                                    *_RESET_PROCESS_COMMAND
-// QRP
+            [simple QualifierOfResetProcessCommand qrp]
         ]
         ['DELAY_ACQUISITION_COMMAND'                                *_DELAY_ACQUISITION_COMMAND
-// CP16Time2a
+            [simple TwoOctetBinaryTime cp16Time2a]
         ]
         ['TEST_COMMAND_WITH_TIME_TAG_CP56TIME2A'                    *_TEST_COMMAND_WITH_TIME_TAG_CP56TIME2A
         ]
         ['PARAMETER_OF_MEASURED_VALUES_NORMALIZED_VALUE'            *_PARAMETER_OF_MEASURED_VALUES_NORMALIZED_VALUE
-// NVA + QPM
+            [simple NormalizedValue nva]
+            [simple QualifierOfParameterOfMeasuredValues qpm]
         ]
         ['PARAMETER_OF_MEASURED_VALUES_SCALED_VALUE'                *_PARAMETER_OF_MEASURED_VALUES_SCALED_VALUE
-// SVA + QPM
+            [simple ScaledValue sva]
+            [simple QualifierOfParameterOfMeasuredValues qpm]
         ]
         ['PARAMETER_OF_MEASURED_VALUES_SHORT_FLOATING_POINT_NUMBER' *_PARAMETER_OF_MEASURED_VALUES_SHORT_FLOATING_POINT_NUMBER
-// IEEE STD 754 + QPM
+            [simple float 32 value]
+            [simple QualifierOfParameterOfMeasuredValues qpm]
         ]
         ['PARAMETER_ACTIVATION'                                     *_PARAMETER_ACTIVATION
-// QPA
+            [simple QualifierOfParameterActivation qpa]
         ]
         ['FILE_READY'                                               *_FILE_READY
-// NOF + LOF + FRQ
+            [simple NameOfFile nof]
+            [simple LengthOfFile lof]
+            [simple FileReadyQualifier frq]
         ]
         ['SECTION_READY'                                            *_SECTION_READY
-// NOF + NOS + LOF + SRQ
+            [simple NameOfFile nof]
+            [simple NameOfSection nos]
+            [simple LengthOfFile lof]
+            [simple SectionReadyQualifier srq]
         ]
         ['CALL_DIRECTORY_SELECT_FILE_CALL_FILE_CALL_SECTION'        *_CALL_DIRECTORY_SELECT_FILE_CALL_FILE_CALL_SECTION
-// NOF + NOS + SCQ
+            [simple NameOfFile nof]
+            [simple NameOfSection nos]
+            [simple SelectAndCallQualifier scq]
         ]
         ['LAST_SECTION_LAST_SEGMENT'                                *_LAST_SECTION_LAST_SEGMENT
-// NOF + NOS + LSQ + CHS
+            [simple NameOfFile nof]
+            [simple NameOfSection nos]
+            [simple LastSectionOrSegmentQualifier lsq]
+            [simple Checksum chs]
         ]
         ['ACK_FILE_ACK_SECTION'                                     *_ACK_FILE_ACK_SECTION
-// NOF + NOS + AFQ
+            [simple NameOfFile nof]
+            [simple NameOfSection nos]
+            [simple AcknowledgeFileOrSectionQualifier afq]
         ]
         ['SEGMENT'                                                  *_SEGMENT
-// NOF + NOS + LOS + segment
+            [simple NameOfFile nof]
+            [simple NameOfSection nos]
+            [simple LengthOfSegment los]
+// NOF + NOS + LOS + *segment*
         ]
         ['DIRECTORY'                                                *_DIRECTORY
-// NOF + LOF + SOF + CP56Time2a
+            [simple NameOfFile nof]
+            [simple LengthOfFile lof]
+            [simple StatusOfFile sof]
+            [simple SevenOctetBinaryTime cp56Time2a]
         ]
     ]
 ]
@@ -279,7 +349,7 @@
 //////////////////////////////////////////////////////////
 
 // SIQ
-[type SinglePointInformation
+[type SinglePointInformation                                                                   byteOrder='LITTLE_ENDIAN'
     [simple   bit    invalid            ]
     [simple   bit    notTopical         ]
     [simple   bit    substituted        ]
@@ -289,7 +359,7 @@
 ]
 
 // DIQ
-[type DoublePointInformation
+[type DoublePointInformation                                                                   byteOrder='LITTLE_ENDIAN'
     [simple   bit    invalid            ]
     [simple   bit    notTopical         ]
     [simple   bit    substituted        ]
@@ -299,17 +369,17 @@
 ]
 
 // BSI
-[type BinaryStateInformation
+[type BinaryStateInformation                                                                   byteOrder='LITTLE_ENDIAN'
     [simple uint 32 bits] // TODO: Possibly bit-string
 ]
 
 // SCD
-[type StatusChangeDetection
+[type StatusChangeDetection                                                                    byteOrder='LITTLE_ENDIAN'
     [simple uint 32 bits] // TODO: Possibly bit-string
 ]
 
 // QDS
-[type QualityDescriptor
+[type QualityDescriptor                                                                        byteOrder='LITTLE_ENDIAN'
     [simple   bit    invalid            ]
     [simple   bit    notTopical         ]
     [simple   bit    substituted        ]
@@ -319,28 +389,28 @@
 ]
 
 // VTI
-[type ValueWithTransientStateIndication
+[type ValueWithTransientStateIndication                                                        byteOrder='LITTLE_ENDIAN'
     [simple   bit    transientState     ]
     [simple   uint 7 value              ]
 ]
 
 // NVA
-[type NormalizedValue
-    // TODO: F16
+[type NormalizedValue                                                                          byteOrder='LITTLE_ENDIAN'
+    [simple uint 16 value]     // TODO: F16
 ]
 
 // SVA
-[type ScaledValue
+[type ScaledValue                                                                              byteOrder='LITTLE_ENDIAN'
     [simple   int 16 value               ]
 ]
 
 // R32
-[type ShortFloatingPointNumber
+[type ShortFloatingPointNumber                                                                 byteOrder='LITTLE_ENDIAN'
    [simple  float 16 value               ] // TODO: Double-Check
 ]
 
 // BCR
-[type BinaryCounterReading
+[type BinaryCounterReading                                                                     byteOrder='LITTLE_ENDIAN'
     [simple   uint 32 counterValue       ]
     [simple   bit     counterValid       ]
     [simple   bit     counterAdjusted    ]
@@ -349,7 +419,7 @@
 ]
 
 // SEP
-[type SingleEventOfProtectionEquipment
+[type SingleEventOfProtectionEquipment                                                         byteOrder='LITTLE_ENDIAN'
     [simple   bit    invalid            ]
     [simple   bit    notTopical         ]
     [simple   bit    substituted        ]
@@ -360,7 +430,7 @@
 ]
 
 // SPE
-[type StartEventsOfProtectionEquipment
+[type StartEventsOfProtectionEquipment                                                         byteOrder='LITTLE_ENDIAN'
     [reserved uint 2 '0'                    ]
     [simple   bit    startOfOperationInReverseDirection]
     [simple   bit    startOfOperationIE     ]
@@ -371,7 +441,7 @@
 ]
 
 // OCI
-[type OutputCircuitInformation
+[type OutputCircuitInformation                                                                 byteOrder='LITTLE_ENDIAN'
     [reserved uint 4 '0'                    ]
     [simple   bit    stateOfOperationPhaseL3]
     [simple   bit    stateOfOperationPhaseL2]
@@ -380,7 +450,7 @@
 ]
 
 // QDP
-[type QualityDescriptorForPointsOfProtectionEquipment
+[type QualityDescriptorForPointsOfProtectionEquipment                                          byteOrder='LITTLE_ENDIAN'
     [simple   bit    invalid            ]
     [simple   bit    notTopical         ]
     [simple   bit    substituted        ]
@@ -394,17 +464,17 @@
 //////////////////////////////////////////////////////////
 
 // SCO
-[type SingleCommand
+[type SingleCommand                                                                            byteOrder='LITTLE_ENDIAN'
     // TODO: Implement
 ]
 
 // DCO
-[type DoubleCommand
+[type DoubleCommand                                                                            byteOrder='LITTLE_ENDIAN'
     // TODO: Implement
 ]
 
 // RCO
-[type RegulatingStepCommand
+[type RegulatingStepCommand                                                                    byteOrder='LITTLE_ENDIAN'
     // TODO: Implement
 ]
 
@@ -413,17 +483,20 @@
 //////////////////////////////////////////////////////////
 
 // CP56Time2a
-[type SevenOctetBinaryTime
+[type SevenOctetBinaryTime                                                                     byteOrder='LITTLE_ENDIAN'
+    [array byte value count '7']
     // TODO: Implement
 ]
 
 // CP24Time2a
-[type ThreeOctetBinaryTime
+[type ThreeOctetBinaryTime                                                                     byteOrder='LITTLE_ENDIAN'
+    [array byte value count '3']
     // TODO: Implement
 ]
 
 // CP16Time2av
-[type TwoOctetBinaryTime
+[type TwoOctetBinaryTime                                                                       byteOrder='LITTLE_ENDIAN'
+    [array byte value count '2']
     // TODO: Implement
 ]
 
@@ -432,42 +505,42 @@
 //////////////////////////////////////////////////////////
 
 // QOI
-[type QualifierOfInterrogation
+[type QualifierOfInterrogation                                                                 byteOrder='LITTLE_ENDIAN'
     [simple   uint 8 qualifierOfCommand         ] // TODO: Possible ENUM
 ]
 
 // QCC
-[type QualifierOfCounterInterrogationCommand
+[type QualifierOfCounterInterrogationCommand                                                   byteOrder='LITTLE_ENDIAN'
     [simple   uint 2 freeze         ] // TODO: Possible ENUM
     [simple   uint 6 request        ] // TODO: Possible ENUM
 ]
 
 // QPM
-[type QualifierOfParameterOfMeasuredValues
+[type QualifierOfParameterOfMeasuredValues                                                     byteOrder='LITTLE_ENDIAN'
     [simple   bit    parameterInOperation]
     [simple   bit    localParameterChange]
     [simple   uint 6 kindOfParameter     ] // TODO: Possible ENUM
 ]
 
 // QPA
-[type QualifierOfParameterActivation
+[type QualifierOfParameterActivation                                                           byteOrder='LITTLE_ENDIAN'
     [simple   uint 8 qualifier         ] // TODO: Possible ENUM
 ]
 
 // QOC
 // TODO: Only 6 bit long !!!!!!
-[type QualifierOfCommand
+[type QualifierOfCommand                                                                       byteOrder='LITTLE_ENDIAN'
     [simple   bit    select]
     [simple   uint 5 qualifier         ] // TODO: Possible ENUM
 ]
 
 // QRP
-[type QualifierOfResetProcessCommand
+[type QualifierOfResetProcessCommand                                                           byteOrder='LITTLE_ENDIAN'
     [simple   uint 8 qualifier         ] // TODO: Possible ENUM
 ]
 
 // QOS
-[type QualifierOfSetPointCommand
+[type QualifierOfSetPointCommand                                                               byteOrder='LITTLE_ENDIAN'
     [simple   bit    select]
     [simple   uint 7 qualifier         ] // TODO: Possible ENUM
 ]
@@ -477,56 +550,56 @@
 //////////////////////////////////////////////////////////
 
 // FRQ
-[type FileReadyQualifier
+[type FileReadyQualifier                                                                       byteOrder='LITTLE_ENDIAN'
     // TODO: Implement
 ]
 
 // SRQ
-[type SectionReadyQualifier
+[type SectionReadyQualifier                                                                    byteOrder='LITTLE_ENDIAN'
     // TODO: Implement
 ]
 
 // SCQ
-[type SelectAndCallQualifier
+[type SelectAndCallQualifier                                                                   byteOrder='LITTLE_ENDIAN'
     // TODO: Implement
 ]
 
 // LSQ
-[type LastSectionOrSegmentQualifier
+[type LastSectionOrSegmentQualifier                                                            byteOrder='LITTLE_ENDIAN'
     // TODO: Implement
 ]
 
 // AFQ
-[type AcknowledgeFileOrSectionQualifier
+[type AcknowledgeFileOrSectionQualifier                                                        byteOrder='LITTLE_ENDIAN'
     // TODO: Implement
 ]
 
 // NOF
-[type NameOfFile
+[type NameOfFile                                                                               byteOrder='LITTLE_ENDIAN'
     // TODO: Implement
 ]
 
 // NOS
-[type NameOfSection
+[type NameOfSection                                                                            byteOrder='LITTLE_ENDIAN'
     // TODO: Implement
 ]
 
 // LOF
-[type LengthOfFile
+[type LengthOfFile                                                                             byteOrder='LITTLE_ENDIAN'
     // TODO: Implement
 ]
 
 // LOS
-[type LengthOfSegment
+[type LengthOfSegment                                                                          byteOrder='LITTLE_ENDIAN'
     // TODO: Implement
 ]
 
 // CHS
-[type Checksum
+[type Checksum                                                                                 byteOrder='LITTLE_ENDIAN'
     // TODO: Implement
 ]
 
-// SOF
+// SOF                                                                                         byteOrder='LITTLE_ENDIAN'
 [type StatusOfFile
     // TODO: Implement
 ]
@@ -536,13 +609,13 @@
 //////////////////////////////////////////////////////////
 
 // COI
-[type CauseOfInitialization
+[type CauseOfInitialization                                                                    byteOrder='LITTLE_ENDIAN'
     [simple   bit    select]
     [simple   uint 7 qualifier         ] // TODO: Possible ENUM
 ]
 
 // FBP
-[type FixedTestBitPatternTwoOctet
+[type FixedTestBitPatternTwoOctet                                                              byteOrder='LITTLE_ENDIAN'
     [simple uint 16 pattern] // TODO: Possibly bit-string
 ]
 

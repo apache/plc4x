@@ -55,7 +55,11 @@ public class BinaryStateInformation implements Message {
     writeBuffer.pushContext("BinaryStateInformation");
 
     // Simple Field (bits)
-    writeSimpleField("bits", bits, writeUnsignedLong(writeBuffer, 32));
+    writeSimpleField(
+        "bits",
+        bits,
+        writeUnsignedLong(writeBuffer, 32),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     writeBuffer.popContext("BinaryStateInformation");
   }
@@ -88,7 +92,11 @@ public class BinaryStateInformation implements Message {
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    long bits = readSimpleField("bits", readUnsignedLong(readBuffer, 32));
+    long bits =
+        readSimpleField(
+            "bits",
+            readUnsignedLong(readBuffer, 32),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     readBuffer.closeContext("BinaryStateInformation");
     // Create the instance

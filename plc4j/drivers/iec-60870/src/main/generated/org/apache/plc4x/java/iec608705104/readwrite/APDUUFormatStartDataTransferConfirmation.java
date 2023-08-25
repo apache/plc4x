@@ -38,12 +38,9 @@ import org.apache.plc4x.java.spi.generation.*;
 public class APDUUFormatStartDataTransferConfirmation extends APDU implements Message {
 
   // Accessors for discriminator values.
-  public Integer getCommand() {
-    return (int) 0x0B;
-  }
 
-  public APDUUFormatStartDataTransferConfirmation() {
-    super();
+  public APDUUFormatStartDataTransferConfirmation(int command) {
+    super(command);
   }
 
   @Override
@@ -103,9 +100,9 @@ public class APDUUFormatStartDataTransferConfirmation extends APDU implements Me
 
     public APDUUFormatStartDataTransferConfirmationBuilderImpl() {}
 
-    public APDUUFormatStartDataTransferConfirmation build() {
+    public APDUUFormatStartDataTransferConfirmation build(int command) {
       APDUUFormatStartDataTransferConfirmation aPDUUFormatStartDataTransferConfirmation =
-          new APDUUFormatStartDataTransferConfirmation();
+          new APDUUFormatStartDataTransferConfirmation(command);
       return aPDUUFormatStartDataTransferConfirmation;
     }
   }

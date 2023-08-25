@@ -77,19 +77,39 @@ public class OutputCircuitInformation implements Message {
     writeBuffer.pushContext("OutputCircuitInformation");
 
     // Reserved Field (reserved)
-    writeReservedField("reserved", (byte) 0, writeUnsignedByte(writeBuffer, 4));
+    writeReservedField(
+        "reserved",
+        (byte) 0,
+        writeUnsignedByte(writeBuffer, 4),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     // Simple Field (stateOfOperationPhaseL3)
-    writeSimpleField("stateOfOperationPhaseL3", stateOfOperationPhaseL3, writeBoolean(writeBuffer));
+    writeSimpleField(
+        "stateOfOperationPhaseL3",
+        stateOfOperationPhaseL3,
+        writeBoolean(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     // Simple Field (stateOfOperationPhaseL2)
-    writeSimpleField("stateOfOperationPhaseL2", stateOfOperationPhaseL2, writeBoolean(writeBuffer));
+    writeSimpleField(
+        "stateOfOperationPhaseL2",
+        stateOfOperationPhaseL2,
+        writeBoolean(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     // Simple Field (stateOfOperationPhaseL1)
-    writeSimpleField("stateOfOperationPhaseL1", stateOfOperationPhaseL1, writeBoolean(writeBuffer));
+    writeSimpleField(
+        "stateOfOperationPhaseL1",
+        stateOfOperationPhaseL1,
+        writeBoolean(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     // Simple Field (generalStartOfOperation)
-    writeSimpleField("generalStartOfOperation", generalStartOfOperation, writeBoolean(writeBuffer));
+    writeSimpleField(
+        "generalStartOfOperation",
+        generalStartOfOperation,
+        writeBoolean(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     writeBuffer.popContext("OutputCircuitInformation");
   }
@@ -134,19 +154,36 @@ public class OutputCircuitInformation implements Message {
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    Byte reservedField0 = readReservedField("reserved", readUnsignedByte(readBuffer, 4), (byte) 0);
+    Byte reservedField0 =
+        readReservedField(
+            "reserved",
+            readUnsignedByte(readBuffer, 4),
+            (byte) 0,
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     boolean stateOfOperationPhaseL3 =
-        readSimpleField("stateOfOperationPhaseL3", readBoolean(readBuffer));
+        readSimpleField(
+            "stateOfOperationPhaseL3",
+            readBoolean(readBuffer),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     boolean stateOfOperationPhaseL2 =
-        readSimpleField("stateOfOperationPhaseL2", readBoolean(readBuffer));
+        readSimpleField(
+            "stateOfOperationPhaseL2",
+            readBoolean(readBuffer),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     boolean stateOfOperationPhaseL1 =
-        readSimpleField("stateOfOperationPhaseL1", readBoolean(readBuffer));
+        readSimpleField(
+            "stateOfOperationPhaseL1",
+            readBoolean(readBuffer),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     boolean generalStartOfOperation =
-        readSimpleField("generalStartOfOperation", readBoolean(readBuffer));
+        readSimpleField(
+            "generalStartOfOperation",
+            readBoolean(readBuffer),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     readBuffer.closeContext("OutputCircuitInformation");
     // Create the instance

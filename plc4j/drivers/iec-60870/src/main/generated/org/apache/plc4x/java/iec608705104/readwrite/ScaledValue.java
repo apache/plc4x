@@ -55,7 +55,11 @@ public class ScaledValue implements Message {
     writeBuffer.pushContext("ScaledValue");
 
     // Simple Field (value)
-    writeSimpleField("value", value, writeSignedShort(writeBuffer, 16));
+    writeSimpleField(
+        "value",
+        value,
+        writeSignedShort(writeBuffer, 16),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     writeBuffer.popContext("ScaledValue");
   }
@@ -88,7 +92,11 @@ public class ScaledValue implements Message {
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    short value = readSimpleField("value", readSignedShort(readBuffer, 16));
+    short value =
+        readSimpleField(
+            "value",
+            readSignedShort(readBuffer, 16),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     readBuffer.closeContext("ScaledValue");
     // Create the instance

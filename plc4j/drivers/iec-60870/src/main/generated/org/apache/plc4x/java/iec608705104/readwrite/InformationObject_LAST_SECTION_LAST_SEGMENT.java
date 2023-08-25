@@ -43,8 +43,39 @@ public class InformationObject_LAST_SECTION_LAST_SEGMENT extends InformationObje
     return TypeIdentification.LAST_SECTION_LAST_SEGMENT;
   }
 
-  public InformationObject_LAST_SECTION_LAST_SEGMENT(int address) {
+  // Properties.
+  protected final NameOfFile nof;
+  protected final NameOfSection nos;
+  protected final LastSectionOrSegmentQualifier lsq;
+  protected final Checksum chs;
+
+  public InformationObject_LAST_SECTION_LAST_SEGMENT(
+      int address,
+      NameOfFile nof,
+      NameOfSection nos,
+      LastSectionOrSegmentQualifier lsq,
+      Checksum chs) {
     super(address);
+    this.nof = nof;
+    this.nos = nos;
+    this.lsq = lsq;
+    this.chs = chs;
+  }
+
+  public NameOfFile getNof() {
+    return nof;
+  }
+
+  public NameOfSection getNos() {
+    return nos;
+  }
+
+  public LastSectionOrSegmentQualifier getLsq() {
+    return lsq;
+  }
+
+  public Checksum getChs() {
+    return chs;
   }
 
   @Override
@@ -53,6 +84,34 @@ public class InformationObject_LAST_SECTION_LAST_SEGMENT extends InformationObje
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     writeBuffer.pushContext("InformationObject_LAST_SECTION_LAST_SEGMENT");
+
+    // Simple Field (nof)
+    writeSimpleField(
+        "nof",
+        nof,
+        new DataWriterComplexDefault<>(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
+    // Simple Field (nos)
+    writeSimpleField(
+        "nos",
+        nos,
+        new DataWriterComplexDefault<>(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
+    // Simple Field (lsq)
+    writeSimpleField(
+        "lsq",
+        lsq,
+        new DataWriterComplexDefault<>(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
+    // Simple Field (chs)
+    writeSimpleField(
+        "chs",
+        chs,
+        new DataWriterComplexDefault<>(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     writeBuffer.popContext("InformationObject_LAST_SECTION_LAST_SEGMENT");
   }
@@ -68,6 +127,18 @@ public class InformationObject_LAST_SECTION_LAST_SEGMENT extends InformationObje
     InformationObject_LAST_SECTION_LAST_SEGMENT _value = this;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
+    // Simple field (nof)
+    lengthInBits += nof.getLengthInBits();
+
+    // Simple field (nos)
+    lengthInBits += nos.getLengthInBits();
+
+    // Simple field (lsq)
+    lengthInBits += lsq.getLengthInBits();
+
+    // Simple field (chs)
+    lengthInBits += chs.getLengthInBits();
+
     return lengthInBits;
   }
 
@@ -77,19 +148,54 @@ public class InformationObject_LAST_SECTION_LAST_SEGMENT extends InformationObje
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
+    NameOfFile nof =
+        readSimpleField(
+            "nof",
+            new DataReaderComplexDefault<>(() -> NameOfFile.staticParse(readBuffer), readBuffer),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
+    NameOfSection nos =
+        readSimpleField(
+            "nos",
+            new DataReaderComplexDefault<>(() -> NameOfSection.staticParse(readBuffer), readBuffer),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
+    LastSectionOrSegmentQualifier lsq =
+        readSimpleField(
+            "lsq",
+            new DataReaderComplexDefault<>(
+                () -> LastSectionOrSegmentQualifier.staticParse(readBuffer), readBuffer),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
+    Checksum chs =
+        readSimpleField(
+            "chs",
+            new DataReaderComplexDefault<>(() -> Checksum.staticParse(readBuffer), readBuffer),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
     readBuffer.closeContext("InformationObject_LAST_SECTION_LAST_SEGMENT");
     // Create the instance
-    return new InformationObject_LAST_SECTION_LAST_SEGMENTBuilderImpl();
+    return new InformationObject_LAST_SECTION_LAST_SEGMENTBuilderImpl(nof, nos, lsq, chs);
   }
 
   public static class InformationObject_LAST_SECTION_LAST_SEGMENTBuilderImpl
       implements InformationObject.InformationObjectBuilder {
+    private final NameOfFile nof;
+    private final NameOfSection nos;
+    private final LastSectionOrSegmentQualifier lsq;
+    private final Checksum chs;
 
-    public InformationObject_LAST_SECTION_LAST_SEGMENTBuilderImpl() {}
+    public InformationObject_LAST_SECTION_LAST_SEGMENTBuilderImpl(
+        NameOfFile nof, NameOfSection nos, LastSectionOrSegmentQualifier lsq, Checksum chs) {
+      this.nof = nof;
+      this.nos = nos;
+      this.lsq = lsq;
+      this.chs = chs;
+    }
 
     public InformationObject_LAST_SECTION_LAST_SEGMENT build(int address) {
       InformationObject_LAST_SECTION_LAST_SEGMENT informationObject_LAST_SECTION_LAST_SEGMENT =
-          new InformationObject_LAST_SECTION_LAST_SEGMENT(address);
+          new InformationObject_LAST_SECTION_LAST_SEGMENT(address, nof, nos, lsq, chs);
       return informationObject_LAST_SECTION_LAST_SEGMENT;
     }
   }
@@ -104,12 +210,17 @@ public class InformationObject_LAST_SECTION_LAST_SEGMENT extends InformationObje
     }
     InformationObject_LAST_SECTION_LAST_SEGMENT that =
         (InformationObject_LAST_SECTION_LAST_SEGMENT) o;
-    return super.equals(that) && true;
+    return (getNof() == that.getNof())
+        && (getNos() == that.getNos())
+        && (getLsq() == that.getLsq())
+        && (getChs() == that.getChs())
+        && super.equals(that)
+        && true;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode());
+    return Objects.hash(super.hashCode(), getNof(), getNos(), getLsq(), getChs());
   }
 
   @Override

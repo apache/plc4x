@@ -91,25 +91,53 @@ public class SingleEventOfProtectionEquipment implements Message {
     writeBuffer.pushContext("SingleEventOfProtectionEquipment");
 
     // Simple Field (invalid)
-    writeSimpleField("invalid", invalid, writeBoolean(writeBuffer));
+    writeSimpleField(
+        "invalid",
+        invalid,
+        writeBoolean(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     // Simple Field (notTopical)
-    writeSimpleField("notTopical", notTopical, writeBoolean(writeBuffer));
+    writeSimpleField(
+        "notTopical",
+        notTopical,
+        writeBoolean(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     // Simple Field (substituted)
-    writeSimpleField("substituted", substituted, writeBoolean(writeBuffer));
+    writeSimpleField(
+        "substituted",
+        substituted,
+        writeBoolean(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     // Simple Field (blocked)
-    writeSimpleField("blocked", blocked, writeBoolean(writeBuffer));
+    writeSimpleField(
+        "blocked",
+        blocked,
+        writeBoolean(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     // Simple Field (elapsedTimeInvalid)
-    writeSimpleField("elapsedTimeInvalid", elapsedTimeInvalid, writeBoolean(writeBuffer));
+    writeSimpleField(
+        "elapsedTimeInvalid",
+        elapsedTimeInvalid,
+        writeBoolean(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     // Reserved Field (reserved)
-    writeReservedField("reserved", (byte) 0, writeUnsignedByte(writeBuffer, 1));
+    writeReservedField(
+        "reserved",
+        (byte) 0,
+        writeUnsignedByte(writeBuffer, 1),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     // Simple Field (eventState)
-    writeSimpleField("eventState", eventState, writeUnsignedByte(writeBuffer, 2));
+    writeSimpleField(
+        "eventState",
+        eventState,
+        writeUnsignedByte(writeBuffer, 2),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     writeBuffer.popContext("SingleEventOfProtectionEquipment");
   }
@@ -161,19 +189,44 @@ public class SingleEventOfProtectionEquipment implements Message {
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    boolean invalid = readSimpleField("invalid", readBoolean(readBuffer));
+    boolean invalid =
+        readSimpleField(
+            "invalid", readBoolean(readBuffer), WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
-    boolean notTopical = readSimpleField("notTopical", readBoolean(readBuffer));
+    boolean notTopical =
+        readSimpleField(
+            "notTopical",
+            readBoolean(readBuffer),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
-    boolean substituted = readSimpleField("substituted", readBoolean(readBuffer));
+    boolean substituted =
+        readSimpleField(
+            "substituted",
+            readBoolean(readBuffer),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
-    boolean blocked = readSimpleField("blocked", readBoolean(readBuffer));
+    boolean blocked =
+        readSimpleField(
+            "blocked", readBoolean(readBuffer), WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
-    boolean elapsedTimeInvalid = readSimpleField("elapsedTimeInvalid", readBoolean(readBuffer));
+    boolean elapsedTimeInvalid =
+        readSimpleField(
+            "elapsedTimeInvalid",
+            readBoolean(readBuffer),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
-    Byte reservedField0 = readReservedField("reserved", readUnsignedByte(readBuffer, 1), (byte) 0);
+    Byte reservedField0 =
+        readReservedField(
+            "reserved",
+            readUnsignedByte(readBuffer, 1),
+            (byte) 0,
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
-    byte eventState = readSimpleField("eventState", readUnsignedByte(readBuffer, 2));
+    byte eventState =
+        readSimpleField(
+            "eventState",
+            readUnsignedByte(readBuffer, 2),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     readBuffer.closeContext("SingleEventOfProtectionEquipment");
     // Create the instance

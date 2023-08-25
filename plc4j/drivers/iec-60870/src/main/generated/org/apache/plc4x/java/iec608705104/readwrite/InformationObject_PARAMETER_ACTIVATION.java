@@ -42,8 +42,16 @@ public class InformationObject_PARAMETER_ACTIVATION extends InformationObject im
     return TypeIdentification.PARAMETER_ACTIVATION;
   }
 
-  public InformationObject_PARAMETER_ACTIVATION(int address) {
+  // Properties.
+  protected final QualifierOfParameterActivation qpa;
+
+  public InformationObject_PARAMETER_ACTIVATION(int address, QualifierOfParameterActivation qpa) {
     super(address);
+    this.qpa = qpa;
+  }
+
+  public QualifierOfParameterActivation getQpa() {
+    return qpa;
   }
 
   @Override
@@ -52,6 +60,13 @@ public class InformationObject_PARAMETER_ACTIVATION extends InformationObject im
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     writeBuffer.pushContext("InformationObject_PARAMETER_ACTIVATION");
+
+    // Simple Field (qpa)
+    writeSimpleField(
+        "qpa",
+        qpa,
+        new DataWriterComplexDefault<>(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     writeBuffer.popContext("InformationObject_PARAMETER_ACTIVATION");
   }
@@ -67,6 +82,9 @@ public class InformationObject_PARAMETER_ACTIVATION extends InformationObject im
     InformationObject_PARAMETER_ACTIVATION _value = this;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
+    // Simple field (qpa)
+    lengthInBits += qpa.getLengthInBits();
+
     return lengthInBits;
   }
 
@@ -76,19 +94,29 @@ public class InformationObject_PARAMETER_ACTIVATION extends InformationObject im
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
+    QualifierOfParameterActivation qpa =
+        readSimpleField(
+            "qpa",
+            new DataReaderComplexDefault<>(
+                () -> QualifierOfParameterActivation.staticParse(readBuffer), readBuffer),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
     readBuffer.closeContext("InformationObject_PARAMETER_ACTIVATION");
     // Create the instance
-    return new InformationObject_PARAMETER_ACTIVATIONBuilderImpl();
+    return new InformationObject_PARAMETER_ACTIVATIONBuilderImpl(qpa);
   }
 
   public static class InformationObject_PARAMETER_ACTIVATIONBuilderImpl
       implements InformationObject.InformationObjectBuilder {
+    private final QualifierOfParameterActivation qpa;
 
-    public InformationObject_PARAMETER_ACTIVATIONBuilderImpl() {}
+    public InformationObject_PARAMETER_ACTIVATIONBuilderImpl(QualifierOfParameterActivation qpa) {
+      this.qpa = qpa;
+    }
 
     public InformationObject_PARAMETER_ACTIVATION build(int address) {
       InformationObject_PARAMETER_ACTIVATION informationObject_PARAMETER_ACTIVATION =
-          new InformationObject_PARAMETER_ACTIVATION(address);
+          new InformationObject_PARAMETER_ACTIVATION(address, qpa);
       return informationObject_PARAMETER_ACTIVATION;
     }
   }
@@ -102,12 +130,12 @@ public class InformationObject_PARAMETER_ACTIVATION extends InformationObject im
       return false;
     }
     InformationObject_PARAMETER_ACTIVATION that = (InformationObject_PARAMETER_ACTIVATION) o;
-    return super.equals(that) && true;
+    return (getQpa() == that.getQpa()) && super.equals(that) && true;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode());
+    return Objects.hash(super.hashCode(), getQpa());
   }
 
   @Override

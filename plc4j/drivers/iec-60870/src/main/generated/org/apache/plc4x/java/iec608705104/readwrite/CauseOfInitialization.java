@@ -61,10 +61,18 @@ public class CauseOfInitialization implements Message {
     writeBuffer.pushContext("CauseOfInitialization");
 
     // Simple Field (select)
-    writeSimpleField("select", select, writeBoolean(writeBuffer));
+    writeSimpleField(
+        "select",
+        select,
+        writeBoolean(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     // Simple Field (qualifier)
-    writeSimpleField("qualifier", qualifier, writeUnsignedByte(writeBuffer, 7));
+    writeSimpleField(
+        "qualifier",
+        qualifier,
+        writeUnsignedByte(writeBuffer, 7),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     writeBuffer.popContext("CauseOfInitialization");
   }
@@ -100,9 +108,15 @@ public class CauseOfInitialization implements Message {
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    boolean select = readSimpleField("select", readBoolean(readBuffer));
+    boolean select =
+        readSimpleField(
+            "select", readBoolean(readBuffer), WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
-    byte qualifier = readSimpleField("qualifier", readUnsignedByte(readBuffer, 7));
+    byte qualifier =
+        readSimpleField(
+            "qualifier",
+            readUnsignedByte(readBuffer, 7),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     readBuffer.closeContext("CauseOfInitialization");
     // Create the instance

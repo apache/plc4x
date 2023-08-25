@@ -43,8 +43,16 @@ public class InformationObject_DOUBLE_POINT_INFORMATION extends InformationObjec
     return TypeIdentification.DOUBLE_POINT_INFORMATION;
   }
 
-  public InformationObject_DOUBLE_POINT_INFORMATION(int address) {
+  // Properties.
+  protected final DoublePointInformation diq;
+
+  public InformationObject_DOUBLE_POINT_INFORMATION(int address, DoublePointInformation diq) {
     super(address);
+    this.diq = diq;
+  }
+
+  public DoublePointInformation getDiq() {
+    return diq;
   }
 
   @Override
@@ -53,6 +61,13 @@ public class InformationObject_DOUBLE_POINT_INFORMATION extends InformationObjec
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     writeBuffer.pushContext("InformationObject_DOUBLE_POINT_INFORMATION");
+
+    // Simple Field (diq)
+    writeSimpleField(
+        "diq",
+        diq,
+        new DataWriterComplexDefault<>(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     writeBuffer.popContext("InformationObject_DOUBLE_POINT_INFORMATION");
   }
@@ -68,6 +83,9 @@ public class InformationObject_DOUBLE_POINT_INFORMATION extends InformationObjec
     InformationObject_DOUBLE_POINT_INFORMATION _value = this;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
+    // Simple field (diq)
+    lengthInBits += diq.getLengthInBits();
+
     return lengthInBits;
   }
 
@@ -77,19 +95,29 @@ public class InformationObject_DOUBLE_POINT_INFORMATION extends InformationObjec
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
+    DoublePointInformation diq =
+        readSimpleField(
+            "diq",
+            new DataReaderComplexDefault<>(
+                () -> DoublePointInformation.staticParse(readBuffer), readBuffer),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
     readBuffer.closeContext("InformationObject_DOUBLE_POINT_INFORMATION");
     // Create the instance
-    return new InformationObject_DOUBLE_POINT_INFORMATIONBuilderImpl();
+    return new InformationObject_DOUBLE_POINT_INFORMATIONBuilderImpl(diq);
   }
 
   public static class InformationObject_DOUBLE_POINT_INFORMATIONBuilderImpl
       implements InformationObject.InformationObjectBuilder {
+    private final DoublePointInformation diq;
 
-    public InformationObject_DOUBLE_POINT_INFORMATIONBuilderImpl() {}
+    public InformationObject_DOUBLE_POINT_INFORMATIONBuilderImpl(DoublePointInformation diq) {
+      this.diq = diq;
+    }
 
     public InformationObject_DOUBLE_POINT_INFORMATION build(int address) {
       InformationObject_DOUBLE_POINT_INFORMATION informationObject_DOUBLE_POINT_INFORMATION =
-          new InformationObject_DOUBLE_POINT_INFORMATION(address);
+          new InformationObject_DOUBLE_POINT_INFORMATION(address, diq);
       return informationObject_DOUBLE_POINT_INFORMATION;
     }
   }
@@ -104,12 +132,12 @@ public class InformationObject_DOUBLE_POINT_INFORMATION extends InformationObjec
     }
     InformationObject_DOUBLE_POINT_INFORMATION that =
         (InformationObject_DOUBLE_POINT_INFORMATION) o;
-    return super.equals(that) && true;
+    return (getDiq() == that.getDiq()) && super.equals(that) && true;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode());
+    return Objects.hash(super.hashCode(), getDiq());
   }
 
   @Override

@@ -43,8 +43,32 @@ public class InformationObject_STEP_POSITION_INFORMATION_WITH_TIME_TAG extends I
     return TypeIdentification.STEP_POSITION_INFORMATION_WITH_TIME_TAG;
   }
 
-  public InformationObject_STEP_POSITION_INFORMATION_WITH_TIME_TAG(int address) {
+  // Properties.
+  protected final ValueWithTransientStateIndication vti;
+  protected final QualityDescriptor qds;
+  protected final ThreeOctetBinaryTime cp24Time2a;
+
+  public InformationObject_STEP_POSITION_INFORMATION_WITH_TIME_TAG(
+      int address,
+      ValueWithTransientStateIndication vti,
+      QualityDescriptor qds,
+      ThreeOctetBinaryTime cp24Time2a) {
     super(address);
+    this.vti = vti;
+    this.qds = qds;
+    this.cp24Time2a = cp24Time2a;
+  }
+
+  public ValueWithTransientStateIndication getVti() {
+    return vti;
+  }
+
+  public QualityDescriptor getQds() {
+    return qds;
+  }
+
+  public ThreeOctetBinaryTime getCp24Time2a() {
+    return cp24Time2a;
   }
 
   @Override
@@ -53,6 +77,27 @@ public class InformationObject_STEP_POSITION_INFORMATION_WITH_TIME_TAG extends I
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     writeBuffer.pushContext("InformationObject_STEP_POSITION_INFORMATION_WITH_TIME_TAG");
+
+    // Simple Field (vti)
+    writeSimpleField(
+        "vti",
+        vti,
+        new DataWriterComplexDefault<>(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
+    // Simple Field (qds)
+    writeSimpleField(
+        "qds",
+        qds,
+        new DataWriterComplexDefault<>(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
+    // Simple Field (cp24Time2a)
+    writeSimpleField(
+        "cp24Time2a",
+        cp24Time2a,
+        new DataWriterComplexDefault<>(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     writeBuffer.popContext("InformationObject_STEP_POSITION_INFORMATION_WITH_TIME_TAG");
   }
@@ -68,6 +113,15 @@ public class InformationObject_STEP_POSITION_INFORMATION_WITH_TIME_TAG extends I
     InformationObject_STEP_POSITION_INFORMATION_WITH_TIME_TAG _value = this;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
+    // Simple field (vti)
+    lengthInBits += vti.getLengthInBits();
+
+    // Simple field (qds)
+    lengthInBits += qds.getLengthInBits();
+
+    // Simple field (cp24Time2a)
+    lengthInBits += cp24Time2a.getLengthInBits();
+
     return lengthInBits;
   }
 
@@ -77,20 +131,53 @@ public class InformationObject_STEP_POSITION_INFORMATION_WITH_TIME_TAG extends I
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
+    ValueWithTransientStateIndication vti =
+        readSimpleField(
+            "vti",
+            new DataReaderComplexDefault<>(
+                () -> ValueWithTransientStateIndication.staticParse(readBuffer), readBuffer),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
+    QualityDescriptor qds =
+        readSimpleField(
+            "qds",
+            new DataReaderComplexDefault<>(
+                () -> QualityDescriptor.staticParse(readBuffer), readBuffer),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
+    ThreeOctetBinaryTime cp24Time2a =
+        readSimpleField(
+            "cp24Time2a",
+            new DataReaderComplexDefault<>(
+                () -> ThreeOctetBinaryTime.staticParse(readBuffer), readBuffer),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
     readBuffer.closeContext("InformationObject_STEP_POSITION_INFORMATION_WITH_TIME_TAG");
     // Create the instance
-    return new InformationObject_STEP_POSITION_INFORMATION_WITH_TIME_TAGBuilderImpl();
+    return new InformationObject_STEP_POSITION_INFORMATION_WITH_TIME_TAGBuilderImpl(
+        vti, qds, cp24Time2a);
   }
 
   public static class InformationObject_STEP_POSITION_INFORMATION_WITH_TIME_TAGBuilderImpl
       implements InformationObject.InformationObjectBuilder {
+    private final ValueWithTransientStateIndication vti;
+    private final QualityDescriptor qds;
+    private final ThreeOctetBinaryTime cp24Time2a;
 
-    public InformationObject_STEP_POSITION_INFORMATION_WITH_TIME_TAGBuilderImpl() {}
+    public InformationObject_STEP_POSITION_INFORMATION_WITH_TIME_TAGBuilderImpl(
+        ValueWithTransientStateIndication vti,
+        QualityDescriptor qds,
+        ThreeOctetBinaryTime cp24Time2a) {
+      this.vti = vti;
+      this.qds = qds;
+      this.cp24Time2a = cp24Time2a;
+    }
 
     public InformationObject_STEP_POSITION_INFORMATION_WITH_TIME_TAG build(int address) {
       InformationObject_STEP_POSITION_INFORMATION_WITH_TIME_TAG
           informationObject_STEP_POSITION_INFORMATION_WITH_TIME_TAG =
-              new InformationObject_STEP_POSITION_INFORMATION_WITH_TIME_TAG(address);
+              new InformationObject_STEP_POSITION_INFORMATION_WITH_TIME_TAG(
+                  address, vti, qds, cp24Time2a);
       return informationObject_STEP_POSITION_INFORMATION_WITH_TIME_TAG;
     }
   }
@@ -105,12 +192,16 @@ public class InformationObject_STEP_POSITION_INFORMATION_WITH_TIME_TAG extends I
     }
     InformationObject_STEP_POSITION_INFORMATION_WITH_TIME_TAG that =
         (InformationObject_STEP_POSITION_INFORMATION_WITH_TIME_TAG) o;
-    return super.equals(that) && true;
+    return (getVti() == that.getVti())
+        && (getQds() == that.getQds())
+        && (getCp24Time2a() == that.getCp24Time2a())
+        && super.equals(that)
+        && true;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode());
+    return Objects.hash(super.hashCode(), getVti(), getQds(), getCp24Time2a());
   }
 
   @Override

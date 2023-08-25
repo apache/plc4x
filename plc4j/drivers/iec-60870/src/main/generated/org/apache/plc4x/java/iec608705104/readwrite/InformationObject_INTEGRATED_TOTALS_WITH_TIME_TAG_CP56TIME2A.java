@@ -43,8 +43,23 @@ public class InformationObject_INTEGRATED_TOTALS_WITH_TIME_TAG_CP56TIME2A extend
     return TypeIdentification.INTEGRATED_TOTALS_WITH_TIME_TAG_CP56TIME2A;
   }
 
-  public InformationObject_INTEGRATED_TOTALS_WITH_TIME_TAG_CP56TIME2A(int address) {
+  // Properties.
+  protected final BinaryCounterReading bcr;
+  protected final SevenOctetBinaryTime cp56Time2a;
+
+  public InformationObject_INTEGRATED_TOTALS_WITH_TIME_TAG_CP56TIME2A(
+      int address, BinaryCounterReading bcr, SevenOctetBinaryTime cp56Time2a) {
     super(address);
+    this.bcr = bcr;
+    this.cp56Time2a = cp56Time2a;
+  }
+
+  public BinaryCounterReading getBcr() {
+    return bcr;
+  }
+
+  public SevenOctetBinaryTime getCp56Time2a() {
+    return cp56Time2a;
   }
 
   @Override
@@ -53,6 +68,20 @@ public class InformationObject_INTEGRATED_TOTALS_WITH_TIME_TAG_CP56TIME2A extend
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     writeBuffer.pushContext("InformationObject_INTEGRATED_TOTALS_WITH_TIME_TAG_CP56TIME2A");
+
+    // Simple Field (bcr)
+    writeSimpleField(
+        "bcr",
+        bcr,
+        new DataWriterComplexDefault<>(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
+    // Simple Field (cp56Time2a)
+    writeSimpleField(
+        "cp56Time2a",
+        cp56Time2a,
+        new DataWriterComplexDefault<>(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     writeBuffer.popContext("InformationObject_INTEGRATED_TOTALS_WITH_TIME_TAG_CP56TIME2A");
   }
@@ -68,6 +97,12 @@ public class InformationObject_INTEGRATED_TOTALS_WITH_TIME_TAG_CP56TIME2A extend
     InformationObject_INTEGRATED_TOTALS_WITH_TIME_TAG_CP56TIME2A _value = this;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
+    // Simple field (bcr)
+    lengthInBits += bcr.getLengthInBits();
+
+    // Simple field (cp56Time2a)
+    lengthInBits += cp56Time2a.getLengthInBits();
+
     return lengthInBits;
   }
 
@@ -77,20 +112,42 @@ public class InformationObject_INTEGRATED_TOTALS_WITH_TIME_TAG_CP56TIME2A extend
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
+    BinaryCounterReading bcr =
+        readSimpleField(
+            "bcr",
+            new DataReaderComplexDefault<>(
+                () -> BinaryCounterReading.staticParse(readBuffer), readBuffer),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
+    SevenOctetBinaryTime cp56Time2a =
+        readSimpleField(
+            "cp56Time2a",
+            new DataReaderComplexDefault<>(
+                () -> SevenOctetBinaryTime.staticParse(readBuffer), readBuffer),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
     readBuffer.closeContext("InformationObject_INTEGRATED_TOTALS_WITH_TIME_TAG_CP56TIME2A");
     // Create the instance
-    return new InformationObject_INTEGRATED_TOTALS_WITH_TIME_TAG_CP56TIME2ABuilderImpl();
+    return new InformationObject_INTEGRATED_TOTALS_WITH_TIME_TAG_CP56TIME2ABuilderImpl(
+        bcr, cp56Time2a);
   }
 
   public static class InformationObject_INTEGRATED_TOTALS_WITH_TIME_TAG_CP56TIME2ABuilderImpl
       implements InformationObject.InformationObjectBuilder {
+    private final BinaryCounterReading bcr;
+    private final SevenOctetBinaryTime cp56Time2a;
 
-    public InformationObject_INTEGRATED_TOTALS_WITH_TIME_TAG_CP56TIME2ABuilderImpl() {}
+    public InformationObject_INTEGRATED_TOTALS_WITH_TIME_TAG_CP56TIME2ABuilderImpl(
+        BinaryCounterReading bcr, SevenOctetBinaryTime cp56Time2a) {
+      this.bcr = bcr;
+      this.cp56Time2a = cp56Time2a;
+    }
 
     public InformationObject_INTEGRATED_TOTALS_WITH_TIME_TAG_CP56TIME2A build(int address) {
       InformationObject_INTEGRATED_TOTALS_WITH_TIME_TAG_CP56TIME2A
           informationObject_INTEGRATED_TOTALS_WITH_TIME_TAG_CP56TIME2A =
-              new InformationObject_INTEGRATED_TOTALS_WITH_TIME_TAG_CP56TIME2A(address);
+              new InformationObject_INTEGRATED_TOTALS_WITH_TIME_TAG_CP56TIME2A(
+                  address, bcr, cp56Time2a);
       return informationObject_INTEGRATED_TOTALS_WITH_TIME_TAG_CP56TIME2A;
     }
   }
@@ -105,12 +162,15 @@ public class InformationObject_INTEGRATED_TOTALS_WITH_TIME_TAG_CP56TIME2A extend
     }
     InformationObject_INTEGRATED_TOTALS_WITH_TIME_TAG_CP56TIME2A that =
         (InformationObject_INTEGRATED_TOTALS_WITH_TIME_TAG_CP56TIME2A) o;
-    return super.equals(that) && true;
+    return (getBcr() == that.getBcr())
+        && (getCp56Time2a() == that.getCp56Time2a())
+        && super.equals(that)
+        && true;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode());
+    return Objects.hash(super.hashCode(), getBcr(), getCp56Time2a());
   }
 
   @Override

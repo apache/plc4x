@@ -38,16 +38,13 @@ import org.apache.plc4x.java.spi.generation.*;
 public class APDUIFormat extends APDU implements Message {
 
   // Accessors for discriminator values.
-  public Integer getCommand() {
-    return 0;
-  }
 
   // Properties.
   protected final int receiveSequenceNo;
   protected final ASDU asdu;
 
-  public APDUIFormat(int receiveSequenceNo, ASDU asdu) {
-    super();
+  public APDUIFormat(int command, int receiveSequenceNo, ASDU asdu) {
+    super(command);
     this.receiveSequenceNo = receiveSequenceNo;
     this.asdu = asdu;
   }
@@ -134,8 +131,8 @@ public class APDUIFormat extends APDU implements Message {
       this.asdu = asdu;
     }
 
-    public APDUIFormat build() {
-      APDUIFormat aPDUIFormat = new APDUIFormat(receiveSequenceNo, asdu);
+    public APDUIFormat build(int command) {
+      APDUIFormat aPDUIFormat = new APDUIFormat(command, receiveSequenceNo, asdu);
       return aPDUIFormat;
     }
   }

@@ -42,8 +42,29 @@ public class InformationObject_ACK_FILE_ACK_SECTION extends InformationObject im
     return TypeIdentification.ACK_FILE_ACK_SECTION;
   }
 
-  public InformationObject_ACK_FILE_ACK_SECTION(int address) {
+  // Properties.
+  protected final NameOfFile nof;
+  protected final NameOfSection nos;
+  protected final AcknowledgeFileOrSectionQualifier afq;
+
+  public InformationObject_ACK_FILE_ACK_SECTION(
+      int address, NameOfFile nof, NameOfSection nos, AcknowledgeFileOrSectionQualifier afq) {
     super(address);
+    this.nof = nof;
+    this.nos = nos;
+    this.afq = afq;
+  }
+
+  public NameOfFile getNof() {
+    return nof;
+  }
+
+  public NameOfSection getNos() {
+    return nos;
+  }
+
+  public AcknowledgeFileOrSectionQualifier getAfq() {
+    return afq;
   }
 
   @Override
@@ -52,6 +73,27 @@ public class InformationObject_ACK_FILE_ACK_SECTION extends InformationObject im
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     writeBuffer.pushContext("InformationObject_ACK_FILE_ACK_SECTION");
+
+    // Simple Field (nof)
+    writeSimpleField(
+        "nof",
+        nof,
+        new DataWriterComplexDefault<>(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
+    // Simple Field (nos)
+    writeSimpleField(
+        "nos",
+        nos,
+        new DataWriterComplexDefault<>(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
+    // Simple Field (afq)
+    writeSimpleField(
+        "afq",
+        afq,
+        new DataWriterComplexDefault<>(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     writeBuffer.popContext("InformationObject_ACK_FILE_ACK_SECTION");
   }
@@ -67,6 +109,15 @@ public class InformationObject_ACK_FILE_ACK_SECTION extends InformationObject im
     InformationObject_ACK_FILE_ACK_SECTION _value = this;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
+    // Simple field (nof)
+    lengthInBits += nof.getLengthInBits();
+
+    // Simple field (nos)
+    lengthInBits += nos.getLengthInBits();
+
+    // Simple field (afq)
+    lengthInBits += afq.getLengthInBits();
+
     return lengthInBits;
   }
 
@@ -76,19 +127,46 @@ public class InformationObject_ACK_FILE_ACK_SECTION extends InformationObject im
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
+    NameOfFile nof =
+        readSimpleField(
+            "nof",
+            new DataReaderComplexDefault<>(() -> NameOfFile.staticParse(readBuffer), readBuffer),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
+    NameOfSection nos =
+        readSimpleField(
+            "nos",
+            new DataReaderComplexDefault<>(() -> NameOfSection.staticParse(readBuffer), readBuffer),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
+    AcknowledgeFileOrSectionQualifier afq =
+        readSimpleField(
+            "afq",
+            new DataReaderComplexDefault<>(
+                () -> AcknowledgeFileOrSectionQualifier.staticParse(readBuffer), readBuffer),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
     readBuffer.closeContext("InformationObject_ACK_FILE_ACK_SECTION");
     // Create the instance
-    return new InformationObject_ACK_FILE_ACK_SECTIONBuilderImpl();
+    return new InformationObject_ACK_FILE_ACK_SECTIONBuilderImpl(nof, nos, afq);
   }
 
   public static class InformationObject_ACK_FILE_ACK_SECTIONBuilderImpl
       implements InformationObject.InformationObjectBuilder {
+    private final NameOfFile nof;
+    private final NameOfSection nos;
+    private final AcknowledgeFileOrSectionQualifier afq;
 
-    public InformationObject_ACK_FILE_ACK_SECTIONBuilderImpl() {}
+    public InformationObject_ACK_FILE_ACK_SECTIONBuilderImpl(
+        NameOfFile nof, NameOfSection nos, AcknowledgeFileOrSectionQualifier afq) {
+      this.nof = nof;
+      this.nos = nos;
+      this.afq = afq;
+    }
 
     public InformationObject_ACK_FILE_ACK_SECTION build(int address) {
       InformationObject_ACK_FILE_ACK_SECTION informationObject_ACK_FILE_ACK_SECTION =
-          new InformationObject_ACK_FILE_ACK_SECTION(address);
+          new InformationObject_ACK_FILE_ACK_SECTION(address, nof, nos, afq);
       return informationObject_ACK_FILE_ACK_SECTION;
     }
   }
@@ -102,12 +180,16 @@ public class InformationObject_ACK_FILE_ACK_SECTION extends InformationObject im
       return false;
     }
     InformationObject_ACK_FILE_ACK_SECTION that = (InformationObject_ACK_FILE_ACK_SECTION) o;
-    return super.equals(that) && true;
+    return (getNof() == that.getNof())
+        && (getNos() == that.getNos())
+        && (getAfq() == that.getAfq())
+        && super.equals(that)
+        && true;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode());
+    return Objects.hash(super.hashCode(), getNof(), getNos(), getAfq());
   }
 
   @Override

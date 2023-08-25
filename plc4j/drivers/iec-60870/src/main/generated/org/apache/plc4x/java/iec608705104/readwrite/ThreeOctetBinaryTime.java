@@ -37,14 +37,29 @@ import org.apache.plc4x.java.spi.generation.*;
 
 public class ThreeOctetBinaryTime implements Message {
 
-  public ThreeOctetBinaryTime() {
+  // Properties.
+  protected final byte[] value;
+
+  public ThreeOctetBinaryTime(byte[] value) {
     super();
+    this.value = value;
+  }
+
+  public byte[] getValue() {
+    return value;
   }
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     writeBuffer.pushContext("ThreeOctetBinaryTime");
+
+    // Array Field (value)
+    writeByteArrayField(
+        "value",
+        value,
+        writeByteArray(writeBuffer, 8),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     writeBuffer.popContext("ThreeOctetBinaryTime");
   }
@@ -60,6 +75,11 @@ public class ThreeOctetBinaryTime implements Message {
     ThreeOctetBinaryTime _value = this;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
+    // Array field
+    if (value != null) {
+      lengthInBits += 8 * value.length;
+    }
+
     return lengthInBits;
   }
 
@@ -74,10 +94,14 @@ public class ThreeOctetBinaryTime implements Message {
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
+    byte[] value =
+        readBuffer.readByteArray(
+            "value", Math.toIntExact(3), WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
     readBuffer.closeContext("ThreeOctetBinaryTime");
     // Create the instance
     ThreeOctetBinaryTime _threeOctetBinaryTime;
-    _threeOctetBinaryTime = new ThreeOctetBinaryTime();
+    _threeOctetBinaryTime = new ThreeOctetBinaryTime(value);
     return _threeOctetBinaryTime;
   }
 
@@ -90,12 +114,12 @@ public class ThreeOctetBinaryTime implements Message {
       return false;
     }
     ThreeOctetBinaryTime that = (ThreeOctetBinaryTime) o;
-    return true;
+    return (getValue() == that.getValue()) && true;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash();
+    return Objects.hash(getValue());
   }
 
   @Override

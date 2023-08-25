@@ -42,8 +42,16 @@ public class InformationObject_DOUBLE_COMMAND extends InformationObject implemen
     return TypeIdentification.DOUBLE_COMMAND;
   }
 
-  public InformationObject_DOUBLE_COMMAND(int address) {
+  // Properties.
+  protected final DoubleCommand dco;
+
+  public InformationObject_DOUBLE_COMMAND(int address, DoubleCommand dco) {
     super(address);
+    this.dco = dco;
+  }
+
+  public DoubleCommand getDco() {
+    return dco;
   }
 
   @Override
@@ -52,6 +60,13 @@ public class InformationObject_DOUBLE_COMMAND extends InformationObject implemen
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     writeBuffer.pushContext("InformationObject_DOUBLE_COMMAND");
+
+    // Simple Field (dco)
+    writeSimpleField(
+        "dco",
+        dco,
+        new DataWriterComplexDefault<>(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     writeBuffer.popContext("InformationObject_DOUBLE_COMMAND");
   }
@@ -67,6 +82,9 @@ public class InformationObject_DOUBLE_COMMAND extends InformationObject implemen
     InformationObject_DOUBLE_COMMAND _value = this;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
+    // Simple field (dco)
+    lengthInBits += dco.getLengthInBits();
+
     return lengthInBits;
   }
 
@@ -76,19 +94,28 @@ public class InformationObject_DOUBLE_COMMAND extends InformationObject implemen
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
+    DoubleCommand dco =
+        readSimpleField(
+            "dco",
+            new DataReaderComplexDefault<>(() -> DoubleCommand.staticParse(readBuffer), readBuffer),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
     readBuffer.closeContext("InformationObject_DOUBLE_COMMAND");
     // Create the instance
-    return new InformationObject_DOUBLE_COMMANDBuilderImpl();
+    return new InformationObject_DOUBLE_COMMANDBuilderImpl(dco);
   }
 
   public static class InformationObject_DOUBLE_COMMANDBuilderImpl
       implements InformationObject.InformationObjectBuilder {
+    private final DoubleCommand dco;
 
-    public InformationObject_DOUBLE_COMMANDBuilderImpl() {}
+    public InformationObject_DOUBLE_COMMANDBuilderImpl(DoubleCommand dco) {
+      this.dco = dco;
+    }
 
     public InformationObject_DOUBLE_COMMAND build(int address) {
       InformationObject_DOUBLE_COMMAND informationObject_DOUBLE_COMMAND =
-          new InformationObject_DOUBLE_COMMAND(address);
+          new InformationObject_DOUBLE_COMMAND(address, dco);
       return informationObject_DOUBLE_COMMAND;
     }
   }
@@ -102,12 +129,12 @@ public class InformationObject_DOUBLE_COMMAND extends InformationObject implemen
       return false;
     }
     InformationObject_DOUBLE_COMMAND that = (InformationObject_DOUBLE_COMMAND) o;
-    return super.equals(that) && true;
+    return (getDco() == that.getDco()) && super.equals(that) && true;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode());
+    return Objects.hash(super.hashCode(), getDco());
   }
 
   @Override
