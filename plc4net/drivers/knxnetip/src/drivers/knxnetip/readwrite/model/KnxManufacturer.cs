@@ -667,8 +667,9 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
         M_RECBER_KABLO_A_S_ = 640,
         M_ILITE_KNX = 641,
         M_LAZZEN = 642,
-        M_ABB___RESERVED = 643,
-        M_BUSCH_JAEGER_ELEKTRO___RESERVED = 644,
+        M_MOX_CONTROL_IT_CHINA_LIMITED = 643,
+        M_ABB___RESERVED = 644,
+        M_BUSCH_JAEGER_ELEKTRO___RESERVED = 645,
     }
 
     public static class KnxManufacturerInfo
@@ -2493,10 +2494,13 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxManufacturer.M_LAZZEN: { /* '642' */
                     return 700;
                 }
-                case KnxManufacturer.M_ABB___RESERVED: { /* '643' */
+                case KnxManufacturer.M_MOX_CONTROL_IT_CHINA_LIMITED: { /* '643' */
+                    return 701;
+                }
+                case KnxManufacturer.M_ABB___RESERVED: { /* '644' */
                     return 43954;
                 }
-                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '644' */
+                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '645' */
                     return 43959;
                 }
                 case KnxManufacturer.M_JEPAZ: { /* '65' */
@@ -4438,10 +4442,13 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxManufacturer.M_LAZZEN: { /* '642' */
                     return "LAZZEN";
                 }
-                case KnxManufacturer.M_ABB___RESERVED: { /* '643' */
+                case KnxManufacturer.M_MOX_CONTROL_IT_CHINA_LIMITED: { /* '643' */
+                    return "MOX CONTROL IT (CHINA) LIMITED";
+                }
+                case KnxManufacturer.M_ABB___RESERVED: { /* '644' */
                     return "ABB - reserved";
                 }
-                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '644' */
+                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '645' */
                     return "Busch-Jaeger Elektro - reserved";
                 }
                 case KnxManufacturer.M_JEPAZ: { /* '65' */
