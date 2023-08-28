@@ -738,9 +738,10 @@ public enum KnxManufacturer {
   M_RECBER_KABLO_A_S_((int) 640, (int) 698, (String) "RECBER KABLO A.S."),
   M_ILITE_KNX((int) 641, (int) 699, (String) "ILite-Knx"),
   M_LAZZEN((int) 642, (int) 700, (String) "LAZZEN"),
-  M_ABB___RESERVED((int) 643, (int) 43954, (String) "ABB - reserved"),
+  M_MOX_CONTROL_IT_CHINA_LIMITED((int) 643, (int) 701, (String) "MOX CONTROL IT (CHINA) LIMITED"),
+  M_ABB___RESERVED((int) 644, (int) 43954, (String) "ABB - reserved"),
   M_BUSCH_JAEGER_ELEKTRO___RESERVED(
-      (int) 644, (int) 43959, (String) "Busch-Jaeger Elektro - reserved");
+      (int) 645, (int) 43959, (String) "Busch-Jaeger Elektro - reserved");
   private static final Map<Integer, KnxManufacturer> map;
 
   static {
