@@ -114,7 +114,7 @@ public class Iec60870514PlcDriver extends GeneratedDriverBase<APDU> {
         @Override
         public int applyAsInt(ByteBuf byteBuf) {
             if (byteBuf.readableBytes() >= 2) {
-                return byteBuf.getUnsignedByte( 1) + 2;
+                return byteBuf.getUnsignedByte( byteBuf.readerIndex() + 1) + 2;
             }
             return -1;
         }
