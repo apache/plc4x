@@ -239,8 +239,10 @@ public enum OpcuaStatusCode {
   GoodDataIgnored((long) 0x00D90000L),
   BadRequestNotAllowed((long) 0x80E40000L),
   BadRequestNotComplete((long) 0x81130000L),
+  BadTransactionPending((long) 0x80E80000L),
   BadTicketRequired((long) 0x811F0000L),
   BadTicketInvalid((long) 0x81200000L),
+  BadLocked((long) 0x80E90000L),
   GoodEdited((long) 0x00DC0000L),
   GoodPostActionFailed((long) 0x00DD0000L),
   UncertainDominantValueChanged((long) 0x40DE0000L),
@@ -284,7 +286,8 @@ public enum OpcuaStatusCode {
   GoodCascadeNotSelected((long) 0x04040000L),
   GoodFaultStateActive((long) 0x04070000L),
   GoodInitiateFaultState((long) 0x04080000L),
-  GoodCascade((long) 0x04090000L);
+  GoodCascade((long) 0x04090000L),
+  BadDataSetIdInvalid((long) 0x80E70000L);
   private static final Map<Long, OpcuaStatusCode> map;
 
   static {

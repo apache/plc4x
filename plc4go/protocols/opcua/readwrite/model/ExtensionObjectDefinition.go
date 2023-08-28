@@ -153,12 +153,18 @@ func ExtensionObjectDefinitionParseWithBuffer(ctx context.Context, readBuffer ut
 		_childTemp, typeSwitchError = CurrencyUnitTypeParseWithBuffer(ctx, readBuffer, identifier)
 	case identifier == "12556": // TrustListDataType
 		_childTemp, typeSwitchError = TrustListDataTypeParseWithBuffer(ctx, readBuffer, identifier)
-	case identifier == "17863": // DecimalDataType
-		_childTemp, typeSwitchError = DecimalDataTypeParseWithBuffer(ctx, readBuffer, identifier)
+	case identifier == "32287": // TransactionErrorType
+		_childTemp, typeSwitchError = TransactionErrorTypeParseWithBuffer(ctx, readBuffer, identifier)
 	case identifier == "15536": // DataTypeSchemaHeader
 		_childTemp, typeSwitchError = DataTypeSchemaHeaderParseWithBuffer(ctx, readBuffer, identifier)
 	case identifier == "14527": // DataTypeDescription
 		_childTemp, typeSwitchError = DataTypeDescriptionParseWithBuffer(ctx, readBuffer, identifier)
+	case identifier == "24107": // PortableQualifiedName
+		_childTemp, typeSwitchError = PortableQualifiedNameParseWithBuffer(ctx, readBuffer, identifier)
+	case identifier == "24108": // PortableNodeId
+		_childTemp, typeSwitchError = PortableNodeIdParseWithBuffer(ctx, readBuffer, identifier)
+	case identifier == "24109": // UnsignedRationalNumber
+		_childTemp, typeSwitchError = UnsignedRationalNumberParseWithBuffer(ctx, readBuffer, identifier)
 	case identifier == "14526": // FieldMetaData
 		_childTemp, typeSwitchError = FieldMetaDataParseWithBuffer(ctx, readBuffer, identifier)
 	case identifier == "14595": // ConfigurationVersionDataType
@@ -199,20 +205,32 @@ func ExtensionObjectDefinitionParseWithBuffer(ctx context.Context, readBuffer ut
 		_childTemp, typeSwitchError = FieldTargetDataTypeParseWithBuffer(ctx, readBuffer, identifier)
 	case identifier == "15532": // PubSubConfigurationDataType
 		_childTemp, typeSwitchError = PubSubConfigurationDataTypeParseWithBuffer(ctx, readBuffer, identifier)
+	case identifier == "23603": // SecurityGroupDataType
+		_childTemp, typeSwitchError = SecurityGroupDataTypeParseWithBuffer(ctx, readBuffer, identifier)
+	case identifier == "25272": // PubSubKeyPushTargetDataType
+		_childTemp, typeSwitchError = PubSubKeyPushTargetDataTypeParseWithBuffer(ctx, readBuffer, identifier)
+	case identifier == "23605": // QosDataType
+		_childTemp, typeSwitchError = QosDataTypeParseWithBuffer(ctx, readBuffer, identifier)
+	case identifier == "25521": // PubSubConfigurationRefDataType
+		_childTemp, typeSwitchError = PubSubConfigurationRefDataTypeParseWithBuffer(ctx, readBuffer, identifier)
+	case identifier == "25522": // PubSubConfigurationValueDataType
+		_childTemp, typeSwitchError = PubSubConfigurationValueDataTypeParseWithBuffer(ctx, readBuffer, identifier)
 	case identifier == "23470": // AliasNameDataType
 		_childTemp, typeSwitchError = AliasNameDataTypeParseWithBuffer(ctx, readBuffer, identifier)
-	case identifier == "24109": // UnsignedRationalNumber
-		_childTemp, typeSwitchError = UnsignedRationalNumberParseWithBuffer(ctx, readBuffer, identifier)
+	case identifier == "24283": // UserManagementDataType
+		_childTemp, typeSwitchError = UserManagementDataTypeParseWithBuffer(ctx, readBuffer, identifier)
+	case identifier == "25222": // PriorityMappingEntryType
+		_childTemp, typeSwitchError = PriorityMappingEntryTypeParseWithBuffer(ctx, readBuffer, identifier)
+	case identifier == "32661": // ReferenceDescriptionDataType
+		_childTemp, typeSwitchError = ReferenceDescriptionDataTypeParseWithBuffer(ctx, readBuffer, identifier)
+	case identifier == "32662": // ReferenceListEntryDataType
+		_childTemp, typeSwitchError = ReferenceListEntryDataTypeParseWithBuffer(ctx, readBuffer, identifier)
 	case identifier == "98": // RolePermissionType
 		_childTemp, typeSwitchError = RolePermissionTypeParseWithBuffer(ctx, readBuffer, identifier)
 	case identifier == "99": // DataTypeDefinition
 		_childTemp, typeSwitchError = DataTypeDefinitionParseWithBuffer(ctx, readBuffer, identifier)
 	case identifier == "103": // StructureField
 		_childTemp, typeSwitchError = StructureFieldParseWithBuffer(ctx, readBuffer, identifier)
-	case identifier == "260": // Node
-		_childTemp, typeSwitchError = NodeParseWithBuffer(ctx, readBuffer, identifier)
-	case identifier == "287": // ReferenceNode
-		_childTemp, typeSwitchError = ReferenceNodeParseWithBuffer(ctx, readBuffer, identifier)
 	case identifier == "298": // Argument
 		_childTemp, typeSwitchError = ArgumentParseWithBuffer(ctx, readBuffer, identifier)
 	case identifier == "7596": // EnumValueType

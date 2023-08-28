@@ -48,6 +48,7 @@ const (
 	IdentityCriteriaType_identityCriteriaTypeAnonymous         IdentityCriteriaType = 5
 	IdentityCriteriaType_identityCriteriaTypeAuthenticatedUser IdentityCriteriaType = 6
 	IdentityCriteriaType_identityCriteriaTypeApplication       IdentityCriteriaType = 7
+	IdentityCriteriaType_identityCriteriaTypeX509Subject       IdentityCriteriaType = 8
 )
 
 var IdentityCriteriaTypeValues []IdentityCriteriaType
@@ -62,6 +63,7 @@ func init() {
 		IdentityCriteriaType_identityCriteriaTypeAnonymous,
 		IdentityCriteriaType_identityCriteriaTypeAuthenticatedUser,
 		IdentityCriteriaType_identityCriteriaTypeApplication,
+		IdentityCriteriaType_identityCriteriaTypeX509Subject,
 	}
 }
 
@@ -81,6 +83,8 @@ func IdentityCriteriaTypeByValue(value uint32) (enum IdentityCriteriaType, ok bo
 		return IdentityCriteriaType_identityCriteriaTypeAuthenticatedUser, true
 	case 7:
 		return IdentityCriteriaType_identityCriteriaTypeApplication, true
+	case 8:
+		return IdentityCriteriaType_identityCriteriaTypeX509Subject, true
 	}
 	return 0, false
 }
@@ -101,6 +105,8 @@ func IdentityCriteriaTypeByName(value string) (enum IdentityCriteriaType, ok boo
 		return IdentityCriteriaType_identityCriteriaTypeAuthenticatedUser, true
 	case "identityCriteriaTypeApplication":
 		return IdentityCriteriaType_identityCriteriaTypeApplication, true
+	case "identityCriteriaTypeX509Subject":
+		return IdentityCriteriaType_identityCriteriaTypeX509Subject, true
 	}
 	return 0, false
 }
@@ -182,6 +188,8 @@ func (e IdentityCriteriaType) PLC4XEnumName() string {
 		return "identityCriteriaTypeAuthenticatedUser"
 	case IdentityCriteriaType_identityCriteriaTypeApplication:
 		return "identityCriteriaTypeApplication"
+	case IdentityCriteriaType_identityCriteriaTypeX509Subject:
+		return "identityCriteriaTypeX509Subject"
 	}
 	return fmt.Sprintf("Unknown(%v)", uint32(e))
 }

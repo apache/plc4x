@@ -30,7 +30,9 @@ public enum JsonDataSetMessageContentMask {
   jsonDataSetMessageContentMaskSequenceNumber((long) 4L),
   jsonDataSetMessageContentMaskTimestamp((long) 8L),
   jsonDataSetMessageContentMaskStatus((long) 16L),
-  jsonDataSetMessageContentMaskMessageType((long) 32L);
+  jsonDataSetMessageContentMaskMessageType((long) 32L),
+  jsonDataSetMessageContentMaskDataSetWriterName((long) 64L),
+  jsonDataSetMessageContentMaskReversibleFieldEncoding((long) 128L);
   private static final Map<Long, JsonDataSetMessageContentMask> map;
 
   static {

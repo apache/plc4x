@@ -256,8 +256,10 @@ const (
 	OpcuaStatusCode_GoodDataIgnored                                                 OpcuaStatusCode = 0x00D90000
 	OpcuaStatusCode_BadRequestNotAllowed                                            OpcuaStatusCode = 0x80E40000
 	OpcuaStatusCode_BadRequestNotComplete                                           OpcuaStatusCode = 0x81130000
+	OpcuaStatusCode_BadTransactionPending                                           OpcuaStatusCode = 0x80E80000
 	OpcuaStatusCode_BadTicketRequired                                               OpcuaStatusCode = 0x811F0000
 	OpcuaStatusCode_BadTicketInvalid                                                OpcuaStatusCode = 0x81200000
+	OpcuaStatusCode_BadLocked                                                       OpcuaStatusCode = 0x80E90000
 	OpcuaStatusCode_GoodEdited                                                      OpcuaStatusCode = 0x00DC0000
 	OpcuaStatusCode_GoodPostActionFailed                                            OpcuaStatusCode = 0x00DD0000
 	OpcuaStatusCode_UncertainDominantValueChanged                                   OpcuaStatusCode = 0x40DE0000
@@ -302,6 +304,7 @@ const (
 	OpcuaStatusCode_GoodFaultStateActive                                            OpcuaStatusCode = 0x04070000
 	OpcuaStatusCode_GoodInitiateFaultState                                          OpcuaStatusCode = 0x04080000
 	OpcuaStatusCode_GoodCascade                                                     OpcuaStatusCode = 0x04090000
+	OpcuaStatusCode_BadDataSetIdInvalid                                             OpcuaStatusCode = 0x80E70000
 )
 
 var OpcuaStatusCodeValues []OpcuaStatusCode
@@ -524,8 +527,10 @@ func init() {
 		OpcuaStatusCode_GoodDataIgnored,
 		OpcuaStatusCode_BadRequestNotAllowed,
 		OpcuaStatusCode_BadRequestNotComplete,
+		OpcuaStatusCode_BadTransactionPending,
 		OpcuaStatusCode_BadTicketRequired,
 		OpcuaStatusCode_BadTicketInvalid,
+		OpcuaStatusCode_BadLocked,
 		OpcuaStatusCode_GoodEdited,
 		OpcuaStatusCode_GoodPostActionFailed,
 		OpcuaStatusCode_UncertainDominantValueChanged,
@@ -570,6 +575,7 @@ func init() {
 		OpcuaStatusCode_GoodFaultStateActive,
 		OpcuaStatusCode_GoodInitiateFaultState,
 		OpcuaStatusCode_GoodCascade,
+		OpcuaStatusCode_BadDataSetIdInvalid,
 	}
 }
 
@@ -1063,6 +1069,12 @@ func OpcuaStatusCodeByValue(value uint32) (enum OpcuaStatusCode, ok bool) {
 		return OpcuaStatusCode_BadTooManyArguments, true
 	case 0x80E60000:
 		return OpcuaStatusCode_BadSecurityModeInsufficient, true
+	case 0x80E70000:
+		return OpcuaStatusCode_BadDataSetIdInvalid, true
+	case 0x80E80000:
+		return OpcuaStatusCode_BadTransactionPending, true
+	case 0x80E90000:
+		return OpcuaStatusCode_BadLocked, true
 	case 0x810D0000:
 		return OpcuaStatusCode_BadCertificateChainIncomplete, true
 	case 0x810E0000:
@@ -1591,6 +1603,12 @@ func OpcuaStatusCodeByName(value string) (enum OpcuaStatusCode, ok bool) {
 		return OpcuaStatusCode_BadTooManyArguments, true
 	case "BadSecurityModeInsufficient":
 		return OpcuaStatusCode_BadSecurityModeInsufficient, true
+	case "BadDataSetIdInvalid":
+		return OpcuaStatusCode_BadDataSetIdInvalid, true
+	case "BadTransactionPending":
+		return OpcuaStatusCode_BadTransactionPending, true
+	case "BadLocked":
+		return OpcuaStatusCode_BadLocked, true
 	case "BadCertificateChainIncomplete":
 		return OpcuaStatusCode_BadCertificateChainIncomplete, true
 	case "BadLicenseExpired":
@@ -2180,6 +2198,12 @@ func (e OpcuaStatusCode) PLC4XEnumName() string {
 		return "BadTooManyArguments"
 	case OpcuaStatusCode_BadSecurityModeInsufficient:
 		return "BadSecurityModeInsufficient"
+	case OpcuaStatusCode_BadDataSetIdInvalid:
+		return "BadDataSetIdInvalid"
+	case OpcuaStatusCode_BadTransactionPending:
+		return "BadTransactionPending"
+	case OpcuaStatusCode_BadLocked:
+		return "BadLocked"
 	case OpcuaStatusCode_BadCertificateChainIncomplete:
 		return "BadCertificateChainIncomplete"
 	case OpcuaStatusCode_BadLicenseExpired:
