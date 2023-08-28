@@ -68,6 +68,8 @@ func (m OpcuaParserHelper) Parse(typeName string, arguments []string, io utils.R
 		return model.NumericNodeIdParseWithBuffer(context.Background(), io)
 	case "FourByteNodeId":
 		return model.FourByteNodeIdParseWithBuffer(context.Background(), io)
+	case "OpcuaNodeIdServices":
+		return model.OpcuaNodeIdServicesParseWithBuffer(context.Background(), io)
 	case "AudioDataType":
 		return model.AudioDataTypeParseWithBuffer(context.Background(), io)
 	case "UserIdentityTokenDefinition":

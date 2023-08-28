@@ -161,8 +161,6 @@ func ExtensionObjectDefinitionParseWithBuffer(ctx context.Context, readBuffer ut
 		_childTemp, typeSwitchError = DataTypeDescriptionParseWithBuffer(ctx, readBuffer, identifier)
 	case identifier == "24107": // PortableQualifiedName
 		_childTemp, typeSwitchError = PortableQualifiedNameParseWithBuffer(ctx, readBuffer, identifier)
-	case identifier == "24108": // PortableNodeId
-		_childTemp, typeSwitchError = PortableNodeIdParseWithBuffer(ctx, readBuffer, identifier)
 	case identifier == "24109": // UnsignedRationalNumber
 		_childTemp, typeSwitchError = UnsignedRationalNumberParseWithBuffer(ctx, readBuffer, identifier)
 	case identifier == "14526": // FieldMetaData
@@ -213,8 +211,6 @@ func ExtensionObjectDefinitionParseWithBuffer(ctx context.Context, readBuffer ut
 		_childTemp, typeSwitchError = QosDataTypeParseWithBuffer(ctx, readBuffer, identifier)
 	case identifier == "25521": // PubSubConfigurationRefDataType
 		_childTemp, typeSwitchError = PubSubConfigurationRefDataTypeParseWithBuffer(ctx, readBuffer, identifier)
-	case identifier == "25522": // PubSubConfigurationValueDataType
-		_childTemp, typeSwitchError = PubSubConfigurationValueDataTypeParseWithBuffer(ctx, readBuffer, identifier)
 	case identifier == "23470": // AliasNameDataType
 		_childTemp, typeSwitchError = AliasNameDataTypeParseWithBuffer(ctx, readBuffer, identifier)
 	case identifier == "24283": // UserManagementDataType

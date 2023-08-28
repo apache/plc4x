@@ -47,9 +47,9 @@
             </goals>
             <configuration>
               <url>https://github.com/OPCFoundation/UA-Nodeset/raw/latest/Schema/Opc.Ua.Types.bsd</url>
-              <unpack>false</unpack>
               <outputDirectory>${project.build.directory}/downloads</outputDirectory>
-              <outputFileName>Opc.Ua.Types.bsd</outputFileName>
+              <outputFileName>Opc.Ua.Types.bsd.gzip</outputFileName>
+              <unpack>true</unpack>
             </configuration>
           </execution>
           <!-- Fetch the master-data which will be used to translate manufacturer ids to readable names -->
@@ -61,9 +61,9 @@
             </goals>
             <configuration>
               <url>https://github.com/OPCFoundation/UA-Nodeset/raw/latest/Schema/StatusCode.csv</url>
-              <unpack>false</unpack>
               <outputDirectory>${project.build.directory}/downloads</outputDirectory>
-              <outputFileName>StatusCode.csv</outputFileName>
+              <outputFileName>StatusCode.csv.gzip</outputFileName>
+              <unpack>true</unpack>
             </configuration>
           </execution>
           <execution>
@@ -74,9 +74,9 @@
             </goals>
             <configuration>
               <url>https://github.com/OPCFoundation/UA-Nodeset/raw/latest/Schema/Opc.Ua.NodeSet2.Services.xml</url>
-              <unpack>false</unpack>
               <outputDirectory>${project.build.directory}/downloads</outputDirectory>
-              <outputFileName>Opc.Ua.NodeSet2.Services.xml</outputFileName>
+              <outputFileName>Opc.Ua.NodeSet2.Services.xml.gzip</outputFileName>
+              <unpack>true</unpack>
             </configuration>
           </execution>
           <execution>
@@ -87,9 +87,9 @@
             </goals>
             <configuration>
               <url>https://github.com/OPCFoundation/UA-Nodeset/raw/latest/Schema/NodeIds.csv</url>
-              <unpack>false</unpack>
               <outputDirectory>${project.build.directory}/downloads</outputDirectory>
-              <outputFileName>Opc.Ua.NodeIds.Services.csv</outputFileName>
+              <outputFileName>Opc.Ua.NodeIds.Services.csv.gzip</outputFileName>
+              <unpack>true</unpack>
             </configuration>
           </execution>
         </executions>

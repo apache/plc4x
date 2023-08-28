@@ -55,7 +55,7 @@
         <xsl:for-each select="$tokenizedLine">
             <xsl:variable select="tokenize(., ',')" name="values" />
             <xsl:choose>
-                <xsl:when test="$values[2]">[const uint 32 <xsl:value-of select="$values[1]"/> '<xsl:value-of select="$values[2]"/>']<xsl:text>
+                <xsl:when test="$values[2]">[const uint 32 <xsl:value-of select="$values[1]"/><xsl:text> </xsl:text><xsl:value-of select="$values[2]"/>]<xsl:text>
     </xsl:text>
                 </xsl:when>
             </xsl:choose>

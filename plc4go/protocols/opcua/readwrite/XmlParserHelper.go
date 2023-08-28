@@ -75,6 +75,8 @@ func (m OpcuaXmlParserHelper) Parse(typeName string, xmlString string, parserArg
 		return model.NumericNodeIdParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "FourByteNodeId":
 		return model.FourByteNodeIdParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "OpcuaNodeIdServices":
+		return model.OpcuaNodeIdServicesParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "AudioDataType":
 		return model.AudioDataTypeParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "UserIdentityTokenDefinition":

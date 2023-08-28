@@ -150,8 +150,6 @@ public abstract class ExtensionObjectDefinition implements Message {
     } else if (EvaluationHelper.equals(identifier, (String) "24107")) {
       builder =
           PortableQualifiedName.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "24108")) {
-      builder = PortableNodeId.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
     } else if (EvaluationHelper.equals(identifier, (String) "24109")) {
       builder =
           UnsignedRationalNumber.staticParseExtensionObjectDefinitionBuilder(
@@ -243,10 +241,6 @@ public abstract class ExtensionObjectDefinition implements Message {
     } else if (EvaluationHelper.equals(identifier, (String) "25521")) {
       builder =
           PubSubConfigurationRefDataType.staticParseExtensionObjectDefinitionBuilder(
-              readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "25522")) {
-      builder =
-          PubSubConfigurationValueDataType.staticParseExtensionObjectDefinitionBuilder(
               readBuffer, identifier);
     } else if (EvaluationHelper.equals(identifier, (String) "23470")) {
       builder =
