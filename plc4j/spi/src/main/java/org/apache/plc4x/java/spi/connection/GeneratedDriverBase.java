@@ -64,7 +64,7 @@ public abstract class GeneratedDriverBase<BASE_PACKET extends Message> implement
     }
 
     protected boolean fireDiscoverEvent() {
-        return true;
+        return false;
     }
 
     protected boolean awaitSetupComplete() {
