@@ -49,16 +49,6 @@ type Node interface {
 	GetWriteMask() uint32
 	// GetUserWriteMask returns UserWriteMask (property field)
 	GetUserWriteMask() uint32
-	// GetNoOfRolePermissions returns NoOfRolePermissions (property field)
-	GetNoOfRolePermissions() int32
-	// GetRolePermissions returns RolePermissions (property field)
-	GetRolePermissions() []ExtensionObjectDefinition
-	// GetNoOfUserRolePermissions returns NoOfUserRolePermissions (property field)
-	GetNoOfUserRolePermissions() int32
-	// GetUserRolePermissions returns UserRolePermissions (property field)
-	GetUserRolePermissions() []ExtensionObjectDefinition
-	// GetAccessRestrictions returns AccessRestrictions (property field)
-	GetAccessRestrictions() uint16
 	// GetNoOfReferences returns NoOfReferences (property field)
 	GetNoOfReferences() int32
 	// GetReferences returns References (property field)
@@ -75,20 +65,15 @@ type NodeExactly interface {
 // _Node is the data-structure of this message
 type _Node struct {
 	*_ExtensionObjectDefinition
-	NodeId                  NodeId
-	NodeClass               NodeClass
-	BrowseName              QualifiedName
-	DisplayName             LocalizedText
-	Description             LocalizedText
-	WriteMask               uint32
-	UserWriteMask           uint32
-	NoOfRolePermissions     int32
-	RolePermissions         []ExtensionObjectDefinition
-	NoOfUserRolePermissions int32
-	UserRolePermissions     []ExtensionObjectDefinition
-	AccessRestrictions      uint16
-	NoOfReferences          int32
-	References              []ExtensionObjectDefinition
+	NodeId         NodeId
+	NodeClass      NodeClass
+	BrowseName     QualifiedName
+	DisplayName    LocalizedText
+	Description    LocalizedText
+	WriteMask      uint32
+	UserWriteMask  uint32
+	NoOfReferences int32
+	References     []ExtensionObjectDefinition
 }
 
 ///////////////////////////////////////////////////////////
@@ -144,26 +129,6 @@ func (m *_Node) GetUserWriteMask() uint32 {
 	return m.UserWriteMask
 }
 
-func (m *_Node) GetNoOfRolePermissions() int32 {
-	return m.NoOfRolePermissions
-}
-
-func (m *_Node) GetRolePermissions() []ExtensionObjectDefinition {
-	return m.RolePermissions
-}
-
-func (m *_Node) GetNoOfUserRolePermissions() int32 {
-	return m.NoOfUserRolePermissions
-}
-
-func (m *_Node) GetUserRolePermissions() []ExtensionObjectDefinition {
-	return m.UserRolePermissions
-}
-
-func (m *_Node) GetAccessRestrictions() uint16 {
-	return m.AccessRestrictions
-}
-
 func (m *_Node) GetNoOfReferences() int32 {
 	return m.NoOfReferences
 }
@@ -178,7 +143,7 @@ func (m *_Node) GetReferences() []ExtensionObjectDefinition {
 ///////////////////////////////////////////////////////////
 
 // NewNode factory function for _Node
-func NewNode(nodeId NodeId, nodeClass NodeClass, browseName QualifiedName, displayName LocalizedText, description LocalizedText, writeMask uint32, userWriteMask uint32, noOfRolePermissions int32, rolePermissions []ExtensionObjectDefinition, noOfUserRolePermissions int32, userRolePermissions []ExtensionObjectDefinition, accessRestrictions uint16, noOfReferences int32, references []ExtensionObjectDefinition) *_Node {
+func NewNode(nodeId NodeId, nodeClass NodeClass, browseName QualifiedName, displayName LocalizedText, description LocalizedText, writeMask uint32, userWriteMask uint32, noOfReferences int32, references []ExtensionObjectDefinition) *_Node {
 	_result := &_Node{
 		NodeId:                     nodeId,
 		NodeClass:                  nodeClass,
@@ -187,11 +152,6 @@ func NewNode(nodeId NodeId, nodeClass NodeClass, browseName QualifiedName, displ
 		Description:                description,
 		WriteMask:                  writeMask,
 		UserWriteMask:              userWriteMask,
-		NoOfRolePermissions:        noOfRolePermissions,
-		RolePermissions:            rolePermissions,
-		NoOfUserRolePermissions:    noOfUserRolePermissions,
-		UserRolePermissions:        userRolePermissions,
-		AccessRestrictions:         accessRestrictions,
 		NoOfReferences:             noOfReferences,
 		References:                 references,
 		_ExtensionObjectDefinition: NewExtensionObjectDefinition(),
@@ -238,35 +198,6 @@ func (m *_Node) GetLengthInBits(ctx context.Context) uint16 {
 
 	// Simple field (userWriteMask)
 	lengthInBits += 32
-
-	// Simple field (noOfRolePermissions)
-	lengthInBits += 32
-
-	// Array field
-	if len(m.RolePermissions) > 0 {
-		for _curItem, element := range m.RolePermissions {
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.RolePermissions), _curItem)
-			_ = arrayCtx
-			_ = _curItem
-			lengthInBits += element.(interface{ GetLengthInBits(context.Context) uint16 }).GetLengthInBits(arrayCtx)
-		}
-	}
-
-	// Simple field (noOfUserRolePermissions)
-	lengthInBits += 32
-
-	// Array field
-	if len(m.UserRolePermissions) > 0 {
-		for _curItem, element := range m.UserRolePermissions {
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.UserRolePermissions), _curItem)
-			_ = arrayCtx
-			_ = _curItem
-			lengthInBits += element.(interface{ GetLengthInBits(context.Context) uint16 }).GetLengthInBits(arrayCtx)
-		}
-	}
-
-	// Simple field (accessRestrictions)
-	lengthInBits += 16
 
 	// Simple field (noOfReferences)
 	lengthInBits += 32
@@ -382,81 +313,6 @@ func NodeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, ident
 	}
 	userWriteMask := _userWriteMask
 
-	// Simple Field (noOfRolePermissions)
-	_noOfRolePermissions, _noOfRolePermissionsErr := readBuffer.ReadInt32("noOfRolePermissions", 32)
-	if _noOfRolePermissionsErr != nil {
-		return nil, errors.Wrap(_noOfRolePermissionsErr, "Error parsing 'noOfRolePermissions' field of Node")
-	}
-	noOfRolePermissions := _noOfRolePermissions
-
-	// Array field (rolePermissions)
-	if pullErr := readBuffer.PullContext("rolePermissions", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for rolePermissions")
-	}
-	// Count array
-	rolePermissions := make([]ExtensionObjectDefinition, utils.Max(noOfRolePermissions, 0))
-	// This happens when the size is set conditional to 0
-	if len(rolePermissions) == 0 {
-		rolePermissions = nil
-	}
-	{
-		_numItems := uint16(utils.Max(noOfRolePermissions, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := ExtensionObjectDefinitionParseWithBuffer(arrayCtx, readBuffer, "98")
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'rolePermissions' field of Node")
-			}
-			rolePermissions[_curItem] = _item.(ExtensionObjectDefinition)
-		}
-	}
-	if closeErr := readBuffer.CloseContext("rolePermissions", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for rolePermissions")
-	}
-
-	// Simple Field (noOfUserRolePermissions)
-	_noOfUserRolePermissions, _noOfUserRolePermissionsErr := readBuffer.ReadInt32("noOfUserRolePermissions", 32)
-	if _noOfUserRolePermissionsErr != nil {
-		return nil, errors.Wrap(_noOfUserRolePermissionsErr, "Error parsing 'noOfUserRolePermissions' field of Node")
-	}
-	noOfUserRolePermissions := _noOfUserRolePermissions
-
-	// Array field (userRolePermissions)
-	if pullErr := readBuffer.PullContext("userRolePermissions", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for userRolePermissions")
-	}
-	// Count array
-	userRolePermissions := make([]ExtensionObjectDefinition, utils.Max(noOfUserRolePermissions, 0))
-	// This happens when the size is set conditional to 0
-	if len(userRolePermissions) == 0 {
-		userRolePermissions = nil
-	}
-	{
-		_numItems := uint16(utils.Max(noOfUserRolePermissions, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := ExtensionObjectDefinitionParseWithBuffer(arrayCtx, readBuffer, "98")
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'userRolePermissions' field of Node")
-			}
-			userRolePermissions[_curItem] = _item.(ExtensionObjectDefinition)
-		}
-	}
-	if closeErr := readBuffer.CloseContext("userRolePermissions", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for userRolePermissions")
-	}
-
-	// Simple Field (accessRestrictions)
-	_accessRestrictions, _accessRestrictionsErr := readBuffer.ReadUint16("accessRestrictions", 16)
-	if _accessRestrictionsErr != nil {
-		return nil, errors.Wrap(_accessRestrictionsErr, "Error parsing 'accessRestrictions' field of Node")
-	}
-	accessRestrictions := _accessRestrictions
-
 	// Simple Field (noOfReferences)
 	_noOfReferences, _noOfReferencesErr := readBuffer.ReadInt32("noOfReferences", 32)
 	if _noOfReferencesErr != nil {
@@ -505,11 +361,6 @@ func NodeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, ident
 		Description:                description,
 		WriteMask:                  writeMask,
 		UserWriteMask:              userWriteMask,
-		NoOfRolePermissions:        noOfRolePermissions,
-		RolePermissions:            rolePermissions,
-		NoOfUserRolePermissions:    noOfUserRolePermissions,
-		UserRolePermissions:        userRolePermissions,
-		AccessRestrictions:         accessRestrictions,
 		NoOfReferences:             noOfReferences,
 		References:                 references,
 	}
@@ -607,61 +458,6 @@ func (m *_Node) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.
 		_userWriteMaskErr := writeBuffer.WriteUint32("userWriteMask", 32, (userWriteMask))
 		if _userWriteMaskErr != nil {
 			return errors.Wrap(_userWriteMaskErr, "Error serializing 'userWriteMask' field")
-		}
-
-		// Simple Field (noOfRolePermissions)
-		noOfRolePermissions := int32(m.GetNoOfRolePermissions())
-		_noOfRolePermissionsErr := writeBuffer.WriteInt32("noOfRolePermissions", 32, (noOfRolePermissions))
-		if _noOfRolePermissionsErr != nil {
-			return errors.Wrap(_noOfRolePermissionsErr, "Error serializing 'noOfRolePermissions' field")
-		}
-
-		// Array Field (rolePermissions)
-		if pushErr := writeBuffer.PushContext("rolePermissions", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for rolePermissions")
-		}
-		for _curItem, _element := range m.GetRolePermissions() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetRolePermissions()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'rolePermissions' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("rolePermissions", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for rolePermissions")
-		}
-
-		// Simple Field (noOfUserRolePermissions)
-		noOfUserRolePermissions := int32(m.GetNoOfUserRolePermissions())
-		_noOfUserRolePermissionsErr := writeBuffer.WriteInt32("noOfUserRolePermissions", 32, (noOfUserRolePermissions))
-		if _noOfUserRolePermissionsErr != nil {
-			return errors.Wrap(_noOfUserRolePermissionsErr, "Error serializing 'noOfUserRolePermissions' field")
-		}
-
-		// Array Field (userRolePermissions)
-		if pushErr := writeBuffer.PushContext("userRolePermissions", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for userRolePermissions")
-		}
-		for _curItem, _element := range m.GetUserRolePermissions() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetUserRolePermissions()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'userRolePermissions' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("userRolePermissions", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for userRolePermissions")
-		}
-
-		// Simple Field (accessRestrictions)
-		accessRestrictions := uint16(m.GetAccessRestrictions())
-		_accessRestrictionsErr := writeBuffer.WriteUint16("accessRestrictions", 16, (accessRestrictions))
-		if _accessRestrictionsErr != nil {
-			return errors.Wrap(_accessRestrictionsErr, "Error serializing 'accessRestrictions' field")
 		}
 
 		// Simple Field (noOfReferences)

@@ -51,9 +51,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
-import static org.apache.plc4x.java.opcua.readwrite.OpcuaNodeIdServicesObject.AnonymousIdentityToken_Encoding_DefaultBinary;
-import static org.apache.plc4x.java.opcua.readwrite.OpcuaNodeIdServicesObject.UserNameIdentityToken_Encoding_DefaultBinary;
-
 public class SecureChannel {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SecureChannel.class);
@@ -1231,7 +1228,7 @@ public class SecureChannel {
                 extExpandedNodeId = new ExpandedNodeId(
                     false,           //Namespace Uri Specified
                     false,            //Server Index Specified
-                    new NodeIdFourByte((short) 0, AnonymousIdentityToken_Encoding_DefaultBinary.getValue()),
+                    new NodeIdFourByte((short) 0, 321 /* TODO: disabled till we have greater segmentation: AnonymousIdentityToken_Encoding_DefaultBinary.getValue()*/),
                     null,
                     null
                 );
@@ -1262,7 +1259,7 @@ public class SecureChannel {
 
                 extExpandedNodeId = new ExpandedNodeId(false,           //Namespace Uri Specified
                     false,            //Server Index Specified
-                    new NodeIdFourByte((short) 0, UserNameIdentityToken_Encoding_DefaultBinary.getValue()),
+                    new NodeIdFourByte((short) 0, 324 /*TODO: disabled till we have greater segmentation: UserNameIdentityToken_Encoding_DefaultBinary.getValue()*/),
                     null,
                     null);
 

@@ -1585,7 +1585,7 @@ func (s *SecureChannel) getIdentityToken(tokenType readWriteModel.UserTokenType,
 			false, //Namespace Uri Specified
 			false, //Server Index Specified
 			readWriteModel.NewNodeIdFourByte(
-				0, uint16(readWriteModel.OpcuaNodeIdServices_AnonymousIdentityToken_Encoding_DefaultBinary)),
+				0, 321 /* TODO: disabled till we have greater segmentation: uint16(readWriteModel.OpcuaNodeIdServices_AnonymousIdentityToken_Encoding_DefaultBinary)*/),
 			nil,
 			nil,
 		)
@@ -1622,7 +1622,7 @@ func (s *SecureChannel) getIdentityToken(tokenType readWriteModel.UserTokenType,
 		extExpandedNodeId := readWriteModel.NewExpandedNodeId(
 			false, //Namespace Uri Specified
 			false, //Server Index Specified
-			readWriteModel.NewNodeIdFourByte(0, uint16(readWriteModel.OpcuaNodeIdServices_UserNameIdentityToken_Encoding_DefaultBinary)),
+			readWriteModel.NewNodeIdFourByte(0, 324 /*TODO: disabled till we have greater segmentation: uint16(readWriteModel.OpcuaNodeIdServices_UserNameIdentityToken_Encoding_DefaultBinary)*/),
 			nil,
 			nil)
 		return readWriteModel.NewExtensionObject(
