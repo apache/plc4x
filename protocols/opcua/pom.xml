@@ -17,7 +17,8 @@
   specific language governing permissions and limitations
   under the License.
   -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
 
@@ -48,8 +49,7 @@
             <configuration>
               <url>https://github.com/OPCFoundation/UA-Nodeset/raw/latest/Schema/Opc.Ua.Types.bsd</url>
               <outputDirectory>${project.build.directory}/downloads</outputDirectory>
-              <outputFileName>Opc.Ua.Types.bsd.gzip</outputFileName>
-              <unpack>true</unpack>
+              <outputFileName>Opc.Ua.Types.bsd</outputFileName>
             </configuration>
           </execution>
           <!-- Fetch the master-data which will be used to translate manufacturer ids to readable names -->
@@ -62,8 +62,7 @@
             <configuration>
               <url>https://github.com/OPCFoundation/UA-Nodeset/raw/latest/Schema/StatusCode.csv</url>
               <outputDirectory>${project.build.directory}/downloads</outputDirectory>
-              <outputFileName>StatusCode.csv.gzip</outputFileName>
-              <unpack>true</unpack>
+              <outputFileName>StatusCode.csv</outputFileName>
             </configuration>
           </execution>
           <execution>
@@ -75,8 +74,7 @@
             <configuration>
               <url>https://github.com/OPCFoundation/UA-Nodeset/raw/latest/Schema/Opc.Ua.NodeSet2.Services.xml</url>
               <outputDirectory>${project.build.directory}/downloads</outputDirectory>
-              <outputFileName>Opc.Ua.NodeSet2.Services.xml.gzip</outputFileName>
-              <unpack>true</unpack>
+              <outputFileName>Opc.Ua.NodeSet2.Services.xml</outputFileName>
             </configuration>
           </execution>
           <execution>
@@ -88,11 +86,18 @@
             <configuration>
               <url>https://github.com/OPCFoundation/UA-Nodeset/raw/latest/Schema/NodeIds.csv</url>
               <outputDirectory>${project.build.directory}/downloads</outputDirectory>
-              <outputFileName>Opc.Ua.NodeIds.Services.csv.gzip</outputFileName>
-              <unpack>true</unpack>
+              <outputFileName>Opc.Ua.NodeIds.Services.csv</outputFileName>
             </configuration>
           </execution>
         </executions>
+        <configuration>
+          <!-- Note: We enforce identity to not have to deal with gzip downloads.
+               It seems that this plugin is not capable to unzip on the fly and
+               sometimes the server responds with gzip and sometimes not -->
+          <headers>
+            <Accept-Encoding>identity</Accept-Encoding>
+          </headers>
+        </configuration>
       </plugin>
 
       <plugin>
