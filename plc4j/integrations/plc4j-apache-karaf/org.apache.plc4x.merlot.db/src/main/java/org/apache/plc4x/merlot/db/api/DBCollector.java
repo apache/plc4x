@@ -18,7 +18,7 @@
  */
 package org.apache.plc4x.merlot.db.api;
 
-import org.apache.plc4x.merlot.das.api.DriverCallback;
+import org.apache.plc4x.merlot.api.DriverCallback;
 import org.apache.plc4x.merlot.scheduler.api.Job;
 import java.util.Collection;
 import org.epics.pvdatabase.PVRecord;

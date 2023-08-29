@@ -30,8 +30,9 @@ public class ModelManagedService implements ManagedService  {
     private static final Logger LOGGER = LoggerFactory.getLogger(ModelManagedService.class);
     
     @Override
-    public void updated(Dictionary<String, ?> properties) throws ConfigurationException {
-        LOGGER.info("Model update.");
+    public void updated(Dictionary props) throws ConfigurationException {
+        if (null == props)  return;
+        LOGGER.info(">>> Model update.");
     }
     
 }

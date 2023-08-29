@@ -188,7 +188,6 @@ public class DeviceManagerImpl implements DeviceManager {
     {
         final Driver driver = Driver.class.cast( obj );
         m_drivers.put( ref, new DriverAttributes( ref, driver ) );
-
         LOGGER.debug( "driver appeared: " + Util.showDriver( ref ) );
         
         //immediately check for idle devices

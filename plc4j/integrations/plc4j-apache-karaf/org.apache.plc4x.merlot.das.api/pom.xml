@@ -26,13 +26,13 @@
     <version>0.11.0-SNAPSHOT</version>
   </parent>
 
-    <groupId>org.apache.plc4x.merlot.das.api</groupId>
-    <artifactId>org.apache.plc4x.merlot.das.api</artifactId>
+    <groupId>org.apache.plc4x.merlot.api</groupId>
+    <artifactId>org.apache.plc4x.merlot.api</artifactId>
     <version>0.11.0-SNAPSHOT</version>
     <packaging>bundle</packaging>
 
     <name>PLC4J: Merlot :: api :: OSGi Device access</name>
-    <description>org.apache.plc4x.merlot.das.api OSGi blueprint bundle project.</description>
+    <description>org.apache.plc4x.merlot.api OSGi blueprint bundle project.</description>
 
     <build>
         <plugins>
@@ -45,8 +45,9 @@
                     <instructions>
                         <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
                         <Bundle-Version>${project.version}</Bundle-Version>
-                        <Export-Package>org.apache.plc4x.merlot.das.api*;version=${project.version}</Export-Package>
+                        <Export-Package>org.apache.plc4x.merlot.api*;version=${project.version}</Export-Package>
                         <Import-Package>*</Import-Package>
+                        <Karaf-Commands>org.apache.plc4x.merlot.api.command*</Karaf-Commands>                            
                     </instructions>
                 </configuration>
             </plugin>
@@ -81,6 +82,31 @@
             <groupId>com.lmax</groupId>
             <artifactId>disruptor</artifactId>
             <version>${disruptor.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.service.dal</artifactId>
+            <version>1.0.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.plc4x.merlot.scheduler</groupId>
+            <artifactId>org.apache.plc4x.merlot.scheduler</artifactId>
+            <version>0.11.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>osgi.core</artifactId>
+            <version>${osgi.core.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.karaf</groupId>
+            <artifactId>org.apache.karaf.util</artifactId>
+            <version>${karaf.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.karaf.shell</groupId>
+            <artifactId>org.apache.karaf.shell.core</artifactId>
+            <version>${karaf.version}</version>
         </dependency>
     </dependencies>
 </project>

@@ -32,8 +32,6 @@ import org.osgi.util.tracker.ServiceTrackerCustomizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
-
 /**
  * The quartz based implementation of the scheduler.
  *
@@ -51,10 +49,9 @@ public class WhiteBoardHandlerImpl implements WhiteBoardHandler {
     public WhiteBoardHandlerImpl(final BundleContext context, final DeviceManager manager) throws InvalidSyntaxException {
         
         this.manager = manager;
-        //                        "(" + Constants.OBJECTCLASS + "=" + com.ceos.merlot.api.Driver.class.getName() + "))" +
+        //(" + Constants.OBJECTCLASS + "=" + org.apache.plc4x.java.api.PlcDriver.class.getName() + ")" +
         this.DriverTracker = new ServiceTracker<>(context,
-                context.createFilter("(|(|(" + Constants.OBJECTCLASS + "=" + Driver.class.getName() + ")" +
-
+                context.createFilter("(|(" + Constants.OBJECTCLASS + "=" + Driver.class.getName() + ")" +
                         "("+ org.osgi.service.device.Constants.DRIVER_ID + "=*))"),
                 new ServiceTrackerCustomizer<Object,Object>() {
 
@@ -76,10 +73,10 @@ public class WhiteBoardHandlerImpl implements WhiteBoardHandler {
                     }
                 });
    
-        //                        "(" + Constants.OBJECTCLASS + "=" + com.ceos.merlot.api.Device.class.getName() + "))" +
+        //|((" + Constants.OBJECTCLASS + "=" + org.apache.plc4x.merlot.api.PlcDevice.class.getName() + "))
         this.DeviceTracker = new ServiceTracker<>(context,
-                context.createFilter("(|(|(" + Constants.OBJECTCLASS + "=" + Device.class.getName() + ")" +
-
+                context.createFilter("(|(" + Constants.OBJECTCLASS + "=" + org.apache.plc4x.merlot.api.PlcDevice.class.getName() + ")" +
+                        "(" + Constants.OBJECTCLASS + "=" + Device.class.getName() + ")" +
                         "(" + org.osgi.service.device.Constants.DEVICE_CATEGORY + "=*))"),
                 new ServiceTrackerCustomizer<Object,Object>() {
 
@@ -117,12 +114,12 @@ public class WhiteBoardHandlerImpl implements WhiteBoardHandler {
     
         @Override
     public void start() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     public void stop() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException("Not supported yet.");
     }
     
     /**

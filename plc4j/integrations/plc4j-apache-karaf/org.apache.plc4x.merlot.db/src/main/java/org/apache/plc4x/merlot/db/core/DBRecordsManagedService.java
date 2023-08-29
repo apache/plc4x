@@ -18,7 +18,7 @@
  */
 package org.apache.plc4x.merlot.db.core;
 
-import org.apache.plc4x.merlot.das.base.api.BaseDriver;
+import org.apache.plc4x.merlot.base.api.BaseDriver;
 import org.apache.plc4x.merlot.db.api.DBControl;
 import org.apache.plc4x.merlot.db.api.DBRecordFactory;
 import org.apache.plc4x.merlot.scheduler.api.Job;
@@ -49,7 +49,7 @@ public class DBRecordsManagedService implements ManagedServiceFactory, Job {
     private static final Logger LOGGER = LoggerFactory.getLogger(DBRecordsManagedService.class);  
     private final PVDatabase master;
     private static Map<String, Dictionary<String, ?>> waitingConfigs = null;    
-    static final String PID = "com.ceos.merlot.db.records";   
+    static final String PID = "org.apache.plc4x.merlot.db.records";   
     static final String FILE_PATH = "felix.fileinstall.filename";
  
     private String filter =  "(&(" + Constants.OBJECTCLASS + "=" + DBRecordFactory.class.getName() + ")"+

@@ -1,72 +1,90 @@
 /*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
- *
- *   https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.
- */
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+*/
+
 package org.apache.plc4x.merlot.das.base.core;
 
 import org.apache.plc4x.merlot.das.base.api.BaseDevice;
-import org.apache.plc4x.merlot.das.base.api.BaseDeviceFactory;
 import org.apache.plc4x.merlot.scheduler.api.Job;
 import org.apache.plc4x.merlot.scheduler.api.JobContext;
 import java.util.Collections;
 import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.Hashtable;
 import java.util.Map;
-import java.util.Set;
+import org.apache.plc4x.java.api.PlcDriver;
+import org.apache.plc4x.merlot.das.base.impl.BaseDeviceFactoryImpl;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
+import org.osgi.service.cm.ConfigurationEvent;
 import org.osgi.service.cm.ConfigurationException;
-import org.osgi.service.cm.ManagedServiceFactory;
+import org.osgi.service.cm.ConfigurationListener;
+import org.osgi.service.cm.ManagedService;
 import org.osgi.service.device.Device;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-
-public class BaseDeviceManagedService implements ManagedServiceFactory, Job {
+import org.apache.plc4x.merlot.api.PlcDeviceFactory;
+import org.apache.plc4x.merlot.api.PlcDevice;
+/**
+ *
+ * @author cgarcia
+ */
+public class BaseDeviceManagedService implements ManagedService, ConfigurationListener, Job {
     
     private static final Logger LOGGER = LoggerFactory.getLogger(BaseDeviceManagedService.class);     
-    private final BundleContext bundleContext;
-    private static Map<String, Dictionary<String, ?>> waitingConfigs = null;     
+    private final BundleContext bc;
+    private static Map<String, Dictionary<String, ?>> waitingConfigs = null;  
+    private String filter_driver =  "(&(" + Constants.OBJECTCLASS + "=" + PlcDriver.class.getName() + ")" +
+                        "(org.apache.plc4x.driver.code=*))";    
     private String filter_device =  "(&(" + Constants.OBJECTCLASS + "=" + Device.class.getName() + ")" +
-                        "(" + org.osgi.service.device.Constants.DEVICE_SERIAL + "=*))";
-    private String filter_factory =  "(&(" + Constants.OBJECTCLASS + "=" + BaseDeviceFactory.class.getName() + ")" +
-                        "(device.factory=*))";
+                        "(" + org.apache.plc4x.merlot.api.PlcDevice.SERVICE_NAME + "=*))";
+    private String filter_factory =  "(&(" + Constants.OBJECTCLASS + "=" + PlcDeviceFactory.class.getName() + ")" +
+                        "(org.apache.plc4x.device.factory=*))";
     
        
-    public BaseDeviceManagedService(BundleContext bundleContext) {
-        this.bundleContext = bundleContext;
+    public BaseDeviceManagedService(BundleContext bc) {
+        this.bc = bc;
         waitingConfigs = Collections.synchronizedMap(new HashMap<String, Dictionary<String, ?>>());
     }
 
-    @Override
     public String getName() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    /*
+    * Example:
+    * AS01 = s7://192.168.1.23/0/2,simatic,compresor system
+    * \__/   \___________________/ \_____/ \______________/
+    * key            url            name      description
+    *
+    */
     @Override
-    public void updated(String pid, Dictionary<String, ?> props) throws ConfigurationException {
-        if (props.size() < 3){
-            waitingConfigs.put(pid, props);  
-            return;
-        }
+    public void updated(Dictionary<String, ?> props) throws ConfigurationException {
+        if (null == props) return;
+
+//        if (props.size() < 3){
+//            waitingConfigs.put(pid, props);  
+//            return;
+//        }
+
         if (props!=null) {
             Enumeration<String> keys = props.keys();
             for (Enumeration e = props.keys(); e.hasMoreElements();) {
@@ -76,36 +94,59 @@ public class BaseDeviceManagedService implements ManagedServiceFactory, Job {
                 if (drv_data.length == 2) {
                     try {  
                         String deviceFilter = filter_device.replace("*",key.toString());
-                        ServiceReference[] references = bundleContext.getServiceReferences((String) null, deviceFilter);
+                        ServiceReference[] references = bc.getServiceReferences((String) null, deviceFilter);
                         if (references != null){
                             for (ServiceReference reference:references){
-                                LOGGER.info("The device already exists: " + reference.getProperty("DEVICE_DESCRIPTION"));                                
+                                LOGGER.info("The device already exists: " + reference.getProperty(org.apache.plc4x.merlot.api.PlcDevice.SERVICE_NAME));                                
                             }
                         } else {
                             String factoryFilter = filter_factory.replace("*",drv_data[0]);                            
-                            references = bundleContext.getServiceReferences((String) null, factoryFilter);
+                            references = bc.getServiceReferences((String) null, factoryFilter);
 
-                            if (references != null){
+                            if (null != references){
+                                //1. Si existe el factory, existe el driver.
                                 drv_data = driver_information.split(",",3);
                               
                                 ServiceReference reference = references[0];
-                                BaseDeviceFactory bdf = (BaseDeviceFactory) bundleContext.getService(reference);
+                                PlcDeviceFactory bdf = (PlcDeviceFactory) bc.getService(reference);
                                 if (bdf != null){
-                                    BaseDevice device = bdf.create(key.toString(), drv_data[0], drv_data[1]);
+                                    PlcDevice device =  bdf.create(key.toString(), drv_data[0], drv_data[1], drv_data[1]);
                                     if (device != null) {
                                         device.start();
                                         LOGGER.info("Starting device["+ key.toString() + "] @ url[ " + drv_data[0]+ "]");  
                                     } else {
                                        LOGGER.info("Failed to register driver." + factoryFilter);
-                                       waitingConfigs.put(pid, props);  
+//                                       waitingConfigs.put(pid, props);  
                                     }
                                 } else {
                                     LOGGER.info("The factory is not available:" + drv_data[0]);
-                                    waitingConfigs.put(pid, props);
+//                                    waitingConfigs.put(pid, props);
                                 };
                             } else {
-                                LOGGER.info("Failed to register device driver." + factoryFilter);
-                                waitingConfigs.put(pid, props);  
+                                LOGGER.info("There is no factory specific for the driver [{}], using base device. to register device driver.", factoryFilter);
+                                //1. Si existe un driver se puede registrar el dispositivo.
+                                LOGGER.info("Clave: " + key.toString() + " : " + drv_data[0]);
+                                                               
+                                //2. Registra el dispositivo con un BaseDevice
+                                String factoryBaseFilter = filter_factory.replace("*","base");    
+                                LOGGER.info("Buscando referencia con filtro [{}].", factoryBaseFilter);                                
+                                references = bc.getServiceReferences((String) null, factoryBaseFilter);
+                                
+                                if ((null != references) && (references.length > 0) && (!drv_data[0].equalsIgnoreCase("file"))) {
+                                    ServiceReference reference = references[0];             
+                                    Hashtable properties = new Hashtable();
+                                    properties.putIfAbsent(org.osgi.service.device.Constants.DEVICE_CATEGORY, drv_data[0]);
+                                    properties.putIfAbsent(org.osgi.service.device.Constants.DEVICE_DESCRIPTION, this);
+                                    properties.putIfAbsent(org.osgi.service.device.Constants.DEVICE_SERIAL, this);                                    
+                                    PlcDeviceFactory bdf = (PlcDeviceFactory) bc.getService(reference);
+                                    drv_data = driver_information.split(",",3);
+                                    PlcDevice device  =  bdf.create(key.toString() , drv_data[0], drv_data[1], drv_data[2]);
+                                    LOGGER.info("Registra ahora el dispositivo...");
+                                    bc.registerService(org.apache.plc4x.merlot.api.PlcDevice.class.getName(), device, device.getProperties());
+                                                                       
+                                } else {
+                                    LOGGER.info("The base factory is not available.");  
+                                }
                             }
                         }
                     } catch (InvalidSyntaxException ex) {
@@ -117,27 +158,27 @@ public class BaseDeviceManagedService implements ManagedServiceFactory, Job {
              }
         }
     }
-
-    @Override
-    public void deleted(String arg0) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
     
     @Override
-    public void execute(JobContext arg0) {       
-        String pid = null;
-        Dictionary<String, ?> props = null;
-        Set<String> keys = new HashSet<>();
-        keys.addAll(waitingConfigs.keySet());
-        for (String key:keys){
-            pid = key;
-            props = waitingConfigs.remove(key);            
-            try {
-                updated(pid,props);
-            } catch (ConfigurationException ex) {
-                LOGGER.debug("Problem updating [" + key +"] from waiting list." );
-            }
-        }
+    public void execute(JobContext arg0) {      
+//        String pid = null;
+//        Dictionary<String, ?> props = null;
+//        Set<String> keys = new HashSet<>();
+//        keys.addAll(waitingConfigs.keySet());
+//        for (String key:keys){
+//            pid = key;
+//            props = waitingConfigs.remove(key);            
+//            try {
+//                updated(pid,props);
+//            } catch (ConfigurationException ex) {
+//                LOGGER.debug("Problem updating [" + key +"] from waiting list." );
+//            }
+//        }
     }    
+
+    @Override
+    public void configurationEvent(ConfigurationEvent event) {
+        LOGGER.info(">>> Cambio de configuración: " + event.getPid());
+    }
     
 }

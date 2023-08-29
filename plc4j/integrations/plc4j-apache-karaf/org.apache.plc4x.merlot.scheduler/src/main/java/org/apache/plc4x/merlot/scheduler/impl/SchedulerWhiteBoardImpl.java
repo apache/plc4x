@@ -112,7 +112,6 @@ public class SchedulerWhiteBoardImpl implements SchedulerWhiteBoard {
                                 immediate = Boolean.valueOf((String) ref.getProperty(Scheduler.PROPERTY_SCHEDULER_IMMEDIATE));
                             }
                         }
-                        System.out.println("Paso por aqui....: " + period);
                         final Date date = new Date();
                         if (!immediate) {     
                             
