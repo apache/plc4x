@@ -19,12 +19,13 @@
 
 package org.apache.plc4x.java.iec608705104.readwrite.tag;
 
-import org.apache.plc4x.java.api.exceptions.PlcInvalidTagException;
+import org.apache.plc4x.java.api.model.ArrayInfo;
+import org.apache.plc4x.java.api.model.PlcTag;
+import org.apache.plc4x.java.api.types.PlcValueType;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.List;
 
-public class Iec608705104Tag {
+public class Iec608705104Tag implements PlcTag {
 
     /*private static final Pattern IEC_60870_5_104_ADDRESS =
         Pattern.compile("^(?<adsuAddrSingleValueGroup>(\\d|\\*))|((?<adsuAddrDoubleValueGroup1>(\\d|\\*))/(?<adsuAddrDoubleValueGroup2>(\\d|\\*)))/((?<objectAddressSingleValueGroup(\\d|\\*))|((?<objectAddressTrippleValueGroup1>(\\d|\\*))\\.(?<objectAddressTrippleValueGroup2>(\\d|\\*))\\.(?<objectAddressTrippleValueGroup3>(\\d|\\*))))");
@@ -48,6 +49,21 @@ public class Iec608705104Tag {
 
     public int getObjectAddress() {
         return objectAddress;
+    }
+
+    @Override
+    public String getAddressString() {
+        return null;
+    }
+
+    @Override
+    public PlcValueType getPlcValueType() {
+        return PlcValueType.NULL;
+    }
+
+    @Override
+    public List<ArrayInfo> getArrayInfo() {
+        return PlcTag.super.getArrayInfo();
     }
 
     @Override

@@ -20,34 +20,34 @@
 package org.apache.plc4x.java.iec608705104.readwrite.protocol;
 
 import org.apache.plc4x.java.api.messages.PlcSubscriptionEvent;
+import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
+import org.apache.plc4x.java.api.messages.PlcSubscriptionResponse;
 import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
 import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
+import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.iec608705104.readwrite.*;
 import org.apache.plc4x.java.iec608705104.readwrite.configuration.Iec608705014Configuration;
+import org.apache.plc4x.java.iec608705104.readwrite.model.Iec608705104SubscriptionHandle;
 import org.apache.plc4x.java.iec608705104.readwrite.tag.Iec608705104Tag;
 import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
 import org.apache.plc4x.java.spi.configuration.HasConfiguration;
+import org.apache.plc4x.java.spi.messages.DefaultPlcSubscriptionEvent;
+import org.apache.plc4x.java.spi.messages.DefaultPlcSubscriptionResponse;
 import org.apache.plc4x.java.spi.messages.PlcBrowser;
 import org.apache.plc4x.java.spi.messages.PlcSubscriber;
+import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
+import org.apache.plc4x.java.spi.model.DefaultPlcConsumerRegistration;
+import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionTag;
 import org.apache.plc4x.java.spi.transaction.RequestTransactionManager;
 
-import java.time.Duration;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.ZoneOffset;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoField;
-import java.time.temporal.Temporal;
-import java.time.temporal.TemporalAmount;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.TimeZone;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
-
-import static java.time.temporal.ChronoField.OFFSET_SECONDS;
 
 public class Iec608705104Protocol extends Plc4xProtocolBase<APDU> implements HasConfiguration<Iec608705014Configuration>, PlcSubscriber, PlcBrowser {
 
@@ -55,6 +55,8 @@ public class Iec608705104Protocol extends Plc4xProtocolBase<APDU> implements Has
     private final RequestTransactionManager tm;
 
     private int unconfirmedPackets;
+
+    private final Map<DefaultPlcConsumerRegistration, Consumer<PlcSubscriptionEvent>> consumers = new ConcurrentHashMap<>();
 
     public Iec608705104Protocol() {
         // We're starting with allowing only one message in-flight.
@@ -129,13 +131,33 @@ public class Iec608705104Protocol extends Plc4xProtocolBase<APDU> implements Has
     }
 
     @Override
-    public PlcConsumerRegistration register(Consumer<PlcSubscriptionEvent> consumer, Collection<PlcSubscriptionHandle> handles) {
-        return null;
+    public CompletableFuture<PlcSubscriptionResponse> subscribe(PlcSubscriptionRequest subscriptionRequest) {
+        Map<String, ResponseItem<PlcSubscriptionHandle>> values = new HashMap<>();
+        for (String tagName : subscriptionRequest.getTagNames()) {
+            final DefaultPlcSubscriptionTag tag = (DefaultPlcSubscriptionTag) subscriptionRequest.getTag(tagName);
+            if (!(tag.getTag() instanceof Iec608705104Tag)) {
+                values.put(tagName, new ResponseItem<>(PlcResponseCode.INVALID_ADDRESS, null));
+            } else {
+                values.put(tagName, new ResponseItem<>(PlcResponseCode.OK,
+                    new Iec608705104SubscriptionHandle(this, (Iec608705104Tag) tag.getTag())));
+            }
+        }
+        return CompletableFuture.completedFuture(
+            new DefaultPlcSubscriptionResponse(subscriptionRequest, values));
     }
 
     @Override
-    public void unregister(PlcConsumerRegistration registration) {
+    public PlcConsumerRegistration register(Consumer<PlcSubscriptionEvent> consumer, Collection<PlcSubscriptionHandle> collection) {
+        final DefaultPlcConsumerRegistration consumerRegistration =
+            new DefaultPlcConsumerRegistration(this, consumer, collection.toArray(new PlcSubscriptionHandle[0]));
+        consumers.put(consumerRegistration, consumer);
+        return consumerRegistration;
+    }
 
+    @Override
+    public void unregister(PlcConsumerRegistration plcConsumerRegistration) {
+        DefaultPlcConsumerRegistration consumerRegistration = (DefaultPlcConsumerRegistration) plcConsumerRegistration;
+        consumers.remove(consumerRegistration);
     }
 
     protected void processData(ASDU asdu) {
@@ -159,7 +181,9 @@ public class Iec608705104Protocol extends Plc4xProtocolBase<APDU> implements Has
             } else {
                 eventTime = LocalDateTime.now();
             }
-            System.out.println(DateTimeFormatter.ISO_DATE_TIME.format(eventTime) + ": " + tag + ": " + plcValue.toString());
+
+            // Send the event out to all subscribed listeners.
+            publishEvent(eventTime, tag, plcValue);
         }
     }
 
@@ -178,6 +202,30 @@ public class Iec608705104Protocol extends Plc4xProtocolBase<APDU> implements Has
         }
         return LocalDateTime.of(2000 + cp56Time2.getYear(), cp56Time2.getMonth(), cp56Time2.getDay(), cp56Time2.getHour() , cp56Time2.getMinutes(), cp56Time2.getMilliseconds() / 1000, (cp56Time2.getMilliseconds() % 1000) * 1000000)
             .minus(localTimeZoneOffsetFromUTC);
+    }
+
+    protected void publishEvent(LocalDateTime timeStamp, Iec608705104Tag tag, PlcValue plcValue) {
+        // Create a subscription event from the input.
+        final PlcSubscriptionEvent event = new DefaultPlcSubscriptionEvent(
+            timeStamp.atZone(ZoneId.systemDefault()).toInstant(),
+            Collections.singletonMap(tag.toString(),
+                new ResponseItem<>(PlcResponseCode.OK, plcValue)));
+
+        // Try sending the subscription event to all listeners.
+        for (Map.Entry<DefaultPlcConsumerRegistration, Consumer<PlcSubscriptionEvent>> entry : consumers.entrySet()) {
+            final DefaultPlcConsumerRegistration registration = entry.getKey();
+            final Consumer<PlcSubscriptionEvent> consumer = entry.getValue();
+            // Only if the current data point matches the subscription, publish the event to it.
+            for (PlcSubscriptionHandle handle : registration.getSubscriptionHandles()) {
+                if (handle instanceof Iec608705104SubscriptionHandle) {
+                    Iec608705104SubscriptionHandle subscriptionHandle = (Iec608705104SubscriptionHandle) handle;
+                    // Check if the subscription matches this current event.
+                    if (/*subscriptionHandle.getTag().matchesGroupAddress(groupAddress)*/true) {
+                        consumer.accept(event);
+                    }
+                }
+            }
+        }
     }
 
 }

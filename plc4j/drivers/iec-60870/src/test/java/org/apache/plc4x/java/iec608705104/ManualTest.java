@@ -32,6 +32,16 @@ public class ManualTest {
             shutdown.complete(null);
         }));
         try (PlcConnection plcConnection = PlcDriverManager.getDefault().getConnectionManager().getConnection("iec-60870-5-104://192.168.23.10")) {
+            if(!plcConnection.getMetadata().canSubscribe()) {
+                throw new RuntimeException("Subscription not supported");
+            }
+
+            plcConnection.subscriptionRequestBuilder().addChangeOfStateTagAddress("all", "*").addPreRegisteredConsumer("all", plcSubscriptionEvent -> {
+                for (String tagName : plcSubscriptionEvent.getTagNames()) {
+                    System.out.println(String.format("TS: %s, Addr: %s, Value; %s", plcSubscriptionEvent.getTimestamp().toString(), tagName, plcSubscriptionEvent.getPlcValue(tagName).toString()));
+                }
+            }).build().execute();
+
             // Wait till shutdown.
             shutdown.get();
         }
