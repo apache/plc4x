@@ -22,8 +22,10 @@ package org.apache.plc4x.java.iec608705104.readwrite.protocol;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionEvent;
 import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
 import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
+import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.iec608705104.readwrite.*;
 import org.apache.plc4x.java.iec608705104.readwrite.configuration.Iec608705014Configuration;
+import org.apache.plc4x.java.iec608705104.readwrite.tag.Iec608705104Tag;
 import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
 import org.apache.plc4x.java.spi.configuration.HasConfiguration;
@@ -32,18 +34,32 @@ import org.apache.plc4x.java.spi.messages.PlcSubscriber;
 import org.apache.plc4x.java.spi.transaction.RequestTransactionManager;
 
 import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoField;
+import java.time.temporal.Temporal;
+import java.time.temporal.TemporalAmount;
+import java.util.Calendar;
 import java.util.Collection;
+import java.util.TimeZone;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
+
+import static java.time.temporal.ChronoField.OFFSET_SECONDS;
 
 public class Iec608705104Protocol extends Plc4xProtocolBase<APDU> implements HasConfiguration<Iec608705014Configuration>, PlcSubscriber, PlcBrowser {
 
     private Iec608705014Configuration configuration;
     private final RequestTransactionManager tm;
 
+    private int unconfirmedPackets;
+
     public Iec608705104Protocol() {
         // We're starting with allowing only one message in-flight.
         this.tm = new RequestTransactionManager(1);
+        unconfirmedPackets = 0;
     }
 
     @Override
@@ -89,9 +105,26 @@ public class Iec608705104Protocol extends Plc4xProtocolBase<APDU> implements Has
 
     @Override
     protected void decode(ConversationContext<APDU> context, APDU msg) throws Exception {
+        // When receiving a test-frame, send the expected response.
         if (msg instanceof APDUUFormatTestFrameActivation) {
             APDUUFormatTestFrameConfirmation testFrameConfirmation = new APDUUFormatTestFrameConfirmation(0x83);
             context.sendToWire(testFrameConfirmation);
+        }
+        // When receiving incoming data, process that.
+        else if (msg instanceof APDUIFormat){
+            APDUIFormat apduiFormat = (APDUIFormat) msg;
+
+            // Make sure we send an acknowledgement packet every few packets.
+            unconfirmedPackets++;
+            if(unconfirmedPackets >= 8) {
+                // Confirm the reception of the packet.
+                APDUSFormat confirmPacket = new APDUSFormat(0x01, apduiFormat.getReceiveSequenceNo() + 1);
+                context.sendToWire(confirmPacket);
+                unconfirmedPackets = 0;
+            }
+
+            // Handle the incoming messages.
+            processData(apduiFormat.getAsdu());
         }
     }
 
@@ -103,6 +136,48 @@ public class Iec608705104Protocol extends Plc4xProtocolBase<APDU> implements Has
     @Override
     public void unregister(PlcConsumerRegistration registration) {
 
+    }
+
+    protected void processData(ASDU asdu) {
+        int asduAddress = asdu.getAsduAddressField();
+        for (InformationObject informationObject : asdu.getInformationObjects()) {
+            int objectAddress = informationObject.getAddress();
+            Iec608705104Tag tag = new Iec608705104Tag(asduAddress, objectAddress);
+            PlcValue plcValue = Iec608705104TagParser.parseTag(informationObject, asdu.getTypeIdentification());
+
+            // If this is a datatype that comes with time-information, parse this
+            // and use this instead of the generated timestamp.
+            LocalDateTime eventTime;
+            if (informationObject instanceof InformationObjectWithTreeByteTime) {
+                InformationObjectWithTreeByteTime informationObjectWithTreeByteTime = (InformationObjectWithTreeByteTime) informationObject;
+                ThreeOctetBinaryTime time = informationObjectWithTreeByteTime.getCp24Time2a();
+                eventTime = convertCp24Time2aToCalendar(time);
+            } else if (informationObject instanceof  InformationObjectWithSevenByteTime) {
+                InformationObjectWithSevenByteTime informationObjectWithSevenByteTime = (InformationObjectWithSevenByteTime) informationObject;
+                SevenOctetBinaryTime time = informationObjectWithSevenByteTime.getCp56Time2a();
+                eventTime = convertCp56Time2aToCalendar(time);
+            } else {
+                eventTime = LocalDateTime.now();
+            }
+            System.out.println(DateTimeFormatter.ISO_DATE_TIME.format(eventTime) + ": " + tag + ": " + plcValue.toString());
+        }
+    }
+
+    protected LocalDateTime convertCp24Time2aToCalendar(ThreeOctetBinaryTime cp24Time2) {
+        LocalDateTime now = LocalDateTime.now();
+        return LocalDateTime.of(now.getYear(), now.getMonthValue(), now.getDayOfMonth(), now.getHour(), cp24Time2.getMinutes(), cp24Time2.getMilliseconds() / 1000, (cp24Time2.getMilliseconds() % 1000) * 1000000);
+    }
+
+    protected LocalDateTime convertCp56Time2aToCalendar(SevenOctetBinaryTime cp56Time2) {
+        // It seems that the time is sent in UTC, so we need to convert that into our local timezone.
+        TimeZone localTimeZone = TimeZone.getDefault();
+        Duration localTimeZoneOffsetFromUTC = Duration.ofMillis(localTimeZone.getRawOffset());
+        if(cp56Time2.getDaylightSaving()) {
+            Duration daylightSavingOffset = Duration.ofMillis(localTimeZone.getDSTSavings());
+            localTimeZoneOffsetFromUTC = localTimeZoneOffsetFromUTC.plus(daylightSavingOffset);
+        }
+        return LocalDateTime.of(2000 + cp56Time2.getYear(), cp56Time2.getMonth(), cp56Time2.getDay(), cp56Time2.getHour() , cp56Time2.getMinutes(), cp56Time2.getMilliseconds() / 1000, (cp56Time2.getMilliseconds() % 1000) * 1000000)
+            .minus(localTimeZoneOffsetFromUTC);
     }
 
 }

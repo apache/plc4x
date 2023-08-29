@@ -38,15 +38,27 @@ import org.apache.plc4x.java.spi.generation.*;
 public class ThreeOctetBinaryTime implements Message {
 
   // Properties.
-  protected final byte[] value;
+  protected final int milliseconds;
+  protected final boolean invalid;
+  protected final byte minutes;
 
-  public ThreeOctetBinaryTime(byte[] value) {
+  public ThreeOctetBinaryTime(int milliseconds, boolean invalid, byte minutes) {
     super();
-    this.value = value;
+    this.milliseconds = milliseconds;
+    this.invalid = invalid;
+    this.minutes = minutes;
   }
 
-  public byte[] getValue() {
-    return value;
+  public int getMilliseconds() {
+    return milliseconds;
+  }
+
+  public boolean getInvalid() {
+    return invalid;
+  }
+
+  public byte getMinutes() {
+    return minutes;
   }
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
@@ -54,11 +66,32 @@ public class ThreeOctetBinaryTime implements Message {
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     writeBuffer.pushContext("ThreeOctetBinaryTime");
 
-    // Array Field (value)
-    writeByteArrayField(
-        "value",
-        value,
-        writeByteArray(writeBuffer, 8),
+    // Simple Field (milliseconds)
+    writeSimpleField(
+        "milliseconds",
+        milliseconds,
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
+    // Simple Field (invalid)
+    writeSimpleField(
+        "invalid",
+        invalid,
+        writeBoolean(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
+    // Reserved Field (reserved)
+    writeReservedField(
+        "reserved",
+        (byte) 0x00,
+        writeUnsignedByte(writeBuffer, 1),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
+    // Simple Field (minutes)
+    writeSimpleField(
+        "minutes",
+        minutes,
+        writeUnsignedByte(writeBuffer, 6),
         WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     writeBuffer.popContext("ThreeOctetBinaryTime");
@@ -75,10 +108,17 @@ public class ThreeOctetBinaryTime implements Message {
     ThreeOctetBinaryTime _value = this;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    // Array field
-    if (value != null) {
-      lengthInBits += 8 * value.length;
-    }
+    // Simple field (milliseconds)
+    lengthInBits += 16;
+
+    // Simple field (invalid)
+    lengthInBits += 1;
+
+    // Reserved Field (reserved)
+    lengthInBits += 1;
+
+    // Simple field (minutes)
+    lengthInBits += 6;
 
     return lengthInBits;
   }
@@ -94,14 +134,33 @@ public class ThreeOctetBinaryTime implements Message {
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    byte[] value =
-        readBuffer.readByteArray(
-            "value", Math.toIntExact(3), WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+    int milliseconds =
+        readSimpleField(
+            "milliseconds",
+            readUnsignedInt(readBuffer, 16),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
+    boolean invalid =
+        readSimpleField(
+            "invalid", readBoolean(readBuffer), WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
+    Byte reservedField0 =
+        readReservedField(
+            "reserved",
+            readUnsignedByte(readBuffer, 1),
+            (byte) 0x00,
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
+    byte minutes =
+        readSimpleField(
+            "minutes",
+            readUnsignedByte(readBuffer, 6),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     readBuffer.closeContext("ThreeOctetBinaryTime");
     // Create the instance
     ThreeOctetBinaryTime _threeOctetBinaryTime;
-    _threeOctetBinaryTime = new ThreeOctetBinaryTime(value);
+    _threeOctetBinaryTime = new ThreeOctetBinaryTime(milliseconds, invalid, minutes);
     return _threeOctetBinaryTime;
   }
 
@@ -114,12 +173,15 @@ public class ThreeOctetBinaryTime implements Message {
       return false;
     }
     ThreeOctetBinaryTime that = (ThreeOctetBinaryTime) o;
-    return (getValue() == that.getValue()) && true;
+    return (getMilliseconds() == that.getMilliseconds())
+        && (getInvalid() == that.getInvalid())
+        && (getMinutes() == that.getMinutes())
+        && true;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(getValue());
+    return Objects.hash(getMilliseconds(), getInvalid(), getMinutes());
   }
 
   @Override

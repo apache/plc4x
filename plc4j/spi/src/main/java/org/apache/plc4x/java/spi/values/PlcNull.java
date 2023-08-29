@@ -272,6 +272,21 @@ public class PlcNull implements PlcValue, Serializable {
     }
 
     @Override
+    public Map<String, PlcValue> getMetaData() {
+        return null;
+    }
+
+    @Override
+    public boolean hasMetaData(String key) {
+        return false;
+    }
+
+    @Override
+    public PlcValue getMetaData(String key) {
+        return null;
+    }
+
+    @Override
     public void serialize(WriteBuffer writeBuffer) throws SerializationException {
         writeBuffer.pushContext("PlcNull");
         writeBuffer.popContext("PlcNull");

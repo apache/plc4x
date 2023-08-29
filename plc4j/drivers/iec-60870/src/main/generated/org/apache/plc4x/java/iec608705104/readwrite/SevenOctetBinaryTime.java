@@ -38,15 +38,79 @@ import org.apache.plc4x.java.spi.generation.*;
 public class SevenOctetBinaryTime implements Message {
 
   // Properties.
-  protected final byte[] value;
+  protected final int milliseconds;
+  protected final boolean invalid;
+  protected final boolean substituted;
+  protected final byte minutes;
+  protected final boolean daylightSaving;
+  protected final byte hour;
+  protected final byte dayOfWeek;
+  protected final byte day;
+  protected final byte month;
+  protected final byte year;
 
-  public SevenOctetBinaryTime(byte[] value) {
+  public SevenOctetBinaryTime(
+      int milliseconds,
+      boolean invalid,
+      boolean substituted,
+      byte minutes,
+      boolean daylightSaving,
+      byte hour,
+      byte dayOfWeek,
+      byte day,
+      byte month,
+      byte year) {
     super();
-    this.value = value;
+    this.milliseconds = milliseconds;
+    this.invalid = invalid;
+    this.substituted = substituted;
+    this.minutes = minutes;
+    this.daylightSaving = daylightSaving;
+    this.hour = hour;
+    this.dayOfWeek = dayOfWeek;
+    this.day = day;
+    this.month = month;
+    this.year = year;
   }
 
-  public byte[] getValue() {
-    return value;
+  public int getMilliseconds() {
+    return milliseconds;
+  }
+
+  public boolean getInvalid() {
+    return invalid;
+  }
+
+  public boolean getSubstituted() {
+    return substituted;
+  }
+
+  public byte getMinutes() {
+    return minutes;
+  }
+
+  public boolean getDaylightSaving() {
+    return daylightSaving;
+  }
+
+  public byte getHour() {
+    return hour;
+  }
+
+  public byte getDayOfWeek() {
+    return dayOfWeek;
+  }
+
+  public byte getDay() {
+    return day;
+  }
+
+  public byte getMonth() {
+    return month;
+  }
+
+  public byte getYear() {
+    return year;
   }
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
@@ -54,11 +118,95 @@ public class SevenOctetBinaryTime implements Message {
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     writeBuffer.pushContext("SevenOctetBinaryTime");
 
-    // Array Field (value)
-    writeByteArrayField(
-        "value",
-        value,
-        writeByteArray(writeBuffer, 8),
+    // Simple Field (milliseconds)
+    writeSimpleField(
+        "milliseconds",
+        milliseconds,
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
+    // Simple Field (invalid)
+    writeSimpleField(
+        "invalid",
+        invalid,
+        writeBoolean(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
+    // Simple Field (substituted)
+    writeSimpleField(
+        "substituted",
+        substituted,
+        writeBoolean(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
+    // Simple Field (minutes)
+    writeSimpleField(
+        "minutes",
+        minutes,
+        writeUnsignedByte(writeBuffer, 6),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
+    // Simple Field (daylightSaving)
+    writeSimpleField(
+        "daylightSaving",
+        daylightSaving,
+        writeBoolean(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
+    // Reserved Field (reserved)
+    writeReservedField(
+        "reserved",
+        (byte) 0x00,
+        writeUnsignedByte(writeBuffer, 2),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
+    // Simple Field (hour)
+    writeSimpleField(
+        "hour",
+        hour,
+        writeUnsignedByte(writeBuffer, 5),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
+    // Simple Field (dayOfWeek)
+    writeSimpleField(
+        "dayOfWeek",
+        dayOfWeek,
+        writeUnsignedByte(writeBuffer, 3),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
+    // Simple Field (day)
+    writeSimpleField(
+        "day",
+        day,
+        writeUnsignedByte(writeBuffer, 5),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
+    // Reserved Field (reserved)
+    writeReservedField(
+        "reserved",
+        (byte) 0x00,
+        writeUnsignedByte(writeBuffer, 4),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
+    // Simple Field (month)
+    writeSimpleField(
+        "month",
+        month,
+        writeUnsignedByte(writeBuffer, 4),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
+    // Reserved Field (reserved)
+    writeReservedField(
+        "reserved",
+        (byte) 0x00,
+        writeUnsignedByte(writeBuffer, 1),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
+    // Simple Field (year)
+    writeSimpleField(
+        "year",
+        year,
+        writeUnsignedByte(writeBuffer, 7),
         WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     writeBuffer.popContext("SevenOctetBinaryTime");
@@ -75,10 +223,44 @@ public class SevenOctetBinaryTime implements Message {
     SevenOctetBinaryTime _value = this;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    // Array field
-    if (value != null) {
-      lengthInBits += 8 * value.length;
-    }
+    // Simple field (milliseconds)
+    lengthInBits += 16;
+
+    // Simple field (invalid)
+    lengthInBits += 1;
+
+    // Simple field (substituted)
+    lengthInBits += 1;
+
+    // Simple field (minutes)
+    lengthInBits += 6;
+
+    // Simple field (daylightSaving)
+    lengthInBits += 1;
+
+    // Reserved Field (reserved)
+    lengthInBits += 2;
+
+    // Simple field (hour)
+    lengthInBits += 5;
+
+    // Simple field (dayOfWeek)
+    lengthInBits += 3;
+
+    // Simple field (day)
+    lengthInBits += 5;
+
+    // Reserved Field (reserved)
+    lengthInBits += 4;
+
+    // Simple field (month)
+    lengthInBits += 4;
+
+    // Reserved Field (reserved)
+    lengthInBits += 1;
+
+    // Simple field (year)
+    lengthInBits += 7;
 
     return lengthInBits;
   }
@@ -94,14 +276,100 @@ public class SevenOctetBinaryTime implements Message {
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    byte[] value =
-        readBuffer.readByteArray(
-            "value", Math.toIntExact(7), WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+    int milliseconds =
+        readSimpleField(
+            "milliseconds",
+            readUnsignedInt(readBuffer, 16),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
+    boolean invalid =
+        readSimpleField(
+            "invalid", readBoolean(readBuffer), WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
+    boolean substituted =
+        readSimpleField(
+            "substituted",
+            readBoolean(readBuffer),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
+    byte minutes =
+        readSimpleField(
+            "minutes",
+            readUnsignedByte(readBuffer, 6),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
+    boolean daylightSaving =
+        readSimpleField(
+            "daylightSaving",
+            readBoolean(readBuffer),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
+    Byte reservedField0 =
+        readReservedField(
+            "reserved",
+            readUnsignedByte(readBuffer, 2),
+            (byte) 0x00,
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
+    byte hour =
+        readSimpleField(
+            "hour",
+            readUnsignedByte(readBuffer, 5),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
+    byte dayOfWeek =
+        readSimpleField(
+            "dayOfWeek",
+            readUnsignedByte(readBuffer, 3),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
+    byte day =
+        readSimpleField(
+            "day",
+            readUnsignedByte(readBuffer, 5),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
+    Byte reservedField1 =
+        readReservedField(
+            "reserved",
+            readUnsignedByte(readBuffer, 4),
+            (byte) 0x00,
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
+    byte month =
+        readSimpleField(
+            "month",
+            readUnsignedByte(readBuffer, 4),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
+    Byte reservedField2 =
+        readReservedField(
+            "reserved",
+            readUnsignedByte(readBuffer, 1),
+            (byte) 0x00,
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+
+    byte year =
+        readSimpleField(
+            "year",
+            readUnsignedByte(readBuffer, 7),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     readBuffer.closeContext("SevenOctetBinaryTime");
     // Create the instance
     SevenOctetBinaryTime _sevenOctetBinaryTime;
-    _sevenOctetBinaryTime = new SevenOctetBinaryTime(value);
+    _sevenOctetBinaryTime =
+        new SevenOctetBinaryTime(
+            milliseconds,
+            invalid,
+            substituted,
+            minutes,
+            daylightSaving,
+            hour,
+            dayOfWeek,
+            day,
+            month,
+            year);
     return _sevenOctetBinaryTime;
   }
 
@@ -114,12 +382,32 @@ public class SevenOctetBinaryTime implements Message {
       return false;
     }
     SevenOctetBinaryTime that = (SevenOctetBinaryTime) o;
-    return (getValue() == that.getValue()) && true;
+    return (getMilliseconds() == that.getMilliseconds())
+        && (getInvalid() == that.getInvalid())
+        && (getSubstituted() == that.getSubstituted())
+        && (getMinutes() == that.getMinutes())
+        && (getDaylightSaving() == that.getDaylightSaving())
+        && (getHour() == that.getHour())
+        && (getDayOfWeek() == that.getDayOfWeek())
+        && (getDay() == that.getDay())
+        && (getMonth() == that.getMonth())
+        && (getYear() == that.getYear())
+        && true;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(getValue());
+    return Objects.hash(
+        getMilliseconds(),
+        getInvalid(),
+        getSubstituted(),
+        getMinutes(),
+        getDaylightSaving(),
+        getHour(),
+        getDayOfWeek(),
+        getDay(),
+        getMonth(),
+        getYear());
   }
 
   @Override
