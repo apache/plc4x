@@ -276,8 +276,8 @@ public abstract class PlcValueAdapter implements PlcValue, Serializable {
     }
 
     @Override
-    public Map<String, PlcValue> getMetaData() {
-        return metaData;
+    public Set<String> getMetaDataNames() {
+        return metaData.keySet();
     }
 
     @Override

@@ -30,6 +30,7 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -272,8 +273,8 @@ public class PlcNull implements PlcValue, Serializable {
     }
 
     @Override
-    public Map<String, PlcValue> getMetaData() {
-        return null;
+    public Set<String> getMetaDataNames() {
+        return Collections.emptySet();
     }
 
     @Override
