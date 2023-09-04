@@ -79,272 +79,286 @@
     [simple   CauseOfTransmission                     causeOfTransmission                            ]
     [simple   uint 8                                  originatorAddress                              ]
     [simple   uint 16                                 asduAddressField                               ]
-    [array    InformationObject('typeIdentification') informationObjects  count 'numberOfObjects'    ]
+    [array    InformationObject('typeIdentification', 'typeIdentification.numTimeBytes') informationObjects  count 'numberOfObjects'    ]
 ]
 
 // http://ijlalhaider.pbworks.com/w/file/fetch/64131148/Practical%20Modern%20SCADA%20Protocols.pdf
 
-[discriminatedType InformationObject(TypeIdentification typeIdentification)                    byteOrder='LITTLE_ENDIAN'
+[discriminatedType InformationObject(TypeIdentification typeIdentification, uint 7 numTimeByte)                    byteOrder='LITTLE_ENDIAN'
     [simple uint 24 address]
-    [typeSwitch typeIdentification
-        ['SINGLE_POINT_INFORMATION'                                 *_SINGLE_POINT_INFORMATION
-            [simple SinglePointInformation siq]
-        ]
-        ['SINGLE_POINT_INFORMATION_WITH_TIME_TAG'                   *_SINGLE_POINT_INFORMATION_WITH_TIME_TAG
-            [simple SinglePointInformation siq]
-            [simple ThreeOctetBinaryTime cp24Time2a]
-        ]
-        ['DOUBLE_POINT_INFORMATION'                                 *_DOUBLE_POINT_INFORMATION
-            [simple DoublePointInformation diq]
-        ]
-        ['DOUBLE_POINT_INFORMATION_WITH_TIME_TAG'                   *_DOUBLE_POINT_INFORMATION_WITH_TIME_TAG
-            [simple DoublePointInformation diq]
-            [simple ThreeOctetBinaryTime cp24Time2a]
-        ]
-        ['STEP_POSITION_INFORMATION'                                *_STEP_POSITION_INFORMATION
-            [simple ValueWithTransientStateIndication vti]
-            [simple QualityDescriptor qds]
-        ]
-        ['STEP_POSITION_INFORMATION_WITH_TIME_TAG'                  *_STEP_POSITION_INFORMATION_WITH_TIME_TAG
-            [simple ValueWithTransientStateIndication vti]
-            [simple QualityDescriptor qds]
-            [simple ThreeOctetBinaryTime cp24Time2a]
-        ]
-        ['BITSTRING_OF_32_BIT'                                      *_BITSTRING_OF_32_BIT
-            [simple BinaryStateInformation bsi]
-            [simple QualityDescriptor qds]
-        ]
-        ['BITSTRING_OF_32_BIT_WITH_TIME_TAG'                        *_BITSTRING_OF_32_BIT_WITH_TIME_TAG
-            [simple BinaryStateInformation bsi]
-            [simple QualityDescriptor qds]
-            [simple ThreeOctetBinaryTime cp24Time2a]
-        ]
-        ['MEASURED_VALUE_NORMALISED_VALUE'                          *_MEASURED_VALUE_NORMALISED_VALUE
-            [simple NormalizedValue nva]
-            [simple QualityDescriptor qds]
-        ]
-        ['MEASURED_VALUE_NORMALIZED_VALUE_WITH_TIME_TAG'            *_MEASURED_VALUE_NORMALIZED_VALUE_WITH_TIME_TAG
-            [simple NormalizedValue nva]
-            [simple QualityDescriptor qds]
-            [simple ThreeOctetBinaryTime cp24Time2a]
-        ]
-        ['MEASURED_VALUE_SCALED_VALUE'                              *_MEASURED_VALUE_SCALED_VALUE
-            [simple ScaledValue sva]
-            [simple QualityDescriptor qds]
-        ]
-        ['MEASURED_VALUE_SCALED_VALUE_WIT_TIME_TAG'                 *_MEASURED_VALUE_SCALED_VALUE_WIT_TIME_TAG
-            [simple ScaledValue sva]
-            [simple QualityDescriptor qds]
-            [simple ThreeOctetBinaryTime cp24Time2a]
-        ]
-        ['MEASURED_VALUE_SHORT_FLOATING_POINT_NUMBER'               *_MEASURED_VALUE_SHORT_FLOATING_POINT_NUMBER
-            [simple float 32 value]
-            [simple QualityDescriptor qds]
-        ]
-        ['MEASURED_VALUE_SHORT_FLOATING_POINT_NUMBER_WITH_TIME_TAG' *_MEASURED_VALUE_SHORT_FLOATING_POINT_NUMBER_WITH_TIME_TAG
-            [simple float 32 value]
-            [simple QualityDescriptor qds]
-            [simple ThreeOctetBinaryTime cp24Time2a]
-        ]
-        ['INTEGRATED_TOTALS'                                        *_INTEGRATED_TOTALS
-            [simple BinaryCounterReading bcr]
-        ]
-        ['INTEGRATED_TOTALS_WITH_TIME_TAG'                          *_INTEGRATED_TOTALS_WITH_TIME_TAG
-            [simple BinaryCounterReading bcr]
-            [simple ThreeOctetBinaryTime cp24Time2a]
-        ]
-        ['EVENT_OF_PROTECTION_EQUIPMENT_WITH_TIME_TAG'              *_EVENT_OF_PROTECTION_EQUIPMENT_WITH_TIME_TAG
-            [simple TwoOctetBinaryTime cp16Time2a]
-            [simple ThreeOctetBinaryTime cp24Time2a]
-        ]
-        ['PACKED_START_EVENTS_OF_PROTECTION_EQUIPMENT_WITH_TIME_TAG' *_PACKED_START_EVENTS_OF_PROTECTION_EQUIPMENT_WITH_TIME_TAG
-            [simple SingleEventOfProtectionEquipment sep]
-            [simple QualityDescriptorForPointsOfProtectionEquipment qdp]
-            [simple TwoOctetBinaryTime cp16Time2a]
-            [simple ThreeOctetBinaryTime cp24Time2a]
-        ]
-        ['PACKED_OUTPUT_CIRCUIT_INFORMATION_OF_PROTECTION_EQUIPMENT_WITH_TIME_TAG' *_PACKED_OUTPUT_CIRCUIT_INFORMATION_OF_PROTECTION_EQUIPMENT_WITH_TIME_TAG
-            [simple OutputCircuitInformation oci]
-            [simple QualityDescriptorForPointsOfProtectionEquipment qdp]
-            [simple TwoOctetBinaryTime cp16Time2a]
-            [simple ThreeOctetBinaryTime cp24Time2a]
-        ]
-        ['PACKED_SINGLE_POINT_INFORMATION_WITH_STATUS_CHANGE_DETECTION' *_PACKED_SINGLE_POINT_INFORMATION_WITH_STATUS_CHANGE_DETECTION
-            [simple StatusChangeDetection scd]
-            [simple QualityDescriptor qds]
-        ]
-        ['MEASURED_VALUE_NORMALIZED_VALUE_WITHOUT_QUALITY_DESCRIPTOR' *_MEASURED_VALUE_NORMALIZED_VALUE_WITHOUT_QUALITY_DESCRIPTOR
-            [simple NormalizedValue nva]
-        ]
-        ['SINGLE_POINT_INFORMATION_WITH_TIME_TAG_CP56TIME2A'        *_SINGLE_POINT_INFORMATION_WITH_TIME_TAG_CP56TIME2A
-            [simple SinglePointInformation siq]
-            [simple SevenOctetBinaryTime cp56Time2a]
-        ]
-        ['DOUBLE_POINT_INFORMATION_WITH_TIME_TAG_CP56TIME2A'        *_DOUBLE_POINT_INFORMATION_WITH_TIME_TAG_CP56TIME2A
-            [simple DoublePointInformation diq]
-            [simple SevenOctetBinaryTime cp56Time2a]
-        ]
-        ['STEP_POSITION_INFORMATION_WITH_TIME_TAG_CP56TIME2A'       *_STEP_POSITION_INFORMATION_WITH_TIME_TAG_CP56TIME2A
-            [simple ValueWithTransientStateIndication vti]
-            [simple QualityDescriptor qds]
-            [simple SevenOctetBinaryTime cp56Time2a]
-        ]
-        ['BITSTRING_OF_32_BIT_WITH_TIME_TAG_CP56TIME2A'             *_BITSTRING_OF_32_BIT_WITH_TIME_TAG_CP56TIME2A
-            [simple BinaryStateInformation bsi]
-            [simple QualityDescriptor qds]
-            [simple SevenOctetBinaryTime cp56Time2a]
-        ]
-        ['MEASURED_VALUE_NORMALISED_VALUE_WITH_TIME_TAG_CP56TIME2A' *_MEASURED_VALUE_NORMALISED_VALUE_WITH_TIME_TAG_CP56TIME2A
-            [simple NormalizedValue nva]
-            [simple QualityDescriptor qds]
-            [simple SevenOctetBinaryTime cp56Time2a]
-        ]
-        ['MEASURED_VALUE_SCALED_VALUE_WITH_TIME_TAG_CP56TIME2A'     *_MEASURED_VALUE_SCALED_VALUE_WITH_TIME_TAG_CP56TIME2A
-            [simple ScaledValue sva]
-            [simple QualityDescriptor qds]
-            [simple SevenOctetBinaryTime cp56Time2a]
-        ]
-        ['MEASURED_VALUE_SHORT_FLOATING_POINT_NUMBER_WITH_TIME_TAG_CP56TIME2A' *_MEASURED_VALUE_SHORT_FLOATING_POINT_NUMBER_WITH_TIME_TAG_CP56TIME2A
-            [simple float 32 value]
-            [simple QualityDescriptor qds]
-            [simple SevenOctetBinaryTime cp56Time2a]
-        ]
-        ['INTEGRATED_TOTALS_WITH_TIME_TAG_CP56TIME2A'               *_INTEGRATED_TOTALS_WITH_TIME_TAG_CP56TIME2A
-            [simple BinaryCounterReading bcr]
-            [simple SevenOctetBinaryTime cp56Time2a]
-        ]
-        ['EVENT_OF_PROTECTION_EQUIPMENT_WITH_TIME_TAG_CP56TIME2A'   *_EVENT_OF_PROTECTION_EQUIPMENT_WITH_TIME_TAG_CP56TIME2A
-            [simple TwoOctetBinaryTime cp16Time2a]
-            [simple SevenOctetBinaryTime cp56Time2a]
-        ]
-        ['PACKED_START_EVENTS_OF_PROTECTION_EQUIPMENT_WITH_TIME_TAG_CP56TIME2A' *_PROTECTION_EQUIPMENT_WITH_TIME_TAG_CP56TIME2A
-            [simple SingleEventOfProtectionEquipment sep]
-            [simple QualityDescriptorForPointsOfProtectionEquipment qdp]
-            [simple TwoOctetBinaryTime cp16Time2a]
-            [simple SevenOctetBinaryTime cp56Time2a]
-        ]
-        ['PACKED_OUTPUT_CIRCUIT_INFORMATION_OF_PROTECTION_EQUIPMENT_WITH_TIME_TAG_CP56TIME2A' *_PACKED_OUTPUT_CIRCUIT_INFORMATION_OF_PROTECTION_EQUIPMENT_WITH_TIME_TAG_CP56TIME2A
-            [simple OutputCircuitInformation oci]
-            [simple QualityDescriptorForPointsOfProtectionEquipment qdp]
-            [simple TwoOctetBinaryTime cp16Time2a]
-            [simple SevenOctetBinaryTime cp56Time2a]
-        ]
-        ['SINGLE_COMMAND'                                           *_SINGLE_COMMAND
-            [simple SingleCommand sco]
-        ]
-        ['DOUBLE_COMMAND'                                           *_DOUBLE_COMMAND
-            [simple DoubleCommand dco]
-        ]
-        ['REGULATING_STEP_COMMAND'                                  *_REGULATING_STEP_COMMAND
-            [simple RegulatingStepCommand rco]
-        ]
-        ['SET_POINT_COMMAND_NORMALISED_VALUE'                       *_SET_POINT_COMMAND_NORMALISED_VALUE
-            [simple NormalizedValue nva]
-            [simple QualifierOfSetPointCommand qos]
-        ]
-        ['SET_POINT_COMMAND_SCALED_VALUE'                           *_SET_POINT_COMMAND_SCALED_VALUE
-            [simple ScaledValue sva]
-            [simple QualifierOfSetPointCommand qos]
-        ]
-        ['SET_POINT_COMMAND_SHORT_FLOATING_POINT_NUMBER'            *_SET_POINT_COMMAND_SHORT_FLOATING_POINT_NUMBER
-            [simple float 32 value]
-            [simple QualifierOfSetPointCommand qos]
-        ]
-        ['BITSTRING_32_BIT_COMMAND'                                 *_BITSTRING_32_BIT_COMMAND
-            [simple BinaryStateInformation bsi]
-        ]
-        ['SINGLE_COMMAND_WITH_TIME_TAG_CP56TIME2A'                  *_SINGLE_COMMAND_WITH_TIME_TAG_CP56TIME2A
-        ]
-        ['DOUBLE_COMMAND_WITH_TIME_TAG_CP56TIME2A'                  *_DOUBLE_COMMAND_WITH_TIME_TAG_CP56TIME2A
-        ]
-        ['REGULATING_STEP_COMMAND_WITH_TIME_TAG_CP56TIME2A'         *_REGULATING_STEP_COMMAND_WITH_TIME_TAG_CP56TIME2A
-        ]
-        ['MEASURED_VALUE_NORMALISED_VALUE_COMMAND_WITH_TIME_TAG_CP56TIME2A' *_MEASURED_VALUE_NORMALISED_VALUE_COMMAND_WITH_TIME_TAG_CP56TIME2A
-        ]
-        ['MEASURED_VALUE_SCALED_VALUE_COMMAND_WITH_TIME_TAG_CP56TIME2A' *_MEASURED_VALUE_SCALED_VALUE_COMMAND_WITH_TIME_TAG_CP56TIME2A
-        ]
-        ['MEASURED_VALUE_SHORT_FLOATING_POINT_NUMBER_COMMAND_WITH_TIME_TAG_CP56TIME2A' *_MEASURED_VALUE_SHORT_FLOATING_POINT_NUMBER_COMMAND_WITH_TIME_TAG_CP56TIME2A
-        ]
-        ['BITSTRING_OF_32_BIT_COMMAND_WITH_TIME_TAG_CP56TIME2A'     *_BITSTRING_OF_32_BIT_COMMAND_WITH_TIME_TAG_CP56TIME2A
-        ]
-        ['END_OF_INITIALISATION'                                    *_END_OF_INITIALISATION
-            [simple CauseOfInitialization coi]
-        ]
-        ['INTERROGATION_COMMAND'                                    *_INTERROGATION_COMMAND
-            [simple QualifierOfInterrogation qoi]
-        ]
-        ['COUNTER_INTERROGATION_COMMAND'                            *_COUNTER_INTERROGATION_COMMAND
-            [simple QualifierOfCounterInterrogationCommand qcc]
-        ]
-        ['READ_COMMAND'                                             *_READ_COMMAND
-        ]
-        ['CLOCK_SYNCHRONISATION_COMMAND'                            *_CLOCK_SYNCHRONISATION_COMMAND
-            [simple SevenOctetBinaryTime cp56Time2a]
-        ]
-        ['TEST_COMMAND'                                             *_TEST_COMMAND
-            [simple FixedTestBitPatternTwoOctet fbp]
-        ]
-        ['RESET_PROCESS_COMMAND'                                    *_RESET_PROCESS_COMMAND
-            [simple QualifierOfResetProcessCommand qrp]
-        ]
-        ['DELAY_ACQUISITION_COMMAND'                                *_DELAY_ACQUISITION_COMMAND
-            [simple TwoOctetBinaryTime cp16Time2a]
-        ]
-        ['TEST_COMMAND_WITH_TIME_TAG_CP56TIME2A'                    *_TEST_COMMAND_WITH_TIME_TAG_CP56TIME2A
-        ]
-        ['PARAMETER_OF_MEASURED_VALUES_NORMALIZED_VALUE'            *_PARAMETER_OF_MEASURED_VALUES_NORMALIZED_VALUE
-            [simple NormalizedValue nva]
-            [simple QualifierOfParameterOfMeasuredValues qpm]
-        ]
-        ['PARAMETER_OF_MEASURED_VALUES_SCALED_VALUE'                *_PARAMETER_OF_MEASURED_VALUES_SCALED_VALUE
-            [simple ScaledValue sva]
-            [simple QualifierOfParameterOfMeasuredValues qpm]
-        ]
-        ['PARAMETER_OF_MEASURED_VALUES_SHORT_FLOATING_POINT_NUMBER' *_PARAMETER_OF_MEASURED_VALUES_SHORT_FLOATING_POINT_NUMBER
-            [simple float 32 value]
-            [simple QualifierOfParameterOfMeasuredValues qpm]
-        ]
-        ['PARAMETER_ACTIVATION'                                     *_PARAMETER_ACTIVATION
-            [simple QualifierOfParameterActivation qpa]
-        ]
-        ['FILE_READY'                                               *_FILE_READY
-            [simple NameOfFile nof]
-            [simple LengthOfFile lof]
-            [simple FileReadyQualifier frq]
-        ]
-        ['SECTION_READY'                                            *_SECTION_READY
-            [simple NameOfFile nof]
-            [simple NameOfSection nos]
-            [simple LengthOfFile lof]
-            [simple SectionReadyQualifier srq]
-        ]
-        ['CALL_DIRECTORY_SELECT_FILE_CALL_FILE_CALL_SECTION'        *_CALL_DIRECTORY_SELECT_FILE_CALL_FILE_CALL_SECTION
-            [simple NameOfFile nof]
-            [simple NameOfSection nos]
-            [simple SelectAndCallQualifier scq]
-        ]
-        ['LAST_SECTION_LAST_SEGMENT'                                *_LAST_SECTION_LAST_SEGMENT
-            [simple NameOfFile nof]
-            [simple NameOfSection nos]
-            [simple LastSectionOrSegmentQualifier lsq]
-            [simple Checksum chs]
-        ]
-        ['ACK_FILE_ACK_SECTION'                                     *_ACK_FILE_ACK_SECTION
-            [simple NameOfFile nof]
-            [simple NameOfSection nos]
-            [simple AcknowledgeFileOrSectionQualifier afq]
-        ]
-        ['SEGMENT'                                                  *_SEGMENT
-            [simple NameOfFile nof]
-            [simple NameOfSection nos]
-            [simple LengthOfSegment los]
-// NOF + NOS + LOS + *segment*
-        ]
-        ['DIRECTORY'                                                *_DIRECTORY
-            [simple NameOfFile nof]
-            [simple LengthOfFile lof]
-            [simple StatusOfFile sof]
-            [simple SevenOctetBinaryTime cp56Time2a]
+    [typeSwitch numTimeByte
+        ['0' *WithoutTime
+            [typeSwitch typeIdentification
+                ['SINGLE_POINT_INFORMATION'                                 *_SINGLE_POINT_INFORMATION
+                    [simple SinglePointInformation siq]
+                ]
+                ['DOUBLE_POINT_INFORMATION'                                 *_DOUBLE_POINT_INFORMATION
+                    [simple DoublePointInformation diq]
+                ]
+                ['STEP_POSITION_INFORMATION'                                *_STEP_POSITION_INFORMATION
+                    [simple ValueWithTransientStateIndication vti]
+                    [simple QualityDescriptor qds]
+                ]
+                ['BITSTRING_OF_32_BIT'                                      *_BITSTRING_OF_32_BIT
+                    [simple BinaryStateInformation bsi]
+                    [simple QualityDescriptor qds]
+                ]
+                ['MEASURED_VALUE_NORMALISED_VALUE'                          *_MEASURED_VALUE_NORMALISED_VALUE
+                    [simple NormalizedValue nva]
+                    [simple QualityDescriptor qds]
+                ]
+                ['MEASURED_VALUE_SCALED_VALUE'                              *_MEASURED_VALUE_SCALED_VALUE
+                    [simple ScaledValue sva]
+                    [simple QualityDescriptor qds]
+                ]
+                ['MEASURED_VALUE_SHORT_FLOATING_POINT_NUMBER'               *_MEASURED_VALUE_SHORT_FLOATING_POINT_NUMBER
+                    [simple float 32 value]
+                    [simple QualityDescriptor qds]
+                ]
+                ['INTEGRATED_TOTALS'                                        *_INTEGRATED_TOTALS
+                    [simple BinaryCounterReading bcr]
+                ]
+                ['PACKED_SINGLE_POINT_INFORMATION_WITH_STATUS_CHANGE_DETECTION' *_PACKED_SINGLE_POINT_INFORMATION_WITH_STATUS_CHANGE_DETECTION
+                    [simple StatusChangeDetection scd]
+                    [simple QualityDescriptor qds]
+                ]
+                ['MEASURED_VALUE_NORMALIZED_VALUE_WITHOUT_QUALITY_DESCRIPTOR' *_MEASURED_VALUE_NORMALIZED_VALUE_WITHOUT_QUALITY_DESCRIPTOR
+                    [simple NormalizedValue nva]
+                ]
+                ['SINGLE_COMMAND'                                           *_SINGLE_COMMAND
+                    [simple SingleCommand sco]
+                ]
+                ['DOUBLE_COMMAND'                                           *_DOUBLE_COMMAND
+                    [simple DoubleCommand dco]
+                ]
+                ['REGULATING_STEP_COMMAND'                                  *_REGULATING_STEP_COMMAND
+                    [simple RegulatingStepCommand rco]
+                ]
+                ['SET_POINT_COMMAND_NORMALISED_VALUE'                       *_SET_POINT_COMMAND_NORMALISED_VALUE
+                    [simple NormalizedValue nva]
+                    [simple QualifierOfSetPointCommand qos]
+                ]
+                ['SET_POINT_COMMAND_SCALED_VALUE'                           *_SET_POINT_COMMAND_SCALED_VALUE
+                    [simple ScaledValue sva]
+                    [simple QualifierOfSetPointCommand qos]
+                ]
+                ['SET_POINT_COMMAND_SHORT_FLOATING_POINT_NUMBER'            *_SET_POINT_COMMAND_SHORT_FLOATING_POINT_NUMBER
+                    [simple float 32 value]
+                    [simple QualifierOfSetPointCommand qos]
+                ]
+                ['BITSTRING_32_BIT_COMMAND'                                 *_BITSTRING_32_BIT_COMMAND
+                    [simple BinaryStateInformation bsi]
+                ]
+                ['END_OF_INITIALISATION'                                    *_END_OF_INITIALISATION
+                    [simple CauseOfInitialization coi]
+                ]
+                ['INTERROGATION_COMMAND'                                    *_INTERROGATION_COMMAND
+                    [simple QualifierOfInterrogation qoi]
+                ]
+                ['COUNTER_INTERROGATION_COMMAND'                            *_COUNTER_INTERROGATION_COMMAND
+                    [simple QualifierOfCounterInterrogationCommand qcc]
+                ]
+                ['READ_COMMAND'                                             *_READ_COMMAND
+                ]
+                ['CLOCK_SYNCHRONISATION_COMMAND'                            *_CLOCK_SYNCHRONISATION_COMMAND
+                    [simple SevenOctetBinaryTime cp56Time2a]
+                ]
+                ['TEST_COMMAND'                                             *_TEST_COMMAND
+                    [simple FixedTestBitPatternTwoOctet fbp]
+                ]
+                ['RESET_PROCESS_COMMAND'                                    *_RESET_PROCESS_COMMAND
+                    [simple QualifierOfResetProcessCommand qrp]
+                ]
+                ['DELAY_ACQUISITION_COMMAND'                                *_DELAY_ACQUISITION_COMMAND
+                    [simple TwoOctetBinaryTime cp16Time2a]
+                ]
+                ['PARAMETER_OF_MEASURED_VALUES_NORMALIZED_VALUE'            *_PARAMETER_OF_MEASURED_VALUES_NORMALIZED_VALUE
+                    [simple NormalizedValue nva]
+                    [simple QualifierOfParameterOfMeasuredValues qpm]
+                ]
+                ['PARAMETER_OF_MEASURED_VALUES_SCALED_VALUE'                *_PARAMETER_OF_MEASURED_VALUES_SCALED_VALUE
+                    [simple ScaledValue sva]
+                    [simple QualifierOfParameterOfMeasuredValues qpm]
+                ]
+                ['PARAMETER_OF_MEASURED_VALUES_SHORT_FLOATING_POINT_NUMBER' *_PARAMETER_OF_MEASURED_VALUES_SHORT_FLOATING_POINT_NUMBER
+                    [simple float 32 value]
+                    [simple QualifierOfParameterOfMeasuredValues qpm]
+                ]
+                ['PARAMETER_ACTIVATION'                                     *_PARAMETER_ACTIVATION
+                    [simple QualifierOfParameterActivation qpa]
+                ]
+                ['FILE_READY'                                               *_FILE_READY
+                    [simple NameOfFile nof]
+                    [simple LengthOfFile lof]
+                    [simple FileReadyQualifier frq]
+                ]
+                ['SECTION_READY'                                            *_SECTION_READY
+                    [simple NameOfFile nof]
+                    [simple NameOfSection nos]
+                    [simple LengthOfFile lof]
+                    [simple SectionReadyQualifier srq]
+                ]
+                ['CALL_DIRECTORY_SELECT_FILE_CALL_FILE_CALL_SECTION'        *_CALL_DIRECTORY_SELECT_FILE_CALL_FILE_CALL_SECTION
+                    [simple NameOfFile nof]
+                    [simple NameOfSection nos]
+                    [simple SelectAndCallQualifier scq]
+                ]
+                ['LAST_SECTION_LAST_SEGMENT'                                *_LAST_SECTION_LAST_SEGMENT
+                    [simple NameOfFile nof]
+                    [simple NameOfSection nos]
+                    [simple LastSectionOrSegmentQualifier lsq]
+                    [simple Checksum chs]
+                ]
+                ['ACK_FILE_ACK_SECTION'                                     *_ACK_FILE_ACK_SECTION
+                    [simple NameOfFile nof]
+                    [simple NameOfSection nos]
+                    [simple AcknowledgeFileOrSectionQualifier afq]
+                ]
+                ['SEGMENT'                                                  *_SEGMENT
+                    [simple NameOfFile nof]
+                    [simple NameOfSection nos]
+                    [simple LengthOfSegment los]
+        // NOF + NOS + LOS + *segment*
+                ]
+                ['DIRECTORY'                                                *_DIRECTORY
+                    [simple NameOfFile nof]
+                    [simple LengthOfFile lof]
+                    [simple StatusOfFile sof]
+                    [simple SevenOctetBinaryTime cp56Time2a]
+                ]
+            ]
+        ]
+        ['3' *WithTreeByteTime
+            [abstract ThreeOctetBinaryTime cp24Time2a]
+            [typeSwitch typeIdentification
+                ['SINGLE_POINT_INFORMATION_WITH_TIME_TAG'                   *_SINGLE_POINT_INFORMATION
+                    [simple SinglePointInformation siq]
+                    [simple ThreeOctetBinaryTime cp24Time2a]
+                ]
+                ['DOUBLE_POINT_INFORMATION_WITH_TIME_TAG'                   *_DOUBLE_POINT_INFORMATION
+                    [simple DoublePointInformation diq]
+                    [simple ThreeOctetBinaryTime cp24Time2a]
+                ]
+                ['STEP_POSITION_INFORMATION_WITH_TIME_TAG'                  *_STEP_POSITION_INFORMATION
+                    [simple ValueWithTransientStateIndication vti]
+                    [simple QualityDescriptor qds]
+                    [simple ThreeOctetBinaryTime cp24Time2a]
+                ]
+                ['BITSTRING_OF_32_BIT_WITH_TIME_TAG'                        *_BITSTRING_OF_32_BIT
+                    [simple BinaryStateInformation bsi]
+                    [simple QualityDescriptor qds]
+                    [simple ThreeOctetBinaryTime cp24Time2a]
+                ]
+                ['MEASURED_VALUE_NORMALIZED_VALUE_WITH_TIME_TAG'            *_MEASURED_VALUE_NORMALIZED_VALUE
+                    [simple NormalizedValue nva]
+                    [simple QualityDescriptor qds]
+                    [simple ThreeOctetBinaryTime cp24Time2a]
+                ]
+                ['MEASURED_VALUE_SCALED_VALUE_WITH_TIME_TAG'                 *_MEASURED_VALUE_SCALED_VALUE
+                    [simple ScaledValue sva]
+                    [simple QualityDescriptor qds]
+                    [simple ThreeOctetBinaryTime cp24Time2a]
+                ]
+                ['MEASURED_VALUE_SHORT_FLOATING_POINT_NUMBER_WITH_TIME_TAG' *_MEASURED_VALUE_SHORT_FLOATING_POINT_NUMBER
+                    [simple float 32 value]
+                    [simple QualityDescriptor qds]
+                    [simple ThreeOctetBinaryTime cp24Time2a]
+                ]
+                ['INTEGRATED_TOTALS_WITH_TIME_TAG'                          *_INTEGRATED_TOTALS
+                    [simple BinaryCounterReading bcr]
+                    [simple ThreeOctetBinaryTime cp24Time2a]
+                ]
+                ['EVENT_OF_PROTECTION_EQUIPMENT_WITH_TIME_TAG'              *_EVENT_OF_PROTECTION_EQUIPMENT
+                    [simple TwoOctetBinaryTime cp16Time2a]
+                    [simple ThreeOctetBinaryTime cp24Time2a]
+                ]
+                ['PACKED_START_EVENTS_OF_PROTECTION_EQUIPMENT_WITH_TIME_TAG' *_PACKED_START_EVENTS_OF_PROTECTION_EQUIPMENT
+                    [simple SingleEventOfProtectionEquipment sep]
+                    [simple QualityDescriptorForPointsOfProtectionEquipment qdp]
+                    [simple TwoOctetBinaryTime cp16Time2a]
+                    [simple ThreeOctetBinaryTime cp24Time2a]
+                ]
+                ['PACKED_OUTPUT_CIRCUIT_INFORMATION_OF_PROTECTION_EQUIPMENT_WITH_TIME_TAG' *_PACKED_OUTPUT_CIRCUIT_INFORMATION_OF_PROTECTION_EQUIPMENT
+                    [simple OutputCircuitInformation oci]
+                    [simple QualityDescriptorForPointsOfProtectionEquipment qdp]
+                    [simple TwoOctetBinaryTime cp16Time2a]
+                    [simple ThreeOctetBinaryTime cp24Time2a]
+                ]
+            ]
+        ]
+        ['7' *WithSevenByteTime
+            [abstract SevenOctetBinaryTime cp56Time2a]
+            [typeSwitch typeIdentification
+                ['SINGLE_POINT_INFORMATION_WITH_TIME_TAG_CP56TIME2A'        *_SINGLE_POINT_INFORMATION
+                    [simple SinglePointInformation siq]
+                    [simple SevenOctetBinaryTime cp56Time2a]
+                ]
+                ['DOUBLE_POINT_INFORMATION_WITH_TIME_TAG_CP56TIME2A'        *_DOUBLE_POINT_INFORMATION
+                    [simple DoublePointInformation diq]
+                    [simple SevenOctetBinaryTime cp56Time2a]
+                ]
+                ['STEP_POSITION_INFORMATION_WITH_TIME_TAG_CP56TIME2A'       *_STEP_POSITION_INFORMATION
+                    [simple ValueWithTransientStateIndication vti]
+                    [simple QualityDescriptor qds]
+                    [simple SevenOctetBinaryTime cp56Time2a]
+                ]
+                ['BITSTRING_OF_32_BIT_WITH_TIME_TAG_CP56TIME2A'             *_BITSTRING_OF_32_BIT
+                    [simple BinaryStateInformation bsi]
+                    [simple QualityDescriptor qds]
+                    [simple SevenOctetBinaryTime cp56Time2a]
+                ]
+                ['MEASURED_VALUE_NORMALISED_VALUE_WITH_TIME_TAG_CP56TIME2A' *_MEASURED_VALUE_NORMALISED_VALUE
+                    [simple NormalizedValue nva]
+                    [simple QualityDescriptor qds]
+                    [simple SevenOctetBinaryTime cp56Time2a]
+                ]
+                ['MEASURED_VALUE_SCALED_VALUE_WITH_TIME_TAG_CP56TIME2A'     *_MEASURED_VALUE_SCALED_VALUE
+                    [simple ScaledValue sva]
+                    [simple QualityDescriptor qds]
+                    [simple SevenOctetBinaryTime cp56Time2a]
+                ]
+                ['MEASURED_VALUE_SHORT_FLOATING_POINT_NUMBER_WITH_TIME_TAG_CP56TIME2A' *_MEASURED_VALUE_SHORT_FLOATING_POINT_NUMBER
+                    [simple float 32 value]
+                    [simple QualityDescriptor qds]
+                    [simple SevenOctetBinaryTime cp56Time2a]
+                ]
+                ['INTEGRATED_TOTALS_WITH_TIME_TAG_CP56TIME2A'               *_INTEGRATED_TOTALS
+                    [simple BinaryCounterReading bcr]
+                    [simple SevenOctetBinaryTime cp56Time2a]
+                ]
+                ['EVENT_OF_PROTECTION_EQUIPMENT_WITH_TIME_TAG_CP56TIME2A'   *_EVENT_OF_PROTECTION_EQUIPMENT
+                    [simple TwoOctetBinaryTime cp16Time2a]
+                    [simple SevenOctetBinaryTime cp56Time2a]
+                ]
+                ['PACKED_START_EVENTS_OF_PROTECTION_EQUIPMENT_WITH_TIME_TAG_CP56TIME2A' *_PACKED_START_EVENTS_OF_PROTECTION_EQUIPMENT
+                    [simple SingleEventOfProtectionEquipment sep]
+                    [simple QualityDescriptorForPointsOfProtectionEquipment qdp]
+                    [simple TwoOctetBinaryTime cp16Time2a]
+                    [simple SevenOctetBinaryTime cp56Time2a]
+                ]
+                ['PACKED_OUTPUT_CIRCUIT_INFORMATION_OF_PROTECTION_EQUIPMENT_WITH_TIME_TAG_CP56TIME2A' *_PACKED_OUTPUT_CIRCUIT_INFORMATION_OF_PROTECTION_EQUIPMENT
+                    [simple OutputCircuitInformation oci]
+                    [simple QualityDescriptorForPointsOfProtectionEquipment qdp]
+                    [simple TwoOctetBinaryTime cp16Time2a]
+                    [simple SevenOctetBinaryTime cp56Time2a]
+                ]
+                /*['SINGLE_COMMAND_WITH_TIME_TAG_CP56TIME2A'                  *_SINGLE_COMMAND
+                ]
+                ['DOUBLE_COMMAND_WITH_TIME_TAG_CP56TIME2A'                  *_DOUBLE_COMMAND
+                ]
+                ['REGULATING_STEP_COMMAND_WITH_TIME_TAG_CP56TIME2A'         *_REGULATING_STEP_COMMAND
+                ]
+                ['MEASURED_VALUE_NORMALISED_VALUE_COMMAND_WITH_TIME_TAG_CP56TIME2A' *_MEASURED_VALUE_NORMALISED_VALUE_COMMAND
+                ]
+                ['MEASURED_VALUE_SCALED_VALUE_COMMAND_WITH_TIME_TAG_CP56TIME2A' *_MEASURED_VALUE_SCALED_VALUE_COMMAND
+                ]
+                ['MEASURED_VALUE_SHORT_FLOATING_POINT_NUMBER_COMMAND_WITH_TIME_TAG_CP56TIME2A' *_MEASURED_VALUE_SHORT_FLOATING_POINT_NUMBER_COMMAND
+                ]
+                ['BITSTRING_OF_32_BIT_COMMAND_WITH_TIME_TAG_CP56TIME2A'     *_BITSTRING_OF_32_BIT_COMMAND
+                ]
+                ['TEST_COMMAND_WITH_TIME_TAG_CP56TIME2A'                    *_TEST_COMMAND
+                ]*/
+            ]
         ]
     ]
 ]
@@ -493,20 +507,32 @@
 
 // CP56Time2a
 [type SevenOctetBinaryTime                                                                     byteOrder='LITTLE_ENDIAN'
-    [array byte value count '7']
-    // TODO: Implement
+    [simple   uint 16 milliseconds  ]
+    [simple   bit     invalid       ]
+    [simple   bit     substituted   ]
+    [simple   uint 6  minutes       ]
+    [simple   bit     daylightSaving]
+    [reserved uint 2  '0x00'        ]
+    [simple   uint 5  hour          ]
+    [simple   uint 3  dayOfWeek     ]
+    [simple   uint 5  day           ]
+    [reserved uint 4  '0x00'        ]
+    [simple   uint 4  month         ]
+    [reserved uint 1  '0x00'        ]
+    [simple   uint 7  year          ]
 ]
 
 // CP24Time2a
 [type ThreeOctetBinaryTime                                                                     byteOrder='LITTLE_ENDIAN'
-    [array byte value count '3']
-    // TODO: Implement
+    [simple   uint 16 milliseconds]
+    [simple   bit     invalid     ]
+    [reserved uint 1  '0x00'      ]
+    [simple   uint 6  minutes     ]
 ]
 
 // CP16Time2av
 [type TwoOctetBinaryTime                                                                       byteOrder='LITTLE_ENDIAN'
-    [array byte value count '2']
-    // TODO: Implement
+    [simple uint 16 milliseconds]
 ]
 
 //////////////////////////////////////////////////////////
@@ -627,74 +653,74 @@
     [simple uint 16 pattern] // TODO: Possibly bit-string
 ]
 
-[enum uint 8 TypeIdentification
-    ['0x00' NOT_USED                                                                          ]
-    ['0x01' SINGLE_POINT_INFORMATION                                                          ]
-    ['0x02' SINGLE_POINT_INFORMATION_WITH_TIME_TAG                                            ]
-    ['0x03' DOUBLE_POINT_INFORMATION                                                          ]
-    ['0x04' DOUBLE_POINT_INFORMATION_WITH_TIME_TAG                                            ]
-    ['0x05' STEP_POSITION_INFORMATION                                                         ]
-    ['0x06' STEP_POSITION_INFORMATION_WITH_TIME_TAG                                           ]
-    ['0x07' BITSTRING_OF_32_BIT                                                               ]
-    ['0x08' BITSTRING_OF_32_BIT_WITH_TIME_TAG                                                 ]
-    ['0x09' MEASURED_VALUE_NORMALISED_VALUE                                                   ]
-    ['0x0A' MEASURED_VALUE_NORMALIZED_VALUE_WITH_TIME_TAG                                     ]
-    ['0x0B' MEASURED_VALUE_SCALED_VALUE                                                       ]
-    ['0x0C' MEASURED_VALUE_SCALED_VALUE_WIT_TIME_TAG                                          ]
-    ['0x0D' MEASURED_VALUE_SHORT_FLOATING_POINT_NUMBER                                        ]
-    ['0x0E' MEASURED_VALUE_SHORT_FLOATING_POINT_NUMBER_WITH_TIME_TAG                          ]
-    ['0x0F' INTEGRATED_TOTALS                                                                 ]
-    ['0x10' INTEGRATED_TOTALS_WITH_TIME_TAG                                                   ]
-    ['0x11' EVENT_OF_PROTECTION_EQUIPMENT_WITH_TIME_TAG                                       ]
-    ['0x12' PACKED_START_EVENTS_OF_PROTECTION_EQUIPMENT_WITH_TIME_TAG                         ]
-    ['0x13' PACKED_OUTPUT_CIRCUIT_INFORMATION_OF_PROTECTION_EQUIPMENT_WITH_TIME_TAG           ]
-    ['0x14' PACKED_SINGLE_POINT_INFORMATION_WITH_STATUS_CHANGE_DETECTION                      ]
-    ['0x15' MEASURED_VALUE_NORMALIZED_VALUE_WITHOUT_QUALITY_DESCRIPTOR                        ]
-    ['0x1E' SINGLE_POINT_INFORMATION_WITH_TIME_TAG_CP56TIME2A                                 ]
-    ['0x1F' DOUBLE_POINT_INFORMATION_WITH_TIME_TAG_CP56TIME2A                                 ]
-    ['0x20' STEP_POSITION_INFORMATION_WITH_TIME_TAG_CP56TIME2A                                ]
-    ['0x21' BITSTRING_OF_32_BIT_WITH_TIME_TAG_CP56TIME2A                                      ]
-    ['0x22' MEASURED_VALUE_NORMALISED_VALUE_WITH_TIME_TAG_CP56TIME2A                          ]
-    ['0x23' MEASURED_VALUE_SCALED_VALUE_WITH_TIME_TAG_CP56TIME2A                              ]
-    ['0x24' MEASURED_VALUE_SHORT_FLOATING_POINT_NUMBER_WITH_TIME_TAG_CP56TIME2A               ]
-    ['0x25' INTEGRATED_TOTALS_WITH_TIME_TAG_CP56TIME2A                                        ]
-    ['0x26' EVENT_OF_PROTECTION_EQUIPMENT_WITH_TIME_TAG_CP56TIME2A                            ]
-    ['0x27' PACKED_START_EVENTS_OF_PROTECTION_EQUIPMENT_WITH_TIME_TAG_CP56TIME2A              ]
-    ['0x28' PACKED_OUTPUT_CIRCUIT_INFORMATION_OF_PROTECTION_EQUIPMENT_WITH_TIME_TAG_CP56TIME2A]
-    ['0x2D' SINGLE_COMMAND                                                                    ]
-    ['0x2E' DOUBLE_COMMAND                                                                    ]
-    ['0x2F' REGULATING_STEP_COMMAND                                                           ]
-    ['0x30' SET_POINT_COMMAND_NORMALISED_VALUE                                                ]
-    ['0x31' SET_POINT_COMMAND_SCALED_VALUE                                                    ]
-    ['0x32' SET_POINT_COMMAND_SHORT_FLOATING_POINT_NUMBER                                     ]
-    ['0x33' BITSTRING_32_BIT_COMMAND                                                          ]
-    ['0x3A' SINGLE_COMMAND_WITH_TIME_TAG_CP56TIME2A                                           ]
-    ['0x3B' DOUBLE_COMMAND_WITH_TIME_TAG_CP56TIME2A                                           ]
-    ['0x3C' REGULATING_STEP_COMMAND_WITH_TIME_TAG_CP56TIME2A                                  ]
-    ['0x3D' MEASURED_VALUE_NORMALISED_VALUE_COMMAND_WITH_TIME_TAG_CP56TIME2A                  ]
-    ['0x3E' MEASURED_VALUE_SCALED_VALUE_COMMAND_WITH_TIME_TAG_CP56TIME2A                      ]
-    ['0x3F' MEASURED_VALUE_SHORT_FLOATING_POINT_NUMBER_COMMAND_WITH_TIME_TAG_CP56TIME2A       ]
-    ['0x40' BITSTRING_OF_32_BIT_COMMAND_WITH_TIME_TAG_CP56TIME2A                              ]
-    ['0x46' END_OF_INITIALISATION                                                             ]
-    ['0x64' INTERROGATION_COMMAND                                                             ]
-    ['0x65' COUNTER_INTERROGATION_COMMAND                                                     ]
-    ['0x66' READ_COMMAND                                                                      ]
-    ['0x67' CLOCK_SYNCHRONISATION_COMMAND                                                     ]
-    ['0x68' TEST_COMMAND                                                                      ]
-    ['0x69' RESET_PROCESS_COMMAND                                                             ]
-    ['0x6A' DELAY_ACQUISITION_COMMAND                                                         ]
-    ['0x6B' TEST_COMMAND_WITH_TIME_TAG_CP56TIME2A                                             ]
-    ['0x6E' PARAMETER_OF_MEASURED_VALUES_NORMALIZED_VALUE                                     ]
-    ['0x6F' PARAMETER_OF_MEASURED_VALUES_SCALED_VALUE                                         ]
-    ['0x70' PARAMETER_OF_MEASURED_VALUES_SHORT_FLOATING_POINT_NUMBER                          ]
-    ['0x71' PARAMETER_ACTIVATION                                                              ]
-    ['0x78' FILE_READY                                                                        ]
-    ['0x79' SECTION_READY                                                                     ]
-    ['0x7A' CALL_DIRECTORY_SELECT_FILE_CALL_FILE_CALL_SECTION                                 ]
-    ['0x7B' LAST_SECTION_LAST_SEGMENT                                                         ]
-    ['0x7C' ACK_FILE_ACK_SECTION                                                              ]
-    ['0x7D' SEGMENT                                                                           ]
-    ['0x7E' DIRECTORY                                                                         ]
+[enum uint 8 TypeIdentification                                                               (uint 7 numTimeBytes)
+    ['0x00' NOT_USED                                                                          ['0'                ]]
+    ['0x01' SINGLE_POINT_INFORMATION                                                          ['0'                ]]
+    ['0x02' SINGLE_POINT_INFORMATION_WITH_TIME_TAG                                            ['3'                ]]
+    ['0x03' DOUBLE_POINT_INFORMATION                                                          ['0'                ]]
+    ['0x04' DOUBLE_POINT_INFORMATION_WITH_TIME_TAG                                            ['3'                ]]
+    ['0x05' STEP_POSITION_INFORMATION                                                         ['0'                ]]
+    ['0x06' STEP_POSITION_INFORMATION_WITH_TIME_TAG                                           ['3'                ]]
+    ['0x07' BITSTRING_OF_32_BIT                                                               ['0'                ]]
+    ['0x08' BITSTRING_OF_32_BIT_WITH_TIME_TAG                                                 ['3'                ]]
+    ['0x09' MEASURED_VALUE_NORMALISED_VALUE                                                   ['0'                ]]
+    ['0x0A' MEASURED_VALUE_NORMALIZED_VALUE_WITH_TIME_TAG                                     ['3'                ]]
+    ['0x0B' MEASURED_VALUE_SCALED_VALUE                                                       ['0'                ]]
+    ['0x0C' MEASURED_VALUE_SCALED_VALUE_WITH_TIME_TAG                                         ['3'                ]]
+    ['0x0D' MEASURED_VALUE_SHORT_FLOATING_POINT_NUMBER                                        ['0'                ]]
+    ['0x0E' MEASURED_VALUE_SHORT_FLOATING_POINT_NUMBER_WITH_TIME_TAG                          ['3'                ]]
+    ['0x0F' INTEGRATED_TOTALS                                                                 ['0'                ]]
+    ['0x10' INTEGRATED_TOTALS_WITH_TIME_TAG                                                   ['3'                ]]
+    ['0x11' EVENT_OF_PROTECTION_EQUIPMENT_WITH_TIME_TAG                                       ['3'                ]]
+    ['0x12' PACKED_START_EVENTS_OF_PROTECTION_EQUIPMENT_WITH_TIME_TAG                         ['3'                ]]
+    ['0x13' PACKED_OUTPUT_CIRCUIT_INFORMATION_OF_PROTECTION_EQUIPMENT_WITH_TIME_TAG           ['3'                ]]
+    ['0x14' PACKED_SINGLE_POINT_INFORMATION_WITH_STATUS_CHANGE_DETECTION                      ['0'                ]]
+    ['0x15' MEASURED_VALUE_NORMALIZED_VALUE_WITHOUT_QUALITY_DESCRIPTOR                        ['0'                ]]
+    ['0x1E' SINGLE_POINT_INFORMATION_WITH_TIME_TAG_CP56TIME2A                                 ['7'                ]]
+    ['0x1F' DOUBLE_POINT_INFORMATION_WITH_TIME_TAG_CP56TIME2A                                 ['7'                ]]
+    ['0x20' STEP_POSITION_INFORMATION_WITH_TIME_TAG_CP56TIME2A                                ['7'                ]]
+    ['0x21' BITSTRING_OF_32_BIT_WITH_TIME_TAG_CP56TIME2A                                      ['7'                ]]
+    ['0x22' MEASURED_VALUE_NORMALISED_VALUE_WITH_TIME_TAG_CP56TIME2A                          ['7'                ]]
+    ['0x23' MEASURED_VALUE_SCALED_VALUE_WITH_TIME_TAG_CP56TIME2A                              ['7'                ]]
+    ['0x24' MEASURED_VALUE_SHORT_FLOATING_POINT_NUMBER_WITH_TIME_TAG_CP56TIME2A               ['7'                ]]
+    ['0x25' INTEGRATED_TOTALS_WITH_TIME_TAG_CP56TIME2A                                        ['7'                ]]
+    ['0x26' EVENT_OF_PROTECTION_EQUIPMENT_WITH_TIME_TAG_CP56TIME2A                            ['7'                ]]
+    ['0x27' PACKED_START_EVENTS_OF_PROTECTION_EQUIPMENT_WITH_TIME_TAG_CP56TIME2A              ['7'                ]]
+    ['0x28' PACKED_OUTPUT_CIRCUIT_INFORMATION_OF_PROTECTION_EQUIPMENT_WITH_TIME_TAG_CP56TIME2A['7'                ]]
+    ['0x2D' SINGLE_COMMAND                                                                    ['0'                ]]
+    ['0x2E' DOUBLE_COMMAND                                                                    ['0'                ]]
+    ['0x2F' REGULATING_STEP_COMMAND                                                           ['0'                ]]
+    ['0x30' SET_POINT_COMMAND_NORMALISED_VALUE                                                ['0'                ]]
+    ['0x31' SET_POINT_COMMAND_SCALED_VALUE                                                    ['0'                ]]
+    ['0x32' SET_POINT_COMMAND_SHORT_FLOATING_POINT_NUMBER                                     ['0'                ]]
+    ['0x33' BITSTRING_32_BIT_COMMAND                                                          ['0'                ]]
+    ['0x3A' SINGLE_COMMAND_WITH_TIME_TAG_CP56TIME2A                                           ['7'                ]]
+    ['0x3B' DOUBLE_COMMAND_WITH_TIME_TAG_CP56TIME2A                                           ['7'                ]]
+    ['0x3C' REGULATING_STEP_COMMAND_WITH_TIME_TAG_CP56TIME2A                                  ['7'                ]]
+    ['0x3D' MEASURED_VALUE_NORMALISED_VALUE_COMMAND_WITH_TIME_TAG_CP56TIME2A                  ['7'                ]]
+    ['0x3E' MEASURED_VALUE_SCALED_VALUE_COMMAND_WITH_TIME_TAG_CP56TIME2A                      ['7'                ]]
+    ['0x3F' MEASURED_VALUE_SHORT_FLOATING_POINT_NUMBER_COMMAND_WITH_TIME_TAG_CP56TIME2A       ['7'                ]]
+    ['0x40' BITSTRING_OF_32_BIT_COMMAND_WITH_TIME_TAG_CP56TIME2A                              ['7'                ]]
+    ['0x46' END_OF_INITIALISATION                                                             ['0'                ]]
+    ['0x64' INTERROGATION_COMMAND                                                             ['0'                ]]
+    ['0x65' COUNTER_INTERROGATION_COMMAND                                                     ['0'                ]]
+    ['0x66' READ_COMMAND                                                                      ['0'                ]]
+    ['0x67' CLOCK_SYNCHRONISATION_COMMAND                                                     ['0'                ]]
+    ['0x68' TEST_COMMAND                                                                      ['0'                ]]
+    ['0x69' RESET_PROCESS_COMMAND                                                             ['0'                ]]
+    ['0x6A' DELAY_ACQUISITION_COMMAND                                                         ['0'                ]]
+    ['0x6B' TEST_COMMAND_WITH_TIME_TAG_CP56TIME2A                                             ['0'                ]]
+    ['0x6E' PARAMETER_OF_MEASURED_VALUES_NORMALIZED_VALUE                                     ['0'                ]]
+    ['0x6F' PARAMETER_OF_MEASURED_VALUES_SCALED_VALUE                                         ['0'                ]]
+    ['0x70' PARAMETER_OF_MEASURED_VALUES_SHORT_FLOATING_POINT_NUMBER                          ['0'                ]]
+    ['0x71' PARAMETER_ACTIVATION                                                              ['0'                ]]
+    ['0x78' FILE_READY                                                                        ['0'                ]]
+    ['0x79' SECTION_READY                                                                     ['0'                ]]
+    ['0x7A' CALL_DIRECTORY_SELECT_FILE_CALL_FILE_CALL_SECTION                                 ['0'                ]]
+    ['0x7B' LAST_SECTION_LAST_SEGMENT                                                         ['0'                ]]
+    ['0x7C' ACK_FILE_ACK_SECTION                                                              ['0'                ]]
+    ['0x7D' SEGMENT                                                                           ['0'                ]]
+    ['0x7E' DIRECTORY                                                                         ['7'                ]]
 ]
 
 [enum uint 6 CauseOfTransmission

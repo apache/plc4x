@@ -38,15 +38,15 @@ import org.apache.plc4x.java.spi.generation.*;
 public class TwoOctetBinaryTime implements Message {
 
   // Properties.
-  protected final byte[] value;
+  protected final int milliseconds;
 
-  public TwoOctetBinaryTime(byte[] value) {
+  public TwoOctetBinaryTime(int milliseconds) {
     super();
-    this.value = value;
+    this.milliseconds = milliseconds;
   }
 
-  public byte[] getValue() {
-    return value;
+  public int getMilliseconds() {
+    return milliseconds;
   }
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
@@ -54,11 +54,11 @@ public class TwoOctetBinaryTime implements Message {
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     writeBuffer.pushContext("TwoOctetBinaryTime");
 
-    // Array Field (value)
-    writeByteArrayField(
-        "value",
-        value,
-        writeByteArray(writeBuffer, 8),
+    // Simple Field (milliseconds)
+    writeSimpleField(
+        "milliseconds",
+        milliseconds,
+        writeUnsignedInt(writeBuffer, 16),
         WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     writeBuffer.popContext("TwoOctetBinaryTime");
@@ -75,10 +75,8 @@ public class TwoOctetBinaryTime implements Message {
     TwoOctetBinaryTime _value = this;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    // Array field
-    if (value != null) {
-      lengthInBits += 8 * value.length;
-    }
+    // Simple field (milliseconds)
+    lengthInBits += 16;
 
     return lengthInBits;
   }
@@ -94,14 +92,16 @@ public class TwoOctetBinaryTime implements Message {
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    byte[] value =
-        readBuffer.readByteArray(
-            "value", Math.toIntExact(2), WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+    int milliseconds =
+        readSimpleField(
+            "milliseconds",
+            readUnsignedInt(readBuffer, 16),
+            WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     readBuffer.closeContext("TwoOctetBinaryTime");
     // Create the instance
     TwoOctetBinaryTime _twoOctetBinaryTime;
-    _twoOctetBinaryTime = new TwoOctetBinaryTime(value);
+    _twoOctetBinaryTime = new TwoOctetBinaryTime(milliseconds);
     return _twoOctetBinaryTime;
   }
 
@@ -114,12 +114,12 @@ public class TwoOctetBinaryTime implements Message {
       return false;
     }
     TwoOctetBinaryTime that = (TwoOctetBinaryTime) o;
-    return (getValue() == that.getValue()) && true;
+    return (getMilliseconds() == that.getMilliseconds()) && true;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(getValue());
+    return Objects.hash(getMilliseconds());
   }
 
   @Override

@@ -288,7 +288,9 @@ public class ASDU implements Message {
             new DataReaderComplexDefault<>(
                 () ->
                     InformationObject.staticParse(
-                        readBuffer, (TypeIdentification) (typeIdentification)),
+                        readBuffer,
+                        (TypeIdentification) (typeIdentification),
+                        (byte) (typeIdentification.getNumTimeBytes())),
                 readBuffer),
             numberOfObjects,
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));

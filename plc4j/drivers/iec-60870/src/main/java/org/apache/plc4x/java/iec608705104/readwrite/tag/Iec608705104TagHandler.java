@@ -27,7 +27,7 @@ public class Iec608705104TagHandler implements PlcTagHandler {
 
     @Override
     public PlcTag parseTag(String tagAddress) {
-        return null;
+        return new Iec608705104Tag(0, 0);
     }
 
     @Override

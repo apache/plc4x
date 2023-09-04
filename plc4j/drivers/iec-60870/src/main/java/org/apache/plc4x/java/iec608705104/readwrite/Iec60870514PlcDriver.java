@@ -51,16 +51,6 @@ public class Iec60870514PlcDriver extends GeneratedDriverBase<APDU> {
     }
 
     @Override
-    protected boolean canRead() {
-        return true;
-    }
-
-    @Override
-    protected boolean canWrite() {
-        return true;
-    }
-
-    @Override
     protected boolean canSubscribe() {
         return true;
     }

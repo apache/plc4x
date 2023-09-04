@@ -38,7 +38,7 @@ import org.apache.plc4x.java.spi.generation.*;
 public abstract class InformationObject implements Message {
 
   // Abstract accessors for discriminator values.
-  public abstract TypeIdentification getTypeIdentification();
+  public abstract Byte getNumTimeByte();
 
   // Properties.
   protected final int address;
@@ -95,9 +95,9 @@ public abstract class InformationObject implements Message {
   public static InformationObject staticParse(ReadBuffer readBuffer, Object... args)
       throws ParseException {
     PositionAware positionAware = readBuffer;
-    if ((args == null) || (args.length != 1)) {
+    if ((args == null) || (args.length != 2)) {
       throw new PlcRuntimeException(
-          "Wrong number of arguments, expected 1, but got " + args.length);
+          "Wrong number of arguments, expected 2, but got " + args.length);
     }
     TypeIdentification typeIdentification;
     if (args[0] instanceof TypeIdentification) {
@@ -110,11 +110,22 @@ public abstract class InformationObject implements Message {
               + " was "
               + args[0].getClass().getName());
     }
-    return staticParse(readBuffer, typeIdentification);
+    Byte numTimeByte;
+    if (args[1] instanceof Byte) {
+      numTimeByte = (Byte) args[1];
+    } else if (args[1] instanceof String) {
+      numTimeByte = Byte.valueOf((String) args[1]);
+    } else {
+      throw new PlcRuntimeException(
+          "Argument 1 expected to be of type Byte or a string which is parseable but was "
+              + args[1].getClass().getName());
+    }
+    return staticParse(readBuffer, typeIdentification, numTimeByte);
   }
 
   public static InformationObject staticParse(
-      ReadBuffer readBuffer, TypeIdentification typeIdentification) throws ParseException {
+      ReadBuffer readBuffer, TypeIdentification typeIdentification, Byte numTimeByte)
+      throws ParseException {
     readBuffer.pullContext("InformationObject");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
@@ -127,353 +138,25 @@ public abstract class InformationObject implements Message {
 
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     InformationObjectBuilder builder = null;
-    if (EvaluationHelper.equals(typeIdentification, TypeIdentification.SINGLE_POINT_INFORMATION)) {
+    if (EvaluationHelper.equals(numTimeByte, (byte) 0)) {
       builder =
-          InformationObject_SINGLE_POINT_INFORMATION.staticParseInformationObjectBuilder(
-              readBuffer, typeIdentification);
-    } else if (EvaluationHelper.equals(
-        typeIdentification, TypeIdentification.SINGLE_POINT_INFORMATION_WITH_TIME_TAG)) {
+          InformationObjectWithoutTime.staticParseInformationObjectBuilder(
+              readBuffer, typeIdentification, numTimeByte);
+    } else if (EvaluationHelper.equals(numTimeByte, (byte) 3)) {
       builder =
-          InformationObject_SINGLE_POINT_INFORMATION_WITH_TIME_TAG
-              .staticParseInformationObjectBuilder(readBuffer, typeIdentification);
-    } else if (EvaluationHelper.equals(
-        typeIdentification, TypeIdentification.DOUBLE_POINT_INFORMATION)) {
+          InformationObjectWithTreeByteTime.staticParseInformationObjectBuilder(
+              readBuffer, typeIdentification, numTimeByte);
+    } else if (EvaluationHelper.equals(numTimeByte, (byte) 7)) {
       builder =
-          InformationObject_DOUBLE_POINT_INFORMATION.staticParseInformationObjectBuilder(
-              readBuffer, typeIdentification);
-    } else if (EvaluationHelper.equals(
-        typeIdentification, TypeIdentification.DOUBLE_POINT_INFORMATION_WITH_TIME_TAG)) {
-      builder =
-          InformationObject_DOUBLE_POINT_INFORMATION_WITH_TIME_TAG
-              .staticParseInformationObjectBuilder(readBuffer, typeIdentification);
-    } else if (EvaluationHelper.equals(
-        typeIdentification, TypeIdentification.STEP_POSITION_INFORMATION)) {
-      builder =
-          InformationObject_STEP_POSITION_INFORMATION.staticParseInformationObjectBuilder(
-              readBuffer, typeIdentification);
-    } else if (EvaluationHelper.equals(
-        typeIdentification, TypeIdentification.STEP_POSITION_INFORMATION_WITH_TIME_TAG)) {
-      builder =
-          InformationObject_STEP_POSITION_INFORMATION_WITH_TIME_TAG
-              .staticParseInformationObjectBuilder(readBuffer, typeIdentification);
-    } else if (EvaluationHelper.equals(
-        typeIdentification, TypeIdentification.BITSTRING_OF_32_BIT)) {
-      builder =
-          InformationObject_BITSTRING_OF_32_BIT.staticParseInformationObjectBuilder(
-              readBuffer, typeIdentification);
-    } else if (EvaluationHelper.equals(
-        typeIdentification, TypeIdentification.BITSTRING_OF_32_BIT_WITH_TIME_TAG)) {
-      builder =
-          InformationObject_BITSTRING_OF_32_BIT_WITH_TIME_TAG.staticParseInformationObjectBuilder(
-              readBuffer, typeIdentification);
-    } else if (EvaluationHelper.equals(
-        typeIdentification, TypeIdentification.MEASURED_VALUE_NORMALISED_VALUE)) {
-      builder =
-          InformationObject_MEASURED_VALUE_NORMALISED_VALUE.staticParseInformationObjectBuilder(
-              readBuffer, typeIdentification);
-    } else if (EvaluationHelper.equals(
-        typeIdentification, TypeIdentification.MEASURED_VALUE_NORMALIZED_VALUE_WITH_TIME_TAG)) {
-      builder =
-          InformationObject_MEASURED_VALUE_NORMALIZED_VALUE_WITH_TIME_TAG
-              .staticParseInformationObjectBuilder(readBuffer, typeIdentification);
-    } else if (EvaluationHelper.equals(
-        typeIdentification, TypeIdentification.MEASURED_VALUE_SCALED_VALUE)) {
-      builder =
-          InformationObject_MEASURED_VALUE_SCALED_VALUE.staticParseInformationObjectBuilder(
-              readBuffer, typeIdentification);
-    } else if (EvaluationHelper.equals(
-        typeIdentification, TypeIdentification.MEASURED_VALUE_SCALED_VALUE_WIT_TIME_TAG)) {
-      builder =
-          InformationObject_MEASURED_VALUE_SCALED_VALUE_WIT_TIME_TAG
-              .staticParseInformationObjectBuilder(readBuffer, typeIdentification);
-    } else if (EvaluationHelper.equals(
-        typeIdentification, TypeIdentification.MEASURED_VALUE_SHORT_FLOATING_POINT_NUMBER)) {
-      builder =
-          InformationObject_MEASURED_VALUE_SHORT_FLOATING_POINT_NUMBER
-              .staticParseInformationObjectBuilder(readBuffer, typeIdentification);
-    } else if (EvaluationHelper.equals(
-        typeIdentification,
-        TypeIdentification.MEASURED_VALUE_SHORT_FLOATING_POINT_NUMBER_WITH_TIME_TAG)) {
-      builder =
-          InformationObject_MEASURED_VALUE_SHORT_FLOATING_POINT_NUMBER_WITH_TIME_TAG
-              .staticParseInformationObjectBuilder(readBuffer, typeIdentification);
-    } else if (EvaluationHelper.equals(typeIdentification, TypeIdentification.INTEGRATED_TOTALS)) {
-      builder =
-          InformationObject_INTEGRATED_TOTALS.staticParseInformationObjectBuilder(
-              readBuffer, typeIdentification);
-    } else if (EvaluationHelper.equals(
-        typeIdentification, TypeIdentification.INTEGRATED_TOTALS_WITH_TIME_TAG)) {
-      builder =
-          InformationObject_INTEGRATED_TOTALS_WITH_TIME_TAG.staticParseInformationObjectBuilder(
-              readBuffer, typeIdentification);
-    } else if (EvaluationHelper.equals(
-        typeIdentification, TypeIdentification.EVENT_OF_PROTECTION_EQUIPMENT_WITH_TIME_TAG)) {
-      builder =
-          InformationObject_EVENT_OF_PROTECTION_EQUIPMENT_WITH_TIME_TAG
-              .staticParseInformationObjectBuilder(readBuffer, typeIdentification);
-    } else if (EvaluationHelper.equals(
-        typeIdentification,
-        TypeIdentification.PACKED_START_EVENTS_OF_PROTECTION_EQUIPMENT_WITH_TIME_TAG)) {
-      builder =
-          InformationObject_PACKED_START_EVENTS_OF_PROTECTION_EQUIPMENT_WITH_TIME_TAG
-              .staticParseInformationObjectBuilder(readBuffer, typeIdentification);
-    } else if (EvaluationHelper.equals(
-        typeIdentification,
-        TypeIdentification
-            .PACKED_OUTPUT_CIRCUIT_INFORMATION_OF_PROTECTION_EQUIPMENT_WITH_TIME_TAG)) {
-      builder =
-          InformationObject_PACKED_OUTPUT_CIRCUIT_INFORMATION_OF_PROTECTION_EQUIPMENT_WITH_TIME_TAG
-              .staticParseInformationObjectBuilder(readBuffer, typeIdentification);
-    } else if (EvaluationHelper.equals(
-        typeIdentification,
-        TypeIdentification.PACKED_SINGLE_POINT_INFORMATION_WITH_STATUS_CHANGE_DETECTION)) {
-      builder =
-          InformationObject_PACKED_SINGLE_POINT_INFORMATION_WITH_STATUS_CHANGE_DETECTION
-              .staticParseInformationObjectBuilder(readBuffer, typeIdentification);
-    } else if (EvaluationHelper.equals(
-        typeIdentification,
-        TypeIdentification.MEASURED_VALUE_NORMALIZED_VALUE_WITHOUT_QUALITY_DESCRIPTOR)) {
-      builder =
-          InformationObject_MEASURED_VALUE_NORMALIZED_VALUE_WITHOUT_QUALITY_DESCRIPTOR
-              .staticParseInformationObjectBuilder(readBuffer, typeIdentification);
-    } else if (EvaluationHelper.equals(
-        typeIdentification, TypeIdentification.SINGLE_POINT_INFORMATION_WITH_TIME_TAG_CP56TIME2A)) {
-      builder =
-          InformationObject_SINGLE_POINT_INFORMATION_WITH_TIME_TAG_CP56TIME2A
-              .staticParseInformationObjectBuilder(readBuffer, typeIdentification);
-    } else if (EvaluationHelper.equals(
-        typeIdentification, TypeIdentification.DOUBLE_POINT_INFORMATION_WITH_TIME_TAG_CP56TIME2A)) {
-      builder =
-          InformationObject_DOUBLE_POINT_INFORMATION_WITH_TIME_TAG_CP56TIME2A
-              .staticParseInformationObjectBuilder(readBuffer, typeIdentification);
-    } else if (EvaluationHelper.equals(
-        typeIdentification,
-        TypeIdentification.STEP_POSITION_INFORMATION_WITH_TIME_TAG_CP56TIME2A)) {
-      builder =
-          InformationObject_STEP_POSITION_INFORMATION_WITH_TIME_TAG_CP56TIME2A
-              .staticParseInformationObjectBuilder(readBuffer, typeIdentification);
-    } else if (EvaluationHelper.equals(
-        typeIdentification, TypeIdentification.BITSTRING_OF_32_BIT_WITH_TIME_TAG_CP56TIME2A)) {
-      builder =
-          InformationObject_BITSTRING_OF_32_BIT_WITH_TIME_TAG_CP56TIME2A
-              .staticParseInformationObjectBuilder(readBuffer, typeIdentification);
-    } else if (EvaluationHelper.equals(
-        typeIdentification,
-        TypeIdentification.MEASURED_VALUE_NORMALISED_VALUE_WITH_TIME_TAG_CP56TIME2A)) {
-      builder =
-          InformationObject_MEASURED_VALUE_NORMALISED_VALUE_WITH_TIME_TAG_CP56TIME2A
-              .staticParseInformationObjectBuilder(readBuffer, typeIdentification);
-    } else if (EvaluationHelper.equals(
-        typeIdentification,
-        TypeIdentification.MEASURED_VALUE_SCALED_VALUE_WITH_TIME_TAG_CP56TIME2A)) {
-      builder =
-          InformationObject_MEASURED_VALUE_SCALED_VALUE_WITH_TIME_TAG_CP56TIME2A
-              .staticParseInformationObjectBuilder(readBuffer, typeIdentification);
-    } else if (EvaluationHelper.equals(
-        typeIdentification,
-        TypeIdentification.MEASURED_VALUE_SHORT_FLOATING_POINT_NUMBER_WITH_TIME_TAG_CP56TIME2A)) {
-      builder =
-          InformationObject_MEASURED_VALUE_SHORT_FLOATING_POINT_NUMBER_WITH_TIME_TAG_CP56TIME2A
-              .staticParseInformationObjectBuilder(readBuffer, typeIdentification);
-    } else if (EvaluationHelper.equals(
-        typeIdentification, TypeIdentification.INTEGRATED_TOTALS_WITH_TIME_TAG_CP56TIME2A)) {
-      builder =
-          InformationObject_INTEGRATED_TOTALS_WITH_TIME_TAG_CP56TIME2A
-              .staticParseInformationObjectBuilder(readBuffer, typeIdentification);
-    } else if (EvaluationHelper.equals(
-        typeIdentification,
-        TypeIdentification.EVENT_OF_PROTECTION_EQUIPMENT_WITH_TIME_TAG_CP56TIME2A)) {
-      builder =
-          InformationObject_EVENT_OF_PROTECTION_EQUIPMENT_WITH_TIME_TAG_CP56TIME2A
-              .staticParseInformationObjectBuilder(readBuffer, typeIdentification);
-    } else if (EvaluationHelper.equals(
-        typeIdentification,
-        TypeIdentification.PACKED_START_EVENTS_OF_PROTECTION_EQUIPMENT_WITH_TIME_TAG_CP56TIME2A)) {
-      builder =
-          InformationObject_PROTECTION_EQUIPMENT_WITH_TIME_TAG_CP56TIME2A
-              .staticParseInformationObjectBuilder(readBuffer, typeIdentification);
-    } else if (EvaluationHelper.equals(
-        typeIdentification,
-        TypeIdentification
-            .PACKED_OUTPUT_CIRCUIT_INFORMATION_OF_PROTECTION_EQUIPMENT_WITH_TIME_TAG_CP56TIME2A)) {
-      builder =
-          InformationObject_PACKED_OUTPUT_CIRCUIT_INFORMATION_OF_PROTECTION_EQUIPMENT_WITH_TIME_TAG_CP56TIME2A
-              .staticParseInformationObjectBuilder(readBuffer, typeIdentification);
-    } else if (EvaluationHelper.equals(typeIdentification, TypeIdentification.SINGLE_COMMAND)) {
-      builder =
-          InformationObject_SINGLE_COMMAND.staticParseInformationObjectBuilder(
-              readBuffer, typeIdentification);
-    } else if (EvaluationHelper.equals(typeIdentification, TypeIdentification.DOUBLE_COMMAND)) {
-      builder =
-          InformationObject_DOUBLE_COMMAND.staticParseInformationObjectBuilder(
-              readBuffer, typeIdentification);
-    } else if (EvaluationHelper.equals(
-        typeIdentification, TypeIdentification.REGULATING_STEP_COMMAND)) {
-      builder =
-          InformationObject_REGULATING_STEP_COMMAND.staticParseInformationObjectBuilder(
-              readBuffer, typeIdentification);
-    } else if (EvaluationHelper.equals(
-        typeIdentification, TypeIdentification.SET_POINT_COMMAND_NORMALISED_VALUE)) {
-      builder =
-          InformationObject_SET_POINT_COMMAND_NORMALISED_VALUE.staticParseInformationObjectBuilder(
-              readBuffer, typeIdentification);
-    } else if (EvaluationHelper.equals(
-        typeIdentification, TypeIdentification.SET_POINT_COMMAND_SCALED_VALUE)) {
-      builder =
-          InformationObject_SET_POINT_COMMAND_SCALED_VALUE.staticParseInformationObjectBuilder(
-              readBuffer, typeIdentification);
-    } else if (EvaluationHelper.equals(
-        typeIdentification, TypeIdentification.SET_POINT_COMMAND_SHORT_FLOATING_POINT_NUMBER)) {
-      builder =
-          InformationObject_SET_POINT_COMMAND_SHORT_FLOATING_POINT_NUMBER
-              .staticParseInformationObjectBuilder(readBuffer, typeIdentification);
-    } else if (EvaluationHelper.equals(
-        typeIdentification, TypeIdentification.BITSTRING_32_BIT_COMMAND)) {
-      builder =
-          InformationObject_BITSTRING_32_BIT_COMMAND.staticParseInformationObjectBuilder(
-              readBuffer, typeIdentification);
-    } else if (EvaluationHelper.equals(
-        typeIdentification, TypeIdentification.SINGLE_COMMAND_WITH_TIME_TAG_CP56TIME2A)) {
-      builder =
-          InformationObject_SINGLE_COMMAND_WITH_TIME_TAG_CP56TIME2A
-              .staticParseInformationObjectBuilder(readBuffer, typeIdentification);
-    } else if (EvaluationHelper.equals(
-        typeIdentification, TypeIdentification.DOUBLE_COMMAND_WITH_TIME_TAG_CP56TIME2A)) {
-      builder =
-          InformationObject_DOUBLE_COMMAND_WITH_TIME_TAG_CP56TIME2A
-              .staticParseInformationObjectBuilder(readBuffer, typeIdentification);
-    } else if (EvaluationHelper.equals(
-        typeIdentification, TypeIdentification.REGULATING_STEP_COMMAND_WITH_TIME_TAG_CP56TIME2A)) {
-      builder =
-          InformationObject_REGULATING_STEP_COMMAND_WITH_TIME_TAG_CP56TIME2A
-              .staticParseInformationObjectBuilder(readBuffer, typeIdentification);
-    } else if (EvaluationHelper.equals(
-        typeIdentification,
-        TypeIdentification.MEASURED_VALUE_NORMALISED_VALUE_COMMAND_WITH_TIME_TAG_CP56TIME2A)) {
-      builder =
-          InformationObject_MEASURED_VALUE_NORMALISED_VALUE_COMMAND_WITH_TIME_TAG_CP56TIME2A
-              .staticParseInformationObjectBuilder(readBuffer, typeIdentification);
-    } else if (EvaluationHelper.equals(
-        typeIdentification,
-        TypeIdentification.MEASURED_VALUE_SCALED_VALUE_COMMAND_WITH_TIME_TAG_CP56TIME2A)) {
-      builder =
-          InformationObject_MEASURED_VALUE_SCALED_VALUE_COMMAND_WITH_TIME_TAG_CP56TIME2A
-              .staticParseInformationObjectBuilder(readBuffer, typeIdentification);
-    } else if (EvaluationHelper.equals(
-        typeIdentification,
-        TypeIdentification
-            .MEASURED_VALUE_SHORT_FLOATING_POINT_NUMBER_COMMAND_WITH_TIME_TAG_CP56TIME2A)) {
-      builder =
-          InformationObject_MEASURED_VALUE_SHORT_FLOATING_POINT_NUMBER_COMMAND_WITH_TIME_TAG_CP56TIME2A
-              .staticParseInformationObjectBuilder(readBuffer, typeIdentification);
-    } else if (EvaluationHelper.equals(
-        typeIdentification,
-        TypeIdentification.BITSTRING_OF_32_BIT_COMMAND_WITH_TIME_TAG_CP56TIME2A)) {
-      builder =
-          InformationObject_BITSTRING_OF_32_BIT_COMMAND_WITH_TIME_TAG_CP56TIME2A
-              .staticParseInformationObjectBuilder(readBuffer, typeIdentification);
-    } else if (EvaluationHelper.equals(
-        typeIdentification, TypeIdentification.END_OF_INITIALISATION)) {
-      builder =
-          InformationObject_END_OF_INITIALISATION.staticParseInformationObjectBuilder(
-              readBuffer, typeIdentification);
-    } else if (EvaluationHelper.equals(
-        typeIdentification, TypeIdentification.INTERROGATION_COMMAND)) {
-      builder =
-          InformationObject_INTERROGATION_COMMAND.staticParseInformationObjectBuilder(
-              readBuffer, typeIdentification);
-    } else if (EvaluationHelper.equals(
-        typeIdentification, TypeIdentification.COUNTER_INTERROGATION_COMMAND)) {
-      builder =
-          InformationObject_COUNTER_INTERROGATION_COMMAND.staticParseInformationObjectBuilder(
-              readBuffer, typeIdentification);
-    } else if (EvaluationHelper.equals(typeIdentification, TypeIdentification.READ_COMMAND)) {
-      builder =
-          InformationObject_READ_COMMAND.staticParseInformationObjectBuilder(
-              readBuffer, typeIdentification);
-    } else if (EvaluationHelper.equals(
-        typeIdentification, TypeIdentification.CLOCK_SYNCHRONISATION_COMMAND)) {
-      builder =
-          InformationObject_CLOCK_SYNCHRONISATION_COMMAND.staticParseInformationObjectBuilder(
-              readBuffer, typeIdentification);
-    } else if (EvaluationHelper.equals(typeIdentification, TypeIdentification.TEST_COMMAND)) {
-      builder =
-          InformationObject_TEST_COMMAND.staticParseInformationObjectBuilder(
-              readBuffer, typeIdentification);
-    } else if (EvaluationHelper.equals(
-        typeIdentification, TypeIdentification.RESET_PROCESS_COMMAND)) {
-      builder =
-          InformationObject_RESET_PROCESS_COMMAND.staticParseInformationObjectBuilder(
-              readBuffer, typeIdentification);
-    } else if (EvaluationHelper.equals(
-        typeIdentification, TypeIdentification.DELAY_ACQUISITION_COMMAND)) {
-      builder =
-          InformationObject_DELAY_ACQUISITION_COMMAND.staticParseInformationObjectBuilder(
-              readBuffer, typeIdentification);
-    } else if (EvaluationHelper.equals(
-        typeIdentification, TypeIdentification.TEST_COMMAND_WITH_TIME_TAG_CP56TIME2A)) {
-      builder =
-          InformationObject_TEST_COMMAND_WITH_TIME_TAG_CP56TIME2A
-              .staticParseInformationObjectBuilder(readBuffer, typeIdentification);
-    } else if (EvaluationHelper.equals(
-        typeIdentification, TypeIdentification.PARAMETER_OF_MEASURED_VALUES_NORMALIZED_VALUE)) {
-      builder =
-          InformationObject_PARAMETER_OF_MEASURED_VALUES_NORMALIZED_VALUE
-              .staticParseInformationObjectBuilder(readBuffer, typeIdentification);
-    } else if (EvaluationHelper.equals(
-        typeIdentification, TypeIdentification.PARAMETER_OF_MEASURED_VALUES_SCALED_VALUE)) {
-      builder =
-          InformationObject_PARAMETER_OF_MEASURED_VALUES_SCALED_VALUE
-              .staticParseInformationObjectBuilder(readBuffer, typeIdentification);
-    } else if (EvaluationHelper.equals(
-        typeIdentification,
-        TypeIdentification.PARAMETER_OF_MEASURED_VALUES_SHORT_FLOATING_POINT_NUMBER)) {
-      builder =
-          InformationObject_PARAMETER_OF_MEASURED_VALUES_SHORT_FLOATING_POINT_NUMBER
-              .staticParseInformationObjectBuilder(readBuffer, typeIdentification);
-    } else if (EvaluationHelper.equals(
-        typeIdentification, TypeIdentification.PARAMETER_ACTIVATION)) {
-      builder =
-          InformationObject_PARAMETER_ACTIVATION.staticParseInformationObjectBuilder(
-              readBuffer, typeIdentification);
-    } else if (EvaluationHelper.equals(typeIdentification, TypeIdentification.FILE_READY)) {
-      builder =
-          InformationObject_FILE_READY.staticParseInformationObjectBuilder(
-              readBuffer, typeIdentification);
-    } else if (EvaluationHelper.equals(typeIdentification, TypeIdentification.SECTION_READY)) {
-      builder =
-          InformationObject_SECTION_READY.staticParseInformationObjectBuilder(
-              readBuffer, typeIdentification);
-    } else if (EvaluationHelper.equals(
-        typeIdentification, TypeIdentification.CALL_DIRECTORY_SELECT_FILE_CALL_FILE_CALL_SECTION)) {
-      builder =
-          InformationObject_CALL_DIRECTORY_SELECT_FILE_CALL_FILE_CALL_SECTION
-              .staticParseInformationObjectBuilder(readBuffer, typeIdentification);
-    } else if (EvaluationHelper.equals(
-        typeIdentification, TypeIdentification.LAST_SECTION_LAST_SEGMENT)) {
-      builder =
-          InformationObject_LAST_SECTION_LAST_SEGMENT.staticParseInformationObjectBuilder(
-              readBuffer, typeIdentification);
-    } else if (EvaluationHelper.equals(
-        typeIdentification, TypeIdentification.ACK_FILE_ACK_SECTION)) {
-      builder =
-          InformationObject_ACK_FILE_ACK_SECTION.staticParseInformationObjectBuilder(
-              readBuffer, typeIdentification);
-    } else if (EvaluationHelper.equals(typeIdentification, TypeIdentification.SEGMENT)) {
-      builder =
-          InformationObject_SEGMENT.staticParseInformationObjectBuilder(
-              readBuffer, typeIdentification);
-    } else if (EvaluationHelper.equals(typeIdentification, TypeIdentification.DIRECTORY)) {
-      builder =
-          InformationObject_DIRECTORY.staticParseInformationObjectBuilder(
-              readBuffer, typeIdentification);
+          InformationObjectWithSevenByteTime.staticParseInformationObjectBuilder(
+              readBuffer, typeIdentification, numTimeByte);
     }
     if (builder == null) {
       throw new ParseException(
           "Unsupported case for discriminated type"
               + " parameters ["
-              + "typeIdentification="
-              + typeIdentification
+              + "numTimeByte="
+              + numTimeByte
               + "]");
     }
 
