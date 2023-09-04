@@ -28,6 +28,7 @@ import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.iec608705104.readwrite.*;
 import org.apache.plc4x.java.iec608705104.readwrite.configuration.Iec608705014Configuration;
+import org.apache.plc4x.java.iec608705104.readwrite.messages.Iec608705104PlcSubscriptionEvent;
 import org.apache.plc4x.java.iec608705104.readwrite.model.Iec608705104SubscriptionHandle;
 import org.apache.plc4x.java.iec608705104.readwrite.tag.Iec608705104Tag;
 import org.apache.plc4x.java.spi.ConversationContext;
@@ -206,8 +207,9 @@ public class Iec608705104Protocol extends Plc4xProtocolBase<APDU> implements Has
 
     protected void publishEvent(LocalDateTime timeStamp, Iec608705104Tag tag, PlcValue plcValue) {
         // Create a subscription event from the input.
-        final PlcSubscriptionEvent event = new DefaultPlcSubscriptionEvent(
+        final PlcSubscriptionEvent event = new Iec608705104PlcSubscriptionEvent(
             timeStamp.atZone(ZoneId.systemDefault()).toInstant(),
+            Collections.singletonMap(tag.toString(), tag),
             Collections.singletonMap(tag.toString(),
                 new ResponseItem<>(PlcResponseCode.OK, plcValue)));
 

@@ -21,6 +21,8 @@ package org.apache.plc4x.java.iec608705104;
 
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.PlcDriverManager;
+import org.apache.plc4x.java.api.model.PlcTag;
+import org.apache.plc4x.java.iec608705104.readwrite.tag.Iec608705104Tag;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -38,7 +40,8 @@ public class ManualTest {
 
             plcConnection.subscriptionRequestBuilder().addChangeOfStateTagAddress("all", "*").addPreRegisteredConsumer("all", plcSubscriptionEvent -> {
                 for (String tagName : plcSubscriptionEvent.getTagNames()) {
-                    System.out.println(String.format("TS: %s, Addr: %s, Value; %s", plcSubscriptionEvent.getTimestamp().toString(), tagName, plcSubscriptionEvent.getPlcValue(tagName).toString()));
+                    Iec608705104Tag tag = (Iec608705104Tag) plcSubscriptionEvent.getTag(tagName);
+                    System.out.println(String.format("TS: %s, Addr: %d:%d, Value; %s", plcSubscriptionEvent.getTimestamp().toString(), tag.getAdsuAddress(), tag.getObjectAddress(), plcSubscriptionEvent.getPlcValue(tagName).toString()));
                 }
             }).build().execute();
 
