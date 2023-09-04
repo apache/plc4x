@@ -45,7 +45,7 @@ public interface PlcValue {
 
     boolean isNullable();
 
-    boolean isNull();
+    boolean isNull();°
 
     // Generic (\o/ Sebastian)
 
