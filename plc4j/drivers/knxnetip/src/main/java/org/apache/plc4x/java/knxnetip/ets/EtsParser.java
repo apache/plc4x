@@ -85,7 +85,8 @@ public class EtsParser {
                         }
                     }
                 }
-                EtsFileHandler fileHandler = ("21".equals(etsSchemaVersion)) ? new Ets6FileHandler() : new Ets5FileHandler();
+                // 21 = ETS6, 22 = ETS6.1
+                EtsFileHandler fileHandler = ("21".equals(etsSchemaVersion) || "22".equals(etsSchemaVersion)) ? new Ets6FileHandler() : new Ets5FileHandler();
 
                 ////////////////////////////////////////////////////////////////////////////////
                 // File containing the information on the type of encoding used for group addresses.
