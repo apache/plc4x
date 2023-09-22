@@ -22,7 +22,6 @@ import com.github.jinahya.bit.io.BufferByteOutput;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.plc4x.java.spi.generation.io.MyDefaultBitOutput;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
@@ -83,7 +82,7 @@ public class WriteBufferByteBased implements WriteBuffer, BufferCommons {
     public void writeBit(String logicalName, boolean value, WithWriterArgs... writerArgs) throws SerializationException {
         try {
             bo.writeBoolean(value);
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new SerializationException("Error writing bit", e);
         }
     }
@@ -110,7 +109,7 @@ public class WriteBufferByteBased implements WriteBuffer, BufferCommons {
         }
         try {
             bo.writeByte(true, bitLength, value);
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new SerializationException("Error writing unsigned byte", e);
         }
     }
@@ -147,7 +146,7 @@ public class WriteBufferByteBased implements WriteBuffer, BufferCommons {
                 default:
                     throw new SerializationException("unsupported encoding '" + encoding + "'");
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new SerializationException("Error writing unsigned short", e);
         }
     }
@@ -187,7 +186,7 @@ public class WriteBufferByteBased implements WriteBuffer, BufferCommons {
                 default:
                     throw new SerializationException("unsupported encoding '" + encoding + "'");
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new SerializationException("Error writing unsigned int", e);
         }
     }
@@ -227,7 +226,7 @@ public class WriteBufferByteBased implements WriteBuffer, BufferCommons {
                 default:
                     throw new SerializationException("unsupported encoding '" + encoding + "'");
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new SerializationException("Error writing unsigned long", e);
         }
     }
@@ -271,7 +270,7 @@ public class WriteBufferByteBased implements WriteBuffer, BufferCommons {
         }
         try {
             bo.writeByte(false, bitLength, value);
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new SerializationException("Error writing signed byte", e);
         }
     }
@@ -289,7 +288,7 @@ public class WriteBufferByteBased implements WriteBuffer, BufferCommons {
                 value = Short.reverseBytes(value);
             }
             bo.writeShort(false, bitLength, value);
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new SerializationException("Error writing signed short", e);
         }
     }
@@ -307,7 +306,7 @@ public class WriteBufferByteBased implements WriteBuffer, BufferCommons {
                 value = Integer.reverseBytes(value);
             }
             bo.writeInt(false, bitLength, value);
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new SerializationException("Error writing signed int", e);
         }
     }
@@ -325,7 +324,7 @@ public class WriteBufferByteBased implements WriteBuffer, BufferCommons {
                 value = Long.reverseBytes(value);
             }
             bo.writeLong(false, bitLength, value);
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new SerializationException("Error writing signed long", e);
         }
     }
@@ -415,7 +414,7 @@ public class WriteBufferByteBased implements WriteBuffer, BufferCommons {
             for (int i = 0; i < numZeroBytes; i++) {
                 bo.writeByte(false, 8, (byte) 0x00);
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new SerializationException("Error writing string", e);
         }
     }

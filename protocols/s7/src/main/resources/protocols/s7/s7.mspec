@@ -734,12 +734,10 @@
             [simple string 16 value encoding='"UTF-16"']
         ]
         ['"IEC61131_STRING"' STRING
-            // TODO: Fix this length
-            [manual vstring value  'STATIC_CALL("parseS7String", readBuffer, stringLength, _type.encoding)' 'STATIC_CALL("serializeS7String", writeBuffer, _value, stringLength, _type.encoding)' 'STR_LEN(_value) + 2' encoding='"UTF-8"']
+            [manual vstring value  'STATIC_CALL("parseS7String", readBuffer, stringLength, _type.encoding)' 'STATIC_CALL("serializeS7String", writeBuffer, _value, stringLength, _type.encoding)' '(stringLength * 8) + 16' encoding='"UTF-8"']
         ]
         ['"IEC61131_WSTRING"' STRING
-            // TODO: Fix this length
-            [manual vstring value 'STATIC_CALL("parseS7String", readBuffer, stringLength, _type.encoding)' 'STATIC_CALL("serializeS7String", writeBuffer, _value, stringLength, _type.encoding)' '(STR_LEN(_value) * 2) + 2' encoding='"UTF-16"']
+            [manual vstring value 'STATIC_CALL("parseS7String", readBuffer, stringLength, _type.encoding)' 'STATIC_CALL("serializeS7String", writeBuffer, _value, stringLength, _type.encoding)' '(stringLength * 16) + 32' encoding='"UTF-16"']
         ]
 
         // -----------------------------------------
@@ -854,10 +852,10 @@
     ['0x0F' LREAL         ['0x30'     , 'X'             , '8'               , 'REAL'                , 'null'                             , 'IEC61131_LREAL'        , 'false'             , 'false'             , 'true'               , 'true'               , 'false'             ]]
 
     // Characters and Strings
-    ['0x10' CHAR          ['0x03'     , 'B'             , '1'               , 'null'                , 'BYTE_WORD_DWORD'                  , 'IEC61131_CHAR'         , 'true'              , 'true'              , 'true'               , 'true'               , 'true'              ]]
-    ['0x11' WCHAR         ['0x13'     , 'X'             , '2'               , 'null'                , 'null'                             , 'IEC61131_WCHAR'        , 'false'             , 'false'             , 'true'               , 'true'               , 'true'              ]]
-    ['0x12' STRING        ['0x03'     , 'X'             , '1'               , 'null'                , 'BYTE_WORD_DWORD'                  , 'IEC61131_STRING'       , 'true'              , 'true'              , 'true'               , 'true'               , 'true'              ]]
-    ['0x13' WSTRING       ['0x00'     , 'X'             , '2'               , 'null'                , 'null'                             , 'IEC61131_WSTRING'      , 'false'             , 'false'             , 'true'               , 'true'               , 'true'              ]]
+    ['0x10' CHAR          ['0x03'     , 'B'             , '1'               , 'null'                , 'OCTET_STRING'                     , 'IEC61131_CHAR'         , 'true'              , 'true'              , 'true'               , 'true'               , 'true'              ]]
+    ['0x11' WCHAR         ['0x13'     , 'X'             , '2'               , 'null'                , 'OCTET_STRING'                     , 'IEC61131_WCHAR'        , 'false'             , 'false'             , 'true'               , 'true'               , 'true'              ]]
+    ['0x12' STRING        ['0x03'     , 'X'             , '1'               , 'null'                , 'OCTET_STRING'                     , 'IEC61131_STRING'       , 'true'              , 'true'              , 'true'               , 'true'               , 'true'              ]]
+    ['0x13' WSTRING       ['0x00'     , 'X'             , '2'               , 'null'                , 'OCTET_STRING'                     , 'IEC61131_WSTRING'      , 'false'             , 'false'             , 'true'               , 'true'               , 'true'              ]]
 
     // Dates and time values (Please note that we seem to have to rewrite queries for these types to reading bytes or we'll get "Data type not supported" errors)
     ['0x14' TIME          ['0x0B'     , 'X'             , '4'                 , 'null'                  , 'null'                         , 'IEC61131_TIME'         , 'true'              , 'true'              , 'true'               , 'true'               , 'true'              ]]
@@ -865,9 +863,9 @@
     ['0x16' LTIME         ['0x00'     , 'X'             , '8'                 , 'TIME'                  , 'null'                         , 'IEC61131_LTIME'        , 'false'             , 'false'             , 'false'              , 'true'               , 'false'             ]]
     ['0x17' DATE          ['0x09'     , 'X'             , '2'                 , 'null'                  , 'BYTE_WORD_DWORD'              , 'IEC61131_DATE'         , 'true'              , 'true'              , 'true'               , 'true'               , 'true'              ]]
     ['0x18' TIME_OF_DAY   ['0x06'     , 'X'             , '4'                 , 'null'                  , 'BYTE_WORD_DWORD'              , 'IEC61131_TIME_OF_DAY'  , 'true'              , 'true'              , 'true'               , 'true'               , 'true'              ]]
-    ['0x19' TOD           ['0x06'     , 'X'             , '4'                 , 'null'                  , 'BYTE_WORD_DWORD'              , 'IEC61131_TIME_OF_DAY'  , 'true'              , 'true'              , 'true'               , 'true'               , 'true'              ]]
+    //['0x19' TOD           ['0x06'     , 'X'             , '4'                 , 'null'                  , 'BYTE_WORD_DWORD'              , 'IEC61131_TIME_OF_DAY'  , 'true'              , 'true'              , 'true'               , 'true'               , 'true'              ]]
     ['0x1A' DATE_AND_TIME ['0x0F'     , 'X'             , '12'                , 'null'                  , 'null'                         , 'IEC61131_DATE_AND_TIME', 'true'              , 'true'              , 'false'              , 'true'               , 'false'             ]]
-    ['0x1B' DT            ['0x0F'     , 'X'             , '12'                , 'null'                  , 'null'                         , 'IEC61131_DATE_AND_TIME', 'true'              , 'true'              , 'false'              , 'true'               , 'false'             ]]
+    //['0x1B' DT            ['0x0F'     , 'X'             , '12'                , 'null'                  , 'null'                         , 'IEC61131_DATE_AND_TIME', 'true'              , 'true'              , 'false'              , 'true'               , 'false'             ]]
 ]
 
 [enum uint 8 MemoryArea(string 24 shortName)

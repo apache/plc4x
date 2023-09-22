@@ -87,7 +87,8 @@ public class PlcDATE extends PlcSimpleValue<LocalDate> {
     }
 
     public int getDaysSinceSiemensEpoch() {
-        return ((int) (value.atStartOfDay(ZoneId.systemDefault()).toEpochSecond() / 86400)) - 7305;
+        // For some reason we need to subtract one day less (guess because of the "start of day").
+        return ((int) (value.atStartOfDay(ZoneId.systemDefault()).toEpochSecond() / 86400)) - 7304;
     }
 
     @Override

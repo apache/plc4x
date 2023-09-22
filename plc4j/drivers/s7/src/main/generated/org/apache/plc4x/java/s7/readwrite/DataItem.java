@@ -376,7 +376,7 @@ public class DataItem {
       /*TODO: migrate me*/ writeBuffer.writeUnsignedBigInteger("", 64, (BigInteger) (nanoseconds));
     } else if (EvaluationHelper.equals(dataProtocolId, "IEC61131_DATE")) { // DATE
       // Simple Field (daysSinceSiemensEpoch)
-      int daysSinceSiemensEpoch = (int) _value.getInt();
+      int daysSinceSiemensEpoch = (int) ((PlcDATE) _value).getDaysSinceSiemensEpoch();
       /*TODO: migrate me*/
       /*TODO: migrate me*/ writeBuffer.writeUnsignedInt(
           "", 16, ((Number) (daysSinceSiemensEpoch)).intValue());
@@ -491,10 +491,10 @@ public class DataItem {
       sizeInBits += 16;
     } else if (EvaluationHelper.equals(dataProtocolId, "IEC61131_STRING")) { // STRING
       // Manual Field (value)
-      sizeInBits += (STR_LEN(_value)) + (2);
+      sizeInBits += (((stringLength) * (8))) + (16);
     } else if (EvaluationHelper.equals(dataProtocolId, "IEC61131_WSTRING")) { // STRING
       // Manual Field (value)
-      sizeInBits += (((STR_LEN(_value)) * (2))) + (2);
+      sizeInBits += (((stringLength) * (16))) + (32);
     } else if (EvaluationHelper.equals(dataProtocolId, "IEC61131_TIME")) { // TIME
       // Simple Field (milliseconds)
       sizeInBits += 32;

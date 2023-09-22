@@ -37,6 +37,7 @@ import org.apache.plc4x.java.spi.generation.ReadBuffer;
 import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
 
+import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
@@ -2745,23 +2746,46 @@ public class StaticHelper {
      * If your application does not handle S7string, you can handle
      * the String as char arrays from your application.
      */
-    public static void serializeS7String(WriteBuffer io, PlcValue value, int stringLength, String encoding) {
+    public static void serializeS7String(WriteBuffer io, PlcValue value, int stringLength, String encoding) throws SerializationException {
         int k = 0xFF & ((stringLength > 250) ? 250 : stringLength);
         int m = 0xFF & value.getString().length();
         m = (m > k) ? k : m;
-        byte[] chars = new byte[m];
-        for (int i = 0; i < m; ++i) {
-            char c = value.getString().charAt(i);
-            chars[i] = (byte) c;
+        byte[] chars;
+        if("UTF-8".equals(encoding)) {
+            chars = new byte[k];
+            for (int i = 0; i < m; ++i) {
+                char c = value.getString().charAt(i);
+                chars[i] = (byte) c;
+            }
+            try {
+                io.writeByte((byte)(k & 0xFF));
+                io.writeByte((byte)(m & 0xFF));
+                io.writeByteArray(chars);
+            } catch (SerializationException ex) {
+                Logger.getLogger(StaticHelper.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } else if ("UTF-16".equals(encoding)) {
+            chars = new byte[k*2];
+            try {
+                byte[] rawBytes = value.getString().getBytes("UTF-16");
+                for (int i = 0; i < m * 2; ++i) {
+                    // For some reason the first two bytes are "-2" and "-1".
+                    chars[i] = rawBytes[i + 2];
+                }
+            } catch (UnsupportedEncodingException e) {
+                throw new SerializationException("Unsupported string encoding '%s'" + encoding, e);
+            }
+            try {
+                io.writeUnsignedInt(16, (short)(k & 0xFFFF));
+                io.writeUnsignedInt(16, (short)(m & 0xFFFF));
+                io.writeByteArray(chars);
+            } catch (SerializationException ex) {
+                Logger.getLogger(StaticHelper.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } else {
+            throw new SerializationException("Unsupported string encoding '%s'" + encoding);
         }
 
-        try {
-            io.writeByte((byte)(k & 0xFF));
-            io.writeByte((byte)(m & 0xFF));
-            io.writeByteArray(chars);
-        } catch (SerializationException ex) {
-            Logger.getLogger(StaticHelper.class.getName()).log(Level.SEVERE, null, ex);
-        }
     }
 
 }

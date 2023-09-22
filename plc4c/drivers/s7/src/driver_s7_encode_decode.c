@@ -330,9 +330,6 @@ plc4c_return_code plc4c_driver_s7_encode_address(char* address, void** item) {
         any_address->s7_address_any_number_of_elements =
             254 * any_address->s7_address_any_number_of_elements;
       }
-    } else if (any_address->s7_address_any_transport_size ==
-               plc4c_s7_read_write_transport_size_TOD) {
-      any_address->s7_address_any_transport_size = plc4c_s7_read_write_transport_size_TIME_OF_DAY;
     }
     free(string_length);
 

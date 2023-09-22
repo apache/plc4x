@@ -120,7 +120,7 @@ public abstract class ManualTest {
                     PlcWriteResponse writeResponse = writeRequest.execute().get();
 
                     // Check the result
-                    Assertions.assertEquals(PlcResponseCode.OK, writeResponse.getResponseCode(tagName));
+                    Assertions.assertEquals(PlcResponseCode.OK, writeResponse.getResponseCode(tagName), String.format("Got status %s for %s", writeResponse.getResponseCode(tagName).name(), testCase.address));
                 }
             }
             System.out.println("Success");

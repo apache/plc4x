@@ -75,9 +75,7 @@ const (
 	TransportSize_LTIME         TransportSize = 0x16
 	TransportSize_DATE          TransportSize = 0x17
 	TransportSize_TIME_OF_DAY   TransportSize = 0x18
-	TransportSize_TOD           TransportSize = 0x19
 	TransportSize_DATE_AND_TIME TransportSize = 0x1A
-	TransportSize_DT            TransportSize = 0x1B
 )
 
 var TransportSizeValues []TransportSize
@@ -108,9 +106,7 @@ func init() {
 		TransportSize_LTIME,
 		TransportSize_DATE,
 		TransportSize_TIME_OF_DAY,
-		TransportSize_TOD,
 		TransportSize_DATE_AND_TIME,
-		TransportSize_DT,
 	}
 }
 
@@ -208,16 +204,8 @@ func (e TransportSize) Supported_S7_300() bool {
 		{ /* '0x18' */
 			return true
 		}
-	case 0x19:
-		{ /* '0x19' */
-			return true
-		}
 	case 0x1A:
 		{ /* '0x1A' */
-			return true
-		}
-	case 0x1B:
-		{ /* '0x1B' */
 			return true
 		}
 	default:
@@ -330,16 +318,8 @@ func (e TransportSize) Supported_LOGO() bool {
 		{ /* '0x18' */
 			return true
 		}
-	case 0x19:
-		{ /* '0x19' */
-			return true
-		}
 	case 0x1A:
 		{ /* '0x1A' */
-			return false
-		}
-	case 0x1B:
-		{ /* '0x1B' */
 			return false
 		}
 	default:
@@ -452,16 +432,8 @@ func (e TransportSize) Code() uint8 {
 		{ /* '0x18' */
 			return 0x06
 		}
-	case 0x19:
-		{ /* '0x19' */
-			return 0x06
-		}
 	case 0x1A:
 		{ /* '0x1A' */
-			return 0x0F
-		}
-	case 0x1B:
-		{ /* '0x1B' */
 			return 0x0F
 		}
 	default:
@@ -574,16 +546,8 @@ func (e TransportSize) SizeInBytes() uint8 {
 		{ /* '0x18' */
 			return 4
 		}
-	case 0x19:
-		{ /* '0x19' */
-			return 4
-		}
 	case 0x1A:
 		{ /* '0x1A' */
-			return 12
-		}
-	case 0x1B:
-		{ /* '0x1B' */
 			return 12
 		}
 	default:
@@ -696,16 +660,8 @@ func (e TransportSize) Supported_S7_400() bool {
 		{ /* '0x18' */
 			return true
 		}
-	case 0x19:
-		{ /* '0x19' */
-			return true
-		}
 	case 0x1A:
 		{ /* '0x1A' */
-			return true
-		}
-	case 0x1B:
-		{ /* '0x1B' */
 			return true
 		}
 	default:
@@ -818,16 +774,8 @@ func (e TransportSize) Supported_S7_1200() bool {
 		{ /* '0x18' */
 			return true
 		}
-	case 0x19:
-		{ /* '0x19' */
-			return true
-		}
 	case 0x1A:
 		{ /* '0x1A' */
-			return false
-		}
-	case 0x1B:
-		{ /* '0x1B' */
 			return false
 		}
 	default:
@@ -940,16 +888,8 @@ func (e TransportSize) ShortName() uint8 {
 		{ /* '0x18' */
 			return 'X'
 		}
-	case 0x19:
-		{ /* '0x19' */
-			return 'X'
-		}
 	case 0x1A:
 		{ /* '0x1A' */
-			return 'X'
-		}
-	case 0x1B:
-		{ /* '0x1B' */
 			return 'X'
 		}
 	default:
@@ -1062,16 +1002,8 @@ func (e TransportSize) Supported_S7_1500() bool {
 		{ /* '0x18' */
 			return true
 		}
-	case 0x19:
-		{ /* '0x19' */
-			return true
-		}
 	case 0x1A:
 		{ /* '0x1A' */
-			return true
-		}
-	case 0x1B:
-		{ /* '0x1B' */
 			return true
 		}
 	default:
@@ -1154,19 +1086,19 @@ func (e TransportSize) DataTransportSize() DataTransportSize {
 		}
 	case 0x10:
 		{ /* '0x10' */
-			return DataTransportSize_BYTE_WORD_DWORD
+			return DataTransportSize_OCTET_STRING
 		}
 	case 0x11:
 		{ /* '0x11' */
-			return 0
+			return DataTransportSize_OCTET_STRING
 		}
 	case 0x12:
 		{ /* '0x12' */
-			return DataTransportSize_BYTE_WORD_DWORD
+			return DataTransportSize_OCTET_STRING
 		}
 	case 0x13:
 		{ /* '0x13' */
-			return 0
+			return DataTransportSize_OCTET_STRING
 		}
 	case 0x14:
 		{ /* '0x14' */
@@ -1184,16 +1116,8 @@ func (e TransportSize) DataTransportSize() DataTransportSize {
 		{ /* '0x18' */
 			return DataTransportSize_BYTE_WORD_DWORD
 		}
-	case 0x19:
-		{ /* '0x19' */
-			return DataTransportSize_BYTE_WORD_DWORD
-		}
 	case 0x1A:
 		{ /* '0x1A' */
-			return 0
-		}
-	case 0x1B:
-		{ /* '0x1B' */
 			return 0
 		}
 	default:
@@ -1306,16 +1230,8 @@ func (e TransportSize) DataProtocolId() string {
 		{ /* '0x18' */
 			return "IEC61131_TIME_OF_DAY"
 		}
-	case 0x19:
-		{ /* '0x19' */
-			return "IEC61131_TIME_OF_DAY"
-		}
 	case 0x1A:
 		{ /* '0x1A' */
-			return "IEC61131_DATE_AND_TIME"
-		}
-	case 0x1B:
-		{ /* '0x1B' */
 			return "IEC61131_DATE_AND_TIME"
 		}
 	default:
@@ -1428,16 +1344,8 @@ func (e TransportSize) BaseType() TransportSize {
 		{ /* '0x18' */
 			return 0
 		}
-	case 0x19:
-		{ /* '0x19' */
-			return 0
-		}
 	case 0x1A:
 		{ /* '0x1A' */
-			return 0
-		}
-	case 0x1B:
-		{ /* '0x1B' */
 			return 0
 		}
 	default:
@@ -1503,12 +1411,8 @@ func TransportSizeByValue(value uint8) (enum TransportSize, ok bool) {
 		return TransportSize_DATE, true
 	case 0x18:
 		return TransportSize_TIME_OF_DAY, true
-	case 0x19:
-		return TransportSize_TOD, true
 	case 0x1A:
 		return TransportSize_DATE_AND_TIME, true
-	case 0x1B:
-		return TransportSize_DT, true
 	}
 	return 0, false
 }
@@ -1561,12 +1465,8 @@ func TransportSizeByName(value string) (enum TransportSize, ok bool) {
 		return TransportSize_DATE, true
 	case "TIME_OF_DAY":
 		return TransportSize_TIME_OF_DAY, true
-	case "TOD":
-		return TransportSize_TOD, true
 	case "DATE_AND_TIME":
 		return TransportSize_DATE_AND_TIME, true
-	case "DT":
-		return TransportSize_DT, true
 	}
 	return 0, false
 }
@@ -1680,12 +1580,8 @@ func (e TransportSize) PLC4XEnumName() string {
 		return "DATE"
 	case TransportSize_TIME_OF_DAY:
 		return "TIME_OF_DAY"
-	case TransportSize_TOD:
-		return "TOD"
 	case TransportSize_DATE_AND_TIME:
 		return "DATE_AND_TIME"
-	case TransportSize_DT:
-		return "DT"
 	}
 	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
