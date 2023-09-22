@@ -43,7 +43,7 @@ public class LeasedPlcConnection implements PlcConnection {
     private boolean invalidateConnection;
     private final Timer usageTimer;
 
-    public LeasedPlcConnection(ConnectionContainer connectionContainer, PlcConnection connection, Duration maxUseTime) {
+    LeasedPlcConnection(ConnectionContainer connectionContainer, PlcConnection connection, Duration maxUseTime) {
         this.connectionContainer = connectionContainer;
         this.connection = connection;
         this.invalidateConnection = false;
