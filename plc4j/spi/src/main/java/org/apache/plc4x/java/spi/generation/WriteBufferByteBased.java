@@ -25,6 +25,7 @@ import org.apache.plc4x.java.spi.generation.io.MyDefaultBitOutput;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 
 public class WriteBufferByteBased implements WriteBuffer, BufferCommons {
@@ -377,6 +378,10 @@ public class WriteBufferByteBased implements WriteBuffer, BufferCommons {
         switch (encoding.toUpperCase()) {
             case "ASCII": {
                 bytes = value.getBytes(StandardCharsets.US_ASCII);
+                break;
+            }
+            case "WINDOWS1252": {
+                bytes = value.getBytes(Charset.forName("windows-1252"));
                 break;
             }
             case "UTF8": {
