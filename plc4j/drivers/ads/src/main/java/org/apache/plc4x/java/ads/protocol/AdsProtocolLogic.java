@@ -1681,7 +1681,15 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
     protected DirectAdsTag resolveDirectAdsTagForSymbolicNameFromDataType(List<String> remainingAddressParts, long currentGroup, long currentOffset, AdsDataTypeTableEntry adsDataTypeTableEntry) {
         if (remainingAddressParts.isEmpty()) {
             // TODO: Implement the Array support
-            return new DirectAdsTag(currentGroup, currentOffset, adsDataTypeTableEntry.getDataTypeName(), 1);
+            if(adsDataTypeTableEntry.getDataType() == AdsDataType.CHAR.getValue()) {
+                int stringLength = (int) adsDataTypeTableEntry.getSize() - 1;
+                return new DirectAdsStringTag(currentGroup, currentOffset, adsDataTypeTableEntry.getDataTypeName(), stringLength, 1);
+            } else if(adsDataTypeTableEntry.getDataType() == AdsDataType.WCHAR.getValue()) {
+                int stringLength = (int) (adsDataTypeTableEntry.getSize() - 2) / 2;
+                return new DirectAdsStringTag(currentGroup, currentOffset, adsDataTypeTableEntry.getDataTypeName(), stringLength, 1);
+            } else {
+                return new DirectAdsTag(currentGroup, currentOffset, adsDataTypeTableEntry.getDataTypeName(), 1);
+            }
         }
 
         // Go through all children looking for a matching one.
