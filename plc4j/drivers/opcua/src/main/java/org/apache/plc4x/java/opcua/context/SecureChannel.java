@@ -20,6 +20,8 @@ package org.apache.plc4x.java.opcua.context;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.RandomUtils;
+import org.apache.plc4x.java.api.authentication.PlcAuthentication;
+import org.apache.plc4x.java.api.authentication.PlcUsernamePasswordAuthentication;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.opcua.config.OpcuaConfiguration;
@@ -121,13 +123,22 @@ public class SecureChannel {
     private final List<String> endpoints = new ArrayList<>();
     private final AtomicLong senderSequenceNumber = new AtomicLong();
 
-    public SecureChannel(OpcuaDriverContext driverContext, OpcuaConfiguration configuration) {
+    public SecureChannel(OpcuaDriverContext driverContext, OpcuaConfiguration configuration, PlcAuthentication authentication) {
         this.configuration = configuration;
 
         this.driverContext = driverContext;
         this.endpoint = new PascalString(driverContext.getEndpoint());
-        this.username = configuration.getUsername();
-        this.password = configuration.getPassword();
+        if (authentication != null) {
+            if (authentication instanceof PlcUsernamePasswordAuthentication) {
+                this.username = ((PlcUsernamePasswordAuthentication) authentication).getUsername();
+                this.password = ((PlcUsernamePasswordAuthentication) authentication).getPassword();
+            } else {
+                throw new PlcRuntimeException("This type of connection only supports username-password authentication");
+            }
+        } else {
+            this.username = configuration.getUsername();
+            this.password = configuration.getPassword();
+        }
         this.securityPolicy = "http://opcfoundation.org/UA/SecurityPolicy#" + configuration.getSecurityPolicy();
         CertificateKeyPair ckp = driverContext.getCertificateKeyPair();
 
