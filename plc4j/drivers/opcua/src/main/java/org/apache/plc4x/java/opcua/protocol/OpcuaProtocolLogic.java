@@ -730,16 +730,31 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
 
             /* Functional Consumer example using inner class */
             Consumer<byte[]> consumer = opcuaResponse -> {
-                WriteResponse responseMessage = null;
                 try {
-                    responseMessage = (WriteResponse) ExtensionObject.staticParse(new ReadBufferByteBased(opcuaResponse, ByteOrder.LITTLE_ENDIAN), false).getBody();
+                    ExtensionObjectDefinition reply = ExtensionObject.staticParse(new ReadBufferByteBased(opcuaResponse, ByteOrder.LITTLE_ENDIAN), false).getBody();
+                    if (reply instanceof WriteResponse) {
+                        WriteResponse responseMessage = (WriteResponse) reply;
+                        PlcWriteResponse response = writeResponse(request, responseMessage);
+
+                        // Pass the response back to the application.
+                        future.complete(response);
+                    } else {
+                        if (reply instanceof ServiceFault) {
+                            ExtensionObjectDefinition header = ((ServiceFault) reply).getResponseHeader();
+                            LOGGER.error("Write request ended up with ServiceFault: {}", header);
+                        } else {
+                            LOGGER.error("Remote party returned an error '{}'", reply);
+                        }
+
+                        Map<String, PlcResponseCode> status = new LinkedHashMap<>();
+                        for (String key : request.getTagNames()) {
+                            status.put(key, PlcResponseCode.INTERNAL_ERROR);
+                        }
+                        future.complete(new DefaultPlcWriteResponse(request, status));
+                    }
                 } catch (ParseException e) {
                     throw new PlcRuntimeException(e);
                 }
-                PlcWriteResponse response = writeResponse(request, responseMessage);
-
-                // Pass the response back to the application.
-                future.complete(response);
             };
 
             /* Functional Consumer example using inner class */
@@ -851,16 +866,30 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
 
             /* Functional Consumer example using inner class */
             Consumer<byte[]> consumer = opcuaResponse -> {
-                CreateSubscriptionResponse responseMessage = null;
                 try {
-                    responseMessage = (CreateSubscriptionResponse) ExtensionObject.staticParse(new ReadBufferByteBased(opcuaResponse, ByteOrder.LITTLE_ENDIAN), false).getBody();
+                    ExtensionObjectDefinition reply = ExtensionObject.staticParse(new ReadBufferByteBased(opcuaResponse, ByteOrder.LITTLE_ENDIAN),false).getBody();
+                    if (reply instanceof CreateSubscriptionResponse) {
+                        CreateSubscriptionResponse responseMessage = (CreateSubscriptionResponse) reply;
+
+                        // Pass the response back to the application.
+                        future.complete(responseMessage);
+                    } else {
+                        if (reply instanceof ServiceFault) {
+                            ExtensionObjectDefinition header = ((ServiceFault) reply).getResponseHeader();
+                            LOGGER.error("Subscription request ended up with ServiceFault: {}", header);
+                            future.completeExceptionally(new PlcRuntimeException(
+                                    String.format("Subscription request ended up with ServiceFault: %s", header)
+                            ));
+                        } else {
+                            LOGGER.error("Remote party returned an error '{}'", reply);
+                            future.completeExceptionally(new PlcRuntimeException(
+                                    String.format("Remote party returned an error '%s'", reply)
+                            ));
+                        }
+                    }
                 } catch (ParseException e) {
                     LOGGER.error("error parsing", e);
                 }
-
-                // Pass the response back to the application.
-                future.complete(responseMessage);
-
             };
 
             /* Functional Consumer example using inner class */
