@@ -40,7 +40,6 @@
     <module>plc4x-server</module>
     <module>scraper</module>
     <module>scraper-ng</module>
-    <module>ui</module>
   </modules>
 
 </project>
