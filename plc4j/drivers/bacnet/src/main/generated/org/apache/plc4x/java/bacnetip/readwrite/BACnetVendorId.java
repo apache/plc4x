@@ -29,7 +29,7 @@ public enum BACnetVendorId {
   ASHRAE((int) 0, (int) 0, (String) "ASHRAE"),
   NIST((int) 1, (int) 1, (String) "NIST"),
   THE_TRANE_COMPANY((int) 2, (int) 2, (String) "The Trane Company"),
-  MC_QUAY_INTERNATIONAL((int) 3, (int) 3, (String) "McQuay International"),
+  DAIKIN_APPLIED_AMERICAS((int) 3, (int) 3, (String) "Daikin Applied Americas"),
   POLAR_SOFT((int) 4, (int) 4, (String) "PolarSoft"),
   JOHNSON_CONTROLS_INC((int) 5, (int) 5, (String) "Johnson Controls, Inc."),
   ABB_FORMERLY_AMERICAN_AUTO_MATRIX(
@@ -114,7 +114,7 @@ public enum BACnetVendorId {
       (int) 75,
       (String) "Institute of Electrical Installation Engineers of Japan (IEIEJ)"),
   NOHMI_BOSAI_LTD((int) 76, (int) 76, (String) "Nohmi Bosai, Ltd."),
-  CAREL_SPA((int) 77, (int) 77, (String) "Carel S.p.A."),
+  CAREL_INDUSTRIES_SPA((int) 77, (int) 77, (String) "Carel Industries S.p.A."),
   UTC_FIRE_SECURITY_ESPAASL((int) 78, (int) 78, (String) "UTC Fire & Security España, S.L."),
   HOCHIKI_CORPORATION((int) 79, (int) 79, (String) "Hochiki Corporation"),
   FR_SAUTERAG((int) 80, (int) 80, (String) "Fr. Sauter AG"),
@@ -412,7 +412,7 @@ public enum BACnetVendorId {
   RCK_CONTROLS_INC((int) 331, (int) 331, (String) "RCK Controls, Inc."),
   DISTECH_CONTROLSSAS((int) 332, (int) 332, (String) "Distech Controls SAS"),
   NOVAR_HONEYWELL((int) 333, (int) 333, (String) "Novar/Honeywell"),
-  THES_GROUP_INC((int) 334, (int) 334, (String) "The S4 Group, Inc."),
+  S_INTEGRATION_SOLUTIONS((int) 334, (int) 334, (String) "S4 Integration Solutions"),
   SCHNEIDER_ELECTRIC1((int) 335, (int) 335, (String) "Schneider Electric"),
   LHA_SYSTEMS((int) 336, (int) 336, (String) "LHA Systems"),
   GH_MENGINEERING_GROUP_INC((int) 337, (int) 337, (String) "GHM engineering Group, Inc."),
@@ -1575,7 +1575,7 @@ public enum BACnetVendorId {
   CLEAN_AIRAI_CORPORATION((int) 1369, (int) 1369, (String) "CleanAir.ai Corporation"),
   REVOLUTION_MICROELECTRONICS_AMERICA_INC(
       (int) 1370, (int) 1370, (String) "Revolution Microelectronics (America) Inc."),
-  ARENDARIT_SECURITY_GMBH((int) 1371, (int) 1371, (String) "Arendar IT-Security GmbH"),
+  REAL_TIME_SYSTEMS_GMBH((int) 1371, (int) 1371, (String) "Real-Time Systems GmbH"),
   ZED_BEE_TECHNOLOGIES_PVT_LTD((int) 1372, (int) 1372, (String) "ZedBee Technologies Pvt Ltd"),
   WINMATE_TECHNOLOGY_SOLUTIONS_PVT_LTD(
       (int) 1373, (int) 1373, (String) "Winmate Technology Solutions Pvt. Ltd."),
@@ -1654,6 +1654,15 @@ public enum BACnetVendorId {
   ATLAS_COPCO_AIRPOWERNV((int) 1438, (int) 1438, (String) "Atlas Copco Airpower NV"),
   AIR_SENTRY_LIMITED((int) 1439, (int) 1439, (String) "Air Sentry Limited"),
   AELSYS((int) 1440, (int) 1440, (String) "Aelsys"),
+  GRANBY_CONSULTINGLLC((int) 1441, (int) 1441, (String) "Granby Consulting LLC"),
+  CLEVER_RELAY((int) 1442, (int) 1442, (String) "Clever Relay"),
+  MONICO_MONITORING_INC((int) 1443, (int) 1443, (String) "Monico Monitoring, Inc."),
+  OQDO((int) 1444, (int) 1444, (String) "Oqdo"),
+  MATRIX_COMSEC_PRIVATE_LIMITED((int) 1445, (int) 1445, (String) "Matrix Comsec Private Limited"),
+  RESOURCE_SOLUTIONS((int) 1446, (int) 1446, (String) "Resource Solutions"),
+  AMERICAN_GAS_SAFETYLLC((int) 1447, (int) 1447, (String) "American Gas Safety, LLC"),
+  SS_NORTHERN_LTD((int) 1448, (int) 1448, (String) "S&S Northern Ltd."),
+  ULBIOS_TECHSENS((int) 1449, (int) 1449, (String) "Ulbios Techsens"),
   UNKNOWN_VENDOR((int) 0xFFFF, (int) 0xFFFF, (String) "Unknown");
   private static final Map<Integer, BACnetVendorId> map;
 
