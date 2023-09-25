@@ -476,6 +476,7 @@ public class ReadBufferByteBased implements ReadBuffer, BufferCommons {
         encoding = encoding.toUpperCase();
         switch (encoding) {
             case "ASCII":
+            case "WINDOWS1252":
             case "UTF8": {
                 byte[] strBytes = new byte[bitLength / 8];
                 int realLength = 0;
@@ -497,6 +498,9 @@ public class ReadBufferByteBased implements ReadBuffer, BufferCommons {
                 switch (encoding) {
                     case "UTF8":
                         charset = StandardCharsets.UTF_8;
+                        break;
+                    case "WINDOWS1252":
+                        charset = Charset.forName("windows-1252");
                         break;
                     default:
                         charset = StandardCharsets.US_ASCII;

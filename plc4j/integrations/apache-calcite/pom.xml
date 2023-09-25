@@ -153,12 +153,12 @@
       <dependency>
         <groupId>com.google.protobuf</groupId>
         <artifactId>protobuf-java</artifactId>
-        <version>3.24.2</version>
+        <version>3.24.3</version>
       </dependency>
       <dependency>
         <groupId>org.checkerframework</groupId>
         <artifactId>checker-qual</artifactId>
-        <version>3.37.0</version>
+        <version>3.38.0</version>
       </dependency>
       <dependency>
         <groupId>com.google.errorprone</groupId>

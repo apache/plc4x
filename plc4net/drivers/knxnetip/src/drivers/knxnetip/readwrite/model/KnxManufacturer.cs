@@ -668,8 +668,9 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
         M_ILITE_KNX = 641,
         M_LAZZEN = 642,
         M_MOX_CONTROL_IT_CHINA_LIMITED = 643,
-        M_ABB___RESERVED = 644,
-        M_BUSCH_JAEGER_ELEKTRO___RESERVED = 645,
+        M_CLOWIRE = 644,
+        M_ABB___RESERVED = 645,
+        M_BUSCH_JAEGER_ELEKTRO___RESERVED = 646,
     }
 
     public static class KnxManufacturerInfo
@@ -2497,10 +2498,13 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxManufacturer.M_MOX_CONTROL_IT_CHINA_LIMITED: { /* '643' */
                     return 701;
                 }
-                case KnxManufacturer.M_ABB___RESERVED: { /* '644' */
+                case KnxManufacturer.M_CLOWIRE: { /* '644' */
+                    return 702;
+                }
+                case KnxManufacturer.M_ABB___RESERVED: { /* '645' */
                     return 43954;
                 }
-                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '645' */
+                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '646' */
                     return 43959;
                 }
                 case KnxManufacturer.M_JEPAZ: { /* '65' */
@@ -4445,10 +4449,13 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxManufacturer.M_MOX_CONTROL_IT_CHINA_LIMITED: { /* '643' */
                     return "MOX CONTROL IT (CHINA) LIMITED";
                 }
-                case KnxManufacturer.M_ABB___RESERVED: { /* '644' */
+                case KnxManufacturer.M_CLOWIRE: { /* '644' */
+                    return "CLOWIRE";
+                }
+                case KnxManufacturer.M_ABB___RESERVED: { /* '645' */
                     return "ABB - reserved";
                 }
-                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '645' */
+                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '646' */
                     return "Busch-Jaeger Elektro - reserved";
                 }
                 case KnxManufacturer.M_JEPAZ: { /* '65' */

@@ -18,6 +18,7 @@
  */
 package org.apache.plc4x.java.opcua.protocol;
 
+import java.nio.ByteBuffer;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
@@ -246,10 +247,14 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
             nodeId = new NodeId(new NodeIdNumeric((short) tag.getNamespace(), Long.parseLong(tag.getIdentifier())));
         } else if (tag.getIdentifierType() == OpcuaIdentifierType.GUID_IDENTIFIER) {
             UUID guid = UUID.fromString(tag.getIdentifier());
-            byte[] guidBytes = new byte[16];
-            System.arraycopy(guid.getMostSignificantBits(), 0, guidBytes, 0, 8);
-            System.arraycopy(guid.getLeastSignificantBits(), 0, guidBytes, 8, 8);
-            nodeId = new NodeId(new NodeIdGuid((short) tag.getNamespace(), guidBytes));
+            ByteBuffer bb = ByteBuffer.allocate(16)
+                    .order(java.nio.ByteOrder.LITTLE_ENDIAN)
+                    .putInt((int)(guid.getMostSignificantBits() >> (4*8)))
+                    .putShort((short)(guid.getMostSignificantBits() >> (2*8)))
+                    .putShort((short)guid.getMostSignificantBits())
+                    .order(java.nio.ByteOrder.BIG_ENDIAN)
+                    .putLong(guid.getLeastSignificantBits());
+            nodeId = new NodeId(new NodeIdGuid((short) tag.getNamespace(), bb.array()));
         } else if (tag.getIdentifierType() == OpcuaIdentifierType.STRING_IDENTIFIER) {
             nodeId = new NodeId(new NodeIdString((short) tag.getNamespace(), new PascalString(tag.getIdentifier())));
         }

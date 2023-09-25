@@ -150,7 +150,7 @@ public class DataItem {
 
       // Simple Field (value)
       String value = /*TODO: migrate me*/ /*TODO: migrate me*/
-          readBuffer.readString("", 8, WithOption.WithEncoding("UTF-8"));
+          readBuffer.readString("", 8, WithOption.WithEncoding("Windows-1252"));
 
       return new PlcCHAR(value);
     } else if (EvaluationHelper.equals(plcValueType, PlcValueType.WCHAR)) { // WCHAR
@@ -164,7 +164,7 @@ public class DataItem {
 
       // Simple Field (value)
       String value = /*TODO: migrate me*/ /*TODO: migrate me*/
-          readBuffer.readString("", (stringLength) * (8), WithOption.WithEncoding("UTF-8"));
+          readBuffer.readString("", (stringLength) * (8), WithOption.WithEncoding("Windows-1252"));
 
       // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
       {
@@ -355,7 +355,7 @@ public class DataItem {
       String value = (String) _value.getString();
       /*TODO: migrate me*/
       /*TODO: migrate me*/ writeBuffer.writeString(
-          "", 8, (String) (value), WithOption.WithEncoding("UTF-8"));
+          "", 8, (String) (value), WithOption.WithEncoding("Windows-1252"));
     } else if (EvaluationHelper.equals(plcValueType, PlcValueType.WCHAR)) { // WCHAR
       // Simple Field (value)
       String value = (String) _value.getString();
@@ -367,7 +367,7 @@ public class DataItem {
       String value = (String) _value.getString();
       /*TODO: migrate me*/
       /*TODO: migrate me*/ writeBuffer.writeString(
-          "", (stringLength) * (8), (String) (value), WithOption.WithEncoding("UTF-8"));
+          "", (stringLength) * (8), (String) (value), WithOption.WithEncoding("Windows-1252"));
       // Reserved Field
       /*TODO: migrate me*/
       /*TODO: migrate me*/ writeBuffer.writeUnsignedShort(
