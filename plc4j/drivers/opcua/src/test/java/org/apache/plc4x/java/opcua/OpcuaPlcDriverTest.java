@@ -21,6 +21,8 @@ package org.apache.plc4x.java.opcua;
 import io.vavr.collection.List;
 import org.apache.plc4x.java.DefaultPlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
+import org.apache.plc4x.java.api.authentication.PlcUsernamePasswordAuthentication;
+import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
@@ -90,6 +92,9 @@ public class OpcuaPlcDriverTest {
     private static final String UINT32_ARRAY_IDENTIFIER = "ns=2;s=HelloWorld/ArrayTypes/UInt32Array";
     private static final String UINT64_ARRAY_IDENTIFIER = "ns=2;s=HelloWorld/ArrayTypes/UInt64Array";
     private static final String DATE_TIME_ARRAY_IDENTIFIER = "ns=2;s=HelloWorld/ArrayTypes/DateTimeArray";
+
+    //Restricted
+    public static final String STRING_IDENTIFIER_ONLY_ADMIN_READ_WRITE = "ns=2;s=HelloWorld/OnlyAdminCanRead/String";
 
     // Address of local milo server
     private final String miloLocalAddress = "127.0.0.1:12686/milo";
@@ -169,6 +174,59 @@ public class OpcuaPlcDriverTest {
                         .iterator()))
                 .map(DynamicNode.class::cast)
                 .toJavaStream();
+        }
+
+        @Test
+        void connectionWithUrlAuthentication() throws Exception {
+            DefaultPlcDriverManager driverManager = new DefaultPlcDriverManager();
+            try (PlcConnection opcuaConnection = driverManager.getConnection(tcpConnectionAddress + "?username=admin&password=password2")) {
+                Condition<PlcConnection> is_connected = new Condition<>(PlcConnection::isConnected, "is connected");
+                assertThat(opcuaConnection).is(is_connected);
+
+                PlcReadRequest.Builder builder = opcuaConnection.readRequestBuilder()
+                        .addTagAddress("String", STRING_IDENTIFIER_ONLY_ADMIN_READ_WRITE);
+
+                PlcReadRequest request = builder.build();
+                PlcReadResponse response = request.execute().get();
+
+                assertThat(response.getResponseCode("String")).isEqualTo(PlcResponseCode.OK);
+            }
+        }
+
+        @Test
+        void connectionWithPlcAuthentication() throws Exception {
+            DefaultPlcDriverManager driverManager = new DefaultPlcDriverManager();
+            try (PlcConnection opcuaConnection = driverManager.getConnection(tcpConnectionAddress,
+                    new PlcUsernamePasswordAuthentication("admin", "password2"))) {
+                Condition<PlcConnection> is_connected = new Condition<>(PlcConnection::isConnected, "is connected");
+                assertThat(opcuaConnection).is(is_connected);
+
+                PlcReadRequest.Builder builder = opcuaConnection.readRequestBuilder()
+                        .addTagAddress("String", STRING_IDENTIFIER_ONLY_ADMIN_READ_WRITE);
+
+                PlcReadRequest request = builder.build();
+                PlcReadResponse response = request.execute().get();
+
+                assertThat(response.getResponseCode("String")).isEqualTo(PlcResponseCode.OK);
+            }
+        }
+
+        @Test
+        void connectionWithPlcAuthenticationOverridesUrlParam() throws Exception {
+            DefaultPlcDriverManager driverManager = new DefaultPlcDriverManager();
+            try (PlcConnection opcuaConnection = driverManager.getConnection(tcpConnectionAddress + "?username=user&password=password1",
+                    new PlcUsernamePasswordAuthentication("admin", "password2"))) {
+                Condition<PlcConnection> is_connected = new Condition<>(PlcConnection::isConnected, "is connected");
+                assertThat(opcuaConnection).is(is_connected);
+
+                PlcReadRequest.Builder builder = opcuaConnection.readRequestBuilder()
+                        .addTagAddress("String", STRING_IDENTIFIER_ONLY_ADMIN_READ_WRITE);
+
+                PlcReadRequest request = builder.build();
+                PlcReadResponse response = request.execute().get();
+
+                assertThat(response.getResponseCode("String")).isEqualTo(PlcResponseCode.OK);
+            }
         }
     }
 

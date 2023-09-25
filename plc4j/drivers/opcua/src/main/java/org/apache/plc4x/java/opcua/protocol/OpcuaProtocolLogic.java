@@ -19,6 +19,8 @@
 package org.apache.plc4x.java.opcua.protocol;
 
 import java.nio.ByteBuffer;
+import org.apache.plc4x.java.api.authentication.PlcAuthentication;
+import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
@@ -91,6 +93,9 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
 
     @Override
     public void onDisconnect(ConversationContext<OpcuaAPU> context) {
+        if (channel == null) {
+            return;
+        }
         for (Map.Entry<Long, OpcuaSubscriptionHandle> subscriber : subscriptions.entrySet()) {
             subscriber.getValue().stopSubscriber();
         }
@@ -100,7 +105,6 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
     @Override
     public void setDriverContext(DriverContext driverContext) {
         super.setDriverContext(driverContext);
-        this.channel = new SecureChannel((OpcuaDriverContext) driverContext, this.configuration);
     }
 
     @Override
@@ -108,7 +112,12 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
         LOGGER.debug("Opcua Driver running in ACTIVE mode.");
 
         if (this.channel == null) {
-            this.channel = new SecureChannel((OpcuaDriverContext) driverContext, this.configuration);
+            try {
+                this.channel = createSecureChannel(context.getAuthentication());
+            } catch (PlcRuntimeException ex) {
+                context.getChannel().pipeline().fireExceptionCaught(new PlcConnectionException(ex));
+                return;
+            }
         }
         this.channel.onConnect(context);
     }
@@ -118,9 +127,18 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
         // Only the TCP transport supports login.
         LOGGER.debug("Opcua Driver running in ACTIVE mode, discovering endpoints");
         if (this.channel == null) {
-            this.channel = new SecureChannel((OpcuaDriverContext) driverContext, this.configuration);
+            try {
+                this.channel = createSecureChannel(context.getAuthentication());
+            } catch (PlcRuntimeException ex) {
+                context.getChannel().pipeline().fireExceptionCaught(new PlcConnectionException(ex));
+                return;
+            }
         }
         channel.onDiscover(context);
+    }
+
+    private SecureChannel createSecureChannel(PlcAuthentication authentication) {
+        return new SecureChannel((OpcuaDriverContext) driverContext, configuration, authentication);
     }
 
     @Override
