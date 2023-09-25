@@ -97,7 +97,7 @@
     <sonar.exclusions>**/generated-sources</sonar.exclusions>
     <sonar.cfamily.build-wrapper-output>${project.basedir}/plc4c/target/build-wrapper-output</sonar.cfamily.build-wrapper-output>
 
-    <plc4x-code-generation.version>1.7.0-SNAPSHOT</plc4x-code-generation.version>
+    <plc4x-code-generation.version>1.7.0</plc4x-code-generation.version>
 
     <antlr.version>4.13.1</antlr.version>
     <apiguardian.version>1.1.2</apiguardian.version>
