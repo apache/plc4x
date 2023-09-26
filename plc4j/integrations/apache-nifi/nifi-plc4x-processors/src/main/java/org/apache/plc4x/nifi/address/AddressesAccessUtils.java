@@ -51,6 +51,7 @@ public class AddressesAccessUtils {
                     + "Each field-value is treated as tag-address.")
             .expressionLanguageSupported(ExpressionLanguageScope.FLOWFILE_ATTRIBUTES)
             .addValidator(new JsonValidator())
+            .addValidator(new TextPropertyAccessStrategy.TagValidator())
             .dependsOn(PLC_ADDRESS_ACCESS_STRATEGY, ADDRESS_TEXT)
             .required(true)
             .build();

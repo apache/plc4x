@@ -21,8 +21,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.nifi.components.PropertyDescriptor;
+import org.apache.nifi.components.ValidationContext;
+import org.apache.nifi.components.ValidationResult;
+import org.apache.nifi.components.Validator;
 import org.apache.nifi.flowfile.FlowFile;
 import org.apache.nifi.processor.ProcessContext;
+import org.apache.plc4x.java.DefaultPlcDriverManager;
+import org.apache.plc4x.java.api.PlcDriver;
+import org.apache.plc4x.nifi.BasePlc4xProcessor;
+
 
 public class DynamicPropertyAccessStrategy implements AddressesAccessStrategy{
 
@@ -35,7 +42,40 @@ public class DynamicPropertyAccessStrategy implements AddressesAccessStrategy{
         return addressMap; 
     }
 
+    @Override
     public Map<String, String> extractAddresses(final ProcessContext context, final FlowFile flowFile) {
         return extractAddressesFromAttributes(context, flowFile);
+    }
+
+    public static class TagValidator implements Validator {
+        @Override
+        public ValidationResult validate(String subject, String input, ValidationContext context) {
+            String connectionString = context.getProperty(BasePlc4xProcessor.PLC_CONNECTION_STRING).getValue();
+
+            if (context.isExpressionLanguageSupported(subject) && context.isExpressionLanguagePresent(input) || 
+                context.isExpressionLanguagePresent(connectionString)) {
+                return new ValidationResult.Builder().subject(subject).input(input).explanation("Expression Language Present").valid(true).build();
+            }
+
+            try {
+                DefaultPlcDriverManager manager = new DefaultPlcDriverManager();
+                PlcDriver driver =  manager.getDriverForUrl(connectionString);
+
+                if (!context.isExpressionLanguagePresent(input)) {
+                    driver.prepareTag(input);
+                } 
+                
+            }catch (Exception e) {
+                    return new ValidationResult.Builder().subject(subject)
+                        .explanation(e.getLocalizedMessage())
+                        .valid(false)
+                        .build();
+            }
+            
+            return new ValidationResult.Builder().subject(subject)
+                .explanation("")
+                .valid(true)
+                .build();
+        }
     }
 }
