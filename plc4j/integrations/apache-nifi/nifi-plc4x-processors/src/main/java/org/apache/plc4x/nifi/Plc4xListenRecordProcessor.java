@@ -30,7 +30,6 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.apache.nifi.annotation.behavior.InputRequirement;
@@ -85,6 +84,7 @@ public class Plc4xListenRecordProcessor extends BasePlc4xProcessor {
 	protected Plc4xListenerDispatcher dispatcher;
 	protected RecordSchema recordSchema;
 	protected Thread readerThread;
+	protected Map<String, String> addressMap;
 	final StopWatch executeTime = new StopWatch(false);
 
 	public static final PropertyDescriptor PLC_RECORD_WRITER_FACTORY = new PropertyDescriptor.Builder()
@@ -112,21 +112,7 @@ public class Plc4xListenRecordProcessor extends BasePlc4xProcessor {
 		.dependsOn(PLC_SUBSCRIPTION_TYPE, Plc4xSubscriptionType.CYCLIC.name())
 		.required(true)
         .addValidator(StandardValidators.POSITIVE_INTEGER_VALIDATOR)
-		.addValidator(new Validator() {
-			@Override
-			public ValidationResult validate(String subject, String input, ValidationContext context) {
-				if (context.getProperty(PLC_FUTURE_TIMEOUT_MILISECONDS).asLong() > Long.valueOf(input)) {
-					return new ValidationResult.Builder().valid(true).build();
-				} else {
-					return new ValidationResult.Builder()
-					.valid(false)
-					.input(input)
-					.subject(PLC_SUBSCRIPTION_CYCLIC_POLLING_INTERVAL.getDisplayName())
-					.explanation(String.format("it must me smaller than the value of %s", PLC_FUTURE_TIMEOUT_MILISECONDS.getDisplayName()))
-					.build();
-				}
-			}	
-		})
+		.addValidator(new CyclycPollingIntervalValidator())
         .defaultValue("10000")
 		.build();
 
@@ -151,20 +137,19 @@ public class Plc4xListenRecordProcessor extends BasePlc4xProcessor {
 		super.onScheduled(context);
 		subscriptionType = Plc4xSubscriptionType.valueOf(context.getProperty(PLC_SUBSCRIPTION_TYPE).getValue());
         cyclingPollingInterval = context.getProperty(PLC_SUBSCRIPTION_CYCLIC_POLLING_INTERVAL).asLong();
-		addressMap = getPlcAddressMap(context, null);
-
-		createDispatcher(events);
+		createDispatcher(context, events);
 	}
 
-    protected void createDispatcher(final BlockingQueue<PlcSubscriptionEvent> events) {
+    protected void createDispatcher(final ProcessContext context, final BlockingQueue<PlcSubscriptionEvent> events) {
 		if (readerThread != null) {
 			return;
 		}
 
 		// create the dispatcher and calls open() to start listening to the plc subscription
-        dispatcher =  new Plc4xListenerDispatcher(timeout, subscriptionType, cyclingPollingInterval, getLogger(), events);
+        dispatcher =  new Plc4xListenerDispatcher(getTimeout(context, null), subscriptionType, cyclingPollingInterval, getLogger(), events);
 		try {
-			dispatcher.open(getConnectionString(), addressMap);
+			addressMap = getPlcAddressMap(context, null);
+			dispatcher.open(getConnectionString(context, null), addressMap);
 		} catch (Exception e) {
 			if (debugEnabled) {
 				getLogger().debug("Error creating a the subscription event dispatcher");
@@ -198,7 +183,7 @@ public class Plc4xListenRecordProcessor extends BasePlc4xProcessor {
 		}
     }
 
-	protected PlcSubscriptionEvent getMessage() {
+	protected PlcSubscriptionEvent getMessage(final ProcessContext context) {
 		if (readerThread != null && readerThread.isAlive()) {
 			return events.poll();
 			
@@ -208,14 +193,14 @@ public class Plc4xListenRecordProcessor extends BasePlc4xProcessor {
 			getLogger().debug("Connection to Plc broke. Trying to restart connection");
 		}
 		closeDispatcher();
-		createDispatcher(events);
+		createDispatcher(context, events);
 		throw new ProcessException("Connection to Plc broke. Trying to restart connection");
 	}
 	
 	@Override
 	public void onTrigger(final ProcessContext context, final ProcessSession session) throws ProcessException {
 
-		DefaultPlcSubscriptionEvent event = (DefaultPlcSubscriptionEvent) getMessage();
+		DefaultPlcSubscriptionEvent event = (DefaultPlcSubscriptionEvent) getMessage(context);
 
 		if (event == null) {
 			return;
@@ -226,70 +211,25 @@ public class Plc4xListenRecordProcessor extends BasePlc4xProcessor {
 
 		final AtomicLong nrOfRows = new AtomicLong(0L);
 
-		FlowFile resultSetFF;
-		resultSetFF = session.create();
+		FlowFile resultSetFF = session.create();
 
 		Plc4xWriter plc4xWriter = new RecordPlc4xWriter(context.getProperty(PLC_RECORD_WRITER_FACTORY).asControllerService(RecordSetWriterFactory.class), Collections.emptyMap());
 
 		try {
-			resultSetFF = session.write(resultSetFF, out -> {
+			session.write(resultSetFF, out -> {
 				try {
-					nrOfRows.set(plc4xWriter.writePlcReadResponse(event, out, getLogger(), null, recordSchema));
+					nrOfRows.set(plc4xWriter.writePlcReadResponse(event, out, getLogger(), null, recordSchema, getTimestampField(context)));
 				}  catch (Exception e) {
 					getLogger().error("Exception reading the data from PLC", e);
 					throw (e instanceof ProcessException) ? (ProcessException) e : new ProcessException(e);
 				}
 
 				if (recordSchema == null){
-					if (debugEnabled)
-						getLogger().debug("Adding Plc-Avro schema and PlcTypes resolution into cache with key: " + addressMap.toString());
-					
-					// Add schema to the cache
-					LinkedHashSet<String> addressNames = new LinkedHashSet<String>();
-					addressNames.addAll(event.getTagNames());
-					
-					List<PlcTag> addressTags = addressNames.stream().map(
-						new Function<String,PlcTag>() {
-							@Override
-							public PlcTag apply(String addr) {
-								return new PlcTag() {
-									@Override
-									public String getAddressString() {
-										return addr;
-									}
-
-									@Override
-									public PlcValueType getPlcValueType() {
-										return event.getPlcValue(addr).getPlcValueType();
-									}
-								};
-							}
-						}).collect(Collectors.toList()); 
-
-					getSchemaCache().addSchema(
-						addressMap, 
-						addressNames,
-						addressTags,
-						plc4xWriter.getRecordSchema()
-					);
-					recordSchema = getSchemaCache().retrieveSchema(addressMap);
+					addTagsToCache(event, plc4xWriter);
 				}
 			});
-			long executionTimeElapsed = executeTime.getElapsed(TimeUnit.MILLISECONDS);
-			executeTime.stop();
-			
-			final Map<String, String> attributesToAdd = new HashMap<>();
-			attributesToAdd.put(RESULT_ROW_COUNT, String.valueOf(nrOfRows.get()));
-			attributesToAdd.put(RESULT_LAST_EVENT, String.valueOf(executionTimeElapsed));
-
-			attributesToAdd.putAll(plc4xWriter.getAttributesToAdd());
-			resultSetFF = session.putAllAttributes(resultSetFF, attributesToAdd);
-			plc4xWriter.updateCounters(session);
-			getLogger().info("{} contains {} records; transferring to 'success'", resultSetFF, nrOfRows.get());
-			
-			session.getProvenanceReporter().receive(resultSetFF, "Retrieved " + nrOfRows.get() + " rows from subscription", executionTimeElapsed);
+			resultSetFF = completeResultFlowFile(session, nrOfRows, resultSetFF, plc4xWriter);
 			session.transfer(resultSetFF, REL_SUCCESS);
-			session.commitAsync();
 
 			executeTime.start();
 
@@ -297,5 +237,72 @@ public class Plc4xListenRecordProcessor extends BasePlc4xProcessor {
 			getLogger().error("Got an error while trying to get a subscription event", e);
 			throw new ProcessException("Got an error while trying to get a subscription event", e);
 		}
+	}
+
+	private void addTagsToCache(DefaultPlcSubscriptionEvent event, Plc4xWriter plc4xWriter) {
+		if (debugEnabled)
+			getLogger().debug("Adding Plc-Avro schema and PlcTypes resolution into cache with key: " + addressMap.toString());
+		
+		// Add schema to the cache
+		LinkedHashSet<String> addressNames = new LinkedHashSet<>();
+		addressNames.addAll(event.getTagNames());
+		
+		List<PlcTag> addressTags = addressNames.stream().map(addr -> 
+				new PlcTag() {
+					@Override
+					public String getAddressString() {
+						return addr;
+					}
+
+					@Override
+					public PlcValueType getPlcValueType() {
+						return event.getPlcValue(addr).getPlcValueType();
+					}
+				}
+			).collect(Collectors.toList()); 
+
+		getSchemaCache().addSchema(
+			addressMap, 
+			addressNames,
+			addressTags,
+			plc4xWriter.getRecordSchema()
+		);
+		recordSchema = getSchemaCache().retrieveSchema(addressMap);
+	}
+
+	private FlowFile completeResultFlowFile(final ProcessSession session, final AtomicLong nrOfRows, FlowFile resultSetFF,
+			Plc4xWriter plc4xWriter) {
+				
+		long executionTimeElapsed = executeTime.getElapsed(TimeUnit.MILLISECONDS);
+		executeTime.stop();
+		
+		final Map<String, String> attributesToAdd = new HashMap<>();
+		attributesToAdd.put(RESULT_ROW_COUNT, String.valueOf(nrOfRows.get()));
+		attributesToAdd.put(RESULT_LAST_EVENT, String.valueOf(executionTimeElapsed));
+
+		attributesToAdd.putAll(plc4xWriter.getAttributesToAdd());
+		resultSetFF = session.putAllAttributes(resultSetFF, attributesToAdd);
+		plc4xWriter.updateCounters(session);
+		getLogger().info("{} contains {} records; transferring to 'success'", resultSetFF, nrOfRows.get());
+		
+		session.getProvenanceReporter().receive(resultSetFF, "Retrieved " + nrOfRows.get() + " rows from subscription", executionTimeElapsed);
+		return resultSetFF;
+	}
+
+
+	protected static class CyclycPollingIntervalValidator implements Validator {
+		@Override
+		public ValidationResult validate(String subject, String input, ValidationContext context) {
+			if (context.getProperty(PLC_FUTURE_TIMEOUT_MILISECONDS).asLong() > Long.valueOf(input)) {
+				return new ValidationResult.Builder().valid(true).build();
+			} else {
+				return new ValidationResult.Builder()
+				.valid(false)
+				.input(input)
+				.subject(PLC_SUBSCRIPTION_CYCLIC_POLLING_INTERVAL.getDisplayName())
+				.explanation(String.format("it must me smaller than the value of %s", PLC_FUTURE_TIMEOUT_MILISECONDS.getDisplayName()))
+				.build();
+			}
+		}	
 	}
 }

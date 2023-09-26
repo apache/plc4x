@@ -39,8 +39,8 @@ public class Plc4xSourceProcessorTest {
         testRunner.setIncomingConnection(false);
         testRunner.setValidateExpressionUsage(false);
 
-        testRunner.setProperty(Plc4xSourceProcessor.PLC_CONNECTION_STRING, "simulated://127.0.0.1");
-        testRunner.setProperty(Plc4xSinkRecordProcessor.PLC_FUTURE_TIMEOUT_MILISECONDS, "1000");
+        testRunner.setProperty(Plc4xSourceProcessor.PLC_CONNECTION_STRING, "${literal(\"simulated\")}://127.0.0.1");
+        testRunner.setProperty(Plc4xSourceProcessor.PLC_FUTURE_TIMEOUT_MILISECONDS, "1000");
 
         testRunner.addConnection(Plc4xSourceProcessor.REL_SUCCESS);
         testRunner.addConnection(Plc4xSourceProcessor.REL_FAILURE);

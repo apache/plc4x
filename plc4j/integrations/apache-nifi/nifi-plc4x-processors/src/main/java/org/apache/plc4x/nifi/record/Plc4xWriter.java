@@ -39,8 +39,8 @@ public interface Plc4xWriter {
      * @return the number of rows written to the output stream
      * @throws Exception if any errors occur during the writing of the result set to the output stream
      */
-    long writePlcReadResponse(PlcReadResponse response, OutputStream outputStream, ComponentLog logger,  Plc4xReadResponseRowCallback callback, RecordSchema recordSchema) throws Exception;
-    long writePlcReadResponse(PlcReadResponse response, OutputStream outputStream, ComponentLog logger,  Plc4xReadResponseRowCallback callback, RecordSchema recordSchema, FlowFile originalFlowFile) throws Exception;
+    long writePlcReadResponse(PlcReadResponse response, OutputStream outputStream, ComponentLog logger,  Plc4xReadResponseRowCallback callback, RecordSchema recordSchema, String timestampFieldName) throws Exception;
+    long writePlcReadResponse(PlcReadResponse response, OutputStream outputStream, ComponentLog logger,  Plc4xReadResponseRowCallback callback, RecordSchema recordSchema, FlowFile originalFlowFile, String timestampFieldName) throws Exception;
 
     /**
      * Returns a map of attribute key/value pairs to be added to any outgoing flow file(s). The default implementation is to return an empty map.

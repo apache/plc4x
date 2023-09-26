@@ -41,13 +41,13 @@ import org.apache.nifi.processor.ProcessContext;
 import org.apache.nifi.processor.ProcessorInitializationContext;
 import org.apache.nifi.processor.Relationship;
 import org.apache.nifi.processor.util.StandardValidators;
-import org.apache.plc4x.java.api.PlcConnectionManager;
+import org.apache.plc4x.java.DefaultPlcDriverManager;
 import org.apache.plc4x.java.api.PlcDriver;
-import org.apache.plc4x.java.api.PlcDriverManager;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.utils.cache.CachedPlcConnectionManager;
 import org.apache.plc4x.nifi.address.AddressesAccessStrategy;
 import org.apache.plc4x.nifi.address.AddressesAccessUtils;
+import org.apache.plc4x.nifi.address.DynamicPropertyAccessStrategy;
 import org.apache.plc4x.nifi.record.SchemaCache;
 
 public abstract class BasePlc4xProcessor extends AbstractProcessor {
@@ -55,28 +55,22 @@ public abstract class BasePlc4xProcessor extends AbstractProcessor {
     protected List<PropertyDescriptor> properties;
     protected Set<Relationship> relationships;
     protected volatile boolean debugEnabled;
-  
-    protected String connectionString;
-    protected Map<String, String> addressMap;
-    protected Long timeout;
 
     protected final SchemaCache schemaCache = new SchemaCache(0);
 
-    private final PlcConnectionManager connectionManager = CachedPlcConnectionManager.getBuilder()
-        .withMaxLeaseTime(Duration.ofSeconds(1000L))
-        .withMaxWaitTime(Duration.ofSeconds(500L))
-        .build();
+    private CachedPlcConnectionManager connectionManager;
 
     protected static final List<AllowableValue> addressAccessStrategy = Collections.unmodifiableList(Arrays.asList(
         AddressesAccessUtils.ADDRESS_PROPERTY,
         AddressesAccessUtils.ADDRESS_TEXT));
 
 
-	protected static final PropertyDescriptor PLC_CONNECTION_STRING = new PropertyDescriptor.Builder()
+	public static final PropertyDescriptor PLC_CONNECTION_STRING = new PropertyDescriptor.Builder()
         .name("plc4x-connection-string")
         .displayName("PLC connection String")
         .description("PLC4X connection string used to connect to a given PLC device.")
         .required(true)
+        .expressionLanguageSupported(ExpressionLanguageScope.FLOWFILE_ATTRIBUTES)
         .addValidator(new Plc4xConnectionStringValidator())
         .build();
 	
@@ -86,6 +80,7 @@ public abstract class BasePlc4xProcessor extends AbstractProcessor {
 		.description("Maximum number of entries in the cache. Can improve performance when addresses change dynamically.")
 		.defaultValue("1")
 		.required(true)
+        .expressionLanguageSupported(ExpressionLanguageScope.VARIABLE_REGISTRY)
 		.addValidator(StandardValidators.POSITIVE_INTEGER_VALIDATOR)
 		.build();
 
@@ -95,8 +90,19 @@ public abstract class BasePlc4xProcessor extends AbstractProcessor {
 		.description( "Request timeout in miliseconds")
 		.defaultValue("10000")
 		.required(true)
+        .expressionLanguageSupported(ExpressionLanguageScope.FLOWFILE_ATTRIBUTES)
 		.addValidator(StandardValidators.POSITIVE_INTEGER_VALIDATOR)
 		.build();
+
+    public static final PropertyDescriptor PLC_TIMESTAMP_FIELD_NAME = new PropertyDescriptor.Builder()
+        .name("plc4x-timestamp-field-name")
+        .displayName("Timestamp Field Name")
+        .description("Name of the field that will display the timestamp of the operation.")
+        .required(true)
+        .expressionLanguageSupported(ExpressionLanguageScope.VARIABLE_REGISTRY)
+        .addValidator(new Plc4xTimestampFieldValidator())
+        .defaultValue("ts")
+        .build();
 
 
     protected static final Relationship REL_SUCCESS = new Relationship.Builder()
@@ -119,6 +125,7 @@ public abstract class BasePlc4xProcessor extends AbstractProcessor {
         properties.add(AddressesAccessUtils.ADDRESS_TEXT_PROPERTY);
         properties.add(PLC_SCHEMA_CACHE_SIZE);
         properties.add(PLC_FUTURE_TIMEOUT_MILISECONDS);
+        properties.add(PLC_TIMESTAMP_FIELD_NAME);
         this.properties = Collections.unmodifiableList(properties);
 
     	
@@ -133,8 +140,16 @@ public abstract class BasePlc4xProcessor extends AbstractProcessor {
         return strategy.extractAddresses(context, flowFile);
     }
     
-    public String getConnectionString() {
-        return connectionString;
+    public String getConnectionString(ProcessContext context, FlowFile flowFile) {
+        return context.getProperty(PLC_CONNECTION_STRING).evaluateAttributeExpressions(flowFile).getValue();
+    }
+
+    public Long getTimeout(ProcessContext context, FlowFile flowFile) {
+        return context.getProperty(PLC_FUTURE_TIMEOUT_MILISECONDS).evaluateAttributeExpressions(flowFile).asLong();
+    }
+
+    public String getTimestampField(ProcessContext context) {
+        return context.getProperty(PLC_TIMESTAMP_FIELD_NAME).evaluateAttributeExpressions().getValue();
     }
 
     public SchemaCache getSchemaCache() {
@@ -159,6 +174,7 @@ public abstract class BasePlc4xProcessor extends AbstractProcessor {
                 .expressionLanguageSupported(ExpressionLanguageScope.NONE)
                 .addValidator(StandardValidators.ATTRIBUTE_KEY_PROPERTY_NAME_VALIDATOR)
                 .dependsOn(AddressesAccessUtils.PLC_ADDRESS_ACCESS_STRATEGY, AddressesAccessUtils.ADDRESS_PROPERTY)
+                .addValidator(new DynamicPropertyAccessStrategy.TagValidator())
                 .required(false)
                 .dynamic(true)
                 .build();
@@ -167,10 +183,9 @@ public abstract class BasePlc4xProcessor extends AbstractProcessor {
 
     @OnScheduled
     public void onScheduled(final ProcessContext context) {
-		connectionString = context.getProperty(PLC_CONNECTION_STRING.getName()).getValue();
-        schemaCache.restartCache(context.getProperty(PLC_SCHEMA_CACHE_SIZE).asInteger());
+        refreshConnectionManager();
+        schemaCache.restartCache(context.getProperty(PLC_SCHEMA_CACHE_SIZE).evaluateAttributeExpressions().asInteger());
         debugEnabled = getLogger().isDebugEnabled();
-        timeout = context.getProperty(PLC_FUTURE_TIMEOUT_MILISECONDS.getName()).asLong();
     }
 
     @Override
@@ -186,37 +201,73 @@ public abstract class BasePlc4xProcessor extends AbstractProcessor {
         }
         BasePlc4xProcessor that = (BasePlc4xProcessor) o;
         return Objects.equals(properties, that.properties) &&
-            Objects.equals(getRelationships(), that.getRelationships()) &&
-            Objects.equals(getConnectionString(), that.getConnectionString());
+            Objects.equals(getRelationships(), that.getRelationships());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), properties, getRelationships(), getConnectionString());
+        return Objects.hash(super.hashCode(), properties, getRelationships());
     }
 
-    public static class Plc4xConnectionStringValidator implements Validator {
+    protected static class Plc4xConnectionStringValidator implements Validator {
         @Override
         public ValidationResult validate(String subject, String input, ValidationContext context) {
-            // TODO: Add validation here ...
-            return new ValidationResult.Builder().subject(subject).explanation("").valid(true).build();
+            DefaultPlcDriverManager manager = new DefaultPlcDriverManager();
+            
+            if (context.isExpressionLanguageSupported(subject) && context.isExpressionLanguagePresent(input)) {
+                return new ValidationResult.Builder().subject(subject).input(input).explanation("Expression Language Present").valid(true).build();
+            }
+            try {
+                PlcDriver driver =  manager.getDriverForUrl(input);
+                driver.getConnection(input);
+            } catch (PlcConnectionException e) {
+                return new ValidationResult.Builder().subject(subject)
+                    .explanation(e.getMessage())
+                    .valid(false)
+                    .build();
+            }
+            return new ValidationResult.Builder().subject(subject)
+                .explanation("")
+                .valid(true)
+                .build();
         }
     }
 
-    public static class Plc4xAddressStringValidator implements Validator {
+    protected static class Plc4xTimestampFieldValidator implements Validator {
         @Override
         public ValidationResult validate(String subject, String input, ValidationContext context) {
-            // TODO: Add validation here ...
-            return new ValidationResult.Builder().subject(subject).explanation("").valid(true).build();
+
+            if (context.isExpressionLanguageSupported(subject) && context.isExpressionLanguagePresent(input)) {
+                return new ValidationResult.Builder().subject(subject).input(input).explanation("Expression Language Present").valid(true).build();
+            }
+            
+            Map<String, String> allProperties = context.getAllProperties();
+            allProperties.remove(subject);
+
+            if (allProperties.containsValue(input)) {
+                return new ValidationResult.Builder().subject(subject)
+                    .explanation("Timestamp field must be unique")
+                    .valid(false)
+                    .build(); 
+            }
+            return new ValidationResult.Builder().subject(subject)
+                .explanation("")
+                .valid(true)
+                .build();
+
         }
     }
 
-    protected PlcConnectionManager getConnectionManager() {
+   
+
+    protected CachedPlcConnectionManager getConnectionManager() {
         return connectionManager;
     }
 
-    protected PlcDriver getDriver() throws PlcConnectionException {
-        return PlcDriverManager.getDefault().getDriverForUrl(connectionString);
+    protected void refreshConnectionManager() {
+        connectionManager = CachedPlcConnectionManager.getBuilder()
+            .withMaxLeaseTime(Duration.ofSeconds(1000L))
+            .withMaxWaitTime(Duration.ofSeconds(500L))
+            .build();
     }
-
 }

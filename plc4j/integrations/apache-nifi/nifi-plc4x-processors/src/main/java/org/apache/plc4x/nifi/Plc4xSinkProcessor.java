@@ -18,8 +18,11 @@
  */
 package org.apache.plc4x.nifi;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import org.apache.nifi.annotation.behavior.InputRequirement;
 import org.apache.nifi.annotation.behavior.ReadsAttribute;
@@ -50,81 +53,112 @@ public class Plc4xSinkProcessor extends BasePlc4xProcessor {
     @Override
     public void onTrigger(final ProcessContext context, final ProcessSession session) throws ProcessException {
         FlowFile flowFile = session.get();
-        final ComponentLog logger = getLogger();
-
+        
         // Abort if there's nothing to do.
         if (flowFile == null) {
             return;
         }
 
-        // Get an instance of a component able to write to a PLC.
-        try(PlcConnection connection = getConnectionManager().getConnection(getConnectionString())) {
+        final ComponentLog logger = getLogger();
+
+        try(PlcConnection connection = getConnectionManager().getConnection(getConnectionString(context, flowFile))) {
             if (!connection.getMetadata().canWrite()) {
                 throw new ProcessException("Writing not supported by connection");
             }
-
-            // Prepare the request.
-            PlcWriteRequest.Builder builder = connection.writeRequestBuilder();
-            Map<String,String> addressMap = getPlcAddressMap(context, flowFile);
+            
+            final Map<String,String> addressMap = getPlcAddressMap(context, flowFile);
             final Map<String, PlcTag> tags = getSchemaCache().retrieveTags(addressMap);
 
-            if (tags != null){
-                for (Map.Entry<String,PlcTag> tag : tags.entrySet()){
-                    if (flowFile.getAttributes().containsKey(tag.getKey())) {
-                        builder.addTag(tag.getKey(), tag.getValue(), flowFile.getAttribute(tag.getKey()));
-                    } else {
-                        if (debugEnabled)
-                            logger.debug("PlcTag " + tag + " is declared as address but was not found on input record.");
-                    }
-                }
-            } else {
-                for (Map.Entry<String,String> entry: addressMap.entrySet()){
-                    if (flowFile.getAttributes().containsKey(entry.getKey())) {
-                        builder.addTagAddress(entry.getKey(), entry.getValue(), flowFile.getAttribute(entry.getKey()));
-                    }
-                }
-                if (debugEnabled)
-                    logger.debug("PlcTypes resolution not found in cache and will be added with key: " + addressMap);
-            }
-           
-            PlcWriteRequest writeRequest = builder.build();
+            PlcWriteRequest writeRequest = getWriteRequest(flowFile, logger, addressMap, tags, connection);
 
-            // Send the request to the PLC.
             try {
-                final PlcWriteResponse plcWriteResponse = writeRequest.execute().get(this.timeout, TimeUnit.MILLISECONDS);
-                PlcResponseCode code = null;
+                final PlcWriteResponse plcWriteResponse = writeRequest.execute().get(getTimeout(context, flowFile), TimeUnit.MILLISECONDS);
 
-                for (String tag : plcWriteResponse.getTagNames()) {
-                    code = plcWriteResponse.getResponseCode(tag);
-                    if (!code.equals(PlcResponseCode.OK)) {
-                        logger.error("Not OK code when writing the data to PLC for tag " + tag 
-								+ " with value  " + flowFile.getAttribute(tag)
-								+ " in addresss " + plcWriteResponse.getTag(tag).getAddressString());
-                        throw new Exception(code.toString());
-                    }
-                }
-                session.transfer(flowFile, REL_SUCCESS);
-
-                if (tags == null){
-                    if (debugEnabled)
-                        logger.debug("Adding PlcTypes resolution into cache with key: " + addressMap);
-                    getSchemaCache().addSchema(
-                        addressMap, 
-                        writeRequest.getTagNames(),
-                        writeRequest.getTags(),
-                        null
-                    );
-                }
+                evaluateWriteResponse(flowFile, logger, plcWriteResponse);
+ 
+            } catch (TimeoutException e) {
+                logger.error("Timeout writting the data to the PLC", e);
+                getConnectionManager().removeCachedConnection(getConnectionString(context, flowFile));
+                throw new ProcessException(e);
             } catch (Exception e) {
-                flowFile = session.putAttribute(flowFile, "exception", e.getLocalizedMessage());
-                session.transfer(flowFile, REL_FAILURE);
+                logger.error("Exception writting the data to the PLC", e);
+                throw (e instanceof ProcessException) ? (ProcessException) e : new ProcessException(e);
             }
 
-        } catch (ProcessException e) {
-            throw e;
+            session.transfer(flowFile, REL_SUCCESS);
+
+            if (tags == null){
+                addTagsToCache(logger, addressMap, writeRequest);
+            }
+
+
         } catch (Exception e) {
-            throw new ProcessException("Got an error while trying to get a connection", e);
+            flowFile = session.putAttribute(flowFile, "exception", e.getLocalizedMessage());
+            session.transfer(flowFile, REL_FAILURE);
+            session.commitAsync();
+            throw (e instanceof ProcessException) ? (ProcessException) e : new ProcessException(e);
         }
+    }
+
+    private PlcWriteRequest getWriteRequest(FlowFile flowFile, final ComponentLog logger,
+            final Map<String, String> addressMap, final Map<String, PlcTag> tags, final PlcConnection connection) {
+
+        PlcWriteRequest.Builder builder = connection.writeRequestBuilder();
+
+        if (tags != null){
+            for (Map.Entry<String,PlcTag> tag : tags.entrySet()){
+                if (flowFile.getAttributes().containsKey(tag.getKey())) {
+                    builder.addTag(tag.getKey(), tag.getValue(), flowFile.getAttribute(tag.getKey()));
+                } else {
+                    if (debugEnabled)
+                        logger.debug("PlcTag " + tag + " is declared as address but was not found on input record.");
+                }
+            }
+        } else {
+            if (debugEnabled)
+                logger.debug("PlcTypes resolution not found in cache and will be added with key: " + addressMap);
+            for (Map.Entry<String,String> entry: addressMap.entrySet()){
+                if (flowFile.getAttributes().containsKey(entry.getKey())) {
+                    builder.addTagAddress(entry.getKey(), entry.getValue(), flowFile.getAttribute(entry.getKey()));
+                }
+            }
+        }
+         
+        return builder.build();
+    }
+
+    private void evaluateWriteResponse(FlowFile flowFile, final ComponentLog logger, final PlcWriteResponse plcWriteResponse) {
+        boolean codeErrorPresent = false;
+        List<String> tagsAtError = null;
+        for (String tag : plcWriteResponse.getTagNames()) {
+
+            PlcResponseCode code = plcWriteResponse.getResponseCode(tag);
+            if (!code.equals(PlcResponseCode.OK)) {
+                if (tagsAtError == null) {
+                    tagsAtError = new ArrayList<>();
+                }
+                logger.error("Not OK code when writing the data to PLC for tag " + tag 
+        				+ " with value  " + flowFile.getAttribute(tag)
+        				+ " in addresss " + plcWriteResponse.getTag(tag).getAddressString());
+                codeErrorPresent = true;
+                tagsAtError.add(tag);
+            }
+        }
+        if (codeErrorPresent) {
+            throw new ProcessException("At least one error was found when while writting tags: " + tagsAtError.toString());
+        }
+    }
+
+    private void addTagsToCache(final ComponentLog logger, final Map<String, String> addressMap,
+            PlcWriteRequest writeRequest) {
+        if (debugEnabled)
+            logger.debug("Adding PlcTypes resolution into cache with key: " + addressMap);
+        getSchemaCache().addSchema(
+            addressMap, 
+            writeRequest.getTagNames(),
+            writeRequest.getTags(),
+            null
+        );
     }
 
 }

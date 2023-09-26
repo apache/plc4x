@@ -61,7 +61,7 @@ public class Plc4xSourceRecordProcessorTest {
     	testRunner.assertTransferCount(Plc4xSourceRecordProcessor.REL_FAILURE, 0);
     	testRunner.assertTransferCount(Plc4xSourceRecordProcessor.REL_SUCCESS, NUMBER_OF_CALLS);
 
-		Plc4xCommonTest.assertAvroContent(testRunner.getFlowFilesForRelationship(Plc4xSourceProcessor.REL_SUCCESS), false, true);
+		Plc4xCommonTest.assertAvroContent(testRunner.getFlowFilesForRelationship(Plc4xSourceRecordProcessor.REL_SUCCESS), false, true);
     }
 
 	// Test dynamic properties addressess access strategy
