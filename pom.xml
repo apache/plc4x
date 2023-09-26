@@ -124,7 +124,7 @@
     <commons-text.version>1.10.0</commons-text.version>
     <commons-csv.version>1.10.0</commons-csv.version>
     <dom4j.version>2.1.4</dom4j.version>
-    <equalsverifier.version>3.15.1</equalsverifier.version>
+    <equalsverifier.version>3.15.2</equalsverifier.version>
     <freemarker.version>2.3.32</freemarker.version>
     <groovy.version>4.0.12</groovy.version>
     <gson.version>2.10.1</gson.version>
@@ -155,7 +155,7 @@
     <!-- Site properties -->
     <asciidoctor.maven.plugin.version>2.2.4</asciidoctor.maven.plugin.version>
     <asciidoctorj.version>2.5.10</asciidoctorj.version>
-    <asciidoctorj.diagram.version>2.2.11</asciidoctorj.diagram.version>
+    <asciidoctorj.diagram.version>2.2.13</asciidoctorj.diagram.version>
 
     <skip-code-generation-tests>true</skip-code-generation-tests>
     <skip-pgp-signing>false</skip-pgp-signing>
