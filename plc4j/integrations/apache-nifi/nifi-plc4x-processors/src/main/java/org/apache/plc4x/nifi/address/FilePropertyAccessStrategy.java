@@ -17,6 +17,12 @@
 
 package org.apache.plc4x.nifi.address;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+
+import java.nio.file.StandardOpenOption;
+import java.nio.file.Path;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -27,33 +33,36 @@ import org.apache.nifi.flowfile.FlowFile;
 import org.apache.nifi.processor.ProcessContext;
 import org.apache.nifi.processor.exception.ProcessException;
 import org.apache.plc4x.java.DefaultPlcDriverManager;
-import com.fasterxml.jackson.core.JsonProcessingException;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class TextPropertyAccessStrategy extends BaseAccessStrategy {
+public class FilePropertyAccessStrategy extends BaseAccessStrategy {
 
     @Override
     public AllowableValue getAllowableValue() {
-        return AddressesAccessUtils.ADDRESS_TEXT;
+        return AddressesAccessUtils.ADDRESS_FILE;
     }
 
     @Override
     public List<PropertyDescriptor> getPropertyDescriptors() {
-        return List.of(AddressesAccessUtils.ADDRESS_TEXT_PROPERTY);
+        return List.of(AddressesAccessUtils.ADDRESS_FILE_PROPERTY);
     }
 
     @Override
     public Map<String, String> extractAddressesFromResources(final ProcessContext context, final FlowFile flowFile) throws ProcessException{
         try {
-            return extractAddressesFromText(context.getProperty(AddressesAccessUtils.ADDRESS_TEXT_PROPERTY).evaluateAttributeExpressions(flowFile).getValue());
+            return extractAddressesFromFile(context.getProperty(AddressesAccessUtils.ADDRESS_FILE_PROPERTY).evaluateAttributeExpressions(flowFile).getValue());
         } catch (Exception e) {
             throw new ProcessException(e.toString());
         }
     }
 
-    private static Map<String,String> extractAddressesFromText(String input) throws JsonProcessingException {
+    private static  Map<String,String> extractAddressesFromFile(String fileName) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
 
+        Path filePath = Path.of(fileName);
+        InputStream input = Files.newInputStream(filePath, StandardOpenOption.READ);
+        
         return mapper.readerForMapOf(String.class).readValue(input);
     }
 
@@ -64,7 +73,7 @@ public class TextPropertyAccessStrategy extends BaseAccessStrategy {
 
         @Override
         protected Collection<String> getTags(String input) throws Exception {
-            return TextPropertyAccessStrategy.extractAddressesFromText(input).values();
+            return FilePropertyAccessStrategy.extractAddressesFromFile(input).values();
         } 
     }
 }

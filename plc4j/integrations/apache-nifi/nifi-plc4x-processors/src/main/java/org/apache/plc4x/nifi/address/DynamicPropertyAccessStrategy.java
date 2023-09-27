@@ -17,21 +17,34 @@
 
 package org.apache.plc4x.nifi.address;
 
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import org.apache.nifi.components.AllowableValue;
 import org.apache.nifi.components.PropertyDescriptor;
-import org.apache.nifi.components.ValidationContext;
-import org.apache.nifi.components.ValidationResult;
-import org.apache.nifi.components.Validator;
 import org.apache.nifi.flowfile.FlowFile;
 import org.apache.nifi.processor.ProcessContext;
 import org.apache.plc4x.java.DefaultPlcDriverManager;
-import org.apache.plc4x.java.api.PlcDriver;
-import org.apache.plc4x.nifi.BasePlc4xProcessor;
 
 
-public class DynamicPropertyAccessStrategy implements AddressesAccessStrategy{
+public class DynamicPropertyAccessStrategy extends BaseAccessStrategy{
+
+    @Override
+    public AllowableValue getAllowableValue() {
+        return AddressesAccessUtils.ADDRESS_PROPERTY;
+    }
+
+    @Override
+    public List<PropertyDescriptor> getPropertyDescriptors() {
+        return List.of();
+    }
+
+    @Override
+    public Map<String,String> extractAddressesFromResources(final ProcessContext context, final FlowFile flowFile) {
+        return extractAddressesFromAttributes(context, flowFile);
+    }
 
     private Map<String,String> extractAddressesFromAttributes(final ProcessContext context, final FlowFile flowFile) {
         Map<String,String> addressMap = new HashMap<>();
@@ -42,40 +55,16 @@ public class DynamicPropertyAccessStrategy implements AddressesAccessStrategy{
         return addressMap; 
     }
 
-    @Override
-    public Map<String, String> extractAddresses(final ProcessContext context, final FlowFile flowFile) {
-        return extractAddressesFromAttributes(context, flowFile);
-    }
 
-    public static class TagValidator implements Validator {
+    public static class TagValidator extends BaseAccessStrategy.TagValidator {
+        public TagValidator(DefaultPlcDriverManager manager) {
+            super(manager);
+        }
+
         @Override
-        public ValidationResult validate(String subject, String input, ValidationContext context) {
-            String connectionString = context.getProperty(BasePlc4xProcessor.PLC_CONNECTION_STRING).getValue();
-
-            if (context.isExpressionLanguageSupported(subject) && context.isExpressionLanguagePresent(input) || 
-                context.isExpressionLanguagePresent(connectionString)) {
-                return new ValidationResult.Builder().subject(subject).input(input).explanation("Expression Language Present").valid(true).build();
-            }
-
-            try {
-                DefaultPlcDriverManager manager = new DefaultPlcDriverManager();
-                PlcDriver driver =  manager.getDriverForUrl(connectionString);
-
-                if (!context.isExpressionLanguagePresent(input)) {
-                    driver.prepareTag(input);
-                } 
-                
-            }catch (Exception e) {
-                    return new ValidationResult.Builder().subject(subject)
-                        .explanation(e.getLocalizedMessage())
-                        .valid(false)
-                        .build();
-            }
-            
-            return new ValidationResult.Builder().subject(subject)
-                .explanation("")
-                .valid(true)
-                .build();
+        protected Collection<String> getTags(String input) throws Exception {
+            return List.of(input);
         }
     }
+
 }

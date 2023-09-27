@@ -55,14 +55,28 @@ public abstract class BasePlc4xProcessor extends AbstractProcessor {
     protected List<PropertyDescriptor> properties;
     protected Set<Relationship> relationships;
     protected volatile boolean debugEnabled;
+    protected Integer cacheSize = 0;
 
     protected final SchemaCache schemaCache = new SchemaCache(0);
 
     private CachedPlcConnectionManager connectionManager;
 
+    protected CachedPlcConnectionManager getConnectionManager() {
+        return connectionManager;
+    }
+
+    protected void refreshConnectionManager() {
+        connectionManager = CachedPlcConnectionManager.getBuilder()
+            .withMaxLeaseTime(Duration.ofSeconds(1000L))
+            .withMaxWaitTime(Duration.ofSeconds(500L))
+            .build();
+    }
+
+
     protected static final List<AllowableValue> addressAccessStrategy = Collections.unmodifiableList(Arrays.asList(
         AddressesAccessUtils.ADDRESS_PROPERTY,
-        AddressesAccessUtils.ADDRESS_TEXT));
+        AddressesAccessUtils.ADDRESS_TEXT,
+        AddressesAccessUtils.ADDRESS_FILE));
 
 
 	public static final PropertyDescriptor PLC_CONNECTION_STRING = new PropertyDescriptor.Builder()
@@ -123,6 +137,7 @@ public abstract class BasePlc4xProcessor extends AbstractProcessor {
     	properties.add(PLC_CONNECTION_STRING);
         properties.add(AddressesAccessUtils.PLC_ADDRESS_ACCESS_STRATEGY);
         properties.add(AddressesAccessUtils.ADDRESS_TEXT_PROPERTY);
+        properties.add(AddressesAccessUtils.ADDRESS_FILE_PROPERTY);
         properties.add(PLC_SCHEMA_CACHE_SIZE);
         properties.add(PLC_FUTURE_TIMEOUT_MILISECONDS);
         properties.add(PLC_TIMESTAMP_FIELD_NAME);
@@ -166,7 +181,6 @@ public abstract class BasePlc4xProcessor extends AbstractProcessor {
         return properties;
     }
     
-    //dynamic prop
     @Override
     protected PropertyDescriptor getSupportedDynamicPropertyDescriptor(final String propertyDescriptorName) {
         return new PropertyDescriptor.Builder()
@@ -174,7 +188,7 @@ public abstract class BasePlc4xProcessor extends AbstractProcessor {
                 .expressionLanguageSupported(ExpressionLanguageScope.NONE)
                 .addValidator(StandardValidators.ATTRIBUTE_KEY_PROPERTY_NAME_VALIDATOR)
                 .dependsOn(AddressesAccessUtils.PLC_ADDRESS_ACCESS_STRATEGY, AddressesAccessUtils.ADDRESS_PROPERTY)
-                .addValidator(new DynamicPropertyAccessStrategy.TagValidator())
+                .addValidator(new DynamicPropertyAccessStrategy.TagValidator(AddressesAccessUtils.getManager()))
                 .required(false)
                 .dynamic(true)
                 .build();
@@ -183,8 +197,12 @@ public abstract class BasePlc4xProcessor extends AbstractProcessor {
 
     @OnScheduled
     public void onScheduled(final ProcessContext context) {
+        Integer newCacheSize = context.getProperty(PLC_SCHEMA_CACHE_SIZE).evaluateAttributeExpressions().asInteger();
+        if (!newCacheSize.equals(cacheSize)){
+            schemaCache.restartCache(newCacheSize);
+            cacheSize = newCacheSize;
+        }
         refreshConnectionManager();
-        schemaCache.restartCache(context.getProperty(PLC_SCHEMA_CACHE_SIZE).evaluateAttributeExpressions().asInteger());
         debugEnabled = getLogger().isDebugEnabled();
     }
 
@@ -256,18 +274,5 @@ public abstract class BasePlc4xProcessor extends AbstractProcessor {
                 .build();
 
         }
-    }
-
-   
-
-    protected CachedPlcConnectionManager getConnectionManager() {
-        return connectionManager;
-    }
-
-    protected void refreshConnectionManager() {
-        connectionManager = CachedPlcConnectionManager.getBuilder()
-            .withMaxLeaseTime(Duration.ofSeconds(1000L))
-            .withMaxWaitTime(Duration.ofSeconds(500L))
-            .build();
     }
 }

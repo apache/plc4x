@@ -140,7 +140,7 @@ public class Plc4xSourceRecordProcessor extends BasePlc4xProcessor {
 
 				} catch (TimeoutException e) {
 					logger.error("Timeout reading the data from PLC", e);
-					refreshConnectionManager();
+					getConnectionManager().removeCachedConnection(getConnectionString(context, originalFlowFile));
 					throw new ProcessException(e);
 				} catch (PlcConnectionException e) {
 					logger.error("Error getting the PLC connection", e);
@@ -159,8 +159,10 @@ public class Plc4xSourceRecordProcessor extends BasePlc4xProcessor {
 			
 		} catch (Exception e) {
 			logger.error("Exception reading the data from the PLC", e);
-			session.putAttribute(fileToProcess, "exception", e.getLocalizedMessage());
-			session.transfer(fileToProcess, REL_FAILURE);
+			if (fileToProcess != null) {
+				session.putAttribute(fileToProcess, "exception", e.getLocalizedMessage());
+				session.transfer(fileToProcess, REL_FAILURE);
+			}
 			session.remove(resultSetFF);
 			session.commitAsync();
 			throw (e instanceof ProcessException) ? (ProcessException) e : new ProcessException(e);
