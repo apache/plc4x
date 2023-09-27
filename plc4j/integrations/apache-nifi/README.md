@@ -49,6 +49,21 @@ The following properties applies to all Plc4x Processors:
     }
     ```
     If this JSON is in an attribute `plc4x.addresses` it can be accessed with *Address Text*=`${plc4x.addresses}`. 
+  
+  * **Address File:**
+    Property *Address File* must be supplied with a path to a file in JSON format that contains variable name and address tag. Expression Language is supported.
+
+    For example a file in:
+    - *Address File*:```/home/nifi/s7addresses.json```  
+    With the following content
+    ```json
+    {
+      "var1" : "%DB1:DBX0.0:BOOL",
+      "var2" : "%DB1:DBX0.1:BOOL"
+    }
+    ```
+    If the file name is in an attribute `plc4x.addresses_file` it can be accessed with *Address File*=`${plc4x.addresses_file}`. 
+
 
 
 When reading from a PLC the response is used to create a mapping between Plc types into Avro. The mapping is done as follows:
