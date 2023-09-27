@@ -46,6 +46,8 @@ import org.apache.plc4x.java.api.model.PlcTag;
 @WritesAttributes({@WritesAttribute(attribute="value", description="some value")})
 public class Plc4xSourceProcessor extends BasePlc4xProcessor {
 
+	public static final String EXCEPTION = "plc4x.read.exception";
+
     @Override
     public void onTrigger(final ProcessContext context, final ProcessSession session) throws ProcessException {
         
@@ -102,7 +104,7 @@ public class Plc4xSourceProcessor extends BasePlc4xProcessor {
         } catch (Exception e) {
             session.remove(flowFile);
             if (incomingFlowFile != null){
-                incomingFlowFile = session.putAttribute(incomingFlowFile, "exception", e.getLocalizedMessage());
+                incomingFlowFile = session.putAttribute(incomingFlowFile, EXCEPTION, e.getLocalizedMessage());
                 session.transfer(incomingFlowFile, REL_FAILURE);
             }
             session.commitAsync();

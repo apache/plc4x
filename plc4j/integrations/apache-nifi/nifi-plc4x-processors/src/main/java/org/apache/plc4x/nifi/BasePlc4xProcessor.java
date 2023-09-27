@@ -20,7 +20,6 @@ package org.apache.plc4x.nifi;
 
 import java.time.Duration;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -29,7 +28,6 @@ import java.util.Objects;
 import java.util.Set;
 
 import org.apache.nifi.annotation.lifecycle.OnScheduled;
-import org.apache.nifi.components.AllowableValue;
 import org.apache.nifi.components.PropertyDescriptor;
 import org.apache.nifi.components.ValidationContext;
 import org.apache.nifi.components.ValidationResult;
@@ -58,6 +56,7 @@ public abstract class BasePlc4xProcessor extends AbstractProcessor {
     protected Integer cacheSize = 0;
 
     protected final SchemaCache schemaCache = new SchemaCache(0);
+    protected AddressesAccessStrategy addressAccessStrategy;
 
     private CachedPlcConnectionManager connectionManager;
 
@@ -71,12 +70,6 @@ public abstract class BasePlc4xProcessor extends AbstractProcessor {
             .withMaxWaitTime(Duration.ofSeconds(500L))
             .build();
     }
-
-
-    protected static final List<AllowableValue> addressAccessStrategy = Collections.unmodifiableList(Arrays.asList(
-        AddressesAccessUtils.ADDRESS_PROPERTY,
-        AddressesAccessUtils.ADDRESS_TEXT,
-        AddressesAccessUtils.ADDRESS_FILE));
 
 
 	public static final PropertyDescriptor PLC_CONNECTION_STRING = new PropertyDescriptor.Builder()
@@ -151,8 +144,7 @@ public abstract class BasePlc4xProcessor extends AbstractProcessor {
     }
 
     public Map<String, String> getPlcAddressMap(ProcessContext context, FlowFile flowFile) {
-        AddressesAccessStrategy strategy = AddressesAccessUtils.getAccessStrategy(context);
-        return strategy.extractAddresses(context, flowFile);
+        return addressAccessStrategy.extractAddresses(context, flowFile);
     }
     
     public String getConnectionString(ProcessContext context, FlowFile flowFile) {
@@ -204,6 +196,7 @@ public abstract class BasePlc4xProcessor extends AbstractProcessor {
         }
         refreshConnectionManager();
         debugEnabled = getLogger().isDebugEnabled();
+        addressAccessStrategy = AddressesAccessUtils.getAccessStrategy(context);
     }
 
     @Override

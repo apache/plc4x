@@ -74,6 +74,7 @@ public class Plc4xSinkRecordProcessor extends BasePlc4xProcessor {
 	public static final String RESULT_ROW_COUNT = "plc4x.write.row.count";
 	public static final String RESULT_QUERY_EXECUTION_TIME = "plc4x.write.query.executiontime";
 	public static final String INPUT_FLOWFILE_UUID = "input.flowfile.uuid";
+	public static final String EXCEPTION = "plc4x.write.exception";
 	
 	public static final PropertyDescriptor PLC_RECORD_READER_FACTORY = new PropertyDescriptor.Builder()
 			.name("record-reader").displayName("Record Reader")
@@ -161,7 +162,7 @@ public class Plc4xSinkRecordProcessor extends BasePlc4xProcessor {
 
 		} catch (ProcessException e) {
 			logger.error("Exception writing the data to the PLC", e);
-			session.putAttribute(fileToProcess, "exception", e.getLocalizedMessage());
+			session.putAttribute(fileToProcess, EXCEPTION, e.getLocalizedMessage());
 			session.transfer(fileToProcess, REL_FAILURE);
 			session.commitAsync();
 			throw e;

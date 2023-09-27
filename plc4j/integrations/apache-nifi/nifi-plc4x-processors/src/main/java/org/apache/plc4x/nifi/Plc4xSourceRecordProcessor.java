@@ -70,6 +70,7 @@ public class Plc4xSourceRecordProcessor extends BasePlc4xProcessor {
 	public static final String RESULT_ROW_COUNT = "plc4x.read.row.count";
 	public static final String RESULT_QUERY_EXECUTION_TIME = "plc4x.read.query.executiontime";
 	public static final String INPUT_FLOWFILE_UUID = "input.flowfile.uuid";
+	public static final String EXCEPTION = "plc4x.read.exception";
 
 	public static final PropertyDescriptor PLC_RECORD_WRITER_FACTORY = new PropertyDescriptor.Builder()
 		.name("plc4x-record-writer").displayName("Record Writer")
@@ -160,7 +161,7 @@ public class Plc4xSourceRecordProcessor extends BasePlc4xProcessor {
 		} catch (Exception e) {
 			logger.error("Exception reading the data from the PLC", e);
 			if (fileToProcess != null) {
-				session.putAttribute(fileToProcess, "exception", e.getLocalizedMessage());
+				session.putAttribute(fileToProcess, EXCEPTION, e.getLocalizedMessage());
 				session.transfer(fileToProcess, REL_FAILURE);
 			}
 			session.remove(resultSetFF);
