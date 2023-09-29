@@ -18,6 +18,7 @@
  */
 package org.apache.plc4x.java.modbus.base.protocol;
 
+import org.apache.commons.lang3.BitField;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.value.*;
@@ -272,9 +273,39 @@ public abstract class ModbusProtocolLogic<T extends ModbusADU> extends Plc4xProt
     protected byte[] fromPlcValue(PlcTag tag, PlcValue plcValue) {
         ModbusDataType tagDataType = ((ModbusTag) tag).getDataType();
         try {
-            if (tag instanceof ModbusTagCoil && plcValue instanceof PlcBOOL) {
-                byte byteValue = (byte) (plcValue.getBoolean() ? 1 : 0);
-                return new byte[]{byteValue};
+            if (tag instanceof ModbusTagCoil) {
+                // If it's a single value, just cast that to a number.
+                if(plcValue instanceof PlcBOOL) {
+                    byte byteValue = (byte) (plcValue.getBoolean() ? 1 : 0);
+                    return new byte[]{byteValue};
+                }
+                // If it's a List, convert the booleans in the list into an array of bytes.
+                else if(plcValue instanceof PlcList) {
+                    PlcList valueList = (PlcList) plcValue;
+                    WriteBufferByteBased wb = new WriteBufferByteBased(((plcValue.getLength() - 1) / 8) + 1);
+                    int paddingBits = 8 - (plcValue.getLength() % 8);
+                    if(paddingBits < 8) {
+                        for(int i = 0; i < paddingBits; i++) {
+                            wb.writeBit(false);
+                        }
+                    }
+                    for(int i = 0; i < plcValue.getLength(); i++) {
+                        // We need to serialize the bits in reverse order for them to end in the right coils.
+                        PlcValue value = valueList.getIndex((plcValue.getLength() - 1) - i);
+                        if(!(value instanceof PlcBOOL)) {
+                            throw new PlcRuntimeException("Expecting only BOOL values when writing coils.");
+                        }
+                        PlcBOOL boolValue = (PlcBOOL) value;
+                        wb.writeBit(boolValue.getBoolean());
+                    }
+                    // Reverse the bytes to have the "unfinished bytes" at the end.
+                    byte[] bytes = wb.getBytes();
+                    ArrayUtils.reverse(bytes);
+                    return bytes;
+                }
+                else {
+                    throw new PlcRuntimeException("Expecting only BOOL or List values when writing coils.");
+               }
             }
             else if (plcValue instanceof PlcList) {
                 WriteBufferByteBased writeBuffer = new WriteBufferByteBased(DataItem.getLengthInBytes(plcValue, tagDataType, plcValue.getLength()));
