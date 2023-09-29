@@ -69,6 +69,7 @@ public class ManualModbusDriverTest extends ManualTest {
     }
 
     public static void main(String[] args) throws Exception {
+        // ! See modbus-pal-project.xmpp for a config made to be used by this test
         // Tested with ModbusPal
         ManualModbusDriverTest test = new ManualModbusDriverTest("modbus-tcp://127.0.0.1");
         test.addTestCase("holding-register:1000:BOOL", new PlcBOOL(true)); // 0001 # 1
