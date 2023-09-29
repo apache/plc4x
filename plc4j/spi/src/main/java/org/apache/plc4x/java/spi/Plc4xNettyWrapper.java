@@ -21,6 +21,7 @@ package org.apache.plc4x.java.spi;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPipeline;
+import io.netty.channel.ChannelPromise;
 import io.netty.handler.codec.MessageToMessageCodec;
 import io.vavr.control.Either;
 import java.util.concurrent.TimeoutException;
@@ -112,18 +113,22 @@ public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, Object> {
             }
 
             @Override
-            @SuppressWarnings({"unchecked", "rawtypes"})
             public SendRequestContext<T> sendRequest(T packet) {
                 return new DefaultSendRequestContext<>(Plc4xNettyWrapper.this::registerHandler, packet, this);
             }
 
             @Override
-            @SuppressWarnings({"unchecked", "rawtypes"})
             public ExpectRequestContext<T> expectRequest(Class<T> clazz, Duration timeout) {
                 return new DefaultExpectRequestContext<>(Plc4xNettyWrapper.this::registerHandler, clazz, timeout, this);
             }
 
         });
+    }
+
+    @Override
+    public void close(ChannelHandlerContext ctx, ChannelPromise promise) throws Exception {
+        super.close(ctx, promise);
+        timeoutManager.stop();
     }
 
     @Override
