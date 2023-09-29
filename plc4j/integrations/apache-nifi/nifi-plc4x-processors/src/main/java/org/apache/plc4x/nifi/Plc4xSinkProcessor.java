@@ -18,8 +18,6 @@
  */
 package org.apache.plc4x.nifi;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -39,7 +37,6 @@ import org.apache.nifi.processor.exception.ProcessException;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteResponse;
-import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.model.PlcTag;
 
 @TriggerSerially
@@ -71,12 +68,12 @@ public class Plc4xSinkProcessor extends BasePlc4xProcessor {
             final Map<String,String> addressMap = getPlcAddressMap(context, flowFile);
             final Map<String, PlcTag> tags = getSchemaCache().retrieveTags(addressMap);
 
-            PlcWriteRequest writeRequest = getWriteRequest(flowFile, logger, addressMap, tags, connection);
+            PlcWriteRequest writeRequest = getWriteRequest(logger, addressMap, tags, flowFile.getAttributes(), connection, null);
 
             try {
                 final PlcWriteResponse plcWriteResponse = writeRequest.execute().get(getTimeout(context, flowFile), TimeUnit.MILLISECONDS);
 
-                evaluateWriteResponse(flowFile, logger, plcWriteResponse);
+                evaluateWriteResponse(logger, flowFile.getAttributes(), plcWriteResponse);
  
             } catch (TimeoutException e) {
                 logger.error("Timeout writting the data to the PLC", e);
@@ -90,7 +87,14 @@ public class Plc4xSinkProcessor extends BasePlc4xProcessor {
             session.transfer(flowFile, REL_SUCCESS);
 
             if (tags == null){
-                addTagsToCache(logger, addressMap, writeRequest);
+                if (debugEnabled)
+                    logger.debug("Adding PlcTypes resolution into cache with key: " + addressMap);
+                getSchemaCache().addSchema(
+                    addressMap, 
+                    writeRequest.getTagNames(),
+                    writeRequest.getTags(),
+                    null
+                );
             }
 
 
@@ -100,67 +104,6 @@ public class Plc4xSinkProcessor extends BasePlc4xProcessor {
             session.commitAsync();
             throw (e instanceof ProcessException) ? (ProcessException) e : new ProcessException(e);
         }
-    }
-
-    private PlcWriteRequest getWriteRequest(FlowFile flowFile, final ComponentLog logger,
-            final Map<String, String> addressMap, final Map<String, PlcTag> tags, final PlcConnection connection) {
-
-        PlcWriteRequest.Builder builder = connection.writeRequestBuilder();
-
-        if (tags != null){
-            for (Map.Entry<String,PlcTag> tag : tags.entrySet()){
-                if (flowFile.getAttributes().containsKey(tag.getKey())) {
-                    builder.addTag(tag.getKey(), tag.getValue(), flowFile.getAttribute(tag.getKey()));
-                } else {
-                    if (debugEnabled)
-                        logger.debug("PlcTag " + tag + " is declared as address but was not found on input record.");
-                }
-            }
-        } else {
-            if (debugEnabled)
-                logger.debug("PlcTypes resolution not found in cache and will be added with key: " + addressMap);
-            for (Map.Entry<String,String> entry: addressMap.entrySet()){
-                if (flowFile.getAttributes().containsKey(entry.getKey())) {
-                    builder.addTagAddress(entry.getKey(), entry.getValue(), flowFile.getAttribute(entry.getKey()));
-                }
-            }
-        }
-         
-        return builder.build();
-    }
-
-    private void evaluateWriteResponse(FlowFile flowFile, final ComponentLog logger, final PlcWriteResponse plcWriteResponse) {
-        boolean codeErrorPresent = false;
-        List<String> tagsAtError = null;
-        for (String tag : plcWriteResponse.getTagNames()) {
-
-            PlcResponseCode code = plcWriteResponse.getResponseCode(tag);
-            if (!code.equals(PlcResponseCode.OK)) {
-                if (tagsAtError == null) {
-                    tagsAtError = new ArrayList<>();
-                }
-                logger.error("Not OK code when writing the data to PLC for tag " + tag 
-        				+ " with value  " + flowFile.getAttribute(tag)
-        				+ " in addresss " + plcWriteResponse.getTag(tag).getAddressString());
-                codeErrorPresent = true;
-                tagsAtError.add(tag);
-            }
-        }
-        if (codeErrorPresent) {
-            throw new ProcessException("At least one error was found when while writting tags: " + tagsAtError.toString());
-        }
-    }
-
-    private void addTagsToCache(final ComponentLog logger, final Map<String, String> addressMap,
-            PlcWriteRequest writeRequest) {
-        if (debugEnabled)
-            logger.debug("Adding PlcTypes resolution into cache with key: " + addressMap);
-        getSchemaCache().addSchema(
-            addressMap, 
-            writeRequest.getTagNames(),
-            writeRequest.getTags(),
-            null
-        );
     }
 
 }

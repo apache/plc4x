@@ -152,7 +152,14 @@ public class Plc4xSourceRecordProcessor extends BasePlc4xProcessor {
 				}
 
 				if (recordSchema == null){
-					addTagsToCache(logger, addressMap, readRequest, plc4xWriter.getRecordSchema());
+					if (debugEnabled)
+						logger.debug("Adding PlcTypes resolution into cache with key: " + addressMap);
+					getSchemaCache().addSchema(
+						addressMap, 
+						readRequest.getTagNames(),
+						readRequest.getTags(),
+						plc4xWriter.getRecordSchema()
+					);
 				}
 				nrOfRows.set(nrOfRowsHere);
 
@@ -169,8 +176,25 @@ public class Plc4xSourceRecordProcessor extends BasePlc4xProcessor {
 			throw (e instanceof ProcessException) ? (ProcessException) e : new ProcessException(e);
 		}
 
-		completeResultFlowFile(context, session, logger, nrOfRows, executeTime, inputFileUUID, resultSetFF,
-				plc4xWriter);
+		plc4xWriter.updateCounters(session);
+		long executionTimeElapsed = executeTime.getElapsed(TimeUnit.MILLISECONDS);
+		final Map<String, String> attributesToAdd = new HashMap<>();
+		attributesToAdd.put(RESULT_ROW_COUNT, String.valueOf(nrOfRows.get()));
+		attributesToAdd.put(RESULT_QUERY_EXECUTION_TIME, String.valueOf(executionTimeElapsed));
+		if (inputFileUUID != null) {
+			attributesToAdd.put(INPUT_FLOWFILE_UUID, inputFileUUID);
+		}
+		attributesToAdd.putAll(plc4xWriter.getAttributesToAdd());
+
+		session.putAllAttributes(resultSetFF, attributesToAdd);
+		
+		logger.info("{} contains {} records; transferring to 'success'", resultSetFF, nrOfRows.get());
+
+		if (context.hasIncomingConnection()) {
+			session.getProvenanceReporter().fetch(resultSetFF, "Retrieved " + nrOfRows.get() + " rows", executionTimeElapsed);
+		} else {
+			session.getProvenanceReporter().receive(resultSetFF, "Retrieved " + nrOfRows.get() + " rows", executionTimeElapsed);
+		}
 		
 		if (fileToProcess != null) {
 			session.remove(fileToProcess);
@@ -192,73 +216,6 @@ public class Plc4xSourceRecordProcessor extends BasePlc4xProcessor {
 			resultSetFF = session.putAllAttributes(resultSetFF, inputFileAttrMap);
 		}
 		return resultSetFF;
-	}
-
-	private PlcReadRequest getReadRequest(final ComponentLog logger, final Map<String, String> addressMap,
-			final Map<String, PlcTag> tags, final PlcConnection connection) {
-
-		PlcReadRequest.Builder builder = connection.readRequestBuilder();
-
-		if (tags != null){
-			for (Map.Entry<String,PlcTag> tag : tags.entrySet()){
-				builder.addTag(tag.getKey(), tag.getValue());
-			}
-		} else {
-			if (debugEnabled)
-				logger.debug("Plc-Avro schema and PlcTypes resolution not found in cache and will be added with key: " + addressMap);
-			for (Map.Entry<String,String> entry: addressMap.entrySet()){
-				builder.addTagAddress(entry.getKey(), entry.getValue());
-			}
-		}
-		return builder.build();
-	}
-
-
-	private long evaluateReadResponse(final ProcessContext context, final ComponentLog logger, final FlowFile originalFlowFile,
-			Plc4xWriter plc4xWriter, OutputStream out, final RecordSchema recordSchema, PlcReadResponse readResponse)
-			throws Exception {
-
-		if(originalFlowFile == null) //there is no inherit attributes to use in writer service 
-			return plc4xWriter.writePlcReadResponse(readResponse, out, logger, null, recordSchema, getTimestampField(context));
-		else 
-			return plc4xWriter.writePlcReadResponse(readResponse, out, logger, null, recordSchema, originalFlowFile, getTimestampField(context));
-	}
-
-	private void addTagsToCache(final ComponentLog logger, final Map<String, String> addressMap,
-			PlcReadRequest readRequest, RecordSchema schema) {
-		if (debugEnabled)
-			logger.debug("Adding Plc-Avro schema and PlcTypes resolution into cache with key: " + addressMap);
-		getSchemaCache().addSchema(
-			addressMap, 
-			readRequest.getTagNames(),
-			readRequest.getTags(),
-			schema
-		);
-	}
-
-	private void completeResultFlowFile(final ProcessContext context, final ProcessSession session,
-			final ComponentLog logger, final AtomicLong nrOfRows, final StopWatch executeTime, String inputFileUUID,
-			FlowFile resultSetFF, Plc4xWriter plc4xWriter) {
-		
-		long executionTimeElapsed = executeTime.getElapsed(TimeUnit.MILLISECONDS);
-		final Map<String, String> attributesToAdd = new HashMap<>();
-		attributesToAdd.put(RESULT_ROW_COUNT, String.valueOf(nrOfRows.get()));
-		attributesToAdd.put(RESULT_QUERY_EXECUTION_TIME, String.valueOf(executionTimeElapsed));
-		if (inputFileUUID != null) {
-			attributesToAdd.put(INPUT_FLOWFILE_UUID, inputFileUUID);
-		}
-		attributesToAdd.putAll(plc4xWriter.getAttributesToAdd());
-
-		resultSetFF = session.putAllAttributes(resultSetFF, attributesToAdd);
-		plc4xWriter.updateCounters(session);
-		
-		logger.info("{} contains {} records; transferring to 'success'", resultSetFF, nrOfRows.get());
-
-		if (context.hasIncomingConnection()) {
-			session.getProvenanceReporter().fetch(resultSetFF, "Retrieved " + nrOfRows.get() + " rows", executionTimeElapsed);
-		} else {
-			session.getProvenanceReporter().receive(resultSetFF, "Retrieved " + nrOfRows.get() + " rows", executionTimeElapsed);
-		}
 	}
 
 }

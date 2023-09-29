@@ -18,14 +18,17 @@
  */
 package org.apache.plc4x.nifi;
 
+import java.io.OutputStream;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicLong;
 
 import org.apache.nifi.annotation.lifecycle.OnScheduled;
 import org.apache.nifi.components.PropertyDescriptor;
@@ -34,18 +37,32 @@ import org.apache.nifi.components.ValidationResult;
 import org.apache.nifi.components.Validator;
 import org.apache.nifi.expression.ExpressionLanguageScope;
 import org.apache.nifi.flowfile.FlowFile;
+import org.apache.nifi.logging.ComponentLog;
 import org.apache.nifi.processor.AbstractProcessor;
 import org.apache.nifi.processor.ProcessContext;
+import org.apache.nifi.processor.ProcessSession;
 import org.apache.nifi.processor.ProcessorInitializationContext;
 import org.apache.nifi.processor.Relationship;
+import org.apache.nifi.processor.exception.ProcessException;
 import org.apache.nifi.processor.util.StandardValidators;
+import org.apache.nifi.serialization.record.RecordSchema;
 import org.apache.plc4x.java.DefaultPlcDriverManager;
+import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.PlcDriver;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
+import org.apache.plc4x.java.api.messages.PlcReadRequest;
+import org.apache.plc4x.java.api.messages.PlcReadResponse;
+import org.apache.plc4x.java.api.messages.PlcWriteRequest;
+import org.apache.plc4x.java.api.messages.PlcWriteResponse;
+import org.apache.plc4x.java.api.model.PlcTag;
+import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.utils.cache.CachedPlcConnectionManager;
+import org.apache.plc4x.nifi.BasePlc4xProcessor.Plc4xConnectionStringValidator;
+import org.apache.plc4x.nifi.BasePlc4xProcessor.Plc4xTimestampFieldValidator;
 import org.apache.plc4x.nifi.address.AddressesAccessStrategy;
 import org.apache.plc4x.nifi.address.AddressesAccessUtils;
 import org.apache.plc4x.nifi.address.DynamicPropertyAccessStrategy;
+import org.apache.plc4x.nifi.record.Plc4xWriter;
 import org.apache.plc4x.nifi.record.SchemaCache;
 
 public abstract class BasePlc4xProcessor extends AbstractProcessor {
@@ -219,6 +236,108 @@ public abstract class BasePlc4xProcessor extends AbstractProcessor {
     public int hashCode() {
         return Objects.hash(super.hashCode(), properties, getRelationships());
     }
+
+    protected PlcWriteRequest getWriteRequest(final ComponentLog logger,
+            final Map<String, String> addressMap, final Map<String, PlcTag> tags, final Map<String, ? extends Object> presentTags,
+            final PlcConnection connection, final AtomicLong nrOfRowsHere) {
+
+        PlcWriteRequest.Builder builder = connection.writeRequestBuilder();
+
+        if (tags != null){
+            for (Map.Entry<String,PlcTag> tag : tags.entrySet()){
+                if (presentTags.containsKey(tag.getKey())) {
+                    builder.addTag(tag.getKey(), tag.getValue(), presentTags.get(tag.getKey()));
+                    if (nrOfRowsHere != null) {
+                        nrOfRowsHere.incrementAndGet();
+                    }
+                } else {
+                    if (debugEnabled)
+                        logger.debug("PlcTag " + tag + " is declared as address but was not found on input record.");
+                }
+            }
+        } else {
+            if (debugEnabled)
+                logger.debug("PlcTypes resolution not found in cache and will be added with key: " + addressMap);
+            for (Map.Entry<String,String> entry: addressMap.entrySet()){
+                if (presentTags.containsKey(entry.getKey())) {
+                    builder.addTagAddress(entry.getKey(), entry.getValue(), presentTags.get(entry.getKey()));
+                    if (nrOfRowsHere != null) {
+                        nrOfRowsHere.incrementAndGet();
+                    }
+                }
+            }
+        }
+         
+        return builder.build();
+    }
+
+    protected PlcReadRequest getReadRequest(final ComponentLog logger, 
+            final Map<String, String> addressMap, final Map<String, PlcTag> tags,
+            final PlcConnection connection) {
+
+        PlcReadRequest.Builder builder = connection.readRequestBuilder();
+
+        if (tags != null){
+            for (Map.Entry<String,PlcTag> tag : tags.entrySet()){
+                builder.addTag(tag.getKey(), tag.getValue());
+            }
+        } else {
+            if (debugEnabled)
+                logger.debug("Plc-Avro schema and PlcTypes resolution not found in cache and will be added with key: " + addressMap);
+            for (Map.Entry<String,String> entry: addressMap.entrySet()){
+                builder.addTagAddress(entry.getKey(), entry.getValue());
+            }
+        }
+        return builder.build();
+	}
+
+    protected void evaluateWriteResponse(final ComponentLog logger, Map<String, ? extends Object> values, PlcWriteResponse plcWriteResponse) {
+
+		boolean codeErrorPresent = false;
+		List<String> tagsAtError = null;
+
+		PlcResponseCode code = null;
+
+		for (String tag : plcWriteResponse.getTagNames()) {
+			code = plcWriteResponse.getResponseCode(tag);
+			if (!code.equals(PlcResponseCode.OK)) {
+				if (tagsAtError == null) {
+					tagsAtError = new ArrayList<>();
+				}
+				logger.error("Not OK code when writing the data to PLC for tag " + tag 
+					+ " with value  " + values.get(tag).toString() 
+					+ " in addresss " + plcWriteResponse.getTag(tag).getAddressString());
+				
+			codeErrorPresent = true;
+			tagsAtError.add(tag);
+						
+			}
+		}
+		if (codeErrorPresent) {
+			throw new ProcessException("At least one error was found when while writting tags: " + tagsAtError.toString());
+		}
+	}
+
+   protected void evaluateReadResponse(final ProcessSession session, final FlowFile flowFile, final PlcReadResponse response) {
+        Map<String, String> attributes = new HashMap<>();
+        for (String tagName : response.getTagNames()) {
+            for (int i = 0; i < response.getNumberOfValues(tagName); i++) {
+                Object value = response.getObject(tagName, i);
+                attributes.put(tagName, String.valueOf(value));
+            }
+        }
+        session.putAllAttributes(flowFile, attributes);
+    }
+
+    protected long evaluateReadResponse(final ProcessContext context, final ComponentLog logger, final FlowFile originalFlowFile,
+			Plc4xWriter plc4xWriter, OutputStream out, final RecordSchema recordSchema, PlcReadResponse readResponse)
+			throws Exception {
+
+		if(originalFlowFile == null) //there is no inherit attributes to use in writer service 
+			return plc4xWriter.writePlcReadResponse(readResponse, out, logger, null, recordSchema, getTimestampField(context));
+		else 
+			return plc4xWriter.writePlcReadResponse(readResponse, out, logger, null, recordSchema, originalFlowFile, getTimestampField(context));
+	}
 
     protected static class Plc4xConnectionStringValidator implements Validator {
         @Override

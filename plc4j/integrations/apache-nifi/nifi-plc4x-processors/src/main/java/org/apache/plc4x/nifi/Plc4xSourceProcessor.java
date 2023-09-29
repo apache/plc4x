@@ -80,7 +80,7 @@ public class Plc4xSourceProcessor extends BasePlc4xProcessor {
             try {
                 final PlcReadResponse response = readRequest.execute().get(getTimeout(context, incomingFlowFile), TimeUnit.MILLISECONDS);
                 
-                attributes = getNewAttributes(response);
+                evaluateReadResponse(session, flowFile, response);
                 
             } catch (TimeoutException e) {
                 logger.error("Timeout reading the data from PLC", e);
@@ -91,14 +91,21 @@ public class Plc4xSourceProcessor extends BasePlc4xProcessor {
                 throw (e instanceof ProcessException) ? (ProcessException) e : new ProcessException(e);
             }
 
-            session.putAllAttributes(flowFile, attributes);
+            
             if (incomingFlowFile != null) {
                 session.remove(incomingFlowFile);
             }
             session.transfer(flowFile, REL_SUCCESS);
                 
             if (tags == null){
-                addTagsToCache(logger, addressMap, readRequest);
+                if (debugEnabled)
+                    logger.debug("Adding PlcTypes resolution into cache with key: " + addressMap);
+                getSchemaCache().addSchema(
+                    addressMap, 
+                    readRequest.getTagNames(),
+                    readRequest.getTags(),
+                    null
+                );
             }
             
         } catch (Exception e) {
@@ -111,48 +118,5 @@ public class Plc4xSourceProcessor extends BasePlc4xProcessor {
             throw (e instanceof ProcessException) ? (ProcessException) e : new ProcessException(e);
         }
     }
-
-    private PlcReadRequest getReadRequest(final ComponentLog logger, final Map<String, String> addressMap, 
-            final Map<String, PlcTag> tags , final PlcConnection connection) {
-
-        PlcReadRequest.Builder builder = connection.readRequestBuilder();
-        
-        if (tags != null){
-            for (Map.Entry<String,PlcTag> tag : tags.entrySet()){
-                builder.addTag(tag.getKey(), tag.getValue());
-            }
-        } else {
-            if (debugEnabled)
-                logger.debug("PlcTypes resolution not found in cache and will be added with key: " + addressMap);
-            for (Map.Entry<String,String> entry: addressMap.entrySet()){
-                builder.addTagAddress(entry.getKey(), entry.getValue());
-            }
-        }
-
-        return builder.build();
-    }
-
-    private Map<String, String> getNewAttributes(PlcReadResponse response) {
-        Map<String, String> attributes = new HashMap<>();
-        for (String tagName : response.getTagNames()) {
-            for (int i = 0; i < response.getNumberOfValues(tagName); i++) {
-                Object value = response.getObject(tagName, i);
-                attributes.put(tagName, String.valueOf(value));
-            }
-        }
-        return attributes;
-    }
-
-    private void addTagsToCache(final ComponentLog logger, final Map<String, String> addressMap,
-            PlcReadRequest readRequest) {
-        if (debugEnabled)
-            logger.debug("Adding PlcTypes resolution into cache with key: " + addressMap);
-        getSchemaCache().addSchema(
-            addressMap, 
-            readRequest.getTagNames(),
-            readRequest.getTags(),
-            null
-        );
-    }
-
+    
 }
