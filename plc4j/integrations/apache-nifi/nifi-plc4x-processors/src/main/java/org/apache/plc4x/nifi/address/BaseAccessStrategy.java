@@ -54,7 +54,7 @@ public abstract class BaseAccessStrategy implements AddressesAccessStrategy{
     @Override
     public Map<String, String> extractAddresses(final ProcessContext context, final FlowFile flowFile) {
         if (!isInitializated) {
-            propertyDescriptors.forEach(prop -> {
+            getPropertyDescriptors().forEach(prop -> {
                 if (context.isExpressionLanguagePresent(prop)){
                     isDynamic = true;
                 }
