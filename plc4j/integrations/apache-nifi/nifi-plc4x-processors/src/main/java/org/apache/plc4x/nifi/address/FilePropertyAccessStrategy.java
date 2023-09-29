@@ -57,7 +57,7 @@ public class FilePropertyAccessStrategy extends BaseAccessStrategy {
         }
     }
 
-    private static  Map<String,String> extractAddressesFromFile(String fileName) throws IOException {
+    public static Map<String,String> extractAddressesFromFile(String fileName) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
 
         Path filePath = Path.of(fileName);
