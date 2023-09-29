@@ -57,8 +57,6 @@ import org.apache.plc4x.java.api.messages.PlcWriteResponse;
 import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.utils.cache.CachedPlcConnectionManager;
-import org.apache.plc4x.nifi.BasePlc4xProcessor.Plc4xConnectionStringValidator;
-import org.apache.plc4x.nifi.BasePlc4xProcessor.Plc4xTimestampFieldValidator;
 import org.apache.plc4x.nifi.address.AddressesAccessStrategy;
 import org.apache.plc4x.nifi.address.AddressesAccessUtils;
 import org.apache.plc4x.nifi.address.DynamicPropertyAccessStrategy;

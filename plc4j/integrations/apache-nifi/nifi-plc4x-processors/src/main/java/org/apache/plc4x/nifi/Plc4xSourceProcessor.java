@@ -18,7 +18,6 @@
  */
 package org.apache.plc4x.nifi;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -73,9 +72,6 @@ public class Plc4xSourceProcessor extends BasePlc4xProcessor {
 
 
             PlcReadRequest readRequest = getReadRequest(logger, addressMap, tags, connection);
-                
-
-            Map<String, String> attributes;
 
             try {
                 final PlcReadResponse response = readRequest.execute().get(getTimeout(context, incomingFlowFile), TimeUnit.MILLISECONDS);

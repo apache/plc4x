@@ -18,7 +18,6 @@
  */
 package org.apache.plc4x.nifi;
 
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -111,8 +110,13 @@ public class Plc4xSourceRecordProcessor extends BasePlc4xProcessor {
 		final AtomicLong nrOfRows = new AtomicLong(0L);
 		final StopWatch executeTime = new StopWatch(true);
 
-		String inputFileUUID = fileToProcess == null ? null : fileToProcess.getAttribute(CoreAttributes.UUID.key());
-		final FlowFile resultSetFF = createResultFlowFile(session, fileToProcess);
+		final FlowFile resultSetFF;
+		if (fileToProcess == null) {
+			resultSetFF = session.create();
+		} else {
+			resultSetFF = session.create(fileToProcess);
+			session.putAttribute(resultSetFF, INPUT_FLOWFILE_UUID, fileToProcess.getAttribute(CoreAttributes.UUID.key()));
+		}
 
 		final FlowFile originalFlowFile = fileToProcess;
 
@@ -122,9 +126,6 @@ public class Plc4xSourceRecordProcessor extends BasePlc4xProcessor {
 
 		try {
 			session.write(resultSetFF, out -> {
-
-			
-
 				final Map<String,String> addressMap = getPlcAddressMap(context, originalFlowFile);
 				final RecordSchema recordSchema = getSchemaCache().retrieveSchema(addressMap);
 				final Map<String, PlcTag> tags = getSchemaCache().retrieveTags(addressMap);
@@ -181,9 +182,6 @@ public class Plc4xSourceRecordProcessor extends BasePlc4xProcessor {
 		final Map<String, String> attributesToAdd = new HashMap<>();
 		attributesToAdd.put(RESULT_ROW_COUNT, String.valueOf(nrOfRows.get()));
 		attributesToAdd.put(RESULT_QUERY_EXECUTION_TIME, String.valueOf(executionTimeElapsed));
-		if (inputFileUUID != null) {
-			attributesToAdd.put(INPUT_FLOWFILE_UUID, inputFileUUID);
-		}
 		attributesToAdd.putAll(plc4xWriter.getAttributesToAdd());
 
 		session.putAllAttributes(resultSetFF, attributesToAdd);
@@ -200,22 +198,6 @@ public class Plc4xSourceRecordProcessor extends BasePlc4xProcessor {
 			session.remove(fileToProcess);
 		}
 		session.transfer(resultSetFF, REL_SUCCESS);
-	}
-
-	private FlowFile createResultFlowFile(final ProcessSession session, FlowFile fileToProcess) {
-
-		Map<String, String> inputFileAttrMap = fileToProcess == null ? null : fileToProcess.getAttributes();
-		
-		FlowFile resultSetFF;
-		if (fileToProcess == null) {
-			resultSetFF = session.create();
-		} else {
-			resultSetFF = session.create(fileToProcess);
-		}
-		if (inputFileAttrMap != null) {
-			resultSetFF = session.putAllAttributes(resultSetFF, inputFileAttrMap);
-		}
-		return resultSetFF;
 	}
 
 }
