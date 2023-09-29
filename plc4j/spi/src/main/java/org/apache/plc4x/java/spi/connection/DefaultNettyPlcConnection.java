@@ -248,7 +248,7 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
                         }
                     }
                 });
-                // Fix for https://github.com/apache/plc4x/issues/801
+                // If any exception goes through the pipeline unhandled, close the connection.
                 pipeline.addLast(
                         new ChannelInboundHandlerAdapter() {
                             @Override
