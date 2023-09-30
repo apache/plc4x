@@ -17,6 +17,7 @@ New Features
 - Added SBOM generation
 - Improved Apache NiFi support
 - Added support for the latest ETS version in KNX
+- Started implementing the ping() method for some drivers
 
 Incompatible changes
 --------------------
@@ -35,6 +36,8 @@ Incompatible changes
   of these drivers are currently not going to work as well as before
   (We're going to address these issues in the next phase after the
   release)
+- Changed the return type of the PLC4J Ping method to return more
+  information on if the ping was successful
 
 Bug Fixes
 ---------
