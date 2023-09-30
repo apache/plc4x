@@ -584,6 +584,28 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
     }
 
     @Override
+    public CompletableFuture<PlcPingResponse> ping(PlcPingRequest pingRequest) {
+        CompletableFuture<PlcPingResponse> future = new CompletableFuture<>();
+
+        AmsPacket readDeviceInfoRequest = new AdsReadDeviceInfoRequest(
+            configuration.getTargetAmsNetId(), DefaultAmsPorts.RUNTIME_SYSTEM_01.getValue(),
+            configuration.getSourceAmsNetId(), 800, 0, getInvokeId());
+
+        RequestTransactionManager.RequestTransaction readDeviceInfoTx = tm.startRequest();
+        readDeviceInfoTx.submit(() -> context.sendRequest(new AmsTCPPacket(readDeviceInfoRequest))
+            .expectResponse(AmsTCPPacket.class, Duration.ofMillis(configuration.getTimeoutRequest()))
+            .onTimeout(e -> context.getChannel().pipeline().fireExceptionCaught(e))
+            .onError((p, e) -> context.getChannel().pipeline().fireExceptionCaught(e))
+            .check(responseAmsPacket -> responseAmsPacket.getUserdata().getInvokeId() == readDeviceInfoRequest.getInvokeId())
+            .unwrap(response -> (AdsReadDeviceInfoResponse) response.getUserdata())
+            .handle(readDeviceInfoResponse -> {
+                    readDeviceInfoTx.endRequest();
+                future.complete(new DefaultPlcPingResponse(pingRequest, PlcResponseCode.OK));
+                }));
+        return future;
+    }
+
+    @Override
     public CompletableFuture<PlcReadResponse> read(PlcReadRequest readRequest) {
         // Get all ADS addresses in their resolved state.
         final CompletableFuture<Map<AdsTag, DirectAdsTag>> directAdsTagsFuture =

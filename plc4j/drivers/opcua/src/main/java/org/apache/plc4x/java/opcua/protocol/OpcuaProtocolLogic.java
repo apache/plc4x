@@ -56,7 +56,6 @@ import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
@@ -194,7 +193,6 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
 
             /* Functional Consumer example using inner class */
             Consumer<byte[]> consumer = opcuaResponse -> {
-                PlcReadResponse response = null;
                 try {
                     ExtensionObjectDefinition reply = ExtensionObject.staticParse(new ReadBufferByteBased(opcuaResponse, ByteOrder.LITTLE_ENDIAN), false).getBody();
                     if (reply instanceof ReadResponse) {
@@ -212,7 +210,6 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
                             status.put(key, new ResponseItem<>(PlcResponseCode.INTERNAL_ERROR, null));
                         }
                         future.complete(new DefaultPlcReadResponse(request, status));
-                        return;
                     }
                 } catch (ParseException | PlcRuntimeException e) {
                     future.completeExceptionally(new PlcRuntimeException(e));

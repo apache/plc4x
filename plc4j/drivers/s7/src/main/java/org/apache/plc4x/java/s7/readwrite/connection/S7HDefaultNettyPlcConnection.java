@@ -26,6 +26,7 @@ import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
+import org.apache.plc4x.java.api.messages.PlcPingResponse;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.value.PlcValueHandler;
@@ -67,7 +68,8 @@ public class S7HDefaultNettyPlcConnection extends DefaultNettyPlcConnection impl
     protected int slice_ping = 0;
     protected int slice_retry_time = 0;
 
-    public S7HDefaultNettyPlcConnection(boolean canRead,
+    public S7HDefaultNettyPlcConnection(boolean canPing,
+                                        boolean canRead,
                                         boolean canWrite,
                                         boolean canSubscribe,
                                         boolean canBrowse,
@@ -83,7 +85,8 @@ public class S7HDefaultNettyPlcConnection extends DefaultNettyPlcConnection impl
                                         ProtocolStackConfigurer<TPKTPacket> stackConfigurer,
                                         BaseOptimizer optimizer,
                                         PlcAuthentication authentication) {
-        super(canRead,
+        super(canPing,
+            canRead,
             canWrite,
             canSubscribe,
             canBrowse,
@@ -300,7 +303,8 @@ public class S7HDefaultNettyPlcConnection extends DefaultNettyPlcConnection impl
     }
 
     @Override
-    public CompletableFuture<Void> ping() {
+    // TODO: This method needs some cleaning up ...
+    public CompletableFuture<? extends PlcPingResponse> ping() {
         if (channel.attr(S7HMuxImpl.IS_CONNECTED).get()) {
             channel.eventLoop().execute(() -> {
                 PlcReadRequest.Builder builder = readRequestBuilder();

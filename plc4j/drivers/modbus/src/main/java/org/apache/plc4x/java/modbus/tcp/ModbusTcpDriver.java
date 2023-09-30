@@ -90,6 +90,11 @@ public class ModbusTcpDriver extends GeneratedDriverBase<ModbusTcpADU> {
     }
 
     @Override
+    protected boolean canPing() {
+        return true;
+    }
+
+    @Override
     protected boolean canRead() {
         return true;
     }

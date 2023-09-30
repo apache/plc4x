@@ -47,6 +47,10 @@ public abstract class GeneratedDriverBase<BASE_PACKET extends Message> implement
 
     protected abstract Class<? extends Configuration> getConfigurationType();
 
+    protected boolean canPing() {
+        return false;
+    }
+
     protected boolean canRead() {
         return false;
     }
@@ -184,7 +188,7 @@ public abstract class GeneratedDriverBase<BASE_PACKET extends Message> implement
         }
 
         return new DefaultNettyPlcConnection(
-            canRead(), canWrite(), canSubscribe(), canBrowse(),
+            canPing(), canRead(), canWrite(), canSubscribe(), canBrowse(),
             getTagHandler(),
             getValueHandler(),
             configuration,

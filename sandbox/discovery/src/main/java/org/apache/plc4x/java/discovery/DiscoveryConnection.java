@@ -117,8 +117,8 @@ public class DiscoveryConnection implements PlcConnection, PlcSubscriber, PlcBro
     }
 
     @Override
-    public CompletableFuture<Void> ping() {
-        CompletableFuture<Void> future = new CompletableFuture<>();
+    public CompletableFuture<? extends PlcPingResponse> ping() {
+        CompletableFuture<PlcPingResponse> future = new CompletableFuture<>();
         future.completeExceptionally(new PlcUnsupportedOperationException("The connection does not support pinging"));
         return future;
     }

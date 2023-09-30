@@ -76,6 +76,11 @@ public class ModbusRtuDriver extends GeneratedDriverBase<ModbusRtuADU> {
     }
 
     @Override
+    protected boolean canPing() {
+        return true;
+    }
+
+    @Override
     protected boolean canRead() {
         return true;
     }

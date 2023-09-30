@@ -59,6 +59,11 @@ public class AdsPlcDriver extends GeneratedDriverBase<AmsTCPPacket> {
     }
 
     @Override
+    protected boolean canPing() {
+        return true;
+    }
+
+    @Override
     protected boolean canRead() {
         return true;
     }

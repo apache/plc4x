@@ -80,6 +80,11 @@ public class ModbusAsciiDriver extends GeneratedDriverBase<ModbusAsciiADU> {
     }
 
     @Override
+    protected boolean canPing() {
+        return true;
+    }
+
+    @Override
     protected boolean canRead() {
         return true;
     }

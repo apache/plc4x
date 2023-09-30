@@ -41,8 +41,9 @@ import java.util.function.Consumer;
  * Concrete implementations should override the methods indicating connection capabilities
  * and for obtaining respective request builders.
  */
-public abstract class AbstractPlcConnection implements PlcConnection, PlcConnectionMetadata, PlcReader, PlcWriter, PlcSubscriber, PlcBrowser {
+public abstract class AbstractPlcConnection implements PlcConnection, PlcConnectionMetadata, PlcPinger, PlcReader, PlcWriter, PlcSubscriber, PlcBrowser {
 
+    private boolean canPing = false;
     private boolean canRead = false;
     private boolean canWrite = false;
     private boolean canSubscribe = false;
@@ -60,9 +61,11 @@ public abstract class AbstractPlcConnection implements PlcConnection, PlcConnect
     protected AbstractPlcConnection() {
     }
 
-    protected AbstractPlcConnection(boolean canRead, boolean canWrite, boolean canSubscribe, boolean canBrowse,
+    protected AbstractPlcConnection(boolean canPing, boolean canRead, boolean canWrite,
+                                    boolean canSubscribe, boolean canBrowse,
                                     PlcTagHandler tagHandler, PlcValueHandler valueHandler,
                                     BaseOptimizer optimizer, PlcAuthentication authentication) {
+        this.canPing = canPing;
         this.canRead = canRead;
         this.canWrite = canWrite;
         this.canSubscribe = canSubscribe;
@@ -83,8 +86,8 @@ public abstract class AbstractPlcConnection implements PlcConnection, PlcConnect
     }
 
     @Override
-    public CompletableFuture<Void> ping() {
-        CompletableFuture<Void> future = new CompletableFuture<>();
+    public CompletableFuture<? extends PlcPingResponse> ping() {
+        CompletableFuture<PlcPingResponse> future = new CompletableFuture<>();
         future.completeExceptionally(new PlcUnsupportedOperationException("The connection does not support pinging"));
         return future;
     }
@@ -159,6 +162,14 @@ public abstract class AbstractPlcConnection implements PlcConnection, PlcConnect
             throw new PlcUnsupportedOperationException("The connection does not support browsing");
         }
         return new DefaultPlcBrowseRequest.Builder(this, getPlcTagHandler());
+    }
+
+    @Override
+    public CompletableFuture<PlcPingResponse> ping(PlcPingRequest pingRequest) {
+        if (!canPing) {
+            throw new PlcUnsupportedOperationException("The connection does not support pinging");
+        }
+        return protocol.ping(pingRequest);
     }
 
     @Override

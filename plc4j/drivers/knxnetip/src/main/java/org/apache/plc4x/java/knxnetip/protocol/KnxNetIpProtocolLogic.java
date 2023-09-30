@@ -238,7 +238,7 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KnxNetIpMessage> im
             .check(p -> p instanceof DisconnectResponse)
             .unwrap(p -> (DisconnectResponse) p)
             .handle(disconnectResponse -> {
-                // In general we should probably check if the disconnect was successful, but in
+                // In general, we should probably check if the disconnect was successful, but in
                 // the end we couldn't do much if the disconnect would fail.
                 final String gatewayName = knxNetIpDriverContext.getGatewayName();
                 final KnxAddress gatewayAddress = knxNetIpDriverContext.getGatewayAddress();
@@ -249,6 +249,33 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KnxNetIpMessage> im
                 context.fireDisconnected();
                 LOGGER.debug("Disconnected event fired from KNX protocol");
             });
+    }
+
+    @Override
+    public CompletableFuture<PlcPingResponse> ping(PlcPingRequest pingRequest) {
+        CompletableFuture<PlcPingResponse> future = new CompletableFuture<>();
+
+        // We're using the connection-state-request as Ping operation as that's
+        // what the protocol generally uses anyway.
+        ConnectionStateRequest connectionStateRequest =
+            new ConnectionStateRequest(
+                knxNetIpDriverContext.getCommunicationChannelId(),
+                new HPAIControlEndpoint(HostProtocolCode.IPV4_UDP,
+                    knxNetIpDriverContext.getLocalIPAddress(),
+                    knxNetIpDriverContext.getLocalPort()));
+        context.sendRequest(connectionStateRequest)
+            .expectResponse(KnxNetIpMessage.class, Duration.ofMillis(1000))
+            .check(p -> p instanceof ConnectionStateResponse)
+            .unwrap(p -> (ConnectionStateResponse) p)
+            .handle(connectionStateResponse -> {
+                if(connectionStateResponse.getStatus() == Status.NO_ERROR) {
+                    future.complete(new DefaultPlcPingResponse(pingRequest, PlcResponseCode.OK));
+                } else {
+                    future.complete(new DefaultPlcPingResponse(pingRequest, PlcResponseCode.REMOTE_ERROR));
+                }
+            });
+
+        return future;
     }
 
     @Override

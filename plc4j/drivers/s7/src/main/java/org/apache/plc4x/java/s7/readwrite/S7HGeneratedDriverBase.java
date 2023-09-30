@@ -149,7 +149,7 @@ public class S7HGeneratedDriverBase extends GeneratedDriverBase<TPKTPacket> {
         }
 
         return new S7HDefaultNettyPlcConnection(
-            canRead(), canWrite(), canSubscribe(), canBrowse(),
+            canPing(), canRead(), canWrite(), canSubscribe(), canBrowse(),
             getTagHandler(),
             getValueHandler(),
             configuration,
