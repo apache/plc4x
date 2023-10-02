@@ -18,16 +18,32 @@
  */
 package org.apache.plc4x.java.bacnetip;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.plc4x.java.bacnetip.readwrite.BVLC;
 import org.apache.plc4x.test.generator.ParserSerializerTestsuiteGenerator;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+import java.nio.file.FileSystems;
 import java.nio.file.Path;
 
 public class BACnetParserSerializerTestSuiteGenerator {
 
-    public static void main(String... args) {
-        String pcapFile = Path.of("plc4j/utils/test-generator/src/test/resources/bacnet-stack-services.cap").toAbsolutePath().toString();
+    public static void main(String... args) throws Exception {
+        String pcapFile = DownloadAndCache("bacnet-stack-services.cap");
         String xmlTestSuiteFile = Path.of("protocols/bacnetip/src/test/resources/protocols/bacnet/ParserSerializerTestsuite.xml").toAbsolutePath().toString();
         ParserSerializerTestsuiteGenerator.main("-tBACnet/IP", "-pbacnetip", BVLC.class.getName(), pcapFile, xmlTestSuiteFile);
+    }
+
+    private static String DownloadAndCache(String file) throws IOException {
+        String tempDirectory = FileUtils.getTempDirectoryPath();
+        File pcapFile = FileSystems.getDefault().getPath(tempDirectory, RandomPackagesTest.class.getSimpleName(), file).toFile();
+        FileUtils.createParentDirectories(pcapFile);
+        if (!pcapFile.exists()) {
+            URL source = new URL("https://kargs.net/captures/" + file);
+            FileUtils.copyURLToFile(source, pcapFile);
+        }
+        return pcapFile.getAbsolutePath();
     }
 }
