@@ -93,10 +93,15 @@ function mywget() {
   (set -x; curl -f -O "$1")
 }
 
-function getSignedBundle() {
+function getSignedAndHashedBundle() {
   mywget "${1}"
   mywget "${1}".asc
   mywget "${1}".sha512
+}
+
+function getSignedBundle() {
+  mywget "${1}"
+  mywget "${1}".asc
 }
 
 mkdir -p "${DST_BASE_DIR}"
@@ -114,9 +119,11 @@ fi
 
 mkdir -p "${DST_VER_DIR}"
 cd "${DST_VER_DIR}"
-mywget "${URL}"/README
+mywget "${URL}"/README.md
 mywget "${URL}"/RELEASE_NOTES
-getSignedBundle "${URL}"/apache-plc4x-"${VER}"-source-release.zip
+getSignedAndHashedBundle "${URL}"/apache-plc4x-"${VER}"-source-release.zip
+getSignedBundle "${URL}"/apache-plc4x-parent-"${VER}"-sbom.json
+getSignedBundle "${URL}"/apache-plc4x-parent-"${VER}"-sbom.xml
 
 echo
 echo Done Downloading to "${DST_BASE_DIR}"
