@@ -18,6 +18,7 @@ New Features
 - Improved Apache NiFi support
 - Added support for the latest ETS version in KNX
 - Started implementing the ping() method for some drivers
+- Greatly updated Apache NiFi integration
 
 Incompatible changes
 --------------------
