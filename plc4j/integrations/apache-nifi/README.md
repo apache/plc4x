@@ -20,8 +20,9 @@ under the License.
 
 ## Common properties
 The following properties applies to all Plc4x Processors:
-* Connection String: A constant connection string such as `s7://10.105.143.7:102?remote-rack=0&remote-slot=1&controller-type=S7_1200`.
-* Read/Write/Subscribe timeout (miliseconds): Specifies the time in milliseconds for the connection to return a timeout. In case of subscription the timeout is used to renew connections.
+* Connection String: A constant connection string such as `s7://10.105.143.7:102?remote-rack=0&remote-slot=1&controller-type=S7_1200` or a valid Expression Language ([Expression Language NiFi documentation](https://nifi.apache.org/docs/nifi-docs/html/expression-language-guide.html)) such as `${plc4x.connection_string}`.
+* Timeout (miliseconds): Specifies the time in milliseconds for the connection to return a timeout. Is used to renew connections. Can be set with Expression Language.
+* Timestamp field name: It defines the name of the field that represents the time when the response from the Plc was received. It will be added to the attributes or to the record deppending on the processor used.
 * Address Access Strategy: defines how the processor obtains the PLC addresses. It can take 2 values:
   * **Properties as Addreses:** 
       For each variable, add a new property to the processor where the property name matches the variable name, and the variable value corresponds to the address tag. 
@@ -48,6 +49,21 @@ The following properties applies to all Plc4x Processors:
     }
     ```
     If this JSON is in an attribute `plc4x.addresses` it can be accessed with *Address Text*=`${plc4x.addresses}`. 
+  
+  * **Address File:**
+    Property *Address File* must be supplied with a path to a file in JSON format that contains variable name and address tag. Expression Language is supported.
+
+    For example a file in:
+    - *Address File*:```/home/nifi/s7addresses.json```  
+    With the following content
+    ```json
+    {
+      "var1" : "%DB1:DBX0.0:BOOL",
+      "var2" : "%DB1:DBX0.1:BOOL"
+    }
+    ```
+    If the file name is in an attribute `plc4x.addresses_file` it can be accessed with *Address File*=`${plc4x.addresses_file}`. 
+
 
 
 When reading from a PLC the response is used to create a mapping between Plc types into Avro. The mapping is done as follows:
@@ -87,10 +103,6 @@ Table of data mapping between plc data and Avro types (as specified in [Avro spe
 Also, it is important to keep in mind the Processor Scheduling Configuration. Using the parameter **Run Schedule** (for example to *1 sec*), the reading frequency can be set. Note that by default, this value is defined to 0 sec (as fast as possible).
 
 
-## Plc4xSinkProcessor
-
-## Plc4xSourceProcessor
-
 ## Plc4xSinkRecordProcessor
 
 This processor is <ins>record oriented</ins>, reads from a formated input flowfile content using a Record Reader (for further information see [NiFi Documentation](https://nifi.apache.org/docs/nifi-docs/html/record-path-guide.html#overview)). 
@@ -124,6 +136,7 @@ An *example* for reading values from a S7-1200:
 - *PLC connection String:* *s7://10.105.143.7:102?remote-rack=0&remote-slot=1&controller-type=S7_1200*
 - *Record Writer:* *PLC4x Embedded - AvroRecordSetWriter*
 - *Read timeout (miliseconds):* *10000*
+- *Timestamp field name:* *timestamp*  
 - *var1:* *%DB1:DBX0.0:BOOL*
 - *var2:* *%DB1:DBX0.1:BOOL*
 - *var3:* *%DB1:DBB01:BYTE*
@@ -162,6 +175,6 @@ The output flowfile will contain the PLC read values. This information is includ
   "var3" : "\u0005",
   "var5" : 1992,
   "var4" : "4",
-  "ts" : 1628783058433
+  "timestamp" : 1628783058433
 } ]
 ```

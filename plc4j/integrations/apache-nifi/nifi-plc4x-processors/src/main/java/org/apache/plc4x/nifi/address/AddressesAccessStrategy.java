@@ -16,11 +16,32 @@
  */
 package org.apache.plc4x.nifi.address;
 
+import org.apache.nifi.components.AllowableValue;
+import org.apache.nifi.components.PropertyDescriptor;
 import org.apache.nifi.flowfile.FlowFile;
 import org.apache.nifi.processor.ProcessContext;
 
+import java.util.List;
 import java.util.Map;
 
 public interface AddressesAccessStrategy {
+    /**
+     * Returns the allowable value associated with the strategy.
+     * @return AllowableValue the allowable value associated
+     */
+    AllowableValue getAllowableValue();
+
+    /**
+     * Returns a list of property descriptors needed in for the strategy.
+     * @return List of PropertyDescriptor needed for the strategy
+     */
+    List<PropertyDescriptor> getPropertyDescriptors();
+    
+    /**
+     * Returns a map with the names and addresses of the tags.
+     * @param context the context of the processor
+     * @param flowFile the FlowFile being processed
+     * @return Map with the tag names and addresses
+     */
     Map<String, String> extractAddresses(final ProcessContext context, final FlowFile flowFile);
 }

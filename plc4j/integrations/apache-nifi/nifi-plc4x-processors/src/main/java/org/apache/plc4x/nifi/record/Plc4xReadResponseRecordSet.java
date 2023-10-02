@@ -20,6 +20,7 @@ package org.apache.plc4x.nifi.record;
 
 import java.io.Closeable;
 import java.io.IOException;
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -46,12 +47,18 @@ public class Plc4xReadResponseRecordSet implements RecordSet, Closeable {
     private Set<String> rsColumnNames;
     private boolean moreRows;
     private final boolean debugEnabled = logger.isDebugEnabled();
+    private final String timestampFieldName; 
     private boolean isSubscription = false;
+    private Instant timestamp;
 
    	private final AtomicReference<RecordSchema> recordSchema = new AtomicReference<>(null);
 
-    public Plc4xReadResponseRecordSet(final PlcReadResponse readResponse, RecordSchema recordSchema) throws IOException {
+    public Plc4xReadResponseRecordSet(final PlcReadResponse readResponse, RecordSchema recordSchema, String timestampFieldName) {
+        this.timestampFieldName = timestampFieldName;
         this.readResponse = readResponse;
+        if (!isSubscription) {
+            timestamp = Instant.now();
+        }
         moreRows = true;
         
         isSubscription = readResponse.getRequest() == null;
@@ -68,7 +75,7 @@ public class Plc4xReadResponseRecordSet implements RecordSet, Closeable {
         rsColumnNames = responseDataStructure.keySet();
                
         if (recordSchema == null) {
-        	Schema avroSchema = Plc4xCommon.createSchema(responseDataStructure);     	
+        	Schema avroSchema = Plc4xCommon.createSchema(responseDataStructure, this.timestampFieldName);     	
         	this.recordSchema.set(AvroTypeUtil.createSchema(avroSchema));
         } else {
             this.recordSchema.set(recordSchema);
@@ -78,7 +85,7 @@ public class Plc4xReadResponseRecordSet implements RecordSet, Closeable {
 
     }
 
-    public Map<String, PlcValue> plc4xSubscriptionResponseRecordSet(final DefaultPlcSubscriptionEvent subscriptionEvent) throws IOException {;
+    public Map<String, PlcValue> plc4xSubscriptionResponseRecordSet(final DefaultPlcSubscriptionEvent subscriptionEvent) {
         moreRows = true;
         
         if (debugEnabled)
@@ -131,7 +138,7 @@ public class Plc4xReadResponseRecordSet implements RecordSet, Closeable {
         //do nothing
     }
 
-    protected Record createRecord(final PlcReadResponse readResponse) throws IOException{
+    protected Record createRecord(final PlcReadResponse readResponse) {
         final Map<String, Object> values = new HashMap<>(getSchema().getFieldCount());
 
         if (debugEnabled)
@@ -158,7 +165,12 @@ public class Plc4xReadResponseRecordSet implements RecordSet, Closeable {
         }
 
         //add timestamp tag to schema
-        values.put(Plc4xCommon.PLC4X_RECORD_TIMESTAMP_FIELD_NAME, System.currentTimeMillis());
+        if (isSubscription) {
+            values.put(timestampFieldName, ((DefaultPlcSubscriptionEvent) readResponse).getTimestamp().toEpochMilli());
+        } else {
+            values.put(timestampFieldName, timestamp.toEpochMilli());
+        }
+        
         if (debugEnabled)
             logger.debug("added timestamp tag to record.");
 

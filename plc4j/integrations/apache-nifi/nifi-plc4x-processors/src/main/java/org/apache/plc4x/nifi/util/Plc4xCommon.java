@@ -53,9 +53,6 @@ import org.apache.plc4x.java.spi.values.PlcWORD;
 
 public class Plc4xCommon {
 
-	
-	public static final String PLC4X_RECORD_TIMESTAMP_FIELD_NAME = "ts";
-	
 	/**
 	 * This method is used to infer output AVRO schema directly from the PlcReadResponse object. 
 	 * It is directly used from the RecordPlc4xWriter.writePlcReadResponse() method.
@@ -66,7 +63,7 @@ public class Plc4xCommon {
 	 * @param responseDataStructure: a map that reflects the structure of the answer given by the PLC when making a Read Request.
 	 * @return AVRO Schema built from responseDataStructure.
 	 */
-	public static Schema createSchema(Map<String, ? extends PlcValue> responseDataStructure){
+	public static Schema createSchema(Map<String, ? extends PlcValue> responseDataStructure, String timestampFieldName){
 		//plc and record datatype map
 		final FieldAssembler<Schema> builder = SchemaBuilder.record("PlcReadResponse").namespace("any.data").fields();	
 		String fieldName = null;
@@ -108,7 +105,7 @@ public class Plc4xCommon {
 		}
 		
 		//add timestamp tag to schema
-		builder.name(PLC4X_RECORD_TIMESTAMP_FIELD_NAME).type().longType().noDefault();
+		builder.name(timestampFieldName).type().longType().noDefault();
 		
 		
 		return builder.endRecord();
