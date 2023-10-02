@@ -24,6 +24,7 @@ import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionResponse;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.opcua.OpcuaPlcDriverTest;
+import org.apache.plc4x.test.DisableInDockerFlag;
 import org.apache.plc4x.test.DisableOnParallelsVmFlag;
 import org.eclipse.milo.examples.server.ExampleServer;
 import org.junit.jupiter.api.*;
@@ -42,6 +43,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 // I tracked it down into the core of Milo several times now, but got lost in there.
 // It's not a big issue as the GitHub runners and the Apache Jenkins still run the test.
 @DisableOnParallelsVmFlag
+@DisableInDockerFlag
 public class OpcuaSubscriptionHandleTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OpcuaPlcDriverTest.class);
