@@ -21,14 +21,11 @@ Be sure to verify your downloads by these https://www.apache.org/info/verificati
 
 === Current Releases
 
-==== 0.10.0 Official https://www.apache.org/dyn/closer.lua/plc4x/0.10.0/apache-plc4x-0.10.0-source-release.zip[source release] [ https://downloads.apache.org/plc4x/0.10.0/apache-plc4x-0.10.0-source-release.zip.sha512[SHA512] ] [ https://downloads.apache.org/plc4x/0.10.0/apache-plc4x-0.10.0-source-release.zip.asc[ASC] ]
+==== 0.11.0 Official https://www.apache.org/dyn/closer.lua/plc4x/0.11.0/apache-plc4x-0.11.0-source-release.zip[source release] [ https://downloads.apache.org/plc4x/0.11.0/apache-plc4x-0.11.0-source-release.zip.sha512[SHA512] ] [ https://downloads.apache.org/plc4x/0.11.0/apache-plc4x-0.11.0-source-release.zip.asc[ASC] ]
 
-A lot of the work in this version went into refactoring and
-cleaning up our code generation. The code generation itself is
-now a lot cleaner and simpler as well as the code generated
-for Java. We also added a number of new field-types to allow
-implementing more sophisticated protocols. PLC4C now should
-also support all of the constructs mspec has to offer.
+The APIs have been streamlined in a preparation for a hopefully soon 1.0.0 release.
+Many drivers have been re-implemented with much more features.
+Integration modules have been improved.
 
 ===== New Features
 
@@ -59,9 +56,14 @@ values for any of these types.
 
 === Previous Releases
 
-- Fixed a big bug in the KNX Datapoint decoding, which caused
-byte-aligned data types to parse with an offset of 8 bit.
-(This bug affected both the Java and the Go driver)
+==== 0.10.0 Official https://archive.apache.org/dist/plc4x/0.10.0/apache-plc4x-0.10.ß-source-release.zip[source release] [ https://downloads.apache.org/plc4x/0.10.0/apache-plc4x-0.10.ß-source-release.zip.sha512[SHA512] ] [ https://downloads.apache.org/plc4x/0.10.ß/apache-plc4x-0.1ß.ß-source-release.zip.asc[ASC] ]
+
+A lot of the work in this version went into refactoring and
+cleaning up our code generation. The code generation itself is
+now a lot cleaner and simpler as well as the code generated
+for Java. We also added a number of new field-types to allow
+implementing more sophisticated protocols. PLC4C now should
+also support all of the constructs mspec has to offer.
 
 ==== 0.9.1 Official https://archive.apache.org/dist/plc4x/0.9.1/apache-plc4x-0.9.1-source-release.zip[source release] [ https://downloads.apache.org/plc4x/0.9.1/apache-plc4x-0.9.1-source-release.zip.sha512[SHA512] ] [ https://downloads.apache.org/plc4x/0.9.1/apache-plc4x-0.9.1-source-release.zip.asc[ASC] ]
 
@@ -72,8 +74,6 @@ Please note that CVE-2021-43083 only affects the PLC4C part of PLC4X.
 ===== Bug Fixes
 
 CVE-2021-43083 Apache PLC4X 0.9.0 Buffer overflow in PLC4C via crafted server response
-
-=== Previous Releases
 
 [#release-0_9_0]
 ==== 0.9.0 Official https://archive.apache.org/dist/plc4x/0.9.0/apache-plc4x-0.9.0-source-release.zip[source release] [ https://archive.apache.org/dist/plc4x/0.9.0/apache-plc4x-0.9.0-source-release.zip.sha512[SHA512] ] [ https://archive.apache.org/dist/plc4x/0.9.0/apache-plc4x-0.9.0-source-release.zip.asc[ASC] ]
